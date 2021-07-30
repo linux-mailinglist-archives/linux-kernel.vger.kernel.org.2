@@ -2,113 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010293DB89B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5C63DB887
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhG3M27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 08:28:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50315 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230355AbhG3M26 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 08:28:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627648133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KoGVkv7H3/+ygZF2TyDEKy9CxxMUqYhhWlGnltJvuyM=;
-        b=KkQG5D1TCYO2nTrgr9Y4lXY96IA+n+fF5suLjuEYaG3Y0b2PLQm0ler3exNreJLHXanUjB
-        MsfjN0aiG6M1VVRXCLHsMKzUDWh73lnyClNdytPGMJ0kVlQ9ngQ1z1PbccQcm6bqGuFoJy
-        MbhEXqVF6qmFjAwq1jWQmPoTz1vp2Xs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-pZHFfejSPfasBYxYWzJMww-1; Fri, 30 Jul 2021 08:28:50 -0400
-X-MC-Unique: pZHFfejSPfasBYxYWzJMww-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B47E6190A7A5;
-        Fri, 30 Jul 2021 12:28:48 +0000 (UTC)
-Received: from horse.redhat.com (unknown [10.22.32.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E6465779D0;
-        Fri, 30 Jul 2021 12:28:47 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 8652D22037A; Fri, 30 Jul 2021 08:24:18 -0400 (EDT)
-Date:   Fri, 30 Jul 2021 08:24:18 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@lst.de, virtio-fs@redhat.com,
-        v9fs-developer@lists.sourceforge.net, stefanha@redhat.com,
-        miklos@szeredi.hu
-Subject: Re: [PATCH v3 3/3] fs: simplify get_filesystem_list /
- get_all_fs_names
-Message-ID: <YQPvcilZ09yByXb5@redhat.com>
-References: <20210714202321.59729-1-vgoyal@redhat.com>
- <20210714202321.59729-4-vgoyal@redhat.com>
- <YQNOY9H/6mJMWRNN@zeniv-ca.linux.org.uk>
+        id S238800AbhG3MYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 08:24:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230325AbhG3MYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 08:24:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FB1F60F0F;
+        Fri, 30 Jul 2021 12:24:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627647883;
+        bh=4skOWnrpXbFXjOabP6T3ypo967ThsPE6KYZyHShRRh8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RYRRWB7dAwPvV/aGPP7PQMkZiIszM19lBt90KI4m5qM3Bv0Ee7bY8P6r6d28Mjfhf
+         8BeIRdpmeLf1f8PEGnKPjFzCubQlc+EuwjgAMn9FI0/8NTxs3OYSqDYdNMWfXIaxmo
+         ukaQ+koFqKyqhKb9nEYU5tPxVbE3XPyDzTPPti6/KBe6esJAryen8l1BWe28FTkaFL
+         TfYL+8b6iaNd4I6CT1AV8lixiOShSRXBPTYJxCGSQvsdJXtgGucchoarod47N51TbU
+         Oy1l6+Uq9wg9BNY8cILnmuZvL0ZMnMv0G91utzokt9f9kp9PB9qkzdJbrUZK37S/r3
+         7z6cvlMX+ifQA==
+Date:   Fri, 30 Jul 2021 13:24:38 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     catalin.marinas@arm.com, jthierry@redhat.com, amit.kachhap@arm.com,
+        dave.martin@arm.com, mark.rutland@arm.com, tabba@google.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: use __func__ to get function name in pr_err
+Message-ID: <20210730122438.GF23589@willie-the-truck>
+References: <20210726122907.51529-1-wangborong@cdjrlc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQNOY9H/6mJMWRNN@zeniv-ca.linux.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210726122907.51529-1-wangborong@cdjrlc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:57:07AM +0000, Al Viro wrote:
-> On Wed, Jul 14, 2021 at 04:23:21PM -0400, Vivek Goyal wrote:
+On Mon, Jul 26, 2021 at 08:29:07PM +0800, Jason Wang wrote:
+> Prefer using '"%s...", __func__' to get current function's name in
+> a debug message.
 > 
-> > +static int __init split_fs_names(char *page, char *names)
-> >  {
-> > +	int count = 0;
-> > +	char *p = page;
-> >  
-> > +	strcpy(p, root_fs_names);
-> > +	while (*p++) {
-> > +		if (p[-1] == ',')
-> > +			p[-1] = '\0';
-> >  	}
-> > +	*p = '\0';
-> > +
-> > +	for (p = page; *p; p += strlen(p)+1)
-> > +		count++;
-> >  
-> > +	return count;
-> >  }
-> 
-> Ummm....  The last part makes no sense - it counts '\0' in the array
-> pointed to be page, until the first double '\0' in there.  All of
-> which had been put there by the loop immediately prior to that one...
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> ---
+>  arch/arm64/lib/insn.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-I want split_fs_names() to replace ',' with space as well as return
-number of null terminated strings found. So first loop just replaces
-',' with '\0' and second loop counts number of strings.
+Acked-by: Will Deacon <will@kernel.org>
 
-Previously split_fs_names() was only replacing ',' with '\0'. Now
-we are changing the semantics and returning number of strings
-left in the buffer after the replacement.
-
-I initilaly thought that if I can manage it with single loop but
-there were quite a few corner cases. So I decided to use two
-loops instead. One for replacement and one for counting.
-
-> 
-> Incidentally, it treats stray ,, in root_fs_names as termination;
-> is that intentional?
-
-Just trying to keep the existing behavior. Existing get_fs_names(), also
-replaces all instances of ',' with '\0'. So if there are two consecutive,
-',', that will result in two consecutive '\0' and caller will view
-it as end of buffer. 
-
-IOW, rootfsnames=foo,,bar will effectively be treated as "rootfsname=foo".
-
-That's the current behavior and I did not try to improve on it just
-keeps on increasing the size of patches. That's probably an improvement
-for some other day if somebody cares.
-
-Thanks
-Vivek
-
+Will
