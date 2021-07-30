@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 167563DBA5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7859D3DBA5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239396AbhG3OWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:22:09 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55836 "EHLO
+        id S239441AbhG3OWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:22:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56128 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239259AbhG3OSQ (ORCPT
+        with ESMTP id S239264AbhG3OSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:18:16 -0400
-Message-ID: <20210730135208.309317951@linutronix.de>
+        Fri, 30 Jul 2021 10:18:17 -0400
+Message-ID: <20210730135208.364023771@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627654690;
+        s=2020; t=1627654692;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Nc56ITYoTDbK+/OR8K4wKKWggLR9IrPVbYS+M+N/8LY=;
-        b=OWLWi3m7Y4k6bMr+Qu43IO3/CDLj7WMBk61r2VRkRON69ie/6DKgy74FmSgOMf2oxhaNGb
-        mEVG4F27I22DDixZ/W9XEAkH3RE4eJGnqaCWs+OD6Rq1FyHkA3z2pThc5bnpf/5jcoEOZx
-        vDfk3cVDXX8ZzL7FHHaLGQNNOhxNwuwEAjtfl0xr8FUzf7zeYREouHXET52Xh5WXRa+Jtt
-        ZwsYoJy4oofYhePToiiiXFIUWCHtBoRy9DFB24VeotEX0ZoOXa0NTRSzKzOEdjRgqZFTY6
-        F2I4nbtqXuSjzbYl6g6Ym+HBb/OCm+u9o0THDd/Bl3IcISqonOkbNJ9f8zhSzQ==
+        bh=CBkg0DxaX9wXWU6TQkV2hJdx88bMZNqdLHHbULUl/20=;
+        b=Xt/kBc8quUElmsPcc0aihNbILMhhIjxDtiWjFePagBbJ9YLWzbUkIIbxoPD2b89bgBt+bn
+        GZRbU+yj70HAFh7n8r9GWx71sHDMBbGqRDkfns6r8C9VuU1NkXrbzGO4eo9+BHcVaBP+TH
+        CTBSdJwGwiWIuPTueLZTDTx//eouN+ydKVzOeIODsb2mnGd6DvJqMWnaViI3doWiQ6KHcM
+        DTNXTzoa4PN8Hzr+9Lui3txshESGomgQpL2uKNd9/UnvqJ+H1fvRb2rer7FZe+hsQP5db+
+        ICLDBrK6RlMA4TFNRUyjddvSgWXO+vKm5FWwBLz/DRS+CR/PfEpeegszTPJ9kg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627654690;
+        s=2020e; t=1627654692;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Nc56ITYoTDbK+/OR8K4wKKWggLR9IrPVbYS+M+N/8LY=;
-        b=JbCeTRGfA3fR1RAQhskfS5ZfwWrRYC8QK2nziVtWHH90QeWKpb/aOUOjQ6PFVceDVzOO81
-        iFce2seCSyMIEHCA==
-Date:   Fri, 30 Jul 2021 15:51:03 +0200
+        bh=CBkg0DxaX9wXWU6TQkV2hJdx88bMZNqdLHHbULUl/20=;
+        b=PNUS5o83DDH3KQAzhEomLwIQbIhXXamw/EeFq9RQk4+7MYH86CTnbLG90Izr+MtR4qxJLt
+        FA07nycUOA+1i9Bw==
+Date:   Fri, 30 Jul 2021 15:51:04 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -45,7 +45,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 56/63] futex: Restructure futex_requeue()
+Subject: [patch 57/63] futex: Clarify comment in futex_requeue()
 References: <20210730135007.155909613@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,129 +56,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-No point in taking two more 'requeue_pi' conditionals just to get to the
-requeue. Same for the requeue_pi case just the other way round.
-
-No functional change.
+The comment about the restriction of the number of waiters to wake for the
+REQUEUE_PI case is confusing at best. Rewrite it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/futex.c |   90 +++++++++++++++++++++++++--------------------------------
- 1 file changed, 41 insertions(+), 49 deletions(-)
+ kernel/futex.c |   28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 ---
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -2116,20 +2116,17 @@ static int futex_requeue(u32 __user *uad
- 			break;
- 		}
- 
--		/*
--		 * Wake nr_wake waiters.  For requeue_pi, if we acquired the
--		 * lock, we already woke the top_waiter.  If not, it will be
--		 * woken by futex_unlock_pi().
--		 */
--		if (++task_count <= nr_wake && !requeue_pi) {
--			mark_wake_futex(&wake_q, this);
-+		/* Plain futexes just wake or requeue and are done */
-+		if (!requeue_pi) {
-+			if (++task_count <= nr_wake)
-+				mark_wake_futex(&wake_q, this);
-+			else
-+				requeue_futex(this, hb1, hb2, &key2);
- 			continue;
- 		}
- 
- 		/* Ensure we requeue to the expected futex for requeue_pi. */
--		if (requeue_pi && !match_futex(this->requeue_pi_key, &key2)) {
--			/* Don't account for it */
--			task_count--;
-+		if (!match_futex(this->requeue_pi_key, &key2)) {
- 			ret = -EINVAL;
- 			break;
- 		}
-@@ -2137,50 +2134,45 @@ static int futex_requeue(u32 __user *uad
- 		/*
- 		 * Requeue nr_requeue waiters and possibly one more in the case
- 		 * of requeue_pi if we couldn't acquire the lock atomically.
-+		 *
-+		 * Prepare the waiter to take the rt_mutex. Take a refcount
-+		 * on the pi_state and store the pointer in the futex_q
-+		 * object of the waiter.
+@@ -1957,15 +1957,27 @@ static int futex_requeue(u32 __user *uad
  		 */
--		if (requeue_pi) {
-+		get_pi_state(pi_state);
-+		this->pi_state = pi_state;
-+		ret = rt_mutex_start_proxy_lock(&pi_state->pi_mutex,
-+						this->rt_waiter, this->task);
-+		if (ret == 1) {
-+			/*
-+			 * We got the lock. We do neither drop the refcount
-+			 * on pi_state nor clear this->pi_state because the
-+			 * waiter needs the pi_state for cleaning up the
-+			 * user space value. It will drop the refcount
-+			 * after doing so.
-+			 */
-+			requeue_pi_wake_futex(this, &key2, hb2);
-+			task_count++;
-+			continue;
-+		} else if (ret) {
-+			/*
-+			 * rt_mutex_start_proxy_lock() detected a potential
-+			 * deadlock when we tried to queue that waiter.
-+			 * Drop the pi_state reference which we took above
-+			 * and remove the pointer to the state from the
-+			 * waiters futex_q object.
-+			 */
-+			this->pi_state = NULL;
-+			put_pi_state(pi_state);
- 			/*
--			 * Prepare the waiter to take the rt_mutex. Take a
--			 * refcount on the pi_state and store the pointer in
--			 * the futex_q object of the waiter.
-+			 * We stop queueing more waiters and let user space
-+			 * deal with the mess.
- 			 */
--			get_pi_state(pi_state);
--			this->pi_state = pi_state;
--			ret = rt_mutex_start_proxy_lock(&pi_state->pi_mutex,
--							this->rt_waiter,
--							this->task);
--			if (ret == 1) {
--				/*
--				 * We got the lock. We do neither drop the
--				 * refcount on pi_state nor clear
--				 * this->pi_state because the waiter needs the
--				 * pi_state for cleaning up the user space
--				 * value. It will drop the refcount after
--				 * doing so.
--				 */
--				requeue_pi_wake_futex(this, &key2, hb2);
--				continue;
--			} else if (ret) {
--				/*
--				 * rt_mutex_start_proxy_lock() detected a
--				 * potential deadlock when we tried to queue
--				 * that waiter. Drop the pi_state reference
--				 * which we took above and remove the pointer
--				 * to the state from the waiters futex_q
--				 * object.
--				 */
--				this->pi_state = NULL;
--				put_pi_state(pi_state);
--				/* Don't account for it */
--				task_count--;
--				/*
--				 * We stop queueing more waiters and let user
--				 * space deal with the mess.
--				 */
--				break;
--			}
-+			break;
- 		}
-+		/* Waiter is queued, move it to hb2 */
- 		requeue_futex(this, hb1, hb2, &key2);
-+		task_count++;
- 	}
- 
- 	/*
+ 		if (refill_pi_state_cache())
+ 			return -ENOMEM;
++
+ 		/*
+-		 * requeue_pi must wake as many tasks as it can, up to nr_wake
+-		 * + nr_requeue, since it acquires the rt_mutex prior to
+-		 * returning to userspace, so as to not leave the rt_mutex with
+-		 * waiters and no owner.  However, second and third wake-ups
+-		 * cannot be predicted as they involve race conditions with the
+-		 * first wake and a fault while looking up the pi_state.  Both
+-		 * pthread_cond_signal() and pthread_cond_broadcast() should
+-		 * use nr_wake=1.
++		 * futex_requeue() allows the caller to define the number
++		 * of waiters to wake up via the @nr_wake argument. With
++		 * REQUEUE_PI waking up more than one waiter is creating
++		 * more problems than it solves. Waking up a waiter makes
++		 * only sense if the PI futex @uaddr2 is uncontended as
++		 * this allows the requeue code to acquire the futex
++		 * @uaddr2 before waking the waiter. The waiter can then
++		 * return to user space without further action. A secondary
++		 * wakeup would just make the futex_wait_requeue_pi()
++		 * handling more complex because that code would have to
++		 * look up pi_state and do more or less all the handling
++		 * which the requeue code has to do for the to be requeued
++		 * waiters. So restrict the number of waiters to wake to
++		 * one and only wake it up when the PI futex is
++		 * uncontended. Otherwise requeue it and let the unlock of
++		 * the PI futex handle the wakeup.
++		 *
++		 * All REQUEUE_PI users, e.g. pthread_cond_signal() and
++		 * pthread_cond_broadcast() must use nr_wake=1.
+ 		 */
+ 		if (nr_wake != 1)
+ 			return -EINVAL;
 
