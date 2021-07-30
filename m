@@ -2,70 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064E33DB268
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 06:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C766E3DB26A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 06:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhG3EdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 00:33:03 -0400
-Received: from ozlabs.ru ([107.174.27.60]:34640 "EHLO ozlabs.ru"
+        id S230105AbhG3Eiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 00:38:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229609AbhG3EdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 00:33:01 -0400
-Received: from fstn1-p1.ozlabs.ibm.com. (localhost [IPv6:::1])
-        by ozlabs.ru (Postfix) with ESMTP id 37EE5AE80062;
-        Fri, 30 Jul 2021 00:32:21 -0400 (EDT)
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-To:     linux-kernel@vger.kernel.org
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [RFC PATCH kernel] KVM: Stop leaking memory in debugfs
-Date:   Fri, 30 Jul 2021 14:32:17 +1000
-Message-Id: <20210730043217.953384-1-aik@ozlabs.ru>
-X-Mailer: git-send-email 2.30.2
+        id S229609AbhG3Eiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 00:38:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC4B46103B;
+        Fri, 30 Jul 2021 04:38:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627619925;
+        bh=tD4NnTylNSsCZ9xiCzjSNWEXJJJDNb6Se5lb5F1OcYw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=toiNWdL04FsePRojqRJIzvv75RA0Lqux0uewva6xZNg/8+SNhPETyhI9IUaDHc0nP
+         dLbX29AD9Ewde6vsYtAWR/NX1gam5MiODiU+gF4sHGp4VMfUMLseThhhhpg13TX6Rl
+         RWvDpfkK7vCzJhrQiVSYh84T5CtpQznwl2kwtzPw=
+Date:   Fri, 30 Jul 2021 06:38:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Peter Collingbourne <pcc@google.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Alistair Delva <adelva@google.com>,
+        William McVicker <willmcvicker@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Mitch Phillips <mitchp@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        donnyxia@google.com
+Subject: Re: [PATCH 5.13 191/223] selftest: use mmap instead of
+ posix_memalign to allocate memory
+Message-ID: <YQOCUu0nALesF1HB@kroah.com>
+References: <20210726153846.245305071@linuxfoundation.org>
+ <20210726153852.445207631@linuxfoundation.org>
+ <CAMn1gO42sPYDajZN7MuysTeGJmxvby=sFuU1eXt0APo_Y5FFSQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMn1gO42sPYDajZN7MuysTeGJmxvby=sFuU1eXt0APo_Y5FFSQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The debugfs folder name is made of a supposedly unique pair of
-the process pid and a VM fd. However it is possible to get a race here
-which manifests in these messages:
+On Thu, Jul 29, 2021 at 10:58:11AM -0700, Peter Collingbourne wrote:
+> On Mon, Jul 26, 2021 at 9:16 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > From: Peter Collingbourne <pcc@google.com>
+> >
+> > commit 0db282ba2c12c1515d490d14a1ff696643ab0f1b upstream.
+> >
+> > This test passes pointers obtained from anon_allocate_area to the
+> > userfaultfd and mremap APIs.  This causes a problem if the system
+> > allocator returns tagged pointers because with the tagged address ABI
+> > the kernel rejects tagged addresses passed to these APIs, which would
+> > end up causing the test to fail.  To make this test compatible with such
+> > system allocators, stop using the system allocator to allocate memory in
+> > anon_allocate_area, and instead just use mmap.
+> >
+> > Link: https://lkml.kernel.org/r/20210714195437.118982-3-pcc@google.com
+> > Link: https://linux-review.googlesource.com/id/Icac91064fcd923f77a83e8e133f8631c5b8fc241
+> > Fixes: c47174fc362a ("userfaultfd: selftest")
+> > Co-developed-by: Lokesh Gidra <lokeshgidra@google.com>
+> > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> > Signed-off-by: Peter Collingbourne <pcc@google.com>
+> > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> > Cc: Dave Martin <Dave.Martin@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Andrea Arcangeli <aarcange@redhat.com>
+> > Cc: Alistair Delva <adelva@google.com>
+> > Cc: William McVicker <willmcvicker@google.com>
+> > Cc: Evgenii Stepanov <eugenis@google.com>
+> > Cc: Mitch Phillips <mitchp@google.com>
+> > Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> > Cc: <stable@vger.kernel.org>    [5.4]
+> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  tools/testing/selftests/vm/userfaultfd.c |    6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > --- a/tools/testing/selftests/vm/userfaultfd.c
+> > +++ b/tools/testing/selftests/vm/userfaultfd.c
+> > @@ -197,8 +197,10 @@ static int anon_release_pages(char *rel_
+> >
+> >  static void anon_allocate_area(void **alloc_area)
+> >  {
+> > -       if (posix_memalign(alloc_area, page_size, nr_pages * page_size)) {
+> > -               fprintf(stderr, "out of memory\n");
+> > +       *alloc_area = mmap(NULL, nr_pages * page_size, PROT_READ | PROT_WRITE,
+> > +                          MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+> > +       if (*alloc_area == MAP_FAILED)
+> 
+> Hi Greg,
+> 
+> It looks like your backport of this patch (and the backports to stable
+> kernels) are missing a left brace here.
 
-[  471.846235] debugfs: Directory '20245-4' with parent 'kvm' already present!
+Already fixed up in the latest -rc releases, right?
 
-debugfs_create_dir() returns an error which is handled correctly
-everywhere except kvm_create_vm_debugfs() where the code allocates
-stat data structs and overwrites the older values regardless.
+thanks,
 
-Spotted by syzkaller. This slow memory leak produces way too many
-OOM reports.
-
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
----
-
-I am pretty sure we better fix the race but I am not quite sure what
-lock is appropriate here, ideas?
-
----
- virt/kvm/kvm_main.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 986959833d70..89496fd8127a 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -904,6 +904,10 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
- 
- 	snprintf(dir_name, sizeof(dir_name), "%d-%d", task_pid_nr(current), fd);
- 	kvm->debugfs_dentry = debugfs_create_dir(dir_name, kvm_debugfs_dir);
-+	if (IS_ERR_OR_NULL(kvm->debugfs_dentry)) {
-+		pr_err("Failed to create %s\n", dir_name);
-+		return 0;
-+	}
- 
- 	kvm->debugfs_stat_data = kcalloc(kvm_debugfs_num_entries,
- 					 sizeof(*kvm->debugfs_stat_data),
--- 
-2.30.2
-
+greg k-h
