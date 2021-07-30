@@ -2,241 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29523DBDAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57F53DBDAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhG3RYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 13:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhG3RYc (ORCPT
+        id S230037AbhG3R1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 13:27:52 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:34449 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229738AbhG3R1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 13:24:32 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F9BC0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:24:27 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id 105so4271061uac.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:24:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3faiOjuxSUtf88Wfr7yQ9xzOu5k/v1bkY2et82KSWbE=;
-        b=XNysvuze1jRxWGpD2oNpIxG59TcJSMQeIO02tnyko9KPqKzfZ6eUT+5gUgNHKiJ0KY
-         FzR95voEVIHwEgLurq+1WuS8cuCAbW0YkPCKnvcJNxtd27AI6j9R1a8LO1wHQ38nDqix
-         8MfFAIqTLSmX+dxe64WknBms+7WNoUJJCvrIH/Jkz8vN2KAnrN62cTHvKvstqA/bXP3e
-         h4RvbqBbqefPd7hBu4OzXuThy4cnDBjDSf3ckhISFrYLPawPCw2iaQHKaMxb2QXgkM1H
-         CqYOtIKOJtqGarlmLIkS1nir0x8q6SsNbMqo9VccX5mNXF4JaX0VLeKax66Kx1//H7vm
-         ARbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3faiOjuxSUtf88Wfr7yQ9xzOu5k/v1bkY2et82KSWbE=;
-        b=E1tPWw0ZyuAxKkh7+a7nvdEmsZK0lP56/6BXKbFV7fhdUlFHtbAYuiPWCX4jNWvwmY
-         bsQI155F47+zUzEU36Ak27xJMxwRpowrJqdwSwoCILAg/f+73O4LVID60PuvR4L6BH+K
-         bd4K0uI64jiFacrhvU0zllFnKzHg377/y8Jm6Bv0sMbHdXxwCr8Ccvg7ElR1gxR1XyaM
-         d40GYOy2GMiZ6w0VvAY5XwjzzTyfqbOPJrTRgFziENcmYehnnP4kGty2V+yIq2POd3Nz
-         zPzhdS5nLxSU8HCOZxMWsGOhSrgAWPOck0h/jn7R8JKGHeCKaueHKQEm23HGvKjXLQ6y
-         9liQ==
-X-Gm-Message-State: AOAM531hbA7NjyH/6Eb8AqghevXgO8et0mPca0CPQ32z4kcJuGNE3zA7
-        FeqBPQXnK7QNXfljpw3HO9QGXjAzqiji/mC43ts1eQ==
-X-Google-Smtp-Source: ABdhPJzDAtkg/SOljbLu0z1HdBXSPg1EVFJlPAgQpf6kYOBWaGyp4zl8t9PkOdKTr1hXBM8wvPBOlEzIi/+yRxlUDEE=
-X-Received: by 2002:ab0:5e92:: with SMTP id y18mr3203668uag.9.1627665866687;
- Fri, 30 Jul 2021 10:24:26 -0700 (PDT)
+        Fri, 30 Jul 2021 13:27:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1627666065; x=1659202065;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=222i4rwJ8kye2GQ1RI7paRWBjvdM//GLJf/iWez9ZL4=;
+  b=QG+agjaRN1KO/GeiZgWGoZT5ZOUipcOIeRto6u5wvXLwJcOqqMuQA8h5
+   W3PO2OlKvgMB1QmIveDvTumnokEJ2ph/XaP5C5OwLsTvJnMulOYciiWRO
+   CddrZnucW7LlvMOPt4flyFLJjufsexD6uXTkPUUazGBWq54qUwABde523
+   pql5fQA2tBXDHgqeCmvtP6fJDtJYpRc0NOd1unGpLRs9ZaZgPq6YBMOOz
+   Vwzs4u8MofAPwfIJ9MJrxORdQozaEri7dpDZNIyaxUciEfrSgeTkBL2Bi
+   nDwnrkDx0MLVE4wGTxNeBAArVx5tvW/vDUxxuH3y36g5aEFAEU9SusAff
+   Q==;
+IronPort-SDR: UO2zf8wiEgOMxM1waSYPhEgi6X/AIxcndlRFkVYzosrlVoCJNdwc07DqwT6il8n13T6fJGafj/
+ SJMvk31DLw21q1oM6Zge/r4XAj7IV9HUrWxofefnBZb56j3biOqY2PcvjTG9TWoU9Eja8DZdlv
+ +kOJDiAKAV9TMT77LabBN9OVo2UIWrpWvUY6151G8f4+ll9aZdlL8lPC5xMq37fdD2GgV3gk/p
+ miOJ800EQG02EUFzf6M+jkOim4MFzLccqZJ2p7kZseqndSveZ0TjzFpDp0v3o0WXtMsS1Uvsrf
+ IHNJhwJN8NRwosRYFA5+B/Ys
+X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
+   d="scan'208";a="138192147"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Jul 2021 10:27:45 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 30 Jul 2021 10:27:45 -0700
+Received: from ness.home (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Fri, 30 Jul 2021 10:27:43 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <clement.leger@bootlin.com>, <linux-kernel@vger.kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: [PATCH] ARM: dts: at91: use the right property for shutdown controller
+Date:   Fri, 30 Jul 2021 19:27:29 +0200
+Message-ID: <20210730172729.28093-1-nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <20210730144922.29111-11-semen.protsenko@linaro.org> <CAHp75VdzXXM64CoS3P9f=8e3hwOa-vY44+s6sqOhBmNCTFxtYQ@mail.gmail.com>
-In-Reply-To: <CAHp75VdzXXM64CoS3P9f=8e3hwOa-vY44+s6sqOhBmNCTFxtYQ@mail.gmail.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Fri, 30 Jul 2021 20:24:15 +0300
-Message-ID: <CAPLW+4mv1EBckbCPJuwHtkXBjRX45KGdTw0aaC+c6fy5V5Ag6A@mail.gmail.com>
-Subject: Re: [PATCH 10/12] clk: samsung: Add Exynos850 clock driver stub
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-On Fri, 30 Jul 2021 at 18:12, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
->
-> On Fri, Jul 30, 2021 at 5:51 PM Sam Protsenko
-> <semen.protsenko@linaro.org> wrote:
-> >
-> > For now it's just a stub driver to make serial driver work. Later it
->
-> make the serial
->
-> > will be implemented properly.
-> >
-> > This driver doesn't really change clocks, only registers the UART clock
-> > as a fixed-rate clock. Without this clock driver the UART driver won't
-> > work, as it's trying to obtain "uart" clock and fails if it's not able
-> > to.
->
->
-> > From drivers/tty/serial/samsung_tty.c:
-> >
-> > 8<------------------------------------------------------------------->8
-> >     ourport->clk = clk_get(&platdev->dev, "uart");
-> >     if (IS_ERR(ourport->clk)) {
-> >         pr_err("%s: Controller clock not found\n",
-> >                 dev_name(&platdev->dev));
-> >         ret = PTR_ERR(ourport->clk);
-> >         goto err;
-> >     }
-> > 8<------------------------------------------------------------------->8
->
-> This is not needed in the commit message.
->
-> > In order to get functional serial console we have to implement that
->
-> get a functional
->
-> > minimal clock driver with "uart" clock. It's not necessary to actually
-> > configure clocks, as those are already configured in bootloader, so
-> > kernel can rely on that for now.
->
-> > 80 column limit is broken here to make checkpatch happy, otherwise it
-> > swears about incorrect __initconst usage.
->
-> Again, no need to be in the commit message, use the comment field for
-> this (after the cutter '---' line below).
->
->
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  drivers/clk/samsung/Makefile        |  1 +
-> >  drivers/clk/samsung/clk-exynos850.c | 63 +++++++++++++++++++++++++++++
-> >  2 files changed, 64 insertions(+)
-> >  create mode 100644 drivers/clk/samsung/clk-exynos850.c
-> >
-> > diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
-> > index 028b2e27a37e..c46cf11e4d0b 100644
-> > --- a/drivers/clk/samsung/Makefile
-> > +++ b/drivers/clk/samsung/Makefile
-> > @@ -17,6 +17,7 @@ obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK) += clk-exynos5433.o
-> >  obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
-> >  obj-$(CONFIG_EXYNOS_CLKOUT)    += clk-exynos-clkout.o
-> >  obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)  += clk-exynos7.o
-> > +obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)  += clk-exynos850.o
-> >  obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
-> >  obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
-> >  obj-$(CONFIG_S3C2412_COMMON_CLK)+= clk-s3c2412.o
-> > diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-> > new file mode 100644
-> > index 000000000000..3192ec9bb90b
-> > --- /dev/null
-> > +++ b/drivers/clk/samsung/clk-exynos850.c
-> > @@ -0,0 +1,63 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (C) 2019 Samsung Electronics Co., Ltd.
-> > + * Copyright (C) 2021 Linaro Ltd.
-> > + *
-> > + * Common Clock Framework support for Exynos850 SoC.
-> > + */
-> > +
-> > +#include <linux/clk.h>
-> > +#include <linux/clkdev.h>
-> > +#include <linux/clk-provider.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_address.h>
->
-> + blank line?
->
-> > +#include <dt-bindings/clock/exynos850.h>
-> > +
-> > +#include "clk.h"
-> > +
-> > +/* Fixed rate clocks generated outside the SoC */
-> > +static struct samsung_fixed_rate_clock exynos850_fixed_rate_ext_clks[] __initdata = {
-> > +       FRATE(OSCCLK, "fin_pll", NULL, 0, 26000000),
-> > +};
-> > +
-> > +/*
-> > + * Model the UART clock as a fixed-rate clock for now, to make serial driver
-> > + * work. This clock is already configured in the bootloader.
-> > + */
-> > +static const struct samsung_fixed_rate_clock exynos850_peri_clks[] __initconst = {
-> > +       FRATE(DOUT_UART, "DOUT_UART", NULL, 0, 200000000),
-> > +};
-> > +
-> > +static const struct of_device_id ext_clk_match[] __initconst = {
->
-> > +       { .compatible = "samsung,exynos850-oscclk", .data = (void *)0 },
->
-> 0 is the default for static variables.
->
-> > +       {},
->
-> No comma needed for the terminator lines.
->
-> > +};
-> > +
-> > +void __init exynos850_clk_init(struct device_node *np)
-> > +{
-> > +       void __iomem *reg_base;
-> > +       struct samsung_clk_provider *ctx;
->
-> > +       if (!np)
-> > +               panic("%s: unable to determine soc\n", __func__);
->
-> Check for the sake of additional code?
->
-> > +       reg_base = of_iomap(np, 0);
->
-> This will fail when np == NULL.
->
+The wrong property "atmel,shdwc-debouncer" was used to specify the
+debounce delay for the shutdown controler. Replace it with the
+documented and implemented property "debounce-delay-us", as mentioned
+in v4 driver submission. See:
+https://lore.kernel.org/linux-arm-kernel/1458134390-23847-3-git-send-email-nicolas.ferre@atmel.com/
 
-Thanks for the review! All your comments will be addressed in v2.
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Reported-by: Clément Léger <clement.leger@bootlin.co
+Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ arch/arm/boot/dts/at91-kizbox3_common.dtsi    | 2 +-
+ arch/arm/boot/dts/at91-sam9x60ek.dts          | 2 +-
+ arch/arm/boot/dts/at91-sama5d27_som1_ek.dts   | 2 +-
+ arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts | 2 +-
+ arch/arm/boot/dts/at91-sama5d2_icp.dts        | 2 +-
+ arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts     | 2 +-
+ arch/arm/boot/dts/at91-sama5d2_xplained.dts   | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-> > +       if (!reg_base)
-> > +               panic("%s: failed to map registers\n", __func__);
-> > +
-> > +       ctx = samsung_clk_init(np, reg_base, CLK_NR_CLKS);
-> > +       if (!ctx)
-> > +               panic("%s: unable to allocate ctx\n", __func__);
-> > +
-> > +       samsung_clk_of_register_fixed_ext(ctx,
-> > +                       exynos850_fixed_rate_ext_clks,
-> > +                       ARRAY_SIZE(exynos850_fixed_rate_ext_clks),
-> > +                       ext_clk_match);
-> > +
-> > +       samsung_clk_register_fixed_rate(ctx, exynos850_peri_clks,
-> > +                       ARRAY_SIZE(exynos850_peri_clks));
-> > +
-> > +       samsung_clk_of_add_provider(np, ctx);
-> > +}
-> > +
-> > +CLK_OF_DECLARE(exynos850_clk, "samsung,exynos850-clock", exynos850_clk_init);
->
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+diff --git a/arch/arm/boot/dts/at91-kizbox3_common.dtsi b/arch/arm/boot/dts/at91-kizbox3_common.dtsi
+index c4b3750495da..abe27adfa4d6 100644
+--- a/arch/arm/boot/dts/at91-kizbox3_common.dtsi
++++ b/arch/arm/boot/dts/at91-kizbox3_common.dtsi
+@@ -336,7 +336,7 @@ &pwm0 {
+ };
+ 
+ &shutdown_controller {
+-	atmel,shdwc-debouncer = <976>;
++	debounce-delay-us = <976>;
+ 	atmel,wakeup-rtc-timer;
+ 
+ 	input@0 {
+diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
+index ebbc9b23aef1..b1068cca4228 100644
+--- a/arch/arm/boot/dts/at91-sam9x60ek.dts
++++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
+@@ -662,7 +662,7 @@ &rtt {
+ };
+ 
+ &shutdown_controller {
+-	atmel,shdwc-debouncer = <976>;
++	debounce-delay-us = <976>;
+ 	status = "okay";
+ 
+ 	input@0 {
+diff --git a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+index 261a7dbcfdee..614999dcb990 100644
+--- a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+@@ -138,7 +138,7 @@ i2c3: i2c@600 {
+ 			};
+ 
+ 			shdwc@f8048010 {
+-				atmel,shdwc-debouncer = <976>;
++				debounce-delay-us = <976>;
+ 				atmel,wakeup-rtc-timer;
+ 
+ 				input@0 {
+diff --git a/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts
+index ff83967fd008..c145c4e5ef58 100644
+--- a/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d27_wlsom1_ek.dts
+@@ -205,7 +205,7 @@ &sdmmc0 {
+ };
+ 
+ &shutdown_controller {
+-	atmel,shdwc-debouncer = <976>;
++	debounce-delay-us = <976>;
+ 	atmel,wakeup-rtc-timer;
+ 
+ 	input@0 {
+diff --git a/arch/arm/boot/dts/at91-sama5d2_icp.dts b/arch/arm/boot/dts/at91-sama5d2_icp.dts
+index 1c235fc5f788..e06b58724ca8 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_icp.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_icp.dts
+@@ -699,7 +699,7 @@ &sdmmc0 {
+ };
+ 
+ &shutdown_controller {
+-	atmel,shdwc-debouncer = <976>;
++	debounce-delay-us = <976>;
+ 	atmel,wakeup-rtc-timer;
+ 
+ 	input@0 {
+diff --git a/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts b/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
+index dfd150eb0fd8..3f972a4086c3 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
+@@ -203,7 +203,7 @@ i2c2: i2c@600 {
+ 			};
+ 
+ 			shdwc@f8048010 {
+-				atmel,shdwc-debouncer = <976>;
++				debounce-delay-us = <976>;
+ 
+ 				input@0 {
+ 					reg = <0>;
+diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+index 509c732a0d8b..627b7bf88d83 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+@@ -347,7 +347,7 @@ i2c2: i2c@600 {
+ 			};
+ 
+ 			shdwc@f8048010 {
+-				atmel,shdwc-debouncer = <976>;
++				debounce-delay-us = <976>;
+ 				atmel,wakeup-rtc-timer;
+ 
+ 				input@0 {
+-- 
+2.32.0
+
