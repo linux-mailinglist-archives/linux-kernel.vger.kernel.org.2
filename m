@@ -2,40 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D143DB2FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BF43DB306
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236603AbhG3FyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 01:54:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:37308 "EHLO foss.arm.com"
+        id S237211AbhG3Fzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 01:55:43 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:44663 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229948AbhG3FyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:54:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96D0D31B;
-        Thu, 29 Jul 2021 22:53:58 -0700 (PDT)
-Received: from [10.163.66.9] (unknown [10.163.66.9])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D7333F66F;
-        Thu, 29 Jul 2021 22:53:55 -0700 (PDT)
-Subject: Re: [PATCH v2 09/10] coresight: trbe: End the AUX handle on
- truncation
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
-        mike.leach@linaro.org, mathieu.poirier@linaro.org,
-        jinlmao@qti.qualcomm.com, Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
- <20210723124611.3828908-10-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <d7c68b50-1537-32d9-6803-cf0c5973c880@arm.com>
-Date:   Fri, 30 Jul 2021 11:24:44 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237185AbhG3Fzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 01:55:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627624538; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=lYaNhuLnlPpaN4fXth6X4xr4/sxqYzupM5XAMywBIyc=; b=v0qOEQoEhdkJyanhMZ6YeGYOEW4nzSevUcXjAeCWYBLBFz2exRTRMUrGqK4sdnwrmpSBlG6b
+ ulf75p/HUfGynYiHxND3bo8ZOM5TQlcAl0BEseQ5/t+dysysa/u6nCnqKRB0CIrNMJRwolpv
+ SmGtvhMfrxf9eYDmw5PNl42kOn4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 61039454e31d882d18741912 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Jul 2021 05:55:32
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9B094C433F1; Fri, 30 Jul 2021 05:55:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.100] (unknown [49.207.203.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC915C433F1;
+        Fri, 30 Jul 2021 05:55:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CC915C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v2 2/3] nvmem: qfprom: sc7280: Handle the additional
+ power-domains vote
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Ravi Kumar Bokka (Temp)" <rbokka@codeaurora.org>
+References: <1627560036-1626-1-git-send-email-rnayak@codeaurora.org>
+ <1627560036-1626-3-git-send-email-rnayak@codeaurora.org>
+ <CAD=FV=Wy6iyrty0tmygY42GJdWSNqby9XePjpg6pKpce-9A7fg@mail.gmail.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <b9e7f3b9-6046-b1b2-5e8a-7036d54b5995@codeaurora.org>
+Date:   Fri, 30 Jul 2021 11:25:26 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210723124611.3828908-10-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAD=FV=Wy6iyrty0tmygY42GJdWSNqby9XePjpg6pKpce-9A7fg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -43,121 +72,88 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 7/23/21 6:16 PM, Suzuki K Poulose wrote:
-> When we detect that there isn't enough space left to start
-> a meaningful session, we disable the TRBE, marking the buffer
-> as TRUNCATED. But we delay the notification to the perf layer
-> by perf_aux_output_end() until the event is scheduled out.
-
-via the CoreSight PMU layer's stop event ?
-
-> This will cause significant black outs in the trace. Now that
-> the CoreSight PMU layer can handle a closed "AUX" handle
-> properly, we can close the handle as soon as we detect the
-> case, allowing the userspace to collect and re-enable the
-> event.
+On 7/29/2021 9:37 PM, Doug Anderson wrote:
+> Hi,
 > 
-> Also, while in the IRQ handler, move the irq_work_run() after
-> we have updated the handle, to make sure the "TRUNCATED" flag
-> causes the event to be disabled as soon as possible.
+> On Thu, Jul 29, 2021 at 5:01 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>>
+>> On sc7280, to reliably blow fuses, we need an additional vote
+>> on max performance state of 'MX' power-domain.
+>> Add support for power-domain performance state voting in the
+>> driver.
+>>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> ---
+>>   drivers/nvmem/qfprom.c | 26 ++++++++++++++++++++++++++
+>>   1 file changed, 26 insertions(+)
+>>
+>> diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+>> index 81fbad5..b5f27df 100644
+>> --- a/drivers/nvmem/qfprom.c
+>> +++ b/drivers/nvmem/qfprom.c
+>> @@ -12,6 +12,8 @@
+>>   #include <linux/mod_devicetable.h>
+>>   #include <linux/nvmem-provider.h>
+>>   #include <linux/platform_device.h>
+>> +#include <linux/pm_domain.h>
+>> +#include <linux/pm_runtime.h>
+>>   #include <linux/property.h>
+>>   #include <linux/regulator/consumer.h>
+>>
+>> @@ -139,6 +141,9 @@ static void qfprom_disable_fuse_blowing(const struct qfprom_priv *priv,
+>>   {
+>>          int ret;
+>>
+>> +       dev_pm_genpd_set_performance_state(priv->dev, 0);
+>> +       pm_runtime_put(priv->dev);
+> 
+> To me it feels as if this should be at the end of the function rather
+> than the beginning. I guess it doesn't matter (?), but it feels wrong
+> that we have writes to the register space after we're don't a
+> pm_runtime_put().
 
-Makes sense.
-
-Minor nit. Commit message here should be reformatted to be expanded
-upto 75 character width.
+Right, I was confused with this too when I saw that the other resources
+(regulator/clocks) were also turned off before we write into the
+register space. And then looking into the driver I realized its perhaps because
+the resources are needed only for the 'raw' writes and the 'conf'
+read/writes can happen regardless. I'll just fix that up and put the register
+writes before we really turn off any resources to avoid confusion.
 
 > 
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 25 ++++++++++++--------
->  1 file changed, 15 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index 6d6aad171c72..e7567727e8fc 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -134,6 +134,7 @@ static void trbe_stop_and_truncate_event(struct perf_output_handle *handle)
->  	trbe_drain_and_disable_local();
->  	perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED |
->  				     PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
-> +	perf_aux_output_end(handle, 0);
->  	*this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
->  }
->  
-> @@ -699,7 +700,7 @@ static void trbe_handle_spurious(struct perf_output_handle *handle)
->  	isb();
->  }
->  
-> -static void trbe_handle_overflow(struct perf_output_handle *handle)
-> +static int trbe_handle_overflow(struct perf_output_handle *handle)
->  {
->  	struct perf_event *event = handle->event;
->  	struct trbe_buf *buf = etm_perf_sink_config(handle);
-> @@ -728,10 +729,10 @@ static void trbe_handle_overflow(struct perf_output_handle *handle)
->  		 */
->  		trbe_drain_and_disable_local();
->  		*this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
-> -		return;
-> +		return -EINVAL;
->  	}
->  
-> -	__arm_trbe_enable(buf, handle);
-> +	return __arm_trbe_enable(buf, handle);
->  }
->  
->  static bool is_perf_trbe(struct perf_output_handle *handle)
-> @@ -762,6 +763,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->  	struct perf_output_handle *handle = *handle_ptr;
->  	enum trbe_fault_action act;
->  	u64 status;
-> +	bool truncated = false;
->  
->  	/* Reads to TRBSR_EL1 is fine when TRBE is active */
->  	status = read_sysreg_s(SYS_TRBSR_EL1);
-> @@ -786,24 +788,27 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->  	if (!is_perf_trbe(handle))
->  		return IRQ_NONE;
->  
-> -	/*
-> -	 * Ensure perf callbacks have completed, which may disable
-> -	 * the trace buffer in response to a TRUNCATION flag.
-> -	 */
-> -	irq_work_run();
-> -
->  	act = trbe_get_fault_act(status);
->  	switch (act) {
->  	case TRBE_FAULT_ACT_WRAP:
-> -		trbe_handle_overflow(handle);
-> +		truncated = !!trbe_handle_overflow(handle);
->  		break;
->  	case TRBE_FAULT_ACT_SPURIOUS:
->  		trbe_handle_spurious(handle);
->  		break;
->  	case TRBE_FAULT_ACT_FATAL:
->  		trbe_stop_and_truncate_event(handle);
-> +		truncated = true;
->  		break;
->  	}
-> +
-> +	/*
-> +	 * If the buffer was truncated, ensure perf callbacks
-> +	 * have completed, which will disable the event.
-> +	 */
-> +	if (truncated)
-> +		irq_work_run();
-> +
->  	return IRQ_HANDLED;
->  }
->  
+>> @@ -420,6 +440,12 @@ static int qfprom_probe(struct platform_device *pdev)
+>>                          econfig.reg_write = qfprom_reg_write;
+>>          }
+>>
+>> +       ret = devm_add_action_or_reset(dev, qfprom_runtime_disable, dev);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       pm_runtime_enable(dev);
+>> +
+> 
+> Swap the order of the two. IOW first pm_runtime_enable(), then
+> devm_add_action_or_reset(). Specifically the "_or_reset" means that if
+> you fail to add the action (AKA devm_add_action() fails to allocate
+> the tiny amount of memory it needs) it will actually _call_ the
+> action. 
+
+Ah, I didn't know that, thanks, I'll fix the order up and repost.
+
+> That means that in your code if the memory allocation fails
+> you'll call pm_runtime_disable() without the corresponding
+> pm_runtime_enable().
+> 
+> 
+> Other than those two issues this looks good to me. Feel free to add my
+> Reviewed-by when you fix them.
+
+Thanks.
+
+> 
+> -Doug
 > 
 
-LGTM.
-
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
