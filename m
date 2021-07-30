@@ -2,100 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11EA3DBE8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 20:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972B73DBE92
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 20:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhG3SxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 14:53:01 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:44022 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbhG3SxA (ORCPT
+        id S230433AbhG3S5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 14:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhG3S5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 14:53:00 -0400
-Received: by mail-oi1-f174.google.com with SMTP id z26so14479444oih.10;
-        Fri, 30 Jul 2021 11:52:55 -0700 (PDT)
+        Fri, 30 Jul 2021 14:57:30 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97D3C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:57:25 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id o185so14432879oih.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:57:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=R52SkjmgEOTUBqEHYa4AfMHcfuuZbXxc9uqTeblsMI4=;
+        b=cHDqg/JVMq/KqDermTQjYQh3zJXJCgTPV0eNVwov0YhCZHuLgysibPpi3PiXwC8AL/
+         r7BYwYGHH616M3q6D5LlbG06SRra2HKOgobDs6tHNk6qKcizFKqbOz2O8tuMAjVa0e98
+         AFfaruS7lNYtXfYX7BcUXNpVasZSMNkgguCmo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=RuHOO+tvlD2YfqaGK+Oz0rBM0rH5c8DYOmI/fOMJusE=;
-        b=b/oKOmMSo1GyTiHC94odEcxNx/I82/WOX15HRyKG0zi1IZi63P/qAHNYpv/FAIJphX
-         UL4BQuXH98HG6rU4xePdui+D2s0r2EBtTO0cSFlzWTdwMVUZzl1mVqdOPttSZ5V3Pvd4
-         16mTOQLXKUIrGR4ii5Neb8ru3LGe1fOMDCdgTsqFSLLmsV6oeI0JQ2Yy7vvUlOLNxBvb
-         p5wtGqb5PJw1jCEjuQQO8TgXPuGy2/jhBhMpNbDgiUuL9TP6aTq2VPptVNZm1fC0T6N4
-         3FIJAhrfvYvXlYB5M1WMOie7Udb/nIaqjHaRAWjGWeV/3iK2oayKN6UCEpdlkB6old7Z
-         /ydQ==
-X-Gm-Message-State: AOAM5304f2LeUHW/6gKTvivAZxT1pXG05BvqCp7oJTwovq0U5BDhTbfM
-        OlEx6ylTory0Gcap2ddbKBBqjFpV2nrgQaQ5ytRkJQtSB6E=
-X-Google-Smtp-Source: ABdhPJyPsVCLDmYR9zFPb5UJ5xtrAa2d5QTnBtP1chLNPz6XoDPxB0Qot80b+0JMLgn9/U9GZ+8w/FfJQG3l/bN0juY=
-X-Received: by 2002:aca:d7d5:: with SMTP id o204mr2669951oig.69.1627671175176;
- Fri, 30 Jul 2021 11:52:55 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=R52SkjmgEOTUBqEHYa4AfMHcfuuZbXxc9uqTeblsMI4=;
+        b=AZZjIkvCz9BiC0Y5nUms040vfSVaQlA4hkVrlT4fU4B53g4b1NdRrUpaBv/r93mLoC
+         1ElOeDix3TOQceH8cW93LF57iBlRKV3A3jW6Sib+QsWQduF6f0AfFxCam4i8V0+RwarH
+         XRfIttvO06rSIEKqSIbceH/RPU0BCk3kUZ9MeuBiywcemXiN5DLBeqCwxygD65/ujVSK
+         8cpc1i2xlkp0IOaSBiYC3729DurMMjdzB666hfMeafCCIxqcKv9FIcL3t20+svaO25/M
+         E4hkg15I29EYZUCOHrcM2yHpbBoakr0n7esr2KFQhv7YLdiC/Z52CETL3O2o1cGZDjMH
+         YOvQ==
+X-Gm-Message-State: AOAM531ltDWwFoCtJzUUkr+0DLCAKNR3MabR/C9ZeaqXI/wwn0aIbzrA
+        /5A82WAa2imXH8W5k8WBJUy5symBEQO97IxV60NvOQ==
+X-Google-Smtp-Source: ABdhPJxNDgMIs+i6xUVmTNkHBOhTrdiS70/qH/dNqao4vmx6KI2snPhoSDEX5E4jN4uKjzYEP/Dq7jJoDsUvXCG78qo=
+X-Received: by 2002:a05:6808:619:: with SMTP id y25mr3062792oih.166.1627671445211;
+ Fri, 30 Jul 2021 11:57:25 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 30 Jul 2021 11:57:24 -0700
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 30 Jul 2021 20:52:44 +0200
-Message-ID: <CAJZ5v0h_QSqNjAz9EEp4DBk0jQSE3W+m5niC_7KWgvETwS1Yyg@mail.gmail.com>
-Subject: [GIT PULL] ACPI fixes for v5.14-rc4
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <1627507854-16733-1-git-send-email-khsieh@codeaurora.org>
+References: <1627507854-16733-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 30 Jul 2021 11:57:24 -0700
+Message-ID: <CAE-0n51cNywB2ThQxqS4iX-d7wR+rYXt8P33o9cUq9J6tT915A@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dp: update is_connected status base on sink count
+ at dp_pm_resume()
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Quoting Kuogee Hsieh (2021-07-28 14:30:54)
+> Currently at dp_pm_resume() is_connected state is decided base on hpd connection
+> status only. This will put is_connected in wrongly "true" state at the scenario
+> that dongle attached to DUT but without hmdi cable connecting to it. Fix this
+> problem by adding read sink count from dongle and decided is_connected state base
+> on both sink count and hpd connection status.
+>
 
-Please pull from the tag
+Please add a Fixes tag.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.14-rc4
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_display.c | 23 +++++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 2b660e9..9bcb261 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -1308,6 +1308,17 @@ static int dp_display_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> +static int dp_get_sink_count(struct dp_display_private *dp)
+> +{
+> +       u8 sink_count;
+> +
+> +       sink_count = drm_dp_read_sink_count(dp->aux);
 
-with top-most commit e83f54eacf137de228a52c20c74e77f575684600
+drm_dp_read_sink_count() returns an int, not a u8. Comparing a u8 to
+less than zero doesn't make any sense as it isn't signed.
 
- Merge branches 'acpi-resources' and 'acpi-dptf'
+> +       if (sink_count < 0)
+> +               return 0;
+> +
+> +       return sink_count;
+> +}
 
-on top of commit ff1176468d368232b684f75e82563369208bc371
+We can drop this function and just have an int count in dp_pm_resume()
+that is compared to < 0 and then ignored.
 
- Linux 5.14-rc3
+> +
+>  static int dp_pm_resume(struct device *dev)
+>  {
+>         struct platform_device *pdev = to_platform_device(dev);
+> @@ -1327,14 +1338,22 @@ static int dp_pm_resume(struct device *dev)
+>
+>         dp_catalog_ctrl_hpd_config(dp->catalog);
+>
+> -       status = dp_catalog_link_is_connected(dp->catalog);
+> +       /*
+> +        * set sink to normal operation mode -- D0
+> +        * before dpcd read
+> +        */
+> +       dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+>
+> +       if ((status = dp_catalog_link_is_connected(dp->catalog)))
+> +               dp->link->sink_count = dp_get_sink_count(dp);
 
-to receive ACPI fixes for 5.14-rc4.
+Do we need to call drm_dp_read_sink_count_cap() as well?
 
-These revert a recent IRQ resources handling modification that
-turned out to be problematic, fix suspend-to-idle handling on
-AMD platforms to take upcoming systems into account properly
-and fix the retrieval of the DPTF attributes of the PCH FIVR.
+> +       else
+> +               dp->link->sink_count = 0;
+>         /*
+>          * can not declared display is connected unless
+>          * HDMI cable is plugged in and sink_count of
+>          * dongle become 1
+>          */
+> -       if (status && dp->link->sink_count)
 
-Specifics:
+Is 'status' used anymore? If not, please remove it.
 
- - Revert recent change of the ACPI IRQ resources handling that
-   attempted to improve the ACPI IRQ override selection logic, but
-   introduced serious regressions on some systems (Hui Wang).
-
- - Fix up quirks for AMD platforms in the suspend-to-idle support
-   code so as to take upcoming systems using uPEP HID AMDI007 into
-   account as appropriate (Mario Limonciello).
-
- - Fix the code retrieving DPTF attributes of the PCH FIVR so that
-   it agrees on the return data type with the ACPI control method
-   evaluated for this purpose (Srinivas Pandruvada).
-
-Thanks!
-
-
----------------
-
-Hui Wang (1):
-      Revert "ACPI: resources: Add checks for ACPI IRQ override"
-
-Mario Limonciello (1):
-      ACPI: PM: Add support for upcoming AMD uPEP HID AMDI007
-
-Srinivas Pandruvada (1):
-      ACPI: DPTF: Fix reading of attributes
-
----------------
-
- drivers/acpi/dptf/dptf_pch_fivr.c | 51 +++++++++++++++++++++++++++++++++------
- drivers/acpi/resource.c           |  9 +------
- drivers/acpi/x86/s2idle.c         | 10 ++++++--
- 3 files changed, 52 insertions(+), 18 deletions(-)
+> +       if (dp->link->sink_count)
+>                 dp->dp_display.is_connected = true;
+>         else
+>                 dp->dp_display.is_connected = false;
