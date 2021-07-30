@@ -2,151 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3447D3DB336
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826403DB347
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237035AbhG3GIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236430AbhG3GIr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:08:47 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D1EC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:08:43 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id z7so9246899iog.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:08:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1Ri7dUSHGhZY2tYqQt9WHv9mXFUqQVec2u9T6YNhEc0=;
-        b=Hk2KvJDgF8BJlfdnAPgnRP/64Cvj3rjXJWTFLSCoZY/ulCK5cfAHu+GC9R4s7dLjv1
-         SXHgg2P9e0oNTWauzALeEwhhgk7/ggHIrfoPq5Hc4GLwG5+674MQaxWTTLZfh8kQYH3u
-         wRzKOWzkcViy4HqhhNIDX9GvLhBCGlyUuB3pFZll1Jq/g9fA0sRFvyxYUmn0ysfs+k7e
-         kiBLhsEaBtULrp0PPxxD26BqJnbn2pIG1idgl1mwnIqecv6rweC1oMXKtpafQ5lK2wKC
-         uc2X/BH7V5R++ZQlwxav7Hgkd044IyHr5yyySjtzMem0IwpJtbVOj6Zi0KOoxJ0vA7uE
-         NvFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1Ri7dUSHGhZY2tYqQt9WHv9mXFUqQVec2u9T6YNhEc0=;
-        b=KGNfWaLWLmXTXt5X7Xrmo0vNydzMxiMj+IfcreAwmMv+Sj3qUCA/5QM1bcSfAR5ji1
-         FK8jJrjWuYqBtnmYAWzpDGYttc4yfxCrTefEGoO3TocwVbWD2dLG65G3yRoq5l+jIGd2
-         haWJJ6n1bhIS5BZeoqSKoJqnu9DB3GV/NE6N9WtaC5Khlz7aIgttDBESpLARkMaVGh1S
-         kX8e1wAEpEyHDegWdTqaM43nVMd0xTGCDbQESllxWn3liVpbTckQQFL9P39+uWMaYZKA
-         gJJkPZc1pJirBcRCMcxJrwBc09Bgn0FO+Uom3wNlCz10h1VicsoiW+T7CykEw3p+ySEv
-         kTWA==
-X-Gm-Message-State: AOAM530lxqZIMutVSy+4ZfUsfkchc6XBvNK82SMQva8im3h7Vs3zBRma
-        rumSaP1M94RDsgwWbhqFjeeYcEa8JuXaKg==
-X-Google-Smtp-Source: ABdhPJyvbk1qFvusNWnTRZMt8D4ZQbtWZ8pYKwuXWyNI5nEsznwSugT2hpZqY56lkSflsl9dw+S/zg==
-X-Received: by 2002:a05:6602:218c:: with SMTP id b12mr1100588iob.82.1627625322651;
-        Thu, 29 Jul 2021 23:08:42 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id k4sm452212ior.55.2021.07.29.23.08.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 23:08:42 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 395E327C0054;
-        Fri, 30 Jul 2021 02:08:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 30 Jul 2021 02:08:41 -0400
-X-ME-Sender: <xms:ZpcDYX-C7wr8cjhSKq4JR-P_97ZSNgD9_wQWx6irRJ39x5GtIfQimg>
-    <xme:ZpcDYTvGQo53XeLl4sr-xdEbcbXcZZUO7TO55mP7md2OYlU3JAf6fWah8FqSJly1E
-    xqbqyItL8J1wp8AWQ>
-X-ME-Received: <xmr:ZpcDYVDBS3A5BU2_dYrIbuMClFiKw-Dyp6Mb--rkumQHs1OOIvgD6vt1tkG0mA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheeggdekgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttdertd
-    dttddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhm
-    rghilhdrtghomheqnecuggftrfgrthhtvghrnhepvdelieegudfggeevjefhjeevueevie
-    etjeeikedvgfejfeduheefhffggedvgeejnecuvehluhhsthgvrhfuihiivgeptdenucfr
-    rghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsoh
-    hnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhg
-    peepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:ZpcDYTebkroJ3dzWUOIvs0XyWbp942eAM9EjIsoS9rpxtiqaXlDIPw>
-    <xmx:ZpcDYcNE1ywBbw5FlGyFO4BC19vzjqFp3Li20lmyV41WCoGERWuisw>
-    <xmx:ZpcDYVkVGn4knw8H1fwjffd7ezjZ8UkP6P4x7Dvms5zWQg5zMiwdDQ>
-    <xmx:aZcDYTmd_Kq16_ZsH3d7aQFuM0nmosDdUZiKtxtqfzNuEvMiP7lmXFNzKM0>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 30 Jul 2021 02:08:38 -0400 (EDT)
-Date:   Fri, 30 Jul 2021 14:08:13 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 2/2] drm: add lockdep assert to
- drm_is_current_master_locked
-Message-ID: <YQOXTW8kSHdNjhiY@boqun-archlinux>
-References: <20210730041515.1430237-1-desmondcheongzx@gmail.com>
- <20210730041515.1430237-3-desmondcheongzx@gmail.com>
+        id S237339AbhG3GLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:11:07 -0400
+Received: from mga14.intel.com ([192.55.52.115]:44109 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229999AbhG3GLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 02:11:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="212763576"
+X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
+   d="scan'208";a="212763576"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 23:11:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
+   d="scan'208";a="465344955"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by orsmga008.jf.intel.com with ESMTP; 29 Jul 2021 23:10:58 -0700
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, john.garry@huawei.com,
+        dianders@chromium.org
+Subject: Re: [PATCH v2 14/24] iommu: Introduce explicit type for non-strict
+ DMA domains
+To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
+        will@kernel.org
+References: <cover.1627468308.git.robin.murphy@arm.com>
+ <59a4d350c32a83e21de5dcfe6f041f38b0c35b82.1627468309.git.robin.murphy@arm.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <3e9035ab-5344-acc7-9c74-32c9137aad86@linux.intel.com>
+Date:   Fri, 30 Jul 2021 14:08:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730041515.1430237-3-desmondcheongzx@gmail.com>
+In-Reply-To: <59a4d350c32a83e21de5dcfe6f041f38b0c35b82.1627468309.git.robin.murphy@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:15:15PM +0800, Desmond Cheong Zhi Xi wrote:
-> In drm_is_current_master_locked, accessing drm_file.master should be
-> protected by either drm_file.master_lookup_lock or
-> drm_device.master_mutex. This was previously awkward to assert with
-> lockdep.
+On 7/28/21 11:58 PM, Robin Murphy wrote:
+> Promote the difference between strict and non-strict DMA domains from an
+> internal detail to a distinct domain feature and type, to pave the road
+> for exposing it through the sysfs default domain interface.
 > 
-> Following patch ("locking/lockdep: Provide lockdep_assert{,_once}()
-> helpers"), this assertion is now convenient so we add it in.
-> 
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 > ---
->  drivers/gpu/drm/drm_auth.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>   drivers/iommu/dma-iommu.c |  2 +-
+>   drivers/iommu/iommu.c     |  8 ++++++--
+>   include/linux/iommu.h     | 11 +++++++++++
+>   3 files changed, 18 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
-> index 9c24b8cc8e36..6f4d7ff23c80 100644
-> --- a/drivers/gpu/drm/drm_auth.c
-> +++ b/drivers/gpu/drm/drm_auth.c
-> @@ -63,9 +63,9 @@
->  
->  static bool drm_is_current_master_locked(struct drm_file *fpriv)
->  {
-> -	/* Either drm_device.master_mutex or drm_file.master_lookup_lock
-> -	 * should be held here.
-> -	 */
-> +	lockdep_assert_once(lockdep_is_held(&fpriv->master_lookup_lock) ||
-> +			    lockdep_is_held(&fpriv->minor->dev->master_mutex));
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index e28396cea6eb..8b3545c01077 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -1311,7 +1311,7 @@ void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit)
+>   	 * The IOMMU core code allocates the default DMA domain, which the
+>   	 * underlying IOMMU driver needs to support via the dma-iommu layer.
+>   	 */
+> -	if (domain->type == IOMMU_DOMAIN_DMA) {
+> +	if (iommu_is_dma_domain(domain)) {
+>   		if (iommu_dma_init_domain(domain, dma_base, dma_limit, dev))
+>   			goto out_err;
+>   		dev->dma_ops = &iommu_dma_ops;
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index fa8109369f74..982545234cf3 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -115,6 +115,7 @@ static const char *iommu_domain_type_str(unsigned int t)
+>   	case IOMMU_DOMAIN_UNMANAGED:
+>   		return "Unmanaged";
+>   	case IOMMU_DOMAIN_DMA:
+> +	case IOMMU_DOMAIN_DMA_FQ:
+>   		return "Translated";
+>   	default:
+>   		return "Unknown";
+> @@ -552,6 +553,9 @@ static ssize_t iommu_group_show_type(struct iommu_group *group,
+>   		case IOMMU_DOMAIN_DMA:
+>   			type = "DMA\n";
+>   			break;
+> +		case IOMMU_DOMAIN_DMA_FQ:
+> +			type = "DMA-FQ\n";
+> +			break;
+>   		}
+>   	}
+>   	mutex_unlock(&group->mutex);
+> @@ -765,7 +769,7 @@ static int iommu_create_device_direct_mappings(struct iommu_group *group,
+>   	unsigned long pg_size;
+>   	int ret = 0;
+>   
+> -	if (!domain || domain->type != IOMMU_DOMAIN_DMA)
+> +	if (!domain || !iommu_is_dma_domain(domain))
+>   		return 0;
+>   
+>   	BUG_ON(!domain->pgsize_bitmap);
+> @@ -1947,7 +1951,7 @@ static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
+>   	/* Assume all sizes by default; the driver may override this later */
+>   	domain->pgsize_bitmap  = bus->iommu_ops->pgsize_bitmap;
+>   
+> -	if (type == IOMMU_DOMAIN_DMA && iommu_get_dma_cookie(domain)) {
+> +	if (iommu_is_dma_domain(domain) && iommu_get_dma_cookie(domain)) {
+>   		iommu_domain_free(domain);
+>   		domain = NULL;
+>   	}
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 141779d76035..046ba4d54cd2 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -61,6 +61,7 @@ struct iommu_domain_geometry {
+>   #define __IOMMU_DOMAIN_DMA_API	(1U << 1)  /* Domain for use in DMA-API
+>   					      implementation              */
+>   #define __IOMMU_DOMAIN_PT	(1U << 2)  /* Domain is identity mapped   */
+> +#define __IOMMU_DOMAIN_DMA_FQ	(1U << 3)  /* DMA-API uses flush queue    */
+>   
+>   /*
+>    * This are the possible domain-types
+> @@ -73,12 +74,17 @@ struct iommu_domain_geometry {
+>    *	IOMMU_DOMAIN_DMA	- Internally used for DMA-API implementations.
+>    *				  This flag allows IOMMU drivers to implement
+>    *				  certain optimizations for these domains
+> + *	IOMMU_DOMAIN_DMA_FQ	- As above, but definitely using batched TLB
+> + *				  invalidation.
+>    */
+>   #define IOMMU_DOMAIN_BLOCKED	(0U)
+>   #define IOMMU_DOMAIN_IDENTITY	(__IOMMU_DOMAIN_PT)
+>   #define IOMMU_DOMAIN_UNMANAGED	(__IOMMU_DOMAIN_PAGING)
+>   #define IOMMU_DOMAIN_DMA	(__IOMMU_DOMAIN_PAGING |	\
+>   				 __IOMMU_DOMAIN_DMA_API)
+> +#define IOMMU_DOMAIN_DMA_FQ	(__IOMMU_DOMAIN_PAGING |	\
+> +				 __IOMMU_DOMAIN_DMA_API |	\
+> +				 __IOMMU_DOMAIN_DMA_FQ)
+>   
+>   struct iommu_domain {
+>   	unsigned type;
+> @@ -90,6 +96,11 @@ struct iommu_domain {
+>   	struct iommu_dma_cookie *iova_cookie;
+>   };
+>   
+> +static inline bool iommu_is_dma_domain(struct iommu_domain *domain)
+> +{
+> +	return domain->type & __IOMMU_DOMAIN_DMA_API;
+> +}
 > +
-
-I think it's better to also add the lockdep_assert() of & (i.e. both
-held) in the updater side, and have comments pointing to each other.
-
-Is it convenient to do in this patchset? If the updater side doesn't
-need to put the lockdep_assert() (maybe the lock acquire code and the
-update code are in the same function), it's still better to add some
-comments like:
-
-	/*
-	 * To update drm_file.master, both drm_file.master_lookup_lock
-	 * and drm_device.master_mutex are needed, therefore holding
-	 * either of them is safe and enough for the read side.
-	 */
-
-Just feel it's better to explain the lock design either in the
-lockdep_assert() or comments.
-
-Regards,
-Boqun
-
->  	return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
->  }
->  
-> -- 
-> 2.25.1
+>   enum iommu_cap {
+>   	IOMMU_CAP_CACHE_COHERENCY,	/* IOMMU can enforce cache coherent DMA
+>   					   transactions */
 > 
+
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+
+Best regards,
+baolu
