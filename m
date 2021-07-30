@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE31A3DC10F
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9934C3DC118
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbhG3W2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:28:25 -0400
-Received: from mail-il1-f170.google.com ([209.85.166.170]:38565 "EHLO
-        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231292AbhG3W2V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:28:21 -0400
-Received: by mail-il1-f170.google.com with SMTP id h18so10913598ilc.5;
-        Fri, 30 Jul 2021 15:28:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=iRrLbfbqIS5aTyIlMg3Ddsn2aOpsLg2suPETUyCuhso=;
-        b=IiKJWRvYWnnNN2+YhVv19HPWGZSKC34dL6aKynVrcph6dxqNOHZwPxZH9pi+RX8MUz
-         8kcpG24N7KY4OG9PJO90VHVo4SkBGd2le3bZJ6lxuesNb47JfPmFlWjJ0kPlMu5H5r2v
-         8vSXl+qsP6LKbnZP4aO58NlHGEcBRxGNVYagyhSI8Yi6074t+Jx6HtfRiaymqK6fgg/Y
-         Vlzxm9J1bBp2RTMiXBajmGOopSeb1XOoN8SU0cCTP23Lu5L7jv5tvfiU8+za70ezUrtC
-         o2vezfmOUF1Ql4BoqtwxawfqSZr33b2QQ1H2HUvrOFq4XSBjxznKFv3FEv+YmiI/xNh5
-         1yfA==
-X-Gm-Message-State: AOAM533px7zstcl2sL4611bbMCBpUcYOb4csJQLlamSnsBRHSWrK+rC3
-        w4TY1omniUzzrcSt1fGenQ==
-X-Google-Smtp-Source: ABdhPJwlmKihwwXcD9Z4ajEH9RFsMbk1wE/qDHxqpqyY95ye8bwCTuw8fNL1ePMNWAQGTXnZRs0YIA==
-X-Received: by 2002:a92:7f03:: with SMTP id a3mr3431717ild.254.1627684095214;
-        Fri, 30 Jul 2021 15:28:15 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id k9sm870727ioq.55.2021.07.30.15.28.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 15:28:14 -0700 (PDT)
-Received: (nullmailer pid 3442797 invoked by uid 1000);
-        Fri, 30 Jul 2021 22:28:10 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     devicetree@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
-In-Reply-To: <20210730171646.2406-1-dariobin@libero.it>
-References: <20210730171646.2406-1-dariobin@libero.it>
-Subject: Re: [PATCH v3] dt-bindings: net: can: c_can: convert to json-schema
-Date:   Fri, 30 Jul 2021 16:28:10 -0600
-Message-Id: <1627684090.574176.3442796.nullmailer@robh.at.kernel.org>
+        id S233112AbhG3Wbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:31:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229604AbhG3Wbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 18:31:48 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1F0D60524;
+        Fri, 30 Jul 2021 22:31:42 +0000 (UTC)
+Date:   Fri, 30 Jul 2021 18:31:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>
+Subject: Re: [PATCH 00/17] libtracefs: Introducing tracefs_sql() to create
+ synthetice events with an SQL line
+Message-ID: <20210730183136.46eeb036@oasis.local.home>
+In-Reply-To: <20210730221824.595597-1-rostedt@goodmis.org>
+References: <20210730221824.595597-1-rostedt@goodmis.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 19:16:46 +0200, Dario Binacchi wrote:
-> Convert the Bosch C_CAN/D_CAN controller device tree binding
-> documentation to json-schema.
+On Fri, 30 Jul 2021 18:18:07 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> FUNCTIONAL EXAMPLE:
+> -------------------
 > 
-> Document missing properties.
-> Remove "ti,hwmods" as it is no longer used in TI dts.
-> Make "clocks" required as it is used in all dts.
-> Correct nodename in the example.
+> After applying this patch, and installing it. If you compile the example from the man
+> page (calling it sqlhist.c):
 > 
-> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+>  >$ gcc -o sqlhist sqlhist.c `pkg-config --cflags --libs libtracefs`
+>  >$ su
+>  ># ./sqlhist -n syscall_wait -e 'select start.id, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat  
+>     from sys_enter as start join sys_exit as end on start.common_pid = end.common_pid
+>     where start.id != 23 && start.id != 7 && start.id != 61 && start.id != 230 &&
+>           start.id != 232 && start.id != 270 && start.id != 271 && start.id != 202'
 > 
-> ---
 > 
-> Changes in v3:
->  - Add type (phandle-array) and size (maxItems: 2) to syscon-raminit
->    property.
+> (All the start.id filtering is hiding the syscalls that block for a long time)
 > 
-> Changes in v2:
->  - Drop Documentation references.
+>  ># echo 'hist:keys=id.syscall,lat.buckets=10:sort=lat' > /sys/kernel/tracing/events/synthetic/syscall_wait/trigger  
 > 
->  .../bindings/net/can/bosch,c_can.yaml         | 85 +++++++++++++++++++
->  .../devicetree/bindings/net/can/c_can.txt     | 65 --------------
->  2 files changed, 85 insertions(+), 65 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
+> <wait a while>
 > 
+>  ># cat /sys/kernel/tracing/events/synthetic/syscall_wait/hist  
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+And of course, I forgot to say what the above is doing :-p
 
-yamllint warnings/errors:
+I wanted to see how long syscalls block for. So I created a synthetic
+event that connects with the starting of all system calls, with the
+exit of the same system call, using the common_pid of the task as the
+key to connect the two.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/can/bosch,c_can.example.dt.yaml: can@0: syscon-raminit: [[4294967295, 1604, 1]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
-\ndoc reference errors (make refcheckdocs):
+I record the id of the system call as well as the latency that is
+recorded, and send that off to a synthetic event called "syscall_wait".
 
-See https://patchwork.ozlabs.org/patch/1511753
+The '-e' option of the man page program sqlhist executes the command to
+create the synthetic event.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+Then I add a histogram to that event keying off the id (the ".syscall"
+writes out the name of the system call along with the id), and the
+latency "lat" grouping it in buckets of "5 microseconds", and sort it
+by the latency.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+I waited a while, and then reported the result.
 
-pip3 install dtschema --upgrade
+When I first ran this, the system calls that block for a long time
+filled up the histogram with useless data.  Those were the various
+"poll" and "select" as well as (surprising) "futex" system call.
 
-Please check and re-submit.
-
+-- Steve
