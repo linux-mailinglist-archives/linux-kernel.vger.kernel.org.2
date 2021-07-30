@@ -2,239 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4B53DB4A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4553DB4A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237921AbhG3Hn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 03:43:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
+        id S237832AbhG3HqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237783AbhG3Hnx (ORCPT
+        with ESMTP id S237824AbhG3Hp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:43:53 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCC7C061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:43:47 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id gs8so15123509ejc.13
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:43:47 -0700 (PDT)
+        Fri, 30 Jul 2021 03:45:59 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD3DC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:45:54 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id c18so8627204qke.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:45:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XNb1vdDFyUaitEth7U9Mw3bRVjScfkX4yuNTGRHOOZI=;
-        b=WOMkP1gUuGLYiBgd6mH86nsLknzRL5bXpAPNk/5UwcXfcZ9EQv9MRr0f+D9hGjPlks
-         bgrCF827NmTWYILTDg23M0IKQHIjQ4aXkX8EuXYFUDMbRjztqs5FJozIxBGLZYiVH/rf
-         oyoOnV5A5N2c9Dyx6fFvtnNuLy3GGahc8bfdgY7VKafbsk+ct6Dif/g+2KeKF1Pz7G2o
-         dZRGDHaGQ3Ohe2rDDlR2odQiTGOFY4P0vLRglEYx/RvIszvla7R+DKNuw91Lsa/HED+p
-         XzH2AClE0grQhthEAL+ZGYS2I18RLx4moNnKcDUKjLlCe4tcd3RDmhBJTYrTdjFrQbj1
-         o6iA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=Hjb4Qvz+d4rYfp83KEA4cSUCQ4NRMEv6hD5clar2zEo=;
+        b=a7HxZWdRuQp/zhxdj9ZcSffkcLO8HYoMF85EQHR69lnn6lWZFwTxyv1XpqKMeLtIqv
+         XIXaGDHJwfWpAl+KwQV0h6XIqzYEOWE60HA9eqcxGD37L31oqLG3edyDXvQ8Retknk6K
+         0WuRqc35Hc3ncI3tEDPx4nIPfhoOoxRviPd0VD2XUuZ+hb4W1vHQugu6R4CpXCa/DO8C
+         KSOXL82pzPwx3B5pU6GJNxVM/E22uC7bFDvuHFjKggCu97Z4dxW6o33YLWi4uEDKMi6K
+         z/rRSowG6Za2DhA/BYRuReLIYJQ/tXN+EonrH/gzp+MW3wGfZKCQhOAp8C0SrnHPDetw
+         UGeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XNb1vdDFyUaitEth7U9Mw3bRVjScfkX4yuNTGRHOOZI=;
-        b=ovC46G2KYwk5aOneZhBTwUOusDwHWbalxYhg2NfG5vhX/gyZGy4AEafBEGMNZfMvOR
-         7MoPspULsZDbp1d1NdbVW7+kNG3J3zpC6SofwSzfoGh8vq+K4iLVfVSGmFGNEj6JUVHK
-         U0/qhar884xg3IViDUvoREaOc5RJVNQl4+e6dxSI0PQ2CqdTISkB90ynESv2Mtg7o8cq
-         ncxCagN3aPf+6GNStrya0PbZjD82QeUVc4oi68kG9x6UzhCGowt8dpyUPqoaM95Ddb7H
-         FZjcysUqmwnUu6/mfbLNU085beEJxpYZSBcIud1+XdtLgELLwM/WxLUkz0zYmbyTXF7w
-         +iRg==
-X-Gm-Message-State: AOAM530VX/6KNvkMmTYa0dCyi7ZDfQ5ouHCpEIsdY8882cdCGS+4H5aT
-        UqcjyDmDI6XFUCOK7tFuXTubbuqgRwYLjEAiHfzLBQ==
-X-Google-Smtp-Source: ABdhPJyjd5Ruhtz7xbinzt2RW6nVODmDy6NaOTTXBdA0vGpDB2dMCIucBKKENRmccDApb7FWHODHlJL2DcsTdYbsGsw=
-X-Received: by 2002:a17:906:c447:: with SMTP id ck7mr1354289ejb.18.1627631025894;
- Fri, 30 Jul 2021 00:43:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=Hjb4Qvz+d4rYfp83KEA4cSUCQ4NRMEv6hD5clar2zEo=;
+        b=E/qptBlOsMx/kRJytidYId79uwHhRwQ7gBQFdikCtBfNPGBTfaqbPL2jWgr+ZN1t7D
+         vrGBi8kNC3fUeycLgMBLZK153PCZeBLaa9xb4VsOz9tjPe8/ZtdRP6jW1mag60GoxFqW
+         nZo9GH2/9OnFrpVh09zsGBTs1G/24gihf+egyepOkY1enrmhX4ugj77OGbDZaqcF/elY
+         VG/peoC6gYnyG6m4PVN4UXD4knfBhBLvFi9eEwyrMdH5Izf8ZGF4xMilc3ueNzTdSoMJ
+         eNjmwlsM8X1ncvwIAb/q44fF6osOvMk24AVgdsupsUTONpo2b0a1PSp0xlmihdRw2RkH
+         XXaA==
+X-Gm-Message-State: AOAM530h7HMCpzDfDq9g0DqWGOQV0c2VgHIKkRjQzaY3/aj2osthNSEZ
+        +FVXkMRDNst8QBA4iGz++zZWHg==
+X-Google-Smtp-Source: ABdhPJyxwl7K7cMuTTQwVGAyfcH23tbKgh3bhsC84QKSqBFc0wlrNsNL3TZXdmX5JSzubXT3+108+A==
+X-Received: by 2002:ae9:e901:: with SMTP id x1mr1079559qkf.360.1627631153052;
+        Fri, 30 Jul 2021 00:45:53 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x125sm539177qkd.8.2021.07.30.00.45.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 00:45:52 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 00:45:49 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH 07/16] memfd: memfd_create(name, MFD_HUGEPAGE) for shmem huge
+ pages
+In-Reply-To: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
+Message-ID: <c140f56a-1aa3-f7ae-b7d1-93da7d5a3572@google.com>
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
 MIME-Version: 1.0
-References: <20210729135142.920143237@linuxfoundation.org>
-In-Reply-To: <20210729135142.920143237@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 30 Jul 2021 13:13:34 +0530
-Message-ID: <CA+G9fYvazOLwch-JupVP6uhAYYdMuYpfgWAEYVyipmUsUqCasQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/21] 5.4.137-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jul 2021 at 19:28, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.137 release.
-> There are 21 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.137-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Commit 749df87bd7be ("mm/shmem: add hugetlbfs support to memfd_create()")
+in 4.14 added the MFD_HUGETLB flag to memfd_create(), to use hugetlbfs
+pages instead of tmpfs pages: now add the MFD_HUGEPAGE flag, to use tmpfs
+Transparent Huge Pages when they can be allocated (flag named to follow
+the precedent of madvise's MADV_HUGEPAGE for THPs).
 
+/sys/kernel/mm/transparent_hugepage/shmem_enabled "always" or "force"
+already made this possible: but that is much too blunt an instrument,
+affecting all the very different kinds of files on the internal shmem
+mount, and was intended just for ease of testing hugepage loads.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+MFD_HUGEPAGE is implemented internally by VM_HUGEPAGE in the shmem inode
+flags: do not permit a PR_SET_THP_DISABLE (MMF_DISABLE_THP) task to set
+this flag, and do not set it if THPs are not allowed at all; but let the
+memfd_create() succeed even in those cases - the caller wants to create a
+memfd, just hinting how it's best allocated if huge pages are available.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+shmem_is_huge() (at allocation time or khugepaged time) applies its
+SHMEM_HUGE_DENY and vma VM_NOHUGEPAGE and vm_mm MMF_DISABLE_THP checks
+first, and only then allows the memfd's MFD_HUGEPAGE to take effect.
 
-## Build
-* kernel: 5.4.137-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: f73de39e1fb7b0cbd29bf959b3a305eca0e182e7
-* git describe: v5.4.136-22-gf73de39e1fb7
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-36-22-gf73de39e1fb7
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+ include/uapi/linux/memfd.h |  3 ++-
+ mm/memfd.c                 | 24 ++++++++++++++++++------
+ mm/shmem.c                 | 33 +++++++++++++++++++++++++++++++--
+ 3 files changed, 51 insertions(+), 9 deletions(-)
 
-## No regressions (compared to v5.4.135-109-g77cfe86f3223)
+diff --git a/include/uapi/linux/memfd.h b/include/uapi/linux/memfd.h
+index 7a8a26751c23..8358a69e78cc 100644
+--- a/include/uapi/linux/memfd.h
++++ b/include/uapi/linux/memfd.h
+@@ -7,7 +7,8 @@
+ /* flags for memfd_create(2) (unsigned int) */
+ #define MFD_CLOEXEC		0x0001U
+ #define MFD_ALLOW_SEALING	0x0002U
+-#define MFD_HUGETLB		0x0004U
++#define MFD_HUGETLB		0x0004U		/* Use hugetlbfs */
++#define MFD_HUGEPAGE		0x0008U		/* Use huge tmpfs */
+ 
+ /*
+  * Huge page size encoding when MFD_HUGETLB is specified, and a huge page
+diff --git a/mm/memfd.c b/mm/memfd.c
+index 081dd33e6a61..0d1a504d2fc9 100644
+--- a/mm/memfd.c
++++ b/mm/memfd.c
+@@ -245,7 +245,10 @@ long memfd_fcntl(struct file *file, unsigned int cmd, unsigned long arg)
+ #define MFD_NAME_PREFIX_LEN (sizeof(MFD_NAME_PREFIX) - 1)
+ #define MFD_NAME_MAX_LEN (NAME_MAX - MFD_NAME_PREFIX_LEN)
+ 
+-#define MFD_ALL_FLAGS (MFD_CLOEXEC | MFD_ALLOW_SEALING | MFD_HUGETLB)
++#define MFD_ALL_FLAGS  (MFD_CLOEXEC | \
++			MFD_ALLOW_SEALING | \
++			MFD_HUGETLB | \
++			MFD_HUGEPAGE)
+ 
+ SYSCALL_DEFINE2(memfd_create,
+ 		const char __user *, uname,
+@@ -257,14 +260,17 @@ SYSCALL_DEFINE2(memfd_create,
+ 	char *name;
+ 	long len;
+ 
+-	if (!(flags & MFD_HUGETLB)) {
+-		if (flags & ~(unsigned int)MFD_ALL_FLAGS)
++	if (flags & MFD_HUGETLB) {
++		/* Disallow huge tmpfs when choosing hugetlbfs */
++		if (flags & MFD_HUGEPAGE)
+ 			return -EINVAL;
+-	} else {
+ 		/* Allow huge page size encoding in flags. */
+ 		if (flags & ~(unsigned int)(MFD_ALL_FLAGS |
+ 				(MFD_HUGE_MASK << MFD_HUGE_SHIFT)))
+ 			return -EINVAL;
++	} else {
++		if (flags & ~(unsigned int)MFD_ALL_FLAGS)
++			return -EINVAL;
+ 	}
+ 
+ 	/* length includes terminating zero */
+@@ -303,8 +309,14 @@ SYSCALL_DEFINE2(memfd_create,
+ 					HUGETLB_ANONHUGE_INODE,
+ 					(flags >> MFD_HUGE_SHIFT) &
+ 					MFD_HUGE_MASK);
+-	} else
+-		file = shmem_file_setup(name, 0, VM_NORESERVE);
++	} else {
++		unsigned long vm_flags = VM_NORESERVE;
++
++		if (flags & MFD_HUGEPAGE)
++			vm_flags |= VM_HUGEPAGE;
++		file = shmem_file_setup(name, 0, vm_flags);
++	}
++
+ 	if (IS_ERR(file)) {
+ 		error = PTR_ERR(file);
+ 		goto err_fd;
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 6def7391084c..e2bcf3313686 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -476,6 +476,20 @@ static bool shmem_confirm_swap(struct address_space *mapping,
+ 
+ static int shmem_huge __read_mostly = SHMEM_HUGE_NEVER;
+ 
++/*
++ * Does either /sys/kernel/mm/transparent_hugepage/shmem_enabled or
++ * /sys/kernel/mm/transparent_hugepage/enabled allow transparent hugepages?
++ * (Can only return true when the machine has_transparent_hugepage() too.)
++ */
++static bool transparent_hugepage_allowed(void)
++{
++	return	shmem_huge > SHMEM_HUGE_NEVER ||
++		test_bit(TRANSPARENT_HUGEPAGE_FLAG,
++			&transparent_hugepage_flags) ||
++		test_bit(TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG,
++			&transparent_hugepage_flags);
++}
++
+ bool shmem_is_huge(struct vm_area_struct *vma,
+ 		   struct inode *inode, pgoff_t index)
+ {
+@@ -486,6 +500,8 @@ bool shmem_is_huge(struct vm_area_struct *vma,
+ 	if (vma && ((vma->vm_flags & VM_NOHUGEPAGE) ||
+ 	    test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags)))
+ 		return false;
++	if (SHMEM_I(inode)->flags & VM_HUGEPAGE)
++		return true;
+ 	if (shmem_huge == SHMEM_HUGE_FORCE)
+ 		return true;
+ 
+@@ -676,6 +692,11 @@ static long shmem_unused_huge_count(struct super_block *sb,
+ 
+ #define shmem_huge SHMEM_HUGE_DENY
+ 
++bool transparent_hugepage_allowed(void)
++{
++	return false;
++}
++
+ bool shmem_is_huge(struct vm_area_struct *vma,
+ 		   struct inode *inode, pgoff_t index)
+ {
+@@ -2171,10 +2192,14 @@ unsigned long shmem_get_unmapped_area(struct file *file,
+ 
+ 	if (shmem_huge != SHMEM_HUGE_FORCE) {
+ 		struct super_block *sb;
++		struct inode *inode;
+ 
+ 		if (file) {
+ 			VM_BUG_ON(file->f_op != &shmem_file_operations);
+-			sb = file_inode(file)->i_sb;
++			inode = file_inode(file);
++			if (SHMEM_I(inode)->flags & VM_HUGEPAGE)
++				goto huge;
++			sb = inode->i_sb;
+ 		} else {
+ 			/*
+ 			 * Called directly from mm/mmap.c, or drivers/char/mem.c
+@@ -2187,7 +2212,7 @@ unsigned long shmem_get_unmapped_area(struct file *file,
+ 		if (SHMEM_SB(sb)->huge == SHMEM_HUGE_NEVER)
+ 			return addr;
+ 	}
+-
++huge:
+ 	offset = (pgoff << PAGE_SHIFT) & (HPAGE_PMD_SIZE-1);
+ 	if (offset && offset + len < 2 * HPAGE_PMD_SIZE)
+ 		return addr;
+@@ -2308,6 +2333,10 @@ static struct inode *shmem_get_inode(struct super_block *sb, const struct inode
+ 		atomic_set(&info->stop_eviction, 0);
+ 		info->seals = F_SEAL_SEAL;
+ 		info->flags = flags & VM_NORESERVE;
++		if ((flags & VM_HUGEPAGE) &&
++		    transparent_hugepage_allowed() &&
++		    !test_bit(MMF_DISABLE_THP, &current->mm->flags))
++			info->flags |= VM_HUGEPAGE;
+ 		INIT_LIST_HEAD(&info->shrinklist);
+ 		INIT_LIST_HEAD(&info->swaplist);
+ 		simple_xattrs_init(&info->xattrs);
+-- 
+2.26.2
 
-## No fixes (compared to v5.4.135-109-g77cfe86f3223)
-
-
-## Test result summary
- total: 76416, pass: 61164, fail: 1313, skip: 12522, xfail: 1417,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 192 passed, 0 failed
-* arm64: 26 total, 26 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 15 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 26 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
