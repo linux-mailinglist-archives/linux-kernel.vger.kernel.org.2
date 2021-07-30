@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8901E3DC0E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E753DC0E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233946AbhG3WSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:18:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51286 "EHLO mail.kernel.org"
+        id S233572AbhG3WSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:18:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232589AbhG3WSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:18:39 -0400
+        id S232680AbhG3WSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 18:18:40 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DC6A61040;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DD6F61042;
         Fri, 30 Jul 2021 22:18:34 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1m9apt-002V1V-JQ; Fri, 30 Jul 2021 18:18:33 -0400
+        id 1m9apt-002V1Y-KC; Fri, 30 Jul 2021 18:18:33 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -28,9 +28,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 09/17] libtracefs: Add line number and index to expr structure
-Date:   Fri, 30 Jul 2021 18:18:16 -0400
-Message-Id: <20210730221824.595597-10-rostedt@goodmis.org>
+Subject: [PATCH 10/17] libtracefs: Add a parse_error() helper function to record errors
+Date:   Fri, 30 Jul 2021 18:18:17 -0400
+Message-Id: <20210730221824.595597-11-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210730221824.595597-1-rostedt@goodmis.org>
 References: <20210730221824.595597-1-rostedt@goodmis.org>
@@ -42,38 +42,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-In order to have better error messages, record the line number and index
-when an expr structure is created. Then this can be used to show where in
-the SQL sequence a problem was found if the building of the synth event
-has issues.
+Add parse_error() that calls into sql_parse_error() with the appropriate
+ap argument. That is, parse_error() takes a normal printf() form and then
+translates it to the vprintf from of sql_parse_error.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/tracefs-sqlhist.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ src/tracefs-sqlhist.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 933b3609733b..887c2441a39e 100644
+index 887c2441a39e..c0875d630391 100644
 --- a/src/tracefs-sqlhist.c
 +++ b/src/tracefs-sqlhist.c
-@@ -72,6 +72,8 @@ struct expr {
- 	struct expr		*free_list;
- 	struct expr		*next;
- 	enum expr_type		type;
-+	int			line;
-+	int			idx;
- 	union {
- 		struct field	field;
- 		struct filter	filter;
-@@ -300,6 +302,8 @@ static void *create_expr(struct sqlhist_bison *sb,
- 	sb->table->exprs = expr;
+@@ -8,6 +8,7 @@
+  */
+ #include <trace-seq.h>
+ #include <stdlib.h>
++#include <stdarg.h>
+ #include <errno.h>
  
- 	expr->type = type;
-+	expr->line = sb->line_no;
-+	expr->idx = sb->line_idx;
+ #include "tracefs.h"
+@@ -153,6 +154,16 @@ __hidden void sql_parse_error(struct sqlhist_bison *sb, const char *text,
+ 	trace_seq_destroy(&s);
+ }
  
- 	switch (type) {
- 	case EXPR_FIELD:	return &expr->field;
++static void parse_error(struct sqlhist_bison *sb, const char *text,
++			const char *fmt, ...)
++{
++	va_list ap;
++
++	va_start(ap, fmt);
++	sql_parse_error(sb, text, fmt, ap);
++	va_end(ap);
++}
++
+ static inline unsigned int quick_hash(const char *str)
+ {
+ 	unsigned int val = 0;
 -- 
 2.30.2
 
