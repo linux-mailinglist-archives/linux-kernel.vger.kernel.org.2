@@ -2,149 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5A93DC05F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0073DC06C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbhG3VoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 17:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39254 "EHLO
+        id S231184AbhG3VvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 17:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbhG3VoX (ORCPT
+        with ESMTP id S229840AbhG3VvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 17:44:23 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2044BC06175F;
-        Fri, 30 Jul 2021 14:44:17 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id h9so14318427ljq.8;
-        Fri, 30 Jul 2021 14:44:17 -0700 (PDT)
+        Fri, 30 Jul 2021 17:51:17 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2761DC06175F;
+        Fri, 30 Jul 2021 14:51:12 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id nd39so19298211ejc.5;
+        Fri, 30 Jul 2021 14:51:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iUWsYGbYRvDKidtDFAD37LhSTu0mAAw/UZoF5BX5je4=;
-        b=OBxPLbMIP9Zg1tCsP+gAveHb7Z/9qmetZxjEySQkmkZVrdOtfdVFg9vR/2s0vrE7DJ
-         G4Y0G7XB7bsR6NcAgROrFQwttHTY69EXUww9skhLiR5Ku/WZCTgtjHknOKmDg4IiahMC
-         i+tawWXEKt0K+gQw0otdQKclH++pyPaMd3vxryxAwIirSEPOt/Y1AcwOTvn3Z+5vkpga
-         aj6I0mprZrERwbxMRtiO9f+kz5/A+cvg6gTqXW3Q4NLZxQ9WVs6HXLd4gpXceCpRnIPJ
-         sZXx8GtiqDzZkQM86doOwKekydU+wTRpSBdhOQc99y5m83gJASGOX0mjzRnjRYSSgd8B
-         F7CA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ALuer+FidfIoua3TUSD8gX2hS4i01XLeemyyVEmMoQc=;
+        b=mqVuNenWLGsGEestEyn1VFsrzeMOzP2lqyROg7AXmeoUVCaf6TFWK0BzzfuDLeM8zF
+         jrmLd/hIp0m+ic8y82kCwAN0lqF4BBb2R0/TfRuZAMIj75G3qjAMcNI/bmIg3r+iEPAA
+         zvlmNMBIbCR9gdYmAXk6vjnxw1Qc7zKeYuh+ou6PBz3PX+ICXhcc6+qSBDL10VuMZoMv
+         gO3hy/DQALNsneH7xBudPFMdVe9/kKHac5rsioR4L9rqOdjI/yqHZWh/kci6xACpbJZ7
+         Oo5wYVhKkHGi6U3QOU2L3BWo8w2xFyhzX3/Vs+5Z/QywaGRQ/qTIwDX6tFPufDV2UvHe
+         Jo8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iUWsYGbYRvDKidtDFAD37LhSTu0mAAw/UZoF5BX5je4=;
-        b=a90sbxe2qyUAU3g5EwalWSp3xt38EyOH9ei7WNWL9yMdz8RqXM4C/+fako/19BKdXT
-         NJgocqhgBzbwF9/90KTmGjXPAqhYdoJbewJXprW0u15JAfjshmalFFDOwlOxgOaHrhDe
-         ZYVLGVWnCezaBGg0+QxZc8A0Y2ZaMfIT3QtLzvgrrgiYBuMLLJUeJDoowZX20eY0Zgzl
-         Zkx+H61fEmeVrh8Xo8JQLF3vr0CFylv+vLpIa83ivCRNGW9TCFkdx/h+hkbvTwGg4DPu
-         J02UZKm3m61wLyfO52EyjTtl7JNdTvedIbFKG1pHoSMONy6IdPx/JHZEFD7sPkU0095e
-         f2Ww==
-X-Gm-Message-State: AOAM530x3MIORUg3oQoUaNdsg64/qIvd470h0C/vVbOXNtq9ABDJd2j9
-        IcE+jRHMesW1Cj2McRdCkfc=
-X-Google-Smtp-Source: ABdhPJx/siIPONhywOb1T7C7lk6QtoW4/5xKjW34rQU/7G6Jr2RCrRQRgPnwO1B6wzgDxNa7PZHQUQ==
-X-Received: by 2002:a05:651c:b06:: with SMTP id b6mr3027530ljr.171.1627681455465;
-        Fri, 30 Jul 2021 14:44:15 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.227.213])
-        by smtp.gmail.com with ESMTPSA id d18sm175512ljc.64.2021.07.30.14.44.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 14:44:15 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     petkan@nucleusys.com, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
-Subject: [PATCH] net: pegasus: fix uninit-value in get_interrupt_interval
-Date:   Sat, 31 Jul 2021 00:44:11 +0300
-Message-Id: <20210730214411.1973-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ALuer+FidfIoua3TUSD8gX2hS4i01XLeemyyVEmMoQc=;
+        b=WXckuOeVbUU0c/Uxmtaby0Jj1Xenjfmzc1NsDUXTDdCpepuI9nBElnc45X23J7nkGV
+         4B5rnj7E3APvASn84BARp6fUnsnt/RDVokwhNdErKen0NCdREItEaCHiZss4w7VJeb/r
+         B41+Ypu/OyJiYIWZTzSUUJfYgUXjA7NZSmWDpEqDS6YwHqoVAE0RcSnpAcLrkoyoiKBP
+         GYiRgq7l4/9I3J3lVu7m5Lrt99Ot3dTz0phwnjGIumEbBaW8k3cSbCopxWO1rDbSxx6r
+         T+sO3WLdVF1tw97p9TCBYiM6Y2DwhAaJzFUe3kx+PL5gFBjKC5tDzz5A6fikCXOyMvT7
+         xwyg==
+X-Gm-Message-State: AOAM5318rp/ej8NAg1t64A+2dubB868JqnqLPwAJfUKH8ZpyxuZbwQcT
+        uZtQSYlAEPeAsxAFuUUPMzzlTn7RaAMVX5VsX2o=
+X-Google-Smtp-Source: ABdhPJw21kECf87JDJrKuLPPTCnErY9hdTNVhtt2vxlhdDQkryswZ+3LZtsPd3/QdyTUiF1AXes0gf1b7z2RCq/IpB0=
+X-Received: by 2002:a17:906:fc0b:: with SMTP id ov11mr1436950ejb.238.1627681870825;
+ Fri, 30 Jul 2021 14:51:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <42353193-6896-aa85-9127-78881d5fef66@google.com>
+In-Reply-To: <42353193-6896-aa85-9127-78881d5fef66@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 30 Jul 2021 14:50:58 -0700
+Message-ID: <CAHbLzkp9UQ9bb4gMN-BtrSHY3uet+nSxN-wMaObrtp5yhSN5Sw@mail.gmail.com>
+Subject: Re: [PATCH 03/16] huge tmpfs: remove shrinklist addition from shmem_setattr()
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported uninit value pegasus_probe(). The problem was in missing
-error handling.
+On Fri, Jul 30, 2021 at 12:31 AM Hugh Dickins <hughd@google.com> wrote:
+>
+> There's a block of code in shmem_setattr() to add the inode to
+> shmem_unused_huge_shrink()'s shrinklist when lowering i_size: it dates
+> from before 5.7 changed truncation to do split_huge_page() for itself,
+> and should have been removed at that time.
+>
+> I am over-stating that: split_huge_page() can fail (notably if there's
+> an extra reference to the page at that time), so there might be value in
+> retrying.  But there were already retries as truncation worked through
+> the tails, and this addition risks repeating unsuccessful retries
+> indefinitely: I'd rather remove it now, and work on reducing the
+> chance of split_huge_page() failures separately, if we need to.
 
-get_interrupt_interval() internally calls read_eprom_word() which can
-fail in some cases. For example: failed to receive usb control message.
-These cases should be handled to prevent uninit value bug, since
-read_eprom_word() will not initialize passed stack variable in case of
-internal failure.
+Yes, agreed. Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-Fail log:
-
-BUG: KMSAN: uninit-value in get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
-BUG: KMSAN: uninit-value in pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
-CPU: 1 PID: 825 Comm: kworker/1:1 Not tainted 5.12.0-rc6-syzkaller #0
-...
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
- kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
- get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
- pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
-....
-
-Local variable ----data.i@pegasus_probe created at:
- get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
- pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
- get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
- pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
-
-Reported-and-tested-by: syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/net/usb/pegasus.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
-index 9a907182569c..bc2dbf86496b 100644
---- a/drivers/net/usb/pegasus.c
-+++ b/drivers/net/usb/pegasus.c
-@@ -735,12 +735,16 @@ static inline void disable_net_traffic(pegasus_t *pegasus)
- 	set_registers(pegasus, EthCtrl0, sizeof(tmp), &tmp);
- }
- 
--static inline void get_interrupt_interval(pegasus_t *pegasus)
-+static inline int get_interrupt_interval(pegasus_t *pegasus)
- {
- 	u16 data;
- 	u8 interval;
-+	int ret;
-+
-+	ret = read_eprom_word(pegasus, 4, &data);
-+	if (ret < 0)
-+		return ret;
- 
--	read_eprom_word(pegasus, 4, &data);
- 	interval = data >> 8;
- 	if (pegasus->usb->speed != USB_SPEED_HIGH) {
- 		if (interval < 0x80) {
-@@ -755,6 +759,8 @@ static inline void get_interrupt_interval(pegasus_t *pegasus)
- 		}
- 	}
- 	pegasus->intr_interval = interval;
-+
-+	return 0;
- }
- 
- static void set_carrier(struct net_device *net)
-@@ -1149,7 +1155,9 @@ static int pegasus_probe(struct usb_interface *intf,
- 				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
- 
- 	pegasus->features = usb_dev_id[dev_index].private;
--	get_interrupt_interval(pegasus);
-+	res = get_interrupt_interval(pegasus);
-+	if (res)
-+		goto out2;
- 	if (reset_mac(pegasus)) {
- 		dev_err(&intf->dev, "can't reset MAC\n");
- 		res = -EIO;
--- 
-2.32.0
-
+>
+> Fixes: 71725ed10c40 ("mm: huge tmpfs: try to split_huge_page() when punching hole")
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> ---
+>  mm/shmem.c | 19 -------------------
+>  1 file changed, 19 deletions(-)
+>
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 24c9da6b41c2..ce3ccaac54d6 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1061,7 +1061,6 @@ static int shmem_setattr(struct user_namespace *mnt_userns,
+>  {
+>         struct inode *inode = d_inode(dentry);
+>         struct shmem_inode_info *info = SHMEM_I(inode);
+> -       struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
+>         int error;
+>
+>         error = setattr_prepare(&init_user_ns, dentry, attr);
+> @@ -1097,24 +1096,6 @@ static int shmem_setattr(struct user_namespace *mnt_userns,
+>                         if (oldsize > holebegin)
+>                                 unmap_mapping_range(inode->i_mapping,
+>                                                         holebegin, 0, 1);
+> -
+> -                       /*
+> -                        * Part of the huge page can be beyond i_size: subject
+> -                        * to shrink under memory pressure.
+> -                        */
+> -                       if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+> -                               spin_lock(&sbinfo->shrinklist_lock);
+> -                               /*
+> -                                * _careful to defend against unlocked access to
+> -                                * ->shrink_list in shmem_unused_huge_shrink()
+> -                                */
+> -                               if (list_empty_careful(&info->shrinklist)) {
+> -                                       list_add_tail(&info->shrinklist,
+> -                                                       &sbinfo->shrinklist);
+> -                                       sbinfo->shrinklist_len++;
+> -                               }
+> -                               spin_unlock(&sbinfo->shrinklist_lock);
+> -                       }
+>                 }
+>         }
+>
+> --
+> 2.26.2
+>
