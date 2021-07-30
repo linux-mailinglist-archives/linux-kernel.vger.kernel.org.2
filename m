@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B40A3DB4BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FF93DB4BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237932AbhG3HyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 03:54:15 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:43472
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237851AbhG3HyO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:54:14 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S237997AbhG3HzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:55:09 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:28692 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237851AbhG3HzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 03:55:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627631702; h=Content-Type: MIME-Version: Message-ID: Date:
+ References: In-Reply-To: Subject: Cc: To: From: Sender;
+ bh=OBKYoTKsmSrm6ziAPZqraNbNVhRFMPPbFTILQJX3yXk=; b=c0CQYTHwv2oB8yY/rLLWMBCZ6IjWRUIrCVGK0kzKLZLSWMdlYuk419Rw1FI9duiGVrzB6oFA
+ krnHjnVuPKzFiSL0kyjn8AKQALppkeKi8cGJSXgnlzZTk0EJdcl7JbDKV+k5r9eJOhiZMnJU
+ pu5BWDP031zuFXumjWZYdefMXDo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6103b03438fa9bfe9c3cdb28 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Jul 2021 07:54:28
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3E509C4338A; Fri, 30 Jul 2021 07:54:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id CE3513F0FD;
-        Fri, 30 Jul 2021 07:54:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627631648;
-        bh=G8dnFS/VJuY2eMdGcNAfSAELq2LIUnvG4Ahde4qXVcY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=nJNgyqQu1SjV/CA5seVDj4v87xbVHXsiUVbuIwuCVYPa9BzFYGQ37diHdLMkwSpgb
-         +p1NrW/93SCZuSxlPyFP2qfhAmer2XXDYZbaLlfHS1aBNe3x5IYXk0yg1dLtaNT93V
-         kSq9lUSOH9L6ywR/WFK+30wGwKsdA7FZCtgxFLLn2njmn0mtniVN2tKMuBVZQ61hjs
-         if4wqcM5xZ/CCxtaVCF16rRD6T7o5rvWZvGTPQ3MDTDTkchWoLLl82CLcVhrDmutpq
-         c6Oy57Foemkch1zfgIu+5IFBfQcPczr/5ueqzsdo480N4VSuhVxWD9CeXzOyKDLBZe
-         +ygAPdj5d7dfQ==
-From:   Colin King <colin.king@canonical.com>
-To:     Georgi Djakov <djakov@kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-pm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] interconnect: Fix undersized devress_alloc allocation
-Date:   Fri, 30 Jul 2021 08:54:08 +0100
-Message-Id: <20210730075408.19945-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E0F2C433F1;
+        Fri, 30 Jul 2021 07:54:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6E0F2C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Chris Chiu <chris.chiu@canonical.com>
+Cc:     Jes.Sorensen@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        code@reto-schneider.ch, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rtl8xxxu: Fix the handling of TX A-MPDU aggregation
+In-Reply-To: <CABTNMG0KurxtzXfExS-OE-UopoimCzbJTLj5q7a2_6HU8u0k0A@mail.gmail.com>
+        (Chris Chiu's message of "Fri, 30 Jul 2021 11:25:31 +0800")
+References: <20210630160151.28227-1-chris.chiu@canonical.com>
+        <CABTNMG1FJYP4O021mWgVU0ZJZJmBTvm-x3sM0_dHCfa0LbOYDA@mail.gmail.com>
+        <CABTNMG0KurxtzXfExS-OE-UopoimCzbJTLj5q7a2_6HU8u0k0A@mail.gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Fri, 30 Jul 2021 10:54:19 +0300
+Message-ID: <877dh8fd90.fsf@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Chris Chiu <chris.chiu@canonical.com> writes:
 
-The expression sizeof(**ptr) for the void **ptr is just 1 rather than
-the size of a pointer. Fix this by using sizeof(*ptr).
+> Any comments for this patch? Thanks 
 
-Addresses-Coverity: ("Wrong sizeof argument")
-Fixes: e145d9a184f2 ("interconnect: Add devm_of_icc_get() as exported API for users")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/interconnect/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please don't send HTML mails, our lists drop those.
 
-diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
-index 55aa8d108c6d..9050ca1f4285 100644
---- a/drivers/interconnect/core.c
-+++ b/drivers/interconnect/core.c
-@@ -403,7 +403,7 @@ struct icc_path *devm_of_icc_get(struct device *dev, const char *name)
- {
- 	struct icc_path **ptr, *path;
- 
--	ptr = devres_alloc(devm_icc_release, sizeof(**ptr), GFP_KERNEL);
-+	ptr = devres_alloc(devm_icc_release, sizeof(*ptr), GFP_KERNEL);
- 	if (!ptr)
- 		return ERR_PTR(-ENOMEM);
- 
 -- 
-2.31.1
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
