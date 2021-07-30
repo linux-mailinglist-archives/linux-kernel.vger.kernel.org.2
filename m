@@ -2,89 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAAE3DBB70
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAA53DBB74
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239476AbhG3Oys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239424AbhG3OyX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:54:23 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFFCC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:54:17 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id x14so13539650edr.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Jw0xLY+vm795MhFxQkfoXv1/Mq5jVRjAqI9LMouhf/s=;
-        b=NdaU2lIE2VdmHidOsEjh3ssUPR26yIq0ttRCxSLGiclMYfLL5X8V0IYDS7lo6Wiu1R
-         IIh3pzZi3AwUogrfsWc9U05ZJLPTquzIpN2I9RU7o0rPg1Tq4Z97nFCK7qFf4UkPw6M1
-         dmMFTsob/aTSK9mgQz/VRQVfQZmEBOGCNWm5GebqTJPzCCD5yOe40hl+9aXiXmE8m35d
-         NqyKxl1oCPwv5Oj1Ji89UHXy7oi4WK1kOshF3EXAePfqCUcboSIjxpiAoPZe0vzTgSjs
-         XwbPGe6mh8gq0rwSV3cIJ/b1aivNrniM8QOUYb+tuWlLHzl25+LYhxyvo1q1NKHtvsRO
-         gMLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Jw0xLY+vm795MhFxQkfoXv1/Mq5jVRjAqI9LMouhf/s=;
-        b=ao8sxwhbXZ96gRcEeKee5UdV77vb7Q3tziLqYix+kAxQs+k4qmfb9w3d0Lr+qfNF7c
-         5RCyS3VNV+ULHxMqyD4HHilpv0CTUWqH77EuYTiw6wHIKtmP3+WiVzvFKUXXqWstqxEE
-         qX2v3xesf9MfaRuILez0wjYwS/ebSyETu/8dVaZ108kuOVaKgEZANbNB5qM2YXp4+YuC
-         TlEsg6PVmbOypxnyEW3NyFkZcoN1mYGuZsuvPa5iq4mCnPMj+WOWqJlWy1sT+UjUEr3l
-         t6CAqbej3jIQSBPoo1aMV0st3u5VKyWCAHTWMcYb3kt78Av6K8HworTEtnpK7L/h0tqK
-         axIQ==
-X-Gm-Message-State: AOAM5333HONROtQE8H4SO5bjCBd6E9jqspwVxbObIDFjzh1BzZ2RDKJi
-        mxFf00MMpzigjffgabYQuf84FqkX9IM=
-X-Google-Smtp-Source: ABdhPJwKFHy5TdGafmcw5J/0qFZuSmaO6yyDBNHHM8pE0s/Ni2+FENJD00zajqvnc1vdo41KVVSUUA==
-X-Received: by 2002:a50:f1d8:: with SMTP id y24mr3373123edl.275.1627656856089;
-        Fri, 30 Jul 2021 07:54:16 -0700 (PDT)
-Received: from agape ([5.171.81.215])
-        by smtp.gmail.com with ESMTPSA id o7sm616292ejy.48.2021.07.30.07.54.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 07:54:15 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] staging: rtl8723bs: put condition parentheses at the end of a line
-Date:   Fri, 30 Jul 2021 16:54:08 +0200
-Message-Id: <295a41c98cd475ae25f9288d99a929b75492db3f.1627656773.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1627656773.git.fabioaiuto83@gmail.com>
-References: <cover.1627656773.git.fabioaiuto83@gmail.com>
+        id S231307AbhG3OzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:55:09 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:35822 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238909AbhG3OzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:55:02 -0400
+Received: from BC-Mail-Ex20.internal.baidu.com (unknown [172.31.51.14])
+        by Forcepoint Email with ESMTPS id 07156AC1C1E2DC5980F1;
+        Fri, 30 Jul 2021 22:54:50 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex20.internal.baidu.com (172.31.51.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Fri, 30 Jul 2021 22:54:49 +0800
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Fri, 30 Jul 2021 22:54:49 +0800
+Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
+ BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
+ 15.01.2308.014; Fri, 30 Jul 2021 22:54:49 +0800
+From:   "Cai,Huoqing" <caihuoqing@baidu.com>
+To:     Shakeel Butt <shakeelb@google.com>, Hu Haowen <src.res@email.cn>
+CC:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Cgroups <cgroups@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] cgroup: Fix typo in comments and documents
+Thread-Topic: [PATCH] cgroup: Fix typo in comments and documents
+Thread-Index: AQHXhQIDu+2rYoYCcECzux5whjnjEKtbAdqAgAATPICAAIZdwA==
+Date:   Fri, 30 Jul 2021 14:54:49 +0000
+Message-ID: <437db356f1b44a19837dc7f24f9adfcb@baidu.com>
+References: <20210730051605.2626-1-caihuoqing@baidu.com>
+ <0516372e-0120-ff52-bf9a-cf1cda9a633f@email.cn>
+ <CALvZod6sUh0XQGVb4wEfzGNDcrLabgmjEdu+wh0g1c=cvvci4Q@mail.gmail.com>
+In-Reply-To: <CALvZod6sUh0XQGVb4wEfzGNDcrLabgmjEdu+wh0g1c=cvvci4Q@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.12.190.132]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-put the closing parenthese at the end of a line
-
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_mlme.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-index d3d068babb5e..5ed13bf765d2 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-@@ -606,8 +606,7 @@ void rtw_update_scanned_network(struct adapter *adapter, struct wlan_bssid_ex *t
- 
- 		/*  probe resp(3) > beacon(1) > probe req(2) */
- 		if (target->reserved[0] != 2 &&
--		    target->reserved[0] >= pnetwork->network.reserved[0]
--			) {
-+		    target->reserved[0] >= pnetwork->network.reserved[0]) {
- 			update_ie = true;
- 		} else {
- 			update_ie = false;
--- 
-2.20.1
-
+Rm9yZ2V0IGl0IC0gLQ0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogU2hha2Vl
+bCBCdXR0IDxzaGFrZWVsYkBnb29nbGUuY29tPiANClNlbnQ6IDIwMjHlubQ35pyIMzDml6UgMjI6
+NTMNClRvOiBIdSBIYW93ZW4gPHNyYy5yZXNAZW1haWwuY24+DQpDYzogQ2FpLEh1b3FpbmcgPGNh
+aWh1b3FpbmdAYmFpZHUuY29tPjsgVGVqdW4gSGVvIDx0akBrZXJuZWwub3JnPjsgWmVmYW4gTGkg
+PGxpemVmYW4ueEBieXRlZGFuY2UuY29tPjsgSm9oYW5uZXMgV2VpbmVyIDxoYW5uZXNAY21weGNo
+Zy5vcmc+OyBKb25hdGhhbiBDb3JiZXQgPGNvcmJldEBsd24ubmV0PjsgQ2dyb3VwcyA8Y2dyb3Vw
+c0B2Z2VyLmtlcm5lbC5vcmc+OyBsaW51eC1kb2NAdmdlci5rZXJuZWwub3JnOyBMS01MIDxsaW51
+eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPg0KU3ViamVjdDogUmU6IFtQQVRDSF0gY2dyb3VwOiBG
+aXggdHlwbyBpbiBjb21tZW50cyBhbmQgZG9jdW1lbnRzDQoNCk9uIEZyaSwgSnVsIDMwLCAyMDIx
+IGF0IDY6NDQgQU0gSHUgSGFvd2VuIDxzcmMucmVzQGVtYWlsLmNuPiB3cm90ZToNCj4NCj4NCj4g
+5ZyoIDIwMjEvNy8zMCDkuIvljYgxOjE2LCBDYWkgSHVvcWluZyDlhpnpgZM6DQo+ID4gRml4IHR5
+cG86IGlmZiAgPT0+IGlmDQoNClRoaXMgaXMgbm90IGEgdHlwby4gJ2lmZicgbWVhbnMgJ2lmIGFu
+ZCBvbmx5IGlmJy4gRm9yIGRldGFpbHMgc2VlIGh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy93aWtp
+L0lmX2FuZF9vbmx5X2lmLg0K
