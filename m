@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D00C3DB614
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148F33DB608
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238237AbhG3Jek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:34:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238347AbhG3Jeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238344AbhG3Jeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 30 Jul 2021 05:34:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 054EC60F5C;
-        Fri, 30 Jul 2021 09:34:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627637667;
-        bh=NXq0Hi8b5aSirn3qb7AXIhIajJhTyFfSBKSnQTXScPM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=W+OmIie5D9+AAKg0xteqArun4Pw98MS8YQhGVTQMQUY+VKi658JxbAAyXq7mGQkoC
-         sHiuxoBvTQ4/K7rI1jDMq8v5GtLbkxngrZ16bKXjEmp8MWBBbT/dTTYFjn3v2GwMwz
-         54gEATJjcLJtA1DELiw2c63J7bHXZUt2qKwsWcGqtHwHUUm1UHJlEY7BpHHo2NvJnZ
-         ikuCYiZypFgFts56QXjSDFJongb4Dayw01KmjHIgXMkXTfZ3MvsOQXCkZfh83JESs4
-         YU4C/RHNLWNEBjhapgr3F8agRL2VE2XgnFUrsBWdx53KrByc+1JUTSqnX6WXNF3Gfn
-         BzH2FMLgJHo/Q==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m9OuO-006qw0-El; Fri, 30 Jul 2021 11:34:24 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: [PATCH v2 0/4] DT schema changes for HiKey970 PCIe hardware to work
-Date:   Fri, 30 Jul 2021 11:34:17 +0200
-Message-Id: <cover.1627637448.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
+Received: from out28-221.mail.aliyun.com ([115.124.28.221]:52543 "EHLO
+        out28-221.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238089AbhG3Je2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 05:34:28 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1378147|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.104343-0.0010973-0.894559;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.Kt13.RU_1627637659;
+Received: from 192.168.88.131(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Kt13.RU_1627637659)
+          by smtp.aliyun-inc.com(10.147.43.95);
+          Fri, 30 Jul 2021 17:34:21 +0800
+Subject: Re: [PATCH 2/2] USB: dwc2: Add OTG support for Ingenic SoCs.
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     robh+dt@kernel.org, hminas@synopsys.com, paul@crapouillou.net,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com,
+        =?UTF-8?Q?Dragan_=c4=8ce=c4=8davac?= <dragancecavac@yahoo.com>
+References: <1627116521-124612-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1627116521-124612-3-git-send-email-zhouyanjie@wanyeetech.com>
+ <YQAXt1pCFZqRm2ud@kroah.com>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <01db0ee3-8c80-1df6-e351-8bc944035c25@wanyeetech.com>
+Date:   Fri, 30 Jul 2021 17:34:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <YQAXt1pCFZqRm2ud@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi Greg,
 
-That's the second version of the DT bindings for Kirin 970 PCIE and its
-corresponding PHY.
+On 2021/7/27 下午10:27, Greg KH wrote:
+> On Sat, Jul 24, 2021 at 04:48:41PM +0800, 周琰杰 (Zhou Yanjie) wrote:
+>> Add OTG support for the JZ4775 SoC, the JZ4780 SoC, the X1000
+>> SoC, the X1600 SoC, the X1830 SoC, and the X2000 SoC. Introduce
+>> support for disable Ingenic overcurrent detection, once selected
+>> it enables GOTGCTL register bits VbvalidOvEn and VbvalidOvVal to
+>> disable the VBUS overcurrent detection.
+>>
+>> This patch is derived from Dragan Čečavac (in the kernel 3.18.3
+>> tree of CI20). It is very useful for the MIPS Creator CI20 (r1).
+>> Without this patch, OTG port of CI20 has a great probability to
+>> face overcurrent warning, which breaks the OTG functionality.
+>>
+>> Signed-off-by: Dragan Čečavac <dragancecavac@yahoo.com>
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> ---
+>>   drivers/usb/dwc2/core.c   |  9 +++++++++
+>>   drivers/usb/dwc2/core.h   |  5 +++++
+>>   drivers/usb/dwc2/params.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++-
+>>   3 files changed, 62 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/usb/dwc2/core.c b/drivers/usb/dwc2/core.c
+>> index 272ae57..c35b2e2 100644
+>> --- a/drivers/usb/dwc2/core.c
+>> +++ b/drivers/usb/dwc2/core.c
+>> @@ -1153,6 +1153,7 @@ static void dwc2_set_turnaround_time(struct dwc2_hsotg *hsotg)
+>>   int dwc2_phy_init(struct dwc2_hsotg *hsotg, bool select_phy)
+>>   {
+>>   	u32 usbcfg;
+>> +	u32 otgctl;
+>>   	int retval = 0;
+>>   
+>>   	if ((hsotg->params.speed == DWC2_SPEED_PARAM_FULL ||
+>> @@ -1187,6 +1188,14 @@ int dwc2_phy_init(struct dwc2_hsotg *hsotg, bool select_phy)
+>>   		dwc2_writel(hsotg, usbcfg, GUSBCFG);
+>>   	}
+>>   
+>> +	if (hsotg->params.deactivate_ingenic_overcurrent_detection) {
+>> +		if (dwc2_is_host_mode(hsotg)) {
+>> +			otgctl = readl(hsotg->regs + GOTGCTL);
+>> +			otgctl |= GOTGCTL_VBVALOEN | GOTGCTL_VBVALOVAL;
+>> +			writel(otgctl, hsotg->regs + GOTGCTL);
+>> +		}
+>> +	}
+>> +
+>>   	return retval;
+>>   }
+>>   
+>> diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
+>> index ab6b815..e026d13 100644
+>> --- a/drivers/usb/dwc2/core.h
+>> +++ b/drivers/usb/dwc2/core.h
+>> @@ -418,6 +418,10 @@ enum dwc2_ep0_state {
+>>    *			detection using GGPIO register.
+>>    *			0 - Deactivate the external level detection (default)
+>>    *			1 - Activate the external level detection
+>> + * @deactivate_ingenic_overcurrent_detection: Deactivate Ingenic overcurrent
+>> + *			detection.
+>> + *			0 - Activate the overcurrent detection (default)
+> Having 0 as "active" is rough to handle over time.
+>
+> All of the other options are "activate", so please, keep them the same
+> if at all possible.
 
-IMO, the best would be to merge this series via your tree, as it
-depends on the patch converting the DT bindings for the PCIe DWC
-driver.
 
-v2:
-  - removed the DTS file. I'll submit it in separate, once having
-    everything else merged;
-  - it now doesn't produce any warnings with:
-        make DT_SCHEMA_FILES=Documentation/devicetree/bindings/pci/hisilicon,kirin
--pcie.yaml DT_CHECKER_FLAGS=-m dt_binding_check
-  - added the upstream node;
-  - the clock enable now uses a new property (hisilicon,clken-gpios);
-  - the reg for the PCI devices are now properly filled;
-  - the pcie@x,y nodes now match the port number from table 4-1 from the
-   datasheet.
-
-Mauro Carvalho Chehab (4):
-  dt-bindings: PCI: kirin: Fix compatible string
-  dt-bindings: PCI: kirin: Convert kirin-pcie.txt to yaml
-  dt-bindings: PCI: kirin: Add support for Kirin970
-  dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
-
- .../bindings/pci/hisilicon,kirin-pcie.yaml    | 160 ++++++++++++++++++
- .../devicetree/bindings/pci/kirin-pcie.txt    |  50 ------
- .../devicetree/bindings/pci/snps,dw-pcie.yaml |   2 +-
- .../phy/hisilicon,phy-hi3670-pcie.yaml        |  86 ++++++++++
- MAINTAINERS                                   |   2 +-
- 5 files changed, 248 insertions(+), 52 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
- delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
- create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
-
--- 
-2.31.1
+Sure, I will try.
 
 
+Thanks and best regards!
+
+
+>
+> thanks,
+>
+> greg k-h
