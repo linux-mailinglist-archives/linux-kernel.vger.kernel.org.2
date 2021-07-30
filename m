@@ -2,122 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5490B3DC0C6
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A6E3DC0CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhG3WFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:05:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20352 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233170AbhG3WFO (ORCPT
+        id S233493AbhG3WG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233420AbhG3WGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:05:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627682708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nJ5kIz6o1OQd9QTNvIHXfvS8tA6xw4680ifwk1fWPhY=;
-        b=OiBcf8ItaceCmzR9F5B24Vwh30MEgE8kp9gYAIsHzLNphdvLk55YjWqKXBTPByZcHVzKjc
-        AYrGeAfKOVM1gaY5TA7IcpY0YYdxl+KuzIAe9FvxUVE5ZbWD6XLuYrjBHVhX5PNqTsRBGP
-        bfaYISSb1IcxMkF33ViPCTMX5aCDy/U=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-JevSpj21OQa_GBFUB6SDrw-1; Fri, 30 Jul 2021 18:05:07 -0400
-X-MC-Unique: JevSpj21OQa_GBFUB6SDrw-1
-Received: by mail-qt1-f200.google.com with SMTP id i8-20020ac85c080000b029026ae3f4adc9so5137921qti.13
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:05:06 -0700 (PDT)
+        Fri, 30 Jul 2021 18:06:25 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F010C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:06:20 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id h14so20657874lfv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hRvMxRopOfk4wfDLGrvSeXWbdrziagZNRb9gSwqHbig=;
+        b=fTtEbfGJErUIEPLddkT7tQyhajByiXgFt5iXayW/HiQx8Dz9DZMcdwPNxxqNYehVe7
+         hJZPw2H7EiB5LE9kx1MOr25zYr/xlEHqZYCVytn+vE6iaIqTJ3K0bTNFYUZwOZUEOrj4
+         o1BXtaR3EvlPz3z2x5EKHntoIKuG8VQ5rDkII=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nJ5kIz6o1OQd9QTNvIHXfvS8tA6xw4680ifwk1fWPhY=;
-        b=BjYp96RqA8ab4bcDoscxYTiywx+5pWa74PH7R4Xz7xfWUizXC5wq2NBcySYnerPlHZ
-         PQOkkbbsbKT0g7/mI1v1p8fj4H/k56X2oYTa/bH1wvHFBKjSEkxx4EgNEA31y+mmcc5i
-         Xr+CwVPn14XA3XjWWUMaupMK9ZzLgsZEJvsdjkvn/ajIqZOdoS+B3HwHRhvhrwVrwalo
-         f9zfrl1K3dUZR7gly9Nal0bi0hg7p03UwMEfrwwX7YMtrVpz/SXoN3UXmHwXiyxMdK3k
-         69k6lcFbwvBc0FEvF2Y+OEVWzMglocweSVyTcWs+96XV+Zhgm1Ad+D3JToIOtOMWdpPx
-         QqEA==
-X-Gm-Message-State: AOAM531ktddRt1CmAUDkjPW8JYa+baOM89qA2zimhy/23jaLXb5URQNT
-        FdGRjYpWTCTn4Zi6SY2jC6GLCeXZyIsKbOwefr1RBfnfsBZcgyLX515OFUqPsMlk2fmOOlplqhp
-        R16jO5wEEZjK2NWszi2O9csIo
-X-Received: by 2002:a37:9c06:: with SMTP id f6mr4344534qke.86.1627682705614;
-        Fri, 30 Jul 2021 15:05:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2+zyiyehuJ7kqaZ8WuhUtBpixZqcJNaSYno9mpuUyv7sxWUQmjmlZLJ6h4xEDlsaUXutyew==
-X-Received: by 2002:a37:9c06:: with SMTP id f6mr4344517qke.86.1627682705409;
-        Fri, 30 Jul 2021 15:05:05 -0700 (PDT)
-Received: from t490s.. (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id l12sm1199651qtx.45.2021.07.30.15.05.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 15:05:04 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, peterx@redhat.com,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH v3 5/7] KVM: X86: MMU: Tune PTE_LIST_EXT to be bigger
-Date:   Fri, 30 Jul 2021 18:04:53 -0400
-Message-Id: <20210730220455.26054-6-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210730220455.26054-1-peterx@redhat.com>
-References: <20210730220455.26054-1-peterx@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hRvMxRopOfk4wfDLGrvSeXWbdrziagZNRb9gSwqHbig=;
+        b=pSKmJwLy13cjmf1C0x3VoDBhNpC0N33uWtnRNqcM9hwyBv4dGXIQ+tps825Esot/af
+         QW03CWYcEx8vUCjxs4nEGr280im9WwBFXHIa0w+Xt0b417Or090VnHPjIwqpJFDOiRSJ
+         IzHbQxvumYQts1suu3Jp8JuV1M6dNm2n8uFWd36W4lNSJHqg5k19TGcOldSioxA4l4TH
+         hGCHJlympezFx63MyORLChhgECQIq9IKGEqnsVyeA+x6b4c/xiRVlF6E8r9Ot6q3dXGT
+         0699Avq6wxmIswG6W0aBM3vhgz+Fna4g9G0XMuf6J7BlydxvmjVTnZp0LAgX5rns6Oab
+         SajQ==
+X-Gm-Message-State: AOAM531GLXinYV5j0L+mkf+hYvFS8Tih7btVPsbWhqSXpltVY2D8isjE
+        37SSuHoMvwRKaKX1Mxrktsd7VeiK7mqFXdRM/y4=
+X-Google-Smtp-Source: ABdhPJxlZsW7MX3U4V5lmvsWJS+6g94gCigCqEyund1qmHePNgFG3F6FlEybFtR9ExDj4JrDj2T5kg==
+X-Received: by 2002:a05:6512:2023:: with SMTP id s3mr3532230lfs.587.1627682778077;
+        Fri, 30 Jul 2021 15:06:18 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id u9sm246389lfc.278.2021.07.30.15.06.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 15:06:16 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id h2so20714205lfu.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:06:16 -0700 (PDT)
+X-Received: by 2002:ac2:4475:: with SMTP id y21mr3384042lfl.487.1627682776227;
+ Fri, 30 Jul 2021 15:06:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210729222635.2937453-1-sspatil@android.com> <20210729222635.2937453-2-sspatil@android.com>
+ <CAHk-=wh-DWvsFykwAy6uwyv24nasJ39d7SHT+15x+xEXBtSm_Q@mail.gmail.com>
+ <cee514d6-8551-8838-6d61-098d04e226ca@android.com> <CAHk-=wjStQurUzSAPVajL6Rj=CaPuSSgwaMO=0FJzFvSD66ACw@mail.gmail.com>
+ <b1688f32-cb0e-04e1-3c91-aa8cddbcf41d@android.com>
+In-Reply-To: <b1688f32-cb0e-04e1-3c91-aa8cddbcf41d@android.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 30 Jul 2021 15:06:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=witY33b-vqqp=ApqyoFDpx9p+n4PwG9N-TvF8bq7-tsHw@mail.gmail.com>
+Message-ID: <CAHk-=witY33b-vqqp=ApqyoFDpx9p+n4PwG9N-TvF8bq7-tsHw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] fs: pipe: wakeup readers everytime new data written
+ is to pipe
+To:     Sandeep Patil <sspatil@android.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable <stable@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently rmap array element only contains 3 entries.  However for EPT=N there
-could have a lot of guest pages that got tens of even hundreds of rmap entry.
+On Fri, Jul 30, 2021 at 12:47 PM Sandeep Patil <sspatil@android.com> wrote:
+>
+> aren't we supposed to wakeup on each write in level-triggered (default)
+> case though?
 
-A normal distribution of a 6G guest (even if idle) shows this with rmap count
-statistics:
+No.
 
-Rmap_Count:     0       1       2-3     4-7     8-15    16-31   32-63   64-127  128-255 256-511 512-1023
-Level=4K:       3089171 49005   14016   1363    235     212     15      7       0       0       0
-Level=2M:       5951    227     0       0       0       0       0       0       0       0       0
-Level=1G:       32      0       0       0       0       0       0       0       0       0       0
+The thing about level triggered is that if the condition was already
+true, it would not need a wakeup in the first place.
 
-If we do some more fork some pages will grow even larger rmap counts.
+Put another way: select() and poll() are both fundamentally
+level-triggered. If the condition was already true, they will return
+success immediately, and don't need any extraneous wakeups.
 
-This patch makes PTE_LIST_EXT bigger so it'll be more efficient for the general
-use case of EPT=N as we do list reference less and the loops over PTE_LIST_EXT
-will be slightly more efficient; but still not too large so less waste when
-array not full.
+This is literally an epoll() confusion about what an "edge" is.
 
-It should not affecting EPT=Y since EPT normally only has zero or one rmap
-entry for each page, so no array is even allocated.
+An edge is not "somebody wrote more data". An edge is "there was no
+data, now there is data".
 
-With a test case to fork 500 child and recycle them ("./rmap_fork 500" [1]),
-this patch speeds up fork time of about 29%.
+And a level triggered event is *also* not "somebody wrote more data".
+A level-triggered signal is simply "there is data".
 
-    Before: 473.90 (+-5.93%)
-    After:  366.10 (+-4.94%)
+Notice how neither edge nor level are about "more data". One is about
+the edge of "no data" -> "some data", and the other is just a "data is
+available".
 
-[1] https://github.com/xzpeter/clibs/commit/825436f825453de2ea5aaee4bdb1c92281efe5b3
+Sadly, it seems that our old "we'll wake things up whether needed or
+not" implementation ended up being something that people thought was
+edge-triggered semantics.
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+But we have the policy that regressions aren't about documentation or
+even sane behavior.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 16c99f771c9e..c0b452bb5dd9 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -137,8 +137,8 @@ module_param(dbg, bool, 0644);
- 
- #include <trace/events/kvm.h>
- 
--/* make pte_list_desc fit well in cache line */
--#define PTE_LIST_EXT 3
-+/* make pte_list_desc fit well in cache lines */
-+#define PTE_LIST_EXT 15
- 
- struct pte_list_desc {
- 	u64 *sptes[PTE_LIST_EXT];
--- 
-2.31.1
+Regressions are about whether a user application broke in a noticeable way.
 
+                     Linus
