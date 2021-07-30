@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3143DB2BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C32E3DB2BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236993AbhG3FTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 01:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236642AbhG3FTF (ORCPT
+        id S236383AbhG3FWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 01:22:25 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50165 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229696AbhG3FWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:19:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36DEC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 22:18:59 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m9Kv8-0003HC-P6; Fri, 30 Jul 2021 07:18:54 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m9Kv7-0004To-1a; Fri, 30 Jul 2021 07:18:53 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m9Kv7-0005G4-0L; Fri, 30 Jul 2021 07:18:53 +0200
-Date:   Fri, 30 Jul 2021 07:18:50 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     patches@arm.linux.org.uk, Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
-Subject: Re: [PATCH] ARM: move the (z/u)install rules to arch/arm/Makefile
-Message-ID: <20210730051850.v4erhjhrfxr6hb3n@pengutronix.de>
-References: <20210729140351.442678-1-masahiroy@kernel.org>
+        Fri, 30 Jul 2021 01:22:24 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B013F580D65;
+        Fri, 30 Jul 2021 01:22:19 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 30 Jul 2021 01:22:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=w
+        Z3kutLqmcKQSNip3ycj7XGCG1ZWDjerJRvqk0QSHZU=; b=BuomH8qzwT4tALiDl
+        1vvTx8AQRdRK03K/c44WkmzqAzSSvSd2BKdtL6br6Uxgsce9a3efQVVa7Bik4ioc
+        oooOTbE7QoDEwwxuXrIiHWwjjWzvhiAKmmxBNusBDpkl0JYoWhF6XCmVPAfXeJy/
+        Y/H1Qa9Qot+qKa8nJmlGd0O7QTGH0hEqI+Bd+IN6Ysu42Na/oXfUvEtzwtpQzCuZ
+        ltfhuqSMhYnFUsdPC/aHelqqlkS18ZvGUTZEHBUu8T4tqdz4ZzwgxZKqL4ag0PsP
+        lH4q7TNa/r/TyzM6R5Tvj5p5NTIylU2wil7BHXfiRPQ5jcXnUQEEvYS314rEQdOz
+        qZtBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=wZ3kutLqmcKQSNip3ycj7XGCG1ZWDjerJRvqk0QSH
+        ZU=; b=W/RL+RnDcbQqBAdaQn7yFZp1OdzFohjyvjMHp7rfQaNi4mJEUZkbMdwq3
+        VCn/rfRv6KUyBeRjfPiR5/bAF6IdWpKtIIqtJLV+o0+C7F5LLNFlxppXAMXSf5eh
+        rhpHfRVxGhfgifxyR449pC+7dUg5GuB+xzahqrqlEIEE2HoHPhsext5B7THDA/6/
+        QWyOuJypQTeCd3YoHB5A3TFyreECeP8qJPpNvtRXwhmCPDSoEKkHMwE9tvivBtz1
+        PXYx5X490xQz/mYQotbDqeJihUxRQw4RUBPaXYbUxdQWexi2O6FZRM5qVXYp/BKa
+        xV599mJPVnGkFI1Oh+HZw33hQsVAQ==
+X-ME-Sender: <xms:iowDYTizcg78LosaRTdbPH_r_nimNDxKdJvMXea-pJVfsHM9b73y2Q>
+    <xme:iowDYQC7cENA8p7TmbRzq3QV82nAhAWcBQ6M4Gg2K7G34VFIFTqLI3y7daroud-Sa
+    dvjFzLqARuPtw>
+X-ME-Received: <xmr:iowDYTH3YVqjyJkDgQHw6j7AcgjnWwS8X1tZd1DSTiBs_luJmG_ghVMSp2V4Z5ZjCvCSvPv-qUNiNs-U2cGH_eNG38SEOLyQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheeggdejhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuheekhe
+    elffefieduteefkeejffdvueehjeejffehledugfetkedvleekudduvdenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:iowDYQSy2yNQuwG09wEV9uTJzXcaOjCkWWBr7gHA_p8zkO8B1p5Gvg>
+    <xmx:iowDYQwobnYPKK7xHHGvU4BYN3WeT6hgKVCgQPW6wxLuYN6-7uGraQ>
+    <xmx:iowDYW5x2Dj1PryFqgcicVL68rc2Ubl1ShWBX6r5bnAQZyYqL-kgdg>
+    <xmx:i4wDYVI04zKJLztJry6rR3d5MF_sa7wiQksfJENiH2Wh2yCOAfHaDg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 30 Jul 2021 01:22:18 -0400 (EDT)
+Date:   Fri, 30 Jul 2021 07:22:16 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        axboe@kernel.dk, kernelnewbies@kernelnewbies.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        pavel@ucw.cz, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH 1/8] docs: Add block device LED trigger documentation
+Message-ID: <YQOMiO1HAf60Odqa@kroah.com>
+References: <20210729015344.3366750-1-arequipeno@gmail.com>
+ <20210729015344.3366750-2-arequipeno@gmail.com>
+ <108629.1627528155@turing-police>
+ <ee56510e-e8ef-5e92-3e29-4e290bfad9b2@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oq7pwxvlfu5omslo"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210729140351.442678-1-masahiroy@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ee56510e-e8ef-5e92-3e29-4e290bfad9b2@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 29, 2021 at 10:52:06AM -0500, Ian Pilcher wrote:
+> On 7/28/21 10:09 PM, Valdis Klētnieks wrote:
+> > > +	# cat /sys/class/block/led_trigger_list
+> > > +	baz: 0
+> > > +	bar: 0
+> > > +	foo: 0
+> > 
+> > This looks like an abuse of the "one entry one value" rule for sysfs.
+> > Perhaps this should be a directory /sys/class/block/defined_triggers/
+> > and separate files under that for foo, bar, and baz?  That would probably
+> > make reference counting a lot easier as well....
+> 
+> Indeed it is.
+> 
+> Funny that you should mention using a subdirectory.  I originally wanted
+> to put all of the trigger-related stuff into
+> /sys/class/block/led_triggers/, but I couldn't find any API to create a
+> subdirectory for *class* attributes (only for device attributes), nor do
+> I see any such subdirectories on my system.
 
---oq7pwxvlfu5omslo
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Add a name to your attribute group and sysfs creates the subdirectory
+automagically for you.
 
-On Thu, Jul 29, 2021 at 11:03:51PM +0900, Masahiro Yamada wrote:
-> Currently, the (z/u)install targets in arch/arm/Makefile descend into
-> arch/arm/boot/Makefile to invoke the shell script, but there is no
-> good reason to do so.
->=20
-> arch/arm/Makefile can run the shell script directly.
+thanks,
 
-I didn't test, but I think this works in general. There shouldn't be a
-principal problem as e.g. mips also doesn't have install in
-arch/$(ARCH)/boot/Makefile.
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---oq7pwxvlfu5omslo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEDi7cACgkQwfwUeK3K
-7AlHhAf8DMPkrcCyAHgKhcZL5lWJQzYOfE26BEfGaT1zW/N2oDuLTHmiL47V5kCA
-+NVQ+9lbqylWbt89go2IArfkn+MFZQRPRXQ1LjvfBkczXjaLBAKUQDOK/NfSLuJT
-ck6DCYKxOLayzkrhRJRXX4ACVT+Y93IxCGl/6LTGHBvqgrmWHOjqU+yQ3+sVa+Ao
-7N6U+aFzDR6exCoC4qQYHdkCv079m24atunhtg+SLWH6ody1WeX09h7DINBM38MG
-BJ1RO6qm0ukeZbp8UdrKGHCYOAlP+tYx9uoDJe21pooe3Oh84oaBNDxiY7l7Qh0H
-YpgkUqsQ2LkO6CGyUI7esggS42QYjg==
-=p2Qs
------END PGP SIGNATURE-----
-
---oq7pwxvlfu5omslo--
+greg k-h
