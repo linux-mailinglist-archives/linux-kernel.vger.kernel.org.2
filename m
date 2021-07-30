@@ -2,109 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEF13DB379
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16ABE3DB37C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237496AbhG3GWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
+        id S237335AbhG3GYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237427AbhG3GWJ (ORCPT
+        with ESMTP id S230203AbhG3GYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:22:09 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076DFC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:22:05 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1m9LuD-0001G3-Cj; Fri, 30 Jul 2021 08:22:01 +0200
-Subject: Re: [PATCH v2] KEYS: trusted: fix use as module when CONFIG_TCG_TPM=m
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, kernel@pengutronix.de,
-        Andreas Rammhold <andreas@rammhold.de>,
-        David Gstir <david@sigma-star.at>,
-        Richard Weinberger <richard@nod.at>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-References: <20210721160258.7024-1-a.fatoum@pengutronix.de>
- <20210727030433.3dwod2elwtdkhwsc@kernel.org>
- <fe39a449-88df-766b-a13a-290f4847d43e@pengutronix.de>
- <20210728215200.nfvnm5s2b27ang7i@kernel.org>
- <f0f05df9-95bb-8b67-cecc-742af0b19f1e@pengutronix.de>
- <20210730002101.2tcb3bs2lxdvmuqk@kernel.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <e372db1d-0909-42b8-7d52-9e5354601c68@pengutronix.de>
-Date:   Fri, 30 Jul 2021 08:21:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 30 Jul 2021 02:24:09 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36934C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:24:05 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id x11so13890306ejj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:24:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OMfZlxCdprYAMpSImSSaNaMJO4xAI8KlwbjojS8D79s=;
+        b=EZMa6Mi1XvY4tt4G26/MGz0jdCbS1obA2izIlayZicK0NMidUGSOUrVEu6n9F66+ee
+         a0WwXbQxNhGgdij+xo7qT6nWMVzeApDpmyd8luXKY7ZZsxe04wBpsbamkop5ZxMF0llq
+         1O36xioANA6tfCh8w77MuYryGjrZ12a9K9P/nkubL3n/oFRyA3c/NkCrU/SeQY3xSKeR
+         WS7X+AZxMfysQERAJD78U42exZ2oIl0Rka0lXseKwRpRNC99yh1yhkaCRxQsg2q0fQPQ
+         4o4sHik0lMRjuY01H31c6eToi0dsfP8PzH9a0hbU1Am3udKswHVxQLQ9xhea5MLftzP1
+         +uPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OMfZlxCdprYAMpSImSSaNaMJO4xAI8KlwbjojS8D79s=;
+        b=PAtJCjHvPPII3UWlMEiSma8sx+VgGdvqI6lcBGJnZfo6bH69snFxIWBf+BKYNWHLdT
+         1btnQyr3uCRO7GlGU45cEq7ikg84gfnsVi3a7cMzizHdqN/rzoQoSuQaA7Ny57ZdM9FY
+         I+Y/nyTa0T8JDOSl6a6y+n93B18iBYnilmdeHPTpVFc8DMLVuLYbYNSa+1bhT6UbkUX4
+         2+6fS7KAnSR5SKQoE1zPL3bdl4GpxI/dyaKbzJjvICJpARJ5Rtyq6TJEHmbWJDK81qra
+         7/YnPpmfxbMTP/QE+LQss4r1EeHM6r58iIYvpDOoMa8mdrIgxhm9gBhp0/Dbv54MXqBX
+         MmJw==
+X-Gm-Message-State: AOAM533YNC2N1RPKU+uhXnwYeDpGbRc5fRwU1YXnt8B63l9aKgWEj8uL
+        Bo612pGFbZldj9J13KKwfSvGerDQqfEtvLK0/I8VKA==
+X-Google-Smtp-Source: ABdhPJzIQvMlwJGxo0T9munDhJU13izs6JDlXL0JCikHMNzkctCCAvkvdq3hkNFW4AoID7XpzhXenn1793RMg1uBkQk=
+X-Received: by 2002:a17:906:45b:: with SMTP id e27mr1036339eja.375.1627626243571;
+ Thu, 29 Jul 2021 23:24:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210730002101.2tcb3bs2lxdvmuqk@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210729135137.267680390@linuxfoundation.org>
+In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 30 Jul 2021 11:53:52 +0530
+Message-ID: <CA+G9fYuEBfRcJx0o7m5+YnLsqzQazp6aCpr6pzUfS152dpi=jw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/24] 5.10.55-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.07.21 02:31, Jarkko Sakkinen wrote:
-> On Thu, Jul 29, 2021 at 12:29:38AM +0200, Ahmad Fatoum wrote:
->> On 28.07.21 23:52, Jarkko Sakkinen wrote:
->>> On Tue, Jul 27, 2021 at 06:24:49AM +0200, Ahmad Fatoum wrote:
->>>> On 27.07.21 05:04, Jarkko Sakkinen wrote:
->>>>>> Reported-by: Andreas Rammhold <andreas@rammhold.de>
->>>>>> Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
->>>>>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->>>>>
->>>>> Is it absolutely need to do all this *just* to fix the bug?
->>>>>
->>>>> For a pure bug fix the most essential thing is to be able the backport
->>>>> it to stable kernels.
->>>>
->>>> Not much happened in-between, so a backport should be trivial.
->>>> I can provide these if needed.
->>>
->>> "not much" is not good enough. It should be "not anything".
->>
->> "Not much" [code that could conflict was added in-between].
->>
->> I just checked and it applies cleanly on v5.13. On the off chance
->> that this patch conflicts with another stable backport by the time
->> it's backported, I'll get a friendly automated email and send out
->> a rebased patch.
-> 
-> What you should do is to split this into patch that exactly
-> fixes the issue, and to one that adds the "niceties".
+On Thu, 29 Jul 2021 at 19:30, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.55 release.
+> There are 24 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.55-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-I'd rather not send out patches I believe to be incomplete, sorry.
-If you want to fix the regression's root cause of insufficient
-Kconfig description, that here is what it takes.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-You can take Andreas' regression fix for stable and replace it with my patch later.
-I'll send out a new version removing references that it fixes a regression.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Cheers,
-Ahmad
+## Build
+* kernel: 5.10.55-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: dfa33f1e9f64f87f2483e3dd6ff84244281527db
+* git describe: v5.10.54-25-gdfa33f1e9f64
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.54-25-gdfa33f1e9f64
 
-> 
-> /Jarkko
-> 
+## No regressions (compared to v5.10.53-169-gf52d2bc365d2)
 
+## No fixes (compared to v5.10.53-169-gf52d2bc365d2)
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+## Test result summary
+ total: 84369, pass: 69684, fail: 1624, skip: 11968, xfail: 1093,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-fcntl[
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
