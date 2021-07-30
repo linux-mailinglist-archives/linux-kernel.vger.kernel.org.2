@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1BD3DB76B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63FA3DB76D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238585AbhG3Kvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:51:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56594 "EHLO mail.kernel.org"
+        id S238595AbhG3Kwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:52:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:40342 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238551AbhG3Kvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:51:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34AED60F01;
-        Fri, 30 Jul 2021 10:51:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627642288;
-        bh=PAsvyDUJ7oXu+H+0ddRKT0jY1zLYdfOIU4gnmdpz9g8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Ec8lBfEuqb60hZ0JgDC3UoZqK9+uzaWyfL5SwBvTWxt/Cm7nNjiYoxkbwIxqawKZK
-         /1Da6H2GJ5A43mzGblsrxbxcddL7X9430Q3Gy0IVDgOwFGKMHAw87Hr8mRRbKwoek2
-         rdfzs4+jXUbinQOG1MEd4FvVv7No59Gr030sWeNpbgD1r1A6+uJk+2YxTXdIuLV4EZ
-         INAT1WCAirlc1ft+EtY/cy8kn4kZUQK4NDgT5XrhuQazXSWa0P/h4MLxbANAjTw7Iq
-         jwFyNkHvOfG26e6W2JWcNAkof1+y2BQDoTk/YJdSOhUFdM1vjwPoPP6XB6y57RNhNc
-         D20cble7FwH+Q==
-Subject: Re: [PATCH 2/2] memory: omap-gpmc: Drop custom PM calls with cpu_pm
- notifier
-To:     Tony Lindgren <tony@atomide.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-References: <20210727101034.32148-1-tony@atomide.com>
- <20210727101034.32148-2-tony@atomide.com>
-From:   Roger Quadros <rogerq@kernel.org>
-Message-ID: <18b8eb6f-0628-5202-b37c-c8ea665d3522@kernel.org>
-Date:   Fri, 30 Jul 2021 13:51:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238487AbhG3Kw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 06:52:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B7301FB;
+        Fri, 30 Jul 2021 03:52:25 -0700 (PDT)
+Received: from [10.163.66.9] (unknown [10.163.66.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 42AF43F73D;
+        Fri, 30 Jul 2021 03:52:20 -0700 (PDT)
+Subject: Re: [PATCH 04/10] coresight: trbe: Decouple buffer base from the
+ hardware base
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
+References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+ <20210728135217.591173-5-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <54e9f562-08ef-f198-e865-a6cf94746704@arm.com>
+Date:   Fri, 30 Jul 2021 16:23:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210727101034.32148-2-tony@atomide.com>
+In-Reply-To: <20210728135217.591173-5-suzuki.poulose@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,317 +43,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 27/07/2021 13:10, Tony Lindgren wrote:
-> We can now switch over to using cpu_pm instead of custom calls and make
-> the context save and restore functions static.
+On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
+> We always set the TRBBASER_EL1 to the base of the virtual ring
+> buffer. We are about to change this for working around an erratum.
+> So, in preparation to that, allow the driver to choose a different
+> base for the TRBBASER_EL1 (which is within the buffer range).
 > 
-> Let's also move the save and restore functions to avoid adding forward
-> declarations for them. And get rid of the static data pointer while at it.
-> 
-> Cc: Roger Quadros <rogerq@kernel.org>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-
-Acked-by: Roger Quadros <rogerq@kernel.org>
-
-cheers,
--roger
-
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > ---
->  arch/arm/mach-omap2/pm34xx.c |   5 -
->  drivers/memory/omap-gpmc.c   | 193 +++++++++++++++++++++--------------
->  include/linux/omap-gpmc.h    |   3 -
->  3 files changed, 118 insertions(+), 83 deletions(-)
+>  drivers/hwtracing/coresight/coresight-trbe.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/arm/mach-omap2/pm34xx.c b/arch/arm/mach-omap2/pm34xx.c
-> --- a/arch/arm/mach-omap2/pm34xx.c
-> +++ b/arch/arm/mach-omap2/pm34xx.c
-> @@ -26,7 +26,6 @@
->  #include <linux/delay.h>
->  #include <linux/slab.h>
->  #include <linux/of.h>
-> -#include <linux/omap-gpmc.h>
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index 0af644331b99..9735d514c5e1 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -59,6 +59,8 @@ struct trbe_buf {
+>  	 * trbe_limit sibling pointers.
+>  	 */
+>  	unsigned long trbe_base;
+> +	/* The base programmed into the TRBE */
+> +	unsigned long trbe_hw_base;
+>  	unsigned long trbe_limit;
+>  	unsigned long trbe_write;
+>  	int nr_pages;
+> @@ -504,7 +506,7 @@ static void trbe_enable_hw(struct trbe_buf *buf)
+>  	set_trbe_disabled();
+>  	isb();
+>  	clr_trbe_status();
+> -	set_trbe_base_pointer(buf->trbe_base);
+> +	set_trbe_base_pointer(buf->trbe_hw_base);
+
+It might be better to add a sanity check asserting 'buf->trbe_hw_base' to
+be within [buf->trbe_base..buf->trbe_base + nr_pages * PAGE_SIZE] before
+writing that into TRBBASER_EL1.
+
+>  	set_trbe_write_pointer(buf->trbe_write);
 >  
->  #include <trace/events/power.h>
->  
-> @@ -81,8 +80,6 @@ static void omap3_core_save_context(void)
->  
->  	/* Save the Interrupt controller context */
->  	omap_intc_save_context();
-> -	/* Save the GPMC context */
-> -	omap3_gpmc_save_context();
->  	/* Save the system control module context, padconf already save above*/
->  	omap3_control_save_context();
->  }
-> @@ -91,8 +88,6 @@ static void omap3_core_restore_context(void)
->  {
->  	/* Restore the control module context, padconf restored by h/w */
->  	omap3_control_restore_context();
-> -	/* Restore the GPMC context */
-> -	omap3_gpmc_restore_context();
->  	/* Restore the interrupt controller context */
->  	omap_intc_restore_context();
->  }
-> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-> --- a/drivers/memory/omap-gpmc.c
-> +++ b/drivers/memory/omap-gpmc.c
-> @@ -9,6 +9,7 @@
->   * Copyright (C) 2009 Texas Instruments
->   * Added OMAP4 support - Santosh Shilimkar <santosh.shilimkar@ti.com>
->   */
-> +#include <linux/cpu_pm.h>
->  #include <linux/irq.h>
->  #include <linux/kernel.h>
->  #include <linux/init.h>
-> @@ -232,7 +233,10 @@ struct gpmc_device {
->  	int irq;
->  	struct irq_chip irq_chip;
->  	struct gpio_chip gpio_chip;
-> +	struct notifier_block nb;
-> +	struct omap3_gpmc_regs context;
->  	int nirqs;
-> +	unsigned int is_suspended:1;
->  };
->  
->  static struct irq_domain *gpmc_irq_domain;
-> @@ -2384,6 +2388,106 @@ static int gpmc_gpio_init(struct gpmc_device *gpmc)
+>  	/*
+> @@ -709,6 +711,8 @@ static int __arm_trbe_enable(struct trbe_buf *buf,
+>  		trbe_stop_and_truncate_event(handle);
+>  		return -ENOSPC;
+>  	}
+> +	/* Set the base of the TRBE to the buffer base */
+> +	buf->trbe_hw_base = buf->trbe_base;
+
+So applicable 'buf->trbe_hw_base' will be derived from 'buf->trbe_base'
+after taking into account workarounds (if any). Makes sense.
+
+>  	*this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
+>  	trbe_enable_hw(buf);
 >  	return 0;
->  }
+> @@ -808,7 +812,7 @@ static bool is_perf_trbe(struct perf_output_handle *handle)
+>  	struct trbe_drvdata *drvdata = cpudata->drvdata;
+>  	int cpu = smp_processor_id();
 >  
-> +static void omap3_gpmc_save_context(struct gpmc_device *gpmc)
-> +{
-> +	struct omap3_gpmc_regs *gpmc_context;
-> +	int i;
-> +
-> +	if (!gpmc || !gpmc_base)
-> +		return;
-> +
-> +	gpmc_context = &gpmc->context;
-> +
-> +	gpmc_context->sysconfig = gpmc_read_reg(GPMC_SYSCONFIG);
-> +	gpmc_context->irqenable = gpmc_read_reg(GPMC_IRQENABLE);
-> +	gpmc_context->timeout_ctrl = gpmc_read_reg(GPMC_TIMEOUT_CONTROL);
-> +	gpmc_context->config = gpmc_read_reg(GPMC_CONFIG);
-> +	gpmc_context->prefetch_config1 = gpmc_read_reg(GPMC_PREFETCH_CONFIG1);
-> +	gpmc_context->prefetch_config2 = gpmc_read_reg(GPMC_PREFETCH_CONFIG2);
-> +	gpmc_context->prefetch_control = gpmc_read_reg(GPMC_PREFETCH_CONTROL);
-> +	for (i = 0; i < gpmc_cs_num; i++) {
-> +		gpmc_context->cs_context[i].is_valid = gpmc_cs_mem_enabled(i);
-> +		if (gpmc_context->cs_context[i].is_valid) {
-> +			gpmc_context->cs_context[i].config1 =
-> +				gpmc_cs_read_reg(i, GPMC_CS_CONFIG1);
-> +			gpmc_context->cs_context[i].config2 =
-> +				gpmc_cs_read_reg(i, GPMC_CS_CONFIG2);
-> +			gpmc_context->cs_context[i].config3 =
-> +				gpmc_cs_read_reg(i, GPMC_CS_CONFIG3);
-> +			gpmc_context->cs_context[i].config4 =
-> +				gpmc_cs_read_reg(i, GPMC_CS_CONFIG4);
-> +			gpmc_context->cs_context[i].config5 =
-> +				gpmc_cs_read_reg(i, GPMC_CS_CONFIG5);
-> +			gpmc_context->cs_context[i].config6 =
-> +				gpmc_cs_read_reg(i, GPMC_CS_CONFIG6);
-> +			gpmc_context->cs_context[i].config7 =
-> +				gpmc_cs_read_reg(i, GPMC_CS_CONFIG7);
-> +		}
-> +	}
-> +}
-> +
-> +static void omap3_gpmc_restore_context(struct gpmc_device *gpmc)
-> +{
-> +	struct omap3_gpmc_regs *gpmc_context;
-> +	int i;
-> +
-> +	if (!gpmc || !gpmc_base)
-> +		return;
-> +
-> +	gpmc_context = &gpmc->context;
-> +
-> +	gpmc_write_reg(GPMC_SYSCONFIG, gpmc_context->sysconfig);
-> +	gpmc_write_reg(GPMC_IRQENABLE, gpmc_context->irqenable);
-> +	gpmc_write_reg(GPMC_TIMEOUT_CONTROL, gpmc_context->timeout_ctrl);
-> +	gpmc_write_reg(GPMC_CONFIG, gpmc_context->config);
-> +	gpmc_write_reg(GPMC_PREFETCH_CONFIG1, gpmc_context->prefetch_config1);
-> +	gpmc_write_reg(GPMC_PREFETCH_CONFIG2, gpmc_context->prefetch_config2);
-> +	gpmc_write_reg(GPMC_PREFETCH_CONTROL, gpmc_context->prefetch_control);
-> +	for (i = 0; i < gpmc_cs_num; i++) {
-> +		if (gpmc_context->cs_context[i].is_valid) {
-> +			gpmc_cs_write_reg(i, GPMC_CS_CONFIG1,
-> +					  gpmc_context->cs_context[i].config1);
-> +			gpmc_cs_write_reg(i, GPMC_CS_CONFIG2,
-> +					  gpmc_context->cs_context[i].config2);
-> +			gpmc_cs_write_reg(i, GPMC_CS_CONFIG3,
-> +					  gpmc_context->cs_context[i].config3);
-> +			gpmc_cs_write_reg(i, GPMC_CS_CONFIG4,
-> +					  gpmc_context->cs_context[i].config4);
-> +			gpmc_cs_write_reg(i, GPMC_CS_CONFIG5,
-> +					  gpmc_context->cs_context[i].config5);
-> +			gpmc_cs_write_reg(i, GPMC_CS_CONFIG6,
-> +					  gpmc_context->cs_context[i].config6);
-> +			gpmc_cs_write_reg(i, GPMC_CS_CONFIG7,
-> +					  gpmc_context->cs_context[i].config7);
-> +		} else {
-> +			gpmc_cs_write_reg(i, GPMC_CS_CONFIG7, 0);
-> +		}
-> +	}
-> +}
-> +
-> +static int omap_gpmc_context_notifier(struct notifier_block *nb,
-> +				      unsigned long cmd, void *v)
-> +{
-> +	struct gpmc_device *gpmc;
-> +
-> +	gpmc = container_of(nb, struct gpmc_device, nb);
-> +	if (gpmc->is_suspended || pm_runtime_suspended(gpmc->dev))
-> +		return NOTIFY_OK;
-> +
-> +	switch (cmd) {
-> +	case CPU_CLUSTER_PM_ENTER:
-> +		omap3_gpmc_save_context(gpmc);
-> +		break;
-> +	case CPU_CLUSTER_PM_ENTER_FAILED:	/* No need to restore context */
-> +		break;
-> +	case CPU_CLUSTER_PM_EXIT:
-> +		omap3_gpmc_restore_context(gpmc);
-> +		break;
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
->  static int gpmc_probe(struct platform_device *pdev)
->  {
->  	int rc;
-> @@ -2472,6 +2576,9 @@ static int gpmc_probe(struct platform_device *pdev)
+> -	WARN_ON(buf->trbe_base != get_trbe_base_pointer());
+> +	WARN_ON(buf->trbe_hw_base != get_trbe_base_pointer());
+>  	WARN_ON(buf->trbe_limit != get_trbe_limit_pointer());
 >  
->  	gpmc_probe_dt_children(pdev);
->  
-> +	gpmc->nb.notifier_call = omap_gpmc_context_notifier;
-> +	cpu_pm_register_notifier(&gpmc->nb);
-> +
->  	return 0;
->  
->  gpio_init_failed:
-> @@ -2486,6 +2593,7 @@ static int gpmc_remove(struct platform_device *pdev)
->  {
->  	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
->  
-> +	cpu_pm_unregister_notifier(&gpmc->nb);
->  	gpmc_free_irq(gpmc);
->  	gpmc_mem_exit();
->  	pm_runtime_put_sync(&pdev->dev);
-> @@ -2497,15 +2605,23 @@ static int gpmc_remove(struct platform_device *pdev)
->  #ifdef CONFIG_PM_SLEEP
->  static int gpmc_suspend(struct device *dev)
->  {
-> -	omap3_gpmc_save_context();
-> +	struct gpmc_device *gpmc = dev_get_drvdata(dev);
-> +
-> +	omap3_gpmc_save_context(gpmc);
->  	pm_runtime_put_sync(dev);
-> +	gpmc->is_suspended = 1;
-> +
->  	return 0;
->  }
->  
->  static int gpmc_resume(struct device *dev)
->  {
-> +	struct gpmc_device *gpmc = dev_get_drvdata(dev);
-> +
->  	pm_runtime_get_sync(dev);
-> -	omap3_gpmc_restore_context();
-> +	omap3_gpmc_restore_context(gpmc);
-> +	gpmc->is_suspended = 0;
-> +
->  	return 0;
->  }
->  #endif
-> @@ -2527,76 +2643,3 @@ static __init int gpmc_init(void)
->  	return platform_driver_register(&gpmc_driver);
->  }
->  postcore_initcall(gpmc_init);
-> -
-> -static struct omap3_gpmc_regs gpmc_context;
-> -
-> -void omap3_gpmc_save_context(void)
-> -{
-> -	int i;
-> -
-> -	if (!gpmc_base)
-> -		return;
-> -
-> -	gpmc_context.sysconfig = gpmc_read_reg(GPMC_SYSCONFIG);
-> -	gpmc_context.irqenable = gpmc_read_reg(GPMC_IRQENABLE);
-> -	gpmc_context.timeout_ctrl = gpmc_read_reg(GPMC_TIMEOUT_CONTROL);
-> -	gpmc_context.config = gpmc_read_reg(GPMC_CONFIG);
-> -	gpmc_context.prefetch_config1 = gpmc_read_reg(GPMC_PREFETCH_CONFIG1);
-> -	gpmc_context.prefetch_config2 = gpmc_read_reg(GPMC_PREFETCH_CONFIG2);
-> -	gpmc_context.prefetch_control = gpmc_read_reg(GPMC_PREFETCH_CONTROL);
-> -	for (i = 0; i < gpmc_cs_num; i++) {
-> -		gpmc_context.cs_context[i].is_valid = gpmc_cs_mem_enabled(i);
-> -		if (gpmc_context.cs_context[i].is_valid) {
-> -			gpmc_context.cs_context[i].config1 =
-> -				gpmc_cs_read_reg(i, GPMC_CS_CONFIG1);
-> -			gpmc_context.cs_context[i].config2 =
-> -				gpmc_cs_read_reg(i, GPMC_CS_CONFIG2);
-> -			gpmc_context.cs_context[i].config3 =
-> -				gpmc_cs_read_reg(i, GPMC_CS_CONFIG3);
-> -			gpmc_context.cs_context[i].config4 =
-> -				gpmc_cs_read_reg(i, GPMC_CS_CONFIG4);
-> -			gpmc_context.cs_context[i].config5 =
-> -				gpmc_cs_read_reg(i, GPMC_CS_CONFIG5);
-> -			gpmc_context.cs_context[i].config6 =
-> -				gpmc_cs_read_reg(i, GPMC_CS_CONFIG6);
-> -			gpmc_context.cs_context[i].config7 =
-> -				gpmc_cs_read_reg(i, GPMC_CS_CONFIG7);
-> -		}
-> -	}
-> -}
-> -
-> -void omap3_gpmc_restore_context(void)
-> -{
-> -	int i;
-> -
-> -	if (!gpmc_base)
-> -		return;
-> -
-> -	gpmc_write_reg(GPMC_SYSCONFIG, gpmc_context.sysconfig);
-> -	gpmc_write_reg(GPMC_IRQENABLE, gpmc_context.irqenable);
-> -	gpmc_write_reg(GPMC_TIMEOUT_CONTROL, gpmc_context.timeout_ctrl);
-> -	gpmc_write_reg(GPMC_CONFIG, gpmc_context.config);
-> -	gpmc_write_reg(GPMC_PREFETCH_CONFIG1, gpmc_context.prefetch_config1);
-> -	gpmc_write_reg(GPMC_PREFETCH_CONFIG2, gpmc_context.prefetch_config2);
-> -	gpmc_write_reg(GPMC_PREFETCH_CONTROL, gpmc_context.prefetch_control);
-> -	for (i = 0; i < gpmc_cs_num; i++) {
-> -		if (gpmc_context.cs_context[i].is_valid) {
-> -			gpmc_cs_write_reg(i, GPMC_CS_CONFIG1,
-> -				gpmc_context.cs_context[i].config1);
-> -			gpmc_cs_write_reg(i, GPMC_CS_CONFIG2,
-> -				gpmc_context.cs_context[i].config2);
-> -			gpmc_cs_write_reg(i, GPMC_CS_CONFIG3,
-> -				gpmc_context.cs_context[i].config3);
-> -			gpmc_cs_write_reg(i, GPMC_CS_CONFIG4,
-> -				gpmc_context.cs_context[i].config4);
-> -			gpmc_cs_write_reg(i, GPMC_CS_CONFIG5,
-> -				gpmc_context.cs_context[i].config5);
-> -			gpmc_cs_write_reg(i, GPMC_CS_CONFIG6,
-> -				gpmc_context.cs_context[i].config6);
-> -			gpmc_cs_write_reg(i, GPMC_CS_CONFIG7,
-> -				gpmc_context.cs_context[i].config7);
-> -		} else {
-> -			gpmc_cs_write_reg(i, GPMC_CS_CONFIG7, 0);
-> -		}
-> -	}
-> -}
-> diff --git a/include/linux/omap-gpmc.h b/include/linux/omap-gpmc.h
-> --- a/include/linux/omap-gpmc.h
-> +++ b/include/linux/omap-gpmc.h
-> @@ -81,9 +81,6 @@ extern int gpmc_configure(int cmd, int wval);
->  extern void gpmc_read_settings_dt(struct device_node *np,
->  				  struct gpmc_settings *p);
->  
-> -extern void omap3_gpmc_save_context(void);
-> -extern void omap3_gpmc_restore_context(void);
-> -
->  struct gpmc_timings;
->  struct omap_nand_platform_data;
->  struct omap_onenand_platform_data;
+>  	if (cpudata->mode != CS_MODE_PERF)
 > 
+
+With or without the above sanity check.
+
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
