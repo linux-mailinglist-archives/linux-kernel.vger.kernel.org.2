@@ -2,94 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38753DB094
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 03:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC023DB091
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 03:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbhG3BVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 21:21:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233855AbhG3BVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 21:21:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E582660E09;
-        Fri, 30 Jul 2021 01:21:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627608086;
-        bh=KTh+1SvWGrqaP3ZzUAM76b2+rrCHeZnuYTqbOR/wQI0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mPkRXG4bstZLhu+l0/gTAZuS7sV0j9IQMW/fWBVg3OSMwJmOZ9FOLPaUAmEUmAcrA
-         yw4UIS2GrdPScRxDxYqm9lJz/fXnl3wNn9VGGo4HHzxg129/qL0poB9Cx+eqZGjwXR
-         ia/v+oqk6hE30NlIdKqjPbnmLtfAwKohIf//cLuxidSQVdHP1WJCo9TdhjxkJupOyr
-         p7TUdBQH9orIC6FlC8HQZCEgHuWHPGgNW6kNY8ic3CpGmqiLMyZ5261ls3T12n3SWq
-         7PMHjGm7kELpkQyS3q4o8jZhGY7mN/D+jS57Sof5k+I/q7KWrNUIbla/ObLsN9q777
-         wGgP4za1IkVKQ==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] bsg: Fix build error with CONFIG_BLK_DEV_BSG_COMMON=m
-Date:   Thu, 29 Jul 2021 18:21:08 -0700
-Message-Id: <20210730012108.3385990-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.32.0.264.g75ae10bc75
+        id S233731AbhG3BV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 21:21:27 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7898 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhG3BV0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 21:21:26 -0400
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GbTz14l6hz7x3G;
+        Fri, 30 Jul 2021 09:17:33 +0800 (CST)
+Received: from [127.0.0.1] (10.40.193.166) by dggeme756-chm.china.huawei.com
+ (10.3.19.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 30
+ Jul 2021 09:21:19 +0800
+Subject: Re: [PATCH v2 00/24] iommu: Refactor DMA domain strictness
+To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <will@kernel.org>
+References: <cover.1627468308.git.robin.murphy@arm.com>
+ <49c7ca2c-11a3-ff93-05bc-feb482a79980@hisilicon.com>
+ <942c3da1-fb79-967a-d50e-4cbf5331261c@arm.com>
+CC:     Maxime Ripard <mripard@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        <dianders@chromium.org>, <iommu@lists.linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>
+From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
+Message-ID: <08de8f83-addc-8547-eca1-912323402e2f@hisilicon.com>
+Date:   Fri, 30 Jul 2021 09:21:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.2.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
+In-Reply-To: <942c3da1-fb79-967a-d50e-4cbf5331261c@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.193.166]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_BLK_DEV_BSG_COMMON is enabled as a module, which can happen
-when CONFIG_SCSI=m and CONFIG_BLK_DEV_BSGLIB=n, the following error
-occurs:
 
-In file included from arch/x86/kernel/asm-offsets.c:13:
-In file included from include/linux/suspend.h:5:
-In file included from include/linux/swap.h:9:
-In file included from include/linux/memcontrol.h:22:
-In file included from include/linux/writeback.h:14:
-In file included from include/linux/blk-cgroup.h:23:
-include/linux/blkdev.h:539:26: error: field has incomplete type 'struct
-bsg_class_device'
-        struct bsg_class_device bsg_dev;
-                                ^
-include/linux/blkdev.h:539:9: note: forward declaration of 'struct
-bsg_class_device'
-        struct bsg_class_device bsg_dev;
-               ^
-1 error generated.
 
-The definition of struct bsg_class_device is kept under an #ifdef
-directive, which does not work when CONFIG_BLK_DEV_BSG_COMMON is a
-module, as the define is CONFIG_BLK_DEV_BSG_COMMON_MODULE.
+在 2021/7/29 18:59, Robin Murphy 写道:
+> On 2021-07-29 03:55, chenxiang (M) wrote:
+>> Hi Robin,
+>>
+>>
+>> 在 2021/7/28 23:58, Robin Murphy 写道:
+>>> Hi all,
+>>>
+>>> Here's v2 where things start to look more realistic, hence the expanded
+>>> CC list. The patches are now based on the current iommu/core branch to
+>>> take John's iommu_set_dma_strict() cleanup into account.
+>>>
+>>> The series remiains in two (or possibly 3) logical parts - for people
+>>> CC'd on cookie cleanup patches, the later parts should not affect you
+>>> since your drivers don't implement non-strict mode anyway; the cleanup
+>>> is all pretty straightforward, but please do yell at me if I've managed
+>>> to let a silly mistake slip through and broken your driver.
+>>>
+>>> This time I have also build-tested x86 as well as arm64 :)
+>>
+>> I have tested those patchset on ARM64 with SMMUV3, and the testcases 
+>> are as follows:
+>> - Boot with iommu.strict=0, running fio and it works well;
+>> - Boot with iommu.strict=1, running fio and it works well;
+>> - Change strict mode to lazy mode when building, the change takes 
+>> effect;
+>> - Boot without iommu.strict(default strict mode), change the sysfs 
+>> interface type from DMA to DMA-FQ dynamically during running fio, and 
+>> it works well;
+>> - Boot without iommu.strict(default strict mode), change the sysfs 
+>> interface type from DMA-FQ to DMA dynamically, and it is not allowed 
+>> and print "Device or resource busy"
+>> (i know it is qualified, and we can change no-strict mode to strict 
+>> by unbind the driver -> change the sysfs interface (type)->bind the 
+>> driver (tested this and it works well),
+>> but i have a small question: is it also possible to change from 
+>> DMA-FQ to DMA dynamically? )
+>
+> As patch #22 mentions, I think it's possible in principle, but it's 
+> certainly trickier. When enabling a flush queue, it doesn't matter if 
+> it takes a while for other threads to notice that cookie->fq_domain is 
+> now set and stop doing synchronous invalidations (and in the SMMU case 
+> it seems like there are probably enough dependencies to additionally 
+> prevent the io_pgtable quirk being observable before that). However 
+> when disabling, we'd need to be absolutely sure that the driver *has* 
+> started invalidating strictly before we stop queueing freed IOVAs, 
+> plus we need to be absolutely sure that we've stopped queueing freed 
+> IOVAs before we attempt to tear down the flush queue itself. I'm not 
+> sure off-hand how feasible it would be to put all that synchronisation 
+> in the right places without it also impacting normal operation.
+>
+> Furthermore, as also noted, there doesn't seem to be a good reason for 
+> ever actually needing to do that. If a device isn't trusted, it should 
+> be given a strict domain *before* any driver has a chance to start 
+> doing anything, or your trust model is broken and pretty useless. I 
+> can imagine some niche debugging/benchmarking cases where it might 
+> help save a bit of effort, but nothing with a strong enough 
+> justification to be worth supporting in mainline.
 
-Use IS_ENABLED instead, which evaluates to 1 when
-CONFIG_BLK_DEV_BSG_COMMON is y or m.
+Ok, thanks.
 
-Fixes: 78011042684d ("scsi: bsg: Move bsg_scsi_ops to drivers/scsi/")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- include/linux/bsg.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>> Anyway, please feel free to add :
+>> Tested-by: Xiang Chen <chenxiang66@hisilicon.com>
+>
+> That's great, thanks!
+>
+> Robin.
+>
+>>> Changes in v2:
+>>>
+>>> - Add iommu_is_dma_domain() helper to abstract flag check (and help
+>>>    avoid silly typos like the one in v1).
+>>> - Tweak a few commit messages for spelling and (hopefully) clarity.
+>>> - Move the iommu_create_device_direct_mappings() update to patch #14
+>>>    where it should have been.
+>>> - Rewrite patch #20 as a conversion of the now-existing option.
+>>> - Clean up the ops->flush_iotlb_all check which is also made redundant
+>>>    by the new domain type
+>>> - Add patch #24, which is arguably tangential, but it was something I
+>>>    spotted during the rebase, so...
+>>>
+>>> Once again, the whole lot is available on a branch here:
+>>>
+>>> https://gitlab.arm.com/linux-arm/linux-rm/-/tree/iommu/fq
+>>>
+>>> Thanks,
+>>> Robin.
+>>>
+>>>
+>>> CC: Marek Szyprowski <m.szyprowski@samsung.com>
+>>> CC: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>>> CC: Geert Uytterhoeven <geert+renesas@glider.be>
+>>> CC: Yong Wu <yong.wu@mediatek.com>
+>>> CC: Heiko Stuebner <heiko@sntech.de>
+>>> CC: Chunyan Zhang <chunyan.zhang@unisoc.com>
+>>> CC: Chunyan Zhang <chunyan.zhang@unisoc.com>
+>>> CC: Maxime Ripard <mripard@kernel.org>
+>>> CC: Jean-Philippe Brucker <jean-philippe@linaro.org>
+>>>
+>>> Robin Murphy (24):
+>>>    iommu: Pull IOVA cookie management into the core
+>>>    iommu/amd: Drop IOVA cookie management
+>>>    iommu/arm-smmu: Drop IOVA cookie management
+>>>    iommu/vt-d: Drop IOVA cookie management
+>>>    iommu/exynos: Drop IOVA cookie management
+>>>    iommu/ipmmu-vmsa: Drop IOVA cookie management
+>>>    iommu/mtk: Drop IOVA cookie management
+>>>    iommu/rockchip: Drop IOVA cookie management
+>>>    iommu/sprd: Drop IOVA cookie management
+>>>    iommu/sun50i: Drop IOVA cookie management
+>>>    iommu/virtio: Drop IOVA cookie management
+>>>    iommu/dma: Unexport IOVA cookie management
+>>>    iommu/dma: Remove redundant "!dev" checks
+>>>    iommu: Introduce explicit type for non-strict DMA domains
+>>>    iommu/amd: Prepare for multiple DMA domain types
+>>>    iommu/arm-smmu: Prepare for multiple DMA domain types
+>>>    iommu/vt-d: Prepare for multiple DMA domain types
+>>>    iommu: Express DMA strictness via the domain type
+>>>    iommu: Expose DMA domain strictness via sysfs
+>>>    iommu: Merge strictness and domain type configs
+>>>    iommu/dma: Factor out flush queue init
+>>>    iommu: Allow enabling non-strict mode dynamically
+>>>    iommu/arm-smmu: Allow non-strict in pgtable_quirks interface
+>>>    iommu: Only log strictness for DMA domains
+>>>
+>>>   .../ABI/testing/sysfs-kernel-iommu_groups     |  2 +
+>>>   drivers/iommu/Kconfig                         | 80 
+>>> +++++++++----------
+>>>   drivers/iommu/amd/iommu.c                     | 21 +----
+>>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 25 ++++--
+>>>   drivers/iommu/arm/arm-smmu/arm-smmu.c         | 29 ++++---
+>>>   drivers/iommu/arm/arm-smmu/qcom_iommu.c       |  8 --
+>>>   drivers/iommu/dma-iommu.c                     | 44 +++++-----
+>>>   drivers/iommu/exynos-iommu.c                  | 18 +----
+>>>   drivers/iommu/intel/iommu.c                   | 23 ++----
+>>>   drivers/iommu/iommu.c                         | 53 +++++++-----
+>>>   drivers/iommu/ipmmu-vmsa.c                    | 27 +------
+>>>   drivers/iommu/mtk_iommu.c                     |  6 --
+>>>   drivers/iommu/rockchip-iommu.c                | 11 +--
+>>>   drivers/iommu/sprd-iommu.c                    |  6 --
+>>>   drivers/iommu/sun50i-iommu.c                  | 12 +--
+>>>   drivers/iommu/virtio-iommu.c                  |  8 --
+>>>   include/linux/dma-iommu.h                     |  9 ++-
+>>>   include/linux/iommu.h                         | 15 +++-
+>>>   18 files changed, 171 insertions(+), 226 deletions(-)
+>>>
+>>
+>>
+>
+> .
+>
 
-diff --git a/include/linux/bsg.h b/include/linux/bsg.h
-index b887da20bd41..9602ae3ab01b 100644
---- a/include/linux/bsg.h
-+++ b/include/linux/bsg.h
-@@ -7,7 +7,7 @@
- struct request;
- struct request_queue;
- 
--#ifdef CONFIG_BLK_DEV_BSG_COMMON
-+#if IS_ENABLED(CONFIG_BLK_DEV_BSG_COMMON)
- struct bsg_ops {
- 	int	(*check_proto)(struct sg_io_v4 *hdr);
- 	int	(*fill_hdr)(struct request *rq, struct sg_io_v4 *hdr,
-
-base-commit: 08dc2f9b53afbbc897bc895aa41906194f5af1cf
--- 
-2.32.0.264.g75ae10bc75
 
