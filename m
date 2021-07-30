@@ -2,281 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A623DB207
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7063DB20C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235812AbhG3Drn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 23:47:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:35604 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230352AbhG3Drm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 23:47:42 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F02731B;
-        Thu, 29 Jul 2021 20:47:37 -0700 (PDT)
-Received: from [10.163.66.9] (unknown [10.163.66.9])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 16FB13F73D;
-        Thu, 29 Jul 2021 20:47:33 -0700 (PDT)
-Subject: Re: [PATCH v2 02/10] coresight: etm4x: Use Trace Filtering controls
- dynamically
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
-        mike.leach@linaro.org, mathieu.poirier@linaro.org,
-        jinlmao@qti.qualcomm.com
-References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
- <20210723124611.3828908-3-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <0c975635-d4d2-3f9f-4c4c-3a67d05cda21@arm.com>
-Date:   Fri, 30 Jul 2021 09:18:17 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236264AbhG3Dxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 23:53:45 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:24067 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234733AbhG3Dxn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 23:53:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627617219; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=h3QRUbjY3/MYcxFAA6X5fTV80RY62f6e6ae8EIvlifc=; b=NzxR4/DyD4AEhhopCkeQkkWozmyksubkJaOM9GAms10sIS3NGRaNl/UV7UIX9TX9aTztSM4z
+ VMlJTZX6BhUXHKPyRLz7+h8BMxSxWjO+Oxt0X1drEwrnlY56Hgin9e0NlXVFR0QImwc/UAg9
+ jn74UgXO3WSbSg5xNYdA/esKLZc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 610377b74815712f3aa6fd31 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Jul 2021 03:53:27
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 51C32C43460; Fri, 30 Jul 2021 03:53:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [59.89.227.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0CD6CC433D3;
+        Fri, 30 Jul 2021 03:53:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0CD6CC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH] drm: msm: Add 680 gpu to the adreno gpu list
+To:     Rob Clark <robdclark@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     freedreno <freedreno@lists.freedesktop.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Sean Paul <sean@poorly.run>
+References: <20210725032002.3961691-1-bjorn.andersson@linaro.org>
+ <CAF6AEGvADHz7YmOZQTX8g+ZRG1rp7sk9wevgBQsknQytH+eFSA@mail.gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <20412cce-df2f-6271-9284-611f6b2ef1c5@codeaurora.org>
+Date:   Fri, 30 Jul 2021 09:23:18 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210723124611.3828908-3-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAF6AEGvADHz7YmOZQTX8g+ZRG1rp7sk9wevgBQsknQytH+eFSA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/23/21 6:16 PM, Suzuki K Poulose wrote:
-> The Trace Filtering support (FEAT_TRF) ensures that the ETM
-> can be prohibited from generating any trace for a given EL.
-> This is much stricter knob, than the TRCVICTLR exception level
-
-Could you please explain 'stricter' ? Are you suggesting that TRCVICTLR
-based exception filtering some times might not implement the filtering
-even if configured ?
-
-> masks. At the moment, we do a onetime enable trace at user and
-> kernel and leave it untouched for the kernel life time.
+On 7/30/2021 5:38 AM, Rob Clark wrote:
+> On Sat, Jul 24, 2021 at 8:21 PM Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+>>
+>> This patch adds a Adreno 680 entry to the gpulist.
 > 
-> This patch makes the switch dynamic, by honoring the filters
-> set by the user and enforcing them in the TRFCR controls.
+> Looks reasonable, but I wonder if we should just go ahead and add
+> adreno_is_a640_family() in a similar vein to
+> adreno_is_a650_familiy()/adreno_is_a660_family().. I think most of the
+> 'if (a640) ...' should also apply to a680?
 
-TRFCR actually helps in making the exception level filtering dynamic
-which was not possible earlier with TRCVICTLR.
+If there is no delta, wouldn't it be better to simply add a680 to 
+adreno_is_a640?
 
-> We also rename the cpu_enable_tracing() appropriately to
-> cpu_detect_trace_filtering() and the drvdata member
-> trfc => trfcr to indicate the "value" of the TRFCR_EL1.
-
-Makes sense.
+-Akhil.
 
 > 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Al Grant <al.grant@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  .../coresight/coresight-etm4x-core.c          | 61 ++++++++++++++-----
->  drivers/hwtracing/coresight/coresight-etm4x.h |  5 +-
->  .../coresight/coresight-self-hosted-trace.h   |  7 +++
->  3 files changed, 55 insertions(+), 18 deletions(-)
+> BR,
+> -R
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 3e548dac9b05..adba84b29455 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -237,6 +237,43 @@ struct etm4_enable_arg {
->  	int rc;
->  };
->  
-> +/*
-> + * etm4x_prohibit_trace - Prohibit the CPU from tracing at all ELs.
-> + * When the CPU supports FEAT_TRF, we could move the ETM to a trace
-> + * prohibited state by filtering the Exception levels via TRFCR_EL1.
-> + */
-> +static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
-> +{
-> +	if (drvdata->trfcr)
-> +		cpu_prohibit_trace();
+>> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>> ---
+>>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c      |  5 +++--
+>>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 12 +++++++-----
+>>   drivers/gpu/drm/msm/adreno/a6xx_hfi.c      |  2 +-
+>>   drivers/gpu/drm/msm/adreno/adreno_device.c | 13 +++++++++++++
+>>   drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  5 +++++
+>>   5 files changed, 29 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>> index b349692219b7..1c0d75e1189f 100644
+>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>> @@ -521,7 +521,8 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+>>
+>>          if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu))
+>>                  pdc_in_aop = true;
+>> -       else if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
+>> +       else if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu) ||
+>> +                adreno_is_a680(adreno_gpu))
+>>                  pdc_address_offset = 0x30090;
+>>          else
+>>                  pdc_address_offset = 0x30080;
+>> @@ -1522,7 +1523,7 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
+>>                          SZ_16M - SZ_16K, 0x04000);
+>>                  if (ret)
+>>                          goto err_memory;
+>> -       } else if (adreno_is_a640(adreno_gpu)) {
+>> +       } else if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu)) {
+>>                  ret = a6xx_gmu_memory_alloc(gmu, &gmu->icache,
+>>                          SZ_256K - SZ_16K, 0x04000);
+>>                  if (ret)
+>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> index 9c5e4618aa0a..5cdafc6c8bb0 100644
+>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> @@ -683,7 +683,7 @@ static void a6xx_set_ubwc_config(struct msm_gpu *gpu)
+>>          if (adreno_is_a618(adreno_gpu))
+>>                  return;
+>>
+>> -       if (adreno_is_a640(adreno_gpu))
+>> +       if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu))
+>>                  amsbc = 1;
+>>
+>>          if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu)) {
+>> @@ -757,7 +757,7 @@ static bool a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
+>>           * a660 targets have all the critical security fixes from the start
+>>           */
+>>          if (adreno_is_a618(adreno_gpu) || adreno_is_a630(adreno_gpu) ||
+>> -               adreno_is_a640(adreno_gpu)) {
+>> +           adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu)) {
+>>                  /*
+>>                   * If the lowest nibble is 0xa that is an indication that this
+>>                   * microcode has been patched. The actual version is in dword
+>> @@ -897,7 +897,8 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
+>>          a6xx_set_hwcg(gpu, true);
+>>
+>>          /* VBIF/GBIF start*/
+>> -       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu)) {
+>> +       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu) ||
+>> +           adreno_is_a680(adreno_gpu)) {
+>>                  gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE0, 0x00071620);
+>>                  gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE1, 0x00071620);
+>>                  gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE2, 0x00071620);
+>> @@ -935,7 +936,8 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
+>>          gpu_write(gpu, REG_A6XX_UCHE_FILTER_CNTL, 0x804);
+>>          gpu_write(gpu, REG_A6XX_UCHE_CACHE_WAYS, 0x4);
+>>
+>> -       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu))
+>> +       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu) ||
+>> +           adreno_is_a680(adreno_gpu))
+>>                  gpu_write(gpu, REG_A6XX_CP_ROQ_THRESHOLDS_2, 0x02000140);
+>>          else
+>>                  gpu_write(gpu, REG_A6XX_CP_ROQ_THRESHOLDS_2, 0x010000c0);
+>> @@ -952,7 +954,7 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
+>>          */
+>>          if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu))
+>>                  gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00300200);
+>> -       else if (adreno_is_a640(adreno_gpu))
+>> +       else if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu))
+>>                  gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00200200);
+>>          else
+>>                  gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00180000);
+>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_hfi.c b/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
+>> index 919433732b43..df8af237cf6a 100644
+>> --- a/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
+>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
+>> @@ -428,7 +428,7 @@ static int a6xx_hfi_send_bw_table(struct a6xx_gmu *gmu)
+>>
+>>          if (adreno_is_a618(adreno_gpu))
+>>                  a618_build_bw_table(&msg);
+>> -       else if (adreno_is_a640(adreno_gpu))
+>> +       else if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu))
+>>                  a640_build_bw_table(&msg);
+>>          else if (adreno_is_a650(adreno_gpu))
+>>                  a650_build_bw_table(&msg);
+>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>> index 6dad8015c9a1..799e4a35ca44 100644
+>> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+>> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>> @@ -300,6 +300,19 @@ static const struct adreno_info gpulist[] = {
+>>                  .init = a6xx_gpu_init,
+>>                  .zapfw = "a660_zap.mdt",
+>>                  .hwcg = a660_hwcg,
+>> +       }, {
+>> +               .rev = ADRENO_REV(6, 8, 0, ANY_ID),
+>> +               .revn = 680,
+>> +               .name = "A680",
+>> +               .fw = {
+>> +                       [ADRENO_FW_SQE] = "a630_sqe.fw",
+>> +                       [ADRENO_FW_GMU] = "a640_gmu.bin",
+>> +               },
+>> +               .gmem = SZ_2M,
+>> +               .inactive_period = DRM_MSM_INACTIVE_PERIOD,
+>> +               .init = a6xx_gpu_init,
+>> +               .zapfw = "a640_zap.mdt",
+>> +               .hwcg = a640_hwcg,
+>>          },
+>>   };
+>>
+>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>> index 8dbe0d157520..a7e843e81b1e 100644
+>> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>> @@ -258,6 +258,11 @@ static inline int adreno_is_a650_family(struct adreno_gpu *gpu)
+>>          return gpu->revn == 650 || gpu->revn == 620 || gpu->revn == 660;
+>>   }
+>>
+>> +static inline int adreno_is_a680(struct adreno_gpu *gpu)
+>> +{
+>> +       return gpu->revn == 680;
+>> +}
+>> +
+>>   int adreno_get_param(struct msm_gpu *gpu, uint32_t param, uint64_t *value);
+>>   const struct firmware *adreno_request_fw(struct adreno_gpu *adreno_gpu,
+>>                  const char *fwname);
+>> --
+>> 2.29.2
+>>
 
-Should it be as etm4x_allow_trace() instead, where drvdata->trfcr
-indicates the presence of FEAT_TRF - just to be clear ?
-
-	/* If the CPU doesn't support FEAT_TRF, nothing to do */
-	if (!drvdata->trfcr)
-		return;
-
-	cpu_prohibit_trace();
-
-> +}
-> +
-> +/*
-> + * etm4x_allow_trace - Allow CPU tracing in the respective ELs,
-> + * as configured by the drvdata->config.mode for the current
-> + * session. Even though we have TRCVICTLR bits to filter the
-> + * trace in the ELs, it doesn't prevent the ETM from generating
-> + * a packet (e.g, TraceInfo) that might contain the addresses from
-> + * the excluded levels. Thus we use the additional controls provided
-> + * via the Trace Filtering controls (FEAT_TRF) to make sure no trace
-> + * is generated for the excluded ELs.
-> + */
-> +static void etm4x_allow_trace(struct etmv4_drvdata *drvdata)
-> +{
-> +	u64 trfcr = drvdata->trfcr;
-> +
-> +	/* If the CPU doesn't support FEAT_TRF, nothing to do */
-> +	if (!trfcr)
-> +		return;
-> +
-> +	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
-> +		trfcr &= ~TRFCR_ELx_ExTRE;
-> +	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
-> +		trfcr &= ~TRFCR_ELx_E0TRE;
-> +
-> +	write_trfcr(trfcr);
-> +}
-> +
->  #ifdef CONFIG_ETM4X_IMPDEF_FEATURE
->  
->  #define HISI_HIP08_AMBA_ID		0x000b6d01
-> @@ -441,6 +478,7 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
->  	if (etm4x_is_ete(drvdata))
->  		etm4x_relaxed_write32(csa, TRCRSR_TA, TRCRSR);
->  
-> +	etm4x_allow_trace(drvdata);
->  	/* Enable the trace unit */
->  	etm4x_relaxed_write32(csa, 1, TRCPRGCTLR);
->  
-> @@ -719,7 +757,6 @@ static int etm4_enable(struct coresight_device *csdev,
->  static void etm4_disable_hw(void *info)
->  {
->  	u32 control;
-> -	u64 trfcr;
->  	struct etmv4_drvdata *drvdata = info;
->  	struct etmv4_config *config = &drvdata->config;
->  	struct coresight_device *csdev = drvdata->csdev;
-> @@ -746,12 +783,7 @@ static void etm4_disable_hw(void *info)
->  	 * If the CPU supports v8.4 Trace filter Control,
->  	 * set the ETM to trace prohibited region.
->  	 */
-> -	if (drvdata->trfc) {
-> -		trfcr = read_sysreg_s(SYS_TRFCR_EL1);
-> -		write_sysreg_s(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE),
-> -			       SYS_TRFCR_EL1);
-> -		isb();
-> -	}
-> +	etm4x_prohibit_trace(drvdata);
->  	/*
->  	 * Make sure everything completes before disabling, as recommended
->  	 * by section 7.3.77 ("TRCVICTLR, ViewInst Main Control Register,
-> @@ -767,9 +799,6 @@ static void etm4_disable_hw(void *info)
->  	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_PMSTABLE_BIT, 1))
->  		dev_err(etm_dev,
->  			"timeout while waiting for PM stable Trace Status\n");
-> -	if (drvdata->trfc)
-> -		write_sysreg_s(trfcr, SYS_TRFCR_EL1);
-> -
->  	/* read the status of the single shot comparators */
->  	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
->  		config->ss_status[i] =
-> @@ -964,15 +993,15 @@ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
->  	return false;
->  }
->  
-> -static void cpu_enable_tracing(struct etmv4_drvdata *drvdata)
-> +static void cpu_detect_trace_filtering(struct etmv4_drvdata *drvdata)
->  {
->  	u64 dfr0 = read_sysreg(id_aa64dfr0_el1);
->  	u64 trfcr;
->  
-> +	drvdata->trfcr = 0;
->  	if (!cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_TRACE_FILT_SHIFT))
->  		return;
->  
-> -	drvdata->trfc = true;
->  	/*
->  	 * If the CPU supports v8.4 SelfHosted Tracing, enable
->  	 * tracing at the kernel EL and EL0, forcing to use the
-> @@ -986,7 +1015,7 @@ static void cpu_enable_tracing(struct etmv4_drvdata *drvdata)
->  	if (is_kernel_in_hyp_mode())
->  		trfcr |= TRFCR_EL2_CX;
->  
-> -	write_trfcr(trfcr);
-> +	drvdata->trfcr = trfcr;
->  }
->  
->  static void etm4_init_arch_data(void *info)
-> @@ -1177,7 +1206,7 @@ static void etm4_init_arch_data(void *info)
->  	/* NUMCNTR, bits[30:28] number of counters available for tracing */
->  	drvdata->nr_cntr = BMVAL(etmidr5, 28, 30);
->  	etm4_cs_lock(drvdata, csa);
-> -	cpu_enable_tracing(drvdata);
-> +	cpu_detect_trace_filtering(drvdata);
->  }
->  
->  static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
-> @@ -1673,7 +1702,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
->  	int ret = 0;
->  
->  	/* Save the TRFCR irrespective of whether the ETM is ON */
-> -	if (drvdata->trfc)
-> +	if (drvdata->trfcr)
->  		drvdata->save_trfcr = read_trfcr();
->  	/*
->  	 * Save and restore the ETM Trace registers only if
-> @@ -1782,7 +1811,7 @@ static void __etm4_cpu_restore(struct etmv4_drvdata *drvdata)
->  
->  static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
->  {
-> -	if (drvdata->trfc)
-> +	if (drvdata->trfcr)
->  		write_trfcr(drvdata->save_trfcr);
->  	if (drvdata->state_needs_restore)
->  		__etm4_cpu_restore(drvdata);
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-> index 82cba16b73a6..724819592c2e 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-> @@ -919,7 +919,8 @@ struct etmv4_save_state {
->   * @nooverflow:	Indicate if overflow prevention is supported.
->   * @atbtrig:	If the implementation can support ATB triggers
->   * @lpoverride:	If the implementation can support low-power state over.
-> - * @trfc:	If the implementation supports Arm v8.4 trace filter controls.
-> + * @trfcr:	If the CPU supportfs FEAT_TRF, value of the TRFCR_ELx with
-
-Typo here. 	   ^^^^^^ s/supportfs/supports
-
-> + *		trace allowed at user and kernel ELs. Otherwise, 0.
-
-The sentence here does not make sense. Is not the exception level ELx and EL0
-can be filtered out independently ? Should this be something like ...
-
-"If the CPU supports FEAT_TRF, value of the TRFCR_ELx - indicating whether
-trace is allowed at user [and/or] kernel ELs. Otherwise, 0."
-
->   * @config:	structure holding configuration parameters.
->   * @save_trfcr:	Saved TRFCR_EL1 register during a CPU PM event.
->   * @save_state:	State to be preserved across power loss
-> @@ -972,7 +973,7 @@ struct etmv4_drvdata {
->  	bool				nooverflow;
->  	bool				atbtrig;
->  	bool				lpoverride;
-> -	bool				trfc;
-> +	u64				trfcr;
->  	struct etmv4_config		config;
->  	u64				save_trfcr;
->  	struct etmv4_save_state		*save_state;
-> diff --git a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
-> index 53b35a28075e..586d26e0cba3 100644
-> --- a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
-> +++ b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
-> @@ -22,4 +22,11 @@ static inline void write_trfcr(u64 val)
->  	isb();
->  }
->  
-> +static inline void cpu_prohibit_trace(void)
-> +{
-> +	u64 trfcr = read_trfcr();
-> +
-> +	/* Prohibit tracing at EL0 & the kernel EL */
-> +	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
-> +}
->  #endif			/*  __CORESIGHT_SELF_HOSTED_TRACE_H */
-> 
