@@ -2,105 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C32E3DB2BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BAB3DB2BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbhG3FWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 01:22:25 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50165 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229696AbhG3FWY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:22:24 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B013F580D65;
-        Fri, 30 Jul 2021 01:22:19 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 30 Jul 2021 01:22:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=w
-        Z3kutLqmcKQSNip3ycj7XGCG1ZWDjerJRvqk0QSHZU=; b=BuomH8qzwT4tALiDl
-        1vvTx8AQRdRK03K/c44WkmzqAzSSvSd2BKdtL6br6Uxgsce9a3efQVVa7Bik4ioc
-        oooOTbE7QoDEwwxuXrIiHWwjjWzvhiAKmmxBNusBDpkl0JYoWhF6XCmVPAfXeJy/
-        Y/H1Qa9Qot+qKa8nJmlGd0O7QTGH0hEqI+Bd+IN6Ysu42Na/oXfUvEtzwtpQzCuZ
-        ltfhuqSMhYnFUsdPC/aHelqqlkS18ZvGUTZEHBUu8T4tqdz4ZzwgxZKqL4ag0PsP
-        lH4q7TNa/r/TyzM6R5Tvj5p5NTIylU2wil7BHXfiRPQ5jcXnUQEEvYS314rEQdOz
-        qZtBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=wZ3kutLqmcKQSNip3ycj7XGCG1ZWDjerJRvqk0QSH
-        ZU=; b=W/RL+RnDcbQqBAdaQn7yFZp1OdzFohjyvjMHp7rfQaNi4mJEUZkbMdwq3
-        VCn/rfRv6KUyBeRjfPiR5/bAF6IdWpKtIIqtJLV+o0+C7F5LLNFlxppXAMXSf5eh
-        rhpHfRVxGhfgifxyR449pC+7dUg5GuB+xzahqrqlEIEE2HoHPhsext5B7THDA/6/
-        QWyOuJypQTeCd3YoHB5A3TFyreECeP8qJPpNvtRXwhmCPDSoEKkHMwE9tvivBtz1
-        PXYx5X490xQz/mYQotbDqeJihUxRQw4RUBPaXYbUxdQWexi2O6FZRM5qVXYp/BKa
-        xV599mJPVnGkFI1Oh+HZw33hQsVAQ==
-X-ME-Sender: <xms:iowDYTizcg78LosaRTdbPH_r_nimNDxKdJvMXea-pJVfsHM9b73y2Q>
-    <xme:iowDYQC7cENA8p7TmbRzq3QV82nAhAWcBQ6M4Gg2K7G34VFIFTqLI3y7daroud-Sa
-    dvjFzLqARuPtw>
-X-ME-Received: <xmr:iowDYTH3YVqjyJkDgQHw6j7AcgjnWwS8X1tZd1DSTiBs_luJmG_ghVMSp2V4Z5ZjCvCSvPv-qUNiNs-U2cGH_eNG38SEOLyQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheeggdejhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuheekhe
-    elffefieduteefkeejffdvueehjeejffehledugfetkedvleekudduvdenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:iowDYQSy2yNQuwG09wEV9uTJzXcaOjCkWWBr7gHA_p8zkO8B1p5Gvg>
-    <xmx:iowDYQwobnYPKK7xHHGvU4BYN3WeT6hgKVCgQPW6wxLuYN6-7uGraQ>
-    <xmx:iowDYW5x2Dj1PryFqgcicVL68rc2Ubl1ShWBX6r5bnAQZyYqL-kgdg>
-    <xmx:i4wDYVI04zKJLztJry6rR3d5MF_sa7wiQksfJENiH2Wh2yCOAfHaDg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 30 Jul 2021 01:22:18 -0400 (EDT)
-Date:   Fri, 30 Jul 2021 07:22:16 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        axboe@kernel.dk, kernelnewbies@kernelnewbies.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        pavel@ucw.cz, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH 1/8] docs: Add block device LED trigger documentation
-Message-ID: <YQOMiO1HAf60Odqa@kroah.com>
-References: <20210729015344.3366750-1-arequipeno@gmail.com>
- <20210729015344.3366750-2-arequipeno@gmail.com>
- <108629.1627528155@turing-police>
- <ee56510e-e8ef-5e92-3e29-4e290bfad9b2@gmail.com>
+        id S231611AbhG3FXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 01:23:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229696AbhG3FXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 01:23:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A561760EC0;
+        Fri, 30 Jul 2021 05:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627622577;
+        bh=zWQoFuvSGRkaWrMDBZYBHS+7L+3+XOedxJZ92sz89LU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KxNa0A1dMdHpzEckFrW9pi9fQW8uTkFDXbvhGo7T6es3r7feLWURFgaLQFxcQmC0e
+         FX72qDCbSgSLcsKVX7tFl/OEh4zbUBPRwJAzBxzFsjxrG0bE3ppgD2Ddmqy7myKuI6
+         /2/2u7dpwbiYvd+/5DNyUAQmQ/HiQ21ktGotWBII=
+Date:   Fri, 30 Jul 2021 07:22:54 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Barry Song <song.bao.hua@hisilicon.com>,
+        andriy.shevchenko@linux.intel.com, yury.norov@gmail.com,
+        linux-kernel@vger.kernel.org, dave.hansen@intel.com,
+        linux@rasmusvillemoes.dk, rafael@kernel.org, rdunlap@infradead.org,
+        agordeev@linux.ibm.com, sbrivio@redhat.com, jianpeng.ma@intel.com,
+        valentin.schneider@arm.com, peterz@infradead.org,
+        bristot@redhat.com, guodong.xu@linaro.org,
+        tangchengchang@huawei.com, prime.zeng@hisilicon.com,
+        yangyicong@huawei.com, tim.c.chen@linux.intel.com,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v8 0/5] use bin_attribute to break the size limitation of
+ cpumap ABI
+Message-ID: <YQOMrk2UxvMnjCBR@kroah.com>
+References: <20210729054208.1800-1-song.bao.hua@hisilicon.com>
+ <20210729105000.857e7225f0a73d6af98db116@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ee56510e-e8ef-5e92-3e29-4e290bfad9b2@gmail.com>
+In-Reply-To: <20210729105000.857e7225f0a73d6af98db116@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 10:52:06AM -0500, Ian Pilcher wrote:
-> On 7/28/21 10:09 PM, Valdis Klētnieks wrote:
-> > > +	# cat /sys/class/block/led_trigger_list
-> > > +	baz: 0
-> > > +	bar: 0
-> > > +	foo: 0
-> > 
-> > This looks like an abuse of the "one entry one value" rule for sysfs.
-> > Perhaps this should be a directory /sys/class/block/defined_triggers/
-> > and separate files under that for foo, bar, and baz?  That would probably
-> > make reference counting a lot easier as well....
+On Thu, Jul 29, 2021 at 10:50:00AM -0700, Andrew Morton wrote:
+> On Thu, 29 Jul 2021 17:42:03 +1200 Barry Song <song.bao.hua@hisilicon.com> wrote:
 > 
-> Indeed it is.
+> >  drivers/base/node.c     |  51 +++++++++-----
+> >  drivers/base/topology.c | 115 ++++++++++++++++--------------
+> >  include/linux/bitmap.h  |   2 +
+> >  include/linux/cpumask.h |  63 +++++++++++++++++
+> >  lib/bitmap.c            |  96 +++++++++++++++++++++++++
+> >  lib/test_bitmap.c       | 150 ++++++++++++++++++++++++++++++++++++++++
+> >  6 files changed, 407 insertions(+), 70 deletions(-)
 > 
-> Funny that you should mention using a subdirectory.  I originally wanted
-> to put all of the trigger-related stuff into
-> /sys/class/block/led_triggers/, but I couldn't find any API to create a
-> subdirectory for *class* attributes (only for device attributes), nor do
-> I see any such subdirectories on my system.
+> I'm assuming this is more a gregkh thing than an akpm thing?
 
-Add a name to your attribute group and sysfs creates the subdirectory
-automagically for you.
-
-thanks,
+Yeah, I can take this, thanks!
 
 greg k-h
