@@ -2,125 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC833DB07F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 03:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B693DB086
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 03:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233639AbhG3BDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 21:03:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229667AbhG3BDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 21:03:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1CF960E09;
-        Fri, 30 Jul 2021 01:03:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627607010;
-        bh=AktQh6JLFUAYr6R5McfeUKBxwClypkgS4Rv7pzn41gU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V6/q702zDk3sob+6PsfffOeGWNPRlBrkiJFEWgVjq9odapABAjC7T+FVFIF/I1biB
-         kXWQtjb5Aywpgnn/kdNs7Uj0xrFZ8PIaftrWAcJAvTs1YqC5ozBJQW8gux1iOqvjBg
-         GjYMj++8EKaNuACO801OUWQwgjN4aPKfldNGPkUFoguLJPHcOu5GaLx5CTkLFwQ3/3
-         AOq5No0m3DwPlKXRgzC5JuokITkX3uqHRYdBlBr+UYExX1Ej3WQ7MJHmvRHsbR45Gq
-         fDUol9tk/OWZ8xa5COAQ+O4x7TZGAZ1PZ/hSaigpeiPVuXipclcSDU7plp/B39auJX
-         knhcK8GQML/oA==
-Date:   Fri, 30 Jul 2021 04:03:27 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] selftests/sgx: Fix Q1 and Q2 calculation in
- sigstruct.c
-Message-ID: <20210730010327.zp2amwhmfr5l3nc7@kernel.org>
-References: <20210705050922.63710-1-jarkko@kernel.org>
- <be6227d1-728a-c658-f962-380c28afc926@linuxfoundation.org>
- <20210727031227.tx2gqx2qg3mg4522@kernel.org>
- <c5491afc-2a7e-cb36-2a24-6dfa6b08b31a@linuxfoundation.org>
+        id S233541AbhG3BLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 21:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhG3BLo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 21:11:44 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C0FBC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 18:11:40 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id j2so10632155edp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 18:11:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Co/e7CAYLfOTocind5NVDXjDIOQtVq2jyYw3O7rdTr8=;
+        b=s9DnSYlLMvRSOgTRK4n8dPto4nCKU3bkcDElqAOBclM3WQ0tqGx4ikv5KYe6hVlckk
+         WXYZmhaJcKD3gC9oJ7o2H/MY+5WsTW5Ghj3EzK9MrA1UyyN64FFSavmt3u+p0/cZoDK0
+         gDcCciPfyw+yu69Z49Ct5pOmGRcYRsJdPrpwLuRfqL4ySbcvaplsNIGFNb+RP/23hDWR
+         pBQdXKsmvye9iaX3b5J7HGt4M8Dy8aTa2LzR8ib1awyHPqQh28LlZ3faf4j5IN/qzOgX
+         jA30oQOaNQCWuwz6QL37DjdJWQUP8Y8M35HOy3r87Ut21q5FurwNQczwrInuEGTCgFcr
+         MVUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Co/e7CAYLfOTocind5NVDXjDIOQtVq2jyYw3O7rdTr8=;
+        b=rAnFSHGIQN9w6A4p5oOBqnms+Nijm3JAto1zd0lwC1p7zSSe76p75MuCW3RHPhVeAn
+         LsZnFksXTQq/AyxrJlx/LSB85SmSApWzNrE71H9NnnpKIt5HhWxJAGCQwBkPKVFniU6L
+         In1gfB/QQy1dUFlB6hFZd2S2DeudS4skOwzsZK3qjwKKwX06LQbd7IZF+ypCpIoyKXOT
+         rSMas49yIDqVKjAigHw/6KmVaVkSMv2laxcXosZ243DQ5D65DgHKW+CDnPJiXJdOIyI8
+         EdMLkCFeT+HMaD1Vqvej60p17cWHSTfWz43CGTJeQxm1+PbwFCS8q8BfNf/VffY3yogu
+         paKA==
+X-Gm-Message-State: AOAM533XILQH0QOaouubQmNwGNjkNSFlkPC627cbUxW5GC9dchUmZrkd
+        HA/k1+EgiX/gYXqbHKbEji1F7UwOeuN9SslCA7Jh4k0iEQ6E77wR
+X-Google-Smtp-Source: ABdhPJxeCDic6qzBO9sZWJ8GzDfyisuRB9GISoF+UEocdUBoXSaKeYswP1TAynEpjIn6BlTXKiMIklLtyVYLhmWmmBY=
+X-Received: by 2002:a05:6402:1289:: with SMTP id w9mr9290346edv.127.1627607498641;
+ Thu, 29 Jul 2021 18:11:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5491afc-2a7e-cb36-2a24-6dfa6b08b31a@linuxfoundation.org>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 30 Jul 2021 11:11:27 +1000
+Message-ID: <CAPM=9twko1gCNTB3CPf7CAQqWFayMj=1fa3ZoEwwviDFhF48kQ@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.14-rc4
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:33:10PM -0600, Shuah Khan wrote:
-> On 7/26/21 9:12 PM, Jarkko Sakkinen wrote:
-> > On Fri, Jul 23, 2021 at 01:53:06PM -0600, Shuah Khan wrote:
-> > > On 7/4/21 11:09 PM, Jarkko Sakkinen wrote:
-> > > > From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> > > > 
-> > > > Q1 and Q2 are numbers with *maximum* length of 384 bytes. If the calculated
-> > > > length of Q1 and Q2 is less than 384 bytes, things will go wrong.
-> > > > 
-> > > > E.g. if Q2 is 383 bytes, then
-> > > > 
-> > > > 1. The bytes of q2 are copied to sigstruct->q2 in calc_q1q2().
-> > > > 2. The entire sigstruct->q2 is reversed, which results it being
-> > > >      256 * Q2, given that the last byte of sigstruct->q2 is added
-> > > >      to before the bytes given by calc_q1q2().
-> > > > 
-> > > > Either change in key or measurement can trigger the bug. E.g. an unmeasured
-> > > > heap could cause a devastating change in Q1 or Q2.
-> > > > 
-> > > > Reverse exactly the bytes of Q1 and Q2 in calc_q1q2() before returning to
-> > > > the caller.
-> > > > 
-> > > > Fixes: dedde2634570 ("selftests/sgx: Trigger the reclaimer in the selftests")
-> > > > Link: https://lore.kernel.org/linux-sgx/20210301051836.30738-1-tianjia.zhang@linux.alibaba.com/
-> > > > Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > ---
-> > > > The original patch did a bad job explaining the code change but it
-> > > > turned out making sense. I wrote a new description.
-> > > > 
-> > > > v2:
-> > > > - Added a fixes tag.
-> > > >    tools/testing/selftests/sgx/sigstruct.c | 41 +++++++++++++------------
-> > > >    1 file changed, 21 insertions(+), 20 deletions(-)
-> > > > 
-> > > > diff --git a/tools/testing/selftests/sgx/sigstruct.c b/tools/testing/selftests/sgx/sigstruct.c
-> > > > index dee7a3d6c5a5..92bbc5a15c39 100644
-> > > > --- a/tools/testing/selftests/sgx/sigstruct.c
-> > > > +++ b/tools/testing/selftests/sgx/sigstruct.c
-> > > > @@ -55,10 +55,27 @@ static bool alloc_q1q2_ctx(const uint8_t *s, const uint8_t *m,
-> > > >    	return true;
-> > > >    }
-> > > > +static void reverse_bytes(void *data, int length)
-> > > > +{
-> > > > +	int i = 0;
-> > > > +	int j = length - 1;
-> > > > +	uint8_t temp;
-> > > > +	uint8_t *ptr = data;
-> > > > +
-> > > > +	while (i < j) {
-> > > > +		temp = ptr[i];
-> > > > +		ptr[i] = ptr[j];
-> > > > +		ptr[j] = temp;
-> > > > +		i++;
-> > > > +		j--;
-> > > > +	}
-> > > > +}
-> > > 
-> > > I was just about apply this one and noticed this reverse_bytes().
-> > > Aren't there byteswap functions you could call instead of writing
-> > > your own?
-> > 
-> > Sorry for latency, just came from two week leave.
-> > 
-> > glibc does provide bswap for 16, 32, 64 bit numbers but nothing better.
-> > I have no idea if libssl has such function. Since the test code already
-> > uses this function, and it works, and it's not a newly added function in
-> > this patch, I would consider keeping it.
-> 
-> I will queue this up since it is fixing an important problem.
-> Let's look into if this can be replaced with a lib call when
-> you do cleanups perhaps for the next release.
+Hi Linus,
 
-Thank you.
+Regular drm fixes pull, seems about the right size, lots of small
+fixes across the board, mostly amdgpu, but msm and i915 are in there
+along with panel and ttm. There is an rc3 backmerge due to some
+patches ending up in the gap between last and this week.
 
-/Jarkko
+Dave.
+
+drm-fixes-2021-07-30:
+drm fixes for 5.14-rc4
+
+amdgpu:
+- Fix resource leak in an error path
+- Avoid stack contents exposure in error path
+- pmops check fix for S0ix vs S3
+- DCN 2.1 display fixes
+- DCN 2.0 display fix
+- Backlight control fix for laptops with HDR panels
+- Maintainers updates
+
+i915:
+- Fix vbt port mask
+- Fix around reading the right DSC disable fuse in display_ver 10
+- Split display version 9 and 10 in intel_setup_outputs
+
+msm:
+- iommu fault display fix
+- misc dp compliance fixes
+- dpu reg sizing fix
+
+panel:
+- Fix bpc for ytc700tlag_05_201c
+
+ttm:
+- debugfs init fixes
+The following changes since commit ff1176468d368232b684f75e82563369208bc371:
+
+  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-07-30
+
+for you to fetch changes up to d28e2568ac26fff351c846bf74ba6ca5dded733e:
+
+  Merge tag 'amd-drm-fixes-5.14-2021-07-28' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2021-07-29
+17:20:29 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.14-rc4
+
+amdgpu:
+- Fix resource leak in an error path
+- Avoid stack contents exposure in error path
+- pmops check fix for S0ix vs S3
+- DCN 2.1 display fixes
+- DCN 2.0 display fix
+- Backlight control fix for laptops with HDR panels
+- Maintainers updates
+
+i915:
+- Fix vbt port mask
+- Fix around reading the right DSC disable fuse in display_ver 10
+- Split display version 9 and 10 in intel_setup_outputs
+
+msm:
+- iommu fault display fix
+- misc dp compliance fixes
+- dpu reg sizing fix
+
+panel:
+- Fix bpc for ytc700tlag_05_201c
+
+ttm:
+- debugfs init fixes
+
+----------------------------------------------------------------
+Alex Deucher (1):
+      drm/amdgpu/display: only enable aux backlight control for OLED panels
+
+Bjorn Andersson (1):
+      drm/msm/dp: Initialize the INTF_CONFIG register
+
+Dale Zhao (1):
+      drm/amd/display: ensure dentist display clock update finished in DCN20
+
+Dave Airlie (4):
+      Merge tag 'drm-msm-fixes-2021-07-27' of
+https://gitlab.freedesktop.org/drm/msm into drm-fixes
+      Merge tag 'drm-misc-fixes-2021-07-28' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      Merge tag 'drm-intel-fixes-2021-07-28' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'amd-drm-fixes-5.14-2021-07-28' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+
+Jagan Teki (1):
+      drm/panel: panel-simple: Fix proper bpc for ytc700tlag_05_201c
+
+Jason Ekstrand (1):
+      drm/ttm: Initialize debugfs from ttm_global_init()
+
+Jiri Kosina (2):
+      drm/amdgpu: Fix resource leak on probe error path
+      drm/amdgpu: Avoid printing of stack contents on firmware load error
+
+Kuogee Hsieh (2):
+      drm/msm/dp: use dp_ctrl_off_link_stream during PHY compliance test run
+      drm/msm/dp: signal audio plugged change at dp_pm_resume
+
+Lucas De Marchi (2):
+      drm/i915: fix not reading DSC disable fuse in GLK
+      drm/i915/display: split DISPLAY_VER 9 and 10 in intel_setup_outputs()
+
+Pratik Vishwakarma (1):
+      drm/amdgpu: Check pmops for desired suspend state
+
+Rob Clark (1):
+      drm/msm: Fix display fault handling
+
+Robert Foss (1):
+      drm/msm/dpu: Fix sm8250_mdp register length
+
+Rodrigo Vivi (1):
+      drm/i915/bios: Fix ports mask
+
+Sean Paul (1):
+      drm/msm/dp: Initialize dp->aux->drm_dev before registration
+
+Simon Ser (1):
+      maintainers: add bugs and chat URLs for amdgpu
+
+Thomas Zimmermann (1):
+      Merge drm/drm-fixes into drm-misc-fixes
+
+Victor Lu (2):
+      drm/amd/display: Guard DST_Y_PREFETCH register overflow in DCN21
+      drm/amd/display: Add missing DCN21 IP parameter
+
+ MAINTAINERS                                              |  2 ++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c                 |  3 ++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c               |  8 ++------
+ drivers/gpu/drm/amd/amdgpu/psp_v12_0.c                   |  7 +++----
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c        |  4 ++--
+ .../gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c |  2 +-
+ drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c    |  1 +
+ .../drm/amd/display/dc/dml/dcn21/display_mode_vba_21.c   |  3 +++
+ drivers/gpu/drm/i915/display/intel_bios.c                |  3 ++-
+ drivers/gpu/drm/i915/display/intel_display.c             |  8 +++++++-
+ drivers/gpu/drm/i915/intel_device_info.c                 |  9 +++++----
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c           |  2 +-
+ drivers/gpu/drm/msm/dp/dp_catalog.c                      |  1 +
+ drivers/gpu/drm/msm/dp/dp_ctrl.c                         |  2 +-
+ drivers/gpu/drm/msm/dp/dp_display.c                      |  5 +++++
+ drivers/gpu/drm/msm/msm_iommu.c                          | 11 ++++++++++-
+ drivers/gpu/drm/panel/panel-simple.c                     |  2 +-
+ drivers/gpu/drm/ttm/ttm_device.c                         | 12 ++++++++++++
+ drivers/gpu/drm/ttm/ttm_module.c                         | 16 ----------------
+ 19 files changed, 61 insertions(+), 40 deletions(-)
