@@ -2,84 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0761F3DBE9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F75C3DBEA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhG3TAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 15:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
+        id S230468AbhG3TCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbhG3TAe (ORCPT
+        with ESMTP id S230335AbhG3TCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:00:34 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125EFC061765;
-        Fri, 30 Jul 2021 12:00:30 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id y200so12670291iof.1;
-        Fri, 30 Jul 2021 12:00:30 -0700 (PDT)
+        Fri, 30 Jul 2021 15:02:30 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608A0C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:02:24 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id f4so2226011vkb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=LW9Axg6PO2+fAhkVIielz/2kuUe/8kVjL2M0TRJoppw=;
-        b=h7Wff98sS/D3hYcTAQd9yf/JkVaCdiSHAqFI7XGUFgQn0PsjpPMP6lFqvGDPX+GUx3
-         tV9rgybUcmKNS1+Im0jIqkUUZsfNKGKTQ9Pb1udvrIdAP6k6wAoZCXF40YOIkDtxRhnJ
-         AcyCyYuqEonB/Xfe/i7796npkV50tMNLbPEuN2K2R7BRrMSb3HKS66QYfe/tiQI46E6C
-         lS68qjy8vANHhH47BAiRcX72HhDn1oMpfDzGuvAQanZ8ihb7Rl9U6msuPixBqOuGjzX2
-         AkKBNhokvZ0rrRJIdp64lpJBKSOkgqX+dC6osTkB7mTvi+XVJduQNDWM3MCeCylnLCsV
-         bOwQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gBCAezsRz+diDpubea9ipqu5sk3T7ijBYsLpPq9JW6g=;
+        b=bDgWF2lqGMUdyCyKt7IN7yXqW3h+wIKUz+MPEaJhXXpzBEp0DfQjh9CuOEjG0CzTM/
+         d6go/2disbc51wRYj5T56dCFF7xi2Rz1b2FVK3dHv6J18v1pdUDD/alM4dyrmFzkPCVA
+         pP2PTVAS15KrTJIylWJrNUaLIw9s/j/JfrkmfrXlXajpC+0My7997AyW3R5J/44mKOOD
+         nrdt1iHUwHO5PLk/3S8/L/SSLcWT+jC4zfOY46O7rmUAcjmKFHEE6P0UkaKf0pB+CJ9J
+         X9SBMLKBTsJ+2Oq0jxxtMYwnzVaEmgz0h/cJoTjfTTFS3JhqVDJAxAVuUCMp6LLFiBD1
+         mfDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=LW9Axg6PO2+fAhkVIielz/2kuUe/8kVjL2M0TRJoppw=;
-        b=RgpGXTsXiDtzxJGu8sS3bCuA3w8+hHbZ6AVBiyofu6JRK0YC+4Qi+Y5uvkw/Bn5SHm
-         6GXWPC+u+Ybc4My/AWULrEyz8bURIhrNYOaA56XQkbQPpxaHNfWYbMI8ZNfFNyOfSMQu
-         UFrnrwOQmWWkqZ8LoPPXeFoeiJre6ITHkufandggp+lGkE7LdzgqM8IBWoMkbvVCsFJJ
-         nz4XCPZwzLP+g1ixDwT4K1l4TjbAk2Q5A0eSBkfDSjDsWXasDaEgGx9EQ1EkhF0JyZQl
-         UGglzE2I8GCXmW0B9st4Z6UQe1GhG0Y/KzFoItSJDjJBAriLhPF+3U35CqG9dlgPaMN4
-         t7Gw==
-X-Gm-Message-State: AOAM532F256D24kTGQ99Uo0hXskc1jvSIxm66fHCZSRWu35nCt3evWyE
-        kD+eXC3HUbD0ZqfWLf/ye34=
-X-Google-Smtp-Source: ABdhPJww/+ckhdc92jt2T7e4jkYlM9JINk8XOuefIN5BFo+AtM3w9Tc+bDl5jNoH+2PkQCj9U8jaRQ==
-X-Received: by 2002:a05:6602:2d10:: with SMTP id c16mr2254956iow.40.1627671629552;
-        Fri, 30 Jul 2021 12:00:29 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id x4sm1336069ilj.52.2021.07.30.12.00.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 12:00:28 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 1/2] net: dsa: tag_mtk: skip address learning on transmit to standalone ports
-Date:   Sat, 31 Jul 2021 03:00:20 +0800
-Message-Id: <20210730190020.638409-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210730162403.p2dnwvwwgsxttomg@skbuf>
-References: <20210728175327.1150120-1-dqfext@gmail.com> <20210728175327.1150120-2-dqfext@gmail.com> <20210728183705.4gea64qlbe64kkpl@skbuf> <20210730162403.p2dnwvwwgsxttomg@skbuf>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gBCAezsRz+diDpubea9ipqu5sk3T7ijBYsLpPq9JW6g=;
+        b=IikGmRLiDfYYwD1JMbqFY3pprGUujrxPE+wnsJqj6SEVRjZJ6zM8Z3FjvRc82j9ju9
+         IznB1Xhko8yjhyh7lUGWtoqs+UIlD/QiCmhB38D7/TYoV3RRPqHrsZzFv8MPmcyEnItu
+         dkaHStvt9Yye4oaSLiILML/t4diPYvOiMFx+PUC6Hh8JfzUK/Vapq2yTqrAbSZYQIdel
+         1w1ILfSvpObDbXoKL72ti1hOr7hMjHCr9CS8NdXZlkgDI+hebznzjtkvvt4P4igiITs4
+         565VytMiMn/XKv851pnFUm+AZiId/lwVLuUxeElJcWBYsVudFCYjS+aDC49HwJgNCkws
+         AKLQ==
+X-Gm-Message-State: AOAM53146ZMmhQECachYfFQZgGJCDItQDOXxaswuhfA8J2FDPGymsvre
+        9DaHOPtzOe0szN3CK1SIlmHO5gF2pt3cOd9ws57YiQ==
+X-Google-Smtp-Source: ABdhPJy6d7W9hl2/7EtbdW42ci7f/PLQYOiCiB8PwC/au40+bBBTWt2EtWiXxIl/RIdt37Nw/MAlL2jVYoYJ1eEgjXE=
+X-Received: by 2002:a1f:3651:: with SMTP id d78mr3095853vka.0.1627671743462;
+ Fri, 30 Jul 2021 12:02:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <5e35b0a7-13aa-3c62-ca49-14af2fcb2a08@canonical.com> <c3486111-0ec9-9679-d2a2-68b2f33a2450@canonical.com>
+In-Reply-To: <c3486111-0ec9-9679-d2a2-68b2f33a2450@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Fri, 30 Jul 2021 22:02:12 +0300
+Message-ID: <CAPLW+4kbnJEBkc0D=RWt59JxBan8X1uDy6sSXBiYAq8N9FDV6A@mail.gmail.com>
+Subject: Re: [PATCH 00/12] Add minimal support for Exynos850 SoC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 07:24:03PM +0300, Vladimir Oltean wrote:
-> Considering that you also have the option of setting
-> ds->assisted_learning_on_cpu_port = true and this will have less false
-> positives, what are the reasons why you did not choose that approach?
+Hi Krzysztof,
 
-After enabling it, I noticed .port_fdb_{add,del} are called with VID=0
-(which it does not use now) unless I turn on VLAN filtering. Is that
-normal?
+On Fri, 30 Jul 2021 at 20:21, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 30/07/2021 17:18, Krzysztof Kozlowski wrote:
+> > On 30/07/2021 16:49, Sam Protsenko wrote:
+> >> This patch series adds initial platform support for Samsung Exynos850
+> >> SoC [1]. With this patchset it's possible to run the kernel with BusyBox
+> >> rootfs as a RAM disk. More advanced platform support (like MMC driver
+> >> additions) will be added later. The idea is to keep the first submission
+> >> minimal to ease the review, and then build up on top of that.
+> >>
+> >> [1] https://www.samsung.com/semiconductor/minisite/exynos/products/mobileprocessor/exynos-850/
+> >>
+> >
+> > Great work!
+> >
+
+Thanks, Krzysztof! And thank you for reviewing the whole series.
+
+> > What's the SoC revision number (should be accessible via
+> > /sys/bus/soc/devices/soc0/)? Recent wrap in numbering of Exynos chips
+> > might bring confusion...
+
+# cat /sys/devices/soc0/revision
+0
+
+>
+> Judging by vendor's sources it is quite confusing. It looks mostly like
+> Exynos3830 but in few other cases it uses Exynos9 compatibles (Exynos9,
+> Exynos9820). Only in few places there is Exynos850. Marketing department
+> made it so confusing...  The revision embedded in SoC would be very
+> interesting.
+>
+
+As I understand, this SoC is called Exynos850 everywhere now.
+Exynos3830 is its old name, not used anymore. As you noticed from
+patch #2, it shares some definitions with Exynos9 SoC, so I guess some
+software is similar for both architectures. Not sure about hardware
+though, never worked with Exynos9 CPUs. Anyway, I asked Samsung
+representatives about naming, and it seems like we should stick to
+"Exynos850" name, even in code.
+
+> Anyway, judging by current versioning, there is a risk Samsung will come
+> with a new chipset name conflicting with existing ones. It already
+> overflowed.
+>
+> It's even worse with a thingy called "Exynos9 auto" which hides
+> numbering even more.
+>
+>
+> Best regards,
+> Krzysztof
