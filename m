@@ -2,110 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA293DBBF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946743DBC09
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239623AbhG3PSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 11:18:53 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:35164
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239439AbhG3PSw (ORCPT
+        id S239944AbhG3PUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 11:20:12 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:56410 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S239704AbhG3PTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 11:18:52 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id B24A23F248
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:18:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627658326;
-        bh=uQz9tULPCu5UgY3Ykcp4Ot2UDuSXdhe8Cf5AChsFwuk=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=bGggyeAsHZoe99MUNqYYPyGTi8QMtb0yCvsD9bAAZ/Fr8LMUYIx8QrjuvDrjqQwKF
-         4Z4l7Mdo3XEHJyud6uhVFXIKZoBe4oZ0eY9kwIRg1PyNyvb54QqQrsor9Q9YOJM2OP
-         YTS43aHA1sNay/hbtdPUId5HbnW6tqQ32ZhRgzUAaW/k15tpMjpgSA5llqYEIwWtmM
-         ReaiX4TxzMw2HcWmPMM0XzB0Yf1HnK4JOISkWdv0cRRr2cA0QlErgnhYlJ5B+g+5zT
-         foFIqteMe8eQC/6hlTJYXzhIKM/gL59j8YprrSK08FKNADfv2MfU3JbptKNjDWGPcp
-         NMbFtzkS2RhzA==
-Received: by mail-ed1-f72.google.com with SMTP id j22-20020a50ed160000b02903ab03a06e86so4753056eds.14
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 08:18:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uQz9tULPCu5UgY3Ykcp4Ot2UDuSXdhe8Cf5AChsFwuk=;
-        b=eompq1ID4wW09hnbHqAXpOgJUIX9jnNpTBM35UgkZEC8Lx9unzlBMM0tTfC9kEglAI
-         XFqymzmbft61pPsYNAOC33LAfCfP5BIlDCJCCZ4NOWG9LKZoQeqASx3DA0GuSVeAb/Zk
-         Jj/7hw4kThyuIdIA5QTQZzdL3ZtXJy1AeqN8luCdrazN7E6Q2SbjTyAxJdgtDmlkKLuJ
-         r9q6Jn1M62f7M9rRm8LBid/7ZHPo/acH7UdrZxsG41wGKyD+WBBt7YPkKiTHjR3P6Q9A
-         EZdaoTL0spmuBb9/Ray7CP7OVvwmpuYcDbzVOvDV1N7tDVAqG6H2z/iNfzbsURofr6a4
-         l97g==
-X-Gm-Message-State: AOAM530tdFfwAgYBqKEj3vHyWXfAdrREP5nktah+ocf30KYDyTfbUAIL
-        hvT9GwAsU7HU/pO8Cc8+anIXESdBZC3kMxmAYceqx9VBg99EVKR1QtpVNJYVdIbDTP0xDxkaUOG
-        VtHYvLGAX1tlheLIjX1s3EGCErED4Afs0+S2U9rEQZA==
-X-Received: by 2002:a05:6402:3192:: with SMTP id di18mr3654265edb.186.1627658326388;
-        Fri, 30 Jul 2021 08:18:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxSu7DW5+j3BhrkN5cwojsD8uD94ncil0rrItmiexSqoVvOVwhkjvCksZc4ftgx6K7DzkIA9A==
-X-Received: by 2002:a05:6402:3192:: with SMTP id di18mr3654233edb.186.1627658326270;
-        Fri, 30 Jul 2021 08:18:46 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id f15sm824270edd.54.2021.07.30.08.18.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 08:18:45 -0700 (PDT)
-Subject: Re: [PATCH 00/12] Add minimal support for Exynos850 SoC
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <5e35b0a7-13aa-3c62-ca49-14af2fcb2a08@canonical.com>
-Date:   Fri, 30 Jul 2021 17:18:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 30 Jul 2021 11:19:38 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16UELBKl004490;
+        Fri, 30 Jul 2021 10:19:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=4aewaRG2Ws8MYZlNy27pbkaKvgZ3jxtw9I4cDaz4YUE=;
+ b=aG4qLcivdqbGbGO5N0iPzt4tQaoHmZB9u/DkL5qSf3B/1iWdUtaPnsGZ3N0yLqyWxW61
+ 5b2GYNpE6afOyOcz9xf1nwfKRWdNwKciNxmhyW3+SbKRzpC34ZUQNpdEE5ptHwR6P9aJ
+ TGSwDm9MklKiuFGsCLmGrREAS0HhOGzmZelIBonekFagiWrLeCBf0te7v93vHOn8hnTe
+ /y00VnMyrYDJbKZshlHlJ0YGieYbq/U2uvcTCvynUy/FycJq2mBj5n2pDsPo6UC2VbOZ
+ taBcS+OIvlQmN8AdHzJJo7hTbNX2Vn/4wmzw5uxn5tCxcMSECH5MFGV60pxlHF4d9Yy+ Ww== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3a41wd181m-14
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 30 Jul 2021 10:19:24 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 30 Jul
+ 2021 16:19:13 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Fri, 30 Jul 2021 16:19:13 +0100
+Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E929E2BA;
+        Fri, 30 Jul 2021 15:19:12 +0000 (UTC)
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: [PATCH v3 26/27] ALSA: hda/cs8409: Follow correct CS42L42 power down sequence for suspend
+Date:   Fri, 30 Jul 2021 16:18:43 +0100
+Message-ID: <20210730151844.7873-27-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
+References: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <20210730144922.29111-1-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: QiTiCKMmOJBVHkvvB2CvqiVZ7OkRSQc4
+X-Proofpoint-ORIG-GUID: QiTiCKMmOJBVHkvvB2CvqiVZ7OkRSQc4
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
+ spamscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2107300102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/07/2021 16:49, Sam Protsenko wrote:
-> This patch series adds initial platform support for Samsung Exynos850
-> SoC [1]. With this patchset it's possible to run the kernel with BusyBox
-> rootfs as a RAM disk. More advanced platform support (like MMC driver
-> additions) will be added later. The idea is to keep the first submission
-> minimal to ease the review, and then build up on top of that.
-> 
-> [1] https://www.samsung.com/semiconductor/minisite/exynos/products/mobileprocessor/exynos-850/
-> 
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Great work!
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+---
 
-What's the SoC revision number (should be accessible via
-/sys/bus/soc/devices/soc0/)? Recent wrap in numbering of Exynos chips
-might bring confusion...
+Changes in v2:
+- No changes
 
+Changes in v3:
+- No changes
 
-Best regards,
-Krzysztof
+ sound/pci/hda/patch_cs8409.c | 23 ++++++++++++++++++++++-
+ sound/pci/hda/patch_cs8409.h |  2 ++
+ 2 files changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
+index f4c53088fa4e..b42ef3c3e447 100644
+--- a/sound/pci/hda/patch_cs8409.c
++++ b/sound/pci/hda/patch_cs8409.c
+@@ -11,6 +11,7 @@
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <linux/mutex.h>
++#include <linux/iopoll.h>
+ 
+ #include "patch_cs8409.h"
+ 
+@@ -206,6 +207,7 @@ static int cs8409_i2c_read(struct sub_codec *scodec, unsigned int addr)
+ 	read_data = cs8409_vendor_coef_get(codec, CS8409_I2C_QREAD);
+ 
+ 	mutex_unlock(&spec->i2c_mux);
++
+ 	return read_data & 0x0ff;
+ 
+ error:
+@@ -662,9 +664,28 @@ static void cs42l42_suspend(struct sub_codec *cs42l42)
+ {
+ 	struct hda_codec *codec = cs42l42->codec;
+ 	unsigned int gpio_data;
++	int reg_cdc_status = 0;
++	const struct cs8409_i2c_param cs42l42_pwr_down_seq[] = {
++		{ 0x2301, 0x3F },
++		{ 0x2302, 0x3F },
++		{ 0x2303, 0x3F },
++		{ 0x2001, 0x0F },
++		{ 0x2A01, 0x00 },
++		{ 0x1207, 0x00 },
++		{ 0x1101, 0xFE },
++		{ 0x1102, 0x8C },
++		{ 0x1101, 0xFF },
++	};
++
++	cs8409_i2c_bulk_write(cs42l42, cs42l42_pwr_down_seq, ARRAY_SIZE(cs42l42_pwr_down_seq));
++
++	if (read_poll_timeout(cs8409_i2c_read, reg_cdc_status,
++			(reg_cdc_status & 0x1), CS42L42_PDN_SLEEP_US, CS42L42_PDN_TIMEOUT_US,
++			true, cs42l42, 0x1308) < 0)
++		codec_warn(codec, "Timeout waiting for PDN_DONE for CS42L42\n");
+ 
+ 	/* Power down CS42L42 ASP/EQ/MIX/HP */
+-	cs8409_i2c_write(cs42l42, 0x1101, 0xfe);
++	cs8409_i2c_write(cs42l42, 0x1102, 0x9C);
+ 	cs42l42->suspended = 1;
+ 	cs42l42->last_page = 0;
+ 
+diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
+index 71dbbd8e2f3b..09987daa9cbf 100644
+--- a/sound/pci/hda/patch_cs8409.h
++++ b/sound/pci/hda/patch_cs8409.h
+@@ -233,6 +233,8 @@ enum cs8409_coefficient_index_registers {
+ #define CS42L42_JACK_REMOVED			(0x00)
+ #define CS42L42_I2C_TIMEOUT_US			(20000)
+ #define CS42L42_I2C_SLEEP_US			(2000)
++#define CS42L42_PDN_TIMEOUT_US			(250000)
++#define CS42L42_PDN_SLEEP_US			(2000)
+ 
+ /* Dell BULLSEYE / WARLOCK / CYBORG Specific Definitions */
+ 
+-- 
+2.25.1
+
