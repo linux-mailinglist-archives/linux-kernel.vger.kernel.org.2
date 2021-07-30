@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE4E3DC0C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5490B3DC0C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhG3WFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:05:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56147 "EHLO
+        id S233357AbhG3WFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:05:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20352 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233065AbhG3WFK (ORCPT
+        by vger.kernel.org with ESMTP id S233170AbhG3WFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:05:10 -0400
+        Fri, 30 Jul 2021 18:05:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627682705;
+        s=mimecast20190719; t=1627682708;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/RDoZRQ4z39utw+snkzSoyuPXl0N6gUtnPUuN5iXfGY=;
-        b=Fe2YbJrMZLksaQJKqR1gtkCY1cdaMfWZ9ns6ZXif2juGHWN3e1kaZ1jUqx9ErmIrbWpjlU
-        0DLx4YjfDIZ4EjOdfolgJgH8CH9DRWAoZfePdsZ0WUKxzE+rQA340/EfEIru4TXaud4xjG
-        URCdGHI4UQ/5dwU22vSghSV6g5aPLQw=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-38-gScp3NdGPam_5-_NZKnW5g-1; Fri, 30 Jul 2021 18:05:03 -0400
-X-MC-Unique: gScp3NdGPam_5-_NZKnW5g-1
-Received: by mail-qt1-f199.google.com with SMTP id f9-20020a05622a1a09b02902615523e725so5110755qtb.21
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:05:03 -0700 (PDT)
+        bh=nJ5kIz6o1OQd9QTNvIHXfvS8tA6xw4680ifwk1fWPhY=;
+        b=OiBcf8ItaceCmzR9F5B24Vwh30MEgE8kp9gYAIsHzLNphdvLk55YjWqKXBTPByZcHVzKjc
+        AYrGeAfKOVM1gaY5TA7IcpY0YYdxl+KuzIAe9FvxUVE5ZbWD6XLuYrjBHVhX5PNqTsRBGP
+        bfaYISSb1IcxMkF33ViPCTMX5aCDy/U=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-JevSpj21OQa_GBFUB6SDrw-1; Fri, 30 Jul 2021 18:05:07 -0400
+X-MC-Unique: JevSpj21OQa_GBFUB6SDrw-1
+Received: by mail-qt1-f200.google.com with SMTP id i8-20020ac85c080000b029026ae3f4adc9so5137921qti.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:05:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/RDoZRQ4z39utw+snkzSoyuPXl0N6gUtnPUuN5iXfGY=;
-        b=CtYynwZ5z4uM4CzxKP44+O7RAdZ8axkvnRpRl2AZdMgxxxGhQw0wag0hFxLb2cueXv
-         e1sOY47n7u+cJj2fg2oFBL+G0NYJUgmOoX/tEKVNWin2UKKPnXKmzJYJzBB2TxsGr2IX
-         AeiYuWFUkl1QNQ6YRyS6S6SNPiB6rqYfw/9gWH3OvYs6UrVEpoVWjXNAilDHVtoO8hgA
-         LEIgnPs5IyEhm9bNZHDZL1Y+77HkOxjNF+gI1AfwhHeMFvjHXwb0ugtNFaWTZtgQ64t1
-         Wc8mcBfqn8fLE1l3hEwHFsNI4Vge/mR+pgWy5+tL2s3fjEEuwqEk1EKfQfZE4iXG2JtK
-         k3aw==
-X-Gm-Message-State: AOAM531UJn7qzEyvdqHzvjZgboQiXWDI8funw89XPYAc7WfKPoybtBRu
-        RwRmCHUBuE1chKoNlw8cfYLm3Sm0l9NBZv29VoZbLbfYgdu4CUMQU2xIk6ALNW7CHSQK9Kk8xW6
-        yKQ+SkPtP7QtamTqoaBCaeqP2
-X-Received: by 2002:a05:6214:301d:: with SMTP id ke29mr5138479qvb.30.1627682703112;
-        Fri, 30 Jul 2021 15:05:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWCmoNcaZU19195qKr1Fps5K3/JOg1+6YD1Cz0f/pAtcjGUvYAKUdj8qKiLNrXgJM3H6DyoA==
-X-Received: by 2002:a05:6214:301d:: with SMTP id ke29mr5138465qvb.30.1627682702921;
-        Fri, 30 Jul 2021 15:05:02 -0700 (PDT)
+        bh=nJ5kIz6o1OQd9QTNvIHXfvS8tA6xw4680ifwk1fWPhY=;
+        b=BjYp96RqA8ab4bcDoscxYTiywx+5pWa74PH7R4Xz7xfWUizXC5wq2NBcySYnerPlHZ
+         PQOkkbbsbKT0g7/mI1v1p8fj4H/k56X2oYTa/bH1wvHFBKjSEkxx4EgNEA31y+mmcc5i
+         Xr+CwVPn14XA3XjWWUMaupMK9ZzLgsZEJvsdjkvn/ajIqZOdoS+B3HwHRhvhrwVrwalo
+         f9zfrl1K3dUZR7gly9Nal0bi0hg7p03UwMEfrwwX7YMtrVpz/SXoN3UXmHwXiyxMdK3k
+         69k6lcFbwvBc0FEvF2Y+OEVWzMglocweSVyTcWs+96XV+Zhgm1Ad+D3JToIOtOMWdpPx
+         QqEA==
+X-Gm-Message-State: AOAM531ktddRt1CmAUDkjPW8JYa+baOM89qA2zimhy/23jaLXb5URQNT
+        FdGRjYpWTCTn4Zi6SY2jC6GLCeXZyIsKbOwefr1RBfnfsBZcgyLX515OFUqPsMlk2fmOOlplqhp
+        R16jO5wEEZjK2NWszi2O9csIo
+X-Received: by 2002:a37:9c06:: with SMTP id f6mr4344534qke.86.1627682705614;
+        Fri, 30 Jul 2021 15:05:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz2+zyiyehuJ7kqaZ8WuhUtBpixZqcJNaSYno9mpuUyv7sxWUQmjmlZLJ6h4xEDlsaUXutyew==
+X-Received: by 2002:a37:9c06:: with SMTP id f6mr4344517qke.86.1627682705409;
+        Fri, 30 Jul 2021 15:05:05 -0700 (PDT)
 Received: from t490s.. (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id l12sm1199651qtx.45.2021.07.30.15.05.01
+        by smtp.gmail.com with ESMTPSA id l12sm1199651qtx.45.2021.07.30.15.05.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 15:05:02 -0700 (PDT)
+        Fri, 30 Jul 2021 15:05:04 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
         Sean Christopherson <seanjc@google.com>, peterx@redhat.com,
         Maxim Levitsky <mlevitsk@redhat.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH v3 4/7] KVM: X86: Introduce mmu_rmaps_stat per-vm debugfs file
-Date:   Fri, 30 Jul 2021 18:04:52 -0400
-Message-Id: <20210730220455.26054-5-peterx@redhat.com>
+Subject: [PATCH v3 5/7] KVM: X86: MMU: Tune PTE_LIST_EXT to be bigger
+Date:   Fri, 30 Jul 2021 18:04:53 -0400
+Message-Id: <20210730220455.26054-6-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210730220455.26054-1-peterx@redhat.com>
 References: <20210730220455.26054-1-peterx@redhat.com>
@@ -69,159 +69,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use this file to dump rmap statistic information.  The statistic is done by
-calculating the rmap count and the result is log-2-based.
+Currently rmap array element only contains 3 entries.  However for EPT=N there
+could have a lot of guest pages that got tens of even hundreds of rmap entry.
 
-An example output of this looks like (idle 6GB guest, right after boot linux):
+A normal distribution of a 6G guest (even if idle) shows this with rmap count
+statistics:
 
 Rmap_Count:     0       1       2-3     4-7     8-15    16-31   32-63   64-127  128-255 256-511 512-1023
-Level=4K:       3086676 53045   12330   1272    502     121     76      2       0       0       0
-Level=2M:       5947    231     0       0       0       0       0       0       0       0       0
+Level=4K:       3089171 49005   14016   1363    235     212     15      7       0       0       0
+Level=2M:       5951    227     0       0       0       0       0       0       0       0       0
 Level=1G:       32      0       0       0       0       0       0       0       0       0       0
+
+If we do some more fork some pages will grow even larger rmap counts.
+
+This patch makes PTE_LIST_EXT bigger so it'll be more efficient for the general
+use case of EPT=N as we do list reference less and the loops over PTE_LIST_EXT
+will be slightly more efficient; but still not too large so less waste when
+array not full.
+
+It should not affecting EPT=Y since EPT normally only has zero or one rmap
+entry for each page, so no array is even allocated.
+
+With a test case to fork 500 child and recycle them ("./rmap_fork 500" [1]),
+this patch speeds up fork time of about 29%.
+
+    Before: 473.90 (+-5.93%)
+    After:  366.10 (+-4.94%)
+
+[1] https://github.com/xzpeter/clibs/commit/825436f825453de2ea5aaee4bdb1c92281efe5b3
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- arch/x86/kvm/x86.c | 113 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 113 insertions(+)
+ arch/x86/kvm/mmu/mmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index e44d8f7781b6..0877340dc6ff 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -30,6 +30,7 @@
- #include "hyperv.h"
- #include "lapic.h"
- #include "xen.h"
-+#include "mmu/mmu_internal.h"
- 
- #include <linux/clocksource.h>
- #include <linux/interrupt.h>
-@@ -59,6 +60,7 @@
- #include <linux/mem_encrypt.h>
- #include <linux/entry-kvm.h>
- #include <linux/suspend.h>
-+#include <linux/debugfs.h>
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 16c99f771c9e..c0b452bb5dd9 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -137,8 +137,8 @@ module_param(dbg, bool, 0644);
  
  #include <trace/events/kvm.h>
  
-@@ -11193,6 +11195,117 @@ int kvm_arch_post_init_vm(struct kvm *kvm)
- 	return kvm_mmu_post_init_vm(kvm);
- }
+-/* make pte_list_desc fit well in cache line */
+-#define PTE_LIST_EXT 3
++/* make pte_list_desc fit well in cache lines */
++#define PTE_LIST_EXT 15
  
-+/*
-+ * This covers statistics <1024 (11=log(1024)+1), which should be enough to
-+ * cover RMAP_RECYCLE_THRESHOLD.
-+ */
-+#define  RMAP_LOG_SIZE  11
-+
-+static const char *kvm_lpage_str[KVM_NR_PAGE_SIZES] = { "4K", "2M", "1G" };
-+
-+static int kvm_mmu_rmaps_stat_show(struct seq_file *m, void *v)
-+{
-+	struct kvm_rmap_head *rmap;
-+	struct kvm *kvm = m->private;
-+	struct kvm_memory_slot *slot;
-+	struct kvm_memslots *slots;
-+	unsigned int lpage_size, index;
-+	/* Still small enough to be on the stack */
-+	unsigned int *log[KVM_NR_PAGE_SIZES], *cur;
-+	int i, j, k, l, ret;
-+
-+	memset(log, 0, sizeof(log));
-+
-+	ret = -ENOMEM;
-+	for (i = 0; i < KVM_NR_PAGE_SIZES; i++) {
-+		log[i] = kzalloc(RMAP_LOG_SIZE * sizeof(unsigned int), GFP_KERNEL);
-+		if (!log[i])
-+			goto out;
-+	}
-+
-+	mutex_lock(&kvm->slots_lock);
-+	write_lock(&kvm->mmu_lock);
-+
-+	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-+		slots = __kvm_memslots(kvm, i);
-+		for (j = 0; j < slots->used_slots; j++) {
-+			slot = &slots->memslots[j];
-+			for (k = 0; k < KVM_NR_PAGE_SIZES; k++) {
-+				rmap = slot->arch.rmap[k];
-+				lpage_size = kvm_mmu_slot_lpages(slot, k + 1);
-+				cur = log[k];
-+				for (l = 0; l < lpage_size; l++) {
-+					index = ffs(pte_list_count(&rmap[l]));
-+					if (WARN_ON_ONCE(index >= RMAP_LOG_SIZE))
-+						index = RMAP_LOG_SIZE - 1;
-+					cur[index]++;
-+				}
-+			}
-+		}
-+	}
-+
-+	write_unlock(&kvm->mmu_lock);
-+	mutex_unlock(&kvm->slots_lock);
-+
-+	/* index=0 counts no rmap; index=1 counts 1 rmap */
-+	seq_printf(m, "Rmap_Count:\t0\t1\t");
-+	for (i = 2; i < RMAP_LOG_SIZE; i++) {
-+		j = 1 << (i - 1);
-+		k = (1 << i) - 1;
-+		seq_printf(m, "%d-%d\t", j, k);
-+	}
-+	seq_printf(m, "\n");
-+
-+	for (i = 0; i < KVM_NR_PAGE_SIZES; i++) {
-+		seq_printf(m, "Level=%s:\t", kvm_lpage_str[i]);
-+		cur = log[i];
-+		for (j = 0; j < RMAP_LOG_SIZE; j++)
-+			seq_printf(m, "%d\t", cur[j]);
-+		seq_printf(m, "\n");
-+	}
-+
-+	ret = 0;
-+out:
-+	for (i = 0; i < KVM_NR_PAGE_SIZES; i++)
-+		if (log[i])
-+			kfree(log[i]);
-+
-+	return ret;
-+}
-+
-+static int kvm_mmu_rmaps_stat_open(struct inode *inode, struct file *file)
-+{
-+	struct kvm *kvm = inode->i_private;
-+
-+	if (!kvm_get_kvm_safe(kvm))
-+		return -ENOENT;
-+
-+	return single_open(file, kvm_mmu_rmaps_stat_show, kvm);
-+}
-+
-+static int kvm_mmu_rmaps_stat_release(struct inode *inode, struct file *file)
-+{
-+	struct kvm *kvm = inode->i_private;
-+
-+	kvm_put_kvm(kvm);
-+
-+	return single_release(inode, file);
-+}
-+
-+static const struct file_operations mmu_rmaps_stat_fops = {
-+	.open		= kvm_mmu_rmaps_stat_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= kvm_mmu_rmaps_stat_release,
-+};
-+
-+int kvm_arch_create_vm_debugfs(struct kvm *kvm)
-+{
-+	debugfs_create_file("mmu_rmaps_stat", 0644, kvm->debugfs_dentry, kvm,
-+			    &mmu_rmaps_stat_fops);
-+	return 0;
-+}
-+
- static void kvm_unload_vcpu_mmu(struct kvm_vcpu *vcpu)
- {
- 	vcpu_load(vcpu);
+ struct pte_list_desc {
+ 	u64 *sptes[PTE_LIST_EXT];
 -- 
 2.31.1
 
