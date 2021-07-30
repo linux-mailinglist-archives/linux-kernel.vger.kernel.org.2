@@ -2,224 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B625A3DB5E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA02F3DB5E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238265AbhG3J0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:26:35 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56714 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238209AbhG3J0b (ORCPT
+        id S238176AbhG3J2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230522AbhG3J2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:26:31 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D026F2240A;
-        Fri, 30 Jul 2021 09:26:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627637185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3qVuz5gWClPtgxEZQpa8+8C1kUk+SDB64ahqtgECpn8=;
-        b=SebqX/TBG+6Jymm7zXT/FeRAPxnYMQdDVRARBH4DcJiYOhL0X4uZAL0pQJwzRsl3s1ylp4
-        Rz8+w4zHs50hoNWDj7sk/wZURGfrsc08XKmH08ku/zs+EKEscpD9gYAdivzCxCeeZQhDZF
-        mVcTNcsTFKrY5hajqFS4F7RCZo/8Ajw=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 8EE9913748;
-        Fri, 30 Jul 2021 09:26:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id YG2xIcHFA2GeIwAAGKfGzw
-        (envelope-from <jgross@suse.com>); Fri, 30 Jul 2021 09:26:25 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH v2 2/2] xen: rename wrong named pfn related variables
-Date:   Fri, 30 Jul 2021 11:26:22 +0200
-Message-Id: <20210730092622.9973-3-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210730092622.9973-1-jgross@suse.com>
-References: <20210730092622.9973-1-jgross@suse.com>
+        Fri, 30 Jul 2021 05:28:50 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BD9C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:28:45 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id x90so12216656ede.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:28:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WxhlzYrYV28az1jXTH92aNSQMW4lNS5B9o0J3BKptsc=;
+        b=RVTBKHUPkJGMHQr5TC6/sYRTWrnQgV3jEyRw4RI12fsX+efJSbQOhg3RVAAi0s0MmJ
+         D+m9kebK87MkoNUf56TrmJECOkAiYn4jnIuQ0nCu8rGxKrbO0nLoWm+cSP67lKVlxLqJ
+         HwbJTvz2w7/kBbdJUZ9sq93DTHT8/TqYPx7lLdYbnSke0ukvdHFP5F5YO1ghHVG/eRoF
+         GLM4x2/TJ9VwtOmeVkOyA66sPajVF5QZtCxzYZjUsXALSiF8ByP5s+ThBviMql30Q77M
+         fVHU7R1/0CL8c2FK/CBc/a0i4zbQHqM9FlGS82CbnuzBEejzJK+yLwr1Dz9yCxfmidhV
+         1jdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WxhlzYrYV28az1jXTH92aNSQMW4lNS5B9o0J3BKptsc=;
+        b=KHIwXZUMBCwrmloSo1Bq5BwtC5+QkAB7dvYmtCt/7QbKlwlMyyZWtRzblwVhAhjeoN
+         bZkGTYb7VuMsd7mQhyWtcFA7Kg8mGbjoaR70m5U54cD7vuPkcQJNtDc0OZO3PmG2NaqA
+         cbSBN993bLw+G1p4gxEcusfI+wXV/3z/yblWj+AUAZTycX2yZMFeV7orql/Tpak+LdN2
+         Np4L0otrhNF8ubdSEu9vZdWkbUGE2iA8J1ShJnsK8a1TCQW2KUD1pOX76MZpC+m7V7GT
+         Fzc/mJun24N17ee8hrM9dQ1v1Kvkm5soWsJL1VsMuaWMpGoZXwsvjqKAwf+UJYbdpBG3
+         YxXg==
+X-Gm-Message-State: AOAM532cs/7TNSp144uF5OUBmFBY346gX0q53/5YUcuDKLpt3qvNV5bH
+        3WbitZU94WA6WAEZ+QXUkaekNQ==
+X-Google-Smtp-Source: ABdhPJz7v59AkGLe4ncF8sDSsbs4m/88saDYcXaP0lDGk9+fMwno6QtbmMRD+lr3lYSTMH8XQi1Rcg==
+X-Received: by 2002:aa7:dbc8:: with SMTP id v8mr1860784edt.242.1627637324222;
+        Fri, 30 Jul 2021 02:28:44 -0700 (PDT)
+Received: from myrica (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
+        by smtp.gmail.com with ESMTPSA id fr4sm367026ejc.42.2021.07.30.02.28.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 02:28:43 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 11:28:23 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     joro@8bytes.org, will@kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 19/24] iommu: Expose DMA domain strictness via sysfs
+Message-ID: <YQPGNxhgVEagZ28H@myrica>
+References: <cover.1627468308.git.robin.murphy@arm.com>
+ <dd26592103c7613ef9fdff703d0d2ed2df8305c2.1627468310.git.robin.murphy@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dd26592103c7613ef9fdff703d0d2ed2df8305c2.1627468310.git.robin.murphy@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some variables in Xen specific coding which names imply them
-holding a PFN, while in reality they are containing numbers of PFNs.
+On Wed, Jul 28, 2021 at 04:58:40PM +0100, Robin Murphy wrote:
+> The sysfs interface for default domain types exists primarily so users
+> can choose the performance/security tradeoff relevant to their own
+> workload. As such, the choice between the policies for DMA domains fits
+> perfectly as an additional point on that scale - downgrading a
+> particular device from a strict default to non-strict may be enough to
+> let it reach the desired level of performance, while still retaining
+> more peace of mind than with a wide-open identity domain. Now that we've
+> abstracted non-strict mode as a distinct type of DMA domain, allow it to
+> be chosen through the user interface as well.
+> 
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+>  Documentation/ABI/testing/sysfs-kernel-iommu_groups | 2 ++
+>  drivers/iommu/iommu.c                               | 2 ++
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-kernel-iommu_groups b/Documentation/ABI/testing/sysfs-kernel-iommu_groups
+> index eae2f1c1e11e..43ba764ba5b7 100644
+> --- a/Documentation/ABI/testing/sysfs-kernel-iommu_groups
+> +++ b/Documentation/ABI/testing/sysfs-kernel-iommu_groups
+> @@ -42,6 +42,8 @@ Description:	/sys/kernel/iommu_groups/<grp_id>/type shows the type of default
+>  		========  ======================================================
+>  		DMA       All the DMA transactions from the device in this group
+>  		          are translated by the iommu.
+> +		DMA-FQ    As above, but using batched invalidation to lazily
+> +		          remove translations after use.
 
-Rename them accordingly.
+It might be useful to desribe the security/performance tradeoff here as
+well. I guess a normal user is more likely to look at the doc for this
+sysfs knob than the kernel config or parameters.
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
-V2:
-- adjust comment (Jan Beulich)
----
- arch/x86/include/asm/xen/page.h |  4 ++--
- arch/x86/xen/p2m.c              | 33 ++++++++++++++++++---------------
- arch/x86/xen/setup.c            |  2 +-
- 3 files changed, 21 insertions(+), 18 deletions(-)
+Thanks,
+Jean
 
-diff --git a/arch/x86/include/asm/xen/page.h b/arch/x86/include/asm/xen/page.h
-index 1a162e559753..3590d6bf42c7 100644
---- a/arch/x86/include/asm/xen/page.h
-+++ b/arch/x86/include/asm/xen/page.h
-@@ -51,7 +51,7 @@ extern unsigned long *machine_to_phys_mapping;
- extern unsigned long  machine_to_phys_nr;
- extern unsigned long *xen_p2m_addr;
- extern unsigned long  xen_p2m_size;
--extern unsigned long  xen_max_p2m_pfn;
-+extern unsigned long  xen_p2m_max_size;
- 
- extern int xen_alloc_p2m_entry(unsigned long pfn);
- 
-@@ -144,7 +144,7 @@ static inline unsigned long __pfn_to_mfn(unsigned long pfn)
- 
- 	if (pfn < xen_p2m_size)
- 		mfn = xen_p2m_addr[pfn];
--	else if (unlikely(pfn < xen_max_p2m_pfn))
-+	else if (unlikely(pfn < xen_p2m_max_size))
- 		return get_phys_to_machine(pfn);
- 	else
- 		return IDENTITY_FRAME(pfn);
-diff --git a/arch/x86/xen/p2m.c b/arch/x86/xen/p2m.c
-index 5e6e236977c7..d75d9e077d13 100644
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -95,8 +95,8 @@ unsigned long *xen_p2m_addr __read_mostly;
- EXPORT_SYMBOL_GPL(xen_p2m_addr);
- unsigned long xen_p2m_size __read_mostly;
- EXPORT_SYMBOL_GPL(xen_p2m_size);
--unsigned long xen_max_p2m_pfn __read_mostly;
--EXPORT_SYMBOL_GPL(xen_max_p2m_pfn);
-+unsigned long xen_p2m_max_size __read_mostly;
-+EXPORT_SYMBOL_GPL(xen_p2m_max_size);
- 
- #ifdef CONFIG_XEN_MEMORY_HOTPLUG_LIMIT
- #define P2M_LIMIT CONFIG_XEN_MEMORY_HOTPLUG_LIMIT
-@@ -120,8 +120,10 @@ static pte_t *p2m_identity_pte;
-  * Used to set HYPERVISOR_shared_info->arch.max_pfn so the toolstack
-  * can avoid scanning the whole P2M (which may be sized to account for
-  * hotplugged memory).
-+ *
-+ * All populated P2M entries have an index lower than xen_p2m_pfn_limit.
-  */
--static unsigned long xen_p2m_last_pfn;
-+static unsigned long xen_p2m_pfn_limit;
- 
- static inline unsigned p2m_top_index(unsigned long pfn)
- {
-@@ -239,7 +241,7 @@ void __ref xen_build_mfn_list_list(void)
- 		p2m_mid_mfn_init(p2m_mid_missing_mfn, p2m_missing);
- 	}
- 
--	for (pfn = 0; pfn < xen_max_p2m_pfn && pfn < MAX_P2M_PFN;
-+	for (pfn = 0; pfn < xen_p2m_max_size && pfn < MAX_P2M_PFN;
- 	     pfn += P2M_PER_PAGE) {
- 		topidx = p2m_top_index(pfn);
- 		mididx = p2m_mid_index(pfn);
-@@ -284,7 +286,7 @@ void xen_setup_mfn_list_list(void)
- 	else
- 		HYPERVISOR_shared_info->arch.pfn_to_mfn_frame_list_list =
- 			virt_to_mfn(p2m_top_mfn);
--	HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_last_pfn;
-+	HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_pfn_limit;
- 	HYPERVISOR_shared_info->arch.p2m_generation = 0;
- 	HYPERVISOR_shared_info->arch.p2m_vaddr = (unsigned long)xen_p2m_addr;
- 	HYPERVISOR_shared_info->arch.p2m_cr3 =
-@@ -302,7 +304,7 @@ void __init xen_build_dynamic_phys_to_machine(void)
- 	for (pfn = xen_start_info->nr_pages; pfn < xen_p2m_size; pfn++)
- 		xen_p2m_addr[pfn] = INVALID_P2M_ENTRY;
- 
--	xen_max_p2m_pfn = xen_p2m_size;
-+	xen_p2m_max_size = xen_p2m_size;
- }
- 
- #define P2M_TYPE_IDENTITY	0
-@@ -353,7 +355,7 @@ static void __init xen_rebuild_p2m_list(unsigned long *p2m)
- 			pfn_pte(PFN_DOWN(__pa(p2m_identity)), PAGE_KERNEL_RO));
- 	}
- 
--	for (pfn = 0; pfn < xen_max_p2m_pfn; pfn += chunk) {
-+	for (pfn = 0; pfn < xen_p2m_max_size; pfn += chunk) {
- 		/*
- 		 * Try to map missing/identity PMDs or p2m-pages if possible.
- 		 * We have to respect the structure of the mfn_list_list
-@@ -413,21 +415,22 @@ void __init xen_vmalloc_p2m_tree(void)
- 	static struct vm_struct vm;
- 	unsigned long p2m_limit;
- 
--	xen_p2m_last_pfn = xen_max_p2m_pfn;
-+	xen_p2m_pfn_limit = xen_p2m_max_size;
- 
- 	p2m_limit = (phys_addr_t)P2M_LIMIT * 1024 * 1024 * 1024 / PAGE_SIZE;
- 	vm.flags = VM_ALLOC;
--	vm.size = ALIGN(sizeof(unsigned long) * max(xen_max_p2m_pfn, p2m_limit),
-+	vm.size = ALIGN(sizeof(unsigned long) *
-+			max(xen_p2m_max_size, p2m_limit),
- 			PMD_SIZE * PMDS_PER_MID_PAGE);
- 	vm_area_register_early(&vm, PMD_SIZE * PMDS_PER_MID_PAGE);
- 	pr_notice("p2m virtual area at %p, size is %lx\n", vm.addr, vm.size);
- 
--	xen_max_p2m_pfn = vm.size / sizeof(unsigned long);
-+	xen_p2m_max_size = vm.size / sizeof(unsigned long);
- 
- 	xen_rebuild_p2m_list(vm.addr);
- 
- 	xen_p2m_addr = vm.addr;
--	xen_p2m_size = xen_max_p2m_pfn;
-+	xen_p2m_size = xen_p2m_max_size;
- 
- 	xen_inv_extra_mem();
- }
-@@ -438,7 +441,7 @@ unsigned long get_phys_to_machine(unsigned long pfn)
- 	unsigned int level;
- 
- 	if (unlikely(pfn >= xen_p2m_size)) {
--		if (pfn < xen_max_p2m_pfn)
-+		if (pfn < xen_p2m_max_size)
- 			return xen_chk_extra_mem(pfn);
- 
- 		return IDENTITY_FRAME(pfn);
-@@ -618,9 +621,9 @@ int xen_alloc_p2m_entry(unsigned long pfn)
- 	}
- 
- 	/* Expanded the p2m? */
--	if (pfn >= xen_p2m_last_pfn) {
--		xen_p2m_last_pfn = ALIGN(pfn + 1, P2M_PER_PAGE);
--		HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_last_pfn;
-+	if (pfn >= xen_p2m_pfn_limit) {
-+		xen_p2m_pfn_limit = ALIGN(pfn + 1, P2M_PER_PAGE);
-+		HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_pfn_limit;
- 	}
- 
- 	return 0;
-diff --git a/arch/x86/xen/setup.c b/arch/x86/xen/setup.c
-index 8bfc10330107..1caddd3fa0e1 100644
---- a/arch/x86/xen/setup.c
-+++ b/arch/x86/xen/setup.c
-@@ -816,7 +816,7 @@ char * __init xen_memory_setup(void)
- 				n_pfns = PFN_DOWN(addr + chunk_size) - pfn_s;
- 				extra_pages -= n_pfns;
- 				xen_add_extra_mem(pfn_s, n_pfns);
--				xen_max_p2m_pfn = pfn_s + n_pfns;
-+				xen_p2m_max_size = pfn_s + n_pfns;
- 			} else
- 				discard = true;
- 		}
--- 
-2.26.2
-
+>  		identity  All the DMA transactions from the device in this group
+>  		          are not translated by the iommu.
+>  		auto      Change to the type the device was booted with.
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index eecb5657de69..5a08e0806cbb 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -3265,6 +3265,8 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
+>  		req_type = IOMMU_DOMAIN_IDENTITY;
+>  	else if (sysfs_streq(buf, "DMA"))
+>  		req_type = IOMMU_DOMAIN_DMA;
+> +	else if (sysfs_streq(buf, "DMA-FQ"))
+> +		req_type = IOMMU_DOMAIN_DMA_FQ;
+>  	else if (sysfs_streq(buf, "auto"))
+>  		req_type = 0;
+>  	else
+> -- 
+> 2.25.1
+> 
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
