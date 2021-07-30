@@ -2,147 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF543DBCF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4A53DBCF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhG3QTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 12:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhG3QTC (ORCPT
+        id S229775AbhG3QUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 12:20:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42695 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229479AbhG3QUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 12:19:02 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F09C06175F;
-        Fri, 30 Jul 2021 09:18:57 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id h9so2276899ejs.4;
-        Fri, 30 Jul 2021 09:18:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rnL+DT6WaAAlihW1AoN/tB2D11HIMglWHsy5YB9xalA=;
-        b=nJ4C4oqp2So/xg0u8hYcnVzRvBDxqLZqv6TA/A8fsa6hAV5GzDIuCa35v34njdPiPe
-         tE1+DKt0K8T7UR3996CwY0zfCmcdH5+IGRlBGVMMarDKISnRnXRLoBLs1kvfMllVvQ7v
-         XAhKFDdzCK8/fltQmiwOVcURqavpdHwNh8g1CLOSpqKxhOHSjsEnXvM0MPjbt+MFgYuF
-         A61MXrgKQ9Qrhya/x4AJ3Bd1IMTY3P2eklRwYXHcsxYFkbZ2jutMGCb3BBNEkRNvJ/Ub
-         buCsYVzYXpDiTRJQUtnkt+F9K/u1IieZYdmmFoqEzb4igfwrU80eYNZJ9XpiKWhp7yra
-         4tOQ==
+        Fri, 30 Jul 2021 12:20:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627662007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6sxbrTXcrTd5pHC9K2KxbmQLHh8u1jEYeqbDBwTE+r4=;
+        b=hlRYVNkNN82UU8Pg+hSQAkvoeSMZ0IT0CXenEn07lNFID8W+4d7BZzdRanBrSjcJ8zf9k8
+        l8Z2ufu3l3Dv4pY9o3hDTbWFLR5GW3fmHIbirY3V7xdrKpa6ULy/4jfYkRAtS1HgEAEYr7
+        08LCTUPF6h6eOifCGGdYXkH6C4581Po=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-8InSzytvM_W1vVtx5MT0NQ-1; Fri, 30 Jul 2021 12:20:06 -0400
+X-MC-Unique: 8InSzytvM_W1vVtx5MT0NQ-1
+Received: by mail-wm1-f69.google.com with SMTP id d72-20020a1c1d4b0000b029025164ff3ebfso3343727wmd.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:20:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rnL+DT6WaAAlihW1AoN/tB2D11HIMglWHsy5YB9xalA=;
-        b=TCD79YL9tT5EhQ+vAcvkedkjCYXdc0O06Pl48PKpnLulcZfNS4yadO5/+PuZcAjzLm
-         VNGUnO4752lCgQmS6AV4EwNh119g71KsHEI2fKzam8Z1I7TLQKjSC3Aq5NMEk7ir4Cgs
-         H9bLyw3/6t0A9xVtUETSBifFSExpj2uwkL8nzmBq0X3DhbJtaXKVaANFqNk4uVfuGNas
-         oKrUwNYfnJizyRhM3pd8Qst+3yB6zz2ELFEg3KPv9auha2AmhLFi9G3lOFOjBPw1AYqk
-         Q1V+APgrJat6H38Sp+vVVQSYwnvTql/CLnUEJqVvwPSoudoacayrbe2cHFLCQ2mhzrwR
-         amOQ==
-X-Gm-Message-State: AOAM531Cu+IfXFNCKRtWVBi2awGjx3PRT0w3WhNpyNu/JeLfCo3upiT7
-        hpaCwrJjpyyfAP7eYxeUovk=
-X-Google-Smtp-Source: ABdhPJzzuPrv2SqvZYSlUSsr3w1X7odtfbVxsd3yG7NU5OJbhDUx0qQgpnj5n0ROyUD9H8ZfXs+9rQ==
-X-Received: by 2002:a17:906:24d3:: with SMTP id f19mr3326764ejb.391.1627661935282;
-        Fri, 30 Jul 2021 09:18:55 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id cf16sm874035edb.92.2021.07.30.09.18.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6sxbrTXcrTd5pHC9K2KxbmQLHh8u1jEYeqbDBwTE+r4=;
+        b=OMOt+ZzIMXifgHz/MWSrL75N+Pkz78PiaiRWpsn8vNyAmF26fHJsMP1JygCSHg1Tkh
+         yhfQytcmeBDSWZ46Uzb80OOJUVYQssx0ydYUYoTnJklmuDofRHl1DGQvmcglvmtTIhXW
+         5IIpZCeYNGxP7DLDxeYh3HZs5i8T70/FpeSQrOitv8DbrZWOqpkFeCENg1rp4AuhtlhT
+         Up862v7YeKnN5+IPOgdMQqcphRAo3A4WVeHu8MfDXh+VWOljoGFAnzrbJNVsP9jx4WhU
+         AX5G2H99iGn5mcVt2wZno3AxfDmVKgNz+AuZ/rcD2Xik+TavHF0iT27zCmO17D4HrfNU
+         KsCQ==
+X-Gm-Message-State: AOAM53264vIOGObLjTERMVuMtkQD10BujdP0fylQkpskkL01XKYJ1iw5
+        l+NHJsfCLRaPNnpSRxipocmp+GpNuNb425jElGkpodvhsoVfNsFOFEsTSEWhqiDqnduhtsNoXCw
+        pj9VeYM8qQCFADHj2MaigGac=
+X-Received: by 2002:adf:8b86:: with SMTP id o6mr86921wra.116.1627662004390;
+        Fri, 30 Jul 2021 09:20:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwueOQ6ozH2s/dDrfAY4tQiAwkhHfpipARtKccXK0pW5HfzXL3N4gPkJFLi4GaS2oJfkRKhFA==
+X-Received: by 2002:adf:8b86:: with SMTP id o6mr86898wra.116.1627662004124;
+        Fri, 30 Jul 2021 09:20:04 -0700 (PDT)
+Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
+        by smtp.gmail.com with ESMTPSA id b15sm2619315wrr.27.2021.07.30.09.20.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 09:18:54 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 19:18:52 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC net-next 2/2] net: dsa: mt7530: trap packets from
- standalone ports to the CPU
-Message-ID: <20210730161852.4weylgdkcyacxhci@skbuf>
-References: <20210728175327.1150120-1-dqfext@gmail.com>
- <20210728175327.1150120-3-dqfext@gmail.com>
- <20210729152805.o2pur7pp2kpxvvnq@skbuf>
- <CALW65jbHwRhekX=7xoFvts2m7xTRM4ti9zpTiah8ed0n0fCrRg@mail.gmail.com>
- <20210729165027.okmfa3ulpd3e6gte@skbuf>
- <CALW65jYYmpnDou0dC3=1AjL9tmo_9jqLSWmusJkeqRb4mSwCGQ@mail.gmail.com>
+        Fri, 30 Jul 2021 09:20:02 -0700 (PDT)
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, mhocko@suse.com,
+        penguin-kernel@i-love.sakura.ne.jp, rientjes@google.com,
+        llong@redhat.com, neelx@redhat.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] mm/oom_kill: show oom eligibility when displaying the current memory state of all tasks
+Date:   Fri, 30 Jul 2021 17:20:02 +0100
+Message-Id: <20210730162002.279678-1-atomlin@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALW65jYYmpnDou0dC3=1AjL9tmo_9jqLSWmusJkeqRb4mSwCGQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 11:45:41PM +0800, DENG Qingfang wrote:
-> On Fri, Jul 30, 2021 at 12:50 AM Vladimir Oltean <olteanv@gmail.com> wrote:
-> > I have the MT7621 GSW, and sadly this reference manual isn't the best in
-> > explaining what is and what is not possible. For example, I am still not
-> > clear what is meant by "VID1" and "VID0". Is "VID1" the inner (customer)
-> > VLAN tag, and "VID0" the outer (service) VLAN tag, or "VID1" means the
-> > actual VLAN ID 1?
-> >
-> > And the bits 3:1 of VAWD1 (VLAN table access register) indicate a FID
-> > field per VLAN. I cannot find the piece that you quoted in this manual.
-> > But what I expect to happen for a Transparent Port is that the packets
-> > are always classified to that port's PVID, and the VLAN Table is looked
-> > up with that PVID. There, it will find the FID, which this driver
-> > currently always configures as zero. In my manual's description, in the
-> > "Transparent Port" chapter, it does explicitly say:
-> >
-> >         VID0 and VID1 will store PVID as the default VID which is used
-> >         to look up the VLAN table.
-> >
-> > So I get the impression that the phrase "the VLAN table is not applicable"
-> > is not quite correct, but I might be wrong...
-> 
-> Alright, I think I've made some progress.
-> In the current code, we only use two combinations to toggle user
-> ports' VLAN awareness: one is PCR.PORT_VLAN set to port matrix mode
-> with PVC.VLAN_ATTR set to transparent port, the other is PCR.PORT_VLAN
-> set to security mode with PVC.VLAN_ATTR set to user port.
-> 
-> It turns out that only PVC.VLAN_ATTR contributes to VLAN awareness.
-> Port matrix mode just skips the VLAN table lookup. The reference
-> manual is somehow misleading when describing PORT_VLAN modes (See Page
-> 17 of MT7531 Reference Manual, available at
-> http://wiki.banana-pi.org/Banana_Pi_BPI-R64#Resources). It states that
-> PORT_MEM (VLAN port member) is used for destination if the VLAN table
-> lookup hits, but actually it uses **PORT_MEM & PORT_MATRIX** (bitwise
-> AND of VLAN port member and port matrix) instead, which means we can
-> have two or more separate VLAN-aware bridges with the same PVID and
-> traffic won't leak between them.
+Changes since v2:
+ - Use single character (e.g. 'R' for MMF_OOM_SKIP) as suggested
+   by Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+ - Add new header to oom_dump_tasks documentation
+ - Provide further justification
 
-Ah, but it's not completely misleading. It does say:
 
-	2'b01: Fallback mode
+The output generated by dump_tasks() can be helpful to determine why
+there was an OOM condition and which rogue task potentially caused it.
+Please note that this is only provided when sysctl oom_dump_tasks is
+enabled.
 
-	Enable 802.1Q function for all the received frames.
-	Do not discard received frames due to ingress membership violation.
-	**Frames whose VID is missed on the VLAN table will be filtered
-	by the Port Matrix Member**.
+At the present time, when showing potential OOM victims, we do not
+exclude any task that are not OOM eligible e.g. those that have
+MMF_OOM_SKIP set; it is possible that the last OOM killable victim was
+already OOM killed, yet the OOM reaper failed to reclaim memory and set
+MMF_OOM_SKIP. This can be confusing (or perhaps even be misleading) to the
+viewer. Now, we already unconditionally display a task's oom_score_adj_min
+value that can be set to OOM_SCORE_ADJ_MIN which is indicative of an
+"unkillable" task.
 
-(emphasis mine on the last paragraph)
+This patch provides a clear indication with regard to the OOM ineligibility
+(and why) of each displayed task with the addition of a new column namely
+"oom_skipped". An example is provided below:
 
-> So I came up with a solution: Set PORT_VLAN to fallback mode when in
-> VLAN-unaware mode, this way, even VLAN-unaware bridges will use
-> independent VLAN filtering.
+    [ 5084.524970] [ pid ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj oom_skipped name
+    [ 5084.526397] [660417]     0 660417    35869      683   167936        0         -1000 M conmon
+    [ 5084.526400] [660452]     0 660452   175834      472    86016        0          -998  pod
+    [ 5084.527460] [752415]     0 752415    35869      650   172032        0         -1000 M conmon
+    [ 5084.527462] [752575] 1001050000 752575   184205    11158   700416        0           999  npm
+    [ 5084.527467] [753606] 1001050000 753606   183380    46843  2134016        0           999  node
+    [ 5084.527581] Memory cgroup out of memory: Killed process 753606 (node) total-vm:733520kB, anon-rss:161228kB, file-rss:26144kB, shmem-rss:0kB, UID:1001050000
 
-If you did indeed test that the Port Matrix is still used to enforce
-separation between ports if the VLAN table _does_ match and we're in
-fallback mode, then we should be okay.
+So, a single character 'M' is for OOM_SCORE_ADJ_MIN, 'R' MMF_OOM_SKIP and
+'V' for in_vfork().
 
-> Then assign all standalone ports to a reserved VLAN.
 
-You mean all standalone ports to the same VLAN ID, like 4095, or each
-standalone port to a separate reserved VLAN ID? As long as address
-learning is disabled on the standalone ports, I guess using a single
-VLAN ID like 4095 for all of them is just fine, the Port Matrix will
-take care of the rest.
+Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
+---
+ Documentation/admin-guide/sysctl/vm.rst |  5 ++--
+ mm/oom_kill.c                           | 31 +++++++++++++++++++++----
+ 2 files changed, 30 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
+index 003d5cc3751b..4c79fa00ddb3 100644
+--- a/Documentation/admin-guide/sysctl/vm.rst
++++ b/Documentation/admin-guide/sysctl/vm.rst
+@@ -650,8 +650,9 @@ oom_dump_tasks
+ Enables a system-wide task dump (excluding kernel threads) to be produced
+ when the kernel performs an OOM-killing and includes such information as
+ pid, uid, tgid, vm size, rss, pgtables_bytes, swapents, oom_score_adj
+-score, and name.  This is helpful to determine why the OOM killer was
+-invoked, to identify the rogue task that caused it, and to determine why
++score, oom eligibility status and name.  This is helpful to determine why
++the OOM killer was invoked, to identify the rogue task that caused it, and
++to determine why
+ the OOM killer chose the task it did to kill.
+ 
+ If this is set to zero, this information is suppressed.  On very
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index c729a4c4a1ac..36daa6917b62 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -160,6 +160,27 @@ static inline bool is_sysrq_oom(struct oom_control *oc)
+ 	return oc->order == -1;
+ }
+ 
++/**
++ * is_task_eligible_oom - determine if and why a task cannot be OOM killed
++ * @tsk: task to check
++ *
++ * Needs to be called with task_lock().
++ */
++static const char * const is_task_oom_eligible(struct task_struct *p)
++{
++	long adj;
++
++	adj = (long)p->signal->oom_score_adj;
++	if (adj == OOM_SCORE_ADJ_MIN)
++		return "M";
++	else if (test_bit(MMF_OOM_SKIP, &p->mm->flags)
++		return "R";
++	else if (in_vfork(p))
++		return "V";
++	else
++		return "";
++}
++
+ /* return true if the task is not adequate as candidate victim task. */
+ static bool oom_unkillable_task(struct task_struct *p)
+ {
+@@ -401,12 +422,13 @@ static int dump_task(struct task_struct *p, void *arg)
+ 		return 0;
+ 	}
+ 
+-	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %s\n",
++	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %1s %s\n",
+ 		task->pid, from_kuid(&init_user_ns, task_uid(task)),
+ 		task->tgid, task->mm->total_vm, get_mm_rss(task->mm),
+ 		mm_pgtables_bytes(task->mm),
+ 		get_mm_counter(task->mm, MM_SWAPENTS),
+-		task->signal->oom_score_adj, task->comm);
++		task->signal->oom_score_adj, is_task_oom_eligible(task),
++		task->comm);
+ 	task_unlock(task);
+ 
+ 	return 0;
+@@ -420,12 +442,13 @@ static int dump_task(struct task_struct *p, void *arg)
+  * memcg, not in the same cpuset, or bound to a disjoint set of mempolicy nodes
+  * are not shown.
+  * State information includes task's pid, uid, tgid, vm size, rss,
+- * pgtables_bytes, swapents, oom_score_adj value, and name.
++ * pgtables_bytes, swapents, oom_score_adj value, oom eligibility status
++ * and name.
+  */
+ static void dump_tasks(struct oom_control *oc)
+ {
+ 	pr_info("Tasks state (memory values in pages):\n");
+-	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name\n");
++	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj oom_skipped name\n");
+ 
+ 	if (is_memcg_oom(oc))
+ 		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
+-- 
+2.31.1
+
