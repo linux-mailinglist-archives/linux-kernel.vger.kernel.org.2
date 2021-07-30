@@ -2,141 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E853DBB7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58AD3DBB7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239326AbhG3PAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 11:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239095AbhG3O6z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:58:55 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A98C061384
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:57:40 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id j77so14447836ybj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:57:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=37x8w0UYvLcVBgIUnWgo+PPV937yKLBY+SfU728blww=;
-        b=Nh0DDzzSH9/W/vuSHcrfHS4tX6BVYIipubEgEk6nqQGRauR3Kjdmr4p6MwQRvyTzPa
-         HZj8nWmjGVX/XgGv7lj5Wj0jzIQV+5G4nrJ6Cd/hFGGXEFJG9LaVCFnm/2ryaoNbm+fj
-         BnX2OV8kicXKEWMO0asIm0Ao4WRkzZUXg0fwuoH6rlcsG7qZVgw7NuqF1YusYFYmbada
-         zUvsgOnbni19kXc/c5UYuj1jJPlhp55fFRpZAK+pRtAJeJr6z4sp41VNBaKIgeCthe1h
-         PXC0oGSMn8nywPNirdR99UIUfcNhydA3QjpWqui0nDN0f25yJPARQRoSwpxr+bZN5x6t
-         63uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=37x8w0UYvLcVBgIUnWgo+PPV937yKLBY+SfU728blww=;
-        b=XpBOhx1GED8rSGHpS26ubt+06id5VU2NZLEw3xq7Z0wsLs6rOEUYj1gZyDCK6FTvIW
-         RGuekd+4lAh22wXMihdg/Ti8BiXLfC3y/0qNhOagLiA1mxxZOJKoSGnZDRcWnNvaR1Bf
-         vCqYnxiOfD8T+0MFM64P2/LD7ptj7LfMysbuLI4oxM9ugg2VZ3Llb2rkHi5+VIq2oZDz
-         +zdUBHyCVSXtm+v3F/ZAMEqMYrI4nu4djnbcRA3XoHFVPsub5Cd4nntGPkcekUJ+DPZT
-         /O/fuX97bpk91iUJOWNLhsv+Xayj+xAEz3M4OQGdXd9zqTXPu30Rz0pCEgaA3g1h0l/O
-         muWA==
-X-Gm-Message-State: AOAM532u29HdYViAZssue2XMTK8O1Y1ciwqYycb7eTeBSut3hf+65OTq
-        44kcge/nkXdNLuqO8EQFnqdSTjiS2YhFPUfh4f4Jpw==
-X-Google-Smtp-Source: ABdhPJyWpTSfdHbBre+1lzAhAENFLLbKmABxKRKEbNWOSKpkoHZ+FO80HY+Ia/CDITLyxL0ubS/GvhoCNX1/Vxxnv2o=
-X-Received: by 2002:a25:10d4:: with SMTP id 203mr3610734ybq.454.1627657060077;
- Fri, 30 Jul 2021 07:57:40 -0700 (PDT)
+        id S239287AbhG3PAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 11:00:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:43280 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239519AbhG3O7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:59:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1A441063;
+        Fri, 30 Jul 2021 07:59:06 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.13.245])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 464EF3F66F;
+        Fri, 30 Jul 2021 07:59:04 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 15:59:01 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
+        John Crispin <john@phrozen.org>, Felix Fietkau <nbd@nbd.name>
+Subject: Re: [PATCH 3/5] ARM: dts: Add basic support for EcoNet EN7523
+Message-ID: <20210730145901.GC19569@C02TD0UTHF1T.local>
+References: <20210730134552.853350-1-bert@biot.com>
+ <20210730134552.853350-4-bert@biot.com>
 MIME-Version: 1.0
-References: <720d0a9a42e33148fcac45cd39a727093a32bf32.1614965598.git.robin.murphy@arm.com>
- <a730070d718cb119f77c8ca1782a0d4189bfb3e7.1614965598.git.robin.murphy@arm.com>
- <0a1d437d-9ea0-de83-3c19-e07f560ad37c@arm.com> <20210730143431.GB1517404@mutt>
- <8b358507-dbdf-b05b-c1da-2ec9903a2912@arm.com>
-In-Reply-To: <8b358507-dbdf-b05b-c1da-2ec9903a2912@arm.com>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Fri, 30 Jul 2021 16:57:28 +0200
-Message-ID: <CADYN=9KV6u5ZTRWwpyNQt-FtnT3Fn0P6chQwodxOSg67_Qs7yg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: juno: Enable more SMMUs
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     sudeep.holla@arm.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        liviu.dudau@arm.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        lkft-triage@lists.linaro.org,
-        Linux Kernel Functional Testing <lkft@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730134552.853350-4-bert@biot.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 at 16:44, Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-07-30 15:34, Anders Roxell wrote:
-> > On 2021-07-30 13:17, Robin Murphy wrote:
-> >> On 2021-07-30 12:35, Anders Roxell wrote:
-> >>> From: Robin Murphy <robin.murphy@arm.com>
-> >>>
-> >>>> Now that PCI inbound window restrictions are handled generically between
-> >>>> the of_pci resource parsing and the IOMMU layer, and described in the
-> >>>> Juno DT, we can finally enable the PCIe SMMU without the risk of DMA
-> >>>> mappings inadvertently allocating unusable addresses.
-> >>>>
-> >>>> Similarly, the relevant support for IOMMU mappings for peripheral
-> >>>> transfers has been hooked up in the pl330 driver for ages, so we can
-> >>>> happily enable the DMA SMMU without that breaking anything either.
-> >>>>
-> >>>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> >>>
-> >>> When we build a kernel with 64k page size and run the ltp syscalls we
-> >>> sporadically see a kernel crash while doing a mkfs on a connected SATA
-> >>> drive.  This is happening every third test run on any juno-r2 device in
-> >>> the lab with the same kernel image (stable-rc 5.13.y, mainline and next)
-> >>> with gcc-11.
-> >>
-> >> Hmm, I guess 64K pages might make a difference in that we'll chew through
-> >> IOVA space a lot faster with small mappings...
-> >>
-> >> I'll have to try to reproduce this locally, since the interesting thing
-> >> would be knowing what DMA address it was trying to use that went wrong, but
-> >> IOMMU tracepoints and/or dma-debug are going to generate an crazy amount of
-> >> data to sift through and try to correlate - having done it before it's not
-> >> something I'd readily ask someone else to do for me :)
-> >>
-> >> On a hunch, though, does it make any difference if you remove the first
-> >> entry from the PCIe "dma-ranges" (the 0x2c1c0000 one)?
-> >
-> > I did this change, and run the job 7 times and could not reproduce the
-> > issue.
->
-> Thanks! And hold that thought; if it works then I suspect it probably is
-> the best fix, but I'll double-check and write it up properly next week.
+On Fri, Jul 30, 2021 at 03:45:50PM +0200, Bert Vermeulen wrote:
+> From: John Crispin <john@phrozen.org>
+> 
+> Add basic support for EcoNet EN7523, enough for booting to console.
+> 
+> The UART is basically 8250-compatible, except for the clock selection.
+> A clock-frequency value is synthesized to get this to run at 115200 bps.
+> 
+> Signed-off-by: John Crispin <john@phrozen.org>
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
+> ---
+>  arch/arm/boot/dts/Makefile       |   2 +
+>  arch/arm/boot/dts/en7523-evb.dts |  17 ++++
+>  arch/arm/boot/dts/en7523.dtsi    | 128 +++++++++++++++++++++++++++++++
+>  3 files changed, 147 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/en7523-evb.dts
+>  create mode 100644 arch/arm/boot/dts/en7523.dtsi
+> 
 
-Thank you Robin.
+> +	cpus {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
 
-Cheers,
-Anders
+> +		cpu0: cpu@0 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a7";
+> +			reg = <0x0>;
+> +			enable-method = "psci";
+> +			clock-frequency = <80000000>;
+> +			next-level-cache = <&L2_0>;
+> +
+> +		};
 
->
-> Cheers,
-> Robin.
->
-> > diff --git a/arch/arm64/boot/dts/arm/juno-base.dtsi b/arch/arm64/boot/dts/arm/juno-base.dtsi
-> > index 8e7a66943b01..d3148730e951 100644
-> > --- a/arch/arm64/boot/dts/arm/juno-base.dtsi
-> > +++ b/arch/arm64/boot/dts/arm/juno-base.dtsi
-> > @@ -545,8 +545,7 @@ pcie_ctlr: pcie@40000000 {
-> >                           <0x02000000 0x00 0x50000000 0x00 0x50000000 0x0 0x08000000>,
-> >                           <0x42000000 0x40 0x00000000 0x40 0x00000000 0x1 0x00000000>;
-> >                  /* Standard AXI Translation entries as programmed by EDK2 */
-> > -               dma-ranges = <0x02000000 0x0 0x2c1c0000 0x0 0x2c1c0000 0x0 0x00040000>,
-> > -                            <0x02000000 0x0 0x80000000 0x0 0x80000000 0x0 0x80000000>,
-> > +               dma-ranges = <0x02000000 0x0 0x80000000 0x0 0x80000000 0x0 0x80000000>,
-> >                               <0x43000000 0x8 0x00000000 0x8 0x00000000 0x2 0x00000000>;
-> >                  #interrupt-cells = <1>;
-> >                  interrupt-map-mask = <0 0 0 7>;
-> >
-> >
-> > Cheers,
-> > Anders
-> >
+> +	gic: interrupt-controller@09000000 {
+> +		compatible = "arm,gic-v3";
+> +		interrupt-controller;
+> +		#interrupt-cells = <3>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		reg = <0x09000000 0x20000>,
+> +			  <0x09080000 0x80000>;
+> +		interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_LOW>;
+> +
+> +		its: gic-its@09020000 {
+> +			compatible = "arm,gic-v3-its";
+> +			msi-controller;
+> +			#msi-cell = <1>;
+
+Missing 's' here for '#msi-cells'.
+
+> +			reg = <0x090200000 0x20000>;
+> +		};
+> +	};
+
+Looking at this again, I was under the impression that Cortex-A7 only
+supported GICv2; is this actually a Cortex-A7 or a different CPU?
+
+Which revision is this?
+
+Thanks,
+Mark.
