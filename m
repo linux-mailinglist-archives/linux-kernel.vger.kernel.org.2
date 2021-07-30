@@ -2,246 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01563DB2B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBDD3DB2BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236608AbhG3FSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 01:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
+        id S236973AbhG3FSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 01:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236235AbhG3FSX (ORCPT
+        with ESMTP id S236642AbhG3FS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:18:23 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6D7C0613D5;
-        Thu, 29 Jul 2021 22:18:01 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id m20-20020a05600c4f54b029024e75a15716so5523453wmq.2;
-        Thu, 29 Jul 2021 22:18:01 -0700 (PDT)
+        Fri, 30 Jul 2021 01:18:29 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06D6C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 22:18:24 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id a20so9762424plm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 22:18:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gcfjXHL9s8iq9c1a62B7oEoBNVKLn8vyy6R3qU8PH5I=;
-        b=Hm9qtZRqm8jcpyPOrEzK134qLp7Z7Gcengx0cFcnIWh7hvHSaIfwnaYGsEJ2ZClZ37
-         LszecmvsxuRcbcbdiYD8Id9lo0WtDTrFaXdVhlisZRmbqnOIaVhpi+IC16pTK9LkjpTt
-         6CJIifPQQhqp5imTF8a5eoACfEWXtWuST8O/aHGXNCVfCMo2abuZYllpP4MKL09UD62T
-         hSJz2TQn6k12ZAQXoweW4bS1eyNzHvHZxxX+MvfLGdBLdM/UG1Zi/1JgeoboQWZd/852
-         G//XZOaIB5+uZiS98k3IV53IMYQBG4q7B43XFcc7lho46KfDOqIg7MFqSQ7wOLCHdIB1
-         j9xA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Ab74AhJwzRIRCGKgVVDL+7Qsvq0Oe+eaDr5ToQWIrM=;
+        b=H+H2wlj1EE0u8J1jTx+Ex7m4hUnl2baCHpp7Ad6LGMkcRw+7rwr6QGwxb0Zw9Z/+YZ
+         DC6ul5wmzHs0mM3UfV3S41rlBtNoNOYF/ElpLjwU7Rwtcok8UhOXdNYqfuAN5Wm5foQU
+         zF8jYbWZRDaJDt48rN5h8JAOE7qOchc2sKPvVpNQF4u2PJtoqzcJvwuylbikxxxBgDQM
+         DhgJ740i061uzWWiqbaXQObrbX06D5xNBY9/Sz4hPeIVW354g1t2U/AAyHVRLupwrkRW
+         gnjYSQU4fDBBflA0HkHlqTrdcD0dbsOqIeBXch7dFTd5zikxgKHkU98oAFvL9/OINjFE
+         By6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gcfjXHL9s8iq9c1a62B7oEoBNVKLn8vyy6R3qU8PH5I=;
-        b=tuaR+P/nxLteHuvxtrt9PymUNH74oTdlimBW83xArcbJruPdD5u9QcP0MtFlu8DOCS
-         sygDXs+1NdUg5pa2XafDLLgMV3zEnCaE87Lg3+dsVSHN1HMxVgXypd+IL1mZpcmVpOGN
-         xtX1dj2A/jizEEJHWxX0urQU8Iz+5prfPJOoizGso1MpEdxcSPkeNTPmze1v6YOmvkV7
-         W+e02AaM3rgGaRdF6ysXzuc+EgXyYD5ndwQhyZYdnnLlylUsStk9RPd4TQbk6cDrzL5s
-         ZAwBsYwUSYnOyph4XG4nIS4x1RXea2Kp3T+d0KaWBmzmYRch3/dpy81Qk1rwCTuIPotu
-         HU7w==
-X-Gm-Message-State: AOAM530YrTxsBSJtkPVBrbtglBc/ge3Gr+kLA+veBF2LZD3qj1e+0Cet
-        yf98q7E5Vta+WhigO8Faz+waZINTY3dCwgOlzXg=
-X-Google-Smtp-Source: ABdhPJz7A90qMFZqNp3xDuwFHlzZ0eiFyKaRKBuOxUeMrJu/Ha93+6+SI2mA/0ullnIbS/Vypku1xi7ALWlIzPK0RzU=
-X-Received: by 2002:a05:600c:19cb:: with SMTP id u11mr768042wmq.175.1627622280139;
- Thu, 29 Jul 2021 22:18:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Ab74AhJwzRIRCGKgVVDL+7Qsvq0Oe+eaDr5ToQWIrM=;
+        b=Jx6F7WzfLk0PYOlQSoeh338FphM3Aw9sQjjTcZsNqtqsVnZ2ZfQDq538rKueDmZk0+
+         P+mIUhyL2quuewzgZYvyLA8snNMhUeN68CSv+jJ+KiO6CS3L2oVuZgUFFjOy3ddE6kDI
+         yTAYwnTbLy9oTafB3kwe0uHtWXqQVn5NWCJxo+8awotUud/73zNi666KzgAvWkZ/+u6e
+         JER1zWDLcWbN5pI4TmmWZrevEkIHaazBjA+JJeDi/4GgJB3cqUcNCZ+cOignFsmdkira
+         G3t4maxqECW1hVm47t7NUXZOBZ3Ftw7TKMAA4fZjdO1PVytXIOabrwQB4LwF2wF3kL/+
+         nltQ==
+X-Gm-Message-State: AOAM532Tm8jVmwQXhHfIhwPmaoht4hw09upxaw0B7dGM0wEXBmPwYdFe
+        WZvobh9/K5H8ikFM+GTp5+c=
+X-Google-Smtp-Source: ABdhPJwwZ7bfmA1WBWMnM9nSkPgl9E1SBdUL8MZLDqWCk8kGpHCkK3PjMOb59kmfJI125sxO51R0cw==
+X-Received: by 2002:a17:903:244d:b029:12c:3c0:f21d with SMTP id l13-20020a170903244db029012c03c0f21dmr882043pls.65.1627622304272;
+        Thu, 29 Jul 2021 22:18:24 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id c4sm655444pfo.45.2021.07.29.22.18.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 22:18:23 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: clean up unused kerneldoc in drm_lease.c
+Date:   Fri, 30 Jul 2021 13:17:59 +0800
+Message-Id: <20210730051759.1570630-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210725032002.3961691-1-bjorn.andersson@linaro.org>
- <CAF6AEGvADHz7YmOZQTX8g+ZRG1rp7sk9wevgBQsknQytH+eFSA@mail.gmail.com> <20412cce-df2f-6271-9284-611f6b2ef1c5@codeaurora.org>
-In-Reply-To: <20412cce-df2f-6271-9284-611f6b2ef1c5@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 29 Jul 2021 22:17:48 -0700
-Message-ID: <CAF6AEGv=+N-1SQH+g-B2-LHMFPOpz-hQW8F2NOFGgFDcxy+cRQ@mail.gmail.com>
-Subject: Re: [Freedreno] [PATCH] drm: msm: Add 680 gpu to the adreno gpu list
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Jonathan Marek <jonathan@marek.ca>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        freedreno <freedreno@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 8:53 PM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
->
-> On 7/30/2021 5:38 AM, Rob Clark wrote:
-> > On Sat, Jul 24, 2021 at 8:21 PM Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> >>
-> >> This patch adds a Adreno 680 entry to the gpulist.
-> >
-> > Looks reasonable, but I wonder if we should just go ahead and add
-> > adreno_is_a640_family() in a similar vein to
-> > adreno_is_a650_familiy()/adreno_is_a660_family().. I think most of the
-> > 'if (a640) ...' should also apply to a680?
->
-> If there is no delta, wouldn't it be better to simply add a680 to
-> adreno_is_a640?
+The kerneldoc in drm_lease.c is unused because none of the functions
+are driver interfaces as the symbols are not exported.
 
-Until we move to features flags (and if needed, other config table
-params.. I know UMD needs more than just booleans but that may not be
-the case on kernel side), I'd kinda prefer "_family()" to make it
-clear that it applies to more than just a single gpu but a
-sub-generation of a6xx.. I'd kinda assume the differences in memory
-configuration (iirc dual vs quad ddr interfaces) have some small
-differences between a640 and a680 that matters somewhere on the kernel
-side?
+Since they aren't used and much of the existing comments don't provide
+any insights (e.g. they just repeat the function name or list out the
+function parameters), they should be removed to make them easier to
+maintain and to make useful info more obvious.
 
-BR,
--R
+As a note, many of the comments mention whether idr_mutex should be
+held, but these are mostly redundant in cases where the function
+contains lockdep assertions or grabs the mutex.
 
-> -Akhil.
->
-> >
-> > BR,
-> > -R
-> >
-> >> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> >> ---
-> >>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c      |  5 +++--
-> >>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 12 +++++++-----
-> >>   drivers/gpu/drm/msm/adreno/a6xx_hfi.c      |  2 +-
-> >>   drivers/gpu/drm/msm/adreno/adreno_device.c | 13 +++++++++++++
-> >>   drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  5 +++++
-> >>   5 files changed, 29 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >> index b349692219b7..1c0d75e1189f 100644
-> >> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >> @@ -521,7 +521,8 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
-> >>
-> >>          if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu))
-> >>                  pdc_in_aop = true;
-> >> -       else if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
-> >> +       else if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu) ||
-> >> +                adreno_is_a680(adreno_gpu))
-> >>                  pdc_address_offset = 0x30090;
-> >>          else
-> >>                  pdc_address_offset = 0x30080;
-> >> @@ -1522,7 +1523,7 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
-> >>                          SZ_16M - SZ_16K, 0x04000);
-> >>                  if (ret)
-> >>                          goto err_memory;
-> >> -       } else if (adreno_is_a640(adreno_gpu)) {
-> >> +       } else if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu)) {
-> >>                  ret = a6xx_gmu_memory_alloc(gmu, &gmu->icache,
-> >>                          SZ_256K - SZ_16K, 0x04000);
-> >>                  if (ret)
-> >> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >> index 9c5e4618aa0a..5cdafc6c8bb0 100644
-> >> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >> @@ -683,7 +683,7 @@ static void a6xx_set_ubwc_config(struct msm_gpu *gpu)
-> >>          if (adreno_is_a618(adreno_gpu))
-> >>                  return;
-> >>
-> >> -       if (adreno_is_a640(adreno_gpu))
-> >> +       if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu))
-> >>                  amsbc = 1;
-> >>
-> >>          if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu)) {
-> >> @@ -757,7 +757,7 @@ static bool a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
-> >>           * a660 targets have all the critical security fixes from the start
-> >>           */
-> >>          if (adreno_is_a618(adreno_gpu) || adreno_is_a630(adreno_gpu) ||
-> >> -               adreno_is_a640(adreno_gpu)) {
-> >> +           adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu)) {
-> >>                  /*
-> >>                   * If the lowest nibble is 0xa that is an indication that this
-> >>                   * microcode has been patched. The actual version is in dword
-> >> @@ -897,7 +897,8 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
-> >>          a6xx_set_hwcg(gpu, true);
-> >>
-> >>          /* VBIF/GBIF start*/
-> >> -       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu)) {
-> >> +       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu) ||
-> >> +           adreno_is_a680(adreno_gpu)) {
-> >>                  gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE0, 0x00071620);
-> >>                  gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE1, 0x00071620);
-> >>                  gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE2, 0x00071620);
-> >> @@ -935,7 +936,8 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
-> >>          gpu_write(gpu, REG_A6XX_UCHE_FILTER_CNTL, 0x804);
-> >>          gpu_write(gpu, REG_A6XX_UCHE_CACHE_WAYS, 0x4);
-> >>
-> >> -       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu))
-> >> +       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu) ||
-> >> +           adreno_is_a680(adreno_gpu))
-> >>                  gpu_write(gpu, REG_A6XX_CP_ROQ_THRESHOLDS_2, 0x02000140);
-> >>          else
-> >>                  gpu_write(gpu, REG_A6XX_CP_ROQ_THRESHOLDS_2, 0x010000c0);
-> >> @@ -952,7 +954,7 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
-> >>          */
-> >>          if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu))
-> >>                  gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00300200);
-> >> -       else if (adreno_is_a640(adreno_gpu))
-> >> +       else if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu))
-> >>                  gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00200200);
-> >>          else
-> >>                  gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00180000);
-> >> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_hfi.c b/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
-> >> index 919433732b43..df8af237cf6a 100644
-> >> --- a/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
-> >> +++ b/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
-> >> @@ -428,7 +428,7 @@ static int a6xx_hfi_send_bw_table(struct a6xx_gmu *gmu)
-> >>
-> >>          if (adreno_is_a618(adreno_gpu))
-> >>                  a618_build_bw_table(&msg);
-> >> -       else if (adreno_is_a640(adreno_gpu))
-> >> +       else if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu))
-> >>                  a640_build_bw_table(&msg);
-> >>          else if (adreno_is_a650(adreno_gpu))
-> >>                  a650_build_bw_table(&msg);
-> >> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> >> index 6dad8015c9a1..799e4a35ca44 100644
-> >> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-> >> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> >> @@ -300,6 +300,19 @@ static const struct adreno_info gpulist[] = {
-> >>                  .init = a6xx_gpu_init,
-> >>                  .zapfw = "a660_zap.mdt",
-> >>                  .hwcg = a660_hwcg,
-> >> +       }, {
-> >> +               .rev = ADRENO_REV(6, 8, 0, ANY_ID),
-> >> +               .revn = 680,
-> >> +               .name = "A680",
-> >> +               .fw = {
-> >> +                       [ADRENO_FW_SQE] = "a630_sqe.fw",
-> >> +                       [ADRENO_FW_GMU] = "a640_gmu.bin",
-> >> +               },
-> >> +               .gmem = SZ_2M,
-> >> +               .inactive_period = DRM_MSM_INACTIVE_PERIOD,
-> >> +               .init = a6xx_gpu_init,
-> >> +               .zapfw = "a640_zap.mdt",
-> >> +               .hwcg = a640_hwcg,
-> >>          },
-> >>   };
-> >>
-> >> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> >> index 8dbe0d157520..a7e843e81b1e 100644
-> >> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> >> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> >> @@ -258,6 +258,11 @@ static inline int adreno_is_a650_family(struct adreno_gpu *gpu)
-> >>          return gpu->revn == 650 || gpu->revn == 620 || gpu->revn == 660;
-> >>   }
-> >>
-> >> +static inline int adreno_is_a680(struct adreno_gpu *gpu)
-> >> +{
-> >> +       return gpu->revn == 680;
-> >> +}
-> >> +
-> >>   int adreno_get_param(struct msm_gpu *gpu, uint32_t param, uint64_t *value);
-> >>   const struct firmware *adreno_request_fw(struct adreno_gpu *adreno_gpu,
-> >>                  const char *fwname);
-> >> --
-> >> 2.29.2
-> >>
->
-> _______________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
+To simplify review, here's the reasoning behind each update.
+
+drm_lease_owner:
+function name is self-descriptive
+
+_drm_find_lessee:
+function name is self-descriptive
+
+_drm_lease_held_master:
+function name and signature are self-descriptive
+
+_drm_has_leased:
+kerneldoc is summarized into a comment because the function name could
+be interpreted ambiguously (check if the object has been leased VS
+check if the master has a lease on the object)
+
+_drm_lease_held:
+Retain the idr_mutex comment because the function does not directly
+grab the mutex or use a lockdep assertion.
+Otherwise, the function name is self-descriptive.
+
+drm_lease_held:
+function name is self-descriptive
+
+drm_lease_filter_crtcs:
+Kerneldoc is summarized into a comment because the function name could
+be interpreted ambiguously (filter leases based on crtcs mask VS
+filter crtcs mask based on leases)
+
+drm_lease_create:
+Kerneldoc removed.
+Useful function details such as atomic leasing are retained.
+Errno interpretations are useful and retained.
+
+drm_lease_destroy:
+function name is self-descriptive. Additional information is also
+removed as they're already present as comments inside the function.
+
+_drm_lease_revoke:
+function name is self-descriptive
+
+drm_lease_revoke:
+function name is self-descriptive
+
+drm_mode_create_lease_ioctl:
+Kerneldoc removed, but useful function details retained.
+
+drm_mode_list_lessees_ioctl:
+function name is self-descriptive. Additional details restate what the
+code does.
+
+drm_mode_get_lease_ioctl:
+Function summary retained to clarify that it's the leased objects that
+are returned, not the lease structure.
+
+drm_mode_revoke_lease_ioctl:
+Kerneldoc removed, but useful function details retained.
+
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+---
+ drivers/gpu/drm/drm_lease.c | 131 +++---------------------------------
+ 1 file changed, 8 insertions(+), 123 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
+index 79be797e8689..dee4f24a1808 100644
+--- a/drivers/gpu/drm/drm_lease.c
++++ b/drivers/gpu/drm/drm_lease.c
+@@ -71,14 +71,6 @@
+ 
+ static uint64_t drm_lease_idr_object;
+ 
+-/**
+- * drm_lease_owner - return ancestor owner drm_master
+- * @master: drm_master somewhere within tree of lessees and lessors
+- *
+- * RETURN:
+- *
+- * drm_master at the top of the tree (i.e, with lessor NULL
+- */
+ struct drm_master *drm_lease_owner(struct drm_master *master)
+ {
+ 	while (master->lessor != NULL)
+@@ -86,16 +78,6 @@ struct drm_master *drm_lease_owner(struct drm_master *master)
+ 	return master;
+ }
+ 
+-/**
+- * _drm_find_lessee - find lessee by id (idr_mutex held)
+- * @master: drm_master of lessor
+- * @lessee_id: id
+- *
+- * RETURN:
+- *
+- * drm_master of the lessee if valid, NULL otherwise
+- */
+-
+ static struct drm_master*
+ _drm_find_lessee(struct drm_master *master, int lessee_id)
+ {
+@@ -103,17 +85,6 @@ _drm_find_lessee(struct drm_master *master, int lessee_id)
+ 	return idr_find(&drm_lease_owner(master)->lessee_idr, lessee_id);
+ }
+ 
+-/**
+- * _drm_lease_held_master - check to see if an object is leased (or owned) by master (idr_mutex held)
+- * @master: the master to check the lease status of
+- * @id: the id to check
+- *
+- * Checks if the specified master holds a lease on the object. Return
+- * value:
+- *
+- *	true		'master' holds a lease on (or owns) the object
+- *	false		'master' does not hold a lease.
+- */
+ static int _drm_lease_held_master(struct drm_master *master, int id)
+ {
+ 	lockdep_assert_held(&master->dev->mode_config.idr_mutex);
+@@ -122,17 +93,7 @@ static int _drm_lease_held_master(struct drm_master *master, int id)
+ 	return true;
+ }
+ 
+-/**
+- * _drm_has_leased - check to see if an object has been leased (idr_mutex held)
+- * @master: the master to check the lease status of
+- * @id: the id to check
+- *
+- * Checks if any lessee of 'master' holds a lease on 'id'. Return
+- * value:
+- *
+- *	true		Some lessee holds a lease on the object.
+- *	false		No lessee has a lease on the object.
+- */
++/* Checks if the given object has been leased to some lessee of drm_master */
+ static bool _drm_has_leased(struct drm_master *master, int id)
+ {
+ 	struct drm_master *lessee;
+@@ -144,17 +105,7 @@ static bool _drm_has_leased(struct drm_master *master, int id)
+ 	return false;
+ }
+ 
+-/**
+- * _drm_lease_held - check drm_mode_object lease status (idr_mutex held)
+- * @file_priv: the master drm_file
+- * @id: the object id
+- *
+- * Checks if the specified master holds a lease on the object. Return
+- * value:
+- *
+- *	true		'master' holds a lease on (or owns) the object
+- *	false		'master' does not hold a lease.
+- */
++/* Called with idr_mutex held */
+ bool _drm_lease_held(struct drm_file *file_priv, int id)
+ {
+ 	bool ret;
+@@ -172,17 +123,6 @@ bool _drm_lease_held(struct drm_file *file_priv, int id)
+ 	return ret;
+ }
+ 
+-/**
+- * drm_lease_held - check drm_mode_object lease status (idr_mutex not held)
+- * @file_priv: the master drm_file
+- * @id: the object id
+- *
+- * Checks if the specified master holds a lease on the object. Return
+- * value:
+- *
+- *	true		'master' holds a lease on (or owns) the object
+- *	false		'master' does not hold a lease.
+- */
+ bool drm_lease_held(struct drm_file *file_priv, int id)
+ {
+ 	struct drm_master *master;
+@@ -207,13 +147,9 @@ bool drm_lease_held(struct drm_file *file_priv, int id)
+ 	return ret;
+ }
+ 
+-/**
+- * drm_lease_filter_crtcs - restricted crtc set to leased values (idr_mutex not held)
+- * @file_priv: requestor file
+- * @crtcs_in: bitmask of crtcs to check
+- *
+- * Reconstructs a crtc mask based on the crtcs which are visible
+- * through the specified file.
++/*
++ * Given a bitmask of crtcs to check, reconstructs a crtc mask based on the
++ * crtcs which are visible through the specified file.
+  */
+ uint32_t drm_lease_filter_crtcs(struct drm_file *file_priv, uint32_t crtcs_in)
+ {
+@@ -258,10 +194,6 @@ uint32_t drm_lease_filter_crtcs(struct drm_file *file_priv, uint32_t crtcs_in)
+ }
+ 
+ /*
+- * drm_lease_create - create a new drm_master with leased objects (idr_mutex not held)
+- * @lessor: lease holder (or owner) of objects
+- * @leases: objects to lease to the new drm_master
+- *
+  * Uses drm_master_create to allocate a new drm_master, then checks to
+  * make sure all of the desired objects can be leased, atomically
+  * leasing them to the new drmmaster.
+@@ -330,15 +262,6 @@ static struct drm_master *drm_lease_create(struct drm_master *lessor, struct idr
+ 	return ERR_PTR(error);
+ }
+ 
+-/**
+- * drm_lease_destroy - a master is going away (idr_mutex not held)
+- * @master: the drm_master being destroyed
+- *
+- * All lessees will have been destroyed as they
+- * hold a reference on their lessor. Notify any
+- * lessor for this master so that it can check
+- * the list of lessees.
+- */
+ void drm_lease_destroy(struct drm_master *master)
+ {
+ 	struct drm_device *dev = master->dev;
+@@ -372,10 +295,6 @@ void drm_lease_destroy(struct drm_master *master)
+ 	DRM_DEBUG_LEASE("drm_lease_destroy done %d\n", master->lessee_id);
+ }
+ 
+-/**
+- * _drm_lease_revoke - revoke access to all leased objects (idr_mutex held)
+- * @top: the master losing its lease
+- */
+ static void _drm_lease_revoke(struct drm_master *top)
+ {
+ 	int object;
+@@ -414,10 +333,6 @@ static void _drm_lease_revoke(struct drm_master *top)
+ 	}
+ }
+ 
+-/**
+- * drm_lease_revoke - revoke access to all leased objects (idr_mutex not held)
+- * @top: the master losing its lease
+- */
+ void drm_lease_revoke(struct drm_master *top)
+ {
+ 	mutex_lock(&top->dev->mode_config.idr_mutex);
+@@ -549,12 +464,7 @@ static int fill_object_idr(struct drm_device *dev,
+ 	return ret;
+ }
+ 
+-/**
+- * drm_mode_create_lease_ioctl - create a new lease
+- * @dev: the drm device
+- * @data: pointer to struct drm_mode_create_lease
+- * @lessor_priv: the file being manipulated
+- *
++/*
+  * The master associated with the specified file will have a lease
+  * created containing the objects specified in the ioctl structure.
+  * A file descriptor will be allocated for that and returned to the
+@@ -676,18 +586,6 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
+ 	return ret;
+ }
+ 
+-/**
+- * drm_mode_list_lessees_ioctl - list lessee ids
+- * @dev: the drm device
+- * @data: pointer to struct drm_mode_list_lessees
+- * @lessor_priv: the file being manipulated
+- *
+- * Starting from the master associated with the specified file,
+- * the master with the provided lessee_id is found, and then
+- * an array of lessee ids associated with leases from that master
+- * are returned.
+- */
+-
+ int drm_mode_list_lessees_ioctl(struct drm_device *dev,
+ 			       void *data, struct drm_file *lessor_priv)
+ {
+@@ -734,15 +632,7 @@ int drm_mode_list_lessees_ioctl(struct drm_device *dev,
+ 	return ret;
+ }
+ 
+-/**
+- * drm_mode_get_lease_ioctl - list leased objects
+- * @dev: the drm device
+- * @data: pointer to struct drm_mode_get_lease
+- * @lessee_priv: the file being manipulated
+- *
+- * Return the list of leased objects for the specified lessee
+- */
+-
++/* Return the list of leased objects for the specified lessee */
+ int drm_mode_get_lease_ioctl(struct drm_device *dev,
+ 			     void *data, struct drm_file *lessee_priv)
+ {
+@@ -796,12 +686,7 @@ int drm_mode_get_lease_ioctl(struct drm_device *dev,
+ 	return ret;
+ }
+ 
+-/**
+- * drm_mode_revoke_lease_ioctl - revoke lease
+- * @dev: the drm device
+- * @data: pointer to struct drm_mode_revoke_lease
+- * @lessor_priv: the file being manipulated
+- *
++/*
+  * This removes all of the objects from the lease without
+  * actually getting rid of the lease itself; that way all
+  * references to it still work correctly
+-- 
+2.25.1
+
