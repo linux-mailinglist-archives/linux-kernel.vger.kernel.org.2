@@ -2,50 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0746D3DB063
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 02:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B266A3DB067
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 02:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233098AbhG3AmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 20:42:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41220 "EHLO mail.kernel.org"
+        id S231755AbhG3Ap0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 20:45:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229667AbhG3AmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 20:42:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F59160F0F;
-        Fri, 30 Jul 2021 00:42:07 +0000 (UTC)
+        id S229667AbhG3ApZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 20:45:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70C6B6052B;
+        Fri, 30 Jul 2021 00:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627605728;
-        bh=fzQouAp0BSmpfI0BisnWIRifzAAL6fkGAKQxzXLpDis=;
+        s=k20201202; t=1627605921;
+        bh=IKk7BX1ONbfPnv8s4mwXVo9+RGln8d3bOeRSwAddPO8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qVV1c9N8Sv3Agke1azj+JnVRpRHWnJNLlG0u3fWIWc0fk+f4lWqOtX4OtLhXXI9FO
-         QHzn9bxnmZ9MjHU/jC+VBqFK/2s3gV9JmHy/iU918sF2pIJVYmdMYm7gLF+JOCW8P9
-         Azkpb7nkbiCQww34/VweHP0p+po6QUXz58mmySOFb5U0N2yyAqXnjzwEqj9NZYVTCi
-         QPabGQqgE23k12xplgJAYHcagBSc5B5EA1Kk10B6CfDQUAho0WhCvHOMJ4NiGOK7FC
-         B5ijp43zrcIv7gLqIqmq9v+bV0JhqqlONP3S8xMMl9xzd4vkFpSUfEJe84MRp+Xwvq
-         KtMHeKK4KaZCw==
-Date:   Fri, 30 Jul 2021 03:42:04 +0300
+        b=b0FNddH7tZzNv0/r9imFIx+MXyPhXQKMovGjhi0J2KdGypSiPqknCUZUZXcaYiBNH
+         iSr3r3Pt0aNeNDCqjkcv5FFoiFAYiBHkWjzDPyLOd3MOvZ6aOMl5rhf1RULksXh+BR
+         jOOA/8xkDHplNcnfcw+bHeyvhWnejduJwxGntZZFaYjbf3LTXr27uK2kT6mdPAqRSs
+         JfHdwOQeB/PUA6EQbZb6bbIG6UCetiK7UoGuSGoMNauzCRpBEI7wIDOp30T0VtviUD
+         JjSXhTNrnNykYCIci0FKRGvjQmw+2LlUr8ARQiH3+61ZK3SrB2nsXv7jzRu3vvsLX9
+         J7kU0ZK+vqH6A==
+Date:   Fri, 30 Jul 2021 03:45:17 +0300
 From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] x86/sgx: Initial poison handling for dirty and
- free pages
-Message-ID: <20210730004204.cwlb6lm5e7rabgio@kernel.org>
-References: <20210719182009.1409895-1-tony.luck@intel.com>
- <20210728204653.1509010-1-tony.luck@intel.com>
- <20210728204653.1509010-4-tony.luck@intel.com>
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] char: tpm: Kconfig: remove bad i2c cr50 select
+Message-ID: <20210730004517.w66o7cyas2h3t6oj@kernel.org>
+References: <20210727171313.2452236-1-adrian.ratiu@collabora.com>
+ <20210728215346.rmgvn4woou4iehqx@kernel.org>
+ <87h7gdqstj.fsf@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210728204653.1509010-4-tony.luck@intel.com>
+In-Reply-To: <87h7gdqstj.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 01:46:49PM -0700, Tony Luck wrote:
-> +	dir = debugfs_create_dir("sgx", NULL);
+On Thu, Jul 29, 2021 at 02:10:16PM +0300, Adrian Ratiu wrote:
+> On Thu, 29 Jul 2021, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > On Tue, Jul 27, 2021 at 08:13:12PM +0300, Adrian Ratiu wrote:
+> > > This fixes a minor bug which went unnoticed during the initial
+> > > driver upstreaming review: TCG_CR50 does not exist in mainline
+> > > kernels, so remove it.   Fixes: 3a253caaad11 ("char: tpm: add i2c
+> > > driver for cr50") Cc: stable@vger.kernel.org Reviewed-by: Jarkko
+> > > Sakkinen <jarkko@kernel.org> Signed-off-by: Adrian Ratiu
+> > > <adrian.ratiu@collabora.com> ---
+> > 
+> > These are missing changelog. I guess tags are added, and nothing else?
+> 
+> Hi. That is correct, I've only added the tags you suggested on the first
+> patch, the second patch is identical.
 
-dir = debugfs_create_dir("sgx", arch_debugfs_dir);
+OK, cool. I'll pick this up then. Thank you.
 
 /Jarkko
