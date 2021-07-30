@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2F23DB595
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A923DB5A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238107AbhG3JBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:01:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230436AbhG3JBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:01:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DB2060EBC;
-        Fri, 30 Jul 2021 09:01:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627635663;
-        bh=ZqUXtxocwsf9OoFzcWmFz4ZMIgWoSvnVSWDE/K9rjYc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gsqow/fRGqYWqMYX/Gxs1k8QH2DDnJhaEknI7ikudaKF79bQeRYbdBKX/y+Mf5U9a
-         SmNghxm3s85lGNm1JT8JzX/97KQfutuYcRP3dWPWgeturv3mBMm2ITqaVIqCPS2upt
-         0baXwj7mBSJn1cZ3BDfMzMwcm8a3N3gY4OTRRjMylvYV/FhhuPrOtNgAR9kUjPEf9m
-         CxaeCVfc+UoWO8f3dIM9qUgF3N8tWBPScbMURa3nrgq//bd+oSsV5J4+dDdtmb2/By
-         g3CJvntp4P8ghwPpj5f12ShjzM8r2UfqWXMOQtHI9VYcwki3kCQNcdjnf5wauDAzsM
-         Kxv8PJ68drXeA==
-Date:   Fri, 30 Jul 2021 10:00:57 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, catalin.marinas@arm.com,
-        maz@kernel.org, mark.rutland@arm.com, dbrazdil@google.com,
-        qperret@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lipeng321@huawei.com, peterz@infradead.org
-Subject: Re: [PATCH net-next 2/4] io: add function to flush the write combine
- buffer to device immediately
-Message-ID: <20210730090056.GA22968@willie-the-truck>
-References: <1627614864-50824-1-git-send-email-huangguangbin2@huawei.com>
- <1627614864-50824-3-git-send-email-huangguangbin2@huawei.com>
+        id S238077AbhG3JGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230335AbhG3JGA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 05:06:00 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EEDC061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:05:56 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id h2so16548972lfu.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7fjXkwTW0XnvdKErYY4YL2ErCAYkMkBwM+Rl2m8Fj6I=;
+        b=eGvLfG7jvtnjTQ7y+uCAzJHDZINAwVBBBlKWuE7mlsW14wdA2ixv+vViZ8bNRmLRFU
+         LcZoDot0roZma+aktjsr9qvzqe8VziNoIxS6VbmN/Ana/GyH3CH2OW5qUr74F+/Ta7qV
+         vC+gStNco8y/HFqsuHSWQXiHCoqm2WKHBfHpK+PodFsejdDk7xYD8NJ0fkdozpy5zQUu
+         7H4wxOHYbkp987bOegnd8nuNL4HbDbj9g38tCQeSg2sX+1DQUFUdUbpnCAR+TwYhIWqu
+         wnQepbb3xRK2LFHiVbYJaR1RDMCVGatNdlDwUrBc9nVMV0ZB1pg+jhVJts5TEcUb9qkV
+         Li3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7fjXkwTW0XnvdKErYY4YL2ErCAYkMkBwM+Rl2m8Fj6I=;
+        b=uVQi59bw5Jcsqom9JWJxqKHfHqHBz/9VJ5fl/hYvp1En13s/dkKt7yEs9Sar5hPYVN
+         j9sjBLAsnIco+ZGQAnGwZ2uY8I8Lms37oN5OPVZm5X4U1722w1sgMr7Vn9cXKN/k8HRC
+         k2G7Ej1eJwqzXnBynVxqmG3dTppnNXqWl2Q3pdpjxV1xBvtsfIsUi1e5qD1/ISVekPbJ
+         grYUV0d5icr66XOegsRa+Ne582Fjgu1JG/gSqsR15PkGijy4B1i4ZRPK6GX1uKJlir0Q
+         rB4DLF5XZL9UK960g7+5sVq5G4STSXDmTuBcsn+dx8JmpmNkVQUueOgq0p90tfQhP/xp
+         yRqg==
+X-Gm-Message-State: AOAM532+cM/Vk0lZNcoMoon+BJqH20M6omfgfU8Zswse77LvkLKz/lmJ
+        ChT9Dxa8fgsr2V2BUikL2bMe0R0LooX6ZRZBu0haqQ==
+X-Google-Smtp-Source: ABdhPJzIglz1+X4aSDlLJ6cYQdggCLwPPABBzmggXznaSbU40ecn/VSlTll3FYW9jH0fHE4V0yz43gnugLU0kCh26VA=
+X-Received: by 2002:ac2:5d4a:: with SMTP id w10mr1160863lfd.529.1627635954345;
+ Fri, 30 Jul 2021 02:05:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1627614864-50824-3-git-send-email-huangguangbin2@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210716162724.26047-1-lakshmi.sowjanya.d@intel.com> <20210716162724.26047-2-lakshmi.sowjanya.d@intel.com>
+In-Reply-To: <20210716162724.26047-2-lakshmi.sowjanya.d@intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 30 Jul 2021 11:05:43 +0200
+Message-ID: <CACRpkdZdK38iwwCQKqUQ1Xbd-5kf8NFjAxT8pvq+e7jT+wiThA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: Add bindings for Intel
+ Keembay pinctrl driver
+To:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Saha, Tamal" <tamal.saha@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Lakshmi,
 
-On Fri, Jul 30, 2021 at 11:14:22AM +0800, Guangbin Huang wrote:
-> From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> 
-> Device registers can be mapped as write-combine type. In this case, data
-> are not written into the device immediately. They are temporarily stored
-> in the write combine buffer and written into the device when the buffer
-> is full. But in some situation, we need to flush the write combine
-> buffer to device immediately for better performance. So we add a general
-> function called 'flush_wc_write()'. We use DGH instruction to implement
-> this function for ARM64.
-> 
-> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-> ---
->  arch/arm64/include/asm/io.h | 2 ++
->  include/linux/io.h          | 6 ++++++
->  2 files changed, 8 insertions(+)
+sorry for slow review.
 
--ENODOCUMENTATION
+Since this is one of those "Intel but Arm" things I don't know how
+Andy feels about picking up the patch to his Intel pinctrl tree
+(I think we discussed it in the past) so I need to know how to handle
+this. It'd be great if Andy queues "all Intel stuff" but I don't want
+to force unfamiliar stuff on him either.
 
-> diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
-> index 7fd836bea7eb..5315d023b2dd 100644
-> --- a/arch/arm64/include/asm/io.h
-> +++ b/arch/arm64/include/asm/io.h
-> @@ -112,6 +112,8 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
->  #define __iowmb()		dma_wmb()
->  #define __iomb()		dma_mb()
->  
-> +#define flush_wc_write()	dgh()
+Andy? Do you pick this (when finished) or should I?
 
-I think it would be worthwhile to look at what architectures other than
-arm64 offer here. For example, is there anything similar to this on riscv,
-x86 or power? Doing a quick survery of what's out there might help us define
-a macro that can be used across multiple architectures.
+On Fri, Jul 16, 2021 at 6:27 PM <lakshmi.sowjanya.d@intel.com> wrote:
 
-Thanks,
+> +        interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
 
-Will
+Did we discuss this before? Are these hierarchical or does these IRQs
+map to more than one GPIO line?
 
->  /*
->   * Relaxed I/O memory access primitives. These follow the Device memory
->   * ordering rules but do not guarantee any ordering relative to Normal memory
-> diff --git a/include/linux/io.h b/include/linux/io.h
-> index 9595151d800d..469d53444218 100644
-> --- a/include/linux/io.h
-> +++ b/include/linux/io.h
-> @@ -166,4 +166,10 @@ static inline void arch_io_free_memtype_wc(resource_size_t base,
->  }
->  #endif
->  
-> +/* IO barriers */
-> +
-> +#ifndef flush_wc_write
-> +#define flush_wc_write()		do { } while (0)
-> +#endif
-> +
->  #endif /* _LINUX_IO_H */
-> -- 
-> 2.8.1
-> 
+If they are hieararchical then the driver should just pick the lines
+in hierarchy from the parent with no data in the driver, but if one
+of these IRQ lines maps to more than one GPIO line they should
+be like this.
+
+Yours,
+Linus Walleij
