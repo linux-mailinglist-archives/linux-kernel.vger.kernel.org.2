@@ -2,150 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBD13DB68F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A223DB6C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238371AbhG3KCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:02:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:39828 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230160AbhG3KBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:01:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3BBC1FB;
-        Fri, 30 Jul 2021 03:01:12 -0700 (PDT)
-Received: from [10.163.66.9] (unknown [10.163.66.9])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50CB13F73D;
-        Fri, 30 Jul 2021 03:01:08 -0700 (PDT)
-Subject: Re: [PATCH 02/10] coresight: trbe: Add a helper to calculate the
- trace generated
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
-References: <20210728135217.591173-1-suzuki.poulose@arm.com>
- <20210728135217.591173-3-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <3f3643fc-95b5-43b2-c512-72a7357f9ca8@arm.com>
-Date:   Fri, 30 Jul 2021 15:31:56 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S238414AbhG3KEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:04:23 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:32033 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S238426AbhG3KEE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 06:04:04 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AxlOEba4/NSlm8RnYvgPXwPTXdLJyesId70hD?=
+ =?us-ascii?q?6qkRc20wTiX8ra2TdZsguyMc9wx6ZJhNo7G90cq7MBbhHPxOkOos1N6ZNWGIhI?=
+ =?us-ascii?q?LCFvAB0WKN+V3dMhy73utc+IMlSKJmFeD3ZGIQse/KpCW+DPYsqePqzJyV?=
+X-IronPort-AV: E=Sophos;i="5.84,281,1620662400"; 
+   d="scan'208";a="112074017"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 30 Jul 2021 18:02:19 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 09A294D0D4A2;
+        Fri, 30 Jul 2021 18:02:16 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 30 Jul 2021 18:02:18 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 30 Jul 2021 18:02:14 +0800
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <nvdimm@lists.linux.dev>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <dm-devel@redhat.com>
+CC:     <djwong@kernel.org>, <dan.j.williams@intel.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <agk@redhat.com>,
+        <snitzer@redhat.com>
+Subject: [PATCH RESEND v6 8/9] md: Implement dax_holder_operations
+Date:   Fri, 30 Jul 2021 18:01:57 +0800
+Message-ID: <20210730100158.3117319-9-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com>
+References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <20210728135217.591173-3-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 09A294D0D4A2.A5534
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the case where the holder represents a mapped device, or a list
+of mapped devices more exactly(because it is possible to create more
+than one mapped device on one pmem device).
+
+Find out which mapped device the offset belongs to, and translate the
+offset from target device to mapped device.  When it is done, call
+dax_corrupted_range() for the holder of this mapped device.
+
+Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+---
+ drivers/md/dm.c | 126 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 125 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 2c5f9e585211..a35b9a97a73f 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -626,7 +626,11 @@ static void dm_put_live_table_fast(struct mapped_device *md) __releases(RCU)
+ }
+ 
+ static char *_dm_claim_ptr = "I belong to device-mapper";
+-
++static const struct dax_holder_operations dm_dax_holder_ops;
++struct dm_holder {
++	struct list_head list;
++	struct mapped_device *md;
++};
+ /*
+  * Open a table device so we can use it as a map destination.
+  */
+@@ -634,6 +638,8 @@ static int open_table_device(struct table_device *td, dev_t dev,
+ 			     struct mapped_device *md)
+ {
+ 	struct block_device *bdev;
++	struct list_head *holders;
++	struct dm_holder *holder;
+ 
+ 	int r;
+ 
+@@ -651,6 +657,19 @@ static int open_table_device(struct table_device *td, dev_t dev,
+ 
+ 	td->dm_dev.bdev = bdev;
+ 	td->dm_dev.dax_dev = dax_get_by_host(bdev->bd_disk->disk_name);
++	if (!td->dm_dev.dax_dev)
++		return 0;
++
++	holders = dax_get_holder(td->dm_dev.dax_dev);
++	if (!holders) {
++		holders = kmalloc(sizeof(*holders), GFP_KERNEL);
++		INIT_LIST_HEAD(holders);
++		dax_set_holder(td->dm_dev.dax_dev, holders, &dm_dax_holder_ops);
++	}
++	holder = kmalloc(sizeof(*holder), GFP_KERNEL);
++	holder->md = md;
++	list_add_tail(&holder->list, holders);
++
+ 	return 0;
+ }
+ 
+@@ -659,9 +678,27 @@ static int open_table_device(struct table_device *td, dev_t dev,
+  */
+ static void close_table_device(struct table_device *td, struct mapped_device *md)
+ {
++	struct list_head *holders;
++	struct dm_holder *holder, *n;
++
+ 	if (!td->dm_dev.bdev)
+ 		return;
+ 
++	holders = dax_get_holder(td->dm_dev.dax_dev);
++	if (holders) {
++		list_for_each_entry_safe(holder, n, holders, list) {
++			if (holder->md == md) {
++				list_del(&holder->list);
++				kfree(holder);
++			}
++		}
++		if (list_empty(holders)) {
++			kfree(holders);
++			/* unset dax_device's holder_data */
++			dax_set_holder(td->dm_dev.dax_dev, NULL, NULL);
++		}
++	}
++
+ 	bd_unlink_disk_holder(td->dm_dev.bdev, dm_disk(md));
+ 	blkdev_put(td->dm_dev.bdev, td->dm_dev.mode | FMODE_EXCL);
+ 	put_dax(td->dm_dev.dax_dev);
+@@ -1115,6 +1152,89 @@ static int dm_dax_zero_page_range(struct dax_device *dax_dev, pgoff_t pgoff,
+ 	return ret;
+ }
+ 
++#if IS_ENABLED(CONFIG_DAX_DRIVER)
++struct corrupted_hit_info {
++	struct dax_device *dax_dev;
++	sector_t offset;
++};
++
++static int dm_blk_corrupted_hit(struct dm_target *ti, struct dm_dev *dev,
++				sector_t start, sector_t count, void *data)
++{
++	struct corrupted_hit_info *bc = data;
++
++	return bc->dax_dev == (void *)dev->dax_dev &&
++			(start <= bc->offset && bc->offset < start + count);
++}
++
++struct corrupted_do_info {
++	size_t length;
++	void *data;
++};
++
++static int dm_blk_corrupted_do(struct dm_target *ti, struct block_device *bdev,
++			       sector_t sector, void *data)
++{
++	struct mapped_device *md = ti->table->md;
++	struct corrupted_do_info *bc = data;
++
++	return dax_holder_notify_failure(md->dax_dev, to_bytes(sector),
++					 bc->length, bc->data);
++}
++
++static int dm_dax_notify_failure_one(struct mapped_device *md,
++				     struct dax_device *dax_dev,
++				     loff_t offset, size_t length, void *data)
++{
++	struct dm_table *map;
++	struct dm_target *ti;
++	sector_t sect = to_sector(offset);
++	struct corrupted_hit_info hi = {dax_dev, sect};
++	struct corrupted_do_info di = {length, data};
++	int srcu_idx, i, rc = -ENODEV;
++
++	map = dm_get_live_table(md, &srcu_idx);
++	if (!map)
++		return rc;
++
++	/*
++	 * find the target device, and then translate the offset of this target
++	 * to the whole mapped device.
++	 */
++	for (i = 0; i < dm_table_get_num_targets(map); i++) {
++		ti = dm_table_get_target(map, i);
++		if (!(ti->type->iterate_devices && ti->type->rmap))
++			continue;
++		if (!ti->type->iterate_devices(ti, dm_blk_corrupted_hit, &hi))
++			continue;
++
++		rc = ti->type->rmap(ti, sect, dm_blk_corrupted_do, &di);
++		break;
++	}
++
++	dm_put_live_table(md, srcu_idx);
++	return rc;
++}
++
++static int dm_dax_notify_failure(struct dax_device *dax_dev,
++				 loff_t offset, size_t length, void *data)
++{
++	struct dm_holder *holder;
++	struct list_head *holders = dax_get_holder(dax_dev);
++	int rc = -ENODEV;
++
++	list_for_each_entry(holder, holders, list) {
++		rc = dm_dax_notify_failure_one(holder->md, dax_dev, offset,
++					       length, data);
++		if (rc != -ENODEV)
++			break;
++	}
++	return rc;
++}
++#else
++#define dm_dax_notify_failure NULL
++#endif
++
+ /*
+  * A target may call dm_accept_partial_bio only from the map routine.  It is
+  * allowed for all bio types except REQ_PREFLUSH, REQ_OP_ZONE_* zone management
+@@ -3057,6 +3177,10 @@ static const struct dax_operations dm_dax_ops = {
+ 	.zero_page_range = dm_dax_zero_page_range,
+ };
+ 
++static const struct dax_holder_operations dm_dax_holder_ops = {
++	.notify_failure = dm_dax_notify_failure,
++};
++
+ /*
+  * module hooks
+  */
+-- 
+2.32.0
 
 
-On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
-> We collect the trace from the TRBE on FILL event from IRQ context
-> and when via update_buffer(), when the event is stopped. Let us
-> consolidate how we calculate the trace generated into a helper.
-> 
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 48 ++++++++++++--------
->  1 file changed, 30 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index 0368bf405e35..a0168ad204b3 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -528,6 +528,30 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
->  	return TRBE_FAULT_ACT_SPURIOUS;
->  }
->  
-> +static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
-> +					 struct trbe_buf *buf,
-> +					 bool wrap)
-> +{
-> +	u64 write;
-> +	u64 start_off, end_off;
-> +
-> +	/*
-> +	 * If the TRBE has wrapped around the write pointer has
-> +	 * wrapped and should be treated as limit.
-> +	 */
-> +	if (wrap)
-> +		write = get_trbe_limit_pointer();
-> +	else
-> +		write = get_trbe_write_pointer();
-> +
-> +	end_off = write - buf->trbe_base;
-> +	start_off = PERF_IDX2OFF(handle->head, buf);
-> +
-> +	if (WARN_ON_ONCE(end_off < start_off))
-> +		return 0;
-> +	return (end_off - start_off);
-> +}
-> +
->  static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
->  				   struct perf_event *event, void **pages,
->  				   int nr_pages, bool snapshot)
-> @@ -589,9 +613,9 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->  	struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
->  	struct trbe_buf *buf = config;
->  	enum trbe_fault_action act;
-> -	unsigned long size, offset;
-> -	unsigned long write, base, status;
-> +	unsigned long size, status;
->  	unsigned long flags;
-> +	bool wrap = false;
->  
->  	WARN_ON(buf->cpudata != cpudata);
->  	WARN_ON(cpudata->cpu != smp_processor_id());
-> @@ -633,8 +657,6 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->  	 * handle gets freed in etm_event_stop().
->  	 */
->  	trbe_drain_and_disable_local();
-> -	write = get_trbe_write_pointer();
-> -	base = get_trbe_base_pointer();
->  
->  	/* Check if there is a pending interrupt and handle it here */
->  	status = read_sysreg_s(SYS_TRBSR_EL1);
-> @@ -658,20 +680,11 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->  			goto done;
->  		}
->  
-> -		/*
-> -		 * Otherwise, the buffer is full and the write pointer
-> -		 * has reached base. Adjust this back to the Limit pointer
-> -		 * for correct size. Also, mark the buffer truncated.
-> -		 */
-> -		write = get_trbe_limit_pointer();
->  		perf_aux_output_flag(handle, PERF_AUX_FLAG_COLLISION);
-> +		wrap = true;
->  	}
->  
-> -	offset = write - base;
-> -	if (WARN_ON_ONCE(offset < PERF_IDX2OFF(handle->head, buf)))
-> -		size = 0;
-> -	else
-> -		size = offset - PERF_IDX2OFF(handle->head, buf);
-> +	size = trbe_get_trace_size(handle, buf, wrap);
->  
->  done:
->  	local_irq_restore(flags);
-> @@ -752,11 +765,10 @@ static int trbe_handle_overflow(struct perf_output_handle *handle)
->  {
->  	struct perf_event *event = handle->event;
->  	struct trbe_buf *buf = etm_perf_sink_config(handle);
-> -	unsigned long offset, size;
-> +	unsigned long size;
->  	struct etm_event_data *event_data;
->  
-> -	offset = get_trbe_limit_pointer() - get_trbe_base_pointer();
-> -	size = offset - PERF_IDX2OFF(handle->head, buf);
-> +	size = trbe_get_trace_size(handle, buf, true);
->  	if (buf->snapshot)
->  		handle->head += size;
->  
-> 
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
