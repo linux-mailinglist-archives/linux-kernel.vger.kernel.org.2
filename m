@@ -2,141 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9703B3DB128
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 04:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38073DB11F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 04:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235887AbhG3CbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 22:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235464AbhG3CbP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 22:31:15 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AFCC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 19:31:10 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so12294648pjh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 19:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fUqZ0NLVZxg4yvCXyE1lEs/e7e2cakQ+3GgW8pZJCvA=;
-        b=etYre1AjERNhjyVA/9+2+oLRj921sU45jCtD5h5fRrioHVxndRb/wVYqd+Gvs/9PWN
-         W5TIwCrEKVrSomZp1XNcHMR3yLthFd9Qftp86Ybrvy7SLYwhXBueLu90Yc4ejQUhYSOC
-         pE6uT73BOuVftlnSqfS6+2EzGpdU+4QF+7NHo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fUqZ0NLVZxg4yvCXyE1lEs/e7e2cakQ+3GgW8pZJCvA=;
-        b=TO47HHbbJFq7EA9vTMXbv9kkgs7XXAuH7qkQgYvRgKm98s0qzS8omi0W3oHvH20GLj
-         U2OpELz7BsskvxIoT8vSX1KMu4h3Wu4oA49jP/wEDAUcBQtPY/qUJIkrLAkYoxUou5m6
-         nr+bG3O02Lwd/7CDXy/EKTI2idDG0Kfv1EXJ92R0KZ01O+uSDPMLkIvNVY16QR+ago0b
-         jlIeIX/DYGQRLpYCZQ2RTNO5z/M3/tRKCBkMV+SF9FnI1jx7ZpHuMR9wpkMPDJlkjomm
-         PoRvvcW1P5QEjuaOk4XehbggJyEDndyjeHueDN775KhRd3e20P31HolZjOr0ZMtOIRZZ
-         w3Tw==
-X-Gm-Message-State: AOAM531cGVpwT15VLvoUla5c7AT6GwqcyET5eE5oDy1qB0aHi5uKR5Pt
-        h0BrHT9Dr6pk2oZTsdH4nipTpw==
-X-Google-Smtp-Source: ABdhPJxIpjyYfp2wSF3KUcMBsoeqagBGHs5J6YJ1XjDsi8DNMVFxuffmFFgkMO9ZoPoLSYu5GHbnWw==
-X-Received: by 2002:a05:6a00:168a:b029:2fb:6bb0:aba with SMTP id k10-20020a056a00168ab02902fb6bb00abamr526959pfc.32.1627612270101;
-        Thu, 29 Jul 2021 19:31:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q13sm218718pjq.10.2021.07.29.19.31.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 19:31:09 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 19:31:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 48/64] drbd: Use struct_group() to zero algs
-Message-ID: <202107291845.1E1528D@keescook>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-49-keescook@chromium.org>
- <1cc74e5e-8d28-6da4-244e-861eac075ca2@acm.org>
+        id S235836AbhG3CYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 22:24:37 -0400
+Received: from mail-sn1anam02on2082.outbound.protection.outlook.com ([40.107.96.82]:27766
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230200AbhG3CYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 22:24:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ijo/rLkkTnYhbSjcyA0Fahei3c2fZrYW7Q1brLyOplWtTsqMYvrbapUh4dDwRx84BWUdC1LJEE+04wVx5hH8w1LSMsQEMZ8+5997cfyoqQZpqud/4o73Nsc7N/X52QVXMVJZU0zbmomJQSqwErOs0SvmZtTrmbKX4pRXiXONTFuz9xTYHsf8DU8bSLV0qD72KDDMa9f9hwndai6YTQ7bim/W+SDHsU0BUJOriwWpdUcIhp6uonNZy/cE1dAN4f+J5S6rWX4bNrgfkTvzTwDPYiLfxsxbRgK2SYMYCbkX23AiE7Nfr7mPp0HJhM77b3RiurSSSq9k0jO1LfM12cxNLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=w6bLH62oPK0In5jLU8GOHpbm8NdW9jUhBJjfr0+yQu4=;
+ b=J+3W+nrs/E8lH7HN9HabRWomBefqvtEhsEHn5TO52T2LWGq7+ikayqKzfv9OsCc73c7a7R7Hg0hUlBopth0m+8h1liol/itDql1+UWobw9hIPz3pcbQ05hWgLrHy0HaEswekk7j21CAuvXQiHRjBDNDpWTiHUiSBvaFyau4x+wk2UR+TrNFKlHk4AYObHU7a7AOOB+Sxb/s6G1jm94S2ZZUhe6oGIX1agLZtMZdHp4ow2wUaC8DZ6WGDGaNASAaiySdIaEpBoanmv6k/IuTKjfcdL5XX2UKeRKhmfXtSF5zXxvr67L+i8yD0XuuduLJvLVf777ki83tTyQEFiA/R/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=w6bLH62oPK0In5jLU8GOHpbm8NdW9jUhBJjfr0+yQu4=;
+ b=LUn2uFYFmRC+GP/vb+pE8Kwv+e0hwYhwV1GFroDMp1SmE1IkEDyIxXqVVHAqM8iHGxiw99L1vWMmG3BrPj7GmwL6/KJy57T+sza70dtJ6CCHqAHJkt3qEqk6bTPGYHg8k/20Rmzlg446wGApg5RXDEPXpmH5X/sEmjTPQspyt5C6Xas8JFq7gCBUtSRwLuAEXVQoczp0/7WqdajKDImqXEsnZLsbTPUYy0h+47Gqww75zrmRUJcKFUplJ+737Ckwx/TjGiLK8OxF976QL30httV3qo8hfZwKZxppmD3tExFcRluMIZO67KWL8jtSoxXOHfK0A9QWVvu9XVnVfowOcg==
+Received: from MWHPR11CA0021.namprd11.prod.outlook.com (2603:10b6:301:1::31)
+ by DM6PR12MB3579.namprd12.prod.outlook.com (2603:10b6:5:11f::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.29; Fri, 30 Jul
+ 2021 02:24:29 +0000
+Received: from CO1NAM11FT068.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:301:1:cafe::8c) by MWHPR11CA0021.outlook.office365.com
+ (2603:10b6:301:1::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend
+ Transport; Fri, 30 Jul 2021 02:24:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT068.mail.protection.outlook.com (10.13.175.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4373.18 via Frontend Transport; Fri, 30 Jul 2021 02:24:29 +0000
+Received: from [172.17.173.69] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Jul
+ 2021 02:24:28 +0000
+Subject: Re: [RFC 08/11] gpiolib: cdev: Add hardware timestamp clock type
+To:     Jon Hunter <jonathanh@nvidia.com>, <thierry.reding@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linus.walleij@linaro.org>,
+        <bgolaszewski@baylibre.com>, <warthog618@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <robh+dt@kernel.org>
+References: <20210625235532.19575-1-dipenp@nvidia.com>
+ <20210625235532.19575-9-dipenp@nvidia.com>
+ <7e49e6a9-bd7c-1b97-50e6-bc803addc27f@nvidia.com>
+X-Nvconfidentiality: public
+From:   Dipen Patel <dipenp@nvidia.com>
+Message-ID: <65bf01e1-66e1-7eec-0052-4d707f4a3f6b@nvidia.com>
+Date:   Thu, 29 Jul 2021 19:33:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1cc74e5e-8d28-6da4-244e-861eac075ca2@acm.org>
+In-Reply-To: <7e49e6a9-bd7c-1b97-50e6-bc803addc27f@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: db8727ad-2e9c-43f6-33fd-08d9530128b3
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3579:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB357971BE3BC4C437A6A98EA5AEEC9@DM6PR12MB3579.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qgiv6Lgzvk7qCccjJ9TlVL3fCwgSUuvMyJc6R/2IrcWvl5BS+CfdISyHTMI7fOCTS1iUXvChwKKJ9/fBffhoOVf6kUowymD8VTBUIz5BahyVZOvaZFD43yydjN36tehr+4d9E4oTASLGPNDP+6PbynMbV9y9nyU6+MxWFuaG2BhDbFz4xyUUgQpBW6xM5cxpw4w1OnHIOblANO3ZcMBdCdlPRfoW3mB3v5TeUxx0GTzrOEh/KsGkIstxV5E4EdjLAwWFgNL+U4jJOi66/Ce16sF/RXcCTqkB7AS6CuAkIO2JHASQp7jL+ACRip4aRNLXKvMkqHQgCYedgs+3grsP9EmjVmdrZ7sMm0owfRiEvDsl4wCvD8aLv/jBex5b32542XO6siLHKjE5LDWAZm9L0SRtNwR2PyGH/YNG4GEto5CgOO+QROa9kdTLo6RjEpKp+XVBL44uU+Bw8wtv8xwTPmM4nyxUUMUCO70panbty+t83M/66X0GLqwb3iSa7hcA6VQ2ztBdi1l9gc0Kl6pWKfnrmGmx+5vO1PgrLR2m7aVbsNSnBq6miw2OwOCldZfq6wTjSA0S9UuBjbfn7x2zmGe/0dEZg3DwcLJbVu4Jkj97xH0J8qsGW7c6pc0fvi2wrSkgrAUNOle6d9nXI0AGf7aZ+mBfn+eSy/AEgWI3lpYc+CeHF77ttdK+CGQpnr7rsC2fmmWH0wF9w4PiyVLI+RVpmcbSCZ8ZBzjxntyl4sO9EilWB/Oz/i4+uu3C4GKygkA4HK3e9iPfusKQZvFpeZ7N2jPz5fgqi5A4tvk3o+o=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(39860400002)(346002)(36840700001)(46966006)(26005)(426003)(2906002)(336012)(47076005)(16526019)(186003)(83380400001)(478600001)(8676002)(82310400003)(7636003)(36860700001)(2616005)(36756003)(7416002)(82740400003)(53546011)(110136005)(86362001)(31686004)(5660300002)(70586007)(70206006)(36906005)(921005)(8936002)(316002)(356005)(31696002)(16576012)(43740500002)(83996005)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 02:24:29.1512
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: db8727ad-2e9c-43f6-33fd-08d9530128b3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT068.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3579
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 02:45:55PM -0700, Bart Van Assche wrote:
-> On 7/27/21 1:58 PM, Kees Cook wrote:
-> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > field bounds checking for memset(), avoid intentionally writing across
-> > neighboring fields.
-> > 
-> > Add a struct_group() for the algs so that memset() can correctly reason
-> > about the size.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >   drivers/block/drbd/drbd_main.c     | 3 ++-
-> >   drivers/block/drbd/drbd_protocol.h | 6 ++++--
-> >   drivers/block/drbd/drbd_receiver.c | 3 ++-
-> >   3 files changed, 8 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
-> > index 55234a558e98..b824679cfcb2 100644
-> > --- a/drivers/block/drbd/drbd_main.c
-> > +++ b/drivers/block/drbd/drbd_main.c
-> > @@ -729,7 +729,8 @@ int drbd_send_sync_param(struct drbd_peer_device *peer_device)
-> >   	cmd = apv >= 89 ? P_SYNC_PARAM89 : P_SYNC_PARAM;
-> >   	/* initialize verify_alg and csums_alg */
-> > -	memset(p->verify_alg, 0, 2 * SHARED_SECRET_MAX);
-> > +	BUILD_BUG_ON(sizeof(p->algs) != 2 * SHARED_SECRET_MAX);
-> > +	memset(&p->algs, 0, sizeof(p->algs));
-> >   	if (get_ldev(peer_device->device)) {
-> >   		dc = rcu_dereference(peer_device->device->ldev->disk_conf);
-> > diff --git a/drivers/block/drbd/drbd_protocol.h b/drivers/block/drbd/drbd_protocol.h
-> > index dea59c92ecc1..a882b65ab5d2 100644
-> > --- a/drivers/block/drbd/drbd_protocol.h
-> > +++ b/drivers/block/drbd/drbd_protocol.h
-> > @@ -283,8 +283,10 @@ struct p_rs_param_89 {
-> >   struct p_rs_param_95 {
-> >   	u32 resync_rate;
-> > -	char verify_alg[SHARED_SECRET_MAX];
-> > -	char csums_alg[SHARED_SECRET_MAX];
-> > +	struct_group(algs,
-> > +		char verify_alg[SHARED_SECRET_MAX];
-> > +		char csums_alg[SHARED_SECRET_MAX];
-> > +	);
-> >   	u32 c_plan_ahead;
-> >   	u32 c_delay_target;
-> >   	u32 c_fill_target;
-> > diff --git a/drivers/block/drbd/drbd_receiver.c b/drivers/block/drbd/drbd_receiver.c
-> > index 1f740e42e457..6df2539e215b 100644
-> > --- a/drivers/block/drbd/drbd_receiver.c
-> > +++ b/drivers/block/drbd/drbd_receiver.c
-> > @@ -3921,7 +3921,8 @@ static int receive_SyncParam(struct drbd_connection *connection, struct packet_i
-> >   	/* initialize verify_alg and csums_alg */
-> >   	p = pi->data;
-> > -	memset(p->verify_alg, 0, 2 * SHARED_SECRET_MAX);
-> > +	BUILD_BUG_ON(sizeof(p->algs) != 2 * SHARED_SECRET_MAX);
-> > +	memset(&p->algs, 0, sizeof(p->algs));
-> 
-> Using struct_group() introduces complexity. Has it been considered not to
-> modify struct p_rs_param_95 and instead to use two memset() calls instead of
-> one (one memset() call per member)?
 
-I went this direction because using two memset()s (or memcpy()s in other
-patches) changes the machine code. It's not much of a change, but it
-seems easier to justify "no binary changes" via the use of struct_group().
-
-If splitting the memset() is preferred, I can totally do that instead.
-:)
-
--Kees
-
--- 
-Kees Cook
+On 7/9/21 1:30 AM, Jon Hunter wrote:
+> On 26/06/2021 00:55, Dipen Patel wrote:
+>> This patch adds new clock type for the GPIO controller which can
+>> timestamp gpio lines using hardware means. To expose such
+>> functionalities to the userspace, code has been added in this patch
+>> where during line create call, it checks for new clock type and if
+>> requested, calls hardware timestamp related API from gpiolib.c.
+>> During line change event, it retrieves timestamp in nano seconds by
+>> calling gpiod_get_hw_timestamp API from gpiolib.c. At the line release,
+>> it disables this functionality by calling gpiod_hw_timestamp_control.
+>>
+>> Signed-off-by: Dipen Patel <dipenp@nvidia.com>
+>> ---
+>>  drivers/gpio/gpiolib-cdev.c | 65 +++++++++++++++++++++++++++++++++++--
+>>  include/uapi/linux/gpio.h   |  1 +
+>>  2 files changed, 64 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+>> index 1631727bf0da..9f98c727e937 100644
+>> --- a/drivers/gpio/gpiolib-cdev.c
+>> +++ b/drivers/gpio/gpiolib-cdev.c
+>> @@ -518,6 +518,7 @@ struct linereq {
+>>  	 GPIO_V2_LINE_DRIVE_FLAGS | \
+>>  	 GPIO_V2_LINE_EDGE_FLAGS | \
+>>  	 GPIO_V2_LINE_FLAG_EVENT_CLOCK_REALTIME | \
+>> +	 GPIO_V2_LINE_FLAG_EVENT_CLOCK_HARDWARE | \
+>>  	 GPIO_V2_LINE_BIAS_FLAGS)
+>>  
+>>  static void linereq_put_event(struct linereq *lr,
+>> @@ -540,9 +541,20 @@ static void linereq_put_event(struct linereq *lr,
+>>  
+>>  static u64 line_event_timestamp(struct line *line)
+>>  {
+>> +	bool block;
+>> +
+>>  	if (test_bit(FLAG_EVENT_CLOCK_REALTIME, &line->desc->flags))
+>>  		return ktime_get_real_ns();
+>>  
+>> +	if (test_bit(FLAG_EVENT_CLOCK_HARDWARE, &line->desc->flags)) {
+>> +		if (irq_count())
+>> +			block = false;
+>> +		else
+>> +			block = true;
+>> +
+>> +		return gpiod_get_hw_timestamp(line->desc, block);
+>> +	}
+>> +
+>>  	return ktime_get_ns();
+>>  }
+>
+> Looking at line_event_timestamp() and the callers of this function, it
+> appears that this should always return nanoseconds. Does
+> gpiod_get_hw_timestamp() return nanoseconds?
+Yes, it returns in ns to align with line_event_timestamp.
+>
+> Jon
+>
