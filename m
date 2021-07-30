@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E193DC01A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141A63DC01F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbhG3VKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 17:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59310 "EHLO
+        id S232018AbhG3VKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 17:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbhG3VKF (ORCPT
+        with ESMTP id S231982AbhG3VKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 17:10:05 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B05C06175F;
-        Fri, 30 Jul 2021 14:09:58 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id h9so14207747ljq.8;
-        Fri, 30 Jul 2021 14:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=QSur+1PHlTt0wjrwYXzpD7UGhBN9zjUfFcpb+MppDGQ=;
-        b=bpj7sleRqb8YAFh9SRbtRKYbJuFddVqeePUbCewjfc001JSv/SfF3qwszqHHkgs66k
-         IevmQRt98/ElPaSvw9UxJegTcwBj2yjs0bJO6NHZ/m2ZbsVYdnkZ05aCA6bZnb6X8eo1
-         0JSLlYA2Od+QVIxaPeqarS3AFNlGqv9y821Yy69HSAkmpOyr/GyPUBSYFkhYeKekpaAd
-         nzbtxniLGW1rBdqQ0PAIHGxbp0EtdsTY+C0ZwS+14rIhX+mnDUueQgkd4BJW8/Q09mVG
-         KuybvAZlrCbsLUL3GGswQu68Kj3Y7fbEYP6AsybW5VR5d2acKQdScU/RrWhnyTtXvXZW
-         s1dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=QSur+1PHlTt0wjrwYXzpD7UGhBN9zjUfFcpb+MppDGQ=;
-        b=lQtQwchlAC46WhS+iDnVZnNgLxWguED5ad+IKdfLNmr4lMlyOw6PdYuCWi+eP6y2EL
-         EZVwJgfVBcFvPYCtsgGWFLAr8b6OLPwHY50Ci0OlgGLYXsuU2QxyVnh5ABih0N/hU+Kx
-         sdu6tRD6STc8XB9Esss9NOwCT+IuzWTKmYJrQbrU9pcEhpdwve1G4SYQ37lEDPv99C08
-         nS0XXla8dgC8Bja4/GBS1NIg2VPqaw7wPljD+ymsBtNCobtJickZmvVzcbdgRd9Gbtya
-         ZDfGocpbNfk4ZU2sEG0JSvhv4yqqtLZ85yXHAtybOaIp+cA7B5JZm4iap8YUrGxmJn/F
-         5K1w==
-X-Gm-Message-State: AOAM532XDm3l2RsG30zHJZ+TR9WzwDjMwXI8Mfc9bb3zMTfok2gqyqHL
-        YsI97ZpvJcxYlZmQQ0xGnSmmTWKomAUtmn1mklI=
-X-Google-Smtp-Source: ABdhPJzWSoJeBz+UthApFvEVF3+nMI8DZKoX0r2cqasU5U4FDDWoZHXSBJT4HfenIMA5pS1kZqpA1RBMLOKstugceeA=
-X-Received: by 2002:a2e:a884:: with SMTP id m4mr2949152ljq.406.1627679397200;
- Fri, 30 Jul 2021 14:09:57 -0700 (PDT)
+        Fri, 30 Jul 2021 17:10:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED25C061765;
+        Fri, 30 Jul 2021 14:10:39 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 21:10:35 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627679436;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=qMLj7LoyKYMS7jxdCGqk9QKiXWPC4NuhSIGwaA6lW2U=;
+        b=naKH4D3FibfFDBa0cEljlmlfJkBWop6acTRZ40KDcTqBIHjpfA3ipvRxRqvNpe2QWv632n
+        yNi4HE0YEOMjp7UEbxH+gGi/K8a0MzfXPnFVasLcsyLMra64DCIArABeGU/AP0KPc+YB+f
+        Nm1vkShJ6JFS+of7RsymB3uGUXsk6TPqZuLGpssC6ZJioXgaSBy0F0Qh5+6tz+EyFCnsk+
+        iXAuSY5lxk/BRbv4QLj+e/cCblVQ5d3DkJvNU2zSHNYKd7LVvG9zTfdx+5/Ahl8gmMqTcN
+        4BjcOD7GVcZvaUAaaFEzvfasy4utZmo6J6zFEI2u3XANWM1c+VYBxdiI1txwZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627679436;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=qMLj7LoyKYMS7jxdCGqk9QKiXWPC4NuhSIGwaA6lW2U=;
+        b=XINCMXWg2rW2UlCmCw7nxp/3XOB4l3m/BiaAYUpAMnCIi3E88tBySfnblZHzq6XRfZKalp
+        sr106biNvoRfW9CA==
+From:   tip-bot2 for =?utf-8?q?C=C3=A9dric?= Le Goater 
+        <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] genirq: Improve "hwirq" output in /proc and /sys/
+Cc:     clg@kaod.org, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 30 Jul 2021 16:09:46 -0500
-Message-ID: <CAH2r5msGVA44tK4+9YAm-vrH0sAL8WqPPfdnU5Uk5++jCqoJYQ@mail.gmail.com>
-Subject: [GIT PULL] CIFS/SMB3 fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <162767943540.395.16803004880839169459.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-ff1176468d368232b684f75e82563369208bc371:
+The following commit has been merged into the irq/core branch of tip:
 
-  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
+Commit-ID:     d92df42d7685445a2b6c815d9230d9699d9d400b
+Gitweb:        https://git.kernel.org/tip/d92df42d7685445a2b6c815d9230d9699d9=
+d400b
+Author:        C=C3=A9dric Le Goater <clg@kaod.org>
+AuthorDate:    Thu, 01 Jul 2021 15:27:50 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 30 Jul 2021 23:07:31 +02:00
 
-are available in the Git repository at:
+genirq: Improve "hwirq" output in /proc and /sys/
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.14-rc3-smb3-fixes
+The HW IRQ numbers generated by the PCI MSI layer can be quite large
+on a pSeries machine when running under the IBM Hypervisor and they
+appear as negative. Use '%lu' instead to show them correctly.
 
-for you to fetch changes up to b946dbcfa4df80ec81b442964e07ad37000cc059:
+Signed-off-by: C=C3=A9dric Le Goater <clg@kaod.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-  cifs: add missing parsing of backupuid (2021-07-28 17:03:24 -0500)
+---
+ kernel/irq/irqdesc.c | 2 +-
+ kernel/irq/proc.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-----------------------------------------------------------------
-3 cifs/smb3 fixes, including two for stable, and a fix for an
-fallocate problem noticed by Clang
-
-----------------------------------------------------------------
-Ronnie Sahlberg (1):
-      cifs: add missing parsing of backupuid
-
-Steve French (2):
-      SMB3: fix readpage for large swap cache
-      smb3: rc uninitialized in one fallocate path
-
- fs/cifs/file.c       | 2 +-
- fs/cifs/fs_context.c | 7 +++++++
- fs/cifs/smb2ops.c    | 3 ++-
- 3 files changed, 10 insertions(+), 2 deletions(-)
-
-
--- 
-Thanks,
-
-Steve
+diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+index fadb937..4e3c29b 100644
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -188,7 +188,7 @@ static ssize_t hwirq_show(struct kobject *kobj,
+=20
+ 	raw_spin_lock_irq(&desc->lock);
+ 	if (desc->irq_data.domain)
+-		ret =3D sprintf(buf, "%d\n", (int)desc->irq_data.hwirq);
++		ret =3D sprintf(buf, "%lu\n", desc->irq_data.hwirq);
+ 	raw_spin_unlock_irq(&desc->lock);
+=20
+ 	return ret;
+diff --git a/kernel/irq/proc.c b/kernel/irq/proc.c
+index 7c5cd42..ee595ec 100644
+--- a/kernel/irq/proc.c
++++ b/kernel/irq/proc.c
+@@ -513,7 +513,7 @@ int show_interrupts(struct seq_file *p, void *v)
+ 		seq_printf(p, " %8s", "None");
+ 	}
+ 	if (desc->irq_data.domain)
+-		seq_printf(p, " %*d", prec, (int) desc->irq_data.hwirq);
++		seq_printf(p, " %*lu", prec, desc->irq_data.hwirq);
+ 	else
+ 		seq_printf(p, " %*s", prec, "");
+ #ifdef CONFIG_GENERIC_IRQ_SHOW_LEVEL
