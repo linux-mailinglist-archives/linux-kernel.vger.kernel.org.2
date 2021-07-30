@@ -2,125 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2AA3DBDA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F27B3DBDA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhG3RVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 13:21:40 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:56114
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230199AbhG3RVj (ORCPT
+        id S230040AbhG3RYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 13:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhG3RYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 13:21:39 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 5D5CE3F23D
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 17:21:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627665693;
-        bh=o5z17HicOMnibSKxbfutUtdmQTlkkNRFgUGIEJq9A5o=;
-        h=From:To:Cc:References:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=iP1hWkWZT5MwdLvttmMex0l/IDza+w9yJmXaClovbGuDZQk3A2vKh1UBx7N6XEXUf
-         GNXXL8D5F3rXZ5Gk+bybOiO4/AKiZ7BIjrf5nXR6f/srdiMQJrjD9ug4gTS6YHKUel
-         ZAj8ig1/r+6/u6DxOfF5AWYwJ7EZ2kdNKbLo5orIKO84lDxlBO6O/uitwevsCqDyXt
-         KSvAX6pY3v035Z1khVp0+xT81wAuBHXccX256pOfkSlKBKQItACijOQLvezemEmR2e
-         acouAcnqVlz5aWFP0O0Kz/JaVgqa2l5eApzLQ07eyR6uNpREj44eMVSq34ifNmACXo
-         xIKWVdmtXeorQ==
-Received: by mail-ed1-f70.google.com with SMTP id c20-20020a0564021014b029039994f9cab9so3479955edu.22
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:21:33 -0700 (PDT)
+        Fri, 30 Jul 2021 13:24:15 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D220C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:24:10 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id m13so19259755lfg.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:24:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V5XV6WBhPw1h0fTI0SqmJhAQIDZcprvflesFAjdSnoI=;
+        b=dXFvwrV3SI/JNYdq8jhdZqWKkwAX9QYglLSHeaLk0UQDPF6IKqBiGAAgibfahd+2kJ
+         qZLaden8dpyXuskq1d+8EOHt62kMntdXl+AhI1Q5gXf1QcjvHWIsH2dQsI4OQNl7PtkW
+         wI1p33v6yrQavv7i5BfBnqZNhtIhcGDvYh3p8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=o5z17HicOMnibSKxbfutUtdmQTlkkNRFgUGIEJq9A5o=;
-        b=t+a6r9pKjfnq03Y1lJkpxaWEgFJLbM5O84A3eI23Ya+cYmRbxKekSom/3neX77f01T
-         252S+d/v0itEF9FBBBGaVXWN4iFPfl4Iqdymucedk8lgyOFnT9n+krx11wzc6o6FRVR4
-         QHyyvoaAuKTsPJ8Nf6Ex5/Va7JPG4Kj4Kv9u6iO6X5p3WB/jJtO+xOnLnFdmmms9i096
-         JblWwiYMk2DKXh+IazcyyjG53OoJwGYrpMBImiGm3VLHfwiikYXvgIm2Lc4NVm4jNifp
-         TjfA4aZAMgW/DQfSDHXC/3VQ7g7n/3wil61Ivce31zeV+M8Q0x+lJhMrAHtU3mn7dCbU
-         i9ww==
-X-Gm-Message-State: AOAM531hlxbNbm3hWNrOjQ9BiFY2aHD4NQKOkc2sn8aSyxxBXniE8v6s
-        60bRxy0foVxboqXyun++7cGwLDVzYL2nzMtEZZx99ASe477Hq3eevS3wtTILqf5ZeSS72MqZMdd
-        Ym5XGzt6F0Be7RZT16IodCehKKzF+41x5P7W1DsC62g==
-X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr3758107ejc.192.1627665692502;
-        Fri, 30 Jul 2021 10:21:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzFiKJlif1uhqb84VdmehIjJr5DEUQdSGnnvL110bm0Y0Y4Awj/aQgY4XpZWPb/ITBePmMBnw==
-X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr3758080ejc.192.1627665692316;
-        Fri, 30 Jul 2021 10:21:32 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id p16sm944758eds.73.2021.07.30.10.21.30
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V5XV6WBhPw1h0fTI0SqmJhAQIDZcprvflesFAjdSnoI=;
+        b=OBDB4zfqhvNuOrhe+y9gTjnX7pfgBRgfIRNROz/M1oYA07xdShUoAqJKh7sfXrmKv4
+         oLFNd73TC5RxDGhiCVSG8ozYbiQ1K+OJXOHEPmoxKTg7Nfwlq1XUtouRKDa0n0g2NyXE
+         T4tpi9S2MhWyUC27HR5YDnfVKxsO5mNpZHQOWjfZl3c5HoNKTWIbvy15y9rh56Ktp7lp
+         6Dg5NKukjIP0Pbz7vXONsoQK/xINIYS72tmZo65RQlCSxAN7V8uQH5B6y7deQqyWySof
+         1fwyzEJqY6qvzDlTahWculK7CjLGLKnQsIvKAAIxQSD2HC9JA92P3wY3bjI+RZVF5jcW
+         ghdQ==
+X-Gm-Message-State: AOAM532R7erY804GHCax9y28BEPEPO55NezE2qtG7DQjFpM1sQV/EDgf
+        M2tMvI0lw0F8KRsTiFWJAyVnZNU7OWCXgDCA
+X-Google-Smtp-Source: ABdhPJz62tKGJHVX5RmJcRyJ4Bej5JmG5gYelYFAGO84K2d0eX35JuhmKJdiBuABOTknX30omYWV4Q==
+X-Received: by 2002:a19:c20e:: with SMTP id l14mr2760416lfc.532.1627665848438;
+        Fri, 30 Jul 2021 10:24:08 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id b14sm142815lji.91.2021.07.30.10.24.07
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 10:21:31 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <5e35b0a7-13aa-3c62-ca49-14af2fcb2a08@canonical.com>
-Subject: Re: [PATCH 00/12] Add minimal support for Exynos850 SoC
-Message-ID: <c3486111-0ec9-9679-d2a2-68b2f33a2450@canonical.com>
-Date:   Fri, 30 Jul 2021 19:21:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 30 Jul 2021 10:24:07 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id m9so13356623ljp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:24:07 -0700 (PDT)
+X-Received: by 2002:a2e:84c7:: with SMTP id q7mr2294792ljh.61.1627665847174;
+ Fri, 30 Jul 2021 10:24:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5e35b0a7-13aa-3c62-ca49-14af2fcb2a08@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
+ <20210716114635.14797-1-papadakospan@gmail.com> <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
+ <afd62ae457034c3fbc4f2d38408d359d@paragon-software.com>
+In-Reply-To: <afd62ae457034c3fbc4f2d38408d359d@paragon-software.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 30 Jul 2021 10:23:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjn4W-7ZbHrw08cWy=12DgheFUKLO5YLgG6in5TA5HxqQ@mail.gmail.com>
+Message-ID: <CAHk-=wjn4W-7ZbHrw08cWy=12DgheFUKLO5YLgG6in5TA5HxqQ@mail.gmail.com>
+Subject: Paragon NTFSv3 (was Re: [GIT PULL] vboxsf fixes for 5.14-1)
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Leonidas P. Papadakos" <papadakospan@gmail.com>,
+        "zajec5@gmail.com" <zajec5@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/07/2021 17:18, Krzysztof Kozlowski wrote:
-> On 30/07/2021 16:49, Sam Protsenko wrote:
->> This patch series adds initial platform support for Samsung Exynos850
->> SoC [1]. With this patchset it's possible to run the kernel with BusyBox
->> rootfs as a RAM disk. More advanced platform support (like MMC driver
->> additions) will be added later. The idea is to keep the first submission
->> minimal to ease the review, and then build up on top of that.
->>
->> [1] https://www.samsung.com/semiconductor/minisite/exynos/products/mobileprocessor/exynos-850/
->>
-> 
-> Great work!
-> 
-> What's the SoC revision number (should be accessible via
-> /sys/bus/soc/devices/soc0/)? Recent wrap in numbering of Exynos chips
-> might bring confusion...
+On Fri, Jul 30, 2021 at 8:55 AM Konstantin Komarov
+<almaz.alexandrovich@paragon-software.com> wrote:
+>
+> We've just sent the 27th patch series which fixes to the buildability against
+> current linux-next. And we'll need several days to prepare a proper pull request
+> before sending it to you.
 
-Judging by vendor's sources it is quite confusing. It looks mostly like
-Exynos3830 but in few other cases it uses Exynos9 compatibles (Exynos9,
-Exynos9820). Only in few places there is Exynos850. Marketing department
-made it so confusing...  The revision embedded in SoC would be very
-interesting.
+Well, I won't pull until the next merge window opens anyway (about a
+month away). But it would be good to have your tree in linux-next for
+at least a couple of weeks before that happens.
 
-Anyway, judging by current versioning, there is a risk Samsung will come
-with a new chipset name conflicting with existing ones. It already
-overflowed.
+Added Stephen to the participants list as a heads-up for him - letting
+him know where to fetch the git tree from will allow that to happen if
+you haven't done so already.
 
-It's even worse with a thingy called "Exynos9 auto" which hides
-numbering even more.
+The one other thing I do want when there's big new pieces like this
+being added is to ask you to make sure that everything is signed-off
+properly, and that there is no internal confusion about the GPLv2
+inside Paragon, and that any legal people etc are all aware of this
+all and are on board. The last thing we want to see is some "oops, we
+didn't mean to do this" brouhaha six months later.
 
+I doubt that's an issue, considering how public this all has been, but
+I just wanted to mention it just to be very obvious about it.
 
-Best regards,
-Krzysztof
+                  Linus
