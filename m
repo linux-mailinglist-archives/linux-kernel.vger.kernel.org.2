@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991CD3DC0FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C073DC103
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbhG3WUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:20:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234357AbhG3WT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:19:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4853D6108E;
-        Fri, 30 Jul 2021 22:19:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627683592;
-        bh=eymSPNa/TShtYv9U+nLrPRjDCp95bQdCZy22yEiy6Ok=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KXy6Vyl6m36STisPeXh+7/hG5UjvgoprI0Vk6NXpV1dglkyEOYQWHVlz0l6onT51r
-         jz9TLdegV7JdNemfxYZldBxqIQT64qHDoQMUJu4+HXP+eKivaNs7C4Hqris4yHOwGL
-         RQvmv78vATrETUChTHRjNzdXUG+4x84f9ikZ7L/99vRfXERl9qEy6zpBzX1ORWRVls
-         8znxc3hcCbbjwzoey/QizLY+99cw1XQMRF5LeM9pVwCXfMDDOnzyjy4R76/Jp3rOaY
-         f2rWT/Etm0amxspsLFQ6ALojtxyc4wDjG+IIdUnvOEnb3hsSnq/FrljUJ5835AKZJT
-         DKXt7mfdCU41A==
-Date:   Fri, 30 Jul 2021 15:19:50 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Chao Yu <chao.yu@linux.dev>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: fix to force keeping write barrier
- for strict fsync mode
-Message-ID: <YQR7Bi9lI+k2QuYG@google.com>
-References: <20210720010329.3975-1-chao@kernel.org>
- <YPYjzAVq04LfUO2Y@google.com>
- <014d1b9d-0698-fda1-0765-cce81d915280@kernel.org>
- <bdd499d9-1272-9fe3-8024-f53fbda458bc@kernel.org>
+        id S233281AbhG3WU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232745AbhG3WUy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 18:20:54 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40BEC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:20:48 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id k7so10886964qki.11
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X/ut0W8QWQzgc3+TFp0Zpab3f8ktnZebi671B/GRa1s=;
+        b=MyagQMiCCsM3Rrn6I1WUv92/Bb4Hoxpt54pGqOpfWtDctdM1tQkL6ciLcbY6UdDKg+
+         CHPIMI68YD94tESmrEfcGANjj5Cl0XwRrXRcwNL9k1ZbXaHmbVZH7THGiL7zV/RxUQ1c
+         g511pq+mPaWbOHjDMSUZoOWqY8Uja0Hq1ANig=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X/ut0W8QWQzgc3+TFp0Zpab3f8ktnZebi671B/GRa1s=;
+        b=msJ1ejttT3+T3W3Sn6q3jDZIEgWBMyAk1lsHN6KaDCyh7TgE/HlG35+fBUSpmi0TfJ
+         ysg4PF9LgRQkla93LKI8B1E6IbiQt2wVC5N/grLWKX9kIH6V4sQFnNq6RHRclK4TXSkr
+         phIA74qrK8cGCIuJ9Ats/1yR2tzu5A8rn3z0lOmNRwg3p2KI132p65SPtKkDmmfomvxA
+         JJYWWXiEn5QE+74p5URFW19VOr/YmF13CAGUdfyns3lB2ceVE88kVk7ca/JOgpO6ZotS
+         mlIU7zZJTnwetq3px9eUW00xyyDDJEpeto0hLrSrCimMvdkMK+oOMPugAKYgKX3zKIhE
+         dBSQ==
+X-Gm-Message-State: AOAM530CBL5MEvd7CP06ZiLqNXzmrSLWFJsMRQm9sxLstWHDSTJZijUI
+        XKpfROngW8UZNoxAM4cGwm6yi75CvrFcGg==
+X-Google-Smtp-Source: ABdhPJwBUYhtrEn3zSQwhiJLkHY29TP1fFG8Y97WcTMrZIYaeHzdgfz/kdoOCsf/XvGAmYzHPV4qZQ==
+X-Received: by 2002:a05:620a:64c:: with SMTP id a12mr249265qka.377.1627683647690;
+        Fri, 30 Jul 2021 15:20:47 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id k15sm1653430qko.84.2021.07.30.15.20.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 15:20:46 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id z18so3506281ybg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:20:46 -0700 (PDT)
+X-Received: by 2002:a25:2904:: with SMTP id p4mr6090679ybp.276.1627683645881;
+ Fri, 30 Jul 2021 15:20:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bdd499d9-1272-9fe3-8024-f53fbda458bc@kernel.org>
+References: <1620807083-5451-1-git-send-email-sibis@codeaurora.org> <1620807083-5451-3-git-send-email-sibis@codeaurora.org>
+In-Reply-To: <1620807083-5451-3-git-send-email-sibis@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 30 Jul 2021 15:20:34 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VfvW1PqJiR7Lh5RNyR6EQ1E8JK0N+KqJiB8DK49oUZ4A@mail.gmail.com>
+Message-ID: <CAD=FV=VfvW1PqJiR7Lh5RNyR6EQ1E8JK0N+KqJiB8DK49oUZ4A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/29, Chao Yu wrote:
-> Ping,
+Hi,
 
-Added. Thanks.
+On Wed, May 12, 2021 at 1:11 AM Sibi Sankar <sibis@codeaurora.org> wrote:
+>
+> Add OPP tables required to scale DDR/L3 per freq-domain on SC7280 SoCs.
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>
+> V3:
+>  * Rename cpu opp table nodes [Matthias]
+>  * Rename opp phandles [Doug]
+>
+> Depends on the following patch series:
+> L3 Provider Support: https://lore.kernel.org/lkml/1618556290-28303-1-git-send-email-okukatla@codeaurora.org/
+> CPUfreq Support: https://lore.kernel.org/lkml/1618020280-5470-2-git-send-email-tdas@codeaurora.org/
+> RPMH Provider Support: https://lore.kernel.org/lkml/1619517059-12109-1-git-send-email-okukatla@codeaurora.org/
+>
+> It also depends on L3 and cpufreq dt nodes from the ^^ series to not have
+> overlapping memory regions.
+>
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 215 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 215 insertions(+)
 
-> 
-> On 2021/7/20 9:19, Chao Yu wrote:
-> > On 2021/7/20 9:15, Jaegeuk Kim wrote:
-> > > Wasn't it supposed to be v1?
-> > 
-> > I skip IPU case for v1, and resend it as v3, is it fine to you?
-> > 
-> > Thanks,
-> > 
-> > > 
-> > > On 07/20, Chao Yu wrote:
-> > > > [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
-> > > > 
-> > > > As [1] reported, if lower device doesn't support write barrier, in below
-> > > > case:
-> > > > 
-> > > > - write page #0; persist
-> > > > - overwrite page #0
-> > > > - fsync
-> > > >    - write data page #0 OPU into device's cache
-> > > >    - write inode page into device's cache
-> > > >    - issue flush
-> > > > 
-> > > > If SPO is triggered during flush command, inode page can be persisted
-> > > > before data page #0, so that after recovery, inode page can be recovered
-> > > > with new physical block address of data page #0, however there may
-> > > > contains dummy data in new physical block address.
-> > > > 
-> > > > Then what user will see is: after overwrite & fsync + SPO, old data in
-> > > > file was corrupted, if any user do care about such case, we can suggest
-> > > > user to use STRICT fsync mode, in this mode, we will force to use atomic
-> > > > write sematics to keep write order in between data/node and last node,
-> > > > so that it avoids potential data corruption during fsync().
-> > > > 
-> > > > Signed-off-by: Chao Yu <chao@kernel.org>
-> > > > ---
-> > > >    fs/f2fs/file.c | 12 ++++++++++++
-> > > >    1 file changed, 12 insertions(+)
-> > > > 
-> > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > > index 6afd4562335f..00b45876eaa1 100644
-> > > > --- a/fs/f2fs/file.c
-> > > > +++ b/fs/f2fs/file.c
-> > > > @@ -301,6 +301,18 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
-> > > >    				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
-> > > >    			goto flush_out;
-> > > >    		goto out;
-> > > > +	} else {
-> > > > +		/*
-> > > > +		 * for OPU case, during fsync(), node can be persisted before
-> > > > +		 * data when lower device doesn't support write barrier, result
-> > > > +		 * in data corruption after SPO.
-> > > > +		 * So for strict fsync mode, force to use atomic write sematics
-> > > > +		 * to keep write order in between data/node and last node to
-> > > > +		 * avoid potential data corruption.
-> > > > +		 */
-> > > > +		if (F2FS_OPTION(sbi).fsync_mode ==
-> > > > +				FSYNC_MODE_STRICT && !atomic)
-> > > > +			atomic = true;
-> > > >    	}
-> > > >    go_write:
-> > > >    	/*
-> > > > -- 
-> > > > 2.22.1
-> > 
-> > 
-> > _______________________________________________
-> > Linux-f2fs-devel mailing list
-> > Linux-f2fs-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> > 
+I see patch #1 in mainline now. Does that mean it's time to land patch
+#2 in the Qualcomm tree now? ...or maybe it needs to be re-posted?
+
+-Doug
