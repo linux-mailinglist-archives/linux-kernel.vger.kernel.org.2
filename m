@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191A33DB5F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9793DB5FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238248AbhG3JcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
+        id S238296AbhG3JdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238223AbhG3JcU (ORCPT
+        with ESMTP id S238280AbhG3Jc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:32:20 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D2DC061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:32:16 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id f6so4832522ioc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:32:16 -0700 (PDT)
+        Fri, 30 Jul 2021 05:32:59 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A774C061796;
+        Fri, 30 Jul 2021 02:32:54 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id nh14so2586372pjb.2;
+        Fri, 30 Jul 2021 02:32:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UENAkyvXIftlcsdFlCx7zKVE+FxyVIbvdXexL7kT+QE=;
-        b=Kj9ECAHYD/ijOc+AQmZERa4YCkM0N5gIPeIWfCnUyHR1t+9tBHkIlIgtQppwjeZEg+
-         m+/Krzw/xOGSKDEPyWPrKdHqh+Rpm8rOgo6iDpbrT1oiqbWUuGSj6xibOJ2Veabnvecx
-         xDxtKVUuWGlBTbXQHvyTbVRqXNfSjAD7c2Ob0wQTTdYb5eFIqW+Rw7L6ZTSj0gPHGRx6
-         OkiRts6pTOHsu3rxnrxlf0Cpv3OwBN53ETx2xyuDFYHtQ1gL4sv0tp4f2NcVHIoU4NHC
-         vTCMMr6CI9VEYJAW24EowB/UQn0I1CPwCVD64bhfsua21IJ+/98fgFjwuAtIZD8/iGrP
-         diGg==
+        bh=NkMpSeNl2IIAYITgWu/3gdQOZYu+llfh7Hm/THeDEn8=;
+        b=R6E41MdYeWRaXF71KtkqnJCLuJmRjQRvf7z76LbAprLeyf8ejBVdKuKb6RqD/RoZng
+         TJC3z7c7eHdRl9sdP5HrQgLihsTaCJGo+mXlSoKsEfUPedbogUvEwZZgiWjRcYC04nu7
+         x0fh7+bt8AspwKJdeabb77oNOxzXvPTUApi9VhsKV53t3mDe2EjtdEaD38kpwRn/iG54
+         8pvpZqSHVo1R2K7kKIkCEHidQf2E0SZE7A1K35ogsNZrCKm/7BoN5AzIqC8oTLgyKq7t
+         oswG0SiPSL0YM2qapmfO8ApbCtYlwVVjAsbuigR7UIeEBtM8d9DRhjt9djSdMor+ntLt
+         dMJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UENAkyvXIftlcsdFlCx7zKVE+FxyVIbvdXexL7kT+QE=;
-        b=oYDV5LSmEvOW24J8NNHVl+k/llrNm9rr+oxEqzwSxlGSVA311uIFFAVgCuaKWbPVTU
-         pSkKkKw9BMlr65/VeMuR1GFSCqiEzD4xeVJ/TjaFjdME6AbZgpO1zyymNA/Y3Q5y74mD
-         VYJFMcq/2nmC/ZCFrcXtRlIiXezrYLyEYL5HGhz+s0sp9xvNaTarSAknAj2LLO7T7bRm
-         x0SHHk5pk275KnShTHjDRRgZSU+9n7EDF6qfLEbBRaZ7dqs7b3iPZO3tRp6gCgLxTcWI
-         e4kYN6HJtkNwZQ83y0m7Azen8FAaestnNTjC4dciY+sjROLVcgEB3QckIi6quL6I4SLN
-         8bTA==
-X-Gm-Message-State: AOAM533f+flFMc1CAojnZYWFdOnI1OE+U25ayeV/8EUU82te2mDhXhfY
-        YS7MtT7Mt9nXt4oz1+G3zwgHuyJeKOpDOJIVYJ7feQ==
-X-Google-Smtp-Source: ABdhPJyD5fhu1x1POggBPj9r5dqca/AUQYvuZYJIMAyvwmAD/h2B6cTR9Lr0qps5U3HnSkkqjCdA8z2hd4f997Fsgjs=
-X-Received: by 2002:a5d:87d0:: with SMTP id q16mr486487ios.109.1627637535819;
- Fri, 30 Jul 2021 02:32:15 -0700 (PDT)
+        bh=NkMpSeNl2IIAYITgWu/3gdQOZYu+llfh7Hm/THeDEn8=;
+        b=ehbTQvxCinr/Rsvdd5fHlTYWyAkIdzRXne6Qi0HImy5ekMwrvTfKNglnGHEWky6uT6
+         VxpGxHwHiJnpqmRXkB/7l3DjyQzmshkXaUbchUFtIZTVuY88D4iB0lDvAZMTU9puspV6
+         /+ISVWeuwSnvE2XJePeyGTD2bNbUtF+mfxp5flk8F3vdIVyZdAxcZxTJOegquX0k17Y8
+         EwrRYerGF1SD8KJJ2z0HSToL13lNhNkv2+5Bv9YJvGPqGKIOLNJs+Sa8kn9OPbBxiM1s
+         XGiKs+D+yAe0EzA+9C/WeumHW0JbiGJI8VvXtYcaZWlMMyrlVy7//7HITI2JQ3lp4VIC
+         FaTw==
+X-Gm-Message-State: AOAM532kgFCv+7uUqBQNBm+s8TbmDCrxvtHhP00JvX/jO3YFGXOlZZsc
+        Fek7k//GzPmHOR3lnYZqbksyapU6yr6z+1uIs4A=
+X-Google-Smtp-Source: ABdhPJyXZiiDxSm+YSPcle5KK7JeOB9Z+/ukby8RCJqsZf0zPCQgGZr6JZ1cwDhy5cn5iQ9dRBGPl5FYQWV8/CYrHVw=
+X-Received: by 2002:a17:90a:af90:: with SMTP id w16mr2258627pjq.129.1627637573852;
+ Fri, 30 Jul 2021 02:32:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210727101051.24418-1-yunfei.dong@mediatek.com> <20210727101051.24418-4-yunfei.dong@mediatek.com>
-In-Reply-To: <20210727101051.24418-4-yunfei.dong@mediatek.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 30 Jul 2021 17:32:05 +0800
-Message-ID: <CA+Px+wVfaAZ-PmrDM2=jG6NqcLHnXhnQFPLtiX8oRLS+UuZXwA@mail.gmail.com>
-Subject: Re: [PATCH v3, 03/15] media: mtk-vcodec: Refactor vcodec pm interface
-To:     Yunfei Dong <Yunfei.Dong@mediatek.com>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20210716162724.26047-1-lakshmi.sowjanya.d@intel.com>
+ <20210716162724.26047-3-lakshmi.sowjanya.d@intel.com> <CACRpkdbv77hjJ91h3fuLSYbpT+Yxd4X8_S7F+NsUw+QsKXN3Ww@mail.gmail.com>
+In-Reply-To: <CACRpkdbv77hjJ91h3fuLSYbpT+Yxd4X8_S7F+NsUw+QsKXN3Ww@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 30 Jul 2021 12:32:13 +0300
+Message-ID: <CAHp75VdZ2_Hd66FoB5W_p0WCy8Hvx7ypz5K9iVAv22mnjE+jCQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] pinctrl: Add Intel Keem Bay pinctrl driver
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Saha, Tamal" <tamal.saha@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 06:10:39PM +0800, Yunfei Dong wrote:
-> Using the needed param for pm init/release function and remove unused
-> param mtkdev in 'struct mtk_vcodec_pm'.
+On Fri, Jul 30, 2021 at 12:14 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Fri, Jul 16, 2021 at 6:27 PM <lakshmi.sowjanya.d@intel.com> wrote:
 >
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+> > +       /*
+> > +        * Each Interrupt line can be shared by up to 4 GPIO pins. Enable bit
+> > +        * and input values were checked to identify the source of the
+> > +        * Interrupt. The checked enable bit positions are 7, 15, 23 and 31.
+> > +        */
+> > +       for_each_set_clump8(bit, clump, &reg, BITS_PER_TYPE(typeof(reg))) {
+> > +               pin = clump & ~KEEMBAY_GPIO_IRQ_ENABLE;
+> > +               val = keembay_read_pin(kpc->base0 + KEEMBAY_GPIO_DATA_IN, pin);
+> > +               kmb_irq = irq_linear_revmap(gc->irq.domain, pin);
+> > +
+> > +               /* Checks if the interrupt is enabled */
+> > +               if (val && (clump & KEEMBAY_GPIO_IRQ_ENABLE))
+> > +                       generic_handle_irq(kmb_irq);
+> > +       }
+>
+> Aha there it is. "Half-hierarchical" with one IRQ handling 4 lines.
+>
+> OK we can't do any better than this so this and the bindings
+> look fine.
+>
+> I need to know how Andy think about merging,
+
+Linus, unfortunately I can fulfil a detailed review (busy with a
+critical task not related to this platform anyway), but this version
+is more or less okay to merge. We may adjust it with follow up fixes
+if needed.
+
+>  and then there is
+> an uninitialized ret in the mail from Dan Carpenter look into that
+> too.
+>
+> In any case with minor nits fixed:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
