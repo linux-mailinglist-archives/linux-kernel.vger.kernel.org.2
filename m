@@ -2,102 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC253DB8E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8BE3DB8EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238847AbhG3MwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 08:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230445AbhG3MwN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 08:52:13 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425E1C061765;
-        Fri, 30 Jul 2021 05:52:09 -0700 (PDT)
-Received: from [IPv6:2a02:810a:880:f54:51e7:d967:c146:d0c] (unknown [IPv6:2a02:810a:880:f54:51e7:d967:c146:d0c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7DA241F448DA;
-        Fri, 30 Jul 2021 13:52:07 +0100 (BST)
-Subject: Re: [PATCH v7 3/4] iommu: rockchip: Add internal ops to handle
- variants
-To:     Robin Murphy <robin.murphy@arm.com>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        joro@8bytes.org, will@kernel.org, robh+dt@kernel.org,
-        xxm@rock-chips.com, Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        iommu@lists.linux-foundation.org, kernel@collabora.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210525121551.606240-1-benjamin.gaignard@collabora.com>
- <20210525121551.606240-4-benjamin.gaignard@collabora.com>
- <c6175f3d-a324-9fb5-bd39-cfe0447ee5e7@collabora.com>
- <3544194.oiGErgHkdL@diego> <06cdd178-66af-9ff7-5100-3da4e901040f@arm.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <4ad13d07-85d3-390d-123c-a7ed47056385@collabora.com>
-Date:   Fri, 30 Jul 2021 14:52:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238806AbhG3M54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 08:57:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:41734 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230328AbhG3M5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 08:57:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B110F6D;
+        Fri, 30 Jul 2021 05:57:50 -0700 (PDT)
+Received: from [10.57.86.111] (unknown [10.57.86.111])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B80E3F70D;
+        Fri, 30 Jul 2021 05:57:49 -0700 (PDT)
+Subject: Re: [PATCH v2 06/10] coresight: trbe: Fix handling of spurious
+ interrupts
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        coresight@lists.linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        jinlmao@qti.qualcomm.com
+References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
+ <20210723124611.3828908-7-suzuki.poulose@arm.com>
+ <5a8f30f2-188c-427f-98e5-5c1ec5ad0626@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <5b7cd17f-77e0-0a8e-29f4-3eda082c5a67@arm.com>
+Date:   Fri, 30 Jul 2021 13:57:47 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <06cdd178-66af-9ff7-5100-3da4e901040f@arm.com>
+In-Reply-To: <5a8f30f2-188c-427f-98e5-5c1ec5ad0626@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 29.07.21 18:58, Robin Murphy wrote:
-> On 2021-07-29 17:08, Heiko Stübner wrote:
->> Hi Dafna,
->>
->> Am Donnerstag, 29. Juli 2021, 17:59:26 CEST schrieb Dafna Hirschfeld:
->>> On 25.05.21 14:15, Benjamin Gaignard wrote:
->>>> @@ -879,7 +895,7 @@ static int rk_iommu_enable(struct rk_iommu *iommu)
->>>>        for (i = 0; i < iommu->num_mmu; i++) {
->>>>            rk_iommu_write(iommu->bases[i], RK_MMU_DTE_ADDR,
->>>> -                   rk_domain->dt_dma);
->>>> +                   rk_ops->dma_addr_dte(rk_domain->dt_dma));
->>>
->>> Hi,
->>> This is not related to that patch, I was wondring why are all mmu devices initialized
->>> with the same dt_dma?
->>> I see for example that the isp0_mmu in rk3399.dtsi has two resources. Can't each resource
->>> be initialized with different dt_dma and this way there are two dt tables instead of the two mmus pointing
->>> to the same dt table.
->>
->> maybe
->> git log -1 cd6438c5f8446691afa4829fe1a9d7b656204f11
->>
->> "iommu/rockchip: Reconstruct to support multi slaves
->> There are some IPs, such as video encoder/decoder, contains 2 slave iommus,
->> one for reading and the other for writing. They share the same irq and
->> clock with master.
->> This patch reconstructs to support this case by making them share the same
->> Page Directory, Page Tables and even the register operations.
->> That means every instruction to the reading MMU registers would be
->> duplicated to the writing MMU and vice versa."
+On 30/07/2021 06:15, Anshuman Khandual wrote:
 > 
-> Right. In theory we *could* maintain a separate pagetable for each IOMMU instance, but it would just lead to a load of complexity and overhead. For a map request, we'd have to do extra work to decide which table(s) need modifying, and duplicate all the work of the actual mapping if it's more than one. For an unmap request, we'd have no choice but to walk *all* the tables backing that domain to figure out which (if any) actually had it mapped in the first place.
 > 
-> Given that we already have distinct read and write permissions for mappings within a single table, there's not even any functional benefit that could be gained in this case (and in the more general case where the device might emit all kinds of transactions from all its interfaces you'd have to maintain identical mappings for all its IOMMUs anyway). Saving memory and code complexity by physically sharing one pagetable and not worrying about trying to do selective TLB maintenance is a bigger win than anything else could be.
+> On 7/23/21 6:16 PM, Suzuki K Poulose wrote:
+>> On a spurious IRQ, right now we disable the TRBE and then re-enable
+>> it back, resetting the "buffer" pointers(i.e BASE, LIMIT and more
+>> importantly WRITE) to the original pointers from the AUX handle.
+>> This implies that we overwrite any trace that was written so far,
+>> (by overwriting TRBPTR) while we should have ignored the IRQ.
 > 
-> Robin.
+> The ideas was that a state (pointers) reset would improve the chances
+> of not getting the spurious IRQ once again. This is assuming that some
+> thing during this current state machine, had caused the spurious IRQ.
+> Hence just restart it back from the beginning. Yes, it does lose some
+> trace data but whats the real possibility of such spurious IRQs in the
+> first place ?
+> 
+>>
+>> This patch cleans the behavior, by only stopping the TRBE if the
+>> IRQ was indeed raised, as we can read the TRBSR without stopping
+>> the TRBE (Only writes to the TRBSR requires the TRBE disabled).
+>> And also, on detecting a spurious IRQ after examining the TRBSR,
+>> we simply re-enable the TRBE without touching the other parameters.
+> 
+> This makes sense. I was not sure if TRBSR could be safely read without
+> actually stopping the TRBE.
+> 
+>>
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-trbe.c | 29 ++++++++++----------
+>>   1 file changed, 15 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>> index 62e1a08f73ff..503bea0137ae 100644
+>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>> @@ -679,15 +679,16 @@ static int arm_trbe_disable(struct coresight_device *csdev)
+>>   
+>>   static void trbe_handle_spurious(struct perf_output_handle *handle)
+>>   {
+>> -	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +	u64 limitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+>>   
+>> -	buf->trbe_limit = compute_trbe_buffer_limit(handle);
+>> -	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+>> -	if (buf->trbe_limit == buf->trbe_base) {
+>> -		trbe_drain_and_disable_local();
+>> -		return;
+>> -	}
+>> -	trbe_enable_hw(buf);
+>> +	/*
+>> +	 * If the IRQ was spurious, simply re-enable the TRBE
+>> +	 * back without modifiying the buffer parameters to
+> 
+> Typo here 		^^^^^^ s/modifiying/modifying
+> 
+>> +	 * retain the trace collected so far.
+>> +	 */
+>> +	limitr |= TRBLIMITR_ENABLE;
+>> +	write_sysreg_s(limitr, SYS_TRBLIMITR_EL1);
+>> +	isb();
+>>   }
+>>   
+>>   static void trbe_handle_overflow(struct perf_output_handle *handle)
+>> @@ -760,12 +761,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>>   	enum trbe_fault_action act;
+>>   	u64 status;
+>>   
+>> -	/*
+>> -	 * Ensure the trace is visible to the CPUs and
+>> -	 * any external aborts have been resolved.
+>> -	 */
+>> -	trbe_drain_and_disable_local();
+>> -
+>> +	/* Reads to TRBSR_EL1 is fine when TRBE is active */
+>>   	status = read_sysreg_s(SYS_TRBSR_EL1);
+>>   	/*
+>>   	 * If the pending IRQ was handled by update_buffer callback
+>> @@ -774,6 +770,11 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>>   	if (!is_trbe_irq(status))
+> 
+> Warn here that a non-related IRQ has been delivered to this handler ?
+> But moving the trbe_drain_and_disable_local() later, enables it to
+> return back immediately after detecting an unrelated IRQ.
 
-Hi, I just try to understand how this iommu hardware/software works. I have two questions,
+Not really. There could be race with the update_buffer(), see the 
+comment right above that. When that happens, we have disabled the
+TRBE in the update_buffer(). Either case, we have nothing to do.
 
-1. So we currently miss a potential mapping of the hardware right? I mean , each mmu can map 1024*1024*4K = 4G addresses, so two mmus can potentially map 8G. But since
-we set them to identical values, we can map only up to 4G.
-2. What is the benefit of setting all mmus if they are all set to the same values? Can't we just work with the first mmu like it was done before that patch
-cd6438c5f8446691afa4829fe1a9d7b656204f11
+> 
+>>   		return IRQ_NONE;
+>>   
+>> +	/*
+>> +	 * Ensure the trace is visible to the CPUs and
+>> +	 * any external aborts have been resolved.
+>> +	 */
+>> +	trbe_drain_and_disable_local();
+>>   	clr_trbe_irq();
+>>   	isb();
+>>   
+>>
+> 
+> Actually there are two types of spurious interrupts here.
+> 
+> 1. Non-TRBE spurious interrupt
+> 
+> Fails is_trbe_irq() test and needs to be returned immediately from
+> arm_trbe_irq_handler(), after an warning for the platform IRQ
+> delivery wiring.
 
-Thanks,
-Dafna
+Not necessarily warrant a WARNING. See above.
 
+> 
+> 2. TRBE spurious interrupt
+> 
+> Clears is_trbe_irq() and get handled in trbe_handle_spurious(). I
+> still think leaving this unchanged might be better as it reduces
+> the chance of getting further spurious TRBE interrupts.
 
+How does it reduce the chances of getting another spurious interrupt ?
+If the TRBE gets a spurious IRQ, that we cannot decode, I would rather
+leave it as NOP.
+
+Suzuki
 
