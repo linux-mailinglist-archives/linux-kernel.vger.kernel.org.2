@@ -2,109 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48A13DBD27
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32463DBD2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhG3QgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 12:36:04 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:41084
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229521AbhG3Qf7 (ORCPT
+        id S229852AbhG3Qg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 12:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhG3Qg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 12:35:59 -0400
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 4296A3F243
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 16:35:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627662954;
-        bh=r6WBOzzzU71Avbpbkb7MJv5FMhuteThAgMvx7ePk7s4=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=ezwLRmvHQ/MfPcVmQT1RbewuFDc5ZpJ/mMgMzx32gPb7jSD4dNQkO343EUQDi1j3y
-         WEPsuTiNDBICn+1SSt7auYbrfp7tpP+diR626Es2wITargm0m2FEOPcH1Tu16ycUmF
-         r2vbfpc+iHEtkjrGN49cHa27aNrWU7ziocUj4dvsfCXkq6Qv/Vlq2j2Pdoro1TDmVF
-         nJ78AzLKgJfwg0KWjFpQyzXrhRnyPD5vdVa7tn6Xm75HD9cZK7tocPWGAX9FsQb8Hq
-         4mgOnJtDtUpmbUNjVNICkOVatBnHvV/tykFZP+9Fl5T6vou8PqBHkDZrIFzlKb8a7S
-         +truZ6NHC7QPQ==
-Received: by mail-ej1-f71.google.com with SMTP id k21-20020a1709062a55b0290590e181cc34so2211917eje.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:35:54 -0700 (PDT)
+        Fri, 30 Jul 2021 12:36:56 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649A4C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:36:50 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id u25so13914363oiv.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:36:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+VAdv+WeR1jvOvgcgnqcYxpRfRpHfv5qO3GWKK9dmZw=;
+        b=LMBohOITePzc4wVsTkFVhKygBXZW4iqgqr2pshr0IqV5u30sIL8eN1nNetsNSxtslD
+         lXY9rHs5iWFhNBa36KgiFggL/E2bEc/L8pGCNbdfg5n5ujjQBUPZcBtvrw/HipQOqqy3
+         Rphy/TGaj1NfoXlRQKp8Bc4McAATWnXDGrWIVHkz+NHASH3PqVvlEk0SqeWV3NzUTqbm
+         FgFfUetOtWSOCy+eEHRQRXo2tLraleRZ92zu3BDHRO2LoXBwTcu3+WEZv5NvKVYIQGrP
+         QaOBRSHoD9iI3iFSoYye911ZQngN9QIpB84gvYZxoZ2R+IR7XxwyRiEjWLf+ScM01e/+
+         eAyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r6WBOzzzU71Avbpbkb7MJv5FMhuteThAgMvx7ePk7s4=;
-        b=m7cI9edvONSY6p2rdAJloT3qWCLr5X+U8KbKaiqMl8yue4ldllEyBOtrm4QD5V7dKX
-         2lbLhRNPP7W5E6h66hF95UNGJVFfogyHJ9gt55GBEcW5UTRMZ+Er9mlWx7oJtfWqAgbD
-         R5A2yBF+c3x+0fv6Mf43wtCCPihDGzDCpq8G+NzJOmKtdP5/IvV7HjjUZqQEMtLwYo32
-         T3D+JC6CH7AxC+8c22dUyUCONX15glSY90WBpU5XwFTmx4RvuaM54S5170nSGyDEb/lL
-         ZMGw/KD0OfV/jrV0D4IPYPg7sRdbaiGGfBVji0VTU0NlBtkktMjNiID0xd8iNsBQ4Lv1
-         0hQg==
-X-Gm-Message-State: AOAM532ppjqeepocNxtb888JOT52vj7e5motfO/tDtQcy9kLvzw0qPO8
-        MlFRthd5Fim6LMuFNHGpKUNrkIezV8Wg0kVWGdJCtuMxuPL2URRP4pyz5Jmx2zBWetCKi1afUG0
-        j4opesExLOu/N5daoriShBST+F5ZglzhWFpWgdiZX1Q==
-X-Received: by 2002:a17:907:766c:: with SMTP id kk12mr3257249ejc.525.1627662954043;
-        Fri, 30 Jul 2021 09:35:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWkxEaV8vcHXDuB7QVly4oizqMQCUQ0S+bTlZqlWe7m7kMOzOsno/9k+vpyqKWr+t6iPU+7A==
-X-Received: by 2002:a17:907:766c:: with SMTP id kk12mr3257225ejc.525.1627662953841;
-        Fri, 30 Jul 2021 09:35:53 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id la23sm734067ejc.63.2021.07.30.09.35.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 09:35:53 -0700 (PDT)
-Subject: Re: [PATCH 07/12] dt-bindings: serial: samsung: Add Exynos850 doc
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <20210730144922.29111-8-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <45da758c-d32d-293b-f4c7-12b58ebca8ac@canonical.com>
-Date:   Fri, 30 Jul 2021 18:35:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+VAdv+WeR1jvOvgcgnqcYxpRfRpHfv5qO3GWKK9dmZw=;
+        b=Yn7+lLlrJWfcyBWjL9+7jkhIcwczXbpreNuczS+JEWpwsA/Qni1zwT0Mlmd+HNd8PL
+         Vh7Cn+XvQBP+/oQ/zYeN2vJaPBOWfpL4wvIqQoFISxndV5Hwy4X+Lf5vAzmkg/hQ7jYH
+         odU8HALp8yqhUTOogUbw4mbtP6Q/Lk0musCaunFt+Ee1zyd+WohX4aUrKZkwOjdGyytD
+         8+l6O5tIijArbZbKpAXtLfWEJ69aL9zEFA4LWQmx4bleC9k+qXvVHEYZoMBH8r5LItUg
+         NEmCAvy3EbtunezkMw3W05ApGirLM6S+H3k8CoMzcnUU/NUws1CpxPdXME/OJ+85Wzfp
+         t2rg==
+X-Gm-Message-State: AOAM533r1HiCh/GWlQUTYdgx1pDCsnpy7NUuAAC5N6B8fi62aVfNRlTH
+        Rl/ReNASXvnbPRuIibaOcZu/3Q==
+X-Google-Smtp-Source: ABdhPJy9S4ERYG+NYbJHmT2b4l+CRSgIl/ARguLUHnMpNudWlcP48MLgOOQajgy8+J2pt07NuVzEjQ==
+X-Received: by 2002:aca:f54c:: with SMTP id t73mr2367532oih.175.1627663009726;
+        Fri, 30 Jul 2021 09:36:49 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w24sm372033otp.28.2021.07.30.09.36.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 09:36:49 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 11:36:46 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     mka@chromium.org, swboyd@chromium.org, robh+dt@kernel.org,
+        ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v4 04/13] remoteproc: qcom: q6v5: Use qmp_send to update
+ co-processor load state
+Message-ID: <YQQqnoOJLP9ixWn1@builder.lan>
+References: <1626755807-11865-1-git-send-email-sibis@codeaurora.org>
+ <1626755807-11865-5-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210730144922.29111-8-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626755807-11865-5-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/07/2021 16:49, Sam Protsenko wrote:
-> Add compatible string for Exynos850 SoC.
+On Mon 19 Jul 23:36 CDT 2021, Sibi Sankar wrote:
+
+> The power domains exposed by the AOSS QMP driver control the load state
+> resources linked to modem, adsp, cdsp remoteprocs. These are used to
+> notify the Always on Subsystem (AOSS) that a particular co-processor is
+> up/down. AOSS uses this information to wait for the co-processors to
+> suspend before starting its sleep sequence.
 > 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> These co-processors enter low-power modes independent to that of the
+> application processor and the load state resources linked to them are
+> expected to remain unaltered across system suspend/resume cycles. To
+> achieve this behavior lets stop using the power-domains exposed by the
+> AOSS QMP node and replace them with generic qmp_send interface instead.
+> 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 > ---
->  Documentation/devicetree/bindings/serial/samsung_uart.yaml | 1 +
->  1 file changed, 1 insertion(+)
+> 
+> v4:
+>  * Drop unused pdev and kfree the load state string in q6v5_deinit
+>    /probe path for patch 4. [Matthias]
+> 
+>  drivers/remoteproc/qcom_q6v5.c      | 57 ++++++++++++++++++++++++-
+>  drivers/remoteproc/qcom_q6v5.h      |  7 ++-
+>  drivers/remoteproc/qcom_q6v5_adsp.c |  7 ++-
+>  drivers/remoteproc/qcom_q6v5_mss.c  | 44 ++++---------------
+>  drivers/remoteproc/qcom_q6v5_pas.c  | 85 +++++++++----------------------------
+>  drivers/remoteproc/qcom_q6v5_wcss.c |  4 +-
+>  6 files changed, 96 insertions(+), 108 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/qcom_q6v5.c b/drivers/remoteproc/qcom_q6v5.c
+> index 7e9244c748da..997ff21271f7 100644
+> --- a/drivers/remoteproc/qcom_q6v5.c
+> +++ b/drivers/remoteproc/qcom_q6v5.c
+> @@ -16,8 +16,28 @@
+>  #include "qcom_common.h"
+>  #include "qcom_q6v5.h"
+>  
+> +#define Q6V5_LOAD_STATE_MSG_LEN	64
+>  #define Q6V5_PANIC_DELAY_MS	200
+>  
+> +static int q6v5_load_state_toggle(struct qcom_q6v5 *q6v5, bool enable)
+> +{
+> +	char buf[Q6V5_LOAD_STATE_MSG_LEN] = {};
+> +	int ret;
+> +
+> +	if (IS_ERR(q6v5->qmp))
 
-Thanks for the patches!
+I would prefer that you keep it NULL when there's no qmp.
 
-Please put this one before other serial changes but does not have to be
-first in the entire series.
+> +		return 0;
+> +
+> +	snprintf(buf, sizeof(buf),
+> +		 "{class: image, res: load_state, name: %s, val: %s}",
+> +		 q6v5->load_state, enable ? "on" : "off");
+> +
+> +	ret = qmp_send(q6v5->qmp, buf, sizeof(buf));
+> +	if (ret)
+> +		dev_err(q6v5->dev, "failed to toggle load state\n");
+> +
+> +	return ret;
+> +}
+> +
+>  /**
+>   * qcom_q6v5_prepare() - reinitialize the qcom_q6v5 context before start
+>   * @q6v5:	reference to qcom_q6v5 context to be reinitialized
+> @@ -26,6 +46,12 @@
+>   */
+>  int qcom_q6v5_prepare(struct qcom_q6v5 *q6v5)
+>  {
+> +	int ret;
+> +
+> +	ret = q6v5_load_state_toggle(q6v5, true);
+> +	if (ret)
+> +		return ret;
+> +
+>  	reinit_completion(&q6v5->start_done);
+>  	reinit_completion(&q6v5->stop_done);
+>  
+> @@ -47,6 +73,7 @@ EXPORT_SYMBOL_GPL(qcom_q6v5_prepare);
+>  int qcom_q6v5_unprepare(struct qcom_q6v5 *q6v5)
+>  {
+>  	disable_irq(q6v5->handover_irq);
+> +	q6v5_load_state_toggle(q6v5, false);
+>  
+>  	return !q6v5->handover_issued;
+>  }
+> @@ -196,12 +223,13 @@ EXPORT_SYMBOL_GPL(qcom_q6v5_panic);
+>   * @pdev:	platform_device reference for acquiring resources
+>   * @rproc:	associated remoteproc instance
+>   * @crash_reason: SMEM id for crash reason string, or 0 if none
+> + * @load_state: load state resource string
+>   * @handover:	function to be called when proxy resources should be released
+>   *
+>   * Return: 0 on success, negative errno on failure
+>   */
+>  int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device *pdev,
+> -		   struct rproc *rproc, int crash_reason,
+> +		   struct rproc *rproc, int crash_reason, const char *load_state,
+>  		   void (*handover)(struct qcom_q6v5 *q6v5))
+>  {
+>  	int ret;
+> @@ -286,9 +314,36 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device *pdev,
+>  		return PTR_ERR(q6v5->state);
+>  	}
+>  
+> +	q6v5->load_state = kstrdup_const(load_state, GFP_KERNEL);
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Can't you use devm_kstrdup_const(&pdev->dev, ...) for this?
 
-Best regards,
-Krzysztof
+> +	q6v5->qmp = qmp_get(&pdev->dev);
+> +	if (IS_ERR(q6v5->qmp)) {
+> +		if (PTR_ERR(q6v5->qmp) != -ENODEV) {
+> +			if (PTR_ERR(q6v5->qmp) != -EPROBE_DEFER)
+> +				dev_err(&pdev->dev, "failed to acquire load state\n");
+> +			kfree_const(q6v5->load_state);
+
+Then you don't need to free it here.
+
+> +			return PTR_ERR(q6v5->qmp);
+> +		}
+> +	} else {
+> +		if (!q6v5->load_state) {
+> +			dev_err(&pdev->dev, "load state resource string empty\n");
+> +			return -EINVAL;
+
+I see two cases here:
+
+1) kstrdup_const() failed to allocate memory, the error print is
+unnecessary and misleading and it would be more appropriate to return
+-ENOMEM.
+
+2) kstrdup_const() failed because you passed load_state == NULL, in
+which case the error message could be more helpful by saying "unexpected
+qcom,qmp property found" or something like that.
+
+> +		}
+> +	}
+> +
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(qcom_q6v5_init);
+>  
+> +/**
+> + * qcom_q6v5_deinit() - deinitialize the q6v5 common struct
+> + * @q6v5:	reference to qcom_q6v5 context to be deinitialized
+> + */
+> +void qcom_q6v5_deinit(struct qcom_q6v5 *q6v5)
+> +{
+> +	kfree_const(q6v5->load_state);
+> +	qmp_put(q6v5->qmp);
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_q6v5_deinit);
+> +
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_DESCRIPTION("Qualcomm Peripheral Image Loader for Q6V5");
+> diff --git a/drivers/remoteproc/qcom_q6v5.h b/drivers/remoteproc/qcom_q6v5.h
+> index 1c212f670cbc..f35e04471ed7 100644
+> --- a/drivers/remoteproc/qcom_q6v5.h
+> +++ b/drivers/remoteproc/qcom_q6v5.h
+> @@ -5,6 +5,7 @@
+>  
+>  #include <linux/kernel.h>
+>  #include <linux/completion.h>
+> +#include <linux/soc/qcom/qcom_aoss.h>
+>  
+>  struct rproc;
+>  struct qcom_smem_state;
+> @@ -15,6 +16,8 @@ struct qcom_q6v5 {
+>  	struct rproc *rproc;
+>  
+>  	struct qcom_smem_state *state;
+> +	struct qmp *qmp;
+> +
+>  	unsigned stop_bit;
+>  
+>  	int wdog_irq;
+> @@ -32,12 +35,14 @@ struct qcom_q6v5 {
+>  
+>  	bool running;
+>  
+> +	const char *load_state;
+>  	void (*handover)(struct qcom_q6v5 *q6v5);
+>  };
+>  
+>  int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device *pdev,
+> -		   struct rproc *rproc, int crash_reason,
+> +		   struct rproc *rproc, int crash_reason, const char *load_state,
+>  		   void (*handover)(struct qcom_q6v5 *q6v5));
+> +void qcom_q6v5_deinit(struct qcom_q6v5 *q6v5);
+>  
+>  int qcom_q6v5_prepare(struct qcom_q6v5 *q6v5);
+>  int qcom_q6v5_unprepare(struct qcom_q6v5 *q6v5);
+> diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c b/drivers/remoteproc/qcom_q6v5_adsp.c
+> index 8b0d8bbacd2e..098362e6e233 100644
+> --- a/drivers/remoteproc/qcom_q6v5_adsp.c
+> +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
+> @@ -185,7 +185,9 @@ static int adsp_start(struct rproc *rproc)
+>  	int ret;
+>  	unsigned int val;
+>  
+> -	qcom_q6v5_prepare(&adsp->q6v5);
+> +	ret = qcom_q6v5_prepare(&adsp->q6v5);
+> +	if (ret)
+> +		return ret;
+
+In the (hopefully unlikely) case that we have instances of
+qcom_q6v5_prepare() failing today, the switch to the new qmp interface
+would also introduce a regression in the same commit.
+
+Could you please add the error handling in a separate commit? Just so
+that we can pinpoint which of the two changes caused any issues if we
+need to bisect this?
+
+Regards,
+Bjorn
