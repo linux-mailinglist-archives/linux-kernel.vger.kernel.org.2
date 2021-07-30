@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AC33DB9E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCA43DB9E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239059AbhG3OAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:00:18 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:35965 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238961AbhG3OAQ (ORCPT
+        id S239075AbhG3OBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231247AbhG3OBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:00:16 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 475E05C0136;
-        Fri, 30 Jul 2021 10:00:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 30 Jul 2021 10:00:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=AV6mcwgLoFgtra4SJrg+KJHj+RL
-        GMs7+Cx0G0YGXzC8=; b=B6tvhyEXg8sJgiz69X6KSrNPcR/PEWakRR03lApaWXD
-        Qd5SN5rJVCCVe+rgXqGSeKwtt5nafUSYxkHCviNEQSZu/SmcpR9SGOqUJFTmIjH9
-        zWs1Q2+7k8qDWlpaQfl6cQLDM1bS65DDlNLsQgG2vR6VVIDr7jh3uMZBmsCl19Fk
-        qGWIU9iM1qJQa4BZoVR5wO3qQy2Lkyw1+/8TDFbXSnXS2MPqCIVy09m7/4p2NlPZ
-        Sz9byk+aGDXhWS7OTJENysDLTAmCgkjKYt/LefqZFfiJtXbr7xL/9UMf4vytKHvu
-        rYCrCRh4seGD2ye/qMiVaDgrOLNXwAQgRrF0G1gslzw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=AV6mcw
-        gLoFgtra4SJrg+KJHj+RLGMs7+Cx0G0YGXzC8=; b=BQnboKZAOYIuMe5tD3atFC
-        jcuMC8xJ/V3ZG0FnCCAsDWv/vCvJmyt9/OOrKJcwvCLKix2BIv2h4knFGvNlKkQo
-        V+VmXVTtY1Ej4c0LgSkHUCAsTdZ+hrZjT29txSaer+ywte037UjbqjACfpXqxRzP
-        h0lRMAsLcHid5saqePCTKTuouYtFSe8GPbtpwWDWngpoKElxCOmP4EbvxVCY91oh
-        DzeEAIStd2tKsEJxuCMM0SeiVkwOruNryIxVVrqq+bEtnkkwDydEAeEgv0warIga
-        KH+k6Fz8xdxX0bJKAkzC344pl/RZesvX97wQvrg9g0DKh4SF00zdOF1omowmGmCg
-        ==
-X-ME-Sender: <xms:6wUEYZU7vu5h6D-GOhQnxOUU99-ixLa0GflLKiu_bDnhtxdf_8ijmw>
-    <xme:6wUEYZlY2ftI575gwPnrJcM0-dcGAlsETg_jNG-N9rwJchi2uwC4cFU6bLKYW4Vq4
-    YOqSh2ErHaRRg>
-X-ME-Received: <xmr:6wUEYVaHkNOi-7MqoLwKaI2DjHzXnirFgEj3YW498VJpVEUOIeEr3fd7NLcBuDB5JG2ZTtHidFuI8f5zY6lS0UZzLJHzcFnX>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheehgdeijecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:6wUEYcVPTIpJqL9bNxr2g5fOsC8Sc4LEmaTHLqS0vJicWg976gn-ow>
-    <xmx:6wUEYTm5CA7KH2oiz0QnN2ZbrgmeCEyni2YNDeG2_-mSfncLiMRFxg>
-    <xmx:6wUEYZevkn-tn2j9t2Qv5oRCu80qZ-D97lOc6YeeG16rKqFZzInHUw>
-    <xmx:6wUEYcA2ci8d8Dc4t1Wtf7eXddIB81jmus2NsQltYRBgXFwYHG2dRg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 30 Jul 2021 10:00:10 -0400 (EDT)
-Date:   Fri, 30 Jul 2021 16:00:07 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: build failure after merge of the staging tree
-Message-ID: <YQQF5/XhsxtZgj/Z@kroah.com>
-References: <20210730135219.21723-1-broonie@kernel.org>
+        Fri, 30 Jul 2021 10:01:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9780BC06175F;
+        Fri, 30 Jul 2021 07:01:46 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 16:01:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627653704;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mLd6T+G+Mt7/rauFlAnBkB5WnhfOZZe5ZifZfPgsjEE=;
+        b=NgBGpLFwJHy2Zx3P08eqKVosjuppDKML/0V3noGdJSBOSCErBbX+d6fKLIH/52h2K4JD6+
+        k0zu9ogcRvFYqVY40khZjpvsJcwAhSwLqGgL1owFBRBnQWHbR2NASSB4En/R1uG7MKk/pI
+        5tsADbCeVGS5xsb5uLb/M7JnNduzE1EQCBcFqNi2U5vZ75N5r+vfUuQCyW+SbzjMoymsYU
+        EBYMu22+7AKCLBrLwvjXwAnlTcVcAdpELcmiS8WTJMVZ4NuK6l4xtjHdWlbhe4UKs3xOA8
+        IdvAX3ivvB9s0XiNBYfwbdsAiyOYFKp9fxaN15ZruwK/cnRPWjEU4Dkdq3jy9w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627653704;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mLd6T+G+Mt7/rauFlAnBkB5WnhfOZZe5ZifZfPgsjEE=;
+        b=5P1GWPtijxHgSPVxdJeP76cA938Z7RfEtFGjLZnABKVnGI1P1RSxHhc4VRs8V9Cz11aIif
+        ezL6LNPXFPomOiDw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     chao.qin@intel.com, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, mgross@linux.intel.com, paul.mei@intel.com,
+        lili.li@intel.com
+Subject: Re: [PREEMPT_RT][PATCH] printk: Enhance the condition check of
+ msleep in pr_flush()
+Message-ID: <20210730140143.53wls2g7xf2ktdgv@linutronix.de>
+References: <20210719022649.3444072-1-chao.qin@intel.com>
+ <87mtqiuzd4.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210730135219.21723-1-broonie@kernel.org>
+In-Reply-To: <87mtqiuzd4.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 02:52:19PM +0100, Mark Brown wrote:
-> Hi all,
-> 
-> After merging the staging tree, today's linux-next build (x86
-> allmodconfig) failed like this:
-> 
-> /tmp/next/build/drivers/staging/r8188eu/core/rtw_ap.c:22:10: fatal error: osdep_service.h: No such file or directory
->  #include <osdep_service.h>
->           ^~~~~~~~~~~~~~~~~
-> compilation terminated.
-> make[4]: *** [/tmp/next/build/scripts/Makefile.build:271: drivers/staging/r8188eu/core/rtw_ap.o] Error 1
-> make[4]: *** Waiting for unfinished jobs....
-> /tmp/next/build/drivers/staging/r8188eu/core/rtw_br_ext.c:29:10: fatal error: drv_types.h: No such file or directory
->  #include <drv_types.h>
->           ^~~~~~~~~~~~~
-> compilation terminated.
-> 
-> Caused by commit
-> 
->   15865124feed880978b7 ("staging: r8188eu: introduce new core dir for RTL8188eu driver")
-> 
-> I've used the staging tree from yesterday instead.
+On 2021-07-19 17:01:51 [+0206], John Ogness wrote:
+> On 2021-07-19, chao.qin@intel.com wrote:
+> > --- a/kernel/printk/printk.c
+> > +++ b/kernel/printk/printk.c
+> > @@ -3620,7 +3620,8 @@ bool pr_flush(int timeout_ms, bool reset_on_progress)
+> >  	u64 diff;
+> >  	u64 seq;
+> >  
+> > -	may_sleep = (preemptible() && !in_softirq());
+> > +	may_sleep = (preemptible() && !in_softirq()
+> > +			&& (system_state >= SYSTEM_RUNNING));
 
-Very odd, why is this not hitting it in my builds?  Let me dig...
+I don't have more context but scheduling should work starting with
+SYSTEM_SCHEDULING.
 
-greg k-h
+> >  
+> >  	seq = prb_next_seq(prb);
+> >  
+> >
+
+Sebastian
