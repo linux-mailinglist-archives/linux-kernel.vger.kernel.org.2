@@ -2,163 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B545C3DBAA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3153DBAA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239228AbhG3Ode (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:33:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:42832 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239042AbhG3Odd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:33:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5902D6D;
-        Fri, 30 Jul 2021 07:33:28 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1FEBC3F70D;
-        Fri, 30 Jul 2021 07:33:26 -0700 (PDT)
-Subject: Re: [PATCH v2] arm64: dts: rockchip: add thermal fan control to
- rockpro64
-To:     Peter Geis <pgwipeout@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210730140210.728367-1-pgwipeout@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <9bb0e700-eb12-af14-76d6-3a90d434339b@arm.com>
-Date:   Fri, 30 Jul 2021 15:33:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S239238AbhG3Odm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239200AbhG3Odk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:33:40 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F035C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:33:35 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id m9so12637071ljp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:33:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dQGtz4NxA/KCcb2UkEKczuSorFz82jXK+AMOuFhIpSY=;
+        b=RDXh6xhSHzVcHoLlZtkJY8rwf+9yeKe0yYYIuU3JvH6YO4ghrz6ojczlapHQhwLmCd
+         Fe+TAjzwdXYjAv06/eyWHH3Q10DkSfI9d/AfMDP7wA867e2ePSETc1r6V984B2jOSxuf
+         amMOK/ZmyhihhEhZ8f/Sa3NU/ODRr5XPRXRIR9lvPBR3s9csTgQ1WHhVYHwGmlpeK9IT
+         dDVZYTaWI9Vc59rDlXVpmgnW6t6/qB7KFS8XKcZdocIlK2yLURmYOJJfjNhhBnZ5DHFd
+         FjPTbYr5RJa7XU4gvoi6v4QJy5l1V9kf7uESMvX+FkIFC6dNkaxHkyQDRuwJkGyuXETd
+         ziGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dQGtz4NxA/KCcb2UkEKczuSorFz82jXK+AMOuFhIpSY=;
+        b=hgQR2TwhdRh8JfeitYZx/1wM4RG2WzrxfgcCzuyfKJdMQIESdJvjgXeDNxBmF3fsYG
+         zbBwv8lYKldht0FVMjAc3dkR4fF8LitMs8nbSt47TOKQDGSYZIi/u6pod7zJk6oakIDp
+         JzM0oX1p1/LG7PQaHvEbw3sP1p9S5KgIJ12N0Fojs3RE8Bzm72qoXOoaZHlfEEls9faB
+         GKqeezrcmbGavTaHgSK48gZJbBZtA+9uXLckGj9Mz6flXpySKW601v8j6saqyUXam41E
+         ZG3rNLgBA9HzB/LjZTmrcSw/TpUBkDtQsfLt7EdVm1mRBsF4lWwhpQQAHvWQDp8jFdmn
+         uIfQ==
+X-Gm-Message-State: AOAM530DAVqkzXcrtqN6eTGJTPpkfet8QWU26uva8H8tv+o2qCMVVjmg
+        Ejcrr9n5rgH48ANromCCZFJk9VHbx3jSGYo/ericbw==
+X-Google-Smtp-Source: ABdhPJzgGnVq10vXKLaHBZpfgLUJ0afJNvNbZo+mH2b7grVgG96TtjH9fn8FrBCfPY3RGRFW6+8Q94qxjfL1Nl+Zq/g=
+X-Received: by 2002:a2e:a68f:: with SMTP id q15mr1890524lje.314.1627655612988;
+ Fri, 30 Jul 2021 07:33:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210730140210.728367-1-pgwipeout@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210729220916.1672875-1-oupton@google.com> <20210729220916.1672875-4-oupton@google.com>
+ <878s1o2l6j.wl-maz@kernel.org>
+In-Reply-To: <878s1o2l6j.wl-maz@kernel.org>
+From:   Oliver Upton <oupton@google.com>
+Date:   Fri, 30 Jul 2021 07:33:21 -0700
+Message-ID: <CAOQ_QsjFzdjYgYSxNLH=8O84FJB+O8KtH0VnzdQ9HnLZwxwpNQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] KVM: arm64: Use generic KVM xfer to guest work function
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <Alexandru.Elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Peter Shier <pshier@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Guangyu Shi <guangyus@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Marc,
 
-On 2021-07-30 15:02, Peter Geis wrote:
-> The rockpro64 had a fan node since
-> commit 5882d65c1691 ("arm64: dts: rockchip: Add PWM fan for RockPro64")
-> however it was never tied into the thermal driver for automatic control.
-> 
-> Add the links to the thermal node to permit the kernel to handle this
-> automatically.
-> Borrowed from the (rk3399-khadas-edge.dtsi).
-> 
-> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> ---
-> 
-> Changelog:
-> v2:
-> Adjusted fan setpoints for less noise
-> 
->   .../boot/dts/rockchip/rk3399-rockpro64.dtsi   | 57 +++++++++++++++++++
->   1 file changed, 57 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-> index 6bff8db7d33e..0d79e6ae1c3a 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-> @@ -69,6 +69,7 @@ diy_led: led-1 {
->   
->   	fan: pwm-fan {
->   		compatible = "pwm-fan";
-> +		cooling-levels = <0 100 150 200 255>;
->   		#cooling-cells = <2>;
->   		fan-supply = <&vcc12v_dcin>;
->   		pwms = <&pwm1 0 50000 0>;
-> @@ -245,6 +246,34 @@ &cpu_b1 {
->   	cpu-supply = <&vdd_cpu_b>;
->   };
->   
-> +&cpu_thermal {
-> +	trips {
-> +		cpu_warm: cpu_warm {
-> +			temperature = <55000>;
-> +			hysteresis = <2000>;
-> +			type = "active";
-> +		};
+On Fri, Jul 30, 2021 at 2:41 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Hi Oliver,
+>
+> On Thu, 29 Jul 2021 23:09:16 +0100,
+> Oliver Upton <oupton@google.com> wrote:
+> >
+> > Clean up handling of checks for pending work by switching to the generic
+> > infrastructure to do so.
+> >
+> > We pick up handling for TIF_NOTIFY_RESUME from this switch, meaning that
+> > task work will be correctly handled.
+> >
+> > Signed-off-by: Oliver Upton <oupton@google.com>
+> > ---
+> >  arch/arm64/kvm/Kconfig |  1 +
+> >  arch/arm64/kvm/arm.c   | 27 ++++++++++++++-------------
+> >  2 files changed, 15 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
+> > index a4eba0908bfa..8bc1fac5fa26 100644
+> > --- a/arch/arm64/kvm/Kconfig
+> > +++ b/arch/arm64/kvm/Kconfig
+> > @@ -26,6 +26,7 @@ menuconfig KVM
+> >       select HAVE_KVM_ARCH_TLB_FLUSH_ALL
+> >       select KVM_MMIO
+> >       select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+> > +     select KVM_XFER_TO_GUEST_WORK
+> >       select SRCU
+> >       select KVM_VFIO
+> >       select HAVE_KVM_EVENTFD
+> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> > index 60d0a546d7fd..9762e2129813 100644
+> > --- a/arch/arm64/kvm/arm.c
+> > +++ b/arch/arm64/kvm/arm.c
+> > @@ -6,6 +6,7 @@
+> >
+> >  #include <linux/bug.h>
+> >  #include <linux/cpu_pm.h>
+> > +#include <linux/entry-kvm.h>
+> >  #include <linux/errno.h>
+> >  #include <linux/err.h>
+> >  #include <linux/kvm_host.h>
+> > @@ -714,6 +715,13 @@ static bool vcpu_mode_is_bad_32bit(struct kvm_vcpu *vcpu)
+> >               static_branch_unlikely(&arm64_mismatched_32bit_el0);
+> >  }
+> >
+> > +static bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu)
+> > +{
+> > +     return kvm_request_pending(vcpu) ||
+> > +                     need_new_vmid_gen(&vcpu->arch.hw_mmu->vmid) ||
+> > +                     xfer_to_guest_mode_work_pending();
+>
+> Here's what xfer_to_guest_mode_work_pending() says:
+>
+> <quote>
+>  * Has to be invoked with interrupts disabled before the transition to
+>  * guest mode.
+> </quote>
+>
+> At the point where you call this, we already are in guest mode, at
+> least in the KVM sense.
 
-(Heh, it still tickles me to see these points I arbitrarily made up 
-being faithfully copied around - I guess that means I got them right!)
+I believe the comment is suggestive of guest mode in the hardware
+sense, not KVM's vcpu->mode designation. I got this from
+arch/x86/kvm/x86.c:vcpu_enter_guest() to infer the author's
+intentions.
 
-> +
-> +		cpu_hot: cpu_hot {
-> +			temperature = <65000>;
-> +			hysteresis = <2000>;
-> +			type = "active";
-> +		};
-> +	};
-> +
-> +	cooling-maps {
-> +		map2 {
-> +			trip = <&cpu_warm>;
-> +			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
-> +		};
-> +
-> +		map3 {
-> +			trip = <&cpu_hot>;
-> +			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
-> +		};
-> +	};
-> +};
-> +
->   &emmc_phy {
->   	status = "okay";
->   };
-> @@ -281,6 +310,34 @@ &gpu {
->   	status = "okay";
->   };
->   
-> +&gpu_thermal {
-> +	trips {
-> +		gpu_warm: gpu_warm {
-> +			temperature = <55000>;
-> +			hysteresis = <2000>;
-> +			type = "active";
-> +		};
-> +
-> +		gpu_hot: gpu_hot {
-> +			temperature = <65000>;
-> +			hysteresis = <2000>;
-> +			type = "active";
-> +		};
-> +	};
-> +
-> +	cooling-maps {
-> +		map1 {
-> +			trip = <&gpu_warm>;
-> +			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
-> +		};
-> +
-> +		map2 {
-> +			trip = <&gpu_hot>;
-> +			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
-> +		};
-> +	};
-> +};
+>
+> > +}
+> > +
+> >  /**
+> >   * kvm_arch_vcpu_ioctl_run - the main VCPU run function to execute guest code
+> >   * @vcpu:    The VCPU pointer
+> > @@ -757,7 +765,11 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+> >               /*
+> >                * Check conditions before entering the guest
+> >                */
+> > -             cond_resched();
+> > +             if (__xfer_to_guest_mode_work_pending()) {
+> > +                     ret = xfer_to_guest_mode_handle_work(vcpu);
+>
+> xfer_to_guest_mode_handle_work() already does the exact equivalent of
+> __xfer_to_guest_mode_work_pending(). Why do we need to do it twice?
 
-Unless something's changed since commit a793e19c15f2 ("arm64: dts: 
-rockchip: Fix NanoPC-T4 cooling maps"), multiple cooling maps don't 
-actually share a singe cooling device properly[1]. The Khadas Edge DT 
-dates from right around the same time so I guess it crossed over with 
-that discussion and never got fixed.
+Right, there's no need to do the check twice.
 
-In hindsight, I do seem to remember my fan being a bit more jumpy around 
-the trip points than it is today, which may well have been the two maps 
-fighting each other...
+>
+> > +                     if (!ret)
+> > +                             ret = 1;
+> > +             }
+> >
+> >               update_vmid(&vcpu->arch.hw_mmu->vmid);
+> >
+> > @@ -776,16 +788,6 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+> >
+> >               kvm_vgic_flush_hwstate(vcpu);
+> >
+> > -             /*
+> > -              * Exit if we have a signal pending so that we can deliver the
+> > -              * signal to user space.
+> > -              */
+> > -             if (signal_pending(current)) {
+> > -                     ret = -EINTR;
+> > -                     run->exit_reason = KVM_EXIT_INTR;
+> > -                     ++vcpu->stat.signal_exits;
+> > -             }
+> > -
+> >               /*
+> >                * If we're using a userspace irqchip, then check if we need
+> >                * to tell a userspace irqchip about timer or PMU level
+> > @@ -809,8 +811,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+> >                */
+> >               smp_store_mb(vcpu->mode, IN_GUEST_MODE);
+> >
+> > -             if (ret <= 0 || need_new_vmid_gen(&vcpu->arch.hw_mmu->vmid) ||
+> > -                 kvm_request_pending(vcpu)) {
+> > +             if (ret <= 0 || kvm_vcpu_exit_request(vcpu)) {
+>
+> If you are doing this, please move the userspace irqchip handling into
+> the helper as well, so that we have a single function dealing with
+> collecting exit reasons.
 
-Robin.
+Sure thing.
 
-[1] 
-https://lore.kernel.org/linux-rockchip/55b9018e-672e-522b-d0a0-c5655be0f353@linaro.org/
+Thanks for the quick review, Marc!
 
-> +
->   &i2c0 {
->   	clock-frequency = <400000>;
->   	i2c-scl-rising-time-ns = <168>;
-> 
+--
+Best,
+Oliver
