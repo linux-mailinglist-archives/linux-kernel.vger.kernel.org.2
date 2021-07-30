@@ -2,177 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262043DC016
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E193DC01A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhG3VI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 17:08:26 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:43830 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhG3VIZ (ORCPT
+        id S231974AbhG3VKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 17:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231584AbhG3VKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 17:08:25 -0400
-Received: by mail-io1-f72.google.com with SMTP id d7-20020a6b6e070000b02904c0978ed194so6548420ioh.10
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 14:08:20 -0700 (PDT)
+        Fri, 30 Jul 2021 17:10:05 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B05C06175F;
+        Fri, 30 Jul 2021 14:09:58 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id h9so14207747ljq.8;
+        Fri, 30 Jul 2021 14:09:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=QSur+1PHlTt0wjrwYXzpD7UGhBN9zjUfFcpb+MppDGQ=;
+        b=bpj7sleRqb8YAFh9SRbtRKYbJuFddVqeePUbCewjfc001JSv/SfF3qwszqHHkgs66k
+         IevmQRt98/ElPaSvw9UxJegTcwBj2yjs0bJO6NHZ/m2ZbsVYdnkZ05aCA6bZnb6X8eo1
+         0JSLlYA2Od+QVIxaPeqarS3AFNlGqv9y821Yy69HSAkmpOyr/GyPUBSYFkhYeKekpaAd
+         nzbtxniLGW1rBdqQ0PAIHGxbp0EtdsTY+C0ZwS+14rIhX+mnDUueQgkd4BJW8/Q09mVG
+         KuybvAZlrCbsLUL3GGswQu68Kj3Y7fbEYP6AsybW5VR5d2acKQdScU/RrWhnyTtXvXZW
+         s1dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Ezra53fJ9ovAmRTj95ODS6/rqWMOlHrXy6SIWRBmIqE=;
-        b=DBl+dMYaQIY82qlubol6j7SPSJVUwSUqvZfzXWaxIqZomJYqWxEG/21TlOEGka/aai
-         2gT/Q82rhoWBj1arhhN2LpXoojyx1k3WaHijBwHDuc+rQRM3aVAIzHhy04EEHVO52mmd
-         vCmWm6gByYhhk1tSBhWgU3My7uXhWfjJBJA2KeQHsLffvmObI7rO5FkG5pg0zNpp+zdz
-         Ujx3e/3k8CL+vemlyacJIOGFkTsQ8LJ/2OBBhobx+xrSkHCE+GNv8FI5nB5zdQozL2Zq
-         BHNkfb3fKVgjlDu/7PR2SJtsOT+35rzNfI7cjNFL5vhSqurcPEjpC9qC8Pg7dRywrKmi
-         8mTQ==
-X-Gm-Message-State: AOAM530yrgNsDkNF0JXzBHiWPG+gKZ0F2tybWxD38xE3HmtuXszmp0kJ
-        5fKtuCHyb3Tz/9sNaAPUBFZDcQCdWNACvr6K+ozq+SOtDZfQ
-X-Google-Smtp-Source: ABdhPJzl08nsf9LL1ms/XQOCdeiQ4I7sbo+awGg/+z9Et9Oq1oKi4pYR8FCGVHO56f5YYDc81cqWZ6nYq9ZQwmg9hDW9qmW4WLrc
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=QSur+1PHlTt0wjrwYXzpD7UGhBN9zjUfFcpb+MppDGQ=;
+        b=lQtQwchlAC46WhS+iDnVZnNgLxWguED5ad+IKdfLNmr4lMlyOw6PdYuCWi+eP6y2EL
+         EZVwJgfVBcFvPYCtsgGWFLAr8b6OLPwHY50Ci0OlgGLYXsuU2QxyVnh5ABih0N/hU+Kx
+         sdu6tRD6STc8XB9Esss9NOwCT+IuzWTKmYJrQbrU9pcEhpdwve1G4SYQ37lEDPv99C08
+         nS0XXla8dgC8Bja4/GBS1NIg2VPqaw7wPljD+ymsBtNCobtJickZmvVzcbdgRd9Gbtya
+         ZDfGocpbNfk4ZU2sEG0JSvhv4yqqtLZ85yXHAtybOaIp+cA7B5JZm4iap8YUrGxmJn/F
+         5K1w==
+X-Gm-Message-State: AOAM532XDm3l2RsG30zHJZ+TR9WzwDjMwXI8Mfc9bb3zMTfok2gqyqHL
+        YsI97ZpvJcxYlZmQQ0xGnSmmTWKomAUtmn1mklI=
+X-Google-Smtp-Source: ABdhPJzWSoJeBz+UthApFvEVF3+nMI8DZKoX0r2cqasU5U4FDDWoZHXSBJT4HfenIMA5pS1kZqpA1RBMLOKstugceeA=
+X-Received: by 2002:a2e:a884:: with SMTP id m4mr2949152ljq.406.1627679397200;
+ Fri, 30 Jul 2021 14:09:57 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:528:: with SMTP id h8mr2849385ils.223.1627679300353;
- Fri, 30 Jul 2021 14:08:20 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 14:08:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008183f605c85d9e9c@google.com>
-Subject: [syzbot] memory leak in packet_sendmsg
-From:   syzbot <syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tannerlove@google.com,
-        willemb@google.com, xie.he.0141@gmail.com, yhs@fb.com
+From:   Steve French <smfrench@gmail.com>
+Date:   Fri, 30 Jul 2021 16:09:46 -0500
+Message-ID: <CAH2r5msGVA44tK4+9YAm-vrH0sAL8WqPPfdnU5Uk5++jCqoJYQ@mail.gmail.com>
+Subject: [GIT PULL] CIFS/SMB3 fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Please pull the following changes since commit
+ff1176468d368232b684f75e82563369208bc371:
 
-syzbot found the following issue on:
+  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
 
-HEAD commit:    ff1176468d36 Linux 5.14-rc3
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15057fa2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4ebfe83ba9ca8666
-dashboard link: https://syzkaller.appspot.com/bug?extid=989efe781c74de1ddb54
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e54382300000
+are available in the Git repository at:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.14-rc3-smb3-fixes
 
-2021/07/26 20:48:07 executed programs: 1
-2021/07/26 20:48:13 executed programs: 3
-2021/07/26 20:48:19 executed programs: 5
-BUG: memory leak
-unreferenced object 0xffff88810f41be00 (size 232):
-  comm "dhclient", pid 4908, jiffies 4294938558 (age 1092.590s)
-  hex dump (first 32 bytes):
-    a0 6c 13 19 81 88 ff ff a0 6c 13 19 81 88 ff ff  .l.......l......
-    00 00 83 1a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff836e1e8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:414
-    [<ffffffff836ec6ba>] alloc_skb include/linux/skbuff.h:1112 [inline]
-    [<ffffffff836ec6ba>] alloc_skb_with_frags+0x6a/0x2b0 net/core/skbuff.c:6019
-    [<ffffffff836d9fa3>] sock_alloc_send_pskb+0x353/0x3c0 net/core/sock.c:2461
-    [<ffffffff83bf47a2>] packet_alloc_skb net/packet/af_packet.c:2864 [inline]
-    [<ffffffff83bf47a2>] packet_snd net/packet/af_packet.c:2959 [inline]
-    [<ffffffff83bf47a2>] packet_sendmsg+0xbd2/0x2500 net/packet/af_packet.c:3044
-    [<ffffffff836d0b46>] sock_sendmsg_nosec net/socket.c:703 [inline]
-    [<ffffffff836d0b46>] sock_sendmsg+0x56/0x80 net/socket.c:723
-    [<ffffffff836d0c67>] sock_write_iter+0xf7/0x180 net/socket.c:1056
-    [<ffffffff81564527>] call_write_iter include/linux/fs.h:2114 [inline]
-    [<ffffffff81564527>] new_sync_write+0x1d7/0x2b0 fs/read_write.c:518
-    [<ffffffff81567ba1>] vfs_write+0x351/0x400 fs/read_write.c:605
-    [<ffffffff81567f1b>] ksys_write+0x12b/0x160 fs/read_write.c:658
-    [<ffffffff843b18b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843b18b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+for you to fetch changes up to b946dbcfa4df80ec81b442964e07ad37000cc059:
 
-BUG: memory leak
-unreferenced object 0xffff8881019ce500 (size 232):
-  comm "kworker/1:1", pid 35, jiffies 4294938559 (age 1092.580s)
-  hex dump (first 32 bytes):
-    a0 d4 28 19 81 88 ff ff a0 d4 28 19 81 88 ff ff  ..(.......(.....
-    00 00 cb 03 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff836e1e8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:414
-    [<ffffffff836ec6ba>] alloc_skb include/linux/skbuff.h:1112 [inline]
-    [<ffffffff836ec6ba>] alloc_skb_with_frags+0x6a/0x2b0 net/core/skbuff.c:6019
-    [<ffffffff836d9fa3>] sock_alloc_send_pskb+0x353/0x3c0 net/core/sock.c:2461
-    [<ffffffff83b812d4>] mld_newpack+0x84/0x200 net/ipv6/mcast.c:1751
-    [<ffffffff83b814f3>] add_grhead+0xa3/0xc0 net/ipv6/mcast.c:1854
-    [<ffffffff83b82196>] add_grec+0x7b6/0x820 net/ipv6/mcast.c:1992
-    [<ffffffff83b84643>] mld_send_cr net/ipv6/mcast.c:2118 [inline]
-    [<ffffffff83b84643>] mld_ifc_work+0x273/0x750 net/ipv6/mcast.c:2655
-    [<ffffffff81262669>] process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
-    [<ffffffff81262f59>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2422
-    [<ffffffff8126c3b8>] kthread+0x188/0x1d0 kernel/kthread.c:319
-    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+  cifs: add missing parsing of backupuid (2021-07-28 17:03:24 -0500)
 
-BUG: memory leak
-unreferenced object 0xffff88810f41b300 (size 232):
-  comm "kworker/1:1", pid 35, jiffies 4294938624 (age 1091.930s)
-  hex dump (first 32 bytes):
-    a0 ac 3f 19 81 88 ff ff a0 ac 3f 19 81 88 ff ff  ..?.......?.....
-    00 00 cb 03 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff836e1e8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:414
-    [<ffffffff83b6d076>] alloc_skb include/linux/skbuff.h:1112 [inline]
-    [<ffffffff83b6d076>] ndisc_alloc_skb+0x56/0xe0 net/ipv6/ndisc.c:420
-    [<ffffffff83b7183a>] ndisc_send_ns+0xba/0x2f0 net/ipv6/ndisc.c:626
-    [<ffffffff83b48b13>] addrconf_dad_work+0x643/0x900 net/ipv6/addrconf.c:4119
-    [<ffffffff81262669>] process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
-    [<ffffffff81262f59>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2422
-    [<ffffffff8126c3b8>] kthread+0x188/0x1d0 kernel/kthread.c:319
-    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+----------------------------------------------------------------
+3 cifs/smb3 fixes, including two for stable, and a fix for an
+fallocate problem noticed by Clang
 
-BUG: memory leak
-unreferenced object 0xffff88810dd97600 (size 232):
-  comm "softirq", pid 0, jiffies 4294938659 (age 1091.580s)
-  hex dump (first 32 bytes):
-    a0 fc fb 16 81 88 ff ff a0 fc fb 16 81 88 ff ff  ................
-    00 c0 84 03 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff836e1e8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:414
-    [<ffffffff839f1aff>] alloc_skb include/linux/skbuff.h:1112 [inline]
-    [<ffffffff839f1aff>] __ip_append_data+0x12cf/0x1510 net/ipv4/ip_output.c:1109
-    [<ffffffff839f429d>] ip_append_data net/ipv4/ip_output.c:1327 [inline]
-    [<ffffffff839f429d>] ip_append_data net/ipv4/ip_output.c:1306 [inline]
-    [<ffffffff839f429d>] ip_send_unicast_reply+0x33d/0x550 net/ipv4/ip_output.c:1718
-    [<ffffffff83a33e6f>] tcp_v4_send_reset+0x3df/0x980 net/ipv4/tcp_ipv4.c:818
-    [<ffffffff83a37442>] tcp_v4_rcv+0xf22/0x1620 net/ipv4/tcp_ipv4.c:2116
-    [<ffffffff839e99b2>] ip_protocol_deliver_rcu+0x22/0x2c0 net/ipv4/ip_input.c:204
-    [<ffffffff839e9cc1>] ip_local_deliver_finish+0x71/0x90 net/ipv4/ip_input.c:231
-    [<ffffffff839e9e33>] NF_HOOK include/linux/netfilter.h:307 [inline]
-    [<ffffffff839e9e33>] NF_HOOK include/linux/netfilter.h:301 [inline]
-    [<ffffffff839e9e33>] ip_local_deliver+0x153/0x160 net/ipv4/ip_input.c:252
-    [<ffffffff839e9016>] dst_input include/net/dst.h:458 [inline]
-    [<ffffffff839e9016>] ip_sublist_rcv_finish+0x76/0x90 net/ipv4/ip_input.c:551
-    [<ffffffff839e9723>] ip_list_rcv_finish net/ipv4/ip_input.c:601 [inline]
-    [<ffffffff839e9723>] ip_sublist_rcv+0x293/0x340 net/ipv4/ip_input.c:609
-    [<ffffffff839ea126>] ip_list_rcv+0x1c6/0x1f0 net/ipv4/ip_input.c:644
-    [<ffffffff83713f01>] __netif_receive_skb_list_ptype net/core/dev.c:5541 [inline]
-    [<ffffffff83713f01>] __netif_receive_skb_list_core+0x2b1/0x360 net/core/dev.c:5589
-    [<ffffffff83714305>] __netif_receive_skb_list net/core/dev.c:5641 [inline]
-    [<ffffffff83714305>] netif_receive_skb_list_internal+0x355/0x4a0 net/core/dev.c:5751
-    [<ffffffff83715d52>] gro_normal_list net/core/dev.c:5905 [inline]
-    [<ffffffff83715d52>] gro_normal_list net/core/dev.c:5901 [inline]
-    [<ffffffff83715d52>] napi_complete_done+0xe2/0x2e0 net/core/dev.c:6627
-    [<ffffffff828eb89d>] virtqueue_napi_complete drivers/net/virtio_net.c:337 [inline]
-    [<ffffffff828eb89d>] virtnet_poll+0x52d/0x6a0 drivers/net/virtio_net.c:1546
-    [<ffffffff83715f8d>] __napi_poll+0x3d/0x290 net/core/dev.c:7047
+----------------------------------------------------------------
+Ronnie Sahlberg (1):
+      cifs: add missing parsing of backupuid
+
+Steve French (2):
+      SMB3: fix readpage for large swap cache
+      smb3: rc uninitialized in one fallocate path
+
+ fs/cifs/file.c       | 2 +-
+ fs/cifs/fs_context.c | 7 +++++++
+ fs/cifs/smb2ops.c    | 3 ++-
+ 3 files changed, 10 insertions(+), 2 deletions(-)
 
 
+-- 
+Thanks,
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Steve
