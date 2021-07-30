@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5A23DC11A
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1523DC11C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233134AbhG3Wdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:33:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51344 "EHLO
+        id S233256AbhG3Wes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbhG3Wdv (ORCPT
+        with ESMTP id S229604AbhG3Wer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:33:51 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293C4C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:33:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=BQTjsw+UIinxocEC0qr+MREl4u9UoUD4PRqQWjNAf6g=; b=uVkpEhPwZ9nMb9q0lUYb6Sx8/M
-        XlxPAf5zdS6PbrxsyyFxbzD9mUJhd2UTCPVrN3Kl1CRpxswEVPEGmjcV2jdDxcI0wG8e6g2tLuTjF
-        PUnbqRwwNgI0Fy47fbpINfQYcsJCCG4d+JVBSk66YkIljbRDsSsYhJVETDYtovBpaIL1e5qop+Rv6
-        I7wvbXVhXdT8rlDVAMjEYBT4wjM+J/mfrwI0KlLrP9Gp7QDIjwUGZQ/A8s2o8dGzIikbEVC3Ujadw
-        cASyGPgsuLw7sPrcKzV9AgYohpfWkOmbhV2KKcTTdqKqdDgVfDllQZpE0mQCAIDOsuYlFJqeJ1FGt
-        3yBjM7Ww==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m9b4b-00AR4y-Ak; Fri, 30 Jul 2021 22:33:45 +0000
-Subject: Re: drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c:1046:11: error: use of
- undeclared identifier 'pm_suspend_target_state'
-To:     kernel test robot <lkp@intel.com>,
-        Pratik Vishwakarma <Pratik.Vishwakarma@amd.com>
-Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>
-References: <202107301618.ENDZx6ZW-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6662aaa4-f1da-56bf-08c4-9af562bb61cd@infradead.org>
-Date:   Fri, 30 Jul 2021 15:33:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 30 Jul 2021 18:34:47 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1FEC061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:34:42 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso22862618pjq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2B8bmMK1MWV0IKBzZFhJ4QQnRCCDWLQwwtmcrrRzShw=;
+        b=UfW+Uyhy937lSOvlfCbvzUSHfPBdVvhcTOaILHqlmzjEQeZkE7CJS1pDjY85yLeTrk
+         ZUbJvCXGnG9V4YR8YvLqiCoHxoAuC0RJHo8xznM5u3dhr6dkJI9BNq9mI/HgcDxL19UV
+         T0+Bsg6O2a3etVDRUOMu6je3JU33B5pFqiYpolqwzc84ASrmmPyryuwH24+FPODl2NK0
+         /jswqbw3cLYGC3s8tw+3+64iNj05CofMOCHjsjPmhNsSGF6fZGX5s2X6UpkAmOT82yEf
+         KD+vMh5N6wzurqnoLV7GP3bDuQRiamzrkbH5J6wxueQVfjy9YKlsV1lqKUCTBLbTMy1G
+         tbIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2B8bmMK1MWV0IKBzZFhJ4QQnRCCDWLQwwtmcrrRzShw=;
+        b=Sk6JTl9yzL4NdZCOt4UbE/DOeLiPgcw/FeG/okuN1Rm+WMGEut0qwjFtV7fHnYo9fN
+         aBFHRDvi11ZfJrP9RVU06frsDkYPTtEIQo2AM/lna/R1cBzDORHmVSS+I5cbUJOwbLR9
+         c1U19KwKQSW3+DOdmhacm3epjAKblkQTmZJLSD7Qj54ET9KpY+p+wGgWmMlMAJWYMX6C
+         P54GJ9grnNZr0XmwJyjY1rBUGb5XnhObDv8R5CZUPi1NhXHYnstRC6PoiSoQ36XTRdLk
+         +69gSMxqYgJNrN29cBSxFScO506iHPVaeEzFw3LbHjrTsOyF4NFqbtbUvBRBzUJh9WiW
+         vu4Q==
+X-Gm-Message-State: AOAM530gU51TU8fiDaeGoUfy15iDQrtuBYNdbJn0UwS+ESYkXb7rWkUi
+        1um/3wAlcR8ip6J8Ed2rkeWh8Q==
+X-Google-Smtp-Source: ABdhPJzSqN3B7Go3MtNjE9VY5h0clk+hYXj3ladZ5/S+PnXE8W92M9c05HKB4nGF1ekuX4eoULgjrQ==
+X-Received: by 2002:a17:90b:1bcc:: with SMTP id oa12mr5239612pjb.113.1627684481796;
+        Fri, 30 Jul 2021 15:34:41 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b184sm3525033pfg.72.2021.07.30.15.34.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 15:34:41 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 22:34:37 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Will Deacon <will@kernel.org>, Dave Young <dyoung@redhat.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 07/11] treewide: Replace the use of mem_encrypt_active()
+ with prot_guest_has()
+Message-ID: <YQR+ffO92gMfGDbs@google.com>
+References: <cover.1627424773.git.thomas.lendacky@amd.com>
+ <029791b24c6412f9427cfe6ec598156c64395964.1627424774.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <202107301618.ENDZx6ZW-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <029791b24c6412f9427cfe6ec598156c64395964.1627424774.git.thomas.lendacky@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/21 1:17 AM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   764a5bc89b12b82c18ce7ca5d7c1b10dd748a440
-> commit: 91e273712ab8dd8c31924ac7714b21e011137e98 drm/amdgpu: Check pmops for desired suspend state
-> date:   3 days ago
-> config: x86_64-randconfig-a002-20210730 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project c49df15c278857adecd12db6bb1cdc96885f7079)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=91e273712ab8dd8c31924ac7714b21e011137e98
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 91e273712ab8dd8c31924ac7714b21e011137e98
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/gpu/drm/amd/amdgpu/
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->>> drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c:1046:11: error: use of undeclared identifier 'pm_suspend_target_state'
->                            return pm_suspend_target_state == PM_SUSPEND_TO_IDLE;
->                                   ^
->    1 error generated.
+On Tue, Jul 27, 2021, Tom Lendacky wrote:
+> @@ -451,7 +450,7 @@ void __init mem_encrypt_free_decrypted_mem(void)
+>  	 * The unused memory range was mapped decrypted, change the encryption
+>  	 * attribute from decrypted to encrypted before freeing it.
+>  	 */
+> -	if (mem_encrypt_active()) {
+> +	if (sme_me_mask) {
 
+Any reason this uses sme_me_mask?  The helper it calls, __set_memory_enc_dec(),
+uses prot_guest_has(PATTR_MEM_ENCRYPT) so I assume it's available?
 
-A patch has been posted and accepted.
+>  		r = set_memory_encrypted(vaddr, npages);
+>  		if (r) {
+>  			pr_warn("failed to free unused decrypted pages\n");
 
-https://lore.kernel.org/lkml/CADnq5_PPYtdb17WLtgjeS3THXBeHw_DyMKueZ4LP8cVS1G8Tcw@mail.gmail.com/
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-https://people.kernel.org/tglx/notes-about-netiquette
