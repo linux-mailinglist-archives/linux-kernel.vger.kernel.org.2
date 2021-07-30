@@ -2,89 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7187A3DBD61
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EEF3DBD64
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhG3QyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 12:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbhG3Qx7 (ORCPT
+        id S230039AbhG3Qz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 12:55:26 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:56521 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhG3QzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 12:53:59 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5754C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:53:54 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 48-20020a9d0bb30000b02904cd671b911bso10192078oth.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/zz8SlCDjP/5EQCBECZsztr338jbNBe1TGYsR7QJMKI=;
-        b=H2+fZMiUKFckMowCPbbNdkkTnbf+DqEQ2E7LMQHDSzMS/LM7xqhmaTLGbvBpVP6Avy
-         Sm6DSNPHfTMLatbrXLneDunGFY19kbi69fX3hc8mwxZgAt3g9heVtXmSqJD8upr0rKDP
-         PVnFPnpygQocQIjWrFHxpPWU2qT9xRwxnY3Dk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/zz8SlCDjP/5EQCBECZsztr338jbNBe1TGYsR7QJMKI=;
-        b=Q9uVnfVNVRbF0rD6IrSI4I0Er/tJZO/dOkcqrtemtXQouFFiw0tyXW4bGGt6TZJ9vN
-         LfeOA+8MDXzzL3TxVKF2RTc8UQXQJdrt1ysPK91f77LNk4cziw5fFXD2YrUE4vTa9WPt
-         BRsuK4PdLvSQwpnlnaFtjfRo0WFUHs1PisPJrkTAm1KGj4TivoVEBs7i7rS76ojMsvpy
-         wxSh2DjMDdTs1BMQ3rVHZFW2iAAVegdJCOIXF8WIAXwQRwba0mNt5wqMXhG0j4bj0zFH
-         84VdGJvoZdVRkkcYdDvveSPaAHWsLn+4xElK/N7SpfTthLCuWS89iwE+MhbRot5YrPx0
-         B8IQ==
-X-Gm-Message-State: AOAM532Udtz50Y90r9MRB42AQm99lP5gHw3Dk6bDwWMU0IjA5ou//s2f
-        uRkN5k68lIv1y1M80ffnwJh0Kw==
-X-Google-Smtp-Source: ABdhPJwkjqlRmT9N9mjzp7K74H0hjjP+/6LGfLhSwRRdMevLvjjU2udtdo7p3yCMPqpFk+ppVh8dug==
-X-Received: by 2002:a9d:628:: with SMTP id 37mr2343240otn.126.1627664034228;
-        Fri, 30 Jul 2021 09:53:54 -0700 (PDT)
-Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
-        by smtp.gmail.com with ESMTPSA id x14sm374703oiv.4.2021.07.30.09.53.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 09:53:53 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 11:53:52 -0500
-From:   Justin Forbes <jmforbes@linuxtx.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 00/22] 5.13.7-rc1 review
-Message-ID: <YQQuoEHcxtZdxWLT@fedora64.linuxtx.org>
-References: <20210729135137.336097792@linuxfoundation.org>
+        Fri, 30 Jul 2021 12:55:24 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MxHLs-1n77cc1pTE-00xbBO; Fri, 30 Jul 2021 18:55:18 +0200
+Received: by mail-wr1-f45.google.com with SMTP id h14so12087408wrx.10;
+        Fri, 30 Jul 2021 09:55:18 -0700 (PDT)
+X-Gm-Message-State: AOAM531x36drL025206zfhSfsIdVNUVYtXIIdwh7tJXRkoxahAE6fFFe
+        5pch65HRs5BPODEUF4YRSt9avNT68PPACJ16s+4=
+X-Google-Smtp-Source: ABdhPJx8pRQBP+fRbShwuYvNiG34iB85ht3PkP357n80b2tOp0dc7/DUvny3sNOHPUMU7TLnQH+oHIK/GgO7nACZa6s=
+X-Received: by 2002:adf:f446:: with SMTP id f6mr4206493wrp.361.1627664118110;
+ Fri, 30 Jul 2021 09:55:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729135137.336097792@linuxfoundation.org>
+References: <20210730134552.853350-1-bert@biot.com> <20210730134552.853350-5-bert@biot.com>
+ <CAK8P3a3OuJ3pMSdEA4Rt3aWvvuX2+_Bg5x7-kZ1++fvvJvgGxA@mail.gmail.com> <d5498cc1-f700-998f-4e98-918081f2ac66@phrozen.org>
+In-Reply-To: <d5498cc1-f700-998f-4e98-918081f2ac66@phrozen.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 30 Jul 2021 18:55:02 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1c9bVjACjAN=2d+XiBn+yWgHHs9CEUmik7U61+3MzFhw@mail.gmail.com>
+Message-ID: <CAK8P3a1c9bVjACjAN=2d+XiBn+yWgHHs9CEUmik7U61+3MzFhw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] ARM: Add basic support for EcoNet EN7523 SoC
+To:     John Crispin <john@phrozen.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Bert Vermeulen <bert@biot.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Mike Rapoport <rppt@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Djm3HiGtPborGwABFKLa69C29V921SpSOe07xLTEUvN1ltcib6i
+ oU/7+2bli17JFsiITTU2UsrQHCJmRtJnoY+9zlZktzDif2QGD2dXiaFyoWQmdkMc4Yn9dvz
+ qq63H6S93Jzyzu4jS+tuYMPvIOpvPsrkTlP1ul+Z4mbsqZFt0YYJs53i4gPmF95zUdLdOsO
+ Oz61d1ljFEleqlOSPbCNg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gKgZSZRph+M=:9190HjctsZ8ZsfU/3fz5Zy
+ XcLcDmqmyjFh8xMVT/kyrd4nwiYHOx8vPve6q0MleNDzdMM3zW8jH6qQDS/Zhvk5/P90B717m
+ 8kFR9YakEvKAdj3dgaYyC9mdwjVNYlfPa4fshumIOzV9Ng5huI/M+TEs7HOq5slDWgVfxdwK8
+ vXpsWTkOke/BxCuYubNJlk06DKhovUgZ0Oa27GP2Z8cbPTUd44le8YRnh8UiHJwKINUZYS/Dy
+ 3qNeLeELScI8Mgxao9CWL3sQTTzwDxHrwcqvy/zWCCHEtu/GmzxGEZj2FLE17uD0s2TuPVkM/
+ M0Ammy4P3/4+zavBbnlh2+pJ6p+TUCWLq+AWUH7djVJJPFGzQVgnV3aumJB8M2vzmaSUgl3nQ
+ WZAz9N6OEvs7Mx9rZ9M7awuPRSsyvLf4PzKKjalNIqjEV1OlsRFWRCLZSwgaH37uQnExogVfI
+ +awAMCrZWXtldPs1yvMOXj5Vf+W+K42oLvAUibLTTxBqP5CDrau96Z/r0N2tDld244CP1NAq1
+ 4Qnksqd3n9GwzDid+vUU1OhjFnyN4SG88yZ1kz4Q5dvC/hWbrmGKBJbm3j7EJ2Mdm89HUcGdP
+ 7Y4X+TUEstGvKNz/xu1Qx16PS+72YrqzoWedbSEAAhL1hOB15Iy5tQxLCAqqSdU4CnldljMT1
+ Z8ezGMN7kEcA7PWFA1Z9Vha9m0KP2AF8t0Jlgy7pb55J7DoLVbHNuZA2CnaS1fyOBeGsdNH0A
+ i5/ZyrWprd6QxAxQpvAGf6GKoySxNQiKN5VrJQ7VqCFvW9yA5w2pbmCGu00eBzPDxh4eaRSNR
+ NVd9PswvNDIe8FKva1HPGIoociPuFQmH3wN47wvm6WSAT18B7Gl5bEahKAoRSIXceWA1Yb80k
+ Ex++Yo6sRmjecHpjyFpxpBXefdBwXsVemgc7LICKM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:54:31PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.7 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.7-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Fri, Jul 30, 2021 at 5:16 PM John Crispin <john@phrozen.org> wrote:
+> On 30.07.21 16:48, Arnd Bergmann wrote:
+> > Given how closely related this probably is to MT7623/MT7622, should this
+> > perhaps just be part of arch/arm/mach-mediatek? According to
+> > https://wikidevi.wi-cat.ru/MediaTek#xPON, the older (mips based) MT752x
+> > chips are apparently just rebranded to EN752x after the business unit
+> > was spun off, but I guess they are still in the same family.
+>
+> Hi,
+>
+> ECNT (what was once known as trendchip) is now a subsidary of MTK (and
+> not a BU if I am understanding it correctly).
+>
+> the EN7523 is rather similar to the MT7622 for some parts, other parts
+> (spi, flash, wdt, gpio, .. drivers all needed to be rewritten and will
+> be part of the next series).
+>
+> the older MIPS silicon shares almost no IP with the current ARM silicon.
 
-Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
-s390x, x86_64), and boot tested x86_64. No regressions noted.
+Ah, so I guess the old Trendchip parts were separately developed separately
+from the Ralink parts before the original acquisition, and then Ralink/Mediatek
+combined the two product lines before spinning off the dsl products into
+a new subsidiary.
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+> not really my call to decide which folder this should live in. it seemed
+> natural to just give it its own folder, as ECNT is not a BU of MTK.
+>
+> we can change that however if required.
 
+My preference would be to have a common directory for both,
+but I'm not going to require that. From the kernel perspective the
+main question is actually not who makes the parts but who is going
+to maintain the code.
+
+Matthias is doing a good job taking care of the Mediatek parts,
+and he's familiar with the arm-soc process. If there is enough overlap
+between the Mediatek and EcoNet devices that we would expect
+either conflicts between binding/driver patches, or that you would want
+each other to review the patches for related parts, then it would
+make most sense to have a common directory and maintainer
+entry for both, with all patches going through the same git tree.
+
+It would also be nice to have someone listed as second maintainer
+for mediatek, since Matthias is currently the only one listed there.
+(Doesn't have to be you, I don't mean to drag you into taking up
+more work if you don't want to).
+
+Please discuss this between the three of you (Bert, John and
+Matthias), and let me know what you think works best for all of
+you.
+
+       Arnd
