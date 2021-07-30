@@ -2,144 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462683DC0C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA483DC0D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhG3WGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:06:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56580 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232564AbhG3WGO (ORCPT
+        id S232741AbhG3WPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhG3WO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:06:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627682768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o4BBOvgzxNUCJGeElx/7CJIgRVcb9Llih1duOoDbR4M=;
-        b=EpYZVlmqqNcXKXJNz2llflEf1iG8xXx19BsL4CDcGPFU1SuC/Mk/vFzxAjjZmvNzzO5D5A
-        K6s7YSc97hjlUQHP6j0sJGpIDa0wCrekME7o0ojcSwDIkYHUEYmpz33a7PxD28uestydSu
-        HTNg/QyMjpYtUhBAmhdIvWYGShidfOc=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-LNfuX7e3PdaAmx13p2mnWQ-1; Fri, 30 Jul 2021 18:06:07 -0400
-X-MC-Unique: LNfuX7e3PdaAmx13p2mnWQ-1
-Received: by mail-qk1-f199.google.com with SMTP id p14-20020a05620a22eeb02903b94aaa0909so6538430qki.15
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:06:07 -0700 (PDT)
+        Fri, 30 Jul 2021 18:14:58 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68334C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:14:53 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id t3so10629969plg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vddn+vvtKgOVqzqDSz65GCCZWuHGFXaCgkycC5H7nuc=;
+        b=CiiI2ggcFke2Cr1DprT/sGjOE+M7Pnh/YovUHL38sLnQfa3VHnPEYmbKc1Q/XVJJj6
+         /GWBpssQk3TAKFZV6gK2nUjZ3tUNYiZGrN4poHwQFadaDARw8sszZk8vdQuvgzS+tKC2
+         2wVnjUY/N2dHnrSNXDFaYHLTomommF54LseqJzPdlmfmVaFbVLXqJeJGaAqab4WUQWKX
+         yMnCafHV8vOmYwsMZRQR/hRanbpxsJp15hOch+8SIzwEus9nBdhl44DZjbYY606UucQw
+         PBht786uWvmBszeKy8ykIOJwvq3PTe6iMUaPn7CVYcwKPtOiv4masIJA/g22ALVtWkmS
+         4c6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=o4BBOvgzxNUCJGeElx/7CJIgRVcb9Llih1duOoDbR4M=;
-        b=pp9+B3ZuwGQJSUlKUyT0maLwjAeoY22K6syJD2mouAUy2yvE38fuKwe1AYgUM8b0hZ
-         j9rnGrEUa3f8YO+9mlim9kwHjXonUzgxIb7wSl3spGagZVfLI5WJArvkKczQGntvNSyl
-         QmktyUwG9MqNamtohQphAp0eh6B/83o60uf6htJz0ZvpwdpO77K3WFgJy0mq8ZDPgTvx
-         VrDh3t+Hl/5Tg05tpfYp+JFFMratZLP0hKey+YQvpm4OG9ZZxnLKYS0d1G8YL9XIIRTs
-         ncLejSqTGoHE5fF8FQG6930Th0mN2uN6RAwBauXGcRgddwWwgG2zT1+L0letC9c2dLbH
-         v0UA==
-X-Gm-Message-State: AOAM5310X1ed8I0kw2UeloguuKWmXpjiZIp7usRKP75c6AQGnIXTlrLh
-        QH466PcN5wfS/yQoSAvSphrJPz2Eppr5rAUs4ixDzENaOI8YqQ1ZBC/oFDE66X3AN8mDCc0fn6q
-        eZB8x8bE+mvznFdLo3+aAa/sY9cLEkKRLlDK/VL0S5O7ZwhYl6iNDD0VekU43ptGy5O1GpKK9Uw
-        ==
-X-Received: by 2002:a0c:df09:: with SMTP id g9mr5152077qvl.30.1627682766772;
-        Fri, 30 Jul 2021 15:06:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz8B8Fu0lZQSprSiVyqxCrIMRlql3zmCcV7iN3gkLx6KiU458PV2fSBpow9iSveEnl956h6FQ==
-X-Received: by 2002:a0c:df09:: with SMTP id g9mr5152051qvl.30.1627682766549;
-        Fri, 30 Jul 2021 15:06:06 -0700 (PDT)
-Received: from t490s.. (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id d16sm1154974qtj.69.2021.07.30.15.06.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vddn+vvtKgOVqzqDSz65GCCZWuHGFXaCgkycC5H7nuc=;
+        b=V715V+MosUGPfrIdv25oKvdxDvmk19WQWkYqCySKMuGMZf5BkIZkTDUu6wrRExaOPy
+         d18kSiAtCQFKYXmfPk+l6RfY0txz+NPL4Fqx5Ni2EL1UQzlRuV7FKD1/BiMP8PZZ+oVK
+         4XvTupkvPXH1FN7ULYPKW93TApOg5NEc/cbM/LZ7nZCoMTG/WTUvNs3ixcwArBUVo2Dn
+         nbbFY5YvVRhh1uf443GHtsrN8ItU7ENldpqA0bdf+DMxWVyeTUeYxR3sBAZc59l9ux7G
+         0ZaFe/OPu79XM/jYlNi/Ki1JHcRZNrw2gq1nIRnIROr4xgJbEmxDIECjmR96nscRKCEY
+         JwEQ==
+X-Gm-Message-State: AOAM533flsd1r571d+xZkQ7QiG17Rzk5GvixeCABRRtd0OhFw8znz3l9
+        DlKdc3OWOvj95+KpQsUa+FIOng==
+X-Google-Smtp-Source: ABdhPJyZ5+BXJu7Tm6hcHq5Ca+eHHgIjoij+V2bh6ieawtkrN8emuis0lJHS2P1caSnA+hF1wWsBOA==
+X-Received: by 2002:a63:1359:: with SMTP id 25mr2255674pgt.79.1627683292597;
+        Fri, 30 Jul 2021 15:14:52 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id i25sm3464475pfo.20.2021.07.30.15.14.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 15:06:06 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, peterx@redhat.com,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH v3 7/7] KVM: X86: Optimize zapping rmap
-Date:   Fri, 30 Jul 2021 18:06:05 -0400
-Message-Id: <20210730220605.26377-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210730220455.26054-1-peterx@redhat.com>
-References: <20210730220455.26054-1-peterx@redhat.com>
+        Fri, 30 Jul 2021 15:14:51 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 22:14:48 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Edmondson <david.edmondson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        David Matlack <dmatlack@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v3 2/3] KVM: x86: On emulation failure, convey the exit
+ reason, etc. to userspace
+Message-ID: <YQR52JRv8jgj+Dv8@google.com>
+References: <20210729133931.1129696-1-david.edmondson@oracle.com>
+ <20210729133931.1129696-3-david.edmondson@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729133931.1129696-3-david.edmondson@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using rmap_get_first() and rmap_remove() for zapping a huge rmap list could be
-slow.  The easy way is to travers the rmap list, collecting the a/d bits and
-free the slots along the way.
+On Thu, Jul 29, 2021, David Edmondson wrote:
+> Should instruction emulation fail, include the VM exit reason, etc. in
+> the emulation_failure data passed to userspace, in order that the VMM
+> can report it as a debugging aid when describing the failure.
+> 
+> Suggested-by: Joao Martins <joao.m.martins@oracle.com>
+> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  5 ++++
+>  arch/x86/kvm/vmx/vmx.c          |  5 +---
+>  arch/x86/kvm/x86.c              | 53 ++++++++++++++++++++++++++-------
+>  include/uapi/linux/kvm.h        |  7 +++++
+>  4 files changed, 56 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index dfb902930cdc..17da43c1aa67 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1630,6 +1630,11 @@ extern u64 kvm_mce_cap_supported;
+>  int kvm_emulate_instruction(struct kvm_vcpu *vcpu, int emulation_type);
+>  int kvm_emulate_instruction_from_buffer(struct kvm_vcpu *vcpu,
+>  					void *insn, int insn_len);
+> +void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu,
+> +					bool instruction_bytes,
+> +					void *data, unsigned int ndata);
+> +void kvm_prepare_emulation_failure_exit_with_reason(struct kvm_vcpu *vcpu,
+> +						    bool instruction_bytes);
+>  
+>  void kvm_enable_efer_bits(u64);
+>  bool kvm_valid_efer(struct kvm_vcpu *vcpu, u64 efer);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index fefdecb0ff3d..a8d303c7c099 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -5367,10 +5367,7 @@ static int handle_invalid_guest_state(struct kvm_vcpu *vcpu)
+>  
+>  		if (vmx->emulation_required && !vmx->rmode.vm86_active &&
+>  		    vcpu->arch.exception.pending) {
+> -			vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+> -			vcpu->run->internal.suberror =
+> -						KVM_INTERNAL_ERROR_EMULATION;
+> -			vcpu->run->internal.ndata = 0;
+> +			kvm_prepare_emulation_failure_exit_with_reason(vcpu, false);
+>  			return 0;
+>  		}
+>  
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index a4fd10604f72..a97bacd8922f 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -7456,7 +7456,9 @@ void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc_eip)
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_inject_realmode_interrupt);
+>  
+> -static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+> +void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu,
+> +					bool instruction_bytes,
+> +					void *data, unsigned int ndata)
 
-Provide a pte_list_destroy() and do exactly that.
+'data' should be a 'u64 *', and 'ndata' should be a 'u8' that is actual ndata as
+opposed to the size.  The obvious alternative would be to rename ndata to size,
+but IMO that's unnecessarily complex, it's much easier to force the caller to work
+with u64s.  That also reduces the probablity of KVM mangling data[] by dumping
+unrelated fields into a single data[] entry, or by leaving stale chunks (if the
+incoming data is not a multiple of 8 bytes).
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c | 41 +++++++++++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 12 deletions(-)
+>  {
+>  	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
+>  	u32 insn_size = ctxt->fetch.end - ctxt->fetch.data;
+> @@ -7464,10 +7466,10 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+>  
+>  	run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+>  	run->emulation_failure.suberror = KVM_INTERNAL_ERROR_EMULATION;
+> -	run->emulation_failure.ndata = 0;
+> +	run->emulation_failure.ndata = 1; /* Always include the flags. */
+>  	run->emulation_failure.flags = 0;
+>  
+> -	if (insn_size) {
+> +	if (instruction_bytes && insn_size) {
+>  		run->emulation_failure.ndata = 3;
+>  		run->emulation_failure.flags |=
+>  			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
+> @@ -7477,7 +7479,42 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+>  		memcpy(run->emulation_failure.insn_bytes,
+>  		       ctxt->fetch.data, insn_size);
+>  	}
+> +
+> +	ndata = min((size_t)ndata, sizeof(run->internal.data) -
+> +		    run->emulation_failure.ndata * sizeof(u64));
+> +	if (ndata) {
+> +		unsigned int offset =
+> +			offsetof(struct kvm_run, emulation_failure.flags) +
+> +			run->emulation_failure.ndata * sizeof(u64);
+> +
+> +		memcpy((void *)run + offset, data, ndata);
+> +		run->emulation_failure.ndata += ndata / sizeof(u64);
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_prepare_emulation_failure_exit);
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 111c37141dbe..9b2616760e23 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1027,6 +1027,34 @@ unsigned int pte_list_count(struct kvm_rmap_head *rmap_head)
- 	return count;
- }
- 
-+/* Return true if rmap existed, false otherwise */
-+static bool pte_list_destroy(struct kvm_rmap_head *rmap_head)
-+{
-+	struct pte_list_desc *desc, *next;
-+	int i;
-+
-+	if (!rmap_head->val)
-+		return false;
-+
-+	if (!(rmap_head->val & 1)) {
-+		mmu_spte_clear_track_bits((u64 *)rmap_head->val);
-+		goto out;
-+	}
-+
-+	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
-+
-+	for (; desc; desc = next) {
-+		for (i = 0; i < desc->spte_count; i++)
-+			mmu_spte_clear_track_bits(desc->sptes[i]);
-+		next = desc->more;
-+		mmu_free_pte_list_desc(desc);
-+	}
-+out:
-+	/* rmap_head is meaningless now, remember to reset it */
-+	rmap_head->val = 0;
-+	return true;
-+}
-+
- static struct kvm_rmap_head *__gfn_to_rmap(gfn_t gfn, int level,
- 					   const struct kvm_memory_slot *slot)
- {
-@@ -1418,18 +1446,7 @@ static bool rmap_write_protect(struct kvm_vcpu *vcpu, u64 gfn)
- static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 			  const struct kvm_memory_slot *slot)
- {
--	u64 *sptep;
--	struct rmap_iterator iter;
--	bool flush = false;
--
--	while ((sptep = rmap_get_first(rmap_head, &iter))) {
--		rmap_printk("spte %p %llx.\n", sptep, *sptep);
--
--		pte_list_remove(rmap_head, sptep);
--		flush = true;
--	}
--
--	return flush;
-+	return pte_list_destroy(rmap_head);
- }
- 
- static bool kvm_unmap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
--- 
-2.31.1
+NAK on exporting this particular helper, it consumes vcpu->arch.emulate_ctxt,
+which ideally wouldn't even be visible to vendor code (stupid SVM erratum).  The
+emulation context will rarely, if ever, be valid if this is called from vendor code.
 
+The SGX call is effectively guarded by instruction_bytes=false, but that's a
+messy approach as the handle_emulation_failure() patch is the _only_ case where
+emulate_ctxt can be valid.
+
+> +void kvm_prepare_emulation_failure_exit_with_reason(struct kvm_vcpu *vcpu,
+> +						    bool instruction_bytes)
+> +{
+> +	struct {
+> +		__u64 exit_reason;
+
+As mentioned in the prior patch, exit_reason is probably best kept to a u32 at
+this time.
+
+> +		__u64 exit_info1;
+> +		__u64 exit_info2;
+> +		__u32 intr_info;
+> +		__u32 error_code;
+> +	} exit_reason;
+
+Oooh, you're dumping all the fields in kvm_run.  That took me forever to realize
+because the struct is named "exit_reason".  Unless there's a naming conflict,
+'data' would be the simplest, and if that's already taken, maybe 'info'?
+
+I'm also not sure an anonymous struct is going to be the easiest to maintain.
+I do like that the fields all have names, but on the other hand the data should
+be padded so that each field is in its own data[] entry when dumped to userspace.
+IMO, the padding complexity isn't worth the naming niceness since this code
+doesn't actually care about what each field contains.
+
+> +
+> +	static_call(kvm_x86_get_exit_info)(vcpu,
+> +					   &exit_reason.exit_reason,
+> +					   &exit_reason.exit_info1,
+> +					   &exit_reason.exit_info2,
+> +					   &exit_reason.intr_info,
+> +					   &exit_reason.error_code);
+> +
+> +	kvm_prepare_emulation_failure_exit(vcpu, instruction_bytes,
+> +					   &exit_reason, sizeof(exit_reason));
+
+Retrieiving the exit reason and info should probably be in the inner helper, the
+only case where the info will be stale is the VMX !unrestricted_guest
+handle_invalid_guest_state() path, but even then I think the last VM-Exit info
+would be interesting/relevant.  That should allow for a cleaner API too.
+
+This is what I came up with after a fair bit of massaging.  The get_exit_info()
+call is beyond gross, but I still think I like it more than a struct?  A
+build-time assertion that the struct size is a multiple of 8 would allay my
+concerns over leaking stack state to userspace, so I'm not totally opposed to it.
+
+	struct {
+		u32 exit_reason;
+		u32 pad1;
+		u64 info1;
+		u64 info2;
+		u32 intr_info;
+		u32 pad2;
+		u32 error_code;
+		u32 pad3;
+	} info;
+	u64 ninfo = sizeof(info) / sizeof(u64);
+
+	BUILD_BUG_ON(sizeof(info) % sizeof(u64));
+
+	/*
+	 * Zero the whole struct used to retrieve the exit info to ensure the
+	 * padding does not leak stack data to userspace.
+	 */
+	memset(&info, 0, sizeof(info));
+
+	static_call(kvm_x86_get_exit_info)(vcpu, &info.exit_reason,
+					   &info.info1, &info.info2,
+					   &info.intr_info, &info.error_code);
+
+
+
+void __kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, u64 *data,
+					  u8 ndata);
+void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu);
+
+static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, u64 *data,
+					   u8 ndata, u8 *insn_bytes, u8 insn_size)
+{
+	struct kvm_run *run = vcpu->run;
+	u8 ndata_start;
+	u64 info[5];
+
+	/*
+	 * Zero the whole array used to retrieve the exit info, casting to u32
+	 * for select entries will leave some chunks uninitialized.
+	 */
+	memset(&info, 0, sizeof(info));
+
+	static_call(kvm_x86_get_exit_info)(vcpu, (u32 *)&info[0], &info[1],
+					   &info[2], (u32 *)&info[3],
+					   (u32 *)&info[4]);
+
+	run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+	run->emulation_failure.suberror = KVM_INTERNAL_ERROR_EMULATION;
+
+	/*
+	 * There's currently space for 13 entries, but 5 are used for the exit
+	 * reason and info.  Restrict to 4 to reduce the maintenance burden
+	 * when expanding kvm_run.emulation_failure in the future.
+	 */
+	if (WARN_ON_ONCE(ndata > 4))
+		ndata = 4;
+
+	if (insn_size) {
+		ndata_start = 3;
+		run->emulation_failure.flags =
+			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
+		run->emulation_failure.insn_size = insn_size;
+		memset(run->emulation_failure.insn_bytes, 0x90,
+		       sizeof(run->emulation_failure.insn_bytes));
+		memcpy(run->emulation_failure.insn_bytes, insn_bytes, insn_size);
+	} else {
+		/* Always include the flags as a 'data' entry. */
+		ndata_start = 1;
+		run->emulation_failure.flags = 0;
+	}
+
+	memcpy(&run->internal.data[ndata_start], info, ARRAY_SIZE(info));
+	memcpy(&run->internal.data[ndata_start + ARRAY_SIZE(info)], data, ndata);
+}
+
+static void prepare_emulation_ctxt_failure_exit(struct kvm_vcpu *vcpu)
+{
+	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
+
+	prepare_emulation_failure_exit(vcpu, NULL, 0, ctxt->fetch.data,
+				       ctxt->fetch.end - ctxt->fetch.data);
+}
+
+void __kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, u64 *data,
+					  u8 ndata)
+{
+	prepare_emulation_failure_exit(vcpu, data, ndata, NULL, 0);
+}
+EXPORT_SYMBOL_GPL(__kvm_prepare_emulation_failure_exit);
+
+void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+{
+	__kvm_prepare_emulation_failure_exit(vcpu, NULL, 0);
+}
+EXPORT_SYMBOL_GPL(kvm_prepare_emulation_failure_exit);
