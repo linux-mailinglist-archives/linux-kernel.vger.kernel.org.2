@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DC13DBDBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B013DBDC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhG3RcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 13:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
+        id S230371AbhG3RdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 13:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbhG3RcS (ORCPT
+        with ESMTP id S230251AbhG3RdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 13:32:18 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4614EC0613CF;
-        Fri, 30 Jul 2021 10:32:13 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id m13so12339457iol.7;
-        Fri, 30 Jul 2021 10:32:13 -0700 (PDT)
+        Fri, 30 Jul 2021 13:33:09 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8604C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:33:04 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id n15so4278956uao.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:33:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=B8zL+1qEXUiyhytb1znuh6gn0RRcTrCNxC66xqLEJ2M=;
-        b=XPp6ZGO91Rb7e90Ovm8SWrrU4CdL9lQZ/5cZWVw6TXHCt5dwQ71FDZFH1oZYbn557g
-         obTqqr4Kx7ReoyX7lZAxPdTp7YZEBXcHJND+JX3rxG9knyEL85L2UJr8pNvPmR2NFXVz
-         VYiW5yKFNZee9HCT2hKXkXX669jimeI0ganqZdEz649nH70wCQYLv2pvhgravJXFnlfD
-         ZbUj7NFmQQwKE/myDhnSrwauThxqb07/a86C/9ixMlIZy9g4m9ndcsxj4tMq5GqirJu6
-         KqHqFmagahVRc6Xot69XUs9WpZZqWnoTpaPdkzbfy9DxsAgyLQidumdhLkIs8vh0jaHb
-         ge2Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JaBel+Wk+Pmj/m/QWG3pSV0rzgtGPwsESburA6QnpC0=;
+        b=FhUt38mUtFIiLDdQIxIQoXNxNSSACz3P74Pvf9/7tfNd8lCP3n5L4F56oUZaI/XE5V
+         VcqKCElVfJuA/8oM6UGQK6sz7nMLW0t2jyS8v2hTI9ATj9QJ1Mm5j0IdoPtG8WGUTHri
+         bHCYKViNYMOvw9g/VW7ic19rZqIkUI4xxqyM0rO8XMhuczGIv7VRf2mcRAgVM7P9Gso2
+         OUkF/iq1VjVvWMFYpIS5oktLhycz5Jh6/HVhTj23eOvlu1NziMVqzv//yRtE05spLPIr
+         btZhS+eZkiePZdnRCNd74CRuy5GcuaHwzmLrhulokA1WpsDAY1yVDhkurmc+Nt7dKDHA
+         Z7yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=B8zL+1qEXUiyhytb1znuh6gn0RRcTrCNxC66xqLEJ2M=;
-        b=Mo2AKvckU19nd5UT+O8W4u8YURmIkgQ5OCTNwCduB0QHVPnA265/mKBlaYvzHed0Bb
-         amcA4z3V3CTw1jMb3V0KMPbo2M3qs5grB2YFxnJRsszeZ1t0pziJEyMDz3soW4v1Jcu0
-         oxz1dECE56/WfT76oP/Ynd49kjuPjPItT26Bcfy8evaHDBiRHIyfVpWBefAfmXq6NhQ0
-         9TlaPoenVdRR5G462FDKdQYeEYNnZzZGOfLw1clsOlo3tlu8T1cALl96H6NCY/k+i/Gl
-         j5WhSlBn9ujvRW5RhnorwxFV+UuL8/WjYxW5AtoVthxin9kpNgEonipGRZhkJjmGsZGp
-         JwcA==
-X-Gm-Message-State: AOAM533buONkHDZ9o/6uPLAKwkkPm7R10YetvGk0Sa2kGOC0luFuzGD+
-        zbFbekxjld7kfZuscRA78wg=
-X-Google-Smtp-Source: ABdhPJySqKOIiujFAu9fj7/f5VnXJ3qIZVovsQHfHWytr2kYzmNRDmtj8MyJLQFiOujKYaEgo3l4hA==
-X-Received: by 2002:a6b:4f16:: with SMTP id d22mr880154iob.15.1627666332729;
-        Fri, 30 Jul 2021 10:32:12 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id l12sm1142444ilg.2.2021.07.30.10.32.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 10:32:12 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 1/2] net: dsa: tag_mtk: skip address learning on transmit to standalone ports
-Date:   Sat, 31 Jul 2021 01:32:03 +0800
-Message-Id: <20210730173203.518307-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210730162403.p2dnwvwwgsxttomg@skbuf>
-References: <20210728175327.1150120-1-dqfext@gmail.com> <20210728175327.1150120-2-dqfext@gmail.com> <20210728183705.4gea64qlbe64kkpl@skbuf> <20210730162403.p2dnwvwwgsxttomg@skbuf>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JaBel+Wk+Pmj/m/QWG3pSV0rzgtGPwsESburA6QnpC0=;
+        b=LDmWb+8SHM5xLI/95N4ctgWgWpkOpigVbXohRRRnlnQ7sLkBok2UY0BbZaGDdfbafh
+         BsPOItUI/+M15fBLp3C/zKokKbjNcLdT77dQAxmh/Nj18nxeO8yOMuqhABmP59kLtqcr
+         4QridVu6B23htwGAq8TKq3O6fJxsPEyofgz4ePsWay+q7iijeXbr5XDnIFBwp91avy7G
+         eN8ThHfu+k9vHEa9dJhzHlHXK73MZtUyPISB4QgHewXOx70pu6JJwGXqeBdO4uRkQH7V
+         QTQNBspiu1DA+JGEwV3Gy5omGrt1bHKXG48vQ+yW44r4q9hHW26iR4619CL/9u7HWe7s
+         hD9g==
+X-Gm-Message-State: AOAM532Q/BKLkIg9z6gw5zBTfcsb9I72oQRPa16CRRhbmJYr8JuID87C
+        r74zZyZeNdZ34bZy1sZzgDzBpXRDRH1yR42F7jj5Sg==
+X-Google-Smtp-Source: ABdhPJw43II2PhFksB0jmNqxACJZWx9bpShJeIvnmuKr7qKhtUKe+219lDwvOwfyXr4EiYyBAsjydof5yY2K1WxqSb8=
+X-Received: by 2002:ab0:6392:: with SMTP id y18mr3251539uao.139.1627666384076;
+ Fri, 30 Jul 2021 10:33:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-9-semen.protsenko@linaro.org> <CAHp75VcugLnV6D8xhkMHuW-X6LCtHDDnghD2G+vqwYmRvFP9Nw@mail.gmail.com>
+ <8202e9f9-06f4-f1ba-4f30-e1a0c8340450@canonical.com>
+In-Reply-To: <8202e9f9-06f4-f1ba-4f30-e1a0c8340450@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Fri, 30 Jul 2021 20:32:52 +0300
+Message-ID: <CAPLW+4mB1NpswMDVThEiOgn0ce29xckV5ZHo=85+ia9d5=x-6A@mail.gmail.com>
+Subject: Re: [PATCH 08/12] MAINTAINERS: Cover Samsung clock YAML bindings
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 07:24:03PM +0300, Vladimir Oltean wrote:
-> Considering that you also have the option of setting
-> ds->assisted_learning_on_cpu_port = true and this will have less false
-> positives, what are the reasons why you did not choose that approach?
+On Fri, 30 Jul 2021 at 18:25, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 30/07/2021 17:06, Andy Shevchenko wrote:
+> > On Fri, Jul 30, 2021 at 5:50 PM Sam Protsenko
+> > <semen.protsenko@linaro.org> wrote:
+> >>
+> >> New device tree bindings are usually added in YAML format. Fix "SAMSUNG
+> >> SOC CLOCK DRIVERS" entry to cover both txt and yaml docs for Exynos
+> >> clock drivers.
+> >
+> > Fixes tag?
+>
+> No need because the pattern is correct at the moment. The patch does not
+> make sense on its own and should be squashed with the next one.
+>
 
-You're right. Hardware learning on CPU port does have some limitations.
+Nice catch. Will do in v2, thanks!
 
-I have been testing a multi CPU ports patch, and assisted learning has
-to be used, because FDB entries should be installed like multicast
-ones, which point to all CPU ports.
+>
+> Best regards,
+> Krzysztof
