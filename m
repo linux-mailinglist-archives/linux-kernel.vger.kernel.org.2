@@ -2,129 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2763DB299
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFEC3DB29C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236250AbhG3FKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 01:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhG3FJy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:09:54 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522B8C061765;
-        Thu, 29 Jul 2021 22:09:47 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id n1-20020a4ac7010000b0290262f3c22a63so2156405ooq.9;
-        Thu, 29 Jul 2021 22:09:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DtOXr89OzIUFPwE95nTmJSuToUjtwfHb2hL/EyTTeLc=;
-        b=XY33TRonS6iaFY857RRIQ5xAHb5O7L8Jrt4fQzW+qvvevuzod7Xg8is59dM5ETkBJ4
-         wYWWROpIyuB2L67wmNUMRY35h3FfSQeiVKCWaPWJcdc8/mvg4bF8W4iGiaGEvAvgKp0I
-         6GjooQqaU07rJv//dEwa75a8mjLFg/xo2ybK/5lUnMfeOGAfglml4Fa2I1tQjqwc5V3B
-         fUgF41r5dR96gDmnyiGArQGCFLH+dau1Dx3vHOZ4GZotNZXUDkKTs00VBtY6kKlTjavu
-         Pz37oaj2IsjpSq3R9Y2i6Nwddl/6b6nu9y1QxwqYsxv1l6wRSOQzzq5400YFKQZjbsu8
-         m4/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=DtOXr89OzIUFPwE95nTmJSuToUjtwfHb2hL/EyTTeLc=;
-        b=SJVW/Ejv3ai69Rq7D302F8uEeoGKPHfhn0dD3jPS+iY4KUuHyPH/54MuoV1rWxxpO9
-         Mvyc+kDQ2Oy9tCpr2OjKz6y3D65ybnqvtA9TgkZmgiBmFIzlYfe0FCnkMYN/OojCNn4g
-         oi0oTfmgDcWR+pNnkvkoTjKpycjIgeO9OVTW5Weox+rvgea5PIb7CkllK7EMiBLGgx3/
-         /RSKFbIelRbR44919wVP9ggFWmdHxjTQvQqW0SlLtwTeclp6RQH0QWbVpGorpNMApKip
-         p/7S8QG9BgRAqVvsbIWcqirctoOsmNT3rrZIESZD3gv3m0ptlB9i1bELGc7Jmc+AAPA8
-         ZVnA==
-X-Gm-Message-State: AOAM533+cAGXxbVgbdh3eUnWo/QI3LKGuJX78IzrckpujS0huE/WvSmt
-        jJPLPa6tXsTkXUNu/0oPZbI=
-X-Google-Smtp-Source: ABdhPJwfnmqbVIz/NnmIZ/LXSibJIG3tB+bMED54PtXcQRW60tZjj7o7wIbGMW91sxaKQT6whWsfFQ==
-X-Received: by 2002:a4a:7b4b:: with SMTP id l72mr473141ooc.9.1627621786751;
-        Thu, 29 Jul 2021 22:09:46 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q186sm127995oib.31.2021.07.29.22.09.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 22:09:46 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 29 Jul 2021 22:09:44 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Christine Zhu <Christine.Zhu@mediatek.com>
-Cc:     wim@linux-watchdog.org, robh+dt@kernel.org, matthias.bgg@gmail.com,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        seiya.wang@mediatek.com,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [v5,2/3] dt-bindings: reset: mt8195: add toprgu reset-controller
- head file
-Message-ID: <20210730050944.GA2111694@roeck-us.net>
-References: <20210628113730.26107-1-Christine.Zhu@mediatek.com>
- <20210628113730.26107-3-Christine.Zhu@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628113730.26107-3-Christine.Zhu@mediatek.com>
+        id S233624AbhG3FNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 01:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229696AbhG3FNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 01:13:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6E70E60C40;
+        Fri, 30 Jul 2021 05:13:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627621992;
+        bh=in0glC0/qJx3indA2Z7BJ09AIHm1buh7ievguXEF9Wk=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=qcB5noO7w76gKlSnjP3+DEjo82FfkD1MkAy3do7HyIxH96gbhtr1/WS49RSf8p/VP
+         Qrf6fy4JH0LlhCOyk42Hv2na1t+a6634jC8uqE4k797e8O+alFiVziW1/uET3SvyWS
+         OtX+/16r7eXiHfPOQENsKo8y9S1eI9K8OzWNy2l66t5Iy/aCDYzXPmT4FpMrSnVqc+
+         2t362nv6EHPqlMYRl4UA5WeCeM7rB0mztqokMb45ZRN1gdc/koiQyJ7KHu9C6g2xT3
+         0663h5lqnKwdjZ0unp+6ThOoQqoUyPZ+9a54UR7yCGCuuU74UcruhjEtMB2GD18be4
+         6XBH54a1xSqwQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5EFDA609E4;
+        Fri, 30 Jul 2021 05:13:12 +0000 (UTC)
+Subject: Re: [git pull] drm fixes for 5.14-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAPM=9twko1gCNTB3CPf7CAQqWFayMj=1fa3ZoEwwviDFhF48kQ@mail.gmail.com>
+References: <CAPM=9twko1gCNTB3CPf7CAQqWFayMj=1fa3ZoEwwviDFhF48kQ@mail.gmail.com>
+X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
+ <dri-devel.lists.freedesktop.org>
+X-PR-Tracked-Message-Id: <CAPM=9twko1gCNTB3CPf7CAQqWFayMj=1fa3ZoEwwviDFhF48kQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-07-30
+X-PR-Tracked-Commit-Id: d28e2568ac26fff351c846bf74ba6ca5dded733e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 764a5bc89b12b82c18ce7ca5d7c1b10dd748a440
+Message-Id: <162762199233.22958.3909758694757785317.pr-tracker-bot@kernel.org>
+Date:   Fri, 30 Jul 2021 05:13:12 +0000
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 07:37:30PM +0800, Christine Zhu wrote:
-> From: "Christine Zhu" <Christine.Zhu@mediatek.com>
-> 
-> Add toprgu reset-controller head file for MT8195 platform.
-> 
-> Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
-> ---
->  .../reset-controller/mt8195-resets.h          | 29 +++++++++++++++++++
+The pull request you sent on Fri, 30 Jul 2021 11:11:27 +1000:
 
-There is another patch pending which moves the mtk reset controller
-include files to another directory. See [1]. Maybe it would make
-sense to use the same directory for this file ?
+> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-07-30
 
-Thanks,
-Guenter
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/764a5bc89b12b82c18ce7ca5d7c1b10dd748a440
 
->  1 file changed, 29 insertions(+)
->  create mode 100644 include/dt-bindings/reset-controller/mt8195-resets.h
-> 
-> diff --git a/include/dt-bindings/reset-controller/mt8195-resets.h b/include/dt-bindings/reset-controller/mt8195-resets.h
-> new file mode 100644
-> index 000000000000..7ec27a64afc7
-> --- /dev/null
-> +++ b/include/dt-bindings/reset-controller/mt8195-resets.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Crystal Guo <crystal.guo@mediatek.com>
-> + */
-> +
-> +#ifndef _DT_BINDINGS_RESET_CONTROLLER_MT8195
-> +#define _DT_BINDINGS_RESET_CONTROLLER_MT8195
-> +
-> +#define MT8195_TOPRGU_CONN_MCU_SW_RST          0
-> +#define MT8195_TOPRGU_INFRA_GRST_SW_RST        1
-> +#define MT8195_TOPRGU_APU_SW_RST               2
-> +#define MT8195_TOPRGU_INFRA_AO_GRST_SW_RST     6
-> +#define MT8195_TOPRGU_MMSYS_SW_RST             7
-> +#define MT8195_TOPRGU_MFG_SW_RST               8
-> +#define MT8195_TOPRGU_VENC_SW_RST              9
-> +#define MT8195_TOPRGU_VDEC_SW_RST              10
-> +#define MT8195_TOPRGU_IMG_SW_RST               11
-> +#define MT8195_TOPRGU_APMIXEDSYS_SW_RST        13
-> +#define MT8195_TOPRGU_AUDIO_SW_RST             14
-> +#define MT8195_TOPRGU_CAMSYS_SW_RST            15
-> +#define MT8195_TOPRGU_EDPTX_SW_RST             16
-> +#define MT8195_TOPRGU_ADSPSYS_SW_RST           21
-> +#define MT8195_TOPRGU_DPTX_SW_RST              22
-> +#define MT8195_TOPRGU_SPMI_MST_SW_RST          23
-> +
-> +#define MT8195_TOPRGU_SW_RST_NUM               16
-> +
-> +#endif  /* _DT_BINDINGS_RESET_CONTROLLER_MT8195 */
+Thank you!
 
-[1] https://patchwork.kernel.org/project/linux-watchdog/patch/20210714121116.v2.1.I514d9aafff3a062f751b37d3fea7402f67595b86@changeid/
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
