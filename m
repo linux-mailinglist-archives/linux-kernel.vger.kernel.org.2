@@ -2,355 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6743DC10A
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54953DC107
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhG3W2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:28:21 -0400
-Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:57619 "EHLO
-        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231292AbhG3W2T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232376AbhG3W2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 30 Jul 2021 18:28:19 -0400
-Received: from MTA-13-3.privateemail.com (mta-13-1.privateemail.com [198.54.122.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id 98E228034D;
-        Fri, 30 Jul 2021 18:28:13 -0400 (EDT)
-Received: from mta-13.privateemail.com (localhost [127.0.0.1])
-        by mta-13.privateemail.com (Postfix) with ESMTP id 35D9D18002CF;
-        Fri, 30 Jul 2021 18:28:12 -0400 (EDT)
-Received: from hal-station.. (unknown [10.20.151.213])
-        by mta-13.privateemail.com (Postfix) with ESMTPA id 9451818002CD;
-        Fri, 30 Jul 2021 18:28:10 -0400 (EDT)
-From:   Hamza Mahfooz <someguy@effective-light.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Hamza Mahfooz <someguy@effective-light.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: [PATCH v2] KVM: const-ify all relevant uses of struct kvm_memory_slot
-Date:   Fri, 30 Jul 2021 18:27:03 -0400
-Message-Id: <20210730222704.61672-1-someguy@effective-light.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Received: from mail-io1-f42.google.com ([209.85.166.42]:46706 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229543AbhG3W2S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 18:28:18 -0400
+Received: by mail-io1-f42.google.com with SMTP id z7so12383289iog.13;
+        Fri, 30 Jul 2021 15:28:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=1SioxWYOB4GKQF75otjmPAgYQGJ4juMB4TymylBvulE=;
+        b=P0oOjp24LssnbVlPk3D5V1NeORXdoYw0NAbgnpFs3zBRQAUzC5OqCIUA5FEGXWfXSC
+         jtBE5lf9imS4oP7f6dBARdZ44IL1MaShg/6APgsop5KA7NdUYEpTQuNv61ePpXIZYp+/
+         wntmrXX1/lxxcK86eGdFAVbvdocNTWJcu0w6qcxPcPnu9YQqpf6GB70G35GBI6SsFQk7
+         dTHbtWz65RQsdcewEqMiMcy2bj5WU4425dZydAyhKc81XkwVTGOrfTBMP9SMtm+Uob9Y
+         yNksvrVoGsOxM/ZGkwUuIQPuvhujvZTYkRvGsgRjXkxh5klou8WIhW9tz18dXUug/70r
+         /uAQ==
+X-Gm-Message-State: AOAM530dv4Y0kUN7WRRr9UZJDnzVMhYrTnW3XcsEtTu3ZXNVe4MVM0g4
+        oB42/vJCkjV7z1WDgXD9IOPEcvF8xw==
+X-Google-Smtp-Source: ABdhPJw92Pxgc45lpYhnZL98mHP5QmwqnkzlX6tQ6SiGz6QcI3EsfiGGEi2BDOlTWCaMN4QVg4tTIA==
+X-Received: by 2002:a02:90cb:: with SMTP id c11mr3909371jag.53.1627684092766;
+        Fri, 30 Jul 2021 15:28:12 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id q1sm1887882ioi.42.2021.07.30.15.28.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 15:28:12 -0700 (PDT)
+Received: (nullmailer pid 3442792 invoked by uid 1000);
+        Fri, 30 Jul 2021 22:28:10 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Andy Teng <andy.teng@mediatek.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20210730120937.1435204-3-hsinyi@chromium.org>
+References: <20210730120937.1435204-1-hsinyi@chromium.org> <20210730120937.1435204-3-hsinyi@chromium.org>
+Subject: Re: [PATCH v2 3/3] dt-bindings: mediatek: convert pinctrl to yaml
+Date:   Fri, 30 Jul 2021 16:28:10 -0600
+Message-Id: <1627684090.548356.3442791.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As alluded to in commit f36f3f2846b5 ("KVM: add "new" argument to
-kvm_arch_commit_memory_region"), a bunch of other places where struct
-kvm_memory_slot is used, needs to be refactored to preserve the
-"const"ness of struct kvm_memory_slot across-the-board.
+On Fri, 30 Jul 2021 20:09:37 +0800, Hsin-Yi Wang wrote:
+> Convert mt65xx, mt6796, mt7622, mt8183 bindings to yaml.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+> v1->v2:
+> - fix comments in v1.
+> - fix mt7622 where groups is not required for conf node.
+> ---
+>  .../pinctrl/mediatek,mt65xx-pinctrl.yaml      | 206 ++++++++
+>  .../pinctrl/mediatek,mt6797-pinctrl.yaml      | 173 +++++++
+>  .../pinctrl/mediatek,mt7622-pinctrl.yaml      | 416 +++++++++++++++
+>  .../pinctrl/mediatek,mt8183-pinctrl.yaml      | 228 ++++++++
+>  .../bindings/pinctrl/pinctrl-mt65xx.txt       | 156 ------
+>  .../bindings/pinctrl/pinctrl-mt6797.txt       |  83 ---
+>  .../bindings/pinctrl/pinctrl-mt7622.txt       | 490 ------------------
+>  .../bindings/pinctrl/pinctrl-mt8183.txt       | 132 -----
+>  8 files changed, 1023 insertions(+), 861 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt65xx-pinctrl.yaml
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt6797-pinctrl.yaml
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt7622-pinctrl.yaml
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt6797.txt
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt7622.txt
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8183.txt
+> 
 
-Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
----
-v2: fix an issue regarding an incorrect start_level being passed to
-rmap_walk_init_level()
----
- arch/x86/include/asm/kvm_host.h |  4 +--
- arch/x86/kvm/mmu/mmu.c          | 58 ++++++++++++++++++---------------
- arch/x86/kvm/mmu/mmu_internal.h |  4 +--
- arch/x86/kvm/mmu/tdp_mmu.c      |  7 ++--
- arch/x86/kvm/mmu/tdp_mmu.h      |  6 ++--
- arch/x86/kvm/x86.c              |  7 ++--
- 6 files changed, 44 insertions(+), 42 deletions(-)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 974cbfb1eefe..a195e1c32018 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1536,12 +1536,12 @@ void kvm_mmu_uninit_vm(struct kvm *kvm);
- void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu);
- void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
- void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
--				      struct kvm_memory_slot *memslot,
-+				      const struct kvm_memory_slot *memslot,
- 				      int start_level);
- void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
- 				   const struct kvm_memory_slot *memslot);
- void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
--				   struct kvm_memory_slot *memslot);
-+				   const struct kvm_memory_slot *memslot);
- void kvm_mmu_zap_all(struct kvm *kvm);
- void kvm_mmu_invalidate_mmio_sptes(struct kvm *kvm, u64 gen);
- unsigned long kvm_mmu_calculate_default_mmu_pages(struct kvm *kvm);
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 845d114ae075..4c09de259309 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -784,7 +784,7 @@ static struct kvm_lpage_info *lpage_info_slot(gfn_t gfn,
- 	return &slot->arch.lpage_info[level - 2][idx];
- }
- 
--static void update_gfn_disallow_lpage_count(struct kvm_memory_slot *slot,
-+static void update_gfn_disallow_lpage_count(const struct kvm_memory_slot *slot,
- 					    gfn_t gfn, int count)
- {
- 	struct kvm_lpage_info *linfo;
-@@ -797,12 +797,12 @@ static void update_gfn_disallow_lpage_count(struct kvm_memory_slot *slot,
- 	}
- }
- 
--void kvm_mmu_gfn_disallow_lpage(struct kvm_memory_slot *slot, gfn_t gfn)
-+void kvm_mmu_gfn_disallow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn)
- {
- 	update_gfn_disallow_lpage_count(slot, gfn, 1);
- }
- 
--void kvm_mmu_gfn_allow_lpage(struct kvm_memory_slot *slot, gfn_t gfn)
-+void kvm_mmu_gfn_allow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn)
- {
- 	update_gfn_disallow_lpage_count(slot, gfn, -1);
- }
-@@ -989,7 +989,7 @@ static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
- }
- 
- static struct kvm_rmap_head *__gfn_to_rmap(gfn_t gfn, int level,
--					   struct kvm_memory_slot *slot)
-+					   const struct kvm_memory_slot *slot)
- {
- 	unsigned long idx;
- 
-@@ -1216,7 +1216,7 @@ static bool spte_wrprot_for_clear_dirty(u64 *sptep)
-  * Returns true iff any D or W bits were cleared.
-  */
- static bool __rmap_clear_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
--			       struct kvm_memory_slot *slot)
-+			       const struct kvm_memory_slot *slot)
- {
- 	u64 *sptep;
- 	struct rmap_iterator iter;
-@@ -1375,7 +1375,7 @@ static bool rmap_write_protect(struct kvm_vcpu *vcpu, u64 gfn)
- }
- 
- static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
--			  struct kvm_memory_slot *slot)
-+			  const struct kvm_memory_slot *slot)
- {
- 	u64 *sptep;
- 	struct rmap_iterator iter;
-@@ -1440,7 +1440,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 
- struct slot_rmap_walk_iterator {
- 	/* input fields. */
--	struct kvm_memory_slot *slot;
-+	const struct kvm_memory_slot *slot;
- 	gfn_t start_gfn;
- 	gfn_t end_gfn;
- 	int start_level;
-@@ -1467,16 +1467,20 @@ rmap_walk_init_level(struct slot_rmap_walk_iterator *iterator, int level)
- 
- static void
- slot_rmap_walk_init(struct slot_rmap_walk_iterator *iterator,
--		    struct kvm_memory_slot *slot, int start_level,
-+		    const struct kvm_memory_slot *slot, int start_level,
- 		    int end_level, gfn_t start_gfn, gfn_t end_gfn)
- {
--	iterator->slot = slot;
--	iterator->start_level = start_level;
--	iterator->end_level = end_level;
--	iterator->start_gfn = start_gfn;
--	iterator->end_gfn = end_gfn;
-+	struct slot_rmap_walk_iterator iter = {
-+		.slot = slot,
-+		.start_gfn = start_gfn,
-+		.end_gfn = end_gfn,
-+		.start_level = start_level,
-+		.end_level = end_level
-+	};
-+
-+	rmap_walk_init_level(&iter, start_level);
- 
--	rmap_walk_init_level(iterator, iterator->start_level);
-+	memcpy(iterator, &iter, sizeof(struct slot_rmap_walk_iterator));
- }
- 
- static bool slot_rmap_walk_okay(struct slot_rmap_walk_iterator *iterator)
-@@ -5274,12 +5278,13 @@ void kvm_configure_mmu(bool enable_tdp, int tdp_max_root_level,
- EXPORT_SYMBOL_GPL(kvm_configure_mmu);
- 
- /* The return value indicates if tlb flush on all vcpus is needed. */
--typedef bool (*slot_level_handler) (struct kvm *kvm, struct kvm_rmap_head *rmap_head,
--				    struct kvm_memory_slot *slot);
-+typedef bool (*slot_level_handler) (struct kvm *kvm,
-+				    struct kvm_rmap_head *rmap_head,
-+				    const struct kvm_memory_slot *slot);
- 
- /* The caller should hold mmu-lock before calling this function. */
- static __always_inline bool
--slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
-+slot_handle_level_range(struct kvm *kvm, const struct kvm_memory_slot *memslot,
- 			slot_level_handler fn, int start_level, int end_level,
- 			gfn_t start_gfn, gfn_t end_gfn, bool flush_on_yield,
- 			bool flush)
-@@ -5306,7 +5311,7 @@ slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
- }
- 
- static __always_inline bool
--slot_handle_level(struct kvm *kvm, struct kvm_memory_slot *memslot,
-+slot_handle_level(struct kvm *kvm, const struct kvm_memory_slot *memslot,
- 		  slot_level_handler fn, int start_level, int end_level,
- 		  bool flush_on_yield)
- {
-@@ -5317,7 +5322,7 @@ slot_handle_level(struct kvm *kvm, struct kvm_memory_slot *memslot,
- }
- 
- static __always_inline bool
--slot_handle_leaf(struct kvm *kvm, struct kvm_memory_slot *memslot,
-+slot_handle_leaf(struct kvm *kvm, const struct kvm_memory_slot *memslot,
- 		 slot_level_handler fn, bool flush_on_yield)
- {
- 	return slot_handle_level(kvm, memslot, fn, PG_LEVEL_4K,
-@@ -5576,7 +5581,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
- 				if (start >= end)
- 					continue;
- 
--				flush = slot_handle_level_range(kvm, memslot,
-+				flush = slot_handle_level_range(kvm,
-+						(const struct kvm_memory_slot *) memslot,
- 						kvm_zap_rmapp, PG_LEVEL_4K,
- 						KVM_MAX_HUGEPAGE_LEVEL, start,
- 						end - 1, true, flush);
-@@ -5604,13 +5610,13 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
- 
- static bool slot_rmap_write_protect(struct kvm *kvm,
- 				    struct kvm_rmap_head *rmap_head,
--				    struct kvm_memory_slot *slot)
-+				    const struct kvm_memory_slot *slot)
- {
- 	return __rmap_write_protect(kvm, rmap_head, false);
- }
- 
- void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
--				      struct kvm_memory_slot *memslot,
-+				      const struct kvm_memory_slot *memslot,
- 				      int start_level)
- {
- 	bool flush = false;
-@@ -5646,7 +5652,7 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
- 
- static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
- 					 struct kvm_rmap_head *rmap_head,
--					 struct kvm_memory_slot *slot)
-+					 const struct kvm_memory_slot *slot)
- {
- 	u64 *sptep;
- 	struct rmap_iterator iter;
-@@ -5685,10 +5691,8 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
- }
- 
- void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
--				   const struct kvm_memory_slot *memslot)
-+				   const struct kvm_memory_slot *slot)
- {
--	/* FIXME: const-ify all uses of struct kvm_memory_slot.  */
--	struct kvm_memory_slot *slot = (struct kvm_memory_slot *)memslot;
- 	bool flush = false;
- 
- 	if (kvm_memslots_have_rmaps(kvm)) {
-@@ -5724,7 +5728,7 @@ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
- }
- 
- void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
--				   struct kvm_memory_slot *memslot)
-+				   const struct kvm_memory_slot *memslot)
- {
- 	bool flush = false;
- 
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 35567293c1fd..ee4ad9c99219 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -124,8 +124,8 @@ static inline bool is_nx_huge_page_enabled(void)
- 
- int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync);
- 
--void kvm_mmu_gfn_disallow_lpage(struct kvm_memory_slot *slot, gfn_t gfn);
--void kvm_mmu_gfn_allow_lpage(struct kvm_memory_slot *slot, gfn_t gfn);
-+void kvm_mmu_gfn_disallow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn);
-+void kvm_mmu_gfn_allow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn);
- bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
- 				    struct kvm_memory_slot *slot, u64 gfn,
- 				    int min_level);
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 0853370bd811..5d8d69d56a81 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1242,8 +1242,8 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-  * only affect leaf SPTEs down to min_level.
-  * Returns true if an SPTE has been changed and the TLBs need to be flushed.
-  */
--bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm, struct kvm_memory_slot *slot,
--			     int min_level)
-+bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm,
-+			     const struct kvm_memory_slot *slot, int min_level)
- {
- 	struct kvm_mmu_page *root;
- 	bool spte_set = false;
-@@ -1313,7 +1313,8 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-  * each SPTE. Returns true if an SPTE has been changed and the TLBs need to
-  * be flushed.
-  */
--bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
-+bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
-+				  const struct kvm_memory_slot *slot)
- {
- 	struct kvm_mmu_page *root;
- 	bool spte_set = false;
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 1cae4485b3bc..49437dbb4804 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -61,10 +61,10 @@ bool kvm_tdp_mmu_age_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range);
- bool kvm_tdp_mmu_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
- bool kvm_tdp_mmu_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
- 
--bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm, struct kvm_memory_slot *slot,
--			     int min_level);
-+bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm,
-+			     const struct kvm_memory_slot *slot, int min_level);
- bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
--				  struct kvm_memory_slot *slot);
-+				  const struct kvm_memory_slot *slot);
- void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
- 				       struct kvm_memory_slot *slot,
- 				       gfn_t gfn, unsigned long mask,
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c6dc1b445231..970e95110175 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11473,7 +11473,7 @@ static void kvm_mmu_update_cpu_dirty_logging(struct kvm *kvm, bool enable)
- 
- static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
- 				     struct kvm_memory_slot *old,
--				     struct kvm_memory_slot *new,
-+				     const struct kvm_memory_slot *new,
- 				     enum kvm_mr_change change)
- {
- 	bool log_dirty_pages = new->flags & KVM_MEM_LOG_DIRTY_PAGES;
-@@ -11553,10 +11553,7 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
- 		kvm_mmu_change_mmu_pages(kvm,
- 				kvm_mmu_calculate_default_mmu_pages(kvm));
- 
--	/*
--	 * FIXME: const-ify all uses of struct kvm_memory_slot.
--	 */
--	kvm_mmu_slot_apply_flags(kvm, old, (struct kvm_memory_slot *) new, change);
-+	kvm_mmu_slot_apply_flags(kvm, old, new, change);
- 
- 	/* Free the arrays associated with the old memslot. */
- 	if (change == KVM_MR_MOVE)
--- 
-2.32.0
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.example.dts:21:18: fatal error: dt-bindings/pinctrl/mt8183-pinfunc.h: No such file or directory
+   21 |         #include <dt-bindings/pinctrl/mt8183-pinfunc.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1419: dt_binding_check] Error 2
+\ndoc reference errors (make refcheckdocs):
+Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
+Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/pinctrl/pinctrl-mt7622.txt
+MAINTAINERS: Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
+MAINTAINERS: Documentation/devicetree/bindings/pinctrl/pinctrl-mt7622.txt
+
+See https://patchwork.ozlabs.org/patch/1511632
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
