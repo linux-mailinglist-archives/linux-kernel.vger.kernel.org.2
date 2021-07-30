@@ -2,108 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D048D3DC162
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293FD3DC15E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233833AbhG3W7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
+        id S233461AbhG3W7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233602AbhG3W7u (ORCPT
+        with ESMTP id S229604AbhG3W7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:59:50 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7413AC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:44 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id f17-20020a170902ab91b029012c3bac8d81so8719298plr.23
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:44 -0700 (PDT)
+        Fri, 30 Jul 2021 18:59:47 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41711C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:42 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id u2so4559214plg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=Lbc7sqdkn0ZF7q/zL1zy+BZt85TGXNNC6j+dLXsHB30=;
-        b=ABuyA90o4Rfv0gzWABXk1bFOn0wAMNeb7lswrtyy4kTA8yKt04WtaVefJfFSfKWBd+
-         U/lNa9oIrhkWA883+nSUV6HbAUTFAmvDdD0/j7vmGvCO0/WoEv2vYAu6tJIx5xrVsVak
-         3gUSVJFJ6193JwCZeXc+CnLLNiVuNBMG5vP/WRUPMxHkR88+I/52GlVZIzjij1bWuOJS
-         +Ky/Svl/BLJQus7AX0lDBgKtHyojq49tQCDTXREOjxCSEXkNgiViRd3Ub0s+LBnwocAV
-         eiAfHXKreb3xeWqWI3dDZr+QuEV0RLUrPTuZ+SbIk4b/kJJ5v+TGGPVcVIawdvEOw9tD
-         +kXg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V2dvuvNFpryb1cvQLGlVrhhfsTfSnu/5+tUDbUkQolo=;
+        b=sCMXYE8BPVu/dKEp3RQsjKh5BuJC1zZZb4+9CntVolv0Jbrb/288cSPWlbgdYB6uV8
+         WJXTQDArwMcZuEtSPpFWbXRWRAWq6AvaG6OKGWySn3W8iDAsfRyVvtdb1/efkiAlUIUW
+         n7KgCTW1pAQ8LyKDcl2tVh/E5CWElNXrwCZmEevGnBD7Pn0mnmpbVXIjrhbcv4C5m963
+         eoeYNJGNPQUSRSipE7Kfd9amGgFWJIUqyeyILlgygBlypxHV+pfv0CgeLk7sG0mF4Lc/
+         MdIVR+f/eT+lmsmqc7z9fRROYhrxD8JPegsJJ+4ESDXsUCKfqNjW34r9okUBJARXwgH9
+         6rUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=Lbc7sqdkn0ZF7q/zL1zy+BZt85TGXNNC6j+dLXsHB30=;
-        b=s8X+y/IRjNGvMBnFRr9DYOCjuYtItg2jJtFjlf6J69hzK+hqYT2KQNxa+seBAiXBv6
-         1s8M1vHFjZZD3j3X33yRmjPbNID3pqGsXZoxDvyudi64WVEzcVpzqTCGAVYam6flBBIw
-         lodLTVM1QCXHK2IPlectUDeOgoSBuC4qh2nlLC603ED2KlnT1hrrOMJNiMMQzMpx/9XG
-         1DWzUGmJzi8/1P7LXW68As2i9uH1JvVY2twBbIJJ/NA0rXt2AgFuItibJdvQ549l8nej
-         QJwrWong4Nzdg/Y3a5PC3NlM5WZnErVIT3MGnPjIrVy4Ip8l36B0ghfl8R3Hhk5sesxA
-         DJow==
-X-Gm-Message-State: AOAM5301jCH1gT93MHzeHoUmuHqrSiIf4Tv+aUIZkJF3TF+Sp4u/X7xm
-        8PTIUwdZOJey3t7//J+lZmkgmDaaFqlk
-X-Google-Smtp-Source: ABdhPJwvSUjcF/nenM4qr4VcNEtPQB86OCURhK9iR4YwszYBEH9gvVxRbSJBpcXzw85ov8SxlvX8BiCdEDvA
-X-Received: from mihenry-linux-desktop.kir.corp.google.com ([2620:15c:29:204:a198:4c3e:b951:58e3])
- (user=mizhang job=sendgmr) by 2002:aa7:8148:0:b029:31b:10b4:f391 with SMTP id
- d8-20020aa781480000b029031b10b4f391mr4714934pfn.69.1627685984030; Fri, 30 Jul
- 2021 15:59:44 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V2dvuvNFpryb1cvQLGlVrhhfsTfSnu/5+tUDbUkQolo=;
+        b=QQ4jGiMea69g0j6uSoFkDAB4NL9/rkVgzEBPFh5DQU5STn76HX8N3GsJ6Ulgce6jmJ
+         ndII3PB5ETNQAyoWS55PqHWsKLcx9KnoDy41ORUQG4+Sm6RGR2gWUDeYSYX1jf1Rzpo0
+         O4YOjTz2ZSoVX5IP3eg5v+cfpujsezcd2i6MB+Wu95x2i/b/gCgJrG29Tee1GHTyXoS4
+         Zg+yOUyoocyOCLdFGJBDjmOe/1O4sLNdyImVC1I/KGp4hAmjsDXFwI1xNOmU2TGtHJD6
+         mu0+gCsOTus6xSoW76CUowuEC6R2tc/WJITiFuoeNbfWTVeDsSs7ej1zIZ3iBbRCeOVS
+         ZxEg==
+X-Gm-Message-State: AOAM530Ne7Dkrc+DvTrfpuj4yxkXznuUv9cwZO+dxL0xtpRk8fpgBFIX
+        PA/uieKWkrdBeLEqxzIyhxJiyA==
+X-Google-Smtp-Source: ABdhPJy5fOXlF8mlpIqzL8jUb2C6BgbXxOZyyEYs4oEPgoSBaa6t7Y9gQXLYxESft75tpRgo3kepEw==
+X-Received: by 2002:a17:902:b713:b029:12b:b249:693f with SMTP id d19-20020a170902b713b029012bb249693fmr4511815pls.17.1627685981632;
+        Fri, 30 Jul 2021 15:59:41 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:200:160:995:7f22:dc59])
+        by smtp.gmail.com with ESMTPSA id a20sm3235150pjh.46.2021.07.30.15.59.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 15:59:40 -0700 (PDT)
 Date:   Fri, 30 Jul 2021 15:59:36 -0700
-Message-Id: <20210730225939.3852712-1-mizhang@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH v3 0/3] Add detailed page size stats in KVM stats
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="UTF-8"
+From:   Fangrui Song <maskray@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, Marco Elver <elver@google.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, clang-built-linux@googlegroups.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] vmlinux.lds.h: Handle clang's module.{c,d}tor sections
+Message-ID: <20210730225936.ce3hcjdg2sptvbh7@google.com>
+References: <20210730223815.1382706-1-nathan@kernel.org>
+ <CAKwvOdnJ9VMZfZrZprD6k0oWxVJVSNePUM7fbzFTJygXfO24Pw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnJ9VMZfZrZprD6k0oWxVJVSNePUM7fbzFTJygXfO24Pw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit basically adds detailed (large and regular) page size info to
-KVM stats and deprecate the old one: lpages.
+On 2021-07-30, Nick Desaulniers wrote:
+>On Fri, Jul 30, 2021 at 3:38 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>>
+>> A recent change in LLVM causes module_{c,d}tor sections to appear when
+>> CONFIG_K{A,C}SAN are enabled, which results in orphan section warnings
+>> because these are not handled anywhere:
+>>
+>> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_ctor) is being placed in '.text.asan.module_ctor'
+>> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_dtor) is being placed in '.text.asan.module_dtor'
+>> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.tsan.module_ctor) is being placed in '.text.tsan.module_ctor'
+>
+>^ .text.tsan.*
 
-To support legacy MMU and TDP mmu, we use atomic type for all page stats.
+I was wondering why the orphan section warning only arose recently.
+Now I see: the function asan.module_ctor has the SHF_GNU_RETAIN flag, so
+it is in a separate section even with -fno-function-sections (default).
 
-v2 -> v3:
- - move kvm_update_page_stats to mmu.h as a static inline function. [sean]
- - remove is_last_spte check in mmu_spte_clear_track_bits. [bgardon]
- - change page_stats union by making it anonymous. [dmatlack]
+It seems that with -ffunction-sections the issue should have been caught
+much earlier.
 
-v1 -> v2:
- - refactor kvm_update_page_stats and remove 'spte' argument. [sean]
- - remove 'lpages' as it can be aggregated by user level [sean]
- - fix lpages stats update issue in __handle_change_pte [sean]
- - fix style issues and typos. [ben/sean]
+>>
+>> Place them in the TEXT_TEXT section so that these technologies continue
+>> to work with the newer compiler versions. All of the KASAN and KCSAN
+>> KUnit tests continue to pass after this change.
+>>
+>> Cc: stable@vger.kernel.org
+>> Link: https://github.com/ClangBuiltLinux/linux/issues/1432
+>> Link: https://github.com/llvm/llvm-project/commit/7b789562244ee941b7bf2cefeb3fc08a59a01865
+>> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>> ---
+>>  include/asm-generic/vmlinux.lds.h | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+>> index 17325416e2de..3b79b1e76556 100644
+>> --- a/include/asm-generic/vmlinux.lds.h
+>> +++ b/include/asm-generic/vmlinux.lds.h
+>> @@ -586,6 +586,7 @@
+>>                 NOINSTR_TEXT                                            \
+>>                 *(.text..refcount)                                      \
+>>                 *(.ref.text)                                            \
+>> +               *(.text.asan .text.asan.*)                              \
+>
+>Will this match .text.tsan.module_ctor?
 
-pre-v1 (internal reviewers):
- - use atomic in all page stats and use 'level' as index. [sean]
- - use an extra argument in kvm_update_page_stats for atomic/non-atomic.
-   [bgardon]
- - should be careful on the difference between legacy mmu and tdp mmu.
-   [jingzhangos]
+asan.module_ctor is the only function AddressSanitizer synthesizes in the instrumented translation unit.
+There is no function called "asan".
 
+(Even if a function "asan" exists due to -ffunction-sections
+-funique-section-names, TEXT_MAIN will match .text.asan, so the
+.text.asan pattern will match nothing.)
 
-Mingwei Zhang (3):
-  kvm: mmu/x86: Remove redundant spte present check in mmu_set_spte
-  KVM: x86/mmu: Avoid collision with !PRESENT SPTEs in TDP MMU lpage
-    stats
-  kvm: mmu/x86: Add detailed page size stats
-
- arch/x86/include/asm/kvm_host.h | 10 +++++++-
- arch/x86/kvm/mmu.h              |  2 ++
- arch/x86/kvm/mmu/mmu.c          | 42 ++++++++++++++++++---------------
- arch/x86/kvm/mmu/tdp_mmu.c      |  9 ++-----
- arch/x86/kvm/x86.c              |  7 ++++--
- 5 files changed, 41 insertions(+), 29 deletions(-)
-
---
-2.32.0.432.gabb21c7263-goog
-
+>Do we want to add these conditionally on
+>CONFIG_KASAN_GENERIC/CONFIG_KCSAN like we do for SANITIZER_DISCARDS?
+>
+>>                 TEXT_CFI_JT                                             \
+>>         MEM_KEEP(init.text*)                                            \
+>>         MEM_KEEP(exit.text*)                                            \
+>>
+>> base-commit: 4669e13cd67f8532be12815ed3d37e775a9bdc16
+>> --
+>
+>
+>-- 
+>Thanks,
+>~Nick Desaulniers
