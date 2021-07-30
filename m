@@ -2,169 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81FB3DBA67
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1ED63DB99E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239536AbhG3OWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:22:34 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55968 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239230AbhG3OSC (ORCPT
+        id S239031AbhG3NvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 09:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhG3NvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:18:02 -0400
-Message-ID: <20210730135207.703706679@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627654677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=lzQ6SJUWO+cQIKpc/IWE3nb8cj8Ps+LzIGeiMNlvMc8=;
-        b=pOfRSVNlMRbzJ9kHS0ICHJo0ckBP0DJkQRYcLRnWtqTdycfGWQFkmmWxxC7AJU4G1mYLDm
-        BtZ/xxkkpe1V9jQJ+On8dkLVx3OLttbo1CLhVCTg02HWNwXkF1DTkxoHYrjzePoUw0BLiB
-        InveJwSAzhgTjDGl/G4RbFvXxn6hQPqVLopevWODOarY/zpSLvJaPAEHGRXnX93Qjjtjwd
-        ZR77Yd3ae2scSlD5UaYERQ2hpvh/VG9p8975SBJiDXK35SNcSYfsEcH6rf2dcTbozciBuX
-        8O0ndkdPNT9P8doXTSKHj95kGGw6iQJTSaF8Or5JEzBN2fx1HkID3pbAvFxieg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627654677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=lzQ6SJUWO+cQIKpc/IWE3nb8cj8Ps+LzIGeiMNlvMc8=;
-        b=ep0hj0sa4MDxl/dvquAfHYYdza2IVsw1UrVu3Gdsvhm/4ZZYQkft5LqpwKwI6fQXQFsZ4b
-        Py/D73Zs/yNH0KBA==
-Date:   Fri, 30 Jul 2021 15:50:52 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 45/63] locking/ww_mutex: Abstract internal lock access
-References: <20210730135007.155909613@linutronix.de>
+        Fri, 30 Jul 2021 09:51:06 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2A6C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:51:00 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id a20so11228336plm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:51:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=Fg+J3oW692Mh3cj6C7vQfzGK/Q/IMQA26Bq+Duy+a4w=;
+        b=VmcZG1GRWJrPQtzy+TCHvuVNPKTGa+BsqIntwj6ttKUN/bSbXgL70/Xodxa74Ma4p0
+         rwxlQt0RRyaJZejJxeJi8BBKEbUuPiOrHslCY+HUINYp1SJ1iolaJkON0f5eGEMyYsC/
+         9Le3jMLov9yMGz2bDatl71kjesThyRzy7wewQhjnsafaTOnUnYfbwd438/L0Nt4KgTZW
+         4qC6zQI1wNFf7sWKkZnojJgg6pzBK8eaPLVoFKzn7plTdUfqYk/mAYEF6HOxS0z93kjj
+         AFO9Vm2OULZA9T1QhehMkU7M6O8/p3OGEGYzj+dKxhpXYdHjwzpHkLvzGv3XAxEKXoR7
+         cyPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=Fg+J3oW692Mh3cj6C7vQfzGK/Q/IMQA26Bq+Duy+a4w=;
+        b=j3lFpHmMjcmH63eWR9YRdu8y3vSJ7SJkogtdmYRj/jIumYOuxn4c56uKiRa5Q+hAig
+         Gyel8OuQ6P3twpLJ3KAtJWOeIgmgZM+yNYNOCQYVDKlnCIaBSl8Dk31JAWz8fgeQ9GjV
+         j2zfQp/DUaYGqZNZ6OGv/5me9g/eHe4bGxVoHnw2UabsFqoSjmdLqt+hfjvInggQd4xm
+         q/AiR9H0wXkYbCfTEIbn/CGD0+aUfHHC3gjI1+VxUuKnDNl77hT+2IOqLrP1YEJ2GkW/
+         CuMoBf63Qh17vQXg1dF9AQ3VHYs7OBolRdVy7I4c+ETNxT8hGZclBlgHzYi/8+yU33+v
+         DUMQ==
+X-Gm-Message-State: AOAM53236jzujDhllr5t1Kqk3qlRBW3usvSf+zneM15aXaLEXbuEjlao
+        nbB0Yy4Iw/YGRzOkwtPGph+HaE8sZKxL6A==
+X-Google-Smtp-Source: ABdhPJw0kB2BBs33d+TllZbOUWcOrwfM9KEon9kLTtG4TWSRM1Sy3r6nfGeaiiH6RDmPosurY61KYg==
+X-Received: by 2002:a17:90a:c003:: with SMTP id p3mr3212973pjt.14.1627653059822;
+        Fri, 30 Jul 2021 06:50:59 -0700 (PDT)
+Received: from [192.168.1.153] (M106072041033.v4.enabler.ne.jp. [106.72.41.33])
+        by smtp.gmail.com with ESMTPSA id n5sm2534471pfv.29.2021.07.30.06.50.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 06:50:59 -0700 (PDT)
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Subject: [PATCH 0/1] __asm_copy_to-from_user: Reduce more byte_copy
+Message-ID: <65f08f01-d4ce-75c2-030b-f8759003e061@gmail.com>
+Date:   Fri, 30 Jul 2021 22:50:52 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Accessing the internal wait_lock of mutex and rtmutex is slightly
-different. Provide helper functions for that.
+Adding none unrolling word_copy, which is used if the size is smaller
+than 9*SZREG.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/ww_mutex.h  |   13 +++++++++----
- kernel/locking/ww_mutex.h |   23 +++++++++++++++++++----
- 2 files changed, 28 insertions(+), 8 deletions(-)
+This patch is based on Palmer's past comment.
+> My guess is that some workloads will want some smaller unrolling factors,
 
---- a/include/linux/ww_mutex.h
-+++ b/include/linux/ww_mutex.h
-@@ -19,6 +19,11 @@
- 
- #include <linux/mutex.h>
- 
-+#define WW_MUTEX_BASE			mutex
-+#define ww_mutex_base_init(l,n,k)	__mutex_init(l,n,k)
-+#define ww_mutex_base_trylock(l)	mutex_trylock(l)
-+#define ww_mutex_base_is_locked(b)	mutex_is_locked((b))
-+
- struct ww_class {
- 	atomic_long_t stamp;
- 	struct lock_class_key acquire_key;
-@@ -29,7 +34,7 @@ struct ww_class {
- };
- 
- struct ww_mutex {
--	struct mutex base;
-+	struct WW_MUTEX_BASE base;
- 	struct ww_acquire_ctx *ctx;
- #ifdef CONFIG_DEBUG_MUTEXES
- 	struct ww_class *ww_class;
-@@ -82,7 +87,7 @@ struct ww_acquire_ctx {
- static inline void ww_mutex_init(struct ww_mutex *lock,
- 				 struct ww_class *ww_class)
- {
--	__mutex_init(&lock->base, ww_class->mutex_name, &ww_class->mutex_key);
-+	ww_mutex_base_init(&lock->base, ww_class->mutex_name, &ww_class->mutex_key);
- 	lock->ctx = NULL;
- #ifdef CONFIG_DEBUG_MUTEXES
- 	lock->ww_class = ww_class;
-@@ -330,7 +335,7 @@ extern void ww_mutex_unlock(struct ww_mu
-  */
- static inline int __must_check ww_mutex_trylock(struct ww_mutex *lock)
- {
--	return mutex_trylock(&lock->base);
-+	return ww_mutex_base_trylock(&lock->base);
- }
- 
- /***
-@@ -354,7 +359,7 @@ static inline void ww_mutex_destroy(stru
-  */
- static inline bool ww_mutex_is_locked(struct ww_mutex *lock)
- {
--	return mutex_is_locked(&lock->base);
-+	return ww_mutex_base_is_locked(&lock->base);
- }
- 
- #endif
---- a/kernel/locking/ww_mutex.h
-+++ b/kernel/locking/ww_mutex.h
-@@ -68,6 +68,21 @@ static inline bool
- 	return atomic_long_read(&lock->owner) & MUTEX_FLAG_WAITERS;
- }
- 
-+static inline void lock_wait_lock(struct mutex *lock)
-+{
-+	raw_spin_lock(&lock->wait_lock);
-+}
-+
-+static inline void unlock_wait_lock(struct mutex *lock)
-+{
-+	raw_spin_unlock(&lock->wait_lock);
-+}
-+
-+static inline void lockdep_assert_wait_lock_held(struct mutex *lock)
-+{
-+	lockdep_assert_held(&lock->wait_lock);
-+}
-+
- /*
-  * Wait-Die:
-  *   The newer transactions are killed when:
-@@ -174,7 +189,7 @@ static bool __ww_mutex_wound(struct MUTE
- {
- 	struct task_struct *owner = __ww_mutex_owner(lock);
- 
--	lockdep_assert_held(&lock->wait_lock);
-+	lockdep_assert_wait_lock_held(lock);
- 
- 	/*
- 	 * Possible through __ww_mutex_add_waiter() when we race with
-@@ -227,7 +242,7 @@ static void
- {
- 	struct MUTEX_WAITER *cur;
- 
--	lockdep_assert_held(&lock->wait_lock);
-+	lockdep_assert_wait_lock_held(lock);
- 
- 	for (cur = __ww_waiter_first(lock); cur;
- 	     cur = __ww_waiter_next(lock, cur)) {
-@@ -275,9 +290,9 @@ ww_mutex_set_context_fastpath(struct ww_
- 	 * Uh oh, we raced in fastpath, check if any of the waiters need to
- 	 * die or wound us.
- 	 */
--	raw_spin_lock(&lock->base.wait_lock);
-+	lock_wait_lock(&lock->base);
- 	__ww_mutex_check_waiters(&lock->base, ctx);
--	raw_spin_unlock(&lock->base.wait_lock);
-+	unlock_wait_lock(&lock->base);
- }
- 
- static __always_inline int
+It will reduce the number of slow byte_copy being used when the 
+size is small.
 
+Have tested on qemu rv32, qemu rv64 and beaglev beta board.
+
+In the future, I am planning to convert uaccess.S to inline assembly 
+in .c file. Then it will be easier to optimize on both in-order core and
+out-of-order core with #ifdef macro in c.
+
+Akira Tsukamoto (1):
+  riscv: __asm_copy_to-from_user: Improve using word copy if size <
+    9*SZREG
+
+ arch/riscv/lib/uaccess.S | 46 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 42 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
