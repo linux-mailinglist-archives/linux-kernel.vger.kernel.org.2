@@ -2,173 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EE63DB2AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DFB3DB2A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhG3FQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 01:16:19 -0400
-Received: from mail-qv1-f52.google.com ([209.85.219.52]:39816 "EHLO
-        mail-qv1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236868AbhG3FPN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:15:13 -0400
-Received: by mail-qv1-f52.google.com with SMTP id d3so4610105qvq.6;
-        Thu, 29 Jul 2021 22:15:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bAVnIwvX8e+qAileedKRPA1lXMF1MMPyPKuAP+v6VTE=;
-        b=k36FmHnHnGxnGkctuvPT42ARDcdeYPraICBZ1t767HY9xnE6VExUQ3znh8YVZOlfKg
-         A/MGQgwvrvN2lZ+psMYtWttD/8NgDXk6KF9WE9OxCadruWF4CLduUw/UCyrdgFuv383c
-         Htk4HVyXeJX6O25jgyHVkKjCmNWzdXTEl/RZOscYfnwTLlR7RvKuRHFy6QnminEgaQTV
-         3+XEnPxRbUM0YGlEEYjfCJfjrgiTZyylTdRWyotGUgW/I8sByj4K0fuz7NHA2Nh4Ich6
-         lCTw+TRM7r+EoRHrmhrlee+kqp+069pQQWmgbNHLz8MAkP8S8sH4TohxGeOft2viQMkp
-         W73w==
-X-Gm-Message-State: AOAM531fdxMvLn8641u+wnBUWHPFxoAmFX7JH8IBroKs79Y/9Zo39Ywt
-        W2q9xbO5QJGgfX7qe6cGrutuYXqNQqnhaw==
-X-Google-Smtp-Source: ABdhPJxfBdhJhTrTWdy4gWRNXEwFjtq6eNZPUAhNjMDAUyNYnoe5sjL7JjoSQDxVxlxXDp+idDp9KQ==
-X-Received: by 2002:a0c:fa44:: with SMTP id k4mr922937qvo.59.1627622107267;
-        Thu, 29 Jul 2021 22:15:07 -0700 (PDT)
-Received: from [10.68.32.40] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id bl40sm343832qkb.64.2021.07.29.22.15.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 22:15:06 -0700 (PDT)
-Subject: Re: [BUG] FLOPPY DRIVER since 5.10.20
-From:   Denis Efremov <efremov@linux.com>
-To:     linux-block@vger.kernel.org,
-        Linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <jkosina@suse.cz>, Kurt Garloff <kurt@garloff.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wim Osterholt <wim@djo.tudelft.nl>, dmarkh@cfl.rr.com,
-        markh@compro.net
-References: <de10cb47-34d1-5a88-7751-225ca380f735@compro.net>
- <e49603c2-ac36-12b0-57cf-ff5ab30115bc@linux.com>
- <f5501a7c-4387-259d-66d2-f10db0cf36ff@cfl.rr.com>
- <f1277dcb-6bf8-b149-ad4e-68a4109d4e67@linux.com>
- <1cf8e751-db77-441e-53b4-d6e979bbe046@compro.net>
- <751150dd-251f-bc68-0cd0-4a10b70ab79a@linux.com>
-Message-ID: <ffb8ca1c-ac8c-95c4-c05a-1269c4831b0a@linux.com>
-Date:   Fri, 30 Jul 2021 08:15:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236297AbhG3FPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 01:15:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:36812 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230012AbhG3FOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 01:14:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DAAC1FB;
+        Thu, 29 Jul 2021 22:14:49 -0700 (PDT)
+Received: from [10.163.66.9] (unknown [10.163.66.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54A0C3F73D;
+        Thu, 29 Jul 2021 22:14:46 -0700 (PDT)
+Subject: Re: [PATCH v2 06/10] coresight: trbe: Fix handling of spurious
+ interrupts
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        jinlmao@qti.qualcomm.com
+References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
+ <20210723124611.3828908-7-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <5a8f30f2-188c-427f-98e5-5c1ec5ad0626@arm.com>
+Date:   Fri, 30 Jul 2021 10:45:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <751150dd-251f-bc68-0cd0-4a10b70ab79a@linux.com>
+In-Reply-To: <20210723124611.3828908-7-suzuki.poulose@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 7/26/21 7:34 PM, Denis Efremov wrote:
+
+On 7/23/21 6:16 PM, Suzuki K Poulose wrote:
+> On a spurious IRQ, right now we disable the TRBE and then re-enable
+> it back, resetting the "buffer" pointers(i.e BASE, LIMIT and more
+> importantly WRITE) to the original pointers from the AUX handle.
+> This implies that we overwrite any trace that was written so far,
+> (by overwriting TRBPTR) while we should have ignored the IRQ.
+
+The ideas was that a state (pointers) reset would improve the chances
+of not getting the spurious IRQ once again. This is assuming that some
+thing during this current state machine, had caused the spurious IRQ.
+Hence just restart it back from the beginning. Yes, it does lose some
+trace data but whats the real possibility of such spurious IRQs in the
+first place ?
+
 > 
+> This patch cleans the behavior, by only stopping the TRBE if the
+> IRQ was indeed raised, as we can read the TRBSR without stopping
+> the TRBE (Only writes to the TRBSR requires the TRBE disabled).
+> And also, on detecting a spurious IRQ after examining the TRBSR,
+> we simply re-enable the TRBE without touching the other parameters.
+
+This makes sense. I was not sure if TRBSR could be safely read without
+actually stopping the TRBE.
+
 > 
-> On 7/26/21 3:23 PM, Mark Hounschell wrote:
->> On 7/26/21 7:37 AM, Denis Efremov wrote:
->>>
->>>
->>> On 7/26/21 2:17 PM, Mark Hounschell wrote:
->>>> On 7/26/21 3:57 AM, Denis Efremov wrote:
->>>>> Hi,
->>>>>
->>>>> On 7/23/21 9:47 PM, Mark Hounschell wrote:
->>>>>>
->>>>>> These 2 incremental patches, patch-5.10.19-20 and patch-5.11.2-3 have broken the user land fd = open("/dev/fd0", (O_RDWR | O_NDELAY)); functionality.
->>>>>
->>>>> Thank you for the report, I'm looking into this.
->>>>>
->>>>>> Since FOREVER before the patch, when using O_NDELAY, one could open the floppy device with no media inserted or even with write protected media without error. "Read-only file system" status is returned only when we actually tried to write to it. We have software still in use today that relies on this functionality.
->>>>>
->>>>> If it's a project with open sources could you please give a link?
->>>>>
->>>>> Regards,
->>>>> Denis
->>>>>
->>>> This is immaterial but fdutils and libdsk both use rely on this flag. Who can know who else does. The point is it should NOT have been changed.
->>>
->>> Yes, I asked this only to add utils and this behavior to the tests.
->>> And be more specific about why we should preserve this behavior in
->>> next commit messages.
->>>
->>
->> Well, first thing is now you can't open a floppy with a write protected floppy installed. I don't think that was intended but that is now how it is.
->>
->> Next there are commands that can be sent to the floppy via "ioctl(fd, FDRAWCMD,  &raw_cmd);" that do NOT require a floppy diskette to be installed.
->>
->> All commands issued to the device that require a floppy diskette without a diskette installed fail with the proper status letting you know the device is not ready / no diskette installed. That goes for write protected floppies too.
->>
->> There is no reason to force a user to only be able to operate on Linux fdformat formatted floppies.
->>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 29 ++++++++++----------
+>  1 file changed, 15 insertions(+), 14 deletions(-)
 > 
-> It appears that the story behind the issue is long enough.
-> I'll try to sum up the things:
-> [1] 09954bad4487 floppy: refactor open() flags handling
-> [2] ff06db1efb2a floppy: fix open(O_ACCMODE) for ioctl-only open
-> [3] 468c298ad3ed Revert "floppy: fix open(O_ACCMODE) for ioctl-only open"
-> [4] f2791e7eadf4 Revert "floppy: refactor open() flags handling"
-> [5] 8a0c014cd205 floppy: reintroduce O_NDELAY fix
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index 62e1a08f73ff..503bea0137ae 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -679,15 +679,16 @@ static int arm_trbe_disable(struct coresight_device *csdev)
+>  
+>  static void trbe_handle_spurious(struct perf_output_handle *handle)
+>  {
+> -	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +	u64 limitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+>  
+> -	buf->trbe_limit = compute_trbe_buffer_limit(handle);
+> -	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+> -	if (buf->trbe_limit == buf->trbe_base) {
+> -		trbe_drain_and_disable_local();
+> -		return;
+> -	}
+> -	trbe_enable_hw(buf);
+> +	/*
+> +	 * If the IRQ was spurious, simply re-enable the TRBE
+> +	 * back without modifiying the buffer parameters to
+
+Typo here 		^^^^^^ s/modifiying/modifying
+
+> +	 * retain the trace collected so far.
+> +	 */
+> +	limitr |= TRBLIMITR_ENABLE;
+> +	write_sysreg_s(limitr, SYS_TRBLIMITR_EL1);
+> +	isb();
+>  }
+>  
+>  static void trbe_handle_overflow(struct perf_output_handle *handle)
+> @@ -760,12 +761,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>  	enum trbe_fault_action act;
+>  	u64 status;
+>  
+> -	/*
+> -	 * Ensure the trace is visible to the CPUs and
+> -	 * any external aborts have been resolved.
+> -	 */
+> -	trbe_drain_and_disable_local();
+> -
+> +	/* Reads to TRBSR_EL1 is fine when TRBE is active */
+>  	status = read_sysreg_s(SYS_TRBSR_EL1);
+>  	/*
+>  	 * If the pending IRQ was handled by update_buffer callback
+> @@ -774,6 +770,11 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>  	if (!is_trbe_irq(status))
+
+Warn here that a non-related IRQ has been delivered to this handler ?
+But moving the trbe_drain_and_disable_local() later, enables it to
+return back immediately after detecting an unrelated IRQ.
+
+>  		return IRQ_NONE;
+>  
+> +	/*
+> +	 * Ensure the trace is visible to the CPUs and
+> +	 * any external aborts have been resolved.
+> +	 */
+> +	trbe_drain_and_disable_local();
+>  	clr_trbe_irq();
+>  	isb();
+>  
 > 
-> In [1] we tried to fix O_NDELAY behavior because it's hard to define
-> proper non-blocking behavior for floppies. We also added
-> "!(mode & (FMODE_READ|FMODE_WRITE))" sanity check for open in that patch.
-> Motivation for the changes was that it's easy to livelock the system with
-> floppy's O_NDELAY and syzkaller spotted it. Just for the record, /dev/fd0
-> is only accessible by the root user in recent distros. 
-> 
-> Patch [1] broke ioctl-only opens in fdutils because:
-> $ grep -nre open ./setfdprm.c 
-> 60:     if ((fd = open(argv[0],3)) < 0) { /* 3 == no access at all */
-> Patch [2] reverted "!(mode & (FMODE_READ|FMODE_WRITE))" to fix ioctls.
-> I guess [2] was not enough and Jens completely reverted [1] with [3] [4].
-> 
-> The last [5] patch restores the open function to the [2] state (it's possible
-> to use ioctl with open O_ACCMODE). [5] was added because libblkid use O_NONBLOCK
-> for probing devices, and floppy driver prints many I/O errors to the kernel log.
-> There are also problems with mounts after. I'm afraid simple revert for [5] is
-> not enough, otherwise we will face libblkid issues once again.I'll try to test the things and find a more elegant solution.
-> 
 
-I performed some tests and here is a small example that can be reproduced
-even with qemu.
-With O_NDELAY fix:
-$ fdlist # no floppy inserted
-fdlist (): drive fd0 does not exist
+Actually there are two types of spurious interrupts here.
 
-Without O_NDELAY fix:
-$ fdlist # no floppy inserted
-NAME   TYPE  STATUS
- fd0  2880K  not mounted
+1. Non-TRBE spurious interrupt
 
-That's because of O_RDONLY|O_NDELAY open in probe_drive:
-https://sources.debian.org/src/fdutils/5.6-2/src/fdmount.c/#L390
+Fails is_trbe_irq() test and needs to be returned immediately from
+arm_trbe_irq_handler(), after an warning for the platform IRQ
+delivery wiring.
 
-I guess that's why the original patch was reverted
-f2791e7eadf4 Revert "floppy: refactor open() flags handling"
-We still have software that depends on O_NDELAY in floppies
-and this patch will be reverted again.
+2. TRBE spurious interrupt
 
-Meanwhile I can't fully reproduce the issues with libblkid.
-I know that systemd-udevd tries to open /dev/fd0 during boot
-with O_RDONLY|O_NDELAY. With O_NDELAY implemented we don't call
-floppy_revalidate() which result in an attempt to read block 0
-https://elixir.bootlin.com/linux/v5.10.20/source/drivers/block/floppy.c#L4127
-However, *with* O_NDELAY fix we try to read block 0 and get kernel
-log errors if no floppy inserted:
-[    1.732360] blk_update_request: I/O error, dev fd0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
-[    1.732822] floppy: error 10 while reading block 0
-If floppy inserted this results in a boot delay on a
-real system.
-
-Jiri, Kurt, can you give more details about test conditions
-for O_NDELAY problem or maybe even provide some examples?
-
-Maybe it will cheaper to implement a special probing for
-floppies in new software than drop O_NDELAY for all already
-written software. Of course, if there is no cheap and obvious
-in-kernel fix.
-
-Denis
+Clears is_trbe_irq() and get handled in trbe_handle_spurious(). I
+still think leaving this unchanged might be better as it reduces
+the chance of getting further spurious TRBE interrupts.
