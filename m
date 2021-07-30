@@ -2,128 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C7B3DBA08
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C569D3DBA0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239135AbhG3OGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:06:49 -0400
-Received: from mail-dm6nam11on2083.outbound.protection.outlook.com ([40.107.223.83]:20097
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239052AbhG3OGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:06:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TxXWmSme6S8B76Xh8ShgK84Cx+aAMoDWY1KIjYl6mFzSOb5WxwxTVFNEHL9L21hRgLfFPNrAxLCplY4+60ltoeHyAllne28is1gTFxNR+1OUrzP2z25PZGVeBdd0fV0GmdjVi9/Ydpfi30037cC+Y/2rlQ9YqPIyP3zjxl+cHhLpG0x2BW1XXSJuzQfmiYUCTL8DLcm1QSisdMhFZyoPskVCtjDfyqmvBJJ9br3M/C1VQU8NQViPuZV9h1Z8QQwnG15xYnyTNkeueLCGCFYpWWHIkFVwgGMXYKfo8jn1agb4eoAIvF9z3p4mxObYHIDmxRoPaA4BCgVgwAzsSZ9HHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+eOfAXsTP/7OFlGNs6XFfajn2apRcQ1flQV27BGTXc=;
- b=cxcEj6UM/nuTugG3xPjPVEfF8PNmVaQasB2h9cM0iYg5Qd9NWd3Ad7JmyTIKlH/ggPLCUjapkG9ihq/NOgX+ukjQECUaGdPn1uWBPAZyQ5Zd1iwrPP2h/0g7fE4l46yh3pveCtD9v0Ng2F0s7LMnFwe0HqRbx1gVnE64DtkfzTgNYh4Q+DiW/d1rqGGmZ+MGfJArUDgxXfRnSwszI+7ndwGExyJz7qF2Nqlv+Cc0cYC0z0wcrgMkb6KuW+YDTwr1j7hNQm5oXNuyrAHj+MI/xrXkTU2unbxdTkWj+gikLMiA6Xfpz1PypIVEU+I07zZ48vf/vQ4lVcqGQ4WN71UzLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+eOfAXsTP/7OFlGNs6XFfajn2apRcQ1flQV27BGTXc=;
- b=TGKIOAET3+qjXZX1npP6uH5jcg20E0nr3FMBugeM/uguGjNDvdpiTAzYlkdyo7nXCk4GVUT9rS2SmI1u1ptz4LiHzNi3gz9T/prBnLv/xDQcSehooe2RrlFrpHN3o96i0YJtjV83EtJ4TYbWQFJXCyC7vMk6xYXT8f4W0IGByz8xY0ADuhVAerMdMQaEm76/2/zaLVTUc5/vzJeOKiGkL6rjlrBfy34EX7AwIr3N4tMdjoT50svvmJUjhDXZgs9fMf1AUvnS1MQKGwLDFBFYqYRuzksPQg8ZkHioHfWhH5MqIpzPLPpBqxtpHBGqgeC6NpkyNxttQOnE/5DnQtDstA==
-Authentication-Results: fudan.edu.cn; dkim=none (message not signed)
- header.d=none;fudan.edu.cn; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5362.namprd12.prod.outlook.com (2603:10b6:208:31d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17; Fri, 30 Jul
- 2021 14:06:40 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4373.025; Fri, 30 Jul 2021
- 14:06:40 +0000
-Date:   Fri, 30 Jul 2021 11:06:39 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: Re: [PATCH] RDMA/hfi1: Convert from atomic_t to refcount_t on
- hfi1_devdata->user_refcount
-Message-ID: <20210730140639.GB2559559@nvidia.com>
-References: <1626674454-56075-1-git-send-email-xiyuyang19@fudan.edu.cn>
+        id S239145AbhG3OHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:07:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239052AbhG3OHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:07:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A18AA60F94;
+        Fri, 30 Jul 2021 14:07:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627654034;
+        bh=k4XJ9zveStKiRpAKx9X6DNnQlXVfFjJr2h2Z96smXy0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YeHtVKPNwCWijDOU6aea/M2v3YF8KZIQOXmAKvam2VZEpbf1Pwi32kNcfd1h2Atn1
+         LDptbBukrpbQ2AZ1gKOnMmMgKyR2l8rrdqxLBaKh8pKICexW1+9on67ZuzrPdFu2o5
+         ii7zlMRyKeWjDD9ZELv0L1SC+cNVvfRgMWhRPo3lH7xVKNG3pqaJLShu9M0yLpmO4I
+         WjbiwdVLBL1b7aM72plnjgyB/lcQex4SDwHHi6f6aXrfQHnSVxGiG4g4+R2zXPWrxq
+         qGjMQBStMzISZ4OBdZzIiYpfSv6c1fCiAJ1j6TgJ5hSfkZsCoG0gpBa73i+TCXwPsY
+         duxAv61sqtRMA==
+Date:   Fri, 30 Jul 2021 15:07:09 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 12/16] mm/ioremap: Add arch-specific callbacks on
+ ioremap/iounmap calls
+Message-ID: <20210730140709.GE23756@willie-the-truck>
+References: <20210715163159.1480168-1-maz@kernel.org>
+ <20210715163159.1480168-13-maz@kernel.org>
+ <20210727181203.GG19173@willie-the-truck>
+ <87tuked7mm.wl-maz@kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1626674454-56075-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-ClientProxiedBy: YT1PR01CA0050.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2e::19) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0050.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21 via Frontend Transport; Fri, 30 Jul 2021 14:06:40 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m9T9r-00AjsI-1o; Fri, 30 Jul 2021 11:06:39 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a8ddb9f3-2ed6-498b-47a4-08d9536340b4
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5362:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53629F590380D1AC526E46A3C2EC9@BL1PR12MB5362.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eFB6mH494DcEGVPV+GM23Oja1FWaCPgQ2R6CxG6XQPWj0cos/vLzcMmqDl2jh3cZ+gv9AJ9sThX+XheS8fCfEDOcVIZJGTkLQPfI/1sNvBbRx6xNA2hhw0nKDmZcYOCWr0ALncuUuOYM4nV35dB4fg62lIJl7Lp89F6vk/b+doUlayEQ8ZP57o0N4/TlYXi9a+rBQzO/YAGJSzVGh6FYZgoxFqRsVMkRliWoinuobS4WdJq2PTt2IsNG7K5Inykz7Q5fPi16K/DLbwZGX2hak7nzeb4Jzw1rQYRf1g7agxnMHEb6EQzColeqRbFI3sgwLynjpXauzBctGvfyMjDNdxKn92Wrcmc/C4EBrjcMdcogMCUcL8NI8Z+w3Ez00o9cxhMzqpYCRy92YgQ1g3tFTrG6z5VBvuHw71I8q0iKFlFEjEXedOaOVfMtEF4bmNbdoDw1sk3CwO1PugCpXVDBPTbl1n0Nvy1lWWzxsplL6zjDYp7ALJssTleNIr5MWZ0D2y7bRqpMv8J6IOXPotuKoeXXZ0C0xo3sdzMxl6RQ62RELpl7bgrMRegObPU0M7Cg0btCFyMM0s8OMrVC0BeerTTO2fAfSU6ShHBAx55PVd8zF58EyKndDiVQy1GFrVqYoJ5gysRj2VzuREmN8Lb3JQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(376002)(396003)(366004)(9786002)(9746002)(33656002)(8936002)(38100700002)(54906003)(6916009)(426003)(186003)(66946007)(83380400001)(2616005)(66476007)(66556008)(478600001)(4744005)(1076003)(8676002)(316002)(36756003)(4326008)(86362001)(26005)(2906002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XOeocBEUfnkTqniQgoqbveBVaCvpgm7yxw0tSUSAJdvjGEFY3yZPvkfGWXC8?=
- =?us-ascii?Q?M7WbuCZn3SbZk/NpfiQWTlRtxwhdjaT1AXYlP16wKLtL2ktGc1PiAyCYVOKs?=
- =?us-ascii?Q?PRN7F0FQQraacjCPXMqk4clloTZ4dyqUg2eXavpRxP2BSO4FA6LKcGHxooQM?=
- =?us-ascii?Q?sqqUZ/MsJ88Gws7ljEMhm6hhWEAyfusoBesvIBHYSr1mRxdAujpfhpwEOZXl?=
- =?us-ascii?Q?d7UzSfyx5qCr4U0cNFhGMakwI6SBv4IibUCuB9ttgrTPhLHwQKQeHuo8OOnZ?=
- =?us-ascii?Q?E4o6/VvcVYqPSs6SgOJb/BGthZtzSMdV+6tunCHMAQyiiHevcrDNuzFxRM/x?=
- =?us-ascii?Q?WcOuF1cA89JmHJojkNRfviRtXKUPhv9J+sPFV36N9obylgVNbVi2A23xjvt2?=
- =?us-ascii?Q?D7WWXGY8XRCYrEbOFkc1osGkiPMrCxFvbEZ62rBhI+dlBmbUXg3xG+k/P43c?=
- =?us-ascii?Q?sTQtZIYCOiTwmdsZWHVC8EiWzfRj+s1nEMvBj9NUlv+hFD/ifB9RZkQ/bkKD?=
- =?us-ascii?Q?XzFebigB4Vwb5ZH8v9SNUXz8okqLfbJF6/Zv+Rj4N07itnJBCdByCEw6WMWD?=
- =?us-ascii?Q?VbXm9r8AF93FxCIvWLGx/XTqzu47eZV/KDUkvh3pgo+mCCZEg/c6j6/XXCzV?=
- =?us-ascii?Q?eYZk7Y+wiB9ohXN77V2jC9G1bybKg4XYuqZegb74+/77qE8rL6SIUTDS2q20?=
- =?us-ascii?Q?lGwXqs3pAwid9OUGGQMhtW2TbchR8rVlsIIiB9eZmVea4l/0p0TUI39+2Vd6?=
- =?us-ascii?Q?Rqqx7/8cNopljCpnrKlp0C2n6ZcElWxqq6RUOCExcjjeHy9+vTLH4yLV2jEu?=
- =?us-ascii?Q?IWQzAzozknmiZTzNJ+CSEhN3kGIXUFK8VhE2LSc605yAt6J291mjQrhgm/9d?=
- =?us-ascii?Q?1ZGZzm1w/sfPe7dOfFtCqiDJxfuqYlq0qlSPfqkwXTbuW3D78RKWqTcLHOLk?=
- =?us-ascii?Q?TP3JNAFUhcei28ZbZEn62XdxYvUFsavnjBJC4QduZ91goN2FkXRi2r6ikDZ4?=
- =?us-ascii?Q?AOEuhDYE4UGeOOBHdnp/VpObvMBByCKkzMwQyXK1eKWvXC0E+HCjZWGZcEuR?=
- =?us-ascii?Q?CTN05DTC+zzTJF4Uvgh3UbfxfurRbsFiEREG4c9zZ5KNkBKC958Nq6yBCW63?=
- =?us-ascii?Q?8F4ktZ0+xvj7cYHgcJoz0FjStqolZzDNo8j9pBxeFtBSuKnqqwtXHhnxBSad?=
- =?us-ascii?Q?rHtXepTcH0qcfRDGDtn242dv3UuokrpRuCcker7vSqGqart0PDEK2bpQb76W?=
- =?us-ascii?Q?8OqC0jlnIbtBtyeAQPUd8bF71Dt/ZFbPFCVWQp2yi6+B0+j8pjMsnuefID6g?=
- =?us-ascii?Q?PbHkQ/9wz9AEgOY5iyt7n/SA?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8ddb9f3-2ed6-498b-47a4-08d9536340b4
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 14:06:40.4439
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tkn8l2790a4xRe4H6ez+bF5hGk1AEGnFMiZqFzGGCbyx0CgNCE9Vl5bhKQc7UfpJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5362
+In-Reply-To: <87tuked7mm.wl-maz@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 02:00:53PM +0800, Xiyu Yang wrote:
-> refcount_t type and corresponding API can protect refcounters from
-> accidental underflow and overflow and further use-after-free situations.
+On Wed, Jul 28, 2021 at 12:01:53PM +0100, Marc Zyngier wrote:
+> On Tue, 27 Jul 2021 19:12:04 +0100,
+> Will Deacon <will@kernel.org> wrote:
+> > 
+> > On Thu, Jul 15, 2021 at 05:31:55PM +0100, Marc Zyngier wrote:
+> > > Add a pair of hooks (ioremap_page_range_hook/iounmap_page_range_hook)
+> > > that can be implemented by an architecture.
+> > > 
+> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > > ---
+> > >  include/linux/io.h |  3 +++
+> > >  mm/ioremap.c       | 13 ++++++++++++-
+> > >  mm/vmalloc.c       |  8 ++++++++
+> > >  3 files changed, 23 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/include/linux/io.h b/include/linux/io.h
+> > > index 9595151d800d..0ffc265f114c 100644
+> > > --- a/include/linux/io.h
+> > > +++ b/include/linux/io.h
+> > > @@ -21,6 +21,9 @@ void __ioread32_copy(void *to, const void __iomem *from, size_t count);
+> > >  void __iowrite64_copy(void __iomem *to, const void *from, size_t count);
+> > >  
+> > >  #ifdef CONFIG_MMU
+> > > +void ioremap_page_range_hook(unsigned long addr, unsigned long end,
+> > > +			     phys_addr_t phys_addr, pgprot_t prot);
+> > > +void iounmap_page_range_hook(phys_addr_t phys_addr, size_t size);
+> > >  int ioremap_page_range(unsigned long addr, unsigned long end,
+> > >  		       phys_addr_t phys_addr, pgprot_t prot);
+> > >  #else
+> > 
+> > Can we avoid these hooks by instead not registering the regions proactively
+> > in the guest and moving that logic to a fault handler which runs off the
+> > back of the injected data abort? From there, we could check if the faulting
+> > IPA is a memory address and register it as MMIO if not.
+> > 
+> > Dunno, you've spent more time than me thinking about this, but just
+> > wondering if you'd had a crack at doing it that way, as it _seems_ simpler
+> > to my naive brain.
 > 
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> Tested-by: Josh Fisher <josh.fisher@cornelisnetworks.com>
-> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-> ---
->  drivers/infiniband/hw/hfi1/chip.c     | 2 +-
->  drivers/infiniband/hw/hfi1/file_ops.c | 6 +++---
->  drivers/infiniband/hw/hfi1/hfi.h      | 3 ++-
->  drivers/infiniband/hw/hfi1/init.c     | 2 +-
->  4 files changed, 7 insertions(+), 6 deletions(-)
+> I thought about it, but couldn't work out whether it was always
+> possible for the guest to handle these faults (first access in an
+> interrupt context, for example?).
 
-Applied to for-next, thanks
+If the check is a simple pfn_valid() I think it should be ok, but yes, we'd
+definitely not want to do anything more involved given that this could run
+in all sorts of horrible contexts.
 
-Jason
+> Also, this changes the semantics of the protection this is supposed to
+> offer: any access out of the RAM space will generate an abort, and the
+> fault handler will grant MMIO forwarding for this page. Stray accesses
+> that would normally be properly handled as fatal would now succeed and
+> be forwarded to userspace, even if there was no emulated devices
+> there.
+
+That's true, it would offer much weaker guarantees to the guest. It's more
+like a guarantee that memory never traps to the VMM. It also then wouldn't
+help with the write-combine fun. It would be simpler though, but with less
+functionality.
+
+> For this to work, we'd need to work out whether there is any existing
+> device mapping that actually points to this page. And whether it
+> actually is supposed to be forwarded to userspace. Do we have a rmap
+> for device mappings?
+
+I don't think this would be possible given your comments above.
+
+So let's stick with the approach you've taken. It just feels like there
+should be a way to do this without introducing new hooks into the core
+code. If it wasn't for pci_remap_iospace(), we could simply hook our
+definition of __ioremap_caller(). Another avenue to explore would be
+looking at the IO resource instead; I see x86 already uses
+IORES_MAP_ENCRYPTED and IORES_MAP_SYSTEM_RAM to drive pgprot...
+
+Will
