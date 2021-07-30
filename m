@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2D33DB8D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0957E3DB8D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238895AbhG3Mql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 08:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
+        id S238900AbhG3Mqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 08:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238866AbhG3Moq (ORCPT
+        with ESMTP id S238888AbhG3Mor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 08:44:46 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C65C061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 05:43:53 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id j12-20020a05620a146cb02903ad9c5e94baso5637939qkl.16
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 05:43:53 -0700 (PDT)
+        Fri, 30 Jul 2021 08:44:47 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9DDC06179C
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 05:43:57 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id m22-20020a05622a1196b029026549e62339so4292138qtk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 05:43:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=BUiqVnmCC5LvHUiB8iYWIOWbO4jO0OfShvOq4rUC/U0=;
-        b=uot/DzFgmwjObSu3zktrMgJ2umnJ8lum8uAOrI27vCbViA92GIbqlHdxxDRPAtckTu
-         pERv9asVh4OIsUjb+BUVGdepbl1ymy3BdWTldI52oht4Djvx8c1uLSPY415R6wMYVqfP
-         gh2tWn1w+GJx/x5pJ64MIl5CVdTQ5d4MVpxZcq/C15WiF5kTACB9QcDW/Ru8dv3bKYO7
-         1XCRNDQ1GfUcykDekKhqhlqii7cp89YBceib99SKdTvjEb4dOjmjNd2B7LZRDb5dXKUx
-         a5PQTb0tC4XQwd4a3cymf2cMRcb8AR13tAzMA+varqD7Skn/iPnkXY10kLohLcJB0CWT
-         oSFw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=kaUeOg4wMw2l7vTceRoyu4/OPISM5UcP9eJirJ9oM9Y=;
+        b=MWnjHnvoqoYAt3FQds194USz9dVhS/WB5OxryNDxnP0BJFGA1sltN0eRhXDFJBh/om
+         Dj4mlAX67YWNYYLhCbG1/tc+JtMFt4r7r+KY8MvBYe0NFSq/S4A5lVfDWxvTvAkvSIv9
+         gNf1L4GdiXsjMMTMub7kTWDLtAm+XTcIbB5R9omww6cZhja4yMF5AEQudIIzX3F2g1fm
+         bZYUqlzR295HVO9uYBWHqof7FSIRQkggr7QI2YcFkg4BBPmekmqdO/hyvmfQJTSxmmwH
+         vuSQUWQ22AqAnK/cgsIpfLRXNrspLK6XA+frjobDHHcyW6XMsyKzetuxQ2xTceSJsye2
+         1XaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=BUiqVnmCC5LvHUiB8iYWIOWbO4jO0OfShvOq4rUC/U0=;
-        b=P4rLGsqqvtvrJ/HRw5eTwSGy3GLyzyxVxUgCvIbh8iBMWalv/n8/wF7rtYAjvZCImP
-         PijgY8xvCcDGBcZ9uP/UDZmcG9r6N9Zb6EPQhXF50UMEE8TKKMGguegCCvtMsNuEc9SE
-         okG3bNEtYArR6hMURUqeYL2l8f+6XTG+dSOwxfVeT/uDisNIrmWwW/2QwrKc6jGB5kM3
-         vyiN6JPZYm7ehU6AtKRjpOqV70QtVWPZExRpXAEvnO2cxIX8jNYAfo105CkBnyb+Y89P
-         wSVJRjO+CFcFG8wsfLvr3LGgJkinB0rEcq+ljY5Vfmkw7A0Dxpq8NphffIu3HVoGKz7m
-         U3eQ==
-X-Gm-Message-State: AOAM531hnAlz+PC0vUJBa1eZKAaBeGEmV/VxWhZNCq22tnsmqUFoNU7s
-        2Lf11GlGMkWWAf1JoIT1b4ca9iO2YzSM
-X-Google-Smtp-Source: ABdhPJxzxMzASRvkFgqW+ytumwovki124B/n372u7N1TvgSmlRct/5OVggH9RDgimalWc+KEFLXb7Jn2Ascy
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=kaUeOg4wMw2l7vTceRoyu4/OPISM5UcP9eJirJ9oM9Y=;
+        b=Sia0WkHpCN9/pbbDXNPbekFbi2fh4wIK17zHrCFVDUVxT1ugSX2nnN1+0LtJZCy3at
+         jIcboFuNlpFm8y3wkD+9eKZ4GWCj8jDag99ssiekPntHJ1b9CEZZCT6arWRq79EJI5XE
+         cgmUps2ll2uymyV43OjnzZ2uPdL7deT7ED//abV1o1GZxsFP6VwMPT9sDT79fWyWdwHn
+         Si5lU4xdNCS4coXmDb/TBcKgxj3kwuvBMjp4rFVmlFBVWb1DJEjzIJ7zEvcmUasp43ry
+         HcZjuCXmNgUEUVFPLXDE056dxFX6Vf1jR5vrXCGbCJxYb8eelepeKiZ3A8Y9BrckRVHG
+         lsxw==
+X-Gm-Message-State: AOAM531wMMbJ3rhjfVp8okrkpOACehgVMNL12bsFbShDup7ys9BTyNMJ
+        5zjCk1TfyclZzH+Xwz793UbkiVTwX+Ke
+X-Google-Smtp-Source: ABdhPJw7QIaNo5xLOs4ReEDdoq0ozBmSokGCqKvMO19HHr9L4/Gush9xfvT7WQTK6GG+Cr80INWUAEzmaZFz
 X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:6892:a74:4970:a062])
- (user=kyletso job=sendgmr) by 2002:ad4:522c:: with SMTP id
- r12mr2460956qvq.17.1627649032859; Fri, 30 Jul 2021 05:43:52 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 20:43:46 +0800
-Message-Id: <20210730124348.1986638-1-kyletso@google.com>
+ (user=kyletso job=sendgmr) by 2002:a05:6214:1021:: with SMTP id
+ k1mr2372695qvr.4.1627649036478; Fri, 30 Jul 2021 05:43:56 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 20:43:47 +0800
+In-Reply-To: <20210730124348.1986638-1-kyletso@google.com>
+Message-Id: <20210730124348.1986638-2-kyletso@google.com>
 Mime-Version: 1.0
+References: <20210730124348.1986638-1-kyletso@google.com>
 X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH v5 0/2] TCPM non-PD mode
+Subject: [PATCH v5 1/2] dt-bindings: connector: Add pd-unsupported property
 From:   Kyle Tso <kyletso@google.com>
 To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
         gregkh@linuxfoundation.org, robh+dt@kernel.org
@@ -59,37 +63,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cover-letter is the same as that in v4
+Set "pd-unsupported" property if the Type-C connector has no power
+delivery support.
 
-The reason for this patch is to let the device/system policy decide
-whether PD is going to be supported using devicetree properties.
-
-A new dt property "pd-unsupported" is introduced and TCPM uses this
-property as a flag to decide whether PD is supported. If the flag is
-false (the dt property is not present), the RX functionality of the
-low-level driver will not be enabled. The power negotiation related
-states will be skipped as well. If the flag is true, everything is a
-what it was before.
-
-If "pd-unsupported" is present, and the port is SRC or DRP, another
-existing dt property "typec-power-opmode" needs to be specified to
-indicate which Rp value should be used when the port is SRC.
-
-changes since v4:
-dt-bindings: connector: Add pd-unsupported property
+Signed-off-by: Kyle Tso <kyletso@google.com>
+---
+Changes since v4:
 - Corrected the subject
 
-usb: typec: tcpm: Support non-PD mode
-- Added Reviewed-by
+ .../devicetree/bindings/connector/usb-connector.yaml          | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Kyle Tso (2):
-  dt-bindings: connector: Add pd-unsupported property
-  usb: typec: tcpm: Support non-PD mode
-
- .../bindings/connector/usb-connector.yaml     |  4 +
- drivers/usb/typec/tcpm/tcpm.c                 | 87 +++++++++++++++----
- 2 files changed, 72 insertions(+), 19 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+index 92b49bc37939..21ec470117a6 100644
+--- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
++++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+@@ -111,6 +111,10 @@ properties:
+       - 1.5A
+       - 3.0A
+ 
++  pd-unsupported:
++    description: Set this property if the Type-C connector has no power delivery support.
++    type: boolean
++
+   # The following are optional properties for "usb-c-connector" with power
+   # delivery support.
+   source-pdos:
 -- 
 2.32.0.554.ge1b32706d8-goog
 
