@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB80A3DB1AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7B53DB1AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbhG3DD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 23:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhG3DDz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 23:03:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB102C061765;
-        Thu, 29 Jul 2021 20:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=UoUNO6SpxNZD8Kp5rDs7cJKyFvYdXqxIuqfJvEub1Mw=; b=ucmvasQyzJtn31aB4P2X78i/2y
-        WGRcNUGJMLzlw2x+7VuL1yP5J+LpB1ljOzytIidamb08eRhyfn+niwxax2AqAUcd4dKXm6p1/VeRZ
-        4MmxD9NN8f1wCwmYjvaq+XMPwWJYS5wk7Ha1LIia9iJjncXjq0VqYnz1PpILaJHVZKrfr0ckfA5GT
-        +ccKpF25wV1W6pn+aKw/1PZjJV8YuVzDBPkmMQ31TFY3hWJ0RP3GbKCtpqsaGrssPFUp2dMX5Kk7y
-        U/0J0FFaYn8slPT3+tOa+NXhXdmHD7RFanIAVP7UWcT9TBPZZGCwoTgmyTl7JrCHq7aAQf6Cn42ro
-        oHvha7RA==;
-Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m9IoO-006n2H-Cd; Fri, 30 Jul 2021 03:03:48 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-next@vger.kernel.org
-Subject: [PATCH -next] drm/amdgpu: fix checking pmops when PM_SLEEP is not enabled
-Date:   Thu, 29 Jul 2021 20:03:47 -0700
-Message-Id: <20210730030347.13996-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S234966AbhG3DFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 23:05:14 -0400
+Received: from mga07.intel.com ([134.134.136.100]:30228 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229750AbhG3DFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 23:05:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="276795839"
+X-IronPort-AV: E=Sophos;i="5.84,280,1620716400"; 
+   d="scan'208";a="276795839"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 20:05:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,280,1620716400"; 
+   d="scan'208";a="518685854"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga002.fm.intel.com with ESMTP; 29 Jul 2021 20:05:03 -0700
+Date:   Fri, 30 Jul 2021 11:05:02 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v6 1/6] mm/mempolicy: Add MPOL_PREFERRED_MANY for
+ multiple preferred nodes
+Message-ID: <20210730030502.GA87066@shbuild999.sh.intel.com>
+References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
+ <1626077374-81682-2-git-send-email-feng.tang@intel.com>
+ <YQFOB4UDK+dNZeOV@dhcp22.suse.cz>
+ <20210728141156.GC43486@shbuild999.sh.intel.com>
+ <YQGB5cB5NlgOuNIN@dhcp22.suse.cz>
+ <20210729070918.GA96680@shbuild999.sh.intel.com>
+ <YQKvZDXmRSVVRvfi@dhcp22.suse.cz>
+ <20210729151242.GA42865@shbuild999.sh.intel.com>
+ <YQLVf3pkQTHLemAZ@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQLVf3pkQTHLemAZ@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'pm_suspend_target_state' is only available when CONFIG_PM_SLEEP
-is set/enabled. OTOH, when both SUSPEND and HIBERNATION are not set,
-PM_SLEEP is not set, so this variable cannot be used.
+On Thu, Jul 29, 2021 at 06:21:19PM +0200, Michal Hocko wrote:
+> On Thu 29-07-21 23:12:42, Feng Tang wrote:
+> > On Thu, Jul 29, 2021 at 03:38:44PM +0200, Michal Hocko wrote:
+> [...]
+> > > Also the
+> > > semantic to give nodes some ordering based on their numbers sounds
+> > > rather weird to me.
+> > 
+> > I agree, and as I admitted in the first reply, this need to be fixed.
+> 
+> OK. I was not really clear that we are on the same page here.
+> 
+> > > The semantic I am proposing is to allocate from prefered nodes in
+> > > distance order starting from the local node.
+> > 
+> > So the plan is:
+> > * if the local node is set in 'prefer-many's nodemask, then chose
+> > * otherwise chose the node with the shortest distance to local node
+> > ?
+> 
+> Yes and what I am trying to say is that you will achieve that simply by
+> doing the following in policy_node:
+> 	if (policy->mode == MPOL_PREFERRED_MANY)
+> 		return nd;
 
-../drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c: In function ‘amdgpu_acpi_is_s0ix_active’:
-../drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c:1046:11: error: ‘pm_suspend_target_state’ undeclared (first use in this function); did you mean ‘__KSYM_pm_suspend_target_state’?
-    return pm_suspend_target_state == PM_SUSPEND_TO_IDLE;
-           ^~~~~~~~~~~~~~~~~~~~~~~
-           __KSYM_pm_suspend_target_state
+One thing is, it's possible that 'nd' is not set in the preferred
+nodemask. 
 
-Also use shorter IS_ENABLED(CONFIG_foo) notation for checking the
-2 config symbols.
+For policy_node(), most of its caller use the local node id as 'nd'
+parameter. For HBM and PMEM memory nodes, they are cpuless nodes,
+so they will not be a 'local node', but some use cases only prefer
+these nodes.
 
-Fixes: 91b03fc6b50c ("drm/amdgpu: Check pmops for desired suspend state")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-next@vger.kernel.org
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Feng
 
---- linext-20210729.orig/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-+++ linext-20210729/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-@@ -1040,7 +1040,7 @@ void amdgpu_acpi_detect(void)
-  */
- bool amdgpu_acpi_is_s0ix_active(struct amdgpu_device *adev)
- {
--#if defined(CONFIG_AMD_PMC) || defined(CONFIG_AMD_PMC_MODULE)
-+#if IS_ENABLED(CONFIG_AMD_PMC) && IS_ENABLED(CONFIG_PM_SLEEP)
- 	if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
- 		if (adev->flags & AMD_IS_APU)
- 			return pm_suspend_target_state == PM_SUSPEND_TO_IDLE;
+> -- 
+> Michal Hocko
+> SUSE Labs
