@@ -2,139 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B853DB200
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A623DB207
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236420AbhG3DhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 23:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234733AbhG3DhD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 23:37:03 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93EDC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 20:36:57 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id y200so9764774iof.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 20:36:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V1EKk6db6Y8vCs85qWDsaQdefuQvwKiDm0jlq66LwLk=;
-        b=V/0drxt9megCv8w0kDJNaPEyTmBwWbF0FmUQQ6jUct64IS+vXU1mvsvzBy32FtXZB4
-         p0CHybwKutlK9CO8+xTY5LnDGLonMZSBXkISqhvVy/BSqPThLtCMLeDL1bUsPliuVafW
-         +EUbrG/bqLUPEmke5nDUtOZt5nd0yvfXI3VtP4LkEC0m2+1auhlIdqAekEQhrTBQ9lyp
-         QK0m9GnrBXlvxWpIX6JIuEt7SNg9OyWGj8KLYFG/CwY/boN4dLbycNp2CAUl706X7gLk
-         ToOkYStabPzB/48DZrw66c0aCHEU0tI8rU8fg+Fo0/5fnDIHc/5YcuheT4dpVEDyIlYc
-         pc6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V1EKk6db6Y8vCs85qWDsaQdefuQvwKiDm0jlq66LwLk=;
-        b=RFL3drmIAEOLQMnOgfAccFKjmsm8Cjc0dU4Nx8U6N3zT9vzkyq93rUU8+zd7Tz4jqz
-         NbhDNvcqA8BnF8e5/5ohjBNSYqLHrZ+kXpbo5DtsSChZ/KFDT7uYqeHbnsUu7ORTzJLX
-         2iKINjQ/MN8ttcFw1Bnunvi4MmsNFQBCaj8Y9hXYXtEKDHHEm1z1iBWJrzqeEbddfeeW
-         5sjVAgoxO4HcKWXC1ysiEVPdgxPkoZm0YQn3z1KV/+/pOs1CLO3pqBUI9DqqV6cMnUVx
-         iY8Z0Uv8e4/FII6upAkSrF9Vv9Y0ztLPB8MsJvvDJ892mzcvW9hGhz4LhVkv+pWa2chO
-         6UWA==
-X-Gm-Message-State: AOAM530PBk6/iUXi0+7cTgKODgysA6ChWa1VlbgsyTukAYvGnfwJzJhb
-        DlYeWidbSzHlnum+uSKlmnq4DZok3OtUJiAL3C/6Ig==
-X-Google-Smtp-Source: ABdhPJzUF9eqp23HlP2sqP5ldU19abiMWl+SYkIm6l1qXI26Szt+e1Rdmhy8esHBOdp8I1LlYRtib0EOTVkO2tpPf+A=
-X-Received: by 2002:a5e:db02:: with SMTP id q2mr626895iop.172.1627616217421;
- Thu, 29 Jul 2021 20:36:57 -0700 (PDT)
+        id S235812AbhG3Drn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 23:47:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:35604 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230352AbhG3Drm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 23:47:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F02731B;
+        Thu, 29 Jul 2021 20:47:37 -0700 (PDT)
+Received: from [10.163.66.9] (unknown [10.163.66.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 16FB13F73D;
+        Thu, 29 Jul 2021 20:47:33 -0700 (PDT)
+Subject: Re: [PATCH v2 02/10] coresight: etm4x: Use Trace Filtering controls
+ dynamically
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        jinlmao@qti.qualcomm.com
+References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
+ <20210723124611.3828908-3-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <0c975635-d4d2-3f9f-4c4c-3a67d05cda21@arm.com>
+Date:   Fri, 30 Jul 2021 09:18:17 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1867445.PYKUYFuaPT@kreacher> <2178828.iZASKD2KPV@kreacher>
- <CAAYoRsVko5jG=xqH=KTochqQu95i7PDo_6f1LCPGvAP0=XdVTA@mail.gmail.com> <4334837.LvFx2qVVIh@kreacher>
-In-Reply-To: <4334837.LvFx2qVVIh@kreacher>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Thu, 29 Jul 2021 20:36:49 -0700
-Message-ID: <CAAYoRsUn853=yFbYtD+GkbGVTxw8pzo8iZGp1NWkab0vHGpanw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210723124611.3828908-3-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 9:14 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-... [snip]...
->
-> This means that idle state 0 data are disregarded after disabling it
-> and that most likely is because the second loop in teo_select() should
-> be over all states down to idle state 0 (not only down to the first
-> enabled one).
->
-> So below is an updated patch (not tested yet).
 
-Hi Rafael,
+On 7/23/21 6:16 PM, Suzuki K Poulose wrote:
+> The Trace Filtering support (FEAT_TRF) ensures that the ETM
+> can be prohibited from generating any trace for a given EL.
+> This is much stricter knob, than the TRCVICTLR exception level
 
-This updated patch works great / solves the problem.
-Tested-by: Doug Smythies <dsmythies@telus.net>
+Could you please explain 'stricter' ? Are you suggesting that TRCVICTLR
+based exception filtering some times might not implement the filtering
+even if configured ?
 
-Thank you very much.
+> masks. At the moment, we do a onetime enable trace at user and
+> kernel and leave it untouched for the kernel life time.
+> 
+> This patch makes the switch dynamic, by honoring the filters
+> set by the user and enforcing them in the TRFCR controls.
 
-... Doug
+TRFCR actually helps in making the exception level filtering dynamic
+which was not possible earlier with TRCVICTLR.
 
->
+> We also rename the cpu_enable_tracing() appropriately to
+> cpu_detect_trace_filtering() and the drvdata member
+> trfc => trfcr to indicate the "value" of the TRFCR_EL1.
+
+Makes sense.
+
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Al Grant <al.grant@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > ---
->  drivers/cpuidle/governors/teo.c |   28 +++++++++++++++-------------
->  1 file changed, 15 insertions(+), 13 deletions(-)
->
-> Index: linux-pm/drivers/cpuidle/governors/teo.c
-> ===================================================================
-> --- linux-pm.orig/drivers/cpuidle/governors/teo.c
-> +++ linux-pm/drivers/cpuidle/governors/teo.c
-> @@ -397,32 +397,34 @@ static int teo_select(struct cpuidle_dri
->                 intercept_sum = 0;
->                 recent_sum = 0;
->
-> -               for (i = idx - 1; i >= idx0; i--) {
-> +               for (i = idx - 1; i >= 0; i--) {
->                         struct teo_bin *bin = &cpu_data->state_bins[i];
->                         s64 span_ns;
->
->                         intercept_sum += bin->intercepts;
->                         recent_sum += bin->recent;
->
-> -                       if (dev->states_usage[i].disable)
-> +                       if (dev->states_usage[i].disable && i > 0)
->                                 continue;
->
->                         span_ns = teo_middle_of_bin(i, drv);
-> -                       if (!teo_time_ok(span_ns)) {
-> -                               /*
-> -                                * The current state is too shallow, so select
-> -                                * the first enabled deeper state.
-> -                                */
-> -                               duration_ns = last_enabled_span_ns;
-> -                               idx = last_enabled_idx;
-> -                               break;
-> -                       }
->
->                         if ((!alt_recent || 2 * recent_sum > idx_recent_sum) &&
->                             (!alt_intercepts ||
->                              2 * intercept_sum > idx_intercept_sum)) {
-> -                               idx = i;
-> -                               duration_ns = span_ns;
-> +                               if (!teo_time_ok(span_ns) ||
-> +                                   dev->states_usage[i].disable) {
-> +                                       /*
-> +                                        * The current state is too shallow or
-> +                                        * disabled, so select the first enabled
-> +                                        * deeper state.
-> +                                        */
-> +                                       duration_ns = last_enabled_span_ns;
-> +                                       idx = last_enabled_idx;
-> +                               } else {
-> +                                       idx = i;
-> +                                       duration_ns = span_ns;
-> +                               }
->                                 break;
->                         }
+>  .../coresight/coresight-etm4x-core.c          | 61 ++++++++++++++-----
+>  drivers/hwtracing/coresight/coresight-etm4x.h |  5 +-
+>  .../coresight/coresight-self-hosted-trace.h   |  7 +++
+>  3 files changed, 55 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 3e548dac9b05..adba84b29455 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -237,6 +237,43 @@ struct etm4_enable_arg {
+>  	int rc;
+>  };
+>  
+> +/*
+> + * etm4x_prohibit_trace - Prohibit the CPU from tracing at all ELs.
+> + * When the CPU supports FEAT_TRF, we could move the ETM to a trace
+> + * prohibited state by filtering the Exception levels via TRFCR_EL1.
+> + */
+> +static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
+> +{
+> +	if (drvdata->trfcr)
+> +		cpu_prohibit_trace();
+
+Should it be as etm4x_allow_trace() instead, where drvdata->trfcr
+indicates the presence of FEAT_TRF - just to be clear ?
+
+	/* If the CPU doesn't support FEAT_TRF, nothing to do */
+	if (!drvdata->trfcr)
+		return;
+
+	cpu_prohibit_trace();
+
+> +}
+> +
+> +/*
+> + * etm4x_allow_trace - Allow CPU tracing in the respective ELs,
+> + * as configured by the drvdata->config.mode for the current
+> + * session. Even though we have TRCVICTLR bits to filter the
+> + * trace in the ELs, it doesn't prevent the ETM from generating
+> + * a packet (e.g, TraceInfo) that might contain the addresses from
+> + * the excluded levels. Thus we use the additional controls provided
+> + * via the Trace Filtering controls (FEAT_TRF) to make sure no trace
+> + * is generated for the excluded ELs.
+> + */
+> +static void etm4x_allow_trace(struct etmv4_drvdata *drvdata)
+> +{
+> +	u64 trfcr = drvdata->trfcr;
+> +
+> +	/* If the CPU doesn't support FEAT_TRF, nothing to do */
+> +	if (!trfcr)
+> +		return;
+> +
+> +	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
+> +		trfcr &= ~TRFCR_ELx_ExTRE;
+> +	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
+> +		trfcr &= ~TRFCR_ELx_E0TRE;
+> +
+> +	write_trfcr(trfcr);
+> +}
+> +
+>  #ifdef CONFIG_ETM4X_IMPDEF_FEATURE
+>  
+>  #define HISI_HIP08_AMBA_ID		0x000b6d01
+> @@ -441,6 +478,7 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+>  	if (etm4x_is_ete(drvdata))
+>  		etm4x_relaxed_write32(csa, TRCRSR_TA, TRCRSR);
+>  
+> +	etm4x_allow_trace(drvdata);
+>  	/* Enable the trace unit */
+>  	etm4x_relaxed_write32(csa, 1, TRCPRGCTLR);
+>  
+> @@ -719,7 +757,6 @@ static int etm4_enable(struct coresight_device *csdev,
+>  static void etm4_disable_hw(void *info)
+>  {
+>  	u32 control;
+> -	u64 trfcr;
+>  	struct etmv4_drvdata *drvdata = info;
+>  	struct etmv4_config *config = &drvdata->config;
+>  	struct coresight_device *csdev = drvdata->csdev;
+> @@ -746,12 +783,7 @@ static void etm4_disable_hw(void *info)
+>  	 * If the CPU supports v8.4 Trace filter Control,
+>  	 * set the ETM to trace prohibited region.
+>  	 */
+> -	if (drvdata->trfc) {
+> -		trfcr = read_sysreg_s(SYS_TRFCR_EL1);
+> -		write_sysreg_s(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE),
+> -			       SYS_TRFCR_EL1);
+> -		isb();
+> -	}
+> +	etm4x_prohibit_trace(drvdata);
+>  	/*
+>  	 * Make sure everything completes before disabling, as recommended
+>  	 * by section 7.3.77 ("TRCVICTLR, ViewInst Main Control Register,
+> @@ -767,9 +799,6 @@ static void etm4_disable_hw(void *info)
+>  	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_PMSTABLE_BIT, 1))
+>  		dev_err(etm_dev,
+>  			"timeout while waiting for PM stable Trace Status\n");
+> -	if (drvdata->trfc)
+> -		write_sysreg_s(trfcr, SYS_TRFCR_EL1);
+> -
+>  	/* read the status of the single shot comparators */
+>  	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
+>  		config->ss_status[i] =
+> @@ -964,15 +993,15 @@ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
+>  	return false;
+>  }
+>  
+> -static void cpu_enable_tracing(struct etmv4_drvdata *drvdata)
+> +static void cpu_detect_trace_filtering(struct etmv4_drvdata *drvdata)
+>  {
+>  	u64 dfr0 = read_sysreg(id_aa64dfr0_el1);
+>  	u64 trfcr;
+>  
+> +	drvdata->trfcr = 0;
+>  	if (!cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_TRACE_FILT_SHIFT))
+>  		return;
+>  
+> -	drvdata->trfc = true;
+>  	/*
+>  	 * If the CPU supports v8.4 SelfHosted Tracing, enable
+>  	 * tracing at the kernel EL and EL0, forcing to use the
+> @@ -986,7 +1015,7 @@ static void cpu_enable_tracing(struct etmv4_drvdata *drvdata)
+>  	if (is_kernel_in_hyp_mode())
+>  		trfcr |= TRFCR_EL2_CX;
+>  
+> -	write_trfcr(trfcr);
+> +	drvdata->trfcr = trfcr;
+>  }
+>  
+>  static void etm4_init_arch_data(void *info)
+> @@ -1177,7 +1206,7 @@ static void etm4_init_arch_data(void *info)
+>  	/* NUMCNTR, bits[30:28] number of counters available for tracing */
+>  	drvdata->nr_cntr = BMVAL(etmidr5, 28, 30);
+>  	etm4_cs_lock(drvdata, csa);
+> -	cpu_enable_tracing(drvdata);
+> +	cpu_detect_trace_filtering(drvdata);
+>  }
+>  
+>  static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
+> @@ -1673,7 +1702,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>  	int ret = 0;
+>  
+>  	/* Save the TRFCR irrespective of whether the ETM is ON */
+> -	if (drvdata->trfc)
+> +	if (drvdata->trfcr)
+>  		drvdata->save_trfcr = read_trfcr();
+>  	/*
+>  	 * Save and restore the ETM Trace registers only if
+> @@ -1782,7 +1811,7 @@ static void __etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+>  
+>  static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+>  {
+> -	if (drvdata->trfc)
+> +	if (drvdata->trfcr)
+>  		write_trfcr(drvdata->save_trfcr);
+>  	if (drvdata->state_needs_restore)
+>  		__etm4_cpu_restore(drvdata);
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+> index 82cba16b73a6..724819592c2e 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+> @@ -919,7 +919,8 @@ struct etmv4_save_state {
+>   * @nooverflow:	Indicate if overflow prevention is supported.
+>   * @atbtrig:	If the implementation can support ATB triggers
+>   * @lpoverride:	If the implementation can support low-power state over.
+> - * @trfc:	If the implementation supports Arm v8.4 trace filter controls.
+> + * @trfcr:	If the CPU supportfs FEAT_TRF, value of the TRFCR_ELx with
+
+Typo here. 	   ^^^^^^ s/supportfs/supports
+
+> + *		trace allowed at user and kernel ELs. Otherwise, 0.
+
+The sentence here does not make sense. Is not the exception level ELx and EL0
+can be filtered out independently ? Should this be something like ...
+
+"If the CPU supports FEAT_TRF, value of the TRFCR_ELx - indicating whether
+trace is allowed at user [and/or] kernel ELs. Otherwise, 0."
+
+>   * @config:	structure holding configuration parameters.
+>   * @save_trfcr:	Saved TRFCR_EL1 register during a CPU PM event.
+>   * @save_state:	State to be preserved across power loss
+> @@ -972,7 +973,7 @@ struct etmv4_drvdata {
+>  	bool				nooverflow;
+>  	bool				atbtrig;
+>  	bool				lpoverride;
+> -	bool				trfc;
+> +	u64				trfcr;
+>  	struct etmv4_config		config;
+>  	u64				save_trfcr;
+>  	struct etmv4_save_state		*save_state;
+> diff --git a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+> index 53b35a28075e..586d26e0cba3 100644
+> --- a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+> +++ b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+> @@ -22,4 +22,11 @@ static inline void write_trfcr(u64 val)
+>  	isb();
+>  }
+>  
+> +static inline void cpu_prohibit_trace(void)
+> +{
+> +	u64 trfcr = read_trfcr();
+> +
+> +	/* Prohibit tracing at EL0 & the kernel EL */
+> +	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
+> +}
+>  #endif			/*  __CORESIGHT_SELF_HOSTED_TRACE_H */
+> 
