@@ -2,137 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1D73DBF92
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DB03DBF84
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbhG3UVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 16:21:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36198 "EHLO
+        id S231249AbhG3UTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 16:19:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28079 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231500AbhG3UVG (ORCPT
+        by vger.kernel.org with ESMTP id S230239AbhG3UTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 16:21:06 -0400
+        Fri, 30 Jul 2021 16:19:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627676460;
+        s=mimecast20190719; t=1627676367;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=a0MRiXhMesi6Xu141xxbrQC/8qScgm+e3IO9BCTOUEI=;
-        b=NWfQgjFmxoT4nrO6wdwIlKZL1XUBgrcz/d9QL1BVfO3HDg1odBIp7yXi7NY4S+JFqaIuaY
-        uFinhgZqY7sE5uxGTCM9RilU7fuUBZr6mtho7f3+9KltYnr+O2NwgbH44zP4KYoPfNDbli
-        NsWKKsgnk4QM4klr2NX0r5VjDlj+LYw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-197-bocp-FgTOViO9cTTJrRfuA-1; Fri, 30 Jul 2021 16:20:59 -0400
-X-MC-Unique: bocp-FgTOViO9cTTJrRfuA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C566801AE3;
-        Fri, 30 Jul 2021 20:20:58 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 077833AC1;
-        Fri, 30 Jul 2021 20:20:58 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 8846441752B7; Fri, 30 Jul 2021 17:20:28 -0300 (-03)
-Message-ID: <20210730202010.331065257@fuller.cnet>
-User-Agent: quilt/0.66
-Date:   Fri, 30 Jul 2021 17:18:31 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Nitesh Lal <nilal@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [patch 4/4] mm: vmstat_refresh: avoid queueing work item if cpu stats are clean
-References: <20210730201827.269106165@fuller.cnet>
+         in-reply-to:in-reply-to:references:references;
+        bh=/zFJyWsxPQk78UOPs/+ij8Jx+cS7quRI3uqSv1o/GPo=;
+        b=QNvYEo7mmZGtsHfSXh3xDaJL2wGN8RMuT2p4TFgCsNZm+NWQAbc2z+EeCd1u8vA87qfFd6
+        5yttv9pxZTC/+jLiN5EVdEjKNykilnKaxF6usutP3kpWuVSZ3RVZE0YnS1uZeP4z4kJ3yN
+        uRAHHeaCUtTol6uSX+dUo89GRVDE1Wo=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-XfY28MBaND2X3LNT57gYqA-1; Fri, 30 Jul 2021 16:19:24 -0400
+X-MC-Unique: XfY28MBaND2X3LNT57gYqA-1
+Received: by mail-qv1-f70.google.com with SMTP id v15-20020a0ccd8f0000b0290335f005a486so6686651qvm.22
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:19:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/zFJyWsxPQk78UOPs/+ij8Jx+cS7quRI3uqSv1o/GPo=;
+        b=OeAtcgg1Na/5obeh89f+oDH3fG8jGOxry5mNlIghTXPBDAZ8ZJogw9o9J0fC+2tONK
+         irXJvnWhKDYYl8IUSq7ynK3AqcLX0py9HSwOlqn9UaY3j6vons287EkWbhyxxtVARQsG
+         Gozf1Izo88pThCD3ogU0heejOoqFqgEWdN/6LKZCmBcHb9ztCyjlQ0riIzQuLKlUFTPc
+         3aTjQfCuEeyl53tSMAIf6Bkh38kQJNi79cYLFcwcuGX6HbiYmkg6zf6Q3flLZz8Qf4bi
+         rB4kPW1RIKq4YIABN4UB1cf2Bgqc2MlbDE3nTXYmHa5TKDTt2CeS+tNl8ydNzXqNy7dt
+         QREw==
+X-Gm-Message-State: AOAM533OlmwfaCmvqWIUyi/iJbc/UWfJLh2iNY5099GnSpbYe3YmmXd9
+        MVhxsHI7NgbdtkiK6XFiOyhhYLdXrWmuQyxfJOxyjWreIcFcFO+46R6yHrJ9Xkxg+OjvmgClGyf
+        mlfIXsYVrq7rRagD5lyuZECZj
+X-Received: by 2002:ad4:522c:: with SMTP id r12mr4643071qvq.17.1627676363800;
+        Fri, 30 Jul 2021 13:19:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzpcJumONCf8DoskE6RaFKasSWi6GXBAhPM3j6dnrtWg/hV7L9H+UMK1U8vpHb8qp71Nb1+Ow==
+X-Received: by 2002:ad4:522c:: with SMTP id r12mr4643056qvq.17.1627676363551;
+        Fri, 30 Jul 2021 13:19:23 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id w26sm1388000qki.6.2021.07.30.13.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 13:19:22 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 16:19:21 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Hamza Mahfooz <someguy@effective-light.com>
+Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: const-ify all relevant uses of struct
+ kvm_memory_slot
+Message-ID: <YQReyaxp/rwypHbR@t490s>
+References: <20210713023338.57108-1-someguy@effective-light.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210713023338.57108-1-someguy@effective-light.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not necessary to queue work item to run refresh_vm_stats 
-on a remote CPU if that CPU has no dirty stats and no per-CPU
-allocations for remote nodes.
+Hi, Hamza,
 
-This fixes sosreport hang (which uses vmstat_refresh) with 
-spinning SCHED_FIFO process.
+On Mon, Jul 12, 2021 at 10:33:38PM -0400, Hamza Mahfooz wrote:
+> @@ -1467,16 +1467,20 @@ rmap_walk_init_level(struct slot_rmap_walk_iterator *iterator, int level)
+>  
+>  static void
+>  slot_rmap_walk_init(struct slot_rmap_walk_iterator *iterator,
+> -		    struct kvm_memory_slot *slot, int start_level,
+> +		    const struct kvm_memory_slot *slot, int start_level,
+>  		    int end_level, gfn_t start_gfn, gfn_t end_gfn)
+>  {
+> -	iterator->slot = slot;
+> -	iterator->start_level = start_level;
+> -	iterator->end_level = end_level;
+> -	iterator->start_gfn = start_gfn;
+> -	iterator->end_gfn = end_gfn;
+> +	struct slot_rmap_walk_iterator iter = {
+> +		.slot = slot,
+> +		.start_gfn = start_gfn,
+> +		.end_gfn = end_gfn,
+> +		.start_level = start_level,
+> +		.end_level = end_level,
+> +	};
+> +
+> +	rmap_walk_init_level(&iter, iterator->start_level);
 
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+Here it should be s/iterator->//.
 
-Index: linux-2.6-vmstat-update/mm/vmstat.c
-===================================================================
---- linux-2.6-vmstat-update.orig/mm/vmstat.c
-+++ linux-2.6-vmstat-update/mm/vmstat.c
-@@ -1826,17 +1826,42 @@ static bool need_update(int cpu)
- }
- 
- #ifdef CONFIG_PROC_FS
--static void refresh_vm_stats(struct work_struct *work)
-+static bool need_drain_remote_zones(int cpu)
-+{
-+#ifdef CONFIG_NUMA
-+	struct zone *zone;
-+
-+	for_each_populated_zone(zone) {
-+		struct per_cpu_pages *pcp;
-+		pcp = per_cpu_ptr(zone->per_cpu_pageset, cpu);
-+
-+		if (!pcp->count)
-+			continue;
-+
-+		if (!pcp->expire)
-+			continue;
-+
-+		if (zone_to_nid(zone) == cpu_to_node(cpu))
-+			continue;
-+
-+		return true;
-+	}
-+#endif
-+
-+	return false;
-+}
-+
-+static long refresh_vm_stats(void *arg)
- {
- 	refresh_cpu_vm_stats(true);
-+	return 0;
- }
- 
- int vmstat_refresh(struct ctl_table *table, int write,
- 		   void *buffer, size_t *lenp, loff_t *ppos)
- {
- 	long val;
--	int err;
--	int i;
-+	int i, cpu;
- 
- 	/*
- 	 * The regular update, every sysctl_stat_interval, may come later
-@@ -1850,9 +1875,15 @@ int vmstat_refresh(struct ctl_table *tab
- 	 * transiently negative values, report an error here if any of
- 	 * the stats is negative, so we know to go looking for imbalance.
- 	 */
--	err = schedule_on_each_cpu(refresh_vm_stats);
--	if (err)
--		return err;
-+	get_online_cpus();
-+	for_each_online_cpu(cpu) {
-+		if (need_update(cpu) || need_drain_remote_zones(cpu))
-+			work_on_cpu(cpu, refresh_vm_stats, NULL);
-+
-+		cond_resched();
-+	}
-+	put_online_cpus();
-+
- 	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
- 		/*
- 		 * Skip checking stats known to go negative occasionally.
+>  
+> -	rmap_walk_init_level(iterator, iterator->start_level);
+> +	memcpy(iterator, &iter, sizeof(struct slot_rmap_walk_iterator));
+>  }
 
+This patch breaks kvm/queue with above issue.  Constify of kvm_memory_slot
+pointer should have nothing to do with this so at least it should need a
+separate patch.  At the meantime I also don't understand why memcpy() here,
+which seems to be even slower..
+
+-- 
+Peter Xu
 
