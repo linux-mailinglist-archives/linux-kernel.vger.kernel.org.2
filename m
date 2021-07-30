@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D5B3DB70C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8413DB70F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238454AbhG3KTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34038 "EHLO
+        id S238433AbhG3KTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238379AbhG3KTV (ORCPT
+        with ESMTP id S238419AbhG3KTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:19:21 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC61C061765;
-        Fri, 30 Jul 2021 03:19:16 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id r2so10678620wrl.1;
-        Fri, 30 Jul 2021 03:19:16 -0700 (PDT)
+        Fri, 30 Jul 2021 06:19:42 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958BDC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:19:36 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id x3so8896849qkl.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:19:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6cu1j5kMK2bLHBJWu2lsik3zogAys0l24xOWZb+THxY=;
-        b=jDYjdhOMR5j7fXd2JqphzRt+q/M+tsRotrByjqbdig8sCXyFtnBXI/ndnur+nHQOIG
-         +PUpGOJgF2evkASyYakUd4dWvkk8PAdDiLyADNiWepUjzR7Ufe42oo5qhf4I0kOYpI3a
-         rLml2OmdpAdRkOjqwq7daC7yFGOospCQFCuEnijB1bvHZMqshxb1O9smPuRUOBpxdU6h
-         z54YF+E78OG2ZW/g/d7TXN9TMAnK+6XbVuvmWEXPTMHB0ulcujp6pyMrWSNmV+1bRrYo
-         2wjrnYe1JT8J4dqJWSyyT/wMvA11/NXZ/f9oLG+/Z6DRIuBEdQ2uSNtLD4diPXRf+LkP
-         qHqw==
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V8JhnK0JaTLe1j2WUtHenqsTJs5R6g7xYpo3dUxnCzU=;
+        b=vxh2ZgtdKYKwarEBSe3f7fBuReTJ2Hzz+6ylTBSdOUu7Bsa4J4t9aEQLGOe8hxoFA5
+         FNoABOhQ+oCxg8wTuOqn3QFTFoSHzxs7oNB2kew/vTeII/F1zy6r/ktNXMC7g1eZr8IR
+         ZktcP6E1fYkOj+tuvaAr55VvuxASHtRrTljFg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6cu1j5kMK2bLHBJWu2lsik3zogAys0l24xOWZb+THxY=;
-        b=S46Uv4kJSRPsEXbAvQDtMMflbKJLs1GF2N8BZltUZ2JKgqLFuuqL/dqxk7onGIzBux
-         pFi4QRGeXyhFcvJEDl0Aitt7AN9Uz6UUzeEeo335bYTALyJHlUECt9SUYLj+kma2engP
-         EvDA8mVVE+Z5srzRYeXGGXmb4W6u7fPIPIn/O8wjXr64NLSBKib04R9jf0Fi3XVP1dXy
-         0ev29T4pOc4jkV5d3iTGabB8iAakyuC6y6AeKCHvFQ6hqmlW/LvT53mFFxF40I88IO7C
-         ZX8KGPE9f8uadQctZabxQ3bP9IZYN61LQceAValxTVylDtEt9d5jTnSGAeh1Zpkugd/P
-         mK4w==
-X-Gm-Message-State: AOAM531v7FvGgSW7T6VVLK5K03nSracsXiuVcrhDzXtCRIeZOPyz4DyL
-        YZPbDR5O9X3wfDrheOPb2G8=
-X-Google-Smtp-Source: ABdhPJzmob8JJuaNPlp7p5Jm7UMWP5ZkVz43udecY+yScKmKchEV0o+Rvw3kUgE5L2J3VuhhxAwtsQ==
-X-Received: by 2002:a5d:64c8:: with SMTP id f8mr2224197wri.290.1627640354906;
-        Fri, 30 Jul 2021 03:19:14 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id h15sm1178235wrq.88.2021.07.30.03.19.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 03:19:14 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 11:19:12 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/21] 5.4.137-rc1 review
-Message-ID: <YQPSILlMjB+v2njR@debian>
-References: <20210729135142.920143237@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V8JhnK0JaTLe1j2WUtHenqsTJs5R6g7xYpo3dUxnCzU=;
+        b=FW5vkZLADXDt7KdCt6Y3qgErE1zT3IcTtIATsMyVma2oBlg3Dmm5YLYCfJYlFmTHrX
+         jkymGBgXjmFgI1MEnIYlhdJOKGVZWG59ghEQRKoIQXU6UxWw3FXMvi0usdy++MG16nV8
+         sdeenVyqzTrJ3CA6Azyt+emcn4NTZdTWc8wmgHEzGA1ZkeiF1YpQjsfpsdpKjKrtxcbf
+         o814oQxa8bsryeMoTTa/nSH43/9Mlhcv4y3manCHvziL9Tah4tko0MNIekPEhq8n+qA8
+         Y6CeYoBDIqtwIUIJpMWreaUNDlYVRnPxbe7BByQ15rxu2CH7lB6Ij/9JGaS0d3tp0/+e
+         3log==
+X-Gm-Message-State: AOAM531HLMicd7WrjfPQQDTv1m/2VWAPYlpDva4ySxjSbZ9f7x+b0k1a
+        SftEUkmUJ7c6NsQz+030VyzyO/JavokqQP8mcWLwqQ==
+X-Google-Smtp-Source: ABdhPJw9A7zOLsaIxYiSbhoqYdVI6Dy948DuDJK/ZvPsB1nOgnQgw930oGErqOWdYh71EOgokyy1FQb1iHwx3Doa6a0=
+X-Received: by 2002:a05:620a:62c:: with SMTP id 12mr1581399qkv.159.1627640375777;
+ Fri, 30 Jul 2021 03:19:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729135142.920143237@linuxfoundation.org>
+References: <20210717045627.1739959-1-daniel@0x0f.com> <CACRpkdbE+_DJFhBCmtz5JwJupf7QkkWZhXrgf1KG_3rPqvEm0w@mail.gmail.com>
+In-Reply-To: <CACRpkdbE+_DJFhBCmtz5JwJupf7QkkWZhXrgf1KG_3rPqvEm0w@mail.gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Fri, 30 Jul 2021 19:19:25 +0900
+Message-ID: <CAFr9PXmq6EWJv+Htp2W9BHJ3+UFFj+FjcWUrn22E6-QPZuAwEw@mail.gmail.com>
+Subject: Re: [PATCH 00/10] gpio: msc313: Add gpio support for ssd20xd
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Romain Perier <romain.perier@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi Linus,
 
-On Thu, Jul 29, 2021 at 03:54:07PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.137 release.
-> There are 21 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
-> Anything received after that time might be too late.
+On Fri, 30 Jul 2021 at 19:12, Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Sat, Jul 17, 2021 at 6:56 AM Daniel Palmer <daniel@0x0f.com> wrote:
+> > Daniel Palmer (10):
+> >   dt-bindings: gpio: msc313: Add compatible for ssd20xd
+> >   dt-bindings: gpio: msc313: Add offsets for ssd20xd
+> >   gpio: msc313: Code clean ups
+> >   gpio: msc313: Add support for SSD201 and SSD202D
+>
+> I suppose Bartosz can just merge the 4 first patches into the
+> GPIO tree
 
-Build test:
-mips (gcc version 11.1.1 20210723): 65 configs -> no failure
-arm (gcc version 11.1.1 20210723): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210723): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+Yep.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
+>And you can take the rest into the SoC tree?
 
+My plan is to take the rest into a "mstar dts for 5.15" branch along
+with some other bits and send a PR to Arnd and Olof later on.
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Thanks for checking out the patches.
 
---
-Regards
-Sudip
+Cheers,
+
+Daniel
