@@ -2,190 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5423DB4B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B40A3DB4BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237967AbhG3HxL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Jul 2021 03:53:11 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12426 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhG3HxK (ORCPT
+        id S237932AbhG3HyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:54:15 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:43472
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237851AbhG3HyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:53:10 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GbfgK4T8pzcfbV;
-        Fri, 30 Jul 2021 15:49:33 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 30 Jul 2021 15:53:03 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 30 Jul 2021 15:53:02 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Fri, 30 Jul 2021 08:53:00 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>
-CC:     "aviadye@nvidia.com" <aviadye@nvidia.com>,
-        "oren@nvidia.com" <oren@nvidia.com>,
-        "shahafs@nvidia.com" <shahafs@nvidia.com>,
-        "parav@nvidia.com" <parav@nvidia.com>,
-        "artemp@nvidia.com" <artemp@nvidia.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "ACurrid@nvidia.com" <ACurrid@nvidia.com>,
-        "cjia@nvidia.com" <cjia@nvidia.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "targupta@nvidia.com" <targupta@nvidia.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "yan.y.zhao@intel.com" <yan.y.zhao@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jgg@nvidia.com" <jgg@nvidia.com>
-Subject: RE: [RFC PATCH v4 00/11] Introduce vfio-pci-core subsystem
-Thread-Topic: [RFC PATCH v4 00/11] Introduce vfio-pci-core subsystem
-Thread-Index: AQHXWJLMh7u8kEfBQ0qOr84q2/p5ratbfFiw
-Date:   Fri, 30 Jul 2021 07:53:00 +0000
-Message-ID: <01765c3bb55f48cf866dc3732a483eff@huawei.com>
-References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
-In-Reply-To: <20210603160809.15845-1-mgurtovoy@nvidia.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.81.115]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 30 Jul 2021 03:54:14 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id CE3513F0FD;
+        Fri, 30 Jul 2021 07:54:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627631648;
+        bh=G8dnFS/VJuY2eMdGcNAfSAELq2LIUnvG4Ahde4qXVcY=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=nJNgyqQu1SjV/CA5seVDj4v87xbVHXsiUVbuIwuCVYPa9BzFYGQ37diHdLMkwSpgb
+         +p1NrW/93SCZuSxlPyFP2qfhAmer2XXDYZbaLlfHS1aBNe3x5IYXk0yg1dLtaNT93V
+         kSq9lUSOH9L6ywR/WFK+30wGwKsdA7FZCtgxFLLn2njmn0mtniVN2tKMuBVZQ61hjs
+         if4wqcM5xZ/CCxtaVCF16rRD6T7o5rvWZvGTPQ3MDTDTkchWoLLl82CLcVhrDmutpq
+         c6Oy57Foemkch1zfgIu+5IFBfQcPczr/5ueqzsdo480N4VSuhVxWD9CeXzOyKDLBZe
+         +ygAPdj5d7dfQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Georgi Djakov <djakov@kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] interconnect: Fix undersized devress_alloc allocation
+Date:   Fri, 30 Jul 2021 08:54:08 +0100
+Message-Id: <20210730075408.19945-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Max/ Yishai,
+From: Colin Ian King <colin.king@canonical.com>
 
-(Sorry I picked this thread instead of the [1] here as I don't have that
-in my mailbox)
+The expression sizeof(**ptr) for the void **ptr is just 1 rather than
+the size of a pointer. Fix this by using sizeof(*ptr).
 
-I see that an update to this series has been posted by Yishai [1] and it mentions
-about a branch with all relevant patches,
+Addresses-Coverity: ("Wrong sizeof argument")
+Fixes: e145d9a184f2 ("interconnect: Add devm_of_icc_get() as exported API for users")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/interconnect/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-" A preview of all the patches can be seen here:
-https://github.com/jgunthorpe/linux/commits/mlx5_vfio_pci"
-
-But sorry I couldn't find the patches in the branch above. Could you
-please check and let me know.
-
-Thanks,
-Shameer
-
-[1] https://lore.kernel.org/kvm/20210721161609.68223-1-yishaih@nvidia.com/#R
-
-
-> -----Original Message-----
-> From: Max Gurtovoy [mailto:mgurtovoy@nvidia.com]
-> Sent: 03 June 2021 17:08
-> To: alex.williamson@redhat.com; cohuck@redhat.com; kvm@vger.kernel.org;
-> linux-kernel@vger.kernel.org; jgg@nvidia.com
-> Cc: aviadye@nvidia.com; oren@nvidia.com; shahafs@nvidia.com;
-> parav@nvidia.com; artemp@nvidia.com; kwankhede@nvidia.com;
-> ACurrid@nvidia.com; cjia@nvidia.com; yishaih@nvidia.com;
-> kevin.tian@intel.com; hch@infradead.org; targupta@nvidia.com; Shameerali
-> Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>; liulongfang
-> <liulongfang@huawei.com>; yan.y.zhao@intel.com; Max Gurtovoy
-> <mgurtovoy@nvidia.com>
-> Subject: [RFC PATCH v4 00/11] Introduce vfio-pci-core subsystem
-> 
-> Hi Alex, Cornelia, Jason and Co,
-> 
-> This series split the vfio_pci driver into 2 parts: pci drivers and a
-> subsystem driver that will also be library of code. The main pci driver,
-> vfio_pci.ko will be used as before and it will bind to the subsystem
-> driver vfio_pci_core.ko to register to the VFIO subsystem.
-> 
-> This series is coming to solve some of the issues that were raised in
-> the previous attempts for extending vfio-pci for vendor specific
-> functionality:
-> 1. https://lkml.org/lkml/2020/5/17/376 by Yan Zhao.
-> 2. https://www.spinics.net/lists/kernel/msg3903996.html by Longfang Liu
-> 
-> This subsystem framework will also ease on adding new vendor specific
-> functionality to VFIO devices in the future by allowing another module
-> to provide the pci_driver that can setup number of details before
-> registering to VFIO subsystem (such as inject its own operations).
-> 
-> This series also extends the "driver_override" mechanism. We added a flag
-> for pci drivers that will declare themselves as "driver_override" capable
-> and only declared drivers can use this mechanism in the PCI subsystem.
-> Other drivers will not be able to bind to devices that use "driver_override".
-> Also, the PCI driver matching will always look for ID table and will never
-> generate dummy "match_all" ID table in the PCI subsystem layer. In this
-> way, we ensure deterministic behaviour with no races with the original
-> pci drivers. In order to get the best match for "driver_override" drivers,
-> one can create a userspace program (example can be found at
-> https://github.com/maxgurtovoy/linux_tools/blob/main/vfio/bind_vfio_pci_dr
-> iver.py)
-> that find the 'best match' according to simple algorithm: "the driver
-> with the fewest '*' matches wins."
-> For example, the vfio-pci driver will match to any pci device. So it
-> will have the maximal '*' matches (for all matching IDs: vendor, device,
-> subvendor, ...).
-> In case we are looking for a match to mlx5 based device, we'll have a
-> match to vfio-pci.ko and mlx5-vfio-pci.ko. We'll prefer mlx5-vfio-pci.ko
-> since it will have less '*' matches (probably vendor and device IDs will
-> match). This will work in the future for NVMe/Virtio devices that can
-> match according to a class code or other criteria.
-> 
-> The main goal of this series is to agree on the vfio_pci module split and the
-> "driver_override" extensions. The follow-up version will include an extended
-> mlx5_vfio_pci driver that will support VF suspend/resume as well.
-> 
-> This series applied cleanly on top of vfio reflck re-design (still haven't sent
-> for review) and can be found at:
-> https://github.com/Mellanox/NVMEoF-P2P/tree/vfio-v4-external.
-> 
-> Max Gurtovoy (11):
->   vfio-pci: rename vfio_pci.c to vfio_pci_core.c
->   vfio-pci: rename vfio_pci_private.h to vfio_pci_core.h
->   vfio-pci: rename vfio_pci_device to vfio_pci_core_device
->   vfio-pci: rename ops functions to fit core namings
->   vfio-pci: include vfio header in vfio_pci_core.h
->   vfio-pci: introduce vfio_pci.c
->   vfio-pci: move igd initialization to vfio_pci.c
->   PCI: add flags field to pci_device_id structure
->   PCI: add matching checks for driver_override binding
->   vfio-pci: introduce vfio_pci_core subsystem driver
->   mlx5-vfio-pci: add new vfio_pci driver for mlx5 devices
-> 
->  Documentation/ABI/testing/sysfs-bus-pci       |    6 +-
->  Documentation/PCI/pci.rst                     |    1 +
->  drivers/pci/pci-driver.c                      |   22 +-
->  drivers/vfio/pci/Kconfig                      |   27 +-
->  drivers/vfio/pci/Makefile                     |   12 +-
->  drivers/vfio/pci/mlx5_vfio_pci.c              |  130 +
->  drivers/vfio/pci/vfio_pci.c                   | 2329 +----------------
->  drivers/vfio/pci/vfio_pci_config.c            |   70 +-
->  drivers/vfio/pci/vfio_pci_core.c              | 2239 ++++++++++++++++
->  drivers/vfio/pci/vfio_pci_igd.c               |   16 +-
->  drivers/vfio/pci/vfio_pci_intrs.c             |   42 +-
->  drivers/vfio/pci/vfio_pci_rdwr.c              |   18 +-
->  drivers/vfio/pci/vfio_pci_zdev.c              |    4 +-
->  include/linux/mod_devicetable.h               |    9 +
->  include/linux/pci.h                           |   27 +
->  .../linux/vfio_pci_core.h                     |   93 +-
->  scripts/mod/devicetable-offsets.c             |    1 +
->  scripts/mod/file2alias.c                      |    8 +-
->  18 files changed, 2695 insertions(+), 2359 deletions(-)
->  create mode 100644 drivers/vfio/pci/mlx5_vfio_pci.c
->  create mode 100644 drivers/vfio/pci/vfio_pci_core.c
->  rename drivers/vfio/pci/vfio_pci_private.h => include/linux/vfio_pci_core.h
-> (56%)
-> 
-> --
-> 2.21.0
+diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
+index 55aa8d108c6d..9050ca1f4285 100644
+--- a/drivers/interconnect/core.c
++++ b/drivers/interconnect/core.c
+@@ -403,7 +403,7 @@ struct icc_path *devm_of_icc_get(struct device *dev, const char *name)
+ {
+ 	struct icc_path **ptr, *path;
+ 
+-	ptr = devres_alloc(devm_icc_release, sizeof(**ptr), GFP_KERNEL);
++	ptr = devres_alloc(devm_icc_release, sizeof(*ptr), GFP_KERNEL);
+ 	if (!ptr)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-- 
+2.31.1
 
