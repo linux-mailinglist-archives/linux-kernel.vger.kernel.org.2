@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87AF3DB3A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164B63DB39C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237577AbhG3Gab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237567AbhG3GaZ (ORCPT
+        id S237522AbhG3GaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:30:06 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:12334 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237264AbhG3GaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:30:25 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A1BC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:30:20 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id mt6so13759937pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:30:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QzDlSOdZWBlt4r0PCKAXsvwu2THC00Q/tjyRtcnCkig=;
-        b=OOgZP6Oqb/0lQi+naETsZINCyn69JBX0KhAPYrUlGcNLUA9JofTT4VXgCmw19NSy0U
-         cxYZB9l7EpUH0VLFoSVA2jccBk+9ILcdSGFV8eraPhsrwn3/KN2r2YVgbzVdiJX7+wb7
-         07ZeajZsy4ISjS9LTSbml9mN6ZC7qw36D/76DwNqUcU1Y7rjRoVzh56fI+c6DGP8MDzq
-         LzKvomG7pWJv2GFFYTKFcIihQnkyql7mqg+UxI7MFKTw9Yvi6G/DUs5t7FKlCKx3QNdd
-         WpLZ8yp4glMlEJbC1FxC/YViPNoT6Z7kFs/n1dIq1RoB237TjAcL7EoXYc9vVHn/uVoy
-         0K4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QzDlSOdZWBlt4r0PCKAXsvwu2THC00Q/tjyRtcnCkig=;
-        b=k2RnIfelKnTlWekBmpPWFa/Co0eexPGD9V/69Z+sdXucwf/e54ZFkW7LkiQvLfzlAs
-         p1BqVp5jQLrAQ9gug4H0a/kNkt1q7mvXKvBhUP9UR+04gDnew3cpqzwpm/16A67SwgPM
-         HIih1HNLJ3T4mwRu870XTrKzOCl74GOhNPqBw9dwi9cyNqvhOu+EdDAL0c7CdExkpaUy
-         0wo9pjTLEPL1koEaZimmB7e/dmQW3/EzPRPnBsuLF03w+R8XPw/GOUz7YRMDTIZ+uMbZ
-         kRYasLsbiTJ5CrO8l0kKgkqdjZwYUzkgIfamVHcuXWIh7xn62/O7M1j/wHe52jtweylp
-         P/tg==
-X-Gm-Message-State: AOAM530tbVcTeXQoFBevGMZQxHKpo8ZD66thucEbB6qnvlw0wYeKHrZw
-        uLIP7Z/5L7wb0gayxrCuzOc=
-X-Google-Smtp-Source: ABdhPJyU3pq9iF2msSbUGcXAYJuUIGuZSubDIuzBrR+tD3BLD0bxGNeN5leV+0YBY5TlEErbEjIaZg==
-X-Received: by 2002:a17:90a:5b17:: with SMTP id o23mr1374451pji.25.1627626619339;
-        Thu, 29 Jul 2021 23:30:19 -0700 (PDT)
-Received: from localhost.localdomain ([49.37.50.31])
-        by smtp.gmail.com with ESMTPSA id g8sm937913pfu.30.2021.07.29.23.30.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 23:30:18 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     minyard@acm.org
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-Subject: [PATCH] char: ipmi: use DEVICE_ATTR helper macro
-Date:   Fri, 30 Jul 2021 11:59:51 +0530
-Message-Id: <20210730062951.84876-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Fri, 30 Jul 2021 02:30:04 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Gbcp03TGXz7ylT;
+        Fri, 30 Jul 2021 14:25:12 +0800 (CST)
+Received: from [10.174.178.209] (10.174.178.209) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 30 Jul 2021 14:29:57 +0800
+Subject: Re: [PATCH 4/5] mm, memcg: avoid possible NULL pointer dereferencing
+ in mem_cgroup_init()
+To:     Roman Gushchin <guro@fb.com>
+CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
+        <shakeelb@google.com>, <willy@infradead.org>, <alexs@kernel.org>,
+        <richard.weiyang@gmail.com>, <songmuchun@bytedance.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>
+References: <20210729125755.16871-1-linmiaohe@huawei.com>
+ <20210729125755.16871-5-linmiaohe@huawei.com> <YQNuK+jN7pZLJTvT@carbon.lan>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <2a9353e0-9ece-d8d5-1387-202b01b0fdad@huawei.com>
+Date:   Fri, 30 Jul 2021 14:29:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQNuK+jN7pZLJTvT@carbon.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.209]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of open coding DEVICE_ATTR, use the helper macro
-DEVICE_ATTR_RO to replace DEVICE_ATTR with 0444 octal
-permissions.
+On 2021/7/30 11:12, Roman Gushchin wrote:
+> On Thu, Jul 29, 2021 at 08:57:54PM +0800, Miaohe Lin wrote:
+>> rtpn might be NULL in very rare case. We have better to check it before
+>> dereferencing it. Since memcg can live with NULL rb_tree_per_node in
+>> soft_limit_tree, warn this case and continue.
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/memcontrol.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 5b4592d1e0f2..70a32174e7c4 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -7109,6 +7109,8 @@ static int __init mem_cgroup_init(void)
+>>  		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL,
+>>  				    node_online(node) ? node : NUMA_NO_NODE);
+>>  
+>> +		if (WARN_ON_ONCE(!rtpn))
+>> +			continue;
+> 
+> I also really doubt that it makes any sense to continue in this case.
+> If this allocations fails (at the very beginning of the system's life, it's an __init function),
+> something is terribly wrong and panic'ing on a NULL-pointer dereference sounds like
+> a perfect choice.
+> 
+> Is this a real world problem? Do I miss something?
 
-This was detected as a part of checkpatch evaluation
-investigating all reports of DEVICE_ATTR_RO warning
-type.
+No, this is a theoretical bug, a very race case but not impossible IMO.
+Since we can't live with NULL rb_tree_per_node in soft_limit_tree, I thinks
+simply continue or break here without panic is also acceptable. Or is it
+more proper to choose panic here?
 
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
- drivers/char/ipmi/ipmi_si_intf.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Thanks.
 
-diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-index 62929a3e397e..1cbc6a6a3ef4 100644
---- a/drivers/char/ipmi/ipmi_si_intf.c
-+++ b/drivers/char/ipmi/ipmi_si_intf.c
-@@ -1605,7 +1605,7 @@ static ssize_t name##_show(struct device *dev,			\
- 									\
- 	return snprintf(buf, 10, "%u\n", smi_get_stat(smi_info, name));	\
- }									\
--static DEVICE_ATTR(name, 0444, name##_show, NULL)
-+static DEVICE_ATTR_RO(name)
- 
- static ssize_t type_show(struct device *dev,
- 			 struct device_attribute *attr,
-@@ -1615,7 +1615,7 @@ static ssize_t type_show(struct device *dev,
- 
- 	return snprintf(buf, 10, "%s\n", si_to_str[smi_info->io.si_type]);
- }
--static DEVICE_ATTR(type, 0444, type_show, NULL);
-+static DEVICE_ATTR_RO(type);
- 
- static ssize_t interrupts_enabled_show(struct device *dev,
- 				       struct device_attribute *attr,
-@@ -1626,8 +1626,7 @@ static ssize_t interrupts_enabled_show(struct device *dev,
- 
- 	return snprintf(buf, 10, "%d\n", enabled);
- }
--static DEVICE_ATTR(interrupts_enabled, 0444,
--		   interrupts_enabled_show, NULL);
-+static DEVICE_ATTR_RO(interrupts_enabled);
- 
- IPMI_SI_ATTR(short_timeouts);
- IPMI_SI_ATTR(long_timeouts);
-@@ -1658,7 +1657,7 @@ static ssize_t params_show(struct device *dev,
- 			smi_info->io.irq,
- 			smi_info->io.slave_addr);
- }
--static DEVICE_ATTR(params, 0444, params_show, NULL);
-+static DEVICE_ATTR_RO(params);
- 
- static struct attribute *ipmi_si_dev_attrs[] = {
- 	&dev_attr_type.attr,
--- 
-2.28.0
+> .
+> 
 
