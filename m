@@ -2,128 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A883DC0F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BA23DC0F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbhG3WTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:19:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232680AbhG3WTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:19:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F302A610A6;
-        Fri, 30 Jul 2021 22:18:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627683539;
-        bh=gIRZmLSHg2oCuCzzrUdAVmZR964QJKWRL7lSRznz+70=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c+D/i0H9E9aW7yh91QtXvqeP2ApTvE2MS8e1tb15PTb0AlrYv3fi+CEz4OluJl4kb
-         Ntd6VtQQ8k1Ez74u/XilPdo6nC7ZZ6MqfurtqzLiGml5N5UOvTjCe086I9B6BrmYaz
-         WRtEWqwsYUvvVc2aQVbippDp/SWHSodBI+VYBUHURmnnTJBk9BPBSyM66sr3lrRHff
-         ZuTVnsOuPXb4xApJTJQhOMtXjI2Ai4f5oE34B4/VpM2Wywwz/77vlyc67EUJ8AkGrT
-         /kqy3L6M6B0gZcGe8W8AwAZWQfyiv1N4/+ruVFabY/IAUvVXUo3xtev3eManj0XwcO
-         dR/VUQZ0pkKPQ==
-Date:   Fri, 30 Jul 2021 15:18:57 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: reset free segment to prefree status
- when do_checkpoint() fail
-Message-ID: <YQR60QUh0Pim8vSf@google.com>
-References: <20210427082106.2755-1-frank.li@vivo.com>
- <12ae52df-bc5e-82c3-4f78-1eafe7723f93@huawei.com>
- <5f37995c-2390-e8ca-d002-3639ad39e0d3@kernel.org>
- <YPXDtEyBg5W2ToD/@google.com>
- <8d2e3a63-72f9-bcb2-24e5-dddd84136001@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8d2e3a63-72f9-bcb2-24e5-dddd84136001@kernel.org>
+        id S234437AbhG3WT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234382AbhG3WT2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 18:19:28 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C664C06179C
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:19:22 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so16543243pjd.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:19:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=workware-net-au.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=O24PNtKrKZ/R4LgVLMiIP6EoNyXsgw3ajELkWTG8RLo=;
+        b=FZYQhFlDOs9Aq3bosQwrMNnX9gb4N5kUKVVl+0TWoiZ5E51sJZ46FwYyQwqp/ssPQI
+         Dp39QLzC7K3xuoEsgd5hXAgimfYP7Ez9YaqCUhrRT42+hlKK/UfFBg2Zo518XMuVxJg8
+         Ge604OBVtfnFAQEuNUGhALeksQotBzQ8tjIHUFxrTqN/0r01fRtbYztl+3kMRXSLQlvH
+         A+ZzO0Qm53ABkqZ6nF53EuHtLoexENzcKPOn0Cfqh5fwwclL8T9C2A06EVxoL9zbKFu9
+         g/+kd/29vrcrJP5JFZEzengql9pDFC5OzltBzJ8qCNuKsvE439nmqPonQGp6tVb4bQ7O
+         ZzAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=O24PNtKrKZ/R4LgVLMiIP6EoNyXsgw3ajELkWTG8RLo=;
+        b=Xn8B9r+Nz62ARkgJHZ2mHd2x8viwphUp/ZiKvhmKG2c1ygOftVhixtB9SneOhE42KH
+         hJmiFsa9FnTE1+pe/JEWH8B3w62gIVmfwVoqQ40dbLUXzvGqr6Am1ymazmLQiroOd53D
+         EtGoIUCl+K7l2TZj/OVcA/j44bo3HogqGWZF9BVpTk+kbQANWokB0Ypj1rBjPtZY5Qfh
+         7r41fZlDlac9DH0uyWLp9hz3QXb0/vPusztZFTExUR589plB3XD2O8ezi6qJ2r06V4Oj
+         408ZUcJKeft5gqqDn3xLOwV1008DDx6EBBlgFjb7QRF4IxYxgXfw5IM7hjByl2Wo95aU
+         oi/Q==
+X-Gm-Message-State: AOAM530F6QEPztIHw2KBZJZfrA/tbZtDxeCqNmde2ORe0EyxiDx2XuFx
+        VuZfOntRdg+3XATodHXoINptPQ==
+X-Google-Smtp-Source: ABdhPJyh4rFQzG8+Mb9p1u5b4EcqoZFKns1hLpbNhv2Pm3CdlC55gIOWgCMcLHWiCcTWWM8+0OwnUw==
+X-Received: by 2002:a63:5fd4:: with SMTP id t203mr1278866pgb.141.1627683561826;
+        Fri, 30 Jul 2021 15:19:21 -0700 (PDT)
+Received: from smtpclient.apple (117-20-69-228.751445.bne.nbn.aussiebb.net. [117.20.69.228])
+        by smtp.gmail.com with ESMTPSA id n15sm3538687pff.149.2021.07.30.15.19.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 30 Jul 2021 15:19:21 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH] net: phy: micrel: Fix detection of ksz87xx switch
+From:   Steve Bennett <steveb@workware.net.au>
+In-Reply-To: <20210730095936.1420b930@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Date:   Sat, 31 Jul 2021 08:19:17 +1000
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Workware-Check: steveb@workware.net.au
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <74BE3A85-61E2-45C9-BA77-242B1014A820@workware.net.au>
+References: <20210730105120.93743-1-steveb@workware.net.au>
+ <20210730095936.1420b930@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/20, Chao Yu wrote:
-> On 2021/7/20 2:25, Jaegeuk Kim wrote:
-> > On 07/19, Chao Yu wrote:
-> > > On 2021/4/27 20:37, Chao Yu wrote:
-> > > > I think just reverting dirty/free bitmap is not enough if checkpoint fails,
-> > > > due to we have updated sbi->cur_cp_pack and nat/sit bitmap, next CP tries
-> > > > to overwrite last valid meta/node/data, then filesystem will be corrupted.
-> > > > 
-> > > > So I suggest to set cp_error if do_checkpoint() fails until we can handle
-> > > > all cases, which is not so easy.
-> > > > 
-> > > > How do you think?
-> > > 
-> > > Let's add below patch first before you figure out the patch which covers all
-> > > things.
-> > > 
-> > >  From 3af957c98e9e04259f8bb93ca0b74ba164f3f27e Mon Sep 17 00:00:00 2001
-> > > From: Chao Yu <chao@kernel.org>
-> > > Date: Mon, 19 Jul 2021 16:37:44 +0800
-> > > Subject: [PATCH] f2fs: fix to stop filesystem update once CP failed
-> > > 
-> > > During f2fs_write_checkpoint(), once we failed in
-> > > f2fs_flush_nat_entries() or do_checkpoint(), metadata of filesystem
-> > > such as prefree bitmap, nat/sit version bitmap won't be recovered,
-> > > it may cause f2fs image to be inconsistent, let's just set CP error
-> > > flag to avoid further updates until we figure out a scheme to rollback
-> > > all metadatas in such condition.
-> > > 
-> > > Reported-by: Yangtao Li <frank.li@vivo.com>
-> > > Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> > > Signed-off-by: Chao Yu <chao@kernel.org>
-> > > ---
-> > >   fs/f2fs/checkpoint.c | 10 +++++++---
-> > >   1 file changed, 7 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-> > > index 6c208108d69c..096c85022f62 100644
-> > > --- a/fs/f2fs/checkpoint.c
-> > > +++ b/fs/f2fs/checkpoint.c
-> > > @@ -1639,8 +1639,10 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
-> > > 
-> > >   	/* write cached NAT/SIT entries to NAT/SIT area */
-> > >   	err = f2fs_flush_nat_entries(sbi, cpc);
-> > > -	if (err)
-> > > +	if (err) {
-> > > +		f2fs_stop_checkpoint(sbi, false);
-> > 
-> > I think we should abuse this, since we can get any known ENOMEM as well.
-> 
-> Yup, but one critical issue here is it can break A/B update of NAT area,
-> so, in order to fix this hole, how about using NOFAIL memory allocation
-> in f2fs_flush_nat_entries() first until we figure out the finial scheme?
+> On 31 Jul 2021, at 2:59 am, Jakub Kicinski <kuba@kernel.org> wrote:
+>=20
+> Please extend the CC list to the maintainers, and people who
+> worked on this driver in the past, especially Marek.
 
-NOFAIL is risky, so how about adding a retry logic on ENOMEM with a message
-and then giving up if we can't get the memory? BTW, what about EIO or other
-family?
+Sure, I can do that in a v2 of the patch along with the more detailed
+explanation below.
 
-> 
-> Thanks,
-> 
-> > 
-> > >   		goto stop;
-> > > +	}
-> > > 
-> > >   	f2fs_flush_sit_entries(sbi, cpc);
-> > > 
-> > > @@ -1648,10 +1650,12 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
-> > >   	f2fs_save_inmem_curseg(sbi);
-> > > 
-> > >   	err = do_checkpoint(sbi, cpc);
-> > > -	if (err)
-> > > +	if (err) {
-> > > +		f2fs_stop_checkpoint(sbi, false);
-> > >   		f2fs_release_discard_addrs(sbi);
-> > > -	else
-> > > +	} else {
-> > >   		f2fs_clear_prefree_segments(sbi, cpc);
-> > > +	}
-> > > 
-> > >   	f2fs_restore_inmem_curseg(sbi);
-> > >   stop:
-> > > -- 
-> > > 2.22.1
+>=20
+> On Fri, 30 Jul 2021 20:51:20 +1000 Steve Bennett wrote:
+>> The previous logic was wrong such that the ksz87xx
+>> switch was not identified correctly.
+>=20
+> Any more details of what is happening? Which extact device do you see
+> this problem on?
+
+I have a ksz8795 switch.
+
+Without the patch:
+
+ksz8795-switch spi3.1 ade1 (uninitialized): PHY [dsa-0.1:03] driver =
+[Generic PHY]
+ksz8795-switch spi3.1 ade2 (uninitialized): PHY [dsa-0.1:04] driver =
+[Generic PHY]
+
+With the patch:
+
+ksz8795-switch spi3.1 ade1 (uninitialized): PHY [dsa-0.1:03] driver =
+[Micrel KSZ87XX Switch]
+ksz8795-switch spi3.1 ade2 (uninitialized): PHY [dsa-0.1:04] driver =
+[Micrel KSZ87XX Switch]
+
+>=20
+> I presume ksz87xx devices used to work and gotten broken - would you
+> mind clarifying and adding a Fixes tag to help backporting to the
+> correct stable branches?
+
+I looked at the original commit =
+8b95599c55ed24b36cf44a4720067cfe67edbcb4, but
+it couldn't ever have worked.
+
+ksz8051_ksz8795_match_phy_device() uses the parameter ksz_phy_id to =
+discriminate
+whether it was called from ksz8051_match_phy_device() or from =
+ksz8795_match_phy_device()
+but since PHY_ID_KSZ87XX is the same value as PHY_ID_KSZ8051, this =
+doesn't do anything.
+
+Need to pass a different value to discriminate.
+
+>=20
+>> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+>> index 4d53886f7d51..a4acec02c8cb 100644
+>> --- a/drivers/net/phy/micrel.c
+>> +++ b/drivers/net/phy/micrel.c
+>> @@ -401,11 +401,11 @@ static int ksz8041_config_aneg(struct =
+phy_device *phydev)
+>> }
+>>=20
+>> static int ksz8051_ksz8795_match_phy_device(struct phy_device =
+*phydev,
+>> -					    const u32 ksz_phy_id)
+>> +					    const u32 ksz_8051)
+>=20
+> bool and use true/false in the callers?
+
+Sure.
