@@ -2,161 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1003DB544
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2262C3DB555
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238206AbhG3IvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 04:51:06 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:41564 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238137AbhG3Iuy (ORCPT
+        id S238121AbhG3IxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 04:53:02 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:31447 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230456AbhG3IxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 04:50:54 -0400
-X-UUID: 075053a04ba54ba5ab4a7f7a47d8b2ca-20210730
-X-UUID: 075053a04ba54ba5ab4a7f7a47d8b2ca-20210730
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1362136745; Fri, 30 Jul 2021 16:50:46 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 30 Jul 2021 16:50:45 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 30 Jul 2021 16:50:45 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH 11/11] usb: xhci-mtk: modify the SOF/ITP interval for mt8195
-Date:   Fri, 30 Jul 2021 16:50:02 +0800
-Message-ID: <1627635002-24521-11-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1627635002-24521-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1627635002-24521-1-git-send-email-chunfeng.yun@mediatek.com>
+        Fri, 30 Jul 2021 04:53:00 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ANiX2cqnqx3FARrJ6zCopma8oMGzpDfIQ3DAb?=
+ =?us-ascii?q?v31ZSRFFG/Fw9vre+MjzsCWYtN9/Yh8dcK+7UpVoLUm8yXcX2/h1AV7BZniEhI?=
+ =?us-ascii?q?LAFugLgrcKqAeQeREWmNQ86Y5QN4B6CPDVSWNxlNvG5mCDeOoI8Z2q97+JiI7l?=
+ =?us-ascii?q?o0tQcQ=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,281,1620662400"; 
+   d="scan'208";a="112070560"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 30 Jul 2021 16:52:52 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id C2E894D0D49D;
+        Fri, 30 Jul 2021 16:52:48 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 30 Jul 2021 16:52:49 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 30 Jul 2021 16:52:47 +0800
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <nvdimm@lists.linux.dev>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <dm-devel@redhat.com>
+CC:     <djwong@kernel.com>, <dan.j.williams@intel.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <agk@redhat.com>,
+        <snitzer@redhat.com>
+Subject: [PATCH v6 0/9] fsdax: introduce fs query to support reflink
+Date:   Fri, 30 Jul 2021 16:52:36 +0800
+Message-ID: <20210730085245.3069812-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: C2E894D0D49D.A3ADA
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are 4 USB controllers on MT8195, the controllers (IP1~IP3,
-exclude IP0) have a wrong default SOF/ITP interval which is
-calculated from the frame counter clock 24Mhz by default, but
-in fact, the frame counter clock is 48Mhz, so we should set
-the accurate interval according to 48Mhz for those controllers.
-Note: the first controller no need set it.
+This patchset is aimed to support shared pages tracking for fsdax.
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
- drivers/usb/host/xhci-mtk.c | 65 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 65 insertions(+)
+Change from V5:
+  - fix dax_load_pfn(), take locked,empty,zero dax entry into
+       consideration
+  - fix the usage of rwsem lock for dax_device's holder
+  - fix build error reported by kernelbot
+  - keep functionality of dax_{,dis}assocaite_entry() for filesystems
+       doesn't have rmapbt feature
+  - Rebased to v5.14-rc3
 
-diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
-index 12b691547438..7ff0cd707ba1 100644
---- a/drivers/usb/host/xhci-mtk.c
-+++ b/drivers/usb/host/xhci-mtk.c
-@@ -57,6 +57,27 @@
- /* u2_phy_pll register */
- #define CTRL_U2_FORCE_PLL_STB	BIT(28)
- 
-+/* xHCI CSR */
-+#define LS_EOF_CFG		0x930
-+#define LSEOF_OFFSET		0x89
-+
-+#define FS_EOF_CFG		0x934
-+#define FSEOF_OFFSET		0x2e
-+
-+#define SS_GEN1_EOF_CFG		0x93c
-+#define SSG1EOF_OFFSET		0x78
-+
-+#define HFCNTR_CFG		0x944
-+#define ITP_DELTA_CLK		(0xa << 1)
-+#define ITP_DELTA_CLK_MASK	GENMASK(5, 1)
-+#define FRMCNT_LEV1_RANG	(0x12b << 8)
-+#define FRMCNT_LEV1_RANG_MASK	GENMASK(19, 8)
-+
-+#define SS_GEN2_EOF_CFG		0x990
-+#define SSG2EOF_OFFSET		0x3c
-+
-+#define XSEOF_OFFSET_MASK	GENMASK(11, 0)
-+
- /* usb remote wakeup registers in syscon */
- 
- /* mt8173 etc */
-@@ -87,6 +108,46 @@ enum ssusb_uwk_vers {
- 	SSUSB_UWK_V1_2,		/* specific revision 1.2 */
- };
- 
-+/*
-+ * MT8195 has 4 controllers, the controller1~3's default SOF/ITP interval
-+ * is calculated from the frame counter clock 24M, but in fact, the clock
-+ * is 48M, add workaround for it.
-+ */
-+static void xhci_mtk_set_frame_interval(struct xhci_hcd_mtk *mtk)
-+{
-+	struct device *dev = mtk->dev;
-+	struct usb_hcd *hcd = mtk->hcd;
-+	u32 value;
-+
-+	if (!of_device_is_compatible(dev->of_node, "mediatek,mt8195-xhci"))
-+		return;
-+
-+	value = readl(hcd->regs + HFCNTR_CFG);
-+	value &= ~(ITP_DELTA_CLK_MASK | FRMCNT_LEV1_RANG_MASK);
-+	value |= (ITP_DELTA_CLK | FRMCNT_LEV1_RANG);
-+	writel(value, hcd->regs + HFCNTR_CFG);
-+
-+	value = readl(hcd->regs + LS_EOF_CFG);
-+	value &= ~XSEOF_OFFSET_MASK;
-+	value |= LSEOF_OFFSET;
-+	writel(value, hcd->regs + LS_EOF_CFG);
-+
-+	value = readl(hcd->regs + FS_EOF_CFG);
-+	value &= ~XSEOF_OFFSET_MASK;
-+	value |= FSEOF_OFFSET;
-+	writel(value, hcd->regs + FS_EOF_CFG);
-+
-+	value = readl(hcd->regs + SS_GEN1_EOF_CFG);
-+	value &= ~XSEOF_OFFSET_MASK;
-+	value |= SSG1EOF_OFFSET;
-+	writel(value, hcd->regs + SS_GEN1_EOF_CFG);
-+
-+	value = readl(hcd->regs + SS_GEN2_EOF_CFG);
-+	value &= ~XSEOF_OFFSET_MASK;
-+	value |= SSG2EOF_OFFSET;
-+	writel(value, hcd->regs + SS_GEN2_EOF_CFG);
-+}
-+
- static int xhci_mtk_host_enable(struct xhci_hcd_mtk *mtk)
- {
- 	struct mu3c_ippc_regs __iomem *ippc = mtk->ippc_regs;
-@@ -368,6 +429,9 @@ static int xhci_mtk_setup(struct usb_hcd *hcd)
- 		ret = xhci_mtk_ssusb_config(mtk);
- 		if (ret)
- 			return ret;
-+
-+		/* workaround only for mt8195 */
-+		xhci_mtk_set_frame_interval(mtk);
- 	}
- 
- 	ret = xhci_gen_setup(hcd, xhci_mtk_quirks);
-@@ -716,6 +780,7 @@ static const struct dev_pm_ops xhci_mtk_pm_ops = {
- 
- static const struct of_device_id mtk_xhci_of_match[] = {
- 	{ .compatible = "mediatek,mt8173-xhci"},
-+	{ .compatible = "mediatek,mt8195-xhci"},
- 	{ .compatible = "mediatek,mtk-xhci"},
- 	{ },
- };
+This patchset moves owner tracking from dax_assocaite_entry() to pmem
+device driver, by introducing an interface ->memory_failure() for struct
+pagemap.  This interface is called by memory_failure() in mm, and
+implemented by pmem device.
+
+Then call holder operations to find the filesystem which the corrupted
+data located in, and call filesystem handler to track files or metadata
+associated with this page.
+
+Finally we are able to try to fix the corrupted data in filesystem and
+do other necessary processing, such as killing processes who are using
+the files affected.
+
+The call trace is like this:
+memory_failure()
+|* fsdax case
+|------------
+|pgmap->ops->memory_failure()      => pmem_pgmap_memory_failure()
+| dax_holder_notify_failure()      =>
+|  dax_device->holder_ops->notify_failure() =>
+|                                     - xfs_dax_notify_failure()
+|                                     - md_dax_notify_failure()
+|  |* xfs_dax_notify_failure()
+|  |--------------------------
+|  |   xfs_rmap_query_range()
+|  |    xfs_currupt_helper()
+|  |    * corrupted on metadata
+|  |       try to recover data, call xfs_force_shutdown()
+|  |    * corrupted on file data
+|  |       try to recover data, call mf_dax_kill_procs()
+|  |* md_dax_notify_failure()
+|  |-------------------------
+|      md_targets->iterate_devices()
+|      md_targets->rmap()          => linear_rmap()
+|       dax_holder_notify_failure()
+|* normal case
+|-------------
+ mf_generic_kill_procs()
+
+The fsdax & reflink support for XFS is not contained in this patchset.
+
+(Rebased on v5.14-rc3)
+==
+
+Shiyang Ruan (9):
+  pagemap: Introduce ->memory_failure()
+  dax: Introduce holder for dax_device
+  mm: factor helpers for memory_failure_dev_pagemap
+  pmem,mm: Implement ->memory_failure in pmem driver
+  mm: Introduce mf_dax_kill_procs() for fsdax case
+  xfs: Implement ->corrupted_range() for XFS
+  dm: Introduce ->rmap() to find bdev offset
+  md: Implement dax_holder_operations
+  fsdax: add exception for reflinked files
+
+ block/genhd.c                 |  56 +++++++++++
+ drivers/dax/super.c           |  58 ++++++++++++
+ drivers/md/dm-linear.c        |  20 ++++
+ drivers/md/dm.c               | 126 ++++++++++++++++++++++++-
+ drivers/nvdimm/pmem.c         |  13 +++
+ fs/dax.c                      |  59 ++++++++----
+ fs/xfs/xfs_fsops.c            |   5 +
+ fs/xfs/xfs_mount.h            |   1 +
+ fs/xfs/xfs_super.c            | 135 +++++++++++++++++++++++++++
+ include/linux/dax.h           |  46 +++++++++
+ include/linux/device-mapper.h |   5 +
+ include/linux/genhd.h         |   1 +
+ include/linux/memremap.h      |   9 ++
+ include/linux/mm.h            |  10 ++
+ mm/memory-failure.c           | 169 +++++++++++++++++++++++-----------
+ 15 files changed, 641 insertions(+), 72 deletions(-)
+
 -- 
-2.18.0
+2.32.0
+
+
 
