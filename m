@@ -2,240 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A383DBF08
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDB03DBF0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhG3TcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 15:32:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230335AbhG3TcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:32:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BA8A60F01;
-        Fri, 30 Jul 2021 19:31:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627673520;
-        bh=oMJdAK1/uqVtScnYBeamslsc/N0GvUq5kx86SJOVb9Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Im4pmu+sHhsMi8XhIj/K7BbkDAzeZWLhh9rrAZCrFOVDahZ99J0DLQA/j7SQYgupJ
-         Jcl2hXEFPoXJOfhiC88mtDefNLv0bun7IG3TK1GSZam0jgPnuWXI4wHKskP7HzEVi0
-         TSFYD85ZAStQWH2tcLn5irx3N+qAhbkWGRiSUCo5zganKpGJjXonnHp5/dagZDWLWj
-         4qMYktcC5nNWFKYzbCD6Q+pVd/skjYzsCNsMukI8ambJPZ8Sne378pmB6ce+EvL8Ke
-         ntMNylNt08wxGENcGdFw+JYXYAH+ZerLyV+i0OWujimJWHFRpHZOq10mCwwRw//mpw
-         m1tQS8hzQRvrQ==
-Date:   Fri, 30 Jul 2021 22:31:52 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Charan Teja Reddy <charante@codeaurora.org>
-Cc:     akpm@linux-foundation.org, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com,
-        dave.hansen@linux.intel.com, vbabka@suse.cz,
-        mgorman@techsingularity.net, nigupta@nvidia.com, corbet@lwn.net,
-        khalid.aziz@oracle.com, rientjes@google.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        vinmenon@codeaurora.org
-Subject: Re: [PATCH V5] mm: compaction: support triggering of proactive
- compaction by user
-Message-ID: <YQRTqNF3xn+tB+qN@kernel.org>
-References: <1627653207-12317-1-git-send-email-charante@codeaurora.org>
+        id S231143AbhG3Tej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230402AbhG3Tei (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 15:34:38 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A71C061765;
+        Fri, 30 Jul 2021 12:34:33 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 358222A0;
+        Fri, 30 Jul 2021 19:34:33 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 358222A0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1627673673; bh=NXFn2qrOpQssNUy6D827VdxWljfdtpOsIvk/raOWLIw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=NVGsWJK0N0DJ1UzW9JU+CWpJgKX0zxRsR3AbLXo7nRvPLA3NUu6uuuEMmf61QQKSz
+         RPKHcVMLplBMNzI7hlrysnOMUhEJUjIlXWJ+yIqlMKOreDpf9Jtvxztn+SE5vli3TF
+         T3zcCYr3Pa1QZmGlJ9Or6b0Vp7qeQdj7SFvafAoZe5PIDs/ff30pyseSn5W5qyPpR0
+         D8yuJ8b427A0cXxsUHoOor89gB89Ab9H+lw7Q1ItO61cMMtPYzrCzIT0aamlq7Y80m
+         g+179Ulhy0YTMy0zKSSxeH6QB78GOs9qu/Cds8+mXZeLQ9WRvul/f3ALO+PUj/A3Xk
+         sssVl5Wmb+5YQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Hu Haowen <src.res@email.cn>
+Cc:     panyunwang849@gmail.com,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 1/3] docs: add traditional Chinese translation for
+ kernel Documentation
+In-Reply-To: <20210729155627.41744-1-src.res@email.cn>
+References: <20210729155627.41744-1-src.res@email.cn>
+Date:   Fri, 30 Jul 2021 13:34:32 -0600
+Message-ID: <87a6m3a94n.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1627653207-12317-1-git-send-email-charante@codeaurora.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 07:23:27PM +0530, Charan Teja Reddy wrote:
-> The proactive compaction[1] gets triggered for every 500msec and run
-> compaction on the node for COMPACTION_HPAGE_ORDER (usually order-9)
-> pages based on the value set to sysctl.compaction_proactiveness.
-> Triggering the compaction for every 500msec in search of
-> COMPACTION_HPAGE_ORDER pages is not needed for all applications,
-> especially on the embedded system usecases which may have few MB's of
-> RAM. Enabling the proactive compaction in its state will endup in
-> running almost always on such systems.
-> 
-> Other side, proactive compaction can still be very much useful for
-> getting a set of higher order pages in some controllable
-> manner(controlled by using the sysctl.compaction_proactiveness). So, on
-> systems where enabling the proactive compaction always may proove not
-> required, can trigger the same from user space on write to its sysctl
-> interface. As an example, say app launcher decide to launch the memory
-> heavy application which can be launched fast if it gets more higher
-> order pages thus launcher can prepare the system in advance by
-> triggering the proactive compaction from userspace.
-> 
-> This triggering of proactive compaction is done on a write to
-> sysctl.compaction_proactiveness by user.
-> 
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
-> 
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> ---
->  Changes in V5:
->  	-- Avoid unnecessary wakeup of proactive compaction when it is disabled.
-> 	-- No changes in the logic of triggering the proactive compaction.
-> 
->  Changes in V4:
-> 	-- Changed the code as the 'proactive_defer' counter is removed.
-> 	-- No changes in the logic of triggering the proactive compaction.
-> 	-- https://lore.kernel.org/patchwork/patch/1448777/
-> 
->  Changes in V3:
->         -- Fixed review comments from Valstimil and others.
->         -- https://lore.kernel.org/patchwork/patch/1438211/
-> 
->  Changes in V2:
-> 	-- remove /proc/../proactive_compact_memory interface trigger for proactive compaction
->         -- Intention is same that add a way to trigger proactive compaction by user.
->         -- https://lore.kernel.org/patchwork/patch/1431283/
-> 
->  changes in V1:
-> 	-- Created the new /proc/sys/vm/proactive_compact_memory in
-> 	   interface to trigger proactive compaction from user 
->         -- https://lore.kernel.org/lkml/1619098678-8501-1-git-send-email-charante@codeaurora.org/
-> 
->  Documentation/admin-guide/sysctl/vm.rst |  3 ++-
->  include/linux/compaction.h              |  2 ++
->  include/linux/mmzone.h                  |  1 +
->  kernel/sysctl.c                         |  2 +-
->  mm/compaction.c                         | 38 +++++++++++++++++++++++++++++++--
->  5 files changed, 42 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-> index 003d5cc..b526cf6 100644
-> --- a/Documentation/admin-guide/sysctl/vm.rst
-> +++ b/Documentation/admin-guide/sysctl/vm.rst
-> @@ -118,7 +118,8 @@ compaction_proactiveness
->  
->  This tunable takes a value in the range [0, 100] with a default value of
->  20. This tunable determines how aggressively compaction is done in the
-> -background. Setting it to 0 disables proactive compaction.
-> +background. On write of non zero value to this tunable will immediately
+Hu Haowen <src.res@email.cn> writes:
 
-Nit: I think "Write of non zero ..."
+> Add traditional Chinese translation (zh_TW) for the Linux Kernel
+> documentation with a series of translated files.
+>
+> Signed-off-by: Hu Haowen <src.res@email.cn>
+> Reviewed-by: Pan Yunwang <panyunwang849@gmail.com>
 
-> +trigger the proactive compaction. Setting it to 0 disables proactive compaction.
->  
->  Note that compaction has a non-trivial system-wide impact as pages
->  belonging to different processes are moved around, which could also lead
-> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-> index c24098c..34bce35 100644
-> --- a/include/linux/compaction.h
-> +++ b/include/linux/compaction.h
-> @@ -84,6 +84,8 @@ static inline unsigned long compact_gap(unsigned int order)
->  extern unsigned int sysctl_compaction_proactiveness;
->  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
->  			void *buffer, size_t *length, loff_t *ppos);
-> +extern int compaction_proactiveness_sysctl_handler(struct ctl_table *table,
-> +		int write, void *buffer, size_t *length, loff_t *ppos);
->  extern int sysctl_extfrag_threshold;
->  extern int sysctl_compact_unevictable_allowed;
->  
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 4610750..6a1d79d 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -853,6 +853,7 @@ typedef struct pglist_data {
->  	enum zone_type kcompactd_highest_zoneidx;
->  	wait_queue_head_t kcompactd_wait;
->  	struct task_struct *kcompactd;
-> +	bool proactive_compact_trigger;
->  #endif
->  	/*
->  	 * This is a per-node reserve of pages that are not available
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 82d6ff6..65bc6f7 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -2871,7 +2871,7 @@ static struct ctl_table vm_table[] = {
->  		.data		= &sysctl_compaction_proactiveness,
->  		.maxlen		= sizeof(sysctl_compaction_proactiveness),
->  		.mode		= 0644,
-> -		.proc_handler	= proc_dointvec_minmax,
-> +		.proc_handler	= compaction_proactiveness_sysctl_handler,
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= &one_hundred,
->  	},
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index f984ad0..fbc60f9 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -2700,6 +2700,30 @@ static void compact_nodes(void)
->   */
->  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
->  
-> +int compaction_proactiveness_sysctl_handler(struct ctl_table *table, int write,
-> +		void *buffer, size_t *length, loff_t *ppos)
-> +{
-> +	int rc, nid;
-> +
-> +	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
-> +	if (rc)
-> +		return rc;
-> +
-> +	if (write && sysctl_compaction_proactiveness) {
-> +		for_each_online_node(nid) {
-> +			pg_data_t *pgdat = NODE_DATA(nid);
-> +
-> +			if (pgdat->proactive_compact_trigger)
-> +				continue;
-> +
-> +			pgdat->proactive_compact_trigger = true;
-> +			wake_up_interruptible(&pgdat->kcompactd_wait);
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * This is the entry point for compacting all nodes via
->   * /proc/sys/vm/compact_memory
-> @@ -2744,7 +2768,8 @@ void compaction_unregister_node(struct node *node)
->  
->  static inline bool kcompactd_work_requested(pg_data_t *pgdat)
->  {
-> -	return pgdat->kcompactd_max_order > 0 || kthread_should_stop();
-> +	return pgdat->kcompactd_max_order > 0 || kthread_should_stop() ||
-> +		pgdat->proactive_compact_trigger;
->  }
->  
->  static bool kcompactd_node_suitable(pg_data_t *pgdat)
-> @@ -2895,9 +2920,16 @@ static int kcompactd(void *p)
->  	while (!kthread_should_stop()) {
->  		unsigned long pflags;
->  
-> +		/*
-> +		 * Avoid the unnecessary wakeup for proactive compaction
-> +		 * when it is disabled.
-> +		 */
-> +		if (!sysctl_compaction_proactiveness)
-> +			timeout = MAX_SCHEDULE_TIMEOUT;
->  		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
->  		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
-> -			kcompactd_work_requested(pgdat), timeout)) {
-> +			kcompactd_work_requested(pgdat), timeout) &&
-> +			!pgdat->proactive_compact_trigger) {
->  
->  			psi_memstall_enter(&pflags);
->  			kcompactd_do_work(pgdat);
-> @@ -2932,6 +2964,8 @@ static int kcompactd(void *p)
->  				timeout =
->  				   default_timeout << COMPACT_MAX_DEFER_SHIFT;
->  		}
-> +		if (unlikely(pgdat->proactive_compact_trigger))
-> +			pgdat->proactive_compact_trigger = false;
->  	}
->  
->  	return 0;
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member of the Code Aurora Forum, hosted by The Linux Foundation
-> 
-> 
+OK, I have applied this set, thanks.
 
--- 
-Sincerely yours,
-Mike.
+jon
