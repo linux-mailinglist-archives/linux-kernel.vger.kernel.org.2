@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160433DBEF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9CC3DBEF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbhG3TY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 15:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
+        id S231196AbhG3T0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbhG3TYZ (ORCPT
+        with ESMTP id S230335AbhG3T0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:24:25 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CC0C061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:24:19 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id p38so5032232lfa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:24:19 -0700 (PDT)
+        Fri, 30 Jul 2021 15:26:12 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A3DC061765;
+        Fri, 30 Jul 2021 12:26:06 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id a13so12752728iol.5;
+        Fri, 30 Jul 2021 12:26:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mlZRTu+F0o6A8qh5wibGN8Kxtu6GVrlOQ+jra2A0ypw=;
-        b=VphtNkf0G/ZxdbSdJpJzgxkywMFcq1UHxJnjZdCDE57WkxcLiIrN61VNPYQac5bOpk
-         hzseshWLh8ffqXoaL+BdguaYgNlzWPDe5sacat3uwFxH2Xb3YxRGk8hwNauNLDtrOr1p
-         KCX50L4qjXUnogsRN6IM9EICxclKNh4O3UxrE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=1SdEFlqROmHFj3HUxGkbmgw79mMP1UfAqtIWtIV0eqU=;
+        b=W6tcu9NK+555WyEu62p2gwpE4VYEJHwTEMZ9/HW2fUxTg0eiytjtEpoPXP/R07aJO9
+         0DPVPVRpKTN6fkcgM6/yvBFBHh4BWDZhzn8O8UhXhnz/bzO8pyVW88vPdpSUYe0aG/IQ
+         7cw5Y0I09DAKCf5BxKIP4ZISJtVpcvi2PvA7QqqgDqYoG/9DiYMSLrj/N8LrQX6qW/c4
+         SVZXEchoKYK8ahbnBArRAO0XnvqbgrsIrEUztQBeNDC5VqOSquCgz1RjD+sxUKQ/jdh8
+         b4DKnWNBf0T4CNEzjBpd44goVeksoNOGkEXO3+wg/JNaMQvoQ+GAN4amyxHHG2lf+78X
+         C15Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mlZRTu+F0o6A8qh5wibGN8Kxtu6GVrlOQ+jra2A0ypw=;
-        b=bNbEJEQ4or1YYibQ93gdrcuIzlM+WkvP3rEpo6ZzJGc3UO7LRRyFVpOaATd0E7VsqZ
-         bos/SeY805Mm0BAryMlSser2LF8Lns6Mj0A+ttU5RUwdL1aVFdEHjcehHvv/mLFUeHAY
-         y5JL50kNQSVrkHXXTHQUHFNUkgpjHk0yT5nvUqH8sekL+iVbZxU7rjDv8siyU85eRvqH
-         WVllbxzExJDbDcSdVL3bCS7fzUpHxHNUlaVzb4H2zoZC/+bqSvY6MRi3VfPMKtoFGCFX
-         MVU46l62aZXJ7m+cI6sP4EOoh0cRLI8KdHX25O6yHlEVWexnmN/Pjq4X6nZhcDZnBO5s
-         GrIg==
-X-Gm-Message-State: AOAM531vCHR4CzPqObyiS0NILt2/OICRbmoOUY1ConEsv18WgixnRMhf
-        w/7jT/BgdANux9RM+7IlEX0vI7OWH6GKPMkO
-X-Google-Smtp-Source: ABdhPJxmfBzX5LkcHP/Jcvuh/krqVC/splBcITtO2lVVwJ98X57LG7kNEeoeH4gAvdtVVPjcCIINoA==
-X-Received: by 2002:ac2:5979:: with SMTP id h25mr3004031lfp.393.1627673057268;
-        Fri, 30 Jul 2021 12:24:17 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id t30sm218119lfg.289.2021.07.30.12.24.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 12:24:15 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id r26so20003067lfp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:24:15 -0700 (PDT)
-X-Received: by 2002:a05:6512:2388:: with SMTP id c8mr2853330lfv.201.1627673054956;
- Fri, 30 Jul 2021 12:24:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=1SdEFlqROmHFj3HUxGkbmgw79mMP1UfAqtIWtIV0eqU=;
+        b=YYDk7cftpocxD3H7RLzu7QRK51cOTaY/wHMmfYlCv9vAg/C4EyPcY/9JWzqAlOA13L
+         W45Bqo2R0HWnuoyabhIMop9UEmJDCD5EKb7m7BH3PdgHIHXx6Cgo+wlCX2Xt5vnLgdz8
+         vMKFEnZBaT5DpPKvB/qxehuK7V8cJ/6fmb1QRyIfYRiFQ0ojnJQmrtISFOS+p9BUjipB
+         4col0nztRhsx7qpGANK7lS4rda6Syn2MKIo9vwiBcmuIp4zp0dHze8vXQ5qnE63eN6WG
+         lo1+gjSNXX/ebq2v474agfQAWLN3bc504+N4yg0+djOglM23L27qcDbQcJr/EsrTmmIO
+         ZGyA==
+X-Gm-Message-State: AOAM532O4Xev+4LRGxDEgi5fxq3+wbi/gk/GFdoeQUHP5cCnZ8fvSvUB
+        0uhI43FttXERJvhdCRZbLpsllY6dXpORY8o7
+X-Google-Smtp-Source: ABdhPJw3AWyzwHYgQ8HIQ55jKCF389gducqMMPWDj1GfbausUMakuP31ZENQC9HQut62412HBjDN+Q==
+X-Received: by 2002:a6b:f714:: with SMTP id k20mr773833iog.148.1627673165677;
+        Fri, 30 Jul 2021 12:26:05 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id s21sm1560756iot.33.2021.07.30.12.26.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 12:26:04 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next 1/2] net: dsa: tag_mtk: skip address learning on transmit to standalone ports
+Date:   Sat, 31 Jul 2021 03:25:55 +0800
+Message-Id: <20210730192555.638774-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210730190706.jm7uizyqltmle2bi@skbuf>
+References: <20210728175327.1150120-1-dqfext@gmail.com> <20210728175327.1150120-2-dqfext@gmail.com> <20210728183705.4gea64qlbe64kkpl@skbuf> <20210730162403.p2dnwvwwgsxttomg@skbuf> <20210730190020.638409-1-dqfext@gmail.com> <20210730190706.jm7uizyqltmle2bi@skbuf>
 MIME-Version: 1.0
-References: <20210729222635.2937453-1-sspatil@android.com> <20210729222635.2937453-2-sspatil@android.com>
- <CAHk-=wh-DWvsFykwAy6uwyv24nasJ39d7SHT+15x+xEXBtSm_Q@mail.gmail.com> <cee514d6-8551-8838-6d61-098d04e226ca@android.com>
-In-Reply-To: <cee514d6-8551-8838-6d61-098d04e226ca@android.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 30 Jul 2021 12:23:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjStQurUzSAPVajL6Rj=CaPuSSgwaMO=0FJzFvSD66ACw@mail.gmail.com>
-Message-ID: <CAHk-=wjStQurUzSAPVajL6Rj=CaPuSSgwaMO=0FJzFvSD66ACw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] fs: pipe: wakeup readers everytime new data written
- is to pipe
-To:     Sandeep Patil <sspatil@android.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable <stable@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:11 PM Sandeep Patil <sspatil@android.com> wrote:
->
-> Yes, your patch fixes all apps on Android I can test that include this
-> library.
+On Fri, Jul 30, 2021 at 10:07:06PM +0300, Vladimir Oltean wrote:
+> > After enabling it, I noticed .port_fdb_{add,del} are called with VID=0
+> > (which it does not use now) unless I turn on VLAN filtering. Is that
+> > normal?
+> 
+> They are called with the VID from the learned packet.
+> If the bridge is VLAN-unaware, the MAC SA is learned with VID 0.
+> Generally, VID 0 is always used for VLAN-unaware bridging. You can
+> privately translate VID 0 to whatever VLAN ID you use in VLAN-unaware
+> mode.
 
-Ok, thanks for checking.
-
-> fwiw, the library seems to have been fixed. However, I am not sure
-> how long it will be for all apps to take that update :(.
-
-I wonder if I could make the wakeup logic do this only for the epollet case.
-
-I'll have to think about it, but maybe I'll just apply that simple
-patch. I dislike the pointless wakeups, and as long as the only case I
-knew of was only a test of broken behavior, it was fine. But now that
-you've reported actual application breakage, this is in the "real
-regression" category, and so I'll fix it one way or the other.
-
-And on the other hand I also have a slight preference towards your
-patch simply because you did the work of finding this out, so you
-should get the credit.
-
-I'll mull it over a bit more, but whatever I'll do I'll do before rc4
-and mark it for stable.
-
-Thanks for testing,
-
-                 Linus
+Now the issue is PVID is always set to the bridge's vlan_default_pvid,
+regardless of VLAN awareless.
