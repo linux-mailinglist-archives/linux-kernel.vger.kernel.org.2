@@ -2,176 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504263DB39A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0693DB399
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237550AbhG3G3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:29:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44680 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237398AbhG3G3N (ORCPT
+        id S237424AbhG3G3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237420AbhG3G3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:29:13 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U645JJ163310;
-        Fri, 30 Jul 2021 02:29:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=N3n8o8U5G1Exik9fyptpEp7xkG5QP1uKEt2i/YLJeiM=;
- b=gjiKpyAy1yl0Sera917CswGxnDMHHHjCgMqWrmMb5TwFLiGipkop/3P38abHykYvZ296
- m9U+o1GPWfF9ituwsVxxTSedls062xMg3gutK8bvLNAY0tVQ7LlZ6PwoTKbVNcdauAl5
- 1MrNfcdQmKBzrAg2qST33vPZrv0mFdvBrkDRnz4uEU3+poQ8/W8EvReQkFdMPzt+KnVv
- dXzF9hPl2HeoOW8v/TWTVIITg8eoR2qWs5zeTibZkq0NuU8m4C8wezqhQFFu+znWbcVG
- Hp4B6S/fI/jaczJIie4IsR9kveirNlY2AN0Z8KE7/zwoXuNU5P5I52J7P+q51sR0lIRv +Q== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a49cqktem-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Jul 2021 02:29:06 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16U6SBWE022046;
-        Fri, 30 Jul 2021 06:29:04 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma01fra.de.ibm.com with ESMTP id 3a417ph0b5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Jul 2021 06:29:03 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16U6T1P619136924
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Jul 2021 06:29:01 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55E02A406D;
-        Fri, 30 Jul 2021 06:29:01 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4AB9CA405D;
-        Fri, 30 Jul 2021 06:29:01 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 30 Jul 2021 06:29:01 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
-        id B75B1E07F7; Fri, 30 Jul 2021 08:28:59 +0200 (CEST)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexey Gladkov <legion@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: [PATCH v3] ucounts: add missing data type changes
-Date:   Fri, 30 Jul 2021 08:28:54 +0200
-Message-Id: <20210730062854.3601635-1-svens@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 30 Jul 2021 02:29:15 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CBEC0613C1;
+        Thu, 29 Jul 2021 23:29:10 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so8437032oth.7;
+        Thu, 29 Jul 2021 23:29:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/YmkoeXmhmKuU8zgRSXd2MrrHRV9HDVXo1+GFiCPMV8=;
+        b=WEjBFvjcsm1P/5l6I/Qmr82R9ku/UZsPgDZ7xKDPmqWBlOefkBb4+hsnty4KbZ88gW
+         GefwZXnnSWwXsVy4VjEmXoupwW1UERK2MMSRO9aX4NnmOJuPzlJQAOlGWVyjbA9K5/Pe
+         m4xy8WX7DFtigEaayZe9XURNKZuLb2y59rYWtTJMBnwkc6mdnxOy2VXXFAYmaEGpcT5Q
+         PiRtEAyvh4GqDLSPRxpJkKgvVPLTe6JU6BEJfbTMSTK2UpEmUXUEYw6NiPLZ25i7NdlM
+         gwdInO7rlh8+B+5kOMuaiRFrS5qLUCVaJs4+VvxcnVRbwgAePF3c/y1DoqvNai2g5HkY
+         un8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/YmkoeXmhmKuU8zgRSXd2MrrHRV9HDVXo1+GFiCPMV8=;
+        b=FbfhHB+G0OKx4XjLUjlPXri3/4+d6d6YCd3gM7gx3vaGaJb/XflAcftP5Wjrjwm5Ym
+         0kXmj4np5PyzkwXmOwn75rFoqJwWk07LaRz8i0yI2a6feoRX4tiTorWXgKJGtPyGzdbz
+         Q1xMwpAnX6r4kbQn5QFTGgQnwn/C+pawX/3Baw3N13cB+t5zkK8OrcVtHj1/raCZYC+a
+         bHoIkRD0kGYHAFTlJxLvlk74uZnCFJBPpQa2ho3O0Y2krt3+67q115WNxRQyWz1quvS0
+         91UzUN9D0t11IOOy7OPkblBQiSDwt18dkC8ZHxKTsLIF8A2X/QNp4J2KU0tNiMNcW+V2
+         t+hg==
+X-Gm-Message-State: AOAM533q7+BLLv/DZ7jOYtWKMsERNvm9LZtUetaNTL6OnBshDTST+bx1
+        JVxrTplgqrd3sRghsWGTrty+iPekZd8=
+X-Google-Smtp-Source: ABdhPJznxKwtyj4BQFaa0HkanOt/oNuv3VsYcwyH0w0R6qkvLW2fXzBbkhdQeDL1fwz/e00lSNbQWQ==
+X-Received: by 2002:a9d:bb2:: with SMTP id 47mr906274oth.102.1627626549348;
+        Thu, 29 Jul 2021 23:29:09 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bh3sm153111oib.30.2021.07.29.23.29.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 23:29:08 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: connector: Add pd-supported property
+To:     Kyle Tso <kyletso@google.com>, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20210730061832.1927936-1-kyletso@google.com>
+ <20210730061832.1927936-2-kyletso@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <68732310-d53a-a86b-f43c-2ceb22051338@roeck-us.net>
+Date:   Thu, 29 Jul 2021 23:29:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Z4s2R4V6mROYwMhtNmb6G3jHeRrmArba
-X-Proofpoint-ORIG-GUID: Z4s2R4V6mROYwMhtNmb6G3jHeRrmArba
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-30_03:2021-07-29,2021-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
- mlxscore=0 adultscore=1 bulkscore=0 malwarescore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107300036
+In-Reply-To: <20210730061832.1927936-2-kyletso@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
-changed the data type of ucounts/ucounts_max to long, but missed to
-adjust a few other places. This is noticeable on big endian platforms
-from user space because the /proc/sys/user/max_*_names files all
-contain 0.
+On 7/29/21 11:18 PM, Kyle Tso wrote:
+> Set "pd-unsupported" property if the Type-C connector has no power
+> delivery support.
+> 
 
-Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
----
- fs/notify/fanotify/fanotify_user.c | 10 ++++++----
- fs/notify/inotify/inotify_user.c   | 10 ++++++----
- kernel/ucount.c                    | 16 ++++++++--------
- 3 files changed, 20 insertions(+), 16 deletions(-)
+subject is still wrong (it says pd-supported).
 
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 64864fb40b40..6576657a1a25 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -58,18 +58,20 @@ struct ctl_table fanotify_table[] = {
- 	{
- 		.procname	= "max_user_groups",
- 		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
-+		.proc_handler	= proc_doulongvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_INT_MAX,
- 	},
- 	{
- 		.procname	= "max_user_marks",
- 		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_MARKS],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
-+		.proc_handler	= proc_doulongvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_INT_MAX,
- 	},
- 	{
- 		.procname	= "max_queued_events",
-diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-index 98f61b31745a..55fe7cdea2fb 100644
---- a/fs/notify/inotify/inotify_user.c
-+++ b/fs/notify/inotify/inotify_user.c
-@@ -59,18 +59,20 @@ struct ctl_table inotify_table[] = {
- 	{
- 		.procname	= "max_user_instances",
- 		.data		= &init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
-+		.proc_handler	= proc_doulongvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_INT_MAX,
- 	},
- 	{
- 		.procname	= "max_user_watches",
- 		.data		= &init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
-+		.proc_handler	= proc_doulongvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_INT_MAX,
- 	},
- 	{
- 		.procname	= "max_queued_events",
-diff --git a/kernel/ucount.c b/kernel/ucount.c
-index 87799e2379bd..f852591e395c 100644
---- a/kernel/ucount.c
-+++ b/kernel/ucount.c
-@@ -58,14 +58,14 @@ static struct ctl_table_root set_root = {
- 	.permissions = set_permissions,
- };
- 
--#define UCOUNT_ENTRY(name)				\
--	{						\
--		.procname	= name,			\
--		.maxlen		= sizeof(int),		\
--		.mode		= 0644,			\
--		.proc_handler	= proc_dointvec_minmax,	\
--		.extra1		= SYSCTL_ZERO,		\
--		.extra2		= SYSCTL_INT_MAX,	\
-+#define UCOUNT_ENTRY(name)					\
-+	{							\
-+		.procname	= name,				\
-+		.maxlen		= sizeof(long),			\
-+		.mode		= 0644,				\
-+		.proc_handler	= proc_doulongvec_minmax,	\
-+		.extra1		= SYSCTL_ZERO,			\
-+		.extra2		= SYSCTL_INT_MAX,		\
- 	}
- static struct ctl_table user_table[] = {
- 	UCOUNT_ENTRY("max_user_namespaces"),
--- 
-2.25.1
+
+> Signed-off-by: Kyle Tso <kyletso@google.com>
+> ---
+>   .../devicetree/bindings/connector/usb-connector.yaml          | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> index 92b49bc37939..21ec470117a6 100644
+> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> @@ -111,6 +111,10 @@ properties:
+>         - 1.5A
+>         - 3.0A
+>   
+> +  pd-unsupported:
+> +    description: Set this property if the Type-C connector has no power delivery support.
+> +    type: boolean
+> +
+>     # The following are optional properties for "usb-c-connector" with power
+>     # delivery support.
+>     source-pdos:
+> 
 
