@@ -2,77 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027BA3DB96C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7F33DB982
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238982AbhG3Nhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 09:37:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239007AbhG3Nh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 09:37:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 267C460EFF;
-        Fri, 30 Jul 2021 13:37:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627652243;
-        bh=uLZFMYInw+yxWqWg50OgHWU7KJcnzhlQUZPIzJzg4iU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YL7T6ymVdHKNifWkmWLVVHb/Bie3x0Pgs2Y2skNBkWhWLWDggIZYnTLOc1Ej7EG12
-         dQihKS7OJZhxCDX+w+4TDmOG6p7tQuBlHtatns6+XDqdPn4P+fYDib89827GDr2Rld
-         TYM9g+99qPrKohQI6PKSUp8HCWna4wmxs4xlQS6U=
-Date:   Fri, 30 Jul 2021 15:37:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "qiaoyanbo_310@163.com" <qiaoyanbo_310@163.com>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] kobject: kobject_add_internal cleanup
-Message-ID: <YQQAkfGXjdDc/3na@kroah.com>
-References: <20210727143212.39142-1-qiaoyanbo_310@163.com>
- <YQEtJkPFDWMSAd/C@kroah.com>
- <3be7ce57.62f6.17af280a47f.Coremail.qiaoyanbo_310@163.com>
- <YQK0JuI1w1zsEHeC@kroah.com>
- <54cc7e43.808a.17af32725d9.Coremail.qiaoyanbo_310@163.com>
- <YQOEl0SQY/WpE1dK@kroah.com>
- <YQP04FoSecPhI+38@ybqiao-virtual-machine>
+        id S239179AbhG3Nk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 09:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239056AbhG3Nja (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 09:39:30 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE369C0617A4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:39:16 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id v21so16929131ejg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:39:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A0btF4f/Zvh8ltVtQYn7h5KQSDQ3I8KDE+5fPKu995k=;
+        b=hPiUBRyGda0IX/B4j3VjgPyJnQFYM02UALv5krx+Kre10dP4TC5N3wtXmpk8iGuSNh
+         k40fqHNR9LvU0b3umAKFhJkKKPAPgam7hWUy/noT5QgD9D2jslVizzGEx3w71oZ/j11s
+         +GHI28AxrqsLk/dMPtyX8WAn+EwUjQ5Rc7nPWoo1bjJUSlKYaY5FDiknJJxogcJ5MMEW
+         TWLH4pWFDgszr/dF8XeGZFgRMKtid/pDu8LEOMC4AMlDcRzKsSYMXdNz/b54oWyEbzvl
+         YeRNZ64jXpxc9FJ4NiqkPtmmUL3Vq8HrAX6qc0KQf1iIpCdeN1YsY7BcZqoO5roDDiYr
+         Iz9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A0btF4f/Zvh8ltVtQYn7h5KQSDQ3I8KDE+5fPKu995k=;
+        b=SdP/dhea+dlmPui5Nn28h18EU96c+7zK5qDQ8mY8Tf6fkklfYpA/x4gfQC9Fbdp1gu
+         PKN6RREiWIvambewBF6YBNy2zEnJUlxANrQL8otEIqqLsXU0sygwISqWBvdcnqnyfJar
+         SAjoRW8adR/KpRkD0a5am6DIR3Lr/7ZVdrZ8ctmEHYrZK6deIVIZ8N8yt341P7tztWco
+         uuF7EswVHAA9VE2p+C4Sg/VWy1XvtBsvjHSx27KAURiXXRKEjTbjUo73V4C/a2a5HsI9
+         iEHbuspaSu3c5KUc1IXYatLpQHBVMFKlFmbSTyxAu3iZUY9Eid91/JgE0wbrTM2862KI
+         ERQA==
+X-Gm-Message-State: AOAM532UUEkhp4uVBrxUWYLIJKrWwaqL5sKJNJWVH9vu8I9gcrEGGR2s
+        iHe7KtcPqn0q4n0lJSjVnh8QF4heeHg=
+X-Google-Smtp-Source: ABdhPJzkonuszswUXBNiYdEveClGgPkKuD+AySlZU3GjiykkX1D6Mz0yP9Jk1MIbgvTHB45UMFK/lA==
+X-Received: by 2002:a17:906:7393:: with SMTP id f19mr2750212ejl.79.1627652355408;
+        Fri, 30 Jul 2021 06:39:15 -0700 (PDT)
+Received: from agape ([5.171.81.215])
+        by smtp.gmail.com with ESMTPSA id p23sm727983edw.94.2021.07.30.06.39.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 06:39:15 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     fabioaiuto83@gmail.com
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Sterba <dsterba@suse.cz>
+Subject: [PATCH v2] staging: rtl8723bs: remove unused BIT macros definitions
+Date:   Fri, 30 Jul 2021 15:39:13 +0200
+Message-Id: <20210730133914.8625-1-fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQP04FoSecPhI+38@ybqiao-virtual-machine>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 08:47:28PM +0800, qiaoyanbo_310@163.com wrote:
-> On Fri, Jul 30, 2021 at 06:48:23AM +0200, Greg KH wrote:
-> > On Fri, Jul 30, 2021 at 12:44:26AM +0800, qiaoyanbo_310 wrote:
-> > > Hi Greg KH,
-> > 
-> > Sorry, but html email is rejected by the mailing lists.  Please try
-> > again after fixing up your email client, and I will be glad to respond.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> (Sorry, this is the first time I use the mutt environment to send mail,
-> 	shamed on me I know~)
-> 
-> >Why is this a problem?  What bug is this solving?  Is the code somehow
-> >now faster or smaller that can be measured? 
-> 
-> I don't think the logic of the original code is self consistent.
+BIT(x) macro used all over the driver is defined in
+include/vsdo/bit.h as
 
-I no longer even remember what the patch was anymore here, sorry.
-That's the problem when emails are not quoted properly :(
+	- #define BIT(nr)	(UL(1) << (nr))
 
-> This is not a bug,  but it causes  some unnecessary assignment operations.
+which is safer than the local BIT macros declared.
+Local macros shift a signed integer which brings
+unespected results. For example:
 
-Are you sure?  What would set the kobject parent to NULL then?
+(unsigned long)(1 << 31) => 0xffffffff80000000
 
-> This patch is to clean unnecessary assignment operations.
+shift.c:
 
-Are you sure there is anything unneeded?  Have you measured the
-performance issues here?  What benchmark is affected by this?
+int main() {
+        printf("%lx\n", (unsigned long)(1 << 31));
+        printf("%lx\n", (unsigned long)(1U << 31));
+        return 0;
+}
 
-thanks,
+...
 
-greg k-h
+$ ./shift
+ffffffff80000000
+80000000
+
+...
+
+So just remove redundant, less safe macro declarations.
+
+Suggested-by: David Sterba <dsterba@suse.cz>
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+Changes in v2:
+	- edited changelog
+
+ drivers/staging/rtl8723bs/include/osdep_service.h | 4 ----
+ drivers/staging/rtl8723bs/include/wifi.h          | 8 --------
+ 2 files changed, 12 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/include/osdep_service.h b/drivers/staging/rtl8723bs/include/osdep_service.h
+index b49838c7e457..bde415db4114 100644
+--- a/drivers/staging/rtl8723bs/include/osdep_service.h
++++ b/drivers/staging/rtl8723bs/include/osdep_service.h
+@@ -14,10 +14,6 @@
+ 
+ #include <osdep_service_linux.h>
+ 
+-#ifndef BIT
+-	#define BIT(x)	(1 << (x))
+-#endif
+-
+ #define BIT0	0x00000001
+ #define BIT1	0x00000002
+ #define BIT2	0x00000004
+diff --git a/drivers/staging/rtl8723bs/include/wifi.h b/drivers/staging/rtl8723bs/include/wifi.h
+index 0bd7b662b972..f03e26818d45 100644
+--- a/drivers/staging/rtl8723bs/include/wifi.h
++++ b/drivers/staging/rtl8723bs/include/wifi.h
+@@ -7,14 +7,6 @@
+ #ifndef _WIFI_H_
+ #define _WIFI_H_
+ 
+-
+-#ifdef BIT
+-/* error	"BIT define occurred earlier elsewhere!\n" */
+-#undef BIT
+-#endif
+-#define BIT(x)	(1 << (x))
+-
+-
+ #define WLAN_ETHHDR_LEN		14
+ #define WLAN_ETHADDR_LEN	6
+ #define WLAN_IEEE_OUI_LEN	3
+-- 
+2.20.1
+
