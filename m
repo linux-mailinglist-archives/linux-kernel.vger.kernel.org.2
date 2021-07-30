@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02DB3DBDD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D233DBDD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhG3Rhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 13:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbhG3Rh1 (ORCPT
+        id S230238AbhG3Rhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 13:37:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229773AbhG3Rhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 13:37:27 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7376CC061765;
-        Fri, 30 Jul 2021 10:37:22 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id g13so19322801lfj.12;
-        Fri, 30 Jul 2021 10:37:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YdD/cQbxE12roUQGUPlpfAtfifyzljBPvXuX8vTuNeQ=;
-        b=OHLEomAUDEdDieEdq+73CDWNR3GZ9sjoIWNZUB6G0iOgneOiKlsjmU2LKmepB4/7K4
-         K4LPYZOpdzackoANKPBCKPSia9gb8vn4s300ngs0LMWAIfTRrTDVJJhtJiOWg0nBfUPb
-         eKLSZuhYp9ZDHfBe3p6i88WWMPgoOuIJ0nMBpExQ3EdpgKYwqhFqIRaXm+fIkApaofk5
-         UzbdScesIb9d1IxiVfstMurv4iaCf4t2R3A/8tHkwUaUWhnfSdGRUu7RauPljNiFgCI5
-         5W2IGaPuJFZqxABEB8Yd0P8suhrCr+LhA5Hg6h+wlJ5AKv5ao5Dt7S/d0gSZUt95NG2P
-         mcrg==
+        Fri, 30 Jul 2021 13:37:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627666665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vCAX2Kmv6swjeLPb8XTOG5P1FiP7p6CkcukVbAna/IY=;
+        b=Wj1SB0Wn+nRjCvC4H9QH3Ba4r+yWpshgWEQGr8pFwpKsgfEATzTGM5ZWhJeYhzu8rAanEQ
+        InEJLJSKLgPiIwLqlfyQRRAWB0SWXYS7MYBdHs+wnrX+RV2pDh6I4godMvKDVG06Gt2Ms/
+        J/IPnG5Q+VgujKqLbQLEGktKw2fa4dE=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-GGInJzGOOZa70RkxYpnhPg-1; Fri, 30 Jul 2021 13:37:44 -0400
+X-MC-Unique: GGInJzGOOZa70RkxYpnhPg-1
+Received: by mail-qk1-f199.google.com with SMTP id u22-20020ae9c0160000b02903b488f9d348so6141768qkk.20
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:37:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YdD/cQbxE12roUQGUPlpfAtfifyzljBPvXuX8vTuNeQ=;
-        b=TqWcts8+gxe9LRLh0RZW55s+NhxHXh8x8KNw6cHnKiLIQxZVWekzB+oF1WppBXeK+J
-         j7I4tAOgm7pxG8DxP0Hz+b95Ps19yPaM8uSJgmocF1kdo3h4UjKpKHhAh/gUGXLyU32z
-         Rdu4huvU28YLVQ2wfYHZFkFmZyjdbJ5JE6o+Z5vQ/bnVdoQQDqXuYq8Rh1b5KnMuc2lf
-         Lunk9gwqUGoJhC8gmwU8fg5rAq+OakctwjqStFxJUtfjP7XxvjvuuCbhj92I3NVb9ab6
-         uC/t+HcIl0pa+GBiXMx/sLk29Mpz+0sO3SpOEcpS5RyVNGasNkHfVALrVHffFb7yuChb
-         B7Mg==
-X-Gm-Message-State: AOAM5316h3VV0WN1kVWRFhMFnuIk+fys0Eb8bkIAN3Xlm39jRsTp0vKa
-        8gpp50Sa+cRrgOSijMZQn9c=
-X-Google-Smtp-Source: ABdhPJwy8rI9+LJQTi6lVK2rpSiGY4hRkUnXqyk7UBMJ1mSAW7CPTJaIXxKYe3Umh7FA/tCTkTv6FA==
-X-Received: by 2002:a05:6512:3e0b:: with SMTP id i11mr2517488lfv.221.1627666640891;
-        Fri, 30 Jul 2021 10:37:20 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-39-114.dynamic.spd-mgts.ru. [94.29.39.114])
-        by smtp.googlemail.com with ESMTPSA id h34sm201080lfv.231.2021.07.30.10.37.19
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=vCAX2Kmv6swjeLPb8XTOG5P1FiP7p6CkcukVbAna/IY=;
+        b=hqOPYwg7KzKFlKmqkUCvrevBFVEodLGaqHAegjOHh9SNyTAJAWz/YVn0MpjerUCSCh
+         REvQn/rbl9GOw/2Jn5lI47QuBcntVY83h2yi5stA3nfQFDNJnugNMxYdCIdCz/AnxIHI
+         JSl40vCra/m6VcOmfQv4LgzmGi+EW961DHDFxAaRYeuCmPcezEwqj8mBvGEWhUIedhSX
+         A6e5uStHSsx57VcsBDlhi3iEYxYGXLyjqQNr+XhDPDRCYCrWVxBdw73uroGv1+eBWVEu
+         tnqtk7BZjW4vf3eCJamHyGlJ7nJYxId0wuNagDJqWSL6DWRpJx2aDSfDpv5XEdvk+hI5
+         kVOA==
+X-Gm-Message-State: AOAM531aseJOx3huUieIDiaIwK/rxqPtJJzMn0eXz5oMWG9a2eaTeIwd
+        p5Unpij7vu5El/hZS2U6uIBk/JoWwMcOmw7HWodPfDHJ7Y1lACUgoEtNkIFOwOleCQvZ/8dLyi3
+        ypp0C19FHvTPcjMNd6AX5YGdh
+X-Received: by 2002:ac8:548a:: with SMTP id h10mr3208420qtq.89.1627666663761;
+        Fri, 30 Jul 2021 10:37:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyaE99KUbpDYu6wEAU0dWSDkIcZGkRC7mBhIpMTdzhBiTASsmfcotVAkvrC5BAu6v76Y1uh6Q==
+X-Received: by 2002:ac8:548a:: with SMTP id h10mr3208401qtq.89.1627666663488;
+        Fri, 30 Jul 2021 10:37:43 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id a20sm896826qtp.19.2021.07.30.10.37.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 10:37:20 -0700 (PDT)
-Subject: Re: [PATCH v5 00/12] Add OTG mode support to Tegra USB PHY, SMB347
- and Nexus 7
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, Thierry Reding <treding@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>
-References: <20210717182134.30262-1-digetx@gmail.com>
-Message-ID: <ed3c2a5c-a916-2215-a767-5546fa8cd352@gmail.com>
-Date:   Fri, 30 Jul 2021 20:37:19 +0300
+        Fri, 30 Jul 2021 10:37:43 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 0/2] locking/lockdep, drm: apply new lockdep assert in
+ drm_auth.c
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        boqun.feng@gmail.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210730041515.1430237-1-desmondcheongzx@gmail.com>
+Message-ID: <ac36ec31-df97-b2ce-39f1-182e6859a1a0@redhat.com>
+Date:   Fri, 30 Jul 2021 13:37:41 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210717182134.30262-1-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210730041515.1430237-1-desmondcheongzx@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.07.2021 21:21, Dmitry Osipenko пишет:
-...
->   power: supply: smb347-charger: Make smb347_set_writable() IRQ-safe
->   power: supply: smb347-charger: Utilize generic regmap caching
->   power: supply: smb347-charger: Implement USB VBUS regulator
+On 7/30/21 12:15 AM, Desmond Cheong Zhi Xi wrote:
+> Hi,
+>
+> Following a discussion on the patch ("drm: use the lookup lock in
+> drm_is_current_master") [1], Peter Zijlstra proposed new lockdep_assert
+> helpers to make it convenient to compose lockdep checks together.
+>
+> This series includes the patch that introduces the new lockdep helpers,
+> then utilizes these helpers in drm_is_current_master_locked in the
+> following patch.
+>
+> Link: https://lore.kernel.org/lkml/20210722092929.244629-2-desmondcheongzx@gmail.com/ [1]
+>
+> Best wishes,
+> Desmond
+>
+> Desmond Cheong Zhi Xi (1):
+>    drm: add lockdep assert to drm_is_current_master_locked
+>
+> Peter Zijlstra (1):
+>    locking/lockdep: Provide lockdep_assert{,_once}() helpers
+>
+>   drivers/gpu/drm/drm_auth.c |  6 +++---
+>   include/linux/lockdep.h    | 41 +++++++++++++++++++-------------------
+>   2 files changed, 24 insertions(+), 23 deletions(-)
+>
+This patch series looks good to me.
 
-I noticed that charging doesn't work properly now, will fix it in v6.
+Acked-by: Waiman Long <longman@redhat.com>
+
+Thanks!
+
