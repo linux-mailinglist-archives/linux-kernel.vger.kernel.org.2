@@ -2,144 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FD83DBFD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F253DBFD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbhG3Ua0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 16:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbhG3UaS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 16:30:18 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF78AC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:30:12 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id m9so14062984ljp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NlNJsWKLmqO3IeQQioweQYYN6qx+xQ/7jnpZkoegGsQ=;
-        b=N8HoRlaGoRDU1r+nR55Q+mD8NeG34Px6GOxSmRxfAWW/GtjaLdW4aEeIuv/KprECeS
-         nlkj1pzEAMruW5U2sly70QyiAeKTV7LAgxYxFO5Ghd+vKCdzW2j0cp2YcLu0GLu4zTkX
-         gf8JtbV00p0gPK9m1zN7X84cFLWtYaj/gcnSOMvkCOkm915o9iUhaJbypDlgNwlsaCYm
-         6cLVDs9eLPDBauUK9WRcd5TAEwbftzIPZKZyABICTTlEZmWKkWwmUfVd/E03Y+x7H32F
-         GwRknAJs6R8kf0WLZw6JN8rYtXRbl/xtr5FoJDjoRXDQZrn8G/VXJkeaoiv3RCrBcY9C
-         nDbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NlNJsWKLmqO3IeQQioweQYYN6qx+xQ/7jnpZkoegGsQ=;
-        b=oO4Ms0+UdSoQdW/PhdfnQqOxIxDAlSuTx61wN2EYIsh3si82qpB24BWtlaG9agNCZS
-         ed8ahdg5kY6UEa6YrCVi87GPHg4jCv7AVyOSjeopiizgrBXYVfUINnwRFuBXEousiL07
-         sK/1iksmFxEeCiqHrnXyOLICtAyO+Q521Nso9qLJePC1EBgexBOZLqlhcLknWOkfCfXD
-         +/kw4PVV32Q/7BxRhrlCqFmSJ86uGo+Af8z1SORzMuvNFZR18603HuwhKpcylsEemY03
-         dPr6rJJ4R5lneZZV15+bbIQk54Uj18/55U4IPWz5MiaDwXBJTmIfmkQcoDdeZSfFbriq
-         MmFQ==
-X-Gm-Message-State: AOAM5303lE+A/oks5xlI9bJsbDLJIRqNze0r09Dw0O3C+IJ2evUxuvEY
-        BhDJB382yxrPWW/mVffnSmmb5jdzvAB7sT336pn4QpKWRpcuQg==
-X-Google-Smtp-Source: ABdhPJycP4d14boj+x7rHzVPDwajcqyRnadT/XwhsCoJtnZ5aga9ccR/57cOzQWxd3X3ZJJjF6Pof8pxFnN/+9b14Ac=
-X-Received: by 2002:a05:651c:329:: with SMTP id b9mr2927423ljp.116.1627677010835;
- Fri, 30 Jul 2021 13:30:10 -0700 (PDT)
+        id S231405AbhG3UaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 16:30:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230316AbhG3UaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 16:30:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id ABF7360F48;
+        Fri, 30 Jul 2021 20:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627677005;
+        bh=BxFASqzSnYPlDWdTMu1GjoSjF4sTklDOEVzC0i1cYmM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=d9CKrnIqfCqcflDOt7Hz6EPPflStrjkcV8vYcwTmG5h+cQgLQt/8CH6Lvp/YDhMoU
+         RtUp7+NCo6QJOSXueMZJK+vo7phkEZ7K1y0Q8gGrXOpwZ8uQY1mIBJKoMB4sFbksFL
+         7JiGx7wmUZgc4DR+a8AHNQIUPAWVew7gEJJ3Z+G9VYofnabvHdPqsnjZSWkpdBPAu9
+         Tb8dPYb4aaT5+9g0TUwt+ui2rhnXdfN5o6Wa3JQacQTzIduxD6PphfQnNEenr6KFRB
+         ZHfEcgkllqBTgHAj/vIaejKGUI52UudAPu0Pt7K8uUueP3WEd2cCVkGhcKYzH3Jlwg
+         FY9ZTMk/2eepA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 977A060A85;
+        Fri, 30 Jul 2021 20:30:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210729141937.445051-1-masahiroy@kernel.org> <20210729141937.445051-3-masahiroy@kernel.org>
-In-Reply-To: <20210729141937.445051-3-masahiroy@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 30 Jul 2021 13:29:59 -0700
-Message-ID: <CAKwvOdkRuxaUvAi4ik2SiDgEeNOX6D76aBtHDBPyDVTumWskLg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] powerpc: move the install rule to arch/powerpc/Makefile
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Bill Wendling <morbo@google.com>, Joel Stanley <joel@jms.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2 0/2] Clean devlink net namespace operations
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162767700561.11153.17362580046562666251.git-patchwork-notify@kernel.org>
+Date:   Fri, 30 Jul 2021 20:30:05 +0000
+References: <cover.1627578998.git.leonro@nvidia.com>
+In-Reply-To: <cover.1627578998.git.leonro@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, jiri@nvidia.com,
+        leonro@nvidia.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, parav@nvidia.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 7:22 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Currently, the install target in arch/powerpc/Makefile descends into
-> arch/powerpc/boot/Makefile to invoke the shell script, but there is no
-> good reason to do so.
+Hello:
 
-Sure, but there are more arch/ subdirs that DO invoke install.sh from
-arch/<arch>/boot/Makefile than, not:
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-arch/<arch>/boot/Makefile:
-- parisc
-- nios2
-- arm
-- nds32
-- sparc
-- riscv
-- 390
-- ppc (this patch)
-- x86
-- arm64
+On Thu, 29 Jul 2021 20:19:23 +0300 you wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Changelog:
+> v2:
+>  * Patch 1: Dropped cmd argument
+> v1: https://lore.kernel.org/lkml/cover.1627564383.git.leonro@nvidia.com
+>  * Patch 1:
+>    * Renamed function name
+>    * Added bool parameter to the notifier function
+>  * Patch 2:
+>    * added Jiri's ROB and dropped word "RAW" from the comment"
+> v0: https://lore.kernel.org/lkml/cover.1627545799.git.leonro@nvidia.com
+> 
+> [...]
 
-arch/<arch>/Makefile:
-- ia64
-- m68k
+Here is the summary with links:
+  - [net-next,v2,1/2] devlink: Break parameter notification sequence to be before/after unload/load driver
+    https://git.kernel.org/netdev/net-next/c/05a7f4a8dff1
+  - [net-next,v2,2/2] devlink: Allocate devlink directly in requested net namespace
+    https://git.kernel.org/netdev/net-next/c/26713455048e
 
-Patch is fine, but right now the tree is a bit inconsistent.
-
->
-> arch/powerpc/Makefile can run the shell script directly.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  arch/powerpc/Makefile      | 3 ++-
->  arch/powerpc/boot/Makefile | 6 ------
->  2 files changed, 2 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
-> index 6505d66f1193..9aaf1abbc641 100644
-> --- a/arch/powerpc/Makefile
-> +++ b/arch/powerpc/Makefile
-> @@ -407,7 +407,8 @@ endef
->
->  PHONY += install
->  install:
-> -       $(Q)$(MAKE) $(build)=$(boot) install
-> +       sh -x $(srctree)/$(boot)/install.sh "$(KERNELRELEASE)" vmlinux \
-> +       System.map "$(INSTALL_PATH)"
->
->  archclean:
->         $(Q)$(MAKE) $(clean)=$(boot)
-> diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
-> index 0d165bd98b61..10c0fb306f15 100644
-> --- a/arch/powerpc/boot/Makefile
-> +++ b/arch/powerpc/boot/Makefile
-> @@ -444,12 +444,6 @@ $(obj)/zImage:             $(addprefix $(obj)/, $(image-y))
->  $(obj)/zImage.initrd:  $(addprefix $(obj)/, $(initrd-y))
->         $(Q)rm -f $@; ln $< $@
->
-> -# Only install the vmlinux
-> -install:
-> -       sh -x $(srctree)/$(src)/install.sh "$(KERNELRELEASE)" vmlinux System.map "$(INSTALL_PATH)"
-> -
-> -PHONY += install
-> -
->  # anything not in $(targets)
->  clean-files += $(image-) $(initrd-) cuImage.* dtbImage.* treeImage.* \
->         zImage zImage.initrd zImage.chrp zImage.coff zImage.holly \
-> --
-> 2.27.0
->
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
--- 
-Thanks,
-~Nick Desaulniers
