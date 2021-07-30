@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCBB3DB9FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F98A3DB9FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239090AbhG3OFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:05:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51718 "EHLO mail.kernel.org"
+        id S239091AbhG3OFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:05:33 -0400
+Received: from mga04.intel.com ([192.55.52.120]:32875 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239013AbhG3OFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:05:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4167160F94;
-        Fri, 30 Jul 2021 14:05:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627653905;
-        bh=2esQo+K+opJscL8fj+PkbeVPDGTMucYGFc5Jt3XGZPw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZhudDhloVPIXVBpydnkAIT3ySux1plRzANbHng+IcJW0KlHPCtC/iZ54bJA2fF1zh
-         xHqkODg2D01YF+9zISzMUmc2gXUNNrWhLMv5CM/w3d1BmF9wqZs9NXefjc3KILwtxb
-         LexL5qBl4rSygu2yZANGNHNDjzhiTsnE1iduOYsGTya4iXVq/8XhFDGlMxJiqPwyo/
-         GeRB7ObgEcIvJtTjX+gBlcbs+fgziRv4D+2xgcERZlk2UUC3cDFoPXoVKNNTEDaYsT
-         phAL9D3Y5YNuDFeL0oi2CH1WJPvqvyYVMOc9bWxQC7zc5rMjUsL3OVQdO9froZGZxS
-         EIQ5GaIIYFS9Q==
-Date:   Fri, 30 Jul 2021 15:04:54 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg KH <greg@kroah.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Phillip Potter <phil@philpotter.co.uk>
-Subject: Re: build failure after merge of the staging tree
-Message-ID: <20210730140454.GZ4670@sirena.org.uk>
-References: <20210730135340.17863-1-broonie@kernel.org>
- <YQQGgReGba/Ld40y@kroah.com>
+        id S239013AbhG3OFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:05:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="211222526"
+X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
+   d="scan'208";a="211222526"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 07:05:25 -0700
+X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
+   d="scan'208";a="508132580"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.24.117]) ([10.213.24.117])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 07:05:23 -0700
+Subject: Re: [PATCH v1] ASoC: Intel: kbl_da7219_max98357a: fix drv_name
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Lukasz Majczak <lma@semihalf.com>
+Cc:     upstream@semihalf.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20210730115906.144300-1-lma@semihalf.com>
+ <58b46549-9b42-1832-b1e1-680d56c3f393@linux.intel.com>
+From:   Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <c1fb1cd1-6d27-648a-ac9c-81e150505750@intel.com>
+Date:   Fri, 30 Jul 2021 16:05:19 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KO6AnYnUdC9Z3rW+"
-Content-Disposition: inline
-In-Reply-To: <YQQGgReGba/Ld40y@kroah.com>
-X-Cookie: Vini, vidi, Linux!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <58b46549-9b42-1832-b1e1-680d56c3f393@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-07-30 3:55 PM, Pierre-Louis Bossart wrote:
+> On 7/30/21 6:59 AM, Lukasz Majczak wrote:
 
---KO6AnYnUdC9Z3rW+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+...
 
-On Fri, Jul 30, 2021 at 04:02:41PM +0200, Greg KH wrote:
+>> @@ -113,7 +113,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+>>   	},
+>>   	{
+>>   		.id = "DLGS7219",
+>> -		.drv_name = "kbl_da7219_mx98373",
+>> +		.drv_name = "kbl_da7219_max98373",
+> 
+> this one is wrong though? The correct name was already present, you're
+> reverting back to the wrong name.
+> 
+> there's another one that I missed, do you mind changing this as well?
+> 
+> soc-acpi-intel-cml-match.c:             .drv_name = "cml_da7219_max98357a",
+> 
+> Should be "cml_da7219_mx98357a"
+> 
+> 
 
-> Ah, are you building with O= ?  That might be the problem here, I think
-> I had to fix up that mess with the older driver in the past...
+Not saying 'nay' or 'yay' but why is configuration first available on 
+KBL platforms being renamed to 'cml_XXX'?
 
-Yes, all the -next integration builds use O= to keep the working trees
-between builds.
-
---KO6AnYnUdC9Z3rW+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEEBwUACgkQJNaLcl1U
-h9ArwQf+LzDRW8YXEafaXorgmu1LfxNx6XYrfXIiv8/Uvdjmp0Xsi5PvrPKSXfUA
-rCJ8R31BUwOF7REIUKd+dmHSHY+OKiQja/zXidiOdwr7a15ppVNT6k2YE0qzhGsR
-UVLl3CViEACmXSKNUgxQ0iblDOs/Wi2VTCeUDQB7BKiVZXa8aFI6+ffmwngf3Mt9
-+t96KpQppuPLkJbuB5QD99CzSQpHVuIzC9mKD2wOXpqTq+FYUQIpUT/hOw+Kd32b
-A6JiC1+lLElN4p/fnyC+ATit2O9X5vRo+S/gNyR20Vm/seuLRGGJDij73kE0q8KN
-elTFEwwgoyaRVaD+x8tJWzxbee/SXA==
-=1X+h
------END PGP SIGNATURE-----
-
---KO6AnYnUdC9Z3rW+--
+Czarek
