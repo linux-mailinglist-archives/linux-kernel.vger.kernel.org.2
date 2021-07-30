@@ -2,144 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BAC3DB474
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29073DB478
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237781AbhG3HZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 03:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237630AbhG3HZr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:25:47 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49E8C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:25:42 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id f22so8571023qke.10
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=jkYXHYQOJwdYcrKEK9MjpwYhNSueJb3fc8wKTs2YDzo=;
-        b=MnYv4B4ahWeK8EelXwid43sUxDgsWADeVSOhfvddZrBPkswJK5Et+CtJWb+1DpLpwA
-         dJxKP4tIc+aR6szsW9Lj/v66BEXLzd94E7bNJu1Qv1OUyxB+6RVhP7wlqaRXjwuQMRxn
-         pr4uQKsGvfWn5CQjX4TZC+h5ZSYjlqNl8ghcCklzv30T9zSJOLkgfBRgJn4Mnl9FHJjc
-         5xY3HwHZ6ZhzzS1dkQQTof7vNMZVM8qYC1xMtDJVq2VqMGeUWb4XpvYSVM3lFW/hJJeQ
-         c9HZP2vLmNhDzpObKtkmUZSZAx/7AMfQgfv6CjmnYWAD7b7wiotN3Ekace0xWNMNXI+D
-         fYBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=jkYXHYQOJwdYcrKEK9MjpwYhNSueJb3fc8wKTs2YDzo=;
-        b=DYWjBBZyw0GC6fqm2A38/xFD3omK1Y9D0vFDGbQe2RNCXJGu0vfpLpt1uyoFw/pipR
-         atmgbBXt8oTYj+mzQvzqgURtvcmPBl7APa6pR80sBBv6Uki2KMSZvCMQuBg+SspxZnXY
-         lVY0MFOI1gqW2OmepGEBV2oTwwIKjLvpOZwh0jaxJx+iAbFw+xtfhlAqbaImBvl3Sahb
-         MK0US7iVJw0JI2m8blk1lWQtw8ykKBvaOBbMaDrV5ibnAKCILcFoKFIuAIwNht/92BwR
-         pMNNN6XjJPPLDtjqbjSkCjn6HlFf6KVCTQXCILBTX97+ZMkoJce71qmqzPwbY+oOiAMq
-         2U5A==
-X-Gm-Message-State: AOAM530lKbCYclU3uMluloqwKOVfLcAa+Ll/Hst/Wy0o0ITxG6KcD/UJ
-        XFVyAQ2T0A9LW3yK/P1u9Ww/TQ==
-X-Google-Smtp-Source: ABdhPJwqYYV/p4qw44eoD0Ui59yNPpX+r3lsn/zvr7f6iY0IIpj9pmMIxxqRvhwlEzpGikFmo1z2LQ==
-X-Received: by 2002:ae9:e90e:: with SMTP id x14mr992985qkf.118.1627629941526;
-        Fri, 30 Jul 2021 00:25:41 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 5sm524075qko.53.2021.07.30.00.25.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 00:25:40 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 00:25:37 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 01/16] huge tmpfs: fix fallocate(vanilla) advance over huge
- pages
-In-Reply-To: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
-Message-ID: <af71608e-ecc-af95-3511-1a62cbf8d751@google.com>
-References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
+        id S237747AbhG3H0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:26:38 -0400
+Received: from ni.piap.pl ([195.187.100.5]:39064 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237403AbhG3H0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 03:26:36 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        by ni.piap.pl (Postfix) with ESMTPSA id 850AFC369544;
+        Fri, 30 Jul 2021 09:26:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 850AFC369544
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1627629990; bh=7NjeuI9OzODAQTBeTKkoJMXYwc5KJdYM6kfPUEfVli0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Jxukr1t6vvkZtPLfn3vHEW0GnO9OiMg+dZWIAk5V1Pu0VS9zIMnDjeTa4ke8pIogN
+         CKiIRRFt1VQHM/xoZo2GAyF9aaqBeu9UcGZRDLXEQAdyS3UW9zX0ThGehqTlC7GWSK
+         GWT6USN6miYDfVp2vb1wwG4Yiw6wP0k8L4JjcHYc=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     devicetree@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: [PATCH v4] dt-binding: media: document ON Semi AR0521 sensor bindings
+Sender: khalasa@piap.pl
+Date:   Fri, 30 Jul 2021 09:26:30 +0200
+Message-ID: <m3lf5o9s9l.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 165318 [Jul 30 2021]
+X-KLMS-AntiSpam-Version: 5.9.20.0
+X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
+X-KLMS-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4, {Tracking_uf_ne_domains}, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;t19.piap.pl:7.1.1;piap.pl:7.1.1;devicetree.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2021/07/30 06:56:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/30 04:15:00 #16998356
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-shmem_fallocate() goes to a lot of trouble to leave its newly allocated
-pages !Uptodate, partly to identify and undo them on failure, partly to
-leave the overhead of clearing them until later.  But the huge page case
-did not skip to the end of the extent, walked through the tail pages one
-by one, and appeared to work just fine: but in doing so, cleared and
-Uptodated the huge page, so there was no way to undo it on failure.
+This file documents DT bindings for the AR0521 camera sensor driver.
 
-Now advance immediately to the end of the huge extent, with a comment on
-why this is more than just an optimization.  But although this speeds up
-huge tmpfs fallocation, it does leave the clearing until first use, and
-some users may have come to appreciate slow fallocate but fast first use:
-if they complain, then we can consider adding a pass to clear at the end.
+Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- mm/shmem.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 70d9ce294bb4..0cd5c9156457 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2736,7 +2736,7 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
- 	inode->i_private = &shmem_falloc;
- 	spin_unlock(&inode->i_lock);
- 
--	for (index = start; index < end; index++) {
-+	for (index = start; index < end; ) {
- 		struct page *page;
- 
- 		/*
-@@ -2759,13 +2759,26 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
- 			goto undone;
- 		}
- 
-+		index++;
-+		/*
-+		 * Here is a more important optimization than it appears:
-+		 * a second SGP_FALLOC on the same huge page will clear it,
-+		 * making it PageUptodate and un-undoable if we fail later.
-+		 */
-+		if (PageTransCompound(page)) {
-+			index = round_up(index, HPAGE_PMD_NR);
-+			/* Beware 32-bit wraparound */
-+			if (!index)
-+				index--;
-+		}
+diff --git a/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml b=
+/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
+new file mode 100644
+index 000000000000..b617cc5c6a9f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
+@@ -0,0 +1,112 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/onnn,ar0521.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 		/*
- 		 * Inform shmem_writepage() how far we have reached.
- 		 * No need for lock or barrier: we have the page lock.
- 		 */
--		shmem_falloc.next++;
- 		if (!PageUptodate(page))
--			shmem_falloc.nr_falloced++;
-+			shmem_falloc.nr_falloced += index - shmem_falloc.next;
-+		shmem_falloc.next = index;
- 
- 		/*
- 		 * If !PageUptodate, leave it that way so that freeable pages
--- 
-2.26.2
++title: ON Semiconductor AR0521 MIPI CSI-2 sensor
++
++maintainers:
++  - Krzysztof Ha=C5=82asa <khalasa@piap.pl>
++
++description: |-
++  The AR0521 is a raw CMOS image sensor with MIPI CSI-2 and
++  I2C-compatible control interface.
++
++properties:
++  compatible:
++    const: onnn,ar0521
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: extclk
++
++  vaa-supply:
++    description:
++      Definition of the regulator used as analog (2.7 V) voltage supply.
++
++  vdd-supply:
++    description:
++      Definition of the regulator used as digital core (1.2 V) voltage sup=
+ply.
++
++  vdd_io-supply:
++    description:
++      Definition of the regulator used as digital I/O (1.8 V) voltage supp=
+ly.
++
++  reset-gpios:
++    description: reset GPIO, usually active low
++    maxItems: 1
++
++  port:
++    $ref: /schemas/graph.yaml#/$defs/port-base
++    unevaluatedProperties: false
++    description: |
++      Video output port.
++
++    properties:
++      endpoint:
++        $ref: /schemas/media/video-interfaces.yaml#
++        unevaluatedProperties: false
++
++        properties:
++          bus-type:
++            const: 4
++          data-lanes:
++            anyOf:
++              - items:
++                  - const: 1
++              - items:
++                  - const: 1
++                  - const: 2
++              - items:
++                  - const: 1
++                  - const: 2
++                  - const: 3
++                  - const: 4
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - vaa-supply
++  - vdd-supply
++  - vdd_io-supply
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/clock/imx6qdl-clock.h>
++
++    i2c {
++            #address-cells =3D <1>;
++            #size-cells =3D <0>;
++
++            ar0521: camera-sensor@36 {
++                    compatible =3D "onnn,ar0521";
++                    reg =3D <0x36>;
++                    pinctrl-names =3D "default";
++                    pinctrl-0 =3D <&pinctrl_mipi_camera>;
++                    clocks =3D <&clks IMX6QDL_CLK_CKO>;
++                    clock-names =3D "extclk";
++                    reset-gpios =3D <&gpio1 7 GPIO_ACTIVE_LOW>;
++                    vaa-supply =3D <&reg_2p7v>;
++                    vdd-supply =3D <&reg_1p2v>;
++                    vdd_io-supply =3D <&reg_1p8v>;
++
++                    port {
++                           mipi_camera_to_mipi_csi2: endpoint {
++                                    remote-endpoint =3D <&mipi_csi2_in>;
++                                    data-lanes =3D <1 2 3 4>;
++                            };
++                    };
++            };
++    };
 
+--=20
+Krzysztof "Chris" Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
