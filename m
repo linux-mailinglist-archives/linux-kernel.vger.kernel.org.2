@@ -2,118 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3EE3DBCC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF503DBCC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhG3QA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 12:00:26 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35436 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbhG3QAV (ORCPT
+        id S229655AbhG3QFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 12:05:16 -0400
+Received: from mail-pj1-f52.google.com ([209.85.216.52]:37608 "EHLO
+        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhG3QFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 12:00:21 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4368C22428;
-        Fri, 30 Jul 2021 16:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627660815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kw6stp8k72daDKN6GtjAkWV2DdxxOIrOovtdOiv+Lbo=;
-        b=VWJLSUNx/UXqcLjpye1h9LwuHPVOsgkM7hkJQ8ymPmqpgoEeIKlw+m0VGitoXHpsIrIbbZ
-        bUZLrnYuwlKrcsDcZ+nhoBTkUCfS5FepMiIkmw2GCMfaQkDhntNXYp8dkb+1SdLgjnqXfi
-        Dus9D5j3zqWexTfrbcdpU+pK15yvxH0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627660815;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kw6stp8k72daDKN6GtjAkWV2DdxxOIrOovtdOiv+Lbo=;
-        b=5ZGpDrmFl/crYJnLVvuY6F74NkKit4pZoyVsypvoNjwAIHc+o4K5kJd0pkfMDOSYtIZDTq
-        +zu4zbkiiVKEFIDQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id CF57D134B1;
-        Fri, 30 Jul 2021 16:00:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id vSnqMQ4iBGG1EgAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Fri, 30 Jul 2021 16:00:14 +0000
-To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-11-brijesh.singh@amd.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH Part2 RFC v4 10/40] x86/fault: Add support to handle the
- RMP fault for user address
-Message-ID: <95a27dfd-bb41-cf32-acd3-f6fdf3780d15@suse.cz>
-Date:   Fri, 30 Jul 2021 18:00:14 +0200
+        Fri, 30 Jul 2021 12:05:14 -0400
+Received: by mail-pj1-f52.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso21506834pjq.2;
+        Fri, 30 Jul 2021 09:05:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Mb1gO+6STzLWuQhCsk6+1XZIXPWL26jkAcu9s9eX/WM=;
+        b=LOtV3XNjZJohMmWgMYVuJTC7qRGR7Bmo2BFoyfuyY8/8WpDTTJDibU4S88ng2z0TwQ
+         j7q9YBy6RQBkYihYVQI+Le+hLa5snX7YUhtZK5KjWE4dC7kLo01htdu/ZOEaJSihI5I1
+         7B+f2JjFtSi9wQ35DnkExeAcZVtKMbQ/GBjii3l2NXSlS+8mDcfDW713To2fWmAMQZ50
+         WEr/HPfxU7ii0vYMHbmTyqVlax3zS9p3IswT0krHqHX/pBynvf3b8m+XvOf2Ls2zm3zf
+         S/yvK6e5eCu4SYx0AbX6+hbRlm/KxrNOLTmFy4c98Aa3cTEdSDVF8nCZ2O8GWZTEjZ/g
+         x5BQ==
+X-Gm-Message-State: AOAM533jWpYEU2JWyAGfWPdPsQFXdIaJQCQ3X96dwvaUPmTGzdboaDHS
+        t/Xejicxqw8SxeVDnRAYNAU=
+X-Google-Smtp-Source: ABdhPJwy2js4U4Iak2ex7sFLzTif9lZyITB6DErOQjLoUeAcFMkysbqnCLlnlpw94AUCOgqEqlpJxw==
+X-Received: by 2002:aa7:9546:0:b029:32e:5fdf:9576 with SMTP id w6-20020aa795460000b029032e5fdf9576mr3353456pfq.5.1627661107884;
+        Fri, 30 Jul 2021 09:05:07 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:684a:6173:abee:6f13])
+        by smtp.gmail.com with ESMTPSA id r128sm2997972pfc.155.2021.07.30.09.05.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 09:05:07 -0700 (PDT)
+Subject: Re: [PATCH] scsi: ufs: Allow async suspend/resume callbacks
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Vincent Palomares <paillon@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+References: <20210728012743.1063928-1-paillon@google.com>
+ <DM6PR04MB6575579560F7CB1B71103F28FCEB9@DM6PR04MB6575.namprd04.prod.outlook.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <1630ebc3-b40e-31e3-1efa-67717e186b0a@acm.org>
+Date:   Fri, 30 Jul 2021 09:05:05 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210707183616.5620-11-brijesh.singh@amd.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <DM6PR04MB6575579560F7CB1B71103F28FCEB9@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/21 8:35 PM, Brijesh Singh wrote:
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4407,6 +4407,15 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
->  	return 0;
->  }
->  
-> +static int handle_split_page_fault(struct vm_fault *vmf)
-> +{
-> +	if (!IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
-> +		return VM_FAULT_SIGBUS;
-> +
-> +	__split_huge_pmd(vmf->vma, vmf->pmd, vmf->address, false, NULL);
-> +	return 0;
-> +}
-> +
+On 7/28/21 11:48 PM, Avri Altman wrote:
+> Vincent wrote:
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index b87ff68aa9aa..9ec5c308a0ea 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -9625,6 +9625,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem
+>> *mmio_base, unsigned int irq)
+>>          async_schedule(ufshcd_async_scan, hba);
+>>          ufs_sysfs_add_nodes(hba->dev);
+>>
+>> +       device_enable_async_suspend(dev);
+>>          return 0;
+> Isn't device_enable_async_suspend is being called for each lun in scsi_sysfs_add_sdev Anyway?
 
-I think back in v1 Dave asked if khugepaged will just coalesce this back, and it
-wasn't ever answered AFAICS.
+Hi Avri,
 
-I've checked the code and I think the answer is: no. Khugepaged isn't designed
-to coalesce a pte-mapped hugepage back to pmd in place. And the usual way (copy
-to a new huge page) I think will not succeed because IIRC the page is also
-FOLL_PIN pinned and  khugepaged_scan_pmd() will see the elevated refcounts via
-is_refcount_suitable() and give up.
+Our measurements have shown that resume takes longer than it should with 
+encryption enabled. While suspending we change the power mode of the UFS 
+device to a mode in which it loses crypto keys. Restoring crypto keys 
+during resume (blk_ksm_reprogram_all_keys()) takes about 31 ms. This is 
+the long pole and takes much more time than resuming LUNs. This patch 
+makes UFS resume happen concurrently with resuming other devices in the 
+system instead of serializing it. Measurements have shown that this 
+patch significantly improves the time needed to resume an Android device.
 
-So the lack of coalescing (in case the sub-page leading to split becomes guest
-private again later) is somewhat suboptimal, but not critical.
+Bart.
