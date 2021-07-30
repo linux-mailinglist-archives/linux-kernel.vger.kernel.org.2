@@ -2,163 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825F33DB457
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412143DB45C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237638AbhG3HQJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Jul 2021 03:16:09 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3535 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbhG3HQI (ORCPT
+        id S237736AbhG3HRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:17:07 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:56978
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230273AbhG3HRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:16:08 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gbdfp5sqqz6LBk7;
-        Fri, 30 Jul 2021 15:04:02 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 30 Jul 2021 09:16:00 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Fri, 30 Jul 2021 09:16:00 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
- digest_list_del
-Thread-Topic: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
- digest_list_del
-Thread-Index: AQHXgjzPxJ6WuoGgH0KyG3D/y7w0xqtaWSsAgADBDpA=
-Date:   Fri, 30 Jul 2021 07:16:00 +0000
-Message-ID: <ef7c85dcb096479e95c8c60ccda4d700@huawei.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
-         <20210726163700.2092768-7-roberto.sassu@huawei.com>
- <c9dffd9d29df095660beaa631ff252c4b33629a0.camel@linux.ibm.com>
-In-Reply-To: <c9dffd9d29df095660beaa631ff252c4b33629a0.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 30 Jul 2021 03:17:06 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E40EE3F0FF;
+        Fri, 30 Jul 2021 07:16:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627629420;
+        bh=Bxi4+gVVY7RYVNsZmSxbI2QT4hl08RVLKb5YuD0/vnA=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=vnwdWLoh0qTfJ7WUGbqHFlZ7uh/kRdoDkKiiwU+I3APP6kLRUeVHqLmsoAx5iQUr/
+         5zWuyNteG+wmdDMTFvrVF0lCR11+h+Q+wWzKNo7TVwzNP4iwiAPouL49/XArnt03w/
+         9UTG1DXKX2DCa6tJmEkHHYsK3fZLxksNDXr6j/HtBUh/C/4PrDDxqGM7tp7Onny81m
+         WLQzpBYK2kUZpO/MW9LT98tke5QEcfKy/dGpEC7aCCj3q1PP3yf3ZAhZWR8x+6lZXf
+         zk+CdtTQw7W4VuSd9DTUJzAVbvfwinl8MgxvpV8VatoviEXYhmes3OYkftQueR3Gp9
+         mLaqOtPy13z/A==
+From:   Colin King <colin.king@canonical.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Pradeep Goudagunta <pgoudagunta@nvidia.com>,
+        Marek Belisko <marek@goldelico.com>, linux-iio@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: adc: Fix incorrect exit of for-loop
+Date:   Fri, 30 Jul 2021 08:16:51 +0100
+Message-Id: <20210730071651.17394-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Thursday, July 29, 2021 11:21 PM
-> Hi Roberto,
-> 
-> On Mon, 2021-07-26 at 18:36 +0200, Roberto Sassu wrote:
-> > /*
-> > + * digest_list_read: read and parse the digest list from the path
-> > + */
-> > +static ssize_t digest_list_read(char *path, enum ops op)
-> > +{
-> > +       void *data = NULL;
-> > +       char *datap;
-> > +       size_t size;
-> > +       u8 actions = 0;
-> > +       struct file *file;
-> > +       char event_name[NAME_MAX + 9 + 1];
-> > +       u8 digest[IMA_MAX_DIGEST_SIZE] = { 0 };
-> > +       enum hash_algo algo;
-> > +       int rc, pathlen = strlen(path);
-> > +
-> > +       /* Remove \n. */
-> > +       datap = path;
-> > +       strsep(&datap, "\n");
-> > +
-> > +       file = filp_open(path, O_RDONLY, 0);
-> > +       if (IS_ERR(file)) {
-> > +               pr_err("unable to open file: %s (%ld)", path, PTR_ERR(file));
-> > +               return PTR_ERR(file);
-> > +       }
-> > +
-> > +       rc = kernel_read_file(file, 0, &data, INT_MAX, NULL,
-> > +                             READING_DIGEST_LIST);
-> > +       if (rc < 0) {
-> > +               pr_err("unable to read file: %s (%d)", path, rc);
-> > +               goto out;
-> > +       }
-> > +
-> > +       size = rc;
-> > +
-> > +       snprintf(event_name, sizeof(event_name), "%s_file_%s",
-> > +                op == DIGEST_LIST_ADD ? "add" : "del",
-> > +                file_dentry(file)->d_name.name);
-> > +
-> > +       rc = ima_measure_critical_data("diglim", event_name, data, size, false,
-> > +                                      digest, sizeof(digest));
-> > +       if (rc < 0 && rc != -EEXIST)
-> > +               goto out_vfree;
-> 
-> The digest lists could easily be measured while reading the digest list
-> file above in kernel_read_file().  What makes it "critical-data"?  In
-> the SELinux case, the in memory SELinux policy is being measured and
-> re-measured to make sure it hasn't been modified.  Is the digest list
-> file data being measured more than once?
+From: Colin Ian King <colin.king@canonical.com>
 
-Hi Mimi
+Currently the for-loop that scans for the optimial adc_period iterates
+through all the possible adc_period levels because the exit logic in
+the loop is inverted. I believe the comparison should be swapped and
+the continue replaced with a break to exit the loop at the correct
+point.
 
-yes, the digest lists can be measured with kernel_read_file().
-I didn't send the change yet, but I added a DIGEST_LIST_CHECK
-hook mapped to READING_DIGEST_LIST, so that digest lists
-can be easily measured or appraised.
+Addresses-Coverity: ("Continue has no effect")
+Fixes: e08e19c331fb ("iio:adc: add iio driver for Palmas (twl6035/7) gpadc")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/iio/adc/palmas_gpadc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The point was that the digest of the digest list must be always
-calculated, as it is added to the hash table. Instead of duplicating
-the code, I preferred to use ima_measure_critical_data().
-
-The advantage is also that, if the use case is to just measure
-digest lists, ima_measure_critical_data() could do both at the
-same time.
-
-Digest lists can be seen as "critical data" in the sense that
-they can affect the security decision on whether to grant
-access to a file or not, assuming that an appropriate rule is
-added in the IMA policy.
-
-> I understand that with your changes to ima_measure_critical_data(),
-> which are now in next-integrity-testing branch, allow IMA to calculate
-> the file data hash.
-
-Yes, correct. But actually there is another useful use case.
-If digest lists are not in the format supported by the kernel,
-the user space parser has to convert them before uploading
-them to the kernel.
-
-ima_measure_critical_data() would in this case measure
-the converted digest list (it is written directly, without
-sending the file path). It is easier to attest the result,
-instead of determining whether the user space parser
-produced the expected result (by checking the files it
-read).
-
-Thanks
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> thanks,
-> 
-> Mimi
-> 
-> > +
-> > +       algo = ima_get_current_hash_algo();
-> > +
-> 
+diff --git a/drivers/iio/adc/palmas_gpadc.c b/drivers/iio/adc/palmas_gpadc.c
+index 6ef09609be9f..f9c8385c72d3 100644
+--- a/drivers/iio/adc/palmas_gpadc.c
++++ b/drivers/iio/adc/palmas_gpadc.c
+@@ -664,8 +664,8 @@ static int palmas_adc_wakeup_configure(struct palmas_gpadc *adc)
+ 
+ 	adc_period = adc->auto_conversion_period;
+ 	for (i = 0; i < 16; ++i) {
+-		if (((1000 * (1 << i)) / 32) < adc_period)
+-			continue;
++		if (((1000 * (1 << i)) / 32) >= adc_period)
++			break;
+ 	}
+ 	if (i > 0)
+ 		i--;
+-- 
+2.31.1
 
