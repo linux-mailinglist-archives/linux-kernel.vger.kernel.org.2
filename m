@@ -2,68 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D293DBF1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E973DBF28
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhG3Tj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 15:39:26 -0400
-Received: from david.siemens.de ([192.35.17.14]:48202 "EHLO david.siemens.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230335AbhG3TjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:39:24 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 16UJd19b024569
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Jul 2021 21:39:02 +0200
-Received: from [167.87.33.191] ([167.87.33.191])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 16UJd0Vc012541;
-        Fri, 30 Jul 2021 21:39:01 +0200
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Subject: [PATCH] watchdog: Respect handle_boot_enabled when setting last
- last_hw_keepalive
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tero Kristo <t-kristo@ti.com>
-Message-ID: <fe8cf65f-f949-9326-8f32-fda7134c8da6@siemens.com>
-Date:   Fri, 30 Jul 2021 21:39:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S231282AbhG3Tqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:46:48 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:45489 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230402AbhG3Tqp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 15:46:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UhT8q23_1627674386;
+Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UhT8q23_1627674386)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 31 Jul 2021 03:46:38 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Chao Yu <chao@kernel.org>,
+        Liu Bo <bo.liu@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Tao Ma <boyu.mt@taobao.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH v2 0/3] erofs: iomap support for uncompressed cases
+Date:   Sat, 31 Jul 2021 03:46:22 +0800
+Message-Id: <20210730194625.93856-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+Hi folks,
 
-We must not pet a running watchdog when handle_boot_enabled is off
-because this requests to only start doing that via userspace, not during
-probing.
+This patchset mainly adds EROFS iomap support for uncompressed cases
+I've planed for the next merge window.
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
- drivers/watchdog/watchdog_dev.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+The first 2 patches mainly deal with 2 new cases:
+1) Direct I/O is useful in certain scenarios for uncompressed files.
+For example, double pagecache can be avoid by direct I/O when loop
+device is used for uncompressed files containing upper layer
+compressed filesystem.
 
-diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-index 3bab32485273..3c93d00bb284 100644
---- a/drivers/watchdog/watchdog_dev.c
-+++ b/drivers/watchdog/watchdog_dev.c
-@@ -1172,7 +1172,10 @@ int watchdog_set_last_hw_keepalive(struct watchdog_device *wdd,
- 
- 	wd_data->last_hw_keepalive = ktime_sub(now, ms_to_ktime(last_ping_ms));
- 
--	return __watchdog_ping(wdd);
-+	if (handle_boot_enabled)
-+		return __watchdog_ping(wdd);
-+
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(watchdog_set_last_hw_keepalive);
- 
+2) DAX is quite useful for some container use cases in order to save
+guest memory extremely by using the minimal lightweight EROFS image.
+BTW, a bit more off this iomap topic, chunk-deduplicated regfile
+support is almost available (blob data support) for multi-layer
+container image use cases (aka. called RAFS v6, nydus [1] will support
+RAFS v6 (EROFS-compatible format) in the future and form a unified
+high-performance container image solution, which will be announced
+formally independently), which is also a small independent update.
+
+The last patch relies on the previous iomap core update in order to
+convert tail-packing inline files into iomap, thus all uncompressed
+cases are handled with iomap properly.
+
+Comments are welcome. Thanks for your time on reading this!
+
+Thanks,
+Gao Xiang
+
+[1] https://github.com/dragonflyoss/image-service
+
+changes since v1:
+ - mainly resend with commit message & comments update.
+
+Gao Xiang (2):
+  erofs: dax support for non-tailpacking regular file
+  erofs: convert all uncompressed cases to iomap
+
+Huang Jianan (1):
+  erofs: iomap support for non-tailpacking DIO
+
+ fs/erofs/Kconfig    |   1 +
+ fs/erofs/data.c     | 342 +++++++++++++++++++-------------------------
+ fs/erofs/inode.c    |   9 +-
+ fs/erofs/internal.h |   4 +
+ fs/erofs/super.c    |  60 +++++++-
+ 5 files changed, 217 insertions(+), 199 deletions(-)
+
 -- 
-2.31.1
+2.24.4
+
