@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D323DC3F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671333DC3F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhGaGaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 02:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50508 "EHLO
+        id S236711AbhGaGbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 02:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231786AbhGaGaU (ORCPT
+        with ESMTP id S231887AbhGaGbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 02:30:20 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F971C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:30:14 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id v16so6640210vss.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:30:14 -0700 (PDT)
+        Sat, 31 Jul 2021 02:31:10 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A96C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:31:04 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id c16so13634211plh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:31:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=KSUxTO+EOQGlkGcG4nqfPKO6I6SlgWbHF09kbFHtAVE=;
-        b=c6TV1iL+G9a5WwTfCqHZF5os5GeQKwGIEV6xVODb8QGEfnd3AjvDgFg8iyjd7EyDYu
-         7w4zFvzzWyAeAIStawXiRTJ4hWmwHfPabteJVEqfRwqpGKJDChFilHfL40OF2tSCgcWN
-         6v10Wj79mhDKqid0Is7mZ70ROfajOq2ESBhLC3GddLJqgcTnzuUXRhRT37jRbKr0ps0F
-         SvZIyKgTlHn6NMvCnkbfDzn0eyFAfUJH6MbEw7qVYWyrl8aPcZhJh4oksleX9vj2xCId
-         N4Wt4G2SJmwtDfajyduh+oYc4mc6hyIdccoZuQN5jeP3Bj3Oe5RbLO5dvh4WuIDAZV9f
-         B3Iw==
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=qIjbr+bB3b2M/mjNyixbaPxC5u6C27XmhB1R4YVuR4A=;
+        b=sMj5HuKPgFyPTo4c3LC5MzvgaL4cUri7Ek8+Fxf1TRLjqOt8nxke5Nv/FbO209pTX4
+         jtnROqrwCSzaThBSaiyq3KOI/rRDJAmu8kKS7wJ46wO9nd1VsGWpwv6kFg1a8U24v2tJ
+         J01c2c+oVkh6uwE8O3lIJswOh/lfbyipccBsFYXsOakHE8Ea6fJ+JKpwq9ZsfdCB+QYw
+         NTAWfKCOq9Ve1IrMsHbGX6XUQAkvVMZGQWoq5KQ7+TLt1z9+WP7ljklA91Sn6uWAgKaA
+         6CNVfrxE7LEpBfX13FPGU/0u2V7jS2xvB+OBNYWQtZoiRhm7nHdTcoBQun+NsgKCDFOU
+         q/1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=KSUxTO+EOQGlkGcG4nqfPKO6I6SlgWbHF09kbFHtAVE=;
-        b=l27air1cjLJ+wWkY/hThDV5qxMHufkRnQYEuOiQwPkNbFVKQPIgxwtE5w9r8ayBG38
-         8ntkO8nJQpz4E5pzGKIc66iNF6OBSQd76cCjrAK1syf73pdT9z4Yae5N1uCBN7jDAW7Y
-         d5adgbfzYo8S/VCKZOiX9LvY2Kca1EoUGGl3T5FaafC5BieTWLNPk9rESFgxrQSL4XJ8
-         Ilod/z1LHoBNeVpe92r1OqBsw0ZxJCPlUFQ9xHvZj8Z4OTMvfjzZhyjne3iWmWyJ9rYA
-         sg2V2mZa0fCK5F98D6zpB9otrGEKhcPcU+sYt/yxYEl93cKnGfCusw2E6joB84C7OxMa
-         i3MA==
-X-Gm-Message-State: AOAM5328PqDsvaLKyfR14SmupSE2+elepJ43l47QJup2AH+PV79cOeI3
-        u9SqwnRdOaK+uq2L2NBzuqT9eAEhpBPwBxfJPnyCgA==
-X-Google-Smtp-Source: ABdhPJxAHjnkaAfL/jk7GH1uPRMouoCiImo6qY3+0+Y+gr7iMdyVnG4uF1dbKZ93BRVajYXitoagVnAYT6Wte1dVi4E=
-X-Received: by 2002:a05:6102:21dc:: with SMTP id r28mr392600vsg.50.1627713013454;
- Fri, 30 Jul 2021 23:30:13 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=qIjbr+bB3b2M/mjNyixbaPxC5u6C27XmhB1R4YVuR4A=;
+        b=eRdXgWkffqoFV9jEG/RWBYqFUlzz0QEnD+VLChHkqn31V8aafbVE6LsbXKlrxwmApD
+         ztpIgWDXYuB/LFTtI+50pOvnVJXLy7aGuk+kDHPFZOMhYgPBbS5WzMKRiCcEGqX5f99v
+         Tucwzc5aOLuCGKXdrilcB6qfMejT7pw2UVOoZobnJHrWvqVt4H3zyvTBx1NXI5Nka5Sh
+         1qbMGuV84kxa+L8LNUj80syd+UzIluJwTtUX0t9b7zVZw8R9TMwsD7Zjk7a5wlavO8yz
+         l8K/UP61nTsImv5zsdLZSdlAiukERrynf5OWGPCgIb86dBJ2XW3w2c0gccPJUiqpCvR0
+         FpZQ==
+X-Gm-Message-State: AOAM530pGHzYEhWYEvm4bO/mRFTYql27rxeOkBdt92t/P5Qr7Eb4NR8v
+        0tVQ3OLEi8QZ7rDVWwkGjhI=
+X-Google-Smtp-Source: ABdhPJwc2rieJ6CRVUVfh9qjZkUSX/FqySfbO7siHkND9wdIQtdcsqX52axifxcVqDVmRZQtTYwaVw==
+X-Received: by 2002:a63:6c5:: with SMTP id 188mr2329643pgg.39.1627713064378;
+        Fri, 30 Jul 2021 23:31:04 -0700 (PDT)
+Received: from [10.106.0.50] ([45.135.186.29])
+        by smtp.gmail.com with ESMTPSA id n17sm5263572pgj.93.2021.07.30.23.31.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 23:31:04 -0700 (PDT)
+To:     shaggy@kernel.org
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com
+From:   Li Tuo <islituo@gmail.com>
+Subject: [BUG] jfs: possible uninitialized-variable access in xtSplitUp()
+Message-ID: <6b3b3a56-b77c-aff7-c9f1-94a99d4929d2@gmail.com>
+Date:   Sat, 31 Jul 2021 14:31:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-From:   Jue Wang <juew@google.com>
-Date:   Fri, 30 Jul 2021 23:30:02 -0700
-Message-ID: <CAPcxDJ6qnrkuckxm6KkoONZZh5Q-H3-CkFiWq627p5OF3GKJ4Q@mail.gmail.com>
-Subject: RE: [PATCH 2/3] x86/mce: Avoid infinite loop for copy from user recovery
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, dinghui@sangfor.com.cn,
-        huangcun@sangfor.com.cn, Jue Wang <juew@google.com>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        x86 <x86@kernel.org>, "Song, Youquan" <youquan.song@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Been busy with some other work.
+Hello,
 
-After cherry picking patch 1 & 2, I saw the following with 2 UC errors injected
-into the user space buffer passed into write(2), as expected:
+Our static analysis tool finds a possible uninitialized-variable access 
+in the jfs driver in Linux 5.14.0-rc3:
 
-[  287.994754] Kernel panic - not syncing: Machine checks to different
-user pages
+At the beginning of the function xtSplitUp(), the variable rbn is not 
+initialized.
+If sp->header.flag & BT_ROOT is true,
+780:    rc = (sp->header.flag & BT_ROOT) ? xtSplitRoot(tid, ip, split, 
+&rmp) : xtSplitPage(tid, ip, split, &rmp, &rbn);
 
-The kernel tested with has its x86/mce and mm/memory-failure aligned with
-upstream till around 2020/11.
+the varialbe rbn will remain uninitialized.
+However, it is accessed through:
+814:    rcbn = rbn;
 
-Is there any other patch that I have missed to the write syscall etc?
+I am not quite sure whether this possible uninitialized-variable access 
+is real and how to fix it if it is real.
+Any feedback would be appreciated, thanks!
 
-Thanks,
--Jue
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+
+Best wishes,
+Tuo Li
