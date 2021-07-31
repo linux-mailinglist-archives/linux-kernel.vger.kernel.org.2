@@ -2,143 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764D03DC88D
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 00:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56CC3DC890
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 00:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhGaWFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 18:05:38 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55516 "EHLO vps0.lunn.ch"
+        id S231694AbhGaWIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 18:08:19 -0400
+Received: from mx1.riseup.net ([198.252.153.129]:42412 "EHLO mx1.riseup.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229560AbhGaWFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 18:05:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=MXXfRvh2b8PuxEin99HbUG03NW+7u7VDu/JhwY7Oahw=; b=JDDyCJR0fdSb+1ODOJF5+hSOnT
-        v11BkeW3mVAMkJ2EPrwQ92ONytPZrg7bc7/3Twl3CDkS2N5XpKVLX3jmuncT5/1OmjZQ+6dKQZziV
-        gusFgRTyA3EW+I6bENx3UlNUEFk51iNsgXUq/b2NYT5m6zgtCW+nJc4VqP+kzFHT1EhE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m9x6a-00Ff1q-2F; Sun, 01 Aug 2021 00:05:16 +0200
-Date:   Sun, 1 Aug 2021 00:05:16 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
-        netdev@vger.kernel.org, robh+dt@kernel.org,
-        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
- for microchip lan937x
-Message-ID: <YQXJHA+z+hXjxe6+@lunn.ch>
-References: <20210723173108.459770-1-prasanna.vengateshan@microchip.com>
- <20210723173108.459770-6-prasanna.vengateshan@microchip.com>
- <20210731150416.upe5nwkwvwajhwgg@skbuf>
+        id S229505AbhGaWIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 18:08:19 -0400
+Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4Gcdgc0xwSzF4FT;
+        Sat, 31 Jul 2021 15:08:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1627769292; bh=F/rFKRmbOQq9ALjgMY+H9ZQfj+XBLIymkBXHGLS4rJQ=;
+        h=Subject:From:To:Cc:In-Reply-To:References:Date:From;
+        b=P+4raG2q0Eu0b3412u5g+43WMYfmzjXFv2qLGNCTC4MoeoSkxkkH5eTYf7U4bfbXN
+         +0daM0Srnmy5be55L2lsHav51LZ1VXwppBFpvSSYEDMq7YeIgJhe1sHqWsGwXLSGgi
+         JCkI0Xz6fj92eyginsBwxaoBidfWHWzKUcTEw+RU=
+X-Riseup-User-ID: DB4F723F64DE5F8C1128BAB35A63DD05743D9CC089447E8F30A909201F243FCF
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews1.riseup.net (Postfix) with ESMTPSA id 4GcdgZ3s0Xz5w7g;
+        Sat, 31 Jul 2021 15:08:10 -0700 (PDT)
+Message-ID: <084f4be8150e83f865b8a8c768ae9fea6d205330.camel@riseup.net>
+Subject: Re: [PATCH v3] HID: logitech-hidpp: battery: provide CAPACITY
+ property for newer devices
+From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@riseup.net>
+To:     Hamza Mahfooz <someguy@effective-light.com>
+Cc:     linux-kernel@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org
+In-Reply-To: <86WPWQ.ODI6WUKUKD0N3@effective-light.com>
+References: <20210723185720.29314-1-someguy@effective-light.com>
+         <e3bdfa16584d7ec832414dcb854ee4d2582543b3.camel@riseup.net>
+         <86WPWQ.ODI6WUKUKD0N3@effective-light.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-in/OeNRbjo+2DEid1fFH"
+Date:   Sat, 31 Jul 2021 23:08:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210731150416.upe5nwkwvwajhwgg@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +void lan937x_mac_config(struct ksz_device *dev, int port,
-> > +			phy_interface_t interface)
-> > +{
-> > +	u8 data8;
-> > +
-> > +	lan937x_pread8(dev, port, REG_PORT_XMII_CTRL_1, &data8);
-> > +
-> > +	/* clear MII selection & set it based on interface later */
-> > +	data8 &= ~PORT_MII_SEL_M;
-> > +
-> > +	/* configure MAC based on interface */
-> > +	switch (interface) {
-> > +	case PHY_INTERFACE_MODE_MII:
-> > +		lan937x_config_gbit(dev, false, &data8);
-> > +		data8 |= PORT_MII_SEL;
-> > +		break;
-> > +	case PHY_INTERFACE_MODE_RMII:
-> > +		lan937x_config_gbit(dev, false, &data8);
-> > +		data8 |= PORT_RMII_SEL;
-> > +		break;
-> > +	case PHY_INTERFACE_MODE_RGMII:
-> > +	case PHY_INTERFACE_MODE_RGMII_ID:
-> > +	case PHY_INTERFACE_MODE_RGMII_TXID:
-> > +	case PHY_INTERFACE_MODE_RGMII_RXID:
-> > +		lan937x_config_gbit(dev, true, &data8);
-> > +		data8 |= PORT_RGMII_SEL;
-> > +
-> > +		/* Add RGMII internal delay for cpu port*/
-> > +		if (dsa_is_cpu_port(dev->ds, port)) {
-> 
-> Why only for the CPU port? I would like Andrew/Florian to have a look
-> here, I guess the assumption is that if the port has a phy-handle, the
-> RGMII delays should be dealt with by the PHY, but the logic seems to be
-> "is a CPU port <=> has a phy-handle / isn't a CPU port <=> doesn't have
-> a phy-handle"? What if it's a fixed-link port connected to a downstream
-> switch, for which this one is a DSA master?
 
-The marvell driver applies delays unconditionally. And as far as i
-remember, it is only used in the use case you suggest, a DSA link,
-which is using RGMII. For marvell switches, that is pretty unusual,
-most boards use 1000BaseX or higher SERDES speeds for links between
-switches.
+--=-in/OeNRbjo+2DEid1fFH
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I'm not sure if we have the case of an external PHY using RGMII. I
-suspect it might actually be broken, because i think both the MAC and
-the PHY might add the same delay. For phylib in general, if the MAC
-applies the delays, it needs to manipulate the value passed to the PHY
-so it also does not add delays. And i'm not sure DSA does that.
+On Fri, 2021-07-23 at 17:39 -0400, Hamza Mahfooz wrote:
+>=20
+> On Fri, Jul 23 2021 at 08:42:32 PM +0100, Filipe La=C3=ADns=20
+> <lains@riseup.net> wrote:
+> > That said, I think we should definitely have a comment here nothing=20
+> > that, and
+> > possible have some bounds checks for the reported voltage value=20
+> > hinting that
+> > there may be bug.
+>=20
+> Hey Filipe,
+>=20
+> Do you have any thoughts on what the bounds ought to be?
+> 3500 mV seems like a rather safe lower bound, however the upper bound
+> seems much more fuzzy.
+>=20
+>=20
 
-So limiting RGMII delays to only the CPU port is not
-unreasonable. However, i suspect you are correct about chained
-switches not working.
+Hi Hamza,
 
-We might need to look at this at a higher level, when the PHY is
-connected to the MAC and what mode gets passed to it.
- 
-> > +			if (interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> > +			    interface == PHY_INTERFACE_MODE_RGMII_RXID)
-> > +				data8 |= PORT_RGMII_ID_IG_ENABLE;
-> > +
-> > +			if (interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> > +			    interface == PHY_INTERFACE_MODE_RGMII_TXID)
-> > +				data8 |= PORT_RGMII_ID_EG_ENABLE;
-> > +		}
-> > +		break;
-> > +	default:
-> > +		dev_err(dev->dev, "Unsupported interface '%s' for port %d\n",
-> > +			phy_modes(interface), port);
-> > +		return;
-> > +	}
-> > +
-> > +	/* Write the updated value */
-> > +	lan937x_pwrite8(dev, port, REG_PORT_XMII_CTRL_1, data8);
-> > +}
-> 
-> > +static int lan937x_mdio_register(struct dsa_switch *ds)
-> > +{
-> > +	struct ksz_device *dev = ds->priv;
-> > +	int ret;
-> > +
-> > +	dev->mdio_np = of_get_child_by_name(ds->dev->of_node, "mdio");
-> 
-> So you support both the cases where an internal PHY is described using
-> OF bindings, and where the internal PHY is implicitly accessed using the
-> slave_mii_bus of the switch, at a PHY address equal to the port number,
-> and with no phy-handle or fixed-link device tree property for that port?
-> 
-> Do you need both alternatives? The first is already more flexible than
-> the second.
+Sorry for the delay getting back to you! The most relevant bound would be t=
+he
+lower one, but I think 5000mV would be a good value.
 
-The first is also much more verbose in DT, and the second generally
-just works without any DT. What can be tricky with the second is
-getting PHY interrupts to work, but it is possible, the mv88e6xxx does
-it.
+Cheers,
+Filipe La=C3=ADns
 
-	Andrew
+--=-in/OeNRbjo+2DEid1fFH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAmEFyccACgkQ+JPGdIFq
+qV2mMA/+OAq+BFtdGOobLYmDG6SQqixQLQe+UEJkZ0D+zN5QW+I9RIfaOYCzCUis
+Q7exSbqvCwLsoYNDWosleKnNpGHLTnCPALeBYJracblZsipJdYt2WAVBuwAmnZSJ
+uGAWiI2zwjpiYVqP8Y8aIPfH60YaAbrnp7rHuddx63Mx7XWz/l8PuMURsBkSgEOX
+d69Dz55qA87TuxwffDv52mAizV2r9XVkX82ML0WGHA7JoubapsZhWRciJN6iknGX
+EBdrtQECdivEelv0AHis1xpjLgUEVzkG0JYpzRbSdwC/wXxDHdWRFGzptQuI96Jx
+WeW0V4PKB0P9kCFcWlq6fOgrYsWXVGszCZsvekL8DFNa80bHf+kPD0Xe0aMTiUA6
+ZBq9B1yGL0fRyjn4NX7MznateFqWDvsF7ZXrcltkFIUZmWbrsA1W+fgRBMyxEIwz
+kZoByRP8/2um9plPiK+ModmoZxLwL9EsIMU/9nnv7i2YT0S0H4t91TopRZJy/Upg
+0Y2eYo0/5ZuK2bQuWGYyQeaNlERbMR7LIebkXB+C4KllHfaSL7Dr2FBuHI5jwbw1
+9dUUpLBk1XyBgwFA6AYWRX+96O6AYMzOTACRJ3zaeHqVgoSc6scaoUf5YX/Xlb5v
+elap2wQ3QocISISvw+/dkn40LFM7CRl6HwVHP58I/I/TRPrfegY=
+=gKt5
+-----END PGP SIGNATURE-----
+
+--=-in/OeNRbjo+2DEid1fFH--
+
