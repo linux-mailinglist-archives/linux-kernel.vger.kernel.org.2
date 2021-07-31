@@ -2,234 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091BB3DC3B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2601C3DC3A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236890AbhGaGD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 02:03:28 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:29206 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236048AbhGaGD0 (ORCPT
+        id S236803AbhGaGBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 02:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236495AbhGaGBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 02:03:26 -0400
-X-Greylist: delayed 1935 seconds by postgrey-1.27 at vger.kernel.org; Sat, 31 Jul 2021 02:03:25 EDT
-Received: from localhost.localdomain ([133.106.57.58]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 16V60MNT006940;
-        Sat, 31 Jul 2021 15:00:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 16V60MNT006940
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627711224;
-        bh=E1KYte6EKYvuOXcazzHUuX4uprDRxjj1nwZUGGg69y0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ks+HHPyiQsB4OoMywyC5471MbAfkkwSCZmNeD3PTw1B3lkQ77LuPVzltS9vjmtHEv
-         gj73bxnaUqARREufMNwMwgIeatkcHNp+6iL5DFpOkOZ05S0IRw2JTwUe+pgLfMC2L1
-         cEcFnXt4M31ltZPd8C9XlBCW/oU5ZzLVPIHyRUkUYUMicyzf043T8Yh6JSVAuLdhBk
-         cp901SEFrI1NoseIv+DFPesUZambG8FswAOb3cMqcFgucI8L/apFEImtob/q4dTCVw
-         GXnsE6nm0/tOCQrT/4SXRTAGep0guoXmym5jgKo0iB+B3ILb8JHYquSWBPqdhTHxxV
-         F030NsS4YZ7mQ==
-X-Nifty-SrcIP: [133.106.57.58]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Guo Ren <guoren@kernel.org>, linux-mips@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Albert Ou <aou@eecs.berkeley.edu>,
-        linuxppc-dev@lists.ozlabs.org,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Subject: [PATCH v2] arch: vdso: remove if-conditionals of $(c-gettimeofday-y)
-Date:   Sat, 31 Jul 2021 15:00:20 +0900
-Message-Id: <20210731060020.12913-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Sat, 31 Jul 2021 02:01:14 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50327C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:01:09 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id a20so13663718plm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:01:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RnJbeFRABx8gv+E+NAXey4lvwWkcIEVkiEIkxS1UNwc=;
+        b=azNSPWyE526BJD25Kig41e/gXZuaCnVwVtmfP/XFktm31kW6IWgDV558SlzkEo/XN6
+         aJjHbwyHPNxcpZyhqo3fDd3UiLK7HBtztgkTaq3x3JKUITY/O2N3Zemakxue44EvrNx8
+         vrZZf6hRZbsoBPAsWiiMWzGR2Xu9cw6oyHzRzhPmaglu1tsu3ZGZ6Q50dYJz70t6S8vm
+         u8kyWdLjAPRBQ2YyckxY631Voo/H2xTYGz6YznrmzzRZpvUE+yWJcBNfSWBUecvR9MKF
+         DY7vxvbSItyF/XXB9m9a5aoe6FxDRpAkuYyYSQ0qrO8Ms41bXxw4WcMuRcJcNsGVEAWw
+         yu4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RnJbeFRABx8gv+E+NAXey4lvwWkcIEVkiEIkxS1UNwc=;
+        b=OFcIbb+1+3dBI+1M2wV4evQK5lcPNmBJspmKS17uQ+FmqUfmoTmZj80cLl0OEBdEPs
+         v7XckOeON4VoVnZ0DKKIgGKFtx1kdO+s3cytgJysIFv0oPevnhCjQZ3ow/qcXSko0K7D
+         blvmmHoozfjic4Y5klVncKcA7Nv/mFxKOSvpKdKUH+zxndcqmNntq4d5OpNFcXxVF6TL
+         gzDHzAKRhbNhicjnx34EzYa6vygS8a99z/6LuB96ArLvrD/SLFYdnle/1SVqPQlC10U8
+         unHgHvEGDLSG7DR9p6uh4BUWPN86q9sS6v3zqYT2yniDUtDc5oefddKzidJu0u3/oCAh
+         IpZQ==
+X-Gm-Message-State: AOAM531bGlJTuTmeEHJcv/JOgxoTAmHDhcPgBsqUKvc4PMB7GLwOTbss
+        NgDmR3EQIWBD46171J7tBxfLeg==
+X-Google-Smtp-Source: ABdhPJxiEDXou0jFqjJs2vDftAvISpJh7DtbwCekHl/+Ra3AI1c094rlWyAyzBjgNLOhZRVDT/sb2A==
+X-Received: by 2002:a17:90a:d596:: with SMTP id v22mr6926387pju.51.1627711268627;
+        Fri, 30 Jul 2021 23:01:08 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:200:160:995:7f22:dc59])
+        by smtp.gmail.com with ESMTPSA id e35sm4090000pjk.28.2021.07.30.23.01.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 23:01:07 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 23:01:02 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Marco Elver <elver@google.com>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        clang-built-linux@googlegroups.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2] vmlinux.lds.h: Handle clang's module.{c,d}tor sections
+Message-ID: <20210731060102.3p7sknifz4d62ocn@google.com>
+References: <20210730223815.1382706-1-nathan@kernel.org>
+ <20210731023107.1932981-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210731023107.1932981-1-nathan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arm, arm64, csky, mips, powerpc always select GENERIC_GETTIMEOFDAY,
-hence $(gettimeofday-y) never becomes empty.
+Reviewed-by: Fangrui Song <maskray@google.com>
 
-riscv conditionally selects GENERIC_GETTIMEOFDAY when MMU=y && 64BIT=y,
-but arch/riscv/kernel/vdso/vgettimeofday.o is built only under that
-condition. So, you can always define CFLAGS_vgettimeofday.o
+On 2021-07-30, Nathan Chancellor wrote:
+>A recent change in LLVM causes module_{c,d}tor sections to appear when
+>CONFIG_K{A,C}SAN are enabled, which results in orphan section warnings
+>because these are not handled anywhere:
+>
+>ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_ctor) is being placed in '.text.asan.module_ctor'
+>ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_dtor) is being placed in '.text.asan.module_dtor'
+>ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.tsan.module_ctor) is being placed in '.text.tsan.module_ctor'
+>
+>Fangrui explains: "the function asan.module_ctor has the SHF_GNU_RETAIN
+>flag, so it is in a separate section even with -fno-function-sections
+>(default)".
 
-Remove all the meaningless conditionals.
+If my theory is true, we should see orphan section warning with
+CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+before my sanitizer change.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+>Place them in the TEXT_TEXT section so that these technologies continue
+>to work with the newer compiler versions. All of the KASAN and KCSAN
+>KUnit tests continue to pass after this change.
+>
+>Cc: stable@vger.kernel.org
+>Link: https://github.com/ClangBuiltLinux/linux/issues/1432
+>Link: https://github.com/llvm/llvm-project/commit/7b789562244ee941b7bf2cefeb3fc08a59a01865
+>Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>---
+>
+>v1 -> v2:
+>
+>* Fix inclusion of .text.tsan.* (Nick)
+>
+>* Drop .text.asan as it does not exist plus it would be handled by a
+>  different line (Fangrui)
+>
+>* Add Fangrui's explanation about why the LLVM commit caused these
+>  sections to appear.
+>
+> include/asm-generic/vmlinux.lds.h | 1 +
+> 1 file changed, 1 insertion(+)
+>
+>diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+>index 17325416e2de..62669b36a772 100644
+>--- a/include/asm-generic/vmlinux.lds.h
+>+++ b/include/asm-generic/vmlinux.lds.h
+>@@ -586,6 +586,7 @@
+> 		NOINSTR_TEXT						\
+> 		*(.text..refcount)					\
+> 		*(.ref.text)						\
+>+		*(.text.asan.* .text.tsan.*)				\
 
-Changes in v2:
-  - Fix csky as well
+When kmsan is upstreamed, we may need to add .text.msan.* :)
 
- arch/arm/vdso/Makefile              |  4 ----
- arch/arm64/kernel/vdso/Makefile     |  5 +----
- arch/arm64/kernel/vdso32/Makefile   |  3 ---
- arch/csky/kernel/vdso/Makefile      |  4 +---
- arch/mips/vdso/Makefile             |  2 --
- arch/powerpc/kernel/vdso32/Makefile | 14 ++++++--------
- arch/powerpc/kernel/vdso64/Makefile | 14 ++++++--------
- arch/riscv/kernel/vdso/Makefile     |  5 +----
- 8 files changed, 15 insertions(+), 36 deletions(-)
+(
+I wondered why we cannot just change the TEXT_MAIN pattern to .text.*
 
-diff --git a/arch/arm/vdso/Makefile b/arch/arm/vdso/Makefile
-index 7c9e395b77f7..d996b57ca19d 100644
---- a/arch/arm/vdso/Makefile
-+++ b/arch/arm/vdso/Makefile
-@@ -29,11 +29,7 @@ CFLAGS_REMOVE_vdso.o = -pg
- 
- # Force -O2 to avoid libgcc dependencies
- CFLAGS_REMOVE_vgettimeofday.o = -pg -Os $(GCC_PLUGINS_CFLAGS)
--ifeq ($(c-gettimeofday-y),)
--CFLAGS_vgettimeofday.o = -O2
--else
- CFLAGS_vgettimeofday.o = -O2 -include $(c-gettimeofday-y)
--endif
- 
- # Disable gcov profiling for VDSO code
- GCOV_PROFILE := n
-diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
-index 945e6bb326e3..5545c28e0e6e 100644
---- a/arch/arm64/kernel/vdso/Makefile
-+++ b/arch/arm64/kernel/vdso/Makefile
-@@ -37,10 +37,7 @@ OBJECT_FILES_NON_STANDARD	:= y
- KCOV_INSTRUMENT			:= n
- 
- CFLAGS_vgettimeofday.o = -O2 -mcmodel=tiny -fasynchronous-unwind-tables
--
--ifneq ($(c-gettimeofday-y),)
--  CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
--endif
-+CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
- 
- # Disable gcov profiling for VDSO code
- GCOV_PROFILE := n
-diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-index 3dba0c4f8f42..330111046afc 100644
---- a/arch/arm64/kernel/vdso32/Makefile
-+++ b/arch/arm64/kernel/vdso32/Makefile
-@@ -133,10 +133,7 @@ hostprogs := $(munge)
- 
- c-obj-vdso := note.o
- c-obj-vdso-gettimeofday := vgettimeofday.o
--
--ifneq ($(c-gettimeofday-y),)
- VDSO_CFLAGS_gettimeofday_o += -include $(c-gettimeofday-y)
--endif
- 
- VDSO_CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
- 
-diff --git a/arch/csky/kernel/vdso/Makefile b/arch/csky/kernel/vdso/Makefile
-index 0b6909f10667..432adf2c78c2 100644
---- a/arch/csky/kernel/vdso/Makefile
-+++ b/arch/csky/kernel/vdso/Makefile
-@@ -12,9 +12,7 @@ vdso-syms  += vgettimeofday
- # Files to link into the vdso
- obj-vdso = $(patsubst %, %.o, $(vdso-syms)) note.o
- 
--ifneq ($(c-gettimeofday-y),)
--	CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
--endif
-+CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
- 
- ccflags-y := -fno-stack-protector -DBUILD_VDSO32
- 
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index 1b2ea34c3d3b..c409d551972a 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -36,7 +36,6 @@ cflags-vdso := $(ccflags-vdso) \
- aflags-vdso := $(ccflags-vdso) \
- 	-D__ASSEMBLY__ -Wa,-gdwarf-2
- 
--ifneq ($(c-gettimeofday-y),)
- CFLAGS_vgettimeofday.o = -include $(c-gettimeofday-y)
- 
- # config-n32-o32-env.c prepares the environment to build a 32bit vDSO
-@@ -44,7 +43,6 @@ CFLAGS_vgettimeofday.o = -include $(c-gettimeofday-y)
- # Note: Needs to be included before than the generic library.
- CFLAGS_vgettimeofday-o32.o = -include $(srctree)/$(src)/config-n32-o32-env.c -include $(c-gettimeofday-y)
- CFLAGS_vgettimeofday-n32.o = -include $(srctree)/$(src)/config-n32-o32-env.c -include $(c-gettimeofday-y)
--endif
- 
- CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
- 
-diff --git a/arch/powerpc/kernel/vdso32/Makefile b/arch/powerpc/kernel/vdso32/Makefile
-index 7d9a6fee0e3d..2386abc6fa58 100644
---- a/arch/powerpc/kernel/vdso32/Makefile
-+++ b/arch/powerpc/kernel/vdso32/Makefile
-@@ -7,14 +7,12 @@ include $(srctree)/lib/vdso/Makefile
- 
- obj-vdso32 = sigtramp.o gettimeofday.o datapage.o cacheflush.o note.o getcpu.o
- 
--ifneq ($(c-gettimeofday-y),)
--  CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
--  CFLAGS_vgettimeofday.o += $(DISABLE_LATENT_ENTROPY_PLUGIN)
--  CFLAGS_vgettimeofday.o += $(call cc-option, -fno-stack-protector)
--  CFLAGS_vgettimeofday.o += -DDISABLE_BRANCH_PROFILING
--  CFLAGS_vgettimeofday.o += -ffreestanding -fasynchronous-unwind-tables
--  CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
--endif
-+CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
-+CFLAGS_vgettimeofday.o += $(DISABLE_LATENT_ENTROPY_PLUGIN)
-+CFLAGS_vgettimeofday.o += $(call cc-option, -fno-stack-protector)
-+CFLAGS_vgettimeofday.o += -DDISABLE_BRANCH_PROFILING
-+CFLAGS_vgettimeofday.o += -ffreestanding -fasynchronous-unwind-tables
-+CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
- 
- # Build rules
- 
-diff --git a/arch/powerpc/kernel/vdso64/Makefile b/arch/powerpc/kernel/vdso64/Makefile
-index 2813e3f98db6..cdf748ebdcde 100644
---- a/arch/powerpc/kernel/vdso64/Makefile
-+++ b/arch/powerpc/kernel/vdso64/Makefile
-@@ -6,14 +6,12 @@ include $(srctree)/lib/vdso/Makefile
- 
- obj-vdso64 = sigtramp.o gettimeofday.o datapage.o cacheflush.o note.o getcpu.o
- 
--ifneq ($(c-gettimeofday-y),)
--  CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
--  CFLAGS_vgettimeofday.o += $(DISABLE_LATENT_ENTROPY_PLUGIN)
--  CFLAGS_vgettimeofday.o += $(call cc-option, -fno-stack-protector)
--  CFLAGS_vgettimeofday.o += -DDISABLE_BRANCH_PROFILING
--  CFLAGS_vgettimeofday.o += -ffreestanding -fasynchronous-unwind-tables
--  CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
--endif
-+CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
-+CFLAGS_vgettimeofday.o += $(DISABLE_LATENT_ENTROPY_PLUGIN)
-+CFLAGS_vgettimeofday.o += $(call cc-option, -fno-stack-protector)
-+CFLAGS_vgettimeofday.o += -DDISABLE_BRANCH_PROFILING
-+CFLAGS_vgettimeofday.o += -ffreestanding -fasynchronous-unwind-tables
-+CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
- 
- # Build rules
- 
-diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-index 24d936c147cd..7653767a6100 100644
---- a/arch/riscv/kernel/vdso/Makefile
-+++ b/arch/riscv/kernel/vdso/Makefile
-@@ -17,10 +17,7 @@ vdso-syms += flush_icache
- obj-vdso = $(patsubst %, %.o, $(vdso-syms)) note.o
- 
- ccflags-y := -fno-stack-protector
--
--ifneq ($(c-gettimeofday-y),)
--  CFLAGS_vgettimeofday.o += -fPIC -include $(c-gettimeofday-y)
--endif
-+CFLAGS_vgettimeofday.o += -fPIC -include $(c-gettimeofday-y)
- 
- # Build rules
- targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds vdso-syms.S
--- 
-2.27.0
+For large userspace applications, separating .text.unlikely .text.hot can help
+do things like hugepage and mlock, which can improve instruction cache
+localize and reduce instruction TLB miss rates,,, but not sure this
+helps much for the kernel.
 
+Or perhaps some .text.FOOBAR has special usage which cannot be placed
+into the output .text
+)
+
+
+> 		TEXT_CFI_JT						\
+> 	MEM_KEEP(init.text*)						\
+> 	MEM_KEEP(exit.text*)						\
+>
+>base-commit: 4669e13cd67f8532be12815ed3d37e775a9bdc16
+>-- 
+>2.32.0.264.g75ae10bc75
+>
