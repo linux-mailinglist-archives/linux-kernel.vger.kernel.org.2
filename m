@@ -2,148 +2,712 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93B43DC6EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 18:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14823DC6EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 18:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhGaQ1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 12:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
+        id S230099AbhGaQ3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 12:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhGaQ1i (ORCPT
+        with ESMTP id S229475AbhGaQ3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 12:27:38 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C70C06175F;
-        Sat, 31 Jul 2021 09:27:30 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id i13so631105ilm.11;
-        Sat, 31 Jul 2021 09:27:30 -0700 (PDT)
+        Sat, 31 Jul 2021 12:29:20 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3C1C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 09:29:14 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id x3so12556967qkl.6
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 09:29:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ee50FTv47mz9YSA5BwOWPTMugOsH5ALvkhacKksyiDA=;
-        b=tfKTh5XeHtEOhGQy/XAOuqUtEUcePZyKuhzSUfWoP7/nItHS2qy35v+VONq5az6KTh
-         vI0xkU3rCrPpu7EoNWcg/7e0aVnYgFoCSD44YwoDVITySsNOSTLRTEhSD3Zf2l/PNhpw
-         +btNuqLwZt4ha6X0T9gWD8QZOS4Ic5BIfVGIQfh7hcJQf+rEKStJabkYOczqGEqx1bIN
-         uY8RjBXS5WECQBxdPj7hNxyd1Fv7hLJk3UYSW2vTQAbi0AUhbdsz5s/B9SRI5LUDtWVA
-         r5hKT9k9+7xbuiv8JQX1KFE5ZuguWT+u0zQ9AtNXU87yY8r8HRLKb+WAvuRRTTbQJCdr
-         iZ2g==
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:organization:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Us1XPx2RpSoJxeDLbBGLLkoGKUkmplyYT/y3+gqcYL4=;
+        b=kWvDGZR1hqq/4sD7SCvZsWdGzkVpyf1WTzKqWKsuoi3XajKSIKPUBz0HVgzlgE2ywm
+         VzlpdDjvLjva71mXok+of3XEWi0xUvg/VLSfxja51nZaCUPHAR2c9JyaCTj5c3lgt74s
+         Z0onWIKoVuukR6shh9PMH+WBYSc8+asLSOCzmlTX0Skn3pE6LMEjeNRMyDia4ajELhci
+         r8/wncB7Hf6UDFB8GG761tUx+5BWiKy/ntYVXRu0PoUdD0Bd8r0Azbip8u1QXBmWFzLm
+         pzj6pd0rKTd5sLb/B4n8SfD0HPQnyiBvEjwg1nWoRHRNtGJ9avg/QcpBNF5SMx2HRUy7
+         Gx5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ee50FTv47mz9YSA5BwOWPTMugOsH5ALvkhacKksyiDA=;
-        b=VNCSbHey9f26wr0tKNfeYm7y5eV9KnXb22m64qg5EKK5CMBl9ufqkdYnNoAorKIUoO
-         QljrbgokaibnxhGCzxEC0+GsPpXkYRAqiGmhOxsSGwpsD+yen4R3ry4NqJvk9/pU0iSv
-         tYQnThvanVpAlW7hdX62upE9o8nDAGncJSD/iwi+cAfmlo5+EZDHjPaAQOJy1fOvZhpV
-         rTgtfZImE0TpOLvONj5RTSO88dMVtN9uh7SMXtDOsp1fqfRqeTdCfdqTLYNAZy0Kd1uO
-         BYZ1y6QwSRlOhPicOe04ry+407eKmsV8gN7YDw5OMnHxIgMAewHt/SOk5G/0jIJAQuAi
-         XlHQ==
-X-Gm-Message-State: AOAM531giw6YDPSntK2EsGqCblWtdLHr7GWFSz9UKFt5O+fIFaa7EJd2
-        04PMUwFqPhUPOlPImS9z0y2IRSO4g2Fxrtvls20=
-X-Google-Smtp-Source: ABdhPJzKOyTYcsRfW1fyXwn6uL+XCJ/SsUhrPRxbGHj33Y2gm774u5U4O1CBy7SOEtspOuHrlMzMp9USWVkD9zMu+Gw=
-X-Received: by 2002:a05:6e02:1c2d:: with SMTP id m13mr5017071ilh.137.1627748850316;
- Sat, 31 Jul 2021 09:27:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=Us1XPx2RpSoJxeDLbBGLLkoGKUkmplyYT/y3+gqcYL4=;
+        b=QYsSUpXDwDMFIGdK8xB3jF+kMRuuJ3pgrY/f6Hqo2LOYq0SCl8nX2pD08nnxVkFPCR
+         vohpzwQpmHNZMFPKLO069p69O2MhDvz5RyaCmOGrGKA96bcP34dvgb+YcNwYm/D6YXpn
+         KBOspkeRcx5FkysOMUvzVNTdHEKI4rCdqIhfBAxUXFmWzkwQVlDaHKaDirHk7vuMDjkl
+         AyuTptYpOGHsFg6ebrlHEaolEGX5R9UOZMXVScTBYxIUZ2oiu9ui9EWLPF1WDOzvpNAi
+         blPATxsGnpNcMVy0frqU+kKvfg35MQqSKEOHU0oWARy2IK0JABbOCICFRt4RN20ciXSg
+         T5Xw==
+X-Gm-Message-State: AOAM5339Vji3mT7tg4iyM0+u4EVpUu8LbLDNJcfI8imbmjNA5lk59hyy
+        hgYFh9yv1sfmnVa0ysIHqlBtOQ==
+X-Google-Smtp-Source: ABdhPJx55exo/KUuuxwrm88HuoiThYyE6dya1rl7xubBKcZ1YmL75cj8+PuwTzPW7shFGH8TzDYzWQ==
+X-Received: by 2002:a37:a6d2:: with SMTP id p201mr7805824qke.98.1627748953104;
+        Sat, 31 Jul 2021 09:29:13 -0700 (PDT)
+Received: from iron-maiden.localnet (50-200-151-121-static.hfc.comcastbusiness.net. [50.200.151.121])
+        by smtp.gmail.com with ESMTPSA id d25sm2152025qtq.55.2021.07.31.09.29.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 09:29:12 -0700 (PDT)
+From:   Carlos Bilbao <bilbao@vt.edu>
+To:     Thomas Gleixner <tglx@linutronix.de>, kbuild-all@lists.01.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, jianyong.wu@arm.com,
+        Matthew Wilcox <willy@infradead.org>, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org
+Subject: [PATCH v4] include: linux: Reorganize timekeeping and ktime headers
+Date:   Sat, 31 Jul 2021 12:29:11 -0400
+Message-ID: <12103420.O9o76ZdvQC@iron-maiden>
+Organization: Virginia Tech
+In-Reply-To: <202107230326.HiPEGmrx-lkp@intel.com>
+References: <2204751.ElGaqSPkdT@iron-maiden> <202107230326.HiPEGmrx-lkp@intel.com>
 MIME-Version: 1.0
-References: <20210720155944.1447086-9-krisman@collabora.com>
- <20210731063818.GB18773@xsang-OptiPlex-9020> <CAOQ4uxgtke-jK3a1SxowdEhObw8rDuUXB-DSGCr-M1uVMWarww@mail.gmail.com>
-In-Reply-To: <CAOQ4uxgtke-jK3a1SxowdEhObw8rDuUXB-DSGCr-M1uVMWarww@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sat, 31 Jul 2021 19:27:19 +0300
-Message-ID: <CAOQ4uxh+do6SVyYCcNSM+7dqzSRU_Y-AXYuMyti4ESkmLdm5zQ@mail.gmail.com>
-Subject: Re: [fsnotify] 4c40d6efc8: unixbench.score -3.3% regression
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@linux.intel.com, Jan Kara <jack@suse.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
-        Mel Gorman <mgorman@techsingularity.net>,
-        0day robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 12:27 PM Amir Goldstein <amir73il@gmail.com> wrote:
->
-> On Sat, Jul 31, 2021 at 9:20 AM kernel test robot <oliver.sang@intel.com> wrote:
-> >
-> >
-> >
-> > Greeting,
-> >
-> > FYI, we noticed a -3.3% regression of unixbench.score due to commit:
-> >
-> >
-> > commit: 4c40d6efc8b22b88a45c335ffd6d25b55d769f5b ("[PATCH v4 08/16] fsnotify: pass arguments of fsnotify() in struct fsnotify_event_info")
-> > url: https://github.com/0day-ci/linux/commits/Gabriel-Krisman-Bertazi/File-system-wide-monitoring/20210721-001444
-> > base: https://git.kernel.org/cgit/linux/kernel/git/jack/linux-fs.git fsnotify
-> >
-> > in testcase: unixbench
-> > on test machine: 96 threads 2 sockets Intel(R) Xeon(R) CPU @ 2.30GHz with 128G memory
-> > with following parameters:
-> >
-> >         runtime: 300s
-> >         nr_task: 1
-> >         test: pipe
-> >         cpufreq_governor: performance
-> >         ucode: 0x4003006
-> >
-> > test-description: UnixBench is the original BYTE UNIX benchmark suite aims to test performance of Unix-like system.
-> > test-url: https://github.com/kdlucas/byte-unixbench
-> >
-> > In addition to that, the commit also has significant impact on the following tests:
-> >
-> > +------------------+-------------------------------------------------------------------------------------+
-> > | testcase: change | will-it-scale: will-it-scale.per_thread_ops -1.3% regression                        |
-> > | test machine     | 192 threads 4 sockets Intel(R) Xeon(R) Platinum 9242 CPU @ 2.30GHz with 192G memory |
-> > | test parameters  | cpufreq_governor=performance                                                        |
-> > |                  | mode=thread                                                                         |
-> > |                  | nr_task=100%                                                                        |
-> > |                  | test=eventfd1                                                                       |
-> > |                  | ucode=0x5003006                                                                     |
-> > +------------------+-------------------------------------------------------------------------------------+
-> >
-> >
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> >
->
-> Gabriel,
->
-> It looks like my change throws away much of the performance gain for
-> small IO on pipes without any watches that was achieved by commit
-> 71d734103edf ("fsnotify: Rearrange fast path to minimise overhead
-> when there is no watcher").
->
-> I think the way to fix it is to lift the optimization in __fsnotify()
-> to the fsnotify_parent() inline wrapper as Mel considered doing
-> but was not sure it was worth the effort at the time.
->
-> It's not completely trivial. I think it requires setting a flag
-> MNT_FSNOTIFY_WATCHED when there are watches on the
-> vfsmount. I will look into it.
->
+Reorganize and separate the headers by making ktime.h take care of the 
+ktime_get() family of functions, and reserve timekeeping.h for the actual 
+timekeeping. This also helps to avoid implicit function errors and strengthens
+the header dependencies, since timekeeping.h was using ktime_to_ns(), a static 
+function defined in a header it does no include, ktime.h. Include the header 
+timekeeping.h wherever it is necessary for a successful compilation after the 
+header code reorganization.
 
-Oliver,
+Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+Changelog:
+- v2: Add three more files that also needed a header update for x86: 
+  pps_kernel.h, posix-timers.c and hda_controller.c
+- v3: Cover build tests for other architectures than x86. To compile arm64, 
+  update arch/arm64/kvm/hypercalls.c, include/linux/stmmac.h, and 
+  drivers/rtc/class.c. No other arch/ seems to need fixes but to be on the safe
+  side compiled arm, mips, powerpc, sparc, s390, riscv and i386.
+- v4: Fix warnings pointed out by the kernel test robot.
+---
+ arch/arm64/kvm/hypercalls.c    |   1 +
+ arch/ia64/kernel/time.c        |   1 +
+ arch/x86/kernel/rtc.c          |   1 +
+ arch/x86/kernel/tsc.c          |   1 +
+ drivers/rtc/class.c            |   1 +
+ include/linux/ktime.h          | 196 +++++++++++++++++++++++++++++++-
+ include/linux/pps_kernel.h     |   1 +
+ include/linux/sched_clock.h    |   2 +
+ include/linux/stmmac.h         |   1 +
+ include/linux/timekeeping.h    | 197 +--------------------------------
+ init/main.c                    |   1 +
+ kernel/time/ntp.c              |   1 +
+ kernel/time/posix-timers.c     |   1 +
+ kernel/time/tick-legacy.c      |   1 +
+ kernel/time/time.c             |   1 +
+ kernel/time/timekeeping.c      |   1 +
+ sound/pci/hda/hda_controller.c |   1 +
+ 17 files changed, 211 insertions(+), 198 deletions(-)
 
-Would it be possible to request a re-test with the branch:
-https://github.com/amir73il/linux fsnotify-perf
+diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+index 30da78f72b3b..41499c1d7379 100644
+--- a/arch/arm64/kvm/hypercalls.c
++++ b/arch/arm64/kvm/hypercalls.c
+@@ -3,6 +3,7 @@
+ 
+ #include <linux/arm-smccc.h>
+ #include <linux/kvm_host.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/kvm_emulate.h>
+ 
+diff --git a/arch/ia64/kernel/time.c b/arch/ia64/kernel/time.c
+index fa9c0ab8c6fc..85e79ff3c98e 100644
+--- a/arch/ia64/kernel/time.c
++++ b/arch/ia64/kernel/time.c
+@@ -22,6 +22,7 @@
+ #include <linux/efi.h>
+ #include <linux/timex.h>
+ #include <linux/timekeeper_internal.h>
++#include <linux/timekeeping.h>
+ #include <linux/platform_device.h>
+ #include <linux/sched/cputime.h>
+ 
+diff --git a/arch/x86/kernel/rtc.c b/arch/x86/kernel/rtc.c
+index 586f718b8e95..98ea05cc6aeb 100644
+--- a/arch/x86/kernel/rtc.c
++++ b/arch/x86/kernel/rtc.c
+@@ -9,6 +9,7 @@
+ #include <linux/export.h>
+ #include <linux/pnp.h>
+ #include <linux/of.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/vsyscall.h>
+ #include <asm/x86_init.h>
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 2e076a459a0c..b730cb20f5fd 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -15,6 +15,7 @@
+ #include <linux/timex.h>
+ #include <linux/static_key.h>
+ #include <linux/static_call.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/hpet.h>
+ #include <asm/timer.h>
+diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
+index f77bc089eb6b..1bdf1f790beb 100644
+--- a/drivers/rtc/class.c
++++ b/drivers/rtc/class.c
+@@ -16,6 +16,7 @@
+ #include <linux/kdev_t.h>
+ #include <linux/idr.h>
+ #include <linux/slab.h>
++#include <linux/timekeeping.h>
+ #include <linux/workqueue.h>
+ 
+ #include "rtc-core.h"
+diff --git a/include/linux/ktime.h b/include/linux/ktime.h
+index 73f20deb497d..37955d6664dd 100644
+--- a/include/linux/ktime.h
++++ b/include/linux/ktime.h
+@@ -229,6 +229,198 @@ static inline ktime_t ms_to_ktime(u64 ms)
+ 	return ms * NSEC_PER_MSEC;
+ }
+ 
+-# include <linux/timekeeping.h>
++/*
++ * ktime_get() family: read the current time in a multitude of ways,
++ *
++ * The default time reference is CLOCK_MONOTONIC, starting at
++ * boot time but not counting the time spent in suspend.
++ * For other references, use the functions with "real", "clocktai",
++ * "boottime" and "raw" suffixes.
++ *
++ * To get the time in a different format, use the ones wit
++ * "ns", "ts64" and "seconds" suffix.
++ *
++ * See Documentation/core-api/timekeeping.rst for more details.
++ */
+ 
+-#endif
++
++/*
++ * timespec64 based interfaces
++ */
++extern void ktime_get_raw_ts64(struct timespec64 *ts);
++extern void ktime_get_ts64(struct timespec64 *ts);
++extern void ktime_get_real_ts64(struct timespec64 *tv);
++extern void ktime_get_coarse_ts64(struct timespec64 *ts);
++extern void ktime_get_coarse_real_ts64(struct timespec64 *ts);
++
++void getboottime64(struct timespec64 *ts);
++
++/*
++ * time64_t base interfaces
++ */
++extern time64_t ktime_get_seconds(void);
++extern time64_t __ktime_get_real_seconds(void);
++extern time64_t ktime_get_real_seconds(void);
++
++/*
++ * ktime_t based interfaces
++ */
++
++enum tk_offsets {
++       TK_OFFS_REAL,
++       TK_OFFS_BOOT,
++       TK_OFFS_TAI,
++       TK_OFFS_MAX,
++};
++
++extern ktime_t ktime_get(void);
++extern ktime_t ktime_get_with_offset(enum tk_offsets offs);
++extern ktime_t ktime_get_coarse_with_offset(enum tk_offsets offs);
++extern ktime_t ktime_mono_to_any(ktime_t tmono, enum tk_offsets offs);
++extern ktime_t ktime_get_raw(void);
++extern u32 ktime_get_resolution_ns(void);
++
++/**
++ * ktime_get_real - get the real (wall-) time in ktime_t format
++ */
++static inline ktime_t ktime_get_real(void)
++{
++       return ktime_get_with_offset(TK_OFFS_REAL);
++}
++
++static inline ktime_t ktime_get_coarse_real(void)
++{
++       return ktime_get_coarse_with_offset(TK_OFFS_REAL);
++}
++
++/**
++ * ktime_get_boottime - Returns monotonic time since boot in ktime_t format
++ *
++ * This is similar to CLOCK_MONTONIC/ktime_get, but also includes the
++ * time spent in suspend.
++ */
++static inline ktime_t ktime_get_boottime(void)
++{
++       return ktime_get_with_offset(TK_OFFS_BOOT);
++}
++
++static inline ktime_t ktime_get_coarse_boottime(void)
++{
++       return ktime_get_coarse_with_offset(TK_OFFS_BOOT);
++}
++
++/**
++ * ktime_get_clocktai - Returns the TAI time of day in ktime_t format
++ */
++static inline ktime_t ktime_get_clocktai(void)
++{
++       return ktime_get_with_offset(TK_OFFS_TAI);
++}
++
++static inline ktime_t ktime_get_coarse_clocktai(void)
++{
++       return ktime_get_coarse_with_offset(TK_OFFS_TAI);
++}
++
++static inline ktime_t ktime_get_coarse(void)
++{
++       struct timespec64 ts;
++
++       ktime_get_coarse_ts64(&ts);
++       return timespec64_to_ktime(ts);
++}
++
++static inline u64 ktime_get_coarse_ns(void)
++{
++       return ktime_to_ns(ktime_get_coarse());
++}
++
++static inline u64 ktime_get_coarse_real_ns(void)
++{
++       return ktime_to_ns(ktime_get_coarse_real());
++}
++
++static inline u64 ktime_get_coarse_boottime_ns(void)
++{
++       return ktime_to_ns(ktime_get_coarse_boottime());
++}
++
++static inline u64 ktime_get_coarse_clocktai_ns(void)
++{
++       return ktime_to_ns(ktime_get_coarse_clocktai());
++}
++
++/**
++ * ktime_mono_to_real - Convert monotonic time to clock realtime
++ */
++static inline ktime_t ktime_mono_to_real(ktime_t mono)
++{
++       return ktime_mono_to_any(mono, TK_OFFS_REAL);
++}
++
++static inline u64 ktime_get_ns(void)
++{
++       return ktime_to_ns(ktime_get());
++}
++
++static inline u64 ktime_get_real_ns(void)
++{
++       return ktime_to_ns(ktime_get_real());
++}
++
++static inline u64 ktime_get_boottime_ns(void)
++{
++       return ktime_to_ns(ktime_get_boottime());
++}
++
++static inline u64 ktime_get_clocktai_ns(void)
++{
++       return ktime_to_ns(ktime_get_clocktai());
++}
++
++static inline u64 ktime_get_raw_ns(void)
++{
++       return ktime_to_ns(ktime_get_raw());
++}
++
++extern u64 ktime_get_mono_fast_ns(void);
++extern u64 ktime_get_raw_fast_ns(void);
++extern u64 ktime_get_boot_fast_ns(void);
++extern u64 ktime_get_real_fast_ns(void);
++
++/*
++ * timespec64/time64_t interfaces utilizing the ktime based ones
++ * for API completeness, these could be implemented more efficiently
++ * if needed.
++ */
++static inline void ktime_get_boottime_ts64(struct timespec64 *ts)
++{
++       *ts = ktime_to_timespec64(ktime_get_boottime());
++}
++
++static inline void ktime_get_coarse_boottime_ts64(struct timespec64 *ts)
++{
++       *ts = ktime_to_timespec64(ktime_get_coarse_boottime());
++}
++
++static inline time64_t ktime_get_boottime_seconds(void)
++{
++       return ktime_divns(ktime_get_coarse_boottime(), NSEC_PER_SEC);
++}
++
++static inline void ktime_get_clocktai_ts64(struct timespec64 *ts)
++{
++       *ts = ktime_to_timespec64(ktime_get_clocktai());
++}
++
++static inline void ktime_get_coarse_clocktai_ts64(struct timespec64 *ts)
++{
++       *ts = ktime_to_timespec64(ktime_get_coarse_clocktai());
++}
++
++static inline time64_t ktime_get_clocktai_seconds(void)
++{
++       return ktime_divns(ktime_get_coarse_clocktai(), NSEC_PER_SEC);
++}
++
++#endif /* _LINUX_KTIME_H */
+diff --git a/include/linux/pps_kernel.h b/include/linux/pps_kernel.h
+index 78c8ac4951b5..24970c202ac6 100644
+--- a/include/linux/pps_kernel.h
++++ b/include/linux/pps_kernel.h
+@@ -12,6 +12,7 @@
+ #include <linux/cdev.h>
+ #include <linux/device.h>
+ #include <linux/time.h>
++#include <linux/timekeeping.h>
+ 
+ /*
+  * Global defines
+diff --git a/include/linux/sched_clock.h b/include/linux/sched_clock.h
+index 528718e4ed52..3a1aa2fdd9b2 100644
+--- a/include/linux/sched_clock.h
++++ b/include/linux/sched_clock.h
+@@ -5,6 +5,8 @@
+ #ifndef LINUX_SCHED_CLOCK
+ #define LINUX_SCHED_CLOCK
+ 
++#include <linux/timekeeping.h>
++
+ #ifdef CONFIG_GENERIC_SCHED_CLOCK
+ /**
+  * struct clock_read_data - data required to read from sched_clock()
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index 0db36360ef21..bd9b4205b070 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -14,6 +14,7 @@
+ 
+ #include <linux/platform_device.h>
+ #include <linux/phy.h>
++#include <linux/timekeeping.h>
+ 
+ #define MTL_MAX_RX_QUEUES	8
+ #define MTL_MAX_TX_QUEUES	8
+diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+index 78a98bdff76d..b1c54f5ff91e 100644
+--- a/include/linux/timekeeping.h
++++ b/include/linux/timekeeping.h
+@@ -19,201 +19,6 @@ extern void legacy_timer_tick(unsigned long ticks);
+ extern int do_settimeofday64(const struct timespec64 *ts);
+ extern int do_sys_settimeofday64(const struct timespec64 *tv,
+ 				 const struct timezone *tz);
+-
+-/*
+- * ktime_get() family: read the current time in a multitude of ways,
+- *
+- * The default time reference is CLOCK_MONOTONIC, starting at
+- * boot time but not counting the time spent in suspend.
+- * For other references, use the functions with "real", "clocktai",
+- * "boottime" and "raw" suffixes.
+- *
+- * To get the time in a different format, use the ones wit
+- * "ns", "ts64" and "seconds" suffix.
+- *
+- * See Documentation/core-api/timekeeping.rst for more details.
+- */
+-
+-
+-/*
+- * timespec64 based interfaces
+- */
+-extern void ktime_get_raw_ts64(struct timespec64 *ts);
+-extern void ktime_get_ts64(struct timespec64 *ts);
+-extern void ktime_get_real_ts64(struct timespec64 *tv);
+-extern void ktime_get_coarse_ts64(struct timespec64 *ts);
+-extern void ktime_get_coarse_real_ts64(struct timespec64 *ts);
+-
+-void getboottime64(struct timespec64 *ts);
+-
+-/*
+- * time64_t base interfaces
+- */
+-extern time64_t ktime_get_seconds(void);
+-extern time64_t __ktime_get_real_seconds(void);
+-extern time64_t ktime_get_real_seconds(void);
+-
+-/*
+- * ktime_t based interfaces
+- */
+-
+-enum tk_offsets {
+-	TK_OFFS_REAL,
+-	TK_OFFS_BOOT,
+-	TK_OFFS_TAI,
+-	TK_OFFS_MAX,
+-};
+-
+-extern ktime_t ktime_get(void);
+-extern ktime_t ktime_get_with_offset(enum tk_offsets offs);
+-extern ktime_t ktime_get_coarse_with_offset(enum tk_offsets offs);
+-extern ktime_t ktime_mono_to_any(ktime_t tmono, enum tk_offsets offs);
+-extern ktime_t ktime_get_raw(void);
+-extern u32 ktime_get_resolution_ns(void);
+-
+-/**
+- * ktime_get_real - get the real (wall-) time in ktime_t format
+- */
+-static inline ktime_t ktime_get_real(void)
+-{
+-	return ktime_get_with_offset(TK_OFFS_REAL);
+-}
+-
+-static inline ktime_t ktime_get_coarse_real(void)
+-{
+-	return ktime_get_coarse_with_offset(TK_OFFS_REAL);
+-}
+-
+-/**
+- * ktime_get_boottime - Returns monotonic time since boot in ktime_t format
+- *
+- * This is similar to CLOCK_MONTONIC/ktime_get, but also includes the
+- * time spent in suspend.
+- */
+-static inline ktime_t ktime_get_boottime(void)
+-{
+-	return ktime_get_with_offset(TK_OFFS_BOOT);
+-}
+-
+-static inline ktime_t ktime_get_coarse_boottime(void)
+-{
+-	return ktime_get_coarse_with_offset(TK_OFFS_BOOT);
+-}
+-
+-/**
+- * ktime_get_clocktai - Returns the TAI time of day in ktime_t format
+- */
+-static inline ktime_t ktime_get_clocktai(void)
+-{
+-	return ktime_get_with_offset(TK_OFFS_TAI);
+-}
+-
+-static inline ktime_t ktime_get_coarse_clocktai(void)
+-{
+-	return ktime_get_coarse_with_offset(TK_OFFS_TAI);
+-}
+-
+-static inline ktime_t ktime_get_coarse(void)
+-{
+-	struct timespec64 ts;
+-
+-	ktime_get_coarse_ts64(&ts);
+-	return timespec64_to_ktime(ts);
+-}
+-
+-static inline u64 ktime_get_coarse_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_coarse());
+-}
+-
+-static inline u64 ktime_get_coarse_real_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_coarse_real());
+-}
+-
+-static inline u64 ktime_get_coarse_boottime_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_coarse_boottime());
+-}
+-
+-static inline u64 ktime_get_coarse_clocktai_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_coarse_clocktai());
+-}
+-
+-/**
+- * ktime_mono_to_real - Convert monotonic time to clock realtime
+- */
+-static inline ktime_t ktime_mono_to_real(ktime_t mono)
+-{
+-	return ktime_mono_to_any(mono, TK_OFFS_REAL);
+-}
+-
+-static inline u64 ktime_get_ns(void)
+-{
+-	return ktime_to_ns(ktime_get());
+-}
+-
+-static inline u64 ktime_get_real_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_real());
+-}
+-
+-static inline u64 ktime_get_boottime_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_boottime());
+-}
+-
+-static inline u64 ktime_get_clocktai_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_clocktai());
+-}
+-
+-static inline u64 ktime_get_raw_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_raw());
+-}
+-
+-extern u64 ktime_get_mono_fast_ns(void);
+-extern u64 ktime_get_raw_fast_ns(void);
+-extern u64 ktime_get_boot_fast_ns(void);
+-extern u64 ktime_get_real_fast_ns(void);
+-
+-/*
+- * timespec64/time64_t interfaces utilizing the ktime based ones
+- * for API completeness, these could be implemented more efficiently
+- * if needed.
+- */
+-static inline void ktime_get_boottime_ts64(struct timespec64 *ts)
+-{
+-	*ts = ktime_to_timespec64(ktime_get_boottime());
+-}
+-
+-static inline void ktime_get_coarse_boottime_ts64(struct timespec64 *ts)
+-{
+-	*ts = ktime_to_timespec64(ktime_get_coarse_boottime());
+-}
+-
+-static inline time64_t ktime_get_boottime_seconds(void)
+-{
+-	return ktime_divns(ktime_get_coarse_boottime(), NSEC_PER_SEC);
+-}
+-
+-static inline void ktime_get_clocktai_ts64(struct timespec64 *ts)
+-{
+-	*ts = ktime_to_timespec64(ktime_get_clocktai());
+-}
+-
+-static inline void ktime_get_coarse_clocktai_ts64(struct timespec64 *ts)
+-{
+-	*ts = ktime_to_timespec64(ktime_get_coarse_clocktai());
+-}
+-
+-static inline time64_t ktime_get_clocktai_seconds(void)
+-{
+-	return ktime_divns(ktime_get_coarse_clocktai(), NSEC_PER_SEC);
+-}
+-
+ /*
+  * RTC specific
+  */
+@@ -308,4 +113,4 @@ void read_persistent_wall_and_boot_offset(struct timespec64 *wall_clock,
+ extern int update_persistent_clock64(struct timespec64 now);
+ #endif
+ 
+-#endif
++#endif /* _LINUX_TIMEKEEPING_H */
+diff --git a/init/main.c b/init/main.c
+index eb01e121d2f1..8c1b2410e74b 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -98,6 +98,7 @@
+ #include <linux/kcsan.h>
+ #include <linux/init_syscalls.h>
+ #include <linux/stackdepot.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/io.h>
+ #include <asm/bugs.h>
+diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+index 406dccb79c2b..804f06801737 100644
+--- a/kernel/time/ntp.c
++++ b/kernel/time/ntp.c
+@@ -18,6 +18,7 @@
+ #include <linux/module.h>
+ #include <linux/rtc.h>
+ #include <linux/audit.h>
++#include <linux/timekeeping.h>
+ 
+ #include "ntp_internal.h"
+ #include "timekeeping_internal.h"
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index dd5697d7347b..14f82cd95d10 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -13,6 +13,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/slab.h>
+ #include <linux/time.h>
++#include <linux/timekeeping.h>
+ #include <linux/mutex.h>
+ #include <linux/sched/task.h>
+ 
+diff --git a/kernel/time/tick-legacy.c b/kernel/time/tick-legacy.c
+index af225b32f5b3..9a534f716462 100644
+--- a/kernel/time/tick-legacy.c
++++ b/kernel/time/tick-legacy.c
+@@ -7,6 +7,7 @@
+ #include <linux/irq.h>
+ #include <linux/profile.h>
+ #include <linux/timekeeper_internal.h>
++#include <linux/timekeeping.h>
+ 
+ #include "tick-internal.h"
+ 
+diff --git a/kernel/time/time.c b/kernel/time/time.c
+index 29923b20e0e4..7292ed074742 100644
+--- a/kernel/time/time.c
++++ b/kernel/time/time.c
+@@ -29,6 +29,7 @@
+ #include <linux/timex.h>
+ #include <linux/capability.h>
+ #include <linux/timekeeper_internal.h>
++#include <linux/timekeeping.h>
+ #include <linux/errno.h>
+ #include <linux/syscalls.h>
+ #include <linux/security.h>
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 8a364aa9881a..4dfee925adc8 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -22,6 +22,7 @@
+ #include <linux/pvclock_gtod.h>
+ #include <linux/compiler.h>
+ #include <linux/audit.h>
++#include <linux/timekeeping.h>
+ 
+ #include "tick-internal.h"
+ #include "ntp_internal.h"
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index ca2f2ecd1488..efbbe624d81d 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/slab.h>
++#include <linux/timekeeping.h>
+ 
+ #ifdef CONFIG_X86
+ /* for art-tsc conversion */
+-- 
+2.25.1
 
-The patch at the tip of that branch is the one this regression report
-has blamed.
 
-My expectation is that the patch at fsnotify-perf^ ("fsnotify: optimize the
-case of no marks of any type") will improve performance of the test case
-compared to baseline (v5.14-rc3) and that the patch at the tip of fsnotify-perf
-would not regress performance.
 
-Thanks,
-Amir.
