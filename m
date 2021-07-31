@@ -2,93 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C143DC451
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA903DC45B
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhGaHKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 03:10:19 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7770 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbhGaHKR (ORCPT
+        id S230523AbhGaHMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 03:12:32 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:40346
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230250AbhGaHM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 03:10:17 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GcFcR4tVPzYjf6;
-        Sat, 31 Jul 2021 15:04:07 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 31 Jul 2021 15:10:02 +0800
-Received: from [10.174.178.91] (10.174.178.91) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 31 Jul 2021 15:10:01 +0800
-Subject: Re: [PATCH 1/3] block, bfq: do not idle if only one cgroup is
- activated
-To:     Paolo Valente <paolo.valente@linaro.org>
-CC:     Jens Axboe <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20210714094529.758808-1-yukuai3@huawei.com>
- <20210714094529.758808-2-yukuai3@huawei.com>
- <7DF40BD4-8F57-4C2E-88A9-CBC3DA2A891E@linaro.org>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <c0b97b5b-c961-6d9f-7033-6da194c6b220@huawei.com>
-Date:   Sat, 31 Jul 2021 15:10:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sat, 31 Jul 2021 03:12:28 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id E68083F233
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 07:12:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627715539;
+        bh=hN6QfGvmrSwTg4tA4I3radaavpm+Sqfgu2IG+IjJCBU=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=B0PAP61XUWJZhkjQiJoFJ6o2+qyJG6f+RbTMjUZ+8LptRgw/A340uWzzIkCh2ZIA6
+         clw14io+hbIdgN7k7OEGBZ3ntQq+43eecoMqzqMTkhEVJbJ0WzdP06UimgNTVINHQn
+         Aui4gWYVpuRPy2v9LfjcG6G/05xOfpjDaP69dFKpdAtcIEEAHpxuODK2BlJfg09a1u
+         pVoa70KGHRP3MmzBPPOApkiSE0XT8dYcVtNaLifH5YnbvgGjPF3aQro4XKTfOQpTmB
+         yFFcDA1kHzCg4CKw8msRIYJ+ICR0I8MFXQ8q40MEbI+O5m3u9wrrLlZqA2LcTCpgTa
+         BuUQQwE2YQPLw==
+Received: by mail-ed1-f70.google.com with SMTP id x1-20020a05640218c1b02903bc7f97f858so4152305edy.2
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 00:12:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hN6QfGvmrSwTg4tA4I3radaavpm+Sqfgu2IG+IjJCBU=;
+        b=s4xKd70DZII68437tBpUW+uVx24fcLf5DFsWKPcf8sgxh45LbTJvxO7i3YoIEfioG+
+         fEDNm75AUOk0xQTFmSujVIs8LZDG3nPwqsjF5r+IW8Dnn0W4fDNy3mrYIGBy1UIwjC9s
+         BWukKB+IYJRJJI7sL+rdAAB8H2S72g6s3+IjJ7EzebZ9IdBEDKrYfvT8TFOnUUUMmuqV
+         C4SUrg6lYlPoLj90WdmgHrqpuILduESzfmr8o3VKH1ARAsmFXaSyAHyE0cylyJVKOC2c
+         GBkj7iePelAk9YyyFQg5DgGPimy51BC2gkNI+FAqpsBhzc+9G4ysAO92Arpx20sknY9C
+         NwEA==
+X-Gm-Message-State: AOAM5310KJjEmgkySrjJXf4pZdeY0JHVdx0PtQ9wV5b3EMQfPDK1PVda
+        JXmY9vASIq89dfBBkLNrSpxqZdKgVAu9M5k1njnPo/+sP1YxFGzJnMVxkoCYlO3XAxMndVOan/+
+        rPfh4QbYiQm1uNx7bGD5lbjA0gYXlOVbkO28nMxu3PA==
+X-Received: by 2002:a50:da0e:: with SMTP id z14mr7925684edj.73.1627715537253;
+        Sat, 31 Jul 2021 00:12:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzM+J4ApxUWFlgbSwRrJJR8tujps6FaXF0fw5qP1Ypyvp7qxb82ntIhvndqLnHetlhetnI/Qw==
+X-Received: by 2002:a50:da0e:: with SMTP id z14mr7925659edj.73.1627715537087;
+        Sat, 31 Jul 2021 00:12:17 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id l2sm1339054ejg.37.2021.07.31.00.12.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 31 Jul 2021 00:12:16 -0700 (PDT)
+Subject: Re: [PATCH 06/12] tty: serial: samsung: Add Exynos850 SoC data
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-7-semen.protsenko@linaro.org>
+ <5826bc3e-e9e8-a9bb-4541-21c1b944a60e@canonical.com>
+ <CAPLW+4=yOETYdVWvG_YUzewRDg9wB1h+z4i3DRDxJQHeVgu1EQ@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <3b607569-e97a-9f1b-92a2-a28de5d0e6b6@canonical.com>
+Date:   Sat, 31 Jul 2021 09:12:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <7DF40BD4-8F57-4C2E-88A9-CBC3DA2A891E@linaro.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
+In-Reply-To: <CAPLW+4=yOETYdVWvG_YUzewRDg9wB1h+z4i3DRDxJQHeVgu1EQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/07/24 15:12, Paolo Valente wrote:
-> 
-> 
->> Il giorno 14 lug 2021, alle ore 11:45, Yu Kuai <yukuai3@huawei.com> ha scritto:
+On 31/07/2021 01:10, Sam Protsenko wrote:
+> On Fri, 30 Jul 2021 at 19:05, Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
 >>
->> If only one group is activated, specifically
->> 'bfqd->num_groups_with_pending_reqs == 1', there is no need to guarantee
->> the same share of the throughput of queues in the same group.
+>> On 30/07/2021 16:49, Sam Protsenko wrote:
+>>> Add serial driver data for Exynos850 SoC. This driver data is basically
+>>> reusing EXYNOS_COMMON_SERIAL_DRV_DATA, which is common for all Exynos
+>>> chips, but also enables USI init, which was added in previous commit:
+>>> "tty: serial: samsung: Init USI to keep clocks running".
+>>>
+>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>> ---
+>>>  drivers/tty/serial/samsung_tty.c | 13 +++++++++++++
+>>>  1 file changed, 13 insertions(+)
+>>>
+>>> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+>>> index 75ccbb08df4a..d059b516a0f4 100644
+>>> --- a/drivers/tty/serial/samsung_tty.c
+>>> +++ b/drivers/tty/serial/samsung_tty.c
+>>> @@ -2814,11 +2814,19 @@ static struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
+>>>       .fifosize = { 64, 256, 16, 256 },
+>>>  };
+>>>
+>>> +static struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
+>>> +     EXYNOS_COMMON_SERIAL_DRV_DATA_USI(1),
+>>> +     .fifosize = { 0, },
 >>
->> Thus change the condition from '> 0' to '> 1' in
->> bfq_asymmetric_scenario().
+>> This does not look correct. You rely on samsung,uart-fifosize property
+>> but it is optional.
+>>
 > 
-> I see your point, and I agree with your goal.  Yet, your change seems
-> not to suffer from the following problem.
+> Good point. I will replace fifosize elements (in patch series v2) with
+> this code (the reasoning is below):
 > 
-> In addition to the groups that are created explicitly, there is the
-> implicit root group.  So, when bfqd->num_groups_with_pending_reqs ==
-> 1, there may be both active processes in the root group and active
-> processes in the only group created explicitly.  In this case, idling
-> is needed to preserve service guarantees.
+>     .fifosize = { 256, 64, 64, 64 }
 > 
-> Probably your idea should be improved by making sure that there is
-> pending I/O only from either the root group or the explicit group.
+> TRM mentions that USI block has configurable FIFO of 16/32/64/128/256
+> byte. In vendor kernel they are setting default values in dtsi instead
+> of driver, that's where fifosize = { 0 } appeared from. And in vendor
+> dtsi they set 256 for serial_0 (USI UART instance), 64 for serial_1
+> (CMGP0 UART instance) and 64 for serial_2 (CMGP1 UART instance). I
+> tested 256 and 64 for serial_0 (which is used for serial console)
 > 
-> Thanks,
-> Paolo
+> As for fifosize array elements count: though it's possible to
+> configure up to 7 UARTs in Exynos850 (it has 5 USI blocks and 2 CMGP
+> blocks, which can be configured as USIs), in a regular case it's only
+> 3 UARTs (1 in USI and 2 in CMGP). This is how it's done in vendor's
+> device tree, and I doubt someone is going to need more than 3 serials
+> anyway, looks like very specific case for a mobile SoC. But
+> CONFIG_SERIAL_SAMSUNG_UARTS_4=y is set by default when using arm64
+> defconfig, and I'd like to keep minimal delta for this defconfig for
+> now.
+> 
+> Hope you are ok with this?
+> 
+
+Yes, sounds good.
 
 
-Hi, Paolo
-
-I'm trying to add support to judge if root group have pending rqs, the
-implementation involve setting and clearing the busy state.
-
-I'm thinking about setting busy in __bfq_activate_entity() if
-bfq_entity_to_bfqq() return valid bfqq, however I'm not sure where to
-clear the busy state.
-
-On the other hand, do you think the way I record rq size info in patch 2
-is OK? If so, I can do this the similar way: say that root group doesn't
-have any pending requests if bfq haven't dispatch rq from root group for
-a period of time.
-
-Thanks
-Kuai
+Best regards,
+Krzysztof
