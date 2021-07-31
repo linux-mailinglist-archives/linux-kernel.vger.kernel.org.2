@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FBB3DC1E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3C63DC1E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234495AbhGaARa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 20:17:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234211AbhGaAR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 20:17:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97C7860E09;
-        Sat, 31 Jul 2021 00:17:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627690642;
-        bh=v9W11yuhUc1ArFzXc2d11Un1ugxJhd8TImD3TfT1dXo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kwNlVcY0TTNsw9lstRNHKrv88P8wCxENV2CttvaL+qrxYXYbqX9ZAdPju+uP1yF5U
-         +YN/1qN0U9aeMpFZ9dZjroTQIwEue+38qOZ55/pGD+Wh/iDcblxv10EXcMNfokDXIS
-         FA7oF5NapUlndrLLwWxUulhiAbZ5L79pvIWWQER0/Y44/HsWf8oMuePPDJra78Xvdk
-         X0xmUXXETDgBx4CftaNnlVuADyr2riZgaR2NX3DxgwgWmJ2Ojvf+h+ZLXXDOHeoaNq
-         X5dGC5Z8UDZKV9SeRFfMD29cIrf3sGwgRE1IIyMMQk0ihDO4Nxu4skseWCzrk078/l
-         xftjcwY0P+BOw==
-Date:   Sat, 31 Jul 2021 09:17:18 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH v3 RESEND] x86/tools: fix objdump version check again
-Message-Id: <20210731091718.e5bf207d185196d746d2b527@kernel.org>
-In-Reply-To: <20210731000146.2720-1-rdunlap@infradead.org>
-References: <20210731000146.2720-1-rdunlap@infradead.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234327AbhGaAYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 20:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233795AbhGaAYC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 20:24:02 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C237FC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 17:23:56 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id b13so2476181wrs.3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 17:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qOH69DvPtbrG4aMNPj+aM7ClxD5APY7n7/6ogqEJBeE=;
+        b=mqlnaPv6VgAQaGmmXabUraOPyUgteLJ9ahyrS1EIy/at+APSsHiHN6Lu8O8k3+zBte
+         Hz4LIPxYX5992GTKuYmqRJ/C+TTAt1wELPvTYQTDBPFGmj59rx5nMIXZDTAIyntRQnms
+         4ZDuDR9xqI7JBkasH36XSD3tqL67KWnzUWH4U1WkMwn2XJ3P9grfJSdDzlDylYPZRhhs
+         GwBvOX5rBQsMQBAOP2qnYneQw486wyi+e8SxtSL2jc7NCgEP+QEeuegFmh4ByxUzkKDd
+         dvhvQl8sQ3qSdPtanf4Phc/TelIRLe/OXz0xpFOzhgX6eBeFcqOXh7/QZGam+lDbn1V9
+         GW9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qOH69DvPtbrG4aMNPj+aM7ClxD5APY7n7/6ogqEJBeE=;
+        b=mGXuLWW6fnWPR9m1Ct74pPT+nbxnIp6gAFTpo4CwDYf0St1MaZc0dVmpVW8sLZbq/4
+         jSwkpsFEhPdnN3X+ei0VOq27T4Mwka8pe3mkWfbfUHl9fllKCK55FG+KfDaXjt4Ghj4F
+         WlkICwZFU80QB6zb9QR83BJo7bjcFxawt3OIlU7zcr1cKvP9DpAe0UUJRPaD6jpF5ecJ
+         b8Idga4ZNG0PW4nshSEN9TzKpTscS3bDs26Z0qTYHnAfZuk5ezRqAvho1nIYsMvMtHEE
+         DLa2uFTbNIvv+YO4fmt8RbshXGc2cMTINTuDdytOKqOa4UhR/RwnHJ68UM4ptdBG4igO
+         KT5Q==
+X-Gm-Message-State: AOAM5314Lj7LI32yWAx+g1U6AQ5cR47d+C65W0lgsiZjl6Qi9KKQ9c7L
+        gKhp0gBCdrr+/rwi7R1P5bmbCtuTsJmMMq0YNsk=
+X-Google-Smtp-Source: ABdhPJxpSIghPIO64MtHpAgcYJUNv2knFlki2Q+Nigcq+p9Rugj+/hBh3WCSxHkugZU74sH82eVfxA==
+X-Received: by 2002:adf:f282:: with SMTP id k2mr5730940wro.183.1627691035418;
+        Fri, 30 Jul 2021 17:23:55 -0700 (PDT)
+Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
+        by smtp.gmail.com with ESMTPSA id x9sm3236011wmj.41.2021.07.30.17.23.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 17:23:54 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/14] remove include/odm_debug.h
+Date:   Sat, 31 Jul 2021 01:23:39 +0100
+Message-Id: <20210731002353.68479-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 17:01:46 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+This patch series removes include/odm_debug.h, after first going through
+and removing all uses of various macros within it and chipping away
+until it is no longer used. Removing all of this code significantly
+reduces the size of the driver by many hundreds of lines of code, and
+is a good idea due to the fact that none of the code follows best
+practice and none of it uses proper kernel internals for debugging.
 
-> Skip (omit) any version string info that is parenthesized.
-> 
-> Warning: objdump version 15) is older than 2.19
-> Warning: Skipping posttest.
-> 
-> where 'objdump -v' says:
-> GNU objdump (GNU Binutils; SUSE Linux Enterprise 15) 2.35.1.20201123-7.18
+Phillip Potter (14):
+  staging: r8188eu: remove ODM_PRINT_ADDR macro definition
+  staging: r8188eu: remove ODM_dbg_* macro definitions
+  staging: r8188eu: remove ODM_RT_ASSERT macro definition and caller
+  staging: r8188eu: remove ODM_RT_TRACE_F macro definition
+  staging: r8188eu: remove ASSERT ifndef and macro definition
+  staging: r8188eu: remove ODM_RT_TRACE calls from
+    hal/Hal8188ERateAdaptive.c
+  staging: r8188eu: remove ODM_RT_TRACE calls from hal/HalPhyRf_8188e.c
+  staging: r8188eu: remove ODM_RT_TRACE calls from hal/odm_HWConfig.c
+  staging: r8188eu: remove ODM_RT_TRACE calls from hal/odm_RTL8188E.c
+  staging: r8188eu: remove ODM_RT_TRACE calls from
+    hal/odm_RegConfig8188E.c
+  staging: r8188eu: remove ODM_RT_TRACE calls from hal/odm.c
+  staging: r8188eu: remove ODM_RT_TRACE macro definition
+  staging: r8188eu: remove DbgPrint and RT_PRINTK macro definitions
+  staging: r8188eu: remove include/odm_debug.h
 
-Looks good to me.
-
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you,
-
-
-> 
-> Fixes: 8bee738bb1979 ("x86: Fix objdump version check in chkobjdump.awk for different formats.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: H. Peter Anvin <hpa@zytor.com>
-> Cc: x86@kernel.org
-> Cc: Borislav Petkov <bp@alien8.de>
-> ---
-> v3: rebase & resend
->     correct Ingo's email address (not @elte.hu)
->     add x86@kernel.org email address
->     add BP's email address
-> 
->  arch/x86/tools/chkobjdump.awk |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> --- linux-next-20210715.orig/arch/x86/tools/chkobjdump.awk
-> +++ linux-next-20210715/arch/x86/tools/chkobjdump.awk
-> @@ -10,6 +10,7 @@ BEGIN {
->  
->  /^GNU objdump/ {
->  	verstr = ""
-> +	gsub(/\(.*\)/, "");
->  	for (i = 3; i <= NF; i++)
->  		if (match($(i), "^[0-9]")) {
->  			verstr = $(i);
-
+ drivers/staging/r8188eu/core/rtw_xmit.c       |   1 -
+ .../r8188eu/hal/Hal8188ERateAdaptive.c        |  99 +-------
+ drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  | 228 +-----------------
+ drivers/staging/r8188eu/hal/odm.c             | 199 ++-------------
+ drivers/staging/r8188eu/hal/odm_HWConfig.c    |   6 -
+ drivers/staging/r8188eu/hal/odm_RTL8188E.c    |  38 +--
+ .../staging/r8188eu/hal/odm_RegConfig8188E.c  |  29 +--
+ drivers/staging/r8188eu/hal/odm_debug.c       |   7 -
+ drivers/staging/r8188eu/hal/rtl8188e_dm.c     |   1 -
+ drivers/staging/r8188eu/hal/usb_halinit.c     |  23 --
+ drivers/staging/r8188eu/include/hal_intf.h    |   2 -
+ drivers/staging/r8188eu/include/odm.h         |   4 -
+ drivers/staging/r8188eu/include/odm_debug.h   | 126 ----------
+ drivers/staging/r8188eu/include/odm_precomp.h |   4 -
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c  |  27 ---
+ 15 files changed, 35 insertions(+), 759 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/include/odm_debug.h
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.31.1
+
