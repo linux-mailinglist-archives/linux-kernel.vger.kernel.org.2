@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1717A3DC494
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22E73DC49B
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhGaHry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 03:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
+        id S232345AbhGaHvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 03:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhGaHrv (ORCPT
+        with ESMTP id S230338AbhGaHvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 03:47:51 -0400
-Received: from mxout2.routing.net (mxout2.routing.net [IPv6:2a03:2900:1:a::b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A95FC06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 00:47:46 -0700 (PDT)
-Received: from mxbox4.masterlogin.de (unknown [192.168.10.79])
-        by mxout2.routing.net (Postfix) with ESMTP id 742395FC28;
-        Sat, 31 Jul 2021 07:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-        s=20200217; t=1627717663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=203p5LOrdBHh+Yer5N7D3VTBaUXubh54vrXwH3UF8Lk=;
-        b=sTVl6SjEaPCkXfzHdCJW6bkXpfSshz1B+2feQ8pz2TcMhOHMuuTuMXo1LwG6wa37Ag8MiT
-        XCep1oJyXfXwIz3y9dL36QqsPVvld76XWHlp4JrjUWvZWGOHCaFfJTyi0BRFoJMkwwuGGC
-        6Q1r5uWoWW0DatZh0p3SESLRXf5B7hE=
-Received: from localhost.localdomain (fttx-pool-80.245.79.120.bambit.de [80.245.79.120])
-        by mxbox4.masterlogin.de (Postfix) with ESMTPSA id CD16280843;
-        Sat, 31 Jul 2021 07:47:42 +0000 (UTC)
-From:   Frank Wunderlich <linux@fw-web.de>
-To:     iommu@lists.linux-foundation.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, yong.wu@mediatek.com
-Subject: [PATCH v2] iommu: Check if group is NULL before remove device
-Date:   Sat, 31 Jul 2021 09:47:37 +0200
-Message-Id: <20210731074737.4573-1-linux@fw-web.de>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mail-ID: c0f3efb9-ff49-441d-a9bc-ca8ab5fd7dbc
+        Sat, 31 Jul 2021 03:51:38 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA0DC06175F;
+        Sat, 31 Jul 2021 00:51:32 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id k1so13774628plt.12;
+        Sat, 31 Jul 2021 00:51:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=ICg7XziMcUYzjn1qRXDJ14WuqLuOzl3YM5j40dQBDlw=;
+        b=EIHM+GAcsV8TM1RJ4o8DVuPQuYkFo00AhWxIxFLIhy0a1c3z54nkn3msX5ZsbMBQTR
+         s+YndkkL74kzROEichM9TWYRRpKso6+JrsfT3+al573f7ethxmVm4DUzK2MgCG1fdlRP
+         tbwfDDDWJALiNnTwF1baqRYDKMI7pzRfr1wXmXaXp3ytF6IhN/CyRpnho8XIkmEkpubF
+         xDv0V/YK1UAZlclAFI7mtlvgVSaYQvAsv2UUR0I7H2WdwKj3A+oul3+N4K1qZWUSmtpj
+         fNaRkFe94uySYsC573z1tPC3qEBObPWwypqEuTHN5BywMhOPwb1pLDXCc/Vkmltyl9/L
+         rwXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=ICg7XziMcUYzjn1qRXDJ14WuqLuOzl3YM5j40dQBDlw=;
+        b=bRYsQJBtGC6LlnqxIGVXiaVAYi7y1lv3CukJLB6bDm5f6RPt9wvCxPxR4jp1BSehDb
+         TkeZ5YTzhip5xozoMs9wQ050uHDAZ7a0Cg3kfEa2LQIQZQgjMRQXDi+BazSIesMVua7a
+         LqnOqa6nprWBqLVFB0VYKZ04Y1m+WwPZ/nXetn/uTWidJU1LeGxabp85RIXnPn2zL3TQ
+         Nim6wsaMjwVv4/PgjkK0mmU5nQUul6yJ1MPLcWUncLQEjafyouw+qBqZeFo9c20h4rTS
+         TTsM4Gk4rxFrgOTWE+q9/lnnMZLpjvmIQinn2Cywq+7SwzNoFmOeCtOgzGZL82IT7TKk
+         NXcw==
+X-Gm-Message-State: AOAM533uOXTXDW2DF9F642q4wJ0Mck3hsui/ZgLgTQPAhIhhj3obRkpj
+        G5bN7o3VxnYTNV/HiQxhgYjpNnMYDFlvO1hB2jo=
+X-Google-Smtp-Source: ABdhPJxXfaac4MuBtORdnHVamlNwhdM1sCUXS352jdFyt4BpSCVEgMsfqKgorkAweS+wI9nC7Gr6VA==
+X-Received: by 2002:a17:90a:5588:: with SMTP id c8mr7306990pji.36.1627717891203;
+        Sat, 31 Jul 2021 00:51:31 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id i25sm4714400pfo.20.2021.07.31.00.51.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 00:51:30 -0700 (PDT)
+Message-ID: <61050102.1c69fb81.d0073.d7ea@mx.google.com>
+Date:   Sat, 31 Jul 2021 00:51:30 -0700 (PDT)
+X-Google-Original-Date: Sat, 31 Jul 2021 07:51:24 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 00/24] 5.10.55-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+On Thu, 29 Jul 2021 15:54:20 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.55 release.
+> There are 24 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.55-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-If probe_device is failing, iommu_group is not initialized because
-iommu_group_add_device is not reached, so freeing it will result
-in NULL pointer access.
-
-iommu_bus_init
-  ->bus_iommu_probe
-      ->probe_iommu_group in for each:/* return -22 in fail case */
-          ->iommu_probe_device
-              ->__iommu_probe_device       /* return -22 here.*/
-                  -> ops->probe_device          /* return -22 here.*/
-                  -> iommu_group_get_for_dev
-                        -> ops->device_group
-                        -> iommu_group_add_device //good case
-  ->remove_iommu_group  //in fail case, it will remove group
-     ->iommu_release_device
-         ->iommu_group_remove_device // here we don't have group
-
-In my case ops->probe_device (mtk_iommu_probe_device from
-mtk_iommu_v1.c) is due to failing fwspec->ops mismatch.
-
-Fixes: d72e31c93746 ("iommu: IOMMU Groups")
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
----
-v2:
-- commit-message with captial letters on beginning of sentenence
-- added more information, many thanks to Yong Wu
----
- drivers/iommu/iommu.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 5419c4b9f27a..63f0af10c403 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -924,6 +924,9 @@ void iommu_group_remove_device(struct device *dev)
- 	struct iommu_group *group = dev->iommu_group;
- 	struct group_device *tmp_device, *device = NULL;
- 
-+	if (!group)
-+		return;
-+
- 	dev_info(dev, "Removing from iommu group %d\n", group->id);
- 
- 	/* Pre-notify listeners that a device is being removed. */
--- 
-2.25.1
+5.10.55-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
