@@ -2,144 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2601C3DC3A9
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDA03DC3B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236803AbhGaGBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 02:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236495AbhGaGBO (ORCPT
+        id S236840AbhGaGDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 02:03:22 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:30931 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236048AbhGaGDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 02:01:14 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50327C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:01:09 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id a20so13663718plm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RnJbeFRABx8gv+E+NAXey4lvwWkcIEVkiEIkxS1UNwc=;
-        b=azNSPWyE526BJD25Kig41e/gXZuaCnVwVtmfP/XFktm31kW6IWgDV558SlzkEo/XN6
-         aJjHbwyHPNxcpZyhqo3fDd3UiLK7HBtztgkTaq3x3JKUITY/O2N3Zemakxue44EvrNx8
-         vrZZf6hRZbsoBPAsWiiMWzGR2Xu9cw6oyHzRzhPmaglu1tsu3ZGZ6Q50dYJz70t6S8vm
-         u8kyWdLjAPRBQ2YyckxY631Voo/H2xTYGz6YznrmzzRZpvUE+yWJcBNfSWBUecvR9MKF
-         DY7vxvbSItyF/XXB9m9a5aoe6FxDRpAkuYyYSQ0qrO8Ms41bXxw4WcMuRcJcNsGVEAWw
-         yu4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RnJbeFRABx8gv+E+NAXey4lvwWkcIEVkiEIkxS1UNwc=;
-        b=OFcIbb+1+3dBI+1M2wV4evQK5lcPNmBJspmKS17uQ+FmqUfmoTmZj80cLl0OEBdEPs
-         v7XckOeON4VoVnZ0DKKIgGKFtx1kdO+s3cytgJysIFv0oPevnhCjQZ3ow/qcXSko0K7D
-         blvmmHoozfjic4Y5klVncKcA7Nv/mFxKOSvpKdKUH+zxndcqmNntq4d5OpNFcXxVF6TL
-         gzDHzAKRhbNhicjnx34EzYa6vygS8a99z/6LuB96ArLvrD/SLFYdnle/1SVqPQlC10U8
-         unHgHvEGDLSG7DR9p6uh4BUWPN86q9sS6v3zqYT2yniDUtDc5oefddKzidJu0u3/oCAh
-         IpZQ==
-X-Gm-Message-State: AOAM531bGlJTuTmeEHJcv/JOgxoTAmHDhcPgBsqUKvc4PMB7GLwOTbss
-        NgDmR3EQIWBD46171J7tBxfLeg==
-X-Google-Smtp-Source: ABdhPJxiEDXou0jFqjJs2vDftAvISpJh7DtbwCekHl/+Ra3AI1c094rlWyAyzBjgNLOhZRVDT/sb2A==
-X-Received: by 2002:a17:90a:d596:: with SMTP id v22mr6926387pju.51.1627711268627;
-        Fri, 30 Jul 2021 23:01:08 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:200:160:995:7f22:dc59])
-        by smtp.gmail.com with ESMTPSA id e35sm4090000pjk.28.2021.07.30.23.01.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 23:01:07 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 23:01:02 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marco Elver <elver@google.com>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2] vmlinux.lds.h: Handle clang's module.{c,d}tor sections
-Message-ID: <20210731060102.3p7sknifz4d62ocn@google.com>
-References: <20210730223815.1382706-1-nathan@kernel.org>
- <20210731023107.1932981-1-nathan@kernel.org>
+        Sat, 31 Jul 2021 02:03:19 -0400
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 16V62rkF031113;
+        Sat, 31 Jul 2021 15:02:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 16V62rkF031113
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1627711374;
+        bh=LWga7esoyndTXDvF0XQrO+vJSaL7iFQWmNBogYT4sq8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o9+5X1SvbKPA2o86uIvsZmNKz7uw3ZKipq2egDDNyfQXwyelhjvU/vkhbyAnsomP1
+         5k90nSNWCPkOokpYdxNV9xh8CcY6kQ35iP6HdLl9wubIhvlVOZTUq71HQdDkvAyK8q
+         HBICHZxRbtx7wkuoK7pg7QmDz8OA3mj7plkm01+n70w0+vDizjN21pwZNNs4ZBhVFc
+         gVi/0GRxgNpN/OT6c42x1SM6V7TX9vEgrMZbwnM5LfizxpqF3Sjc17/qXt6WKfdnqY
+         R3Mgt2d0hIVQuanDe4cKkC9BFLah6M2yjCWPCrPGkZ2m4r33etqmo8n/FgX52e7vUt
+         pTv1R8CueOVQw==
+X-Nifty-SrcIP: [209.85.216.41]
+Received: by mail-pj1-f41.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso17420195pjf.4;
+        Fri, 30 Jul 2021 23:02:54 -0700 (PDT)
+X-Gm-Message-State: AOAM530I4qVbIB0CrPpKUEzB6fncQPvhkcqBxO4iNZ0ETSRJZNm3/l5K
+        TR5TlMhSDPTRbSJ3QeGeVqxsxkULlh165lUPYMA=
+X-Google-Smtp-Source: ABdhPJzxLT+VYMsbrrrUfBrOvhroV7QceyySrzxnrMoK+CQLQXj71gGswBHbIPxUKhjhWKEfixEolyP5TyUd8ncd048=
+X-Received: by 2002:a05:6a00:26d0:b029:32d:7d40:5859 with SMTP id
+ p16-20020a056a0026d0b029032d7d405859mr6056229pfw.76.1627711373301; Fri, 30
+ Jul 2021 23:02:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210731023107.1932981-1-nathan@kernel.org>
+References: <20210528180140.176257-1-masahiroy@kernel.org>
+In-Reply-To: <20210528180140.176257-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 31 Jul 2021 15:02:16 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
+Message-ID: <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
+Subject: Re: [PATCH] security: remove unneeded subdir-$(CONFIG_...)
+To:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Fangrui Song <maskray@google.com>
-
-On 2021-07-30, Nathan Chancellor wrote:
->A recent change in LLVM causes module_{c,d}tor sections to appear when
->CONFIG_K{A,C}SAN are enabled, which results in orphan section warnings
->because these are not handled anywhere:
+On Sat, May 29, 2021 at 3:02 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
->ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_ctor) is being placed in '.text.asan.module_ctor'
->ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_dtor) is being placed in '.text.asan.module_dtor'
->ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.tsan.module_ctor) is being placed in '.text.tsan.module_ctor'
+> All of these are unneeded. The directories to descend are specified
+> by obj-$(CONFIG_...).
 >
->Fangrui explains: "the function asan.module_ctor has the SHF_GNU_RETAIN
->flag, so it is in a separate section even with -fno-function-sections
->(default)".
-
-If my theory is true, we should see orphan section warning with
-CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-before my sanitizer change.
-
->Place them in the TEXT_TEXT section so that these technologies continue
->to work with the newer compiler versions. All of the KASAN and KCSAN
->KUnit tests continue to pass after this change.
->
->Cc: stable@vger.kernel.org
->Link: https://github.com/ClangBuiltLinux/linux/issues/1432
->Link: https://github.com/llvm/llvm-project/commit/7b789562244ee941b7bf2cefeb3fc08a59a01865
->Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->---
->
->v1 -> v2:
->
->* Fix inclusion of .text.tsan.* (Nick)
->
->* Drop .text.asan as it does not exist plus it would be handled by a
->  different line (Fangrui)
->
->* Add Fangrui's explanation about why the LLVM commit caused these
->  sections to appear.
->
-> include/asm-generic/vmlinux.lds.h | 1 +
-> 1 file changed, 1 insertion(+)
->
->diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
->index 17325416e2de..62669b36a772 100644
->--- a/include/asm-generic/vmlinux.lds.h
->+++ b/include/asm-generic/vmlinux.lds.h
->@@ -586,6 +586,7 @@
-> 		NOINSTR_TEXT						\
-> 		*(.text..refcount)					\
-> 		*(.ref.text)						\
->+		*(.text.asan.* .text.tsan.*)				\
-
-When kmsan is upstreamed, we may need to add .text.msan.* :)
-
-(
-I wondered why we cannot just change the TEXT_MAIN pattern to .text.*
-
-For large userspace applications, separating .text.unlikely .text.hot can help
-do things like hugepage and mlock, which can improve instruction cache
-localize and reduce instruction TLB miss rates,,, but not sure this
-helps much for the kernel.
-
-Or perhaps some .text.FOOBAR has special usage which cannot be placed
-into the output .text
-)
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
 
-> 		TEXT_CFI_JT						\
-> 	MEM_KEEP(init.text*)						\
-> 	MEM_KEEP(exit.text*)						\
+Ping?
+
+
+
+
+> ---
 >
->base-commit: 4669e13cd67f8532be12815ed3d37e775a9bdc16
->-- 
->2.32.0.264.g75ae10bc75
+>  security/Makefile | 11 -----------
+>  1 file changed, 11 deletions(-)
 >
+> diff --git a/security/Makefile b/security/Makefile
+> index 47e432900e24..18121f8f85cd 100644
+> --- a/security/Makefile
+> +++ b/security/Makefile
+> @@ -4,16 +4,6 @@
+>  #
+>
+>  obj-$(CONFIG_KEYS)                     += keys/
+> -subdir-$(CONFIG_SECURITY_SELINUX)      += selinux
+> -subdir-$(CONFIG_SECURITY_SMACK)                += smack
+> -subdir-$(CONFIG_SECURITY_TOMOYO)        += tomoyo
+> -subdir-$(CONFIG_SECURITY_APPARMOR)     += apparmor
+> -subdir-$(CONFIG_SECURITY_YAMA)         += yama
+> -subdir-$(CONFIG_SECURITY_LOADPIN)      += loadpin
+> -subdir-$(CONFIG_SECURITY_SAFESETID)    += safesetid
+> -subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM) += lockdown
+> -subdir-$(CONFIG_BPF_LSM)               += bpf
+> -subdir-$(CONFIG_SECURITY_LANDLOCK)     += landlock
+>
+>  # always enable default capabilities
+>  obj-y                                  += commoncap.o
+> @@ -36,5 +26,4 @@ obj-$(CONFIG_BPF_LSM)                 += bpf/
+>  obj-$(CONFIG_SECURITY_LANDLOCK)                += landlock/
+>
+>  # Object integrity file lists
+> -subdir-$(CONFIG_INTEGRITY)             += integrity
+>  obj-$(CONFIG_INTEGRITY)                        += integrity/
+> --
+> 2.27.0
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
