@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097743DC233
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 03:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD573DC23C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 03:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235396AbhGaBFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 21:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
+        id S231495AbhGaBMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 21:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234862AbhGaBFO (ORCPT
+        with ESMTP id S231337AbhGaBME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 21:05:14 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B29C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 18:05:08 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id nh14so5851169pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 18:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7fCQsCvI2ERSkc9ox+/XNf66aLFSxrAJ6Aab87hhw0s=;
-        b=X1ZVq0hpPSO5/Yd2KoFffT1sCZrD4/KqJLWniSqAunDAunqotTFNmgTlYx8KUSGe8m
-         fPxlVyLQg40Wmttm/FuH4QmQ7tP+M366QBmOpPijlSr+alouiYwFqy6hq1pJWWjsmOA/
-         SmemNq1syXjJlBEzTC3ubhKa1Pgs2IvjsWnLiso57YSoLYU8wZn3Hg/yXPwQf6h0RpaN
-         GHJPFsm79AznsUpLJSXojUVdKaGrKvdZQcB0RBSUNbJwxuTPuJRuc6uDpsEgP22Qjhh2
-         UD//jD0LgenwhRmsgQ7665zxDIsWvWtiiNvlB5W7XaTQwq68EQXW1Xa46KueX38SzbVT
-         dd1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7fCQsCvI2ERSkc9ox+/XNf66aLFSxrAJ6Aab87hhw0s=;
-        b=fKy7PLSCx3uih4MgvEcMDHPVPTmG7uDR6zauL+bF5qVmhyhyNtQhAejYVxBfCd/t9w
-         XfpGoDBndpQsI1f0wojvFRcrqWWZiRgVbr38FHQmyRDU4nHIRpjdJr2bhVODj8HaV+3N
-         hJE07rKNYmC2brxfbU2vQMxniy+w4xL3lBRGrOziNwMRtl7fOa6OtQQsV/tzBjzUJt6k
-         wgLsrzLQ7+Tngz8nhoBSpMOLDAWGeIaqY15Zsa5MAqJo+Ni4wyfm+5vSmrZLcLQtzbUD
-         WUhbw2vmEVs9R7t7aNlY9V2VElkc1/OZ1IxqV5VmLU9k+1h+G67D9N5WPZIyHrY3Fe4l
-         6QzA==
-X-Gm-Message-State: AOAM533U779GHBuhhsx7F6VBP66DzYattoF6Xz8tMZhnqhi4snAwwpna
-        mehmNjMTJOwfl5qW1OA/BP7zsiE7Gj8f0+SgsvmLzg==
-X-Google-Smtp-Source: ABdhPJwwGCDxYc0g7AC9UO9CQ7HbqhDlZ7Jx0scPAC9w4HO534gFU7sVhQvnq7/WEPE7IJoY5Kr1Dw+NQ0K9rCkHt/c=
-X-Received: by 2002:a17:90a:1b01:: with SMTP id q1mr5854899pjq.162.1627693508091;
- Fri, 30 Jul 2021 18:05:08 -0700 (PDT)
+        Fri, 30 Jul 2021 21:12:04 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010BCC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 18:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=NgYJFFWzUHM3zcEoA5gx+sVNg6nWN0rmXGQDCj9xjk8=; b=SmZVZTm/nxNdfBTgTEe2jPNb1/
+        FXKfdjYFGpgr9VbhExls1PqzUvBzHqQ2Msh2438krx7WENxexT3vDyn9nGNBZMP83qBuCubu/paey
+        KuUX01mjn/9cqnuw+guQzhZUSVBKjSdrD5cPuQUhWuztvMJSFTNZ4fMOH3kr8zRyAMbs51XO300q9
+        XInKddH6EHajvJCJJzvWLWMe5r8GFYrc7DGqBD6oBCOt8SLY6VUG1qEcWeoHefk82CNKntND0zuKH
+        eigK3EkUqbpd74nTAz++gSVhYDuoOgrH6Kk3VMDcxqndmhhKj4kkjBH8/hZYPwQ6ppe4JbYZ+1gMA
+        ABMzZQkw==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m9dXf-00AgER-A0; Sat, 31 Jul 2021 01:11:55 +0000
+Subject: Re: [PATCH] trace: eradicate noisy warning in trace_osnoise.c
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+References: <20210731000055.28876-1-rdunlap@infradead.org>
+ <20210730204050.46975ae2@oasis.local.home>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d4fdf5f0-ba3b-1260-b320-3045f218e6a6@infradead.org>
+Date:   Fri, 30 Jul 2021 18:11:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <cover.1625186503.git.isaku.yamahata@intel.com> <d29b2ac2090f20e8de96888742feb413f597f1dc.1625186503.git.isaku.yamahata@intel.com>
-In-Reply-To: <d29b2ac2090f20e8de96888742feb413f597f1dc.1625186503.git.isaku.yamahata@intel.com>
-From:   Erdem Aktas <erdemaktas@google.com>
-Date:   Fri, 30 Jul 2021 18:04:57 -0700
-Message-ID: <CAAYXXYy=fn9dUMjY6b6wgCHSTLewnTZLKb00NMupDXSWbNC9OQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 05/69] KVM: TDX: Add architectural definitions for
- structures and values
-To:     "Yamahata, Isaku" <isaku.yamahata@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86 <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kai Huang <kai.huang@linux.intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Chao Gao <chao.gao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210730204050.46975ae2@oasis.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 3:05 PM <isaku.yamahata@intel.com> wrote:
-> +/* Management class fields */
-> +enum tdx_guest_management {
-> +       TD_VCPU_PEND_NMI = 11,
-> +};
-> +
-> +/* @field is any of enum tdx_guest_management */
-> +#define TDVPS_MANAGEMENT(field)        BUILD_TDX_FIELD(32, (field))
+On 7/30/21 5:40 PM, Steven Rostedt wrote:
+> On Fri, 30 Jul 2021 17:00:55 -0700
+> Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+>> OK, I'm officially tired of this noise warning coming from
+>> trace_osnoise.c, so shut it up. Also, adding new warnings is not OK.
+> 
+> I agree adding "new warnings" is not OK, but this is a stupid warning.
+> 
+>>
+>> ../kernel/trace/trace_osnoise.c: In function ‘start_kthread’:
+>> ../kernel/trace/trace_osnoise.c:1461:8: warning: ‘main’ is usually a function [-Wmain]
+>>   void *main = osnoise_main;
+>>         ^~~~
+>>
+>> Fixes: c8895e271f79 ("trace/osnoise: Support hotplug operations")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Suggested-by: Matthew Wilcox <willy@infradead.org>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+>> ---
+>>  kernel/trace/Makefile |    2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> --- mmotm-2021-0728-1824.orig/kernel/trace/Makefile
+>> +++ mmotm-2021-0728-1824/kernel/trace/Makefile
+>> @@ -36,6 +36,8 @@ CFLAGS_bpf_trace.o := -I$(src)
+>>  CFLAGS_trace_benchmark.o := -I$(src)
+>>  CFLAGS_trace_events_filter.o := -I$(src)
+>>  
+>> +CFLAGS_trace_osnoise.o := -Wno-main
+> 
+> Why just add it here. It's a silly warning to have for the kernel at
+> all. Should this not be added in a more global place?
 
-I am a little confused with this. According to the spec, PEND_NMI has
-a field code of 0x200000000000000B
-I can understand that 0x20 is the class code and the PEND_NMI field code is 0xB.
-On the other hand, for the LAST_EXIT_TSC the field code is  0xA00000000000000A.
-Based on your code and the table in the spec, I can see that there is
-an additional mask (1ULL<<63) for readonly fields.
-Is this information correct and is this included in the spec? I tried
-to find it but somehow I do not see it clearly defined.
+I don't know of any other places that name something 'main' when it is
+not a main() function.
 
-> +#define TDX1_NR_TDCX_PAGES             4
-> +#define TDX1_NR_TDVPX_PAGES            5
-> +
-> +#define TDX1_MAX_NR_CPUID_CONFIGS      6
-Why is this just 6? I am looking at the CPUID table in the spec and
-there are already more than 6 CPUID leaves there.
-
-> +#define TDX1_MAX_NR_CMRS               32
-> +#define TDX1_MAX_NR_TDMRS              64
-> +#define TDX1_MAX_NR_RSVD_AREAS         16
-> +#define TDX1_PAMT_ENTRY_SIZE           16
-> +#define TDX1_EXTENDMR_CHUNKSIZE                256
-
-I believe all of the defined variables above need to be enumerated
-with TDH.SYS.INFO.
-
-> +#define TDX_TDMR_ADDR_ALIGNMENT        512
-Is TDX_TDMR_ADDR_ALIGNMENT used anywhere or is it just for completeness?
-
-> +#define TDX_TDMR_INFO_ALIGNMENT        512
-Why do we have alignment of 512, I am assuming to make it cache line
-size aligned for efficiency?
+> -- Steve
+> 
+> 
+>> +
+>>  obj-$(CONFIG_TRACE_CLOCK) += trace_clock.o
+>>  
+>>  obj-$(CONFIG_FUNCTION_TRACER) += libftrace.o
+> 
 
 
-> +#define TDX_TDSYSINFO_STRUCT_ALIGNEMNT 1024
+-- 
+~Randy
 
-typo: ALIGNEMNT -> ALIGNMENT
-
--Erdem
