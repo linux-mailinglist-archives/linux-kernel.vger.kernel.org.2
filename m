@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272213DC52C
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2483DC52D
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbhGaIut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 04:50:49 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61039 "EHLO m43-7.mailgun.net"
+        id S232684AbhGaIvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 04:51:46 -0400
+Received: from mout.gmx.net ([212.227.15.15]:53285 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232257AbhGaIuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 04:50:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627721440; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=umJbV2hG5/Yp526M0LlnozPrNCkbsNWKGIS3tLnL3yQ=; b=l+6b+YwzaobEss8nNAJ+dAO+H8xKj2YrZURTywzH3kxXIrPt7X1SIcBxH7PSyyk+CcJDzn/E
- 6fUfs8OKWcfojMVpM9JHTrVXoOsBeuSMikzei8O+eqkAC0k/KJyAlYVZsW5njXcdBZ1o5VJA
- yGQKgSdNNpc5QNF01XKkaSc1cR8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 61050edf290ea35ee6dbd918 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 31 Jul 2021 08:50:39
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0FCB5C433D3; Sat, 31 Jul 2021 08:50:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F18D4C433F1;
-        Sat, 31 Jul 2021 08:50:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F18D4C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
-Subject: Re: [PATCH v2 1/2] mwifiex: pcie: add DMI-based quirk implementation for Surface devices
-References: <20210709145831.6123-1-verdre@v0yd.nl>
-        <20210709145831.6123-2-verdre@v0yd.nl>
-Date:   Sat, 31 Jul 2021 11:50:29 +0300
-In-Reply-To: <20210709145831.6123-2-verdre@v0yd.nl> ("Jonas \=\?utf-8\?Q\?Dre\?\=
- \=\?utf-8\?Q\?\=C3\=9Fler\=22's\?\= message
-        of "Fri, 9 Jul 2021 16:58:30 +0200")
-Message-ID: <87pmuyeuju.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S232211AbhGaIvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 04:51:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627721452;
+        bh=sG6pQw8zNTAy56K9va8IBzRlPwzMASSpdw6+jHEgqh4=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=ZOoMqDi/x+cbldl4oDrS0Fn0X8rCf0USnJuMyWpM1PVHWUZJRyQ8Oa78HLWbw0vfi
+         fWJUOLr06B88ykKJGoJ0btP/35qO1tDSOQi0EaFucI/fatDjGtx5SDicvPxZI6rpte
+         1QJzNdOs48sT45J7/UFBvliaNpdD/56v7VRrwe4M=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.109]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N49lD-1n9JXR1Mll-0105cM; Sat, 31
+ Jul 2021 10:50:52 +0200
+Message-ID: <9e2492721004fb98b144ec61002b2d525ac2c0d6.camel@gmx.de>
+Subject: Re: v5.14-rc3-rt1 losing wakeups?
+From:   Mike Galbraith <efault@gmx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Date:   Sat, 31 Jul 2021 10:50:51 +0200
+In-Reply-To: <4fb6dc706d0fdde718943b48b1d564ec12c97f03.camel@gmx.de>
+References: <20210730110753.jvli6alm63h5lefy@linutronix.de>
+         <2ae27233ab091d09a7d1e971a47144b40dd51fa0.camel@gmx.de>
+         <87pmuzsf1p.ffs@tglx>
+         <a2cd339c0e440cb5beed788d66a19a636b2e39a1.camel@gmx.de>
+         <4fb6dc706d0fdde718943b48b1d564ec12c97f03.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pC/H2IfOV1HycqlF4d9i6QWhBJwI/UuvikoLeP4IOLlSRGBeDKg
+ GO+4inwpJ6GHbqlca740iKO3BdiPYfUfttJR9qdswX7mEl2asGjePK0u7EpUxpcWtOBHxkM
+ fwJOzoJXfNIKkfjK+F4ntg5FFbGV3G5xz65WP2WYyG7+DVk8PGL8Ur82BEZJg7DVRBVZa+q
+ gUGaYpmiM+p5s/H0Wpp2A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fb+0MyGjoyQ=:F4p4ZZoj9x1/Fer/XWjzD+
+ 3+LYbgM6OVzmsivkOyhRId61Dzg+LtlemQ1zR9k+9TykjqYXfkp4NhnhZMS0i+9yemwPtObS6
+ CxyHgO9i7nrxTQEzQXcFQTCzeh2UCRjKWYnFraG2a9LMWLx+TJ79bFj9aiydUcItp8SObkm3O
+ oKIXOUTBGZK7Whlfhf8Lwt4/I4AZJ2jYQkQQd/0tFytN+6K71iLLsKuvkSfRYnogtdYF0+wOn
+ y6F+ERZGSzcmQk1UqB3zJ2p9sPrdUlLzmWtZgXCd5c3KJmyN8Y1HPeimMCuirLsfyXosbKjZO
+ +jQwgZAP5784zDAA9wWb/vKDvh8zGICKXJQ+Zh1rEonVesQ+JKCJ+U9qTQ9gPr1vEuV4NmzCR
+ UrVI26C8S6T0hpTAOYAiL/zH6VYteoj3gYSRZ+/vuoFYXCZrwMKoKm/dPIeaZvCpAzu1/vWpA
+ hXHnZQEZR2dy9hxxdAqqbto9JX4WdmGauzsIjxKYepYuuccwrWJeLiCUfrMT16CZ73kUweJzp
+ iXTZvWQB2vyr8crQSK3oJEJIDEDq4ulBOJ3VhuzgBTUpTu2BW1JoV5WBiRORs4qyc88VZ1Vdp
+ 4ih9A0nFVs//0nDl8posYB2QZp9mkI4vsqe1m8Z1tud2ez6VkkCuIuyjB5B7S1jtIww/E64Pw
+ 8I12H+h5+WjyN1uZs24Ih6O1jPxdM8KzyabYPm1dUriqiL8M860dRY1xqc7LNmayBMn8vCNzr
+ QqX6UQzLTk7PsCefPiIar1LyiBiRMPk34lEIVno5BZvUGW9TXfe0gN9Ge6/Roct14EjBXUStD
+ 9txTlAUTqvR2Cv1jjSWVTUNnFV/i9/YVMu5IrD46W/jN8nYRKhHBMuKSAlf3r2K17oUHAEiOV
+ 4bXna8ZcaBW3Q1MjFZB6YKb1BJsuN3o3EwyCB6nQ9RdSaB4lZCDS8Fs5LcsUSMRaJ1CTOhMCi
+ rKAxY2zze4bm42YH+KR7pUeuJLpgZy+Glw4kr2+n3JsvMPjtYzFy3va3ZCcFuVtBFjgzrajfM
+ EP6i4dNAUwCw20IlQoNFornjHOp6/YmFN48RDIPbo47Yyy4BZ+7/2DAP0amLrqQKb5oznJ2u5
+ DmBVqSc/iX9m1BZkwGkpNQ4C4xRdTwbiDKU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jonas Dre=C3=9Fler <verdre@v0yd.nl> writes:
-
-> This commit adds the ability to apply device-specific quirks to the
-> mwifiex driver. It uses DMI matching similar to the quirks brcmfmac uses
-> with dmi.c. We'll add identifiers to match various MS Surface devices,
-> which this is primarily meant for, later.
+On Sat, 2021-07-31 at 05:33 +0200, Mike Galbraith wrote:
+> On Sat, 2021-07-31 at 03:03 +0200, Mike Galbraith wrote:
+> > On Fri, 2021-07-30 at 22:49 +0200, Thomas Gleixner wrote:
+> > >
+> >
+> > > Which graphics driver is in use on that machine?
+> >
+> > The all too often problem child nouveau, but I don't _think_ it's
+> > playing a roll in this, as nomodeset hangs as well.=C2=A0 I'll stuff i=
+t into
+> > lappy (i915) to double check that.
 >
-> This commit is a slightly modified version of a previous patch sent in
-> by Tsuchiya Yuto.
->
-> Co-developed-by: Tsuchiya Yuto <kitakar@gmail.com>
-> Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
-> Signed-off-by: Jonas Dre=C3=9Fler <verdre@v0yd.nl>
+> Hm, lappy doesn't seem to want to hang.=C2=A0 i915 isn't virgin, it need=
+ing
+> a couple bandaids, but I doubt my grubby fingerprints matter.
 
-[...]
+Hours later i915 lappy is still working fine.
 
-> --- /dev/null
-> +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
-> @@ -0,0 +1,32 @@
-> +// SPDX-License-Identifier: GPL-2.0
+The problem is not my nvidia/nouveau desktop box. Taking KVM images
+over to lappy on a USB SSD, the same QXL vbox that hangs with desktop
+box as host also hangs with lappy as host.. a host that's still running
+the very same kernel, the same build in fact (all instances are), just
+fine.
 
-I prefer having a consistent license within a driver. So please either
-convert mwifiex to use SPDX in every file or use the same license boiler
-plate as used in the driver.
+	-Mike
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
