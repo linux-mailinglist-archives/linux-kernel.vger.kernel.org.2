@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E653DC833
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 22:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F043DC835
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 22:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbhGaUnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 16:43:23 -0400
-Received: from mga06.intel.com ([134.134.136.31]:1396 "EHLO mga06.intel.com"
+        id S230359AbhGaUtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 16:49:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:52358 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229560AbhGaUnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 16:43:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10062"; a="274335556"
-X-IronPort-AV: E=Sophos;i="5.84,285,1620716400"; 
-   d="scan'208";a="274335556"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2021 13:43:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,285,1620716400"; 
-   d="scan'208";a="477676538"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga008.fm.intel.com with ESMTP; 31 Jul 2021 13:43:14 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Sat, 31 Jul 2021 13:43:14 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Sat, 31 Jul 2021 13:43:13 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
- Sat, 31 Jul 2021 13:43:13 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Jue Wang <juew@google.com>
-CC:     Borislav Petkov <bp@alien8.de>,
-        "dinghui@sangfor.com.cn" <dinghui@sangfor.com.cn>,
-        "huangcun@sangfor.com.cn" <huangcun@sangfor.com.cn>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        x86 <x86@kernel.org>, "Song, Youquan" <youquan.song@intel.com>
-Subject: RE: [PATCH 2/3] x86/mce: Avoid infinite loop for copy from user
- recovery
-Thread-Topic: [PATCH 2/3] x86/mce: Avoid infinite loop for copy from user
- recovery
-Thread-Index: AQHXhdWHIECRm0GebEyGCELVn1f6zqtdjHxQ
-Date:   Sat, 31 Jul 2021 20:43:13 +0000
-Message-ID: <fc4d994b02f643d480647edc4f2a7a29@intel.com>
-References: <CAPcxDJ6qnrkuckxm6KkoONZZh5Q-H3-CkFiWq627p5OF3GKJ4Q@mail.gmail.com>
-In-Reply-To: <CAPcxDJ6qnrkuckxm6KkoONZZh5Q-H3-CkFiWq627p5OF3GKJ4Q@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        id S229958AbhGaUti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 16:49:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C095ED6E;
+        Sat, 31 Jul 2021 13:49:31 -0700 (PDT)
+Received: from localhost.localdomain (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 979383F70D;
+        Sat, 31 Jul 2021 13:49:29 -0700 (PDT)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>,
+        Ali Saidi <alisaidi@amazon.com>,
+        Jon Nettleton <jon@solid-run.com>
+Subject: [PATCH v4 0/2] hwrng: Add Arm SMCCC TRNG based driver
+Date:   Sat, 31 Jul 2021 21:48:43 +0100
+Message-Id: <20210731204845.21196-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.14.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBBZnRlciBjaGVycnkgcGlja2luZyBwYXRjaCAxICYgMiwgSSBzYXcgdGhlIGZvbGxvd2luZyB3
-aXRoIDIgVUMgZXJyb3JzIGluamVjdGVkDQo+IGludG8gdGhlIHVzZXIgc3BhY2UgYnVmZmVyIHBh
-c3NlZCBpbnRvIHdyaXRlKDIpLCBhcyBleHBlY3RlZDoNCj4NCj4gWyAgMjg3Ljk5NDc1NF0gS2Vy
-bmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IE1hY2hpbmUgY2hlY2tzIHRvIGRpZmZlcmVudA0KPiB1
-c2VyIHBhZ2VzDQoNCkludGVyZXN0aW5nLiAgV2hhdCBhcmUgdGhlIG9mZnNldHMgb2YgdGhlIHR3
-byBpbmplY3RlZCBlcnJvcnMgaW4geW91ciB0ZXN0IChib3RoDQp3LnIudC4gdGhlIHN0YXJ0IG9m
-IHRoZSBidWZmZXIsIGFuZCB3aXRoaW4gYSBwYWdlKS4NCg0KPiBUaGUga2VybmVsIHRlc3RlZCB3
-aXRoIGhhcyBpdHMgeDg2L21jZSBhbmQgbW0vbWVtb3J5LWZhaWx1cmUgYWxpZ25lZCB3aXRoDQo+
-IHVwc3RyZWFtIHRpbGwgYXJvdW5kIDIwMjAvMTEuDQo+DQo+IElzIHRoZXJlIGFueSBvdGhlciBw
-YXRjaCB0aGF0IEkgaGF2ZSBtaXNzZWQgdG8gdGhlIHdyaXRlIHN5c2NhbGwgZXRjPw0KDQpUaGVy
-ZSBpcyBhIGxvbmcgc2VyaWVzIG9mIHBhdGNoZXMgZnJvbSBBbCBWaXJvIHRvIGxpYi9pb3ZfaXRl
-ci5jIHRoYXQgYXJlIG1heWJlDQphbHNvIHJlbGV2ZW50IGluIG1ha2luZyB0aGUga2VybmVsIGNv
-cHkgZnJvbSB1c2VyIHN0b3AgYXQgdGhlIGZpcnN0IHBvaXNvbg0KYWRkcmVzcyBpbiB0aGUgYnVm
-ZmVyLg0KDQotVG9ueQ0K
+The "Arm True Random Number Generator Firmware Interface"[1] provides
+an SMCCC based interface to a true hardware random number generator.
+So far we are using that in arch_get_random_seed(), but it might be
+useful to expose the entropy through the /dev/hwrng device as well. This
+allows to assess the quality of the implementation, by using "rngtest"
+from the rng-tools package, for example.
+
+Patch 1 creates a platform device, triggered by the previous discovery
+of the SMCCC TRNG service.
+Patch 2 implements a hw_random platform driver, which is instantiated
+through this said platform device.
+
+The driver can be loaded as module, or built into the kernel.
+
+[1] https://developer.arm.com/documentation/den0098/latest/
+
+Changelog v3 ... v4:
+- drop pointless driver loading message
+- drop unneeded init() routine
+
+Changelog v2 ... v3:
+- split platform device and driver
+
+Changelog v1 ... v2:
+- fix building as a module
+- de-register device upon exit
+- mention module name in Kconfig
+
+Andre Przywara (2):
+  firmware: smccc: Register smccc_trng platform device
+  hwrng: Add Arm SMCCC TRNG based driver
+
+ drivers/char/hw_random/Kconfig          |  14 +++
+ drivers/char/hw_random/Makefile         |   1 +
+ drivers/char/hw_random/arm_smccc_trng.c | 123 ++++++++++++++++++++++++
+ drivers/firmware/smccc/smccc.c          |  17 ++++
+ 4 files changed, 155 insertions(+)
+ create mode 100644 drivers/char/hw_random/arm_smccc_trng.c
+
+-- 
+2.17.6
+
