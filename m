@@ -2,231 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B3E3DC839
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 22:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB5D3DC842
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 23:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231587AbhGaUtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 16:49:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:52388 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231643AbhGaUtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 16:49:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9FA8711D4;
-        Sat, 31 Jul 2021 13:49:36 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 823F83F70D;
-        Sat, 31 Jul 2021 13:49:34 -0700 (PDT)
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>,
-        Ali Saidi <alisaidi@amazon.com>,
-        Jon Nettleton <jon@solid-run.com>
-Subject: [PATCH v4 2/2] hwrng: Add Arm SMCCC TRNG based driver
-Date:   Sat, 31 Jul 2021 21:48:45 +0100
-Message-Id: <20210731204845.21196-3-andre.przywara@arm.com>
-X-Mailer: git-send-email 2.14.1
-In-Reply-To: <20210731204845.21196-1-andre.przywara@arm.com>
-References: <20210731204845.21196-1-andre.przywara@arm.com>
+        id S231558AbhGaVX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 17:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230350AbhGaVX6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 17:23:58 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D84C061798
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 14:23:50 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id y34so25729230lfa.8
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 14:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UFuagbB68OTvddF9Xywx7UrDN/I21A6uFb3ydrSsaG8=;
+        b=CRqwWc7QBYs7ycsAgYE5p59uP5JVARslAuqr+wmJA6jVq8VD76RE/xwkyEuczrL7y/
+         qYSvp1fOFmy8Nx+lYlnUKnZLLwK9WdJ77KXwxtjV8b4TLO7LGkEQ3cqidhda96VJomgh
+         P9ON+IGk+7tfgw/4t6+joWkbp0yXfGa7NORIxMegHLyEXWrHxTFf5nXnA9PVZ6LVKcC0
+         tkpjQqi+m/+t5CygOoFF9YlqixGOBWaQemI5sZnwY8qSHelPfj5HAOcx+nYtkJxVp++Z
+         2/Z+et95YgDXFLfI+9N5Yc57rewWnvBMlJCJSvT9uKuW7RF7Z53fakh72OQsEsypGe8M
+         jOxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UFuagbB68OTvddF9Xywx7UrDN/I21A6uFb3ydrSsaG8=;
+        b=bhcN0K76zZX1CVLD6ECF+tH1YSLn2nxtN+uW8ma2yXvQdu/Wk4QfI5DrwReYfZpTF/
+         KxzsPRWwje6rd3twH/bG5W1vzdqy1MAaMXea37FNrN61FJ6+5AY1JDE+5ANI4wKybRuT
+         JDpGe+J0hGuAkGdZoEngG1aWW6SsC4weoHmrQLLYuuv4ZJBZJvPBrKsVwd8SlvbNg0MV
+         fdO05drdMLYNoIVc2lGKqUDyWKhfVf5qdt/+7exBMfA/g3R3k1g5bWxnlxnLhX39J+aU
+         ysdS2HV3U2yBRkyJNMN42IBC01j9fAHLYOVvvd1QPY+pgOXmO+3tTDkBuBvcVf4uDQUp
+         Th+w==
+X-Gm-Message-State: AOAM531O8gbgLzPKY0Ncb0ew3Senq2JUa7eY8C/ZRK1S5ftofICmy8iu
+        lLcItwICCde13UyapjPQ27TcGE6DyP/bgTpdvoW3gA==
+X-Google-Smtp-Source: ABdhPJx7Q9x1W9R0NDVhm+5e93isK61FmR6LCKivpcqNcKWU0TYWxJ+S9YQgwYa7UlNcmN4iPwiV5tUP5zTz9VvOfOc=
+X-Received: by 2002:a19:c7cd:: with SMTP id x196mr5925413lff.465.1627766628769;
+ Sat, 31 Jul 2021 14:23:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210723192352.546902-1-iskren.chernev@gmail.com>
+In-Reply-To: <20210723192352.546902-1-iskren.chernev@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 31 Jul 2021 23:23:37 +0200
+Message-ID: <CACRpkdYVX+AZWto15Buq023cPSodQuyYXr8Fq64-RP8SQ2b0bg@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Add Pinctrl for SM4250/6115
+To:     Iskren Chernev <iskren.chernev@gmail.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        phone-devel@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
+        Shevchenko <andy.shevchenko@gmail.com>," 
+        <~postmarketos/upstreaming@lists.sr.ht>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "Arm True Random Number Generator Firmware Interface"[1] provides
-an SMCCC based interface to a true hardware random number generator.
-So far we are using that in arch_get_random_seed(), but it might be
-useful to expose the entropy through the /dev/hwrng device as well. This
-allows to assess the quality of the implementation, by using "rngtest"
-from the rng-tools package, for example.
+On Fri, Jul 23, 2021 at 9:24 PM Iskren Chernev <iskren.chernev@gmail.com> wrote:
 
-Add a simple platform driver implementing the hw_random interface.
-The corresponding platform device is created by the SMCCC core code,
-we just match it here by name and provide a module alias.
+> This patch adds support for the TLMM block on QCom SM4250 and SM6115, codename
+> bengal. The code is taken from OnePlus repo [1]. The two platforms are
+> identical so there is only one compat string.
+>
+> [1]: https://github.com/OnePlusOSS/android_kernel_oneplus_sm4250
 
-Since the firmware takes care about serialisation, this can happily
-coexist with the arch_get_random_seed() bits.
+Patches applied!
 
-[1] https://developer.arm.com/documentation/den0098/latest/
-
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
----
- drivers/char/hw_random/Kconfig          |  14 +++
- drivers/char/hw_random/Makefile         |   1 +
- drivers/char/hw_random/arm_smccc_trng.c | 123 ++++++++++++++++++++++++
- 3 files changed, 138 insertions(+)
- create mode 100644 drivers/char/hw_random/arm_smccc_trng.c
-
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 3f166c8a4099..239eca4d6805 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -524,6 +524,20 @@ config HW_RANDOM_XIPHERA
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called xiphera-trng.
- 
-+config HW_RANDOM_ARM_SMCCC_TRNG
-+	tristate "Arm SMCCC TRNG firmware interface support"
-+	depends on HAVE_ARM_SMCCC_DISCOVERY
-+	default HW_RANDOM
-+	help
-+	  Say 'Y' to enable the True Random Number Generator driver using
-+	  the Arm SMCCC TRNG firmware interface. This reads entropy from
-+	  higher exception levels (firmware, hypervisor). Uses SMCCC for
-+	  communicating with the firmware:
-+	  https://developer.arm.com/documentation/den0098/latest/
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called arm_smccc_trng.
-+
- endif # HW_RANDOM
- 
- config UML_RANDOM
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index 8933fada74f2..a5a1c765a394 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -45,3 +45,4 @@ obj-$(CONFIG_HW_RANDOM_OPTEE) += optee-rng.o
- obj-$(CONFIG_HW_RANDOM_NPCM) += npcm-rng.o
- obj-$(CONFIG_HW_RANDOM_CCTRNG) += cctrng.o
- obj-$(CONFIG_HW_RANDOM_XIPHERA) += xiphera-trng.o
-+obj-$(CONFIG_HW_RANDOM_ARM_SMCCC_TRNG) += arm_smccc_trng.o
-diff --git a/drivers/char/hw_random/arm_smccc_trng.c b/drivers/char/hw_random/arm_smccc_trng.c
-new file mode 100644
-index 000000000000..b24ac39a903b
---- /dev/null
-+++ b/drivers/char/hw_random/arm_smccc_trng.c
-@@ -0,0 +1,123 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Randomness driver for the ARM SMCCC TRNG Firmware Interface
-+ * https://developer.arm.com/documentation/den0098/latest/
-+ *
-+ *  Copyright (C) 2020 Arm Ltd.
-+ *
-+ * The ARM TRNG firmware interface specifies a protocol to read entropy
-+ * from a higher exception level, to abstract from any machine specific
-+ * implemenations and allow easier use in hypervisors.
-+ *
-+ * The firmware interface is realised using the SMCCC specification.
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/device.h>
-+#include <linux/hw_random.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/arm-smccc.h>
-+
-+#ifdef CONFIG_ARM64
-+#define ARM_SMCCC_TRNG_RND	ARM_SMCCC_TRNG_RND64
-+#define MAX_BITS_PER_CALL	(3 * 64UL)
-+#else
-+#define ARM_SMCCC_TRNG_RND	ARM_SMCCC_TRNG_RND32
-+#define MAX_BITS_PER_CALL	(3 * 32UL)
-+#endif
-+
-+/* We don't want to allow the firmware to stall us forever. */
-+#define SMCCC_TRNG_MAX_TRIES	20
-+
-+#define SMCCC_RET_TRNG_INVALID_PARAMETER	-2
-+#define SMCCC_RET_TRNG_NO_ENTROPY		-3
-+
-+static int copy_from_registers(char *buf, struct arm_smccc_res *res,
-+			       size_t bytes)
-+{
-+	unsigned int chunk, copied;
-+
-+	if (bytes == 0)
-+		return 0;
-+
-+	chunk = min(bytes, sizeof(long));
-+	memcpy(buf, &res->a3, chunk);
-+	copied = chunk;
-+	if (copied >= bytes)
-+		return copied;
-+
-+	chunk = min((bytes - copied), sizeof(long));
-+	memcpy(&buf[copied], &res->a2, chunk);
-+	copied += chunk;
-+	if (copied >= bytes)
-+		return copied;
-+
-+	chunk = min((bytes - copied), sizeof(long));
-+	memcpy(&buf[copied], &res->a1, chunk);
-+
-+	return copied + chunk;
-+}
-+
-+static int smccc_trng_read(struct hwrng *rng, void *data, size_t max, bool wait)
-+{
-+	struct arm_smccc_res res;
-+	u8 *buf = data;
-+	unsigned int copied = 0;
-+	int tries = 0;
-+
-+	while (copied < max) {
-+		size_t bits = min_t(size_t, (max - copied) * BITS_PER_BYTE,
-+				  MAX_BITS_PER_CALL);
-+
-+		arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND, bits, &res);
-+		if ((int)res.a0 < 0)
-+			return (int)res.a0;
-+
-+		switch ((int)res.a0) {
-+		case SMCCC_RET_SUCCESS:
-+			copied += copy_from_registers(buf + copied, &res,
-+						      bits / BITS_PER_BYTE);
-+			tries = 0;
-+			break;
-+		case SMCCC_RET_TRNG_NO_ENTROPY:
-+			if (!wait)
-+				return copied;
-+			tries++;
-+			if (tries >= SMCCC_TRNG_MAX_TRIES)
-+				return copied;
-+			cond_resched();
-+			break;
-+		}
-+	}
-+
-+	return copied;
-+}
-+
-+static int smccc_trng_probe(struct platform_device *pdev)
-+{
-+	struct hwrng *trng;
-+
-+	trng = devm_kzalloc(&pdev->dev, sizeof(*trng), GFP_KERNEL);
-+	if (!trng)
-+		return -ENOMEM;
-+
-+	trng->name = "smccc_trng";
-+	trng->read = smccc_trng_read;
-+
-+	platform_set_drvdata(pdev, trng);
-+
-+	return devm_hwrng_register(&pdev->dev, trng);
-+}
-+
-+static struct platform_driver smccc_trng_driver = {
-+	.driver = {
-+		.name		= "smccc_trng",
-+	},
-+	.probe		= smccc_trng_probe,
-+};
-+module_platform_driver(smccc_trng_driver);
-+
-+MODULE_ALIAS("platform:smccc_trng");
-+MODULE_AUTHOR("Andre Przywara");
-+MODULE_LICENSE("GPL");
--- 
-2.17.6
-
+Yours,
+Linus Walleij
