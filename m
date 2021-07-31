@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5388F3DC4A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197603DC4B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbhGaHxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 03:53:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230503AbhGaHxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 03:53:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3529C60F46;
-        Sat, 31 Jul 2021 07:53:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627718023;
-        bh=1KJVYCEuJ5jV6qNfQDq5kolD2QvDiKAsaWJLINb42vk=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=KTmL4svsIHOnIZK42fAMAfvm0IXfzS3/1ujkK42dwR7TSFBuzdsgZeeR72OOAnwl1
-         yt2Jqn759Qni/JoQv8jUSAkdOqNLMzcqHtTAHQxLWm8DB6mBLcxrjV/d8ySCt20mqS
-         arIVOI9OSRIulhNLeHbouD7NTxXz37Cv2eCI8UKBcDM9E29DfvPz4xGr3xG/pBsQ2C
-         Ukyu1v3ERT0VcFSLhIgIjEle3DxUFjlIXKWwDc7yRMwF5uIotZ2ibMJ9Ht8DW2428y
-         +CkEqTdKVp2smYz5XbqOHm82hklDrLsGZVPVIcFBik3Fwur2l4T8eqxSiiTEqQScc2
-         cTcWRfPUA5A7Q==
-Content-Type: text/plain; charset="utf-8"
+        id S232461AbhGaH5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 03:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229703AbhGaH53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 03:57:29 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC2BC06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 00:57:22 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id j1so18500433pjv.3
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 00:57:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jQujshHE7jKWS1+C7xQP9tnfF3yH0GDVGZkIK3moVlU=;
+        b=slmzD1H4xs8NDUowznIP2T5du5xI8BjgpOOPzgvx95aeZjZg/B8qmN4HcM51CpevUV
+         KBYGghGY+U4maIDm9kvMvCAjAMOeR5roAID7WPmLZzDz0IUIamKKPdKiMAeAmtPeJiOE
+         QeNXCtdz+xLuc+wgzu9M6B5zdr2rMGViheDqJMRmr452N8wMK3n7LL1iANtrePnKqmag
+         634j3SWZYj5k/0z+iKkA3zEyJ1xEf17MDFECf1JpqCuvip16XhV5lZ/zvtxJMYhmsWQM
+         pbPPiz4LGTn3XBpeD2kvRzErhopGL9f5IQJKWtyykY/SEzPwk+o6bBrNHAcYgvf30ROE
+         1lDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jQujshHE7jKWS1+C7xQP9tnfF3yH0GDVGZkIK3moVlU=;
+        b=H69H0D2HvC5FioyRSutC5P+DmXG0IJHO6aLnVZnJp9/qTRvm6TaWbHjCKBzjxWbg5k
+         xcp/74MOVB+o8HrnviWIYeN0GUshOChAu0yDWSFRZT+XRDQPTPWAQfTZ/NXqjL7g3xal
+         CpxOYeI2CBm0y3ItYWuiU4KkeycK7cDRKHg7gifS4nSJIv6SvEW6NJaa81hO2IJO7aat
+         kMj8XrkX7w6szZRp+CIMzOXN5VDuYnEYlR8wnDrtU08v+BR3LEIUy8WiDCyR5Lf4RDAZ
+         Pe/ZMWbaoFBukqbpgL3TSIfWcGGyhDRmYJs9/OyKYfpaJENh+onoZus4+d2mmMtxpjIt
+         9Iiw==
+X-Gm-Message-State: AOAM533oyorE86c+LnG9+RHm1ywNnrbDi9nAyG1I3e2e8iA8UAnaRHBm
+        LP/plpivoWXokqQX2nbPvX4=
+X-Google-Smtp-Source: ABdhPJxLWzpfwgdJKJml+8xRal8USXAvCo0f5vC8aGxcUOjHhaZnQcIlzhD4uSXkGEwAMEnCWlSGYw==
+X-Received: by 2002:a17:902:ac94:b029:12c:9bae:7d with SMTP id h20-20020a170902ac94b029012c9bae007dmr3031701plr.32.1627718242052;
+        Sat, 31 Jul 2021 00:57:22 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.29])
+        by smtp.gmail.com with ESMTPSA id ge21sm4361615pjb.55.2021.07.31.00.57.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 00:57:21 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com
+Cc:     ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com, Tuo Li <islituo@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] ocfs2: quota_local: fix possible uninitialized-variable access in ocfs2_local_read_info()
+Date:   Sat, 31 Jul 2021 00:56:59 -0700
+Message-Id: <20210731075659.73505-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210731025950.2238582-1-briannorris@chromium.org>
-References: <20210731025950.2238582-1-briannorris@chromium.org>
-Subject: Re: [PATCH] clk: fix leak on devm_clk_bulk_get_all() unwind
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brian Norris <briannorris@chromium.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>, stable@vger.kernel.org
-To:     Brian Norris <briannorris@chromium.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Date:   Sat, 31 Jul 2021 00:53:41 -0700
-Message-ID: <162771802186.714452.5743429710136064714@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Brian Norris (2021-07-30 19:59:50)
-> clk_bulk_get_all() allocates an array of struct clk_bulk data for us
-> (unlike clk_bulk_get()), so we need to free it. Let's use the
-> clk_bulk_put_all() helper.
->=20
-> kmemleak complains, on an RK3399 Gru/Kevin system:
->=20
-> unreferenced object 0xffffff80045def00 (size 128):
->   comm "swapper/0", pid 1, jiffies 4294667682 (age 86.394s)
->   hex dump (first 32 bytes):
->     44 32 60 fe fe ff ff ff 00 00 00 00 00 00 00 00  D2`.............
->     48 32 60 fe fe ff ff ff 00 00 00 00 00 00 00 00  H2`.............
->   backtrace:
->     [<00000000742860d6>] __kmalloc+0x22c/0x39c
->     [<00000000b0493f2c>] clk_bulk_get_all+0x64/0x188
->     [<00000000325f5900>] devm_clk_bulk_get_all+0x58/0xa8
->     [<00000000175b9bc5>] dwc3_probe+0x8ac/0xb5c
->     [<000000009169e2f9>] platform_drv_probe+0x9c/0xbc
->     [<000000005c51e2ee>] really_probe+0x13c/0x378
->     [<00000000c47b1f24>] driver_probe_device+0x84/0xc0
->     [<00000000f870fcfb>] __device_attach_driver+0x94/0xb0
->     [<000000004d1b92ae>] bus_for_each_drv+0x8c/0xd8
->     [<00000000481d60c3>] __device_attach+0xc4/0x150
->     [<00000000a163bd36>] device_initial_probe+0x1c/0x28
->     [<00000000accb6bad>] bus_probe_device+0x3c/0x9c
->     [<000000001a199f89>] device_add+0x218/0x3cc
->     [<000000001bd84952>] of_device_add+0x40/0x50
->     [<000000009c658c29>] of_platform_device_create_pdata+0xac/0x100
->     [<0000000021c69ba4>] of_platform_bus_create+0x190/0x224
->=20
-> Fixes: f08c2e2865f6 ("clk: add managed version of clk_bulk_get_all")
-> Cc: Dong Aisheng <aisheng.dong@nxp.com>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> ---
+A memory block is allocated through kmalloc(), and its return value is
+assigned to the pointer oinfo. If the return value of
+ocfs2_global_read_info() at line 709 is less than zero,
+oinfo->dqi_gqinode may be not initialized. However, it is accessed at
+line 775:
+  iput(oinfo->dqi_gqinode);
 
-Applied to clk-fixes
+To fix this possible uninitialized-variable access, replace kmalloc()
+with kzalloc() when allocating memory for oinfo.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+ fs/ocfs2/quota_local.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ocfs2/quota_local.c b/fs/ocfs2/quota_local.c
+index b1a8b046f4c2..4c1219e08b49 100644
+--- a/fs/ocfs2/quota_local.c
++++ b/fs/ocfs2/quota_local.c
+@@ -693,7 +693,7 @@ static int ocfs2_local_read_info(struct super_block *sb, int type)
+ 
+ 	info->dqi_max_spc_limit = 0x7fffffffffffffffLL;
+ 	info->dqi_max_ino_limit = 0x7fffffffffffffffLL;
+-	oinfo = kmalloc(sizeof(struct ocfs2_mem_dqinfo), GFP_NOFS);
++	oinfo = kzalloc(sizeof(struct ocfs2_mem_dqinfo), GFP_NOFS);
+ 	if (!oinfo) {
+ 		mlog(ML_ERROR, "failed to allocate memory for ocfs2 quota"
+ 			       " info.");
+-- 
+2.25.1
+
