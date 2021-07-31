@@ -2,91 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5C93DC393
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 07:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414CE3DC395
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 07:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhGaFgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 01:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231529AbhGaFgN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 01:36:13 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D83C06175F;
-        Fri, 30 Jul 2021 22:36:07 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so17378067pji.5;
-        Fri, 30 Jul 2021 22:36:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=OA933n3uTuUYOxu3WCa3yr58k18VKPd0XcFtuOaa1Yk=;
-        b=S/8H2ZFyOTIADocxAe7N+TaSUQcOGB+DsOmD/JNhaLx3wVHPkeGC9pa6Z+v7JFfGjt
-         xJhsFRc9uF+dxZSLLJdVIQ0jsXo0ReLI03P6Td9aL7aXEFTz3+H4tMrG+bL5LbueWJN5
-         ESkME/KtLbP4qRJnZooeegGxVxQLjHSXIoiEXkYWwFiPSpiwCUwoXPrvDBstRjFzFOm2
-         yFV+KPtRazBilIqzKAzerrN5v8LeDnNHpHOLW6EJixPqCZaBr7ftI4800evVAznf96ha
-         4ws/9VEJUqlnt0DHKSo7jzpcTDPT9EjMfHbzKZeO2736fdOPimxHMB0i0mdxZ2Zo8a0Z
-         JLBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=OA933n3uTuUYOxu3WCa3yr58k18VKPd0XcFtuOaa1Yk=;
-        b=gxTJn8I+DMdH4ODBnrxPl9N9qkOz99bC/R5fcuGjFANn04fUmzeKB3wBRM65gyyium
-         tEpROec+lcq/2CstB+QNqpbfTvVznkuTqEnR5xlAB0GGHD/wTGSxK6hBOAszl+omKZkw
-         Tr7TG7abGAgEKBbeRAwc6DAc5Ami0eh5KHcry6OzSNbleJYpXEaLlsGndQu16AhFMpS+
-         X+mPVvdop31bJ2/IZ1z0hG/KWVBso17MB2832SioNikXkC/QH1+L2xfWsPCK3LLnHuoV
-         Fc6PSmN/IUcOa7WKd9uNzr+KTBJDceTJW7VtcIwJY8EmP6fiMyRR/pUafacwatO01zgk
-         1ZVg==
-X-Gm-Message-State: AOAM532ZSr4G0x9I0uKZx9I290j1ZXEOGWEI9z46brt6dyxDczmSd36l
-        MISVscqKIPADQaaEuk+rPfBctuuSh2IPdvtpI9M=
-X-Google-Smtp-Source: ABdhPJyldW/xDn9pkKRdqTXkCvXTPVONxJ7QQbiZPkkKryELilBdJCwPpv7/sUkxqtC7idOi0LgajA==
-X-Received: by 2002:a63:6f8c:: with SMTP id k134mr2566072pgc.35.1627709766489;
-        Fri, 30 Jul 2021 22:36:06 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id t8sm5032195pgh.18.2021.07.30.22.36.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 22:36:06 -0700 (PDT)
-Message-ID: <6104e146.1c69fb81.feef9.ea9f@mx.google.com>
-Date:   Fri, 30 Jul 2021 22:36:06 -0700 (PDT)
-X-Google-Original-Date: Sat, 31 Jul 2021 05:35:59 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210729135137.336097792@linuxfoundation.org>
-Subject: RE: [PATCH 5.13 00/22] 5.13.7-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        id S234849AbhGaFhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 01:37:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229766AbhGaFhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 01:37:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F9E60F12;
+        Sat, 31 Jul 2021 05:37:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627709853;
+        bh=S3uexazbecHE/Hgv8ReBZYx8s/DUibwfmrnN3y8zAw4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wKqnh8WuJcKmWLQ2YEjFxgGx+a9IkBBsZSypBE3jI3KuAubPDIU98J7BsvV+4EyH5
+         2nY/tea7JezudGybI3Ly/3LOvCrYcEM0y6tVczrbFY7i0NHPnvrOZpbKWfXo4+sLTc
+         n/exC2QoGvjcL8958RCgYdHv5uMLEKIVcftCQCbI=
+Date:   Sat, 31 Jul 2021 07:37:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-staging@lists.linux.dev
+Subject: Re: kernel BUG in new r8188eu
+Message-ID: <YQThm1A0Up1m4l1S@kroah.com>
+References: <80042e9f-6811-38f3-010b-1c0951ba88db@lwfinger.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <80042e9f-6811-38f3-010b-1c0951ba88db@lwfinger.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jul 2021 15:54:31 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.13.7 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Jul 30, 2021 at 02:59:44PM -0500, Larry Finger wrote:
+> Greg,
 > 
-> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
-> Anything received after that time might be too late.
+> When I unplug the USB device with the driver loaded, I get the following BUG
+> and my laptop freezes:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.7-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
+> kernel: BUG: unable to handle page fault for address: ffffeb0200043248
+> kernel: #PF: supervisor read access in kernel mode
+> kernel: #PF: error_code(0x0000) - not-present page
 > 
-> thanks,
-> 
-> greg k-h
-> 
+> The traceback points to a kfree() call. I do not understand this BUG. Can
+> you explain what happens?
 
-5.13.7-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Is this a new regression due to the recent cleanups, or something that
+has always been here?
 
+As for the error, looks like someone is reading to an address that is
+in userspace without doing the proper copy_from_user() thing.  Do you
+have a full traceback?
+
+> I think I know how to avoid the BUG, but that might be at the expense of a
+> memory leak.
+
+That shouldn't be needed :)
+
+thanks,
+
+greg k-h
