@@ -2,115 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDA03DC3B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CE63DC3B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236840AbhGaGDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 02:03:22 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:30931 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236048AbhGaGDT (ORCPT
+        id S237096AbhGaGDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 02:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236982AbhGaGD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 02:03:19 -0400
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 16V62rkF031113;
-        Sat, 31 Jul 2021 15:02:54 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 16V62rkF031113
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627711374;
-        bh=LWga7esoyndTXDvF0XQrO+vJSaL7iFQWmNBogYT4sq8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o9+5X1SvbKPA2o86uIvsZmNKz7uw3ZKipq2egDDNyfQXwyelhjvU/vkhbyAnsomP1
-         5k90nSNWCPkOokpYdxNV9xh8CcY6kQ35iP6HdLl9wubIhvlVOZTUq71HQdDkvAyK8q
-         HBICHZxRbtx7wkuoK7pg7QmDz8OA3mj7plkm01+n70w0+vDizjN21pwZNNs4ZBhVFc
-         gVi/0GRxgNpN/OT6c42x1SM6V7TX9vEgrMZbwnM5LfizxpqF3Sjc17/qXt6WKfdnqY
-         R3Mgt2d0hIVQuanDe4cKkC9BFLah6M2yjCWPCrPGkZ2m4r33etqmo8n/FgX52e7vUt
-         pTv1R8CueOVQw==
-X-Nifty-SrcIP: [209.85.216.41]
-Received: by mail-pj1-f41.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso17420195pjf.4;
-        Fri, 30 Jul 2021 23:02:54 -0700 (PDT)
-X-Gm-Message-State: AOAM530I4qVbIB0CrPpKUEzB6fncQPvhkcqBxO4iNZ0ETSRJZNm3/l5K
-        TR5TlMhSDPTRbSJ3QeGeVqxsxkULlh165lUPYMA=
-X-Google-Smtp-Source: ABdhPJzxLT+VYMsbrrrUfBrOvhroV7QceyySrzxnrMoK+CQLQXj71gGswBHbIPxUKhjhWKEfixEolyP5TyUd8ncd048=
-X-Received: by 2002:a05:6a00:26d0:b029:32d:7d40:5859 with SMTP id
- p16-20020a056a0026d0b029032d7d405859mr6056229pfw.76.1627711373301; Fri, 30
- Jul 2021 23:02:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210528180140.176257-1-masahiroy@kernel.org>
-In-Reply-To: <20210528180140.176257-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 31 Jul 2021 15:02:16 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
-Message-ID: <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
-Subject: Re: [PATCH] security: remove unneeded subdir-$(CONFIG_...)
-To:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>,
+        Sat, 31 Jul 2021 02:03:29 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E08FC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:03:23 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id l19so18345066pjz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:03:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=75Zkhg83/waZUlL0SId+YvamWoiIkDrDXEUeyRTWERc=;
+        b=zzgpBEUrIKvu+dKlJJ/xrPzDeZ/TnnVtXB0yFrdxc/GyJ/YieEUpvQn0lMKTv8w4vx
+         HOtrNRQeX0vDKCV8JoM6H/TIx8TmLEdoOMZpsiagdDeug/aHxsMj/Y5jIZvemcWpk7ui
+         SDToqwk0ULG8/g8O5v0hW4H5LhxtrYorU9EYzW+5sMdwSjB7CS1hV3WSBDbt2uyRM+3o
+         mVUd8e5b/3vBl4jhPju3hgqSOblCLwB23b3oMdME7uGJ4USctCGxEZ09DoE5JZHK9YgW
+         WvCujxef4wycGeD1ajoctBruhpuTaTQi3Km+x48Vt86sZJsK9R4uNb1ZCU/D94WRK5oB
+         lK0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=75Zkhg83/waZUlL0SId+YvamWoiIkDrDXEUeyRTWERc=;
+        b=MKsIitL5zmbWIArvDTJxRmOZDaKgxIKRPHUr64dL2pl3U6gXj5/kWaSNubwN6yxkEB
+         Sa2UYYg8klbkFcRwoU+NsSLmM54S2OE2vd1fFO4BmDmsi/96vyAnwW5d/5Zz2hzioYfC
+         f9IyepDk/hyGSTUnqw9DHM5YprsE5AZ+1DHUq0BlfjHXun9FFO73XlbBxlSJYMOQzE42
+         LY4Kj3gPd4pV7/NIHuVcYOKpFBAGyRsonpnxVWcqNb+MkmYSe/sVNtMI0D7tN4scuZU1
+         rPfKlqKez7nS/5tVKskDBWnJr1r7NWxifgaqbuVNJ3jgx42k4Twgs519Lp7FJ7tpamHj
+         X8cw==
+X-Gm-Message-State: AOAM531n7fxWDKCjmu7N8j2wSzgmnKmaeThZZOCjwRRTe0YAV0eHezok
+        m+eLqc+eroPhKIRfKBR1lU+nGw==
+X-Google-Smtp-Source: ABdhPJwtM3rMZUgyVpwQmUuEHr+HM/85JnXrXwEmH2M+PFy9jtTtvc8zkBClsULutoKg9mDieZyALQ==
+X-Received: by 2002:a05:6a00:b46:b029:334:54db:af17 with SMTP id p6-20020a056a000b46b029033454dbaf17mr6188123pfo.26.1627711402944;
+        Fri, 30 Jul 2021 23:03:22 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([204.124.181.43])
+        by smtp.gmail.com with ESMTPSA id m8sm4296685pfo.110.2021.07.30.23.03.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 23:03:22 -0700 (PDT)
+Date:   Sat, 31 Jul 2021 14:03:12 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Al Grant <al.grant@arm.com>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 2/6] perf cs-etm: Initialise architecture based on TRCIDR1
+Message-ID: <20210731060312.GB7437@leoy-ThinkPad-X240s>
+References: <20210721090706.21523-1-james.clark@arm.com>
+ <20210721090706.21523-3-james.clark@arm.com>
+ <CAJ9a7Viap53OgrM2e_DU4+oymFB41jspbKbvEVFQWROt7ifuXw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ9a7Viap53OgrM2e_DU4+oymFB41jspbKbvEVFQWROt7ifuXw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 3:02 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> All of these are unneeded. The directories to descend are specified
-> by obj-$(CONFIG_...).
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+On Thu, Jul 22, 2021 at 12:10:35PM +0100, Mike Leach wrote:
+> HI James
+> 
+> On Wed, 21 Jul 2021 at 10:07, James Clark <james.clark@arm.com> wrote:
+> >
+> > Currently the architecture is hard coded as ARCH_V8, but with the
+> > introduction of ETE we want to pick ARCH_AA64. And this change is also
+> > applicable to ETM v4.4 onwards as well.
+> >
+> > Signed-off-by: James Clark <james.clark@arm.com>
+> > ---
+> >  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 14 +++++++++++++-
+> >  1 file changed, 13 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > index 30889a9d0165..5972a8afcc6b 100644
+> > --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > @@ -126,6 +126,18 @@ static int cs_etm_decoder__gen_etmv3_config(struct cs_etm_trace_params *params,
+> >         return 0;
+> >  }
+> >
+> > +#define TRCIDR1_TRCARCHMIN_SHIFT 4
+> > +#define TRCIDR1_TRCARCHMIN_MASK  GENMASK(7, 4)
+> > +#define TRCIDR1_TRCARCHMIN(x)    (((x) & TRCIDR1_TRCARCHMIN_MASK) >> TRCIDR1_TRCARCHMIN_SHIFT)
+> > +static enum _ocsd_arch_version cs_etm_decoder__get_arch_ver(u32 reg_idr1)
+> > +{
+> > +       /*
+> > +        * If the ETM trace minor version is 4 or more then we can assume
+> > +        * the architecture is ARCH_AA64 rather than just V8
+> > +        */
+> > +       return TRCIDR1_TRCARCHMIN(reg_idr1) >= 4 ? ARCH_AA64 : ARCH_V8;
+> > +}
+> 
+> This is true for ETM4.x & ETE 1.x (arch 5.x) but not ETM 3.x
+> Probably need to beef up this comment or the function name to emphasise this.
 
+Yeah, I think it's good to change the function name.  Eventually, this
+function should only be used for ETM4.x and ETE.
 
-Ping?
+Another minor comment is: can we refine the arch version number, e.g.
+change the OpenCSD's macro "ARCH_AA64" to "ARCH_V8R4", (or
+"ARCH_V8R3_AA64"), this can give more clear clue what's the ETM version.
 
+And a nitpick: how about to change OpenCSD macro "ARCH_V8r3" to
+"ARCH_V8R3" and assign it for ETMv4.3 IPs.
 
-
-
-> ---
->
->  security/Makefile | 11 -----------
->  1 file changed, 11 deletions(-)
->
-> diff --git a/security/Makefile b/security/Makefile
-> index 47e432900e24..18121f8f85cd 100644
-> --- a/security/Makefile
-> +++ b/security/Makefile
-> @@ -4,16 +4,6 @@
->  #
->
->  obj-$(CONFIG_KEYS)                     += keys/
-> -subdir-$(CONFIG_SECURITY_SELINUX)      += selinux
-> -subdir-$(CONFIG_SECURITY_SMACK)                += smack
-> -subdir-$(CONFIG_SECURITY_TOMOYO)        += tomoyo
-> -subdir-$(CONFIG_SECURITY_APPARMOR)     += apparmor
-> -subdir-$(CONFIG_SECURITY_YAMA)         += yama
-> -subdir-$(CONFIG_SECURITY_LOADPIN)      += loadpin
-> -subdir-$(CONFIG_SECURITY_SAFESETID)    += safesetid
-> -subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM) += lockdown
-> -subdir-$(CONFIG_BPF_LSM)               += bpf
-> -subdir-$(CONFIG_SECURITY_LANDLOCK)     += landlock
->
->  # always enable default capabilities
->  obj-y                                  += commoncap.o
-> @@ -36,5 +26,4 @@ obj-$(CONFIG_BPF_LSM)                 += bpf/
->  obj-$(CONFIG_SECURITY_LANDLOCK)                += landlock/
->
->  # Object integrity file lists
-> -subdir-$(CONFIG_INTEGRITY)             += integrity
->  obj-$(CONFIG_INTEGRITY)                        += integrity/
-> --
-> 2.27.0
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+Thanks,
+Leo
