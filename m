@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C2E3DC844
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 23:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3413DC847
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 23:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhGaVge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 17:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhGaVgc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 17:36:32 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A653C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 14:36:26 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id t128so18917431oig.1
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 14:36:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gpEgoANb95kLZ1B0ubUvGwiEQUfZz4kQSRm7QPVeBYk=;
-        b=pgDfbxs+zMvZMZyZ22s+4+TtYs12GGI1QvSYxdwOSOIQuwSbW+C/6Q1UeZnyrqr/qf
-         KX+/0blc6QU6SHi829yqWemQ3Sjjd6ob464xqhOjxyrjs/Njt6ZWCBgYMjl34i8mPDJI
-         5K5AXOMNbmmqfsbUbg/e1+vJmdW2Aa4O9Wr9wm2fiXe+kgPrjnq3+JSMv1BpfM0F1FUD
-         02IGgY2+SXJ8DFAJx7lNiSTemWFlrD5NQH7cb31EbUS2rfoyVXf6+7ilBIWEQ9M+B+86
-         ud7aUhug7TSdC0fxmlUeZj0hXKJfQPTymC/wCcFYWxy/+bmStjGf/RxxAPGZVV1+G198
-         Soow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gpEgoANb95kLZ1B0ubUvGwiEQUfZz4kQSRm7QPVeBYk=;
-        b=IL69i9icVwrH+iaWXsxv/rIRCsFKd9PuNeE2pZ0Lw8Jihb0w8hqN/piprbwXjziD0X
-         evDhQP17pUVOrEtm21bYBlmDqEPyPS8jYNH32n5Sd9ThMZZCTSjmT5Lj5be3gxD2KcOs
-         Q7z1Jz1N1Sb+mREzbscIlACXqAL8eD6oNc3QOypqEEA03PGpbqYGi+kLcygzlAitWe1l
-         xWkiX0CN4JZa69v9RSvEWGM1z4/vA1H2zxWTg/h3fHpF0c5rwGI9LXuVv94D77LVsuHq
-         GGWy+koYghpi64tqfu1MmsYRP3Vp7BNIwLu+uqI/f6qgs7IDgKM+vb5o7x1CIkmTdvGA
-         6JFA==
-X-Gm-Message-State: AOAM533q310r4LYWcWD8ix8Q7bu01A844+/qbQwvdCN3ihIBYOzUzNMC
-        964PKp1j54QIPJQgYs31kH64Jb9mK4E1RF2kSBP3kfOR
-X-Google-Smtp-Source: ABdhPJwd38bs/Rhk06eC+12Bfx+etMnnlUFDIfzDSFnEf9vI/zQW1SOE6iiPL0mB0kL4zWlUx7bmMq1ukwPCx+xl//w=
-X-Received: by 2002:aca:c343:: with SMTP id t64mr5944212oif.67.1627767385425;
- Sat, 31 Jul 2021 14:36:25 -0700 (PDT)
+        id S231754AbhGaVht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 17:37:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230350AbhGaVhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 17:37:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B4E860F36;
+        Sat, 31 Jul 2021 21:37:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627767461;
+        bh=Yd5XUjuiBpfqxyAPMe2PIfadrpz9l3nlrb8X0WLM248=;
+        h=Date:From:To:Cc:Subject:From;
+        b=j7O1JBSCtALt0j83k76J13KXmjbeYHnWIz3PdhECRxtepy2iobBVxqMLwNE3vbjVz
+         jxZo27sgAxjJZp1QWwUO53ttLCnf7mRCIxAPPnSGJdUu2+5EZH/ldbalD0RYbW1ZQO
+         hm5WYSruR+hI+EEYU/yX9urWM0xBjSvIMFaA+W1O6EQZ5/y26K4z2AHnCctQtT52E0
+         NQGpN+sAGQP9TossUVXDg8zS1CmGfJmztVoMwhqIaB16cYg53lBtP/a6oEIN3vvZra
+         6n+LO1obT9tdAQ1bpXmpExy62XStc5CI5YVWY+SW1/13X44eSeWm2B+PgMtuhFLViM
+         64C2086r7S5NA==
+Date:   Sat, 31 Jul 2021 14:37:40 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
+Subject: [GIT PULL] xfs: bug fixes for 5.14-rc4
+Message-ID: <20210731213740.GN3601443@magnolia>
 MIME-Version: 1.0
-References: <20210722201929.3585671-1-djrscally@gmail.com> <20210722201929.3585671-2-djrscally@gmail.com>
- <YPq28BNOmqZPdRqq@smile.fi.intel.com> <acf4838d-3c70-20c1-5fce-ee36765b06c4@gmail.com>
- <YQPjxzpfGn0csS+S@smile.fi.intel.com>
-In-Reply-To: <YQPjxzpfGn0csS+S@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Date:   Sat, 31 Jul 2021 22:36:14 +0100
-Message-ID: <CAFLoDVHB0ywv6LYXXUM26KHB8spp3phkPGADXqhps6Z0cre0QA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] device property: Check fwnode->secondary in fwnode_graph_get_next_endpoint()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:34 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, Jul 23, 2021 at 02:04:59PM +0100, Daniel Scally wrote:
-> >
-> > On 23/07/2021 13:32, Andy Shevchenko wrote:
-> > > On Thu, Jul 22, 2021 at 09:19:28PM +0100, Daniel Scally wrote:
-> > >> Sensor drivers often check for an endpoint to make sure that they're
-> > >> connected to a consuming device like a CIO2 during .probe(). Some of
-> > >> those endpoints might be in the form of software_nodes assigned as
-> > >> a secondary to the device's fwnode_handle. Account for this possibility
-> > >> in fwnode_graph_get_next_endpoint() to avoid having to do it in the
-> > >> sensor drivers themselves.
-> > > ...
-> > >
-> > >> +  ep = fwnode_call_ptr_op(parent, graph_get_next_endpoint, prev);
-> > >> +
-> > >> +  if (IS_ERR_OR_NULL(ep) && !IS_ERR_OR_NULL(parent) &&
-> > >> +      !IS_ERR_OR_NULL(parent->secondary))
-> > > Nit-pick, I would put it like:
-> > >
-> > >     if (!IS_ERR_OR_NULL(parent->secondary) && !IS_ERR_OR_NULL(parent) &&
-> > >         IS_ERR_OR_NULL(ep))
-> > >
-> > > or
-> > >
-> > >     if (IS_ERR_OR_NULL(ep) &&
-> > >         !IS_ERR_OR_NULL(parent->secondary) && !IS_ERR_OR_NULL(parent))
-> > >
-> > > for the sake of logical split.
-> >
-> >
-> > OK; I'll do the second one, feel like it's better to have ep as the
-> > first check.
->
-> Fine, but also I have just noticed that parent should be checked before
-> parent->secondary.
->
-> Something like this
->
->         if (IS_ERR_OR_NULL(ep) &&
->             !IS_ERR_OR_NULL(parent) && IS_ERR_OR_NULL(parent->secondary))
->
-> > >> +          ep = fwnode_graph_get_next_endpoint(parent->secondary, NULL);
+Hi Linus,
 
-Yes, no problem. I'll send a v2 when I can, It will likely be another
-week or so though, my computer's in a cardboard box.
+Please pull this branch containing a bunch of bug fixes in XFS.  Dave
+and I have been busy the last couple of weeks to find and fix as many
+log recovery bugs as we can find; here are the results so far.  Go
+fstests -g recoveryloop! ;)
 
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+The branch merges cleanly against upstream as of a few minutes ago.
+Please let me know if anything else strange happens during the merge
+process.
+
+--D
+
+The following changes since commit b102a46ce16fd5550aed882c3c5b95f50da7992c:
+
+  xfs: detect misaligned rtinherit directory extent size hints (2021-07-15 09:58:42 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.14-fixes-2
+
+for you to fetch changes up to 81a448d7b0668ae39c08e6f34a54cc7eafb844f1:
+
+  xfs: prevent spoofing of rtbitmap blocks when recovering buffers (2021-07-29 09:27:29 -0700)
+
+----------------------------------------------------------------
+Fixes for 5.14-rc4:
+ * Fix a number of coordination bugs relating to cache flushes for
+   metadata writeback, cache flushes for multi-buffer log writes, and
+   FUA writes for single-buffer log writes.
+ * Fix a bug with incorrect replay of attr3 blocks.
+ * Fix unnecessary stalls when flushing logs to disk.
+ * Fix spoofing problems when recovering realtime bitmap blocks.
+
+----------------------------------------------------------------
+Darrick J. Wong (1):
+      xfs: prevent spoofing of rtbitmap blocks when recovering buffers
+
+Dave Chinner (11):
+      xfs: flush data dev on external log write
+      xfs: external logs need to flush data device
+      xfs: fold __xlog_state_release_iclog into xlog_state_release_iclog
+      xfs: fix ordering violation between cache flushes and tail updates
+      xfs: factor out forced iclog flushes
+      xfs: log forces imply data device cache flushes
+      xfs: avoid unnecessary waits in xfs_log_force_lsn()
+      xfs: logging the on disk inode LSN can make it go backwards
+      xfs: Enforce attr3 buffer recovery order
+      xfs: need to see iclog flags in tracing
+      xfs: limit iclog tail updates
+
+ fs/xfs/libxfs/xfs_log_format.h  |  11 +-
+ fs/xfs/xfs_buf_item_recover.c   |  15 ++-
+ fs/xfs/xfs_inode_item_recover.c |  39 +++++--
+ fs/xfs/xfs_log.c                | 251 ++++++++++++++++++++++++++--------------
+ fs/xfs/xfs_log_cil.c            |  13 ++-
+ fs/xfs/xfs_log_priv.h           |  16 ++-
+ fs/xfs/xfs_trace.h              |   5 +-
+ 7 files changed, 244 insertions(+), 106 deletions(-)
