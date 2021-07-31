@@ -2,627 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0643DC6F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 18:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07C33DC6F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 18:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhGaQhC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 31 Jul 2021 12:37:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39976 "EHLO mail.kernel.org"
+        id S230020AbhGaQfp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 31 Jul 2021 12:35:45 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:32501 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229685AbhGaQhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 12:37:00 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35C3C6044F;
-        Sat, 31 Jul 2021 16:36:47 +0000 (UTC)
-Date:   Sat, 31 Jul 2021 17:39:28 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andreas Klinger <ak@it-klinger.de>
-Cc:     devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jiri Kosina <trivial@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Slawomir Stepien <sst@poczta.fm>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>
-Subject: Re: [PATCH 2/2] iio: chemical: Add driver support for sgp40
-Message-ID: <20210731173928.08d6812f@jic23-huawei>
-In-Reply-To: <20210727163517.GA3468@arbad>
-References: <20210727163517.GA3468@arbad>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229647AbhGaQfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 12:35:44 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GcVHs0RTGzBB6B;
+        Sat, 31 Jul 2021 18:35:37 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id frZPMb5MSNCg; Sat, 31 Jul 2021 18:35:36 +0200 (CEST)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GcVHr6TZLzBB44;
+        Sat, 31 Jul 2021 18:35:36 +0200 (CEST)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id 30E13B4; Sat, 31 Jul 2021 18:40:59 +0200 (CEST)
+Received: from 37-173-18-216.coucou-networks.fr
+ (37-173-18-216.coucou-networks.fr [37.173.18.216]) by messagerie.c-s.fr
+ (Horde Framework) with HTTP; Sat, 31 Jul 2021 18:40:59 +0200
+Date:   Sat, 31 Jul 2021 18:40:59 +0200
+Message-ID: <20210731184059.Horde.Yln_bjDrKlAdWFSSbeXUSQ1@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Nick Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Stan Johnson <userm57@yahoo.com>
+Subject: Re: [PATCH v3 31/41] powerpc/32: Dismantle
+ EXC_XFER_STD/LITE/TEMPLATE
+References: <cover.1615552866.git.christophe.leroy@csgroup.eu>
+ <ca5795d04a220586b7037dbbbe6951dfa9e768eb.1615552867.git.christophe.leroy@csgroup.eu>
+ <666e3ab4-372-27c2-4621-7cc3933756dd@linux-m68k.org>
+In-Reply-To: <666e3ab4-372-27c2-4621-7cc3933756dd@linux-m68k.org>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 18:35:19 +0200
-Andreas Klinger <ak@it-klinger.de> wrote:
+Finn Thain <fthain@linux-m68k.org> a écrit :
 
-> sgp40 is a gas sensor used for measuring the air quality.
-> 
-> This driver is reading the raw resistance value which can be passed to
-> a userspace algorithm for further calculation.
-> 
-> The raw value is also used to calculate an estimated absolute voc index
-> in the range from 0 to 500. For this purpose the raw_mean value of the
-> resistance for which the index value is 250 might be set up as a
-> calibration step.
-> 
-> Compensation of relative humidity and temperature is supported and can
-> be used by writing to device attributes of the driver.
-> 
-> There is a predecesor sensor type (sgp30) already existing. This driver
-> module was not extended because the new sensor is quite different in its
-> i2c telegrams.
-> 
-> Signed-off-by: Andreas Klinger <ak@it-klinger.de>
+> Hi Christophe,
 
-Hi Andreas,
+> We found that reducing memory with the kernel parameter 'mem=464M' would
+> prevent the crash.
+>
+> Below are Stan's notes from the 'git bisect' run. They include an
+> additional failure mode that might be of interest. We've also observed
+> "Kernel attempted to write user page (c6207c) - exploit attempt?" and
+> "kernel BUG at arch/powerpc/kernel/interrupt.c:49!".
+>
 
-Non standard ABI in here, so we are missing documentation in Documentation/ABI/testing/sysfs-bus-iio-*
+Interesting.  Can you provide detailed log of thoose two BUGs ?
 
-Otherwise a few suggestions inline.
-
-Thanks,
-
-Jonathan
+Thanks
+Christophe
 
 
-> ---
->  MAINTAINERS                   |   5 +
->  drivers/iio/chemical/Kconfig  |  11 +
->  drivers/iio/chemical/Makefile |   1 +
->  drivers/iio/chemical/sgp40.c  | 413 ++++++++++++++++++++++++++++++++++
->  4 files changed, 430 insertions(+)
->  create mode 100644 drivers/iio/chemical/sgp40.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 19135a9d778e..ed8aae16559d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16707,6 +16707,11 @@ F:	drivers/iio/chemical/scd30_core.c
->  F:	drivers/iio/chemical/scd30_i2c.c
->  F:	drivers/iio/chemical/scd30_serial.c
->  
-> +SENSIRION SGP40 GAS SENSOR DRIVER
-> +M:	Andreas Klinger <ak@it-klinger.de>
-> +S:	Maintained
-> +F:	drivers/iio/chemical/sgp40.c
-> +
->  SENSIRION SPS30 AIR POLLUTION SENSOR DRIVER
->  M:	Tomasz Duszynski <tduszyns@gmail.com>
->  S:	Maintained
-> diff --git a/drivers/iio/chemical/Kconfig b/drivers/iio/chemical/Kconfig
-> index a4920646e9be..c03667e62732 100644
-> --- a/drivers/iio/chemical/Kconfig
-> +++ b/drivers/iio/chemical/Kconfig
-> @@ -131,6 +131,17 @@ config SENSIRION_SGP30
->  	  To compile this driver as module, choose M here: the
->  	  module will be called sgp30.
->  
-> +config SENSIRION_SGP40
-> +	tristate "Sensirion SGP40 gas sensor"
-> +	depends on I2C
-> +	select CRC8
-> +	help
-> +	  Say Y here to build I2C interface to support Sensirion SGP40 gas
-> +	  sensor
-> +
-> +	  To compile this driver as module, choose M here: the
-> +	  module will be called sgp40.
-> +
->  config SPS30
->  	tristate
->  	select IIO_BUFFER
-> diff --git a/drivers/iio/chemical/Makefile b/drivers/iio/chemical/Makefile
-> index 4898690cc155..d07af581f234 100644
-> --- a/drivers/iio/chemical/Makefile
-> +++ b/drivers/iio/chemical/Makefile
-> @@ -16,6 +16,7 @@ obj-$(CONFIG_SCD30_CORE) += scd30_core.o
->  obj-$(CONFIG_SCD30_I2C) += scd30_i2c.o
->  obj-$(CONFIG_SCD30_SERIAL) += scd30_serial.o
->  obj-$(CONFIG_SENSIRION_SGP30)	+= sgp30.o
-> +obj-$(CONFIG_SENSIRION_SGP40)	+= sgp40.o
->  obj-$(CONFIG_SPS30) += sps30.o
->  obj-$(CONFIG_SPS30_I2C) += sps30_i2c.o
->  obj-$(CONFIG_SPS30_SERIAL) += sps30_serial.o
-> diff --git a/drivers/iio/chemical/sgp40.c b/drivers/iio/chemical/sgp40.c
-> new file mode 100644
-> index 000000000000..7072c5f3c28d
-> --- /dev/null
-> +++ b/drivers/iio/chemical/sgp40.c
-> @@ -0,0 +1,413 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * sgp40.c - Support for Sensirion SGP40 Gas Sensors
-> + *
-> + * Copyright (C) 2021 Andreas Klinger <ak@it-klinger.de>
-> + *
-> + * I2C slave address: 0x59
-> + *
-> + * Datasheets:
-> + * https://www.sensirion.com/file/datasheet_sgp40
-> + *
-> + * There are two functionalities supported:
-> + * 1) read raw logarithmic resistance value from sensor
-> + *    --> useful to pass it to the algorithm of the sensor vendor for
-> + *    measuring deteriorations and improvements of air quality.
-> + * 2) calculate an estimated absolute voc index (0 - 500 index points) for
-> + *    measuring the air quality.
-> + *    For this purpose the mean value of the resistance can be set up using
-> + *    a device attribute
 
-The info on that ABI also needs to be in ABI docs.  Is it effectively a calibration
-offset?  If so, we have calibbias which might be appropriate.
 
-> + *
-> + * Compensation of relative humidity and temperature can be used by device
-> + * attributes.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/iio/iio.h>
-> +#include <linux/iio/sysfs.h>
-> +#include <linux/delay.h>
-> +#include <linux/mutex.h>
-> +#include <linux/i2c.h>
-> +#include <linux/crc8.h>
-> +
-> +#define SGP40_CRC8_POLYNOMIAL			0x31
-> +#define SGP40_CRC8_INIT				0xff
-> +
-> +static u8 sgp40_measure_raw_tg[] = {0x26, 0x0F};
+>
+> On Thu, 29 Jul 2021, Stanley J. Johnson wrote:
+>
+>> Here are the git bisect results (I saved the kernels and dmesg outputs
+>> in case they're needed later, though it's easy enough to re-create the
+>> results).
+>>
+>> We'll have up to two boots (only one if the first boot fails) for each
+>> kernel on WS-1 with the default memory setting of 512M.
+>>
+>> 1) 5.12.0-pmac-08447-g85f3f17b5db (good)
+>> -> works: no dmesg errs, X works
+>> -> works: no dmesg errs, X works
+>>
+>> 2) 5.12.0-pmac-12750-g23243c1ace9 (bad)
+>> (Crash and burn. I was tempted to mark this one "skip", since the errors
+>> are different, though we've seen them in earlier tests. So there could
+>> be multiple regressions. But let's keep chasing this one. I can re-run
+>> the bisect later and skip some failures if necessary.)
+>> -> fails: "Unable to contact settings server" after wdm login; dmesg errors:
+>> ...
+>> [  127.169294] BUG: Unable to handle kernel instruction fetch (NULL  
+>> pointer?)
+>> [  127.169397] Faulting instruction address: 0x00000000
+>> [  127.169635] Oops: Kernel access of bad area, sig: 11 [#2]
+>> [  127.169661] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  127.169696] Modules linked in:
+>> [  127.169736] CPU: 0 PID: 1877 Comm: gdbus Tainted: G      D  
+>> 5.12.0-pmac-12750-g23243c1ace9 #9
+>> [  127.169776] NIP:  00000000 LR: 00000000 CTR: 00000000
+>> ...
+>>
+>> 3) 5.12.0-rc7-pmac-02335-gaeacb52a8de (good)
+>> -> works: no dmesg errs, X works
+>> -> works: no dmesg errs, X works
+>>
+>> 4) 5.12.0-pmac-11585-g95275402f66 (bad)
+>> -> fails: dmesg errs, wdm login fails with "Unable to contact settings
+>> server..."
+>> ...
+>> [   58.290883] BUG: Unable to handle kernel instruction fetch
+>> [   58.291009] Faulting instruction address: 0x7cc903a4
+>> [   58.291240] Oops: Kernel access of bad area, sig: 11 [#1]
+>> [   58.291268] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [   58.291305] Modules linked in:
+>> [   58.291349] CPU: 0 PID: 1750 Comm: Xorg Not tainted  
+>> 5.12.0-pmac-11585-g95275402f66 #11
+>> [   58.291391] NIP:  7cc903a4 LR: 7cc903a6 CTR: c0127eb8
+>> [   58.291417] REGS: e2da1e70 TRAP: 0400   Not tainted  
+>> (5.12.0-pmac-11585-g95275402f66)
+>> [   58.291450] MSR:  40001030 <ME,IR,DR>  CR: 28008228  XER: 20000000
+>> ...
+>>
+>> 5) 5.12.0-pmac-11068-g9d31d233895 (good)
+>> -> works: no dmesg errs, X works
+>> -> works: no dmesg errs, X works
+>>
+>> 6) 5.12.0-rc3-pmac-00258-ga9d2f9bb225 (bad)
+>> -> fails: wdm dies at login, screen hangs, dmesg errs that I haven't
+>> seen before:
+>> ...
+>> [   59.988732] InputThread[1751]: bad frame in sys_rt_sigreturn:  
+>> 51a79ab6 nip 001023c8 lr 001023c0
+>> [   62.079043] InputThread[1760]: bad frame in sys_rt_sigreturn:  
+>> a98be235 nip 001023c8 lr 001023c0
+>> [   64.348063] InputThread[1776]: bad frame in sys_rt_sigreturn:  
+>> a46b945e nip 001023c8 lr 001023c0
+>> [   66.413980] InputThread[1785]: bad frame in sys_rt_sigreturn:  
+>> a98be235 nip 001023c8 lr 001023c0
+>> [   68.486768] InputThread[1794]: bad frame in sys_rt_sigreturn:  
+>> 677e693b nip 001023c8 lr 001023c0
+>>
+>> 7) 5.12.0-rc3-pmac-00129-g036fc2cb1dc (bad)
+>> -> fails: dmesg errs, wdm hangs (wdm did not crash, screen seems hung)
+>> ...
+>> [  101.136941] BUG: Unable to handle kernel instruction fetch
+>> [  101.137059] Faulting instruction address: 0xfea31f74
+>> [  101.137296] Oops: Kernel access of bad area, sig: 11 [#1]
+>> [  101.137323] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  101.137358] Modules linked in:
+>> [  101.137401] CPU: 0 PID: 1882 Comm: xfce4-session Not tainted  
+>> 5.12.0-rc3-pmac-00129-g036fc2cb1dc #14
+>> [  101.137443] NIP:  fea31f74 LR: fea31f74 CTR: c00cfef4
+>> [  101.137470] REGS: e2e21e70 TRAP: 0400   Not tainted  
+>> (5.12.0-rc3-pmac-00129-g036fc2cb1dc)
+>> [  101.137502] MSR:  40001030 <ME,IR,DR>  CR: 220084e8  XER: 00000000
+>> ...
+>>
+>> 8) 5.12.0-rc3-pmac-00064-g719e7e212c7 (good)
+>> -> works: no dmesg errs, X works
+>> -> works: no dmesg errs, X works
+>>
+>> 9) 5.12.0-rc3-pmac-00096-ga2308836880 (bad)
+>> -> fails: dmesg errs, wdm hangs while validating login
+>> ...
+>> [  104.559951] BUG: Unable to handle kernel instruction fetch
+>> [  104.560086] Faulting instruction address: 0xfe988ba4
+>> [  104.560307] Oops: Kernel access of bad area, sig: 11 [#1]
+>> [  104.560337] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  104.560371] Modules linked in:
+>> [  104.560415] CPU: 0 PID: 1834 Comm: xfce4-session Not tainted  
+>> 5.12.0-rc3-pmac-00096-ga2308836880 #16
+>> [  104.560457] NIP:  fe988ba4 LR: fe988ba4 CTR: c00cfee8
+>> [  104.560484] REGS: e2d9de70 TRAP: 0400   Not tainted  
+>> (5.12.0-rc3-pmac-00096-ga2308836880)
+>> [  104.560517] MSR:  40001030 <ME,IR,DR>  CR: 220484e8  XER: 00000000
+>> ...
+>> [  114.371853] BUG: Unable to handle kernel instruction fetch
+>> [  114.371998] Faulting instruction address: 0x3e62a270
+>> [  114.372270] Oops: Kernel access of bad area, sig: 11 [#2]
+>> [  114.372298] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  114.372334] Modules linked in:
+>> [  114.372382] CPU: 0 PID: 1858 Comm: xfwm4 Tainted: G      D  
+>> 5.12.0-rc3-pmac-00096-ga2308836880 #16
+>> [  114.372425] NIP:  3e62a270 LR: 3e62a271 CTR: c065eebc
+>> [  114.372452] REGS: e2dede70 TRAP: 0400   Tainted: G      D  
+>> (5.12.0-rc3-pmac-00096-ga2308836880)
+>> [  114.372486] MSR:  40001030 <ME,IR,DR>  CR: 22002284  XER: 00000000
+>> ...
+>>
+>> 10) 5.12.0-rc3-pmac-00080-g7a7d744ffe8 (bad)
+>> -> fails: dmesg errs, "Unable to contact settings server..."
+>> ...
+>> [  170.622408] BUG: Unable to handle kernel instruction fetch
+>> [  170.622546] Faulting instruction address: 0xfe9255d4
+>> [  170.622777] Oops: Kernel access of bad area, sig: 11 [#1]
+>> [  170.622806] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  170.622841] Modules linked in:
+>> [  170.622885] CPU: 0 PID: 1863 Comm: xfce4-session Not tainted  
+>> 5.12.0-rc3-pmac-00080-g7a7d744ffe8 #17
+>> [  170.622927] NIP:  fe9255d4 LR: fe9255d4 CTR: c00cfee8
+>> [  170.622954] REGS: e2da1e70 TRAP: 0400   Not tainted  
+>> (5.12.0-rc3-pmac-00080-g7a7d744ffe8)
+>> [  170.622987] MSR:  40001030 <ME,IR,DR>  CR: 220484e8  XER: 00000000
+>> ...
+>> [  172.611235] BUG: Unable to handle kernel instruction fetch (NULL  
+>> pointer?)
+>> [  172.611364] Faulting instruction address: 0x00000000
+>> [  172.611662] Oops: Kernel access of bad area, sig: 11 [#2]
+>> [  172.611690] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  172.611725] Modules linked in:
+>> [  172.611773] CPU: 0 PID: 1871 Comm: gmain Tainted: G      D  
+>> 5.12.0-rc3-pmac-00080-g7a7d744ffe8 #17
+>> [  172.611814] NIP:  00000000 LR: 00000000 CTR: 00000000
+>> [  172.611840] REGS: e2db9e70 TRAP: 0400   Tainted: G      D  
+>> (5.12.0-rc3-pmac-00080-g7a7d744ffe8)
+>> [  172.611874] MSR:  40001030 <ME,IR,DR>  CR: 28008468  XER: 00000000
+>> ...
+>>
+>> 11) 5.12.0-rc3-pmac-00072-ga2b3e09ae41 (bad)
+>> -> fails: kernel panic, I'd have to capture the output via a serial console
+>>
+>> 12) 5.12.0-rc3-pmac-00068-gacc142b6230 (bad)
+>> -> fails: kernel panic
+>>
+>> 13) 5.12.0-rc3-pmac-00066-g8f6ff5bd9b7 (good)
+>> -> works: no dmesg errs, X works
+>> -> works: no dmesg errs, X works
+>>
+>> 14) 5.12.0-rc3-pmac-00067-g4c0104a83fc (bad)
+>> -> fails: kernel panic
+>>
+>> The git bisect thinks this is the bad commit, but I'm not sure it means
+>> anything at all:
+>>
+>> -----
+>>
+>> 4c0104a83fc3990a76a01a2f4e504251fa9814c4 is the first bad commit
 
-Only used in one place, I'd just put it down there directly.
-
-> +
-> +DECLARE_CRC8_TABLE(sgp40_crc8_table);
-> +
-> +struct sgp40_data {
-> +	struct device		*dev;
-> +	struct i2c_client	*client;
-> +	int			rel_humidity;
-> +	int			temperature;
-> +	int			raw_mean;
-> +	struct mutex		lock;
-> +};
-> +
-> +static const struct iio_chan_spec sgp40_channels[] = {
-> +	{
-> +		.type = IIO_CONCENTRATION,
-> +		.channel2 = IIO_MOD_VOC,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED),
-> +	},
-> +	{
-> +		.type = IIO_RESISTANCE,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +	},
-> +};
-> +
-> +/*
-> + * calculate e^x where n is the exponent multiplied with 100
-> + *
-> + * use taylor approximation which is accurate enough for the purpose of
-> + * coming out with just 500 index points.
-> + */
-> +int sqp40_exp100(int n)
-> +{
-> +	int x, xn, y, z;
-> +	int s = 1;
-> +
-> +	if (n < 0) {
-> +		s = -1;
-> +		n *= -1;
-> +	}
-> +
-> +	x = n;
-> +
-> +	y = 100 + x;
-> +	xn = x * x;
-> +	y += xn / 2 / 100;
-> +	xn = x * x * x;
-> +	y += xn / 6 / 10000;
-> +	xn = x * x * x * x;
-> +	y += xn / 24 / 1000000;
-> +
-> +	if (s == -1)
-> +		z = 10000 / y;
-> +	else
-> +		z = y;
-> +
-> +	return z;
-> +}
-> +
-> +static int sgp40_calc_voc(struct sgp40_data *data, u16 raw, int *voc)
-> +{
-> +	int x;
-> +	int ex = 0;
-> +
-> +	/* we calculate in 100's */
-> +	x = ((int)raw - data->raw_mean) * 65 / 100;
-> +
-> +	/* voc = 500 / (1 + e^x) */
-> +	if (x < -800)
-> +		*voc = 500;
-> +	else if (x > 800)
-> +		*voc = 0;
-> +	else {
-> +		ex = sqp40_exp100(x);
-> +		*voc = 50000 / (100 + ex);
-
-Does it make sense to provide more precision by not returning a single integer?
-IIO_VAL_INT_PLUS_MICRO perhaps?
-
-> +	}
-> +
-> +	dev_dbg(data->dev, "raw: %d raw_mean: %d x: %d ex: %d voc: %d\n",
-> +						raw, data->raw_mean, x, ex, *voc);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sgp40_measure_raw(struct sgp40_data *data, u16 *raw)
-> +{
-> +	int ret;
-> +	struct i2c_client *client = data->client;
-> +	u16 buf_be16; 
-
-If it is be, then use the big endian types.  Also run sparse over
-your code before submitting as it will complain about this.
-
-> +	u8 buf[3];
-> +	u8 tg[8];
-> +	u32 ticks;
-> +	u8 crc;
-> +
-> +	memcpy(tg, sgp40_measure_raw_tg, 2);
-
-It looks like this would benefit from a packed structure into which we
-can directly assign the various parts - something like
-
-struct {
-	u8 command[2];
-	__be16 rel_humidity_ticks;
-	u8 rht_crc;
-	__be16 temp_ticks;
-	u8 temp_crc;
-} __packed tg;
-
-> +
-> +	ticks = (data->rel_humidity / 10) * 65535 / 10000;
-> +	buf_be16 = cpu_to_be16((u16)ticks);
-
-It's not immediately obvious ticks won't overflow a u16, so may be best to
-use clamp() to ensure it doesn't.
-
-> +	memcpy(&tg[2], &buf_be16, 2);
-> +	tg[4] = crc8(sgp40_crc8_table, &tg[2], 2, SGP40_CRC8_INIT);
-> +
-> +	ticks = ((data->temperature + 45000) / 10) * 65535 / 17500;
-> +	buf_be16 = cpu_to_be16((u16)ticks);
-> +	memcpy(&tg[5], &buf_be16, 2);
-> +	tg[7] = crc8(sgp40_crc8_table, &tg[5], 2, SGP40_CRC8_INIT);
-> +
-> +	ret = i2c_master_send(client, (const char *)tg, sizeof(tg));
-> +	if (ret != sizeof(tg)) {
-> +		dev_warn(data->dev, "i2c_master_send ret: %d sizeof: %d\n", ret, sizeof(tg));
-> +		return -EIO;
-> +	}
-> +	msleep(30);
-> +
-> +	ret = i2c_master_recv(client, buf, sizeof(buf));
-> +	if (ret < 0)
-> +		return ret;
-> +	if (ret != sizeof(buf)) {
-> +		dev_warn(data->dev, "i2c_master_recv ret: %d sizeof: %d\n", ret, sizeof(buf));
-> +		return -EIO;
-> +	}
-> +
-> +	crc = crc8(sgp40_crc8_table, buf, 2, SGP40_CRC8_INIT);
-> +	if (crc != buf[2]) {
-> +		dev_err(data->dev, "CRC error while measure-raw\n");
-> +		return -EIO;
-> +	}
-> +
-> +	memcpy(&buf_be16, buf, sizeof(buf_be16));
-> +	*raw = be16_to_cpu(buf_be16);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sgp40_read_raw(struct iio_dev *indio_dev,
-> +			struct iio_chan_spec const *chan, int *val,
-> +			int *val2, long mask)
-> +{
-> +	struct sgp40_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +	u16 raw;
-> +	int voc;
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		mutex_lock(&data->lock);
-> +		ret = sgp40_measure_raw(data, &raw);
-> +		if (ret) {
-> +			mutex_unlock(&data->lock);
-> +			return ret;
-> +		}
-> +		*val = raw;
-> +		ret = IIO_VAL_INT;
-> +		mutex_unlock(&data->lock);
-> +		break;
-> +	case IIO_CHAN_INFO_PROCESSED:
-> +		mutex_lock(&data->lock);
-> +		ret = sgp40_measure_raw(data, &raw);
-> +		if (ret) {
-> +			mutex_unlock(&data->lock);
-> +			return ret;
-> +		}
-> +		ret = sgp40_calc_voc(data, raw, &voc);
-> +		if (ret) {
-> +			mutex_unlock(&data->lock);
-> +			return ret;
-> +		}
-> +		*val = voc;
-> +		ret = IIO_VAL_INT;
-> +		mutex_unlock(&data->lock);
-
-You are holding the lock longer than needed - it would be good
-to reduce this, hopefully removing the need for unlocking separately
-in each of the error paths.
-
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return ret;
-
-Drop this as you can't get here.
-
-> +}
-> +
-> +static ssize_t rel_humidity_comp_store(struct device *dev,
-> +				       struct device_attribute *attr,
-> +				       const char *buf, size_t len)
-> +{
-> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> +	struct sgp40_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +	u32 val;
-> +
-> +	ret = kstrtouint(buf, 10, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (val > 100000)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&data->lock);
-> +	data->rel_humidity = val;
-> +	mutex_unlock(&data->lock);
-> +
-> +	return len;
-> +}
-> +
-> +static ssize_t rel_humidity_comp_show(struct device *dev,
-> +				      struct device_attribute *attr,
-> +				      char *buf)
-> +{
-> +	int ret;
-> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> +	struct sgp40_data *data = iio_priv(indio_dev);
-> +
-> +	mutex_lock(&data->lock);
-> +	ret = snprintf(buf, PAGE_SIZE, "%d\n", data->rel_humidity);
-> +	mutex_unlock(&data->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t temperature_comp_store(struct device *dev,
-> +				       struct device_attribute *attr,
-> +				       const char *buf, size_t len)
-> +{
-> +	int ret;
-> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> +	struct sgp40_data *data = iio_priv(indio_dev);
-> +	int val;
-> +
-> +	ret = kstrtoint(buf, 10, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if ((val < -45000) || (val > 130000))
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&data->lock);
-> +	data->temperature = val;
-> +	mutex_unlock(&data->lock);
-> +
-> +	return len;
-> +}
-> +
-> +static ssize_t temperature_comp_show(struct device *dev,
-> +				      struct device_attribute *attr,
-> +				      char *buf)
-> +{
-> +	int ret;
-> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> +	struct sgp40_data *data = iio_priv(indio_dev);
-> +
-> +	mutex_lock(&data->lock);
-> +	ret = snprintf(buf, PAGE_SIZE, "%d\n", data->temperature);
-> +	mutex_unlock(&data->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t raw_mean_store(struct device *dev,
-> +				       struct device_attribute *attr,
-> +				       const char *buf, size_t len)
-> +{
-> +	int ret;
-> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> +	struct sgp40_data *data = iio_priv(indio_dev);
-> +	u32 val;
-> +
-> +	ret = kstrtouint(buf, 10, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if ((val < 20000) || (val > 52768))
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&data->lock);
-> +	data->raw_mean = val;
-
-Huh.  That is definitely not what I was expecting.  You are writing
-the mean?  That's odd. Docs needed.
-
-> +	mutex_unlock(&data->lock);
-> +
-> +	return len;
-> +}
-> +
-> +static ssize_t raw_mean_show(struct device *dev,
-> +				      struct device_attribute *attr,
-> +				      char *buf)
-> +{
-> +	int ret;
-> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> +	struct sgp40_data *data = iio_priv(indio_dev);
-> +
-> +	mutex_lock(&data->lock);
-> +	ret = snprintf(buf, PAGE_SIZE, "%d\n", data->raw_mean);
-> +	mutex_unlock(&data->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static IIO_DEVICE_ATTR_RW(rel_humidity_comp, 0);
-> +static IIO_DEVICE_ATTR_RW(temperature_comp, 0);
-> +static IIO_DEVICE_ATTR_RW(raw_mean, 0);
-> +
-> +static struct attribute *sgp40_attrs[] = {
-> +	&iio_dev_attr_rel_humidity_comp.dev_attr.attr,
-> +	&iio_dev_attr_temperature_comp.dev_attr.attr,
-
-I'm somewhat guessing on what exactly these two are, but assuming they
-are meant as place you push in the temperature and relative humidity that
-then gets used in some calculations...
-
-To avoid adding ABI for these cases, what we have often done before
-is specified them as 'output' channels.  In some sense we are telling the
-sensor what the temperature is for example, so this mapping isn't too
-unexpected or unintuitive.  It's not perfect, but it's better than defining
-new ABI without clear units etc.
-
-> +	&iio_dev_attr_raw_mean.dev_attr.attr,
-
-We have *_mean_raw as standard (though not often used) ABI.
-Does that map to what you have here?
-You would need to add a channel specific line in the ABI docs though.
-
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group sgp40_attr_group = {
-> +	.attrs = sgp40_attrs,
-> +};
-> +
-> +static const struct iio_info sgp40_info = {
-> +	.attrs		= &sgp40_attr_group,
-> +	.read_raw	= sgp40_read_raw,
-> +};
-> +
-> +static int sgp40_probe(struct i2c_client *client,
-> +		     const struct i2c_device_id *id)
-> +{
-> +	struct device *dev = &client->dev;
-> +	struct iio_dev *indio_dev;
-> +	struct sgp40_data *data;
-> +	int ret;
-> +
-> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	data = iio_priv(indio_dev);
-> +	i2c_set_clientdata(client, indio_dev);
-
-Not used, so don't set it until it is used in some future patch.
-
-> +	data->client = client;
-> +	data->dev = dev;
-> +
-> +	crc8_populate_msb(sgp40_crc8_table, SGP40_CRC8_POLYNOMIAL);
-> +
-> +	mutex_init(&data->lock);
-> +
-> +	/* set default values */
-> +	data->rel_humidity = 50000;	/* 50 % */
-> +	data->temperature = 25000;	/* 25 °C */
-> +	data->raw_mean = 30000;		/* resistance raw value for voc index of 250 */
-> +
-> +	indio_dev->info = &sgp40_info;
-> +	indio_dev->name = id->name;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
-> +	indio_dev->channels = sgp40_channels;
-> +	indio_dev->num_channels = ARRAY_SIZE(sgp40_channels);
-> +
-> +	ret = devm_iio_device_register(dev, indio_dev);
-> +	if (ret) {
-> +		dev_err(dev, "failed to register iio device\n");
-> +		return ret;
-> +	}
-
-Given the device register will probably always be last so we aren't avoiding
-code churn with this structure, I would suggest you instead do
-
-	if (ret)
-		dev_err(dev,..)
-
-	return ret;
-
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct i2c_device_id sgp40_id[] = {
-> +	{ "sgp40" },
-> +	{ }
-> +};
-> +
-> +MODULE_DEVICE_TABLE(i2c, sgp40_id);
-> +
-> +static const struct of_device_id sgp40_dt_ids[] = {
-> +	{ .compatible = "sensirion,sgp40" },
-> +	{ }
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, sgp40_dt_ids);
-> +
-> +static struct i2c_driver sgp40_driver = {
-> +	.driver = {
-> +		.name = "sgp40",
-> +		.of_match_table = sgp40_dt_ids,
-> +	},
-> +	.probe = sgp40_probe,
-> +	.id_table = sgp40_id,
-> +};
-> +module_i2c_driver(sgp40_driver);
-> +
-> +MODULE_AUTHOR("Andreas Klinger <ak@it-klinger.de>");
-> +MODULE_DESCRIPTION("Sensirion SGP40 gas sensors");
-> +MODULE_LICENSE("GPL v2");
 
