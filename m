@@ -2,64 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C59C3DC36C
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 06:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DCE3DC36F
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 07:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbhGaEzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 00:55:49 -0400
-Received: from mta-10-4.privateemail.com ([198.54.122.62]:10185 "EHLO
-        MTA-10-4.privateemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhGaEzs (ORCPT
+        id S235109AbhGaFDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 01:03:14 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:55585 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229478AbhGaFDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 00:55:48 -0400
-X-Greylist: delayed 84635 seconds by postgrey-1.27 at vger.kernel.org; Sat, 31 Jul 2021 00:55:48 EDT
-Received: from mta-10.privateemail.com (localhost [127.0.0.1])
-        by mta-10.privateemail.com (Postfix) with ESMTP id C24E218000A5;
-        Sat, 31 Jul 2021 00:55:41 -0400 (EDT)
-Received: from [192.168.0.46] (unknown [10.20.151.205])
-        by mta-10.privateemail.com (Postfix) with ESMTPA id 06E7618000A4;
-        Sat, 31 Jul 2021 00:55:38 -0400 (EDT)
-Date:   Sat, 31 Jul 2021 00:55:32 -0400
-From:   Hamza Mahfooz <someguy@effective-light.com>
-Subject: Re: [PATCH] KVM: const-ify all relevant uses of struct
- kvm_memory_slot
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Message-Id: <K0F3XQ.PUWYFZOU1LO23@effective-light.com>
-In-Reply-To: <YQReyaxp/rwypHbR@t490s>
-References: <20210713023338.57108-1-someguy@effective-light.com>
-        <YQReyaxp/rwypHbR@t490s>
-X-Mailer: geary/40.0
+        Sat, 31 Jul 2021 01:03:12 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R801e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UhV3faO_1627707780;
+Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UhV3faO_1627707780)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 31 Jul 2021 13:03:05 +0800
+From:   Wen Yang <wenyang@linux.alibaba.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Wen Yang <wenyang@linux.alibaba.com>,
+        Baoyou Xie <baoyou.xie@alibaba-inc.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Jessica Yu <jeyu@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] params:  fix a race condition between rmmod and module_attr_store
+Date:   Sat, 31 Jul 2021 13:02:53 +0800
+Message-Id: <20210731050253.86995-1-wenyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When rmmod, the resource of the module may have been released, but its
+sysfs have not been destroyed. And at this time, if another process
+manipulates the module through sysfs, it may cause kernel panic.
+This may occasionally occur during stress testing, as follows:
 
+PID: 36427  TASK: ffff88ed08044300  CPU: 6   COMMAND: "rmmod"
 
-On Fri, Jul 30 2021 at 04:19:21 PM -0400, Peter Xu <peterx@redhat.com> 
-wrote:
-> separate patch.  At the meantime I also don't understand why memcpy() 
-> here,
-> which seems to be even slower..
+ #0 [ffff9d21888c7ca8] __schedule at ffffffff93871dd8
+ #1 [ffff9d21888c7d40] schedule at ffffffff93872113
+ #2 [ffff9d21888c7d58] schedule_timeout at ffffffff93876492
+ #3 [ffff9d21888c7de0] wait_for_completion at ffffffff93872b83
+ #4 [ffff9d21888c7e40] __wait_rcu_gp at ffffffff93117aac
+ #5 [ffff9d21888c7e80] synchronize_sched at ffffffff9311c179
+ #6 [ffff9d21888c7ec8] cleanup_module at ffffffffc04a282f [aprof]
+ #7 [ffff9d21888c7ee0] __x64_sys_delete_module at ffffffff931453e0
+ #8 [ffff9d21888c7f38] do_syscall_64 at ffffffff9300437b
 
-Alright, I've now had a chance to compare the object code generated 
-before
-my patch is applied, with what is generated after it is applied and the
-same object code is generated for arch/x86/kvm/mmu/mmu.c in both cases 
-(at
-least when compiling with clang, however I suspect other optimizing
-compilers would behave similarly).
+PID: 19120  TASK: ffff88f0b34ad3c0  CPU: 3   COMMAND: "bash"
 
+ #0 [ffff9d219406bad8] machine_kexec at ffffffff9306242e
+ #1 [ffff9d219406bb30] __crash_kexec at ffffffff9314b541
+ #2 [ffff9d219406bbf0] crash_kexec at ffffffff9314c398
+ #3 [ffff9d219406bc08] oops_end at ffffffff9302ace4
+ #4 [ffff9d219406bc28] no_context at ffffffff93071331
+ #5 [ffff9d219406bc80] __do_page_fault at ffffffff93071f06
+ #6 [ffff9d219406bcf0] do_page_fault at ffffffff93072322
+ #7 [ffff9d219406bd20] async_page_fault at ffffffff93a0119e
+    [exception RIP: __list_add_valid]
+......
+ #10 [ffff9d219406be48] param_set_buffer_grow at ffffffffc04a1408 [aprof]
+ #11 [ffff9d219406be60] param_attr_store at ffffffff930bf0ac
+ #12 [ffff9d219406be88] module_attr_store at ffffffff930be69a
+ #13 [ffff9d219406be90] kernfs_fop_write at ffffffff9334f56f
+ #14 [ffff9d219406bec8] vfs_write at ffffffff932ad740
+ #15 [ffff9d219406bef8] ksys_write at ffffffff932ad9ca
+
+It is fixed by making sure that the module is alive in param_attr_store.
+
+Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+Cc: Baoyou Xie <baoyou.xie@alibaba-inc.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Jessica Yu <jeyu@kernel.org>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Johan Hovold <johan@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+---
+ kernel/params.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/params.c b/kernel/params.c
+index 2daa2780..3ff3efc 100644
+--- a/kernel/params.c
++++ b/kernel/params.c
+@@ -562,12 +562,16 @@ static ssize_t param_attr_store(struct module_attribute *mattr,
+ 	if (!attribute->param->ops->set)
+ 		return -EPERM;
+ 
++	if (!try_module_get(mk->mod))
++		return -ENODEV;
++
+ 	kernel_param_lock(mk->mod);
+ 	if (param_check_unsafe(attribute->param))
+ 		err = attribute->param->ops->set(buf, attribute->param);
+ 	else
+ 		err = -EPERM;
+ 	kernel_param_unlock(mk->mod);
++	module_put(mk->mod);
+ 	if (!err)
+ 		return len;
+ 	return err;
+-- 
+1.8.3.1
 
