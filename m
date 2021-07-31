@@ -2,146 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20523DC2D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 05:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722C53DC2E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 05:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhGaDEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 23:04:53 -0400
-Received: from smtpbg704.qq.com ([203.205.195.105]:37614 "EHLO
-        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231285AbhGaDEw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 23:04:52 -0400
-X-QQ-mid: bizesmtp34t1627700679tx3105p6
-Received: from localhost.localdomain (unknown [117.152.154.62])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sat, 31 Jul 2021 11:04:37 +0800 (CST)
-X-QQ-SSF: 0140000000200050B000B00A0000000
-X-QQ-FEAT: mrYqqQu6MtHX06+OAGTAWFBFQ7MmCD7WcfnU/eu4WLDlXI1MVsqi06CaJt8SB
-        zUBGGK3yL/+5Wb9gyf4ITJ67gVybg809QdB6/hNs6b9iXbhmwKSSCFAAc9TGAymqhNIyezR
-        NCAACa/c4ntdVChdwzQn48QudwrB0mp+ZvRR9hOVh5D4097e7ZirZNfkNbBdfzVV4m3hIcb
-        FufSraCMkUkP83kqrqEDjZBofkJNwzWoLt0B+/l+fZUKJWH7ot10DxKqRP77VgCFJoTpfZy
-        006ZP5hWIWhvGO6v48zXSIxZNDTx1U5fCpnyRvqhoBO4Hx9LGdFHNzWToKor6W2MqEyyLFJ
-        /LPPENJ1K7sevqcm1unEy3nzTFMdQ==
-X-QQ-GoodBg: 2
-From:   Hao Chen <chenhaoa@uniontech.com>
-To:     peppe.cavallaro@st.com
-Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        linux@armlinux.org.uk, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Hao Chen <chenhaoa@uniontech.com>
-Subject: [net,v7] net: stmmac: fix 'ethtool -P' return -EBUSY
-Date:   Sat, 31 Jul 2021 11:04:36 +0800
-Message-Id: <20210731030436.24666-1-chenhaoa@uniontech.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
-X-QQ-Bgrelay: 1
+        id S231533AbhGaDWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 23:22:38 -0400
+Received: from mga18.intel.com ([134.134.136.126]:37975 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231395AbhGaDWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 23:22:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10061"; a="200408406"
+X-IronPort-AV: E=Sophos;i="5.84,283,1620716400"; 
+   d="scan'208";a="200408406"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 20:22:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,283,1620716400"; 
+   d="scan'208";a="439414699"
+Received: from host.sh.intel.com ([10.239.154.115])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Jul 2021 20:22:27 -0700
+From:   Ye Xiang <xiang.ye@intel.com>
+To:     jikos@kernel.org, jic23@kernel.org,
+        srinivas.pandruvada@linux.intel.com
+Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
+Subject: [PATCH] iio: hid-sensor-press: Add timestamp channel
+Date:   Sat, 31 Jul 2021 11:25:56 +0800
+Message-Id: <20210731032556.26813-1-xiang.ye@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I want to get permanent MAC address when the card is down. And I think
-it is more convenient to get statistics in the down state by 'ethtool -S'.
-But current all of the ethool command return -EBUSY.
+Each sample has a timestamp field with this change. This timestamp may
+be from the sensor hub when present or local kernel timestamp. The
+unit of timestamp is nanosecond.
 
-I don't think we should detect that the network card is up in '. Begin',
-which will cause that all the ethtool commands can't be used when the
-network card is down. If some ethtool commands can only be used in the
-up state, check it in the corresponding ethool OPS function is better.
-This is too rude and unreasonable.
-
-I have checked the '.begin' implementation of other drivers, most of which
-support the submission of NIC driver for the first time.
-They are too old to know why '.begin' is implemented. I suspect that they
-have not noticed the usage of '.begin'.
-
-Fixes: 47dd7a540b8a ("net: add support for STMicroelectronics Ethernet
-		     controllers.")
-
-Compile-tested on arm64. Tested on an arm64 system with an on-board
-STMMAC chip.
-
-Changes v6 ... v7:
-- fix arg type error of 'dev' to 'priv->device'.
-
-Changes v5 ... v6:
-- The 4.19.90 kernel not support pm_runtime, so implemente '.begin' and
-  '.complete' again. Add return value check of pm_runtime function.
-
-Changes v4 ... v5:
-- test the '.begin' will return -13 error on my machine based on 4.19.90
-  kernel. The platform driver does not supported pm_runtime. So remove the
-  implementation of '.begin' and '.complete'.
-
-Changes v3 ... v4:
-- implement '.complete' ethtool OPS.
-
-Changes v2 ... v3:
-- add linux/pm_runtime.h head file.
-
-Changes v1 ... v2:
-- fix spell error of dev.
-
-Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
+Signed-off-by: Ye Xiang <xiang.ye@intel.com>
 ---
- .../ethernet/stmicro/stmmac/stmmac_ethtool.c  | 21 +++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ drivers/iio/pressure/hid-sensor-press.c | 40 +++++++++++++++----------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index d0ce608b81c3..fd5b68f6bf53 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -12,8 +12,9 @@
- #include <linux/ethtool.h>
- #include <linux/interrupt.h>
- #include <linux/mii.h>
--#include <linux/phylink.h>
- #include <linux/net_tstamp.h>
-+#include <linux/phylink.h>
-+#include <linux/pm_runtime.h>
- #include <asm/io.h>
+diff --git a/drivers/iio/pressure/hid-sensor-press.c b/drivers/iio/pressure/hid-sensor-press.c
+index c416d261e3e3..b365483bd09e 100644
+--- a/drivers/iio/pressure/hid-sensor-press.c
++++ b/drivers/iio/pressure/hid-sensor-press.c
+@@ -16,17 +16,24 @@
+ #include <linux/iio/buffer.h>
+ #include "../common/hid-sensors/hid-sensor-trigger.h"
  
- #include "stmmac.h"
-@@ -410,11 +411,18 @@ static void stmmac_ethtool_setmsglevel(struct net_device *dev, u32 level)
+-#define CHANNEL_SCAN_INDEX_PRESSURE 0
++enum {
++	CHANNEL_SCAN_INDEX_PRESSURE,
++	CHANNEL_SCAN_INDEX_TIMESTAMP,
++};
  
+ struct press_state {
+ 	struct hid_sensor_hub_callbacks callbacks;
+ 	struct hid_sensor_common common_attributes;
+ 	struct hid_sensor_hub_attribute_info press_attr;
+-	u32 press_data;
++	struct {
++		u32 press_data;
++		u64 timestamp __aligned(8);
++	} scan;
+ 	int scale_pre_decml;
+ 	int scale_post_decml;
+ 	int scale_precision;
+ 	int value_offset;
++	s64 timestamp;
+ };
+ 
+ static const u32 press_sensitivity_addresses[] = {
+@@ -44,7 +51,9 @@ static const struct iio_chan_spec press_channels[] = {
+ 		BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+ 		BIT(IIO_CHAN_INFO_HYSTERESIS),
+ 		.scan_index = CHANNEL_SCAN_INDEX_PRESSURE,
+-	}
++	},
++	IIO_CHAN_SOFT_TIMESTAMP(CHANNEL_SCAN_INDEX_TIMESTAMP)
++
+ };
+ 
+ /* Adjust channel real bits based on report descriptor */
+@@ -157,14 +166,6 @@ static const struct iio_info press_info = {
+ 	.write_raw = &press_write_raw,
+ };
+ 
+-/* Function to push data to buffer */
+-static void hid_sensor_push_data(struct iio_dev *indio_dev, const void *data,
+-					int len)
+-{
+-	dev_dbg(&indio_dev->dev, "hid_sensor_push_data\n");
+-	iio_push_to_buffers(indio_dev, data);
+-}
+-
+ /* Callback handler to send event after all samples are received and captured */
+ static int press_proc_event(struct hid_sensor_hub_device *hsdev,
+ 				unsigned usage_id,
+@@ -174,10 +175,13 @@ static int press_proc_event(struct hid_sensor_hub_device *hsdev,
+ 	struct press_state *press_state = iio_priv(indio_dev);
+ 
+ 	dev_dbg(&indio_dev->dev, "press_proc_event\n");
+-	if (atomic_read(&press_state->common_attributes.data_ready))
+-		hid_sensor_push_data(indio_dev,
+-				&press_state->press_data,
+-				sizeof(press_state->press_data));
++	if (atomic_read(&press_state->common_attributes.data_ready)) {
++		if (!press_state->timestamp)
++			press_state->timestamp = iio_get_time_ns(indio_dev);
++
++		iio_push_to_buffers_with_timestamp(
++			indio_dev, &press_state->scan, press_state->timestamp);
++	}
+ 
+ 	return 0;
  }
+@@ -194,9 +198,13 @@ static int press_capture_sample(struct hid_sensor_hub_device *hsdev,
  
--static int stmmac_check_if_running(struct net_device *dev)
-+static int stmmac_ethtool_begin(struct net_device *dev)
- {
--	if (!netif_running(dev))
--		return -EBUSY;
--	return 0;
-+	struct stmmac_priv *priv = netdev_priv(dev);
-+
-+	return pm_runtime_resume_and_get(priv->device);
-+}
-+
-+static void stmmac_ethtool_complete(struct net_device *dev)
-+{
-+	struct stmmac_priv *priv = netdev_priv(dev);
-+
-+	pm_runtime_put(priv->device);
- }
- 
- static int stmmac_ethtool_get_regs_len(struct net_device *dev)
-@@ -1073,7 +1081,8 @@ static int stmmac_set_tunable(struct net_device *dev,
- static const struct ethtool_ops stmmac_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
- 				     ETHTOOL_COALESCE_MAX_FRAMES,
--	.begin = stmmac_check_if_running,
-+	.begin = stmmac_ethtool_begin,
-+	.complete = stmmac_ethtool_complete,
- 	.get_drvinfo = stmmac_ethtool_getdrvinfo,
- 	.get_msglevel = stmmac_ethtool_getmsglevel,
- 	.set_msglevel = stmmac_ethtool_setmsglevel,
+ 	switch (usage_id) {
+ 	case HID_USAGE_SENSOR_ATMOSPHERIC_PRESSURE:
+-		press_state->press_data = *(u32 *)raw_data;
++		press_state->scan.press_data = *(u32 *)raw_data;
+ 		ret = 0;
+ 		break;
++	case HID_USAGE_SENSOR_TIME_TIMESTAMP:
++		press_state->timestamp = hid_sensor_convert_timestamp(
++			&press_state->common_attributes, *(s64 *)raw_data);
++		break;
+ 	default:
+ 		break;
+ 	}
 -- 
-2.20.1
-
-
+2.17.1
 
