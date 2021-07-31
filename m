@@ -2,204 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA67F3DC5D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 14:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439EF3DC5DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 14:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbhGaMFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 08:05:46 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:43920 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232807AbhGaMFo (ORCPT
+        id S233039AbhGaMKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 08:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232902AbhGaMKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 08:05:44 -0400
-Received: from localhost.localdomain (unknown [223.178.63.20])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D7532208AABC;
-        Sat, 31 Jul 2021 05:05:34 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D7532208AABC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1627733138;
-        bh=5sTyBcHaScpa7fGKFyjknvMr+JF7VV4Pke88UsBATl4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KIxpxnHTIQAbfFH6ToieJHhR8Cqo4N4VFvt0sIZj5dJljMbZV8RhLy9yNqKu7+d18
-         A3hzjYZtidolft1Zg8k0B/rB4mb03e7GUvHtVE6KON66BJZGRv0JwHStBDiEdsqRnE
-         LllLmhPveje5BwPBQHudpBAqPhf0Lf55EwCArpm8=
-From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
-To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        nunodasneves@linux.microsoft.com
-Subject: [PATCH v5] hyperv: root partition faults writing to VP ASSIST MSR PAGE
-Date:   Sat, 31 Jul 2021 17:35:19 +0530
-Message-Id: <20210731120519.17154-1-kumarpraveen@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 31 Jul 2021 08:10:21 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB278C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 05:10:14 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m9nnU-0007Ot-05; Sat, 31 Jul 2021 14:08:56 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m9nnD-0007eB-Mm; Sat, 31 Jul 2021 14:08:39 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m9nnD-0001LE-Jt; Sat, 31 Jul 2021 14:08:39 +0200
+Date:   Sat, 31 Jul 2021 14:08:36 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-pci@vger.kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        oss-drivers@corigine.com, Oliver O'Halloran <oohall@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        linux-perf-users@vger.kernel.org,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-scsi@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Ido Schimmel <idosch@nvidia.com>, x86@kernel.org,
+        qat-linux@intel.com,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-wireless@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Michael Buesch <m@bues.ch>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        xen-devel@lists.xenproject.org, Vadym Kochan <vkochan@marvell.com>,
+        MPT-FusionLinux.pdl@broadcom.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        linux-kernel@vger.kernel.org, Taras Chornyi <tchornyi@marvell.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        netdev@vger.kernel.org, Frederic Barrat <fbarrat@linux.ibm.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v1 4/5] PCI: Adapt all code locations to not use struct
+ pci_dev::driver directly
+Message-ID: <20210731120836.vegno6voijvlflws@pengutronix.de>
+References: <20210729203740.1377045-1-u.kleine-koenig@pengutronix.de>
+ <20210729203740.1377045-5-u.kleine-koenig@pengutronix.de>
+ <2b5e8cb5-fac2-5da2-f87b-d287d2c5ea81@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rawlqk3jhoxts24y"
+Content-Disposition: inline
+In-Reply-To: <2b5e8cb5-fac2-5da2-f87b-d287d2c5ea81@oracle.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For Root partition the VP assist pages are pre-determined by the
-hypervisor. The Root kernel is not allowed to change them to
-different locations. And thus, we are getting below stack as in
-current implementation Root is trying to perform write to specific
-MSR.
 
-[ 2.778197] unchecked MSR access error: WRMSR to 0x40000073 (tried to
-write 0x0000000145ac5001) at rIP: 0xffffffff810c1084
-(native_write_msr+0x4/0x30)
-[ 2.784867] Call Trace:
-[ 2.791507] hv_cpu_init+0xf1/0x1c0
-[ 2.798144] ? hyperv_report_panic+0xd0/0xd0
-[ 2.804806] cpuhp_invoke_callback+0x11a/0x440
-[ 2.811465] ? hv_resume+0x90/0x90
-[ 2.818137] cpuhp_issue_call+0x126/0x130
-[ 2.824782] __cpuhp_setup_state_cpuslocked+0x102/0x2b0
-[ 2.831427] ? hyperv_report_panic+0xd0/0xd0
-[ 2.838075] ? hyperv_report_panic+0xd0/0xd0
-[ 2.844723] ? hv_resume+0x90/0x90
-[ 2.851375] __cpuhp_setup_state+0x3d/0x90
-[ 2.858030] hyperv_init+0x14e/0x410
-[ 2.864689] ? enable_IR_x2apic+0x190/0x1a0
-[ 2.871349] apic_intr_mode_init+0x8b/0x100
-[ 2.878017] x86_late_time_init+0x20/0x30
-[ 2.884675] start_kernel+0x459/0x4fb
-[ 2.891329] secondary_startup_64_no_verify+0xb0/0xbb
+--rawlqk3jhoxts24y
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Since, the hypervisor already provides the VP assist page for root
-partition, we need to memremap the memory from hypervisor for root
-kernel to use. The mapping is done in hv_cpu_init during bringup and
-is unmaped in hv_cpu_die during teardown.
+Hello Boris,
 
-Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
----
- arch/x86/hyperv/hv_init.c          | 64 ++++++++++++++++++++----------
- arch/x86/include/asm/hyperv-tlfs.h |  9 +++++
- 2 files changed, 53 insertions(+), 20 deletions(-)
+On Fri, Jul 30, 2021 at 04:37:31PM -0400, Boris Ostrovsky wrote:
+> On 7/29/21 4:37 PM, Uwe Kleine-K=F6nig wrote:
+> > --- a/drivers/pci/xen-pcifront.c
+> > +++ b/drivers/pci/xen-pcifront.c
+> > @@ -599,12 +599,12 @@ static pci_ers_result_t pcifront_common_process(i=
+nt cmd,
+> >  	result =3D PCI_ERS_RESULT_NONE;
+> > =20
+> >  	pcidev =3D pci_get_domain_bus_and_slot(domain, bus, devfn);
+> > -	if (!pcidev || !pcidev->driver) {
+> > +	pdrv =3D pci_driver_of_dev(pcidev);
+> > +	if (!pcidev || !pdrv) {
+>=20
+> If pcidev is NULL we are dead by the time we reach 'if' statement.
 
-changelog:
-v1: initial patch
-v2: commit message changes, removal of HV_MSR_APIC_ACCESS_AVAILABLE
-    check and addition of null check before reading the VP assist MSR
-    for root partition
-v3: added new data structure to handle VP ASSIST MSR page and done
-    handling in hv_cpu_init and hv_cpu_die
-v4: better code alignment, VP ASSIST handling correction for root
-    partition in hv_cpu_die and renaming of hv_vp_assist_msr_contents
-    attribute
-v5: disable VP ASSIST page for root partition during hv_cpu_die
----
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 6f247e7e07eb..a46bd92c532a 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -44,6 +44,7 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
- 
- static int hv_cpu_init(unsigned int cpu)
- {
-+	union hv_vp_assist_msr_contents msr = {0};
- 	struct hv_vp_assist_page **hvp = &hv_vp_assist_page[smp_processor_id()];
- 	int ret;
- 
-@@ -54,25 +55,34 @@ static int hv_cpu_init(unsigned int cpu)
- 	if (!hv_vp_assist_page)
- 		return 0;
- 
--	/*
--	 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's Section
--	 * 5.2.1 "GPA Overlay Pages"). Here it must be zeroed out to make sure
--	 * we always write the EOI MSR in hv_apic_eoi_write() *after* the
--	 * EOI optimization is disabled in hv_cpu_die(), otherwise a CPU may
--	 * not be stopped in the case of CPU offlining and the VM will hang.
--	 */
- 	if (!*hvp) {
--		*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
--	}
--
--	if (*hvp) {
--		u64 val;
--
--		val = vmalloc_to_pfn(*hvp);
--		val = (val << HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT) |
--			HV_X64_MSR_VP_ASSIST_PAGE_ENABLE;
--
--		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, val);
-+		if (hv_root_partition) {
-+			/*
-+			 * For Root partition we get the hypervisor provided VP ASSIST
-+			 * PAGE, instead of allocating a new page.
-+			 */
-+			rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-+			*hvp = memremap(msr.pfn <<
-+					HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT,
-+					PAGE_SIZE, MEMREMAP_WB);
-+		} else {
-+			/*
-+			 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's
-+			 * Section 5.2.1 "GPA Overlay Pages"). Here it must be zeroed
-+			 * out to make sure we always write the EOI MSR in
-+			 * hv_apic_eoi_write() *after* theEOI optimization is disabled
-+			 * in hv_cpu_die(), otherwise a CPU may not be stopped in the
-+			 * case of CPU offlining and the VM will hang.
-+			 */
-+			*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
-+			if (*hvp)
-+				msr.pfn = vmalloc_to_pfn(*hvp);
-+		}
-+		WARN_ON(!(*hvp));
-+		if (*hvp) {
-+			msr.enable = 1;
-+			wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-+		}
- 	}
- 
- 	return 0;
-@@ -170,8 +180,22 @@ static int hv_cpu_die(unsigned int cpu)
- 
- 	hv_common_cpu_die(cpu);
- 
--	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
--		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
-+	if (hv_vp_assist_page && hv_vp_assist_page[cpu]) {
-+		union hv_vp_assist_msr_contents msr = {0};
-+		if (hv_root_partition) {
-+			/*
-+			 * For Root partition the VP ASSIST page is mapped to
-+			 * hypervisor provided page, and thus, we unmap the
-+			 * page here and nullify it, so that in future we have
-+			 * correct page address mapped in hv_cpu_init.
-+			 */
-+			memunmap(hv_vp_assist_page[cpu]);
-+			hv_vp_assist_page[cpu] = NULL;
-+			rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-+			msr.enable = 0;
-+		}
-+		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-+	}
- 
- 	if (hv_reenlightenment_cb == NULL)
- 		return 0;
-diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-index f1366ce609e3..2322d6bd5883 100644
---- a/arch/x86/include/asm/hyperv-tlfs.h
-+++ b/arch/x86/include/asm/hyperv-tlfs.h
-@@ -288,6 +288,15 @@ union hv_x64_msr_hypercall_contents {
- 	} __packed;
- };
- 
-+union hv_vp_assist_msr_contents {
-+	u64 as_uint64;
-+	struct {
-+		u64 enable:1;
-+		u64 reserved:11;
-+		u64 pfn:52;
-+	} __packed;
-+};
-+
- struct hv_reenlightenment_control {
- 	__u64 vector:8;
- 	__u64 reserved1:8;
--- 
-2.25.1
+Oh, you're right. So this needs something like:
 
+	if (!pcidev || !(pdrv =3D pci_driver_of_dev(pcidev)))
+
+or repeating the call to pci_driver_of_dev for each previous usage of
+pdev->driver.
+
+If there are no other preferences I'd got with the first approach for
+v2.
+
+Best regards and thanks for catching,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--rawlqk3jhoxts24y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEFPUEACgkQwfwUeK3K
+7AlQoAgAidQUuX/L2YhXMvP0F+SSjym4ILhKdbRYnWojo/QbFUE8WbOQueAZA76q
+NW0vq2X07i0bUwTfbZoOgqSFvMfXJiETcN9R48epPUGWS2IT17NE8EgtH+/srht0
+sGGI7bia2a1L++nruccUllCf1qMfngKRQUhatVOPYqIs2dX3ijjjpSAxHh8L+gjC
+nOMgWu7lZm7QQawBjQGfirpYGBUFdAh3odwm/JHN7+cZKC6dbhLYGm2WS8db1bCI
+4k4EO2RpSeuZb9XaFPq9DEWy1exgtgjnmKt3Szrp31/xWizjhMEOrZVWfWD1bjUa
+rWcmnDR4bm4Fz/MdVFhjJq2XJQoIDw==
+=2o5y
+-----END PGP SIGNATURE-----
+
+--rawlqk3jhoxts24y--
