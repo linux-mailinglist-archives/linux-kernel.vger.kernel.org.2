@@ -2,153 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805E93DC42F
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2997C3DC425
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232414AbhGaGwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 02:52:10 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55454 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232079AbhGaGwJ (ORCPT
+        id S232262AbhGaGub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 02:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhGaGua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 02:52:09 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16V6XQmG085951;
-        Sat, 31 Jul 2021 02:50:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=AykrfsFgkMAYLNg2w36lRGIX3leux4UCoOOR3djqTLk=;
- b=hfejmFW+fXsOsLjD+mu8ZUTBnuS4CofZfnheKQKaT8a2RLuIIciO8wwpdydUxCYZzqls
- YavwCO3kmcbYvdwtIYcHCK4z/HQ+JEMl27G6d0fQtKPQ19/I8LfIPC4tqRtknJAZijrA
- EtZov9BGRDi1hH8vhvca0WInmSLH840nS0EuvlDPSn9pAPdeJr8o6eJRK+cdfU6JVfQ8
- QjAPDcmiTyhI5FB9XJ+2Pv5G2sbhuG3VOtmyVEbQbO8iaDci110hYw94PoZGVctBsyvJ
- haC/x/MvVLXh5ldbSUHSC+JOMCOyj6GkIFI14qhLTYhpjpd6+iIm+gfUhzF9t0pbvGT1 ag== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a4w54n690-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 31 Jul 2021 02:50:11 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16V6kaAg127005;
-        Sat, 31 Jul 2021 02:50:10 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a4w54n687-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 31 Jul 2021 02:50:10 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16V6h3V6005513;
-        Sat, 31 Jul 2021 06:50:07 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3a4x58r77c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 31 Jul 2021 06:50:07 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16V6o4AF27656602
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 31 Jul 2021 06:50:04 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D728211C04A;
-        Sat, 31 Jul 2021 06:50:03 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5F35A11C050;
-        Sat, 31 Jul 2021 06:50:01 +0000 (GMT)
-Received: from osiris (unknown [9.145.16.160])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat, 31 Jul 2021 06:50:01 +0000 (GMT)
-Date:   Sat, 31 Jul 2021 08:50:00 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>, x86@kernel.org,
-        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-riscv@lists.infradead.org, YiFei Zhu <yifeifz2@illinois.edu>,
-        Greentime Hu <green.hu@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michal Simek <monstr@monstr.eu>, Helge Deller <deller@gmx.de>,
-        linux-sh@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Guo Ren <guoren@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Richard Weinberger <richard@nod.at>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jeff Dike <jdike@addtoit.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-hexagon@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        linux-s390@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        linux-um@lists.infradead.org,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>, linux-csky@vger.kernel.org,
-        Stafford Horne <shorne@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Chris Zankel <chris@zankel.net>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-snps-arc@lists.infradead.org,
-        Jonas Bonn <jonas@southpole.se>, linux-parisc@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, Vincent Chen <deanbo422@gmail.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
+        Sat, 31 Jul 2021 02:50:30 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8436C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:50:23 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so17536697pji.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 23:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Scp0XsH/8g/xK4xKxJDwfK0sTyUpWpPn5qW5XBp4RlQ=;
+        b=t5KuRMuqXwprgBmPyYSxKUd9krVCGGA1/xFNfgaXMbWzxfPTXEG3OEi+Pa0OSrxk51
+         HD841NZ6TGnggbZXbFfK5Y96Vg6U+w2CtczwKpMsaRA83Qylg6Vmi98cFMDopiEq9Qjv
+         HMnOZNaLE4Oe6e2uXI+ElUBf9dSqD55l6oE470aYX0v0oyAxBcp/Q/Ty/sCsy6RQnekk
+         6HWpWqrmzvVtxiG4c5ckM0DvM06cAd6/R6JXBGbSrwnp3MVCosssqU/vcmJc/ltpCh9K
+         tcQK8ZganY6dzHe0CwjEduNH4rxJLjM9STZUSvURpuIDdqz62OobXT3en/qIocQjLoUN
+         vFvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Scp0XsH/8g/xK4xKxJDwfK0sTyUpWpPn5qW5XBp4RlQ=;
+        b=Wm85eATQ5jUW+d52EOHlEEcH7+H5qXRSK78aNKNBgzKBQc5sl+CqaL33idSZbHGcQX
+         yrtBZa1CP0Z3EG1ArNt656eXiRU/tCHfJlrUMosN74qll2wBa56aUIDXnjofdYbTK3ml
+         s9CJVXIluTfqICda0Ux/Zyan0OIjgYgQI0zAKPmfI/32NYdxVsYIlyUdL2HRCprKt+VS
+         /fQWD9iTIjOo57Sgg0Gjm4149gYY1vTrEjbQ579mVrFe+dsQbWaxuV+iuCfWyOQsc5nv
+         HimkNIcexJqN0/y3xI+FBPzPyvaljalFuGDrDRhweWkWlijdM8Gryis37cKpBwfTFafM
+         kOKA==
+X-Gm-Message-State: AOAM531YYqkWi5ayWicOLUHC76eV8/8t/T60w2JrFff9CuQW/8UF9kuv
+        1xwuCU/CTUnPdLG1kX5oWRtFcQ==
+X-Google-Smtp-Source: ABdhPJyPuhbQY1xaqyLCuAYgPVh0gLGVPKGQCpoB6z7QVm3rnjclpY3xMn1x90IcjsEf9JHsoC15nQ==
+X-Received: by 2002:a17:902:76cb:b029:12b:2fb8:7c35 with SMTP id j11-20020a17090276cbb029012b2fb87c35mr5751825plt.16.1627714223124;
+        Fri, 30 Jul 2021 23:50:23 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([204.124.181.43])
+        by smtp.gmail.com with ESMTPSA id g3sm4423116pfi.197.2021.07.30.23.50.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 23:50:22 -0700 (PDT)
+Date:   Sat, 31 Jul 2021 14:50:12 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     acme@kernel.org, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, al.grant@arm.com,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        mike.leach@linaro.org, John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org
-Subject: Re: [PATCH 2/3] trace: refactor TRACE_IRQFLAGS_SUPPORT in Kconfig
-Message-ID: <YQTymISw2nXxDSGu@osiris>
-References: <20210731052233.4703-1-masahiroy@kernel.org>
- <20210731052233.4703-2-masahiroy@kernel.org>
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 4/6] perf cs-etm: Update OpenCSD decoder for ETE
+Message-ID: <20210731065012.GD7437@leoy-ThinkPad-X240s>
+References: <20210721090706.21523-1-james.clark@arm.com>
+ <20210721090706.21523-5-james.clark@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210731052233.4703-2-masahiroy@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: b8JyszSZHwxzYkonaS857HhsIawmofS_
-X-Proofpoint-GUID: vxXdXbz5r_bOe1aK5v2-uA7MeMo7WGZw
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-30_11:2021-07-30,2021-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- adultscore=0 mlxlogscore=567 suspectscore=0 impostorscore=0
- lowpriorityscore=0 priorityscore=1501 spamscore=0 malwarescore=0
- clxscore=1011 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107310029
+In-Reply-To: <20210721090706.21523-5-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 02:22:32PM +0900, Masahiro Yamada wrote:
-> Make architectures select TRACE_IRQFLAGS_SUPPORT instead of
-> having many defines.
+On Wed, Jul 21, 2021 at 10:07:03AM +0100, James Clark wrote:
+> OpenCSD v1.1.1 has a bug fix for the installation of the ETE decoder
+> headers. This also means that including headers separately for each
+> decoder is unnecessary so remove these.
 > 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-...
->  arch/s390/Kconfig             | 1 +
->  arch/s390/Kconfig.debug       | 3 ---
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-For s390:
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+IIUC, only the later patches in this patch set are dependent on OpenCSD
+v1.1.1.  After I checked OpenCSD latest header, this change LGTM:
+
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
+
+> ---
+>  tools/build/feature/test-libopencsd.c           | 4 ++--
+>  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 2 --
+>  2 files changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/build/feature/test-libopencsd.c b/tools/build/feature/test-libopencsd.c
+> index 52c790b0317b..eb6303ff446e 100644
+> --- a/tools/build/feature/test-libopencsd.c
+> +++ b/tools/build/feature/test-libopencsd.c
+> @@ -4,9 +4,9 @@
+>  /*
+>   * Check OpenCSD library version is sufficient to provide required features
+>   */
+> -#define OCSD_MIN_VER ((1 << 16) | (0 << 8) | (0))
+> +#define OCSD_MIN_VER ((1 << 16) | (1 << 8) | (1))
+>  #if !defined(OCSD_VER_NUM) || (OCSD_VER_NUM < OCSD_MIN_VER)
+> -#error "OpenCSD >= 1.0.0 is required"
+> +#error "OpenCSD >= 1.1.1 is required"
+>  #endif
+>  
+>  int main(void)
+> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> index 5972a8afcc6b..60147c908425 100644
+> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> @@ -13,8 +13,6 @@
+>  #include <linux/zalloc.h>
+>  #include <stdlib.h>
+>  #include <opencsd/c_api/opencsd_c_api.h>
+> -#include <opencsd/etmv4/trc_pkt_types_etmv4.h>
+> -#include <opencsd/ocsd_if_types.h>
+>  
+>  #include "cs-etm.h"
+>  #include "cs-etm-decoder.h"
+> -- 
+> 2.28.0
+> 
