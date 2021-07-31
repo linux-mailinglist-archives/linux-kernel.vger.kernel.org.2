@@ -2,92 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A2C3DC36B
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 06:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C59C3DC36C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 06:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbhGaEwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 00:52:13 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:43356 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhGaEwL (ORCPT
+        id S235763AbhGaEzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 00:55:49 -0400
+Received: from mta-10-4.privateemail.com ([198.54.122.62]:10185 "EHLO
+        MTA-10-4.privateemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229647AbhGaEzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 00:52:11 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16V4pmVX105473;
-        Fri, 30 Jul 2021 23:51:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1627707108;
-        bh=SHuG0KuuJUw46qCngxJHmhdC+ykdC/6gJbXxAPyMbrk=;
-        h=From:To:CC:Subject:Date;
-        b=O10z1D4P6vlLCF7NNYZNPII0d6rt047R1gr96hWcCOOBbk9ooOPv8b/f6IopT/hdb
-         4lNpIVoanblcxCkX0lyWc0YVdeGa+2QRzsnjq3+rmzYCCeX/CZi1Y/ZC2x4ubAgRt1
-         OOW6Z3JRuURhdKw7Hnuik1XEYfFoWubAeUIEeE9Y=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16V4pmOp102113
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Jul 2021 23:51:48 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 30
- Jul 2021 23:51:47 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 30 Jul 2021 23:51:48 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16V4pf4J009078;
-        Fri, 30 Jul 2021 23:51:42 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] dt-bindings: net: can: Document power-domains property
-Date:   Sat, 31 Jul 2021 10:21:38 +0530
-Message-ID: <20210731045138.29912-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 31 Jul 2021 00:55:48 -0400
+X-Greylist: delayed 84635 seconds by postgrey-1.27 at vger.kernel.org; Sat, 31 Jul 2021 00:55:48 EDT
+Received: from mta-10.privateemail.com (localhost [127.0.0.1])
+        by mta-10.privateemail.com (Postfix) with ESMTP id C24E218000A5;
+        Sat, 31 Jul 2021 00:55:41 -0400 (EDT)
+Received: from [192.168.0.46] (unknown [10.20.151.205])
+        by mta-10.privateemail.com (Postfix) with ESMTPA id 06E7618000A4;
+        Sat, 31 Jul 2021 00:55:38 -0400 (EDT)
+Date:   Sat, 31 Jul 2021 00:55:32 -0400
+From:   Hamza Mahfooz <someguy@effective-light.com>
+Subject: Re: [PATCH] KVM: const-ify all relevant uses of struct
+ kvm_memory_slot
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Message-Id: <K0F3XQ.PUWYFZOU1LO23@effective-light.com>
+In-Reply-To: <YQReyaxp/rwypHbR@t490s>
+References: <20210713023338.57108-1-someguy@effective-light.com>
+        <YQReyaxp/rwypHbR@t490s>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii; format=flowed
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document power-domains property for adding the Power domain provider.
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-index a7b5807c5543..d633fe1da870 100644
---- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-+++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-@@ -104,6 +104,13 @@ properties:
-           maximum: 32
-     maxItems: 1
- 
-+  power-domains:
-+    description:
-+      Power domain provider node and an args specifier containing
-+      the can device id value. Please see,
-+      Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
-+    maxItems: 1
-+
-   can-transceiver:
-     $ref: can-transceiver.yaml#
- 
--- 
-2.17.1
+On Fri, Jul 30 2021 at 04:19:21 PM -0400, Peter Xu <peterx@redhat.com> 
+wrote:
+> separate patch.  At the meantime I also don't understand why memcpy() 
+> here,
+> which seems to be even slower..
+
+Alright, I've now had a chance to compare the object code generated 
+before
+my patch is applied, with what is generated after it is applied and the
+same object code is generated for arch/x86/kvm/mmu/mmu.c in both cases 
+(at
+least when compiling with clang, however I suspect other optimizing
+compilers would behave similarly).
+
 
