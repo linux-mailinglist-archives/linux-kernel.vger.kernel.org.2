@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F396E3DC226
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE603DC22C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 03:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235149AbhGaA4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 20:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhGaA4u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 20:56:50 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD54C06175F;
-        Fri, 30 Jul 2021 17:56:44 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id z3-20020a4a98430000b029025f4693434bso2920237ooi.3;
-        Fri, 30 Jul 2021 17:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4I3sfRH5c1qD7pcvAmdOAVZq247JJaOlPdDXsBkGJVo=;
-        b=ePI09i2bpo2YPJWdPQb/QyYlqRI+5DeVdB9MuwfnpYuxP+/QNVeIB6FaakuodQZTkc
-         CBbIu6gfXy6JnZ3A8aZBA3RL9qkltsvuc5dKP8EH6l8GrDR84+5wECbzjBFdSuiZKKUH
-         ELA4CwtHt3LJ1LR3PSp8hMN05vDQZJuM87NTKzoEijtq9D5VKCUYe/XQat4quuq8ad8I
-         dLZOgxTCb6VaFIYSSmCC5iDsZQxxwoDzvFnsVDAoVCK7Sc5J6701BDRw7AFiovdF3IJb
-         b75pYp4o2WBzvCJugtInU8UZ++fRjKV0j3NazSiatL4nXZck6KBSF0TEISQsKsSXEZsx
-         pYew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4I3sfRH5c1qD7pcvAmdOAVZq247JJaOlPdDXsBkGJVo=;
-        b=TAouX7ng3SldTzz+EkgXHZsWljKWGDhyC4ntzyOq83UWARyt1pH+H8iC9C9BM8TRMY
-         cXB8A3qIDnZnkRJm7aBAlaTF7CxhKoIMRerl/xNUvRy0AUZRWAv1uaKK3tEXYhE8Q11+
-         ZkbuGp0csAYLBfeM10naCQtDIbZ7Im3mpEQfDAvPP8MvoU5/TNA+RfJKHd09Kn/BwRaa
-         D3EqCP70Lf2RbgDgvWcFUjnlxeIJYlIcYbisqP0r4NolmGwZcPDHWa8287PWOb36qx0B
-         nSKmaU02hIpV3d7+18sk51qD/ZrSi4nbxn1j06x8SNz4WHaXZ36EfCi3cO3LnSUcKimG
-         zunQ==
-X-Gm-Message-State: AOAM532j2v4Qvd1MhmRVrPO7DkdYfzXKk+zf2kgrFCwdeqwTWZgkc4pD
-        funSjAMTdXQRSxMY31sAtb6tDGbpsIf24A==
-X-Google-Smtp-Source: ABdhPJxm5TUERunhOkcXMvDJv8MwzDzJ6uuPZ3avpd0l2fWXxFE17D9tHU35lS0+orEuCdoA1CvkCQ==
-X-Received: by 2002:a4a:bf11:: with SMTP id r17mr3645698oop.29.1627693003731;
-        Fri, 30 Jul 2021 17:56:43 -0700 (PDT)
-Received: from localhost.localdomain (ip98-171-33-13.ph.ph.cox.net. [98.171.33.13])
-        by smtp.gmail.com with ESMTPSA id c26sm592804otu.38.2021.07.30.17.56.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 30 Jul 2021 17:56:43 -0700 (PDT)
-From:   Matthew Cover <werekraken@gmail.com>
-X-Google-Original-From: Matthew Cover <matthew.cover@stackpath.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthew Cover <matthew.cover@stackpath.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] samples/bpf: xdp_redirect_cpu: Add mprog-disable to optstring.
-Date:   Fri, 30 Jul 2021 17:56:32 -0700
-Message-Id: <20210731005632.13228-1-matthew.cover@stackpath.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        id S234742AbhGaBEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 21:04:01 -0400
+Received: from mout.gmx.net ([212.227.17.22]:48125 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231337AbhGaBEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 21:04:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627693386;
+        bh=NvOfU3vudpzB1gN5IEwQ5eLbIIUMOlAEGpRRt0GcmFc=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=dchH6Y5DFoQETsLyZZrR+3Xikxk65wH5ZhLy2KReA28gV5HAXWTkHjtXRITI7lcxg
+         XrR6uqAPaaJ2FiId87sScpobl74gn6DGlkW3VRYLyXnzCZf2hNO7SYMuCYB5OIjXA7
+         rDuPiBwWGoluy26Z+Dqd4iXWcpPh2AqD4oPzejl4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.109]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mkpap-1mtOp330aF-00mKKf; Sat, 31
+ Jul 2021 03:03:06 +0200
+Message-ID: <a2cd339c0e440cb5beed788d66a19a636b2e39a1.camel@gmx.de>
+Subject: Re: v5.14-rc3-rt1 losing wakeups?
+From:   Mike Galbraith <efault@gmx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Date:   Sat, 31 Jul 2021 03:03:05 +0200
+In-Reply-To: <87pmuzsf1p.ffs@tglx>
+References: <20210730110753.jvli6alm63h5lefy@linutronix.de>
+         <2ae27233ab091d09a7d1e971a47144b40dd51fa0.camel@gmx.de>
+         <87pmuzsf1p.ffs@tglx>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:bCXKUODlOQ6QM5iOrYOPoKcIvbkBA8A5IGmVMGbcy3cq4/hVBAI
+ RV6h3F6QP0iFymw2b9VqB54kUKNPo4FNgqMJHXi8bVN4dUAEnLAokYqWqKjXrN2Yeg6hFbS
+ KVJPkpGrlR3LmhWHb8NJPnzi/6vGExtYHntNCq9stT/PeCqVdbbShqqXuXGhHnqjxKlfc93
+ 2KnRuBU9XlaXjctQlwNVg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xGJ0rSlsorU=:fV7AumzYQ9S3xUV8SA+gnG
+ EibBGX0yKXcMfdQpXAdPLI5/d2SzX7nfc2bWmAw2igUgWcet9zDpM2vCd+jDXemdwm4ZxA7Gb
+ IVNr7ZpA5ozYv1oDB0gk0Fg1DiIfw8eZXv4O5m5ZgoHaWnoWgeFS8sYdm5xFZoj5iYWeRPzDO
+ dMYU+u/76nSK8L7odc21vydUPGlhw9aTyrOYb/KS/ojgFelZ2R0801UaWsfUZCVc6+bzAKxsz
+ a5/F5JS11bnDQKZ21vhBFWM7bwX+dsVn4geSk8Ar3P1tXVfsTKb935OfCQIcEuItE972Gia9h
+ bhI0etmAjZ9mCtgCBORNvB5qVZkekzt+nEPeCMGuQLpdRj+zI6azvPsoEyLnFYWx35PJNF1Yd
+ 1EmZ3BlTMTIcQbmQ7cZpXmsyVUN70W8gRc+IyRfWUoIuruvkgX5+cjpf+pR8UlstqEODrAWkc
+ HxEQ13SmqfnKJ+FjR2XWH5QUDL5CoCtDgcT8iKeqJNmUUDd/JnWwcPsIbe+Z30wC6IpGqj29z
+ tlPmDfV2YIRqXluzXqB+ds4QPrCkmAUfPpyaRQXUX23zr18IDJ39x/bSu07m4M5g0A1G9gRuM
+ lORPkH2/q3Dz9Ml8RIB1eOEPVydgBq/2CYqFmnqGg69B+x32e+9wlWc1T6vjY7+V9TEl7J7ug
+ /NWgW2j54Q6HVFbtAQLJRfJUXIbRK26qz8WExSXiRruL61Hir+kQL5JWgLPEFe7SZZoPLf7af
+ Fw9as4GFx+Vwr8Tc2lCjcLp+3dFJlN0BiSciC6LINlBp3oEapucbgD0a2AR4dS6HbIdFmqgJA
+ jJxtPnSxE5hvZCdqi2LlAu7IVilLb1TVVe+SBkr1efvJg4FYFlH2PTN1tSM45CUs04F/7/GrO
+ yH2pxksRBwD6NXUsEvVn92QZ7yxDJsvgTsGUyTwDLM5BdFdzClSZkuv582D17QqIXdu2zcwFI
+ 5VyIqXI76Qmm61a2poVX/CuuPkOzdQWro+6PQOMZPNYhE9XLtoHKcnOHL96ECdiqaRCAIdQxO
+ etrKuWb32oCozrZ+LwlvnTNYieQ6p+AAO0htCFGy6oEDS3okbF0eNy5b0zMYnqN/uSfn2eEyF
+ 6Nz9D1ehc4FtRE9p5ehSA47UjnSw6YH4K2u
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program
-on cpumap") added the following option, but missed adding it to optstring:
-- mprog-disable: disable loading XDP program on cpumap entries
+On Fri, 2021-07-30 at 22:49 +0200, Thomas Gleixner wrote:
+> >
+> > First symptom is KDE/Plasma's task manager going comatose.=C2=A0 Notic=
+e soon
+>
+> KDE/Plasma points at the new fangled rtmutex based ww_mutex from
+> Peter.
 
-Add the missing option character.
+Yeah, that seems to be most of the delta from 50->62 [now 63] commit
+delta, and the 50 turning out to be what I was already running.  I'm
+staring, but as yet, nothing has poked me in the eye.
 
-Fixes: ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program on cpumap")
-Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
----
- samples/bpf/xdp_redirect_cpu_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  I tried to test the heck out of it...
 
-diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
-index d3ecdc1..9e225c9 100644
---- a/samples/bpf/xdp_redirect_cpu_user.c
-+++ b/samples/bpf/xdp_redirect_cpu_user.c
-@@ -841,7 +841,7 @@ int main(int argc, char **argv)
- 	memset(cpu, 0, n_cpus * sizeof(int));
- 
- 	/* Parse commands line args */
--	while ((opt = getopt_long(argc, argv, "hSd:s:p:q:c:xzFf:e:r:m:",
-+	while ((opt = getopt_long(argc, argv, "hSd:s:p:q:c:xzFf:e:r:m:n",
- 				  long_options, &longindex)) != -1) {
- 		switch (opt) {
- 		case 'd':
--- 
-1.8.3.1
+And futextests, rt-tests etc work fine, just stay away from GUI.
+
+> Which graphics driver is in use on that machine?
+
+The all too often problem child nouveau, but I don't _think_ it's
+playing a roll in this, as nomodeset hangs as well.  I'll stuff it into
+lappy (i915) to double check that.
+
+	-Mike
 
