@@ -2,78 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8DC3DC62B
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 15:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641023DC631
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 16:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233046AbhGaN5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 09:57:24 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:52470 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232770AbhGaN5W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 09:57:22 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UhXKjCz_1627739833;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UhXKjCz_1627739833)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 31 Jul 2021 21:57:14 +0800
-Subject: Re: [PATCH] ocfs2: quota_local: fix possible uninitialized-variable
- access in ocfs2_local_read_info()
-To:     Tuo Li <islituo@gmail.com>, mark@fasheh.com, jlbec@evilplan.org
-Cc:     ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, TOTE Robot <oslab@tsinghua.edu.cn>
-References: <20210731075659.73505-1-islituo@gmail.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <607936a1-a21d-7d2f-7a89-2abeb4c5b1d4@linux.alibaba.com>
-Date:   Sat, 31 Jul 2021 21:57:13 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S233143AbhGaOAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 10:00:25 -0400
+Received: from mout.gmx.net ([212.227.15.18]:49629 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232770AbhGaOAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 10:00:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627740000;
+        bh=QdHwj+IsnJi5IzMwqUW3TfO7oP0yxI2OFU1E0J2+TGU=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=BJqMD7+9OX8NQ377fjRaZhE30oQgrpitGIE39GvNzFykzIbgNbZ+d/q7v2aYqLmiE
+         Sv3+GGtXEKMWMzeON/xMzV1bLSEUEpQGWXTdUIy4E5eP7baJ3PbrqvPOzUm39eN2Vb
+         xCCfmDwIZSlX73xw4BdlYquAiz8iAytx1ICTGeZU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MnaoZ-1mqcSb1xW1-00jXgJ; Sat, 31
+ Jul 2021 16:00:00 +0200
+Date:   Sat, 31 Jul 2021 15:59:57 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        linux-hardening@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] drivers/soc: Remove all strcpy() uses in favor of
+ strscpy()
+Message-ID: <20210731135957.GB1979@titan>
+References: <20210725151434.7122-1-len.baker@gmx.com>
+ <CAMuHMdUdmv+YmdtjGJV2Lp_Rvar4kN4uSgSTYqXX9CtCJ+qoRw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210731075659.73505-1-islituo@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUdmv+YmdtjGJV2Lp_Rvar4kN4uSgSTYqXX9CtCJ+qoRw@mail.gmail.com>
+X-Provags-ID: V03:K1:qUm0FH1ghq6WNJ/Rmut5+r4u5WV6r8/bAeCUshozt5VKgCN225P
+ OrVDNggsXY8F74K9umWT8oOQrNm0KSB2wA12pRezKPZnQnkuzv0Pa8ag8DMzxfPkUuCrsHF
+ Cw2zbRkmLkAvWdT9xxVsNpcMqvixb9+W3fiiykkbJvnFd+9h2rSHPeidV1grwyrPVU0dzml
+ m71/ks9fqkCC4/ih+1/tQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:I5zIChcrHao=:PP4ua8BnhiZfYhDBqkXX+e
+ pfVAy5oA9TszZrsLtBsAuiLyWziOyegSVk7fXycC/G/PNCXkkahPJmZZ9jL3J6t2xbFG6mpXk
+ V4n4bt2lEifysR0pQ0NDyf301ZskZeF2EMj0EhRh9ivMR70oPAXr9ZWjkjHYLdlZZ6dogoC2h
+ I1I8T4ZMaH6r9FcTJWNTwouRKWzVTr5PlDkSFlRTFDxSWrKgz8cRu2MSetZBxzbth04RRvUfr
+ 5J0h2Zymz9RSDo0bwrfqwYfuTGWqRRUDLzYvuwVi5UwC7AqE3DSx0d+HsNKwNCV6JxdI0jTtc
+ kw3gMvG2uCjIeNQfJxT43LWhJqtcP4CW74mfZNNEmKcz86YOV+Q4Awry+jbJ8nsaIaPqZg0le
+ Vp91poTztx+SclUEo4Y2yuiVVTxaUX+p9YoU19nzDZgbObwbxa8IUMWL0gslizXle1XfadKf6
+ 5CA68ILlgTbOrW6CHPOEXFwiBh8h73N6Zn5mw3CImyfanxnMyiF+ps4FMjHL1LGA0tO3nz9yx
+ jj1ObyopWBSSMmtk/ClwAbC3jxqRu6Tv0An+1VrnOAp82MlB93Pj63EISyVUN18d2CTw3ZgxO
+ Ohi3FTJ70/NdNGTd53U7/xQlhe+jbiYG0brDkw1oxPA2Z0M/4F41lxyZ1HudAcvJ3+J+qbZ96
+ Ur3VX6j2c5LXtN9eOp2x+7DmSX//9q84boaeN+zFaHzwP93tA6LXm2JOFK8C56vzyiZQ3kcNG
+ +OkOtic2hLYVFUmGJjlJRZb6Kkpq/YU6j1GyapKkoVVtzBf0UlwyApqVGICGqGgciYTpTZmAF
+ KHeFmnwhN+OTkLtNXdsgfLpcBNG4fMMprBAGGKAWMajMHWmSrvYGY34nJK9S2tw5mqa8l4/Fk
+ jnFAma31GosDQfVq6kVrv/JgZo5aLSaBpRGXE6GuHibVGWilvphm2m1eFodAVPMpVZmzIQnOt
+ Rd0T28sbzvy7MKwYrReIPYCwyNGvtDCH8dcGMyHNF1y/qCvr/y2Y56NHOtGPTYe8okkpxgwSs
+ bgHGeQdyXWujp94IdM3w5/IA4vQg3jTwFuN7vcNedePvsuRKTzPiHIlErLMI0hiRDMaBQed64
+ uOYSgM/0OQq5Nf2utI/l0gBW4GiTFrHZTS0
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the efforts.
-For the issue you mentioned, I'd like just initialized
-oinfo->dqi_gqinode as NULL before calling ocfs2_global_read_info().
-But it seems still have other issues here such as dqi_gqlock.
-We need take care all those initialized in ocfs2_global_read_info()
-carefully.
+Hi,
 
-Thanks,
-Joseph
+On Mon, Jul 26, 2021 at 10:03:18AM +0200, Geert Uytterhoeven wrote:
+> Hi Len,
+>
+> On Sun, Jul 25, 2021 at 5:15 PM Len Baker <len.baker@gmx.com> wrote:
+> > strcpy() performs no bounds checking on the destination buffer. This
+> > could result in linear overflows beyond the end of the buffer, leading
+> > to all kinds of misbehaviors. The safe replacement is strscpy().
+> >
+> > Signed-off-by: Len Baker <len.baker@gmx.com>
+>
+> Thanks for your patch!
+>
+> > ---
+> > This is a task of the KSPP [1]
+> >
+> > [1] https://github.com/KSPP/linux/issues/88
+>
+> Any chance the almost one year old question in that ticket can be
+> answered?
 
-On 7/31/21 3:56 PM, Tuo Li wrote:
-> A memory block is allocated through kmalloc(), and its return value is
-> assigned to the pointer oinfo. If the return value of
-> ocfs2_global_read_info() at line 709 is less than zero,
-> oinfo->dqi_gqinode may be not initialized. However, it is accessed at
-> line 775:
->   iput(oinfo->dqi_gqinode);
-> 
-> To fix this possible uninitialized-variable access, replace kmalloc()
-> with kzalloc() when allocating memory for oinfo.
-> 
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Tuo Li <islituo@gmail.com>
-> ---
->  fs/ocfs2/quota_local.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ocfs2/quota_local.c b/fs/ocfs2/quota_local.c
-> index b1a8b046f4c2..4c1219e08b49 100644
-> --- a/fs/ocfs2/quota_local.c
-> +++ b/fs/ocfs2/quota_local.c
-> @@ -693,7 +693,7 @@ static int ocfs2_local_read_info(struct super_block *sb, int type)
->  
->  	info->dqi_max_spc_limit = 0x7fffffffffffffffLL;
->  	info->dqi_max_ino_limit = 0x7fffffffffffffffLL;
-> -	oinfo = kmalloc(sizeof(struct ocfs2_mem_dqinfo), GFP_NOFS);
-> +	oinfo = kzalloc(sizeof(struct ocfs2_mem_dqinfo), GFP_NOFS);
->  	if (!oinfo) {
->  		mlog(ML_ERROR, "failed to allocate memory for ocfs2 quota"
->  			       " info.");
-> 
+I'm a kernel newbie and I have chosen this task as a starting point. So,
+I think that someone with more experience could answer this question.
+
+Kees: Any comments?
+
+>
+> >  drivers/soc/renesas/rcar-sysc.c     |  6 ++++--
+>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> But please see my comments below...
+>
+> > --- a/drivers/soc/renesas/r8a779a0-sysc.c
+> > +++ b/drivers/soc/renesas/r8a779a0-sysc.c
+> > @@ -404,19 +404,21 @@ static int __init r8a779a0_sysc_pd_init(void)
+> >         for (i =3D 0; i < info->num_areas; i++) {
+> >                 const struct r8a779a0_sysc_area *area =3D &info->areas=
+[i];
+> >                 struct r8a779a0_sysc_pd *pd;
+> > +               size_t area_name_size;
+>
+> I wouldn't mind a shorter name, like "n".
+
+Ok, I will change this for the next version.
+
+> >
+> >                 if (!area->name) {
+> >                         /* Skip NULLified area */
+> >                         continue;
+> >                 }
+> >
+> > -               pd =3D kzalloc(sizeof(*pd) + strlen(area->name) + 1, G=
+FP_KERNEL);
+> > +               area_name_size =3D strlen(area->name) + 1;
+> > +               pd =3D kzalloc(sizeof(*pd) + area_name_size, GFP_KERNE=
+L);
+> >                 if (!pd) {
+> >                         error =3D -ENOMEM;
+> >                         goto out_put;
+> >                 }
+> >
+> > -               strcpy(pd->name, area->name);
+> > +               strscpy(pd->name, area->name, area_name_size);
+> >                 pd->genpd.name =3D pd->name;
+> >                 pd->pdr =3D area->pdr;
+> >                 pd->flags =3D area->flags;
+> > diff --git a/drivers/soc/renesas/rcar-sysc.c b/drivers/soc/renesas/rca=
+r-sysc.c
+> > index 53387a72ca00..0eae5ce0eeb0 100644
+> > --- a/drivers/soc/renesas/rcar-sysc.c
+> > +++ b/drivers/soc/renesas/rcar-sysc.c
+> > @@ -396,19 +396,21 @@ static int __init rcar_sysc_pd_init(void)
+> >         for (i =3D 0; i < info->num_areas; i++) {
+> >                 const struct rcar_sysc_area *area =3D &info->areas[i];
+> >                 struct rcar_sysc_pd *pd;
+> > +               size_t area_name_size;
+>
+> Likewise.
+
+Ok, understood.
+
+Regards,
+Len
