@@ -2,73 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E744F3DC216
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925E43DC218
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhGaAnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 20:43:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51290 "EHLO mail.kernel.org"
+        id S234753AbhGaAoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 20:44:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234326AbhGaAnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 20:43:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 067AA60FED;
-        Sat, 31 Jul 2021 00:42:57 +0000 (UTC)
+        id S234326AbhGaAoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 20:44:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 215BC60FED;
+        Sat, 31 Jul 2021 00:44:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627692178;
-        bh=sPuGl+L1sdMhNZK/fg1Tmc3r36KfKxRqsunJdIUimWw=;
+        s=k20201202; t=1627692254;
+        bh=paN8p7t9akgL6K/U2ftqUCAJXEoYEwWcAUhQmb/DS6g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HcZ0jAYDOWYePNYjE32BhhbV1DO76aUFx129ROMN5YtXrvNo1928acyqx85pVexu1
-         lhL1ur0K3CAv7GD/mwp9I26CHucFbCf7hPN6P7KpsvgB2f/ZSiAWTqRuFc5Z/cHhx2
-         lpz7mDt3sWZWaOR/JmdX0gx+ZFq1JOdHyZDSGW2tqhLdlEY7yIvus0DYyWCvz+gB/g
-         izEUKS5BaM0IPVpDEJx0o5ohIMTeJkgVZ9iZnFmQ0j1s/A9Cl4nGmSaJb5i03TZys0
-         ERmI5EheTcG1rsrHivHRugQkTrY/7m6xs6HENEh3mog9/zFcnjvhw97osmnSkJKkkR
-         pZcd5wowcV0eA==
-Date:   Fri, 30 Jul 2021 17:42:56 -0700
+        b=l52iEZfuhNIKrBeWevCew1f49Z07XM9/JWSVq1bydQ/O3IzOCCu4M3DUcTFku5cJE
+         qXzs4QdFV5AzFG4q9u4/BLNHeJFprV4BGoYkjHmZjqyiLkvJGxK4Hhqs7B5c3NDPXy
+         5C/e3kH/nPp9tjdsoHdFcWk2O8miai+YSxj0dUagwTkiLHXi78+4BTMQ006qKSLbBJ
+         /WiRUTWBES0ie12B6illKaqMiEcq+8nlCJzdx0QF15YURDF+MSEPrET9yHO+OwN2I0
+         tW8n55l+WDlFVv5TjnpWxCocqU2doxKeTb4Dai78x/GyFrGPIFEpwtgt7xVS2f9NZR
+         Lxao7eBBGletw==
+Date:   Fri, 30 Jul 2021 17:44:12 -0700
 From:   Jaegeuk Kim <jaegeuk@kernel.org>
 To:     Chao Yu <chao@kernel.org>
-Cc:     Chao Yu <chao.yu@linux.dev>, linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: introduce nosmall_discard mount option
-Message-ID: <YQSckPQWe9b0JfNu@google.com>
-References: <20210730100530.4401-1-chao@kernel.org>
- <YQREtmDLBNKSQViC@google.com>
- <c0af2126-7383-a579-e020-6480216c46fe@kernel.org>
- <1a540deb-4219-4000-2f8d-a72695f1dfde@kernel.org>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: show sbi status in debugfs/f2f/sstatus
+Message-ID: <YQSc3GEv/jQdcku8@google.com>
+References: <20210730190907.2072122-1-jaegeuk@kernel.org>
+ <f3331e35-9cfb-eb7b-8867-fb39f468c49d@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1a540deb-4219-4000-2f8d-a72695f1dfde@kernel.org>
+In-Reply-To: <f3331e35-9cfb-eb7b-8867-fb39f468c49d@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 07/31, Chao Yu wrote:
-> On 2021/7/31 7:41, Chao Yu wrote:
-> > On 2021/7/31 2:28, Jaegeuk Kim wrote:
-> > > how about adding "discard_gran=[small|segment|section]", and keeping discard_map
-> > > in the small case only? And, I think we should set the section mode for zoned
-> > > device automatically.
-> > 
-> > Yup, better,
-> > 
-> > About the naming, it look discard_gran is not clear here, since there is another
-> > sysfs entry /sys/fs/f2fs/<devname>/discard_granularity has the same name, and
-> > also semantics of newly added mount option is not only control the smallest discard
-> > size, but also indicate discard start offset should be aligned to segment or section.
-> > So how about using: "aligned_discard=[none|segment|section]" instead?
+> On 2021/7/31 3:09, Jaegeuk Kim wrote:
+> > We need to get sbi->s_flag to understand the current f2fs status as well.
+> > One example is SBI_NEED_FSCK.
 > 
-> Maybe: "aligned_discard=[block|segment|section]"?
+> Typo in patch title: "f2f/sstatus".
+> 
+> Please note that there is a sysfs entry /sys/fs/f2fs/<devname/stat/sb_status.
 
-How about discard_unit? I feel that issuing discards in one of those unit
-indicate the offset.
+Sure. Thanks.
 
 > 
 > > 
-> > Thanks,
-> > 
-> > 
-> > _______________________________________________
-> > Linux-f2fs-devel mailing list
-> > Linux-f2fs-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> > 
+> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> 
+> Reviewed-by: Chao Yu <chao@kernel.org>
+> 
+> Thanks,
