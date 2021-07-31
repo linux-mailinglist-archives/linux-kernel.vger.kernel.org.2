@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730113DC728
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 19:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A353DC72E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 19:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhGaRSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 13:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhGaRSv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 13:18:51 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F24C06175F;
-        Sat, 31 Jul 2021 10:18:43 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id k4so4875950wrc.0;
-        Sat, 31 Jul 2021 10:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=TYAR2TN+HLCEo0IKM3gk6gNN7p0qbP1mcajdWTzCkkY=;
-        b=M52/iticaY8knwq6V+LuB99CyidPAlzmvQfhb8aOvzqHW7LGjltktcTpGSBpcgpAtv
-         aRqCuVZxgRY+DIOV5aVcTrn8ojoXt3/3+ERV2QTd4y62aCoyellhOEJzSlYphSs8fX9m
-         +Fho4SANqRyMU1uUZ09305tU1Fnl5CG37lPS15Mxz2vv8F1gDGq9OU00IHQCq6V7aoJd
-         KLSGbWvIBiRcYI6ORBNh4iZvi19zKieMZ/RQC4q3hLNyOFCtrC+nxAiePGCYWdWG4tHO
-         pRKg1KEhxb2s4EJzXTolT/0wN46eCmqfsNGN94FgOpHRyf2KblSIX/Lsoxz1ZNFhCnW9
-         1GCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=TYAR2TN+HLCEo0IKM3gk6gNN7p0qbP1mcajdWTzCkkY=;
-        b=AgUzJaqgvi156J0FxDMZo1xezvvSsyyPPAIhKRaNasDgQPRRDYHCtZa2kJuBOyd+Cv
-         hJVhAzihBiMCFwMTLmTo/Ep1EmDATadoQ3xuYIns09sOBKsRvMjw06UD31vCGESMg+71
-         bk9GVQohfUHRJetZ98Jjo/iXE9gaamyIPrhcXWymyaq4ksS0zH+xM6cQ00+N6AogMYq0
-         f3v12cUI9NXnM5S/EXqhs1pL0BmnsSfnn1CUxZQ93tnGgH1ijOv9mVB+GxYPlTBAwBPO
-         zEVJfbClumJKq7hsrvO5dCEG/hDGVVgNpV+J0L2Z0YkEwfaDJZbRG9KhPlUfzkIw+on4
-         QCwg==
-X-Gm-Message-State: AOAM5333GDevt+Ygcep0UcbsKO6NzHTnalgRHCdFVF1jyXNIZojnv4/P
-        vJKV196aR6w/s6JsRXvO448=
-X-Google-Smtp-Source: ABdhPJyR1F4x3H45pg0po8H4tQtOMk0FvgFyxWTrukbMTvdYsD1NEAAJH8WrPAQ2C4QTCzuUSfIdXQ==
-X-Received: by 2002:a5d:5111:: with SMTP id s17mr8868165wrt.227.1627751922345;
-        Sat, 31 Jul 2021 10:18:42 -0700 (PDT)
-Received: from pc ([196.235.233.206])
-        by smtp.gmail.com with ESMTPSA id m39sm4971255wms.28.2021.07.31.10.18.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 10:18:41 -0700 (PDT)
-Date:   Sat, 31 Jul 2021 18:18:38 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Jack Pham <jackp@codeaurora.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        kernel test robot <lkp@intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dean Anderson <dean@sensoray.com>,
-        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
-        Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: gadget: remove useless cast
-Message-ID: <20210731171838.GA912463@pc>
+        id S230355AbhGaRYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 13:24:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229647AbhGaRYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 13:24:46 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E763D61042;
+        Sat, 31 Jul 2021 17:24:34 +0000 (UTC)
+Date:   Sat, 31 Jul 2021 18:27:14 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Billy Tsai <billy_tsai@aspeedtech.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [v2 1/8] dt-bindings: iio: adc: rename the aspeed adc yaml
+Message-ID: <20210731182714.7197bdcc@jic23-huawei>
+In-Reply-To: <YQMQJ15KpM0eeLIb@robh.at.kernel.org>
+References: <20210723081621.29477-1-billy_tsai@aspeedtech.com>
+        <20210723081621.29477-2-billy_tsai@aspeedtech.com>
+        <20210723154456.00006744@Huawei.com>
+        <E650AFD8-FFD1-4D87-87B0-42D20D9C3BB4@aspeedtech.com>
+        <YQMQJ15KpM0eeLIb@robh.at.kernel.org>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the cast done by ERR_PTR() and PTR_ERR() since data is of type char
-* and fss_prepare_buffer() should returns a value of this type.
+On Thu, 29 Jul 2021 14:31:35 -0600
+Rob Herring <robh@kernel.org> wrote:
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
----
- drivers/usb/gadget/function/f_fs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mon, Jul 26, 2021 at 06:53:07AM +0000, Billy Tsai wrote:
+> > Hi Jonathan,
+> > 
+> > On 2021/7/23, 10:45 PM, "Jonathan Cameron" <Jonathan.Cameron@Huawei.com> wrote:
+> > 
+> >     On Fri, 23 Jul 2021 16:16:14 +0800
+> >     Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+> >   
+> >     >   > The aspeed,ast2400-adc.yaml not only descriptor the bindings of ast2400.
+> >     >   > Rename it to aspeed,adc.yaml for all of the aspeed adc bindings.
+> >     >   > 
+> >     >   > Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>  
+> >   
+> >     >   We try to avoid 'wild' card type namings most of the time and instead
+> >     >   name after a particular part number.  I say try because clearly
+> >     >   we let a few in over the years :(  
+> >   
+> >     >   It is very hard to know if this binding will apply to 'all' future
+> >     >   aspeed ADCs.  
+> >   
+> >     >   As such I'm not sure this particular rename makes sense.  
+> > 
+> > If I want to extend the yaml file to compatible more versions of the aspeed adc.
+> > Would you suggest to add new files call aspeed,ast2600-adc.yaml or just append it
+> > to the aspeed,ast2400-adc.yaml?  
+> 
+> If 2600 is not backwards compatible with 2400, then probably a new 
+> schema file. Given you are adding new properties (which only apply to 
+> 2600?), then most likely a new schema file. Depends at which point there 
+> are too many conditional (if/then/else) schemas.
 
-diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
-index 9c0c393abb39..e411555e4c34 100644
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -3831,7 +3831,7 @@ static char *ffs_prepare_buffer(const char __user *buf, size_t len)
- 
- 	data = memdup_user(buf, len);
- 	if (IS_ERR(data))
--		return ERR_PTR(PTR_ERR(data));
-+		return data;
- 
- 	pr_vdebug("Buffer from user space:\n");
- 	ffs_dump_mem("", data, len);
--- 
-2.25.1
+Agreed.  It's a judgement call you need to make on when it is worth the new file.
+Note that doesn't have anything to do with splitting the driver.  We have mulitple
+binding files for single drivers and for that matter multiple drivers for single binding
+files.
+
+If it is 'compatible' enough to not make the file to complex, then add to the existing
+ast2400 file without renaming.
+
+Jonathan
+
+> 
+> Rob
 
