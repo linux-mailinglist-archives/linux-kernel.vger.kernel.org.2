@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4948A3DC2AC
+	by mail.lfdr.de (Postfix) with ESMTP id 920BE3DC2AD
 	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 04:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236140AbhGaCWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 22:22:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7768 "EHLO
+        id S236223AbhGaCWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 22:22:07 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16030 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234944AbhGaCWE (ORCPT
+        with ESMTP id S235124AbhGaCWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Jul 2021 22:22:04 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gc7Cx40v3zYjZh;
-        Sat, 31 Jul 2021 10:15:57 +0800 (CST)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gc7Gq1D3GzZqqc;
+        Sat, 31 Jul 2021 10:18:27 +0800 (CST)
 Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 31 Jul 2021 10:21:56 +0800
+ 15.1.2176.2; Sat, 31 Jul 2021 10:21:57 +0800
 Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
  (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 31
@@ -28,9 +28,9 @@ To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
         <bbrezillon@kernel.org>
 CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH 1/2] mtd: mtdconcat: Judge callback function existence getting from master for each partition
-Date:   Sat, 31 Jul 2021 10:32:42 +0800
-Message-ID: <20210731023243.3977104-2-chengzhihao1@huawei.com>
+Subject: [PATCH 2/2] mtd: mtdconcat: Remove concat_{read|write}_oob
+Date:   Sat, 31 Jul 2021 10:32:43 +0800
+Message-ID: <20210731023243.3977104-3-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210731023243.3977104-1-chengzhihao1@huawei.com>
 References: <20210731023243.3977104-1-chengzhihao1@huawei.com>
@@ -45,122 +45,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 46b5889cc2c5("mtd: implement proper partition handling")
-applied, mtd partition device won't hold some callback functions, such
-as _block_isbad, _block_markbad, etc. Besides, function mtd_block_isbad()
-will get mtd device's master mtd device, then invokes master mtd device's
-callback function. So, following process may result mtd_block_isbad()
-always return 0, even though mtd device has bad blocks:
+Since 2431c4f5b46c3("mtd: Implement mtd_{read,write}() as wrappers
+around mtd_{read,write}_oob()") don't allow _write|_read and
+_write_oob|_read_oob existing at the same time. We should stop these
+two callback functions assigning, otherwise following warning occurs
+while making concatenated device:
 
-1. Split a mtd device into 3 partitions: PA, PB, PC
-[ Each mtd partition device won't has callback function _block_isbad(). ]
-2. Concatenate PA and PB as a new mtd device PN
-[ mtd_concat_create() finds out each subdev has no callback function
-_block_isbad(), so PN won't be assigned callback function
-concat_block_isbad(). ]
-Then, mtd_block_isbad() checks "!master->_block_isbad" is true, will
-always return 0.
+  WARNING: CPU: 2 PID: 6728 at drivers/mtd/mtdcore.c:595
+  add_mtd_device+0x7f/0x7b0
 
-Reproducer:
-// reproduce.c
-static int __init init_diy_module(void)
-{
-	struct mtd_info *mtd[2];
-	struct mtd_info *mtd_combine = NULL;
-
-	mtd[0] = get_mtd_device_nm("NAND simulator partition 0");
-	if (!mtd[0]) {
-		pr_err("cannot find mtd1\n");
-		return -EINVAL;
-	}
-	mtd[1] = get_mtd_device_nm("NAND simulator partition 1");
-	if (!mtd[1]) {
-		pr_err("cannot find mtd2\n");
-		return -EINVAL;
-	}
-
-	put_mtd_device(mtd[0]);
-	put_mtd_device(mtd[1]);
-
-	mtd_combine = mtd_concat_create(mtd, 2, "Combine mtd");
-	if (mtd_combine == NULL) {
-		pr_err("comnoine  fail\n");
-		return -EINVAL;
-	}
-
-	mtd_device_register(mtd_combine, NULL, 0);
-	pr_info("Combine success\n");
-
-	return 0;
-}
-
-1. ID="0x20,0xac,0x00,0x15"
-2. modprobe nandsim id_bytes=$ID parts=50,100 badblocks=100
-3. insmod reproduce.ko
-4. flash_erase /dev/mtd3 0 0
-  libmtd: error!: MEMERASE64 ioctl failed for eraseblock 100 (mtd3)
-  error 5 (Input/output error)
-  // Should be "flash_erase: Skipping bad block at 00c80000"
-
-Fixes: 46b5889cc2c54bac ("mtd: implement proper partition handling")
+Fixes: 2431c4f5b46c3("mtd: Implement mtd_{read,write}() around ...")
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/mtdconcat.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ drivers/mtd/mtdconcat.c | 113 +---------------------------------------
+ 1 file changed, 1 insertion(+), 112 deletions(-)
 
 diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 6e4d0017c0bd..ea130eeb54d5 100644
+index ea130eeb54d5..98d1c79cf51d 100644
 --- a/drivers/mtd/mtdconcat.c
 +++ b/drivers/mtd/mtdconcat.c
-@@ -641,6 +641,7 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	int i;
- 	size_t size;
- 	struct mtd_concat *concat;
-+	struct mtd_info *subdev_master = NULL;
- 	uint32_t max_erasesize, curr_erasesize;
- 	int num_erase_region;
- 	int max_writebufsize = 0;
-@@ -679,17 +680,19 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	concat->mtd.subpage_sft = subdev[0]->subpage_sft;
- 	concat->mtd.oobsize = subdev[0]->oobsize;
- 	concat->mtd.oobavail = subdev[0]->oobavail;
--	if (subdev[0]->_writev)
-+
-+	subdev_master = mtd_get_master(subdev[0]);
-+	if (subdev_master->_writev)
- 		concat->mtd._writev = concat_writev;
--	if (subdev[0]->_read_oob)
-+	if (subdev_master->_read_oob)
- 		concat->mtd._read_oob = concat_read_oob;
--	if (subdev[0]->_write_oob)
-+	if (subdev_master->_write_oob)
- 		concat->mtd._write_oob = concat_write_oob;
--	if (subdev[0]->_block_isbad)
-+	if (subdev_master->_block_isbad)
- 		concat->mtd._block_isbad = concat_block_isbad;
--	if (subdev[0]->_block_markbad)
-+	if (subdev_master->_block_markbad)
- 		concat->mtd._block_markbad = concat_block_markbad;
--	if (subdev[0]->_panic_write)
-+	if (subdev_master->_panic_write)
- 		concat->mtd._panic_write = concat_panic_write;
+@@ -256,110 +256,6 @@ concat_writev(struct mtd_info *mtd, const struct kvec *vecs,
+ 	return err;
+ }
  
- 	concat->mtd.ecc_stats.badblocks = subdev[0]->ecc_stats.badblocks;
-@@ -721,14 +724,15 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+-static int
+-concat_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
+-{
+-	struct mtd_concat *concat = CONCAT(mtd);
+-	struct mtd_oob_ops devops = *ops;
+-	int i, err, ret = 0;
+-
+-	ops->retlen = ops->oobretlen = 0;
+-
+-	for (i = 0; i < concat->num_subdev; i++) {
+-		struct mtd_info *subdev = concat->subdev[i];
+-
+-		if (from >= subdev->size) {
+-			from -= subdev->size;
+-			continue;
+-		}
+-
+-		/* partial read ? */
+-		if (from + devops.len > subdev->size)
+-			devops.len = subdev->size - from;
+-
+-		err = mtd_read_oob(subdev, from, &devops);
+-		ops->retlen += devops.retlen;
+-		ops->oobretlen += devops.oobretlen;
+-
+-		/* Save information about bitflips! */
+-		if (unlikely(err)) {
+-			if (mtd_is_eccerr(err)) {
+-				mtd->ecc_stats.failed++;
+-				ret = err;
+-			} else if (mtd_is_bitflip(err)) {
+-				mtd->ecc_stats.corrected++;
+-				/* Do not overwrite -EBADMSG !! */
+-				if (!ret)
+-					ret = err;
+-			} else
+-				return err;
+-		}
+-
+-		if (devops.datbuf) {
+-			devops.len = ops->len - ops->retlen;
+-			if (!devops.len)
+-				return ret;
+-			devops.datbuf += devops.retlen;
+-		}
+-		if (devops.oobbuf) {
+-			devops.ooblen = ops->ooblen - ops->oobretlen;
+-			if (!devops.ooblen)
+-				return ret;
+-			devops.oobbuf += ops->oobretlen;
+-		}
+-
+-		from = 0;
+-	}
+-	return -EINVAL;
+-}
+-
+-static int
+-concat_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
+-{
+-	struct mtd_concat *concat = CONCAT(mtd);
+-	struct mtd_oob_ops devops = *ops;
+-	int i, err;
+-
+-	if (!(mtd->flags & MTD_WRITEABLE))
+-		return -EROFS;
+-
+-	ops->retlen = ops->oobretlen = 0;
+-
+-	for (i = 0; i < concat->num_subdev; i++) {
+-		struct mtd_info *subdev = concat->subdev[i];
+-
+-		if (to >= subdev->size) {
+-			to -= subdev->size;
+-			continue;
+-		}
+-
+-		/* partial write ? */
+-		if (to + devops.len > subdev->size)
+-			devops.len = subdev->size - to;
+-
+-		err = mtd_write_oob(subdev, to, &devops);
+-		ops->retlen += devops.retlen;
+-		ops->oobretlen += devops.oobretlen;
+-		if (err)
+-			return err;
+-
+-		if (devops.datbuf) {
+-			devops.len = ops->len - ops->retlen;
+-			if (!devops.len)
+-				return 0;
+-			devops.datbuf += devops.retlen;
+-		}
+-		if (devops.oobbuf) {
+-			devops.ooblen = ops->ooblen - ops->oobretlen;
+-			if (!devops.ooblen)
+-				return 0;
+-			devops.oobbuf += devops.oobretlen;
+-		}
+-		to = 0;
+-	}
+-	return -EINVAL;
+-}
+-
+ static int concat_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
+ 	struct mtd_concat *concat = CONCAT(mtd);
+@@ -684,10 +580,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+ 	subdev_master = mtd_get_master(subdev[0]);
+ 	if (subdev_master->_writev)
+ 		concat->mtd._writev = concat_writev;
+-	if (subdev_master->_read_oob)
+-		concat->mtd._read_oob = concat_read_oob;
+-	if (subdev_master->_write_oob)
+-		concat->mtd._write_oob = concat_write_oob;
+ 	if (subdev_master->_block_isbad)
+ 		concat->mtd._block_isbad = concat_block_isbad;
+ 	if (subdev_master->_block_markbad)
+@@ -724,15 +616,12 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
  				    subdev[i]->flags & MTD_WRITEABLE;
  		}
  
-+		subdev_master = mtd_get_master(subdev[i]);
+-		subdev_master = mtd_get_master(subdev[i]);
  		concat->mtd.size += subdev[i]->size;
  		concat->mtd.ecc_stats.badblocks +=
  			subdev[i]->ecc_stats.badblocks;
  		if (concat->mtd.writesize   !=  subdev[i]->writesize ||
  		    concat->mtd.subpage_sft != subdev[i]->subpage_sft ||
- 		    concat->mtd.oobsize    !=  subdev[i]->oobsize ||
--		    !concat->mtd._read_oob  != !subdev[i]->_read_oob ||
--		    !concat->mtd._write_oob != !subdev[i]->_write_oob) {
-+		    !concat->mtd._read_oob  != !subdev_master->_read_oob ||
-+		    !concat->mtd._write_oob != !subdev_master->_write_oob) {
+-		    concat->mtd.oobsize    !=  subdev[i]->oobsize ||
+-		    !concat->mtd._read_oob  != !subdev_master->_read_oob ||
+-		    !concat->mtd._write_oob != !subdev_master->_write_oob) {
++		    concat->mtd.oobsize    !=  subdev[i]->oobsize) {
  			kfree(concat);
  			printk("Incompatible OOB or ECC data on \"%s\"\n",
  			       subdev[i]->name);
