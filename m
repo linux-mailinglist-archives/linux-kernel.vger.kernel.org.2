@@ -2,79 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACB03DC2C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 04:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED7C3DC2D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 04:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhGaCvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 22:51:13 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:13217 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhGaCvM (ORCPT
+        id S235755AbhGaC7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 22:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231380AbhGaC7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 22:51:12 -0400
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gc7sY6FTdz1CQtM;
-        Sat, 31 Jul 2021 10:45:05 +0800 (CST)
-Received: from huawei.com (100.120.247.70) by dggeme756-chm.china.huawei.com
- (10.3.19.102) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 31
- Jul 2021 10:51:04 +0800
-From:   Liang Wang <wangliang101@huawei.com>
-To:     <palmerdabbelt@google.com>, <mcgrof@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>
-CC:     <stable@vger.kernel.org>, <wangliang101@huawei.com>,
-        <wangle6@huawei.com>, <kepler.chenxin@huawei.com>,
-        <nixiaoming@huawei.com>, <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3] lib: Use PFN_PHYS() in devmem_is_allowed()
-Date:   Sat, 31 Jul 2021 10:50:57 +0800
-Message-ID: <20210731025057.78825-1-wangliang101@huawei.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 30 Jul 2021 22:59:13 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D53CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 19:59:06 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so6425726pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 19:59:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=9Aa9q+ZgPH94d4mui+MhDlRe9awiZiZZrbzXI3QwflQ=;
+        b=K/AnMh6xbreh13akr8KlRWX933KG/LVSiOukQOOU02w9zDvPcZa/3brhzVIyI/b/3I
+         8MwYX4XWyDe4L8DaHTAAOwEDtNaP6NmQ6MxmN2PhdWVt37y0G/ZLykupXyKWHjpiieLb
+         dX8vGbaeXhGoISkRuWXLfYmOV+Mfm2EZz2F7A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9Aa9q+ZgPH94d4mui+MhDlRe9awiZiZZrbzXI3QwflQ=;
+        b=MuKnPHirEyjyyYFhdTronMYrliIOkR9LPo9xX7UPLP9wt3cbVfTT5IhyKxnor+baSy
+         HBSgJSxBb8ZuvSvfTs3PTRL2xbQVd5Y9M7QZVIU721HyPb/+zl9AOqWJliA1Q7ewEWtm
+         qD1Tj93+B1JFchgVyYlw7eLch3zLxzv/TgkROP8np/CymJQwYmOwubcbsJnig10jYkgL
+         O6kI8aKp+OQo0LBdNV8aS9Byz5qux+3ll2ldI8BRnzX7e3itIO1XzrnAhdJNN/xEpspi
+         95Utyr2W1Yttd1eJxPTgFUAtqDVm5vsG5pxKyPfN8GqlfxV/8Qm4ea7yc04myTuCfbx4
+         vt7g==
+X-Gm-Message-State: AOAM533VHxSweHDsmmLAgLPpOIBKtbHxyEd4F6h9mGMuaYEUcg5Z06il
+        aLdtKAcmCVONfiS1qrpBpkFZ+Q==
+X-Google-Smtp-Source: ABdhPJxTfKt3gvdchGd16NukW5boDEwoaheumkJt6I1FzMy8GwJfQpRQICiNX//vocu1zdwGzNo0jA==
+X-Received: by 2002:a63:5505:: with SMTP id j5mr1362082pgb.250.1627700346188;
+        Fri, 30 Jul 2021 19:59:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c7sm4280329pgq.22.2021.07.30.19.59.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 19:59:05 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 19:59:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Williams, Dan J" <dan.j.williams@intel.com>
+Cc:     "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
+        "keithpac@amazon.com" <keithpac@amazon.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+Subject: Re: [PATCH 04/64] stddef: Introduce struct_group() helper macro
+Message-ID: <202107301952.B484563@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-5-keescook@chromium.org>
+ <41183a98-bdb9-4ad6-7eab-5a7292a6df84@rasmusvillemoes.dk>
+ <202107281456.1A3A5C18@keescook>
+ <1d9a2e6df2a9a35b2cdd50a9a68cac5991e7e5f0.camel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [100.120.247.70]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1d9a2e6df2a9a35b2cdd50a9a68cac5991e7e5f0.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The physical address may exceed 32 bits on 32-bit systems with
-more than 32 bits of physcial address,use PFN_PHYS() in devmem_is_allowed(),
-or the physical address may overflow and be truncated.
-We found this bug when mapping a high addresses through devmem tool,
-when CONFIG_STRICT_DEVMEM is enabled on the ARM with ARM_LPAE and devmem
-is used to map a high address that is not in the iomem address range,
-an unexpected error indicating no permission is returned.
+On Fri, Jul 30, 2021 at 10:19:20PM +0000, Williams, Dan J wrote:
+> On Wed, 2021-07-28 at 14:59 -0700, Kees Cook wrote:
+> > On Wed, Jul 28, 2021 at 12:54:18PM +0200, Rasmus Villemoes wrote:
+> > > On 27/07/2021 22.57, Kees Cook wrote:
+> > > 
+> > > > In order to have a regular programmatic way to describe a struct
+> > > > region that can be used for references and sizing, can be examined for
+> > > > bounds checking, avoids forcing the use of intermediate identifiers,
+> > > > and avoids polluting the global namespace, introduce the struct_group()
+> > > > macro. This macro wraps the member declarations to create an anonymous
+> > > > union of an anonymous struct (no intermediate name) and a named struct
+> > > > (for references and sizing):
+> > > > 
+> > > >         struct foo {
+> > > >                 int one;
+> > > >                 struct_group(thing,
+> > > >                         int two,
+> > > >                         int three,
+> > > >                 );
+> > > >                 int four;
+> > > >         };
+> > > 
+> > > That example won't compile, the commas after two and three should be
+> > > semicolons.
+> > 
+> > Oops, yes, thanks. This is why I shouldn't write code that doesn't first
+> > go through a compiler. ;)
+> > 
+> > > And your implementation relies on MEMBERS not containing any comma
+> > > tokens, but as
+> > > 
+> > >   int a, b, c, d;
+> > > 
+> > > is a valid way to declare multiple members, consider making MEMBERS
+> > > variadic
+> > > 
+> > > #define struct_group(NAME, MEMBERS...)
+> > > 
+> > > to have it slurp up every subsequent argument and make that work.
+> > 
+> > Ah! Perfect, thank you. I totally forgot I could do it that way.
+> 
+> This is great Kees. It just so happens it would clean-up what we are
+> already doing in drivers/cxl/cxl.h for anonymous + named register block
+> pointers. However in the cxl case it also needs the named structure to
+> be typed. Any appetite for a typed version of this?
 
-This bug was initially introduced from v2.6.37, and the function was moved
-to lib when v5.11.
+Oh cool! Yeah, totally I can expand it. Thanks for the suggestion!
 
-Cc: Luis Chamberlain <mcgrof@kernel.org>
-Fixes: 087aaffcdf9c ("ARM: implement CONFIG_STRICT_DEVMEM by disabling access to RAM via /dev/mem")
-Fixes: 527701eda5f1 ("lib: Add a generic version of devmem_is_allowed()")
-Cc: stable@vger.kernel.org # v2.6.37
-Signed-off-by: Liang Wang <wangliang101@huawei.com>
----
-v3: update changelog suggested by Luis Chamberlain <mcgrof@kernel.org>
- lib/devmem_is_allowed.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Here is a rough idea of the cleanup it would induce in drivers/cxl/:
+> 
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index 53927f9fa77e..a2308c995654 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -75,52 +75,19 @@ static inline int cxl_hdm_decoder_count(u32 cap_hdr)
+>  #define CXLDEV_MBOX_BG_CMD_STATUS_OFFSET 0x18
+>  #define CXLDEV_MBOX_PAYLOAD_OFFSET 0x20
+>  
+> -#define CXL_COMPONENT_REGS() \
+> -       void __iomem *hdm_decoder
+> -
+> -#define CXL_DEVICE_REGS() \
+> -       void __iomem *status; \
+> -       void __iomem *mbox; \
+> -       void __iomem *memdev
+> -
+> -/* See note for 'struct cxl_regs' for the rationale of this organization */
+>  /*
+> - * CXL_COMPONENT_REGS - Common set of CXL Component register block base pointers
+>   * @hdm_decoder: CXL 2.0 8.2.5.12 CXL HDM Decoder Capability Structure
+> - */
+> -struct cxl_component_regs {
+> -       CXL_COMPONENT_REGS();
+> -};
+> -
+> -/* See note for 'struct cxl_regs' for the rationale of this organization */
+> -/*
+> - * CXL_DEVICE_REGS - Common set of CXL Device register block base pointers
+>   * @status: CXL 2.0 8.2.8.3 Device Status Registers
+>   * @mbox: CXL 2.0 8.2.8.4 Mailbox Registers
+>   * @memdev: CXL 2.0 8.2.8.5 Memory Device Registers
+>   */
+> -struct cxl_device_regs {
+> -       CXL_DEVICE_REGS();
+> -};
+> -
+> -/*
+> - * Note, the anonymous union organization allows for per
+> - * register-block-type helper routines, without requiring block-type
+> - * agnostic code to include the prefix.
+> - */
+>  struct cxl_regs {
+> -       union {
+> -               struct {
+> -                       CXL_COMPONENT_REGS();
+> -               };
+> -               struct cxl_component_regs component;
+> -       };
+> -       union {
+> -               struct {
+> -                       CXL_DEVICE_REGS();
+> -               };
+> -               struct cxl_device_regs device_regs;
+> -       };
+> +       struct_group_typed(cxl_component_regs, component,
+> +               void __iomem *hdm_decoder;
+> +       );
+> +       struct_group_typed(cxl_device_regs, device_regs,
+> +               void __iomem *status, *mbox, *memdev;
+> +       );
+>  };
+>  
+>  struct cxl_reg_map {
+> diff --git a/include/linux/stddef.h b/include/linux/stddef.h
+> index cf7f866944f9..84b7de24ffb5 100644
+> --- a/include/linux/stddef.h
+> +++ b/include/linux/stddef.h
+> @@ -49,12 +49,18 @@ enum {
+>   * @ATTRS: Any struct attributes (normally empty)
+>   * @MEMBERS: The member declarations for the mirrored structs
+>   */
+> -#define struct_group_attr(NAME, ATTRS, MEMBERS) \
+> +#define struct_group_attr(NAME, ATTRS, MEMBERS...) \
+>         union { \
+>                 struct { MEMBERS } ATTRS; \
+>                 struct { MEMBERS } ATTRS NAME; \
+>         }
+>  
+> +#define struct_group_attr_typed(TYPE, NAME, ATTRS, MEMBERS...) \
+> +       union { \
+> +               struct { MEMBERS } ATTRS; \
+> +               struct TYPE { MEMBERS } ATTRS NAME; \
+> +       }
+> +
+>  /**
+>   * struct_group(NAME, MEMBERS)
+>   *
+> @@ -67,7 +73,10 @@ enum {
+>   * @NAME: The name of the mirrored sub-struct
+>   * @MEMBERS: The member declarations for the mirrored structs
+>   */
+> -#define struct_group(NAME, MEMBERS)    \
+> +#define struct_group(NAME, MEMBERS...) \
+>         struct_group_attr(NAME, /* no attrs */, MEMBERS)
+>  
+> +#define struct_group_typed(TYPE, NAME, MEMBERS...) \
+> +       struct_group_attr_typed(TYPE, NAME, /* no attrs */, MEMBERS)
+> +
+>  #endif
 
-diff --git a/lib/devmem_is_allowed.c b/lib/devmem_is_allowed.c
-index c0d67c541849..60be9e24bd57 100644
---- a/lib/devmem_is_allowed.c
-+++ b/lib/devmem_is_allowed.c
-@@ -19,7 +19,7 @@
-  */
- int devmem_is_allowed(unsigned long pfn)
- {
--	if (iomem_is_exclusive(pfn << PAGE_SHIFT))
-+	if (iomem_is_exclusive(PFN_PHYS(pfn)))
- 		return 0;
- 	if (!page_is_ram(pfn))
- 		return 1;
+Awesome! My instinct is to expose the resulting API as:
+
+__struct_group(type, name, attrs, members...)
+
+struct_group(name, members...)
+struct_group_attr(name, attrs, members...)
+struct_group_typed(type, name, members...)
+
 -- 
-2.32.0
-
+Kees Cook
