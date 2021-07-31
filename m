@@ -2,138 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3873DC663
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 16:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89B03DC669
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 16:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbhGaOse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 10:48:34 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:45639 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232770AbhGaOs3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 10:48:29 -0400
-Received: by mail-io1-f72.google.com with SMTP id g19-20020a5d8c930000b02904dd8a55bbd7so7930327ion.12
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 07:48:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=GnCHPHIAZGrBSipZAlOzb9JHVlmDvHpAlEidlqyUeQA=;
-        b=kutG8sEuWRE6L50v4H0srrkCKKQ2s+aSM7MreN83q99YjYrhOhpBGVfuC72UetCFZx
-         UT0HWpCexAJ63U2H/TSvP6YE0FqcoagmwQbrZMY+doWLylezBbUnmYfwRtPnf2nOTyFM
-         +GG3yCQuMLnKGu5H2Culklrth9U49/JJvEo2oEgoc8tp/21z2KnZxvB4s2tzSfpx8GlP
-         TUGOrD4qEE5P3/ttvtOgQjkr28tdlhUZvVc861WjSdva+NcrPExxYEEVsoO+q3g6PK5l
-         78U5YgvBYa8XNCfUDxLvnTtLXeHhQZZ4csTNRL9KQLC1LN2gXBNDndMCIxDcVDAlFXvE
-         MPrQ==
-X-Gm-Message-State: AOAM5335qSNgY6w5UiXUe3XPBkcWyELxMGN6WsmCNEGai+Lej5XOZTLn
-        hJzgxmJdSrecEUJJ0uS6wYezXKunYgLBPTaU+A7abEnez0Fq
-X-Google-Smtp-Source: ABdhPJy1emLbDRUY+QVC86+ky0OabWKbWgTxPEZWDGuiQXaNJVa1PMjzE3Qncwg4B5g924VtI9MEq+9c5Se7lkFPbdKLgAZ+PXq+
+        id S233329AbhGaOuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 10:50:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233035AbhGaOt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 10:49:59 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFA8260F56;
+        Sat, 31 Jul 2021 14:49:49 +0000 (UTC)
+Date:   Sat, 31 Jul 2021 15:52:28 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com,
+        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v4 2/5] iio: adc: ad7949: fix spi messages on non 14-bit
+ controllers
+Message-ID: <20210731155228.5cf77479@jic23-huawei>
+In-Reply-To: <20210731152921.2fcb53ab@jic23-huawei>
+References: <20210727232906.980769-1-liambeguin@gmail.com>
+        <20210727232906.980769-3-liambeguin@gmail.com>
+        <20210731152921.2fcb53ab@jic23-huawei>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3048:: with SMTP id u8mr6518279jak.91.1627742903086;
- Sat, 31 Jul 2021 07:48:23 -0700 (PDT)
-Date:   Sat, 31 Jul 2021 07:48:23 -0700
-In-Reply-To: <000000000000f94f5405c284e370@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008637e205c86c6dac@google.com>
-Subject: Re: [syzbot] general protection fault in tls_sk_proto_close (3)
-From:   syzbot <syzbot+29c3c12f3214b85ad081@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, borisp@nvidia.com, bp@alien8.de,
-        daniel@iogearbox.net, davem@davemloft.net, hpa@zytor.com,
-        jmattson@google.com, john.fastabend@gmail.com, joro@8bytes.org,
-        kuba@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, pbonzini@redhat.com, peterz@infradead.org,
-        rafael.j.wysocki@intel.com, rostedt@goodmis.org, seanjc@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, will@kernel.org,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Sat, 31 Jul 2021 15:29:21 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-HEAD commit:    8d67041228ac Merge tag 'linux-can-fixes-for-5.14-20210730'..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=17a6e966300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=42748795a8952874
-dashboard link: https://syzkaller.appspot.com/bug?extid=29c3c12f3214b85ad081
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11c631b2300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1519451e300000
+> On Tue, 27 Jul 2021 19:29:03 -0400
+> Liam Beguin <liambeguin@gmail.com> wrote:
+> 
+> > From: Liam Beguin <lvb@xiphos.com>
+> > 
+> > This driver supports devices with 14-bit and 16-bit sample sizes.
+> > This is not always handled properly by spi controllers and can fail. To
+> > work around this limitation, pad samples to 16-bit and split the sample
+> > into two 8-bit messages in the event that only 8-bit messages are
+> > supported by the controller.
+> > 
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> >  drivers/iio/adc/ad7949.c | 62 ++++++++++++++++++++++++++++++++++------
+> >  1 file changed, 54 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
+> > index 0b549b8bd7a9..f1702c54c8be 100644
+> > --- a/drivers/iio/adc/ad7949.c
+> > +++ b/drivers/iio/adc/ad7949.c
+> > @@ -67,6 +67,7 @@ static const struct ad7949_adc_spec ad7949_adc_spec[] = {
+> >   * @indio_dev: reference to iio structure
+> >   * @spi: reference to spi structure
+> >   * @resolution: resolution of the chip
+> > + * @bits_per_word: number of bits per SPI word
+> >   * @cfg: copy of the configuration register
+> >   * @current_channel: current channel in use
+> >   * @buffer: buffer to send / receive data to / from device
+> > @@ -77,6 +78,7 @@ struct ad7949_adc_chip {
+> >  	struct iio_dev *indio_dev;
+> >  	struct spi_device *spi;
+> >  	u8 resolution;
+> > +	u8 bits_per_word;
+> >  	u16 cfg;
+> >  	unsigned int current_channel;
+> >  	u16 buffer ____cacheline_aligned;
+> > @@ -86,19 +88,34 @@ static int ad7949_spi_write_cfg(struct ad7949_adc_chip *ad7949_adc, u16 val,
+> >  				u16 mask)
+> >  {
+> >  	int ret;
+> > -	int bits_per_word = ad7949_adc->resolution;
+> > -	int shift = bits_per_word - AD7949_CFG_REG_SIZE_BITS;  
+> 
+> The define for this was removed in patch 1.  I'll fix that up whilst applying by
+> keeping it until this patch.  Please check build passes on intermediate points
+> during a patch series as otherwise we may break bisectability and that's really
+> annoying if you are bisecting!
+> 
+> Jonathan
+> 
+> >  	struct spi_message msg;
+> >  	struct spi_transfer tx[] = {
+> >  		{
+> >  			.tx_buf = &ad7949_adc->buffer,
+> >  			.len = 2,
+> > -			.bits_per_word = bits_per_word,
+> > +			.bits_per_word = ad7949_adc->bits_per_word,
+> >  		},
+> >  	};
+> >  
+> > +	ad7949_adc->buffer = 0;
+> >  	ad7949_adc->cfg = (val & mask) | (ad7949_adc->cfg & ~mask);
+> > -	ad7949_adc->buffer = ad7949_adc->cfg << shift;
+> > +
+> > +	switch (ad7949_adc->bits_per_word) {
+> > +	case 16:
+> > +		ad7949_adc->buffer = ad7949_adc->cfg << 2;
+> > +		break;
+> > +	case 14:
+> > +		ad7949_adc->buffer = ad7949_adc->cfg;
+> > +		break;
+> > +	case 8:
+> > +		/* Here, type is big endian as it must be sent in two transfers */
+> > +		ad7949_adc->buffer = (u16)cpu_to_be16(ad7949_adc->cfg << 2);
 
-The issue was bisected to:
+Gah, I wasn't thinking clearly when I suggested this.  Sparse warns on the
+endian conversion
 
-commit 997acaf6b4b59c6a9c259740312a69ea549cc684
-Author: Mark Rutland <mark.rutland@arm.com>
-Date:   Mon Jan 11 15:37:07 2021 +0000
+One option is to resort to ignoring the fact we know it's aligned and
+use the put_unaligned_be16() and get_unaligned_be16 calls which sparse seems to be
+happy with.  Alternative would be to just have a be16 buffer after the existing
+one in the iio_priv structure. Then you will have to change the various users
+of iio_priv()->buffer to point to the new value if we are doing 8 bit transfers.
 
-    lockdep: report broken irq restoration
+Whilst more invasive, this second option is the one I'd suggest.
+Note that there will be no need to add an __cacheline_aligned marking to this
+new element because it will be in a cachline that is only used for DMA simply being
+after the other buffer element which is force to start on a new cacheline.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11a85786d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13a85786d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15a85786d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+29c3c12f3214b85ad081@syzkaller.appspotmail.com
-Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
-
-general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 0 PID: 9805 Comm: syz-executor059 Not tainted 5.14.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:tls_sk_proto_close+0xd8/0xaf0 net/tls/tls_main.c:304
-Code: 02 00 0f 85 16 09 00 00 48 8b 85 f0 02 00 00 4d 8d 6c 24 14 4c 89 ea 48 c1 ea 03 48 89 44 24 18 48 b8 00 00 00 00 00 fc ff df <0f> b6 04 02 4c 89 ea 83 e2 07 38 d0 7f 08 84 c0 0f 85 4f 07 00 00
-RSP: 0018:ffffc9000afffc60 EFLAGS: 00010203
-RAX: dffffc0000000000 RBX: dffffc0000000000 RCX: 0000000000000000
-RDX: 0000000000000002 RSI: ffffffff87c151d3 RDI: ffff888147a24170
-RBP: ffff888147a23e80 R08: 0000000000000001 R09: 00000000fffffff0
-R10: ffffffff87c15461 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000014 R14: ffff88803d517908 R15: 0000000000000001
-FS:  000000000076f400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb379600000 CR3: 000000003d560000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- tls_sk_proto_close+0x356/0xaf0 net/tls/tls_main.c:327
- inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
- inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:478
- __sock_release+0xcd/0x280 net/socket.c:648
- sock_close+0x18/0x20 net/socket.c:1300
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
- exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x40c81b
-Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 63 fc ff ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 a1 fc ff ff 8b 44
-RSP: 002b:00007fffc346f8f0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000006 RCX: 000000000040c81b
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 0000000000000005
-RBP: 00000000000149a5 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007fffc346f940 R11: 0000000000000293 R12: 00007fffc346f940
-R13: 00007fffc346f960 R14: 0000000000405060 R15: 00007fffc346f9d0
-Modules linked in:
----[ end trace 6a958f78622ad753 ]---
-RIP: 0010:tls_sk_proto_close+0xd8/0xaf0 net/tls/tls_main.c:304
-Code: 02 00 0f 85 16 09 00 00 48 8b 85 f0 02 00 00 4d 8d 6c 24 14 4c 89 ea 48 c1 ea 03 48 89 44 24 18 48 b8 00 00 00 00 00 fc ff df <0f> b6 04 02 4c 89 ea 83 e2 07 38 d0 7f 08 84 c0 0f 85 4f 07 00 00
-RSP: 0018:ffffc9000afffc60 EFLAGS: 00010203
-
-RAX: dffffc0000000000 RBX: dffffc0000000000 RCX: 0000000000000000
-RDX: 0000000000000002 RSI: ffffffff87c151d3 RDI: ffff888147a24170
-RBP: ffff888147a23e80 R08: 0000000000000001 R09: 00000000fffffff0
-R10: ffffffff87c15461 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000014 R14: ffff88803d517908 R15: 0000000000000001
-FS:  000000000076f400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb379600000 CR3: 000000003d560000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Jonathan
+ 
+> > +		break;
+> > +	default:
+> > +		dev_err(&ad7949_adc->indio_dev->dev, "unsupported BPW\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> >  	spi_message_init_with_transfers(&msg, tx, 1);
+> >  	ret = spi_sync(ad7949_adc->spi, &msg);
+> >  
+> > @@ -115,14 +132,12 @@ static int ad7949_spi_read_channel(struct ad7949_adc_chip *ad7949_adc, int *val,
+> >  {
+> >  	int ret;
+> >  	int i;
+> > -	int bits_per_word = ad7949_adc->resolution;
+> > -	int mask = GENMASK(ad7949_adc->resolution - 1, 0);
+> >  	struct spi_message msg;
+> >  	struct spi_transfer tx[] = {
+> >  		{
+> >  			.rx_buf = &ad7949_adc->buffer,
+> >  			.len = 2,
+> > -			.bits_per_word = bits_per_word,
+> > +			.bits_per_word = ad7949_adc->bits_per_word,
+> >  		},
+> >  	};
+> >  
+> > @@ -157,7 +172,25 @@ static int ad7949_spi_read_channel(struct ad7949_adc_chip *ad7949_adc, int *val,
+> >  
+> >  	ad7949_adc->current_channel = channel;
+> >  
+> > -	*val = ad7949_adc->buffer & mask;
+> > +	switch (ad7949_adc->bits_per_word) {
+> > +	case 16:
+> > +		*val = ad7949_adc->buffer;
+> > +		/* Shift-out padding bits */
+> > +		*val >>= 16 - ad7949_adc->resolution;
+> > +		break;
+> > +	case 14:
+> > +		*val = ad7949_adc->buffer & GENMASK(13, 0);
+> > +		break;
+> > +	case 8:
+> > +		/* Here, type is big endian as data was sent in two transfers */
+> > +		*val = be16_to_cpu(ad7949_adc->buffer);
+> > +		/* Shift-out padding bits */
+> > +		*val >>= 16 - ad7949_adc->resolution;
+> > +		break;
+> > +	default:
+> > +		dev_err(&ad7949_adc->indio_dev->dev, "unsupported BPW\n");
+> > +		return -EINVAL;
+> > +	}
+> >  
+> >  	return 0;
+> >  }
+> > @@ -265,6 +298,7 @@ static int ad7949_spi_init(struct ad7949_adc_chip *ad7949_adc)
+> >  
+> >  static int ad7949_spi_probe(struct spi_device *spi)
+> >  {
+> > +	u32 spi_ctrl_mask = spi->controller->bits_per_word_mask;
+> >  	struct device *dev = &spi->dev;
+> >  	const struct ad7949_adc_spec *spec;
+> >  	struct ad7949_adc_chip *ad7949_adc;
+> > @@ -291,6 +325,18 @@ static int ad7949_spi_probe(struct spi_device *spi)
+> >  	indio_dev->num_channels = spec->num_channels;
+> >  	ad7949_adc->resolution = spec->resolution;
+> >  
+> > +	/* Set SPI bits per word */
+> > +	if (spi_ctrl_mask & SPI_BPW_MASK(ad7949_adc->resolution)) {
+> > +		ad7949_adc->bits_per_word = ad7949_adc->resolution;
+> > +	} else if (spi_ctrl_mask == SPI_BPW_MASK(16)) {
+> > +		ad7949_adc->bits_per_word = 16;
+> > +	} else if (spi_ctrl_mask == SPI_BPW_MASK(8)) {
+> > +		ad7949_adc->bits_per_word = 8;
+> > +	} else {
+> > +		dev_err(dev, "unable to find common BPW with spi controller\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> >  	ad7949_adc->vref = devm_regulator_get(dev, "vref");
+> >  	if (IS_ERR(ad7949_adc->vref)) {
+> >  		dev_err(dev, "fail to request regulator\n");  
+> 
 
