@@ -2,159 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA903DC45B
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACB43DC45E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhGaHMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 03:12:32 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:40346
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230250AbhGaHM2 (ORCPT
+        id S230331AbhGaHNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 03:13:34 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12434 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhGaHNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 03:12:28 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id E68083F233
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 07:12:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627715539;
-        bh=hN6QfGvmrSwTg4tA4I3radaavpm+Sqfgu2IG+IjJCBU=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=B0PAP61XUWJZhkjQiJoFJ6o2+qyJG6f+RbTMjUZ+8LptRgw/A340uWzzIkCh2ZIA6
-         clw14io+hbIdgN7k7OEGBZ3ntQq+43eecoMqzqMTkhEVJbJ0WzdP06UimgNTVINHQn
-         Aui4gWYVpuRPy2v9LfjcG6G/05xOfpjDaP69dFKpdAtcIEEAHpxuODK2BlJfg09a1u
-         pVoa70KGHRP3MmzBPPOApkiSE0XT8dYcVtNaLifH5YnbvgGjPF3aQro4XKTfOQpTmB
-         yFFcDA1kHzCg4CKw8msRIYJ+ICR0I8MFXQ8q40MEbI+O5m3u9wrrLlZqA2LcTCpgTa
-         BuUQQwE2YQPLw==
-Received: by mail-ed1-f70.google.com with SMTP id x1-20020a05640218c1b02903bc7f97f858so4152305edy.2
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 00:12:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hN6QfGvmrSwTg4tA4I3radaavpm+Sqfgu2IG+IjJCBU=;
-        b=s4xKd70DZII68437tBpUW+uVx24fcLf5DFsWKPcf8sgxh45LbTJvxO7i3YoIEfioG+
-         fEDNm75AUOk0xQTFmSujVIs8LZDG3nPwqsjF5r+IW8Dnn0W4fDNy3mrYIGBy1UIwjC9s
-         BWukKB+IYJRJJI7sL+rdAAB8H2S72g6s3+IjJ7EzebZ9IdBEDKrYfvT8TFOnUUUMmuqV
-         C4SUrg6lYlPoLj90WdmgHrqpuILduESzfmr8o3VKH1ARAsmFXaSyAHyE0cylyJVKOC2c
-         GBkj7iePelAk9YyyFQg5DgGPimy51BC2gkNI+FAqpsBhzc+9G4ysAO92Arpx20sknY9C
-         NwEA==
-X-Gm-Message-State: AOAM5310KJjEmgkySrjJXf4pZdeY0JHVdx0PtQ9wV5b3EMQfPDK1PVda
-        JXmY9vASIq89dfBBkLNrSpxqZdKgVAu9M5k1njnPo/+sP1YxFGzJnMVxkoCYlO3XAxMndVOan/+
-        rPfh4QbYiQm1uNx7bGD5lbjA0gYXlOVbkO28nMxu3PA==
-X-Received: by 2002:a50:da0e:: with SMTP id z14mr7925684edj.73.1627715537253;
-        Sat, 31 Jul 2021 00:12:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzM+J4ApxUWFlgbSwRrJJR8tujps6FaXF0fw5qP1Ypyvp7qxb82ntIhvndqLnHetlhetnI/Qw==
-X-Received: by 2002:a50:da0e:: with SMTP id z14mr7925659edj.73.1627715537087;
-        Sat, 31 Jul 2021 00:12:17 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id l2sm1339054ejg.37.2021.07.31.00.12.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 31 Jul 2021 00:12:16 -0700 (PDT)
-Subject: Re: [PATCH 06/12] tty: serial: samsung: Add Exynos850 SoC data
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <20210730144922.29111-7-semen.protsenko@linaro.org>
- <5826bc3e-e9e8-a9bb-4541-21c1b944a60e@canonical.com>
- <CAPLW+4=yOETYdVWvG_YUzewRDg9wB1h+z4i3DRDxJQHeVgu1EQ@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <3b607569-e97a-9f1b-92a2-a28de5d0e6b6@canonical.com>
-Date:   Sat, 31 Jul 2021 09:12:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sat, 31 Jul 2021 03:13:32 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GcFl50xGWzcfZv;
+        Sat, 31 Jul 2021 15:09:53 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 31 Jul 2021 15:13:23 +0800
+Received: from [10.174.178.91] (10.174.178.91) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 31 Jul 2021 15:13:23 +0800
+Subject: Re: [PATCH] blk-mq: allow hardware queue to get more tag while
+ sharing a tag set
+From:   "yukuai (C)" <yukuai3@huawei.com>
+To:     <axboe@kernel.dk>, <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210712031818.31918-1-yukuai3@huawei.com>
+ <ce3aa33f-3b13-5047-60ac-dee910ae6184@huawei.com>
+Message-ID: <81352885-9af4-0dcf-c009-59d1d6da8495@huawei.com>
+Date:   Sat, 31 Jul 2021 15:13:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAPLW+4=yOETYdVWvG_YUzewRDg9wB1h+z4i3DRDxJQHeVgu1EQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <ce3aa33f-3b13-5047-60ac-dee910ae6184@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/2021 01:10, Sam Protsenko wrote:
-> On Fri, 30 Jul 2021 at 19:05, Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
+On 2021/07/20 20:33, yukuai (C) wrote:
+> On 2021/07/12 11:18, Yu Kuai wrote:
+>> If there are multiple active queues while sharing a tag set, it's not
+>> necessary to limit the available tags as same share for each active queue
+>> if no one ever failed to get driver tag. And fall back to same share if
+>> someone do failed to get driver tag.
 >>
->> On 30/07/2021 16:49, Sam Protsenko wrote:
->>> Add serial driver data for Exynos850 SoC. This driver data is basically
->>> reusing EXYNOS_COMMON_SERIAL_DRV_DATA, which is common for all Exynos
->>> chips, but also enables USI init, which was added in previous commit:
->>> "tty: serial: samsung: Init USI to keep clocks running".
->>>
->>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
->>> ---
->>>  drivers/tty/serial/samsung_tty.c | 13 +++++++++++++
->>>  1 file changed, 13 insertions(+)
->>>
->>> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
->>> index 75ccbb08df4a..d059b516a0f4 100644
->>> --- a/drivers/tty/serial/samsung_tty.c
->>> +++ b/drivers/tty/serial/samsung_tty.c
->>> @@ -2814,11 +2814,19 @@ static struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
->>>       .fifosize = { 64, 256, 16, 256 },
->>>  };
->>>
->>> +static struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
->>> +     EXYNOS_COMMON_SERIAL_DRV_DATA_USI(1),
->>> +     .fifosize = { 0, },
+>> This modification will be beneficial if total queue_depth of disks
+>> on the same host is less than total tags.
 >>
->> This does not look correct. You rely on samsung,uart-fifosize property
->> but it is optional.
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   block/blk-mq-debugfs.c |  2 ++
+>>   block/blk-mq-tag.c     | 43 +++++++++++++++++++++++++++++++++++++++++-
+>>   block/blk-mq-tag.h     | 27 ++++++++++++++++++++++++--
+>>   block/blk-mq.c         | 13 ++++++++++---
+>>   block/blk-mq.h         |  8 ++++++++
+>>   include/linux/blk-mq.h |  4 ++++
+>>   include/linux/blkdev.h |  1 +
+>>   7 files changed, 92 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
+>> index 4b66d2776eda..35f1f01d93ae 100644
+>> --- a/block/blk-mq-debugfs.c
+>> +++ b/block/blk-mq-debugfs.c
+>> @@ -450,6 +450,8 @@ static void blk_mq_debugfs_tags_show(struct 
+>> seq_file *m,
+>>       seq_printf(m, "nr_reserved_tags=%u\n", tags->nr_reserved_tags);
+>>       seq_printf(m, "active_queues=%d\n",
+>>              atomic_read(&tags->active_queues));
+>> +    seq_printf(m, "pending_queues=%d\n",
+>> +           atomic_read(&tags->pending_queues));
+>>       seq_puts(m, "\nbitmap_tags:\n");
+>>       sbitmap_queue_show(tags->bitmap_tags, m);
+>> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+>> index 86f87346232a..618624b359d6 100644
+>> --- a/block/blk-mq-tag.c
+>> +++ b/block/blk-mq-tag.c
+>> @@ -40,6 +40,22 @@ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>>       return true;
+>>   }
+>> +void __blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx)
+>> +{
+>> +    if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+>> +        struct request_queue *q = hctx->queue;
+>> +        struct blk_mq_tag_set *set = q->tag_set;
+>> +
+>> +        if (!test_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags) &&
+>> +            !test_and_set_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags))
+>> +            atomic_inc(&set->pending_queues_shared_sbitmap);
+>> +    } else {
+>> +        if (!test_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state) &&
+>> +            !test_and_set_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state))
+>> +            atomic_inc(&hctx->tags->pending_queues);
+>> +    }
+>> +}
+>> +
+>>   /*
+>>    * Wakeup all potentially sleeping on tags
+>>    */
+>> @@ -74,6 +90,24 @@ void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+>>       blk_mq_tag_wakeup_all(tags, false);
+>>   }
+>> +void __blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx)
+>> +{
+>> +    struct blk_mq_tags *tags = hctx->tags;
+>> +    struct request_queue *q = hctx->queue;
+>> +    struct blk_mq_tag_set *set = q->tag_set;
+>> +
+>> +    if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+>> +        if (!test_and_clear_bit(QUEUE_FLAG_HCTX_WAIT,
+>> +                    &q->queue_flags))
+>> +            return;
+>> +        atomic_dec(&set->pending_queues_shared_sbitmap);
+>> +    } else {
+>> +        if (!test_and_clear_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state))
+>> +            return;
+>> +        atomic_dec(&tags->pending_queues);
+>> +    }
+>> +}
+>> +
+>>   static int __blk_mq_get_tag(struct blk_mq_alloc_data *data,
+>>                   struct sbitmap_queue *bt)
+>>   {
+>> @@ -112,8 +146,12 @@ unsigned int blk_mq_get_tag(struct 
+>> blk_mq_alloc_data *data)
+>>       if (tag != BLK_MQ_NO_TAG)
+>>           goto found_tag;
+>> -    if (data->flags & BLK_MQ_REQ_NOWAIT)
+>> +    if (data->flags & BLK_MQ_REQ_NOWAIT) {
+>> +        if (!data->q->elevator)
+>> +            blk_mq_dtag_busy(data->hctx);
+>> +
+>>           return BLK_MQ_NO_TAG;
+>> +    }
+>>       ws = bt_wait_ptr(bt, data->hctx);
+>>       do {
+>> @@ -140,6 +178,9 @@ unsigned int blk_mq_get_tag(struct 
+>> blk_mq_alloc_data *data)
+>>           if (tag != BLK_MQ_NO_TAG)
+>>               break;
+>> +        if (!data->q->elevator)
+>> +            blk_mq_dtag_busy(data->hctx);
+>> +
+>>           bt_prev = bt;
+>>           io_schedule();
+>> diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+>> index 8ed55af08427..badcf3693749 100644
+>> --- a/block/blk-mq-tag.h
+>> +++ b/block/blk-mq-tag.h
+>> @@ -10,6 +10,11 @@ struct blk_mq_tags {
+>>       unsigned int nr_reserved_tags;
+>>       atomic_t active_queues;
+>> +    /*
+>> +     * if multiple queues share a tag set, pending_queues record the
+>> +     * number of queues that can't get driver tag.
+>> +     */
+>> +    atomic_t pending_queues;
+>>       struct sbitmap_queue *bitmap_tags;
+>>       struct sbitmap_queue *breserved_tags;
+>> @@ -69,8 +74,10 @@ enum {
+>>       BLK_MQ_TAG_MAX        = BLK_MQ_NO_TAG - 1,
+>>   };
+>> -extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
+>> -extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
+>> +extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx);
+>> +extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx);
+>> +extern void __blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx);
+>> +extern void __blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx);
+>>   static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>>   {
+>> @@ -88,6 +95,22 @@ static inline void blk_mq_tag_idle(struct 
+>> blk_mq_hw_ctx *hctx)
+>>       __blk_mq_tag_idle(hctx);
+>>   }
+>> +static inline void blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx)
+>> +{
+>> +    if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+>> +        return;
+>> +
+>> +    __blk_mq_dtag_busy(hctx);
+>> +}
+>> +
+>> +static inline void blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx)
+>> +{
+>> +    if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+>> +        return;
+>> +
+>> +    __blk_mq_dtag_idle(hctx);
+>> +}
+>> +
+>>   static inline bool blk_mq_tag_is_reserved(struct blk_mq_tags *tags,
+>>                         unsigned int tag)
+>>   {
+>> diff --git a/block/blk-mq.c b/block/blk-mq.c
+>> index 2c4ac51e54eb..1bb52bd71da8 100644
+>> --- a/block/blk-mq.c
+>> +++ b/block/blk-mq.c
+>> @@ -991,8 +991,10 @@ static void blk_mq_timeout_work(struct 
+>> work_struct *work)
+>>            */
+>>           queue_for_each_hw_ctx(q, hctx, i) {
+>>               /* the hctx may be unmapped, so check it here */
+>> -            if (blk_mq_hw_queue_mapped(hctx))
+>> +            if (blk_mq_hw_queue_mapped(hctx)) {
+>>                   blk_mq_tag_idle(hctx);
+>> +                blk_mq_dtag_idle(hctx);
+>> +            }
+>>           }
+>>       }
+>>       blk_queue_exit(q);
+>> @@ -1097,8 +1099,10 @@ static bool __blk_mq_get_driver_tag(struct 
+>> request *rq)
+>>       }
+>>       tag = __sbitmap_queue_get(bt);
+>> -    if (tag == BLK_MQ_NO_TAG)
+>> +    if (tag == BLK_MQ_NO_TAG) {
+>> +        blk_mq_dtag_busy(rq->mq_hctx);
+>>           return false;
+>> +    }
+>>       rq->tag = tag + tag_offset;
+>>       return true;
+>> @@ -2676,8 +2680,10 @@ static void blk_mq_exit_hctx(struct 
+>> request_queue *q,
+>>   {
+>>       struct request *flush_rq = hctx->fq->flush_rq;
+>> -    if (blk_mq_hw_queue_mapped(hctx))
+>> +    if (blk_mq_hw_queue_mapped(hctx)) {
+>>           blk_mq_tag_idle(hctx);
+>> +        blk_mq_dtag_idle(hctx);
+>> +    }
+>>       blk_mq_clear_flush_rq_mapping(set->tags[hctx_idx],
+>>               set->queue_depth, flush_rq);
+>> @@ -3536,6 +3542,7 @@ int blk_mq_alloc_tag_set(struct blk_mq_tag_set 
+>> *set)
+>>       if (blk_mq_is_sbitmap_shared(set->flags)) {
+>>           atomic_set(&set->active_queues_shared_sbitmap, 0);
+>> +        atomic_set(&set->pending_queues_shared_sbitmap, 0);
+>>           if (blk_mq_init_shared_sbitmap(set)) {
+>>               ret = -ENOMEM;
+>> diff --git a/block/blk-mq.h b/block/blk-mq.h
+>> index d08779f77a26..9e646ade81a8 100644
+>> --- a/block/blk-mq.h
+>> +++ b/block/blk-mq.h
+>> @@ -337,10 +337,18 @@ static inline bool hctx_may_queue(struct 
+>> blk_mq_hw_ctx *hctx,
+>>           if (!test_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags))
+>>               return true;
+>> +
+>> +        if (!atomic_read(&set->pending_queues_shared_sbitmap))
+>> +            return true;
+>> +
+>>           users = atomic_read(&set->active_queues_shared_sbitmap);
+>>       } else {
+>>           if (!test_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
+>>               return true;
+>> +
+>> +        if (!atomic_read(&hctx->tags->pending_queues))
+>> +            return true;
+>> +
+>>           users = atomic_read(&hctx->tags->active_queues);
+>>       }
+>> diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+>> index 1d18447ebebc..3bc0faf0e2cf 100644
+>> --- a/include/linux/blk-mq.h
+>> +++ b/include/linux/blk-mq.h
+>> @@ -256,6 +256,7 @@ struct blk_mq_tag_set {
+>>       unsigned int        flags;
+>>       void            *driver_data;
+>>       atomic_t        active_queues_shared_sbitmap;
+>> +    atomic_t        pending_queues_shared_sbitmap;
+>>       struct sbitmap_queue    __bitmap_tags;
+>>       struct sbitmap_queue    __breserved_tags;
+>> @@ -415,6 +416,9 @@ enum {
+>>       /* hw queue is inactive after all its CPUs become offline */
+>>       BLK_MQ_S_INACTIVE    = 3,
+>> +    /* hw queue is waiting for driver tag */
+>> +    BLK_MQ_S_DTAG_WAIT    = 1,
+>> +
+>>       BLK_MQ_MAX_DEPTH    = 10240,
+>>       BLK_MQ_CPU_WORK_BATCH    = 8,
+>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+>> index 3177181c4326..55e0965c9c3c 100644
+>> --- a/include/linux/blkdev.h
+>> +++ b/include/linux/blkdev.h
+>> @@ -603,6 +603,7 @@ struct request_queue {
+>>   #define QUEUE_FLAG_RQ_ALLOC_TIME 27    /* record rq->alloc_time_ns */
+>>   #define QUEUE_FLAG_HCTX_ACTIVE    28    /* at least one blk-mq hctx 
+>> is active */
+>>   #define QUEUE_FLAG_NOWAIT       29    /* device supports NOWAIT */
+>> +#define QUEUE_FLAG_HCTX_WAIT    30    /* at least one blk-mq hctx 
+>> can't get driver tag */
+>>   #define QUEUE_FLAG_MQ_DEFAULT    ((1 << QUEUE_FLAG_IO_STAT) |        \
+>>                    (1 << QUEUE_FLAG_SAME_COMP) |        \
 >>
 > 
-> Good point. I will replace fifosize elements (in patch series v2) with
-> this code (the reasoning is below):
-> 
->     .fifosize = { 256, 64, 64, 64 }
-> 
-> TRM mentions that USI block has configurable FIFO of 16/32/64/128/256
-> byte. In vendor kernel they are setting default values in dtsi instead
-> of driver, that's where fifosize = { 0 } appeared from. And in vendor
-> dtsi they set 256 for serial_0 (USI UART instance), 64 for serial_1
-> (CMGP0 UART instance) and 64 for serial_2 (CMGP1 UART instance). I
-> tested 256 and 64 for serial_0 (which is used for serial console)
-> 
-> As for fifosize array elements count: though it's possible to
-> configure up to 7 UARTs in Exynos850 (it has 5 USI blocks and 2 CMGP
-> blocks, which can be configured as USIs), in a regular case it's only
-> 3 UARTs (1 in USI and 2 in CMGP). This is how it's done in vendor's
-> device tree, and I doubt someone is going to need more than 3 serials
-> anyway, looks like very specific case for a mobile SoC. But
-> CONFIG_SERIAL_SAMSUNG_UARTS_4=y is set by default when using arm64
-> defconfig, and I'd like to keep minimal delta for this defconfig for
-> now.
-> 
-> Hope you are ok with this?
-> 
+> ping ...
 
-Yes, sounds good.
-
-
-Best regards,
-Krzysztof
+ping ...
