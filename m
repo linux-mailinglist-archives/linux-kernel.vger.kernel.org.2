@@ -2,86 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF2E3DC67D
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 17:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8203DC676
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 17:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbhGaPCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 11:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233291AbhGaPCH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 11:02:07 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92CFC061798
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 08:01:59 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso25129740pjq.2
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 08:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6NzNWl7LhGEt5gulXFub5aIXRWGd7b+RfXfHU7IL/eI=;
-        b=Jx/NovSJ2alFyoaVfse4LYGuhNMlBcAWv6JTiM3YSwvodvaXCAulhewOn2HF0FC+nz
-         N7t2fd02SxFeFS/jAywZfBDu3dF82py23YxGadXmxU6FsZZNwFLKknaPYZ73JtAAQWAr
-         FgjDEpjlNdXTBhWlUNhxTGhy3p9i8wqoga8qo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6NzNWl7LhGEt5gulXFub5aIXRWGd7b+RfXfHU7IL/eI=;
-        b=ADty0lwJ5ViAEgTyR7krm0QpDzMz7p+/3Wiuih/Ck9GXjxbGH0pMyIJ8ZrqkVKcN/r
-         QZiWFt1P28g2W9xJUaDKpKAApgt1V+yLl7bXaRNLJ223jnEhhFtkoAUuARoh63PWvNyB
-         Mm9CfK8KelMCd6BkPv6SU4z4YoFAagN5BMeRqAwx7P/YJRfZoyMQczgeLoZQrj4WK20D
-         9FRsehXiwNYXw/CzoEp2FKu9s8fsa1wYkqUgtL/VyY7vSQigObRKeXqKZkU1HhdU3We4
-         Sa0clMsdUeOxRh5eWqXfDmUMJI8ZVmSz2Yjb/k3XENpS96hUAWqzl/kBnQRbQHUsEie8
-         MGtA==
-X-Gm-Message-State: AOAM530yoEOmuyvl/HGv+BFM/okH2YJpZJ7cb3wk0iL1BEgduWyg36AU
-        EZOIfhW1OQn9nRKvg8EKEsuB4A==
-X-Google-Smtp-Source: ABdhPJxldKFq/Rzqofqxn4rJbNcLhr5hYJ4ZeyAVRbwaYS9Cd10PchwbLiRXEC7+1Qe+4tL2UtPocg==
-X-Received: by 2002:a65:53ce:: with SMTP id z14mr2617394pgr.275.1627743719538;
-        Sat, 31 Jul 2021 08:01:59 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id jz24sm1857832pjb.9.2021.07.31.08.01.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 08:01:58 -0700 (PDT)
-Date:   Sat, 31 Jul 2021 08:01:57 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 54/64] ipv6: Use struct_group() to zero rt6_info
-Message-ID: <202107310801.D50070F@keescook>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-55-keescook@chromium.org>
- <20210729115850.7f913c73@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S233214AbhGaPAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 11:00:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233227AbhGaPAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 11:00:13 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09CE460F56;
+        Sat, 31 Jul 2021 15:00:03 +0000 (UTC)
+Date:   Sat, 31 Jul 2021 16:02:43 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com,
+        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v4 4/5] dt-bindings: iio: adc: ad7949: add per channel
+ reference
+Message-ID: <20210731160243.662065ef@jic23-huawei>
+In-Reply-To: <20210727232906.980769-5-liambeguin@gmail.com>
+References: <20210727232906.980769-1-liambeguin@gmail.com>
+        <20210727232906.980769-5-liambeguin@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729115850.7f913c73@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 11:58:50AM -0700, Jakub Kicinski wrote:
-> On Tue, 27 Jul 2021 13:58:45 -0700 Kees Cook wrote:
-> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > field bounds checking for memset(), avoid intentionally writing across
-> > neighboring fields.
-> > 
-> > Add struct_group() to mark region of struct rt6_info that should be
-> > initialized to zero.
+On Tue, 27 Jul 2021 19:29:05 -0400
+Liam Beguin <liambeguin@gmail.com> wrote:
+
+> From: Liam Beguin <lvb@xiphos.com>
 > 
-> memset_after() ?
+> Add bindings documentation describing per channel reference voltage
+> selection.
+> This adds the adi,internal-ref-microvolt property, and child nodes for
+> each channel. This is required to properly configure the ADC sample
+> request based on which reference source should be used for the
+> calculation.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
 
-Oh, hah. Yes. I will adjust for v2.
+I'm fine with this, but as it's a bit unusual, definitely want to give a
+little more time for Rob and others to take a look.
 
--- 
-Kees Cook
+Jonathan
+> ---
+>  .../bindings/iio/adc/adi,ad7949.yaml          | 69 +++++++++++++++++--
+>  1 file changed, 65 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> index 9b56bd4d5510..893f72b8081e 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> @@ -26,19 +26,63 @@ properties:
+>    reg:
+>      maxItems: 1
+>  
+> +  vrefin-supply:
+> +    description:
+> +      Buffered ADC reference voltage supply.
+> +
+>    vref-supply:
+>      description:
+> -      ADC reference voltage supply
+> +      Unbuffered ADC reference voltage supply.
+>  
+>    spi-max-frequency: true
+>  
+> -  "#io-channel-cells":
+> +  '#io-channel-cells':
+>      const: 1
+>  
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+> +
+>  required:
+>    - compatible
+>    - reg
+> -  - vref-supply
+> +
+> +patternProperties:
+> +  '^channel@([0-7])$':
+> +    type: object
+> +    description: |
+> +      Represents the external channels which are connected to the ADC.
+> +
+> +    properties:
+> +      reg:
+> +        description: |
+> +          The channel number.
+> +          Up to 4 channels, numbered from 0 to 3 for adi,ad7682.
+> +          Up to 8 channels, numbered from 0 to 7 for adi,ad7689 and adi,ad7949.
+> +        items:
+> +          minimum: 0
+> +          maximum: 7
+> +
+> +      adi,internal-ref-microvolt:
+> +        description: |
+> +          Internal reference voltage selection in microvolts.
+> +
+> +          If no internal reference is specified, the channel will default to the
+> +          external reference defined by vrefin-supply (or vref-supply).
+> +          vrefin-supply will take precedence over vref-supply if both are defined.
+> +
+> +          If no supplies are defined, the reference selection will default to
+> +          4096mV internal reference.
+> +
+> +        enum: [2500000, 4096000]
+> +        default: 4096000
+> +
+> +    required:
+> +      - reg
+> +
+> +    additionalProperties: false
+>  
+>  additionalProperties: false
+>  
+> @@ -49,9 +93,26 @@ examples:
+>          #size-cells = <0>;
+>  
+>          adc@0 {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+>              compatible = "adi,ad7949";
+>              reg = <0>;
+> -            vref-supply = <&vdd_supply>;
+> +            vrefin-supply = <&vdd_supply>;
+> +
+> +            channel@0 {
+> +                adi,internal-ref-microvolt = <4096000>;
+> +                reg = <0>;
+> +            };
+> +
+> +            channel@1 {
+> +                adi,internal-ref-microvolt = <2500000>;
+> +                reg = <1>;
+> +            };
+> +
+> +            channel@2 {
+> +                reg = <2>;
+> +            };
+>          };
+>      };
+>  ...
+
