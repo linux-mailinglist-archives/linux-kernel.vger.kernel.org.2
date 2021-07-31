@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBF03DC1F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2ED3DC1FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234403AbhGaA2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 20:28:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234211AbhGaA2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 20:28:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2823560FE7;
-        Sat, 31 Jul 2021 00:28:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627691314;
-        bh=6tVa5WTEOKvXkrQ0dlXJd8ijDejSCWqUtHLbUi9dqXI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bC5jEhS+sFu5xnhqiWQAcaHDM+rdH0WxsXDV9pWS+LS/dR5lV4029VXR9v2ADd8Oj
-         p577lmyiwqAPW03W2n2HMAOddShm5xgf61wZMnwzf8sOUtsZN2Rq7OW/Ga3TNnviwn
-         5lllOy+fWYHjwld+is7QRqfPrMau/GSGjIhrMMkC7ZYyD2y1qv+lFpy9vWj9f4fGyZ
-         6/4XwjCT9YT25HeEoCcu4zSef5F80c/I76NCY6MRzVeoi11YRXmOk87fkEF8NL9PZa
-         3KCmLxCPZ/Nzb5GvplWDAmgGSz6X4ZPL4oekpNYWw1l1/NQOvrc/bsbKf4Yr84mpgD
-         vsOBhEch9f5PQ==
-Date:   Sat, 31 Jul 2021 09:28:30 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <mark.rutland@arm.com>,
-        <tyhicks@linux.microsoft.com>, <linux@roeck-us.net>,
-        <maz@kernel.org>, <tabba@google.com>, <lecopzer.chen@mediatek.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@arm.com>,
-        "Qi Liu" <liuqi115@huawei.com>
-Subject: Re: [PATCH v2] arm64: fix the doc of RANDOMIZE_MODULE_REGION_FULL
-Message-Id: <20210731092830.8e9622d45ac52a739fd80b88@kernel.org>
-In-Reply-To: <20210730125131.13724-1-song.bao.hua@hisilicon.com>
-References: <20210730125131.13724-1-song.bao.hua@hisilicon.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234537AbhGaA3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 20:29:48 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:51455 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234448AbhGaA3r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 20:29:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627691382; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=fK+tZMR6pKL2c8jQjVZ5FRLeEtgsQl5vSZl1JOIRzjs=; b=Ri4l0OodhaLVPD4+rfoUgQtsSmdVk4x0Fq7QDQ06JoaJCfKb9v7jTDGSe2R3dmVuYznwzun0
+ QX0kIKrkWf2guPkBtqJvVcpdDPYQU64sulFEgn2GnyIwVsmcZbDgHkY7kHZn1UK8m1SqXLNZ
+ bNYHMx2wPjxDUWTYJZtz8BWGbco=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6104997296a66e66b20cd002 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 31 Jul 2021 00:29:38
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CC230C43460; Sat, 31 Jul 2021 00:29:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B513FC433D3;
+        Sat, 31 Jul 2021 00:29:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B513FC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH] usb: dwc3: gadget: Avoid runtime resume if disabling pullup
+Date:   Fri, 30 Jul 2021 17:29:34 -0700
+Message-Id: <1627691374-15711-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Jul 2021 00:51:31 +1200
-Barry Song <song.bao.hua@hisilicon.com> wrote:
+If the device is already in the runtime suspended state, any call to
+the pullup routine will issue a runtime resume on the DWC3 core
+device.  If the USB gadget is disabling the pullup, then avoid having
+to issue a runtime resume, as DWC3 gadget has already been
+halted/stopped.
 
-> Obviously kaslr is setting the module region to 2GB rather than 4GB since
-> commit b2eed9b588112 ("arm64/kernel: kaslr: reduce module randomization
-> range to 2 GB"). So fix the size of region in Kconfig.
-> On the other hand, even though RANDOMIZE_MODULE_REGION_FULL is not set,
-> module_alloc() can fall back to a 2GB window if ARM64_MODULE_PLTS is set.
-> In this case, veneers are still needed. !RANDOMIZE_MODULE_REGION_FULL
-> doesn't necessarily mean veneers are not needed.
-> So fix the doc to be more precise to avoid any confusion to the readers
-> of the code.
-> 
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Ard Biesheuvel <ard.biesheuvel@arm.com>
-> Cc: Qi Liu <liuqi115@huawei.com>
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+This fixes an issue where the following condition occurs:
 
-Thanks for explanation. This looks good to me.
+usb_gadget_remove_driver()
+-->usb_gadget_disconnect()
+ -->dwc3_gadget_pullup(0)
+  -->pm_runtime_get_sync() -> ret = 0
+  -->pm_runtime_put() [async]
+-->usb_gadget_udc_stop()
+ -->dwc3_gadget_stop()
+  -->dwc->gadget_driver = NULL
+...
 
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+dwc3_suspend_common()
+-->dwc3_gadget_suspend()
+ -->DWC3 halt/stop routine skipped, driver_data == NULL
 
-Thank you,
+This leads to a situation where the DWC3 gadget is not properly
+stopped, as the runtime resume would have re-enabled EP0 and event
+interrupts, and since we avoided the DWC3 gadget suspend, these
+resources were never disabled.
 
-> ---
->  -v2:
->  Add description about fallback can only happen while ARM64_MODULE_PLTS
->  is enabled. Thanks for Will's comment.
-> 
->  arch/arm64/Kconfig        | 9 ++++++---
->  arch/arm64/kernel/kaslr.c | 4 +++-
->  2 files changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index b5b13a932561..fdcd54d39c1e 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1800,11 +1800,11 @@ config RANDOMIZE_BASE
->  	  If unsure, say N.
->  
->  config RANDOMIZE_MODULE_REGION_FULL
-> -	bool "Randomize the module region over a 4 GB range"
-> +	bool "Randomize the module region over a 2 GB range"
->  	depends on RANDOMIZE_BASE
->  	default y
->  	help
-> -	  Randomizes the location of the module region inside a 4 GB window
-> +	  Randomizes the location of the module region inside a 2 GB window
->  	  covering the core kernel. This way, it is less likely for modules
->  	  to leak information about the location of core kernel data structures
->  	  but it does imply that function calls between modules and the core
-> @@ -1812,7 +1812,10 @@ config RANDOMIZE_MODULE_REGION_FULL
->  
->  	  When this option is not set, the module region will be randomized over
->  	  a limited range that contains the [_stext, _etext] interval of the
-> -	  core kernel, so branch relocations are always in range.
-> +	  core kernel, so branch relocations are almost always in range unless
-> +	  ARM64_MODULE_PLTS is enabled and the region is exhausted. In this
-> +	  particular case of region exhaustion, modules might be able to fall
-> +	  back to a larger 2GB area.
->  
->  config CC_HAVE_STACKPROTECTOR_SYSREG
->  	def_bool $(cc-option,-mstack-protector-guard=sysreg -mstack-protector-guard-reg=sp_el0 -mstack-protector-guard-offset=0)
-> diff --git a/arch/arm64/kernel/kaslr.c b/arch/arm64/kernel/kaslr.c
-> index cfa2cfde3019..418b2bba1521 100644
-> --- a/arch/arm64/kernel/kaslr.c
-> +++ b/arch/arm64/kernel/kaslr.c
-> @@ -162,7 +162,9 @@ u64 __init kaslr_early_init(void)
->  		 * a PAGE_SIZE multiple in the range [_etext - MODULES_VSIZE,
->  		 * _stext) . This guarantees that the resulting region still
->  		 * covers [_stext, _etext], and that all relative branches can
-> -		 * be resolved without veneers.
-> +		 * be resolved without veneers unless this region is exhausted
-> +		 * and we fall back to a larger 2GB window in module_alloc()
-> +		 * when ARM64_MODULE_PLTS is enabled.
->  		 */
->  		module_range = MODULES_VSIZE - (u64)(_etext - _stext);
->  		module_alloc_base = (u64)_etext + offset - MODULES_VSIZE;
-> -- 
-> 2.25.1
-> 
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+---
+ drivers/usb/dwc3/gadget.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index a29a4ca..5d08454 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -2435,6 +2435,17 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+ 	}
+ 
+ 	/*
++	 * Avoid issuing a runtime resume if the device is already in the
++	 * suspended state during gadget disconnect.  DWC3 gadget was already
++	 * halted/stopped during runtime suspend.
++	 */
++	if (!is_on) {
++		pm_runtime_barrier(dwc->dev);
++		if (pm_runtime_suspended(dwc->dev))
++			return 0;
++	}
++
++	/*
+ 	 * Check the return value for successful resume, or error.  For a
+ 	 * successful resume, the DWC3 runtime PM resume routine will handle
+ 	 * the run stop sequence, so avoid duplicate operations here.
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
