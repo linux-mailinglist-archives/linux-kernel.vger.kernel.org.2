@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBBF3DC2F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 05:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888B03DC2FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 05:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbhGaDhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 23:37:14 -0400
-Received: from mail.bonc.com.cn ([39.155.134.159]:43163 "EHLO bonc.com.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231518AbhGaDhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 23:37:12 -0400
-X-Greylist: delayed 415 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Jul 2021 23:37:12 EDT
-Received: from localhost.localdomain.localdomain (unknown [223.70.140.94])
-        by coremail (Coremail) with SMTP id AQAAfwCnRmRnwwRhD7MmAA--.10921S2;
-        Sat, 31 Jul 2021 11:28:48 +0800 (CST)
-From:   Baisheng Gao <gaobaisheng@bonc.com.cn>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: fix incorrect macro referencing in mscc-phy-vsc8531.txt
-Date:   Sat, 31 Jul 2021 11:34:47 +0800
-Message-Id: <1627702487-234812-1-git-send-email-gaobaisheng@bonc.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAfwCnRmRnwwRhD7MmAA--.10921S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtFykWF4kAFyDKw4kGFyxAFb_yoWkuFcEkF
-        naqF18Jr9rGr1Fga1jvrsrZF4Yvr4jy3s7u3sFqFyIv3yrA398CFyDJwnxZr1xCFWUuF4x
-        Zry8uF17u3ZrKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb28YjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0Y48IcxkI7VAKI48G6xCj
-        nVAKz4kxMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUJVWUXwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jz89NUUUUU=
-X-CM-SenderInfo: xjdrutplvkv0nj6e003fof0zgofq/
+        id S235623AbhGaDkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 23:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231487AbhGaDkB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 23:40:01 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7193BC06175F;
+        Fri, 30 Jul 2021 20:39:55 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id a20so13402922plm.0;
+        Fri, 30 Jul 2021 20:39:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=p2lpXtsSO03rW6tcWTOmwaCtuMDEqLxg0LUSEGGH3vI=;
+        b=JE3SeclbIM3he1tkc9keVUi25AQkxSqk1zYw/znHDZ8usMuV6gWLURbaml/8UEsW+A
+         B8HFMv5NQIG4iyODlnJseiGoYiXI10723mumdR7Pk/pL5IvDPYxo7tmLK3U0lx8toGV3
+         fSNib14rmAnynvoRlkT6dw2GKrpv/P3Gnqfc3NwKNYXK0uSiuyHcGqoa1FRdPWEJtgxm
+         RuZkLFeqyP7BsX+kWtmX/geuxrs3U8s01ZtRsG3dvxOLYJ0xqcI9My5luudQ1hgSKwk1
+         WWz9BrxK4FiWLvtDc4R9JYkOAhnWj9Y0B7gvnT5gGklnb76Bdia1IxGzZK4TWnlEgl1+
+         Vj3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=p2lpXtsSO03rW6tcWTOmwaCtuMDEqLxg0LUSEGGH3vI=;
+        b=j1m8m82A7d6f24Oh5MVbNin7P9inttsTVjNCtFIeuIzLOpZIcmeO8LMrtYX3WY5dM4
+         LjRZEm8tvnjhmoh3PRDp08t/7Jb++pgzR9jGr+asUD9AtFeGSoWTXNsi+hlCu/B9fzBL
+         SINphf9RRPIKh4gha091lr2c1zn8f7FHHwBsV6tXLCh4b4smP4D+5EtR4iIbbYUmF5kb
+         gwo0spY3M78sRLoP89XQSzECKHxQ8Z0ahHMhlOuq/R9GzxJ+uWYmzyC3hWV1B1KK+lOz
+         bZx/L+KMSiGrIIYBky0iMTN7WcVm5Zl4MgtDyo8lDxPC/dqMoFWKTkPLGGlyIqCwan4e
+         6gtQ==
+X-Gm-Message-State: AOAM531HrCPVnaVf/X7X3ziICXK02iBUT941O2CHT5shh8kalDb+KePy
+        H4AFQHQsNsbDk5+so6jcC4Sg+UOg/Q296Rrp
+X-Google-Smtp-Source: ABdhPJxd77Ef1mfbPQZ8wOiSnmNHKR8W5cnPUcmXDDwNlm9EXArjLXkEKX9EWO0lHYwCm++2YbpmlQ==
+X-Received: by 2002:a63:e43:: with SMTP id 3mr1686841pgo.61.1627702795089;
+        Fri, 30 Jul 2021 20:39:55 -0700 (PDT)
+Received: from [10.106.0.42] ([45.135.186.29])
+        by smtp.gmail.com with ESMTPSA id y15sm4555337pga.34.2021.07.30.20.39.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 20:39:54 -0700 (PDT)
+To:     stf_xl@wp.pl, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com
+From:   Li Tuo <islituo@gmail.com>
+Subject: [BUG] iwlegacy: 3945-rs: possible null-pointer dereference in
+ il3945_rs_get_rate()
+Message-ID: <c9663714-a352-7c5c-1826-c7a1cd6d9abf@gmail.com>
+Date:   Sat, 31 Jul 2021 11:39:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify LINK_1000_ACTIVITY and LINK_100_ACTIVITY to VSC8531_LINK_1000_ACTIVITY
-and VSC8531_LINK_100_ACTIVITY respectively in the example of ethernet-phy node
-according to include/dt-bindings/net/mscc-phy-vsc8531.h.
+Hello,
 
-Signed-off-by: Baisheng Gao <gaobaisheng@bonc.com.cn>
----
- Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Our static analysis tool finds a possible null-pointer dereference in 
+the iwlegacy driver in Linux 5.14.0-rc3:
 
-diff --git a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
-index 87a27d7..0a3647f 100644
---- a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
-+++ b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
-@@ -67,7 +67,7 @@ Example:
-                 compatible = "ethernet-phy-id0007.0570";
-                 vsc8531,vddmac		= <3300>;
-                 vsc8531,edge-slowdown	= <7>;
--                vsc8531,led-0-mode	= <LINK_1000_ACTIVITY>;
--                vsc8531,led-1-mode	= <LINK_100_ACTIVITY>;
-+                vsc8531,led-0-mode	= <VSC8531_LINK_1000_ACTIVITY>;
-+                vsc8531,led-1-mode	= <VSC8531_LINK_100_ACTIVITY>;
- 		load-save-gpios		= <&gpio 10 GPIO_ACTIVE_HIGH>;
-         };
--- 
-1.8.3.1
+The variable rs_sta is checked in:
+629:    if (rs_sta && !rs_sta->il)
 
+This indicates that rs_sta can be NULL.
+If so, some null-pointer dereferences will occur in some statements such as:
+643:    idx = min(rs_sta->last_txrate_idx & 0xffff, RATE_COUNT_3945 - 1);
+653:    if (rs_sta->start_rate != RATE_INVALID)
 
+I am not quite sure whether this possible null-pointer dereference is 
+real and how to fix it if it is real.
+Any feedback would be appreciated, thanks!
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+
+Best wishes,
+Tuo Li
