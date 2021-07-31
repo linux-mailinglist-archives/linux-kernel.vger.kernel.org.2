@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489963DC71D
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 19:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8876A3DC723
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 19:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhGaRNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 13:13:16 -0400
-Received: from smtprelay0171.hostedemail.com ([216.40.44.171]:38420 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229449AbhGaRNO (ORCPT
+        id S231189AbhGaRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 13:15:26 -0400
+Received: from mail-pj1-f47.google.com ([209.85.216.47]:55137 "EHLO
+        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229840AbhGaRPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 13:13:14 -0400
-Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 22371182CED2A;
-        Sat, 31 Jul 2021 17:13:07 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 22581C4182;
-        Sat, 31 Jul 2021 17:13:06 +0000 (UTC)
-Message-ID: <72be13936ca341897d2fd7c65fb4345a8467c571.camel@perches.com>
-Subject: Re: [PATCH 4/4] memblock: stop poisoning raw allocations
-From:   Joe Perches <joe@perches.com>
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Simek <monstr@monstr.eu>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Date:   Sat, 31 Jul 2021 10:13:04 -0700
-In-Reply-To: <20210714123739.16493-5-rppt@kernel.org>
-References: <20210714123739.16493-1-rppt@kernel.org>
-         <20210714123739.16493-5-rppt@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Sat, 31 Jul 2021 13:15:24 -0400
+Received: by mail-pj1-f47.google.com with SMTP id b6so19658292pji.4;
+        Sat, 31 Jul 2021 10:15:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DlaoNmwnEWDtxTjH4uaBlzq3ZGun3yheeOVe4kPMWlc=;
+        b=nRiNHjZ3ak47qCrpNaQC0KlEFsD2IJqBqsI1jy+9CnSM9OelaAgyA+Mu1MpcgIs33K
+         MjTuU01NGmSM3JZkodBKzlqvY7euttqBs+vUI/X4Wky9Z4F5YoY/FY9v+1T4wJk1wMqp
+         uyuR9peYgOq5CdJwj6JuMSN2wtPUeborC3fpNiF+BO/p+RdsZo4jqLIkjf2H9wv2yWcd
+         0aPU4N2NJQndTWUwMJdKLmtguitLd5aDvvCQLx+gJlN1PRM1mgCF+AT64aqjPlPBFy7l
+         30fA1O9pqE8ytkwTagftLoWxnF4Nk5dfidjo4DqJUZjkvfDminEzRO9X7AhsKeS2wCQ8
+         oB8g==
+X-Gm-Message-State: AOAM530AyiOT1ba5ld2GHS9chB2nRk5whiy6MnnsWZBk98rF/EJPNoi9
+        UbnSAvSw+/rL2sLUcI8XPBI=
+X-Google-Smtp-Source: ABdhPJxagnFWjqey40tjfYyQ5SyxoZzmV1olLTHdeYhT7HZM2cviRdp277uKthSeil31eA/NJXkRIQ==
+X-Received: by 2002:a17:90a:d90f:: with SMTP id c15mr9207955pjv.178.1627751717376;
+        Sat, 31 Jul 2021 10:15:17 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:13bf:959e:93b8:7d56? ([2601:647:4000:d7:13bf:959e:93b8:7d56])
+        by smtp.gmail.com with ESMTPSA id z5sm2501918pff.97.2021.07.31.10.15.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 31 Jul 2021 10:15:16 -0700 (PDT)
+Subject: Re: [PATCH] blk-mq: allow hardware queue to get more tag while
+ sharing a tag set
+To:     Yu Kuai <yukuai3@huawei.com>, axboe@kernel.dk, ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+References: <20210712031818.31918-1-yukuai3@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <ade72519-5e16-1cc5-9a77-cb9ead42035e@acm.org>
+Date:   Sat, 31 Jul 2021 10:15:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.06
-X-Stat-Signature: yj9zkob6dcque4mf7j5834161m7hf6mi
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 22581C4182
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19ko8q83D4fbzHA4YVPHk7tHYLcyeYYJGs=
-X-HE-Tag: 1627751586-362545
+In-Reply-To: <20210712031818.31918-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-07-14 at 15:37 +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On 7/11/21 8:18 PM, Yu Kuai wrote:
+> If there are multiple active queues while sharing a tag set, it's not
+> necessary to limit the available tags as same share for each active queue
+> if no one ever failed to get driver tag. And fall back to same share if
+> someone do failed to get driver tag.
 > 
-> Functions memblock_alloc_exact_nid_raw() and memblock_alloc_try_nid_raw()
-> are intended for early memory allocation without overhead of zeroing the
-> allocated memory. Since these functions were used to allocate the memory
-> map, they have ended up with addition of a call to page_init_poison() that
-> poisoned the allocated memory when CONFIG_PAGE_POISON was set.
-> 
-> Since the memory map is allocated using a dedicated memmep_alloc() function
-> that takes care of the poisoning, remove page poisoning from the
-> memblock_alloc_*_raw() functions.
-[]
-> diff --git a/mm/memblock.c b/mm/memblock.c
-[]
-> @@ -1490,18 +1490,12 @@ void * __init memblock_alloc_exact_nid_raw(
->  			phys_addr_t min_addr, phys_addr_t max_addr,
->  			int nid)
->  {
-> -	void *ptr;
-> -
->  	memblock_dbg("%s: %llu bytes align=0x%llx nid=%d from=%pa max_addr=%pa %pS\n",
->  		     __func__, (u64)size, (u64)align, nid, &min_addr,
->  		     &max_addr, (void *)_RET_IP_);
+> This modification will be beneficial if total queue_depth of disks
+> on the same host is less than total tags.
 
-unassociated trivia:
+This patch adds new atomic operations in the hot path and hence probably
+has a negative performance impact. What is the performance impact of
+this patch for e.g. null_blk when submitting I/O from all CPU cores?
 
-casting _RET_IP_ back to void * seems odd as the define is
-include/linux/kernel.h:#define _RET_IP_         (unsigned long)__builtin_return_address(0)
+Thanks,
 
-It's probably easier to understand as just __builtin_return_address(0)
-
-> @@ -1528,18 +1522,12 @@ void * __init memblock_alloc_try_nid_raw(
->  			phys_addr_t min_addr, phys_addr_t max_addr,
->  			int nid)
->  {
-> -	void *ptr;
-> -
->  	memblock_dbg("%s: %llu bytes align=0x%llx nid=%d from=%pa max_addr=%pa %pS\n",
->  		     __func__, (u64)size, (u64)align, nid, &min_addr,
->  		     &max_addr, (void *)_RET_IP_);
-
-here too
-
+Bart.
