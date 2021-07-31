@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4873DC366
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 06:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A2C3DC36B
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 06:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236133AbhGaEoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 00:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhGaEoK (ORCPT
+        id S235262AbhGaEwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 00:52:13 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:43356 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229647AbhGaEwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 00:44:10 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE31CC06175F;
-        Fri, 30 Jul 2021 21:44:03 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id c2-20020a0568303482b029048bcf4c6bd9so11774173otu.8;
-        Fri, 30 Jul 2021 21:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gof5uAFDYaK8JMjJaZeVTbKBZfqFb/cl6SCVEVhjqvg=;
-        b=iwTPHE+vJTdw7S5eegFMuAtFncJu+aZxoq8RGLtLPtC3vdKNNIa5NVK+dohUE6gjU6
-         zDMmQUkBBLHVKt7cPNsng6G3iyzdRb1ctX6EKJ7DPaJYQ0rU+Uf17YHbJ2M/c3a5BpP/
-         44zpo3DIJd2W6PIMFKOT1ucfbiHVyOgiseRvf5RztZ7x4b6nK6BAMKhRpH2KX0NAL93w
-         w225ot0+zElaNTUe7BDS59bMBDAtEWicfiuU4gs2MtE+kD5ck0VohrBYFLUCQVKsRnY2
-         mBEN4kbwzNK1oyD9f5WBmzopRBH5SQGfUKbhUlkfPGKtOc2+sNGQk9MYAEg0/mkPdzoK
-         2e1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Gof5uAFDYaK8JMjJaZeVTbKBZfqFb/cl6SCVEVhjqvg=;
-        b=rEDyFMk7WZSPjAjzLTGtBolIHsXLjNcnxYVEBynVRRTyPKp2+LHUAFfuJBm6JXBwPE
-         AMnkr2qNi6+/AR4GIMwN0K/UvRJw6Xg4QxRSbxD4+NwD9XZxRwAcg0ntjjoyYqTZjxki
-         P1OP47POv68OFiqqXUfGjZ0dWyjDyPy5nUctqiPnb97lj8fDItk+08Pnu1ZQFDqA5+8O
-         RgHe2xDE/XkgplfJjjpITntiOCBtqKjA/2PWi+dtEK+UDwEWhn2xABrXExPAY6AbTfcg
-         LKWGn737BIGI3KRZDmZvDXLyoQVZfrmCYbrqKuPQ707JTdoMw3JnSEp5lqWlMYLlmi67
-         sJYg==
-X-Gm-Message-State: AOAM530aaGd9Gd4TvryrutzW34r8tiBnrIs/VRnMtWTZtBUOXXV5fYPD
-        7G/0Isg7QC7FOw2Uy472ogg=
-X-Google-Smtp-Source: ABdhPJyQGs2wEdHnPmd6T77eVk1eIMCgXRpbmS/2+gC2yeC60minYLDrb44SoPoDK8sJ70jJv3L2LA==
-X-Received: by 2002:a05:6830:4104:: with SMTP id w4mr4620163ott.59.1627706643346;
-        Fri, 30 Jul 2021 21:44:03 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f2sm640580oij.45.2021.07.30.21.44.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 21:44:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 30 Jul 2021 21:44:01 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 00/22] 5.13.7-rc1 review
-Message-ID: <20210731044401.GD3455442@roeck-us.net>
-References: <20210729135137.336097792@linuxfoundation.org>
+        Sat, 31 Jul 2021 00:52:11 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16V4pmVX105473;
+        Fri, 30 Jul 2021 23:51:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1627707108;
+        bh=SHuG0KuuJUw46qCngxJHmhdC+ykdC/6gJbXxAPyMbrk=;
+        h=From:To:CC:Subject:Date;
+        b=O10z1D4P6vlLCF7NNYZNPII0d6rt047R1gr96hWcCOOBbk9ooOPv8b/f6IopT/hdb
+         4lNpIVoanblcxCkX0lyWc0YVdeGa+2QRzsnjq3+rmzYCCeX/CZi1Y/ZC2x4ubAgRt1
+         OOW6Z3JRuURhdKw7Hnuik1XEYfFoWubAeUIEeE9Y=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16V4pmOp102113
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 30 Jul 2021 23:51:48 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 30
+ Jul 2021 23:51:47 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 30 Jul 2021 23:51:48 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16V4pf4J009078;
+        Fri, 30 Jul 2021 23:51:42 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sriram Dash <sriram.dash@samsung.com>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dt-bindings: net: can: Document power-domains property
+Date:   Sat, 31 Jul 2021 10:21:38 +0530
+Message-ID: <20210731045138.29912-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729135137.336097792@linuxfoundation.org>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:54:31PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.7 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
-> Anything received after that time might be too late.
-> 
+Document power-domains property for adding the Power domain provider.
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 470 pass: 470 fail: 0
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
+ Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index a7b5807c5543..d633fe1da870 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -104,6 +104,13 @@ properties:
+           maximum: 32
+     maxItems: 1
+ 
++  power-domains:
++    description:
++      Power domain provider node and an args specifier containing
++      the can device id value. Please see,
++      Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
++    maxItems: 1
++
+   can-transceiver:
+     $ref: can-transceiver.yaml#
+ 
+-- 
+2.17.1
 
-Guenter
