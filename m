@@ -2,160 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641023DC631
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 16:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAF63DC638
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 16:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhGaOAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 10:00:25 -0400
-Received: from mout.gmx.net ([212.227.15.18]:49629 "EHLO mout.gmx.net"
+        id S233115AbhGaOGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 10:06:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232770AbhGaOAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 10:00:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627740000;
-        bh=QdHwj+IsnJi5IzMwqUW3TfO7oP0yxI2OFU1E0J2+TGU=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=BJqMD7+9OX8NQ377fjRaZhE30oQgrpitGIE39GvNzFykzIbgNbZ+d/q7v2aYqLmiE
-         Sv3+GGtXEKMWMzeON/xMzV1bLSEUEpQGWXTdUIy4E5eP7baJ3PbrqvPOzUm39eN2Vb
-         xCCfmDwIZSlX73xw4BdlYquAiz8iAytx1ICTGeZU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MnaoZ-1mqcSb1xW1-00jXgJ; Sat, 31
- Jul 2021 16:00:00 +0200
-Date:   Sat, 31 Jul 2021 15:59:57 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        linux-hardening@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] drivers/soc: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <20210731135957.GB1979@titan>
-References: <20210725151434.7122-1-len.baker@gmx.com>
- <CAMuHMdUdmv+YmdtjGJV2Lp_Rvar4kN4uSgSTYqXX9CtCJ+qoRw@mail.gmail.com>
+        id S232752AbhGaOGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 10:06:54 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7409860E94;
+        Sat, 31 Jul 2021 14:06:47 +0000 (UTC)
+Date:   Sat, 31 Jul 2021 15:09:26 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     <alexandru.tachici@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] iio: adc: Fix flags in sigma-delta drivers
+Message-ID: <20210731150926.42a2da31@jic23-huawei>
+In-Reply-To: <20210729084731.79135-1-alexandru.tachici@analog.com>
+References: <20210729084731.79135-1-alexandru.tachici@analog.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUdmv+YmdtjGJV2Lp_Rvar4kN4uSgSTYqXX9CtCJ+qoRw@mail.gmail.com>
-X-Provags-ID: V03:K1:qUm0FH1ghq6WNJ/Rmut5+r4u5WV6r8/bAeCUshozt5VKgCN225P
- OrVDNggsXY8F74K9umWT8oOQrNm0KSB2wA12pRezKPZnQnkuzv0Pa8ag8DMzxfPkUuCrsHF
- Cw2zbRkmLkAvWdT9xxVsNpcMqvixb9+W3fiiykkbJvnFd+9h2rSHPeidV1grwyrPVU0dzml
- m71/ks9fqkCC4/ih+1/tQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:I5zIChcrHao=:PP4ua8BnhiZfYhDBqkXX+e
- pfVAy5oA9TszZrsLtBsAuiLyWziOyegSVk7fXycC/G/PNCXkkahPJmZZ9jL3J6t2xbFG6mpXk
- V4n4bt2lEifysR0pQ0NDyf301ZskZeF2EMj0EhRh9ivMR70oPAXr9ZWjkjHYLdlZZ6dogoC2h
- I1I8T4ZMaH6r9FcTJWNTwouRKWzVTr5PlDkSFlRTFDxSWrKgz8cRu2MSetZBxzbth04RRvUfr
- 5J0h2Zymz9RSDo0bwrfqwYfuTGWqRRUDLzYvuwVi5UwC7AqE3DSx0d+HsNKwNCV6JxdI0jTtc
- kw3gMvG2uCjIeNQfJxT43LWhJqtcP4CW74mfZNNEmKcz86YOV+Q4Awry+jbJ8nsaIaPqZg0le
- Vp91poTztx+SclUEo4Y2yuiVVTxaUX+p9YoU19nzDZgbObwbxa8IUMWL0gslizXle1XfadKf6
- 5CA68ILlgTbOrW6CHPOEXFwiBh8h73N6Zn5mw3CImyfanxnMyiF+ps4FMjHL1LGA0tO3nz9yx
- jj1ObyopWBSSMmtk/ClwAbC3jxqRu6Tv0An+1VrnOAp82MlB93Pj63EISyVUN18d2CTw3ZgxO
- Ohi3FTJ70/NdNGTd53U7/xQlhe+jbiYG0brDkw1oxPA2Z0M/4F41lxyZ1HudAcvJ3+J+qbZ96
- Ur3VX6j2c5LXtN9eOp2x+7DmSX//9q84boaeN+zFaHzwP93tA6LXm2JOFK8C56vzyiZQ3kcNG
- +OkOtic2hLYVFUmGJjlJRZb6Kkpq/YU6j1GyapKkoVVtzBf0UlwyApqVGICGqGgciYTpTZmAF
- KHeFmnwhN+OTkLtNXdsgfLpcBNG4fMMprBAGGKAWMajMHWmSrvYGY34nJK9S2tw5mqa8l4/Fk
- jnFAma31GosDQfVq6kVrv/JgZo5aLSaBpRGXE6GuHibVGWilvphm2m1eFodAVPMpVZmzIQnOt
- Rd0T28sbzvy7MKwYrReIPYCwyNGvtDCH8dcGMyHNF1y/qCvr/y2Y56NHOtGPTYe8okkpxgwSs
- bgHGeQdyXWujp94IdM3w5/IA4vQg3jTwFuN7vcNedePvsuRKTzPiHIlErLMI0hiRDMaBQed64
- uOYSgM/0OQq5Nf2utI/l0gBW4GiTFrHZTS0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 29 Jul 2021 11:47:28 +0300
+<alexandru.tachici@analog.com> wrote:
 
-On Mon, Jul 26, 2021 at 10:03:18AM +0200, Geert Uytterhoeven wrote:
-> Hi Len,
->
-> On Sun, Jul 25, 2021 at 5:15 PM Len Baker <len.baker@gmx.com> wrote:
-> > strcpy() performs no bounds checking on the destination buffer. This
-> > could result in linear overflows beyond the end of the buffer, leading
-> > to all kinds of misbehaviors. The safe replacement is strscpy().
-> >
-> > Signed-off-by: Len Baker <len.baker@gmx.com>
->
-> Thanks for your patch!
->
-> > ---
-> > This is a task of the KSPP [1]
-> >
-> > [1] https://github.com/KSPP/linux/issues/88
->
-> Any chance the almost one year old question in that ticket can be
-> answered?
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
+> 
+> Some sigma-delta drivers use wrong irq_flags specified in the
+> ad_sigma_delta_info struct. Add the flags corresponding to the
+> interrupt type specified in the data-sheets of each chip.
+> 
 
-I'm a kernel newbie and I have chosen this task as a starting point. So,
-I think that someone with more experience could answer this question.
+The complexity here is that we normally now leave this to the
+firmware description of the interrupt.  The reason for that is
+people have an annoying habit of building boards where there is
+an inverter used as a cheap level converter on the interrupt line.
 
-Kees: Any comments?
+It an also be somewhat 'fun' to identify from a datasheet if
+the signal is actually an edge interrupt or a level interrupt and
+in the case of devices that don't have any autonomous triggering
+(i.e. won't grab new data unless you tell the to) the difference
+is irrelevant.  Take the ad7780 for example.  It has an interrupt
+that remains low unless
+a) The data is read - normal case I'd imagine
+b) New data capture occurs (slowly at 10Hz)
 
->
-> >  drivers/soc/renesas/rcar-sysc.c     |  6 ++++--
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> But please see my comments below...
->
-> > --- a/drivers/soc/renesas/r8a779a0-sysc.c
-> > +++ b/drivers/soc/renesas/r8a779a0-sysc.c
-> > @@ -404,19 +404,21 @@ static int __init r8a779a0_sysc_pd_init(void)
-> >         for (i =3D 0; i < info->num_areas; i++) {
-> >                 const struct r8a779a0_sysc_area *area =3D &info->areas=
-[i];
-> >                 struct r8a779a0_sysc_pd *pd;
-> > +               size_t area_name_size;
->
-> I wouldn't mind a shorter name, like "n".
+So we aren't dealing with a short pulse, or a situation where we
+have an interrupt that will stay set after the data is read
+(both of which would make this definitely an edge interrupt to avoid
+ possibility of either missing or double triggering).
 
-Ok, I will change this for the next version.
+Hence whilst it will work as an edge interrupt, it will also work
+fine with the existing level interrupt and in some ways level is
+more appropriate as the interrupt will remain set if you don't read
+it (for a while anyway and after that it's not safe to read).
 
-> >
-> >                 if (!area->name) {
-> >                         /* Skip NULLified area */
-> >                         continue;
-> >                 }
-> >
-> > -               pd =3D kzalloc(sizeof(*pd) + strlen(area->name) + 1, G=
-FP_KERNEL);
-> > +               area_name_size =3D strlen(area->name) + 1;
-> > +               pd =3D kzalloc(sizeof(*pd) + area_name_size, GFP_KERNE=
-L);
-> >                 if (!pd) {
-> >                         error =3D -ENOMEM;
-> >                         goto out_put;
-> >                 }
-> >
-> > -               strcpy(pd->name, area->name);
-> > +               strscpy(pd->name, area->name, area_name_size);
-> >                 pd->genpd.name =3D pd->name;
-> >                 pd->pdr =3D area->pdr;
-> >                 pd->flags =3D area->flags;
-> > diff --git a/drivers/soc/renesas/rcar-sysc.c b/drivers/soc/renesas/rca=
-r-sysc.c
-> > index 53387a72ca00..0eae5ce0eeb0 100644
-> > --- a/drivers/soc/renesas/rcar-sysc.c
-> > +++ b/drivers/soc/renesas/rcar-sysc.c
-> > @@ -396,19 +396,21 @@ static int __init rcar_sysc_pd_init(void)
-> >         for (i =3D 0; i < info->num_areas; i++) {
-> >                 const struct rcar_sysc_area *area =3D &info->areas[i];
-> >                 struct rcar_sysc_pd *pd;
-> > +               size_t area_name_size;
->
-> Likewise.
+For extra fun / background for anyone else reading this thread,
+this interrupt line is also the data out line, so
+we absolutely 'must' keep the interrupt disabled until we are done
+with the read out, but that's handled in the ad_sigma_delta core.
 
-Ok, understood.
+Conclusion, I'm not sure these are actually wrong, and if we were
+doing this today we wouldn't have them anyway...  So have we seen
+any problems with current code?
 
-Regards,
-Len
+Jonathan
+
+
+> Alexandru Tachici (3):
+>   iio: adc: ad7192: Fix IRQ flag
+>   iio: adc: ad7780: Fix IRQ flag
+>   iio: adc: ad7923: Fix IRQ flag
+> 
+>  drivers/iio/adc/ad7192.c | 1 +
+>  drivers/iio/adc/ad7780.c | 2 +-
+>  drivers/iio/adc/ad7793.c | 2 +-
+>  3 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> --
+> 2.25.1
+
