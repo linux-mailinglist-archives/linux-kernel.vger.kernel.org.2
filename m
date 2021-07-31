@@ -2,214 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89B03DC669
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 16:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4162E3DC66C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 16:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhGaOuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 10:50:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47068 "EHLO mail.kernel.org"
+        id S232752AbhGaOy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 10:54:27 -0400
+Received: from mout.gmx.net ([212.227.15.19]:33831 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233035AbhGaOt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 10:49:59 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFA8260F56;
-        Sat, 31 Jul 2021 14:49:49 +0000 (UTC)
-Date:   Sat, 31 Jul 2021 15:52:28 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com,
-        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v4 2/5] iio: adc: ad7949: fix spi messages on non 14-bit
- controllers
-Message-ID: <20210731155228.5cf77479@jic23-huawei>
-In-Reply-To: <20210731152921.2fcb53ab@jic23-huawei>
-References: <20210727232906.980769-1-liambeguin@gmail.com>
-        <20210727232906.980769-3-liambeguin@gmail.com>
-        <20210731152921.2fcb53ab@jic23-huawei>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S233228AbhGaOyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 10:54:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627743243;
+        bh=zY96gBywycZ3DkNeGCbLFMqyecwq4irLjId53UZ4Zf8=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Ganr3Z8MpqDXwLQU1ajZQdu1jXzt1nzmNe7rSSrq26cKszyGo5a8Ip/m0nQHQA9I4
+         7zOz9eeAaB9UA6ET3eZRakKZAb71Jpo35ILPw6dAfYS5+YQsnpDe2tkyxweGpT3Wkt
+         EhE/mTTRJlwvgMsMs8AAkSiDeMfjRX5PIP0TOnD8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N0FxV-1n4IiS04Rz-00xOSP; Sat, 31
+ Jul 2021 16:54:03 +0200
+Date:   Sat, 31 Jul 2021 16:53:59 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Robin Murphy <robin.murphy@arm.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        'Geert Uytterhoeven' <geert@linux-m68k.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] drivers/soc: Remove all strcpy() uses in favor of
+ strscpy()
+Message-ID: <20210731140620.GC1979@titan>
+References: <20210725151434.7122-1-len.baker@gmx.com>
+ <CAMuHMdUdmv+YmdtjGJV2Lp_Rvar4kN4uSgSTYqXX9CtCJ+qoRw@mail.gmail.com>
+ <80f4574c9f6c4c6780735b0fffd83363@AcuMS.aculab.com>
+ <fa2fd44d-8cd7-b700-2e7b-d88c9c52507d@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa2fd44d-8cd7-b700-2e7b-d88c9c52507d@arm.com>
+X-Provags-ID: V03:K1:CPIGMjcOPSVTZO7Gzwh9hg7OmO3+oHEOG/0hwDtVK02HC8v0C/H
+ VZtjWWWA7ZfqdoNIu89W/7fLWalj2kCOTQKhAxS6lFF7AoLoeM0lcDEuqjYIj+iDuALWlr/
+ e3w2i4JYbm+getruIVMJJX4rXzTrv9aobAHUAs0KWlJnXuZM0dUDqdXEBq34FlTZeIDneQi
+ IY/Xc6Mh+O9qwxxy5/a2A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KDOOqXKprFU=:aKLa3NCS3Zzhe89gSTB7xm
+ S5gbutCNag4xoaxDSSedPJyiapV+RHqXoXWOVHnzxjYUqTVPUWOOwNtWAZU+fJzeJORs/1SIP
+ 1OoRhLNgfQkGczk6bUZdlH2HOoIntYsgaEo2I8dYaa315q5tymP0d6v35fBmn7r0rqi3yyIvD
+ fnRyTbhf4CpNTGkwzqL/GNynOwbwPOCiYepKBmYGjoPs5/OWOi2DkB4eniekMTX939uyE5FRp
+ hb9igUS8h0EzaDJBHtT3jvgRo7I814KSRArIfYkr8PKUi3CPx+7nz1GV3dDJQzfDEyW2tvDVN
+ 16j6laKhMmY7HJot8t8/3fuO9pjJ1Uqv3vAeB4m63iki7BcSqAVZdICPm4qDzsypfDOifWsZn
+ njKRzbVxf/DJz4SSXxTLG7NvKG6q9luBbLuLMTqb68BAhuTStnCXPHLMOQ6Anb/hTqux8TBgK
+ 5zyLmFxWrVW/fym5geK0gR/HmPJKyPb5iPV7aPv35WRqzIMOHYBtm1j4Usow5DIc74U+cPtBu
+ LPyYMZv2bmFdTN1UhsPfjWzqioQbqIp02W53VhzsGLXFptkIATwTRZybyrRVgC0UaEjjrRvY8
+ RJm8jUx8q5cRCc7SZ0ez8w/CbjUUfmQs37vC91tRCE2uleFh6I7kadGtttDvyzSQpMAmoiEBo
+ YhgqS68ZYcpBfcNPhkj7ExTUx27Gg9Z3KUa5MHb5UveIjFTToZgINcXiAoY7pRUTppTMIp+eV
+ T1sVwKiIbd0jCO6TN5v8Pp4bIXTimprkGOY7BCcIzux04RKjoeUBx+sOeiUt74TVKVccLK/Fm
+ Oy3VJzdCuUUUpC2cxwxs2XODerg1L/8q6rQ4oLM068fqyfqi0tZ1b4JFNUryfZF6oUkS6ivwc
+ aBTvLmQDpJmvInRrFoyusUI4JicfOQhGX+/MzBxDIZfAJ5m19UtUJNpB9rL4DZaVne0g+Il+g
+ WChV2VUBnwM4CkHcXL+dTdeopZoSeqRb6qH53Ym39g/HAdOYTnQxxVgwLgYppTc31pupCyI2l
+ 8xy18lw1WuX4wUCFHbzoEX2h7WPeQh3USpSqNvD49Kl1SZpuHlKajG1pzSniqADZDtCgHFQMs
+ 65fiqzh7iwOd1lv68wDU0pl4hVOG9CnvXln
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Jul 2021 15:29:21 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+Hi,
 
-> On Tue, 27 Jul 2021 19:29:03 -0400
-> Liam Beguin <liambeguin@gmail.com> wrote:
-> 
-> > From: Liam Beguin <lvb@xiphos.com>
-> > 
-> > This driver supports devices with 14-bit and 16-bit sample sizes.
-> > This is not always handled properly by spi controllers and can fail. To
-> > work around this limitation, pad samples to 16-bit and split the sample
-> > into two 8-bit messages in the event that only 8-bit messages are
-> > supported by the controller.
-> > 
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > ---
-> >  drivers/iio/adc/ad7949.c | 62 ++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 54 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
-> > index 0b549b8bd7a9..f1702c54c8be 100644
-> > --- a/drivers/iio/adc/ad7949.c
-> > +++ b/drivers/iio/adc/ad7949.c
-> > @@ -67,6 +67,7 @@ static const struct ad7949_adc_spec ad7949_adc_spec[] = {
-> >   * @indio_dev: reference to iio structure
-> >   * @spi: reference to spi structure
-> >   * @resolution: resolution of the chip
-> > + * @bits_per_word: number of bits per SPI word
-> >   * @cfg: copy of the configuration register
-> >   * @current_channel: current channel in use
-> >   * @buffer: buffer to send / receive data to / from device
-> > @@ -77,6 +78,7 @@ struct ad7949_adc_chip {
-> >  	struct iio_dev *indio_dev;
-> >  	struct spi_device *spi;
-> >  	u8 resolution;
-> > +	u8 bits_per_word;
-> >  	u16 cfg;
-> >  	unsigned int current_channel;
-> >  	u16 buffer ____cacheline_aligned;
-> > @@ -86,19 +88,34 @@ static int ad7949_spi_write_cfg(struct ad7949_adc_chip *ad7949_adc, u16 val,
-> >  				u16 mask)
-> >  {
-> >  	int ret;
-> > -	int bits_per_word = ad7949_adc->resolution;
-> > -	int shift = bits_per_word - AD7949_CFG_REG_SIZE_BITS;  
-> 
-> The define for this was removed in patch 1.  I'll fix that up whilst applying by
-> keeping it until this patch.  Please check build passes on intermediate points
-> during a patch series as otherwise we may break bisectability and that's really
-> annoying if you are bisecting!
-> 
-> Jonathan
-> 
-> >  	struct spi_message msg;
-> >  	struct spi_transfer tx[] = {
-> >  		{
-> >  			.tx_buf = &ad7949_adc->buffer,
-> >  			.len = 2,
-> > -			.bits_per_word = bits_per_word,
-> > +			.bits_per_word = ad7949_adc->bits_per_word,
-> >  		},
-> >  	};
-> >  
-> > +	ad7949_adc->buffer = 0;
-> >  	ad7949_adc->cfg = (val & mask) | (ad7949_adc->cfg & ~mask);
-> > -	ad7949_adc->buffer = ad7949_adc->cfg << shift;
-> > +
-> > +	switch (ad7949_adc->bits_per_word) {
-> > +	case 16:
-> > +		ad7949_adc->buffer = ad7949_adc->cfg << 2;
-> > +		break;
-> > +	case 14:
-> > +		ad7949_adc->buffer = ad7949_adc->cfg;
-> > +		break;
-> > +	case 8:
-> > +		/* Here, type is big endian as it must be sent in two transfers */
-> > +		ad7949_adc->buffer = (u16)cpu_to_be16(ad7949_adc->cfg << 2);
+On Wed, Jul 28, 2021 at 10:36:09AM +0100, Robin Murphy wrote:
+> On 2021-07-28 09:36, David Laight wrote:
 
-Gah, I wasn't thinking clearly when I suggested this.  Sparse warns on the
-endian conversion
+> > > > -               strcpy(pd->name, area->name);
+> > > > +               strscpy(pd->name, area->name, area_name_size);
+> >
+> > You can just use memcpy().
+>
+> Indeed. In fact I'd go as far as saying that it might be worth teaching
+> static checkers to recognise patterns that boil down to strscpy(dst, src=
+,
+> strlen(src) + 1) and flag them as suspect, because AFAICS that would alw=
+ays
+> represent either an unnecessarily elaborate memcpy(), or far worse just =
+an
+> obfuscated strcpy().
 
-One option is to resort to ignoring the fact we know it's aligned and
-use the put_unaligned_be16() and get_unaligned_be16 calls which sparse seems to be
-happy with.  Alternative would be to just have a be16 buffer after the existing
-one in the iio_priv structure. Then you will have to change the various users
-of iio_priv()->buffer to point to the new value if we are doing 8 bit transfers.
+Ok, I will use the memcpy function instead of strscpy. Thanks for the
+feedback.
 
-Whilst more invasive, this second option is the one I'd suggest.
-Note that there will be no need to add an __cacheline_aligned marking to this
-new element because it will be in a cachline that is only used for DMA simply being
-after the other buffer element which is force to start on a new cacheline.
+>
+> Robin.
 
-Jonathan
- 
-> > +		break;
-> > +	default:
-> > +		dev_err(&ad7949_adc->indio_dev->dev, "unsupported BPW\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> >  	spi_message_init_with_transfers(&msg, tx, 1);
-> >  	ret = spi_sync(ad7949_adc->spi, &msg);
-> >  
-> > @@ -115,14 +132,12 @@ static int ad7949_spi_read_channel(struct ad7949_adc_chip *ad7949_adc, int *val,
-> >  {
-> >  	int ret;
-> >  	int i;
-> > -	int bits_per_word = ad7949_adc->resolution;
-> > -	int mask = GENMASK(ad7949_adc->resolution - 1, 0);
-> >  	struct spi_message msg;
-> >  	struct spi_transfer tx[] = {
-> >  		{
-> >  			.rx_buf = &ad7949_adc->buffer,
-> >  			.len = 2,
-> > -			.bits_per_word = bits_per_word,
-> > +			.bits_per_word = ad7949_adc->bits_per_word,
-> >  		},
-> >  	};
-> >  
-> > @@ -157,7 +172,25 @@ static int ad7949_spi_read_channel(struct ad7949_adc_chip *ad7949_adc, int *val,
-> >  
-> >  	ad7949_adc->current_channel = channel;
-> >  
-> > -	*val = ad7949_adc->buffer & mask;
-> > +	switch (ad7949_adc->bits_per_word) {
-> > +	case 16:
-> > +		*val = ad7949_adc->buffer;
-> > +		/* Shift-out padding bits */
-> > +		*val >>= 16 - ad7949_adc->resolution;
-> > +		break;
-> > +	case 14:
-> > +		*val = ad7949_adc->buffer & GENMASK(13, 0);
-> > +		break;
-> > +	case 8:
-> > +		/* Here, type is big endian as data was sent in two transfers */
-> > +		*val = be16_to_cpu(ad7949_adc->buffer);
-> > +		/* Shift-out padding bits */
-> > +		*val >>= 16 - ad7949_adc->resolution;
-> > +		break;
-> > +	default:
-> > +		dev_err(&ad7949_adc->indio_dev->dev, "unsupported BPW\n");
-> > +		return -EINVAL;
-> > +	}
-> >  
-> >  	return 0;
-> >  }
-> > @@ -265,6 +298,7 @@ static int ad7949_spi_init(struct ad7949_adc_chip *ad7949_adc)
-> >  
-> >  static int ad7949_spi_probe(struct spi_device *spi)
-> >  {
-> > +	u32 spi_ctrl_mask = spi->controller->bits_per_word_mask;
-> >  	struct device *dev = &spi->dev;
-> >  	const struct ad7949_adc_spec *spec;
-> >  	struct ad7949_adc_chip *ad7949_adc;
-> > @@ -291,6 +325,18 @@ static int ad7949_spi_probe(struct spi_device *spi)
-> >  	indio_dev->num_channels = spec->num_channels;
-> >  	ad7949_adc->resolution = spec->resolution;
-> >  
-> > +	/* Set SPI bits per word */
-> > +	if (spi_ctrl_mask & SPI_BPW_MASK(ad7949_adc->resolution)) {
-> > +		ad7949_adc->bits_per_word = ad7949_adc->resolution;
-> > +	} else if (spi_ctrl_mask == SPI_BPW_MASK(16)) {
-> > +		ad7949_adc->bits_per_word = 16;
-> > +	} else if (spi_ctrl_mask == SPI_BPW_MASK(8)) {
-> > +		ad7949_adc->bits_per_word = 8;
-> > +	} else {
-> > +		dev_err(dev, "unable to find common BPW with spi controller\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> >  	ad7949_adc->vref = devm_regulator_get(dev, "vref");
-> >  	if (IS_ERR(ad7949_adc->vref)) {
-> >  		dev_err(dev, "fail to request regulator\n");  
-> 
-
+Regards,
+Len
