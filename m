@@ -2,60 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1409C3DC6EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 18:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DF23DC6F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 18:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbhGaQcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 12:32:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39350 "EHLO mail.kernel.org"
+        id S229703AbhGaQeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 12:34:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229449AbhGaQca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 12:32:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D1CA760F13;
-        Sat, 31 Jul 2021 16:32:23 +0000 (UTC)
+        id S229449AbhGaQd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 12:33:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DC3E60F13;
+        Sat, 31 Jul 2021 16:33:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627749143;
-        bh=U98qu25SJMulk/dJa2lRpUsz8dJeZS1hVWuXwKBXD48=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=QtWR1CpJYjaapVLNqt6foT4GFofNGwcRcdDWegJec+C5tEZVSjX3sKDmtiiBeEhvf
-         LSxhRdEhI8QSxqn7u/PrJL5J8Bd3EmQNUu11xpDmFYunFXgHYybnkWUCtvBndLJQ8Y
-         QDbRUBwQ8LhvVZRIIOVxmHeRDJ8g0blHECTN1i5OBUePTEAYUwYHRp4i5oOHdzAnNS
-         lvEcqN2z7tMMweHiiRMu1qd/h9FGvlLMd2txInOllUr95yNZeXiGv9Y46NurkFKz39
-         1VX/GrCTVnmrzqr2OHx7qTLaRvIxVQGm8GBb9QzXnamqVYEM4u3GdW0NDi51qW21MH
-         j+99nYEqcCMqA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BE01E60963;
-        Sat, 31 Jul 2021 16:32:23 +0000 (UTC)
-Subject: Re: [GIT PULL] CIFS/SMB3 fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5msGVA44tK4+9YAm-vrH0sAL8WqPPfdnU5Uk5++jCqoJYQ@mail.gmail.com>
-References: <CAH2r5msGVA44tK4+9YAm-vrH0sAL8WqPPfdnU5Uk5++jCqoJYQ@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-cifs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5msGVA44tK4+9YAm-vrH0sAL8WqPPfdnU5Uk5++jCqoJYQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.14-rc3-smb3-fixes
-X-PR-Tracked-Commit-Id: b946dbcfa4df80ec81b442964e07ad37000cc059
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f3438b4c4e692b49b7dc2bab864d20381024be16
-Message-Id: <162774914372.27499.5669882027343979348.pr-tracker-bot@kernel.org>
-Date:   Sat, 31 Jul 2021 16:32:23 +0000
-To:     Steve French <smfrench@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        s=k20201202; t=1627749232;
+        bh=BOPpUSjxDz00r/FRJaG8mxlK8DItXDs1H8BlKV/FtI8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cOI+2RsrQQS4FyIwRgtRa9xBkb/42RdGz4DeY59M3GPww/TjftQ6LEIBBdENRiIxB
+         uMZXCwrJZCoAbV39tXQHD7dlgkojYZJpW0gKWvDEFmVIbamuqD2YoF4WVan8kYapWh
+         ar5/meLJYdjFWPfDL5ebMx9/D2CaVt3WTqDVwBYSO1Nle2/03d4y7JN1uJ/JF7U5YS
+         c4Tc4vSEdc2ZYFM2PfQ6Xl/ieqbTJTsf+kLUie9mTSrUoHJ0oRJfiCMHmKfeU8MHLv
+         3n8KOev3mYGpr+JtmGMz98p1dWOBO8eulPM1yBWFibsQh0NcqvzBT4f8a/yyMeJ39S
+         b9LUcta5G14Uw==
+Date:   Sat, 31 Jul 2021 09:33:51 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jordy Zomer <jordy@pwning.systems>
+Cc:     netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] atm: [nicstar] make drain_scq explicitly unsigned
+Message-ID: <20210731093351.39c0e305@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210731085429.510245-1-jordy@pwning.systems>
+References: <20210731085429.510245-1-jordy@pwning.systems>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 30 Jul 2021 16:09:46 -0500:
+On Sat, 31 Jul 2021 10:54:28 +0200 Jordy Zomer wrote:
+> The drain_scq function used to take a signed integer as a pos parameter.
+> The only caller of this function passes an unsigned integer to it.
+> Therefore to make it obviously safe, let's just make this an unsgined
+> integer as this is used in pointer arithmetics.
+> 
+> Signed-off-by: Jordy Zomer <jordy@pwning.systems>
 
-> git://git.samba.org/sfrench/cifs-2.6.git tags/5.14-rc3-smb3-fixes
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f3438b4c4e692b49b7dc2bab864d20381024be16
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Does not build.
