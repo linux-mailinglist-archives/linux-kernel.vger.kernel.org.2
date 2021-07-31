@@ -2,103 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56CC3DC890
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 00:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364883DC896
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 00:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhGaWIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 18:08:19 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:42412 "EHLO mx1.riseup.net"
+        id S231725AbhGaWSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 18:18:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhGaWIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 18:08:19 -0400
-Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4Gcdgc0xwSzF4FT;
-        Sat, 31 Jul 2021 15:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1627769292; bh=F/rFKRmbOQq9ALjgMY+H9ZQfj+XBLIymkBXHGLS4rJQ=;
-        h=Subject:From:To:Cc:In-Reply-To:References:Date:From;
-        b=P+4raG2q0Eu0b3412u5g+43WMYfmzjXFv2qLGNCTC4MoeoSkxkkH5eTYf7U4bfbXN
-         +0daM0Srnmy5be55L2lsHav51LZ1VXwppBFpvSSYEDMq7YeIgJhe1sHqWsGwXLSGgi
-         JCkI0Xz6fj92eyginsBwxaoBidfWHWzKUcTEw+RU=
-X-Riseup-User-ID: DB4F723F64DE5F8C1128BAB35A63DD05743D9CC089447E8F30A909201F243FCF
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews1.riseup.net (Postfix) with ESMTPSA id 4GcdgZ3s0Xz5w7g;
-        Sat, 31 Jul 2021 15:08:10 -0700 (PDT)
-Message-ID: <084f4be8150e83f865b8a8c768ae9fea6d205330.camel@riseup.net>
-Subject: Re: [PATCH v3] HID: logitech-hidpp: battery: provide CAPACITY
- property for newer devices
-From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@riseup.net>
-To:     Hamza Mahfooz <someguy@effective-light.com>
-Cc:     linux-kernel@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org
-In-Reply-To: <86WPWQ.ODI6WUKUKD0N3@effective-light.com>
-References: <20210723185720.29314-1-someguy@effective-light.com>
-         <e3bdfa16584d7ec832414dcb854ee4d2582543b3.camel@riseup.net>
-         <86WPWQ.ODI6WUKUKD0N3@effective-light.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-in/OeNRbjo+2DEid1fFH"
-Date:   Sat, 31 Jul 2021 23:08:07 +0100
+        id S229505AbhGaWST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 18:18:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF0EB60EBC;
+        Sat, 31 Jul 2021 22:18:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627769892;
+        bh=Pud8xtGP3Uc9/7WKiVauc4aaKsBW/kEwyrH3U5Z8Lf4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LBhDrqUtUAHAn9AZXyT5FY/XjnSTQ+w4uuEhA/MeWasr2MIMtEu754qQJta0kU24l
+         NGQuK+ok20YVwA35soSdRCgQ3YSHcZKH7E7+5mwUNl2JIo133vlb2ZT7hvPAiC3GT+
+         1VAH6xR40vi0wKE0VVt/NiU+pu0AlS+AaghK+fjS79jNnoelilYrINxO2aF1Glh54q
+         FnrhNu5OYLoyO4JqI7wyUgP4mdG9n/ZP3iQuA3VcmWBgT6JyWtBdFDZa0uMd749Gd+
+         XwEh+hiDi5FQVVVKzDTwF6JJLx1pjfYf2B+EL98AHXzOYkstZoG6MVuWJh5zZFFZay
+         H3U+OWPjaWmRg==
+Date:   Sat, 31 Jul 2021 15:18:06 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, cl@linux.com, guro@fb.com,
+        iamjoonsoo.kim@lge.com, linux-mm@kvack.org, mhocko@suse.com,
+        mm-commits@vger.kernel.org, penberg@kernel.org,
+        rientjes@google.com, shakeelb@google.com, songmuchun@bytedance.com,
+        torvalds@linux-foundation.org, vbabka@suse.cz
+Subject: Re: [patch 6/7] slub: fix unreclaimable slab stat for bulk free
+Message-ID: <YQXMHnWRsmfzKK00@archlinux-ax161>
+References: <20210729145259.24681c326dc3ed18194cf9e5@linux-foundation.org>
+ <20210729215350.SZC9InNuL%akpm@linux-foundation.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729215350.SZC9InNuL%akpm@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 29, 2021 at 02:53:50PM -0700, Andrew Morton wrote:
+> From: Shakeel Butt <shakeelb@google.com>
+> Subject: slub: fix unreclaimable slab stat for bulk free
+> 
+> SLUB uses page allocator for higher order allocations and update
+> unreclaimable slab stat for such allocations.  At the moment, the bulk
+> free for SLUB does not share code with normal free code path for these
+> type of allocations and have missed the stat update.  So, fix the stat
+> update by common code.  The user visible impact of the bug is the
+> potential of inconsistent unreclaimable slab stat visible through meminfo
+> and vmstat.
+> 
+> Link: https://lkml.kernel.org/r/20210728155354.3440560-1-shakeelb@google.com
+> Fixes: 6a486c0ad4dc ("mm, sl[ou]b: improve memory accounting")
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Pekka Enberg <penberg@kernel.org>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> 
+>  mm/slub.c |   22 ++++++++++++----------
+>  1 file changed, 12 insertions(+), 10 deletions(-)
+> 
+> --- a/mm/slub.c~slub-fix-unreclaimable-slab-stat-for-bulk-free
+> +++ a/mm/slub.c
+> @@ -3236,6 +3236,16 @@ struct detached_freelist {
+>  	struct kmem_cache *s;
+>  };
+>  
+> +static inline void free_nonslab_page(struct page *page)
+> +{
+> +	unsigned int order = compound_order(page);
+> +
+> +	VM_BUG_ON_PAGE(!PageCompound(page), page);
+> +	kfree_hook(page_address(page));
+> +	mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B, -(PAGE_SIZE << order));
+> +	__free_pages(page, order);
+> +}
+> +
+>  /*
+>   * This function progressively scans the array with free objects (with
+>   * a limited look ahead) and extract objects belonging to the same
+> @@ -3272,9 +3282,7 @@ int build_detached_freelist(struct kmem_
+>  	if (!s) {
+>  		/* Handle kalloc'ed objects */
+>  		if (unlikely(!PageSlab(page))) {
+> -			BUG_ON(!PageCompound(page));
+> -			kfree_hook(object);
+> -			__free_pages(page, compound_order(page));
+> +			free_nonslab_page(page);
+>  			p[size] = NULL; /* mark object processed */
+>  			return size;
+>  		}
+> @@ -4250,13 +4258,7 @@ void kfree(const void *x)
+>  
+>  	page = virt_to_head_page(x);
+>  	if (unlikely(!PageSlab(page))) {
+> -		unsigned int order = compound_order(page);
+> -
+> -		BUG_ON(!PageCompound(page));
+> -		kfree_hook(object);
+> -		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
+> -				      -(PAGE_SIZE << order));
+> -		__free_pages(page, order);
+> +		free_nonslab_page(page);
+>  		return;
+>  	}
+>  	slab_free(page->slab_cache, page, object, NULL, 1, _RET_IP_);
+> _
 
---=-in/OeNRbjo+2DEid1fFH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This patch, now in mainline as commit f227f0faf63b ("slub: fix
+unreclaimable slab stat for bulk free") causes the KASAN KUnit test
+kmalloc_pagealloc_invalid_free to no longer fail:
 
-On Fri, 2021-07-23 at 17:39 -0400, Hamza Mahfooz wrote:
->=20
-> On Fri, Jul 23 2021 at 08:42:32 PM +0100, Filipe La=C3=ADns=20
-> <lains@riseup.net> wrote:
-> > That said, I think we should definitely have a comment here nothing=20
-> > that, and
-> > possible have some bounds checks for the reported voltage value=20
-> > hinting that
-> > there may be bug.
->=20
-> Hey Filipe,
->=20
-> Do you have any thoughts on what the bounds ought to be?
-> 3500 mV seems like a rather safe lower bound, however the upper bound
-> seems much more fuzzy.
->=20
->=20
+[    0.000000] Linux version 5.14.0-rc3-00066-gf227f0faf63b (nathan@archlinux-ax161) (x86_64-linux-gcc (GCC) 11.2.0, GNU ld (GNU Binutils) 2.37) #1 SMP Sat Jul 31 15:08:11 MST 2021
+...
+[    5.717678]     # kmalloc_pagealloc_invalid_free: EXPECTATION FAILED at lib/test_kasan.c:203
+[    5.717678]     KASAN failure expected in "kfree(ptr + 1)", but none occurred
+[    5.718909]     not ok 6 - kmalloc_pagealloc_invalid_free
+...
+[    9.481520] not ok 1 - kasan
 
-Hi Hamza,
+The previous commit is fine:
 
-Sorry for the delay getting back to you! The most relevant bound would be t=
-he
-lower one, but I think 5000mV would be a good value.
+[    0.000000] Linux version 5.14.0-rc3-00065-gb5916c025432 (nathan@archlinux-ax161) (x86_64-linux-gcc (GCC) 11.2.0, GNU ld (GNU Binutils) 2.37) #1 SMP Sat Jul 31 15:05:09 MST 2021
+...
+[    9.347598] ok 1 - kasan
+
+I am by no means a KASAN or mm/ expert, I noticed this when trying to
+test KASAN with clang for ClangBuiltLinux's CI, so it does not appear to
+be compiler dependent. It is reproducible for me in QEMU with
+x86_64_defconfig + CONFIG_KASAN=y + CONFIG_KUNIT=y +
+CONFIG_KASAN_KUNIT_TEST=y.
+
+Please let me know if there is any other information I can provide or
+testing I can do.
 
 Cheers,
-Filipe La=C3=ADns
-
---=-in/OeNRbjo+2DEid1fFH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAmEFyccACgkQ+JPGdIFq
-qV2mMA/+OAq+BFtdGOobLYmDG6SQqixQLQe+UEJkZ0D+zN5QW+I9RIfaOYCzCUis
-Q7exSbqvCwLsoYNDWosleKnNpGHLTnCPALeBYJracblZsipJdYt2WAVBuwAmnZSJ
-uGAWiI2zwjpiYVqP8Y8aIPfH60YaAbrnp7rHuddx63Mx7XWz/l8PuMURsBkSgEOX
-d69Dz55qA87TuxwffDv52mAizV2r9XVkX82ML0WGHA7JoubapsZhWRciJN6iknGX
-EBdrtQECdivEelv0AHis1xpjLgUEVzkG0JYpzRbSdwC/wXxDHdWRFGzptQuI96Jx
-WeW0V4PKB0P9kCFcWlq6fOgrYsWXVGszCZsvekL8DFNa80bHf+kPD0Xe0aMTiUA6
-ZBq9B1yGL0fRyjn4NX7MznateFqWDvsF7ZXrcltkFIUZmWbrsA1W+fgRBMyxEIwz
-kZoByRP8/2um9plPiK+ModmoZxLwL9EsIMU/9nnv7i2YT0S0H4t91TopRZJy/Upg
-0Y2eYo0/5ZuK2bQuWGYyQeaNlERbMR7LIebkXB+C4KllHfaSL7Dr2FBuHI5jwbw1
-9dUUpLBk1XyBgwFA6AYWRX+96O6AYMzOTACRJ3zaeHqVgoSc6scaoUf5YX/Xlb5v
-elap2wQ3QocISISvw+/dkn40LFM7CRl6HwVHP58I/I/TRPrfegY=
-=gKt5
------END PGP SIGNATURE-----
-
---=-in/OeNRbjo+2DEid1fFH--
-
+Nathan
