@@ -2,109 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7903DC4E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5225E3DC4EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhGaINh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 04:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhGaINe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 04:13:34 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB19C06175F;
-        Sat, 31 Jul 2021 01:13:28 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id t3so11731463plg.9;
-        Sat, 31 Jul 2021 01:13:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pSqWDBwjSHpo0CpUmYzJgqTp6C8xaprSXoTH68RUk9A=;
-        b=uByXvFJLrQigPJrd54cWKzjfeHhmv/59d2ORQVsOva+5sc8NUkvICieZBg18ItO2Bl
-         H+jyxMqxtR0naDcAwKzLvkcaHmdzHLlTRV2Qd5tSi0sHOfJJSg7jY/ebFfZeOmmti3qi
-         1vVVuxwkQwYobrzkHkFpnjjzAjyaH6FXU2fi77dkQQkKugCrqjK1T9MFCse+PXzQRtIY
-         XP0TZajX/Rxe7SI2zQ5gYjE3+38td6o/gj0n5cl9efRbBGYGQYjXqzIiEadVQx9HQlGx
-         ta+9+0HadNRRG8JvzJnzj1NnY2ljjQUf+MbJ1vsR007GS4MkFmVY6+qUL3xODTt8ppuZ
-         CEMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pSqWDBwjSHpo0CpUmYzJgqTp6C8xaprSXoTH68RUk9A=;
-        b=STnuAzggIMj5UrjyYlZ1U99BvLdaKf9JGUJjJINNIpX9V9+IrmX+JeDwRajezaNLm2
-         F9dF6VrAyDrqRbtisLEgWV90ZaDhmd5tsS4IQWaq9Q3cAmsZMUvPoEamMAH0fzFtQiAy
-         yqR4Ec2gmHpUTvArVtnHQr1iP6ngsdHXdcSP+fNX/QHynTocRugN5nPkEFUJG53sVml2
-         e1JgcDIvebXjFQh1ac3kgBv8CMI3uPArlqtBQUt3cdbEh4G4BXmQakWnKJ1LdkWqPve5
-         xTzHrnHhCqAbMYrV0W2+/MD3cPVC7cYFndFNHbVJaw1hc+jvlnSbMDR9OE6HpKXmZLu3
-         GNKQ==
-X-Gm-Message-State: AOAM531W/XkuHX44ZXHZx6oQazFRqr4nlVaBK8W3cirYk4CGsRqsxwUn
-        /Wk3iMHeJDo/WQ/ZrV1tWwc=
-X-Google-Smtp-Source: ABdhPJw3sUv7SWXCtHAKD2+0aZD/9TU7DS9fJq1J3MW2qhUDFcv1S/rMnj/DfvR5PrG6iihq7vzA3Q==
-X-Received: by 2002:a62:30c5:0:b029:31e:fa6d:1738 with SMTP id w188-20020a6230c50000b029031efa6d1738mr6786010pfw.55.1627719207841;
-        Sat, 31 Jul 2021 01:13:27 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.29])
-        by smtp.gmail.com with ESMTPSA id c7sm5314475pgq.22.2021.07.31.01.13.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 01:13:27 -0700 (PDT)
-From:   Tuo Li <islituo@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, airlied@redhat.com,
-        Felix.Kuehling@amd.com, Oak.Zeng@amd.com, nirmoy.das@amd.com,
-        tzimmermann@suse.de, Philip.Yang@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, baijiaju1990@gmail.com,
-        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] drm/amdgpu: fix possible null-pointer dereference in amdgpu_ttm_tt_unpopulate()
-Date:   Sat, 31 Jul 2021 01:13:06 -0700
-Message-Id: <20210731081306.86523-1-islituo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S232358AbhGaIU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 04:20:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230338AbhGaIU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 04:20:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8107060F39;
+        Sat, 31 Jul 2021 08:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627719621;
+        bh=x6IuptWPn4NILNW/vfNzrSqEssOd4EqWaQZgxs6ql9E=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=d5+U+/tmUQYwcpdNYMp8ea9eSvyn8IC2FktQWaaRxUCKEny3yrJFs/evJ2OmMKjxJ
+         LAghGjhN4w30izCfjQrl2RJWqsj+AOkMm6GenDaex3FT5TZv5h7uVvydIjHZhJPn5q
+         KOK/nf5AhEbk5amUnAYx3YJ3g1mBhcqUmgxcCJTZj1L/y4QE+PBRENjhmumYDq+Krc
+         lzpGKFAL6JKsmPwuL3+91ONKr/kxNo0L0fYGZ6a3ZIPsB6vm+h90G44UpmjFUbZwcH
+         3D2EzqX18x3slNLz0aC1tLEkGTNJI+TfjWWR/NubCCnc/ZXya8azZDTKMePBb76udL
+         NCPeCgHgYINQg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210728180209.14764-1-collinsd@codeaurora.org>
+References: <20210728180209.14764-1-collinsd@codeaurora.org>
+Subject: Re: [RESEND PATCH] spmi: spmi-pmic-arb: fix irq_set_type race condition
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     David Collins <collinsd@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+To:     David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 31 Jul 2021 01:20:19 -0700
+Message-ID: <162771961962.714452.2347964437306072737@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable ttm is assigned to the variable gtt, and the variable gtt
-is checked in:
-  if (gtt && gtt->userptr)
++irqchip driver maintainers
 
-This indicates that both ttm and gtt can be NULL.
-If so, a null-pointer dereference will occur:
-  if (ttm->page_flags & TTM_PAGE_FLAG_SG)
+Quoting David Collins (2021-07-28 11:02:09)
+> The qpnpint_irq_set_type() callback function configures the type
+> (edge vs level) and polarity (high, low, or both) of a particular
+> PMIC interrupt within a given peripheral.  To do this, it reads
+> the three consecutive IRQ configuration registers, modifies the
+> specified IRQ bit within the register values, and finally writes
+> the three modified register values back to the PMIC.  While a
+> spinlock is used to provide mutual exclusion on the SPMI bus
+> during the register read and write calls, there is no locking
+> around the overall read, modify, write sequence.  This opens up
+> the possibility of a race condition if two tasks set the type of
+> a PMIC IRQ within the same peripheral simultaneously.
+>=20
+> When the race condition is encountered, both tasks will read the
+> old value of the registers and IRQ bits set by one of the tasks
+> will be dropped upon the register write of the other task.  This
+> then leads to PMIC IRQs being enabled with an incorrect type and
+> polarity configured.  Such misconfiguration can lead to an IRQ
+> storm that overwhelms the system and causes it to crash.
+>=20
+> This race condition and IRQ storm have been observed when using
+> a pair of pm8941-pwrkey devices to handle PMK8350 pwrkey and
+> resin interrupts.  The independent devices probe asynchronously
+> in parallel and can simultaneously request and configure PMIC
+> IRQs in the same PMIC peripheral.
+>=20
+> For a good case, the IRQ configuration calls end up serialized
+> due to timing deltas and the register read/write sequence looks
+> like this:
+>=20
+> 1. pwrkey probe: SPMI  read(0x1311): 0x00, 0x00, 0x00
+> 2. pwrkey probe: SPMI write(0x1311): 0x80, 0x80, 0x80
+> 3. resin probe:  SPMI  read(0x1311): 0x80, 0x80, 0x80
+> 4. resin probe:  SPMI write(0x1311): 0xC0, 0xC0, 0xC0
+>=20
+> The final register states after both devices have requested and
+> enabled their respective IRQs is thus:
+>=20
+> 0x1311: 0xC0
+> 0x1312: 0xC0
+> 0x1313: 0xC0
+> 0x1314: 0x00
+> 0x1315: 0xC0
+>=20
+> For a bad case, the IRQ configuration calls end up occurring
+> simultaneously and the race condition is encountered.  The
+> register read/write sequence then looks like this:
+>=20
+> 1. pwrkey probe: SPMI  read(0x1311): 0x00, 0x00, 0x00
+> 2. resin probe:  SPMI  read(0x1311): 0x00, 0x00, 0x00
+> 3. pwrkey probe: SPMI write(0x1311): 0x80, 0x80, 0x80
+> 4. resin probe:  SPMI write(0x1311): 0x40, 0x40, 0x40
+>=20
+> In this case, the final register states after both devices have
+> requested and enabled their respective IRQs is thus:
+>=20
+> 0x1311: 0x40
+> 0x1312: 0x40
+> 0x1313: 0x40
+> 0x1314: 0x00
+> 0x1315: 0xC0
+>=20
+> This corresponds to the resin IRQ being configured for both
+> rising and falling edges, as expected.  However, the pwrkey IRQ
+> is misconfigured as level type with both polarity high and low
+> set to disabled.  The PMIC IRQ triggering hardware treats this
+> particular register configuration as if level low triggering is
+> enabled.
+>=20
+> The raw pwrkey IRQ signal is low when the power key is not being
+> pressed.  Thus, the pwrkey IRQ begins firing continuously in an
+> IRQ storm.
+>=20
+> Fix the race condition by locking a spinlock for the duration of
+> the read, modify, write sequence in the qpnpint_irq_set_type()
+> function.
+>=20
+> Fixes: 67b563f1f258 ("spmi: pmic_arb: add support for interrupt handling")
+> Signed-off-by: David Collins <collinsd@codeaurora.org>
+> ---
+>  drivers/spmi/spmi-pmic-arb.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
+> index bbbd311eda03..379ad6c1c14a 100644
+> --- a/drivers/spmi/spmi-pmic-arb.c
+> +++ b/drivers/spmi/spmi-pmic-arb.c
+> @@ -127,6 +127,7 @@ struct apid_data {
+>   * @intr:              address of the SPMI interrupt control registers.
+>   * @cnfg:              address of the PMIC Arbiter configuration registe=
+rs.
+>   * @lock:              lock to synchronize accesses.
+> + * @irq_lock:          lock to ensure mutual exclusion for IRQ type sett=
+ing
+>   * @channel:           execution environment channel to use for accesses.
+>   * @irq:               PMIC ARB interrupt.
+>   * @ee:                        the current Execution Environment
+> @@ -146,6 +147,7 @@ struct spmi_pmic_arb {
+>         void __iomem            *core;
+>         resource_size_t         core_size;
+>         raw_spinlock_t          lock;
+> +       raw_spinlock_t          irq_lock;
 
-Also, some null-pointer dereferences will occur in the function
-ttm_pool_free() which is called in:
-  return ttm_pool_free(&adev->mman.bdev.pool, ttm);
+Maybe a better name is type_lock given that it's about the irq type
+setting rmw sequence.
 
-To fix these possible null-pointer dereferences, the function returns
-when ttm is NULL.
+>         u8                      channel;
+>         int                     irq;
+>         u8                      ee;
+> @@ -600,10 +602,13 @@ static void qpnpint_irq_unmask(struct irq_data *d)
+> =20
+>  static int qpnpint_irq_set_type(struct irq_data *d, unsigned int flow_ty=
+pe)
+>  {
+> +       struct spmi_pmic_arb *pmic_arb =3D irq_data_get_irq_chip_data(d);
+>         struct spmi_pmic_arb_qpnpint_type type;
+>         irq_flow_handler_t flow_handler;
+>         u8 irq =3D hwirq_to_irq(d->hwirq);
+> +       unsigned long flags;
+> =20
+> +       raw_spin_lock_irqsave(&pmic_arb->irq_lock, flags);
+>         qpnpint_spmi_read(d, QPNPINT_REG_SET_TYPE, &type, sizeof(type));
+> =20
+>         if (flow_type & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING)) {
+> @@ -616,8 +621,10 @@ static int qpnpint_irq_set_type(struct irq_data *d, =
+unsigned int flow_type)
+>                 flow_handler =3D handle_edge_irq;
+>         } else {
+>                 if ((flow_type & (IRQF_TRIGGER_HIGH)) &&
+> -                   (flow_type & (IRQF_TRIGGER_LOW)))
+> +                   (flow_type & (IRQF_TRIGGER_LOW))) {
+> +                       raw_spin_unlock_irqrestore(&pmic_arb->irq_lock, f=
+lags);
+>                         return -EINVAL;
+> +               }
+> =20
+>                 type.type &=3D ~BIT(irq); /* level trig */
+>                 if (flow_type & IRQF_TRIGGER_HIGH)
+> @@ -629,6 +636,8 @@ static int qpnpint_irq_set_type(struct irq_data *d, u=
+nsigned int flow_type)
+>         }
+> =20
+>         qpnpint_spmi_write(d, QPNPINT_REG_SET_TYPE, &type, sizeof(type));
+> +       raw_spin_unlock_irqrestore(&pmic_arb->irq_lock, flags);
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Could we have a qpnpint_spmi_set_bit/clear_bit() API that takes the bit
+we want to touch as an argument and then does it all under the originial
+pmic_arb->lock? Then we don't need a different lock, we can avoid that
+drop the lock under the else if condition above, and the area for the
+lock will be contained within the set/clear function instead of here.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index 3a55f08e00e1..0216ca085f11 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@ -1146,7 +1146,10 @@ static void amdgpu_ttm_tt_unpopulate(struct ttm_device *bdev,
- 	struct amdgpu_ttm_tt *gtt = (void *)ttm;
- 	struct amdgpu_device *adev;
- 
--	if (gtt && gtt->userptr) {
-+	if (ttm == NULL)
-+		return;
-+
-+	if (gtt->userptr) {
- 		amdgpu_ttm_tt_set_user_pages(ttm, NULL);
- 		kfree(ttm->sg);
- 		ttm->sg = NULL;
--- 
-2.25.1
-
+> +
+>         irq_set_handler_locked(d, flow_handler);
+> =20
+>         return 0;
+> @@ -1285,6 +1294,7 @@ static int spmi_pmic_arb_probe(struct platform_devi=
+ce *pdev)
+> =20
+>         platform_set_drvdata(pdev, ctrl);
+>         raw_spin_lock_init(&pmic_arb->lock);
+> +       raw_spin_lock_init(&pmic_arb->irq_lock);
+> =20
+>         ctrl->cmd =3D pmic_arb_cmd;
+>         ctrl->read_cmd =3D pmic_arb_read_cmd;
