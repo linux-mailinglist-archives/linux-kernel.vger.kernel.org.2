@@ -2,287 +2,711 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CC23DC82D
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 22:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4457B3DC830
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 22:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbhGaUgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 16:36:50 -0400
-Received: from mail-bn8nam12on2112.outbound.protection.outlook.com ([40.107.237.112]:19200
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229560AbhGaUgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 16:36:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UvrKsqHyIL61FVprPJJ95qOShgD17SYNt2j/ZzC2xhh9e2qMUCOXYdjZatjOG4i17XdvMxpEfxqqkooF1WX2pcjNkGVx/fUr/qMp49qeeYAN78EfapUBhnTZRWLW2E4701PSMg61MOzFqemZ8+tmc2eRVujdxdXRtVcCmfZaaZT06/022c2OgXoU6TZH2FkNNjDYp5Yy15PAyLhYAhTKQEgsa5ULOrihLAgrSGzJesqgLWVbSbJ5B3WcCyu0IKMxUIEIW7PHF4sydg2Lf9dARKp3VFebZJmui8gZ8o03jHwDdROjbLUNjCJ+xJpMFPMCSvSisaUnn6N5Wh1XcbYayw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7Bg+cN6Pr7mqG2A2iyBK5CfCs8Rz025x3oH4T3aQvSE=;
- b=JexW2PNx4pShoMArNk1oi4XUOA7c/nawMCUcP8EOuDA3nxJsby8tIwELoGzBwOOpUAaRIinhcw8loQ3dhgcY3zjNLmPCmZBMKlMXj8dRZoDiKNPaCYtGewbwyB8atO7yemk1NuW7KqiJpDSdFaJdy3AJLfc962nLP/RjWkCQr1tPh43tr1kF5k8nxVnbCUi72gYdhMHJf7c+0WV2LF+30YLr26nXxZWEqhUaQnyQATHCB2VKuCxmKH/HxFjoEoVXK1nkdxPPBU5uRb384eGBK6bUMwsorVxmUWcc66lAhfpJTWgo7/oDkWXD5B5IivF8mAsJevBk2brKSsSwhFPtcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7Bg+cN6Pr7mqG2A2iyBK5CfCs8Rz025x3oH4T3aQvSE=;
- b=Fxh4mYiBjcngFlsYREjXvT9/Kluyf2gKbOsdfy56p+aNK2KzP1uoO+1Iuo9zjzjfNWEZOub8zl8bT1vU5jC5fjfgLOsn6yXtUHYM2SQPmHeOdJ0Cyh/3KBQUtuPruQ/ECWKjs80f0g7sXOpI6uzwsdVvEMMk00Sd9iM6UKRX0zg=
-Received: from MW4PR21MB2002.namprd21.prod.outlook.com (2603:10b6:303:68::18)
- by MWHPR21MB0829.namprd21.prod.outlook.com (2603:10b6:300:76::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.11; Sat, 31 Jul
- 2021 20:36:39 +0000
-Received: from MW4PR21MB2002.namprd21.prod.outlook.com
- ([fe80::601a:d59b:f64e:5433]) by MW4PR21MB2002.namprd21.prod.outlook.com
- ([fe80::601a:d59b:f64e:5433%7]) with mapi id 15.20.4415.001; Sat, 31 Jul 2021
- 20:36:39 +0000
-From:   Sunil Muthuswamy <sunilmut@microsoft.com>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
-        "nunodasneves@linux.microsoft.com" <nunodasneves@linux.microsoft.com>
-Subject: RE: [PATCH v5] hyperv: root partition faults writing to VP ASSIST MSR
- PAGE
-Thread-Topic: [PATCH v5] hyperv: root partition faults writing to VP ASSIST
- MSR PAGE
-Thread-Index: AQHXhgRi9VkW0Z/FOUWxjTerh/knP6tdiy6Q
-Date:   Sat, 31 Jul 2021 20:36:39 +0000
-Message-ID: <MW4PR21MB20020E5A5C33831B4FB20AC9C0ED9@MW4PR21MB2002.namprd21.prod.outlook.com>
-References: <20210731120519.17154-1-kumarpraveen@linux.microsoft.com>
-In-Reply-To: <20210731120519.17154-1-kumarpraveen@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b5d13c90-72d8-46bf-62f5-08d95462e618
-x-ms-traffictypediagnostic: MWHPR21MB0829:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR21MB082946FCBF5B43A7856CCD34C0ED9@MWHPR21MB0829.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2582;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CIunhBve8RVBvNZGi1Tq/Cw+/Kvi9e3fgN4xRjZTEvq0fyTpMyeS+waDO4Vyi0StvhsB7ZbTz+W0X9cMg6yhvyBle+yi5SMs9MBywOwB+7II1QiwmM+Q7GaOaKygER4adV7tkYDhmBIGrtBL/IOSIDhT+cSob2mxCSBXmraHq3kzP+jw8k8skpi9kdmtKhOZf8Uk0zYRlhlOvEofbrGPcRbtu1eDjU9vXg4dhS1/mrOcq999LDCPwBrpM5b+QV3n3+O2WFSoRzpx+oLYgITt6YRBdg52FwM4BiL2TpYtEVgKMyYP2eevLCAi4wMgvsoru+2rS2xxUyP9v5zVjRKIzfV5ebS5vpY3kmfytSboqLT7lse2EzgDuRyQ5fVC6zKUwu3D+3slLUY7Iemt75sA3C1y+5cOibCJ6/K1jS97rkDiXeecIvsiePp+xEKlDB1zMUvpXo+9Glzi6DN1VWdJruUNYmVhOhjlfRzbsKcDud3JaQSv1X1SvHNXBK6Bh+6jtcASYrWZQ9eVcg8JhKmmgt08vL/tNW9RGBdeHgq2RimuVxbUCYcj4gNQtzNGS5tRRCAM2epkuNZgX+KZ7KHG6b2kjiwEaRt/Jj4kwIVFKKZUltD7ZO+VbyOUCmvjYLQ62qiwPt/evUvAOiMUR/M37VQR+C4nxv6wkp8PdlA9m0XFMid4w0rLuIjddsItQ/MzIYIPgwTkvenAl1LpgR8dEw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB2002.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(4326008)(2906002)(52536014)(8936002)(8990500004)(55016002)(76116006)(110136005)(66946007)(107886003)(66476007)(66446008)(9686003)(38100700002)(10290500003)(316002)(86362001)(83380400001)(71200400001)(122000001)(64756008)(66556008)(82960400001)(6506007)(7696005)(5660300002)(38070700005)(33656002)(82950400001)(8676002)(186003)(508600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ShJ4S0xVESVjtZC/y/vyRDq/yKgLjaXZSLiZgGeF6JaIKbHjcmekni++kIE3?=
- =?us-ascii?Q?b3VVJwLYL9Y9dIVybJuIQCmRr96RijB79vazKMNiQArT48LFTRy8By634y8a?=
- =?us-ascii?Q?bMKThw/0ku4Cg/4zViaFIwEnDuCqClUsoF1aMLWYYjZhZANYN1lCGbl2PqVs?=
- =?us-ascii?Q?LjL0l4UN3NLJkrtMiE3stafK0e3DE7zQSdWDzLJY/GMro5Ab+c2MoqhPruQe?=
- =?us-ascii?Q?LcglBn+p1YG1wn4W3nLS50hTloOSNCDDX4HV4OmaDI9PcGGVX1s/ZFv5dI/9?=
- =?us-ascii?Q?xyHg/lui1ezAqV50H6xbbI6dot4+vVvNfxC65LUC/J092i8pZUGqfND8C9xx?=
- =?us-ascii?Q?5mJDNR+IFfrUAxydfBBUxa2N6dX/Dw4409iUvul0LBGnQLK2bBfoomjOTLwf?=
- =?us-ascii?Q?NmTgNjVSxAJ9AeCcR132t1Njn1J+F2QrbXgT07bRHuFzzxqQT5R+IHfP1HcC?=
- =?us-ascii?Q?dXO4f9lOslc2jobAoVlj8w01O/CrMjIB6nOu263MY8ZxODIYoarSmrS6yoz9?=
- =?us-ascii?Q?3gyMqsYGizUsbmrtEYbE5cUfTZDqWbzX60SELjrAG5ZfwY3pTbBXMxh2O6yK?=
- =?us-ascii?Q?LnX/WljHo6SRUvguSfcxQtU+f75T6A2ppKyJx+HOjkK17v9kiTYsqux/4xQO?=
- =?us-ascii?Q?SmDaSgTETCFNcn42TEfwUErCDTt5U6s4gSDNjP8Ws7USK5eT+P8r86jCtI/Y?=
- =?us-ascii?Q?b3S9tVPvvrhwdb0ywvjUgv1uiIFiFT+KUnab82sEJJYnxhoX8vFIOT8qNApk?=
- =?us-ascii?Q?m7sjuPB81SAQMSH1U/sur5ZU4XKWUMKmAtkzsKGknus7hYQiCQaXHWn0aWvZ?=
- =?us-ascii?Q?VZDp00eYaY2AMWlleAWX+SDC1ymwIN2T+m2JZTC2Z+dj92TydsxLcuw2oj6x?=
- =?us-ascii?Q?p3CRFqn/9kmbECwhw3F7YJvWu16AcYbhrlZ9i785rrDba4Fq1XoHerA47aWY?=
- =?us-ascii?Q?uPZqmPaT1Ek2DmH5mJt+J+zZdh7RH7wIk5c5AWh6UBwLDJlFcP7bhUulGCDP?=
- =?us-ascii?Q?qWvibZLYKq5ZBZq46/E1xx1PbVxR15EnmELC1pzjxDYXkw/rlcfVVlxZ/rEA?=
- =?us-ascii?Q?guQbOSPt3518UImV61oOrAVR7B/PawF44cbS5vYOKO7UWf+blLP16gmwT872?=
- =?us-ascii?Q?bbUdZMHDq+aytmfL5UspYP0TVQySGJ+2W5B+vR8dq/o0cYR7GjB43IIbMnPE?=
- =?us-ascii?Q?xZDnF9VRLZSBkTN8XCoQ6YSH6GB8uXEdrgS2GvsRUKz4khaprUj0iMtPTm+r?=
- =?us-ascii?Q?WQhPo9UBMdGQlz+yDU14sfMhTzawSDInWO6NOibv9C0olBNwBojt8nYZysO4?=
- =?us-ascii?Q?q+YVao1FRsJdXTT8ez9De1z5faw4NvrGSytj0BDiTFI22c0llIyXgcRfpOP/?=
- =?us-ascii?Q?io4eFXr95w9MQwD1QddO0ZsuMcrH?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231712AbhGaUhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 16:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231462AbhGaUg7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 16:36:59 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3605DC06175F;
+        Sat, 31 Jul 2021 13:36:53 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so25813853pja.5;
+        Sat, 31 Jul 2021 13:36:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VmNEdoS5r6GvqkWWwphEbE3rPjBgBu1nkgdQuk6gtP8=;
+        b=uoaHpjY5ccx/ZVvBpXA/TUMMsOGDOckpcEv0OSVj9sbhVLTooMLP9sA1DD+p7AChX4
+         AzktDp2TqeYeV9CIhYxL4Pt2SpA75xlkwycMuN3QPDxDolK/PYJ9NnIZxkfepilgGtmF
+         4tjgJcDt52pmUVYzbcDP49xgYEcqaV4OQk1VadQ+6/nTL+I2xpYn2k2vwD3079pCCwzZ
+         GLOxfPWGbqSbgQevYOt+ccEE3nIFDyCzuVwsIpnihCiVQQW4qZrMBPSCuxLyx5s20b2T
+         XxCUakq9KVjhroSSd0Y3rQXQRgd11Tqa2dqNlFye9YLRuQTMwnLrHl1Zhxf8K7OdlSmn
+         jZqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VmNEdoS5r6GvqkWWwphEbE3rPjBgBu1nkgdQuk6gtP8=;
+        b=XlfOPreGS9QjZLyr1EYTVcdcGCEaFe7SLFZOTgEXYwV2gReArwtLNZNTzbpy90cuj3
+         si22G1ROBDOvgYwE9HeuyrD9OvhSILictQNObw8NyO4oCtu8iHVZlNH2dxqdHJZn9xqi
+         xdL2tnCAWU/ZFBpyhD89M+kKOCFE7cMEkdlf/fwclcZvkK5I0/KgCwatK7zg6cZ8Brqy
+         NRugIe6CTZFKTCo3w5To6Lt6aVT/5ufiO4OVcuvW7/wpjym6ofA21fk47KykuPpYo5NL
+         rR5N5uk0UpH7F5At8hd5rxxZ3v17Qir3QzpExufOzbCKCxB4oe2oH51WQy/Tj1eVhqxD
+         o8ag==
+X-Gm-Message-State: AOAM531J0Yc379UN3D7jb1Hg61pdI+uQhSdKRSclw9K3X+wuEdeMYhWj
+        dEMwwzhSnqJH1+miuoEfybwXgs0C+6skIgbMchE=
+X-Google-Smtp-Source: ABdhPJzCTqYMYJ25x1sXkAhdYQp8reIv8vGKvlDWL5OCnMUKkDDi5VAAJ1oiFF1hUMjzfXMqwFdjLw==
+X-Received: by 2002:a05:6a00:26e7:b029:3b6:10c6:4527 with SMTP id p39-20020a056a0026e7b02903b610c64527mr2658222pfw.17.1627763812624;
+        Sat, 31 Jul 2021 13:36:52 -0700 (PDT)
+Received: from smtp.gmail.com ([2804:14c:73:9a01::1000])
+        by smtp.gmail.com with ESMTPSA id 131sm6085863pfv.129.2021.07.31.13.36.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 13:36:52 -0700 (PDT)
+Date:   Sat, 31 Jul 2021 17:36:48 -0300
+From:   Lucas Stankus <lucas.p.stankus@gmail.com>
+To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        robh+dt@kernel.org, Dragos.Bogdan@analog.com,
+        Darius.Berghe@analog.com
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] iio: accel: Add driver support for ADXL313
+Message-ID: <8f13da2603ebede1c8c2d89f4ec2d9900a331250.1627709571.git.lucas.p.stankus@gmail.com>
+References: <cover.1627709571.git.lucas.p.stankus@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB2002.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5d13c90-72d8-46bf-62f5-08d95462e618
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2021 20:36:39.1998
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RjAEmsouwZe4KaiOYsoa+kanQ5VkSz4JoLp5aSCjJZ8thSO0drwIcS94ULGcLba8BYDf1tMgacGW5FPNVI3GoR1wd9aH8+T285pxkvSycAU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0829
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1627709571.git.lucas.p.stankus@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> For Root partition the VP assist pages are pre-determined by the
-> hypervisor. The Root kernel is not allowed to change them to
-> different locations. And thus, we are getting below stack as in
-> current implementation Root is trying to perform write to specific
-> MSR.
->=20
-> [ 2.778197] unchecked MSR access error: WRMSR to 0x40000073 (tried to
-> write 0x0000000145ac5001) at rIP: 0xffffffff810c1084
-> (native_write_msr+0x4/0x30)
-> [ 2.784867] Call Trace:
-> [ 2.791507] hv_cpu_init+0xf1/0x1c0
-> [ 2.798144] ? hyperv_report_panic+0xd0/0xd0
-> [ 2.804806] cpuhp_invoke_callback+0x11a/0x440
-> [ 2.811465] ? hv_resume+0x90/0x90
-> [ 2.818137] cpuhp_issue_call+0x126/0x130
-> [ 2.824782] __cpuhp_setup_state_cpuslocked+0x102/0x2b0
-> [ 2.831427] ? hyperv_report_panic+0xd0/0xd0
-> [ 2.838075] ? hyperv_report_panic+0xd0/0xd0
-> [ 2.844723] ? hv_resume+0x90/0x90
-> [ 2.851375] __cpuhp_setup_state+0x3d/0x90
-> [ 2.858030] hyperv_init+0x14e/0x410
-> [ 2.864689] ? enable_IR_x2apic+0x190/0x1a0
-> [ 2.871349] apic_intr_mode_init+0x8b/0x100
-> [ 2.878017] x86_late_time_init+0x20/0x30
-> [ 2.884675] start_kernel+0x459/0x4fb
-> [ 2.891329] secondary_startup_64_no_verify+0xb0/0xbb
->=20
-> Since, the hypervisor already provides the VP assist page for root
-> partition, we need to memremap the memory from hypervisor for root
-> kernel to use. The mapping is done in hv_cpu_init during bringup and
-> is unmaped in hv_cpu_die during teardown.
->=20
-> Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
-> ---
->  arch/x86/hyperv/hv_init.c          | 64 ++++++++++++++++++++----------
->  arch/x86/include/asm/hyperv-tlfs.h |  9 +++++
->  2 files changed, 53 insertions(+), 20 deletions(-)
->=20
-> changelog:
-> v1: initial patch
-> v2: commit message changes, removal of HV_MSR_APIC_ACCESS_AVAILABLE
->     check and addition of null check before reading the VP assist MSR
->     for root partition
-> v3: added new data structure to handle VP ASSIST MSR page and done
->     handling in hv_cpu_init and hv_cpu_die
-> v4: better code alignment, VP ASSIST handling correction for root
->     partition in hv_cpu_die and renaming of hv_vp_assist_msr_contents
->     attribute
-> v5: disable VP ASSIST page for root partition during hv_cpu_die
-> ---
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 6f247e7e07eb..a46bd92c532a 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -44,6 +44,7 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
->=20
->  static int hv_cpu_init(unsigned int cpu)
->  {
-> +	union hv_vp_assist_msr_contents msr =3D {0};
->  	struct hv_vp_assist_page **hvp =3D &hv_vp_assist_page[smp_processor_id(=
-)];
->  	int ret;
->=20
-> @@ -54,25 +55,34 @@ static int hv_cpu_init(unsigned int cpu)
->  	if (!hv_vp_assist_page)
->  		return 0;
->=20
-> -	/*
-> -	 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's Section
-> -	 * 5.2.1 "GPA Overlay Pages"). Here it must be zeroed out to make sure
-> -	 * we always write the EOI MSR in hv_apic_eoi_write() *after* the
-> -	 * EOI optimization is disabled in hv_cpu_die(), otherwise a CPU may
-> -	 * not be stopped in the case of CPU offlining and the VM will hang.
-> -	 */
->  	if (!*hvp) {
-> -		*hvp =3D __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
-> -	}
-> -
-> -	if (*hvp) {
-> -		u64 val;
-> -
-> -		val =3D vmalloc_to_pfn(*hvp);
-> -		val =3D (val << HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT) |
-> -			HV_X64_MSR_VP_ASSIST_PAGE_ENABLE;
-> -
-> -		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, val);
-> +		if (hv_root_partition) {
-> +			/*
-> +			 * For Root partition we get the hypervisor provided VP ASSIST
-> +			 * PAGE, instead of allocating a new page.
-> +			 */
-> +			rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-> +			*hvp =3D memremap(msr.pfn <<
-> +					HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT,
-> +					PAGE_SIZE, MEMREMAP_WB);
-> +		} else {
-> +			/*
-> +			 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's
-> +			 * Section 5.2.1 "GPA Overlay Pages"). Here it must be zeroed
-> +			 * out to make sure we always write the EOI MSR in
-> +			 * hv_apic_eoi_write() *after* theEOI optimization is disabled
-> +			 * in hv_cpu_die(), otherwise a CPU may not be stopped in the
-> +			 * case of CPU offlining and the VM will hang.
-> +			 */
-> +			*hvp =3D __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
-> +			if (*hvp)
-> +				msr.pfn =3D vmalloc_to_pfn(*hvp);
-> +		}
-> +		WARN_ON(!(*hvp));
-> +		if (*hvp) {
-> +			msr.enable =3D 1;
-> +			wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-> +		}
->  	}
->=20
->  	return 0;
-> @@ -170,8 +180,22 @@ static int hv_cpu_die(unsigned int cpu)
->=20
->  	hv_common_cpu_die(cpu);
->=20
-> -	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
-> -		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
-> +	if (hv_vp_assist_page && hv_vp_assist_page[cpu]) {
-> +		union hv_vp_assist_msr_contents msr =3D {0};
-> +		if (hv_root_partition) {
-> +			/*
-> +			 * For Root partition the VP ASSIST page is mapped to
-> +			 * hypervisor provided page, and thus, we unmap the
-> +			 * page here and nullify it, so that in future we have
-> +			 * correct page address mapped in hv_cpu_init.
-> +			 */
-> +			memunmap(hv_vp_assist_page[cpu]);
-> +			hv_vp_assist_page[cpu] =3D NULL;
-> +			rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-> +			msr.enable =3D 0;
-> +		}
-> +		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-> +	}
->=20
->  	if (hv_reenlightenment_cb =3D=3D NULL)
->  		return 0;
-> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hy=
-perv-tlfs.h
-> index f1366ce609e3..2322d6bd5883 100644
-> --- a/arch/x86/include/asm/hyperv-tlfs.h
-> +++ b/arch/x86/include/asm/hyperv-tlfs.h
-> @@ -288,6 +288,15 @@ union hv_x64_msr_hypercall_contents {
->  	} __packed;
->  };
->=20
-> +union hv_vp_assist_msr_contents {
-> +	u64 as_uint64;
-> +	struct {
-> +		u64 enable:1;
-> +		u64 reserved:11;
-> +		u64 pfn:52;
-> +	} __packed;
-> +};
-> +
->  struct hv_reenlightenment_control {
->  	__u64 vector:8;
->  	__u64 reserved1:8;
-> --
-> 2.25.1
+ADXL313 is a small, thin, low power, 3-axis accelerometer with high
+resolution measurement up to +/-4g. It includes an integrated 32-level
+FIFO and has activity and inactivity sensing capabilities.
 
-Reviewed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
+
+Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+---
+ MAINTAINERS                      |   9 +
+ drivers/iio/accel/Kconfig        |  29 +++
+ drivers/iio/accel/Makefile       |   3 +
+ drivers/iio/accel/adxl313.h      |  60 ++++++
+ drivers/iio/accel/adxl313_core.c | 323 +++++++++++++++++++++++++++++++
+ drivers/iio/accel/adxl313_i2c.c  |  65 +++++++
+ drivers/iio/accel/adxl313_spi.c  |  74 +++++++
+ 7 files changed, 563 insertions(+)
+ create mode 100644 drivers/iio/accel/adxl313.h
+ create mode 100644 drivers/iio/accel/adxl313_core.c
+ create mode 100644 drivers/iio/accel/adxl313_i2c.c
+ create mode 100644 drivers/iio/accel/adxl313_spi.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a61f4f3b78a9..1fc88723e632 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -585,6 +585,15 @@ L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
+ F:	drivers/platform/x86/adv_swbutton.c
+ 
++ADXL313 THREE-AXIS DIGITAL ACCELEROMETER DRIVER
++M:	Lucas Stankus <lucas.p.stankus@gmail.com>
++S:	Supported
++F:	Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
++F:	drivers/iio/accel/adxl313.h
++F:	drivers/iio/accel/adxl313_core.c
++F:	drivers/iio/accel/adxl313_i2c.c
++F:	drivers/iio/accel/adxl313_spi.c
++
+ ADXL34X THREE-AXIS DIGITAL ACCELEROMETER DRIVER (ADXL345/ADXL346)
+ M:	Michael Hennerich <michael.hennerich@analog.com>
+ S:	Supported
+diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
+index 0e56ace61103..ae621532e716 100644
+--- a/drivers/iio/accel/Kconfig
++++ b/drivers/iio/accel/Kconfig
+@@ -30,6 +30,35 @@ config ADIS16209
+ 	  To compile this driver as a module, say M here: the module will be
+ 	  called adis16209.
+ 
++config ADXL313
++	tristate
++
++config ADXL313_I2C
++	tristate "Analog Devices ADXL313 3-Axis Digital Accelerometer I2C Driver"
++	depends on I2C
++	select ADXL313
++	select REGMAP_I2C
++	help
++	  Say Y here if you want to build i2c support for the Analog Devices
++	  ADXL313 3-axis digital accelerometer.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called adxl313_i2c and you will also get adxl313_core
++	  for the core module.
++
++config ADXL313_SPI
++	tristate "Analog Devices ADXL313 3-Axis Digital Accelerometer SPI Driver"
++	depends on SPI
++	select ADXL313
++	select REGMAP_SPI
++	help
++	  Say Y here if you want to build spi support for the Analog Devices
++	  ADXL313 3-axis digital accelerometer.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called adxl313_spi and you will also get adxl313_core
++	  for the core module.
++
+ config ADXL345
+ 	tristate
+ 
+diff --git a/drivers/iio/accel/Makefile b/drivers/iio/accel/Makefile
+index 89280e823bcd..fadc92816e24 100644
+--- a/drivers/iio/accel/Makefile
++++ b/drivers/iio/accel/Makefile
+@@ -6,6 +6,9 @@
+ # When adding new entries keep the list in alphabetical order
+ obj-$(CONFIG_ADIS16201) += adis16201.o
+ obj-$(CONFIG_ADIS16209) += adis16209.o
++obj-$(CONFIG_ADXL313) += adxl313_core.o
++obj-$(CONFIG_ADXL313_I2C) += adxl313_i2c.o
++obj-$(CONFIG_ADXL313_SPI) += adxl313_spi.o
+ obj-$(CONFIG_ADXL345) += adxl345_core.o
+ obj-$(CONFIG_ADXL345_I2C) += adxl345_i2c.o
+ obj-$(CONFIG_ADXL345_SPI) += adxl345_spi.o
+diff --git a/drivers/iio/accel/adxl313.h b/drivers/iio/accel/adxl313.h
+new file mode 100644
+index 000000000000..72f268e02a80
+--- /dev/null
++++ b/drivers/iio/accel/adxl313.h
+@@ -0,0 +1,60 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * ADXL313 3-Axis Digital Accelerometer
++ *
++ * Copyright (c) 2021 Lucas Stankus <lucas.p.stankus@gmail.com>
++ */
++
++#ifndef _ADXL313_H_
++#define _ADXL313_H_
++
++/* ADXL313 register definitions */
++#define ADXL313_REG_DEVID0		0x00
++#define ADXL313_REG_DEVID1		0x01
++#define ADXL313_REG_PARTID		0x02
++#define ADXL313_REG_XID			0x04
++#define ADXL313_REG_SOFT_RESET		0x18
++#define ADXL313_REG_OFS_AXIS(index)	(0x1E + (index))
++#define ADXL313_REG_THRESH_ACT		0x24
++#define ADXL313_REG_ACT_INACT_CTL	0x27
++#define ADXL313_REG_BW_RATE		0x2C
++#define ADXL313_REG_POWER_CTL		0x2D
++#define ADXL313_REG_INT_MAP		0x2F
++#define ADXL313_REG_DATA_FORMAT		0x31
++#define ADXL313_REG_DATAX		0x32
++#define ADXL313_REG_DATAY		0x34
++#define ADXL313_REG_DATAZ		0x36
++#define ADXL313_REG_FIFO_CTL		0x38
++#define ADXL313_REG_FIFO_STATUS		0x39
++
++#define ADXL313_DEVID0			0xAD
++#define ADXL313_DEVID1			0x1D
++#define ADXL313_PARTID			0xCB
++#define ADXL313_SOFT_RESET		0x52
++
++#define ADXL313_RATE_MSK		GENMASK(3, 0)
++#define ADXL313_RATE_BASE		6
++
++#define ADXL313_POWER_CTL_MSK		GENMASK(3, 2)
++#define ADXL313_MEASUREMENT_MODE	BIT(3)
++
++#define ADXL313_RANGE_MSK		GENMASK(1, 0)
++#define ADXL313_RANGE_4G		3
++
++#define ADXL313_FULL_RES		BIT(3)
++#define ADXL313_SPI_3WIRE		BIT(6)
++#define ADXL313_I2C_DISABLE		BIT(6)
++
++/*
++ * Scale for any g range is given in datasheet as
++ * 1024 LSB/g = 0.0009765625 * 9.80665 = 0.009576806640625 m/s^2
++ */
++#define ADXL313_NSCALE 9576806
++
++extern const struct regmap_access_table adxl313_readable_regs_table;
++
++extern const struct regmap_access_table adxl313_writable_regs_table;
++
++int adxl313_core_probe(struct device *dev, struct regmap *regmap,
++		       const char *name);
++#endif /* _ADXL313_H_ */
+diff --git a/drivers/iio/accel/adxl313_core.c b/drivers/iio/accel/adxl313_core.c
+new file mode 100644
+index 000000000000..76382ab4f0f4
+--- /dev/null
++++ b/drivers/iio/accel/adxl313_core.c
+@@ -0,0 +1,323 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * ADXL313 3-Axis Digital Accelerometer
++ *
++ * Copyright (c) 2021 Lucas Stankus <lucas.p.stankus@gmail.com>
++ *
++ * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
++ */
++
++#include <linux/bitfield.h>
++#include <linux/iio/iio.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++
++#include "adxl313.h"
++
++const struct regmap_range adxl313_readable_reg_range[] = {
++	regmap_reg_range(ADXL313_REG_DEVID0, ADXL313_REG_XID),
++	regmap_reg_range(ADXL313_REG_SOFT_RESET, ADXL313_REG_SOFT_RESET),
++	regmap_reg_range(ADXL313_REG_OFS_AXIS(0), ADXL313_REG_OFS_AXIS(2)),
++	regmap_reg_range(ADXL313_REG_THRESH_ACT, ADXL313_REG_ACT_INACT_CTL),
++	regmap_reg_range(ADXL313_REG_BW_RATE, ADXL313_REG_FIFO_STATUS)
++};
++
++const struct regmap_access_table adxl313_readable_regs_table = {
++	.yes_ranges = adxl313_readable_reg_range,
++	.n_yes_ranges = ARRAY_SIZE(adxl313_readable_reg_range)
++};
++EXPORT_SYMBOL_GPL(adxl313_readable_regs_table);
++
++const struct regmap_range adxl313_writable_reg_range[] = {
++	regmap_reg_range(ADXL313_REG_SOFT_RESET, ADXL313_REG_SOFT_RESET),
++	regmap_reg_range(ADXL313_REG_OFS_AXIS(0), ADXL313_REG_OFS_AXIS(2)),
++	regmap_reg_range(ADXL313_REG_THRESH_ACT, ADXL313_REG_ACT_INACT_CTL),
++	regmap_reg_range(ADXL313_REG_BW_RATE, ADXL313_REG_INT_MAP),
++	regmap_reg_range(ADXL313_REG_DATA_FORMAT, ADXL313_REG_DATA_FORMAT),
++	regmap_reg_range(ADXL313_REG_FIFO_CTL, ADXL313_REG_FIFO_CTL)
++};
++
++const struct regmap_access_table adxl313_writable_regs_table = {
++	.yes_ranges = adxl313_writable_reg_range,
++	.n_yes_ranges = ARRAY_SIZE(adxl313_writable_reg_range)
++};
++EXPORT_SYMBOL_GPL(adxl313_writable_regs_table);
++
++struct adxl313_data {
++	struct regmap	*regmap;
++	struct mutex	lock; /* lock to protect transf_buf */
++	__le16		transf_buf ____cacheline_aligned;
++};
++
++static const int adxl313_odr_freqs[][2] = {
++	[0] = { 6, 250000 },
++	[1] = { 12, 500000 },
++	[2] = { 25, 0 },
++	[3] = { 50, 0 },
++	[4] = { 100, 0 },
++	[5] = { 200, 0 },
++	[6] = { 400, 0 },
++	[7] = { 800, 0 },
++	[8] = { 1600, 0 },
++	[9] = { 3200, 0 },
++};
++
++#define ADXL313_ACCEL_CHANNEL(index, addr, axis) {			\
++	.type = IIO_ACCEL,						\
++	.address = addr,						\
++	.modified = 1,							\
++	.channel2 = IIO_MOD_##axis,					\
++	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |			\
++			      BIT(IIO_CHAN_INFO_CALIBBIAS),		\
++	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) |		\
++				    BIT(IIO_CHAN_INFO_SAMP_FREQ),	\
++	.info_mask_shared_by_type_available =				\
++		BIT(IIO_CHAN_INFO_SAMP_FREQ),				\
++	.scan_index = index,						\
++	.scan_type = {							\
++		.sign = 's',						\
++		.realbits = 13,						\
++		.storagebits = 16,					\
++		.endianness = IIO_LE,					\
++	},								\
++}
++
++static const struct iio_chan_spec adxl313_channels[] = {
++	ADXL313_ACCEL_CHANNEL(0, ADXL313_REG_DATAX, X),
++	ADXL313_ACCEL_CHANNEL(1, ADXL313_REG_DATAY, Y),
++	ADXL313_ACCEL_CHANNEL(2, ADXL313_REG_DATAZ, Z),
++};
++
++static int adxl313_set_odr(struct adxl313_data *data,
++			   unsigned int freq1, unsigned int freq2)
++{
++	unsigned int i;
++
++	for (i = 0; i < ARRAY_SIZE(adxl313_odr_freqs); i++) {
++		if (adxl313_odr_freqs[i][0] == freq1 &&
++		    adxl313_odr_freqs[i][1] == freq2)
++			break;
++	}
++
++	if (i == ARRAY_SIZE(adxl313_odr_freqs))
++		return -EINVAL;
++
++	return regmap_update_bits(data->regmap, ADXL313_REG_BW_RATE,
++				  ADXL313_RATE_MSK,
++				  FIELD_PREP(ADXL313_RATE_MSK,
++					     ADXL313_RATE_BASE + i));
++}
++
++static int adxl313_read_axis(struct adxl313_data *data,
++			     struct iio_chan_spec const *chan)
++{
++	int ret;
++
++	mutex_lock(&data->lock);
++
++	ret = regmap_bulk_read(data->regmap,
++			       chan->address,
++			       &data->transf_buf, 2);
++	if (ret)
++		goto unlock_ret;
++
++	ret = le16_to_cpu(data->transf_buf);
++
++unlock_ret:
++	mutex_unlock(&data->lock);
++	return ret;
++}
++
++static int adxl313_read_freq_avail(struct iio_dev *indio_dev,
++				   struct iio_chan_spec const *chan,
++				   const int **vals, int *type, int *length,
++				   long mask)
++{
++	switch (mask) {
++	case IIO_CHAN_INFO_SAMP_FREQ:
++		*vals = (const int *)adxl313_odr_freqs;
++		*length = ARRAY_SIZE(adxl313_odr_freqs) * 2;
++		*type = IIO_VAL_INT_PLUS_MICRO;
++		return IIO_AVAIL_LIST;
++	}
++
++	return -EINVAL;
++}
++
++static int adxl313_read_raw(struct iio_dev *indio_dev,
++			    struct iio_chan_spec const *chan,
++			    int *val, int *val2, long mask)
++{
++	struct adxl313_data *data = iio_priv(indio_dev);
++	unsigned int regval;
++	int ret;
++
++	switch (mask) {
++	case IIO_CHAN_INFO_RAW:
++		ret = adxl313_read_axis(data, chan);
++		if (ret < 0)
++			return ret;
++
++		*val = sign_extend32(ret, chan->scan_type.realbits - 1);
++		return IIO_VAL_INT;
++	case IIO_CHAN_INFO_SCALE:
++		*val = 0;
++		*val2 = ADXL313_NSCALE;
++		return IIO_VAL_INT_PLUS_NANO;
++	case IIO_CHAN_INFO_CALIBBIAS:
++		ret = regmap_read(data->regmap,
++				  ADXL313_REG_OFS_AXIS(chan->scan_index),
++				  &regval);
++		if (ret)
++			return ret;
++
++		/*
++		 * 8-bit resolution at +/- 0.5g, that is 4x accel data scale
++		 * factor at full resolution
++		 */
++		*val = sign_extend32(regval, 7) * 4;
++		return IIO_VAL_INT;
++	case IIO_CHAN_INFO_SAMP_FREQ:
++		ret = regmap_read(data->regmap, ADXL313_REG_BW_RATE, &regval);
++		if (ret)
++			return ret;
++
++		ret = FIELD_GET(ADXL313_RATE_MSK, regval) - ADXL313_RATE_BASE;
++		*val = adxl313_odr_freqs[ret][0];
++		*val2 = adxl313_odr_freqs[ret][1];
++		return IIO_VAL_INT_PLUS_MICRO;
++	}
++
++	return -EINVAL;
++}
++
++static int adxl313_write_raw(struct iio_dev *indio_dev,
++			     struct iio_chan_spec const *chan,
++			     int val, int val2, long mask)
++{
++	struct adxl313_data *data = iio_priv(indio_dev);
++
++	switch (mask) {
++	case IIO_CHAN_INFO_CALIBBIAS:
++		/*
++		 * 8-bit resolution at +/- 0.5g, that is 4x accel data scale
++		 * factor at full resolution
++		 */
++		if (val > 127 * 4 || val < -128 * 4)
++			return -EINVAL;
++
++		return regmap_write(data->regmap,
++				    ADXL313_REG_OFS_AXIS(chan->scan_index),
++				    val / 4);
++	case IIO_CHAN_INFO_SAMP_FREQ:
++		return adxl313_set_odr(data, val, val2);
++	}
++
++	return -EINVAL;
++}
++
++static const struct iio_info adxl313_info = {
++	.read_raw	= adxl313_read_raw,
++	.write_raw	= adxl313_write_raw,
++	.read_avail	= adxl313_read_freq_avail
++};
++
++static int adxl313_setup(struct device *dev, struct adxl313_data *data)
++{
++	unsigned int regval;
++	int ret;
++
++	/* Ensures the device is in a consistent state after start up */
++	ret = regmap_write(data->regmap, ADXL313_REG_SOFT_RESET,
++			   ADXL313_SOFT_RESET);
++	if (ret)
++		return ret;
++
++	if (device_property_read_bool(dev, "spi-3wire")) {
++		ret = regmap_write(data->regmap, ADXL313_REG_DATA_FORMAT,
++				   ADXL313_SPI_3WIRE);
++		if (ret)
++			return ret;
++	}
++
++	ret = regmap_read(data->regmap, ADXL313_REG_DEVID0, &regval);
++	if (ret)
++		return ret;
++
++	if (regval != ADXL313_DEVID0) {
++		dev_err(dev, "Invalid manufacturer ID: 0x%02x\n", regval);
++		return -ENODEV;
++	}
++
++	ret = regmap_read(data->regmap, ADXL313_REG_DEVID1, &regval);
++	if (ret)
++		return ret;
++
++	if (regval != ADXL313_DEVID1) {
++		dev_err(dev, "Invalid mems ID: 0x%02x\n", regval);
++		return -ENODEV;
++	}
++
++	ret = regmap_read(data->regmap, ADXL313_REG_PARTID, &regval);
++	if (ret)
++		return ret;
++
++	if (regval != ADXL313_PARTID) {
++		dev_err(dev, "Invalid device ID: 0x%02x\n", regval);
++		return -ENODEV;
++	}
++
++	/* Sets the range to +/- 4g */
++	ret = regmap_update_bits(data->regmap, ADXL313_REG_DATA_FORMAT,
++				 ADXL313_RANGE_MSK,
++				 FIELD_PREP(ADXL313_RANGE_MSK,
++					    ADXL313_RANGE_4G));
++	if (ret)
++		return ret;
++
++	/* Enables full resolution */
++	ret = regmap_update_bits(data->regmap, ADXL313_REG_DATA_FORMAT,
++				 ADXL313_FULL_RES, ADXL313_FULL_RES);
++	if (ret)
++		return ret;
++
++	/* Enables measurement mode */
++	return regmap_update_bits(data->regmap, ADXL313_REG_POWER_CTL,
++				  ADXL313_POWER_CTL_MSK,
++				  ADXL313_MEASUREMENT_MODE);
++}
++
++int adxl313_core_probe(struct device *dev, struct regmap *regmap,
++		       const char *name)
++{
++	struct adxl313_data *data;
++	struct iio_dev *indio_dev;
++	int ret;
++
++	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
++	if (!indio_dev)
++		return -ENOMEM;
++
++	data = iio_priv(indio_dev);
++	data->regmap = regmap;
++	mutex_init(&data->lock);
++
++	indio_dev->name = name;
++	indio_dev->info = &adxl313_info;
++	indio_dev->modes = INDIO_DIRECT_MODE;
++	indio_dev->channels = adxl313_channels;
++	indio_dev->num_channels = ARRAY_SIZE(adxl313_channels);
++
++	ret = adxl313_setup(dev, data);
++	if (ret) {
++		dev_err(dev, "ADXL313 setup failed\n");
++		return ret;
++	}
++
++	return devm_iio_device_register(dev, indio_dev);
++}
++EXPORT_SYMBOL_GPL(adxl313_core_probe);
++
++MODULE_AUTHOR("Lucas Stankus <lucas.p.stankus@gmail.com>");
++MODULE_DESCRIPTION("ADXL313 3-Axis Digital Accelerometer core driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/iio/accel/adxl313_i2c.c b/drivers/iio/accel/adxl313_i2c.c
+new file mode 100644
+index 000000000000..65050a2fbd38
+--- /dev/null
++++ b/drivers/iio/accel/adxl313_i2c.c
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * ADXL313 3-Axis Digital Accelerometer
++ *
++ * Copyright (c) 2021 Lucas Stankus <lucas.p.stankus@gmail.com>
++ *
++ * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
++ */
++
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++
++#include "adxl313.h"
++
++static const struct regmap_config adxl313_i2c_regmap_config = {
++	.reg_bits	= 8,
++	.val_bits	= 8,
++	.rd_table	= &adxl313_readable_regs_table,
++	.wr_table	= &adxl313_writable_regs_table,
++	.max_register	= 0x39
++};
++
++static int adxl313_i2c_probe(struct i2c_client *client)
++{
++	struct regmap *regmap;
++
++	regmap = devm_regmap_init_i2c(client, &adxl313_i2c_regmap_config);
++	if (IS_ERR(regmap)) {
++		dev_err(&client->dev, "Error initializing i2c regmap: %ld\n",
++			PTR_ERR(regmap));
++		return PTR_ERR(regmap);
++	}
++
++	return adxl313_core_probe(&client->dev, regmap, client->name);
++}
++
++static const struct i2c_device_id adxl313_i2c_id[] = {
++	{ "adxl313", 0 },
++	{ }
++};
++
++MODULE_DEVICE_TABLE(i2c, adxl313_i2c_id);
++
++static const struct of_device_id adxl313_of_match[] = {
++	{ .compatible = "adi,adxl313" },
++	{ },
++};
++
++MODULE_DEVICE_TABLE(of, adxl313_of_match);
++
++static struct i2c_driver adxl313_i2c_driver = {
++	.driver = {
++		.name	= "adxl313_i2c",
++		.of_match_table = adxl313_of_match,
++	},
++	.probe_new	= adxl313_i2c_probe,
++	.id_table	= adxl313_i2c_id,
++};
++
++module_i2c_driver(adxl313_i2c_driver);
++
++MODULE_AUTHOR("Lucas Stankus <lucas.p.stankus@gmail.com>");
++MODULE_DESCRIPTION("ADXL313 3-Axis Digital Accelerometer I2C driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/iio/accel/adxl313_spi.c b/drivers/iio/accel/adxl313_spi.c
+new file mode 100644
+index 000000000000..7c58c9ff8985
+--- /dev/null
++++ b/drivers/iio/accel/adxl313_spi.c
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * ADXL313 3-Axis Digital Accelerometer
++ *
++ * Copyright (c) 2021 Lucas Stankus <lucas.p.stankus@gmail.com>
++ *
++ * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
++ */
++
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/spi/spi.h>
++
++#include "adxl313.h"
++
++static const struct regmap_config adxl313_spi_regmap_config = {
++	.reg_bits	= 8,
++	.val_bits	= 8,
++	.rd_table	= &adxl313_readable_regs_table,
++	.wr_table	= &adxl313_writable_regs_table,
++	.max_register	= 0x39,
++	 /* Setting bits 7 and 6 enables multiple-byte read */
++	.read_flag_mask	= BIT(7) | BIT(6)
++};
++
++static int adxl313_spi_probe(struct spi_device *spi)
++{
++	const struct spi_device_id *id = spi_get_device_id(spi);
++	struct regmap *regmap;
++	int ret;
++
++	regmap = devm_regmap_init_spi(spi, &adxl313_spi_regmap_config);
++	if (IS_ERR(regmap)) {
++		dev_err(&spi->dev, "Error initializing spi regmap: %ld\n",
++			PTR_ERR(regmap));
++		return PTR_ERR(regmap);
++	}
++
++	ret = adxl313_core_probe(&spi->dev, regmap, id->name);
++	if (ret < 0)
++		return ret;
++
++	return regmap_update_bits(regmap, ADXL313_REG_POWER_CTL,
++				  ADXL313_I2C_DISABLE, ADXL313_I2C_DISABLE);
++}
++
++static const struct spi_device_id adxl313_spi_id[] = {
++	{ "adxl313", 0 },
++	{ }
++};
++
++MODULE_DEVICE_TABLE(spi, adxl313_spi_id);
++
++static const struct of_device_id adxl313_of_match[] = {
++	{ .compatible = "adi,adxl313" },
++	{ },
++};
++
++MODULE_DEVICE_TABLE(of, adxl313_of_match);
++
++static struct spi_driver adxl313_spi_driver = {
++	.driver = {
++		.name	= "adxl313_spi",
++		.of_match_table = adxl313_of_match,
++	},
++	.probe		= adxl313_spi_probe,
++	.id_table	= adxl313_spi_id,
++};
++
++module_spi_driver(adxl313_spi_driver);
++
++MODULE_AUTHOR("Lucas Stankus <lucas.p.stankus@gmail.com>");
++MODULE_DESCRIPTION("ADXL313 3-Axis Digital Accelerometer SPI driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.32.0
+
