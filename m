@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D1D3DC203
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B8C3DC205
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234536AbhGaAcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 20:32:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234448AbhGaAck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 20:32:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E0A260FE7;
-        Sat, 31 Jul 2021 00:32:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627691555;
-        bh=o+PLNhrJjYzJClkCiD1x2ngH38naHAhxH0uspRMZAk0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Fob9LrC7lLW8/Nupz+JnUcvUWuJy7rdK6mqt5l6vB9mpv9tbhBMqv5bfxWvURlr30
-         5lIc/NL9RSkw9Yq4Bw6ak54rXQL1e1dj7ZFX1ltvJZSNqYl8S7GCfOub7XDUQzEspn
-         cgsvmB0nKl1fUej7/1Ycak74kHxKaGDHrlRlEIxrpr0BLvvK3B2tIiaVkdiqDfRqSC
-         AHyBHuqGs3vBL5G07jo9fgiKBmpFxO3DoolQonsPYsczpYTlS3fakoJnJjzct+qs5S
-         WQxiXn+VNJbA9JTOiFyLZd7CSR6jddfaTUukpSu3cXq0Kkp75O+App2GDM3hZ+KY5E
-         CUJ9C95gyztiw==
-Subject: Re: [PATCH] vmlinux.lds.h: Handle clang's module.{c,d}tor sections
-To:     Fangrui Song <maskray@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, Marco Elver <elver@google.com>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, clang-built-linux@googlegroups.com,
-        stable@vger.kernel.org
-References: <20210730223815.1382706-1-nathan@kernel.org>
- <CAKwvOdnJ9VMZfZrZprD6k0oWxVJVSNePUM7fbzFTJygXfO24Pw@mail.gmail.com>
- <20210730225936.ce3hcjdg2sptvbh7@google.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <baf67422-8662-02f2-0bbf-6afb141875af@kernel.org>
-Date:   Fri, 30 Jul 2021 17:32:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234448AbhGaAjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 20:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234211AbhGaAjq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 20:39:46 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB2DC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 17:39:40 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id h14so13338844wrx.10
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 17:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vh1nEK9Y0sBT4f+P3UkKqMBsF6s5dMGivHhoys5ZwWk=;
+        b=qJoIxDLJyksjqZ0eCbU2ThAXz+qa4fBMMjWQ8bBXPYQUUJsiwlhmhivbX9nL8Njig7
+         yj18hfLXUhGccuTxG/lrPJPNxwzgWiArme8O4CwGvKqYx5mLFgfEmedeZP89MVqG8a0A
+         xd3XzLHkVzy+kl4gGn4VO7xqtGmgBz4mDfE2jPNmad6FWxDqcPtFQ5p2PGktd7pxi3U0
+         j8Yzh2ZVlyu6keGewoYgZAX+sjRXcG97p2YoU5EvtRt78IK1Rd4Kz6ffk4OUev8NB8Ci
+         uzuHpUvc/g53ZkYN2JzlHivZLCG+je6Ps4r0ksVz8EtBddOZBGrQ02aY7WKNJ/m28Jns
+         FBYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vh1nEK9Y0sBT4f+P3UkKqMBsF6s5dMGivHhoys5ZwWk=;
+        b=sE+OioWCQNDlh/JKlCdLGJpXLnecx5Tn6vhO4+UFSv0k4sMCdM9NPQ1BRPzo9g+6+l
+         +YryYywuKbzonY/IzkSB/DStEyAVAvLZMVNb4ClrmwOkoqaf45ux+Et6v1AlanSh16Hr
+         GIpMWKWw9YKEyHOvT0Ny+9JZPLypX/4YFb3WNT983T0wrd53V4mLt/cBf1+nVa8vtP+9
+         hS1lcp3zrSpvHzJxylG6v+6cQ3MQKsUSRf5xRZFh1p/vX65QhtQXFNgZ0YQUZsi7aAWF
+         M02KKWhPiCrOjgBdqhleCEiGxhtYz9g1Gbovd1X1o8oyxIbic743JTNYD2RYQBwNK52B
+         E9DQ==
+X-Gm-Message-State: AOAM531UVEiahIbNDHjzIrxMRLNUWlhZGp5x07l1TTWVsgTB7i9dT/1o
+        pH6peDkJSmG7ziNnSXElBJOqEQ==
+X-Google-Smtp-Source: ABdhPJwx0JhT1NShoCWJPPfYGk0/DymIBK/CsKk/Wdp0JquM5lZm2likVJWKORqL7JofamWdXQ3ckw==
+X-Received: by 2002:adf:e94b:: with SMTP id m11mr5623246wrn.339.1627691979426;
+        Fri, 30 Jul 2021 17:39:39 -0700 (PDT)
+Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
+        by smtp.gmail.com with ESMTPSA id g138sm3829614wmg.32.2021.07.30.17.39.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 17:39:38 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/14 resent] staging: r8188eu: remove include/odm_debug.h
+Date:   Sat, 31 Jul 2021 01:39:23 +0100
+Message-Id: <20210731003937.68615-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210730225936.ce3hcjdg2sptvbh7@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/2021 3:59 PM, Fangrui Song wrote:
-> On 2021-07-30, Nick Desaulniers wrote:
->> On Fri, Jul 30, 2021 at 3:38 PM Nathan Chancellor <nathan@kernel.org> 
->> wrote:
->>>
->>> A recent change in LLVM causes module_{c,d}tor sections to appear when
->>> CONFIG_K{A,C}SAN are enabled, which results in orphan section warnings
->>> because these are not handled anywhere:
->>>
->>> ld.lld: warning: 
->>> arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_ctor) is being 
->>> placed in '.text.asan.module_ctor'
->>> ld.lld: warning: 
->>> arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_dtor) is being 
->>> placed in '.text.asan.module_dtor'
->>> ld.lld: warning: 
->>> arch/x86/pci/built-in.a(legacy.o):(.text.tsan.module_ctor) is being 
->>> placed in '.text.tsan.module_ctor'
->>
->> ^ .text.tsan.*
-> 
-> I was wondering why the orphan section warning only arose recently.
-> Now I see: the function asan.module_ctor has the SHF_GNU_RETAIN flag, so
-> it is in a separate section even with -fno-function-sections (default).
+This patch series removes include/odm_debug.h, after first going through
+and removing all uses of various macros within it and chipping away
+until it is no longer used. Removing all of this code significantly
+reduces the size of the driver by many hundreds of lines of code, and
+is a good idea due to the fact that none of the code follows best
+practice and none of it uses proper kernel internals for debugging.
 
-Thanks for the explanation, I will add this to the commit message.
+I resent the series with the subject corrected on this cover to make it
+clearer.
 
-> It seems that with -ffunction-sections the issue should have been caught
-> much earlier.
-> 
->>>
->>> Place them in the TEXT_TEXT section so that these technologies continue
->>> to work with the newer compiler versions. All of the KASAN and KCSAN
->>> KUnit tests continue to pass after this change.
->>>
->>> Cc: stable@vger.kernel.org
->>> Link: https://github.com/ClangBuiltLinux/linux/issues/1432
->>> Link: 
->>> https://github.com/llvm/llvm-project/commit/7b789562244ee941b7bf2cefeb3fc08a59a01865 
->>>
->>> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->>> ---
->>>  include/asm-generic/vmlinux.lds.h | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/include/asm-generic/vmlinux.lds.h 
->>> b/include/asm-generic/vmlinux.lds.h
->>> index 17325416e2de..3b79b1e76556 100644
->>> --- a/include/asm-generic/vmlinux.lds.h
->>> +++ b/include/asm-generic/vmlinux.lds.h
->>> @@ -586,6 +586,7 @@
->>>                 
->>> NOINSTR_TEXT                                            \
->>>                 
->>> *(.text..refcount)                                      \
->>>                 
->>> *(.ref.text)                                            \
->>> +               *(.text.asan 
->>> .text.asan.*)                              \
->>
->> Will this match .text.tsan.module_ctor?
+Phillip Potter (14):
+  staging: r8188eu: remove ODM_PRINT_ADDR macro definition
+  staging: r8188eu: remove ODM_dbg_* macro definitions
+  staging: r8188eu: remove ODM_RT_ASSERT macro definition and caller
+  staging: r8188eu: remove ODM_RT_TRACE_F macro definition
+  staging: r8188eu: remove ASSERT ifndef and macro definition
+  staging: r8188eu: remove ODM_RT_TRACE calls from
+    hal/Hal8188ERateAdaptive.c
+  staging: r8188eu: remove ODM_RT_TRACE calls from hal/HalPhyRf_8188e.c
+  staging: r8188eu: remove ODM_RT_TRACE calls from hal/odm_HWConfig.c
+  staging: r8188eu: remove ODM_RT_TRACE calls from hal/odm_RTL8188E.c
+  staging: r8188eu: remove ODM_RT_TRACE calls from
+    hal/odm_RegConfig8188E.c
+  staging: r8188eu: remove ODM_RT_TRACE calls from hal/odm.c
+  staging: r8188eu: remove ODM_RT_TRACE macro definition
+  staging: r8188eu: remove DbgPrint and RT_PRINTK macro definitions
+  staging: r8188eu: remove include/odm_debug.h
 
-No, I forgot to test CONFIG_KCSAN with this version, rather than the 
-prior one I had on GitHub so I will send v2 shortly.
+ drivers/staging/r8188eu/core/rtw_xmit.c       |   1 -
+ .../r8188eu/hal/Hal8188ERateAdaptive.c        |  99 +-------
+ drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  | 228 +-----------------
+ drivers/staging/r8188eu/hal/odm.c             | 199 ++-------------
+ drivers/staging/r8188eu/hal/odm_HWConfig.c    |   6 -
+ drivers/staging/r8188eu/hal/odm_RTL8188E.c    |  38 +--
+ .../staging/r8188eu/hal/odm_RegConfig8188E.c  |  29 +--
+ drivers/staging/r8188eu/hal/odm_debug.c       |   7 -
+ drivers/staging/r8188eu/hal/rtl8188e_dm.c     |   1 -
+ drivers/staging/r8188eu/hal/usb_halinit.c     |  23 --
+ drivers/staging/r8188eu/include/hal_intf.h    |   2 -
+ drivers/staging/r8188eu/include/odm.h         |   4 -
+ drivers/staging/r8188eu/include/odm_debug.h   | 126 ----------
+ drivers/staging/r8188eu/include/odm_precomp.h |   4 -
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c  |  27 ---
+ 15 files changed, 35 insertions(+), 759 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/include/odm_debug.h
 
-> asan.module_ctor is the only function AddressSanitizer synthesizes in 
-> the instrumented translation unit.
-> There is no function called "asan".
-> 
-> (Even if a function "asan" exists due to -ffunction-sections
-> -funique-section-names, TEXT_MAIN will match .text.asan, so the
-> .text.asan pattern will match nothing.)
+-- 
+2.31.1
 
-Sounds good, I will update it to remove the .text.asan and replace it 
-with .text.tsan.*
-
->> Do we want to add these conditionally on
->> CONFIG_KASAN_GENERIC/CONFIG_KCSAN like we do for SANITIZER_DISCARDS?
-
-I do not think there is a point in doing so but I can if others feel 
-strongly.
-
-Thank you both for the comments for the comments!
-
-Cheers,
-Nathan
