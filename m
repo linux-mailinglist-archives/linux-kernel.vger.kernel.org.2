@@ -2,223 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD3C3DC8DB
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 01:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613453DC8E8
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 01:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhGaXNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 19:13:25 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:58212 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229465AbhGaXNX (ORCPT
+        id S229458AbhGaXY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 19:24:27 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:42574 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhGaXYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 19:13:23 -0400
-Received: from mailhost.synopsys.com (us03-mailhost2.synopsys.com [10.4.17.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 379DF40AAB;
-        Sat, 31 Jul 2021 23:13:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1627773196; bh=/S86EVYPGY9xO3kUoJy56OQzYShJeYu8vWMcA/vI1hU=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=cSknRoUDYnV5K4e9RsktZTB3QGt2oCEb40SBNrfyh9F+EmNso1AAl6mimKoLm4Z9q
-         khyQvwqSZMh/b/Bx1hwv6KmrDnrBMAkYlKcvTB6+yI+xCL5FSzLYTByDQnJ2OvadN+
-         3F9QsvB9tzuxlD09nUjofDPzIEIr0tmc8Cu9mI0vuYnj2NMrIug8z2eYy+4czpfEXj
-         Z3LmxLa5LXEHOkJWlry4xLGnfMHtmXYTKDJbbWD4mMGtv/4vHxsZdh+8/LFn9vS/5M
-         Z+6h3mB1Pq6c8L7GYiHzosHPQZDDYwhJii5aBORBdt6MwcDUNT/C6CovEDYJobnFjO
-         ynYFu45BOhzmQ==
-Received: from o365relay-in.synopsys.com (us03-o365relay1.synopsys.com [10.4.161.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
-        by mailhost.synopsys.com (Postfix) with ESMTPS id 96039A00A0;
-        Sat, 31 Jul 2021 23:13:02 +0000 (UTC)
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2047.outbound.protection.outlook.com [104.47.56.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id EBF978021F;
-        Sat, 31 Jul 2021 23:12:42 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=vgupta@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="YG5vmKaa";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lpwXj4pwuqtmFIDKSh6+tPV8Wvzx6rPiDM61wQAwVZW+dvzyJzLx7AQnna/76mETD9TZA4AokNwdISek/EiDM6jKa64zVH5l3Xf9jLGzNzkisXj41u5Bz4uVM6ATgRhrLn4hnlX78B7RvK4qfnpjpMEeh2jMvg6PHsU5JAp6wQFeF7tHmMLlJs2JhaoYo6YhOCo6wSl6PbMORKmYdM8Zl8KvrJx/WMnSgy/HiV01FmJKFDhByq7EzrfZCwd8gkWiJukzRFIvd03LxgtQDZbw/uWS35QDiLjJJwhPBIf+K36bmBx2TOPL28+e5i4oJcPbKcEyzHTt6wnTSeJ7m7HBqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/S86EVYPGY9xO3kUoJy56OQzYShJeYu8vWMcA/vI1hU=;
- b=Ugt3bcB263NQ840znsmCrwSrZCCjnHTSbbMSf3w03NJ1e9IATBiWuP9btT2zJZDKyqL3vMnWjkTBuaLTbdeuxp2lsktJ9kE67lKwT2FUc5kdgrZVcCekXSA/74Og5NkIg9D6g304DIU75OmgQRU3vtOoEGT4LgHjdRCN5+hRoS1/uzWN1cgvNlpw+AeT8cGlhX8C5pXbGDQ8ifs6VEsA0j+zE0dxWvHSvlSB8V4CIj42CCpsRvWUyxI0uGuuwj/r6ut5fHD7TNrWr2clOs3Pze3N3+20xTnP1yC06RrcqmguIJ6MUs92yCaxgzV7sRds1I+eb4QxCzMCUPA6nH5AOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/S86EVYPGY9xO3kUoJy56OQzYShJeYu8vWMcA/vI1hU=;
- b=YG5vmKaaTr8H8brX5rjKTHUnmj2TIgOVM/BnGwDsLv37PoaFI78mHpo97eW7w0cnAEtfgxQVbwI7la7nLB6605apE4qQrON0rxo+18q6Cy+kEKHeMHuCvyMsiZRoS3jt2urRBeFdIA08oyOzGgFlT5HL4upq6yltkbqR3lpRE4U=
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com (20.178.54.154) by
- BYAPR12MB4629.namprd12.prod.outlook.com (20.179.59.203) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4373.25; Sat, 31 Jul 2021 23:12:39 +0000
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::acbd:42ac:9bab:39ee]) by BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::acbd:42ac:9bab:39ee%3]) with mapi id 15.20.4373.026; Sat, 31 Jul 2021
- 23:12:39 +0000
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Greentime Hu <green.hu@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michal Simek <monstr@monstr.eu>, Helge Deller <deller@gmx.de>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>, Guo Ren <guoren@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Richard Weinberger <richard@nod.at>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Chris Zankel <chris@zankel.net>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>
-Subject: Re: [PATCH 2/3] trace: refactor TRACE_IRQFLAGS_SUPPORT in Kconfig
-Thread-Topic: [PATCH 2/3] trace: refactor TRACE_IRQFLAGS_SUPPORT in Kconfig
-Thread-Index: AQHXhcxPA6EPe6ekOUigKes8hDjBc6tdt4MA
-Date:   Sat, 31 Jul 2021 23:12:38 +0000
-Message-ID: <1036d104-44c1-b162-2262-973226628be2@synopsys.com>
-References: <20210731052233.4703-1-masahiroy@kernel.org>
- <20210731052233.4703-2-masahiroy@kernel.org>
-In-Reply-To: <20210731052233.4703-2-masahiroy@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=synopsys.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 11f32b68-098f-4b98-4dd5-08d95478b105
-x-ms-traffictypediagnostic: BYAPR12MB4629:
-x-microsoft-antispam-prvs: <BYAPR12MB4629D5976007C72139678E93B6ED9@BYAPR12MB4629.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:439;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gmFQOtz89sCyiTQut2zG1zFT0qpFyE0WSlhEbGxCJGfkjyhF+USRzUKzqwkodF8ZyRtyeOgj2zP134AurnC+Q+DpgsrlycwmfpeUPMbz93DtP24Oe568AkFxk3jMKKB4ze2zuTS53ReYfN6biZHJYYNvQiEn+dctWFX/I12PgztinH2/ugFnZbNpGNZ+heYU845Bozk739sSSxsa/LtyN+qzf3qpUNot2nTr3PCLBOyiO1zZBXug6kbXnq2FEOZ1oe+Aj/HBStz/mjw2vukJV5L+poZNNkHJFp8lBwpZAaI3kRQIgVyKXE5Q2rwC+Fxgr59Eqenwc7Haggm9MFSyqHSaB616ZNgFFit6Cyem7ebS0dOrwT4x4DPudHskmfx7ARtB98jxRP7JNsr+mjDMuaxsOu7XAdbeXaxA/PQ9fnglLyPn7iU4TrYbVCK+q9Gp16anRP3UkybeF5lUHpVdyset4ZUqgF+AZiT4JzMNXC+IhZeeSWMSRcN2C1+Bw0n5uMi9QjGyYNvdGKE3JfUBcBbWeXZyiEcvfhcMVwyMr1/Ax/yowBS8dC8wrkE4Hpd6YA4xNzje3rfUdWSK6gJrlHk34PIKfYY73g5q9V5meZMdfacvgx7vRYOMlAPRujYRQBBo1LA2th2vp5I5Y9TU9Sr2JwvTYeFH2+3krPTKHCzJqJ86q0BFC0Yr+guESlQdkXaQDVg+msTqnCYqTjQQV17Pv3VTmn68D2B8Ggf9oUbhwtewM51U74tspgcSgAEes0etk5PqoMEoZI07aUPmwQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(366004)(136003)(346002)(39850400004)(71200400001)(54906003)(2906002)(31686004)(8676002)(110136005)(6512007)(64756008)(76116006)(5660300002)(66556008)(66946007)(478600001)(66446008)(66476007)(38100700002)(316002)(38070700005)(6486002)(4326008)(8936002)(122000001)(7406005)(186003)(53546011)(26005)(6506007)(558084003)(2616005)(31696002)(86362001)(7366002)(36756003)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cmZ0ejc4cXpYMTkxUnBnY0lObXVWQ29JUFc2d0RlMjQvRS8wYndESDNkUEUx?=
- =?utf-8?B?elllWERCbVMxV29SelZjUmNSaXZESU9ER0xsMFFMQ1Rnd00vRTV0ckQyN1Vo?=
- =?utf-8?B?TG9jTlFIcTQxbk12TTBZdE4wTUJIUXZKeGx5blhmUm15NnE1aWVENXdmd0Fr?=
- =?utf-8?B?TEhNbWROcy90aTJHODNkVWl6bWdaajc1eS9VWmpLTWc4S2d1Vm9jOXJGcG9N?=
- =?utf-8?B?NE1kaUhEVDU4SEZFUjlUbE9aN1FBakVSNzNVRm8yaWFJRUF4MHFQK21FSENk?=
- =?utf-8?B?SlRvbkQ0WmptajNtcG1hNlhHZmRpWGNxSk5wWFlJNCthejRTRm0vemxwU1VE?=
- =?utf-8?B?K0xjT0YyYS9DUjg5V1ViWDdJcTZWYldvUUw1Q3F2NTVmUllUNnpVaHFJMlE2?=
- =?utf-8?B?Y2dQWXZqSzZEa1kwYlA1SlpNaEtEenFXT3NXNmYvT3ArVHpMV1p4cS93TGlW?=
- =?utf-8?B?NFJ1bkRnMk5QNzkvOTdtcHlJQ0FCRzlMZ3dnMGdjTlc5Q2JIbDZHbUptdGRI?=
- =?utf-8?B?RDljL1QzNXg4TlBYM0lvNHFjZ21rVGZ1OG5ONlkvR1ZXdytkWDJHTG1JQXVU?=
- =?utf-8?B?dkpySmNWNkRqL05XVUNRbkJyNWpORFFMT2FDV0dyeDI4bEZtRXc0SExMMzJ3?=
- =?utf-8?B?eEJ6N0V6by9GVkt2THM4eTRMcVhLRTJnZy8xWlpSNEN5bXFFMEY4ampYSTlZ?=
- =?utf-8?B?Q0JUNlR5UFN5cnpHWHM3a0V6T1RMcnNWazRqWFkrM0x6RjBLdkZMVklnTDVM?=
- =?utf-8?B?eGFKc2p5QlY2NTlxUFdxSlNrVmJ2QVBlZlN1U2Y1amVoNmhEZUZXZ1ZjT0pZ?=
- =?utf-8?B?Vk9tNTZET1BpWGZaSzFrN2lhQkN5aUNIOEM0UHVZTjI1UUkyQXBvUFhZR3da?=
- =?utf-8?B?cFRqbnZwNk5KUTJadFFINGhiM2JHUVBtMk1ZODNYUkxKYmVTcWNVS1duZWR0?=
- =?utf-8?B?aUh6d2Q4Z1ZxOUpVSHFaYnFmUG1RUWxjN3I4dGdadU53UkFPNGdoTTlMeWox?=
- =?utf-8?B?ekVLVWIzYmpwd3pLSnMwUy8vTk9RbU5VVlBMT0QyZkpDZ25rMDBGM0lZNWdN?=
- =?utf-8?B?ZTZ0YUFYK0RUbGVlUmNuSzc1OWM3Ykl3dXZEaWU1cnJSb3Q0MlVwTGRMdkgx?=
- =?utf-8?B?dkt0cDNFRFhtRWxsRllkQU1qZyt3UFlmMzRKbkpiTHgzd3U1OHgrekJGdm5O?=
- =?utf-8?B?dlZGUU8zbUJYdzFUK1hGRXFOYkRJWG9FNnFmZnVyZUI4RjA2SENoVVRpZ0pk?=
- =?utf-8?B?TVlHYVF4WEhpNjRyUzNxRkI5NWJScWlISUdDWWUwZ1QvaWR3ZmJqVXcrbkNQ?=
- =?utf-8?B?TDBWUzdURE9hR1dweVVKSnArZm1JS0Jqemx3eUIwWktOMUViTzhGUmkyRjdT?=
- =?utf-8?B?VWErdEtpRU8rQmJxck1aU3k0ajRNUkk2ZTBuYkV3TVluOVlnMm1PbEtYR1hi?=
- =?utf-8?B?UFdCZkh6akFEWTUyMlFRZU82VGhxeWZaVTZzNDRpcEFHRzkza2lKWmI5eHNK?=
- =?utf-8?B?R01xeEg4KzA2VnVnaWxkZTlOVDRmTXRYa2lFVFgySUVPbmZMNytzUDY2Zllv?=
- =?utf-8?B?OTd0eWVzdW5BOVVKaWlkUlZTSjcvOFNVWmZpRlhvUkRkWHROd3VTdFhxQW5Q?=
- =?utf-8?B?ejBTNFJTMjI1TTZVWDBSaURVSHhKVk9qOHhzaEwyeHR4anF3Y3N0ZDBqeEpG?=
- =?utf-8?B?aHkrY0VhV2puMUorRFFTT1RDUDBiYWZSSW52Q3dISzJFUldhZFQvanF1NS9Z?=
- =?utf-8?Q?IjB8kzYt4uw+NJgbH4=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D343C53D18DD6D43ADCBB013B53C2A98@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Sat, 31 Jul 2021 19:24:24 -0400
+Received: by mail-io1-f72.google.com with SMTP id l2-20020a6b7f020000b0290439ea50822eso8525597ioq.9
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 16:24:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=b0eqpglLPImvUJ+g7sgJQ9riaNStRu/07p0XmihlFR0=;
+        b=t3X9GgvJwRS/YzwuUKhvJao6msODxHLlYRSaueNcify5QN5bq0jftS10S8CLgvL/uI
+         xGeieigYfmoVlJQYioFDpCHUC4nvFG2XUiBRhWWmn/97PFeJh7J7WDt4TziMRzqBN2ig
+         bjKNM8xKN9A0ZOvvbzJHOzpHFRBxwyzgTNuM2gVX93RSJRKPOHbyTw15rpGZYoUReW5r
+         p+oODJTx2bpJRnIeQx/7Ozei7sXwKmlWaZVAD6L/C4sPyFDkDcz4ijy/ZmFFBaPIlor0
+         Xv/nwNcTT05pDwgAVlghRh2ytQn80EmGIjfNdZ8E1sxmz7w4OTtGV38jiD409E9o/7D4
+         DlFQ==
+X-Gm-Message-State: AOAM533Gt92wEgv+9gpN17D7yGlUIFwdUydvvGGqsdFvsK841rX11NsU
+        Kgj4036QSb6OvrWTJTYakZhSm0VqAwDrZ3Z/5UX88rBhABwh
+X-Google-Smtp-Source: ABdhPJxIQ8qiGxauZyMjuJdj67nwIWcQHBp9kt0BauLVZSrGGJHazfFHH33nrFfijtwQtwalPVmB1AMyro9tWKQHoC3qEWj2MH6U
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3479.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11f32b68-098f-4b98-4dd5-08d95478b105
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2021 23:12:38.8971
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n591pRdiJ+MmbcbSM0oJpTzbEaSomMaacCyu2y3wQloG0Gf8tLeP4Y4IVvlSpPAu7VFslDybhx3kj+vNcxGOYg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4629
+X-Received: by 2002:a05:6638:1646:: with SMTP id a6mr7931078jat.1.1627773856541;
+ Sat, 31 Jul 2021 16:24:16 -0700 (PDT)
+Date:   Sat, 31 Jul 2021 16:24:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007e6ec705c873a2d3@google.com>
+Subject: [syzbot] bpf test error: BUG: sleeping function called from invalid
+ context in stack_depot_save
+From:   syzbot <syzbot+698b7bcef78dd8162024@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, ast@kernel.org, daniel@iogearbox.net,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gNy8zMC8yMSAxMDoyMiBQTSwgTWFzYWhpcm8gWWFtYWRhIHdyb3RlOg0KPiBNYWtlIGFyY2hp
-dGVjdHVyZXMgc2VsZWN0IFRSQUNFX0lSUUZMQUdTX1NVUFBPUlQgaW5zdGVhZCBvZg0KPiBoYXZp
-bmcgbWFueSBkZWZpbmVzLg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBNYXNhaGlybyBZYW1hZGEgPG1h
-c2FoaXJveUBrZXJuZWwub3JnPg0KPiAtLS0NCj4NCj4gICBhcmNoL2FyYy9LY29uZmlnICAgICAg
-ICAgICAgICB8IDQgKy0tLQ0KPiBbc25pcC4uXQ0KDQoNCkFja2VkLWJ5OiBWaW5lZXQgR3VwdGEg
-PHZndXB0YUBzeW5vcHN5cy5jb20+wqDCoCAjYXJjaC9hcmMNCg0K
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    f1fdee33f5b4 Merge branch 'sockmap fixes picked up by stre..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=1661b4d4300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6da37c7627210105
+dashboard link: https://syzkaller.appspot.com/bug?extid=698b7bcef78dd8162024
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+698b7bcef78dd8162024@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at mm/page_alloc.c:5167
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 8427, name: syz-fuzzer
+INFO: lockdep is turned off.
+irq event stamp: 0
+hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+hardirqs last disabled at (0): [<ffffffff8143f9ad>] copy_process+0x1dcd/0x74d0 kernel/fork.c:2061
+softirqs last  enabled at (0): [<ffffffff8143f9ee>] copy_process+0x1e0e/0x74d0 kernel/fork.c:2065
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+CPU: 1 PID: 8427 Comm: syz-fuzzer Tainted: G        W         5.14.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9154
+ prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5167
+ __alloc_pages+0x12f/0x500 mm/page_alloc.c:5363
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
+ stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+ save_stack+0x15e/0x1e0 mm/page_owner.c:120
+ __set_page_owner+0x50/0x290 mm/page_owner.c:181
+ prep_new_page mm/page_alloc.c:2433 [inline]
+ __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5301
+ alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+ vm_area_alloc_pages mm/vmalloc.c:2793 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2863 [inline]
+ __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2966
+ __vmalloc_node mm/vmalloc.c:3015 [inline]
+ vzalloc+0x67/0x80 mm/vmalloc.c:3085
+ n_tty_open+0x16/0x170 drivers/tty/n_tty.c:1848
+ tty_ldisc_open+0x9b/0x110 drivers/tty/tty_ldisc.c:449
+ tty_ldisc_setup+0x43/0x100 drivers/tty/tty_ldisc.c:766
+ tty_init_dev.part.0+0x1f4/0x610 drivers/tty/tty_io.c:1453
+ tty_init_dev include/linux/err.h:36 [inline]
+ tty_open_by_driver drivers/tty/tty_io.c:2098 [inline]
+ tty_open+0xb16/0x1000 drivers/tty/tty_io.c:2146
+ chrdev_open+0x266/0x770 fs/char_dev.c:414
+ do_dentry_open+0x4c8/0x11d0 fs/open.c:826
+ do_open fs/namei.c:3374 [inline]
+ path_openat+0x1c23/0x27f0 fs/namei.c:3507
+ do_filp_open+0x1aa/0x400 fs/namei.c:3534
+ do_sys_openat2+0x16d/0x420 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_openat fs/open.c:1236 [inline]
+ __se_sys_openat fs/open.c:1231 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1231
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4af20a
+Code: e8 3b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
+RSP: 002b:000000c0000df3f8 EFLAGS: 00000216 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 000000c00001c000 RCX: 00000000004af20a
+RDX: 0000000000000000 RSI: 000000c000165a80 RDI: ffffffffffffff9c
+RBP: 000000c0000df470 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000216 R12: 00000000000001a9
+R13: 00000000000001a8 R14: 0000000000000200 R15: 000000c000337ea0
+can: request_module (can-proto-0) failed.
+can: request_module (can-proto-0) failed.
+can: request_module (can-proto-0) failed.
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
