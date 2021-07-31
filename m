@@ -2,788 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1793DC7B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 20:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C553DC7C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 20:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbhGaSc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 14:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
+        id S230241AbhGaSxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 14:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhGaSc0 (ORCPT
+        with ESMTP id S229590AbhGaSxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 14:32:26 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73714C06175F;
-        Sat, 31 Jul 2021 11:32:19 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id j77so19737339ybj.3;
-        Sat, 31 Jul 2021 11:32:19 -0700 (PDT)
+        Sat, 31 Jul 2021 14:53:41 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3791C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 11:53:33 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id cf5so6870783edb.2
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 11:53:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+TS93CVSfIimTDH64QdCBi4eN/nuRbRnV4BUMOxgST4=;
-        b=an0l1D2ymi9pYRnSKxa4OeSBAMmbR2ri+d9a/KXFfqxGANITZWBq1v83FAro18ndsB
-         /M/n0CRF2Yhtu38FQlL8h2wre0WYFloo25mtAt56Rrq9kY4Zk6CpWslFMZHF2YXYchM9
-         djaSmqpElV2zk9XBRZ5iB2kWzlMkvKI2ddzVI7nBomvqrX4sYBpFa5osGDuliyOhIAUL
-         J4mK/j+g40X2xjK4hR2GSAqgLi6wUFMvqnWTItVydr1hmDJtk6vFDYDccP49afr6zD/m
-         dPvuPA2BhyDMTEydSfYaRi3VwyXuyh0tkq7PW4zF4VFPeQA+lrGGLjjZVHlr/MjB+xrW
-         zDfQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4JV2FNGIzMOGa8obtGDCciCpFhJ3+9ZCSukHWUja/38=;
+        b=leF3Id7qgtL9CMVZmbJDK1L03uDolGYkt1lsYKkGssC8nX9G5MF8okg2gudp46B3h5
+         NAnLTRbvYlV+TGQ1NFWjz6SBwVKhdx0ih0qYy8044GV0bZ+ABhPSnlNJ5K530JEbHRhD
+         N863VPcDj5+Cy2AJPtvoSAWOy5pqKH0IR1H/37wzrpmTGQW/ZwiqinQRjLTZpqJAZD+D
+         f5pDLtfHKXKG1RxUC5pNJ3MvdeU86ZRoMSX8amY41k43X9y7jtlSj3Oa9fE7+RbzkHuV
+         BBzHisVRqFMCPvcJ69qKS+ws80Tshy7XCU9pFTFji9iSZg+hl9mNhDRsiQZKyedog7zC
+         dCkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+TS93CVSfIimTDH64QdCBi4eN/nuRbRnV4BUMOxgST4=;
-        b=JKg/XEveDLvwL9hK5cE5Hab79tEd+uJCetlFffPwZZwYxZUnyzgqyzrZSU3OyrYEOS
-         wcFjkVyj6/C4nx7Rht//X/cKuVOv3yIXLkmrm8SQfKC8XMKUvVC7PbMjiEVopsfhjwkf
-         YXUC+/RuiUEOKdsigKS7gaE5UV6Or0z66i4Ia3XxVJKJzWnlFTvuX5JBsiOkZX7+jyMa
-         GeggWjuvnDBK6YoMSLPbbYbDlTxLv2KR8LsAtn9xcD22e11LlrTI3meFzBmjfk9NGGzD
-         vvGP0Kbfs+MAV30qvCALlzIWsgt+kX2jeVH2p1+ehpmtluucuO4sXhT5Zd0P6cFMDIbg
-         MFfA==
-X-Gm-Message-State: AOAM530ZlaOkWDwEZnQWyEj5RaiNwmOuTYBvNraXTpT3UQBY5F2KsvQH
-        OGqIlxXSm/l+jqENsk+BticwNe47J5UZl8qOMcA=
-X-Google-Smtp-Source: ABdhPJxe9ROzRmrY777gVCWJ7COMMt8cgZWblQecKchl6taZdopz1vYEGV7ugdqERiWFVPFH6YyyvycAr8H+XZ24jkI=
-X-Received: by 2002:a25:2449:: with SMTP id k70mr10179087ybk.156.1627756338627;
- Sat, 31 Jul 2021 11:32:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210726182850.14328-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210726182850.14328-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210731181142.430c50f8@jic23-huawei>
-In-Reply-To: <20210731181142.430c50f8@jic23-huawei>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Sat, 31 Jul 2021 19:31:52 +0100
-Message-ID: <CA+V-a8vMdFrrcw3iqbSzd4oN_x6CijOwYo7eSFuf8LhfB6SFRg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] iio: adc: Add driver for Renesas RZ/G2L A/D converter
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4JV2FNGIzMOGa8obtGDCciCpFhJ3+9ZCSukHWUja/38=;
+        b=lkuN6n9VTYMCYZFNzt9Fpch5Qja1bvSjIjWum85vmkG1WlLoS1qsGIE78Vcbzst83D
+         xNzjEv5t4lBumHPV+covSoeA6Plk3jTgzynVZ8mQMP/ApXUChjcBUacxeDfC5TLwSQVE
+         0/w0lgD3wRx8vw7zPvbAE/1d7WuH2gihVpBslO1FfPlqC9k5BMOAiaKDU2K+PMKTmFaJ
+         uo1kkgwVdFe23891HLqRFgi5vssHbrDPHK3W5pL0nIElbC2wwpZ/mYCEGJgKLtIgpHPh
+         dxj5kifM1K9V03Jvrg40w5aZvN7J6+FzbMFQ25QMMNwu3GBko1jM+5HPDY6UoyMK7qDA
+         H+SQ==
+X-Gm-Message-State: AOAM531KrKuqBAHuaNY9iBdp+s0335+D3SA8papasE5nx0+TbeqyeHhR
+        DhiMKtfgbg3nbhdQdGINg8I=
+X-Google-Smtp-Source: ABdhPJwy4wH4RZNKr8G0/S/fFEtOBr3P0VpiaiMy/BisFIhs33lig45msCsFownIRjfo/q53a6HVHg==
+X-Received: by 2002:aa7:c541:: with SMTP id s1mr10509698edr.327.1627757612328;
+        Sat, 31 Jul 2021 11:53:32 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.1])
+        by smtp.gmail.com with ESMTPSA id oz27sm2032667ejb.90.2021.07.31.11.53.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 11:53:32 -0700 (PDT)
+Date:   Sat, 31 Jul 2021 20:53:29 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-staging@lists.linux.dev
+Subject: Re: kernel BUG in new r8188eu
+Message-ID: <20210731185328.GA1412@agape.jhs>
+References: <80042e9f-6811-38f3-010b-1c0951ba88db@lwfinger.net>
+ <YQThm1A0Up1m4l1S@kroah.com>
+ <c2a6746a-24e6-6888-9208-32fccebb3fec@lwfinger.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2a6746a-24e6-6888-9208-32fccebb3fec@lwfinger.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+Hi all,
 
-Thank you for the review.
-
-On Sat, Jul 31, 2021 at 6:09 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Mon, 26 Jul 2021 19:28:49 +0100
-> Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
->
-> > Add ADC driver support for Renesas RZ/G2L A/D converter in SW
-> > trigger mode.
+On Sat, Jul 31, 2021 at 11:18:10AM -0500, Larry Finger wrote:
+> On 7/31/21 12:37 AM, Greg Kroah-Hartman wrote:
+> > Is this a new regression due to the recent cleanups, or something that
+> > has always been here?
+> 
+> I suspect that it has been there forever. I was just doing the kinds of
+> things a user might do, and locked up my box.
+> 
+> > As for the error, looks like someone is reading to an address that is
+> > in userspace without doing the proper copy_from_user() thing.  Do you
+> > have a full traceback?
+> 
+>  BUG: unable to handle page fault for address: ffffeb020003b848
+>  #PF: supervisor read access in kernel mode
+>  #PF: error_code(0x0000) - not-present page
+>  PGD 0 P4D 0
+>  Oops: 0000 [#1] SMP PTI
+>  CPU: 2 PID: 45 Comm: kworker/2:1 Tainted: G         C O
+> 5.14.0-rc2-00157-g390c661543a8 #8
+>  Hardware name: TOSHIBA TECRA A50-A/TECRA A50-A, BIOS Version 4.50   09/29/2014
+>  Workqueue: usb_hub_wq hub_event [usbcore]
+>  RIP: 0010:kfree+0x68/0x2c0
+>  Code: 01 e5 0f 82 5f 02 00 00 48 b8 00 00 00 80 7f 77 00 00 48 01 c5 48 b8
+> 00 00 00 00 00 ea ff ff 48 c1 ed 0c 48 c1 e5 06 48 01 c5 <48> 8b 45 0>
+>  RSP: 0018:ffffc900001efa78 EFLAGS: 00010282
+>  RAX: ffffea0000000000 RBX: ffffc90000ee1028 RCX: 000000008010000d
+>  RDX: 0000000000000000 RSI: ffffffffa149eddf RDI: ffffc90000ee1578
+>  RBP: ffffeb020003b840 R08: 0000000000000001 R09: 0000000000000001
+>  R10: 0000000000000000 R11: ffff888121c0e400 R12: ffffc90000ee1578
+>  R13: ffff888101fd0000 R14: ffff888101fd0030 R15: 0000000000000003
+>  FS:  0000000000000000(0000) GS:ffff888323280000(0000) knlGS:0000000000000000
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: ffffeb020003b848 CR3: 000000000220a002 CR4: 00000000001706e0
+>  Call Trace:
+>   ? kfree+0x25a/0x2c0
+>   rtw_free_mlme_priv_ie_data+0x15/0xf8 [r8188eu]
+>   _rtw_free_mlme_priv+0xe/0x30 [r8188eu]
+>   rtw_free_mlme_priv+0x1a/0x47 [r8188eu]
+>   rtw_free_drv_sw+0x5c/0x1ae [r8188eu]
+>   rtw_usb_if1_deinit+0x67/0xcd [r8188eu]
+>   rtw_dev_remove+0x5a/0xf4 [r8188eu]
+>   usb_unbind_interface+0x8a/0x270 [usbcore]
+>   ? kernfs_find_ns+0x35/0xd0
+>   __device_release_driver+0x1a0/0x260
+>   device_release_driver+0x24/0x30
+>   bus_remove_device+0xd8/0x140
+>   device_del+0x18b/0x3e0
+>   ? kobject_cleanup+0x49/0x130
+>   usb_disable_device+0xd9/0x260 [usbcore]
+>   usb_disconnect.cold+0x7b/0x201 [usbcore]
+>   hub_port_connect+0x88/0x8d0 [usbcore]
+>   ? kfree+0xe6/0x2c0
+>   hub_port_connect_change+0xb1/0x3a0 [usbcore]
+>   port_event+0x5d4/0x720 [usbcore]
+>   hub_event+0x1db/0x430 [usbcore]
+>   process_one_work+0x1dd/0x3a0
+>   worker_thread+0x50/0x3f0
+>   ? rescuer_thread+0x390/0x390
+>   kthread+0x128/0x140
+>   ? set_kthread_struct+0x40/0x40
+>   ret_from_fork+0x22/0x30
+>  Modules linked in: snd_seq_dummy snd_hrtimer snd_seq snd_seq_device ctr ccm
+> r8188eu(C) rfcomm rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs>
+>   crypto_simd cryptd i915 i2c_algo_bit serio_raw ttm drm_kms_helper
+> syscopyarea sysfillrect sysimgblt fb_sys_fops drm xhci_pci ehci_pci xhci_hcd
 > >
-> > A/D Converter block is a successive approximation analog-to-digital
-> > converter with a 12-bit accuracy and supports a maximum of 8 input
-> > channels.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Hi Lad,
->
-> A few additional comments inline,
->
-> Thanks,
->
-> Jonathan
->
-> > ---
-> >  MAINTAINERS                 |   8 +
-> >  drivers/iio/adc/Kconfig     |  10 +
-> >  drivers/iio/adc/Makefile    |   1 +
-> >  drivers/iio/adc/rzg2l_adc.c | 595 ++++++++++++++++++++++++++++++++++++
-> >  4 files changed, 614 insertions(+)
-> >  create mode 100644 drivers/iio/adc/rzg2l_adc.c
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 6c8be735cc91..6a52f9f4604c 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -15839,6 +15839,14 @@ L:   linux-renesas-soc@vger.kernel.org
-> >  S:   Maintained
-> >  F:   drivers/phy/renesas/phy-rcar-gen3-usb*.c
-> >
-> > +RENESAS RZ/G2L A/D DRIVER
-> > +M:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > +L:   linux-iio@vger.kernel.org
-> > +L:   linux-renesas-soc@vger.kernel.org
-> > +S:   Supported
-> > +F:   Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> > +F:   drivers/iio/adc/rzg2l_adc.c
-> > +
-> >  RESET CONTROLLER FRAMEWORK
-> >  M:   Philipp Zabel <p.zabel@pengutronix.de>
-> >  S:   Maintained
-> > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-> > index db0c8fb60515..af168e1c9fdb 100644
-> > --- a/drivers/iio/adc/Kconfig
-> > +++ b/drivers/iio/adc/Kconfig
-> > @@ -887,6 +887,16 @@ config ROCKCHIP_SARADC
-> >         To compile this driver as a module, choose M here: the
-> >         module will be called rockchip_saradc.
-> >
-> > +config RZG2L_ADC
-> > +     tristate "Renesas RZ/G2L ADC driver"
-> > +     depends on ARCH_R9A07G044 || COMPILE_TEST
-> > +     help
-> > +       Say yes here to build support for the ADC found in Renesas
-> > +       RZ/G2L family.
-> > +
-> > +       To compile this driver as a module, choose M here: the
-> > +       module will be called rzg2l_adc.
-> > +
-> >  config SC27XX_ADC
-> >       tristate "Spreadtrum SC27xx series PMICs ADC"
-> >       depends on MFD_SC27XX_PMIC || COMPILE_TEST
-> > diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
-> > index f70d877c555a..d68550f493e3 100644
-> > --- a/drivers/iio/adc/Makefile
-> > +++ b/drivers/iio/adc/Makefile
-> > @@ -82,6 +82,7 @@ obj-$(CONFIG_QCOM_PM8XXX_XOADC) += qcom-pm8xxx-xoadc.o
-> >  obj-$(CONFIG_RCAR_GYRO_ADC) += rcar-gyroadc.o
-> >  obj-$(CONFIG_RN5T618_ADC) += rn5t618-adc.o
-> >  obj-$(CONFIG_ROCKCHIP_SARADC) += rockchip_saradc.o
-> > +obj-$(CONFIG_RZG2L_ADC) += rzg2l_adc.o
-> >  obj-$(CONFIG_SC27XX_ADC) += sc27xx_adc.o
-> >  obj-$(CONFIG_SPEAR_ADC) += spear_adc.o
-> >  obj-$(CONFIG_STX104) += stx104.o
-> > diff --git a/drivers/iio/adc/rzg2l_adc.c b/drivers/iio/adc/rzg2l_adc.c
-> > new file mode 100644
-> > index 000000000000..d05a3208ff9d
-> > --- /dev/null
-> > +++ b/drivers/iio/adc/rzg2l_adc.c
-> > @@ -0,0 +1,595 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * RZ/G2L A/D Converter driver
-> > + *
-> > + *  Copyright (c) 2021 Renesas Electronics Europe GmbH
-> > + *
-> > + * Author: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > + */
-> > +
-> > +#include <linux/clk.h>
-> > +#include <linux/completion.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/iio/iio.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/io.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/pm_runtime.h>
-> > +#include <linux/reset.h>
-> > +
-> > +#define DRIVER_NAME          "rzg2l-adc"
->
-> As only used in one place, just put it inline there so we don't need
-> to go find if we want to know the value - I'm lazy.
->
-Its being used in two places
-1: indio_dev->name = DRIVER_NAME #In probe call
-2: .name = DRIVER_NAME # In platform_driver struct
+>  CR2: ffffeb020003b848
+>  ---[ end trace f5f4e2b2680b5fd7 ]---
+> 
+> The driver is allocating some buffers using kmalloc variants, and others
+> using vmalloc. I checked to see if there was confusion on which form of free
+> should be used, but this one is allocated with kmalloc and freed with kfree,
+> which should be OK.
+> 
+> Larry
+> 
 
-Let me know if you want me to replace them inline and drop the above macro.
+Maybe hostapd is involved. Try killing hostapd before and then
+unplug the dongle... does the system freeze?
 
-> > +
-> > +#define RZG2L_ADM(n)                 ((n) * 0x4)
-> > +#define RZG2L_ADM0_ADCE                      BIT(0)
-> > +#define RZG2L_ADM0_ADBSY             BIT(1)
-> > +#define RZG2L_ADM0_PWDWNB            BIT(2)
-> > +#define RZG2L_ADM0_SRESB             BIT(15)
-> > +#define RZG2L_ADM1_TRG                       BIT(0)
-> > +#define RZG2L_ADM1_MS                        BIT(2)
-> > +#define RZG2L_ADM1_BS                        BIT(4)
-> > +#define RZG2L_ADM1_EGA_MASK          GENMASK(13, 12)
-> > +#define RZG2L_ADM2_CHSEL_MASK                GENMASK(7, 0)
-> > +#define RZG2L_ADM3_ADIL_MASK         GENMASK(31, 24)
-> > +#define RZG2L_ADM3_ADCMP_MASK                GENMASK(23, 16)
-> > +#define RZG2L_ADM3_ADCMP_E           FIELD_PREP(RZG2L_ADM3_ADCMP_MASK, 0xe)
-> > +#define RZG2L_ADM3_ADSMP_MASK                GENMASK(15, 0)
-> > +
-> > +#define RZG2L_ADINT                  0x20
-> > +#define RZG2L_ADINT_INTEN_MASK               GENMASK(7, 0)
-> > +#define RZG2L_ADINT_CSEEN            BIT(16)
-> > +#define RZG2L_ADINT_INTS             BIT(31)
-> > +
-> > +#define RZG2L_ADSTS                  0x24
-> > +#define RZG2L_ADSTS_CSEST            BIT(16)
-> > +#define RZG2L_ADSTS_INTST_MASK               GENMASK(7, 0)
-> > +
-> > +#define RZG2L_ADIVC                  0x28
-> > +#define RZG2L_ADIVC_DIVADC_MASK              GENMASK(8, 0)
-> > +#define RZG2L_ADIVC_DIVADC_4         FIELD_PREP(RZG2L_ADIVC_DIVADC_MASK, 0x4)
-> > +
-> > +#define RZG2L_ADFIL                  0x2c
-> > +
-> > +#define RZG2L_ADCR(n)                        (0x30 + ((n) * 0x4))
-> > +#define RZG2L_ADCR_AD_MASK           GENMASK(11, 0)
-> > +
-> > +#define RZG2L_ADSMP_DEFUALT_SAMPLING 0x578
-> > +
-> > +#define RZG2L_ADC_MAX_CHANNELS               8
-> > +#define RZG2L_ADC_CHN_MASK           0x7
-> > +#define RZG2L_ADC_TIMEOUT            usecs_to_jiffies(1 * 4)
-> > +
-> > +struct rzg2l_adc_data {
-> > +     const struct iio_chan_spec *channels;
-> > +     u8 num_channels;
-> > +};
-> > +
-> > +struct rzg2l_adc {
-> > +     void __iomem *base;
-> > +     struct clk *pclk;
-> > +     struct clk *adclk;
-> > +     struct reset_control *presetn;
-> > +     struct reset_control *adrstn;
-> > +     struct completion completion;
-> > +     const struct rzg2l_adc_data *data;
-> > +     u16 last_val[RZG2L_ADC_MAX_CHANNELS];
-> > +};
-> > +
-> > +static const char * const rzg2l_adc_channel_name[] = {
-> > +     "adc0",
-> > +     "adc1",
-> > +     "adc2",
-> > +     "adc3",
-> > +     "adc4",
-> > +     "adc5",
-> > +     "adc6",
-> > +     "adc7",
-> > +};
-> > +
-> > +static unsigned int rzg2l_adc_readl(struct rzg2l_adc *adc, u32 reg)
-> > +{
-> > +     return readl(adc->base + reg);
-> > +}
-> > +
-> > +static void rzg2l_adc_writel(struct rzg2l_adc *adc, unsigned int reg, u32 val)
-> > +{
-> > +     writel(val, adc->base + reg);
-> > +}
-> > +
-> > +static void rzg2l_adc_pwr(struct rzg2l_adc *adc, bool on)
-> > +{
-> > +     u32 reg;
-> > +
-> > +     reg = rzg2l_adc_readl(adc, RZG2L_ADM(0));
-> > +     if (on)
-> > +             reg |= RZG2L_ADM0_PWDWNB;
-> > +     else
-> > +             reg &= ~RZG2L_ADM0_PWDWNB;
-> > +     rzg2l_adc_writel(adc, RZG2L_ADM(0), reg);
-> > +     udelay(2);
-> > +}
-> > +
-> > +static void rzg2l_adc_start_stop(struct rzg2l_adc *adc, bool start)
-> > +{
-> > +     int timeout = 5;
-> > +     u32 reg;
-> > +
-> > +     /* stop A/D conversion */
->
-> This comment seems odd.  If it is stopping conversion, how is this function
-> used to start conversion?  Perhaps some more details.
->
-My bad its should be start/stop, said that already the function is
-named rzg2l_adc_start_stop() so will drop this comment.
+#include "../include/rtw_android.h"
+int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+{
+        struct iwreq *wrq = (struct iwreq *)rq;
+        int ret = 0;
 
-> > +     reg = rzg2l_adc_readl(adc, RZG2L_ADM(0));
-> > +     if (start)
-> > +             reg |= RZG2L_ADM0_ADCE;
-> > +     else
-> > +             reg &= ~RZG2L_ADM0_ADCE;
-> > +     rzg2l_adc_writel(adc, RZG2L_ADM(0), reg);
-> > +
-> > +     if (start)
-> > +             return;
-> > +
-> > +     do {
-> > +             usleep_range(100, 200);
-> > +             reg = rzg2l_adc_readl(adc, RZG2L_ADM(0));
-> > +             timeout--;
-> > +             if (!timeout) {
-> > +                     pr_err("%s stopping ADC timed out\n", __func__);
-> > +                     break;
-> > +             }
-> > +     } while (((reg & RZG2L_ADM0_ADBSY) || (reg & RZG2L_ADM0_ADCE)));
-> > +}
-> > +
-> > +static void rzg2l_set_trigger(struct rzg2l_adc *adc)
-> > +{
-> > +     u32 reg;
-> > +
-> > +     /*
-> > +      * Setup ADM1 for SW trigger
-> > +      * EGA[13:12] - Set 00 to indicate hardware trigger is invalid
-> > +      * BS[4] - Enable 1-buffer mode
-> > +      * MS[1] - Enable Select mode
-> > +      * TRG[0] - Enable software trigger mode
-> > +      */
-> > +     reg = rzg2l_adc_readl(adc, RZG2L_ADM(1));
-> > +     reg &= ~RZG2L_ADM1_EGA_MASK;
-> > +     reg &= ~RZG2L_ADM1_BS;
-> > +     reg &= ~RZG2L_ADM1_TRG;
-> > +     reg |= RZG2L_ADM1_MS;
-> > +     rzg2l_adc_writel(adc, RZG2L_ADM(1), reg);
-> > +}
-> > +
-> > +static int rzg2l_adc_conversion_setup(struct rzg2l_adc *adc, u8 ch)
-> > +{
-> > +     u32 reg;
-> > +
-> > +     if (rzg2l_adc_readl(adc, RZG2L_ADM(0)) & RZG2L_ADM0_ADBSY)
-> > +             return -EBUSY;
-> > +
-> > +     rzg2l_set_trigger(adc);
-> > +
-> > +     /* Select analog input channel subjected to conversion. */
-> > +     reg = rzg2l_adc_readl(adc, RZG2L_ADM(2));
-> > +     reg &= ~RZG2L_ADM2_CHSEL_MASK;
-> > +     reg |= BIT(ch);
-> > +     rzg2l_adc_writel(adc, RZG2L_ADM(2), reg);
-> > +
-> > +     /*
-> > +      * Setup ADINT
-> > +      * INTS[31] - Select pulse signal
-> > +      * CSEEN[16] - Enable channel select error interrupt
-> > +      * INTEN[7:0] - Select channel interrupt
-> > +      */
-> > +     reg = rzg2l_adc_readl(adc, RZG2L_ADINT);
-> > +     reg &= ~RZG2L_ADINT_INTS;
-> > +     reg &= ~RZG2L_ADINT_INTEN_MASK;
-> > +     reg |= (RZG2L_ADINT_CSEEN | BIT(ch));
-> > +     rzg2l_adc_writel(adc, RZG2L_ADINT, reg);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int rzg2l_adc_set_power(struct iio_dev *indio_dev, bool on)
-> > +{
-> > +     struct device *dev = indio_dev->dev.parent;
-> > +
-> > +     if (on)
-> > +             return pm_runtime_resume_and_get(dev);
-> > +
-> > +     return pm_runtime_put_sync(dev);
-> > +}
-> > +
-> > +static int rzg2l_adc_conversion(struct iio_dev *indio_dev, struct rzg2l_adc *adc, u8 ch)
-> > +{
-> > +     int ret;
-> > +
-> > +     ret = rzg2l_adc_set_power(indio_dev, true);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret = rzg2l_adc_conversion_setup(adc, ch);
-> > +     if (ret) {
-> > +             rzg2l_adc_set_power(indio_dev, false);
-> > +             return ret;
-> > +     }
-> > +
-> > +     reinit_completion(&adc->completion);
-> > +
-> > +     rzg2l_adc_start_stop(adc, true);
-> > +
-> > +     if (!wait_for_completion_timeout(&adc->completion, RZG2L_ADC_TIMEOUT)) {
-> > +             rzg2l_adc_writel(adc, RZG2L_ADINT,
-> > +                              rzg2l_adc_readl(adc, RZG2L_ADINT) & ~RZG2L_ADINT_INTEN_MASK);
-> > +             rzg2l_adc_start_stop(adc, false);
-> > +             rzg2l_adc_set_power(indio_dev, false);
-> > +             return -ETIMEDOUT;
-> > +     }
-> > +
-> > +     return rzg2l_adc_set_power(indio_dev, false);
-> > +}
-> > +
-> > +static int rzg2l_adc_read_raw(struct iio_dev *indio_dev,
-> > +                           struct iio_chan_spec const *chan,
-> > +                           int *val, int *val2, long mask)
-> > +{
-> > +     struct rzg2l_adc *adc = iio_priv(indio_dev);
-> > +     int ret;
-> > +     u8 ch;
-> > +
-> > +     switch (mask) {
-> > +     case IIO_CHAN_INFO_RAW:
-> > +             if (chan->type != IIO_VOLTAGE)
-> > +                     return -EINVAL;
-> > +
-> > +             ret = iio_device_claim_direct_mode(indio_dev);
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             ch = chan->channel & RZG2L_ADC_CHN_MASK;
-> > +             ret = rzg2l_adc_conversion(indio_dev, adc, ch);
-> > +             if (ret) {
-> > +                     iio_device_release_direct_mode(indio_dev);
-> > +                     return ret;
-> > +             }
-> > +             *val = adc->last_val[ch];
->
-> You should not rely on implementation details of iio_device_claim_direct_mode()
-> to protect your driver specific data structures. Use your own lock.
-> Those calls are intended for safe operation when buffered mode in IIO is supported
-> and currently your driver doesn't support that at all so please remove them.
->
-sure will add drivers own lock.
+        switch (cmd) {
+        case RTL_IOCTL_WPA_SUPPLICANT:
+                ret = wpa_supplicant_ioctl(dev, &wrq->u.data);
+                break;
+#ifdef CONFIG_88EU_AP_MODE
+        case RTL_IOCTL_HOSTAPD:
+                ret = rtw_hostapd_ioctl(dev, &wrq->u.data);
+        	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-> > +             iio_device_release_direct_mode(indio_dev);
-> > +
-> > +             return IIO_VAL_INT;
-> > +
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
-> > +}
-> > +
-> > +static int rzg2l_adc_read_label(struct iio_dev *iio_dev,
-> > +                             const struct iio_chan_spec *chan,
-> > +                             char *label)
-> > +{
-> > +     if (chan->channel >= RZG2L_ADC_MAX_CHANNELS)
-> > +             return -EINVAL;
-> > +
-> > +     return sysfs_emit(label, "%s\n", rzg2l_adc_channel_name[chan->channel]);
-> > +}
-> > +
-> > +static const struct iio_info rzg2l_adc_iio_info = {
-> > +     .read_raw = rzg2l_adc_read_raw,
-> > +     .read_label = rzg2l_adc_read_label,
-> > +};
-> > +
-> > +static irqreturn_t rzg2l_adc_isr(int irq, void *dev_id)
-> > +{
-> > +     struct rzg2l_adc *adc = (struct rzg2l_adc *)dev_id;
->
-> No need for explicit cast from void * to another pointer type.
-> This is always valid without in C.
->
-Agreed.
+I think that someone tries to write the wrong fields while
+freeing memory...        
 
-> > +     unsigned long intst;
-> > +     u32 reg;
-> > +     int ch;
-> > +
-> > +     reg = rzg2l_adc_readl(adc, RZG2L_ADSTS);
-> > +
-> > +     /* A/D conversion channel select error interrupt */
-> > +     if (reg & RZG2L_ADSTS_CSEST) {
-> > +             rzg2l_adc_writel(adc, RZG2L_ADSTS, reg);
-> > +             return IRQ_HANDLED;
-> > +     }
-> > +
-> > +     intst = reg & RZG2L_ADSTS_INTST_MASK;
-> > +     if (!intst)
-> > +             return IRQ_NONE;
-> > +
-> > +     for_each_set_bit(ch, &intst, RZG2L_ADC_MAX_CHANNELS) {
-> > +             if (intst & BIT(ch))
->
-> I'm missing how this if can fail given we only end up in here when the bit is
-> set.
->
-ADC has 8 channels RZG2L_ADSTS register bits [0:7] will be set to 1
-when the given channel ADC conversion has been completed. So the above
-if condition checks if the bit is set to 1 and then reads the
-corresponding value of that channel.
+	break;
+#endif /*  CONFIG_88EU_AP_MODE */
+        case SIOCDEVPRIVATE:
 
-> > +                     adc->last_val[ch] = rzg2l_adc_readl(adc, RZG2L_ADCR(ch)) &
-> > +                                         RZG2L_ADCR_AD_MASK;
-> > +     }
-> > +
-> > +     /* clear the channel interrupt */
-> > +     rzg2l_adc_writel(adc, RZG2L_ADSTS, reg);
-> > +
-> > +     complete(&adc->completion);
-> > +
-> > +     return IRQ_HANDLED;
-> > +}
-> > +
-> > +static int rzg2l_adc_parse_properties(struct platform_device *pdev, struct rzg2l_adc *adc)
-> > +{
-> > +     struct iio_chan_spec *chan_array;
-> > +     struct fwnode_handle *fwnode;
-> > +     struct rzg2l_adc_data *data;
-> > +     unsigned int channel;
-> > +     int num_channels;
-> > +     int ret;
-> > +     u8 i;
-> > +
-> > +     data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-> > +     if (!data)
-> > +             return -ENOMEM;
-> > +
-> > +     num_channels = device_get_child_node_count(&pdev->dev);
-> > +     if (!num_channels) {
-> > +             dev_err(&pdev->dev, "no channel children\n");
-> > +             return -ENODEV;
-> > +     }
-> > +
-> > +     if (num_channels > RZG2L_ADC_MAX_CHANNELS) {
-> > +             dev_err(&pdev->dev, "num of channel children out of range\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     chan_array = devm_kcalloc(&pdev->dev, num_channels, sizeof(*chan_array),
-> > +                               GFP_KERNEL);
-> > +     if (!chan_array)
-> > +             return -ENOMEM;
-> > +
-> > +     i = 0;
-> > +     device_for_each_child_node(&pdev->dev, fwnode) {
-> > +             ret = fwnode_property_read_u32(fwnode, "reg", &channel);
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             if (channel >= RZG2L_ADC_MAX_CHANNELS)
-> > +                     return -EINVAL;
-> > +
-> > +             chan_array[i].type = IIO_VOLTAGE;
-> > +             chan_array[i].indexed = 1;
-> > +             chan_array[i].channel = channel;
-> > +             chan_array[i].info_mask_separate = BIT(IIO_CHAN_INFO_RAW);
-> > +             chan_array[i].datasheet_name = rzg2l_adc_channel_name[channel];
-> > +             i++;
-> > +     }
-> > +
-> > +     data->num_channels = num_channels;
-> > +     data->channels = chan_array;
-> > +     adc->data = data;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int rzg2l_adc_hw_init(struct rzg2l_adc *adc)
-> > +{
-> > +     int timeout = 5;
-> > +     u32 reg;
-> > +     int ret;
-> > +
-> > +     ret = clk_prepare_enable(adc->pclk);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* SW reset */
-> > +     reg = rzg2l_adc_readl(adc, RZG2L_ADM(0));
-> > +     reg |= RZG2L_ADM0_SRESB;
-> > +     rzg2l_adc_writel(adc, RZG2L_ADM(0), reg);
-> > +
-> > +     while (!(rzg2l_adc_readl(adc, RZG2L_ADM(0)) & RZG2L_ADM0_SRESB)) {
-> > +             if (!timeout) {
-> > +                     ret = -EBUSY;
-> > +                     goto exit_hw_init;
-> > +             }
-> > +             timeout--;
-> > +             usleep_range(100, 200);
-> > +     }
-> > +
-> > +     /* Only division by 4 can be set */
-> > +     reg = rzg2l_adc_readl(adc, RZG2L_ADIVC);
-> > +     reg &= ~RZG2L_ADIVC_DIVADC_MASK;
-> > +     reg |= RZG2L_ADIVC_DIVADC_4;
-> > +     rzg2l_adc_writel(adc, RZG2L_ADIVC, reg);
-> > +
-> > +     /*
-> > +      * Setup AMD3
-> > +      * ADIL[31:24] - Should be always set to 0
-> > +      * ADCMP[23:16] - Should be always set to 0xe
-> > +      * ADSMP[15:0] - Set default (0x578) sampling period
-> > +      */
-> > +     reg = rzg2l_adc_readl(adc, RZG2L_ADM(3));
-> > +     reg &= ~RZG2L_ADM3_ADIL_MASK;
-> > +     reg &= ~RZG2L_ADM3_ADCMP_MASK;
-> > +     reg &= ~RZG2L_ADM3_ADSMP_MASK;
-> > +     reg |= (RZG2L_ADM3_ADCMP_E | RZG2L_ADSMP_DEFUALT_SAMPLING);
-> > +     rzg2l_adc_writel(adc, RZG2L_ADM(3), reg);
-> > +
-> > +exit_hw_init:
-> > +     clk_disable_unprepare(adc->pclk);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void rzg2l_adc_pm_runtime_disable(void *data)
-> > +{
-> > +     struct iio_dev *indio_dev = data;
->
-> Register the devm call with the dev instead of the iio_dev.
-> As this should be right next to the enable, it will be obvious
-> what it should be.
->
-Agreed will do.
+static int rtw_hostapd_ioctl(struct net_device *dev, struct iw_point *p)
+{
+        struct ieee_param *param;
+        int ret = 0;
+        struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
 
-> > +
-> > +     pm_runtime_disable(indio_dev->dev.parent);
-> > +}
-> > +
-> > +static void rzg2l_adc_reset_assert(void *data)
-> > +{
-> > +     struct reset_control *reset = data;
-> Why do we need the local variable?
->
->         reset_control_assert(data);
->
-> is fine.
->
-Agreed.
+...
 
-> > +
-> > +     reset_control_assert(reset);
-> > +}
-> > +
-> > +static int rzg2l_adc_probe(struct platform_device *pdev)
-> > +{
-> > +     struct device *dev = &pdev->dev;
-> > +     struct iio_dev *indio_dev;
-> > +     struct rzg2l_adc *adc;
-> > +     int ret;
-> > +     int irq;
-> > +
-> > +     indio_dev = devm_iio_device_alloc(dev, sizeof(*adc));
-> > +     if (!indio_dev)
-> > +             return -ENOMEM;
-> > +
-> > +     adc = iio_priv(indio_dev);
-> > +
-> > +     ret = rzg2l_adc_parse_properties(pdev, adc);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     adc->base = devm_platform_ioremap_resource(pdev, 0);
-> > +     if (IS_ERR(adc->base))
-> > +             return PTR_ERR(adc->base);
-> > +
-> > +     irq = platform_get_irq(pdev, 0);
->
-> Please group things together, so we 'get' whatever it is next to where
-> we use it.  It might make the error handling a tiny bit more complex, but
-> it makes the code easier to review as we don't have to jump backwards and forwards
-> all the time. With devm_ in heavy use as you have here, that's all magic
-> in the error paths anyway :)
->
-sure will move this just above the devm_request_irq().
+        switch (param->cmd) {
+        case RTL871X_HOSTAPD_FLUSH:
+                ret = rtw_hostapd_sta_flush(dev);
+                break;
+...
+        case RTL871X_HOSTAPD_SET_WPS_BEACON:
+                ret = rtw_set_wps_beacon(dev, param, p->length);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+		break;
 
-> > +     if (irq < 0) {
-> > +             dev_err(dev, "no irq resource\n");
-> > +             return irq;
-> > +     }
-> > +
-> > +     adc->pclk = devm_clk_get(dev, "pclk");
-> > +     if (IS_ERR(adc->pclk)) {
-> > +             dev_err(dev, "Failed to get pclk");
-> > +             return PTR_ERR(adc->pclk);
-> > +     }
-> > +
-> > +     adc->adclk = devm_clk_get(dev, "adclk");
-> > +     if (IS_ERR(adc->adclk)) {
-> > +             dev_err(dev, "Failed to get adclk");
-> > +             return PTR_ERR(adc->adclk);
-> > +     }
-> > +
-> > +     adc->adrstn = devm_reset_control_get_exclusive(dev, "adrst-n");
-> > +     if (IS_ERR(adc->adrstn)) {
-> > +             dev_err(dev, "failed to get adrstn\n");
-> > +             return PTR_ERR(adc->adrstn);
-> > +     }
-> > +
-> > +     ret = devm_add_action_or_reset(&pdev->dev,
-> > +                                    rzg2l_adc_reset_assert, adc->adrstn);
-> > +     if (ret) {
-> > +             dev_err(&pdev->dev, "failed to register adrstn assert devm action, %d\n",
-> > +                     ret);
-> > +             return ret;
-> > +     }
-> > +
-> > +     adc->presetn = devm_reset_control_get_exclusive(dev, "presetn");
-> > +     if (IS_ERR(adc->presetn)) {
-> > +             dev_err(dev, "failed to get presetn\n");
-> > +             return PTR_ERR(adc->presetn);
-> > +     }
-> > +
-> > +     ret = devm_add_action_or_reset(&pdev->dev,
-> > +                                    rzg2l_adc_reset_assert, adc->presetn);
->
-> As already raised, wrong place.
->
-Agreed.
+static int rtw_set_wps_beacon(struct net_device *dev, struct ieee_param *param, int len)
+{
+        int ret = 0;
+       
+...
 
-> > +     if (ret) {
-> > +             dev_err(&pdev->dev, "failed to register presetn assert devm action, %d\n",
-> > +                     ret);
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret = reset_control_deassert(adc->adrstn);
-> > +     if (ret) {
-> > +             dev_err(&pdev->dev, "failed to deassert adrstn pin, %d\n", ret);
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret = reset_control_deassert(adc->presetn);
-> > +     if (ret) {
-> > +             dev_err(&pdev->dev, "failed to deassert presetn pin, %d\n", ret);
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret = rzg2l_adc_hw_init(adc);
-> > +     if (ret) {
-> > +             dev_err(&pdev->dev, "failed to initialize ADC HW, %d\n", ret);
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret = devm_request_irq(dev, irq, rzg2l_adc_isr,
-> > +                            0, dev_name(dev), adc);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     init_completion(&adc->completion);
-> > +
-> > +     platform_set_drvdata(pdev, indio_dev);
-> > +
-> > +     indio_dev->name = DRIVER_NAME;
-> > +     indio_dev->info = &rzg2l_adc_iio_info;
-> > +     indio_dev->modes = INDIO_DIRECT_MODE;
-> > +     indio_dev->channels = adc->data->channels;
-> > +     indio_dev->num_channels = adc->data->num_channels;
-> > +
-> > +     pm_runtime_enable(dev);
->
-> I think you also want to set the state to suspended to ensure the resume is
-> called on get.
->
-pm_runtime_set_suspended() should only be called when runtime is
-disabled or is it that I am missing something ?
+                memcpy(pmlmepriv->wps_beacon_ie, param->u.bcn_ie.buf, ie_len);
+		^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+		maybe hotsapd does some ioctl at the wrong moment. 
 
-> > +     ret = devm_add_action_or_reset(&pdev->dev,
-> > +                                    rzg2l_adc_pm_runtime_disable, indio_dev);
-> > +     if (ret) {
-> > +             dev_err(&pdev->dev, "failed to register pm_runtime_disable devm action, %d\n",
-> > +                     ret);
->
-> This is vanishingly unlikely as it's a tiny memory allocation.  So I would dropt he error
-> print in the interests of simplicity.  Some of the other items above we don't print
-> on are more likely to fail.
->
-Sure will drop this.
+Just to verify, we could kill hostapd, if ever runs in your machine...
 
-Cheers,
-Prabhakar
+thank you,
 
-> > +             return ret;
-> > +     }
-> > +
-> > +     return devm_iio_device_register(dev, indio_dev);
-> > +}
+fabio
