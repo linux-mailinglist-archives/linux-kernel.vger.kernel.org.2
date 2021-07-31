@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9933DC861
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 23:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AE83DC864
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 23:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbhGaVmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 17:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
+        id S231924AbhGaVmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 17:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231537AbhGaVmp (ORCPT
+        with ESMTP id S231462AbhGaVmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 17:42:45 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BBFC06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 14:42:39 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id z7so14983948iog.13
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 14:42:39 -0700 (PDT)
+        Sat, 31 Jul 2021 17:42:52 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0E0C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 14:42:45 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id d10so13016480ils.7
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 14:42:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=TarqHKb2wh9HC+czOpmfvpe+4WJMCMhoUET0HeAvQsg=;
-        b=ChHEB9cn1Lk8yB5rfWFQ1d5yu+CRBv6BPI2R74etPqUCzJgU0BAuSuspXSZXz7q+65
-         Rqx3mbokyv+23fwMzoEP10GrYIrqp9gsrU/wAzIo4KLqsW9Mp88Dp/k5PPfq/nyHPYqv
-         GAAP8fLAEu39c4S5vjxbaUPBTAgMrrpAOQPSwPUHnuzF7S1ZoZY3Hut+uNkJrpoFvsLr
-         ZLm8Yn/ZQDE3Y9R3QyKBW8vnjIMzh1/SrhbwUmlcqvS+PKPewpMtXyeHf08ev2WaqXaJ
-         1sGc+yd14y5kw11gIiokecM+s+x7KNmonzI4UenSCXK29vNtwUfBomYKRpG06bIEhQXJ
-         D/VQ==
+        bh=xPck7MMABBW1WtH6n+xcidO56Avpeo49SggTpQTKxus=;
+        b=AexSXd2PXlmD2Clg3eVEPdYp3vl1NLUrBzV3KgrgcMfxWzO8W6+/+i8hXtB8HqNeqm
+         zuCPHcu8pvMJiXxE28nu7X9mNIjYr57YpVy1sOWu+vv3JrksNi9rDQCl5io2q2T/D31A
+         ui/8qTw3jHS3AVmBdWb2syc1XgPVeNWZ908NJHyYJJO/uyAp3PObAKpSaTCLBGnbMNEe
+         SVJYa0kvCwwUvJ5dJtxSLgCcuM60bLkTaiV57aDet/X8y6JZ9CKzWUfS+qMaKq/B8GO7
+         j91IfyIDkHrfdsSEOT+BSSJ/Y2d21wWsMlRWnoUMMoY1w/6fGTcKr4uc8cArAkDKWV3E
+         y/ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TarqHKb2wh9HC+czOpmfvpe+4WJMCMhoUET0HeAvQsg=;
-        b=jb+fv5SzoBTbvOXpA10/nsaQmYHWSIvTDDS+ByoJK/9agv1eswY7o17vbBIjOkYs8p
-         8S1FFP/4s/OKyTf4EwEoM0/QiFT/xj7f4ho7thuv8vf8tslW/Zz8Gl0aDRRRIZ8QOQ4d
-         pT/KLvxF7J6RlAklWqSAFAqIVjGjTzAaRlMf901RgzrQdxeDcHBirUtuNsxw5nJsM0Vk
-         w2TrSYtKt8JLiLH05tGHUcVg1lO4TMIiHY0tm+b1u0iMKG6wIQTbiR3Hy4gdBaIkWApg
-         K1cPXqQ5pAiDJFLogPYhujiEkd4Ir2bI0OSGQBeZCDa6xHXKZaqn5W3YiR6m1I23cX7t
-         Typw==
-X-Gm-Message-State: AOAM531XEnj1cAhLTpBy0KUJ+lhEFej97kHHToRGAyt0IjseMMC3ji3H
-        lAesUrMMu+npKQ6ojlXxWNo=
-X-Google-Smtp-Source: ABdhPJwVYVK0Xb4+Y+xg/kICohGw6QY3fg7nUx88vH0xZrpT+G5YyF7mdDH9vGymQy1CL8T8OS1Lig==
-X-Received: by 2002:a02:2a07:: with SMTP id w7mr7722468jaw.96.1627767758496;
-        Sat, 31 Jul 2021 14:42:38 -0700 (PDT)
+        bh=xPck7MMABBW1WtH6n+xcidO56Avpeo49SggTpQTKxus=;
+        b=QhlUGBP37YYjs0ldv3nUG+tliRTOpvVrsL0QWmfwtmQWGvtszDASgHtjuYqmehHpi0
+         RZTml9MR3O0590Fv2pEqXEBTbfYnfPZZKWC2XX28delxT0T0rkoJMajA5RR4t954dyOZ
+         wUTm1tyaPHi70zxZdCZq639HToqyZVg+mBSC49NUCTSqNQz4V5SOaHist5e9fGeaemxn
+         hS7RAluLx8obn3AqcZ1xckrgOoA0BgM7MzRmGIGrogiSCLpMqVBYq/Rx81jtvoOCUtim
+         6Y8/9J0m3OtDgvMGBfoh/0TOlmhm0LMsyBJZR2rmf3v3Ix++lMpsAiF3Qi2gNza6XJpt
+         NnxQ==
+X-Gm-Message-State: AOAM532t1FGs5/35Sf61MvJztfFir5hz3NeH9F6rUo6WEpT1TioOn0RO
+        nIk15H6aKSeqB+yeqTsO6AA=
+X-Google-Smtp-Source: ABdhPJwQjrRtHttvc3vCaTEHaO1jjg2Zrk/t8zWB73N8dPAu1dBcfj2fmbzg3rQBcmT5QP+vbvn2zg==
+X-Received: by 2002:a92:7b13:: with SMTP id w19mr2318517ilc.291.1627767765231;
+        Sat, 31 Jul 2021 14:42:45 -0700 (PDT)
 Received: from frodo.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id q10sm3721040ion.3.2021.07.31.14.42.37
+        by smtp.googlemail.com with ESMTPSA id q10sm3721040ion.3.2021.07.31.14.42.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 14:42:38 -0700 (PDT)
+        Sat, 31 Jul 2021 14:42:44 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -66,19 +66,19 @@ To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
         Jason Baron <jbaron@akamai.com>,
         Ashley Thomas <Ashley.Thomas2@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
         Aurabindo Pillai <aurabindo.pillai@amd.com>,
         Wyatt Wood <Wyatt.Wood@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
         Jim Cromie <jim.cromie@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
         Nick Desaulniers <ndesaulniers@gooogle.com>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
         intel-gfx@lists.freedesktop.org
-Subject: [PATCH v4 3/7] dyndbg: add dyndbg-bitmap definer and callbacks
-Date:   Sat, 31 Jul 2021 15:42:00 -0600
-Message-Id: <20210731214211.657280-4-jim.cromie@gmail.com>
+Subject: [PATCH v4 4/7] i915/gvt: remove spaces in pr_debug "gvt: core:" etc prefixes
+Date:   Sat, 31 Jul 2021 15:42:01 -0600
+Message-Id: <20210731214211.657280-5-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210731214211.657280-1-jim.cromie@gmail.com>
 References: <20210731214211.657280-1-jim.cromie@gmail.com>
@@ -88,165 +88,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DEFINE_DYNDBG_BITMAP(name, var, bitmap_desc, @bit_descs) to allow
-users to define a /sys/module/*/parameter/name, and a mapping from
-bits[0-N] to the debug-class-prefixes that the author wishes to
-control.
+Collapsing "gvt: core: " to "gvt:core: " is a better class-prefix;
+dropping the internal spaces means a trailing space in a query will
+more clearly terminate the prefix.
 
-DEFINE_DYNDBG_BITMAP(debug_gvt, __gvt_debug,
-	"dyndbg bitmap desc",
-	{ "gvt:cmd: ",	"command processing" },
-	{ "gvt:core: ",	"core help" },
-	{ "gvt:dpy: ",	"display help" },
-	{ "gvt:el: ",	"help" },
-	{ "gvt:irq: ",	"help" },
-	{ "gvt:mm: ",	"help" },
-	{ "gvt:mmio: ", "help" },
-	{ "gvt:render: ", "help" },
-	{ "gvt:sched: ", "help" });
+Consider a generic drm-debug example:
 
-dynamic_debug.c: add 3 new elements:
+  # turn off most ATOMIC reports
+  echo format "^drm:atomic: " -p > control
 
-- int param_set_dyndbg() - not working yet, // __gvt_debug
-- int param_get_dyndbg()
-- struct param_ops_dyndbg
+  # turn off all ATOMIC:* reports
+  echo format "^drm:atomic:" -p > control
 
-Following the model of kernel/params.c STANDARD_PARAM_DEFS, All 3 are
-non-static and exported.
+  # turn on ATOMIC:FAIL reports
+  echo format "^drm:atomic:fail: " +p > control
 
-dynamic_debug.h:
+Removing embedded spaces in the class-prefixes simplifies the
+corresponding match-prefix.  This means that "quoted" match-prefixes
+are only needed when the trailing space is desired, in order to
+exclude explicitly sub-categorized pr-debugs; in this example,
+"drm:atomic:fail:".
 
-extern the struct param_ops_dyndbg prototype.  This appears to be
-needed to reference the var, forex in i915_params.c
-
-TBD: set_dyndbg() works to enable categories, but fails to disable
-them.  This is because the code relied on having an old copy of the
-param (__gvt_debug) to detect +/- changes.  Rewriting the loop is
-probably easier than stashing the old state for change detection.
+RFC: maybe the prefix catenation should paste in the " " class-prefix
+terminator explicitly.  A pr_debug_() flavor could exclude the " ",
+allowing ad-hoc sub-categorization by appending for example, "fail:"
+to "drm:atomic:".
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- include/linux/dynamic_debug.h | 36 +++++++++++++++++++++++
- lib/dynamic_debug.c           | 55 +++++++++++++++++++++++++++++++++++
- 2 files changed, 91 insertions(+)
+ drivers/gpu/drm/i915/gvt/debug.h | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-index dce631e678dd..677ad176b167 100644
---- a/include/linux/dynamic_debug.h
-+++ b/include/linux/dynamic_debug.h
-@@ -2,6 +2,8 @@
- #ifndef _DYNAMIC_DEBUG_H
- #define _DYNAMIC_DEBUG_H
+diff --git a/drivers/gpu/drm/i915/gvt/debug.h b/drivers/gpu/drm/i915/gvt/debug.h
+index c6027125c1ec..b4021f41c546 100644
+--- a/drivers/gpu/drm/i915/gvt/debug.h
++++ b/drivers/gpu/drm/i915/gvt/debug.h
+@@ -36,30 +36,30 @@ do {									\
+ } while (0)
  
-+#include <linux/moduleparam.h>
-+
- #if defined(CONFIG_JUMP_LABEL)
- #include <linux/jump_label.h>
+ #define gvt_dbg_core(fmt, args...) \
+-	pr_debug("gvt: core: "fmt, ##args)
++	pr_debug("gvt:core: "fmt, ##args)
+ 
+ #define gvt_dbg_irq(fmt, args...) \
+-	pr_debug("gvt: irq: "fmt, ##args)
++	pr_debug("gvt:irq: "fmt, ##args)
+ 
+ #define gvt_dbg_mm(fmt, args...) \
+-	pr_debug("gvt: mm: "fmt, ##args)
++	pr_debug("gvt:mm: "fmt, ##args)
+ 
+ #define gvt_dbg_mmio(fmt, args...) \
+-	pr_debug("gvt: mmio: "fmt, ##args)
++	pr_debug("gvt:mmio: "fmt, ##args)
+ 
+ #define gvt_dbg_dpy(fmt, args...) \
+-	pr_debug("gvt: dpy: "fmt, ##args)
++	pr_debug("gvt:dpy: "fmt, ##args)
+ 
+ #define gvt_dbg_el(fmt, args...) \
+-	pr_debug("gvt: el: "fmt, ##args)
++	pr_debug("gvt:el: "fmt, ##args)
+ 
+ #define gvt_dbg_sched(fmt, args...) \
+-	pr_debug("gvt: sched: "fmt, ##args)
++	pr_debug("gvt:sched: "fmt, ##args)
+ 
+ #define gvt_dbg_render(fmt, args...) \
+-	pr_debug("gvt: render: "fmt, ##args)
++	pr_debug("gvt:render: "fmt, ##args)
+ 
+ #define gvt_dbg_cmd(fmt, args...) \
+-	pr_debug("gvt: cmd: "fmt, ##args)
++	pr_debug("gvt:cmd: "fmt, ##args)
+ 
  #endif
-@@ -227,6 +229,40 @@ static inline int dynamic_debug_exec_queries(const char *query, const char *modn
- 	return 0;
- }
- 
-+static int param_set_dyndbg(const char *instr, struct kernel_param *kp)
-+{ return 0; }
-+static int param_get_dyndbg(char *buffer, struct kernel_param *kp)
-+{ return 0; }
-+
- #endif /* !CONFIG_DYNAMIC_DEBUG_CORE */
- 
-+struct dyndbg_bitdesc {
-+	/* bitpos is inferred from index in containing array */
-+	char *prefix;
-+	char *help;
-+};
-+
-+/**
-+ * DYNDBG_BITMAP_DESC(name, var, bitmap_desc, @bit_descs)
-+ * @name: basename under /sys
-+ * @var: C identifier to map
-+ * @bitmap_desc: string summarizing dyndbg categories
-+ * @bit_descs: list of struct dydbg_bitdesc initializations
-+ *
-+ * Defines the mapping of bits 0-N to categories/prefixes of
-+ * debug-callsites to be controlled.
-+ *
-+ * Users should also call MODULE_PARM_DESC(name, bitmap_desc).
-+ * Maybe we can invoke it on their behalf, but we want MOD-NAME to be
-+ * correct, test soon.  may also need modname in name - "debug" will
-+ * not be unique.
-+ */
-+#define DEFINE_DYNDBG_BITMAP(name, value, bitmap_desc, ...)	\
-+	struct dyndbg_bitdesc dyndbg_classes_##name[] =		\
-+	{ __VA_ARGS__, { NULL, NULL } };			\
-+	module_param_cbd(name, &param_ops_dyndbg, value, 0644,	\
-+			 &dyndbg_classes_##name);
-+
-+extern const struct kernel_param_ops param_ops_dyndbg;
-+
- #endif
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index cb5abb42c16a..045e1cf92c44 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -1154,3 +1154,58 @@ early_initcall(dynamic_debug_init);
- 
- /* Debugfs setup must be done later */
- fs_initcall(dynamic_debug_init_control);
-+
-+#include <linux/moduleparam.h>
-+
-+#define OUR_QUERY_SIZE 128 /* typically need <40 */
-+
-+int param_set_dyndbg(const char *instr, const struct kernel_param *kp)
-+{
-+	unsigned int val;
-+	unsigned long changes, result;
-+	int rc, chgct = 0, totct = 0, bitpos, bitsmax;
-+	char query[OUR_QUERY_SIZE];
-+	struct dyndbg_bitdesc *bitmap = (struct dyndbg_bitdesc *) kp->data;
-+
-+	// pr_info("set_dyndbg: instr: %s curr: %d\n", instr, *kp->arg);
-+
-+	rc = kstrtouint(instr, 0, &val);
-+	if (rc) {
-+		pr_err("set_dyndbg: failed\n");
-+		return -EINVAL;
-+	}
-+	result = val;
-+	pr_info("set_dyndbg: result:0x%lx from %s\n", result, instr);
-+
-+	changes = result; // ^ __gvt_debug;
-+
-+	for (bitsmax = 0; bitmap[bitsmax].prefix; bitsmax++);
-+
-+	for_each_set_bit(bitpos, &changes, min(--bitsmax, 64)) {
-+
-+		sprintf(query, "format '^%s' %cp", bitmap[bitpos].prefix,
-+			test_bit(bitpos, &result) ? '+' : '-');
-+
-+		chgct = dynamic_debug_exec_queries(query, "i915");
-+
-+		pr_info("bit-%d: %d changes on: %s\n", bitpos, chgct, query);
-+		totct += chgct;
-+	}
-+	pr_info("total changes: %d\n", totct);
-+	// __gvt_debug = result;
-+	return 0;
-+}
-+EXPORT_SYMBOL(param_set_dyndbg);
-+
-+int param_get_dyndbg(char *buffer, const struct kernel_param *kp)
-+{
-+	return scnprintf(buffer, PAGE_SIZE, "%u\n",
-+			 *((unsigned int *)kp->arg));
-+}
-+EXPORT_SYMBOL(param_get_dyndbg);
-+
-+const struct kernel_param_ops param_ops_dyndbg = {
-+	.set = param_set_dyndbg,
-+	.get = param_get_dyndbg,
-+};
-+EXPORT_SYMBOL(param_ops_dyndbg);
 -- 
 2.31.1
 
