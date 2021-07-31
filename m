@@ -2,70 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1843DC8B3
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 00:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2CB3DC8BE
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 00:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbhGaWoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 18:44:38 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:36766 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhGaWoh (ORCPT
+        id S231934AbhGaWvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 18:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhGaWvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 18:44:37 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m9xgO-005bgK-Az; Sat, 31 Jul 2021 22:42:16 +0000
-Date:   Sat, 31 Jul 2021 22:42:16 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     John Ericson <mail@johnericson.me>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Jann Horn <jann@thejh.net>,
-        Christian Brauner <christian.brauner@canonical.com>
-Subject: Re: Leveraging pidfs for process creation without fork
-Message-ID: <YQXRyMUGS5cDSbzu@zeniv-ca.linux.org.uk>
-References: <CAHmME9oHBtR4fBBUY8E_Oi7av-=OjOGkSNhQuMJMHhafCjazBw@mail.gmail.com>
- <CALCETrVGLx5yeHo7ExAmJZmPjVjcJiV7p1JOa4iUaW5DRoEvLQ@mail.gmail.com>
- <cf07f0732eb94dbfa67c9d56ceba738e@AcuMS.aculab.com>
- <f8457e20-c3cc-6e56-96a4-3090d7da0cb6@JohnEricson.me>
- <20210729142415.qovpzky537zkg3dp@wittgenstein>
- <YQNYs+BKenJHBMSP@zeniv-ca.linux.org.uk>
- <1468d75c-57ae-42aa-85ce-2bee8d403763@www.fastmail.com>
+        Sat, 31 Jul 2021 18:51:03 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A443C0613CF;
+        Sat, 31 Jul 2021 15:50:56 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id j1so20325479pjv.3;
+        Sat, 31 Jul 2021 15:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ccOmKGqAMkhwq31OLMcVjOhchprcLxq6RDKgsBdQFs=;
+        b=mZWaMTj3EpxN8tSLODH97h8uPSbvNy45r4BNkaTAqVdZo+5//hJB/BLP0CVeV/ppit
+         FUEFAuG0avqzBQ3hj862RvEh+FvFOxG3tadrhFD+tkc9peaSAUKbbnsRKCZsBdZHSo7u
+         /zuoRbBgF2sd22FsvNXwCSSrbvejB55Oc1vA0Wp3or+qc+otCTJ71WD2td/u1TnUg8gf
+         Ihb4OOFtMTknD/i0fe+sDuTH3oGJ6tGtGcbiSqY7JIeMvHIeJYt3EtTdP2PrAHchlUsI
+         itChO72DNemc2uUKbCgbf6iS9vGE8mwGsLJmK3dXW7mnyY4JBQvKTWWoTAN8/NgUHY8S
+         klGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ccOmKGqAMkhwq31OLMcVjOhchprcLxq6RDKgsBdQFs=;
+        b=X83xz7YcY2vGot1VgR0SzveEESMXbm1uqmSCJ8ExCb9KzUCPpmic+4/bVN+85Vnl1y
+         a++ccVaUjxh1KCcDSpNIo9sjf9Son4L7CV97E+aZAgOTeE87PpoGwXZivSpF7rwAgHMH
+         pYPd53QGjEk5vbTo5tI8Fjzn5N4a09nFYFEFXv11avmJpRgqQVxX14n3fzTULQYdcklU
+         f4e5kyDRMCG4aQh9X/Mg+Yc09+QmgHtPmt2f5veImoyu8+EP3sZBdCS5zZP4qdnBq5Rr
+         ESrndXvNnPTsY/6P9MRWqLAe7vcw9A3PwnH40Ie2MGqZeDdmXvcXkrnAM/k2ARSThua2
+         fWag==
+X-Gm-Message-State: AOAM531UDFH6OW8YBGK7MHRg2lH4jeoXjMu08qSidgu59jB0PDlP9i1O
+        0edlASnDKo21JYrVCg8ccOY=
+X-Google-Smtp-Source: ABdhPJzELZqnT2vtdNh6hTPdTJ8H1uP75TJks3eb6I+eDIx/P+FExZ0KF/DrCjmkrKMEbpTIJ3vtng==
+X-Received: by 2002:a17:902:e804:b029:12c:af3b:b172 with SMTP id u4-20020a170902e804b029012caf3bb172mr587680plg.2.1627771855477;
+        Sat, 31 Jul 2021 15:50:55 -0700 (PDT)
+Received: from localhost.localdomain ([125.62.118.205])
+        by smtp.googlemail.com with ESMTPSA id 20sm6980578pfi.170.2021.07.31.15.50.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 15:50:54 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Michael.Hennerich@analog.com, alexandru.ardelean@analog.com,
+        jic23@kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lars@metafoo.de, Dragos.Bogdan@analog.com, Darius.Berghe@analog.com
+Cc:     Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH v7 0/3] iio: accel: add support for ADXL355
+Date:   Sun,  1 Aug 2021 04:20:42 +0530
+Message-Id: <20210731225045.399445-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1468d75c-57ae-42aa-85ce-2bee8d403763@www.fastmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 03:11:03PM -0700, John Ericson wrote:
-> Do you mind pointing out one of those examples? I'm new to this, but if they follow a pattern I should be able to find the other examples based off it. I'm certainly curious to take a look :).
-> 
-> I hope these issues aren't to deep. Ideally there's a nice decoupling so the creating process is just manipulating "inert" data structures for the embryo that scheduler doesn't even need see, and then after the embryonic process is submitted, when the context switches to it for the first time that's a completely normal process without special cases.
-> 
-> The place complexity is hardest to avoid I think would be cleaning up the yet-unborn embryonic processes orphaned by exitted parent(s), because that will have to handle all the semi-initialized states those could be in (as opposed to real processes).
+Add the dt-bindings and the driver for ADXL355 3-axis MEMS Accelerometer.
 
-	It's more on the exit/exec/coredump side, actually.  For
-exit we want to be sure that no new live threads will appear in a
-group once the last live thread has entered do_exit().  For
-exec (de_thread(), for starters) you want to have all threads
-except for the one that does execve() to be killed and your
-thread to take over as group leader.  Look for the machinery there
-and in do_exit()/release_task() involved into that.  For coredump
-you want all threads except for dumper to be brought into do_exit()
-and stopped there, for dumping one to be able to access their state.
+Changes since v6:
+1. Use interrupt-names property in device tree document.
+2. Add triggered buffer support.
+3. Use a static table for offset and data registers.
+4. Fix coding style issues.
+5. move defines from header to c file.
 
-	Then there's fun with ->sighand treatment - the whole thing
-critically relies upon ->sighand being shared for the entire thread
-group; look at the ->sighand->siglock uses.
+Changes since v5:
+1. Used get_unaligned_be24() and  get_unaligned_be16() to parse
+acceleration and temperature data. This solves sparse errors and also
+make the code more understandable.
 
-	The whole area is full of rather subtle places.  Again, the
-real headache comes from the exit and execve.  Embryonic threads are
-passive; it's the ones already running that can (and do) cause PITA.
+Changes since v4:
+1. Fix errors reported by sparse.
 
-	What do you want that for, BTW?
+Changes since v3:
+1. Fix errors in yaml DT doc.
+2. Change SPDX-License-Identifier to GPL-2.0-only OR BSD-2-Clause
+
+Changes since v2:
+1. Add separate DT binding doc in yaml.
+2. Use ____cacheline_aligned buffer for regmap_bulk_read/write calls.
+3. Make code consistent by using same style in switch case.
+4. Use FIELD_PREP in place of custom macros.
+5. Make Kconfig description more informative.
+
+Changes since v1:
+1. Remove the declarations for static regmap structures from adxl355.h.
+This was missed in the v1 and caused errors.
+2. Make switch case statements consistent by directly returning from
+each case rather than saving the return in a variable.
+3. Some coding style changes.
+
+Changes since v0:
+1. Move adxl355_hpf_3db_table to adxl355_data structure. This is done to make
+sure that each device gets its own table.
+2. Make local regmap definitions private to adxl355_core.c.
+3. Other minor coding style changes.
+
+Puranjay Mohan (3):
+  dt-bindings: iio: accel: Add DT binding doc for ADXL355
+  iio: accel: Add driver support for ADXL355
+  iio: accel: adxl355: Add triggered buffer support
+
+ .../bindings/iio/accel/adi,adxl355.yaml       |  88 +++
+ MAINTAINERS                                   |   7 +
+ drivers/iio/accel/Kconfig                     |  29 +
+ drivers/iio/accel/Makefile                    |   3 +
+ drivers/iio/accel/adxl355.h                   |  19 +
+ drivers/iio/accel/adxl355_core.c              | 682 ++++++++++++++++++
+ drivers/iio/accel/adxl355_i2c.c               |  65 ++
+ drivers/iio/accel/adxl355_spi.c               |  67 ++
+ 8 files changed, 960 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+ create mode 100644 drivers/iio/accel/adxl355.h
+ create mode 100644 drivers/iio/accel/adxl355_core.c
+ create mode 100644 drivers/iio/accel/adxl355_i2c.c
+ create mode 100644 drivers/iio/accel/adxl355_spi.c
+
+-- 
+2.30.1
+
