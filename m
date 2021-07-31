@@ -2,211 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B795E3DC383
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 07:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F503DC38D
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 07:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231717AbhGaF1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 01:27:12 -0400
-Received: from smtpbg587.qq.com ([113.96.223.105]:39806 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhGaF1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 01:27:11 -0400
-X-QQ-mid: bizesmtp38t1627709210t835i70l
-Received: from ficus.lan (unknown [171.223.99.141])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sat, 31 Jul 2021 13:26:48 +0800 (CST)
-X-QQ-SSF: 01000000002000B0C000B00A0000000
-X-QQ-FEAT: s7pJguWOSDAMFImT23sH0iw24VPXGJfxegD2ZKiEalCHy0MMfVGLOoIP/046a
-        Ao3Du8N4vAZuxCxa7MtgTPx//64DMo9ih+6gQ8zO+RApdwPQ1JzqPXifOeWOkaWHlupCNCl
-        C6KiBqj2UAV95IAHcvZ8APHe3UZwUo7ffjP/8nzq6/PDQ02/IlvluXjCB+RI9INv1VqYM/D
-        QWomz7TzdcnGlerPvhdFlZ1+S4gH3pghYK9mQY27Oqpf+pRChmf5Cs7vMip8YyYOIskZjOD
-        ngMTOi8BMN6dL55D1ZKrsKExXDFXg3qtWr2C7BOPSg0GdYSELK4C3K6JXb40PdhQEDqA==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     tiwai@suse.com
-Cc:     perex@perex.cz, leon@kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] ALSA: pcxhr: use __func__ to get funcion's name in an output message
-Date:   Sat, 31 Jul 2021 13:26:47 +0800
-Message-Id: <20210731052647.141046-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S236583AbhGaFbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 01:31:34 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:36575 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231558AbhGaFbe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 01:31:34 -0400
+Received: by mail-io1-f69.google.com with SMTP id k20-20020a6b6f140000b029053817be16cdso7264317ioc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 22:31:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Ybhqdh1oYd31ci+HGWGSrGtMp6EI7IzrFPCbt4B92Rk=;
+        b=U+BTqKR7pcmya0FubqVuqirbPPTvUDEOc7XPC9DzkmBjvZX09OgdAxrABRiVCWcWn4
+         7H/kAfpL+LFK77HQDw1sM9EflmtOJT64cavKI8LsB5HYU7g8XC0+inK4kEKMgYJkG9Cx
+         aOlsgBFhJSdobIXYdoXJ+E/okVjiv3/SiZBU/wtsnwHMI72xy5L7E4fozqp7A/ZzEEBH
+         t7BglO5KBgdbd+aXI4lRPcvxHIup/i/U0VxyTg5bcnIDOmBPEDMU25tWTrrZxlUgWuNd
+         rYmq9iwpnrqN9JoPcoNvi5g9rHb8TD73WeRGlBdwDU7+a7WW55eXmlICc+VwT9yC41qz
+         SkGg==
+X-Gm-Message-State: AOAM533GD4TfmYXo56O5C3qqkKBC13ga1BmJNhCXEJQC/BUKZVmY0DQf
+        yObJzQZ8/6yDxgK0ebz6HrmPITUEZxPiKnKM3Ywion6yjNWt
+X-Google-Smtp-Source: ABdhPJy6LYtw5jeTSRqjdhMSsg7KnPwClEQsL7kwZkfKosDBBQl+Vhzy4l3I5accRC/Ng+FO8iFn28tDmcfQlGCkK174j6m1JoDp
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam3
+X-Received: by 2002:a02:6a24:: with SMTP id l36mr4919100jac.4.1627709487368;
+ Fri, 30 Jul 2021 22:31:27 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 22:31:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cacd1705c864a53a@google.com>
+Subject: [syzbot] general protection fault in __block_write_begin_int
+From:   syzbot <syzbot+dda2ebbaa98b7ee29c87@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prefer using '"%s...", __func__' to get current function's name in
-an output message.
+Hello,
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+syzbot found the following issue on:
+
+HEAD commit:    764a5bc89b12 Merge tag 'drm-fixes-2021-07-30' of git://ano..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=169e4966300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=40eef000d7648480
+dashboard link: https://syzkaller.appspot.com/bug?extid=dda2ebbaa98b7ee29c87
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dda2ebbaa98b7ee29c87@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xfbd59c0000000040: 0000 [#1] PREEMPT SMP KASAN
+KASAN: maybe wild-memory-access in range [0xdead000000000200-0xdead000000000207]
+CPU: 0 PID: 14330 Comm: syz-executor.0 Not tainted 5.14.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__block_write_begin_int+0xdf/0x1810 fs/buffer.c:1973
+Code: c1 e8 03 42 80 3c 28 00 41 89 ec 0f 85 4e 16 00 00 48 8b 04 24 48 8b 58 18 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 1e 16 00 00 48 8b 03 48 89 44 24 48 48 8b 04 24
+RSP: 0018:ffffc900028df408 EFLAGS: 00010a02
+RAX: dffffc0000000000 RBX: dead000000000200 RCX: ffffc9000a883000
+RDX: 1bd5a00000000040 RSI: ffffffff81d82909 RDI: ffffea00020b8058
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff819c2dde R11: 0000000000000000 R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000001000 R15: 0000000000001000
+FS:  00007fdaaa33b700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055640707d930 CR3: 0000000030e6f000 CR4: 00000000001526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __block_write_begin fs/buffer.c:2056 [inline]
+ block_write_begin+0x58/0x2e0 fs/buffer.c:2116
+ generic_perform_write+0x202/0x500 mm/filemap.c:3656
+ __generic_file_write_iter+0x24e/0x610 mm/filemap.c:3783
+ blkdev_write_iter+0x298/0x550 fs/block_dev.c:1643
+ call_write_iter include/linux/fs.h:2114 [inline]
+ do_iter_readv_writev+0x46f/0x740 fs/read_write.c:740
+ do_iter_write+0x188/0x670 fs/read_write.c:866
+ vfs_iter_write+0x70/0xa0 fs/read_write.c:907
+ iter_file_splice_write+0x723/0xc70 fs/splice.c:689
+ do_splice_from fs/splice.c:767 [inline]
+ direct_splice_actor+0x110/0x180 fs/splice.c:936
+ splice_direct_to_actor+0x34b/0x8c0 fs/splice.c:891
+ do_splice_direct+0x1b3/0x280 fs/splice.c:979
+ do_sendfile+0x9f0/0x1120 fs/read_write.c:1260
+ __do_sys_sendfile64 fs/read_write.c:1325 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1311 [inline]
+ __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1311
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fdaaa33b188 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000003
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000080006 R11: 0000000000000246 R12: 000000000056bf80
+R13: 0000000000a9fb1f R14: 00007fdaaa33b300 R15: 0000000000022000
+Modules linked in:
+---[ end trace 525ffcbbca5b966c ]---
+RIP: 0010:__block_write_begin_int+0xdf/0x1810 fs/buffer.c:1973
+Code: c1 e8 03 42 80 3c 28 00 41 89 ec 0f 85 4e 16 00 00 48 8b 04 24 48 8b 58 18 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 1e 16 00 00 48 8b 03 48 89 44 24 48 48 8b 04 24
+RSP: 0018:ffffc900028df408 EFLAGS: 00010a02
+RAX: dffffc0000000000 RBX: dead000000000200 RCX: ffffc9000a883000
+RDX: 1bd5a00000000040 RSI: ffffffff81d82909 RDI: ffffea00020b8058
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff819c2dde R11: 0000000000000000 R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000001000 R15: 0000000000001000
+FS:  00007fdaaa33b700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000030e6f000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- sound/pci/pcxhr/pcxhr.c | 47 ++++++++++++++++++++---------------------
- 1 file changed, 23 insertions(+), 24 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
-index 96b9371c201a..242bd7e04b3e 100644
---- a/sound/pci/pcxhr/pcxhr.c
-+++ b/sound/pci/pcxhr/pcxhr.c
-@@ -366,7 +366,7 @@ static int pcxhr_sub_set_clock(struct pcxhr_mgr *mgr,
- 		mgr->codec_speed = speed;	/* save new codec speed */
- 	}
- 
--	dev_dbg(&mgr->pci->dev, "pcxhr_sub_set_clock to %dHz (realfreq=%d)\n",
-+	dev_dbg(&mgr->pci->dev, "%s to %dHz (realfreq=%d)\n", __func__,
- 		    rate, realfreq);
- 	return 0;
- }
-@@ -499,7 +499,7 @@ static int pcxhr_set_stream_state(struct snd_pcxhr *chip,
- 	else {
- 		if (stream->status != PCXHR_STREAM_STATUS_SCHEDULE_STOP) {
- 			dev_err(chip->card->dev,
--				"pcxhr_set_stream_state CANNOT be stopped\n");
-+				"%s CANNOT be stopped\n", __func__);
- 			return -EINVAL;
- 		}
- 		start = 0;
-@@ -524,7 +524,7 @@ static int pcxhr_set_stream_state(struct snd_pcxhr *chip,
- 	err = pcxhr_send_msg(chip->mgr, &rmh);
- 	if (err)
- 		dev_err(chip->card->dev,
--			"ERROR pcxhr_set_stream_state err=%x;\n", err);
-+			"ERROR %s err=%x;\n", __func__, err);
- 	stream->status =
- 	  start ? PCXHR_STREAM_STATUS_STARTED : PCXHR_STREAM_STATUS_STOPPED;
- 	return err;
-@@ -570,7 +570,7 @@ static int pcxhr_set_format(struct pcxhr_stream *stream)
- 		break;
- 	default:
- 		dev_err(chip->card->dev,
--			"error pcxhr_set_format() : unknown format\n");
-+			"error %s() : unknown format\n", __func__);
- 		return -EINVAL;
- 	}
- 
-@@ -615,7 +615,7 @@ static int pcxhr_set_format(struct pcxhr_stream *stream)
- 	err = pcxhr_send_msg(chip->mgr, &rmh);
- 	if (err)
- 		dev_err(chip->card->dev,
--			"ERROR pcxhr_set_format err=%x;\n", err);
-+			"ERROR %s err=%x;\n", __func__, err);
- 	return err;
- }
- 
-@@ -630,7 +630,7 @@ static int pcxhr_update_r_buffer(struct pcxhr_stream *stream)
- 	stream_num = is_capture ? 0 : subs->number;
- 
- 	dev_dbg(chip->card->dev,
--		"pcxhr_update_r_buffer(pcm%c%d) : addr(%p) bytes(%zx) subs(%d)\n",
-+		"%s(pcm%c%d) : addr(%p) bytes(%zx) subs(%d)\n", __func__,
- 		is_capture ? 'c' : 'p',
- 		chip->chip_idx, (void *)(long)subs->runtime->dma_addr,
- 		subs->runtime->dma_bytes, subs->number);
-@@ -721,21 +721,20 @@ static void pcxhr_start_linked_stream(struct pcxhr_mgr *mgr)
- 	}
- 	if (capture_mask == 0 && playback_mask == 0) {
- 		mutex_unlock(&mgr->setup_mutex);
--		dev_err(&mgr->pci->dev, "pcxhr_start_linked_stream : no pipes\n");
-+		dev_err(&mgr->pci->dev, "%s : no pipes\n", __func__);
- 		return;
- 	}
- 
--	dev_dbg(&mgr->pci->dev, "pcxhr_start_linked_stream : "
--		    "playback_mask=%x capture_mask=%x\n",
--		    playback_mask, capture_mask);
-+	dev_dbg(&mgr->pci->dev, "%s : playback_mask=%x capture_mask=%x\n",
-+		    __func__, playback_mask, capture_mask);
- 
- 	/* synchronous stop of all the pipes concerned */
- 	err = pcxhr_set_pipe_state(mgr,  playback_mask, capture_mask, 0);
- 	if (err) {
- 		mutex_unlock(&mgr->setup_mutex);
--		dev_err(&mgr->pci->dev, "pcxhr_start_linked_stream : "
-+		dev_err(&mgr->pci->dev, "%s : "
- 			   "error stop pipes (P%x C%x)\n",
--			   playback_mask, capture_mask);
-+			   __func__, playback_mask, capture_mask);
- 		return;
- 	}
- 
-@@ -778,9 +777,9 @@ static void pcxhr_start_linked_stream(struct pcxhr_mgr *mgr)
- 	err = pcxhr_set_pipe_state(mgr, playback_mask, capture_mask, 1);
- 	if (err) {
- 		mutex_unlock(&mgr->setup_mutex);
--		dev_err(&mgr->pci->dev, "pcxhr_start_linked_stream : "
-+		dev_err(&mgr->pci->dev, "%s : "
- 			   "error start pipes (P%x C%x)\n",
--			   playback_mask, capture_mask);
-+			   __func__, playback_mask, capture_mask);
- 		return;
- 	}
- 
-@@ -889,7 +888,7 @@ static int pcxhr_hardware_timer(struct pcxhr_mgr *mgr, int start)
- 	}
- 	err = pcxhr_send_msg(mgr, &rmh);
- 	if (err < 0)
--		dev_err(&mgr->pci->dev, "error pcxhr_hardware_timer err(%x)\n",
-+		dev_err(&mgr->pci->dev, "error %s err(%x)\n", __func__,
- 			   err);
- 	return err;
- }
-@@ -904,7 +903,7 @@ static int pcxhr_prepare(struct snd_pcm_substream *subs)
- 	int err = 0;
- 
- 	dev_dbg(chip->card->dev,
--		"pcxhr_prepare : period_size(%lx) periods(%x) buffer_size(%lx)\n",
-+		"%s : period_size(%lx) periods(%x) buffer_size(%lx)\n", __func__,
- 		    subs->runtime->period_size, subs->runtime->periods,
- 		    subs->runtime->buffer_size);
- 
-@@ -997,12 +996,12 @@ static int pcxhr_open(struct snd_pcm_substream *subs)
- 	runtime->hw = pcxhr_caps;
- 
- 	if( subs->stream == SNDRV_PCM_STREAM_PLAYBACK ) {
--		dev_dbg(chip->card->dev, "pcxhr_open playback chip%d subs%d\n",
--			    chip->chip_idx, subs->number);
-+		dev_dbg(chip->card->dev, "%s playback chip%d subs%d\n",
-+			    __func__, chip->chip_idx, subs->number);
- 		stream = &chip->playback_stream[subs->number];
- 	} else {
--		dev_dbg(chip->card->dev, "pcxhr_open capture chip%d subs%d\n",
--			    chip->chip_idx, subs->number);
-+		dev_dbg(chip->card->dev, "%s capture chip%d subs%d\n",
-+			    __func__, chip->chip_idx, subs->number);
- 		if (mgr->mono_capture)
- 			runtime->hw.channels_max = 1;
- 		else
-@@ -1011,8 +1010,8 @@ static int pcxhr_open(struct snd_pcm_substream *subs)
- 	}
- 	if (stream->status != PCXHR_STREAM_STATUS_FREE){
- 		/* streams in use */
--		dev_err(chip->card->dev, "pcxhr_open chip%d subs%d in use\n",
--			   chip->chip_idx, subs->number);
-+		dev_err(chip->card->dev, "%s chip%d subs%d in use\n",
-+			   __func__, chip->chip_idx, subs->number);
- 		mutex_unlock(&mgr->setup_mutex);
- 		return -EBUSY;
- 	}
-@@ -1077,7 +1076,7 @@ static int pcxhr_close(struct snd_pcm_substream *subs)
- 
- 	mutex_lock(&mgr->setup_mutex);
- 
--	dev_dbg(chip->card->dev, "pcxhr_close chip%d subs%d\n",
-+	dev_dbg(chip->card->dev, "%s chip%d subs%d\n", __func__,
- 		    chip->chip_idx, subs->number);
- 
- 	/* sample rate released */
-@@ -1572,7 +1571,7 @@ static int pcxhr_probe(struct pci_dev *pci,
- 	/* init setup mutex*/
- 	mutex_init(&mgr->setup_mutex);
- 
--	mgr->prmh = kmalloc(sizeof(*mgr->prmh) + 
-+	mgr->prmh = kmalloc(sizeof(*mgr->prmh) +
- 			    sizeof(u32) * (PCXHR_SIZE_MAX_LONG_STATUS -
- 					   PCXHR_SIZE_MAX_STATUS),
- 			    GFP_KERNEL);
--- 
-2.32.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
