@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206BA3DC4A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5388F3DC4A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232708AbhGaHyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 03:54:01 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:30362 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232700AbhGaHx4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 03:53:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627718030; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=053XoErYIp5BO4CyS7/Ja55Uun492HY50+ChgG3h3PM=; b=JRg2u9WNWnDPLttliR8fXE+VKfd9DOgEOcTP4tYm7nubkP3EEyUTZXQzUgtFC3NuQ74MYkZ7
- QGnKFG5LSytEo+CHGm+7iTO27us2yGOu0hBQOo93keIncchAGpjruo9I+KyKk9c+jdArm5az
- T1WSPVeET+WjmIZH1DjaEhYhuZY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6105017d17c2b4047da051b8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 31 Jul 2021 07:53:33
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 08086C4323A; Sat, 31 Jul 2021 07:53:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 535BEC433D3;
-        Sat, 31 Jul 2021 07:53:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 535BEC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Greg KH <greg@kroah.com>
-Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, johannes@sipsolutions.net,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH V2] cfg80211: Fix possible memory leak in function cfg80211_bss_update
-References: <20210628132334.851095-1-phind.uet@gmail.com>
-        <YQKELjKuAQsjmpLY@kroah.com>
-Date:   Sat, 31 Jul 2021 10:53:28 +0300
-In-Reply-To: <YQKELjKuAQsjmpLY@kroah.com> (Greg KH's message of "Thu, 29 Jul
-        2021 12:34:22 +0200")
-Message-ID: <877dh6dimf.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S232615AbhGaHxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 03:53:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230503AbhGaHxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 03:53:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3529C60F46;
+        Sat, 31 Jul 2021 07:53:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627718023;
+        bh=1KJVYCEuJ5jV6qNfQDq5kolD2QvDiKAsaWJLINb42vk=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=KTmL4svsIHOnIZK42fAMAfvm0IXfzS3/1ujkK42dwR7TSFBuzdsgZeeR72OOAnwl1
+         yt2Jqn759Qni/JoQv8jUSAkdOqNLMzcqHtTAHQxLWm8DB6mBLcxrjV/d8ySCt20mqS
+         arIVOI9OSRIulhNLeHbouD7NTxXz37Cv2eCI8UKBcDM9E29DfvPz4xGr3xG/pBsQ2C
+         Ukyu1v3ERT0VcFSLhIgIjEle3DxUFjlIXKWwDc7yRMwF5uIotZ2ibMJ9Ht8DW2428y
+         +CkEqTdKVp2smYz5XbqOHm82hklDrLsGZVPVIcFBik3Fwur2l4T8eqxSiiTEqQScc2
+         cTcWRfPUA5A7Q==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210731025950.2238582-1-briannorris@chromium.org>
+References: <20210731025950.2238582-1-briannorris@chromium.org>
+Subject: Re: [PATCH] clk: fix leak on devm_clk_bulk_get_all() unwind
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brian Norris <briannorris@chromium.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>, stable@vger.kernel.org
+To:     Brian Norris <briannorris@chromium.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Date:   Sat, 31 Jul 2021 00:53:41 -0700
+Message-ID: <162771802186.714452.5743429710136064714@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH <greg@kroah.com> writes:
+Quoting Brian Norris (2021-07-30 19:59:50)
+> clk_bulk_get_all() allocates an array of struct clk_bulk data for us
+> (unlike clk_bulk_get()), so we need to free it. Let's use the
+> clk_bulk_put_all() helper.
+>=20
+> kmemleak complains, on an RK3399 Gru/Kevin system:
+>=20
+> unreferenced object 0xffffff80045def00 (size 128):
+>   comm "swapper/0", pid 1, jiffies 4294667682 (age 86.394s)
+>   hex dump (first 32 bytes):
+>     44 32 60 fe fe ff ff ff 00 00 00 00 00 00 00 00  D2`.............
+>     48 32 60 fe fe ff ff ff 00 00 00 00 00 00 00 00  H2`.............
+>   backtrace:
+>     [<00000000742860d6>] __kmalloc+0x22c/0x39c
+>     [<00000000b0493f2c>] clk_bulk_get_all+0x64/0x188
+>     [<00000000325f5900>] devm_clk_bulk_get_all+0x58/0xa8
+>     [<00000000175b9bc5>] dwc3_probe+0x8ac/0xb5c
+>     [<000000009169e2f9>] platform_drv_probe+0x9c/0xbc
+>     [<000000005c51e2ee>] really_probe+0x13c/0x378
+>     [<00000000c47b1f24>] driver_probe_device+0x84/0xc0
+>     [<00000000f870fcfb>] __device_attach_driver+0x94/0xb0
+>     [<000000004d1b92ae>] bus_for_each_drv+0x8c/0xd8
+>     [<00000000481d60c3>] __device_attach+0xc4/0x150
+>     [<00000000a163bd36>] device_initial_probe+0x1c/0x28
+>     [<00000000accb6bad>] bus_probe_device+0x3c/0x9c
+>     [<000000001a199f89>] device_add+0x218/0x3cc
+>     [<000000001bd84952>] of_device_add+0x40/0x50
+>     [<000000009c658c29>] of_platform_device_create_pdata+0xac/0x100
+>     [<0000000021c69ba4>] of_platform_bus_create+0x190/0x224
+>=20
+> Fixes: f08c2e2865f6 ("clk: add managed version of clk_bulk_get_all")
+> Cc: Dong Aisheng <aisheng.dong@nxp.com>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> ---
 
-> On Mon, Jun 28, 2021 at 09:23:34PM +0800, Nguyen Dinh Phi wrote:
->> When we exceed the limit of BSS entries, this function will free the
->> new entry, however, at this time, it is the last door to access the
->> inputed ies, so these ies will be unreferenced objects and cause memory
->> leak.
->> Therefore we should free its ies before deallocating the new entry, beside
->> of dropping it from hidden_list.
->> 
->> Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-
-[...]
-
-> Did this change get lost somewhere?
-
-Johannes applied it to the macc80211 tree:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211.git/commit/?id=f9a5c358c8d26fed0cc45f2afc64633d4ba21dff
-
-Ah, and it's already in Linus' tree as well.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Applied to clk-fixes
