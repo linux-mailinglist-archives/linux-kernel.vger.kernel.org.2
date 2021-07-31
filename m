@@ -2,102 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD573DC23C
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 03:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877893DC23F
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 03:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhGaBMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 21:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33068 "EHLO
+        id S234520AbhGaBO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 21:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhGaBME (ORCPT
+        with ESMTP id S231337AbhGaBOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 21:12:04 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010BCC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 18:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=NgYJFFWzUHM3zcEoA5gx+sVNg6nWN0rmXGQDCj9xjk8=; b=SmZVZTm/nxNdfBTgTEe2jPNb1/
-        FXKfdjYFGpgr9VbhExls1PqzUvBzHqQ2Msh2438krx7WENxexT3vDyn9nGNBZMP83qBuCubu/paey
-        KuUX01mjn/9cqnuw+guQzhZUSVBKjSdrD5cPuQUhWuztvMJSFTNZ4fMOH3kr8zRyAMbs51XO300q9
-        XInKddH6EHajvJCJJzvWLWMe5r8GFYrc7DGqBD6oBCOt8SLY6VUG1qEcWeoHefk82CNKntND0zuKH
-        eigK3EkUqbpd74nTAz++gSVhYDuoOgrH6Kk3VMDcxqndmhhKj4kkjBH8/hZYPwQ6ppe4JbYZ+1gMA
-        ABMzZQkw==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m9dXf-00AgER-A0; Sat, 31 Jul 2021 01:11:55 +0000
-Subject: Re: [PATCH] trace: eradicate noisy warning in trace_osnoise.c
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-References: <20210731000055.28876-1-rdunlap@infradead.org>
- <20210730204050.46975ae2@oasis.local.home>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d4fdf5f0-ba3b-1260-b320-3045f218e6a6@infradead.org>
-Date:   Fri, 30 Jul 2021 18:11:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210730204050.46975ae2@oasis.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Fri, 30 Jul 2021 21:14:24 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97573C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 18:14:18 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id o32-20020a0c85a30000b0290328f91ede2bso7148784qva.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 18:14:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=Z+jBLOwaMHrD3vpQNOpOohSej7/a6ld7rbOxzY8Rd54=;
+        b=KWHmbWUtKjbcYcQHomSb4B1ApPywDoaS8s42TLlijLflq4kD2tH8pFsodAT5RfVXdR
+         YK0JWLwaaMRXDvEI/gVHQ6ZUswZh8yMStA1+5QeZCm0Po3n3pybFNfl6FzggLoyeY5Iv
+         q/w9t0SvdIbOuoZx6uhxSF8YmjrGimgrVRlmpfEgm9MJUGEH1tdd/ywQ4ClR27guHbpe
+         KWHEp/5x6YZ73mOuhFsGBYR+7R1MKA7K5qdR4iAMhUd5lBt9RboH+vjJOo8EMHr6QjLM
+         cvfZ7eQTq/Hx5wS+ccpyJ/DgYwYTtk3oiJ+9QNbC86GkFU3Rzu5ELC8FfjSGTkhnIAK0
+         9gQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=Z+jBLOwaMHrD3vpQNOpOohSej7/a6ld7rbOxzY8Rd54=;
+        b=mXiB/Z4i5GtebQCNsWDA2Ei2Ils92lElJJMOKC9eLJtSMr5rOBjanm75ns+uhs7Ux4
+         G87PZ4vUSqEt9YgNbZQTz0oxdEK0Dk/noDMt6rRE/zV8R1myG5FIWmqXmt5Xe8PvENnp
+         F1DMC5xkBk7VTIdkiR6S9NG/nXsZAIjE0aQw8xxb8SVfk9l8C+H9mnRJvIuWuxz9c9rN
+         lvbcLRclmZCLGm2vDOCDnbco69DLoqKVVNfsD5WTxo5SjAes/UYMx+78UCvnt3HxFNIO
+         zYM27NH9ke/1HakboClgflPZxTrTWYXLeK0p7HpJT/g1Za1eS4Z/Fq1gWtt3CP/bo62W
+         h7PQ==
+X-Gm-Message-State: AOAM533irJMU+TTHjdS5At2gTVhDB5ZVaDCV90UmTa8PIJI005YG9gUV
+        cvJ4br1uIIYdCAw7yvxCKFEASn3SYApG
+X-Google-Smtp-Source: ABdhPJzpDwuooUXZRIvdINIqPPnA6y1MqnCrAjWz5q0X22yWSn7QhNy6ZFuYNYPqDYYDEqNujWC9e4rza03J
+X-Received: from mihenry-linux-desktop.kir.corp.google.com ([2620:15c:29:204:a198:4c3e:b951:58e3])
+ (user=mizhang job=sendgmr) by 2002:a0c:ef4f:: with SMTP id
+ t15mr5815346qvs.31.1627694057687; Fri, 30 Jul 2021 18:14:17 -0700 (PDT)
+Reply-To: Mingwei Zhang <mizhang@google.com>
+Date:   Fri, 30 Jul 2021 18:13:04 -0700
+Message-Id: <20210731011304.3868795-1-mizhang@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH] KVM: SEV: improve the code readability for ASID management
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mingwei Zhang <mizhang@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Alper Gun <alpergun@google.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/21 5:40 PM, Steven Rostedt wrote:
-> On Fri, 30 Jul 2021 17:00:55 -0700
-> Randy Dunlap <rdunlap@infradead.org> wrote:
-> 
->> OK, I'm officially tired of this noise warning coming from
->> trace_osnoise.c, so shut it up. Also, adding new warnings is not OK.
-> 
-> I agree adding "new warnings" is not OK, but this is a stupid warning.
-> 
->>
->> ../kernel/trace/trace_osnoise.c: In function ‘start_kthread’:
->> ../kernel/trace/trace_osnoise.c:1461:8: warning: ‘main’ is usually a function [-Wmain]
->>   void *main = osnoise_main;
->>         ^~~~
->>
->> Fixes: c8895e271f79 ("trace/osnoise: Support hotplug operations")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Suggested-by: Matthew Wilcox <willy@infradead.org>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
->> ---
->>  kernel/trace/Makefile |    2 ++
->>  1 file changed, 2 insertions(+)
->>
->> --- mmotm-2021-0728-1824.orig/kernel/trace/Makefile
->> +++ mmotm-2021-0728-1824/kernel/trace/Makefile
->> @@ -36,6 +36,8 @@ CFLAGS_bpf_trace.o := -I$(src)
->>  CFLAGS_trace_benchmark.o := -I$(src)
->>  CFLAGS_trace_events_filter.o := -I$(src)
->>  
->> +CFLAGS_trace_osnoise.o := -Wno-main
-> 
-> Why just add it here. It's a silly warning to have for the kernel at
-> all. Should this not be added in a more global place?
+KVM SEV code uses bitmaps to manage ASID states. ASID 0 was always skipped
+because it is never used by VM. Thus, ASID value and its bitmap postion
+always has an 'offset-by-1' relationship.
 
-I don't know of any other places that name something 'main' when it is
-not a main() function.
+Both SEV and SEV-ES shares the ASID space, thus KVM uses a dynamic range
+[min_asid, max_asid] to handle SEV and SEV-ES ASIDs separately.
 
-> -- Steve
-> 
-> 
->> +
->>  obj-$(CONFIG_TRACE_CLOCK) += trace_clock.o
->>  
->>  obj-$(CONFIG_FUNCTION_TRACER) += libftrace.o
-> 
+Existing code mixes the usage of ASID value and its bitmap position by
+using the same variable called 'min_asid'.
 
+Fix the min_asid usage: ensure that its usage is consistent with its name;
+adjust its value before using it as a bitmap position. Add comments on ASID
+bitmap allocation to clarify the skipping-ASID-0 property.
 
+Fixes: 80675b3ad45f (KVM: SVM: Update ASID allocation to support SEV-ES guests)
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Alper Gun <alpergun@google.com>
+Cc: Dionna Glaze <dionnaglaze@google.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Vipin Sharma <vipinsh@google.com>
+Ce: Peter Gonda <pgonda@google.com>
+---
+ arch/x86/kvm/svm/sev.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 8d36f0c73071..e3902283cbf7 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -80,7 +80,7 @@ static int sev_flush_asids(int min_asid, int max_asid)
+ 	int ret, pos, error = 0;
+ 
+ 	/* Check if there are any ASIDs to reclaim before performing a flush */
+-	pos = find_next_bit(sev_reclaim_asid_bitmap, max_asid, min_asid);
++	pos = find_next_bit(sev_reclaim_asid_bitmap, max_asid, min_asid - 1);
+ 	if (pos >= max_asid)
+ 		return -EBUSY;
+ 
+@@ -142,10 +142,10 @@ static int sev_asid_new(struct kvm_sev_info *sev)
+ 	 * SEV-enabled guests must use asid from min_sev_asid to max_sev_asid.
+ 	 * SEV-ES-enabled guest can use from 1 to min_sev_asid - 1.
+ 	 */
+-	min_asid = sev->es_active ? 0 : min_sev_asid - 1;
++	min_asid = sev->es_active ? 1 : min_sev_asid;
+ 	max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
+ again:
+-	pos = find_next_zero_bit(sev_asid_bitmap, max_sev_asid, min_asid);
++	pos = find_next_zero_bit(sev_asid_bitmap, max_sev_asid, min_asid - 1);
+ 	if (pos >= max_asid) {
+ 		if (retry && __sev_recycle_asids(min_asid, max_asid)) {
+ 			retry = false;
+@@ -1854,7 +1854,10 @@ void __init sev_hardware_setup(void)
+ 	min_sev_asid = edx;
+ 	sev_me_mask = 1UL << (ebx & 0x3f);
+ 
+-	/* Initialize SEV ASID bitmaps */
++	/*
++	 * Initialize SEV ASID bitmaps. Note: ASID 0 is skipped since it is
++	 * never used by any VM, thus: ASID value == ASID position + 1;
++	 */
+ 	sev_asid_bitmap = bitmap_zalloc(max_sev_asid, GFP_KERNEL);
+ 	if (!sev_asid_bitmap)
+ 		goto out;
+@@ -1904,7 +1907,7 @@ void sev_hardware_teardown(void)
+ 		return;
+ 
+ 	/* No need to take sev_bitmap_lock, all VMs have been destroyed. */
+-	sev_flush_asids(0, max_sev_asid);
++	sev_flush_asids(1, max_sev_asid);
+ 
+ 	bitmap_free(sev_asid_bitmap);
+ 	bitmap_free(sev_reclaim_asid_bitmap);
 -- 
-~Randy
+2.32.0.554.ge1b32706d8-goog
 
