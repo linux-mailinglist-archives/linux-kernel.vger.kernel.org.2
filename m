@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B3D3DC5B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 13:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3F13DC5B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 13:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbhGaLW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 07:22:57 -0400
-Received: from mail-40135.protonmail.ch ([185.70.40.135]:25074 "EHLO
-        mail-40135.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232787AbhGaLW4 (ORCPT
+        id S232968AbhGaLZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 07:25:18 -0400
+Received: from mail-4325.protonmail.ch ([185.70.43.25]:31495 "EHLO
+        mail-4325.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232828AbhGaLZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 07:22:56 -0400
-Date:   Sat, 31 Jul 2021 11:22:36 +0000
+        Sat, 31 Jul 2021 07:25:17 -0400
+X-Greylist: delayed 83933 seconds by postgrey-1.27 at vger.kernel.org; Sat, 31 Jul 2021 07:25:17 EDT
+Date:   Sat, 31 Jul 2021 11:24:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1627730566;
-        bh=oBMQORLr71eHF+5XGOOCjrFcm1f761Z0GkeUmfUkBrw=;
+        s=protonmail; t=1627730708;
+        bh=YMRJNg+Xty8j0U+NbDMFmLI6dusj412CfV8y58Nw4Dw=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=E/ItKv/tf+7asF/tsJipLM7n9oHsREqXWCpz6flaRJ9RzqHMzxPl7YLNz5qpO74UC
-         pm6PF0G/TlRFDPFNPsmNq68Dwf7oKJWI4FJa3YtJsDcS7QaKs7WnPz4NACjpvMltvr
-         N0wI8LTstTKzp3TOMRvVMPmTmiuE5vu5TT807K24=
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
+        b=q7tkKJ0j9U4YRN6e8Hil49jHEd9ShCY129E4+a1FHbyjT8pr0RvLHZA1B+Lz8Gn8b
+         mdWs37iWHO40LKwxTquh+2SWDvuSKuhEblW6S6K93gM8QFCM9oCztoUElGXC4K8l5z
+         OJJePx32YToeCKoMAR+8Em0kTWvyt/nBuaegK0X8=
+To:     Michael Auchter <michael.auchter@ni.com>
 From:   Yassine Oudjana <y.oudjana@protonmail.com>
 Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
 Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: Re: [PATCH 1/5] interconnect: qcom: sdm660: Commonize RPM-QoS
-Message-ID: <8MU3XQ.J4PEYNU13D7K2@protonmail.com>
-In-Reply-To: <d65fa810-403f-29f3-ec18-16bcdfb68a85@somainline.org>
-References: <tBji8z2BZb2uc4O2OP7PyUJqbxLiWwoKnR7Ybshs@cp3-web-050.plabs.ch> <d65fa810-403f-29f3-ec18-16bcdfb68a85@somainline.org>
+Subject: Re: [PATCH v2 1/3] extcon: usbc-tusb320: Add support for mode setting and reset
+Message-ID: <27V3XQ.2D0PFTDOHG4Q3@protonmail.com>
+In-Reply-To: <YQF0/P6ngk7pjSCH@xaphan>
+References: <Fz2Ehjftp2eVDCxfgd4j3TYcrmSf5ForizOdT7rngo@cp7-web-042.plabs.ch> <YQF0/P6ngk7pjSCH@xaphan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -48,602 +45,262 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30 2021 at 17:39:31 +0400, AngeloGioacchino Del Regno=20
-<angelogioacchino.delregno@somainline.org> wrote:
-> Il 30/07/21 14:06, Yassine Oudjana ha scritto:
->>  SoCs such as MSM8996 also control bus QoS in a similar fashion to=20
->> SDM660,
->>  with some paths being controlled by RPM and others directly by the=20
->> AP.
->>  Move relevant functions and defines to a new object so that they=20
->> can be used
->>  in multiple drivers.
+On Wed, Jul 28 2021 at 19:17:16 +0400, Michael Auchter=20
+<michael.auchter@ni.com> wrote:
+> Hello Yassine,
+>=20
+> On Tue, Jul 27, 2021 at 09:56:41AM +0000, Yassine Oudjana wrote:
+>>  Reset the chip and set its mode to default (maintain mode set by=20
+>> PORT pin)
+>>  during probe to make sure it comes up in the default state.
 >>=20
 >>  Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
->=20
-> Hello Yassine,
-> thanks for the patch! However, I think there are a few things to=20
-> improve:
->=20
 >>  ---
->>    drivers/interconnect/qcom/Kconfig       |   5 +-
->>    drivers/interconnect/qcom/Makefile      |   2 +
->>    drivers/interconnect/qcom/icc-rpm-qos.c | 237 ++++++++++++++++
->>    drivers/interconnect/qcom/icc-rpm-qos.h | 133 +++++++++
->>    drivers/interconnect/qcom/icc-rpmh.c    |   6 +-
->>    drivers/interconnect/qcom/icc-rpmh.h    |   2 +-
->>    drivers/interconnect/qcom/sc7180.c      |   2 +-
->>    drivers/interconnect/qcom/sc7280.c      |   2 +-
->>    drivers/interconnect/qcom/sdm660.c      | 346=20
->> +-----------------------
->>    drivers/interconnect/qcom/sdm845.c      |   2 +-
->>    drivers/interconnect/qcom/sdx55.c       |   2 +-
->>    drivers/interconnect/qcom/sm8150.c      |   2 +-
->>    drivers/interconnect/qcom/sm8250.c      |   2 +-
->>    drivers/interconnect/qcom/sm8350.c      |   2 +-
->>    14 files changed, 391 insertions(+), 354 deletions(-)
->>    create mode 100644 drivers/interconnect/qcom/icc-rpm-qos.c
->>    create mode 100644 drivers/interconnect/qcom/icc-rpm-qos.h
+>>   drivers/extcon/extcon-usbc-tusb320.c | 111=20
+>> +++++++++++++++++++++++----
+>>   1 file changed, 97 insertions(+), 14 deletions(-)
 >>=20
->>  diff --git a/drivers/interconnect/qcom/Kconfig=20
->> b/drivers/interconnect/qcom/Kconfig
->>  index 0d7a2500d0b8..ad16224f1720 100644
->>  --- a/drivers/interconnect/qcom/Kconfig
->>  +++ b/drivers/interconnect/qcom/Kconfig
->>  @@ -87,7 +87,7 @@ config INTERCONNECT_QCOM_SDM660
->>    =09tristate "Qualcomm SDM660 interconnect driver"
->>    =09depends on INTERCONNECT_QCOM
->>    =09depends on QCOM_SMD_RPM
->>  -=09select INTERCONNECT_QCOM_SMD_RPM
->>  +=09select INTERCONNECT_QCOM_SMD_RPM_QOS
->>    =09help
->>    =09  This is a driver for the Qualcomm Network-on-Chip on=20
->> sdm660-based
->>    =09  platforms.
->>  @@ -139,3 +139,6 @@ config INTERCONNECT_QCOM_SM8350
->>=20
->>    config INTERCONNECT_QCOM_SMD_RPM
->>    =09tristate
+>>  diff --git a/drivers/extcon/extcon-usbc-tusb320.c=20
+>> b/drivers/extcon/extcon-usbc-tusb320.c
+>>  index 805af73b4152..c8d931abbf9f 100644
+>>  --- a/drivers/extcon/extcon-usbc-tusb320.c
+>>  +++ b/drivers/extcon/extcon-usbc-tusb320.c
+>>  @@ -19,15 +19,32 @@
+>>   #define TUSB320_REG9_ATTACHED_STATE_MASK=090x3
+>>   #define TUSB320_REG9_CABLE_DIRECTION=09=09BIT(5)
+>>   #define TUSB320_REG9_INTERRUPT_STATUS=09=09BIT(4)
+>>  -#define TUSB320_ATTACHED_STATE_NONE=09=090x0
+>>  -#define TUSB320_ATTACHED_STATE_DFP=09=090x1
+>>  -#define TUSB320_ATTACHED_STATE_UFP=09=090x2
+>>  -#define TUSB320_ATTACHED_STATE_ACC=09=090x3
 >>  +
->>  +config INTERCONNECT_QCOM_SMD_RPM_QOS
->>  +=09tristate
->>  diff --git a/drivers/interconnect/qcom/Makefile=20
->> b/drivers/interconnect/qcom/Makefile
->>  index 2880129a6fe4..2d04d024f46e 100644
->>  --- a/drivers/interconnect/qcom/Makefile
->>  +++ b/drivers/interconnect/qcom/Makefile
->>  @@ -16,6 +16,7 @@ qnoc-sm8150-objs=09=09=09:=3D sm8150.o
->>    qnoc-sm8250-objs=09=09=09:=3D sm8250.o
->>    qnoc-sm8350-objs=09=09=09:=3D sm8350.o
->>    icc-smd-rpm-objs=09=09=09:=3D smd-rpm.o icc-rpm.o
->>  +icc-smd-rpm-qos-objs=09=09=09:=3D smd-rpm.o icc-rpm-qos.o
->>=20
->>    obj-$(CONFIG_INTERCONNECT_QCOM_BCM_VOTER) +=3D icc-bcm-voter.o
->>    obj-$(CONFIG_INTERCONNECT_QCOM_MSM8916) +=3D qnoc-msm8916.o
->>  @@ -33,3 +34,4 @@ obj-$(CONFIG_INTERCONNECT_QCOM_SM8150) +=3D=20
->> qnoc-sm8150.o
->>    obj-$(CONFIG_INTERCONNECT_QCOM_SM8250) +=3D qnoc-sm8250.o
->>    obj-$(CONFIG_INTERCONNECT_QCOM_SM8350) +=3D qnoc-sm8350.o
->>    obj-$(CONFIG_INTERCONNECT_QCOM_SMD_RPM) +=3D icc-smd-rpm.o
->>  +obj-$(CONFIG_INTERCONNECT_QCOM_SMD_RPM_QOS) +=3D icc-smd-rpm-qos.o
->>  diff --git a/drivers/interconnect/qcom/icc-rpm-qos.c=20
->> b/drivers/interconnect/qcom/icc-rpm-qos.c
->>  new file mode 100644
->>  index 000000000000..678b347375d8
->>  --- /dev/null
->>  +++ b/drivers/interconnect/qcom/icc-rpm-qos.c
->>  @@ -0,0 +1,237 @@
->>  +/* SPDX-License-Identifier: GPL-2.0 */
->>  +/*
->>  + * Copyright (C) 2020, AngeloGioacchino Del Regno=20
->> <kholk11@gmail.com>
->>  + */
+>>  +#define TUSB320_REGA=09=09=09=090xa
+>>  +#define TUSB320_REGA_I2C_SOFT_RESET=09=09BIT(3)
+>>  +#define TUSB320_REGA_MODE_SELECT_SHIFT=09=094
+>>  +#define TUSB320_REGA_MODE_SELECT_MASK=09=090x3
 >>  +
->>  +#include <linux/clk.h>
->>  +#include <linux/device.h>
->>  +#include <linux/interconnect-provider.h>
->>  +#include <linux/io.h>
->>  +#include <linux/module.h>
->>  +#include <linux/of_device.h>
->>  +#include <linux/of_platform.h>
->>  +#include <linux/platform_device.h>
->>  +#include <linux/regmap.h>
->>  +#include <linux/slab.h>
->>  +
->>  +#include "smd-rpm.h"
->>  +#include "icc-rpm-qos.h"
->>  +
->>  +static int qcom_icc_bimc_set_qos_health(struct regmap *rmap,
->>  +=09=09=09=09=09struct qcom_icc_qos *qos,
->>  +=09=09=09=09=09int regnum)
->>  +{
->>  +=09u32 val;
->>  +=09u32 mask;
->>  +
->>  +=09val =3D qos->prio_level;
->>  +=09mask =3D M_BKE_HEALTH_CFG_PRIOLVL_MASK;
->>  +
->>  +=09val |=3D qos->areq_prio << M_BKE_HEALTH_CFG_AREQPRIO_SHIFT;
->>  +=09mask |=3D M_BKE_HEALTH_CFG_AREQPRIO_MASK;
->>  +
->>  +=09/* LIMITCMDS is not present on M_BKE_HEALTH_3 */
->>  +=09if (regnum !=3D 3) {
->>  +=09=09val |=3D qos->limit_commands << M_BKE_HEALTH_CFG_LIMITCMDS_SHIFT=
-;
->>  +=09=09mask |=3D M_BKE_HEALTH_CFG_LIMITCMDS_MASK;
->>  +=09}
->>  +
->>  +=09return regmap_update_bits(rmap,
->>  +=09=09=09=09  M_BKE_HEALTH_CFG_ADDR(regnum, qos->qos_port),
->>  +=09=09=09=09  mask, val);
->>  +}
->>  +
->>  +static int qcom_icc_set_bimc_qos(struct icc_node *src, u64 max_bw,
->>  +=09=09=09=09 bool bypass_mode)
->>  +{
->>  +=09struct qcom_icc_provider *qp;
->>  +=09struct qcom_icc_node *qn;
->>  +=09struct icc_provider *provider;
->>  +=09u32 mode =3D NOC_QOS_MODE_BYPASS;
->>  +=09u32 val =3D 0;
->>  +=09int i, rc =3D 0;
->>  +
->>  +=09qn =3D src->data;
->>  +=09provider =3D src->provider;
->>  +=09qp =3D to_qcom_provider(provider);
->>  +
->>  +=09if (qn->qos.qos_mode !=3D -1)
->>  +=09=09mode =3D qn->qos.qos_mode;
->>  +
->>  +=09/* QoS Priority: The QoS Health parameters are getting considered
->>  +=09 * only if we are NOT in Bypass Mode.
->>  +=09 */
->>  +=09if (mode !=3D NOC_QOS_MODE_BYPASS) {
->>  +=09=09for (i =3D 3; i >=3D 0; i--) {
->>  +=09=09=09rc =3D qcom_icc_bimc_set_qos_health(qp->regmap,
->>  +=09=09=09=09=09=09=09  &qn->qos, i);
->>  +=09=09=09if (rc)
->>  +=09=09=09=09return rc;
->>  +=09=09}
->>  +
->>  +=09=09/* Set BKE_EN to 1 when Fixed, Regulator or Limiter Mode */
->>  +=09=09val =3D 1;
->>  +=09}
->>  +
->>  +=09return regmap_update_bits(qp->regmap,=20
->> M_BKE_EN_ADDR(qn->qos.qos_port),
->>  +=09=09=09=09  M_BKE_EN_EN_BMASK, val);
->>  +}
->>  +
->>  +static int qcom_icc_noc_set_qos_priority(struct regmap *rmap,
->>  +=09=09=09=09=09 struct qcom_icc_qos *qos)
->>  +{
->>  +=09u32 val;
->>  +=09int rc;
->>  +
->>  +=09/* Must be updated one at a time, P1 first, P0 last */
->>  +=09val =3D qos->areq_prio << NOC_QOS_PRIORITY_P1_SHIFT;
->>  +=09rc =3D regmap_update_bits(rmap,=20
->> NOC_QOS_PRIORITYn_ADDR(qos->qos_port),
->>  +=09=09=09=09NOC_QOS_PRIORITY_MASK, val);
->>  +=09if (rc)
->>  +=09=09return rc;
->>  +
->>  +=09val =3D qos->prio_level << NOC_QOS_PRIORITY_P0_SHIFT;
->>  +=09return regmap_update_bits(rmap,=20
->> NOC_QOS_PRIORITYn_ADDR(qos->qos_port),
->>  +=09=09=09=09  NOC_QOS_PRIORITY_MASK, val);
->>  +}
->>  +
->>  +static int qcom_icc_set_noc_qos(struct icc_node *src, u64 max_bw)
->>  +{
->>  +=09struct qcom_icc_provider *qp;
->>  +=09struct qcom_icc_node *qn;
->>  +=09struct icc_provider *provider;
->>  +=09u32 mode =3D NOC_QOS_MODE_BYPASS;
->>  +=09int rc =3D 0;
->>  +
->>  +=09qn =3D src->data;
->>  +=09provider =3D src->provider;
->>  +=09qp =3D to_qcom_provider(provider);
->>  +
->>  +=09if (qn->qos.qos_port < 0) {
->>  +=09=09dev_dbg(src->provider->dev,
->>  +=09=09=09"NoC QoS: Skipping %s: vote aggregated on parent.\n",
->>  +=09=09=09qn->name);
->>  +=09=09return 0;
->>  +=09}
->>  +
->>  +=09if (qn->qos.qos_mode !=3D -1)
->>  +=09=09mode =3D qn->qos.qos_mode;
->>  +
->>  +=09if (mode =3D=3D NOC_QOS_MODE_FIXED) {
->>  +=09=09dev_dbg(src->provider->dev, "NoC QoS: %s: Set Fixed mode\n",
->>  +=09=09=09qn->name);
->>  +=09=09rc =3D qcom_icc_noc_set_qos_priority(qp->regmap, &qn->qos);
->>  +=09=09if (rc)
->>  +=09=09=09return rc;
->>  +=09} else if (mode =3D=3D NOC_QOS_MODE_BYPASS) {
->>  +=09=09dev_dbg(src->provider->dev, "NoC QoS: %s: Set Bypass mode\n",
->>  +=09=09=09qn->name);
->>  +=09}
->>  +
->>  +=09return regmap_update_bits(qp->regmap,
->>  +=09=09=09=09  NOC_QOS_MODEn_ADDR(qn->qos.qos_port),
->>  +=09=09=09=09  NOC_QOS_MODEn_MASK, mode);
->>  +}
->>  +
->>  +static int qcom_icc_qos_set(struct icc_node *node, u64 sum_bw)
->>  +{
->>  +=09struct qcom_icc_provider *qp =3D to_qcom_provider(node->provider);
->>  +=09struct qcom_icc_node *qn =3D node->data;
->>  +
->>  +=09dev_dbg(node->provider->dev, "Setting QoS for %s\n", qn->name);
->>  +
->>  +=09if (qp->is_bimc_node)
->>  +=09=09return qcom_icc_set_bimc_qos(node, sum_bw,
->>  +=09=09=09=09(qn->qos.qos_mode =3D=3D NOC_QOS_MODE_BYPASS));
->>  +
->>  +=09return qcom_icc_set_noc_qos(node, sum_bw);
->>  +}
->>  +
->>  +static int qcom_icc_rpm_set(int mas_rpm_id, int slv_rpm_id, u64=20
->> sum_bw)
->>  +{
->>  +=09int ret =3D 0;
->>  +
->>  +=09if (mas_rpm_id !=3D -1) {
->>  +=09=09ret =3D qcom_icc_rpm_smd_send(QCOM_SMD_RPM_ACTIVE_STATE,
->>  +=09=09=09=09=09    RPM_BUS_MASTER_REQ,
->>  +=09=09=09=09=09    mas_rpm_id,
->>  +=09=09=09=09=09    sum_bw);
->>  +=09=09if (ret) {
->>  +=09=09=09pr_err("qcom_icc_rpm_smd_send mas %d error %d\n",
->>  +=09=09=09       mas_rpm_id, ret);
->>  +=09=09=09return ret;
->>  +=09=09}
->>  +=09}
->>  +
->>  +=09if (slv_rpm_id !=3D -1) {
->>  +=09=09ret =3D qcom_icc_rpm_smd_send(QCOM_SMD_RPM_ACTIVE_STATE,
->>  +=09=09=09=09=09    RPM_BUS_SLAVE_REQ,
->>  +=09=09=09=09=09    slv_rpm_id,
->>  +=09=09=09=09=09    sum_bw);
->>  +=09=09if (ret) {
->>  +=09=09=09pr_err("qcom_icc_rpm_smd_send slv %d error %d\n",
->>  +=09=09=09       slv_rpm_id, ret);
->>  +=09=09=09return ret;
->>  +=09=09}
->>  +=09}
->>  +
->>  +=09return ret;
->>  +}
->>  +
->>  +int qcom_icc_rpm_qos_set(struct icc_node *src, struct icc_node=20
->> *dst)
->>  +{
->>  +=09struct qcom_icc_provider *qp;
->>  +=09struct qcom_icc_node *qn;
->>  +=09struct icc_provider *provider;
->>  +=09struct icc_node *n;
->>  +=09u64 sum_bw;
->>  +=09u64 max_peak_bw;
->>  +=09u64 rate;
->>  +=09u32 agg_avg =3D 0;
->>  +=09u32 agg_peak =3D 0;
->>  +=09int ret, i;
->>  +
->>  +=09qn =3D src->data;
->>  +=09provider =3D src->provider;
->>  +=09qp =3D to_qcom_provider(provider);
->>  +
->>  +=09list_for_each_entry(n, &provider->nodes, node_list)
->>  +=09=09provider->aggregate(n, 0, n->avg_bw, n->peak_bw,
->>  +=09=09=09=09    &agg_avg, &agg_peak);
->>  +
->>  +=09sum_bw =3D icc_units_to_bps(agg_avg);
->>  +=09max_peak_bw =3D icc_units_to_bps(agg_peak);
->>  +
->>  +=09if (!qn->qos.ap_owned) {
->>  +=09=09/* send bandwidth request message to the RPM processor */
->>  +=09=09ret =3D qcom_icc_rpm_set(qn->mas_rpm_id, qn->slv_rpm_id, sum_bw)=
-;
->>  +=09=09if (ret)
->>  +=09=09=09return ret;
->>  +=09} else if (qn->qos.qos_mode !=3D -1) {
->>  +=09=09/* set bandwidth directly from the AP */
->>  +=09=09ret =3D qcom_icc_qos_set(src, sum_bw);
->>  +=09=09if (ret)
->>  +=09=09=09return ret;
->>  +=09}
->>  +
->>  +=09rate =3D max(sum_bw, max_peak_bw);
->>  +
->>  +=09do_div(rate, qn->buswidth);
->>  +
->>  +=09if (qn->rate =3D=3D rate)
->>  +=09=09return 0;
->>  +
->>  +=09for (i =3D 0; i < qp->num_clks; i++) {
->>  +=09=09ret =3D clk_set_rate(qp->bus_clks[i].clk, rate);
->>  +=09=09if (ret) {
->>  +=09=09=09pr_err("%s clk_set_rate error: %d\n",
->>  +=09=09=09       qp->bus_clks[i].id, ret);
->>  +=09=09=09return ret;
->>  +=09=09}
->>  +=09}
->>  +
->>  +=09qn->rate =3D rate;
->>  +
->>  +=09return 0;
->>  +}
->>  +EXPORT_SYMBOL_GPL(qcom_icc_rpm_qos_set);
->>  diff --git a/drivers/interconnect/qcom/icc-rpm-qos.h=20
->> b/drivers/interconnect/qcom/icc-rpm-qos.h
->>  new file mode 100644
->>  index 000000000000..625ac5f84ebc
->>  --- /dev/null
->>  +++ b/drivers/interconnect/qcom/icc-rpm-qos.h
->>  @@ -0,0 +1,133 @@
->>  +/* SPDX-License-Identifier: GPL-2.0 */
->>  +/*
->>  + * Copyright (C) 2020, AngeloGioacchino Del Regno=20
->> <kholk11@gmail.com>
->>  + */
->>  +
->>  +#ifndef __DRIVERS_INTERCONNECT_QCOM_ICC_RPM_QOS_H__
->>  +#define __DRIVERS_INTERCONNECT_QCOM_ICC_RPM_QOS_H__
->>  +
->>  +#define RPM_BUS_MASTER_REQ=090x73616d62
->>  +#define RPM_BUS_SLAVE_REQ=090x766c7362
->>  +
->>  +/* BIMC QoS */
->>  +#define M_BKE_REG_BASE(n)=09=09(0x300 + (0x4000 * n))
->>  +#define M_BKE_EN_ADDR(n)=09=09(M_BKE_REG_BASE(n))
->>  +#define M_BKE_HEALTH_CFG_ADDR(i, n)=09(M_BKE_REG_BASE(n) + 0x40 +=20
->> (0x4 * i))
->>  +
->>  +#define M_BKE_HEALTH_CFG_LIMITCMDS_MASK=090x80000000
->>  +#define M_BKE_HEALTH_CFG_AREQPRIO_MASK=090x300
->>  +#define M_BKE_HEALTH_CFG_PRIOLVL_MASK=090x3
->>  +#define M_BKE_HEALTH_CFG_AREQPRIO_SHIFT=090x8
->>  +#define M_BKE_HEALTH_CFG_LIMITCMDS_SHIFT 0x1f
->>  +
->>  +#define M_BKE_EN_EN_BMASK=09=090x1
->>  +
->>  +/* Valid for both NoC and BIMC */
->>  +#define NOC_QOS_MODE_FIXED=09=090x0
->>  +#define NOC_QOS_MODE_LIMITER=09=090x1
->>  +#define NOC_QOS_MODE_BYPASS=09=090x2
->>  +
->>  +/* NoC QoS */
->>  +#define NOC_PERM_MODE_FIXED=09=091
->>  +#define NOC_PERM_MODE_BYPASS=09=09(1 << NOC_QOS_MODE_BYPASS)
->>  +
->>  +#define NOC_QOS_PRIORITYn_ADDR(n)=09(0x8 + (n * 0x1000))
->>  +#define NOC_QOS_PRIORITY_MASK=09=090xf
->>  +#define NOC_QOS_PRIORITY_P1_SHIFT=090x2
->>  +#define NOC_QOS_PRIORITY_P0_SHIFT=090x3
->>  +
->>  +#define NOC_QOS_MODEn_ADDR(n)=09=09(0xc + (n * 0x1000))
->>  +#define NOC_QOS_MODEn_MASK=09=090x3
->>  +
->>  +#define to_qcom_provider(_provider) \
->>  +=09container_of(_provider, struct qcom_icc_provider, provider)
->>  +
->>  +/**
->>  + * struct qcom_icc_provider - Qualcomm specific interconnect=20
->> provider
->>  + * @provider: generic interconnect provider
->>  + * @bus_clks: the clk_bulk_data table of bus clocks
->>  + * @num_clks: the total number of clk_bulk_data entries
->>  + * @is_bimc_node: indicates whether to use bimc specific setting
->>  + * @regmap: regmap for QoS registers read/write access
->>  + * @mmio: NoC base iospace
->>  + */
->>  +struct qcom_icc_provider {
->>  +=09struct icc_provider provider;
->>  +=09struct clk_bulk_data *bus_clks;
->>  +=09int num_clks;
->>  +=09bool is_bimc_node;
->>  +=09struct regmap *regmap;
->>  +=09void __iomem *mmio;
+>>  +enum tusb320_attached_state {
+>>  +=09TUSB320_ATTACHED_STATE_NONE,
+>>  +=09TUSB320_ATTACHED_STATE_DFP,
+>>  +=09TUSB320_ATTACHED_STATE_UFP,
+>>  +=09TUSB320_ATTACHED_STATE_ACC,
 >>  +};
 >>  +
->>  +/**
->>  + * struct qcom_icc_qos - Qualcomm specific interconnect QoS=20
->> parameters
->>  + * @areq_prio: node requests priority
->>  + * @prio_level: priority level for bus communication
->>  + * @limit_commands: activate/deactivate limiter mode during runtime
->>  + * @ap_owned: indicates if the node is owned by the AP or by the=20
->> RPM
->>  + * @qos_mode: default qos mode for this node
->>  + * @qos_port: qos port number for finding qos registers of this=20
->> node
->>  + */
->>  +struct qcom_icc_qos {
->>  +=09u32 areq_prio;
->>  +=09u32 prio_level;
->>  +=09bool limit_commands;
->>  +=09bool ap_owned;
->>  +=09int qos_mode;
->>  +=09int qos_port;
+>>  +enum tusb320_mode {
+>>  +=09TUSB320_MODE_PORT,
+>>  +=09TUSB320_MODE_UFP,
+>>  +=09TUSB320_MODE_DFP,
+>>  +=09TUSB320_MODE_DRP,
 >>  +};
->>  +
->>  +/**
->>  + * struct qcom_icc_node - Qualcomm specific interconnect nodes
->>  + * @name: the node name used in debugfs
->>  + * @id: a unique node identifier
->>  + * @links: an array of nodes where we can go next while traversing
->>  + * @num_links: the total number of @links
->>  + * @buswidth: width of the interconnect between a node and the bus=20
->> (bytes)
->>  + * @mas_rpm_id: RPM id for devices that are bus masters
->>  + * @slv_rpm_id: RPM id for devices that are bus slaves
->>  + * @qos: NoC QoS setting parameters
->>  + * @rate: current bus clock rate in Hz
->>  + */
->>  +
->>  +#define MAX_LINKS=0938
->>  +
->>  +struct qcom_icc_node {
->>  +=09unsigned char *name;
->>  +=09u16 id;
->>  +=09u16 links[MAX_LINKS];
->>  +=09u16 num_links;
->>  +=09u16 buswidth;
->>  +=09int mas_rpm_id;
->>  +=09int slv_rpm_id;
->>  +=09struct qcom_icc_qos qos;
->>  +=09u64 rate;
->>  +};
->>  +
->>  +struct qcom_icc_desc {
->>  +=09struct qcom_icc_node **nodes;
->>  +=09size_t num_nodes;
->>  +=09const struct regmap_config *regmap_cfg;
->>  +};
->>  +
->>  +#define DEFINE_QNODE(_name, _id, _buswidth, _mas_rpm_id,=20
->> _slv_rpm_id,=09\
->>  +=09=09     _ap_owned, _qos_mode, _qos_prio, _qos_port, ...)=09\
->>  +=09=09static struct qcom_icc_node _name =3D {=09=09=09\
->>  +=09=09.name =3D #_name,=09=09=09=09=09=09\
->>  +=09=09.id =3D _id,=09=09=09=09=09=09\
->>  +=09=09.buswidth =3D _buswidth,=09=09=09=09=09\
->>  +=09=09.mas_rpm_id =3D _mas_rpm_id,=09=09=09=09\
->>  +=09=09.slv_rpm_id =3D _slv_rpm_id,=09=09=09=09\
->>  +=09=09.qos.ap_owned =3D _ap_owned,=09=09=09=09\
->>  +=09=09.qos.qos_mode =3D _qos_mode,=09=09=09=09\
->>  +=09=09.qos.areq_prio =3D _qos_prio,=09=09=09=09\
->>  +=09=09.qos.prio_level =3D _qos_prio,=09=09=09=09\
->>  +=09=09.qos.qos_port =3D _qos_port,=09=09=09=09\
->>  +=09=09.num_links =3D ARRAY_SIZE(((int[]){ __VA_ARGS__ })),=09\
->>  +=09=09.links =3D { __VA_ARGS__ },=09=09=09=09\
->>  +=09}
->>  +
->>  +int qcom_icc_rpm_qos_set(struct icc_node *src, struct icc_node=20
->> *dst);
->>  +
->>  +#endif
->>  diff --git a/drivers/interconnect/qcom/icc-rpmh.c=20
->> b/drivers/interconnect/qcom/icc-rpmh.c
->>  index bf01d09dba6c..6f93273109a3 100644
->>  --- a/drivers/interconnect/qcom/icc-rpmh.c
->>  +++ b/drivers/interconnect/qcom/icc-rpmh.c
->>  @@ -70,13 +70,13 @@ int qcom_icc_aggregate(struct icc_node *node,=20
->> u32 tag, u32 avg_bw,
->>    EXPORT_SYMBOL_GPL(qcom_icc_aggregate);
 >>=20
->>    /**
->>  - * qcom_icc_set - set the constraints based on path
->>  + * qcom_icc_rpmh_set - set the constraints based on path
->>     * @src: source node for the path to set constraints on
->>     * @dst: destination node for the path to set constraints on
->>     *
->>     * Return: 0 on success, or an error code otherwise
->>     */
->>  -int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
->>  +int qcom_icc_rpmh_set(struct icc_node *src, struct icc_node *dst)
+>>   struct tusb320_priv {
+>>   =09struct device *dev;
+>>   =09struct regmap *regmap;
+>>   =09struct extcon_dev *edev;
+>>  +
+>>  +=09enum tusb320_attached_state state;
+>>   };
+>>=20
+>>   static const char * const tusb_attached_states[] =3D {
+>>  @@ -37,6 +54,13 @@ static const char * const tusb_attached_states[]=20
+>> =3D {
+>>   =09[TUSB320_ATTACHED_STATE_ACC]  =3D "accessory",
+>>   };
+>>=20
+>>  +static const char * const tusb_modes[] =3D {
+>>  +=09[TUSB320_MODE_PORT] =3D "maintain mode set by PORT pin",
+>>  +=09[TUSB320_MODE_UFP]  =3D "upstream facing port",
+>>  +=09[TUSB320_MODE_DFP]  =3D "downstream facing port",
+>>  +=09[TUSB320_MODE_DRP]  =3D "dual role port",
+>>  +};
+>>  +
+>>   static const unsigned int tusb320_extcon_cable[] =3D {
+>>   =09EXTCON_USB,
+>>   =09EXTCON_USB_HOST,
+>>  @@ -62,26 +86,77 @@ static int tusb320_check_signature(struct=20
+>> tusb320_priv *priv)
+>>   =09return 0;
+>>   }
+>>=20
+>>  +static int tusb320_set_mode(struct tusb320_priv *priv, enum=20
+>> tusb320_mode mode)
+>>  +{
+>>  +=09int ret;
+>>  +
+>>  +=09/* Mode cannot be changed while cable is attached */
+>>  +=09if(priv->state !=3D TUSB320_ATTACHED_STATE_NONE)
+>>  +=09=09return -EBUSY;
 >=20
-> This change should be splitted to a different commit, as it is not=20
-> part of any
-> commonization of the RPM QoS functions. This is a "global" rename, so=20
-> you should
-> create a preparation commit for this change.
+> When tusb320_set_mode() is called from probe() via tusb320_reset(),
+> priv->state will be always be 0 as it hasn't been read from the chip
+> yet.
+
+I'll move the call after the first tusb320_irq_handler() call to read=20
+the state first.
+
+>=20
+> Also, per CodingStyle, please ensure there's a space between the "if"
+> and the opening paren (here and elsewhere in this patchset)
 >=20
 
 Noted.
 
->>    {
->>    =09struct qcom_icc_provider *qp;
->>    =09struct qcom_icc_node *qn;
->>  @@ -99,7 +99,7 @@ int qcom_icc_set(struct icc_node *src, struct=20
->> icc_node *dst)
+>>  +
+>>  +=09/* Write mode */
+>>  +=09ret =3D regmap_write_bits(priv->regmap, TUSB320_REGA,
+>>  +=09=09TUSB320_REGA_MODE_SELECT_MASK << TUSB320_REGA_MODE_SELECT_SHIFT,
+>>  +=09=09mode << TUSB320_REGA_MODE_SELECT_SHIFT);
+>>  +=09if(ret) {
+>>  +=09=09dev_err(priv->dev, "failed to write mode: %d\n", ret);
+>>  +=09=09return ret;
+>>  +=09}
+>>  +
+>>  +=09return 0;
+>>  +}
+>>  +
+>>  +static int tusb320_reset(struct tusb320_priv *priv)
+>>  +{
+>>  +=09int ret;
+>>  +
+>>  +=09/* Set mode to default (follow PORT pin) */
+>>  +=09ret =3D tusb320_set_mode(priv, TUSB320_MODE_PORT);
+>>  +=09if(ret && ret !=3D -EBUSY) {
+>>  +=09=09dev_err(priv->dev,
+>>  +=09=09=09"failed to set mode to PORT: %d\n", ret);
+>>  +=09=09return ret;
+>>  +=09}
+>>  +
+>>  +=09/* Perform soft reset */
+>>  +=09ret =3D regmap_write_bits(priv->regmap, TUSB320_REGA,
+>>  +=09=09=09TUSB320_REGA_I2C_SOFT_RESET, 1);
+>>  +=09if(ret) {
+>>  +=09=09dev_err(priv->dev,
+>>  +=09=09=09"failed to write soft reset bit: %d\n", ret);
+>>  +=09=09return ret;
+>>  +=09}
+>>  +
+>>  +=09return 0;
+>>  +}
+>>  +
+>>   static irqreturn_t tusb320_irq_handler(int irq, void *dev_id)
+>>   {
+>>   =09struct tusb320_priv *priv =3D dev_id;
+>>  -=09int state, polarity;
+>>  -=09unsigned reg;
+>>  +=09int state, polarity, mode;
+>>  +=09unsigned reg9, rega;
+>>  +
+>>  +=09if (regmap_read(priv->regmap, TUSB320_REG9, &reg9)) {
+>>  +=09=09dev_err(priv->dev, "error during register 0x9 i2c read!\n");
+>>  +=09=09return IRQ_NONE;
+>>  +=09}
 >>=20
->>    =09return 0;
->>    }
->>  -EXPORT_SYMBOL_GPL(qcom_icc_set);
->>  +EXPORT_SYMBOL_GPL(qcom_icc_rpmh_set);
->>=20
->>    struct icc_node_data *qcom_icc_xlate_extended(struct=20
->> of_phandle_args *spec, void *data)
->>    {
->>  diff --git a/drivers/interconnect/qcom/icc-rpmh.h=20
->> b/drivers/interconnect/qcom/icc-rpmh.h
->>  index e5f61ab989e7..5dc1049dc065 100644
->>  --- a/drivers/interconnect/qcom/icc-rpmh.h
->>  +++ b/drivers/interconnect/qcom/icc-rpmh.h
->>  @@ -130,7 +130,7 @@ struct qcom_icc_desc {
->>=20
->>    int qcom_icc_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
->>    =09=09       u32 peak_bw, u32 *agg_avg, u32 *agg_peak);
->>  -int qcom_icc_set(struct icc_node *src, struct icc_node *dst);
->>  +int qcom_icc_rpmh_set(struct icc_node *src, struct icc_node *dst);
+>>  -=09if (regmap_read(priv->regmap, TUSB320_REG9, &reg)) {
+>>  -=09=09dev_err(priv->dev, "error during i2c read!\n");
+>>  +=09if (regmap_read(priv->regmap, TUSB320_REGA, &rega)) {
+>>  +=09=09dev_err(priv->dev, "error during register 0xa i2c read!\n");
 >=20
-> Same for this.
->=20
->>    struct icc_node_data *qcom_icc_xlate_extended(struct=20
->> of_phandle_args *spec, void *data);
->>    int qcom_icc_bcm_init(struct qcom_icc_bcm *bcm, struct device=20
->> *dev);
->>    void qcom_icc_pre_aggregate(struct icc_node *node);
->>  diff --git a/drivers/interconnect/qcom/sc7180.c=20
->> b/drivers/interconnect/qcom/sc7180.c
->>  index 8d9044ed18ab..40232b41c080 100644
->>  --- a/drivers/interconnect/qcom/sc7180.c
->>  +++ b/drivers/interconnect/qcom/sc7180.c
->>  @@ -532,7 +532,7 @@ static int qnoc_probe(struct platform_device=20
->> *pdev)
->>=20
->>    =09provider =3D &qp->provider;
->>    =09provider->dev =3D &pdev->dev;
->>  -=09provider->set =3D qcom_icc_set;
->>  +=09provider->set =3D qcom_icc_rpmh_set;
->=20
-> And for this ... etc :))
->=20
->>    =09provider->pre_aggregate =3D qcom_icc_pre_aggregate;
->>    =09provider->aggregate =3D qcom_icc_aggregate;
->>    =09provider->xlate_extended =3D qcom_icc_xlate_extended;
->>  diff --git a/drivers/interconnect/qcom/sc7280.c=20
->> b/drivers/interconnect/qcom/sc7280.c
->>  index 8d1b55c3705c..b84742debc13 100644
->>  --- a/drivers/interconnect/qcom/sc7280.c
->>  +++ b/drivers/interconnect/qcom/sc7280.c
->>  @@ -1830,7 +1830,7 @@ static int qnoc_probe(struct platform_device=20
->> *pdev)
->>=20
->>    =09provider =3D &qp->provider;
->>    =09provider->dev =3D &pdev->dev;
->>  -=09provider->set =3D qcom_icc_set;
->>  +=09provider->set =3D qcom_icc_rpmh_set;
->>    =09provider->pre_aggregate =3D qcom_icc_pre_aggregate;
->>    =09provider->aggregate =3D qcom_icc_aggregate;
->>    =09provider->xlate_extended =3D qcom_icc_xlate_extended;
->>  diff --git a/drivers/interconnect/qcom/sdm660.c=20
->> b/drivers/interconnect/qcom/sdm660.c
->>  index 632dbdd21915..acd026ecd17f 100644
->>  --- a/drivers/interconnect/qcom/sdm660.c
->>  +++ b/drivers/interconnect/qcom/sdm660.c
->>  @@ -4,7 +4,6 @@
->>     * Copyright (C) 2020, AngeloGioacchino Del Regno=20
->> <kholk11@gmail.com>
->>     */
->>=20
->>  -#include <dt-bindings/interconnect/qcom,sdm660.h>
->=20
-> Why did you move this header down?
-> If you have a reason, this is also not part of the RPM-QoS=20
-> commonization.
->=20
+> Why is this register being read in the interrupt handler? The
+> datasheet's documentation for the INTERRUPT_STATUS register says that=20
+> an
+> interrupt will be generated "whenever a CSR with RU in [the] Access=20
+> field
+> changes" (i.e., whenever hardware has autonomously updated a value).=20
+> As
+> far as I can see, there are no RU registers here.
 
-Must have been by mistake. I tried to keep the order of things in=20
-msm8996.c similar to newer drivers, and I probably ended up editing=20
-sdm660.c as well without noticing it.
+My chip had its mode set to UFP by default which contradicted the=20
+datasheet where
+it's stated that the default is to follow the PORT pin, so I thought it=20
+was being
+changed on its own somehow, so I read the register here to debug. But=20
+thinking
+about it now, it's probably being set to UFP by the bootloader since as=20
+you said
+the chip doesn't change its mode on its own. I'll just remove this=20
+change.
 
-> Thanks!
-> - Angelo
+>=20
+>>   =09=09return IRQ_NONE;
+>>   =09}
+>>=20
+>>  -=09if (!(reg & TUSB320_REG9_INTERRUPT_STATUS))
+>>  +=09if (!(reg9 & TUSB320_REG9_INTERRUPT_STATUS))
+>>   =09=09return IRQ_NONE;
+>>=20
+>>  -=09state =3D (reg >> TUSB320_REG9_ATTACHED_STATE_SHIFT) &
+>>  +=09state =3D (reg9 >> TUSB320_REG9_ATTACHED_STATE_SHIFT) &
+>>   =09=09TUSB320_REG9_ATTACHED_STATE_MASK;
+>>  -=09polarity =3D !!(reg & TUSB320_REG9_CABLE_DIRECTION);
+>>  +=09polarity =3D !!(reg9 & TUSB320_REG9_CABLE_DIRECTION);
+>>  +=09mode =3D (rega >> TUSB320_REGA_MODE_SELECT_SHIFT) &
+>>  +=09=09TUSB320_REGA_MODE_SELECT_MASK;
+>>=20
+>>  -=09dev_dbg(priv->dev, "attached state: %s, polarity: %d\n",
+>>  -=09=09tusb_attached_states[state], polarity);
+>>  +=09dev_dbg(priv->dev, "mode: %s, attached state: %s, polarity: %d\n",
+>>  +=09=09tusb_modes[mode], tusb_attached_states[state], polarity);
+>=20
+> What's the purpose of tracing the mode here? Since the chip does not
+> change the mode on its own, it should always be whatever it was last=20
+> set
+> to, correct?
+
+Same answer as question above.
+
+>=20
+>>   =09extcon_set_state(priv->edev, EXTCON_USB,
+>>   =09=09=09 state =3D=3D TUSB320_ATTACHED_STATE_UFP);
+>>  @@ -96,7 +171,10 @@ static irqreturn_t tusb320_irq_handler(int irq,=20
+>> void *dev_id)
+>>   =09extcon_sync(priv->edev, EXTCON_USB);
+>>   =09extcon_sync(priv->edev, EXTCON_USB_HOST);
+>>=20
+>>  -=09regmap_write(priv->regmap, TUSB320_REG9, reg);
+>>  +=09priv->state =3D state;
+>>  +
+>>  +=09regmap_write(priv->regmap, TUSB320_REG9, reg9);
+>>  +=09regmap_write(priv->regmap, TUSB320_REGA, rega);
+>=20
+> The write to REG9 is required in order to clear the INTERRUPT_STATUS
+> bit, but I do not see a need to write back to REGA...
+
+I didn't figure out the reason for this write actually so I got=20
+confused. I'll remove
+this along with reading REGA and tracing the mode.
+
+>=20
+>>=20
+>>   =09return IRQ_HANDLED;
+>>   }
+>>  @@ -137,6 +215,11 @@ static int tusb320_extcon_probe(struct=20
+>> i2c_client *client,
+>>   =09=09return ret;
+>>   =09}
+>>=20
+>>  +=09/* Reset chip to its default state */
+>>  +=09ret =3D tusb320_reset(priv);
+>>  +=09if(ret)
+>>  +=09=09dev_warn(priv->dev, "failed to reset chip: %d\n", ret);
+>>  +
+>=20
+> As mentioned above, the tusb320_reset() should be probably be done=20
+> after
+> the call to tusb320_irq_handler(), which will read and update the
+> attached state.
+>=20
+>>   =09extcon_set_property_capability(priv->edev, EXTCON_USB,
+>>   =09=09=09=09       EXTCON_PROP_USB_TYPEC_POLARITY);
+>>   =09extcon_set_property_capability(priv->edev, EXTCON_USB_HOST,
+>>  --
+>>  2.32.0
+>>=20
+>>=20
+>=20
+> Thanks,
+>  Michael
+
+Regards,
+Yassine
 
 
