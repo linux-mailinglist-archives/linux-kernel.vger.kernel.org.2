@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1CD83DC524
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272213DC52C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbhGaIpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 04:45:40 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:46052
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232681AbhGaIpj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 04:45:39 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S232637AbhGaIut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 04:50:49 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61039 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232257AbhGaIuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 04:50:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627721440; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=umJbV2hG5/Yp526M0LlnozPrNCkbsNWKGIS3tLnL3yQ=; b=l+6b+YwzaobEss8nNAJ+dAO+H8xKj2YrZURTywzH3kxXIrPt7X1SIcBxH7PSyyk+CcJDzn/E
+ 6fUfs8OKWcfojMVpM9JHTrVXoOsBeuSMikzei8O+eqkAC0k/KJyAlYVZsW5njXcdBZ1o5VJA
+ yGQKgSdNNpc5QNF01XKkaSc1cR8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 61050edf290ea35ee6dbd918 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 31 Jul 2021 08:50:39
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0FCB5C433D3; Sat, 31 Jul 2021 08:50:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id EB1F93F0AA
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 08:45:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627721132;
-        bh=HpikimZJ3+N1KHx4n97v9ZY8Mpfh1GCJC1kFvVvcZrc=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=G+OORHGH2GRrD3kf7EHjalXbkr8W13MMljmZZjJ1xlE5/Dagw6/F0wVtFgYvshw0E
-         bZRcc24vH9rF/qbtLynY6weUP3pq7X5KjVQy3j5RTsZmG2rRG5jKAAgM7Kc9HZOpco
-         tNw+QmksmFr0k9Hvvh1ar2qLC0yOzyu0iNGNyQf1pPJnCRRFaMD6tTpi0vQvueEDc9
-         2NlQK/3bzI4mIE0e0BM08ErdpTc+f3O/JTNYdo+gOJl1/300HAgozSDsHbDFDCgCQR
-         jWX7FtGj/Fw3x82C75D+F//ckWel57qooDu4RJo08j7WTg9W0Kt5It9GyWpEvFT1nO
-         AWljF/jdT8M+g==
-Received: by mail-ed1-f69.google.com with SMTP id y39-20020a50bb2a0000b02903bc05daccbaso5841008ede.5
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 01:45:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HpikimZJ3+N1KHx4n97v9ZY8Mpfh1GCJC1kFvVvcZrc=;
-        b=SAa3fvbcfFsDKuvzIXImqW3GsWQ3N4QPEDVAZqbKFWJk4SvG+7USMPHblXe5HILLmR
-         h6X93xehxI4a0lSSMAGSsh8vIGC9nvmc7+fCz/JPGsE3HX5QRjVLn5DDxRu1ZAUho4lv
-         COry9qS81DOgWtroJyV5SDWUbJoTnml5hfFD87xFkO5B1eLeBGTUWTTHtrVeGV955R0X
-         TynNorS+AY0CRxJcImtjrkmxvoZjvEyDfJrvkESHqu4ytcRRi1QNpdgdD2fvxeekGOTY
-         qVkJJO3ky5MeNupLE5voWuZMTKK0xWDv1rnqxROVd/7V25Ipgn9auDqC56roiMtO9Iqu
-         aTRQ==
-X-Gm-Message-State: AOAM532ZXpJRxp/jD8qQdB2Q9I9KvY2yeux6ED0eLwAQfI36n1uU5ye6
-        YVdBV3v1G4TKAuJIbJWQobUorJo93xvKMfs20Q+JB/5NqQhIIgMN7RLaGK9BgLA6iA/ILTYXNjH
-        /8LnhhK0DGr9FpVHvxLRaLUlMluuPAUJHL14cef4Fpw==
-X-Received: by 2002:a17:906:1f82:: with SMTP id t2mr6494558ejr.499.1627721132521;
-        Sat, 31 Jul 2021 01:45:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyhfyQHtQpkTYQbl8JV0BuJ0MetHqfQ6fFXdNuJCV2ubWaz/d0aGWkgl0x0n4Bo8PaJzjHcCQ==
-X-Received: by 2002:a17:906:1f82:: with SMTP id t2mr6494542ejr.499.1627721132370;
-        Sat, 31 Jul 2021 01:45:32 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id i10sm1888409edf.12.2021.07.31.01.45.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 31 Jul 2021 01:45:31 -0700 (PDT)
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <20210730144922.29111-12-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH 11/12] dt-bindings: interrupt-controller: Add IRQ
- constants for Exynos850
-Message-ID: <d603be80-4fb6-1bad-1963-c9fa7d1e63fb@canonical.com>
-Date:   Sat, 31 Jul 2021 10:45:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F18D4C433F1;
+        Sat, 31 Jul 2021 08:50:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F18D4C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
+Subject: Re: [PATCH v2 1/2] mwifiex: pcie: add DMI-based quirk implementation for Surface devices
+References: <20210709145831.6123-1-verdre@v0yd.nl>
+        <20210709145831.6123-2-verdre@v0yd.nl>
+Date:   Sat, 31 Jul 2021 11:50:29 +0300
+In-Reply-To: <20210709145831.6123-2-verdre@v0yd.nl> ("Jonas \=\?utf-8\?Q\?Dre\?\=
+ \=\?utf-8\?Q\?\=C3\=9Fler\=22's\?\= message
+        of "Fri, 9 Jul 2021 16:58:30 +0200")
+Message-ID: <87pmuyeuju.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210730144922.29111-12-semen.protsenko@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/07/2021 16:49, Sam Protsenko wrote:
-> Add external GIC interrupt constants for SPI[479:0] for Exynos850 SoC.
-> Interrupt names were taken from TRM without change, hence double
-> underscore in const namings.
+Jonas Dre=C3=9Fler <verdre@v0yd.nl> writes:
 
-I am not sure what is the benefit of defining these in header. Unlike
-other DT consts (e.g. clock IDs) drivers do not us them at all. Using
-them in DT does not reduce chance of mistakes in numbers - instead of in
-DTS you can make a mistake here in header file. In the same time, they
-grow the interrupt property in DTS making it more difficult to read.
+> This commit adds the ability to apply device-specific quirks to the
+> mwifiex driver. It uses DMI matching similar to the quirks brcmfmac uses
+> with dmi.c. We'll add identifiers to match various MS Surface devices,
+> which this is primarily meant for, later.
+>
+> This commit is a slightly modified version of a previous patch sent in
+> by Tsuchiya Yuto.
+>
+> Co-developed-by: Tsuchiya Yuto <kitakar@gmail.com>
+> Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
+> Signed-off-by: Jonas Dre=C3=9Fler <verdre@v0yd.nl>
 
-I also did not see anyone else using this approach, so it's not only me
-(Marc also find it confusing).
+[...]
 
-If vendor kernel did similar, it's not an argument. Samsung LSI /.
-vendor kernel has terrible code quality so usually it is not a good example.
+> --- /dev/null
+> +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
+> @@ -0,0 +1,32 @@
+> +// SPDX-License-Identifier: GPL-2.0
 
+I prefer having a consistent license within a driver. So please either
+convert mwifiex to use SPDX in every file or use the same license boiler
+plate as used in the driver.
 
-Best regards,
-Krzysztof
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
