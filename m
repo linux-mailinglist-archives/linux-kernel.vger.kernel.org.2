@@ -2,149 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7A63DC785
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 19:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF653DC788
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 19:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhGaRtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 13:49:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229830AbhGaRtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 13:49:43 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11CD661042;
-        Sat, 31 Jul 2021 17:49:31 +0000 (UTC)
-Date:   Sat, 31 Jul 2021 18:52:10 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "hui.liu" <hui.liu@mediatek.com>
-Cc:     <robh+dt@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
-        <chun-hung.wu@mediatek.com>, <yingjoe.chen@mediatek.com>,
-        <seiya.wang@mediatek.com>, <matthias.bgg@gmail.com>,
-        <s.hauer@pengutronix.de>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH] iio: mtk-auxadc: add mutex_destroy
-Message-ID: <20210731185210.7acb5f79@jic23-huawei>
-In-Reply-To: <1627300994.11261.11.camel@mhfsdcap03>
-References: <20210715093523.29844-1-hui.liu@mediatek.com>
-        <20210715093523.29844-2-hui.liu@mediatek.com>
-        <20210717174432.7e69e4e9@jic23-huawei>
-        <1627042875.27985.15.camel@mhfsdcap03>
-        <20210724183003.6f3bc1d5@jic23-huawei>
-        <1627300994.11261.11.camel@mhfsdcap03>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230479AbhGaRyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 13:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhGaRyM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 13:54:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29929C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 10:54:05 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id s123-20020a2577810000b02904f84a5c5297so14336033ybc.16
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 10:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ivMf2Yjdch9nwF/G9GfQW4akc0oLsluxTWhSUC3fYFk=;
+        b=vsTqgJfo8r39fd6ueado1agpNnb9dTqc/VMN8x6fR4O7y06NcFd3lmXN+8wLDk4WkH
+         BYxhcEYJX+yNzyJgb4Eq++dHCzGGmsr1sn3ROHGVPvEdHk6ecxBRGA/wu9ByweKnzYMC
+         +DCXItDJL/zP1x5OTLRDf8YF6PGSLicd9OLU1qllo2qFK7D3rcVEa6ITEJhfB6fkzpl0
+         /jVusx2lewbkBmUvt8Gto17NK3EkSNhk/FHmkLX3IRD/iqFg3yJW6g6aM86EidMAkQA1
+         Q3rOrFU0CceKyYCan9Ka0NrimT5mihwKaWMqXPI7uGBpW/TXAOCxHBgYLLnJSOQg4+R6
+         eUew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ivMf2Yjdch9nwF/G9GfQW4akc0oLsluxTWhSUC3fYFk=;
+        b=ip+2h5CHFN3aG+7nKt81ptzyWWgcFuGerzXODM+rzznvHPLO92EFr3Qd6UrdqZrdm2
+         C8PYaCJ+1GHw6oHaHeEk3AmaioHiuTkp4A+cQYZInigFXXI6trTt0EIQhLS+BCUBQX0h
+         36xj++rZhnQc6MEtxa8ZCYrCwBPwRGwP5iLi5dvKPaPEwNV+wSkOD9ZrVqeherdq5YE3
+         7NayYVwKmxVMAT1J2fjJUF0ZOiRJHwPicF/I8lCYTh+eByFd+1f6MjtWRO2OccRc0N/4
+         IGynjHQvVmybnSMPhpj7lqcGb4uK3ZdztAZlFMxE1KZeGoezOqMbDWZMCjRU2vnTMOTS
+         7WmQ==
+X-Gm-Message-State: AOAM531PcQvG3M2pi4t8OsqFY+Bguxdl0vU6oPd7KE2vH+nTsIfZz7FH
+        0LntmEOwgI4dspLlkSW00BaPEZKAZLRqWDlfdIqBiR3v976UA6VKF0azI/ql5saXfc4mEdcwGza
+        OtXCndG5AzfBgIyWRRbmEW86XBH//3Oms2P8K19OfTuhoQ109jzGP71TGHJ0SxbTjhNLG2A==
+X-Google-Smtp-Source: ABdhPJxp4EdwE4NDYsUcJ9AHAVwjadmWCd+NDw9IOLv27oyK70lPHY75R7Gly0kdMG1fohG1LG2o0lPZ96Q=
+X-Received: from lrizzo2.svl.corp.google.com ([2620:15c:2c4:201:af39:9f08:202e:eb75])
+ (user=lrizzo job=sendgmr) by 2002:a25:804d:: with SMTP id a13mr10669276ybn.431.1627754044283;
+ Sat, 31 Jul 2021 10:54:04 -0700 (PDT)
+Date:   Sat, 31 Jul 2021 10:53:41 -0700
+Message-Id: <20210731175341.3458608-1-lrizzo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH] Add mmap_assert_locked() annotations to find_vma*()
+From:   Luigi Rizzo <lrizzo@google.com>
+To:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     linux-mm@kvack.org, Luigi Rizzo <lrizzo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 20:03:14 +0800
-hui.liu <hui.liu@mediatek.com> wrote:
+find_vma() and variants need protection when used.
+This patch adds mmap_assert_lock() calls in the functions.
 
-> On Sat, 2021-07-24 at 18:30 +0100, Jonathan Cameron wrote:
-> > On Fri, 23 Jul 2021 20:21:15 +0800
-> > hui.liu <hui.liu@mediatek.com> wrote:
-> >   
-> > > On Sat, 2021-07-17 at 17:44 +0100, Jonathan Cameron wrote:  
-> > > > On Thu, 15 Jul 2021 17:35:23 +0800
-> > > > Hui Liu <hui.liu@mediatek.com> wrote:
-> > > >     
-> > > > > Add mutex_destroy when probe fail and remove device.
-> > > > > 
-> > > > > Signed-off-by: Hui Liu <hui.liu@mediatek.com>    
-> > > > Hi Hui Liu,
-> > > > 
-> > > > We very very rarely bother to call mutex_destroy().  The reason is
-> > > > that it is only a non noop in when mutex debugging is enabled and
-> > > > that is only useful if there is a plausible route in which it could
-> > > > be used after the mutex_destroy.   Given these are both at the ends
-> > > > of removal paths, I don't think this is useful.  That's why you will
-> > > > rarely find mutex_destroy() being called.
-> > > > 
-> > > > Thanks,
-> > > > 
-> > > > Jonathan    
-> > > 
-> > > Hi Jonathon,
-> > > 
-> > > I think this patch could assurance the integrity of code.
-> > > mutex_init will be called when driver probe. If driver probe fail or
-> > > device removed, mutex_destroy could set lock->magic to NULL.  
-> > 
-> > I'm not seeing the use case here given the location doesn't leave
-> > a huge amount of code that could have such a bug.  There might have been
-> > something if we had any route to increment the reference count of the
-> > structure this mutex is ultimately embedded in and so have it outlast
-> > the remove function or error path. In this driver it looks like there is
-> > no such path.  Hence you are protecting against a automated
-> > cleanup of core code (nothing in the driver itself) which is obviously
-> > not going to try taking a driver specific mutex.
-> > 
-> > A few side notes:
-> > 
-> > You are calling it wrong place in remove. The ordering in remove
-> > should be the opposite of that in probe so the mutex_destroy should either
-> > be a few lines earlier, or you should have a comment there to say why you
-> > are doing it where you have chosen to do so.
-> > 
-> > The style of this probe is to do error handling in a block at the end.
-> > So this handling should be there, not in the if statement.
-> > 
-> > Jonathan
-> > 
-> >   
-> Hi Jonathon,
-> 
-> Base on your helpful opinion, We will to do two changes in patch v2.
-> 1. In probe: move mutex_destroy from the if statement to error handling
-> path(err_power_off).
-> 2. In remove: calling mutex_destroy right after iio_device_unregister.
-> 
-> Do we need some more change? Thanks.
-Ah. Sorry I missed this in the flood of emails during the week.
+To make sure the invariant is satisfied, we also need to add a
+mmap_read_loc() around the get_user_pages_remote() call in
+get_arg_page(). The lock is not strictly necessary because the mm
+has been newly created, but the extra cost is limited because
+the same mutex was also acquired shortly before in __bprm_mm_init(),
+so it is hot and uncontended.
 
-Anyhow, I've replied to the v1 posting.
+Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+---
+ fs/exec.c | 2 ++
+ mm/mmap.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
-Jonathan
-
-> >   
-> > > 
-> > > Thanks.
-> > > Hui
-> > >   
-> > > >     
-> > > > > ---
-> > > > >  drivers/iio/adc/mt6577_auxadc.c | 2 ++
-> > > > >  1 file changed, 2 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/iio/adc/mt6577_auxadc.c b/drivers/iio/adc/mt6577_auxadc.c
-> > > > > index 79c1dd68b909..d57243037ad6 100644
-> > > > > --- a/drivers/iio/adc/mt6577_auxadc.c
-> > > > > +++ b/drivers/iio/adc/mt6577_auxadc.c
-> > > > > @@ -289,6 +289,7 @@ static int mt6577_auxadc_probe(struct platform_device *pdev)
-> > > > >  	ret = iio_device_register(indio_dev);
-> > > > >  	if (ret < 0) {
-> > > > >  		dev_err(&pdev->dev, "failed to register iio device\n");
-> > > > > +		mutex_destroy(&adc_dev->lock);
-> > > > >  		goto err_power_off;
-> > > > >  	}
-> > > > >  
-> > > > > @@ -313,6 +314,7 @@ static int mt6577_auxadc_remove(struct platform_device *pdev)
-> > > > >  			      0, MT6577_AUXADC_PDN_EN);
-> > > > >  
-> > > > >  	clk_disable_unprepare(adc_dev->adc_clk);
-> > > > > +	mutex_destroy(&adc_dev->lock);
-> > > > >  
-> > > > >  	return 0;
-> > > > >  }    
-> > > >     
-> > >   
-> >   
-> 
+diff --git a/fs/exec.c b/fs/exec.c
+index 38f63451b928..ac7603e985b4 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -217,8 +217,10 @@ static struct page *get_arg_page(struct linux_binprm *bprm, unsigned long pos,
+ 	 * We are doing an exec().  'current' is the process
+ 	 * doing the exec and bprm->mm is the new process's mm.
+ 	 */
++	mmap_read_lock(bprm->mm);
+ 	ret = get_user_pages_remote(bprm->mm, pos, 1, gup_flags,
+ 			&page, NULL, NULL);
++	mmap_read_unlock(bprm->mm);
+ 	if (ret <= 0)
+ 		return NULL;
+ 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index ca54d36d203a..79f4f8ae43ec 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -534,6 +534,7 @@ static int find_vma_links(struct mm_struct *mm, unsigned long addr,
+ {
+ 	struct rb_node **__rb_link, *__rb_parent, *rb_prev;
+ 
++	mmap_assert_locked(mm);
+ 	__rb_link = &mm->mm_rb.rb_node;
+ 	rb_prev = __rb_parent = NULL;
+ 
+@@ -2303,6 +2304,7 @@ struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+ 	struct rb_node *rb_node;
+ 	struct vm_area_struct *vma;
+ 
++	mmap_assert_locked(mm);
+ 	/* Check the cache first. */
+ 	vma = vmacache_find(mm, addr);
+ 	if (likely(vma))
+-- 
+2.32.0.554.ge1b32706d8-goog
 
