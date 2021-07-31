@@ -2,345 +2,1269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C3E3DC533
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2313DC53D
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 11:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbhGaIzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 04:55:52 -0400
-Received: from mx.kolabnow.com ([95.128.36.41]:63904 "EHLO mx.kolabnow.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232299AbhGaIzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 04:55:50 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by ext-mx-out002.mykolab.com (Postfix) with ESMTP id 88998891;
-        Sat, 31 Jul 2021 10:55:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kolabnow.com; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :message-id:date:date:subject:subject:from:from:received
-        :received:received; s=dkim20160331; t=1627721740; x=1629536141;
-         bh=P0ConBhjniYirdILUZkSkCHAyHgU/sE04t2oW/ndIko=; b=gI4tRaXmThuV
-        1j+d7JoT3m/OOC5Fe+Uu4UA0rRAXe1vIzWfjeqmbucw6aKLfxJ9nNc1iWTwFBVqn
-        Y4SzsLgpRDAtgT0FzC8JmKwict/Hd2dmaM8CgAoCIJmY9X9f6/mmWBZX9lKs1/Ue
-        3FU2GaLjdFWnzCfzt8bbBrD3LvM+4TnYgEeYCj0ENI+t/JZ/KL3vxg6jy/pUs9Su
-        0m/Ctnq4a+hnnxTkAwWOkynGPXD9CesuGRT0eTNrJXrkeSpGnHk9g6e+8vj2vX66
-        nko2tnMIqxddZCnXqHml9EbEbqteTATjTUaBGc0KOl2iw4ZqxxcGZxN5NcaO91ZF
-        Z/BZlT7u6P7VDDUhexCmkzJBM4q8Y/8/QkqRwMkLTIVgJitG+NSsI1gy0xzEqCm+
-        kC9WpXL/94dWh3KXqp5Q8Dum5FjbXutlS0+cq0of16HkAUmXg0CNGua2KaAZpiGv
-        2j+dUK/WJGzvg8FnCbm02VyQnhbbK7uYGkb3xTZdHzfm8N3XQEnRc/12YUz1pnFn
-        shFutxJwvIX8S6flgNsXZghmpwFWUMN1+YVJ8tDyTGbj2ommjzYoq7Bw9yyhr/xb
-        Aicaxj6i7rgCzM+7CuvwwbpGo24SY42EePdVDiipvqpZGPPASNc8XOgODRRP58x1
-        t7SsgCdESWKNOmYK0tn4u87KQetJGjw=
-X-Virus-Scanned: amavisd-new at mykolab.com
-X-Spam-Flag: NO
-X-Spam-Score: -1.9
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 tagged_above=-10 required=5
-        tests=[BAYES_00=-1.9] autolearn=ham autolearn_force=no
-Received: from mx.kolabnow.com ([127.0.0.1])
-        by localhost (ext-mx-out002.mykolab.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7wI1WrLhXk_l; Sat, 31 Jul 2021 10:55:40 +0200 (CEST)
-Received: from int-mx002.mykolab.com (unknown [10.9.13.2])
-        by ext-mx-out002.mykolab.com (Postfix) with ESMTPS id 0BDDA614;
-        Sat, 31 Jul 2021 10:55:39 +0200 (CEST)
-Received: from ext-subm002.mykolab.com (unknown [10.9.6.2])
-        by int-mx002.mykolab.com (Postfix) with ESMTPS id EE46144A4;
-        Sat, 31 Jul 2021 10:55:37 +0200 (CEST)
-From:   Federico Vaga <federico.vaga@vaga.pv.it>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Federico Vaga <federico.vaga@vaga.pv.it>
-Subject: [PATCH 1/2] doc: align Italian translation
-Date:   Sat, 31 Jul 2021 10:55:13 +0200
-Message-Id: <20210731085513.11820-1-federico.vaga@vaga.pv.it>
+        id S232666AbhGaJDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 05:03:20 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:58786
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232299AbhGaJDS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 05:03:18 -0400
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com [209.85.218.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 186B63F077
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 09:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627722191;
+        bh=xAvGdDMakW4Wo5VhUe4CQjuLm6JHx80DZ/BBoHmFnVY=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=q10RyZKtgjaE0FmOh4DcGdbjBRwDfNSXNVppCHthKvSJ+du7F/zv7kkJE41R3tnRl
+         nruk5+atnHUNuSfzrUUn1WPEiqKJvCbtkudYyhRipYNHVwPZJkiyzb5Ar2stMbukXp
+         BJgh9DNxqVgvMN7u2x5UMS1Mj2xFL7l4SF+UpKfXf7IaX9YbT8jHbD6tVZhgPA2U4h
+         dDikbeMFPpbAjhDU/SsKgNYWDwIyznfNQFo+SdFjfVlYW4rDQSrkZY5Ml/pZVezAPW
+         zY8O3JbQE0RAsodehUjJw4/IM3OAZBSrDCWSWFGd82D8u7IMcyKw8JqTQyfmoRA91I
+         Kszda8RIOffQQ==
+Received: by mail-ej1-f70.google.com with SMTP id z20-20020a1709069454b0290595651dca8eso1359130ejx.23
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 02:03:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xAvGdDMakW4Wo5VhUe4CQjuLm6JHx80DZ/BBoHmFnVY=;
+        b=q7oZNdGbbIZyPdpLTDFJJK3SqsiZBSROJHIEoG7eYjKfERcwIzlbkq0q2iFrmg6xoA
+         G69RMOBQR6/2MrrSfCODipCRAkRtDdFYblRcIkK9sJgxmWB63xTTq9Po2GoQ1Va4VTe8
+         XjoA7OtplYp6Maxv6msHqk36x79kSYCKb8so418EVTeGjUjfMFg4ED2k41WjnUxi8aYA
+         FqeuU8J8OD2CqB+QPh0l99bplwN2IiMeYRv+HuElxyPPH6fsNIERUecHv4f8uOh3XvcK
+         6u4qmDV2tqAgfTB7sdEdgACX/n/zPR1f9h+xKmJ4rOk0+HXCdxoQMA8+TDAyZ23QvWqM
+         YEUg==
+X-Gm-Message-State: AOAM531CtzdDH1ufVr0yf2Ik+IdSgnAYsNBF8kgKFIzD8jMKJzqRYImJ
+        lntzqRUCRtYRR1tQohLOeVPYygWzq+9cq2WvJhxBIoEeME+zcmZ4aoC+NwZhn07N0sSgGoStX9n
+        nyMWg5ytyBlZlHT0uI3O2vQKPqHub2/abubgBjEIOVQ==
+X-Received: by 2002:a17:906:cb96:: with SMTP id mf22mr2326952ejb.50.1627722190388;
+        Sat, 31 Jul 2021 02:03:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyjcorQOIS88HLhmYNu5hYzY5lta8pKxaU2fxmGljQkD9n5onqcJel1kmPGG2SvlUwMqkoJAg==
+X-Received: by 2002:a17:906:cb96:: with SMTP id mf22mr2326922ejb.50.1627722190002;
+        Sat, 31 Jul 2021 02:03:10 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id cw9sm1397382ejc.59.2021.07.31.02.03.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 31 Jul 2021 02:03:09 -0700 (PDT)
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-13-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
+Message-ID: <455cfb5e-dff7-a5c0-3875-49abe3e900f3@canonical.com>
+Date:   Sat, 31 Jul 2021 11:03:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20210730144922.29111-13-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Translation for the following patches
+On 30/07/2021 16:49, Sam Protsenko wrote:
+> Samsung Exynos850 is ARMv8-based mobile-oriented SoC.
+> 
+> Features:
+>  * CPU: Cortex-A55 Octa (8 cores), up to 2 GHz
+>  * Memory interface: LPDDR4/4x 2 channels (12.8 GB/s)
+>  * SD/MMC: SD 3.0, eMMC5.1 DDR 8-bit
+>  * Modem: 4G LTE, 3G, GSM/GPRS/EDGE
+>  * RF: Quad GNSS, WiFi 5 (802.11ac), Bluetooth 5.0
+>  * GPU: Mali-G52 MP1
+>  * Codec: 1080p 60fps H64, HEVC, JPEG HW Codec
+>  * Display: Full HD+ (2520x1080)@60fps LCD
+>  * Camera: 16+5MP/13+8MP ISP, MIPI CSI 4/4/2, FD, DRC
+>  * Connectivity: USB 2.0 DRD, USI (SPI/UART/I2C), HSI2C, I3C, ADC, Audio
 
-commit 0ca0d55526d3 ("docs/core-api: Consistent code style")
-commit 9912d0bb9dee ("docs: process: submitting-patches.rst: avoid using ReST :doc:`foo` markup")
-commit 6349469a4f3c ("Documentation/submitting-patches: Document RESEND tag on patches")
-commit dbbe7c962c3a ("docs: networking: drop special stable handling")
-commit 7f3f7bfbbe02 ("docs: kernel-hacking: hacking.rst: avoid using ReST :doc:`foo` markup")
-commit 6ab0493dfc62 ("deprecated.rst: Include details on "no_hash_pointers" ")
-commit 77167b966b7e ("docs: submitting-patches: clarify the role of LKML ")
+Please document first the features you add (and are working) and
+afterwards mention all others capabilities.
 
-Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
----
- .../it_IT/core-api/symbol-namespaces.rst      | 26 ++++-----
- .../it_IT/kernel-hacking/hacking.rst          |  4 +-
- .../translations/it_IT/process/deprecated.rst |  8 ++-
- .../it_IT/process/stable-kernel-rules.rst     |  6 --
- .../it_IT/process/submitting-patches.rst      | 57 ++++++++++---------
- 5 files changed, 51 insertions(+), 50 deletions(-)
+> 
+> This patch adds minimal SoC support. Particular board device tree files
+> can include exynos850.dtsi file to get SoC related nodes, and then
+> reference those nodes further as needed.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  .../boot/dts/exynos/exynos850-pinctrl.dtsi    | 782 ++++++++++++++++++
+>  arch/arm64/boot/dts/exynos/exynos850-usi.dtsi |  30 +
+>  arch/arm64/boot/dts/exynos/exynos850.dtsi     | 245 ++++++
 
-diff --git a/Documentation/translations/it_IT/core-api/symbol-namespaces.rst b/Documentation/translations/it_IT/core-api/symbol-namespaces.rst
-index aa851a57a4b0..42f5d04e38ec 100644
---- a/Documentation/translations/it_IT/core-api/symbol-namespaces.rst
-+++ b/Documentation/translations/it_IT/core-api/symbol-namespaces.rst
-@@ -42,15 +42,15 @@ nomi: EXPORT_SYMBOL_NS() ed EXPORT_SYMBOL_NS_GPL(). Queste macro richiedono un
- argomento aggiuntivo: lo spazio dei nomi.
- Tenete presente che per via dell'espansione delle macro questo argomento deve
- essere un simbolo di preprocessore. Per esempio per esportare il
--simbolo `usb_stor_suspend` nello spazio dei nomi `USB_STORAGE` usate::
-+simbolo ``usb_stor_suspend`` nello spazio dei nomi ``USB_STORAGE`` usate::
- 
- 	EXPORT_SYMBOL_NS(usb_stor_suspend, USB_STORAGE);
- 
- Di conseguenza, nella tabella dei simboli del kernel ci sarà una voce
--rappresentata dalla struttura `kernel_symbol` che avrà il campo
--`namespace` (spazio dei nomi) impostato. Un simbolo esportato senza uno spazio
--dei nomi avrà questo campo impostato a `NULL`. Non esiste uno spazio dei nomi
--di base. Il programma `modpost` e il codice in kernel/module.c usano lo spazio
-+rappresentata dalla struttura ``kernel_symbol`` che avrà il campo
-+``namespace`` (spazio dei nomi) impostato. Un simbolo esportato senza uno spazio
-+dei nomi avrà questo campo impostato a ``NULL``. Non esiste uno spazio dei nomi
-+di base. Il programma ``modpost`` e il codice in kernel/module.c usano lo spazio
- dei nomi, rispettivamente, durante la compilazione e durante il caricamento
- di un modulo.
- 
-@@ -65,7 +65,7 @@ ed EXPORT_SYMBOL_GPL() che non specificano esplicitamente uno spazio dei nomi.
- 
- Ci sono molti modi per specificare questo simbolo di preprocessore e il loro
- uso dipende dalle preferenze del manutentore di un sottosistema. La prima
--possibilità è quella di definire il simbolo nel `Makefile` del sottosistema.
-+possibilità è quella di definire il simbolo nel ``Makefile`` del sottosistema.
- Per esempio per esportare tutti i simboli definiti in usb-common nello spazio
- dei nomi USB_COMMON, si può aggiungere la seguente linea in
- drivers/usb/common/Makefile::
-@@ -97,7 +97,7 @@ USB_STORAGE usando la seguente dichiarazione::
- 
- 	MODULE_IMPORT_NS(USB_STORAGE);
- 
--Questo creerà un'etichetta `modinfo` per ogni spazio dei nomi
-+Questo creerà un'etichetta ``modinfo`` per ogni spazio dei nomi
- importato. Un risvolto di questo fatto è che gli spazi dei
- nomi importati da un modulo possono essere ispezionati tramite
- modinfo::
-@@ -116,7 +116,7 @@ mancanti.
- 4. Caricare moduli che usano simboli provenienti da spazi dei nomi
- ==================================================================
- 
--Quando un modulo viene caricato (per esempio usando `insmod`), il kernel
-+Quando un modulo viene caricato (per esempio usando ``insmod``), il kernel
- verificherà la disponibilità di ogni simbolo usato e se lo spazio dei nomi
- che potrebbe contenerli è stato importato. Il comportamento di base del kernel
- è di rifiutarsi di caricare quei moduli che non importano tutti gli spazi dei
-@@ -144,22 +144,22 @@ Lo scenario tipico di chi scrive un modulo potrebbe essere::
- 
- 	- scrivere codice che dipende da un simbolo appartenente ad uno spazio
- 	  dei nomi non importato
--	- eseguire `make`
-+	- eseguire ``make``
- 	- aver notato un avviso da modpost che parla di un'importazione
- 	  mancante
--	- eseguire `make nsdeps` per aggiungere import nel posto giusto
-+	- eseguire ``make nsdeps`` per aggiungere import nel posto giusto
- 
- Per i manutentori di sottosistemi che vogliono aggiungere uno spazio dei nomi,
--l'approccio è simile. Di nuovo, eseguendo `make nsdeps` aggiungerà le
-+l'approccio è simile. Di nuovo, eseguendo ``make nsdeps`` aggiungerà le
- importazioni mancanti nei moduli inclusi nel kernel::
- 
- 	- spostare o aggiungere simboli ad uno spazio dei nomi (per esempio
- 	  usando EXPORT_SYMBOL_NS())
--	- eseguire `make` (preferibilmente con allmodconfig per coprire tutti
-+	- eseguire ``make`` (preferibilmente con allmodconfig per coprire tutti
- 	  i moduli del kernel)
- 	- aver notato un avviso da modpost che parla di un'importazione
- 	  mancante
--	- eseguire `make nsdeps` per aggiungere import nel posto giusto
-+	- eseguire ``make nsdeps`` per aggiungere import nel posto giusto
- 
- Potete anche eseguire nsdeps per moduli esterni. Solitamente si usa così::
- 
-diff --git a/Documentation/translations/it_IT/kernel-hacking/hacking.rst b/Documentation/translations/it_IT/kernel-hacking/hacking.rst
-index f6beb385b4ac..b4ea00f1b583 100644
---- a/Documentation/translations/it_IT/kernel-hacking/hacking.rst
-+++ b/Documentation/translations/it_IT/kernel-hacking/hacking.rst
-@@ -634,7 +634,7 @@ Definita in ``include/linux/export.h``
- 
- Questa è una variate di `EXPORT_SYMBOL()` che permette di specificare uno
- spazio dei nomi. Lo spazio dei nomi è documentato in
--:doc:`../core-api/symbol-namespaces`
-+Documentation/translations/it_IT/core-api/symbol-namespaces.rst.
- 
- :c:func:`EXPORT_SYMBOL_NS_GPL()`
- --------------------------------
-@@ -643,7 +643,7 @@ Definita in ``include/linux/export.h``
- 
- Questa è una variate di `EXPORT_SYMBOL_GPL()` che permette di specificare uno
- spazio dei nomi. Lo spazio dei nomi è documentato in
--:doc:`../core-api/symbol-namespaces`
-+Documentation/translations/it_IT/core-api/symbol-namespaces.rst.
- 
- Procedure e convenzioni
- =======================
-diff --git a/Documentation/translations/it_IT/process/deprecated.rst b/Documentation/translations/it_IT/process/deprecated.rst
-index 07c79d4bafca..987f45ee1804 100644
---- a/Documentation/translations/it_IT/process/deprecated.rst
-+++ b/Documentation/translations/it_IT/process/deprecated.rst
-@@ -183,9 +183,11 @@ di Linus:
-   affrontare il giudizio di Linus, allora forse potrai usare "%px",
-   assicurandosi anche di averne il permesso.
- 
--Infine, sappi che un cambio in favore di "%p" con hash `non verrà
--accettato
--<https://lore.kernel.org/lkml/CA+55aFwieC1-nAs+NFq9RTwaR8ef9hWa4MjNBWL41F-8wM49eA@mail.gmail.com/>`_.
-+Potete disabilitare temporaneamente l'hashing di "%p" nel caso in cui questa
-+funzionalità vi sia d'ostacolo durante una sessione di debug. Per farlo
-+aggiungete l'opzione di debug "`no_hash_pointers
-+<https://git.kernel.org/linus/5ead723a20e0447bc7db33dc3070b420e5f80aa6>`_" alla
-+riga di comando del kernel.
- 
- Vettori a dimensione variabile (VLA)
- ------------------------------------
-diff --git a/Documentation/translations/it_IT/process/stable-kernel-rules.rst b/Documentation/translations/it_IT/process/stable-kernel-rules.rst
-index 283d62541c4f..83f48afe48b9 100644
---- a/Documentation/translations/it_IT/process/stable-kernel-rules.rst
-+++ b/Documentation/translations/it_IT/process/stable-kernel-rules.rst
-@@ -41,12 +41,6 @@ Regole sul tipo di patch che vengono o non vengono accettate nei sorgenti
- Procedura per sottomettere patch per i sorgenti -stable
- -------------------------------------------------------
- 
-- - Se la patch contiene modifiche a dei file nelle cartelle net/ o drivers/net,
--   allora seguite le linee guida descritte in
--   :ref:`Documentation/translations/it_IT/networking/netdev-FAQ.rst <it_netdev-FAQ>`;
--   ma solo dopo aver verificato al seguente indirizzo che la patch non sia
--   già in coda:
--   https://patchwork.kernel.org/bundle/netdev/stable/?state=*
-  - Una patch di sicurezza non dovrebbero essere gestite (solamente) dal processo
-    di revisione -stable, ma dovrebbe seguire le procedure descritte in
-    :ref:`Documentation/translations/it_IT/admin-guide/security-bugs.rst <it_securitybugs>`.
-diff --git a/Documentation/translations/it_IT/process/submitting-patches.rst b/Documentation/translations/it_IT/process/submitting-patches.rst
-index ded95048b9a8..458d9d24b9c0 100644
---- a/Documentation/translations/it_IT/process/submitting-patches.rst
-+++ b/Documentation/translations/it_IT/process/submitting-patches.rst
-@@ -14,14 +14,15 @@ una certa familiarità col "sistema".  Questo testo è una raccolta di
- suggerimenti che aumenteranno significativamente le probabilità di vedere le
- vostre patch accettate.
- 
--Questo documento contiene un vasto numero di suggerimenti concisi.  Per
--maggiori dettagli su come funziona il processo di sviluppo del kernel leggete
--:doc:`development-process`.
--Leggete anche :doc:`submit-checklist` per una lista di punti da
--verificare prima di inviare del codice.  Se state inviando un driver,
--allora leggete anche :doc:`submitting-drivers`; per delle patch
-+Questo documento contiene un vasto numero di suggerimenti concisi. Per maggiori
-+dettagli su come funziona il processo di sviluppo del kernel leggete
-+Documentation/translations/it_IT/process/development-process.rst. Leggete anche
-+Documentation/translations/it_IT/process/submit-checklist.rst per una lista di
-+punti da verificare prima di inviare del codice. Se state inviando un driver,
-+allora leggete anche
-+Documentation/translations/it_IT/process/submitting-drivers.rst; per delle patch
- relative alle associazioni per Device Tree leggete
--:doc:`submitting-patches`.
-+Documentation/translations/it_IT/process/submitting-patches.rst.
- 
- Questa documentazione assume che sappiate usare ``git`` per preparare le patch.
- Se non siete pratici di ``git``, allora è bene che lo impariate;
-@@ -193,7 +194,7 @@ ed integrate.
- ---------------------------------------------
- 
- Controllate che la vostra patch non violi lo stile del codice, maggiori
--dettagli sono disponibili in :ref:`Documentation/translations/it_IT/process/coding-style.rst <it_codingstyle>`.
-+dettagli sono disponibili in Documentation/translations/it_IT/process/coding-style.rst.
- Non farlo porta semplicemente a una perdita di tempo da parte dei revisori e
- voi vedrete la vostra patch rifiutata, probabilmente senza nemmeno essere stata
- letta.
-@@ -230,13 +231,13 @@ scripts/get_maintainer.pl può esservi d'aiuto.  Se non riuscite a trovare un
- manutentore per il sottosistema su cui state lavorando, allora Andrew Morton
- (akpm@linux-foundation.org) sarà la vostra ultima possibilità.
- 
--Normalmente, dovreste anche scegliere una lista di discussione a cui inviare
--la vostra serie di patch.  La lista di discussione linux-kernel@vger.kernel.org
--è proprio l'ultima spiaggia, il volume di email su questa lista fa si che
--diversi sviluppatori non la seguano.  Guardate nel file MAINTAINERS per trovare
--la lista di discussione dedicata ad un sottosistema; probabilmente lì la vostra
--patch riceverà molta più attenzione.  Tuttavia, per favore, non spammate le
--liste di discussione che non sono interessate al vostro lavoro.
-+Normalmente, dovreste anche scegliere una lista di discussione a cui inviare la
-+vostra serie di patch. La lista di discussione linux-kernel@vger.kernel.org
-+dovrebbe essere usata per inviare tutte le patch, ma il traffico è tale per cui
-+diversi sviluppatori la trascurano. Guardate nel file MAINTAINERS per trovare la
-+lista di discussione dedicata ad un sottosistema; probabilmente lì la vostra
-+patch riceverà molta più attenzione. Tuttavia, per favore, non spammate le liste
-+di discussione che non sono interessate al vostro lavoro.
- 
- Molte delle liste di discussione relative al kernel vengono ospitate su
- vger.kernel.org; potete trovare un loro elenco alla pagina
-@@ -257,7 +258,7 @@ embargo potrebbe essere preso in considerazione per dare il tempo alle
- distribuzioni di prendere la patch e renderla disponibile ai loro utenti;
- in questo caso, ovviamente, la patch non dovrebbe essere inviata su alcuna
- lista di discussione pubblica. Leggete anche
--:doc:`/admin-guide/security-bugs`.
-+Documentation/admin-guide/security-bugs.rst.
- 
- Patch che correggono bachi importanti su un kernel già rilasciato, dovrebbero
- essere inviate ai manutentori dei kernel stabili aggiungendo la seguente riga::
-@@ -266,12 +267,7 @@ essere inviate ai manutentori dei kernel stabili aggiungendo la seguente riga::
- 
- nella vostra patch, nell'area dedicata alle firme (notate, NON come destinatario
- delle e-mail).  In aggiunta a questo file, dovreste leggere anche
--:ref:`Documentation/translations/it_IT/process/stable-kernel-rules.rst <it_stable_kernel_rules>`
--
--Tuttavia, notate, che alcuni manutentori di sottosistema preferiscono avere
--l'ultima parola su quali patch dovrebbero essere aggiunte ai kernel stabili.
--La rete di manutentori, in particolare, non vorrebbe vedere i singoli
--sviluppatori aggiungere alle loro patch delle righe come quella sopracitata.
-+Documentation/translations/it_IT/process/stable-kernel-rules.rst.
- 
- Se le modifiche hanno effetti sull'interfaccia con lo spazio utente, per favore
- inviate una patch per le pagine man ai manutentori di suddette pagine (elencati
-@@ -330,7 +326,7 @@ così la possibilità che il vostro allegato-MIME venga accettato.
- Eccezione: se il vostro servizio di posta storpia le patch, allora qualcuno
- potrebbe chiedervi di rinviarle come allegato MIME.
- 
--Leggete :doc:`/translations/it_IT/process/email-clients`
-+Leggete Documentation/translations/it_IT/process/email-clients.rst
- per dei suggerimenti sulla configurazione del programmi di posta elettronica
- per l'invio di patch intatte.
- 
-@@ -351,7 +347,7 @@ richiede molto tempo, e a volte i revisori diventano burberi.  Tuttavia, anche
- in questo caso, rispondete con educazione e concentratevi sul problema che
- hanno evidenziato.
- 
--Leggete :doc:`/translations/it_IT/process/email-clients` per
-+Leggete Documentation/translations/it_IT/process/email-clients.rst per
- le raccomandazioni sui programmi di posta elettronica e l'etichetta da usare
- sulle liste di discussione.
- 
-@@ -369,6 +365,16 @@ aver inviato le patch correttamente.  Aspettate almeno una settimana prima di
- rinviare le modifiche o sollecitare i revisori - probabilmente anche di più
- durante la finestra d'integrazione.
- 
-+Potete anche rinviare la patch, o la serie di patch, dopo un paio di settimane
-+aggiungendo la parola "RESEND" nel titolo::
-+
-+    [PATCH Vx RESEND] sub/sys: Condensed patch summary
-+
-+Ma non aggiungete "RESEND" quando state sottomettendo una versione modificata
-+della vostra patch, o serie di patch - "RESEND" si applica solo alla
-+sottomissione di patch, o serie di patch, che non hanno subito modifiche
-+dall'ultima volta che sono state inviate.
-+
- Aggiungete PATCH nell'oggetto
- -----------------------------
- 
-@@ -795,8 +801,7 @@ Greg Kroah-Hartman, "Come scocciare un manutentore di un sottosistema"
- No!!!! Basta gigantesche bombe patch alle persone sulla lista linux-kernel@vger.kernel.org!
-   <https://lore.kernel.org/r/20050711.125305.08322243.davem@davemloft.net>
- 
--Kernel Documentation/translations/it_IT/process/coding-style.rst:
--  :ref:`Documentation/translations/it_IT/process/coding-style.rst <it_codingstyle>`
-+Kernel Documentation/translations/it_IT/process/coding-style.rst.
- 
- E-mail di Linus Torvalds sul formato canonico di una patch:
-   <https://lore.kernel.org/r/Pine.LNX.4.58.0504071023190.28951@ppc970.osdl.org>
--- 
-2.32.0.93.g670b81a890
+Not buildable. Missing Makefile, missing DTS. Please submit with initial
+DTS, otherwise no one is able to verify it even compiles.
 
+>  3 files changed, 1057 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
+>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> new file mode 100644
+> index 000000000000..4cf0a22cc6db
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> @@ -0,0 +1,782 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Samsung's Exynos850 SoC pin-mux and pin-config device tree source
+> + *
+> + * Copyright (C) 2017 Samsung Electronics Co., Ltd.
+> + * Copyright (C) 2021 Linaro Ltd.
+> + *
+> + * Samsung's Exynos850 SoC pin-mux and pin-config options are listed as device
+> + * tree nodes in this file.
+> + */
+> +
+> +#include <dt-bindings/interrupt-controller/exynos850.h>
+> +
+> +/ {
+> +	/* ALIVE */
+> +	pinctrl@11850000 {
+> +		gpa0: gpa0 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+
+That's odd a little, why three cells? How this would be used/referenced?
+
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			    <GIC_SPI INTREQ__ALIVE_EINT0 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT1 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT2 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT3 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT4 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT5 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT6 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT7 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		gpa1: gpa1 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			    <GIC_SPI INTREQ__ALIVE_EINT8 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT9 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT10 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT11 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT12 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT13 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT14 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT15 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		gpa2: gpa2 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			    <GIC_SPI INTREQ__ALIVE_EINT16 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT17 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT18 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT19 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT20 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT21 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT22 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT23 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		gpa3: gpa3 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			    <GIC_SPI INTREQ__ALIVE_EINT24 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT25 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT26 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT27 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT28 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT29 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT30 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT31 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		gpa4: gpa4 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			    <GIC_SPI INTREQ__ALIVE_EINT32 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT33 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT34 IRQ_TYPE_LEVEL_HIGH>,
+> +			    <GIC_SPI INTREQ__ALIVE_EINT35 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		gpq0: gpq0 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		/* USI_PERI_UART_DBG */
+> +		uart0_bus: uart0-bus {
+> +			samsung,pins = "gpq0-0", "gpq0-1";
+> +			samsung,pin-function = <2>;
+
+EXYNOS_PIN_FUNC_2
+
+> +			samsung,pin-pud = <0>;
+
+EXYNOS_PIN_PULL_xx?
+
+> +		};
+> +
+> +		decon_f_te_on: decon_f_te_on {
+
+1. Where is it used?
+2. Use hyphens in node names.
+Please build it with W=1 and fix the warnings.
+
+> +			samsung,pins = "gpa4-1";
+
+Order the nodes based on first pin name, so:
+i2c5_bus
+i2c6_bus
+decon_f_te_on
+uart0_bus
+
+> +			samsung,pin-function = <0xf>;
+> +		};
+> +
+> +		decon_f_te_off: decon_f_te_off {
+
+Where is it used?
+
+> +			samsung,pins = "gpa4-1";
+> +			samsung,pin-function = <0x0>;
+> +		};
+> +
+> +		/* I2C_5 | CAM_PMIC_I2C */
+
+This comment is confusing. I2C-5 is obvious from node name and label.
+CAM_PMIC_I2C does not look like property of SoC but board.
+
+> +		i2c5_bus: i2c5-bus {
+> +			samsung,pins = "gpa3-5", "gpa3-6";
+> +			samsung,pin-function = <3>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		/* I2C_6 | MOTOR_I2C */
+> +		i2c6_bus: i2c6-bus {
+> +			samsung,pins = "gpa3-7", "gpa4-0";
+> +			samsung,pin-function = <3>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +	};
+> +
+> +	/* CMGP */
+> +	pinctrl@11c30000 {
+> +		gpm0: gpm0 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			  <GIC_SPI INTREQ__CMGP_EXT_INTM00 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		gpm1: gpm1 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			  <GIC_SPI INTREQ__CMGP_EXT_INTM01 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		gpm2: gpm2 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			  <GIC_SPI INTREQ__CMGP_EXT_INTM02 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		gpm3: gpm3 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			  <GIC_SPI INTREQ__CMGP_EXT_INTM03 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		gpm4: gpm4 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			  <GIC_SPI INTREQ__CMGP_EXT_INTM04 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		gpm5: gpm5 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupts =
+> +			  <GIC_SPI INTREQ__CMGP_EXT_INTM05 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		/* usi_cmgp00 */
+> +		hsi2c3_bus: hsi2c3-bus {
+> +			samsung,pins = "gpm0-0", "gpm1-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		/* usi_cmgp01 */
+> +		hsi2c4_bus: hsi2c4-bus {
+> +			samsung,pins = "gpm4-0", "gpm5-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		/* spi usi_cmgp00 */
+> +		spi1_bus: spi1-bus {
+> +			samsung,pins = "gpm0-0", "gpm1-0", "gpm2-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		spi1_cs: spi1-cs {
+> +			samsung,pins = "gpm3-0";
+> +			samsung,pin-function = <1>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		spi1_cs_func: spi1-cs-func {
+> +			samsung,pins = "gpm3-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		/* spi usi_cmgp01 */
+> +		spi2_bus: spi2-bus {
+> +			samsung,pins = "gpm4-0", "gpm5-0", "gpm6-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		spi2_cs: spi2-cs {
+> +			samsung,pins = "gpm7-0";
+> +			samsung,pin-function = <1>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		spi2_cs_func: spi2-cs-func {
+> +			samsung,pins = "gpm7-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		/* usi_cmgp00_uart */
+> +		uart1_bus_single: uart1-bus {
+> +			samsung,pins = "gpm0-0", "gpm1-0", "gpm2-0", "gpm3-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +		};
+> +
+> +		uart1_bus_dual: uart1-bus-dual {
+> +			samsung,pins = "gpm0-0", "gpm1-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +		};
+> +
+> +		/* usi_cmgp01_uart */
+> +		uart2_bus_single: uart2-bus {
+> +			samsung,pins = "gpm4-0", "gpm5-0", "gpm6-0", "gpm7-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +		};
+> +
+> +		uart2_bus_dual: uart2-bus-dual {
+> +			samsung,pins = "gpm4-0", "gpm5-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +		};
+> +	};
+> +
+> +	/* AUD */
+> +	pinctrl@14a60000 {
+> +		gpb0: gpb0 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		gpb1: gpb1 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		aud_codec_mclk: aud-codec-mclk {
+> +			samsung,pins = "gpb0-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <1>;
+> +		};
+> +
+> +		aud_codec_mclk_idle: aud-codec-mclk-idle {
+> +			samsung,pins = "gpb0-0";
+> +			samsung,pin-function = <0>;
+> +			samsung,pin-pud = <1>;
+> +		};
+> +
+> +		aud_i2s0_bus: aud-i2s0-bus {
+> +			samsung,pins = "gpb0-1", "gpb0-2", "gpb0-3", "gpb0-4";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <1>;
+> +		};
+> +
+> +		aud_i2s0_idle: aud-i2s0-idle {
+> +			samsung,pins = "gpb0-1", "gpb0-2", "gpb0-3", "gpb0-4";
+> +			samsung,pin-function = <0>;
+> +			samsung,pin-pud = <1>;
+> +		};
+> +
+> +		aud_i2s1_bus: aud-i2s1-bus {
+> +			samsung,pins = "gpb1-0", "gpb1-1", "gpb1-2", "gpb1-3";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <1>;
+> +		};
+> +
+> +		aud_i2s1_idle: aud-i2s1-idle {
+> +			samsung,pins = "gpb1-0", "gpb1-1", "gpb1-2", "gpb1-3";
+> +			samsung,pin-function = <0>;
+> +			samsung,pin-pud = <1>;
+> +		};
+> +
+> +		aud_fm_bus: aud-fm-bus {
+> +			samsung,pins = "gpb1-4";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <1>;
+> +		};
+> +
+> +		aud_fm_idle: aud-fm-idle {
+> +			samsung,pins = "gpb1-4";
+> +			samsung,pin-function = <0>;
+> +			samsung,pin-pud = <1>;
+> +		};
+> +	};
+> +
+> +	/* HSI */
+> +	pinctrl@13430000 {
+> +		gpf2: gpf2 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		sd2_clk: sd2-clk {
+> +			samsung,pins = "gpf2-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sd2_cmd: sd2-cmd {
+> +			samsung,pins = "gpf2-1";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <2>;
+> +		 };
+> +
+> +		sd2_bus1: sd2-bus-width1 {
+> +			samsung,pins = "gpf2-2";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sd2_bus4: sd2-bus-width4 {
+> +			samsung,pins = "gpf2-3", "gpf2-4", "gpf2-5";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sd2_clk_fast_slew_rate_1x: sd2-clk_fast_slew_rate_1x {
+> +			samsung,pins = "gpf2-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		sd2_clk_fast_slew_rate_1_5x: sd2-clk_fast_slew_rate_1_5x {
+> +			samsung,pins = "gpf2-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <1>;
+> +		};
+> +
+> +		sd2_clk_fast_slew_rate_2x: sd2-clk_fast_slew_rate_2x {
+> +			samsung,pins = "gpf2-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sd2_clk_fast_slew_rate_2_5x: sd2-clk_fast_slew_rate_2_5x {
+> +			samsung,pins = "gpf2-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <3>;
+> +		};
+> +
+> +		sd2_clk_fast_slew_rate_3x: sd2-clk_fast_slew_rate_3x {
+> +			samsung,pins = "gpf2-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <4>;
+> +		};
+> +
+> +		sd2_clk_fast_slew_rate_4x: sd2-clk_fast_slew_rate_4x {
+> +			samsung,pins = "gpf2-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <5>;
+> +		};
+> +
+> +		sd2_pins_as_pdn: sd2-pins-as-pdn {
+> +			samsung,pins = "gpf2-0", "gpf2-1", "gpf2-2", "gpf2-3",
+> +				       "gpf2-4", "gpf2-5";
+> +			samsung,pin-function = <0>;
+> +			samsung,pin-pud = <2>;
+> +		};
+> +
+
+No need for blank line.
+
+> +	};
+> +
+> +	/* CORE */
+> +	pinctrl@12070000 {
+> +		gpf0: gpf0 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		sd0_clk: sd0-clk {
+> +			samsung,pins = "gpf0-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <3>;
+> +		};
+> +
+> +		sd0_cmd: sd0-cmd {
+> +			samsung,pins = "gpf0-1";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <3>;
+> +		};
+> +
+> +		sd0_rdqs: sd0-rdqs {
+> +			samsung,pins = "gpf0-2";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <1>;
+> +			samsung,pin-drv = <3>;
+> +		};
+> +
+> +		sd0_nreset: sd0-nreset {
+> +			samsung,pins = "gpf0-3";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <3>;
+> +		};
+> +
+> +		sd0_clk_fast_slew_rate_1x: sd0-clk_fast_slew_rate_1x {
+> +			samsung,pins = "gpf0-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <1>;
+> +		};
+> +
+> +		sd0_clk_fast_slew_rate_2x: sd0-clk_fast_slew_rate_2x {
+> +			samsung,pins = "gpf0-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sd0_clk_fast_slew_rate_3x: sd0-clk_fast_slew_rate_3x {
+> +			samsung,pins = "gpf0-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sd0_clk_fast_slew_rate_4x: sd0-clk_fast_slew_rate_4x {
+> +			samsung,pins = "gpf0-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <3>;
+> +		};
+> +
+> +		gpf1: gpf1 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		sd0_bus1: sd0-bus-width1 {
+> +			samsung,pins = "gpf1-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <3>;
+> +		};
+> +
+> +		sd0_bus4: sd0-bus-width4 {
+> +			samsung,pins = "gpf1-1", "gpf1-2", "gpf1-3";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <3>;
+> +		};
+> +
+> +		sd0_bus8: sd0-bus-width8 {
+> +			samsung,pins = "gpf1-4", "gpf1-5", "gpf1-6", "gpf1-7";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <3>;
+> +		};
+> +	};
+> +
+> +	/* PERI */
+> +	pinctrl@139b0000 {
+> +		gpg0: gpg0 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		gpp0: gpp0 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +		gpp1: gpp1 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		gpp2: gpp2 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		gpg1: gpg1 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		gpg2: gpg2 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		gpg3: gpg3 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		gpc0: gpc0 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		gpc1: gpc1 {
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		xclkout: xclkout {
+> +			samsung,pins = "gpq0-2";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +		};
+> +
+> +		/* usi_hsi2c_0 */
+
+Comment seems to duplicate node name/label.
+
+> +		hsi2c0_bus: hsi2c0-bus {
+> +			samsung,pins = "gpc1-0", "gpc1-1";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		/* usi_hsi2c_1 */
+> +		hsi2c1_bus: hsi2c1-bus {
+> +			samsung,pins = "gpc1-2", "gpc1-3";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		/* usi_hsi2c_2 */
+> +		hsi2c2_bus: hsi2c2-bus {
+> +			samsung,pins = "gpc1-4", "gpc1-5";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		/* usi_spi_0 */
+> +		spi0_bus: spi0-bus {
+> +			samsung,pins = "gpp2-0", "gpp2-2", "gpp2-3";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		spi0_cs: spi0-cs {
+> +			samsung,pins = "gpp2-1";
+> +			samsung,pin-function = <1>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		spi0_cs_func: spi0-cs-func {
+> +			samsung,pins = "gpp2-1";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		i2c0_bus: i2c0-bus {
+> +			samsung,pins = "gpp0-0", "gpp0-1";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		i2c1_bus: i2c1-bus {
+> +			samsung,pins = "gpp0-2", "gpp0-3";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		i2c2_bus: i2c2-bus {
+> +			samsung,pins = "gpp0-4", "gpp0-5";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		i2c3_bus: i2c3-bus {
+> +			samsung,pins = "gpp1-0", "gpp1-1";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		i2c4_bus: i2c4-bus {
+> +			samsung,pins = "gpp1-2", "gpp1-3";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <3>;
+> +			samsung,pin-drv = <0>;
+> +		};
+> +
+> +		fm_lna_en: fm-lna-en {
+> +			samsung,pins = "gpg2-3";
+> +			samsung,pin-function = <1>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-val = <0>;
+> +		};
+> +
+> +		sensor_mclk0_in: sensor-mclk0-in {
+> +			samsung,pins = "gpc0-0";
+> +			samsung,pin-function = <0>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sensor_mclk0_out: sensor-mclk0-out {
+> +			samsung,pins = "gpc0-0";
+> +			samsung,pin-function = <1>;
+> +			samsung,pin-pud = <1>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sensor_mclk0_fn: sensor-mclk0-fn {
+
+No, seriously. What sensor is it? In SoC?
+
+> +			samsung,pins = "gpc0-0";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sensor_mclk1_in: sensor-mclk1-in {
+> +			samsung,pins = "gpc0-1";
+> +			samsung,pin-function = <0>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sensor_mclk1_out: sensor-mclk1-out {
+> +			samsung,pins = "gpc0-1";
+> +			samsung,pin-function = <1>;
+> +			samsung,pin-pud = <1>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sensor_mclk1_fn: sensor-mclk1-fn {
+> +			samsung,pins = "gpc0-1";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sensor_mclk2_in: sensor-mclk2-in {
+> +			samsung,pins = "gpc0-2";
+> +			samsung,pin-function = <0>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sensor_mclk2_out: sensor-mclk2-out {
+> +			samsung,pins = "gpc0-2";
+> +			samsung,pin-function = <1>;
+> +			samsung,pin-pud = <1>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +
+> +		sensor_mclk2_fn: sensor-mclk2-fn {
+> +			samsung,pins = "gpc0-2";
+> +			samsung,pin-function = <2>;
+> +			samsung,pin-pud = <0>;
+> +			samsung,pin-drv = <2>;
+> +		};
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/exynos/exynos850-usi.dtsi b/arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
+> new file mode 100644
+> index 000000000000..fb243e0a6260
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
+> @@ -0,0 +1,30 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Samsung's Exynos850 SoC USI device tree source
+> + *
+> + * Copyright (C) 2019 Samsung Electronics Co., Ltd.
+> + * Copyright (C) 2021 Linaro Ltd.
+> + *
+> + * Samsung's Exynos850 SoC USI channels are listed in this file as device tree
+> + * nodes.
+
+Why here not in exynos850.dtsi?
+
+> + */
+> +
+> +#include <dt-bindings/clock/exynos850.h>
+> +
+> +/ {
+> +	aliases {
+> +		uart0 = &serial_0;
+> +	};
+> +
+> +	/* USI_UART */
+> +	serial_0: uart@13820000 {
+
+This should ne in soc node.
+
+> +		compatible = "samsung,exynos850-uart";
+> +		reg = <0x0 0x13820000 0x100>;
+> +		interrupts = <GIC_SPI INTREQ__UART IRQ_TYPE_LEVEL_HIGH>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&uart0_bus>;
+> +		clocks = <&clock GATE_UART_QCH>, <&clock DOUT_UART>;
+> +		clock-names = "gate_uart_clk0", "uart";
+> +		status = "disabled";
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/exynos/exynos850.dtsi b/arch/arm64/boot/dts/exynos/exynos850.dtsi
+> new file mode 100644
+> index 000000000000..ed2d1c8ae0c3
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/exynos/exynos850.dtsi
+> @@ -0,0 +1,245 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Samsung Exynos850 SoC device tree source
+> + *
+> + * Copyright (C) 2018 Samsung Electronics Co., Ltd.
+> + * Copyright (C) 2021 Linaro Ltd.
+> + *
+> + * Samsung Exynos850 SoC device nodes are listed in this file.
+> + * Exynos based board files can include this file and provide
+> + * values for board specific bindings.
+> + */
+> +
+> +#include <dt-bindings/interrupt-controller/exynos850.h>
+> +#include <dt-bindings/clock/exynos850.h>
+> +#include "exynos850-pinctrl.dtsi"
+> +#include "exynos850-usi.dtsi"
+> +
+> +/ {
+
+Add a comment like:
+/* Also known under engineering name exynos3830 */
+
+> +	compatible = "samsung,exynos850";
+
+Undocumented compatible. Checkpatch should complain.
+
+> +	interrupt-parent = <&gic>;
+> +	#address-cells = <2>;
+> +	#size-cells = <1>;
+> +
+> +	aliases {
+> +		pinctrl0 = &pinctrl_0;
+> +		pinctrl1 = &pinctrl_1;
+> +		pinctrl2 = &pinctrl_2;
+> +		pinctrl3 = &pinctrl_3;
+> +		pinctrl4 = &pinctrl_4;
+> +		pinctrl5 = &pinctrl_5;
+> +	};
+> +
+> +	cpus {
+> +		#address-cells = <2>;
+> +		#size-cells = <0>;
+> +
+> +		cpu-map {
+> +			cluster0 {
+> +				core0 {
+> +					cpu = <&cpu0>;
+> +				};
+> +				core1 {
+> +					cpu = <&cpu1>;
+> +				};
+> +				core2 {
+> +					cpu = <&cpu2>;
+> +				};
+> +				core3 {
+> +					cpu = <&cpu3>;
+> +				};
+> +			};
+> +
+> +			cluster1 {
+> +				core0 {
+> +					cpu = <&cpu4>;
+> +				};
+> +				core1 {
+> +					cpu = <&cpu5>;
+> +				};
+> +				core2 {
+> +					cpu = <&cpu6>;
+> +				};
+> +				core3 {
+> +					cpu = <&cpu7>;
+> +				};
+> +			};
+> +		};
+> +
+> +		cpu0: cpu@0000 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a55", "arm,armv8";
+> +			reg = <0x0 0x0000>;
+
+reg = <0x0 0x0>;
+(in following places similarly)
+
+> +			enable-method = "psci";
+> +		};
+> +		cpu1: cpu@0001 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a55", "arm,armv8";
+> +			reg = <0x0 0x0001>;
+> +			enable-method = "psci";
+> +		};
+> +		cpu2: cpu@0002 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a55", "arm,armv8";
+> +			reg = <0x0 0x0002>;
+> +			enable-method = "psci";
+> +		};
+> +		cpu3: cpu@0003 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a55", "arm,armv8";
+> +			reg = <0x0 0x0003>;
+> +			enable-method = "psci";
+> +		};
+> +		cpu4: cpu@0004 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a55", "arm,armv8";
+> +			reg = <0x0 0x0100>;
+> +			enable-method = "psci";
+> +		};
+> +		cpu5: cpu@0005 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a55", "arm,armv8";
+> +			reg = <0x0 0x0101>;
+> +			enable-method = "psci";
+> +		};
+> +		cpu6: cpu@0006 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a55", "arm,armv8";
+> +			reg = <0x0 0x0102>;
+> +			enable-method = "psci";
+> +		};
+> +		cpu7: cpu@0007 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a55", "arm,armv8";
+> +			reg = <0x0 0x0103>;
+> +			enable-method = "psci";
+> +		};
+> +	};
+> +
+> +	psci {
+> +		compatible = "arm,psci-1.0";
+> +		method = "smc";
+> +	};
+> +
+> +	gic: interrupt-controller@12a00000 {
+> +		compatible = "arm,cortex-a15-gic", "arm,cortex-a9-gic";
+> +		#interrupt-cells = <3>;
+> +		#address-cells = <0>;
+> +		interrupt-controller;
+> +		reg = <0x0 0x12a01000 0x1000>,
+> +		      <0x0 0x12a02000 0x1000>,
+> +		      <0x0 0x12a04000 0x2000>,
+> +		      <0x0 0x12a06000 0x2000>;
+> +		interrupts = <GIC_PPI 9
+> +				(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+> +	};
+> +
+> +	timer {
+> +		compatible = "arm,armv8-timer";
+> +		interrupts = <GIC_PPI 13
+> +				(GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+> +			     <GIC_PPI 14
+> +				(GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+> +			     <GIC_PPI 11
+> +				(GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+> +			     <GIC_PPI 10
+> +				(GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
+> +		clock-frequency = <26000000>;
+> +		use-clocksource-only;
+> +		use-physical-timer;
+> +	};
+> +
+
+All below should be under soc node.
+
+Please don't write new DTS/DTSI from scratch but use exynos5433.dtsi as
+template/example.
+
+> +	clock: clock-controller@0x120e0000 {
+> +		compatible = "samsung,exynos850-clock";
+> +		reg = <0x0 0x120e0000 0x8000>;
+> +		#clock-cells = <1>;
+> +	};
+> +
+> +	/* ALIVE */
+> +	pinctrl_0: pinctrl@11850000 {
+> +		compatible = "samsung,exynos850-pinctrl";
+> +		reg = <0x0 0x11850000 0x1000>;
+> +		interrupts = <GIC_SPI INTREQ__ALIVE_EINT0 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT1 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT2 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT3 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT4 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT5 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT6 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT7 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT8 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT9 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT10 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT11 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT12 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT13 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT14 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT15 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT16 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT17 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT18 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT19 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT20 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT21 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT22 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT23 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT24 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT25 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT26 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT27 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT28 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT29 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT30 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI INTREQ__ALIVE_EINT31 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +		wakeup-interrupt-controller {
+> +			compatible = "samsung,exynos7-wakeup-eint";
+> +		};
+> +	};
+> +
+> +	/* CMGP */
+> +	pinctrl_1: pinctrl@11c30000 {
+> +		compatible = "samsung,exynos850-pinctrl";
+> +		reg = <0x0 0x11c30000 0x1000>;
+> +		interrupts =
+> +			<GIC_SPI INTREQ__CMGP_EXT_INTM00 IRQ_TYPE_LEVEL_HIGH>,
+> +			<GIC_SPI INTREQ__CMGP_EXT_INTM01 IRQ_TYPE_LEVEL_HIGH>,
+> +			<GIC_SPI INTREQ__CMGP_EXT_INTM02 IRQ_TYPE_LEVEL_HIGH>,
+> +			<GIC_SPI INTREQ__CMGP_EXT_INTM03 IRQ_TYPE_LEVEL_HIGH>,
+> +			<GIC_SPI INTREQ__CMGP_EXT_INTM04 IRQ_TYPE_LEVEL_HIGH>,
+> +			<GIC_SPI INTREQ__CMGP_EXT_INTM05 IRQ_TYPE_LEVEL_HIGH>,
+> +			<GIC_SPI INTREQ__CMGP_EXT_INTM06 IRQ_TYPE_LEVEL_HIGH>,
+> +			<GIC_SPI INTREQ__CMGP_EXT_INTM07 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +		wakeup-interrupt-controller {
+> +			compatible = "samsung,exynos7-wakeup-eint";
+> +		};
+> +	};
+> +
+> +	/* AUD */
+> +	pinctrl_2: pinctrl@14a60000 {
+> +		compatible = "samsung,exynos850-pinctrl";
+> +		reg = <0x0 0x14a60000 0x1000>;
+> +	};
+> +
+> +	/* HSI */
+> +	pinctrl_3: pinctrl@13430000 {
+> +		compatible = "samsung,exynos850-pinctrl";
+> +		reg = <0x0 0x13430000 0x1000>;
+> +		interrupts = <GIC_SPI INTREQ__GPIO_HSI IRQ_TYPE_LEVEL_HIGH>;
+> +	};
+> +
+> +	/* CORE */
+> +	pinctrl_4: pinctrl@12070000 {
+> +		compatible = "samsung,exynos850-pinctrl";
+> +		reg = <0x0 0x12070000 0x1000>;
+> +		interrupts = <GIC_SPI INTREQ__GPIO_CORE IRQ_TYPE_LEVEL_HIGH>;
+> +	};
+> +
+> +	/* PERI */
+> +	pinctrl_5: pinctrl@139b0000 {
+> +		compatible = "samsung,exynos850-pinctrl";
+> +		reg = <0x0 0x139b0000 0x1000>;
+> +		interrupts = <GIC_SPI INTREQ__GPIO_PERI IRQ_TYPE_LEVEL_HIGH>;
+> +	};
+> +};
+> 
+
+
+Best regards,
+Krzysztof
