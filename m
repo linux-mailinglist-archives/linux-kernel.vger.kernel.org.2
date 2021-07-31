@@ -2,131 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0ED3DC2D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 05:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20523DC2D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 05:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235958AbhGaDAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 23:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbhGaDAK (ORCPT
+        id S231511AbhGaDEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 23:04:53 -0400
+Received: from smtpbg704.qq.com ([203.205.195.105]:37614 "EHLO
+        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231285AbhGaDEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 23:00:10 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2284BC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 20:00:04 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id t21so13221846plr.13
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 20:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7zBw9j8ybMQuBdxwfQuqsf44R15K6SeWh2IGwK7jYag=;
-        b=AFeGOzugL2CydbYFfVBGXeQsERjhKiOR7cLKK9mH1vwwDKVlzEQrfLwYulqpIyTi4e
-         8t+OKJflW7gNEp3XrrsYuKxs23+p/YpIArovmBT32hzRfdFn+1LPhzfp27KCOEdl+3v5
-         LE22Hk5y+g6DFeMSX5Yx+saYUhR6PlEOPM6Kc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7zBw9j8ybMQuBdxwfQuqsf44R15K6SeWh2IGwK7jYag=;
-        b=PUiepP1fL8ApckSdX2ShH9cCbYfOhK4fyz+UnoeAHhhWQYdMBbnhuw3BtuxMA8ZJOv
-         1GF1Rl5cVB+2qPXln26KfoTb5SxYbvssqZfbWjC/GnWlXEETtmhboQt5kH7TQG3WqhiH
-         cKw5vMHTqYnSDOdv8glwnd6PaQFOMgYijjUN865yQszpfVHldk8yWXeosLJJvx+pi3c+
-         /1e+GZwQNRHN8O9nfe7yGXirMyGAKJmoi6AahFaED4K43Sa+U5mOdcfqZH5Ud2f9tP5d
-         rWtNEhpgu+Fv+UrrDWdj+0LbQcFztnUjoHKxlBlgYo96gHOeswP4QMW/KwleoPWgCOU0
-         ItTw==
-X-Gm-Message-State: AOAM533TvTNeyfbpgR8vFiHu368GC1u5EQ+haFlYDzSeRRGXcgBvza4K
-        Sj3Dn0vId+aANIRCuu8vqX+LUw==
-X-Google-Smtp-Source: ABdhPJyw54CZg0S63WEjJqxwTtP1chxHRehf4lfBegCGvCSHFX0+TM/K7LN3lD50p8VFWCNIF/ZR5w==
-X-Received: by 2002:a62:ab0a:0:b029:33b:6d08:2a45 with SMTP id p10-20020a62ab0a0000b029033b6d082a45mr5767695pff.38.1627700403643;
-        Fri, 30 Jul 2021 20:00:03 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:d273:6afe:a426:39e7])
-        by smtp.gmail.com with ESMTPSA id l14sm3825416pfd.58.2021.07.30.20.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 20:00:03 -0700 (PDT)
-From:   Brian Norris <briannorris@chromium.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, <linux-kernel@vger.kernel.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>, stable@vger.kernel.org
-Subject: [PATCH] clk: fix leak on devm_clk_bulk_get_all() unwind
-Date:   Fri, 30 Jul 2021 19:59:50 -0700
-Message-Id: <20210731025950.2238582-1-briannorris@chromium.org>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+        Fri, 30 Jul 2021 23:04:52 -0400
+X-QQ-mid: bizesmtp34t1627700679tx3105p6
+Received: from localhost.localdomain (unknown [117.152.154.62])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Sat, 31 Jul 2021 11:04:37 +0800 (CST)
+X-QQ-SSF: 0140000000200050B000B00A0000000
+X-QQ-FEAT: mrYqqQu6MtHX06+OAGTAWFBFQ7MmCD7WcfnU/eu4WLDlXI1MVsqi06CaJt8SB
+        zUBGGK3yL/+5Wb9gyf4ITJ67gVybg809QdB6/hNs6b9iXbhmwKSSCFAAc9TGAymqhNIyezR
+        NCAACa/c4ntdVChdwzQn48QudwrB0mp+ZvRR9hOVh5D4097e7ZirZNfkNbBdfzVV4m3hIcb
+        FufSraCMkUkP83kqrqEDjZBofkJNwzWoLt0B+/l+fZUKJWH7ot10DxKqRP77VgCFJoTpfZy
+        006ZP5hWIWhvGO6v48zXSIxZNDTx1U5fCpnyRvqhoBO4Hx9LGdFHNzWToKor6W2MqEyyLFJ
+        /LPPENJ1K7sevqcm1unEy3nzTFMdQ==
+X-QQ-GoodBg: 2
+From:   Hao Chen <chenhaoa@uniontech.com>
+To:     peppe.cavallaro@st.com
+Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Hao Chen <chenhaoa@uniontech.com>
+Subject: [net,v7] net: stmmac: fix 'ethtool -P' return -EBUSY
+Date:   Sat, 31 Jul 2021 11:04:36 +0800
+Message-Id: <20210731030436.24666-1-chenhaoa@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clk_bulk_get_all() allocates an array of struct clk_bulk data for us
-(unlike clk_bulk_get()), so we need to free it. Let's use the
-clk_bulk_put_all() helper.
+I want to get permanent MAC address when the card is down. And I think
+it is more convenient to get statistics in the down state by 'ethtool -S'.
+But current all of the ethool command return -EBUSY.
 
-kmemleak complains, on an RK3399 Gru/Kevin system:
+I don't think we should detect that the network card is up in '. Begin',
+which will cause that all the ethtool commands can't be used when the
+network card is down. If some ethtool commands can only be used in the
+up state, check it in the corresponding ethool OPS function is better.
+This is too rude and unreasonable.
 
-unreferenced object 0xffffff80045def00 (size 128):
-  comm "swapper/0", pid 1, jiffies 4294667682 (age 86.394s)
-  hex dump (first 32 bytes):
-    44 32 60 fe fe ff ff ff 00 00 00 00 00 00 00 00  D2`.............
-    48 32 60 fe fe ff ff ff 00 00 00 00 00 00 00 00  H2`.............
-  backtrace:
-    [<00000000742860d6>] __kmalloc+0x22c/0x39c
-    [<00000000b0493f2c>] clk_bulk_get_all+0x64/0x188
-    [<00000000325f5900>] devm_clk_bulk_get_all+0x58/0xa8
-    [<00000000175b9bc5>] dwc3_probe+0x8ac/0xb5c
-    [<000000009169e2f9>] platform_drv_probe+0x9c/0xbc
-    [<000000005c51e2ee>] really_probe+0x13c/0x378
-    [<00000000c47b1f24>] driver_probe_device+0x84/0xc0
-    [<00000000f870fcfb>] __device_attach_driver+0x94/0xb0
-    [<000000004d1b92ae>] bus_for_each_drv+0x8c/0xd8
-    [<00000000481d60c3>] __device_attach+0xc4/0x150
-    [<00000000a163bd36>] device_initial_probe+0x1c/0x28
-    [<00000000accb6bad>] bus_probe_device+0x3c/0x9c
-    [<000000001a199f89>] device_add+0x218/0x3cc
-    [<000000001bd84952>] of_device_add+0x40/0x50
-    [<000000009c658c29>] of_platform_device_create_pdata+0xac/0x100
-    [<0000000021c69ba4>] of_platform_bus_create+0x190/0x224
+I have checked the '.begin' implementation of other drivers, most of which
+support the submission of NIC driver for the first time.
+They are too old to know why '.begin' is implemented. I suspect that they
+have not noticed the usage of '.begin'.
 
-Fixes: f08c2e2865f6 ("clk: add managed version of clk_bulk_get_all")
-Cc: Dong Aisheng <aisheng.dong@nxp.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Brian Norris <briannorris@chromium.org>
+Fixes: 47dd7a540b8a ("net: add support for STMicroelectronics Ethernet
+		     controllers.")
+
+Compile-tested on arm64. Tested on an arm64 system with an on-board
+STMMAC chip.
+
+Changes v6 ... v7:
+- fix arg type error of 'dev' to 'priv->device'.
+
+Changes v5 ... v6:
+- The 4.19.90 kernel not support pm_runtime, so implemente '.begin' and
+  '.complete' again. Add return value check of pm_runtime function.
+
+Changes v4 ... v5:
+- test the '.begin' will return -13 error on my machine based on 4.19.90
+  kernel. The platform driver does not supported pm_runtime. So remove the
+  implementation of '.begin' and '.complete'.
+
+Changes v3 ... v4:
+- implement '.complete' ethtool OPS.
+
+Changes v2 ... v3:
+- add linux/pm_runtime.h head file.
+
+Changes v1 ... v2:
+- fix spell error of dev.
+
+Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
 ---
-Never mind that kmemleak appears broken on 5.14-rc3+... but I caught the
-leak on an earlier kernel.
+ .../ethernet/stmicro/stmmac/stmmac_ethtool.c  | 21 +++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
- drivers/clk/clk-devres.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c
-index be160764911b..f9d5b7334341 100644
---- a/drivers/clk/clk-devres.c
-+++ b/drivers/clk/clk-devres.c
-@@ -92,13 +92,20 @@ int __must_check devm_clk_bulk_get_optional(struct device *dev, int num_clks,
- }
- EXPORT_SYMBOL_GPL(devm_clk_bulk_get_optional);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index d0ce608b81c3..fd5b68f6bf53 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -12,8 +12,9 @@
+ #include <linux/ethtool.h>
+ #include <linux/interrupt.h>
+ #include <linux/mii.h>
+-#include <linux/phylink.h>
+ #include <linux/net_tstamp.h>
++#include <linux/phylink.h>
++#include <linux/pm_runtime.h>
+ #include <asm/io.h>
  
-+static void devm_clk_bulk_release_all(struct device *dev, void *res)
-+{
-+	struct clk_bulk_devres *devres = res;
+ #include "stmmac.h"
+@@ -410,11 +411,18 @@ static void stmmac_ethtool_setmsglevel(struct net_device *dev, u32 level)
+ 
+ }
+ 
+-static int stmmac_check_if_running(struct net_device *dev)
++static int stmmac_ethtool_begin(struct net_device *dev)
+ {
+-	if (!netif_running(dev))
+-		return -EBUSY;
+-	return 0;
++	struct stmmac_priv *priv = netdev_priv(dev);
 +
-+	clk_bulk_put_all(devres->num_clks, devres->clks);
++	return pm_runtime_resume_and_get(priv->device);
 +}
 +
- int __must_check devm_clk_bulk_get_all(struct device *dev,
- 				       struct clk_bulk_data **clks)
- {
- 	struct clk_bulk_devres *devres;
- 	int ret;
++static void stmmac_ethtool_complete(struct net_device *dev)
++{
++	struct stmmac_priv *priv = netdev_priv(dev);
++
++	pm_runtime_put(priv->device);
+ }
  
--	devres = devres_alloc(devm_clk_bulk_release,
-+	devres = devres_alloc(devm_clk_bulk_release_all,
- 			      sizeof(*devres), GFP_KERNEL);
- 	if (!devres)
- 		return -ENOMEM;
+ static int stmmac_ethtool_get_regs_len(struct net_device *dev)
+@@ -1073,7 +1081,8 @@ static int stmmac_set_tunable(struct net_device *dev,
+ static const struct ethtool_ops stmmac_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
+ 				     ETHTOOL_COALESCE_MAX_FRAMES,
+-	.begin = stmmac_check_if_running,
++	.begin = stmmac_ethtool_begin,
++	.complete = stmmac_ethtool_complete,
+ 	.get_drvinfo = stmmac_ethtool_getdrvinfo,
+ 	.get_msglevel = stmmac_ethtool_getmsglevel,
+ 	.set_msglevel = stmmac_ethtool_setmsglevel,
 -- 
-2.32.0.554.ge1b32706d8-goog
+2.20.1
+
+
 
