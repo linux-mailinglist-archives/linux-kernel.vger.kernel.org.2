@@ -2,95 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD05D3DC5FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 14:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4194C3DC601
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 14:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbhGaMk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 08:40:59 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:55296
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232692AbhGaMk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 08:40:57 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 753DA3F0A8;
-        Sat, 31 Jul 2021 12:40:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627735249;
-        bh=WmppQV2MYziB7/h7Q9+1v9o0+Fs4+5hGMgdCIXdYWlE=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version:Content-Type;
-        b=wBgNYQm0hDv5l3lbaflmQrk2gx4/xLXmvgoKToO/EQ2eXXfXsFsqJO+9k/xFAgK5Y
-         OXli37WVFc1ew44JhiLeGwTCLezOOaZgJ1U7/jYBCuhXQ8pqOpvo7nPF0zKwPtiN+b
-         SwPuvFk258yapl4rqqJ8BjaTtZi/c4lRMtsZD49tXm0xO3UMxF4AsZHWU/TPxCwNIR
-         dT1nd2YBlzDuXk43T7esgwymw6zrViog60XHzkKYovAwX/yWQEG6QcToXSZmJSyrA2
-         gzMSS03Zl4LtmN1ZKsjlHtiafiZ1rBROa12etRyfQgWgYGe6VMRM2WKPN80F2rQPxB
-         W2Gz31QLcJW6Q==
-From:   Colin King <colin.king@canonical.com>
-To:     Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] rtlwifi: rtl8192de:  make arrays static const, makes object smaller
-Date:   Sat, 31 Jul 2021 13:40:44 +0100
-Message-Id: <20210731124044.101927-2-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210731124044.101927-1-colin.king@canonical.com>
-References: <20210731124044.101927-1-colin.king@canonical.com>
+        id S232692AbhGaMuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 08:50:54 -0400
+Received: from smtpbg604.qq.com ([59.36.128.82]:38309 "EHLO smtpbg604.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229683AbhGaMuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 08:50:52 -0400
+X-QQ-mid: bizesmtp53t1627735842tkg0sl5p
+Received: from ficus.lan (unknown [171.223.99.141])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Sat, 31 Jul 2021 20:50:40 +0800 (CST)
+X-QQ-SSF: 01000000002000B0C000B00A0000000
+X-QQ-FEAT: HxmgvvJ9MVvfJ0xJIrY5p3zqOJ6/4wtJkKz+W5k4F9MJGo9gCkqvg3XvBHxGt
+        wDGvygWcxTtF25Azs2rRu9PyK1AnIy4+WFCNv8YAY+UyL+PKQy7re2+h3TYO4DbWuDzBst+
+        4GR/pACxEdEQhB0SyJ2ZefP7xhRGpS/l2gugdIROFBPfDkchB/iQos1LW1rcuJlTy3/pShC
+        5jqXEzWFKwBVWvqwcA/gbRuQH5cIoqxheiRqAvG96j3mGWoRedjUBYbD7bghqlM29Y5MbDn
+        aaYbHAgEjxqwFpDKne7Yz9MCNFeFv90WdLs99zsU+GIsPEdxCaKd4KYnDT/jBkDT8BCQogV
+        JS4YgSOUYhQWFQpn/4=
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] fs: use 'unsigned int' instead of bare 'unsigned'
+Date:   Sat, 31 Jul 2021 20:50:27 +0800
+Message-Id: <20210731125027.404300-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Prefer 'unsigned int' to bare use of 'unsigned'.
 
-Don't populate arrays the stack but instead make them static const
-Makes the object code smaller by 852 bytes.
-
-Before:
-   text	   data	    bss	    dec	    hex	filename
- 128211	  44250	   1024	 173485	  2a5ad	../realtek/rtlwifi/rtl8192de/phy.o
-
-After:
-   text	   data	    bss	    dec	    hex	filename
- 127199	  44410	   1024	 172633	  2a259	../realtek/rtlwifi/rtl8192de/phy.o
-
-(gcc version 10.2.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/dcache.c | 75 ++++++++++++++++++++++++++++-------------------------
+ 1 file changed, 39 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-index 4eaa40d73baf..79956254f798 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-@@ -1354,7 +1354,7 @@ static void _rtl92d_phy_switch_rf_setting(struct ieee80211_hw *hw, u8 channel)
+diff --git a/fs/dcache.c b/fs/dcache.c
+index cf871a81f4fd..b8feea90df43 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -193,7 +193,8 @@ int proc_nr_dentry(struct ctl_table *table, int write, void *buffer,
+  * In contrast, 'ct' and 'tcount' can be from a pathname, and do
+  * need the careful unaligned handling.
+  */
+-static inline int dentry_string_cmp(const unsigned char *cs, const unsigned char *ct, unsigned tcount)
++static inline int dentry_string_cmp(const unsigned char *cs,
++		const unsigned char *ct, unsigned int tcount)
+ {
+ 	unsigned long a,b,mask;
  
- u8 rtl92d_get_rightchnlplace_for_iqk(u8 chnl)
+@@ -216,7 +217,8 @@ static inline int dentry_string_cmp(const unsigned char *cs, const unsigned char
+ 
+ #else
+ 
+-static inline int dentry_string_cmp(const unsigned char *cs, const unsigned char *ct, unsigned tcount)
++static inline int dentry_string_cmp(const unsigned char *cs,
++		const unsigned char *ct, unsigned int tcount)
  {
--	u8 channel_all[59] = {
-+	static const u8 channel_all[59] = {
- 		1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
- 		36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58,
- 		60, 62, 64, 100, 102, 104, 106, 108, 110, 112,
-@@ -3220,7 +3220,7 @@ void rtl92d_phy_config_macphymode_info(struct ieee80211_hw *hw)
- u8 rtl92d_get_chnlgroup_fromarray(u8 chnl)
+ 	do {
+ 		if (*cs != *ct)
+@@ -230,7 +232,8 @@ static inline int dentry_string_cmp(const unsigned char *cs, const unsigned char
+ 
+ #endif
+ 
+-static inline int dentry_cmp(const struct dentry *dentry, const unsigned char *ct, unsigned tcount)
++static inline int dentry_cmp(const struct dentry *dentry,
++		const unsigned char *ct, unsigned int tcount)
  {
- 	u8 group;
--	u8 channel_info[59] = {
-+	static const u8 channel_info[59] = {
- 		1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
- 		36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56,
- 		58, 60, 62, 64, 100, 102, 104, 106, 108,
+ 	/*
+ 	 * Be careful about RCU walk racing with rename:
+@@ -270,7 +273,7 @@ static void __d_free(struct rcu_head *head)
+ {
+ 	struct dentry *dentry = container_of(head, struct dentry, d_u.d_rcu);
+ 
+-	kmem_cache_free(dentry_cache, dentry); 
++	kmem_cache_free(dentry_cache, dentry);
+ }
+ 
+ static void __d_free_external(struct rcu_head *head)
+@@ -313,9 +316,9 @@ EXPORT_SYMBOL(release_dentry_name_snapshot);
+ 
+ static inline void __d_set_inode_and_type(struct dentry *dentry,
+ 					  struct inode *inode,
+-					  unsigned type_flags)
++					  unsigned int type_flags)
+ {
+-	unsigned flags;
++	unsigned int flags;
+ 
+ 	dentry->d_inode = inode;
+ 	flags = READ_ONCE(dentry->d_flags);
+@@ -326,7 +329,7 @@ static inline void __d_set_inode_and_type(struct dentry *dentry,
+ 
+ static inline void __d_clear_type_and_inode(struct dentry *dentry)
+ {
+-	unsigned flags = READ_ONCE(dentry->d_flags);
++	unsigned int flags = READ_ONCE(dentry->d_flags);
+ 
+ 	flags &= ~(DCACHE_ENTRY_TYPE | DCACHE_FALLTHRU);
+ 	WRITE_ONCE(dentry->d_flags, flags);
+@@ -840,7 +843,7 @@ static inline bool fast_dput(struct dentry *dentry)
+ }
+ 
+ 
+-/* 
++/*
+  * This is dput
+  *
+  * This is complicated by the fact that we do not want to put
+@@ -859,7 +862,7 @@ static inline bool fast_dput(struct dentry *dentry)
+ 
+ /*
+  * dput - release a dentry
+- * @dentry: dentry to release 
++ * @dentry: dentry to release
+  *
+  * Release a dentry. This will drop the usage count and if appropriate
+  * call the dentry unlink method as well as removing it from the queues and
+@@ -932,7 +935,7 @@ struct dentry *dget_parent(struct dentry *dentry)
+ {
+ 	int gotref;
+ 	struct dentry *ret;
+-	unsigned seq;
++	unsigned int seq;
+ 
+ 	/*
+ 	 * Do optimistic parent lookup without any
+@@ -1325,7 +1328,7 @@ static void d_walk(struct dentry *parent, void *data,
+ {
+ 	struct dentry *this_parent;
+ 	struct list_head *next;
+-	unsigned seq = 0;
++	unsigned int seq = 0;
+ 	enum d_walk_ret ret;
+ 	bool retry = true;
+ 
+@@ -1734,7 +1737,7 @@ EXPORT_SYMBOL(d_invalidate);
+  * available. On a success the dentry is returned. The name passed in is
+  * copied and the copy passed in may be reused after this call.
+  */
+- 
++
+ static struct dentry *__d_alloc(struct super_block *sb, const struct qstr *name)
+ {
+ 	struct dentry *dentry;
+@@ -1761,14 +1764,14 @@ static struct dentry *__d_alloc(struct super_block *sb, const struct qstr *name)
+ 						  GFP_KERNEL_ACCOUNT |
+ 						  __GFP_RECLAIMABLE);
+ 		if (!p) {
+-			kmem_cache_free(dentry_cache, dentry); 
++			kmem_cache_free(dentry_cache, dentry);
+ 			return NULL;
+ 		}
+ 		atomic_set(&p->u.count, 1);
+ 		dname = p->name;
+ 	} else  {
+ 		dname = dentry->d_iname;
+-	}	
++	}
+ 
+ 	dentry->d_name.len = name->len;
+ 	dentry->d_name.hash = name->hash;
+@@ -1932,9 +1935,9 @@ void d_set_fallthru(struct dentry *dentry)
+ }
+ EXPORT_SYMBOL(d_set_fallthru);
+ 
+-static unsigned d_flags_for_inode(struct inode *inode)
++static unsigned int d_flags_for_inode(struct inode *inode)
+ {
+-	unsigned add_flags = DCACHE_REGULAR_TYPE;
++	unsigned int add_flags = DCACHE_REGULAR_TYPE;
+ 
+ 	if (!inode)
+ 		return DCACHE_MISS_TYPE;
+@@ -1969,7 +1972,7 @@ static unsigned d_flags_for_inode(struct inode *inode)
+ 
+ static void __d_instantiate(struct dentry *dentry, struct inode *inode)
+ {
+-	unsigned add_flags = d_flags_for_inode(inode);
++	unsigned int add_flags = d_flags_for_inode(inode);
+ 	WARN_ON(d_in_lookup(dentry));
+ 
+ 	spin_lock(&dentry->d_lock);
+@@ -2000,7 +2003,7 @@ static void __d_instantiate(struct dentry *dentry, struct inode *inode)
+  * (or otherwise set) by the caller to indicate that it is now
+  * in use by the dcache.
+  */
+- 
++
+ void d_instantiate(struct dentry *entry, struct inode * inode)
+ {
+ 	BUG_ON(!hlist_unhashed(&entry->d_u.d_alias));
+@@ -2055,7 +2058,7 @@ static struct dentry *__d_instantiate_anon(struct dentry *dentry,
+ 					   bool disconnected)
+ {
+ 	struct dentry *res;
+-	unsigned add_flags;
++	unsigned int add_flags;
+ 
+ 	security_d_instantiate(dentry, inode);
+ 	spin_lock(&inode->i_lock);
+@@ -2210,7 +2213,7 @@ struct dentry *d_add_ci(struct dentry *dentry, struct inode *inode,
+ 		if (!found) {
+ 			iput(inode);
+ 			return ERR_PTR(-ENOMEM);
+-		} 
++		}
+ 	}
+ 	res = d_splice_alias(inode, found);
+ 	if (res) {
+@@ -2267,7 +2270,7 @@ static inline bool d_same_name(const struct dentry *dentry,
+  */
+ struct dentry *__d_lookup_rcu(const struct dentry *parent,
+ 				const struct qstr *name,
+-				unsigned *seqp)
++				unsigned int *seqp)
+ {
+ 	u64 hashlen = name->hash_len;
+ 	const unsigned char *str = name->name;
+@@ -2296,7 +2299,7 @@ struct dentry *__d_lookup_rcu(const struct dentry *parent,
+ 	 * See Documentation/filesystems/path-lookup.txt for more details.
+ 	 */
+ 	hlist_bl_for_each_entry_rcu(dentry, node, b, d_hash) {
+-		unsigned seq;
++		unsigned int seq;
+ 
+ seqretry:
+ 		/*
+@@ -2363,7 +2366,7 @@ struct dentry *__d_lookup_rcu(const struct dentry *parent,
+ struct dentry *d_lookup(const struct dentry *parent, const struct qstr *name)
+ {
+ 	struct dentry *dentry;
+-	unsigned seq;
++	unsigned int seq;
+ 
+ 	do {
+ 		seq = read_seqbegin(&rename_lock);
+@@ -2419,7 +2422,7 @@ struct dentry *__d_lookup(const struct dentry *parent, const struct qstr *name)
+ 	 * See Documentation/filesystems/path-lookup.txt for more details.
+ 	 */
+ 	rcu_read_lock();
+-	
++
+ 	hlist_bl_for_each_entry_rcu(dentry, node, b, d_hash) {
+ 
+ 		if (dentry->d_name.hash != hash)
+@@ -2482,7 +2485,7 @@ EXPORT_SYMBOL(d_hash_and_lookup);
+  * it from the hash queues and waiting for
+  * it to be deleted later when it has no users
+  */
+- 
++
+ /**
+  * d_delete - delete a dentry
+  * @dentry: The dentry to delete
+@@ -2490,7 +2493,7 @@ EXPORT_SYMBOL(d_hash_and_lookup);
+  * Turn the dentry into a negative dentry if possible, otherwise
+  * remove it from the hash queues so it can be deleted later
+  */
+- 
++
+ void d_delete(struct dentry * dentry)
+ {
+ 	struct inode *inode = dentry->d_inode;
+@@ -2526,7 +2529,7 @@ static void __d_rehash(struct dentry *entry)
+  *
+  * Adds a dentry to the hash according to its name.
+  */
+- 
++
+ void d_rehash(struct dentry * entry)
+ {
+ 	spin_lock(&entry->d_lock);
+@@ -2535,18 +2538,18 @@ void d_rehash(struct dentry * entry)
+ }
+ EXPORT_SYMBOL(d_rehash);
+ 
+-static inline unsigned start_dir_add(struct inode *dir)
++static inline unsigned int start_dir_add(struct inode *dir)
+ {
+ 
+ 	for (;;) {
+-		unsigned n = dir->i_dir_seq;
++		unsigned int n = dir->i_dir_seq;
+ 		if (!(n & 1) && cmpxchg(&dir->i_dir_seq, n, n + 1) == n)
+ 			return n;
+ 		cpu_relax();
+ 	}
+ }
+ 
+-static inline void end_dir_add(struct inode *dir, unsigned n)
++static inline void end_dir_add(struct inode *dir, unsigned int n)
+ {
+ 	smp_store_release(&dir->i_dir_seq, n + 2);
+ }
+@@ -2574,7 +2577,7 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
+ 	struct hlist_bl_node *node;
+ 	struct dentry *new = d_alloc(parent, name);
+ 	struct dentry *dentry;
+-	unsigned seq, r_seq, d_seq;
++	unsigned int seq, r_seq, d_seq;
+ 
+ 	if (unlikely(!new))
+ 		return ERR_PTR(-ENOMEM);
+@@ -2695,7 +2698,7 @@ EXPORT_SYMBOL(__d_lookup_done);
+ static inline void __d_add(struct dentry *dentry, struct inode *inode)
+ {
+ 	struct inode *dir = NULL;
+-	unsigned n;
++	unsigned int n;
+ 	spin_lock(&dentry->d_lock);
+ 	if (unlikely(d_in_lookup(dentry))) {
+ 		dir = dentry->d_parent->d_inode;
+@@ -2703,7 +2706,7 @@ static inline void __d_add(struct dentry *dentry, struct inode *inode)
+ 		__d_lookup_done(dentry);
+ 	}
+ 	if (inode) {
+-		unsigned add_flags = d_flags_for_inode(inode);
++		unsigned int add_flags = d_flags_for_inode(inode);
+ 		hlist_add_head(&dentry->d_u.d_alias, &inode->i_dentry);
+ 		raw_write_seqcount_begin(&dentry->d_seq);
+ 		__d_set_inode_and_type(dentry, inode, add_flags);
+@@ -2860,7 +2863,7 @@ static void __d_move(struct dentry *dentry, struct dentry *target,
+ {
+ 	struct dentry *old_parent, *p;
+ 	struct inode *dir = NULL;
+-	unsigned n;
++	unsigned int n;
+ 
+ 	WARN_ON(!dentry->d_inode);
+ 	if (WARN_ON(dentry == target))
+@@ -3117,11 +3120,11 @@ EXPORT_SYMBOL(d_splice_alias);
+  * Returns false otherwise.
+  * Caller must ensure that "new_dentry" is pinned before calling is_subdir()
+  */
+-  
++
+ bool is_subdir(struct dentry *new_dentry, struct dentry *old_dentry)
+ {
+ 	bool result;
+-	unsigned seq;
++	unsigned int seq;
+ 
+ 	if (new_dentry == old_dentry)
+ 		return true;
 -- 
-2.31.1
+2.32.0
 
