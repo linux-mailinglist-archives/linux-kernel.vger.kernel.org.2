@@ -2,144 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EA13DC1D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF433DC1E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 02:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234289AbhGaAMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 20:12:54 -0400
-Received: from mail-bn8nam08on2098.outbound.protection.outlook.com ([40.107.100.98]:42464
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231355AbhGaAMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 20:12:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=krHq3RwMu8liBmw/5R7EyA858u67QSfJ45M0llbIVYJva8Axqlfmw4mOziGjkaE6t0eNW/x6BhnHpGuYg6ld667oyQ32sE5gZQu7+RGdjLugO56dzdUcdwv9Hv6FGhOwZXUFudP+Xa4MMpNR8akRbrwroJHdZeUe6SGUv2TRr8hcdJfRqMlsKZYgJ2tgM7xFHdaDBROyr1+6UiwV1Gag5esfn1WDq5dDLciXQQl6LLXge8P8+6OmAd5++bUzohb3J7hpyjpb/9kShg4kPoqo3h94QsUaVl37kIrMlc9MkWi4AsvZyeWavannPCtZPACaPb7P4anhXwcNQRBih6UtNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u5oDjnR9JBhd+RUTMlhuAxhatuwcwuKB3B6XT7XDZz8=;
- b=AufLw1SIO4nKYlrkrXWXr0uMi6qMPysgm2CI67GSVrfC8rzRJNUCgJfyG1xJnUrqWsS27JxehRbnk0zObJBmVSZM+rMf13meRdUnA9Sfqk+CapLEqUi0/gzqW9Gd1lIyod4pxTRpZknI2ZS2aTtE5gxWLYGHabdppEUA70m+V2luZv+8VKXMn4c1+VrPY0FslG5bt1zFrbU1JrmsIf1ua6m9Hz3Farr7+IoZW0AjxxsV7W6X0/7t0BJYKMJf5/izJA9q68hkiCIjLMiJawQbYkepM0Rax12OKG2GtE56Rm8lCKXYpFjdY2sALyaXRSLblJEDOl5pBmcbeW9vZodg9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u5oDjnR9JBhd+RUTMlhuAxhatuwcwuKB3B6XT7XDZz8=;
- b=ZvxmzqGxUA6Lf0Lwd194xMvo0DBGL6qiDicF89MHQcZp9jVj+qk3oZ89wKUfJNrURUWuEMOBoY1qLvqpjM0M7h3xC0ZokQDpNqg3j7y6Xr47gSMcc8U9xMfYvpAjLu0LPeuX27dQD5K2NzIz480V/QhlK4KWoi7AQWN7J7aGPWQ=
-Received: from MW4PR21MB2002.namprd21.prod.outlook.com (2603:10b6:303:68::18)
- by MW2PR2101MB1130.namprd21.prod.outlook.com (2603:10b6:302:4::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.2; Sat, 31 Jul
- 2021 00:12:45 +0000
-Received: from MW4PR21MB2002.namprd21.prod.outlook.com
- ([fe80::292a:eeea:ee64:3f51]) by MW4PR21MB2002.namprd21.prod.outlook.com
- ([fe80::292a:eeea:ee64:3f51%4]) with mapi id 15.20.4394.012; Sat, 31 Jul 2021
- 00:12:45 +0000
-From:   Sunil Muthuswamy <sunilmut@microsoft.com>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
-        "nunodasneves@linux.microsoft.com" <nunodasneves@linux.microsoft.com>
-Subject: RE: [PATCH v4] hyperv: root partition faults writing to VP ASSIST MSR
- PAGE
-Thread-Topic: [PATCH v4] hyperv: root partition faults writing to VP ASSIST
- MSR PAGE
-Thread-Index: AQHXhWXjNWmxIS5YjUS2UQiuiH/FdKtcNdJw
-Date:   Sat, 31 Jul 2021 00:12:45 +0000
-Message-ID: <MW4PR21MB200206D615DEE60044B1F0A6C0ED9@MW4PR21MB2002.namprd21.prod.outlook.com>
-References: <20210730171056.2820-1-kumarpraveen@linux.microsoft.com>
-In-Reply-To: <20210730171056.2820-1-kumarpraveen@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 54600535-a7e4-4d82-4869-08d953b7ec16
-x-ms-traffictypediagnostic: MW2PR2101MB1130:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW2PR2101MB1130CE74E4CBD2BEC472AF06C0ED9@MW2PR2101MB1130.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Icg+yLD9ZreM4dxLn9GOHyOcG8PVUIzB6E8jYNuJXxlUcvOHW8QwlPkmVJGHq16Bn+yeMkxgmoWvDlP2aoVTd7sHoPrrFYoMFAWb5vsIpYzIvKP/hG2IDBSi+M+WgASQ/Ob5jI2dCucvocqiIfdY2wS0VQffAlqSM7iU4I4AYzTQpiTJchsHCCipVdot69jbUxUlpqbRMHY99BXM+8XfG6vfbiMUgBC1/vcmO7/bOthhwbd5An+50xdFU79twHJa1tVemYiPlKYNBs0L22Cx+M79bYDWEkXAtE8SiQD6jTK9oyURv2ce0lMJewDIDISTqxQ8hmQ+sfk+fS+ItbLG2D+3rSBF2CfGIP3XQ3bS3qyxIMs1C5SjR4fBj116ErlDxfWKQAQ0azo1k12F02Cq2B21xiVSsMBxAbB441OGinc/KV95vGR/Nqmg6bHjs6cWcIXgNaT1ShSgG+UNkglOuGn+EONBq8OcxcLB/0PHr0K+Q0DUxy+8hN21BBonUwnL6n0cN+TMLKxAD++ClPSZvMw/vOsur27t3y+XxhVZnSz5fsTxUOSaF+Q5qz00v7ca9lkzxOv5/HwNLQQ98TIA3GpkEUT4tTujM4cpClWrc0A3yE8r0kxETzoVfH6zi1+bpTa3Nmgrp63t6gj0Ts19hpi+VoBa5vCKgvJuUoY5ab8VhsoSTNGQr3VCnd4W8IIygNDs2xhjgADII6Z1oEYWRQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB2002.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(9686003)(107886003)(6506007)(66946007)(316002)(38070700005)(55016002)(38100700002)(71200400001)(52536014)(54906003)(122000001)(76116006)(10290500003)(7696005)(2906002)(64756008)(8676002)(66446008)(66556008)(5660300002)(4326008)(508600001)(26005)(186003)(86362001)(4744005)(8990500004)(33656002)(66476007)(110136005)(8936002)(82960400001)(82950400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?YydDI7CuETu+Jz7ouGO34aFlu3fqcFnCMXi3s1q3//od13Z8dNZbw8kXSq0y?=
- =?us-ascii?Q?AOiao7QZiPHTnsVefe5wyyxF77z8PugwAPeZNluA/QObVGW7xm3t2XJK3k+u?=
- =?us-ascii?Q?MK6u/L/KXXlc3sKbeLP78muj6QS8Db+NhMDpjSNNywWwYHDTZC9eBh2K+efb?=
- =?us-ascii?Q?IUK67CZuBFnT8l4UTxLA4Owbh50MWEvmQKJoRkNbwPMwNmetz14RBibFpPRo?=
- =?us-ascii?Q?cJnBWPI1VE+iLplH89tCkiua4V1WHkglRdhxGKUiGI034seKWUaveiOkdH6G?=
- =?us-ascii?Q?x0KPI++D69muVir+S+P7S40AMr7IOC1rWzAhJ3Ph6JYyenYytUfUTi0CiU9q?=
- =?us-ascii?Q?F7wVxZTwY+CTSg6PCCw6k0//WFlRV/5OtkazK7oAtyh3WmFwrzCg1L9Mxjwx?=
- =?us-ascii?Q?UO89Ee2eDPodG6XzyvSl/cYbFneYl3liaxxu21hOfxE3oHAIdsCrOv+1o6GI?=
- =?us-ascii?Q?2+CWrxVu/OwXjAlYMAr4MzEIb2itBnpaTxYmwu37D9Phj+nADfBwvuuyefsI?=
- =?us-ascii?Q?QrkEhFsuD8w56SL1RA7+YUwhMZTeLbW7wwXLwTXW6j5EZYygOICx6v5kZUzZ?=
- =?us-ascii?Q?Ra8h8wxltAN7mSmLFT67+Ci0CRQ68V36GWsrPxnJCx1eeH6E/l2HN9OMAozl?=
- =?us-ascii?Q?rWqB75B93UElzlnO0C10CL9JC5tvCXSWP0Qi/2qeqX8wGhYOug4oAPUTyN65?=
- =?us-ascii?Q?uJwoCSI5GtIltsb3zeUfdgU/kyRyQ9jQBTLJa131+QXSBFalE7wjMdWq0dOH?=
- =?us-ascii?Q?QcRqRfn1+wgW9QJrjHA2WP288vDEq4hJ613IYFfcPqX9SshAAugapZ/KZRbl?=
- =?us-ascii?Q?tVrl4G4tz5fMLvR8EsxfNdsUc2ZNZ85Zs+0Rm/iB30qbujR+hGlUd4G2QcG3?=
- =?us-ascii?Q?ggdXi2vPOI7+xyXqyn3Gm9cRuszVNQhl4bExwRSYtVKKYlviciUJTJpDy7Te?=
- =?us-ascii?Q?dd4IYG9kcT28Qj1ToAQM1pLYQzYC4eUwKXpTaubtA3+FYd+pJAkuwHM96B+t?=
- =?us-ascii?Q?bNu2A9AHQvPSsUyCwiTEU+MUqn8/kp/ihz9WCx1KIoXAQ4x76tSOvDvEmjef?=
- =?us-ascii?Q?tdUvHRhPt9DwKOGwDyX1hH0T+Ib/VBcmJsBjwyV/Tt7AOzL5te/o+FJe1mli?=
- =?us-ascii?Q?PIvb9rv6feUkfTopiCqaKQIKFyr2NKvkiE0Qf15d+ZgoWHcAmuuZaWn9JvCO?=
- =?us-ascii?Q?ydTYABUyrA1/52E8QE3gsSjLyHp7EKj9WjlQJ5gf9c9G5korrpEL9saLpo2c?=
- =?us-ascii?Q?Nr2el3c0/izYUu/vWuA06CwxmJLWGiZdQgzzP8t8vFKu4Jkn/uFxJ+WzYVhS?=
- =?us-ascii?Q?dso=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234851AbhGaAPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 20:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234326AbhGaAPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 20:15:44 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58354C06175F;
+        Fri, 30 Jul 2021 17:15:39 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso23136949pjb.1;
+        Fri, 30 Jul 2021 17:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=uOoMY7WWDtNHWPPws89NRO9ZDQL/9B+g8377URwZYtc=;
+        b=hdlTI/OBcexMUhSBLXOqQuJtkf3tBiQXFjCJpIzJzVU9cea4tlrknRorGMvWXkf4+B
+         1Dxz0/4fd37oA6HPCka/Pf5fvWYhRHpYT/Nc4YV/MK4MQ7DU5ARqOsrRkQs0q/I+kkti
+         TJQY9NKJu95D4gBRyRuH/SUxSQYfnXcPMukP+KXGFr4MECPbTLauVS7Nwe6b+XcYnRtB
+         FMieL+vlBcCi1rZROA/Fna0dCQkCVxB+rMpggOVeH5N+KPzLUMH0u2SeYVGFHPQxxuFZ
+         gKTvPSTZPoq0pfVbdbUo/iAIg/J7+s99pi1E9P2oqMrcsFk9VzN8D1XHwL5jRtPel/SX
+         GGNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=uOoMY7WWDtNHWPPws89NRO9ZDQL/9B+g8377URwZYtc=;
+        b=C55XT9szBt49RoXjoEGPHzCgLUWfEThDq3UsBMuZvwW+UAB6VOB+U53rcBNSGSKl2f
+         tsff7b5IEvXm3W/0oUMskPLbbLCXPvhi2gdkdhqRGEy6f1IWnY+J4xOzWkWUhZI0hp/9
+         pRGTpp/unM+kqaJa8ST088izlES5K7ozTe2DKLhYhOvJA1KxxZxKK1jGS7J1Z1QaQNXb
+         InbfYYsckJ5ob0uQq+mENaJIn70UTZ3DAN6UsCjeNpP9xlsuE7jr0SrwJLUw+sd24MTf
+         6/VuT6hkO95nA/YTvKINJn0YtmcX0BWDCp94ZZgfYAhH+pI1U8mvchgVbR2G+oGGoal8
+         PRRQ==
+X-Gm-Message-State: AOAM532UfPQcJOp2BS2woor9t5PC8Yye+gj6vEXlxWvD/jTF2LAzXjdf
+        sRGMH0FvN+BFOMiBmbhKBGE=
+X-Google-Smtp-Source: ABdhPJz/4BtbHd4PqKJR8l42KuGXJcERiKA/KFOkdQ/54G7PBpEMORFR6/0fdd3V2CY2miHcckTvOg==
+X-Received: by 2002:a63:1d21:: with SMTP id d33mr3466027pgd.340.1627690538888;
+        Fri, 30 Jul 2021 17:15:38 -0700 (PDT)
+Received: from localhost.localdomain ([1.145.37.91])
+        by smtp.gmail.com with ESMTPSA id 5sm3686420pfp.154.2021.07.30.17.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 17:15:38 -0700 (PDT)
+Date:   Sat, 31 Jul 2021 10:15:31 +1000
+From:   "G. Branden Robinson" <g.branden.robinson@gmail.com>
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        landlock@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-man@vger.kernel.org, linux-security-module@vger.kernel.org,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: [PATCH v2 1/4] landlock.7: Add a new page to introduce Landlock
+Message-ID: <20210731001529.ggiknccl74akaahk@localhost.localdomain>
+References: <20210712155745.831580-1-mic@digikod.net>
+ <20210712155745.831580-2-mic@digikod.net>
+ <3f1b943b-2477-2c4e-c835-d6616888176c@gmail.com>
+ <c5036c5c-37a1-57d2-e5dc-1f41a5ed0d31@digikod.net>
+ <a3b271e6-e03f-dab8-b04c-c76315cdd98e@gmail.com>
+ <1a698059-d9dd-5aa0-2765-42e704c3a697@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB2002.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54600535-a7e4-4d82-4869-08d953b7ec16
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2021 00:12:45.4131
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: t/7dsbAhcmuJLt5pif/6g6wxK1e1I6E2B3OriRMz1O6huu9rafo3Z67wnmeS2eVjfXA+6dYcM58n7phGkNC6wn9IFyV0OzC/y33kfFnJ5fY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1130
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ehsdumg7eeutkyzw"
+Content-Disposition: inline
+In-Reply-To: <1a698059-d9dd-5aa0-2765-42e704c3a697@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  	hv_common_cpu_die(cpu);
+
+--ehsdumg7eeutkyzw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi, Alex!
+
+At 2021-07-30T14:59:52+0200, Alejandro Colomar (man-pages) wrote:
+> Yes, they were because of semantic newlines.
 >=20
-> -	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
-> -		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
-> +	if (hv_vp_assist_page && hv_vp_assist_page[cpu]) {
-> +		union hv_vp_assist_msr_contents msr =3D {0};
-> +		if (hv_root_partition) {
-> +			/*
-> +			 * For Root partition the VP ASSIST page is mapped to
-> +			 * hypervisor provided page, and thus, we unmap the
-> +			 * page here and nullify it, so that in future we have
-> +			 * correct page address mapped in hv_cpu_init.
-> +			 */
-> +			memunmap(hv_vp_assist_page[cpu]);
-> +			hv_vp_assist_page[cpu] =3D NULL;
-> +			rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
+> The "rules" are:
+>=20
+> Follow mainly "semantic newlines" style (forgetting about the line
+> length), which will give you a text that (mostly) fits into 75 or 80
+> columns.
+>=20
+> If after doing that there are some lines that exceed the 75 or 80
+> column right margin, consider fixing that line by breaking it at a
+> different point or maybe breaking it further.  The 80 column limit is
+> a hard limit (I can't read anything past the 80 col), while the 75
+> limit is a bit softer (that's for allowing quotes in reviews) (if
+> fitting a line into col 75 would break it in a weird way, don't do
+> it).
+>=20
+> If I didn't explain myself enough, please tell me.
 
-If the vp assist page was previously enabled for root, it will continue to =
-stay enabled
-when you 'wrmsr' below. We need to explicitly set the enable bit to 0.
+I'm a little puzzled by the above.  Semantic newlines have little to do
+with the output line length in *roff systems.  They arose due to a Bell
+Labs Unix Room practice, popularized by Brian Kernighan.  Brandon Rhodes
+has a backgrounder on this[1].
 
-> +		}
-> +		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-> +	}
+Man pages tend to be really flexible with respect to output line length.
+This is one reason the groff man macros expose a user-settable LL
+register.  The main limitations on line length are people using tbl(1)
+tables or disabling filling (with the .nf request or in .EX/.EE
+examples).  Another limitation is that as lines get shorter, it becomes
+hard to set the page headers and footers without them overlapping.
+
+For the first two points there is not much the macro package can do;
+both tbl(1) and filling disablement leave the placement of line breaks
+in the hands of the document author, and they can abuse that power by
+"oversetting" a line; that is, making it longer than the configured line
+length.
+
+The third point is a problem the macro package can overcome with some
+effort, by measuring the lengths of the components that go into a header
+or footer an abbreviating them.  This is not a theoretical concern;
+Erlang supplies some man pages with insanely long names[2], and you can
+see the problem in footers today on the man-pages site for any page
+groff ships, because Michael pulls from our Git repository (to my great
+relief, because I fix documentation errors and make other improvements
+all the time) and our version identifier has gotten crazily long because
+we're on the order of one thousand commits since the last release
+candidate, and gnulib's git-version-gen uses release tags, commit count
+since the tag, _and_ an abbreviated commit ID to generate the version
+string.  For my tree right now that's "1.23.0.rc1.999-7ae6d".
+
+Here's a specimen of how that works out in a rendered page:
+<https://man7.org/linux/man-pages/man1/neqn.1.html> (scroll to the
+bottom).
+
+I've fixed the problem for long page names for the next groff release,
+but it involved some string-manipulation gymnastics[3].  I haven't yet
+factored those out into their own (private) macro which I can also call
+when preparing the page footer.
+
+Regards,
+Branden
+
+[1] https://rhodesmill.org/brandon/2012/one-sentence-per-line/
+[2] CosNotifyChannelAdmin_StructuredProxyPushSupplier(3erl)
+[3] https://git.savannah.gnu.org/cgit/groff.git/commit/?id=3Db7f38e8a1d698e=
+1078d7c215d08fde57d8e919b9
+
+--ehsdumg7eeutkyzw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEh3PWHWjjDgcrENwa0Z6cfXEmbc4FAmEElhkACgkQ0Z6cfXEm
+bc5viQ//aiYP1xMIvvGAd9x6UiXqZvwslItd2+qKgtJyFKCUjwggKlenPpewgt5b
+Qsjc4qLJ57yXFre0kFel/Dy3MqBROWdcILWDjxD7HY6Q92nquR+kZ4YkWGqdsnTd
+QwsxcFcYrtpBj/NfScfdNqkdxOG3odXSX4MK5HFB3Kf1/V/0AN99uSqQImm1WkiJ
+2o6SHEbxsRmNOJB7tn1sQZQiSEgObrVpMfGXOevDma+6vma+2R/rykc7wq6W89Jp
+7uVyHEq3R6ow4Jel+6ZPMTn/xo3yhp3V7Ghj/bzqcXpXSG97HnnDrzeIFKk0Lo9y
+LvegNheY3kju+e5iVJuUq9NNY1j6nlpEHdQCmw249G+ZD3oIw3jbWaXVVqQgFB5b
++S1QnXxHTIH7Crz7gL4aeED3ik/bDg7LLZCHC+NcLUPpjA+35pfFT2IXVxEUJFoR
+d1DEvfVwAlsjp9ubYzzc31NOBpmOglTMPxywzBY5CDw9rM53FVvzNNZ828XziCjh
+8dD7tD2O2ibyJRfQPrH3QU63tRzNjX5bgOONkOh48k5rsU2MF1wybwZIDipIKMJj
+xKr1aJO/a3QhTWzPsyBNOtYdRDuaAnaEjYHL4RULurNcHTDtZnR7N3thInFFrUEG
+ZWes+6VM8MS65nAg/OOWmsV54Ikip54Sim3AWKaeKwMQUYsKwXQ=
+=DqRD
+-----END PGP SIGNATURE-----
+
+--ehsdumg7eeutkyzw--
