@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22E73DC49B
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB873DC4A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbhGaHvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 03:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
+        id S232559AbhGaHwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 03:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhGaHvi (ORCPT
+        with ESMTP id S230338AbhGaHwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 03:51:38 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA0DC06175F;
-        Sat, 31 Jul 2021 00:51:32 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id k1so13774628plt.12;
-        Sat, 31 Jul 2021 00:51:32 -0700 (PDT)
+        Sat, 31 Jul 2021 03:52:11 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227FBC06175F;
+        Sat, 31 Jul 2021 00:52:05 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso24160852pjq.2;
+        Sat, 31 Jul 2021 00:52:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ICg7XziMcUYzjn1qRXDJ14WuqLuOzl3YM5j40dQBDlw=;
-        b=EIHM+GAcsV8TM1RJ4o8DVuPQuYkFo00AhWxIxFLIhy0a1c3z54nkn3msX5ZsbMBQTR
-         s+YndkkL74kzROEichM9TWYRRpKso6+JrsfT3+al573f7ethxmVm4DUzK2MgCG1fdlRP
-         tbwfDDDWJALiNnTwF1baqRYDKMI7pzRfr1wXmXaXp3ytF6IhN/CyRpnho8XIkmEkpubF
-         xDv0V/YK1UAZlclAFI7mtlvgVSaYQvAsv2UUR0I7H2WdwKj3A+oul3+N4K1qZWUSmtpj
-         fNaRkFe94uySYsC573z1tPC3qEBObPWwypqEuTHN5BywMhOPwb1pLDXCc/Vkmltyl9/L
-         rwXA==
+        bh=LNinOfUJINPcfdOxhYvsgsalnU1GKLpLDBpG0mAohAc=;
+        b=TL/nDTwV7Ph7kC1oZk66wjgapAmGIuuvxKdZnyb2id6PMHXk3i4RURbvV6vN+GabZ0
+         5nKC4XMdjCnAQdmdM1bcAxlR9PIybYesEm8AYOmglzQijYZkBb2VyLlLvLH9yYsbTsxK
+         0yYvZVJMCN63zzu8VGgeKdHRVKCL470JVoFALEkpn7OJZaMW/ahykXkU4zwNGT5k8Tv0
+         6/S0ja07q4MoAw3FheqVo8DTllRy/nT4EoMa9q6VINztElQPFRVb29cccLjZbzjSJsZR
+         eRQmfcJ/n+nCYCVe9b+BWYBJ1LgV2iHr85HIMojw7mv+BhnuuR98JOlFkfqah5ZiBbA8
+         idkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ICg7XziMcUYzjn1qRXDJ14WuqLuOzl3YM5j40dQBDlw=;
-        b=bRYsQJBtGC6LlnqxIGVXiaVAYi7y1lv3CukJLB6bDm5f6RPt9wvCxPxR4jp1BSehDb
-         TkeZ5YTzhip5xozoMs9wQ050uHDAZ7a0Cg3kfEa2LQIQZQgjMRQXDi+BazSIesMVua7a
-         LqnOqa6nprWBqLVFB0VYKZ04Y1m+WwPZ/nXetn/uTWidJU1LeGxabp85RIXnPn2zL3TQ
-         Nim6wsaMjwVv4/PgjkK0mmU5nQUul6yJ1MPLcWUncLQEjafyouw+qBqZeFo9c20h4rTS
-         TTsM4Gk4rxFrgOTWE+q9/lnnMZLpjvmIQinn2Cywq+7SwzNoFmOeCtOgzGZL82IT7TKk
-         NXcw==
-X-Gm-Message-State: AOAM533uOXTXDW2DF9F642q4wJ0Mck3hsui/ZgLgTQPAhIhhj3obRkpj
-        G5bN7o3VxnYTNV/HiQxhgYjpNnMYDFlvO1hB2jo=
-X-Google-Smtp-Source: ABdhPJxXfaac4MuBtORdnHVamlNwhdM1sCUXS352jdFyt4BpSCVEgMsfqKgorkAweS+wI9nC7Gr6VA==
-X-Received: by 2002:a17:90a:5588:: with SMTP id c8mr7306990pji.36.1627717891203;
-        Sat, 31 Jul 2021 00:51:31 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id i25sm4714400pfo.20.2021.07.31.00.51.26
+        bh=LNinOfUJINPcfdOxhYvsgsalnU1GKLpLDBpG0mAohAc=;
+        b=DO3PR7I0liFhdchpb7twB/licO+qahIidaAmig572sSAIwNxXtaYKdQk6oa+jSvbyN
+         SlUVNDtCujah2ibhGaheLTuP0h8C7UFebRomM2caxjk/ufCvqJU+1sxBskkHGJ6sHhDf
+         qgQ4gMeZpbuLvSDc3kH9tHGnx5sx1lCxqd1p3xcC456sPzZ1Tx2R6WvPTAusHyiltktR
+         ignqv/RcahOVVle0WG0bs26tXughDdoz+zq3FsTyH2a8XD0Qc6njE1iu1XaBnh6ug9Ms
+         GWyXSY/DXoAmJcGDRCwkv8MfGkSbfaDYzH/Iyj8hmX34PcMj9J2csU+D7zZILr0KwHp1
+         qMAQ==
+X-Gm-Message-State: AOAM533PR/8ItQGvUVE9palewqmtiI1FJkbx5Rok27HNzBkv9mIiVj05
+        Pw+o4riv4mfffLS7BdDAuBM=
+X-Google-Smtp-Source: ABdhPJxEmyd/fVeOUjyk7iQ/WLxWnrDrhtacIwVjgE+LHn4GCwVnNtolqtkZfzUNk0y77xteCo9kSQ==
+X-Received: by 2002:a63:e405:: with SMTP id a5mr5864785pgi.150.1627717924655;
+        Sat, 31 Jul 2021 00:52:04 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.29])
+        by smtp.gmail.com with ESMTPSA id y15sm5470504pga.34.2021.07.31.00.52.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 00:51:30 -0700 (PDT)
-Message-ID: <61050102.1c69fb81.d0073.d7ea@mx.google.com>
-Date:   Sat, 31 Jul 2021 00:51:30 -0700 (PDT)
-X-Google-Original-Date: Sat, 31 Jul 2021 07:51:24 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 00/24] 5.10.55-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Sat, 31 Jul 2021 00:52:04 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        colin.king@canonical.com, jiapeng.chong@linux.alibaba.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, baijiaju1990@gmail.com,
+        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] scsi: csiostor: fix possible null-pointer dereference in csio_eh_lun_reset_handler()
+Date:   Sat, 31 Jul 2021 00:51:48 -0700
+Message-Id: <20210731075148.72494-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jul 2021 15:54:20 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.55 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.55-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+The variable rn is checked in:
+  if (!rn)
 
-5.10.55-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+If rn is NULL, the program goes to the label fail:
+  fail:
+    CSIO_INC_STATS(rn, n_lun_rst_fail);
+
+However, rn is dereferenced in this macro:
+  #define CSIO_INC_STATS(elem, val) ((elem)->stats.val++)
+
+To fix this possible null-pointer dereference, the function returns
+FAILED directly if rn is NULL.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+ drivers/scsi/csiostor/csio_scsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/csiostor/csio_scsi.c b/drivers/scsi/csiostor/csio_scsi.c
+index 56b9ad0a1ca0..df0bf8348860 100644
+--- a/drivers/scsi/csiostor/csio_scsi.c
++++ b/drivers/scsi/csiostor/csio_scsi.c
+@@ -2070,7 +2070,7 @@ csio_eh_lun_reset_handler(struct scsi_cmnd *cmnd)
+ 	struct csio_scsi_level_data sld;
+ 
+ 	if (!rn)
+-		goto fail;
++		return FAILED;
+ 
+ 	csio_dbg(hw, "Request to reset LUN:%llu (ssni:0x%x tgtid:%d)\n",
+ 		      cmnd->device->lun, rn->flowid, rn->scsi_id);
+-- 
+2.25.1
 
