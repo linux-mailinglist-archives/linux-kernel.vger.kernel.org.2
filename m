@@ -2,133 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29073DC43B
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A713DC43E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhGaHGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 03:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhGaHGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 03:06:33 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B84C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 00:06:27 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id i39-20020a9d17270000b02904cf73f54f4bso790883ota.2
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 00:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=P3DkQPwwrt0dYb0N9QKWL+lxmQz5Na2mLnHIL6Wenck=;
-        b=u8y6MITzwT94Pj6D44NnGOIfBLVHVvEA6jlidSniT1k8aCtcIjFBIWs+QTGRq7jaBJ
-         xQr+0XdKY8EszdPLadtohqTEh+ZJO2ntbVskdGunQnsHuBT589wREJCJ9sptwOp01Scy
-         xuBlyLDTwuOcRyxcrpTHaHKCrcQIDMgZ7FcA3Gtz3gaX+Z1zCslL0y84HeqhpWF1u7w5
-         +WZTzZhkeg+aOMmTqttlr0+DFWwX4liftwva0d94QIOpd/PpnSUzWWoCWXn4KjowTJ/s
-         aN6Wawb+mSkJy63a8QOPV0A0oB7CDvnh6wOtaNDN4yeYoKQWFlajfHGnOU/48TAx7aLo
-         a4rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=P3DkQPwwrt0dYb0N9QKWL+lxmQz5Na2mLnHIL6Wenck=;
-        b=LPxLToUXuQTrjfoPoARF7ljoQeVsq16zOCpzwWRyEIk2iy1aWKxE2c6IPX7oT2l2xW
-         xZ0O41cQ5CT/+bOhmwpu3qlGp+QjLzIwm15CdZAFimKNcWdYaFE1+h7rAbtQ+NxgKLre
-         xIFHsEhqhrXPyvRqf4oyEMclqB6fAoYd9LPFj58PMWOPMS+c9Zdh2+dHPHOHnPbdAt7c
-         wDNCivtzfYdfMZVriu7PsqTa9/jcN2Xunyvz0Rgjsr7nNc590BmPd3AhzwMUdUhjp+La
-         rsfLQHEP+9AnS1VMlKh6ZA1vBJG+vgd6RmB8HKHfkjI5jjHg6hOvFcLNnlq2KFyDamo7
-         JHUw==
-X-Gm-Message-State: AOAM530yRy/YpWN/nUksqaTh+hzFrQ2qRMCXgztSCEqh2ngg7qnLsISn
-        isKfv9lqbebhh4WPiQY7xxlkm4Rm6HJDwlQouwI=
-X-Google-Smtp-Source: ABdhPJwLUjNZ2Svq4Q+yOX1PmLFZa1D81/ecllIP9dJL92YXwfPrCNTJizwBxokQspejUrGMW6sUFGX1h4Lq3fNN/YM=
-X-Received: by 2002:a9d:5a16:: with SMTP id v22mr5013228oth.27.1627715186327;
- Sat, 31 Jul 2021 00:06:26 -0700 (PDT)
+        id S230471AbhGaHIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 03:08:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229758AbhGaHIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 03:08:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A0A86103B;
+        Sat, 31 Jul 2021 07:07:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627715277;
+        bh=9mpDDPQdhS+DaI2bj8l92WM7lmK5+lg/yY/eUsOMpQI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ao8GokU4i2pZEAT42TIZNjIhUYVvajYjOYOTSewg536tnGKF1YSFtdycjLOjIdAIP
+         S5YecxlrsNeNToQOu+AcWgF+jiNdlMkAq0qkiNBrc2JQ0t3G1rFHKWFZ088jdMUXdg
+         L69p0DGlh7DRBgVsW2e0c4BOLZ8/KPSISKKFW9es=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.19.200
+Date:   Sat, 31 Jul 2021 09:07:53 +0200
+Message-Id: <162771527342248@kroah.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Reply-To: kipkalyamissharrita@gmail.com
-Sender: lougueyac@gmail.com
-Received: by 2002:ac9:734b:0:0:0:0:0 with HTTP; Sat, 31 Jul 2021 00:06:25
- -0700 (PDT)
-From:   "Miss.Harrita Kipkalya" <kipkalyamissharrita@gmail.com>
-Date:   Sat, 31 Jul 2021 00:06:25 -0700
-X-Google-Sender-Auth: 58lIMcbQgR84c6UAglw0kNON92U
-Message-ID: <CAHRS_7bwy6juSgYZBpJ5iBUCCdTtg4qZyHrSiuwy5MtXM3Oatg@mail.gmail.com>
-Subject: My Dearest,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dearest,
+I'm announcing the release of the 4.19.200 kernel.
 
-I am writing this mail to you with tears and sorrow from my heart.With
-due respect, trust and humanity, i appeal to you to exercise a little
-patience and read through my letter i feel quite safe dealing with you
-in this important business having gone through your remarkable
-profile, honestly i am writing this email to you with pains, tears and
-sorrow from my heart, i will really like to have a good relationship
-with you and i have a special reason why I decided to contact you. I
-decided to contact you due to the urgency of my situation.
+All users of the 4.19 kernel series must upgrade.
 
-My name is Miss.Harrita Kipkalya, 23yrs old female and i am from Kenya
-in East Africa. Light in complexion, single (never married) but
-presently i am residing here in Ouagadougou, Burkina Faso refugee
-camp. My father Late Dr Kipkalya Kones was the former Kenyan road
-Minister. He and Assistant Minister of Home Affairs Lorna Laboso had
-been on board the Cessna 210, which was headed to Kericho and crashed
-in a remote area called Kajong'a, in western Kenya. The plane crashed
-on the Tuesday 10th, June, 2008. You can read more about the crash
-through the below site:
-http://edition.cnn.com/2008/WORLD/africa/06/10/kenya.crash/index.html?iref=
-=3Dnextin
+The updated 4.19.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.19.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-After the burial of my father, my Fathers brother conspired and sold
-my father' s property to an Italian Expert rate which they shared the
-money among themselves and live nothing for me. One faithful morning,
-I opened my father's briefcase and found out the documents which he
-have deposited huge amount of money in one bank in United States Of
-America with my name as the next of kin because when he was alive he
-deposited some amount of money in a Bank in United States Of America
-which he used my name as the next of kin. The amount in question is
-$4.7Million.
+thanks,
 
-I have informed the bank about claiming this money and the only thing
-they told me is to look for a foreign partner who will assist me in
-the transfer due to my refugee status here in Burkina Faso. God told
-me that you are the honest and reliable person who will help me and
-stand as my trustee so that I will present you to the Bank for
-transferring of my father=E2=80=99s money to your bank account in overseas.=
-I
-have chosen to contact you after my prayers and I believe that you
-will not betray my trust. But rather take me as your own biological
-sister or daughter which I will be coming to your country as soon as
-this money is transferred to your account.
+greg k-h
 
-My dearest, things are very bad for me here in the refugee camp where
-i am living today. People are dying here day after day because of lack
-of food and poor medical treatment. Even one of us died last night and
-was buried this morning. I am afraid of what i am seeing here. I don't
-know who it will be her turn tomorrow, I was planning to read law in
-my life before the ugly incident that killed my parents that put me in
-this horrible place i found myself toady. This place is like a prison
-as we are only allowed to go out on Monday and Friday of the week as
-given by the united nation rules and regulation here in Burkina
-Faso.It=E2=80=99s in this refugee we are only allowed to go out two times i=
-n a
-week it=E2=80=99s just like one staying in the prison and i hope by Gods gr=
-ace
-i will come out here soon. I don' t have any relatives now whom i can
-go to and the only person i have now is Rev Isaac Ambrose who is the
-pastor of the (Christ for all Churches) here in the refugee he has
-been very nice to me since i came here but i am not living with him
-rather i am leaving in the women's hostel because the refugee have two
-hostels one for men the other for women, so you can always contact me
-through this my both email address here
-(kipkalyamissharrita@gmail.com) thanks and am waiting for your reply.
-Please if you want to help me out of this situation respond back so
-that i will tell you more about me.
+------------
 
-Yours faithful
-Miss.Harrita Kipkalya
+ Makefile                                 |    2 
+ arch/arm/boot/dts/versatile-ab.dts       |    5 -
+ arch/arm/boot/dts/versatile-pb.dts       |    2 
+ arch/x86/kvm/x86.c                       |   13 +-
+ drivers/firmware/arm_scmi/driver.c       |   12 +-
+ drivers/iio/dac/ds4424.c                 |    6 -
+ fs/cifs/smb2ops.c                        |    4 
+ fs/hfs/bfind.c                           |   14 ++
+ fs/hfs/bnode.c                           |   25 ++++-
+ fs/hfs/btree.h                           |    7 +
+ fs/hfs/super.c                           |   10 +-
+ include/net/af_unix.h                    |    1 
+ include/net/busy_poll.h                  |    2 
+ include/net/sctp/constants.h             |    4 
+ kernel/workqueue.c                       |   20 ++--
+ net/802/garp.c                           |   14 ++
+ net/802/mrp.c                            |   14 ++
+ net/Makefile                             |    2 
+ net/core/sock.c                          |    2 
+ net/sctp/protocol.c                      |    3 
+ net/unix/Kconfig                         |    5 +
+ net/unix/Makefile                        |    2 
+ net/unix/af_unix.c                       |  102 +++++++++------------
+ net/unix/garbage.c                       |   68 --------------
+ net/unix/scm.c                           |  148 +++++++++++++++++++++++++++++++
+ net/unix/scm.h                           |   10 ++
+ tools/testing/selftests/vm/userfaultfd.c |    2 
+ 27 files changed, 328 insertions(+), 171 deletions(-)
+
+Cristian Marussi (1):
+      firmware: arm_scmi: Fix range check for the maximum number of pending messages
+
+Desmond Cheong Zhi Xi (3):
+      hfs: add missing clean-up in hfs_fill_super
+      hfs: fix high memory mapping in hfs_bnode_read
+      hfs: add lock nesting notation to hfs_find_init
+
+Eric Dumazet (1):
+      net: annotate data race around sk_ll_usec
+
+Greg Kroah-Hartman (2):
+      selftest: fix build error in tools/testing/selftests/vm/userfaultfd.c
+      Linux 4.19.200
+
+Hyunchul Lee (1):
+      cifs: fix the out of range assignment to bit fields in parse_server_interfaces
+
+Jens Axboe (1):
+      net: split out functions related to registering inflight socket files
+
+Maxim Levitsky (1):
+      KVM: x86: determine if an exception has an error code only when injecting it.
+
+Miklos Szeredi (1):
+      af_unix: fix garbage collect vs MSG_PEEK
+
+Ruslan Babayev (1):
+      iio: dac: ds4422/ds4424 drop of_node check
+
+Sudeep Holla (2):
+      firmware: arm_scmi: Fix possible scmi_linux_errmap buffer overflow
+      ARM: dts: versatile: Fix up interrupt controller node names
+
+Xin Long (1):
+      sctp: move 198 addresses from unusable to private scope
+
+Yang Yingliang (3):
+      workqueue: fix UAF in pwq_unbound_release_workfn()
+      net/802/mrp: fix memleak in mrp_request_join()
+      net/802/garp: fix memleak in garp_request_join()
+
