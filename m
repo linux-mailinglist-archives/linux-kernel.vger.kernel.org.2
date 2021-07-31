@@ -2,170 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02293DC4C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DA03DC4C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbhGaIDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 04:03:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229703AbhGaICk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 04:02:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1732D60F00;
-        Sat, 31 Jul 2021 08:02:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627718554;
-        bh=SL+zQtOluR7oaGk9b/26gphQiXSwy44s+7eTk/8jqE8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Hl18wsfgtF2Gq3RrkX9EllLmSfNnKiC5zlk0Y17/J3lxPV2ywUg5ZDivQOaBCuHkL
-         sMzGgzHbMdSmHte1sibFIlKFV/hE57qej/e0BllNpxwmIfiKdsyNaWOLYu8WSz4bfi
-         PeIuLMJ8amOAOvAET08bf3ioMNzPzDmx2L64C34Iny2tShK8jcoYN8GhqGFsQ1DYsD
-         5oyXPm9vJI98Lsgdajj+n8HkzCUcwjI7v0llxFFxXbZUZimRISzUP/SlDt3sFj55ng
-         MCUjLu8qk7U6cEjVs+YYyooggKY+QhEgBIjFhRfojE8lusAlDUVIc+jPGxIDLde8Hh
-         nq44MvaJPKy7g==
-Content-Type: text/plain; charset="utf-8"
+        id S233036AbhGaIEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 04:04:37 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:47661 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232462AbhGaIDW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 04:03:22 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id AD67E2B01381;
+        Sat, 31 Jul 2021 04:03:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sat, 31 Jul 2021 04:03:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=HaF70jJIwVgzmQByN2MvzfEuB4C
+        s9uu4puwwbbsEWXw=; b=ip8Zjpp4kk00bDvde12tpXFrWj0X4lVgrydAqKkTAjT
+        h9URjOHRfTjL7DIAr5cpe5JplyV5UAnC+glL2m3hPIbchgsw2UfoSyNacOjNxRWP
+        M49SkMwrPdH0UadqcSyOivFkkB0H6gt27b2yLVg9oVNMA366LiWU/1/sXA/dYW1q
+        wvzNncf8r9AyVTknFRVp4LUI3/DSaD6PYAPmc/7lJ8thVNbHlEcIyZFjfrj6/SM0
+        zmYIND8ED8YFuDcbTCrCfC4Sn2rfJfRubuYDWOgz1Exm5I+eLpKRVFd8PL4Uao+n
+        Ia0KMjckOHCt5oEJyXLWBBxJoa4Ut+mqvzvnQd6HZTA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=HaF70j
+        JIwVgzmQByN2MvzfEuB4Cs9uu4puwwbbsEWXw=; b=cOXjQgJ+LZFOUBUQ64WiZ9
+        6d3lpXS1wQrsTMQupnbwQY9A/BJ441TxcmjURvDcCZdNhnoVUw++5Gzut/rKGwe6
+        G/g6S3k6/OVHhEp1xW9XkGds1nkzVzp93R4hgJELe6nrLTpL2eOW8gR6h4UzM8sK
+        p08x4X46dyt5iZ+GMtZGFBdFSK3FLTlOR7d9dnnOtrclh/A9onoOoKJhRWlVD9+I
+        qptKNmVhYceSwzFN02NvtZ3E7M8NEnlM/6zlSlYUZaLJ1EtQ/6Unql45wgmsee4y
+        O6ezVGKreStnjVf8KtirC881XTl2m1ETMSieJBJVFKpszx7Axz1+jI1/65i0Vq4w
+        ==
+X-ME-Sender: <xms:tQMFYbc7XnpDjHqYDpm5ZoFskQIBFtQ4gAUalQtTLC-HXmJsY6rjiw>
+    <xme:tQMFYRPzb8pKhsx4Zx_q98f5eY5hGX_J6EgNBY5oRICXAg-Rx14p7m5taLz6rEqHy
+    2YVvFUsBEP0Tw>
+X-ME-Received: <xmr:tQMFYUjp8UyyvXUEV4lsC6aCwrSlboloFxQE8UZoxLOc60lA-3r55oEFBmRIdpzpq-Vr6bM1-9k6hf8nmv4Fmjl5PHEutNNv>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheeigdduvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpedutdeivd
+    ejgedufffgvdfhtdejuefghfehvdejhefggfeludeugfefkeegvdelhfenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:tQMFYc9v2t0KGttYcJMOb3ctEelF6MYjebdTCgz2-c5fKgnpJDr8yA>
+    <xmx:tQMFYXtZjYcvDF0BS62NIjjDVX7v-aFua_Zmu5bVIG0de66p3ggpXg>
+    <xmx:tQMFYbE33l3qd3Qg2RHhReP_t8hFbiS93S4uy_4rHWVwuJ_1kIWqHA>
+    <xmx:tgMFYQ_IqByBo7m0m_9TQKBjbCFTH3oI6VBqfaD1zXzAjE99RhAhzvbBFZc>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 31 Jul 2021 04:03:01 -0400 (EDT)
+Date:   Sat, 31 Jul 2021 10:02:58 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, johannes@sipsolutions.net,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH V2] cfg80211: Fix possible memory leak in function
+ cfg80211_bss_update
+Message-ID: <YQUDsiFItvqsVxdz@kroah.com>
+References: <20210628132334.851095-1-phind.uet@gmail.com>
+ <YQKELjKuAQsjmpLY@kroah.com>
+ <877dh6dimf.fsf@tynnyri.adurom.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210721224056.3035016-1-bjorn.andersson@linaro.org>
-References: <20210721224056.3035016-1-bjorn.andersson@linaro.org>
-Subject: Re: [PATCH v2] clk: qcom: gdsc: Ensure regulator init state matches GDSC state
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        Taniya Das <tdas@codeaurora.org>, Vinod Koul <vkoul@kernel.org>
-Date:   Sat, 31 Jul 2021 01:02:31 -0700
-Message-ID: <162771855184.714452.5922758777501573850@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dh6dimf.fsf@tynnyri.adurom.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-07-21 15:40:56)
-> As GDSCs are registered and found to be already enabled gdsc_init()
-> ensures that 1) the kernel state matches the hardware state, and 2)
-> votable GDSCs are properly enabled from this master as well.
->=20
-> But as the (optional) supply regulator is enabled deep into
-> gdsc_toggle_logic(), which is only executed for votable GDSCs the
-> kernel's state of the regulator might not match the hardware. The
-> regulator might be automatically turned off if no other users are
-> present or the next call to gdsc_disable() would cause an unbalanced
-> regulator_disable().
->=20
-> But as the votable case deals with an already enabled GDSC, most of
-> gdsc_enable() and gdsc_toggle_logic() can be skipped. Reducing it to
-> just clearing the SW_COLLAPSE_MASK and enabling hardware control allow
-> us to simply call regulator_enable() in both cases.
->=20
-> The enablement of hardware control seems to be an independent property
-> from the GDSC being enabled, so this is moved outside that conditional
-> segment.
->=20
-> Lastly, as the propagation of ALWAY_ON to GENPD_FLAG_ALWAYS_ON needs to
-> happen regardless of the initial state this is grouped together with the
-> other sc->pd updates at the end of the function.
->=20
-> Cc: stable@vger.kernel.org
-> Fixes: 37416e554961 ("clk: qcom: gdsc: Handle GDSC regulator supplies")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+On Sat, Jul 31, 2021 at 10:53:28AM +0300, Kalle Valo wrote:
+> Greg KH <greg@kroah.com> writes:
+> 
+> > On Mon, Jun 28, 2021 at 09:23:34PM +0800, Nguyen Dinh Phi wrote:
+> >> When we exceed the limit of BSS entries, this function will free the
+> >> new entry, however, at this time, it is the last door to access the
+> >> inputed ies, so these ies will be unreferenced objects and cause memory
+> >> leak.
+> >> Therefore we should free its ies before deallocating the new entry, beside
+> >> of dropping it from hidden_list.
+> >> 
+> >> Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+> 
+> [...]
+> 
+> > Did this change get lost somewhere?
+> 
+> Johannes applied it to the macc80211 tree:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211.git/commit/?id=f9a5c358c8d26fed0cc45f2afc64633d4ba21dff
+> 
+> Ah, and it's already in Linus' tree as well.
 
-I was hoping someone from qcom would review it. I'll take a look in the
-next couple of days and probably throw it on clk-fixes for the next rc.
+Ah, thanks, I had missed that it just landed there.
 
--Stephen
-
->=20
-> Changes since v1:
-> - Refactored into if (on) else if (ALWAYS_ON) style
-> - Extracted relevant parts of gdsc_enable() to call under VOTABLE
-> - Turn on hwctrl if requested for non-votable gdscs
->=20
->  drivers/clk/qcom/gdsc.c | 54 +++++++++++++++++++++++++++--------------
->  1 file changed, 36 insertions(+), 18 deletions(-)
->=20
-> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> index 51ed640e527b..4ece326ea233 100644
-> --- a/drivers/clk/qcom/gdsc.c
-> +++ b/drivers/clk/qcom/gdsc.c
-> @@ -357,27 +357,43 @@ static int gdsc_init(struct gdsc *sc)
->         if (on < 0)
->                 return on;
-> =20
-> -       /*
-> -        * Votable GDSCs can be ON due to Vote from other masters.
-> -        * If a Votable GDSC is ON, make sure we have a Vote.
-> -        */
-> -       if ((sc->flags & VOTABLE) && on)
-> -               gdsc_enable(&sc->pd);
-> +       if (on) {
-> +               /* The regulator must be on, sync the kernel state */
-> +               if (sc->rsupply) {
-> +                       ret =3D regulator_enable(sc->rsupply);
-> +                       if (ret < 0)
-> +                               return ret;
-> +               }
-> =20
-> -       /*
-> -        * Make sure the retain bit is set if the GDSC is already on, oth=
-erwise
-> -        * we end up turning off the GDSC and destroying all the register
-> -        * contents that we thought we were saving.
-> -        */
-> -       if ((sc->flags & RETAIN_FF_ENABLE) && on)
-> -               gdsc_retain_ff_on(sc);
-> +               /*
-> +                * Votable GDSCs can be ON due to Vote from other masters.
-> +                * If a Votable GDSC is ON, make sure we have a Vote.
-> +                */
-> +               if (sc->flags & VOTABLE) {
-> +                       ret =3D regmap_update_bits(sc->regmap, sc->gdscr,
-> +                                                SW_COLLAPSE_MASK, val);
-> +                       if (ret)
-> +                               return ret;
-> +               }
-> +
-> +               /* Turn on HW trigger mode if supported */
-> +               if (sc->flags & HW_CTRL) {
-> +                       ret =3D gdsc_hwctrl(sc, true);
-> +                       if (ret < 0)
-> +                               return ret;
-> +               }
-> =20
-> -       /* If ALWAYS_ON GDSCs are not ON, turn them ON */
-> -       if (sc->flags & ALWAYS_ON) {
-> -               if (!on)
-> -                       gdsc_enable(&sc->pd);
-> +               /*
-> +                * Make sure the retain bit is set if the GDSC is already=
- on,
-> +                * otherwise we end up turning off the GDSC and destroyin=
-g all
-> +                * the register contents that we thought we were saving.
-> +                */
-> +               if (sc->flags & RETAIN_FF_ENABLE)
-> +                       gdsc_retain_ff_on(sc);
-> +       } else if (sc->flags & ALWAYS_ON) {
-> +               /* If ALWAYS_ON GDSCs are not ON, turn them ON */
-> +               gdsc_enable(&sc->pd);
->                 on =3D true;
-> -               sc->pd.flags |=3D GENPD_FLAG_ALWAYS_ON;
->         }
-> =20
->         if (on || (sc->pwrsts & PWRSTS_RET))
-> @@ -385,6 +401,8 @@ static int gdsc_init(struct gdsc *sc)
->         else
->                 gdsc_clear_mem_on(sc);
-> =20
-> +       if (sc->flags & ALWAYS_ON)
-> +               sc->pd.flags |=3D GENPD_FLAG_ALWAYS_ON;
->         if (!sc->pd.power_off)
->                 sc->pd.power_off =3D gdsc_disable;
->         if (!sc->pd.power_on)
-> --=20
-> 2.29.2
->
+greg k-h
