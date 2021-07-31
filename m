@@ -2,130 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7DB3DC56A
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 11:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851813DC57F
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 11:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhGaJ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 05:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbhGaJ2D (ORCPT
+        id S232852AbhGaJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 05:51:48 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:53833 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231853AbhGaJvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 05:28:03 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDFDC06175F;
-        Sat, 31 Jul 2021 02:27:56 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id h18so11865474ilc.5;
-        Sat, 31 Jul 2021 02:27:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=42fk0JLlPxngYOLTycnNlC1N05QmALd58V4flGjPUHA=;
-        b=h2MgJ0n6Z3GAoD7xS/oEUDOqvqdzuAWs7ChMrUcJk03nNGbyed2kOlsvlEtDRox31S
-         k0rzF2dmqCMbctywdfx6dArb4tBP9w57vs98/4kwyWbE8H56ALFEeK0ER1twQ4Fa90Z1
-         9NRobu3oDKVkcbSPgnWtTimwsxSmGPzHP1uCjIURzOsd4e9BQaAwMFypXbL/yZ+aAmBJ
-         r6DscCwfKztZgF6Lspb9g2NZgwUXm+rDEpP13qGSARW6l28T8jEdd0OUiIdKIiyzfVPM
-         P/5VpDFkmztI+i8jCeM+0c04ok24E3easPPWeH3Fw0GMXj95E9PgZQnrIds6CU2LC8Qw
-         ROnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=42fk0JLlPxngYOLTycnNlC1N05QmALd58V4flGjPUHA=;
-        b=oLoq1NERHhPCdq57loM0jOFGtxYS7GFmLYTjRMN3QqXLk447tsAylrlB1qQOTT2mED
-         lqiKWSe84zZaxRIuwpT/a35iRfr1ARSRczS+GTRbOasuKCWfWA6RZCZAwUNqt+eFaQ7S
-         mNT8peIUw88bPn6SeiMglmaWQpxbNQd0WMUFElL6g1GqnkvkCgpJDV4cMy5hlamQP4KC
-         T5Ta9CII8ITGlfDPbHsRdl0Ei+ZLAMJ2WgWuOBP3hDadxtJu2QNfERe+g9ZAfjOBxxAf
-         tQKk1Kb3IkkGUxGP+p1Di5sQaLKo8pBjx21wLTwqWAufwczRqWIf8kfmyZ1b2LXkw2QG
-         Z1nw==
-X-Gm-Message-State: AOAM5320bhxQgoy8hMhQnMlGWMhckt8xt0z2QTxSOPyX4RjOT1bXjtvI
-        znbHFsq//k5U1f9Y5YqZGQ1YiKDzHyrXd9rX3xk=
-X-Google-Smtp-Source: ABdhPJzy8OmpI+375ShVxrIv6n/AB3ba2KJe0mpXRkR6ianchK12I6/ZodVsN+d8OBiy4VoNEWSIA/pIJmKumEMsEoQ=
-X-Received: by 2002:a05:6e02:d93:: with SMTP id i19mr4691245ilj.72.1627723674278;
- Sat, 31 Jul 2021 02:27:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210720155944.1447086-9-krisman@collabora.com> <20210731063818.GB18773@xsang-OptiPlex-9020>
-In-Reply-To: <20210731063818.GB18773@xsang-OptiPlex-9020>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sat, 31 Jul 2021 12:27:43 +0300
-Message-ID: <CAOQ4uxgtke-jK3a1SxowdEhObw8rDuUXB-DSGCr-M1uVMWarww@mail.gmail.com>
-Subject: Re: [fsnotify] 4c40d6efc8: unixbench.score -3.3% regression
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@linux.intel.com, Jan Kara <jack@suse.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
-        Mel Gorman <mgorman@techsingularity.net>,
-        kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 31 Jul 2021 05:51:47 -0400
+X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Sat, 31 Jul 2021 05:51:46 EDT
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id e3d389dd;
+        Sat, 31 Jul 2021 11:44:59 +0200 (CEST)
+Date:   Sat, 31 Jul 2021 11:44:59 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Rob Herring <robh@kernel.org>, maz@kernel.org
+Cc:     devicetree@vger.kernel.org, robin.murphy@arm.com,
+        sven@svenpeter.dev, kettenis@openbsd.org, marcan@marcan.st,
+        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210726231848.GA1025245@robh.at.kernel.org> (message from Rob
+        Herring on Mon, 26 Jul 2021 17:18:48 -0600)
+Subject: Re: [PATCH v3 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
+References: <20210726083204.93196-1-mark.kettenis@xs4all.nl>
+ <20210726083204.93196-2-mark.kettenis@xs4all.nl> <20210726231848.GA1025245@robh.at.kernel.org>
+Message-ID: <5613e78e95a90b8e@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 9:20 AM kernel test robot <oliver.sang@intel.com> wrote:
->
->
->
-> Greeting,
->
-> FYI, we noticed a -3.3% regression of unixbench.score due to commit:
->
->
-> commit: 4c40d6efc8b22b88a45c335ffd6d25b55d769f5b ("[PATCH v4 08/16] fsnotify: pass arguments of fsnotify() in struct fsnotify_event_info")
-> url: https://github.com/0day-ci/linux/commits/Gabriel-Krisman-Bertazi/File-system-wide-monitoring/20210721-001444
-> base: https://git.kernel.org/cgit/linux/kernel/git/jack/linux-fs.git fsnotify
->
-> in testcase: unixbench
-> on test machine: 96 threads 2 sockets Intel(R) Xeon(R) CPU @ 2.30GHz with 128G memory
-> with following parameters:
->
->         runtime: 300s
->         nr_task: 1
->         test: pipe
->         cpufreq_governor: performance
->         ucode: 0x4003006
->
-> test-description: UnixBench is the original BYTE UNIX benchmark suite aims to test performance of Unix-like system.
-> test-url: https://github.com/kdlucas/byte-unixbench
->
-> In addition to that, the commit also has significant impact on the following tests:
->
-> +------------------+-------------------------------------------------------------------------------------+
-> | testcase: change | will-it-scale: will-it-scale.per_thread_ops -1.3% regression                        |
-> | test machine     | 192 threads 4 sockets Intel(R) Xeon(R) Platinum 9242 CPU @ 2.30GHz with 192G memory |
-> | test parameters  | cpufreq_governor=performance                                                        |
-> |                  | mode=thread                                                                         |
-> |                  | nr_task=100%                                                                        |
-> |                  | test=eventfd1                                                                       |
-> |                  | ucode=0x5003006                                                                     |
-> +------------------+-------------------------------------------------------------------------------------+
->
->
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
->
+> Date: Mon, 26 Jul 2021 17:18:48 -0600
+> From: Rob Herring <robh@kernel.org>
 
-Gabriel,
+Hi Rob,
 
-It looks like my change throws away much of the performance gain for
-small IO on pipes without any watches that was achieved by commit
-71d734103edf ("fsnotify: Rearrange fast path to minimise overhead
-when there is no watcher").
+> On Mon, Jul 26, 2021 at 10:32:00AM +0200, Mark Kettenis wrote:
+> > From: Mark Kettenis <kettenis@openbsd.org>
+> > 
+> > The Apple PCIe host controller is a PCIe host controller with
+> > multiple root ports present in Apple ARM SoC platforms, including
+> > various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > 
+> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> > ---
+> >  .../devicetree/bindings/pci/apple,pcie.yaml   | 166 ++++++++++++++++++
+> >  MAINTAINERS                                   |   1 +
+> >  2 files changed, 167 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > new file mode 100644
+> > index 000000000000..bfcbdee79c64
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > @@ -0,0 +1,166 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Apple PCIe host controller
+> > +
+> > +maintainers:
+> > +  - Mark Kettenis <kettenis@openbsd.org>
+> > +
+> > +description: |
+> > +  The Apple PCIe host controller is a PCIe host controller with
+> > +  multiple root ports present in Apple ARM SoC platforms, including
+> > +  various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > +  The controller incorporates Synopsys DesigWare PCIe logic to
+> > +  implements its root ports.  But the ATU found on most DesignWare
+> > +  PCIe host bridges is absent.
+> 
+> blank line
+> 
+> > +  All root ports share a single ECAM space, but separate GPIOs are
+> > +  used to take the PCI devices on those ports out of reset.  Therefore
+> > +  the standard "reset-gpio" and "max-link-speed" properties appear on
+> 
+> reset-gpios
+> 
+> > +  the child nodes that represent the PCI bridges that correspond to
+> > +  the individual root ports.
+> 
+> blank line
 
-I think the way to fix it is to lift the optimization in __fsnotify()
-to the fsnotify_parent() inline wrapper as Mel considered doing
-but was not sure it was worth the effort at the time.
+Fixing these for v4.
 
-It's not completely trivial. I think it requires setting a flag
-MNT_FSNOTIFY_WATCHED when there are watches on the
-vfsmount. I will look into it.
+> > +  MSIs are handled by the PCIe controller and translated into regular
+> > +  interrupts.  A range of 32 MSIs is provided.  These 32 MSIs can be
+> > +  distributed over the root ports as the OS sees fit by programming
+> > +  the PCIe controller's port registers.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: apple,t8103-pcie
+> > +      - const: apple,pcie
+> > +
+> > +  reg:
+> > +    minItems: 3
+> > +    maxItems: 5
+> > +
+> > +  reg-names:
+> > +    minItems: 3
+> > +    maxItems: 5
+> > +    items:
+> > +      - const: config
+> > +      - const: rc
+> > +      - const: port0
+> > +      - const: port1
+> > +      - const: port2
+> > +
+> > +  ranges:
+> > +    minItems: 2
+> > +    maxItems: 2
+> > +
+> > +  interrupts:
+> > +    description:
+> > +      Interrupt specifiers, one for each root port.
+> > +    minItems: 1
+> > +    maxItems: 3
+> > +
+> > +  msi-controller: true
+> > +  msi-parent: true
+> > +
+> > +  msi-ranges:
+> > +    description:
+> > +      A list of pairs <intid span>, where "intid" is the first
+> > +      interrupt number that can be used as an MSI, and "span" the size
+> > +      of that range.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> > +    items:
+> > +      minItems: 2
+> > +      maxItems: 2
+> 
+> I still have issues I raised on v1 with this property. It's genericish 
+> looking, but not generic. 'intid' as a single cell can't specify any 
+> parent interrupt such as a GIC which uses 3 cells. You could put in all 
+> the cells, but you'd still be assuming which cell you can increment.
 
-Thanks,
-Amir.
+Not sure what you mean with "specify any parent interrupt" here.  For
+the GIC and AIC the three cells encode the interrupt type, interrupt
+number, and trigger level/polarity.  And for MSIs the interrupt type
+and trigger level/polarity are pretty much implied.  It is genericish
+in the sense that it follows the pattern of the "mbi-ranges" in the
+arm,gic-v3.yaml binding.
+
+> I think you should just list all these under 'interrupts' using 
+> interrupt-names to make your life easier:
+> 
+> interrupt-names:
+>   items:
+>     - const: port0
+>     - const: port1
+>     - const: port2
+>     - const: msi0
+>     - const: msi1
+>     - const: msi2
+>     - const: msi3
+>     ...
+> 
+> Yeah, it's kind of verbose, but if the h/w block handles N interrupts, 
+> you should list N interrupts. The worst case for the above is N entries 
+> too if not contiguous.
+
+Hmm, "msi-ranges" was what Marc Zyngier came up with since he didn't
+really like the approach you sketch above.  And he gave this version
+of the binding his blessing.  Your approach would work fine as well,
+although doing a string-based lookup for each MSI vector is a bit
+ugly.
