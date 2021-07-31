@@ -2,756 +2,1031 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0BC3DC6BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 17:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB143DC6BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 17:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbhGaPpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 11:45:49 -0400
-Received: from mga05.intel.com ([192.55.52.43]:64863 "EHLO mga05.intel.com"
+        id S233095AbhGaPqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 11:46:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229541AbhGaPps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 11:45:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10062"; a="298836915"
-X-IronPort-AV: E=Sophos;i="5.84,284,1620716400"; 
-   d="gz'50?scan'50,208,50";a="298836915"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2021 08:45:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,284,1620716400"; 
-   d="gz'50?scan'50,208,50";a="508867341"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 31 Jul 2021 08:45:37 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m9rBA-000BHt-Gk; Sat, 31 Jul 2021 15:45:36 +0000
-Date:   Sat, 31 Jul 2021 23:45:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org
-Cc:     kbuild-all@lists.01.org, Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: don't remap clean subpages when splitting
- isolated thp
-Message-ID: <202107312353.0jHXbIPP-lkp@intel.com>
-References: <20210731063938.1391602-4-yuzhao@google.com>
+        id S229541AbhGaPqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 11:46:06 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4611603E7;
+        Sat, 31 Jul 2021 15:45:56 +0000 (UTC)
+Date:   Sat, 31 Jul 2021 16:48:35 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Michael.Hennerich@analog.com, alexandru.ardelean@analog.com,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lars@metafoo.de,
+        Dragos.Bogdan@analog.com, Darius.Berghe@analog.com
+Subject: Re: [PATCH v6 2/2] iio: accel: Add driver support for ADXL355
+Message-ID: <20210731164835.10e1f30d@jic23-huawei>
+In-Reply-To: <20210728063430.258199-3-puranjay12@gmail.com>
+References: <20210728063430.258199-1-puranjay12@gmail.com>
+        <20210728063430.258199-3-puranjay12@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="fUYQa+Pmc3FrFX/N"
-Content-Disposition: inline
-In-Reply-To: <20210731063938.1391602-4-yuzhao@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 28 Jul 2021 12:04:30 +0530
+Puranjay Mohan <puranjay12@gmail.com> wrote:
 
---fUYQa+Pmc3FrFX/N
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> ADXL355 is 3-axis MEMS Accelerometer. It offers low noise density,
+> low 0g offset drift, low power with selectable measurement ranges.
+> It also features programmable high-pass and low-pass filters.
+> 
+> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 
-Hi Yu,
+Hi Puranjan,
 
-Thank you for the patch! Yet something to improve:
+Looks pretty good so comments below are fairly minor changes, many of which will make
+your life easier as you add more features to this driver, rather than strictly being required
+for what you have here.
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v5.14-rc3]
-[cannot apply to hnaz-linux-mm/master linux/master next-20210730]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+If you are working on buffer + event support, feel free to send that with the next
+version of this as well. I might well pick up the first part of such a series, even if
+the other patches need further changes.  Given there can be some delay and we are in the
+holiday season you don't want to get stuck waiting for review of earlier patches!
 
-url:    https://github.com/0day-ci/linux/commits/Yu-Zhao/mm-optimize-thp-for-reclaim-and-migration/20210731-144129
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git c7d102232649226a69dddd58a4942cf13cff4f7c
-config: i386-randconfig-a003-20210730 (attached as .config)
-compiler: gcc-10 (Ubuntu 10.3.0-1ubuntu1~20.04) 10.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/0day-ci/linux/commit/e4e76c4915b364558aacae2cf320a43306a20fa1
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Yu-Zhao/mm-optimize-thp-for-reclaim-and-migration/20210731-144129
-        git checkout e4e76c4915b364558aacae2cf320a43306a20fa1
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+Thanks,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Jonathan
 
-All errors (new ones prefixed by >>):
+> ---
+>  MAINTAINERS                      |   7 +
+>  drivers/iio/accel/Kconfig        |  29 ++
+>  drivers/iio/accel/Makefile       |   3 +
+>  drivers/iio/accel/adxl355.h      |  77 +++++
+>  drivers/iio/accel/adxl355_core.c | 542 +++++++++++++++++++++++++++++++
+>  drivers/iio/accel/adxl355_i2c.c  |  63 ++++
+>  drivers/iio/accel/adxl355_spi.c  |  66 ++++
+>  7 files changed, 787 insertions(+)
+>  create mode 100644 drivers/iio/accel/adxl355.h
+>  create mode 100644 drivers/iio/accel/adxl355_core.c
+>  create mode 100644 drivers/iio/accel/adxl355_i2c.c
+>  create mode 100644 drivers/iio/accel/adxl355_spi.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index bd7aff0c1..461f2a192 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -586,6 +586,13 @@ W:	http://ez.analog.com/community/linux-device-drivers
+>  F:	Documentation/devicetree/bindings/iio/accel/adi,adxl345.yaml
+>  F:	drivers/input/misc/adxl34x.c
+>  
+> +ADXL355 THREE-AXIS DIGITAL ACCELEROMETER DRIVER
+> +M:	Puranjay Mohan <puranjay12@gmail.com>
+> +L:	linux-iio@vger.kernel.org
+> +S:	Supported
+> +F:	drivers/iio/accel/adxl34x.c
+> +F:	Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+> +
+>  ADXL372 THREE-AXIS DIGITAL ACCELEROMETER DRIVER
+>  M:	Michael Hennerich <michael.hennerich@analog.com>
+>  S:	Supported
+> diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
+> index cceda3cec..d0c45c809 100644
+> --- a/drivers/iio/accel/Kconfig
+> +++ b/drivers/iio/accel/Kconfig
+> @@ -61,6 +61,35 @@ config ADXL345_SPI
+>  	  will be called adxl345_spi and you will also get adxl345_core
+>  	  for the core module.
+>  
+> +config ADXL355
+> +	tristate
+> +
+> +config ADXL355_I2C
+> +	tristate "Analog Devices ADXL355 3-Axis Digital Accelerometer I2C Driver"
+> +	depends on I2C
+> +	select ADXL355
+> +	select REGMAP_I2C
+> +	help
+> +	  Say Y here if you want to build i2c support for the Analog Devices
+> +	  ADXL355 3-axis digital accelerometer.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called adxl355_i2c and you will also get adxl355_core
+> +	  for the core module.
+> +
+> +config ADXL355_SPI
+> +	tristate "Analog Devices ADXL355 3-Axis Digital Accelerometer SPI Driver"
+> +	depends on SPI
+> +	select ADXL355
+> +	select REGMAP_SPI
+> +	help
+> +	  Say Y here if you want to build spi support for the Analog Devices
+> +	  ADXL355 3-axis digital accelerometer.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called adxl355_spi and you will also get adxl355_core
+> +	  for the core module.
+> +
+>  config ADXL372
+>  	tristate
+>  	select IIO_BUFFER
+> diff --git a/drivers/iio/accel/Makefile b/drivers/iio/accel/Makefile
+> index 32cd1342a..0e4721d2d 100644
+> --- a/drivers/iio/accel/Makefile
+> +++ b/drivers/iio/accel/Makefile
+> @@ -9,6 +9,9 @@ obj-$(CONFIG_ADIS16209) += adis16209.o
+>  obj-$(CONFIG_ADXL345) += adxl345_core.o
+>  obj-$(CONFIG_ADXL345_I2C) += adxl345_i2c.o
+>  obj-$(CONFIG_ADXL345_SPI) += adxl345_spi.o
+> +obj-$(CONFIG_ADXL355) += adxl355_core.o
+> +obj-$(CONFIG_ADXL355_I2C) += adxl355_i2c.o
+> +obj-$(CONFIG_ADXL355_SPI) += adxl355_spi.o
+>  obj-$(CONFIG_ADXL372) += adxl372.o
+>  obj-$(CONFIG_ADXL372_I2C) += adxl372_i2c.o
+>  obj-$(CONFIG_ADXL372_SPI) += adxl372_spi.o
+> diff --git a/drivers/iio/accel/adxl355.h b/drivers/iio/accel/adxl355.h
+> new file mode 100644
+> index 000000000..77d0d0a28
+> --- /dev/null
+> +++ b/drivers/iio/accel/adxl355.h
+> @@ -0,0 +1,77 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * ADXL355 3-Axis Digital Accelerometer
+> + *
+> + * Copyright (c) 2021 Puranjay Mohan <puranjay12@gmail.com>
+> + */
+> +
+> +#ifndef _ADXL355_H_
+> +#define _ADXL355_H_
+> +
+> +#include <linux/regmap.h>
+> +
+> +/* ADXL355 Register Definitions */
+> +#define ADXL355_DEVID_AD	0x00
+why are these register definitions in a header, I'd expect them to only be
+accessed from the main c file, so if that is true, move them to the top
+of that file.  The less we have in a header, the better!
 
-   mm/migrate.c: In function 'try_to_unmap_clean':
->> mm/migrate.c:199:17: error: 'THP_SPLIT_UNMAP' undeclared (first use in this function)
-     199 |  count_vm_event(THP_SPLIT_UNMAP);
-         |                 ^~~~~~~~~~~~~~~
-   mm/migrate.c:199:17: note: each undeclared identifier is reported only once for each function it appears in
+Also, you may want to consider using naming that makes it clear these
+are register addresses.  That makes it much more readable once you have
+fields, and masks etc defined as well.  At _REG postfix tends to
+work well for this.
 
+> +#define ADXL355_DEVID_MST	0x01
+> +#define ADXL355_PARTID		0x02
+> +#define ADXL355_REVID		0x03
+> +#define ADXL355_STATUS		0x04
+> +#define ADXL355_FIFO_ENTRIES	0x05
+> +#define ADXL355_TEMP2		0x06
+> +#define ADXL355_XDATA3		0x08
+> +#define ADXL355_YDATA3		0x0B
+> +#define ADXL355_ZDATA3		0x0E
+> +#define ADXL355_FIFO_DATA	0x11
+> +#define ADXL355_OFFSET_X_H	0x1E
+> +#define ADXL355_OFFSET_Y_H	0x20
+> +#define ADXL355_OFFSET_Z_H	0x22
+> +#define ADXL355_ACT_EN		0x24
+> +#define ADXL355_ACT_THRESH_H	0x25
+> +#define ADXL355_ACT_THRESH_L	0x26
+> +#define ADXL355_ACT_COUNT	0x27
+> +#define ADXL355_FILTER		0x28
+> +#define ADXL355_FIFO_SAMPLES	0x29
+> +#define ADXL355_INT_MAP		0x2A
+> +#define ADXL355_SYNC		0x2B
+> +#define ADXL355_RANGE		0x2C
+> +#define ADXL355_POWER_CTL	0x2D
+> +#define ADXL355_SELF_TEST	0x2E
+> +#define ADXL355_RESET		0x2F
+> +
+> +#define ADXL355_DEVID_AD_VAL	0xAD
+> +#define ADXL355_DEVID_MST_VAL	0x1D
+> +#define ADXL355_PARTID_VAL	0xED
+> +#define ADXL355_REVID_VAL	0x01
 
-vim +/THP_SPLIT_UNMAP +199 mm/migrate.c
+REVID is unused and I'd like to 'hope' that it's never needed due to an
+compatibility problems.  As such I'd drop this define.
 
-   170	
-   171	static bool try_to_unmap_clean(struct page_vma_mapped_walk *pvmw, struct page *page)
-   172	{
-   173		void *addr;
-   174		bool dirty;
-   175	
-   176		VM_BUG_ON_PAGE(PageLRU(page), page);
-   177		VM_BUG_ON_PAGE(PageCompound(page), page);
-   178		VM_BUG_ON_PAGE(!PageAnon(page), page);
-   179		VM_BUG_ON_PAGE(!PageLocked(page), page);
-   180		VM_BUG_ON_PAGE(pte_present(*pvmw->pte), page);
-   181	
-   182		if (PageMlocked(page) || (pvmw->vma->vm_flags & VM_LOCKED))
-   183			return false;
-   184	
-   185		/*
-   186		 * The pmd entry mapping the old thp was flushed and the pte mapping
-   187		 * this subpage has been non present. Therefore, this subpage is
-   188		 * inaccessible. We don't need to remap it if it contains only zeros.
-   189		 */
-   190		addr = kmap_atomic(page);
-   191		dirty = !!memchr_inv(addr, 0, PAGE_SIZE);
-   192		kunmap_atomic(addr);
-   193	
-   194		if (dirty)
-   195			return false;
-   196	
-   197		pte_clear_not_present_full(pvmw->vma->vm_mm, pvmw->address, pvmw->pte, false);
-   198		dec_mm_counter(pvmw->vma->vm_mm, mm_counter(page));
- > 199		count_vm_event(THP_SPLIT_UNMAP);
-   200	
-   201		return true;
-   202	}
-   203	
+> +#define ADXL355_RESET_CODE	0x52
+> +
+> +#define ADXL355_POWER_CTL_MODE_MSK	GENMASK(1, 0)
+> +
+> +#define ADXL355_FILTER_ODR_MSK			GENMASK(3, 0)
+> +#define ADXL355_FILTER_HPF_MSK			GENMASK(6, 4)
+Good to group the field defintions with the register defines.
+A nice option is to use both naming and indentation to make it clear
+what thigns are.  Eg. for these.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+#define ADXL355_FILTER_REG			0x28
+#define   ADXL355_FILTER_ODR_MSK		GENMASK(3, 0)
+#define   ADXL355_FILTER_HPF_MSK		GENMASK(6, 4)
 
---fUYQa+Pmc3FrFX/N
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+> +
+> +/*
+> + * The datasheet defines an intercept of 1885 LSB at 25 degC
+> + * and a slope of -9.05 LSB/C. The following formula can be used to find the
+> + * temperature:
+> + * Temp = ((RAW - 1885)/(-9.05)) + 25 but this doesn't follow the format of
+> + * the IIO which is Temp = (RAW + OFFSET) * SCALE. Hence using some rearranging
+> + * we get the scale as -110.49723 and offset as -2111.25
+> + */
+> +#define TEMP_SCALE_VAL -110
+> +#define TEMP_SCALE_VAL2 497238
+> +#define TEMP_OFFSET_VAL -2111
+> +#define TEMP_OFFSET_VAL2 250000
+> +
+> +/*
+> + * At +/- 2g with 20-bit resolution, scale is given in datasheet as
+> + * 3.9ug/LSB = 0.0000039 * 9.80665 = 0.00003824593 m/s^2
+> + */
+> +#define ADXL355_NSCALE	38245
+> +
+> +extern const struct regmap_access_table adxl355_readable_regs_tbl;
+> +
+> +extern const struct regmap_access_table adxl355_writeable_regs_tbl;
+> +
+> +int adxl355_core_probe(struct device *dev, struct regmap *regmap,
+> +		       const char *name);
+> +#endif /* _ADXL355_H_ */
+> diff --git a/drivers/iio/accel/adxl355_core.c b/drivers/iio/accel/adxl355_core.c
+> new file mode 100644
+> index 000000000..8556f286e
+> --- /dev/null
+> +++ b/drivers/iio/accel/adxl355_core.c
+> @@ -0,0 +1,542 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * ADXL355 3-Axis Digital Accelerometer IIO core driver
+> + *
+> + * Copyright (c) 2021 Puranjay Mohan <puranjay12@gmail.com>
+> + *
+> + * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
+> + */
+> +
+> +#include <asm/unaligned.h>
+> +#include <linux/bitfield.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/sysfs.h>
 
-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
+I don't think you use anything from iio/sysfs.h so drop that one.
 
---fUYQa+Pmc3FrFX/N--
+> +#include <linux/limits.h>
+> +#include <linux/math64.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/regmap.h>
+> +
+> +#include "adxl355.h"
+> +
+> +static const struct regmap_range adxl355_read_reg_range[] = {
+> +	regmap_reg_range(ADXL355_DEVID_AD, ADXL355_FIFO_DATA),
+> +	regmap_reg_range(ADXL355_OFFSET_X_H, ADXL355_SELF_TEST)
+> +};
+> +
+> +const struct regmap_access_table adxl355_readable_regs_tbl = {
+> +	.yes_ranges = adxl355_read_reg_range,
+> +	.n_yes_ranges = ARRAY_SIZE(adxl355_read_reg_range),
+> +};
+> +EXPORT_SYMBOL_GPL(adxl355_readable_regs_tbl);
+> +
+> +static const struct regmap_range adxl355_write_reg_range[] = {
+> +	regmap_reg_range(ADXL355_OFFSET_X_H, ADXL355_RESET)
+> +};
+> +
+> +const struct regmap_access_table adxl355_writeable_regs_tbl = {
+> +	.yes_ranges = adxl355_write_reg_range,
+> +	.n_yes_ranges = ARRAY_SIZE(adxl355_write_reg_range),
+> +};
+> +EXPORT_SYMBOL_GPL(adxl355_writeable_regs_tbl);
+> +
+> +enum adxl355_op_mode {
+> +	ADXL355_MEASUREMENT,
+> +	ADXL355_STANDBY,
+> +	ADXL355_TEMP_OFF
+> +};
+> +
+> +enum adxl355_odr {
+> +	ADXL355_ODR_4000HZ,
+> +	ADXL355_ODR_2000HZ,
+> +	ADXL355_ODR_1000HZ,
+> +	ADXL355_ODR_500HZ,
+> +	ADXL355_ODR_250HZ,
+> +	ADXL355_ODR_125HZ,
+> +	ADXL355_ODR_62_5HZ,
+> +	ADXL355_ODR_31_25HZ,
+> +	ADXL355_ODR_15_625HZ,
+> +	ADXL355_ODR_7_813HZ,
+> +	ADXL355_ODR_3_906HZ
+> +};
+> +
+> +enum adxl355_hpf_3db {
+> +	ADXL355_HPF_OFF,
+> +	ADXL355_HPF_24_7,
+> +	ADXL355_HPF_6_2084,
+> +	ADXL355_HPF_1_5545,
+> +	ADXL355_HPF_0_3862,
+> +	ADXL355_HPF_0_0954,
+> +	ADXL355_HPF_0_0238
+> +};
+> +
+> +static const int adxl355_odr_table[][2] = {
+> +	[0] = {4000, 0},
+> +	[1] = {2000, 0},
+> +	[2] = {1000, 0},
+> +	[3] = {500, 0},
+> +	[4] = {250, 0},
+> +	[5] = {125, 0},
+> +	[6] = {62, 500000},
+> +	[7] = {31, 250000},
+> +	[8] = {15, 625000},
+> +	[9] = {7, 813000},
+> +	[10] = {3, 906000}
+> +};
+> +
+> +static const int adxl355_hpf_3db_multipliers[] = {
+> +	0,
+> +	247000,
+> +	62084,
+> +	15545,
+> +	3862,
+> +	954,
+> +	238
+> +};
+> +
+> +struct adxl355_data {
+> +	struct regmap *regmap;
+> +	struct device *dev;
+> +	struct mutex lock; /* lock to protect op_mode */
+> +	enum adxl355_op_mode op_mode;
+> +	enum adxl355_odr odr;
+> +	enum adxl355_hpf_3db hpf_3db;
+> +	int x_calibbias;
+> +	int y_calibbias;
+> +	int z_calibbias;
+> +	int adxl355_hpf_3db_table[7][2];
+> +	u8 transf_buf[3] ____cacheline_aligned;
+> +};
+> +
+> +static int adxl355_set_op_mode(struct adxl355_data *data,
+> +			       enum adxl355_op_mode op_mode)
+> +{
+> +	int ret;
+> +
+> +	if (data->op_mode == op_mode)
+> +		return 0;
+> +
+> +	ret = regmap_update_bits(data->regmap, ADXL355_POWER_CTL,
+> +				 ADXL355_POWER_CTL_MODE_MSK, op_mode);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	data->op_mode = op_mode;
+> +
+> +	return ret;
+> +}
+> +
+> +static void adxl355_fill_3db_frequency_table(struct adxl355_data *data)
+> +{
+> +	int i;
+> +	u64 rem;
+> +	u64 div;
+> +	u32 multiplier;
+> +	u64 odr = mul_u64_u32_shr(adxl355_odr_table[data->odr][0], 1000000, 0) +
+> +					adxl355_odr_table[data->odr][1];
+> +
+> +	for (i = 0; i < ARRAY_SIZE(adxl355_hpf_3db_multipliers); i++) {
+> +		multiplier = adxl355_hpf_3db_multipliers[i];
+> +		div = div64_u64_rem(mul_u64_u32_shr(odr, multiplier, 0),
+> +				    100000000000000UL, &rem);
+> +
+> +		data->adxl355_hpf_3db_table[i][0] = div;
+> +		data->adxl355_hpf_3db_table[i][1] = div_u64(rem, 100000000);
+> +	}
+> +}
+> +
+> +static int adxl355_setup(struct adxl355_data *data)
+> +{
+> +	unsigned int regval;
+> +	int ret;
+> +
+> +	ret = regmap_read(data->regmap, ADXL355_DEVID_AD, &regval);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (regval != ADXL355_DEVID_AD_VAL) {
+> +		dev_err(data->dev, "Invalid ADI ID 0x%02x\n", regval);
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = regmap_read(data->regmap, ADXL355_DEVID_MST, &regval);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (regval != ADXL355_DEVID_MST_VAL) {
+> +		dev_err(data->dev, "Invalid MEMS ID 0x%02x\n", regval);
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = regmap_read(data->regmap, ADXL355_PARTID, &regval);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (regval != ADXL355_PARTID_VAL) {
+> +		dev_err(data->dev, "Invalid DEV ID 0x%02x\n", regval);
+> +		return -ENODEV;
+> +	}
+> +
+> +	/*
+> +	 * Perform a software reset to make sure the device is in a consistent
+> +	 * state after start up.
+> +	 */
+> +	ret = regmap_write(data->regmap, ADXL355_RESET, ADXL355_RESET_CODE);
+> +	if (ret)
+> +		return ret;
+> +
+> +	adxl355_fill_3db_frequency_table(data);
+> +
+> +	return adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+> +}
+> +
+> +static int adxl355_get_temp_data(struct adxl355_data *data, u8 addr)
+> +{
+> +	return regmap_bulk_read(data->regmap, addr, data->transf_buf, 2);
+> +}
+> +
+> +static int adxl355_read_axis(struct adxl355_data *data, u8 addr)
+> +{
+> +	int ret;
+> +
+> +	ret = regmap_bulk_read(data->regmap, addr, data->transf_buf, 3);
+> +	if (ret < 0)
+
+currently the code is inconsistent on 
+if (ret) or if (ret < 0) for regmap calls.  I would prefer if (ret)
+throughout as that makes things consistent when you do
+return adxlset_op_mode() at the end of a function and any positive return
+(of which there aren't any) would be returned unlike in error paths above.
+
+> +		return ret;
+> +
+> +	return get_unaligned_be24(data->transf_buf);
+> +}
+> +
+> +static int adxl355_find_match(const int (*freq_tbl)[2], const int n,
+> +			      const int val, const int val2)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < n; i++) {
+> +		if (freq_tbl[i][0] == val && freq_tbl[i][1] == val2)
+> +			return i;
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static int adxl355_set_odr(struct adxl355_data *data,
+> +			   enum adxl355_odr odr)
+> +{
+> +	int ret = 0;
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	if (data->odr == odr)
+> +		goto out_unlock;
+> +
+> +	ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> +	if (ret < 0)
+> +		goto out_unlock;
+> +
+> +	ret = regmap_update_bits(data->regmap, ADXL355_FILTER,
+> +				 ADXL355_FILTER_ODR_MSK,
+> +				 FIELD_PREP(ADXL355_FILTER_ODR_MSK, odr));
+> +	if (ret < 0)
+> +		goto out_unlock;
+> +
+> +	data->odr = odr;
+> +	adxl355_fill_3db_frequency_table(data);
+> +
+> +out_unlock:
+> +	ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+> +	mutex_unlock(&data->lock);
+> +	return ret;
+> +}
+> +
+> +static int adxl355_set_hpf_3db(struct adxl355_data *data,
+> +			       enum adxl355_hpf_3db hpf)
+> +{
+> +	int ret = 0;
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	if (data->hpf_3db == hpf)
+> +		goto out_unlock;
+
+If we follow this goto, we have not yet changed the mode of the
+device, so we shouldn't change it back again.  I would suggest
+two labels to allow us to just unlock in this error case, but
+also do the op_mode change for the other cases.
+
+> +
+> +	ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> +	if (ret < 0)
+> +		goto out_unlock;
+> +
+> +	ret = regmap_update_bits(data->regmap, ADXL355_FILTER,
+> +				 ADXL355_FILTER_HPF_MSK,
+> +				 FIELD_PREP(ADXL355_FILTER_HPF_MSK, hpf));
+> +	if (!ret)
+> +		data->hpf_3db = hpf;
+> +
+> +out_unlock:
+> +	ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+> +	mutex_unlock(&data->lock);
+> +	return ret;
+> +}
+> +
+> +static int adxl355_set_calibbias(struct adxl355_data *data,
+> +				 int channel2, int calibbias)
+> +{
+> +	int ret = 0;
+> +
+> +	data->transf_buf[0] = (calibbias >> 8) & 0xFF;
+> +	data->transf_buf[1] = calibbias & 0xFF;
+
+One more case for put_unaligned_be16(). If you don't do it now, it'll get picked
+up by one of the people who really like clearing this stuff up the moment it goes
+upstream anyway.
+
+> +	data->transf_buf[2] = 0;
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> +	if (ret < 0)
+> +		goto out_unlock;
+> +
+> +	switch (channel2) {
+I mention below that you should consider using an enum in the chan->address field and having
+done that, use it to index into an array of structures that have the registers,
+plus you can also use it to index into
+data->calibbias[3].
+
+That changes this code to look something like
+enum adxl355_chans {
+	chan_x, chan_y, chan_z
+};
+struct adxl355_chan_info {
+	u8 data_reg;
+	u8 offset_reg;
+};
+
+static const struct adxl355_chan_info adxl355_chans[] = {
+	[chan_x] = {
+		...
+	},
+	[chan_y] = {...
+};
+
+	ret = regmap_bulk_write(data->regmap, adxl355_chan_info[chan].offset_reg,
+				data_trans_buf, 2);
+	if (ret < 0)
+		goto out_unlock;
+	data->calibbias[chan] = calibbias;
+	...
+
+So you move a lot of the information about the device into static tables rather
+than dynamic code.  Things tend to end up simpler that way.
+
+The case for this modification in this particular driver is lower than many because
+it only really has a couple of per channel registers, but I think it still worth doing
+(at least partly because other people may well copy your code in future!)
+
+> +	case IIO_MOD_X:
+> +		ret = regmap_bulk_write(data->regmap, ADXL355_OFFSET_X_H,
+> +					data->transf_buf, 2);
+> +		if (ret < 0)
+> +			goto out_unlock;
+> +		data->x_calibbias = calibbias;
+> +		break;
+> +	case IIO_MOD_Y:
+> +		ret = regmap_bulk_write(data->regmap, ADXL355_OFFSET_Y_H,
+> +					data->transf_buf, 2);
+> +		if (ret < 0)
+> +			goto out_unlock;
+> +		data->y_calibbias = calibbias;
+> +		break;
+> +	case IIO_MOD_Z:
+> +		ret = regmap_bulk_write(data->regmap, ADXL355_OFFSET_Z_H,
+> +					data->transf_buf, 2);
+> +		if (ret < 0)
+> +			goto out_unlock;
+> +		data->z_calibbias = calibbias;
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +
+> +out_unlock:
+> +	ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+> +	mutex_unlock(&data->lock);
+> +	return ret;
+> +}
+> +
+> +static int adxl355_read_raw(struct iio_dev *indio_dev,
+> +			    struct iio_chan_spec const *chan,
+> +			    int *val, int *val2, long mask)
+> +{
+> +	struct adxl355_data *data = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_RAW:
+> +		switch (chan->type) {
+> +		case IIO_TEMP:
+> +			ret = adxl355_get_temp_data(data, chan->address);
+> +			if (ret < 0)
+> +				return ret;
+> +			*val = get_unaligned_be16(data->transf_buf);
+> +
+> +			return IIO_VAL_INT;
+> +		case IIO_ACCEL:
+> +			ret = adxl355_read_axis(data, chan->address);
+> +			if (ret < 0)
+> +				return ret;
+> +			*val = sign_extend32(ret >> (chan->scan_type.shift),
+
+Drop the extra brackets.
+
+> +					     chan->scan_type.realbits - 1);
+> +			return IIO_VAL_INT;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +
+> +	case IIO_CHAN_INFO_SCALE:
+> +		switch (chan->type) {
+> +		case IIO_TEMP:
+> +			*val = TEMP_SCALE_VAL;
+> +			*val2 = TEMP_SCALE_VAL2;
+> +			return IIO_VAL_INT_PLUS_MICRO;
+> +		case IIO_ACCEL:
+> +			*val = 0;
+> +			*val2 = ADXL355_NSCALE;
+> +			return IIO_VAL_INT_PLUS_NANO;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	case IIO_CHAN_INFO_OFFSET:
+> +		*val = TEMP_OFFSET_VAL;
+> +		*val2 = TEMP_OFFSET_VAL2;
+> +		return IIO_VAL_INT_PLUS_MICRO;
+> +	case IIO_CHAN_INFO_CALIBBIAS:
+> +		if (chan->channel2 == IIO_MOD_X)
+> +			*val = data->x_calibbias;
+> +		else if (chan->channel2 == IIO_MOD_Y)
+> +			*val = data->y_calibbias;
+> +		else
+> +			*val = data->z_calibbias;
+
+Whilst it is clearly more code, a switch statement would be
+better here as it would make it clear there are 3 valid options to
+pick between.
+
+> +		*val = sign_extend32(*val, 15);
+> +		return IIO_VAL_INT;
+> +	case IIO_CHAN_INFO_SAMP_FREQ:
+> +		*val = adxl355_odr_table[data->odr][0];
+> +		*val2 = adxl355_odr_table[data->odr][1];
+> +		return IIO_VAL_INT_PLUS_MICRO;
+> +	case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
+> +		*val = data->adxl355_hpf_3db_table[data->hpf_3db][0];
+> +		*val2 = data->adxl355_hpf_3db_table[data->hpf_3db][1];
+> +		return IIO_VAL_INT_PLUS_MICRO;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int adxl355_write_raw(struct iio_dev *indio_dev,
+> +			     struct iio_chan_spec const *chan,
+> +			     int val, int val2, long mask)
+> +{
+> +	struct adxl355_data *data = iio_priv(indio_dev);
+> +	int odr_idx, hpf_idx, calibbias;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_SAMP_FREQ:
+> +		odr_idx = adxl355_find_match(adxl355_odr_table,
+> +					     ARRAY_SIZE(adxl355_odr_table),
+> +					     val, val2);
+> +		if (odr_idx < 0)
+> +			return odr_idx;
+> +
+> +		return adxl355_set_odr(data, odr_idx);
+> +	case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
+> +		hpf_idx = adxl355_find_match(data->adxl355_hpf_3db_table,
+> +					ARRAY_SIZE(data->adxl355_hpf_3db_table),
+> +					     val, val2);
+> +		if (hpf_idx < 0)
+> +			return hpf_idx;
+> +
+> +		return adxl355_set_hpf_3db(data, hpf_idx);
+> +	case IIO_CHAN_INFO_CALIBBIAS:
+> +		calibbias = clamp_t(int, val, S16_MIN, S16_MAX);
+> +
+> +		return adxl355_set_calibbias(data, chan->channel2, calibbias);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int adxl355_read_avail(struct iio_dev *indio_dev,
+> +			      struct iio_chan_spec const *chan,
+> +			      const int **vals, int *type, int *length,
+> +			      long mask)
+> +{
+> +	struct adxl355_data *data = iio_priv(indio_dev);
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_SAMP_FREQ:
+> +		*vals = (const int *)adxl355_odr_table;
+> +		*type = IIO_VAL_INT_PLUS_MICRO;
+> +		/* Values are stored in a 2D matrix */
+> +		*length = ARRAY_SIZE(adxl355_odr_table) * 2;
+> +
+> +		return IIO_AVAIL_LIST;
+> +	case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
+> +		*vals = (const int *)(data->adxl355_hpf_3db_table);
+
+Extra brackets not needed (see the equivalent for *vals above).
+
+> +		*type = IIO_VAL_INT_PLUS_MICRO;
+> +		/* Values are stored in a 2D matrix */
+> +		*length = ARRAY_SIZE(data->adxl355_hpf_3db_table) * 2;
+> +
+> +		return IIO_AVAIL_LIST;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static const unsigned long adxl355_avail_scan_masks[] = {
+> +	GENMASK(3, 0),
+> +	0
+> +};
+> +
+> +static const struct iio_info adxl355_info = {
+> +	.read_raw	= adxl355_read_raw,
+> +	.write_raw	= adxl355_write_raw,
+> +	.read_avail	= &adxl355_read_avail
+> +};
+> +
+> +#define ADXL355_ACCEL_CHANNEL(index, reg, axis) {			\
+> +	.type = IIO_ACCEL,						\
+> +	.address = reg,							\
+> +	.modified = 1,							\
+> +	.channel2 = IIO_MOD_##axis,					\
+> +	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |			\
+> +			      BIT(IIO_CHAN_INFO_CALIBBIAS),		\
+> +	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) |		\
+> +				    BIT(IIO_CHAN_INFO_SAMP_FREQ) |	\
+> +		BIT(IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY),	\
+> +	.info_mask_shared_by_type_available =				\
+> +		BIT(IIO_CHAN_INFO_SAMP_FREQ) |				\
+> +		BIT(IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY),	\
+> +	.scan_index = index,						\
+> +	.scan_type = {							\
+> +		.sign = 's',						\
+> +		.realbits = 20,						\
+> +		.storagebits = 32,					\
+> +		.shift = 4,						\
+> +		.endianness = IIO_BE,					\
+> +	}								\
+> +}
+> +
+> +static const struct iio_chan_spec adxl355_channels[] = {
+> +	ADXL355_ACCEL_CHANNEL(0, ADXL355_XDATA3, X),
+
+Rather than directly using the data register, I would suggest some indirection.
+So instead use an enum value here, and then index into a static const array
+of structures that provide everything register specific.  That will give
+you a clean way to later support things like the per axis offsets,
+
+> +	ADXL355_ACCEL_CHANNEL(1, ADXL355_YDATA3, Y),
+> +	ADXL355_ACCEL_CHANNEL(2, ADXL355_ZDATA3, Z),
+> +	{
+> +		.type = IIO_TEMP,
+> +		.address = ADXL355_TEMP2,
+> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> +				      BIT(IIO_CHAN_INFO_SCALE) |
+> +				      BIT(IIO_CHAN_INFO_OFFSET),
+> +		.scan_index = 3,
+
+Keep the introduction of scan_index for when you add buffer support.
+
+> +		.scan_type = {
+> +			.sign = 's',
+> +			.realbits = 12,
+> +			.storagebits = 16,
+> +			.endianness = IIO_BE,
+
+Given you do use some of the scan_type fields already, I guess keeping the
+rest isn't too bad..
+
+> +		},
+> +	}
+> +};
+> +
+> +int adxl355_core_probe(struct device *dev, struct regmap *regmap,
+> +		       const char *name)
+> +{
+> +	struct adxl355_data *data;
+> +	struct iio_dev *indio_dev;
+> +	int ret;
+> +
+> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
+> +	if (!indio_dev)
+> +		return -ENOMEM;
+> +
+> +	data = iio_priv(indio_dev);
+> +	data->regmap = regmap;
+> +	data->dev = dev;
+> +	data->op_mode = ADXL355_STANDBY;
+> +	mutex_init(&data->lock);
+> +
+> +	indio_dev->name = name;
+> +	indio_dev->info = &adxl355_info;
+> +	indio_dev->modes = INDIO_DIRECT_MODE;
+> +	indio_dev->channels = adxl355_channels;
+> +	indio_dev->num_channels = ARRAY_SIZE(adxl355_channels);
+> +	indio_dev->available_scan_masks = adxl355_avail_scan_masks;
+
+Please leave introducing available_scan_masks until it can be part of the
+patch adding buffered support.  That way we'll know there are restrictions on it
+whilst reading that patch.
+
+> +
+> +	ret = adxl355_setup(data);
+> +	if (ret < 0) {
+> +		dev_err(dev, "ADXL355 setup failed\n");
+> +		return ret;
+> +	}
+> +
+> +	return devm_iio_device_register(dev, indio_dev);
+> +}
+> +EXPORT_SYMBOL_GPL(adxl355_core_probe);
+> +
+> +MODULE_AUTHOR("Puranjay Mohan <puranjay12@gmail.com>");
+> +MODULE_DESCRIPTION("ADXL355 3-Axis Digital Accelerometer core driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/iio/accel/adxl355_i2c.c b/drivers/iio/accel/adxl355_i2c.c
+> new file mode 100644
+> index 000000000..6b84d8df2
+> --- /dev/null
+> +++ b/drivers/iio/accel/adxl355_i2c.c
+> @@ -0,0 +1,63 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * ADXL355 3-Axis Digital Accelerometer I2C driver
+> + *
+> + * Copyright (c) 2021 Puranjay Mohan <puranjay12@gmail.com>
+> + */
+> +
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +#include <linux/regmap.h>
+> +
+> +#include "adxl355.h"
+> +
+> +static const struct regmap_config adxl355_i2c_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.max_register = 0x2F,
+> +	.rd_table = &adxl355_readable_regs_tbl,
+> +	.wr_table = &adxl355_writeable_regs_tbl
+> +};
+> +
+> +static int adxl355_i2c_probe(struct i2c_client *client)
+> +{
+> +	struct regmap *regmap;
+> +
+> +	regmap = devm_regmap_init_i2c(client, &adxl355_i2c_regmap_config);
+> +	if (IS_ERR(regmap)) {
+> +		dev_err(&client->dev, "Error initializing i2c regmap: %ld\n",
+> +			PTR_ERR(regmap));
+> +		return PTR_ERR(regmap);
+> +	}
+> +
+> +	return adxl355_core_probe(&client->dev, regmap, client->name);
+> +}
+> +
+> +static const struct i2c_device_id adxl355_i2c_id[] = {
+> +	{ "adxl355", 0 },
+> +	{ }
+> +};
+> +
+> +MODULE_DEVICE_TABLE(i2c, adxl355_i2c_id);
+> +
+> +static const struct of_device_id adxl355_of_match[] = {
+> +	{ .compatible = "adi,adxl355" },
+> +	{ }
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, adxl355_of_match);
+> +
+> +static struct i2c_driver adxl355_i2c_driver = {
+> +	.driver = {
+> +		.name	= "adxl355_i2c",
+> +		.of_match_table = adxl355_of_match,
+> +	},
+> +	.probe_new	= adxl355_i2c_probe,
+> +	.id_table	= adxl355_i2c_id,
+> +};
+> +
+> +module_i2c_driver(adxl355_i2c_driver);
+> +
+> +MODULE_AUTHOR("Puranjay Mohan <puranjay12@gmail.com>");
+> +MODULE_DESCRIPTION("ADXL355 3-Axis Digital Accelerometer I2C driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/iio/accel/adxl355_spi.c b/drivers/iio/accel/adxl355_spi.c
+> new file mode 100644
+> index 000000000..108d1b308
+> --- /dev/null
+> +++ b/drivers/iio/accel/adxl355_spi.c
+> @@ -0,0 +1,66 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * ADXL355 3-Axis Digital Accelerometer SPI driver
+> + *
+> + * Copyright (c) 2021 Puranjay Mohan <puranjay12@gmail.com>
+> + */
+> +
+> +#include <linux/module.h>
+
+Good to also include mod_devicetable.h in both the i2c and spi parts for
+the id tables.
+
+> +#include <linux/regmap.h>
+> +#include <linux/spi/spi.h>
+> +
+> +#include "adxl355.h"
+> +
+> +static const struct regmap_config adxl355_spi_regmap_config = {
+> +	.reg_bits = 7,
+> +	.pad_bits = 1,
+> +	.val_bits = 8,
+> +	.read_flag_mask = BIT(0),
+> +	.max_register = 0x2F,
+> +	.rd_table = &adxl355_readable_regs_tbl,
+> +	.wr_table = &adxl355_writeable_regs_tbl
+> +};
+> +
+> +static int adxl355_spi_probe(struct spi_device *spi)
+> +{
+> +	const struct spi_device_id *id = spi_get_device_id(spi);
+> +	struct regmap *regmap;
+> +
+> +	regmap = devm_regmap_init_spi(spi, &adxl355_spi_regmap_config);
+> +	if (IS_ERR(regmap)) {
+> +		dev_err(&spi->dev, "Error initializing spi regmap: %ld\n",
+> +			PTR_ERR(regmap));
+> +		return PTR_ERR(regmap);
+> +	}
+> +
+> +	return adxl355_core_probe(&spi->dev, regmap, id->name);
+> +}
+> +
+> +static const struct spi_device_id adxl355_spi_id[] = {
+> +	{ "adxl355", 0 },
+> +	{ }
+> +};
+> +
+> +MODULE_DEVICE_TABLE(spi, adxl355_spi_id);
+> +
+> +static const struct of_device_id adxl355_of_match[] = {
+> +	{ .compatible = "adi,adxl355" },
+> +	{ }
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, adxl355_of_match);
+> +
+> +static struct spi_driver adxl355_spi_driver = {
+> +	.driver = {
+> +		.name	= "adxl355_spi",
+> +		.of_match_table = adxl355_of_match,
+> +	},
+> +	.probe		= adxl355_spi_probe,
+> +	.id_table	= adxl355_spi_id,
+> +};
+> +
+> +module_spi_driver(adxl355_spi_driver);
+> +
+> +MODULE_AUTHOR("Puranjay Mohan <puranjay12@gmail.com>");
+> +MODULE_DESCRIPTION("ADXL355 3-Axis Digital Accelerometer SPI driver");
+> +MODULE_LICENSE("GPL v2");
+
