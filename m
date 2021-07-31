@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6213DC311
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 06:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D133DC312
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 06:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229555AbhGaEE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 00:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44544 "EHLO
+        id S231613AbhGaEF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 00:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhGaEE0 (ORCPT
+        with ESMTP id S229454AbhGaEFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 00:04:26 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F86EC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 21:04:19 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id f6so8044512ioc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 21:04:19 -0700 (PDT)
+        Sat, 31 Jul 2021 00:05:55 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052B7C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 21:05:49 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id k4-20020a17090a5144b02901731c776526so23571626pjm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 21:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZFmzRvrQwwX+/h5T5pEHk6Y9rzp+9zbf/fzAExZsDUs=;
-        b=ByDAtRrTejpUQn1ptsavPV5TqWsShnWxLIUUnQGbO8wetrhp+7fwCXl/tUk+a48ojP
-         wHMNDd5ICBsX7VxtJPbE+nOGBb25m8zC9e4wKVGaj6F450uWc9Cyzdt5BNha9AG9P29x
-         SAQ5Tv0znx3sw8topp2ax9llpLOUB7V+onfECLECVLjgzdrlRxGEPmQCzdaDoutxjzPy
-         VTR3vMCMpQvNbeKwmHnhb9TYUNMI28LGf9Hp/QBDjRu3Z/dBd5GrmsJ15OMolioT7zIE
-         hdRBLvRf7oZp7KQieTTwl5PpHo4DIlPmJNM9dBABnVAFVGQwhKoIcGAmv+IHNOcCm38G
-         WsDg==
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=VFXOOTn/Vn4wZYYve4ASVb/HHzXMtsmmCHHBTxOGsvA=;
+        b=sLP19dreR3fqB84FUJE8d2g6cKKyeCBFloWtY579h/6SgMebVOowmEV4wiedpKaRVs
+         cS8qMrRmvv0IwGaeuvEmNrNDVHyARI8tBPM/HjVKUo1dv9CEKmZZ8RJCWzM1VkqtrhNo
+         Y9/q+zdJeQbJl+gcod8zZLVlnDOUC7oLOD122eRZ9gK4l5r89UeqvTP+kDL4luB0TdYA
+         pIzBwG8ASjM9fg/Ibmx7hrr2b4BS/urcpsGYos5Aa5/VzJvR99PTU8hQueXVdZjZSQXz
+         3GsFeuawMS5FjY47pwATwFNmbLCBI7OZRd19gYWz5Cj6AhQmFlYngLiMBrZjNVuYoV5z
+         rLtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZFmzRvrQwwX+/h5T5pEHk6Y9rzp+9zbf/fzAExZsDUs=;
-        b=ZkB2dm18L6NKHZdYAudR0oUpD6JfsCFm/1Kw/xkBAmt18TVO0Fg/fLwTZoOwTd7Agz
-         wqMZzgIwDUCbdRs0kUqVTkAf97IQvZbvY0LhxmMP2wH7LJncP8tqnUoDyZCoga3bPVAe
-         Kbuul95pVn7a1DXwB5P5jsal+zpayshWQAf+uu0cjLgit7fAy3LoPFsMqOMqhCtKlSut
-         IEHMwucm9Sfb62EQC/kNfd8xi+iGoOycvqqc6iO/04l7e1JzXX3mCuPB8Uw1uUQ42Pnh
-         Lh2GeU8RzBvqNPp0MCe6OTIKX7M/acS7HHDxzRu3L/o0J3geHFu7VU1JoSSEgTTHp99i
-         Fwag==
-X-Gm-Message-State: AOAM531qtKDRllajSySE6tjjlBqaRcc+r7VIuq6sZw7RYrXfqULa/bRv
-        a4x/RlMzTSZ43MAgus3RctqyBbKypPc3sZNfYVMGDiKgeqQ=
-X-Google-Smtp-Source: ABdhPJwY3j+LM5B6toBq9lu8MGJoV4JDSVu8zpnYQkps2H8n0WGIKR+RVJmqF922K1TxIS0ed5QMXZ4HuRFNkqHSU+M=
-X-Received: by 2002:a05:6638:204c:: with SMTP id t12mr4753823jaj.129.1627704259008;
- Fri, 30 Jul 2021 21:04:19 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=VFXOOTn/Vn4wZYYve4ASVb/HHzXMtsmmCHHBTxOGsvA=;
+        b=X29ikFlNhgxxLpRebxXXEzKr+YDDesLBK1WW66ufKyhDlthXY4lt6edQYc3JYfUC+V
+         B4xsCR70QXPSzYaU5wdf9TEM4zQtibQtZgfpSyg6WMgJY4AAqdwa5uf8T2aP+n3vlhgc
+         lx4vOa/sXuRilyJs5bBa98YrKt67Axf1J852YC6HgeZefGaz8lsGUBCvpyM5L9a5+BPf
+         vBHE83pdIcSltpc1AxGteyvyLkMql48P6i2eeZfNQ1z4AoxKFwNq1xAiOvD+RySmVuAH
+         mB9yc71kX/6NS94mIQ0CeN0Ki4mMywdMQih3qotmjIH9Kc9ySu3FEIqHPvAGK14nAhYe
+         iYGQ==
+X-Gm-Message-State: AOAM530uzhMl90uhYVAhQm8IkBcU/55QxgOyGDmke1dD452+xhvw6kJP
+        m81O7PRxavKTYY6e0EXTwbM=
+X-Google-Smtp-Source: ABdhPJzaAo2Op1LNut0Z98WmyNuIKcEFNkrZ5JV3ZnBHASVQBzU/8t+3IAryF8kG1yC3vJT2e68O5Q==
+X-Received: by 2002:a62:7b86:0:b029:32b:364a:e7e4 with SMTP id w128-20020a627b860000b029032b364ae7e4mr5848448pfc.49.1627704348615;
+        Fri, 30 Jul 2021 21:05:48 -0700 (PDT)
+Received: from [10.106.0.50] ([45.135.186.29])
+        by smtp.gmail.com with ESMTPSA id h16sm3564511pfn.215.2021.07.30.21.05.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 21:05:48 -0700 (PDT)
+To:     dwmw2@infradead.org, richard@nod.at
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com
+From:   Li Tuo <islituo@gmail.com>
+Subject: [BUG] jffs2: possible null-pointer dereference in
+ jffs2_scan_dirty_space()
+Message-ID: <c5849781-7fb9-28ca-03dd-fdd6e240c5bb@gmail.com>
+Date:   Sat, 31 Jul 2021 12:05:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <4336554.LvFx2qVVIh@kreacher>
-In-Reply-To: <4336554.LvFx2qVVIh@kreacher>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Fri, 30 Jul 2021 21:04:10 -0700
-Message-ID: <CAAYoRsX+NnOom6f7s6=xOM8rwa_S6tPaQyReYfgDGU4wDkG2uQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] cpuidle: teo: Fix selection when idle state 0 is disabled
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 7:39 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> Hi,
->
-> Patch [1/2] fixes idle state selection in the teo governor when idle state 0
-> is disabled (which is broken after recent changes in that governor) and patch
-> [2/2] renames two local variables on top of that change.
->
-> Please see the patch changelogs for details.
+Hello,
 
-Hi Rafael,
+Our static analysis tool finds a possible null-pointer dereference in 
+the jffs2 driver in Linux 5.14.0-rc3:
 
-I tested this version of the patches, and the idle state 0
-disabled issue has been fixed.
+The variable jeb->last_node is checked in:
+673:    if (jeb->last_node && ref_obsolete(jeb->last_node))
 
-... Doug
+This indicates that jeb->last_node can be NULL.
+If so, the function jffs2_link_node_ref() is called with the argument jeb:
+685:    jffs2_link_node_ref(c, jeb, ofs, size, NULL);
+
+In the called function, jeb->last_node is assigned to the pointer ref, 
+which means ref is also NULL.
+However, the possible NULL pointer ref is dereferenced in some 
+statements such as:
+597:    dbg_noderef("Last node at %p is (%08x,%p)\n", ref, 
+ref->flash_offset, ref->next_in_ino);
+600:    while (ref->flash_offset != REF_EMPTY_NODE)
+
+I am not quite sure whether this possible null-pointer dereference is 
+real and how to fix it if it is real.
+Any feedback would be appreciated, thanks!
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+
+Best wishes,
+Tuo Li
