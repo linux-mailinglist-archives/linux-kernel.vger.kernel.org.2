@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F993DC889
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 00:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764D03DC88D
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 00:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbhGaWFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 18:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbhGaWFT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 18:05:19 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1646C061796
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 15:05:12 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id a7so18315772ljq.11
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 15:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eavS7+nVlKa3pE/nMERuVdSNOcLN0CSyw0CYPXJs2RE=;
-        b=oxTawDKtE7gUMCEZTGVhmlVv2Y3WYDP+FS3lOaHPAgoD7WcgQjYd0RzzaaCmE3977P
-         y2AZlp+prHKgerutQ7jx1R/cVL6lbK+WzauqEJucT+Izj+ziz0I0tc0O+XwvtPwksIj1
-         ukvPhZPy1rocK17IvtjWMFHZ1JmoIIqK4FLNFIt716WQ3Pie0UvlUCbiTbUjKG2RTcHV
-         7aLptfufBWxUeUNmjY6/SgCFLiwOzAyRIGpCOm9JFIGiWEdzkbX1t7kvgcWoJlruvGQV
-         TNKC7K+DYoXaKkZDcceTWufkpcffdIMAe8eG+6751qHasEPk6w4m+/EI6Gd9NCUzZuvT
-         oxzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eavS7+nVlKa3pE/nMERuVdSNOcLN0CSyw0CYPXJs2RE=;
-        b=nC6Z7MibhWWrFeCxSQI/4doA/WVoLKwE9XBOZjwxXlhKJF+EANJ58eAkadsDbU8aYK
-         iJH5XQ0sL1IO6/d/b6P7sdys1QqF46OdlnE6kbivViP3qOSMr0+Yf7YnsAyT5gVKQNZM
-         RbnF0sNCdVoM9e/JGGDx3HFDO5poZYKEVOD7SsEpKrBrOTNJnI5ybu0dmXSLFa2+07tH
-         1VSNh9EiNaYV1LtukQ8tlrchbZ3Ttz3a7rVFI9nrrqzX7gi58Zq9AV2++hE1f07R1WAu
-         NCu2OAY9horAgX+MSJUCb87RK1/CqnZjtYTrPDUj14rIdgQMx8DcpkjLFQTs1n8dEwDZ
-         cKEg==
-X-Gm-Message-State: AOAM532pQm702PDbTR+LXNHfF6T6csqb9SrBMylyyp3gFc+EI3OkDX/P
-        o9IN1ZJ3azSLmhdyEhH1QTAypo52lu1gXVqU7UYQmA==
-X-Google-Smtp-Source: ABdhPJwTjpbUeZT+xrHLeSR/vD0UodSpw43lXDmx8pJiyALETra8HqJRQTMUGT7mTfcqIT7xDGsd2Eo06KRRqoQp1Bw=
-X-Received: by 2002:a2e:bc14:: with SMTP id b20mr6401323ljf.200.1627769110442;
- Sat, 31 Jul 2021 15:05:10 -0700 (PDT)
+        id S231823AbhGaWFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 18:05:38 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55516 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229560AbhGaWFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 18:05:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=MXXfRvh2b8PuxEin99HbUG03NW+7u7VDu/JhwY7Oahw=; b=JDDyCJR0fdSb+1ODOJF5+hSOnT
+        v11BkeW3mVAMkJ2EPrwQ92ONytPZrg7bc7/3Twl3CDkS2N5XpKVLX3jmuncT5/1OmjZQ+6dKQZziV
+        gusFgRTyA3EW+I6bENx3UlNUEFk51iNsgXUq/b2NYT5m6zgtCW+nJc4VqP+kzFHT1EhE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m9x6a-00Ff1q-2F; Sun, 01 Aug 2021 00:05:16 +0200
+Date:   Sun, 1 Aug 2021 00:05:16 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
+        netdev@vger.kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
+ for microchip lan937x
+Message-ID: <YQXJHA+z+hXjxe6+@lunn.ch>
+References: <20210723173108.459770-1-prasanna.vengateshan@microchip.com>
+ <20210723173108.459770-6-prasanna.vengateshan@microchip.com>
+ <20210731150416.upe5nwkwvwajhwgg@skbuf>
 MIME-Version: 1.0
-References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
-In-Reply-To: <20210726115058.23729-1-nikita.shubin@maquefel.me>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 1 Aug 2021 00:04:59 +0200
-Message-ID: <CACRpkdYeqJFFwkc6pfSrz3-gaN_PjjV52jstqzR2sMa+bxbMuQ@mail.gmail.com>
-Subject: Re: [PATCH 0/8] arm: ep93xx: CCF conversion
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
-        <dmaengine@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        "open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)..." 
-        <linux-input@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, YiFei Zhu <yifeifz2@illinois.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210731150416.upe5nwkwvwajhwgg@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 1:51 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+> > +void lan937x_mac_config(struct ksz_device *dev, int port,
+> > +			phy_interface_t interface)
+> > +{
+> > +	u8 data8;
+> > +
+> > +	lan937x_pread8(dev, port, REG_PORT_XMII_CTRL_1, &data8);
+> > +
+> > +	/* clear MII selection & set it based on interface later */
+> > +	data8 &= ~PORT_MII_SEL_M;
+> > +
+> > +	/* configure MAC based on interface */
+> > +	switch (interface) {
+> > +	case PHY_INTERFACE_MODE_MII:
+> > +		lan937x_config_gbit(dev, false, &data8);
+> > +		data8 |= PORT_MII_SEL;
+> > +		break;
+> > +	case PHY_INTERFACE_MODE_RMII:
+> > +		lan937x_config_gbit(dev, false, &data8);
+> > +		data8 |= PORT_RMII_SEL;
+> > +		break;
+> > +	case PHY_INTERFACE_MODE_RGMII:
+> > +	case PHY_INTERFACE_MODE_RGMII_ID:
+> > +	case PHY_INTERFACE_MODE_RGMII_TXID:
+> > +	case PHY_INTERFACE_MODE_RGMII_RXID:
+> > +		lan937x_config_gbit(dev, true, &data8);
+> > +		data8 |= PORT_RGMII_SEL;
+> > +
+> > +		/* Add RGMII internal delay for cpu port*/
+> > +		if (dsa_is_cpu_port(dev->ds, port)) {
+> 
+> Why only for the CPU port? I would like Andrew/Florian to have a look
+> here, I guess the assumption is that if the port has a phy-handle, the
+> RGMII delays should be dealt with by the PHY, but the logic seems to be
+> "is a CPU port <=> has a phy-handle / isn't a CPU port <=> doesn't have
+> a phy-handle"? What if it's a fixed-link port connected to a downstream
+> switch, for which this one is a DSA master?
 
-> This series series of patches converts ep93xx to Common Clock Framework.
->
-> It consists of preparation patches to use clk_prepare_enable where it is
-> needed, instead of clk_enable used in ep93xx drivers prior to CCF and
-> a patch converting mach-ep93xx/clock.c to CCF.
->
-> Link: https://lore.kernel.org/patchwork/cover/1445563/
-> Link: https://lore.kernel.org/patchwork/patch/1435884/
->
-> Alexander Sverdlin (7):
->   iio: ep93xx: Prepare clock before using it
->   spi: spi-ep93xx: Prepare clock before using it
->   Input: ep93xx_keypad: Prepare clock before using it
->   video: ep93xx: Prepare clock before using it
->   dmaengine: ep93xx: Prepare clock before using it
->   ASoC: cirrus: i2s: Prepare clock before using it
->   pwm: ep93xx: Prepare clock before using it
->
-> Nikita Shubin (1):
->   ep93xx: clock: convert in-place to COMMON_CLK
+The marvell driver applies delays unconditionally. And as far as i
+remember, it is only used in the use case you suggest, a DSA link,
+which is using RGMII. For marvell switches, that is pretty unusual,
+most boards use 1000BaseX or higher SERDES speeds for links between
+switches.
 
-This series is looking very good.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I'm not sure if we have the case of an external PHY using RGMII. I
+suspect it might actually be broken, because i think both the MAC and
+the PHY might add the same delay. For phylib in general, if the MAC
+applies the delays, it needs to manipulate the value passed to the PHY
+so it also does not add delays. And i'm not sure DSA does that.
 
-I suppose the per-subsystem patches can be picked up by
-each subsystem maintainer and then you can send the "big patch"
-to the SoC tree.
+So limiting RGMII delays to only the CPU port is not
+unreasonable. However, i suspect you are correct about chained
+switches not working.
 
-Yours,
-Linus Walleij
+We might need to look at this at a higher level, when the PHY is
+connected to the MAC and what mode gets passed to it.
+ 
+> > +			if (interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> > +			    interface == PHY_INTERFACE_MODE_RGMII_RXID)
+> > +				data8 |= PORT_RGMII_ID_IG_ENABLE;
+> > +
+> > +			if (interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> > +			    interface == PHY_INTERFACE_MODE_RGMII_TXID)
+> > +				data8 |= PORT_RGMII_ID_EG_ENABLE;
+> > +		}
+> > +		break;
+> > +	default:
+> > +		dev_err(dev->dev, "Unsupported interface '%s' for port %d\n",
+> > +			phy_modes(interface), port);
+> > +		return;
+> > +	}
+> > +
+> > +	/* Write the updated value */
+> > +	lan937x_pwrite8(dev, port, REG_PORT_XMII_CTRL_1, data8);
+> > +}
+> 
+> > +static int lan937x_mdio_register(struct dsa_switch *ds)
+> > +{
+> > +	struct ksz_device *dev = ds->priv;
+> > +	int ret;
+> > +
+> > +	dev->mdio_np = of_get_child_by_name(ds->dev->of_node, "mdio");
+> 
+> So you support both the cases where an internal PHY is described using
+> OF bindings, and where the internal PHY is implicitly accessed using the
+> slave_mii_bus of the switch, at a PHY address equal to the port number,
+> and with no phy-handle or fixed-link device tree property for that port?
+> 
+> Do you need both alternatives? The first is already more flexible than
+> the second.
+
+The first is also much more verbose in DT, and the second generally
+just works without any DT. What can be tricky with the second is
+getting PHY interrupts to work, but it is possible, the mv88e6xxx does
+it.
+
+	Andrew
