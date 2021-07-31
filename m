@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FA53DC407
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D91B3DC40B
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 08:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237180AbhGaGeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 02:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51462 "EHLO
+        id S232191AbhGaGhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 02:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbhGaGeU (ORCPT
+        with ESMTP id S229683AbhGaGg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 02:34:20 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B600C06175F;
-        Fri, 30 Jul 2021 23:34:13 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so23904361pja.5;
-        Fri, 30 Jul 2021 23:34:13 -0700 (PDT)
+        Sat, 31 Jul 2021 02:36:59 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0E5C06175F;
+        Fri, 30 Jul 2021 23:36:52 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t21so13625632plr.13;
+        Fri, 30 Jul 2021 23:36:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=to:cc:from:subject:message-id:date:user-agent:mime-version
          :content-transfer-encoding:content-language;
-        bh=nwHZHKPyHdulVpG6nZp/fHzmawIMoWKSVKxMeN3+CoI=;
-        b=nZszvoxugr7/mJ4QS2quqa6R7rKRH8itdwlZUuyWTz3JIkRr3p9w0c7NFQWw9drwky
-         3E6zUdRt0BWtpzvO1h/hQnwcIqmr0AYTnl3FPR1RhQnCbCEPIZTBwOOj0J8Z6SM6/4G1
-         zhd6B/NXeZTO3YffD7B3W6EXVAWhctXcRzh/WqpsUTVZ8ZI66Cql7frjRn4I9fqyj7Ny
-         Igl2h9K1NW+PxESbMKhNqRnc0hdC/GLLmnfWdSMjb5XtNan7OsIOWWgoSPF+TmwddUwV
-         EZzWX1jrT9iLmvcLQa7+xw7P/pBr7FOuSUbYu/S1vW2yoXv2tkdtaj7y2+ncZD/8q7gz
-         sqWQ==
+        bh=wgaZg1d2VQvo5M33uwm7icAweaDqnNdVOHZDjGVcFWg=;
+        b=bLU5TlUe+SxHZIB1E4/5xntNAT7SXemPH3hFQiUB99Yfk1RcA8tc7Ri2PfEUTiBTVb
+         8seQXyOEXqnccwB/tyb2V8G4cF4/u7GrQZZ/aC0qIxLp2zWPczyb+s5qrkcAAMj8EtiC
+         i3FUFJpKUVHXknfaMj7FzOas11u8/kYynKyNAljg7kn8rhnGAuvV86PSBRjIWKKv7cvb
+         ZS5TS+URuXa+tcLFSzhTUXzYxrrPKC0tCLt3Sp8Tw44PRlVkVaZ4vnthMTFVaIjmeuCY
+         eYZNMYyGtOKwKGeG+lnK2XU17H3uytSu6s05xvy6OAUiu/l9tjTU4ZvzDHAleV3Z2bkG
+         0WEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
          :mime-version:content-transfer-encoding:content-language;
-        bh=nwHZHKPyHdulVpG6nZp/fHzmawIMoWKSVKxMeN3+CoI=;
-        b=URnQJ5z/4jgjHDGtxjA5Y8LRZwK0x+WW86iHY9J9eZ8qdXzDXdAxKKCenbXcRkVtZi
-         t6vmAWX0U2eSTPH54tOdm5DYRupW2mjZwMuc3fld45sWRbtDAujMEsFoGbmIJJErwIR9
-         8bWBp9WbEsiB/S5b0a9K0vLshym+lhhrcOSgwyDfa+1H7bYz6Yf980IjQVkCAljEJDcs
-         gNM3K+jXblYrDlKaK36vHPiMH4/omQYJ52RaUfzjzqhryTx5g7MKSvOp0XXKXKI58f69
-         0NBbCSFVX6fIForrjZXqnijUsMT3KYGUNxeYE80Fe/TSjgUdKX1VjGSvf0Apk1Uswj09
-         Agrg==
-X-Gm-Message-State: AOAM531KDDuXd8R2aWJjkjtKWY//t0SDZu1IpYZ8GsymvnDXVKrYPkCV
-        D0Srtkb3WG5e6i7u7bfIzhg=
-X-Google-Smtp-Source: ABdhPJw5aaSdBOA/B22KmWjK7ZemAJJrWlxSuRwt1dUh6nh9ejaJZSIA/kWgMbDU7K6686nV3CqBFg==
-X-Received: by 2002:a65:6a52:: with SMTP id o18mr2433953pgu.414.1627713253034;
-        Fri, 30 Jul 2021 23:34:13 -0700 (PDT)
+        bh=wgaZg1d2VQvo5M33uwm7icAweaDqnNdVOHZDjGVcFWg=;
+        b=AOki4Bei9OiiC93Ke0yhPZpJ/KsZ/ip8O1BEOwDH38C4JRSudb4nS9AlQO+8XpwAAq
+         GZ7QBlSZqQfTfshyXcZLKO0bBCPvWgOzMjS7KnZE8R5ghaSnYNDKG37kWZR8SD4ee6uR
+         AVDbObeedblZhZbCQbbEY2Bz7pMGQE8EwBzxYavx9j4yRhahGgwKpABJ4e5zwjbah4l9
+         mzz0R9b/dHTvndYaDx+aC2qKjy8LDk2dl0GXm6WZ8qxs44r7LXIRGHbHkXommSoV/Id9
+         8NRiPkDW32rIpqNAX7JuEPga8MJNq3NPBcAuE8iIiifQEGSrsJpRhu1Jx9meFtsM/PfY
+         03Qg==
+X-Gm-Message-State: AOAM532u18DtmynCj62YPmwhqf2b1OY695h9hgfMIGhbq8EM6q1fcoWP
+        X/34QeLNm9q5JT0nb8jiVPs=
+X-Google-Smtp-Source: ABdhPJxteRUzb8j5qAls+d9s8OqzChOXHSAPPYdi4k6gUsE/sDDi0yKE2AOYV+suGMSa74P7zjUXqA==
+X-Received: by 2002:a63:da14:: with SMTP id c20mr1854498pgh.155.1627713412165;
+        Fri, 30 Jul 2021 23:36:52 -0700 (PDT)
 Received: from [10.106.0.50] ([45.135.186.29])
-        by smtp.gmail.com with ESMTPSA id n17sm5276730pgj.93.2021.07.30.23.34.10
+        by smtp.gmail.com with ESMTPSA id n123sm5172962pga.69.2021.07.30.23.36.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 23:34:12 -0700 (PDT)
-To:     vz@mleia.com, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com
+        Fri, 30 Jul 2021 23:36:51 -0700 (PDT)
+To:     maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com
 From:   Li Tuo <islituo@gmail.com>
-Subject: [BUG] net: ethernet: lpc_eth: possible uninitialized-variable access
- in lpc_eth_drv_probe()
-Message-ID: <e431a6ad-d06c-2913-55ec-303707386029@gmail.com>
-Date:   Sat, 31 Jul 2021 14:34:09 +0800
+Subject: [BUG] memstick: rtsx_usb_ms: possible uninitialized-variable access
+ in rtsx_usb_ms_issue_cmd()
+Message-ID: <e49e0ad5-d09d-4fa7-12a9-0608d9c9d800@gmail.com>
+Date:   Sat, 31 Jul 2021 14:36:49 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
@@ -69,16 +69,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hello,
 
 Our static analysis tool finds a possible uninitialized-variable access 
-in the nxp driver in Linux 5.14.0-rc3:
+in the memstick driver in Linux 5.14.0-rc3:
 
-At the beginning of the function lpc_eth_drv_probe(), the variable 
-dma_handle is not initialized.
-If the following conditions are false, it remains uninitialized.
-1304:    if (use_iram_for_net(dev))
-1314:    if (pldat->dma_buff_base_v == NULL)
+At the beginning of the function rtsx_usb_ms_issue_cmd(), the variable 
+int_reg is not initialized.
+If the following condition is true, it remains uninitialized.
+469:    if (req->long_data)
 
-However, it is accessed through:
-1333:    pldat->dma_buff_base_p = dma_handle;;
+However, it is accessed in some statements such as:
+491:    if (int_reg & MS_INT_CMDNK)
 
 I am not quite sure whether this possible uninitialized-variable access 
 is real and how to fix it if it is real.
