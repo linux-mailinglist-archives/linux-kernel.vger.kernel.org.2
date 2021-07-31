@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8876A3DC723
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 19:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0D03DC71C
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 19:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhGaRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 13:15:26 -0400
-Received: from mail-pj1-f47.google.com ([209.85.216.47]:55137 "EHLO
-        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhGaRPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 13:15:24 -0400
-Received: by mail-pj1-f47.google.com with SMTP id b6so19658292pji.4;
-        Sat, 31 Jul 2021 10:15:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DlaoNmwnEWDtxTjH4uaBlzq3ZGun3yheeOVe4kPMWlc=;
-        b=nRiNHjZ3ak47qCrpNaQC0KlEFsD2IJqBqsI1jy+9CnSM9OelaAgyA+Mu1MpcgIs33K
-         MjTuU01NGmSM3JZkodBKzlqvY7euttqBs+vUI/X4Wky9Z4F5YoY/FY9v+1T4wJk1wMqp
-         uyuR9peYgOq5CdJwj6JuMSN2wtPUeborC3fpNiF+BO/p+RdsZo4jqLIkjf2H9wv2yWcd
-         0aPU4N2NJQndTWUwMJdKLmtguitLd5aDvvCQLx+gJlN1PRM1mgCF+AT64aqjPlPBFy7l
-         30fA1O9pqE8ytkwTagftLoWxnF4Nk5dfidjo4DqJUZjkvfDminEzRO9X7AhsKeS2wCQ8
-         oB8g==
-X-Gm-Message-State: AOAM530AyiOT1ba5ld2GHS9chB2nRk5whiy6MnnsWZBk98rF/EJPNoi9
-        UbnSAvSw+/rL2sLUcI8XPBI=
-X-Google-Smtp-Source: ABdhPJxagnFWjqey40tjfYyQ5SyxoZzmV1olLTHdeYhT7HZM2cviRdp277uKthSeil31eA/NJXkRIQ==
-X-Received: by 2002:a17:90a:d90f:: with SMTP id c15mr9207955pjv.178.1627751717376;
-        Sat, 31 Jul 2021 10:15:17 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:13bf:959e:93b8:7d56? ([2601:647:4000:d7:13bf:959e:93b8:7d56])
-        by smtp.gmail.com with ESMTPSA id z5sm2501918pff.97.2021.07.31.10.15.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 31 Jul 2021 10:15:16 -0700 (PDT)
-Subject: Re: [PATCH] blk-mq: allow hardware queue to get more tag while
- sharing a tag set
-To:     Yu Kuai <yukuai3@huawei.com>, axboe@kernel.dk, ming.lei@redhat.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-References: <20210712031818.31918-1-yukuai3@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <ade72519-5e16-1cc5-9a77-cb9ead42035e@acm.org>
-Date:   Sat, 31 Jul 2021 10:15:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S230004AbhGaRNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 13:13:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229449AbhGaRM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 13:12:58 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C362A60F94;
+        Sat, 31 Jul 2021 17:12:48 +0000 (UTC)
+Date:   Sat, 31 Jul 2021 18:15:28 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Christophe Branchereau <cbranchereau@gmail.com>
+Cc:     lars@metafoo.de, linux-mips@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
+        contact@artur-rojek.eu, paul@crapouillou.net
+Subject: Re: [PATCH v4 0/5] iio/adc: ingenic: add support for the JZ4760(B)
+ Socs to the ingenic sadc driver
+Message-ID: <20210731181528.5fe57c57@jic23-huawei>
+In-Reply-To: <20210726082033.351533-1-cbranchereau@gmail.com>
+References: <20210726082033.351533-1-cbranchereau@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210712031818.31918-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/21 8:18 PM, Yu Kuai wrote:
-> If there are multiple active queues while sharing a tag set, it's not
-> necessary to limit the available tags as same share for each active queue
-> if no one ever failed to get driver tag. And fall back to same share if
-> someone do failed to get driver tag.
-> 
-> This modification will be beneficial if total queue_depth of disks
-> on the same host is less than total tags.
+On Mon, 26 Jul 2021 10:20:28 +0200
+Christophe Branchereau <cbranchereau@gmail.com> wrote:
 
-This patch adds new atomic operations in the hot path and hence probably
-has a negative performance impact. What is the performance impact of
-this patch for e.g. null_blk when submitting I/O from all CPU cores?
+> This is a set of patches to add support to the JZ4760(B) socs found in numerous gaming handhelds and some
+> mp3 players to the ingenic-sadc driver.
+> 
+> Changelog for this v4:
+> 
+> Fix patch 4/5 that was missing the .compatible string for the jz4760b.
+
+Series applied to the togreg branch of iio.git which will first be pushed out as testing
+to see if 0-day can find anything we missed.
 
 Thanks,
 
-Bart.
+Jonathan
+
+> 
+> Christophe Branchereau (5):
+>   iio/adc: ingenic: rename has_aux2 to has_aux_md
+>   dt-bindings: iio/adc: add an INGENIC_ADC_AUX0 entry
+>   iio/adc: ingenic: add JZ4760 support to the sadc driver
+>   iio/adc: ingenic: add JZ4760B support to the sadc driver
+>   dt-bindings: iio/adc: ingenic: add the JZ4760(B) socs to the sadc
+>     Documentation
+> 
+>  .../bindings/iio/adc/ingenic,adc.yaml         |  19 ++++
+>  drivers/iio/adc/ingenic-adc.c                 | 102 ++++++++++++++++--
+>  include/dt-bindings/iio/adc/ingenic,adc.h     |   1 +
+>  3 files changed, 113 insertions(+), 9 deletions(-)
+> 
+
