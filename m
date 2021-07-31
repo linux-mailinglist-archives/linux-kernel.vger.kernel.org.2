@@ -2,137 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722C53DC2E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 05:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8873DC2EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 05:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbhGaDWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 23:22:38 -0400
-Received: from mga18.intel.com ([134.134.136.126]:37975 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231395AbhGaDWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 23:22:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10061"; a="200408406"
-X-IronPort-AV: E=Sophos;i="5.84,283,1620716400"; 
-   d="scan'208";a="200408406"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 20:22:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,283,1620716400"; 
-   d="scan'208";a="439414699"
-Received: from host.sh.intel.com ([10.239.154.115])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Jul 2021 20:22:27 -0700
-From:   Ye Xiang <xiang.ye@intel.com>
-To:     jikos@kernel.org, jic23@kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
-Subject: [PATCH] iio: hid-sensor-press: Add timestamp channel
-Date:   Sat, 31 Jul 2021 11:25:56 +0800
-Message-Id: <20210731032556.26813-1-xiang.ye@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S237060AbhGaD1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 23:27:47 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12432 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231642AbhGaD1j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 23:27:39 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gc8kT6bQYzch6F;
+        Sat, 31 Jul 2021 11:24:01 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 31 Jul 2021 11:27:29 +0800
+Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
+ (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 31 Jul
+ 2021 11:27:29 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
+Subject: [PATCH 0/5] crypto: hisilicon - some misc bugfix for SEC engine
+Date:   Sat, 31 Jul 2021 11:26:31 +0800
+Message-ID: <1627701996-4589-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each sample has a timestamp field with this change. This timestamp may
-be from the sensor hub when present or local kernel timestamp. The
-unit of timestamp is nanosecond.
+some misc bugfix for SEC engine.
 
-Signed-off-by: Ye Xiang <xiang.ye@intel.com>
----
- drivers/iio/pressure/hid-sensor-press.c | 40 +++++++++++++++----------
- 1 file changed, 24 insertions(+), 16 deletions(-)
+Kai Ye (5):
+  crypto: hisilicon/sec - fixup icv checking enabled on Kunpeng 930
+  crypto: hisilicon/sec - delete the print of fallback tfm application
+    failure
+  crypto: hisilicon/sec - fix the max length of AAD for the CCM mode
+  crypto: hisilicon/sec - fix the CTR mode BD configuration
+  crypto: hisilicon/sec - use the correct print format
 
-diff --git a/drivers/iio/pressure/hid-sensor-press.c b/drivers/iio/pressure/hid-sensor-press.c
-index c416d261e3e3..b365483bd09e 100644
---- a/drivers/iio/pressure/hid-sensor-press.c
-+++ b/drivers/iio/pressure/hid-sensor-press.c
-@@ -16,17 +16,24 @@
- #include <linux/iio/buffer.h>
- #include "../common/hid-sensors/hid-sensor-trigger.h"
- 
--#define CHANNEL_SCAN_INDEX_PRESSURE 0
-+enum {
-+	CHANNEL_SCAN_INDEX_PRESSURE,
-+	CHANNEL_SCAN_INDEX_TIMESTAMP,
-+};
- 
- struct press_state {
- 	struct hid_sensor_hub_callbacks callbacks;
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info press_attr;
--	u32 press_data;
-+	struct {
-+		u32 press_data;
-+		u64 timestamp __aligned(8);
-+	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
- 	int scale_precision;
- 	int value_offset;
-+	s64 timestamp;
- };
- 
- static const u32 press_sensitivity_addresses[] = {
-@@ -44,7 +51,9 @@ static const struct iio_chan_spec press_channels[] = {
- 		BIT(IIO_CHAN_INFO_SAMP_FREQ) |
- 		BIT(IIO_CHAN_INFO_HYSTERESIS),
- 		.scan_index = CHANNEL_SCAN_INDEX_PRESSURE,
--	}
-+	},
-+	IIO_CHAN_SOFT_TIMESTAMP(CHANNEL_SCAN_INDEX_TIMESTAMP)
-+
- };
- 
- /* Adjust channel real bits based on report descriptor */
-@@ -157,14 +166,6 @@ static const struct iio_info press_info = {
- 	.write_raw = &press_write_raw,
- };
- 
--/* Function to push data to buffer */
--static void hid_sensor_push_data(struct iio_dev *indio_dev, const void *data,
--					int len)
--{
--	dev_dbg(&indio_dev->dev, "hid_sensor_push_data\n");
--	iio_push_to_buffers(indio_dev, data);
--}
--
- /* Callback handler to send event after all samples are received and captured */
- static int press_proc_event(struct hid_sensor_hub_device *hsdev,
- 				unsigned usage_id,
-@@ -174,10 +175,13 @@ static int press_proc_event(struct hid_sensor_hub_device *hsdev,
- 	struct press_state *press_state = iio_priv(indio_dev);
- 
- 	dev_dbg(&indio_dev->dev, "press_proc_event\n");
--	if (atomic_read(&press_state->common_attributes.data_ready))
--		hid_sensor_push_data(indio_dev,
--				&press_state->press_data,
--				sizeof(press_state->press_data));
-+	if (atomic_read(&press_state->common_attributes.data_ready)) {
-+		if (!press_state->timestamp)
-+			press_state->timestamp = iio_get_time_ns(indio_dev);
-+
-+		iio_push_to_buffers_with_timestamp(
-+			indio_dev, &press_state->scan, press_state->timestamp);
-+	}
- 
- 	return 0;
- }
-@@ -194,9 +198,13 @@ static int press_capture_sample(struct hid_sensor_hub_device *hsdev,
- 
- 	switch (usage_id) {
- 	case HID_USAGE_SENSOR_ATMOSPHERIC_PRESSURE:
--		press_state->press_data = *(u32 *)raw_data;
-+		press_state->scan.press_data = *(u32 *)raw_data;
- 		ret = 0;
- 		break;
-+	case HID_USAGE_SENSOR_TIME_TIMESTAMP:
-+		press_state->timestamp = hid_sensor_convert_timestamp(
-+			&press_state->common_attributes, *(s64 *)raw_data);
-+		break;
- 	default:
- 		break;
- 	}
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 30 ++++++++++++++++++++----------
+ drivers/crypto/hisilicon/sec2/sec_crypto.h |  6 ++++--
+ 2 files changed, 24 insertions(+), 12 deletions(-)
+
 -- 
-2.17.1
+2.7.4
 
