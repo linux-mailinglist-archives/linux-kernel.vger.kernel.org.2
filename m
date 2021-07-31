@@ -2,88 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B4A3DC258
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 03:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E16C3DC289
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 03:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235006AbhGaBia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 21:38:30 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12428 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhGaBi3 (ORCPT
+        id S234568AbhGaBvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 21:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231335AbhGaBvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 21:38:29 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gc6JW2zhMzcjxh;
-        Sat, 31 Jul 2021 09:34:51 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 31 Jul 2021 09:38:21 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 31 Jul
- 2021 09:38:20 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <josef@toxicpanda.com>, <axboe@kernel.dk>,
-        <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <patchwork@huawei.com>, <libaokun1@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] nbd: add the check to prevent overflow in __nbd_ioctl()
-Date:   Sat, 31 Jul 2021 09:48:54 +0800
-Message-ID: <20210731014854.3953274-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 30 Jul 2021 21:51:42 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5A3C06175F;
+        Fri, 30 Jul 2021 18:51:36 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id r5so11188831ilc.13;
+        Fri, 30 Jul 2021 18:51:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m1SHKy5hexFk2I9Nf/8HsQX5Jd6mF6IvHmx4tMHAEV8=;
+        b=F0RM9J10Y6gLe53NWCR7Tsd8sTL7s/1xf0EbbPlzB6v3DHqR9+LrRvQ32zN17DTnTn
+         x1ftAUAZExm0soRfMEgzXFk06P9cKp+y+fXZ95zjWIW05GtQyF1wGdE6bf2FVGts1gwH
+         Lgwc3ejm4WXjdS9laeLFD8E7vCtJhNJn1vk6gAcWQsrrhE7E0jrQ+e39kCBRiXkSb1W/
+         MScOCbFfmbGS9UznZvMXZ4/bgc0+Sb6MKK8RTwFNkfgZt/ViUL/h7nYPjJ+6Ed+pB5vV
+         u3GaN464x8Ghb5z0pYoWhNIs7GvjFrxPsF7+gdUXmhppFYyBJX+rOHZxehzzwGIfqe6u
+         npCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m1SHKy5hexFk2I9Nf/8HsQX5Jd6mF6IvHmx4tMHAEV8=;
+        b=ebf1+tPiAcN+6Dd1YooqZwoiBqEMnUhbMCHNglGpbq3Lg9fsPjONX2ANk7lTKobc8v
+         Fl86V5gWGFrsIEgPLu2MEFNsn+bR9LQi3de7/vBb+oVzNY86HTqhfdrypMcx99jYtmAf
+         llJNhNxJfMFkIa4sypD1XBcAlGpK0iys8YRHSzro0hLAX9lpNjERnpa/EceGJTCvhC/R
+         P0GlZ1NJH39TgEoywKNmVIgAYzvM170CdV7Um/tbpVAG1Hk6xiXmQtoyCJd5kt0oUGvJ
+         mjCUFdaikkcc9s8pE6omC9b0fB+WuseyWJ0WA8m7ZbRe3Bw87eoROeKKey2jncNpclv+
+         JbZQ==
+X-Gm-Message-State: AOAM531e1X15hie7GyY0vltO4HQI1JlpA28X92cHg5hRUEX+Zn2jb2s2
+        BXKvz/pNHTYUxoK/ZwbNcpA=
+X-Google-Smtp-Source: ABdhPJyn/tYN5Z/GRoMRw6hRGtBKNTaELrqCtNh7R56Z3uYF95ZwtIllPdDTvJXhz2mVlxUZ93LWOQ==
+X-Received: by 2002:a92:da86:: with SMTP id u6mr2325722iln.265.1627696295747;
+        Fri, 30 Jul 2021 18:51:35 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id u16sm2047220iob.41.2021.07.30.18.51.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 18:51:35 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 4EE3527C0054;
+        Fri, 30 Jul 2021 21:51:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 30 Jul 2021 21:51:34 -0400
+X-ME-Sender: <xms:pKwEYeRGRGDqRamBCEzxaEqzZDHBJXjIJnnKgi8BPamVFeeheScRiQ>
+    <xme:pKwEYTwj6a705TqrPFQeYLOj1w9CxSJT3PfUVgyPl0Fl3YC6CtTer2VGkWGz52h7d
+    T8mHiTcAXxOCZC9fg>
+X-ME-Received: <xmr:pKwEYb1AnGmMfU1AFbokw9vF_PrlskmJGVTx_0-pF7XFQfLXVCVmCWoQ4zc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheeigdehtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
+    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:pKwEYaDK0DIwv0simMgsjeUmo3dUk0IwvkTRbMqZYxlW73PIzZsdSw>
+    <xmx:pKwEYXjKtQBUxJSIaFaNzLj0DjWFAEMygPwUF6VAdSLs2p5g5A8_WA>
+    <xmx:pKwEYWqh1djR_7Yh5l5pOU8mPaas-l_BX7Zs2CkBT2ZE-M9YrmoSNA>
+    <xmx:pawEYXj0EaWHgFf_p5A2IXrYC641YUSIzbs7C5n5vGsyEAyjCLxBvA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 30 Jul 2021 21:51:32 -0400 (EDT)
+Date:   Sat, 31 Jul 2021 09:51:05 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Gary Guo <gary@garyguo.net>, Hector Martin <marcan@marcan.st>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [Question] Alignment requirement for readX() and writeX()
+Message-ID: <YQSsiacvJHFKk3Cj@boqun-archlinux>
+References: <YQQr+twAYHk2jXs6@boqun-archlinux>
+ <CAK8P3a0w09Ga_OXAqhA0JcgR-LBc32a296dZhpTyPDwVSgaNkw@mail.gmail.com>
+ <YQQ3KAXrPN1CuglL@boqun-archlinux>
+ <CAK8P3a3_pgtUWrg-MpaVyVqhffeuvQECHCmSCLyudfSwuEcP_g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3_pgtUWrg-MpaVyVqhffeuvQECHCmSCLyudfSwuEcP_g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If user specify a large enough value of NBD blocks option, it may trigger
-signed integer overflow which may lead to nbd->config->bytesize becomes a
-large or small value, zero in particular.
+On Fri, Jul 30, 2021 at 10:24:53PM +0200, Arnd Bergmann wrote:
+> On Fri, Jul 30, 2021 at 7:31 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+> > On Fri, Jul 30, 2021 at 06:58:30PM +0200, Arnd Bergmann wrote:
+> >
+> > If we want to check, I'd expect we do the checks inside
+> > readX()/writeX(), for example, readl() could be implemented as:
+> >
+> >         #define readl(c)                                        \
+> >         ({                                                      \
+> >                 u32 __v;                                        \
+> >                                                                 \
+> >                 /* alignment checking */                        \
+> >                 BUG_ON(c & (sizeof(__v) - 1));                  \
+> >                 __v = readl_relaxed(c);                         \
+> >                 __iormb(__v);                                   \
+> >                 __v;                                            \
+> >         })
+> >
+> > It's a runtime check, so if anyone hates it I can understand ;-)
+> 
+> Right, I really don't think that adds any value, this just replaces one
+> oops message with a more different oops message, while adding
+> some overhead.
+> 
 
-UBSAN: Undefined behaviour in drivers/block/nbd.c:325:31
-signed integer overflow:
-1024 * 4611686155866341414 cannot be represented in type 'long long int'
-[...]
-Call trace:
-[...]
- handle_overflow+0x188/0x1dc lib/ubsan.c:192
- __ubsan_handle_mul_overflow+0x34/0x44 lib/ubsan.c:213
- nbd_size_set drivers/block/nbd.c:325 [inline]
- __nbd_ioctl drivers/block/nbd.c:1342 [inline]
- nbd_ioctl+0x998/0xa10 drivers/block/nbd.c:1395
- __blkdev_driver_ioctl block/ioctl.c:311 [inline]
-[...]
+Agreed. I wasn't planning to propose this kind of checks for C code.
+Just want to understand better on the alignment requirement of these
+APIs. Thanks  ;-)
 
-Although it is not a big deal, still silence the UBSAN by limit
-the input value.
+Regards,
+Boqun
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- drivers/block/nbd.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index c38317979f74..7c838bf8cc31 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1398,6 +1398,8 @@ static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
- 	case NBD_SET_SIZE:
- 		return nbd_set_size(nbd, arg, config->blksize);
- 	case NBD_SET_SIZE_BLOCKS:
-+		if (arg && (LLONG_MAX / arg <= config->blksize))
-+			return -EINVAL;
- 		return nbd_set_size(nbd, arg * config->blksize,
- 				    config->blksize);
- 	case NBD_SET_TIMEOUT:
--- 
-2.31.1
-
+>         Arnd
