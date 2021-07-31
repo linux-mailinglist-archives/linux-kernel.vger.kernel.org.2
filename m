@@ -2,267 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDE13DC44F
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C143DC451
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 09:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbhGaHKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 03:10:17 -0400
-Received: from out06.smtpout.orange.fr ([193.252.22.215]:38454 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhGaHKP (ORCPT
+        id S232323AbhGaHKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 03:10:19 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7770 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231429AbhGaHKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 03:10:15 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d21 with ME
-        id bjA02500g21Fzsu03jA1bv; Sat, 31 Jul 2021 09:10:06 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 31 Jul 2021 09:10:06 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     dchickles@marvell.com, sburla@marvell.com, fmanlunas@marvell.com,
-        davem@davemloft.net, kuba@kernel.org, sgoutham@marvell.com
-Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] cavium: switch from 'pci_' to 'dma_' API
-Date:   Sat, 31 Jul 2021 09:10:00 +0200
-Message-Id: <27c2b1a5152add2b3ecdfded40f562c5e4abed14.1627714392.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sat, 31 Jul 2021 03:10:17 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GcFcR4tVPzYjf6;
+        Sat, 31 Jul 2021 15:04:07 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 31 Jul 2021 15:10:02 +0800
+Received: from [10.174.178.91] (10.174.178.91) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 31 Jul 2021 15:10:01 +0800
+Subject: Re: [PATCH 1/3] block, bfq: do not idle if only one cgroup is
+ activated
+To:     Paolo Valente <paolo.valente@linaro.org>
+CC:     Jens Axboe <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20210714094529.758808-1-yukuai3@huawei.com>
+ <20210714094529.758808-2-yukuai3@huawei.com>
+ <7DF40BD4-8F57-4C2E-88A9-CBC3DA2A891E@linaro.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <c0b97b5b-c961-6d9f-7033-6da194c6b220@huawei.com>
+Date:   Sat, 31 Jul 2021 15:10:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <7DF40BD4-8F57-4C2E-88A9-CBC3DA2A891E@linaro.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On 2021/07/24 15:12, Paolo Valente wrote:
+> 
+> 
+>> Il giorno 14 lug 2021, alle ore 11:45, Yu Kuai <yukuai3@huawei.com> ha scritto:
+>>
+>> If only one group is activated, specifically
+>> 'bfqd->num_groups_with_pending_reqs == 1', there is no need to guarantee
+>> the same share of the throughput of queues in the same group.
+>>
+>> Thus change the condition from '> 0' to '> 1' in
+>> bfq_asymmetric_scenario().
+> 
+> I see your point, and I agree with your goal.  Yet, your change seems
+> not to suffer from the following problem.
+> 
+> In addition to the groups that are created explicitly, there is the
+> implicit root group.  So, when bfqd->num_groups_with_pending_reqs ==
+> 1, there may be both active processes in the root group and active
+> processes in the only group created explicitly.  In this case, idling
+> is needed to preserve service guarantees.
+> 
+> Probably your idea should be improved by making sure that there is
+> pending I/O only from either the root group or the explicit group.
+> 
+> Thanks,
+> Paolo
 
-The patch has been generated with the coccinelle script below. It has been
-hand modified to use 'dma_set_mask_and_coherent()' instead of
-'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
 
-It has been compile tested.
+Hi, Paolo
 
+I'm trying to add support to judge if root group have pending rqs, the
+implementation involve setting and clearing the busy state.
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+I'm thinking about setting busy in __bfq_activate_entity() if
+bfq_entity_to_bfqq() return valid bfqq, however I'm not sure where to
+clear the busy state.
 
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+On the other hand, do you think the way I record rq size info in patch 2
+is OK? If so, I can do this the similar way: say that root group doesn't
+have any pending requests if bfq haven't dispatch rq from root group for
+a period of time.
 
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/ethernet/cavium/liquidio/lio_main.c    | 4 ++--
- drivers/net/ethernet/cavium/liquidio/lio_vf_main.c | 4 ++--
- drivers/net/ethernet/cavium/thunder/nic_main.c     | 8 +-------
- drivers/net/ethernet/cavium/thunder/nicvf_main.c   | 8 +-------
- 4 files changed, 6 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_main.c b/drivers/net/ethernet/cavium/liquidio/lio_main.c
-index a4a5209a9386..af116ef83bad 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_main.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_main.c
-@@ -1457,7 +1457,7 @@ static void free_netsgbuf(void *buf)
- 	while (frags--) {
- 		skb_frag_t *frag = &skb_shinfo(skb)->frags[i - 1];
- 
--		pci_unmap_page((lio->oct_dev)->pci_dev,
-+		dma_unmap_page(&lio->oct_dev->pci_dev->dev,
- 			       g->sg[(i >> 2)].ptr[(i & 3)],
- 			       skb_frag_size(frag), DMA_TO_DEVICE);
- 		i++;
-@@ -1500,7 +1500,7 @@ static void free_netsgbuf_with_resp(void *buf)
- 	while (frags--) {
- 		skb_frag_t *frag = &skb_shinfo(skb)->frags[i - 1];
- 
--		pci_unmap_page((lio->oct_dev)->pci_dev,
-+		dma_unmap_page(&lio->oct_dev->pci_dev->dev,
- 			       g->sg[(i >> 2)].ptr[(i & 3)],
- 			       skb_frag_size(frag), DMA_TO_DEVICE);
- 		i++;
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c b/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-index 3085dd455a17..c6fe0f2a4d0e 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-@@ -843,7 +843,7 @@ static void free_netsgbuf(void *buf)
- 	while (frags--) {
- 		skb_frag_t *frag = &skb_shinfo(skb)->frags[i - 1];
- 
--		pci_unmap_page((lio->oct_dev)->pci_dev,
-+		dma_unmap_page(&lio->oct_dev->pci_dev->dev,
- 			       g->sg[(i >> 2)].ptr[(i & 3)],
- 			       skb_frag_size(frag), DMA_TO_DEVICE);
- 		i++;
-@@ -887,7 +887,7 @@ static void free_netsgbuf_with_resp(void *buf)
- 	while (frags--) {
- 		skb_frag_t *frag = &skb_shinfo(skb)->frags[i - 1];
- 
--		pci_unmap_page((lio->oct_dev)->pci_dev,
-+		dma_unmap_page(&lio->oct_dev->pci_dev->dev,
- 			       g->sg[(i >> 2)].ptr[(i & 3)],
- 			       skb_frag_size(frag), DMA_TO_DEVICE);
- 		i++;
-diff --git a/drivers/net/ethernet/cavium/thunder/nic_main.c b/drivers/net/ethernet/cavium/thunder/nic_main.c
-index 9361f964bb9b..691e1475d55e 100644
---- a/drivers/net/ethernet/cavium/thunder/nic_main.c
-+++ b/drivers/net/ethernet/cavium/thunder/nic_main.c
-@@ -1322,18 +1322,12 @@ static int nic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto err_disable_device;
- 	}
- 
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(48));
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
- 	if (err) {
- 		dev_err(dev, "Unable to get usable DMA configuration\n");
- 		goto err_release_regions;
- 	}
- 
--	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(48));
--	if (err) {
--		dev_err(dev, "Unable to get 48-bit DMA for consistent allocations\n");
--		goto err_release_regions;
--	}
--
- 	/* MAP PF's configuration registers */
- 	nic->reg_base = pcim_iomap(pdev, PCI_CFG_REG_BAR_NUM, 0);
- 	if (!nic->reg_base) {
-diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_main.c b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-index efaaa57d4ed5..d1667b759522 100644
---- a/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-+++ b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-@@ -2130,18 +2130,12 @@ static int nicvf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto err_disable_device;
- 	}
- 
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(48));
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
- 	if (err) {
- 		dev_err(dev, "Unable to get usable DMA configuration\n");
- 		goto err_release_regions;
- 	}
- 
--	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(48));
--	if (err) {
--		dev_err(dev, "unable to get 48-bit DMA for consistent allocations\n");
--		goto err_release_regions;
--	}
--
- 	qcount = netif_get_num_default_rss_queues();
- 
- 	/* Restrict multiqset support only for host bound VFs */
--- 
-2.30.2
-
+Thanks
+Kuai
