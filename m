@@ -2,129 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1434A3DC543
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 11:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204773DC549
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 11:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhGaJJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 05:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhGaJJO (ORCPT
+        id S232747AbhGaJT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 05:19:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14214 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232371AbhGaJT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 05:09:14 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DFAC0613D3
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 02:09:07 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 48-20020a9d0bb30000b02904cd671b911bso12246895oth.1
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 02:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vaAWrkzE49kpA8JCIiCiOMwaEcjf5J0qZweefCaV6Js=;
-        b=Gp8ddgcSsdz7JROBXknYU+v2p1kXvS2NTlufoSvXs2xSBqOzoSTqrTEoNNr4cvOn/L
-         X2w8AjJPeuQf1ZWGpOsHKDhbvsTjlLuoiLUsck5u6sK+JfUFcHbrC9i3E4srckgJzSMm
-         1mfA/Rq4fQZDS3lXE0loMMIOduFdV4+GHh1jTgbTsde8dy8dU3IZdLSppJh4fako4XRi
-         KMVV9x2djecxSD9XfPH68Cb4xxfF5vTVTcasDIEWSDpbX3kJaxnIkVGmJTkxH4aXDlCq
-         RhegliyZROtvGJM6wZva2mOMui6QylvPWju4wqUMZnoLHag3sA08TXGsfAVbRZZYAde6
-         m3FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vaAWrkzE49kpA8JCIiCiOMwaEcjf5J0qZweefCaV6Js=;
-        b=tbiMNIDxabGLIEL+M6RGpzkCMQEkE3afifHfCnBsKX7dVsF5Wyox5iTzckQG0qw+Cu
-         Zv+hfSMMYwYSQY2z3B4nTC/UDR+Dc28LxKbKhsIBOzVKuVvrASNnHA5Ozcu1cDTv/9Sj
-         /en2vxSc0Hjkn15/NPFO+QNtPLZnyBc3xVlPYDsLNZAGBwzvSsOv8/SmkgjPhXhGzMBc
-         VedLOeqXl9ZTu+qxnz373rUeSoDSxV00DQD0879awiYd7zR8vWMDkRZnk2FN2I/bUDtY
-         bOjranWvqZAjuvxrl9StGIF0izzWVBF01Eb7i1pstzbOJG4do8/QPbQwSP0MhtHztkaX
-         Pf3g==
-X-Gm-Message-State: AOAM533D4zZLYRW0vGxm0d60zGoa4hFDfNQGHoA3U6nRhsEp/XZ0pllV
-        Fl8TPJHovyMQbAOh/m9AElgdZsJL0KbnUPRtayvv+g==
-X-Google-Smtp-Source: ABdhPJx/tcoITFgW0uzDCxON4iQQbvCkCbi63apcAR8wygJH80IvZT0cpXasQBS7xAA4PgjdVvQHxHb1Gc114BkzJw4=
-X-Received: by 2002:a05:6830:23a7:: with SMTP id m7mr5218486ots.17.1627722546365;
- Sat, 31 Jul 2021 02:09:06 -0700 (PDT)
+        Sat, 31 Jul 2021 05:19:56 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16V94aqB158975;
+        Sat, 31 Jul 2021 05:19:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=lJCFZPh6zYoPmvB6VZge0NUSC8dpQezLavM7E24Rq8U=;
+ b=ZuvXTLUBwY87LdzWMX4GmsyPBguaYxG2nMHDIxjYYNjdXROTfIWlReymWQiQzQ4+g9Hl
+ N1somz2PKCmCa0Ua4ZeWnF+r3LVegEceNKivyQ9Ci+ZyjqmdPEQzUKQFgsFRKyQvsO8y
+ cN4cv5FhnPaxKUM5Hs+RpBWztK8LNWORK3GINIxNXmuAm8W1bAos5wH7dN4IcVN24npC
+ sQ5Fv5gXcqXp6k/KSNBp7z6XRuquWX4RRGRnxwDdi1am1lv/aj68xhyjuryfMyjbix3i
+ TZlgp+dB+mSLnElAWHQ44i/YG7ZnvZEtDJzU6Mk1rraaJd6cnqNl1KDkvN2lu822oSHg IA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a531mgx8q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 31 Jul 2021 05:19:21 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16V96Y39170209;
+        Sat, 31 Jul 2021 05:19:21 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a531mgx87-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 31 Jul 2021 05:19:21 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16V9DPW8001901;
+        Sat, 31 Jul 2021 09:19:19 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 3a4x5909y2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 31 Jul 2021 09:19:19 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16V9GU6l27787676
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 31 Jul 2021 09:16:30 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8E75942047;
+        Sat, 31 Jul 2021 09:19:16 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E073442041;
+        Sat, 31 Jul 2021 09:19:15 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.187.235])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat, 31 Jul 2021 09:19:15 +0000 (GMT)
+Date:   Sat, 31 Jul 2021 12:19:13 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Matt Turner <mattst88@gmail.com>
+Cc:     Michael Cree <mcree@orcon.net.nz>, linux-mm@kvack.org,
+        linux-alpha <linux-alpha@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Regression bisected to fa3354e4ea39 (mm: free_area_init: use
+ maximal zone PFNs rather than zone sizes)
+Message-ID: <YQUVkbhX0U3te1l6@linux.ibm.com>
+References: <20210726192311.uffqnanxw3ac5wwi@ivybridge>
+ <YP8Vxt0xuV1m5EPS@linux.ibm.com>
+ <CAEdQ38F2ddbM0WBjut6MH-0TpencKmx9Wu4++gLtfQ5HGRwxFQ@mail.gmail.com>
+ <YP+rI9Fh4wl/O6/8@linux.ibm.com>
+ <CAEdQ38G+ZfXmc01iZTc+q4dYpRqQJUz0KNFCPwTQ25AYqJVbMA@mail.gmail.com>
+ <YQBvYUupT/jgDMqI@linux.ibm.com>
+ <CAEdQ38HZ4g_E3vtG=f6p_sfuWnk7haK_eJ0MZziLsOq0ZmfBoQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210730223815.1382706-1-nathan@kernel.org> <20210731023107.1932981-1-nathan@kernel.org>
-In-Reply-To: <20210731023107.1932981-1-nathan@kernel.org>
-From:   Marco Elver <elver@google.com>
-Date:   Sat, 31 Jul 2021 11:08:54 +0200
-Message-ID: <CANpmjNMJR7A5FyPLuK+mWLKjZ7z4qJfygXWFpsADxicYE=Kx=g@mail.gmail.com>
-Subject: Re: [PATCH v2] vmlinux.lds.h: Handle clang's module.{c,d}tor sections
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEdQ38HZ4g_E3vtG=f6p_sfuWnk7haK_eJ0MZziLsOq0ZmfBoQ@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AxbwOAlgTTu-wCGYwBmM3qGCe3OD30sN
+X-Proofpoint-ORIG-GUID: MJwEW2mI35ujpAAPn6_iP0y15ujHymB5
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-31_05:2021-07-30,2021-07-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ mlxlogscore=868 priorityscore=1501 bulkscore=0 malwarescore=0 mlxscore=0
+ impostorscore=0 clxscore=1011 adultscore=0 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2107310046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Jul 2021 at 04:33, Nathan Chancellor <nathan@kernel.org> wrote:
-> A recent change in LLVM causes module_{c,d}tor sections to appear when
-> CONFIG_K{A,C}SAN are enabled, which results in orphan section warnings
-> because these are not handled anywhere:
->
-> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_ctor) is being placed in '.text.asan.module_ctor'
-> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_dtor) is being placed in '.text.asan.module_dtor'
-> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.tsan.module_ctor) is being placed in '.text.tsan.module_ctor'
->
-> Fangrui explains: "the function asan.module_ctor has the SHF_GNU_RETAIN
-> flag, so it is in a separate section even with -fno-function-sections
-> (default)".
->
-> Place them in the TEXT_TEXT section so that these technologies continue
-> to work with the newer compiler versions. All of the KASAN and KCSAN
-> KUnit tests continue to pass after this change.
->
-> Cc: stable@vger.kernel.org
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1432
-> Link: https://github.com/llvm/llvm-project/commit/7b789562244ee941b7bf2cefeb3fc08a59a01865
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Fri, Jul 30, 2021 at 12:53:58PM -0700, Matt Turner wrote:
+> On Tue, Jul 27, 2021 at 1:41 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> > On Tue, Jul 27, 2021 at 12:24:26PM -0700, Matt Turner wrote:
+> > >
+> > > Thanks, this patch fixes it. With the patch applied, I see
+> > >
+> > > Zone ranges:
+> > >   DMA      [mem 0x0000000000000000-0x00000fffffffdfff]
+> > >   Normal   empty
+> > > Movable zone start for each node
+> > > Early memory node ranges
+> > >   node   0: [mem 0x0000000000000000-0x00000001ffffffff]
+> > >   node   0: [mem 0x0000000400000000-0x00000005ffffffff]
+> > > Initmem setup node 0 [mem 0x0000000000000000-0x00000005ffffffff]
+> > >
+> > > If you want to send me this patch with your S-o-b I'll take it through
+> > > my alpha git tree.
+> >
+> > The patch is on its way :)
+> 
+> Thanks a bunch, Mike, for the patch and for all you do!
+> 
+> > Now I'm really curios how commit e7793e53901b ("arc: update comment about
+> > HIGHMEM implementation") will work out.
 
-Acked-by: Marco Elver <elver@google.com>
+Oh, sure, I've copied the wrong line from the log :)
+ 
+> You probably mean fdb7d9b7acd0 ("alpha: remove DISCONTIGMEM and
+> NUMA"). Works well so far!
+> 
+> Maybe in some alternative universe where I have infinite free time
+> (and my own power plant!) I'll get a second AlphaServer ES47 with the
+> enormous "hose" [1] to link the two and I'll poke you for guidance on
+> restoring NUMA support :)
 
-For KASAN module_ctors are very much required to support detecting
-globals out-of-bounds: https://reviews.llvm.org/D81390
-For KASAN the test would have revealed that at the latest.
-
-KCSAN does not yet have much use for the module_ctors, but it may
-change in future, so keeping them all was the right call.
-
-Thanks,
--- Marco
-
-> ---
->
-> v1 -> v2:
->
-> * Fix inclusion of .text.tsan.* (Nick)
->
-> * Drop .text.asan as it does not exist plus it would be handled by a
->   different line (Fangrui)
->
-> * Add Fangrui's explanation about why the LLVM commit caused these
->   sections to appear.
->
->  include/asm-generic/vmlinux.lds.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 17325416e2de..62669b36a772 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -586,6 +586,7 @@
->                 NOINSTR_TEXT                                            \
->                 *(.text..refcount)                                      \
->                 *(.ref.text)                                            \
-> +               *(.text.asan.* .text.tsan.*)                            \
->                 TEXT_CFI_JT                                             \
->         MEM_KEEP(init.text*)                                            \
->         MEM_KEEP(exit.text*)                                            \
->
-> base-commit: 4669e13cd67f8532be12815ed3d37e775a9bdc16
-> --
-> 2.32.0.264.g75ae10bc75
->
+Heh, I'm not sure that restoring NUMA on alpha is really good use for free
+time even if it were infinite :)
+ 
+-- 
+Sincerely yours,
+Mike.
