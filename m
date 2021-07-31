@@ -2,399 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C6F3DC736
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 19:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC78D3DC741
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 19:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbhGaRei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 13:34:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229830AbhGaRef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 13:34:35 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83EAA60EE6;
-        Sat, 31 Jul 2021 17:34:27 +0000 (UTC)
-Date:   Sat, 31 Jul 2021 18:37:07 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        denis.ciocca@st.com
-Subject: Re: [PATCH 2/4] iio: st_sensors: remove st_sensors_power_disable()
- function
-Message-ID: <20210731183707.20bf8e00@jic23-huawei>
-In-Reply-To: <20210726071404.14529-3-aardelean@deviqon.com>
-References: <20210726071404.14529-1-aardelean@deviqon.com>
-        <20210726071404.14529-3-aardelean@deviqon.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231491AbhGaRjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 13:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231400AbhGaRjF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 13:39:05 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D91C06175F;
+        Sat, 31 Jul 2021 10:38:59 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id h14so24912939lfv.7;
+        Sat, 31 Jul 2021 10:38:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SS9BOsTn1J0RZPkuT9yL2yhtJS7pbjI+aQLQvn2jnHk=;
+        b=LVgadFAH8rrcCg5jc7fMaHRMdJiftQfZffdcJ0WMWQogM9HuLeJzVUnsfF3KjRTqa7
+         kl9DMNMN4G/Hw/pInUS2LRcqJevpp2JVgJuAFCSByVeBMTJN/dOW/rcvAqaQULUTkOkr
+         6C1PS+XF1g755gr/ut/qasbh02Xb2PFyNny+uPETBIk3QMopfMexISGOAOgQt/7W+P9i
+         /ylDiaCxOEu9D46GWUDDKRnZCitIfQmS5k3lYi5X5aJv6jkdJ3NthJgZnSvAppU28hlR
+         7NOusLki6fZK86Y1uEHGMHPPEI5qBMeIwq1ECbTF0QDD05iEpyrqn7+LR+6Arm80LBoo
+         c7lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SS9BOsTn1J0RZPkuT9yL2yhtJS7pbjI+aQLQvn2jnHk=;
+        b=XI/JVgK4sJp23XZj2OQdfnMBwadLXRaiujwkfqemT9WDZcqNjSVxIwjVswlxi/IjSa
+         r8OwQ8QRdCTasBbNKtaO4ptOpVrVh4e76vRRoD1CCE3bO4sUG9P9pA6lGbHZwquqdsY/
+         cdhtsT2QFIMbzYzgkogUPOeHdIpE5bz+wqhJWxIVznrtRAW7TYAjCgwuWxiC+n18hgmO
+         qOHujt85FFYN8vboEruqQ9bhsQb+kTPfpIVSrP6zr9T8yWmkt5omKuZEy03cWcb3h0HT
+         BwVwfxKLwbOwaE0kmoBTXSrVnzs1Qq3nD8RhYvcqzSJwULanyfeFpCDA130DwXKt41p/
+         q/cw==
+X-Gm-Message-State: AOAM530KGfFLpX758p6jf3a36f4lV7CA3UPWCs9jfEq6JpklES7RIZvE
+        Bw2anD9NCjV0JkMUOY7Jwd8=
+X-Google-Smtp-Source: ABdhPJzQG/TUmm91jxQlHLD70oJmLeD3AMW+ESZcfJ0s7zOmp66gMDJZcCvHGFFdT+9A1z7uuRrP0g==
+X-Received: by 2002:ac2:560e:: with SMTP id v14mr6308909lfd.158.1627753137526;
+        Sat, 31 Jul 2021 10:38:57 -0700 (PDT)
+Received: from localhost.localdomain (94-29-22-96.dynamic.spd-mgts.ru. [94.29.22.96])
+        by smtp.gmail.com with ESMTPSA id s15sm445272lfp.216.2021.07.31.10.38.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 10:38:57 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v6 00/12] Add OTG mode support to Tegra USB PHY, SMB347 and Nexus 7
+Date:   Sat, 31 Jul 2021 20:38:30 +0300
+Message-Id: <20210731173842.19643-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 10:14:02 +0300
-Alexandru Ardelean <aardelean@deviqon.com> wrote:
+Hi,
 
-> This change converts the st_sensors_power_enable() function to use
-> devm_add_action_or_reset() handlers to register regulator_disable hooks for
-> when the drivers get unloaded.
-> 
-> The parent device of the IIO device object is used. This is based on the
-> assumption that all other devm_ calls in the ST sensors use this reference.
-> 
-> This makes the st_sensors_power_disable() un-needed.
-> Removing this also changes unload order a bit, as all ST drivers would call
-> st_sensors_power_disable() first and iio_device_unregister() after that.
+This series adds USB OTG mode support to the NVIDIA Tegra USB PHY driver,
+SMB347 charger driver and Nexus 7 tablet.
 
-Huh.  So currently the drivers turn the power off before calling
-iio_device_unregister()?
+Changelog:
 
-That's a bad idea (turn off power when userspace is still available)
-and looks like a bug fix to me.  Perhaps the reorder should be pulled out as
-a precursor patch in case anyone wants to backport it?
+v6: - Added r-b from Rob Herring to the OTG properties DT binding patch.
 
-(note I initially thought you were going the other way and was just writing
- a rant about breaking the order when I realised you were fixing it ;)
+    - Corrected "smb347-charger: generic regmap caching" patch, it now
+      sets the .num_reg_defaults_raw, initializing cache properly.
 
-> 
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> ---
->  drivers/iio/accel/st_accel_i2c.c              | 13 +------
->  drivers/iio/accel/st_accel_spi.c              | 13 +------
->  .../iio/common/st_sensors/st_sensors_core.c   | 34 ++++++++-----------
->  drivers/iio/gyro/st_gyro_i2c.c                | 13 +------
->  drivers/iio/gyro/st_gyro_spi.c                | 13 +------
->  drivers/iio/magnetometer/st_magn_i2c.c        | 13 +------
->  drivers/iio/magnetometer/st_magn_spi.c        | 13 +------
->  drivers/iio/pressure/st_pressure_i2c.c        | 13 +------
->  drivers/iio/pressure/st_pressure_spi.c        | 13 +------
->  include/linux/iio/common/st_sensors.h         |  2 --
->  10 files changed, 23 insertions(+), 117 deletions(-)
-> 
-> diff --git a/drivers/iio/accel/st_accel_i2c.c b/drivers/iio/accel/st_accel_i2c.c
-> index f711756e41e3..b377575efc41 100644
-> --- a/drivers/iio/accel/st_accel_i2c.c
-> +++ b/drivers/iio/accel/st_accel_i2c.c
-> @@ -177,24 +177,13 @@ static int st_accel_i2c_probe(struct i2c_client *client)
->  	if (ret)
->  		return ret;
->  
-> -	ret = st_accel_common_probe(indio_dev);
-> -	if (ret < 0)
-> -		goto st_accel_power_off;
-> -
-> -	return 0;
-> -
-> -st_accel_power_off:
-> -	st_sensors_power_disable(indio_dev);
-> -
-> -	return ret;
-> +	return st_accel_common_probe(indio_dev);
->  }
->  
->  static int st_accel_i2c_remove(struct i2c_client *client)
->  {
->  	struct iio_dev *indio_dev = i2c_get_clientdata(client);
->  
-> -	st_sensors_power_disable(indio_dev);
-> -
->  	st_accel_common_remove(indio_dev);
->  
->  	return 0;
-> diff --git a/drivers/iio/accel/st_accel_spi.c b/drivers/iio/accel/st_accel_spi.c
-> index bb45d9ff95b8..4ca87e73bdb3 100644
-> --- a/drivers/iio/accel/st_accel_spi.c
-> +++ b/drivers/iio/accel/st_accel_spi.c
-> @@ -127,24 +127,13 @@ static int st_accel_spi_probe(struct spi_device *spi)
->  	if (err)
->  		return err;
->  
-> -	err = st_accel_common_probe(indio_dev);
-> -	if (err < 0)
-> -		goto st_accel_power_off;
-> -
-> -	return 0;
-> -
-> -st_accel_power_off:
-> -	st_sensors_power_disable(indio_dev);
-> -
-> -	return err;
-> +	return st_accel_common_probe(indio_dev);
->  }
->  
->  static int st_accel_spi_remove(struct spi_device *spi)
->  {
->  	struct iio_dev *indio_dev = spi_get_drvdata(spi);
->  
-> -	st_sensors_power_disable(indio_dev);
-> -
->  	st_accel_common_remove(indio_dev);
->  
->  	return 0;
-> diff --git a/drivers/iio/common/st_sensors/st_sensors_core.c b/drivers/iio/common/st_sensors/st_sensors_core.c
-> index 0bbb090b108c..a5a140de9a23 100644
-> --- a/drivers/iio/common/st_sensors/st_sensors_core.c
-> +++ b/drivers/iio/common/st_sensors/st_sensors_core.c
-> @@ -215,13 +215,19 @@ int st_sensors_set_axis_enable(struct iio_dev *indio_dev, u8 axis_enable)
->  }
->  EXPORT_SYMBOL(st_sensors_set_axis_enable);
->  
-> +static void st_reg_disable(void *reg)
-> +{
-> +	regulator_disable(reg);
-> +}
-> +
->  int st_sensors_power_enable(struct iio_dev *indio_dev)
->  {
->  	struct st_sensor_data *pdata = iio_priv(indio_dev);
-> +	struct device *parent = indio_dev->dev.parent;
->  	int err;
->  
->  	/* Regulators not mandatory, but if requested we should enable them. */
-> -	pdata->vdd = devm_regulator_get(indio_dev->dev.parent, "vdd");
-> +	pdata->vdd = devm_regulator_get(parent, "vdd");
->  	if (IS_ERR(pdata->vdd)) {
->  		dev_err(&indio_dev->dev, "unable to get Vdd supply\n");
->  		return PTR_ERR(pdata->vdd);
-> @@ -233,36 +239,26 @@ int st_sensors_power_enable(struct iio_dev *indio_dev)
->  		return err;
->  	}
->  
-> -	pdata->vdd_io = devm_regulator_get(indio_dev->dev.parent, "vddio");
-> +	err = devm_add_action_or_reset(parent, st_reg_disable, pdata->vdd);
-> +	if (err)
-> +		return err;
-> +
-> +	pdata->vdd_io = devm_regulator_get(parent, "vddio");
->  	if (IS_ERR(pdata->vdd_io)) {
->  		dev_err(&indio_dev->dev, "unable to get Vdd_IO supply\n");
-> -		err = PTR_ERR(pdata->vdd_io);
-> -		goto st_sensors_disable_vdd;
-> +		return PTR_ERR(pdata->vdd_io);
->  	}
->  	err = regulator_enable(pdata->vdd_io);
->  	if (err != 0) {
->  		dev_warn(&indio_dev->dev,
->  			 "Failed to enable specified Vdd_IO supply\n");
-> -		goto st_sensors_disable_vdd;
-> +		return err;
->  	}
->  
-> -	return 0;
-> -
-> -st_sensors_disable_vdd:
-> -	regulator_disable(pdata->vdd);
-> -	return err;
-> +	return devm_add_action_or_reset(parent, st_reg_disable, pdata->vdd_io);
->  }
->  EXPORT_SYMBOL(st_sensors_power_enable);
->  
-> -void st_sensors_power_disable(struct iio_dev *indio_dev)
-> -{
-> -	struct st_sensor_data *pdata = iio_priv(indio_dev);
-> -
-> -	regulator_disable(pdata->vdd);
-> -	regulator_disable(pdata->vdd_io);
-> -}
-> -EXPORT_SYMBOL(st_sensors_power_disable);
-> -
->  static int st_sensors_set_drdy_int_pin(struct iio_dev *indio_dev,
->  					struct st_sensors_platform_data *pdata)
->  {
-> diff --git a/drivers/iio/gyro/st_gyro_i2c.c b/drivers/iio/gyro/st_gyro_i2c.c
-> index 3ef86e16ee65..0bd80dfd389f 100644
-> --- a/drivers/iio/gyro/st_gyro_i2c.c
-> +++ b/drivers/iio/gyro/st_gyro_i2c.c
-> @@ -90,24 +90,13 @@ static int st_gyro_i2c_probe(struct i2c_client *client,
->  	if (err)
->  		return err;
->  
-> -	err = st_gyro_common_probe(indio_dev);
-> -	if (err < 0)
-> -		goto st_gyro_power_off;
-> -
-> -	return 0;
-> -
-> -st_gyro_power_off:
-> -	st_sensors_power_disable(indio_dev);
-> -
-> -	return err;
-> +	return st_gyro_common_probe(indio_dev);
->  }
->  
->  static int st_gyro_i2c_remove(struct i2c_client *client)
->  {
->  	struct iio_dev *indio_dev = i2c_get_clientdata(client);
->  
-> -	st_sensors_power_disable(indio_dev);
-> -
->  	st_gyro_common_remove(indio_dev);
->  
->  	return 0;
-> diff --git a/drivers/iio/gyro/st_gyro_spi.c b/drivers/iio/gyro/st_gyro_spi.c
-> index 41d835493347..f74b09fa5cde 100644
-> --- a/drivers/iio/gyro/st_gyro_spi.c
-> +++ b/drivers/iio/gyro/st_gyro_spi.c
-> @@ -94,24 +94,13 @@ static int st_gyro_spi_probe(struct spi_device *spi)
->  	if (err)
->  		return err;
->  
-> -	err = st_gyro_common_probe(indio_dev);
-> -	if (err < 0)
-> -		goto st_gyro_power_off;
-> -
-> -	return 0;
-> -
-> -st_gyro_power_off:
-> -	st_sensors_power_disable(indio_dev);
-> -
-> -	return err;
-> +	return st_gyro_common_probe(indio_dev);
->  }
->  
->  static int st_gyro_spi_remove(struct spi_device *spi)
->  {
->  	struct iio_dev *indio_dev = spi_get_drvdata(spi);
->  
-> -	st_sensors_power_disable(indio_dev);
-> -
->  	st_gyro_common_remove(indio_dev);
->  
->  	return 0;
-> diff --git a/drivers/iio/magnetometer/st_magn_i2c.c b/drivers/iio/magnetometer/st_magn_i2c.c
-> index 2dfe4ee99591..0a5117dffcf4 100644
-> --- a/drivers/iio/magnetometer/st_magn_i2c.c
-> +++ b/drivers/iio/magnetometer/st_magn_i2c.c
-> @@ -86,24 +86,13 @@ static int st_magn_i2c_probe(struct i2c_client *client,
->  	if (err)
->  		return err;
->  
-> -	err = st_magn_common_probe(indio_dev);
-> -	if (err < 0)
-> -		goto st_magn_power_off;
-> -
-> -	return 0;
-> -
-> -st_magn_power_off:
-> -	st_sensors_power_disable(indio_dev);
-> -
-> -	return err;
-> +	return st_magn_common_probe(indio_dev);
->  }
->  
->  static int st_magn_i2c_remove(struct i2c_client *client)
->  {
->  	struct iio_dev *indio_dev = i2c_get_clientdata(client);
->  
-> -	st_sensors_power_disable(indio_dev);
-> -
->  	st_magn_common_remove(indio_dev);
->  
->  	return 0;
-> diff --git a/drivers/iio/magnetometer/st_magn_spi.c b/drivers/iio/magnetometer/st_magn_spi.c
-> index fba978796395..1f3bf02b24e0 100644
-> --- a/drivers/iio/magnetometer/st_magn_spi.c
-> +++ b/drivers/iio/magnetometer/st_magn_spi.c
-> @@ -80,24 +80,13 @@ static int st_magn_spi_probe(struct spi_device *spi)
->  	if (err)
->  		return err;
->  
-> -	err = st_magn_common_probe(indio_dev);
-> -	if (err < 0)
-> -		goto st_magn_power_off;
-> -
-> -	return 0;
-> -
-> -st_magn_power_off:
-> -	st_sensors_power_disable(indio_dev);
-> -
-> -	return err;
-> +	return st_magn_common_probe(indio_dev);
->  }
->  
->  static int st_magn_spi_remove(struct spi_device *spi)
->  {
->  	struct iio_dev *indio_dev = spi_get_drvdata(spi);
->  
-> -	st_sensors_power_disable(indio_dev);
-> -
->  	st_magn_common_remove(indio_dev);
->  
->  	return 0;
-> diff --git a/drivers/iio/pressure/st_pressure_i2c.c b/drivers/iio/pressure/st_pressure_i2c.c
-> index 52fa98f24478..afeeab485c0d 100644
-> --- a/drivers/iio/pressure/st_pressure_i2c.c
-> +++ b/drivers/iio/pressure/st_pressure_i2c.c
-> @@ -103,24 +103,13 @@ static int st_press_i2c_probe(struct i2c_client *client,
->  	if (ret)
->  		return ret;
->  
-> -	ret = st_press_common_probe(indio_dev);
-> -	if (ret < 0)
-> -		goto st_press_power_off;
-> -
-> -	return 0;
-> -
-> -st_press_power_off:
-> -	st_sensors_power_disable(indio_dev);
-> -
-> -	return ret;
-> +	return st_press_common_probe(indio_dev);
->  }
->  
->  static int st_press_i2c_remove(struct i2c_client *client)
->  {
->  	struct iio_dev *indio_dev = i2c_get_clientdata(client);
->  
-> -	st_sensors_power_disable(indio_dev);
-> -
->  	st_press_common_remove(indio_dev);
->  
->  	return 0;
-> diff --git a/drivers/iio/pressure/st_pressure_spi.c b/drivers/iio/pressure/st_pressure_spi.c
-> index ee393df54cee..834ad6d40a70 100644
-> --- a/drivers/iio/pressure/st_pressure_spi.c
-> +++ b/drivers/iio/pressure/st_pressure_spi.c
-> @@ -86,24 +86,13 @@ static int st_press_spi_probe(struct spi_device *spi)
->  	if (err)
->  		return err;
->  
-> -	err = st_press_common_probe(indio_dev);
-> -	if (err < 0)
-> -		goto st_press_power_off;
-> -
-> -	return 0;
-> -
-> -st_press_power_off:
-> -	st_sensors_power_disable(indio_dev);
-> -
-> -	return err;
-> +	return st_press_common_probe(indio_dev);
->  }
->  
->  static int st_press_spi_remove(struct spi_device *spi)
->  {
->  	struct iio_dev *indio_dev = spi_get_drvdata(spi);
->  
-> -	st_sensors_power_disable(indio_dev);
-> -
->  	st_press_common_remove(indio_dev);
->  
->  	return 0;
-> diff --git a/include/linux/iio/common/st_sensors.h b/include/linux/iio/common/st_sensors.h
-> index e74b55244f35..fc90c202d15e 100644
-> --- a/include/linux/iio/common/st_sensors.h
-> +++ b/include/linux/iio/common/st_sensors.h
-> @@ -293,8 +293,6 @@ int st_sensors_set_axis_enable(struct iio_dev *indio_dev, u8 axis_enable);
->  
->  int st_sensors_power_enable(struct iio_dev *indio_dev);
->  
-> -void st_sensors_power_disable(struct iio_dev *indio_dev);
-> -
->  int st_sensors_debugfs_reg_access(struct iio_dev *indio_dev,
->  				  unsigned reg, unsigned writeval,
->  				  unsigned *readval);
+    - Added new patch "smb347-charger: Add missing pin control activation",
+      which prevents never-enabled charging on Nexus 7.
+
+    - The "otg-fsm: Fix hrtimer list corruption" patch of v5 was already
+      applied to next, so it's not included anymore.
+
+v5: - Replaced "Remove caching of charger state" patch with "Utilize
+      generic regmap caching" after Sebastian's notice about disabled
+      regmap caching.
+
+v4: - Added r-b from Rob Herring.
+
+    - Added unevaluatedProperties into SMB binding for VBUS regulator,
+      which was Requested by Rob Herring.
+
+    - Added cell to nvidia,pmc phandle instead of explicit h/w ID
+      property. Requested by Rob Herring.
+
+    - Added stack trace to commit message and ack from Peter Chen to
+      OTG FSM patch.
+
+v3: - Further improved interrupt handling in the PHY driver by removing
+      assumption that interrupt is enabled by the CI driver at the time
+      of set_wakeup() invocation, which makes this function a bit more
+      universal.
+
+v2: - The PHY's interrupt is now enabled from PHY's set_wakeup() callback.
+      It prevents getting a spurious interrupt during the CI driver probe
+      time.
+
+Dmitry Osipenko (12):
+  dt-bindings: phy: tegra20-usb-phy: Convert to schema
+  dt-bindings: phy: tegra20-usb-phy: Document properties needed for OTG
+    mode
+  soc/tegra: pmc: Expose USB regmap to all SoCs
+  usb: phy: tegra: Support OTG mode programming
+  dt-bindings: power: supply: smb347-charger: Document USB VBUS
+    regulator
+  power: supply: smb347-charger: Make smb347_set_writable() IRQ-safe
+  power: supply: smb347-charger: Utilize generic regmap caching
+  power: supply: smb347-charger: Add missing pin control activation
+  power: supply: smb347-charger: Implement USB VBUS regulator
+  ARM: tegra: Add new properties to USB PHY device-tree nodes
+  ARM: tegra: nexus7: Enable USB OTG mode
+  arm64: tegra132: Add new properties to USB PHY device-tree node
+
+ .../bindings/phy/nvidia,tegra20-usb-phy.txt   |  74 ----
+ .../bindings/phy/nvidia,tegra20-usb-phy.yaml  | 373 ++++++++++++++++++
+ .../power/supply/summit,smb347-charger.yaml   |  30 ++
+ arch/arm/boot/dts/tegra114.dtsi               |   4 +
+ arch/arm/boot/dts/tegra124.dtsi               |   6 +
+ arch/arm/boot/dts/tegra20.dtsi                |   6 +
+ .../tegra30-asus-nexus7-grouper-common.dtsi   |  25 +-
+ arch/arm/boot/dts/tegra30.dtsi                |   6 +
+ arch/arm64/boot/dts/nvidia/tegra132.dtsi      |   6 +
+ drivers/power/supply/Kconfig                  |   1 +
+ drivers/power/supply/smb347-charger.c         | 271 ++++++++++++-
+ drivers/soc/tegra/pmc.c                       |   6 +-
+ drivers/usb/phy/phy-tegra-usb.c               | 197 ++++++++-
+ .../dt-bindings/power/summit,smb347-charger.h |   4 +
+ include/linux/usb/tegra_usb_phy.h             |   5 +
+ 15 files changed, 911 insertions(+), 103 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml
+
+-- 
+2.32.0
 
