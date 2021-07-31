@@ -2,64 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414CE3DC395
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 07:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347BC3DC396
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 07:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234849AbhGaFhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 01:37:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39154 "EHLO mail.kernel.org"
+        id S236312AbhGaFi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 01:38:28 -0400
+Received: from mga03.intel.com ([134.134.136.65]:27712 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhGaFhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 01:37:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F9E60F12;
-        Sat, 31 Jul 2021 05:37:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627709853;
-        bh=S3uexazbecHE/Hgv8ReBZYx8s/DUibwfmrnN3y8zAw4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wKqnh8WuJcKmWLQ2YEjFxgGx+a9IkBBsZSypBE3jI3KuAubPDIU98J7BsvV+4EyH5
-         2nY/tea7JezudGybI3Ly/3LOvCrYcEM0y6tVczrbFY7i0NHPnvrOZpbKWfXo4+sLTc
-         n/exC2QoGvjcL8958RCgYdHv5uMLEKIVcftCQCbI=
-Date:   Sat, 31 Jul 2021 07:37:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-staging@lists.linux.dev
-Subject: Re: kernel BUG in new r8188eu
-Message-ID: <YQThm1A0Up1m4l1S@kroah.com>
-References: <80042e9f-6811-38f3-010b-1c0951ba88db@lwfinger.net>
+        id S229766AbhGaFi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 01:38:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10061"; a="213243375"
+X-IronPort-AV: E=Sophos;i="5.84,283,1620716400"; 
+   d="scan'208";a="213243375"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 22:38:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,283,1620716400"; 
+   d="scan'208";a="439435848"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Jul 2021 22:38:17 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m9hhQ-000Aic-BB; Sat, 31 Jul 2021 05:38:16 +0000
+Date:   Sat, 31 Jul 2021 13:38:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ f6a71a5ebe2354888c7fa45b579f18180f2f6b7e
+Message-ID: <6104e1bb.vCc8MVy96nFJ9irY%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <80042e9f-6811-38f3-010b-1c0951ba88db@lwfinger.net>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 02:59:44PM -0500, Larry Finger wrote:
-> Greg,
-> 
-> When I unplug the USB device with the driver loaded, I get the following BUG
-> and my laptop freezes:
-> 
-> kernel: BUG: unable to handle page fault for address: ffffeb0200043248
-> kernel: #PF: supervisor read access in kernel mode
-> kernel: #PF: error_code(0x0000) - not-present page
-> 
-> The traceback points to a kfree() call. I do not understand this BUG. Can
-> you explain what happens?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: f6a71a5ebe2354888c7fa45b579f18180f2f6b7e  Merge branch 'locking/core'
 
-Is this a new regression due to the recent cleanups, or something that
-has always been here?
+elapsed time: 722m
 
-As for the error, looks like someone is reading to an address that is
-in userspace without doing the proper copy_from_user() thing.  Do you
-have a full traceback?
+configs tested: 100
+configs skipped: 4
 
-> I think I know how to avoid the BUG, but that might be at the expense of a
-> memory leak.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-That shouldn't be needed :)
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210730
+mips                      pic32mzda_defconfig
+mips                          malta_defconfig
+h8300                            alldefconfig
+arm                          collie_defconfig
+powerpc                     ppa8548_defconfig
+arm                           sunxi_defconfig
+mips                           ip28_defconfig
+m68k                            q40_defconfig
+nios2                         10m50_defconfig
+arm                          pcm027_defconfig
+powerpc                         wii_defconfig
+arc                              alldefconfig
+sh                           se7705_defconfig
+mips                           mtx1_defconfig
+x86_64                           alldefconfig
+powerpc                    gamecube_defconfig
+powerpc                   currituck_defconfig
+powerpc                      chrp32_defconfig
+mips                      fuloong2e_defconfig
+sh                ecovec24-romimage_defconfig
+mips                           rs90_defconfig
+arm                      footbridge_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210730
+i386                 randconfig-a004-20210730
+i386                 randconfig-a003-20210730
+i386                 randconfig-a002-20210730
+i386                 randconfig-a006-20210730
+i386                 randconfig-a001-20210730
+x86_64               randconfig-a015-20210730
+x86_64               randconfig-a014-20210730
+x86_64               randconfig-a013-20210730
+x86_64               randconfig-a011-20210730
+x86_64               randconfig-a012-20210730
+x86_64               randconfig-a016-20210730
+i386                 randconfig-a013-20210730
+i386                 randconfig-a016-20210730
+i386                 randconfig-a012-20210730
+i386                 randconfig-a011-20210730
+i386                 randconfig-a014-20210730
+i386                 randconfig-a015-20210730
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-thanks,
+clang tested configs:
+x86_64               randconfig-c001-20210730
+x86_64               randconfig-a001-20210730
+x86_64               randconfig-a006-20210730
+x86_64               randconfig-a005-20210730
+x86_64               randconfig-a004-20210730
+x86_64               randconfig-a002-20210730
+x86_64               randconfig-a003-20210730
 
-greg k-h
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
