@@ -2,244 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED7C3DC2D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 04:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0ED3DC2D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 05:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235755AbhGaC7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 22:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
+        id S235958AbhGaDAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 23:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhGaC7N (ORCPT
+        with ESMTP id S231511AbhGaDAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 22:59:13 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D53CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 19:59:06 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so6425726pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 19:59:06 -0700 (PDT)
+        Fri, 30 Jul 2021 23:00:10 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2284BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 20:00:04 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id t21so13221846plr.13
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 20:00:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9Aa9q+ZgPH94d4mui+MhDlRe9awiZiZZrbzXI3QwflQ=;
-        b=K/AnMh6xbreh13akr8KlRWX933KG/LVSiOukQOOU02w9zDvPcZa/3brhzVIyI/b/3I
-         8MwYX4XWyDe4L8DaHTAAOwEDtNaP6NmQ6MxmN2PhdWVt37y0G/ZLykupXyKWHjpiieLb
-         dX8vGbaeXhGoISkRuWXLfYmOV+Mfm2EZz2F7A=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7zBw9j8ybMQuBdxwfQuqsf44R15K6SeWh2IGwK7jYag=;
+        b=AFeGOzugL2CydbYFfVBGXeQsERjhKiOR7cLKK9mH1vwwDKVlzEQrfLwYulqpIyTi4e
+         8t+OKJflW7gNEp3XrrsYuKxs23+p/YpIArovmBT32hzRfdFn+1LPhzfp27KCOEdl+3v5
+         LE22Hk5y+g6DFeMSX5Yx+saYUhR6PlEOPM6Kc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9Aa9q+ZgPH94d4mui+MhDlRe9awiZiZZrbzXI3QwflQ=;
-        b=MuKnPHirEyjyyYFhdTronMYrliIOkR9LPo9xX7UPLP9wt3cbVfTT5IhyKxnor+baSy
-         HBSgJSxBb8ZuvSvfTs3PTRL2xbQVd5Y9M7QZVIU721HyPb/+zl9AOqWJliA1Q7ewEWtm
-         qD1Tj93+B1JFchgVyYlw7eLch3zLxzv/TgkROP8np/CymJQwYmOwubcbsJnig10jYkgL
-         O6kI8aKp+OQo0LBdNV8aS9Byz5qux+3ll2ldI8BRnzX7e3itIO1XzrnAhdJNN/xEpspi
-         95Utyr2W1Yttd1eJxPTgFUAtqDVm5vsG5pxKyPfN8GqlfxV/8Qm4ea7yc04myTuCfbx4
-         vt7g==
-X-Gm-Message-State: AOAM533VHxSweHDsmmLAgLPpOIBKtbHxyEd4F6h9mGMuaYEUcg5Z06il
-        aLdtKAcmCVONfiS1qrpBpkFZ+Q==
-X-Google-Smtp-Source: ABdhPJxTfKt3gvdchGd16NukW5boDEwoaheumkJt6I1FzMy8GwJfQpRQICiNX//vocu1zdwGzNo0jA==
-X-Received: by 2002:a63:5505:: with SMTP id j5mr1362082pgb.250.1627700346188;
-        Fri, 30 Jul 2021 19:59:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c7sm4280329pgq.22.2021.07.30.19.59.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7zBw9j8ybMQuBdxwfQuqsf44R15K6SeWh2IGwK7jYag=;
+        b=PUiepP1fL8ApckSdX2ShH9cCbYfOhK4fyz+UnoeAHhhWQYdMBbnhuw3BtuxMA8ZJOv
+         1GF1Rl5cVB+2qPXln26KfoTb5SxYbvssqZfbWjC/GnWlXEETtmhboQt5kH7TQG3WqhiH
+         cKw5vMHTqYnSDOdv8glwnd6PaQFOMgYijjUN865yQszpfVHldk8yWXeosLJJvx+pi3c+
+         /1e+GZwQNRHN8O9nfe7yGXirMyGAKJmoi6AahFaED4K43Sa+U5mOdcfqZH5Ud2f9tP5d
+         rWtNEhpgu+Fv+UrrDWdj+0LbQcFztnUjoHKxlBlgYo96gHOeswP4QMW/KwleoPWgCOU0
+         ItTw==
+X-Gm-Message-State: AOAM533TvTNeyfbpgR8vFiHu368GC1u5EQ+haFlYDzSeRRGXcgBvza4K
+        Sj3Dn0vId+aANIRCuu8vqX+LUw==
+X-Google-Smtp-Source: ABdhPJyw54CZg0S63WEjJqxwTtP1chxHRehf4lfBegCGvCSHFX0+TM/K7LN3lD50p8VFWCNIF/ZR5w==
+X-Received: by 2002:a62:ab0a:0:b029:33b:6d08:2a45 with SMTP id p10-20020a62ab0a0000b029033b6d082a45mr5767695pff.38.1627700403643;
+        Fri, 30 Jul 2021 20:00:03 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:d273:6afe:a426:39e7])
+        by smtp.gmail.com with ESMTPSA id l14sm3825416pfd.58.2021.07.30.20.00.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 19:59:05 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 19:59:04 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Williams, Dan J" <dan.j.williams@intel.com>
-Cc:     "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-        "keithpac@amazon.com" <keithpac@amazon.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Subject: Re: [PATCH 04/64] stddef: Introduce struct_group() helper macro
-Message-ID: <202107301952.B484563@keescook>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-5-keescook@chromium.org>
- <41183a98-bdb9-4ad6-7eab-5a7292a6df84@rasmusvillemoes.dk>
- <202107281456.1A3A5C18@keescook>
- <1d9a2e6df2a9a35b2cdd50a9a68cac5991e7e5f0.camel@intel.com>
+        Fri, 30 Jul 2021 20:00:03 -0700 (PDT)
+From:   Brian Norris <briannorris@chromium.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, <linux-kernel@vger.kernel.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>, stable@vger.kernel.org
+Subject: [PATCH] clk: fix leak on devm_clk_bulk_get_all() unwind
+Date:   Fri, 30 Jul 2021 19:59:50 -0700
+Message-Id: <20210731025950.2238582-1-briannorris@chromium.org>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1d9a2e6df2a9a35b2cdd50a9a68cac5991e7e5f0.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 10:19:20PM +0000, Williams, Dan J wrote:
-> On Wed, 2021-07-28 at 14:59 -0700, Kees Cook wrote:
-> > On Wed, Jul 28, 2021 at 12:54:18PM +0200, Rasmus Villemoes wrote:
-> > > On 27/07/2021 22.57, Kees Cook wrote:
-> > > 
-> > > > In order to have a regular programmatic way to describe a struct
-> > > > region that can be used for references and sizing, can be examined for
-> > > > bounds checking, avoids forcing the use of intermediate identifiers,
-> > > > and avoids polluting the global namespace, introduce the struct_group()
-> > > > macro. This macro wraps the member declarations to create an anonymous
-> > > > union of an anonymous struct (no intermediate name) and a named struct
-> > > > (for references and sizing):
-> > > > 
-> > > >         struct foo {
-> > > >                 int one;
-> > > >                 struct_group(thing,
-> > > >                         int two,
-> > > >                         int three,
-> > > >                 );
-> > > >                 int four;
-> > > >         };
-> > > 
-> > > That example won't compile, the commas after two and three should be
-> > > semicolons.
-> > 
-> > Oops, yes, thanks. This is why I shouldn't write code that doesn't first
-> > go through a compiler. ;)
-> > 
-> > > And your implementation relies on MEMBERS not containing any comma
-> > > tokens, but as
-> > > 
-> > >   int a, b, c, d;
-> > > 
-> > > is a valid way to declare multiple members, consider making MEMBERS
-> > > variadic
-> > > 
-> > > #define struct_group(NAME, MEMBERS...)
-> > > 
-> > > to have it slurp up every subsequent argument and make that work.
-> > 
-> > Ah! Perfect, thank you. I totally forgot I could do it that way.
-> 
-> This is great Kees. It just so happens it would clean-up what we are
-> already doing in drivers/cxl/cxl.h for anonymous + named register block
-> pointers. However in the cxl case it also needs the named structure to
-> be typed. Any appetite for a typed version of this?
+clk_bulk_get_all() allocates an array of struct clk_bulk data for us
+(unlike clk_bulk_get()), so we need to free it. Let's use the
+clk_bulk_put_all() helper.
 
-Oh cool! Yeah, totally I can expand it. Thanks for the suggestion!
+kmemleak complains, on an RK3399 Gru/Kevin system:
 
-> 
-> Here is a rough idea of the cleanup it would induce in drivers/cxl/:
-> 
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index 53927f9fa77e..a2308c995654 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -75,52 +75,19 @@ static inline int cxl_hdm_decoder_count(u32 cap_hdr)
->  #define CXLDEV_MBOX_BG_CMD_STATUS_OFFSET 0x18
->  #define CXLDEV_MBOX_PAYLOAD_OFFSET 0x20
->  
-> -#define CXL_COMPONENT_REGS() \
-> -       void __iomem *hdm_decoder
-> -
-> -#define CXL_DEVICE_REGS() \
-> -       void __iomem *status; \
-> -       void __iomem *mbox; \
-> -       void __iomem *memdev
-> -
-> -/* See note for 'struct cxl_regs' for the rationale of this organization */
->  /*
-> - * CXL_COMPONENT_REGS - Common set of CXL Component register block base pointers
->   * @hdm_decoder: CXL 2.0 8.2.5.12 CXL HDM Decoder Capability Structure
-> - */
-> -struct cxl_component_regs {
-> -       CXL_COMPONENT_REGS();
-> -};
-> -
-> -/* See note for 'struct cxl_regs' for the rationale of this organization */
-> -/*
-> - * CXL_DEVICE_REGS - Common set of CXL Device register block base pointers
->   * @status: CXL 2.0 8.2.8.3 Device Status Registers
->   * @mbox: CXL 2.0 8.2.8.4 Mailbox Registers
->   * @memdev: CXL 2.0 8.2.8.5 Memory Device Registers
->   */
-> -struct cxl_device_regs {
-> -       CXL_DEVICE_REGS();
-> -};
-> -
-> -/*
-> - * Note, the anonymous union organization allows for per
-> - * register-block-type helper routines, without requiring block-type
-> - * agnostic code to include the prefix.
-> - */
->  struct cxl_regs {
-> -       union {
-> -               struct {
-> -                       CXL_COMPONENT_REGS();
-> -               };
-> -               struct cxl_component_regs component;
-> -       };
-> -       union {
-> -               struct {
-> -                       CXL_DEVICE_REGS();
-> -               };
-> -               struct cxl_device_regs device_regs;
-> -       };
-> +       struct_group_typed(cxl_component_regs, component,
-> +               void __iomem *hdm_decoder;
-> +       );
-> +       struct_group_typed(cxl_device_regs, device_regs,
-> +               void __iomem *status, *mbox, *memdev;
-> +       );
->  };
->  
->  struct cxl_reg_map {
-> diff --git a/include/linux/stddef.h b/include/linux/stddef.h
-> index cf7f866944f9..84b7de24ffb5 100644
-> --- a/include/linux/stddef.h
-> +++ b/include/linux/stddef.h
-> @@ -49,12 +49,18 @@ enum {
->   * @ATTRS: Any struct attributes (normally empty)
->   * @MEMBERS: The member declarations for the mirrored structs
->   */
-> -#define struct_group_attr(NAME, ATTRS, MEMBERS) \
-> +#define struct_group_attr(NAME, ATTRS, MEMBERS...) \
->         union { \
->                 struct { MEMBERS } ATTRS; \
->                 struct { MEMBERS } ATTRS NAME; \
->         }
->  
-> +#define struct_group_attr_typed(TYPE, NAME, ATTRS, MEMBERS...) \
-> +       union { \
-> +               struct { MEMBERS } ATTRS; \
-> +               struct TYPE { MEMBERS } ATTRS NAME; \
-> +       }
-> +
->  /**
->   * struct_group(NAME, MEMBERS)
->   *
-> @@ -67,7 +73,10 @@ enum {
->   * @NAME: The name of the mirrored sub-struct
->   * @MEMBERS: The member declarations for the mirrored structs
->   */
-> -#define struct_group(NAME, MEMBERS)    \
-> +#define struct_group(NAME, MEMBERS...) \
->         struct_group_attr(NAME, /* no attrs */, MEMBERS)
->  
-> +#define struct_group_typed(TYPE, NAME, MEMBERS...) \
-> +       struct_group_attr_typed(TYPE, NAME, /* no attrs */, MEMBERS)
-> +
->  #endif
+unreferenced object 0xffffff80045def00 (size 128):
+  comm "swapper/0", pid 1, jiffies 4294667682 (age 86.394s)
+  hex dump (first 32 bytes):
+    44 32 60 fe fe ff ff ff 00 00 00 00 00 00 00 00  D2`.............
+    48 32 60 fe fe ff ff ff 00 00 00 00 00 00 00 00  H2`.............
+  backtrace:
+    [<00000000742860d6>] __kmalloc+0x22c/0x39c
+    [<00000000b0493f2c>] clk_bulk_get_all+0x64/0x188
+    [<00000000325f5900>] devm_clk_bulk_get_all+0x58/0xa8
+    [<00000000175b9bc5>] dwc3_probe+0x8ac/0xb5c
+    [<000000009169e2f9>] platform_drv_probe+0x9c/0xbc
+    [<000000005c51e2ee>] really_probe+0x13c/0x378
+    [<00000000c47b1f24>] driver_probe_device+0x84/0xc0
+    [<00000000f870fcfb>] __device_attach_driver+0x94/0xb0
+    [<000000004d1b92ae>] bus_for_each_drv+0x8c/0xd8
+    [<00000000481d60c3>] __device_attach+0xc4/0x150
+    [<00000000a163bd36>] device_initial_probe+0x1c/0x28
+    [<00000000accb6bad>] bus_probe_device+0x3c/0x9c
+    [<000000001a199f89>] device_add+0x218/0x3cc
+    [<000000001bd84952>] of_device_add+0x40/0x50
+    [<000000009c658c29>] of_platform_device_create_pdata+0xac/0x100
+    [<0000000021c69ba4>] of_platform_bus_create+0x190/0x224
 
-Awesome! My instinct is to expose the resulting API as:
+Fixes: f08c2e2865f6 ("clk: add managed version of clk_bulk_get_all")
+Cc: Dong Aisheng <aisheng.dong@nxp.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
+Never mind that kmemleak appears broken on 5.14-rc3+... but I caught the
+leak on an earlier kernel.
 
-__struct_group(type, name, attrs, members...)
+ drivers/clk/clk-devres.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-struct_group(name, members...)
-struct_group_attr(name, attrs, members...)
-struct_group_typed(type, name, members...)
-
+diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c
+index be160764911b..f9d5b7334341 100644
+--- a/drivers/clk/clk-devres.c
++++ b/drivers/clk/clk-devres.c
+@@ -92,13 +92,20 @@ int __must_check devm_clk_bulk_get_optional(struct device *dev, int num_clks,
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_bulk_get_optional);
+ 
++static void devm_clk_bulk_release_all(struct device *dev, void *res)
++{
++	struct clk_bulk_devres *devres = res;
++
++	clk_bulk_put_all(devres->num_clks, devres->clks);
++}
++
+ int __must_check devm_clk_bulk_get_all(struct device *dev,
+ 				       struct clk_bulk_data **clks)
+ {
+ 	struct clk_bulk_devres *devres;
+ 	int ret;
+ 
+-	devres = devres_alloc(devm_clk_bulk_release,
++	devres = devres_alloc(devm_clk_bulk_release_all,
+ 			      sizeof(*devres), GFP_KERNEL);
+ 	if (!devres)
+ 		return -ENOMEM;
 -- 
-Kees Cook
+2.32.0.554.ge1b32706d8-goog
+
