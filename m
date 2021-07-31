@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DDF3DC556
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 11:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856903DC554
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 11:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhGaJYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 05:24:49 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:47660
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232528AbhGaJYp (ORCPT
+        id S232880AbhGaJYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 05:24:47 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59914
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232395AbhGaJYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 31 Jul 2021 05:24:45 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 4C3C73F232
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 09:24:34 +0000 (UTC)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 4C8A73F233
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 09:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
         s=20210705; t=1627723477;
-        bh=2SsoeL69SAbyVLuagHDmvrXJo7lE3+dC0c+iRSlRnVc=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=qFsTkO4eepm/DqCMQXppe8VxSEAFM3YwAlxSrj2U6Eq84QGni2PVt4TurlipA1zpi
-         3T+zZjyKCuW6zs+t68drgEnyrmxHbgnk9NH22iluQ2ukdq0DAZ119RXehvWPRvMC0i
-         yoMK5TDyeJxIITephJ3EqPUSs6O/F8Z1BZVYYZI/egfu+4SjbnXrBOgG0Ahi+FyDWb
-         1H7eXVDPMMSnSAmqlZ76yGqap3y5+avNcSU4WX9nqQX2ZwBdLjdgQnkZlczwZLH8XQ
-         j2O5ef3z3dMcMSEwLvWNJi9pBgRa/rsEnUeDlIx2tTSL8ueR2l6mTch8Ks+E4v8YFl
-         9XbeRaN0KSLpg==
-Received: by mail-ed1-f69.google.com with SMTP id cm18-20020a0564020c92b02903bc7f21d540so4445389edb.13
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 02:24:34 -0700 (PDT)
+        bh=kGo37r3WhFCeIFTyZEtB2b0clBfBYswptDUZjNvqtBo=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=Pn5AM4+RTr3v2gvWU1GhJ6S64vSgytYHeNA6eItQhTIv6qNo/LWYeYVa5A/DBGcsP
+         eIfLt8k1wW7JwwWG1ltx1ob2wJWvBau/4iqAfFJDKIzlW8vqIoLsvCpX9uQTr/pH59
+         d3UuqaLmYqumd+msboGpIUQyo0fRwCgGqFQrUoDkOqiPuAbY3VLLA3BqPXc+zdlhuJ
+         tDSwlKFreAwZUPLAXTfvwqv/alcbTp/ccKii84eaUPffFlxtsRdlhtkaARXkAmqkxL
+         Dl+FfugIrK4btbosHu9Cva7YtijZUDZgGYqUTB4p9WkegXUlPKv4BXM8E4YeOwDcTY
+         8AOVpOrnjb56g==
+Received: by mail-ed1-f71.google.com with SMTP id d12-20020a50fe8c0000b02903a4b519b413so5879634edt.9
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 02:24:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2SsoeL69SAbyVLuagHDmvrXJo7lE3+dC0c+iRSlRnVc=;
-        b=IKUgK85cgZWCljW1DcrMezDOphWuQgvi33jyW1wQDJgZA/DbWYBl8Fh0O5Y7LBL5yh
-         60cqFIPgIGKisXiwFWxoa2OsmkbnbcJzpQZ3RlckvUm2DXq1xSt+CJ3BPmHKvNqkADp0
-         Ux6/tOdTaco/005+htoYg46HO6w44QeDs24FyXF1bsObPrgwJLInzkgDUv5bvzLrg5wn
-         1BLA/jg3bDEGWBD83XTL9mr2WzMkAcpqtnu/7u24bN790FEb6Opto64tX8vTgT3opxqS
-         j137bESqSCQGm0kIeroc2jmtrRGaRZvxfGZ9+2OtLbb0MZ4c3OGTUYcMaBC1Vvvy7yJD
-         cd2g==
-X-Gm-Message-State: AOAM530uddfhfsjQivzlObCmNJbgl/TknRRIpqNR9PUabbWcooDzznGi
-        biIded11FjG3tAqYO/W9LWXMqQVR/KHmnyN5R8ax7upwFKZ9Qo3pkOcacpaqCXtMHRa6wsPu1C6
-        nEBv4SPC2FhRoTv8jfy+7kJ/ZDANBlm+K6M1yCcef2w==
-X-Received: by 2002:aa7:c3d1:: with SMTP id l17mr4578543edr.299.1627723474537;
-        Sat, 31 Jul 2021 02:24:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxeAnPajwclK+eQXY1ZtPp0NIkRYZP3KRr0MLG5lY5FR1vkdqt76BV8Rkpf4D3K9sS4iN6vpg==
-X-Received: by 2002:aa7:c3d1:: with SMTP id l17mr4578532edr.299.1627723474425;
-        Sat, 31 Jul 2021 02:24:34 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kGo37r3WhFCeIFTyZEtB2b0clBfBYswptDUZjNvqtBo=;
+        b=udOlTxlAr4sD3kDjpPPxFcDY/3+3mGlXoMBcaxpHZeD6Jx+VDXY8G/lIz5lOKfOaa3
+         oztnY3putUzzSwZRsl03x2RU9VETlCVWVcgtg9r3trWPIdWu09U62USFIRnaaH7tPOL2
+         O7gDcXZaXp1o7FnrRMXvqj/5/rOchtPhcnrGXwIDEKTWQVU+CGMA+/bMtJTI2ib8CfwZ
+         bLs8uINV+K/uxDTRZFKXXm9H6stOcuRFQAEopW6zb0Nyf3mY0e/RYwTd2Cgw0yqN4smo
+         XDMc/SKEKTAjPa4Llngu9/iCH+sN+Xkxd9d9k30LqPSz/s79KaxMWZ4Xv7PyI/s/h4hq
+         rrJQ==
+X-Gm-Message-State: AOAM530aAb//6Ah26CoyOk8w62D1jfOlxf8lGz/gCi2QMnM5c4UHKHeb
+        wFhRTcOjeObOJ7YxqR0DADWDpScxptAD1/Ok8IC603kodFLWMQUTCrW6aMtbM7zl1ejbd1sUmJx
+        1hy4TfvMXd38hfuJPRRPc8TOvEhz0lgnlN7DschXnjQ==
+X-Received: by 2002:a05:6402:28f:: with SMTP id l15mr8056969edv.131.1627723475765;
+        Sat, 31 Jul 2021 02:24:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyaUYFBiBXOj/YrSnv2G1IxSRpz8mT9DY7R7LnPnM3pnBBdSPX26G/dea1pdGER5HCdqQwzig==
+X-Received: by 2002:a05:6402:28f:: with SMTP id l15mr8056962edv.131.1627723475618;
+        Sat, 31 Jul 2021 02:24:35 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id r16sm1947693edt.15.2021.07.31.02.24.33
+        by smtp.gmail.com with ESMTPSA id r16sm1947693edt.15.2021.07.31.02.24.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 02:24:34 -0700 (PDT)
+        Sat, 31 Jul 2021 02:24:35 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
@@ -63,28 +64,30 @@ Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Chanwoo Choi <cw00.choi@samsung.com>,
         Alim Akhtar <alim.akhtar@samsung.com>
-Subject: [PATCH 1/8] ARM: dts: exynos: add CPU topology to Exynos3250
-Date:   Sat, 31 Jul 2021 11:24:02 +0200
-Message-Id: <20210731092409.31496-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/8] ARM: dts: exynos: add CPU topology to Exynos4210
+Date:   Sat, 31 Jul 2021 11:24:03 +0200
+Message-Id: <20210731092409.31496-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210731092409.31496-1-krzysztof.kozlowski@canonical.com>
+References: <20210731092409.31496-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe Exynos3250 CPU topology.
+Describe Exynos4210 CPU topology.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- arch/arm/boot/dts/exynos3250.dtsi | 11 +++++++++++
+ arch/arm/boot/dts/exynos4210.dtsi | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/arch/arm/boot/dts/exynos3250.dtsi b/arch/arm/boot/dts/exynos3250.dtsi
-index 77ab7193b903..a10b789d8acf 100644
---- a/arch/arm/boot/dts/exynos3250.dtsi
-+++ b/arch/arm/boot/dts/exynos3250.dtsi
-@@ -50,6 +50,17 @@ cpus {
+diff --git a/arch/arm/boot/dts/exynos4210.dtsi b/arch/arm/boot/dts/exynos4210.dtsi
+index 70baad9b11f0..7e7d65ce6585 100644
+--- a/arch/arm/boot/dts/exynos4210.dtsi
++++ b/arch/arm/boot/dts/exynos4210.dtsi
+@@ -32,6 +32,17 @@ cpus {
  		#address-cells = <1>;
  		#size-cells = <0>;
  
@@ -99,9 +102,9 @@ index 77ab7193b903..a10b789d8acf 100644
 +			};
 +		};
 +
- 		cpu0: cpu@0 {
+ 		cpu0: cpu@900 {
  			device_type = "cpu";
- 			compatible = "arm,cortex-a7";
+ 			compatible = "arm,cortex-a9";
 -- 
 2.27.0
 
