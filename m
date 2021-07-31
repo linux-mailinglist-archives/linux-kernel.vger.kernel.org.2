@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4162E3DC66C
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 16:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995713DC672
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 16:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhGaOy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 10:54:27 -0400
-Received: from mout.gmx.net ([212.227.15.19]:33831 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233228AbhGaOyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 10:54:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627743243;
-        bh=zY96gBywycZ3DkNeGCbLFMqyecwq4irLjId53UZ4Zf8=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Ganr3Z8MpqDXwLQU1ajZQdu1jXzt1nzmNe7rSSrq26cKszyGo5a8Ip/m0nQHQA9I4
-         7zOz9eeAaB9UA6ET3eZRakKZAb71Jpo35ILPw6dAfYS5+YQsnpDe2tkyxweGpT3Wkt
-         EhE/mTTRJlwvgMsMs8AAkSiDeMfjRX5PIP0TOnD8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N0FxV-1n4IiS04Rz-00xOSP; Sat, 31
- Jul 2021 16:54:03 +0200
-Date:   Sat, 31 Jul 2021 16:53:59 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        'Geert Uytterhoeven' <geert@linux-m68k.org>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] drivers/soc: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <20210731140620.GC1979@titan>
-References: <20210725151434.7122-1-len.baker@gmx.com>
- <CAMuHMdUdmv+YmdtjGJV2Lp_Rvar4kN4uSgSTYqXX9CtCJ+qoRw@mail.gmail.com>
- <80f4574c9f6c4c6780735b0fffd83363@AcuMS.aculab.com>
- <fa2fd44d-8cd7-b700-2e7b-d88c9c52507d@arm.com>
+        id S233299AbhGaO55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 10:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233035AbhGaO5z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 10:57:55 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B2BC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 07:57:49 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id m11so2367638plx.4
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 07:57:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cZF9Y6I+Qx6Gr1wByV30zO6gwQTmqMIjVaDGJsLh6xY=;
+        b=BPCE/iJCz7ZZdNq+YWfPBsJCVbK2LhY4aLwn2ORBLnmHW4Yeuex9V06v9M06CixNSg
+         nbPXP9LzzmsmWNN+tNuwAhjcrLuQD3F3kRf5uszwAkSjsTcBk1w1Iajjkq05Ng+6GLNK
+         UkskUAmaxmIwvbzElih3EmkDWdDLN3mSQ958h9GpDPB98rOAd21WYoCsOJLHYgJvCdkY
+         4zvEBMPjY8H7EfC23M2+B9Ke4I21lPkpsE27qhLeoh5vN/oH6XCSarOHOsE94Z+tMdio
+         vbH/VHY4ZY7SRm9dnctPnl/6T3FiWZhFtE7roXuM82WDxxj6G5jql9Pd4FI2TbUsR9LO
+         ShXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cZF9Y6I+Qx6Gr1wByV30zO6gwQTmqMIjVaDGJsLh6xY=;
+        b=Fzv6pCmXxKBd35tzWGi0V2YKdIXDeJwuwn15RRDqn9DcYd/EELGaY0lc13eW8APD3f
+         2wAnXbGEn3ye5gcJeMORKcg2UO7TJeGQ9J+9vUkD4DCun8OvGOuhnPBECFkW7Q9uwX0m
+         eMSYc0rfqKrHjJl/vcJ0rRzuQYlQ44te2pRKdv6yBQ/z/evTiDgkD7yDM3isVdNegH6U
+         Wv5u8FhrGpVx3pCP74lrodF3b24042mAyYOyckLM2FONxQMy4IhsvfvHIfbo5hfT9tzv
+         1wx8J4wWD+34qmPzG3bAQeT37RexCxyn8IFkXRxCpWNe/uIVBoOQFCY0u53B8He6ViN+
+         4xWg==
+X-Gm-Message-State: AOAM530fxKSbw1SmsZ8oanbSjog83Fe5r6UMaUJgyvPtyVPeDLVo4Xne
+        DBy6bP5CVHtu2TUJNXrfGz2BRA==
+X-Google-Smtp-Source: ABdhPJyzU/6tGM56mhUxjGi31EMHcEd077Dj2ChDGqQDnO9RWpBxWW15XvR1Z01nBGYLn0FBmRv99g==
+X-Received: by 2002:a17:90a:d3d2:: with SMTP id d18mr8775350pjw.102.1627743467767;
+        Sat, 31 Jul 2021 07:57:47 -0700 (PDT)
+Received: from [192.168.1.116] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id s31sm6998392pgm.27.2021.07.31.07.57.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 31 Jul 2021 07:57:47 -0700 (PDT)
+Subject: Re: [PATCH -next] nbd: add the check to prevent overflow in
+ __nbd_ioctl()
+To:     Baokun Li <libaokun1@huawei.com>, josef@toxicpanda.com,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org
+Cc:     patchwork@huawei.com, Hulk Robot <hulkci@huawei.com>
+References: <20210731014854.3953274-1-libaokun1@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b2582b8f-7cb8-f936-2d78-4d8b5feb0c12@kernel.dk>
+Date:   Sat, 31 Jul 2021 08:57:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa2fd44d-8cd7-b700-2e7b-d88c9c52507d@arm.com>
-X-Provags-ID: V03:K1:CPIGMjcOPSVTZO7Gzwh9hg7OmO3+oHEOG/0hwDtVK02HC8v0C/H
- VZtjWWWA7ZfqdoNIu89W/7fLWalj2kCOTQKhAxS6lFF7AoLoeM0lcDEuqjYIj+iDuALWlr/
- e3w2i4JYbm+getruIVMJJX4rXzTrv9aobAHUAs0KWlJnXuZM0dUDqdXEBq34FlTZeIDneQi
- IY/Xc6Mh+O9qwxxy5/a2A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KDOOqXKprFU=:aKLa3NCS3Zzhe89gSTB7xm
- S5gbutCNag4xoaxDSSedPJyiapV+RHqXoXWOVHnzxjYUqTVPUWOOwNtWAZU+fJzeJORs/1SIP
- 1OoRhLNgfQkGczk6bUZdlH2HOoIntYsgaEo2I8dYaa315q5tymP0d6v35fBmn7r0rqi3yyIvD
- fnRyTbhf4CpNTGkwzqL/GNynOwbwPOCiYepKBmYGjoPs5/OWOi2DkB4eniekMTX939uyE5FRp
- hb9igUS8h0EzaDJBHtT3jvgRo7I814KSRArIfYkr8PKUi3CPx+7nz1GV3dDJQzfDEyW2tvDVN
- 16j6laKhMmY7HJot8t8/3fuO9pjJ1Uqv3vAeB4m63iki7BcSqAVZdICPm4qDzsypfDOifWsZn
- njKRzbVxf/DJz4SSXxTLG7NvKG6q9luBbLuLMTqb68BAhuTStnCXPHLMOQ6Anb/hTqux8TBgK
- 5zyLmFxWrVW/fym5geK0gR/HmPJKyPb5iPV7aPv35WRqzIMOHYBtm1j4Usow5DIc74U+cPtBu
- LPyYMZv2bmFdTN1UhsPfjWzqioQbqIp02W53VhzsGLXFptkIATwTRZybyrRVgC0UaEjjrRvY8
- RJm8jUx8q5cRCc7SZ0ez8w/CbjUUfmQs37vC91tRCE2uleFh6I7kadGtttDvyzSQpMAmoiEBo
- YhgqS68ZYcpBfcNPhkj7ExTUx27Gg9Z3KUa5MHb5UveIjFTToZgINcXiAoY7pRUTppTMIp+eV
- T1sVwKiIbd0jCO6TN5v8Pp4bIXTimprkGOY7BCcIzux04RKjoeUBx+sOeiUt74TVKVccLK/Fm
- Oy3VJzdCuUUUpC2cxwxs2XODerg1L/8q6rQ4oLM068fqyfqi0tZ1b4JFNUryfZF6oUkS6ivwc
- aBTvLmQDpJmvInRrFoyusUI4JicfOQhGX+/MzBxDIZfAJ5m19UtUJNpB9rL4DZaVne0g+Il+g
- WChV2VUBnwM4CkHcXL+dTdeopZoSeqRb6qH53Ym39g/HAdOYTnQxxVgwLgYppTc31pupCyI2l
- 8xy18lw1WuX4wUCFHbzoEX2h7WPeQh3USpSqNvD49Kl1SZpuHlKajG1pzSniqADZDtCgHFQMs
- 65fiqzh7iwOd1lv68wDU0pl4hVOG9CnvXln
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210731014854.3953274-1-libaokun1@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 7/30/21 7:48 PM, Baokun Li wrote:
+> If user specify a large enough value of NBD blocks option, it may trigger
+> signed integer overflow which may lead to nbd->config->bytesize becomes a
+> large or small value, zero in particular.
+> 
+> UBSAN: Undefined behaviour in drivers/block/nbd.c:325:31
+> signed integer overflow:
+> 1024 * 4611686155866341414 cannot be represented in type 'long long int'
+> [...]
+> Call trace:
+> [...]
+>  handle_overflow+0x188/0x1dc lib/ubsan.c:192
+>  __ubsan_handle_mul_overflow+0x34/0x44 lib/ubsan.c:213
+>  nbd_size_set drivers/block/nbd.c:325 [inline]
+>  __nbd_ioctl drivers/block/nbd.c:1342 [inline]
+>  nbd_ioctl+0x998/0xa10 drivers/block/nbd.c:1395
+>  __blkdev_driver_ioctl block/ioctl.c:311 [inline]
+> [...]
+> 
+> Although it is not a big deal, still silence the UBSAN by limit
+> the input value.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>  drivers/block/nbd.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index c38317979f74..7c838bf8cc31 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -1398,6 +1398,8 @@ static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
+>  	case NBD_SET_SIZE:
+>  		return nbd_set_size(nbd, arg, config->blksize);
+>  	case NBD_SET_SIZE_BLOCKS:
+> +		if (arg && (LLONG_MAX / arg <= config->blksize))
+> +			return -EINVAL;
 
-On Wed, Jul 28, 2021 at 10:36:09AM +0100, Robin Murphy wrote:
-> On 2021-07-28 09:36, David Laight wrote:
+Use check_mul_overflow() instead?
 
-> > > > -               strcpy(pd->name, area->name);
-> > > > +               strscpy(pd->name, area->name, area_name_size);
-> >
-> > You can just use memcpy().
->
-> Indeed. In fact I'd go as far as saying that it might be worth teaching
-> static checkers to recognise patterns that boil down to strscpy(dst, src=
-,
-> strlen(src) + 1) and flag them as suspect, because AFAICS that would alw=
-ays
-> represent either an unnecessarily elaborate memcpy(), or far worse just =
-an
-> obfuscated strcpy().
+-- 
+Jens Axboe
 
-Ok, I will use the memcpy function instead of strscpy. Thanks for the
-feedback.
-
->
-> Robin.
-
-Regards,
-Len
