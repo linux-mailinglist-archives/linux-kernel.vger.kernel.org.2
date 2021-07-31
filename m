@@ -2,166 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B523DC4E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7903DC4E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 10:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhGaINB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 04:13:01 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:56722
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229703AbhGaIM5 (ORCPT
+        id S232622AbhGaINh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 04:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhGaINe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 04:12:57 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id D92583F106
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 08:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627719170;
-        bh=HofaMjseVcCUgqSYBsyKnJ2om6JL+Ag5g9O40Ge5/aA=;
-        h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=KrCfpMKt7a20tIXJx0UX6vAmt0qXGZnxmrsdapyDypuBya8UfXsLCxfVU7XAF9vRp
-         mVmOHEl8a/8HerNeScDyX4/MuICS6qe7utL38F+FMZrCdo3Pua6sOYmYyRM/xBd6Cn
-         N/icXqx2z1L0PHAahtdEIFxCy2CItLRbRJ1tmdftcvLUkGXMjszt4flEeUPrny8V3K
-         gqn7X75b6geCkACZVLrKW4eTkDOhQoNlXEcIEZv3NA77ksQwqTNdDdhTU2tAZ3k/oY
-         1zN1lDBS5lr6BVqdA3zli48hI87lMkiqgogps3JxU8wnCPfK0ZnA2nwixZ18pOqlwW
-         WMhlHoBXZ9RZA==
-Received: by mail-ed1-f72.google.com with SMTP id d6-20020a50f6860000b02903bc068b7717so5834130edn.11
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 01:12:50 -0700 (PDT)
+        Sat, 31 Jul 2021 04:13:34 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB19C06175F;
+        Sat, 31 Jul 2021 01:13:28 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id t3so11731463plg.9;
+        Sat, 31 Jul 2021 01:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pSqWDBwjSHpo0CpUmYzJgqTp6C8xaprSXoTH68RUk9A=;
+        b=uByXvFJLrQigPJrd54cWKzjfeHhmv/59d2ORQVsOva+5sc8NUkvICieZBg18ItO2Bl
+         H+jyxMqxtR0naDcAwKzLvkcaHmdzHLlTRV2Qd5tSi0sHOfJJSg7jY/ebFfZeOmmti3qi
+         1vVVuxwkQwYobrzkHkFpnjjzAjyaH6FXU2fi77dkQQkKugCrqjK1T9MFCse+PXzQRtIY
+         XP0TZajX/Rxe7SI2zQ5gYjE3+38td6o/gj0n5cl9efRbBGYGQYjXqzIiEadVQx9HQlGx
+         ta+9+0HadNRRG8JvzJnzj1NnY2ljjQUf+MbJ1vsR007GS4MkFmVY6+qUL3xODTt8ppuZ
+         CEMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=HofaMjseVcCUgqSYBsyKnJ2om6JL+Ag5g9O40Ge5/aA=;
-        b=RQUxpqGCcxRFlKDaMCIU+IEqdpC52tzAuLrMcJMugJvTtLI5sX/IGluphAjZLSLvnv
-         1cYbtW81dxWazajuZHXv3s3SQJZLIbDjL6Qc0p0tBH0kV4z252sZw9anWQZUGpwPW29o
-         kmWsGaMN9jN5KIBOV18eZSlXTTTyfyD9kTcphfXm/LDX/DWDkgAYww+Dubc4hA2nBi8u
-         wwKqemAnW0gjTlTSX73nyc254Tt2Wh/DC0GZVsJDGBFMNd25iGR6hpsfBwOVhGJNQolb
-         8rpLMb/k9To86jVJV+o6lrfbvEYQSaEPDscMWxXMwcMSd0+UTX4mrhrv48iQB9Hz1KSR
-         VLSQ==
-X-Gm-Message-State: AOAM531Aix3+fkdathJEemCvk7EkcrbgJh8MfaoPqQa7dRVe0c0VSXxx
-        gGGMhKXR8NZtN/m6UydMunS3dZ2CItWtEskZrTQ0nk2mlGqn/gcOavesGooJPwOhPcslGXtdjT7
-        zrdrrabHhO7c/zXIlMEVyRKivL4XK6Q5mJNPAK2ZDsQ==
-X-Received: by 2002:a17:906:cd1a:: with SMTP id oz26mr6577420ejb.101.1627719170297;
-        Sat, 31 Jul 2021 01:12:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwm7c/vYPdEZ6qJ4RX+9vAac/dbPuwTMcFunGU0oW5pq2v9q/TLiem2CXVaQ4vIsN9WXGr5Fg==
-X-Received: by 2002:a17:906:cd1a:: with SMTP id oz26mr6577395ejb.101.1627719170126;
-        Sat, 31 Jul 2021 01:12:50 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id r16sm1860561edt.15.2021.07.31.01.12.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 31 Jul 2021 01:12:49 -0700 (PDT)
-Subject: Re: [PATCH 00/12] Add minimal support for Exynos850 SoC
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <5e35b0a7-13aa-3c62-ca49-14af2fcb2a08@canonical.com>
- <c3486111-0ec9-9679-d2a2-68b2f33a2450@canonical.com>
- <CAPLW+4kbnJEBkc0D=RWt59JxBan8X1uDy6sSXBiYAq8N9FDV6A@mail.gmail.com>
- <13f166bb-7103-25d5-35a6-8ec53a1f1817@canonical.com>
-Message-ID: <2dacc205-04ce-c206-a393-50ba0d5aa1a7@canonical.com>
-Date:   Sat, 31 Jul 2021 10:12:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=pSqWDBwjSHpo0CpUmYzJgqTp6C8xaprSXoTH68RUk9A=;
+        b=STnuAzggIMj5UrjyYlZ1U99BvLdaKf9JGUJjJINNIpX9V9+IrmX+JeDwRajezaNLm2
+         F9dF6VrAyDrqRbtisLEgWV90ZaDhmd5tsS4IQWaq9Q3cAmsZMUvPoEamMAH0fzFtQiAy
+         yqR4Ec2gmHpUTvArVtnHQr1iP6ngsdHXdcSP+fNX/QHynTocRugN5nPkEFUJG53sVml2
+         e1JgcDIvebXjFQh1ac3kgBv8CMI3uPArlqtBQUt3cdbEh4G4BXmQakWnKJ1LdkWqPve5
+         xTzHrnHhCqAbMYrV0W2+/MD3cPVC7cYFndFNHbVJaw1hc+jvlnSbMDR9OE6HpKXmZLu3
+         GNKQ==
+X-Gm-Message-State: AOAM531W/XkuHX44ZXHZx6oQazFRqr4nlVaBK8W3cirYk4CGsRqsxwUn
+        /Wk3iMHeJDo/WQ/ZrV1tWwc=
+X-Google-Smtp-Source: ABdhPJw3sUv7SWXCtHAKD2+0aZD/9TU7DS9fJq1J3MW2qhUDFcv1S/rMnj/DfvR5PrG6iihq7vzA3Q==
+X-Received: by 2002:a62:30c5:0:b029:31e:fa6d:1738 with SMTP id w188-20020a6230c50000b029031efa6d1738mr6786010pfw.55.1627719207841;
+        Sat, 31 Jul 2021 01:13:27 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.29])
+        by smtp.gmail.com with ESMTPSA id c7sm5314475pgq.22.2021.07.31.01.13.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 01:13:27 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, airlied@redhat.com,
+        Felix.Kuehling@amd.com, Oak.Zeng@amd.com, nirmoy.das@amd.com,
+        tzimmermann@suse.de, Philip.Yang@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, baijiaju1990@gmail.com,
+        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] drm/amdgpu: fix possible null-pointer dereference in amdgpu_ttm_tt_unpopulate()
+Date:   Sat, 31 Jul 2021 01:13:06 -0700
+Message-Id: <20210731081306.86523-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <13f166bb-7103-25d5-35a6-8ec53a1f1817@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/2021 09:29, Krzysztof Kozlowski wrote:
-> On 30/07/2021 21:02, Sam Protsenko wrote:
->> Hi Krzysztof,
->>
->> On Fri, 30 Jul 2021 at 20:21, Krzysztof Kozlowski
->> <krzysztof.kozlowski@canonical.com> wrote:
->>>
->>> On 30/07/2021 17:18, Krzysztof Kozlowski wrote:
->>>> On 30/07/2021 16:49, Sam Protsenko wrote:
->>>>> This patch series adds initial platform support for Samsung Exynos850
->>>>> SoC [1]. With this patchset it's possible to run the kernel with BusyBox
->>>>> rootfs as a RAM disk. More advanced platform support (like MMC driver
->>>>> additions) will be added later. The idea is to keep the first submission
->>>>> minimal to ease the review, and then build up on top of that.
->>>>>
->>>>> [1] https://www.samsung.com/semiconductor/minisite/exynos/products/mobileprocessor/exynos-850/
->>>>>
->>>>
->>>> Great work!
->>>>
->>
->> Thanks, Krzysztof! And thank you for reviewing the whole series.
->>
->>>> What's the SoC revision number (should be accessible via
->>>> /sys/bus/soc/devices/soc0/)? Recent wrap in numbering of Exynos chips
->>>> might bring confusion...
->>
->> # cat /sys/devices/soc0/revision
->> 0
-> 
-> soc_id but you're right it won't be set for unknown SoCs. You need to
-> extend drivers/soc/samsung/exynos-chipid.c to parse new values (E3830000
-> for product ID) and maybe new register offsets (previous offset is 0x0,
-> for 3830 is 0x10 I think). Also revision mask might change.
-> 
->>> Judging by vendor's sources it is quite confusing. It looks mostly like
->>> Exynos3830 but in few other cases it uses Exynos9 compatibles (Exynos9,
->>> Exynos9820). Only in few places there is Exynos850. Marketing department
->>> made it so confusing...  The revision embedded in SoC would be very
->>> interesting.
->>>
->>
->> As I understand, this SoC is called Exynos850 everywhere now.
->> Exynos3830 is its old name, not used anymore. As you noticed from
->> patch #2, it shares some definitions with Exynos9 SoC, so I guess some
->> software is similar for both architectures. Not sure about hardware
->> though, never worked with Exynos9 CPUs. Anyway, I asked Samsung
->> representatives about naming, and it seems like we should stick to
->> "Exynos850" name, even in code.
-> 
-> 
-> Since the chip identifies itself as E3830000, I would prefer naming
-> matching real product ID instead of what is pushed by marketing or sales
-> representatives. The marketing names don't have to follow any
-> engineering rules, they can be changed and renamed. Sales follows rather
-> money and corporate rules, not consistency for upstream project.
+The variable ttm is assigned to the variable gtt, and the variable gtt
+is checked in:
+  if (gtt && gtt->userptr)
 
-On the other hand we have already two exceptions for naming
-inconsistency - Exynos3250 identifies itself as 3472 (which is confusing
-because 3250 is two core and there is a separate quad-core
-Exyons3472...) and Exynos5800 is actually marketing name for a revision
-of Exynos5422. Maybe indeed will be easier to go with the branded name
-850...
+This indicates that both ttm and gtt can be NULL.
+If so, a null-pointer dereference will occur:
+  if (ttm->page_flags & TTM_PAGE_FLAG_SG)
 
+Also, some null-pointer dereferences will occur in the function
+ttm_pool_free() which is called in:
+  return ttm_pool_free(&adev->mman.bdev.pool, ttm);
 
-Best regards,
-Krzysztof
+To fix these possible null-pointer dereferences, the function returns
+when ttm is NULL.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index 3a55f08e00e1..0216ca085f11 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -1146,7 +1146,10 @@ static void amdgpu_ttm_tt_unpopulate(struct ttm_device *bdev,
+ 	struct amdgpu_ttm_tt *gtt = (void *)ttm;
+ 	struct amdgpu_device *adev;
+ 
+-	if (gtt && gtt->userptr) {
++	if (ttm == NULL)
++		return;
++
++	if (gtt->userptr) {
+ 		amdgpu_ttm_tt_set_user_pages(ttm, NULL);
+ 		kfree(ttm->sg);
+ 		ttm->sg = NULL;
+-- 
+2.25.1
+
