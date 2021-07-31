@@ -2,496 +2,679 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2F53DC6B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 17:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5913DC6AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 17:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbhGaPht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 11:37:49 -0400
-Received: from mga09.intel.com ([134.134.136.24]:57480 "EHLO mga09.intel.com"
+        id S232971AbhGaPgP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 31 Jul 2021 11:36:15 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:48359 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231774AbhGaPhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 11:37:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10062"; a="213235902"
-X-IronPort-AV: E=Sophos;i="5.84,284,1620716400"; 
-   d="gz'50?scan'50,208,50";a="213235902"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2021 08:37:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,284,1620716400"; 
-   d="gz'50?scan'50,208,50";a="667833618"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 31 Jul 2021 08:37:36 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m9r3Q-000BHT-5q; Sat, 31 Jul 2021 15:37:36 +0000
-Date:   Sat, 31 Jul 2021 23:37:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: xillybus_of.c:undefined reference to `devm_platform_ioremap_resource'
-Message-ID: <202107312308.nDVQI1IF-lkp@intel.com>
+        id S233917AbhGaPel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 11:34:41 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GcSxN5MbjzB9xF;
+        Sat, 31 Jul 2021 17:34:32 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id lz5QMw1alx1r; Sat, 31 Jul 2021 17:34:32 +0200 (CEST)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GcSxN3sVmzB9wR;
+        Sat, 31 Jul 2021 17:34:32 +0200 (CEST)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id 5C04610B; Sat, 31 Jul 2021 17:39:54 +0200 (CEST)
+Received: from 37-173-18-216.coucou-networks.fr
+ (37-173-18-216.coucou-networks.fr [37.173.18.216]) by messagerie.c-s.fr
+ (Horde Framework) with HTTP; Sat, 31 Jul 2021 17:39:54 +0200
+Date:   Sat, 31 Jul 2021 17:39:54 +0200
+Message-ID: <20210731173954.Horde.fV2Xkw7-sxjG0DUcZ_JO_g3@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Nick Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Stan Johnson <userm57@yahoo.com>
+Subject: Re: [PATCH v3 31/41] powerpc/32: Dismantle
+ EXC_XFER_STD/LITE/TEMPLATE
+References: <cover.1615552866.git.christophe.leroy@csgroup.eu>
+ <ca5795d04a220586b7037dbbbe6951dfa9e768eb.1615552867.git.christophe.leroy@csgroup.eu>
+ <666e3ab4-372-27c2-4621-7cc3933756dd@linux-m68k.org>
+In-Reply-To: <666e3ab4-372-27c2-4621-7cc3933756dd@linux-m68k.org>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="7AUc2qLy4jB3hD7Z"
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Finn Thain <fthain@linux-m68k.org> a écrit :
 
---7AUc2qLy4jB3hD7Z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Hi Christophe,
+>
+> On Fri, 12 Mar 2021, Christophe Leroy wrote:
+>
+>> In order to get more control in exception prolog, dismantle all non
+>> standard exception macros, finishing with EXC_XFER_STD and EXC_XFER_LITE
+>> and EXC_XFER_TEMPLATE.
+>>
+>> Also remove transfer_to_handler_full and ret_from_except and
+>> ret_from_except_full as they are not used anymore.
+>>
+>> Last parameter of EXCEPTION() is now ignored, will be removed in a later
+>> patch to avoid too much churn.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>  arch/powerpc/kernel/entry_32.S       | 42 +-----------------------
+>>  arch/powerpc/kernel/head_32.h        | 21 ++++--------
+>>  arch/powerpc/kernel/head_40x.S       | 33 ++++++++++++-------
+>>  arch/powerpc/kernel/head_8xx.S       | 12 +++++--
+>>  arch/powerpc/kernel/head_book3s_32.S | 27 ++++++++++-----
+>>  arch/powerpc/kernel/head_booke.h     | 49 +++++++++++++++-------------
+>>  arch/powerpc/kernel/head_fsl_booke.S | 14 +++++---
+>>  7 files changed, 92 insertions(+), 106 deletions(-)
+>>
+>
+> Stan Johnson contacted me about a regression in mainline that he observed
+> on his G3 Powerbooks. Using 'git bisect' we determined that this patch was
+> the cause of the regression, i.e. commit 4c0104a83fc3 ("powerpc/32:
+> Dismantle EXC_XFER_STD/LITE/TEMPLATE").
+>
+> When testing 4c0104a83fc and all subsequent builds, various user processes
+> were liable to segfault. Here is the console log that Stan provided:
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c7d102232649226a69dddd58a4942cf13cff4f7c
-commit: a1315dcb7b6a7d3a78df848eed5b331a4b3ec28a hwrng: ks-sa - Add dependency on IOMEM and OF
-date:   8 months ago
-config: s390-buildonly-randconfig-r001-20210730 (attached as .config)
-compiler: s390-linux-gcc (GCC) 10.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a1315dcb7b6a7d3a78df848eed5b331a4b3ec28a
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout a1315dcb7b6a7d3a78df848eed5b331a4b3ec28a
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=s390 SHELL=/bin/bash
+Hi, i will be able to look at that more in details next week, however  
+I have a few preliminary qurstions.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Can you reliabily reproduce the problem with the said commit, and can  
+you reliabily run without problem with the parent commit ? I'm asking  
+because at first look that commit doesn't bring any functionnal change.
 
-All errors (new ones prefixed by >>):
+Coukd you provide your .config ?
 
-   s390-linux-ld: kernel/dma/coherent.o: in function `dma_init_coherent_memory':
-   coherent.c:(.text+0x50c): undefined reference to `memremap'
-   s390-linux-ld: coherent.c:(.text+0x5f8): undefined reference to `memunmap'
-   s390-linux-ld: kernel/dma/coherent.o: in function `dma_declare_coherent_memory':
-   coherent.c:(.text+0x7c8): undefined reference to `memunmap'
-   s390-linux-ld: drivers/irqchip/irq-al-fic.o: in function `al_fic_init_dt':
-   irq-al-fic.c:(.init.text+0x60): undefined reference to `of_iomap'
-   s390-linux-ld: irq-al-fic.c:(.init.text+0x1f6): undefined reference to `iounmap'
-   s390-linux-ld: drivers/irqchip/irq-imx-intmux.o: in function `imx_intmux_probe':
-   irq-imx-intmux.c:(.text+0x78c): undefined reference to `devm_platform_ioremap_resource'
-   s390-linux-ld: drivers/phy/marvell/phy-mvebu-a3700-utmi.o: in function `mvebu_a3700_utmi_phy_probe':
-   phy-mvebu-a3700-utmi.c:(.text+0x4c6): undefined reference to `devm_platform_ioremap_resource'
-   s390-linux-ld: drivers/soc/fsl/dpaa2-console.o: in function `dpaa2_console_close':
-   dpaa2-console.c:(.text+0x84): undefined reference to `iounmap'
-   s390-linux-ld: drivers/soc/fsl/dpaa2-console.o: in function `dpaa2_console_probe':
-   dpaa2-console.c:(.text+0xe0): undefined reference to `of_address_to_resource'
-   s390-linux-ld: drivers/soc/fsl/dpaa2-console.o: in function `dpaa2_generic_console_open.constprop.0':
-   dpaa2-console.c:(.text+0x234): undefined reference to `ioremap'
-   s390-linux-ld: dpaa2-console.c:(.text+0x26a): undefined reference to `iounmap'
-   s390-linux-ld: dpaa2-console.c:(.text+0x284): undefined reference to `ioremap'
-   s390-linux-ld: dpaa2-console.c:(.text+0x3ec): undefined reference to `iounmap'
-   s390-linux-ld: drivers/char/hw_random/exynos-trng.o: in function `exynos_trng_probe':
-   exynos-trng.c:(.text+0x298): undefined reference to `devm_platform_ioremap_resource'
-   s390-linux-ld: drivers/char/hw_random/meson-rng.o: in function `meson_rng_probe':
-   meson-rng.c:(.text+0xbc): undefined reference to `devm_platform_ioremap_resource'
-   s390-linux-ld: drivers/char/hw_random/mtk-rng.o: in function `mtk_rng_probe':
-   mtk-rng.c:(.text+0x2e0): undefined reference to `devm_platform_ioremap_resource'
-   s390-linux-ld: drivers/char/hw_random/npcm-rng.o: in function `npcm_rng_probe':
-   npcm-rng.c:(.text+0x2ae): undefined reference to `devm_platform_ioremap_resource'
-   s390-linux-ld: drivers/char/xillybus/xillybus_of.o: in function `xilly_drv_probe':
->> xillybus_of.c:(.text+0x1dc): undefined reference to `devm_platform_ioremap_resource'
-   s390-linux-ld: drivers/ptp/ptp_qoriq.o: in function `ptp_qoriq_probe':
-   ptp_qoriq.c:(.text+0x130e): undefined reference to `ioremap'
-   s390-linux-ld: ptp_qoriq.c:(.text+0x1374): undefined reference to `iounmap'
-   s390-linux-ld: drivers/ptp/ptp_qoriq.o: in function `ptp_qoriq_free':
-   ptp_qoriq.c:(.text+0x14cc): undefined reference to `iounmap'
-   s390-linux-ld: drivers/watchdog/sirfsoc_wdt.o: in function `sirfsoc_wdt_probe':
-   sirfsoc_wdt.c:(.text+0x180): undefined reference to `devm_platform_ioremap_resource'
+Could you try without CONFIG_VMAP_STACK
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks
+Christophe
 
---7AUc2qLy4jB3hD7Z
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+>
+> [    0.000000] printk: debug: ignoring loglevel setting.
+> [    0.000000] Total memory = 512MB; using 1024kB for hash table
+> [    0.000000] Activating Kernel Userspace Execution Prevention
+> [    0.000000] Activating Kernel Userspace Access Protection
+> [    0.000000] Linux version 5.12.0-rc3-pmac-00067-g4c0104a83fc  
+> (johnson@ThinkPad) (powerpc-linux-gnu-gcc (Debian 8.3.0-2) 8.3.0,  
+> GNU ld (GNU Binutils for Debian) 2.31.1) #22 SMP Fri Jul 30 12:15:00  
+> MDT 2021
+> [    0.000000] ioremap() called early from  
+> probe_one_macio+0x130/0x268. Use early_ioremap() instead
+> [    0.000000] Found a Gatwick mac-io controller, rev: 0, mapped at  
+> 0x(ptrval)
+> [    0.000000] ioremap() called early from  
+> probe_one_macio+0x130/0x268. Use early_ioremap() instead
+> [    0.000000] Found a Heathrow mac-io controller, rev: 0, mapped at  
+> 0x(ptrval)
+> [    0.000000] PowerMac motherboard: PowerBook Wallstreet
+> [    0.000000] ioremap() called early from find_via_pmu+0x244/0x56c.  
+> Use early_ioremap() instead
+> [    0.000000] PMU driver v2 initialized for PowerBook G3 Series,  
+> firmware: 0a
+> [    0.000000] Using PowerMac machine description
+> [    0.000000] printk: bootconsole [udbg0] enabled
+> [    0.000000] CPU maps initialized for 1 thread per core
+> [    0.000000]  (thread shift is 0)
+> [    0.000000] -----------------------------------------------------
+> [    0.000000] phys_mem_size     = 0x20000000
+> [    0.000000] dcache_bsize      = 0x20
+> [    0.000000] icache_bsize      = 0x20
+> [    0.000000] cpu_features      = 0x000000000501a008
+> [    0.000000]   possible        = 0x00000000277de14a
+> [    0.000000]   always          = 0x0000000001000000
+> [    0.000000] cpu_user_features = 0x8c000001 0x00000000
+> [    0.000000] mmu_features      = 0x00000001
+> [    0.000000] Hash_size         = 0x100000
+> [    0.000000] Hash_mask         = 0x3fff
+> [    0.000000] -----------------------------------------------------
+> [    0.000000] ioremap() called early from  
+> pmac_setup_arch+0x10c/0x294. Use early_ioremap() instead
+> [    0.000000] nvram: OF partition at 0x1800
+> [    0.000000] nvram: XP partition at 0x1300
+> [    0.000000] nvram: NR partition at 0x1400
+> [    0.000000] Top of RAM: 0x20000000, Total RAM: 0x20000000
+> [    0.000000] Memory hole size: 0MB
+> [    0.000000] Zone ranges:
+> [    0.000000]   DMA      [mem 0x0000000000000000-0x000000001fffffff]
+> [    0.000000]   Normal   empty
+> [    0.000000]   HighMem  empty
+> [    0.000000] Movable zone start for each node
+> [    0.000000] Early memory node ranges
+> [    0.000000]   node   0: [mem 0x0000000000000000-0x000000001fffffff]
+> [    0.000000] Initmem setup node 0 [mem  
+> 0x0000000000000000-0x000000001fffffff]
+> [    0.000000] On node 0 totalpages: 131072
+> [    0.000000]   DMA zone: 1024 pages used for memmap
+> [    0.000000]   DMA zone: 0 pages reserved
+> [    0.000000]   DMA zone: 131072 pages, LIFO batch:31
+> [    0.000000] percpu: Embedded 13 pages/cpu s21644 r8192 d23412 u53248
+> [    0.000000] pcpu-alloc: s21644 r8192 d23412 u53248 alloc=13*4096
+> [    0.000000] pcpu-alloc: [0] 0 [0] 1
+> [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 130048
+> [    0.000000] Kernel command line: root=/dev/sda12 console=ttyS0  
+> console=tty printk.time earlyprintk ignore_loglevel video=ofonly
+> [    0.000000] Dentry cache hash table entries: 65536 (order: 6,  
+> 262144 bytes, linear)
+> [    0.000000] Inode-cache hash table entries: 32768 (order: 5,  
+> 131072 bytes, linear)
+> [    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+> [    0.000000] Memory: 498908K/524288K available (6756K kernel code,  
+> 352K rwdata, 1276K rodata, 1232K init, 176K bss, 25380K reserved, 0K  
+> cma-reserved, 0K highmem)
+> [    0.000000] Kernel virtual memory layout:
+> [    0.000000]   * 0xffbbf000..0xfffff000  : fixmap
+> [    0.000000]   * 0xff400000..0xff800000  : highmem PTEs
+> [    0.000000]   * 0xff2fd000..0xff400000  : early ioremap
+> [    0.000000]   * 0xe1000000..0xff2fd000  : vmalloc & ioremap
+> [    0.000000] rcu: Hierarchical RCU implementation.
+> [    0.000000] rcu: RCU calculated value of scheduler-enlistment  
+> delay is 10 jiffies.
+> [    0.000000] NR_IRQS: 512, nr_irqs: 512, preallocated irqs: 16
+> [    0.000000] irq: Found primary Apple PIC /pci/mac-io for 64 irqs
+> [    0.000000] irq: Found slave Apple PIC /pci/mac-io for 64 irqs cascade: 27
+> [    0.000000] irq: System has 128 possible interrupts
+> [    0.000000] GMT Delta read from XPRAM: -360 minutes, DST: on
+> [    0.000000] random: get_random_u32 called from  
+> start_kernel+0x36c/0x4d8 with crng_init=0
+> [    0.000000] time_init: decrementer frequency = 16.671650 MHz
+> [    0.000000] time_init: processor frequency   = 264.000000 MHz
+> [    0.000038] clocksource: timebase: mask: 0xffffffffffffffff  
+> max_cycles: 0x3d85178a6, max_idle_ns: 440795202430 ns
+> [    0.000097] clocksource: timebase mult[3bfb68a3] shift[24] registered
+> [    0.000201] clockevent: decrementer mult[44497e0] shift[32] cpu[0]
+> [    0.001368] Console: colour dummy device 80x25
+> [    0.001436] printk: console [tty0] enabled
+> [    0.001487] printk: bootconsole [udbg0] disabled
+> [    0.001882] pmac_zilog: serial modem detected
+> [    1.345729] printk: console [ttyS0] enabled
+> [    1.358329] pid_max: default: 32768 minimum: 301
+> [    1.372599] Mount-cache hash table entries: 1024 (order: 0, 4096  
+> bytes, linear)
+> [    1.394156] Mountpoint-cache hash table entries: 1024 (order: 0,  
+> 4096 bytes, linear)
+> [    1.422118] rcu: Hierarchical SRCU implementation.
+> [    1.437119] smp: Bringing up secondary CPUs ...
+> [    1.450268] smp: Brought up 1 node, 1 CPU
+> [    1.463448] devtmpfs: initialized
+> [    1.473485] Duplicate name in PowerPC,750, renamed to "l2-cache#1"
+> [    1.494492] Duplicate name in pci, renamed to "mac-io#1"
+> [    1.511648] Duplicate name in pci, renamed to "pccard#1"
+> [    1.530211] Found Grackle (MPC106) PCI host bridge at  
+> 0x0000000080000000. Firmware bus number: 0->0
+> [    1.556990] PCI host bridge /pci (primary) ranges:
+> [    1.571383]   IO 0x00000000fe000000..0x00000000fe7fffff ->  
+> 0x0000000000000000
+> [    1.593309]  MEM 0x00000000fd000000..0x00000000fdffffff ->  
+> 0x0000000000000000
+> [    1.614579]  MEM 0x0000000080000000..0x00000000fcffffff ->  
+> 0x0000000080000000
+> [    1.637120] clocksource: jiffies: mask: 0xffffffff max_cycles:  
+> 0xffffffff, max_idle_ns: 19112604462750000 ns
+> [    1.667441] futex hash table entries: 512 (order: 2, 16384 bytes, linear)
+> [    1.688431] NET: Registered protocol family 16
+> [    1.707910] PMU i2c /pci/mac-io/via-pmu
+> [    1.722983]  channel 1 bus <multibus>
+> [    1.733605]  channel 2 bus <multibus>
+> [    1.746841] PCI: Probing PCI hardware
+> [    1.761155] PCI host bridge to bus 0000:00
+> [    1.773432] pci_bus 0000:00: root bus resource [io  0x0000-0x7fffff]
+> [    1.792247] pci_bus 0000:00: root bus resource [mem  
+> 0xfd000000-0xfdffffff] (bus address [0x00000000-0x00ffffff])
+> [    1.822825] pci_bus 0000:00: root bus resource [mem 0x80000000-0xfcffffff]
+> [    1.843419] pci_bus 0000:00: root bus resource [bus 00-ff]
+> [    1.859881] pci_bus 0000:00: busn_res: [bus 00-ff] end is updated to ff
+> [    1.879871] pci 0000:00:00.0: [1057:0002] type 00 class 0x060000
+> [    1.899189] pci 0000:00:0d.0: [106b:0017] type 00 class 0xff0000
+> [    1.916838] pci 0000:00:0d.0: reg 0x10: [mem 0xf4000000-0xf407ffff]
+> [    1.936859] pci 0000:00:10.0: [106b:0017] type 00 class 0xff0000
+> [    1.954533] pci 0000:00:10.0: reg 0x10: [mem 0xf3000000-0xf307ffff]
+> [    1.974637] pci 0000:00:11.0: [1002:4c50] type 00 class 0x038000
+> [    1.992312] pci 0000:00:11.0: reg 0x10: [mem 0x82000000-0x82ffffff]
+> [    2.011110] pci 0000:00:11.0: reg 0x14: [io  0x0400-0x04ff]
+> [    2.027818] pci 0000:00:11.0: reg 0x18: [mem 0x82fff000-0x82ffffff]
+> [    2.046665] pci 0000:00:11.0: reg 0x30: [mem 0xfd000000-0xfd01ffff pref]
+> [    2.066830] pci 0000:00:11.0: supports D1 D2
+> [    2.080778] pci 0000:00:13.0: [104c:ac15] type 02 class 0x060700
+> [    2.098478] pci 0000:00:13.0: reg 0x10: [mem 0x81803000-0x81803fff]
+> [    2.118276] pci 0000:00:13.1: [104c:ac15] type 02 class 0x060700
+> [    2.135978] pci 0000:00:13.1: reg 0x10: [mem 0x81802000-0x81802fff]
+> [    2.156532] pci_bus 0000:01: extended config space not accessible
+> [    2.175227] pci_bus 0000:01: busn_res: [bus 01-ff] end is updated to 04
+> [    2.195189] pci_bus 0000:05: extended config space not accessible
+> [    2.213538] pci_bus 0000:05: busn_res: [bus 05-ff] end is updated to 08
+> [    2.233067] pci_bus 0000:00: busn_res: [bus 00-ff] end is updated to 08
+> [    2.253708] PCI: Cannot allocate resource region 2 of device  
+> 0000:00:11.0, will remap
+> [    2.277131] PCI 0000:00 Cannot reserve Legacy IO [io  0x0000-0x0fff]
+> [    2.296121] pci 0000:00:13.0: BAR 9: assigned [mem  
+> 0x84000000-0x87ffffff pref]
+> [    2.317651] pci 0000:00:13.0: BAR 10: assigned [mem 0x88000000-0x8bffffff]
+> [    2.338269] pci 0000:00:13.1: BAR 9: assigned [mem  
+> 0x8c000000-0x8fffffff pref]
+> [    2.359955] pci 0000:00:13.1: BAR 10: assigned [mem 0x90000000-0x93ffffff]
+> [    2.380606] pci 0000:00:11.0: BAR 6: assigned [mem  
+> 0xfd000000-0xfd01ffff pref]
+> [    2.402311] pci 0000:00:11.0: BAR 2: assigned [mem 0xfd020000-0xfd020fff]
+> [    2.422704] pci 0000:00:13.0: BAR 7: assigned [io  0x1000-0x10ff]
+> [    2.441000] pci 0000:00:13.0: BAR 8: assigned [io  0x1100-0x11ff]
+> [    2.459300] pci 0000:00:13.1: BAR 7: assigned [io  0x1200-0x12ff]
+> [    2.477600] pci 0000:00:13.1: BAR 8: assigned [io  0x1300-0x13ff]
+> [    2.495919] pci 0000:00:13.0: CardBus bridge to [bus 01-04]
+> [    2.512627] pci 0000:00:13.0:   bridge window [io  0x1000-0x10ff]
+> [    2.530925] pci 0000:00:13.0:   bridge window [io  0x1100-0x11ff]
+> [    2.549229] pci 0000:00:13.0:   bridge window [mem  
+> 0x84000000-0x87ffffff pref]
+> [    2.570928] pci 0000:00:13.0:   bridge window [mem 0x88000000-0x8bffffff]
+> [    2.591320] pci 0000:00:13.1: CardBus bridge to [bus 05-08]
+> [    2.608046] pci 0000:00:13.1:   bridge window [io  0x1200-0x12ff]
+> [    2.626349] pci 0000:00:13.1:   bridge window [io  0x1300-0x13ff]
+> [    2.644651] pci 0000:00:13.1:   bridge window [mem  
+> 0x8c000000-0x8fffffff pref]
+> [    2.666350] pci 0000:00:13.1:   bridge window [mem 0x90000000-0x93ffffff]
+> [    2.686748] pci_bus 0000:00: resource 4 [io  0x0000-0x7fffff]
+> [    2.703993] pci_bus 0000:00: resource 5 [mem 0xfd000000-0xfdffffff]
+> [    2.722816] pci_bus 0000:00: resource 6 [mem 0x80000000-0xfcffffff]
+> [    2.741641] pci_bus 0000:01: resource 0 [io  0x1000-0x10ff]
+> [    2.758373] pci_bus 0000:01: resource 1 [io  0x1100-0x11ff]
+> [    2.775105] pci_bus 0000:01: resource 2 [mem 0x84000000-0x87ffffff pref]
+> [    2.795235] pci_bus 0000:01: resource 3 [mem 0x88000000-0x8bffffff]
+> [    2.814059] pci_bus 0000:05: resource 0 [io  0x1200-0x12ff]
+> [    2.830791] pci_bus 0000:05: resource 1 [io  0x1300-0x13ff]
+> [    2.847523] pci_bus 0000:05: resource 2 [mem 0x8c000000-0x8fffffff pref]
+> [    2.867653] pci_bus 0000:05: resource 3 [mem 0x90000000-0x93ffffff]
+> [    3.004865] vgaarb: loaded
+> [    3.015684] SCSI subsystem initialized
+> [    3.028576] libata version 3.00 loaded.
+> [    3.041525] usbcore: registered new interface driver usbfs
+> [    3.058590] usbcore: registered new interface driver hub
+> [    3.074722] usbcore: registered new device driver usb
+> [    3.097574] clocksource: Switched to clocksource timebase
+> [    3.176945] NET: Registered protocol family 2
+> [    3.196269] tcp_listen_portaddr_hash hash table entries: 512  
+> (order: 0, 6144 bytes, linear)
+> [    3.221544] TCP established hash table entries: 4096 (order: 2,  
+> 16384 bytes, linear)
+> [    3.244755] TCP bind hash table entries: 4096 (order: 3, 32768  
+> bytes, linear)
+> [    3.266467] TCP: Hash tables configured (established 4096 bind 4096)
+> [    3.285534] UDP hash table entries: 256 (order: 1, 8192 bytes, linear)
+> [    3.305032] UDP-Lite hash table entries: 256 (order: 1, 8192  
+> bytes, linear)
+> [    3.326164] NET: Registered protocol family 1
+> [    3.339985] RPC: Registered named UNIX socket transport module.
+> [    3.357356] RPC: Registered udp transport module.
+> [    3.371459] RPC: Registered tcp transport module.
+> [    3.385564] RPC: Registered tcp NFSv4.1 backchannel transport module.
+> [    3.405111] PCI: CLS 32 bytes, default 32
+> [    3.418590] Thermal assist unit using workqueue, shrink_timer: 2000 ms
+> [    3.444637] workingset: timestamp_bits=30 max_order=17 bucket_order=0
+> [    3.465435] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+> [    3.484342] Block layer SCSI generic (bsg) driver version 0.4  
+> loaded (major 253)
+> [    3.506233] io scheduler mq-deadline registered
+> [    3.521141] pci 0000:00:11.0: enabling device (0086 -> 0087)
+> [    3.537885] Using unsupported 1024x768 (null) at 82801000,  
+> depth=32, pitch=4096
+> [    3.682913] Console: switching to colour frame buffer device 128x48
+> [    3.823127] fb0: Open Firmware frame buffer device on /pci/ATY,RageLTPro
+> [    3.845192] pmac_zilog: 0.6 (Benjamin Herrenschmidt  
+> <benh@kernel.crashing.org>)
+> [    3.869499] Non-volatile memory driver v1.3
+> [    3.893598] brd: module loaded
+> [    3.931206] loop: module loaded
+> [    3.942363] MacIO PCI driver attached to Gatwick chipset
+> [    3.959805] MacIO PCI driver attached to Heathrow chipset
+> [    3.986647] swim3 0.00015000:floppy: [fd0] SWIM3 floppy  
+> controller in media bay
+> [    4.015851] 0.00013020:ch-a: ttyS0 at MMIO 0xf3013020 (irq = 16,  
+> base_baud = 230400) is a Z85c30 ESCC - Serial port
+> [    4.052300] 0.00013000:ch-b: ttyS1 at MMIO 0xf3013000 (irq = 17,  
+> base_baud = 230400) is a Z85c30 ESCC - Infrared port
+> [    4.090256] macio: fixed media-bay irq on gatwick
+> [    4.107695] macio: fixed left floppy irqs
+> [    4.121515] swim3 1.00015000:floppy: [fd1] Couldn't request interrupt
+> [    4.142797] swim3: probe of 1.00015000:floppy failed with error -16
+> [    4.163133] macio: fixed left ide irqs
+> [    4.175485] macio: fixed SCC irqs on gatwick
+> [    4.189655] 1.00013020:ch-a: ttyS2 at MMIO 0xf4013020 (irq = 79,  
+> base_baud = 230400) is a Z85c30 ESCC - Internal modem
+> [    4.226442] mediabay0: Registered Heathrow media-bay
+> [    4.455126] mediabay1: Registered Heathrow media-bay
+> [    4.686271] PMU Backlight initialized (pmubl)
+> [    4.703522] mesh: configured for synchronous 5 MB/s
+> [    4.719262] mediabay1: Bay contains a floppy drive
+> [    4.954580] mesh: performing initial bus reset...
+> [    6.861383] random: fast init done
+> [    6.976730] adb device [2]: 2 0xC3
+> [    7.044008] adb device [3]: 3 0x1
+> [    7.107927] adb device [7]: 7 0x1F
+> [    7.181591] ADB keyboard at 2 has handler 0xC3
+> [    7.244084] Detected ADB keyboard, type ANSI.
+> [    7.306604] input: ADB keyboard as /devices/virtual/input/input0
+> [    7.374680] input: ADB Powerbook buttons as /devices/virtual/input/input1
+> [    7.509364] ADB mouse (trackpad) at 3 has handler 0x4
+> [    7.573745] input: ADB mouse as /devices/virtual/input/input2
+> [    9.034624] scsi host0: MESH
+> [   12.394536] pata-macio 0.00020000:ata0: Activating pata-macio  
+> chipset Heathrow ATA, Apple bus ID 0
+> [   12.477627] scsi host1: pata_macio
+> [   12.540331] ata1: PATA max MWDMA2 irq 30
+> [   12.795027] ata1.00: ATA-7: SAMSUNG HM100JC, YN100-08, max UDMA/100
+> [   12.865009] ata1.00: 195371568 sectors, multi 8: LBA48
+> [   12.935050] scsi 1:0:0:0: Direct-Access     ATA      SAMSUNG  
+> HM100JC  0-08 PQ: 0 ANSI: 5
+> [   13.013610] sd 1:0:0:0: [sda] 195371568 512-byte logical blocks:  
+> (100 GB/93.2 GiB)
+> [   13.088556] sd 1:0:0:0: Attached scsi generic sg0 type 0
+> [   13.158582] sd 1:0:0:0: [sda] Write Protect is off
+> [   13.223470] sd 1:0:0:0: [sda] Mode Sense: 00 3a 00 00
+> [   13.289075] sd 1:0:0:0: [sda] Write cache: disabled, read cache:  
+> enabled, doesn't support DPO or FUA
+> [   13.674503] pata-macio 0.00021000:ata1: Activating pata-macio  
+> chipset Heathrow ATA, Apple bus ID 1
+> [   13.757042] scsi host2: pata_macio
+> [   13.819249] ata2: PATA max MWDMA2 irq 36
+> [   13.904489] pata-macio 1.00021000:ata4: Activating pata-macio  
+> chipset Heathrow ATA, Apple bus ID 4
+> [   13.983164] genirq: Flags mismatch irq 36. 00000000  
+> (pata-macio[1.00021000:ata4]) vs. 00000000  
+> (pata-macio[0.00021000:ata1])
+> [   14.070207] pata-macio: probe of 1.00021000:ata4 failed with error -16
+> [   14.479032] eth0: BMAC at 00:05:02:07:5a:a6
+> [   14.479077]
+> [   14.615187] aoe: AoE v85 initialised.
+> [   14.679798] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+> [   14.753685] ehci-pci: EHCI PCI platform driver
+> [   14.820303] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+> [   14.893038] ohci-pci: OHCI PCI platform driver
+> [   14.959871] usbcore: registered new interface driver uas
+> [   15.029671] usbcore: registered new interface driver usb-storage
+> [   15.104150] mousedev: PS/2 mouse device common for all mice
+> [   15.178852] rtc-generic rtc-generic: registered as rtc0
+> [   15.248707] i2c /dev entries driver
+> [   15.313358] PowerMac i2c bus pmu 2 registered
+> [   15.379651] PowerMac i2c bus pmu 1 registered
+> [   15.450539] usbcore: registered new interface driver usbhid
+> [   15.517786] usbhid: USB HID core driver
+> [   15.581161]  sda: [mac] sda1 sda2 sda3 sda4 sda5 sda6 sda7 sda8  
+> sda9 sda10 sda11 sda12 sda13 sda14 sda15
+> [   15.682021] sd 1:0:0:0: [sda] Attached SCSI disk
+> [   15.748688] NET: Registered protocol family 17
+> [   15.815278] drmem: No dynamic reconfiguration memory found
+> [   15.905030] EXT4-fs (sda12): mounting ext3 file system using the  
+> ext4 subsystem
+> [   16.093352] EXT4-fs (sda12): mounted filesystem with ordered data  
+> mode. Opts: (null). Quota mode: disabled.
+> [   16.177770] VFS: Mounted root (ext3 filesystem) readonly on device 8:12.
+> [   16.267681] Freeing unused kernel memory: 1232K
+> [   16.337890] Kernel memory protection not selected by kernel config.
+> [   16.413504] Run /sbin/init as init process
+> [   16.481986]   with arguments:
+> [   16.546360]     /sbin/init
+> [   16.609020]     earlyprintk
+> [   16.671224]   with environment:
+> [   16.733922]     HOME=/
+> [   16.792877]     TERM=linux
+> [   17.149488] BUG: Unable to handle kernel data access on read at 0x5071b5f4
+> [   17.222336] Faulting instruction address: 0xc0004194
+> [   17.289513] Oops: Kernel access of bad area, sig: 11 [#1]
+> [   17.357646] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+> [   17.426007] Modules linked in:
+> [   17.485807] CPU: 0 PID: 1 Comm: init Not tainted  
+> 5.12.0-rc3-pmac-00067-g4c0104a83fc #22
+> [   17.561902] NIP:  c0004194 LR: c0004194 CTR: 00000000
+> [   17.629263] REGS: e1025e70 TRAP: 0300   Not tainted   
+> (5.12.0-rc3-pmac-00067-g4c0104a83fc)
+> [   17.707694] MSR:  00001032 <ME,IR,DR,RI>  CR: 40025f30  XER: 00000000
+> [   17.780835] DAR: 5071b5f4 DSISR: 40000000
+> [   17.780835] GPR00: 00000000 e1025f30 c14432e0 e1025f40 00000000  
+> 00000000 00000000 00000000
+> [   17.780835] GPR08: 00000000 0000d032 00000300 5071b53c c0000000  
+> 00000000 00000000 00000000
+> [   17.780835] GPR16: 00000000 00000000 00000000 00000000 00000000  
+> 00000000 00000000 00000000
+> [   17.780835] GPR24: 00000000 00000000 00000000 00000000 00000000  
+> 00000000 00000000 00000000
+> [   18.155821] NIP [c0004194] DataAccess_virt+0x8c/0xac
+> [   18.218757] LR [c0004194] DataAccess_virt+0x8c/0xac
+> [   18.281072] Call Trace:
+> [   18.335751] [e1025f30] [c0004240]  
+> InstructionAccess_virt+0x8c/0x90 (unreliable)
+> [   18.407057] --- interrupt: 300 at 0xb780d500
+> [   18.468711] NIP:  b780d500 LR: b7828554 CTR: 00000000
+> [   18.532657] REGS: e1025f40 TRAP: 0300   Not tainted   
+> (5.12.0-rc3-pmac-00067-g4c0104a83fc)
+> [   18.607221] MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 00000000   
+> XER: 00000000
+> [   18.678419] DAR: bfcbfd50 DSISR: 42000000
+> [   18.678419] GPR00: 00000000 bfcc0010 00000000 bfcc0020 00000000  
+> 00000000 00000000 00000000
+> [   18.678419] GPR08: 00000000 00000000 00000000 00000000 00000000  
+> 00000000 00000000 00000000
+> [   18.678419] GPR16: 00000000 00000000 00000000 00000000 00000000  
+> 00000000 00000000 00000000
+> [   18.678419] GPR24: 00000000 00000000 00000000 00000000 00000000  
+> 00000000 00000000 00000000
+> [   19.044798] NIP [b780d500] 0xb780d500
+> [   19.104645] LR [b7828554] 0xb7828554
+> [   19.164652] --- interrupt: 300
+> [   19.222524] Instruction dump:
+> [   19.279658] 3d407265 394a6773 914b0008 39400300 914b00b0 906b001c  
+> 908b0020 90ab0024
+> [   19.352049] 90cb0028 90eb002c 910b0030 4800fe71 <80ab00b8>  
+> 74a00040 4082000c 48014f65
+> [   19.424682] ---[ end trace 88a2dc920b595dd1 ]---
+> [   19.487214]
+> [   20.499171] Kernel panic - not syncing: Attempted to kill init!  
+> exitcode=0x0000000b
+> [   20.571365] Rebooting in 180 seconds..
+>
+>
+> When testing a recent mainline build, 5.14.0-rc2-pmac-00323-gd8079fac1681,
+> PID 1 did not crash. Other processes crash instead and the kernel produces
+> messages like these:
+>
+> [   91.150956] xfce4-session[1792]: segfault (11) at 404cd4fc nip  
+> a6aed794 lr a6aed930 code 1 in libc-2.31.so[a6aa9000+1ce000]
+> [   91.151194] xfce4-session[1792]: code: 2c170000 41820050 83f70004  
+> 3bb70008 57ff2036 3bfffff8 7ff7fa14 7c1df840
+> [   91.151233] xfce4-session[1792]: code: 41810028 60000000 60000000  
+> 41920150 <813f000c> 7c09d800 41820144 3bfffff0
+> [  115.700631] xfwm4[1978]: segfault (11) at 766d3243 nip a6c4af84  
+> lr a6e07724 code 1 in libc-2.31.so[a6c0b000+1ce000]
+> [  115.700948] xfwm4[1978]: code: 60420000 8121000c 5069063e  
+> 9121000c 60420000 c8010008 fdfe058e 38210010
+> [  115.700995] xfwm4[1978]: code: 4e800020 7c250b78 80c28ff4  
+> 7cc52a78 <90a30000> 7c0802a6 91c3000c d9c30058
+>
+>
+> We found that reducing memory with the kernel parameter 'mem=464M' would
+> prevent the crash.
+>
+> Below are Stan's notes from the 'git bisect' run. They include an
+> additional failure mode that might be of interest. We've also observed
+> "Kernel attempted to write user page (c6207c) - exploit attempt?" and
+> "kernel BUG at arch/powerpc/kernel/interrupt.c:49!".
+>
+>
+> On Thu, 29 Jul 2021, Stanley J. Johnson wrote:
+>
+>> Here are the git bisect results (I saved the kernels and dmesg outputs
+>> in case they're needed later, though it's easy enough to re-create the
+>> results).
+>>
+>> We'll have up to two boots (only one if the first boot fails) for each
+>> kernel on WS-1 with the default memory setting of 512M.
+>>
+>> 1) 5.12.0-pmac-08447-g85f3f17b5db (good)
+>> -> works: no dmesg errs, X works
+>> -> works: no dmesg errs, X works
+>>
+>> 2) 5.12.0-pmac-12750-g23243c1ace9 (bad)
+>> (Crash and burn. I was tempted to mark this one "skip", since the errors
+>> are different, though we've seen them in earlier tests. So there could
+>> be multiple regressions. But let's keep chasing this one. I can re-run
+>> the bisect later and skip some failures if necessary.)
+>> -> fails: "Unable to contact settings server" after wdm login; dmesg errors:
+>> ...
+>> [  127.169294] BUG: Unable to handle kernel instruction fetch (NULL  
+>> pointer?)
+>> [  127.169397] Faulting instruction address: 0x00000000
+>> [  127.169635] Oops: Kernel access of bad area, sig: 11 [#2]
+>> [  127.169661] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  127.169696] Modules linked in:
+>> [  127.169736] CPU: 0 PID: 1877 Comm: gdbus Tainted: G      D  
+>> 5.12.0-pmac-12750-g23243c1ace9 #9
+>> [  127.169776] NIP:  00000000 LR: 00000000 CTR: 00000000
+>> ...
+>>
+>> 3) 5.12.0-rc7-pmac-02335-gaeacb52a8de (good)
+>> -> works: no dmesg errs, X works
+>> -> works: no dmesg errs, X works
+>>
+>> 4) 5.12.0-pmac-11585-g95275402f66 (bad)
+>> -> fails: dmesg errs, wdm login fails with "Unable to contact settings
+>> server..."
+>> ...
+>> [   58.290883] BUG: Unable to handle kernel instruction fetch
+>> [   58.291009] Faulting instruction address: 0x7cc903a4
+>> [   58.291240] Oops: Kernel access of bad area, sig: 11 [#1]
+>> [   58.291268] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [   58.291305] Modules linked in:
+>> [   58.291349] CPU: 0 PID: 1750 Comm: Xorg Not tainted  
+>> 5.12.0-pmac-11585-g95275402f66 #11
+>> [   58.291391] NIP:  7cc903a4 LR: 7cc903a6 CTR: c0127eb8
+>> [   58.291417] REGS: e2da1e70 TRAP: 0400   Not tainted  
+>> (5.12.0-pmac-11585-g95275402f66)
+>> [   58.291450] MSR:  40001030 <ME,IR,DR>  CR: 28008228  XER: 20000000
+>> ...
+>>
+>> 5) 5.12.0-pmac-11068-g9d31d233895 (good)
+>> -> works: no dmesg errs, X works
+>> -> works: no dmesg errs, X works
+>>
+>> 6) 5.12.0-rc3-pmac-00258-ga9d2f9bb225 (bad)
+>> -> fails: wdm dies at login, screen hangs, dmesg errs that I haven't
+>> seen before:
+>> ...
+>> [   59.988732] InputThread[1751]: bad frame in sys_rt_sigreturn:  
+>> 51a79ab6 nip 001023c8 lr 001023c0
+>> [   62.079043] InputThread[1760]: bad frame in sys_rt_sigreturn:  
+>> a98be235 nip 001023c8 lr 001023c0
+>> [   64.348063] InputThread[1776]: bad frame in sys_rt_sigreturn:  
+>> a46b945e nip 001023c8 lr 001023c0
+>> [   66.413980] InputThread[1785]: bad frame in sys_rt_sigreturn:  
+>> a98be235 nip 001023c8 lr 001023c0
+>> [   68.486768] InputThread[1794]: bad frame in sys_rt_sigreturn:  
+>> 677e693b nip 001023c8 lr 001023c0
+>>
+>> 7) 5.12.0-rc3-pmac-00129-g036fc2cb1dc (bad)
+>> -> fails: dmesg errs, wdm hangs (wdm did not crash, screen seems hung)
+>> ...
+>> [  101.136941] BUG: Unable to handle kernel instruction fetch
+>> [  101.137059] Faulting instruction address: 0xfea31f74
+>> [  101.137296] Oops: Kernel access of bad area, sig: 11 [#1]
+>> [  101.137323] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  101.137358] Modules linked in:
+>> [  101.137401] CPU: 0 PID: 1882 Comm: xfce4-session Not tainted  
+>> 5.12.0-rc3-pmac-00129-g036fc2cb1dc #14
+>> [  101.137443] NIP:  fea31f74 LR: fea31f74 CTR: c00cfef4
+>> [  101.137470] REGS: e2e21e70 TRAP: 0400   Not tainted  
+>> (5.12.0-rc3-pmac-00129-g036fc2cb1dc)
+>> [  101.137502] MSR:  40001030 <ME,IR,DR>  CR: 220084e8  XER: 00000000
+>> ...
+>>
+>> 8) 5.12.0-rc3-pmac-00064-g719e7e212c7 (good)
+>> -> works: no dmesg errs, X works
+>> -> works: no dmesg errs, X works
+>>
+>> 9) 5.12.0-rc3-pmac-00096-ga2308836880 (bad)
+>> -> fails: dmesg errs, wdm hangs while validating login
+>> ...
+>> [  104.559951] BUG: Unable to handle kernel instruction fetch
+>> [  104.560086] Faulting instruction address: 0xfe988ba4
+>> [  104.560307] Oops: Kernel access of bad area, sig: 11 [#1]
+>> [  104.560337] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  104.560371] Modules linked in:
+>> [  104.560415] CPU: 0 PID: 1834 Comm: xfce4-session Not tainted  
+>> 5.12.0-rc3-pmac-00096-ga2308836880 #16
+>> [  104.560457] NIP:  fe988ba4 LR: fe988ba4 CTR: c00cfee8
+>> [  104.560484] REGS: e2d9de70 TRAP: 0400   Not tainted  
+>> (5.12.0-rc3-pmac-00096-ga2308836880)
+>> [  104.560517] MSR:  40001030 <ME,IR,DR>  CR: 220484e8  XER: 00000000
+>> ...
+>> [  114.371853] BUG: Unable to handle kernel instruction fetch
+>> [  114.371998] Faulting instruction address: 0x3e62a270
+>> [  114.372270] Oops: Kernel access of bad area, sig: 11 [#2]
+>> [  114.372298] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  114.372334] Modules linked in:
+>> [  114.372382] CPU: 0 PID: 1858 Comm: xfwm4 Tainted: G      D  
+>> 5.12.0-rc3-pmac-00096-ga2308836880 #16
+>> [  114.372425] NIP:  3e62a270 LR: 3e62a271 CTR: c065eebc
+>> [  114.372452] REGS: e2dede70 TRAP: 0400   Tainted: G      D  
+>> (5.12.0-rc3-pmac-00096-ga2308836880)
+>> [  114.372486] MSR:  40001030 <ME,IR,DR>  CR: 22002284  XER: 00000000
+>> ...
+>>
+>> 10) 5.12.0-rc3-pmac-00080-g7a7d744ffe8 (bad)
+>> -> fails: dmesg errs, "Unable to contact settings server..."
+>> ...
+>> [  170.622408] BUG: Unable to handle kernel instruction fetch
+>> [  170.622546] Faulting instruction address: 0xfe9255d4
+>> [  170.622777] Oops: Kernel access of bad area, sig: 11 [#1]
+>> [  170.622806] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  170.622841] Modules linked in:
+>> [  170.622885] CPU: 0 PID: 1863 Comm: xfce4-session Not tainted  
+>> 5.12.0-rc3-pmac-00080-g7a7d744ffe8 #17
+>> [  170.622927] NIP:  fe9255d4 LR: fe9255d4 CTR: c00cfee8
+>> [  170.622954] REGS: e2da1e70 TRAP: 0400   Not tainted  
+>> (5.12.0-rc3-pmac-00080-g7a7d744ffe8)
+>> [  170.622987] MSR:  40001030 <ME,IR,DR>  CR: 220484e8  XER: 00000000
+>> ...
+>> [  172.611235] BUG: Unable to handle kernel instruction fetch (NULL  
+>> pointer?)
+>> [  172.611364] Faulting instruction address: 0x00000000
+>> [  172.611662] Oops: Kernel access of bad area, sig: 11 [#2]
+>> [  172.611690] BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>> [  172.611725] Modules linked in:
+>> [  172.611773] CPU: 0 PID: 1871 Comm: gmain Tainted: G      D  
+>> 5.12.0-rc3-pmac-00080-g7a7d744ffe8 #17
+>> [  172.611814] NIP:  00000000 LR: 00000000 CTR: 00000000
+>> [  172.611840] REGS: e2db9e70 TRAP: 0400   Tainted: G      D  
+>> (5.12.0-rc3-pmac-00080-g7a7d744ffe8)
+>> [  172.611874] MSR:  40001030 <ME,IR,DR>  CR: 28008468  XER: 00000000
+>> ...
+>>
+>> 11) 5.12.0-rc3-pmac-00072-ga2b3e09ae41 (bad)
+>> -> fails: kernel panic, I'd have to capture the output via a serial console
+>>
+>> 12) 5.12.0-rc3-pmac-00068-gacc142b6230 (bad)
+>> -> fails: kernel panic
+>>
+>> 13) 5.12.0-rc3-pmac-00066-g8f6ff5bd9b7 (good)
+>> -> works: no dmesg errs, X works
+>> -> works: no dmesg errs, X works
+>>
+>> 14) 5.12.0-rc3-pmac-00067-g4c0104a83fc (bad)
+>> -> fails: kernel panic
+>>
+>> The git bisect thinks this is the bad commit, but I'm not sure it means
+>> anything at all:
+>>
+>> -----
+>>
+>> 4c0104a83fc3990a76a01a2f4e504251fa9814c4 is the first bad commit
 
-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
-IT6hh0XQUrBJqSVOY/8DT1Tzanw7AQA=
 
---7AUc2qLy4jB3hD7Z--
