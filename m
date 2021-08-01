@@ -2,56 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584433DCB5E
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 13:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1A53DCB69
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 13:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhHAL17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 07:27:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231461AbhHAL16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 07:27:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27EE860F46;
-        Sun,  1 Aug 2021 11:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627817270;
-        bh=C3z33tqBperSCk84d9sEKrhG3x66XBirfJNluhRCJ9c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qtVacoZKe8jlk1KrjjGUYmfOQ4HNczUH8o9ncNIU6MrVoYbTlmWo1jgjh499jrslv
-         ZWnYYDBxuXnWFp+nNRV4YRrzpE4Nff1DNHV1+eKEmV9DkrSFtcAhhnVtan1WyH71rf
-         qMNw9l3O6AewS4hMrLL9CANjwmP69c3vKXmSaoPhZYu3d8khdcwc2DGS9spTZyquH1
-         sRSimLYDYr+36/g/REgmIPEAXdDfwZLUguI3p6TonfJZOnXH+4QLRNG1JNqD9UrVCG
-         ot9x2jUpTVyiAYcM7LTqeSuzUd8ljRxnvewyBJKa5Fs+9LNYCfz0ww6zCtMH/Rk42d
-         fGKlBP91dZYvw==
-Date:   Sun, 1 Aug 2021 14:27:47 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Li Zhijian <lizhijian@cn.fujitsu.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
-Message-ID: <YQaFM8OTlmde+ZFV@unreal>
-References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
+        id S231779AbhHALl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 07:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231461AbhHALl0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 07:41:26 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77959C0613CF;
+        Sun,  1 Aug 2021 04:41:17 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id q2so16428598plr.11;
+        Sun, 01 Aug 2021 04:41:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V7CbcU24c2EcgEh6gPwl360Lbo6a4Vh6iTk5nFSY/dA=;
+        b=qZkxBAhluE0p43cVISH+ol5q1lT+cnqxEql+NIpY08L6/PwowG/tSK7brsoB2dM+g4
+         IsHCS42s3dWQ01GIdqQ2VK4IM4bOGJ/yx24/hAOvNqWJwbxbsCpKnF2rkFffMdNgwFrC
+         6NjZdCRVEFlKZINxUnEFV2Xkrte76bs6chq7lWN6s9gbkliRtcbETJiv3JjWBY+ROuau
+         7QBHcX8eOM8aLEoJRqNtPiQlkpD6wYCOuSCf3CNuwnvCF9AIupQzAS+CZdWu+b/WV2XR
+         qiQPlqwMe4USOYxSrqo6WEDk1pAoQV5dne9UdThjajtzvP3R06+MzqdQCnGXvELPeNu9
+         9QWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V7CbcU24c2EcgEh6gPwl360Lbo6a4Vh6iTk5nFSY/dA=;
+        b=rhjN0+cvtH1UbHxWwBoo4DUYT1LYbmoJd7jraURwRnyWJp26Mc9BPpG2sUqWUG3WMs
+         CS+7hXp1nx0mN4iraqBxAD++mM5z9Zu7xByYOoo0VJs2m4XBIMafzYRIBUe7L9cvKCed
+         G86+QjIMPpvoKWKYtHdLALaNnOmzIsIm0M9ph5btjCrQRcFqauT6rIAYbj5nDMTdI89K
+         aexxV2P5ojENbanlU1L5H7hObCPkz7w0le2fYzGz229iRPFN+ERe4F49khxqph3jSf0S
+         GRTep5l1FVyb6dBiuP8lc0OwdomAkiwKFc4NfRZEGxadHKXSmaEKeGdrbMZVqdLdBexB
+         Qihg==
+X-Gm-Message-State: AOAM532J3joKURSTds1NX5+pVGQvJJXtiaSSF4MjkbxvTcOivszjBkcU
+        fkRvVwvbQGaoLVXiRMTjuXddqT+1IZz/Jsc2DYc=
+X-Google-Smtp-Source: ABdhPJydhwxZ12g/won3lYfp7ROJMWycWxQ5X9RiPATUxhjXxXP+UgIyRIZYxpjob21kv49ZmMn2kBq09Ob2FCmxc98=
+X-Received: by 2002:a63:1457:: with SMTP id 23mr1761825pgu.203.1627818076930;
+ Sun, 01 Aug 2021 04:41:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
+References: <20210801085155.3170-1-len.baker@gmx.com>
+In-Reply-To: <20210801085155.3170-1-len.baker@gmx.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 1 Aug 2021 14:40:40 +0300
+Message-ID: <CAHp75VcD_Kqedpkw-Pj+uQbWqdu_9FhXqJS5TuGUPoVv2x45-Q@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] Remove all strcpy() uses
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Phil Reid <preid@electromag.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 01, 2021 at 05:20:50PM +0800, Li Zhijian wrote:
-> ibv_advise_mr(3) says:
-> EFAULT In one of the following: o When the range requested is out of the  MR  bounds,
->        or  when  parts of it are not part of the process address space. o One of the
->        lkeys provided in the scatter gather list is invalid or with wrong write access
-> 
-> Actually get_prefetchable_mr() will return NULL if it see above conditions
-> 
-> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-> ---
->  drivers/infiniband/hw/mlx5/odp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+On Sun, Aug 1, 2021 at 11:53 AM Len Baker <len.baker@gmx.com> wrote:
+>
+> strcpy() performs no bounds checking on the destination buffer. This
+> could result in linear overflows beyond the end of the buffer, leading
+> to all kinds of misbehaviors. So, this serie removes all strcpy uses
+> from the "staging/fbtft" subsystem.
+>
+> Also, refactor the code a bit to follow the kernel coding-style and
+> avoid unnecessary variable initialization.
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+I don't see patch 3 (even on lore.kernel.org).
+
+Greg, Geert, does it make sense to move this driver outside of staging?
+I would volunteer to maintain it there.
+
+> Changelog v1 -> v2
+> - Add two new commits to clean the code.
+> - Use the "%*ph" format specifier instead of strscpy() function (Geert
+>   Uytterhoeven)
+>
+> Changelog v2 -> v3
+> - Change the initialization of the "j" variable in the "for" loop and
+>   update the code accordingly (Andy Shevchenko).
+> - Improve the commit message to inform that the "%*ph" replacement
+>   won't cut output earlier than requested (Andy Shevchenko).
+> - Don't remove the braces in the "if" statement due to the presence of
+>   the comment (Geert Uytterhoeven).
+>
+> Len Baker (3):
+>   staging/fbtft: Remove all strcpy() uses
+>   staging/fbtft: Remove unnecessary variable initialization
+>   staging/fbtft: Fix braces coding style
+>
+>  drivers/staging/fbtft/fbtft-core.c | 23 ++++++++++-------------
+>  1 file changed, 10 insertions(+), 13 deletions(-)
+>
+> --
+> 2.25.1
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
