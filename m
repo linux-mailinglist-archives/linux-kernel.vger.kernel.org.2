@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C393DC973
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 05:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1AE3DC978
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 05:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbhHADe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 23:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56594 "EHLO
+        id S231680AbhHADgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 23:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhHADe6 (ORCPT
+        with ESMTP id S229761AbhHADgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 23:34:58 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95D5C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:34:50 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id d10so13445065ils.7
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:34:50 -0700 (PDT)
+        Sat, 31 Jul 2021 23:36:00 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109C4C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:35:52 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id c3so13452247ilh.3
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:35:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=TuTXg0e3clW+MMWqMjMwfJqjaNCb4Ct1FoSRnnKkgJ8=;
-        b=kC3SpbfGQStvm0vYCDgFFccoBC/d4pOGgv6VuIWBrntvaxsyMaVZZc7hGtP30YQI8s
-         CpKdVoYLqeToXu/D392uoc4+5J2Ld5hYGS3ZyFJ0kHkkzrzLPE1Z0lhYp736hbm421hN
-         NdEjKol+y8rgsYVHqiqHTrw/Ef6lHfER8Vyk0Mg7H7uajPr4iM/nO4UyzopSTPAfA9Gn
-         KMxwEwnPlQ8a07egcI5HuqEjtAiqxSZ0rf3Yr3iMi+0T6cIhhnpJbiHRfXGmjJAKWFpd
-         JKlvxQaRcbXeBy0KM8d9guJrj/1vUFk3cG8mhmmy5DF4GPrqx/Q2lhgziM2U2TvocZ+3
-         CoOA==
+        b=sPXROjnFoYm7RXY4aLJrzMtImBPW6ZMyQ9sMkh+rGUD+b1Ey12aNke2Qd6Pzph6XEI
+         Lgp5RMrZvUCaLTK5MeOUgUT9BSGuJ6tIK6comnx9GtBRJHAKfvezatG28fZUfj1bGtiA
+         iJEDqF4CW763DOKd+OL6ZgHVB93Kzyf3N4G/APGVLhypjn/sSvGpV2Rr6UFaSA/wUTVE
+         vz8RGP2PpPFVVVmZ+QnavW2WWLvl8cCfRCyxghePFgFEPpnQs+j4curKCG7YDZ+XQBZz
+         Bp326VQpi7fxQKRUBF0DsUi70FCesUvuCy2nIMEyFmBKbTVJSoPbc7uwF7eKWrtMyRwL
+         4avw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=TuTXg0e3clW+MMWqMjMwfJqjaNCb4Ct1FoSRnnKkgJ8=;
-        b=uZ3D1yFvVAWFAnAVJz/KSB+ZKWQeEuBM5hPydLrXFK729n7z0c0laSHiJtyel+QY2I
-         0qpGBZFnjZSHsjq5+k/oK+1hIbGcSBbzhbQkipfsAOA7fbyJR7xpLrOpReMJXHsCF9bo
-         mD1cwugXmZTW7Hbr1Nsp8P1NQ3B4dX0SF/FIHJPWzgCRF+uzQWbGJ4FLjG2b3SBefij1
-         76JgcuyL7++PzUpvUwZ5b59nSWCsp3N2ktvJng89NjCkDyg5IE/UBimIGi24qNRwh/1A
-         WLIBbctFPzrI87jM+TTVVvuYXgLz8i+zqCnO68p3hInRfnUx7+NjKzlh4O89TMZN1gA2
-         lc1w==
-X-Gm-Message-State: AOAM530ad31KmqBdKlPbnxNz14KOTRws/q0n/c9DNdh1G688c6scrsb8
-        DG2hW7KX3Ok7G5bD1Rcr9kY=
-X-Google-Smtp-Source: ABdhPJwxzVLBZL+ZmF8QBZL4Gvbcc1RiS9N6/uHnbx0dzquWp60KZIHGDWSCoHisTkYzkl8QyZYx3g==
-X-Received: by 2002:a92:c54d:: with SMTP id a13mr4253873ilj.74.1627788890249;
-        Sat, 31 Jul 2021 20:34:50 -0700 (PDT)
+        b=cdWl0m0vt9W3xjWGrI+jD/2J0fr1Xvdtn/WNl72uQtUzjfH6Y56d+EgeEkNZY5unhf
+         hJD8kaNzk3jw9erTN0zCZGxTZMd0rDva4QFvA4SobmFUtdM8b3GlEJS4LC4EcqJAYgNW
+         qqNhW5nbFjRlQzsn+iQ6+FXXB57d9JkCXihuKdSb6OGMVjUHy9kSDP59V2V+7SAMGzeH
+         K4g27XEXRG2POsqIQe2iwg+xYuG94dhKH2KRQr2ktC4S1bkWvJFg73A8Eap3FDq4lthb
+         abhzlqcrkH72JTU9POkyHyF9w4Nzomk1kQgzd5UGp2RbGAdK3nib1n7gRKZ65ojXFhoY
+         BoaA==
+X-Gm-Message-State: AOAM533Xs7Ur3oDj1xtnhP7f1mV4TYSp/LoqTkjiK18i2byhdo2B17vr
+        BUIe6fMgNdwFmPs9+1zXYHE=
+X-Google-Smtp-Source: ABdhPJzhYDwh4Y5EpOWBn5vN+Ipha5HDFJAJOT1R4CjiWkZ1a+41Eg4cL2jSZjy+79qvwEQ52aHSvQ==
+X-Received: by 2002:a92:6d07:: with SMTP id i7mr3565334ilc.104.1627788951500;
+        Sat, 31 Jul 2021 20:35:51 -0700 (PDT)
 Received: from frodo.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id c1sm3366525ils.21.2021.07.31.20.34.49
+        by smtp.googlemail.com with ESMTPSA id h24sm4395848ioj.32.2021.07.31.20.35.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 20:34:49 -0700 (PDT)
+        Sat, 31 Jul 2021 20:35:51 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, seanpaul@chromium.org
+        intel-gfx@lists.freedesktop.org, seanpaul@chromium.org,
+        jbaron@akamai.com
 Cc:     Jim Cromie <jim.cromie@gmail.com>
 Subject: [PATCH] dyndbg: add special aux_print framework
-Date:   Sat, 31 Jul 2021 21:34:32 -0600
-Message-Id: <20210801033432.831938-1-jim.cromie@gmail.com>
+Date:   Sat, 31 Jul 2021 21:35:48 -0600
+Message-Id: <20210801033548.832022-1-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
