@@ -2,96 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183013DCC30
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 17:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309D73DCC34
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 17:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbhHAPAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 11:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbhHAPAU (ORCPT
+        id S232021AbhHAPG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 11:06:59 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33826
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231940AbhHAPG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 11:00:20 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5479AC06175F;
-        Sun,  1 Aug 2021 08:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=AOECMWGb6nlNA2AbjBlqi2+81wz9/r/lBwa4HJp9G3Y=; b=bGoZWtrP0uQrkKF82Ut6ZEpqW
-        x/kicol0i5zLftC4zx1Qg1ZZi16OVdGHPYh/0ar0hmeKmbZXrpiDDH4nvH9f6p2ZvjUE/+8vloYZT
-        BIJ2XIhTD+7BAhDnpjsLf9M+XtYElOiazkDwd5vOG+QeL5Pzv+jZsJvwY/y3fy6xxKfR+Bc3YA4qq
-        ZDuFvisLm0k5pxWXyXRMEArkKJYCoNhInfZsR/Aa4CE+doAt4EMsbu9plXiHwPCX4+ztOilVozK8e
-        iRnVC0scjuqGTQiSFIxFVPs9Ad3lTzCLW1Wwn8ZxvowZzcD0r1FW8+D9P4nOM/OGL9k0haKXxTbww
-        ry5z2W/TQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46824)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mACwb-0004bS-JR; Sun, 01 Aug 2021 16:00:01 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mACwa-00021N-1N; Sun, 01 Aug 2021 16:00:00 +0100
-Date:   Sun, 1 Aug 2021 16:00:00 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-hardening@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/input: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <20210801145959.GI22278@shell.armlinux.org.uk>
-References: <20210801144316.12841-1-len.baker@gmx.com>
+        Sun, 1 Aug 2021 11:06:57 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 96E773F043;
+        Sun,  1 Aug 2021 15:06:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627830408;
+        bh=O0MWsrFV/8FqTq3uVdIOdB4tqLqx6mBbBBdu5wpJA5w=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=vqA00Mx9z0gyMmSlkqwK+n0eVHpSKnuV61GywxZxO8ipOfDOPP/UOcqAr+q54GkJL
+         U+cTSWSACJ7ia8H8qEC91+WfNgVlaPZO5VzKAP/+1FOoz5+JFUPfsWeofUNb3K8lgi
+         X9+Eyo+hxxS83lcZthJQdQfFSELOeiVF+1Vq7EWsGwEJXtr5KkvvceFWMDCQxXHhG2
+         NGPqHe3ZvxBrB5/X2GUddRwB5HugwMjXXl0wTppaiZ4NgwzG4+ZWeL9uZWS1MZV53v
+         zoa5Vx8RiKQ6GDoF6fyvGNzdkF7pi+qWwtMKTiUcwOmeT+jkRvainAvawLZPsvQyTc
+         Ca9yswsiHmQZg==
+From:   Colin King <colin.king@canonical.com>
+To:     Mirko Lindner <mlindner@marvell.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: marvell: make the array name static, makes object smaller
+Date:   Sun,  1 Aug 2021 16:06:47 +0100
+Message-Id: <20210801150647.145728-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210801144316.12841-1-len.baker@gmx.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 01, 2021 at 04:43:16PM +0200, Len Baker wrote:
-> strcpy() performs no bounds checking on the destination buffer. This
-> could result in linear overflows beyond the end of the buffer, leading
-> to all kinds of misbehaviors. The safe replacement is strscpy().
-> 
-> Signed-off-by: Len Baker <len.baker@gmx.com>
-> ---
-> This is a task of the KSPP [1]
-> 
-> [1] https://github.com/KSPP/linux/issues/88
-> 
->  drivers/input/keyboard/locomokbd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/keyboard/locomokbd.c b/drivers/input/keyboard/locomokbd.c
-> index dae053596572..dbb3dc48df12 100644
-> --- a/drivers/input/keyboard/locomokbd.c
-> +++ b/drivers/input/keyboard/locomokbd.c
-> @@ -254,7 +254,7 @@ static int locomokbd_probe(struct locomo_dev *dev)
->  	locomokbd->suspend_jiffies = jiffies;
-> 
->  	locomokbd->input = input_dev;
-> -	strcpy(locomokbd->phys, "locomokbd/input0");
-> +	strscpy(locomokbd->phys, "locomokbd/input0", sizeof(locomokbd->phys));
+From: Colin Ian King <colin.king@canonical.com>
 
-So if the string doesn't fit, it's fine to silently truncate it?
+Don't populate the const array name on the stack but instead it
+static. Makes the object code smaller by 28 bytes. Add a missing
+const to clean up a checkpatch warning.
 
-Rather than converting every single strcpy() in the kernel to
-strscpy(), maybe there should be some consideration given to how the
-issue of a strcpy() that overflows the buffer should be handled.
-E.g. in the case of a known string such as the above, if it's longer
-than the destination, should we find a way to make the compiler issue
-a warning at compile time?
+Before:
+   text    data   bss     dec     hex filename
+ 124565   31565   384  156514   26362 drivers/net/ethernet/marvell/sky2.o
 
+After:
+   text    data   bss     dec     hex filename
+ 124441   31661   384  156486   26346 drivers/net/ethernet/marvell/sky2.o
+
+(gcc version 10.2.0)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/marvell/sky2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/marvell/sky2.c b/drivers/net/ethernet/marvell/sky2.c
+index 743ca96527fa..4f51882d83ca 100644
+--- a/drivers/net/ethernet/marvell/sky2.c
++++ b/drivers/net/ethernet/marvell/sky2.c
+@@ -4884,7 +4884,7 @@ static int sky2_test_msi(struct sky2_hw *hw)
+ /* This driver supports yukon2 chipset only */
+ static const char *sky2_name(u8 chipid, char *buf, int sz)
+ {
+-	const char *name[] = {
++	static const char *const name[] = {
+ 		"XL",		/* 0xb3 */
+ 		"EC Ultra", 	/* 0xb4 */
+ 		"Extreme",	/* 0xb5 */
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.31.1
+
