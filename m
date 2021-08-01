@@ -2,584 +2,648 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640DC3DCD30
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 21:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E9C3DCD39
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 21:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbhHATF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 15:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
+        id S229943AbhHATSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 15:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhHATFB (ORCPT
+        with ESMTP id S229497AbhHATSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 15:05:01 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB39C061798
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 12:04:52 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id l18so18789597wrv.5
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 12:04:52 -0700 (PDT)
+        Sun, 1 Aug 2021 15:18:35 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB15C06175F;
+        Sun,  1 Aug 2021 12:18:26 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id r5so14586776ilc.13;
+        Sun, 01 Aug 2021 12:18:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2LKvS4q4HTI5wMzebAXEEF35toBQt7KXxYePveJYywM=;
-        b=gd6ssKbimkv9spqz8hebjMZsV/a9yvcgmh9O8OAmXjWzQlyYi2PzRgjxZKAKRap+Yk
-         Xam9T3ndN9h77kdpmfevQ3s3uskCxRm9XNkXgVlx70glbdFR3DgAljb0uQoMm7KtGk7E
-         RjCo4KMZSzP+vHDdk/T/LC2lJDsSLcnJvZ+L0u/6kwp+cYHYMt7vpGfhxfBR0/jk5zOn
-         xJ/fR3Kt42qiHV2KTiTAaz17YR+LB1H0pXG4AgfZ6WeNtQhm9ldIL/YwOUd1C0SkNPDZ
-         74DppAffNdn6E08RrE0EYnWLVk47Y8BLJv/fJWf/Q7AR2dLfsmq9SxzusLDbR/c9dwnI
-         eASw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WHMIxaVy3aDx7oa8/QYCorPHQ/IPcMdISHsVYAkYd60=;
+        b=SBhmf7zMiw7Unay+ENpPai89k2vRlhr6jZzQVhqlT0D1Q/ys7c+WAIauBMAjHUZsoF
+         wpZMITHG5ZTAFjIiaJz7vKANEskUfAj39xnwpZO/7UruJdnYpBXCyATnESB16qLmn07T
+         Q5n40gz52suq5Ey00f6w31lT6bJ2ZyfQMIAPG5rjucTpLTBIh4zKP+o54xW4kozZGu6P
+         a45Z39tr29HaTojIdOjl3f8fEcDVT7R6fGE8xlh/8b1ngePihjpiTJGHFD2VGX0OhLe/
+         3QM6a3S2edbDofMlTkeYt4kAa7904CNHhTlOz+9DFEgci2H5tp/nZzI1kVIPs0Q0aDEw
+         YApw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2LKvS4q4HTI5wMzebAXEEF35toBQt7KXxYePveJYywM=;
-        b=CgiecP2S6zwVOJQnKBFSjC1ZdcWukmt0Py0FG2/32W0n+tR4W6wqZwL0tZYblg4U4p
-         I0DgilkCQWJbwOz/RS/DA9rRYiYMKYGTtbG7JyPpgLSnqEhaveQSh+6p3RjUwCofOjOE
-         neALe3stXjEVSFXGqmykGkbYIKTGKK946vNb91coYTdCXNxhDnSh9+s9fYW4icIdSOfa
-         II+UOIQHHDp1t/a9CyFhm/hyuLS1+x9HOQKsPPQOioaORMYmEexxdukdWLD3wh/FfMPj
-         qtn5hAbBCkSCMW9arjZXi+M1ZbFfJVOkXc2yQtAJSw/wFZFm3q+cAj5Q7bXdPcve5/iR
-         yTxA==
-X-Gm-Message-State: AOAM533c+vh30edYO4hcAraRY8/jU9WMUf3iDWXty4yf5uycnqDmLMuH
-        2utHrkWp75kb9eGWkMIS28py0w==
-X-Google-Smtp-Source: ABdhPJydwhW7gwQ9aOaQBOEiPHDPOWHzqJaiLMrAYQUcJM53rxmwvipdo9bj4+HtsBOy3sSWPZnRsg==
-X-Received: by 2002:a5d:4f86:: with SMTP id d6mr13852410wru.271.1627844691344;
-        Sun, 01 Aug 2021 12:04:51 -0700 (PDT)
-Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id c10sm8196026wmb.40.2021.08.01.12.04.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WHMIxaVy3aDx7oa8/QYCorPHQ/IPcMdISHsVYAkYd60=;
+        b=eDRN0/MzTen3SMsqYyJO4sQ6rXzu5JwpRNegiIhvcaRtS3OyYOv9lFokvyu7rhXECU
+         jTPvIZF/OFna3VxWQMPv8QZ8PKkjGRijJZEsFs6nO5F8gk7Zh+uYzIdNPe54Q6izOPzX
+         ny5a49tM9RV8qie1IU2l72te4tH2UtrKHIxRf/Iq/wd6IprsOD9gaOUH2HmRvMXYuCnO
+         8CacmxfvgjfetDHCPQw4Fwi8klpHm/GMdOJGPgDApnxJ/rOiZ8Iz3sjHbFkdGAuXJnYA
+         Rwo7h+N//7a3pa0G4hL/50SyRI2febbQo0WrLcQh8C5Jm0hR6x7sOciT3Cd6886nC3KH
+         kZJw==
+X-Gm-Message-State: AOAM531ptevTuCOEm0AFMpqHW27EC/sxNrn1x1zJYmkN7n3DqwZhQvR6
+        2WPY/scD+60mQUfnZhWXqxY=
+X-Google-Smtp-Source: ABdhPJx5GNnv7WMyDoXHKSLsgUTRqoBn/b/u6qv60/3wEJyO1FqOmBB2Z3pJjS9lcEJKeIRm2urlKw==
+X-Received: by 2002:a92:4b0a:: with SMTP id m10mr3604127ilg.163.1627845506186;
+        Sun, 01 Aug 2021 12:18:26 -0700 (PDT)
+Received: from localhost.localdomain ([2600:1702:1260:6e50:2a99:68d3:e3cd:a9ec])
+        by smtp.gmail.com with ESMTPSA id l18sm5263285ioc.13.2021.08.01.12.18.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Aug 2021 12:04:50 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
+        Sun, 01 Aug 2021 12:18:25 -0700 (PDT)
+From:   William Batista <batistaw082@gmail.com>
+X-Google-Original-From: William Batista <bootlegbilly@protonmail.ch>
 To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, martin@kaiser.cx
-Subject: [PATCH 15/15] staging: r8188eu: remove RT_TRACE calls from core/rtw_recv.c
-Date:   Sun,  1 Aug 2021 20:04:37 +0100
-Message-Id: <20210801190437.82017-16-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210801190437.82017-1-phil@philpotter.co.uk>
-References: <20210801190437.82017-1-phil@philpotter.co.uk>
+Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        trivial@kernel.org, William Batista <bootlegbilly@protonmail.ch>
+Subject: [PATCH] iwlwifi: renamed all occurrences of IWL_RATE_COUNT to IWL_RATE_INDEX_COUNT
+Date:   Sun,  1 Aug 2021 15:18:22 -0400
+Message-Id: <20210801191822.152193-1-bootlegbilly@protonmail.ch>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove RT_TRACE macro calls from core/rtw_recv.c, so that ultimately the
-macro definition itself can eventually be removed.
+A FIXME requested to eventaully rename IWL_RATE_COUNT to
+IWL_RATE_INDEX_COUNT, as it's a more appropriate name.
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Signed-off-by: William Batista <bootlegbilly@protonmail.ch>
 ---
- drivers/staging/r8188eu/core/rtw_recv.c | 161 ++----------------------
- 1 file changed, 11 insertions(+), 150 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/dvm/lib.c  |  2 +-
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c   | 48 +++++++++----------
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.h   | 16 +++----
+ drivers/net/wireless/intel/iwlwifi/dvm/tx.c   |  2 +-
+ .../net/wireless/intel/iwlwifi/fw/api/rs.h    |  6 +--
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c   | 36 +++++++-------
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.h   | 10 ++--
+ drivers/net/wireless/intel/iwlwifi/mvm/scan.c |  2 +-
+ drivers/net/wireless/intel/iwlwifi/mvm/tx.c   |  2 +-
+ .../net/wireless/intel/iwlwifi/mvm/utils.c    |  4 +-
+ 10 files changed, 64 insertions(+), 64 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
-index 610cc699caf9..d0d433f2fa4e 100644
---- a/drivers/staging/r8188eu/core/rtw_recv.c
-+++ b/drivers/staging/r8188eu/core/rtw_recv.c
-@@ -342,33 +342,24 @@ static int recvframe_chkmic(struct adapter *adapter,  struct recv_frame *precvfr
- 	stainfo = rtw_get_stainfo(&adapter->stapriv, &prxattrib->ta[0]);
- 
- 	if (prxattrib->encrypt == _TKIP_) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("\n recvframe_chkmic:prxattrib->encrypt==_TKIP_\n"));
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("\n recvframe_chkmic:da=0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x\n",
--			 prxattrib->ra[0], prxattrib->ra[1], prxattrib->ra[2], prxattrib->ra[3], prxattrib->ra[4], prxattrib->ra[5]));
--
- 		/* calculate mic code */
- 		if (stainfo != NULL) {
- 			if (IS_MCAST(prxattrib->ra)) {
- 				mickey = &psecuritypriv->dot118021XGrprxmickey[prxattrib->key_index].skey[0];
- 
--				RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("\n recvframe_chkmic: bcmc key\n"));
--
- 				if (!psecuritypriv) {
- 					res = _FAIL;
--					RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("\n recvframe_chkmic:didn't install group key!!!!!!!!!!\n"));
- 					DBG_88E("\n recvframe_chkmic:didn't install group key!!!!!!!!!!\n");
- 					goto exit;
- 				}
- 			} else {
- 				mickey = &stainfo->dot11tkiprxmickey.skey[0];
--				RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("\n recvframe_chkmic: unicast key\n"));
- 			}
- 
- 			datalen = precvframe->len-prxattrib->hdrlen-prxattrib->iv_len-prxattrib->icv_len-8;/* icv_len included the mic code */
- 			pframe = precvframe->rx_data;
- 			payload = pframe+prxattrib->hdrlen+prxattrib->iv_len;
- 
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("\n prxattrib->iv_len=%d prxattrib->icv_len=%d\n", prxattrib->iv_len, prxattrib->icv_len));
- 			rtw_seccalctkipmic(mickey, pframe, payload, datalen, &miccode[0],
- 					   (unsigned char)prxattrib->priority); /* care the length of the data */
- 
-@@ -377,44 +368,11 @@ static int recvframe_chkmic(struct adapter *adapter,  struct recv_frame *precvfr
- 			bmic_err = false;
- 
- 			for (i = 0; i < 8; i++) {
--				if (miccode[i] != *(pframemic+i)) {
--					RT_TRACE(_module_rtl871x_recv_c_, _drv_err_,
--						 ("recvframe_chkmic:miccode[%d](%02x)!=*(pframemic+%d)(%02x) ",
--						 i, miccode[i], i, *(pframemic+i)));
-+				if (miccode[i] != *(pframemic+i))
- 					bmic_err = true;
--				}
- 			}
- 
- 			if (bmic_err) {
--				RT_TRACE(_module_rtl871x_recv_c_, _drv_err_,
--					 ("\n *(pframemic-8)-*(pframemic-1)=0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x\n",
--					 *(pframemic-8), *(pframemic-7), *(pframemic-6),
--					 *(pframemic-5), *(pframemic-4), *(pframemic-3),
--					 *(pframemic-2), *(pframemic-1)));
--				RT_TRACE(_module_rtl871x_recv_c_, _drv_err_,
--					 ("\n *(pframemic-16)-*(pframemic-9)=0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x\n",
--					 *(pframemic-16), *(pframemic-15), *(pframemic-14),
--					 *(pframemic-13), *(pframemic-12), *(pframemic-11),
--					 *(pframemic-10), *(pframemic-9)));
--				{
--					uint i;
--					RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("\n ======demp packet (len=%d)======\n", precvframe->len));
--					for (i = 0; i < precvframe->len; i = i+8) {
--						RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x",
--							 *(precvframe->rx_data+i), *(precvframe->rx_data+i+1),
--							 *(precvframe->rx_data+i+2), *(precvframe->rx_data+i+3),
--							 *(precvframe->rx_data+i+4), *(precvframe->rx_data+i+5),
--							 *(precvframe->rx_data+i+6), *(precvframe->rx_data+i+7)));
--					}
--					RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("\n ====== demp packet end [len=%d]======\n", precvframe->len));
--					RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("\n hrdlen=%d,\n", prxattrib->hdrlen));
--				}
--
--				RT_TRACE(_module_rtl871x_recv_c_, _drv_err_,
--					 ("ra=0x%.2x 0x%.2x 0x%.2x 0x%.2x 0x%.2x 0x%.2x psecuritypriv->binstallGrpkey=%d ",
--					 prxattrib->ra[0], prxattrib->ra[1], prxattrib->ra[2],
--					 prxattrib->ra[3], prxattrib->ra[4], prxattrib->ra[5], psecuritypriv->binstallGrpkey));
--
- 				/*  double check key_index for some timing issue , */
- 				/*  cannot compare with psecuritypriv->dot118021XGrpKeyid also cause timing issue */
- 				if ((IS_MCAST(prxattrib->ra) == true)  && (prxattrib->key_index != pmlmeinfo->key_index))
-@@ -422,22 +380,16 @@ static int recvframe_chkmic(struct adapter *adapter,  struct recv_frame *precvfr
- 
- 				if ((prxattrib->bdecrypted) && (brpt_micerror)) {
- 					rtw_handle_tkip_mic_err(adapter, (u8)IS_MCAST(prxattrib->ra));
--					RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, (" mic error :prxattrib->bdecrypted=%d ", prxattrib->bdecrypted));
- 					DBG_88E(" mic error :prxattrib->bdecrypted=%d\n", prxattrib->bdecrypted);
- 				} else {
--					RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, (" mic error :prxattrib->bdecrypted=%d ", prxattrib->bdecrypted));
- 					DBG_88E(" mic error :prxattrib->bdecrypted=%d\n", prxattrib->bdecrypted);
- 				}
- 				res = _FAIL;
- 			} else {
- 				/* mic checked ok */
--				if ((!psecuritypriv->bcheck_grpkey) && (IS_MCAST(prxattrib->ra))) {
-+				if ((!psecuritypriv->bcheck_grpkey) && (IS_MCAST(prxattrib->ra)))
- 					psecuritypriv->bcheck_grpkey = true;
--					RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("psecuritypriv->bcheck_grpkey = true"));
--				}
- 			}
--		} else {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("recvframe_chkmic: rtw_get_stainfo==NULL!!!\n"));
- 		}
- 
- 		recvframe_pull_tail(precvframe, 8);
-@@ -456,8 +408,6 @@ static struct recv_frame *decryptor(struct adapter *padapter, struct recv_frame
- 	struct recv_frame *return_packet = precv_frame;
- 	u32	 res = _SUCCESS;
- 
--	RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("prxstat->decrypted=%x prxattrib->encrypt=0x%03x\n", prxattrib->bdecrypted, prxattrib->encrypt));
--
- 	if (prxattrib->encrypt > 0) {
- 		u8 *iv = precv_frame->rx_data+prxattrib->hdrlen;
- 		prxattrib->key_index = (((iv[3])>>6)&0x3);
-@@ -536,16 +486,11 @@ static struct recv_frame *portctrl(struct adapter *adapter, struct recv_frame *p
- 	prtnframe = NULL;
- 
- 	psta = rtw_get_stainfo(pstapriv, psta_addr);
--	RT_TRACE(_module_rtl871x_recv_c_, _drv_info_,
--		 ("########portctrl:adapter->securitypriv.dot11AuthAlgrthm=%d\n",
--		 adapter->securitypriv.dot11AuthAlgrthm));
- 
- 	if (auth_alg == 2) {
- 		if ((psta != NULL) && (psta->ieee8021x_blocked)) {
- 			/* blocked */
- 			/* only accept EAPOL frame */
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("########portctrl:psta->ieee8021x_blocked==1\n"));
--
- 			prtnframe = precv_frame;
- 
- 			/* get ether_type */
-@@ -563,22 +508,11 @@ static struct recv_frame *portctrl(struct adapter *adapter, struct recv_frame *p
- 		} else {
- 			/* allowed */
- 			/* check decryption status, and decrypt the frame if needed */
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("########portctrl:psta->ieee8021x_blocked==0\n"));
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("portctrl:precv_frame->hdr.attrib.privacy=%x\n", precv_frame->attrib.privacy));
--
--			if (pattrib->bdecrypted == 0)
--				RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("portctrl:prxstat->decrypted=%x\n", pattrib->bdecrypted));
--
- 			prtnframe = precv_frame;
- 			/* check is the EAPOL frame or not (Rekey) */
--			if (ether_type == eapol_type) {
--				RT_TRACE(_module_rtl871x_recv_c_, _drv_notice_, ("########portctrl:ether_type==0x888e\n"));
-+			if (ether_type == eapol_type)
- 				/* check Rekey */
--
- 				prtnframe = precv_frame;
--			} else {
--				RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("########portctrl:ether_type=0x%04x\n", ether_type));
--			}
- 		}
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/lib.c b/drivers/net/wireless/intel/iwlwifi/dvm/lib.c
+index 3b937a7dd..87c64b701 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/lib.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/lib.c
+@@ -89,7 +89,7 @@ int iwlagn_hwrate_to_mac80211_idx(u32 rate_n_flags, enum nl80211_band band)
  	} else {
- 		prtnframe = precv_frame;
-@@ -594,18 +528,12 @@ static int recv_decache(struct recv_frame *precv_frame, u8 bretry, struct stainf
- 	u16 seq_ctrl = ((precv_frame->attrib.seq_num&0xffff) << 4) |
- 		(precv_frame->attrib.frag_num & 0xf);
- 
--	if (tid > 15) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_notice_, ("recv_decache, (tid>15)! seq_ctrl=0x%x, tid=0x%x\n", seq_ctrl, tid));
--
-+	if (tid > 15)
- 		return _FAIL;
--	}
- 
- 	if (1) {/* if (bretry) */
--		if (seq_ctrl == prxcache->tid_rxseq[tid]) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_notice_, ("recv_decache, seq_ctrl=0x%x, tid=0x%x, tid_rxseq=0x%x\n", seq_ctrl, tid, prxcache->tid_rxseq[tid]));
--
-+		if (seq_ctrl == prxcache->tid_rxseq[tid])
- 			return _FAIL;
--		}
+ 		if (band == NL80211_BAND_5GHZ)
+ 			band_offset = IWL_FIRST_OFDM_RATE;
+-		for (idx = band_offset; idx < IWL_RATE_COUNT_LEGACY; idx++)
++		for (idx = band_offset; idx < IWL_RATE_INDEX_COUNT_LEGACY; idx++)
+ 			if (iwl_rates[idx].plcp == (rate_n_flags & 0xFF))
+ 				return idx - band_offset;
  	}
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/rs.c b/drivers/net/wireless/intel/iwlwifi/dvm/rs.c
+index 548540dd0..27892c652 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/rs.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/rs.c
+@@ -80,7 +80,7 @@ static const u8 ant_toggle_lookup[] = {
+  * maps to IWL_RATE_INVALID
+  *
+  */
+-const struct iwl_rate_info iwl_rates[IWL_RATE_COUNT] = {
++const struct iwl_rate_info iwl_rates[IWL_RATE_INDEX_COUNT] = {
+ 	IWL_DECLARE_RATE_INFO(1, INV, INV, 2, INV, 2, INV, 2),    /*  1mbps */
+ 	IWL_DECLARE_RATE_INFO(2, INV, 1, 5, 1, 5, 1, 5),          /*  2mbps */
+ 	IWL_DECLARE_RATE_INFO(5, INV, 2, 6, 2, 11, 2, 11),        /*5.5mbps */
+@@ -162,46 +162,46 @@ static void rs_dbgfs_set_mcs(struct iwl_lq_sta *lq_sta,
+  * (2.4 GHz) band.
+  */
  
- 	prxcache->tid_rxseq[tid] = seq_ctrl;
-@@ -746,7 +674,6 @@ int sta2sta_data_frame(struct adapter *adapter, struct recv_frame *precv_frame,
- 	    (check_fwstate(pmlmepriv, WIFI_ADHOC_MASTER_STATE) == true)) {
- 		/*  filter packets that SA is myself or multicast or broadcast */
- 		if (!memcmp(myhwaddr, pattrib->src, ETH_ALEN)) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, (" SA==myself\n"));
- 			ret = _FAIL;
- 			goto exit;
- 		}
-@@ -767,7 +694,6 @@ int sta2sta_data_frame(struct adapter *adapter, struct recv_frame *precv_frame,
- 	} else if (check_fwstate(pmlmepriv, WIFI_STATION_STATE)) {
- 		/*  For Station mode, sa and bssid should always be BSSID, and DA is my mac-address */
- 		if (memcmp(pattrib->bssid, pattrib->src, ETH_ALEN)) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("bssid!=TA under STATION_MODE; drop pkt\n"));
- 			ret = _FAIL;
- 			goto exit;
- 		}
-@@ -806,7 +732,6 @@ int sta2sta_data_frame(struct adapter *adapter, struct recv_frame *precv_frame,
- 		*psta = rtw_get_stainfo(pstapriv, sta_addr); /*  get ap_info */
+-static const u16 expected_tpt_legacy[IWL_RATE_COUNT] = {
++static const u16 expected_tpt_legacy[IWL_RATE_INDEX_COUNT] = {
+ 	7, 13, 35, 58, 40, 57, 72, 98, 121, 154, 177, 186, 0
+ };
  
- 	if (*psta == NULL) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("can't get psta under sta2sta_data_frame ; drop pkt\n"));
- 		if (adapter->registrypriv.mp_mode == 1) {
- 			if (check_fwstate(pmlmepriv, WIFI_MP_STATE) == true)
- 			adapter->mppriv.rx_pktloss++;
-@@ -839,15 +764,12 @@ static int ap2sta_data_frame (
- 	    check_fwstate(pmlmepriv, _FW_UNDER_LINKING))) {
- 		/*  filter packets that SA is myself or multicast or broadcast */
- 		if (!memcmp(myhwaddr, pattrib->src, ETH_ALEN)) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, (" SA==myself\n"));
- 			ret = _FAIL;
- 			goto exit;
- 		}
+-static const u16 expected_tpt_siso20MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_siso20MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0, 42, 0,  76, 102, 124, 159, 183, 193, 202}, /* Norm */
+ 	{0, 0, 0, 0, 46, 0,  82, 110, 132, 168, 192, 202, 210}, /* SGI */
+ 	{0, 0, 0, 0, 47, 0,  91, 133, 171, 242, 305, 334, 362}, /* AGG */
+ 	{0, 0, 0, 0, 52, 0, 101, 145, 187, 264, 330, 361, 390}, /* AGG+SGI */
+ };
  
- 		/*  da should be for me */
- 		if ((memcmp(myhwaddr, pattrib->dst, ETH_ALEN)) && (!bmcast)) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_info_,
--				 (" ap2sta_data_frame:  compare DA fail; DA=%pM\n", (pattrib->dst)));
- 			ret = _FAIL;
- 			goto exit;
- 		}
-@@ -856,10 +778,6 @@ static int ap2sta_data_frame (
- 		if (!memcmp(pattrib->bssid, "\x0\x0\x0\x0\x0\x0", ETH_ALEN) ||
- 		    !memcmp(mybssid, "\x0\x0\x0\x0\x0\x0", ETH_ALEN) ||
- 		     (memcmp(pattrib->bssid, mybssid, ETH_ALEN))) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_info_,
--				 (" ap2sta_data_frame:  compare BSSID fail ; BSSID=%pM\n", (pattrib->bssid)));
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("mybssid=%pM\n", (mybssid)));
--
- 			if (!bmcast) {
- 				DBG_88E("issue_deauth to the nonassociated ap=%pM for the reason(7)\n", (pattrib->bssid));
- 				issue_deauth(adapter, pattrib->bssid, WLAN_REASON_CLASS3_FRAME_FROM_NONASSOC_STA);
-@@ -875,7 +793,6 @@ static int ap2sta_data_frame (
- 			*psta = rtw_get_stainfo(pstapriv, pattrib->bssid); /*  get ap_info */
+-static const u16 expected_tpt_siso40MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_siso40MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0,  77, 0, 127, 160, 184, 220, 242, 250, 257}, /* Norm */
+ 	{0, 0, 0, 0,  83, 0, 135, 169, 193, 229, 250, 257, 264}, /* SGI */
+ 	{0, 0, 0, 0,  94, 0, 177, 249, 313, 423, 512, 550, 586}, /* AGG */
+ 	{0, 0, 0, 0, 104, 0, 193, 270, 338, 454, 545, 584, 620}, /* AGG+SGI */
+ };
  
- 		if (*psta == NULL) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("ap2sta: can't get psta under STATION_MODE ; drop pkt\n"));
- 			ret = _FAIL;
- 			goto exit;
- 		}
-@@ -902,7 +819,6 @@ static int ap2sta_data_frame (
+-static const u16 expected_tpt_mimo2_20MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_mimo2_20MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0,  74, 0, 123, 155, 179, 214, 236, 244, 251}, /* Norm */
+ 	{0, 0, 0, 0,  81, 0, 131, 164, 188, 223, 243, 251, 257}, /* SGI */
+ 	{0, 0, 0, 0,  89, 0, 167, 235, 296, 402, 488, 526, 560}, /* AGG */
+ 	{0, 0, 0, 0,  97, 0, 182, 255, 320, 431, 520, 558, 593}, /* AGG+SGI*/
+ };
  
- 		*psta = rtw_get_stainfo(pstapriv, pattrib->bssid); /*  get sta_info */
- 		if (*psta == NULL) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("can't get psta under MP_MODE ; drop pkt\n"));
- 			ret = _FAIL;
- 			goto exit;
- 		}
-@@ -948,7 +864,6 @@ static int sta2ap_data_frame(struct adapter *adapter,
+-static const u16 expected_tpt_mimo2_40MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_mimo2_40MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0, 123, 0, 182, 214, 235, 264, 279, 285, 289}, /* Norm */
+ 	{0, 0, 0, 0, 131, 0, 191, 222, 242, 270, 284, 289, 293}, /* SGI */
+ 	{0, 0, 0, 0, 171, 0, 305, 410, 496, 634, 731, 771, 805}, /* AGG */
+ 	{0, 0, 0, 0, 186, 0, 329, 439, 527, 667, 764, 803, 838}, /* AGG+SGI */
+ };
  
- 		*psta = rtw_get_stainfo(pstapriv, pattrib->src);
- 		if (*psta == NULL) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("can't get psta under AP_MODE; drop pkt\n"));
- 			DBG_88E("issue_deauth to sta=%pM for the reason(7)\n", (pattrib->src));
+-static const u16 expected_tpt_mimo3_20MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_mimo3_20MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0,  99, 0, 153, 186, 208, 239, 256, 263, 268}, /* Norm */
+ 	{0, 0, 0, 0, 106, 0, 162, 194, 215, 246, 262, 268, 273}, /* SGI */
+ 	{0, 0, 0, 0, 134, 0, 249, 346, 431, 574, 685, 732, 775}, /* AGG */
+ 	{0, 0, 0, 0, 148, 0, 272, 376, 465, 614, 727, 775, 818}, /* AGG+SGI */
+ };
  
- 			issue_deauth(adapter, pattrib->src, WLAN_REASON_CLASS3_FRAME_FROM_NONASSOC_STA);
-@@ -1116,13 +1031,9 @@ static int validate_recv_mgnt_frame(struct adapter *padapter,
+-static const u16 expected_tpt_mimo3_40MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_mimo3_40MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0, 152, 0, 211, 239, 255, 279,  290,  294,  297}, /* Norm */
+ 	{0, 0, 0, 0, 160, 0, 219, 245, 261, 284,  294,  297,  300}, /* SGI */
+ 	{0, 0, 0, 0, 254, 0, 443, 584, 695, 868,  984, 1030, 1070}, /* AGG */
+@@ -209,7 +209,7 @@ static const u16 expected_tpt_mimo3_40MHz[4][IWL_RATE_COUNT] = {
+ };
+ 
+ /* mbps, mcs */
+-static const struct iwl_rate_mcs_info iwl_rate_mcs[IWL_RATE_COUNT] = {
++static const struct iwl_rate_mcs_info iwl_rate_mcs[IWL_RATE_INDEX_COUNT] = {
+ 	{  "1", "BPSK DSSS"},
+ 	{  "2", "QPSK DSSS"},
+ 	{"5.5", "BPSK CCK"},
+@@ -454,7 +454,7 @@ static int rs_collect_tx_data(struct iwl_scale_tbl_info *tbl,
+ 	static const u64 mask = (((u64)1) << (IWL_RATE_MAX_WINDOW - 1));
+ 	s32 fail_count, tpt;
+ 
+-	if (scale_index < 0 || scale_index >= IWL_RATE_COUNT)
++	if (scale_index < 0 || scale_index >= IWL_RATE_INDEX_COUNT)
+ 		return -EINVAL;
+ 
+ 	/* Select window for current tx bit rate */
+@@ -738,7 +738,7 @@ static u16 rs_get_adjacent_rate(struct iwl_priv *priv, u8 index, u16 rate_mask,
+ 
+ 		/* Find the next rate that is in the rate mask */
+ 		i = index + 1;
+-		for (mask = (1 << i); i < IWL_RATE_COUNT; i++, mask <<= 1) {
++		for (mask = (1 << i); i < IWL_RATE_INDEX_COUNT; i++, mask <<= 1) {
+ 			if (rate_mask & mask) {
+ 				high = i;
+ 				break;
+@@ -1087,7 +1087,7 @@ static void rs_set_expected_tpt_table(struct iwl_lq_sta *lq_sta,
+ 				      struct iwl_scale_tbl_info *tbl)
  {
- 	struct sta_info *psta;
+ 	/* Used to choose among HT tables */
+-	const u16 (*ht_tbl_pointer)[IWL_RATE_COUNT];
++	const u16 (*ht_tbl_pointer)[IWL_RATE_INDEX_COUNT];
  
--	RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("+validate_recv_mgnt_frame\n"));
--
- 	precv_frame = recvframe_chk_defrag(padapter, precv_frame);
--	if (precv_frame == NULL) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_notice_, ("%s: fragment packet\n", __func__));
-+	if (precv_frame == NULL)
- 		return _SUCCESS;
--	}
+ 	/* Check for invalid LQ type */
+ 	if (WARN_ON_ONCE(!is_legacy(tbl->lq_type) && !is_Ht(tbl->lq_type))) {
+@@ -1403,7 +1403,7 @@ static void rs_move_legacy_other(struct iwl_priv *priv,
+ 				&(lq_sta->lq_info[(1 - lq_sta->active_tbl)]);
+ 	struct iwl_rate_scale_data *window = &(tbl->win[index]);
+ 	u32 sz = (sizeof(struct iwl_scale_tbl_info) -
+-		  (sizeof(struct iwl_rate_scale_data) * IWL_RATE_COUNT));
++		  (sizeof(struct iwl_rate_scale_data) * IWL_RATE_INDEX_COUNT));
+ 	u8 start_action;
+ 	u8 valid_tx_ant = priv->nvm_data->valid_tx_ant;
+ 	u8 tx_chains_num = priv->hw_params.tx_chains_num;
+@@ -1577,7 +1577,7 @@ static void rs_move_siso_to_other(struct iwl_priv *priv,
+ 	struct iwl_rate_scale_data *window = &(tbl->win[index]);
+ 	struct ieee80211_sta_ht_cap *ht_cap = &sta->ht_cap;
+ 	u32 sz = (sizeof(struct iwl_scale_tbl_info) -
+-		  (sizeof(struct iwl_rate_scale_data) * IWL_RATE_COUNT));
++		  (sizeof(struct iwl_rate_scale_data) * IWL_RATE_INDEX_COUNT));
+ 	u8 start_action;
+ 	u8 valid_tx_ant = priv->nvm_data->valid_tx_ant;
+ 	u8 tx_chains_num = priv->hw_params.tx_chains_num;
+@@ -1747,7 +1747,7 @@ static void rs_move_mimo2_to_other(struct iwl_priv *priv,
+ 	struct iwl_rate_scale_data *window = &(tbl->win[index]);
+ 	struct ieee80211_sta_ht_cap *ht_cap = &sta->ht_cap;
+ 	u32 sz = (sizeof(struct iwl_scale_tbl_info) -
+-		  (sizeof(struct iwl_rate_scale_data) * IWL_RATE_COUNT));
++		  (sizeof(struct iwl_rate_scale_data) * IWL_RATE_INDEX_COUNT));
+ 	u8 start_action;
+ 	u8 valid_tx_ant = priv->nvm_data->valid_tx_ant;
+ 	u8 tx_chains_num = priv->hw_params.tx_chains_num;
+@@ -1915,7 +1915,7 @@ static void rs_move_mimo3_to_other(struct iwl_priv *priv,
+ 	struct iwl_rate_scale_data *window = &(tbl->win[index]);
+ 	struct ieee80211_sta_ht_cap *ht_cap = &sta->ht_cap;
+ 	u32 sz = (sizeof(struct iwl_scale_tbl_info) -
+-		  (sizeof(struct iwl_rate_scale_data) * IWL_RATE_COUNT));
++		  (sizeof(struct iwl_rate_scale_data) * IWL_RATE_INDEX_COUNT));
+ 	u8 start_action;
+ 	u8 valid_tx_ant = priv->nvm_data->valid_tx_ant;
+ 	u8 tx_chains_num = priv->hw_params.tx_chains_num;
+@@ -2140,7 +2140,7 @@ static void rs_stay_in_table(struct iwl_lq_sta *lq_sta, bool force_search)
+ 				lq_sta->table_count = 0;
  
- 	/* for rx pkt statistics */
- 	psta = rtw_get_stainfo(&padapter->stapriv, GetAddr2Ptr(precv_frame->rx_data));
-@@ -1194,7 +1105,6 @@ static int validate_recv_data_frame(struct adapter *adapter,
- 		memcpy(pattrib->ra, GetAddr1Ptr(ptr), ETH_ALEN);
- 		memcpy(pattrib->ta, GetAddr2Ptr(ptr), ETH_ALEN);
- 		ret = _FAIL;
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, (" case 3\n"));
- 		break;
- 	default:
- 		ret = _FAIL;
-@@ -1208,7 +1118,6 @@ static int validate_recv_data_frame(struct adapter *adapter,
- 	}
- 
- 	if (psta == NULL) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, (" after to_fr_ds_chk; psta==NULL\n"));
- 		ret = _FAIL;
- 		goto exit;
- 	}
-@@ -1240,19 +1149,13 @@ static int validate_recv_data_frame(struct adapter *adapter,
- 
- 	/*  decache, drop duplicate recv packets */
- 	if (recv_decache(precv_frame, bretry, &psta->sta_recvpriv.rxcache) == _FAIL) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("decache : drop pkt\n"));
- 		ret = _FAIL;
- 		goto exit;
- 	}
- 
- 	if (pattrib->privacy) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("validate_recv_data_frame:pattrib->privacy=%x\n", pattrib->privacy));
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("\n ^^^^^^^^^^^IS_MCAST(pattrib->ra(0x%02x))=%d^^^^^^^^^^^^^^^6\n", pattrib->ra[0], IS_MCAST(pattrib->ra)));
--
- 		GET_ENCRY_ALGO(psecuritypriv, psta, pattrib->encrypt, IS_MCAST(pattrib->ra));
- 
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("\n pattrib->encrypt=%d\n", pattrib->encrypt));
--
- 		SET_ICE_IV_LEN(pattrib->iv_len, pattrib->icv_len, pattrib->encrypt);
- 	} else {
- 		pattrib->encrypt = 0;
-@@ -1288,7 +1191,6 @@ static int validate_recv_frame(struct adapter *adapter, struct recv_frame *precv
- 
- 	/* add version chk */
- 	if (ver != 0) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("validate_recv_data_frame fail! (ver!=0)\n"));
- 		retval = _FAIL;
- 		goto exit;
- 	}
-@@ -1340,15 +1242,11 @@ static int validate_recv_frame(struct adapter *adapter, struct recv_frame *precv
- 	}
- 	switch (type) {
- 	case WIFI_MGT_TYPE: /* mgnt */
--		retval = validate_recv_mgnt_frame(adapter, precv_frame);
--		if (retval == _FAIL)
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("validate_recv_mgnt_frame fail\n"));
-+		validate_recv_mgnt_frame(adapter, precv_frame);
- 		retval = _FAIL; /*  only data frame return _SUCCESS */
- 		break;
- 	case WIFI_CTRL_TYPE: /* ctrl */
--		retval = validate_recv_ctrl_frame(adapter, precv_frame);
--		if (retval == _FAIL)
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("validate_recv_ctrl_frame fail\n"));
-+		validate_recv_ctrl_frame(adapter, precv_frame);
- 		retval = _FAIL; /*  only data frame return _SUCCESS */
- 		break;
- 	case WIFI_DATA_TYPE: /* data */
-@@ -1361,7 +1259,6 @@ static int validate_recv_frame(struct adapter *adapter, struct recv_frame *precv
- 		}
- 		break;
- 	default:
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("validate_recv_data_frame fail! type= 0x%x\n", type));
- 		retval = _FAIL;
- 		break;
- 	}
-@@ -1409,9 +1306,6 @@ static int wlanhdr_to_ethhdr (struct recv_frame *precvframe)
- 	rmv_len = pattrib->hdrlen + pattrib->iv_len + (bsnaphdr ? SNAP_SIZE : 0);
- 	len = precvframe->len - rmv_len;
- 
--	RT_TRACE(_module_rtl871x_recv_c_, _drv_info_,
--		 ("\n===pattrib->hdrlen: %x,  pattrib->iv_len:%x===\n\n", pattrib->hdrlen,  pattrib->iv_len));
--
- 	memcpy(&be_tmp, ptr+rmv_len, 2);
- 	eth_type = ntohs(be_tmp); /* pattrib->ether_type */
- 	pattrib->eth_type = eth_type;
-@@ -1517,8 +1411,6 @@ static struct recv_frame *recvframe_defrag(struct adapter *adapter, struct __que
- 	/* free the defrag_q queue and return the prframe */
- 	rtw_free_recvframe_queue(defrag_q, pfree_recv_queue);
- 
--	RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("Performance defrag!!!!!\n"));
--
- 	return prframe;
- }
- 
-@@ -1579,15 +1471,12 @@ struct recv_frame *recvframe_chk_defrag(struct adapter *padapter, struct recv_fr
- 			phead = get_list_head(pdefrag_q);
- 			list_add_tail(&pfhdr->list, phead);
- 
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("Enqueuq: ismfrag=%d, fragnum=%d\n", ismfrag, fragnum));
--
- 			prtnframe = NULL;
- 		} else {
- 			/* can't find this ta's defrag_queue, so free this recv_frame */
- 			if (precv_frame && pfree_recv_queue)
- 				rtw_free_recvframe(precv_frame, pfree_recv_queue);
- 			prtnframe = NULL;
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("Free because pdefrag_q==NULL: ismfrag=%d, fragnum=%d\n", ismfrag, fragnum));
- 		}
- 	}
- 
-@@ -1599,7 +1488,6 @@ struct recv_frame *recvframe_chk_defrag(struct adapter *padapter, struct recv_fr
- 			list_add_tail(&pfhdr->list, phead);
- 
- 			/* call recvframe_defrag to defrag */
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("defrag: ismfrag=%d, fragnum=%d\n", ismfrag, fragnum));
- 			precv_frame = recvframe_defrag(padapter, pdefrag_q);
- 			prtnframe = precv_frame;
- 		} else {
-@@ -1607,14 +1495,12 @@ struct recv_frame *recvframe_chk_defrag(struct adapter *padapter, struct recv_fr
- 			if (precv_frame && pfree_recv_queue)
- 				rtw_free_recvframe(precv_frame, pfree_recv_queue);
- 			prtnframe = NULL;
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("Free because pdefrag_q==NULL: ismfrag=%d, fragnum=%d\n", ismfrag, fragnum));
- 		}
- 	}
- 
- 	if ((prtnframe != NULL) && (prtnframe->attrib.privacy)) {
- 		/* after defrag we must check tkip mic code */
- 		if (recvframe_chkmic(padapter,  prtnframe) == _FAIL) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("recvframe_chkmic(padapter,  prtnframe)==_FAIL\n"));
- 			if (precv_frame && pfree_recv_queue)
- 				rtw_free_recvframe(prtnframe, pfree_recv_queue);
- 			prtnframe = NULL;
-@@ -1831,9 +1717,6 @@ static int recv_indicatepkts_in_order(struct adapter *padapter, struct recv_reor
- 		pattrib = &prframe->attrib;
- 
- 		if (!SN_LESS(preorder_ctrl->indicate_seq, pattrib->seq_num)) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_notice_,
--				 ("recv_indicatepkts_in_order: indicate=%d seq=%d amsdu=%d\n",
--				  preorder_ctrl->indicate_seq, pattrib->seq_num, pattrib->amsdu));
- 			plist = plist->next;
- 			list_del_init(&(prframe->list));
- 
-@@ -1878,9 +1761,6 @@ static int recv_indicatepkt_reorder(struct adapter *padapter, struct recv_frame
- 		if (pattrib->qos != 1) {
- 			if (!padapter->bDriverStopped &&
- 			    !padapter->bSurpriseRemoved) {
--				RT_TRACE(_module_rtl871x_recv_c_, _drv_notice_,
--					 ("@@@@  recv_indicatepkt_reorder -recv_func recv_indicatepkt\n"));
--
- 				rtw_recv_indicatepkt(padapter, prframe);
- 				return _SUCCESS;
+ 				IWL_DEBUG_RATE(priv, "LQ: stay in table clear win\n");
+-				for (i = 0; i < IWL_RATE_COUNT; i++)
++				for (i = 0; i < IWL_RATE_INDEX_COUNT; i++)
+ 					rs_rate_scale_clear_window(
+ 						&(tbl->win[i]));
  			}
-@@ -1908,10 +1788,6 @@ static int recv_indicatepkt_reorder(struct adapter *padapter, struct recv_frame
- 
- 	spin_lock_bh(&ppending_recvframe_queue->lock);
- 
--	RT_TRACE(_module_rtl871x_recv_c_, _drv_notice_,
--		 ("recv_indicatepkt_reorder: indicate=%d seq=%d\n",
--		  preorder_ctrl->indicate_seq, pattrib->seq_num));
--
- 	/* s2. check if winstart_b(indicate_seq) needs to been updated */
- 	if (!check_indicate_seq(preorder_ctrl, pattrib->seq_num))
- 		goto _err_exit;
-@@ -1988,20 +1864,14 @@ static int process_recv_indicatepkts(struct adapter *padapter, struct recv_frame
+@@ -2150,7 +2150,7 @@ static void rs_stay_in_table(struct iwl_lq_sta *lq_sta, bool force_search)
+ 		 * bitmaps and stats in active table (this will become the new
+ 		 * "search" table). */
+ 		if (!lq_sta->stay_in_tbl) {
+-			for (i = 0; i < IWL_RATE_COUNT; i++)
++			for (i = 0; i < IWL_RATE_INDEX_COUNT; i++)
+ 				rs_rate_scale_clear_window(&(tbl->win[i]));
  		}
- 	} else { /* B/G mode */
- 		retval = wlanhdr_to_ethhdr (prframe);
--		if (retval != _SUCCESS) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("wlanhdr_to_ethhdr: drop pkt\n"));
-+		if (retval != _SUCCESS)
- 			return retval;
--		}
- 
- 		if ((!padapter->bDriverStopped) &&
- 		    (!padapter->bSurpriseRemoved)) {
- 			/* indicate this recv_frame */
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_notice_, ("@@@@ process_recv_indicatepkts- recv_func recv_indicatepkt\n"));
- 			rtw_recv_indicatepkt(padapter, prframe);
- 		} else {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_notice_, ("@@@@ process_recv_indicatepkts- recv_func free_indicatepkt\n"));
--
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_notice_, ("recv_func:bDriverStopped(%d) OR bSurpriseRemoved(%d)", padapter->bDriverStopped, padapter->bSurpriseRemoved));
- 			retval = _FAIL;
- 			return retval;
- 		}
-@@ -2024,7 +1894,6 @@ static int recv_func_prehandle(struct adapter *padapter, struct recv_frame *rfra
- 			padapter->mppriv.rx_pktcount++;
- 
- 		if (check_fwstate(pmlmepriv, WIFI_MP_LPBK_STATE) == false) {
--			RT_TRACE(_module_rtl871x_recv_c_, _drv_alert_, ("MP - Not in loopback mode , drop pkt\n"));
- 			ret = _FAIL;
- 			rtw_free_recvframe(rframe, pfree_recv_queue);/* free this recv_frame */
- 			goto exit;
-@@ -2034,7 +1903,6 @@ static int recv_func_prehandle(struct adapter *padapter, struct recv_frame *rfra
- 	/* check the frame crtl field and decache */
- 	ret = validate_recv_frame(padapter, rframe);
- 	if (ret != _SUCCESS) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("recv_func: validate_recv_frame fail! drop pkt\n"));
- 		rtw_free_recvframe(rframe, pfree_recv_queue);/* free this recv_frame */
- 		goto exit;
  	}
-@@ -2055,20 +1923,16 @@ static int recv_func_posthandle(struct adapter *padapter, struct recv_frame *prf
+@@ -2557,7 +2557,7 @@ static void rs_rate_scale_perform(struct iwl_priv *priv,
+ 		if (lq_sta->search_better_tbl) {
+ 			/* Access the "search" table, clear its history. */
+ 			tbl = &(lq_sta->lq_info[(1 - lq_sta->active_tbl)]);
+-			for (i = 0; i < IWL_RATE_COUNT; i++)
++			for (i = 0; i < IWL_RATE_INDEX_COUNT; i++)
+ 				rs_rate_scale_clear_window(&(tbl->win[i]));
  
- 	prframe = decryptor(padapter, prframe);
- 	if (prframe == NULL) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("decryptor: drop pkt\n"));
- 		ret = _FAIL;
- 		goto _recv_data_drop;
+ 			/* Use new "search" start rate */
+@@ -2657,7 +2657,7 @@ static void rs_initialize_lq(struct iwl_priv *priv,
+ 
+ 	tbl = &(lq_sta->lq_info[active_tbl]);
+ 
+-	if ((i < 0) || (i >= IWL_RATE_COUNT))
++	if ((i < 0) || (i >= IWL_RATE_INDEX_COUNT))
+ 		i = 0;
+ 
+ 	rate = iwl_rates[i].plcp;
+@@ -2701,7 +2701,7 @@ static void rs_get_rate(void *priv_r, struct ieee80211_sta *sta, void *priv_sta,
+ 		    (lq_sta->max_rate_idx != -1))
+ 			lq_sta->max_rate_idx += IWL_FIRST_OFDM_RATE;
+ 		if ((lq_sta->max_rate_idx < 0) ||
+-		    (lq_sta->max_rate_idx >= IWL_RATE_COUNT))
++		    (lq_sta->max_rate_idx >= IWL_RATE_INDEX_COUNT))
+ 			lq_sta->max_rate_idx = -1;
  	}
  
- 	prframe = recvframe_chk_defrag(padapter, prframe);
--	if (prframe == NULL) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("recvframe_chk_defrag: drop pkt\n"));
-+	if (prframe == NULL)
- 		goto _recv_data_drop;
--	}
+@@ -2734,7 +2734,7 @@ static void rs_get_rate(void *priv_r, struct ieee80211_sta *sta, void *priv_sta,
+ 			info->control.rates[0].flags |= IEEE80211_TX_RC_GREEN_FIELD;
+ 	} else {
+ 		/* Check for invalid rates */
+-		if ((rate_idx < 0) || (rate_idx >= IWL_RATE_COUNT_LEGACY) ||
++		if ((rate_idx < 0) || (rate_idx >= IWL_RATE_INDEX_COUNT_LEGACY) ||
+ 				((sband->band == NL80211_BAND_5GHZ) &&
+ 				 (rate_idx < IWL_FIRST_OFDM_RATE)))
+ 			rate_idx = rate_lowest_index(sband, sta);
+@@ -2782,7 +2782,7 @@ void iwl_rs_rate_init(struct iwl_priv *priv, struct ieee80211_sta *sta, u8 sta_i
+ 	lq_sta->lq.sta_id = sta_id;
  
- 	prframe = portctrl(padapter, prframe);
- 	if (prframe == NULL) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("portctrl: drop pkt\n"));
- 		ret = _FAIL;
- 		goto _recv_data_drop;
+ 	for (j = 0; j < LQ_SIZE; j++)
+-		for (i = 0; i < IWL_RATE_COUNT; i++)
++		for (i = 0; i < IWL_RATE_INDEX_COUNT; i++)
+ 			rs_rate_scale_clear_window(&lq_sta->lq_info[j].win[i]);
+ 
+ 	lq_sta->flush_timer = 0;
+@@ -3198,7 +3198,7 @@ static ssize_t rs_sta_dbgfs_stats_table_read(struct file *file,
+ 				lq_sta->lq_info[i].is_dup,
+ 				lq_sta->is_green,
+ 				lq_sta->lq_info[i].current_rate);
+-		for (j = 0; j < IWL_RATE_COUNT; j++) {
++		for (j = 0; j < IWL_RATE_INDEX_COUNT; j++) {
+ 			desc += sprintf(buff+desc,
+ 				"counter=%d success=%d %%=%d\n",
+ 				lq_sta->lq_info[i].win[j].counter,
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/rs.h b/drivers/net/wireless/intel/iwlwifi/dvm/rs.h
+index 68a840d73..70c7f6a72 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/rs.h
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/rs.h
+@@ -34,7 +34,7 @@ struct iwl_rate_info {
+ 
+ /*
+  * These serve as indexes into
+- * struct iwl_rate_info iwl_rates[IWL_RATE_COUNT];
++ * struct iwl_rate_info iwl_rates[IWL_RATE_INDEX_COUNT];
+  */
+ enum {
+ 	IWL_RATE_1M_INDEX = 0,
+@@ -50,10 +50,10 @@ enum {
+ 	IWL_RATE_48M_INDEX,
+ 	IWL_RATE_54M_INDEX,
+ 	IWL_RATE_60M_INDEX,
+-	IWL_RATE_COUNT, /*FIXME:RS:change to IWL_RATE_INDEX_COUNT,*/
+-	IWL_RATE_COUNT_LEGACY = IWL_RATE_COUNT - 1,	/* Excluding 60M */
+-	IWL_RATE_INVM_INDEX = IWL_RATE_COUNT,
+-	IWL_RATE_INVALID = IWL_RATE_COUNT,
++	IWL_RATE_INDEX_COUNT,
++	IWL_RATE_INDEX_COUNT_LEGACY = IWL_RATE_INDEX_COUNT - 1,	/* Excluding 60M */
++	IWL_RATE_INVM_INDEX = IWL_RATE_INDEX_COUNT,
++	IWL_RATE_INVALID = IWL_RATE_INDEX_COUNT,
+ };
+ 
+ enum {
+@@ -161,7 +161,7 @@ enum {
+ 	IWL_RATE_11M_IEEE = 22,
+ };
+ 
+-#define IWL_RATES_MASK ((1 << IWL_RATE_COUNT) - 1)
++#define IWL_RATES_MASK ((1 << IWL_RATE_INDEX_COUNT) - 1)
+ 
+ #define IWL_INVALID_VALUE    -1
+ 
+@@ -246,7 +246,7 @@ enum {
+ #define TID_MAX_TIME_DIFF ((TID_QUEUE_MAX_SIZE - 1) * TID_QUEUE_CELL_SPACING)
+ #define TIME_WRAP_AROUND(x, y) (((y) > (x)) ? (y) - (x) : (0-(x)) + (y))
+ 
+-extern const struct iwl_rate_info iwl_rates[IWL_RATE_COUNT];
++extern const struct iwl_rate_info iwl_rates[IWL_RATE_INDEX_COUNT];
+ 
+ enum iwl_table_type {
+ 	LQ_NONE,
+@@ -302,7 +302,7 @@ struct iwl_scale_tbl_info {
+ 	u8 max_search;	/* maximun number of tables we can search */
+ 	const u16 *expected_tpt;	/* throughput metrics; expected_tpt_G, etc. */
+ 	u32 current_rate;  /* rate_n_flags, uCode API format */
+-	struct iwl_rate_scale_data win[IWL_RATE_COUNT]; /* rate histories */
++	struct iwl_rate_scale_data win[IWL_RATE_INDEX_COUNT]; /* rate histories */
+ };
+ 
+ struct iwl_traffic_load {
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/tx.c b/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
+index 847b8e07f..4f7fdcae5 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
+@@ -156,7 +156,7 @@ static void iwlagn_tx_cmd_build_rate(struct iwl_priv *priv,
+ 	 */
+ 	rate_idx = info->control.rates[0].idx;
+ 	if (info->control.rates[0].flags & IEEE80211_TX_RC_MCS ||
+-			(rate_idx < 0) || (rate_idx > IWL_RATE_COUNT_LEGACY))
++			(rate_idx < 0) || (rate_idx > IWL_RATE_INDEX_COUNT_LEGACY))
+ 		rate_idx = rate_lowest_index(
+ 				&priv->nvm_data->bands[info->band], sta);
+ 	/* For 5 GHZ band, remap mac80211 rate indices into driver indices */
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/api/rs.h b/drivers/net/wireless/intel/iwlwifi/fw/api/rs.h
+index fc2fa49e9..bab35a6d2 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/api/rs.h
++++ b/drivers/net/wireless/intel/iwlwifi/fw/api/rs.h
+@@ -186,7 +186,7 @@ struct iwl_tlc_update_notif {
+ 
+ /*
+  * These serve as indexes into
+- * struct iwl_rate_info fw_rate_idx_to_plcp[IWL_RATE_COUNT];
++ * struct iwl_rate_info fw_rate_idx_to_plcp[IWL_RATE_INDEX_COUNT];
+  * TODO: avoid overlap between legacy and HT rates
+  */
+ enum {
+@@ -224,8 +224,8 @@ enum {
+ 	IWL_RATE_MCS_10_INDEX,
+ 	IWL_RATE_MCS_11_INDEX,
+ 	IWL_LAST_HE_RATE = IWL_RATE_MCS_11_INDEX,
+-	IWL_RATE_COUNT_LEGACY = IWL_LAST_NON_HT_RATE + 1,
+-	IWL_RATE_COUNT = IWL_LAST_HE_RATE + 1,
++	IWL_RATE_INDEX_COUNT_LEGACY = IWL_LAST_NON_HT_RATE + 1,
++	IWL_RATE_INDEX_COUNT = IWL_LAST_HE_RATE + 1,
+ };
+ 
+ #define IWL_RATE_BIT_MSK(r) BIT(IWL_RATE_##r##M_INDEX)
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rs.c b/drivers/net/wireless/intel/iwlwifi/mvm/rs.c
+index b97708cb8..6c7578cbc 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rs.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rs.c
+@@ -80,7 +80,7 @@ static const u8 ant_toggle_lookup[] = {
+  * maps to IWL_RATE_INVALID
+  *
+  */
+-static const struct iwl_rs_rate_info iwl_rates[IWL_RATE_COUNT] = {
++static const struct iwl_rs_rate_info iwl_rates[IWL_RATE_INDEX_COUNT] = {
+ 	IWL_DECLARE_RATE_INFO(1, INV, INV, 2),   /*  1mbps */
+ 	IWL_DECLARE_RATE_INFO(2, INV, 1, 5),     /*  2mbps */
+ 	IWL_DECLARE_RATE_INFO(5, INV, 2, 11),    /*5.5mbps */
+@@ -396,63 +396,63 @@ static void rs_stay_in_table(struct iwl_lq_sta *lq_sta, bool force_search);
+  * CCK rates are only valid in legacy table and will only be used in G
+  * (2.4 GHz) band.
+  */
+-static const u16 expected_tpt_legacy[IWL_RATE_COUNT] = {
++static const u16 expected_tpt_legacy[IWL_RATE_INDEX_COUNT] = {
+ 	7, 13, 35, 58, 40, 57, 72, 98, 121, 154, 177, 186, 0, 0, 0
+ };
+ 
+ /* Expected TpT tables. 4 indexes:
+  * 0 - NGI, 1 - SGI, 2 - AGG+NGI, 3 - AGG+SGI
+  */
+-static const u16 expected_tpt_siso_20MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_siso_20MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0, 42, 0,  76, 102, 124, 159, 183, 193, 202, 216, 0},
+ 	{0, 0, 0, 0, 46, 0,  82, 110, 132, 168, 192, 202, 210, 225, 0},
+ 	{0, 0, 0, 0, 49, 0,  97, 145, 192, 285, 375, 420, 464, 551, 0},
+ 	{0, 0, 0, 0, 54, 0, 108, 160, 213, 315, 415, 465, 513, 608, 0},
+ };
+ 
+-static const u16 expected_tpt_siso_40MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_siso_40MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0,  77, 0, 127, 160, 184, 220, 242, 250,  257,  269,  275},
+ 	{0, 0, 0, 0,  83, 0, 135, 169, 193, 229, 250, 257,  264,  275,  280},
+ 	{0, 0, 0, 0, 101, 0, 199, 295, 389, 570, 744, 828,  911, 1070, 1173},
+ 	{0, 0, 0, 0, 112, 0, 220, 326, 429, 629, 819, 912, 1000, 1173, 1284},
+ };
+ 
+-static const u16 expected_tpt_siso_80MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_siso_80MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0, 130, 0, 191, 223, 244,  273,  288,  294,  298,  305,  308},
+ 	{0, 0, 0, 0, 138, 0, 200, 231, 251,  279,  293,  298,  302,  308,  312},
+ 	{0, 0, 0, 0, 217, 0, 429, 634, 834, 1220, 1585, 1760, 1931, 2258, 2466},
+ 	{0, 0, 0, 0, 241, 0, 475, 701, 921, 1343, 1741, 1931, 2117, 2468, 2691},
+ };
+ 
+-static const u16 expected_tpt_siso_160MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_siso_160MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0, 191, 0, 244, 288,  298,  308,  313,  318,  323,  328,  330},
+ 	{0, 0, 0, 0, 200, 0, 251, 293,  302,  312,  317,  322,  327,  332,  334},
+ 	{0, 0, 0, 0, 439, 0, 875, 1307, 1736, 2584, 3419, 3831, 4240, 5049, 5581},
+ 	{0, 0, 0, 0, 488, 0, 972, 1451, 1925, 2864, 3785, 4240, 4691, 5581, 6165},
+ };
+ 
+-static const u16 expected_tpt_mimo2_20MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_mimo2_20MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0,  74, 0, 123, 155, 179, 213, 235, 243, 250,  261, 0},
+ 	{0, 0, 0, 0,  81, 0, 131, 164, 187, 221, 242, 250, 256,  267, 0},
+ 	{0, 0, 0, 0,  98, 0, 193, 286, 375, 550, 718, 799, 878, 1032, 0},
+ 	{0, 0, 0, 0, 109, 0, 214, 316, 414, 607, 790, 879, 965, 1132, 0},
+ };
+ 
+-static const u16 expected_tpt_mimo2_40MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_mimo2_40MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0, 123, 0, 182, 214, 235,  264,  279,  285,  289,  296,  300},
+ 	{0, 0, 0, 0, 131, 0, 191, 222, 242,  270,  284,  289,  293,  300,  303},
+ 	{0, 0, 0, 0, 200, 0, 390, 571, 741, 1067, 1365, 1505, 1640, 1894, 2053},
+ 	{0, 0, 0, 0, 221, 0, 430, 630, 816, 1169, 1490, 1641, 1784, 2053, 2221},
+ };
+ 
+-static const u16 expected_tpt_mimo2_80MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_mimo2_80MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0, 182, 0, 240,  264,  278,  299,  308,  311,  313,  317,  319},
+ 	{0, 0, 0, 0, 190, 0, 247,  269,  282,  302,  310,  313,  315,  319,  320},
+ 	{0, 0, 0, 0, 428, 0, 833, 1215, 1577, 2254, 2863, 3147, 3418, 3913, 4219},
+ 	{0, 0, 0, 0, 474, 0, 920, 1338, 1732, 2464, 3116, 3418, 3705, 4225, 4545},
+ };
+ 
+-static const u16 expected_tpt_mimo2_160MHz[4][IWL_RATE_COUNT] = {
++static const u16 expected_tpt_mimo2_160MHz[4][IWL_RATE_INDEX_COUNT] = {
+ 	{0, 0, 0, 0, 240, 0, 278,  308,  313,  319,  322,  324,  328,  330,   334},
+ 	{0, 0, 0, 0, 247, 0, 282,  310,  315,  320,  323,  325,  329,  332,   338},
+ 	{0, 0, 0, 0, 875, 0, 1735, 2582, 3414, 5043, 6619, 7389, 8147, 9629,  10592},
+@@ -460,7 +460,7 @@ static const u16 expected_tpt_mimo2_160MHz[4][IWL_RATE_COUNT] = {
+ };
+ 
+ /* mbps, mcs */
+-static const struct iwl_rate_mcs_info iwl_rate_mcs[IWL_RATE_COUNT] = {
++static const struct iwl_rate_mcs_info iwl_rate_mcs[IWL_RATE_INDEX_COUNT] = {
+ 	{  "1", "BPSK DSSS"},
+ 	{  "2", "QPSK DSSS"},
+ 	{"5.5", "BPSK CCK"},
+@@ -586,7 +586,7 @@ static void rs_rate_scale_clear_tbl_windows(struct iwl_mvm *mvm,
+ 	int i;
+ 
+ 	IWL_DEBUG_RATE(mvm, "Clearing up window stats\n");
+-	for (i = 0; i < IWL_RATE_COUNT; i++)
++	for (i = 0; i < IWL_RATE_INDEX_COUNT; i++)
+ 		rs_rate_scale_clear_window(&tbl->win[i]);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tbl->tpc_win); i++)
+@@ -794,7 +794,7 @@ static int rs_collect_tlc_data(struct iwl_mvm *mvm,
+ {
+ 	struct iwl_rate_scale_data *window = NULL;
+ 
+-	if (scale_index < 0 || scale_index >= IWL_RATE_COUNT)
++	if (scale_index < 0 || scale_index >= IWL_RATE_INDEX_COUNT)
+ 		return -EINVAL;
+ 
+ 	if (tbl->column != RS_COLUMN_INVALID) {
+@@ -1040,7 +1040,7 @@ static u16 rs_get_adjacent_rate(struct iwl_mvm *mvm, u8 index, u16 rate_mask,
+ 
+ 		/* Find the next rate that is in the rate mask */
+ 		i = index + 1;
+-		for (mask = (1 << i); i < IWL_RATE_COUNT; i++, mask <<= 1) {
++		for (mask = (1 << i); i < IWL_RATE_INDEX_COUNT; i++, mask <<= 1) {
+ 			if (rate_mask & mask) {
+ 				high = i;
+ 				break;
+@@ -1284,7 +1284,7 @@ static const u16 *rs_get_expected_tpt_table(struct iwl_lq_sta *lq_sta,
+ 					    u32 bw)
+ {
+ 	/* Used to choose among HT tables */
+-	const u16 (*ht_tbl_pointer)[IWL_RATE_COUNT];
++	const u16 (*ht_tbl_pointer)[IWL_RATE_INDEX_COUNT];
+ 
+ 	if (WARN_ON_ONCE(column->mode != RS_LEGACY &&
+ 			 column->mode != RS_SISO &&
+@@ -3936,7 +3936,7 @@ static ssize_t rs_sta_dbgfs_stats_table_read(struct file *file,
+ 				is_ht80(rate) ? "80MHz" :
+ 				is_ht160(rate) ? "160MHz" : "ERR",
+ 				rate->index);
+-		for (j = 0; j < IWL_RATE_COUNT; j++) {
++		for (j = 0; j < IWL_RATE_INDEX_COUNT; j++) {
+ 			desc += sprintf(buff+desc,
+ 				"counter=%d success=%d %%=%d\n",
+ 				tbl->win[j].counter,
+@@ -4005,7 +4005,7 @@ static ssize_t rs_sta_dbgfs_drv_tx_stats_read(struct file *file,
+ 	endpos = pos + bufsz;
+ 
+ 	pos += scnprintf(pos, endpos - pos, "COLUMN,");
+-	for (rate = 0; rate < IWL_RATE_COUNT; rate++)
++	for (rate = 0; rate < IWL_RATE_INDEX_COUNT; rate++)
+ 		pos += scnprintf(pos, endpos - pos, "%s,", rate_name[rate]);
+ 	pos += scnprintf(pos, endpos - pos, "\n");
+ 
+@@ -4013,7 +4013,7 @@ static ssize_t rs_sta_dbgfs_drv_tx_stats_read(struct file *file,
+ 		pos += scnprintf(pos, endpos - pos,
+ 				 "%s,", column_name[col]);
+ 
+-		for (rate = 0; rate < IWL_RATE_COUNT; rate++) {
++		for (rate = 0; rate < IWL_RATE_INDEX_COUNT; rate++) {
+ 			stats = &(lq_sta->pers.tx_stats[col][rate]);
+ 			pos += scnprintf(pos, endpos - pos,
+ 					 "%llu/%llu,",
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rs.h b/drivers/net/wireless/intel/iwlwifi/mvm/rs.h
+index 32104c9f8..88698d322 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rs.h
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rs.h
+@@ -37,8 +37,8 @@ struct iwl_rs_rate_info {
+ #define IWL_RATE_60M_PLCP 3
+ 
+ enum {
+-	IWL_RATE_INVM_INDEX = IWL_RATE_COUNT,
+-	IWL_RATE_INVALID = IWL_RATE_COUNT,
++	IWL_RATE_INVM_INDEX = IWL_RATE_INDEX_COUNT,
++	IWL_RATE_INVALID = IWL_RATE_INDEX_COUNT,
+ };
+ 
+ #define LINK_QUAL_MAX_RETRY_NUM 16
+@@ -123,7 +123,7 @@ enum {
+ 	IWL_RATE_HT_MIMO2_MCS_9_PLCP = IWL_RATE_HT_SISO_MCS_INV_PLCP,
+ };
+ 
+-#define IWL_RATES_MASK ((1 << IWL_RATE_COUNT) - 1)
++#define IWL_RATES_MASK ((1 << IWL_RATE_INDEX_COUNT) - 1)
+ 
+ #define IWL_INVALID_VALUE    -1
+ 
+@@ -302,7 +302,7 @@ struct iwl_scale_tbl_info {
+ 	struct rs_rate rate;
+ 	enum rs_column column;
+ 	const u16 *expected_tpt;	/* throughput metrics; expected_tpt_G, etc. */
+-	struct iwl_rate_scale_data win[IWL_RATE_COUNT]; /* rate histories */
++	struct iwl_rate_scale_data win[IWL_RATE_INDEX_COUNT]; /* rate histories */
+ 	/* per txpower-reduction history */
+ 	struct iwl_rate_scale_data tpc_win[TPC_MAX_REDUCTION + 1];
+ };
+@@ -388,7 +388,7 @@ struct iwl_lq_sta {
+ 		u8 chains;
+ 		s8 chain_signal[IEEE80211_MAX_CHAINS];
+ 		s8 last_rssi;
+-		struct rs_rate_stats tx_stats[RS_COLUMN_COUNT][IWL_RATE_COUNT];
++		struct rs_rate_stats tx_stats[RS_COLUMN_COUNT][IWL_RATE_INDEX_COUNT];
+ 		struct iwl_mvm *drv;
+ 		spinlock_t lock; /* for races in reinit/update table */
+ 	} pers;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
+index 0368b7101..3272ca8a8 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
+@@ -1009,7 +1009,7 @@ static int iwl_mvm_scan_lmac(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
+ 
+ static int rate_to_scan_rate_flag(unsigned int rate)
+ {
+-	static const int rate_to_scan_rate[IWL_RATE_COUNT] = {
++	static const int rate_to_scan_rate[IWL_RATE_INDEX_COUNT] = {
+ 		[IWL_RATE_1M_INDEX]	= SCAN_CONFIG_RATE_1M,
+ 		[IWL_RATE_2M_INDEX]	= SCAN_CONFIG_RATE_2M,
+ 		[IWL_RATE_5M_INDEX]	= SCAN_CONFIG_RATE_5M,
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
+index 0a13c2bda..437b469b8 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
+@@ -284,7 +284,7 @@ static u32 iwl_mvm_get_tx_rate(struct iwl_mvm *mvm,
  	}
-@@ -2077,7 +1941,6 @@ static int recv_func_posthandle(struct adapter *padapter, struct recv_frame *prf
  
- 	ret = process_recv_indicatepkts(padapter, prframe);
- 	if (ret != _SUCCESS) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_err_, ("recv_func: process_recv_indicatepkts fail!\n"));
- 		rtw_free_recvframe(orig_prframe, pfree_recv_queue);/* free this recv_frame */
- 		goto _recv_data_drop;
- 	}
-@@ -2149,10 +2012,8 @@ s32 rtw_recv_entry(struct recv_frame *precvframe)
- 	precvpriv = &padapter->recvpriv;
+ 	/* if the rate isn't a well known legacy rate, take the lowest one */
+-	if (rate_idx < 0 || rate_idx >= IWL_RATE_COUNT_LEGACY)
++	if (rate_idx < 0 || rate_idx >= IWL_RATE_INDEX_COUNT_LEGACY)
+ 		rate_idx = rate_lowest_index(
+ 				&mvm->nvm_data->bands[info->band], sta);
  
- 	ret = recv_func(padapter, precvframe);
--	if (ret == _FAIL) {
--		RT_TRACE(_module_rtl871x_recv_c_, _drv_info_, ("rtw_recv_entry: recv_func return fail!!!\n"));
-+	if (ret == _FAIL)
- 		goto _recv_entry_drop;
--	}
- 
- 	precvpriv->rx_pkts++;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
+index 4a3d2971a..d276cf12b 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
+@@ -141,7 +141,7 @@ int iwl_mvm_send_cmd_pdu_status(struct iwl_mvm *mvm, u32 id, u16 len,
+ /*
+  * Translate from fw_rate_index (IWL_RATE_XXM_INDEX) to PLCP
+  */
+-static const u8 fw_rate_idx_to_plcp[IWL_RATE_COUNT] = {
++static const u8 fw_rate_idx_to_plcp[IWL_RATE_INDEX_COUNT] = {
+ 	IWL_DECLARE_RATE_INFO(1),
+ 	IWL_DECLARE_RATE_INFO(2),
+ 	IWL_DECLARE_RATE_INFO(5),
+@@ -166,7 +166,7 @@ int iwl_mvm_legacy_rate_to_mac80211_idx(u32 rate_n_flags,
+ 	/* Legacy rate format, search for match in table */
+ 	if (band != NL80211_BAND_2GHZ)
+ 		band_offset = IWL_FIRST_OFDM_RATE;
+-	for (idx = band_offset; idx < IWL_RATE_COUNT_LEGACY; idx++)
++	for (idx = band_offset; idx < IWL_RATE_INDEX_COUNT_LEGACY; idx++)
+ 		if (fw_rate_idx_to_plcp[idx] == rate)
+ 			return idx - band_offset;
  
 -- 
-2.31.1
+2.32.0
 
