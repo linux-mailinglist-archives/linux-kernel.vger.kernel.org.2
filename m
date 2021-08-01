@@ -2,107 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AD93DCE36
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 01:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3CF3DCE39
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 02:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhHAX74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 19:59:56 -0400
-Received: from smtprelay0195.hostedemail.com ([216.40.44.195]:60360 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231361AbhHAX74 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 19:59:56 -0400
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id BF429100E7B52;
-        Sun,  1 Aug 2021 23:59:46 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id AE3E5315D75;
-        Sun,  1 Aug 2021 23:59:45 +0000 (UTC)
-Message-ID: <67be9ed47831f09620e2eff8c90a496e4ceb9294.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Support wide strings
-From:   Joe Perches <joe@perches.com>
-To:     Simon Glass <sjg@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sun, 01 Aug 2021 16:59:44 -0700
-In-Reply-To: <20210801170733.1.I3f9784fd3c1007d08ec2e70b151d137687575495@changeid>
-References: <20210801170733.1.I3f9784fd3c1007d08ec2e70b151d137687575495@changeid>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S231796AbhHBAAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 20:00:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230368AbhHBAAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 20:00:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BE5D610FC;
+        Mon,  2 Aug 2021 00:00:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627862403;
+        bh=5P5WW6486esvrl1w9nWW3mnfsqIMCtE21IsdFLyNPYM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t4ZOjcCZSnjTqCdQGSSfU7kK7YClQbaDDzdogAaA35ze3fzNsvDpJ7voEtTOTdF1i
+         FEDwXA0Oq6tHu7G5YevSF+HJkJBdfTWIAq4HRSMoF0A47t0Vf74RR2fNBg5oRxVa3B
+         AOfs0fQi2j6GzZ3qsL2lqGHfNofBtmsI8sH1UuWHD34FuF7Nd+2Cfl0xErHggh0mYj
+         ulbesmXAqR7eTHPwELWzdiGdruUfn01AqWLsqhaVkcxcAlgB3AAqFww4v6/sqCoZPM
+         6rcDHmn0Rjjz4EdM+v09cjcPqcFGnn0CWjUgOyIG0ftvH6Id/lLGeVQRAxe2CW396h
+         lScQpUFkEz2XA==
+Received: by mail-ej1-f49.google.com with SMTP id hw6so14054711ejc.10;
+        Sun, 01 Aug 2021 17:00:03 -0700 (PDT)
+X-Gm-Message-State: AOAM5300UMpY+IsBN3pBBAyKmzcUNIi19nALM5K6IIU4hjxhLi+pUA7v
+        Zf0gGR5VDIRwafeKJ2hX+3Q3pjHYfq+PqYsOAw==
+X-Google-Smtp-Source: ABdhPJwLhvPNChdJl+3BZnur1WssTSiE+2mRYb40oKWRSxPub5BYLVF5/p5xkaBqtwjxWpIMXY0t7uFUGmSnYhh7o/k=
+X-Received: by 2002:a17:906:3707:: with SMTP id d7mr13160933ejc.127.1627862401906;
+ Sun, 01 Aug 2021 17:00:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.59
-X-Stat-Signature: a9637swzg9hsxd7nmqhqx177pt414gej
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: AE3E5315D75
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18fQg+e8GFhznEJwpbVhA/tEXxiefiQRU8=
-X-HE-Tag: 1627862385-423797
+References: <20210801040544.104135-1-jitao.shi@mediatek.com> <20210801040544.104135-2-jitao.shi@mediatek.com>
+In-Reply-To: <20210801040544.104135-2-jitao.shi@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 2 Aug 2021 07:59:50 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-KORHyePSbDSmc6Tdk=GpbTWewYmg9Q1ebQ0PgKADSug@mail.gmail.com>
+Message-ID: <CAAOTY_-KORHyePSbDSmc6Tdk=GpbTWewYmg9Q1ebQ0PgKADSug@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] dt-bindings: mediatek: add force_dsi_end_without_null
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        CK Hu <ck.hu@mediatek.com>, stonea168@163.com,
+        huijuan.xie@mediatek.com, Rex-BC Chen <rex-bc.chen@mediatek.com>,
+        shuijing.li@mediatek.com, Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-08-01 at 17:07 -0600, Simon Glass wrote:
-> From: Joe Perches <joe@perches.com>
-> 
-> Allow prefixing typical strings with L for wide strings and u for
-> unicode strings.
+Hi, Jitao:
 
+Jitao Shi <jitao.shi@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=881=E6=97=
+=A5 =E9=80=B1=E6=97=A5 =E4=B8=8B=E5=8D=8812:06=E5=AF=AB=E9=81=93=EF=BC=9A
 
-I believe the kernel didn't need this when I wrote it.
-There were no wide or unicode strings in the kernel sources.
+Move this patch before the patch "drm/mediatek: force hsa hbp hfp
+packets multiple of lanenum to avoid screen shift",
+and this patch's title should be "dt-bindings: drm/bridge: anx7625:
+add force_dsi_end_without_null"
 
-But looking now, there _are_ wide strings in the kernel sources.
+Regards,
+Chun-Kuang.
 
-So:
-
-Acked-by: Joe Perches <joe@perches.com>
-
-(with some false positives, but hey it shows some...)
-
-$ git grep -P '\b[Lu]"[A-Za-z0-9 \.]*?"'
-Documentation/sphinx/cdomain.py:u"""
-Documentation/sphinx/cdomain.py:        u"""Handles signatures of function-like macros.
-Documentation/sphinx/kernel_abi.py:u"""
-Documentation/sphinx/kernel_abi.py:    u"""KernelABI (``kernel-abi``) directive"""
-Documentation/sphinx/kernel_abi.py:        u"""Run command ``cmd`` and return it's stdout as unicode."""
-Documentation/sphinx/kernel_feat.py:u"""
-Documentation/sphinx/kernel_feat.py:    u"""KernelFeat (``kernel-feat``) directive"""
-Documentation/sphinx/kernel_feat.py:        u"""Run command ``cmd`` and return it's stdout as unicode."""
-Documentation/sphinx/kernel_include.py:u"""
-Documentation/sphinx/kernel_include.py:    u"""KernelInclude (``kernel-include``) directive"""
-Documentation/sphinx/kfigure.py:u"""
-Documentation/sphinx/kfigure.py:    u"""
-Documentation/sphinx/kfigure.py:    u"""KernelImage directive
-Documentation/sphinx/kfigure.py:    u"""KernelImage directive
-Documentation/sphinx/kfigure.py:    u"""KernelRender directive
-Documentation/sphinx/load_config.py:    u"""Load an additional configuration file into *namespace*.
-Documentation/sphinx/maintainers_include.py:u"""
-Documentation/sphinx/maintainers_include.py:    u"""MaintainersInclude (``maintainers-include``) directive"""
-Documentation/sphinx/rstFlatTable.py:u"""
-Documentation/sphinx/rstFlatTable.py:    u"""FlatTable (``flat-table``) directive"""
-Documentation/sphinx/rstFlatTable.py:    u"""Builds a table from a double-stage list"""
-Documentation/sphinx/rstFlatTable.py:        u"""parses the node from a :py:class:`FlatTable` directive's body"""
-Documentation/sphinx/rstFlatTable.py:        u"""Round off the table definition.
-arch/x86/platform/efi/quirks.c:static const efi_char16_t efi_dummy_name[] = L"DUMMY";
-arch/x86/xen/efi.c:             efi_systab_xen.fw_vendor = __pa_symbol(L"UNKNOWN");
-arch/x86/xen/efi.c:     status = efi.get_variable(L"MokSBStateRT", &shim_guid,
-drivers/firmware/efi/libstub/secureboot.c:static const efi_char16_t shim_MokSBState_name[] = L"MokSBState";
-drivers/firmware/efi/libstub/tpm.c:     L"MemoryOverwriteRequestControl";
-drivers/firmware/efi/libstub/x86-stub.c:static const efi_char16_t apple[] = L"Apple";
-drivers/input/keyboard/applespi.c:#define EFI_BL_LEVEL_NAME     L"KeyboardBacklightLevel"
-drivers/net/wireless/intel/iwlwifi/fw/uefi.h:#define IWL_UEFI_OEM_PNVM_NAME             L"UefiCnvWlanOemSignedPnvm"
-drivers/net/wireless/intel/iwlwifi/fw/uefi.h:#define IWL_UEFI_REDUCED_POWER_NAME        L"UefiCnvWlanReducedPower"
-drivers/platform/mellanox/mlxbf-tmfifo.c:static efi_char16_t mlxbf_tmfifo_efi_name[] = L"RshimMacAddr";
-fs/ceph/file.c:         dout("aio_write %p %llx.%llx %llu~%u" "got EOLDSNAPC, retrying\n",
-include/linux/efi.h:    status = get_var(L"SecureBoot", &EFI_GLOBAL_VARIABLE_GUID, NULL, &size,
-include/linux/efi.h:    get_var(L"SetupMode", &EFI_GLOBAL_VARIABLE_GUID, NULL, &size, &setupmode);
-security/integrity/platform_certs/load_uefi.c:  status = efi.get_variable(L"MokIgnoreDB", &guid, NULL, &size, &db);
-security/integrity/platform_certs/load_uefi.c:  mok = get_cert_list(L"MokListRT", &mok_var, &moksize, &status);
-security/integrity/platform_certs/load_uefi.c:          db = get_cert_list(L"db", &secure_var, &dbsize, &status);
-security/integrity/platform_certs/load_uefi.c:  dbx = get_cert_list(L"dbx", &secure_var, &dbxsize, &status);
-security/integrity/platform_certs/load_uefi.c:  mokx = get_cert_list(L"MokListXRT", &mok_var, &mokxsize, &status);
-
-
+>
+> The force_dsi_end_without_null requires the dsi host ent at
+> the same time in line.
+>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> ---
+>  .../bindings/display/bridge/analogix,anx7625.yaml           | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,an=
+x7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7=
+625.yaml
+> index ab48ab2f4240..8b868a6a3d60 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.y=
+aml
+> +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.y=
+aml
+> @@ -43,6 +43,11 @@ properties:
+>    vdd33-supply:
+>      description: Regulator that provides the supply 3.3V power.
+>
+> +  force_dsi_end_without_null:
+> +    description: |
+> +      Requires the dsi host send the dsi packets on all lanes aligned
+> +      at the end.
+> +
+>    ports:
+>      $ref: /schemas/graph.yaml#/properties/ports
+>
+> @@ -87,6 +92,7 @@ examples:
+>              vdd10-supply =3D <&pp1000_mipibrdg>;
+>              vdd18-supply =3D <&pp1800_mipibrdg>;
+>              vdd33-supply =3D <&pp3300_mipibrdg>;
+> +            force_dsi_end_without_null;
+>
+>              ports {
+>                  #address-cells =3D <1>;
+> --
+> 2.25.1
