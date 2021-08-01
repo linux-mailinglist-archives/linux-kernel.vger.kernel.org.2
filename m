@@ -2,135 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65833DCDCB
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DD13DCDD3
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbhHAUen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 16:34:43 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:55251 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbhHAUel (ORCPT
+        id S231603AbhHAUtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 16:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229759AbhHAUtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 16:34:41 -0400
-Received: by mail-io1-f72.google.com with SMTP id h70-20020a6bb7490000b02904f7957d92b5so10192760iof.21
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 13:34:32 -0700 (PDT)
+        Sun, 1 Aug 2021 16:49:00 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E195C06175F;
+        Sun,  1 Aug 2021 13:48:51 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id c7-20020a9d27870000b02904d360fbc71bso15598963otb.10;
+        Sun, 01 Aug 2021 13:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3wDs4TscZnBfih/RoUBpjRLjosLDw2uLwbF2csntLTo=;
+        b=IxfENPjH2e4w5qRT7ASIYRIozgQ+/sX8NCAKqSMc6b8w5WRry3ukSep3aE2Fdahxn6
+         06QxofQwMZSunlFhvJ35+J6SYxpVw2+IItEPpV3WL1PO9zjtPi3cPwE4M4guMKfNdiTn
+         d06Vtv5iYNjJAk6E3J1cmLMEqxDXekYvaqh8C3R2LpUrtBoMXTXuHEp7GWlQfesx7fKI
+         ZmAVqd7Z/Xjr6/bA44sAEb95fSmTPw3Apd/Up7D3P/GfAn3D4X6TmYn4VU0nBl12ATDj
+         KCwnHIE1lE8wm7IwmhLBMER1of3SIGWivzBShnm66w1mNspn295cJaqgc5CW/yRPXXY/
+         0YTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2nTW78nne7YV4oteAEFI9yTUaPPtJoN/k/2jsa42cBY=;
-        b=VbqyXafct06tJlkYAF5Q2YkZH9hiObAY4L9TowSTIX0CqF6wRkTCiuhENCqszsaURc
-         Ny54B+uKmP1WhONmWc/A+ijEb3D5DDm7Am2s6o1IDk7Pfg7F0admo0mARm3JL40aDyyD
-         MFA85lodXFsC3fK7ikZk1i0WGpIsGEO7rjWbrjBfjM8ShAWfUO3hVwiBZEXfYIk/MOtO
-         1vnzHlr0RaZS/4T/iKL9VZsh3afbSg/WSGTfXQDMqpt4QKpezEBJQ0eyhjoufkVB377b
-         iMkwN4Y/dTTgpfHyJELWgEs3fO4qMwwT7zMDX+85Td2lBW0Db9AXUw/SkQk9Kg4HpTId
-         VCnQ==
-X-Gm-Message-State: AOAM533Puag497oU2VdviIlY3pTx9M395Mjdt3xmLHZBbnUO7OfvkKz5
-        52G7pbNLaCb7dG6ujzGahAr02fyQXQ8+ao8rxdRFGyO2hjsG
-X-Google-Smtp-Source: ABdhPJxDdf6F16NElNuv+EDK47lNPw3fQeOaF7nxq3ifv2BqJl98TAAKjzfueChD4GrxpBEUmzwcPcxRbhFxFWBRwujSY1OoaiFr
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=3wDs4TscZnBfih/RoUBpjRLjosLDw2uLwbF2csntLTo=;
+        b=duCQPL6C6rFZ9lVO21qEAQz/CC9lC1KScbt3yZox+09MfKhslBZpyWW/0FcEVUHKd6
+         LxF1tNa418mes8hVr5/aaDXl4tG8EIeFM9j4mdJslLyR+aCpWrGHwmqU+th2YyRFxzA8
+         Zp2Br76PK440LkTVBoxlJTVzOPcH3qACyH43M3LApouNLTqDFUUoQEDyncdhmPoQV7vd
+         f1pZIn6ruWSgVYy4j4+298ooC2tAAGmfYtTzZoqjVCWh5r4avvPIRfrOpdT8CL5SwNsC
+         aKFJa7bJI54wUG1epTWXRwhQU/JdVSW4AEVA+zk0zjvnS4tcaMy4Q8i0pZlmF4+KkkES
+         Y00w==
+X-Gm-Message-State: AOAM531/ra+0E64sHJ1R99ee+uhmtWskrv7g0jiJ4fWFzvQtEagtlLXI
+        LlEa4maE6aDQ3M//fMR2vpA=
+X-Google-Smtp-Source: ABdhPJzlGbNGz7fO6f3aMCFJPAHsiwpnrYGwxdWj9tPS+NunUjP161qUG9vYt6Ii2t5StdpPw6vNDQ==
+X-Received: by 2002:a9d:26a:: with SMTP id 97mr9282002otb.333.1627850930545;
+        Sun, 01 Aug 2021 13:48:50 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c11sm1559290otm.37.2021.08.01.13.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Aug 2021 13:48:50 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 1 Aug 2021 13:48:48 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Sam Shih <sam.shih@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-clk@vger.kernel.org, John Crispin <john@phrozen.org>,
+        Ryder Lee <Ryder.Lee@mediatek.com>
+Subject: Re: [PATCH 10/12] dt-bindings: watchdog: Add compatible for Mediatek
+ MT7986
+Message-ID: <20210801204848.GA2800586@roeck-us.net>
+References: <20210726071439.14248-1-sam.shih@mediatek.com>
+ <20210726071439.14248-11-sam.shih@mediatek.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:7a18:: with SMTP id a24mr9031500jac.45.1627850072379;
- Sun, 01 Aug 2021 13:34:32 -0700 (PDT)
-Date:   Sun, 01 Aug 2021 13:34:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004fd4c505c8856109@google.com>
-Subject: [syzbot] general protection fault in br_switchdev_fdb_notify
-From:   syzbot <syzbot+9ba1174359adba5a5b7c@syzkaller.appspotmail.com>
-To:     bridge@lists.linux-foundation.org, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, nikolay@nvidia.com, roopa@nvidia.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726071439.14248-11-sam.shih@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Jul 26, 2021 at 03:14:37PM +0800, Sam Shih wrote:
+> This commit adds dt-binding documentation of watchdog for Mediatek MT7986
+> SoC Platform.
+> 
+> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-syzbot found the following issue on:
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-HEAD commit:    b11f0a4c0c81 net: dsa: sja1105: be stateless when installi..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13b77662300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=914a8107c0ffdc14
-dashboard link: https://syzkaller.appspot.com/bug?extid=9ba1174359adba5a5b7c
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1247bf2e300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=163c441a300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9ba1174359adba5a5b7c@syzkaller.appspotmail.com
-
-netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 1 PID: 8468 Comm: syz-executor865 Not tainted 5.14.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:br_switchdev_fdb_notify+0x2bf/0x340 net/bridge/br_switchdev.c:137
-Code: c4 a8 00 00 00 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 f6 fd 77 f9 49 8d 7e 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 71 4d 8b 6e 08 e9 4f ff ff ff e8 cd fd 77 f9 31 c9
-RSP: 0018:ffffc9000186f360 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff87fd8c8a RDI: 0000000000000008
-RBP: 1ffff9200030de6d R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff87fd8bc7 R11: 0000000000000000 R12: 000000000000001c
-R13: ffff88801d1c8c00 R14: 0000000000000000 R15: ffff888033cb93e8
-FS:  0000000002147300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000000 CR3: 000000003756d000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- fdb_notify+0x159/0x190 net/bridge/br_fdb.c:798
- br_fdb_external_learn_add+0x2cc/0x5c0 net/bridge/br_fdb.c:1303
- __br_fdb_add+0x122/0xa40 net/bridge/br_fdb.c:1033
- br_fdb_add+0x8aa/0xcd0 net/bridge/br_fdb.c:1105
- rtnl_fdb_add+0x45f/0xad0 net/core/rtnetlink.c:4046
- rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5563
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:703 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:723
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2402
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2456
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2485
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x443239
-Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffee38b3de8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007ffee38b3df8 RCX: 0000000000443239
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000003
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffee38b3e00
-R13: 00007ffee38b3e20 R14: 00000000004b8018 R15: 00000000004004b8
-Modules linked in:
----[ end trace aa1b885b5f5494d5 ]---
-RIP: 0010:br_switchdev_fdb_notify+0x2bf/0x340 net/bridge/br_switchdev.c:137
-Code: c4 a8 00 00 00 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 f6 fd 77 f9 49 8d 7e 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 71 4d 8b 6e 08 e9 4f ff ff ff e8 cd fd 77 f9 31 c9
-RSP: 0018:ffffc9000186f360 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff87fd8c8a RDI: 0000000000000008
-RBP: 1ffff9200030de6d R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff87fd8bc7 R11: 0000000000000000 R12: 000000000000001c
-R13: ffff88801d1c8c00 R14: 0000000000000000 R15: ffff888033cb93e8
-FS:  0000000002147300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000000 CR3: 000000003756d000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> ---
+>  Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+> index 416d716403f6..a4e31ce96e0e 100644
+> --- a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+> +++ b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+> @@ -13,6 +13,7 @@ Required properties:
+>  	"mediatek,mt7622-wdt", "mediatek,mt6589-wdt": for MT7622
+>  	"mediatek,mt7623-wdt", "mediatek,mt6589-wdt": for MT7623
+>  	"mediatek,mt7629-wdt", "mediatek,mt6589-wdt": for MT7629
+> +	"mediatek,mt7986-wdt", "mediatek,mt6589-wdt": for MT7986
+>  	"mediatek,mt8183-wdt": for MT8183
+>  	"mediatek,mt8516-wdt", "mediatek,mt6589-wdt": for MT8516
+>  	"mediatek,mt8192-wdt": for MT8192
