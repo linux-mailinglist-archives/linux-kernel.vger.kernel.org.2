@@ -2,75 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E822C3DC95C
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 04:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40B83DC95F
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 04:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhHACom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 22:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhHACok (ORCPT
+        id S231374AbhHAC4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 22:56:15 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:35472 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231294AbhHACyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 22:44:40 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61656C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 19:44:31 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id t18so9370701qta.8
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 19:44:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/5ecc/3b0c9DlP5gv+Twq7PKykLz+QwWDSWKrTcTwOY=;
-        b=DJ4fqnmo+wk6enZYrC5wLyFeknzUsdGtntaumwN9szx9HM8ZClF58unPo8k9cd+WVG
-         j6SvrMSbzAxHmqqcWN96hwjgPy/CmWdvPF/nr3qCtDV++/WeQEWWIDe8sCkqoCqqFRYr
-         7ZUOYsdmC5jGYW0KiilCZspGZN0upgLOFTw1hTB9vawJaifDnOtBULqJpsyf4GlxbGyb
-         AXKtpgXpb3vPntLRrMs26Sl4Bzbxwh4CtdGOo6xzHVdMk2w6vzv7+ZhmgsqdHwtr8L/M
-         sc7JXdBNi2RdFqoPQT+YSwCaheMDp1I0RGGfpNCxR2cFWY6HdOa0zGmhRed7UICR4W4t
-         Juqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/5ecc/3b0c9DlP5gv+Twq7PKykLz+QwWDSWKrTcTwOY=;
-        b=FYVZH+2XQwbPQeovRW5g7qEiEyclVaiy9l//hVme5w6jUULYAnxMZXtZCg3ch3jSCW
-         6tMShhrfDIoV7vp0ldSMK8GGS+iPeZ4c9bczxP33O9IvecSR7HtFJT0IKPpx1Hbe+gb/
-         oam86lgob++AOBLc68iLUacrr0zWH8P+CaGdlU0oobS4fNod55MmtviQR8fSMtPWILg+
-         HmCDwRs2T45W48d75mzbc9jTp/7/oBVA5VT5AbaA2lDZkpNi7gLo1aT09erIhVZn7prq
-         ztdZj5nyGk3ftf+ew/9N6ApY17p7f8WYqrfSYDx5Ho/tjo1ldaIC8Qh74ngJo5m5LLy9
-         4tFQ==
-X-Gm-Message-State: AOAM532yoJ3ZuVSkyInc1E0rB6iC+X6TIC7csBhUVStKZrJWtgn0Ad84
-        eTouBT5TAsR8vlxGu+pkJeOlsNBRQLH2+FFe
-X-Google-Smtp-Source: ABdhPJyHYfEwc/iHHbUaEE9pW29ukjZC4oODGCLzXRb7fb8xWbmuxwu3pCqJbWhKsCSLWBEQch6uUg==
-X-Received: by 2002:ac8:734a:: with SMTP id q10mr8598774qtp.73.1627785870499;
-        Sat, 31 Jul 2021 19:44:30 -0700 (PDT)
-Received: from fedora (cpe-66-24-154-110.stny.res.rr.com. [66.24.154.110])
-        by smtp.gmail.com with ESMTPSA id i4sm3376564qka.130.2021.07.31.19.44.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 19:44:30 -0700 (PDT)
-Sender: Konrad Rzeszutek Wilk <konrad.r.wilk@gmail.com>
-Date:   Sat, 31 Jul 2021 22:44:27 -0400
-From:   Konrad Rzeszutek Wilk <konrad@darnok.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Maurizio Lombardi <mlombard@redhat.com>, bp@alien8.de,
-        tglx@linutronix.de, x86@kernel.org, pjones@redhat.com,
-        konrad@kernel.org, george.kennedy@oracle.com, rafael@kernel.org,
+        Sat, 31 Jul 2021 22:54:15 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 1712rmh9026849;
+        Sun, 1 Aug 2021 11:53:49 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 1712rmh9026849
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1627786429;
+        bh=THjjh/MBwu064N8PkuAcVIKWQNUJvheL3ECQMRV6TXY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UJHptJ/kaKMT3uyJLtLPf+FssuOTtM1kiCjqkAKJPPGpHL3M5/7RK5m+BDVGgHolC
+         97D7tjP5b45A+13Y4u1mL6oxFZX6BNPTx/4fNFCxs3/sj/beTLEZx4DAxUkahl18wV
+         pdgoEEVPc1l2mzGIoWUlFA4Ee8ZQCyoZ4wMpe9xjpLRap+9l/3C/aBEK9Pjc/swEeS
+         LukERFhly3jl16O7Z5tMODZLBtbvjaRvqbB5mpj7LRcZmkLRE+qL8Y+7/Jh52n4e6F
+         PR9Xxbj0pfo5sJ+dxpyoOOzfZyUw4CB3u9/Be6z7mUltIlXilmueKrTn2N+3DbF6X8
+         6T9ewVL+TVKQw==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Michal Marek <michal.lkml@markovi.net>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3] iscsi_ibft: fix crash due to KASLR physical memory
- remapping
-Message-ID: <YQYKixj1y4yey7zR@fedora>
-References: <20210729135250.32212-1-mlombard@redhat.com>
- <YQMCFWYCSqNBRkX4@kernel.org>
+Subject: [PATCH] kbuild: warn if a different compiler is used for external module builds
+Date:   Sun,  1 Aug 2021 11:53:46 +0900
+Message-Id: <20210801025346.93877-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQMCFWYCSqNBRkX4@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
-> 
-> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+It is always safe to use the same compiler for the kernel and external
+modules, but in reality, some distributions such as Fedora release a
+different version of GCC from the one used for building the kernel.
 
-Stuck it in linux-next and modified the commit message a bit. Thanks folks!
+There was a long discussion about mixing different compilers [1].
+
+I do not repeat it here, but at least, showing a heads up in that
+case is better than nothing.
+
+Linus suggested [2]:
+  And a warning might be more palatable even if different compiler
+  version work fine together. Just a heads up on "it looks like you
+  might be mixing compiler versions" is a valid note, and isn't
+  necessarily wrong. Even when they work well together, maybe you want
+  to have people at least _aware_ of it.
+
+This commit shows a warning unless the compiler is exactly the same.
+
+  warning: the compiler differs from the one used to build the kernel
+    The kernel was built by: gcc (GCC) 11.1.1 20210531 (Red Hat 11.1.1-3)
+    You are using:           gcc (GCC) 11.2.1 20210728 (Red Hat 11.2.1-1)
+
+Check the difference, and if it is OK with you, please proceed at your
+risk.
+
+To avoid the locale issue as in commit bcbcf50f5218 ("kbuild: fix
+ld-version.sh to not be affected by locale"), pass LC_ALL=C to
+"$(CC) --version".
+
+[1] https://lore.kernel.org/linux-hardening/efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com/
+[2] https://lore.kernel.org/lkml/CAHk-=wgjwhDy-y4mQh34L+2aF=n6BjzHdqAW2=8wri5x7O04pA@mail.gmail.com/
+
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ Makefile | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 6b555f64df06..f4cc77a10413 100644
+--- a/Makefile
++++ b/Makefile
+@@ -583,7 +583,7 @@ endif
+ # Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
+ # CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
+ # and from include/config/auto.conf.cmd to detect the compiler upgrade.
+-CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -n 1))
++CC_VERSION_TEXT = $(subst $(pound),,$(shell LC_ALL=C $(CC) --version 2>/dev/null | head -n 1))
+ 
+ ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+ ifneq ($(CROSS_COMPILE),)
+@@ -1731,6 +1731,16 @@ clean-dirs := $(KBUILD_EXTMOD)
+ clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers $(KBUILD_EXTMOD)/modules.nsdeps \
+ 	$(KBUILD_EXTMOD)/compile_commands.json $(KBUILD_EXTMOD)/.thinlto-cache
+ 
++PHONY += prepare
++# now expand this into a simple variable to reduce the cost of shell evaluations
++prepare: CC_VERSION_TEXT := $(CC_VERSION_TEXT)
++prepare:
++	@if [ "$(CC_VERSION_TEXT)" != $(CONFIG_CC_VERSION_TEXT) ]; then \
++		echo >&2 "warning: the compiler differs from the one used to build the kernel"; \
++		echo >&2 "  The kernel was built by: "$(CONFIG_CC_VERSION_TEXT); \
++		echo >&2 "  You are using:           $(CC_VERSION_TEXT)"; \
++	fi
++
+ PHONY += help
+ help:
+ 	@echo  '  Building external modules.'
+@@ -1742,7 +1752,7 @@ help:
+ 	@echo  ''
+ 
+ # no-op for external module builds
+-PHONY += prepare modules_prepare
++PHONY += modules_prepare
+ 
+ endif # KBUILD_EXTMOD
+ 
+-- 
+2.27.0
+
