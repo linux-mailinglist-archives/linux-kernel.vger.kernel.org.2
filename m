@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806373DCA87
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 09:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFEE93DCAA4
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 09:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbhHAHZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 03:25:56 -0400
-Received: from mga02.intel.com ([134.134.136.20]:28526 "EHLO mga02.intel.com"
+        id S230356AbhHAHxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 03:53:08 -0400
+Received: from msg-1.mailo.com ([213.182.54.11]:41628 "EHLO msg-1.mailo.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230519AbhHAHZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 03:25:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10062"; a="200472323"
-X-IronPort-AV: E=Sophos;i="5.84,286,1620716400"; 
-   d="scan'208";a="200472323"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 00:25:45 -0700
-X-IronPort-AV: E=Sophos;i="5.84,286,1620716400"; 
-   d="scan'208";a="519772111"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 00:25:42 -0700
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [char-misc-next] samples: mei: don't wait on read completion upon write.
-Date:   Sun,  1 Aug 2021 10:25:32 +0300
-Message-Id: <20210801072532.8668-1-tomas.winkler@intel.com>
+        id S229543AbhHAHxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 03:53:06 -0400
+X-Greylist: delayed 1323 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Aug 2021 03:53:06 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1627803011; bh=4G10nVQJkrQltnOTrznYvxzJZvczMCBK7/8KU1oeR88=;
+        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
+         MIME-Version:Content-Transfer-Encoding;
+        b=eBUwieR1Jcmb5GNy2OCAfoRL07rmcEzJrloVfNwd8Su77lb82ETEQucE5RnzTB/RO
+         xfWu7A2kYnBkPnUey4Wyw6p5A0BR/trF0X9hCEG10evkCJCeO9swPawWdHctTWwbqI
+         QQ8S+PRfLmSnLCmxz2sN7kkdyAljdDeMoghPDWNo=
+Received: by b-6.in.mailobj.net [192.168.90.16] with ESMTP
+        via proxy.mailoo.org [213.182.55.207]
+        Sun,  1 Aug 2021 09:30:11 +0200 (CEST)
+X-EA-Auth: ZR/HJzMxTWSmhw2LBY8jJO+wEhwbhSwSmMdyX7IU/oyZLhWZY6TfL/dPrWEE0YA7ybC/EhpxzXNGH1WMdyWhfMlCG/30t8t9bMiEKc0TZ5A=
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     tiwai@suse.com, perex@perex.cz
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        broonie@kernel.org, lgirdwood@gmail.com, bgoswami@codeaurora.org,
+        srinivas.kandagatla@linaro.org, stephan@gerhold.net,
+        Vincent Knecht <vincent.knecht@mailoo.org>
+Subject: [PATCH] ASoC: qcom: apq8016_sbc: Add SEC_MI2S support
+Date:   Sun,  1 Aug 2021 09:29:51 +0200
+Message-Id: <20210801072951.1403241-1-vincent.knecht@mailoo.org>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -35,109 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+This patch adds external codec support on secondary mi2s.
+It is used for headphones on some devices, eg. alcatel-idol347.
 
-The original mei driver communication was strictly write command and
-receive response flow, the completion of write was determined when
-response was ready using select(). This paradigm is a long time not
-true.  There can be write without a response and an unsolicited read.
-The driver is capable of handling those.
-Adjust also the sample code and remove select() on read() from the
-write flow. Add select to the read flow to showcase how to do the
-read with a timeout.
-
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
 ---
- samples/mei/mei-amt-version.c | 51 ++++++++++++++++++++---------------
- 1 file changed, 30 insertions(+), 21 deletions(-)
+ sound/soc/qcom/apq8016_sbc.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/samples/mei/mei-amt-version.c b/samples/mei/mei-amt-version.c
-index ad3e56042f96..867debd3b912 100644
---- a/samples/mei/mei-amt-version.c
-+++ b/samples/mei/mei-amt-version.c
-@@ -154,31 +154,52 @@ static bool mei_init(struct mei *me, const uuid_le *guid,
- static ssize_t mei_recv_msg(struct mei *me, unsigned char *buffer,
- 			ssize_t len, unsigned long timeout)
- {
-+	struct timeval tv;
-+	fd_set set;
- 	ssize_t rc;
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index 08a05f0ecad7..53460272eb1e 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -30,6 +30,11 @@ struct apq8016_sbc_data {
+ #define MIC_CTRL_QUA_WS_SLAVE_SEL_10	BIT(17)
+ #define MIC_CTRL_TLMM_SCLK_EN		BIT(1)
+ #define	SPKR_CTL_PRI_WS_SLAVE_SEL_11	(BIT(17) | BIT(16))
++#define SPKR_CTL_TLMM_MCLK_EN		BIT(1)
++#define SPKR_CTL_TLMM_SCLK_EN		BIT(2)
++#define SPKR_CTL_TLMM_DATA1_EN		BIT(3)
++#define SPKR_CTL_TLMM_WS_OUT_SEL	BIT(6)
++#define SPKR_CTL_TLMM_WS_EN_SEL		BIT(18)
+ #define DEFAULT_MCLK_RATE		9600000
  
-+	tv.tv_sec = timeout / 1000;
-+	tv.tv_usec = (timeout % 1000) * 1000000;
-+
- 	mei_msg(me, "call read length = %zd\n", len);
- 
-+	FD_ZERO(&set);
-+	FD_SET(me->fd, &set);
-+	rc = select(me->fd + 1, &set, NULL, NULL, &tv);
-+	if (rc > 0 && FD_ISSET(me->fd, &set)) {
-+		mei_msg(me, "have reply\n");
-+	} else if (rc == 0) {
-+		rc = -1;
-+		mei_err(me, "read failed on timeout\n");
-+		goto out;
-+	} else { /* rc < 0 */
-+		rc = errno;
-+		mei_err(me, "read failed on select with status %zd %s\n",
-+			rc, strerror(errno));
-+		goto out;
-+	}
-+
- 	rc = read(me->fd, buffer, len);
- 	if (rc < 0) {
- 		mei_err(me, "read failed with status %zd %s\n",
- 				rc, strerror(errno));
--		mei_deinit(me);
--	} else {
--		mei_msg(me, "read succeeded with result %zd\n", rc);
-+		goto out;
- 	}
-+
-+	mei_msg(me, "read succeeded with result %zd\n", rc);
-+
-+out:
-+	if (rc < 0)
-+		mei_deinit(me);
-+
- 	return rc;
- }
- 
- static ssize_t mei_send_msg(struct mei *me, const unsigned char *buffer,
- 			ssize_t len, unsigned long timeout)
- {
--	struct timeval tv;
- 	ssize_t written;
- 	ssize_t rc;
--	fd_set set;
--
--	tv.tv_sec = timeout / 1000;
--	tv.tv_usec = (timeout % 1000) * 1000000;
- 
- 	mei_msg(me, "call write length = %zd\n", len);
- 
-@@ -189,19 +210,7 @@ static ssize_t mei_send_msg(struct mei *me, const unsigned char *buffer,
- 			written, strerror(errno));
- 		goto out;
- 	}
--
--	FD_ZERO(&set);
--	FD_SET(me->fd, &set);
--	rc = select(me->fd + 1 , &set, NULL, NULL, &tv);
--	if (rc > 0 && FD_ISSET(me->fd, &set)) {
--		mei_msg(me, "write success\n");
--	} else if (rc == 0) {
--		mei_err(me, "write failed on timeout with status\n");
--		goto out;
--	} else { /* rc < 0 */
--		mei_err(me, "write failed on select with status %zd\n", rc);
--		goto out;
--	}
-+	mei_msg(me, "write success\n");
- 
- 	rc = written;
- out:
+ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+@@ -53,6 +58,13 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 			MIC_CTRL_TLMM_SCLK_EN,
+ 			pdata->mic_iomux);
+ 		break;
++	case MI2S_SECONDARY:
++		/* Configure the Sec MI2S to TLMM */
++		writel(readl(pdata->spkr_iomux) | SPKR_CTL_TLMM_MCLK_EN |
++			SPKR_CTL_TLMM_SCLK_EN | SPKR_CTL_TLMM_DATA1_EN |
++			SPKR_CTL_TLMM_WS_OUT_SEL | SPKR_CTL_TLMM_WS_EN_SEL,
++			pdata->spkr_iomux);
++		break;
+ 	case MI2S_TERTIARY:
+ 		writel(readl(pdata->mic_iomux) | MIC_CTRL_TER_WS_SLAVE_SEL |
+ 			MIC_CTRL_TLMM_SCLK_EN,
 -- 
 2.31.1
+
+
 
