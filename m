@@ -2,167 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2863DCA1C
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 07:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B558F3DCA22
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 07:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbhHAFWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 01:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
+        id S229618AbhHAFco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 01:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHAFWw (ORCPT
+        with ESMTP id S229451AbhHAFcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 01:22:52 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AED9C0613D3
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 22:22:45 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id o13so13621143qkk.9
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 22:22:45 -0700 (PDT)
+        Sun, 1 Aug 2021 01:32:43 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE28C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 22:32:35 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id r23so19329828lji.3
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 22:32:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=cVKnxJsFEmP6VTmBi9tS1yfqRxwfKg7VbrVRt8cHCvo=;
-        b=nniVekF9vlkNnrUOafOtXHIsYcNQ6rL681EWtkcizPpBYll7lGMYewKh1N7H2JRk17
-         W0OqhipS9dSd1GQCB/S4HKMVJ+kCD5IJjKeELxH4EMefOyJk8jTTN3pKMDwIneZUp+ej
-         jae6g/X2+jWkwVpG9KNQSuaa5bPuGGEImGu6NNGoZOCk2cNAAPoUpIpjb6yO1DfUJKDo
-         0fLMhDxxRlzDyrz7L2+M6p7LMvHMsaEaoarTGBW265h1BQXYdupguv/qK6jzUiF34ZYG
-         cP/L9VDHJTKUhgKU3CllS6TWZG3uAfhZQihh+VyjmnPMe8hbV5K7gjV20NEtsdO17mr6
-         2hsw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7J4wUyNX78qif2RKUFd3wsafpswn9+jydrAIq9BO51s=;
+        b=WwFYADtaE9jNcoAEF8oYqB4AcklFthGbkFLFGQSQ1uKQPJgRQWwSxYkFjHLNSokU63
+         1W76gDWWpbP1CaRSCmHCoz/ixwMMX+zQHrcZJmsCLI2BWu8XLt0zkrHBsSCcHlEL8wvv
+         nUTIAoa5yAp5VFGZrnhiPO0af1366UVqrWQZVTRq6mF4y3b9VYsw71mEWEaFdiHFbDmY
+         dj+d6oqsJfjIyzdYdw9B/g9X8FdLor4nzIlWm6VZVpYh61rJCOUZh0bHcW3Dx04OdaF+
+         56uZFvff27zjqK9dNZ10SHPaLa9MDEWMumqFb/VL+jn4OQFzmqqcHq98pgRwUoKVgeat
+         h4wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=cVKnxJsFEmP6VTmBi9tS1yfqRxwfKg7VbrVRt8cHCvo=;
-        b=ohESR3uVd9U/d0fJxcpFy4dapxn+RR6tFJcT2vakbwT+kY8pwh6cm4SJ0+zOBIAKoi
-         NOlvXS6Bg12khKkvJ4JfjdJm6QvfoSyUro6j1joEtx/gQs6A/uGeYhkqBXBJF35CETO2
-         RV3fjU/ekUNImjIG/dW+pIOk60f9mCeybGdVtmPOOQD7TcJirCMW7DFnnTgV+Vyb79Y8
-         ChTxLEH+GzyfelP9omAz2RlXSdsOHPQTmlTtQGCYDO1d+frWwGAx6fM4LpU43J3Pbq7L
-         6r5kN+tmrD0NjCXWMh24v6l5pzhpSTUOGZz62qkGz4EeMZhjr8631pXT0Hs5cBRH1X9w
-         RRTg==
-X-Gm-Message-State: AOAM532HChoWq1HVAVqSfyBLAdQbsilePrB4fSss30h47Aap7rTJ2HVg
-        bcldbxtZ8SsXPzZHtZBPZwfP5w==
-X-Google-Smtp-Source: ABdhPJyrUeF6RAIGrh/c9ff88AZw0UDXNn0Fppp7eogohS/Zaj97Y7d5VtLeRxic/CzNt1nJO85UaA==
-X-Received: by 2002:a05:620a:2053:: with SMTP id d19mr7804552qka.402.1627795364185;
-        Sat, 31 Jul 2021 22:22:44 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id i7sm2891875qtr.80.2021.07.31.22.22.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 22:22:43 -0700 (PDT)
-Date:   Sat, 31 Jul 2021 22:22:41 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Yang Shi <shy828301@gmail.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH 06/16] huge tmpfs: shmem_is_huge(vma, inode, index)
-In-Reply-To: <CAHbLzkoKZ9OdUfP5DX81CKOJWrRZ0GANrmenNeKWNmSOgUh0bQ@mail.gmail.com>
-Message-ID: <e7374d7e-4773-aba1-763-8fa2c953f917@google.com>
-References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <dae523ab-c75b-f532-af9d-8b6a1d4e29b@google.com> <CAHbLzkoKZ9OdUfP5DX81CKOJWrRZ0GANrmenNeKWNmSOgUh0bQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7J4wUyNX78qif2RKUFd3wsafpswn9+jydrAIq9BO51s=;
+        b=EoqiBRUmQdFus+zQ6dJClUm8LVbt5nJfTUHudXf9a7ygOithMDlShjxIeASAIVcRlN
+         ttid+7rPiWqnp37hfValQphCos4UcF6moZZZopofywAgUn7Zr7BaPY4zJzEmMtKOKOJE
+         2YJrs8rZN69aq9wx9vdRiF3HRB4osBxU6jK85/4ZKOPX9F9DwhfP8+rVoPDBCvoJ9Oh2
+         7IPeSq8RRcXVk4s9qfUEduM4v/ZMAea2xZn/vS/veh4w34e+8msEf0aG2XoNmCAHmYf5
+         wKqpZLGRJBRpfoCF3+Rq3wbXjw3vJByQsdFjd1yIJBYNkQunOGqpcJ46kVeEMCQKCN1a
+         UBDQ==
+X-Gm-Message-State: AOAM5313Y+fMBSbHgvrJuaQUT1aOcpg5i1QB+EnkZ6MlvfQc3bZgywyf
+        kvdGzj7U801K3sqYO8mGhAUf/TQ1N5G0nL4FQe8zaA==
+X-Google-Smtp-Source: ABdhPJx487LYrQWlxhYEv7l56r+0t7kddFosW2G0L5cqyIm7I/q1xfrjFli9AHjU7lhgTbMg+OTKU6QU7Vth7M1qX1E=
+X-Received: by 2002:a05:651c:906:: with SMTP id e6mr6932238ljq.160.1627795953826;
+ Sat, 31 Jul 2021 22:32:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210729145259.24681c326dc3ed18194cf9e5@linux-foundation.org>
+ <20210729215350.SZC9InNuL%akpm@linux-foundation.org> <YQXMHnWRsmfzKK00@archlinux-ax161>
+In-Reply-To: <YQXMHnWRsmfzKK00@archlinux-ax161>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Sat, 31 Jul 2021 22:32:22 -0700
+Message-ID: <CALvZod6_uOVSp83mrjuQRqoRhdzfaV_sNfYNppVHMNhuHpR1oA@mail.gmail.com>
+Subject: Re: [patch 6/7] slub: fix unreclaimable slab stat for bulk free
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>, Roman Gushchin <guro@fb.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linux MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        mm-commits@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021, Yang Shi wrote:
-> On Fri, Jul 30, 2021 at 12:42 AM Hugh Dickins <hughd@google.com> wrote:
+Hi Nathan,
+
+On Sat, Jul 31, 2021 at 3:18 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Thu, Jul 29, 2021 at 02:53:50PM -0700, Andrew Morton wrote:
+> > From: Shakeel Butt <shakeelb@google.com>
+> > Subject: slub: fix unreclaimable slab stat for bulk free
 > >
-> > Extend shmem_huge_enabled(vma) to shmem_is_huge(vma, inode, index), so
-> > that a consistent set of checks can be applied, even when the inode is
-> > accessed through read/write syscalls (with NULL vma) instead of mmaps
-> > (the index argument is seldom of interest, but required by mount option
-> > "huge=within_size").  Clean up and rearrange the checks a little.
+> > SLUB uses page allocator for higher order allocations and update
+> > unreclaimable slab stat for such allocations.  At the moment, the bulk
+> > free for SLUB does not share code with normal free code path for these
+> > type of allocations and have missed the stat update.  So, fix the stat
+> > update by common code.  The user visible impact of the bug is the
+> > potential of inconsistent unreclaimable slab stat visible through meminfo
+> > and vmstat.
 > >
-> > This then replaces the checks which shmem_fault() and shmem_getpage_gfp()
-> > were making, and eliminates the SGP_HUGE and SGP_NOHUGE modes: while it's
-> > still true that khugepaged's collapse_file() at that point wants a small
-> > page, the race that might allocate it a huge page is too unlikely to be
-> > worth optimizing against (we are there *because* there was at least one
-> > small page in the way), and handled by a later PageTransCompound check.
-> 
-> Yes, it seems too unlikely. But if it happens the PageTransCompound
-> check may be not good enough since the page allocated by
-> shmem_getpage() may be charged to wrong memcg (root memcg). And it
-> won't be replaced by a newly allocated huge page so the wrong charge
-> can't be undone.
+> > Link: https://lkml.kernel.org/r/20210728155354.3440560-1-shakeelb@google.com
+> > Fixes: 6a486c0ad4dc ("mm, sl[ou]b: improve memory accounting")
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+> > Acked-by: Roman Gushchin <guro@fb.com>
+> > Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> > Cc: Christoph Lameter <cl@linux.com>
+> > Cc: Pekka Enberg <penberg@kernel.org>
+> > Cc: David Rientjes <rientjes@google.com>
+> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> > Cc: Vlastimil Babka <vbabka@suse.cz>
+> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > ---
+> >
+> >  mm/slub.c |   22 ++++++++++++----------
+> >  1 file changed, 12 insertions(+), 10 deletions(-)
+> >
+> > --- a/mm/slub.c~slub-fix-unreclaimable-slab-stat-for-bulk-free
+> > +++ a/mm/slub.c
+> > @@ -3236,6 +3236,16 @@ struct detached_freelist {
+> >       struct kmem_cache *s;
+> >  };
+> >
+> > +static inline void free_nonslab_page(struct page *page)
+> > +{
+> > +     unsigned int order = compound_order(page);
+> > +
+> > +     VM_BUG_ON_PAGE(!PageCompound(page), page);
+> > +     kfree_hook(page_address(page));
+> > +     mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B, -(PAGE_SIZE << order));
+> > +     __free_pages(page, order);
+> > +}
+> > +
+> >  /*
+> >   * This function progressively scans the array with free objects (with
+> >   * a limited look ahead) and extract objects belonging to the same
+> > @@ -3272,9 +3282,7 @@ int build_detached_freelist(struct kmem_
+> >       if (!s) {
+> >               /* Handle kalloc'ed objects */
+> >               if (unlikely(!PageSlab(page))) {
+> > -                     BUG_ON(!PageCompound(page));
+> > -                     kfree_hook(object);
+> > -                     __free_pages(page, compound_order(page));
+> > +                     free_nonslab_page(page);
+> >                       p[size] = NULL; /* mark object processed */
+> >                       return size;
+> >               }
+> > @@ -4250,13 +4258,7 @@ void kfree(const void *x)
+> >
+> >       page = virt_to_head_page(x);
+> >       if (unlikely(!PageSlab(page))) {
+> > -             unsigned int order = compound_order(page);
+> > -
+> > -             BUG_ON(!PageCompound(page));
+> > -             kfree_hook(object);
+> > -             mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
+> > -                                   -(PAGE_SIZE << order));
+> > -             __free_pages(page, order);
+> > +             free_nonslab_page(page);
+> >               return;
+> >       }
+> >       slab_free(page->slab_cache, page, object, NULL, 1, _RET_IP_);
+> > _
+>
+> This patch, now in mainline as commit f227f0faf63b ("slub: fix
+> unreclaimable slab stat for bulk free") causes the KASAN KUnit test
+> kmalloc_pagealloc_invalid_free to no longer fail:
+>
+> [    0.000000] Linux version 5.14.0-rc3-00066-gf227f0faf63b (nathan@archlinux-ax161) (x86_64-linux-gcc (GCC) 11.2.0, GNU ld (GNU Binutils) 2.37) #1 SMP Sat Jul 31 15:08:11 MST 2021
+> ...
+> [    5.717678]     # kmalloc_pagealloc_invalid_free: EXPECTATION FAILED at lib/test_kasan.c:203
+> [    5.717678]     KASAN failure expected in "kfree(ptr + 1)", but none occurred
+> [    5.718909]     not ok 6 - kmalloc_pagealloc_invalid_free
+> ...
+> [    9.481520] not ok 1 - kasan
+>
+> The previous commit is fine:
+>
+> [    0.000000] Linux version 5.14.0-rc3-00065-gb5916c025432 (nathan@archlinux-ax161) (x86_64-linux-gcc (GCC) 11.2.0, GNU ld (GNU Binutils) 2.37) #1 SMP Sat Jul 31 15:05:09 MST 2021
+> ...
+> [    9.347598] ok 1 - kasan
+>
+> I am by no means a KASAN or mm/ expert, I noticed this when trying to
+> test KASAN with clang for ClangBuiltLinux's CI, so it does not appear to
+> be compiler dependent. It is reproducible for me in QEMU with
+> x86_64_defconfig + CONFIG_KASAN=y + CONFIG_KUNIT=y +
+> CONFIG_KASAN_KUNIT_TEST=y.
+>
+> Please let me know if there is any other information I can provide or
+> testing I can do.
+>
 
-Good point on the memcg charge: I hadn't thought of that.  Of course
-it's not specific to SGP_CACHE versus SGP_NOHUGE (this patch), but I
-admit that a huge mischarge is hugely worse than a small mischarge.
+Thanks for the report. This is actually due to changing
+kfree_hook(object) to kfree_hook(page_address(page)). The test forces
+slub to go to the page allocator and then freeing with the next byte
+address instead of the returned address. Since both are addresses on
+the same page, the code is fine but the kasan test is not happy.
 
-We could fix it by making shmem_getpage_gfp() non-static, and pointing
-to the vma (hence its mm, hence its memcg) here, couldn't we?  Easily
-done, but I don't really want to make shmem_getpage_gfp() public just
-for this, for two reasons.
+The test is making sure that programmers use the address returned by
+kmalloc in the kfree. I don't think this is urgent but I will send the
+patch to fix this during the week.
 
-One is that the huge race it just so unlikely; and a mischarge to root
-is not the end of the world, so long as it's not reproducible.  It can
-only happen on the very first page of the huge extent, and the prior
-"Stop if extent has been truncated" check makes sure there was one
-entry in the extent at that point: so the race with hole-punch can only
-occur after we xas_unlock_irq(&xas) immediately before shmem_getpage()
-looks up the page in the tree (and I say hole-punch not truncate,
-because shmem_getpage()'s i_size check will reject when truncated).
-I don't doubt that it could happen, but stand by not optimizing against.
-
-Other reason is that doing shmem_getpage() (or shmem_getpage_gfp())
-there is unhealthy for unrelated reasons, that I cannot afford to get
-into sending patches for at this time: but some of our users found the
-worst-case latencies in collapse_file() intolerable - shmem_getpage()
-may be reading in from swap, while the locked head of the huge page
-being built is in the page cache keeping other users waiting.  So,
-I'd say there's something worse than memcg in that shmem_getpage(),
-but fixing that cannot be a part of this series.
-
-> 
-> And, another question is it seems the newly allocated huge page will
-> just be uncharged instead of being freed until
-> "khugepaged_pages_to_scan" pages are scanned. The
-> khugepaged_prealloc_page() is called to free the allocated huge page
-> before each call to khugepaged_scan_mm_slot(). But
-> khugepaged_scan_file() -> collapse_fille() -> khugepaged_alloc_page()
-> may be called multiple times in the loop in khugepaged_scan_mm_slot(),
-> so khugepaged_alloc_page() may see that page to trigger VM_BUG IIUC.
-> 
-> The code is quite convoluted, I'm not sure whether I miss something or
-> not. And this problem seems very hard to trigger in real life
-> workload.
-
-Just to clarify, those two paragraphs are not about this patch, but about
-what happens to mm/khugepaged.c's newly allocated huge page, when collapse
-fails for any reason.
-
-Yes, the code is convoluted: that's because it takes very different paths
-when CONFIG_NUMA=y (when it cannot predict which node to allocate from)
-and when not NUMA (when it can allocate the huge page at a good unlocked
-moment, and carry it forward from one attempt to the next).
-
-I don't like it at all, the two paths are confusing: sometimes I wonder
-whether we should just remove the !CONFIG_NUMA path entirely; and other
-times I wonder in the other direction, whether the CONFIG_NUMA=y path
-ought to go the other way when it finds nr_node_ids is 1.  Undecided.
-
-I'm confident that if you work through the two cases (thinking about
-only one of them at once!), you'll find that the failure paths (not
-to mention the successful paths) do actually work correctly without
-leaking (well, maybe the !NUMA path can hold on to one huge page
-indefinitely, I forget, but I wouldn't count that as leaking).
-
-Collapse failure is not uncommon and leaking huge pages gets noticed.
-
-Hugh
+thanks,
+Shakeel
