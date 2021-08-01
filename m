@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BB33DCE32
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 01:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4AD93DCE36
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 01:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhHAXsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 19:48:54 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:51889 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230255AbhHAXsw (ORCPT
+        id S231640AbhHAX74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 19:59:56 -0400
+Received: from smtprelay0195.hostedemail.com ([216.40.44.195]:60360 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231361AbhHAX74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 19:48:52 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 605055C00B3;
-        Sun,  1 Aug 2021 19:48:43 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sun, 01 Aug 2021 19:48:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=nnnzJF
-        x8hthSPnZMbL1LXaiksssikZRREo9X40HfJyo=; b=MAY40HmjmS/AFI4yvUYgWJ
-        k02rfMQIDrmctCPmAdjUet8n60RblLqZivAYJiJVUIfeIQU8yIN8N1OzS6vSjupH
-        dOrzAlvGPyeTrE9+0L1R49w6lDrF0LVM0VtSyx24BW9/aDahFahlJFbUrPCspGjr
-        i0KjDqC++QugdpN8UF5SopFcmPivGYpzL8tXQ+z/gtWH10ZyjKeyPD41XnDniBS9
-        YwLr8IAbshAdrpIvK8mZtKxaJJQUws/OkTpxceJhixSw1lWeZtbfGAjN+Tc1bM/6
-        OrzbjdvPIjKzDiCJB9YUSEejMi5omEq4oraIzZYmhIXYKu1Bl8K0cGI+mjAnV4YA
-        ==
-X-ME-Sender: <xms:2jIHYR4VukHQvaZRDZNdiAE1020L2RRf6-9biPVhQ79iWE2WNd0krA>
-    <xme:2jIHYe4N0u6KgPYhtI9fVNFOU098q49fsLp5b4AqBpmN_5HNdapqIu7cC3Sb56olz
-    ml4BXturuRsNxuiwxU>
-X-ME-Received: <xmr:2jIHYYcavJpf89ph2CSar3Zkc0Rufr6fiCNApBQ7XH7JqfjQXl4Jsx8oZO_PEQsfHN-waltg0yKNYycEZWaXyONgS8V3hjCyQ58>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddriedugddufecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeffudfhgeefvdeitedugfelueegheekkeefveffhfeiveetledvhfdtveffteeu
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:2jIHYaIBRK2WXKB3yeJ3CBZy7zrvlciftgUR9rzH5yt0ZsUCSW0tPw>
-    <xmx:2jIHYVICCBnp8zRjbTHWsG52CbY9Nr_H6xERWEq8qwM1aw_ubA7rlA>
-    <xmx:2jIHYTxF_ZohcMKbfrc7iuvZE5MH3YU3oX37CVp3dhD5VLtmKIh93w>
-    <xmx:2zIHYThhXzBUL1gRcSZmIeOPGnH4ufY0SwaKaWQXCryA6hWcdIKbdg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 1 Aug 2021 19:48:39 -0400 (EDT)
-Date:   Mon, 2 Aug 2021 09:48:36 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Stan Johnson <userm57@yahoo.com>
-cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Nick Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH v3 31/41] powerpc/32: Dismantle
- EXC_XFER_STD/LITE/TEMPLATE
-In-Reply-To: <34e52975-4ab9-4eb4-3501-02376e38a27c@yahoo.com>
-Message-ID: <3e4365d3-e58e-ee89-2da4-f79926db15bd@linux-m68k.org>
-References: <cover.1615552866.git.christophe.leroy@csgroup.eu> <ca5795d04a220586b7037dbbbe6951dfa9e768eb.1615552867.git.christophe.leroy@csgroup.eu> <666e3ab4-372-27c2-4621-7cc3933756dd@linux-m68k.org> <20210731173954.Horde.fV2Xkw7-sxjG0DUcZ_JO_g3@messagerie.c-s.fr>
- <1d601b7c-1e39-e372-39a5-e1e98e56e2a5@linux-m68k.org> <34e52975-4ab9-4eb4-3501-02376e38a27c@yahoo.com>
+        Sun, 1 Aug 2021 19:59:56 -0400
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id BF429100E7B52;
+        Sun,  1 Aug 2021 23:59:46 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id AE3E5315D75;
+        Sun,  1 Aug 2021 23:59:45 +0000 (UTC)
+Message-ID: <67be9ed47831f09620e2eff8c90a496e4ceb9294.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Support wide strings
+From:   Joe Perches <joe@perches.com>
+To:     Simon Glass <sjg@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Sun, 01 Aug 2021 16:59:44 -0700
+In-Reply-To: <20210801170733.1.I3f9784fd3c1007d08ec2e70b151d137687575495@changeid>
+References: <20210801170733.1.I3f9784fd3c1007d08ec2e70b151d137687575495@changeid>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.59
+X-Stat-Signature: a9637swzg9hsxd7nmqhqx177pt414gej
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: AE3E5315D75
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18fQg+e8GFhznEJwpbVhA/tEXxiefiQRU8=
+X-HE-Tag: 1627862385-423797
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Aug 2021, Stan Johnson wrote:
+On Sun, 2021-08-01 at 17:07 -0600, Simon Glass wrote:
+> From: Joe Perches <joe@perches.com>
+> 
+> Allow prefixing typical strings with L for wide strings and u for
+> unicode strings.
 
-> > 
-> >> Could you try without CONFIG_VMAP_STACK
-> >>
-> > 
-> > Stan, would you please test the following build:
-> > 
-> > $ git checkout v5.13
-> > $ cp ../dot-config-powermac-5.13 .config
-> > $ scripts/config -d CONFIG_VMAP_STACK
-> > $ make ARCH=powerpc CROSS_COMPILE=powerpc-linux-gnu- -j4 clean olddefconfig vmlinux
-> > 
-> Please see the attached serial console log (four boots):
-> 1) v5.13-mac, CONFIG_VMAP_STACK=y, mem=512M (fails)
-> 2) v5.13-mac, CONFIG_VMAP_STACK=y, mem=384M (works)
-> 3) v5.13-mac, CONFIG_VMAP_STACK=n, mem=512M (works)
-> 4) v5.13-mac, CONFIG_VMAP_STACK=n, mem=384M (works)
-> 
-> My apologies if the extra boots were not needed (due to the time
-> difference, I'm trying to anticipate future requests).
-> 
-> Cutting and pasting Finn's commands above builds a new kernel
-> (5.13.0-pmac) with the following in .config:
-> 
-> $ fgrep VMAP .config
-> CONFIG_HAVE_ARCH_VMAP_STACK=y
-> CONFIG_VMAP_STACK=y
-> 
 
-That's odd. It works correctly here:
+I believe the kernel didn't need this when I wrote it.
+There were no wide or unicode strings in the kernel sources.
 
-$ cp ../dot-config-powermac-5.13 .config
-$ grep CONFIG_VMAP_STACK .config
-CONFIG_VMAP_STACK=y
-$ scripts/config -d CONFIG_VMAP_STACK
-$ grep CONFIG_VMAP_STACK .config
-# CONFIG_VMAP_STACK is not set
+But looking now, there _are_ wide strings in the kernel sources.
 
-Anyway, I see that you resolved the problem:
+So:
 
-> ...
-> 
-> $ fgrep VMAP .config
-> CONFIG_HAVE_ARCH_VMAP_STACK=y
-> # CONFIG_VMAP_STACK is not set
-> 
-> 3) Same as 1 (512M) but with CONFIG_VMAP_STACK not set in v5.13.
-> Everything works (no problems with X, no errors logged).
-> 
-> 4) Same as 2 (384M) but with CONFIG_VMAP_STACK not set in v5.13.
-> Everything works (no problems with X, no errors logged).
-> 
+Acked-by: Joe Perches <joe@perches.com>
 
-Thanks for collecting those results.
+(with some false positives, but hey it shows some...)
 
-It appears that Christophe was right. Disabling CONFIG_VMAP_STACK avoids 
-the crashes in v5.13. (Enabling CONFIG_VMAP_STACK worked fine in v5.12.)
+$ git grep -P '\b[Lu]"[A-Za-z0-9 \.]*?"'
+Documentation/sphinx/cdomain.py:u"""
+Documentation/sphinx/cdomain.py:        u"""Handles signatures of function-like macros.
+Documentation/sphinx/kernel_abi.py:u"""
+Documentation/sphinx/kernel_abi.py:    u"""KernelABI (``kernel-abi``) directive"""
+Documentation/sphinx/kernel_abi.py:        u"""Run command ``cmd`` and return it's stdout as unicode."""
+Documentation/sphinx/kernel_feat.py:u"""
+Documentation/sphinx/kernel_feat.py:    u"""KernelFeat (``kernel-feat``) directive"""
+Documentation/sphinx/kernel_feat.py:        u"""Run command ``cmd`` and return it's stdout as unicode."""
+Documentation/sphinx/kernel_include.py:u"""
+Documentation/sphinx/kernel_include.py:    u"""KernelInclude (``kernel-include``) directive"""
+Documentation/sphinx/kfigure.py:u"""
+Documentation/sphinx/kfigure.py:    u"""
+Documentation/sphinx/kfigure.py:    u"""KernelImage directive
+Documentation/sphinx/kfigure.py:    u"""KernelImage directive
+Documentation/sphinx/kfigure.py:    u"""KernelRender directive
+Documentation/sphinx/load_config.py:    u"""Load an additional configuration file into *namespace*.
+Documentation/sphinx/maintainers_include.py:u"""
+Documentation/sphinx/maintainers_include.py:    u"""MaintainersInclude (``maintainers-include``) directive"""
+Documentation/sphinx/rstFlatTable.py:u"""
+Documentation/sphinx/rstFlatTable.py:    u"""FlatTable (``flat-table``) directive"""
+Documentation/sphinx/rstFlatTable.py:    u"""Builds a table from a double-stage list"""
+Documentation/sphinx/rstFlatTable.py:        u"""parses the node from a :py:class:`FlatTable` directive's body"""
+Documentation/sphinx/rstFlatTable.py:        u"""Round off the table definition.
+arch/x86/platform/efi/quirks.c:static const efi_char16_t efi_dummy_name[] = L"DUMMY";
+arch/x86/xen/efi.c:             efi_systab_xen.fw_vendor = __pa_symbol(L"UNKNOWN");
+arch/x86/xen/efi.c:     status = efi.get_variable(L"MokSBStateRT", &shim_guid,
+drivers/firmware/efi/libstub/secureboot.c:static const efi_char16_t shim_MokSBState_name[] = L"MokSBState";
+drivers/firmware/efi/libstub/tpm.c:     L"MemoryOverwriteRequestControl";
+drivers/firmware/efi/libstub/x86-stub.c:static const efi_char16_t apple[] = L"Apple";
+drivers/input/keyboard/applespi.c:#define EFI_BL_LEVEL_NAME     L"KeyboardBacklightLevel"
+drivers/net/wireless/intel/iwlwifi/fw/uefi.h:#define IWL_UEFI_OEM_PNVM_NAME             L"UefiCnvWlanOemSignedPnvm"
+drivers/net/wireless/intel/iwlwifi/fw/uefi.h:#define IWL_UEFI_REDUCED_POWER_NAME        L"UefiCnvWlanReducedPower"
+drivers/platform/mellanox/mlxbf-tmfifo.c:static efi_char16_t mlxbf_tmfifo_efi_name[] = L"RshimMacAddr";
+fs/ceph/file.c:         dout("aio_write %p %llx.%llx %llu~%u" "got EOLDSNAPC, retrying\n",
+include/linux/efi.h:    status = get_var(L"SecureBoot", &EFI_GLOBAL_VARIABLE_GUID, NULL, &size,
+include/linux/efi.h:    get_var(L"SetupMode", &EFI_GLOBAL_VARIABLE_GUID, NULL, &size, &setupmode);
+security/integrity/platform_certs/load_uefi.c:  status = efi.get_variable(L"MokIgnoreDB", &guid, NULL, &size, &db);
+security/integrity/platform_certs/load_uefi.c:  mok = get_cert_list(L"MokListRT", &mok_var, &moksize, &status);
+security/integrity/platform_certs/load_uefi.c:          db = get_cert_list(L"db", &secure_var, &dbsize, &status);
+security/integrity/platform_certs/load_uefi.c:  dbx = get_cert_list(L"dbx", &secure_var, &dbxsize, &status);
+security/integrity/platform_certs/load_uefi.c:  mokx = get_cert_list(L"MokListXRT", &mok_var, &mokxsize, &status);
+
+
