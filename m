@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59643DCBCC
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 15:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0543DCBE5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 15:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbhHANbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 09:31:13 -0400
-Received: from einhorn.in-berlin.de ([192.109.42.8]:50835 "EHLO
-        einhorn-mail-out.in-berlin.de" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231546AbhHANbL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 09:31:11 -0400
-X-Envelope-From: stefanr@s5r6.in-berlin.de
-Received: from authenticated.user (localhost [127.0.0.1]) by einhorn.in-berlin.de  with ESMTPSA id 171DUQ6w005133
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Sun, 1 Aug 2021 15:30:28 +0200
-Date:   Sun, 1 Aug 2021 15:30:24 +0200
-From:   Stefan Richter <stefanr@s5r6.in-berlin.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jordy Zomer <jordy@pwning.systems>, linux-kernel@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net
-Subject: Re: [PATCH] firewire: ohci: make reg_(read|write) unsigned
-Message-ID: <20210801153024.21941652@kant>
-In-Reply-To: <YQY+U9i8Zw7OAKOO@kroah.com>
-References: <20210731104112.512449-1-jordy@pwning.systems>
-        <YQY+BL4nR9Loddum@kroah.com>
-        <YQY+U9i8Zw7OAKOO@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232139AbhHANgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 09:36:37 -0400
+Received: from mout.gmx.net ([212.227.17.21]:38527 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232027AbhHANfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 09:35:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627824855;
+        bh=Q/dcoSBUFR0wkRhCtWTaj2W+MgEtc+eWAxQm14Cb/Lc=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Off6RzThUjmsVS5ZtJbBRxOQDs1SmQwvn5QgY962YAs51ZTpHFTowGf1WC7Ei1FAO
+         yIsLbSD75IwpasBqZzSHf8B3RNpo/KIhdE5OUeudiX0TcD0ev5fX59X2wy9G2J6gDQ
+         0Zw8MorDm7sIK2BTzWyeyN2KE+3o59A+bpzyhJ3M=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKbkC-1mSxyd2auy-00KzLZ; Sun, 01
+ Aug 2021 15:34:15 +0200
+Date:   Sun, 1 Aug 2021 15:34:04 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phil Reid <preid@electromag.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/3] Remove all strcpy() uses
+Message-ID: <20210801133404.GA5988@titan>
+References: <20210801085155.3170-1-len.baker@gmx.com>
+ <CAHp75VcD_Kqedpkw-Pj+uQbWqdu_9FhXqJS5TuGUPoVv2x45-Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VcD_Kqedpkw-Pj+uQbWqdu_9FhXqJS5TuGUPoVv2x45-Q@mail.gmail.com>
+X-Provags-ID: V03:K1:4+Pp4U/a3eSnM89ROA2oEnBRHBcVjHUvh/sOFYn7YGYbhQXrOK3
+ gIIzhRk1TOmkGk1sFHh2YVEYJjCu1Qso3Id/QdM0w58LyJbBIhqgHBWjfnAfzaG4/mbcDJZ
+ rEwEZpDxC59TL9nSjLQbEIHAXdSmp47hSiul/4wX3151mcV8guZYKlnDmYdVsx1rnIhtdQT
+ daY6wAb19kHUDxREuLOPg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TOOnf/w1Jdk=:/0N54ezEkdw4FzS5U1m82p
+ BYkyYs7ZB1sM1mtlLA0StOdcoX20D8NuiciAiVB1x24xveLcMHpzYqSNLknYDh5fiC36Ymu1d
+ aGGW+Wb/gItkYj7w7T/TvYKhHJo5RaggnRNq9EuP+isCSYxLMQjU1l5r0jLNHqhGuY54S+M6s
+ GEuM7J8VgACMNJXe+jxdYV/0ctHImxvZvJ/8GJNhxXKL/GMXQyAdjj1rf9e7Yj+Yt/vLbwVhK
+ zD3NxNzjUReXeiiNhdq/m/USxW6uVPzV81hzEiEfFbXTZHsmQVIxD5k9Z91jgIEol5Xzhpwcj
+ fNpnF35tBur3M8z3KHdGwNBtDkcQ6Zln9DnWFv1eu4dMiVlRVTcXfi9kYfouWARkr/xoXtgft
+ R/1bRFS4r3zIXc23nbFniqL8J7YtO2ndH8p4EhaQLFG4CBrPOkZ+DQ3ZqshxSUjrUuO7uJSJ0
+ vLb/B2OasUxn9GRBsA55qM0W2XDrlSQgtj3Hlw1lof54FUl3v4wg0K+ijPJn7jED2NBk5Wfks
+ Z6GiZyKgnbShIJtW0mJGhF67ilRyNcNCWV690KUwx8zuSs79kgooEWfKaYy2ft22t1EW16y1S
+ /MzYEzm9TdqzlPLVnZUS92b6JquQ0Fv80XAhF4O0FnWVvZGUw3lPbBPME5tYgxL/JocyVlkCh
+ Zb4JtUtirKOARRBCAAjwltLdi4EAT77yB4COqp4/J/SnQcRa7pbeUKd3Al3rHMq82SJRSSR/B
+ uUgHP9pKS2PxZ6Q7DENJKkbcOjlU9mxdlKnK33dd9uJTeINI2HZ2/79pbUhJtwY0+8hnglrQ7
+ Fw8ZVHQJkEltHq0WRJhT6anNebqQseQsc0XUKCgt6kRvWuKEs+91ULK2l6h4BnGUCJ/B12CWu
+ oFnPz6y/kv+U0Ayodd7JZ/ifwMSwlZF8SiEb/kDTIpqhAAq3+7QodfQD0/1F4z6tuyM9HnD3W
+ QtUwfJlG8/tSawhQGkbOmF+k1dwvlbkcXX0h8Bm5E1D5Y0GZan/D6Y7JlG/5grkZlwvccCHA3
+ 9kZar2RXyi+uNWu06pHCcsCBz60mhQie9tv8yABFEhyZug7RI9pxwRBYpDmJS2CmEraVnICcO
+ BcTCpHvPf+Gzcu2uDSLHe7cAK7zfZ+wdGUO
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 01 Greg Kroah-Hartman wrote:
-> On Sun, Aug 01, 2021 at 08:24:04AM +0200, Greg Kroah-Hartman wrote:
-> > On Sat, Jul 31, 2021 at 12:41:12PM +0200, Jordy Zomer wrote:  
-> > > The reg_(read|write) functions used to
-> > > take a signed integer as an offset parameter.
-> > > The callers of this function only pass an unsigned integer to it.
-> > > Therefore to make it obviously safe, let's just make this an unsgined
-> > > integer as this is used in pointer arithmetics.
-> > > 
-> > > Signed-off-by: Jordy Zomer <jordy@pwning.systems>
-> > > ---
-> > >  drivers/firewire/ohci.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)  
-> > 
-> > Same thing should probably also be done in
-> > drivers/firewire/init_ohci1394_dma.c for the same inline functions,
-> > right?  
+Hi Andy,
 
-Yes, register offsets are always non-negative; the lowest register address
-is used as the base address.  All of the offset values are taken from
-macros which are define in ohci.h.
+On Sun, Aug 01, 2021 at 02:40:40PM +0300, Andy Shevchenko wrote:
+> On Sun, Aug 1, 2021 at 11:53 AM Len Baker <len.baker@gmx.com> wrote:
+> >
+> > strcpy() performs no bounds checking on the destination buffer. This
+> > could result in linear overflows beyond the end of the buffer, leading
+> > to all kinds of misbehaviors. So, this serie removes all strcpy uses
+> > from the "staging/fbtft" subsystem.
+> >
+> > Also, refactor the code a bit to follow the kernel coding-style and
+> > avoid unnecessary variable initialization.
+>
+> I don't see patch 3 (even on lore.kernel.org).
 
-> And sound/firewire/isight.c also could use this.  Seems like there was
-> some copy/paste in firewire drivers :)
+Due to my email provider restrictions (number of emails per hour), I
+need to send an email every x time.
 
-These offsets are non-negative too; they defined as macros at the top of
-isight.c.  However, here we aren't in the 32 bit (?) PCI register space but
-in the 48 bit FireWire node address space, which is why the functions which
-are wrapped up by reg_read/write() --- snd_fw_transaction() and
-fw_run_transaction() --- use u64 or unsigned long long for @offset.
-
-Long story short, isight.c::reg_read/write() could use u32 or unsigned int
-or u64 or unsigned long long for @offset; it's going to be added to an u64
-so maybe that's what we should use right away?
--- 
-Stefan Richter
--======--=-= =--- ----=
-http://arcgraph.de/sr/
+Regards,
+Len
