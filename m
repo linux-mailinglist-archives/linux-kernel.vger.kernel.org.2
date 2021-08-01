@@ -2,128 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801F53DC90C
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 02:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA85E3DC910
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 02:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbhGaX5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 19:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
+        id S229938AbhHAALN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 20:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhGaX47 (ORCPT
+        with ESMTP id S229664AbhHAALL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 19:56:59 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376D4C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 16:56:52 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id h13so3115248wrp.1
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 16:56:52 -0700 (PDT)
+        Sat, 31 Jul 2021 20:11:11 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75572C06175F;
+        Sat, 31 Jul 2021 17:11:04 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so8780858wmb.5;
+        Sat, 31 Jul 2021 17:11:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XlgQ4zodi9G4CtU/C9MKVtFIarxkNvlp0PU1Vx9JfrI=;
-        b=HQZt4JuH5hSHbS6H+iQSwxlSC0N9roPc/5P1qYbFqF301Q7cwcFgsGO9AkymFeNJSl
-         ol+kJEV8TcyupF0YouNb6Cbfxi95X57mkvDfVbG0K3ni66yBIYAl34dVoHoWyuuw1Ve1
-         XU9Tu0uE57ttMAxC+AUVH02U1QUiC8B1EydW3V4kFSuEHq/mdIFUh9tcc+DjptvhTgjy
-         5tHxeC03DEiskZgGqHJ7P6U0mF5IgKtlBHx9wmC8pyRlgEifdSPryWQ8cmrIOlaay1O+
-         nKklCZIzOGzPIKZdycHets5dbG/bMWMzRikxJWxw1RXmF3nE3wBwiZgcgE8Nn2M+9ZSM
-         EDzA==
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SEyoGWjUYXqXQWlOLgilVFtItLgtihW+VfcSKV/3elE=;
+        b=mPkDD5HAtCOu3LFJFeCZDu1Nd03vsVHygs2Zkl05WmB/NdqaM4opFQjB+/mDco1eiq
+         NxukjRZJP6lWX3eG/iW6mSnL+kJxL9Fo7Q794TJq098W4Jr3+0ay9PBl2ZZ9mOgISEFr
+         JUsJMUYJsNbmcrK/KQQHo++lQAPLRGl7zt7QSY6+w0sqo22mq0D3QJ9QG5XJB9bSDvA+
+         rLj3atwdta5ENAh7fGUZgowue3Hinnxh6hZEBqTM6G0BY6iClbRaf2Oj44HzQUPZIX7x
+         BMd9AByP78/K/TTcBPWnXthqk334/Q6Tk8RX5a6dZXF6rUJmN2efykNx6uAturNO+nEh
+         8mKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=XlgQ4zodi9G4CtU/C9MKVtFIarxkNvlp0PU1Vx9JfrI=;
-        b=JK8wmvPaoCYMwLs6R7i5342H0dzTpAq0RSMDk0UKUTX0cqmDciHZXte5SeRudMefGs
-         HfCOyx7p9vgS2f55EA0hOYZPv8dU3Y1AleAuriQlSK30ic0K1RVTLxDYguDf/YqqnArR
-         XZnl6T4t+RnXJjWsgjlivSleeC0PClY7BMgn+EomVkAWkoXQPxGh7i5ObQeqT6ZXg125
-         AvQZipHUiBxHR4JBiUEWefkBCPSYFBoOE5/CbKgYzYXP1AnUHrlnRc/U9Ae8z8bkxSSY
-         eIuO41nMN6twaKcLodld0j/+31j5LlK0oEYzMk4dVrsEmz9cOteunWFMv3u7xji3VMc4
-         pR6Q==
-X-Gm-Message-State: AOAM533htIa6qOFmK3nn58BvvfyZvmWg3X4gamjH3RATfM+bk1YLGdvb
-        0VI7TZkUi7H4i7DXaRfjXhzYFy/sFZpBC1Lm
-X-Google-Smtp-Source: ABdhPJwsLg+XYeW5CJMP6DuZ0e3P9OnoRWi6rKmRtpPVNLNFCyinLsCrQMRLuJcrutDBlTqIp5h3Zg==
-X-Received: by 2002:a5d:508b:: with SMTP id a11mr10742542wrt.244.1627775810799;
-        Sat, 31 Jul 2021 16:56:50 -0700 (PDT)
-Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id l5sm7121782wrc.90.2021.07.31.16.56.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 16:56:50 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: r8188eu: remove RT_PRINT_DATA macro
-Date:   Sun,  1 Aug 2021 00:56:48 +0100
-Message-Id: <20210731235648.67642-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
+        bh=SEyoGWjUYXqXQWlOLgilVFtItLgtihW+VfcSKV/3elE=;
+        b=OTUbQvuODietqzkegdgUJ4B/VLnn+wJn0/09DC/I9Q8eacB2pz6evmQ5YE05Wd092t
+         wt0KOscXmTDVpeMd5AXreGe4zVatQ7/huRBp5A2L+f7Md6MOOEWQZ5u69a0aWh8rqUm6
+         +QUUrNjWJt4EuPSeGtWFs9DmvgPVBhuKyQgDzD3tUa5kzq/w3dYjJojCj+JrF0n07/Q0
+         QvPFHw16PfSiJh+5jduyNsdfiOR3My+jjHz4E3SeGW+jk2ks2OLLWF1O4ewjXZWtCEN0
+         R0Z1i9GjtdZzIZcjKGZObv8X03vue2HOHeQikMlNkMcPhiYj2Zjlqw9fbDN0VNJTUvCv
+         Fktw==
+X-Gm-Message-State: AOAM532OckuIQ15jgnMB8Um/7H5mgm25Ptla3gj9S8kZQuE14lKJWww8
+        Ag3b2E0HvYgB8Znie5JJAxKBsmj+OVpzWA==
+X-Google-Smtp-Source: ABdhPJxTXc27kXctbVotHeylB1sHitdYMazZYjGmLmhwjHE0eYQ5IsDqExwdtkTxB1Eb0HSbwR4wBQ==
+X-Received: by 2002:a05:600c:19c6:: with SMTP id u6mr10000501wmq.154.1627776661933;
+        Sat, 31 Jul 2021 17:11:01 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.232.220])
+        by smtp.gmail.com with ESMTPSA id c2sm6427873wrs.60.2021.07.31.17.11.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 31 Jul 2021 17:11:01 -0700 (PDT)
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <CADVatmOf+ZfxXA=LBSUqDZApZG3K1Q8GV2N5CR5KgrJLqTGsfg@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: KASAN: stack-out-of-bounds in iov_iter_revert
+Message-ID: <f38b93f3-4cdb-1f9b-bd81-51d32275555e@gmail.com>
+Date:   Sun, 1 Aug 2021 01:10:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <CADVatmOf+ZfxXA=LBSUqDZApZG3K1Q8GV2N5CR5KgrJLqTGsfg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove RT_PRINT_DATA definition from include/rtw_debug.h, and its
-two calling statements in hal/hal_com.c, as this code was not written
-with best practices in mind and is safer to simply remove.
+On 7/31/21 7:21 PM, Sudip Mukherjee wrote:
+> Hi Jens, Pavel,
+> 
+> We had been running syzkaller on v5.10.y and a "KASAN:
+> stack-out-of-bounds in iov_iter_revert" was being reported on it. I
+> got some time to check that today and have managed to get a syzkaller
+> reproducer. I dont have a C reproducer which I can share but I can use
+> the syz-reproducer to reproduce this with v5.14-rc3 and also with
+> next-20210730.
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/r8188eu/hal/hal_com.c       |  7 -------
- drivers/staging/r8188eu/include/rtw_debug.h | 18 ------------------
- 2 files changed, 25 deletions(-)
+Can you try out the diff below? Not a full-fledged fix, but need to
+check a hunch.
 
-diff --git a/drivers/staging/r8188eu/hal/hal_com.c b/drivers/staging/r8188eu/hal/hal_com.c
-index 66a2f3d6d9e7..91d5182f9bb1 100644
---- a/drivers/staging/r8188eu/hal/hal_com.c
-+++ b/drivers/staging/r8188eu/hal/hal_com.c
-@@ -339,18 +339,11 @@ s32 c2h_evt_read(struct adapter *adapter, u8 *buf)
- 	*buf = rtw_read8(adapter, REG_C2HEVT_MSG_NORMAL);
- 	*(buf+1) = rtw_read8(adapter, REG_C2HEVT_MSG_NORMAL + 1);
- 
--	RT_PRINT_DATA(_module_hal_init_c_, _drv_info_, "c2h_evt_read(): ",
--		      &c2h_evt, sizeof(c2h_evt));
--
- 	/* Read the content */
- 	for (i = 0; i < c2h_evt->plen; i++)
- 		c2h_evt->payload[i] = rtw_read8(adapter, REG_C2HEVT_MSG_NORMAL +
- 						sizeof(*c2h_evt) + i);
- 
--	RT_PRINT_DATA(_module_hal_init_c_, _drv_info_,
--		      "c2h_evt_read(): Command Content:\n",
--		      c2h_evt->payload, c2h_evt->plen);
--
- 	ret = _SUCCESS;
- 
- clear_evt:
-diff --git a/drivers/staging/r8188eu/include/rtw_debug.h b/drivers/staging/r8188eu/include/rtw_debug.h
-index 56af0751f70e..83c71275c47b 100644
---- a/drivers/staging/r8188eu/include/rtw_debug.h
-+++ b/drivers/staging/r8188eu/include/rtw_debug.h
-@@ -81,24 +81,6 @@ extern u32 GlobalDebugLevel;
- 		}							\
- 	} while (0)
- 
--#define RT_PRINT_DATA(_comp, _level, _titlestring, _hexdata, _hexdatalen)\
--	do {								\
--		if (_level <= GlobalDebugLevel) {			\
--			int __i;					\
--			u8	*ptr = (u8 *)_hexdata;			\
--			pr_info("%s", DRIVER_PREFIX);			\
--			pr_info(_titlestring);				\
--			for (__i = 0; __i < (int)_hexdatalen; __i++ ) {	\
--				pr_info("%02X%s", ptr[__i],		\
--					 (((__i + 1) % 4) == 0) ?	\
--					 "  " : " ");	\
--				if (((__i + 1) % 16) == 0)		\
--					printk("\n");			\
--			}						\
--			printk("\n");					\
--		}							\
--	} while (0)
--
- int proc_get_drv_version(char *page, char **start,
- 			 off_t offset, int count,
- 			 int *eof, void *data);
--- 
-2.31.1
+If that's important, I was using this branch:
+git://git.kernel.dk/linux-block io_uring-5.14
 
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index bf548af0426c..fdcd25eca67d 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -3316,6 +3316,10 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 		/* no retry on NONBLOCK nor RWF_NOWAIT */
+ 		if (req->flags & REQ_F_NOWAIT)
+ 			goto done;
++		if (WARN_ON_ONCE(iter->truncated)) {
++			iov_iter_reexpand(iter, iov_iter_count(iter) + iter->truncated);
++			iter->truncated = 0;
++		}
+ 		/* some cases will consume bytes even on error returns */
+ 		iov_iter_revert(iter, io_size - iov_iter_count(iter));
+ 		ret = 0;
+@@ -3455,6 +3459,10 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 		kiocb_done(kiocb, ret2, issue_flags);
+ 	} else {
+ copy_iov:
++		if (WARN_ON_ONCE(iter->truncated)) {
++			iov_iter_reexpand(iter, iov_iter_count(iter) + iter->truncated);
++			iter->truncated = 0;
++		}
+ 		/* some cases will consume bytes even on error returns */
+ 		iov_iter_revert(iter, io_size - iov_iter_count(iter));
+ 		ret = io_setup_async_rw(req, iovec, inline_vecs, iter, false);
+diff --git a/include/linux/uio.h b/include/linux/uio.h
+index 82c3c3e819e0..eff06d139fd4 100644
+--- a/include/linux/uio.h
++++ b/include/linux/uio.h
+@@ -30,6 +30,7 @@ enum iter_type {
+ struct iov_iter {
+ 	u8 iter_type;
+ 	bool data_source;
++	u16 truncated;
+ 	size_t iov_offset;
+ 	size_t count;
+ 	union {
+@@ -254,8 +255,10 @@ static inline void iov_iter_truncate(struct iov_iter *i, u64 count)
+ 	 * conversion in assignement is by definition greater than all
+ 	 * values of size_t, including old i->count.
+ 	 */
+-	if (i->count > count)
++	if (i->count > count) {
++		i->truncated += i->count - count;
+ 		i->count = count;
++	}
+ }
+ 
+ /*
+@@ -264,6 +267,8 @@ static inline void iov_iter_truncate(struct iov_iter *i, u64 count)
+  */
+ static inline void iov_iter_reexpand(struct iov_iter *i, size_t count)
+ {
++	WARN_ON_ONCE(i->count > count);
++	i->truncated -= count - i->count;
+ 	i->count = count;
+ }
