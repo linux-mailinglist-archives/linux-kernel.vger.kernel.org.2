@@ -2,267 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D57C3DCB7F
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 14:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91463DCBAD
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 14:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbhHAMD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 08:03:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47851 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231461AbhHAMDz (ORCPT
+        id S231887AbhHAMgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 08:36:50 -0400
+Received: from lan.nucleusys.com ([92.247.61.126]:38836 "EHLO
+        zzt.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231802AbhHAMgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 08:03:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627819426;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R2Sl+xhZ07fi1CiyZFUc8volC3Ldaw50waFma86MTYk=;
-        b=f+3uG6ko9IctjNS4PG004bIc8pOD/0ACqyq5By57At0tfEh5MsoK9iQEzwcDYUbk9PO2Qw
-        2XrSJKRdFnfdxzc90Cb8a0REjS3MZn2gorRztcls6vsbUdGKj6q4Hxp/Uz45fcyCMHTo2G
-        y8pQfhvea6vzAYX5pq2y/CHJGfCrbBo=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-gvCuIgh-N9mJp92xi8DZWw-1; Sun, 01 Aug 2021 08:03:46 -0400
-X-MC-Unique: gvCuIgh-N9mJp92xi8DZWw-1
-Received: by mail-wm1-f69.google.com with SMTP id c2-20020a7bc8420000b0290238db573ab7so4524573wml.5
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 05:03:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R2Sl+xhZ07fi1CiyZFUc8volC3Ldaw50waFma86MTYk=;
-        b=kV4Gd6YI2mOOLR3R5rTaJ/LhcW6KzHYxaSgSJ8SJNH4dXx9mTqjJoSlnqU1AraBSQK
-         8I3OkZcPQkuosmweuzTdn78vZufeXf6MsFSETEUEFG9y4fOaoMlVf6I70769WXe0qKGN
-         ywfdcosTm+mO5AMk0xWcUojn5QB6w2cz42LEnHjAIb2k4zLDyVTbO8/i9JXoL3jpeVnk
-         B6jJS/BEmSYWAknnHVVHk4aCNOGOkgy+vXhRnm8K4YmuNwk85BP0EtlknI5J5OKQV9s6
-         S8bnAurmYZFRieVvYUhcVsrxcuI6OvNNPD4CGEiOGHN7+wmyTAceHSVCd9oNrI3ppv53
-         1clw==
-X-Gm-Message-State: AOAM5328CZLuGpOu0GABJaaZxQnC+c7bPqHLLK+8LRqFTSEMBjAVH4nR
-        aNwjRL9rnvdmMwG4Bq0CHwVP1Ha4NnhQpMJw8aQBnyMxhJ81wkPA0wGBHWBPMpbVh05nR5BB1k2
-        zyo/wUOm8QOI92AQJLUpDuxtzT0rZoDPpsqdFdJ8L
-X-Received: by 2002:adf:dd07:: with SMTP id a7mr12098467wrm.377.1627819424741;
-        Sun, 01 Aug 2021 05:03:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxin7fSOKTA/2+6Wli3DPO8r9DTT4yPQtSqbMy0Ofb2InWsVF6RHpk3vh1EWlAKwHFL5ikAFILUBPDJvWbnuWc=
-X-Received: by 2002:adf:dd07:: with SMTP id a7mr12098452wrm.377.1627819424528;
- Sun, 01 Aug 2021 05:03:44 -0700 (PDT)
+        Sun, 1 Aug 2021 08:36:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=qD0SaqUGLbpCXnxKQhYAIh55AI4eaqb7RBu5u1Fgycg=; b=IRidOk1XEwdiv7peuu2PYqd7f8
+        6fNmZ9dbqzc+lyEwenVQya068KgR4Rw9jAjKYr7OjzPJ799gouZIIxkWJ8AVvOC8eQOtoMCrntQ8/
+        FGsx/wilz0IbLxvQXmN9C6y15wMAoXHrsmhpF/HdG8lp0Z/qUXLdc4SGBTTKCRGLUaOg=;
+Received: from [94.26.108.4] (helo=carbon)
+        by zzt.nucleusys.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <petkan@nucleusys.com>)
+        id 1mAAhg-0000OU-Df; Sun, 01 Aug 2021 15:36:29 +0300
+Date:   Sun, 1 Aug 2021 15:36:27 +0300
+From:   Petko Manolov <petkan@nucleusys.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Subject: Re: [PATCH] net: pegasus: fix uninit-value in get_interrupt_interval
+Message-ID: <YQaVS5UwG6RFsL4t@carbon>
+References: <20210730214411.1973-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-References: <20210727025956.80684-1-hsiangkao@linux.alibaba.com>
-In-Reply-To: <20210727025956.80684-1-hsiangkao@linux.alibaba.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Sun, 1 Aug 2021 14:03:33 +0200
-Message-ID: <CAHc6FU5x3XOTyu8vooReSZ-hacfTdo3cu7wFJRcQrfTH8NkVeg@mail.gmail.com>
-Subject: Re: [PATCH v9] iomap: Support file tail packing
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730214411.1973-1-paskripkin@gmail.com>
+X-Spam_score: -1.0
+X-Spam_bar: -
+X-Spam_report: Spam detection software, running on the system "zzt.nucleusys.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ @@CONTACT_ADDRESS@@ for details.
+ Content preview:  On 21-07-31 00:44:11, Pavel Skripkin wrote: > Syzbot reported
+    uninit value pegasus_probe(). The problem was in missing > error handling.
+    > > get_interrupt_interval() internally calls read_eprom_word() [...] 
+ Content analysis details:   (-1.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 5:00 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> The existing inline data support only works for cases where the entire
-> file is stored as inline data.  For larger files, EROFS stores the
-> initial blocks separately and then can pack a small tail adjacent to the
-> inode.  Generalise inline data to allow for tail packing.  Tails may not
-> cross a page boundary in memory.
->
-> We currently have no filesystems that support tail packing and writing,
-> so that case is currently disabled (see iomap_write_begin_inline).
->
-> Cc: Darrick J. Wong <djwong@kernel.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+On 21-07-31 00:44:11, Pavel Skripkin wrote:
+> Syzbot reported uninit value pegasus_probe(). The problem was in missing
+> error handling.
+> 
+> get_interrupt_interval() internally calls read_eprom_word() which can
+> fail in some cases. For example: failed to receive usb control message.
+> These cases should be handled to prevent uninit value bug, since
+> read_eprom_word() will not initialize passed stack variable in case of
+> internal failure.
+
+Well, this is most definitelly a bug.
+
+ACK!
+
+
+		Petko
+
+
+> Fail log:
+> 
+> BUG: KMSAN: uninit-value in get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
+> BUG: KMSAN: uninit-value in pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
+> CPU: 1 PID: 825 Comm: kworker/1:1 Not tainted 5.12.0-rc6-syzkaller #0
+> ...
+> Workqueue: usb_hub_wq hub_event
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+>  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+>  __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+>  get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
+>  pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
+> ....
+> 
+> Local variable ----data.i@pegasus_probe created at:
+>  get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
+>  pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
+>  get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
+>  pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
+> 
+> Reported-and-tested-by: syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 > ---
-> v8: https://lore.kernel.org/r/20210726145734.214295-1-hsiangkao@linux.alibaba.com
-> changes since v8:
->  - update the subject to 'iomap: Support file tail packing' as there
->    are clearly a number of ways to make the inline data support more
->    flexible (Matthew);
->
->  - add one extra safety check (Darrick):
->         if (WARN_ON_ONCE(size > iomap->length))
->                 return -EIO;
->
->  fs/iomap/buffered-io.c | 42 ++++++++++++++++++++++++++++++------------
->  fs/iomap/direct-io.c   | 10 ++++++----
->  include/linux/iomap.h  | 18 ++++++++++++++++++
->  3 files changed, 54 insertions(+), 16 deletions(-)
->
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 87ccb3438bec..f429b9d87dbe 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -205,25 +205,32 @@ struct iomap_readpage_ctx {
->         struct readahead_control *rac;
->  };
->
-> -static void
-> -iomap_read_inline_data(struct inode *inode, struct page *page,
-> +static int iomap_read_inline_data(struct inode *inode, struct page *page,
->                 struct iomap *iomap)
+>  drivers/net/usb/pegasus.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
+> index 9a907182569c..bc2dbf86496b 100644
+> --- a/drivers/net/usb/pegasus.c
+> +++ b/drivers/net/usb/pegasus.c
+> @@ -735,12 +735,16 @@ static inline void disable_net_traffic(pegasus_t *pegasus)
+>  	set_registers(pegasus, EthCtrl0, sizeof(tmp), &tmp);
+>  }
+>  
+> -static inline void get_interrupt_interval(pegasus_t *pegasus)
+> +static inline int get_interrupt_interval(pegasus_t *pegasus)
 >  {
-> -       size_t size = i_size_read(inode);
-> +       size_t size = i_size_read(inode) - iomap->offset;
->         void *addr;
->
->         if (PageUptodate(page))
-> -               return;
-> +               return 0;
->
-> -       BUG_ON(page_has_private(page));
-> -       BUG_ON(page->index);
-> -       BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +       /* inline data must start page aligned in the file */
-> +       if (WARN_ON_ONCE(offset_in_page(iomap->offset)))
-> +               return -EIO;
-> +       if (WARN_ON_ONCE(size > PAGE_SIZE -
-> +                        offset_in_page(iomap->inline_data)))
-> +               return -EIO;
-> +       if (WARN_ON_ONCE(size > iomap->length))
-> +               return -EIO;
-> +       if (WARN_ON_ONCE(page_has_private(page)))
-> +               return -EIO;
->
->         addr = kmap_atomic(page);
->         memcpy(addr, iomap->inline_data, size);
->         memset(addr + size, 0, PAGE_SIZE - size);
->         kunmap_atomic(addr);
->         SetPageUptodate(page);
-> +       return 0;
+>  	u16 data;
+>  	u8 interval;
+> +	int ret;
+> +
+> +	ret = read_eprom_word(pegasus, 4, &data);
+> +	if (ret < 0)
+> +		return ret;
+>  
+> -	read_eprom_word(pegasus, 4, &data);
+>  	interval = data >> 8;
+>  	if (pegasus->usb->speed != USB_SPEED_HIGH) {
+>  		if (interval < 0x80) {
+> @@ -755,6 +759,8 @@ static inline void get_interrupt_interval(pegasus_t *pegasus)
+>  		}
+>  	}
+>  	pegasus->intr_interval = interval;
+> +
+> +	return 0;
 >  }
->
->  static inline bool iomap_block_needs_zeroing(struct inode *inode,
-> @@ -247,8 +254,10 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
->         sector_t sector;
->
->         if (iomap->type == IOMAP_INLINE) {
-> -               WARN_ON_ONCE(pos);
-> -               iomap_read_inline_data(inode, page, iomap);
-> +               int ret = iomap_read_inline_data(inode, page, iomap);
-> +
-> +               if (ret)
-> +                       return ret;
->                 return PAGE_SIZE;
->         }
->
-> @@ -589,6 +598,15 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
->         return 0;
->  }
->
-> +static int iomap_write_begin_inline(struct inode *inode,
-> +               struct page *page, struct iomap *srcmap)
-> +{
-> +       /* needs more work for the tailpacking case, disable for now */
-
-Nit: the comma should be a semicolon or period here.
-
-> +       if (WARN_ON_ONCE(srcmap->offset != 0))
-> +               return -EIO;
-> +       return iomap_read_inline_data(inode, page, srcmap);
-> +}
-> +
->  static int
->  iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->                 struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-> @@ -618,7 +636,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->         }
->
->         if (srcmap->type == IOMAP_INLINE)
-> -               iomap_read_inline_data(inode, page, srcmap);
-> +               status = iomap_write_begin_inline(inode, page, srcmap);
->         else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
->                 status = __block_write_begin_int(page, pos, len, NULL, srcmap);
->         else
-> @@ -671,11 +689,11 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
->         void *addr;
->
->         WARN_ON_ONCE(!PageUptodate(page));
-> -       BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +       BUG_ON(!iomap_inline_data_valid(iomap));
->
->         flush_dcache_page(page);
->         addr = kmap_atomic(page);
-> -       memcpy(iomap->inline_data + pos, addr + pos, copied);
-> +       memcpy(iomap_inline_data(iomap, pos), addr + pos, copied);
->         kunmap_atomic(addr);
->
->         mark_inode_dirty(inode);
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 9398b8c31323..41ccbfc9dc82 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -378,23 +378,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
->                 struct iomap_dio *dio, struct iomap *iomap)
->  {
->         struct iov_iter *iter = dio->submit.iter;
-> +       void *inline_data = iomap_inline_data(iomap, pos);
->         size_t copied;
->
-> -       BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +       if (WARN_ON_ONCE(!iomap_inline_data_valid(iomap)))
-> +               return -EIO;
->
->         if (dio->flags & IOMAP_DIO_WRITE) {
->                 loff_t size = inode->i_size;
->
->                 if (pos > size)
-> -                       memset(iomap->inline_data + size, 0, pos - size);
-> -               copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-> +                       memset(iomap_inline_data(iomap, size), 0, pos - size);
-> +               copied = copy_from_iter(inline_data, length, iter);
->                 if (copied) {
->                         if (pos + copied > size)
->                                 i_size_write(inode, pos + copied);
->                         mark_inode_dirty(inode);
->                 }
->         } else {
-> -               copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-> +               copied = copy_to_iter(inline_data, length, iter);
->         }
->         dio->size += copied;
->         return copied;
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 479c1da3e221..b8ec145b2975 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -97,6 +97,24 @@ iomap_sector(struct iomap *iomap, loff_t pos)
->         return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
->  }
->
-> +/*
-> + * Returns the inline data pointer for logical offset @pos.
-> + */
-> +static inline void *iomap_inline_data(struct iomap *iomap, loff_t pos)
-> +{
-> +       return iomap->inline_data + pos - iomap->offset;
-> +}
-> +
-> +/*
-> + * Check if the mapping's length is within the valid range for inline data.
-> + * This is used to guard against accessing data beyond the page inline_data
-> + * points at.
-> + */
-> +static inline bool iomap_inline_data_valid(struct iomap *iomap)
-> +{
-> +       return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
-> +}
-> +
->  /*
->   * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
->   * and page_done will be called for each page written to.  This only applies to
-> --
-> 2.24.4
->
-
-Andreas
-
+>  
+>  static void set_carrier(struct net_device *net)
+> @@ -1149,7 +1155,9 @@ static int pegasus_probe(struct usb_interface *intf,
+>  				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
+>  
+>  	pegasus->features = usb_dev_id[dev_index].private;
+> -	get_interrupt_interval(pegasus);
+> +	res = get_interrupt_interval(pegasus);
+> +	if (res)
+> +		goto out2;
+>  	if (reset_mac(pegasus)) {
+>  		dev_err(&intf->dev, "can't reset MAC\n");
+>  		res = -EIO;
+> -- 
+> 2.32.0
+> 
+> 
