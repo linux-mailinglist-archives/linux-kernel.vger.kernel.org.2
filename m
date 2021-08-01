@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4F13DCDA9
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AD13DCDAC
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhHAUUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 16:20:16 -0400
-Received: from mail-yb1-f171.google.com ([209.85.219.171]:47076 "EHLO
-        mail-yb1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbhHAUUN (ORCPT
+        id S231251AbhHAUYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 16:24:43 -0400
+Received: from lan.nucleusys.com ([92.247.61.126]:38882 "EHLO
+        zzt.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229955AbhHAUYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 16:20:13 -0400
-Received: by mail-yb1-f171.google.com with SMTP id k65so3488825yba.13;
-        Sun, 01 Aug 2021 13:20:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eTzcaASLfYxMeVh/o9ndu1xjmQQug01BHbzROqKqzyU=;
-        b=px0lZQ/5SmYNXnwopKJT+0YZ7T1+yi8bKTXF/b2whzGFAfiQX0MworM9xeicikk2A4
-         rNPKpeP4YHROpCJdSYniXQ+dd9/tsfxkgpoL7ETubsAtiDcbq24iAFJ36wBuhAaD8nJ6
-         NGXydDXzWQqBE7iUr3lurzKMiKrGetcZPGYcJqO6ip6Mh3gOL/TyhoANvdfvE8fmVxyU
-         JsTI/AzEdaOU1VPNOjp2x0kh4Lz5aRMQUyqM/ep3L0VDyeryfHWeVq5H0ER8EeI9nCxj
-         8gek+hhMKKd6DHFTUyp83Io3zz2Lc2znaOx9Hw/eL+yhrnLsD+ebn5HaHttuuvTf/hXX
-         9yNw==
-X-Gm-Message-State: AOAM533PMalQavBQ4NkWQ0pwvzBqybWqIQwY24OsXiVDdy7+1EhsltTv
-        IZhwGk1QUHlc7ZYu6NIL/i43CTO6fCPeCuxR3TaajYOB19k=
-X-Google-Smtp-Source: ABdhPJw0qoZXs8yZhg9+B4MNZyQ9bGkX2cF86w6GcxDmRB+ZAk9qShy77Ng5GpqnTbA8RXQe0fpo0yKpG9QEuNRHeGM=
-X-Received: by 2002:a25:aad2:: with SMTP id t76mr16609902ybi.18.1627849202760;
- Sun, 01 Aug 2021 13:20:02 -0700 (PDT)
+        Sun, 1 Aug 2021 16:24:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=6vjd0yjQG3cLOQPkVqx7MVzNhtwrgIO01TVQGBQE7jQ=; b=lJ8Qylio8uUdgrs8Pn4kHtGhxW
+        7marUVg9NQX/bYzKVnT5vhaC0JuIoYlObAgCj+b3OILLllpxqH5ZlUITZk0druvvYIBN/94NDvv5u
+        11FAu1V+LkoehwR8HPdJEHhQu3oOYBgdQc+pfXATie9KTzjCM4HMWRY/z013NcQrWUog=;
+Received: from [94.26.108.4] (helo=carbon)
+        by zzt.nucleusys.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <petkan@nucleusys.com>)
+        id 1mAI0U-000Bk6-CG; Sun, 01 Aug 2021 23:24:23 +0300
+Date:   Sun, 1 Aug 2021 23:24:21 +0300
+From:   Petko Manolov <petkan@nucleusys.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Subject: Re: [PATCH] net: pegasus: fix uninit-value in get_interrupt_interval
+Message-ID: <YQcC9eOf5+MXZRsG@carbon>
+Mail-Followup-To: Pavel Skripkin <paskripkin@gmail.com>,
+        davem@davemloft.net, kuba@kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+References: <20210730214411.1973-1-paskripkin@gmail.com>
+ <YQaVS5UwG6RFsL4t@carbon>
+ <20210801223513.06bede26@gmail.com>
 MIME-Version: 1.0
-References: <20210726171802.1052716-1-kernel@esmil.dk> <bcc9de67-f006-0a81-8c3f-2ae5188dca48@roeck-us.net>
- <CANBLGcxpaFt-bokq8=Tie-bJnWk5AqLyr-1Ns-+Xtobxs5bYQQ@mail.gmail.com>
-In-Reply-To: <CANBLGcxpaFt-bokq8=Tie-bJnWk5AqLyr-1Ns-+Xtobxs5bYQQ@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Sun, 1 Aug 2021 22:19:51 +0200
-Message-ID: <CANBLGcyhKYwsLOwaO=BOhaCzP0T2CqKruJZexypRAY3HmEJUMA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] hwmon: Add StarFive JH7100 temperature sensor
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Drew Fustini <drew@beagleboard.org>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        linux-hwmon@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210801223513.06bede26@gmail.com>
+X-Spam_score: -1.0
+X-Spam_bar: -
+X-Spam_report: Spam detection software, running on the system "zzt.nucleusys.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ @@CONTACT_ADDRESS@@ for details.
+ Content preview:  On 21-08-01 22:35:13, Pavel Skripkin wrote: > On Sun, 1 Aug
+    2021 15:36:27 +0300 Petko Manolov <petkan@nucleusys.com> wrote: > > > On
+   21-07-31 00:44:11, Pavel Skripkin wrote: > > > Syzbot reported unin [...] 
+ Content analysis details:   (-1.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021 at 19:05, Emil Renner Berthing <kernel@esmil.dk> wrote:
-> On Wed, 28 Jul 2021 at 18:54, Guenter Roeck <linux@roeck-us.net> wrote:
-> > On 7/26/21 10:18 AM, Emil Renner Berthing wrote:
-> > > This adds a driver for the temperature sensor on the JH7100, a RISC-V
-> > > SoC by StarFive Technology Co. Ltd., and most likely also the upcoming
-> > > JH7110 version.
-> > >
-> > > The SoC is used on the BeagleV Starlight board:
-> > > https://github.com/beagleboard/beaglev-starlight
-> > >
-> > > Support for this SoC is not yet upstreamed, but is actively worked on,
-> > > so it should only be a matter of time before that happens.
-> > >
-> >
-> > Hmm, makes me wonder if I should apply the series now or later,
-> > when the chip is actually supported by the kernel. Comments/thoughts ?
-> >
-> > Guenter
->
-> I'd of course love if it was applied now. That would at least mean
-> fewer patches to rebase when keeping the beaglev patches [1] up to
-> date, and I'd be very surprised if SoC support doesn't make it
-> upstream eventually. But I'd also fully understand the position that
-> this only makes sense to add when support for the SoC is upstream too.
-> I'm adding Drew, as he might have something to say about this.
+On 21-08-01 22:35:13, Pavel Skripkin wrote:
+> On Sun, 1 Aug 2021 15:36:27 +0300 Petko Manolov <petkan@nucleusys.com> wrote:
+> 
+> > On 21-07-31 00:44:11, Pavel Skripkin wrote:
+> > > Syzbot reported uninit value pegasus_probe(). The problem was in missing
+> > > error handling.
+> > > 
+> > > get_interrupt_interval() internally calls read_eprom_word() which can fail
+> > > in some cases. For example: failed to receive usb control message. These
+> > > cases should be handled to prevent uninit value bug, since
+> > > read_eprom_word() will not initialize passed stack variable in case of
+> > > internal failure.
+> > 
+> > Well, this is most definitelly a bug.
+> > 
+> > ACK!
+> > 
+> > 
+> >		Petko
+> 
+> BTW: I found a lot uses of {get,set}_registers without error checking. I
+> think, some of them could be fixed easily (like in enable_eprom_write), but, I
+> guess, disable_eprom_write is not so easy. For example, if we cannot disable
+> eprom should we retry? If not, will device get in some unexpected state?
 
-Hi Guenter,
+Everything bracketed by PEGASUS_WRITE_EEPROM is more or less dead code.  I've
+added this feature because the chip give us the ability to write to the flash,
+but i seriously doubt anybody ever used it.  Come to think about it, i should
+just remove this code.
 
-Things have changed. The BeagleBoard.org foundation is no longer
-planning to make any further boards using the JH7100 or upcoming
-JH7110 SoCs from StarFive. I still think support for the JH7100 will
-make it upstream eventually, but I'm no longer confident enough to
-recommend merging this before there are more concrete plans for the
-SoC. So thanks for the reviews. I'll repost it when I think it's time
-to consider it for upstream again.
+> Im not familiar with this device, but I can prepare a patch to wrap all these
+> calls with proper error checking
 
-/Emil
+Well, i've stared at the code a bit and i see some places where not checking the
+error returned by {get,set}_registers() could really be problematic.  I'll cook
+a patch with what i think needs doing and will submit it here for review.
+
+
+cheers,
+Petko
