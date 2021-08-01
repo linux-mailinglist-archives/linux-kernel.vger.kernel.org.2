@@ -2,28 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CD23DCE25
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 01:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D163DCE26
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 01:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbhHAXpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 19:45:33 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:50928 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231615AbhHAXpc (ORCPT
+        id S231839AbhHAXpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 19:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231615AbhHAXpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 19:45:32 -0400
+        Sun, 1 Aug 2021 19:45:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E962C06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 16:45:27 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: ezequiel)
-        with ESMTPSA id A23A21F424C8
+        with ESMTPSA id 9AD2E1F424CC
 From:   Ezequiel Garcia <ezequiel@collabora.com>
 To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
         Richard Weinberger <richard@nod.at>
 Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH 1/3] mtdblock: Update old JFFS2 mention in Kconfig
-Date:   Sun,  1 Aug 2021 20:45:03 -0300
-Message-Id: <20210801234509.18774-2-ezequiel@collabora.com>
+Subject: [PATCH 2/3] mtdblock: Add comment about UBI block devices
+Date:   Sun,  1 Aug 2021 20:45:04 -0300
+Message-Id: <20210801234509.18774-3-ezequiel@collabora.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210801234509.18774-1-ezequiel@collabora.com>
 References: <20210801234509.18774-1-ezequiel@collabora.com>
@@ -33,46 +36,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-JFFS2 can be mounted without 'mtdblock' since
-a really, really long time. Some git-log
-archaeology shows that in 2006 it was possible
-to use 'root=' to mount a JFFS2 rootfs:
+There is a surprisingly large number of tutorials
+that suggest using mtdblock to mount SquashFS filesystems
+on flash devices, including NAND devices.
 
-  commit e9482b4374e2596e6f3f1ab30c4ea469f4ac6311
-  Author: Joern Engel <joern@wh.fh-wedel.de>
-  Date:   Tue May 30 14:25:46 2006 +0200
-
-      [MTD] Allow alternate JFFS2 mount variant for root filesystem.
-
-      With this patch, "root=mtd3" and "root=mtd:foo" work for a JFFS2 rootfs.
-
-However, there are still plenty of tutorials that mention
-mtdblock, so users are still taking this route. Update the Kconfig
-to reflect this is no longer needed.
+Given this approach is suboptimal than using UBI, and given
+the UBI block device layer was introduced many years ago
+specifically with this use case in mind, add a small
+comment inviting users and developers to consider UBI block.
 
 Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
 ---
- drivers/mtd/Kconfig | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/mtd/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 79a8ff542883..32bed6c63863 100644
+index 32bed6c63863..91cdbbd44317 100644
 --- a/drivers/mtd/Kconfig
 +++ b/drivers/mtd/Kconfig
-@@ -127,10 +127,9 @@ config MTD_BLOCK
- 	  on RAM chips in this manner. This block device is a user of MTD
- 	  devices performing that function.
+@@ -151,6 +151,9 @@ config MTD_BLOCK_RO
+ 	  You do not need this option for use with the DiskOnChip devices. For
+ 	  those, enable NFTL support (CONFIG_NFTL) instead.
  
--	  At the moment, it is also required for the Journalling Flash File
--	  System(s) to obtain a handle on the MTD device when it's mounted
--	  (although JFFS and JFFS2 don't actually use any of the functionality
--	  of the mtdblock device).
-+	  Note that mounting a JFFS2 filesystem doesn't require using mtdblock.
-+	  It's possible to mount a rootfs using the MTD device on the "root="
-+	  bootargs as "root=mtd2" or "root=mtd:name_of_device".
- 
- 	  Later, it may be extended to perform read/erase/modify/write cycles
- 	  on flash chips to emulate a smaller block size. Needless to say,
++comment "Note that in some cases UBI block is preferred. See MTD_UBI_BLOCK."
++	depends on MTD_BLOCK || MTD_BLOCK_RO
++
+ config FTL
+ 	tristate "FTL (Flash Translation Layer) support"
+ 	depends on BLOCK
 -- 
 2.32.0
 
