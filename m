@@ -2,207 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A983DCDC9
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65833DCDCB
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbhHAUdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 16:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231872AbhHAUda (ORCPT
+        id S231715AbhHAUen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 16:34:43 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:55251 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231319AbhHAUel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 16:33:30 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9408BC06175F;
-        Sun,  1 Aug 2021 13:33:21 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id b6so22480519pji.4;
-        Sun, 01 Aug 2021 13:33:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=fBZqElFDWoJRba//NR2LkUGnReQMVCu2fGdHFbNTSAA=;
-        b=W9GRiK75FflUy+E6dFVTj5BSu4ZsbqxJvPwtta00h+zyQ3xELbzLhMnsPIpJQVM3x0
-         JAMtpysJnSPU5gV/6eKz7UTFYIRyXQIU+RRmy6atjfK+YPQV89eNqaB/AbnyMDNzEmxC
-         QjvI0uraRpb+sekb7qITDOTUAWb+CY4pB53md0H4uUjp1wpRC5M6XvS3I6ioVsdZOdgH
-         DJ//wYpuXlxWdln3uIZmlvY1NtZPiXNkVPHu4SIYvoceq/FmmpWi9DUFifCGJj2NulyS
-         nM2EYkDs0mVpksAkl2LWP1e80VfvOlP5PWZ1NyeHmCdAQ9qeXTTcEN84j470nzqxJWSO
-         IjPg==
+        Sun, 1 Aug 2021 16:34:41 -0400
+Received: by mail-io1-f72.google.com with SMTP id h70-20020a6bb7490000b02904f7957d92b5so10192760iof.21
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 13:34:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=fBZqElFDWoJRba//NR2LkUGnReQMVCu2fGdHFbNTSAA=;
-        b=tT5+arST16B6LHAsu0nvdMGz8kOMUAV4AsDsBOsOCxrFA0ECcyBFEuYK53g6VD42zn
-         O8J/2vwSN27eBWSIKENs3zn4QTRq8rO7yJ6yG/2B6C6dJ5wj8W5TJ9sjpvWMT6znTCAF
-         uBoaCrTai0TL8cSDY6Ulg3LkVxVZeVlmMsX8cQfnukWGMAM5EPvRg+A/gkaBEDkz3NfS
-         HTXW9FwxCne1phNKGqQ068gdNJoVy6/8AwN9U4d703/cPXrMefPP33OHmcsP4SId9Bnc
-         jnS9E0D2y5rMF0A5ySf2gHqPWUOGd4EF27+pTblUQh21BhJZNFK8U3JvKj047xVRmEzv
-         wcYw==
-X-Gm-Message-State: AOAM5310E3e0Vt12gHkjcdHd11csTKIDktu2f4iCFexFOifwtJpVr42y
-        AiDkHybIDLlN7sLWEowRIYM=
-X-Google-Smtp-Source: ABdhPJz13ephTgXqUM+UA4TNO69iRYovunNJ91G6lEVq9z9+l6sFos6sysWM6KLFb8PBzO0QEnt7Cw==
-X-Received: by 2002:a63:48c:: with SMTP id 134mr9440077pge.122.1627850001180;
-        Sun, 01 Aug 2021 13:33:21 -0700 (PDT)
-Received: from localhost.localdomain ([2402:3a80:15b3:589:f07d:5386:a3c2:3056])
-        by smtp.gmail.com with ESMTPSA id k10sm8897974pfc.169.2021.08.01.13.33.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Aug 2021 13:33:20 -0700 (PDT)
-From:   Himadri Pandya <himadrispandya@gmail.com>
-To:     johan@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Himadri Pandya <himadrispandya@gmail.com>
-Subject: [PATCH v2 6/6] USB: serial: kl5kusb105: use usb_control_msg_recv() and usb_control_msg_send()
-Date:   Mon,  2 Aug 2021 02:01:22 +0530
-Message-Id: <20210801203122.3515-7-himadrispandya@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210801203122.3515-1-himadrispandya@gmail.com>
-References: <20210801203122.3515-1-himadrispandya@gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=2nTW78nne7YV4oteAEFI9yTUaPPtJoN/k/2jsa42cBY=;
+        b=VbqyXafct06tJlkYAF5Q2YkZH9hiObAY4L9TowSTIX0CqF6wRkTCiuhENCqszsaURc
+         Ny54B+uKmP1WhONmWc/A+ijEb3D5DDm7Am2s6o1IDk7Pfg7F0admo0mARm3JL40aDyyD
+         MFA85lodXFsC3fK7ikZk1i0WGpIsGEO7rjWbrjBfjM8ShAWfUO3hVwiBZEXfYIk/MOtO
+         1vnzHlr0RaZS/4T/iKL9VZsh3afbSg/WSGTfXQDMqpt4QKpezEBJQ0eyhjoufkVB377b
+         iMkwN4Y/dTTgpfHyJELWgEs3fO4qMwwT7zMDX+85Td2lBW0Db9AXUw/SkQk9Kg4HpTId
+         VCnQ==
+X-Gm-Message-State: AOAM533Puag497oU2VdviIlY3pTx9M395Mjdt3xmLHZBbnUO7OfvkKz5
+        52G7pbNLaCb7dG6ujzGahAr02fyQXQ8+ao8rxdRFGyO2hjsG
+X-Google-Smtp-Source: ABdhPJxDdf6F16NElNuv+EDK47lNPw3fQeOaF7nxq3ifv2BqJl98TAAKjzfueChD4GrxpBEUmzwcPcxRbhFxFWBRwujSY1OoaiFr
+MIME-Version: 1.0
+X-Received: by 2002:a02:7a18:: with SMTP id a24mr9031500jac.45.1627850072379;
+ Sun, 01 Aug 2021 13:34:32 -0700 (PDT)
+Date:   Sun, 01 Aug 2021 13:34:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004fd4c505c8856109@google.com>
+Subject: [syzbot] general protection fault in br_switchdev_fdb_notify
+From:   syzbot <syzbot+9ba1174359adba5a5b7c@syzkaller.appspotmail.com>
+To:     bridge@lists.linux-foundation.org, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, nikolay@nvidia.com, roopa@nvidia.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers usb_control_msg_send/recv eliminate the need of allocating
-dma buffers for usb message. They also impose proper error checks on the
-return value of usb_control_msg() to handle short read/write. Hence use
-the wrappers and remove dma allocations.
+Hello,
 
-Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    b11f0a4c0c81 net: dsa: sja1105: be stateless when installi..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13b77662300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=914a8107c0ffdc14
+dashboard link: https://syzkaller.appspot.com/bug?extid=9ba1174359adba5a5b7c
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1247bf2e300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=163c441a300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9ba1174359adba5a5b7c@syzkaller.appspotmail.com
+
+netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 1 PID: 8468 Comm: syz-executor865 Not tainted 5.14.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:br_switchdev_fdb_notify+0x2bf/0x340 net/bridge/br_switchdev.c:137
+Code: c4 a8 00 00 00 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 f6 fd 77 f9 49 8d 7e 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 71 4d 8b 6e 08 e9 4f ff ff ff e8 cd fd 77 f9 31 c9
+RSP: 0018:ffffc9000186f360 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff87fd8c8a RDI: 0000000000000008
+RBP: 1ffff9200030de6d R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff87fd8bc7 R11: 0000000000000000 R12: 000000000000001c
+R13: ffff88801d1c8c00 R14: 0000000000000000 R15: ffff888033cb93e8
+FS:  0000000002147300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 000000003756d000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ fdb_notify+0x159/0x190 net/bridge/br_fdb.c:798
+ br_fdb_external_learn_add+0x2cc/0x5c0 net/bridge/br_fdb.c:1303
+ __br_fdb_add+0x122/0xa40 net/bridge/br_fdb.c:1033
+ br_fdb_add+0x8aa/0xcd0 net/bridge/br_fdb.c:1105
+ rtnl_fdb_add+0x45f/0xad0 net/core/rtnetlink.c:4046
+ rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:703 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:723
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2402
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2456
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2485
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x443239
+Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffee38b3de8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007ffee38b3df8 RCX: 0000000000443239
+RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffee38b3e00
+R13: 00007ffee38b3e20 R14: 00000000004b8018 R15: 00000000004004b8
+Modules linked in:
+---[ end trace aa1b885b5f5494d5 ]---
+RIP: 0010:br_switchdev_fdb_notify+0x2bf/0x340 net/bridge/br_switchdev.c:137
+Code: c4 a8 00 00 00 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 f6 fd 77 f9 49 8d 7e 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 71 4d 8b 6e 08 e9 4f ff ff ff e8 cd fd 77 f9 31 c9
+RSP: 0018:ffffc9000186f360 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff87fd8c8a RDI: 0000000000000008
+RBP: 1ffff9200030de6d R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff87fd8bc7 R11: 0000000000000000 R12: 000000000000001c
+R13: ffff88801d1c8c00 R14: 0000000000000000 R15: ffff888033cb93e8
+FS:  0000000002147300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 000000003756d000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
-Changes in v2:
- - Fix the caller of klsi_105_chg_port_settings()
- - Drop unnecessary use of the wrappers
----
- drivers/usb/serial/kl5kusb105.c | 79 ++++++++++++++-------------------
- 1 file changed, 34 insertions(+), 45 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/usb/serial/kl5kusb105.c b/drivers/usb/serial/kl5kusb105.c
-index f1e9628a9907..72d3920c9c48 100644
---- a/drivers/usb/serial/kl5kusb105.c
-+++ b/drivers/usb/serial/kl5kusb105.c
-@@ -124,16 +124,18 @@ static int klsi_105_chg_port_settings(struct usb_serial_port *port,
- {
- 	int rc;
- 
--	rc = usb_control_msg(port->serial->dev,
--			usb_sndctrlpipe(port->serial->dev, 0),
--			KL5KUSB105A_SIO_SET_DATA,
--			USB_TYPE_VENDOR | USB_DIR_OUT | USB_RECIP_INTERFACE,
--			0, /* value */
--			0, /* index */
--			settings,
--			sizeof(struct klsi_105_port_settings),
--			KLSI_TIMEOUT);
--	if (rc < 0)
-+	rc = usb_control_msg_send(port->serial->dev,
-+				  0,
-+				  KL5KUSB105A_SIO_SET_DATA,
-+				  USB_TYPE_VENDOR | USB_DIR_OUT |
-+				  USB_RECIP_INTERFACE,
-+				  0, /* value */
-+				  0, /* index */
-+				  settings,
-+				  sizeof(struct klsi_105_port_settings),
-+				  KLSI_TIMEOUT,
-+				  GFP_KERNEL);
-+	if (rc)
- 		dev_err(&port->dev,
- 			"Change port settings failed (error = %d)\n", rc);
- 
-@@ -167,28 +169,21 @@ static int klsi_105_get_line_state(struct usb_serial_port *port,
- 				   unsigned long *line_state_p)
- {
- 	int rc;
--	u8 *status_buf;
-+	u8 status_buf[KLSI_STATUSBUF_LEN];
- 	__u16 status;
- 
--	status_buf = kmalloc(KLSI_STATUSBUF_LEN, GFP_KERNEL);
--	if (!status_buf)
--		return -ENOMEM;
--
- 	status_buf[0] = 0xff;
- 	status_buf[1] = 0xff;
--	rc = usb_control_msg(port->serial->dev,
--			     usb_rcvctrlpipe(port->serial->dev, 0),
--			     KL5KUSB105A_SIO_POLL,
--			     USB_TYPE_VENDOR | USB_DIR_IN,
--			     0, /* value */
--			     0, /* index */
--			     status_buf, KLSI_STATUSBUF_LEN,
--			     10000
--			     );
--	if (rc != KLSI_STATUSBUF_LEN) {
-+	rc = usb_control_msg_recv(port->serial->dev, 0,
-+				  KL5KUSB105A_SIO_POLL,
-+				  USB_TYPE_VENDOR | USB_DIR_IN,
-+				  0, /* value */
-+				  0, /* index */
-+				  status_buf, KLSI_STATUSBUF_LEN,
-+				  10000,
-+				  GFP_KERNEL);
-+	if (rc) {
- 		dev_err(&port->dev, "reading line status failed: %d\n", rc);
--		if (rc >= 0)
--			rc = -EIO;
- 	} else {
- 		status = get_unaligned_le16(status_buf);
- 
-@@ -198,7 +193,6 @@ static int klsi_105_get_line_state(struct usb_serial_port *port,
- 		*line_state_p = klsi_105_status2linestate(status);
- 	}
- 
--	kfree(status_buf);
- 	return rc;
- }
- 
-@@ -245,7 +239,7 @@ static int  klsi_105_open(struct tty_struct *tty, struct usb_serial_port *port)
- 	int retval = 0;
- 	int rc;
- 	unsigned long line_state;
--	struct klsi_105_port_settings *cfg;
-+	struct klsi_105_port_settings cfg;
- 	unsigned long flags;
- 
- 	/* Do a defined restart:
-@@ -255,27 +249,22 @@ static int  klsi_105_open(struct tty_struct *tty, struct usb_serial_port *port)
- 	 * Then read the modem line control and store values in
- 	 * priv->line_state.
- 	 */
--	cfg = kmalloc(sizeof(*cfg), GFP_KERNEL);
--	if (!cfg)
--		return -ENOMEM;
- 
--	cfg->pktlen   = 5;
--	cfg->baudrate = kl5kusb105a_sio_b9600;
--	cfg->databits = kl5kusb105a_dtb_8;
--	cfg->unknown1 = 0;
--	cfg->unknown2 = 1;
--	klsi_105_chg_port_settings(port, cfg);
-+	cfg.pktlen   = 5;
-+	cfg.baudrate = kl5kusb105a_sio_b9600;
-+	cfg.databits = kl5kusb105a_dtb_8;
-+	cfg.unknown1 = 0;
-+	cfg.unknown2 = 1;
-+	klsi_105_chg_port_settings(port, &cfg);
- 
- 	spin_lock_irqsave(&priv->lock, flags);
--	priv->cfg.pktlen   = cfg->pktlen;
--	priv->cfg.baudrate = cfg->baudrate;
--	priv->cfg.databits = cfg->databits;
--	priv->cfg.unknown1 = cfg->unknown1;
--	priv->cfg.unknown2 = cfg->unknown2;
-+	priv->cfg.pktlen   = cfg.pktlen;
-+	priv->cfg.baudrate = cfg.baudrate;
-+	priv->cfg.databits = cfg.databits;
-+	priv->cfg.unknown1 = cfg.unknown1;
-+	priv->cfg.unknown2 = cfg.unknown2;
- 	spin_unlock_irqrestore(&priv->lock, flags);
- 
--	kfree(cfg);
--
- 	/* READ_ON and urb submission */
- 	rc = usb_serial_generic_open(tty, port);
- 	if (rc)
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
