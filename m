@@ -2,182 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA7B3DCB41
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 12:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A6D3DCB5C
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 13:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhHAKof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 06:44:35 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:39513 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231882AbhHAKo1 (ORCPT
+        id S231882AbhHALYW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 1 Aug 2021 07:24:22 -0400
+Received: from cc-smtpout1.netcologne.de ([89.1.8.211]:44656 "EHLO
+        cc-smtpout1.netcologne.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231527AbhHALYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 06:44:27 -0400
-Received: by mail-io1-f71.google.com with SMTP id u22-20020a5d9f560000b02905058dc6c376so9452588iot.6
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 03:44:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=oFv1i//qpH6AOffLvv4YPkuxPAX3tmOECGx7x4XlVx4=;
-        b=p7MjFXxg9s47qP5QV1g6NQ96YQxyM561ZXaOEj8AnEYt5eNFEzqMCqiJlrx4TkuowU
-         MOTHUWkODbLf1F4DW1mwlfaLc+aDPCHy1ErNEnObfUHdlITOZE4oWYOvX6uy3SpkkUq7
-         ZE2Y85sulGfrjrQNBWSNHGgO/+twn/i54eY/nNPCEj57aTIDg1tD7CPHHw4KzLYivNPK
-         JYkjmknGIyDraMM1VFZWU1GlTLNCvjoo0pq41b4A4jIp5YkgfAQWNaeJc10Gh7B2XYaA
-         FI0+q2DjcHuGMqRwV/DvvBVgSWbB+khiChEcxlMMlO7MTH4VDBbp6JglZ1N397jSRS0d
-         v/ww==
-X-Gm-Message-State: AOAM530JMogp1Xv6s66DbrB2iEFwQ296Sxfw7lEX3pIVUlTHyy2CxPta
-        ivqXvOHA0yoOBgDWra+Aojnz5Yhp7ro13Nhd9gEz1041opvw
-X-Google-Smtp-Source: ABdhPJyeh4ufoAcxLqVJHWse/qTK/DiToXD4JjpnUaRyHiv485wYzrBEHTzV8U40IKOuKlWMS3Ws7tiTxgnX7VJxN60WE6JHH6ti
+        Sun, 1 Aug 2021 07:24:21 -0400
+X-Greylist: delayed 555 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Aug 2021 07:24:20 EDT
+Received: from cc-smtpin2.netcologne.de (cc-smtpin2.netcologne.de [89.1.8.202])
+        by cc-smtpout1.netcologne.de (Postfix) with ESMTP id A7EA61257B;
+        Sun,  1 Aug 2021 13:14:56 +0200 (CEST)
+Received: from nas2.garloff.de (xdsl-89-0-233-245.nc.de [89.0.233.245])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by cc-smtpin2.netcologne.de (Postfix) with ESMTPSA id 2377A11E24;
+        Sun,  1 Aug 2021 13:14:47 +0200 (CEST)
+Received: from [10.5.8.22] (unknown [185.58.53.67])
+        by nas2.garloff.de (Postfix) with ESMTPSA id B933CB3B1319;
+        Sun,  1 Aug 2021 13:14:45 +0200 (CEST)
+To:     Denis Efremov <efremov@linux.com>, linux-block@vger.kernel.org,
+        Linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <jkosina@suse.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wim Osterholt <wim@djo.tudelft.nl>, dmarkh@cfl.rr.com,
+        markh@compro.net
+References: <de10cb47-34d1-5a88-7751-225ca380f735@compro.net>
+ <e49603c2-ac36-12b0-57cf-ff5ab30115bc@linux.com>
+ <f5501a7c-4387-259d-66d2-f10db0cf36ff@cfl.rr.com>
+ <f1277dcb-6bf8-b149-ad4e-68a4109d4e67@linux.com>
+ <1cf8e751-db77-441e-53b4-d6e979bbe046@compro.net>
+ <751150dd-251f-bc68-0cd0-4a10b70ab79a@linux.com>
+ <ffb8ca1c-ac8c-95c4-c05a-1269c4831b0a@linux.com>
+From:   Kurt Garloff <kurt@garloff.de>
+Subject: Re: [BUG] FLOPPY DRIVER since 5.10.20
+Message-ID: <9d46f063-8d8d-95ee-e262-9300f54d527c@garloff.de>
+Date:   Sun, 1 Aug 2021 13:14:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-Received: by 2002:a5e:db02:: with SMTP id q2mr197603iop.172.1627814659223;
- Sun, 01 Aug 2021 03:44:19 -0700 (PDT)
-Date:   Sun, 01 Aug 2021 03:44:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000085f72905c87d22f4@google.com>
-Subject: [syzbot] possible deadlock in register_netdev
-From:   syzbot <syzbot+ed8813d241a91de15965@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ffb8ca1c-ac8c-95c4-c05a-1269c4831b0a@linux.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
+X-NetCologne-Spam: L
+X-Rspamd-Queue-Id: 2377A11E24
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Denis,
 
-syzbot found the following issue on:
+Here's what I did to uncover and reproduce the bug:
+* Building a VM image with openSUSE-15.2
+* VM image includes cloud-init which reads from a config-drive (with fallback to network) to customize the generic image on (first) boot
+* Started the image with an attached floppy disk in KVM (qemu-5.x) that contained valid cloud-config (cidata) information
+(-drive file=/tmp/ci-disk.17138.3Jf2/seed-17138.img,format=raw,if=floppy,id=cidata)
 
-HEAD commit:    3bdc70669eb2 Merge branch 'devlink-register'
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e77662300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=914a8107c0ffdc14
-dashboard link: https://syzkaller.appspot.com/bug?extid=ed8813d241a91de15965
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15581d46300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bae1b2300000
+This worked fine until openSUSE updated libblkid to include a backport that opens cdroms and floppies with O_NONBLOCK (to avoid spurious CD tray closes on CDRoms).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ed8813d241a91de15965@syzkaller.appspotmail.com
+History is at
+https://bugzilla.suse.com/show_bug.cgi?id=1181018 <https://bugzilla.suse.com/show_bug.cgi?id=1181018>
 
-netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-======================================================
-WARNING: possible circular locking dependency detected
-5.14.0-rc2-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor917/8441 is trying to acquire lock:
-ffffffff8d0cb568 (rtnl_mutex){+.+.}-{3:3}, at: register_netdev+0x11/0x50 net/core/dev.c:10474
+My understanding is that
+* qemu reports media changed once on the attached floppy (it's a removable device after all) -- I have no idea whether or not that behavior from qemu is reasonable or not.
+* old libblkid used to probe it without O_NONBLOCK, finding out that there is a medium inserted and clearing the media change flag
+* a subsequent mount attempt (by cloud-init) would succeed
 
-but task is already holding lock:
-ffffffff8d0a9608 (br_ioctl_mutex){+.+.}-{3:3}, at: br_ioctl_call+0x3b/0xa0 net/socket.c:1089
+With new libblkid, using O_NONBLOCK, the media change was not cleared, and the mount would not succeed, DESPITE a valid floppy being attached before booting.
 
-which lock already depends on the new lock.
+With the kernel update, the access would work again, despite blkkid using O_NONBLOCK.
 
+Jiri should be able to understand this in more detail than I am -- I am no expert in handling of removable block devices ...
 
-the existing dependency chain (in reverse order) is:
+Let me know if you need a VM image to reproduce this issue -- I can find it in my archives and push it to some place for downloading.
 
--> #1 (br_ioctl_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:959 [inline]
-       __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
-       br_ioctl_call+0x3b/0xa0 net/socket.c:1089
-       dev_ifsioc+0xc1f/0xf60 net/core/dev_ioctl.c:382
-       dev_ioctl+0x1b9/0xee0 net/core/dev_ioctl.c:580
-       sock_do_ioctl+0x18b/0x210 net/socket.c:1128
-       sock_ioctl+0x2f1/0x640 net/socket.c:1231
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:1069 [inline]
-       __se_sys_ioctl fs/ioctl.c:1055 [inline]
-       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+-- 
+Kurt Garloff <kurt@garloff.de>
+Cologne, Germany
 
--> #0 (rtnl_mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __mutex_lock_common kernel/locking/mutex.c:959 [inline]
-       __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
-       register_netdev+0x11/0x50 net/core/dev.c:10474
-       br_add_bridge+0x97/0xf0 net/bridge/br_if.c:459
-       br_ioctl_stub+0x750/0x7f0 net/bridge/br_ioctl.c:390
-       br_ioctl_call+0x5e/0xa0 net/socket.c:1091
-       sock_ioctl+0x30c/0x640 net/socket.c:1185
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:1069 [inline]
-       __se_sys_ioctl fs/ioctl.c:1055 [inline]
-       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+On 30/07/2021 07:15, Denis Efremov wrote:
+> Hi,
+>
+> On 7/26/21 7:34 PM, Denis Efremov wrote:
+>>
+>> On 7/26/21 3:23 PM, Mark Hounschell wrote:
+>>> On 7/26/21 7:37 AM, Denis Efremov wrote:
+>>>>
+>>>> On 7/26/21 2:17 PM, Mark Hounschell wrote:
+>>>>> On 7/26/21 3:57 AM, Denis Efremov wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>> On 7/23/21 9:47 PM, Mark Hounschell wrote:
+>>>>>>> These 2 incremental patches, patch-5.10.19-20 and patch-5.11.2-3 have broken the user land fd = open("/dev/fd0", (O_RDWR | O_NDELAY)); functionality.
+>>>>>> Thank you for the report, I'm looking into this.
+>>>>>>
+>>>>>>> Since FOREVER before the patch, when using O_NDELAY, one could open the floppy device with no media inserted or even with write protected media without error. "Read-only file system" status is returned only when we actually tried to write to it. We have software still in use today that relies on this functionality.
+>>>>>> If it's a project with open sources could you please give a link?
+>>>>>>
+>>>>>> Regards,
+>>>>>> Denis
+>>>>>>
+>>>>> This is immaterial but fdutils and libdsk both use rely on this flag. Who can know who else does. The point is it should NOT have been changed.
+>>>> Yes, I asked this only to add utils and this behavior to the tests.
+>>>> And be more specific about why we should preserve this behavior in
+>>>> next commit messages.
+>>>>
+>>> Well, first thing is now you can't open a floppy with a write protected floppy installed. I don't think that was intended but that is now how it is.
+>>>
+>>> Next there are commands that can be sent to the floppy via "ioctl(fd, FDRAWCMD,  &raw_cmd);" that do NOT require a floppy diskette to be installed.
+>>>
+>>> All commands issued to the device that require a floppy diskette without a diskette installed fail with the proper status letting you know the device is not ready / no diskette installed. That goes for write protected floppies too.
+>>>
+>>> There is no reason to force a user to only be able to operate on Linux fdformat formatted floppies.
+>>>
+>> It appears that the story behind the issue is long enough.
+>> I'll try to sum up the things:
+>> [1] 09954bad4487 floppy: refactor open() flags handling
+>> [2] ff06db1efb2a floppy: fix open(O_ACCMODE) for ioctl-only open
+>> [3] 468c298ad3ed Revert "floppy: fix open(O_ACCMODE) for ioctl-only open"
+>> [4] f2791e7eadf4 Revert "floppy: refactor open() flags handling"
+>> [5] 8a0c014cd205 floppy: reintroduce O_NDELAY fix
+>>
+>> In [1] we tried to fix O_NDELAY behavior because it's hard to define
+>> proper non-blocking behavior for floppies. We also added
+>> "!(mode & (FMODE_READ|FMODE_WRITE))" sanity check for open in that patch.
+>> Motivation for the changes was that it's easy to livelock the system with
+>> floppy's O_NDELAY and syzkaller spotted it. Just for the record, /dev/fd0
+>> is only accessible by the root user in recent distros. 
+>>
+>> Patch [1] broke ioctl-only opens in fdutils because:
+>> $ grep -nre open ./setfdprm.c 
+>> 60:     if ((fd = open(argv[0],3)) < 0) { /* 3 == no access at all */
+>> Patch [2] reverted "!(mode & (FMODE_READ|FMODE_WRITE))" to fix ioctls.
+>> I guess [2] was not enough and Jens completely reverted [1] with [3] [4].
+>>
+>> The last [5] patch restores the open function to the [2] state (it's possible
+>> to use ioctl with open O_ACCMODE). [5] was added because libblkid use O_NONBLOCK
+>> for probing devices, and floppy driver prints many I/O errors to the kernel log.
+>> There are also problems with mounts after. I'm afraid simple revert for [5] is
+>> not enough, otherwise we will face libblkid issues once again.I'll try to test the things and find a more elegant solution.
+>>
+> I performed some tests and here is a small example that can be reproduced
+> even with qemu.
+> With O_NDELAY fix:
+> $ fdlist # no floppy inserted
+> fdlist (): drive fd0 does not exist
+>
+> Without O_NDELAY fix:
+> $ fdlist # no floppy inserted
+> NAME   TYPE  STATUS
+>  fd0  2880K  not mounted
+>
+> That's because of O_RDONLY|O_NDELAY open in probe_drive:
+> https://sources.debian.org/src/fdutils/5.6-2/src/fdmount.c/#L390
+>
+> I guess that's why the original patch was reverted
+> f2791e7eadf4 Revert "floppy: refactor open() flags handling"
+> We still have software that depends on O_NDELAY in floppies
+> and this patch will be reverted again.
+>
+> Meanwhile I can't fully reproduce the issues with libblkid.
+> I know that systemd-udevd tries to open /dev/fd0 during boot
+> with O_RDONLY|O_NDELAY. With O_NDELAY implemented we don't call
+> floppy_revalidate() which result in an attempt to read block 0
+> https://elixir.bootlin.com/linux/v5.10.20/source/drivers/block/floppy.c#L4127
+> However, *with* O_NDELAY fix we try to read block 0 and get kernel
+> log errors if no floppy inserted:
+> [    1.732360] blk_update_request: I/O error, dev fd0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+> [    1.732822] floppy: error 10 while reading block 0
+> If floppy inserted this results in a boot delay on a
+> real system.
+>
+> Jiri, Kurt, can you give more details about test conditions
+> for O_NDELAY problem or maybe even provide some examples?
+>
+> Maybe it will cheaper to implement a special probing for
+> floppies in new software than drop O_NDELAY for all already
+> written software. Of course, if there is no cheap and obvious
+> in-kernel fix.
+>
+> Denis
+>
 
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(br_ioctl_mutex);
-                               lock(rtnl_mutex);
-                               lock(br_ioctl_mutex);
-  lock(rtnl_mutex);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor917/8441:
- #0: ffffffff8d0a9608 (br_ioctl_mutex){+.+.}-{3:3}, at: br_ioctl_call+0x3b/0xa0 net/socket.c:1089
-
-stack backtrace:
-CPU: 0 PID: 8441 Comm: syz-executor917 Not tainted 5.14.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __mutex_lock_common kernel/locking/mutex.c:959 [inline]
- __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
- register_netdev+0x11/0x50 net/core/dev.c:10474
- br_add_bridge+0x97/0xf0 net/bridge/br_if.c:459
- br_ioctl_stub+0x750/0x7f0 net/bridge/br_ioctl.c:390
- br_ioctl_call+0x5e/0xa0 net/socket.c:1091
- sock_ioctl+0x30c/0x640 net/socket.c:1185
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl fs/ioctl.c:1055 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4431e9
-Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd3f5d9338 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffd3f5d9348 RCX: 00000000004431e9
-RDX: 0000000020000300 RSI: 00000000000089a0 RDI: 0000000000000005
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd3f5d9350
-R13: 00007ffd3
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
