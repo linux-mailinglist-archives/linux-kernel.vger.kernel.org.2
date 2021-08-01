@@ -2,104 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620233DCE1A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 01:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C3D3DCE1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 01:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbhHAXc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 19:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
+        id S231758AbhHAXfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 19:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbhHAXcz (ORCPT
+        with ESMTP id S230146AbhHAXf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 19:32:55 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFE3C06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 16:32:46 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id y7so19775077eda.5
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 16:32:46 -0700 (PDT)
+        Sun, 1 Aug 2021 19:35:28 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C21C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 16:35:18 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id u3so30364693lff.9
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 16:35:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nycSytXCZfYCR8LzQF81gm2hXQJ8owxI3Y1HaRP+Y8g=;
-        b=Ek3CzkJjSfBdOm8c+TtTSerBkrRRLsGQgKrQ/4TcNnygf4BN4pfC2MnQZpNDSB165m
-         KYlk5eVY+yYRMVmGsbPuUbN+79G0B1f+vaUFFx7E+xbV2W9HxR8YzfKW3kDzQMHe+EpC
-         tVCPER5xomz5RXA/qYJ0os1uRubJbZGx9w6+2zzcXEYNhzNvEObwh26tIC6c5/f+mDTE
-         quz+DlOXPC6TNNSyxpvBYC03sCZAzeSeDWYjqFY7YZSHJ50/SOpZkU/tw4QmWdf5gxuG
-         YTxUgbByjmaZQrISs0cPioLWTm1DwtE9fF9hv+22C8A21F2VR7h/W05nK4keCt6ZW6r4
-         rbzQ==
+        bh=C6/svOQzqOqPbw3rFdp8t0bc9pHFnD1J8mVJIcesOfQ=;
+        b=VCas2Uh5+HYnebJL88dgEEbyIoYQD4EpejdVd6uOPoE+wNtpwysnaz0jLWJNeCyouD
+         DiiELqxTO38C4ixKKj8MKqUxW4vKGvdp0L9gkBadf9lIh6nh7f1wjkzDRrXIE7nzwbog
+         T7lgSCMjJVo5MO2yuO6DqqnbQYA/hewnEnLF5JJ6EhLE0B2T5BE/QosZVzIaNkpzhxzx
+         hqzT8Wa5ShttghIjr8vmgiAy+pylAMUZy7ozbqgl/VLn9MGzxROnhjuIpIr9Llp7KpCz
+         ckZWSW3mgTTiu8skWqz0N/y/WjqKseMBiMoL/ZljrbInGQ4vOuul0U+RntiSFgjXVyiw
+         hjWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nycSytXCZfYCR8LzQF81gm2hXQJ8owxI3Y1HaRP+Y8g=;
-        b=TWZLxnl5mbb9QiRJPD/H2s0OABM4oITDFNQkoe3pAs1CzxjhzNj/fpJoR2Yqb7cKa3
-         LgfL/LZfkv/4Z4O/RSxOe78G4B0KTAO9EHBH+2/LsNODWOAmbtMkYGrDviOJJShyaY8x
-         LNSTN2GvvDSkUlBgrbhrRO8vQQ8CkVSTaIndLcsrD7lQSRJFfkKtu4pqLdUQFvT94Jj+
-         2jbxJvvrokLi6Xqd9hSOjwv5T5t4/uiLu0KHDk0PHG8ASA9fe+zGrh1FwCekofYdA1+R
-         7OGlZ1tr/tuHAk15u5leqlzisKsi7d7I4m1uNJst8/dzxtPqBDCU04jrB+/HdTFKncjY
-         QGFA==
-X-Gm-Message-State: AOAM530/tZhWrxCHaO7Wym1LY56ODeZ3OsBtQomd0XW7JV0P/Znl5bVT
-        1AekgW22ZjlxCdc0Ofj15+Y=
-X-Google-Smtp-Source: ABdhPJxwWXVeM0etOWnSk+DNRBJSiSVlb5Z+e+QBQfONfWUkYuQxilkf1BFBXIG6oyMayLXlRuHVvQ==
-X-Received: by 2002:a05:6402:4246:: with SMTP id g6mr16039128edb.95.1627860765496;
-        Sun, 01 Aug 2021 16:32:45 -0700 (PDT)
-Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
-        by smtp.gmail.com with ESMTPSA id bs13sm3610308ejb.98.2021.08.01.16.32.44
+        bh=C6/svOQzqOqPbw3rFdp8t0bc9pHFnD1J8mVJIcesOfQ=;
+        b=mxLQaEjV9Pc7nwJRWaw4hE5P6Wi7Clt+jlUKzhV7W4E5JJFuArfe8Kieur6yIHYmxu
+         ILJHK6HAlVzU1K28DFo1qshpiFV7seRN8VWawRx5EL6fi99oHMWLIfVy1r9h+Ljs+EDO
+         b+vmV1/JvoPHqc4wvQDEoRyTqOapQK0m1BWQe7et9Q3FV2VuyrXk75q3ymHhzxEfwNXV
+         EuktlWieZbQ3KnJYnVrlSJAjC6TgZ8JViiLr/enSd7BDUWWbD6nW+HhIttxpzAZj1aBz
+         /hJ3KOemxWxo3nljtu+onLrrHDDm6NKGy07u6ASVeYA6DRNzOekNiCLoao1vIaIOyzlu
+         RVpA==
+X-Gm-Message-State: AOAM530P7KIzm3T0vQpiQRI+f428AFZyD8qMuZfEYvM4AVPJKLNg2nnv
+        IbzA7QxZY77O7r1kcQX0KWMcl50PaaI0hg==
+X-Google-Smtp-Source: ABdhPJwgySXbJ/Vio0yQFfA1AHvsua4uhyZFzkFUXMERZvpLJlYElZtc6cTAj7/cs+o6fScvt4nYlA==
+X-Received: by 2002:a19:f110:: with SMTP id p16mr10647640lfh.584.1627860916212;
+        Sun, 01 Aug 2021 16:35:16 -0700 (PDT)
+Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
+        by smtp.gmail.com with ESMTPSA id y17sm791046lfh.246.2021.08.01.16.35.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Aug 2021 16:32:44 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH] staging: r8188eu: Fix cast between incompatible function type
-Date:   Mon,  2 Aug 2021 01:32:41 +0200
-Message-Id: <20210801233242.20436-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Sun, 01 Aug 2021 16:35:15 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        phone-devel@vger.kernel.org
+Subject: [PATCH 1/2] mfd: db8500-prcmu: Adjust map to reality
+Date:   Mon,  2 Aug 2021 01:33:13 +0200
+Message-Id: <20210801233314.3150754-1-linus.walleij@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sparse warnings of casts between incompatible function
-types from ‘void (*)(void *)’ to ‘void (*)(long unsigned int)’
-[-Wcast-function-type].
+These are the actual frequencies reported by the PLL, so let's
+report these. The roundoffs are inappropriate, we should round
+to the frequency that the clock will later report.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Drop some whitespace at the same time.
+
+Cc: phone-devel@vger.kernel.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/staging/r8188eu/hal/rtl8188eu_recv.c | 2 +-
- drivers/staging/r8188eu/hal/rtl8188eu_xmit.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mfd/db8500-prcmu.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188eu_recv.c b/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
-index 2e3f624d0f22..ef722b4a9ddb 100644
---- a/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
-@@ -38,7 +38,7 @@ int	rtl8188eu_init_recv_priv(struct adapter *padapter)
- 	struct recv_buf *precvbuf;
- 
- 	tasklet_init(&precvpriv->recv_tasklet,
--		     (void(*)(unsigned long))rtl8188eu_recv_tasklet,
-+		     (void *)rtl8188eu_recv_tasklet,
- 		     (unsigned long)padapter);
- 
- 	/* init recv_buf */
-diff --git a/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c b/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c
-index e44a01af7f5c..510df3f3e6bd 100644
---- a/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c
-@@ -14,7 +14,7 @@ s32	rtl8188eu_init_xmit_priv(struct adapter *adapt)
- 	struct xmit_priv	*pxmitpriv = &adapt->xmitpriv;
- 
- 	tasklet_init(&pxmitpriv->xmit_tasklet,
--		     (void(*)(unsigned long))rtl8188eu_xmit_tasklet,
-+		     (void *)rtl8188eu_xmit_tasklet,
- 		     (unsigned long)adapt);
- 	return _SUCCESS;
+diff --git a/drivers/mfd/db8500-prcmu.c b/drivers/mfd/db8500-prcmu.c
+index 3bde7fda755f..dea4e4e8bed5 100644
+--- a/drivers/mfd/db8500-prcmu.c
++++ b/drivers/mfd/db8500-prcmu.c
+@@ -1622,22 +1622,20 @@ static long round_clock_rate(u8 clock, unsigned long rate)
  }
+ 
+ static const unsigned long db8500_armss_freqs[] = {
+-	200000000,
+-	400000000,
+-	800000000,
++	199680000,
++	399360000,
++	798720000,
+ 	998400000
+ };
+ 
+ /* The DB8520 has slightly higher ARMSS max frequency */
+ static const unsigned long db8520_armss_freqs[] = {
+-	200000000,
+-	400000000,
+-	800000000,
++	199680000,
++	399360000,
++	798720000,
+ 	1152000000
+ };
+ 
+-
+-
+ static long round_armss_rate(unsigned long rate)
+ {
+ 	unsigned long freq = 0;
 -- 
-2.32.0
+2.31.1
 
