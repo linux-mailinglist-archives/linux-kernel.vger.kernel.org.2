@@ -2,83 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338D23DCA51
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 08:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E2F3DCA55
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 08:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhHAG0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 02:26:22 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34098
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230356AbhHAG0E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 02:26:04 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5BF423F10D;
-        Sun,  1 Aug 2021 06:25:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627799154;
-        bh=CzjCXhgl0a3d1ieMBVQ+XZEZoQi8gWaJjxi2fu4cq5E=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=l0vqmorMAPZIl0H+3yk13NHRpVICt/c0IN+RqRegnFA+u0JzXwm4dk4mLCtDT2rOp
-         CxEdQK8FwEd99CZTNgmKXlzHcPC16tLId1N+7Hgh3M5laWu3nQnXrnypgy2ojYCFPQ
-         Dflzt9tyWBBVB7lwGoPaG6MXF2puGBFv2PJtzZamtt7BZOpNeDR7sGbgszKMen+gjJ
-         MdnwF+3uE2M9gqJlLa3qwNT0MTIH8aheCZ5qXZcv8lhKDRA8slOEgedO5XHKnDzL7g
-         EW0T2pM3VI2400orB+tYgVyqueIEAt9yKsLMHzD2S1hFnyPBDWtQoM4x3ecHKsvkMN
-         yxo1jryPTC9hg==
-From:   Colin King <colin.king@canonical.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: usb-audio: make array static const, makes object smaller
-Date:   Sun,  1 Aug 2021 07:25:48 +0100
-Message-Id: <20210801062548.137770-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S230002AbhHAG17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 02:27:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhHAG16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 02:27:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A70061057;
+        Sun,  1 Aug 2021 06:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627799270;
+        bh=2PHY9JhVD/YwlHDPKNMJfQk6cWOpOdiuFnlPIR1Cyco=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AMQuE1xbZE1JJWZGWWPuMZ/Fex6D/H6joQKK92I03ggzjSYiFMjisUA7zElyV8ziB
+         /Sd5sVOJWdRrWhw639yl86nLzowtIQOYOQE+6TZn42QrN9j2JZg5UsgYsKFg/HXD2m
+         qv77iiTKxi+5rRW+KDRNDHbP31NthSL+kzW0w848=
+Date:   Sun, 1 Aug 2021 08:27:48 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jordy Zomer <jordy@pwning.systems>
+Cc:     dmaengine@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: usb-dmac: make usb_dmac_get_current_residue
+ unsigned
+Message-ID: <YQY+5OaQKYeWQ+/n@kroah.com>
+References: <20210731091939.510816-1-jordy@pwning.systems>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210731091939.510816-1-jordy@pwning.systems>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Sat, Jul 31, 2021 at 11:19:38AM +0200, Jordy Zomer wrote:
+> The usb_dmac_get_current_residue function used to
+> take a signed integer as a pos parameter.
+> The only callers of this function passes an unsigned integer to it.
+> Therefore to make it obviously safe, let's just make this an unsgined
+> integer as this is used in pointer arithmetics.
+> 
+> Signed-off-by: Jordy Zomer <jordy@pwning.systems>
+> ---
+>  drivers/dma/sh/usb-dmac.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
+> index 8f7ceb698226..a5e225c15730 100644
+> --- a/drivers/dma/sh/usb-dmac.c
+> +++ b/drivers/dma/sh/usb-dmac.c
+> @@ -466,7 +466,7 @@ static int usb_dmac_chan_terminate_all(struct dma_chan *chan)
+>  
+>  static unsigned int usb_dmac_get_current_residue(struct usb_dmac_chan *chan,
+>  						 struct usb_dmac_desc *desc,
+> -						 int sg_index)
+> +						 unsigned int sg_index)
+>  {
+>  	struct usb_dmac_sg *sg = desc->sg + sg_index;
+>  	u32 mem_addr = sg->mem_addr & 0xffffffff;
+> -- 
+> 2.27.0
+> 
 
-Don't populate array names_to_check on the stack but instead it
-static.  Makes the object code smaller by 56 bytes.
-
-Before:
-   text    data     bss     dec     hex filename
- 103512   34380       0  137892   21aa4 ./sound/usb/mixer.o
-
-After:
-   text    data     bss     dec     hex filename
- 103264   34572       0  137836   21a6c ./sound/usb/mixer.o
-
-gcc version 10.2.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/usb/mixer.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index f4cdaf1ba44a..aec2499284a5 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1572,8 +1572,9 @@ static size_t append_ctl_name(struct snd_kcontrol *kctl, const char *str)
- static void check_no_speaker_on_headset(struct snd_kcontrol *kctl,
- 					struct snd_card *card)
- {
--	const char *names_to_check[] = {
--		"Headset", "headset", "Headphone", "headphone", NULL};
-+	static const char *names_to_check[] = {
-+		"Headset", "headset", "Headphone", "headphone", NULL
-+	};
- 	const char **s;
- 	bool found = false;
- 
--- 
-2.31.1
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
