@@ -2,116 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDB53DC967
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 05:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB533DC96B
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 05:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhHADIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 23:08:00 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:32018 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhHADH6 (ORCPT
+        id S231565AbhHAD0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 23:26:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230390AbhHAD0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 23:07:58 -0400
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 17137PXN010101;
-        Sun, 1 Aug 2021 12:07:25 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 17137PXN010101
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627787245;
-        bh=Y6cGd+AS0nIk8K6tDuSpbs8rK8MDD8gLz5pZSZgefaY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Xj3T603svLWCDIOyuL8r6sHggBUX9DI61d2Oja1aIDvnprDmOjHzMdAH0jlv07pkI
-         k6vaTgH3Fio0+MvLKCfIIAFHEO5D9nZrS/rLkjm+Slq8LDvDpGoKIZZRehZAcJqSIv
-         t+SI4vmE5UhbgCSN/xMsS+blE9dewNh8Pu4ptlCY1C661fQ22tjWHxWnlvcVrqeodf
-         R6cvXbDTx1gfHgZYUgEL88/iphQ2XTS82hNd8xPGKYDXrClkhGbI6IgnP5i5U5CwtN
-         lAs0UzBn4MEw+5uaKEyAIk155cO5ieWqb81TTfx7QNcIsqZkBl/4zzedQqPxo7yKol
-         ZMcVjCWep7odQ==
-X-Nifty-SrcIP: [209.85.216.54]
-Received: by mail-pj1-f54.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so9342364pjb.2;
-        Sat, 31 Jul 2021 20:07:25 -0700 (PDT)
-X-Gm-Message-State: AOAM5312lVaRUZYPuCq5EhGalL4TXLg8Bm75gVEVkzQE3Cn0ZHdQ4QSx
-        noVVfon3SvQOgpztXkiI+GcuCIr7ZDdnhXJXZmk=
-X-Google-Smtp-Source: ABdhPJwvJ3Qtr+D3JsXIXaZg/AF6yklUXmSBTrT5wNChga0WU1tPd3vlAQBpApbbvnnnpuTmiqSy9pauIKltQ/jtjmA=
-X-Received: by 2002:a65:498a:: with SMTP id r10mr1600876pgs.7.1627787244686;
- Sat, 31 Jul 2021 20:07:24 -0700 (PDT)
+        Sat, 31 Jul 2021 23:26:08 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982CAC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:26:00 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id l19so20864805pjz.0
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:26:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3XR3Rna7Rr+9CL16uPJTtqZhFZ3n6mMMJSTweWOLXfo=;
+        b=H5qg3Rv7MU+P4vxEQBBg941EZz82TEbn+YLrXqAJYjPhYWhV7UUm6FSQhDPS/94SFQ
+         BBg1I1Tw2eXYkRdW7gLanO5HTB3oQl6I+FCnpIOlJfBBEhth03qDoYYFqLk0Nx4/3/j0
+         2txnkcrm3GXKTBF649x92vWh4fDiipIVK9heE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3XR3Rna7Rr+9CL16uPJTtqZhFZ3n6mMMJSTweWOLXfo=;
+        b=aCljo/SZJ9Jwyz5iy6bjtpe9XS5mAgDsIaCmpimeuL8a/mNrp5euz1ErK8RQ/OHN8I
+         mjKNMe1vhi1CQW2kqn9hx+997dDWP7R3Wlz8RBSj2gGXkmU+dsmH1W/Dgpwhfy2B3t1o
+         fQCYFkXpG5VEvmppYDXwszI9E7KJBN/JxtlEJ/EN7WswgupPRsYiYBRQohDzOnmSxq80
+         Bhh0C98NJuqfSPIrClvNe0feJGcWW68z2CTogqQeHHvj8K81Ce2cIO1SN9bjWg89IMQD
+         3v4vBSNpTE/jdXszPq3JldPSuR2Ot9BL2rJSupCKHg6WjOpEKSGUHm3dQ9c8qzHfrB/5
+         /8OA==
+X-Gm-Message-State: AOAM532W8VuC5MgSUHvU9Df2SwYbeYLIjC2JCiq8UW0cXW9yYDGWjazc
+        egj/5zlcoS0Jkjuq3geSXIm3Xw==
+X-Google-Smtp-Source: ABdhPJztWny8qDLoF9aDrOGGwPEkUl8/lCnKXM6Yi4tE7zPw7q2cjlDL6++ccQRH4HMcKCFTQSzjiA==
+X-Received: by 2002:a62:584:0:b029:32e:3b57:a1c6 with SMTP id 126-20020a6205840000b029032e3b57a1c6mr10199216pff.13.1627788360124;
+        Sat, 31 Jul 2021 20:26:00 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r4sm6540476pjo.46.2021.07.31.20.25.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 20:25:59 -0700 (PDT)
+Date:   Sat, 31 Jul 2021 20:25:58 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        alaaemadhossney.ae@gmail.com, syzkaller@googlegroups.com,
+        Jann Horn <jannh@google.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: memory leak in do_seccomp
+Message-ID: <202107311901.8CDF235F65@keescook>
+References: <CADVatmPShADZ0F133eS3KjeKj1ZjTNAQfy_QOoJVBan02wuR+Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210729001254.327661-1-masahiroy@kernel.org> <CAPotdmRSCnuTwHXc3Fi5b4w3TjEbJmwWUig4mcSNgFo7gXKNHw@mail.gmail.com>
-In-Reply-To: <CAPotdmRSCnuTwHXc3Fi5b4w3TjEbJmwWUig4mcSNgFo7gXKNHw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 1 Aug 2021 12:06:47 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ++vpMyr4YMp1T-RsyAT1DeL0jrGO3JYuSGm6oUA+uVQ@mail.gmail.com>
-Message-ID: <CAK7LNAQ++vpMyr4YMp1T-RsyAT1DeL0jrGO3JYuSGm6oUA+uVQ@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: cancel sub_make_done for the install target to
- fix DKMS
-To:     John S Gruber <johnsgruber@gmail.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADVatmPShADZ0F133eS3KjeKj1ZjTNAQfy_QOoJVBan02wuR+Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 2:38 AM John S Gruber <johnsgruber@gmail.com> wrote:
->
-> On Wed, Jul 28, 2021 at 8:13 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > Since commit bcf637f54f6d ("kbuild: parse C= and M= before changing the
-> > working directory"), external modules invoked by DKMS fail to build
-> > because M= option is not parsed.
-> >
-> > I wanted to add 'unset sub_make_done' in install.sh but similar scripts,
-> > arch/*/boot/install.sh, are duplicated, so I set sub_make_done empty
-> > in the top Makefile.
-> >
-> > Fixes: bcf637f54f6d ("kbuild: parse C= and M= before changing the working directory")
-> > Reported-by: John S Gruber <johnsgruber@gmail.com>
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  Makefile | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index bb10a93edf5c..4193092f7c38 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -1316,6 +1316,16 @@ PHONY += scripts_unifdef
-> >  scripts_unifdef: scripts_basic
-> >         $(Q)$(MAKE) $(build)=scripts scripts/unifdef
-> >
-> > +# ---------------------------------------------------------------------------
-> > +# Install
-> > +
-> > +# Many distros have the custom install script, /sbin/kernelinstall.
+On Sat, Jul 31, 2021 at 08:20:29PM +0100, Sudip Mukherjee wrote:
+> Hi All,
+> 
+> We had been running syzkaller on v5.10.y and a "memory leak in
+> do_seccomp" was being reported on it. I got some time to check that
+> today and have managed to get a syzkaller
+> reproducer. I dont have a C reproducer which I can share but I can use
+> the syz-reproducer to reproduce this with next-20210730.
+> The old report on v5.10.y is at
+> https://elisa-builder-00.iol.unh.edu/syzkaller/report?id=f6ddd3b592f00e95f9cbd2e74f70a5b04b015c6f
 
+Thanks for the details!
 
-I fixed up  /sbin/kernelinstall to /sbin/installkernel
+Is this the same as what syzbot saw here (with a C reproducer)?
+https://syzkaller.appspot.com/bug?id=2809bb0ac77ad9aa3f4afe42d6a610aba594a987
 
+I can't figure out what happened with the "Patch testing request" that
+was made; there's no link?
 
-Applied to linux-kbuild.
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888019282c00 (size 512):
+>   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.841s)
+>   hex dump (first 32 bytes):
+>     01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<00000000762c0963>] do_seccomp+0x2d5/0x27d0
 
+Can you run "./scripts/faddr2line do_seccomp+0x2d5/0x27d0" for this? I
+expect it'll be:
+        sfilter = kzalloc(sizeof(*sfilter), GFP_KERNEL | __GFP_NOWARN);
 
+>     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+>     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-> > +# If DKMS is installed, 'make install' will eventually recuses back
-> > +# to the this Makefile to build and install external modules.
-> > +# Cancel sub_make_done so that options such as M=, V=, etc. are parsed.
-> > +
-> > +install: sub_make_done=
-> > +
-> >  # ---------------------------------------------------------------------------
-> >  # Tools
-> >
-> > --
-> > 2.27.0
-> >
->
-> This patch tested successfully on my system on 5.14.0-rc3.
+The "size 512" in your v5.10.y report is from seccomp_prepare_filter()
+(noted above). seccomp_prepare_filter() cleans up its error paths.
 
+> 
+> BUG: memory leak
+> unreferenced object 0xffffc900006b5000 (size 4096):
+>   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.841s)
+>   hex dump (first 32 bytes):
+>     01 00 00 00 00 00 00 00 00 00 00 00 05 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<00000000854901e5>] __vmalloc_node_range+0x550/0x9a0
+>     [<000000002686628f>] __vmalloc_node+0xb5/0x100
+>     [<0000000004cbd298>] bpf_prog_alloc_no_stats+0x38/0x350
+>     [<0000000009149728>] bpf_prog_alloc+0x24/0x170
+>     [<000000000fe7f1e7>] bpf_prog_create_from_user+0xad/0x2e0
+>     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
+>     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+>     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
+Again, I'm curious about where do_seccomp+0x325/0x27d0 is for this, but
+the matching one in v5.10 shows:
+        ret = bpf_prog_create_from_user(&sfilter->prog, fprog,
+                                        seccomp_check_filter, save_orig);
 
+This and everything remaining below else has bpf_prog_create_from_user()
+in the allocation path.
 
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888026eb1000 (size 2048):
+>   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<0000000072de7240>] bpf_prog_alloc_no_stats+0xeb/0x350
+>     [<0000000009149728>] bpf_prog_alloc+0x24/0x170
+>     [<000000000fe7f1e7>] bpf_prog_create_from_user+0xad/0x2e0
+>     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
+>     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+>     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888014dddac0 (size 16):
+>   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
+>   hex dump (first 16 bytes):
+>     01 00 ca 08 80 88 ff ff c8 ef df 14 80 88 ff ff  ................
+
+These are two kernel pointers:
+	0xffff888008ca0001 (unaligned by 1 byte?!)
+	0xffff888014dfefc8
+
+Ah, no, this is from:
+
+struct sock_fprog_kern {
+        u16                     len;
+        struct sock_filter      *filter;
+};
+
+The "ca 08 80 88 ff ff" bytes are uninitialized padding. ;) "len" has
+a value of 1 (which matches the syzkaller reproducer args below of a
+single BPF instruction).
+
+        fp->orig_prog = kmalloc(sizeof(*fkprog), GFP_KERNEL);
+        if (!fp->orig_prog)
+                return -ENOMEM;
+
+        fkprog = fp->orig_prog;
+        fkprog->len = fprog->len;
+	...
+        fkprog->filter = kmemdup(fp->insns, fsize,
+                                 GFP_KERNEL | __GFP_NOWARN);
+
+>   backtrace:
+>     [<00000000c5d4ed93>] bpf_prog_store_orig_filter+0x7b/0x1e0
+>     [<000000007cb21c2a>] bpf_prog_create_from_user+0x1c6/0x2e0
+>     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
+>     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+>     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888014dfefc8 (size 8):
+>   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
+>   hex dump (first 8 bytes):
+>     06 00 00 00 ff ff ff 7f                          ........
+
+This contains a userspace (likely stack) pointer, and is referenced
+by the second pointer above. (i.e. kmemdup() above, but how have the
+contents become a user stack pointer?)
+
+>   backtrace:
+>     [<00000000ee5550f8>] kmemdup+0x23/0x50
+>     [<00000000f1acd067>] bpf_prog_store_orig_filter+0x103/0x1e0
+>     [<000000007cb21c2a>] bpf_prog_create_from_user+0x1c6/0x2e0
+>     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
+>     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+>     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Not sure if this has been already reported or not, but I will be happy
+> to test if you have a fix for this.
+
+I was suspecting a missing error path free near bpf_prepare_filter()
+as called by bpf_prog_create_from_user() here:
+
+        /* bpf_prepare_filter() already takes care of freeing
+         * memory in case something goes wrong.
+         */
+        fp = bpf_prepare_filter(fp, trans);
+        if (IS_ERR(fp))
+                return PTR_ERR(fp);
+
+Since only seccomp and af_packet use bpf_prog_create_from_user(),
+and af_packet sets neither a "trans" callback nor save_orig. But if
+"trans" fails (due to some BPF instructions seccomp doesn't support),
+I'd expect this leak to be detected more often.
+
+bpf_prepare_filter() is documented as cleaning up allocations on failure,
+though I notice its cleanup differs from bpf_prog_create_from_user()'s,
+which uses __bpf_prog_free() instead of __bfp_prog_release(). But
+that should only make a difference for orig_prog getting freed,
+and bpf_prog_store_orig_filter() should already be freeing that on
+failures too.
+
+Similarly, bpf_migrate_filter() cleanups up on failure too, so this
+doesn't seem to be it:
+
+        if (!fp->jited)
+                fp = bpf_migrate_filter(fp);
+
+        return fp;
+
+So, I'm going to assume the missing free is somehow related to
+process management, since I see the Syzkaller reproducer mentions
+SECCOMP_SET_MODE_FILTER_LISTENER, fork(), and ptrace(). :)
+
+Quoting from the v5.10.y report:
+> # {Threaded:true Collide:true Repeat:true RepeatTimes:0 Procs:8 Slowdown:1 Sandbox:none Fault:false FaultCall:-1 FaultNth:0 Leak:true NetInjection:true NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false USB:true VhciInjection:false Wifi:false IEEE802154:false Sysctl:true UseTmpDir:true HandleSegv:true Repro:false Trace:false}
+> seccomp$SECCOMP_SET_MODE_FILTER_LISTENER(0x1, 0x0, &(0x7f0000000000)={0x1, &(0x7f0000000040)=[{0x6, 0x0, 0x0, 0x7fffffff}]})
+
+0x1 is SECCOMP_SET_MODE_FILTER
+0x0 is empty flags
+{0x6, 0x0, 0x0, 0x7fffffff} is
+	BPF_STMT(BPF_RET, SECCOMP_RET_ALLOW | 0xffff)
+
+For "SECCOMP_SET_MODE_FILTER_LISTENER", defined here:
+https://github.com/google/syzkaller/blob/master/sys/linux/seccomp.txt#L15
+I was expecting flags to include SECCOMP_FILTER_FLAG_NEW_LISTENER:
+	seccomp$SECCOMP_SET_MODE_FILTER_LISTENER(
+			op const[SECCOMP_SET_MODE_FILTER],
+			flags flags[seccomp_flags_listener],
+			arg ptr[in, sock_fprog]) fd_seccomp (breaks_returns)
+
+For the flags:
+
+	seccomp_flags_listener = SECCOMP_FILTER_FLAG_NEW_LISTENER,
+				 SECCOMP_FILTER_FLAG_LOG_LISTENER,
+				 SECCOMP_FILTER_FLAG_SPEC_ALLOW_LISTENER
+
+which is:
+
+	SECCOMP_FILTER_FLAG_LOG_LISTENER = 10
+	SECCOMP_FILTER_FLAG_NEW_LISTENER = 8
+	SECCOMP_FILTER_FLAG_SPEC_ALLOW = 4
+	SECCOMP_FILTER_FLAG_SPEC_ALLOW_LISTENER = 12
+
+How is flags 0 above? (Maybe I don't understand the syzkaller reproducer
+meaning fully?)
+
+> r0 = fork()
+> ptrace(0x10, r0)
+
+0x10 is PTRACE_ATTACH
+
+My best guess is there is some LISTENER refcount state we can get into
+where all the processes die, but a reference is left alive.
+
+-Kees
 
 -- 
-Best Regards
-Masahiro Yamada
+Kees Cook
