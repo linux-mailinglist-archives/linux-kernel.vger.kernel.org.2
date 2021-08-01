@@ -2,168 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062553DC9D1
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 06:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B9F3DCA0E
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 07:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhHAE1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 00:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHAE1G (ORCPT
+        id S229576AbhHAFEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 01:04:22 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:51687 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229491AbhHAFEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 00:27:06 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28F0C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 21:26:57 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id 13-20020a4ae1ad0000b029024b19a4d98eso3578361ooy.5
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 21:26:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=moYJAI6IKGsvSFokzFbQjWI1AKw/0VGF4EI8VgYlBHI=;
-        b=R9jMZ73rYTfklD/SvK3ERhRkt886+N2VNSJ0Im1f0Ge1i9Kx4TUPdZNIuB+QKbKM8c
-         Ay1ogTjO2nw1gn222+nDVI7Sgh3KRaDnkepT7ywjvWujqV1iGsDVNX48d6jLd4z8r9TR
-         TagAQJRE8Ix3Z+GO9S3E07faghWv7cRHjvzx4RpeQJwYRBn6y9l3sdMTlS0HqHrvsqM4
-         S/3yn/B2OrWvj402yMnIIbXlF3wBhAnE5zdVq4aa2zxCpWoK9yv61QyYf6fsJHMxU6MY
-         UdZqRrZgrPS865J4EM1PALTmEf/5dSDs74QvwyHkdPO2WnRcPb7GbZzsoirqsMEhHTqG
-         spXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=moYJAI6IKGsvSFokzFbQjWI1AKw/0VGF4EI8VgYlBHI=;
-        b=XP4V4uMaBi3+6ZdocUqKQkdRKlz+pUjtE0B/f4MNuE1hzy22dxExzClBeCqMLKa6nD
-         fzsQQg2rEPImzEZL5eskopBHUw/26+ZfsSEK3z+FD+u0C3+Rt+84qz+AmGOIPrYNk74u
-         jsby1q8VvhInJLKRsUWwoLUfoPMXvEDXBYIuUkwYDu4rxteCZIGUDtae03Bu/omWIOU1
-         OXK82UpduehxozXHBpzF8bNZRPin3CvN9pytt5GRdQ7urONvT8LjT5MPPY+yOoAIYpfM
-         Yc9WtXycvo+I1sE+FNWfroND7HzZP9//d2viyHvmuzDMuI9+u4u4KMO9Ko4E2kqL4Lik
-         yI4A==
-X-Gm-Message-State: AOAM532ooblRKCTgn4b7J5N0Ru64vNMY7wzlWw2M9mja7U7yNnbsxcfY
-        xuy9EhdUkGvH8vzIyVFya44=
-X-Google-Smtp-Source: ABdhPJxO6rAWQegQYxqlXfjq9ExGR8l0DVPAjeGk1+qUTQv/1A0+JJevBokaULrCCb6ZhuQ3UPVYXw==
-X-Received: by 2002:a4a:4fca:: with SMTP id c193mr6647541oob.33.1627792017269;
-        Sat, 31 Jul 2021 21:26:57 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h2sm1238131oti.24.2021.07.31.21.26.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 31 Jul 2021 21:26:56 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2 4/4] swiotlb: Free tbl memory in swiotlb_exit()
-To:     Konrad Rzeszutek Wilk <konrad@darnok.org>, will@kernel.org
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        iommu@lists.linux-foundation.org,
-        Claire Chang <tientzu@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210720133826.9075-1-will@kernel.org>
- <20210720133826.9075-5-will@kernel.org>
- <20210731182611.GA3792424@roeck-us.net> <YQYHDYnRegV0Xlv5@fedora>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <52cc40eb-3f6b-5abc-9130-af9216760701@roeck-us.net>
-Date:   Sat, 31 Jul 2021 21:26:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 1 Aug 2021 01:04:21 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8DF235C00A7;
+        Sun,  1 Aug 2021 01:04:11 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sun, 01 Aug 2021 01:04:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-id:content-type:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=ixXBiF5JMgE/jUfE+hpqY4FdeRq+epIUTn/nmvE6jJ0=; b=WebSY7C9
+        FAHKPgJvFoR1uu08jVMVfCqNSRNPXqlT1nvgNEPi+wugD0d6B8/2/BCeXUhrvrmv
+        fjxtRAzVJH0iQFnekwdUPGlQ/MzF0JGatyDJM3hprQCSMowHC178lMG9vCIjKJfi
+        lJ2hNJSgWE1agkuC7eVuVq8y+7TeWpI1AakokQ6IYBoJvA80tMPC5xQ5tdIsH5Qb
+        KsbSrigE/nxjIrk6Y8i3mbPikRICNfmWrjsHX3VAKDVmzgqGpXv3+sqEMRkx0wad
+        A0UtO4vLjRvdrKH4OSG/TRGueUJdLAwV+1HQnmzbkHMbwDd5z7cm+TWyT2udqrbw
+        ZTwKlUzD03uRIA==
+X-ME-Sender: <xms:SisGYZ_nkbMjsGdEQxUPiAIha876S-oiF171GzIukMvNx1k6O5kieQ>
+    <xme:SisGYduUwjsV6ZNzFxxReeJIynLICubzXGITBK-ybYvm35EXJiRjsXM3_5gTUZI9M
+    cINJlA1hoLc2ZcDViI>
+X-ME-Received: <xmr:SisGYXB72l5pi9X-eGPkFlnHgj1flDVNVs7Xqmqp8m4cg5eWha_hlOSRTbw5RaKm9YR2l3yQ_ZQD9mIu4kAQUFL2-3Jfroibmfw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheekgdeglecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
+    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:SisGYdeaEN6I7PZt29wkpnJ5hCa9pE8Zs4IWef3NyG1FWr-nCTPvSw>
+    <xmx:SisGYePbpuRVZ1I7Iei1JcoWyrgy_Ukid-nNGuAUhH8mLmyBmCejcQ>
+    <xmx:SisGYfktxFQRdPl5kszdECRQ4VRLeuD4TWlQSgDyW9vczEG22SYh6Q>
+    <xmx:SysGYXZirp0_sDutraj3or5wSk9-UGcGF1ftNIaLCcB5tqcf-iI9yA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 1 Aug 2021 01:04:08 -0400 (EDT)
+Date:   Sun, 1 Aug 2021 15:04:03 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH v2 1/4] nubus: Simplify check in remove callback
+In-Reply-To: <20210730191035.1455248-2-u.kleine-koenig@pengutronix.de>
+Message-ID: <dd248ad3-87b-ead8-957d-aea36cb01058@linux-m68k.org>
+References: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de> <20210730191035.1455248-2-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YQYHDYnRegV0Xlv5@fedora>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; BOUNDARY="-1463811774-1980221512-1627794129=:27"
+Content-ID: <f0cf4098-5fe6-2ba5-457a-fd1b6bf4b24c@nippy.intranet>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/21 7:29 PM, Konrad Rzeszutek Wilk wrote:
-> On Sat, Jul 31, 2021 at 11:26:11AM -0700, Guenter Roeck wrote:
->> Hi,
->>
->> On Tue, Jul 20, 2021 at 02:38:26PM +0100, Will Deacon wrote:
->>> Although swiotlb_exit() frees the 'slots' metadata array referenced by
->>> 'io_tlb_default_mem', it leaves the underlying buffer pages allocated
->>> despite no longer being usable.
->>>
->>> Extend swiotlb_exit() to free the buffer pages as well as the slots
->>> array.
->>>
->>
->> This patch causes qemu pseries emulations to crash. Backtrace and bisect
->> log see below. Reverting it fixes the problem.
-> 
-> I am 99% sure it is fixed by this patch (which should be in linux-next
-> in 5 minutes):
-> 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Yes, it does.
+---1463811774-1980221512-1627794129=:27
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <422deda6-11f-a1c8-5510-7123c82751b8@nippy.intranet>
 
-FWIW:
+On Fri, 30 Jul 2021, Uwe Kleine-K=C3=B6nig wrote:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+> The driver core only calls a remove callback when the device was
+> successfully bound (aka probed) before. So dev->driver is never NULL and
+> the respective check can just be dropped.
+>=20
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-Thanks!
-Guenter
+Acked-by: Finn Thain <fthain@linux-m68k.org>
 
-> 
->>From a449ffaf9181b5a2dc705d8a06b13e0068207fd4 Mon Sep 17 00:00:00 2001
-> From: Will Deacon <will@kernel.org>
-> Date: Fri, 30 Jul 2021 12:42:31 +0100
-> Subject: [PATCH] powerpc/svm: Don't issue ultracalls if !mem_encrypt_active()
-> 
-> Commit ad6c00283163 ("swiotlb: Free tbl memory in swiotlb_exit()")
-> introduced a set_memory_encrypted() call to swiotlb_exit() so that the
-> buffer pages are returned to an encrypted state prior to being freed.
-> 
-> Sachin reports that this leads to the following crash on a Power server:
-> 
-> [    0.010799] software IO TLB: tearing down default memory pool
-> [    0.010805] ------------[ cut here ]------------
-> [    0.010808] kernel BUG at arch/powerpc/kernel/interrupt.c:98!
-> 
-> Nick spotted that this is because set_memory_encrypted() is issuing an
-> ultracall which doesn't exist for the processor, and should therefore
-> be gated by mem_encrypt_active() to mirror the x86 implementation.
-> 
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Cc: Claire Chang <tientzu@chromium.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Fixes: ad6c00283163 ("swiotlb: Free tbl memory in swiotlb_exit()")
-> Suggested-by: Nicholas Piggin <npiggin@gmail.com>
-> Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-> Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
-> Link: https://lore.kernel.org/r/1905CD70-7656-42AE-99E2-A31FC3812EAC@linux.vnet.ibm.com/
-> Signed-off-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Konrad Rzeszutek Wilk <konrad@kernel.org>
+BTW, aside from nubus, zorro and superhyway you can find the same pattern
+in many other busses. You may want to patch the following methods too.
+
+acpi_device_remove
+apr_device_remove
+ccwgroup_remove
+gio_device_remove
+hid_device_remove=20
+ibmebus_bus_device_remove
+macio_device_remove
+memstick_device_remove
+ntb_remove
+pci_device_remove
+pnp_device_remove
+ps3_system_bus_remove
+rio_device_remove
+slim_device_remove
+soundbus_device_remove
+ssb_device_remove
+tifm_device_remove
+vdpa_dev_remove
+vmbus_remove
+
 > ---
->   arch/powerpc/platforms/pseries/svm.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/powerpc/platforms/pseries/svm.c b/arch/powerpc/platforms/pseries/svm.c
-> index 1d829e257996..87f001b4c4e4 100644
-> --- a/arch/powerpc/platforms/pseries/svm.c
-> +++ b/arch/powerpc/platforms/pseries/svm.c
-> @@ -63,6 +63,9 @@ void __init svm_swiotlb_init(void)
->   
->   int set_memory_encrypted(unsigned long addr, int numpages)
->   {
-> +	if (!mem_encrypt_active())
-> +		return 0;
-> +
->   	if (!PAGE_ALIGNED(addr))
->   		return -EINVAL;
->   
-> @@ -73,6 +76,9 @@ int set_memory_encrypted(unsigned long addr, int numpages)
->   
->   int set_memory_decrypted(unsigned long addr, int numpages)
->   {
-> +	if (!mem_encrypt_active())
-> +		return 0;
-> +
->   	if (!PAGE_ALIGNED(addr))
->   		return -EINVAL;
->   
-> 
-
+>  drivers/nubus/bus.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
+> index d9d04f27f89b..17fad660032c 100644
+> --- a/drivers/nubus/bus.c
+> +++ b/drivers/nubus/bus.c
+> @@ -33,7 +33,7 @@ static void nubus_device_remove(struct device *dev)
+>  {
+>  =09struct nubus_driver *ndrv =3D to_nubus_driver(dev->driver);
+> =20
+> -=09if (dev->driver && ndrv->remove)
+> +=09if (ndrv->remove)
+>  =09=09ndrv->remove(to_nubus_board(dev));
+>  }
+> =20
+>=20
+---1463811774-1980221512-1627794129=:27--
