@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9C83DCACE
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 10:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC133DCAD1
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 10:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbhHAIsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 04:48:10 -0400
-Received: from mout.gmx.net ([212.227.17.22]:59883 "EHLO mout.gmx.net"
+        id S231559AbhHAIwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 04:52:42 -0400
+Received: from mout.gmx.net ([212.227.15.15]:43445 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231462AbhHAIsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 04:48:09 -0400
+        id S230087AbhHAIwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 04:52:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627807664;
-        bh=KAtB/hkXnGtyzqimkfmScVvNL7Znds0dqHpt67ZuZ94=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=JhK7D/cZMyBelejeTyyBjOOLqAOmTwexdKB/l1WObBYy7aoEzJYKciXd0q+13LJN5
-         K/76ON/zeYuMZjBEEmLIbQMakmkZpD8KOcR7KSimtdOBerjBeasmCswoUrhfo0OgWW
-         tv5vgCfdWWIaHiT4ntEJJW2qdySwUKWUyysQeLiQ=
+        s=badeba3b8450; t=1627807929;
+        bh=SOIFLquzf5Zz0SDbbcnVJ8DB5eWL4PtOwemIlXPqT4Y=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=TIvReMHWhYORyqwjmEayuO3kZj96KrTT6tPaJrN8yXIw6eD/m5W6wWw84DAWhNlGg
+         rhKsgV/ewp5X/zEylKgITozYp5logbjbF3xwFU0HiI66L0+zwRdGDKOuPY/tjd62yu
+         0nj63ST6oys2hyDHR1CiZX3RRrgNujV/bAWP9sCI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3lcJ-1m9psx0nHX-000wjz; Sun, 01
- Aug 2021 10:47:44 +0200
-Date:   Sun, 1 Aug 2021 10:47:31 +0200
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1Mlf4S-1mrfPm3VHW-00igu5; Sun, 01 Aug 2021 10:52:09 +0200
 From:   Len Baker <len.baker@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Len Baker <len.baker@gmx.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-hardening@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] drivers/soc: Remove all strcpy() uses
-Message-ID: <20210801084731.GA2588@titan>
-References: <20210731171825.12865-1-len.baker@gmx.com>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Phil Reid <preid@electromag.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] Remove all strcpy() uses
+Date:   Sun,  1 Aug 2021 10:51:52 +0200
+Message-Id: <20210801085155.3170-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210731171825.12865-1-len.baker@gmx.com>
-X-Provags-ID: V03:K1:bDsnKas5NAlqNeK8T8Vsqc2f6q2LMWVBcpZAT8PxxpAUSH3wpob
- echByALkbiO5G5lU8JFjlDTCj3+8eyZj86S32cF1QX0QtisZeAfkgg13AeSQw89Vs3z/brO
- ZHD1sx8/mqeToomyl7gkEF9ZywiklBfIqTdLfHrx8xZthat1ahCIgOeQpkDUgHjy2V3E9Ns
- IFLXsaksWOWTZo5mAjVRw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sQFtGwbxGog=:RbelOC5WafgvKeUwUBZFe8
- 9As/og4QkRWlU0e9wQ0+UQH2+qROIuVCe0NMlrSqVFFt44wVMXmjmscnmFuYjtD4/sL28o5s8
- sxpDClhxgcwvJ89g22gw8VgTMMfuBbnvjea+dKw0UP4n72oEmMgtOKMohxFYsCrScjVpnkrgw
- IFH7CP8exEYRLzmVTXJiB8C9odUQz22rBFVxSPNBor/6TgsErmW3xEUv1UIYwlUpYKJ/sEqa3
- HWhsdoHZs7Gl4trQ2RCwJ9QzIkcUcmEqnBlx+quMmAfKwASLdwW8WMF+bKz1jdyxZz3ehYW/1
- u0O0B4J7oXUAwROop3jtIhQ+Ops60jZ5OO1H7mhPcKG2+22ujOpd9ZJMnLA3zDZReFo74tvlq
- UL0kYkVVkJCe/Mhht7QRy9XRjv3IUrh5tnrjLJrugwduxpyIYEuhEBPHNEu7eMacThMPlFHwO
- bX7mWmc9W8DBcnfI04iRH4Zkt6NAdSg8LSALuhKdW8+YASzWzq3ZfKo4re9o/0VHKkFZFnwqW
- kmmtpot3BJl5vJAOufIIlIx+ulvFg0byrKGyTHJdJFFqUQ6/szdzkGpL5nZbH5Urgb4ieGg2x
- 6boHtnimWvEoXnEYAgRGRqNp6Ez6yyQ+4z+8h4hk9orMrKRc7pPYeHtF0qu3x20s9rj/qo/Hd
- 1uMTqn0vMIa6cvGHfBHPh/9ymMK1E8rd6gWyKyroJ5PehuzPAgZKrpakaGji8jqDKo/c2Rkvm
- F86r133HGjvl/m4P4WDB2CzBZVSihs8hCCz7ZlGjKRMsfvkJnxk1JNxFrbTbKUjZ9kwNv7hue
- DhQWWLPErlTPbBrIf3z9+qZiBKPAgjKuMWBKdQSV6SYAszWDdsWXKqiQDAXM3e6roQ0P7sV7a
- FexVfyST7D2yu6roHS8riPPzY0bTG+DTqmRfT+nVCUGE0cBb3tKhQi448eVASL9P11p4du+Hp
- lK7mLUr8GA5Q6gCAPnfon72+pUAUpdfqXLB1cdO3pCIuw3PvO7YIN2gfTVPgh3a+uW76pU+UA
- w1aGTVIFeK/nfIJVPwvGWxP8nifGQHlgenxF0zzfBLyIOZ0dzEs7RNPRYYigvaaKJHsvQSGnf
- P6l7gz3gzYn6FsKTY9sOFsM1Bx03eFrIs+m
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:srW7+QTLXJ7EzVaF4TWVA9WepIXkUL0J7UT9FQCJ+SLKR7a2RRI
+ rvW1K1KbCC1tyLMlihI/G9Ic6pVfq0/0cB6y4kXzkQUbPadtlnkAKW42Aj8ySG9JMH6YsjR
+ ZTGcToRcth60QTmJ95v3NjRHI7PID8nI5N2fnvzbTslnUuY1HC1LlIqr49kNnNKxPWQB+77
+ oF5+ZQO1kMyGMe9Z0TZNA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LiJhGubXC8I=:IWp5R7iGCVjZjY2qtZYuTM
+ LQuvyE6104hlATg3VwkYJqq19W+690jJ8RUru0rTfmZRebtnSeYzyNwlM16IqEsEgXDEjQX66
+ JgmbADBujwRhlAZIHRpsdnN8/v68Xh2Qs778w+5yyW1H+Tsju0UdOBLx9E8QTxf3wJyN9NLXw
+ zX39DNbMTTHirS4w7UTSGY/K62msTs0bQVM+4F49Dpn/J0FSZUAQmCDc/n7KZ+BYebZPvCnLP
+ yH0el+mNFzKKosSf4RC1YpohXFEGF1gxsy0fn2QUzRiR/b53O3Hh0ZFHXdHKS4vn/dql7ET3u
+ 86VPvLwjMZXf/SychaXrxpfADPtzTioX1rbRlXaR4qG4MWtt2AJCVwMjC/RVQQW/9PuO+xUhC
+ B8hvG6lCYi2N/bLrkaVrUWTFF9kwTYk7oU/Xw/qr1pqFF4YyST+0rexNDNgqD8iPXBKVg/V82
+ /x3+K17SFxkHPkSCHncNGdE3ZrpwbS8wPPkGRnQjXsuYXDEKgXRK0zfGRaoRvmPP4Lnu09XOd
+ qkNbaoCxXiXQlqCq4IR6UvUkG7os0qLYghcYFdAqhhsSuOcRpio6nnBP58PWBbP7CcWu1QvUR
+ SRsicuygLf8L+QDlm/yviB8Y8t7lZYmtpKeUehW8m/YVlbPGybSGDhQ+9RwXJ8n570chaz9gl
+ weow9eQh6sDND3why5IMYXtiCPUArAM3F+iMJkzpb3a8rLeFBCVkg6CJnEm+KmqRwoE94Jaed
+ ut4C9gSlKf/OZ6p2IDrXhrLrDdFIppgHPDXcHB/lVk6pJ24Rge2RIKcv03L/mix/W9TtpqTel
+ 6UZ31HkZBQJL3WATn/oha6acC9JsHCH4284c4sXvq+m5mkzFIJ9O/+unFAuYjB45x4SjQxWcW
+ WHh/O7HrqONLhKDHmjBxiaOfQzdpm56BqfDUbRWmuZ/ZC97FBW7IZIygdNskirAGAj77LwMVl
+ 6Q/jjkrIz0hhtjtRSVzZ+br/L/Bn8O7zoNwDJYq11tLVeZJy7Id3jrUuZ8bfi6pyjesqpETA1
+ xRqhbMuSv3CkT+JjMi5F4xpAmFG+otaNeFK0xzl89J41zPkQ696l0ZmkLhUn2pvq7KN7IC3Hq
+ Z6JnzWFpLpXIJFiBsUyxAdxmotE8ZM3uxmo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 07:18:25PM +0200, Len Baker wrote:
-> strcpy() performs no bounds checking on the destination buffer. This
-> could result in linear overflows beyond the end of the buffer, leading
-> to all kinds of misbehaviors. The safe replacement is strscpy().
->
-> Moreover, when the size of the destination buffer cannot be obtained
-> using "sizeof", use the memcpy function instead of strscpy.
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Len Baker <len.baker@gmx.com>
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. So, this serie removes all strcpy uses
+from the "staging/fbtft" subsystem.
 
-Drop this patch. It has errors. Sorry for the noise.
+Also, refactor the code a bit to follow the kernel coding-style and
+avoid unnecessary variable initialization.
 
-Apologies,
-Len
+Changelog v1 -> v2
+- Add two new commits to clean the code.
+- Use the "%*ph" format specifier instead of strscpy() function (Geert
+  Uytterhoeven)
+
+Changelog v2 -> v3
+- Change the initialization of the "j" variable in the "for" loop and
+  update the code accordingly (Andy Shevchenko).
+- Improve the commit message to inform that the "%*ph" replacement
+  won't cut output earlier than requested (Andy Shevchenko).
+- Don't remove the braces in the "if" statement due to the presence of
+  the comment (Geert Uytterhoeven).
+
+Len Baker (3):
+  staging/fbtft: Remove all strcpy() uses
+  staging/fbtft: Remove unnecessary variable initialization
+  staging/fbtft: Fix braces coding style
+
+ drivers/staging/fbtft/fbtft-core.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
+
+=2D-
+2.25.1
+
