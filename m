@@ -2,80 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0202D3DC97A
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 05:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438FE3DC97D
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 05:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbhHADhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 23:37:53 -0400
-Received: from mout.gmx.net ([212.227.17.20]:45415 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229761AbhHADhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 23:37:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627789018;
-        bh=6XXJXx+B8VKjyQj6r5lwRQRASHQ19Vs67JH7oNnWrqs=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=Zyde+j+l0uaPx1E4C/OYLAyPLjY7BE8965HpuPaF+1Pf/A6lYqM2J7Kyg57DfTDHc
-         CTnfep6x6R4wZbgct31dhYHkS6gN0WNhhsDCkmg4EQba/OZcGMnM88Uy7201A9VXly
-         hrZgKFjjoQD0wN5HJyejSDrOo3JtzqQnuqpRKAQQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.216.118]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MHGCu-1mNFhS1w5Q-00DEjT; Sun, 01
- Aug 2021 05:36:58 +0200
-Message-ID: <6fce881efc3d8c24a5172528fe1f46ec2ddc0607.camel@gmx.de>
-Subject: Re: v5.14-rc3-rt1 losing wakeups?
-From:   Mike Galbraith <efault@gmx.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Date:   Sun, 01 Aug 2021 05:36:57 +0200
-In-Reply-To: <87pmuzsf1p.ffs@tglx>
-References: <20210730110753.jvli6alm63h5lefy@linutronix.de>
-         <2ae27233ab091d09a7d1e971a47144b40dd51fa0.camel@gmx.de>
-         <87pmuzsf1p.ffs@tglx>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        id S232026AbhHADiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 23:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231452AbhHADiV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 31 Jul 2021 23:38:21 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DABC06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:38:12 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id 190so13477515qkk.12
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:38:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=5WRI9ovrYarzT6P+AQzyPA+zqmSi1roZ3PpwFTiVvsU=;
+        b=VP/8wrr+L9Dht4u0MJMeSSOm1ThNwDEsQqkwdL+2BxCgXIuJ+MtclIzdrzF/wfhwMO
+         yQ9miYXYFYxmzqvE8QDOodcfyok+5jByfAzw8wF3wNFWeBLMx99WiZucz5wBgngYUAG0
+         PNEfZyKutEQKhv6MNwosmIeiGLkol1lcMX9jMIOIlPL4LfC6ZJwo9ofOYjIlfyoo8elj
+         Tk9j9lZLUVZfMBgp0+Zy/9aL+ydhZQxCzLimxef0eqhpgDaVFsu9AwrBGWIR+hiMR2JA
+         DBAHTy92duQwewQ5ydWLQ4g3BiHgN7LOF2EDS7FnLkBJTpjECrqrXzcX7XbflLAbrVlY
+         xtfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=5WRI9ovrYarzT6P+AQzyPA+zqmSi1roZ3PpwFTiVvsU=;
+        b=bqV3UIB9MuaiTApwXLZnnC1TlFDvNJMmDb+VQyop5BcNzKBpMcyjoO2lxdGxVaF64w
+         UtFv1QUWEM6JwRlmSYukdqpAcn5qDCBJBI34SP31GPN8eZGDJ7PWDdE1H8MCeypXA/ed
+         6Bf3kTYNegPq0N9+gJuKZsiOXslCN8W9NuFgrURAc3F+AknVZ5JDU8cE3jJBMGVq0DMl
+         Vb0TwKeSigld6VDfHwFcTp6LGkghv7a1CpLexeYO8RfEdEtbMVwMctSSyUwuwwW/2bS6
+         O5oSe9a2Uzs0aQAeG7MTx4aizznOiAhIOzQOerkCcbQ4cDa+l5zvwv117LbmkZtVs5Iq
+         PR/w==
+X-Gm-Message-State: AOAM531IpGbv7wUrA/GSo/gxfNVRmwv18GN3JPj2K76idtphZpY+Dxu+
+        Fy/08+TsKL/evtjVvHBop1YLKA==
+X-Google-Smtp-Source: ABdhPJzbeKbM+hBpLElHX4ZgSN+ykriUzfv8c09OhRuDRYE+xw9J+GYvowS5xY0q7CP8coU+Pjf4kA==
+X-Received: by 2002:a05:620a:31a1:: with SMTP id bi33mr9497896qkb.146.1627789091715;
+        Sat, 31 Jul 2021 20:38:11 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id d200sm3505724qke.95.2021.07.31.20.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 20:38:11 -0700 (PDT)
+Date:   Sat, 31 Jul 2021 20:38:00 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Yang Shi <shy828301@gmail.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH 01/16] huge tmpfs: fix fallocate(vanilla) advance over
+ huge pages
+In-Reply-To: <CAHbLzkqp5-SrOBkpvxieswD6OwPT70gsztNpXCTBXW2JnrFpfg@mail.gmail.com>
+Message-ID: <422db5c4-2490-749c-964b-dd2b93286ed5@google.com>
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <af71608e-ecc-af95-3511-1a62cbf8d751@google.com> <CAHbLzkqp5-SrOBkpvxieswD6OwPT70gsztNpXCTBXW2JnrFpfg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pAhS6De1tBjzccsz8ujEyarxfwzTih35RCivZSjCr5Qv66InnU0
- 75xmt73ZIWRst18TIKvzf52L8ouhk5b5EFA1k8DMKEJBuU22jqzE3kLdpHi5ob0+1nSK+XH
- 31/n2H3K7sG57XHSWB+OpOPK8ycXOJTTv5kY5useV5Vt7CdP3QopdjTz9yx+sjCky0NOIbL
- bmSGhDDAslcW6vA+SNThA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ke2jBLI0zwI=:toeU2N4wRUsSAZYYN6dgeT
- 9q947aXCdTrUhlZLiOPkgC89o/Y0Upq1lwHYtGvsxEes/LxHgpVC8/kg20ghDGobOmZhO9UvD
- Fmg4U82M10gpqPQ4bgrxEd+4ILBeuD+8JJWNM5yTE3h2PrIUM7r/ztE6G1Cn4olggU4Igpgow
- xDUbUKb+yekMUM4YCWFS9WO9PBmX9GwycPsiDDHmb6w5xTZa2bAtd3RATwhAA+QO3KLiLBkJH
- hOWdnmtCH4lcnpb2TDTdwPQLSmrJmv6EuyywYUctBvasK9h1zlTVyx9SOjHU+zI5UM6y9zivf
- 8qsaDpsCrzX8U3tCaW4NDa9gq/7fZjLfVlKti/O8ysiwBCelsytSXxj0UoEUGhntRl/KhtHBd
- 71ZOceIqD1vVNwe3wTchR0E31Tz0o93jkNA6GkitH3hKd/3bZ3Gc6+WxhvmdsiO8xH+O5mhPz
- ZrO99qiigJTsRjnZyHMM4T/qVG8Rf+mxaPCPCBpS8SeH8GznKntUQ6M/ni5KgRfpLs8+9nA3P
- mwmthSb5Gtb0K5sBA8yT2D9zvAu8F7q8sPpzmEIXIuZUvvBv63m72AM3QoJ4TeNpTMBuuLflv
- wwJoEYNJW9WrJ4wk8aiNk9MKfaMGe9oRbvgVb6WJkP+4IPHPPWuT325qGeMNlosEXP9BCsdCZ
- zRRrrNApupGqxhMh4ABmMYA0u6YypJN0RWIO/j8xw7RlsEWpIdhdPDCCGCMYVw+P2HQSKfQ72
- cvRVOhaqYD2TsvYOdnaB+YYV7BytWMCSGTRQ6waWhkqH3aBO/EfdAzRxdrbj4dZeqrZBKwQuf
- k3OVJvJrENqUxxHY4mT81r/0bAu/D5/jMW1lyYLURXdHUVpEWTgyThEiY1eSW/QYWdv6OVc3l
- mFR/q5iwINWjXSIZW3BbqUGP5vUxCWDndt8huu5DkDMpwLDW7lyQgQGG/OIO+8rdDg8aK3Eaf
- HxMyZLUtxIxQ2cD40/4RVNXUVUbdC/8K2pLV6wY8AHungalR7Vn4YeDM0FGcN9Bz86KOHuQmQ
- 1KWdGiZGri2Rh/qjGonzdDeGhnoxc1ch4QkrUlobTPgYCC6H3utnlNO1Imem7axyfgUJRVU4/
- qWzV1t/Q33Y0ZGOB0McYyJuTMZweCSR6ePN
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-07-30 at 22:49 +0200, Thomas Gleixner wrote:
+On Fri, 30 Jul 2021, Yang Shi wrote:
+> On Fri, Jul 30, 2021 at 12:25 AM Hugh Dickins <hughd@google.com> wrote:
 > >
-> > First symptom is KDE/Plasma's task manager going comatose.=C2=A0 Notic=
-e soon
->
-> KDE/Plasma points at the new fangled rtmutex based ww_mutex from
-> Peter.
+> > shmem_fallocate() goes to a lot of trouble to leave its newly allocated
+> > pages !Uptodate, partly to identify and undo them on failure, partly to
+> > leave the overhead of clearing them until later.  But the huge page case
+> > did not skip to the end of the extent, walked through the tail pages one
+> > by one, and appeared to work just fine: but in doing so, cleared and
+> > Uptodated the huge page, so there was no way to undo it on failure.
+> >
+> > Now advance immediately to the end of the huge extent, with a comment on
+> > why this is more than just an optimization.  But although this speeds up
+> > huge tmpfs fallocation, it does leave the clearing until first use, and
+> > some users may have come to appreciate slow fallocate but fast first use:
+> > if they complain, then we can consider adding a pass to clear at the end.
+> >
+> > Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
+> > Signed-off-by: Hugh Dickins <hughd@google.com>
+> 
+> Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-Seems not.  When booting KVM box with nomodeset, there's exactly one
-early boot ww_mutex lock/unlock, ancient history at the failure point.
+Many thanks for reviewing so many of these.
 
-	-Mike
+> 
+> A nit below:
+> 
+> > ---
+> >  mm/shmem.c | 19 ++++++++++++++++---
+> >  1 file changed, 16 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> > index 70d9ce294bb4..0cd5c9156457 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -2736,7 +2736,7 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+> >         inode->i_private = &shmem_falloc;
+> >         spin_unlock(&inode->i_lock);
+> >
+> > -       for (index = start; index < end; index++) {
+> > +       for (index = start; index < end; ) {
+> >                 struct page *page;
+> >
+> >                 /*
+> > @@ -2759,13 +2759,26 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+> >                         goto undone;
+> >                 }
+> >
+> > +               index++;
+> > +               /*
+> > +                * Here is a more important optimization than it appears:
+> > +                * a second SGP_FALLOC on the same huge page will clear it,
+> > +                * making it PageUptodate and un-undoable if we fail later.
+> > +                */
+> > +               if (PageTransCompound(page)) {
+> > +                       index = round_up(index, HPAGE_PMD_NR);
+> > +                       /* Beware 32-bit wraparound */
+> > +                       if (!index)
+> > +                               index--;
+> > +               }
+> > +
+> >                 /*
+> >                  * Inform shmem_writepage() how far we have reached.
+> >                  * No need for lock or barrier: we have the page lock.
+> >                  */
+> > -               shmem_falloc.next++;
+> >                 if (!PageUptodate(page))
+> > -                       shmem_falloc.nr_falloced++;
+> > +                       shmem_falloc.nr_falloced += index - shmem_falloc.next;
+> > +               shmem_falloc.next = index;
+> 
+> This also fixed the wrong accounting of nr_falloced, so it should be
+> able to avoid returning -ENOMEM prematurely IIUC. Is it worth
+> mentioning in the commit log?
 
+It took me a long time to see your point there: ah yes, because it made
+the whole huge page Uptodate when it reached the first tail, there would
+have been only one nr_falloced++ for the whole of the huge page: well
+spotted, thanks, I hadn't realized that.
+
+Though I'm not so sure about your premature -ENOMEM: because once it has
+made the huge page Uptodate, the other end (shmem_writepage()) will not
+be incrementing nr_unswapped at all: so -ENOMEM would have been deferred
+rather than premature, wouldn't it?
+
+Add a comment on this in the commit log: yes, I guess so, but I haven't
+worked out what to write yet.
+
+Hugh
+
+> 
+> >
+> >                 /*
+> >                  * If !PageUptodate, leave it that way so that freeable pages
+> > --
+> > 2.26.2
