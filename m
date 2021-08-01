@@ -2,101 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DF93DCBC4
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 15:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C2D3DCBC8
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 15:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhHANQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 09:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhHANQc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 09:16:32 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810F6C06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 06:16:24 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gd1qS58V0z9sWw;
-        Sun,  1 Aug 2021 23:16:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1627823780;
-        bh=5AKuUXsX5mdXOPNOfHTKEXwhhJhi8/p1HRquQHqvrkw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VIluqYAR6Fg9PFcf8xb/t3xCBbKBPY85z53F3HuMNwHbxkeOwg2dn33juXcJhJgsa
-         5+J92smUzeYb0qVnW3nD44nywkxl2idhbU9rBET9BMXz1q3FJ183kLfJ6ZHco78yaa
-         wDI7PxqZh3MWbfvR2DAlpJa9jvh6+LFs9I/w8DPXHnAB/YHUrwhPwuvKG9CcZ5xXoC
-         VI/5MQFLGGkP5btC2yfLz0XE3YiUjsBSd/jT75XwUw1CHhRiamfEalsZ04yK3Twaqx
-         A9fipIsMB/vX5USujeo3sQUeqh4fY1qtzjMrRTcWSv+gnVQom76MATjyjp+5i9utZ7
-         lDQsWU8CctNzg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        srikar@linux.vnet.ibm.com
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.14-4 tag
-Date:   Sun, 01 Aug 2021 23:16:16 +1000
-Message-ID: <87y29lz4nz.fsf@mpe.ellerman.id.au>
+        id S231959AbhHANUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 09:20:37 -0400
+Received: from mout.gmx.net ([212.227.17.20]:49115 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231461AbhHANUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 09:20:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627824010;
+        bh=12SUoHSYDBGt1hC0+tZ7it98pstpvxoKbmEjS94qv3o=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=lnv9cpDmbWbObk5BKhnhxKT1k6FY51TfDWW+t3b5wAYUBrCbhuuiNaLEzbeEhSR6A
+         JdSWwNNxLmc+yQgI6TbCqDG075Bz9D7oDNwulCR75n3VuDjtV5TsRnedOXhUjtrA6O
+         l47Di6Ozolbh6FLZymovj20Q3eWaTD6ymCD0q6sY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1M4Jqb-1mASMt1q9B-000O93; Sun, 01 Aug 2021 15:20:10 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Kees Cook <keescook@chromium.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-hardening@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v3] drivers/soc: Remove all strcpy() uses
+Date:   Sun,  1 Aug 2021 15:19:58 +0200
+Message-Id: <20210801131958.6144-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tTfcHuj+0ypGvbZo0LvioO/mi5Bv/AvCw96dIoajsIs0ln+YTgJ
+ 4k4S2nXfLuvErUmUBcMQHslsS2xRPF7StmHDcwaK5CIq3yP2QrYx6uiyLlZfsPpJgXC9W6P
+ Lxvg5gzdmpkeP/ghkUYLshN6HtiFfpEwoZrY036JZOwqEHr0mkL9QHNJGVIhg9cSuTt39mH
+ QPkaW6A3ZdeqLhxbf5z6w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VosoT9dYQXM=:xIei2A0P1I+zYyhjQMM/Gr
+ SMQlJ0psogAioUEsUwAS1ydrMrFJUL+nJrMhTabj6e9keRrsToqxHcvy/vWOrqpUHxsfbrC2Z
+ 0DCZZTfUR9+uH1LiW7YPbcOuhVM4n2rp8NpkL3wu87E6g9Wbce65bHHv6zhQ8g5UzLrX7T2MW
+ 85j7M+Gm/z5MstxUPUt4TQClwz4PH1ADmyIFSCdbFoeMVjCiOg/6HcBzjL4o401IwnQA2oDu/
+ 6FmVQoZPHlgqVyOrLo7alwrox//RwwjnMQRaQeZEq4TagzJZ+lJQrI72aDdoGjuy9RmRNir+J
+ EPjR0uZEDyYRVsWfN6Rkju294FSz4/bsPeYNSkol6sOS5WTDkmJVBEymMcQWk1nqZLkDyNqMV
+ G90UkFmU1PBy+/OxaDk1WqCO67WoLWbtLljzQhMHTxI3vkL6Qg8Pji5Mf4Wi/0jhKMEm4wWSl
+ WJAs93F+xuv50DpZQEqZk5Ekc+RiCGv7TcdmtuoxEAnTOQ61u6OAYZcInQ7ETWDWPkozq5O5g
+ OzkQCLhNfzcm9ZVm9EMc9tK6QF2NO3EuO7S1WIb4F0fR0XB9QJnJP3Zoq+IIiqiI6xOKU1d2w
+ R4jEM/QBhSPaa/cHu7Y/d3JBcsJHt4c0xZFlfiEBCEqO8X1CRLf44sNr32vKFHWA6xAa6c4Kd
+ M4tuhXWPA0LIoPR4g4zA0yGqbKKtk0dgQjf2Bw6vY1UpRx+laZSK1jIog/EJ7Bbq75BSga4iP
+ 2KmOIdoIrhaMaewlhXaUoG17a5qH/sO4Qm/SmStvH0X3QHKL4T5pgtZp7SYS0J0uHybhYS5ik
+ 6y69+FDelZ2ePEbMPPFJBuWSCYqYvq+uYwpn9OpVkh1D2XXxf8KOrLMFDXgtEFsSq3noqSbKI
+ 8lvugCWBeVnNTfP5CVcZmXqn3WazJinvKWm13f/zDNbWaW7VmtDoUsc4mgnR+CL1sKZBrGdpU
+ MdK9qsyajaJLoHPRoIJiMD9NHs8HRgRxPObVimtkGAfLxV9hZBb/5CYuqvFdf6sBGiAt9OcZx
+ O+kNIUw63rqImi99JsWo08JixFQRQgGfKUMCutaS+O0I/xl3kfoktMzWasYrfBEEXKKiRy+9l
+ UXdQAgc3JpEnuRoOSVYpSdrIJkrG5lOLZ4a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy().
 
-Hi Linus,
+Moreover, when the size of the destination buffer cannot be obtained
+using "sizeof", use the memcpy function instead of strscpy.
 
-Please pull some more powerpc fixes for 5.14:
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+This is a task of the KSPP [1]
 
-The following changes since commit d9c57d3ed52a92536f5fa59dc5ccdd58b4875076:
+[1] https://github.com/KSPP/linux/issues/88
 
-  KVM: PPC: Book3S HV Nested: Sanitise H_ENTER_NESTED TM state (2021-07-23 16:19:38 +1000)
+Changelog v1 -> v2
+- Change the "area_name_size" variable for a shorter name (Geert
+  Uytterhoeven).
+- Add the "Reviewed-by: Geert Uytterhoeven" tag.
+- Use the memcpy function instead of strscpy function when the
+  size of the destination buffer cannot be obtained with "sizeof"
+  (David Laight, Robin Murphy).
 
-are available in the git repository at:
+Changelog v2 -> v3
+- Remove the "Reviewed-by: Geert Uytterhoeven" tag since the code
+  has changed after the v1 review (use of memcpy instead of
+  strscpy).
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.14-4
+ drivers/soc/qcom/pdr_interface.c    | 13 +++++++------
+ drivers/soc/renesas/r8a779a0-sysc.c |  6 ++++--
+ drivers/soc/renesas/rcar-sysc.c     |  6 ++++--
+ drivers/soc/ti/knav_dma.c           |  2 +-
+ 4 files changed, 16 insertions(+), 11 deletions(-)
 
-for you to fetch changes up to a88603f4b92ecef9e2359e40bcb99ad399d85dd7:
+diff --git a/drivers/soc/qcom/pdr_interface.c b/drivers/soc/qcom/pdr_inter=
+face.c
+index 915d5bc3d46e..cf119fde749d 100644
+=2D-- a/drivers/soc/qcom/pdr_interface.c
++++ b/drivers/soc/qcom/pdr_interface.c
+@@ -131,7 +131,7 @@ static int pdr_register_listener(struct pdr_handle *pd=
+r,
+ 		return ret;
 
-  powerpc/vdso: Don't use r30 to avoid breaking Go lang (2021-07-29 23:13:12 +1000)
+ 	req.enable =3D enable;
+-	strcpy(req.service_path, pds->service_path);
++	strscpy(req.service_path, pds->service_path, sizeof(req.service_path));
 
-- ------------------------------------------------------------------
-powerpc fixes for 5.14 #4
+ 	ret =3D qmi_send_request(&pdr->notifier_hdl, &pds->addr,
+ 			       &txn, SERVREG_REGISTER_LISTENER_REQ,
+@@ -257,7 +257,7 @@ static int pdr_send_indack_msg(struct pdr_handle *pdr,=
+ struct pdr_service *pds,
+ 		return ret;
 
- - Don't use r30 in VDSO code, to avoid breaking existing Go lang programs.
+ 	req.transaction_id =3D tid;
+-	strcpy(req.service_path, pds->service_path);
++	strscpy(req.service_path, pds->service_path, sizeof(req.service_path));
 
- - Change an export symbol to allow non-GPL modules to use spinlocks again.
+ 	ret =3D qmi_send_request(&pdr->notifier_hdl, &pds->addr,
+ 			       &txn, SERVREG_SET_ACK_REQ,
+@@ -406,7 +406,7 @@ static int pdr_locate_service(struct pdr_handle *pdr, =
+struct pdr_service *pds)
+ 		return -ENOMEM;
 
-Thanks to: Paul Menzel, Srikar Dronamraju.
+ 	/* Prepare req message */
+-	strcpy(req.service_name, pds->service_name);
++	strscpy(req.service_name, pds->service_name, sizeof(req.service_name));
+ 	req.domain_offset_valid =3D true;
+ 	req.domain_offset =3D 0;
 
-- ------------------------------------------------------------------
-Michael Ellerman (2):
-      Merge branch 'fixes' into next
-      powerpc/vdso: Don't use r30 to avoid breaking Go lang
+@@ -531,8 +531,8 @@ struct pdr_service *pdr_add_lookup(struct pdr_handle *=
+pdr,
+ 		return ERR_PTR(-ENOMEM);
 
-Srikar Dronamraju (1):
-      powerpc/pseries: Fix regression while building external modules
+ 	pds->service =3D SERVREG_NOTIFIER_SERVICE;
+-	strcpy(pds->service_name, service_name);
+-	strcpy(pds->service_path, service_path);
++	strscpy(pds->service_name, service_name, sizeof(pds->service_name));
++	strscpy(pds->service_path, service_path, sizeof(pds->service_path));
+ 	pds->need_locator_lookup =3D true;
 
+ 	mutex_lock(&pdr->list_lock);
+@@ -587,7 +587,8 @@ int pdr_restart_pd(struct pdr_handle *pdr, struct pdr_=
+service *pds)
+ 			break;
 
- arch/powerpc/kernel/vdso64/Makefile    | 7 +++++++
- arch/powerpc/platforms/pseries/setup.c | 2 +-
- 2 files changed, 8 insertions(+), 1 deletion(-)
------BEGIN PGP SIGNATURE-----
+ 		/* Prepare req message */
+-		strcpy(req.service_path, pds->service_path);
++		strscpy(req.service_path, pds->service_path,
++			sizeof(req.service_path));
+ 		addr =3D pds->addr;
+ 		break;
+ 	}
+diff --git a/drivers/soc/renesas/r8a779a0-sysc.c b/drivers/soc/renesas/r8a=
+779a0-sysc.c
+index d464ffa1be33..7410b9fa9846 100644
+=2D-- a/drivers/soc/renesas/r8a779a0-sysc.c
++++ b/drivers/soc/renesas/r8a779a0-sysc.c
+@@ -404,19 +404,21 @@ static int __init r8a779a0_sysc_pd_init(void)
+ 	for (i =3D 0; i < info->num_areas; i++) {
+ 		const struct r8a779a0_sysc_area *area =3D &info->areas[i];
+ 		struct r8a779a0_sysc_pd *pd;
++		size_t n;
 
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmEGnawACgkQUevqPMjh
-pYApeg/9E8l0SD4+NzC0ZwZxQ7sAxufs2X9uugWeTxjEMF3BvhnzAcfF3qPewP0+
-Huy7UwhHYKMBGT9jpqqQuLMfxasbihizesdP89BAVIhzyL6odg6/fo+KaBVVADYr
-F+jHugUXoimS47IntMyQa2HANpCLjl66ZIYWgqytuLgx8jnvIzCGbLmrTN/F4FTS
-7mkNO7+wOmwEi4y3p1cCVnkBd7qkQnjkRgpwS/FQLbtE6G3qkcNhNK1v5AAuSblJ
-eLJ0Lp/+z1OYKA/BSmyM5Aj7kytn9f5UjA2jBtS9O0sfcd19g5LTdKXxPftaAgO3
-eNr947NTztadHQLkLdeeVCDyqrUnAZFZ7f4kn16JIc27ObCWFhFC/OQR+Ba9KGbN
-0hgwVREZ+aqdquYPbqZTj4VWLeEQflgk9zfp9sZquZvOHoknBsvUmzvL24LLE8hw
-ETYEoQwdtBZfCNCbEofCIu3BZXtvt99FUsJo65sUKGty7Vb2iuo3jq85jsgwrh21
-8OhhQ1njfbw+InMYJO1LgFVAXE9f5FDLaV1oMJkkO6vhDZ73Lsac7AG5MP7TrB+z
-dbT0BTfB6nevXzf+JX1OxHZtCXVriXuFWrzZpQVX65zkzbO4N6Q3+Wk28PmMU67P
-oiDsdZWjBxk9rA4xXNGof6AIKr3SDt3/u2kMa/iR5r/mq1itZRk=
-=dB85
------END PGP SIGNATURE-----
+ 		if (!area->name) {
+ 			/* Skip NULLified area */
+ 			continue;
+ 		}
+
+-		pd =3D kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
++		n =3D strlen(area->name) + 1;
++		pd =3D kzalloc(sizeof(*pd) + n, GFP_KERNEL);
+ 		if (!pd) {
+ 			error =3D -ENOMEM;
+ 			goto out_put;
+ 		}
+
+-		strcpy(pd->name, area->name);
++		memcpy(pd->name, area->name, n);
+ 		pd->genpd.name =3D pd->name;
+ 		pd->pdr =3D area->pdr;
+ 		pd->flags =3D area->flags;
+diff --git a/drivers/soc/renesas/rcar-sysc.c b/drivers/soc/renesas/rcar-sy=
+sc.c
+index 53387a72ca00..b0a80de34c98 100644
+=2D-- a/drivers/soc/renesas/rcar-sysc.c
++++ b/drivers/soc/renesas/rcar-sysc.c
+@@ -396,19 +396,21 @@ static int __init rcar_sysc_pd_init(void)
+ 	for (i =3D 0; i < info->num_areas; i++) {
+ 		const struct rcar_sysc_area *area =3D &info->areas[i];
+ 		struct rcar_sysc_pd *pd;
++		size_t n;
+
+ 		if (!area->name) {
+ 			/* Skip NULLified area */
+ 			continue;
+ 		}
+
+-		pd =3D kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
++		n =3D strlen(area->name) + 1;
++		pd =3D kzalloc(sizeof(*pd) + n, GFP_KERNEL);
+ 		if (!pd) {
+ 			error =3D -ENOMEM;
+ 			goto out_put;
+ 		}
+
+-		strcpy(pd->name, area->name);
++		memcpy(pd->name, area->name, n);
+ 		pd->genpd.name =3D pd->name;
+ 		pd->ch.chan_offs =3D area->chan_offs;
+ 		pd->ch.chan_bit =3D area->chan_bit;
+diff --git a/drivers/soc/ti/knav_dma.c b/drivers/soc/ti/knav_dma.c
+index 591d14ebcb11..5f9816d317a5 100644
+=2D-- a/drivers/soc/ti/knav_dma.c
++++ b/drivers/soc/ti/knav_dma.c
+@@ -691,7 +691,7 @@ static int dma_init(struct device_node *cloud, struct =
+device_node *dma_node)
+ 	dma->max_rx_flow =3D max_rx_flow;
+ 	dma->max_tx_chan =3D min(max_tx_chan, max_tx_sched);
+ 	atomic_set(&dma->ref_count, 0);
+-	strcpy(dma->name, node->name);
++	strscpy(dma->name, node->name, sizeof(dma->name));
+ 	spin_lock_init(&dma->lock);
+
+ 	for (i =3D 0; i < dma->max_tx_chan; i++) {
+=2D-
+2.25.1
+
