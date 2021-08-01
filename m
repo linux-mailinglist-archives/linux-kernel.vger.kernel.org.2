@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BEC3DCC45
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 17:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB3E3DCC47
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 17:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbhHAPW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 11:22:26 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:57044
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231940AbhHAPWY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 11:22:24 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 5D2693F070;
-        Sun,  1 Aug 2021 15:22:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627831335;
-        bh=w+wGUm1NI/CIm3eVzRJyzEgQ0VdS9CAG+ZtRdqquIQo=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=JOkVQxFYQSpxpfrVUkdH7muU3m4A3mfIlCo5olfFPQKSu+HimSI/ce29TnadKGH43
-         rvOavqDKh6ozCAyhbPdG6Rb3oChuhj5E4SNPNvy5SiVs6JB+rq3+ngzWVVB6/4g3LO
-         TOW2Z9uTQhesWJ86Vj1Z5efqgZPZcWUsMkZ9mWn1sGwa706OscboQVC9HB5OgAPRTc
-         n+ie77fGyDOhBsSJszwpI3FHOj6GTVy7cEW7H1tmuPs5LEKFQTRHkYxH0rW8UW6zWf
-         FSydWUIIX0+9TH1i55oJAcbOAkXSTth0oVyLG8zAn35+oMHwT/X5b8gb8bRPfs7vOk
-         qaAUHW4oSdY3g==
-From:   Colin King <colin.king@canonical.com>
-To:     Ioana Ciornei <ioana.ciornei@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dpaa2-eth: make the array faf_bits static const, makes object smaller
-Date:   Sun,  1 Aug 2021 16:22:09 +0100
-Message-Id: <20210801152209.146359-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S232168AbhHAPXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 11:23:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231940AbhHAPXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 11:23:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 666C560243;
+        Sun,  1 Aug 2021 15:23:15 +0000 (UTC)
+Date:   Sun, 1 Aug 2021 08:23:12 -0700
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org
+Subject: Re: [PATCH v2 1/3] vmalloc: Choose a better start address in
+ vm_area_register_early()
+Message-ID: <20210801152311.GB28489@arm.com>
+References: <20210720025105.103680-1-wangkefeng.wang@huawei.com>
+ <20210720025105.103680-2-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210720025105.103680-2-wangkefeng.wang@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Jul 20, 2021 at 10:51:03AM +0800, Kefeng Wang wrote:
+> There are some fixed locations in the vmalloc area be reserved
+> in ARM(see iotable_init()) and ARM64(see map_kernel()), but for
+> pcpu_page_first_chunk(), it calls vm_area_register_early() and
+> choose VMALLOC_START as the start address of vmap area which
+> could be conflicted with above address, then could trigger a
+> BUG_ON in vm_area_add_early().
+> 
+> Let's choose the end of existing address range in vmlist as the
+> start address instead of VMALLOC_START to avoid the BUG_ON.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  mm/vmalloc.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index d5cd52805149..a98cf97f032f 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2238,12 +2238,14 @@ void __init vm_area_add_early(struct vm_struct *vm)
+>   */
+>  void __init vm_area_register_early(struct vm_struct *vm, size_t align)
+>  {
+> -	static size_t vm_init_off __initdata;
+> +	unsigned long vm_start = VMALLOC_START;
+> +	struct vm_struct *tmp;
+>  	unsigned long addr;
+>  
+> -	addr = ALIGN(VMALLOC_START + vm_init_off, align);
+> -	vm_init_off = PFN_ALIGN(addr + vm->size) - VMALLOC_START;
+> +	for (tmp = vmlist; tmp; tmp = tmp->next)
+> +		vm_start = (unsigned long)tmp->addr + tmp->size;
+>  
+> +	addr = ALIGN(vm_start, align);
+>  	vm->addr = (void *)addr;
+>  
+>  	vm_area_add_early(vm);
 
-Don't populate the array faf_bits on the stack but instead it
-static const. Makes the object code smaller by 175 bytes.
+Is there a risk of breaking other architectures? It doesn't look like to
+me but I thought I'd ask.
 
-Before:
-   text  data   bss     dec   hex filename
-   9645  4552     0   14197  3775 ../freescale/dpaa2/dpaa2-eth-devlink.o
+Also, instead of always picking the end, could we search for a range
+that fits?
 
-After:
-   text  data   bss     dec   hex filename
-   9406  4616     0   14022  36c6 ../freescale/dpaa2/dpaa2-eth-devlink.o
-
-(gcc version 10.2.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c
-index 833696245565..8e09f65ea295 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c
-@@ -68,7 +68,7 @@ dpaa2_eth_dl_trap_item_lookup(struct dpaa2_eth_priv *priv, u16 trap_id)
- struct dpaa2_eth_trap_item *dpaa2_eth_dl_get_trap(struct dpaa2_eth_priv *priv,
- 						  struct dpaa2_fapr *fapr)
- {
--	struct dpaa2_faf_error_bit {
-+	static const struct dpaa2_faf_error_bit {
- 		int position;
- 		enum devlink_trap_generic_id trap_id;
- 	} faf_bits[] = {
 -- 
-2.31.1
-
+Catalin
