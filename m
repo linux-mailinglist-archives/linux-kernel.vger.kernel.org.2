@@ -2,293 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB533DC96B
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 05:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C393DC973
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 05:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhHAD0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 23:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54544 "EHLO
+        id S231584AbhHADe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 23:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbhHAD0I (ORCPT
+        with ESMTP id S229761AbhHADe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 23:26:08 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982CAC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:26:00 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id l19so20864805pjz.0
-        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:26:00 -0700 (PDT)
+        Sat, 31 Jul 2021 23:34:58 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95D5C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:34:50 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id d10so13445065ils.7
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3XR3Rna7Rr+9CL16uPJTtqZhFZ3n6mMMJSTweWOLXfo=;
-        b=H5qg3Rv7MU+P4vxEQBBg941EZz82TEbn+YLrXqAJYjPhYWhV7UUm6FSQhDPS/94SFQ
-         BBg1I1Tw2eXYkRdW7gLanO5HTB3oQl6I+FCnpIOlJfBBEhth03qDoYYFqLk0Nx4/3/j0
-         2txnkcrm3GXKTBF649x92vWh4fDiipIVK9heE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TuTXg0e3clW+MMWqMjMwfJqjaNCb4Ct1FoSRnnKkgJ8=;
+        b=kC3SpbfGQStvm0vYCDgFFccoBC/d4pOGgv6VuIWBrntvaxsyMaVZZc7hGtP30YQI8s
+         CpKdVoYLqeToXu/D392uoc4+5J2Ld5hYGS3ZyFJ0kHkkzrzLPE1Z0lhYp736hbm421hN
+         NdEjKol+y8rgsYVHqiqHTrw/Ef6lHfER8Vyk0Mg7H7uajPr4iM/nO4UyzopSTPAfA9Gn
+         KMxwEwnPlQ8a07egcI5HuqEjtAiqxSZ0rf3Yr3iMi+0T6cIhhnpJbiHRfXGmjJAKWFpd
+         JKlvxQaRcbXeBy0KM8d9guJrj/1vUFk3cG8mhmmy5DF4GPrqx/Q2lhgziM2U2TvocZ+3
+         CoOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3XR3Rna7Rr+9CL16uPJTtqZhFZ3n6mMMJSTweWOLXfo=;
-        b=aCljo/SZJ9Jwyz5iy6bjtpe9XS5mAgDsIaCmpimeuL8a/mNrp5euz1ErK8RQ/OHN8I
-         mjKNMe1vhi1CQW2kqn9hx+997dDWP7R3Wlz8RBSj2gGXkmU+dsmH1W/Dgpwhfy2B3t1o
-         fQCYFkXpG5VEvmppYDXwszI9E7KJBN/JxtlEJ/EN7WswgupPRsYiYBRQohDzOnmSxq80
-         Bhh0C98NJuqfSPIrClvNe0feJGcWW68z2CTogqQeHHvj8K81Ce2cIO1SN9bjWg89IMQD
-         3v4vBSNpTE/jdXszPq3JldPSuR2Ot9BL2rJSupCKHg6WjOpEKSGUHm3dQ9c8qzHfrB/5
-         /8OA==
-X-Gm-Message-State: AOAM532W8VuC5MgSUHvU9Df2SwYbeYLIjC2JCiq8UW0cXW9yYDGWjazc
-        egj/5zlcoS0Jkjuq3geSXIm3Xw==
-X-Google-Smtp-Source: ABdhPJztWny8qDLoF9aDrOGGwPEkUl8/lCnKXM6Yi4tE7zPw7q2cjlDL6++ccQRH4HMcKCFTQSzjiA==
-X-Received: by 2002:a62:584:0:b029:32e:3b57:a1c6 with SMTP id 126-20020a6205840000b029032e3b57a1c6mr10199216pff.13.1627788360124;
-        Sat, 31 Jul 2021 20:26:00 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r4sm6540476pjo.46.2021.07.31.20.25.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TuTXg0e3clW+MMWqMjMwfJqjaNCb4Ct1FoSRnnKkgJ8=;
+        b=uZ3D1yFvVAWFAnAVJz/KSB+ZKWQeEuBM5hPydLrXFK729n7z0c0laSHiJtyel+QY2I
+         0qpGBZFnjZSHsjq5+k/oK+1hIbGcSBbzhbQkipfsAOA7fbyJR7xpLrOpReMJXHsCF9bo
+         mD1cwugXmZTW7Hbr1Nsp8P1NQ3B4dX0SF/FIHJPWzgCRF+uzQWbGJ4FLjG2b3SBefij1
+         76JgcuyL7++PzUpvUwZ5b59nSWCsp3N2ktvJng89NjCkDyg5IE/UBimIGi24qNRwh/1A
+         WLIBbctFPzrI87jM+TTVVvuYXgLz8i+zqCnO68p3hInRfnUx7+NjKzlh4O89TMZN1gA2
+         lc1w==
+X-Gm-Message-State: AOAM530ad31KmqBdKlPbnxNz14KOTRws/q0n/c9DNdh1G688c6scrsb8
+        DG2hW7KX3Ok7G5bD1Rcr9kY=
+X-Google-Smtp-Source: ABdhPJwxzVLBZL+ZmF8QBZL4Gvbcc1RiS9N6/uHnbx0dzquWp60KZIHGDWSCoHisTkYzkl8QyZYx3g==
+X-Received: by 2002:a92:c54d:: with SMTP id a13mr4253873ilj.74.1627788890249;
+        Sat, 31 Jul 2021 20:34:50 -0700 (PDT)
+Received: from frodo.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id c1sm3366525ils.21.2021.07.31.20.34.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 20:25:59 -0700 (PDT)
-Date:   Sat, 31 Jul 2021 20:25:58 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        alaaemadhossney.ae@gmail.com, syzkaller@googlegroups.com,
-        Jann Horn <jannh@google.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: memory leak in do_seccomp
-Message-ID: <202107311901.8CDF235F65@keescook>
-References: <CADVatmPShADZ0F133eS3KjeKj1ZjTNAQfy_QOoJVBan02wuR+Q@mail.gmail.com>
+        Sat, 31 Jul 2021 20:34:49 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, seanpaul@chromium.org
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH] dyndbg: add special aux_print framework
+Date:   Sat, 31 Jul 2021 21:34:32 -0600
+Message-Id: <20210801033432.831938-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADVatmPShADZ0F133eS3KjeKj1ZjTNAQfy_QOoJVBan02wuR+Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 08:20:29PM +0100, Sudip Mukherjee wrote:
-> Hi All,
-> 
-> We had been running syzkaller on v5.10.y and a "memory leak in
-> do_seccomp" was being reported on it. I got some time to check that
-> today and have managed to get a syzkaller
-> reproducer. I dont have a C reproducer which I can share but I can use
-> the syz-reproducer to reproduce this with next-20210730.
-> The old report on v5.10.y is at
-> https://elisa-builder-00.iol.unh.edu/syzkaller/report?id=f6ddd3b592f00e95f9cbd2e74f70a5b04b015c6f
+Sean Paul seanpaul@chromium.org proposed, in
+https://patchwork.freedesktop.org/series/78133/
+drm/trace: Mirror DRM debug logs to tracefs
 
-Thanks for the details!
+The problem with the approach is that its built upon splitting
+drm_debug_enabled() into syslog & trace flavors, which clashes rather
+profoundly with the strategy of obsoleting it using dyndbg.
 
-Is this the same as what syzbot saw here (with a C reproducer)?
-https://syzkaller.appspot.com/bug?id=2809bb0ac77ad9aa3f4afe42d6a610aba594a987
+Instead, this puts the print-to-trace decision after the is-it-enabled
+test (which is a noop), so it has near zero additional cost.
 
-I can't figure out what happened with the "Patch testing request" that
-was made; there's no link?
+This is preliminary, Proof-of-Concept, and about 2 hrs old.
+But its surprisingly simple:
 
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888019282c00 (size 512):
->   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.841s)
->   hex dump (first 32 bytes):
->     01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<00000000762c0963>] do_seccomp+0x2d5/0x27d0
+ - add a new struct _ddebug member: (*aux_print)(char *format, ...)
+ - add a new S/special flag to check !!aux_print
+ - if S, invoke the function to handle the prepared vaf
 
-Can you run "./scripts/faddr2line do_seccomp+0x2d5/0x27d0" for this? I
-expect it'll be:
-        sfilter = kzalloc(sizeof(*sfilter), GFP_KERNEL | __GFP_NOWARN);
+It intrinsically allows any number of alternate printf-ish consumers,
+but only 1 active per callsite.  I have another patchset that
+eliminates some of the data redundancies like this, it can be
+extended.
 
->     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
->     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+It may also prove to be a generic way to implement the netdev & ibdev
+variants of __dynamic_pr_debug.
 
-The "size 512" in your v5.10.y report is from seccomp_prepare_filter()
-(noted above). seccomp_prepare_filter() cleans up its error paths.
+It just needs a mechanism to set the per-callsite pointer to a
+printf-ish function to consume the pr_debug output, a tighter/better
+function prototype, and a wrapper on drm_trace_printf to bundle up the
+args and comport with the prototype, which can evolve to suit this 1st
+client.
 
-> 
-> BUG: memory leak
-> unreferenced object 0xffffc900006b5000 (size 4096):
->   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.841s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 00 00 00 00 05 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<00000000854901e5>] __vmalloc_node_range+0x550/0x9a0
->     [<000000002686628f>] __vmalloc_node+0xb5/0x100
->     [<0000000004cbd298>] bpf_prog_alloc_no_stats+0x38/0x350
->     [<0000000009149728>] bpf_prog_alloc+0x24/0x170
->     [<000000000fe7f1e7>] bpf_prog_create_from_user+0xad/0x2e0
->     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
->     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
->     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+it is on top of:
+https://patchwork.freedesktop.org/series/92544/
+(v4 on lkml, v2 in patchwork)
 
-Again, I'm curious about where do_seccomp+0x325/0x27d0 is for this, but
-the matching one in v5.10 shows:
-        ret = bpf_prog_create_from_user(&sfilter->prog, fprog,
-                                        seccomp_check_filter, save_orig);
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ include/linux/dynamic_debug.h |  7 ++++++-
+ lib/dynamic_debug.c           | 22 +++++++++++++++++++---
+ 2 files changed, 25 insertions(+), 4 deletions(-)
 
-This and everything remaining below else has bpf_prog_create_from_user()
-in the allocation path.
-
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888026eb1000 (size 2048):
->   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<0000000072de7240>] bpf_prog_alloc_no_stats+0xeb/0x350
->     [<0000000009149728>] bpf_prog_alloc+0x24/0x170
->     [<000000000fe7f1e7>] bpf_prog_create_from_user+0xad/0x2e0
->     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
->     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
->     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888014dddac0 (size 16):
->   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
->   hex dump (first 16 bytes):
->     01 00 ca 08 80 88 ff ff c8 ef df 14 80 88 ff ff  ................
-
-These are two kernel pointers:
-	0xffff888008ca0001 (unaligned by 1 byte?!)
-	0xffff888014dfefc8
-
-Ah, no, this is from:
-
-struct sock_fprog_kern {
-        u16                     len;
-        struct sock_filter      *filter;
-};
-
-The "ca 08 80 88 ff ff" bytes are uninitialized padding. ;) "len" has
-a value of 1 (which matches the syzkaller reproducer args below of a
-single BPF instruction).
-
-        fp->orig_prog = kmalloc(sizeof(*fkprog), GFP_KERNEL);
-        if (!fp->orig_prog)
-                return -ENOMEM;
-
-        fkprog = fp->orig_prog;
-        fkprog->len = fprog->len;
-	...
-        fkprog->filter = kmemdup(fp->insns, fsize,
-                                 GFP_KERNEL | __GFP_NOWARN);
-
->   backtrace:
->     [<00000000c5d4ed93>] bpf_prog_store_orig_filter+0x7b/0x1e0
->     [<000000007cb21c2a>] bpf_prog_create_from_user+0x1c6/0x2e0
->     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
->     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
->     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888014dfefc8 (size 8):
->   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
->   hex dump (first 8 bytes):
->     06 00 00 00 ff ff ff 7f                          ........
-
-This contains a userspace (likely stack) pointer, and is referenced
-by the second pointer above. (i.e. kmemdup() above, but how have the
-contents become a user stack pointer?)
-
->   backtrace:
->     [<00000000ee5550f8>] kmemdup+0x23/0x50
->     [<00000000f1acd067>] bpf_prog_store_orig_filter+0x103/0x1e0
->     [<000000007cb21c2a>] bpf_prog_create_from_user+0x1c6/0x2e0
->     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
->     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
->     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Not sure if this has been already reported or not, but I will be happy
-> to test if you have a fix for this.
-
-I was suspecting a missing error path free near bpf_prepare_filter()
-as called by bpf_prog_create_from_user() here:
-
-        /* bpf_prepare_filter() already takes care of freeing
-         * memory in case something goes wrong.
-         */
-        fp = bpf_prepare_filter(fp, trans);
-        if (IS_ERR(fp))
-                return PTR_ERR(fp);
-
-Since only seccomp and af_packet use bpf_prog_create_from_user(),
-and af_packet sets neither a "trans" callback nor save_orig. But if
-"trans" fails (due to some BPF instructions seccomp doesn't support),
-I'd expect this leak to be detected more often.
-
-bpf_prepare_filter() is documented as cleaning up allocations on failure,
-though I notice its cleanup differs from bpf_prog_create_from_user()'s,
-which uses __bpf_prog_free() instead of __bfp_prog_release(). But
-that should only make a difference for orig_prog getting freed,
-and bpf_prog_store_orig_filter() should already be freeing that on
-failures too.
-
-Similarly, bpf_migrate_filter() cleanups up on failure too, so this
-doesn't seem to be it:
-
-        if (!fp->jited)
-                fp = bpf_migrate_filter(fp);
-
-        return fp;
-
-So, I'm going to assume the missing free is somehow related to
-process management, since I see the Syzkaller reproducer mentions
-SECCOMP_SET_MODE_FILTER_LISTENER, fork(), and ptrace(). :)
-
-Quoting from the v5.10.y report:
-> # {Threaded:true Collide:true Repeat:true RepeatTimes:0 Procs:8 Slowdown:1 Sandbox:none Fault:false FaultCall:-1 FaultNth:0 Leak:true NetInjection:true NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false USB:true VhciInjection:false Wifi:false IEEE802154:false Sysctl:true UseTmpDir:true HandleSegv:true Repro:false Trace:false}
-> seccomp$SECCOMP_SET_MODE_FILTER_LISTENER(0x1, 0x0, &(0x7f0000000000)={0x1, &(0x7f0000000040)=[{0x6, 0x0, 0x0, 0x7fffffff}]})
-
-0x1 is SECCOMP_SET_MODE_FILTER
-0x0 is empty flags
-{0x6, 0x0, 0x0, 0x7fffffff} is
-	BPF_STMT(BPF_RET, SECCOMP_RET_ALLOW | 0xffff)
-
-For "SECCOMP_SET_MODE_FILTER_LISTENER", defined here:
-https://github.com/google/syzkaller/blob/master/sys/linux/seccomp.txt#L15
-I was expecting flags to include SECCOMP_FILTER_FLAG_NEW_LISTENER:
-	seccomp$SECCOMP_SET_MODE_FILTER_LISTENER(
-			op const[SECCOMP_SET_MODE_FILTER],
-			flags flags[seccomp_flags_listener],
-			arg ptr[in, sock_fprog]) fd_seccomp (breaks_returns)
-
-For the flags:
-
-	seccomp_flags_listener = SECCOMP_FILTER_FLAG_NEW_LISTENER,
-				 SECCOMP_FILTER_FLAG_LOG_LISTENER,
-				 SECCOMP_FILTER_FLAG_SPEC_ALLOW_LISTENER
-
-which is:
-
-	SECCOMP_FILTER_FLAG_LOG_LISTENER = 10
-	SECCOMP_FILTER_FLAG_NEW_LISTENER = 8
-	SECCOMP_FILTER_FLAG_SPEC_ALLOW = 4
-	SECCOMP_FILTER_FLAG_SPEC_ALLOW_LISTENER = 12
-
-How is flags 0 above? (Maybe I don't understand the syzkaller reproducer
-meaning fully?)
-
-> r0 = fork()
-> ptrace(0x10, r0)
-
-0x10 is PTRACE_ATTACH
-
-My best guess is there is some LISTENER refcount state we can get into
-where all the processes die, but a reference is left alive.
-
--Kees
-
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index 677ad176b167..0d068e8ed7aa 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -22,6 +22,7 @@ struct _ddebug {
+ 	const char *function;
+ 	const char *filename;
+ 	const char *format;
++	int (*aux_print)(char *, void *, void *);
+ 	unsigned int lineno:18;
+ 	/*
+ 	 * The flags field controls the behaviour at the callsite.
+@@ -29,7 +30,11 @@ struct _ddebug {
+ 	 * writes commands to <debugfs>/dynamic_debug/control
+ 	 */
+ #define _DPRINTK_FLAGS_NONE	0
+-#define _DPRINTK_FLAGS_PRINT	(1<<0) /* printk() a message using the format */
++#define _DPRINTK_FLAGS_PRINT		(1<<0) /* printk() a message */
++#define _DPRINTK_FLAGS_PRINT_AUX	(1<<5) /* call (*aux_print) */
++
++#define _DPRINTK_ENABLED (_DPRINTK_FLAGS_PRINT | _DPRINTK_FLAGS_PRINT_AUX)
++
+ #define _DPRINTK_FLAGS_INCL_MODNAME	(1<<1)
+ #define _DPRINTK_FLAGS_INCL_FUNCNAME	(1<<2)
+ #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index 045e1cf92c44..7bbdedabe6f1 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -85,6 +85,7 @@ static inline const char *trim_prefix(const char *path)
+ 
+ static struct { unsigned flag:8; char opt_char; } opt_array[] = {
+ 	{ _DPRINTK_FLAGS_PRINT, 'p' },
++	{ _DPRINTK_FLAGS_PRINT_AUX, 'S' },
+ 	{ _DPRINTK_FLAGS_INCL_MODNAME, 'm' },
+ 	{ _DPRINTK_FLAGS_INCL_FUNCNAME, 'f' },
+ 	{ _DPRINTK_FLAGS_INCL_LINENO, 'l' },
+@@ -206,10 +207,10 @@ static int ddebug_change(const struct ddebug_query *query,
+ 			if (newflags == dp->flags)
+ 				continue;
+ #ifdef CONFIG_JUMP_LABEL
+-			if (dp->flags & _DPRINTK_FLAGS_PRINT) {
+-				if (!(modifiers->flags & _DPRINTK_FLAGS_PRINT))
++			if (dp->flags & _DPRINTK_ENABLED) {
++				if (!(modifiers->flags & _DPRINTK_ENABLED))
+ 					static_branch_disable(&dp->key.dd_key_true);
+-			} else if (modifiers->flags & _DPRINTK_FLAGS_PRINT)
++			} else if (modifiers->flags & _DPRINTK_ENABLED)
+ 				static_branch_enable(&dp->key.dd_key_true);
+ #endif
+ 			dp->flags = newflags;
+@@ -639,6 +640,21 @@ void __dynamic_pr_debug(struct _ddebug *descriptor, const char *fmt, ...)
+ 
+ 	printk(KERN_DEBUG "%s%pV", dynamic_emit_prefix(descriptor, buf), &vaf);
+ 
++	if (descriptor->flags & _DPRINTK_FLAGS_PRINT_AUX) {
++		/* our model:
++		drm_trace_printf("%s%s[" DRM_NAME ":%ps] %pV",
++				 dev ? dev_name(dev) : "", dev ? " " : "",
++				 __builtin_return_address(0), &vaf);
++		*/
++		pr_info("reached check aux\n");
++
++		if (descriptor->aux_channel) {
++			pr_info("calling aux\n");
++			(*descriptor->aux_channel)
++				("%s[DRM_mumble :%ps] %pV", buf,
++				 __builtin_return_address(0), &vaf);
++		}
++	}
+ 	va_end(args);
+ }
+ EXPORT_SYMBOL(__dynamic_pr_debug);
 -- 
-Kees Cook
+2.31.1
+
