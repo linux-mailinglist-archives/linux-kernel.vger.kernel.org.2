@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0543DCBE5
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 15:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052403DCBE6
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 15:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbhHANgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 09:36:37 -0400
-Received: from mout.gmx.net ([212.227.17.21]:38527 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232027AbhHANfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 09:35:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627824855;
-        bh=Q/dcoSBUFR0wkRhCtWTaj2W+MgEtc+eWAxQm14Cb/Lc=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Off6RzThUjmsVS5ZtJbBRxOQDs1SmQwvn5QgY962YAs51ZTpHFTowGf1WC7Ei1FAO
-         yIsLbSD75IwpasBqZzSHf8B3RNpo/KIhdE5OUeudiX0TcD0ev5fX59X2wy9G2J6gDQ
-         0Zw8MorDm7sIK2BTzWyeyN2KE+3o59A+bpzyhJ3M=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKbkC-1mSxyd2auy-00KzLZ; Sun, 01
- Aug 2021 15:34:15 +0200
-Date:   Sun, 1 Aug 2021 15:34:04 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Phil Reid <preid@electromag.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] Remove all strcpy() uses
-Message-ID: <20210801133404.GA5988@titan>
-References: <20210801085155.3170-1-len.baker@gmx.com>
- <CAHp75VcD_Kqedpkw-Pj+uQbWqdu_9FhXqJS5TuGUPoVv2x45-Q@mail.gmail.com>
+        id S231953AbhHANjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 09:39:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41986 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhHANjg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 09:39:36 -0400
+Date:   Sun, 1 Aug 2021 15:39:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627825167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V2DGzvEDDOHL4wNGqLh/L3qbGiCz/WEtxEh6PwuMsKs=;
+        b=mr5lb4vnCsZeTua2ZYsa3NKBjB8PegqmeO3YML93vfUO/8iRHIRMWSB81tAILTXQjftSZZ
+        QYBVe3gkaZk45qJW0RkryHlJ/T3xps5ioB/fTVhN6ZlnRUu/mnnEMx1Yx6JOF76J2xKCBe
+        nRE22EQkvaQQVxHI6p80hBZpFeaiaR7s+L+pW+enzumSv1ZiF9xisZCAt+RtpNom2l/e/c
+        oO4yUccLGEDFXX95PriJhteAK0CrZtaQk/mfOtP15cqeyzDxkQciXJ0qY7FTeZfUkB9mx1
+        csZG3uL2H7hcJoXUlqom9wEVghREZqnmYFg4ksIksxqWCFt6xQNBVaEmUMkPEQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627825167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V2DGzvEDDOHL4wNGqLh/L3qbGiCz/WEtxEh6PwuMsKs=;
+        b=swcnDVMxb+6GHbeFF3VI4TNMHLEgYli8nMjfujvVn5E0hWw8QWQ5CLYcuaQNLazvt2WYWD
+        gSQXj6+9IdJsKDDA==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Zanussi <zanussi@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>
+Subject: Re: [PATCH 17/17] libtracefs: Add man page for tracefs_sql()
+Message-ID: <YQakDYRnId+bK+ue@lx-t490>
+References: <20210730221824.595597-1-rostedt@goodmis.org>
+ <20210730221824.595597-18-rostedt@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75VcD_Kqedpkw-Pj+uQbWqdu_9FhXqJS5TuGUPoVv2x45-Q@mail.gmail.com>
-X-Provags-ID: V03:K1:4+Pp4U/a3eSnM89ROA2oEnBRHBcVjHUvh/sOFYn7YGYbhQXrOK3
- gIIzhRk1TOmkGk1sFHh2YVEYJjCu1Qso3Id/QdM0w58LyJbBIhqgHBWjfnAfzaG4/mbcDJZ
- rEwEZpDxC59TL9nSjLQbEIHAXdSmp47hSiul/4wX3151mcV8guZYKlnDmYdVsx1rnIhtdQT
- daY6wAb19kHUDxREuLOPg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TOOnf/w1Jdk=:/0N54ezEkdw4FzS5U1m82p
- BYkyYs7ZB1sM1mtlLA0StOdcoX20D8NuiciAiVB1x24xveLcMHpzYqSNLknYDh5fiC36Ymu1d
- aGGW+Wb/gItkYj7w7T/TvYKhHJo5RaggnRNq9EuP+isCSYxLMQjU1l5r0jLNHqhGuY54S+M6s
- GEuM7J8VgACMNJXe+jxdYV/0ctHImxvZvJ/8GJNhxXKL/GMXQyAdjj1rf9e7Yj+Yt/vLbwVhK
- zD3NxNzjUReXeiiNhdq/m/USxW6uVPzV81hzEiEfFbXTZHsmQVIxD5k9Z91jgIEol5Xzhpwcj
- fNpnF35tBur3M8z3KHdGwNBtDkcQ6Zln9DnWFv1eu4dMiVlRVTcXfi9kYfouWARkr/xoXtgft
- R/1bRFS4r3zIXc23nbFniqL8J7YtO2ndH8p4EhaQLFG4CBrPOkZ+DQ3ZqshxSUjrUuO7uJSJ0
- vLb/B2OasUxn9GRBsA55qM0W2XDrlSQgtj3Hlw1lof54FUl3v4wg0K+ijPJn7jED2NBk5Wfks
- Z6GiZyKgnbShIJtW0mJGhF67ilRyNcNCWV690KUwx8zuSs79kgooEWfKaYy2ft22t1EW16y1S
- /MzYEzm9TdqzlPLVnZUS92b6JquQ0Fv80XAhF4O0FnWVvZGUw3lPbBPME5tYgxL/JocyVlkCh
- Zb4JtUtirKOARRBCAAjwltLdi4EAT77yB4COqp4/J/SnQcRa7pbeUKd3Al3rHMq82SJRSSR/B
- uUgHP9pKS2PxZ6Q7DENJKkbcOjlU9mxdlKnK33dd9uJTeINI2HZ2/79pbUhJtwY0+8hnglrQ7
- Fw8ZVHQJkEltHq0WRJhT6anNebqQseQsc0XUKCgt6kRvWuKEs+91ULK2l6h4BnGUCJ/B12CWu
- oFnPz6y/kv+U0Ayodd7JZ/ifwMSwlZF8SiEb/kDTIpqhAAq3+7QodfQD0/1F4z6tuyM9HnD3W
- QtUwfJlG8/tSawhQGkbOmF+k1dwvlbkcXX0h8Bm5E1D5Y0GZan/D6Y7JlG/5grkZlwvccCHA3
- 9kZar2RXyi+uNWu06pHCcsCBz60mhQie9tv8yABFEhyZug7RI9pxwRBYpDmJS2CmEraVnICcO
- BcTCpHvPf+Gzcu2uDSLHe7cAK7zfZ+wdGUO
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210730221824.595597-18-rostedt@goodmis.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Fri, Jul 30, 2021, Steven Rostedt wrote:
+> +
+> +The SQL format is as follows:
+> +
+> +*SELECT* <fields> FROM <start-event> JOIN <end-event> ON <matching-fields> WHERE <filter>
+> +
+> +Note, although the examples show the SQL commands in uppercase, they are not required to
+> +be so. That is, you can use "SELECT" or "select" or "sElEct".
+> +
 
-On Sun, Aug 01, 2021 at 02:40:40PM +0300, Andy Shevchenko wrote:
-> On Sun, Aug 1, 2021 at 11:53 AM Len Baker <len.baker@gmx.com> wrote:
-> >
-> > strcpy() performs no bounds checking on the destination buffer. This
-> > could result in linear overflows beyond the end of the buffer, leading
-> > to all kinds of misbehaviors. So, this serie removes all strcpy uses
-> > from the "staging/fbtft" subsystem.
-> >
-> > Also, refactor the code a bit to follow the kernel coding-style and
-> > avoid unnecessary variable initialization.
->
-> I don't see patch 3 (even on lore.kernel.org).
+Maybe it would be helpful to mention that, unlike normal SELECT queries,
+the JOIN and ON parts above are _not_ optional?
 
-Due to my email provider restrictions (number of emails per hour), I
-need to send an email every x time.
+That is, generic "one event source" queries:
 
-Regards,
-Len
+  SELECT common_pid,msr,val FROM write_msr WHERE msr=72
+
+are not supported. (I wish they were though ;-))
+
+BTW, thanks a lot for this work. It will finally make synthetic events
+usable!
+
+Kind regards,
+
+--
+Ahmed S. Darwish
+Linutronix GmbH
