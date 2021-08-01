@@ -2,103 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB5C3DCAE4
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 11:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42153DCAEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 11:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231600AbhHAJYn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 1 Aug 2021 05:24:43 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:39213 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231446AbhHAJYl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 05:24:41 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MOhx9-1mWtUF2haB-00Q8gW for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021
- 11:24:32 +0200
-Received: by mail-wm1-f49.google.com with SMTP id l4-20020a05600c1d04b02902506f89ad2dso10013936wms.1
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 02:24:32 -0700 (PDT)
-X-Gm-Message-State: AOAM531CZBj79FSTPL6irFMiiilUTodZKf/GLi+TARpPLiC0DbI2vtSf
-        1kLA/MT6IDvjG13ARlNwiwl7nkig2p/SFNjz5C4=
-X-Google-Smtp-Source: ABdhPJzm+d+GUJq55lf66fORA7zJHnwG96B/E2RUvkJawwTVMsCLwoBqiUjM0EJRl1uPz7IdzGuPR7PXCL0i1oa8StU=
-X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr2673903wmq.43.1627809872298;
- Sun, 01 Aug 2021 02:24:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210801051627.78999-1-xianting.tian@linux.alibaba.com>
-In-Reply-To: <20210801051627.78999-1-xianting.tian@linux.alibaba.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 1 Aug 2021 11:24:15 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2_ip1zGMe=EeAA7Xpkvi8iQGWw6=0sGvLqv02Mj4LrmA@mail.gmail.com>
-Message-ID: <CAK8P3a2_ip1zGMe=EeAA7Xpkvi8iQGWw6=0sGvLqv02Mj4LrmA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] tty: hvc: pass DMA capable memory to put_chars()
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>
-Cc:     gregkh <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Amit Shah <amit@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:n4+rvkXBd/PVKg1Ijf2fREdOms5QtVaA5VPpnY+9GgAsTJkSocD
- JTYni+qfirNeApEJ8geQkd9/iQyLudAhviTTEWcosvW+zSUP8abZUEn6evJRwpbZfNqnR2Y
- 6imSe+9Twi8jG3/qV4Iay8shpihqtSI1BhvSu1DzvVH+bxNQmTejQLy6NzPAu4ZywiBvReq
- 7qm/kFcEwA/M7qog3LGnA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:g4N/qZKZTKE=:dqEOS15OX6WNtBCecGWzIb
- Q1pFI7wKSj/lIpm8Ja5Y/dZ1kntOgeXTWa/rsO2MMbUNW+VVnHZ/qCh53lFD2qTpxbzqojwSp
- 2ytWIkyJ2ySjj8gzUVf/AnMpsbkW4nPjFj8xAlmSQmwone+y9cqRuNKRNd8T301sBd/O2r3Ji
- 5SMtvDyqAORh/SJSQPa+PR1rr8WSJcOMZTXH955prKZUKE+oOBtmoT0hOLqf5F5BcO6zqGgjn
- ewLNCz8jkhkYemjqT2PcvQvRVSVO8qOU/R6Fem66B0AGMe5PY4NkMzHU4pJZ9kEBI513VyLh/
- 9KEOP1RzSwE/OKLHuMjKNjDtuwXCuiwslDcRaSBNCW/yuzMDwgRVT7TZ1G/6gZ7KU6bs07nR6
- OsjrEBN3CufYXbfFVxdiPOFbFhT/qIGif5xIsOFdEJa+zfGJovN72M6QG41VXzouq+syFMlkb
- 9swSjHcoPqONX34PuiGofuJlWbqM2DnidpAImJbyiFcTn8/Rtl50l2x3caue3Kw3SyeFIs9G3
- nOpqpE105qR7nqdqfubhKMcXUSKYQDF8AtXJis8XWmYLn+s9PDXSZalP31xa0jyRLYcliuuPr
- RVRHhaFFzNwSClf7+uByzesozZHBO6ER6WNnQ+aMcOC3VckytjwxdWQiKJDGIluAl1VqxTGhe
- 3eW2VBfZqHVCPA+NWM5ghmhVtraJFJSU4l9ZegQHXXInTVf2pXGoMaP/XY4icrGghjVkENMax
- df5SAp5gIWqilzdNElMn1SUS6W6yEMMe5jjSMXIv1VoZk+lfix6jZI1Y2Cx7Kccl9gLiDuKg0
- DGkpuxQRzgVcYXAxWvlmcogtzPfwy4raOrSx92SL50qzyVQ28GnjW6xMN4ncFZR39+PcaQEa4
- ZQYSLZxoISTORp4+a3E9Ch9FrsEPTf1Dqjsbs9Zlep7a2v8B15m4+rEG/es6EtOewyv3DyApj
- Y140smnio5btiatnAh4URWpcxpBS9pcf3C/pu2P/wMieuIE77KXF0
+        id S231653AbhHAJbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 05:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231464AbhHAJb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 05:31:29 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BBCE60243;
+        Sun,  1 Aug 2021 09:31:21 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mA7oU-002GjF-W4; Sun, 01 Aug 2021 10:31:19 +0100
+Date:   Sun, 01 Aug 2021 10:31:18 +0100
+Message-ID: <87sfzt1pg9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
+        devicetree@vger.kernel.org, robin.murphy@arm.com,
+        sven@svenpeter.dev, Mark Kettenis <kettenis@openbsd.org>,
+        Hector Martin <marcan@marcan.st>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
+In-Reply-To: <20210726231848.GA1025245@robh.at.kernel.org>
+References: <20210726083204.93196-1-mark.kettenis@xs4all.nl>
+        <20210726083204.93196-2-mark.kettenis@xs4all.nl>
+        <20210726231848.GA1025245@robh.at.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: robh@kernel.org, mark.kettenis@xs4all.nl, devicetree@vger.kernel.org, robin.murphy@arm.com, sven@svenpeter.dev, kettenis@openbsd.org, marcan@marcan.st, bhelgaas@google.com, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 1, 2021 at 7:16 AM Xianting Tian
-<xianting.tian@linux.alibaba.com> wrote:
+On Tue, 27 Jul 2021 00:18:48 +0100,
+Rob Herring <robh@kernel.org> wrote:
+> 
+> On Mon, Jul 26, 2021 at 10:32:00AM +0200, Mark Kettenis wrote:
+> > From: Mark Kettenis <kettenis@openbsd.org>
+> > 
+> > The Apple PCIe host controller is a PCIe host controller with
+> > multiple root ports present in Apple ARM SoC platforms, including
+> > various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > 
+> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> > ---
+> >  .../devicetree/bindings/pci/apple,pcie.yaml   | 166 ++++++++++++++++++
+> >  MAINTAINERS                                   |   1 +
+> >  2 files changed, 167 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > new file mode 100644
+> > index 000000000000..bfcbdee79c64
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > @@ -0,0 +1,166 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Apple PCIe host controller
+> > +
+> > +maintainers:
+> > +  - Mark Kettenis <kettenis@openbsd.org>
+> > +
+> > +description: |
+> > +  The Apple PCIe host controller is a PCIe host controller with
+> > +  multiple root ports present in Apple ARM SoC platforms, including
+> > +  various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > +  The controller incorporates Synopsys DesigWare PCIe logic to
+> > +  implements its root ports.  But the ATU found on most DesignWare
+> > +  PCIe host bridges is absent.
+> 
+> blank line
+> 
+> > +  All root ports share a single ECAM space, but separate GPIOs are
+> > +  used to take the PCI devices on those ports out of reset.  Therefore
+> > +  the standard "reset-gpio" and "max-link-speed" properties appear on
+> 
+> reset-gpios
+> 
+> > +  the child nodes that represent the PCI bridges that correspond to
+> > +  the individual root ports.
+> 
+> blank line
+> 
+> > +  MSIs are handled by the PCIe controller and translated into regular
+> > +  interrupts.  A range of 32 MSIs is provided.  These 32 MSIs can be
+> > +  distributed over the root ports as the OS sees fit by programming
+> > +  the PCIe controller's port registers.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: apple,t8103-pcie
+> > +      - const: apple,pcie
+> > +
+> > +  reg:
+> > +    minItems: 3
+> > +    maxItems: 5
+> > +
+> > +  reg-names:
+> > +    minItems: 3
+> > +    maxItems: 5
+> > +    items:
+> > +      - const: config
+> > +      - const: rc
+> > +      - const: port0
+> > +      - const: port1
+> > +      - const: port2
+> > +
+> > +  ranges:
+> > +    minItems: 2
+> > +    maxItems: 2
+> > +
+> > +  interrupts:
+> > +    description:
+> > +      Interrupt specifiers, one for each root port.
+> > +    minItems: 1
+> > +    maxItems: 3
+> > +
+> > +  msi-controller: true
+> > +  msi-parent: true
+> > +
+> > +  msi-ranges:
+> > +    description:
+> > +      A list of pairs <intid span>, where "intid" is the first
+> > +      interrupt number that can be used as an MSI, and "span" the size
+> > +      of that range.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> > +    items:
+> > +      minItems: 2
+> > +      maxItems: 2
+> 
+> I still have issues I raised on v1 with this property. It's genericish 
+> looking, but not generic. 'intid' as a single cell can't specify any 
+> parent interrupt such as a GIC which uses 3 cells. You could put in all 
+> the cells, but you'd still be assuming which cell you can increment.
 
-> Considering lock competition of hp->outbuf and the complicated logic in
-> hvc_console_print(), I didn’t use hp->outbuf, just allocate additional
-> memory(length N_OUTBUF) and append it to hp->outbuf.
-> For the issue in hvc_poll_put_char(), I use a static char to replace
-> the char in stack.
+The GIC bindings already use similar abstractions, see what we do for
+both GICv2m and GICv3 MBIs. Other MSI controllers use similar
+properties (alpine and loongson, for example).
 
-While this may work, it sounds rather obscure to me, I don't think
-it's a good idea
-to append the buffer at the back.
+> I think you should just list all these under 'interrupts' using 
+> interrupt-names to make your life easier:
+> 
+> interrupt-names:
+>   items:
+>     - const: port0
+>     - const: port1
+>     - const: port2
+>     - const: msi0
+>     - const: msi1
+>     - const: msi2
+>     - const: msi3
+>     ...
+> 
+> Yeah, it's kind of verbose, but if the h/w block handles N interrupts, 
+> you should list N interrupts. The worst case for the above is N entries 
+> too if not contiguous.
 
-If you need a separate field besides hp->outbuf, I would make that part of the
-structure itself, and give it the correct alignment constraints to ensure it is
-in a cache line by itself. The size of this field is a compile-time
-constant, so I
-don't see a need to play tricks with pointer arithmetic.
+And that's where I beg to differ, again.
 
-I'm not sure about the locking either: Is it possible for two CPUs to enter
-hvc_console_print() at the same time, or is there locking at a higher level
-already? It would be good to document this in the structure definition next
-to the field.
+Specifying interrupts like this gives the false impression that these
+interrupts are generated by the device that owns them (the RC). Which
+for MSIs is not the case. This is not only verbose, this is
+semantically dubious. And what should we do when the number of
+possible interrupt is ridiculously large, as it is for the GICv3 ITS?
 
-> @@ -878,6 +885,7 @@ static void hvc_poll_put_char(struct tty_driver *driver, int line, char ch)
->         struct tty_struct *tty = driver->ttys[0];
->         struct hvc_struct *hp = tty->driver_data;
->         int n;
-> +       static char ch = ch;
->
->         do {
->                 n = hp->ops->put_chars(hp->vtermno, &ch, 1);
+I wish we had a standard way to express these constraints. Until we
+do, I don't think enumerating individual interrupts is a practical
+thing to do, nor that it actually represents the topology of the
+system.
 
-This does not compile, and it's neither thread-safe nor dma safe if you get it
-to build by renaming the variable.
+Thanks,
 
-        Arnd
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
