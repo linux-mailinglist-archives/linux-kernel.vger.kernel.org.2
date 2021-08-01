@@ -2,108 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01ECD3DCCC5
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 18:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1D53DCCC8
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 18:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbhHAQzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 12:55:42 -0400
-Received: from smtprelay0078.hostedemail.com ([216.40.44.78]:42006 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229646AbhHAQzl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 12:55:41 -0400
-Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id B1D1F180210D1;
-        Sun,  1 Aug 2021 16:55:31 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id 57CFE17275;
-        Sun,  1 Aug 2021 16:55:30 +0000 (UTC)
-Message-ID: <4962ac72a94bc5826960dab855b5e2f47a4d1b9a.camel@perches.com>
-Subject: Re: [PATCH] drivers/input: Remove all strcpy() uses in favor of
- strscpy()
-From:   Joe Perches <joe@perches.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Len Baker <len.baker@gmx.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-hardening@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sun, 01 Aug 2021 09:55:28 -0700
-In-Reply-To: <922b0d99b6397adc44761abaed12c019dc0b9e88.camel@perches.com>
-References: <20210801144316.12841-1-len.baker@gmx.com>
-         <20210801145959.GI22278@shell.armlinux.org.uk>
-         <922b0d99b6397adc44761abaed12c019dc0b9e88.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S229965AbhHAQ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 12:57:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229646AbhHAQ5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 12:57:19 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6521E610A5;
+        Sun,  1 Aug 2021 16:57:06 +0000 (UTC)
+Date:   Sun, 1 Aug 2021 17:59:47 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v3 2/3] iio: adc: Add driver for Renesas RZ/G2L A/D
+ converter
+Message-ID: <20210801175947.2b49878d@jic23-huawei>
+In-Reply-To: <CA+V-a8vMdFrrcw3iqbSzd4oN_x6CijOwYo7eSFuf8LhfB6SFRg@mail.gmail.com>
+References: <20210726182850.14328-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        <20210726182850.14328-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        <20210731181142.430c50f8@jic23-huawei>
+        <CA+V-a8vMdFrrcw3iqbSzd4oN_x6CijOwYo7eSFuf8LhfB6SFRg@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 57CFE17275
-X-Spam-Status: No, score=-1.29
-X-Stat-Signature: 343965z1p64ouzhaqchggbnj5ymsxi3k
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19SCwlsX+nYsG+afP45pp+eXwmzf+OErF4=
-X-HE-Tag: 1627836930-174082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-08-01 at 09:39 -0700, Joe Perches wrote:
-> On Sun, 2021-08-01 at 16:00 +0100, Russell King (Oracle) wrote:
-> > On Sun, Aug 01, 2021 at 04:43:16PM +0200, Len Baker wrote:
-> > > strcpy() performs no bounds checking on the destination buffer. This
-> > > could result in linear overflows beyond the end of the buffer, leading
-> > > to all kinds of misbehaviors. The safe replacement is strscpy().
-[]
-> > So if the string doesn't fit, it's fine to silently truncate it?
-> > 
-> > Rather than converting every single strcpy() in the kernel to
-> > strscpy(), maybe there should be some consideration given to how the
-> > issue of a strcpy() that overflows the buffer should be handled.
-> > E.g. in the case of a known string such as the above, if it's longer
-> > than the destination, should we find a way to make the compiler issue
-> > a warning at compile time?
+On Sat, 31 Jul 2021 19:31:52 +0100
+"Lad, Prabhakar" <prabhakar.csengg@gmail.com> wrote:
 
-(apologies for the earlier blank reply, sometimes I dislike my email client)
+> Hi Jonathan,
+> 
+> Thank you for the review.
+> 
 
-stracpy could do that with a trivial addition like below:
+...
 
-Old lkml references:
+> > > +#define DRIVER_NAME          "rzg2l-adc"  
+> >
+> > As only used in one place, just put it inline there so we don't need
+> > to go find if we want to know the value - I'm lazy.
+> >  
+> Its being used in two places
+> 1: indio_dev->name = DRIVER_NAME #In probe call
+> 2: .name = DRIVER_NAME # In platform_driver struct
+> 
+> Let me know if you want me to replace them inline and drop the above macro.
 
-https://lore.kernel.org/lkml/cover.1563889130.git.joe@perches.com/
-and
-https://lore.kernel.org/lkml/56dc4de7e0db153cb10954ac251cb6c27c33da4a.camel@perches.com/
+oops.  Searching apparently failed me ;)  Fine as is.
 
-But Linus T wants a copy_string mechanism instead:
-https://lore.kernel.org/lkml/CAHk-=wgqQKoAnhmhGE-2PBFt7oQs9LLAATKbYa573UO=DPBE0Q@mail.gmail.com/
-
-/**
- * stracpy - Copy a C-string into an array of char/u8/s8 or equivalent
- * @dest: Where to copy the string, must be an array of char and not a pointer
- * @src: String to copy, may be a pointer or const char array
- *
- * Helper for strscpy().
- * Copies a maximum of sizeof(@dest) bytes of @src with %NUL termination.
- *
- * A BUILD_BUG_ON is used for cases where @dest is not a char array or
- * @src is a char array and is larger than @dest.
- *
- * Returns:
- * * The number of characters copied (not including the trailing %NUL)
- * * -E2BIG if @dest is a zero size array or @src was truncated.
- */
-#define stracpy(dest, src)						\
-({									\
-	BUILD_BUG_ON(!(__same_type(dest, char[]) ||			\
-		       __same_type(dest, unsigned char[]) ||		\
-		       __same_type(dest, signed char[])));		\
-	BUILD_BUG_ON((__same_type(src, char[]) ||			\
-		      __same_type(src, unsigned char[]) ||		\
-		      __same_type(src, signed char[])) &&		\
-		     ARRAY_SIZE(src) > ARRAY_SIZE(dest));		\
-									\
-	strscpy(dest, src, ARRAY_SIZE(dest));				\
-})
+...
 
 
+> > > +static const struct iio_info rzg2l_adc_iio_info = {
+> > > +     .read_raw = rzg2l_adc_read_raw,
+> > > +     .read_label = rzg2l_adc_read_label,
+> > > +};
+> > > +
+> > > +static irqreturn_t rzg2l_adc_isr(int irq, void *dev_id)
+> > > +{
+> > > +     struct rzg2l_adc *adc = (struct rzg2l_adc *)dev_id;  
+> >
+> > No need for explicit cast from void * to another pointer type.
+> > This is always valid without in C.
+> >  
+> Agreed.
+> 
+> > > +     unsigned long intst;
+> > > +     u32 reg;
+> > > +     int ch;
+> > > +
+> > > +     reg = rzg2l_adc_readl(adc, RZG2L_ADSTS);
+> > > +
+> > > +     /* A/D conversion channel select error interrupt */
+> > > +     if (reg & RZG2L_ADSTS_CSEST) {
+> > > +             rzg2l_adc_writel(adc, RZG2L_ADSTS, reg);
+> > > +             return IRQ_HANDLED;
+> > > +     }
+> > > +
+> > > +     intst = reg & RZG2L_ADSTS_INTST_MASK;
+> > > +     if (!intst)
+> > > +             return IRQ_NONE;
+> > > +
+> > > +     for_each_set_bit(ch, &intst, RZG2L_ADC_MAX_CHANNELS) {
+> > > +             if (intst & BIT(ch))  
+> >
+> > I'm missing how this if can fail given we only end up in here when the bit is
+> > set.
+> >  
+> ADC has 8 channels RZG2L_ADSTS register bits [0:7] will be set to 1
+> when the given channel ADC conversion has been completed. So the above
+> if condition checks if the bit is set to 1 and then reads the
+> corresponding value of that channel.
+
+Just looking at the two lines of code above
+for_each_set_bit(ch, &intst, RZG2L_ADC_MAX_CHANNELS) 
+will only call the the next line if the bit is set.  E.g. It will only call
+it
+if (intst & BIT(ch))
+
+So you can only get into the body of the for loop if this bit is set and the
+condition is always true.  Hence drop 
+if (intst & BIT(ch)) 
+
+> 
+> > > +                     adc->last_val[ch] = rzg2l_adc_readl(adc, RZG2L_ADCR(ch)) &
+> > > +                                         RZG2L_ADCR_AD_MASK;
+> > > +     }
+> > > +
+> > > +     /* clear the channel interrupt */
+> > > +     rzg2l_adc_writel(adc, RZG2L_ADSTS, reg);
+> > > +
+> > > +     complete(&adc->completion);
+> > > +
+> > > +     return IRQ_HANDLED;
+> > > +}
+> > > +
+
+...
+
+> > > +
+> > > +     pm_runtime_enable(dev);  
+> >
+> > I think you also want to set the state to suspended to ensure the resume is
+> > called on get.
+> >  
+> pm_runtime_set_suspended() should only be called when runtime is
+> disabled or is it that I am missing something ?
+
+If you want the runtime pm code to assume your device is suspended initially
+then you set the state before you call pm_runtime_enable(dev).
+
+
+J
