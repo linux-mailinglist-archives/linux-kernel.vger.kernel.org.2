@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EDD3DCAAA
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 09:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C393DCAB5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 10:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhHAH4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 03:56:51 -0400
-Received: from mout.web.de ([217.72.192.78]:54463 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhHAH4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 03:56:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1627804586;
-        bh=ybETWJ69FP1eklPrS3Vlls+0FH07W6kXIry6yZLnVHA=;
-        h=X-UI-Sender-Class:From:Subject:To:Cc:Date;
-        b=qIgytIIPaMCwaRq6gt6fgUNEyLKI4IDCgv6epdY8gb1Qf4zOMofj0I8j5tnJ5H+AG
-         Y0hVsyyPRGUvjgDKhAJGdn9Jps0gYzz05m2gTCzM8bcLdCc4o6QPNiVSQeUNwF/bjm
-         InwMEFEkm5tOUYDnozmmLBxlauBD8RBiFGdeajH4=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.10.10] ([88.215.87.227]) by smtp.web.de (mrweb102
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MLgUx-1m9p5F2l9f-000qwY; Sun, 01
- Aug 2021 09:56:26 +0200
-From:   Jan Kiszka <jan.kiszka@web.de>
-Subject: [PATCH v2] watchdog: Start watchdog in watchdog_set_last_hw_keepalive
- only if appropriate
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <93d56386-6e37-060b-55ce-84de8cde535f@web.de>
-Date:   Sun, 1 Aug 2021 09:56:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nYWxU0jdTKdDADeNmlGW1+5lohCYi/RQrtK1xOW9eNP9iY1+86G
- AHb8onfpMNkJkzx8Xxe2wNipg05gdUVjAI1uUB6hZkbenQzeZ4p2jZZn5yVLzWOd89ysv1T
- ju+1QulrOg8Th6g0G+MC3K3NRifRyrXS9CdnZgiJIhLByDeA2b9dZueIsM+wcf02S6/oN0j
- 39FQ4QOOMC7ab7K1K88Wg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vkaVJBxNU3Q=:8x569OsVVEBvGWom5INHSc
- CYevetlYmZkMM+rYcdd0KNNnashKtSJfLne24uVOC06U/MI2JSS1eyhyE4kpURORypgIlQAL4
- fh5XEfFCKFLfLmMaORtmISNvn98H2Q6vQHVF7ElPdc56ZhqB00Rjt5Hh9UXiMFzbMJRphM+es
- 2dvBBaVgtI9IyYoGvuUNBkvTOQLsQhv/GrP20BZY9m2nTia+mS6ogtvp5OkMwkFFbA/H+/VbD
- 5fFCTLXyog2NqmTwtuw3SMogLVn2adjZVW9dPO6WJWRZVHDCgJ0pvZ3CJ8v4g0v9YTjdZ8Bui
- dKLEogJxri+PtxcuIe5YdPC69QQJcbHVjLOGwrHC2Fq7AsGUeLTJqdzmJtL82+BsjXIuuN3O6
- NvOrqlqlJ1tKLlpiHVr5ekQsmQl2VWexc1HBr+2Rfs47FDB/nN39JYie4LQ3bk1QRM2V72ayB
- TUVgijboREDBJpXMk2VpKkgkAoWqcZrfAHVttkafWe54pwoA/Ad/Gonfuq154fvwqYMJk7pmS
- k4rhoV1Fp34/fw1Ur+whiz+3KSEfe94XaNKxVpzkgetR0m6HHLo1VHEhM3GC+nqFgjdGyDZ5k
- H5RAnDHRtTiUA10V3aQeVKPDJ6MIXm+uxCwL4vfjMjp31TUNb5wIwHuC+6Tp6KlLG4iL5RBHi
- T9AYe2BzO6WpRhnb8J0Eyyqp5mBfulJVAqykvlGlxYp+962V5gNPI69Ji6Pl0DJHyrpIvHhI6
- QX74udClHFmKhSW7VSsnEcXgGvnBgymL51CraiXp5+ucSxVSj4OIwQHorFNf7gfCB3ta013PJ
- XZXT8EIXq7Rg4uTYEdD6x7KhpJrSLywIaALHn2zZM1xJWCR0X2uMqhALXLUKpHqHs3T7gnOLw
- 2C387SbclBHrUilw2KwaOt6LgqTO7tQT8VcvJz84qMmQqjVyb9gy35UclNm5W/JSkggOa3ONy
- soWlBrVfYasIonyDlW9hOUojR5btV0kjp5nEGJaJUE8RbhAYPB6wWtVrvwCBOWFW1IjQszQfa
- UIpWXLO8gRVcb2dT4m4ViHGze2m82W8c+H6ui2lYllK+fTPpQehkYJL0/IMKBpUqyEj1Af8bT
- Yoz2YYuRK5uUsSi9bX56J6NXAmxXHIsm2gr
+        id S231452AbhHAIEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 04:04:05 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34252 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhHAIEE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 04:04:04 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1AD0421FF9;
+        Sun,  1 Aug 2021 08:03:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627805036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iUnvT3yBk3Ak2FNUwjA/dYWqqudAaqfeubdq+0me75I=;
+        b=Bz8m1F01OxpMp2gtaAHvBzOJRO0HAy73WEx9xUN92Y/V0shSQYitGik1zp0Pscj/82IJGD
+        wPRJF0usS7ouGAqkZzqy56xr1qh8JY4xXqwp2FQ6bVWRWukcVZONk6sknAXhBZDfazny/n
+        EjYPz12++B1KbP0pNi0DEsb6RjzvbsE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627805036;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iUnvT3yBk3Ak2FNUwjA/dYWqqudAaqfeubdq+0me75I=;
+        b=qjaqYRQ2CFcwE1tIRHdsUZGIYL0YSKnwYCNppSWb1qukP9Heb67yHuL3zOWdxpIO0esjiA
+        4SLzjXqMVShi38Bg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 0774FA3BA8;
+        Sun,  1 Aug 2021 08:03:56 +0000 (UTC)
+Date:   Sun, 01 Aug 2021 10:03:55 +0200
+Message-ID: <s5h7dh51thw.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
+        Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v3 13/27] ALSA: hda/cs8409: Dont disable I2C clock between consecutive accesses
+In-Reply-To: <20210730151844.7873-14-vitalyr@opensource.cirrus.com>
+References: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
+        <20210730151844.7873-14-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+On Fri, 30 Jul 2021 17:18:30 +0200,
+Vitaly Rodionov wrote:
+> 
+> From: Lucas Tanure <tanureal@opensource.cirrus.com>
+> 
+> Only disable I2C clock 25 ms after not being used.
+> 
+> The current implementation enables and disables the I2C clock for each
+> I2C transaction. Each enable/disable call requires two verb transactions.
+> This means each I2C transaction requires a total of four verb transactions
+> to enable and disable the clock.
+> However, if there are multiple consecutive I2C transactions, it is not
+> necessary to enable and disable the clock each time, instead it is more
+> efficient to enable the clock for the first transaction, and disable it
+> after the final transaction, which would improve performance.
+> This is achieved by using a timeout which disables the clock if no request
+> to enable the clock has occurred for 25 ms.
+> 
+> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> ---
+> 
+> Changes in v2:
+> - Improved delayed work start/cancel implementation, and re-worked commit message
+>  adding more explanation why this was required. 
+> 
+> Changes in v3:
+> - Cancel the disable timer, but do not wait for any running disable functions to finish.
+>  If the disable timer runs out before cancel, the delayed work thread will be blocked,
+>  waiting for the mutex to become unlocked. This mutex will be locked for the duration of
+>  any i2c transaction, so the disable function will run to completion immediately
+>  afterwards in the scenario. The next enable call will re-enable the clock, regardless.
 
-We must not pet a running watchdog when handle_boot_enabled is off
-because this will kick off automatic triggering before userland is
-running, defeating the purpose of the handle_boot_enabled control.
-Furthermore, don't ping in case watchdog_set_last_hw_keepalive was
-called incorrectly when the hardware watchdog is actually not running.
+This looks almost fine, but just a couple of thoughts:
 
-Fixed: cef9572e9af3 ("watchdog: add support for adjusting last known HW ke=
-epalive time")
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-=2D--
+- cancel_delayed_work_sync() means to it might keep the i2c enabled
+  after that point (just cancel the pending work).
+  Would it cause a inconsistency afterwards?
 
-Changes to v1 ("watchdog: Respect handle_boot_enabled when setting last la=
-st_hw_keepalive"):
- - add watchdog_hw_running test
- - improve commit log
+- A similar procedure is needed for suspend callback to cancel / flush
+  the work.
+  The shutdown is another question, but usually it's fine to without
+  any special handling as long as the resource is kept.
 
- drivers/watchdog/watchdog_dev.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_d=
-ev.c
-index 3bab32485273..6c73160386b9 100644
-=2D-- a/drivers/watchdog/watchdog_dev.c
-+++ b/drivers/watchdog/watchdog_dev.c
-@@ -1172,7 +1172,10 @@ int watchdog_set_last_hw_keepalive(struct watchdog_=
-device *wdd,
+thanks,
 
- 	wd_data->last_hw_keepalive =3D ktime_sub(now, ms_to_ktime(last_ping_ms))=
-;
-
--	return __watchdog_ping(wdd);
-+	if (watchdog_hw_running(wdd) && handle_boot_enabled)
-+		return __watchdog_ping(wdd);
-+
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(watchdog_set_last_hw_keepalive);
-
-=2D-
-2.31.1
+Takashi
