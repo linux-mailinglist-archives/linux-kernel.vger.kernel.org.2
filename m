@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C2C3DCDC1
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832B23DCDC3
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbhHAUdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 16:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47810 "EHLO
+        id S231728AbhHAUd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 16:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhHAUdR (ORCPT
+        with ESMTP id S231612AbhHAUdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 16:33:17 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5972CC06175F;
-        Sun,  1 Aug 2021 13:33:09 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id t21so17217949plr.13;
-        Sun, 01 Aug 2021 13:33:09 -0700 (PDT)
+        Sun, 1 Aug 2021 16:33:21 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D66DC06175F;
+        Sun,  1 Aug 2021 13:33:12 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so21858626pji.5;
+        Sun, 01 Aug 2021 13:33:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=2ku34cnAyfySr5zI5nerb5zYCOk3G/JYtmkF3StscuA=;
-        b=W9fTsbTc3Gs/mwd6ZiD20Ne4v2Jh2jqzhcvdtdQsl6JkdB4hWubMpt2epdEuFh4D2e
-         0PxlQRraHRwYvGGO3JPizBIAFVCI7k6a4Xosis3g173oRjqTG9+liGaRmKPn8XILuM78
-         7m56XJZnUpSIz3G9pDQjwxdHaETGmc4fap8zBvyAIugn7zB8k9dTD3D1pRKxsewsfwR+
-         IaU0DgwFB/fi/fGZAHUSQbjCCJIPn9i/ub39vbnB2oAm63lPXyv9Y0WINd4VmLoQ6eEy
-         EwtP3oPdbqExVGCGww4W6asxJ/f5LIixUASSmuNEGqbXu03UfIpXC77v0Mn0buyqMohu
-         uRyg==
+        bh=OeCfS3YMgALo1kT7+YVPL/G35vIxdbQwPm6wQHzN0L0=;
+        b=kJECoYM4cbjsilfw2BAtj8C9lev0Uf3gQ8nEymU4gmQxZtW0GS5I9qHHyStRLfiWL2
+         f+oTZVhjd6pPAZpuw3EMSEptWC2G6TLCJrBULu5y9lRvMJbIiK7fEq/RNA7v92dnzAZd
+         VTzE2BsM7Lu8iKrkaKS89UUEI2Fnea/WOi4Wf1gTIRKoQUK1DZrrXlNezSFFkfdRfyY3
+         esZduZWjRWnur7q5GBNGaSl+P8widCRit+GP2jKo1Oa9R4QBt9bzlL3yXcrgi8dMZk2n
+         6HkwI0iZArhi/D5V4W7pmnAZd8I7+gyJVpEDUtM7cRFz1uac3JXEClhwFh6iqNWC0PTw
+         9UDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=2ku34cnAyfySr5zI5nerb5zYCOk3G/JYtmkF3StscuA=;
-        b=KEV7u1MSZWrm84GhlIUhOeYjOpB2a1Zbb7nXFFix5Z5CVTsoweSNP4EAX5aD5ebcTw
-         TqlElfkcrPU92KgTBIu+muU89ztznikiAuCDVRaOADlsB7Xq+jLQotdA6H47/0dIhTV5
-         //or9r2i9nTSfn8rPfjbh7V9uv0DkV9/tzPoq3ddzBdZ33DUXP3fj8YMglyQ3hb3e9eR
-         Ie5tdR2anziiMs4xP2+bGMM1fQCjOZNjUfdedIETehnIKicw4pyBU5gnRWJy58nuFmvO
-         QclAjMeXQdd5cb7ChNUcD+OxifvnUnyq2K2SsGGh21NusDAJk6IWc5+TL5i0IJJmCr6w
-         GlHQ==
-X-Gm-Message-State: AOAM533yEizKJgi89YTBKxdAwYe1/TXz2003tW9cvJry+j6NOeUakKJE
-        XrtoYCvVxnZ59B61ZNxKOGw=
-X-Google-Smtp-Source: ABdhPJyLjM34FpwpxdXOyEnCTnCTKE/CJPYY2Uc9jld8n+H3FCClx+e1fw+oIUmSKa6GYcBmNH3aQQ==
-X-Received: by 2002:a17:903:2444:b029:12c:8eba:fd6a with SMTP id l4-20020a1709032444b029012c8ebafd6amr11677278pls.0.1627849988906;
-        Sun, 01 Aug 2021 13:33:08 -0700 (PDT)
+        bh=OeCfS3YMgALo1kT7+YVPL/G35vIxdbQwPm6wQHzN0L0=;
+        b=nfTugjmghLSKgL6Rzbd3CEdtyC+0a+5zspPtM89eO4c7DtGJ5F2BwHz6xKL5Gl9ImC
+         qvxUslJlkHeCldH5ZuhT9czGLbtT4E2VM7fmUogIvBMQidR1PXYEPdUXiIz2Akjox29v
+         jKthUVcO7kyLDzYRQ+E2WZe5SM2VKiMoXVJ0HBVKFuXdciF4Tz9c9Rl9i/1JmBkNHcRs
+         BwHfDDaZ6QrLtjsEZyDE9sa3Kod4DZUCslHZpdknTR1TUM7omc/cRirD7K1/+0VQSvix
+         tzJfKa+ndw8GrWEXVoI+SxX3Ufq3rap3URPyu+JOySoBYYPEnhLGeG+qirGVugDSEXal
+         Yseg==
+X-Gm-Message-State: AOAM530K20B0l0X+LJ5aiiNmG+FMBiRE5w1NMsVXH6lI9d+0oIces/Xy
+        GAa/l/uOiMthrWGVQUplRWRZPomyjcI=
+X-Google-Smtp-Source: ABdhPJyhUAU/iDDVskLjW897dx7GSxLUcNNOZFsfcMjo/tNDqzeaGLJf/qeT2icXM/oiAFTaygGQ0A==
+X-Received: by 2002:a17:90a:6e41:: with SMTP id s1mr14246287pjm.109.1627849991982;
+        Sun, 01 Aug 2021 13:33:11 -0700 (PDT)
 Received: from localhost.localdomain ([2402:3a80:15b3:589:f07d:5386:a3c2:3056])
-        by smtp.gmail.com with ESMTPSA id k10sm8897974pfc.169.2021.08.01.13.33.06
+        by smtp.gmail.com with ESMTPSA id k10sm8897974pfc.169.2021.08.01.13.33.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Aug 2021 13:33:08 -0700 (PDT)
+        Sun, 01 Aug 2021 13:33:11 -0700 (PDT)
 From:   Himadri Pandya <himadrispandya@gmail.com>
 To:     johan@kernel.org, gregkh@linuxfoundation.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Himadri Pandya <himadrispandya@gmail.com>
-Subject: [PATCH v2 2/6] USB: serial: cp210x: use usb_control_msg_recv() and usb_control_msg_send()
-Date:   Mon,  2 Aug 2021 02:01:18 +0530
-Message-Id: <20210801203122.3515-3-himadrispandya@gmail.com>
+Subject: [PATCH v2 3/6] USB: serial: f81232: use usb_control_msg_recv() and usb_control_msg_send()
+Date:   Mon,  2 Aug 2021 02:01:19 +0530
+Message-Id: <20210801203122.3515-4-himadrispandya@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210801203122.3515-1-himadrispandya@gmail.com>
 References: <20210801203122.3515-1-himadrispandya@gmail.com>
@@ -61,185 +61,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new wrapper functions for usb_control_msg() can accept data from
-stack with robust error checks. Hence use the wrappers with stack
-variables for usb transfer buffers to save kernel memory.
+New wrapper functions usb_control_msg_send/recv accept stack variables
+for usb message buffer and eliminate the need of creating temporary dma
+buffers. The wrappers also have proper error checks for short
+read/writes. Hence use the wrappers instead of using usb_control_msg()
+directly.
 
 Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
 ---
 Changes in v2:
- - Drop unrelated style fixes
+ - Drop unrelated style changes
 ---
- drivers/usb/serial/cp210x.c | 107 ++++++++++--------------------------
- 1 file changed, 30 insertions(+), 77 deletions(-)
+ drivers/usb/serial/f81232.c | 96 +++++++++++++------------------------
+ 1 file changed, 34 insertions(+), 62 deletions(-)
 
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index 3c80bfbf3bec..b73581fc1768 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -628,29 +628,18 @@ static int cp210x_read_reg_block(struct usb_serial_port *port, u8 req,
+diff --git a/drivers/usb/serial/f81232.c b/drivers/usb/serial/f81232.c
+index a7a7af8d05bf..3ad1f515fb68 100644
+--- a/drivers/usb/serial/f81232.c
++++ b/drivers/usb/serial/f81232.c
+@@ -139,67 +139,46 @@ static int calc_baud_divisor(speed_t baudrate, speed_t clockrate)
+ static int f81232_get_register(struct usb_serial_port *port, u16 reg, u8 *val)
  {
- 	struct usb_serial *serial = port->serial;
- 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
--	void *dmabuf;
- 	int result;
+ 	int status;
+-	u8 *tmp;
+ 	struct usb_device *dev = port->serial->dev;
  
--	dmabuf = kmalloc(bufsize, GFP_KERNEL);
--	if (!dmabuf)
+-	tmp = kmalloc(sizeof(*val), GFP_KERNEL);
+-	if (!tmp)
 -		return -ENOMEM;
 -
--	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
--			req, REQTYPE_INTERFACE_TO_HOST, 0,
--			port_priv->bInterfaceNumber, dmabuf, bufsize,
--			USB_CTRL_SET_TIMEOUT);
--	if (result == bufsize) {
--		memcpy(buf, dmabuf, bufsize);
--		result = 0;
--	} else {
-+	result = usb_control_msg_recv(serial->dev, 0, req,
-+				      REQTYPE_INTERFACE_TO_HOST, 0,
-+				      port_priv->bInterfaceNumber, buf,
-+				      bufsize, USB_CTRL_SET_TIMEOUT,
+-	status = usb_control_msg(dev,
+-				usb_rcvctrlpipe(dev, 0),
+-				F81232_REGISTER_REQUEST,
+-				F81232_GET_REGISTER,
+-				reg,
+-				0,
+-				tmp,
+-				sizeof(*val),
+-				USB_CTRL_GET_TIMEOUT);
+-	if (status != sizeof(*val)) {
++	status = usb_control_msg_recv(dev,
++				      0,
++				      F81232_REGISTER_REQUEST,
++				      F81232_GET_REGISTER,
++				      reg,
++				      0,
++				      val,
++				      sizeof(*val),
++				      USB_CTRL_GET_TIMEOUT,
 +				      GFP_KERNEL);
-+	if (result) {
- 		dev_err(&port->dev, "failed get req 0x%x size %d status: %d\n",
- 				req, bufsize, result);
--		if (result >= 0)
--			result = -EIO;
++	if (status) {
+ 		dev_err(&port->dev, "%s failed status: %d\n", __func__, status);
+-
+-		if (status < 0)
+-			status = usb_translate_errors(status);
+-		else
+-			status = -EIO;
+-	} else {
+-		status = 0;
+-		*val = *tmp;
++		status = usb_translate_errors(status);
  	}
  
--	kfree(dmabuf);
--
- 	return result;
+-	kfree(tmp);
+ 	return status;
  }
  
-@@ -669,30 +658,17 @@ static int cp210x_read_u8_reg(struct usb_serial_port *port, u8 req, u8 *val)
- static int cp210x_read_vendor_block(struct usb_serial *serial, u8 type, u16 val,
- 				    void *buf, int bufsize)
+ static int f81232_set_register(struct usb_serial_port *port, u16 reg, u8 val)
  {
--	void *dmabuf;
- 	int result;
+ 	int status;
+-	u8 *tmp;
+ 	struct usb_device *dev = port->serial->dev;
  
--	dmabuf = kmalloc(bufsize, GFP_KERNEL);
--	if (!dmabuf)
+-	tmp = kmalloc(sizeof(val), GFP_KERNEL);
+-	if (!tmp)
 -		return -ENOMEM;
 -
--	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
--				 CP210X_VENDOR_SPECIFIC, type, val,
--				 cp210x_interface_num(serial), dmabuf, bufsize,
--				 USB_CTRL_GET_TIMEOUT);
--	if (result == bufsize) {
--		memcpy(buf, dmabuf, bufsize);
--		result = 0;
--	} else {
-+	result = usb_control_msg_recv(serial->dev, 0, CP210X_VENDOR_SPECIFIC,
-+				      type, val, cp210x_interface_num(serial),
-+				      buf, bufsize, USB_CTRL_GET_TIMEOUT,
+-	*tmp = val;
+-
+-	status = usb_control_msg(dev,
+-				usb_sndctrlpipe(dev, 0),
+-				F81232_REGISTER_REQUEST,
+-				F81232_SET_REGISTER,
+-				reg,
+-				0,
+-				tmp,
+-				sizeof(val),
+-				USB_CTRL_SET_TIMEOUT);
+-	if (status < 0) {
++	status = usb_control_msg_send(dev,
++				      0,
++				      F81232_REGISTER_REQUEST,
++				      F81232_SET_REGISTER,
++				      reg,
++				      0,
++				      &val,
++				      sizeof(val),
++				      USB_CTRL_SET_TIMEOUT,
 +				      GFP_KERNEL);
-+	if (result) {
- 		dev_err(&serial->interface->dev,
- 			"failed to get vendor val 0x%04x size %d: %d\n", val,
- 			bufsize, result);
--		if (result >= 0)
--			result = -EIO;
++	if (status) {
+ 		dev_err(&port->dev, "%s failed status: %d\n", __func__, status);
+ 		status = usb_translate_errors(status);
+-	} else {
+-		status = 0;
  	}
--
--	kfree(dmabuf);
--
- 	return result;
+ 
+-	kfree(tmp);
+ 	return status;
  }
  
-@@ -727,21 +703,14 @@ static int cp210x_write_reg_block(struct usb_serial_port *port, u8 req,
- {
- 	struct usb_serial *serial = port->serial;
- 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
--	void *dmabuf;
- 	int result;
- 
--	dmabuf = kmemdup(buf, bufsize, GFP_KERNEL);
--	if (!dmabuf)
+@@ -857,28 +836,22 @@ static int f81534a_ctrl_set_register(struct usb_interface *intf, u16 reg,
+ 	struct usb_device *dev = interface_to_usbdev(intf);
+ 	int retry = F81534A_ACCESS_REG_RETRY;
+ 	int status;
+-	u8 *tmp;
+-
+-	tmp = kmemdup(val, size, GFP_KERNEL);
+-	if (!tmp)
 -		return -ENOMEM;
-+	result = usb_control_msg_send(serial->dev, 0, req,
-+				      REQTYPE_HOST_TO_INTERFACE, 0,
-+				      port_priv->bInterfaceNumber, buf, bufsize,
-+				      USB_CTRL_SET_TIMEOUT, GFP_KERNEL);
  
--	result = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
--			req, REQTYPE_HOST_TO_INTERFACE, 0,
--			port_priv->bInterfaceNumber, dmabuf, bufsize,
--			USB_CTRL_SET_TIMEOUT);
--
--	kfree(dmabuf);
--
--	if (result < 0) {
-+	if (result) {
- 		dev_err(&port->dev, "failed set req 0x%x size %d status: %d\n",
- 				req, bufsize, result);
- 		return result;
-@@ -770,21 +739,14 @@ static int cp210x_write_u32_reg(struct usb_serial_port *port, u8 req, u32 val)
- static int cp210x_write_vendor_block(struct usb_serial *serial, u8 type,
- 				     u16 val, void *buf, int bufsize)
- {
--	void *dmabuf;
- 	int result;
+ 	while (retry--) {
+-		status = usb_control_msg(dev,
+-					usb_sndctrlpipe(dev, 0),
+-					F81232_REGISTER_REQUEST,
+-					F81232_SET_REGISTER,
+-					reg,
+-					0,
+-					tmp,
+-					size,
+-					USB_CTRL_SET_TIMEOUT);
+-		if (status < 0) {
++		status = usb_control_msg_send(dev,
++					      0,
++					      F81232_REGISTER_REQUEST,
++					      F81232_SET_REGISTER,
++					      reg,
++					      0,
++					      val,
++					      size,
++					      USB_CTRL_SET_TIMEOUT,
++					      GFP_KERNEL);
++		if (status) {
+ 			status = usb_translate_errors(status);
+ 			if (status == -EIO)
+ 				continue;
+-		} else {
+-			status = 0;
+ 		}
  
--	dmabuf = kmemdup(buf, bufsize, GFP_KERNEL);
--	if (!dmabuf)
--		return -ENOMEM;
--
--	result = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
--				 CP210X_VENDOR_SPECIFIC, type, val,
--				 cp210x_interface_num(serial), dmabuf, bufsize,
--				 USB_CTRL_SET_TIMEOUT);
-+	result = usb_control_msg_send(serial->dev, 0, CP210X_VENDOR_SPECIFIC,
-+				      type, val, cp210x_interface_num(serial),
-+				      buf, bufsize, USB_CTRL_SET_TIMEOUT,
-+				      GFP_KERNEL);
+ 		break;
+@@ -889,7 +862,6 @@ static int f81534a_ctrl_set_register(struct usb_interface *intf, u16 reg,
+ 				reg, status);
+ 	}
  
--	kfree(dmabuf);
--
--	if (result < 0) {
-+	if (result) {
- 		dev_err(&serial->interface->dev,
- 			"failed to set vendor val 0x%04x size %d: %d\n", val,
- 			bufsize, result);
-@@ -949,27 +911,18 @@ static int cp210x_get_tx_queue_byte_count(struct usb_serial_port *port,
- {
- 	struct usb_serial *serial = port->serial;
- 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
--	struct cp210x_comm_status *sts;
-+	struct cp210x_comm_status sts;
- 	int result;
- 
--	sts = kmalloc(sizeof(*sts), GFP_KERNEL);
--	if (!sts)
--		return -ENOMEM;
--
--	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
--			CP210X_GET_COMM_STATUS, REQTYPE_INTERFACE_TO_HOST,
--			0, port_priv->bInterfaceNumber, sts, sizeof(*sts),
--			USB_CTRL_GET_TIMEOUT);
--	if (result == sizeof(*sts)) {
--		*count = le32_to_cpu(sts->ulAmountInOutQueue);
--		result = 0;
--	} else {
-+	result = usb_control_msg_recv(serial->dev, 0, CP210X_GET_COMM_STATUS,
-+				      REQTYPE_INTERFACE_TO_HOST, 0,
-+				      port_priv->bInterfaceNumber, &sts,
-+				      sizeof(sts), USB_CTRL_GET_TIMEOUT,
-+				      GFP_KERNEL);
-+	if (result == 0)
-+		*count = le32_to_cpu(sts.ulAmountInOutQueue);
-+	else
- 		dev_err(&port->dev, "failed to get comm status: %d\n", result);
--		if (result >= 0)
--			result = -EIO;
--	}
--
--	kfree(sts);
- 
- 	return result;
+-	kfree(tmp);
+ 	return status;
  }
+ 
 -- 
 2.17.1
 
