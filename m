@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A023DCA8B
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 09:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82A23DCA94
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 09:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhHAHii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 03:38:38 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:60434 "EHLO
+        id S231244AbhHAHiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 03:38:51 -0400
+Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:60462 "EHLO
         luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhHAHih (ORCPT
+        with ESMTP id S230408AbhHAHim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 03:38:37 -0400
+        Sun, 1 Aug 2021 03:38:42 -0400
 Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id 4ED11F409C5; Sun,  1 Aug 2021 09:38:27 +0200 (CEST)
+        id 31F91F409C8; Sun,  1 Aug 2021 09:38:29 +0200 (CEST)
 From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
 To:     Rob Herring <robh+dt@kernel.org>, linuxppc-dev@lists.ozlabs.org,
         devicetree@vger.kernel.org
@@ -24,9 +24,9 @@ Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/5] nvmem: nintendo-otp: Add new driver for the Wii and Wii U OTP
-Date:   Sun,  1 Aug 2021 09:38:18 +0200
-Message-Id: <20210801073822.12452-2-linkmauve@linkmauve.fr>
+Subject: [PATCH v4 2/5] dt-bindings: nintendo-otp: Document the Wii and Wii U OTP support
+Date:   Sun,  1 Aug 2021 09:38:19 +0200
+Message-Id: <20210801073822.12452-3-linkmauve@linkmauve.fr>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210801073822.12452-1-linkmauve@linkmauve.fr>
 References: <20210701225743.14631-1-linkmauve@linkmauve.fr>
@@ -38,193 +38,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This OTP is read-only and contains various keys used by the console to
-decrypt, encrypt or verify various pieces of storage.
-
-Its size depends on the console, it is 128 bytes on the Wii and
-1024 bytes on the Wii U (split into eight 128 bytes banks).
-
-It can be used directly by writing into one register and reading from
-the other one, without any additional synchronisation.
-
-This driver was written based on reversed documentation, see:
-https://wiiubrew.org/wiki/Hardware/OTP
+Both of these consoles use the exact same two registers, even at the
+same address, but the Wii U has eight banks of 128 bytes memory while
+the Wii only has one, hence the two compatible strings.
 
 Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Tested-by: Jonathan Neuschäfer <j.ne@posteo.net>  # on Wii
-Tested-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>  # on Wii U
 ---
- drivers/nvmem/Kconfig        |  11 ++++
- drivers/nvmem/Makefile       |   2 +
- drivers/nvmem/nintendo-otp.c | 124 +++++++++++++++++++++++++++++++++++
- 3 files changed, 137 insertions(+)
- create mode 100644 drivers/nvmem/nintendo-otp.c
+ .../bindings/nvmem/nintendo-otp.yaml          | 44 +++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/nintendo-otp.yaml
 
-diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-index dd2019006838..39854d43758b 100644
---- a/drivers/nvmem/Kconfig
-+++ b/drivers/nvmem/Kconfig
-@@ -107,6 +107,17 @@ config MTK_EFUSE
- 	  This driver can also be built as a module. If so, the module
- 	  will be called efuse-mtk.
- 
-+config NVMEM_NINTENDO_OTP
-+	tristate "Nintendo Wii and Wii U OTP Support"
-+	help
-+	  This is a driver exposing the OTP of a Nintendo Wii or Wii U console.
-+
-+	  This memory contains common and per-console keys, signatures and
-+	  related data required to access peripherals.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called nvmem-nintendo-otp.
-+
- config QCOM_QFPROM
- 	tristate "QCOM QFPROM Support"
- 	depends on ARCH_QCOM || COMPILE_TEST
-diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
-index bbea1410240a..dcbbde35b6a8 100644
---- a/drivers/nvmem/Makefile
-+++ b/drivers/nvmem/Makefile
-@@ -23,6 +23,8 @@ obj-$(CONFIG_NVMEM_LPC18XX_OTP)	+= nvmem_lpc18xx_otp.o
- nvmem_lpc18xx_otp-y		:= lpc18xx_otp.o
- obj-$(CONFIG_NVMEM_MXS_OCOTP)	+= nvmem-mxs-ocotp.o
- nvmem-mxs-ocotp-y		:= mxs-ocotp.o
-+obj-$(CONFIG_NVMEM_NINTENDO_OTP)	+= nvmem-nintendo-otp.o
-+nvmem-nintendo-otp-y		:= nintendo-otp.o
- obj-$(CONFIG_MTK_EFUSE)		+= nvmem_mtk-efuse.o
- nvmem_mtk-efuse-y		:= mtk-efuse.o
- obj-$(CONFIG_QCOM_QFPROM)	+= nvmem_qfprom.o
-diff --git a/drivers/nvmem/nintendo-otp.c b/drivers/nvmem/nintendo-otp.c
+diff --git a/Documentation/devicetree/bindings/nvmem/nintendo-otp.yaml b/Documentation/devicetree/bindings/nvmem/nintendo-otp.yaml
 new file mode 100644
-index 000000000000..33961b17f9f1
+index 000000000000..dbe4ffdd644c
 --- /dev/null
-+++ b/drivers/nvmem/nintendo-otp.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Nintendo Wii and Wii U OTP driver
-+ *
-+ * This is a driver exposing the OTP of a Nintendo Wii or Wii U console.
-+ *
-+ * This memory contains common and per-console keys, signatures and
-+ * related data required to access peripherals.
-+ *
-+ * Based on reversed documentation from https://wiiubrew.org/wiki/Hardware/OTP
-+ *
-+ * Copyright (C) 2021 Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-+ */
++++ b/Documentation/devicetree/bindings/nvmem/nintendo-otp.yaml
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/nvmem/nintendo-otp.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/nvmem-provider.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
++title: Nintendo Wii and Wii U OTP Device Tree Bindings
 +
-+#define HW_OTPCMD  0
-+#define HW_OTPDATA 4
-+#define OTP_READ   0x80000000
-+#define BANK_SIZE  128
-+#define WORD_SIZE  4
++description: |
++  This binding represents the OTP memory as found on a Nintendo Wii or Wii U,
++  which contains common and per-console keys, signatures and related data
++  required to access peripherals.
 +
-+struct nintendo_otp_priv {
-+	void __iomem *regs;
-+};
++  See https://wiiubrew.org/wiki/Hardware/OTP
 +
-+struct nintendo_otp_devtype_data {
-+	const char *name;
-+	unsigned int num_banks;
-+};
++maintainers:
++  - Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
 +
-+static const struct nintendo_otp_devtype_data hollywood_otp_data = {
-+	.name = "wii-otp",
-+	.num_banks = 1,
-+};
++allOf:
++  - $ref: "nvmem.yaml#"
 +
-+static const struct nintendo_otp_devtype_data latte_otp_data = {
-+	.name = "wiiu-otp",
-+	.num_banks = 8,
-+};
++properties:
++  compatible:
++    enum:
++      - nintendo,hollywood-otp
++      - nintendo,latte-otp
 +
-+static int nintendo_otp_reg_read(void *context,
-+				 unsigned int reg, void *_val, size_t bytes)
-+{
-+	struct nintendo_otp_priv *priv = context;
-+	u32 *val = _val;
-+	int words = bytes / WORD_SIZE;
-+	u32 bank, addr;
++  reg:
++    maxItems: 1
 +
-+	while (words--) {
-+		bank = (reg / BANK_SIZE) << 8;
-+		addr = (reg / WORD_SIZE) % (BANK_SIZE / WORD_SIZE);
-+		iowrite32be(OTP_READ | bank | addr, priv->regs + HW_OTPCMD);
-+		*val++ = ioread32be(priv->regs + HW_OTPDATA);
-+		reg += WORD_SIZE;
-+	}
++required:
++  - compatible
++  - reg
 +
-+	return 0;
-+}
++unevaluatedProperties: false
 +
-+static const struct of_device_id nintendo_otp_of_table[] = {
-+	{ .compatible = "nintendo,hollywood-otp", .data = &hollywood_otp_data },
-+	{ .compatible = "nintendo,latte-otp", .data = &latte_otp_data },
-+	{/* sentinel */},
-+};
-+MODULE_DEVICE_TABLE(of, nintendo_otp_of_table);
++examples:
++  - |
++    otp@d8001ec {
++        compatible = "nintendo,latte-otp";
++        reg = <0x0d8001ec 0x8>;
++    };
 +
-+static int nintendo_otp_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	const struct of_device_id *of_id =
-+		of_match_device(nintendo_otp_of_table, dev);
-+	struct resource *res;
-+	struct nvmem_device *nvmem;
-+	struct nintendo_otp_priv *priv;
-+
-+	struct nvmem_config config = {
-+		.stride = WORD_SIZE,
-+		.word_size = WORD_SIZE,
-+		.reg_read = nintendo_otp_reg_read,
-+		.read_only = true,
-+		.root_only = true,
-+	};
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	priv->regs = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->regs))
-+		return PTR_ERR(priv->regs);
-+
-+	if (of_id->data) {
-+		const struct nintendo_otp_devtype_data *data = of_id->data;
-+		config.name = data->name;
-+		config.size = data->num_banks * BANK_SIZE;
-+	}
-+
-+	config.dev = dev;
-+	config.priv = priv;
-+
-+	nvmem = devm_nvmem_register(dev, &config);
-+
-+	return PTR_ERR_OR_ZERO(nvmem);
-+}
-+
-+static struct platform_driver nintendo_otp_driver = {
-+	.probe = nintendo_otp_probe,
-+	.driver = {
-+		.name = "nintendo-otp",
-+		.of_match_table = nintendo_otp_of_table,
-+	},
-+};
-+module_platform_driver(nintendo_otp_driver);
-+MODULE_AUTHOR("Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>");
-+MODULE_DESCRIPTION("Nintendo Wii and Wii U OTP driver");
-+MODULE_LICENSE("GPL v2");
++...
 -- 
 2.32.0
 
