@@ -2,627 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2263DCAF2
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 11:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F9E3DCAFB
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 11:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbhHAJsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 05:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbhHAJsF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 05:48:05 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61925C06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 02:47:57 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so1439741pjb.2
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 02:47:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RHsoGJjgDOnzEi5IVMKsSdRnOK0IUJdpaPMyo84Tl68=;
-        b=L4zxM4cwYaEtb0LsuZc0Nq6yIU8PNzb7rVpdAyyjN3Qz09GTkRmqaJG7oKR4dxaWU6
-         hlwNuK8q11HeOlO7HMBlY7wOrB3Nsh15pIBdar7tyI7bF8asV+tbIq9Jj33r47HuyhRH
-         IOOwlZNlaCV0D10goupNP4TADB/zlHqgo38lYguc64Ns7kaITpqaPlCxHdek9MdIH70v
-         xjFAmQlprOBa4hvfclEmvN2iAWEAjA2VpvQqe6wo/pOFmImHCW1BKJiHUqTYiUbJYlKj
-         37b5KDgLrWHkk+jYHoKleLNbHCvfF9hcTjZzksPJteti//b61nH8uCC94nx6Le3kwgrL
-         nBoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RHsoGJjgDOnzEi5IVMKsSdRnOK0IUJdpaPMyo84Tl68=;
-        b=a6aqp4XgAXkBZUQo/iXmjG+nxln08O27+m8fGzTUxxTZR9AoXSWiMa9oJCgc/3GMUq
-         gWrLCWB5IKOlitdCqZRTmUnvjc45kCYAVI1FRGqA3h596aGVZFcd5jIABcieoCoDmx+S
-         f3bKNniSOOXRAQlWgXEbr3Eh8sRTRObgdPcBR0qTPdM0dNPG34FFZ+QhhmGWZvHrIfy1
-         mvxdWCzsy9liWteIhsK2YZ0OmK4k7FsBlWIMwBDjXum/jLlk4x7D39KVsowf6TIuGl2S
-         rgwMhOJKtiA4E78uoWe9mRs2YBvaeB7bho4t0Dtrt0fhdYb+ReYzzmM8fgqNDvSpZHmU
-         d9lA==
-X-Gm-Message-State: AOAM5317DMMl58XhoO9+wYWXhAPifUwuivzr9aNdqzf8vLxczqZhaZ5C
-        1CD2BU+aCZyLCNDtR1YL5tEdpr1OtVoiaHDHIg==
-X-Google-Smtp-Source: ABdhPJw+tr2GBOalJTQGoLDnu3vIb3xXi8UtX9Wb7GNDzZbodvVLRBmN/5cJrIfzRPYkc98i2oWEtJMoD7pd10Yhytk=
-X-Received: by 2002:a62:4e0f:0:b029:329:20be:287a with SMTP id
- c15-20020a624e0f0000b029032920be287amr11522272pfb.55.1627811276782; Sun, 01
- Aug 2021 02:47:56 -0700 (PDT)
+        id S231664AbhHAJ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 05:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231527AbhHAJ7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 05:59:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BB4A610A0;
+        Sun,  1 Aug 2021 09:59:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627811964;
+        bh=bhp36r6obC2nEqhj0ex5uPhGv2lmRu4DIPjP5sNYcU4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VusSK5uPj1qQADT0NSKF3MYzdWiB0iyhG83Xt7Z+qNBVUe5pw6IfG1mEZNOtxiHJK
+         Koy+P3ZLTORCedQlOK5p3oHDVVQU4qnwAl3ak2TekEEaaMjgQ9OFht8qV0WQ3Okg73
+         TOVptpTN+yrFIY3EkJ4HsKhLfhErOqi+ba4Z05emBpxWaQ/bGo3D9jT3g7yh7WkO8o
+         HOs4ndcQ//asBPSG443pF3Pc/qQbHX6oYJYKC8wmWUIqzUCbo1lWVPZrzV1kS/+4Ck
+         3yj4KOcTwi/bYeTbQhB4sMJH+Hf8iH7CRbr/+QyotuzII78aB0lBvY2DmsowSxuO+i
+         2ELCskaXwt8aQ==
+Subject: Re: [f2fs-dev] [PATCH] f2fs: reset free segment to prefree status
+ when do_checkpoint() fail
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20210427082106.2755-1-frank.li@vivo.com>
+ <12ae52df-bc5e-82c3-4f78-1eafe7723f93@huawei.com>
+ <5f37995c-2390-e8ca-d002-3639ad39e0d3@kernel.org>
+ <YPXDtEyBg5W2ToD/@google.com>
+ <8d2e3a63-72f9-bcb2-24e5-dddd84136001@kernel.org>
+ <YQR60QUh0Pim8vSf@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <355ac2ff-f1f1-b9ea-bd8c-139cb24a03fb@kernel.org>
+Date:   Sun, 1 Aug 2021 17:59:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210711122055.4529-1-fengzheng923@gmail.com> <20210715074750.ewbggulc5kast6ez@gilmour>
-In-Reply-To: <20210715074750.ewbggulc5kast6ez@gilmour>
-From:   =?UTF-8?B?54+t5rab?= <fengzheng923@gmail.com>
-Date:   Sun, 1 Aug 2021 17:47:46 +0800
-Message-ID: <CAE=m61_=XfhtG9Q1r34McWWCUXt1KP67cjZ0ER62+YaGrG+b4w@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
-        perex@perex.cz, tiwai@suse.com, wens@csie.org,
-        jernej.skrabec@gmail.com, p.zabel@pengutronix.de,
-        Samuel Holland <samuel@sholland.org>, krzk@kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YQR60QUh0Pim8vSf@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Dear:
+On 2021/7/31 6:18, Jaegeuk Kim wrote:
+> On 07/20, Chao Yu wrote:
+>> On 2021/7/20 2:25, Jaegeuk Kim wrote:
+>>> On 07/19, Chao Yu wrote:
+>>>> On 2021/4/27 20:37, Chao Yu wrote:
+>>>>> I think just reverting dirty/free bitmap is not enough if checkpoint fails,
+>>>>> due to we have updated sbi->cur_cp_pack and nat/sit bitmap, next CP tries
+>>>>> to overwrite last valid meta/node/data, then filesystem will be corrupted.
+>>>>>
+>>>>> So I suggest to set cp_error if do_checkpoint() fails until we can handle
+>>>>> all cases, which is not so easy.
+>>>>>
+>>>>> How do you think?
+>>>>
+>>>> Let's add below patch first before you figure out the patch which covers all
+>>>> things.
+>>>>
+>>>>   From 3af957c98e9e04259f8bb93ca0b74ba164f3f27e Mon Sep 17 00:00:00 2001
+>>>> From: Chao Yu <chao@kernel.org>
+>>>> Date: Mon, 19 Jul 2021 16:37:44 +0800
+>>>> Subject: [PATCH] f2fs: fix to stop filesystem update once CP failed
+>>>>
+>>>> During f2fs_write_checkpoint(), once we failed in
+>>>> f2fs_flush_nat_entries() or do_checkpoint(), metadata of filesystem
+>>>> such as prefree bitmap, nat/sit version bitmap won't be recovered,
+>>>> it may cause f2fs image to be inconsistent, let's just set CP error
+>>>> flag to avoid further updates until we figure out a scheme to rollback
+>>>> all metadatas in such condition.
+>>>>
+>>>> Reported-by: Yangtao Li <frank.li@vivo.com>
+>>>> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+>>>> Signed-off-by: Chao Yu <chao@kernel.org>
+>>>> ---
+>>>>    fs/f2fs/checkpoint.c | 10 +++++++---
+>>>>    1 file changed, 7 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+>>>> index 6c208108d69c..096c85022f62 100644
+>>>> --- a/fs/f2fs/checkpoint.c
+>>>> +++ b/fs/f2fs/checkpoint.c
+>>>> @@ -1639,8 +1639,10 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+>>>>
+>>>>    	/* write cached NAT/SIT entries to NAT/SIT area */
+>>>>    	err = f2fs_flush_nat_entries(sbi, cpc);
+>>>> -	if (err)
+>>>> +	if (err) {
+>>>> +		f2fs_stop_checkpoint(sbi, false);
+>>>
+>>> I think we should abuse this, since we can get any known ENOMEM as well.
+>>
+>> Yup, but one critical issue here is it can break A/B update of NAT area,
+>> so, in order to fix this hole, how about using NOFAIL memory allocation
+>> in f2fs_flush_nat_entries() first until we figure out the finial scheme?
+> 
+> NOFAIL is risky, so how about adding a retry logic on ENOMEM with a message
+> and then giving up if we can't get the memory? BTW, what about EIO or other
+> family?
+
+How about this?
+
+ From ffb50d9a8220be7d9e159b8555533adcf11957a8 Mon Sep 17 00:00:00 2001
+From: Chao Yu <chao@kernel.org>
+Date: Mon, 19 Jul 2021 16:37:44 +0800
+Subject: [PATCH v2] f2fs: fix to stop filesystem update once CP failed
+
+During f2fs_write_checkpoint(), once we failed in
+f2fs_flush_nat_entries() or do_checkpoint(), metadata of filesystem
+such as prefree bitmap, nat/sit version bitmap won't be recovered,
+it may cause f2fs image to be inconsistent, let's just set CP error
+flag to avoid further updates until we figure out a scheme to rollback
+all metadatas in such condition.
+
+Reported-by: Yangtao Li <frank.li@vivo.com>
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+  fs/f2fs/checkpoint.c | 12 +++++++++---
+  fs/f2fs/node.c       |  9 ++++++++-
+  2 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 6c208108d69c..f3f66871ae42 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -1639,8 +1639,11 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+
+  	/* write cached NAT/SIT entries to NAT/SIT area */
+  	err = f2fs_flush_nat_entries(sbi, cpc);
+-	if (err)
++	if (err) {
++		f2fs_err(sbi, "f2fs_flush_nat_entries failed err:%d, stop checkpoint", err);
++		f2fs_stop_checkpoint(sbi, false);
+  		goto stop;
++	}
+
+  	f2fs_flush_sit_entries(sbi, cpc);
+
+@@ -1648,10 +1651,13 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+  	f2fs_save_inmem_curseg(sbi);
+
+  	err = do_checkpoint(sbi, cpc);
+-	if (err)
++	if (err) {
++		f2fs_err(sbi, "do_checkpoint failed err:%d, stop checkpoint", err);
++		f2fs_stop_checkpoint(sbi, false);
+  		f2fs_release_discard_addrs(sbi);
+-	else
++	} else {
+  		f2fs_clear_prefree_segments(sbi, cpc);
++	}
+
+  	f2fs_restore_inmem_curseg(sbi);
+  stop:
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 5840b82ce311..7162836d71c1 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -141,13 +141,20 @@ static struct page *get_next_nat_page(struct f2fs_sb_info *sbi, nid_t nid)
+  	void *src_addr;
+  	void *dst_addr;
+  	struct f2fs_nm_info *nm_i = NM_I(sbi);
++	bool retried = false;
+
+  	dst_off = next_nat_addr(sbi, current_nat_addr(sbi, nid));
+
++retry:
+  	/* get current nat block page with lock */
+  	src_page = get_current_nat_page(sbi, nid);
+-	if (IS_ERR(src_page))
++	if (IS_ERR(src_page)) {
++		if (PTR_ERR(src_page) == -ENOMEM && !retried) {
++			retried = true;
++			goto retry;
++		}
+  		return src_page;
++	}
+  	dst_page = f2fs_grab_meta_page(sbi, dst_off);
+  	f2fs_bug_on(sbi, PageDirty(src_page));
+
+-- 
+2.22.1
 
 
-Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B47=E6=9C=8815=E6=97=
-=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=883:47=E5=86=99=E9=81=93=EF=BC=9A
-
->
-> Hi
->
-> On Sun, Jul 11, 2021 at 08:20:55AM -0400, fengzheng923@gmail.com wrote:
-> > From: Ban Tao <fengzheng923@gmail.com>
-> >
-> > The Allwinner H6 and later SoCs have an DMIC block
-> > which is capable of capture.
-> >
-> > Signed-off-by: Ban Tao <fengzheng923@gmail.com>
-> >
-> > ---
-> > v1->v2:
-> > 1.Fix some compilation errors.
-> > 2.Modify some code styles.
-> > ---
-> > v2->v3:
-> > None.
-> > ---
-> > v3->v4:
-> > 1.add sig_bits.
-> > ---
-> > v4->v5:
-> > None.
-> > ---
-> > v5->v6:
-> > 1.Modify RXFIFO_CTL_MODE to mode 1.
-> > ---
-> >  MAINTAINERS                   |   7 +
-> >  sound/soc/sunxi/Kconfig       |   8 +
-> >  sound/soc/sunxi/Makefile      |   1 +
-> >  sound/soc/sunxi/sun50i-dmic.c | 403 ++++++++++++++++++++++++++++++++++
-> >  4 files changed, 419 insertions(+)
-> >  create mode 100644 sound/soc/sunxi/sun50i-dmic.c
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index e924f9e5df97..8d700baaa3ca 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -760,6 +760,13 @@ L:       linux-media@vger.kernel.org
-> >  S:   Maintained
-> >  F:   drivers/staging/media/sunxi/cedrus/
-> >
-> > +ALLWINNER DMIC DRIVERS
-> > +M:   Ban Tao <fengzheng923@gmail.com>
-> > +L:   alsa-devel@alsa-project.org (moderated for non-subscribers)
-> > +S:   Maintained
-> > +F:   Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.=
-yaml
-> > +F:   sound/soc/sunxi/sun50i-dmic.c
-> > +
-> >  ALPHA PORT
-> >  M:   Richard Henderson <rth@twiddle.net>
-> >  M:   Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> > diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-> > index ddcaaa98d3cb..2a3bf7722e11 100644
-> > --- a/sound/soc/sunxi/Kconfig
-> > +++ b/sound/soc/sunxi/Kconfig
-> > @@ -56,6 +56,14 @@ config SND_SUN4I_SPDIF
-> >         Say Y or M to add support for the S/PDIF audio block in the All=
-winner
-> >         A10 and affiliated SoCs.
-> >
-> > +config SND_SUN50I_DMIC
-> > +     tristate "Allwinner H6 DMIC Support"
-> > +     depends on (OF && ARCH_SUNXI) || COMPILE_TEST
-> > +     select SND_SOC_GENERIC_DMAENGINE_PCM
-> > +     help
-> > +       Say Y or M to add support for the DMIC audio block in the Allwi=
-nner
-> > +       H6 and affiliated SoCs.
-> > +
-> >  config SND_SUN8I_ADDA_PR_REGMAP
-> >       tristate
-> >       select REGMAP
-> > diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
-> > index a86be340a076..4483fe9c94ef 100644
-> > --- a/sound/soc/sunxi/Makefile
-> > +++ b/sound/soc/sunxi/Makefile
-> > @@ -6,3 +6,4 @@ obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) +=3D sun8i-codec-a=
-nalog.o
-> >  obj-$(CONFIG_SND_SUN50I_CODEC_ANALOG) +=3D sun50i-codec-analog.o
-> >  obj-$(CONFIG_SND_SUN8I_CODEC) +=3D sun8i-codec.o
-> >  obj-$(CONFIG_SND_SUN8I_ADDA_PR_REGMAP) +=3D sun8i-adda-pr-regmap.o
-> > +obj-$(CONFIG_SND_SUN50I_DMIC) +=3D sun50i-dmic.o
-> > diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmi=
-c.c
-> > new file mode 100644
-> > index 000000000000..bbac836ba4de
-> > --- /dev/null
-> > +++ b/sound/soc/sunxi/sun50i-dmic.c
-> > @@ -0,0 +1,403 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +//
-> > +// This driver supports the DMIC in Allwinner's H6 SoCs.
-> > +//
-> > +// Copyright 2021 Ban Tao <fengzheng923@gmail.com>
-> > +
-> > +#include <linux/clk.h>
-> > +#include <linux/device.h>
-> > +#include <linux/of_device.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/pm_runtime.h>
-> > +#include <linux/reset.h>
-> > +#include <sound/dmaengine_pcm.h>
-> > +#include <sound/pcm_params.h>
-> > +#include <sound/soc.h>
-> > +
-> > +#define SUN50I_DMIC_EN_CTL           (0x00)
-> > +     #define SUN50I_DMIC_EN_CTL_GLOBE                        BIT(8)
-> > +     #define SUN50I_DMIC_EN_CTL_CHAN(v)              ((v) << 0)
-> > +     #define SUN50I_DMIC_EN_CTL_CHAN_MASK            GENMASK(7, 0)
-> > +#define SUN50I_DMIC_SR                       (0x04)
-> > +     #define SUN50I_DMIC_SR_SAMPLE_RATE(v)           ((v) << 0)
-> > +     #define SUN50I_DMIC_SR_SAMPLE_RATE_MASK         GENMASK(2, 0)
-> > +#define SUN50I_DMIC_CTL                      (0x08)
-> > +     #define SUN50I_DMIC_CTL_OVERSAMPLE_RATE         BIT(0)
-> > +#define SUN50I_DMIC_DATA                     (0x10)
-> > +#define SUN50I_DMIC_INTC                     (0x14)
-> > +     #define SUN50I_DMIC_FIFO_DRQ_EN                 BIT(2)
-> > +#define SUN50I_DMIC_INT_STA          (0x18)
-> > +     #define SUN50I_DMIC_INT_STA_OVERRUN_IRQ_PENDING BIT(1)
-> > +     #define SUN50I_DMIC_INT_STA_DATA_IRQ_PENDING    BIT(0)
-> > +#define SUN50I_DMIC_RXFIFO_CTL               (0x1c)
-> > +     #define SUN50I_DMIC_RXFIFO_CTL_FLUSH            BIT(31)
-> > +     #define SUN50I_DMIC_RXFIFO_CTL_MODE             BIT(9)
-> > +     #define SUN50I_DMIC_RXFIFO_CTL_RESOLUTION       BIT(8)
-> > +#define SUN50I_DMIC_CH_NUM           (0x24)
-> > +     #define SUN50I_DMIC_CH_NUM_N(v)                 ((v) << 0)
-> > +     #define SUN50I_DMIC_CH_NUM_N_MASK               GENMASK(2, 0)
-> > +#define SUN50I_DMIC_CNT                      (0x2c)
-> > +     #define SUN50I_DMIC_CNT_N                       BIT(0)
-> > +#define SUN50I_DMIC_HPF_CTRL         (0x38)
-> > +#define SUN50I_DMIC_VERSION          (0x50)
-> > +
-> > +
->
-> There's multiple blank lines here
->
-> > +struct sun50i_dmic_dev {
-> > +     struct clk *dmic_clk;
-> > +     struct clk *bus_clk;
-> > +     struct reset_control *rst;
-> > +     struct regmap *regmap;
-> > +     struct snd_dmaengine_dai_dma_data dma_params_rx;
-> > +     unsigned int chan_en;
-> > +};
-> > +
-> > +struct dmic_rate {
-> > +     unsigned int samplerate;
-> > +     unsigned int rate_bit;
-> > +};
-> > +
-> > +static int sun50i_dmic_startup(struct snd_pcm_substream *substream,
-> > +                            struct snd_soc_dai *cpu_dai)
-> > +{
-> > +     struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
-> > +     struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(asoc_rtd=
-_to_cpu(rtd, 0));
-> > +
-> > +     /* only support capture */
-> > +     if (substream->stream !=3D SNDRV_PCM_STREAM_CAPTURE)
-> > +             return -EINVAL;
-> > +
-> > +     regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> > +                        SUN50I_DMIC_RXFIFO_CTL_FLUSH,
-> > +                        SUN50I_DMIC_RXFIFO_CTL_FLUSH);
-> > +     regmap_write(host->regmap, SUN50I_DMIC_CNT, SUN50I_DMIC_CNT_N);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int sun50i_dmic_hw_params(struct snd_pcm_substream *substream,
-> > +                              struct snd_pcm_hw_params *params,
-> > +                              struct snd_soc_dai *cpu_dai)
-> > +{
-> > +     int i =3D 0;
-> > +     unsigned long rate =3D params_rate(params);
-> > +     unsigned int mclk =3D 0;
-> > +     unsigned int channels =3D params_channels(params);
-> > +     struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(cpu_dai)=
-;
-> > +     static struct dmic_rate dmic_rate_s[] =3D {
-> > +             {44100, 0x0},
-> > +             {48000, 0x0},
-> > +             {22050, 0x2},
-> > +             {24000, 0x2},
-> > +             {11025, 0x4},
-> > +             {12000, 0x4},
-> > +             {32000, 0x1},
-> > +             {16000, 0x3},
-> > +             {8000,  0x5},
-> > +     };
->
-> We should order these items. It looks like descending rate makes the
-> most sense?
->
-> Also, I'm not sure why we need to make that array local, can't this be a
-> global variable?
->
-> > +     /* DMIC num is N+1 */
-> > +     regmap_update_bits(host->regmap, SUN50I_DMIC_CH_NUM,
-> > +                        SUN50I_DMIC_CH_NUM_N_MASK,
-> > +                        SUN50I_DMIC_CH_NUM_N(channels - 1));
-> > +     host->chan_en =3D (1 << channels) - 1;
-> > +     regmap_write(host->regmap, SUN50I_DMIC_HPF_CTRL, host->chan_en);
->
-> Do we need to store the channels bitmask in the main structure? It looks
-> fairly easy to generate, so I guess we could just use a macro
-
-I need to store channels bitmask and use it in sun50i_dmic_trigger function=
-.
-
->
-> > +     switch (params_format(params)) {
-> > +     case SNDRV_PCM_FORMAT_S16_LE:
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> > +                                SUN50I_DMIC_RXFIFO_CTL_RESOLUTION, 0);
-> > +             break;
-> > +     case SNDRV_PCM_FORMAT_S24_LE:
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> > +                                SUN50I_DMIC_RXFIFO_CTL_RESOLUTION,
-> > +                                SUN50I_DMIC_RXFIFO_CTL_RESOLUTION);
-> > +             break;
->
-> These two defines could be named a bit better, it's not really clear
-> what SUN50I_DMIC_RXFIFO_CTL_RESOLUTION means, exactly, as opposed to 0
-> (while it's actually the sample width).
->
-> What about something like SUN50I_DMIC_RXFIFO_CTL_SAMPLE_16 (for 0) and
-> _24 (for 1), while changing SUN50I_DMIC_RXFIFO_CTL_RESOLUTION for
-> SUN50I_DMIC_RXFIFO_CTL_SAMPLE_MASK ?
->
-> > +     default:
-> > +             dev_err(cpu_dai->dev, "Invalid format!\n");
-> > +             return -EINVAL;
-> > +     }
-> > +     regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> > +                        SUN50I_DMIC_RXFIFO_CTL_MODE,
-> > +                        SUN50I_DMIC_RXFIFO_CTL_MODE);
->
-> Same thing here, MODE doesn't really explain what this does, and why
-> we'd want to always set it.
->
-> I guess 0 is LSB_ZERO and 1 is MSB_SIGN?
-
-Yes.
-
->
-> > +     switch (rate) {
-> > +     case 11025:
-> > +     case 22050:
-> > +     case 44100:
-> > +             mclk =3D 22579200;
-> > +             break;
-> > +     case 8000:
-> > +     case 12000:
-> > +     case 16000:
-> > +     case 24000:
-> > +     case 32000:
-> > +     case 48000:
-> > +             mclk =3D 24576000;
-> > +             break;
-> > +     default:
-> > +             dev_err(cpu_dai->dev, "Invalid rate!\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     if (clk_set_rate(host->dmic_clk, mclk)) {
-> > +             dev_err(cpu_dai->dev, "mclk : %u not support\n", mclk);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     for (i =3D 0; i < ARRAY_SIZE(dmic_rate_s); i++) {
-> > +             if (dmic_rate_s[i].samplerate =3D=3D rate) {
-> > +                     regmap_update_bits(host->regmap, SUN50I_DMIC_SR,
-> > +                                        SUN50I_DMIC_SR_SAMPLE_RATE_MAS=
-K,
-> > +                                        SUN50I_DMIC_SR_SAMPLE_RATE(dmi=
-c_rate_s[i].rate_bit));
-> > +                     break;
-> > +             }
-> > +     }
-> > +
-> > +     switch (params_physical_width(params)) {
-> > +     case 16:
-> > +             host->dma_params_rx.addr_width =3D DMA_SLAVE_BUSWIDTH_2_B=
-YTES;
-> > +             break;
-> > +     case 32:
-> > +             host->dma_params_rx.addr_width =3D DMA_SLAVE_BUSWIDTH_4_B=
-YTES;
-> > +             break;
-> > +     default:
-> > +             dev_err(cpu_dai->dev, "Unsupported physical sample width:=
- %d\n",
-> > +                     params_physical_width(params));
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     /* oversamplerate adjust */
-> > +     if (params_rate(params) >=3D 24000)
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
-> > +                                SUN50I_DMIC_CTL_OVERSAMPLE_RATE,
-> > +                                SUN50I_DMIC_CTL_OVERSAMPLE_RATE);
-> > +     else
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
-> > +                                SUN50I_DMIC_CTL_OVERSAMPLE_RATE, 0);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, in=
-t cmd,
-> > +                            struct snd_soc_dai *dai)
-> > +{
-> > +     int ret =3D 0;
-> > +     struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(dai);
-> > +
-> > +     if (substream->stream !=3D SNDRV_PCM_STREAM_CAPTURE)
-> > +             return -EINVAL;
-> > +
-> > +     switch (cmd) {
-> > +     case SNDRV_PCM_TRIGGER_START:
-> > +     case SNDRV_PCM_TRIGGER_RESUME:
-> > +     case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> > +             /* DRQ ENABLE */
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
-> > +                                SUN50I_DMIC_FIFO_DRQ_EN,
-> > +                                SUN50I_DMIC_FIFO_DRQ_EN);
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> > +                                SUN50I_DMIC_EN_CTL_CHAN_MASK,
-> > +                                SUN50I_DMIC_EN_CTL_CHAN(host->chan_en)=
-);
-> > +             /* Global enable */
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> > +                                SUN50I_DMIC_EN_CTL_GLOBE,
-> > +                                SUN50I_DMIC_EN_CTL_GLOBE);
-> > +             break;
->
-> Do we really need to clear the channel and global enable bits? and DRQ?
-
-Why not? I think we should clear them when not in use......
-
->
-> > +     case SNDRV_PCM_TRIGGER_STOP:
-> > +     case SNDRV_PCM_TRIGGER_SUSPEND:
-> > +     case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> > +             /* DRQ DISABLE */
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
-> > +                                SUN50I_DMIC_FIFO_DRQ_EN, 0);
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> > +                                SUN50I_DMIC_EN_CTL_CHAN_MASK,
-> > +                                SUN50I_DMIC_EN_CTL_CHAN(0));
-> > +             /* Global disable */
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> > +                                SUN50I_DMIC_EN_CTL_GLOBE, 0);
-> > +             break;
-> > +
-> > +     default:
-> > +             ret =3D -EINVAL;
-> > +             break;
-> > +     }
-> > +     return ret;
-> > +}
-> > +
-> > +static int sun50i_dmic_soc_dai_probe(struct snd_soc_dai *dai)
-> > +{
-> > +     struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(dai);
-> > +
-> > +     snd_soc_dai_init_dma_data(dai, NULL, &host->dma_params_rx);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct snd_soc_dai_ops sun50i_dmic_dai_ops =3D {
-> > +     .startup        =3D sun50i_dmic_startup,
-> > +     .trigger        =3D sun50i_dmic_trigger,
-> > +     .hw_params      =3D sun50i_dmic_hw_params,
-> > +};
-> > +
-> > +static const struct regmap_config sun50i_dmic_regmap_config =3D {
-> > +     .reg_bits =3D 32,
-> > +     .reg_stride =3D 4,
-> > +     .val_bits =3D 32,
-> > +     .max_register =3D SUN50I_DMIC_VERSION,
-> > +     .cache_type =3D REGCACHE_NONE,
-> > +};
-> > +
-> > +#define      SUN50I_DMIC_RATES (SNDRV_PCM_RATE_8000_48000)
-> > +#define SUN50I_FORMATS       (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTB=
-IT_S24_LE)
->
-> SUN50I_DMIC_RATES has a tab between the define and its name, while
-> SUN50I_FORMATS has the tab after the name. We should be consistent.
-> Similarly, we should name both with the SUN50I_DMIC prefix.
->
-> > +static struct snd_soc_dai_driver sun50i_dmic_dai =3D {
-> > +     .capture =3D {
-> > +             .channels_min =3D 1,
-> > +             .channels_max =3D 8,
-> > +             .rates =3D SUN50I_DMIC_RATES,
-> > +             .formats =3D SUN50I_FORMATS,
-> > +             .sig_bits =3D 21,
-> > +     },
-> > +     .probe =3D sun50i_dmic_soc_dai_probe,
-> > +     .ops =3D &sun50i_dmic_dai_ops,
-> > +     .name =3D "dmic",
-> > +};
-> > +
-> > +static const struct of_device_id sun50i_dmic_of_match[] =3D {
-> > +     {
-> > +             .compatible =3D "allwinner,sun50i-h6-dmic",
-> > +     },
-> > +     { /* sentinel */ }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
-> > +
-> > +static const struct snd_soc_component_driver sun50i_dmic_component =3D=
- {
-> > +     .name           =3D "sun50i-dmic",
-> > +};
-> > +
-> > +static int sun50i_dmic_runtime_suspend(struct device *dev)
-> > +{
-> > +     struct sun50i_dmic_dev *host  =3D dev_get_drvdata(dev);
-> > +
-> > +     clk_disable_unprepare(host->dmic_clk);
-> > +     clk_disable_unprepare(host->bus_clk);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int sun50i_dmic_runtime_resume(struct device *dev)
-> > +{
-> > +     struct sun50i_dmic_dev *host  =3D dev_get_drvdata(dev);
-> > +     int ret;
-> > +
-> > +     ret =3D clk_prepare_enable(host->dmic_clk);
-> > +     if (ret)
-> > +             return ret;
->
-> A new line here would be great.
->
-> > +     ret =3D clk_prepare_enable(host->bus_clk);
-> > +     if (ret)
-> > +             clk_disable_unprepare(host->dmic_clk);
-> > +
-> > +     return ret;
->
-> In general we prefer to treat the error path and the success path
-> differently. In this case it would mean changing that part to
->
-> ret =3D clk_prepare_enable(host->bus_clk);
-> if (ret) {
->          clk_disable_unprepare(host->dmic_clk);
->          return ret;
-> }
->
-> return 0;
->
-> > +}
-> > +
-> > +static int sun50i_dmic_probe(struct platform_device *pdev)
-> > +{
-> > +     struct sun50i_dmic_dev *host;
-> > +     struct resource *res;
-> > +     int ret;
-> > +     void __iomem *base;
-> > +
-> > +     host =3D devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
-> > +     if (!host)
-> > +             return -ENOMEM;
-> > +
-> > +     /* Get the addresses */
-> > +     res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +     base =3D devm_ioremap_resource(&pdev->dev, res);
-> > +     if (IS_ERR(base))
-> > +             return dev_err_probe(&pdev->dev, PTR_ERR(base),
-> > +                                  "get resource failed.\n");
-> > +
-> > +     host->regmap =3D devm_regmap_init_mmio(&pdev->dev, base,
-> > +                                             &sun50i_dmic_regmap_confi=
-g);
->
-> Your second line should be aligned on the opening parenthesis
->
-> > +     /* Clocks */
-> > +     host->bus_clk =3D devm_clk_get(&pdev->dev, "bus");
-> > +     if (IS_ERR(host->bus_clk))
-> > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->bus_clk),
-> > +                                  "failed to get bus clock.\n");
-> > +
-> > +     host->dmic_clk =3D devm_clk_get(&pdev->dev, "mod");
-> > +     if (IS_ERR(host->dmic_clk))
-> > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->dmic_clk),
-> > +                                  "failed to get dmic clock.\n");
-> > +
-> > +     host->dma_params_rx.addr =3D res->start + SUN50I_DMIC_DATA;
-> > +     host->dma_params_rx.maxburst =3D 8;
-> > +
-> > +     platform_set_drvdata(pdev, host);
-> > +
-> > +     host->rst =3D devm_reset_control_get_optional_exclusive(&pdev->de=
-v, NULL);
-> > +     if (IS_ERR(host->rst))
-> > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
-> > +                                  "Failed to get reset.\n");
->
-> Your binding states that the reset is mandatory so you don't need the
-> optional variant.
->
-> > +     reset_control_deassert(host->rst);
->
-> Can't this be moved to the runtime_pm hooks?
-
-Is this necessary? I see that most of the driver files execute
-reset_control_deassert in the probe function, and reset_control_assert
-in the remove function.
-
->
-> > +     ret =3D devm_snd_soc_register_component(&pdev->dev,
-> > +                             &sun50i_dmic_component, &sun50i_dmic_dai,=
- 1);
->
-> Your second line should be aligned on the opening parenthesis
->
-> > +     if (ret)
-> > +             return dev_err_probe(&pdev->dev, ret,
-> > +                                  "failed to register component.\n");
-> > +
-> > +     pm_runtime_enable(&pdev->dev);
-> > +     if (!pm_runtime_enabled(&pdev->dev)) {
-> > +             ret =3D sun50i_dmic_runtime_resume(&pdev->dev);
-> > +             if (ret)
-> > +                     goto err_unregister;
-> > +     }
->
-> We have a depends on PM on some drivers already, so I guess it would
-> just make sense to add one more here instead of dealing with whether
-> runtime_pm is compiled in or not.
-
-I don't understand. I am referring to the sun4i-spdif.c file. Which
-driver files should I refer to?
-
->
-> Also, the name of the label is misleading: it's called err_unregister
-> but you don't need to unregister anything and you actually disable
-> runtime_pm for that device.
->
-> err_disable_runtime_pm or something similar would be a better pick
->
-> Thanks!
-> Maxime
