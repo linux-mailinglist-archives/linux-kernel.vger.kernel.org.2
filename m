@@ -2,102 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9C73DCA5B
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 08:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4353DCA5E
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 08:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhHAGct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 02:32:49 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34466
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229451AbhHAGcs (ORCPT
+        id S229635AbhHAGdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 02:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhHAGdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 02:32:48 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 023F83F051;
-        Sun,  1 Aug 2021 06:32:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627799559;
-        bh=AUaRd4BS3iiGKLLSuJWn46Te1rChqiyKMssPEqtpXaU=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=A/A2/uoqD7cAjEnl2Hap81woM5IfW4SZtVQHOn86i7DfjvzberuZBE4S2OadUjRfk
-         Ywogy3sn6HyBwNGpxIA/cRp5WwUib+ofWlMYJNQl583LekPLpj8D+94VRP66kk8n6o
-         zCTqXPLeta8S3gF16c6jOHkMzEzM8HSJh1zQ3rfp3INFRrVSfuR6LwNaJ/j6SmTg5z
-         BkInryYKCy/bpCFl5dpL3sMbFUH9+W0i8xXPFt1aECXNxzVorrl93vM9EZW83NMGQZ
-         gHGqdJWaUMnztfqlh8eyTFBCz6ChaXxSyKz3E3OYIB1cgatMxqc+1QVsjx4cZlb/wn
-         iYwDpx2FojwYg==
-From:   Colin King <colin.king@canonical.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: rsnd: make some arrays static const, makes object smaller
-Date:   Sun,  1 Aug 2021 07:32:37 +0100
-Message-Id: <20210801063237.137998-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 1 Aug 2021 02:33:00 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA0FC06175F;
+        Sat, 31 Jul 2021 23:32:52 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id k3so13666086ilu.2;
+        Sat, 31 Jul 2021 23:32:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eUClev66k2CwNGVehotJ41c5fU9e0u4+Aw/nkEdVSo4=;
+        b=Vor6uuwaFPIL6tI6kQNkUjJBadv0llFfR5CYI6gj3wgECMJLXhN8hg3InrXzdHHw6x
+         v9zDzDwZrBxZAcGVOhvymBCPk2UZZZD7TE+EL+mty8S27t8FQDf4NpTcBEsxZHaum6y2
+         3d0A2nn07EApu+KWWgSNxbgjokNSOjRHtla+4d2rAcFKVGCatM2ZE2N5s9tKeMu6a/CM
+         pRDEWT/JCaNndYE6sLyMVTDlq5XAulCKN+/9cZ2bJ3T/9sjK5EPOtpjLffGuKojj1MGt
+         ocfbZFSrsbWmB6T1ogXtulec1lpogOHEpVI0cE2oF/9LBTDgyysS6fWvrh9+gqf+y41G
+         RVAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eUClev66k2CwNGVehotJ41c5fU9e0u4+Aw/nkEdVSo4=;
+        b=NXcRw/ACQKNQbke/stUq/d0xbJnDfiexL6k+/AAdpSXUTszGpTUpuEXq61XXtkevlM
+         +nh44rjKwJov2oyIlvkg1Zc07hzSKnI6ybs5gyLuqX+sop+YD0BLT6PZ4bLmEg3hzzcK
+         UhP6gxIkGlyZeHusKKHJZr8kdZRMD6aYIucs25zMsS7oZYl53rfS4zecuKT0bJ8aa7sK
+         AyRBYOQR8q3AH4ZVmAoRxpEjsMDOxumQ3FkKDq249FDBG98zu7iMmbQtvf0j6rXGLo0D
+         m7PJF1habaQFbQZjxOdBU9a3dYEUsMYo0M5Ox6ygO8R6l6ND4FQoqPAHxZlMW775ejfy
+         N8kA==
+X-Gm-Message-State: AOAM533U8+FFVDcJjZjCFGeDP/oFrNj5sSAj7JFGcTPQ18bYlwddII50
+        Vi0axjNTjLnDQRHA37wtlNq2FukHlZUAEtAjYWzqB51C
+X-Google-Smtp-Source: ABdhPJz2A1YHGrY91aq4xNrHBpd0Fw24qT58iA89MIoLql0jpWOElyATTepmR5ts870yyPm/tMwh/otaM060TJQrreE=
+X-Received: by 2002:a92:d28b:: with SMTP id p11mr3097565ilp.250.1627799571702;
+ Sat, 31 Jul 2021 23:32:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210720155944.1447086-9-krisman@collabora.com>
+ <20210731063818.GB18773@xsang-OptiPlex-9020> <CAOQ4uxgtke-jK3a1SxowdEhObw8rDuUXB-DSGCr-M1uVMWarww@mail.gmail.com>
+ <87lf5mi7mv.fsf@collabora.com>
+In-Reply-To: <87lf5mi7mv.fsf@collabora.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sun, 1 Aug 2021 09:32:40 +0300
+Message-ID: <CAOQ4uxhsb_iVBTWVVreS7eSRCUapFFcyhXwnekaqptbMJSm1KQ@mail.gmail.com>
+Subject: Re: [fsnotify] 4c40d6efc8: unixbench.score -3.3% regression
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@linux.intel.com, Jan Kara <jack@suse.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        David Howells <dhowells@redhat.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>, kernel@collabora.com,
+        Mel Gorman <mgorman@techsingularity.net>,
+        kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Sat, Jul 31, 2021 at 10:51 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Amir Goldstein <amir73il@gmail.com> writes:
+>
+> > On Sat, Jul 31, 2021 at 9:20 AM kernel test robot <oliver.sang@intel.com> wrote:
+> >>
+> >>
+> >>
+> >> Greeting,
+> >>
+> >> FYI, we noticed a -3.3% regression of unixbench.score due to commit:
+> >>
+> >>
+> >> commit: 4c40d6efc8b22b88a45c335ffd6d25b55d769f5b ("[PATCH v4 08/16] fsnotify: pass arguments of fsnotify() in struct fsnotify_event_info")
+> >> url: https://github.com/0day-ci/linux/commits/Gabriel-Krisman-Bertazi/File-system-wide-monitoring/20210721-001444
+> >> base: https://git.kernel.org/cgit/linux/kernel/git/jack/linux-fs.git fsnotify
+> >>
+> >> in testcase: unixbench
+> >> on test machine: 96 threads 2 sockets Intel(R) Xeon(R) CPU @ 2.30GHz with 128G memory
+> >> with following parameters:
+> >>
+> >>         runtime: 300s
+> >>         nr_task: 1
+> >>         test: pipe
+> >>         cpufreq_governor: performance
+> >>         ucode: 0x4003006
+> >>
+> >> test-description: UnixBench is the original BYTE UNIX benchmark suite aims to test performance of Unix-like system.
+> >> test-url: https://github.com/kdlucas/byte-unixbench
+> >>
+> >> In addition to that, the commit also has significant impact on the following tests:
+> >>
+> >> +------------------+-------------------------------------------------------------------------------------+
+> >> | testcase: change | will-it-scale: will-it-scale.per_thread_ops -1.3% regression                        |
+> >> | test machine     | 192 threads 4 sockets Intel(R) Xeon(R) Platinum 9242 CPU @ 2.30GHz with 192G memory |
+> >> | test parameters  | cpufreq_governor=performance                                                        |
+> >> |                  | mode=thread                                                                         |
+> >> |                  | nr_task=100%                                                                        |
+> >> |                  | test=eventfd1                                                                       |
+> >> |                  | ucode=0x5003006                                                                     |
+> >> +------------------+-------------------------------------------------------------------------------------+
+> >>
+> >>
+> >> If you fix the issue, kindly add following tag
+> >> Reported-by: kernel test robot <oliver.sang@intel.com>
+> >>
+> >
+> > Gabriel,
+> >
+> > It looks like my change throws away much of the performance gain for
+> > small IO on pipes without any watches that was achieved by commit
+> > 71d734103edf ("fsnotify: Rearrange fast path to minimise overhead
+> > when there is no watcher").
+> >
+> > I think the way to fix it is to lift the optimization in __fsnotify()
+> > to the fsnotify_parent() inline wrapper as Mel considered doing
+> > but was not sure it was worth the effort at the time.
+> >
+> > It's not completely trivial. I think it requires setting a flag
+> > MNT_FSNOTIFY_WATCHED when there are watches on the
+> > vfsmount. I will look into it.
+>
+> Amir,
+>
+> Since this patch is a clean up, would you mind if I drop it from my
+> series and base my work on top of mainline? Eventually, we can rebase
+> this patch, when the performance issue is addressed.
+>
+> I ask because I'm about to send a v5 and I'm not sure if I should wait
+> to have this fixed.
 
-Don't populate arrays on the stack but instead them static const.
-Makes the object code smaller by 242 bytes.
+I guess you mean that you want to add the sb to fsnotify() args list.
+I don't mind, it's up to Jan.
 
-Before:
-   text    data     bss     dec     hex filename
-  23827    8764       0   32591    7f4f ./sound/soc/sh/rcar/ssi.o
-
-After:
-   text    data     bss     dec     hex filename
-  23361    8988       0   32349    7e5d ./sound/soc/sh/rcar/ssi.o
-
-gcc version 10.2.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/sh/rcar/ssi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 27f34ca6059d..87e606f688d3 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -165,7 +165,7 @@ static void rsnd_ssi_status_check(struct rsnd_mod *mod,
- 
- static u32 rsnd_ssi_multi_secondaries(struct rsnd_dai_stream *io)
- {
--	enum rsnd_mod_type types[] = {
-+	static const enum rsnd_mod_type types[] = {
- 		RSND_MOD_SSIM1,
- 		RSND_MOD_SSIM2,
- 		RSND_MOD_SSIM3,
-@@ -228,7 +228,7 @@ unsigned int rsnd_ssi_clk_query(struct rsnd_dai *rdai,
- 		       int param1, int param2, int *idx)
- {
- 	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
--	int ssi_clk_mul_table[] = {
-+	static const int ssi_clk_mul_table[] = {
- 		1, 2, 4, 8, 16, 6, 12,
- 	};
- 	int j, ret;
-@@ -1079,7 +1079,7 @@ static void rsnd_ssi_connect(struct rsnd_mod *mod,
- 			     struct rsnd_dai_stream *io)
- {
- 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
--	enum rsnd_mod_type types[] = {
-+	static const enum rsnd_mod_type types[] = {
- 		RSND_MOD_SSI,
- 		RSND_MOD_SSIM1,
- 		RSND_MOD_SSIM2,
--- 
-2.31.1
-
+Thanks,
+Amir.
