@@ -2,94 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D4E3DCB79
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 13:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F063DCAD3
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 10:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231866AbhHALws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 07:52:48 -0400
-Received: from mout.gmx.net ([212.227.17.20]:42307 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231461AbhHALws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 07:52:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627818738;
-        bh=BHpBlBtsblnIs/OJwA6XGXgJe+83P0AOEiqA8q2WIRE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=h3Bc4OUSQYi56YP3k2J0IBxGdnchqLmQTB9MED/FThcEr6zcFsUaQYnKqAafCQa9N
-         yuBK72wKhmoUJjpF26wLPpSyrlQRnH5aU7ZpGIEf5aNWtTzBE9Q0OGtewjNGgDxp/2
-         qUFlkFYk+AXNsmyTXtClrXOBdzDYIzjBtR3FT5yk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1Mo6qp-1myNzd1r3r-00pbVB; Sun, 01 Aug 2021 13:52:18 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Phil Reid <preid@electromag.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] staging/fbtft: Fix braces coding style
-Date:   Sun,  1 Aug 2021 10:51:55 +0200
-Message-Id: <20210801085155.3170-4-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210801085155.3170-1-len.baker@gmx.com>
-References: <20210801085155.3170-1-len.baker@gmx.com>
+        id S231598AbhHAIxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 04:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229885AbhHAIxC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 04:53:02 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719DEC06175F;
+        Sun,  1 Aug 2021 01:52:53 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id k4so8572801wms.3;
+        Sun, 01 Aug 2021 01:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3ntFFUEJHJ5MJEqHglVW9TCArN6M1xRMeieVLDZYfos=;
+        b=hJ6JH0gCzDGS1MrnPCscTeCpmfb6Li55vIOs0sEBdTveTG2Kk/02VUBcTTD6LCUJMF
+         +UUr3VU/2mMB8B+eEn0z1h4MSdlOo9aCNkBqBdpdDX2eX79iIK0B/V83DCz4exSjIQd9
+         XQxmU/99mG1c2fgMDHhqI5R9GpltCg9oRh4eBIeYu2HlXxczCAzOHWkKh26Zt1kKdsLP
+         /SNcTJISpzJU2ky7S8JEFD4SbIBQmSIHVV8GHZ66JIi4m5Q0n729vseVzxzBO5VK3fdy
+         0rMw63VOQ50Xiw5WBuplDjO5EHTIFtWg9mdmDSx+Vey9I28Sad5fc5YVsGObieiOqHfY
+         0vGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3ntFFUEJHJ5MJEqHglVW9TCArN6M1xRMeieVLDZYfos=;
+        b=srd3xJpokqRfm7C9PZT756a+kOFM0Fl2bujAlYyLwWktGVbu6QGb3MNCBYaZadQ81B
+         rg+tYvMsFoNVXlfNsEuRy0hUVALQr/aeZUa5VJBsp+LH2nyKhlsJQwnLBLZCBgx3R8W7
+         xp1eHQvL76zt1aF+H/oHHqwSU9QrLlCx1yv69bnpd6/pPoz0Kpn4HzkgrCgmaYeIeTpC
+         y29om7OpxhcPM902Z58fYxm7c+OSVQYLWF6lYBO5hCTGv78iVAalQpVzvkJ2e8FEx1fl
+         hfydr/KJaS6tvUHhCEk0C0IHKnp3+45XZmevNCPbHSRtMeYpBH63N3DwRYgse4YxOuz5
+         LtEw==
+X-Gm-Message-State: AOAM533NvI1lZhbmHWqJ3O4SRJQcIjXgrQhx45nH81IBo4ifjQ+qckrn
+        tblo5Z6NWHM5kmktTuxqEclfRJ8UkCvBjg==
+X-Google-Smtp-Source: ABdhPJxryPAOk+H33xMnXFatjMlvm3y58+pkv8wvmLid4mLqFhosRp0QU/xr+yQD8nCYkHE+FxlmMw==
+X-Received: by 2002:a7b:c5c7:: with SMTP id n7mr11642922wmk.5.1627807971842;
+        Sun, 01 Aug 2021 01:52:51 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.232.220])
+        by smtp.gmail.com with ESMTPSA id w18sm7673558wrg.68.2021.08.01.01.52.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Aug 2021 01:52:51 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <CADVatmOf+ZfxXA=LBSUqDZApZG3K1Q8GV2N5CR5KgrJLqTGsfg@mail.gmail.com>
+ <f38b93f3-4cdb-1f9b-bd81-51d32275555e@gmail.com>
+Subject: Re: KASAN: stack-out-of-bounds in iov_iter_revert
+Message-ID: <4c339bea-87ff-cb41-732f-05fc5aff18fa@gmail.com>
+Date:   Sun, 1 Aug 2021 09:52:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:00bLwC3nTIERcfaw3w8RLsCAM6bKQNJn/2Riikz2relmlKOV1Yw
- jvY42DwN5uwXJdIYrMursuN/wyeAQKpGgiSZQZteORK4XiWO/UvcnqH3x/gGiplyFCdW37I
- SyYZrzLckcZtrsEdG1iiZrXmVwuHc/RbRbSpz5JJljwtmvFqGN1d1bbw+YCshZMjvGFZhFf
- StEa5y22VGAxN+NKU4DNQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gejn52mgomc=:Vq+HxXHUC5KqWu/o5rVdmq
- jeGZYOeg4pvjQq1RlkTLUxd0FkOZuBTXMPdslWSwZCV+ffYGCsUzMu087YwshlgrwE8jJlUzb
- TaZ/fItIyAzf1y4HVmUNoAG2e8rO2T1+mwfEQI60TTt5rEjL79Oul5lSmg4pjshPwnWEkb4TT
- SdPEE8UIL+nHAaYrqeS0Z0l6UNnQ0+Ka+9GrqNwNJvLDq971Z+SmwFNZ85YRTvKsIge0iHl6E
- sLcrKro+C+uijA+qAZoyNvs0v1tKq+XwO86nD3jLLFfRqeoHaHtxz6Wpb8hbI1pNGRbaHA0qx
- BZcXMuyX8uiyyfmrn11JzvUfikhLeNUvClRLqKEabUOm8v05KkvI9yUOERkmPfMQlL1Y8a0fH
- ZtvqH4SpM9Y7y5XbSPBIKiFm3IcFCS4gGTJvsscFooEzSQNXKfn83QYeeTK5uDzxzPv8PeG2d
- pK1/sZWHKdGJgNbgoowShvtAcqC/wvJc9w4VFwW0W44M0QOUqgZ2r83SXfUMTpBYAFQtt9Yiw
- 2vDc3tpoKnp4hyk6zb1x9gkSRX/7t5CJl60iDYCKlTOBVyrR66VQB6sc8rM3z5VoVkbm4EFzs
- q6Z+2Osz3+l7goxVZTzxJyoHW/BjukS7d/oVrntIgf2mWNTl9+nDqAbai9L5Q6FNtXXNepn4j
- I+EhtpBI32jDTEi85W6eaDe3n8dfQgalTgDcmMwoy8ONBydqOwj1hRxcd/OD1iVWWjVFjv1rn
- raP78nUWWhqj4LHac+mlP+JuxurPE4kuLxBNla+J7CveMEF39u720QBgCS01Qw7q3DkBM1kFn
- 2tR24z1n8UuLwl2+WJOO+HKZ0dgwh10E1PUZqMxJmEXu/+d195MXM6br/3yJKit2a1HwrE8Ef
- f94Bhzn6/Zd30A/1GaEKz4fMfivm6/IU/n+GHOQy7D28UzidDYV9fAVowONA+1uEmKKeUYu3v
- u5dhUYekGf3rXaQzNIW6829uEMq60XaReZ4/PuPwDaTvinmg+0FMhPAGF7hg2xUVqgrP1zSl+
- D2jJPRL3DKzSbA+jXOuNW2RbGrMZW+41vvcwQ/1t8BfRdwInR+2vml9xtTJvUgXDH/t9cNZrp
- nWZ4r3uWSdeaLzAGcCk04st5XXbKcFleD9T
+In-Reply-To: <f38b93f3-4cdb-1f9b-bd81-51d32275555e@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add braces to the "for" loop. This way, the kernel coding style is
-followed.
+On 8/1/21 1:10 AM, Pavel Begunkov wrote:
+> On 7/31/21 7:21 PM, Sudip Mukherjee wrote:
+>> Hi Jens, Pavel,
+>>
+>> We had been running syzkaller on v5.10.y and a "KASAN:
+>> stack-out-of-bounds in iov_iter_revert" was being reported on it. I
+>> got some time to check that today and have managed to get a syzkaller
+>> reproducer. I dont have a C reproducer which I can share but I can use
+>> the syz-reproducer to reproduce this with v5.14-rc3 and also with
+>> next-20210730.
+> 
+> Can you try out the diff below? Not a full-fledged fix, but need to
+> check a hunch.
+> 
+> If that's important, I was using this branch:
+> git://git.kernel.dk/linux-block io_uring-5.14
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/staging/fbtft/fbtft-core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Or better this one, just in case it ooopses on warnings.
 
-diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fb=
-tft-core.c
-index ed896049118c..ed992ca605eb 100644
-=2D-- a/drivers/staging/fbtft/fbtft-core.c
-+++ b/drivers/staging/fbtft/fbtft-core.c
-@@ -1003,9 +1003,11 @@ int fbtft_init_display(struct fbtft_par *par)
- 	}
-
- 	/* make sure stop marker exists */
--	for (i =3D 0; i < FBTFT_MAX_INIT_SEQUENCE; i++)
-+	for (i =3D 0; i < FBTFT_MAX_INIT_SEQUENCE; i++) {
- 		if (par->init_sequence[i] =3D=3D -3)
- 			break;
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index bf548af0426c..12284616854b 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -3316,6 +3316,11 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 		/* no retry on NONBLOCK nor RWF_NOWAIT */
+ 		if (req->flags & REQ_F_NOWAIT)
+ 			goto done;
++		if (iter->truncated) {
++			printk("truncated rd: %i\n", (int)iter->truncated);
++			iov_iter_reexpand(iter, iov_iter_count(iter) + iter->truncated);
++			iter->truncated = 0;
++		}
+ 		/* some cases will consume bytes even on error returns */
+ 		iov_iter_revert(iter, io_size - iov_iter_count(iter));
+ 		ret = 0;
+@@ -3455,6 +3460,11 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 		kiocb_done(kiocb, ret2, issue_flags);
+ 	} else {
+ copy_iov:
++		if (iter->truncated) {
++			printk("truncated wr: %i\n", (int)iter->truncated);
++			iov_iter_reexpand(iter, iov_iter_count(iter) + iter->truncated);
++			iter->truncated = 0;
++		}
+ 		/* some cases will consume bytes even on error returns */
+ 		iov_iter_revert(iter, io_size - iov_iter_count(iter));
+ 		ret = io_setup_async_rw(req, iovec, inline_vecs, iter, false);
+diff --git a/include/linux/uio.h b/include/linux/uio.h
+index 82c3c3e819e0..eff06d139fd4 100644
+--- a/include/linux/uio.h
++++ b/include/linux/uio.h
+@@ -30,6 +30,7 @@ enum iter_type {
+ struct iov_iter {
+ 	u8 iter_type;
+ 	bool data_source;
++	u16 truncated;
+ 	size_t iov_offset;
+ 	size_t count;
+ 	union {
+@@ -254,8 +255,10 @@ static inline void iov_iter_truncate(struct iov_iter *i, u64 count)
+ 	 * conversion in assignement is by definition greater than all
+ 	 * values of size_t, including old i->count.
+ 	 */
+-	if (i->count > count)
++	if (i->count > count) {
++		i->truncated += i->count - count;
+ 		i->count = count;
 +	}
-+
- 	if (i =3D=3D FBTFT_MAX_INIT_SEQUENCE) {
- 		dev_err(par->info->device,
- 			"missing stop marker at end of init sequence\n");
-=2D-
-2.25.1
+ }
+ 
+ /*
+@@ -264,6 +267,8 @@ static inline void iov_iter_truncate(struct iov_iter *i, u64 count)
+  */
+ static inline void iov_iter_reexpand(struct iov_iter *i, size_t count)
+ {
++	WARN_ON_ONCE(i->count > count);
++	i->truncated -= count - i->count;
+ 	i->count = count;
+ }
+ 
 
