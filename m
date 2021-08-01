@@ -2,161 +2,408 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B7D3DCCF2
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 19:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33543DCCF7
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 19:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhHAR2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 13:28:25 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:10406 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229592AbhHAR2Y (ORCPT
+        id S231687AbhHARbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 13:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231540AbhHARbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 13:28:24 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 171HH11k018094;
-        Sun, 1 Aug 2021 17:28:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=6bfpDpsqgxzqF+lpFlxKao7qHdcrZ4FWd6Pylie6450=;
- b=VWk6HeNVP2OJrILwmmYFhgLFXHIo1e441RFsishqtXNU+e/1z5wTX3hsQFvIcd7S63kh
- 8B/kj4Pan9WZeeWpm0LYogvOdkPHNC5Wk1fVPW0P1D4rifgntBziY8ImWjzNWS1gnfS2
- 4hl7Ovp6ZjBSXBVwUtkjulVAdRpMAdTaM7CWEkGQLWn6HHsS5opdgafadJdpMLBklU+k
- 39Nfo/uTSxDNmMqBtvWQw9YxZpgwiELyhmm4ejmk8rCrC5ej8ONWo6kISS78dS8gIyY9
- fsu3z9wvo2yFm9fdohtYbS2yIH8vjLXACPxAUNu6n4JiklNSWpD2Y2LGme+AbRAIqEOo 2w== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=6bfpDpsqgxzqF+lpFlxKao7qHdcrZ4FWd6Pylie6450=;
- b=Wah7Y9glYqUDdwSdGkZmFXfxh1tkfjP5MCvBQJhcIMuOdwhi894DmoT/y9WlsBbKm171
- Q7Se9eH8sacbM2wjScBpCM7RBZJwCPJs1o4DG/pmpGZoMYV2LhW7heDrO47Aam9JDbb1
- TiZeWxQsGRTpU9/ZqqBiOR2xQXZl5YenolmsC2/bMwGy8RmlAt9N0izWFZFv6KxDemYA
- Ix2fL3NsWSYA/qSjz5o8dsyVzR2POXXGVc3Q1EH4SR2M/yzjkWP7v0nmL0qyv+AIcweT
- 0kXcw0VtFR5THdb+USeDu4uXJcDSDtTAptEusb2nMggHlt0jwce9WmeF3fowEUQiwey7 yA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a4w419q3h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 01 Aug 2021 17:28:12 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 171HFv4i041837;
-        Sun, 1 Aug 2021 17:28:11 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-        by aserp3030.oracle.com with ESMTP id 3a4vjatajj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 01 Aug 2021 17:28:10 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eZELerkr8FkS7xpzR5gclM2fZHwDdEYWN/dhh5ilMmMOS2WBZnDVaSwB/H0qWkMvQlUfptJnCRrHdUlLLOWpr9vqp1TUS+1kLcUZf9cixh15J57PBH09ah9j3N6NZFxgK6gSjvUMOI58bjQUIhEelJM3hqVtf6iBjQbMmhVJzu1SvWRZPvQyKQfKUk2484p0+QjrRknyFCP+uJnHndJGWsy90EL7Q6WVAQTbVIgz2JzPwUIU9UZoyG6hq3krbvmmBpQusr1aEPF3lRR2FcOWspgLz6tg/YPFw87HdSniVZR1FaCW1gNQMZIFyA0l2wik5I8D9dBy51mdjUqQU1VJtw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6bfpDpsqgxzqF+lpFlxKao7qHdcrZ4FWd6Pylie6450=;
- b=QEh/MajwajGwhIVSS9YRSsvvKtApt+0xjFSuG+2RKnRX1IT7Bxfxtam97HCukkXfePsRS1ArEskXoGDJ+hGf79qvz731ubR/K/c76fZshsb6MMgmuvNZF6D8hRqbJAGBgbgeo7vXHELC+Igzy6OtuY/g2+dGAam0xTA9hEl+kUEgiP+YhbixsrEGL0+d6N2OKB383bbO3mkUA1gs5Lict91Glv/DRh6oJdWzSrMnB11LWMdYVeCKo+wvLLAT+Omqpi11Ll27QwObZRLpKUsLNWfJ5Zdt7Iq9wE+ZfcCDFHp5bfWIvDXdYXX+/+Z/Ltelwr+LD2Rn+rmrZD4qc6t78A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6bfpDpsqgxzqF+lpFlxKao7qHdcrZ4FWd6Pylie6450=;
- b=R7kzf3rbUEoUJwohQmS8rjEtWcJgSzDgj1H8WpfBg378s56aPLPotRwTW8V0zZ8NGQqE/w7sB+UHhGEfPEm3r1QVInwpP4aLh3BFuB6ODW2X6Xnb6bXIRLoLVeddF6uhBexJdO7mmeJRDJJ1FJyB95+rlT1l01/TJ62U+7P+VQg=
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5449.namprd10.prod.outlook.com (2603:10b6:510:e7::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17; Sun, 1 Aug
- 2021 17:28:08 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::153e:22d1:d177:d4f1]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::153e:22d1:d177:d4f1%8]) with mapi id 15.20.4373.026; Sun, 1 Aug 2021
- 17:28:08 +0000
-To:     Colin King <colin.king@canonical.com>
-Cc:     Khalid Aziz <khalid@gonehiking.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: BusLogic: use %X for u32 sized integer rather
- than %lX
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1mtq1krc4.fsf@ca-mkp.ca.oracle.com>
-References: <20210730095031.26981-1-colin.king@canonical.com>
-Date:   Sun, 01 Aug 2021 13:28:05 -0400
-In-Reply-To: <20210730095031.26981-1-colin.king@canonical.com> (Colin King's
-        message of "Fri, 30 Jul 2021 10:50:31 +0100")
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR13CA0173.namprd13.prod.outlook.com
- (2603:10b6:a03:2c7::28) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Sun, 1 Aug 2021 13:31:14 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5BDC06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 10:31:05 -0700 (PDT)
+Received: from ipservice-092-217-078-141.092.217.pools.vodafone-ip.de ([92.217.78.141] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1mAFIg-0002WQ-9i; Sun, 01 Aug 2021 19:30:58 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH 1/2] staging: r8188eu: remove RT_TRACE and DBG_88E prints from usb_intf.c
+Date:   Sun,  1 Aug 2021 19:30:22 +0200
+Message-Id: <20210801173023.1370-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR13CA0173.namprd13.prod.outlook.com (2603:10b6:a03:2c7::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.8 via Frontend Transport; Sun, 1 Aug 2021 17:28:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0461da15-7422-4d17-8159-08d95511ba97
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5449:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB5449FB037F8614ABF275F2598EEE9@PH0PR10MB5449.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hr+0jJtPOc2BpbNOTg5CJ+uR9d7zTLj83pP1jP+E3z6ZwE/Wl1cXb1MqKP0yoFORoLCy28UOrGjYJwU46omuXp4Dgn+3woPm/E8hjV0wQkaHQ9stveffEy0aHD4l3Onap7kHMzLlB+os7oWFRERvGFD/rv1NWK9nGBODmzFx9kt9V+VFrWqdck11I6jL/W1z6wW5ylQWK1PuI+aWUxKuquCHfUj/4OjwafeqgYT6nKYAPhd5C3zUEIOzhWulerITeqXmq0A3by4ccvB62radQ+oYCbQ1EthUjtG7MgRt6bhQyvlIGl+Zuberi55fzSTPmf6y7zGcK9rr1MpFFJKYyBlje7KnppzLC5ZlZ/H3N+qoPlIRNyC8GKX23fyH23B4yUBjFt+oSwjgKji6DvFMW8IY2thIBB8uwHZr9Ve4Aw9ggTqPD6KmBihZwzCd3zPDycKOsnrfdbS+CJ8YW1FcVIMgvK++HP3l8kMVQtXD6QeqTi2Xx/prfkllBVoh0llNahi9ZRc9Z2gqWZCqK3yQ5zTioaxDS0qzyud2SPztS3+dj60TgmLSEvONrHaFGQxdAxTyk9CcIb+/PqNKcROsYKbN9YWUtRyBKIiieVNn15V/BfAoQZ1g5He8mnE4rSCsl285+pp8YGXQnTw59yqZGFxVSGCYMDqReTc69W16HVOOSzJ7jV6buyeTaNGo+scIhWSvPHpaHoMPro/hCJMSpg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(346002)(376002)(396003)(38100700002)(38350700002)(6916009)(54906003)(956004)(316002)(26005)(4326008)(8676002)(8936002)(2906002)(52116002)(36916002)(7696005)(186003)(558084003)(478600001)(66946007)(66476007)(66556008)(86362001)(5660300002)(55016002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?W9aHw9jcz36c4+G0r7KjaSKhh2Z/OZ5MrfYJb6zgSiGwIKTCw/R0ADQYRySB?=
- =?us-ascii?Q?tcvjaJz5ZPdsdNpbC0rTteOr3cGkKflnikQoSZgxZScLcOHkUIOdls0fHmIp?=
- =?us-ascii?Q?bduHQZ/AVlWxpRTHDAIR24oovmnV6N9KAlUunwUvZSEK3ipwEza7GLb9PuR5?=
- =?us-ascii?Q?+4VlEyqnLH7Y4LJ1DBeDiA8Vu+7H3dP6gyD1LWQ59ftPGYexWOmSfA8+gVY+?=
- =?us-ascii?Q?pzz2v9FB69kn3g7TRMwZXpv+16gPqPtLUbk6giZmIep2FXC2Ja1DIl0lWVEp?=
- =?us-ascii?Q?s3DP9+k/xTZ9YI76jLGHbO3LWOBwAdeUnTD0M1+uLxL2cl20d2DP0lBVaRPt?=
- =?us-ascii?Q?jcceDQPcuK4DkEEUoI3Q+YwTRU9bd7wsgSgD95HUm5iwQpcXWmda2ZMhNVKW?=
- =?us-ascii?Q?1pMgq4sHxInnfggfPRRvmbrvHM1vq0bbr3GnOZTXJghQLb0GG7sqrpudIivc?=
- =?us-ascii?Q?xGbEPale13D/d/75UButhqqdd9TqNp8g9+QIQLm96Z9ZogTS7g6Nk9pkP9TF?=
- =?us-ascii?Q?SWWVlEvTcH7PphFEwG20FfKWjn0c4ZlAasqp8WnsT+CcmiSsIvqGfViU8224?=
- =?us-ascii?Q?s2M4LqtqIXQ3uqvRZ21ddCih1jCBnNe9Y8HPsMnWLtJZcWpcOl5y2+NTDO2H?=
- =?us-ascii?Q?LkKgHfFmZWP6Utv8QZHG1kRJnWr9DZC9TaJvtwFAMazi7jhrUFgFgwHhyPIe?=
- =?us-ascii?Q?I+QySVWw1eqlufPGYUWyATCtE4OaCznPRSJtFqsHCRa9IBuAYjquuKDIpWGs?=
- =?us-ascii?Q?a2EopCkpgYVUlf/lvstEhMOyuq1PsBd8iqkMqMFMuxw+QZr8H2Ujr4VIJH69?=
- =?us-ascii?Q?ngQzrosNNM6TXeGo6lIKHMhYRkFCpkRZvOM3a6KRwrB7oxYRrgvLgJkrfEPx?=
- =?us-ascii?Q?LqdqXjeo63eCSbpcY9amyi8LWSLPek2AYawTftBNIPlNw5+n3rgs5QyAnbIS?=
- =?us-ascii?Q?1EzSBzGDBs1QEnR++9NQKK4go+PLyRYzSij5aav3b6Ns1IQjwD3crD5sYNwc?=
- =?us-ascii?Q?WzhLFMzpCXlbAoeYxbYk5LQwHtLyr6B3/YtvQW6JhpcCtqp22tJxi8keq5xY?=
- =?us-ascii?Q?J3kFaCxOmdg+aWf6mwWm/IWSWIKdob6tTZwS/vp24N2VTjHjAnsGI2kgmsiy?=
- =?us-ascii?Q?Yg8jj+KVak78xWyveoiseK7cl1pAY7rYiRn+Vj4kEn8HAa+Y1oqC2hnFWrTK?=
- =?us-ascii?Q?2XJyLuGGl9Jkng4DKiQldwEo1GvPpOxS55J5eEkDKyxUoaxmE9PWlUtb/7M8?=
- =?us-ascii?Q?0OXX06n4PaMeVfbRGhRWw66m9qKPBMWd38pYNljSOxxZaqgN1BR/U5u/Qhvi?=
- =?us-ascii?Q?6mq8SoT1MP6VEOz5e73TuJUs?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0461da15-7422-4d17-8159-08d95511ba97
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2021 17:28:08.4027
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KJoHaE/cxiyp1V2uIylMTfvcRmPyX5uXsXAxMr3z/cUy4rnAqxSVDWV4ESpqT3Gw61noWsD/WgoT1mDi2aBYmBi5/hLcpD4sGCddq3U9whI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5449
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10062 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=883 adultscore=0
- suspectscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108010125
-X-Proofpoint-ORIG-GUID: 8wv8q9uN42mkazCunVbf_AyLgBjX8T52
-X-Proofpoint-GUID: 8wv8q9uN42mkazCunVbf_AyLgBjX8T52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We should use the standard mechanism for debug prints. Remove the
+prints that use driver-specific macros.
 
-Colin,
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+---
+ drivers/staging/r8188eu/os_dep/usb_intf.c | 131 ++--------------------
+ 1 file changed, 9 insertions(+), 122 deletions(-)
 
-> An earlier fix changed the print format specifier for
-> adapter->bios_addr to use %lX however the integer is a u32 so the fix
-> was wrong. Fix this by using the correct %X format specifier.
-
-Applied to 5.15/scsi-staging, thanks!
-
+diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
+index bc7f4bd7ce0b..8a2b370ec774 100644
+--- a/drivers/staging/r8188eu/os_dep/usb_intf.c
++++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
+@@ -120,7 +120,6 @@ static u8 rtw_init_intf_priv(struct dvobj_priv *dvobj)
+ 
+ 	dvobj->usb_alloc_vendor_req_buf = rtw_zmalloc(MAX_USB_IO_CTL_SIZE);
+ 	if (!dvobj->usb_alloc_vendor_req_buf) {
+-		DBG_88E("alloc usb_vendor_req_buf failed... /n");
+ 		rst = _FAIL;
+ 		goto exit;
+ 	}
+@@ -192,19 +191,13 @@ static struct dvobj_priv *usb_dvobj_init(struct usb_interface *usb_intf)
+ 		pdvobjpriv->ep_num[i] = ep_num;
+ 	}
+ 
+-	if (pusbd->speed == USB_SPEED_HIGH) {
++	if (pusbd->speed == USB_SPEED_HIGH)
+ 		pdvobjpriv->ishighspeed = true;
+-		DBG_88E("USB_SPEED_HIGH\n");
+-	} else {
++	else
+ 		pdvobjpriv->ishighspeed = false;
+-		DBG_88E("NON USB_SPEED_HIGH\n");
+-	}
+ 
+-	if (rtw_init_intf_priv(pdvobjpriv) == _FAIL) {
+-		RT_TRACE(_module_os_intfs_c_, _drv_err_,
+-			 ("\n Can't INIT rtw_init_intf_priv\n"));
++	if (rtw_init_intf_priv(pdvobjpriv) == _FAIL)
+ 		goto free_dvobj;
+-	}
+ 
+ 	/* 3 misc */
+ 	sema_init(&(pdvobjpriv->usb_suspend_sema), 0);
+@@ -241,7 +234,6 @@ static void usb_dvobj_deinit(struct usb_interface *usb_intf)
+ 				 * on sitesurvey for the first time when
+ 				 * device is up . Reset usb port for sitesurvey
+ 				 * fail issue. */
+-				DBG_88E("usb attached..., try to reset usb device\n");
+ 				usb_reset_device(interface_to_usbdev(usb_intf));
+ 			}
+ 		}
+@@ -262,25 +254,11 @@ static void chip_by_usb_id(struct adapter *padapter,
+ 
+ static void usb_intf_start(struct adapter *padapter)
+ {
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+usb_intf_start\n"));
+-
+ 	rtw_hal_inirp_init(padapter);
+-
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-usb_intf_start\n"));
+ }
+ 
+ static void usb_intf_stop(struct adapter *padapter)
+ {
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+usb_intf_stop\n"));
+-
+-	/* disabel_hw_interrupt */
+-	if (!padapter->bSurpriseRemoved) {
+-		/* device still exists, so driver can do i/o operation */
+-		/* TODO: */
+-		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
+-			 ("SurpriseRemoved == false\n"));
+-	}
+-
+ 	/* cancel in irp */
+ 	rtw_hal_inirp_deinit(padapter);
+ 
+@@ -288,16 +266,11 @@ static void usb_intf_stop(struct adapter *padapter)
+ 	rtw_write_port_cancel(padapter);
+ 
+ 	/* todo:cancel other irps */
+-
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-usb_intf_stop\n"));
+ }
+ 
+ static void rtw_dev_unload(struct adapter *padapter)
+ {
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_dev_unload\n"));
+-
+ 	if (padapter->bup) {
+-		DBG_88E("===> rtw_dev_unload\n");
+ 		padapter->bDriverStopped = true;
+ 		if (padapter->xmitpriv.ack_tx)
+ 			rtw_ack_tx_done(&padapter->xmitpriv, RTW_SCTX_DONE_DRV_STOP);
+@@ -315,14 +288,7 @@ static void rtw_dev_unload(struct adapter *padapter)
+ 		}
+ 
+ 		padapter->bup = false;
+-	} else {
+-		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
+-			 ("r871x_dev_unload():padapter->bup == false\n"));
+ 	}
+-
+-	DBG_88E("<=== rtw_dev_unload\n");
+-
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-rtw_dev_unload\n"));
+ }
+ 
+ static void process_spec_devid(const struct usb_device_id *pdid)
+@@ -355,16 +321,12 @@ int rtw_hw_suspend(struct adapter *padapter)
+ 
+ 	if ((!padapter->bup) || (padapter->bDriverStopped) ||
+ 	    (padapter->bSurpriseRemoved)) {
+-		DBG_88E("padapter->bup=%d bDriverStopped=%d bSurpriseRemoved = %d\n",
+-			padapter->bup, padapter->bDriverStopped,
+-			padapter->bSurpriseRemoved);
+ 		goto error_exit;
+ 	}
+ 
+ 	if (padapter) { /* system suspend */
+ 		LeaveAllPowerSaveMode(padapter);
+ 
+-		DBG_88E("==> rtw_hw_suspend\n");
+ 		_enter_pwrlock(&pwrpriv->lock);
+ 		pwrpriv->bips_processing = true;
+ 		/* s1. */
+@@ -407,7 +369,6 @@ int rtw_hw_suspend(struct adapter *padapter)
+ 		return 0;
+ 
+ error_exit:
+-	DBG_88E("%s, failed\n", __func__);
+ 	return -1;
+ }
+ 
+@@ -418,7 +379,6 @@ int rtw_hw_resume(struct adapter *padapter)
+ 
+ 
+ 	if (padapter) { /* system resume */
+-		DBG_88E("==> rtw_hw_resume\n");
+ 		_enter_pwrlock(&pwrpriv->lock);
+ 		pwrpriv->bips_processing = true;
+ 		rtw_reset_drv_sw(padapter);
+@@ -450,7 +410,6 @@ int rtw_hw_resume(struct adapter *padapter)
+ 
+ 	return 0;
+ error_exit:
+-	DBG_88E("%s, Open net dev failed\n", __func__);
+ 	return -1;
+ }
+ 
+@@ -466,13 +425,8 @@ static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
+ 	u32 start_time = jiffies;
+ 
+ 
+-	DBG_88E("==> %s (%s:%d)\n", __func__, current->comm, current->pid);
+-
+ 	if ((!padapter->bup) || (padapter->bDriverStopped) ||
+ 	    (padapter->bSurpriseRemoved)) {
+-		DBG_88E("padapter->bup=%d bDriverStopped=%d bSurpriseRemoved = %d\n",
+-			padapter->bup, padapter->bDriverStopped,
+-			padapter->bSurpriseRemoved);
+ 		goto exit;
+ 	}
+ 
+@@ -492,12 +446,6 @@ static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
+ 
+ 	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE) &&
+ 	    check_fwstate(pmlmepriv, _FW_LINKED)) {
+-		DBG_88E("%s:%d %s(%pM), length:%d assoc_ssid.length:%d\n",
+-			__func__, __LINE__,
+-			pmlmepriv->cur_network.network.Ssid.Ssid,
+-			pmlmepriv->cur_network.network.MacAddress,
+-			pmlmepriv->cur_network.network.Ssid.SsidLength,
+-			pmlmepriv->assoc_ssid.SsidLength);
+ 
+ 		pmlmepriv->to_roaming = 1;
+ 	}
+@@ -518,10 +466,7 @@ static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
+ 		rtw_indicate_disconnect(padapter);
+ 
+ exit:
+-	DBG_88E("<===  %s return %d.............. in %dms\n", __func__
+-		, ret, rtw_get_passing_time_ms(start_time));
+-
+-		return ret;
++	return ret;
+ }
+ 
+ static int rtw_resume(struct usb_interface *pusb_intf)
+@@ -545,8 +490,6 @@ int rtw_resume_process(struct adapter *padapter)
+ 	int ret = -1;
+ 	u32 start_time = jiffies;
+ 
+-	DBG_88E("==> %s (%s:%d)\n", __func__, current->comm, current->pid);
+-
+ 	if (padapter) {
+ 		pnetdev = padapter->pnetdev;
+ 		pwrpriv = &padapter->pwrctrlpriv;
+@@ -559,7 +502,6 @@ int rtw_resume_process(struct adapter *padapter)
+ 	if (pwrpriv)
+ 		pwrpriv->bkeepfwalive = false;
+ 
+-	DBG_88E("bkeepfwalive(%x)\n", pwrpriv->bkeepfwalive);
+ 	if (pm_netdev_open(pnetdev, true) != 0)
+ 		goto exit;
+ 
+@@ -569,7 +511,6 @@ int rtw_resume_process(struct adapter *padapter)
+ 	_exit_pwrlock(&pwrpriv->lock);
+ 
+ 	if (padapter->pid[1] != 0) {
+-		DBG_88E("pid[1]:%d\n", padapter->pid[1]);
+ 		rtw_signal_process(padapter->pid[1], SIGUSR2);
+ 	}
+ 
+@@ -579,9 +520,6 @@ int rtw_resume_process(struct adapter *padapter)
+ exit:
+ 	if (pwrpriv)
+ 		pwrpriv->bInSuspend = false;
+-	DBG_88E("<===  %s return %d.............. in %dms\n", __func__,
+-		ret, rtw_get_passing_time_ms(start_time));
+-
+ 
+ 	return ret;
+ }
+@@ -643,28 +581,17 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
+ 	rtw_hal_read_chip_info(padapter);
+ 
+ 	/* step 5. */
+-	if (rtw_init_drv_sw(padapter) == _FAIL) {
+-		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
+-			 ("Initialize driver software resource Failed!\n"));
++	if (rtw_init_drv_sw(padapter) == _FAIL)
+ 		goto free_hal_data;
+-	}
+ 
+ #ifdef CONFIG_PM
+ 	if (padapter->pwrctrlpriv.bSupportRemoteWakeup) {
+ 		dvobj->pusbdev->do_remote_wakeup = 1;
+ 		pusb_intf->needs_remote_wakeup = 1;
+ 		device_init_wakeup(&pusb_intf->dev, 1);
+-		DBG_88E("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~~~~\n");
+-		DBG_88E("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~[%d]~~~\n",
+-			device_may_wakeup(&pusb_intf->dev));
+ 	}
+ #endif
+ 
+-	/* 2012-07-11 Move here to prevent the 8723AS-VAU BT auto
+-	 * suspend influence */
+-	if (usb_autopm_get_interface(pusb_intf) < 0)
+-			DBG_88E("can't get autopm:\n");
+-
+ 	/*  alloc dev name after read efuse. */
+ 	rtw_init_netdev_name(pnetdev, padapter->registrypriv.ifname);
+ 	rtw_macaddr_cfg(padapter->eeprompriv.mac_addr);
+@@ -673,21 +600,10 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
+ 				  padapter->eeprompriv.mac_addr);
+ #endif
+ 	memcpy(pnetdev->dev_addr, padapter->eeprompriv.mac_addr, ETH_ALEN);
+-	DBG_88E("MAC Address from pnetdev->dev_addr =  %pM\n",
+-		pnetdev->dev_addr);
+ 
+ 	/* step 6. Tell the network stack we exist */
+-	if (register_netdev(pnetdev) != 0) {
+-		RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("register_netdev() failed\n"));
++	if (register_netdev(pnetdev) != 0)
+ 		goto free_hal_data;
+-	}
+-
+-	DBG_88E("bDriverStopped:%d, bSurpriseRemoved:%d, bup:%d, hw_init_completed:%d\n"
+-		, padapter->bDriverStopped
+-		, padapter->bSurpriseRemoved
+-		, padapter->bup
+-		, padapter->hw_init_completed
+-	);
+ 
+ 	status = _SUCCESS;
+ 
+@@ -731,8 +647,6 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
+ 	rtw_cancel_all_timer(if1);
+ 
+ 	rtw_dev_unload(if1);
+-	DBG_88E("+r871xu_dev_remove, hw_init_completed=%d\n",
+-		if1->hw_init_completed);
+ 	rtw_handle_dualmac(if1, 0);
+ 	rtw_free_drv_sw(if1);
+ 	if (pnetdev)
+@@ -745,31 +659,20 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
+ 	int status;
+ 	struct dvobj_priv *dvobj;
+ 
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_init\n"));
+-
+ 	/* step 0. */
+ 	process_spec_devid(pdid);
+ 
+ 	/* Initialize dvobj_priv */
+ 	dvobj = usb_dvobj_init(pusb_intf);
+-	if (!dvobj) {
+-		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
+-			 ("initialize device object priv Failed!\n"));
++	if (!dvobj)
+ 		goto exit;
+-	}
+ 
+ 	if1 = rtw_usb_if1_init(dvobj, pusb_intf, pdid);
+-	if (!if1) {
+-		DBG_88E("rtw_init_primarystruct adapter Failed!\n");
++	if (!if1)
+ 		goto free_dvobj;
+-	}
+ 
+-	if (ui_pid[1] != 0) {
+-		DBG_88E("ui_pid[1]:%d\n", ui_pid[1]);
++	if (ui_pid[1] != 0)
+ 		rtw_signal_process(ui_pid[1], SIGUSR2);
+-	}
+-
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-871x_drv - drv_init, success!\n"));
+ 
+ 	status = _SUCCESS;
+ 
+@@ -791,9 +694,6 @@ static void rtw_dev_remove(struct usb_interface *pusb_intf)
+ 	struct dvobj_priv *dvobj = usb_get_intfdata(pusb_intf);
+ 	struct adapter *padapter = dvobj->if1;
+ 
+-	DBG_88E("+rtw_dev_remove\n");
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+dev_remove()\n"));
+-
+ 	if (usb_drv->drv_registered)
+ 		padapter->bSurpriseRemoved = true;
+ 
+@@ -805,19 +705,10 @@ static void rtw_dev_remove(struct usb_interface *pusb_intf)
+ 	rtw_usb_if1_deinit(padapter);
+ 
+ 	usb_dvobj_deinit(pusb_intf);
+-
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-dev_remove()\n"));
+-	DBG_88E("-r871xu_dev_remove, done\n");
+-
+-	return;
+ }
+ 
+ static int __init rtw_drv_entry(void)
+ {
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_entry\n"));
+-
+-	DBG_88E(DRV_NAME " driver version=%s\n", DRIVERVERSION);
+-
+ 	rtw_suspend_lock_init();
+ 
+ 	_rtw_mutex_init(&usb_drv->hw_init_mutex);
+@@ -828,16 +719,12 @@ static int __init rtw_drv_entry(void)
+ 
+ static void __exit rtw_drv_halt(void)
+ {
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_halt\n"));
+-	DBG_88E("+rtw_drv_halt\n");
+-
+ 	rtw_suspend_lock_uninit();
+ 
+ 	usb_drv->drv_registered = false;
+ 	usb_deregister(&usb_drv->usbdrv);
+ 
+ 	_rtw_mutex_free(&usb_drv->hw_init_mutex);
+-	DBG_88E("-rtw_drv_halt\n");
+ }
+ 
+ module_init(rtw_drv_entry);
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.20.1
+
