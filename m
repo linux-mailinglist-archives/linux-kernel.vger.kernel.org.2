@@ -2,83 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797EF3DCAE2
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 11:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB5C3DCAE4
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 11:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhHAJXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 05:23:12 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:55609 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231446AbhHAJXL (ORCPT
+        id S231600AbhHAJYn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 1 Aug 2021 05:24:43 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:39213 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231446AbhHAJYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 05:23:11 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AOwFzqay8Krp2i7N1pzyEKrPwxr1zdoMgy1kn?=
- =?us-ascii?q?xilNoRw8SK2lfqeV7ZMmPH7P+VAssR4b6LO90cW7Lk80lqQFhbX5X43SPjUO0V?=
- =?us-ascii?q?HAROoJgOffKlbbexEWmNQy6U4ZSdkaNDTvNykBse/KpBm/D807wMSKtIShheLl?=
- =?us-ascii?q?xX9rSg1wApsQlztRO0KKFFFsXglaCd4cHJqY3MBOoD2tYjA5dcK+b0N1JNTrlp?=
- =?us-ascii?q?nako78ex4aC1oC4AmKtzmh77n3CFy5834lIkpy/Ys=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,286,1620662400"; 
-   d="scan'208";a="112191140"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 01 Aug 2021 17:22:53 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 8A2E64D0BA67;
-        Sun,  1 Aug 2021 17:22:49 +0800 (CST)
-Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Sun, 1 Aug 2021 17:22:50 +0800
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Sun, 1 Aug 2021 17:22:50 +0800
-Received: from FNSTPC.g08.fujitsu.local (10.167.226.45) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Sun, 1 Aug 2021 17:22:49 +0800
-From:   Li Zhijian <lizhijian@cn.fujitsu.com>
-To:     <leon@kernel.org>, <dledford@redhat.com>, <jgg@ziepe.ca>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Li Zhijian <lizhijian@cn.fujitsu.com>
-Subject: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
-Date:   Sun, 1 Aug 2021 17:20:50 +0800
-Message-ID: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
-X-Mailer: git-send-email 2.30.2
+        Sun, 1 Aug 2021 05:24:41 -0400
+Received: from mail-wm1-f49.google.com ([209.85.128.49]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MOhx9-1mWtUF2haB-00Q8gW for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021
+ 11:24:32 +0200
+Received: by mail-wm1-f49.google.com with SMTP id l4-20020a05600c1d04b02902506f89ad2dso10013936wms.1
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 02:24:32 -0700 (PDT)
+X-Gm-Message-State: AOAM531CZBj79FSTPL6irFMiiilUTodZKf/GLi+TARpPLiC0DbI2vtSf
+        1kLA/MT6IDvjG13ARlNwiwl7nkig2p/SFNjz5C4=
+X-Google-Smtp-Source: ABdhPJzm+d+GUJq55lf66fORA7zJHnwG96B/E2RUvkJawwTVMsCLwoBqiUjM0EJRl1uPz7IdzGuPR7PXCL0i1oa8StU=
+X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr2673903wmq.43.1627809872298;
+ Sun, 01 Aug 2021 02:24:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 8A2E64D0BA67.AFA37
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+References: <20210801051627.78999-1-xianting.tian@linux.alibaba.com>
+In-Reply-To: <20210801051627.78999-1-xianting.tian@linux.alibaba.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 1 Aug 2021 11:24:15 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2_ip1zGMe=EeAA7Xpkvi8iQGWw6=0sGvLqv02Mj4LrmA@mail.gmail.com>
+Message-ID: <CAK8P3a2_ip1zGMe=EeAA7Xpkvi8iQGWw6=0sGvLqv02Mj4LrmA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] tty: hvc: pass DMA capable memory to put_chars()
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>
+Cc:     gregkh <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Amit Shah <amit@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:n4+rvkXBd/PVKg1Ijf2fREdOms5QtVaA5VPpnY+9GgAsTJkSocD
+ JTYni+qfirNeApEJ8geQkd9/iQyLudAhviTTEWcosvW+zSUP8abZUEn6evJRwpbZfNqnR2Y
+ 6imSe+9Twi8jG3/qV4Iay8shpihqtSI1BhvSu1DzvVH+bxNQmTejQLy6NzPAu4ZywiBvReq
+ 7qm/kFcEwA/M7qog3LGnA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:g4N/qZKZTKE=:dqEOS15OX6WNtBCecGWzIb
+ Q1pFI7wKSj/lIpm8Ja5Y/dZ1kntOgeXTWa/rsO2MMbUNW+VVnHZ/qCh53lFD2qTpxbzqojwSp
+ 2ytWIkyJ2ySjj8gzUVf/AnMpsbkW4nPjFj8xAlmSQmwone+y9cqRuNKRNd8T301sBd/O2r3Ji
+ 5SMtvDyqAORh/SJSQPa+PR1rr8WSJcOMZTXH955prKZUKE+oOBtmoT0hOLqf5F5BcO6zqGgjn
+ ewLNCz8jkhkYemjqT2PcvQvRVSVO8qOU/R6Fem66B0AGMe5PY4NkMzHU4pJZ9kEBI513VyLh/
+ 9KEOP1RzSwE/OKLHuMjKNjDtuwXCuiwslDcRaSBNCW/yuzMDwgRVT7TZ1G/6gZ7KU6bs07nR6
+ OsjrEBN3CufYXbfFVxdiPOFbFhT/qIGif5xIsOFdEJa+zfGJovN72M6QG41VXzouq+syFMlkb
+ 9swSjHcoPqONX34PuiGofuJlWbqM2DnidpAImJbyiFcTn8/Rtl50l2x3caue3Kw3SyeFIs9G3
+ nOpqpE105qR7nqdqfubhKMcXUSKYQDF8AtXJis8XWmYLn+s9PDXSZalP31xa0jyRLYcliuuPr
+ RVRHhaFFzNwSClf7+uByzesozZHBO6ER6WNnQ+aMcOC3VckytjwxdWQiKJDGIluAl1VqxTGhe
+ 3eW2VBfZqHVCPA+NWM5ghmhVtraJFJSU4l9ZegQHXXInTVf2pXGoMaP/XY4icrGghjVkENMax
+ df5SAp5gIWqilzdNElMn1SUS6W6yEMMe5jjSMXIv1VoZk+lfix6jZI1Y2Cx7Kccl9gLiDuKg0
+ DGkpuxQRzgVcYXAxWvlmcogtzPfwy4raOrSx92SL50qzyVQ28GnjW6xMN4ncFZR39+PcaQEa4
+ ZQYSLZxoISTORp4+a3E9Ch9FrsEPTf1Dqjsbs9Zlep7a2v8B15m4+rEG/es6EtOewyv3DyApj
+ Y140smnio5btiatnAh4URWpcxpBS9pcf3C/pu2P/wMieuIE77KXF0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ibv_advise_mr(3) says:
-EFAULT In one of the following: o When the range requested is out of the  MR  bounds,
-       or  when  parts of it are not part of the process address space. o One of the
-       lkeys provided in the scatter gather list is invalid or with wrong write access
+On Sun, Aug 1, 2021 at 7:16 AM Xianting Tian
+<xianting.tian@linux.alibaba.com> wrote:
 
-Actually get_prefetchable_mr() will return NULL if it see above conditions
+> Considering lock competition of hp->outbuf and the complicated logic in
+> hvc_console_print(), I didn’t use hp->outbuf, just allocate additional
+> memory(length N_OUTBUF) and append it to hp->outbuf.
+> For the issue in hvc_poll_put_char(), I use a static char to replace
+> the char in stack.
 
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
----
- drivers/infiniband/hw/mlx5/odp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+While this may work, it sounds rather obscure to me, I don't think
+it's a good idea
+to append the buffer at the back.
 
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index d0d98e584ebc..8d2a626c87cf 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -1791,7 +1791,7 @@ static int mlx5_ib_prefetch_sg_list(struct ib_pd *pd,
- 
- 		mr = get_prefetchable_mr(pd, advice, sg_list[i].lkey);
- 		if (!mr)
--			return -ENOENT;
-+			return -EFAULT;
- 		ret = pagefault_mr(mr, sg_list[i].addr, sg_list[i].length,
- 				   &bytes_mapped, pf_flags);
- 		if (ret < 0) {
--- 
-2.30.2
+If you need a separate field besides hp->outbuf, I would make that part of the
+structure itself, and give it the correct alignment constraints to ensure it is
+in a cache line by itself. The size of this field is a compile-time
+constant, so I
+don't see a need to play tricks with pointer arithmetic.
 
+I'm not sure about the locking either: Is it possible for two CPUs to enter
+hvc_console_print() at the same time, or is there locking at a higher level
+already? It would be good to document this in the structure definition next
+to the field.
 
+> @@ -878,6 +885,7 @@ static void hvc_poll_put_char(struct tty_driver *driver, int line, char ch)
+>         struct tty_struct *tty = driver->ttys[0];
+>         struct hvc_struct *hp = tty->driver_data;
+>         int n;
+> +       static char ch = ch;
+>
+>         do {
+>                 n = hp->ops->put_chars(hp->vtermno, &ch, 1);
 
+This does not compile, and it's neither thread-safe nor dma safe if you get it
+to build by renaming the variable.
+
+        Arnd
