@@ -2,182 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932983DCB26
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 12:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9283DCB2A
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 12:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbhHAKeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 06:34:36 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:40648 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231527AbhHAKed (ORCPT
+        id S231477AbhHAKfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 06:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231765AbhHAKfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 06:34:33 -0400
-Received: by mail-io1-f70.google.com with SMTP id q137-20020a6b8e8f0000b02904bd1794d00eso9474502iod.7
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 03:34:24 -0700 (PDT)
+        Sun, 1 Aug 2021 06:35:10 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE4DFC0613CF;
+        Sun,  1 Aug 2021 03:35:02 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id o5so25966643ejy.2;
+        Sun, 01 Aug 2021 03:35:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dW9enhfJrllCelpsKYJGBNZiqnu2wZkLbVkcvB/C17s=;
+        b=Hhfn0YDBmJJwRgNS5s2VyXZr8YgPjQQNAxYU65yM0gFbVh3EuDpFhB0zJ8bRmC5YKB
+         ypU13WQRpxXP4CaiU0VI21VSCTuUPXw/u0z1k2wGWU5RpkLO6CZmsvRgYutBGVf0EAxm
+         eanKjo3RgpaMEN1oxDL32WkJA+SgSRx3qQkpfy7Nn8WJWYMh/fLp/9iVK+yCTjkRbdAq
+         2m3mw2ASeL4xeZPOSgASEBiGOYhIIKVxdJEomHYHZMVEup3CuvMtS0PC8jxuGoerASrm
+         7LC0TssJeqsnDEa7KTzZbpGc2qFQA8utcQ3sQUb/4sdAZ90rlrcsGCQQ/2iNNbN3rT9U
+         hSTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=47KcKz4WmoeO48+LZQ2h16RP+E2fy2ebXX67GEn8Y5E=;
-        b=RuMMbC7TPM9z8jTL1GNGGunKyBVtbkSx0lapb0j+BYNA0Y25Rr/nqB2reBKJiY4s/Z
-         8vBho7yEWMyb55JQKjxsgMzVsHA8/yp+GZQ7zLzvrit97ZdcOaBW3ogCq03jMrjjRU+T
-         8gGYrl73bCxmzBHoeYCrodsbrEd0ErLwOrQVJtffacTFtbctjgvRzLPkgTtG5cKFahgY
-         z7uOGnF2OBQqn3ZL6n7pi1zY8Nb4X6LVZxoKy2SACJ+Mfb3z0ps9qzOtP2VOXmQWDGiq
-         OXplCLyj8jJNKOWyj1isblM+sVQkbcKNNLW888dv51k/4X2anSZDXPDYZpM8GpCrDJZx
-         Dl8A==
-X-Gm-Message-State: AOAM530H6ChFIuGnutd8WEjzbLz6HAYk0Whqvj9ZqeK3PibNTgRfnIlO
-        QqwI+WLEydS9Hl8EtC0O5KkYzEsAuc5ChWaUFBIAwEnSubH8
-X-Google-Smtp-Source: ABdhPJxsHaS2oHjQB1mYPEN/MH2N/WwPYMj2AKK565H1YFt3GrjQfjx7qT9GGHQbw7RDa7otbupK6OQVMe4MCzvIurzP0kF5JtYT
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dW9enhfJrllCelpsKYJGBNZiqnu2wZkLbVkcvB/C17s=;
+        b=oUuq7AdPeAe+NjoDb/BO6v/JefID6LBAnCiJwigCfIY3SkjZnTYyqp3uW6IZ3iu/V3
+         IMsX7ISbhI4z1Dz8SU7lq3EsVDmKtS+zOXh0oA7TcrbdYVYeOwK6CzOIrX/R4MKbNIHv
+         K1NufNPci5t0sNY1/FVlbebETFrapU0HYr9a+136qdzGUt2Kkq8ewjTbelSJ2scovcGa
+         PrCnwJKwDdEdc1sD/SSvrr3/T/1R6PH23FHoSz26rl6y2pIQ8fOKcsYE9viEg+NWMM4o
+         neIbYKhk9lFrBa1ENIKDhHArFYbbVDPjigj157yibsAFExekYWCT1skOCe8S/9Iw9JAt
+         mbCg==
+X-Gm-Message-State: AOAM530DVDa+09OVK2rLBpMEO9J35aHzvGrE2FbhCqf2nUeBiHdXmoH4
+        i/QhEGwHnu3ZYt/zIqjhHjHoXi7ItPM07Q==
+X-Google-Smtp-Source: ABdhPJy0SKgrEXetlOisF4GWqB2BGBMhWco35AWKpSH5pEZx9O12tPLqVL2xT6SmCYNUBY+GiD7icg==
+X-Received: by 2002:a17:906:4784:: with SMTP id cw4mr10641567ejc.160.1627814101415;
+        Sun, 01 Aug 2021 03:35:01 -0700 (PDT)
+Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id x13sm2892573ejv.64.2021.08.01.03.34.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Aug 2021 03:35:00 -0700 (PDT)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Subject: [PATCH v3 0/2] Add GCC for SM4250/6115
+Date:   Sun,  1 Aug 2021 13:34:46 +0300
+Message-Id: <20210801103448.3329333-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9eda:: with SMTP id a26mr62677ioe.166.1627814064557;
- Sun, 01 Aug 2021 03:34:24 -0700 (PDT)
-Date:   Sun, 01 Aug 2021 03:34:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000014105005c87cffdc@google.com>
-Subject: [syzbot] possible deadlock in br_ioctl_call
-From:   syzbot <syzbot+34fe5894623c4ab1b379@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This patch adds support for the Global Clock Controller on QCom SM4250 and
+SM6115, codename bengal. The code is taken from OnePlus repo [1]. The two
+platforms are identical so there is only one compat string.
 
-syzbot found the following issue on:
+[1]: https://github.com/OnePlusOSS/android_kernel_oneplus_sm4250
 
-HEAD commit:    3bdc70669eb2 Merge branch 'devlink-register'
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11ee370a300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=914a8107c0ffdc14
-dashboard link: https://syzkaller.appspot.com/bug?extid=34fe5894623c4ab1b379
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=114398c6300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d6d61a300000
+v1: https://lkml.org/lkml/2021/6/22/1131
+v2: https://lkml.org/lkml/2021/6/27/157
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+34fe5894623c4ab1b379@syzkaller.appspotmail.com
+Changes from v2:
+- Suggested by Stephen Boyd
+  - switch to parent_data in place of parent_names
+- other
+  - drop parent refs to invalid clocks
+  - use pll-alpha regs when possible
+  - drop unused parent defs
+  - add pll test clock to bindings
 
-netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-======================================================
-WARNING: possible circular locking dependency detected
-5.14.0-rc2-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor772/8460 is trying to acquire lock:
-ffffffff8d0a9608 (br_ioctl_mutex){+.+.}-{3:3}, at: br_ioctl_call+0x3b/0xa0 net/socket.c:1089
+Changes from v1:
+- remove sm4250 compat, there will be a single sm6115.dtsi for both platforms
 
-but task is already holding lock:
-ffffffff8d0cb568 (rtnl_mutex){+.+.}-{3:3}, at: dev_ioctl+0x1a7/0xee0 net/core/dev_ioctl.c:579
+Iskren Chernev (2):
+  dt-bindings: clk: qcom: gcc-sm6115: Document SM6115 GCC
+  clk: qcom: Add Global Clock controller (GCC) driver for SM6115
 
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (rtnl_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:959 [inline]
-       __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
-       register_netdev+0x11/0x50 net/core/dev.c:10474
-       br_add_bridge+0x97/0xf0 net/bridge/br_if.c:459
-       br_ioctl_stub+0x750/0x7f0 net/bridge/br_ioctl.c:390
-       br_ioctl_call+0x5e/0xa0 net/socket.c:1091
-       sock_ioctl+0x30c/0x640 net/socket.c:1185
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:1069 [inline]
-       __se_sys_ioctl fs/ioctl.c:1055 [inline]
-       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (br_ioctl_mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __mutex_lock_common kernel/locking/mutex.c:959 [inline]
-       __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
-       br_ioctl_call+0x3b/0xa0 net/socket.c:1089
-       dev_ifsioc+0xc1f/0xf60 net/core/dev_ioctl.c:382
-       dev_ioctl+0x1b9/0xee0 net/core/dev_ioctl.c:580
-       sock_do_ioctl+0x18b/0x210 net/socket.c:1128
-       sock_ioctl+0x2f1/0x640 net/socket.c:1231
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:1069 [inline]
-       __se_sys_ioctl fs/ioctl.c:1055 [inline]
-       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(rtnl_mutex);
-                               lock(br_ioctl_mutex);
-                               lock(rtnl_mutex);
-  lock(br_ioctl_mutex);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor772/8460:
- #0: ffffffff8d0cb568 (rtnl_mutex){+.+.}-{3:3}, at: dev_ioctl+0x1a7/0xee0 net/core/dev_ioctl.c:579
-
-stack backtrace:
-CPU: 0 PID: 8460 Comm: syz-executor772 Not tainted 5.14.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __mutex_lock_common kernel/locking/mutex.c:959 [inline]
- __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
- br_ioctl_call+0x3b/0xa0 net/socket.c:1089
- dev_ifsioc+0xc1f/0xf60 net/core/dev_ioctl.c:382
- dev_ioctl+0x1b9/0xee0 net/core/dev_ioctl.c:580
- sock_do_ioctl+0x18b/0x210 net/socket.c:1128
- sock_ioctl+0x2f1/0x640 net/socket.c:1231
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl fs/ioctl.c:1055 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4431f9
-Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd0ab19648 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffd0ab19658 RCX: 00000000004431f9
-RDX: 0000000020000000 RSI: 00000000000089a2 RDI: 0000000000000004
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd0ab19660
-R13
+ .../bindings/clock/qcom,gcc-sm6115.yaml       |   74 +
+ drivers/clk/qcom/Kconfig                      |    7 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/gcc-sm6115.c                 | 3582 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-sm6115.h   |  201 +
+ 5 files changed, 3865 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.yaml
+ create mode 100644 drivers/clk/qcom/gcc-sm6115.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-sm6115.h
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+base-commit: 8d4b477da1a807199ca60e0829357ce7aa6758d5
+-- 
+2.32.0
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
