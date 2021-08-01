@@ -2,55 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326E33DCD45
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 21:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C14A3DCD48
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 21:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhHATdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 15:33:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhHATdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 15:33:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 932CB6024A;
-        Sun,  1 Aug 2021 19:33:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1627846417;
-        bh=ag97U05m+dlz24Ct0ed4Y5I6gEAxYpIm0JpcOvq/BwY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CNIq9NY4c6JZNHKpZZ7SpHhq5+7iSGQzYwcZ+fA2m3Adxo6J5hC/GEQufdmrtdrOP
-         Dosb4E5Gbp7lJoGLIRyxQ+uIs2f/oXsrKA7qcHpJejJFz7yGlDVLtYuhD9rejo9i8G
-         iX5J/yyrc2FFaWAGKBeEcrvOpHLjqeHYAmdCCXO0=
-Date:   Sun, 1 Aug 2021 12:33:35 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Luigi Rizzo <lrizzo@google.com>
-Cc:     linux-kernel@vger.kernel.org, David Rientjes <rientjes@google.com>,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] Add mmap_assert_locked() annotations to find_vma*()
-Message-Id: <20210801123335.6a7f8e1ee1e52ea64db80323@linux-foundation.org>
-In-Reply-To: <20210731175341.3458608-1-lrizzo@google.com>
-References: <20210731175341.3458608-1-lrizzo@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        id S230106AbhHATf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 15:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhHATf1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 15:35:27 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98CBCC06175F;
+        Sun,  1 Aug 2021 12:35:18 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id z2so29766557lft.1;
+        Sun, 01 Aug 2021 12:35:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mAbYsU4RPaV/8B8ZdAc5/2u4OFxmje95un7poA9waH4=;
+        b=i/TdiNJZXQYNOJ2eze2Awe3TxtRG6IWfVMgkW0vwPXWLrXSJhgrtX9m4H5E/zs0z9b
+         ra97Fsa8aJU92b0fDjTi9t0GehvsyKdnxar7b+P40DD1lwpt0Jb+Rp1bFsDC0FAwcQoL
+         wtoIfumwjk6p1TTc+xZrNqhs5wmFCi9+iPU1e22724Me3kiedCVhGHSLSOCio4hVNkPv
+         WBnyc/sPuSoSPzLzsLYUSSvjZPMp4pv8ULos3W/o6fWxEi4nW70nUBKab5rMrtb362g/
+         JwyLCAnBN9sL1xe5a7I3W0WccfihW9yV+HF5fwsMtU3iB+BC1baI3j4t7ob2hsWJanzr
+         kB/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mAbYsU4RPaV/8B8ZdAc5/2u4OFxmje95un7poA9waH4=;
+        b=EjfBbfoivYQhNLLmKrwoup8oaexve6JaZJcxKxau6pkblzcHK6h9btwmCV6qMe7eSX
+         CXv3iPtOKqI4vwcl3fXlFd/hBEz/VNAD4KPEyM8t/ntBXNQc89jSC9c83I4oMRKI/lNp
+         ZVZZA2ucfoZkUN9Zj+LOVNEu2F1U7E34f8yi+B/b+5uYgMj+K1dSmTyal3bnvzhYtXy/
+         PxWKBX2xejG8b4X8mmHi/gUunHFlnmEt73/GCjru08GeR+6EFPNRVgwiNywqLtSmregY
+         HPBuP7WFw3BASyQ9Uux3A5D29fwLTuXqWJhhA78LOKzbVwM46DXWbJHldsYFM6xnzHuG
+         vfHg==
+X-Gm-Message-State: AOAM531X4PRmFaSskRqRE8d0DDwrDfZL3TnGxTY3Oe0u48ilHaqAbg15
+        1EfmlfaJ30TQwc/oj9RgiY4=
+X-Google-Smtp-Source: ABdhPJz56fImZkjgw7zEFTCzmrviyChKKvYj94gbU5Htb5MvXsIVLYrherV22wNlonbWvgWtTUTeVw==
+X-Received: by 2002:a05:6512:314e:: with SMTP id s14mr9913562lfi.595.1627846516825;
+        Sun, 01 Aug 2021 12:35:16 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.227.213])
+        by smtp.gmail.com with ESMTPSA id p22sm743442lfo.195.2021.08.01.12.35.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Aug 2021 12:35:16 -0700 (PDT)
+Date:   Sun, 1 Aug 2021 22:35:13 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Petko Manolov <petkan@nucleusys.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Subject: Re: [PATCH] net: pegasus: fix uninit-value in
+ get_interrupt_interval
+Message-ID: <20210801223513.06bede26@gmail.com>
+In-Reply-To: <YQaVS5UwG6RFsL4t@carbon>
+References: <20210730214411.1973-1-paskripkin@gmail.com>
+        <YQaVS5UwG6RFsL4t@carbon>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Jul 2021 10:53:41 -0700 Luigi Rizzo <lrizzo@google.com> wrote:
+On Sun, 1 Aug 2021 15:36:27 +0300
+Petko Manolov <petkan@nucleusys.com> wrote:
 
-> find_vma() and variants need protection when used.
-> This patch adds mmap_assert_lock() calls in the functions.
+> On 21-07-31 00:44:11, Pavel Skripkin wrote:
+> > Syzbot reported uninit value pegasus_probe(). The problem was in
+> > missing error handling.
+> > 
+> > get_interrupt_interval() internally calls read_eprom_word() which
+> > can fail in some cases. For example: failed to receive usb control
+> > message. These cases should be handled to prevent uninit value bug,
+> > since read_eprom_word() will not initialize passed stack variable
+> > in case of internal failure.
 > 
-> To make sure the invariant is satisfied, we also need to add a
-> mmap_read_loc() around the get_user_pages_remote() call in
-> get_arg_page(). The lock is not strictly necessary because the mm
-> has been newly created, but the extra cost is limited because
-> the same mutex was also acquired shortly before in __bprm_mm_init(),
-> so it is hot and uncontended.
+> Well, this is most definitelly a bug.
+> 
+> ACK!
+> 
+> 
+> 		Petko
+> 
 > 
 
-Well, it isn't cost-free.  find_vma() is called a lot and a surprising
-number of systems apparently run with CONFIG_DEBUG_VM.  Why do you
-think this cost is justified?
+Thank you, Petko!
+
+
+BTW: I found a lot uses of {get,set}_registers without error
+checking. I think, some of them could be fixed easily (like in
+enable_eprom_write), but, I guess, disable_eprom_write is not so easy.
+For example, if we cannot disable eprom should we retry? If not, will
+device get in some unexpected state?
+
+Im not familiar with this device, but I can prepare a patch to wrap all
+these calls with proper error checking
+
+
+
+With regards,
+Pavel Skripkin
+
 
