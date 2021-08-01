@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30B03DCD85
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255813DCD88
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhHAUBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 16:01:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhHAUBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 16:01:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD40960295;
-        Sun,  1 Aug 2021 20:01:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1627848075;
-        bh=eoI/lcpTJDM3BlN7k4F+GYLHJpUesmWkh7ZzPTwAucY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=o9Z3/wzGq/uvJ2DnqAIVbljcfylaXEPGbNUzxMGwzl++/PbCsuvsxQlKorhZkRGH5
-         iL0Her5jHsMK07Xb6CnxWFMv6LBFXW8MRBt9NroPc6pXCM/NTW/Xay2zfv+aLc9udq
-         Nkv6RAkO28r6puTmeS7dAzTOS983KHUa8LRjrTYI=
-Date:   Sun, 1 Aug 2021 13:01:15 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Aaron Tomlin <atomlin@redhat.com>
-Cc:     linux-mm@kvack.org, mhocko@suse.com,
-        penguin-kernel@i-love.sakura.ne.jp, rientjes@google.com,
-        llong@redhat.com, neelx@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm/oom_kill: show oom eligibility when displaying
- the current memory state of all tasks
-Message-Id: <20210801130115.da6d5cd1d635b21315bcd995@linux-foundation.org>
-In-Reply-To: <20210730162002.279678-1-atomlin@redhat.com>
-References: <20210730162002.279678-1-atomlin@redhat.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230347AbhHAUGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 16:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhHAUGa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 16:06:30 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691F1C06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 13:06:22 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so28463830pja.5
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 13:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=azZm4s2ItKFFM6P1T/V7Z4U9NU3xhdubwb5X+bc1wpI=;
+        b=KuNyqP+Rlms7E+4zWlYj6P8Th/4KnDCAoxkX1SuRhop94eaeeFLy94V4Mvh2qcWLkn
+         gphUC6LKNMPvYDZrVJDSuoWyAqC4i9C7iNLtNJ7eH3bBw1cwvXisWq5TTccu2hu1esVV
+         UPGXWPloaMY2F1lELn7m3oihgQJEYFk6h7qRVk6UMdDn/Kn2Fs9ZS4CHF9EYfltm0Lhl
+         7I/PtQybXlEgRAaFEXYWIVh2s4dCqZ9swhFIS1h2938988jDh1h66bMloBeJzPabUSVy
+         4EHZdjgzIXqCS4DQYV+ig7tYNpcvKojdSVHNyYCBhK2yGmSrjYcaRN8RLuPKRIyXW13j
+         uQlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=azZm4s2ItKFFM6P1T/V7Z4U9NU3xhdubwb5X+bc1wpI=;
+        b=oN4u/1sjirODoZ7On8cTTEQjiGxEwCULTTnCnAoNAoJl4ZGXv/k2o0iCpYJYecBIlv
+         gJ0zeCBZ3O3Hmi02sGuLUnFM9YgSpBIEUo6NaKvsbvm9mVoFfaJ1uJt3HWIaUOrLQNKJ
+         ip0rMCfA6oKyIl4hkFos2YEWJ3UBWWVxKxBkAwxPEEMxF2Y0duP0e4qT/TyVBQv5WjKT
+         BITkDG/h09EzAgH0jGeA9em0Cd1v9fC39rYxWu7/AMslQkKRXO8GTJPyYaAdBd6T2jws
+         FkjhH39SGs87m/rHt7uG/5E/IQ7LN0K8o0wQq3JKL8Ui0HLPxj3HgzAhYVV9Pt29f0Ch
+         bYzg==
+X-Gm-Message-State: AOAM530m/pMMQ3SblaklYtk8bU0PuEmrDwSSo/EbY4IMfUHvI90LLju0
+        s1zwulxhZAuZiAgRXEidRNA+iw==
+X-Google-Smtp-Source: ABdhPJykIKwdJ3YQiR9QYmfh/XXE7vTxgi5e6RwTs15LS9FhzhnHzyf+73jP193tdLruwLdRw7xT4Q==
+X-Received: by 2002:a63:1748:: with SMTP id 8mr2227544pgx.369.1627848381272;
+        Sun, 01 Aug 2021 13:06:21 -0700 (PDT)
+Received: from posk-g1.lan (23-118-52-46.lightspeed.sntcca.sbcglobal.net. [23.118.52.46])
+        by smtp.gmail.com with ESMTPSA id b3sm9293714pfi.179.2021.08.01.13.06.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Aug 2021 13:06:20 -0700 (PDT)
+From:   Peter Oskolkov <posk@posk.io>
+X-Google-Original-From: Peter Oskolkov <posk@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Cc:     Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Peter Oskolkov <posk@posk.io>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: [PATCH 0/4 v0.4] sched/umcg: RFC UMCG patchset
+Date:   Sun,  1 Aug 2021 13:06:13 -0700
+Message-Id: <20210801200617.623745-1-posk@google.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 17:20:02 +0100 Aaron Tomlin <atomlin@redhat.com> wrote:
+This is an update on v0.3:
 
-> Changes since v2:
->  - Use single character (e.g. 'R' for MMF_OOM_SKIP) as suggested
->    by Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
->  - Add new header to oom_dump_tasks documentation
->  - Provide further justification
-> 
-> 
-> The output generated by dump_tasks() can be helpful to determine why
-> there was an OOM condition and which rogue task potentially caused it.
-> Please note that this is only provided when sysctl oom_dump_tasks is
-> enabled.
-> 
-> At the present time, when showing potential OOM victims, we do not
-> exclude any task that are not OOM eligible e.g. those that have
-> MMF_OOM_SKIP set; it is possible that the last OOM killable victim was
-> already OOM killed, yet the OOM reaper failed to reclaim memory and set
-> MMF_OOM_SKIP. This can be confusing (or perhaps even be misleading) to the
-> viewer. Now, we already unconditionally display a task's oom_score_adj_min
-> value that can be set to OOM_SCORE_ADJ_MIN which is indicative of an
-> "unkillable" task.
-> 
-> This patch provides a clear indication with regard to the OOM ineligibility
-> (and why) of each displayed task with the addition of a new column namely
-> "oom_skipped". An example is provided below:
-> 
->     [ 5084.524970] [ pid ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj oom_skipped name
->     [ 5084.526397] [660417]     0 660417    35869      683   167936        0         -1000 M conmon
->     [ 5084.526400] [660452]     0 660452   175834      472    86016        0          -998  pod
->     [ 5084.527460] [752415]     0 752415    35869      650   172032        0         -1000 M conmon
->     [ 5084.527462] [752575] 1001050000 752575   184205    11158   700416        0           999  npm
->     [ 5084.527467] [753606] 1001050000 753606   183380    46843  2134016        0           999  node
->     [ 5084.527581] Memory cgroup out of memory: Killed process 753606 (node) total-vm:733520kB, anon-rss:161228kB, file-rss:26144kB, shmem-rss:0kB, UID:1001050000
-> 
-> So, a single character 'M' is for OOM_SCORE_ADJ_MIN, 'R' MMF_OOM_SKIP and
-> 'V' for in_vfork().
-> 
-> index 003d5cc3751b..4c79fa00ddb3 100644
-> --- a/Documentation/admin-guide/sysctl/vm.rst
-> +++ b/Documentation/admin-guide/sysctl/vm.rst
-> @@ -650,8 +650,9 @@ oom_dump_tasks
->  Enables a system-wide task dump (excluding kernel threads) to be produced
->  when the kernel performs an OOM-killing and includes such information as
->  pid, uid, tgid, vm size, rss, pgtables_bytes, swapents, oom_score_adj
-> -score, and name.  This is helpful to determine why the OOM killer was
-> -invoked, to identify the rogue task that caused it, and to determine why
-> +score, oom eligibility status and name.  This is helpful to determine why
-> +the OOM killer was invoked, to identify the rogue task that caused it, and
-> +to determine why
+https://lore.kernel.org/patchwork/cover/1461708/
 
-It would be better if the meaning of 'M', 'R' and 'V' were described here.
+Key changes v0.3 => v0.4:
+- made idle workers list logic simpler
+- only one idle server tracking
+- removed two fields from struct umcg_task
+- added timeout handling
+- added worker preemption
+- added a doc patch that now documents the syscalls and state
+  transitions.
 
->  the OOM killer chose the task it did to kill.
->  
-> +/**
-> + * is_task_eligible_oom - determine if and why a task cannot be OOM killed
-> + * @tsk: task to check
-> + *
-> + * Needs to be called with task_lock().
-> + */
-> +static const char * const is_task_oom_eligible(struct task_struct *p)
+More details on the state of the patchset and future work are provided
+in the patch 4 commit message.
 
-Name seems inappropriate.  task_oom_eligibility()?
+Peter Oskolkov (4):
+  sched: add WF_CURRENT_CPU and externise ttwu
+  sched/umcg: RFC: add userspace atomic helpers
+  sched/umcg: add Documentation/userspace-api/umcg.rst
+  sched/umcg: RFC: implement UMCG syscalls
 
-> +{
-> +	long adj;
-> +
-> +	adj = (long)p->signal->oom_score_adj;
-> +	if (adj == OOM_SCORE_ADJ_MIN)
-> +		return "M";
-> +	else if (test_bit(MMF_OOM_SKIP, &p->mm->flags)
-> +		return "R";
-> +	else if (in_vfork(p))
-> +		return "V";
-> +	else
-> +		return "";
-> +}
+ Documentation/userspace-api/umcg.rst   | 532 ++++++++++++++++++++++
+ arch/x86/entry/syscalls/syscall_64.tbl |   2 +
+ include/linux/sched.h                  |   6 +
+ include/linux/syscalls.h               |   4 +
+ include/uapi/asm-generic/unistd.h      |   8 +-
+ include/uapi/linux/umcg.h              | 114 +++++
+ init/Kconfig                           |  10 +
+ kernel/exit.c                          |   7 +
+ kernel/sched/Makefile                  |   1 +
+ kernel/sched/core.c                    |  20 +-
+ kernel/sched/fair.c                    |   4 +
+ kernel/sched/sched.h                   |  15 +-
+ kernel/sched/umcg.c                    | 601 +++++++++++++++++++++++++
+ kernel/sched/umcg.h                    | 211 +++++++++
+ kernel/sys_ni.c                        |   4 +
+ 15 files changed, 1528 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/userspace-api/umcg.rst
+ create mode 100644 include/uapi/linux/umcg.h
+ create mode 100644 kernel/sched/umcg.c
+ create mode 100644 kernel/sched/umcg.h
+
+--
+2.25.1
 
