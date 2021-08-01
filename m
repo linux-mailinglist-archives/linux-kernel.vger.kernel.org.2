@@ -2,59 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207243DCDEF
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 23:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E553DCDF5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 23:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhHAVkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 17:40:32 -0400
-Received: from gate.crashing.org ([63.228.1.57]:44069 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhHAVkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 17:40:31 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 171LWnvj015149;
-        Sun, 1 Aug 2021 16:32:49 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 171LWlIp015148;
-        Sun, 1 Aug 2021 16:32:47 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Sun, 1 Aug 2021 16:32:47 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-arch@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        masahiroy@kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/3] isystem: delete global -isystem compile option
-Message-ID: <20210801213247.GM1583@gate.crashing.org>
-References: <20210801201336.2224111-1-adobriyan@gmail.com> <20210801201336.2224111-3-adobriyan@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210801201336.2224111-3-adobriyan@gmail.com>
-User-Agent: Mutt/1.4.2.3i
+        id S230454AbhHAWAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 18:00:02 -0400
+Received: from [209.97.156.48] ([209.97.156.48]:60206 "EHLO cujjun.com"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229759AbhHAWAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 18:00:00 -0400
+X-Greylist: delayed 81222 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Aug 2021 18:00:00 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=philiseua.com; s=mail; h=Message-ID:Reply-To:Subject:To:From:Date:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:Sender:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AraX+mehJYKpMuvj544s5UwrwYceyYzfZ4jAWA0wKMk=; b=uBph0TAJ1YVEPiXSbD4Km8CRjY
+        ky6RWPSPBmM1M9VoU1An2sPwUTTdKgK8iIx/caE7+uS9vh2cy4fkKkmX5xNicXix3133En3Xm5EzK
+        rzRUshOrXBOlWwXZgUQvj9xgdxekDK1hzvWaQ0stDkQg67GzjAQJXFNwrsJX8nkbxris=;
+Received: from localhost ([127.0.0.1] helo=philiseua.com)
+        by cujjun.com with esmtpa (Exim 4.90_1)
+        (envelope-from <michael@philiseua.com>)
+        id 1mAJL9-0004Sc-KF; Sun, 01 Aug 2021 21:49:47 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 01 Aug 2021 23:49:47 +0200
+From:   Luis Fernandez <michael@philiseua.com>
+To:     undisclosed-recipients:;
+Subject: Re:Mutual Beneficial Proposal
+Reply-To: luisfernandezconsultant@gmail.com
+Mail-Reply-To: luisfernandezconsultant@gmail.com
+Message-ID: <9298482c403f6719996bcaa1ccf02c5c@philiseua.com>
+X-Sender: michael@philiseua.com
+User-Agent: Roundcube Webmail/1.3.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 01, 2021 at 11:13:36PM +0300, Alexey Dobriyan wrote:
-> In theory, it enables "leakage" of userspace headers into kernel which
-> may present licensing problem.
-
-> -NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
-> +NOSTDINC_FLAGS += -nostdinc
-
-This is removing the compiler's own include files.  These are required
-for all kinds of basic features, and required to be compliant to the C
-standard at all.  These are not "userspace headers", that is what
--nostdinc takes care of already.
-
-In the case of GCC all these headers are GPL-with-runtime-exception, so
-claiming this can cause licensing problems is fearmongering.
-
-I strongly advise against doing this.
 
 
-Segher
+-- 
+Good day,
+
+I have an investment proposal that I would like to discuss with you. I 
+await your urgent response so that I will explain more regarding this 
+awesome Investment Opportunity.
+
+Regards,
+
+Luis Fernandez
