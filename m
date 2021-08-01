@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4203DCC78
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 17:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF403DCC7F
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 17:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhHAPhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 11:37:55 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34980
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232117AbhHAPhy (ORCPT
+        id S232137AbhHAPoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 11:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230132AbhHAPoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 11:37:54 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5EE3A3F0A6;
-        Sun,  1 Aug 2021 15:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627832265;
-        bh=iLN8TLgdbvtmYaSUrV7g9uz/p2+EVNuytQVWi86ahzk=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=t8Fam8VC535Ic8aJxhQoRDVyQCzWKu3d4lIVBZ/POU19Bi0STVDy2y8lyutq5WdAD
-         8Q8BHNSVEF63yv55++n7UOgmygzQcvouHNFDq28M8b6dhJgk9Zt+R99ewDHavGOyqR
-         Yu8khXUp6YYRbol1kJNsKAu+zPIr6CC/eteiCc7haB7MENS2p3FX1Dq3w15jqh45Lk
-         8AsVEzReRJNwxQg+GTFkqgqxtm7VvntT8dWYubiW/4wxyZOtjPDI3Wuh9G2l8VXKxe
-         Zxc3TObvjpl9iTgua6GC5RSg/vrTUYjAxJbdKnqHQUo/SBRlVWzLIdFpwUhjWzps1F
-         pVBGXzRqmML8w==
-From:   Colin King <colin.king@canonical.com>
-To:     Tariq Toukan <tariqt@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx4: make the array states static const, makes object smaller
-Date:   Sun,  1 Aug 2021 16:37:42 +0100
-Message-Id: <20210801153742.147304-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 1 Aug 2021 11:44:06 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AC5C06175F;
+        Sun,  1 Aug 2021 08:43:58 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id h2so29023776lfu.4;
+        Sun, 01 Aug 2021 08:43:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=6cYpziN3cAvLIGyn/jbriXRL+JuJAVAp0qqV6b6tEdw=;
+        b=KWCT+7aGI6jJ4xmYFubwxVYKyNB+mb390QX0q9lngD9NiqyB/WJmhF5x0ObnXMDAi1
+         ppwPXbv2lPf4M9UtR2kBumv5noUirCgt5if1aEhLgshPuiWFIQdxeH8HyyW4jX3o31DS
+         LaU52+k7ga5gmMA11QZAws2PLj2eQLH4e0AJwPhPXGPItaNm5Z5AOUUJIVu+AKdB7I2r
+         nzb3fE5eITIRvP7OZhOe5Vg0lVexxPToFXJ2Wis+J5NRxGB9Du8zSgsth/9rhunKm3Kb
+         /kw2XD7WbZiBq4YSJOBluxJXJBGGh0McX2ss8M4N2nMgXKgsU5Qs0UNroZcC6aCfx38k
+         oM7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=6cYpziN3cAvLIGyn/jbriXRL+JuJAVAp0qqV6b6tEdw=;
+        b=sTIX/y7R/63sMefpd8ZBxGGiL3JVm9ZcvjPGzFMF24J0dKHItxqFsBSB+Nqn9KPxR0
+         8dZMEZS39uZY2DfOnW78fJU/kRyoUnI3PHf/D/lPmpMQmEX5B+O8+DEPVDUQLwQYOJ7i
+         7ZEF8aC21T2hCXHsXz66uzvi1ohfBCCLIYEZtShxp3+8BFzcJPAaitL1pEHnDUcG9T1L
+         Bwv3tihlVL0FCAmjbUEqmVUIFdp+MEeN7DVCSpCLSPkYgAZev860sri56+wMd4pS29w8
+         uasdX/gJZTUgAl4OI+oqsMFcr/60SBWLdHwc7WErOWyAYo5T7Vy4orFjlXRkXLClBqDH
+         KOng==
+X-Gm-Message-State: AOAM530PMDdKFGq88F5PZ4ykmzNDMHY15Dfxqqb8bOCOVcFKv26zsskT
+        bU3anVybccXDqcUwwvEgU3GhLi6DCgclUQ==
+X-Google-Smtp-Source: ABdhPJxwKNWfq+zpcqZs+CyidFP+yt1eJCOv/yLzw99jX1oWuKX/tGWgBaSaYcfQeIWT7H5/3eCNoQ==
+X-Received: by 2002:a05:6512:b93:: with SMTP id b19mr2458717lfv.412.1627832636799;
+        Sun, 01 Aug 2021 08:43:56 -0700 (PDT)
+Received: from asus ([147.30.82.254])
+        by smtp.gmail.com with ESMTPSA id y27sm764599lfa.260.2021.08.01.08.43.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Aug 2021 08:43:56 -0700 (PDT)
+Date:   Sun, 1 Aug 2021 21:43:51 +0600
+From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+To:     akpm@linux-foundation.org, shuah@kernel.org
+Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tyhicks@linux.microsoft.com,
+        pasha.tatashin@soleen.com
+Subject: [PATCH 0/2] add KSM performance tests
+Message-ID: <cover.1627828548.git.zhansayabagdaulet@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Extend KSM self tests with a performance benchmark. These tests are not
+part of regular regression testing, as they are mainly intended to be
+used by developers making changes to the memory management subsystem. 
+Both patches were developed against linux-next.
 
-Don't populate the array states on the stack but instead it
-static const. Makes the object code smaller by 79 bytes.
+Zhansaya Bagdauletkyzy (2):
+  selftests: vm: add KSM merging time test
+  selftests: vm: add COW time test for KSM pages
 
-Before:
-   text   data   bss    dec    hex filename
-  21309   8304   192  29805   746d drivers/net/ethernet/mellanox/mlx4/qp.o
+ tools/testing/selftests/vm/ksm_tests.c | 136 ++++++++++++++++++++++++-
+ 1 file changed, 132 insertions(+), 4 deletions(-)
 
-After:
-   text   data   bss    dec    hex filename
-  21166   8368   192  29726   741e drivers/net/ethernet/mellanox/mlx4/qp.o
-
-(gcc version 10.2.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/ethernet/mellanox/mlx4/qp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx4/qp.c b/drivers/net/ethernet/mellanox/mlx4/qp.c
-index 427e7a31862c..2584bc038f94 100644
---- a/drivers/net/ethernet/mellanox/mlx4/qp.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/qp.c
-@@ -917,7 +917,7 @@ int mlx4_qp_to_ready(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
- {
- 	int err;
- 	int i;
--	enum mlx4_qp_state states[] = {
-+	static const enum mlx4_qp_state states[] = {
- 		MLX4_QP_STATE_RST,
- 		MLX4_QP_STATE_INIT,
- 		MLX4_QP_STATE_RTR,
 -- 
-2.31.1
+2.25.1
 
