@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832B23DCDC3
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1CF3DCDC6
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 22:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbhHAUd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 16:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
+        id S231971AbhHAUd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 16:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhHAUdV (ORCPT
+        with ESMTP id S231896AbhHAUdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 16:33:21 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D66DC06175F;
-        Sun,  1 Aug 2021 13:33:12 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so21858626pji.5;
-        Sun, 01 Aug 2021 13:33:12 -0700 (PDT)
+        Sun, 1 Aug 2021 16:33:23 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD68AC061799;
+        Sun,  1 Aug 2021 13:33:15 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id q2so17239486plr.11;
+        Sun, 01 Aug 2021 13:33:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=OeCfS3YMgALo1kT7+YVPL/G35vIxdbQwPm6wQHzN0L0=;
-        b=kJECoYM4cbjsilfw2BAtj8C9lev0Uf3gQ8nEymU4gmQxZtW0GS5I9qHHyStRLfiWL2
-         f+oTZVhjd6pPAZpuw3EMSEptWC2G6TLCJrBULu5y9lRvMJbIiK7fEq/RNA7v92dnzAZd
-         VTzE2BsM7Lu8iKrkaKS89UUEI2Fnea/WOi4Wf1gTIRKoQUK1DZrrXlNezSFFkfdRfyY3
-         esZduZWjRWnur7q5GBNGaSl+P8widCRit+GP2jKo1Oa9R4QBt9bzlL3yXcrgi8dMZk2n
-         6HkwI0iZArhi/D5V4W7pmnAZd8I7+gyJVpEDUtM7cRFz1uac3JXEClhwFh6iqNWC0PTw
-         9UDg==
+        bh=m9zvSZe68jgoYggnKmJEwWFOA2wmg629eWtmjh7kzPQ=;
+        b=GyyFElPb6VaE5iyhlk0ZRnk3saewzJXXn+Ou1a3k35wR2JvqeEzv/3nB1wPSXkI2mN
+         dZMmhlEICEOvOlUpo6qoWor7uxXgJKMI+X4w06UUjaf8vK6O9m7z3sub/4sUpi3irVHY
+         cA9vNYsLMRXvZk1+1FJGyOBHrsvBa8e6mtoOsmeJtTxiIhhw2NhXbGKqdEOvBTufo2WU
+         hm8zWnVylpou3xmCg3Da8azGVQ4pWxLHuGu0zge0TJxYnBGod+ojm3CpU0Wr7Y/gGiQx
+         Q5AR3nwPGYi9ln6s+nB0t82cwyTJNq6P+L7+vZk0rApom57Ed6DA/kNNzKnLkCLBf1zY
+         4Jyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=OeCfS3YMgALo1kT7+YVPL/G35vIxdbQwPm6wQHzN0L0=;
-        b=nfTugjmghLSKgL6Rzbd3CEdtyC+0a+5zspPtM89eO4c7DtGJ5F2BwHz6xKL5Gl9ImC
-         qvxUslJlkHeCldH5ZuhT9czGLbtT4E2VM7fmUogIvBMQidR1PXYEPdUXiIz2Akjox29v
-         jKthUVcO7kyLDzYRQ+E2WZe5SM2VKiMoXVJ0HBVKFuXdciF4Tz9c9Rl9i/1JmBkNHcRs
-         BwHfDDaZ6QrLtjsEZyDE9sa3Kod4DZUCslHZpdknTR1TUM7omc/cRirD7K1/+0VQSvix
-         tzJfKa+ndw8GrWEXVoI+SxX3Ufq3rap3URPyu+JOySoBYYPEnhLGeG+qirGVugDSEXal
-         Yseg==
-X-Gm-Message-State: AOAM530K20B0l0X+LJ5aiiNmG+FMBiRE5w1NMsVXH6lI9d+0oIces/Xy
-        GAa/l/uOiMthrWGVQUplRWRZPomyjcI=
-X-Google-Smtp-Source: ABdhPJyhUAU/iDDVskLjW897dx7GSxLUcNNOZFsfcMjo/tNDqzeaGLJf/qeT2icXM/oiAFTaygGQ0A==
-X-Received: by 2002:a17:90a:6e41:: with SMTP id s1mr14246287pjm.109.1627849991982;
-        Sun, 01 Aug 2021 13:33:11 -0700 (PDT)
+        bh=m9zvSZe68jgoYggnKmJEwWFOA2wmg629eWtmjh7kzPQ=;
+        b=MItT7pJu9M+8hKeiuneFHhUxhIeg3xrUg87aWXz2Jpm/VkLZ4z9pyDnJ93ouFKFPrT
+         qBpXSOZ8D1RD8LIpFxGWl/eq5zV4F/A0LrIDXHths/Os4EQQIbfws6vNVsGlENKLIoQ1
+         lWYIMD4Qo3HZhC0OOJglsVH68HxmVuPktdmtkjg8UONvGu4I7cLy3ncJ1qi5WWDBm876
+         lJJe06O9Zvfne/CVeOktEPHp1D073oHg9CjWVBQrOojrYbBIF+Y8QJWsKgK7UVo3XOlW
+         qG4kuITlkm/67s0b9aopYOCfsYxbMo6wjhBZ27fSyQOuK0aM9M9TUleQxflvW2DmFuYQ
+         uvcg==
+X-Gm-Message-State: AOAM532Uk0txaP72++vnSTbbpg/URNDd+QEdBBdo0e0qBkBBSz+q7Mqc
+        i9d/1IG6YhoCNxY9MHE4piw=
+X-Google-Smtp-Source: ABdhPJwjuEigkpTgbKlBbSTxIAxuAg+D4dHm8eczLtD7GX+Pdf/UgLW47NVvHZqT2j1mPDBPEyrrhg==
+X-Received: by 2002:a63:504a:: with SMTP id q10mr11139668pgl.383.1627849995245;
+        Sun, 01 Aug 2021 13:33:15 -0700 (PDT)
 Received: from localhost.localdomain ([2402:3a80:15b3:589:f07d:5386:a3c2:3056])
-        by smtp.gmail.com with ESMTPSA id k10sm8897974pfc.169.2021.08.01.13.33.09
+        by smtp.gmail.com with ESMTPSA id k10sm8897974pfc.169.2021.08.01.13.33.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Aug 2021 13:33:11 -0700 (PDT)
+        Sun, 01 Aug 2021 13:33:14 -0700 (PDT)
 From:   Himadri Pandya <himadrispandya@gmail.com>
 To:     johan@kernel.org, gregkh@linuxfoundation.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Himadri Pandya <himadrispandya@gmail.com>
-Subject: [PATCH v2 3/6] USB: serial: f81232: use usb_control_msg_recv() and usb_control_msg_send()
-Date:   Mon,  2 Aug 2021 02:01:19 +0530
-Message-Id: <20210801203122.3515-4-himadrispandya@gmail.com>
+Subject: [PATCH v2 4/6] USB: serial: ftdi_sio: use usb_control_msg_recv()
+Date:   Mon,  2 Aug 2021 02:01:20 +0530
+Message-Id: <20210801203122.3515-5-himadrispandya@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210801203122.3515-1-himadrispandya@gmail.com>
 References: <20210801203122.3515-1-himadrispandya@gmail.com>
@@ -61,163 +61,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New wrapper functions usb_control_msg_send/recv accept stack variables
-for usb message buffer and eliminate the need of creating temporary dma
-buffers. The wrappers also have proper error checks for short
-read/writes. Hence use the wrappers instead of using usb_control_msg()
-directly.
+usb_control_msg_recv() nicely wraps usb_control_msg() and removes the
+compulsion of using dma buffers for usb messages. It also includes proper
+error check for possible short read. So use the wrapper and remove dma
+buffers from the callers.
 
 Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
 ---
 Changes in v2:
- - Drop unrelated style changes
+ - Drop unnecessary use of wrappers
 ---
- drivers/usb/serial/f81232.c | 96 +++++++++++++------------------------
- 1 file changed, 34 insertions(+), 62 deletions(-)
+ drivers/usb/serial/ftdi_sio.c | 53 ++++++++++-------------------------
+ 1 file changed, 15 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/usb/serial/f81232.c b/drivers/usb/serial/f81232.c
-index a7a7af8d05bf..3ad1f515fb68 100644
---- a/drivers/usb/serial/f81232.c
-+++ b/drivers/usb/serial/f81232.c
-@@ -139,67 +139,46 @@ static int calc_baud_divisor(speed_t baudrate, speed_t clockrate)
- static int f81232_get_register(struct usb_serial_port *port, u16 reg, u8 *val)
+diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
+index 4a1f3a95d017..d4c61568b549 100644
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -1436,27 +1436,15 @@ static int _read_latency_timer(struct usb_serial_port *port)
  {
- 	int status;
--	u8 *tmp;
- 	struct usb_device *dev = port->serial->dev;
+ 	struct ftdi_private *priv = usb_get_serial_port_data(port);
+ 	struct usb_device *udev = port->serial->dev;
+-	unsigned char *buf;
++	u8 buf;
+ 	int rv;
  
--	tmp = kmalloc(sizeof(*val), GFP_KERNEL);
--	if (!tmp)
+-	buf = kmalloc(1, GFP_KERNEL);
+-	if (!buf)
 -		return -ENOMEM;
 -
--	status = usb_control_msg(dev,
--				usb_rcvctrlpipe(dev, 0),
--				F81232_REGISTER_REQUEST,
--				F81232_GET_REGISTER,
--				reg,
--				0,
--				tmp,
--				sizeof(*val),
--				USB_CTRL_GET_TIMEOUT);
--	if (status != sizeof(*val)) {
-+	status = usb_control_msg_recv(dev,
-+				      0,
-+				      F81232_REGISTER_REQUEST,
-+				      F81232_GET_REGISTER,
-+				      reg,
-+				      0,
-+				      val,
-+				      sizeof(*val),
-+				      USB_CTRL_GET_TIMEOUT,
-+				      GFP_KERNEL);
-+	if (status) {
- 		dev_err(&port->dev, "%s failed status: %d\n", __func__, status);
--
--		if (status < 0)
--			status = usb_translate_errors(status);
--		else
--			status = -EIO;
+-	rv = usb_control_msg(udev,
+-			     usb_rcvctrlpipe(udev, 0),
+-			     FTDI_SIO_GET_LATENCY_TIMER_REQUEST,
+-			     FTDI_SIO_GET_LATENCY_TIMER_REQUEST_TYPE,
+-			     0, priv->interface,
+-			     buf, 1, WDR_TIMEOUT);
+-	if (rv < 1) {
+-		if (rv >= 0)
+-			rv = -EIO;
 -	} else {
--		status = 0;
--		*val = *tmp;
-+		status = usb_translate_errors(status);
- 	}
+-		rv = buf[0];
+-	}
+-
+-	kfree(buf);
++	rv = usb_control_msg_recv(udev, 0, FTDI_SIO_GET_LATENCY_TIMER_REQUEST,
++				  FTDI_SIO_GET_LATENCY_TIMER_REQUEST_TYPE, 0,
++				  priv->interface, &buf, 1, WDR_TIMEOUT,
++				  GFP_KERNEL);
++	if (rv == 0)
++		rv = buf;
  
--	kfree(tmp);
- 	return status;
+ 	return rv;
  }
- 
- static int f81232_set_register(struct usb_serial_port *port, u16 reg, u8 val)
+@@ -1851,32 +1839,21 @@ static int ftdi_read_cbus_pins(struct usb_serial_port *port)
  {
- 	int status;
--	u8 *tmp;
- 	struct usb_device *dev = port->serial->dev;
+ 	struct ftdi_private *priv = usb_get_serial_port_data(port);
+ 	struct usb_serial *serial = port->serial;
+-	unsigned char *buf;
++	u8 buf;
+ 	int result;
  
--	tmp = kmalloc(sizeof(val), GFP_KERNEL);
--	if (!tmp)
+ 	result = usb_autopm_get_interface(serial->interface);
+ 	if (result)
+ 		return result;
+ 
+-	buf = kmalloc(1, GFP_KERNEL);
+-	if (!buf) {
+-		usb_autopm_put_interface(serial->interface);
 -		return -ENOMEM;
+-	}
 -
--	*tmp = val;
--
--	status = usb_control_msg(dev,
--				usb_sndctrlpipe(dev, 0),
--				F81232_REGISTER_REQUEST,
--				F81232_SET_REGISTER,
--				reg,
--				0,
--				tmp,
--				sizeof(val),
--				USB_CTRL_SET_TIMEOUT);
--	if (status < 0) {
-+	status = usb_control_msg_send(dev,
-+				      0,
-+				      F81232_REGISTER_REQUEST,
-+				      F81232_SET_REGISTER,
-+				      reg,
-+				      0,
-+				      &val,
-+				      sizeof(val),
-+				      USB_CTRL_SET_TIMEOUT,
-+				      GFP_KERNEL);
-+	if (status) {
- 		dev_err(&port->dev, "%s failed status: %d\n", __func__, status);
- 		status = usb_translate_errors(status);
+-	result = usb_control_msg(serial->dev,
+-				 usb_rcvctrlpipe(serial->dev, 0),
+-				 FTDI_SIO_READ_PINS_REQUEST,
+-				 FTDI_SIO_READ_PINS_REQUEST_TYPE, 0,
+-				 priv->interface, buf, 1, WDR_TIMEOUT);
+-	if (result < 1) {
+-		if (result >= 0)
+-			result = -EIO;
 -	} else {
--		status = 0;
- 	}
+-		result = buf[0];
+-	}
++	result = usb_control_msg_recv(serial->dev, 0,
++				      FTDI_SIO_READ_PINS_REQUEST,
++				      FTDI_SIO_READ_PINS_REQUEST_TYPE, 0,
++				      priv->interface, &buf, 1, WDR_TIMEOUT,
++				      GFP_KERNEL);
++	if (result == 0)
++		result = buf;
  
--	kfree(tmp);
- 	return status;
- }
+-	kfree(buf);
+ 	usb_autopm_put_interface(serial->interface);
  
-@@ -857,28 +836,22 @@ static int f81534a_ctrl_set_register(struct usb_interface *intf, u16 reg,
- 	struct usb_device *dev = interface_to_usbdev(intf);
- 	int retry = F81534A_ACCESS_REG_RETRY;
- 	int status;
--	u8 *tmp;
--
--	tmp = kmemdup(val, size, GFP_KERNEL);
--	if (!tmp)
--		return -ENOMEM;
- 
- 	while (retry--) {
--		status = usb_control_msg(dev,
--					usb_sndctrlpipe(dev, 0),
--					F81232_REGISTER_REQUEST,
--					F81232_SET_REGISTER,
--					reg,
--					0,
--					tmp,
--					size,
--					USB_CTRL_SET_TIMEOUT);
--		if (status < 0) {
-+		status = usb_control_msg_send(dev,
-+					      0,
-+					      F81232_REGISTER_REQUEST,
-+					      F81232_SET_REGISTER,
-+					      reg,
-+					      0,
-+					      val,
-+					      size,
-+					      USB_CTRL_SET_TIMEOUT,
-+					      GFP_KERNEL);
-+		if (status) {
- 			status = usb_translate_errors(status);
- 			if (status == -EIO)
- 				continue;
--		} else {
--			status = 0;
- 		}
- 
- 		break;
-@@ -889,7 +862,6 @@ static int f81534a_ctrl_set_register(struct usb_interface *intf, u16 reg,
- 				reg, status);
- 	}
- 
--	kfree(tmp);
- 	return status;
- }
- 
+ 	return result;
 -- 
 2.17.1
 
