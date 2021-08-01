@@ -2,110 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1A53DCB69
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 13:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7CE3DCB71
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 13:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbhHALl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 07:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57642 "EHLO
+        id S231804AbhHALqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 07:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhHALl0 (ORCPT
+        with ESMTP id S231461AbhHALqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 07:41:26 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77959C0613CF;
-        Sun,  1 Aug 2021 04:41:17 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id q2so16428598plr.11;
-        Sun, 01 Aug 2021 04:41:17 -0700 (PDT)
+        Sun, 1 Aug 2021 07:46:37 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6A8C06175F;
+        Sun,  1 Aug 2021 04:46:29 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id z3so15130999plg.8;
+        Sun, 01 Aug 2021 04:46:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V7CbcU24c2EcgEh6gPwl360Lbo6a4Vh6iTk5nFSY/dA=;
-        b=qZkxBAhluE0p43cVISH+ol5q1lT+cnqxEql+NIpY08L6/PwowG/tSK7brsoB2dM+g4
-         IsHCS42s3dWQ01GIdqQ2VK4IM4bOGJ/yx24/hAOvNqWJwbxbsCpKnF2rkFffMdNgwFrC
-         6NjZdCRVEFlKZINxUnEFV2Xkrte76bs6chq7lWN6s9gbkliRtcbETJiv3JjWBY+ROuau
-         7QBHcX8eOM8aLEoJRqNtPiQlkpD6wYCOuSCf3CNuwnvCF9AIupQzAS+CZdWu+b/WV2XR
-         qiQPlqwMe4USOYxSrqo6WEDk1pAoQV5dne9UdThjajtzvP3R06+MzqdQCnGXvELPeNu9
-         9QWg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xuasN2nPmOUeEGVnE4hDkJbU9sMt+zlOyYRMH9VVQ9M=;
+        b=uCnxAHyo6xWVruF772lNLh3pkfyraHyfWYIWJ1xrbQIqbq1FkuCS7BWORfLQWdrcEk
+         x8FSWNFRzzgFfPtddpwsX0hR2YwbLJoePCUgktwpUaG9TM5EWFB3JQI+DZSqV4rTFC7g
+         XOB3acBmrTFusOLND7hqY4bmO5avmVnOqBj5mwzjRy9KoEWxA6zVEsBH1uRebTU7lZu9
+         Fn4A1EkUNXfaL+gPzwZWpRE2AS54dg94EIdilnpTJEHaqQFWyiXuc74I0hIpBh4frXNC
+         nT2W+y4jGrVlNhuaVe3/OG0Nz3HXVCWlQr9/iwd8SofgAaYY5HmWV+OsYezUAvfCQIAJ
+         cjeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V7CbcU24c2EcgEh6gPwl360Lbo6a4Vh6iTk5nFSY/dA=;
-        b=rhjN0+cvtH1UbHxWwBoo4DUYT1LYbmoJd7jraURwRnyWJp26Mc9BPpG2sUqWUG3WMs
-         CS+7hXp1nx0mN4iraqBxAD++mM5z9Zu7xByYOoo0VJs2m4XBIMafzYRIBUe7L9cvKCed
-         G86+QjIMPpvoKWKYtHdLALaNnOmzIsIm0M9ph5btjCrQRcFqauT6rIAYbj5nDMTdI89K
-         aexxV2P5ojENbanlU1L5H7hObCPkz7w0le2fYzGz229iRPFN+ERe4F49khxqph3jSf0S
-         GRTep5l1FVyb6dBiuP8lc0OwdomAkiwKFc4NfRZEGxadHKXSmaEKeGdrbMZVqdLdBexB
-         Qihg==
-X-Gm-Message-State: AOAM532J3joKURSTds1NX5+pVGQvJJXtiaSSF4MjkbxvTcOivszjBkcU
-        fkRvVwvbQGaoLVXiRMTjuXddqT+1IZz/Jsc2DYc=
-X-Google-Smtp-Source: ABdhPJydhwxZ12g/won3lYfp7ROJMWycWxQ5X9RiPATUxhjXxXP+UgIyRIZYxpjob21kv49ZmMn2kBq09Ob2FCmxc98=
-X-Received: by 2002:a63:1457:: with SMTP id 23mr1761825pgu.203.1627818076930;
- Sun, 01 Aug 2021 04:41:16 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xuasN2nPmOUeEGVnE4hDkJbU9sMt+zlOyYRMH9VVQ9M=;
+        b=RplyRFg2sQrZlRt65MtiyxFvQW1YhYjuik4mP8yYQgD3KrbOxAbhayZj5qT8RYkkV+
+         ItWEW45r7+NpHH7DvZS1pwWaOHuM6/Yisg+Z1lSYdVhaMap94LD+W6rDVfszIo+R99CN
+         2fUjymRLj3ROG6+8yU6JA7ODHH3QKoY1zhpScWCKpEPxyRVunfKZuOAHZu9UHvDCt5oZ
+         Uva3U4XzCQ6TXU9h6bp5gx7qnkv4IhcwcQvGyx8QNLPgIuevdscpGSjDlb7IvI2aNvh5
+         PQbgJRwhbIlvBTBVw/fcSkKGPtd8hmWBAbzJRtiVrR/VF50s3jC+h3/Q9UxCHkKDaKBQ
+         DEAw==
+X-Gm-Message-State: AOAM531WJqcY8eBNkvRPijx0TvjWkj7vTiv39jqliccwlhnCSQbJpqyE
+        0wA7KzsqmAg36Q2eH3zUNGDEkN7x3vyT+w==
+X-Google-Smtp-Source: ABdhPJxjFvXAZHqStljrXRzsijyuHNFgBKDcZojlXpv7c/Rez7YvBrAPxRiO93hx2hWv0pTTnnU3ew==
+X-Received: by 2002:a65:6108:: with SMTP id z8mr1354883pgu.179.1627818389051;
+        Sun, 01 Aug 2021 04:46:29 -0700 (PDT)
+Received: from glados.. ([2601:647:6480:2358:feaa:14ff:fe71:bf70])
+        by smtp.gmail.com with ESMTPSA id b8sm856736pjo.51.2021.08.01.04.46.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Aug 2021 04:46:28 -0700 (PDT)
+From:   Thomas Hebb <tommyhebb@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Hebb <tommyhebb@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ricky Wu <ricky_wu@realtek.com>,
+        Rui Feng <rui_feng@realsil.com.cn>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-mmc@vger.kernel.org
+Subject: [PATCH] mmc: rtsx: fix long reads when clock is prescaled
+Date:   Sun,  1 Aug 2021 04:46:14 -0700
+Message-Id: <2fef280d8409ab0100c26c6ac7050227defd098d.1627818365.git.tommyhebb@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210801085155.3170-1-len.baker@gmx.com>
-In-Reply-To: <20210801085155.3170-1-len.baker@gmx.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 1 Aug 2021 14:40:40 +0300
-Message-ID: <CAHp75VcD_Kqedpkw-Pj+uQbWqdu_9FhXqJS5TuGUPoVv2x45-Q@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Remove all strcpy() uses
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Phil Reid <preid@electromag.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 1, 2021 at 11:53 AM Len Baker <len.baker@gmx.com> wrote:
->
-> strcpy() performs no bounds checking on the destination buffer. This
-> could result in linear overflows beyond the end of the buffer, leading
-> to all kinds of misbehaviors. So, this serie removes all strcpy uses
-> from the "staging/fbtft" subsystem.
->
-> Also, refactor the code a bit to follow the kernel coding-style and
-> avoid unnecessary variable initialization.
+For unexplained reasons, the prescaler register for this device needs to
+be cleared (set to 1) while performing a data read or else the command
+will hang. This does not appear to affect the real clock rate sent out
+on the bus, so I assume it's purely to work around a hardware bug.
 
-I don't see patch 3 (even on lore.kernel.org).
+During normal operation, the prescaler is already set to 1, so nothing
+needs to be done. However, in "initial mode" (which is used for sub-MHz
+clock speeds, like the core sets while enumerating cards), it's set to
+128 and so we need to reset it during data reads. We currently fail to
+do this for long reads.
 
-Greg, Geert, does it make sense to move this driver outside of staging?
-I would volunteer to maintain it there.
+This has no functional affect on the driver's operation currently
+written, as the MMC core always sets a clock above 1MHz before
+attempting any long reads. However, the core could conceivably set any
+clock speed at any time and the driver should still work, so I think
+this fix is worthwhile.
 
-> Changelog v1 -> v2
-> - Add two new commits to clean the code.
-> - Use the "%*ph" format specifier instead of strscpy() function (Geert
->   Uytterhoeven)
->
-> Changelog v2 -> v3
-> - Change the initialization of the "j" variable in the "for" loop and
->   update the code accordingly (Andy Shevchenko).
-> - Improve the commit message to inform that the "%*ph" replacement
->   won't cut output earlier than requested (Andy Shevchenko).
-> - Don't remove the braces in the "if" statement due to the presence of
->   the comment (Geert Uytterhoeven).
->
-> Len Baker (3):
->   staging/fbtft: Remove all strcpy() uses
->   staging/fbtft: Remove unnecessary variable initialization
->   staging/fbtft: Fix braces coding style
->
->  drivers/staging/fbtft/fbtft-core.c | 23 ++++++++++-------------
->  1 file changed, 10 insertions(+), 13 deletions(-)
->
-> --
-> 2.25.1
->
+I personally encountered this issue while performing data recovery on an
+external chip. My connections had poor signal integrity, so I modified
+the core code to reduce the clock speed. Without this change, I saw the
+card enumerate but was unable to actually read any data.
 
+Writes don't seem to work in the situation described above even with
+this change (and even if the workaround is extended to encompass data
+write commands). I was not able to find a way to get them working.
 
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+
+---
+
+ drivers/mmc/host/rtsx_pci_sdmmc.c | 36 ++++++++++++++++++++-----------
+ 1 file changed, 23 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+index 4ca937415734..58cfaffa3c2d 100644
+--- a/drivers/mmc/host/rtsx_pci_sdmmc.c
++++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+@@ -542,9 +542,22 @@ static int sd_write_long_data(struct realtek_pci_sdmmc *host,
+ 	return 0;
+ }
+ 
++static inline void sd_enable_initial_mode(struct realtek_pci_sdmmc *host)
++{
++	rtsx_pci_write_register(host->pcr, SD_CFG1,
++			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_128);
++}
++
++static inline void sd_disable_initial_mode(struct realtek_pci_sdmmc *host)
++{
++	rtsx_pci_write_register(host->pcr, SD_CFG1,
++			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_0);
++}
++
+ static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
+ {
+ 	struct mmc_data *data = mrq->data;
++	int err;
+ 
+ 	if (host->sg_count < 0) {
+ 		data->error = host->sg_count;
+@@ -553,22 +566,19 @@ static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
+ 		return data->error;
+ 	}
+ 
+-	if (data->flags & MMC_DATA_READ)
+-		return sd_read_long_data(host, mrq);
++	if (data->flags & MMC_DATA_READ) {
++		if (host->initial_mode)
++			sd_disable_initial_mode(host);
+ 
+-	return sd_write_long_data(host, mrq);
+-}
++		err = sd_read_long_data(host, mrq);
+ 
+-static inline void sd_enable_initial_mode(struct realtek_pci_sdmmc *host)
+-{
+-	rtsx_pci_write_register(host->pcr, SD_CFG1,
+-			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_128);
+-}
++		if (host->initial_mode)
++			sd_enable_initial_mode(host);
+ 
+-static inline void sd_disable_initial_mode(struct realtek_pci_sdmmc *host)
+-{
+-	rtsx_pci_write_register(host->pcr, SD_CFG1,
+-			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_0);
++		return err;
++	}
++
++	return sd_write_long_data(host, mrq);
+ }
+ 
+ static void sd_normal_rw(struct realtek_pci_sdmmc *host,
 -- 
-With Best Regards,
-Andy Shevchenko
+2.32.0
+
