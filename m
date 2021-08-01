@@ -2,28 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DC43DCE27
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 01:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533423DCE28
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 01:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhHAXpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 19:45:41 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:50942 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231877AbhHAXpi (ORCPT
+        id S231995AbhHAXpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 19:45:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231931AbhHAXpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 19:45:38 -0400
+        Sun, 1 Aug 2021 19:45:42 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5B5C06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 16:45:34 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: ezequiel)
-        with ESMTPSA id 93EF11F424CD
+        with ESMTPSA id 869671F41069
 From:   Ezequiel Garcia <ezequiel@collabora.com>
 To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
         Richard Weinberger <richard@nod.at>
 Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH 3/3] mtdblock: Warn if the added for a NAND device
-Date:   Sun,  1 Aug 2021 20:45:05 -0300
-Message-Id: <20210801234509.18774-4-ezequiel@collabora.com>
+Subject: [PATCH 0/3] mtdblock: Advertise about UBI and UBI block
+Date:   Sun,  1 Aug 2021 20:45:06 -0300
+Message-Id: <20210801234509.18774-5-ezequiel@collabora.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210801234509.18774-1-ezequiel@collabora.com>
 References: <20210801234509.18774-1-ezequiel@collabora.com>
@@ -33,54 +36,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a surprisingly large number of tutorials
-that suggest using mtdblock to mount SquashFS filesystems
-on flash devices, including NAND devices.
+Hi Richard, and everyone else:
 
-This approach is suboptimal than using UBI. If the flash device
-is NAND, this is specially true, due to wear leveling, bit-flips and
-badblocks. In this case UBI is strongly preferred, so be nice to users
-and print a warning suggesting to consider UBI block, if mtdblock
-is added for a NAND device.
+Browsing the internet for "JFFS2 mtd" results in tutorials, articles
+and github.gists0 that point to mtdblock.
 
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+In fact, even the MTD wiki mentions that JFFS2
+needs mtdblock to mount a rootfs:
 
-Untracked files not listed
----
- drivers/mtd/mtdblock.c    | 4 ++++
- drivers/mtd/mtdblock_ro.c | 4 ++++
- 2 files changed, 8 insertions(+)
+  http://www.linux-mtd.infradead.org/faq/jffs2.html
 
-diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-index b2d5ed1cbc94..7c02643f862f 100644
---- a/drivers/mtd/mtdblock.c
-+++ b/drivers/mtd/mtdblock.c
-@@ -332,6 +332,10 @@ static void mtdblock_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	if (!(mtd->flags & MTD_WRITEABLE))
- 		dev->mbd.readonly = 1;
- 
-+	if (mtd_type_is_nand(mtd))
-+		pr_warn("%s: MTD device '%s' is NAND, please consider using UBI block devices instead.\n",
-+			tr->name, mtd->name);
-+
- 	if (add_mtd_blktrans_dev(&dev->mbd))
- 		kfree(dev);
- }
-diff --git a/drivers/mtd/mtdblock_ro.c b/drivers/mtd/mtdblock_ro.c
-index fb5dc89369de..a438e2f6089c 100644
---- a/drivers/mtd/mtdblock_ro.c
-+++ b/drivers/mtd/mtdblock_ro.c
-@@ -60,6 +60,10 @@ static void mtdblock_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	dev->tr = tr;
- 	dev->readonly = 1;
- 
-+	if (mtd_type_is_nand(mtd))
-+		pr_warn("%s: MTD device '%s' is NAND, please consider using UBI block devices instead.\n",
-+			tr->name, mtd->name);
-+
- 	if (add_mtd_blktrans_dev(dev))
- 		kfree(dev);
- }
+Moreover, I suspect there may be lots of users
+that still believe mtdblock is somehow needed to
+mount SquashFS.
+
+I've taken a verbose route and added a pr_warn
+warning if the devices are NAND. I don't think using
+NAND without UBI is too wise, and given the amount
+of outdated tutorials I believe some advertising
+will help.
+
+These patches are compile-tested only, as I don't
+have devices ready to test, but I can undust some
+boards and do some experiments if you think it's needed.
+
+Oh, and PS: We also need to update the wiki.
+
+Ezequiel Garcia (3):
+  mtdblock: Update old JFFS2 mention in Kconfig
+  mtdblock: Add comment about UBI block devices
+  mtdblock: Warn if the added for a NAND device
+
+ drivers/mtd/Kconfig       | 10 ++++++----
+ drivers/mtd/mtdblock.c    |  4 ++++
+ drivers/mtd/mtdblock_ro.c |  4 ++++
+ 3 files changed, 14 insertions(+), 4 deletions(-)
+
 -- 
 2.32.0
 
