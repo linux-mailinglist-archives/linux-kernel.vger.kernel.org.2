@@ -2,125 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40B83DC95F
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 04:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEC73DC964
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 05:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbhHAC4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 31 Jul 2021 22:56:15 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:35472 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbhHACyP (ORCPT
+        id S231429AbhHADA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 31 Jul 2021 23:00:59 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:20803 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhHADA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 31 Jul 2021 22:54:15 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 1712rmh9026849;
-        Sun, 1 Aug 2021 11:53:49 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 1712rmh9026849
+        Sat, 31 Jul 2021 23:00:58 -0400
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 17130LOM006884
+        for <linux-kernel@vger.kernel.org>; Sun, 1 Aug 2021 12:00:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 17130LOM006884
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627786429;
-        bh=THjjh/MBwu064N8PkuAcVIKWQNUJvheL3ECQMRV6TXY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UJHptJ/kaKMT3uyJLtLPf+FssuOTtM1kiCjqkAKJPPGpHL3M5/7RK5m+BDVGgHolC
-         97D7tjP5b45A+13Y4u1mL6oxFZX6BNPTx/4fNFCxs3/sj/beTLEZx4DAxUkahl18wV
-         pdgoEEVPc1l2mzGIoWUlFA4Ee8ZQCyoZ4wMpe9xjpLRap+9l/3C/aBEK9Pjc/swEeS
-         LukERFhly3jl16O7Z5tMODZLBtbvjaRvqbB5mpj7LRcZmkLRE+qL8Y+7/Jh52n4e6F
-         PR9Xxbj0pfo5sJ+dxpyoOOzfZyUw4CB3u9/Be6z7mUltIlXilmueKrTn2N+3DbF6X8
-         6T9ewVL+TVKQw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: warn if a different compiler is used for external module builds
-Date:   Sun,  1 Aug 2021 11:53:46 +0900
-Message-Id: <20210801025346.93877-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        s=dec2015msa; t=1627786822;
+        bh=JLMXmFWJsvNubT3+ZUP/uEKw77wJzyXbzMGUgT1DCaw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XlsvPAzuXGoiILmIqWFaXZNh/N3RD1RwD85ttCtdEUKiFeUnTuXcjLn+eVhdMwlCc
+         U+/HTKRo8Mb9YpxLbkgHN47w9RwHVh8fIgmWxyfOYsLdlyxc9VPRb1S7Wz+TgVWE8N
+         K0/o6/vAYdRtJq8Ux13/TTfSwt9KXQFAkOWAIFfv20GpZV+f7JeRd2vrQTPddTJlK3
+         9GPE9QFSPg/2hYZc7zr1Yy98H+v2Pstc7EluXiimJlR31lSsx+GMMNTp6Sc7n3646A
+         ZSwgSZgYOrzeOrUAEibykxrDLOXA6/tfj/lCsykk79zf3NKd+WSPId9jkhgmfVPNts
+         fm4uKd2CwxWOQ==
+X-Nifty-SrcIP: [209.85.216.45]
+Received: by mail-pj1-f45.google.com with SMTP id nh14so8991322pjb.2
+        for <linux-kernel@vger.kernel.org>; Sat, 31 Jul 2021 20:00:22 -0700 (PDT)
+X-Gm-Message-State: AOAM533J2eSpj8TNQUYTwBxnVRdCUlPhtvZ9/d2wcwNQNaldQ9iX0DHM
+        THAHit3A/gIT9dc41EN3U+iblMRdBtqrCqBclcU=
+X-Google-Smtp-Source: ABdhPJzk8RaUbGoJjQGFVokrKrkb8Jzkc2oo8E+bYjmdSF4akRNHuL1Qgw5N9WqGvl3trMT6yDjHOjJW7BwyVkeOOeA=
+X-Received: by 2002:aa7:8593:0:b029:32b:c173:cd96 with SMTP id
+ w19-20020aa785930000b029032bc173cd96mr10328541pfn.63.1627786821471; Sat, 31
+ Jul 2021 20:00:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210727025737.30553-1-rdunlap@infradead.org>
+In-Reply-To: <20210727025737.30553-1-rdunlap@infradead.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 1 Aug 2021 11:59:44 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATVrJZgWe89dO+W=j+7TB+wTJuJTTp_sFBXD088-fZNsQ@mail.gmail.com>
+Message-ID: <CAK7LNATVrJZgWe89dO+W=j+7TB+wTJuJTTp_sFBXD088-fZNsQ@mail.gmail.com>
+Subject: Re: [PATCH] scripts: checkversion: modernize linux/version.h search strings
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is always safe to use the same compiler for the kernel and external
-modules, but in reality, some distributions such as Fedora release a
-different version of GCC from the one used for building the kernel.
+On Tue, Jul 27, 2021 at 11:57 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> Update scripts/checkversion.pl to recognize the current contents
+> of <linux/version.h> and both of its current locations.
+>
+> Also update my email address.
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+>  scripts/checkversion.pl |   18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
 
-There was a long discussion about mixing different compilers [1].
 
-I do not repeat it here, but at least, showing a heads up in that
-case is better than nothing.
+Applied to linux-kbuild. Thanks.
 
-Linus suggested [2]:
-  And a warning might be more palatable even if different compiler
-  version work fine together. Just a heads up on "it looks like you
-  might be mixing compiler versions" is a valid note, and isn't
-  necessarily wrong. Even when they work well together, maybe you want
-  to have people at least _aware_ of it.
 
-This commit shows a warning unless the compiler is exactly the same.
+> --- linux-next-20210723.orig/scripts/checkversion.pl
+> +++ linux-next-20210723/scripts/checkversion.pl
+> @@ -1,10 +1,10 @@
+>  #! /usr/bin/env perl
+>  # SPDX-License-Identifier: GPL-2.0
+>  #
+> -# checkversion find uses of LINUX_VERSION_CODE or KERNEL_VERSION
+> -# without including <linux/version.h>, or cases of
+> -# including <linux/version.h> that don't need it.
+> -# Copyright (C) 2003, Randy Dunlap <rdunlap@xenotime.net>
+> +# checkversion finds uses of all macros in <linux/version.h>
+> +# where the source files do not #include <linux/version.h>; or cases
+> +# of including <linux/version.h> where it is not needed.
+> +# Copyright (C) 2003, Randy Dunlap <rdunlap@infradead.org>
+>
+>  use strict;
+>
+> @@ -13,7 +13,8 @@ $| = 1;
+>  my $debugging;
+>
+>  foreach my $file (@ARGV) {
+> -    next if $file =~ "include/linux/version\.h";
+> +    next if $file =~ "include/generated/uapi/linux/version\.h";
+> +    next if $file =~ "usr/include/linux/version\.h";
+>      # Open this file.
+>      open( my $f, '<', $file )
+>        or die "Can't open $file: $!\n";
+> @@ -41,8 +42,11 @@ foreach my $file (@ARGV) {
+>             $iLinuxVersion      = $. if m/^\s*#\s*include\s*<linux\/version\.h>/o;
+>         }
+>
+> -       # Look for uses: LINUX_VERSION_CODE, KERNEL_VERSION, UTS_RELEASE
+> -       if (($_ =~ /LINUX_VERSION_CODE/) || ($_ =~ /\WKERNEL_VERSION/)) {
+> +       # Look for uses: LINUX_VERSION_CODE, KERNEL_VERSION,
+> +       # LINUX_VERSION_MAJOR, LINUX_VERSION_PATCHLEVEL, LINUX_VERSION_SUBLEVEL
+> +       if (($_ =~ /LINUX_VERSION_CODE/) || ($_ =~ /\WKERNEL_VERSION/) ||
+> +           ($_ =~ /LINUX_VERSION_MAJOR/) || ($_ =~ /LINUX_VERSION_PATCHLEVEL/) ||
+> +           ($_ =~ /LINUX_VERSION_SUBLEVEL/)) {
+>             $fUseVersion = 1;
+>              last if $iLinuxVersion;
+>          }
 
-  warning: the compiler differs from the one used to build the kernel
-    The kernel was built by: gcc (GCC) 11.1.1 20210531 (Red Hat 11.1.1-3)
-    You are using:           gcc (GCC) 11.2.1 20210728 (Red Hat 11.2.1-1)
 
-Check the difference, and if it is OK with you, please proceed at your
-risk.
 
-To avoid the locale issue as in commit bcbcf50f5218 ("kbuild: fix
-ld-version.sh to not be affected by locale"), pass LC_ALL=C to
-"$(CC) --version".
-
-[1] https://lore.kernel.org/linux-hardening/efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com/
-[2] https://lore.kernel.org/lkml/CAHk-=wgjwhDy-y4mQh34L+2aF=n6BjzHdqAW2=8wri5x7O04pA@mail.gmail.com/
-
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- Makefile | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 6b555f64df06..f4cc77a10413 100644
---- a/Makefile
-+++ b/Makefile
-@@ -583,7 +583,7 @@ endif
- # Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
- # CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
- # and from include/config/auto.conf.cmd to detect the compiler upgrade.
--CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -n 1))
-+CC_VERSION_TEXT = $(subst $(pound),,$(shell LC_ALL=C $(CC) --version 2>/dev/null | head -n 1))
- 
- ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
- ifneq ($(CROSS_COMPILE),)
-@@ -1731,6 +1731,16 @@ clean-dirs := $(KBUILD_EXTMOD)
- clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers $(KBUILD_EXTMOD)/modules.nsdeps \
- 	$(KBUILD_EXTMOD)/compile_commands.json $(KBUILD_EXTMOD)/.thinlto-cache
- 
-+PHONY += prepare
-+# now expand this into a simple variable to reduce the cost of shell evaluations
-+prepare: CC_VERSION_TEXT := $(CC_VERSION_TEXT)
-+prepare:
-+	@if [ "$(CC_VERSION_TEXT)" != $(CONFIG_CC_VERSION_TEXT) ]; then \
-+		echo >&2 "warning: the compiler differs from the one used to build the kernel"; \
-+		echo >&2 "  The kernel was built by: "$(CONFIG_CC_VERSION_TEXT); \
-+		echo >&2 "  You are using:           $(CC_VERSION_TEXT)"; \
-+	fi
-+
- PHONY += help
- help:
- 	@echo  '  Building external modules.'
-@@ -1742,7 +1752,7 @@ help:
- 	@echo  ''
- 
- # no-op for external module builds
--PHONY += prepare modules_prepare
-+PHONY += modules_prepare
- 
- endif # KBUILD_EXTMOD
- 
 -- 
-2.27.0
-
+Best Regards
+Masahiro Yamada
