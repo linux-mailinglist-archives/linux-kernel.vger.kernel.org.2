@@ -2,51 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C393DCAB5
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 10:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6EA3DCAB8
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 10:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhHAIEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 04:04:05 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34252 "EHLO
+        id S231478AbhHAIF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 04:05:58 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34294 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhHAIEE (ORCPT
+        with ESMTP id S230087AbhHAIF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 04:04:04 -0400
+        Sun, 1 Aug 2021 04:05:57 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1AD0421FF9;
-        Sun,  1 Aug 2021 08:03:56 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2869622047;
+        Sun,  1 Aug 2021 08:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627805036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1627805149; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=iUnvT3yBk3Ak2FNUwjA/dYWqqudAaqfeubdq+0me75I=;
-        b=Bz8m1F01OxpMp2gtaAHvBzOJRO0HAy73WEx9xUN92Y/V0shSQYitGik1zp0Pscj/82IJGD
-        wPRJF0usS7ouGAqkZzqy56xr1qh8JY4xXqwp2FQ6bVWRWukcVZONk6sknAXhBZDfazny/n
-        EjYPz12++B1KbP0pNi0DEsb6RjzvbsE=
+        bh=bShZYYYw9gzAU9l1zpGdsOfxjisudXefIX46w2pnN4U=;
+        b=iPH8gy39Dns6MSRve5hLOOrolMWynGDNHVYEukQjhusgVTwrz1vFsKpQCYHvQtfeP442Im
+        hcxlQuuEArF28yE5TEU2Q0t5r3Fy2rL6MFG2udK7ZRJntSdiy1lYRDMOcRdhraMB8wlHoI
+        UtUJTlyTc+uVoKgTXFamrVD/8ckfpQQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627805036;
+        s=susede2_ed25519; t=1627805149;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=iUnvT3yBk3Ak2FNUwjA/dYWqqudAaqfeubdq+0me75I=;
-        b=qjaqYRQ2CFcwE1tIRHdsUZGIYL0YSKnwYCNppSWb1qukP9Heb67yHuL3zOWdxpIO0esjiA
-        4SLzjXqMVShi38Bg==
+        bh=bShZYYYw9gzAU9l1zpGdsOfxjisudXefIX46w2pnN4U=;
+        b=vWketJyJpjbP1Q8vDq02caFxrWnT6rbMFUMJKtBkfeEAggOsZjEUQB2LIpNx4+S4E8ll4g
+        6ddIZ3+e+07q4ZCA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 0774FA3BA8;
-        Sun,  1 Aug 2021 08:03:56 +0000 (UTC)
-Date:   Sun, 01 Aug 2021 10:03:55 +0200
-Message-ID: <s5h7dh51thw.wl-tiwai@suse.de>
+        by relay2.suse.de (Postfix) with ESMTP id 1ECEEA3BA8;
+        Sun,  1 Aug 2021 08:05:49 +0000 (UTC)
+Date:   Sun, 01 Aug 2021 10:05:49 +0200
+Message-ID: <s5h5ywp1teq.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To:     Colin King <colin.king@canonical.com>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: Re: [PATCH v3 13/27] ALSA: hda/cs8409: Dont disable I2C clock between consecutive accesses
-In-Reply-To: <20210730151844.7873-14-vitalyr@opensource.cirrus.com>
-References: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
-        <20210730151844.7873-14-vitalyr@opensource.cirrus.com>
+        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: make array static const, makes object smaller
+In-Reply-To: <20210801062548.137770-1-colin.king@canonical.com>
+References: <20210801062548.137770-1-colin.king@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -56,50 +53,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 17:18:30 +0200,
-Vitaly Rodionov wrote:
+On Sun, 01 Aug 2021 08:25:48 +0200,
+Colin King wrote:
 > 
-> From: Lucas Tanure <tanureal@opensource.cirrus.com>
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Only disable I2C clock 25 ms after not being used.
+> Don't populate array names_to_check on the stack but instead it
+> static.  Makes the object code smaller by 56 bytes.
 > 
-> The current implementation enables and disables the I2C clock for each
-> I2C transaction. Each enable/disable call requires two verb transactions.
-> This means each I2C transaction requires a total of four verb transactions
-> to enable and disable the clock.
-> However, if there are multiple consecutive I2C transactions, it is not
-> necessary to enable and disable the clock each time, instead it is more
-> efficient to enable the clock for the first transaction, and disable it
-> after the final transaction, which would improve performance.
-> This is achieved by using a timeout which disables the clock if no request
-> to enable the clock has occurred for 25 ms.
+> Before:
+>    text    data     bss     dec     hex filename
+>  103512   34380       0  137892   21aa4 ./sound/usb/mixer.o
 > 
-> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> After:
+>    text    data     bss     dec     hex filename
+>  103264   34572       0  137836   21a6c ./sound/usb/mixer.o
+> 
+> gcc version 10.2.0)
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
+>  sound/usb/mixer.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> Changes in v2:
-> - Improved delayed work start/cancel implementation, and re-worked commit message
->  adding more explanation why this was required. 
-> 
-> Changes in v3:
-> - Cancel the disable timer, but do not wait for any running disable functions to finish.
->  If the disable timer runs out before cancel, the delayed work thread will be blocked,
->  waiting for the mutex to become unlocked. This mutex will be locked for the duration of
->  any i2c transaction, so the disable function will run to completion immediately
->  afterwards in the scenario. The next enable call will re-enable the clock, regardless.
+> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> index f4cdaf1ba44a..aec2499284a5 100644
+> --- a/sound/usb/mixer.c
+> +++ b/sound/usb/mixer.c
+> @@ -1572,8 +1572,9 @@ static size_t append_ctl_name(struct snd_kcontrol *kctl, const char *str)
+>  static void check_no_speaker_on_headset(struct snd_kcontrol *kctl,
+>  					struct snd_card *card)
+>  {
+> -	const char *names_to_check[] = {
+> -		"Headset", "headset", "Headphone", "headphone", NULL};
+> +	static const char *names_to_check[] = {
+> +		"Headset", "headset", "Headphone", "headphone", NULL
+> +	};
 
-This looks almost fine, but just a couple of thoughts:
+checkpatch complains like:
+  WARNING: static const char * array should probably be static const
+  char * const
 
-- cancel_delayed_work_sync() means to it might keep the i2c enabled
-  after that point (just cancel the pending work).
-  Would it cause a inconsistency afterwards?
-
-- A similar procedure is needed for suspend callback to cancel / flush
-  the work.
-  The shutdown is another question, but usually it's fine to without
-  any special handling as long as the resource is kept.
+Could you check and resubmit if it's right?
 
 
 thanks,
