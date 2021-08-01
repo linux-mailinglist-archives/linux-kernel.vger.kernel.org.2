@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37C53DCA4C
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 08:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338D23DCA51
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 08:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhHAGZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 02:25:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229642AbhHAGZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 02:25:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB87A61057;
-        Sun,  1 Aug 2021 06:25:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627799126;
-        bh=Uur95jcj5xjC1fQ1fgKkATD2aJ8tRMWLGjQ2YoCRlpo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d9uZmwshEStcEHfd+SmaPCqMk6Pn6PcV8Bg9dxKs5AxUhqg/ctUb3BMxqByxxv+dQ
-         trZhsGF1pETq9PYNDZQuRh+ILOf5iYfqPc4vV51EGgTeRPW9+1MHZQTUH3PPZc/AXs
-         1lNioAnKwjp44GmD6eBLmBD/6EmINIA8Y2wgBBYc=
-Date:   Sun, 1 Aug 2021 08:25:23 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jordy Zomer <jordy@pwning.systems>
-Cc:     linux-kernel@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH] firewire: ohci: make reg_(read|write) unsigned
-Message-ID: <YQY+U9i8Zw7OAKOO@kroah.com>
-References: <20210731104112.512449-1-jordy@pwning.systems>
- <YQY+BL4nR9Loddum@kroah.com>
+        id S230386AbhHAG0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 02:26:22 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34098
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230356AbhHAG0E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 02:26:04 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5BF423F10D;
+        Sun,  1 Aug 2021 06:25:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627799154;
+        bh=CzjCXhgl0a3d1ieMBVQ+XZEZoQi8gWaJjxi2fu4cq5E=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=l0vqmorMAPZIl0H+3yk13NHRpVICt/c0IN+RqRegnFA+u0JzXwm4dk4mLCtDT2rOp
+         CxEdQK8FwEd99CZTNgmKXlzHcPC16tLId1N+7Hgh3M5laWu3nQnXrnypgy2ojYCFPQ
+         Dflzt9tyWBBVB7lwGoPaG6MXF2puGBFv2PJtzZamtt7BZOpNeDR7sGbgszKMen+gjJ
+         MdnwF+3uE2M9gqJlLa3qwNT0MTIH8aheCZ5qXZcv8lhKDRA8slOEgedO5XHKnDzL7g
+         EW0T2pM3VI2400orB+tYgVyqueIEAt9yKsLMHzD2S1hFnyPBDWtQoM4x3ecHKsvkMN
+         yxo1jryPTC9hg==
+From:   Colin King <colin.king@canonical.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: usb-audio: make array static const, makes object smaller
+Date:   Sun,  1 Aug 2021 07:25:48 +0100
+Message-Id: <20210801062548.137770-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQY+BL4nR9Loddum@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 01, 2021 at 08:24:04AM +0200, Greg Kroah-Hartman wrote:
-> On Sat, Jul 31, 2021 at 12:41:12PM +0200, Jordy Zomer wrote:
-> > The reg_(read|write) functions used to
-> > take a signed integer as an offset parameter.
-> > The callers of this function only pass an unsigned integer to it.
-> > Therefore to make it obviously safe, let's just make this an unsgined
-> > integer as this is used in pointer arithmetics.
-> > 
-> > Signed-off-by: Jordy Zomer <jordy@pwning.systems>
-> > ---
-> >  drivers/firewire/ohci.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> Same thing should probably also be done in
-> drivers/firewire/init_ohci1394_dma.c for the same inline functions,
-> right?
+From: Colin Ian King <colin.king@canonical.com>
 
-And sound/firewire/isight.c also could use this.  Seems like there was
-some copy/paste in firewire drivers :)
+Don't populate array names_to_check on the stack but instead it
+static.  Makes the object code smaller by 56 bytes.
 
-thanks,
+Before:
+   text    data     bss     dec     hex filename
+ 103512   34380       0  137892   21aa4 ./sound/usb/mixer.o
 
-greg k-h
+After:
+   text    data     bss     dec     hex filename
+ 103264   34572       0  137836   21a6c ./sound/usb/mixer.o
+
+gcc version 10.2.0)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/usb/mixer.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index f4cdaf1ba44a..aec2499284a5 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1572,8 +1572,9 @@ static size_t append_ctl_name(struct snd_kcontrol *kctl, const char *str)
+ static void check_no_speaker_on_headset(struct snd_kcontrol *kctl,
+ 					struct snd_card *card)
+ {
+-	const char *names_to_check[] = {
+-		"Headset", "headset", "Headphone", "headphone", NULL};
++	static const char *names_to_check[] = {
++		"Headset", "headset", "Headphone", "headphone", NULL
++	};
+ 	const char **s;
+ 	bool found = false;
+ 
+-- 
+2.31.1
+
