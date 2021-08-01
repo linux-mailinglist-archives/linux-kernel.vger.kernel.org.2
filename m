@@ -2,105 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7853D3DCCB3
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 18:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D123DCCB5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Aug 2021 18:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhHAQ02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 12:26:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229665AbhHAQ00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 12:26:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8EDE61059;
-        Sun,  1 Aug 2021 16:26:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627835178;
-        bh=wpnk83J5W52Cehu0wTsNOKGTslGIXxW1DA6xKjVj57M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DnAh/UDly7Bn0jw4Rv0lAOs+BP9fRFpRJ/mOb6SlFksnOaustk1C1zIKWJdaGLcN3
-         prkT96qGygOkaS0SMa5L7B6uyFneKgHoAqxdhdLOco0PCXlKrN9FShTZRwIqNVPkJB
-         uLPFH1/9vLf9bRkaXt/TJMlZ348c8BM6orf/ckyV+tSmRBC3Fyb2YZRDoEKyrcExHP
-         4glY7k39R4pPFuut4CXMiZ3wNE7qeAkxW4yXFzOEJxxkbD26vkoD3M8+oHAR1L17Lr
-         EpOc4yaoEJfn2uTAIN/Ltcpnywu0vZ4t4befktkosYOICOGU2MjDU3SMXxjJ3+aWiQ
-         jIakZzd4Ac4sw==
-Received: by mail-oi1-f179.google.com with SMTP id n16so14652745oij.2;
-        Sun, 01 Aug 2021 09:26:18 -0700 (PDT)
-X-Gm-Message-State: AOAM532yTa0IZ+KFzRPniqbjwEj9U4gdy7jxqH2bstLf6WHKzD+1CQKp
-        BYc+KsQtSj6m1hctPd4rdoouGgU+ztkTrpx9BMI=
-X-Google-Smtp-Source: ABdhPJz3/6J0OezwIAj9JxW632NldoAZOtXTofqhaWRPClx/rrb07RmsWgwSX5m18t60pV6FqwLR/lwyOr+i31b1/gs=
-X-Received: by 2002:aca:4c49:: with SMTP id z70mr7775755oia.174.1627835178131;
- Sun, 01 Aug 2021 09:26:18 -0700 (PDT)
+        id S229665AbhHAQj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 12:39:27 -0400
+Received: from smtprelay0240.hostedemail.com ([216.40.44.240]:35230 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229540AbhHAQjZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 12:39:25 -0400
+Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 91D7E100E7B45;
+        Sun,  1 Aug 2021 16:39:14 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 21D1F2EBFA0;
+        Sun,  1 Aug 2021 16:39:13 +0000 (UTC)
+Message-ID: <922b0d99b6397adc44761abaed12c019dc0b9e88.camel@perches.com>
+Subject: Re: [PATCH] drivers/input: Remove all strcpy() uses in favor of
+ strscpy()
+From:   Joe Perches <joe@perches.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Len Baker <len.baker@gmx.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-hardening@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sun, 01 Aug 2021 09:39:11 -0700
+In-Reply-To: <20210801145959.GI22278@shell.armlinux.org.uk>
+References: <20210801144316.12841-1-len.baker@gmx.com>
+         <20210801145959.GI22278@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-References: <20210731204845.21196-1-andre.przywara@arm.com>
-In-Reply-To: <20210731204845.21196-1-andre.przywara@arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 1 Aug 2021 18:26:06 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHakwfDoAqBL_KbRHbKuF=sJ2ug-cCqYxRUQhCqzcXn9w@mail.gmail.com>
-Message-ID: <CAMj1kXHakwfDoAqBL_KbRHbKuF=sJ2ug-cCqYxRUQhCqzcXn9w@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] hwrng: Add Arm SMCCC TRNG based driver
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>,
-        Ali Saidi <alisaidi@amazon.com>,
-        Jon Nettleton <jon@solid-run.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.46
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 21D1F2EBFA0
+X-Stat-Signature: 3zsg9f1oosgq9iyxgipc88yjqiuu7997
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/uvB/xVXZpL4hqBJoKLjxFDsi/SPgzh/k=
+X-HE-Tag: 1627835953-921460
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Jul 2021 at 22:49, Andre Przywara <andre.przywara@arm.com> wrote:
->
-> The "Arm True Random Number Generator Firmware Interface"[1] provides
-> an SMCCC based interface to a true hardware random number generator.
-> So far we are using that in arch_get_random_seed(), but it might be
-> useful to expose the entropy through the /dev/hwrng device as well. This
-> allows to assess the quality of the implementation, by using "rngtest"
-> from the rng-tools package, for example.
->
-> Patch 1 creates a platform device, triggered by the previous discovery
-> of the SMCCC TRNG service.
-> Patch 2 implements a hw_random platform driver, which is instantiated
-> through this said platform device.
->
-> The driver can be loaded as module, or built into the kernel.
->
-> [1] https://developer.arm.com/documentation/den0098/latest/
->
-> Changelog v3 ... v4:
-> - drop pointless driver loading message
-> - drop unneeded init() routine
->
-> Changelog v2 ... v3:
-> - split platform device and driver
->
-> Changelog v1 ... v2:
-> - fix building as a module
-> - de-register device upon exit
-> - mention module name in Kconfig
->
-> Andre Przywara (2):
->   firmware: smccc: Register smccc_trng platform device
->   hwrng: Add Arm SMCCC TRNG based driver
->
+On Sun, 2021-08-01 at 16:00 +0100, Russell King (Oracle) wrote:
+> On Sun, Aug 01, 2021 at 04:43:16PM +0200, Len Baker wrote:
+> > strcpy() performs no bounds checking on the destination buffer. This
+> > could result in linear overflows beyond the end of the buffer, leading
+> > to all kinds of misbehaviors. The safe replacement is strscpy().
+> > 
+> > Signed-off-by: Len Baker <len.baker@gmx.com>
+> > ---
+> > This is a task of the KSPP [1]
+> > 
+> > [1] https://github.com/KSPP/linux/issues/88
+> > 
+> >  drivers/input/keyboard/locomokbd.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/input/keyboard/locomokbd.c b/drivers/input/keyboard/locomokbd.c
+> > index dae053596572..dbb3dc48df12 100644
+> > --- a/drivers/input/keyboard/locomokbd.c
+> > +++ b/drivers/input/keyboard/locomokbd.c
+> > @@ -254,7 +254,7 @@ static int locomokbd_probe(struct locomo_dev *dev)
+> >  	locomokbd->suspend_jiffies = jiffies;
+> > 
+> >  	locomokbd->input = input_dev;
+> > -	strcpy(locomokbd->phys, "locomokbd/input0");
+> > +	strscpy(locomokbd->phys, "locomokbd/input0", sizeof(locomokbd->phys));
+> 
+> So if the string doesn't fit, it's fine to silently truncate it?
+> 
+> Rather than converting every single strcpy() in the kernel to
+> strscpy(), maybe there should be some consideration given to how the
+> issue of a strcpy() that overflows the buffer should be handled.
+> E.g. in the case of a known string such as the above, if it's longer
+> than the destination, should we find a way to make the compiler issue
+> a warning at compile time?
+> 
 
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 
-
->  drivers/char/hw_random/Kconfig          |  14 +++
->  drivers/char/hw_random/Makefile         |   1 +
->  drivers/char/hw_random/arm_smccc_trng.c | 123 ++++++++++++++++++++++++
->  drivers/firmware/smccc/smccc.c          |  17 ++++
->  4 files changed, 155 insertions(+)
->  create mode 100644 drivers/char/hw_random/arm_smccc_trng.c
->
-> --
-> 2.17.6
->
