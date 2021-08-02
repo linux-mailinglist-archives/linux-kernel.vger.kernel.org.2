@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AE43DD148
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBDD3DD15C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbhHBHgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:36:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43382 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232173AbhHBHgI (ORCPT
+        id S232623AbhHBHk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232458AbhHBHk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:36:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627889759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SCaO3zZA1UHyau/ywC+87QC/FW7k2c/cSKHE04W5tzg=;
-        b=eo/vnmW/L1BAeMY5vByqVqGdb46ajkelnYXqqsNPmaxv4mKnFcWoB7nfT/IcY/eGlRw97B
-        aIAOzbXOynXyjD9ieSMEaIe9EwvCgJMkfXp8NJQt9v8zmmijr+c4u23rqIB6DA8XSiwir3
-        /W+EX8YwS7Rsvtebx70C57q06HbRwBs=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-4fxFYqDQPc--TkEdo59qug-1; Mon, 02 Aug 2021 03:35:57 -0400
-X-MC-Unique: 4fxFYqDQPc--TkEdo59qug-1
-Received: by mail-ed1-f72.google.com with SMTP id y39-20020a50bb2a0000b02903bc05daccbaso8258830ede.5
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 00:35:57 -0700 (PDT)
+        Mon, 2 Aug 2021 03:40:57 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089BCC06175F;
+        Mon,  2 Aug 2021 00:40:47 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id u20so22795834ljo.0;
+        Mon, 02 Aug 2021 00:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Rx5q39Xw1a0JHH/JpOAv2dOieHFpmxEhCjzvGdgwxac=;
+        b=O+AFu5KVOfglY6BISS0tHH7b0Xzrm+nN0tWvnQzROevDBptoTAvP/bfQ3ML7CgB3FP
+         JXLxCKfbsURoiyfyg5E957Diq3HlUsYKoUOrMobARGJfZ0cdmwj8UgRWV4g7Pyco+WOw
+         7+x9Va79c14LJiNX7YvRiTNzx6WCiqe+kiN32G3DJIyG3+eKM8gFabYHCxLqUUpJm1WM
+         AwayYKfaZD43bCHculSQ98usthauNdeqd6qtrYV/vSdITHS0oeLf4d1+aHZOAxeYx6sO
+         N/guu698a+Q7nW3iPMEgrvc/rU1RoNfM1uSyZ2jItSI9JyxndvZw1qgedRcX9cVqKE4i
+         5uOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SCaO3zZA1UHyau/ywC+87QC/FW7k2c/cSKHE04W5tzg=;
-        b=WAMzuEYoVLHHwGdAS6sM6LSya/SxTLffJNxoofWRavTqhvAO3ODI0YPmRRMdk+u4lp
-         h4irxV9lMV+w9lrFF2h1PQrlZphTR74X93z//pXRaTzfJ7SQ8AxKL89ohw0+6rmRndWz
-         3kdSHqG/jzVMvfFlPjnY9U2U0tF0zFMHlpPtsjGUyt6QwJ8V3pmwIg1ZFSJZSSy2JD00
-         NxlUzDszwcziMIDzbcWr2dqr7wid6VONAT18ngr9agN1b0iMK7kF7tDtmr7djan4n8+D
-         jVTPn2DPMIAhHgYRGr1sNzj5o7rccoxS0SpWHYy33S/6q1NQXmMnj3OBnP8/iCm+2QTe
-         Ethw==
-X-Gm-Message-State: AOAM530NID6CsAhH1L8M8v6QNHYmahp5oDeKr/HzFnG63dTQYFaYFLSH
-        1iaNVTh5/cm6LPthhSCX5LVsVTpgFzOhQC9HGFyCu2vpR8SU7EsWylCnsxZegE/BhmOCFy3uRcH
-        XcYQkf8S7RrlrwIGxCSXIghtw
-X-Received: by 2002:a50:ed14:: with SMTP id j20mr17333297eds.323.1627889756770;
-        Mon, 02 Aug 2021 00:35:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxzhnqWfoh5Qj8yOMyS6ItNUUir0U9bB3y02Y7YIrkd17NY9qYSb02LV41rvtGryHpwfi4WuQ==
-X-Received: by 2002:a50:ed14:: with SMTP id j20mr17333280eds.323.1627889756565;
-        Mon, 02 Aug 2021 00:35:56 -0700 (PDT)
-Received: from localhost.localdomain (an-19-190-136.service.infuturo.it. [151.19.190.136])
-        by smtp.gmail.com with ESMTPSA id y23sm4139350ejp.115.2021.08.02.00.35.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 00:35:55 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 09:35:50 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        dietmar.eggemann@arm.com, bristot@redhat.com, bsegall@google.com,
-        mgorman@suse.de, Mark Simmons <msimmons@redhat.com>
-Subject: Re: [PATCH] sched/rt: Fix double enqueue caused by rt_effective_prio
-Message-ID: <YQegVmIoVGOjt4w+@localhost.localdomain>
-References: <20210701091431.256457-1-juri.lelli@redhat.com>
- <YObOIwH7MbfagklQ@hirez.programming.kicks-ass.net>
- <YObS2Rudg4osS7Ic@hirez.programming.kicks-ass.net>
- <YOgJzqOrVHUvCpch@localhost.localdomain>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Rx5q39Xw1a0JHH/JpOAv2dOieHFpmxEhCjzvGdgwxac=;
+        b=dtu7sDhSsDrPTm+SEVRWq+OA5cU3a3ru653GLAjOfw4yvX0E9vrn5AyQnhvJC15K1m
+         ukaBXaxMQ3hscEw69U2BacDJ6c/TcbT22Uqy423MrB6hty53lfu/oVrF6+xmUVYnrHPC
+         pmc6MzJGshzt3Yj21vNciOkHRuWlRuMdKW/7cg5ViFsvB1wswGvGWtXOAmSvV6r1q0Jc
+         1//cp8XKu8kwkjHdVUpnIz1MdUWNml/7Uyj78zJh0JHhxz1E8WSD7l1m4vNuMFsLfHhg
+         OtMrraRekt4KfmHnDLAoTUBDcIhmrmVElV8VX/aw9LYCCWPQ+ycYO9fc+TpuLShK69ic
+         FnBg==
+X-Gm-Message-State: AOAM530WOJyHk72TYEarCT+BqM5v5s94L/KN5xvNw3U3P0acPIDIGLcj
+        R4ADP9niIvH3+a8Nm6eQnhG3kgidCwU=
+X-Google-Smtp-Source: ABdhPJwfOETjLE0hCokBQk+uH4O4MCFf15UDoXoQn73CRKGh6piOwZIRGA/ufgvwUUzzhcq2Iielog==
+X-Received: by 2002:a2e:a417:: with SMTP id p23mr10158364ljn.23.1627890045395;
+        Mon, 02 Aug 2021 00:40:45 -0700 (PDT)
+Received: from [192.168.1.49] ([109.197.204.123])
+        by smtp.gmail.com with ESMTPSA id b23sm883533lff.65.2021.08.02.00.40.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 00:40:44 -0700 (PDT)
+Subject: Re: [PATCH v2 2/8] spi: spi-ep93xx: Prepare clock before using it
+To:     Mark Brown <broonie@kernel.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-3-nikita.shubin@maquefel.me>
+ <20210726165105.GI4670@sirena.org.uk>
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Message-ID: <37e15955-771f-56a8-cf8e-4342c3c2c3a3@gmail.com>
+Date:   Mon, 2 Aug 2021 09:36:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOgJzqOrVHUvCpch@localhost.localdomain>
+In-Reply-To: <20210726165105.GI4670@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hello Mark,
 
-On 09/07/21 10:33, Juri Lelli wrote:
-> Hi Peter,
-> 
-> On 08/07/21 12:26, Peter Zijlstra wrote:
-> > On Thu, Jul 08, 2021 at 12:06:27PM +0200, Peter Zijlstra wrote:
-> > > Slightly larger patch, but perhaps a little cleaner.. still pondering if
-> > > we can share a little more between __sched_setscheduler() and
-> > > rt_mutex_setprio().
-> > 
-> > Best I can seem to come up with...
-> 
-> Thanks for the non-lazy version of the fix!
-> 
-> Makes sense to me and it looks good from quick testing. I'll be doing
-> more extensive testing and ask Mark (cc-ed) to help with that. :)
-> 
-> We'll report back soon-ish.
+On 26/07/2021 18:51, Mark Brown wrote:
+> On Mon, Jul 26, 2021 at 04:59:50PM +0300, Nikita Shubin wrote:
+>> From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+>>
+>> Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+>> to Common Clock Framework, otherwise the following is visible:
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-So, yeah it took a while (mostly my pto :), apologies.
+It looks like we didn't manage to bring the whole series as one lot to any
+maintainer and two patches were applied to two different trees.
+Could you please take this one to your tree as well?
 
-However, we managed to confirm your fix works great!
+>> WARNING: CPU: 0 PID: 1 at drivers/clk/clk.c:1011 clk_core_enable+0x9c/0xbc
+>> Enabling unprepared ep93xx-spi.0
+>> ...
+>> Hardware name: Cirrus Logic EDB9302 Evaluation Board
+>> ...
+>> clk_core_enable
+>> clk_core_enable_lock
+>> ep93xx_spi_prepare_hardware
+> Please think hard before including complete backtraces in upstream
+> reports, they are very large and contain almost no useful information
+> relative to their size so often obscure the relevant content in your
+> message. If part of the backtrace is usefully illustrative (it often is
+> for search engines if nothing else) then it's usually better to pull out
+> the relevant sections.
 
-May I leave posting it again with changelog etc to you, or would you
-like I do that (making you the author)?
+Yes, I noted your comment first time and this was already stripped version
+of the backtrace, but please feel free to strip it even harder if you
+take the patch.
 
-Thanks,
-Juri
-
+Thank you for the review,
+--
+Alex.
