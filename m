@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FF43DDA24
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DBC3DD90E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235718AbhHBOGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:06:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43164 "EHLO mail.kernel.org"
+        id S236010AbhHBN4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:56:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236695AbhHBN7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DE4B60725;
-        Mon,  2 Aug 2021 13:55:57 +0000 (UTC)
+        id S235036AbhHBNuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:50:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F6E361104;
+        Mon,  2 Aug 2021 13:50:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912557;
-        bh=YbJ2oPzxDMUHrGrJo5WNDONfc5xRW4726IXKczgJRq4=;
+        s=korg; t=1627912239;
+        bh=c/pHw0x9Yemy1ZTAUjcVb3eJFXNzIGhqFikizEBodWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CdNktkd2Rba4/hkNPB/NakmzdVsMRD/C0875Pw+5S9xFhcN15nZhKRCcNxRdA9yXY
-         qsKx2NGRF4TopbuZaEgrQm9kclNE5btaqQpbQAATnlzLIvgi0Ux+gM0dzKUey4PkkP
-         WerrZKmeWGYiyzBPfZQ5AneuDQehoo/ZjJ8kHPuk=
+        b=qPFZf/dPFcxJQ1rdRfLBxxrZVHnK/KcDy5DukgDo/HG6TdwgRsKgZwXZoXzYkulCS
+         ilWXBYPcWfMYBOO6S1bXb2f15Br1RxNiaS1dxha6jufNpGhd01xV4/VZOfIjTe//0N
+         E1JDEqgNnevNe5cwxvUG+LN42yfp4n9Jb/tRXE18=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 045/104] i40e: Fix logic of disabling queues
+        stable@vger.kernel.org, Jan Kiszka <jan.kiszka@siemens.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 02/40] x86/asm: Ensure asm/proto.h can be included stand-alone
 Date:   Mon,  2 Aug 2021 15:44:42 +0200
-Message-Id: <20210802134345.509140824@linuxfoundation.org>
+Message-Id: <20210802134335.484340327@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
+References: <20210802134335.408294521@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,159 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+From: Jan Kiszka <jan.kiszka@siemens.com>
 
-[ Upstream commit 65662a8dcdd01342b71ee44234bcfd0162e195af ]
+[ Upstream commit f7b21a0e41171d22296b897dac6e4c41d2a3643c ]
 
-Correct the message flow between driver and firmware when disabling
-queues.
+Fix:
 
-Previously in case of PF reset (due to required reinit after reconfig),
-the error like: "VSI seid 397 Tx ring 60 disable timeout" could show up
-occasionally. The error was not a real issue of hardware or firmware,
-it was caused by wrong sequence of messages invoked by the driver.
+  ../arch/x86/include/asm/proto.h:14:30: warning: ‘struct task_struct’ declared \
+    inside parameter list will not be visible outside of this definition or declaration
+  long do_arch_prctl_64(struct task_struct *task, int option, unsigned long arg2);
+                               ^~~~~~~~~~~
 
-Fixes: 41c445ff0f48 ("i40e: main driver core")
-Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+  .../arch/x86/include/asm/proto.h:40:34: warning: ‘struct task_struct’ declared \
+    inside parameter list will not be visible outside of this definition or declaration
+   long do_arch_prctl_common(struct task_struct *task, int option,
+                                    ^~~~~~~~~~~
+
+if linux/sched.h hasn't be included previously. This fixes a build error
+when this header is used outside of the kernel tree.
+
+ [ bp: Massage commit message. ]
+
+Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/b76b4be3-cf66-f6b2-9a6c-3e7ef54f9845@web.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 58 ++++++++++++---------
- 1 file changed, 34 insertions(+), 24 deletions(-)
+ arch/x86/include/asm/proto.h |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index f9fe500d4ec4..951423e5f2c0 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -4454,11 +4454,10 @@ int i40e_control_wait_tx_q(int seid, struct i40e_pf *pf, int pf_q,
- }
+--- a/arch/x86/include/asm/proto.h
++++ b/arch/x86/include/asm/proto.h
+@@ -4,6 +4,8 @@
  
- /**
-- * i40e_vsi_control_tx - Start or stop a VSI's rings
-+ * i40e_vsi_enable_tx - Start a VSI's rings
-  * @vsi: the VSI being configured
-- * @enable: start or stop the rings
-  **/
--static int i40e_vsi_control_tx(struct i40e_vsi *vsi, bool enable)
-+static int i40e_vsi_enable_tx(struct i40e_vsi *vsi)
- {
- 	struct i40e_pf *pf = vsi->back;
- 	int i, pf_q, ret = 0;
-@@ -4467,7 +4466,7 @@ static int i40e_vsi_control_tx(struct i40e_vsi *vsi, bool enable)
- 	for (i = 0; i < vsi->num_queue_pairs; i++, pf_q++) {
- 		ret = i40e_control_wait_tx_q(vsi->seid, pf,
- 					     pf_q,
--					     false /*is xdp*/, enable);
-+					     false /*is xdp*/, true);
- 		if (ret)
- 			break;
+ #include <asm/ldt.h>
  
-@@ -4476,7 +4475,7 @@ static int i40e_vsi_control_tx(struct i40e_vsi *vsi, bool enable)
- 
- 		ret = i40e_control_wait_tx_q(vsi->seid, pf,
- 					     pf_q + vsi->alloc_queue_pairs,
--					     true /*is xdp*/, enable);
-+					     true /*is xdp*/, true);
- 		if (ret)
- 			break;
- 	}
-@@ -4574,32 +4573,25 @@ int i40e_control_wait_rx_q(struct i40e_pf *pf, int pf_q, bool enable)
- }
- 
- /**
-- * i40e_vsi_control_rx - Start or stop a VSI's rings
-+ * i40e_vsi_enable_rx - Start a VSI's rings
-  * @vsi: the VSI being configured
-- * @enable: start or stop the rings
-  **/
--static int i40e_vsi_control_rx(struct i40e_vsi *vsi, bool enable)
-+static int i40e_vsi_enable_rx(struct i40e_vsi *vsi)
- {
- 	struct i40e_pf *pf = vsi->back;
- 	int i, pf_q, ret = 0;
- 
- 	pf_q = vsi->base_queue;
- 	for (i = 0; i < vsi->num_queue_pairs; i++, pf_q++) {
--		ret = i40e_control_wait_rx_q(pf, pf_q, enable);
-+		ret = i40e_control_wait_rx_q(pf, pf_q, true);
- 		if (ret) {
- 			dev_info(&pf->pdev->dev,
--				 "VSI seid %d Rx ring %d %sable timeout\n",
--				 vsi->seid, pf_q, (enable ? "en" : "dis"));
-+				 "VSI seid %d Rx ring %d enable timeout\n",
-+				 vsi->seid, pf_q);
- 			break;
- 		}
- 	}
- 
--	/* Due to HW errata, on Rx disable only, the register can indicate done
--	 * before it really is. Needs 50ms to be sure
--	 */
--	if (!enable)
--		mdelay(50);
--
- 	return ret;
- }
- 
-@@ -4612,29 +4604,47 @@ int i40e_vsi_start_rings(struct i40e_vsi *vsi)
- 	int ret = 0;
- 
- 	/* do rx first for enable and last for disable */
--	ret = i40e_vsi_control_rx(vsi, true);
-+	ret = i40e_vsi_enable_rx(vsi);
- 	if (ret)
- 		return ret;
--	ret = i40e_vsi_control_tx(vsi, true);
-+	ret = i40e_vsi_enable_tx(vsi);
- 
- 	return ret;
- }
- 
-+#define I40E_DISABLE_TX_GAP_MSEC	50
++struct task_struct;
 +
- /**
-  * i40e_vsi_stop_rings - Stop a VSI's rings
-  * @vsi: the VSI being configured
-  **/
- void i40e_vsi_stop_rings(struct i40e_vsi *vsi)
- {
-+	struct i40e_pf *pf = vsi->back;
-+	int pf_q, err, q_end;
-+
- 	/* When port TX is suspended, don't wait */
- 	if (test_bit(__I40E_PORT_SUSPENDED, vsi->back->state))
- 		return i40e_vsi_stop_rings_no_wait(vsi);
+ /* misc architecture specific prototypes */
  
--	/* do rx first for enable and last for disable
--	 * Ignore return value, we need to shutdown whatever we can
--	 */
--	i40e_vsi_control_tx(vsi, false);
--	i40e_vsi_control_rx(vsi, false);
-+	q_end = vsi->base_queue + vsi->num_queue_pairs;
-+	for (pf_q = vsi->base_queue; pf_q < q_end; pf_q++)
-+		i40e_pre_tx_queue_cfg(&pf->hw, (u32)pf_q, false);
-+
-+	for (pf_q = vsi->base_queue; pf_q < q_end; pf_q++) {
-+		err = i40e_control_wait_rx_q(pf, pf_q, false);
-+		if (err)
-+			dev_info(&pf->pdev->dev,
-+				 "VSI seid %d Rx ring %d dissable timeout\n",
-+				 vsi->seid, pf_q);
-+	}
-+
-+	msleep(I40E_DISABLE_TX_GAP_MSEC);
-+	pf_q = vsi->base_queue;
-+	for (pf_q = vsi->base_queue; pf_q < q_end; pf_q++)
-+		wr32(&pf->hw, I40E_QTX_ENA(pf_q), 0);
-+
-+	i40e_vsi_wait_queues_disabled(vsi);
- }
- 
- /**
--- 
-2.30.2
-
+ void syscall_init(void);
 
 
