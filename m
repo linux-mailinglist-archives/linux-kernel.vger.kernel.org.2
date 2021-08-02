@@ -2,129 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133673DDCA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53D33DDCA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235064AbhHBPpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
+        id S235271AbhHBPqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234551AbhHBPpa (ORCPT
+        with ESMTP id S235102AbhHBPqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:45:30 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FB6C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:45:19 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id d6so17465555edt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:45:19 -0700 (PDT)
+        Mon, 2 Aug 2021 11:46:19 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D67FC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:46:10 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id ca5so25710267pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=cMN4yc6Yg7k+g95Y7UmZLiL/P6GU424U+ZDesgvhHgU=;
-        b=cQd6eHU1xNXbRSjFnHyZg5KKJ8qwmS312QYTIhTlKOvZHVz+vU5I1tTgW2BB0RFmES
-         Z4EHxLLnIiMwBth28LK4Ahje7aFFktra/pnP5cFCug4SnUwmR6zGodWlrj8VYbluAqwQ
-         YJi6LnO/Ryc3z7LAq+QKYt/TWmkRz5mZvE24aY7yFfW1JyXLaItJHEt86+y67qOOSTgE
-         mt1yMy2iPuaKgK7CcNnSNx9YTscgoOCJgITwkVx9FihmNPRfqw5HHHBcqiZE9PhLGbYK
-         lT1UqDwf/AQYapSCuVZ3aNLNUS30d0WEkBVdFHWhYEwB6rusx/Ph3bHdvZGhEx6h+usA
-         nqnw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8Q8GPtUEDsZnvVcYI9DEHGIcb7f0tGzkxrNpYDg2qaU=;
+        b=uow+0XtDub2IqIcws3lM4NZ7uaUdL+cd84LTX4KtuCE3l37WKA2N+zxg5/iVd8BXRq
+         fX1WFK1I+yFnvLf4UWLznAAWEPerkoHJShkJ28aOvH2VE6TE1vJoeCYklWFB4N39ajUz
+         h+hfQex/9Ng6SEilyRyJXJ67tdLF7zbsHtQ1G3sFPnONGHZMXdCLYOd+81GbwBsSNn9b
+         giIDjtOcFzOwECu6+D5R6Pkkjq/ZLiN5ZdLbDKeGW2WyenxRSyUfN3o/1s7SyEygNRcN
+         LNysSnrbcnPA0eFtCIgxq0vL89LGrGe1GzjhZuGXb4Ry/t+e0QRN5DuEzkFQkJuRGucW
+         zxmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=cMN4yc6Yg7k+g95Y7UmZLiL/P6GU424U+ZDesgvhHgU=;
-        b=jz1P4Q4kX83Otc1N1HfQyLwvYN/yEVxiCJ6DpMoKsnibs+5S6ksLKR/xs6STGW9rXF
-         AUbzh+5zgkDZehwLuQNwb8EbqkkNIIWtOfhtFy9FQI5zVITfxbnZ/Z58M7QQOsW0J0Qf
-         hM/iJnyZa2hx7EPNPQDQ5/VMpfBz/sOUIgjrtwfMWSeAh7yJrhGJyPoh/5v7jgrsHC4u
-         +Z9xCf0654/Lz1MuqEgagE85isSKZi9wEdlV6mTuBgpL3f9EwhUs4qKpmo5PCPOx1n2t
-         R+6+1V6B7PIyKxHZhdmkoHcCtQLJZ7uJ0pD2PDiS7sFwameGx+VBrBBxn5UyQrigljIn
-         uNMA==
-X-Gm-Message-State: AOAM530BxxfzlIUX9Ki4j27eqarNOHP1iG5jliiN11FCmVVXSrvpCb1V
-        GT5dObHO7L9agv+RVhDqM4a9LOre0+kKmDBc7IU=
-X-Google-Smtp-Source: ABdhPJxT71L+T05yz/hq+Tsn15GIbWhZTIbquxkVkxucO5ulY894g/8MmOt6pCNq9/8xQxw7L9Urp1FEelq55p0lqoU=
-X-Received: by 2002:a05:6402:274f:: with SMTP id z15mr20502581edd.21.1627919118096;
- Mon, 02 Aug 2021 08:45:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Q8GPtUEDsZnvVcYI9DEHGIcb7f0tGzkxrNpYDg2qaU=;
+        b=CExKCdrdGDuTgyDJHfuOM+rvJDFJtVJx98rEU8IDLioYpU0ezPl+12yOxjN6yXDjsH
+         vGtGtoilMMQ7k7J428El8tNkW/lcnQDm7WbDK1FCwiNLFmc+fOdbRWrxsitixduv5QKR
+         LuhRZE8d7Ikv08ia8d2Wi89jmjQY9zyHMqCf5TiAWBJDKFJgel0aLT6gkU0eiOnv7hUR
+         KjnNAdSH+p0h5a2rTtODjYx2+SL1aJyUNflWT3VMgRwMXpkPQX0BVJuc8v7IgnCea2oJ
+         C02qiygda/QYJK23chpwotwY6CFcgWXz1ZeMjgjF1KluuY5k1orqFsiiP5PR1w8Yo8f6
+         HPQQ==
+X-Gm-Message-State: AOAM531jNPw/zQH5eaSMTn69auVxTiXM8c7ydccnviUt3EuZIZQEjdtn
+        Nid57v+j67sWyKk/T6dmAZjN+w==
+X-Google-Smtp-Source: ABdhPJyD2vWo9Vn05mBGwtYf+avY1EFSSDpDQQAstgMR7/9Wwz/17fZavGw+io3OGZXkoX9XNrwNMw==
+X-Received: by 2002:a65:6441:: with SMTP id s1mr3109877pgv.214.1627919169557;
+        Mon, 02 Aug 2021 08:46:09 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b7sm12046336pfl.195.2021.08.02.08.46.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 08:46:09 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 15:46:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Tao Xu <tao3.xu@intel.com>, pbonzini@redhat.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
+Message-ID: <YQgTPakbT+kCwMLP@google.com>
+References: <20210525051204.1480610-1-tao3.xu@intel.com>
+ <YQRkBI9RFf6lbifZ@google.com>
+ <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
 MIME-Version: 1.0
-Received: by 2002:a17:906:3018:0:0:0:0 with HTTP; Mon, 2 Aug 2021 08:45:17
- -0700 (PDT)
-In-Reply-To: <20210802141245.1146772-1-arnd@kernel.org>
-References: <20210802141245.1146772-1-arnd@kernel.org>
-From:   Martin Guy <martinwguy@gmail.com>
-Date:   Mon, 2 Aug 2021 17:45:17 +0200
-Message-ID: <CAL4-wQqCL1S-GYu7VKJeTT37wh=rR=SMUuwgKiXnnn_Y=uydOA@mail.gmail.com>
-Subject: Re: [PATCH] ARM: ep93xx: remove MaverickCrunch support
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        soc@kernel.org, Nikita Shubin <nikita.shubin@maquefel.me>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Hubert Feurstein <hubert.feurstein@contec.at>,
-        Lukasz Majewski <lukma@denx.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2021, Arnd Bergmann <arnd@kernel.org> wrote:
-> The MaverickCrunch support for ep93xx never made it into glibc
+On Mon, Aug 02, 2021, Xiaoyao Li wrote:
+> On 7/31/2021 4:41 AM, Sean Christopherson wrote:
+> > On Tue, May 25, 2021, Tao Xu wrote:
+> > >   #endif /* __KVM_X86_VMX_CAPS_H */
+> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > > index 4bceb5ca3a89..c0ad01c88dac 100644
+> > > --- a/arch/x86/kvm/vmx/vmx.c
+> > > +++ b/arch/x86/kvm/vmx/vmx.c
+> > > @@ -205,6 +205,10 @@ module_param(ple_window_max, uint, 0444);
+> > >   int __read_mostly pt_mode = PT_MODE_SYSTEM;
+> > >   module_param(pt_mode, int, S_IRUGO);
+> > > +/* Default is 0, less than 0 (for example, -1) disables notify window. */
+> > > +static int __read_mostly notify_window;
+> > 
+> > I'm not sure I like the idea of trusting ucode to select an appropriate internal
+> > threshold.  Unless the internal threshold is architecturally defined to be at
+> > least N nanoseconds or whatever, I think KVM should provide its own sane default.
+> > E.g. it's not hard to imagine a scenario where a ucode patch gets rolled out that
+> > adjusts the threshold and starts silently degrading guest performance.
+> 
+> You mean when internal threshold gets smaller somehow, and cases
+> false-positive that leads unexpected VM exit on normal instruction? In this
+> case, we set increase the vmcs.notify_window in KVM.
 
-This is true, but is not needed except for preserving FP registers in
-catch/throw exeptions or longjmps.
+Not while VMs are running though.
 
-> was removed from gcc in its 4.8 release in 2012.
+> I think there is no better to avoid this case if ucode changes internal
+> threshold. Unless KVM's default notify_window is bigger enough.
+> 
+> > Even if the internal threshold isn't architecturally constrained, it would be very,
+> > very helpful if Intel could publish the per-uarch/stepping thresholds, e.g. to give
+> > us a ballpark idea of how agressive KVM can be before it risks false positives.
+> 
+> Even Intel publishes the internal threshold, we still need to provide a
+> final best_value (internal + vmcs.notify_window). Then what's that value?
 
-I was sad about that, as I had managed to get it working correctly in
-4.2 4.3 and 4.4.
-Unfortunately the GCC ARM maintainer at the time was paid by ARM, and
-they had no interest in it, as I gather the ARM-Cirrus partnership
-ended up disappointingly.
+The ideal value would be high enough to guarantee there are zero false positives,
+yet low enough to prevent a malicious guest from causing instability in the host
+by blocking events for an extended duration.  The problem is that there's no
+magic answer for the threshold at which a blocked event would lead to system
+instability, and without at least a general idea of the internal value there's no
+answer at all.
 
-> It is now one of
-> the last parts of arch/arm/ that fails to build with the clang
-> integrated assembler
+IIRC, SGX instructions have a hard upper bound of 25k cycles before they have to
+check for pending interrupts, e.g. it's why EINIT is interruptible.  The 25k cycle
+limit is likely a good starting point for the combined minimum.  That's why I want
+to know the internal minimum; if the internal minimum is _guaranteed_ to be >25k,
+then KVM can be more aggressive with its default value.
 
-Even if crunch support is not configured?
+> If we have an option for final best_value, then I think it's OK to just let
+> vmcs.notify_window = best_value. Then the true final value is best_value +
+> internal.
+>  - if it's a normal instruction, it should finish within best_value or
+> best_value + internal. So it makes no difference.
+>  - if it's an instruction in malicious case, it won't go to next instruction
+> whether wait for best_value or best_value + internal.
 
-> According to Hartley Sweeten:
->
->  "Martin Guy did a lot of work trying to get the maverick crunch working
->   but I was never able to successfully use it for anything.
+...
 
->   It "kind" of works but depending on the EP93xx silicon revision
+> > > +
+> > >   	vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, 0);
+> > >   	vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, 0);
+> > >   	vmcs_write32(CR3_TARGET_COUNT, 0);           /* 22.2.1 */
+> > > @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
+> > >   	return 0;
+> > >   }
+> > > +static int handle_notify(struct kvm_vcpu *vcpu)
+> > > +{
+> > > +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
+> > > +
+> > > +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
+> > 
+> > What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
+> 
+> It means whether the VM context is corrupted and not valid in the VMCS.
 
-It works fine on all production revisions except D0 (the first one)
-which is so rare as to be unfindable. All the others from D1 on have
-the exact same HW bugs.
-
->   there are still a number of hardware bugs that either give imprecise or garbage results.
-
-Not my experience, See http://martinwguy.net/crunch/#CorrectnessTests
-If "imprecise" means "doesn't handle unnormalized FP values correctly"
-then yes, that's a feature if you need the 2.5 to 4gimes speedup it
-provides.
-But I would be interested (Hartley) if you have a concrete example.
-
-> This touches mostly the ep93xx platform,
-
-The ep93xx is the only chip series it was ever included in.
-
-> If there are remaining users of MaverickCrunch, they can use LTS
-> kernels for at least another five years before kernel support ends.
-
-The only user ! am aware of is the HEAT deep space telescope in the Antarctic
-http://martinwguy.blogspot.com/2015/10/maverickcrunch-code-runs-on-heat-deep.html
-
-Personally I have no problem with removing kernel support if that
-makes people's lives easier in some way.
-
-  M
-
-   M
+Well that's a bit terrifying.  Under what conditions can the VM context become
+corrupted?  E.g. if the context can be corrupted by an inopportune NOTIFY exit,
+then KVM needs to be ultra conservative as a false positive could be fatal to a
+guest.
