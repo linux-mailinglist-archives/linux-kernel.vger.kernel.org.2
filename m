@@ -2,103 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FA93DD752
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB333DD755
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbhHBNj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:39:57 -0400
-Received: from mail-il1-f182.google.com ([209.85.166.182]:39818 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233742AbhHBNjz (ORCPT
+        id S233957AbhHBNkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:40:00 -0400
+Received: from mail-il1-f175.google.com ([209.85.166.175]:35404 "EHLO
+        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233742AbhHBNj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:39:55 -0400
-Received: by mail-il1-f182.google.com with SMTP id r1so16429414iln.6;
-        Mon, 02 Aug 2021 06:39:46 -0700 (PDT)
+        Mon, 2 Aug 2021 09:39:58 -0400
+Received: by mail-il1-f175.google.com with SMTP id k3so16455624ilu.2;
+        Mon, 02 Aug 2021 06:39:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=rIgerFBPFG2F9JHKS0RXhQgm9UjUmaIoJdpDfrB/Eqg=;
-        b=otTBeVwKBaZlVRQKerRBen12EenCc/JWe+nEEfKaxFiiJ3BZOkY2fXH0wAjp9kMXxB
-         i9Y6Jy34EB74jYmczvH+DRtt+qeP2P+7J0SgT4GUh160bkHIxgQdTXmtNBigK2aAYLnA
-         3g+ILu2oBV1Lk7r1b4o8t//hpVf8TwyH/ljt1yLdRe/0Udzg48LUs74/8sGfKZBdZLf4
-         oBViYQPrpyrc/iSZVyGbcmnyhzLh+S4EU48X4SijT4EOuPiLHBITNMMfV+9bzHg6IvWO
-         BpCiwY0u4kEXNqB62OARhJkUUcdpu9NSQ97qHcSvHiC0sNZBkveP7joQc00mie4VFlLr
-         oX4w==
-X-Gm-Message-State: AOAM533XiaaX+WSvPOszUkPB493eGyWv283+GcVv9wLtLDccHef68jBk
-        afToQI58vWexAMeJ2wqc6g==
-X-Google-Smtp-Source: ABdhPJz/WMoUM2rQxLxKe8Oz1HHj/sv39dQtPlrv+f+AFL8gZ4W8A2ixxXUb1j/rukgizJUiX5ZsrA==
-X-Received: by 2002:a92:d790:: with SMTP id d16mr1160275iln.185.1627911586130;
-        Mon, 02 Aug 2021 06:39:46 -0700 (PDT)
+        bh=lMmS75BBYZrZwVcj5qdcK5fUdGJveeoFTuyQ8W/piWQ=;
+        b=oF/UliNQKvfHIuEpwFIVDHIVlW5EDp8UkQHKRuu7G7icDaNdUT1H84/4FN/IFMiHXY
+         joUvg3Etvu44jnm1tbNvijO39d6ySc+mG6HhdHPq4FGz8F2FSVXgpCEVRDBN2Dp89PwQ
+         iQZybJluG3OwNlqUl0s5QhVkuQwiNXh7EYFQwWzHbmsexPdq6h3hNLLUsa2dP1iCgZiB
+         xJSi2He91lxLEnRgmadDHFjRPK4ZNqCbIZ5KuV7Fkh+ddtinq4O+1M5+/m2Q77ca8VMV
+         9ytHHxaGk0YY2TIgkxHpP4Lo0dC24tGvcCizzEVnt9c0Pe5TK/RwuW2V4/Vs87n2jmlX
+         LYOQ==
+X-Gm-Message-State: AOAM531Y2pGxFYPGIfOtFNlfbKauMOz4LUQRv+P5k1y49YI4sNAeXbaO
+        RLWNbSBoL7r+J71tvV6f2Q==
+X-Google-Smtp-Source: ABdhPJxf0ZYJw/fZMjM13lKgISlILvCh3tx8qSjPrDlSPJvoPKdLXZWuZRtIDYY0v4IMl6TM5bc5uw==
+X-Received: by 2002:a92:ca8f:: with SMTP id t15mr617420ilo.262.1627911588427;
+        Mon, 02 Aug 2021 06:39:48 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id 125sm7415955iow.9.2021.08.02.06.39.44
+        by smtp.gmail.com with ESMTPSA id i7sm5609333ilk.7.2021.08.02.06.39.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 06:39:45 -0700 (PDT)
-Received: (nullmailer pid 918759 invoked by uid 1000);
+        Mon, 02 Aug 2021 06:39:47 -0700 (PDT)
+Received: (nullmailer pid 918762 invoked by uid 1000);
         Mon, 02 Aug 2021 13:39:43 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devicetree@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Linus W <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-In-Reply-To: <20210730142537.v2.1.I1116e79d34035338a45c1fc7cdd14a097909c8e0@changeid>
-References: <20210730212625.3071831-1-dianders@chromium.org> <20210730142537.v2.1.I1116e79d34035338a45c1fc7cdd14a097909c8e0@changeid>
-Subject: Re: [PATCH v2 1/6] dt-bindings: drm/panel-simple: Introduce generic eDP panels
+To:     Lucas Stankus <lucas.p.stankus@gmail.com>
+Cc:     Dragos.Bogdan@analog.com, robh+dt@kernel.org,
+        linux-iio@vger.kernel.org, lars@metafoo.de,
+        Darius.Berghe@analog.com, Michael.Hennerich@analog.com,
+        devicetree@vger.kernel.org, jic23@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1e652b88a367824e58fb71896b4a660204bd7a88.1627709571.git.lucas.p.stankus@gmail.com>
+References: <cover.1627709571.git.lucas.p.stankus@gmail.com> <1e652b88a367824e58fb71896b4a660204bd7a88.1627709571.git.lucas.p.stankus@gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: accel: Add binding documentation for ADXL313
 Date:   Mon, 02 Aug 2021 07:39:43 -0600
-Message-Id: <1627911583.050984.918758.nullmailer@robh.at.kernel.org>
+Message-Id: <1627911583.064913.918761.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 14:26:20 -0700, Douglas Anderson wrote:
-> eDP panels generally contain almost everything needed to control them
-> in their EDID. This comes from their DP heritage were a computer needs
-> to be able to properly control pretty much any DP display that's
-> plugged into it.
+On Sat, 31 Jul 2021 17:36:31 -0300, Lucas Stankus wrote:
+> Add device tree binding documentation for ADXL313 3-axis accelerometer.
 > 
-> The one big issue with eDP panels and the reason that we need a panel
-> driver for them is that the power sequencing can be different per
-> panel.
-> 
-> While it is true that eDP panel sequencing can be arbitrarily complex,
-> in practice it turns out that many eDP panels are compatible with just
-> some slightly different delays. See the contents of the bindings file
-> introduced in this patch for some details.
-> 
-> The fact that eDP panels are 99% probable and that the power
-> sequencing (especially power up) can be compatible between many panels
-> means that there's a constant desire to plug multiple different panels
-> into the same board. This could be for second sourcing purposes or to
-> support multiple SKUs (maybe a 11" and a 13", for instance).
-> 
-> As discussed [1], it should be OK to support this by adding two
-> properties to the device tree to specify the delays needed for
-> powering up the panel the first time. We'll create a new "edp-panel"
-> bindings file and define the two delays that might need to be
-> specified. NOTE: in the vast majority of the cases (HPD is hooked up
-> and isn't glitchy or is debounced) even these delays aren't needed.
-> 
-> [1] https://lore.kernel.org/r/CAD=FV=VZYOMPwQZzWdhJGh5cjJWw_EcM-wQVEivZ-bdGXjPrEQ@mail.gmail.com
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
 > ---
-> 
-> Changes in v2:
-> - No longer allow fallback to panel-simple.
-> - Add "-ms" suffix to delays.
-> 
->  .../bindings/display/panel/panel-edp.yaml     | 188 ++++++++++++++++++
->  1 file changed, 188 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/panel-edp.yaml
+>  .../bindings/iio/accel/adi,adxl313.yaml       | 75 +++++++++++++++++++
+>  1 file changed, 75 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -107,11 +68,13 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/panel/panel-edp.example.dt.yaml: bridge@2d: 'aux-bus' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl313.example.dt.yaml: accelerometer@53: interrupts: [[0, 4]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl313.example.dt.yaml: accelerometer@0: interrupts: [[0, 4]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1511822
+See https://patchwork.ozlabs.org/patch/1511954
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
