@@ -2,92 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2123DD48D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EC83DD492
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbhHBLUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
+        id S233466AbhHBLVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbhHBLUq (ORCPT
+        with ESMTP id S233446AbhHBLVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:20:46 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE92AC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 04:20:36 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GdbCN2p71z9s1l;
-        Mon,  2 Aug 2021 21:20:32 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1627903233;
-        bh=Ph52ycwEVB+Kr83e5k5zzEwv6lbCoXALW4ekLWI3mvY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=OyD8Aq4AaqIcoMdaKfnwOqsE8epJkeGEPf9zJ0mxrHVywJVEKvSUZj+8YoIcH1VE0
-         honyNi+z9ReapyZ4mk0fGsa4f3+TDmmba0/ty3GP7pNlm6LYVIBMCjhfutrxOxHu8U
-         sXMxTIGfAExBHy4IhWp21JGrCbgJ+3wenHoU1iroNBQ5voTWW6vLvDn8IZF88BqEG1
-         /H9zBHykLP4zxKizoJFitgHSqjAZTrCPkT/GNtGZIKgGPYlDfFDLg73RL/C+wl4gcp
-         xLa/w0jrpy0Nr/i4gK3JpxGP4X4LK3JHpDAQ4j1a8uYsQjEqJM8BSwqNCeKElZLAQp
-         CCvt/6/jf5VKA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, Robin Murphy <robin.murphy@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        iommu@lists.linux-foundation.org,
-        Claire Chang <tientzu@chromium.org>,
-        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] powerpc/svm: Don't issue ultracalls if
- !mem_encrypt_active()
-In-Reply-To: <20210730114231.23445-1-will@kernel.org>
-References: <20210730114231.23445-1-will@kernel.org>
-Date:   Mon, 02 Aug 2021 21:20:30 +1000
-Message-ID: <871r7cks8x.fsf@mpe.ellerman.id.au>
+        Mon, 2 Aug 2021 07:21:53 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327B7C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 04:21:44 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id c9so779661wri.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 04:21:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G/koorird9RI6rxHcMKGWVC8FpqcPw2Bxqajxw8KAm4=;
+        b=aiZNE3gCayt228fGCrHvqWoMztXke8LpVWO1FnIygBy/abbs828QBj+IZEAUyXO1RI
+         Jm9JuLsbnNsV3CeKbZKE3u2fpsHLWDcB5GriZExIbtLRnn5yx1H+CejY+Tszn3K1jFl+
+         2oIhUVVfjNXKm7l2u6UWTLSOvFnoMk9b2sh9S6Jf7tXzLWuHgMav6vYww9Fb0Yl0piIq
+         KPLvyAg4X715tfC3kuA8KSOVhNhA4pFBHeEwgcggXr2RHaUcnLCmlCMMvtkAU8ShqMus
+         5c5kc8xsTCP3YMQGPqlaCfgPENZM7vSl2noQezCY99cSzsgB6tsXNxCKCpoAd5BXn0Uu
+         c0bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G/koorird9RI6rxHcMKGWVC8FpqcPw2Bxqajxw8KAm4=;
+        b=Uk8HjtVE5aoF0JsPkaNCY9/7EtepZa9lnRbQPSTuvhrnAw2CqvMVLeA/cQLJ2AE1jj
+         /OtbFa7lquT+KhZ6ConEWdwzEspyaoCD0/iHGi8Hzb2gxNCLpuMzysscWH0lZ4UwPKI5
+         2N3VF3tjdZBMayAtcaFB3SEGquUk/ZslFsfEp+VQPBzYksre8p8Gz1CCFl6uk2wK6rVV
+         iDJVc86uTa3VcTaORg1VCRAYG1Xl0CmDRo6n3BwiKfZb9eai+S0V6R3WQ1LGQMLTj3w1
+         1147Wa2IVlIZupSMGa7mIscf/AgNWSXoE6rwSNWvuvlFRhnnNzvXLNK9p4t7GIE9vCvu
+         vOvw==
+X-Gm-Message-State: AOAM532vbX5w6Qht8p8OV0nWTCprJ4hln8+8cCu5B75HuOrUWM3klrNI
+        jN7Ux0/TAgexuj/yBLfZSFY3vjBHnfBI+56lbW4M9Q==
+X-Google-Smtp-Source: ABdhPJw+wl63y5y5TpELUycesptAk3jPx8BJVJfGvYIoyZ5V7Va5STE7ZNvQjhlWpic5NsH+ZoKNK3nykh2tfhfC0CM=
+X-Received: by 2002:a5d:67c4:: with SMTP id n4mr16475048wrw.176.1627903302730;
+ Mon, 02 Aug 2021 04:21:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210721090706.21523-1-james.clark@arm.com> <20210721090706.21523-4-james.clark@arm.com>
+ <20210731074343.GG7437@leoy-ThinkPad-X240s>
+In-Reply-To: <20210731074343.GG7437@leoy-ThinkPad-X240s>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Mon, 2 Aug 2021 12:21:31 +0100
+Message-ID: <CAJ9a7Vj_KhV+v6VU+EQN5t818VS9jvf3v3-2JbwVMOHZbi3gcg@mail.gmail.com>
+Subject: Re: [PATCH 3/6] perf cs-etm: Save TRCDEVARCH register
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Al Grant <al.grant@arm.com>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Will Deacon <will@kernel.org> writes:
-> Commit ad6c00283163 ("swiotlb: Free tbl memory in swiotlb_exit()")
-> introduced a set_memory_encrypted() call to swiotlb_exit() so that the
-> buffer pages are returned to an encrypted state prior to being freed.
+Hi Leo.
+
+On Sat, 31 Jul 2021 at 08:43, Leo Yan <leo.yan@linaro.org> wrote:
 >
-> Sachin reports that this leads to the following crash on a Power server:
+> On Wed, Jul 21, 2021 at 10:07:02AM +0100, James Clark wrote:
+> > Now that the metadata has a length field we can add extra registers
+> > without breaking any previous versions of perf.
+> >
+> > Save the TRCDEVARCH register so that it can be used to configure the ETE
+> > decoder in the next commit. If the sysfs file doesn't exist then 0 will
+> > be saved which is an impossible register value and can also be used to
+> > signify that the file couldn't be read.
 >
-> [    0.010799] software IO TLB: tearing down default memory pool
-> [    0.010805] ------------[ cut here ]------------
-> [    0.010808] kernel BUG at arch/powerpc/kernel/interrupt.c:98!
+> After reviewed the whole patch set, come back to highlight one thing:
+> seems to me ETE is only a feature introduced by new ETMv4 revisions; in
+> other words, if we support ETMv4.5 or any later revisions, it will
+> support ETE feature.
 >
-> Nick spotted that this is because set_memory_encrypted() is issuing an
-> ultracall which doesn't exist for the processor, and should therefore
-> be gated by mem_encrypt_active() to mirror the x86 implementation.
+
+The ETE hardware and trace protocol is introduced to support new
+architectural features in the PE - principally those associated with
+v9 architecture and beyond. It has has additional packet types that
+will never appear in any ETM4.x trace sequence.
+ETE (and TRBE) are defined as architectural features of the PE - i.e.
+FEAT_ETE and FEAT_TRBE read from feature registers on the core.
+
+You are correct in saying that some features in ETM v4.x beyond ETM
+4.5 will also appear in ETE, but the reverse is not true - ETE is a
+superset of ETMv4.
+
+> Here I think the right thing to do is to support newer revisions for
+> ETMv4, and then based on the revision it creates a decoder with
+> supporting ETE feature.  For a more neat solution, if the perf tool
+> passes the "correct" revision number to the OpenCSD decoder, it should
+> can decode trace data with ETE packets.  In this way, the ETE decoding
+> can be transparent for perf cs-etm code.
 >
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Cc: Claire Chang <tientzu@chromium.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Fixes: ad6c00283163 ("swiotlb: Free tbl memory in swiotlb_exit()")
-> Suggested-by: Nicholas Piggin <npiggin@gmail.com>
-> Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-> Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
-> Link: https://lore.kernel.org/r/1905CD70-7656-42AE-99E2-A31FC3812EAC@linux.vnet.ibm.com/
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  arch/powerpc/platforms/pseries/svm.c | 6 ++++++
->  1 file changed, 6 insertions(+)
 
-Thanks.
+The OpenCSD decoder separates the ETMv4 decoder from the ETE decoder -
+for the reasons given above.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Additionally the ETE decoder and the ETMv4 decoder required different
+sets of ID registers to correctly set up the decoder.  For example,
+for ETMv4 the version is extracted form TRCIDR1, for ETE the version
+in TRCIDR1 is set 0xFF, and thus needs TRCDEVARCH to extract the
+revision. It is likely that later updates to ETE will require an
+additional TRCIDR register to be saved.
+
+Choosing the base type of decoder in this way is how the library can
+support ETMv3, EMTv4, ETE, STM, PTM etc - and while some of those
+protocols use TRCIDR1 and TRCDEVARCH - not all do.
+
+It would in theory be possible to have the OpenCSD library
+"autodetect" the type of decoder needed based purely on a set of ID
+registers. But this set of ID registers would be far larger than the
+ones currently used, and would require modifcation to a lot of the
+existing device drivers to ensure they were accessible via sysfs. This
+register set includes the ID registers that are currently used to
+identify the component on the AMBA bus and match to the correct
+driver, plus additional CoreSight management registers. This would
+also create a dependency between decoder creation and ID numbers - in
+the same way that each new ETM4.x part number has to be added to the
+ETM4.x device driver.
+
+Such a system would require a significant update to the OpenCSD
+infrastructure, and is not planned at this time.
+
+Regards
+
+Mike
 
 
-I assume Konrad will take this via the swiotlb tree?
+> How about you think for this?  Sorry if I introduce noise due to my
+> lack knowledge (and platform) for ETE.
+>
+> Thanks,
+> Leo
 
-cheers
+
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
