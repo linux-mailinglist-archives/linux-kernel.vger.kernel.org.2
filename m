@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9132C3DDB7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526983DDB82
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbhHBOtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234132AbhHBOts (ORCPT
+        id S234228AbhHBOu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:50:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52050 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233925AbhHBOuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:49:48 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578B6C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 07:49:39 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id x15-20020a05683000cfb02904d1f8b9db81so6132593oto.12
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 07:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=otW4PBFzPFP9S9Ll8i9O95kKgdyBa3g6lebgB3vbVvk=;
-        b=d6CAnGX8yOnGG/zxuBmSZOHU4DNyBI4ifgTPny+0XVmbMv+ib7OFp8CJWMyZf4AhOC
-         ZLnO0IyakO4PvT4yXKtoMZJ94cmEO+Wm2H4yVJMxeYnWafGLyLJRsStJks1d2N+sGT7a
-         ayOuWHALni5bXJUGAFDswJiLGq6Z/LYgiQ4O82JTQmb6muNTjAYX6R1f0L4Rictqs9m2
-         AmvBdTUA2WXZQwxgjDJVZ4brlEIZyzP4EnfP1FgBe/4HOQ8k/IREeVdUGn5pcykn4q8G
-         Jv6mE8WPul5vudDCn9j6DP+UVzUx5lZ2FKZ1Fj4Swsz9xEJ6sh4cnyW9qhDM5O3FFq8u
-         wF+w==
+        Mon, 2 Aug 2021 10:50:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627915845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JKF801/nYauGcMfbC5O3GsLvI6SfQQJO7GZapt9n7eY=;
+        b=QIpI0I7pELdYy7g3/w+bu/jMSfRcQZms6NdHU2uRxhVmPJ0fkVMUWXqig98su2baVDzsRV
+        ri3W56Ge96+bjo02B/7EB7Zh6TdLRa66pROMyQUAZbnt8d2rFQ58nDwHBnL2pmdHMyPsgO
+        JweGgBojVSEyt7pLIiEhh85SLEpLqiI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-335-Tsh70T_pPyOJvdX1u5r7jQ-1; Mon, 02 Aug 2021 10:50:43 -0400
+X-MC-Unique: Tsh70T_pPyOJvdX1u5r7jQ-1
+Received: by mail-wm1-f69.google.com with SMTP id u14-20020a7bcb0e0000b0290248831d46e4so55307wmj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 07:50:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=otW4PBFzPFP9S9Ll8i9O95kKgdyBa3g6lebgB3vbVvk=;
-        b=j1B3KnZ6qb6Bbe3SszoRmTtll7WbUFjugEFOWDBlCkpuexVCVaLGoNkBjVUB3az0YA
-         mhNKCzTRhD7YcuQAPNko5iiIRwKsbCptDWo9SHBIyYmnX19MlpaK2Lwn995YpyOhcqHT
-         /bYsJKOI52evM13p2VHvS7ly0LssbOV5GlmsG3CC01fDDZYGFY6xD0gVJSqxcRfc3U3k
-         MnCte8Sqd4wgoe1VsNunnxVSW+GG4WgeuC3ESBKQ94D35ciMIBzgWAIQX0Grt0Tugjhs
-         hcZjbviA8nGuU5WkxpZZq+HPEpBYfc0PR1lZo1KDdeEb3lFsj6acfUmkWuG17RIvuP6g
-         0ejg==
-X-Gm-Message-State: AOAM532lGH3OKuxYhCboP2zGbsJgBcfjLeWPgd2uVh0GynYpu+Gx/O1t
-        vF2Rux+2DexVTS1HyGMSGJQ=
-X-Google-Smtp-Source: ABdhPJwkQa8mzAtjz83cHzUjPFU6MFgJDPI5BdaOOjjsKW/OqSD1pczoT3uqI231xEy9CyWBZSiqug==
-X-Received: by 2002:a05:6830:19ca:: with SMTP id p10mr12194541otp.267.1627915778708;
-        Mon, 02 Aug 2021 07:49:38 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
-        by smtp.gmail.com with ESMTPSA id w35sm1879354ott.80.2021.08.02.07.49.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 07:49:38 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: kernel BUG in new r8188eu
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-staging@lists.linux.dev
-References: <80042e9f-6811-38f3-010b-1c0951ba88db@lwfinger.net>
- <YQThm1A0Up1m4l1S@kroah.com>
- <c2a6746a-24e6-6888-9208-32fccebb3fec@lwfinger.net>
- <YQY/tfJJdBVg/mwf@kroah.com>
- <cef19337-5ff3-c0cd-33ef-4f9990bcd4ec@lwfinger.net>
- <YQfKohnSRWHjlht6@kroah.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <4f3e91f4-3d7b-a580-3134-757614d92491@lwfinger.net>
-Date:   Mon, 2 Aug 2021 09:49:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JKF801/nYauGcMfbC5O3GsLvI6SfQQJO7GZapt9n7eY=;
+        b=AI4ooY550qnaq+Mibs12538NCpJ2ocwweciFJ+qDUNtgPogLgTph63gYNa2ZbBveHy
+         4QxUIFZqkCejxqYSPDbgU2bx2+Nv/+l7f984IyVxi9+MQF6y8He2eoGxwS9x23QjRXOD
+         ait7VttMTpBDa8Dpaz2hwrzV0QVmmDXxGH0I0V+DxPREqomZdxg7ebZAK70+Y0J9nS9O
+         w9S7G8iLXJCzR7J/RwowQlfeOmkk2hN+dRoWCofj0J92BY1Su7+C4GURuC4QTOAYLIYl
+         Iuk4QuiGO8zDdn/36vgAtYqRcpXItZ37PJxlP1rohiUwPFd114b2379F+4qeyA2CjD6K
+         Q4Rg==
+X-Gm-Message-State: AOAM532Qn4Ct6mODSlPuA8wkCNFG8zSh25/+ZxY59ZL5i++qhJA2UuxJ
+        qt1o+U/r8ZzvOKSEj3ZtaG7qYpLEdbtFdoIKHJ+easFaiSu86yZgkpfzPQubiW2EUOR2L7zRGC6
+        O/cONaGoeMnncRjcNnm5chVQ=
+X-Received: by 2002:a1c:4e12:: with SMTP id g18mr11555793wmh.165.1627915842820;
+        Mon, 02 Aug 2021 07:50:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxRe8WKPg8hxQ6J9MYGdy56w2042hvGMFgaYmv5rKPDB1BXU0ynn2eaovw/RaGbFMLSeZIZQg==
+X-Received: by 2002:a1c:4e12:: with SMTP id g18mr11555780wmh.165.1627915842678;
+        Mon, 02 Aug 2021 07:50:42 -0700 (PDT)
+Received: from localhost (79-67-181-135.dynamic.dsl.as9105.com. [79.67.181.135])
+        by smtp.gmail.com with ESMTPSA id q64sm6982845wma.8.2021.08.02.07.50.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 07:50:42 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 15:50:41 +0100
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     David Rientjes <rientjes@google.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@suse.com,
+        penguin-kernel@i-love.sakura.ne.jp, llong@redhat.com,
+        neelx@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/oom_kill: show oom eligibility when displaying the
+ current memory state of all tasks
+Message-ID: <20210802145041.w7lqdt77qguwbwag@ava.usersys.com>
+X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
+X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
+References: <20210730162002.279678-1-atomlin@redhat.com>
+ <fa6e3682-abae-f656-fec4-178a608face5@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YQfKohnSRWHjlht6@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <fa6e3682-abae-f656-fec4-178a608face5@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/21 5:36 AM, Greg Kroah-Hartman wrote:
-> Ah, doh, that was my fault, sorry, that patch was incorrect (odd git id,
-> don't know where that came from, it's a different id in my tree.)  Let
-> me revert this commit and then will redo it correctly.
+On Sun 2021-08-01 20:49 -0700, David Rientjes wrote:
+> oom_score_adj is shown already in the tasklist dump, I'm not sure what 
+> value this adds.
+
+Fair enough.
+
 > 
-> thanks for finding this.
+> > +	else if (test_bit(MMF_OOM_SKIP, &p->mm->flags)
+> > +		return "R";
+> > +	else if (in_vfork(p))
+> > +		return "V";
 > 
->> There are lots of these on Ebay from $2.47 up with free shipping!
-> Any hints on the name for how to figure out which devices are supported
-> by this driver?
+> This is going to be racy, we can't show that a task that is emitted as 
+> part of the tasklist dump was did not have in_vfork() == true at the time 
+> oom_badness() was called.
 
-I do not why my git id did not match yours.
+Yes, this is true.
 
-It was no problem. After I determined that the original code was correct, it was 
-an easy bisection - 6 cycles with only r8188eu needing rebuilding.
+> Wouldn't it be better to simply print the output of oom_badness() to the 
+> tasklist dump instead so we get complete information?
 
-The driver supports RTL8188EU and RTL8188EUS. The name comes from the 8188E, and 
-the U means a USB interface. The S indicates a new design that appears the same 
-to the driver.
+I think this would be acceptable.
 
-Larry
+> We could simply special case a LONG_MIN return value as -1000 or "min".
+
+Agreed.
+
+
+
+
+
+Kind regards,
+
+-- 
+Aaron Tomlin
 
