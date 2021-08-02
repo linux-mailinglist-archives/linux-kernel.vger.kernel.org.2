@@ -2,133 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9B03DD70B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA733DD711
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbhHBN0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:26:02 -0400
-Received: from mga17.intel.com ([192.55.52.151]:55701 "EHLO mga17.intel.com"
+        id S233842AbhHBNaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:30:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233818AbhHBN0A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:26:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="193736130"
-X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
-   d="scan'208";a="193736130"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 06:25:50 -0700
-X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
-   d="scan'208";a="520564738"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.168.136]) ([10.249.168.136])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 06:25:46 -0700
-Subject: Re: [RFC PATCH v2 05/69] KVM: TDX: Add architectural definitions for
- structures and values
-To:     Erdem Aktas <erdemaktas@google.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86 <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kai Huang <kai.huang@linux.intel.com>,
-        Chao Gao <chao.gao@intel.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <d29b2ac2090f20e8de96888742feb413f597f1dc.1625186503.git.isaku.yamahata@intel.com>
- <CAAYXXYy=fn9dUMjY6b6wgCHSTLewnTZLKb00NMupDXSWbNC9OQ@mail.gmail.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <1057bbfe-c73e-a182-7696-afc59a4786d8@intel.com>
-Date:   Mon, 2 Aug 2021 21:25:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S233785AbhHBNaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:30:08 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4BDD60EFF;
+        Mon,  2 Aug 2021 13:29:58 +0000 (UTC)
+Date:   Mon, 2 Aug 2021 09:29:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] trace: remove redundant dependency from
+ IRQSOFF_TRACER
+Message-ID: <20210802092952.3047bb99@oasis.local.home>
+In-Reply-To: <20210731052233.4703-3-masahiroy@kernel.org>
+References: <20210731052233.4703-1-masahiroy@kernel.org>
+        <20210731052233.4703-3-masahiroy@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAAYXXYy=fn9dUMjY6b6wgCHSTLewnTZLKb00NMupDXSWbNC9OQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/2021 9:04 AM, Erdem Aktas wrote:
-> On Fri, Jul 2, 2021 at 3:05 PM <isaku.yamahata@intel.com> wrote:
->> +/* Management class fields */
->> +enum tdx_guest_management {
->> +       TD_VCPU_PEND_NMI = 11,
->> +};
->> +
->> +/* @field is any of enum tdx_guest_management */
->> +#define TDVPS_MANAGEMENT(field)        BUILD_TDX_FIELD(32, (field))
+On Sat, 31 Jul 2021 14:22:33 +0900
+Masahiro Yamada <masahiroy@kernel.org> wrote:
+
+> IRQSOFF_TRACE is already guarded by a stronger condition,
+> TRACING_SUPPORT.
 > 
-> I am a little confused with this. According to the spec, PEND_NMI has
-> a field code of 0x200000000000000B
-> I can understand that 0x20 is the class code and the PEND_NMI field code is 0xB.
-> On the other hand, for the LAST_EXIT_TSC the field code is  0xA00000000000000A.
+> 'depends on TRACE_IRQFLAGS_SUPPORT' is redundant.
 
-> Based on your code and the table in the spec, I can see that there is
-> an additional mask (1ULL<<63) for readonly fields
+I'm fine with the other two patches, but this one concerns me. I'm not
+sure TRACING_SUPPORT really needs to depend on TRACE_IRQFLAGS_SUPPORT.
+When tracing was first introduced, the main use case was the irqsoff
+tracer. Today, with function graph tracing and events being introduced,
+it's one of the minor use cases of tracing support.
 
-No. bit 63 is not for readonly fields, but for non_arch fields.
+I believe the only thing that requires the TRACE_IRQFLAGS_SUPPORT is
+the irqsoff tracer (and friends), so if anything, we should remove that
+dependency from TRACING_SUPPORT, not here.
 
-Please see 18.7.1 General definition
+-- Steve
 
-> Is this information correct and is this included in the spec? I tried
-> to find it but somehow I do not see it clearly defined.
-> 
->> +#define TDX1_NR_TDCX_PAGES             4
->> +#define TDX1_NR_TDVPX_PAGES            5
->> +
->> +#define TDX1_MAX_NR_CPUID_CONFIGS      6
-> Why is this just 6? I am looking at the CPUID table in the spec and
-> there are already more than 6 CPUID leaves there.
-
-This is the number of CPUID config reported by TDH.SYS.INFO. Current KVM 
-only reports 6 leaves.
-
->> +#define TDX1_MAX_NR_CMRS               32
->> +#define TDX1_MAX_NR_TDMRS              64
->> +#define TDX1_MAX_NR_RSVD_AREAS         16
->> +#define TDX1_PAMT_ENTRY_SIZE           16
->> +#define TDX1_EXTENDMR_CHUNKSIZE                256
-> 
-> I believe all of the defined variables above need to be enumerated
-> with TDH.SYS.INFO.
-
-No. Only TDX1_MAX_NR_TDMRS, TDX1_MAX_NR_RSVD_AREAS and 
-TDX1_PAMT_ENTRY_SIZE can be enumerated from TDH.SYS.INFO.
-
-- TDX1_MAX_NR_CMRS is described in 18.6.3 CMR_INFO, which tells
-
-   TDH.SYS.INFO leaf function returns a MAX_CMRS(32) entry array
-   of CMR_INFO entries.
-
-- TDX1_EXTENDMR_CHUNKSIZE is describe in 20.2.23 TDH.MR.EXTEND
-
->> +#define TDX_TDMR_ADDR_ALIGNMENT        512
-> Is TDX_TDMR_ADDR_ALIGNMENT used anywhere or is it just for completeness?
-
-It's the leftover during rebase. We will clean it up.
-
->> +#define TDX_TDMR_INFO_ALIGNMENT        512
-> Why do we have alignment of 512, I am assuming to make it cache line
-> size aligned for efficiency?
-
-It should be leftover too.
-
-SEAMCALL TDH.SYS.INFO requires each cmr info in CMR_INFO_ARRAY to be 
-512B aligned
 
 > 
->> +#define TDX_TDSYSINFO_STRUCT_ALIGNEMNT 1024
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
 > 
-> typo: ALIGNEMNT -> ALIGNMENT
+>  kernel/trace/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> -Erdem
-> 
+> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> index 9d3f918b5867..b39e67db644e 100644
+> --- a/kernel/trace/Kconfig
+> +++ b/kernel/trace/Kconfig
+> @@ -265,7 +265,6 @@ config TRACE_PREEMPT_TOGGLE
+>  config IRQSOFF_TRACER
+>  	bool "Interrupts-off Latency Tracer"
+>  	default n
+> -	depends on TRACE_IRQFLAGS_SUPPORT
+>  	select TRACE_IRQFLAGS
+>  	select GENERIC_TRACER
+>  	select TRACER_MAX_TRACE
 
