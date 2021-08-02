@@ -2,150 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC92B3DDF2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85783DDF06
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhHBSa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:30:58 -0400
-Received: from gfs2.fields.utoronto.ca ([128.100.216.21]:35268 "EHLO
-        gfs2.fields.utoronto.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhHBSa5 (ORCPT
+        id S229810AbhHBSWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhHBSWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:30:57 -0400
-X-Greylist: delayed 603 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Aug 2021 14:30:56 EDT
-Received: from fields.fields.utoronto.ca (fields.fields.utoronto.ca [128.100.216.11])
-        by gfs2.fields.utoronto.ca (8.15.2/8.15.2/Fields_9.1_server_1625693608) with ESMTPS id 172IKZEb020929
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 2 Aug 2021 14:20:35 -0400
-Received: from fields.fields.utoronto.ca (localhost [127.0.0.1])
-        by fields.fields.utoronto.ca (8.15.2/8.15.2/Fields_9.1_workstation_1) with ESMTPS id 172IKZ5k023314
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 2 Aug 2021 14:20:35 -0400
-Received: from localhost (pspencer@localhost)
-        by fields.fields.utoronto.ca (8.15.2/8.15.2/Submit) with ESMTP id 172IKZGf023311;
-        Mon, 2 Aug 2021 14:20:35 -0400
-Date:   Mon, 2 Aug 2021 14:20:35 -0400 (EDT)
-From:   Philip Spencer <pspencer@fields.utoronto.ca>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] uvcvideo: Support devices that require SET_INTERFACE(0)
- before/after streaming
-Message-ID: <alpine.LFD.2.21.2108021331010.12783@fields.fields.utoronto.ca>
-User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
-X-Spam-Assessment: NotSpam -3.888/5 BAYES_00,SPF_HELO_NONE,SPF_NONE,T_HDRS_LCASE,FROM_LOCAL_MACHINE
-X-Scanned-By: MIMEDefang 2.79
-X-Greylist: No major spam indications; not delayed by milter-greylist-4.6.1 (gfs2.fields.utoronto.ca [128.100.216.26]); Mon, 02 Aug 2021 14:20:37 -0400 (EDT)
+        Mon, 2 Aug 2021 14:22:09 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA35AC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:21:58 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id n192-20020a25dac90000b029054c59edf217so19905601ybf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:21:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=yv7WLNE2828qDLgR31t9jFSBn3B30XOTw/zxq8FSLFU=;
+        b=JZXUBz4dnf8l5rXEZdeDOpq3WTb6EH38ITJ45zPxiK+FUGsGNAgEG/xBLPceWtOPAe
+         jFLKx/NuhGRdA2LjFuZGebRD84/yfrjLqtgQCGw5PLETw9QknNngYf7nZ3hW4Uji21T4
+         RplezT3ak29uKzYLvf96nQwKHm8lwZLZQP4nST8wpxYuRB0PTHjdU3oaQmsYZ1VvdRKE
+         t6a5MMIfAHRjjrz7pCzGgkGDe2tAhIAckEJLjfVrL3+JXVs3srRKkSBparGMaPt2GtWT
+         hSeHI8bAIolH0nTI8VZCnDphOtw4q1hxMSBX8OQv0HYZBcyg5v4m6gqCL5Hwchs6oDqU
+         A4/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=yv7WLNE2828qDLgR31t9jFSBn3B30XOTw/zxq8FSLFU=;
+        b=KOOM3cD2J72J3KyvexqljPAAdKzrJBxa1/g4fhqIVmWHpmU+IbITDn8cBKMO3s7zlX
+         Q4tlyPocbfMahr0N0sCDYyNwLED+mnS5mKie3q9Kpi1d/pDCreLyl8TrDJVPaFOh7qiX
+         VIQ8UmDBSQq2u9NF+xa2yxqTF3oxZTiUd8rpFvO+7qQ6qHcbMJqH9QNDSxBtmFrL2Dl4
+         8chXGBjKtU52Lylz3nTkUX+IhZ5kfl/zIRkQIu5w8nRLGP/RPrcW/IulSPIbQ0hnDhoP
+         qfDi1sTojcRbR/4SgY+oEsnylG0VLvyaDm+sKKLlcK+FkjwOKg/Wl6FPQKF0+wwjyd2W
+         o7Ww==
+X-Gm-Message-State: AOAM530PdSOjt1C14JQ9Fz+WK5PSOuOJLg4k2wTp0GOHLA+wdI9/sBch
+        AZCvSME0tu2y/Z8rCtpsd1A0ex1ejr7N2bpWNcF1mw==
+X-Google-Smtp-Source: ABdhPJznTjz+KZKbDsCNPJz7BxB1CJD+q1y0cBlC/YOCBZs7kDpjY/el9laA0JlZcagGqwlp/4eYxfvITanP8q1xDDszmw==
+X-Received: from mustash.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:337b])
+ (user=richardsonnick job=sendgmr) by 2002:a25:27c1:: with SMTP id
+ n184mr23601473ybn.496.1627928518173; Mon, 02 Aug 2021 11:21:58 -0700 (PDT)
+Date:   Mon,  2 Aug 2021 18:20:53 +0000
+In-Reply-To: <20210802102100.5292367a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Message-Id: <20210802182057.2199810-1-richardsonnick@google.com>
+Mime-Version: 1.0
+References: <20210802102100.5292367a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH v3] pktgen: Fix invalid clone_skb override
+From:   Nicholas Richardson <richardsonnick@google.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     nrrichar@ncsu.edu, arunkaly@google.com,
+        Nick Richardson <richardsonnick@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Di Zhu <zhudi21@huawei.com>, Ye Bin <yebin10@huawei.com>,
+        Yejune Deng <yejune.deng@gmail.com>,
+        Leesoo Ahn <dev@ooseel.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(This is my first kernel-related mailing list posting; my apologies if I 
-have targeted wrong maintainers and/or lists. This is posted on the Ubuntu 
-launchpad bug tracker at 
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1938669 and it was 
-suggested there that I post directly to the maintainers/mailing lists).
+From: Nick Richardson <richardsonnick@google.com>
 
-Video capture devices made by Epiphan Systems (vendor id 0x2b77) work 
-once, but as soon as the video device is closed (or even if it is kept 
-open but the application issues a VIDIOC_STREAMOFF ioctl) it won't work 
-again - subsequent calls to VIDOC_DQBUF simply hang - until the device is 
-unbound from and rebound to the uvcvideo module. (modprobe -r uvcvideo; 
-modprobe uvcvideo also works).
+When the netif_receive xmit_mode is set, a line is supposed to set
+clone_skb to a default 0 value. This line is made redundant due to a
+preceding line that checks if clone_skb is more than zero and returns
+-ENOTSUPP.
 
-For example:
+Only the positive case for clone_skb needs to be checked. It
+is impossible for a user to set clone_skb to a negative number.
+When a user passes a negative value for clone_skb, the num_arg()
+function stops parsing at the first nonnumeric value.
 
-   ffplay /dev/video0 -- works fine and shows the captured stream.
+For example: "clone_skb -200" would stop parsing at the
+first char ('-') and return zero for the new clone_skb value.
 
-   ffplay /dev/video0 -- when run a second time: hangs and does not capture 
-anything
+The value read by num_arg() cannot be overflow-ed into the negative
+range, since it is an unsigned long.
 
-   modprobe -r uvcvideo ; modprobe uvcvideo; ffplay /dev/video0 -- works 
-fine again.
+Remove redundant line that sets clone_skb to zero. If clone_skb is
+equal to zero then set xmit_mode to netif_receive as usual and return
+no error.
 
-Experimenting with the device and the uvcvideo module source code reveals 
-that problem is the device is expecting SET_INTERFACE(0) to be sent to 
-return it to a state where it can accept control requests and start 
-streaming again.
+Signed-off-by: Nick Richardson <richardsonnick@google.com>
+---
+ net/core/pktgen.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-The code in uvc_video.c has several comments stating that some 
-bulk-transfer devices require a SET_INTERFACE(0) call to be made before 
-any control commands, even though 0 is already the default and only valid 
-interface value. And, the function uvc_video_init makes such a call (which 
-is why the device starts working again after rebinding to the uvcvideo 
-module). But no such call is made when streaming is stopped then 
-restarted.
+diff --git a/net/core/pktgen.c b/net/core/pktgen.c
+index 7e258d255e90..314f97acf39d 100644
+--- a/net/core/pktgen.c
++++ b/net/core/pktgen.c
+@@ -1190,11 +1190,6 @@ static ssize_t pktgen_if_write(struct file *file,
+ 			 * pktgen_xmit() is called
+ 			 */
+ 			pkt_dev->last_ok = 1;
+-
+-			/* override clone_skb if user passed default value
+-			 * at module loading time
+-			 */
+-			pkt_dev->clone_skb = 0;
+ 		} else if (strcmp(f, "queue_xmit") == 0) {
+ 			pkt_dev->xmit_mode = M_QUEUE_XMIT;
+ 			pkt_dev->last_ok = 1;
+-- 
+2.32.0.554.ge1b32706d8-goog
 
-Furthermore, SET_INTERFACE(0) is the mechanism by which isochronous 
-devices are told to stop streaming, and the comments in 
-uvc_video_stop_streaming state that the UVC specification is unclear on 
-how a bulk-based device should be told to stop streaming, so it is 
-reasonable to imagine this particular bulk-based device might be expecting 
-the same SET_INTERFACE(0) call that an isochronous device would get as 
-means of being told to stop streaming.
-
-The attached patch fixes the problem for these Epiphan devices by adding a 
-SET_INTERFACE(0) call in two places. Either one by itself is sufficient to 
-resolve the symptoms but I think it is probably safest to include both.
-
-The first hunk adds a SET_INTERFACE(0) call in uvc_video_start_streaming, 
-but only in the bulk-based case where 0 is the only possible interface 
-value (it won't mess with an isochronous device that might be set to a 
-different interface).
-
-The second hunk modifies the behaviour of uvc_video_stop_streaming to call 
-SET_INTERFACE(0) unconditionally instead of only calling it for 
-isochronous devices. Since interface 0 should already be set on 
-non-isochronous devices, it should be safe to set it again, and this way 
-devices that are expecting it as a signal to stop streaming will get it.
-
-The patch is against 5.4.137 but also applies cleanly to 5.14-rc3.
-
---- a/drivers/media/usb/uvc/uvc_video.c	2021-08-01 10:19:19.343564026 -0400
-+++ b/drivers/media/usb/uvc/uvc_video.c	2021-08-01 10:38:54.234311440 -0400
-@@ -2108,6 +2081,15 @@ int uvc_video_start_streaming(struct uvc
-  {
-  	int ret;
-
-+	/* On a bulk-based device where there is only one alternate
-+	 * setting possibility, set it explicitly to 0. This should be
-+	 * the default value, but some devices (e.g. Epiphan Systems
-+	 * framegrabbers) freeze and won't restart streaming until they
-+	 * receive a SET_INTERFACE(0) request.
-+	 */
-+	if (stream->intf->num_altsetting == 1) 
-+  		usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-+
-  	ret = uvc_video_clock_init(stream);
-  	if (ret < 0)
-  		return ret;
-@@ -2135,9 +2117,17 @@ void uvc_video_stop_streaming(struct uvc
-  {
-  	uvc_video_stop_transfer(stream, 1);
-
--	if (stream->intf->num_altsetting > 1) {
--		usb_set_interface(stream->dev->udev, stream->intfnum, 0);
--	} else {
-+	/* On isochronous devices, switch back to interface 0 to move
-+	 * the device out of the "streaming" state.
-+	 *
-+	 * On bulk-based devices, this interface will already be selected
-+	 * but we re-select it explicitly because some devices seem to need
-+	 * a SET_INTERFACE(0) request to prepare them for receiving other
-+	 * control requests and/or to tell them to stop streaming.
-+	 */
-+	usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-+
-+	if (stream->intf->num_altsetting == 1) {
-  		/* UVC doesn't specify how to inform a bulk-based device
-  		 * when the video stream is stopped. Windows sends a
-  		 * CLEAR_FEATURE(HALT) request to the video streaming
-
-Philip
-
---------------------------------------------+-------------------------------
-Philip Spencer  pspencer@fields.utoronto.ca | Director of Computing Services
-Room 348        (416)-348-9710  ext3048     | The Fields Institute for
-222 College St, Toronto ON M5T 3J1 Canada   | Research in Mathematical Sciences
