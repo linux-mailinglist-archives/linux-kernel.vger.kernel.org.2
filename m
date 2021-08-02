@@ -2,290 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D843DD617
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9BB3DD61D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233788AbhHBM4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        id S233791AbhHBM45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbhHBM4t (ORCPT
+        with ESMTP id S233703AbhHBM4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:56:49 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4387C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 05:56:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Z7zapoqGLH2oFmccAqJHnz47hdvnB+uMaUVb/e6ry+w=; b=D9r+iXrSiZuqB3H1jj89rICtf0
-        hlGEp13m9UFtljg8i3DpJ3nBRtDrZ50KpHKsJHvZa+7JIxg26gWOkgalbUwCQqp43NAhJ71auGIh9
-        Frjc3chaDCtrLw8ydB0YPbqsyE7XWubJKh3cweRwWxMJZOUPqcLHLDJyayDquxygqP9uu0iiku2Tb
-        e+gH5Xh2gzQu5pxyBIuGqPMBlRz18/7JUnaqEhIHbOVbgbkx/KLsCGPR7XrsUqIvEt0beXqxlPyHh
-        cj+JeJDzhWSBpylRxFsGFj8Xv8U2BLAXuuTS/gCqOJcBuLveVhgU27IIvzEDzUaLZPQN8L1DR4U9w
-        EriXXnDA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mAXUL-0059rJ-6B; Mon, 02 Aug 2021 12:56:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A2DE230027E;
-        Mon,  2 Aug 2021 14:56:09 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8D74F2CC6DE9A; Mon,  2 Aug 2021 14:56:09 +0200 (CEST)
-Date:   Mon, 2 Aug 2021 14:56:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [patch 58/63] futex: Prevent requeue_pi() lock nesting issue on
- RT
-Message-ID: <YQfraWyUYKtWgsQF@hirez.programming.kicks-ass.net>
-References: <20210730135007.155909613@linutronix.de>
- <20210730135208.418508738@linutronix.de>
+        Mon, 2 Aug 2021 08:56:55 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D4BC061760;
+        Mon,  2 Aug 2021 05:56:46 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so13938206pjb.2;
+        Mon, 02 Aug 2021 05:56:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/GYPS7X+85wR6YC8425aJSok3ZXyi4U2bTyYNUsfO5w=;
+        b=pyQkhPeDqOZN1lKQvpgjaZhDuqcfBH++qI9Yz80iquDkO6oGt+tBuSPtyV0nMGVBJ1
+         M2E5aA/XAnoteOyDQT8M+x5AliZKopkoGnInKwL3m2QqBiWDu36W26gL/YPC8K/KeYlr
+         lKiZUAf6XKEOBg70NsE3K9fU4mOPUUIoCYKqtgQQ2HjvRH1Q+CjUYFOowxeVCbfkbnu7
+         GXswmjuYPprsxcXIE4NienyvsAMjibDdMeps+gxmOrpMJQUHeDF7e/9b+DgNRmsrf0dj
+         R82WDqtlRqQuveuh5cTGWXuurfZKwGo+CrnXy7KJkYXeft1AWFi82RFU5cJODZER7tHh
+         HwOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/GYPS7X+85wR6YC8425aJSok3ZXyi4U2bTyYNUsfO5w=;
+        b=rrQnvroREh2lzghJkvH2U/ojYO3L0NmRV7JJFuYQUXDTIqPGYR6Rcij7ihjFmzgNJQ
+         mkdaOkLN1jYbe5o32gpwVSeeujdufvy3hKZaUXkRTqNpIskdgh5zN/Ndwyay3hZvIyrL
+         n+Dn7iGXruIGy5LNhbFluSoNHOfha6Oj+Mw0pYbERbZ5Mcoo8rza+5NER0XsnryI+w40
+         C7g+fONcn788RhZd0MEVV4pHdjPTzWDrGP83kg6BsdzLptgypFvOG/dmNOyDR0l/vUWu
+         HZhI+snNNzdulBGXoHqTsp1ZGxsVowjZ2IlTPvalbDHT7/XJRUnncPksy0YflbysJYI5
+         TU7Q==
+X-Gm-Message-State: AOAM533ThRRBnRAPRb96QhFcxQ0mzS4Ya2ROpZpS1VCxA/Mpof/3bP/V
+        qap4wV5zVSIH2t8/CssSYe0=
+X-Google-Smtp-Source: ABdhPJyLDEEPYFYa8bCYhczgLUorbl2lwmF46SVfXQIXh/rESGtdQ+84YDRl3Rg46/KGbl2xu2SCOw==
+X-Received: by 2002:a17:902:b48b:b029:12c:59b:dc44 with SMTP id y11-20020a170902b48bb029012c059bdc44mr14086944plr.47.1627909005643;
+        Mon, 02 Aug 2021 05:56:45 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id g7sm6679837pfv.66.2021.08.02.05.56.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 05:56:45 -0700 (PDT)
+Subject: Re: [PATCH 04/13] HV: Mark vmbus ring buffer visible to host in
+ Isolation VM
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, will@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, rientjes@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, xen-devel@lists.xenproject.org,
+        pgonda@google.com, david@redhat.com, keescook@chromium.org,
+        hannes@cmpxchg.org, sfr@canb.auug.org.au,
+        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
+        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com, anparri@microsoft.com
+References: <20210728145232.285861-1-ltykernel@gmail.com>
+ <20210728145232.285861-5-ltykernel@gmail.com> <YQfgH04t2SqacnHn@8bytes.org>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <173823d1-280c-d34e-be2c-157b55bb6bc3@gmail.com>
+Date:   Mon, 2 Aug 2021 20:56:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730135208.418508738@linutronix.de>
+In-Reply-To: <YQfgH04t2SqacnHn@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 03:51:05PM +0200, Thomas Gleixner wrote:
-> +static inline bool futex_requeue_pi_prepare(struct futex_q *q,
-> +					    struct futex_pi_state *pi_state)
-> +{
-> +	int cur, res, new;
-> +
-> +	/*
-> +	 * Set state to Q_REQUEUE_PI_IN_PROGRESS unless an early wakeup has
-> +	 * already set Q_REQUEUE_PI_IGNORE to signal that requeue should
-> +	 * ignore the waiter.
-> +	 */
-> +	for (cur = atomic_read(&q->requeue_state);; cur = res) {
-> +		if (cur == Q_REQUEUE_PI_IGNORE)
-> +			return false;
-> +
-> +		/*
-> +		 * futex_proxy_trylock_atomic() might have set it to
-> +		 * IN_PROGRESS and a interleaved early wake to WAIT.
-> +		 *
-> +		 * It was considered to have an extra state for that
-> +		 * trylock, but that would just add more conditionals
-> +		 * all over the place for a dubious value.
-> +		 */
-> +		if (cur != Q_REQUEUE_PI_NONE)
-> +			break;
-> +
-> +		new = Q_REQUEUE_PI_IN_PROGRESS;
-> +		res = atomic_cmpxchg(&q->requeue_state, cur, new);
-> +		if (likely(cur == res))
-> +			break;
-> +	}
-> +	q->pi_state = pi_state;
-> +	return true;
-> +}
-> +
-> +static inline void futex_requeue_pi_complete(struct futex_q *q, int locked)
-> +{
-> +	int cur, res, new;
-> +
-> +	for (cur = atomic_read(&q->requeue_state);; cur = res) {
-> +		if (locked >= 0) {
-> +			/* Requeue succeeded. Set DONE or LOCKED */
-> +			new = Q_REQUEUE_PI_DONE + locked;
-> +		} else if (cur == Q_REQUEUE_PI_IN_PROGRESS) {
-> +			/* Deadlock, no early wakeup interleave */
-> +			new = Q_REQUEUE_PI_NONE;
-> +		} else {
-> +			/* Deadlock, early wakeup interleave. */
-> +			new = Q_REQUEUE_PI_IGNORE;
-> +		}
-> +
-> +		res = atomic_cmpxchg(&q->requeue_state, cur, new);
-> +		if (likely(cur == res))
-> +			break;
-> +	}
-> +
-> +#ifdef CONFIG_PREEMPT_RT
-> +	/* If the waiter interleaved with the requeue let it know */
-> +	if (unlikely(cur == Q_REQUEUE_PI_WAIT))
-> +		rcuwait_wake_up(&q->requeue_wait);
-> +#endif
-> +}
-> +
-> +static inline int futex_requeue_pi_wakeup_sync(struct futex_q *q)
-> +{
-> +	int cur, new, res;
-> +
-> +	for (cur = atomic_read(&q->requeue_state);; cur = res) {
-> +		/* Is requeue done already? */
-> +		if (cur >= Q_REQUEUE_PI_DONE)
-> +			break;
-> +
-> +		/*
-> +		 * If not done, then tell the requeue code to either ignore
-> +		 * the waiter or to wake it up once the requeue is done.
-> +		 */
-> +		new = !cur ? Q_REQUEUE_PI_IGNORE : Q_REQUEUE_PI_WAIT;
-> +		res = atomic_cmpxchg(&q->requeue_state, cur, new);
-> +		if (likely(cur == res))
-> +			break;
-> +	}
-> +
-> +	/* If the requeue was in progress, wait for it to complete */
-> +	if (cur == Q_REQUEUE_PI_IN_PROGRESS) {
-> +#ifdef CONFIG_PREEMPT_RT
-> +		rcuwait_wait_event(&q->requeue_wait,
-> +				   atomic_read(&q->requeue_state) != Q_REQUEUE_PI_WAIT,
-> +				   TASK_UNINTERRUPTIBLE);
-> +#else
-> +		while (atomic_read(&q->requeue_state) == Q_REQUEUE_PI_WAIT)
-> +			cpu_relax();
-> +#endif
-> +	}
-> +
-> +	/*
-> +	 * Requeue is now either prohibited or complete. Reread state
-> +	 * because during the wait above it might have changed. Nothing
-> +	 * will modify q->requeue_state after this point.
-> +	 */
-> +	return atomic_read(&q->requeue_state);
-> +}
 
-I did:
 
- - atomic_cmpxchg() -> atomic_try_cmpxchg()
- - atomic_read() -> atomic_read_acquire(); which I think is required for
-   at least the futex_requeue_pi_wakeup_sync() >= Q_REQUEUE_PI_DONE case
-   to ensure we observe the state as per whoever set DONE/LOCKED.
- - use atomic_cond_read_relaxed()
- - removed one ternary operator for (IMO) clearer code.
+On 8/2/2021 8:07 PM, Joerg Roedel wrote:
+> On Wed, Jul 28, 2021 at 10:52:19AM -0400, Tianyu Lan wrote:
+>> +	if (type == HV_GPADL_BUFFER)
+>> +		index = 0;
+>> +	else
+>> +		index = channel->gpadl_range[1].gpadlhandle ? 2 : 1;
+> 
+> Hmm... This doesn't look very robust. Can you set fixed indexes for
+> different buffer types? HV_GPADL_BUFFER already has fixed index 0. But
+> as it is implemented here you risk that index 2 gets overwritten by
+> subsequent calls.
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1853,15 +1853,16 @@ enum {
- static inline bool futex_requeue_pi_prepare(struct futex_q *q,
- 					    struct futex_pi_state *pi_state)
- {
--	int cur, res, new;
-+	int old, new;
- 
- 	/*
- 	 * Set state to Q_REQUEUE_PI_IN_PROGRESS unless an early wakeup has
- 	 * already set Q_REQUEUE_PI_IGNORE to signal that requeue should
- 	 * ignore the waiter.
- 	 */
--	for (cur = atomic_read(&q->requeue_state);; cur = res) {
--		if (cur == Q_REQUEUE_PI_IGNORE)
-+	old = atomic_read_acquire(&q->requeue_state);
-+	do {
-+		if (old == Q_REQUEUE_PI_IGNORE)
- 			return false;
- 
- 		/*
-@@ -1872,74 +1873,68 @@ static inline bool futex_requeue_pi_prep
- 		 * trylock, but that would just add more conditionals
- 		 * all over the place for a dubious value.
- 		 */
--		if (cur != Q_REQUEUE_PI_NONE)
-+		if (old != Q_REQUEUE_PI_NONE)
- 			break;
- 
- 		new = Q_REQUEUE_PI_IN_PROGRESS;
--		res = atomic_cmpxchg(&q->requeue_state, cur, new);
--		if (likely(cur == res))
--			break;
--	}
-+	} while (!atomic_try_cmpxchg(&q->requeue_state, &old, new));
-+
- 	q->pi_state = pi_state;
- 	return true;
- }
- 
- static inline void futex_requeue_pi_complete(struct futex_q *q, int locked)
- {
--	int cur, res, new;
-+	int old, new;
- 
--	for (cur = atomic_read(&q->requeue_state);; cur = res) {
-+	old = atomic_read_acquire(&q->requeue_state);
-+	do {
- 		if (locked >= 0) {
- 			/* Requeue succeeded. Set DONE or LOCKED */
- 			new = Q_REQUEUE_PI_DONE + locked;
--		} else if (cur == Q_REQUEUE_PI_IN_PROGRESS) {
-+		} else if (old == Q_REQUEUE_PI_IN_PROGRESS) {
- 			/* Deadlock, no early wakeup interleave */
- 			new = Q_REQUEUE_PI_NONE;
- 		} else {
- 			/* Deadlock, early wakeup interleave. */
- 			new = Q_REQUEUE_PI_IGNORE;
- 		}
--
--		res = atomic_cmpxchg(&q->requeue_state, cur, new);
--		if (likely(cur == res))
--			break;
--	}
-+	} while (!atomic_try_cmpxchg(&q->requeue_state, &old, new));
- 
- #ifdef CONFIG_PREEMPT_RT
- 	/* If the waiter interleaved with the requeue let it know */
--	if (unlikely(cur == Q_REQUEUE_PI_WAIT))
-+	if (unlikely(old == Q_REQUEUE_PI_WAIT))
- 		rcuwait_wake_up(&q->requeue_wait);
- #endif
- }
- 
- static inline int futex_requeue_pi_wakeup_sync(struct futex_q *q)
- {
--	int cur, new, res;
-+	int old, new;
- 
--	for (cur = atomic_read(&q->requeue_state);; cur = res) {
-+	old = atomic_read_acquire(&q->requeue_state);
-+	do {
- 		/* Is requeue done already? */
--		if (cur >= Q_REQUEUE_PI_DONE)
-+		if (old >= Q_REQUEUE_PI_DONE)
- 			break;
- 
- 		/*
- 		 * If not done, then tell the requeue code to either ignore
- 		 * the waiter or to wake it up once the requeue is done.
- 		 */
--		new = !cur ? Q_REQUEUE_PI_IGNORE : Q_REQUEUE_PI_WAIT;
--		res = atomic_cmpxchg(&q->requeue_state, cur, new);
--		if (likely(cur == res))
--			break;
--	}
-+		new = Q_REQUEUE_PI_WAIT;
-+		if (old == Q_REQUEUE_PI_NONE)
-+			new = Q_REQUEUE_PI_IGNORE;
-+	} while (!atomic_try_cmpxchg(&q->requeue_state, &old, new));
- 
- 	/* If the requeue was in progress, wait for it to complete */
--	if (cur == Q_REQUEUE_PI_IN_PROGRESS) {
-+	if (old == Q_REQUEUE_PI_IN_PROGRESS) {
- #ifdef CONFIG_PREEMPT_RT
- 		rcuwait_wait_event(&q->requeue_wait,
- 				   atomic_read(&q->requeue_state) != Q_REQUEUE_PI_WAIT,
- 				   TASK_UNINTERRUPTIBLE);
- #else
--		while (atomic_read(&q->requeue_state) == Q_REQUEUE_PI_WAIT)
--			cpu_relax();
-+		(void)atomic_cond_read_relaxed(&q->requeue_state, VAL != Q_REQUEUE_PI_WAIT);
- #endif
- 	}
- 
+Both second and third are HV_GPADL_RING type. One is send ring and the
+other is receive ring. The driver keeps the order to allocate rx and
+tx buffer. You are right this is not robust and will add a mutex to keep
+the order.
