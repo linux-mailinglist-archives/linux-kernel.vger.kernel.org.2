@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426303DD974
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68653DD922
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235726AbhHBOAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:00:30 -0400
+        id S235075AbhHBN5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:57:32 -0400
 Received: from mail.kernel.org ([198.145.29.99]:34430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236095AbhHBNy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:54:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF80360FF2;
-        Mon,  2 Aug 2021 13:53:08 +0000 (UTC)
+        id S234865AbhHBNve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:51:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 920BA60EBB;
+        Mon,  2 Aug 2021 13:51:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912389;
-        bh=tO9UUuTQNQKd/bo2w1JXgnCgQC2G2hjgPQP5tBsGR60=;
+        s=korg; t=1627912263;
+        bh=vrVy1tdHGkVyIMDh8usfnUdKqBLUha627ue1VAYCnjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q4lFSkTlsSVJzWgFfuJdNQaKJ2svknYTcqwbB6JcLg7J4EKfJiWl9lVgMNFFTJRPC
-         OuNlhocHGsXO+bCK/YHAzEFDaZrgRbs8691QvpSK1+5rpnWBiIGU3ja+d6B9bMqpbU
-         JEiLxtU/0Q2SAss4NbsHfUMAZlO41HngyaRurcQ8=
+        b=08Pd7rYYTfAZaPdl9rFGebQd75omgfFfHET+HDK8EBaeM7bvQGlxOO3xURNpH6iaR
+         ujTTbNCW4k1z+bwpUX6Gkdt4xEUTNfOxjkHTBmbhLCUg2ibbgQj79L6Rn/BdRzNnbz
+         0SGu2O405tzX4DDBy0pNtSL32Xeqgu+/NtXXQ1wQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 38/67] tipc: fix sleeping in tipc accept routine
+Subject: [PATCH 5.4 21/40] netfilter: nft_nat: allow to specify layer 4 protocol NAT only
 Date:   Mon,  2 Aug 2021 15:45:01 +0200
-Message-Id: <20210802134340.323058565@linuxfoundation.org>
+Message-Id: <20210802134336.065762007@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
+References: <20210802134335.408294521@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit d237a7f11719ff9320721be5818352e48071aab6 ]
+[ Upstream commit a33f387ecd5aafae514095c2c4a8c24f7aea7e8b ]
 
-The release_sock() is blocking function, it would change the state
-after sleeping. In order to evaluate the stated condition outside
-the socket lock context, switch to use wait_woken() instead.
+nft_nat reports a bogus EAFNOSUPPORT if no layer 3 information is specified.
 
-Fixes: 6398e23cdb1d8 ("tipc: standardize accept routine")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: d07db9884a5f ("netfilter: nf_tables: introduce nft_validate_register_load()")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/socket.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ net/netfilter/nft_nat.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 694c432b9710..4f9bd95b4eee 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -2650,7 +2650,7 @@ static int tipc_listen(struct socket *sock, int len)
- static int tipc_wait_for_accept(struct socket *sock, long timeo)
- {
- 	struct sock *sk = sock->sk;
--	DEFINE_WAIT(wait);
-+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 	int err;
- 
- 	/* True wake-one mechanism for incoming connections: only
-@@ -2659,12 +2659,12 @@ static int tipc_wait_for_accept(struct socket *sock, long timeo)
- 	 * anymore, the common case will execute the loop only once.
- 	*/
- 	for (;;) {
--		prepare_to_wait_exclusive(sk_sleep(sk), &wait,
--					  TASK_INTERRUPTIBLE);
- 		if (timeo && skb_queue_empty(&sk->sk_receive_queue)) {
-+			add_wait_queue(sk_sleep(sk), &wait);
- 			release_sock(sk);
--			timeo = schedule_timeout(timeo);
-+			timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, timeo);
- 			lock_sock(sk);
-+			remove_wait_queue(sk_sleep(sk), &wait);
- 		}
- 		err = 0;
- 		if (!skb_queue_empty(&sk->sk_receive_queue))
-@@ -2676,7 +2676,6 @@ static int tipc_wait_for_accept(struct socket *sock, long timeo)
- 		if (signal_pending(current))
- 			break;
+diff --git a/net/netfilter/nft_nat.c b/net/netfilter/nft_nat.c
+index 243e8107f456..17c0f75dfcdb 100644
+--- a/net/netfilter/nft_nat.c
++++ b/net/netfilter/nft_nat.c
+@@ -147,7 +147,9 @@ static int nft_nat_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
+ 		alen = FIELD_SIZEOF(struct nf_nat_range, min_addr.ip6);
+ 		break;
+ 	default:
+-		return -EAFNOSUPPORT;
++		if (tb[NFTA_NAT_REG_ADDR_MIN])
++			return -EAFNOSUPPORT;
++		break;
  	}
--	finish_wait(sk_sleep(sk), &wait);
- 	return err;
- }
+ 	priv->family = family;
  
 -- 
 2.30.2
