@@ -2,100 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2113DDDF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853663DDDF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232813AbhHBQtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
+        id S232918AbhHBQuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhHBQtV (ORCPT
+        with ESMTP id S229722AbhHBQuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:49:21 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C33C06175F;
-        Mon,  2 Aug 2021 09:49:10 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id c16so20303833plh.7;
-        Mon, 02 Aug 2021 09:49:10 -0700 (PDT)
+        Mon, 2 Aug 2021 12:50:08 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94418C06175F;
+        Mon,  2 Aug 2021 09:49:57 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id a19so24853640oiw.6;
+        Mon, 02 Aug 2021 09:49:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oNZPc57psRzc4SpvXgutcnyNtEY7iJ7TN/eALuzAAak=;
-        b=HQaqv3/xiSaIFj/69P2YGGTBVMq0Yxb1LE5e3kjaM35yRW1h1hVUsSwRGevudlYLP/
-         gWwXAs1qKAuoLXWxkb+y7xLDLVxZRtkawr9hycVD50BRfhrfjNCsnDTobhlxYdS72p8I
-         EG2CwzI8tfKIBrqaqDn/NzeM6JvC/RQMEqrK8glX9tE9nOTTxOe4FipVXtaCYYZhwwx1
-         rQR2u9Zcslgf4XJmlA5E+ehG0Wrh6+5bv3SKIu/AUdjW2FbjbFw+dOItcZkNROdck/ua
-         NiViC00+5FOOlpaSQD4+r5hk1gjfhr/TBLon6I9U91YvqwypdbnGT1xUtvMomieLakmK
-         k6tQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GJ/wB5SaZNzipWzV3cX8x7hHQDMnNXMgy0/0mwF3c/c=;
+        b=c/WdP0XbjY5Obu7GQps6Gyr4MVEfRvQUrAKedEOu6g6uu0PqglzkzCHtGJHf6nQu7F
+         HYKTahBkB8pPc6aHO9l1OwVWVAyhLai6im+cfV4E53zGI5pVf3QmdSjmp1zdRKPvHi40
+         f+mwRZHh7w0p9xZVI5MzZFLFwv4tCLMY6O7Ym7SAu47MA/9PKVeYULlifp31FgRXBoUc
+         I2cE2LmL/pc9r4mfGOT+k/pDpiWIYXE/Yc+yAyH87TAmYktX/3sEqrlcvheNiDeNYcZg
+         gD6qhtRx2NRRB1AGD0fTX0iP41Mgt3BEfZKp/6iu0RxyCQSQFwMkOzsFaXDtOTijnKop
+         UF8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oNZPc57psRzc4SpvXgutcnyNtEY7iJ7TN/eALuzAAak=;
-        b=KlFvNQYBw8WDLRWRpoa009mFG+5FcAD4YYHXODMFzdUsk2nvWJoQgk8IuAHWO6/fAH
-         RiJM9Les8iG5/DRpd3RTgPu8WrnfJGDBV/E4bZYhcCyuN39nlMtgA87RIYZagjsr39DR
-         ee5xmDhjaLcGW7olYR5wlK6ML9QHQ2WeDBBQdT3H9iCjtdV/b4HoPUVF/1gMzpbZwSwy
-         DUXozpTLSiTgzbaBugi0MEihCmI0FyI9DaCkwQf5XulT17T+iPPqN/+aYsw4x3f5r7C/
-         ccwl6WtnDudufN1uAhMahsnrpVt8/OEbVihglZwRNFyFc9+LLH1x+EGtibAMc1rq4nfw
-         HdBQ==
-X-Gm-Message-State: AOAM532gBZMeTD/W13llcOjYCcbQeYzc/DlhIyJyU9Hn0HQox8iV9USk
-        /O7VDyVS1obN1vVUCHaiHZo=
-X-Google-Smtp-Source: ABdhPJxNzGuRmCkcB5lxAkv5+Hij2CzC5OOIrqElQnqMRH2+TKkUS1eq3pWmGzRIIl6ZJBmvBOgmdQ==
-X-Received: by 2002:a17:90b:1495:: with SMTP id js21mr18397651pjb.2.1627922950483;
-        Mon, 02 Aug 2021 09:49:10 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id c21sm2143687pfo.193.2021.08.02.09.49.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 09:49:10 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 09:49:07 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Nicolas Pitre <nicolas.pitre@linaro.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
- dependencies
-Message-ID: <20210802164907.GA9832@hoboy.vegasvil.org>
-References: <20210802145937.1155571-1-arnd@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GJ/wB5SaZNzipWzV3cX8x7hHQDMnNXMgy0/0mwF3c/c=;
+        b=lzCqFWnCy32eIBKtQuITpLcPAAVNY7b6agbjQzZ5bu9fJhXif6pNf+W3r1sCK0GsEW
+         PLR0Dk8rdCh7pJ4XD2n3/WLUUE9y4g0kVKuuUCyZmqX4vJDCbrJmYsK/yF/fGy8KqDXa
+         9QiDv3K54ebXfgDsFh679CPVpyXxTlMdutkRThC66kuuvcKm6U4b6ZPflGN7cDuWpGwc
+         aBzgdHXyEGEOPOl67JvPvr+0yZfu5F5C0pclcQwHapfIXjehrqI8yAXLgw/cL4lCXyI/
+         MQ3vWLewRGyc9JyT2OQElsf2c1ystxUzzrLFuQiwt+iSgmoNtJddxG04pbHM3KQk0tE7
+         iBuQ==
+X-Gm-Message-State: AOAM5302QsD/OKpKXzd3z03n4P1y7jrV/322qZQsIBx62kzCNZrRZrNt
+        yFwPEdwRYzLIZFEfQ7R2MmGUtxUA932xJVQkCRo=
+X-Google-Smtp-Source: ABdhPJySjm9Fxl4xbbdV7e8Jqk9rZK0+R9OyCWTRZegqL6TBuGgx25YjNsIHRXxGHb0O3JTVf2N/XSr8e9sQaGYZ/mA=
+X-Received: by 2002:aca:3644:: with SMTP id d65mr11317889oia.88.1627922997057;
+ Mon, 02 Aug 2021 09:49:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802145937.1155571-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1627709571.git.lucas.p.stankus@gmail.com>
+ <1e652b88a367824e58fb71896b4a660204bd7a88.1627709571.git.lucas.p.stankus@gmail.com>
+ <20210801190422.28fd5334@jic23-huawei>
+In-Reply-To: <20210801190422.28fd5334@jic23-huawei>
+From:   Lucas Stankus <lucas.p.stankus@gmail.com>
+Date:   Mon, 2 Aug 2021 13:49:21 -0300
+Message-ID: <CACKVXZBH7M2qNSyCSPwe+M7n-n9jj4Ki5xc9aq0A5HTPB4FTeg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: accel: Add binding documentation
+ for ADXL313
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        robh+dt@kernel.org, "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        "Berghe, Darius" <Darius.Berghe@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 04:59:33PM +0200, Arnd Bergmann wrote:
+On Sun, Aug 1, 2021 at 3:01 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sat, 31 Jul 2021 17:36:31 -0300
+> Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
+>
+> > Add device tree binding documentation for ADXL313 3-axis accelerometer.
+> >
+> > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+>
+> Hi Lucas,
+>
+> A few minor requests for additions inline, so we include everything
+> that is likely to be used by the driver in the longer term.
+>
+> > ---
+> >  .../bindings/iio/accel/adi,adxl313.yaml       | 75 +++++++++++++++++++
+> >  1 file changed, 75 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml b/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
+> > new file mode 100644
+> > index 000000000000..31f11d7eaaae
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
+> > @@ -0,0 +1,75 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/accel/adi,adxl313.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Analog Devices ADXL313 3-Axis Digital Accelerometer
+> > +
+> > +maintainers:
+> > +  - Lucas Stankus <lucas.p.stankus@gmail.com>
+> > +
+> > +description: |
+> > +  Analog Devices ADXL313 3-Axis Digital Accelerometer that supports
+> > +  both I2C & SPI interfaces.
+> > +    https://www.analog.com/en/products/adxl313.html
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - adi,adxl313
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  spi-3wire: true
+> > +
+> > +  spi-cpha: true
+> > +
+> > +  spi-cpol: true
+> > +
+> > +  spi-max-frequency: true
+> > +
+> > +  interrupts:
+> > +    maxItems: 2
+>
+> As board designers have an annoying habit of wiring up the second
+> interrupt only, please also provide interrupt-names so we can
+> know which one is connected if it's only one.
+>
+> From a quick glance at the datasheet, I see this also has two powersupplies.
+> Please include
+> vddio-supply
+> vs-supply - annoyingly the s just stands for supply, but v-supply seems a bit to minimal.
+>
 
-> This is a recurring problem in many drivers, and we have discussed
-> it several times befores, without reaching a consensus. I'm providing
-> a link to the previous email thread for reference, which discusses
-> some related problems, though I can't find what reasons there were
-> against the approach with the extra Kconfig dependency.
+Thanks for the feedback, I'll change it for the v2!
 
-Quoting myself in the thread from 12 Nov 2020:
-
-   This whole "implies" thing turned out to be a colossal PITA.
-
-   I regret the fact that it got merged.  It wasn't my idea.
-
-This whole thing came about because Nicolas Pitre wanted to make PHC
-core support into a module and also to be able to remove dynamic posix
-clock support for tinification.  It has proved to be a never ending
-source of confusion.
-
-Let's restore the core functionality and remove "implies" for good.
-
-Thanks,
-Richard
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    i2c0 {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        /* Example for a I2C device node */
+> > +        accelerometer@53 {
+> > +            compatible = "adi,adxl313";
+> > +            reg = <0x53>;
+> > +            interrupt-parent = <&gpio0>;
+> > +            interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
+> > +        };
+> > +    };
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    spi {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        /* Example for a SPI device node */
+> > +        accelerometer@0 {
+> > +            compatible = "adi,adxl313";
+> > +            reg = <0>;
+> > +            spi-max-frequency = <5000000>;
+> > +            spi-cpol;
+> > +            spi-cpha;
+> > +            interrupt-parent = <&gpio0>;
+> > +            interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
+> > +        };
+> > +    };
+>
