@@ -2,106 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFA23DE12B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8725C3DE12E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232600AbhHBVAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        id S232502AbhHBVBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbhHBVAV (ORCPT
+        with ESMTP id S231194AbhHBVBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:00:21 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C93C06175F;
-        Mon,  2 Aug 2021 14:00:10 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id d6so18665741edt.7;
-        Mon, 02 Aug 2021 14:00:10 -0700 (PDT)
+        Mon, 2 Aug 2021 17:01:00 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5187C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:00:49 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id q3-20020a25bfc30000b02905592911c932so19872810ybm.15
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:00:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=au7OmFbdKv+WEAGRQZkjaVywZk0CXvijDSw0i4sbtGE=;
-        b=EdFRe/KmdoJn1AHOI1FO9W6HwfLEJuPIttmxOrfsgZ7XSj2xJ/yDY+WwBQCzW2hnM9
-         uFPAJdttH57zeJzFLM+i5h53NG/Ag4F2m4dpRrSCB3Xf2B82a32BkeO+KEIMT1CYdb7w
-         ZRA8EUoCvu1mmmHj3FR8Dd2PRjokDDk3Dw3rvdLKWxG96hVvNSpWqXJu2jOOSNzSAAOx
-         kj2KbixhxQbXUVvKHJ9rdW0Dk6jJnd4qswUs+vQC6OdvWgAAr48ndZgwLlmV26YVV4X6
-         vZVl+0dj2R6WiWUGYrIbNCcDiMqwNIch/Y8qAKpmWJYmKX1Wp3evBKuJi52lpvJ56z83
-         TcSA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=OoLM5GDms1jfZ6y4Gk1k9eO6cWXtYL+TWzyRucDvVfA=;
+        b=XJtClUzYLLXjYHOvxy9DSAO9KvUZgtqCqzEDJdmLkunONTYMt6GbjLgqsXu7QKrrMI
+         IAwAreniD2nLhRA+EBw0TSC7iD7GllMAAZZLgoqa9CTW5oB4K6n75yF48OwhrC/skVi2
+         wuLI4ZESOldy89Qjlnsqwirzgvk0SgONq1sBU4YARzQK94LXVB0q2do4d35V26F/9tVo
+         NsmiRjppalhRjJm8asHWxkmcxZkK94maNIDxCabo95mivm5HisexFZpZvleoZvB59tql
+         EY24JfKZOWGcMwVkI5HEnCiC9MLHOBXpYoyWy3T+JrOIESFwMa19AHxyI1nXbgCqe2Uo
+         ztqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=au7OmFbdKv+WEAGRQZkjaVywZk0CXvijDSw0i4sbtGE=;
-        b=sywnXYufs79L4S7FWltKnRx15R0cPEPeYho42nb7/QJpkCyBQfnBVfmMWQ4yR7TH/c
-         o0DgUz2yvYKMkDRTbcsbc3DAuC0QUJj9+glXpqaiNkDXoEwIdYKlwHKNtu0d3HBS2unr
-         FONSXHxLTwQUwjfgapwENUp7/JFq707RnNb9JugDMod0i7sMJRBaz0TSFdK7l9VATcUu
-         Ikn1HF1CroFJcfc9uRdFrfNMy66d+Xj7ZWH26yUo4c8lqicKVCtPItn5v5gI/J4cvL7Y
-         RjH2ijluUntrnG+VAASccaphmry1T83YXZVpDUsnwaEsK4LkRslgTqyZO6Zbj160eJy/
-         DDHA==
-X-Gm-Message-State: AOAM532HwPa1soUVRuTLKiiadN7r8aZXcTMkmV5caWHlZPMpmvC8o5nU
-        Ff087+OVkUqCc1/4MG1/t3I=
-X-Google-Smtp-Source: ABdhPJzyuFCqFOApHOayrbRXZJjmJ3F5gh6jzvSJdRg/0sb8lMnS6VK2GCoDWXc5t1B1LePaHFf/7g==
-X-Received: by 2002:a05:6402:35d2:: with SMTP id z18mr14382992edc.282.1627938009217;
-        Mon, 02 Aug 2021 14:00:09 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id b5sm5126644ejq.56.2021.08.02.14.00.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 14:00:08 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 00:00:06 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Woudstra <ericwouds@gmail.com>,
-        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>
-Subject: Re: [RFC net-next v2 3/4] net: dsa: mt7530: set STP state also on
- filter ID 1
-Message-ID: <20210802210006.fhmb5s6dsnziyk7d@skbuf>
-References: <20210731191023.1329446-1-dqfext@gmail.com>
- <20210731191023.1329446-4-dqfext@gmail.com>
- <20210802134336.gv66le6u2z52kfkh@skbuf>
- <20210802153129.1817825-1-dqfext@gmail.com>
- <20210802154226.qggqzkxe6urkx3yf@skbuf>
- <20210802155810.1818085-1-dqfext@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802155810.1818085-1-dqfext@gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=OoLM5GDms1jfZ6y4Gk1k9eO6cWXtYL+TWzyRucDvVfA=;
+        b=i2ojEEPoXI9nI4ze/h94v9/3apcAkWOapMjeigxt/NWiFCQB62GEi1RrqklpzjEbHZ
+         fwT6luB4NeQ8oIuI+RIXDFxw0r7ivpZZBgf3YefEBLPgTBMo8bEN7zqAIBm5A0RU1UJ1
+         OL5Q6gSOhjz9/b0pE3BA0xMzTvQ8bUDG6FR3tKHiKzPmJkXm/J+L4BMibW20+BTHqQ96
+         BVWO1o2uc4MM9fBQtt7MyWpZXILH6j848uFZF3CEc7ZZqVJcpl474Wec8oD5D46V1/Pu
+         bqgFIeM0loLN4FO+gsDDjJp60vrlipv9nDK3ov4XdcSW0HL9DHzqZ2JTyO5K+GLU9KkA
+         D9tw==
+X-Gm-Message-State: AOAM531PDVfj5kXGCODTWEu6qge8qupFfDVixcsPHwv+iJ8sMvUpPpr3
+        cOJHe/qDhsr5VvozDnY9t4KV/YKTi6yqnw==
+X-Google-Smtp-Source: ABdhPJzBvucKHIMweIDl3BdrobRn6IW1m9USz1Sy/nCMSJpejfHC6+264kj7Ouh/T6rzlCsxIz+723Uk9Kd67w==
+X-Received: from abdulras.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:41e1])
+ (user=abdulras job=sendgmr) by 2002:a25:ac18:: with SMTP id
+ w24mr25228768ybi.289.1627938048937; Mon, 02 Aug 2021 14:00:48 -0700 (PDT)
+Date:   Mon,  2 Aug 2021 21:00:17 +0000
+Message-Id: <20210802210016.642262-1-abdulras@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH] riscv: explicitly use symbol offsets for VDSO v2
+From:   Saleem Abdulrasool <abdulras@google.com>
+To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        clang-built-linux@googlegroups.com,
+        Saleem Abdulrasool <abdulras@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 11:58:10PM +0800, DENG Qingfang wrote:
-> On Mon, Aug 02, 2021 at 06:42:26PM +0300, Vladimir Oltean wrote:
-> > On Mon, Aug 02, 2021 at 11:31:29PM +0800, DENG Qingfang wrote:
-> > > The current code only sets FID 0's STP state. This patch sets both 0's and
-> > > 1's states.
-> > >
-> > > The *5 part is binary magic. [1:0] is FID 0's state, [3:2] is FID 1's state
-> > > and so on. Since 5 == 4'b0101, the value in [1:0] is copied to [3:2] after
-> > > the multiplication.
-> > >
-> > > Perhaps I should only change FID 1's state.
-> >
-> > Keep the patches dumb for us mortals please.
-> > If you only change FID 1's state, I am concerned that the driver no
-> > longer initializes FID 0's port state, and might leave that to the
-> > default set by other pre-kernel initialization stage (bootloader?).
-> > So even if you might assume that standalone ports are FORWARDING, they
-> > might not be.
->
-> The default value is forwarding, and the switch is reset by the driver
-> so any pre-kernel initialization stage is no more.
+The current implementation of the `__rt_sigaction` reference computed an
+absolute offset relative to the mapped base of the VDSO.  While this can
+be handled in the medlow model, the medany model cannot handle this as
+it is meant to be position independent.  The current implementation
+relied on the BFD linker relaxing the PC-relative relocation into an
+absolute relocation as it was a near-zero address allowing it to be
+referenced relative to `zero`.
 
-So then change the port STP state only for FID 1 and resend. Any other
-reason why this patch series is marked RFC? It looked okay to me otherwise.
+We now extract the offsets and create a generated header allowing the
+build with LLVM and lld to succeed as we no longer depend on the linker
+rewriting address references near zero.  This change was largely
+modelled after the ARM64 target which does something similar.
+
+Signed-off-by: Saleem Abdulrasool <abdulras@google.com>
+---
+ arch/riscv/Makefile                        |  4 ++++
+ arch/riscv/include/asm/vdso.h              | 11 ++--------
+ arch/riscv/kernel/vdso/Makefile            | 25 ++++++++++------------
+ arch/riscv/kernel/vdso/gen_vdso_offsets.sh |  5 +++++
+ arch/riscv/kernel/vdso/so2s.sh             |  6 ------
+ 5 files changed, 22 insertions(+), 29 deletions(-)
+ create mode 100755 arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+ delete mode 100755 arch/riscv/kernel/vdso/so2s.sh
+
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index bc74afdbf31e..e026b2d0a5a4 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -108,6 +108,10 @@ PHONY += vdso_install
+ vdso_install:
+ 	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
+ 
++prepare: vdso_prepare
++vdso_prepare: prepare0
++	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso include/generated/vdso-offsets.h
++
+ ifneq ($(CONFIG_XIP_KERNEL),y)
+ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
+ KBUILD_IMAGE := $(boot)/loader.bin
+diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
+index 1453a2f563bc..098795262b92 100644
+--- a/arch/riscv/include/asm/vdso.h
++++ b/arch/riscv/include/asm/vdso.h
+@@ -9,24 +9,17 @@
+ #define _ASM_RISCV_VDSO_H
+ 
+ #include <linux/types.h>
++#include <generated/vdso-offsets.h>
+ 
+ #ifndef CONFIG_GENERIC_TIME_VSYSCALL
+ struct vdso_data {
+ };
+ #endif
+ 
+-/*
+- * The VDSO symbols are mapped into Linux so we can just use regular symbol
+- * addressing to get their offsets in userspace.  The symbols are mapped at an
+- * offset of 0, but since the linker must support setting weak undefined
+- * symbols to the absolute address 0 it also happens to support other low
+- * addresses even when the code model suggests those low addresses would not
+- * otherwise be availiable.
+- */
+ #define VDSO_SYMBOL(base, name)							\
+ ({										\
+ 	extern const char __vdso_##name[];					\
+-	(void __user *)((unsigned long)(base) + __vdso_##name);			\
++	(void __user *)((unsigned long)(base) + __vdso_##name##_offset);	\
+ })
+ 
+ asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t);
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index 24d936c147cd..f8cb9144a284 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -23,10 +23,10 @@ ifneq ($(c-gettimeofday-y),)
+ endif
+ 
+ # Build rules
+-targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds vdso-syms.S
++targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds
+ obj-vdso := $(addprefix $(obj)/, $(obj-vdso))
+ 
+-obj-y += vdso.o vdso-syms.o
++obj-y += vdso.o
+ CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
+ 
+ # Disable -pg to prevent insert call site
+@@ -43,20 +43,22 @@ $(obj)/vdso.o: $(obj)/vdso.so
+ # link rule for the .so file, .lds has to be first
+ $(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
+ 	$(call if_changed,vdsold)
+-LDFLAGS_vdso.so.dbg = -shared -s -soname=linux-vdso.so.1 \
++LDFLAGS_vdso.so.dbg = -shared -S -soname=linux-vdso.so.1 \
+ 	--build-id=sha1 --hash-style=both --eh-frame-hdr
+ 
+-# We also create a special relocatable object that should mirror the symbol
+-# table and layout of the linked DSO. With ld --just-symbols we can then
+-# refer to these symbols in the kernel code rather than hand-coded addresses.
+-$(obj)/vdso-syms.S: $(obj)/vdso.so FORCE
+-	$(call if_changed,so2s)
+-
+ # strip rule for the .so file
+ $(obj)/%.so: OBJCOPYFLAGS := -S
+ $(obj)/%.so: $(obj)/%.so.dbg FORCE
+ 	$(call if_changed,objcopy)
+ 
++# Generate VDSO offsets using helper script
++gen-vdsosym := $(srctree)/$(src)/gen_vdso_offsets.sh
++quiet_cmd_vdsosym = VDSOSYM $@
++	cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
++
++include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
++	$(call if_changed,vdsosym)
++
+ # actual build commands
+ # The DSO images are built using a special linker script
+ # Make sure only to export the intended __vdso_xxx symbol offsets.
+@@ -65,11 +67,6 @@ quiet_cmd_vdsold = VDSOLD  $@
+                    $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms)) $@.tmp $@ && \
+                    rm $@.tmp
+ 
+-# Extracts symbol offsets from the VDSO, converting them into an assembly file
+-# that contains the same symbols at the same offsets.
+-quiet_cmd_so2s = SO2S    $@
+-      cmd_so2s = $(NM) -D $< | $(srctree)/$(src)/so2s.sh > $@
+-
+ # install commands for the unstripped file
+ quiet_cmd_vdso_install = INSTALL $@
+       cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+diff --git a/arch/riscv/kernel/vdso/gen_vdso_offsets.sh b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+new file mode 100755
+index 000000000000..c2e5613f3495
+--- /dev/null
++++ b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+@@ -0,0 +1,5 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++LC_ALL=C
++sed -n -e 's/^[0]\+\(0[0-9a-fA-F]*\) . \(__vdso_[a-zA-Z0-9_]*\)$/\#define \2_offset\t0x\1/p'
+diff --git a/arch/riscv/kernel/vdso/so2s.sh b/arch/riscv/kernel/vdso/so2s.sh
+deleted file mode 100755
+index e64cb6d9440e..000000000000
+--- a/arch/riscv/kernel/vdso/so2s.sh
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0+
+-# Copyright 2020 Palmer Dabbelt <palmerdabbelt@google.com>
+-
+-sed 's!\([0-9a-f]*\) T \([a-z0-9_]*\)\(@@LINUX_4.15\)*!.global \2\n.set \2,0x\1!' \
+-| grep '^\.'
+-- 
+2.32.0.554.ge1b32706d8-goog
+
