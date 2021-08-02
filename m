@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E19F3DDC95
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F273DDC9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235233AbhHBPhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233939AbhHBPhh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:37:37 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E9EC06175F;
-        Mon,  2 Aug 2021 08:37:26 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id qk33so31516394ejc.12;
-        Mon, 02 Aug 2021 08:37:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XB6BGIdQEwggVbLWSap7UjJdUQbesE+7hXxtVRkvtSk=;
-        b=rDgtou/WbtTDhDKzfBGhBu4uvJfyhWBsWAxHFuW9Uzlp5nJ3BeYLS9hFJ6uYan+XlA
-         v64gxnDd+uPjdy5P40q3FE3aFbjQaYfl6fVsYz9S/ZvgipjkqocwLLC/k65S+tT4GD/V
-         6qRfZ/LFxNexi7P7IaYSo1a1ORsD+p0GdQU3kJVmIcs83pNTtbyNvp29pTiq7tZdwaQy
-         1+xgrNvtS6cqNcaOeGDbMZAqyq6zwpgjD5vYW0/zb4OUymOVJpJcKO3EYTOArQWfWfs5
-         pxWTHz/GplFX1P0MaGR+nqqgz7Us6YE2zb6I/zjsBy03P49f9Dt1GOKxG1FEhRxt7LqB
-         eKDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XB6BGIdQEwggVbLWSap7UjJdUQbesE+7hXxtVRkvtSk=;
-        b=XofECvqOLeBp2+Miyd+zXOAaUsjrh5anWBd2T+y3oNzkkQFery7nwvo3aa1eoRuI5Z
-         q3JWXS9oqgw89SEnBIf7rRXtmDosNB5HM5DK+oBDyMrT7UKZb9pa0eay6oPQddTNh01y
-         Ounl1TYxcPPPDlRpZqikml5aumHcmqQJ5ofQObp4E6EeBmHyfYpTM7PWUDD7YIVSvV8v
-         LDKUlG+mOxj3XDl4Akrw5iIHbOLgJBZ0y8VVQ32r8bWw2GsN0sMr/d3923sDO2UgE9Jp
-         tVgCqhNxiL8m9KHsIaLDtPpzsz0a54mly3FNQ+BMyjtqW5cVwsbbTJfXdg7+VJKbgJaZ
-         vVCA==
-X-Gm-Message-State: AOAM530pYPoCDTqzbVdJCJne1oBhwTLswPL+9OnPJe1czXJJDX7Pfj4t
-        +4dY9bIqLtAlH/SMAHFQ+Fc=
-X-Google-Smtp-Source: ABdhPJwNA606jeIUW8D3Xc9aglUyLqwZ8AK4aJSyOW9uThzja/YvGoz+mlh0pFUyNiwzwVegXRONCA==
-X-Received: by 2002:a17:906:49d5:: with SMTP id w21mr15755703ejv.30.1627918645497;
-        Mon, 02 Aug 2021 08:37:25 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id l9sm1105962edt.55.2021.08.02.08.37.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 08:37:25 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 18:37:23 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net-next v3 3/6] net: dsa: qca: ar9331: add forwarding
- database support
-Message-ID: <20210802153723.vp4phpinclsuhlzz@skbuf>
-References: <20210802131037.32326-1-o.rempel@pengutronix.de>
- <20210802131037.32326-4-o.rempel@pengutronix.de>
+        id S235247AbhHBPiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:38:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234605AbhHBPiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:38:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F331561103;
+        Mon,  2 Aug 2021 15:37:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627918672;
+        bh=U6kvM7hjSC76+fQoa0a/IaaXzBvI0i+8+uxTT40yjO0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lbVqO9NaiV9RK2DfsHoS0hfiZPwOV8yrk0ZU2uRqbJY5SQ64ZlL5InD+kyZwCio6/
+         kJ8qvvAedeRpMzu5TM2Zbva3CqxetCxFMGNquIN/x73Ehb/QquWBPkZ1g9Zjo/3YKY
+         lc8qLrn4PVhwAcweY/L48kCQom+zvqDXOHQWsN9IaCi5T+i3D51m033WKteKMINdwk
+         UJKDa1txp/Gnphq7PzsWGA+cKilXwKSCjFzA89yCasYZire7DkZEaIwzJcZa+CPy0i
+         zjtuCcytilrD5Y6LLGh5vy19A4D0mEnJrt9FVI8yymCrHnUy9Z7EMOs3b9S8p3QGmO
+         YRPJ/Ybw3EQIg==
+Received: by mail-oo1-f47.google.com with SMTP id k7-20020a4abd870000b029025e4d9b0a3dso746426oop.6;
+        Mon, 02 Aug 2021 08:37:51 -0700 (PDT)
+X-Gm-Message-State: AOAM5302sawzgUp4FUcXN56sbahpkSOR+1woyLmv9O3WDKTlt1O4GA/m
+        +I4nuJtNpd1wwMfuUuo0u0iugxlE9zVlV6f3oTE=
+X-Google-Smtp-Source: ABdhPJwKKdHfEqVJzsxa1UD9AtgB/0tptfvNeDagjNfo6ROiQZXyY4TWeTVpdkWznh147Qe3deblfxgW7B51ZleNa1g=
+X-Received: by 2002:a4a:414e:: with SMTP id x75mr11195341ooa.13.1627918671384;
+ Mon, 02 Aug 2021 08:37:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802131037.32326-4-o.rempel@pengutronix.de>
+References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com> <20210802152359.12623-1-lorenzo.pieralisi@arm.com>
+In-Reply-To: <20210802152359.12623-1-lorenzo.pieralisi@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 2 Aug 2021 17:37:40 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEyk5xfJsCy=KMuM2cVFR93zkCKBZjUzyiONDR9+Q4EBQ@mail.gmail.com>
+Message-ID: <CAMj1kXEyk5xfJsCy=KMuM2cVFR93zkCKBZjUzyiONDR9+Q4EBQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] ACPI: Fix acpi_os_map_memory() memory semantics
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Veronika kabatova <vkabatov@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Will Deacon <will@kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 03:10:34PM +0200, Oleksij Rempel wrote:
-> +static int ar9331_sw_port_fdb_add(struct dsa_switch *ds, int port,
-> +				  const unsigned char *mac, u16 vid)
-> +{
-> +	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-> +	u16 port_mask = BIT(port);
-> +
-> +	if (vid)
-> +		return -EINVAL;
+On Mon, 2 Aug 2021 at 17:24, Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
+>
+> Patch series is a v2 of a previous version[1]:
+>
+> v1->v2
+>         - Added patch 1 and 2 according to feedback received on[1]
+>
+> [1] https://lore.kernel.org/linux-acpi/20210726100026.12538-1-lorenzo.pieralisi@arm.com
+>
+> Lorenzo Pieralisi (3):
+>   ACPI: osl: Add __force attribute in acpi_os_map_iomem() cast
+>   ACPI: osl: Reorder acpi_os_map_iomem() __ref annotation
+>   ACPI: Add memory semantics to acpi_os_map_memory()
+>
 
-When did you test this patch last time on net-next?
-Asking because when a port joins a VLAN-aware bridge, it will replay the
-FDB entries towards the bridge, which include a VLAN-unaware FDB entry
-with VID 0, and a VLAN-aware one with the bridge's default_pvid.
-If you return -EINVAL, that br_fdb_replay call will fail and you will
-fail to join the bridge.
+For the series,
 
-> +
-> +	return ar9331_sw_port_fdb_rmw(priv, mac, port_mask, 0);
-> +}
-> +
-> +static int ar9331_sw_port_fdb_del(struct dsa_switch *ds, int port,
-> +				  const unsigned char *mac, u16 vid)
-> +{
-> +	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-> +	u16 port_mask = BIT(port);
-> +
-> +	if (vid)
-> +		return -EINVAL;
-> +
-> +	return ar9331_sw_port_fdb_rmw(priv, mac, 0, port_mask);
-> +}
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+>  arch/arm64/include/asm/acpi.h |  3 +++
+>  arch/arm64/kernel/acpi.c      | 19 ++++++++++++++++---
+>  drivers/acpi/osl.c            | 23 ++++++++++++++++-------
+>  include/acpi/acpi_io.h        | 12 ++++++++++--
+>  4 files changed, 45 insertions(+), 12 deletions(-)
+>
+> --
+> 2.31.0
+>
