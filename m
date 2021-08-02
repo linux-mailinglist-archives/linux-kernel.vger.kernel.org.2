@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE723DD9B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529243DD940
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234197AbhHBODE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:03:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40684 "EHLO mail.kernel.org"
+        id S235788AbhHBN64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:58:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234606AbhHBNzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:55:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 331F861184;
-        Mon,  2 Aug 2021 13:53:50 +0000 (UTC)
+        id S235278AbhHBNwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:52:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF8E56112D;
+        Mon,  2 Aug 2021 13:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912430;
-        bh=u3DG5+c+JoKveGRqZGTlbu75hQaaI2ARiW/VJ+oR/PU=;
+        s=korg; t=1627912304;
+        bh=G60XXbGHGwAvo+h6LyXRz0eBUCVpr7FmTdq4fUQKEgY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uEfNBUJgsN+5OqSyLgOCh6I3erqhrIqhy3qIq2lqSqJvC3vqoWUo1vCUSyRk0bzqr
-         bRk3Rsn/+n3gIRQEYoDdTYEwkhhHZPpIGIvS1ABn2pb67T+DWEGg7CO1/yjosvYnmz
-         4aYOmE1naPs+c4AkE7UPOO7szdidfHoHIpVxZJ0M=
+        b=BX7I5fNaFl71fvboSrqPh9GJVx4gT1CbuEg16zVzhXWDLsMZsbXhYMY6LBTOq3KSt
+         0uYu+mhO7SWCLTbiix31rYowWJKHHg0FnmefOTbtXxLS1971CPPEa7DRceDMCEGbgm
+         5OX4CP8shEec7WjctAojxhOkNBYITXXkCBkbxaLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 55/67] tulip: windbond-840: Fix missing pci_disable_device() in probe and remove
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Krister Johansen <kjlx@templeofstupid.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.4 38/40] Revert "perf map: Fix dso->nsinfo refcounting"
 Date:   Mon,  2 Aug 2021 15:45:18 +0200
-Message-Id: <20210802134340.917900403@linuxfoundation.org>
+Message-Id: <20210802134336.612232344@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
+References: <20210802134335.408294521@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-[ Upstream commit 76a16be07b209a3f507c72abe823bd3af1c8661a ]
+commit 9bac1bd6e6d36459087a728a968e79e37ebcea1a upstream.
 
-Replace pci_enable_device() with pcim_enable_device(),
-pci_disable_device() and pci_release_regions() will be
-called in release automatically.
+This makes 'perf top' abort in some cases, and the right fix will
+involve surgery that is too much to do at this stage, so revert for now
+and fix it in the next merge window.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This reverts commit 2d6b74baa7147251c30a46c4996e8cc224aa2dc5.
+
+Cc: Riccardo Mancini <rickyman7@gmail.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Krister Johansen <kjlx@templeofstupid.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/dec/tulip/winbond-840.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ tools/perf/util/map.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
-index 89cbdc1f4857..6161e1c604c0 100644
---- a/drivers/net/ethernet/dec/tulip/winbond-840.c
-+++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
-@@ -357,7 +357,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	int i, option = find_cnt < MAX_UNITS ? options[find_cnt] : 0;
- 	void __iomem *ioaddr;
- 
--	i = pci_enable_device(pdev);
-+	i = pcim_enable_device(pdev);
- 	if (i) return i;
- 
- 	pci_set_master(pdev);
-@@ -379,7 +379,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	ioaddr = pci_iomap(pdev, TULIP_BAR, netdev_res_size);
- 	if (!ioaddr)
--		goto err_out_free_res;
-+		goto err_out_netdev;
- 
- 	for (i = 0; i < 3; i++)
- 		((__le16 *)dev->dev_addr)[i] = cpu_to_le16(eeprom_read(ioaddr, i));
-@@ -458,8 +458,6 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- err_out_cleardev:
- 	pci_iounmap(pdev, ioaddr);
--err_out_free_res:
--	pci_release_regions(pdev);
- err_out_netdev:
- 	free_netdev (dev);
- 	return -ENODEV;
-@@ -1526,7 +1524,6 @@ static void w840_remove1(struct pci_dev *pdev)
- 	if (dev) {
- 		struct netdev_private *np = netdev_priv(dev);
- 		unregister_netdev(dev);
--		pci_release_regions(pdev);
- 		pci_iounmap(pdev, np->base_addr);
- 		free_netdev(dev);
+--- a/tools/perf/util/map.c
++++ b/tools/perf/util/map.c
+@@ -214,8 +214,6 @@ struct map *map__new(struct machine *mac
+ 			if (!(prot & PROT_EXEC))
+ 				dso__set_loaded(dso);
+ 		}
+-
+-		nsinfo__put(dso->nsinfo);
+ 		dso->nsinfo = nsi;
+ 		dso__put(dso);
  	}
--- 
-2.30.2
-
 
 
