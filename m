@@ -2,129 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343443DDBE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E713DDBD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234608AbhHBPIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:08:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234378AbhHBPIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:08:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB99B60FF2;
-        Mon,  2 Aug 2021 15:08:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627916890;
-        bh=0vGZ83lRqAqx2M4uC9EaIbht4AZ9QFvE/a1NQzUEkB8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XgeHNzJW26UPbcfwvnVQS6WR/3QNF2+V2DMFU81S8hETWzi0vJwYLFPAwxH4wezao
-         I0mkHsrP+3OnpGFvIHPomwtj99ODDeVowYmAOTubG/ivNQgC8XxCamDm41KNvim9j/
-         9qnVK12FSYKhhg4zMrAa3FTp+PMXq/QR/nZANV6vYG2bn69J/iuzhejaVG0lytb39t
-         TLlshtcEmyZZfU1BrmRCZy4FurOsnBMi8nOxxG5ypN5rj3t8XrgF0X1s0vE8/TqY2t
-         CSQS3nwa0Vxo2gEbIw9hQr8QlvwJKS5Aj0uCSAlng6fAjRvKoZj9zKMnAg59nzB2Pl
-         MBElQO33AHYLw==
-Date:   Mon, 2 Aug 2021 18:08:02 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Oleksandr Tyshchenko <olekstysh@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Will Deacon <will@kernel.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>,
-        Wei Chen <Wei.Chen@arm.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [RFC PATCH 1/2] arm64: mm: Make virt_addr_valid to check for
- pfn_valid again
-Message-ID: <YQgKUibfW4jZbBXM@kernel.org>
-References: <1627490656-1267-1-git-send-email-olekstysh@gmail.com>
- <20210802121947.GF18685@arm.com>
+        id S234701AbhHBPEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234755AbhHBPEG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:04:06 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B15C06175F;
+        Mon,  2 Aug 2021 08:03:56 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id z4so21879683wrv.11;
+        Mon, 02 Aug 2021 08:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7XHOcI1iqZxijVLGLW7nItKOPrRmjBgh32wAYk4SY0A=;
+        b=XHfgl+M3acCK7c0V7HKcPwXjFcClgkgpF8EEGCvsL19dxnBBG8PXPRDF0zkNLhAD8C
+         eoElgSmdGbPUlGq0V/ocmmR/FLq0tG2IvgAFaeO0dAPN+lrF5Z5l68N7kuJnebiW22km
+         AjHuMo7XLOekNR127PjRnsWmXdYNG5QBW93oZYKySrszC/IQ1M+p2SCvLhVmy4jGlZgi
+         NV2kQ2FPtPB5CHuO16ms8wcPhglWnWHekMJQChMndk42kaSo3w+aN2L6H1UKXpq2JD57
+         J/e9MuBhv8XBN+aL4sxNFY29iIIpagoCscQ9lmuvskMtv/HlEwPCDZ10W664wygmid0Z
+         l6YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7XHOcI1iqZxijVLGLW7nItKOPrRmjBgh32wAYk4SY0A=;
+        b=aZnhbs7oV4GDgkuOvNJPkvOcyvxkJuRMqeARpcP7wb1EYvrHcLZdURitSwSGqguvCn
+         LmwJTbYRK7JP8w5iJF2JHSnBBgotwH6oeE0Bg1PtJGMxZy7zDPjN5no17xszOtng3Haa
+         PvwE4V9m/xgtS9pY7eMncTi4anpxZNrODdaOQ3ZsDCjOLcTjGuTKs2fm/mOeG+y/nUiZ
+         8rtr2cxGj63CNQWfpEq7cFpMDwzrOy3zqIhxdTdv6VIbvkkYG0WWB5n2ahust6tYhk76
+         uEaZaFvdWny0hMlZ7KhoxVyWB1cexUdZAUIS3G3tlrr7L5u/A16T6GCnDY15iWKyHDj8
+         jHSA==
+X-Gm-Message-State: AOAM532mbRAQz4v8RK6ddoEZFl2ilCqVlOTszoCJumSRa4aE3WAXCzLX
+        K96ZhWb/VeBPuLYiCsGTtQ2JL4/cTSdMvoW5M/k=
+X-Google-Smtp-Source: ABdhPJwGH/Eqr7CF+Kt6gNll6QNMzEySN4X0hbpZ4Q5OsyHEbBPyczRncKgDY8mkF35HvK0Ng4dxN6be2gs74L1YFnE=
+X-Received: by 2002:a5d:4348:: with SMTP id u8mr19002665wrr.28.1627916635155;
+ Mon, 02 Aug 2021 08:03:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802121947.GF18685@arm.com>
+References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
+ <20210728140052.GB22887@mms-0441> <8b2742c8891abe4fec3664730717a089@codeaurora.org>
+ <20210802105544.GA27657@willie-the-truck>
+In-Reply-To: <20210802105544.GA27657@willie-the-truck>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 2 Aug 2021 08:08:07 -0700
+Message-ID: <CAF6AEGvtpFu8st=ZFNoKjP9YsAenciLxL1zMFi_iqMCvdby73w@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH 0/3] iommu/drm/msm: Allow non-coherent masters
+ to use system cache
+To:     Will Deacon <will@kernel.org>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        David Airlie <airlied@linux.ie>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Kristian H Kristensen <hoegsberg@google.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Aug 2, 2021 at 3:55 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Thu, Jul 29, 2021 at 10:08:22AM +0530, Sai Prakash Ranjan wrote:
+> > On 2021-07-28 19:30, Georgi Djakov wrote:
+> > > On Mon, Jan 11, 2021 at 07:45:02PM +0530, Sai Prakash Ranjan wrote:
+> > > > commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
+> > > > removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
+> > > > the memory type setting required for the non-coherent masters to use
+> > > > system cache. Now that system cache support for GPU is added, we will
+> > > > need to set the right PTE attribute for GPU buffers to be sys cached.
+> > > > Without this, the system cache lines are not allocated for GPU.
+> > > >
+> > > > So the patches in this series introduces a new prot flag IOMMU_LLC,
+> > > > renames IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
+> > > > and makes GPU the user of this protection flag.
+> > >
+> > > Thank you for the patchset! Are you planning to refresh it, as it does
+> > > not apply anymore?
+> > >
+> >
+> > I was waiting on Will's reply [1]. If there are no changes needed, then
+> > I can repost the patch.
+>
+> I still think you need to handle the mismatched alias, no? You're adding
+> a new memory type to the SMMU which doesn't exist on the CPU side. That
+> can't be right.
+>
 
-On Mon, Aug 02, 2021 at 01:19:48PM +0100, Catalin Marinas wrote:
-> Adding Mike and Anshuman,
-> 
-> On Wed, Jul 28, 2021 at 07:44:15PM +0300, Oleksandr Tyshchenko wrote:
-> > From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-> > 
-> > The problem is that Arm's implementation of virt_addr_valid()
-> > leads to memblock_is_map_memory() check, which will fail for
-> > ZONE_DEVICE based addresses. But, the pfn_valid() check in turn
-> > is able to cope with ZONE_DEVICE based memory.
-> > 
-> > You can find a good explanation of that problem at:
-> > https://lore.kernel.org/lkml/1614921898-4099-2-git-send-email-anshuman.khandual@arm.com
-> > 
-> > Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-> > ---
-> > I am not quite sure whether it is a "correct" place and
-> > the change itself, I just partially restored a behaviour before:
-> > https://lore.kernel.org/lkml/20210511100550.28178-4-rppt@kernel.org
-> > So, the target of this patch is to get a feedback how to resolve
-> > this properly if, of course, this really needs to be resolved
-> > (I might miss important bits here).
-> > 
-> > It is worth mentioning that patch doesn't fix the current code base
-> > (if I am not mistaken, no one calls virt_addr_valid() on Arm64 for
-> > ZONE_DEVICE based addresses at the moment, so it seems that nothing
-> > is broken), the fix is intended for the subsequent patch in this
-> > series that will try to enable Xen's "unpopulated-alloc" usage
-> > on Arm (it was enabled on x86 so far).
-> > Please see:
-> > [RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to provide
-> > unallocated space
-> > 
-> > The subsequent patch will enable the code where virt_addr_valid()
-> > is used in drivers/xen/unpopulated-alloc.c:fill_list() to check that
-> > a virtual address returned by memremap_pages() is valid.
- 
-> I wonder what the point of calling virt_addr_valid() in fill_list() is?
-> If memremap_pages() succeeded, the pages were mapped at the returned
-> vaddr, there's no need for an additional virt_addr_valid() check.
+Just curious, and maybe this is a dumb question, but what is your
+concern about mismatched aliases?  I mean the cache hierarchy on the
+GPU device side (anything beyond the LLC) is pretty different and
+doesn't really care about the smmu pgtable attributes..
 
-The virt_addr_valid() check in fill_list() looks bogus to me as well. If
-memremap_pages() succeeds the range is guaranteed to have proper page
-table.
-
-I believe the first patch should be rather removal of the virt_addr_valid()
-check in fill_list().
- 
-> > ---
-> >  arch/arm64/include/asm/memory.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-> > index 824a365..1a35a44 100644
-> > --- a/arch/arm64/include/asm/memory.h
-> > +++ b/arch/arm64/include/asm/memory.h
-> > @@ -351,7 +351,7 @@ static inline void *phys_to_virt(phys_addr_t x)
-> >  
-> >  #define virt_addr_valid(addr)	({					\
-> >  	__typeof__(addr) __addr = __tag_reset(addr);			\
-> > -	__is_lm_address(__addr) && pfn_is_map_memory(virt_to_pfn(__addr));	\
-> > +	__is_lm_address(__addr) && pfn_valid(virt_to_pfn(__addr));	\
-> >  })
-> 
-> pfn_valid() only guarantees the presence of a struct page but not
-> necessarily that the virtual address is accessible (valid). So this
-> change would break the NOMAP ranges case.
-
-+1
-
--- 
-Sincerely yours,
-Mike.
+BR,
+-R
