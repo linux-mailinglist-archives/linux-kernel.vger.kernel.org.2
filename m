@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E173DD6D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE0F3DD6ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbhHBNUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbhHBNUe (ORCPT
+        id S233965AbhHBNWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:22:22 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:1522 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233885AbhHBNWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:20:34 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743D4C06175F;
-        Mon,  2 Aug 2021 06:20:24 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 69583379; Mon,  2 Aug 2021 15:20:20 +0200 (CEST)
-Date:   Mon, 2 Aug 2021 15:20:03 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, will@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, rientjes@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        rppt@kernel.org, kirill.shutemov@linux.intel.com,
-        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, xen-devel@lists.xenproject.org,
-        pgonda@google.com, david@redhat.com, keescook@chromium.org,
-        hannes@cmpxchg.org, sfr@canb.auug.org.au,
-        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, anparri@microsoft.com
-Subject: Re: [PATCH 13/13] HV/Storvsc: Add Isolation VM support for storvsc
- driver
-Message-ID: <YQfxA/AYfOqyqNh0@8bytes.org>
-References: <20210728145232.285861-1-ltykernel@gmail.com>
- <20210728145232.285861-14-ltykernel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728145232.285861-14-ltykernel@gmail.com>
+        Mon, 2 Aug 2021 09:22:16 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 02 Aug 2021 06:22:07 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 02 Aug 2021 06:22:05 -0700
+X-QCInternal: smtphost
+Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 02 Aug 2021 18:51:23 +0530
+Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
+        id 15BF25368; Mon,  2 Aug 2021 18:51:22 +0530 (IST)
+From:   satya priya <skakit@codeaurora.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     bhupesh.sharma@linaro.org, Das Srinagesh <gurus@codeaurora.org>,
+        kgunda@codeaurora.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, satya priya <skakit@codeaurora.org>
+Subject: [RESEND PATCH V7 0/3] Convert qcom pmic gpio bindings to YAML 
+Date:   Mon,  2 Aug 2021 18:51:01 +0530
+Message-Id: <1627910464-19363-1-git-send-email-skakit@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:52:28AM -0400, Tianyu Lan wrote:
-> In Isolation VM, all shared memory with host needs to mark visible
-> to host via hvcall. vmbus_establish_gpadl() has already done it for
-> storvsc rx/tx ring buffer. The page buffer used by vmbus_sendpacket_
-> mpb_desc() still need to handle. Use DMA API to map/umap these
-> memory during sending/receiving packet and Hyper-V DMA ops callback
-> will use swiotlb function to allocate bounce buffer and copy data
-> from/to bounce buffer.
+Hi, 
 
-I am wondering why you dont't use DMA-API unconditionally? It provides
-enough abstraction to do the right thing for isolated and legacy VMs.
+ I've rebased this series on linux-next. Patch [1/3] of this series is
+ already applied but I'm resending it just to avoid Bot errors.
 
-Regards,
+Thanks,
+Satya Priya
 
-	Joerg
+satya priya (3):
+  dt-bindings: mfd: pm8008: Add gpio-ranges and spmi-gpio compatible
+  dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom pmic gpio bindings
+    to YAML
+  dt-bindings: pinctrl: qcom-pmic-gpio: Remove the interrupts property
+
+ .../devicetree/bindings/mfd/qcom,pm8008.yaml       |  13 +-
+ .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 290 ---------------------
+ .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 239 +++++++++++++++++
+ 3 files changed, 249 insertions(+), 293 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
