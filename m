@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3749A3DD895
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD223DD838
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235438AbhHBNxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:53:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59478 "EHLO mail.kernel.org"
+        id S234710AbhHBNu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:50:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234326AbhHBNs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:48:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C55CF61029;
-        Mon,  2 Aug 2021 13:48:47 +0000 (UTC)
+        id S233981AbhHBNru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:47:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DD0C60EBB;
+        Mon,  2 Aug 2021 13:47:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912128;
-        bh=Zhu2f35svkVVcaajZJtS5Cr8IXrQUSR49SOvyaC9jaw=;
+        s=korg; t=1627912061;
+        bh=8rQU6Md/G+S09rLoycAvv8ctRbjJG4KppAwij9NlqZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hW/9An6zQWhnbgAZjcUAsmAHDXSkJCZON/jFfpyZusuKP71+bbACdspAMGDQFpwQd
-         rJBPyQ2ufa3V9o1sS0n79zG/qZmQodyUybiBkMWoFKRCwlFY9QioDJlyuac7CG0eKx
-         ZsZ5FtbmONcDuwOVWYulYlUIBQFGHNzpJObmyq5s=
+        b=PhKkN+doLXO/riycJjzfFM11/0CWBPQU4tDohW7I4soqUFUa974p0mW/ei3eDFDnP
+         jkoQgyH1hxPfl+cww/XLcfkJHU/HA4w4+K0pLYmfSl5YxOFu0NhmxjY0JHzVq9X6U9
+         wdZzPPv3pU7od+L7yEC0aoueDQBmNxI6oRZIWD+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 28/38] netfilter: conntrack: adjust stop timestamp to real expiry value
+Subject: [PATCH 4.9 30/32] net/mlx5: Fix flow table chaining
 Date:   Mon,  2 Aug 2021 15:44:50 +0200
-Message-Id: <20210802134335.712469272@linuxfoundation.org>
+Message-Id: <20210802134333.878761456@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
-References: <20210802134334.835358048@linuxfoundation.org>
+In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
+References: <20210802134332.931915241@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +41,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-[ Upstream commit 30a56a2b881821625f79837d4d968c679852444e ]
+[ Upstream commit 8b54874ef1617185048029a3083d510569e93751 ]
 
-In case the entry is evicted via garbage collection there is
-delay between the timeout value and the eviction event.
+Fix a bug when flow table is created in priority that already
+has other flow tables as shown in the below diagram.
+If the new flow table (FT-B) has the lowest level in the priority,
+we need to connect the flow tables from the previous priority (p0)
+to this new table. In addition when this flow table is destroyed
+(FT-B), we need to connect the flow tables from the previous
+priority (p0) to the next level flow table (FT-C) in the same
+priority of the destroyed table (if exists).
 
-This adjusts the stop value based on how much time has passed.
+                       ---------
+                       |root_ns|
+                       ---------
+                            |
+            --------------------------------
+            |               |              |
+       ----------      ----------      ---------
+       |p(prio)-x|     |   p-y  |      |   p-n |
+       ----------      ----------      ---------
+            |               |
+     ----------------  ------------------
+     |ns(e.g bypass)|  |ns(e.g. kernel) |
+     ----------------  ------------------
+            |            |           |
+	-------	       ------       ----
+        |  p0 |        | p1 |       |p2|
+        -------        ------       ----
+           |             |    \
+        --------       ------- ------
+        | FT-A |       |FT-B | |FT-C|
+        --------       ------- ------
 
-Fixes: b87a2f9199ea82 ("netfilter: conntrack: add gc worker to remove timed-out entries")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: f90edfd279f3 ("net/mlx5_core: Connect flow tables")
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_core.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index ede0ab5dc400..f13b476378aa 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -506,8 +506,13 @@ bool nf_ct_delete(struct nf_conn *ct, u32 portid, int report)
- 		return false;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+index 13dfc197bdd8..6c092dc41c82 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+@@ -701,17 +701,19 @@ static int connect_fwd_rules(struct mlx5_core_dev *dev,
+ static int connect_flow_table(struct mlx5_core_dev *dev, struct mlx5_flow_table *ft,
+ 			      struct fs_prio *prio)
+ {
+-	struct mlx5_flow_table *next_ft;
++	struct mlx5_flow_table *next_ft, *first_ft;
+ 	int err = 0;
  
- 	tstamp = nf_conn_tstamp_find(ct);
--	if (tstamp && tstamp->stop == 0)
-+	if (tstamp) {
-+		s32 timeout = ct->timeout - nfct_time_stamp;
-+
- 		tstamp->stop = ktime_get_real_ns();
-+		if (timeout < 0)
-+			tstamp->stop -= jiffies_to_nsecs(-timeout);
-+	}
+ 	/* Connect_prev_fts and update_root_ft_create are mutually exclusive */
  
- 	if (nf_conntrack_event_report(IPCT_DESTROY, ct,
- 				    portid, report) < 0) {
+-	if (list_empty(&prio->node.children)) {
++	first_ft = list_first_entry_or_null(&prio->node.children,
++					    struct mlx5_flow_table, node.list);
++	if (!first_ft || first_ft->level > ft->level) {
+ 		err = connect_prev_fts(dev, ft, prio);
+ 		if (err)
+ 			return err;
+ 
+-		next_ft = find_next_chained_ft(prio);
++		next_ft = first_ft ? first_ft : find_next_chained_ft(prio);
+ 		err = connect_fwd_rules(dev, ft, next_ft);
+ 		if (err)
+ 			return err;
+@@ -1357,7 +1359,7 @@ static int disconnect_flow_table(struct mlx5_flow_table *ft)
+ 				node.list) == ft))
+ 		return 0;
+ 
+-	next_ft = find_next_chained_ft(prio);
++	next_ft = find_next_ft(ft);
+ 	err = connect_fwd_rules(dev, next_ft, ft);
+ 	if (err)
+ 		return err;
 -- 
 2.30.2
 
