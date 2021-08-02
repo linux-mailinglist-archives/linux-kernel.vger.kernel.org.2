@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E773DD897
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB753DD896
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235183AbhHBNx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:53:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58758 "EHLO mail.kernel.org"
+        id S235173AbhHBNxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:53:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234638AbhHBNsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:48:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65E9E60FA0;
-        Mon,  2 Aug 2021 13:48:43 +0000 (UTC)
+        id S234556AbhHBNsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:48:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B16260F6D;
+        Mon,  2 Aug 2021 13:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912123;
-        bh=qz3Qm9UzbMKkj0gqArsNkS5oZ2oF1xpS93lp+bgF/d4=;
+        s=korg; t=1627912126;
+        bh=6qEE6ZhHEMSPTEgRzMaDmSsdjbgmkEyeRU/rtemkRcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zIy5tyheNfGyMxx75MgSxYjz7plKFlBoWoTehFZLuKnvMFvK4iOzhOJlTuv3f/1mq
-         MQucYP19jBkGlmdPT0oZzHYOqnbbxN/Ic3JmGr8YqhuVT6dgh53/ocEKMYrokYYf+j
-         R0rK0uaV5cqMZwN0DmATZTvi0TCwG+W76UuiKMgQ=
+        b=T5me1iTVH14Y6AQTy1rem19S61vRwdi8enHSmf5jyyRTalrLkP2MAzxIKNWFF3ka+
+         3PH4LZEs054a1x1jwpflPCFBhiN70qRuH8g1KG11/C00+kclBVMceHFlnQFCj0Y8kT
+         BA2YUBWTKd417dD0i0RJoeQ7mSmfAQ6o5iwfxt/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kiszka <jan.kiszka@siemens.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 26/38] x86/asm: Ensure asm/proto.h can be included stand-alone
-Date:   Mon,  2 Aug 2021 15:44:48 +0200
-Message-Id: <20210802134335.651221435@linuxfoundation.org>
+        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.14 27/38] cfg80211: Fix possible memory leak in function cfg80211_bss_update
+Date:   Mon,  2 Aug 2021 15:44:49 +0200
+Message-Id: <20210802134335.681796474@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
 References: <20210802134334.835358048@linuxfoundation.org>
@@ -39,50 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-[ Upstream commit f7b21a0e41171d22296b897dac6e4c41d2a3643c ]
+commit f9a5c358c8d26fed0cc45f2afc64633d4ba21dff upstream.
 
-Fix:
+When we exceed the limit of BSS entries, this function will free the
+new entry, however, at this time, it is the last door to access the
+inputed ies, so these ies will be unreferenced objects and cause memory
+leak.
+Therefore we should free its ies before deallocating the new entry, beside
+of dropping it from hidden_list.
 
-  ../arch/x86/include/asm/proto.h:14:30: warning: ‘struct task_struct’ declared \
-    inside parameter list will not be visible outside of this definition or declaration
-  long do_arch_prctl_64(struct task_struct *task, int option, unsigned long arg2);
-                               ^~~~~~~~~~~
-
-  .../arch/x86/include/asm/proto.h:40:34: warning: ‘struct task_struct’ declared \
-    inside parameter list will not be visible outside of this definition or declaration
-   long do_arch_prctl_common(struct task_struct *task, int option,
-                                    ^~~~~~~~~~~
-
-if linux/sched.h hasn't be included previously. This fixes a build error
-when this header is used outside of the kernel tree.
-
- [ bp: Massage commit message. ]
-
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/b76b4be3-cf66-f6b2-9a6c-3e7ef54f9845@web.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Link: https://lore.kernel.org/r/20210628132334.851095-1-phind.uet@gmail.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/proto.h | 2 ++
- 1 file changed, 2 insertions(+)
+ net/wireless/scan.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index 6e81788a30c1..0eaca7a130c9 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -4,6 +4,8 @@
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -1026,16 +1026,14 @@ cfg80211_bss_update(struct cfg80211_regi
+ 			 * be grouped with this beacon for updates ...
+ 			 */
+ 			if (!cfg80211_combine_bsses(rdev, new)) {
+-				kfree(new);
++				bss_ref_put(rdev, new);
+ 				goto drop;
+ 			}
+ 		}
  
- #include <asm/ldt.h>
+ 		if (rdev->bss_entries >= bss_entries_limit &&
+ 		    !cfg80211_bss_expire_oldest(rdev)) {
+-			if (!list_empty(&new->hidden_list))
+-				list_del(&new->hidden_list);
+-			kfree(new);
++			bss_ref_put(rdev, new);
+ 			goto drop;
+ 		}
  
-+struct task_struct;
-+
- /* misc architecture specific prototypes */
- 
- void syscall_init(void);
--- 
-2.30.2
-
 
 
