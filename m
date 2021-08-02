@@ -2,126 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBCD3DD471
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BB03DD476
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhHBLBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233421AbhHBLBa (ORCPT
+        id S233448AbhHBLDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:03:08 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:58377 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233243AbhHBLDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:01:30 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832A1C06175F;
-        Mon,  2 Aug 2021 04:01:21 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id t3so17088590plg.9;
-        Mon, 02 Aug 2021 04:01:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9wyMs+rwX3ldqcYresSOjD4BweaQ/WnMH4Ky/VQDi2I=;
-        b=Yc4FE9YjAWr9IC8sdF1L1QTKHbzv2l3QIYmiEecRKbBNneolptr9Pi3XzZU6rwfZCT
-         8O0thjHeEkHK3L1/Txx+ji8Mr513dnL+bfZDMwJt3YYdHu/09mkh0DkeVbUXrIisv81F
-         7YMYsvks+POltFmWXjm8TqCHeKU721PxvWx25P0sezJAC1cu2Kmi+w494F480GQ/FSHx
-         ZSNFgsT45n6tUDl/ryzLi3U5pAvlm1nCCmxwKgvGjhO5XHayaPGgh8OVwCCgex6V1p10
-         Isix8qFvOdtIwT36o1vcheb0yZayKW2fHYdpg9VklB8YLMQ+Gj0nlp/wRjfrxfM8ga9f
-         KDHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9wyMs+rwX3ldqcYresSOjD4BweaQ/WnMH4Ky/VQDi2I=;
-        b=haq3757bHnC46PBKVQOl1LfZgX2T3bK1FHU/+HHlqjZRE71VcY5XRZ+aDfFjxFty7i
-         98Rp5pMWcnF5iMjEoFZF1r7zF7ldOvmPSFn7TQG/OHNUroYGXYxdC/HPTg2IE+IGMbdZ
-         Pr8nkEM9QKTAvhgqAprQIaPJ6sFUH1CfFCT1khwdaHYxvVWjWB/NiV6b6pvrLhvIkaHW
-         mcjCYT/AWs+852axmdDLf0QPoxypDd1xjOAYumYQFMRcCB5p6EmFI3m4/pgXWeQr4saq
-         p2m5q8/GbhrGvVUFpEaVeTDBvsTKZGhpk4jxHn9PsTntCSLP6sCIY1NbDKQ8cTpm08Yj
-         KPLA==
-X-Gm-Message-State: AOAM532El1KyQUG7gvo0MRYm/9SjVvcVTJ/b1qhcnx400A5W80vKW0hN
-        TLu5fWOygg8lpjIYKykn5LQ=
-X-Google-Smtp-Source: ABdhPJw3Zis0PZJdPsYef4VhN3d7rrLIYlB75L7nQeFiLyBly19H2n3lL4vzH8obKhGcJddjQi2ppw==
-X-Received: by 2002:a65:6a0a:: with SMTP id m10mr2267519pgu.145.1627902081017;
-        Mon, 02 Aug 2021 04:01:21 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id v30sm9709158pgk.25.2021.08.02.04.01.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 04:01:20 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com, sumit.semwal@linaro.org,
-        christian.koenig@amd.com
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [RESEND PATCH v2 2/2] drm: add lockdep assert to drm_is_current_master_locked
-Date:   Mon,  2 Aug 2021 18:59:57 +0800
-Message-Id: <20210802105957.77692-3-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210802105957.77692-1-desmondcheongzx@gmail.com>
-References: <20210802105957.77692-1-desmondcheongzx@gmail.com>
+        Mon, 2 Aug 2021 07:03:07 -0400
+Received: from fsav414.sakura.ne.jp (fsav414.sakura.ne.jp [133.242.250.113])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 172B2TPU024015;
+        Mon, 2 Aug 2021 20:02:29 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav414.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp);
+ Mon, 02 Aug 2021 20:02:29 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 172B2SKW024012
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 2 Aug 2021 20:02:28 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [syzbot] general protection fault in hci_release_dev
+To:     Hillf Danton <hdanton@sina.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.von.dentz@intel.com,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+47c6d0efbb7fe2f7a5b8@syzkaller.appspotmail.com>
+References: <00000000000084201105c88bb48a@google.com>
+ <20210802095403.2100-1-hdanton@sina.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <92ae9eb0-0a9c-f73a-57f3-20059d9e4c21@i-love.sakura.ne.jp>
+Date:   Mon, 2 Aug 2021 20:02:24 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210802095403.2100-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In drm_is_current_master_locked, accessing drm_file.master should be
-protected by either drm_file.master_lookup_lock or
-drm_device.master_mutex. This was previously awkward to assert with
-lockdep.
+Hello.
 
-Following patch ("locking/lockdep: Provide lockdep_assert{,_once}()
-helpers"), this assertion is now convenient. So we add in the
-assertion and explain this lock design in the kerneldoc.
+On 2021/08/02 18:54, Hillf Danton wrote:
+> To fix what was addressed in e305509e678b3a4a, defer putting hdev until
+> sock is released with sock locked.
+> 
+> Now only for thoughts.
 
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Acked-by: Boqun Feng <boqun.feng@gmail.com>
-Acked-by: Waiman Long <longman@redhat.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- drivers/gpu/drm/drm_auth.c | 6 +++---
- include/drm/drm_file.h     | 4 ++++
- 2 files changed, 7 insertions(+), 3 deletions(-)
+Thanks for your analysis.
 
-diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
-index 9c24b8cc8e36..6f4d7ff23c80 100644
---- a/drivers/gpu/drm/drm_auth.c
-+++ b/drivers/gpu/drm/drm_auth.c
-@@ -63,9 +63,9 @@
- 
- static bool drm_is_current_master_locked(struct drm_file *fpriv)
+hci_alloc_dev() is called from hci_uart_register_dev() from  hci_uart_set_proto()
+ from hci_uart_tty_ioctl(HCIUARTSETPROTO) via ld->ops->ioctl() from tty_ioctl(),
+and bt_host_release() is called from device_release() from kobject_put() from
+hci_uart_tty_close() from tty_ldisc_kill() from tty_ldisc_release() from
+tty_release_struct() from tty_release() from __fput().
+
+The problem is that bt_host_release() is expecting that hci_register_dev()
+was called if "struct hci_dev" was allocated by hci_alloc_dev(). In other
+words, hci_register_dev() might not be called before bt_host_release().
+
+Then, the fix I think is not to call hci_release_dev() when hci_unregister_dev()
+was not called. That is,
+
+ static void bt_host_release(struct device *dev)
  {
--	/* Either drm_device.master_mutex or drm_file.master_lookup_lock
--	 * should be held here.
--	 */
-+	lockdep_assert_once(lockdep_is_held(&fpriv->master_lookup_lock) ||
-+			    lockdep_is_held(&fpriv->minor->dev->master_mutex));
+        struct hci_dev *hdev = to_hci_dev(dev);
 +
- 	return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
++       if (hci_dev_test_flag(hdev, HCI_UNREGISTER))
++               hci_release_dev(hdev);
+        kfree(hdev);
+        module_put(THIS_MODULE);
  }
- 
-diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
-index 726cfe0ff5f5..a3acb7ac3550 100644
---- a/include/drm/drm_file.h
-+++ b/include/drm/drm_file.h
-@@ -233,6 +233,10 @@ struct drm_file {
- 	 * this only matches &drm_device.master if the master is the currently
- 	 * active one.
- 	 *
-+	 * To update @master, both &drm_device.master_mutex and
-+	 * @master_lookup_lock need to be held, therefore holding either of
-+	 * them is safe and enough for the read side.
-+	 *
- 	 * When dereferencing this pointer, either hold struct
- 	 * &drm_device.master_mutex for the duration of the pointer's use, or
- 	 * use drm_file_get_master() if struct &drm_device.master_mutex is not
--- 
-2.25.1
 
+and remove kfree(hdev) from hci_release_dev(), for HCI_UNREGISTER flag is
+set if hci_unregister_dev() was called before bt_host_release() is called.
