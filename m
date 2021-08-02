@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3BB3DD7DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779043DD86E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233999AbhHBNsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:48:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56038 "EHLO mail.kernel.org"
+        id S234032AbhHBNwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:52:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233994AbhHBNqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:46:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C491860527;
-        Mon,  2 Aug 2021 13:46:39 +0000 (UTC)
+        id S234465AbhHBNsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:48:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03B9860EBB;
+        Mon,  2 Aug 2021 13:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912000;
-        bh=iQcu7CsfD8tjdJ3BJklQRoNL+bjJ1nq6ktJ6QaVMAmI=;
+        s=korg; t=1627912086;
+        bh=jJqvK8HGRjD3gSq3yeANfgSOtangEB0762+udH++WA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TUQjdX4nOFRUI8KnmCeTm/14toF6ZrCnmXIE1iZPhsFXFUCHp8LyNSuFQ+qD7MdTe
-         jCvafGlpgIVmz14aS/YSEm9dduhr6pe4gZNBApYGOQK3yAh76Ug+cPGS25SFhQbL8D
-         Kitzw472I/Y5s0XgPQG/vNP/RV92INFyG0csYJE0=
+        b=yuoOuR4PxLAVEgSDeA1FYTriKjU4B7YrloeziKZgwtxIznPqDv0Hf+YKHLfbo10YL
+         2+YkI0L3bejtz49Nj7zZexntEikEKXp05NN9bh28hrAZ6A6XIhRf8+jPoZ1ENN2IM7
+         LAhF2HHBEpszTbf+UpaZsGFwzyc8tXKHQ/SpkIpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 22/26] tipc: fix sleeping in tipc accept routine
+Subject: [PATCH 4.14 10/38] hfs: add missing clean-up in hfs_fill_super
 Date:   Mon,  2 Aug 2021 15:44:32 +0200
-Message-Id: <20210802134332.749168639@linuxfoundation.org>
+Message-Id: <20210802134335.162194888@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
-References: <20210802134332.033552261@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +46,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-[ Upstream commit d237a7f11719ff9320721be5818352e48071aab6 ]
+[ Upstream commit 16ee572eaf0d09daa4c8a755fdb71e40dbf8562d ]
 
-The release_sock() is blocking function, it would change the state
-after sleeping. In order to evaluate the stated condition outside
-the socket lock context, switch to use wait_woken() instead.
+Patch series "hfs: fix various errors", v2.
 
-Fixes: 6398e23cdb1d8 ("tipc: standardize accept routine")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This series ultimately aims to address a lockdep warning in
+hfs_find_init reported by Syzbot [1].
+
+The work done for this led to the discovery of another bug, and the
+Syzkaller repro test also reveals an invalid memory access error after
+clearing the lockdep warning.  Hence, this series is broken up into
+three patches:
+
+1. Add a missing call to hfs_find_exit for an error path in
+   hfs_fill_super
+
+2. Fix memory mapping in hfs_bnode_read by fixing calls to kmap
+
+3. Add lock nesting notation to tell lockdep that the observed locking
+   hierarchy is safe
+
+This patch (of 3):
+
+Before exiting hfs_fill_super, the struct hfs_find_data used in
+hfs_find_init should be passed to hfs_find_exit to be cleaned up, and to
+release the lock held on the btree.
+
+The call to hfs_find_exit is missing from an error path.  We add it back
+in by consolidating calls to hfs_find_exit for error paths.
+
+Link: https://syzkaller.appspot.com/bug?id=f007ef1d7a31a469e3be7aeb0fde0769b18585db [1]
+Link: https://lkml.kernel.org/r/20210701030756.58760-1-desmondcheongzx@gmail.com
+Link: https://lkml.kernel.org/r/20210701030756.58760-2-desmondcheongzx@gmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Reviewed-by: Viacheslav Dubeyko <slava@dubeyko.com>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/socket.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ fs/hfs/super.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 3ad9158ecf30..9d15bb865eea 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -1987,7 +1987,7 @@ static int tipc_listen(struct socket *sock, int len)
- static int tipc_wait_for_accept(struct socket *sock, long timeo)
- {
- 	struct sock *sk = sock->sk;
--	DEFINE_WAIT(wait);
-+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 	int err;
- 
- 	/* True wake-one mechanism for incoming connections: only
-@@ -1996,12 +1996,12 @@ static int tipc_wait_for_accept(struct socket *sock, long timeo)
- 	 * anymore, the common case will execute the loop only once.
- 	*/
- 	for (;;) {
--		prepare_to_wait_exclusive(sk_sleep(sk), &wait,
--					  TASK_INTERRUPTIBLE);
- 		if (timeo && skb_queue_empty(&sk->sk_receive_queue)) {
-+			add_wait_queue(sk_sleep(sk), &wait);
- 			release_sock(sk);
--			timeo = schedule_timeout(timeo);
-+			timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, timeo);
- 			lock_sock(sk);
-+			remove_wait_queue(sk_sleep(sk), &wait);
+diff --git a/fs/hfs/super.c b/fs/hfs/super.c
+index 7e0d65e9586c..691810b0e6bc 100644
+--- a/fs/hfs/super.c
++++ b/fs/hfs/super.c
+@@ -427,14 +427,12 @@ static int hfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (!res) {
+ 		if (fd.entrylength > sizeof(rec) || fd.entrylength < 0) {
+ 			res =  -EIO;
+-			goto bail;
++			goto bail_hfs_find;
  		}
- 		err = 0;
- 		if (!skb_queue_empty(&sk->sk_receive_queue))
-@@ -2016,7 +2016,6 @@ static int tipc_wait_for_accept(struct socket *sock, long timeo)
- 		if (signal_pending(current))
- 			break;
+ 		hfs_bnode_read(fd.bnode, &rec, fd.entryoffset, fd.entrylength);
  	}
--	finish_wait(sk_sleep(sk), &wait);
- 	return err;
- }
+-	if (res) {
+-		hfs_find_exit(&fd);
+-		goto bail_no_root;
+-	}
++	if (res)
++		goto bail_hfs_find;
+ 	res = -EINVAL;
+ 	root_inode = hfs_iget(sb, &fd.search_key->cat, &rec);
+ 	hfs_find_exit(&fd);
+@@ -450,6 +448,8 @@ static int hfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	/* everything's okay */
+ 	return 0;
  
++bail_hfs_find:
++	hfs_find_exit(&fd);
+ bail_no_root:
+ 	pr_err("get root inode failed\n");
+ bail:
 -- 
 2.30.2
 
