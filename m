@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8263DDA72
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1205C3DD9BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237212AbhHBOOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:14:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49650 "EHLO mail.kernel.org"
+        id S234855AbhHBOD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:03:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234770AbhHBOED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:04:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 805526112E;
-        Mon,  2 Aug 2021 13:57:28 +0000 (UTC)
+        id S235158AbhHBNze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:55:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62987611C5;
+        Mon,  2 Aug 2021 13:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912649;
-        bh=2GTZP091eKfU7pZPiLcAbWAP8+o0WKkT2uVkwuBOflY=;
+        s=korg; t=1627912443;
+        bh=ay5Tboly/MM24mdV2SB/CRgXLQIV3z1cdjrv5/KZ3LE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZfiugUhIRiw0XcYyZk13cabljuu9RqoLzev7rlrtzNf5SfoQTdQ0bZy3OgwRT8kCl
-         HrMQLDe6jUxYhKN7olf4TgjxiGLyIV8jHynDJPFr9ZcjMb5etNFA5gEwvIljCS3cAY
-         Mht2ihEyGpXzg/H8P3ww0tyAHbRZP+I4xxMRiZI8=
+        b=kSbWZEvHZjesM7ccLvFm9X9BN3/R1lZG/QgOI9fW+zrc4Tn+0SBC2RobJ4ZeGjfNM
+         9JtYKg0pmahg6KQnx7Mkd9Tr0Ui4zm1K4osqcq5Y4b1hA8usEGLx58CQMyIsQGyH/2
+         a2wjTwFTrDvGqCE35qiPKFtq+u1vHECrXnAy0Pgg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
-Subject: [PATCH 5.13 054/104] net: qrtr: fix memory leaks
+        stable@vger.kernel.org,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 28/67] RDMA/bnxt_re: Fix stats counters
 Date:   Mon,  2 Aug 2021 15:44:51 +0200
-Message-Id: <20210802134345.791913780@linuxfoundation.org>
+Message-Id: <20210802134339.976726022@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,64 +42,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
 
-[ Upstream commit 52f3456a96c06760b9bfae460e39596fec7af22e ]
+[ Upstream commit 0c23af52ccd1605926480b5dfd1dd857ef604611 ]
 
-Syzbot reported memory leak in qrtr. The problem was in unputted
-struct sock. qrtr_local_enqueue() function calls qrtr_port_lookup()
-which takes sock reference if port was found. Then there is the following
-check:
+Statistical counters are not incrementing in some adapter versions with
+newer FW. This is due to the stats context length mismatch between FW and
+driver. Since the L2 driver updates the length correctly, use the stats
+length from L2 driver while allocating the DMA'able memory and creating
+the stats context.
 
-if (!ipc || &ipc->sk == skb->sk) {
-	...
-	return -ENODEV;
-}
-
-Since we should drop the reference before returning from this function and
-ipc can be non-NULL inside this if, we should add qrtr_port_put() inside
-this if.
-
-The similar corner case is in qrtr_endpoint_post() as Manivannan
-reported. In case of sock_queue_rcv_skb() failure we need to put
-port reference to avoid leaking struct sock pointer.
-
-Fixes: e04df98adf7d ("net: qrtr: Remove receive worker")
-Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
-Reported-and-tested-by: syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 9d6b648c3112 ("bnxt_en: Update firmware interface spec to 1.10.1.65.")
+Link: https://lore.kernel.org/r/1626010296-6076-1-git-send-email-selvin.xavier@broadcom.com
+Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/qrtr/qrtr.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/bnxt_re/main.c      |  4 +++-
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 10 ++++------
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |  1 +
+ 3 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index f2efaa4225f9..67993bcfecde 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -518,8 +518,10 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
- 		if (!ipc)
- 			goto err;
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 04621ba8fa76..1fadca8af71a 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -119,6 +119,7 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
+ 	if (!chip_ctx)
+ 		return -ENOMEM;
+ 	chip_ctx->chip_num = bp->chip_num;
++	chip_ctx->hw_stats_size = bp->hw_ring_stats_size;
  
--		if (sock_queue_rcv_skb(&ipc->sk, skb))
-+		if (sock_queue_rcv_skb(&ipc->sk, skb)) {
-+			qrtr_port_put(ipc);
- 			goto err;
-+		}
+ 	rdev->chip_ctx = chip_ctx;
+ 	/* rest members to follow eventually */
+@@ -507,6 +508,7 @@ static int bnxt_re_net_stats_ctx_alloc(struct bnxt_re_dev *rdev,
+ 				       dma_addr_t dma_map,
+ 				       u32 *fw_stats_ctx_id)
+ {
++	struct bnxt_qplib_chip_ctx *chip_ctx = rdev->chip_ctx;
+ 	struct hwrm_stat_ctx_alloc_output resp = {0};
+ 	struct hwrm_stat_ctx_alloc_input req = {0};
+ 	struct bnxt_en_dev *en_dev = rdev->en_dev;
+@@ -523,7 +525,7 @@ static int bnxt_re_net_stats_ctx_alloc(struct bnxt_re_dev *rdev,
+ 	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_STAT_CTX_ALLOC, -1, -1);
+ 	req.update_period_ms = cpu_to_le32(1000);
+ 	req.stats_dma_addr = cpu_to_le64(dma_map);
+-	req.stats_dma_length = cpu_to_le16(sizeof(struct ctx_hw_stats_ext));
++	req.stats_dma_length = cpu_to_le16(chip_ctx->hw_stats_size);
+ 	req.stat_ctx_flags = STAT_CTX_ALLOC_REQ_STAT_CTX_FLAGS_ROCE;
+ 	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
+ 			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+index 3ca47004b752..754dcebeb4ca 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+@@ -56,6 +56,7 @@
+ static void bnxt_qplib_free_stats_ctx(struct pci_dev *pdev,
+ 				      struct bnxt_qplib_stats *stats);
+ static int bnxt_qplib_alloc_stats_ctx(struct pci_dev *pdev,
++				      struct bnxt_qplib_chip_ctx *cctx,
+ 				      struct bnxt_qplib_stats *stats);
  
- 		qrtr_port_put(ipc);
- 	}
-@@ -839,6 +841,8 @@ static int qrtr_local_enqueue(struct qrtr_node *node, struct sk_buff *skb,
+ /* PBL */
+@@ -559,7 +560,7 @@ int bnxt_qplib_alloc_ctx(struct bnxt_qplib_res *res,
+ 		goto fail;
+ stats_alloc:
+ 	/* Stats */
+-	rc = bnxt_qplib_alloc_stats_ctx(res->pdev, &ctx->stats);
++	rc = bnxt_qplib_alloc_stats_ctx(res->pdev, res->cctx, &ctx->stats);
+ 	if (rc)
+ 		goto fail;
  
- 	ipc = qrtr_port_lookup(to->sq_port);
- 	if (!ipc || &ipc->sk == skb->sk) { /* do not send to self */
-+		if (ipc)
-+			qrtr_port_put(ipc);
- 		kfree_skb(skb);
- 		return -ENODEV;
- 	}
+@@ -889,15 +890,12 @@ static void bnxt_qplib_free_stats_ctx(struct pci_dev *pdev,
+ }
+ 
+ static int bnxt_qplib_alloc_stats_ctx(struct pci_dev *pdev,
++				      struct bnxt_qplib_chip_ctx *cctx,
+ 				      struct bnxt_qplib_stats *stats)
+ {
+ 	memset(stats, 0, sizeof(*stats));
+ 	stats->fw_id = -1;
+-	/* 128 byte aligned context memory is required only for 57500.
+-	 * However making this unconditional, it does not harm previous
+-	 * generation.
+-	 */
+-	stats->size = ALIGN(sizeof(struct ctx_hw_stats), 128);
++	stats->size = cctx->hw_stats_size;
+ 	stats->dma = dma_alloc_coherent(&pdev->dev, stats->size,
+ 					&stats->dma_map, GFP_KERNEL);
+ 	if (!stats->dma) {
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+index 7a1ab38b95da..58bad6f78456 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+@@ -60,6 +60,7 @@ struct bnxt_qplib_chip_ctx {
+ 	u16	chip_num;
+ 	u8	chip_rev;
+ 	u8	chip_metal;
++	u16	hw_stats_size;
+ 	struct bnxt_qplib_drv_modes modes;
+ };
+ 
 -- 
 2.30.2
 
