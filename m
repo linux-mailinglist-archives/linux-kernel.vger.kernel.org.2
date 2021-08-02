@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092D33DD224
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655543DD226
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhHBIkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 04:40:16 -0400
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:33371 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhHBIkP (ORCPT
+        id S232807AbhHBIlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 04:41:10 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:39223 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229917AbhHBIlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 04:40:15 -0400
-Received: by mail-ej1-f41.google.com with SMTP id hs10so20980997ejc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 01:40:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Zz03E5xQt7p2VN7cWkxfZkNKl6W24aLbb5bhnlK6M/Y=;
-        b=Jm0brBbCmMb45NvKIjlUpEMQ42Tv6H+X/Kw9HLYIZ9V1osF8QTDNxQjBN/UYR/qsUl
-         ++Q8mAX9AyUpX1MM83+ua0nlgLG875tKooq4scFrK06v0FtfyMDr94Bp/t64pxjWEMN2
-         Q+1wuWyThovdVUzGM16zHhSnB/d4WYw/K2WSSkG7wjZyrS9rnxQpM2JrFBCTkt/wRXo/
-         EuLMOCVaUKaQVMSELZW18Ur7MkUzlAr/gAi/PjNxJgFv6SuAKyzgXZthagzchjBNFv7x
-         j6rtkzOegKbT+c1/mV24ODura6q44Id+bP7LFP0PTc86n8/LCfENIQ9ynSKT+M8xBg9o
-         kZKw==
-X-Gm-Message-State: AOAM532R5+KxvYwXXEk+mSeAsKiQHEeMeAfE1wQrOVpfAxmZ7YSEMmQu
-        MbhBZbb6V/0iFYcRWMWOjZU=
-X-Google-Smtp-Source: ABdhPJwNQd3t1Hni44DinFugXrDzcKsPIzaWgkeB9qalXL+5uv984oWzkAMVLlGBGUqmkB7JpErwhg==
-X-Received: by 2002:a17:906:3048:: with SMTP id d8mr14693966ejd.534.1627893604790;
-        Mon, 02 Aug 2021 01:40:04 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id n10sm4284468ejk.86.2021.08.02.01.40.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 01:40:04 -0700 (PDT)
-Subject: Re: [PATCH 2/2] virtio-console: remove unnecessary kmemdup()
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>,
-        gregkh@linuxfoundation.org, amit@kernel.org, arnd@arndb.de
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, osandov@fb.com
-References: <20210801051655.79048-1-xianting.tian@linux.alibaba.com>
- <b5554967-a683-96ae-deb9-2d4980d33b41@kernel.org>
- <5ad81a0e-fbb2-a849-6db7-f5718633d282@linux.alibaba.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <a2598ec9-7bc9-be42-bcab-fa19c9e734f7@kernel.org>
-Date:   Mon, 2 Aug 2021 10:40:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 2 Aug 2021 04:41:09 -0400
+Received: from mail-wm1-f53.google.com ([209.85.128.53]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M28O9-1mCOFH3r1F-002aqF; Mon, 02 Aug 2021 10:40:58 +0200
+Received: by mail-wm1-f53.google.com with SMTP id m19so9914427wms.0;
+        Mon, 02 Aug 2021 01:40:58 -0700 (PDT)
+X-Gm-Message-State: AOAM533kulorwX2PcfUeRC0u8B7N30vqSxV1bS6vRchyhjEsrrxG2jp+
+        748EYmHtNrvQZXoE0oxHP3SN9orLh4FJA/Jq/pI=
+X-Google-Smtp-Source: ABdhPJz5worb+3mDgS5BfVO7ARMLM4dzAlkpaueUK5XPmilhwkpYyqD2IgZhtv48MM0fLgUXIA9RUQdA6/gsZXu3Zf4=
+X-Received: by 2002:a05:600c:414b:: with SMTP id h11mr15307818wmm.120.1627893658610;
+ Mon, 02 Aug 2021 01:40:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5ad81a0e-fbb2-a849-6db7-f5718633d282@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <00000000000014105005c87cffdc@google.com> <20210801131406.1750-1-hdanton@sina.com>
+ <6f05c1a9-801a-6174-048a-90688a23941d@nvidia.com>
+In-Reply-To: <6f05c1a9-801a-6174-048a-90688a23941d@nvidia.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 2 Aug 2021 10:40:42 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0dX1GRDTUp50kW81dD-dUw_=H4sx6tyeCVJea-FOBCQA@mail.gmail.com>
+Message-ID: <CAK8P3a0dX1GRDTUp50kW81dD-dUw_=H4sx6tyeCVJea-FOBCQA@mail.gmail.com>
+Subject: Re: [syzbot] possible deadlock in br_ioctl_call
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+34fe5894623c4ab1b379@syzkaller.appspotmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        bridge@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:56wepSUXVz28L9Dna4gNb3O/IaR3lTv8C3dEgk5bPc/SRiGKmTN
+ n7lA5HD4lBzKvygf95qcK2lEW63L0VUwlXWHafLNnQ/6NwMH13oqCdhXBY5Rq49Ms9UoVVp
+ jJcfU+9kYaT88SaHLBkyMI+BLrdLtqUzhDGjqsnFl7nORGVtGBD+ZP/0YAc9aj7VZFVP8tp
+ FBRymqzZ1wuwUAl8z/uuA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6g4JBgcJbPU=:eq3AJ28JQj2DfOYIw+XS9F
+ wsH/BQYJnCECBopLQ7L+ZZRPQpKGwmvaJd3N8jlb9e/iQFy6jb7pkMd3yvGl6go836yAVHUOY
+ oH/EXTNSG+uDZJNwjV/z7bmZCvSInUETMD+WKqDsijAxfaAeQKlGwQFHWUzIbaPNyDFXIyWa1
+ 6KFPu2g+H3LloCk52dGWVpmsgztye7qcsxvDoL9EJCwvxxJ5XKJAF69DzkUxOKGViKfrAmroC
+ DAsz/IJUyh7mjIzx8grBjP1uXLXPTocZBAFkXQH4NADcKAH4xStD9Ijj7DLI0dehZEwt/m3oH
+ qLAJqO41ZjtFnstHeOCnoKwBZ8so+hydoHY19yS8FupcQ9Xoz4g6WV59AwM5Qcb5NUk/R3Fo6
+ 819UeTdPPYbjb3KmMNd+t2xhb9KzuawhuBlZYRpZPaaYO2DEbIf8hkT+nB+uub790VEH74WHb
+ YE5UpHhsgnLoTCTrb4QvVRl3dgKhQ5wsG7K05df41bvD5zEw4YohwsGR06N1HhON0vJ1H9buj
+ YUOboChnqYvrijcwFeE50mfWR5f7KWvTcsRvjMkVWgwlN/RJhBm98tEV7FF17KZZKqYLw1cRZ
+ GZ/j2axGXmmou0dWdWHuv37hhNdHCEsIRPwY7c1twPVoMEnBrF/eEdcLJ1AaCb5KsFJRIGCFx
+ RrH/90YeGFfR5jVo4vkRZM6r6ZG4z0TuM/J0O5iEpJsJpcuyUG72DAF9cEvCY3aLd2MveV48a
+ keU6lTgk+dnY2PdrWkelbzXSkKfei9ureMAbMd1WRey+BMsKLMKU6XHeywzNY0D12i9BOtqMf
+ 22aebCPHq40Oq1n9V0dW9pVO5gVlt5VlbsuxWKZGQSGMtDhDMe9CbhGD+3jKorjUB2oyuz/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02. 08. 21, 10:32, Xianting Tian wrote:
-> 
-> 在 2021/8/2 下午3:25, Jiri Slaby 写道:
->> Hi,
->>
->> why is this 2/2? I seem (Lore neither) to find 1/2.
-> You didn't receive 1/2?
-> [PATCH 1/2] tty: hvc: pass DMA capable memory to put_chars()
-> https://lkml.org/lkml/2021/8/1/8 <https://lkml.org/lkml/2021/8/1/8>
+On Mon, Aug 2, 2021 at 10:30 AM Nikolay Aleksandrov <nikolay@nvidia.com> wrote:
+> On 01/08/2021 16:14, Hillf Danton wrote:
+> > On Sun, 01 Aug 2021 03:34:24 -0700
+> >> syzbot found the following issue on:
+>
+> Thanks, but it will need more work, the bridge ioctl calls were divided in two parts
+> before: one was deviceless called by sock_ioctl and didn't expect rtnl to be held, the other was
+> with a device called by dev_ifsioc() and expected rtnl to be held.
+> Then ad2f99aedf8f ("net: bridge: move bridge ioctls out of .ndo_do_ioctl")
+> united them in a single ioctl stub, but didn't take care of the locking expectations.
+> For sock_ioctl now we acquire  (1) br_ioctl_mutex, (2) rtnl and for dev_ifsioc we
+> acquire (1) rtnl, (2) br_ioctl_mutex as the lockdep warning has demonstrated.
 
-Oh, I did, but it's not properly threaded. PLease fix your setup.
+Right, sorry about causing problems here.
 
->> On 01. 08. 21, 7:16, Xianting Tian wrote:
->>> hvc framework will never pass stack memory to the put_chars() function,
->>
->> Am I blind or missing something?
->>
->> hvc_console_print(...)
->> {
->>   char c[N_OUTBUF]
->> ...
->>   cons_ops[index]->put_chars(vtermnos[index], c, i);
->>
->> The same here:
->>
->> hvc_poll_put_char(..., char ch)
->> {
->> ...
->>    n = hp->ops->put_chars(hp->vtermno, &ch, 1);
->>
->> AFAICS both of them *pass* a pointer to stack variable.
-> 
-> yes, I discussed the issue with Arnd before in below thread,  you can 
-> get the history, thanks
-> 
-> https://lkml.org/lkml/2021/7/27/494 <https://lkml.org/lkml/2021/7/27/494>
+> That fix above can work if rtnl gets reacquired by the ioctl in the proper switch cases.
+> To avoid playing even more locking games it'd probably be best to always acquire and
+> release rtnl by the bridge ioctl which will need a bit more work.
+>
+> Arnd, should I take care of it?
 
-So is this a v2? You should have noted that. And what changed from v1 too.
+That would be best I think. As you have already analyzed the problem and come
+up with a possible solution, I'm sure you will get to a better fix
+more quickly than
+I would.
 
->>> So the calling of kmemdup() is unnecessary, remove it.
->>>
->>> Fixes: c4baad5029 ("virtio-console: avoid DMA from stack")
->>
->> This patch doesn't "Fix" -- it reverts the commit. You should've CCed 
->> the author too.
-> 
-> yes, we discussed ther issue in above thread, which we CCed the author.
+Thanks,
 
-I don't see any input from the author?
-
-
-Anyway, 1/2 does not even build, so you will send v3 with all the above 
-fixed, hopefully.
-
-thanks,
--- 
-js
+       Arnd
