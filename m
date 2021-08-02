@@ -2,116 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9BA3DDF29
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2CC3DDF2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhHBSad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
+        id S230387AbhHBSan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhHBSa3 (ORCPT
+        with ESMTP id S229640AbhHBSak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:30:29 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB761C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:30:18 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id c16so20634253plh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:30:18 -0700 (PDT)
+        Mon, 2 Aug 2021 14:30:40 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666FBC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:30:29 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id u20so25115565ljo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:30:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L3jHyeWhOPlnmHEQqXQZtFquEdYtQ8PlFuxX/iA0B/s=;
-        b=kkjr9Q/jcBdtyVY5j9GqKJURedDDefAXP9V4LLH7jtLeQqkTsQo/ZuqK1HHxKKvaLY
-         ckm/XCuKGJyChRIRNCuBPMHQY90EAtuNL6ptK857EoNl7NBUH+omXWvJKVbIv0+ljlnU
-         IiHomGcvuGugBEKgR5O0j5SlsR5VOunsN5drCoPuO916v4Kz6Zilh157r0R12lMvZirw
-         1AeNotywzHUneXGQGeV3QB0utob2Be5+J7zESX0D/ZOO2ozyaNV+lh2IiZ8++WadhUl2
-         A1yKt7ur0DcQrw+3deesKHw2I2qg1XlE2o/MWjsqOTIfeVUGZ86Fg/F+8ToYMRQbeDQl
-         LA1A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c8TcBGmyR9gclpUTkI1EdTWgQL1bdhzCcbivOvr1tM4=;
+        b=v+2nSFB6R4xfg/1tRswVpbesqfqMlOMTxeSwgzMS4/Je0T7YWpDFciMvXDj/YmcHVX
+         vEwaADhXQCoYhzoLIaNLkXJjaROZ4R7yoBBpoX9KMHr1FoyAQ1Hj8m08ewwPdsp+pr4S
+         5Kpmafn2K2Ybh85YE8HjB6Mp8p9QDOroDFNVgrIArn75HGzLx/8GskkaguIxomSJsomq
+         e2WIfWELptmicmQU0v7+mrbduh+nALynM4fk7OUQJMoOdop3vZovwSCbMIpQjhH0TuiS
+         /vyZebrXqmUCnNJwdZF+lmeG9e/7YTo4uUVOp69lDkhEzFcwlziRsErEMQ6gTcZXgLc4
+         Wwig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L3jHyeWhOPlnmHEQqXQZtFquEdYtQ8PlFuxX/iA0B/s=;
-        b=kXPGsGrdfP4s3vQldSXKXVVf9iNymuU+v/LQEqMxbuztVbwotRxz8AKcxHoS8IwooA
-         heHZJq0f0pxytlY0hlPAiPYojnw0NjTxvcxOqUBUZiFz6zEUoJnXqBM9u6H6i9LJcqye
-         4o5ESELNLsC79ptGBjuLwPr0L9lXEZUX0IhxHaT4rd3EPFAnTFIR8M5Umf0EunbAb0zy
-         sx8F52cb0Nla6iRb8C4ZPW4jy+V28aaGduDz6SBUmUOz14YgRTnm9XTzZzNfe2O9+Dkq
-         QS/dupKVyEf8Stf4HKFwJv/U/duVx0CU3ca+8AyAEchcBCx7V6aQzsajxAEi1CdYhy3P
-         U+3g==
-X-Gm-Message-State: AOAM530K56z4GwfjPPok1KSV0JeT5vz7Sl56d3xWKSmcQtSfdoC9g4Kx
-        Mdo0kx3r019VLeuBTfkGMHnEvQ==
-X-Google-Smtp-Source: ABdhPJxRFU6SpKvF4ZIie4VYq4AmJSV23DiH9m8nZORtUbgYg8beriVgY9zbA/I1wRaSH3jlkqsqcA==
-X-Received: by 2002:a17:902:ab05:b029:12c:3d3:cc93 with SMTP id ik5-20020a170902ab05b029012c03d3cc93mr15525090plb.74.1627929018268;
-        Mon, 02 Aug 2021 11:30:18 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j10sm13563971pfd.200.2021.08.02.11.30.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 11:30:17 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 18:30:13 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 1/2] KVM: Block memslot updates across range_start() and
- range_end()
-Message-ID: <YQg5tQslPv83TTQW@google.com>
-References: <20210727171808.1645060-1-pbonzini@redhat.com>
- <20210727171808.1645060-2-pbonzini@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c8TcBGmyR9gclpUTkI1EdTWgQL1bdhzCcbivOvr1tM4=;
+        b=ZuLaJQtHIpOhnua7z3ZFRlXimdTM97zuwEZiiTngL0+HQ2rrLLc0vq25nhayif/XEE
+         nxd4rHqS6TJpxtEd2LBtphvzf3HY7dL06le3QxnIoFBF99abVUQDNBcedrQSr7zwHDu3
+         l2j5s1uh/WciTUxx7YpMabD9gCnq8cqyJtgm0UvrmqXvAjC8w+CxaVpv+KSi4LdHUcji
+         RjlMzgPvJSfFkMLZZzMOKJod7JwvGeuN7nkucJ/FXJUvXa0D86+5meeRK/8nwzFVYjQ8
+         o4v6aMJ/NTF74uvFPvRVaY5UyvFYlkNHvyDnmuNZJNj3rKfjnedpgX9v9LUI0F5ettVx
+         QSSA==
+X-Gm-Message-State: AOAM533dnfWVyEyVmBjSF+pgncIr9EDjPon/lQ3UFP9ob7aekUcRox47
+        HPAgxaR8vlUZwI4V3FLaNEDT6ve6NFXXDMz+tjnk9g==
+X-Google-Smtp-Source: ABdhPJy5Ow0zC41Zhsdb1BrDBMubmUcVpcxtgtXXRjyz8DDjCNGpRcSs4JzP79rXKVn/nFxRpF22FiQlMKNBAg8+lDE=
+X-Received: by 2002:a2e:98c8:: with SMTP id s8mr12114926ljj.495.1627929027452;
+ Mon, 02 Aug 2021 11:30:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727171808.1645060-2-pbonzini@redhat.com>
+References: <20210730215708.276437-1-ndesaulniers@google.com>
+ <20210730215708.276437-4-ndesaulniers@google.com> <20210730231252.r6fi6c3i6obbcgfi@google.com>
+ <CAK7LNASSpc8JBivPGFSvxMdgh6+emwav9YPmnygrdPkX-Q1a+A@mail.gmail.com>
+In-Reply-To: <CAK7LNASSpc8JBivPGFSvxMdgh6+emwav9YPmnygrdPkX-Q1a+A@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 2 Aug 2021 11:30:16 -0700
+Message-ID: <CAKwvOdnUOAAkWBcwSB2+0swJdkxSja+6QBorqdqD++6q8DY7Kg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] Documentation/llvm: update CROSS_COMPILE inferencing
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Fangrui Song <maskray@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021, Paolo Bonzini wrote:
-> @@ -764,8 +769,9 @@ static inline struct kvm_memslots *__kvm_memslots(struct kvm *kvm, int as_id)
->  {
->  	as_id = array_index_nospec(as_id, KVM_ADDRESS_SPACE_NUM);
->  	return srcu_dereference_check(kvm->memslots[as_id], &kvm->srcu,
-> -			lockdep_is_held(&kvm->slots_lock) ||
-> -			!refcount_read(&kvm->users_count));
-> +				      lockdep_is_held(&kvm->slots_lock) ||
-> +				      READ_ONCE(kvm->mn_active_invalidate_count) ||
+On Fri, Jul 30, 2021 at 5:05 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Sat, Jul 31, 2021 at 8:12 AM Fangrui Song <maskray@google.com> wrote:
+> >
+> > On 2021-07-30, Nick Desaulniers wrote:
+> > >+For example, to cross-compile the arm64 kernel::
+> > >+
+> > >+      ARCH=arm64 make LLVM=1 LLVM_IAS=1
+> >
+> > Is  ARCH=arm64 make LLVM=1 LLVM_IAS=1
+> >
+> > preferred over
+> >
+> >    make ARCH=arm64 LLVM=1 LLVM_IAS=1
+> >
+> > ?
+>
+>
+> I do not think so.
+>
+> For consistency,
+>
+>    make ARCH=arm64 LLVM=1 LLVM_IAS=1
+>
+> or
+>
+>    ARCH=arm64 LLVM=1 LLVM_IAS=1 make
+>
+> might be preferred.
+>
+>
+>
+> But, in the same doc, I see an example, which
+> mixes up the env variables and a make variable.
+>
+>      ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CC=clang
 
-Hmm, I'm not sure we should add mn_active_invalidate_count as an exception to
-holding kvm->srcu.  It made sense in original (flawed) approach because the
-exception was a locked_is_held() check, i.e. it was verifying the the current
-task holds the lock.  With mn_active_invalidate_count, this only verifies that
-there's an invalidation in-progress, it doesn't verify that this task/CPU is the
-one doing the invalidation.
+Perhaps it's just muscle memory from when I started working on Nexus
+phone kernels ~5 years ago; that's how our build scripts invoked make
+(with ARCH and CROSS_COMPILE as env vars).
 
-Since __kvm_handle_hva_range() takes SRCU for read, maybe it's best omit this?
+IIRC, GNU make has the notion of `origin` for variables.
+https://www.gnu.org/software/make/manual/html_node/Origin-Function.html
+So "before `make`" would be "environment" and "after `make`" would be
+"command line."
 
-> +				      !refcount_read(&kvm->users_count));
->  }
->  
->  static inline struct kvm_memslots *kvm_memslots(struct kvm *kvm)
+I'm rereading the section on assignment to see if one of the
+assignment operators was affected by origin.
+https://www.gnu.org/software/make/manual/html_node/Setting.html
+https://www.gnu.org/software/make/manual/html_node/Flavors.html#Flavors
 
-...
+I could have sworn that due to one of the assignment operators
+(perhaps `?=`) that the orderings weren't commutative.
+$ make ARCH=arm64 LLVM=1 LLVM_IAS=1 -j72
+works
+$ ARCH=arm64 LLVM=1 LLVM_IAS=1 make -j72
+also works.  Hmm...maybe I misremembered the issue then.
 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 5cc79373827f..c64a7de60846 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -605,10 +605,8 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
->  
->  	/*
->  	 * .change_pte() must be surrounded by .invalidate_range_{start,end}(),
-
-Nit, the comma can be switch to a period.  The next patch starts a new sentence,
-so it would be correct even in the long term.
-
-> -	 * and so always runs with an elevated notifier count.  This obviates
-> -	 * the need to bump the sequence count.
->  	 */
-> -	WARN_ON_ONCE(!kvm->mmu_notifier_count);
-> +	WARN_ON_ONCE(!READ_ONCE(kvm->mn_active_invalidate_count));
->  
->  	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_set_spte_gfn);
->  }
-
-Nits aside,
-
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+Ok, I will reorder all instances to use the command line rather than
+env vars in v6.
+-- 
+Thanks,
+~Nick Desaulniers
