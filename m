@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319233DD7FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3A93DD894
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbhHBNs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:48:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57096 "EHLO mail.kernel.org"
+        id S234783AbhHBNxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:53:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233984AbhHBNrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:47:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B322960EBB;
-        Mon,  2 Aug 2021 13:47:03 +0000 (UTC)
+        id S234092AbhHBNtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:49:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 836C3610FD;
+        Mon,  2 Aug 2021 13:48:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912024;
-        bh=gcRNNfMiXFcKk4tWGirTCkC3Ks8AkDuQgrrRNPgdTg0=;
+        s=korg; t=1627912137;
+        bh=gSdtKr0cRYtGAPGsVhL7WmzBPiOB29M1QA8/jgqgXGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uLD6Fjgozf7gJ2LQDL2LT6PLv6om3SZbpThaM9IfqYpNp6UssnuraoBfp8yJ3wMw8
-         wOcen74mL3NIuya5KvWamjOkUWdqbDEFIX/gNRtZYEWrnIRd9cQ/tHUV0Uni0ihGDv
-         JH8lx47fmrlqsgsO3V6NepdkpqshN78jZzdw1saE=
+        b=P8KTFeYaMnM4oiMHie9qgrmDSHSgt/qJJKEsHOCfa+6e8jvU69D0j9d92OtkOmENY
+         IbUKykCSHpknf8R1ka8RnwWXvHTXgD6biaWpMEybzlxCak1pbps2NmwMITeR8/D+Hr
+         kIjDROw1VskkW64EZin5FOu0/xbIAddjd0rtCv0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 06/32] net/802/mrp: fix memleak in mrp_request_join()
+        stable@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 04/38] af_unix: fix garbage collect vs MSG_PEEK
 Date:   Mon,  2 Aug 2021 15:44:26 +0200
-Message-Id: <20210802134333.129599408@linuxfoundation.org>
+Message-Id: <20210802134334.972631041@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
-References: <20210802134332.931915241@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,90 +39,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-[ Upstream commit 996af62167d0e0ec69b938a3561e96f84ffff1aa ]
+commit cbcf01128d0a92e131bd09f1688fe032480b65ca upstream.
 
-I got kmemleak report when doing fuzz test:
+unix_gc() assumes that candidate sockets can never gain an external
+reference (i.e.  be installed into an fd) while the unix_gc_lock is
+held.  Except for MSG_PEEK this is guaranteed by modifying inflight
+count under the unix_gc_lock.
 
-BUG: memory leak
-unreferenced object 0xffff88810c239500 (size 64):
-comm "syz-executor940", pid 882, jiffies 4294712870 (age 14.631s)
-hex dump (first 32 bytes):
-01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-00 00 00 00 00 00 00 00 01 00 00 00 01 02 00 04 ................
-backtrace:
-[<00000000a323afa4>] slab_alloc_node mm/slub.c:2972 [inline]
-[<00000000a323afa4>] slab_alloc mm/slub.c:2980 [inline]
-[<00000000a323afa4>] __kmalloc+0x167/0x340 mm/slub.c:4130
-[<000000005034ca11>] kmalloc include/linux/slab.h:595 [inline]
-[<000000005034ca11>] mrp_attr_create net/802/mrp.c:276 [inline]
-[<000000005034ca11>] mrp_request_join+0x265/0x550 net/802/mrp.c:530
-[<00000000fcfd81f3>] vlan_mvrp_request_join+0x145/0x170 net/8021q/vlan_mvrp.c:40
-[<000000009258546e>] vlan_dev_open+0x477/0x890 net/8021q/vlan_dev.c:292
-[<0000000059acd82b>] __dev_open+0x281/0x410 net/core/dev.c:1609
-[<000000004e6dc695>] __dev_change_flags+0x424/0x560 net/core/dev.c:8767
-[<00000000471a09af>] rtnl_configure_link+0xd9/0x210 net/core/rtnetlink.c:3122
-[<0000000037a4672b>] __rtnl_newlink+0xe08/0x13e0 net/core/rtnetlink.c:3448
-[<000000008d5d0fda>] rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3488
-[<000000004882fe39>] rtnetlink_rcv_msg+0x369/0xa10 net/core/rtnetlink.c:5552
-[<00000000907e6c54>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
-[<00000000e7d7a8c4>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-[<00000000e7d7a8c4>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
-[<00000000e0645d50>] netlink_sendmsg+0x78e/0xc90 net/netlink/af_netlink.c:1929
-[<00000000c24559b7>] sock_sendmsg_nosec net/socket.c:654 [inline]
-[<00000000c24559b7>] sock_sendmsg+0x139/0x170 net/socket.c:674
-[<00000000fc210bc2>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
-[<00000000be4577b5>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
+MSG_PEEK does not touch any variable protected by unix_gc_lock (file
+count is not), yet it needs to be serialized with garbage collection.
+Do this by locking/unlocking unix_gc_lock:
 
-Calling mrp_request_leave() after mrp_request_join(), the attr->state
-is set to MRP_APPLICANT_VO, mrp_attr_destroy() won't be called in last
-TX event in mrp_uninit_applicant(), the attr of applicant will be leaked.
-To fix this leak, iterate and free each attr of applicant before rerturning
-from mrp_uninit_applicant().
+ 1) increment file count
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+ 2) lock/unlock barrier to make sure incremented file count is visible
+    to garbage collection
+
+ 3) install file into fd
+
+This is a lock barrier (unlike smp_mb()) that ensures that garbage
+collection is run completely before or completely after the barrier.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/802/mrp.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ net/unix/af_unix.c |   51 +++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 49 insertions(+), 2 deletions(-)
 
-diff --git a/net/802/mrp.c b/net/802/mrp.c
-index 72db2785ef2c..4ee3af3d400b 100644
---- a/net/802/mrp.c
-+++ b/net/802/mrp.c
-@@ -295,6 +295,19 @@ static void mrp_attr_destroy(struct mrp_applicant *app, struct mrp_attr *attr)
- 	kfree(attr);
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -1521,6 +1521,53 @@ out:
+ 	return err;
  }
  
-+static void mrp_attr_destroy_all(struct mrp_applicant *app)
++static void unix_peek_fds(struct scm_cookie *scm, struct sk_buff *skb)
 +{
-+	struct rb_node *node, *next;
-+	struct mrp_attr *attr;
++	scm->fp = scm_fp_dup(UNIXCB(skb).fp);
 +
-+	for (node = rb_first(&app->mad);
-+	     next = node ? rb_next(node) : NULL, node != NULL;
-+	     node = next) {
-+		attr = rb_entry(node, struct mrp_attr, node);
-+		mrp_attr_destroy(app, attr);
-+	}
++	/*
++	 * Garbage collection of unix sockets starts by selecting a set of
++	 * candidate sockets which have reference only from being in flight
++	 * (total_refs == inflight_refs).  This condition is checked once during
++	 * the candidate collection phase, and candidates are marked as such, so
++	 * that non-candidates can later be ignored.  While inflight_refs is
++	 * protected by unix_gc_lock, total_refs (file count) is not, hence this
++	 * is an instantaneous decision.
++	 *
++	 * Once a candidate, however, the socket must not be reinstalled into a
++	 * file descriptor while the garbage collection is in progress.
++	 *
++	 * If the above conditions are met, then the directed graph of
++	 * candidates (*) does not change while unix_gc_lock is held.
++	 *
++	 * Any operations that changes the file count through file descriptors
++	 * (dup, close, sendmsg) does not change the graph since candidates are
++	 * not installed in fds.
++	 *
++	 * Dequeing a candidate via recvmsg would install it into an fd, but
++	 * that takes unix_gc_lock to decrement the inflight count, so it's
++	 * serialized with garbage collection.
++	 *
++	 * MSG_PEEK is special in that it does not change the inflight count,
++	 * yet does install the socket into an fd.  The following lock/unlock
++	 * pair is to ensure serialization with garbage collection.  It must be
++	 * done between incrementing the file count and installing the file into
++	 * an fd.
++	 *
++	 * If garbage collection starts after the barrier provided by the
++	 * lock/unlock, then it will see the elevated refcount and not mark this
++	 * as a candidate.  If a garbage collection is already in progress
++	 * before the file count was incremented, then the lock/unlock pair will
++	 * ensure that garbage collection is finished before progressing to
++	 * installing the fd.
++	 *
++	 * (*) A -> B where B is on the queue of A or B is on the queue of C
++	 * which is on the queue of listening socket A.
++	 */
++	spin_lock(&unix_gc_lock);
++	spin_unlock(&unix_gc_lock);
 +}
 +
- static int mrp_pdu_init(struct mrp_applicant *app)
+ static int unix_scm_to_skb(struct scm_cookie *scm, struct sk_buff *skb, bool send_fds)
  {
- 	struct sk_buff *skb;
-@@ -900,6 +913,7 @@ void mrp_uninit_applicant(struct net_device *dev, struct mrp_application *appl)
+ 	int err = 0;
+@@ -2146,7 +2193,7 @@ static int unix_dgram_recvmsg(struct soc
+ 		sk_peek_offset_fwd(sk, size);
  
- 	spin_lock_bh(&app->lock);
- 	mrp_mad_event(app, MRP_EVENT_TX);
-+	mrp_attr_destroy_all(app);
- 	mrp_pdu_queue(app);
- 	spin_unlock_bh(&app->lock);
+ 		if (UNIXCB(skb).fp)
+-			scm.fp = scm_fp_dup(UNIXCB(skb).fp);
++			unix_peek_fds(&scm, skb);
+ 	}
+ 	err = (flags & MSG_TRUNC) ? skb->len - skip : size;
  
--- 
-2.30.2
-
+@@ -2387,7 +2434,7 @@ unlock:
+ 			/* It is questionable, see note in unix_dgram_recvmsg.
+ 			 */
+ 			if (UNIXCB(skb).fp)
+-				scm.fp = scm_fp_dup(UNIXCB(skb).fp);
++				unix_peek_fds(&scm, skb);
+ 
+ 			sk_peek_offset_fwd(sk, chunk);
+ 
 
 
