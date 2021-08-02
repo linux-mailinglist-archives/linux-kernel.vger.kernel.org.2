@@ -2,97 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4683DD62C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4563DD64E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhHBM6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:58:43 -0400
-Received: from 8bytes.org ([81.169.241.247]:52982 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232629AbhHBM6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:58:42 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 9AD29379; Mon,  2 Aug 2021 14:58:30 +0200 (CEST)
-Date:   Mon, 2 Aug 2021 14:58:26 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, will@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, rientjes@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        rppt@kernel.org, kirill.shutemov@linux.intel.com,
-        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, xen-devel@lists.xenproject.org,
-        pgonda@google.com, david@redhat.com, keescook@chromium.org,
-        hannes@cmpxchg.org, sfr@canb.auug.org.au,
-        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, anparri@microsoft.com
-Subject: Re: [PATCH 07/13] HV/Vmbus: Add SNP support for VMbus channel
- initiate message
-Message-ID: <YQfr8lsaghth8Zix@8bytes.org>
-References: <20210728145232.285861-1-ltykernel@gmail.com>
- <20210728145232.285861-8-ltykernel@gmail.com>
+        id S233905AbhHBNAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233737AbhHBNAH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:00:07 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30301C061796
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 05:59:58 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id j14so729231vkd.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 05:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TJs+dekBD82oknmB9ryXYeqk4t0LqHc2GKv1Ua2jP48=;
+        b=R5hiffWrjH0VhmOssOAj/UCHYAz/zCa/k1z271hRm3/ZqsBODWuc7eNiTVSzueWSRE
+         jNydmP4GPL3zYII+rUnjAP8b9rEDVz9FLmwy6ShMmi9eAxRLUM/VBWxBka8xdRsMiPh9
+         tjc2NS7fQleDlCxq1csLl750r9p/EjfPF3g6eT8qvIT6Jxug8bZ3rozapNtuSxXtms6J
+         NSRTAjkoaWqtev1IHHPGsyoaG+L52mfUTtBhwspoRYD4V++0k6d1FuMZ/Ulp3fLrQKss
+         n6qKstue0VgsBUGlA05+QD8n72QX2/TSzpz0Ipq33+kfvuDCnibFy3TvJbe+ZMu5xQD/
+         tndQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TJs+dekBD82oknmB9ryXYeqk4t0LqHc2GKv1Ua2jP48=;
+        b=o0Rb7uI+iT+Z8oQUYY7GZoSEVJRx//XR+RMGYxgl0DZdITJh3TG9ODodrilhgTPsiO
+         DqDGoUgOUq0bnamikxPqRWTxuWtwwjs98h2Z5EoTx7qbMEqxQeidom6DrIPmDfJgvnLM
+         CHvvDvkVse/pNZAhz3tnaTe6vrFM23ezlbytNRmAIMdkYlhw5GSPcACiwl7wjHz6AJVH
+         IRnCXmXvIC38L68inuwfqxQ3125moUtliH7eMGVy9FNChvdr+I6E04AL3ADHl9EDvTcI
+         135RE0rU4vt3KbMyp1lb0sd5ShUCIQerjh/b6RwlCtuTKsPhi+KlAOB9trUWHzZk/guQ
+         r6Gw==
+X-Gm-Message-State: AOAM530ZgncKZHbS+XOSZJMPKTOj1XLB1jpNKsYCuEYdqHaxlaq0hucu
+        M+QuKn7muboyZ4KFukWK+lzr4PnGU+OuLieyTUhQZw==
+X-Google-Smtp-Source: ABdhPJxby8LAmNxsHXMZQUN74RNItMQXlAwQPLfX50lbwI7BtwRz1ErlE5etSbjfjaU5zPc2DwDXFYEChMCQ7qtu6Vk=
+X-Received: by 2002:a1f:9d13:: with SMTP id g19mr8289005vke.15.1627909197234;
+ Mon, 02 Aug 2021 05:59:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728145232.285861-8-ltykernel@gmail.com>
+References: <1626764876-10229-1-git-send-email-rnayak@codeaurora.org> <1626764876-10229-2-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <1626764876-10229-2-git-send-email-rnayak@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 2 Aug 2021 14:59:20 +0200
+Message-ID: <CAPDyKFrzHD6rXP5TnqrAVnrZExc2JLFe3HoGF+yM_tsaZYwh8g@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] PM / Domains: Add support for 'required-opps' to
+ set default perf state
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:52:22AM -0400, Tianyu Lan wrote:
-> +	if (hv_is_isolation_supported()) {
-> +		vmbus_connection.monitor_pages_va[0]
-> +			= vmbus_connection.monitor_pages[0];
-> +		vmbus_connection.monitor_pages[0]
-> +			= memremap(msg->monitor_page1, HV_HYP_PAGE_SIZE,
-> +				   MEMREMAP_WB);
-> +		if (!vmbus_connection.monitor_pages[0])
-> +			return -ENOMEM;
+On Tue, 20 Jul 2021 at 09:12, Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>
+> Some devices within power domains with performance states do not
+> support DVFS, but still need to vote on a default/static state
+> while they are active. They can express this using the 'required-opps'
+> property in device tree, which points to the phandle of the OPP
+> supported by the corresponding power-domains.
+>
+> Add support to parse this information from DT and then set the
+> specified performance state during attach and drop it on detach.
+> runtime suspend/resume callbacks already have logic to drop/set
+> the vote as needed and should take care of dropping the default
+> perf state vote on runtime suspend and restore it back on runtime
+> resume.
+>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+>  drivers/base/power/domain.c | 28 +++++++++++++++++++++++++---
+>  include/linux/pm_domain.h   |  1 +
+>  2 files changed, 26 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index a934c67..f454031 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -2598,6 +2598,12 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
+>
+>         dev_dbg(dev, "removing from PM domain %s\n", pd->name);
+>
+> +       /* Drop the default performance state */
+> +       if (dev_gpd_data(dev)->default_pstate) {
+> +               dev_pm_genpd_set_performance_state(dev, 0);
+> +               dev_gpd_data(dev)->default_pstate = 0;
+> +       }
 > +
-> +		vmbus_connection.monitor_pages_va[1]
-> +			= vmbus_connection.monitor_pages[1];
-> +		vmbus_connection.monitor_pages[1]
-> +			= memremap(msg->monitor_page2, HV_HYP_PAGE_SIZE,
-> +				   MEMREMAP_WB);
-> +		if (!vmbus_connection.monitor_pages[1]) {
-> +			memunmap(vmbus_connection.monitor_pages[0]);
-> +			return -ENOMEM;
-> +		}
+>         for (i = 1; i < GENPD_RETRY_MAX_MS; i <<= 1) {
+>                 ret = genpd_remove_device(pd, dev);
+>                 if (ret != -EAGAIN)
+> @@ -2635,9 +2641,10 @@ static void genpd_dev_pm_sync(struct device *dev)
+>  static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>                                  unsigned int index, bool power_on)
+>  {
+> +       struct device_node *np;
+>         struct of_phandle_args pd_args;
+>         struct generic_pm_domain *pd;
+> -       int ret;
+> +       int ret, pstate;
+>
+>         ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
+>                                 "#power-domain-cells", index, &pd_args);
+> @@ -2675,10 +2682,25 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>                 genpd_unlock(pd);
+>         }
+>
+> -       if (ret)
+> +       if (ret) {
+>                 genpd_remove_device(pd, dev);
+> +               return -EPROBE_DEFER;
+> +       }
 > +
-> +		memset(vmbus_connection.monitor_pages[0], 0x00,
-> +		       HV_HYP_PAGE_SIZE);
-> +		memset(vmbus_connection.monitor_pages[1], 0x00,
-> +		       HV_HYP_PAGE_SIZE);
-> +	}
+> +       /* Set the default performance state */
+> +       np = base_dev->of_node;
 
-Okay, let me see if I got this right. In Hyper-V Isolation VMs, when the
-guest wants to make memory shared, it does":
+Please use dev->of_node instead (it is set to the same of_node as
+base_dev by the callers of __genpd_dev_pm_attach) as it's more
+consistent with existing code.
 
-	- Call to the Hypervisor the mark the pages shared. The
-	  Hypervisor will do the RMP update and remap the pages at
-	  (VTOM + pa)
+> +       if (of_parse_phandle(np, "required-opps", index)) {
+> +               pstate = of_get_required_opp_performance_state(np, index);
+> +               if (pstate < 0) {
+> +                       ret = pstate;
+> +                       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
+> +                               pd->name, ret);
+> +               }
+> +               dev_pm_genpd_set_performance_state(dev, pstate);
+> +               dev_gpd_data(dev)->default_pstate = pstate;
 
-	- The guest maps the memory again into its page-table, so that
-	  the entries point to the correct GPA (which is above VTOM
-	  now).
+This doesn't look entirely correct to me. If we fail to translate a
+required opp to a performance state, we shouldn't try to set it.
 
-Or in other words, Hyper-V implements a hardware-independent and
-configurable c-bit position, as the VTOM value is always power-of-two
-aligned. Is that correct?
-This would at least explain why there is no separate
-allocation/dealloction of memory for the shared range.
+Perhaps it's also easier to call
+of_get_required_opp_performance_state() unconditionally of whether a
+"required-opps" specifier exists. If it fails with the translation,
+then we just skip setting a default state and continue with returning
+1.
 
-Thanks,
+Would that work?
 
-	Joerg
+> +       }
+>
+> -       return ret ? -EPROBE_DEFER : 1;
+> +       return ret ? ret : 1;
+>  }
+>
+>  /**
+> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+> index 21a0577..67017c9 100644
+> --- a/include/linux/pm_domain.h
+> +++ b/include/linux/pm_domain.h
+> @@ -198,6 +198,7 @@ struct generic_pm_domain_data {
+>         struct notifier_block *power_nb;
+>         int cpu;
+>         unsigned int performance_state;
+> +       unsigned int default_pstate;
+>         unsigned int rpm_pstate;
+>         ktime_t next_wakeup;
+>         void *data;
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
+
+Kind regards
+Uffe
