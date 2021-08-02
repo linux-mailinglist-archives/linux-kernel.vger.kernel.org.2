@@ -2,70 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B0E3DD21F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092D33DD224
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbhHBIhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 04:37:18 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:53979 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232807AbhHBIhQ (ORCPT
+        id S232745AbhHBIkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 04:40:16 -0400
+Received: from mail-ej1-f41.google.com ([209.85.218.41]:33371 "EHLO
+        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229917AbhHBIkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 04:37:16 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-162-VSQlMBHJP8uFUMwjOp7oTQ-1; Mon, 02 Aug 2021 09:37:05 +0100
-X-MC-Unique: VSQlMBHJP8uFUMwjOp7oTQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Mon, 2 Aug 2021 09:37:02 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Mon, 2 Aug 2021 09:37:02 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@arndb.de>, Boqun Feng <boqun.feng@gmail.com>
-CC:     linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Gary Guo <gary@garyguo.net>, Hector Martin <marcan@marcan.st>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: RE: [Question] Alignment requirement for readX() and writeX()
-Thread-Topic: [Question] Alignment requirement for readX() and writeX()
-Thread-Index: AQHXhWQsVwxTTLVBq060hnEUvvCVsqtf5hLQ
-Date:   Mon, 2 Aug 2021 08:37:02 +0000
-Message-ID: <7353d0d46f9f4a908b73ac0ff1c070fc@AcuMS.aculab.com>
-References: <YQQr+twAYHk2jXs6@boqun-archlinux>
- <CAK8P3a0w09Ga_OXAqhA0JcgR-LBc32a296dZhpTyPDwVSgaNkw@mail.gmail.com>
-In-Reply-To: <CAK8P3a0w09Ga_OXAqhA0JcgR-LBc32a296dZhpTyPDwVSgaNkw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 2 Aug 2021 04:40:15 -0400
+Received: by mail-ej1-f41.google.com with SMTP id hs10so20980997ejc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 01:40:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Zz03E5xQt7p2VN7cWkxfZkNKl6W24aLbb5bhnlK6M/Y=;
+        b=Jm0brBbCmMb45NvKIjlUpEMQ42Tv6H+X/Kw9HLYIZ9V1osF8QTDNxQjBN/UYR/qsUl
+         ++Q8mAX9AyUpX1MM83+ua0nlgLG875tKooq4scFrK06v0FtfyMDr94Bp/t64pxjWEMN2
+         Q+1wuWyThovdVUzGM16zHhSnB/d4WYw/K2WSSkG7wjZyrS9rnxQpM2JrFBCTkt/wRXo/
+         EuLMOCVaUKaQVMSELZW18Ur7MkUzlAr/gAi/PjNxJgFv6SuAKyzgXZthagzchjBNFv7x
+         j6rtkzOegKbT+c1/mV24ODura6q44Id+bP7LFP0PTc86n8/LCfENIQ9ynSKT+M8xBg9o
+         kZKw==
+X-Gm-Message-State: AOAM532R5+KxvYwXXEk+mSeAsKiQHEeMeAfE1wQrOVpfAxmZ7YSEMmQu
+        MbhBZbb6V/0iFYcRWMWOjZU=
+X-Google-Smtp-Source: ABdhPJwNQd3t1Hni44DinFugXrDzcKsPIzaWgkeB9qalXL+5uv984oWzkAMVLlGBGUqmkB7JpErwhg==
+X-Received: by 2002:a17:906:3048:: with SMTP id d8mr14693966ejd.534.1627893604790;
+        Mon, 02 Aug 2021 01:40:04 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id n10sm4284468ejk.86.2021.08.02.01.40.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 01:40:04 -0700 (PDT)
+Subject: Re: [PATCH 2/2] virtio-console: remove unnecessary kmemdup()
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>,
+        gregkh@linuxfoundation.org, amit@kernel.org, arnd@arndb.de
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, osandov@fb.com
+References: <20210801051655.79048-1-xianting.tian@linux.alibaba.com>
+ <b5554967-a683-96ae-deb9-2d4980d33b41@kernel.org>
+ <5ad81a0e-fbb2-a849-6db7-f5718633d282@linux.alibaba.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <a2598ec9-7bc9-be42-bcab-fa19c9e734f7@kernel.org>
+Date:   Mon, 2 Aug 2021 10:40:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <5ad81a0e-fbb2-a849-6db7-f5718633d282@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAzMCBKdWx5IDIwMjEgMTc6NTkNCi4uLg0KPiBJ
-IGFtIG5vdCBhd2FyZSBvZiBhbnkgZHJpdmVyIHRoYXQgcmVxdWlyZXMgdW5hbGlnbmVkIGFjY2Vz
-cyBvbiBfX2lvbWVtDQo+IHBvaW50ZXJzLCBhbmQgc2luY2UgaXQgZGVmaW5pdGVseSBkb2Vzbid0
-IHdvcmsgb24gbW9zdCBhcmNoaXRlY3R1cmVzLCAuLi4NCg0KVW5hbGlnbmVkIGFjY2Vzc2VzIGlu
-dG8gUENJZSBzcGFjZSBjYW4gZ2VuZXJhdGUgYSBUTFAgdGhhdCByZXF1ZXN0cw0Kb25seSBzb21l
-IGJ5dGVzIG9mIHRoZSBmaXJzdCBhbmQgbGFzdCAzMmJpdCB3b3JkcyBiZSB0cmFuc2ZlcnJlZC4N
-ClRoZSB0YXJnZXQgaXMgZXhwZWN0ZWQgdG8gaG9ub3VyIHN1Y2ggcmVxdWVzdHMuDQoNCk9uIHRo
-ZSB4ODYgc3lzdGVtcyB3aGVyZSBJJ3ZlIGxvb2tlZCBhdCBhIFRMUCB0cmFjZSBtaXNhbGlnbmVk
-DQphY2Nlc3NlcyBhcmUgZXZlbiBhdG9taWMgcHJvdmlkZWQgdGhlIHRhcmdldCBkb2Vzbid0IGxl
-dCBhIGxvY2FsDQpyZXF1ZXN0IGludGVybGVhdmUuDQoNCk9UT0ggZHJpdmVycyBhcmUgdW5saWtl
-bHkgdG8gbWFrZSBzdWNoIHJlcXVlc3RzLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRy
-ZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1L
-MSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On 02. 08. 21, 10:32, Xianting Tian wrote:
+> 
+> 在 2021/8/2 下午3:25, Jiri Slaby 写道:
+>> Hi,
+>>
+>> why is this 2/2? I seem (Lore neither) to find 1/2.
+> You didn't receive 1/2?
+> [PATCH 1/2] tty: hvc: pass DMA capable memory to put_chars()
+> https://lkml.org/lkml/2021/8/1/8 <https://lkml.org/lkml/2021/8/1/8>
 
+Oh, I did, but it's not properly threaded. PLease fix your setup.
+
+>> On 01. 08. 21, 7:16, Xianting Tian wrote:
+>>> hvc framework will never pass stack memory to the put_chars() function,
+>>
+>> Am I blind or missing something?
+>>
+>> hvc_console_print(...)
+>> {
+>>   char c[N_OUTBUF]
+>> ...
+>>   cons_ops[index]->put_chars(vtermnos[index], c, i);
+>>
+>> The same here:
+>>
+>> hvc_poll_put_char(..., char ch)
+>> {
+>> ...
+>>    n = hp->ops->put_chars(hp->vtermno, &ch, 1);
+>>
+>> AFAICS both of them *pass* a pointer to stack variable.
+> 
+> yes, I discussed the issue with Arnd before in below thread,  you can 
+> get the history, thanks
+> 
+> https://lkml.org/lkml/2021/7/27/494 <https://lkml.org/lkml/2021/7/27/494>
+
+So is this a v2? You should have noted that. And what changed from v1 too.
+
+>>> So the calling of kmemdup() is unnecessary, remove it.
+>>>
+>>> Fixes: c4baad5029 ("virtio-console: avoid DMA from stack")
+>>
+>> This patch doesn't "Fix" -- it reverts the commit. You should've CCed 
+>> the author too.
+> 
+> yes, we discussed ther issue in above thread, which we CCed the author.
+
+I don't see any input from the author?
+
+
+Anyway, 1/2 does not even build, so you will send v3 with all the above 
+fixed, hopefully.
+
+thanks,
+-- 
+js
