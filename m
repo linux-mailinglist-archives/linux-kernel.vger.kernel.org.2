@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C603F3DD91B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2732D3DD8A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234717AbhHBN5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:57:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34094 "EHLO mail.kernel.org"
+        id S234786AbhHBNxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:53:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235064AbhHBNvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:51:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A244361029;
-        Mon,  2 Aug 2021 13:50:51 +0000 (UTC)
+        id S234878AbhHBNtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:49:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16BBA6052B;
+        Mon,  2 Aug 2021 13:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912252;
-        bh=9iOhJBdlcqIJ5sG0i0P6ZQUDdcU1hO4zvkJ2c+vCd+I=;
+        s=korg; t=1627912156;
+        bh=WYmGpK9MuBMK7KA6QMd3ZT6+dbn2a91sXwbwXXXBvcY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZGj7eHcHFST8Il4ihjT7tuzjrm+iGi0M+8P7BpkWc9Akgc+Fkn8RmE4KPklzNKOHI
-         mSSF1Js+u6sx0m5k0GFF8m57ylL2o3jMXBQ9FR7CS2nGlCFiwFaZlQBW+/7eg92SQ9
-         vANjOoCpolVG5H6+j/HcqgAbQWaMF4b9CjAz765s=
+        b=Ec47LNRZpMyYdD24T1LvXNuUvc+o4qDk1PteZ+KTmn6y6prBuc4PqUm35pOF3jzVv
+         2DIRUrP/a7syd59sEAtFaqCfLbasryOjoSzrM8qcDzC/LZcl5hH5tBeNHtpkDs99ZF
+         gFHbyvRuRZlqIGyRCGrxH7BnxTFxA5jj7v4FbDqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
-        Ping Cheng <ping.cheng@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 5.4 16/40] HID: wacom: Re-enable touch by default for Cintiq 24HDT / 27QHDT
+        stable@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 34/38] sctp: fix return value check in __sctp_rcv_asconf_lookup
 Date:   Mon,  2 Aug 2021 15:44:56 +0200
-Message-Id: <20210802134335.911477380@linuxfoundation.org>
+Message-Id: <20210802134335.904585164@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
-References: <20210802134335.408294521@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gerecke <killertofu@gmail.com>
+From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-commit 6ca2350e11f09d5d3e53777d1eff8ff6d300ed93 upstream.
+[ Upstream commit 557fb5862c9272ad9b21407afe1da8acfd9b53eb ]
 
-Commit 670e90924bfe ("HID: wacom: support named keys on older devices")
-added support for sending named events from the soft buttons on the
-24HDT and 27QHDT. In the process, however, it inadvertantly disabled the
-touchscreen of the 24HDT and 27QHDT by default. The
-`wacom_set_shared_values` function would normally enable touch by default
-but because it checks the state of the non-shared `has_mute_touch_switch`
-flag and `wacom_setup_touch_input_capabilities` sets the state of the
-/shared/ version, touch ends up being disabled by default.
+As Ben Hutchings noticed, this check should have been inverted: the call
+returns true in case of success.
 
-This patch sets the non-shared flag, letting `wacom_set_shared_values`
-take care of copying the value over to the shared version and setting
-the default touch state to "on".
-
-Fixes: 670e90924bfe ("HID: wacom: support named keys on older devices")
-CC: stable@vger.kernel.org # 5.4+
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Ben Hutchings <ben@decadent.org.uk>
+Fixes: 0c5dc070ff3d ("sctp: validate from_addr_param return")
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Reviewed-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/wacom_wac.c |    2 +-
+ net/sctp/input.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -3829,7 +3829,7 @@ int wacom_setup_touch_input_capabilities
- 		    wacom_wac->shared->touch->product == 0xF6) {
- 			input_dev->evbit[0] |= BIT_MASK(EV_SW);
- 			__set_bit(SW_MUTE_DEVICE, input_dev->swbit);
--			wacom_wac->shared->has_mute_touch_switch = true;
-+			wacom_wac->has_mute_touch_switch = true;
- 		}
- 		/* fall through */
+diff --git a/net/sctp/input.c b/net/sctp/input.c
+index 1af35b69e99e..90428c59cfaf 100644
+--- a/net/sctp/input.c
++++ b/net/sctp/input.c
+@@ -1125,7 +1125,7 @@ static struct sctp_association *__sctp_rcv_asconf_lookup(
+ 	if (unlikely(!af))
+ 		return NULL;
  
+-	if (af->from_addr_param(&paddr, param, peer_port, 0))
++	if (!af->from_addr_param(&paddr, param, peer_port, 0))
+ 		return NULL;
+ 
+ 	return __sctp_lookup_association(net, laddr, &paddr, transportp);
+-- 
+2.30.2
+
 
 
