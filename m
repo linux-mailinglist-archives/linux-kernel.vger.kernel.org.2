@@ -2,223 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821C33DCEDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03D63DCEF3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbhHBDQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 23:16:03 -0400
-Received: from mga02.intel.com ([134.134.136.20]:13653 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231361AbhHBDP4 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 23:15:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="200548069"
-X-IronPort-AV: E=Sophos;i="5.84,287,1620716400"; 
-   d="scan'208";a="200548069"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 20:15:46 -0700
-X-IronPort-AV: E=Sophos;i="5.84,287,1620716400"; 
-   d="scan'208";a="509810527"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 20:15:43 -0700
-Subject: Re: [PATCH v3 1/2] perf pmu: Add PMU alias support
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com
-References: <20210730070717.30997-1-yao.jin@linux.intel.com>
- <20210730070717.30997-2-yao.jin@linux.intel.com>
- <071252c1bcf72a3fddd5664ca82b05b6589957cc.camel@gmail.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <f44cef59-7ea3-f589-0fdc-919f687b9f5c@linux.intel.com>
-Date:   Mon, 2 Aug 2021 11:15:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232025AbhHBDgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 23:36:13 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:1842 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231361AbhHBDgK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 23:36:10 -0400
+X-UUID: 646c5d5928024c22a2ad7045ea5aa7fb-20210802
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=ZK3e9Sg7ghuyh77VEHKTRyGoBtj/73rumt2QQW4OnHM=;
+        b=I1sTjCKmkm3Pr3FQlnuF3fvH+3ffvbvnfU5jGUKMMyBKeEdvjbffWFmT0UgOc54aN3XB7mcpmbzdf9zdyu+YuZEAVI6qqmyHdgzzoMPKPRmvbbSD5UkRGPBsZDEaGvxPLXYQDRA3yioZUN31DLcaQpYvdULWrdjJh7q5kQuNep0=;
+X-UUID: 646c5d5928024c22a2ad7045ea5aa7fb-20210802
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1405854002; Mon, 02 Aug 2021 11:35:56 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS32N1.mediatek.inc (172.27.4.71) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 2 Aug 2021 11:35:49 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 2 Aug 2021 11:35:48 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     David Ahern <dsahern@kernel.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <rocco.yue@gmail.com>,
+        <chao.song@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
+        Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH net-next v2] ipv6: add IFLA_INET6_RA_MTU to expose mtu value in the RA message
+Date:   Mon, 2 Aug 2021 11:19:24 +0800
+Message-ID: <20210802031924.3256-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <5be90cf4-f603-c2f2-fd7e-3886854457ba@gmail.com>
+References: <5be90cf4-f603-c2f2-fd7e-3886854457ba@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <071252c1bcf72a3fddd5664ca82b05b6589957cc.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 717DC6BBB0EEBCBF51C02B29FAF02E489CDAC93F80059C78A30F86F824E5FC2D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Riccardo,
+T24gU2F0LCAyMDIxLTA3LTMxIGF0IDExOjE3IC0wNjAwLCBEYXZpZCBBaGVybiB3cm90ZToNCk9u
+IDcvMzAvMjEgNzo1MiBQTSwgUm9jY28gWXVlIHdyb3RlOg0KPj4gSW4gdGhpcyB3YXksIGlmIHRo
+ZSBNVFUgdmFsdWVzIHRoYXQgdGhlIGRldmljZSByZWNlaXZlcyBmcm9tDQo+PiB0aGUgbmV0d29y
+ayBpbiB0aGUgUENPIElQdjQgYW5kIHRoZSBSQSBJUHY2IHByb2NlZHVyZXMgYXJlDQo+PiBkaWZm
+ZXJlbnQsIHRoZSB1c2VyIHNwYWNlIHByb2Nlc3MgY2FuIHJlYWQgcmFfbXR1IHRvIGdldA0KPj4g
+dGhlIG10dSB2YWx1ZSBjYXJyaWVkIGluIHRoZSBSQSBtZXNzYWdlIHdpdGhvdXQgd29ycnlpbmcN
+Cj4+IGFib3V0IHRoZSBpc3N1ZSBvZiBpcHY0IGJlaW5nIHN0dWNrIGR1ZSB0byB0aGUgbGF0ZSBh
+cnJpdmFsDQo+PiBvZiBSQSBtZXNzYWdlLiBBZnRlciBjb21wYXJpbmcgdGhlIHZhbHVlIG9mIHJh
+X210dSBhbmQgaXB2NA0KPj4gbXR1LCB0aGVuIHRoZSBkZXZpY2UgY2FuIHVzZSB0aGUgbG93ZXIg
+TVRVIHZhbHVlIGZvciBib3RoDQo+PiBJUHY0IGFuZCBJUHY2Lg0KPiANCj4geW91IGFyZSBzdG9y
+aW5nIHRoZSB2YWx1ZSBhbmQgc2VuZGluZyB0byB1c2Vyc3BhY2UgYnV0IG5ldmVyIHVzaW5nIGl0
+DQo+IHdoZW4gc2VuZGluZyBhIG1lc3NhZ2UuIFdoYXQncyB0aGUgcG9pbnRpbmcgb2YgcHJvY2Vz
+c2luZyB0aGUgTVRVIGluIHRoZQ0KPiBSQSBpZiB5b3UgYXJlIG5vdCBnb2luZyB0byB1c2UgaXQg
+dG8gY29udHJvbCBtZXNzYWdlIHNpemU/DQoNCkhpIERhdmlkLA0KDQpJbiB0aGUgcmVxdWlyZW1l
+bnQgb2YgbW9iaWxlIG9wZXJhdG9yIGF0JnQgaW4gMjAyMToNCkFUJlQgPENEUi1DRFMtMTE2PiBQ
+cmlvcml0aXplIExvd2VyIE1UVSB2YWx1ZToNCklmIHRoZSBNVFUgdmFsdWVzIHRoYXQgdGhlIGRl
+dmljZSByZWNlaXZlcyBmcm9tIHRoZSBuZXR3b3JrIGluIHRoZSBQQ08NCklQdjQgPENEUi1DRFMt
+MTEwPiBhbmQgdGhlIFJBIElQdjYgPENEUi1DRFMtMTEyPiBwcm9jZWR1cmVzIGFyZSBkaWZmZXJl
+bnQsDQp0aGVuIHRoZSBkZXZpY2Ugc2hhbGwgdXNlIHRoZSBsb3dlciBNVFUgdmFsdWUgZm9yIGJv
+dGggSVB2NCBhbmQgSVB2Ni4NCg0KQW5kIGluIHRoZSAzR1BQIDIzLjA2MDoNClRoZSBQRFAgUERV
+cyBzaGFsbCBiZSByb3V0ZWQgYW5kIHRyYW5zZmVycmVkIGJldHdlZW4gdGhlIE1TIGFuZCB0aGUg
+R0dTTg0Kb3IgUC1HVyBhcyBOLVBEVXMuIEluIG9yZGVyIHRvIGF2b2lkIElQIGxheWVyIGZyYWdt
+ZW50YXRpb24gYmV0d2VlbiB0aGUNCk1TIGFuZCB0aGUgR0dTTiBvciBQLUdXLCB0aGUgbGluayBN
+VFUgc2l6ZSBpbiB0aGUgTVMgc2hvdWxkIGJlIHNldCB0byB0aGUNCnZhbHVlIHByb3ZpZGVkIGJ5
+IHRoZSBuZXR3b3JrIGFzIGEgcGFydCBvZiB0aGUgSVAgY29uZmlndXJhdGlvbi4gVGhpcw0KYXBw
+bGllcyB0byBib3RoIElQdjYgYW5kIElQdjQuDQoNClRoYXQgbWVhbnMgdXNlciBuZWVkcyB0byBi
+ZSBhYmxlIHRvIGNvcnJlY3RseSByZWFkIHRoZSBtdHUgdmFsdWUgY2FycmllZA0KaW4gdGhlIFJB
+IG1lc3NhZ2Ugc28gdGhhdCB1c2VyIGNhbiBjb3JyZWN0bHkgY29tcGFyZSBQQ08gaXB2NCBtdHUg
+YW5kDQpSQSBpcHY2IG10dS4NCg0KPj4gQEAgLTU3NjEsNiArNTc2NSw3IEBAIHN0YXRpYyBpbnQg
+aW5ldDZfc2V0X2lmdG9rZW4oc3RydWN0IGluZXQ2X2RldiAqaWRldiwgc3RydWN0IGluNl9hZGRy
+ICp0b2tlbiwNCj4+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG5sYV9wb2xpY3kgaW5ldDZfYWZfcG9s
+aWN5W0lGTEFfSU5FVDZfTUFYICsgMV0gPSB7DQo+PiAgCVtJRkxBX0lORVQ2X0FERFJfR0VOX01P
+REVdCT0geyAudHlwZSA9IE5MQV9VOCB9LA0KPj4gIAlbSUZMQV9JTkVUNl9UT0tFTl0JCT0geyAu
+bGVuID0gc2l6ZW9mKHN0cnVjdCBpbjZfYWRkcikgfSwNCj4+ICsJW0lGTEFfSU5FVDZfUkFfTVRV
+XQkJPSB7IC50eXBlID0gTkxBX1UzMiB9LA0KPj4gIH07DQo+PiAgDQo+PiAgc3RhdGljIGludCBj
+aGVja19hZGRyX2dlbl9tb2RlKGludCBtb2RlKQ0KPiANCj4gSXRzIHZhbHVlIGlzIGRlcml2ZWQg
+ZnJvbSBhbiBSQSBub3Qgc2V0IGJ5IHVzZXJzcGFjZSwgc28gc2V0IHRoZSB0eXBlIHRvDQo+IE5M
+QV9SRUpFQ1Qgc28gdGhhdCBpbmV0Nl92YWxpZGF0ZV9saW5rX2FmIHdpbGwgcmVqZWN0IG1lc3Nh
+Z2VzIHRoYXQgaGF2ZQ0KPiBJRkxBX0lORVQ2X1JBX01UVSBzZXQuIFlvdSBjYW4gc2V0ICJyZWpl
+Y3RfbWVzc2FnZSIgaW4gdGhlIHBvbGljeSB0bw0KPiByZXR1cm4gYSBtZXNzYWdlIHRoYXQgIklG
+TEFfSU5FVDZfUkFfTVRVIGNhbiBub3QgYmUgc2V0Ii4NCg0Kd2lsbCBkby4NCg0KVGhhbmtzDQpS
+b2Njbw==
 
-On 7/30/2021 4:28 PM, Riccardo Mancini wrote:
-> Hi,
-> 
-> thanks for your quick revision.
-> 
-> There is still one small memory issue with a variable not being freed, which I
-> noticed when running this patchset together with John's patchset.
-> 
-> On Fri, 2021-07-30 at 15:07 +0800, Jin Yao wrote:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> A perf uncore PMU may have two PMU names, a real name and an alias. The
->> alias is exported at /sys/bus/event_source/devices/uncore_*/alias.
->> The perf tool should support the alias as well.
->>
->> Add alias_name in the struct perf_pmu to store the alias. For the PMU
->> which doesn't have an alias. It's NULL.
->>
->> Introduce two X86 specific functions to retrieve the real name and the
->> alias separately.
->>
->> Only go through the sysfs to retrieve the mapping between the real name
->> and the alias once. The result is cached in a list, uncore_pmu_list.
->>
->> Nothing changed for the other ARCHs.
->>
->> With the patch, the perf tool can monitor the PMU with either the real
->> name or the alias.
->>
->> Use the real name,
->>   $ perf stat -e uncore_cha_2/event=1/ -x,
->>     4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
->>
->> Use the alias,
->>   $ perf stat -e uncore_type_0_2/event=1/ -x,
->>     3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
->>
->> Co-developed-by: Jin Yao <yao.jin@linux.intel.com>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> ---
->> v3:
->>   - Use fgets to read alias string from sysfs.
->>   - Resource cleanup.
->>
->> v2:
->>   - No change.
->>
->>   tools/perf/arch/x86/util/pmu.c | 129 ++++++++++++++++++++++++++++++++-
->>   tools/perf/util/parse-events.y |   3 +-
->>   tools/perf/util/pmu.c          |  26 ++++++-
->>   tools/perf/util/pmu.h          |   5 ++
->>   4 files changed, 158 insertions(+), 5 deletions(-)
->>
-> <SNIP>
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index 44b90d638ad5..cc9af7942e7b 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -944,13 +944,28 @@ static int pmu_max_precise(const char *name)
->>          return max_precise;
->>   }
->>   
->> -static struct perf_pmu *pmu_lookup(const char *name)
->> +char * __weak
->> +pmu_find_real_name(const char *name)
->> +{
->> +       return strdup(name);
->> +}
->> +
->> +char * __weak
->> +pmu_find_alias_name(const char *name __maybe_unused)
->> +{
->> +       return NULL;
->> +}
->> +
->> +static struct perf_pmu *pmu_lookup(const char *lookup_name)
->>   {
->>          struct perf_pmu *pmu;
->> +       char *name;
->>          LIST_HEAD(format);
->>          LIST_HEAD(aliases);
->>          __u32 type;
->>   
->> +       name = pmu_find_real_name(lookup_name);
-> 
-> name is not freed if one of the following checks fails.
-> 
-> 	/*
-> 	 * The pmu data we store & need consists of the pmu
-> 	 * type value and format definitions. Load both right
-> 	 * now.
-> 	 */
-> 	if (pmu_format(name, &format))
-> 		return NULL;
-> 
-> 	/*
-> 	 * Check the type first to avoid unnecessary work.
-> 	 */
-> 	if (pmu_type(name, &type))
-> 		return NULL;
-> 
-> 	if (pmu_aliases(name, &aliases))
-> 		return NULL;
-> 
-> Thanks,
-> Riccardo
-> 
-
-Thanks so much for pointing this out. I also find I need to rebase the patch because it has some 
-conflicts with John's patch. I will prepare v4 (which will be based on tmp.perf/urgent).
-
-Thanks
-Jin Yao
-
-> 
->> @@ -973,7 +988,8 @@ static struct perf_pmu *pmu_lookup(const char *name)
->>                  return NULL;
->>   
->>          pmu->cpus = pmu_cpumask(name);
->> -       pmu->name = strdup(name);
->> +       pmu->name = name;
->> +       pmu->alias_name = pmu_find_alias_name(name);
->>          pmu->type = type;
->>          pmu->is_uncore = pmu_is_uncore(name);
->>          if (pmu->is_uncore)
->> @@ -1003,7 +1019,8 @@ static struct perf_pmu *pmu_find(const char *name)
->>          struct perf_pmu *pmu;
->>   
->>          list_for_each_entry(pmu, &pmus, list)
->> -               if (!strcmp(pmu->name, name))
->> +               if (!strcmp(pmu->name, name) ||
->> +                   (pmu->alias_name && !strcmp(pmu->alias_name, name)))
->>                          return pmu;
->>   
->>          return NULL;
->> @@ -1898,6 +1915,9 @@ bool perf_pmu__has_hybrid(void)
->>   
->>   int perf_pmu__match(char *pattern, char *name, char *tok)
->>   {
->> +       if (!name)
->> +               return -1;
->> +
->>          if (fnmatch(pattern, name, 0))
->>                  return -1;
->>   
->> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
->> index 926da483a141..f6ca9f6a06ef 100644
->> --- a/tools/perf/util/pmu.h
->> +++ b/tools/perf/util/pmu.h
->> @@ -21,6 +21,7 @@ enum {
->>   #define PERF_PMU_FORMAT_BITS 64
->>   #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
->>   #define CPUS_TEMPLATE_CPU      "%s/bus/event_source/devices/%s/cpus"
->> +#define MAX_PMU_NAME_LEN 128
->>   
->>   struct perf_event_attr;
->>   
->> @@ -32,6 +33,7 @@ struct perf_pmu_caps {
->>   
->>   struct perf_pmu {
->>          char *name;
->> +       char *alias_name;       /* PMU alias name */
->>          char *id;
->>          __u32 type;
->>          bool selectable;
->> @@ -135,4 +137,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu,
->> __u64 config,
->>   bool perf_pmu__has_hybrid(void);
->>   int perf_pmu__match(char *pattern, char *name, char *tok);
->>   
->> +char *pmu_find_real_name(const char *name);
->> +char *pmu_find_alias_name(const char *name);
->> +
->>   #endif /* __PMU_H */
-> 
-> 
