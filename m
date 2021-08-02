@@ -2,118 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A890A3DD66F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FF43DD671
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbhHBNH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
+        id S233801AbhHBNHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233645AbhHBNH2 (ORCPT
+        with ESMTP id S233786AbhHBNHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:07:28 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B4BC06175F;
-        Mon,  2 Aug 2021 06:07:17 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id p5so21438109wro.7;
-        Mon, 02 Aug 2021 06:07:17 -0700 (PDT)
+        Mon, 2 Aug 2021 09:07:37 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF49C06175F;
+        Mon,  2 Aug 2021 06:07:26 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id x14so24363386edr.12;
+        Mon, 02 Aug 2021 06:07:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NYcQMy/qifVRiMiSDikyJJrDjDDR52fe7Fa16GoTEnQ=;
-        b=uogQNy/ncaTFt18nfNPBmExmyzX3ropBliOkmrlAi5+tyutGmGEtzT+ZPXcEDmvH6S
-         uXov3oxzZqp5YzDzTJuo3G7g6nPeYtBpQFACYFPaQxzO35R+7ar5jRn5HcWf4f9/jvb1
-         XYpNwoeDvl88xWcOnxbRKoKwQI0AnWx3JzSwiXsUHvkQ/iMzrYRDVpR1ledvXBIx1gpI
-         1W5trqcXtGweV07QLvdzjaQrw8aub/P/NDVTXZ3GBRmI1WiN9nEvSPL0GIb+4nI04Wf3
-         2BlWPC9UQcnQDUCuEspBTwlroLXbelOXDIAD1OC1LMcnipDoyayrv3tjOiv8ZPKSrjHf
-         XEEA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+SZbqu2OmCriIcHluisGz9iJ+oJzkAqrwEFMwLWTqRc=;
+        b=E48DER1OVUNlNN3AbK4cr/kyuJ+wfrZG9rqkLywltAeZxLroU/5TeEUkLEu96fsr1m
+         oVGOmUS/SyZ18O20SPsgHEmuAxgyiHgAZuHEYbYwLNvSkjctNp7iqBk5VYhOxw7iDMtc
+         OLh3jYO6kwmAd3gKoOVx1ORY5YPWE/23AtjHWFn1H+7dW6vntL2CIy2osXyKZW5f8QUF
+         uc/gD3kx+rS0jAWqGRYV6EGlM/es/kB19OSorwE9E2JtyXs1OKV4U332y2EnsU2ryq1v
+         I2fe512h1Sf6SVpXZ+T042Ae7py3SHuCdN9CBpj5KDWnOHjMuarnQy1O0EbtC4knR07P
+         BVoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NYcQMy/qifVRiMiSDikyJJrDjDDR52fe7Fa16GoTEnQ=;
-        b=H53ABV8heFK9dJm0MEiT4fy0Xy4XTiuxZ8MX+GbpZTNbW6Q+bBJT5G8pqCDfivX2KH
-         lu0oBwsnMSRa884HKSr/kE1Mx2YazGSUZCHrBRbvRHEIwcWi0a2s5nUYMx4oQ0l7bhFf
-         A3LZlvvPNUF1zg+yorSl3ZFGZRXgrMNVt4X4JA/1Sd6ppHxpIOXudxm626sh0M2TYxKp
-         UQyG4m50rL4R3N5DTu9S0lvxnaR7KNF6PpjSLBOWfJixeqhaNB4sHd0oDgV1+XSz31Mc
-         S88ne7DadM3zVBpAFiwzklo1HBNiJ4IinHawGjCYoFrJIRm8kQG2HgTlaCDCWYIz8ZOg
-         sRKQ==
-X-Gm-Message-State: AOAM530Bc7lgLYgRiRWjDRWnDKww48rVpn4Q+pRnvUjgIluwKdg2BPQ9
-        MuGic/n8ZInz8uD7b/cxJ0HXaqmGAm4=
-X-Google-Smtp-Source: ABdhPJy6QdKrnMgOf9Ja2/DDd4GkYHWkhMhGQuq1/g1jFTf0aYdB8hly0hPoCjqIkmGCGJG3df0goA==
-X-Received: by 2002:a5d:44c7:: with SMTP id z7mr18083465wrr.286.1627909636606;
-        Mon, 02 Aug 2021 06:07:16 -0700 (PDT)
-Received: from [10.8.0.10] ([195.53.121.100])
-        by smtp.gmail.com with ESMTPSA id c190sm2536698wma.21.2021.08.02.06.07.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 06:07:16 -0700 (PDT)
-Subject: Re: Document the types "struct termios" and "struct termios2"
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     Glibc <libc-alpha@sourceware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org, linux-man <linux-man@vger.kernel.org>
-References: <ef6a352d-4926-9cdc-9894-e387866a00c4@gmail.com>
- <20210802125034.gubtf24tsm7lkh3k@pali>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <5e9e1f1a-1e08-59f5-6579-a02c0738b9a4@gmail.com>
-Date:   Mon, 2 Aug 2021 15:07:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+SZbqu2OmCriIcHluisGz9iJ+oJzkAqrwEFMwLWTqRc=;
+        b=CydckpFJJDXqDES5BiRxylXGKzbcCFRnBdgv3uahgnXOZJ+iU+MaPna+5Zn3F15c0I
+         KN2qnTte6Yd/nCC+9jm+E8C5bzmCHI/6WPyeZO9Onsiz1dtUv2sfK+8mdgjfSWU8VHZK
+         UZ/7W1Ypym+ClxaadeWoHpMkDz7gIK1XqURZPkKrqhTNjoAp/qXOABdgpz3+ewEvjWvy
+         e9nHiyIibFP1U9LiPXoQ82uyhNTe7g5CNJFWssMHXmqD5iHCWNPkMpHc8Plrm6ejzpN+
+         fxXreodf1Ho5P4wrlMO4zqp+/hKq/96vkRPlHE1TWSd2KBRip6e2LwJymqt5IVwqKS6i
+         EzrQ==
+X-Gm-Message-State: AOAM533aPiOYYRnCIFQtVonMosEEcH0bmTV7KzIcNelNTGYccv/I8yqq
+        TqmXB1ev0EForSRkpXOWuzk=
+X-Google-Smtp-Source: ABdhPJwDkLl+kIN1bl2f4Yw908yzO51fxWKV8HGdwOTC8AgxomlATrgugCeUjm/XBi03A5mFYLG+eA==
+X-Received: by 2002:aa7:d296:: with SMTP id w22mr19096988edq.170.1627909645224;
+        Mon, 02 Aug 2021 06:07:25 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id o3sm5969539edt.61.2021.08.02.06.07.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 06:07:24 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 16:07:23 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Eric Woudstra <ericwouds@gmail.com>,
+        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>
+Subject: Re: [RFC net-next v2 1/4] net: dsa: mt7530: enable assisted learning
+ on CPU port
+Message-ID: <20210802130723.6tieexl5zcxu44xr@skbuf>
+References: <20210731191023.1329446-1-dqfext@gmail.com>
+ <20210731191023.1329446-2-dqfext@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210802125034.gubtf24tsm7lkh3k@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210731191023.1329446-2-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+= linux-man@
-
-:)
-
-On 8/2/21 2:50 PM, Pali Rohár wrote:
-> + linux-serial
+On Sun, Aug 01, 2021 at 03:10:19AM +0800, DENG Qingfang wrote:
+> Consider the following bridge configuration, where bond0 is not
+> offloaded:
 > 
-> On Monday 02 August 2021 14:38:43 Alejandro Colomar (man-pages) wrote:
->> Hi,
->>
->>  From a few patches of Pali and their subsequent discussions,
+>          +-- br0 --+
+>         / /   |     \
+>        / /    |      \
+>       /  |    |     bond0
+>      /   |    |     /   \
+>    swp0 swp1 swp2 swp3 swp4
+>      .        .       .
+>      .        .       .
+>      A        B       C
 > 
-> For others, link to patch with code example:
-> https://lore.kernel.org/linux-man/20210801135146.14849-1-pali@kernel.org/
+> Address learning is enabled on offloaded ports (swp0~2) and the CPU
+> port, so when client A sends a packet to C, the following will happen:
 > 
-> And links to other discussions:
-> https://lore.kernel.org/linux-man/20210725225506.7404-1-pali@kernel.org/t/#u
-> https://lore.kernel.org/linux-man/20210730105353.10424-1-pali@kernel.org/t/#u
-> https://lore.kernel.org/linux-man/20210730153044.23673-1-pali@kernel.org/t/#u
+> 1. The switch learns that client A can be reached at swp0.
+> 2. The switch probably already knows that client C can be reached at the
+>    CPU port, so it forwards the packet to the CPU.
+> 3. The bridge core knows client C can be reached at bond0, so it
+>    forwards the packet back to the switch.
+> 4. The switch learns that client A can be reached at the CPU port.
+> 5. The switch forwards the packet to either swp3 or swp4, according to
+>    the packet's tag.
 > 
->> it was clear
->> that those types need to be documented (the most appropriate place being
->> system_data_types(7), with link pages termios-struct(3) and
->> termios2-struct(3)).
->>
->> The most important part (the one we had problems with) being which headers
->> should be included for each type (and for each version of the type
->> (kernel/glibc)).  That includes the recommended header, and other headers
->> that _shall_ also provide the type.
->>
->> Is there someone that knows those types enough to write such documentation
->> and wants to do it? :)
->>
->> Thanks,
->>
->> Alex
->>
->> -- 
->> Alejandro Colomar
->> Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
->> http://www.alejandro-colomar.es/
+> That makes client A's MAC address flap between swp0 and the CPU port. If
+> client B sends a packet to A, it is possible that the packet is
+> forwarded to the CPU. With offload_fwd_mark = 1, the bridge core won't
+> forward it back to the switch, resulting in packet loss.
+> 
+> As we have the assisted_learning_on_cpu_port in DSA core now, enable
+> that and disable hardware learning on the CPU port.
+> 
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> ---
 
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+Reviewed-by: Vladimir Oltean <oltean@gmail.com>
