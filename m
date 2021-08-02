@@ -2,83 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7DA3DDBC6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3868B3DDBC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234694AbhHBPDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:03:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234313AbhHBPDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:03:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A397F61057;
-        Mon,  2 Aug 2021 15:02:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627916579;
-        bh=nS6WPDPr88n8oDDSgoEL5dgbm9vIRBu7xdEtK4TWgt0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qQ5e9oz43I9pYmR1Ika1qyA/pz9x1re6Y8/ajUu1oIBvdDX7tHYTyB2KOwmo/PrGO
-         GJK4UmJ60B+ccFMLJrxh/8QUy6k1eXVpyI09DGuUAdVvKJKRcQnM4hKGYepsN5wE0v
-         Za5fqSHMBAhqcUoZFjBN3s9FIzAzR6ZLzDBhPrZA+f19O5CJ0vvqqSfL1zB37udae3
-         tvl0aoDhvWYwD/F3ETLK+rdnBzncSlQX9QJHZOjmidDw/xE0Uq1dsRsn7TNhIWZgun
-         jDptCLMST7rlvi+Wl8t6zhAY+ItlgyJ/eSOw5NXAu7CbpvfRWo0elZzb9VRoFhNo33
-         9oKvDF7rBkvGg==
-From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Colin King <colin.king@canonical.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ASoC: rsnd: make some arrays static const, makes object smaller
-Date:   Mon,  2 Aug 2021 16:02:35 +0100
-Message-Id: <162791613030.1468.1113702427634488424.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210801063237.137998-1-colin.king@canonical.com>
-References: <20210801063237.137998-1-colin.king@canonical.com>
+        id S234743AbhHBPDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:03:21 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3550 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234701AbhHBPDU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:03:20 -0400
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gdh833fyRz6F7yB;
+        Mon,  2 Aug 2021 23:02:59 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 17:03:08 +0200
+Received: from [10.47.87.154] (10.47.87.154) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 2 Aug 2021
+ 16:03:07 +0100
+Subject: Re: [PATCH 02/11] perf jevents: Relocate test events to cpu folder
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <yao.jin@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <irogers@google.com>, <linuxarm@huawei.com>
+References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
+ <1627566986-30605-3-git-send-email-john.garry@huawei.com>
+ <YQgHMt4BsDeJnE09@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <d15bf358-5044-4db6-24c8-90fb6b1c5d52@huawei.com>
+Date:   Mon, 2 Aug 2021 16:02:39 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQgHMt4BsDeJnE09@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.87.154]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Aug 2021 07:32:37 +0100, Colin King wrote:
-> Don't populate arrays on the stack but instead them static const.
-> Makes the object code smaller by 242 bytes.
-> 
-> Before:
->    text    data     bss     dec     hex filename
->   23827    8764       0   32591    7f4f ./sound/soc/sh/rcar/ssi.o
-> 
-> [...]
+On 02/08/2021 15:54, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jul 29, 2021 at 09:56:17PM +0800, John Garry escreveu:
+>> In future to add support for sys events, relocate the core and uncore
+>> events to a cpu folder.
+>>
+>> Signed-off-by: John Garry<john.garry@huawei.com>
+>> ---
+>>   .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/branch.json | 0
+>>   .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/cache.json  | 0
+>>   .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/other.json  | 0
+>>   .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/uncore.json | 0
+>>   tools/perf/pmu-events/jevents.c                                 | 2 +-
+>>   5 files changed, 1 insertion(+), 1 deletion(-)
+>>   rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/branch.json (100%)
+>>   rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/cache.json (100%)
+>>   rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/other.json (100%)
+>>   rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/uncore.json (100%)
+>>
+>> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/branch.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/branch.json
+>> similarity index 100%
+>> rename from tools/perf/pmu-events/arch/test/test_cpu/branch.json
+>> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/branch.json
+>> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/cache.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/cache.json
+>> similarity index 100%
+>> rename from tools/perf/pmu-events/arch/test/test_cpu/cache.json
+>> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/cache.json
+>> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/other.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/other.json
+>> similarity index 100%
+>> rename from tools/perf/pmu-events/arch/test/test_cpu/other.json
+>> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/other.json
+>> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/uncore.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
+>> similarity index 100%
+>> rename from tools/perf/pmu-events/arch/test/test_cpu/uncore.json
+>> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
+>> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+>> index 9604446f8360..405bdd36b9b9 100644
+>> --- a/tools/perf/pmu-events/jevents.c
+>> +++ b/tools/perf/pmu-events/jevents.c
+>> @@ -814,7 +814,7 @@ static void print_mapping_test_table(FILE *outfp)
+>>   	fprintf(outfp, "\t.cpuid = \"testcpu\",\n");
+>>   	fprintf(outfp, "\t.version = \"v1\",\n");
+>>   	fprintf(outfp, "\t.type = \"core\",\n");
+>> -	fprintf(outfp, "\t.table = pme_test_cpu,\n");
+>> +	fprintf(outfp, "\t.table = pme_test_soc_cpu,\n");
+> Humm, is this already generated by some script? I.e. this
+> 'pme_test_soc_cpu' table? Or does this works only when applying the full
+> patchset?
 
-Applied to
+Hi Arnaldo,
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+This file jevents.c generates a table in tools/perf/pmu-events/pmu-events.c
 
-Thanks!
+Are you having some issue in applying and building this?
 
-[1/1] ASoC: rsnd: make some arrays static const, makes object smaller
-      commit: 6dfeb70276def839aa605edd274f8e9f6189dba3
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I ask as I think that there is some pre-existing dependency issue which 
+I mean to fix, i.e. so please try a clean build.
 
 Thanks,
-Mark
+John
