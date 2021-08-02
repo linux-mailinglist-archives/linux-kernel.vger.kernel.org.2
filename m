@@ -2,85 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBA43DDB71
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD443DDB78
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234553AbhHBOqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233925AbhHBOqw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:46:52 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA3EC06175F;
-        Mon,  2 Aug 2021 07:46:42 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id x144so848993vsx.3;
-        Mon, 02 Aug 2021 07:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TuUOxCKnvZSNTFcvco20X5jOuFpWKd95m2InPWTRPsw=;
-        b=RtBUfygHY26LCx3H6AhwuFsqkg/TeNax2vo51jDZ7ZZmxLhDYNAWATRpuSA2lOk1qq
-         1RzKn0/Rmgnz0mDOwlwbBZsRcB547tVGsgZ3Je/zBGaqNVZJDd3bINWmCJPrqUoankRg
-         KzCG+HBiS95eEkTnQfhNZIXSgfBOHdF+TTIFOVFxqztBiPeBgGJUaINMNnPeCBe9Dl9U
-         bN4J2BNmGDu44OSkjQ5fzwLamqBTEDg9+r31b/9HgGGpRms0ECnz71ELZd1c8MkC2GoK
-         1MVdlLiiBxzwzxaxeHO3ZNy6dvBAtIE1jajQvGv/P7UOfpP/3+NEjzEtQMSCB3NutSJb
-         qIfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TuUOxCKnvZSNTFcvco20X5jOuFpWKd95m2InPWTRPsw=;
-        b=FBuqTyq1wHFJNhvWMoWrXYj7nZKvBv8tPvCBYoz5EZzdd7MOh8s4dFQgf5/QS5Hza9
-         vs6adaxZWdSWBds6i39U7EBqwkKq5cydoEh74SoCZfcK1qwjxZhGfnRXqrhgRKlUI9vJ
-         0QNBgp38s24v9+Gp5oG/IE4n5ivBwkE3GG0RuEHZ5qAB6kV1zRnbWtv8mRk8sq6ECXlu
-         raGqH0UKQOK3L5kAzGjlMfG7/XJdIoYwgrstY7mTITqm9UaiauEl9n/eLsKMMxjoVkzo
-         r78DoHP4NpFNzp953skj7+hcSk+MEhTmV9qDyrh+gbz5TbtQ4Udt4zu2BUgEvQeGAkp+
-         T7wg==
-X-Gm-Message-State: AOAM532lOXFEj2fATrrK7rb8U5UEx5mxFqft3rRYR1z3WO+Tv7DyN5DM
-        iXZok9cPETXV46qCT3ACDbm45oewI6C7X3cy/RI=
-X-Google-Smtp-Source: ABdhPJwsMGK6fB6ykQXW0Hx1xMgqyEPEnorp+p3inrn+bk5OYy5Jq2OmodindHawgFS4opL0ZbVg2C9ViLxio48Z1lw=
-X-Received: by 2002:a67:f30a:: with SMTP id p10mr9764065vsf.58.1627915599321;
- Mon, 02 Aug 2021 07:46:39 -0700 (PDT)
+        id S234410AbhHBOsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:48:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234008AbhHBOsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:48:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37D8760F51;
+        Mon,  2 Aug 2021 14:48:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627915702;
+        bh=7LZ+RJ0Hi/u0L7+8fl9svS8TaK1SE+sy+Aaxg/1q60o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JTyAaXXm7a2pMrK8j3CpeAm4SzIYEwKRCmUDhrghmygh0eG1ih/BJfuDqxqeWNmcx
+         /+ZjjI0tsyMFkFM6z6AaJb+WlH20BoluD71CBUJyWRm9zDPngqrbCM6b34EC12wslx
+         5tLtxvV/oGNU0aaDgch616021i+yjg2PTT6QP++QPvk4nvILh7IRJfcn4y1k/tlyFW
+         BZX2YuBWlypqld7oJJybsWrq0UiR/xbo/T/GSboQ197H/qnbNbArn3ri2L9ila23T7
+         UGgyQNRZuM9ZqbS7KNPTVw5w727vvinrMzGkjzccliSnrFiiOr/Iwvhnfp0Gm+9dCs
+         IBvt7C+069tcA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Ivan Vecera <ivecera@redhat.com>,
+        Parav Pandit <parav@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        oss-drivers@corigine.com
+Subject: [PATCH] switchdev: add Kconfig dependencies for bridge
+Date:   Mon,  2 Aug 2021 16:47:28 +0200
+Message-Id: <20210802144813.1152762-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210709024834.29680-1-jrdr.linux@gmail.com> <CAE-0n51cqCz4JD75n4ZZV2LDxbB6b0QwJ-La2hU8mnPcckNmSg@mail.gmail.com>
-In-Reply-To: <CAE-0n51cqCz4JD75n4ZZV2LDxbB6b0QwJ-La2hU8mnPcckNmSg@mail.gmail.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Mon, 2 Aug 2021 20:16:26 +0530
-Message-ID: <CAFqt6zZYK+EdePnex_D839XzMV=zXsdAd4bHKdCgX4gtUb1K5g@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dp: Remove unused variable
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     abhinavk@codeaurora.org, David Airlie <airlied@linux.ie>,
-        chandanu@codeaurora.org, Daniel Vetter <daniel@ffwll.ch>,
-        dmitry.baryshkov@linaro.org, khsieh@codeaurora.org,
-        Rob Clark <robdclark@gmail.com>, sean@poorly.run,
-        tanmay@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 3:09 AM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Souptick Joarder (2021-07-08 19:48:34)
-> > Kernel test roobot throws below warning ->
-> >
-> > drivers/gpu/drm/msm/dp/dp_display.c:1017:21:
-> > warning: variable 'drm' set but not used [-Wunused-but-set-variable]
-> >
-> > Removed unused variable drm.
-> >
+From: Arnd Bergmann <arnd@arndb.de>
 
-Can we get this in queue for 5.15, if no further comment ?
+Multiple switchdev drivers depend on CONFIG_NET_SWITCHDEV in Kconfig,
+but have also gained a dependency on the bridge driver as they now
+call switchdev_bridge_port_offload():
 
+drivers/net/ethernet/microchip/sparx5/sparx5_switchdev.o: In function `sparx5_netdevice_event':
+sparx5_switchdev.c:(.text+0x3cc): undefined reference to `switchdev_bridge_port_offload'
+drivers/net/ethernet/ti/cpsw_new.o: In function `cpsw_netdevice_event':
+cpsw_new.c:(.text+0x1098): undefined reference to `switchdev_bridge_port_offload'
 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> > ---
->
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Some of these drivers already have a 'BRIDGE || !BRIDGE' dependency
+that avoids the link failure, but the 'rocker' driver was missing this
+
+For MLXSW/MLX5, SPARX5_SWITCH, and TI_K3_AM65_CPSW_NUSS, the
+driver can conditionally use switchdev support, which is then guarded
+by another Kconfig symbol. For these, add a dependency on a new Kconfig
+symbol NET_MAY_USE_SWITCHDEV that is defined to correctly model the
+dependency: if switchdev support is enabled, these drivers cannot be
+built-in when bridge support is in a module, but if either bridge or
+switchdev is disabled, or both are built-in, there is no such restriction.
+
+Fixes: 2f5dc00f7a3e ("net: bridge: switchdev: let drivers inform which bridge ports are offloaded")
+Fixes: b0e81817629a ("net: build all switchdev drivers as modules when the bridge is a module")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+This version seems to pass my randconfig builds for the moment,
+but that doesn't mean it's correct either. Please have a closer
+look before this gets applied.
+---
+ drivers/net/ethernet/mellanox/mlx5/core/Kconfig | 1 +
+ drivers/net/ethernet/mellanox/mlxsw/Kconfig     | 1 +
+ drivers/net/ethernet/netronome/Kconfig          | 1 +
+ drivers/net/ethernet/ti/Kconfig                 | 1 +
+ net/switchdev/Kconfig                           | 5 +++++
+ 5 files changed, 9 insertions(+)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+index e1a5a79e27c7..3a752e57c1e5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
++++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+@@ -12,6 +12,7 @@ config MLX5_CORE
+ 	depends on MLXFW || !MLXFW
+ 	depends on PTP_1588_CLOCK || !PTP_1588_CLOCK
+ 	depends on PCI_HYPERV_INTERFACE || !PCI_HYPERV_INTERFACE
++	depends on NET_MAY_USE_SWITCHDEV
+ 	help
+ 	  Core driver for low level functionality of the ConnectX-4 and
+ 	  Connect-IB cards by Mellanox Technologies.
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/Kconfig b/drivers/net/ethernet/mellanox/mlxsw/Kconfig
+index 12871c8dc7c1..dee3925bdaea 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/Kconfig
++++ b/drivers/net/ethernet/mellanox/mlxsw/Kconfig
+@@ -5,6 +5,7 @@
+ 
+ config MLXSW_CORE
+ 	tristate "Mellanox Technologies Switch ASICs support"
++	depends on NET_MAY_USE_SWITCHDEV
+ 	select NET_DEVLINK
+ 	select MLXFW
+ 	help
+diff --git a/drivers/net/ethernet/netronome/Kconfig b/drivers/net/ethernet/netronome/Kconfig
+index b82758d5beed..a298d19e8383 100644
+--- a/drivers/net/ethernet/netronome/Kconfig
++++ b/drivers/net/ethernet/netronome/Kconfig
+@@ -21,6 +21,7 @@ config NFP
+ 	depends on PCI && PCI_MSI
+ 	depends on VXLAN || VXLAN=n
+ 	depends on TLS && TLS_DEVICE || TLS_DEVICE=n
++	depends on NET_MAY_USE_SWITCHDEV
+ 	select NET_DEVLINK
+ 	select CRC32
+ 	help
+diff --git a/drivers/net/ethernet/ti/Kconfig b/drivers/net/ethernet/ti/Kconfig
+index 07192613256e..a73c6c236b25 100644
+--- a/drivers/net/ethernet/ti/Kconfig
++++ b/drivers/net/ethernet/ti/Kconfig
+@@ -93,6 +93,7 @@ config TI_CPTS
+ config TI_K3_AM65_CPSW_NUSS
+ 	tristate "TI K3 AM654x/J721E CPSW Ethernet driver"
+ 	depends on OF && TI_K3_UDMA_GLUE_LAYER
++	depends on NET_MAY_USE_SWITCHDEV
+ 	select NET_DEVLINK
+ 	select TI_DAVINCI_MDIO
+ 	imply PHY_TI_GMII_SEL
+diff --git a/net/switchdev/Kconfig b/net/switchdev/Kconfig
+index 18a2d980e11d..3b0e627a4519 100644
+--- a/net/switchdev/Kconfig
++++ b/net/switchdev/Kconfig
+@@ -12,3 +12,8 @@ config NET_SWITCHDEV
+ 	  meaning of the word "switch". This include devices supporting L2/L3 but
+ 	  also various flow offloading chips, including switches embedded into
+ 	  SR-IOV NICs.
++
++config NET_MAY_USE_SWITCHDEV
++	def_tristate y
++	depends on NET_SWITCHDEV || NET_SWITCHDEV=n
++	depends on BRIDGE || NET_SWITCHDEV=n
+-- 
+2.29.2
+
