@@ -2,110 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B633DDF57
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFE33DDF5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhHBSfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:35:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59926 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232124AbhHBSfL (ORCPT
+        id S230030AbhHBShT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhHBShR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:35:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627929301;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wminINGDgWcNHoLPUasL8rgS7uCgoeCj4rIW6d1gFd0=;
-        b=YvBg4D6Ok09eOJC7TpSEwFAEQ2FIpkAD3RnFGXJllgtpEvvvY32RT1vEPaP+v9hID1svZ8
-        IadKbOyRJWI8L53OId502PzHZFsdKqe9b3ZT219OP8kpZrOG124J/W9kmYAeKeXtHkZ1v6
-        kb346tGfSInQ8X5ngvqAx7EFrrPb2rg=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-sa-sHLhyNgeUZagA4kstnw-1; Mon, 02 Aug 2021 14:35:00 -0400
-X-MC-Unique: sa-sHLhyNgeUZagA4kstnw-1
-Received: by mail-ej1-f70.google.com with SMTP id rv22-20020a17090710d6b029058c69e3adbbso4989409ejb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:35:00 -0700 (PDT)
+        Mon, 2 Aug 2021 14:37:17 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37866C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:37:07 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id k24so2060008vsg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IpKyihB3M+3oinMY5i464lWGHngiMrlvZE39L5yuKac=;
+        b=IELFFR56N8LyPmwrNGKlS1ao8vH/LLrw5ZS44V5f8D3W1JRnUh+LPgTzqBlU8FgoE8
+         fGGimjIp5iIsWIAIkJ35I5YGoLfKQoJrxQZRnTaj/YUANaLxOODm961BVRPP4fr6h7k3
+         CwtQLVbWYB0iEirh0GGxW+0thmIhG5wHoASQX/luG9Xj+JsIr/NssxM5XxQ0PrkJM11A
+         2VJEKixVg6QFXFzsBqsqNM2funSFiKMT3NRmOmn5alXZcLarqoL7QOcIZgGjCIV5Qene
+         Z65cCkyLEtI5gkfeNntJ6lCMBvHJmtCe171UlD+regWNlwSnh0iE/oXwKOxH4IoM5hKm
+         8wtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wminINGDgWcNHoLPUasL8rgS7uCgoeCj4rIW6d1gFd0=;
-        b=GJ6WoOKJwNV/SMAoOzXyugFHkAfqEAuL8yJULgPuBU5KfDL0uGo/MRR8+yWXkFLH8g
-         TUm4ODCw8of0SEHq6q5wgWPTgbt2dOsbv+QY7XXNRHfxKXOqplnYIHqjvYD0Yta2lNh4
-         2Ft/+j0EskkbrLa7fYc8VLfSEhpRK4tYd9H7KSprk0cFreiwOcxBEULF6MUOmA11BYRW
-         Fgani+xjQLKS4mj24600f3KHEPYpEe4Dr1EIcITT9Nle/L50srmTvBhfarqLUUBqTP8V
-         mUAGqFkXgbLRDQrtQQgYs41cqYyYPmUdsuUe5EcBQbQqjs/o7xgdrtYpSOCYVO3nK4Ds
-         MDzQ==
-X-Gm-Message-State: AOAM531L438dqnftmGmN66y3yEqk2/7yEGrwO61AQdk8n7aiK7ZapMDX
-        LkZaMobw9qEiXmM8lk6SCWtNkSUSb0Oa5uFQdswGCi0CRk9TsIlYGIeWmHJON/OTD1nLfNb/ycl
-        aw+pznzEBVi68T+Julyh/LsJ3
-X-Received: by 2002:a50:fb18:: with SMTP id d24mr20985347edq.225.1627929299327;
-        Mon, 02 Aug 2021 11:34:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwoCyMdXrDgg3jX2cUmgPnbyHqQZI1zsIxFF27gl9okbIV2OgI+ba2TaS/45evhjSuB8kSK5g==
-X-Received: by 2002:a50:fb18:: with SMTP id d24mr20985334edq.225.1627929299147;
-        Mon, 02 Aug 2021 11:34:59 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id n13sm6705376eda.36.2021.08.02.11.34.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 11:34:58 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 20:34:56 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Harshavardhan Unnibhavi <harshanavkis@gmail.com>
-Cc:     stefanha@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        asias@redhat.com, mst@redhat.com, imbrenda@linux.vnet.ibm.com,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] VSOCK: handle VIRTIO_VSOCK_OP_CREDIT_REQUEST
-Message-ID: <20210802183456.zvr6raqtgwrm3s52@steredhat>
-References: <20210802173506.2383-1-harshanavkis@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IpKyihB3M+3oinMY5i464lWGHngiMrlvZE39L5yuKac=;
+        b=oWspvbXZOAZtcG446Wh/pLzF7EazCmxMwucvXqay9gKjb11Oke5o9YrsxKkYUkVqIV
+         t4Gd+fCIQ1elr5Ysu9XEcWe8+L2eyJHrgcexHRfeA0+F14sINBLh/uaHmeg3UtLJ11pi
+         Nq8ptGyjSN6qFYEmTgpdN2VxTy3T4ZUL0oct7YU4QGneFriuP15uo4/K/mk9EdvjKjwC
+         fud4ZBnk82fT01xdGtp4358wHJ83eVYKxOGulNdRG3o3q1Us2/cARN2zzJDQrrrdmrEc
+         p0dCtTFY8b4Fst8TdCIu9cAUApvOGZYQZehICXOR+zwv0ke3VbAu9IYfiARSjkqkdY/A
+         mlJQ==
+X-Gm-Message-State: AOAM530ZpasdeqmATMU3oKUKx+jKzZm9EUcfTbtuxBcXS46foMsr8BFc
+        XAOBCXxTPjPoLPQJiAlL1AkXrILC6oztsOhl8jM=
+X-Google-Smtp-Source: ABdhPJzjo/9qOXG0fdeyFyvhz+Aj/p8NcNMo/+WII7wlKLWCAd3lrkIimR0VXnppY4xXe7pst3ulKKdyrBotgKBzXac=
+X-Received: by 2002:a67:f58c:: with SMTP id i12mr1373736vso.7.1627929426283;
+ Mon, 02 Aug 2021 11:37:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210802173506.2383-1-harshanavkis@gmail.com>
+References: <20210731214211.657280-1-jim.cromie@gmail.com> <20210731214211.657280-3-jim.cromie@gmail.com>
+ <CACvgo50DDp3p=-2mzY8jvzuLo_4_1L+b8=x6ZRERtcVJUHcomQ@mail.gmail.com>
+In-Reply-To: <CACvgo50DDp3p=-2mzY8jvzuLo_4_1L+b8=x6ZRERtcVJUHcomQ@mail.gmail.com>
+From:   jim.cromie@gmail.com
+Date:   Mon, 2 Aug 2021 12:36:39 -0600
+Message-ID: <CAJfuBxzsLToskA_dtdmsvQdSnEoDRgmrQycZ_nCKm4yQDqJ5Pg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/7] moduleparam: add data member to struct kernel_param
+To:     Emil Velikov <emil.l.velikov@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ashley Thomas <Ashley.Thomas2@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Wyatt Wood <Wyatt.Wood@amd.com>, Jessica Yu <jeyu@kernel.org>,
+        Johan Hovold <johan@kernel.org>, Joe Perches <joe@perches.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 07:35:06PM +0200, Harshavardhan Unnibhavi wrote:
->The original implementation of the virtio-vsock driver does not
->handle a VIRTIO_VSOCK_OP_CREDIT_REQUEST as required by the
->virtio-vsock specification. The vsock device emulated by
->vhost-vsock and the virtio-vsock driver never uses this request,
->which was probably why nobody noticed it. However, another
->implementation of the device may use this request type.
+On Mon, Aug 2, 2021 at 10:18 AM Emil Velikov <emil.l.velikov@gmail.com> wrote:
 >
->Hence, this commit introduces a way to handle an explicit credit
->request by responding with a corresponding credit update as
->required by the virtio-vsock specification.
+> Hi Jim,
 >
->Fixes: 06a8fc78367d ("VSOCK: Introduce virtio_vsock_common.ko")
+> On Sat, 31 Jul 2021 at 22:42, Jim Cromie <jim.cromie@gmail.com> wrote:
 >
->Signed-off-by: Harshavardhan Unnibhavi <harshanavkis@gmail.com>
->---
-> net/vmw_vsock/virtio_transport_common.c | 3 +++
-> 1 file changed, 3 insertions(+)
+> > Use of this new data member will be rare, it might be worth redoing
+> > this as a separate/sub-type to keep the base case.
+> >
+> > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> > ---
+> >  include/linux/moduleparam.h | 11 +++++++++--
+> >  1 file changed, 9 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
+> > index eed280fae433..e9495b1e794d 100644
+> > --- a/include/linux/moduleparam.h
+> > +++ b/include/linux/moduleparam.h
+> > @@ -78,6 +78,7 @@ struct kernel_param {
+> >                 const struct kparam_string *str;
+> >                 const struct kparam_array *arr;
+> >         };
+> > +       void *data;
 >
->diff --git a/net/vmw_vsock/virtio_transport_common.c 
->b/net/vmw_vsock/virtio_transport_common.c
->index 169ba8b72a63..081e7ae93cb1 100644
->--- a/net/vmw_vsock/virtio_transport_common.c
->+++ b/net/vmw_vsock/virtio_transport_common.c
->@@ -1079,6 +1079,9 @@ virtio_transport_recv_connected(struct sock *sk,
-> 		virtio_transport_recv_enqueue(vsk, pkt);
-> 		sk->sk_data_ready(sk);
-> 		return err;
->+	case VIRTIO_VSOCK_OP_CREDIT_REQUEST:
->+		virtio_transport_send_credit_update(vsk);
->+		break;
-> 	case VIRTIO_VSOCK_OP_CREDIT_UPDATE:
-> 		sk->sk_write_space(sk);
-> 		break;
->-- 2.17.1
+> Might as well make this "const void *" since it is a compile-time constant?
 >
 
-The patch LGTM, thanks for fixing this long-time issue!
+yes indeed. revising.  thanks
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-
+> -Emil
