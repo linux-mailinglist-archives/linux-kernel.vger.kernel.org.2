@@ -2,51 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F2E3DD013
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 07:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852A03DD01D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 07:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhHBFj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 01:39:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58496 "EHLO mail.kernel.org"
+        id S231604AbhHBFpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 01:45:30 -0400
+Received: from mga11.intel.com ([192.55.52.93]:50717 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhHBFj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 01:39:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D61561029;
-        Mon,  2 Aug 2021 05:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627882760;
-        bh=PUPqiGY1Lqs3wceq2cbTWPaFQYK7+AacH8oW093jjTc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HokkQCmnsDlrMTzwbz9oR8wymqUwjm8+08bU9fyRSBmadtgrKc4fBMe+jKa4FFmG7
-         wJPTl6m5lIJc7CBy1YyvdSd0VjnWCvIIPy42ax44SXGg3qzUOoa0xJPoLsa5wlDYCL
-         WeXbqXDRVzpAaTfO0wiSKxA/45hfOsShy/qzC/C/yNqfl2JulQpsfJYrz9/zZZhyJv
-         La1UL4girGVTgq/vuD5jXW2d5ivid4mC/ledo1U7IbWsmc8/47zcfF0PaLD/Czelco
-         izc6tAn8P07YPn4ILECDxK5GtFXtdblXlGpvSYE5crTdRGSOxCLEJ31duhLV8oWrhi
-         iZHumL7DOaC2w==
-Date:   Mon, 2 Aug 2021 11:09:15 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        srinivas.kandagatla@linaro.org,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH 00/10] soundwire/ASoC: add mockup codec support
-Message-ID: <YQeFA9/+OfLEftB2@matsya>
-References: <20210714032209.11284-1-yung-chuan.liao@linux.intel.com>
+        id S230417AbhHBFp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 01:45:27 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="210282397"
+X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
+   d="scan'208";a="210282397"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 22:45:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
+   d="scan'208";a="509840578"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by FMSMGA003.fm.intel.com with ESMTP; 01 Aug 2021 22:44:59 -0700
+Subject: Re: [PATCH V4 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
+ fails to probe
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210716114408.17320-1-adrian.hunter@intel.com>
+ <20210716114408.17320-3-adrian.hunter@intel.com>
+ <DM6PR04MB65758A834069CC7B56669905FC109@DM6PR04MB6575.namprd04.prod.outlook.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <2a19830e-47cb-4c2a-ddbc-f2370af01452@intel.com>
+Date:   Mon, 2 Aug 2021 08:45:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714032209.11284-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <DM6PR04MB65758A834069CC7B56669905FC109@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-07-21, 11:21, Bard Liao wrote:
-> Adding mockup SoundWire codec is useful to debug driver/topology changes
-> without having any actual device connected.
+On 17/07/21 9:02 pm, Avri Altman wrote:
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 708b3b62fc4d..9864a8ee0263 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -5020,15 +5020,34 @@ static int ufshcd_slave_configure(struct scsi_device
+>> *sdev)
+>>  static void ufshcd_slave_destroy(struct scsi_device *sdev)
+>>  {
+>>         struct ufs_hba *hba;
+>> +       unsigned long flags;
+>>
+>>         hba = shost_priv(sdev->host);
+>>         /* Drop the reference as it won't be needed anymore */
+>>         if (ufshcd_scsi_to_upiu_lun(sdev->lun) == UFS_UPIU_UFS_DEVICE_WLUN) {
+>> -               unsigned long flags;
+>> -
+>>                 spin_lock_irqsave(hba->host->host_lock, flags);
+>>                 hba->sdev_ufs_device = NULL;
+>>                 spin_unlock_irqrestore(hba->host->host_lock, flags);
+>> +       } else if (hba->sdev_ufs_device) {
+>> +               struct device *supplier = NULL;
+>> +
+>> +               /* Ensure UFS Device WLUN exists and does not disappear */
+>> +               spin_lock_irqsave(hba->host->host_lock, flags);
+>> +               if (hba->sdev_ufs_device) {
+> Was just checked in the outer clause?
 
-Applied sdw patches to sdw-next, thanks
+Yes, but need to re-check with the spinlock locked.
 
--- 
-~Vinod
+> 
+> Thanks,
+> Avri
+> 
+>> +                       supplier = &hba->sdev_ufs_device->sdev_gendev;
+>> +                       get_device(supplier);
+>> +               }
+>> +               spin_unlock_irqrestore(hba->host->host_lock, flags);
+>> +
+>> +               if (supplier) {
+>> +                       /*
+>> +                        * If a LUN fails to probe (e.g. absent BOOT WLUN), the
+>> +                        * device will not have been registered but can still
+>> +                        * have a device link holding a reference to the device.
+>> +                        */
+>> +                       device_link_remove(&sdev->sdev_gendev, supplier);
+>> +                       put_device(supplier);
+>> +               }
+>>         }
+>>  }
+>>
+>> --
+>> 2.17.1
+> 
+
