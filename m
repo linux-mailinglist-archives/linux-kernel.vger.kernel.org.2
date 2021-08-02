@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD8C3DD9A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D716D3DDA9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236111AbhHBOCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:02:23 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39662 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235705AbhHBNyR (ORCPT
+        id S234029AbhHBOQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239267AbhHBOMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:54:17 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 172DYWid155617;
-        Mon, 2 Aug 2021 09:54:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=pPj6dAAf/pstG9xv4fqPWVScQVbjVCC2j4zlCq2/JOk=;
- b=dDStCavylTTnQy9SlKsQjd6piIMX8o0Qxa+D7WIwQ92JKJ8byjEAON22AOwh2sI11p2C
- TswyHKQgDAC50Z3hZcvMmyB99SBo9XElzgMzqN81gElQMWbryyJSkRLuOceYt1/1OaIQ
- A25ztKS/pPLmfObY419zDLnsdHK7Vvu/4juWXEJvqbHZTO0rnc18G3gbtpNT+eDbymt+
- 2rWplk35zn3F6YSqAyRyv25GIrdgyVg1b0313wUy3i3xh4+nvpvWKSmV81J8ptPArzjK
- j8oVk3mYb0BPWQPVNtJKB2V1DSLBqwmucJYEZBivpaTE5B3QF55d7RQC6w2YNpTDRZS9 Cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a5m01mhyf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Aug 2021 09:54:07 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 172DYg5d156184;
-        Mon, 2 Aug 2021 09:54:06 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a5m01mhxy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Aug 2021 09:54:06 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 172DleSw014997;
-        Mon, 2 Aug 2021 13:54:05 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma05fra.de.ibm.com with ESMTP id 3a4x58ce58-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Aug 2021 13:54:04 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 172Ds1KM30015840
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 2 Aug 2021 13:54:01 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0CCF6A406A;
-        Mon,  2 Aug 2021 13:54:01 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D183BA4060;
-        Mon,  2 Aug 2021 13:53:59 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.87.196])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon,  2 Aug 2021 13:53:59 +0000 (GMT)
-Date:   Mon, 2 Aug 2021 15:53:55 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com,
-        pbonzini@redhat.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com
-Subject: Re: [PATCH 0/2] s390/vfio-ap: do not open code locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-Message-ID: <20210802155355.22b98789.pasic@linux.ibm.com>
-In-Reply-To: <3f45fe31-6666-ac87-3a98-dd942b5dfb3c@linux.ibm.com>
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
-        <3f45fe31-6666-ac87-3a98-dd942b5dfb3c@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 2 Aug 2021 10:12:13 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7BBC0611BB
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 06:54:35 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id cb3so9061527ejb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 06:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EpJO592WYEixrqXzIZb7goGYROImopIKrr17z7H5HQw=;
+        b=GJjETva7Crs3bdP2iIdOdApN+dqvB3575sdJh0Nt8UcqnbGjjAOy25+jjhTZl8Ba6B
+         ykMyMBnw+MXexnHgA/YLBz8ogR8UgiKx2rbNMPgLnez9J6KO9E3YxhFUzCw5fCpSvTdx
+         nTKi0scpfCrnqi60VuzkU7HbfODJ7ldqdW8et7FC+Ti/ccjqoBmCz3REEZGQYX+gOQ4I
+         4nHRZgKDOAPhUPf1aQypNW2z5j1GIUkdcG93fBWCIqfRXOKXndsRoTuUh/zktP5e/YTw
+         g1IEvVNlqq4qoTshcXTKTjBxjbn0OISylVGnXWnPCvalG4tzW1Ld+pHz4mERRaqidRhr
+         PWkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EpJO592WYEixrqXzIZb7goGYROImopIKrr17z7H5HQw=;
+        b=GXu3TIi4uuEjwqdB8P03ivGnNQaA+XvuZWhFwAD7lSe5R8r0Ucc/3AnFE/UNQm6hIs
+         +DsPJSGpsTIpnSE+5/YkU+WuaSfCFDzloKaEB9U3ahFZGDAqGLaYKx72RUR8pxBZO4AW
+         x68YhRs7T85tv6EBI6Du9RqheDZtrHCnBOgUxbTHBobhWbSdmx+F/lsA/1JW38K8RqM5
+         OQ73NFRkZu01vbC0utpMgFnHH89vm4D++SyvM0OqnjCRsC3igCVR3eiAbadWnuj38Fg6
+         /k0X07dkQrvFHC850soqOtIyjkzToxVUiARTDujeuYisdhIvH5KgyB97WjsC/zi/S/Pq
+         nTfA==
+X-Gm-Message-State: AOAM531WUY963+/VQewV7thFJZEL3qZM0lxDXjq4lElMB2Tt4dinNb5B
+        +3cK78RcaqemnfO/yIzG9soR5abSdM/zxjceYvDl
+X-Google-Smtp-Source: ABdhPJz40sJlqZEGviQHkm6Qn1c/GD/pz8OCJuU8LwiwWCKf03ePdsNkKAdpoH9hMlUREjbu0ZjfO+uC3SDrk2bUV/U=
+X-Received: by 2002:a17:906:4ad9:: with SMTP id u25mr15537798ejt.106.1627912474320;
+ Mon, 02 Aug 2021 06:54:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MOFS3Gyh8Ve1LlkpOGy8nTWHMAp8da-U
-X-Proofpoint-GUID: _F1f2EQd7B7sAbw5nOQGbcQTKjCpUMsR
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-02_05:2021-08-02,2021-08-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- mlxlogscore=999 lowpriorityscore=0 clxscore=1015 priorityscore=1501
- mlxscore=0 malwarescore=0 phishscore=0 bulkscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108020090
+References: <20210730075234.338-1-suhui@zeku.com>
+In-Reply-To: <20210730075234.338-1-suhui@zeku.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 2 Aug 2021 09:54:23 -0400
+Message-ID: <CAHC9VhRubqCjzv54VSQg5cmAm+G7hBNO=72Eb3-EcbGCtn3_dg@mail.gmail.com>
+Subject: Re: [PATCH] kernel/auditsc: remove unused header file
+To:     Hui Su <suhui@zeku.com>
+Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 09:10:26 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On Fri, Jul 30, 2021 at 3:52 AM Hui Su <suhui@zeku.com> wrote:
+>
+> Since commit c72051d5778a ("audit: use ktime_get_coarse_ts64()
+> for time access"), the linux/time.h is unused.
+>
+> Signed-off-by: Hui Su <suhui@zeku.com>
+> ---
+>  kernel/auditsc.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index 8dd73a64f921..33bb6a83baf1 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -57,7 +57,6 @@
+>  #include <linux/mqueue.h>
+>  #include <linux/audit.h>
+>  #include <linux/personality.h>
+> -#include <linux/time.h>
+>  #include <linux/netlink.h>
+>  #include <linux/compiler.h>
+>  #include <asm/unistd.h>
 
-> PING!
-> 
-> This patch will pre-req version 17 of a patch series I have waiting in 
-> the wings,
-> so I'd like to get this one merged ASAP. In particular, if a KVM 
-> maintainer can
-> take a look at the comments concerning the taking of the kvm->lock 
-> before the
-> matrix_mdev->lock it would be greatly appreciated. Those comments begin with
-> Message ID <20210727004329.3bcc7d4f.pasic@linux.ibm.com> from Halil Pasic.
+At the very least the kernel/auditsc.c file still makes use of the
+timespec64 struct which is defined in include/linux/time64.h which is
+brought in by include/linux/time.h and *not* by
+include/linux/timekeeping.h.  As long as we make use of the timespec64
+struct and the definition remains in time64.h let's keep the time.h
+include.
 
-As far as I'm concerned, we can move forward with this. Was this
-supposed to go in via Alex's tree?
-
-> 
-> On 7/19/21 3:35 PM, Tony Krowiak wrote:
-> > This series is actually only comprised of a single patch to replace the
-> > open coded locks used during VFIO_GROUP_NOTIFY_SET_KVM notification. The
-> > first patch is included because it is a pre-req slotted to be merged but is
-> > not yet available in the kernel.
-> >
-> > Tony Krowiak (2):
-> >    s390/vfio-ap: r/w lock for PQAP interception handler function pointer
-> >    s390/vfio-ap: replace open coded locks for VFIO_GROUP_NOTIFY_SET_KVM
-> >      notification
-> >
-> >   arch/s390/include/asm/kvm_host.h      |   8 +-
-> >   arch/s390/kvm/kvm-s390.c              |  28 +++++-
-> >   arch/s390/kvm/priv.c                  |  10 +-
-> >   drivers/s390/crypto/vfio_ap_ops.c     | 127 +++++++++-----------------
-> >   drivers/s390/crypto/vfio_ap_private.h |   4 +-
-> >   5 files changed, 77 insertions(+), 100 deletions(-)
-> >  
-> 
-
+-- 
+paul moore
+www.paul-moore.com
