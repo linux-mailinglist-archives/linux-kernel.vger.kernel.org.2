@@ -2,42 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02AE3DD825
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695343DDA38
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbhHBNt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:49:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56192 "EHLO mail.kernel.org"
+        id S236752AbhHBOIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:08:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234180AbhHBNqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:46:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51D3460555;
-        Mon,  2 Aug 2021 13:46:22 +0000 (UTC)
+        id S236995AbhHBOAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:00:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84B6F61176;
+        Mon,  2 Aug 2021 13:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627911982;
-        bh=6u0yXNQpcaXNrtN0Gbilq+d+MPQrdxQw4dBqmzYX2Uo=;
+        s=korg; t=1627912575;
+        bh=fqyVpTxEudKsY7rBvzaKqtJhdIPBCp0F5YsRiTxn9h8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AJLmW8GP3nf4cT8jKUBlX41nwAVD4koV2xuKcqSAxd3hv+S3zO0WL2k2l/XZ9UusJ
-         k8QAIqJntMTlzxwxQ5We/Nk3Y+jD6Mbw1+A8kQB3iDw5Kop1Vh+0Nj68a/2VlMa9RI
-         mR9HgDXPYI1B393wa6x1ong9OROELiVaXzhLF3G0=
+        b=LQEga/9N/OiMP8gnJkAzzOyDl7k1vrgf2osXwepjVi44MiuEmAjkK1U901Vqwpm4C
+         d5sUDX4rdhblEkbTHqLzB6XdZDfELvgZE3adRgEiWXk9QqeP6chfFTROHRUpxur+Bt
+         Gpes1qD2E+HuRlCZbL8hwIgRNOuebpKqUIC6DHVc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 07/26] hfs: add missing clean-up in hfs_fill_super
-Date:   Mon,  2 Aug 2021 15:44:17 +0200
-Message-Id: <20210802134332.264419502@linuxfoundation.org>
+        stable@vger.kernel.org, Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH 5.13 021/104] alpha: register early reserved memory in memblock
+Date:   Mon,  2 Aug 2021 15:44:18 +0200
+Message-Id: <20210802134344.703835485@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
-References: <20210802134332.033552261@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,86 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-[ Upstream commit 16ee572eaf0d09daa4c8a755fdb71e40dbf8562d ]
+commit 640b7ea5f888b521dcf28e2564ce75d08a783fd7 upstream.
 
-Patch series "hfs: fix various errors", v2.
+The memory reserved by console/PALcode or non-volatile memory is not added
+to memblock.memory.
 
-This series ultimately aims to address a lockdep warning in
-hfs_find_init reported by Syzbot [1].
+Since commit fa3354e4ea39 (mm: free_area_init: use maximal zone PFNs rather
+than zone sizes) the initialization of the memory map relies on the
+accuracy of memblock.memory to properly calculate zone sizes. The holes in
+memblock.memory caused by absent regions reserved by the firmware cause
+incorrect initialization of struct pages which leads to BUG() during the
+initial page freeing:
 
-The work done for this led to the discovery of another bug, and the
-Syzkaller repro test also reveals an invalid memory access error after
-clearing the lockdep warning.  Hence, this series is broken up into
-three patches:
+BUG: Bad page state in process swapper  pfn:2ffc53
+page:fffffc000ecf14c0 refcount:0 mapcount:1 mapping:0000000000000000 index:0x0
+flags: 0x0()
+raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+page dumped because: nonzero mapcount
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper Not tainted 5.7.0-03841-gfa3354e4ea39-dirty #26
+       fffffc0001b5bd68 fffffc0001b5be80 fffffc00011cd148 fffffc000ecf14c0
+       fffffc00019803df fffffc0001b5be80 fffffc00011ce340 fffffc000ecf14c0
+       0000000000000000 fffffc0001b5be80 fffffc0001b482c0 fffffc00027d6618
+       fffffc00027da7d0 00000000002ff97a 0000000000000000 fffffc0001b5be80
+       fffffc00011d1abc fffffc000ecf14c0 fffffc0002d00000 fffffc0001b5be80
+       fffffc0001b2350c 0000000000300000 fffffc0001b48298 fffffc0001b482c0
+Trace:
+[<fffffc00011cd148>] bad_page+0x168/0x1b0
+[<fffffc00011ce340>] free_pcp_prepare+0x1e0/0x290
+[<fffffc00011d1abc>] free_unref_page+0x2c/0xa0
+[<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
+[<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
+[<fffffc000101001c>] _stext+0x1c/0x20
 
-1. Add a missing call to hfs_find_exit for an error path in
-   hfs_fill_super
+Fix this by registering the reserved ranges in memblock.memory.
 
-2. Fix memory mapping in hfs_bnode_read by fixing calls to kmap
-
-3. Add lock nesting notation to tell lockdep that the observed locking
-   hierarchy is safe
-
-This patch (of 3):
-
-Before exiting hfs_fill_super, the struct hfs_find_data used in
-hfs_find_init should be passed to hfs_find_exit to be cleaned up, and to
-release the lock held on the btree.
-
-The call to hfs_find_exit is missing from an error path.  We add it back
-in by consolidating calls to hfs_find_exit for error paths.
-
-Link: https://syzkaller.appspot.com/bug?id=f007ef1d7a31a469e3be7aeb0fde0769b18585db [1]
-Link: https://lkml.kernel.org/r/20210701030756.58760-1-desmondcheongzx@gmail.com
-Link: https://lkml.kernel.org/r/20210701030756.58760-2-desmondcheongzx@gmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Reviewed-by: Viacheslav Dubeyko <slava@dubeyko.com>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/lkml/20210726192311.uffqnanxw3ac5wwi@ivybridge
+Fixes: fa3354e4ea39 ("mm: free_area_init: use maximal zone PFNs rather than zone sizes")
+Reported-by: Matt Turner <mattst88@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Matt Turner <mattst88@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/hfs/super.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/alpha/kernel/setup.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/fs/hfs/super.c b/fs/hfs/super.c
-index 4574fdd3d421..3eb815bb2c78 100644
---- a/fs/hfs/super.c
-+++ b/fs/hfs/super.c
-@@ -426,14 +426,12 @@ static int hfs_fill_super(struct super_block *sb, void *data, int silent)
- 	if (!res) {
- 		if (fd.entrylength > sizeof(rec) || fd.entrylength < 0) {
- 			res =  -EIO;
--			goto bail;
-+			goto bail_hfs_find;
- 		}
- 		hfs_bnode_read(fd.bnode, &rec, fd.entryoffset, fd.entrylength);
- 	}
--	if (res) {
--		hfs_find_exit(&fd);
--		goto bail_no_root;
--	}
-+	if (res)
-+		goto bail_hfs_find;
- 	res = -EINVAL;
- 	root_inode = hfs_iget(sb, &fd.search_key->cat, &rec);
- 	hfs_find_exit(&fd);
-@@ -449,6 +447,8 @@ static int hfs_fill_super(struct super_block *sb, void *data, int silent)
- 	/* everything's okay */
- 	return 0;
+--- a/arch/alpha/kernel/setup.c
++++ b/arch/alpha/kernel/setup.c
+@@ -325,18 +325,19 @@ setup_memory(void *kernel_end)
+ 		       i, cluster->usage, cluster->start_pfn,
+ 		       cluster->start_pfn + cluster->numpages);
  
-+bail_hfs_find:
-+	hfs_find_exit(&fd);
- bail_no_root:
- 	pr_err("get root inode failed\n");
- bail:
--- 
-2.30.2
-
+-		/* Bit 0 is console/PALcode reserved.  Bit 1 is
+-		   non-volatile memory -- we might want to mark
+-		   this for later.  */
+-		if (cluster->usage & 3)
+-			continue;
+-
+ 		end = cluster->start_pfn + cluster->numpages;
+ 		if (end > max_low_pfn)
+ 			max_low_pfn = end;
+ 
+ 		memblock_add(PFN_PHYS(cluster->start_pfn),
+ 			     cluster->numpages << PAGE_SHIFT);
++
++		/* Bit 0 is console/PALcode reserved.  Bit 1 is
++		   non-volatile memory -- we might want to mark
++		   this for later.  */
++		if (cluster->usage & 3)
++			memblock_reserve(PFN_PHYS(cluster->start_pfn),
++				         cluster->numpages << PAGE_SHIFT);
+ 	}
+ 
+ 	/*
 
 
