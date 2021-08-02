@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C9C3DE089
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362693DE087
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhHBUQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:16:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231287AbhHBUQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:16:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5036E6100A;
-        Mon,  2 Aug 2021 20:16:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627935388;
-        bh=1ftJ9kb+Y2xAzoMqL2sOYtIko6amvbIbdc1OAEJxocA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fVuyEfUv4izjaGIz+P+Ea3mknWUyuJyiQ2TQ2MdPkQucekEpoqrh68+Vyhlqgi70S
-         jD9dXjdaPvkjS5V5fK59wOZ1hihrL48U5gOwd3JTEP8es04ssFJeXki1DdVG0YlBxr
-         vf8kLCAoDA/clTyAowv8NtWEqohkyDwMIccbXn+4H3umMBVQJyHmXijrY7oL8jQmKZ
-         PaKMvI4kgnmOQbFHY/6LB6cNW6uAJ9Gb+aXQjBWZ9diY2mC3HKCWf/Nr+JzQZZvrlU
-         HlH2ZeCOwhXxQPs6Np1SEcUyECFxFFSEOsyLmt8lSocKr+k9sPKHnvqEU+HDxylBZX
-         XxovNwQ/gV/sQ==
-Date:   Mon, 2 Aug 2021 21:16:14 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mason Zhang <mason.zhang@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        leilk.liu@mediatek.com, wsd_upstream@mediatek.com
-Subject: Re: [PATCH 2/3] spi: modify set_cs_timing parameter
-Message-ID: <20210802201614.GA39900@sirena.org.uk>
-References: <20210719091642.24633-1-mason.zhang@mediatek.com>
+        id S231204AbhHBUQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:16:33 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:42781 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229729AbhHBUQb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 16:16:31 -0400
+Received: (qmail 344224 invoked by uid 1000); 2 Aug 2021 16:16:20 -0400
+Date:   Mon, 2 Aug 2021 16:16:20 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Salah Triki <salah.triki@gmail.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Oliver Neukum <oliver@neukum.org>
+Subject: Re: [PATCH v2] bluetooth: bcm203x: update the reference count of udev
+Message-ID: <20210802201620.GA344022@rowland.harvard.edu>
+References: <20210731154102.GA908767@pc>
+ <9B2209B6-D371-432B-A3F5-F1CD7C7967A3@holtmann.org>
+ <20210802193411.GA1006176@pc>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bp/iNruPH9dso1Pn"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210719091642.24633-1-mason.zhang@mediatek.com>
-X-Cookie: hacker, n.:
+In-Reply-To: <20210802193411.GA1006176@pc>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 02, 2021 at 08:34:11PM +0100, Salah Triki wrote:
+> On Sun, Aug 01, 2021 at 08:01:06PM +0200, Marcel Holtmann wrote:
+> > Hi Salah,
+> > 
+> > > Use usb_get_dev() to increment the reference count of the usb device
+> > > structure in order to avoid releasing the structure while it is still in
+> > > use. And use usb_put_dev() to decrement the reference count and thus,
+> > > when it will be equal to 0 the structure will be released.
+> > > 
+> > > Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> > > ---
+> > > Change since v1:
+> > > 	Modification of the description
+> > > 
+> > > drivers/bluetooth/bcm203x.c | 4 +++-
+> > > 1 file changed, 3 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/bluetooth/bcm203x.c b/drivers/bluetooth/bcm203x.c
+> > > index e667933c3d70..547d35425d70 100644
+> > > --- a/drivers/bluetooth/bcm203x.c
+> > > +++ b/drivers/bluetooth/bcm203x.c
+> > > @@ -166,7 +166,7 @@ static int bcm203x_probe(struct usb_interface *intf, const struct usb_device_id
+> > > 	if (!data)
+> > > 		return -ENOMEM;
+> > > 
+> > > -	data->udev  = udev;
+> > > +	data->udev  = usb_get_dev(udev);
+> > > 	data->state = BCM203X_LOAD_MINIDRV;
+> > > 
+> > > 	data->urb = usb_alloc_urb(0, GFP_KERNEL);
+> > > @@ -244,6 +244,8 @@ static void bcm203x_disconnect(struct usb_interface *intf)
+> > > 
+> > > 	usb_set_intfdata(intf, NULL);
+> > > 
+> > > +	usb_put_dev(data->udev);
+> > > +
+> > > 	usb_free_urb(data->urb);
+> > > 	kfree(data->fw_data);
+> > > 	kfree(data->buffer);
+> > 
+> > I do not understand this. If this is something broken, then it is broken in
+> > btusb.c as well and that driver is heavily used by all sorts of devices. So
+> > we should have seen bug reports about this.
+> > 
+> > Regards
+> > 
+> > Marcel
+> > 
+> Hi Marcel,
+> 
+> The patch is based on the following documentation of usb_get_dev():
+> 
+> [quote]
+> Each live reference to a device should be refcounted.
+> 
+> Drivers for USB interfaces should normally record such references in their
+> probe() methods, when they bind to an interface, and release them by calling 
+> usb_put_dev(), in their disconnect() methods.
+> [/quote]
 
---bp/iNruPH9dso1Pn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That documentation is incorrect.  It is not necessary for drivers to 
+take a reference to the devices they are bound to.  Properly written 
+subsystems will guarantee that the driver is unbound from the device 
+before the device is released.
 
-On Mon, Jul 19, 2021 at 05:16:43PM +0800, Mason Zhang wrote:
-> From: Mason Zhang <Mason.Zhang@mediatek.com>
->=20
-> No need pass in spi_delay to set_cs_timing callback.
+To put it another way, if failure to take such a reference leads to an 
+invalid memory access then there is a bug in the subsystem, not in the 
+driver.
 
-This breaks the build:
+Rather than changing the bcm203x driver, you should consider getting rid 
+of the unnecessary advice in the documentation of usb_get_dev.
 
-/mnt/kernel/drivers/spi/spi-tegra114.c: In function 'tegra_spi_probe':
-/mnt/kernel/drivers/spi/spi-tegra114.c:1328:24: error: assignment to 'int (=
-*)(struct spi_device *)' from incompatible pointer type 'int (*)(struct spi=
-_device *, struct spi_delay *, struct spi_delay *, struct spi_delay *)' [-W=
-error=3Dincompatible-pointer-types]
-  master->set_cs_timing =3D tegra_spi_set_hw_cs_timing;
-                        ^
-
---bp/iNruPH9dso1Pn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEIUo0ACgkQJNaLcl1U
-h9A9nAf9F1Go1sfPbVr4y4p+ywDUg5Wsr+MKi1rOBL4AbcQ1yxaoPt+Hy9u9SMos
-0LRfPt0j7LOGZr7vifhjc3oUF1RlB9y6gUMBcLiim6+4pbUz+Tajw2porzvSiK94
-MvdhImTpbS8LPsEKwhXkpogz2uBiOMzmIlGHJL/k2gsewC1xGlXmdORTM+UBfr9Q
-EXPNo9RPLAJP4WGoHjenHIQ7iixQnoLHnikVJtzET2heloGFaTdm0XUL2KUSE7s8
-vOe18JfW8HRf19mr0CNVp4cKg4jE1gQEzXS7s64laov5hmoaFpf6eXVDFX7F0/u+
-EVjpgvgR5/Yb/J/BntGxYQQyaGxUHA==
-=rKDf
------END PGP SIGNATURE-----
-
---bp/iNruPH9dso1Pn--
+Alan Stern
