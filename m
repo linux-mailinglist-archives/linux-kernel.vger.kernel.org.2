@@ -2,98 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2F73DDDB0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6C63DE05C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 21:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232733AbhHBQ3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:29:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:38424 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231357AbhHBQ3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:29:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C944511D4;
-        Mon,  2 Aug 2021 09:29:00 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.10.176])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B7E7C3F66F;
-        Mon,  2 Aug 2021 09:28:58 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 17:28:56 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Michael Kelley <mikelley@microsoft.com>, will@kernel.org,
-        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-efi@vger.kernel.org, wei.liu@kernel.org, kys@microsoft.com,
-        sthemmin@microsoft.com, ardb@kernel.org
-Subject: Re: [PATCH v11 0/5] Enable Linux guests on Hyper-V on ARM64
-Message-ID: <20210802162856.GD59710@C02TD0UTHF1T.local>
-References: <1626793023-13830-1-git-send-email-mikelley@microsoft.com>
- <87k0l325vl.wl-maz@kernel.org>
+        id S231262AbhHBTz4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Aug 2021 15:55:56 -0400
+Received: from 177-131-1-103.netfacil.center ([177.131.1.103]:53468 "EHLO
+        mail.netfacil.net.br" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S230509AbhHBTzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 15:55:54 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.netfacil.net.br (Postfix) with ESMTP id 6E5F9A1E415;
+        Mon,  2 Aug 2021 13:31:01 -0300 (-03)
+Received: from mail.netfacil.net.br ([127.0.0.1])
+        by localhost (mail.netfacil.net.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Zsxy1Y1QnleZ; Mon,  2 Aug 2021 13:31:01 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.netfacil.net.br (Postfix) with ESMTP id 59463AA3320;
+        Mon,  2 Aug 2021 13:30:59 -0300 (-03)
+X-Virus-Scanned: amavisd-new at mail.netfacil.net.br
+Received: from mail.netfacil.net.br ([127.0.0.1])
+        by localhost (mail.netfacil.net.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Vjw6RROOv1ch; Mon,  2 Aug 2021 13:30:59 -0300 (-03)
+Received: from [192.168.124.222] (8ta-229-137-114.telkomadsl.co.za [197.229.137.114])
+        by mail.netfacil.net.br (Postfix) with ESMTPSA id C654EAC0A02;
+        Mon,  2 Aug 2021 13:30:47 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k0l325vl.wl-maz@kernel.org>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: RE
+To:     Recipients <yene.ntos@netfacil.net.br>
+From:   yene.ntos@netfacil.net.br
+Date:   Mon, 02 Aug 2021 09:30:35 -0700
+Reply-To: cristydavisfoundation0101@gmail.com
+X-Antivirus: Avast (VPS 210802-10, 08/02/2021), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20210802163047.C654EAC0A02@mail.netfacil.net.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 05:01:02PM +0100, Marc Zyngier wrote:
-> On Tue, 20 Jul 2021 15:56:58 +0100,
-> Michael Kelley <mikelley@microsoft.com> wrote:
-> > 
-> > This series enables Linux guests running on Hyper-V on ARM64
-> > hardware. New ARM64-specific code in arch/arm64/hyperv initializes
-> > Hyper-V and its hypercall mechanism.  Existing architecture
-> > independent drivers for Hyper-V's VMbus and synthetic devices just
-> > work when built for ARM64. Hyper-V code is built and included in
-> > the image and modules only if CONFIG_HYPERV is enabled.
-> > 
-> > The five patches are organized as follows:
-> > 
-> > 1) Add definitions and functions for making Hyper-V hypercalls
-> >    and getting/setting virtual processor registers provided by
-> >    Hyper-V
-> > 
-> > 2) Add the function needed by the arch independent VMbus driver
-> >    for reporting a panic to Hyper-V.
-> > 
-> > 3) Add Hyper-V initialization code and utility functions that
-> >    report Hyper-v status.
-> > 
-> > 4) Export screen_info so it may be used by the Hyper-V frame buffer
-> >    driver built as a module. It is already exported for x86,
-> >    powerpc, and alpha architectures.
-> > 
-> > 5) Make CONFIG_HYPERV selectable on ARM64 in addition to x86/x64.
-> > 
-> > Hyper-V on ARM64 runs with a 4 Kbyte page size, but allows guests
-> > with 4K/16K/64K page size. Linux guests with this patch series
-> > work with all three supported ARM64 page sizes.
-> > 
-> > The Hyper-V vPCI driver at drivers/pci/host/pci-hyperv.c has
-> > x86/x64-specific code and is not being built for ARM64. Enabling
-> > Hyper-V vPCI devices on ARM64 is in progress via a separate set
-> > of patches.
-> > 
-> > This patch set is based on the linux-next20210720 code tree.
-> > 
-> > Changes in v11:
-> > * Drop the previous Patch 1 as the fixes have already been
-> >   separately accepted upstream.
-> > * Drop the previous Patch 3 for enabling Hyper-V enlightened
-> >   clocks/timers.  Hyper-V is now offering the full ARM64
-> >   architectural Generic Timer in guest VMs, so the existing
-> >   arch_arch_timer.c driver just works. [Mark Rutland, Marc
-> >   Zyngier]
-> 
-> Thanks for doing this. Assuming you fix the issue I mentioned in my
-> reply to patch #3. FWIW:
-> 
-> Acked-by: Marc Zyngier <maz@kernel.org>
+My name is Cristy Davis am from Michigan Two million dollars have been donated to you, I won the $70 million Powerball lottery on February 12, 2020, and I have voluntarily decided to donate the sum of $2 million to you,for more information get back to me  via email: cristydavisfoundation0101@gmail.com
 
-I've tried to provide concrete options for those. With those fixed up
-somehow:
+Hope to hear from you as soon as possible.
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+Mrs. Cristy Davis
 
-Mark.
+-- 
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
+
