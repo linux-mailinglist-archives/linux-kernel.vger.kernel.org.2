@@ -2,223 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80B03DE026
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 21:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 421A43DE02A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 21:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhHBTja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 15:39:30 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:17630 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229537AbhHBTj0 (ORCPT
+        id S230435AbhHBTkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 15:40:43 -0400
+Received: from mail-il1-f174.google.com ([209.85.166.174]:44669 "EHLO
+        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhHBTkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 15:39:26 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 172JW347005798;
-        Mon, 2 Aug 2021 19:39:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=zrFWPdvt6hMMSDIwrSBgeqOvVqINWuxIrrVvIfF+zOI=;
- b=dIsx/MYD9RFl2t1tRH4k71uXPJwxeuJXnhJBkGupVlUpm5hTc36iOHJJsHyobAlubVxb
- hUciDq8DKjt3PhaA/3xTLtAsOFPwuiqPSMkhkh3htq3OpjKkD0Ql3NgpKPZuXmR+SKGH
- UOkCNG6TW42c65npZ4ZNopdnS+VUEPewv6MQvL/u/Av/JcZKwT8BS7VY3fN+5ZwgC6/l
- lUjljt3o5FAG+GpsiYofnZOXjIg3JSB3Qrf0Nqe8VofSrdqLWNS/ij7joWEh9w9LDx/O
- 0OQ2xVcMkLpp8HNw27uHhbwRdEx8276L3uabDCTWY9lG/Nva3+y8pTqizBxsLSIJ5b38 Zw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=zrFWPdvt6hMMSDIwrSBgeqOvVqINWuxIrrVvIfF+zOI=;
- b=ADPnsfhYu5QV1+FXYOci6D8TIvcdtfGkSdaa6TTBI5KxB1cbScLi/ZdLZqkrvHppGqfx
- gOkIKZzvTnMnT8+0chkYFX52IaVc0OExnPObrBPBoiES6oG+cwjOr6wTWsiKE+K6yuf9
- Q39dDgNQlQ2jctcxxw07INOCu9bue3Ki4Fk20ruuy3J4OQ5ArI9InUXfypb1VzBSsHR1
- mVoGtYWiV3iMN7x4CscdPm+pD61gxR1Hkd8exVCr8Lc16JB4W87kwoRMovJovNOgIjyp
- wJBemWoMKDyWIIwFYZGAz6GSkO1ribSkcXPCC4lrz6lwxM68d8rhi2b1uq8o57Ezyvu5 CA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a5wy1jeb8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 02 Aug 2021 19:39:06 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 172JU4rI157285;
-        Mon, 2 Aug 2021 19:39:06 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2043.outbound.protection.outlook.com [104.47.73.43])
-        by aserp3030.oracle.com with ESMTP id 3a4vjcjgu9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 02 Aug 2021 19:39:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AiROqokA9lsJwcB3EgtNH4nWUFU6JMcf26eDbb4V1sFjaBA8oKRiTovCoIdcPqODyhECk1anAGIdQ+5XapqdImXS4or9b+Rce58xulIbyy5zPAGIKifIQ8gwRXqdWMjPXjGiaYCGbxSxmqetSlkFDsA5s5Xzgy3fSrcrMhKJN5pymrKVMP8IYnDv8lDIiZsrhOL0CilfRAJuq00FsjH/k+FZnbUhxnWtYGCRPxZKblbhZXIIzo7OVi8rj+fMM04RRu5EgTBrk4qY2f/WrEE/lfDbvM+4OmwtOSli2JCGrApQykhSYjaxRYAsVMoFkzsbuyhYSvnSgtMn1hz1WC4AXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zrFWPdvt6hMMSDIwrSBgeqOvVqINWuxIrrVvIfF+zOI=;
- b=Gm80X6MtPPKxx1OAX6pdSENPFXWEkxb/ckULFUuEuBsJZSJLngrH0Iqofv/uivpJ4Dm/7bpuosKciOpA1z30BrbjVtJ1cMa7DAx1g5HOUKPDe90XkQSB9irNzKzvIM3rz8sm//jB4UN1DKu/6j+sAyouhJ8qro/H+ALYpiBsS4u99EEHpcgw8pgSWn+icCbVsg94RJy0jwSF++kN3JE9QvbN1ndTw7AbBmUOFR91djhq50+o/yIufpeOD9qgvbbBhEBBaPVXmsko8fd+mL+EBj2uy5JyG3wJl5/IEXTY0UpD05eDlP6uqG0nhHnFlSRDO91wpiyNeDcFf3rfCihrGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zrFWPdvt6hMMSDIwrSBgeqOvVqINWuxIrrVvIfF+zOI=;
- b=kTH8+P08VNroPxTdHhRm8gj79W0OESkc7m4cDVlQVfbtcxoJS8S022LyC7DebvAaM2sEAjLidUmSLToCb1tmevLmN1hMrkwHGkHlfkgkMr1C6V0VrSVVG7gjQg3//QsLuhbMqSJhB9sWg45+cre5YGv8M+1jy8P34K5EMuDvj4g=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from SN6PR10MB2943.namprd10.prod.outlook.com (2603:10b6:805:d4::19)
- by SA2PR10MB4604.namprd10.prod.outlook.com (2603:10b6:806:11c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19; Mon, 2 Aug
- 2021 19:39:04 +0000
-Received: from SN6PR10MB2943.namprd10.prod.outlook.com
- ([fe80::7c0c:7f1d:bbb2:b43]) by SN6PR10MB2943.namprd10.prod.outlook.com
- ([fe80::7c0c:7f1d:bbb2:b43%5]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
- 19:39:04 +0000
-Subject: Re: [PATCH v4 6/8] nvme-fc: fix controller reset hang during traffic
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>,
-        Wen Xiong <wenxiong@us.ibm.com>,
-        James Smart <jsmart2021@gmail.com>
-References: <20210802112658.75875-1-dwagner@suse.de>
- <20210802112658.75875-7-dwagner@suse.de>
-From:   Himanshu Madhani <himanshu.madhani@oracle.com>
-Organization: Oracle
-Message-ID: <a2049faa-888c-af80-9401-a8ba4defec53@oracle.com>
-Date:   Mon, 2 Aug 2021 14:39:01 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210802112658.75875-7-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR07CA0058.namprd07.prod.outlook.com
- (2603:10b6:a03:60::35) To SN6PR10MB2943.namprd10.prod.outlook.com
- (2603:10b6:805:d4::19)
+        Mon, 2 Aug 2021 15:40:41 -0400
+Received: by mail-il1-f174.google.com with SMTP id i13so5599210ilm.11;
+        Mon, 02 Aug 2021 12:40:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J8SamgvZjMzZn8SFG0WG31f9EjYNKG8kJLg4LvePeV4=;
+        b=BVx9jLKQPeSXDseYxt1pONzMMAY+NrcK0BjsFUXJHAnmjQOYHqX7oM8ltzqBOiFy5h
+         dqnjP6YuVbxV0nE6nn1Ee0pZHaa34j+vZiyaVn3tLQBkCT8rITfNlW6AGbxKZQwzCP9I
+         e+wgcL6w2ckqHsHL90nlB15/mRzRLOY/LT5IP7sm2fvZhuDLTyD1boEol8lp4iV3r4pT
+         9fcP3JSEfbNwdA+8+ICCBYYSx5RoMs+8TWjp4w4IqForVi07qm8+fh2WGLrmXbZhx/aq
+         7ZtpBP2V5ttcTabelAsiEGS5MqeduQR5p4sLfFHouQjGzNoIHw6LmtmtDfSFnqYsH3r7
+         KvUg==
+X-Gm-Message-State: AOAM532zQE+ZIbSoUW8C06QBrCzpOWw48+5MMev7QttZQLkg6mNBxhJl
+        0U8Cpyl/ZAGRz5KxeyPRCg==
+X-Google-Smtp-Source: ABdhPJyPJE+Qj7qQn68NldmLQPEMe/MUrKp2yfQyf7zytJe8uOU6ZNPkulS1r9hRjNuLeHzyrwrO/Q==
+X-Received: by 2002:a92:b108:: with SMTP id t8mr605095ilh.6.1627933231644;
+        Mon, 02 Aug 2021 12:40:31 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id c8sm7708834ioa.51.2021.08.02.12.40.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 12:40:30 -0700 (PDT)
+Received: (nullmailer pid 1475286 invoked by uid 1000);
+        Mon, 02 Aug 2021 19:40:27 -0000
+Date:   Mon, 2 Aug 2021 13:40:27 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH V4 3/5] dt-bindings: gpio: Add bindings for gpio-virtio
+Message-ID: <YQhKKyPmOUE8z+US@robh.at.kernel.org>
+References: <cover.1627362340.git.viresh.kumar@linaro.org>
+ <acf7402ef4aabc0ad6295c32846f2bef1cd9b56a.1627362340.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2606:b400:2001:93:8000::b52] (2606:b400:8004:44::1e) by BYAPR07CA0058.namprd07.prod.outlook.com (2603:10b6:a03:60::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17 via Frontend Transport; Mon, 2 Aug 2021 19:39:02 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 59f32dd6-0f18-4ac9-d142-08d955ed2f7a
-X-MS-TrafficTypeDiagnostic: SA2PR10MB4604:
-X-Microsoft-Antispam-PRVS: <SA2PR10MB460453AFA897F14E8AD42F90E6EF9@SA2PR10MB4604.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:586;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 38bEKlDM7bwP2IqtTBV6bMPeo8kCkMcfgeEKIjmBQXiynQsf4I02+63ixbdF1fA5GElM4lluc8R91EieSFY54T/03XAf7F7pNSHJtbRmyDIPtmGrMsAIEPs3MuEankFag0pLdo2Wvx5YtLxN+SGKIhg1QIc8O3CJNMJivqu2bIxQDD08x5uyUPstQ5iUEuXiQ02W0iYZNtwMvdKV8lz8Dw+edgPNrsDF+K7mK3ed4fwPcdVMBq5IOxxdP3NFGAKCg0pIpZJgDcVq1L3M2KYJ9p+xq3GpedFQuMtA9PpElwUb7ufeLIu0o3B0lH4Fs7sXhMvgSmUrLCxCvYdOHVyEV8CHx4sRB15WVzQvqcA59aBDZrNJhvZ/mUBRSmq/mhZRiESzuTVwwhiWnRvoZLr3OvRtozsIOznRWc8qrtmzuQS28XKJc7Z2wKNVHDV7Zb6sYwvkOA3S1Z6QQghOrVqgy1V1LII2n3qnPg/FeDa2rYMOdcK8aL49yY3qne29XSeAEro8yK50m4u+fiQODzwa5F1/bxR/dD8mAY8WY2GEcv7RRSK3lfzvULmD4SJNgdsSzgbK1f9JnaZt3Kn5Pv/ZoIGEU76fXLVRW/B2X1A4jB2CwtVcnpXvY9gKkIl1zJ84fkJztSTDIRfsaVSztGKeWmybv9TJkcN1mngYxefWnMojAFTN9xbzK+kHK0yWzMp8WLIT5YPQj1seAjFI/+7jbKy/WJ8iO9Ir7RnsRfOuDD4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB2943.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(136003)(376002)(39860400002)(396003)(38100700002)(2616005)(66946007)(316002)(86362001)(83380400001)(186003)(53546011)(5660300002)(44832011)(54906003)(2906002)(8676002)(36756003)(36916002)(7416002)(66476007)(66556008)(31686004)(478600001)(4326008)(8936002)(6486002)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c3c3YjY3clorWERzUnl6RHpOZnZ0R2RRZE9nd3E2RXg0YXBjSGZIaEVDeXFk?=
- =?utf-8?B?OVhrYWZTWHE2ZHMvM0VpSWN0VS9iTTVUUjQwL0FjZkFrOHhmWlcxWHNlckh1?=
- =?utf-8?B?SWx0NHBQbTYzeXRlNzJRR01VRjRlQ1VYbVk0MjZweFMxM3lQNzVWTVY1TjNJ?=
- =?utf-8?B?eDNaSFF0bXlTdjJmQ3hQOFRwZ2VZbE0xUmhOMm01VzhtazhnN1FVeDBkRTNP?=
- =?utf-8?B?dUg4c2MwQTRrVTgzQkdLSVBqUTZsVCtZSUlMQXZ5cHNPZi9Ib0psUHRDOUhl?=
- =?utf-8?B?amIvUDZiRjFiSkQxODltRGM5VlRJcC9QTVRrNGpwejRITTdDTFcvaHNOaTF1?=
- =?utf-8?B?azk0MGF0aEhhcHBXQTdtZFhaZHlmY0VNNkc5cUdRdjduSjRxM29CNUVqSnI3?=
- =?utf-8?B?cFVOYmRwM1NaVXVyNnYzWFRmeVVLTFYzWGJqaFpSRVJaSWd4KzR6cTdwWEZp?=
- =?utf-8?B?WHgrSFhBWFBIQnFON2pZdnY4SksrYzhMaVBsL3NvQkJyK0FJS0hWZkNrd3FS?=
- =?utf-8?B?OVc0aG1CaWl2MmtpT3h5UjFwdk1DeCtrT3VTQTFZN3p3MUpiYTVERFlmNjFs?=
- =?utf-8?B?OVYvWEtPZnRUZjluYkFsbU1sRWhKcmJaRkVhaVl1SklXaG9wNWZoSmsvWlp1?=
- =?utf-8?B?THRQUEwvR0NnYnBhdGRDTXRYQlJRbUVzTjZtOWlQTDFHUjVxUEllM1EvQm40?=
- =?utf-8?B?V2l2OEs5WjJaRTE2U3ZaOHMvaEs5Q24zUmh2MElwb3RaUDBHcDRBdmN2YlZq?=
- =?utf-8?B?V2hvYnBSY3NSbWhsZ1d0ck9ndjMyY0IyNkNNYWlWZzRUVGwrT2JSRm03NHlV?=
- =?utf-8?B?MHRYU3lEMUlJZ1BxWlZjWkZIZ2lNUHJVM0U2NFVQSVVTNmw1ODBnM2VRd01X?=
- =?utf-8?B?ZGJDNkhIbEpRcElpS0JPNFFaOUZJNjR5K29PN3ZUd1FQWjk1T05KOFlJUXlU?=
- =?utf-8?B?T3FYd2d4NDlXa1ByVDlJcXhhYXBERFEvUzdSejN1WGFaemRqci8ybENNM2Rl?=
- =?utf-8?B?aFZ0TU5sVEJ1STQzK1EvWWZOWDlBUE5Ba05raktZeFBWcXQzeDBjMytadDgv?=
- =?utf-8?B?TWlNT0tDYmpPR0tpNEY1aHExc3QvVFFXR01WeFo0MHlVR3dKVGNWK0Izc3Fp?=
- =?utf-8?B?Z0lIMXQxMDc0T0UxdkFqaDFEa1Rydm5hNEhueWlmZWU2V1pReTgyRG5EalFH?=
- =?utf-8?B?dk8veVR0Sm9lZGV0VHUwc1kvRStITkxkWHc5K2p1VWo1KzEyemFuN1IrV25y?=
- =?utf-8?B?bC9Bd1FxcGprbUlHT3VoeWtyRS93K3dkM1dVdWEyTU1jaVplTnI4Vkd3aXhr?=
- =?utf-8?B?ZHJaK3RiUmNTcGYrWDE2Y252N3M4YzlFWlhyTlplK21NYmxQRVhSRDN5NmV2?=
- =?utf-8?B?WHNYYmh0MHVub240Q3NlZkVIVFBXZm53VGRFMERKUXZpSjBnc003LzcwS2pM?=
- =?utf-8?B?eDZnRjR4VlpVbWNjU3l4WWxvKzJ0dENXOU9HY290RG5hQXpRc3dBb2NMdnls?=
- =?utf-8?B?WWZIY3ZzbWVVM2pGTk95dGltdjBjUCt4QXZmWU5BdE4xWVd4d040YUNLSXlx?=
- =?utf-8?B?VnZRaTdrN0Nnc0ZqQ3RPVFg1R0Z5ZkZyQnZSWmZ3TmkvbCtJWGpiZ1p6QnpG?=
- =?utf-8?B?WVVkZ3NmbUg1NHQvM3pUeUJBeFdNTGVvSVpBaXhGZUEvbHlRWXAxR2R1M1Uy?=
- =?utf-8?B?NWxtRWJxNHZ2MEtOdFNmZGRYb0NHSVhsL3UwWUtoZXVrcXVyQ1VGQWx1MDhP?=
- =?utf-8?B?QjRiTFpZbWljQ2xjVHU5T0xqNUtmL3AxU253anFETCtnRDE4RkxOZGNCYmtz?=
- =?utf-8?B?aURJeE1PNGxHVlNwZU5nZz09?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59f32dd6-0f18-4ac9-d142-08d955ed2f7a
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB2943.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2021 19:39:04.2773
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +Pxf5HjwA053vwxLzscclB72VooCq0yyQPA8gelsgMLzpPrBru8JJpkRCHes1K/nYh9clp0FuvY3pBvmWu132Pl4nbbQXvxaIi1BUjLQLOI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4604
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10064 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- suspectscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108020125
-X-Proofpoint-GUID: PAbxAIcCf7Z8lM9KtW778yGLGBVbiYoD
-X-Proofpoint-ORIG-GUID: PAbxAIcCf7Z8lM9KtW778yGLGBVbiYoD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <acf7402ef4aabc0ad6295c32846f2bef1cd9b56a.1627362340.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/2/21 6:26 AM, Daniel Wagner wrote:
-> From: James Smart <jsmart2021@gmail.com>
+On Tue, Jul 27, 2021 at 10:53:50AM +0530, Viresh Kumar wrote:
+> This patch adds binding for virtio GPIO controller, it is based on
+> virtio-device bindings.
 > 
-> commit fe35ec58f0d3 ("block: update hctx map when use multiple maps")
-> exposed an issue where we may hang trying to wait for queue freeze
-> during I/O. We call blk_mq_update_nr_hw_queues which may attempt to freeze
-> the queue. However we never started queue freeze when starting the
-> reset, which means that we have inflight pending requests that entered the
-> queue that we will not complete once the queue is quiesced.
-> 
-> So start a freeze before we quiesce the queue, and unfreeze the queue
-> after we successfully connected the I/O queues (the unfreeze is already
-> present in the code). blk_mq_update_nr_hw_queues will be called only
-> after we are sure that the queue was already frozen.
-> 
-> This follows to how the pci driver handles resets.
-> 
-> This patch added logic introduced in commit 9f98772ba307 "nvme-rdma: fix
-> controller reset hang during traffic".
-> 
-> Signed-off-by: James Smart <jsmart2021@gmail.com>
-> CC: Sagi Grimberg <sagi@grimberg.me>
-> [dwagner: call nvme_unfreeze() unconditionally in
->            nvme_fc_recreate_io_queues() to match the nvme_start_freeze()]
-> Tested-by: Daniel Wagner <dwagner@suse.de>
-> Reviewed-by: Daniel Wagner <dwagner@suse.de>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->   drivers/nvme/host/fc.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+>  .../devicetree/bindings/gpio/gpio-virtio.yaml | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
 > 
-> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-> index 133b87db4f1d..b292af0fd655 100644
-> --- a/drivers/nvme/host/fc.c
-> +++ b/drivers/nvme/host/fc.c
-> @@ -2486,6 +2486,7 @@ __nvme_fc_abort_outstanding_ios(struct nvme_fc_ctrl *ctrl, bool start_queues)
->   	 * (but with error status).
->   	 */
->   	if (ctrl->ctrl.queue_count > 1) {
-> +		nvme_start_freeze(&ctrl->ctrl);
->   		nvme_stop_queues(&ctrl->ctrl);
->   		nvme_sync_io_queues(&ctrl->ctrl);
->   		blk_mq_tagset_busy_iter(&ctrl->tag_set,
-> @@ -2966,8 +2967,8 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
->   			return -ENODEV;
->   		}
->   		blk_mq_update_nr_hw_queues(&ctrl->tag_set, nr_io_queues);
-> -		nvme_unfreeze(&ctrl->ctrl);
->   	}
-> +	nvme_unfreeze(&ctrl->ctrl);
->   
->   	ret = nvme_fc_create_hw_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
->   	if (ret)
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-virtio.yaml b/Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
+> new file mode 100644
+> index 000000000000..601d85754577
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
+> @@ -0,0 +1,59 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpio/gpio-virtio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Virtio GPIO controller
+> +
+> +maintainers:
+> +  - Viresh Kumar <viresh.kumar@linaro.org>
+> +
+> +allOf:
+> +  - $ref: /schemas/virtio/virtio-device.yaml#
+> +
+> +description:
+> +  Virtio GPIO controller, see /schemas/virtio/virtio-device.yaml for more
+> +  details.
+> +
+> +properties:
+> +  $nodename:
+> +    const: gpio
+> +
+> +  compatible:
+> +    const: virtio,device29
+> +
+> +  gpio-controller: true
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +  interrupt-controller: true
+> +
+> +  "#interrupt-cells":
+> +    const: 2
+
+Humm, how does one implement interrupts without a parent interrupt? It 
+uses the parent virtio,mmio interrupt?
+
+> +
+> +required:
+> +  - compatible
+> +  - gpio-controller
+> +  - "#gpio-cells"
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    virtio@3000 {
+> +        compatible = "virtio,mmio";
+> +        reg = <0x3000 0x100>;
+> +        interrupts = <41>;
+> +
+> +        gpio {
+> +            compatible = "virtio,device29";
+> +            gpio-controller;
+> +            #gpio-cells = <2>;
+> +            interrupt-controller;
+> +            #interrupt-cells = <2>;
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.31.1.272.g89b43f80a514
 > 
-
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-
--- 
-Himanshu Madhani                                Oracle Linux Engineering
+> 
