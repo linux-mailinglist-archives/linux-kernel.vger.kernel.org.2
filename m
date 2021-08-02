@@ -2,117 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087153DE2FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560EF3DE301
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbhHBXWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 19:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232208AbhHBXWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 19:22:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 872B460EE6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 23:22:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627946521;
-        bh=3UoqdS3ZjZO9aG1FWGZpLNJXpg3edmkfj19jMqgZlag=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fZhBqZC5RN6LFgGTGAhcn9gnxLB6jXBYSgOOOb3AzHHBvQBRGi0ncfOX+8XzA3G+b
-         uRWDWytkUy+fILgu0GiBK/xlCsIiOBJQ/P3aTSYFsoynHfrSRGezrzY5rQRd+d1tgd
-         enAjzKNkNQdAzL+CTW3IRAwInHu8WyyFLBFFzk5EGN7hpEs6yf1f5A3PRM2jhtoJgN
-         aIa3A7EByOkol74HKb3UynsYZFhIl+Ut5hDk5XNUxCSB+Oropz9drSfdJcjcK1XQiv
-         X2tzH143UQee2M7iIboGmRrlKHp/F5y1/gSMFEAGvWufIPxVp2UVwvahkDHr0mtcln
-         Fb4lPigquJArA==
-Received: by mail-ej1-f42.google.com with SMTP id u3so873553ejz.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 16:22:01 -0700 (PDT)
-X-Gm-Message-State: AOAM533aCXBQAHr55tfeHXwZY/r+t1dBSMVRNntpQrTiGYfzBXlI+djV
-        M7tsEGH59rcrX8n8QGbqSLB9Ka661mlofGgfBA==
-X-Google-Smtp-Source: ABdhPJzVHbdqkXZSKJFkdObdtrHHP6P1rJNANKJM5suYmF9hkJsLk9QTqNsPcHe3pRC+2S0r6+TIODJy9UBBYIcSj/0=
-X-Received: by 2002:a17:906:2451:: with SMTP id a17mr17629191ejb.75.1627946520087;
- Mon, 02 Aug 2021 16:22:00 -0700 (PDT)
+        id S232972AbhHBXYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 19:24:39 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:29420 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232311AbhHBXYh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 19:24:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627946667; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=hFy9UGV4bwGkQ7pQHCAXe5mbwQW2kPvxAkdDKqiLWdc=;
+ b=tky+TX5EHtkPcWaaw2ywjN84k+ytqCCHWAjM3dma/9eD23Mt6Q+1LJytLtpCCXsL9WDV0mFa
+ cFuJzTE7Nvg7PwFh2oeUSPHex+N8ZF5ONebRqS69JrqrXsqUEod9aahGYJEbZsB1PESbjyDH
+ WVHiRG5F30c2rI39xcTpJWohSGI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 61087eaa9771b05b242f0630 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 23:24:26
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B4B01C433D3; Mon,  2 Aug 2021 23:24:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6DB70C433F1;
+        Mon,  2 Aug 2021 23:24:25 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210714101141.2089082-1-enric.balletbo@collabora.com> <20210714121116.v2.7.Idbb4727ddf00ba2fe796b630906baff10d994d89@changeid>
-In-Reply-To: <20210714121116.v2.7.Idbb4727ddf00ba2fe796b630906baff10d994d89@changeid>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 3 Aug 2021 07:21:49 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__EA323tC+BswgTfx4EM9FF8Hf9AAkqoxuacuxQwr4SnA@mail.gmail.com>
-Message-ID: <CAAOTY__EA323tC+BswgTfx4EM9FF8Hf9AAkqoxuacuxQwr4SnA@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] drm/mediatek: mtk_dsi: Reset the dsi0 hardware
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Eizan Miyamoto <eizan@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 02 Aug 2021 16:24:25 -0700
+From:   abhinavk@codeaurora.org
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [Freedreno] [PATCH 04/11] drm/msm/disp/dpu1: Add DSC support in
+ RM
+In-Reply-To: <20210715065203.709914-5-vkoul@kernel.org>
+References: <20210715065203.709914-1-vkoul@kernel.org>
+ <20210715065203.709914-5-vkoul@kernel.org>
+Message-ID: <7d656b2265ade461cae993c691d31ab8@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Enric:
-
-Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2021=E5=B9=
-=B47=E6=9C=8814=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=886:12=E5=AF=AB=
-=E9=81=93=EF=BC=9A
->
-> Reset dsi0 HW to default when power on. This prevents to have different
-> settingbetween the bootloader and the kernel.
->
-> As not all Mediatek boards have the reset consumer configured in their
-> board description, also is not needed on all of them, the reset is option=
-al,
-> so the change is compatible with all boards.
-
-Acked-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-
->
-> Cc: Jitao Shi <jitao.shi@mediatek.com>
-> Suggested-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+On 2021-07-14 23:51, Vinod Koul wrote:
+> This add the bits in RM to enable the DSC blocks
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 > ---
->
-> (no changes since v1)
->
->  drivers/gpu/drm/mediatek/mtk_dsi.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
-k/mtk_dsi.c
-> index ae403c67cbd9..d8b81e2ab841 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h |  1 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c  | 32 +++++++++++++++++++++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h  |  1 +
+>  3 files changed, 34 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+> index d6717d6672f7..d56c05146dfe 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+> @@ -165,6 +165,7 @@ struct dpu_global_state {
+>  	uint32_t ctl_to_enc_id[CTL_MAX - CTL_0];
+>  	uint32_t intf_to_enc_id[INTF_MAX - INTF_0];
+>  	uint32_t dspp_to_enc_id[DSPP_MAX - DSPP_0];
+> +	uint32_t dsc_to_enc_id[DSC_MAX - DSC_0];
+>  };
+> 
+>  struct dpu_global_state
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> index fd2d104f0a91..4da6d72b7996 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
 > @@ -11,6 +11,7 @@
->  #include <linux/of_platform.h>
->  #include <linux/phy/phy.h>
->  #include <linux/platform_device.h>
-> +#include <linux/reset.h>
->
->  #include <video/mipi_display.h>
->  #include <video/videomode.h>
-> @@ -980,8 +981,10 @@ static int mtk_dsi_bind(struct device *dev, struct d=
-evice *master, void *data)
->         struct mtk_dsi *dsi =3D dev_get_drvdata(dev);
->
->         ret =3D mtk_dsi_encoder_init(drm, dsi);
-> +       if (ret)
-> +               return ret;
->
-> -       return ret;
-> +       return device_reset_optional(dev);
+>  #include "dpu_hw_intf.h"
+>  #include "dpu_hw_dspp.h"
+>  #include "dpu_hw_merge3d.h"
+> +#include "dpu_hw_dsc.h"
+>  #include "dpu_encoder.h"
+>  #include "dpu_trace.h"
+> 
+> @@ -75,6 +76,14 @@ int dpu_rm_destroy(struct dpu_rm *rm)
+>  			dpu_hw_intf_destroy(hw);
+>  		}
+>  	}
+> +	for (i = 0; i < ARRAY_SIZE(rm->dsc_blks); i++) {
+> +		struct dpu_hw_dsc *hw;
+> +
+> +		if (rm->intf_blks[i]) {
+same comment as dmitry on this 
+https://patchwork.freedesktop.org/patch/444070/?series=90413&rev=2
+> +			hw = to_dpu_hw_dsc(rm->dsc_blks[i]);
+> +			dpu_hw_dsc_destroy(hw);
+> +		}
+> +	}
+> 
+>  	return 0;
 >  }
->
->  static void mtk_dsi_unbind(struct device *dev, struct device *master,
-> --
-> 2.30.2
->
+> @@ -221,6 +230,19 @@ int dpu_rm_init(struct dpu_rm *rm,
+>  		rm->dspp_blks[dspp->id - DSPP_0] = &hw->base;
+>  	}
+> 
+> +	for (i = 0; i < cat->dsc_count; i++) {
+> +		struct dpu_hw_dsc *hw;
+> +		const struct dpu_dsc_cfg *dsc = &cat->dsc[i];
+> +
+> +		hw = dpu_hw_dsc_init(dsc->id, mmio, cat);
+> +		if (IS_ERR_OR_NULL(hw)) {
+> +			rc = PTR_ERR(hw);
+> +			DPU_ERROR("failed dsc object creation: err %d\n", rc);
+> +			goto fail;
+> +		}
+> +		rm->dsc_blks[dsc->id - DSC_0] = &hw->base;
+> +	}
+> +
+>  	return 0;
+> 
+>  fail:
+> @@ -476,6 +498,9 @@ static int _dpu_rm_reserve_intf(
+>  	}
+> 
+>  	global_state->intf_to_enc_id[idx] = enc_id;
+> +
+> +	global_state->dsc_to_enc_id[0] = enc_id;
+> +	global_state->dsc_to_enc_id[1] = enc_id;
+>  	return 0;
+>  }
+agree with dmitry again here, why are DSCs being reserved in the 
+_dpu_rm_reserve_intf function?
+First, for clarity, they should be in a function of their own.
+Allocating the DSCs has to also account for the PP availability of that 
+DSC and other factors need to
+be considered as well.
+I suggest checking _sde_rm_reserve_dsc() from downstream to improve the 
+DSC reservation logic.
+> 
+> @@ -567,6 +592,8 @@ void dpu_rm_release(struct dpu_global_state 
+> *global_state,
+>  		ARRAY_SIZE(global_state->ctl_to_enc_id), enc->base.id);
+>  	_dpu_rm_clear_mapping(global_state->intf_to_enc_id,
+>  		ARRAY_SIZE(global_state->intf_to_enc_id), enc->base.id);
+> +	_dpu_rm_clear_mapping(global_state->dsc_to_enc_id,
+> +		ARRAY_SIZE(global_state->dsc_to_enc_id), enc->base.id);
+>  }
+> 
+>  int dpu_rm_reserve(
+> @@ -640,6 +667,11 @@ int dpu_rm_get_assigned_resources(struct dpu_rm 
+> *rm,
+>  		hw_to_enc_id = global_state->dspp_to_enc_id;
+>  		max_blks = ARRAY_SIZE(rm->dspp_blks);
+>  		break;
+> +	case DPU_HW_BLK_DSC:
+> +		hw_blks = rm->dsc_blks;
+> +		hw_to_enc_id = global_state->dsc_to_enc_id;
+> +		max_blks = ARRAY_SIZE(rm->dsc_blks);
+> +		break;
+>  	default:
+>  		DPU_ERROR("blk type %d not managed by rm\n", type);
+>  		return 0;
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
+> index 1f12c8d5b8aa..278d2a510b80 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
+> @@ -30,6 +30,7 @@ struct dpu_rm {
+>  	struct dpu_hw_blk *intf_blks[INTF_MAX - INTF_0];
+>  	struct dpu_hw_blk *dspp_blks[DSPP_MAX - DSPP_0];
+>  	struct dpu_hw_blk *merge_3d_blks[MERGE_3D_MAX - MERGE_3D_0];
+> +	struct dpu_hw_blk *dsc_blks[DSC_MAX - DSC_0];
+> 
+>  	uint32_t lm_max_width;
+>  };
