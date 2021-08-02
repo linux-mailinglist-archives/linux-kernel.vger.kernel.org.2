@@ -2,195 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD5B3DD052
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34E83DD068
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhHBGM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:12:57 -0400
-Received: from mga02.intel.com ([134.134.136.20]:46078 "EHLO mga02.intel.com"
+        id S232063AbhHBGVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:21:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:58936 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229792AbhHBGM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:12:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="200566005"
-X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
-   d="scan'208";a="200566005"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 23:12:47 -0700
-X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
-   d="scan'208";a="509929037"
-Received: from gao-cwp.sh.intel.com (HELO gao-cwp) ([10.239.159.133])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 23:12:43 -0700
-Date:   Mon, 2 Aug 2021 14:20:09 +0800
-From:   Chao Gao <chao.gao@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [clocksource]  8901ecc231:  stress-ng.lockbus.ops_per_sec -9.5%
- regression
-Message-ID: <20210802062008.GA24720@gao-cwp>
-References: <20210521083322.GG25531@xsang-OptiPlex-9020>
- <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
- <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
- <20210526064922.GD5262@shbuild999.sh.intel.com>
- <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
- <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
+        id S229792AbhHBGVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 02:21:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 679AC106F;
+        Sun,  1 Aug 2021 23:21:22 -0700 (PDT)
+Received: from [10.57.7.125] (unknown [10.57.7.125])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CB3B3F719;
+        Sun,  1 Aug 2021 23:21:18 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] PM: EM: Increase energy calculation precision
+To:     peterz@infradead.org, vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Chris.Redpath@arm.com,
+        dietmar.eggemann@arm.com, morten.rasmussen@arm.com,
+        qperret@google.com, linux-pm@vger.kernel.org,
+        stable@vger.kernel.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
+        segall@google.com, mgorman@suse.de, bristot@redhat.com,
+        CCj.Yeh@mediatek.com
+References: <20210720094153.31097-1-lukasz.luba@arm.com>
+ <20210720094153.31097-2-lukasz.luba@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <3a98d39b-d607-03d2-819b-5150f6755c96@arm.com>
+Date:   Mon, 2 Aug 2021 07:21:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210720094153.31097-2-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[snip]
->commit 48ebcfbfd877f5d9cddcc03c91352a8ca7b190af
->Author: Paul E. McKenney <paulmck@kernel.org>
->Date:   Thu May 27 11:03:28 2021 -0700
->
->    clocksource: Forgive repeated long-latency watchdog clocksource reads
->    
->    Currently, the clocksource watchdog reacts to repeated long-latency
->    clocksource reads by marking that clocksource unstable on the theory that
->    these long-latency reads are a sign of a serious problem.  And this theory
->    does in fact have real-world support in the form of firmware issues [1].
->    
->    However, it is also possible to trigger this using stress-ng on what
->    the stress-ng man page terms "poorly designed hardware" [2].  And it
->    is not necessarily a bad thing for the kernel to diagnose cases where
->    high-stress workloads are being run on hardware that is not designed
->    for this sort of use.
->    
->    Nevertheless, it is quite possible that real-world use will result in
->    some situation requiring that high-stress workloads run on hardware
->    not designed to accommodate them, and also requiring that the kernel
->    refrain from marking clocksources unstable.
->    
->    Therefore, provide an out-of-tree patch that reacts to this situation
->    by leaving the clocksource alone, but using the old 62.5-millisecond
->    skew-detection threshold in response persistent long-latency reads.
->    In addition, the offending clocksource is marked for re-initialization
->    in this case, which both restarts that clocksource with a clean bill of
->    health and avoids false-positive skew reports on later watchdog checks.
+Hi Peter, Vincent,
 
-Hi Paul,
+Gentle ping.
 
-Sorry to dig out this old thread.
 
-I am testing with this patch in a VM, but I find sometimes re-initialization
-after coarse-grained skew check may not happen as expected because ...
-
->    
->    Link: https://lore.kernel.org/lkml/20210513155515.GB23902@xsang-OptiPlex-9020/ # [1]
->    Link: https://lore.kernel.org/lkml/20210521083322.GG25531@xsang-OptiPlex-9020/ # [2]
->    Link: https://lore.kernel.org/lkml/20210521084405.GH25531@xsang-OptiPlex-9020/
->    Link: https://lore.kernel.org/lkml/20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1/
->    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
->diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
->index 01df12395c0e..b72a969f7b93 100644
->--- a/kernel/time/clocksource-wdtest.c
->+++ b/kernel/time/clocksource-wdtest.c
->@@ -146,13 +146,12 @@ static int wdtest_func(void *arg)
-> 		else if (i <= max_cswd_read_retries)
-> 			s = ", expect message";
-> 		else
->-			s = ", expect clock skew";
->+			s = ", expect coarse-grained clock skew check and re-initialization";
-> 		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
-> 		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
-> 		schedule_timeout_uninterruptible(2 * HZ);
-> 		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
->-		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
->-			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
->+		WARN_ON_ONCE(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE);
-> 		wdtest_ktime_clocksource_reset();
-> 	}
+On 7/20/21 10:41 AM, Lukasz Luba wrote:
+> The Energy Model (EM) provides useful information about device power in
+> each performance state to other subsystems like: Energy Aware Scheduler
+> (EAS). The energy calculation in EAS does arithmetic operation based on
+> the EM em_cpu_energy(). Current implementation of that function uses
+> em_perf_state::cost as a pre-computed cost coefficient equal to:
+> cost = power * max_frequency / frequency.
+> The 'power' is expressed in milli-Watts (or in abstract scale).
 > 
->diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
->index 4485635b69f5..6c0820779bd3 100644
->--- a/kernel/time/clocksource.c
->+++ b/kernel/time/clocksource.c
->@@ -225,13 +225,13 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
-> 				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
-> 					smp_processor_id(), watchdog->name, nretries);
-> 			}
->-			return true;
->+			return false;
-> 		}
-> 	}
+> There are corner cases when the EAS energy calculation for two Performance
+> Domains (PDs) return the same value. The EAS compares these values to
+> choose smaller one. It might happen that this values are equal due to
+> rounding error. In such scenario, we need better resolution, e.g. 1000
+> times better. To provide this possibility increase the resolution in the
+> em_perf_state::cost for 64-bit architectures. The costs for increasing
+> resolution in 32-bit architectures are pretty high (64-bit division) and
+> the returns do not justify the increased costs.
 > 
->-	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, marking unstable\n",
->+	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
-> 		smp_processor_id(), watchdog->name, wd_delay, nretries);
->-	return false;
->+	return true;
-> }
+> This patch allows to avoid the rounding to milli-Watt errors, which might
+> occur in EAS energy estimation for each Performance Domains (PD). The
+> rounding error is common for small tasks which have small utilization
+> value.
 > 
-> static u64 csnow_mid;
->@@ -355,6 +355,7 @@ static void clocksource_watchdog(struct timer_list *unused)
-> 	int next_cpu, reset_pending;
-> 	int64_t wd_nsec, cs_nsec;
-> 	struct clocksource *cs;
->+	bool coarse;
-> 	u32 md;
+> There are two places in the code where it makes a difference:
+> 1. In the find_energy_efficient_cpu() where we are searching for
+> best_delta. We might suffer there when two PDs return the same result,
+> like in the example below.
 > 
-> 	spin_lock(&watchdog_lock);
->@@ -372,11 +373,7 @@ static void clocksource_watchdog(struct timer_list *unused)
-> 			continue;
-> 		}
+> Scenario:
+> Low utilized system e.g. ~200 sum_util for PD0 and ~220 for PD1. There
+> are quite a few small tasks ~10-15 util. These tasks would suffer for
+> the rounding error. Such system utilization has been seen while playing
+> some simple games. In such condition our partner reported 5..10mA less
+> battery drain.
 > 
->-		if (!cs_watchdog_read(cs, &csnow, &wdnow)) {
->-			/* Clock readout unreliable, so give it up. */
->-			__clocksource_unstable(cs);
->-			continue;
->-		}
->+		coarse = cs_watchdog_read(cs, &csnow, &wdnow);
+> Some details:
+> We have two Perf Domains (PDs): PD0 (big) and PD1 (little)
+> Let's compare w/o patch set ('old') and w/ patch set ('new')
+> We are comparing energy w/ task and w/o task placed in the PDs
 > 
-> 		/* Clocksource initialized ? */
-> 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
->@@ -402,7 +399,13 @@ static void clocksource_watchdog(struct timer_list *unused)
-> 			continue;
+> a) 'old' w/o patch set, PD0
+> task_util = 13
+> cost = 480
+> sum_util_w/o_task = 215
+> sum_util_w_task = 228
+> scale_cpu = 1024
+> energy_w/o_task = 480 * 215 / 1024 = 100.78 => 100
+> energy_w_task = 480 * 228 / 1024 = 106.87 => 106
+> energy_diff = 106 - 100 = 6
+> (this is equal to 'old' PD1's energy_diff in 'c)')
 > 
-> 		/* Check the deviation from the watchdog clocksource. */
->-		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
->+		if (coarse) {
->+			md = 62500 * NSEC_PER_USEC;
->+			cs->flags &= ~CLOCK_SOURCE_WATCHDOG;
->+			pr_warn("timekeeping watchdog on CPU%d: %s coarse-grained %lu.%03lu ms clock-skew check followed by re-initialization\n", smp_processor_id(), watchdog->name, md / NSEC_PER_MSEC, md % NSEC_PER_MSEC / NSEC_PER_USEC);
+> b) 'new' w/ patch set, PD0
+> task_util = 13
+> cost = 480 * 1000 = 480000
+> sum_util_w/o_task = 215
+> sum_util_w_task = 228
+> energy_w/o_task = 480000 * 215 / 1024 = 100781
+> energy_w_task = 480000 * 228 / 1024  = 106875
+> energy_diff = 106875 - 100781 = 6094
+> (this is not equal to 'new' PD1's energy_diff in 'd)')
+> 
+> c) 'old' w/o patch set, PD1
+> task_util = 13
+> cost = 160
+> sum_util_w/o_task = 283
+> sum_util_w_task = 293
+> scale_cpu = 355
+> energy_w/o_task = 160 * 283 / 355 = 127.55 => 127
+> energy_w_task = 160 * 296 / 355 = 133.41 => 133
+> energy_diff = 133 - 127 = 6
+> (this is equal to 'old' PD0's energy_diff in 'a)')
+> 
+> d) 'new' w/ patch set, PD1
+> task_util = 13
+> cost = 160 * 1000 = 160000
+> sum_util_w/o_task = 283
+> sum_util_w_task = 293
+> scale_cpu = 355
+> energy_w/o_task = 160000 * 283 / 355 = 127549
+> energy_w_task = 160000 * 296 / 355 =   133408
+> energy_diff = 133408 - 127549 = 5859
+> (this is not equal to 'new' PD0's energy_diff in 'b)')
+> 
+> 2. Difference in the the last find_energy_efficient_cpu(): margin filter.
+> With this patch the margin comparison also has better resolution,
+> so it's possible to have better task placement thanks to that.
+> 
+> Fixes: 27871f7a8a341ef ("PM: Introduce an Energy Model management framework")
+> Reported-by: CCJ Yeh <CCj.Yeh@mediatek.com>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>   include/linux/energy_model.h | 16 ++++++++++++++++
+>   kernel/power/energy_model.c  |  3 ++-
+>   2 files changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index 3f221dbf5f95..1834752c5617 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -53,6 +53,22 @@ struct em_perf_domain {
+>   #ifdef CONFIG_ENERGY_MODEL
+>   #define EM_MAX_POWER 0xFFFF
+>   
+> +/*
+> + * Increase resolution of energy estimation calculations for 64-bit
+> + * architectures. The extra resolution improves decision made by EAS for the
+> + * task placement when two Performance Domains might provide similar energy
+> + * estimation values (w/o better resolution the values could be equal).
+> + *
+> + * We increase resolution only if we have enough bits to allow this increased
+> + * resolution (i.e. 64-bit). The costs for increasing resolution when 32-bit
+> + * are pretty high and the returns do not justify the increased costs.
+> + */
+> +#ifdef CONFIG_64BIT
+> +#define em_scale_power(p) ((p) * 1000)
+> +#else
+> +#define em_scale_power(p) (p)
+> +#endif
+> +
+>   struct em_data_callback {
+>   	/**
+>   	 * active_power() - Provide power at the next performance state of
+> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+> index 0f4530b3a8cd..bf312c04c514 100644
+> --- a/kernel/power/energy_model.c
+> +++ b/kernel/power/energy_model.c
+> @@ -170,7 +170,8 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
+>   	/* Compute the cost of each performance state. */
+>   	fmax = (u64) table[nr_states - 1].frequency;
+>   	for (i = 0; i < nr_states; i++) {
+> -		table[i].cost = div64_u64(fmax * table[i].power,
+> +		unsigned long power_res = em_scale_power(table[i].power);
+> +		table[i].cost = div64_u64(fmax * power_res,
+>   					  table[i].frequency);
+>   	}
+>   
+> 
 
-... this message on CPU5 doesn't show up in below kernel logs.
-Do you think it is a bug? if yes, any idea to resolve it?
+Do you have any comments to this patch?
+It's EM-only change now, no other files touched.
+If it's OK, I will ask Rafael to take it.
 
-[  498.571086] clocksource: timekeeping watchdog on CPU1: hpet read-back delay of 432490ns, attempt 4, coarse-grained skew check followed by re-initialization
-[  498.572867] clocksource: timekeeping watchdog on CPU1: hpet coarse-grained 62.500 ms clock-skew check followed by re-initialization
-[  504.071959] clocksource: timekeeping watchdog on CPU4: hpet read-back delay of 1679880ns, attempt 4, coarse-grained skew check followed by re-initialization
-[  504.073817] clocksource: timekeeping watchdog on CPU4: hpet coarse-grained 62.500 ms clock-skew check followed by re-initialization
-[  504.568821] clocksource: timekeeping watchdog on CPU5: hpet read-back delay of 554880ns, attempt 4, coarse-grained skew check followed by re-initialization
-[  505.067666] clocksource: timekeeping watchdog on CPU6: hpet retried 3 times before success
-[  505.068593] clocksource: timekeeping watchdog on CPU6: Marking clocksource 'tsc' as unstable because the skew is too large:
-[  505.069596] clocksource:                       'hpet' wd_nsec: 499376790 wd_now: be2f200d wd_last: bb3522fe mask: ffffffff
-[  505.071131] clocksource:                       'tsc' cs_nsec: 498867307 cs_now: 103895c060a cs_last: 1034aea96ea mask: ffffffffffffffff
-[  505.072994] clocksource:                       'tsc' is current clocksource.
-[  505.074748] tsc: Marking TSC unstable due to clocksource watchdog
-
-Thanks
--Chao
-
->+		} else {
->+			md = cs->uncertainty_margin + watchdog->uncertainty_margin;
->+		}
-> 		if (abs(cs_nsec - wd_nsec) > md) {
-> 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
-> 				smp_processor_id(), cs->name);
+Regards,
+Lukasz
