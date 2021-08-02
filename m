@@ -2,466 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7C13DD7F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FA83DD955
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbhHBNsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:48:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56924 "EHLO mail.kernel.org"
+        id S236728AbhHBN7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:59:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234133AbhHBNrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:47:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28D5560FC4;
-        Mon,  2 Aug 2021 13:46:57 +0000 (UTC)
+        id S235839AbhHBNy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:54:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEB6A60EBB;
+        Mon,  2 Aug 2021 13:52:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912017;
-        bh=WQuebJDC+DQ1FX3uQMUZfKSs8/XBDcM0zJuoWxznjtw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lCmV7qrsseScGwqXXze9koU6AUAgiQr6Ujdnu+s4mPh7x5IPcjFG9IJN74MS2YM+u
-         ryT9LvXUeRY5KgWG1bH5rJrIOAue6k3oa+xwEJGBcEnCPgLleP2tnYL2Un7ioiSNtS
-         z2pSdA/F40N0xfvCFw2fF/9+E0rjgjemJ+hUSlMY=
+        s=korg; t=1627912367;
+        bh=z/P6boWjCh18Vuhu8/ZqliiIjaIa1UPxY0wRJCyAFzY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GMmBpaw3yNjLD1f3U3yGCq8EvTJm+mRqM6dB+CX4kVadfBV/xvYvB+NL9EKNG+x7K
+         +ravFRla94Aca7KQWYUBEOWSunMFuiQjF9U6gCzoQjZTILrKCDWRk0ZWmvZrMvPP4O
+         W262/vHPN79FuZ+TPK90uQ7yULmqyHhFJD7WdkbI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.9 03/32] net: split out functions related to registering inflight socket files
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.10 00/67] 5.10.56-rc1 review
 Date:   Mon,  2 Aug 2021 15:44:23 +0200
-Message-Id: <20210802134333.039164482@linuxfoundation.org>
+Message-Id: <20210802134339.023067817@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
-References: <20210802134332.931915241@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.56-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.10.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.10.56-rc1
+X-KernelTest-Deadline: 2021-08-04T13:43+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+This is the start of the stable review cycle for the 5.10.56 release.
+There are 67 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit f4e65870e5cede5ca1ec0006b6c9803994e5f7b8 upstream.
+Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+Anything received after that time might be too late.
 
-We need this functionality for the io_uring file registration, but
-we cannot rely on it since CONFIG_UNIX can be modular. Move the helpers
-to a separate file, that's always builtin to the kernel if CONFIG_UNIX is
-m/y.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.56-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+and the diffstat can be found below.
 
-No functional changes in this patch, just moving code around.
+thanks,
 
-Reviewed-by: Hannes Reinecke <hare@suse.com>
-Acked-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-[ backported to older kernels to get access to unix_gc_lock - gregkh ]
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/net/af_unix.h |    1 
- net/Makefile          |    2 
- net/unix/Kconfig      |    5 +
- net/unix/Makefile     |    2 
- net/unix/af_unix.c    |   76 -----------------------
- net/unix/garbage.c    |   68 ---------------------
- net/unix/scm.c        |  161 ++++++++++++++++++++++++++++++++++++++++++++++++++
- net/unix/scm.h        |   10 +++
- 8 files changed, 184 insertions(+), 141 deletions(-)
- create mode 100644 net/unix/scm.c
- create mode 100644 net/unix/scm.h
+greg k-h
 
---- a/include/net/af_unix.h
-+++ b/include/net/af_unix.h
-@@ -8,6 +8,7 @@
- 
- void unix_inflight(struct user_struct *user, struct file *fp);
- void unix_notinflight(struct user_struct *user, struct file *fp);
-+void unix_destruct_scm(struct sk_buff *skb);
- void unix_gc(void);
- void wait_for_unix_gc(void);
- struct sock *unix_get_socket(struct file *filp);
---- a/net/Makefile
-+++ b/net/Makefile
-@@ -16,7 +16,7 @@ obj-$(CONFIG_NET)		+= ethernet/ 802/ sch
- obj-$(CONFIG_NETFILTER)		+= netfilter/
- obj-$(CONFIG_INET)		+= ipv4/
- obj-$(CONFIG_XFRM)		+= xfrm/
--obj-$(CONFIG_UNIX)		+= unix/
-+obj-$(CONFIG_UNIX_SCM)		+= unix/
- obj-$(CONFIG_NET)		+= ipv6/
- obj-$(CONFIG_PACKET)		+= packet/
- obj-$(CONFIG_NET_KEY)		+= key/
---- a/net/unix/Kconfig
-+++ b/net/unix/Kconfig
-@@ -19,6 +19,11 @@ config UNIX
- 
- 	  Say Y unless you know what you are doing.
- 
-+config UNIX_SCM
-+	bool
-+	depends on UNIX
-+	default y
-+
- config UNIX_DIAG
- 	tristate "UNIX: socket monitoring interface"
- 	depends on UNIX
---- a/net/unix/Makefile
-+++ b/net/unix/Makefile
-@@ -9,3 +9,5 @@ unix-$(CONFIG_SYSCTL)	+= sysctl_net_unix
- 
- obj-$(CONFIG_UNIX_DIAG)	+= unix_diag.o
- unix_diag-y		:= diag.o
-+
-+obj-$(CONFIG_UNIX_SCM)	+= scm.o
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -118,6 +118,8 @@
- #include <linux/security.h>
- #include <linux/freezer.h>
- 
-+#include "scm.h"
-+
- struct hlist_head unix_socket_table[2 * UNIX_HASH_SIZE];
- EXPORT_SYMBOL_GPL(unix_socket_table);
- DEFINE_SPINLOCK(unix_table_lock);
-@@ -1505,80 +1507,6 @@ out:
- 	return err;
- }
- 
--static void unix_detach_fds(struct scm_cookie *scm, struct sk_buff *skb)
--{
--	int i;
--
--	scm->fp = UNIXCB(skb).fp;
--	UNIXCB(skb).fp = NULL;
--
--	for (i = scm->fp->count-1; i >= 0; i--)
--		unix_notinflight(scm->fp->user, scm->fp->fp[i]);
--}
--
--static void unix_destruct_scm(struct sk_buff *skb)
--{
--	struct scm_cookie scm;
--	memset(&scm, 0, sizeof(scm));
--	scm.pid  = UNIXCB(skb).pid;
--	if (UNIXCB(skb).fp)
--		unix_detach_fds(&scm, skb);
--
--	/* Alas, it calls VFS */
--	/* So fscking what? fput() had been SMP-safe since the last Summer */
--	scm_destroy(&scm);
--	sock_wfree(skb);
--}
--
--/*
-- * The "user->unix_inflight" variable is protected by the garbage
-- * collection lock, and we just read it locklessly here. If you go
-- * over the limit, there might be a tiny race in actually noticing
-- * it across threads. Tough.
-- */
--static inline bool too_many_unix_fds(struct task_struct *p)
--{
--	struct user_struct *user = current_user();
--
--	if (unlikely(user->unix_inflight > task_rlimit(p, RLIMIT_NOFILE)))
--		return !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN);
--	return false;
--}
--
--#define MAX_RECURSION_LEVEL 4
--
--static int unix_attach_fds(struct scm_cookie *scm, struct sk_buff *skb)
--{
--	int i;
--	unsigned char max_level = 0;
--
--	if (too_many_unix_fds(current))
--		return -ETOOMANYREFS;
--
--	for (i = scm->fp->count - 1; i >= 0; i--) {
--		struct sock *sk = unix_get_socket(scm->fp->fp[i]);
--
--		if (sk)
--			max_level = max(max_level,
--					unix_sk(sk)->recursion_level);
--	}
--	if (unlikely(max_level > MAX_RECURSION_LEVEL))
--		return -ETOOMANYREFS;
--
--	/*
--	 * Need to duplicate file references for the sake of garbage
--	 * collection.  Otherwise a socket in the fps might become a
--	 * candidate for GC while the skb is not yet queued.
--	 */
--	UNIXCB(skb).fp = scm_fp_dup(scm->fp);
--	if (!UNIXCB(skb).fp)
--		return -ENOMEM;
--
--	for (i = scm->fp->count - 1; i >= 0; i--)
--		unix_inflight(scm->fp->user, scm->fp->fp[i]);
--	return max_level;
--}
--
- static int unix_scm_to_skb(struct scm_cookie *scm, struct sk_buff *skb, bool send_fds)
- {
- 	int err = 0;
---- a/net/unix/garbage.c
-+++ b/net/unix/garbage.c
-@@ -86,77 +86,13 @@
- #include <net/scm.h>
- #include <net/tcp_states.h>
- 
-+#include "scm.h"
-+
- /* Internal data structures and random procedures: */
- 
--static LIST_HEAD(gc_inflight_list);
- static LIST_HEAD(gc_candidates);
--static DEFINE_SPINLOCK(unix_gc_lock);
- static DECLARE_WAIT_QUEUE_HEAD(unix_gc_wait);
- 
--unsigned int unix_tot_inflight;
--
--struct sock *unix_get_socket(struct file *filp)
--{
--	struct sock *u_sock = NULL;
--	struct inode *inode = file_inode(filp);
--
--	/* Socket ? */
--	if (S_ISSOCK(inode->i_mode) && !(filp->f_mode & FMODE_PATH)) {
--		struct socket *sock = SOCKET_I(inode);
--		struct sock *s = sock->sk;
--
--		/* PF_UNIX ? */
--		if (s && sock->ops && sock->ops->family == PF_UNIX)
--			u_sock = s;
--	}
--	return u_sock;
--}
--
--/* Keep the number of times in flight count for the file
-- * descriptor if it is for an AF_UNIX socket.
-- */
--
--void unix_inflight(struct user_struct *user, struct file *fp)
--{
--	struct sock *s = unix_get_socket(fp);
--
--	spin_lock(&unix_gc_lock);
--
--	if (s) {
--		struct unix_sock *u = unix_sk(s);
--
--		if (atomic_long_inc_return(&u->inflight) == 1) {
--			BUG_ON(!list_empty(&u->link));
--			list_add_tail(&u->link, &gc_inflight_list);
--		} else {
--			BUG_ON(list_empty(&u->link));
--		}
--		unix_tot_inflight++;
--	}
--	user->unix_inflight++;
--	spin_unlock(&unix_gc_lock);
--}
--
--void unix_notinflight(struct user_struct *user, struct file *fp)
--{
--	struct sock *s = unix_get_socket(fp);
--
--	spin_lock(&unix_gc_lock);
--
--	if (s) {
--		struct unix_sock *u = unix_sk(s);
--
--		BUG_ON(!atomic_long_read(&u->inflight));
--		BUG_ON(list_empty(&u->link));
--
--		if (atomic_long_dec_and_test(&u->inflight))
--			list_del_init(&u->link);
--		unix_tot_inflight--;
--	}
--	user->unix_inflight--;
--	spin_unlock(&unix_gc_lock);
--}
--
- static void scan_inflight(struct sock *x, void (*func)(struct unix_sock *),
- 			  struct sk_buff_head *hitlist)
- {
---- /dev/null
-+++ b/net/unix/scm.c
-@@ -0,0 +1,161 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/string.h>
-+#include <linux/socket.h>
-+#include <linux/net.h>
-+#include <linux/fs.h>
-+#include <net/af_unix.h>
-+#include <net/scm.h>
-+#include <linux/init.h>
-+
-+#include "scm.h"
-+
-+unsigned int unix_tot_inflight;
-+EXPORT_SYMBOL(unix_tot_inflight);
-+
-+LIST_HEAD(gc_inflight_list);
-+EXPORT_SYMBOL(gc_inflight_list);
-+
-+DEFINE_SPINLOCK(unix_gc_lock);
-+EXPORT_SYMBOL(unix_gc_lock);
-+
-+struct sock *unix_get_socket(struct file *filp)
-+{
-+	struct sock *u_sock = NULL;
-+	struct inode *inode = file_inode(filp);
-+
-+	/* Socket ? */
-+	if (S_ISSOCK(inode->i_mode) && !(filp->f_mode & FMODE_PATH)) {
-+		struct socket *sock = SOCKET_I(inode);
-+		struct sock *s = sock->sk;
-+
-+		/* PF_UNIX ? */
-+		if (s && sock->ops && sock->ops->family == PF_UNIX)
-+			u_sock = s;
-+	}
-+	return u_sock;
-+}
-+EXPORT_SYMBOL(unix_get_socket);
-+
-+/* Keep the number of times in flight count for the file
-+ * descriptor if it is for an AF_UNIX socket.
-+ */
-+void unix_inflight(struct user_struct *user, struct file *fp)
-+{
-+	struct sock *s = unix_get_socket(fp);
-+
-+	spin_lock(&unix_gc_lock);
-+
-+	if (s) {
-+		struct unix_sock *u = unix_sk(s);
-+
-+		if (atomic_long_inc_return(&u->inflight) == 1) {
-+			BUG_ON(!list_empty(&u->link));
-+			list_add_tail(&u->link, &gc_inflight_list);
-+		} else {
-+			BUG_ON(list_empty(&u->link));
-+		}
-+		unix_tot_inflight++;
-+	}
-+	user->unix_inflight++;
-+	spin_unlock(&unix_gc_lock);
-+}
-+
-+void unix_notinflight(struct user_struct *user, struct file *fp)
-+{
-+	struct sock *s = unix_get_socket(fp);
-+
-+	spin_lock(&unix_gc_lock);
-+
-+	if (s) {
-+		struct unix_sock *u = unix_sk(s);
-+
-+		BUG_ON(!atomic_long_read(&u->inflight));
-+		BUG_ON(list_empty(&u->link));
-+
-+		if (atomic_long_dec_and_test(&u->inflight))
-+			list_del_init(&u->link);
-+		unix_tot_inflight--;
-+	}
-+	user->unix_inflight--;
-+	spin_unlock(&unix_gc_lock);
-+}
-+
-+/*
-+ * The "user->unix_inflight" variable is protected by the garbage
-+ * collection lock, and we just read it locklessly here. If you go
-+ * over the limit, there might be a tiny race in actually noticing
-+ * it across threads. Tough.
-+ */
-+static inline bool too_many_unix_fds(struct task_struct *p)
-+{
-+	struct user_struct *user = current_user();
-+
-+	if (unlikely(user->unix_inflight > task_rlimit(p, RLIMIT_NOFILE)))
-+		return !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN);
-+	return false;
-+}
-+
-+#define MAX_RECURSION_LEVEL 4
-+
-+int unix_attach_fds(struct scm_cookie *scm, struct sk_buff *skb)
-+{
-+	int i;
-+	unsigned char max_level = 0;
-+
-+	if (too_many_unix_fds(current))
-+		return -ETOOMANYREFS;
-+
-+	for (i = scm->fp->count - 1; i >= 0; i--) {
-+		struct sock *sk = unix_get_socket(scm->fp->fp[i]);
-+
-+		if (sk)
-+			max_level = max(max_level,
-+					unix_sk(sk)->recursion_level);
-+	}
-+	if (unlikely(max_level > MAX_RECURSION_LEVEL))
-+		return -ETOOMANYREFS;
-+
-+	/*
-+	 * Need to duplicate file references for the sake of garbage
-+	 * collection.  Otherwise a socket in the fps might become a
-+	 * candidate for GC while the skb is not yet queued.
-+	 */
-+	UNIXCB(skb).fp = scm_fp_dup(scm->fp);
-+	if (!UNIXCB(skb).fp)
-+		return -ENOMEM;
-+
-+	for (i = scm->fp->count - 1; i >= 0; i--)
-+		unix_inflight(scm->fp->user, scm->fp->fp[i]);
-+	return max_level;
-+}
-+EXPORT_SYMBOL(unix_attach_fds);
-+
-+void unix_detach_fds(struct scm_cookie *scm, struct sk_buff *skb)
-+{
-+	int i;
-+
-+	scm->fp = UNIXCB(skb).fp;
-+	UNIXCB(skb).fp = NULL;
-+
-+	for (i = scm->fp->count-1; i >= 0; i--)
-+		unix_notinflight(scm->fp->user, scm->fp->fp[i]);
-+}
-+EXPORT_SYMBOL(unix_detach_fds);
-+
-+void unix_destruct_scm(struct sk_buff *skb)
-+{
-+	struct scm_cookie scm;
-+
-+	memset(&scm, 0, sizeof(scm));
-+	scm.pid  = UNIXCB(skb).pid;
-+	if (UNIXCB(skb).fp)
-+		unix_detach_fds(&scm, skb);
-+
-+	/* Alas, it calls VFS */
-+	/* So fscking what? fput() had been SMP-safe since the last Summer */
-+	scm_destroy(&scm);
-+	sock_wfree(skb);
-+}
-+EXPORT_SYMBOL(unix_destruct_scm);
---- /dev/null
-+++ b/net/unix/scm.h
-@@ -0,0 +1,10 @@
-+#ifndef NET_UNIX_SCM_H
-+#define NET_UNIX_SCM_H
-+
-+extern struct list_head gc_inflight_list;
-+extern spinlock_t unix_gc_lock;
-+
-+int unix_attach_fds(struct scm_cookie *scm, struct sk_buff *skb);
-+void unix_detach_fds(struct scm_cookie *scm, struct sk_buff *skb);
-+
-+#endif
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.10.56-rc1
+
+Oleksij Rempel <linux@rempel-privat.de>
+    can: j1939: j1939_session_deactivate(): clarify lifetime of session object
+
+Lukasz Cieplicki <lukaszx.cieplicki@intel.com>
+    i40e: Add additional info to PHY type error
+
+Arnaldo Carvalho de Melo <acme@redhat.com>
+    Revert "perf map: Fix dso->nsinfo refcounting"
+
+Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+    powerpc/pseries: Fix regression while building external modules
+
+Steve French <stfrench@microsoft.com>
+    SMB3: fix readpage for large swap cache
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Fix pointer arithmetic mask tightening under state pruning
+
+Lorenz Bauer <lmb@cloudflare.com>
+    bpf: verifier: Allocate idmap scratch in verifier env
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Remove superfluous aux sanitation on subprog rejection
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Fix leakage due to insufficient speculative store bypass mitigation
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Introduce BPF nospec instruction for mitigating Spectre v4
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    can: hi311x: fix a signedness bug in hi3110_cmd()
+
+Wang Hai <wanghai38@huawei.com>
+    sis900: Fix missing pci_disable_device() in probe and remove
+
+Wang Hai <wanghai38@huawei.com>
+    tulip: windbond-840: Fix missing pci_disable_device() in probe and remove
+
+Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+    sctp: fix return value check in __sctp_rcv_asconf_lookup
+
+Dima Chumak <dchumak@nvidia.com>
+    net/mlx5e: Fix nullptr in mlx5e_hairpin_get_mdev()
+
+Maor Gottlieb <maorg@nvidia.com>
+    net/mlx5: Fix flow table chaining
+
+Cong Wang <cong.wang@bytedance.com>
+    skmsg: Make sk_psock_destroy() static
+
+Bjorn Andersson <bjorn.andersson@linaro.org>
+    drm/msm/dp: Initialize the INTF_CONFIG register
+
+Robert Foss <robert.foss@linaro.org>
+    drm/msm/dpu: Fix sm8250_mdp register length
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: llc: fix skb_over_panic
+
+Vitaly Kuznetsov <vkuznets@redhat.com>
+    KVM: x86: Check the right feature bit for MSR_KVM_ASYNC_PF_ACK access
+
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+    mlx4: Fix missing error code in mlx4_load_one()
+
+Geetha sowjanya <gakula@marvell.com>
+    octeontx2-pf: Fix interface down flag on error
+
+Xin Long <lucien.xin@gmail.com>
+    tipc: do not write skb_shinfo frags when doing decrytion
+
+Shannon Nelson <snelson@pensando.io>
+    ionic: count csum_none when offload enabled
+
+Shannon Nelson <snelson@pensando.io>
+    ionic: fix up dim accounting for tx and rx
+
+Shannon Nelson <snelson@pensando.io>
+    ionic: remove intr coalesce update from napi
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: qrtr: fix memory leaks
+
+Gilad Naaman <gnaaman@drivenets.com>
+    net: Set true network header for ECN decapsulation
+
+Hoang Le <hoang.h.le@dektech.com.au>
+    tipc: fix sleeping in tipc accept routine
+
+Xin Long <lucien.xin@gmail.com>
+    tipc: fix implicit-connect for SYN+
+
+Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+    i40e: Fix log TC creation failure when max num of queues is exceeded
+
+Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+    i40e: Fix queue-to-TC mapping on Tx
+
+Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+    i40e: Fix firmware LLDP agent related warning
+
+Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+    i40e: Fix logic of disabling queues
+
+Pablo Neira Ayuso <pablo@netfilter.org>
+    netfilter: nft_nat: allow to specify layer 4 protocol NAT only
+
+Florian Westphal <fw@strlen.de>
+    netfilter: conntrack: adjust stop timestamp to real expiry value
+
+Felix Fietkau <nbd@nbd.name>
+    mac80211: fix enabling 4-address mode on a sta vif after assoc
+
+Lorenz Bauer <lmb@cloudflare.com>
+    bpf: Fix OOB read when printing XDP link fdinfo
+
+Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+    RDMA/bnxt_re: Fix stats counters
+
+Nguyen Dinh Phi <phind.uet@gmail.com>
+    cfg80211: Fix possible memory leak in function cfg80211_bss_update
+
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+    nfc: nfcsim: fix use after free during module unload
+
+Tejun Heo <tj@kernel.org>
+    blk-iocost: fix operation ordering in iocg_wake_fn()
+
+Jiri Kosina <jkosina@suse.cz>
+    drm/amdgpu: Fix resource leak on probe error path
+
+Jiri Kosina <jkosina@suse.cz>
+    drm/amdgpu: Avoid printing of stack contents on firmware load error
+
+Dale Zhao <dale.zhao@amd.com>
+    drm/amd/display: ensure dentist display clock update finished in DCN20
+
+Paul Jakma <paul@jakma.org>
+    NIU: fix incorrect error return, missed in previous revert
+
+Jason Gerecke <killertofu@gmail.com>
+    HID: wacom: Re-enable touch by default for Cintiq 24HDT / 27QHDT
+
+Mike Rapoport <rppt@kernel.org>
+    alpha: register early reserved memory in memblock
+
+Pavel Skripkin <paskripkin@gmail.com>
+    can: esd_usb2: fix memory leak
+
+Pavel Skripkin <paskripkin@gmail.com>
+    can: ems_usb: fix memory leak
+
+Pavel Skripkin <paskripkin@gmail.com>
+    can: usb_8dev: fix memory leak
+
+Pavel Skripkin <paskripkin@gmail.com>
+    can: mcba_usb_start(): add missing urb->transfer_dma initialization
+
+Stephane Grosjean <s.grosjean@peak-system.com>
+    can: peak_usb: pcan_usb_handle_bus_evt(): fix reading rxerr/txerr values
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    can: raw: raw_setsockopt(): fix raw_rcv panic for sock UAF
+
+Zhang Changzhong <zhangchangzhong@huawei.com>
+    can: j1939: j1939_xtp_rx_dat_one(): fix rxtimer value between consecutive TP.DT to 750ms
+
+Junxiao Bi <junxiao.bi@oracle.com>
+    ocfs2: issue zeroout to EOF blocks
+
+Junxiao Bi <junxiao.bi@oracle.com>
+    ocfs2: fix zero out valid data
+
+Paolo Bonzini <pbonzini@redhat.com>
+    KVM: add missing compat KVM_CLEAR_DIRTY_LOG
+
+Juergen Gross <jgross@suse.com>
+    x86/kvm: fix vcpu-id indexed array sizes
+
+Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+    ACPI: DPTF: Fix reading of attributes
+
+Hui Wang <hui.wang@canonical.com>
+    Revert "ACPI: resources: Add checks for ACPI IRQ override"
+
+Goldwyn Rodrigues <rgoldwyn@suse.de>
+    btrfs: mark compressed range uptodate only if all bio succeed
+
+Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+    btrfs: fix rw device counting in __btrfs_free_extra_devids
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    pipe: make pipe writes always wake up readers
+
+Jan Kiszka <jan.kiszka@siemens.com>
+    x86/asm: Ensure asm/proto.h can be included stand-alone
+
+Yang Yingliang <yangyingliang@huawei.com>
+    io_uring: fix null-ptr-deref in io_sq_offload_start()
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |   4 +-
+ arch/alpha/kernel/setup.c                          |  13 +-
+ arch/arm/net/bpf_jit_32.c                          |   3 +
+ arch/arm64/net/bpf_jit_comp.c                      |  13 ++
+ arch/mips/net/ebpf_jit.c                           |   3 +
+ arch/powerpc/net/bpf_jit_comp64.c                  |   6 +
+ arch/powerpc/platforms/pseries/setup.c             |   2 +-
+ arch/riscv/net/bpf_jit_comp32.c                    |   4 +
+ arch/riscv/net/bpf_jit_comp64.c                    |   4 +
+ arch/s390/net/bpf_jit_comp.c                       |   5 +
+ arch/sparc/net/bpf_jit_comp_64.c                   |   3 +
+ arch/x86/include/asm/proto.h                       |   2 +
+ arch/x86/kvm/ioapic.c                              |   2 +-
+ arch/x86/kvm/ioapic.h                              |   4 +-
+ arch/x86/kvm/x86.c                                 |   4 +-
+ arch/x86/net/bpf_jit_comp.c                        |   7 +
+ arch/x86/net/bpf_jit_comp32.c                      |   6 +
+ block/blk-iocost.c                                 |  11 +-
+ drivers/acpi/dptf/dptf_pch_fivr.c                  |  51 +++++-
+ drivers/acpi/resource.c                            |   9 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |   8 +-
+ drivers/gpu/drm/amd/amdgpu/psp_v12_0.c             |   7 +-
+ .../amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c   |   2 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c     |   2 +-
+ drivers/gpu/drm/msm/dp/dp_catalog.c                |   1 +
+ drivers/hid/wacom_wac.c                            |   2 +-
+ drivers/infiniband/hw/bnxt_re/main.c               |   4 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.c          |  10 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.h          |   1 +
+ drivers/net/can/spi/hi311x.c                       |   2 +-
+ drivers/net/can/usb/ems_usb.c                      |  14 +-
+ drivers/net/can/usb/esd_usb2.c                     |  16 +-
+ drivers/net/can/usb/mcba_usb.c                     |   2 +
+ drivers/net/can/usb/peak_usb/pcan_usb.c            |  10 +-
+ drivers/net/can/usb/usb_8dev.c                     |  15 +-
+ drivers/net/ethernet/dec/tulip/winbond-840.c       |   7 +-
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c     |   6 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c        |  61 ++++---
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c        |  50 ++++++
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h        |   2 +
+ .../ethernet/marvell/octeontx2/nic/otx2_ethtool.c  |   7 +-
+ .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |   5 +
+ drivers/net/ethernet/mellanox/mlx4/main.c          |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |  33 +++-
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c  |  10 +-
+ drivers/net/ethernet/pensando/ionic/ionic_lif.c    |  14 +-
+ drivers/net/ethernet/pensando/ionic/ionic_txrx.c   |  41 +++--
+ drivers/net/ethernet/sis/sis900.c                  |   7 +-
+ drivers/net/ethernet/sun/niu.c                     |   3 +-
+ drivers/nfc/nfcsim.c                               |   3 +-
+ fs/btrfs/compression.c                             |   2 +-
+ fs/btrfs/volumes.c                                 |   1 +
+ fs/cifs/file.c                                     |   2 +-
+ fs/io_uring.c                                      |   2 +-
+ fs/ocfs2/file.c                                    | 103 +++++++-----
+ fs/pipe.c                                          |  10 +-
+ include/linux/bpf_types.h                          |   1 +
+ include/linux/bpf_verifier.h                       |  11 +-
+ include/linux/filter.h                             |  15 ++
+ include/linux/skmsg.h                              |   1 -
+ include/net/llc_pdu.h                              |  31 +++-
+ kernel/bpf/core.c                                  |  19 ++-
+ kernel/bpf/disasm.c                                |  16 +-
+ kernel/bpf/verifier.c                              | 186 +++++++--------------
+ net/can/j1939/transport.c                          |  11 +-
+ net/can/raw.c                                      |  20 ++-
+ net/core/skmsg.c                                   |   3 +-
+ net/ipv4/ip_tunnel.c                               |   2 +-
+ net/llc/af_llc.c                                   |  10 +-
+ net/llc/llc_s_ac.c                                 |   2 +-
+ net/mac80211/cfg.c                                 |  19 +++
+ net/mac80211/ieee80211_i.h                         |   2 +
+ net/mac80211/mlme.c                                |   4 +-
+ net/netfilter/nf_conntrack_core.c                  |   7 +-
+ net/netfilter/nft_nat.c                            |   4 +-
+ net/qrtr/qrtr.c                                    |   6 +-
+ net/sctp/input.c                                   |   2 +-
+ net/tipc/crypto.c                                  |  14 +-
+ net/tipc/socket.c                                  |  30 ++--
+ net/wireless/scan.c                                |   6 +-
+ tools/perf/util/map.c                              |   2 -
+ virt/kvm/kvm_main.c                                |  28 ++++
+ 82 files changed, 707 insertions(+), 367 deletions(-)
 
 
