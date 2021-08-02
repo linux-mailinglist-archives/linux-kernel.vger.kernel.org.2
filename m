@@ -2,140 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B777D3DDBBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4C13DDBBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234518AbhHBPBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:01:45 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11714 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234211AbhHBPBn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:01:43 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 172EXhc2112433;
-        Mon, 2 Aug 2021 11:01:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=tU+Dh7yViSX+arhzY6wi+MNmaJDKyBkP/td5MGDEVQA=;
- b=obypbEYMUT0DRZoROC89kxdOeObkAnvcqG63XXOsE5QUelM0USpAWZYourKAk4w8OoCS
- WloHbDE/Q6Fv6BBsoaRbpl4AzDRUyvcaqd9ptQZAUJO91/qWk89FhFyWTmRH8GCB/dfR
- z1Cu/S0Xw0b7uywJa4eqeLoZ/fskGddUWRFVcynQ5pyt0D4zm/OJAem2mAbh/XEG6xPF
- K4uUsG4a9QG7znmL+belUJzAPg3MSoR2jB8QH6ZEOuNWXLrMSYu/9/xcQOZ/69DFnFv+
- 2Pkv/KuMezmnQPYQMn7d6usr5gDo81CPDvctHymsqMl4Hn0YEIkYUu+7EcQ1V5HDTECM CA== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a5s279fnf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Aug 2021 11:01:22 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 172ExBlB007905;
-        Mon, 2 Aug 2021 15:01:21 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 3a4wshn1q8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Aug 2021 15:01:20 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 172EwRLH32113108
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 2 Aug 2021 14:58:27 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 840DFA4072;
-        Mon,  2 Aug 2021 15:01:18 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8ABF9A407D;
-        Mon,  2 Aug 2021 15:01:16 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.118.203])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  2 Aug 2021 15:01:16 +0000 (GMT)
-Message-ID: <1efee8d7f62fb0e413f6e28d40af62610b8ce450.camel@linux.ibm.com>
-Subject: Re: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
- digest_list_del
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Igor Stoppa <igor.stoppa@huawei.com>
-Date:   Mon, 02 Aug 2021 11:01:15 -0400
-In-Reply-To: <96c7cd3d19254e84a6cb45b2a940e944@huawei.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
-         <20210726163700.2092768-7-roberto.sassu@huawei.com>
-         <c9dffd9d29df095660beaa631ff252c4b33629a0.camel@linux.ibm.com>
-         <ef7c85dcb096479e95c8c60ccda4d700@huawei.com>
-         <1ef95096bee13578b3f906dd9f708c6af9d6ff18.camel@linux.ibm.com>
-         <555bf01bee4b4ea7a9bee658366d535a@huawei.com>
-         <2c731f07bd08f01f2a3e032814bc65ae9a8494ad.camel@linux.ibm.com>
-         <bd0787e0ee4f47baa41abf47976e536c@huawei.com>
-         <96c7cd3d19254e84a6cb45b2a940e944@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ZQwL0SeAMMVVukqfkoWNXexSkUKdmvJ7
-X-Proofpoint-GUID: ZQwL0SeAMMVVukqfkoWNXexSkUKdmvJ7
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S234562AbhHBPCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:02:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234211AbhHBPCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:02:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0560260FC4;
+        Mon,  2 Aug 2021 15:01:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627916520;
+        bh=Itlu8DBFT8qE0fjbcCvRJBNsGuat0L/pnhVJ+0wi3t8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p/ii3slm/ZyE9VlY2kJyItA2I3DwoyQ0TpfMuoDomWmhvGvptcP0as9XfixHJQH//
+         FuMsgSg/A4CkXIfx7QWWSYKsqvSZw0TBy3FOtIvPs3tc+1Ig5cin/yd41fD4A4RyWD
+         +q7k/MlQpe5F/kUyt1f0Aa34NJjp6dx0lB86o9K7hTRUJirTC1JNP4dFcjvkooB/y6
+         wa3NFejkM5Pf6Ya/51cw+5bamOGgrd+krl7fAYBwB7Vj+BPWBI107/zuP49uXGyBhN
+         J1biR41HoSwjTwB+JcfBMHKonNT8cadg9wp+s6tUXMbKY2aZLbwoykefGIHSXqjJXl
+         YqQ7+CvdDoUbA==
+Date:   Mon, 2 Aug 2021 16:01:53 +0100
+From:   Will Deacon <will@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     joro@8bytes.org, robin.murphy@arm.com, baolu.lu@linux.intel.com,
+        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
+        thierry.reding@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        jonathanh@nvidia.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, digetx@gmail.com, mst@redhat.com,
+        jasowang@redhat.com, linux-kernel@vger.kernel.org,
+        chenxiang66@hisilicon.com
+Subject: Re: [PATCH v4 2/6] iova: Allow rcache range upper limit to be
+ flexible
+Message-ID: <20210802150153.GC28735@willie-the-truck>
+References: <1626259003-201303-1-git-send-email-john.garry@huawei.com>
+ <1626259003-201303-3-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-02_05:2021-08-02,2021-08-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 spamscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- lowpriorityscore=0 clxscore=1011 impostorscore=0 malwarescore=0
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108020094
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626259003-201303-3-git-send-email-john.garry@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-08-02 at 08:14 +0000, Roberto Sassu wrote:
-> > From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
-> > Sent: Friday, July 30, 2021 4:25 PM
-> > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > > Sent: Friday, July 30, 2021 4:03 PM
-> > > Hi Roberto,
-> > >
-> > > On Fri, 2021-07-30 at 13:16 +0000, Roberto Sassu wrote:
-> > > > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > > > > Sent: Friday, July 30, 2021 2:40 PM
-> > >
-> > > > > "critical data", in this context, should probably be used for verifying
-> > > > > the in memory file digests and other state information haven't been
-> > > > > compromised.
-> > > >
-> > > > Actually, this is what we are doing currently. To keep the
-> > > > implementation simple, once the file or the buffer are uploaded
-> > > > to the kernel, they will not be modified, just accessed through
-> > > > the indexes.
-> > >
-> > > My main concern about digest lists is their integrity, from loading the
-> > > digest lists to their being stored in memory.  A while back, there was
-> > > some work on defining a write once memory allocator.  I don't recall
-> > > whatever happened to it.  This would be a perfect usecase for that
-> > > memory allocator.
-> > 
-> > Adding Igor in CC.
-> > 
-> > Regarding loading, everything uploaded to the kernel is carefully
-> > evaluated. This should not be a concern. Regarding making them
-> > read-only, probably if you can subvert digest lists you can also
-> > remove the read-only protection (unless you use an hypervisor).
+On Wed, Jul 14, 2021 at 06:36:39PM +0800, John Garry wrote:
+> Some LLDs may request DMA mappings whose IOVA length exceeds that of the
+> current rcache upper limit.
+
+What's an LLD?
+
+> This means that allocations for those IOVAs will never be cached, and
+> always must be allocated and freed from the RB tree per DMA mapping cycle.
+> This has a significant effect on performance, more so since commit
+> 4e89dce72521 ("iommu/iova: Retry from last rb tree node if iova search
+> fails"), as discussed at [0].
 > 
-> I briefly talked with Igor. He also agreed with that, and added that
-> it could make it more difficult for an attacker to also disable the
-> protection. However, he is not planning to submit an update soon,
-> so I wouldn't consider this an option for now.
+> As a first step towards allowing the rcache range upper limit be
+> configured, hold this value in the IOVA rcache structure, and allocate
+> the rcaches separately.
+> 
+> [0] https://lore.kernel.org/linux-iommu/20210129092120.1482-1-thunder.leizhen@huawei.com/
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>  drivers/iommu/dma-iommu.c |  2 +-
+>  drivers/iommu/iova.c      | 23 +++++++++++++++++------
+>  include/linux/iova.h      |  4 ++--
+>  3 files changed, 20 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 98ba927aee1a..4772278aa5da 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -434,7 +434,7 @@ static dma_addr_t iommu_dma_alloc_iova(struct iommu_domain *domain,
+>  	 * rounding up anything cacheable to make sure that can't happen. The
+>  	 * order of the unadjusted size will still match upon freeing.
+>  	 */
+> -	if (iova_len < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
+> +	if (iova_len < (1 << (iovad->rcache_max_size - 1)))
+>  		iova_len = roundup_pow_of_two(iova_len);
+>  
+>  	dma_limit = min_not_zero(dma_limit, dev->bus_dma_limit);
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index b6cf5f16123b..07ce73fdd8c1 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -15,6 +15,8 @@
+>  /* The anchor node sits above the top of the usable address space */
+>  #define IOVA_ANCHOR	~0UL
+>  
+> +#define IOVA_RANGE_CACHE_MAX_SIZE 6    /* log of max cached IOVA range size (in pages) */
 
-Hi Roberto, Greg,
+Is that the same as an 'order'? i.e. IOVA_RANGE_CACHE_MAX_ORDER?
 
-As long as others understand and agree to the risk, the IMA details can
-be worked out.
+> +
+>  static bool iova_rcache_insert(struct iova_domain *iovad,
+>  			       unsigned long pfn,
+>  			       unsigned long size);
+> @@ -881,7 +883,14 @@ static void init_iova_rcaches(struct iova_domain *iovad)
+>  	unsigned int cpu;
+>  	int i;
+>  
+> -	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
+> +	iovad->rcache_max_size = IOVA_RANGE_CACHE_MAX_SIZE;
+> +
+> +	iovad->rcaches = kcalloc(iovad->rcache_max_size,
+> +				 sizeof(*iovad->rcaches), GFP_KERNEL);
+> +	if (!iovad->rcaches)
+> +		return;
 
-thanks,
+Returning quietly here doesn't seem like the right thing to do. At least, I
+don't think the rest of the functions here are checking rcaches against
+NULL.
 
-Mimi
-
+Will
