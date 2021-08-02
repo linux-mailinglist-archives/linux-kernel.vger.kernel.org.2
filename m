@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D883DD8A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE2F3DD8B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235108AbhHBNyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:54:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59024 "EHLO mail.kernel.org"
+        id S235861AbhHBNyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:54:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234599AbhHBNsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:48:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20E9A60555;
-        Mon,  2 Aug 2021 13:48:29 +0000 (UTC)
+        id S234423AbhHBNtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:49:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7EAA610CC;
+        Mon,  2 Aug 2021 13:49:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912110;
-        bh=tkkSI88kQPQWaYqDavHKIDe2QK26mEXf/Cak9DdlHAo=;
+        s=korg; t=1627912176;
+        bh=gzGV27JQXs/HPah6FF9LQ2YPsSVSA9iOrr7ozmERj/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wiQXKSWoqpkfFYhOTVvk58B7Erq8HlBXMVpbRyFgkv8muhte9ELW+vxbEm86QhaDs
-         gf6fWEuYB+YNOSEGYa7XQO76PaqRPxwdlHIPgMHpQz5lVuw5y5gK4c/e+VCOEUKHh+
-         kjuWpc+2RcGSeBKQQK6+8qTwojcWhCgK+l2oBLpQ=
+        b=Ck3w/cL6k1Y4fIPnl8VqOaqNy+h454RdlYkH+LX8h/LDRBgh/Hr2cDqOp9LGlUtH+
+         OK6JJrlPTB3jhekvI0ILeqa9emTz1W2P/IRuNc5SQfq9lopUpDCfldqAcRZvk+pSfJ
+         DBWk1LK1zJTnWyie+KmRasy4bdMJ+Gp4kYKwNYYQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yasushi SHOJI <yasushi.shoji@gmail.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Yasushi SHOJI <yashi@spacecubics.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.14 20/38] can: mcba_usb_start(): add missing urb->transfer_dma initialization
+        stable@vger.kernel.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com,
+        Anand Jain <anand.jain@oracle.com>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.19 04/30] btrfs: fix rw device counting in __btrfs_free_extra_devids
 Date:   Mon,  2 Aug 2021 15:44:42 +0200
-Message-Id: <20210802134335.469474670@linuxfoundation.org>
+Message-Id: <20210802134334.222025444@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
-References: <20210802134334.835358048@linuxfoundation.org>
+In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
+References: <20210802134334.081433902@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +42,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-commit fc43fb69a7af92839551f99c1a96a37b77b3ae7a upstream.
+commit b2a616676839e2a6b02c8e40be7f886f882ed194 upstream.
 
-Yasushi reported, that his Microchip CAN Analyzer stopped working
-since commit 91c02557174b ("can: mcba_usb: fix memory leak in
-mcba_usb"). The problem was in missing urb->transfer_dma
-initialization.
+When removing a writeable device in __btrfs_free_extra_devids, the rw
+device count should be decremented.
 
-In my previous patch to this driver I refactored mcba_usb_start() code
-to avoid leaking usb coherent buffers. To archive it, I passed local
-stack variable to usb_alloc_coherent() and then saved it to private
-array to correctly free all coherent buffers on ->close() call. But I
-forgot to initialize urb->transfer_dma with variable passed to
-usb_alloc_coherent().
+This error was caught by Syzbot which reported a warning in
+close_fs_devices:
 
-All of this was causing device to not work, since dma addr 0 is not
-valid and following log can be found on bug report page, which points
-exactly to problem described above.
+  WARNING: CPU: 1 PID: 9355 at fs/btrfs/volumes.c:1168 close_fs_devices+0x763/0x880 fs/btrfs/volumes.c:1168
+  Modules linked in:
+  CPU: 0 PID: 9355 Comm: syz-executor552 Not tainted 5.13.0-rc1-syzkaller #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  RIP: 0010:close_fs_devices+0x763/0x880 fs/btrfs/volumes.c:1168
+  RSP: 0018:ffffc9000333f2f0 EFLAGS: 00010293
+  RAX: ffffffff8365f5c3 RBX: 0000000000000001 RCX: ffff888029afd4c0
+  RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+  RBP: ffff88802846f508 R08: ffffffff8365f525 R09: ffffed100337d128
+  R10: ffffed100337d128 R11: 0000000000000000 R12: dffffc0000000000
+  R13: ffff888019be8868 R14: 1ffff1100337d10d R15: 1ffff1100337d10a
+  FS:  00007f6f53828700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 000000000047c410 CR3: 00000000302a6000 CR4: 00000000001506f0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   btrfs_close_devices+0xc9/0x450 fs/btrfs/volumes.c:1180
+   open_ctree+0x8e1/0x3968 fs/btrfs/disk-io.c:3693
+   btrfs_fill_super fs/btrfs/super.c:1382 [inline]
+   btrfs_mount_root+0xac5/0xc60 fs/btrfs/super.c:1749
+   legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+   vfs_get_tree+0x86/0x270 fs/super.c:1498
+   fc_mount fs/namespace.c:993 [inline]
+   vfs_kern_mount+0xc9/0x160 fs/namespace.c:1023
+   btrfs_mount+0x3d3/0xb50 fs/btrfs/super.c:1809
+   legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+   vfs_get_tree+0x86/0x270 fs/super.c:1498
+   do_new_mount fs/namespace.c:2905 [inline]
+   path_mount+0x196f/0x2be0 fs/namespace.c:3235
+   do_mount fs/namespace.c:3248 [inline]
+   __do_sys_mount fs/namespace.c:3456 [inline]
+   __se_sys_mount+0x2f9/0x3b0 fs/namespace.c:3433
+   do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-| DMAR: [DMA Write] Request device [00:14.0] PASID ffffffff fault addr 0 [fault reason 05] PTE Write access is not set
+Because fs_devices->rw_devices was not 0 after
+closing all devices. Here is the call trace that was observed:
 
-Fixes: 91c02557174b ("can: mcba_usb: fix memory leak in mcba_usb")
-Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=990850
-Link: https://lore.kernel.org/r/20210725103630.23864-1-paskripkin@gmail.com
-Cc: linux-stable <stable@vger.kernel.org>
-Reported-by: Yasushi SHOJI <yasushi.shoji@gmail.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Tested-by: Yasushi SHOJI <yashi@spacecubics.com>
-[mkl: fixed typos in commit message - thanks Yasushi SHOJI]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+  btrfs_mount_root():
+    btrfs_scan_one_device():
+      device_list_add();   <---------------- device added
+    btrfs_open_devices():
+      open_fs_devices():
+        btrfs_open_one_device();   <-------- writable device opened,
+	                                     rw device count ++
+    btrfs_fill_super():
+      open_ctree():
+        btrfs_free_extra_devids():
+	  __btrfs_free_extra_devids();  <--- writable device removed,
+	                              rw device count not decremented
+	  fail_tree_roots:
+	    btrfs_close_devices():
+	      close_fs_devices();   <------- rw device count off by 1
+
+As a note, prior to commit cf89af146b7e ("btrfs: dev-replace: fail
+mount if we don't have replace item with target device"), rw_devices
+was decremented on removing a writable device in
+__btrfs_free_extra_devids only if the BTRFS_DEV_STATE_REPLACE_TGT bit
+was not set for the device. However, this check does not need to be
+reinstated as it is now redundant and incorrect.
+
+In __btrfs_free_extra_devids, we skip removing the device if it is the
+target for replacement. This is done by checking whether device->devid
+== BTRFS_DEV_REPLACE_DEVID. Since BTRFS_DEV_STATE_REPLACE_TGT is set
+only on the device with devid BTRFS_DEV_REPLACE_DEVID, no devices
+should have the BTRFS_DEV_STATE_REPLACE_TGT bit set after the check,
+and so it's redundant to test for that bit.
+
+Additionally, following commit 82372bc816d7 ("Btrfs: make
+the logic of source device removing more clear"), rw_devices is
+incremented whenever a writeable device is added to the alloc
+list (including the target device in btrfs_dev_replace_finishing), so
+all removals of writable devices from the alloc list should also be
+accompanied by a decrement to rw_devices.
+
+Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+CC: stable@vger.kernel.org # 5.10+
+Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/usb/mcba_usb.c |    2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/volumes.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -664,6 +664,8 @@ static int mcba_usb_start(struct mcba_pr
- 			break;
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -995,6 +995,7 @@ again:
+ 		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+ 			list_del_init(&device->dev_alloc_list);
+ 			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
++			fs_devices->rw_devices--;
  		}
- 
-+		urb->transfer_dma = buf_dma;
-+
- 		usb_fill_bulk_urb(urb, priv->udev,
- 				  usb_rcvbulkpipe(priv->udev, MCBA_USB_EP_IN),
- 				  buf, MCBA_USB_RX_BUFF_SIZE,
+ 		list_del_init(&device->dev_list);
+ 		fs_devices->num_devices--;
 
 
