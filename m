@@ -2,186 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634E13DD40C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8A23DD415
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233289AbhHBKmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 06:42:21 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:27500 "EHLO m43-7.mailgun.net"
+        id S233368AbhHBKmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 06:42:32 -0400
+Received: from 8bytes.org ([81.169.241.247]:52490 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233167AbhHBKmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 06:42:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627900931; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=darOhbQjZjiDGZ9KoG4mUCBwsmYEbyLqHS1GzH5OshY=;
- b=WHxuRi2joiKsL5DVHLoydFBLoVekLRIDXdiP7hriKKqxGUBRt7IzqNt7PUtEEA9nPkNLnoue
- jWVFCr16V23r8uFtZOTRHQd6/OggevvJAJX2MdEvzN0axP46/+W2wYVaoDLI+jweIwM5EUlM
- txnMRqywwOH3F4lMMp7jmvfSQgU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6107cbe917c2b4047d403f50 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 10:41:45
- GMT
-Sender: sbhanu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 85C22C4323A; Mon,  2 Aug 2021 10:41:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sbhanu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D3AFC433F1;
-        Mon,  2 Aug 2021 10:41:43 +0000 (UTC)
+        id S233081AbhHBKma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 06:42:30 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 06300379; Mon,  2 Aug 2021 12:42:18 +0200 (CEST)
+Date:   Mon, 2 Aug 2021 12:42:17 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 05/11] x86/sev: Replace occurrences of sev_active() with
+ prot_guest_has()
+Message-ID: <YQfMCXN0z+LhNBdN@8bytes.org>
+References: <cover.1627424773.git.thomas.lendacky@amd.com>
+ <fa4cdba858e5cb20da2bcd31acf6959ae391bded.1627424774.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Aug 2021 16:11:43 +0530
-From:   sbhanu@codeaurora.org
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
-Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        vbadigan@codeaurora.org, rampraka@codeaurora.org,
-        sayalil@codeaurora.org, sartgarg@codeaurora.org,
-        rnayak@codeaurora.org, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Subject: Re: [PATCH V4] mmc: sdhci-msm: Update the software timeout value for
- sdhc
-In-Reply-To: <1626435974-14462-1-git-send-email-sbhanu@codeaurora.org>
-References: <1626435974-14462-1-git-send-email-sbhanu@codeaurora.org>
-Message-ID: <d95ea0583c39b8e73f391502adb39b09@codeaurora.org>
-X-Sender: sbhanu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa4cdba858e5cb20da2bcd31acf6959ae391bded.1627424774.git.thomas.lendacky@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle Reminder
+On Tue, Jul 27, 2021 at 05:26:08PM -0500, Tom Lendacky wrote:
+> Replace occurrences of sev_active() with the more generic prot_guest_has()
+> using PATTR_GUEST_MEM_ENCRYPT, except for in arch/x86/mm/mem_encrypt*.c
+> where PATTR_SEV will be used. If future support is added for other memory
+> encryption technologies, the use of PATTR_GUEST_MEM_ENCRYPT can be
+> updated, as required, to use PATTR_SEV.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-Thanks,
-Sajida
-
-On 2021-07-16 17:16, Shaik Sajida Bhanu wrote:
-> Whenever SDHC run at clock rate 50MHZ or below, the hardware data
-> timeout value will be 21.47secs, which is approx. 22secs and we have
-> a current software timeout value as 10secs. We have to set software
-> timeout value more than the hardware data timeout value to avioid 
-> seeing
-> the below register dumps.
-> 
-> [  332.953670] mmc2: Timeout waiting for hardware interrupt.
-> [  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP 
-> ===========
-> [  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  
-> 0x00007202
-> [  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  
-> 0x00000001
-> [  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 
-> 0x00000027
-> [  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 
-> 0x0000001f
-> [  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  
-> 0x00000000
-> [  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    
-> 0x00000007
-> [  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 
-> 0x00000000
-> [  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 
-> 0x03ff100b
-> [  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 
-> 0x00000000
-> [  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   
-> 0x0000808f
-> [  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 
-> 0x00000000
-> [  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  
-> 0x00000000
-> [  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  
-> 0x00000000
-> [  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
-> [  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
-> 0x0000000ffffff218
-> [  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
-> -----------
-> [  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
-> 0x6000642c | DLL cfg2: 0x0020a000
-> [  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
-> 0x00000000 | DDR cfg: 0x80040873
-> [  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
-> 0xf88218a8 Vndr func3: 0x02626040
-> [  333.102371] mmc2: sdhci: 
-> ============================================
-> 
-> So, set software timeout value more than hardware timeout value.
-> 
-> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
-> 
-> Changes since V3:
-> 	- Addressed minor comments from Adrain Hunter and retained his
-> 	  Acked-by Signed-off.
-> 
-> Changes since V2:
-> 	- Updated 22 with 22LL to avoid compiler warning as
-> 	  suggested by Adrian Hunter.
-> 	- Added a check to update software data timeout value if its value
-> 	  is less than the calculated hardware data timeout value as suggested
-> 	  by Veerabhadrarao Badiganti.
-> Changes since V1:
-> 	- Moved software data timeout update part to qcom specific file
-> 	  as suggested by Veerabhadrarao Badiganti.
-> ---
->  drivers/mmc/host/sdhci-msm.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/sdhci-msm.c 
-> b/drivers/mmc/host/sdhci-msm.c
-> index e44b7a6..290a14c 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -2089,6 +2089,23 @@ static void sdhci_msm_cqe_disable(struct
-> mmc_host *mmc, bool recovery)
->  	sdhci_cqe_disable(mmc, recovery);
->  }
-> 
-> +static void sdhci_msm_set_timeout(struct sdhci_host *host, struct
-> mmc_command *cmd)
-> +{
-> +	u32 count, start = 15;
-> +
-> +	__sdhci_set_timeout(host, cmd);
-> +	count = sdhci_readb(host, SDHCI_TIMEOUT_CONTROL);
-> +	/*
-> +	 * Update software timeout value if its value is less than hardware 
-> data
-> +	 * timeout value. Qcom SoC hardware data timeout value was calculated
-> +	 * using 4 * MCLK * 2^(count + 13). where MCLK = 1 / host->clock.
-> +	 */
-> +	if (cmd && cmd->data && host->clock > 400000 &&
-> +	    host->clock <= 50000000 &&
-> +	    ((1 << (count + start)) > (10 * host->clock)))
-> +		host->data_timeout = 22LL * NSEC_PER_SEC;
-> +}
-> +
->  static const struct cqhci_host_ops sdhci_msm_cqhci_ops = {
->  	.enable		= sdhci_msm_cqe_enable,
->  	.disable	= sdhci_msm_cqe_disable,
-> @@ -2438,6 +2455,7 @@ static const struct sdhci_ops sdhci_msm_ops = {
->  	.irq	= sdhci_msm_cqe_irq,
->  	.dump_vendor_regs = sdhci_msm_dump_vendor_regs,
->  	.set_power = sdhci_set_power_noreg,
-> +	.set_timeout = sdhci_msm_set_timeout,
->  };
-> 
->  static const struct sdhci_pltfm_data sdhci_msm_pdata = {
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
