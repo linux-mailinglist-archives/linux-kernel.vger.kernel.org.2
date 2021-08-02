@@ -2,134 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752A63DDD8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEEB03DDD7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbhHBQXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
+        id S232093AbhHBQVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232411AbhHBQXg (ORCPT
+        with ESMTP id S229612AbhHBQVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:23:36 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94E0C061798
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 09:23:26 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so714661pjh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 09:23:26 -0700 (PDT)
+        Mon, 2 Aug 2021 12:21:39 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BABC06175F;
+        Mon,  2 Aug 2021 09:21:28 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id c16so22109386wrp.13;
+        Mon, 02 Aug 2021 09:21:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JaILGVZ5ZfAh5yd44e+vxSRLCop37r4sy9cxjRO/kVU=;
-        b=aw1kgIMmRz0YMmD8jXYt7yhGZxHLHmcNQFLrG40MdDJ4dxtp5Dp6z04FghrmAgWxls
-         ibbc21J6Lj1o0KA7GwJpBkMxWoCQKSfGPfoyBryQnP/vDd6QBrsp3tbdnfeGJcBe4xv4
-         fS1shEaQqJCHHvIk5MIu8rA0hZEvPYJj50Zzs=
+         :content-disposition:in-reply-to:user-agent;
+        bh=Eo/ko/cKXyffVXdy/1Hup8RlLilDw0wcG1gMwmDSxRA=;
+        b=bWW29oBh9sAPntXWB3hWAVN29lWeSqsKPgOKpS9sl+GDTCWiWizvTBm1jbQFljO3d1
+         I05t/uZVMo5kpEERlB4YppqlViue5NeWp1pN3++/uw6xHN27s8bRWe0dIGfrVFozl9Bl
+         tG/8TLeM4EOED0mIDfwKFwZ9DxNFXNIeQwPD36vsg0712PCfssoX3g32hrrmnC+NcxY0
+         YSMfYJ2fbSHGnXQoJb7pAPPAc6aKrS1C+r+TmzvVUiblEJNGY82DvxMrd6L3PDoYDC1W
+         DxJQ6qQJnWUmmF4MxZV8NWmyRCc2Up0sRQ/z5H/PqkCI+brQAIn1fmDWqccgQbeLjTy+
+         tgEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JaILGVZ5ZfAh5yd44e+vxSRLCop37r4sy9cxjRO/kVU=;
-        b=Yngb6FgqyUHNV8tqe5+Enfefw1AY7akJW9hyplH6viw8JkOyeb7qTPllDGur2fzGFh
-         WAmP2E/kBObh3RvO6xRW/pKKhKDDGRyWhTMjqsfpGSPjWcXcHsR+bF8uu8cnHO0uLNRJ
-         u8UYLbhymr6lcA9yn9qkkdJ4AnFFGoqEL+WIq9lAkAjRhG1WzDr7A46YMW45JJuXw1oL
-         aloiAJ49sCBx+mA5G10/medBYYSG1Y07cbBUyr26v+NNuKOKslNxGG6sUGStgvLyIndT
-         AVLlQTiiYK5n7mZbIPKRoXRlIoGsj5s1fsdgSNJcU50Hv8TTe0pTE1PqWF+Z7vZtSc80
-         4VyQ==
-X-Gm-Message-State: AOAM533laTLwPbvnRiiLsXWey70uFXtqy7D+gJ4For5G4kYg7q2qHA1D
-        sHKJWiVVY6+A05INYnYcs+V+yw==
-X-Google-Smtp-Source: ABdhPJyna/JEEPlWGNR2S+ZqJqCzOPLMMoqPYs8YB21x4PV9XLYXx00eTM9yttg27rSVI2z426vQLw==
-X-Received: by 2002:a63:4a49:: with SMTP id j9mr2250552pgl.20.1627921406097;
-        Mon, 02 Aug 2021 09:23:26 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s193sm13206950pfc.183.2021.08.02.09.23.25
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Eo/ko/cKXyffVXdy/1Hup8RlLilDw0wcG1gMwmDSxRA=;
+        b=uXbBeYRRtYC0u3kmMx96OkNhJg/B203RxKXGsE1JMWQFRxeO4UQpe61j7m7jmnM6xv
+         vXeNEDvYh9wc/CCNMTACsDyEPHYjlnaiObWMnx0U+ha3tcaLVBphamVZZfLDKspXk/78
+         vZyzZPl9eu6u6Ba6lRXxaICT8fTYoC4ohjgZW9oNSJlMz9RX/aY9kZ+T/n44iHQxNjkQ
+         P5mnbb0aAWHXS4P+I3wFDa88Fh1jFRuCwIPBE9TAQlHAoA+HPdBnAJ2uUF4l07izOVgw
+         5rJ5h00uEXPfNsX63Ri2mh1vGnUbMfv6DqhKCiS2WxSWhONP7zNhItYqUxUO5sM9bY6m
+         e0GA==
+X-Gm-Message-State: AOAM532hUdn/PEcFS/7jvhFWkbANSiECvpnsdlsJrSXzNs34XPv8ZvVy
+        6tmaF7EcfNLdhpFZkzNtOzg=
+X-Google-Smtp-Source: ABdhPJwMlXJ/6C6206MZvjQ+7RCGAygddlBwfk70hYzOjyW81IkrpCsWmySfMg+Qh3JNDcX8yeYThw==
+X-Received: by 2002:a5d:528d:: with SMTP id c13mr18746610wrv.343.1627921287427;
+        Mon, 02 Aug 2021 09:21:27 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id c10sm4321264wml.44.2021.08.02.09.21.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 09:23:25 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 09:23:24 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Shai Malin <smalin@marvell.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>,
-        Ariel Elior <aelior@marvell.com>
-Subject: Re: [PATCH 42/64] net: qede: Use memset_after() for counters
-Message-ID: <202108020922.FE8A35C854@keescook>
-References: <SJ0PR18MB3882DC88DB04C9DE68678CEDCCEF9@SJ0PR18MB3882.namprd18.prod.outlook.com>
+        Mon, 02 Aug 2021 09:21:26 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 18:23:45 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, SoC Team <soc@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v2] soc/tegra: Make regulator couplers depend on
+ CONFIG_REGULATOR
+Message-ID: <YQgcEfv3DJy9jli1@orome.fritz.box>
+References: <20210721232616.1935-1-digetx@gmail.com>
+ <YQgC/POOrX4t9hUN@orome.fritz.box>
+ <CAK8P3a1oVOqdyYUNBM8UiakEkznQ--SPEHVz4U0HQOMy4DiCbw@mail.gmail.com>
+ <CAK8P3a1ycMhqZ-nvsxusPa5JijjL1hBOpBffhJ0okm5Kav0jzA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vf3CEbbqSz/G3rGB"
 Content-Disposition: inline
-In-Reply-To: <SJ0PR18MB3882DC88DB04C9DE68678CEDCCEF9@SJ0PR18MB3882.namprd18.prod.outlook.com>
+In-Reply-To: <CAK8P3a1ycMhqZ-nvsxusPa5JijjL1hBOpBffhJ0okm5Kav0jzA@mail.gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 02:29:28PM +0000, Shai Malin wrote:
-> 
-> On Tue, Jul 31, 2021 at 07:07:00PM -0300, Kees Cook wrote:
-> > On Tue, Jul 27, 2021 at 01:58:33PM -0700, Kees Cook wrote:
-> > > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > > field bounds checking for memset(), avoid intentionally writing across
-> > > neighboring fields.
-> > >
-> > > Use memset_after() so memset() doesn't get confused about writing
-> > > beyond the destination member that is intended to be the starting point
-> > > of zeroing through the end of the struct.
-> > >
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > > The old code seems to be doing the wrong thing: starting from not the
-> > > first member, but sized for the whole struct. Which is correct?
-> > 
-> > Quick ping on this question.
-> > 
-> > The old code seems to be doing the wrong thing: it starts from the second
-> > member and writes beyond int_info, clobbering qede_lock:
-> 
-> Thanks for highlighting the problem, but actually, the memset is redundant.
-> We will remove it so the change will not be needed.
-> 
-> > 
-> > struct qede_dev {
-> >         ...
-> >         struct qed_int_info             int_info;
-> > 
-> >         /* Smaller private variant of the RTNL lock */
-> >         struct mutex                    qede_lock;
-> >         ...
-> > 
-> > 
-> > struct qed_int_info {
-> >         struct msix_entry       *msix;
-> >         u8                      msix_cnt;
-> > 
-> >         /* This should be updated by the protocol driver */
-> >         u8                      used_cnt;
-> > };
-> > 
-> > Should this also clear the "msix" member, or should this not write
-> > beyond int_info? This patch does the latter.
-> 
-> It should clear only the msix_cnt, no need to clear the entire 
-> qed_int_info structure.
 
-Should used_cnt be cleared too? It is currently. Better yet, what patch
-do you suggest I replace this proposed one with? :)
+--vf3CEbbqSz/G3rGB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for looking at this!
+On Mon, Aug 02, 2021 at 05:05:01PM +0200, Arnd Bergmann wrote:
+> On Mon, Aug 2, 2021 at 5:03 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > On Mon, Aug 2, 2021 at 4:35 PM Thierry Reding <thierry.reding@gmail.com=
+> wrote:
+> >
+> > If you have other fixes that are already in your fixes branch
+> ... that you want to have in rc5, please send them soon, as I'm going
+> to prepare that pull request in a few days.
+>=20
+> I'll probably do another one for -rc6 though.
 
--Kees
+Okay, will do. Thanks.
 
--- 
-Kees Cook
+Thierry
+
+--vf3CEbbqSz/G3rGB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEIG7cACgkQ3SOs138+
+s6EkZA//ZdnqjrQ338ZZNlhh150PojQ/JfLtFYHYRj3fDGKXPbAfQiRMdjRYQ/yE
+Fd8sMWcT1rJ3r2+qkzt7BHyW9zkrRNGHWBRAI+zbMo1pME7ia/jAKDEEqan4aoA2
+FNByG96WD2TxmuBPflRzBRjCsPD/cTFsbVaPjlEwdx3m5SYDzP6jCD5DnkcCbjI7
+U/L2ihw0g7vqAkKvUrtr8RA2YcLccY/W2pimqdXmlQrAy1a87KEG447UtCk0PA2K
+H3DevLVu8vYRlOujkGw9LgZyNRmqh/54sILk+0d8I1apMgxVTWtU393WOZx9p2oW
+Kn17XRwaTD8vwZ4pyfLy9Q4PsqDJ6vri4sK07Dqwj7jGXtu/SHEk0LPNh3tiQV+2
+3dGuHiGR8+P2qMnAvW7UP3yQ6lJIV9qLsbKgMKfE+6iSEKMDgaH/3ZJNSh+vJJ6F
+P0NO4G8hrOn6kjNs2ehai4UMIr84NxYThop9QTvpU3Nc1yJ0d3GIYLsGqADPQGfQ
+xBejqW3YmnsUO08/K714WhnOki+TGxs4auBUlZUIi+JDPq08/QzZgJNTkD/0i2qa
+E59yyGqSWo4f8bjco+GH7l6I5PCNhykTuNTZhUjicKZFQ7tBnyvKgKZ4z5e+hNP1
+akXPKEigG7hAuWqc54tCqg5vk0iabq93tWP/XLSjl0UzAkllybo=
+=8TBq
+-----END PGP SIGNATURE-----
+
+--vf3CEbbqSz/G3rGB--
