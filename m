@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33203DD369
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68593DD36B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhHBJv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233176AbhHBJv6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:51:58 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F52DC0613D5;
-        Mon,  2 Aug 2021 02:51:49 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id e5so19031060pld.6;
-        Mon, 02 Aug 2021 02:51:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rSvZVCk/b4lxtMrQbI5kKo6ZH+53Muvk1QfohkjMfWQ=;
-        b=o6LQCpplPt+icWPEHbKaQRMkxOAejINbTeRiO/3YRlw+GDij/NuKgi0Vk73BjoslDV
-         8cygSgqRS/9zcQyJR+1glwYl+Oedc+7o6Ujh/wsRJ2ZRTAO5KiL/nMe6wu5jGdcMVwQn
-         uIrjSh2yOWRQ+MF+bbyNns5eJvlDNL7Tp86d6vdLN3zj22UpfaZ4aKo2U0zbHud7EiCu
-         zGh3C3YzpJU2TLds4/yA0Sxm9hDsrG+2Aw64vRJyjjRgXHldtH5YkihrLvkx4o/MQr8i
-         bgYbkYCWkzes5gmR76SZRVlUP689YrCH1LUZ5G3J+o56uGu0fFVomAIT8g9G4SjzH4aF
-         De2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rSvZVCk/b4lxtMrQbI5kKo6ZH+53Muvk1QfohkjMfWQ=;
-        b=siHXSIwsmAiRqUsMeijUnTdMZ0pZx3TzITpY2Nv37aqZl0Vv7EgnHhrWR9DrzyrBpQ
-         zZJDYIDAKDBCcsInbFZp8chq6eAgRwstpo+5mH0IO+uIWN/FzkGynYu/Gr7h31zNOyLk
-         aVnTRhoaI/i5n/KTZsK+Ztgav5guxqCYDR33Pwe2aS5YC37ez91i5cpisTiJIDNJnJ8D
-         snaIW5cRHPx1cXZlKo4A5M0lQZapStaZlw3VpZBuDzR5KDGGXvJ35go664IUUynGI1Yz
-         iJQrJxZ5s5OEkv/8/kiWpBSLEOczqkGGpUOslYEGzDlyg00l6R/cXbPoE47gUJUZUXZE
-         vy6w==
-X-Gm-Message-State: AOAM533o+T+S8lqd/diVlII5RmjSfJu89clK1Jkf0FtuaxnMelPCY4ap
-        1CE1R4iRCiLyQX23c0SQpv8=
-X-Google-Smtp-Source: ABdhPJw2LOje+GZYbQog/yQS/5WnF59msN+/7Mp4i9o299dg7UF20relEobhVXBtiKDULMzGNhi7og==
-X-Received: by 2002:a17:90a:a78d:: with SMTP id f13mr16098143pjq.206.1627897908680;
-        Mon, 02 Aug 2021 02:51:48 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id t17sm10928794pfg.93.2021.08.02.02.51.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 02:51:48 -0700 (PDT)
-Subject: [PATCH v3 4/9] docs: pdfdocs: Preserve inter-phrase space in Korean
- translations
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
-        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
-References: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <9e0adaa3-2462-ab8b-3a72-8a0c93ff1cec@gmail.com>
-Date:   Mon, 2 Aug 2021 18:51:45 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233194AbhHBJwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:52:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233081AbhHBJwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 05:52:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CAF760F58;
+        Mon,  2 Aug 2021 09:52:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627897930;
+        bh=zptMS4fel5KD7SXlEYuE6VYDne/g+jcVh1jlBH3XsIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uly2ZZOHomVUxvxd4dtL3RHiqyBuFngfFJP5WtyCMZ9sZmFe3E2SxD4AVGxe/Npun
+         VEZvvoOpQwuY77mjdqPC21GXK97TED11iXTaGT5BmNObZac9RjhkKuwsH012QNTSq7
+         bie4+LZHo0MvqKxmD4LBG3NTbU7ZmQjvCrMVIesIToDvQDF22ZDmK1qCueBRbkTaD0
+         VEWwvzV76H4ldtNCyPTpXoKohpkol+Q+Z4PMkv5+TJeTv2VywGdOR/LhGAgEQ81d0x
+         Svg5JFxGV4m77MDo9JcqTp5RL04Ih1taHe71wLE6/PnRFgyUGo6SJvx6bA6gJNepRG
+         jtET/j5QcQbTg==
+Date:   Mon, 2 Aug 2021 11:52:06 +0200
+From:   Robert Richter <rric@kernel.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drivers/edac/edac_mc: Remove all strcpy() uses
+Message-ID: <YQfARq44bAIR/HEi@rric.localdomain>
+References: <20210801143558.12674-1-len.baker@gmx.com>
+ <YQe4n5H00g3xhSbQ@rric.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQe4n5H00g3xhSbQ@rric.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In Korean typesetting, inter-phrase spaces in Hangul text have
-a similar role as the inter-word spaces in Latin text.
-They can be preserved by the \xeCJKsetup{CJKspace=true} option.
+On 02.08.21 11:19:33, Robert Richter wrote:
+> On 01.08.21 16:35:58, Len Baker wrote:
+> 
+> > @@ -1114,10 +1116,12 @@ void edac_mc_handle_error(const enum hw_event_mc_err_type type,
+> >  			*p = '\0';
+> >  		} else {
+> >  			if (p != e->label) {
+> > -				strcpy(p, OTHER_LABEL);
+> > +				strscpy(p, OTHER_LABEL, left);
+> > +				left -= strlen(OTHER_LABEL);
 
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
----
- Documentation/conf.py | 1 +
- 1 file changed, 1 insertion(+)
+Another note: Other parts of the code use 'len' instead of 'left', so
+if you could change that too?
 
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 980be06df723..2ccfe4442acc 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -426,6 +426,7 @@ latex_elements['preamble']  += '''
- 	    \\renewcommand{\\CJKrmdefault}{KRserif}%
- 	    \\renewcommand{\\CJKsfdefault}{KRsans}%
- 	    \\renewcommand{\\CJKttdefault}{KRmono}%
-+	    \\xeCJKsetup{CJKspace = true} % For inter-phrase space
- 	}
- 	\\newcommand{\\kerneldocEndKR}{\\endgroup}
- 	\\newcommand{\\kerneldocBeginJP}{%
--- 
-2.17.1
+Thanks,
 
+-Robert
 
+> >  				p += strlen(OTHER_LABEL);
+> 
+> Those both must be strlen(p) now as otherwise 'left' could underflow
+> (and p overflow).
+> 
+> -Robert
+> 
+> >  			}
+> > -			strcpy(p, dimm->label);
+> > +			strscpy(p, dimm->label, left);
+> > +			left -= strlen(p);
+> >  			p += strlen(p);
+> >  		}
+> > 
