@@ -2,157 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7173DDC63
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 998043DDC64
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234980AbhHBP1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:27:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56820 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234697AbhHBP1D (ORCPT
+        id S235039AbhHBP1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhHBP1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:27:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627918013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZDhUhOE7wVvhlT6fRTts0o1L7ni+IAaP4sO+YA1/LPs=;
-        b=JkMVuMMwf8wW3Szfi2Eq3lOa7og66x5Tgtp9ar0NOGPTRyN2ELz6Mtcj0C6clz6E8Tfm7B
-        IGg0TtgeMiWc8+1+QBu6Ou2AMnhlEmdN/zHu8Z52SxQzgbx02tbBt8VYwNAIiYYs9rARt3
-        /ccuYWUSXjFp6i1Xx17+ch9Gx4TlKA4=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-a6YAx_fnN-KBt1poQVFPXw-1; Mon, 02 Aug 2021 11:26:52 -0400
-X-MC-Unique: a6YAx_fnN-KBt1poQVFPXw-1
-Received: by mail-lj1-f198.google.com with SMTP id 7-20020a05651c12c7b029019545e8e9c2so3323542lje.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:26:51 -0700 (PDT)
+        Mon, 2 Aug 2021 11:27:19 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35D2C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:27:09 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id b7so25043928edu.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:27:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kUFl9hAIN8lvCQA5YPKWnJI4Gz3za3JFaNPbXmZ8AK0=;
+        b=WUpp5ubyxqNvDpB2nne9zl3iv+RK+siCwm7zWe4sjPE0yERrqxd1OoPqajXgzpm0wB
+         zm88Vjj0fD+R23LidqDisxTggfv64kJT9MhIA8zRAFAhi7eQvjosWIv+JSlbNNEAuqqN
+         ms8VVHUvfF6UVl8kq8o4YPxX7mjSkO2eVd80pnKpuvRtK7iFmXuMV63n6T8XHXdmX7hg
+         dFygzT2+iwF3+q6enLxmRzcLuGAgg2C0asfpqedxZ9STOnEKCgAfY26eLFf+UpYWn+T7
+         u8s6/ppZihpobZ6QShK0aK1qKdw6eiE8dVr/bqbiMumngnqOcrpNwKujm2ILegnNk2FE
+         1Ddg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZDhUhOE7wVvhlT6fRTts0o1L7ni+IAaP4sO+YA1/LPs=;
-        b=WJbUIq3Y9+JQEeRHvtyVIUwV6dfcsRlSRm/lLxalzBcFDKXi8jqfyVPTDemwZ/R/It
-         tBgI9EXtPTDnOJPBojaguQfVo/nt5Es3pcLM0u/zCt/NFXmnEWNaWFzsCQeQ+oVVXZFr
-         m+UY2HhxnBp24x+emSTKuL3Hc0LwKlUkJGI1k3rCRqvhmvGbqRKmqHBjqHEbAifTZ7bD
-         QP8ahsw6ZCg0Ze+xyXZiONwoFwo+o4ZqrGy2tdIV0Y+NzLrJ4j4Kklcm3pMLsVIg7BVY
-         cU3vdfVlsyG/VkmEDxBaUq/B8QFHGWv7IkZFwmhCjtc60zR+gd59gNm//WaTe1/K1wZK
-         2Vyw==
-X-Gm-Message-State: AOAM532ymhn1Rm56BJeobcg8CBPih/6pBEAh7EOq1X5usmPk7W76MbNY
-        KVDD97TJXm66OIbuVwAB2jwpPThoWJWlNPddyh8a6XwDdK3y2fw5z/+Cxdcw+ZxK4ae9/OQ+l5f
-        VHVWoTCslJHTnG/3X5iI2V47mR7JwUxT3U44SRasO
-X-Received: by 2002:a05:6512:2189:: with SMTP id b9mr7974425lft.159.1627918010529;
-        Mon, 02 Aug 2021 08:26:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxJTM6knPaot69WHjAFEXmr/LkoWJIS6PDNnEfEDimuXafoRs+es8u51ckxQOEF4QZT1655o4pRGDQ381sdSI=
-X-Received: by 2002:a05:6512:2189:: with SMTP id b9mr7974367lft.159.1627918010313;
- Mon, 02 Aug 2021 08:26:50 -0700 (PDT)
+        bh=kUFl9hAIN8lvCQA5YPKWnJI4Gz3za3JFaNPbXmZ8AK0=;
+        b=q+FmOKdjQp/GX8dST8crqvETOvpV4Pde8E1Zg2oybr+DDVmPI44zUFjjG6MXIDQwGp
+         MY+ozZCzKMnvIoVXMXc62SmnqhOKXmBaXd6N2M/WSynsowtWIf1qK9wHSlWwgoA+7WDr
+         Om+mz9+vnV7lHw7PYfpdNImq5ni84xAxuiXLvYzx47CIWvDeSvA5EXZck/oW2MwsyXfG
+         VTHOE/64fepYbBcVQGCef1ZUiY8nniYfFHORSQKYWWOU4iE1IKPXHpLSAFf4WB/B+Qhs
+         HJZ9M3PZrWwI2FWmDdEoyuL7S3MZiJa8FuPqLEVkLCRTJ1RGT9AGBDZfgVeNx2lYxEs3
+         dOTg==
+X-Gm-Message-State: AOAM531No/w/OHZdcAoy96YbTxOz1Z03wqTJ4YCZG1OSCc5xf/oS29Al
+        YNe/kymoqtuAHZdWCDAwMgZ2wKWkD7wbS4uOcxgZmw==
+X-Google-Smtp-Source: ABdhPJxhDn6ZpCBmuDgar+9Ku9A9rJ17ctbY4fI34T93D8S8II3xubVHiIpCRBiLFHBi+mDYN59xAWFh+HcL0oRCGjs=
+X-Received: by 2002:aa7:c857:: with SMTP id g23mr19626574edt.100.1627918028334;
+ Mon, 02 Aug 2021 08:27:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210720232624.1493424-1-nitesh@redhat.com>
-In-Reply-To: <20210720232624.1493424-1-nitesh@redhat.com>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Mon, 2 Aug 2021 11:26:39 -0400
-Message-ID: <CAFki+LkNzk0ajUeuBnJZ6mp1kxB0+zZf60tw1Vfq+nPy-bvftQ@mail.gmail.com>
-Subject: Re: [PATCH v5 00/14] genirq: Cleanup the abuse of irq_set_affinity_hint()
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, jassisinghbrar@gmail.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Tushar.Khandelwal@arm.com, manivannan.sadhasivam@linaro.org,
-        lewis.hanly@microchip.com, ley.foon.tan@intel.com,
-        kabel@kernel.org, huangguangbin2@huawei.com, davem@davemloft.net,
-        benve@cisco.com, govind@gmx.com, kashyap.desai@broadcom.com,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        suganath-prabu.subramani@broadcom.com, ajit.khaparde@broadcom.com,
-        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
-        linux-pci@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        rostedt@goodmis.org, Marc Zyngier <maz@kernel.org>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        akpm@linuxfoundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, Neil Horman <nhorman@tuxdriver.com>,
-        pjwaskiewicz@gmail.com, Stefan Assmann <sassmann@redhat.com>,
-        Tomas Henzl <thenzl@redhat.com>, james.smart@broadcom.com,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com,
-        Alaa Hleihel <ahleihel@redhat.com>,
-        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
-        saeedm@nvidia.com, Nitesh Lal <nilal@redhat.com>,
-        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        Al Stone <ahs3@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        bjorn.andersson@linaro.org, chunkuang.hu@kernel.org,
-        yongqiang.niu@mediatek.com, baolin.wang7@gmail.com,
-        Petr Oros <poros@redhat.com>, Ming Lei <minlei@redhat.com>,
-        Ewan Milne <emilne@redhat.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, Jakub Kicinski <kuba@kernel.org>
+References: <20210731192637.3653796-1-lrizzo@google.com> <YQf9h+qvWCx6D7XT@8bytes.org>
+ <CAMOZA0LEr+xM6RrsJErPMqHP7-0GdLmNDqbGVKbKTn92=Ncejg@mail.gmail.com> <YQgDfIcFW5h9TH+n@8bytes.org>
+In-Reply-To: <YQgDfIcFW5h9TH+n@8bytes.org>
+From:   Luigi Rizzo <lrizzo@google.com>
+Date:   Mon, 2 Aug 2021 17:26:57 +0200
+Message-ID: <CAMOZA0J7B=rnVpaa6WiMf3Hpr6=tk1QZeDRWjRFFW04FLx4n=A@mail.gmail.com>
+Subject: Re: [PATCH] amd/iommu: fix logic bug in amd_iommu_report_page_fault()
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Luigi Rizzo <rizzo.unipi@gmail.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 7:26 PM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+On Mon, Aug 2, 2021 at 4:39 PM Joerg Roedel <joro@8bytes.org> wrote:
 >
-> The drivers currently rely on irq_set_affinity_hint() to either set the
-> affinity_hint that is consumed by the userspace and/or to enforce a custom
-> affinity.
+> On Mon, Aug 02, 2021 at 04:30:50PM +0200, Luigi Rizzo wrote:
+> > Ah didn't realize that. Thank you!
+> >
+> > Two questions on the topic:
+> > 1. how comes only the AMD driver is so verbose in reporting io page faults?
+> >    Neither intel nor other iommu drivers seem to log anything
 >
-> irq_set_affinity_hint() as the name suggests is originally introduced to
-> only set the affinity_hint to help the userspace in guiding the interrupts
-> and not the affinity itself. However, since the commit
->
->         e2e64a932556 "genirq: Set initial affinity in irq_set_affinity_hint()"
->
+> What do you mean by 'verbose'? It is only a line per fault, and at least
+> the Intel driver also logs DMAR faults with one line per fault :)
 
-[...]
+Ah never mind, I was grep'ing keywords from the amd message and
+there is almost zero overlap!
 
->  drivers/infiniband/hw/irdma/hw.c              |  4 +-
->  drivers/mailbox/bcm-flexrm-mailbox.c          |  4 +-
->  drivers/net/ethernet/cisco/enic/enic_main.c   |  8 +--
->  drivers/net/ethernet/emulex/benet/be_main.c   |  4 +-
->  drivers/net/ethernet/huawei/hinic/hinic_rx.c  |  4 +-
->  drivers/net/ethernet/intel/i40e/i40e_main.c   |  8 +--
->  drivers/net/ethernet/intel/iavf/iavf_main.c   |  8 +--
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 10 ++--
->  drivers/net/ethernet/mellanox/mlx4/eq.c       |  8 ++-
->  .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  8 +--
->  drivers/scsi/lpfc/lpfc_init.c                 |  4 +-
->  drivers/scsi/megaraid/megaraid_sas_base.c     | 27 +++++-----
->  drivers/scsi/mpt3sas/mpt3sas_base.c           | 21 ++++----
->  include/linux/interrupt.h                     | 53 ++++++++++++++++++-
->  kernel/irq/manage.c                           |  8 +--
->  15 files changed, 114 insertions(+), 65 deletions(-)
->
-> --
->
->
-
-Gentle ping.
-Any comments on the following patches:
-
-  genirq: Provide new interfaces for affinity hints
-  scsi: megaraid_sas: Use irq_set_affinity_and_hint
-  scsi: mpt3sas: Use irq_set_affinity_and_hint
-  enic: Use irq_update_affinity_hint
-  be2net: Use irq_update_affinity_hint
-  mailbox: Use irq_update_affinity_hint
-  hinic: Use irq_set_affinity_and_hint
-
-or any other patches?
-
--- 
-Thanks
-Nitesh
-
+thanks
+luigi
