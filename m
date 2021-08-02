@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBD53DDE4F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4ED3DDE53
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhHBRRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 13:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhHBRRP (ORCPT
+        id S230025AbhHBRT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 13:19:29 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3565 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhHBRT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 13:17:15 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6E1C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 10:17:04 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id u10so24895621oiw.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 10:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=XNmEhCYcavH8lUjF07r3laSZ11ZJHK1QVVxu5abkP1M=;
-        b=TAL5Vdu+3qZZCRpP6g1+EmXLtetQl+wHhdkwpxsT+/fxPP6sJMH1Op+C3Ogsp5Jvwe
-         qo5HznHDkKYo/uMBDKRWYsMV2JEx/PER4p3xMmU7pgvErWbBbRcBsi0B0OcI+piKnJAG
-         KXs4zksTeKoQX3tFmDMRfPh4eaIMSiC2Vh5KXBo9cqFWkENxcpUnMUEH92byjofJsHtB
-         yPe+FUW3C5CJiUhH3t7QmNGFUtvGOLroKgr5aabx1se/421I9qvEo5rUC7FP1QsgyoUB
-         1DUNWij1xA4AbusIobhtWbBZXITS4zLM1f1SbUZ6PeOu+0zI0M6PKsRPbuaqtj+Gqzc1
-         4roA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=XNmEhCYcavH8lUjF07r3laSZ11ZJHK1QVVxu5abkP1M=;
-        b=JaqMUu0cWBrE9kyF7FubRv032en/6APqx06hTV6vdLy4+KB/FMRVbyPg4A/dxP8WL8
-         bOPGfcaZ8TDkgSvCc7n3RW5XcY+oHmqh09PAHkBQ3n0EGCV3WrLZH/9bfQ7wRYacGgfd
-         BT6OlQHQUFVzVwtIeqfw++kwREjd5K3v8mjS259LqFD6f8636fVM4T4nSGraQEfV0TCz
-         1/dy0+NZ7A7LyANsZ3UUffB5rTFJikSGhm4hbiWk53GbQ4/dwQ+rUXBGd+iesMGMb0bz
-         lZAhmYHiRlNVpPzKBZa/K+nBmS0q4Vs9/ywTLFW3zXMtFC2XCQ9CkaoL0vzFB1VdVD9d
-         OMBw==
-X-Gm-Message-State: AOAM5312YSWHqJ4twlhdXY05uDl995sDEQuniQNHnIRn4rX4ovIINzwm
-        IgvDMvVwk7YjVSjqJNMK1jaePgJrVoNnrxQkH3CyX2gHonSoeA==
-X-Google-Smtp-Source: ABdhPJz0ojc6DeWSvEDLNdpEWqUoNSiP9Bq90/S4qeCahoGj+1KUQMcRa6S+Ji4G5PJDkMs0LeWCBpPJw/xdRUnR3Lc=
-X-Received: by 2002:a05:6808:1304:: with SMTP id y4mr11638385oiv.40.1627924623710;
- Mon, 02 Aug 2021 10:17:03 -0700 (PDT)
+        Mon, 2 Aug 2021 13:19:27 -0400
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gdl955vfwz6F7yt;
+        Tue,  3 Aug 2021 01:19:05 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 19:19:14 +0200
+Received: from [10.47.87.154] (10.47.87.154) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 2 Aug 2021
+ 18:19:13 +0100
+Subject: Re: [PATCH v4 5/6] iova: Add iova_len argument to init_iova_domain()
+From:   John Garry <john.garry@huawei.com>
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <sakari.ailus@linux.intel.com>,
+        <mst@redhat.com>, <airlied@linux.ie>, <gregkh@linuxfoundation.org>,
+        <linuxarm@huawei.com>, <jonathanh@nvidia.com>,
+        <iommu@lists.linux-foundation.org>, <thierry.reding@gmail.com>,
+        <daniel@ffwll.ch>, <bingbu.cao@intel.com>, <digetx@gmail.com>,
+        <mchehab@kernel.org>, <jasowang@redhat.com>,
+        <tian.shu.qiu@intel.com>
+References: <1626259003-201303-1-git-send-email-john.garry@huawei.com>
+ <1626259003-201303-6-git-send-email-john.garry@huawei.com>
+ <20210802150644.GD28735@willie-the-truck>
+ <c6be0b9f-531b-dc12-2747-3acbecfcd531@huawei.com>
+ <1d06eda1-9961-d023-f5e7-fe87e768f067@arm.com>
+ <a7c2ce29-ca28-83a3-6432-a508df9825ac@huawei.com>
+Message-ID: <099da8be-00dc-09cb-d72c-8e7b4b724f7c@huawei.com>
+Date:   Mon, 2 Aug 2021 18:18:45 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-From:   Mikael Pettersson <mikpelinux@gmail.com>
-Date:   Mon, 2 Aug 2021 19:16:52 +0200
-Message-ID: <CAM43=SNDAcS952MZpsiD2Z-WU9Bd0EPv=7Z86i7FGdvDtsSXdQ@mail.gmail.com>
-Subject: [BISECTED] 5.14.0-rc4 broke drm/ttm when !CONFIG_DEBUG_FS
-To:     Linux Kernel list <linux-kernel@vger.kernel.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a7c2ce29-ca28-83a3-6432-a508df9825ac@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.87.154]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Booting 5.14.0-rc4 on my box with Radeon graphics breaks with
+On 02/08/2021 17:40, John Garry wrote:
+> On 02/08/2021 17:16, Robin Murphy wrote:
+>> On 2021-08-02 17:06, John Garry wrote:
+>>> On 02/08/2021 16:06, Will Deacon wrote:
+>>>> On Wed, Jul 14, 2021 at 06:36:42PM +0800, John Garry wrote:
+>>>>> Add max opt argument to init_iova_domain(), and use it to set the 
+>>>>> rcaches
+>>>>> range.
+>>>>>
+>>>>> Also fix up all users to set this value (at 0, meaning use default).
+>>>> Wrap that in init_iova_domain_defaults() to avoid the mysterious 0?
+>>>
+>>> Sure, I can do something like that. I actually did have separate 
+>>> along those lines in v3 before I decided to change it.
+>>
+>> Y'know, at this point I'm now starting to seriously wonder whether 
+>> moving the rcaches into iommu_dma_cookie wouldn't make a whole lot of 
+>> things simpler... :/
+> 
+> As I see, the rcache stuff isn't really specific to IOVA anyway, so it 
+> seems sane.
+> 
+>>
+>> Does that sound like crazy talk to you, or an idea worth entertaining?
+> 
+> If you're going to start moving things, has anyone considered putting 
+> rcache support in lib as a generic solution to "Magazines and Vmem: .." 
+> paper?
 
-[drm:radeon_ttm_init [radeon]] *ERROR* failed initializing buffer
-object driver(-19).
-radeon 0000:01:00.0: Fatal error during GPU init
+Having said that, I still think that the rcache code has certain 
+scalability issues, as discussed before. So making more generic and then 
+discarding would be less than ideal.
 
-after which the screen goes black for the rest of kernel boot and
-early user-space init.
-Once the console login shows up the screen is in some legacy low-res
-mode and Xorg can't be started.
-
-A git bisect between v5.14-rc3 (good) and v5.14-rc4 (bad) identified
-
-# first bad commit: [69de4421bb4c103ef42a32bafc596e23918c106f]
-drm/ttm: Initialize debugfs from ttm_global_init()
-
-Reverting that from 5.14.0-rc4 gives me a working kernel again.
-
-Note that I have
-# CONFIG_DEBUG_FS is not set
-
-/Mikael
+Thanks,
+john
