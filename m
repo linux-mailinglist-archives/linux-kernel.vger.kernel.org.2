@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485443DE0A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A51F3DE0A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhHBUZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:25:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229729AbhHBUZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:25:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9C2060EB5;
-        Mon,  2 Aug 2021 20:25:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627935946;
-        bh=O7HnUTXVprmZ4/8oq1gddhA3XEmFUduDhZhLrUMIH2Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VLb6ZLcm+8JPluUSOOKG2uWsYPoVvhY2z2qZhgx+FzVzGwVMUcMCg7d2timrMJcCy
-         a+ab6rKXoYMyXbH1MsuqMvAFkG7Zuj+unTzJ3iuZsDCR6abmC3OaGHOHHMhsp0L3JI
-         pEV4YVSMPUkYMri5AUTevEiB1DRAbRi6lPckODvCXhKzbZxq/fexNgUoULMZuWP5Up
-         jklO48ZC14THUHASjGSn5LxJTd5fphlrQPfRv71DaecEpQjkfYOiQIVG5XY4vCLYdY
-         B75TRL9KVdRGhgnVmghUZDtd6ccTEDRv/gf51zZRu08gDo+oKYNkF9x6END+oAEfQq
-         LuWJBHfK2MWqQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Date:   Mon,  2 Aug 2021 21:25:31 +0100
-Message-Id: <20210802202531.40356-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S231360AbhHBU3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229729AbhHBU3S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 16:29:18 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C0EC06175F;
+        Mon,  2 Aug 2021 13:29:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=l+fsYpXHnA5UWflt6UdASmUhsqYZSqpyJ5dbaN1LNhI=; b=vjQduL25s9hj45Yfu4BTWPBTU
+        kSrAkTSvbBkmMoP+U+eq7jLxh9RY41POf05sbal5DLZUOHV14VyAkDosbwqMP6hNbjJNzszGxQOFb
+        5wYJIChsZvBSrMFJdmAcTH4YkXzYoyuavecHIGnNfsnYkoQHkamhrzD+2t/mLD6cSA8AE/lejVALP
+        o14n71qmu350xdj1XuaKMWTtEqYO2HM34dB006g4k7212DICITO8uYJP3CFtt6kaRoKcMqpnwP50V
+        UIFDzpfSBBtP1nJ9QQnkdI2ASdn0BAlsWuimFTpAKGqcXPn7safpQjAHW1AXfy3hNuN5xHrP1qriX
+        LkVuUtlRQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46868)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mAeYW-0006Ce-VV; Mon, 02 Aug 2021 21:29:00 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mAeYR-0003Bf-Ax; Mon, 02 Aug 2021 21:28:55 +0100
+Date:   Mon, 2 Aug 2021 21:28:55 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        Ludovic Desroches <Ludovic.Desroches@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Mark Brown <broonie@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Claudiu Beznea <Claudiu.Beznea@microchip.com>
+Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
+ devm_clk_get for prepared and enabled clocks enabled clocks]
+Message-ID: <20210802202855.GL22278@shell.armlinux.org.uk>
+References: <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
+ <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
+ <20210728202547.7uvfwflpruku7yps@pengutronix.de>
+ <20210728204033.GF22278@shell.armlinux.org.uk>
+ <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
+ <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
+ <20210802094810.GJ22278@shell.armlinux.org.uk>
+ <20210802152755.ibisunvibmwhiyry@pengutronix.de>
+ <20210802163824.GK22278@shell.armlinux.org.uk>
+ <CAHp75VcpA0vOwN8gBj2iikXW2dw+KCgZEM=QJ5Jx6UWqww=iCw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VcpA0vOwN8gBj2iikXW2dw+KCgZEM=QJ5Jx6UWqww=iCw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Mon, Aug 02, 2021 at 08:13:05PM +0300, Andy Shevchenko wrote:
+> On Mon, Aug 2, 2021 at 7:38 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> > It probably depends on where you stand on power management and power
+> > efficiency issues. Personally, I would like to see more effort put
+> > into drivers to make them more power efficient, and I believe in the
+> > coming years, power efficiency is going to become a big issue.
+> 
+> While in the ideal world I 100% agree with the approach, IRL we have
+> to deal with constantly degrading quality of the code and instead of
+> thinking about power management and efficiency the absence of APIs
+> such as discussed provokes not only creating the power management
+> inefficient code, but also memory leaks here and there.
 
-Today's linux-next merge of the net-next tree got a conflict in:
+The point of my previous reply that you quoted above was to make a
+prediction, it wasn't a rejection of the approach.
 
-  drivers/net/dsa/sja1105/sja1105_main.c
-
-between commit:
-
-  589918df9322 ("net: dsa: sja1105: be stateless with FDB entries on SJA1105P/Q/R/S/SJA1110 too")
-
-from the net tree and commit:
-
-  0fac6aa098ed ("net: dsa: sja1105: delete the best_effort_vlan_filtering mode")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-diff --cc drivers/net/dsa/sja1105/sja1105_main.c
-index 8667c9754330,5ab1676a7448..000000000000
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@@ -1445,23 -1474,25 +1499,29 @@@ int sja1105pqrs_fdb_add(struct dsa_swit
-  	/* Search for an existing entry in the FDB table */
-  	l2_lookup.macaddr = ether_addr_to_u64(addr);
-  	l2_lookup.vlanid = vid;
- -	l2_lookup.iotag = SJA1105_S_TAG;
-  	l2_lookup.mask_macaddr = GENMASK_ULL(ETH_ALEN * 8 - 1, 0);
-- 	l2_lookup.mask_vlanid = VLAN_VID_MASK;
-+ 	if (priv->vlan_aware) {
-+ 		l2_lookup.mask_vlanid = VLAN_VID_MASK;
-+ 		l2_lookup.mask_iotag = BIT(0);
-+ 	} else {
-+ 		l2_lookup.mask_vlanid = 0;
-+ 		l2_lookup.mask_iotag = 0;
-+ 	}
-  	l2_lookup.destports = BIT(port);
-  
- +	tmp = l2_lookup;
- +
-  	rc = sja1105_dynamic_config_read(priv, BLK_IDX_L2_LOOKUP,
- -					 SJA1105_SEARCH, &l2_lookup);
- -	if (rc == 0) {
- -		/* Found and this port is already in the entry's
- +					 SJA1105_SEARCH, &tmp);
- +	if (rc == 0 && tmp.index != SJA1105_MAX_L2_LOOKUP_COUNT - 1) {
- +		/* Found a static entry and this port is already in the entry's
-  		 * port mask => job done
-  		 */
- -		if (l2_lookup.destports & BIT(port))
- +		if ((tmp.destports & BIT(port)) && tmp.lockeds)
-  			return 0;
- +
- +		l2_lookup = tmp;
- +
-  		/* l2_lookup.index is populated by the switch in case it
-  		 * found something.
-  		 */
-@@@ -1536,8 -1537,15 +1596,14 @@@ int sja1105pqrs_fdb_del(struct dsa_swit
-  
-  	l2_lookup.macaddr = ether_addr_to_u64(addr);
-  	l2_lookup.vlanid = vid;
- -	l2_lookup.iotag = SJA1105_S_TAG;
-  	l2_lookup.mask_macaddr = GENMASK_ULL(ETH_ALEN * 8 - 1, 0);
-- 	l2_lookup.mask_vlanid = VLAN_VID_MASK;
-+ 	if (priv->vlan_aware) {
-+ 		l2_lookup.mask_vlanid = VLAN_VID_MASK;
-+ 		l2_lookup.mask_iotag = BIT(0);
-+ 	} else {
-+ 		l2_lookup.mask_vlanid = 0;
-+ 		l2_lookup.mask_iotag = 0;
-+ 	}
-  	l2_lookup.destports = BIT(port);
-  
-  	rc = sja1105_dynamic_config_read(priv, BLK_IDX_L2_LOOKUP,
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
