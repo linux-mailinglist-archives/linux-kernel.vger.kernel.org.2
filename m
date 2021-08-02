@@ -2,92 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4ED3DDE53
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6133DDE58
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbhHBRT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 13:19:29 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3565 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhHBRT1 (ORCPT
+        id S230101AbhHBRUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 13:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhHBRUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 13:19:27 -0400
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gdl955vfwz6F7yt;
-        Tue,  3 Aug 2021 01:19:05 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 19:19:14 +0200
-Received: from [10.47.87.154] (10.47.87.154) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 2 Aug 2021
- 18:19:13 +0100
-Subject: Re: [PATCH v4 5/6] iova: Add iova_len argument to init_iova_domain()
-From:   John Garry <john.garry@huawei.com>
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <sakari.ailus@linux.intel.com>,
-        <mst@redhat.com>, <airlied@linux.ie>, <gregkh@linuxfoundation.org>,
-        <linuxarm@huawei.com>, <jonathanh@nvidia.com>,
-        <iommu@lists.linux-foundation.org>, <thierry.reding@gmail.com>,
-        <daniel@ffwll.ch>, <bingbu.cao@intel.com>, <digetx@gmail.com>,
-        <mchehab@kernel.org>, <jasowang@redhat.com>,
-        <tian.shu.qiu@intel.com>
-References: <1626259003-201303-1-git-send-email-john.garry@huawei.com>
- <1626259003-201303-6-git-send-email-john.garry@huawei.com>
- <20210802150644.GD28735@willie-the-truck>
- <c6be0b9f-531b-dc12-2747-3acbecfcd531@huawei.com>
- <1d06eda1-9961-d023-f5e7-fe87e768f067@arm.com>
- <a7c2ce29-ca28-83a3-6432-a508df9825ac@huawei.com>
-Message-ID: <099da8be-00dc-09cb-d72c-8e7b4b724f7c@huawei.com>
-Date:   Mon, 2 Aug 2021 18:18:45 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Mon, 2 Aug 2021 13:20:02 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3A8C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 10:19:52 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id cb3so10081739ejb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 10:19:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Kgsw97NVFKM1NINGpazGJg2D+jbYM5Prts4Ms4WIhmw=;
+        b=V24lPFLG2LkOzZKhAdjBSrv1m8CzKwqWczXzFUcQ9/0xznmVvi7sEd+mhQN6++WoBj
+         +0Z8YejWKRUZplZqoI+L3jQtZeJJ/sDNpRIgxBClq77omFhDi8D1Vl7+6bakiZNv94MK
+         DN54P3eRJfKX8Ne76B1WDUiRgfcMTfEhyaudW26C13CeODIAB1UXrlbHRAO3hMCpePlv
+         MGuBRlP5HWXlcLpkEnOivm9qYt2n+uyhoB2L6TGVRPPj9D5e+7Sf0ZKCHqyghQF1HmS6
+         ZYRqhDJ1ST2+Ogw8Win3DkrqtLzG/OB0aK/MDvI8KqZFjSYX8lxycD4lFtLLpFduJ2HS
+         WFuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Kgsw97NVFKM1NINGpazGJg2D+jbYM5Prts4Ms4WIhmw=;
+        b=A+aKF62WOR4PCom0mlxvD1S3zKkRpxtUjER95B4EWPpCSvJWuse03rFWslK5sVBcbW
+         9tqRVqOOEk0jjhflsEx+U7ZbXYa5UWIM8RC81GUe/xjSVGWvYXdF6Bf0+hjUgQ6+fKYq
+         3fkGrVYRmDcQYE1r7BeuP08Iu3DMCNBCA7er9GiUBhP7t7tIbGQXA+xd0u9X4nsuRPzb
+         fHKaJLw6domAger2rePST6TbYMfuLu5w7fw49yrRI/c2N0VQ9JCfyM+Kb7IDe+QaiYy0
+         SXbJBpn8r0GoswTbzwgXaopvVzSxtZPEKJ5yr5wUd4n/WpLdocVwZsBYTktMgstOcC2Z
+         uNMA==
+X-Gm-Message-State: AOAM533+HUfrD04eM/BhPcXtTffzfKazrHHxsHnvXEX7BoYPtEBk/SWP
+        FEoS/Iq1fVrCgHO56I3PJR8=
+X-Google-Smtp-Source: ABdhPJzfs+VXJzaVSlUOPcsjhzwAWXyway26QjidiyNlOSGXySMPb8uhUgvdTqr5iP10dop+aX6S4Q==
+X-Received: by 2002:a17:906:e0ce:: with SMTP id gl14mr16496132ejb.168.1627924791169;
+        Mon, 02 Aug 2021 10:19:51 -0700 (PDT)
+Received: from agape.jhs ([5.171.8.39])
+        by smtp.gmail.com with ESMTPSA id i16sm6516196edr.38.2021.08.02.10.19.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 10:19:50 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 19:19:48 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     gregkh@linuxfoundation.org, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] Clean up some extraneous wrappers and some empty
+ routines
+Message-ID: <20210802171947.GA1405@agape.jhs>
+References: <20210802151546.31797-1-Larry.Finger@lwfinger.net>
 MIME-Version: 1.0
-In-Reply-To: <a7c2ce29-ca28-83a3-6432-a508df9825ac@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.87.154]
-X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802151546.31797-1-Larry.Finger@lwfinger.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2021 17:40, John Garry wrote:
-> On 02/08/2021 17:16, Robin Murphy wrote:
->> On 2021-08-02 17:06, John Garry wrote:
->>> On 02/08/2021 16:06, Will Deacon wrote:
->>>> On Wed, Jul 14, 2021 at 06:36:42PM +0800, John Garry wrote:
->>>>> Add max opt argument to init_iova_domain(), and use it to set the 
->>>>> rcaches
->>>>> range.
->>>>>
->>>>> Also fix up all users to set this value (at 0, meaning use default).
->>>> Wrap that in init_iova_domain_defaults() to avoid the mysterious 0?
->>>
->>> Sure, I can do something like that. I actually did have separate 
->>> along those lines in v3 before I decided to change it.
->>
->> Y'know, at this point I'm now starting to seriously wonder whether 
->> moving the rcaches into iommu_dma_cookie wouldn't make a whole lot of 
->> things simpler... :/
-> 
-> As I see, the rcache stuff isn't really specific to IOVA anyway, so it 
-> seems sane.
-> 
->>
->> Does that sound like crazy talk to you, or an idea worth entertaining?
-> 
-> If you're going to start moving things, has anyone considered putting 
-> rcache support in lib as a generic solution to "Magazines and Vmem: .." 
-> paper?
+Hi Larry,
 
-Having said that, I still think that the rcache code has certain 
-scalability issues, as discussed before. So making more generic and then 
-discarding would be less than ideal.
+On Mon, Aug 02, 2021 at 10:15:40AM -0500, Larry Finger wrote:
+> The original code created some wrappers to handle the differences between
+> Linux and Windows. In a Linux-only version, these can be removed.
+> 
+> Larry Finger (6):
+>   staging: r8188eu: Remove wrappers for kalloc() and kzalloc()
+>   staging: r8188eu: Remove wrapper around vfree
+>   staging: r8188eu: Remove wrappers for atomic operations
+>   staging: r8188eu: Remove 4 empty routines from os_sep/service.c
+>   staging: r8188eu: Remove all calls to _rtw_spinlock_free()
+>   staging: r8188eu: Remove more empty routines
+> 
+>  drivers/staging/r8188eu/core/rtw_ap.c         |   8 +-
+>  drivers/staging/r8188eu/core/rtw_br_ext.c     |   2 +-
+>  drivers/staging/r8188eu/core/rtw_br_ext.c.rej |  11 ++
 
-Thanks,
-john
+what these .rej files are?
+
+>  drivers/staging/r8188eu/core/rtw_cmd.c        |  16 +--
+>  drivers/staging/r8188eu/core/rtw_efuse.c      |   4 +-
+>  drivers/staging/r8188eu/core/rtw_efuse.c.rej  |  20 ++++
+>  drivers/staging/r8188eu/core/rtw_mlme.c       |  15 +--
+>  drivers/staging/r8188eu/core/rtw_mlme_ext.c   |  44 +++----
+>  .../staging/r8188eu/core/rtw_mlme_ext.c.rej   | 107 ++++++++++++++++++
+>  drivers/staging/r8188eu/core/rtw_mp.c         |   5 +-
+>  drivers/staging/r8188eu/core/rtw_p2p.c        |   8 +-
+>  drivers/staging/r8188eu/core/rtw_p2p.c.rej    |  18 +++
+>  drivers/staging/r8188eu/core/rtw_recv.c       |  16 +--
+>  drivers/staging/r8188eu/core/rtw_sta_mgt.c    |  48 +-------
+>  drivers/staging/r8188eu/core/rtw_wlan_util.c  |   2 +-
+>  drivers/staging/r8188eu/core/rtw_xmit.c       |  26 +----
+>  drivers/staging/r8188eu/hal/odm_interface.c   |   2 +-
+>  drivers/staging/r8188eu/hal/rtl8188e_cmd.c    |   2 +-
+>  .../staging/r8188eu/hal/rtl8188e_cmd.c.rej    |  11 ++
+>  .../staging/r8188eu/hal/rtl8188e_hal_init.c   |  10 +-
+>  .../r8188eu/hal/rtl8188e_hal_init.c.rej       |  34 ++++++
+>  drivers/staging/r8188eu/hal/rtl8188eu_recv.c  |   3 +-
+>  .../staging/r8188eu/hal/rtl8188eu_recv.c.rej  |  12 ++
+>  drivers/staging/r8188eu/hal/usb_halinit.c     |   2 +-
+>  drivers/staging/r8188eu/hal/usb_halinit.c.rej |  11 ++
+>  drivers/staging/r8188eu/include/drv_types.h   |   2 +-
+>  .../staging/r8188eu/include/odm_precomp.h.rej |  19 ++++
+>  .../staging/r8188eu/include/osdep_service.h   |  28 -----
+>  drivers/staging/r8188eu/include/rtw_cmd.h     |   2 +-
+>  .../staging/r8188eu/include/rtw_mlme_ext.h    |   2 +-
+>  drivers/staging/r8188eu/include/usb_ops.h     |   4 +-
+>  drivers/staging/r8188eu/os_dep/ioctl_linux.c  |  70 ++++++------
+>  drivers/staging/r8188eu/os_dep/mlme_linux.c   |   3 +-
+>  drivers/staging/r8188eu/os_dep/os_intfs.c     |   2 -
+>  .../staging/r8188eu/os_dep/osdep_service.c    | 105 +----------------
+>  drivers/staging/r8188eu/os_dep/rtw_android.c  |   2 -
+>  drivers/staging/r8188eu/os_dep/usb_intf.c     |  10 +-
+>  drivers/staging/r8188eu/os_dep/xmit_linux.c   |   2 +-
+>  .../staging/r8188eu/os_dep/xmit_linux.c.rej   |  11 ++
+>  39 files changed, 366 insertions(+), 333 deletions(-)
+>  create mode 100644 drivers/staging/r8188eu/core/rtw_br_ext.c.rej
+>  create mode 100644 drivers/staging/r8188eu/core/rtw_efuse.c.rej
+>  create mode 100644 drivers/staging/r8188eu/core/rtw_mlme_ext.c.rej
+>  create mode 100644 drivers/staging/r8188eu/core/rtw_p2p.c.rej
+>  create mode 100644 drivers/staging/r8188eu/hal/rtl8188e_cmd.c.rej
+>  create mode 100644 drivers/staging/r8188eu/hal/rtl8188e_hal_init.c.rej
+>  create mode 100644 drivers/staging/r8188eu/hal/rtl8188eu_recv.c.rej
+>  create mode 100644 drivers/staging/r8188eu/hal/usb_halinit.c.rej
+>  create mode 100644 drivers/staging/r8188eu/include/odm_precomp.h.rej
+>  create mode 100644 drivers/staging/r8188eu/os_dep/xmit_linux.c.rej
+> 
+> -- 
+> 2.32.0
+> 
+> 
+
+thank you,
+
+fabio
