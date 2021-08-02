@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3823DD480
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69003DD484
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbhHBLQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbhHBLQy (ORCPT
+        id S233411AbhHBLSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:18:34 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7774 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231881AbhHBLSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:16:54 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7D6C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 04:16:44 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id k4-20020a17090a5144b02901731c776526so31065562pjm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 04:16:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=R6GXUz7kzvPzppSdt3z4/dwHpwHS0zM/rSsMW9Edp1o=;
-        b=IB3AOEneq/zsq6WG+K9Dx+tGjfWRzwSos4X1zR4PK+YOdHjaXNYL+0d057isGuH2bp
-         U1W2OX/daOjme+rPee8zQnzgqRJAaGgxNrWL0BzDRHlIRLSoBhqcfSAbhSGu9/V/5ZGX
-         pNXt5U9rcLjZaMOLU5H4hquh/+M0URu80NcCEFuDGcn/C6XhLUpotKnW6HWdgmRsr7i5
-         YdLHgFQcEcMvs9YG3QjLXQwRP3jCFCoIewoczCg5c3CpsUT9AGa5ZJqy/aDQdLiVANFk
-         iS3wKFtJaCr2GGVr7SSUY99Te33U+xpiBOFLChL37z3CgkwBq+XxxT0cm3YNiAnUGEps
-         nhcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=R6GXUz7kzvPzppSdt3z4/dwHpwHS0zM/rSsMW9Edp1o=;
-        b=CxbJQxlkbzdCcKKVz/HG6UchpaCmzeidg1SZHJqgOpeIK0M4fJKmbum0hzL18KrgDv
-         kYN2QPlWBC+7LxQoD+tGwEivc6t8oQm08Uh6X0B5a42XmZrbSWY2Iv8AE2Ia89pcWJRx
-         RY7Sf7utgw1B4Uxkp9L+8aGxru7hBUTcH2wg22vQiROZhfym+mnrN9pRFCUaRdcOWnfb
-         CpLdNfsT5RIwb2kqf0b4aTvicvT0xyElZeUUWinu2yRh7tINP0s44MFQnRV+61AZk9H7
-         GKJ3keuV5hp3Fj9U3VL2zY8/EaMx71N10klnYGxBlbn1qoabe8Kz/7FtzpgZWsERyNUo
-         6PVw==
-X-Gm-Message-State: AOAM531Belzjs/i2rSNQteXiKtB6Mi4XXGqce7p6v0hZAPkT9bZ1T4ko
-        +lOAQYo3EdTouP4XwzSSqtc=
-X-Google-Smtp-Source: ABdhPJwfTXmmpUNkLpa4I7JfKlBw46SS76hdMpnno6UD5NxuaRk4EFtZTA3ZOXumH8zJRoqx6KSJCw==
-X-Received: by 2002:a17:90a:e2c8:: with SMTP id fr8mr16316205pjb.131.1627903004035;
-        Mon, 02 Aug 2021 04:16:44 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id p11sm10231087pju.20.2021.08.02.04.16.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 04:16:43 -0700 (PDT)
-Subject: Re: [PATCH] mtd: fix lock hierarchy in deregister_mtd_blktrans
-To:     miquel.raynal@bootlin.com
-Cc:     richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Hillf Danton <hdanton@sina.com>
-References: <20210717100719.728829-1-desmondcheongzx@gmail.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <999b1450-949e-fd90-6bf2-7fd4452158bb@gmail.com>
-Date:   Mon, 2 Aug 2021 19:16:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 2 Aug 2021 07:18:32 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gdb8p1TkNzYh96;
+        Mon,  2 Aug 2021 19:18:18 +0800 (CST)
+Received: from [10.174.179.25] (10.174.179.25) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 19:18:21 +0800
+Subject: Re: [PATCH 4/5] mm, memcg: avoid possible NULL pointer dereferencing
+ in mem_cgroup_init()
+To:     Michal Hocko <mhocko@suse.com>
+CC:     Roman Gushchin <guro@fb.com>, <hannes@cmpxchg.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
+        <shakeelb@google.com>, <willy@infradead.org>, <alexs@kernel.org>,
+        <richard.weiyang@gmail.com>, <songmuchun@bytedance.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>
+References: <20210729125755.16871-1-linmiaohe@huawei.com>
+ <20210729125755.16871-5-linmiaohe@huawei.com> <YQNuK+jN7pZLJTvT@carbon.lan>
+ <YQOf0TKOXpGRQFHF@dhcp22.suse.cz>
+ <f7a22702-cd08-6b15-48c7-68523c38060b@huawei.com>
+ <YQeUATTCVMd1D7Ra@dhcp22.suse.cz>
+ <47daf062-f510-edb3-6ec7-f8e7615ad8a0@huawei.com>
+ <YQfMISKHetFOm1Kx@dhcp22.suse.cz>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <59122ae4-52c9-4ff9-104d-872d770dec0c@huawei.com>
+Date:   Mon, 2 Aug 2021 19:18:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210717100719.728829-1-desmondcheongzx@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <YQfMISKHetFOm1Kx@dhcp22.suse.cz>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.25]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/7/21 6:07 pm, Desmond Cheong Zhi Xi wrote:
-> There is a lock hierarchy of major_names_lock --> mtd_table_mutex. One
-> existing chain is as follows:
+On 2021/8/2 18:42, Michal Hocko wrote:
+> On Mon 02-08-21 18:00:10, Miaohe Lin wrote:
+>> On 2021/8/2 14:43, Michal Hocko wrote:
+>>> On Sat 31-07-21 10:05:51, Miaohe Lin wrote:
+>>>> On 2021/7/30 14:44, Michal Hocko wrote:
+>>>>> On Thu 29-07-21 20:12:43, Roman Gushchin wrote:
+>>>>>> On Thu, Jul 29, 2021 at 08:57:54PM +0800, Miaohe Lin wrote:
+>>>>>>> rtpn might be NULL in very rare case. We have better to check it before
+>>>>>>> dereferencing it. Since memcg can live with NULL rb_tree_per_node in
+>>>>>>> soft_limit_tree, warn this case and continue.
+>>>>>>>
+>>>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>>>> ---
+>>>>>>>  mm/memcontrol.c | 2 ++
+>>>>>>>  1 file changed, 2 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>>>>>>> index 5b4592d1e0f2..70a32174e7c4 100644
+>>>>>>> --- a/mm/memcontrol.c
+>>>>>>> +++ b/mm/memcontrol.c
+>>>>>>> @@ -7109,6 +7109,8 @@ static int __init mem_cgroup_init(void)
+>>>>>>>  		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL,
+>>>>>>>  				    node_online(node) ? node : NUMA_NO_NODE);
+>>>>>>>  
+>>>>>>> +		if (WARN_ON_ONCE(!rtpn))
+>>>>>>> +			continue;
+>>>>>>
+>>>>>> I also really doubt that it makes any sense to continue in this case.
+>>>>>> If this allocations fails (at the very beginning of the system's life, it's an __init function),
+>>>>>> something is terribly wrong and panic'ing on a NULL-pointer dereference sounds like
+>>>>>> a perfect choice.
+>>>>>
+>>>>> Moreover this is 24B allocation during early boot. Kernel will OOM and
+>>>>> panic when not being able to find any victim. I do not think we need to
+>>>>
+>>>> Agree with you. But IMO it may not be a good idea to leave the rtpn without NULL check. We should defend
+>>>> it though it could hardly happen. But I'm not insist on this check. I will drop this patch if you insist.
+>>>
+>>> It is not that I would insist. I just do not see any point in the code
+>>> churn. This check is not going to ever trigger and there is nothing you
+>>> can do to recover anyway so crashing the kernel is likely the only
+>>> choice left.
+>>>
+>>
+>> I hope I get the point now. What you mean is nothing we can do to recover and panic'ing on a
+>> NULL-pointer dereference is a perfect choice ? Should we declare that we leave the rtpn without
+>> NULL check on purpose like below ?
+>>
+>> Many thanks.
+>>
+>> @@ -7109,8 +7109,12 @@ static int __init mem_cgroup_init(void)
+>>                 rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL,
+>>                                     node_online(node) ? node : NUMA_NO_NODE);
+>>
+>> -               if (WARN_ON_ONCE(!rtpn))
+>> -                       continue;
+>> +               /*
+>> +                * If this allocation fails (at the very beginning of the
+>> +                * system's life, it's an __init function), something is
+>> +                * terribly wrong and panic'ing on a NULL-pointer
+>> +                * dereference sounds like a perfect choice.
+>> +                */
 > 
-> 1. major_names_lock --> loop_ctl_mutex (when blk_request_module calls
-> loop_probe)
+> I am not really sure this is really worth it. Really we do not really
+> want to have similar comments all over the early init code, do we?
+
+Maybe not. Will drop this patch.
+
+Thanks.
+
 > 
-> 2. loop_ctl_mutex --> bdev->bd_mutex (when loop_control_ioctl calls
-> loop_remove, which then calls del_gendisk)
-> 
-> 3. bdev->bd_mutex --> mtd_table_mutex (when blkdev_get_by_dev calls
-> __blkdev_get, which then calls blktrans_open)
-> 
-> Since unregister_blkdev grabs the major_names_lock, we need to call it
-> outside the critical section for mtd_table_mutex, otherwise we invert
-> the lock hierarchy.
-> 
-> Reported-by: Hillf Danton <hdanton@sina.com>
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> ---
->   drivers/mtd/mtd_blkdevs.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> index 7d26cfe24d05..87e26788ef60 100644
-> --- a/drivers/mtd/mtd_blkdevs.c
-> +++ b/drivers/mtd/mtd_blkdevs.c
-> @@ -563,8 +563,8 @@ int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr)
->   	list_for_each_entry_safe(dev, next, &tr->devs, list)
->   		tr->remove_dev(dev);
->   
-> -	unregister_blkdev(tr->major, tr->name);
->   	mutex_unlock(&mtd_table_mutex);
-> +	unregister_blkdev(tr->major, tr->name);
->   
->   	BUG_ON(!list_empty(&tr->devs));
->   	return 0;
+>>                 rtpn->rb_root = RB_ROOT;
+>>                 rtpn->rb_rightmost = NULL;
+>>                 spin_lock_init(&rtpn->lock);
 > 
 
-Hi Miquèl,
-
-Just a friendly ping, this patch is part 2 of fixing the lock hierarchy 
-inversion between major_names_lock and mtd_table_mutex that was 
-identified by Hillf Danton.
-
-Best wishes,
-Desmond
