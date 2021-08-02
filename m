@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5E73DD775
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12B83DD778
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233850AbhHBNnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:43:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46381 "EHLO
+        id S233742AbhHBNnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:43:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59589 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233719AbhHBNnL (ORCPT
+        by vger.kernel.org with ESMTP id S233719AbhHBNne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:43:11 -0400
+        Mon, 2 Aug 2021 09:43:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627911781;
+        s=mimecast20190719; t=1627911804;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SLB5Wppyf3HhgKlJbKvVGRoxW2c24dGzTvH4Hy2jF/Y=;
-        b=C2dbVH+Lhs+mCnaFimGQfOuTjJAYXUB4EP0h5v8ubalBaeqqluItAB3KlhrLT3W+IoWVC/
-        JDdeHe0wKEH7UGLudkEQv7ONe0MgnFNMcjZJZBS+cdV7o0b12eg+ObiJJwG/qiIpdCH+U4
-        Oe6jDVh6Ct5BOHTp41LbmgAEuVadI/0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-JuQcQM-sPHeTqE6vTHQ0gw-1; Mon, 02 Aug 2021 09:43:00 -0400
-X-MC-Unique: JuQcQM-sPHeTqE6vTHQ0gw-1
-Received: by mail-ed1-f69.google.com with SMTP id s8-20020a0564020148b02903948b71f25cso8782251edu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 06:43:00 -0700 (PDT)
+        bh=10E0KbDcNF3xBbVH8wjtzXO09PrLbKBJPWy5SH+LtDM=;
+        b=WsBx5YkfjPkfswURjuiUcghF3MG0w7gtyysYutwqughefwtP6HIRx4pCsKLpY7IAnsuRe5
+        xewJWmIytvbZ+i1YjY3cRLlFd6QNk06+pqyTPbQ4/8qa2mx3K2q0dGcb8z5td2i3I93aDd
+        Hw3ROlt9gbRpK1CoUQASbTCRWkJHcQQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-K8xyxR3eOtuo5HSDY87Mwg-1; Mon, 02 Aug 2021 09:43:23 -0400
+X-MC-Unique: K8xyxR3eOtuo5HSDY87Mwg-1
+Received: by mail-wr1-f70.google.com with SMTP id p12-20020a5d68cc0000b02901426384855aso6475700wrw.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 06:43:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SLB5Wppyf3HhgKlJbKvVGRoxW2c24dGzTvH4Hy2jF/Y=;
-        b=PBNl12ZbFkm+pizQl9YProjZA6HhcsBhKtC9sYImNQx1SdE0KIWsb8DETHMf3p84wx
-         ggr8ItDhd228uCMHcRANBNsjjYgml4UZqdb+HJn4U+Ytbh6LC/QlefZ4uyZr+1b1/YTt
-         31Gka3djnSFxBDvnXqNqiTEhlrlPgloSpzsPFVTQlaxOLcX+pyCyY1rgPJBmJZAqu5uE
-         O/h+ZbffNbPEr36CU8scQyob0Twiz7aYerCPjOpyuRzKrtq5oTgE7KTAWy6r0yyFeCRF
-         xGzTQc0EcQyXehZ0vskTgiy1JMWDkzK1e//ILqQ/U/ApT344H87VWW+z0M8p7uJFd1n7
-         st2w==
-X-Gm-Message-State: AOAM531GsLKouqc8PnUbK8ZWTpHEV5BXxdsPzBkGMFdzPK2YYj1zy1Q3
-        qFqsuFJmkuS8qRGY/Q3fMexNkuZ2YGCmp9iUhlHaugMiIErPrRV97mKNuiirz5JBGQdLO6PZUog
-        TR/I6ri5b6IyHUKv1ljxWf0q0
-X-Received: by 2002:a17:906:b351:: with SMTP id cd17mr15955960ejb.36.1627911779590;
-        Mon, 02 Aug 2021 06:42:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw42KADDqSCxnBjQagyeBWMBJYH2GNJQ+isAlFVy8Aq7jtoj+DcyNpXJj2+GajVJYGf0thj9g==
-X-Received: by 2002:a17:906:b351:: with SMTP id cd17mr15955937ejb.36.1627911779411;
-        Mon, 02 Aug 2021 06:42:59 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id oz31sm4545973ejb.54.2021.08.02.06.42.58
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=10E0KbDcNF3xBbVH8wjtzXO09PrLbKBJPWy5SH+LtDM=;
+        b=s5Xq56LB51K0d+YfBVmkEilHZX2tiGAI2Tj+rNW4tI6QIUKpmEBh3gvyXd4h8UHDxU
+         laDftkQQxKYHAXgVnHRsVWWY7KR0wG7BJ5oFv7+g0vc1IYbKrxHHZ1R969IwFarzNtn5
+         +JTBIPxGeFrZB+dhYT/ZaG/PVnznqBoWTynSn3WezN2wUZlT7v4C9uq862N7T3aXX5aC
+         HZV/Rv4Ipfr7FCz0vVfKEq2bLXMv5/HIP3FnTFo+COWciMXTvw5dX9Dunerl2K575HjI
+         veETBwsQcjD06XL/9KV7kBdGiRnXDyp0OsrAsYYj2hh7tyWmu7Fb+LLkJhzGudLGzsem
+         yHzg==
+X-Gm-Message-State: AOAM532ticjV11zYoxlt8gji+ZhV3t1QKg5AqUrgsqCLCu083gulbUKo
+        4yjXeDRviE/p+wOdd1dAA0pDZapLCT7eOlUrJWHR1FbD7w//bSqyi/suJvaZ/GaXDP0YJEOyOs7
+        zeV+LLrLQfhpCjHk8HNKeOC/z
+X-Received: by 2002:a5d:6d8c:: with SMTP id l12mr7607052wrs.290.1627911802420;
+        Mon, 02 Aug 2021 06:43:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqlT6pmqx3O86acE7/FPgrql7S7TmLq+6UU6RuIU5lnEOJUjY+xHnA5ouKs2ESuJaT7LzhCQ==
+X-Received: by 2002:a5d:6d8c:: with SMTP id l12mr7607042wrs.290.1627911802287;
+        Mon, 02 Aug 2021 06:43:22 -0700 (PDT)
+Received: from pc-32.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
+        by smtp.gmail.com with ESMTPSA id h11sm6835219wmq.34.2021.08.02.06.43.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 06:42:59 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 15:42:51 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     fuguancheng <fuguancheng@bytedance.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
-        davem@davemloft.net, kuba@kernel.org, arseny.krasnov@kaspersky.com,
-        andraprs@amazon.com, colin.king@canonical.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] Add multi-cid support for vsock driver
-Message-ID: <20210802134251.hgg2wnepia4cjwnv@steredhat>
-References: <20210802120720.547894-1-fuguancheng@bytedance.com>
+        Mon, 02 Aug 2021 06:43:21 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 15:43:20 +0200
+From:   Guillaume Nault <gnault@redhat.com>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: How to find out name or id of newly created interface
+Message-ID: <20210802134320.GB3756@pc-32.home>
+References: <20210731203054.72mw3rbgcjuqbf4j@pali>
+ <20210802100238.GA3756@pc-32.home>
+ <20210802105825.td57b5rd3d6xfxfo@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210802120720.547894-1-fuguancheng@bytedance.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210802105825.td57b5rd3d6xfxfo@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 08:07:16PM +0800, fuguancheng wrote:
->This patchset enables the user to specify additional CIDS for host and
->guest when booting up the guest machine. The guest's additional CIDS cannot
->be repeated, and can be used to communicate with the host. The user can
->also choose to specify a set of additional host cids, which can be
->used to communicate with the guest who specify them. The original
->CID(VHOST_DEFAULT_CID) is still available for host. The guest cid field is
->deleted.
->
->To ensure that multiple guest CID maps to the same vhost_vsock struct,
->a struct called vhost_vsock_ref is added.  The function of vhost_vsock_ref
->is simply used to allow multiple guest CIDS map to the
->same vhost_vsock struct.
->
->If not specified, the host and guest will now use the first CID specified
->in the array for connect operation. If the host or guest wants to use
->one specific CID, the bind operation can be performed before the connect
->operation so that the vsock_auto_bind operation can be avoided.
->
->Hypervisors such as qemu needs to be modified to use this feature. The
->required changes including at least the following:
->1. Invoke the modified ioctl call with the request code
->VHOST_VSOCK_SET_GUEST_CID. Also see struct multi_cid_message for
->arguments used in this ioctl call.
->2. Write new arguments to the emulated device config space.
->3. Modify the layout of the data written to the device config space.
->See struct virtio_vsock_config for reference.
+On Mon, Aug 02, 2021 at 12:58:25PM +0200, Pali Rohár wrote:
+> On Monday 02 August 2021 12:02:38 Guillaume Nault wrote:
+> > 
+> > So the proper solution is to implement NLM_F_ECHO support for
+> > RTM_NEWLINK messages (RTM_NEWROUTE is an example of netlink handler
+> > that supports NLM_F_ECHO, see rtmsg_fib()).
+> 
+> Do you know if there is some workaround / other solution which can be
+> used by userspace applications now? And also with stable kernels (which
+> obviously do not receive this new NLM_F_ECHO support for RTM_NEWLINK)?
 
-Can you please describe a use case?
+I unfortunately can't think of any clean solution. It might be possible
+to create the new interface with attributes very unlikely to be used by
+external programs and retrieve the interface name and id by monitoring
+link creation messages (like 'ip monitor' does). But at this point it's
+probably easier to just set the interface name and retry with a
+different name every time it conflicted with an existing device.
 
-vsock was created to be zero configuration, we're complicating enough 
-here, we should have a particular reason.
-
-Also I gave a quick view and it seems to me that you change 
-virtio_vsock_config, are you sure it works if one of the two peers 
-doesn't support multiple CIDs?
-
-Maybe we'd need a new feature bit, and we'd definitely need to discuss 
-specification changes with virtio-comment@lists.oasis-open.org first.
-
-How does the guest or host applications know which CIDs are assigned to 
-them?
-
-Please use the RFC tag if the patches are not in good shape.
-Patches seem hard to review, please avoid adding code that is removed 
-later (e.g.  multi_cid_message), and try not to break the backward 
-compatibility.
-
-Thanks,
-Stefano
+Maybe someone else could propose less hacky solutions, but I really
+can't think of anything else apart from implementing NLM_F_ECHO.
 
