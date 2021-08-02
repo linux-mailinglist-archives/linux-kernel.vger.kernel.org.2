@@ -2,117 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEB03DDD7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79ACC3DDD91
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbhHBQVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
+        id S232746AbhHBQYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhHBQVj (ORCPT
+        with ESMTP id S230265AbhHBQYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:21:39 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BABC06175F;
-        Mon,  2 Aug 2021 09:21:28 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id c16so22109386wrp.13;
-        Mon, 02 Aug 2021 09:21:28 -0700 (PDT)
+        Mon, 2 Aug 2021 12:24:40 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7553C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 09:24:30 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id f22so17108346qke.10
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 09:24:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Eo/ko/cKXyffVXdy/1Hup8RlLilDw0wcG1gMwmDSxRA=;
-        b=bWW29oBh9sAPntXWB3hWAVN29lWeSqsKPgOKpS9sl+GDTCWiWizvTBm1jbQFljO3d1
-         I05t/uZVMo5kpEERlB4YppqlViue5NeWp1pN3++/uw6xHN27s8bRWe0dIGfrVFozl9Bl
-         tG/8TLeM4EOED0mIDfwKFwZ9DxNFXNIeQwPD36vsg0712PCfssoX3g32hrrmnC+NcxY0
-         YSMfYJ2fbSHGnXQoJb7pAPPAc6aKrS1C+r+TmzvVUiblEJNGY82DvxMrd6L3PDoYDC1W
-         DxJQ6qQJnWUmmF4MxZV8NWmyRCc2Up0sRQ/z5H/PqkCI+brQAIn1fmDWqccgQbeLjTy+
-         tgEQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PABonhkfz0MvRGA6imtUnPyjypKDIpW3LfF+TjLeY4o=;
+        b=abqfi6gzVw+ynFGoz0A5rBsxqK7BLlHO4rmdg6nFQDPOxt1wwq12n3BaH9if/ZXaOn
+         fYBfeuWw6VKmuxNwo13braCXtqReoz3+AR/o0ROfzVlpmzUbY5rAjA98AezOF7T5biLR
+         8Geu2xgl59mAwBEQQmdLzPWofp+8tv1cXKB8pbjhWgHG1USo3sD/vDSuS32yWER7r3Qj
+         9TYb0uNWFAm7UoMPqBtQVDJi3hDWqI2Xa2T501rI8fR7sLTB42NjdldQPfhSV+wdln68
+         XgY1O0AGD94GK3KC9V2pfdQqV0j2lptAmzeLblBEIfuwNOuVp+9skRad2c4iTGTQVbUY
+         xSzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Eo/ko/cKXyffVXdy/1Hup8RlLilDw0wcG1gMwmDSxRA=;
-        b=uXbBeYRRtYC0u3kmMx96OkNhJg/B203RxKXGsE1JMWQFRxeO4UQpe61j7m7jmnM6xv
-         vXeNEDvYh9wc/CCNMTACsDyEPHYjlnaiObWMnx0U+ha3tcaLVBphamVZZfLDKspXk/78
-         vZyzZPl9eu6u6Ba6lRXxaICT8fTYoC4ohjgZW9oNSJlMz9RX/aY9kZ+T/n44iHQxNjkQ
-         P5mnbb0aAWHXS4P+I3wFDa88Fh1jFRuCwIPBE9TAQlHAoA+HPdBnAJ2uUF4l07izOVgw
-         5rJ5h00uEXPfNsX63Ri2mh1vGnUbMfv6DqhKCiS2WxSWhONP7zNhItYqUxUO5sM9bY6m
-         e0GA==
-X-Gm-Message-State: AOAM532hUdn/PEcFS/7jvhFWkbANSiECvpnsdlsJrSXzNs34XPv8ZvVy
-        6tmaF7EcfNLdhpFZkzNtOzg=
-X-Google-Smtp-Source: ABdhPJwMlXJ/6C6206MZvjQ+7RCGAygddlBwfk70hYzOjyW81IkrpCsWmySfMg+Qh3JNDcX8yeYThw==
-X-Received: by 2002:a5d:528d:: with SMTP id c13mr18746610wrv.343.1627921287427;
-        Mon, 02 Aug 2021 09:21:27 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id c10sm4321264wml.44.2021.08.02.09.21.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 09:21:26 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 18:23:45 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>, SoC Team <soc@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v2] soc/tegra: Make regulator couplers depend on
- CONFIG_REGULATOR
-Message-ID: <YQgcEfv3DJy9jli1@orome.fritz.box>
-References: <20210721232616.1935-1-digetx@gmail.com>
- <YQgC/POOrX4t9hUN@orome.fritz.box>
- <CAK8P3a1oVOqdyYUNBM8UiakEkznQ--SPEHVz4U0HQOMy4DiCbw@mail.gmail.com>
- <CAK8P3a1ycMhqZ-nvsxusPa5JijjL1hBOpBffhJ0okm5Kav0jzA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PABonhkfz0MvRGA6imtUnPyjypKDIpW3LfF+TjLeY4o=;
+        b=Uajb3PnoIGOoTUQomCz42Bl22UcYYdHfoPtb1/PP8bboD1GWUJw4lPl+O0nQBqp7i8
+         sjCXKG+RxnfxAuzd79kB/1eUJSXHC0m/Kx1cPSGcjejkJt1Sg0cSpAWEwmM5eHvIh8TT
+         4FRXX+3qGDYZxuLxKx/lR9eY8epzkvtM2ggMhx34nnZ5H2dnFtpWRoxB5rTrMwKZ4CFt
+         9j+rfzBSBXO8W76erlYfKQ4O1N3XYqPopsdm+MI2VvxduKkTo0fJobxHbGLr3KZigmQf
+         Xxb/tmH97Mr69Gkj1/vt+ReBMKs7aI61ZzV0CkhVRi56Yto4MGPrH6DQWduhrsbsH+GL
+         TJhQ==
+X-Gm-Message-State: AOAM531T0R0kvcV/2xTIi/jAjevz/dRvKN6CnUCfqhUN8v9+7gTL97Ez
+        HkjgFdNNqMjYTEc9+ucTH8yrUrKBcyD7/7m23b0=
+X-Google-Smtp-Source: ABdhPJxSICDT7QAUlLZoant5eoxfyRFLmIvUQ/yn35oDDIe5fQ6jBLfy0/FXQELa3F92AS84FaoFLpUf/W6p/DuJ2FI=
+X-Received: by 2002:a37:64d:: with SMTP id 74mr16630354qkg.407.1627921470080;
+ Mon, 02 Aug 2021 09:24:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vf3CEbbqSz/G3rGB"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1ycMhqZ-nvsxusPa5JijjL1hBOpBffhJ0okm5Kav0jzA@mail.gmail.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+References: <20210731214211.657280-1-jim.cromie@gmail.com> <20210731214211.657280-4-jim.cromie@gmail.com>
+In-Reply-To: <20210731214211.657280-4-jim.cromie@gmail.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Mon, 2 Aug 2021 17:24:18 +0100
+Message-ID: <CACvgo509FWgNcBP9SPyuZV0Wey9sApmgB2Xa_+LJ4r91Cgqhgg@mail.gmail.com>
+Subject: Re: [Intel-gfx] [PATCH v4 3/7] dyndbg: add dyndbg-bitmap definer and callbacks
+To:     Jim Cromie <jim.cromie@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ashley Thomas <Ashley.Thomas2@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Wyatt Wood <Wyatt.Wood@amd.com>,
+        Johan Hovold <johan@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jim,
 
---vf3CEbbqSz/G3rGB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sat, 31 Jul 2021 at 22:42, Jim Cromie <jim.cromie@gmail.com> wrote:
 
-On Mon, Aug 02, 2021 at 05:05:01PM +0200, Arnd Bergmann wrote:
-> On Mon, Aug 2, 2021 at 5:03 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > On Mon, Aug 2, 2021 at 4:35 PM Thierry Reding <thierry.reding@gmail.com=
-> wrote:
-> >
-> > If you have other fixes that are already in your fixes branch
-> ... that you want to have in rc5, please send them soon, as I'm going
-> to prepare that pull request in a few days.
->=20
-> I'll probably do another one for -rc6 though.
+> +struct dyndbg_bitdesc {
+> +       /* bitpos is inferred from index in containing array */
+> +       char *prefix;
+> +       char *help;
+AFAICT these two should also be constant, right?
 
-Okay, will do. Thanks.
 
-Thierry
+> +int param_set_dyndbg(const char *instr, const struct kernel_param *kp)
+> +{
+> +       unsigned int val;
+> +       unsigned long changes, result;
+> +       int rc, chgct = 0, totct = 0, bitpos, bitsmax;
+> +       char query[OUR_QUERY_SIZE];
+> +       struct dyndbg_bitdesc *bitmap = (struct dyndbg_bitdesc *) kp->data;
+> +
+> +       // pr_info("set_dyndbg: instr: %s curr: %d\n", instr, *kp->arg);
+Left-over debug code, here and below?
 
---vf3CEbbqSz/G3rGB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEIG7cACgkQ3SOs138+
-s6EkZA//ZdnqjrQ338ZZNlhh150PojQ/JfLtFYHYRj3fDGKXPbAfQiRMdjRYQ/yE
-Fd8sMWcT1rJ3r2+qkzt7BHyW9zkrRNGHWBRAI+zbMo1pME7ia/jAKDEEqan4aoA2
-FNByG96WD2TxmuBPflRzBRjCsPD/cTFsbVaPjlEwdx3m5SYDzP6jCD5DnkcCbjI7
-U/L2ihw0g7vqAkKvUrtr8RA2YcLccY/W2pimqdXmlQrAy1a87KEG447UtCk0PA2K
-H3DevLVu8vYRlOujkGw9LgZyNRmqh/54sILk+0d8I1apMgxVTWtU393WOZx9p2oW
-Kn17XRwaTD8vwZ4pyfLy9Q4PsqDJ6vri4sK07Dqwj7jGXtu/SHEk0LPNh3tiQV+2
-3dGuHiGR8+P2qMnAvW7UP3yQ6lJIV9qLsbKgMKfE+6iSEKMDgaH/3ZJNSh+vJJ6F
-P0NO4G8hrOn6kjNs2ehai4UMIr84NxYThop9QTvpU3Nc1yJ0d3GIYLsGqADPQGfQ
-xBejqW3YmnsUO08/K714WhnOki+TGxs4auBUlZUIi+JDPq08/QzZgJNTkD/0i2qa
-E59yyGqSWo4f8bjco+GH7l6I5PCNhykTuNTZhUjicKZFQ7tBnyvKgKZ4z5e+hNP1
-akXPKEigG7hAuWqc54tCqg5vk0iabq93tWP/XLSjl0UzAkllybo=
-=8TBq
------END PGP SIGNATURE-----
-
---vf3CEbbqSz/G3rGB--
+-Emil
