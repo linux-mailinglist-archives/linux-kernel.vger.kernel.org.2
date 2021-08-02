@@ -2,167 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30C33DDD40
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743C03DDD45
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhHBQJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:09:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:38148 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhHBQJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:09:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C9C311D4;
-        Mon,  2 Aug 2021 09:09:45 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 976F73F66F;
-        Mon,  2 Aug 2021 09:09:42 -0700 (PDT)
-Subject: Re: [PATCH v4 2/6] iova: Allow rcache range upper limit to be
- flexible
-To:     John Garry <john.garry@huawei.com>, Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, sakari.ailus@linux.intel.com,
-        mst@redhat.com, airlied@linux.ie, gregkh@linuxfoundation.org,
-        linuxarm@huawei.com, jonathanh@nvidia.com,
-        iommu@lists.linux-foundation.org, thierry.reding@gmail.com,
-        daniel@ffwll.ch, bingbu.cao@intel.com, digetx@gmail.com,
-        mchehab@kernel.org, jasowang@redhat.com, tian.shu.qiu@intel.com
-References: <1626259003-201303-1-git-send-email-john.garry@huawei.com>
- <1626259003-201303-3-git-send-email-john.garry@huawei.com>
- <20210802150153.GC28735@willie-the-truck>
- <27bb22cf-db64-0aa5-215f-2adf06b6455d@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <83de3911-145d-77c8-17c1-981e4ff825d3@arm.com>
-Date:   Mon, 2 Aug 2021 17:09:35 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232306AbhHBQKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:10:55 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:44377 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232069AbhHBQKy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 12:10:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627920644; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=RcmCVefjMH6l9oNkIcTgBxKj15suM9Nyc7u4Bfq5P6s=;
+ b=AU+Pefk8LNRWkvMqTIxyGXqvUxP5gM7aYdjjoLVm8/4U59bVqmVzOj33fftUZRp3Jx8iaxT0
+ BXGc4u5qEbHTCpz2w4ZC+gn3ItFG6/DvlQoG+Jct9u9sHCg++F4ua0ta53ZIkgrID5YZdtzy
+ ewAh8KXybix6+EQY3aG0Chp7QSs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 610818e117c2b4047dcb83d9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 16:10:09
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9181FC43217; Mon,  2 Aug 2021 16:10:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 436C1C433D3;
+        Mon,  2 Aug 2021 16:10:06 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <27bb22cf-db64-0aa5-215f-2adf06b6455d@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 02 Aug 2021 09:10:06 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dp: update is_connected status base on sink count
+ at dp_pm_resume()
+In-Reply-To: <CAE-0n51cNywB2ThQxqS4iX-d7wR+rYXt8P33o9cUq9J6tT915A@mail.gmail.com>
+References: <1627507854-16733-1-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n51cNywB2ThQxqS4iX-d7wR+rYXt8P33o9cUq9J6tT915A@mail.gmail.com>
+Message-ID: <781ad3c4973b3f8dd83933a451b266b9@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-02 16:23, John Garry wrote:
-> On 02/08/2021 16:01, Will Deacon wrote:
->> On Wed, Jul 14, 2021 at 06:36:39PM +0800, John Garry wrote:
->>> Some LLDs may request DMA mappings whose IOVA length exceeds that of the
->>> current rcache upper limit.
->>
->> What's an LLD?
->>
+On 2021-07-30 11:57, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-07-28 14:30:54)
+>> Currently at dp_pm_resume() is_connected state is decided base on hpd 
+>> connection
+>> status only. This will put is_connected in wrongly "true" state at the 
+>> scenario
+>> that dongle attached to DUT but without hmdi cable connecting to it. 
+>> Fix this
+>> problem by adding read sink count from dongle and decided is_connected 
+>> state base
+>> on both sink count and hpd connection status.
+>> 
 > 
-> low-level driver
+> Please add a Fixes tag.
 > 
-> maybe I'll stick with simply "drivers"
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
+>>  drivers/gpu/drm/msm/dp/dp_display.c | 23 +++++++++++++++++++++--
+>>  1 file changed, 21 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index 2b660e9..9bcb261 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -1308,6 +1308,17 @@ static int dp_display_remove(struct 
+>> platform_device *pdev)
+>>         return 0;
+>>  }
+>> 
+>> +static int dp_get_sink_count(struct dp_display_private *dp)
+>> +{
+>> +       u8 sink_count;
+>> +
+>> +       sink_count = drm_dp_read_sink_count(dp->aux);
 > 
->>> This means that allocations for those IOVAs will never be cached, and
->>> always must be allocated and freed from the RB tree per DMA mapping 
->>> cycle.
->>> This has a significant effect on performance, more so since commit
->>> 4e89dce72521 ("iommu/iova: Retry from last rb tree node if iova search
->>> fails"), as discussed at [0].
->>>
->>> As a first step towards allowing the rcache range upper limit be
->>> configured, hold this value in the IOVA rcache structure, and allocate
->>> the rcaches separately.
->>>
->>> [0] 
->>> https://lore.kernel.org/linux-iommu/20210129092120.1482-1-thunder.leizhen@huawei.com/ 
->>>
->>>
->>> Signed-off-by: John Garry <john.garry@huawei.com>
->>> ---
->>>   drivers/iommu/dma-iommu.c |  2 +-
->>>   drivers/iommu/iova.c      | 23 +++++++++++++++++------
->>>   include/linux/iova.h      |  4 ++--
->>>   3 files changed, 20 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
->>> index 98ba927aee1a..4772278aa5da 100644
->>> --- a/drivers/iommu/dma-iommu.c
->>> +++ b/drivers/iommu/dma-iommu.c
->>> @@ -434,7 +434,7 @@ static dma_addr_t iommu_dma_alloc_iova(struct 
->>> iommu_domain *domain,
->>>        * rounding up anything cacheable to make sure that can't 
->>> happen. The
->>>        * order of the unadjusted size will still match upon freeing.
->>>        */
->>> -    if (iova_len < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
->>> +    if (iova_len < (1 << (iovad->rcache_max_size - 1)))
->>>           iova_len = roundup_pow_of_two(iova_len);
->>>       dma_limit = min_not_zero(dma_limit, dev->bus_dma_limit);
->>> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
->>> index b6cf5f16123b..07ce73fdd8c1 100644
->>> --- a/drivers/iommu/iova.c
->>> +++ b/drivers/iommu/iova.c
->>> @@ -15,6 +15,8 @@
->>>   /* The anchor node sits above the top of the usable address space */
->>>   #define IOVA_ANCHOR    ~0UL
->>> +#define IOVA_RANGE_CACHE_MAX_SIZE 6    /* log of max cached IOVA 
->>> range size (in pages) */
->>
->> Is that the same as an 'order'? i.e. IOVA_RANGE_CACHE_MAX_ORDER?
+> drm_dp_read_sink_count() returns an int, not a u8. Comparing a u8 to
+> less than zero doesn't make any sense as it isn't signed.
 > 
-> Yeah, that may be better. I was just using the same name as before.
+>> +       if (sink_count < 0)
+>> +               return 0;
+>> +
+>> +       return sink_count;
+>> +}
 > 
->>
->>> +
->>>   static bool iova_rcache_insert(struct iova_domain *iovad,
->>>                      unsigned long pfn,
->>>                      unsigned long size);
->>> @@ -881,7 +883,14 @@ static void init_iova_rcaches(struct iova_domain 
->>> *iovad)
->>>       unsigned int cpu;
->>>       int i;
->>> -    for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
->>> +    iovad->rcache_max_size = IOVA_RANGE_CACHE_MAX_SIZE;
->>> +
->>> +    iovad->rcaches = kcalloc(iovad->rcache_max_size,
->>> +                 sizeof(*iovad->rcaches), GFP_KERNEL);
->>> +    if (!iovad->rcaches)
->>> +        return;
->>
->> Returning quietly here doesn't seem like the right thing to do. At 
->> least, I
->> don't think the rest of the functions here are checking rcaches against
->> NULL.
->>
+> We can drop this function and just have an int count in dp_pm_resume()
+> that is compared to < 0 and then ignored.
 > 
-> For sure, but that is what other code which can fail here already does, 
-> like:
+>> +
+>>  static int dp_pm_resume(struct device *dev)
+>>  {
+>>         struct platform_device *pdev = to_platform_device(dev);
+>> @@ -1327,14 +1338,22 @@ static int dp_pm_resume(struct device *dev)
+>> 
+>>         dp_catalog_ctrl_hpd_config(dp->catalog);
+>> 
+>> -       status = dp_catalog_link_is_connected(dp->catalog);
+>> +       /*
+>> +        * set sink to normal operation mode -- D0
+>> +        * before dpcd read
+>> +        */
+>> +       dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+>> 
+>> +       if ((status = dp_catalog_link_is_connected(dp->catalog)))
+>> +               dp->link->sink_count = dp_get_sink_count(dp);
 > 
-> static void init_iova_rcaches(struct iova_domain *iovad)
-> {
->      ...
+> Do we need to call drm_dp_read_sink_count_cap() as well?
+no, we only need sink_count
 > 
->      for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
->          ...
+>> +       else
+>> +               dp->link->sink_count = 0;
+>>         /*
+>>          * can not declared display is connected unless
+>>          * HDMI cable is plugged in and sink_count of
+>>          * dongle become 1
+>>          */
+>> -       if (status && dp->link->sink_count)
 > 
->          rcache->cpu_rcaches = __alloc_percpu(sizeof(*cpu_rcache), 
-> cache_line_size());
->          if (WARN_ON(!rcache->cpu_rcaches))
->              continue;
-> }
+> Is 'status' used anymore? If not, please remove it.
+Yes, it still used which used to decided to perform dpcd read sink count 
+or not
 > 
-> and that is not safe either.
-
-Yeah, along with flush queues, historically this has all been 
-super-dodgy in terms of failure handling (or lack of).
-
-> This issue was raised a while ago. I don't mind trying to fix it - a 
-> slightly painful part is that it touches a few subsystems.
-
-Maybe pull the rcache init out of iova_domain_init() entirely? Only 
-iommu-dma uses {alloc,free}_iova_fast(), so TBH it's only a great big 
-waste of memory for all the other IOVA domain users anyway.
-
-The other week I started pondering how much of iommu-dma only needs to 
-be exposed to the IOMMU core rather than the whole kernel now; I suppose 
-there's probably an equal argument to be made for some of these bits of 
-the IOVA API, and this might pave the way towards some more logical 
-separation, but let's get the functional side dealt with before we worry 
-too much about splitting headers.
-
-Robin.
+>> +       if (dp->link->sink_count)
+>>                 dp->dp_display.is_connected = true;
+>>         else
+>>                 dp->dp_display.is_connected = false;
