@@ -2,52 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683953DD854
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A673DD86D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234808AbhHBNv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:51:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58326 "EHLO mail.kernel.org"
+        id S234421AbhHBNwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:52:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234359AbhHBNsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:48:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5585B60527;
-        Mon,  2 Aug 2021 13:47:57 +0000 (UTC)
+        id S234497AbhHBNsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:48:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0916E60FF2;
+        Mon,  2 Aug 2021 13:48:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912077;
-        bh=IdsctHln3L3h4CE1F5Ksk5EmzdsNzY+kCctty/2yTnk=;
+        s=korg; t=1627912088;
+        bh=WuzcneIIfGTT2mxr3UNm4I8v2xzTdf47LIJTCrgQ4HU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MJ0Fc593cI38Ie516lYgDUP2s3Z7KOejzH5hgzV/SY33gSaDnMKkisKr/bvBP6gmU
-         enPayxBsWh/Mjd6nFMHT3gq71JAStq7WM0De2GCP/oApeUyeF558ftWZqpT9NbXtnC
-         /tx2qfbn6HOxICIMkdZawEkeXo8spkplOqCqhnsw=
+        b=bwrhfy9ICHbZ6h1mN7vhvqyjt+vPkg1ZWAX7BARCLxHytmp7YBIS826ENQG4pD0+I
+         xPMHvgfByQGLvDhNp0Zjzy6/HLDxeAHYyj2HZY42KDgj9Tyo0B99uSTxlzToXp6hAK
+         eZw4hCJWvCiVScOz3rbFPUmC2z9BHu0ahZsbZ35c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Wilcox <mawilcox@microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        David Miller <davem@davemloft.net>,
-        Ingo Molnar <mingo@elte.hu>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Minchan Kim <minchan@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        stable@vger.kernel.org,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.9 13/32] lib/string.c: add multibyte memset functions
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 11/38] hfs: fix high memory mapping in hfs_bnode_read
 Date:   Mon,  2 Aug 2021 15:44:33 +0200
-Message-Id: <20210802134333.346882923@linuxfoundation.org>
+Message-Id: <20210802134335.194231488@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
-References: <20210802134332.931915241@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,169 +46,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox <mawilcox@microsoft.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-commit 3b3c4babd898715926d24ae10aa64778ace33aae upstream.
+[ Upstream commit 54a5ead6f5e2b47131a7385d0c0af18e7b89cb02 ]
 
-Patch series "Multibyte memset variations", v4.
+Pages that we read in hfs_bnode_read need to be kmapped into kernel
+address space.  However, currently only the 0th page is kmapped.  If the
+given offset + length exceeds this 0th page, then we have an invalid
+memory access.
 
-A relatively common idiom we're missing is a function to fill an area of
-memory with a pattern which is larger than a single byte.  I first
-noticed this with a zram patch which wanted to fill a page with an
-'unsigned long' value.  There turn out to be quite a few places in the
-kernel which can benefit from using an optimised function rather than a
-loop; sometimes text size, sometimes speed, and sometimes both.  The
-optimised PowerPC version (not included here) improves performance by
-about 30% on POWER8 on just the raw memset_l().
+To fix this, we kmap relevant pages one by one and copy their relevant
+portions of data.
 
-Most of the extra lines of code come from the three testcases I added.
+An example of invalid memory access occurring without this fix can be seen
+in the following crash report:
 
-This patch (of 8):
+  ==================================================================
+  BUG: KASAN: use-after-free in memcpy include/linux/fortify-string.h:191 [inline]
+  BUG: KASAN: use-after-free in hfs_bnode_read+0xc4/0xe0 fs/hfs/bnode.c:26
+  Read of size 2 at addr ffff888125fdcffe by task syz-executor5/4634
 
-memset16(), memset32() and memset64() are like memset(), but allow the
-caller to fill the destination with a value larger than a single byte.
-memset_l() and memset_p() allow the caller to use unsigned long and
-pointer values respectively.
+  CPU: 0 PID: 4634 Comm: syz-executor5 Not tainted 5.13.0-syzkaller #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  Call Trace:
+   __dump_stack lib/dump_stack.c:79 [inline]
+   dump_stack+0x195/0x1f8 lib/dump_stack.c:120
+   print_address_description.constprop.0+0x1d/0x110 mm/kasan/report.c:233
+   __kasan_report mm/kasan/report.c:419 [inline]
+   kasan_report.cold+0x7b/0xd4 mm/kasan/report.c:436
+   check_region_inline mm/kasan/generic.c:180 [inline]
+   kasan_check_range+0x154/0x1b0 mm/kasan/generic.c:186
+   memcpy+0x24/0x60 mm/kasan/shadow.c:65
+   memcpy include/linux/fortify-string.h:191 [inline]
+   hfs_bnode_read+0xc4/0xe0 fs/hfs/bnode.c:26
+   hfs_bnode_read_u16 fs/hfs/bnode.c:34 [inline]
+   hfs_bnode_find+0x880/0xcc0 fs/hfs/bnode.c:365
+   hfs_brec_find+0x2d8/0x540 fs/hfs/bfind.c:126
+   hfs_brec_read+0x27/0x120 fs/hfs/bfind.c:165
+   hfs_cat_find_brec+0x19a/0x3b0 fs/hfs/catalog.c:194
+   hfs_fill_super+0xc13/0x1460 fs/hfs/super.c:419
+   mount_bdev+0x331/0x3f0 fs/super.c:1368
+   hfs_mount+0x35/0x40 fs/hfs/super.c:457
+   legacy_get_tree+0x10c/0x220 fs/fs_context.c:592
+   vfs_get_tree+0x93/0x300 fs/super.c:1498
+   do_new_mount fs/namespace.c:2905 [inline]
+   path_mount+0x13f5/0x20e0 fs/namespace.c:3235
+   do_mount fs/namespace.c:3248 [inline]
+   __do_sys_mount fs/namespace.c:3456 [inline]
+   __se_sys_mount fs/namespace.c:3433 [inline]
+   __x64_sys_mount+0x2b8/0x340 fs/namespace.c:3433
+   do_syscall_64+0x37/0xc0 arch/x86/entry/common.c:47
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+  RIP: 0033:0x45e63a
+  Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 88 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+  RSP: 002b:00007f9404d410d8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+  RAX: ffffffffffffffda RBX: 0000000020000248 RCX: 000000000045e63a
+  RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f9404d41120
+  RBP: 00007f9404d41120 R08: 00000000200002c0 R09: 0000000020000000
+  R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+  R13: 0000000000000003 R14: 00000000004ad5d8 R15: 0000000000000000
 
-Link: http://lkml.kernel.org/r/20170720184539.31609-2-willy@infradead.org
-Signed-off-by: Matthew Wilcox <mawilcox@microsoft.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: David Miller <davem@davemloft.net>
-Cc: Ingo Molnar <mingo@elte.hu>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Russell King <rmk+kernel@armlinux.org.uk>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+  The buggy address belongs to the page:
+  page:00000000dadbcf3e refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x125fdc
+  flags: 0x2fffc0000000000(node=0|zone=2|lastcpupid=0x3fff)
+  raw: 02fffc0000000000 ffffea000497f748 ffffea000497f6c8 0000000000000000
+  raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+  page dumped because: kasan: bad access detected
+
+  Memory state around the buggy address:
+   ffff888125fdce80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+   ffff888125fdcf00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  >ffff888125fdcf80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                                                  ^
+   ffff888125fdd000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+   ffff888125fdd080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  ==================================================================
+
+Link: https://lkml.kernel.org/r/20210701030756.58760-3-desmondcheongzx@gmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Reviewed-by: Viacheslav Dubeyko <slava@dubeyko.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/string.h |   30 ++++++++++++++++++++++
- lib/string.c           |   66 +++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 96 insertions(+)
+ fs/hfs/bnode.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -103,6 +103,36 @@ extern __kernel_size_t strcspn(const cha
- #ifndef __HAVE_ARCH_MEMSET
- extern void * memset(void *,int,__kernel_size_t);
- #endif
-+
-+#ifndef __HAVE_ARCH_MEMSET16
-+extern void *memset16(uint16_t *, uint16_t, __kernel_size_t);
-+#endif
-+
-+#ifndef __HAVE_ARCH_MEMSET32
-+extern void *memset32(uint32_t *, uint32_t, __kernel_size_t);
-+#endif
-+
-+#ifndef __HAVE_ARCH_MEMSET64
-+extern void *memset64(uint64_t *, uint64_t, __kernel_size_t);
-+#endif
-+
-+static inline void *memset_l(unsigned long *p, unsigned long v,
-+		__kernel_size_t n)
-+{
-+	if (BITS_PER_LONG == 32)
-+		return memset32((uint32_t *)p, v, n);
-+	else
-+		return memset64((uint64_t *)p, v, n);
-+}
-+
-+static inline void *memset_p(void **p, void *v, __kernel_size_t n)
-+{
-+	if (BITS_PER_LONG == 32)
-+		return memset32((uint32_t *)p, (uintptr_t)v, n);
-+	else
-+		return memset64((uint64_t *)p, (uintptr_t)v, n);
-+}
-+
- #ifndef __HAVE_ARCH_MEMCPY
- extern void * memcpy(void *,const void *,__kernel_size_t);
- #endif
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -754,6 +754,72 @@ void memzero_explicit(void *s, size_t co
- }
- EXPORT_SYMBOL(memzero_explicit);
+diff --git a/fs/hfs/bnode.c b/fs/hfs/bnode.c
+index 8aec5e732abf..bca3ea4137ee 100644
+--- a/fs/hfs/bnode.c
++++ b/fs/hfs/bnode.c
+@@ -15,16 +15,31 @@
  
-+#ifndef __HAVE_ARCH_MEMSET16
-+/**
-+ * memset16() - Fill a memory area with a uint16_t
-+ * @s: Pointer to the start of the area.
-+ * @v: The value to fill the area with
-+ * @count: The number of values to store
-+ *
-+ * Differs from memset() in that it fills with a uint16_t instead
-+ * of a byte.  Remember that @count is the number of uint16_ts to
-+ * store, not the number of bytes.
-+ */
-+void *memset16(uint16_t *s, uint16_t v, size_t count)
-+{
-+	uint16_t *xs = s;
+ #include "btree.h"
+ 
+-void hfs_bnode_read(struct hfs_bnode *node, void *buf,
+-		int off, int len)
++void hfs_bnode_read(struct hfs_bnode *node, void *buf, int off, int len)
+ {
+ 	struct page *page;
++	int pagenum;
++	int bytes_read;
++	int bytes_to_read;
++	void *vaddr;
+ 
+ 	off += node->page_offset;
+-	page = node->page[0];
++	pagenum = off >> PAGE_SHIFT;
++	off &= ~PAGE_MASK; /* compute page offset for the first page */
+ 
+-	memcpy(buf, kmap(page) + off, len);
+-	kunmap(page);
++	for (bytes_read = 0; bytes_read < len; bytes_read += bytes_to_read) {
++		if (pagenum >= node->tree->pages_per_bnode)
++			break;
++		page = node->page[pagenum];
++		bytes_to_read = min_t(int, len - bytes_read, PAGE_SIZE - off);
 +
-+	while (count--)
-+		*xs++ = v;
-+	return s;
-+}
-+EXPORT_SYMBOL(memset16);
-+#endif
++		vaddr = kmap_atomic(page);
++		memcpy(buf + bytes_read, vaddr + off, bytes_to_read);
++		kunmap_atomic(vaddr);
 +
-+#ifndef __HAVE_ARCH_MEMSET32
-+/**
-+ * memset32() - Fill a memory area with a uint32_t
-+ * @s: Pointer to the start of the area.
-+ * @v: The value to fill the area with
-+ * @count: The number of values to store
-+ *
-+ * Differs from memset() in that it fills with a uint32_t instead
-+ * of a byte.  Remember that @count is the number of uint32_ts to
-+ * store, not the number of bytes.
-+ */
-+void *memset32(uint32_t *s, uint32_t v, size_t count)
-+{
-+	uint32_t *xs = s;
-+
-+	while (count--)
-+		*xs++ = v;
-+	return s;
-+}
-+EXPORT_SYMBOL(memset32);
-+#endif
-+
-+#ifndef __HAVE_ARCH_MEMSET64
-+/**
-+ * memset64() - Fill a memory area with a uint64_t
-+ * @s: Pointer to the start of the area.
-+ * @v: The value to fill the area with
-+ * @count: The number of values to store
-+ *
-+ * Differs from memset() in that it fills with a uint64_t instead
-+ * of a byte.  Remember that @count is the number of uint64_ts to
-+ * store, not the number of bytes.
-+ */
-+void *memset64(uint64_t *s, uint64_t v, size_t count)
-+{
-+	uint64_t *xs = s;
-+
-+	while (count--)
-+		*xs++ = v;
-+	return s;
-+}
-+EXPORT_SYMBOL(memset64);
-+#endif
-+
- #ifndef __HAVE_ARCH_MEMCPY
- /**
-  * memcpy - Copy one area of memory to another
++		pagenum++;
++		off = 0; /* page offset only applies to the first page */
++	}
+ }
+ 
+ u16 hfs_bnode_read_u16(struct hfs_bnode *node, int off)
+-- 
+2.30.2
+
 
 
