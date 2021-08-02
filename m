@@ -2,154 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5402A3DD307
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DB13DD309
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbhHBJhX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Aug 2021 05:37:23 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3545 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbhHBJhU (ORCPT
+        id S233049AbhHBJhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233054AbhHBJh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:37:20 -0400
-Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GdXvx51CTz6H6tD;
-        Mon,  2 Aug 2021 17:37:01 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 11:37:08 +0200
-Received: from localhost (10.47.9.82) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 2 Aug 2021
- 10:37:06 +0100
-Date:   Mon, 2 Aug 2021 10:36:38 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        <alexandre.belloni@bootlin.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        <thierry.reding@gmail.com>, <lee.jones@linaro.org>,
-        <linux-clk@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
-        <Ludovic.Desroches@microchip.com>, <o.rempel@pengutronix.de>,
-        <andy.shevchenko@gmail.com>, <aardelean@deviqon.com>,
-        <linux-pwm@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        <broonie@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <a.zummo@towertech.it>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <wsa@kernel.org>,
-        <kernel@pengutronix.de>, <akpm@linux-foundation.org>,
-        <torvalds@linux-foundation.org>, <Claudiu.Beznea@microchip.com>
-Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
- devm_clk_get for prepared and enabled clocks enabled clocks]
-Message-ID: <20210802103638.00000448@Huawei.com>
-In-Reply-To: <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
-References: <20210722060654.nudpdtemosi64nlb@pengutronix.de>
-        <YPkg0wtYIoHKpTUW@kunai>
-        <20210722081817.2tsjzof4gvldq6ka@pengutronix.de>
-        <YPlfcbkxiBmB+vw1@kunai>
-        <CAHp75VfC=s12Unw3+Cn0ag71mM5i90=Jbwj4nYwB5cPKiUTRSA@mail.gmail.com>
-        <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
-        <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
-        <20210728202547.7uvfwflpruku7yps@pengutronix.de>
-        <20210728204033.GF22278@shell.armlinux.org.uk>
-        <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
-        <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Mon, 2 Aug 2021 05:37:28 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB440C061796
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 02:37:19 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 26so5556297oiy.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 02:37:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FYSKq5I9PT1AOR7++VBDqRUavrD1FqW1zkcq2amkopA=;
+        b=BOHy8c6RcwBv7BrZpawuZkaSiILuONkxy7E9exBa18jEkvhpM2mDhoaSYmfLpYlO0y
+         3Juy2FnrfJYtsuyXakMsrb5sWy0al+mhdrKckXjGcfenEr/gchY+LziFl5RIqHIzxsn5
+         cGEvLMc98cLzLD0XDWyKgBP1BaJX3EnS/FO2xiGeRcuF3Vx1isdKKvzJm5lKbgEHyH0n
+         Gng7h7uqoTeoKL1JmenGMRV97O28QlScIg3CUHw4PqXGnqPCp5uJoST3dVmhPN8DLwz0
+         skLl/gWCpFZ9aqLuPvoHQftThg7Qag861NVqscxhtJYdZu+C41nY56By2vOYAWeO/D7B
+         3ayA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FYSKq5I9PT1AOR7++VBDqRUavrD1FqW1zkcq2amkopA=;
+        b=NddI1rn+A8HgRTWHqmKC4bW6Vgls1d6y+o+2zBBD6u19Gkel6PJcWYD/8zM4/jQqdd
+         YZfkzE/ML3WU147E30FCFl54z2pdrG4EpMXgGTwVNN/MBoowkn+pGN/mtTG2DkBfXgvx
+         95059OMalwCdy2rKOqnGVovGcBE0xjS6VbucHhxqdIr/4ZS//9HNLtQKTgH56E88uq45
+         CSOTo6Fp5tPNH+wz5Dglu03Q8zwbGSo1A0xSY4Lqn0ezCZJGOUBUWGu7I6+yHQCViDVj
+         0dTnOFK6YB/YFVj2JXvT3Ot5yqR034Rc5jAGr5Cv89B3piSy3K3WfiTa+kJQ8wYyUUa+
+         ayYQ==
+X-Gm-Message-State: AOAM531t0wQPlHxwvkA9QNIoIOlfnMvEE047GaYsuj38JDI7TU/KbMaX
+        4TdelRUwtD/p/C9J1EKPMSmuPodcw16rlMdVAHXicw==
+X-Google-Smtp-Source: ABdhPJx7duRBSKr9RK9jF8w3zgG9BJbts+dNEDkZYXg0XR4D+ZuJAK0QB2VUoRu6L16cgXQVWEdqlDJrLx8Fq0oVgEM=
+X-Received: by 2002:a05:6808:5a:: with SMTP id v26mr9759822oic.90.1627897039116;
+ Mon, 02 Aug 2021 02:37:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.47.9.82]
-X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210729132818.4091769-1-qperret@google.com> <20210729132818.4091769-4-qperret@google.com>
+In-Reply-To: <20210729132818.4091769-4-qperret@google.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Mon, 2 Aug 2021 11:36:42 +0200
+Message-ID: <CA+EHjTzrqbyHQyo7X-=MeJXQ5bVcfUz0uiUKVAv_U+aqVNuhYw@mail.gmail.com>
+Subject: Re: [PATCH v3 03/21] KVM: arm64: Provide the host_stage2_try() helper macro
+To:     Quentin Perret <qperret@google.com>
+Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        dbrazdil@google.com, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Jul 2021 14:00:04 +0200
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
+Hi Quentin.
 
-> Hi Russell, hi Stephen,
-> 
-> On Sat, Jul 31, 2021 at 12:41:19AM -0700, Stephen Boyd wrote:
-> > Quoting Russell King (Oracle) (2021-07-28 13:40:34)  
-> > > > I adapted the Subject in the hope to catch Stephen's and Michael's
-> > > > attention. My impression is that this thread isn't on their radar yet,
-> > > > but the topic here seems important enough to get a matching Subject.  
-> > 
-> > The thread is on my radar but...
-> >   
-> > > 
-> > > Have you thought about sending your pull request to the clk API
-> > > maintainer (iow, me) ?  
-> 
-> I wasn't really aware that Russell has the clk API hat (or that this
-> separate hat actually exists and this isn't purely a CCF topic). I
-> assume I only did
-> 
-> 	$ scripts/get_maintainer.pl -f drivers/clk/clk-devres.c
-> 
-> which is where the current and new code implementing devm_clk_get et al
-> lives.
-> 
-> @Russell: What is your position here, do you like the approach of
-> devm_clk_get_enabled? I can send a new pull request in your direction if
-> you like it and are willing to take it.
-> 
-> > +1 This patch doesn't fall under CCF maintainer.  
-> 
-> Given that CCF is the only implementer of devm_clk_get at least an Ack
-> from your side would still be good I guess?
-> 
-> > Finally, this sort of patch has been discussed for years and I didn't
-> > see any mention of those previous attempts in the patch series. Has
-> > something changed since that time? I think we've got a bunch of hand
-> > rolled devm things in the meantime but not much else.   
-> 
-> I found a patch set adding devm variants of clk_enable (e.g.
-> https://lore.kernel.org/patchwork/patch/755667/) but this approach is
-> different as it also contains clk_get which IMHO makes more sense 
-> The discussion considered wrapping get+enable at one point, but I didn't
-> find a followup.
-> 
-> > I still wonder if it would be better if we had some sort of DT binding
-> > that said "turn this clk on when the driver probes this device and keep
-> > it on until the driver is unbound".  
-> 
-> This doesn't sound like a hardware property and so I don't think this
-> belongs into DT and I would be surprised if the dt maintainers would be
-> willing to accept an idea with this semantic.
+On Thu, Jul 29, 2021 at 3:28 PM Quentin Perret <qperret@google.com> wrote:
+>
+> We currently unmap all MMIO mappings from the host stage-2 to recycle
+> the pages whenever we run out. In order to make this pattern easy to
+> re-use from other places, factor the logic out into a dedicated macro.
+> While at it, apply the macro for the kvm_pgtable_stage2_set_owner()
+> calls. They're currently only called early on and are guaranteed to
+> succeed, but making them robust to the -ENOMEM case doesn't hurt and
+> will avoid painful debugging sessions later on.
+>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c | 40 +++++++++++++++------------
+>  1 file changed, 22 insertions(+), 18 deletions(-)
+>
+> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> index d938ce95d3bd..74280a753efb 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> @@ -208,6 +208,25 @@ static inline int __host_stage2_idmap(u64 start, u64 end,
+>                                       prot, &host_s2_pool);
+>  }
+>
+> +/*
+> + * The pool has been provided with enough pages to cover all of memory with
+> + * page granularity, but it is difficult to know how much of the MMIO range
+> + * we will need to cover upfront, so we may need to 'recycle' the pages if we
+> + * run out.
+> + */
 
-Agreed. It's not unheard of to have a driver start out just enabing
-clock at probe and dropping it at remove. When the driver gets more
-sophisticated it will then manage the clock more frequently.
-Whilst that's often tied to runtime_pm I'm not sure it always is.
+The comment you added in V2 about host_kvm.lock got dropped in favor
+asserting that the lock is held.
 
-Given the mess that would be involved in having a property that we
-need to later ignore for particular drivers, I'd keep this management
-explicit in the driver. This series makes that trivial to do for these
-easy cases.
+Reviewed-by: Fuad Tabba <tabba@google.com>
 
-Jonathan
+Thanks,
+/fuad
 
-> 
-> > That would probably work well for quite a few drivers that don't want
-> > to ever call clk_get() or clk_prepare_enable() and could tie into the
-> > assigned-clock-rates property in a way that let us keep the platform
-> > details out of the drivers. We could also go one step further and make
-> > a clk pm domain when this new property is present and then have the
-> > clk be enabled based on runtime PM of the device (and if runtime PM is
-> > disabled then just enable it at driver probe time).  
-> 
-> clk pm domain sounds good, but introducing devm_clk_get_enabled() is
-> much easier and converting to it can be done without dt changes and more
-> or less mechanically. So I consider the cost-usage-value of
-> devm_clk_get_enabled() much better.
-> 
-> Best regards
-> Uwe
-> 
 
+
+
+> +#define host_stage2_try(fn, ...)                                       \
+> +       ({                                                              \
+> +               int __ret;                                              \
+> +               hyp_assert_lock_held(&host_kvm.lock);                   \
+> +               __ret = fn(__VA_ARGS__);                                \
+> +               if (__ret == -ENOMEM) {                                 \
+> +                       __ret = host_stage2_unmap_dev_all();            \
+> +                       if (!__ret)                                     \
+> +                               __ret = fn(__VA_ARGS__);                \
+> +               }                                                       \
+> +               __ret;                                                  \
+> +        })
+> +
+>  static int host_stage2_idmap(u64 addr)
+>  {
+>         enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W;
+> @@ -223,22 +242,7 @@ static int host_stage2_idmap(u64 addr)
+>         if (ret)
+>                 goto unlock;
+>
+> -       ret = __host_stage2_idmap(range.start, range.end, prot);
+> -       if (ret != -ENOMEM)
+> -               goto unlock;
+> -
+> -       /*
+> -        * The pool has been provided with enough pages to cover all of memory
+> -        * with page granularity, but it is difficult to know how much of the
+> -        * MMIO range we will need to cover upfront, so we may need to 'recycle'
+> -        * the pages if we run out.
+> -        */
+> -       ret = host_stage2_unmap_dev_all();
+> -       if (ret)
+> -               goto unlock;
+> -
+> -       ret = __host_stage2_idmap(range.start, range.end, prot);
+> -
+> +       ret = host_stage2_try(__host_stage2_idmap, range.start, range.end, prot);
+>  unlock:
+>         hyp_spin_unlock(&host_kvm.lock);
+>
+> @@ -257,8 +261,8 @@ int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end)
+>                 return -EINVAL;
+>
+>         hyp_spin_lock(&host_kvm.lock);
+> -       ret = kvm_pgtable_stage2_set_owner(&host_kvm.pgt, start, end - start,
+> -                                          &host_s2_pool, pkvm_hyp_id);
+> +       ret = host_stage2_try(kvm_pgtable_stage2_set_owner, &host_kvm.pgt,
+> +                             start, end - start, &host_s2_pool, pkvm_hyp_id);
+>         hyp_spin_unlock(&host_kvm.lock);
+>
+>         return ret != -EAGAIN ? ret : 0;
+> --
+> 2.32.0.432.gabb21c7263-goog
+>
