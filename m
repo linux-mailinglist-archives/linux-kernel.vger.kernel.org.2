@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558363DD930
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E295D3DD8DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235993AbhHBN6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:58:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33500 "EHLO mail.kernel.org"
+        id S235122AbhHBNzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:55:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234639AbhHBNvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:51:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99E9E61108;
-        Mon,  2 Aug 2021 13:51:15 +0000 (UTC)
+        id S234628AbhHBNuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:50:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB57460527;
+        Mon,  2 Aug 2021 13:50:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912276;
-        bh=H5v5wfb2zFopAgaoROblUXmSz2SQUzUggOjBYxEAH5s=;
+        s=korg; t=1627912215;
+        bh=fp66PKMkZv7SjqD3Wg879LDEq12HBvW62IGsBxIa7Ps=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yQ4JVvUAnx5ZU9G5epuTPpJhlCl5RNPOZEtOYTNAmfXclA08mEhyI1Qx8m5HhaXDs
-         PVe1ht3qhF8RF4lJBz321h8jq7z7Ou2iclnu4DiseB74gTfyFkCjnFeeJcrRf3cDxl
-         B2Qv7Ps08jHoa7hW0FRl2eQ4Be7daX59Qx9fDr7g=
+        b=yEzsPEoaOWG3uOv+yQG8JDqFQyl3suYysobKj1ZiFuzltKlAocpHjFyUfCbSi61zE
+         GYhf2X2wDi8H4Ek272al9ppFs0x3Sl7D7Ucx9bK+Zid7ApoHLs5MJBquEYza6gbQE8
+         gjqGsfIOCbXPsgbJkrZtOSBq+3Envp3HMfYgqkPU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 26/40] tipc: fix sleeping in tipc accept routine
-Date:   Mon,  2 Aug 2021 15:45:06 +0200
-Message-Id: <20210802134336.227510777@linuxfoundation.org>
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Krister Johansen <kjlx@templeofstupid.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 4.19 29/30] Revert "perf map: Fix dso->nsinfo refcounting"
+Date:   Mon,  2 Aug 2021 15:45:07 +0200
+Message-Id: <20210802134335.022545989@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
-References: <20210802134335.408294521@linuxfoundation.org>
+In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
+References: <20210802134334.081433902@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-[ Upstream commit d237a7f11719ff9320721be5818352e48071aab6 ]
+commit 9bac1bd6e6d36459087a728a968e79e37ebcea1a upstream.
 
-The release_sock() is blocking function, it would change the state
-after sleeping. In order to evaluate the stated condition outside
-the socket lock context, switch to use wait_woken() instead.
+This makes 'perf top' abort in some cases, and the right fix will
+involve surgery that is too much to do at this stage, so revert for now
+and fix it in the next merge window.
 
-Fixes: 6398e23cdb1d8 ("tipc: standardize accept routine")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This reverts commit 2d6b74baa7147251c30a46c4996e8cc224aa2dc5.
+
+Cc: Riccardo Mancini <rickyman7@gmail.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Krister Johansen <kjlx@templeofstupid.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/socket.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ tools/perf/util/map.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index cdade990fe44..a5922ce9109c 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -2501,7 +2501,7 @@ static int tipc_listen(struct socket *sock, int len)
- static int tipc_wait_for_accept(struct socket *sock, long timeo)
- {
- 	struct sock *sk = sock->sk;
--	DEFINE_WAIT(wait);
-+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 	int err;
- 
- 	/* True wake-one mechanism for incoming connections: only
-@@ -2510,12 +2510,12 @@ static int tipc_wait_for_accept(struct socket *sock, long timeo)
- 	 * anymore, the common case will execute the loop only once.
- 	*/
- 	for (;;) {
--		prepare_to_wait_exclusive(sk_sleep(sk), &wait,
--					  TASK_INTERRUPTIBLE);
- 		if (timeo && skb_queue_empty(&sk->sk_receive_queue)) {
-+			add_wait_queue(sk_sleep(sk), &wait);
- 			release_sock(sk);
--			timeo = schedule_timeout(timeo);
-+			timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, timeo);
- 			lock_sock(sk);
-+			remove_wait_queue(sk_sleep(sk), &wait);
+--- a/tools/perf/util/map.c
++++ b/tools/perf/util/map.c
+@@ -209,8 +209,6 @@ struct map *map__new(struct machine *mac
+ 			if (!(prot & PROT_EXEC))
+ 				dso__set_loaded(dso);
  		}
- 		err = 0;
- 		if (!skb_queue_empty(&sk->sk_receive_queue))
-@@ -2527,7 +2527,6 @@ static int tipc_wait_for_accept(struct socket *sock, long timeo)
- 		if (signal_pending(current))
- 			break;
+-
+-		nsinfo__put(dso->nsinfo);
+ 		dso->nsinfo = nsi;
+ 		dso__put(dso);
  	}
--	finish_wait(sk_sleep(sk), &wait);
- 	return err;
- }
- 
--- 
-2.30.2
-
 
 
