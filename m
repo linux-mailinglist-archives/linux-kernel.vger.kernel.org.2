@@ -2,57 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AA83DE21B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39483DE22D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbhHBWJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 18:09:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56138 "EHLO mail.kernel.org"
+        id S233509AbhHBWKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 18:10:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231950AbhHBWJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 18:09:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5284260E78;
-        Mon,  2 Aug 2021 22:09:19 +0000 (UTC)
+        id S232094AbhHBWKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 18:10:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 771F360E78;
+        Mon,  2 Aug 2021 22:10:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627942159;
-        bh=fLVQF/t6wPWp+qJ9ehM/MjUmrMCRd15NX4dAGPwnH68=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=JnPV96lgFzoQstMQbGsvksvar5yILQC1BQO2UksHvxMQiepiHEnWO9xePi+uK9v0z
-         WFRVrFzTzlg2ctvNmaenXiFfqBK3FJV24+CgCmDs/4StoUIIwCuKy8390REyGA11Xm
-         nTxIop+8V2RlOB0IhEj8yCiyVvu/1j5Qh+F1WCOJ/DH0mTv0Lk2R9hRrSYTHMY8XhW
-         RYOheQ3Dhf439zEG09uNyGr+vQ3sOzy9XnHS6ozSL3ayUqoFSKPQn8uapzTLa4FmbN
-         ZsMirZ/JMBRfzYHmdJX7gc+oI5r+S2Q2XpM0B0Wg20G2eJ1Wwkl69+BL6B6THFmQ2b
-         35bWXI8U/pylQ==
+        s=k20201202; t=1627942206;
+        bh=Cl2WcD4nTC2dMOkzPaWYmUD3pw6zf6LV9KGOPOAuDXY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=RR1aPSVUu9CGDohInd+8P3ShanwZ5/CY4kdRyiMb+eho6rInUDd1vDmU/+YmoyiMS
+         knMnvqIzQlNSkiC9P5YMI5c5ojASNzNPzsu9pbooNJtX2JoGktvR4Xjtkhjbg6Y2Eu
+         uu12ZQXM5U2h2vExG9s1PyGLgu+oh4AEIZEArIFNlZUe03bkjwlC/43dGV2gw0YxER
+         W3CWzAxvBhp79mFVttBXL2nFYEAcg3CJ7uaZ8V3QUlZzCa29TSCr31WWARFuN/SYdD
+         s76sQDVTWQNOYNxUKnfFvizfBRpwvzA4LlOhuPrTYyC/HU26itvgVFzzxvCVP1iGeX
+         GH4TVrPIHcSXQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 720A06098C;
+        Mon,  2 Aug 2021 22:10:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1371790418.70998.1627846630234@mail1.libero.it>
-References: <20210725160725.10788-1-dariobin@libero.it> <CAPTRvHkf0cK_4ZidM17rPo99gWDmxgqFt4CDUjqFFwkOeQeFDg@mail.gmail.com> <1926284813.753014.1627553002984@mail1.libero.it> <CAPTRvH=R822osk86tRJqJCPNYY85t8t90+HJWcz43iASbcg2Jw@mail.gmail.com> <1371790418.70998.1627846630234@mail1.libero.it>
-Subject: Re: [RESEND PATCH v4] clk: stm32f4: fix post divisor setup for I2S/SAI PLLs
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Gabriel Fernandez <gabriel.fernandez@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com
-To:     Dario Binacchi <dariobin@libero.it>,
-        Dillon Hua <dillonhua@gmail.com>
-Date:   Mon, 02 Aug 2021 15:09:17 -0700
-Message-ID: <162794215799.714452.17355927940378699473@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] dpaa2-eth: make the array faf_bits static const,
+ makes object smaller
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162794220646.7989.7869180322597079523.git-patchwork-notify@kernel.org>
+Date:   Mon, 02 Aug 2021 22:10:06 +0000
+References: <20210801152209.146359-1-colin.king@canonical.com>
+In-Reply-To: <20210801152209.146359-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     ioana.ciornei@nxp.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dario Binacchi (2021-08-01 12:37:10)
->=20
-> As said in a previous email to Stephen, the patch I submitted fixes commi=
-t 517633ef630e
-> ("clk: stm32f4: Add post divisor for I2S & SAI PLLs"), so IMHO it should =
-not be dropped from the tree.
-> What Dillon suggested should instead be fixed by another patch.
+Hello:
 
-Ok. I'll send off the fix to Linus today.
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Sun,  1 Aug 2021 16:22:09 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Don't populate the array faf_bits on the stack but instead it
+> static const. Makes the object code smaller by 175 bytes.
+> 
+> Before:
+>    text  data   bss     dec   hex filename
+>    9645  4552     0   14197  3775 ../freescale/dpaa2/dpaa2-eth-devlink.o
+> 
+> [...]
+
+Here is the summary with links:
+  - dpaa2-eth: make the array faf_bits static const, makes object smaller
+    https://git.kernel.org/netdev/net-next/c/d5731f891a0c
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
