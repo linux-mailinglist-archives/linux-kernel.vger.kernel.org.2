@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F31D3DD9C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8CD3DD913
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235637AbhHBODh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:03:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40754 "EHLO mail.kernel.org"
+        id S235662AbhHBN5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:57:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235435AbhHBNzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:55:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7F8D60551;
-        Mon,  2 Aug 2021 13:54:07 +0000 (UTC)
+        id S235041AbhHBNuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:50:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E926E60555;
+        Mon,  2 Aug 2021 13:50:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912448;
-        bh=ycYnckxHiwK6o3thCMS/KVwMBi2G5QpfGPS+8aUeJZY=;
+        s=korg; t=1627912243;
+        bh=0B2Po5l4r/EMhqykpANqkG0r8CXXsiADx809HDaixWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kOoJRRo7EYuVbOOdK9kcldRhGAeSvp0L2xFtcJLoiuUZ78pdMz9NAM4oKZVGcqIGe
-         KacMPMkUBkkjwK3xKJm+zFDQteEIOoeHtbuHc1VYOyHpp2Uu/2DSsGe5fuxpQeZ4eR
-         ViDvktXyv8MSRcRq7DCS96j+NLR5OUyXzJWlFeXc=
+        b=AHD1uKCCdPbLmhuyyWozomFjTHuwwu/9Jy3yb1sz+4VzHJMxs5nVS7Yl2sLoU8f8u
+         8/hDgtMOLe9BGcRwACfC+4yk06ONYlTCxK07wcmXXMKZSCMLVBbidtm+4sp0pNRws1
+         TFbooZTWrRcQ0d3JwhO1EL969+Dex4oyazq8wlc4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
-        Ping Cheng <ping.cheng@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 5.10 20/67] HID: wacom: Re-enable touch by default for Cintiq 24HDT / 27QHDT
-Date:   Mon,  2 Aug 2021 15:44:43 +0200
-Message-Id: <20210802134339.701461753@linuxfoundation.org>
+        stable@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 04/40] btrfs: mark compressed range uptodate only if all bio succeed
+Date:   Mon,  2 Aug 2021 15:44:44 +0200
+Message-Id: <20210802134335.542382864@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
+References: <20210802134335.408294521@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gerecke <killertofu@gmail.com>
+From: Goldwyn Rodrigues <rgoldwyn@suse.de>
 
-commit 6ca2350e11f09d5d3e53777d1eff8ff6d300ed93 upstream.
+commit 240246f6b913b0c23733cfd2def1d283f8cc9bbe upstream.
 
-Commit 670e90924bfe ("HID: wacom: support named keys on older devices")
-added support for sending named events from the soft buttons on the
-24HDT and 27QHDT. In the process, however, it inadvertantly disabled the
-touchscreen of the 24HDT and 27QHDT by default. The
-`wacom_set_shared_values` function would normally enable touch by default
-but because it checks the state of the non-shared `has_mute_touch_switch`
-flag and `wacom_setup_touch_input_capabilities` sets the state of the
-/shared/ version, touch ends up being disabled by default.
+In compression write endio sequence, the range which the compressed_bio
+writes is marked as uptodate if the last bio of the compressed (sub)bios
+is completed successfully. There could be previous bio which may
+have failed which is recorded in cb->errors.
 
-This patch sets the non-shared flag, letting `wacom_set_shared_values`
-take care of copying the value over to the shared version and setting
-the default touch state to "on".
+Set the writeback range as uptodate only if cb->errors is zero, as opposed
+to checking only the last bio's status.
 
-Fixes: 670e90924bfe ("HID: wacom: support named keys on older devices")
-CC: stable@vger.kernel.org # 5.4+
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Backporting notes: in all versions up to 4.4 the last argument is always
+replaced by "!cb->errors".
+
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hid/wacom_wac.c |    2 +-
+ fs/btrfs/compression.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -3829,7 +3829,7 @@ int wacom_setup_touch_input_capabilities
- 		    wacom_wac->shared->touch->product == 0xF6) {
- 			input_dev->evbit[0] |= BIT_MASK(EV_SW);
- 			__set_bit(SW_MUTE_DEVICE, input_dev->swbit);
--			wacom_wac->shared->has_mute_touch_switch = true;
-+			wacom_wac->has_mute_touch_switch = true;
- 		}
- 		fallthrough;
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -273,7 +273,7 @@ static void end_compressed_bio_write(str
+ 	cb->compressed_pages[0]->mapping = cb->inode->i_mapping;
+ 	btrfs_writepage_endio_finish_ordered(cb->compressed_pages[0],
+ 			cb->start, cb->start + cb->len - 1,
+-			bio->bi_status == BLK_STS_OK);
++			!cb->errors);
+ 	cb->compressed_pages[0]->mapping = NULL;
  
+ 	end_compressed_writeback(inode, cb);
 
 
