@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C023DE0DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838E33DE0E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbhHBUlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:41:05 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:35590 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231921AbhHBUk6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:40:58 -0400
-Received: by mail-io1-f45.google.com with SMTP id y9so21837100iox.2;
-        Mon, 02 Aug 2021 13:40:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uc/rr/5xcuhR+zif0CpvyF7mUh82ehF886KfvVGZcB0=;
-        b=J5e6P3zJSrp8swuHuRcpLO/hPF1AdSHOtM8qTj1Zw1PLQyHJD1LeSntMfzK7ti2Ndg
-         /zRTBdIoVJ8iJa+B3pR6NxXRuM9T4Jt3uKSG5Jy2r5Y+oah/XvyG63O3J+FQIE1BH5hc
-         uFltJtES12Sa8uDk1opwR1r1502UNXrYxbPZjrGuXWFvI69+iH56pPUqGq9Sqw7WscnF
-         dD13TvdBoM84o0LmXn6MItAD+8N6t7+FkKH9CCywNsZF0rbkT/Hqj7ht3lUHMKKXNMdu
-         pMGuxawmaGR23y90fLVgXtixX2Cv+XCb4LhLmkJhRFyPFlOlGdO1fJ+rkbpIhl+WQQtt
-         KaYA==
-X-Gm-Message-State: AOAM532+cg755+FusWhgLwVa4RbBTfDrFiGFH6k6ehnjmM4cirzFjYTy
-        8Wj2s2C2lxsTHVHr4EK/rlhovulWgg==
-X-Google-Smtp-Source: ABdhPJxnLXrZtIwbHJwJS1JysQYhqQudWRsgjCyynZjPxToZnlkja1X5wSw4jWZEi12yEAxyZL0t/Q==
-X-Received: by 2002:a05:6638:3824:: with SMTP id i36mr16493740jav.11.1627936847813;
-        Mon, 02 Aug 2021 13:40:47 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id f9sm6296535ile.38.2021.08.02.13.40.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 13:40:47 -0700 (PDT)
-Received: (nullmailer pid 1570511 invoked by uid 1000);
-        Mon, 02 Aug 2021 20:40:45 -0000
-Date:   Mon, 2 Aug 2021 14:40:45 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2] dt-bindings: memory: renesas,rpc-if: Miscellaneous
- improvements
-Message-ID: <YQhYTXTRBl6HkTL/@robh.at.kernel.org>
-References: <d81b59a513c2a5204c8378b4a89cd07f97c46797.1627401508.git.geert+renesas@glider.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d81b59a513c2a5204c8378b4a89cd07f97c46797.1627401508.git.geert+renesas@glider.be>
+        id S232297AbhHBUlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:41:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231165AbhHBUlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 16:41:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9936260F35;
+        Mon,  2 Aug 2021 20:41:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1627936902;
+        bh=mD2GlJ7qH0mW1hEmSzx38bjvmcCI51oF/MKdQrW9HmU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1JTdIkjiyweXRbNQAEN28NLpa5d8t+1ZUkAsnz3nmXFhOSTwSra+EzKTAU/8H0jqg
+         L8vmi7MQk4/BZlCyXJkei2xPkwoMybAKXl1T4b/e9SroNjP/dc4bb/hiIUMlXO/UBm
+         W0qE/aeML0YzE8KUtr+Ov3bF70Ndb/62dDcFyN3Y=
+Date:   Mon, 2 Aug 2021 13:41:41 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Charan Teja Kalla <charante@codeaurora.org>
+Cc:     Mike Rapoport <rppt@kernel.org>, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com,
+        dave.hansen@linux.intel.com, vbabka@suse.cz,
+        mgorman@techsingularity.net, nigupta@nvidia.com, corbet@lwn.net,
+        khalid.aziz@oracle.com, rientjes@google.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        vinmenon@codeaurora.org
+Subject: Re: [PATCH V5] mm: compaction: support triggering of proactive
+ compaction by user
+Message-Id: <20210802134141.dbff2d5f850bbe84f3bef4d5@linux-foundation.org>
+In-Reply-To: <1089d373-221e-7094-b778-ac260ca139a5@codeaurora.org>
+References: <1627653207-12317-1-git-send-email-charante@codeaurora.org>
+        <YQRTqNF3xn+tB+qN@kernel.org>
+        <1089d373-221e-7094-b778-ac260ca139a5@codeaurora.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 18:01:05 +0200, Geert Uytterhoeven wrote:
->   - Fix rejection of legitimate flash subnodes containing multiple
->     compatible values,
->   - Add missing list of required properties.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v2:
->   - Drop #{address,size}-cells.
-> ---
->  .../memory-controllers/renesas,rpc-if.yaml      | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
-> 
+On Mon, 2 Aug 2021 17:30:16 +0530 Charan Teja Kalla <charante@codeaurora.org> wrote:
 
-Applied, thanks!
+> Thanks Mike for the review!!
+> 
+> On 7/31/2021 1:01 AM, Mike Rapoport wrote:
+> >> diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
+> >> index 003d5cc..b526cf6 100644
+> >> --- a/Documentation/admin-guide/sysctl/vm.rst
+> >> +++ b/Documentation/admin-guide/sysctl/vm.rst
+> >> @@ -118,7 +118,8 @@ compaction_proactiveness
+> >>  
+> >>  This tunable takes a value in the range [0, 100] with a default value of
+> >>  20. This tunable determines how aggressively compaction is done in the
+> >> -background. Setting it to 0 disables proactive compaction.
+> >> +background. On write of non zero value to this tunable will immediately
+> > Nit: I think "Write of non zero ..."
+> 
+> Can Andrew change it while applying the patch ?
+
+I have done so, thanks.
