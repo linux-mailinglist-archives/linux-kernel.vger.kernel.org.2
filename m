@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD03C3DD935
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07E33DDA6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbhHBN6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:58:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33720 "EHLO mail.kernel.org"
+        id S236740AbhHBONb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:13:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235014AbhHBNv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:51:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28DB66113D;
-        Mon,  2 Aug 2021 13:51:22 +0000 (UTC)
+        id S235472AbhHBOCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:02:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9ECF61186;
+        Mon,  2 Aug 2021 13:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912282;
-        bh=sQtXZatmVw2YtFzFtA6U93icaZsP1FzDnelEbp4MPkg=;
+        s=korg; t=1627912614;
+        bh=36htMheiM5cvlTuBNHwrHhafl3ZaNJxJhtphZUn9Bmk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C+moOlq4ICyNIo2pbW71M/IzVlpy+5m1JYbcfa8yc4nf3aPVLOw/lXq5f+RGpPj7D
-         /yqQTiKsNjQrq+wn44kEas62Pa5UqgRtYNxlMje99TapOEgLGfVWXbW/PRnICGfe9Z
-         IxvdZksxofuk9FFcAT8BCsnMib6jaO+rf3numNWE=
+        b=v/YycEKi0p1f8meRZnUiyfiU8sl6cuRWzdxjEREBI0pUWJWkDa7K6PUec8nTU/ZyM
+         47jkwvbav2r/Wtio0woAuo4sKzxhkvQGxvEK37RZLDvwOtsD5c0bmJtmhhid+fHJda
+         kClkddDpZPdnTSPGQSSqpMYUGGPMckQjMXblkKNo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+5e5a981ad7cc54c4b2b4@syzkaller.appspotmail.com
-Subject: [PATCH 5.4 29/40] net: llc: fix skb_over_panic
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 072/104] drm/msm/dp: Initialize the INTF_CONFIG register
 Date:   Mon,  2 Aug 2021 15:45:09 +0200
-Message-Id: <20210802134336.322013476@linuxfoundation.org>
+Message-Id: <20210802134346.387675173@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
-References: <20210802134335.408294521@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,159 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-[ Upstream commit c7c9d2102c9c098916ab9e0ab248006107d00d6c ]
+[ Upstream commit f9a39932fa54b6421e751ada7a285da809146421 ]
 
-Syzbot reported skb_over_panic() in llc_pdu_init_as_xid_cmd(). The
-problem was in wrong LCC header manipulations.
+Some bootloaders set the widebus enable bit in the INTF_CONFIG register,
+but configuration of widebus isn't yet supported ensure that the
+register has a known value, with widebus disabled.
 
-Syzbot's reproducer tries to send XID packet. llc_ui_sendmsg() is
-doing following steps:
-
-	1. skb allocation with size = len + header size
-		len is passed from userpace and header size
-		is 3 since addr->sllc_xid is set.
-
-	2. skb_reserve() for header_len = 3
-	3. filling all other space with memcpy_from_msg()
-
-Ok, at this moment we have fully loaded skb, only headers needs to be
-filled.
-
-Then code comes to llc_sap_action_send_xid_c(). This function pushes 3
-bytes for LLC PDU header and initializes it. Then comes
-llc_pdu_init_as_xid_cmd(). It initalizes next 3 bytes *AFTER* LLC PDU
-header and call skb_push(skb, 3). This looks wrong for 2 reasons:
-
-	1. Bytes rigth after LLC header are user data, so this function
-	   was overwriting payload.
-
-	2. skb_push(skb, 3) call can cause skb_over_panic() since
-	   all free space was filled in llc_ui_sendmsg(). (This can
-	   happen is user passed 686 len: 686 + 14 (eth header) + 3 (LLC
-	   header) = 703. SKB_DATA_ALIGN(703) = 704)
-
-So, in this patch I added 2 new private constansts: LLC_PDU_TYPE_U_XID
-and LLC_PDU_LEN_U_XID. LLC_PDU_LEN_U_XID is used to correctly reserve
-header size to handle LLC + XID case. LLC_PDU_TYPE_U_XID is used by
-llc_pdu_header_init() function to push 6 bytes instead of 3. And finally
-I removed skb_push() call from llc_pdu_init_as_xid_cmd().
-
-This changes should not affect other parts of LLC, since after
-all steps we just transmit buffer.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-and-tested-by: syzbot+5e5a981ad7cc54c4b2b4@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/20210722024434.3313167-1-bjorn.andersson@linaro.org
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/llc_pdu.h | 31 +++++++++++++++++++++++--------
- net/llc/af_llc.c      | 10 +++++++++-
- net/llc/llc_s_ac.c    |  2 +-
- 3 files changed, 33 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/msm/dp/dp_catalog.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/net/llc_pdu.h b/include/net/llc_pdu.h
-index c0f0a13ed818..49aa79c7b278 100644
---- a/include/net/llc_pdu.h
-+++ b/include/net/llc_pdu.h
-@@ -15,9 +15,11 @@
- #include <linux/if_ether.h>
- 
- /* Lengths of frame formats */
--#define LLC_PDU_LEN_I	4       /* header and 2 control bytes */
--#define LLC_PDU_LEN_S	4
--#define LLC_PDU_LEN_U	3       /* header and 1 control byte */
-+#define LLC_PDU_LEN_I		4       /* header and 2 control bytes */
-+#define LLC_PDU_LEN_S		4
-+#define LLC_PDU_LEN_U		3       /* header and 1 control byte */
-+/* header and 1 control byte and XID info */
-+#define LLC_PDU_LEN_U_XID	(LLC_PDU_LEN_U + sizeof(struct llc_xid_info))
- /* Known SAP addresses */
- #define LLC_GLOBAL_SAP	0xFF
- #define LLC_NULL_SAP	0x00	/* not network-layer visible */
-@@ -50,9 +52,10 @@
- #define LLC_PDU_TYPE_U_MASK    0x03	/* 8-bit control field */
- #define LLC_PDU_TYPE_MASK      0x03
- 
--#define LLC_PDU_TYPE_I	0	/* first bit */
--#define LLC_PDU_TYPE_S	1	/* first two bits */
--#define LLC_PDU_TYPE_U	3	/* first two bits */
-+#define LLC_PDU_TYPE_I		0	/* first bit */
-+#define LLC_PDU_TYPE_S		1	/* first two bits */
-+#define LLC_PDU_TYPE_U		3	/* first two bits */
-+#define LLC_PDU_TYPE_U_XID	4	/* private type for detecting XID commands */
- 
- #define LLC_PDU_TYPE_IS_I(pdu) \
- 	((!(pdu->ctrl_1 & LLC_PDU_TYPE_I_MASK)) ? 1 : 0)
-@@ -230,9 +233,18 @@ static inline struct llc_pdu_un *llc_pdu_un_hdr(struct sk_buff *skb)
- static inline void llc_pdu_header_init(struct sk_buff *skb, u8 type,
- 				       u8 ssap, u8 dsap, u8 cr)
- {
--	const int hlen = type == LLC_PDU_TYPE_U ? 3 : 4;
-+	int hlen = 4; /* default value for I and S types */
- 	struct llc_pdu_un *pdu;
- 
-+	switch (type) {
-+	case LLC_PDU_TYPE_U:
-+		hlen = 3;
-+		break;
-+	case LLC_PDU_TYPE_U_XID:
-+		hlen = 6;
-+		break;
-+	}
-+
- 	skb_push(skb, hlen);
- 	skb_reset_network_header(skb);
- 	pdu = llc_pdu_un_hdr(skb);
-@@ -374,7 +386,10 @@ static inline void llc_pdu_init_as_xid_cmd(struct sk_buff *skb,
- 	xid_info->fmt_id = LLC_XID_FMT_ID;	/* 0x81 */
- 	xid_info->type	 = svcs_supported;
- 	xid_info->rw	 = rx_window << 1;	/* size of receive window */
--	skb_put(skb, sizeof(struct llc_xid_info));
-+
-+	/* no need to push/put since llc_pdu_header_init() has already
-+	 * pushed 3 + 3 bytes
-+	 */
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+index f4f53f23e331..146a223a997a 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.c
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+@@ -762,6 +762,7 @@ int dp_catalog_panel_timing_cfg(struct dp_catalog *dp_catalog)
+ 	dp_write_link(catalog, REG_DP_HSYNC_VSYNC_WIDTH_POLARITY,
+ 				dp_catalog->width_blanking);
+ 	dp_write_link(catalog, REG_DP_ACTIVE_HOR_VER, dp_catalog->dp_active);
++	dp_write_p0(catalog, MMSS_DP_INTF_CONFIG, 0);
+ 	return 0;
  }
  
- /**
-diff --git a/net/llc/af_llc.c b/net/llc/af_llc.c
-index fa0f3c1543ba..0b3adf7594ff 100644
---- a/net/llc/af_llc.c
-+++ b/net/llc/af_llc.c
-@@ -98,8 +98,16 @@ static inline u8 llc_ui_header_len(struct sock *sk, struct sockaddr_llc *addr)
- {
- 	u8 rc = LLC_PDU_LEN_U;
- 
--	if (addr->sllc_test || addr->sllc_xid)
-+	if (addr->sllc_test)
- 		rc = LLC_PDU_LEN_U;
-+	else if (addr->sllc_xid)
-+		/* We need to expand header to sizeof(struct llc_xid_info)
-+		 * since llc_pdu_init_as_xid_cmd() sets 4,5,6 bytes of LLC header
-+		 * as XID PDU. In llc_ui_sendmsg() we reserved header size and then
-+		 * filled all other space with user data. If we won't reserve this
-+		 * bytes, llc_pdu_init_as_xid_cmd() will overwrite user data
-+		 */
-+		rc = LLC_PDU_LEN_U_XID;
- 	else if (sk->sk_type == SOCK_STREAM)
- 		rc = LLC_PDU_LEN_I;
- 	return rc;
-diff --git a/net/llc/llc_s_ac.c b/net/llc/llc_s_ac.c
-index 7ae4cc684d3a..9fa3342c7a82 100644
---- a/net/llc/llc_s_ac.c
-+++ b/net/llc/llc_s_ac.c
-@@ -79,7 +79,7 @@ int llc_sap_action_send_xid_c(struct llc_sap *sap, struct sk_buff *skb)
- 	struct llc_sap_state_ev *ev = llc_sap_ev(skb);
- 	int rc;
- 
--	llc_pdu_header_init(skb, LLC_PDU_TYPE_U, ev->saddr.lsap,
-+	llc_pdu_header_init(skb, LLC_PDU_TYPE_U_XID, ev->saddr.lsap,
- 			    ev->daddr.lsap, LLC_PDU_CMD);
- 	llc_pdu_init_as_xid_cmd(skb, LLC_XID_NULL_CLASS_2, 0);
- 	rc = llc_mac_hdr_init(skb, ev->saddr.mac, ev->daddr.mac);
 -- 
 2.30.2
 
