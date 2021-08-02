@@ -2,61 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5C03DD782
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 099733DD836
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233970AbhHBNqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:46:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233863AbhHBNqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:46:02 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E52060F6D;
-        Mon,  2 Aug 2021 13:45:53 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mAYGN-002Spk-Pn; Mon, 02 Aug 2021 14:45:51 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH] KVM: ARM: count remote TLB flushes
-Date:   Mon,  2 Aug 2021 14:45:47 +0100
-Message-Id: <162791193623.3441939.13198222517993801713.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210727103251.16561-1-pbonzini@redhat.com>
-References: <20210727103251.16561-1-pbonzini@redhat.com>
+        id S234684AbhHBNuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:50:25 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7917 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234257AbhHBNrf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:47:35 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GdfNB5NzHz83CY;
+        Mon,  2 Aug 2021 21:43:22 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 21:47:11 +0800
+Received: from thunder-town.china.huawei.com (10.174.179.0) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 21:47:11 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable <stable@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Sasha Levin <sasha.levin@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: [PATCH 4.4 00/11] Fix a potential infinite loop in RT futex-pi scenarios
+Date:   Mon, 2 Aug 2021 21:46:13 +0800
+Message-ID: <20210802134624.1934-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: pbonzini@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 12:32:51 +0200, Paolo Bonzini wrote:
-> KVM/ARM has an architecture-specific implementation of
-> kvm_flush_remote_tlbs; however, unlike the generic one,
-> it does not count the flushes in kvm->stat.remote_tlb_flush,
-> so that it inexorably remained stuck to zero.
+Commit 73d786bd043e "futex: Rework inconsistent rt_mutex/futex_q state"
+mentions that it could cause an infinite loop, and will fix it in the later
+patches:
+bebe5b514345f09 futex: Futex_unlock_pi() determinism
+cfafcd117da0216 futex: Rework futex_lock_pi() to use rt_mutex_*_proxy_lock()
 
-Applied to next, thanks!
+But at the moment they're not backported. In a single-core environment, the
+probability of triggering is high.
 
-[1/1] KVM: ARM: count remote TLB flushes
-      commit: 38f703663d4c82ead5b51b8860deeef19d6dcb6d
+I also backported commit b4abf91047cf ("rtmutex: Make wait_lock irq safe"),
+it fixes a potential deadlock problem. Although it hasn't actually been
+triggered in our environment at the moment.
 
-Cheers,
+Other patches are used to resolve conflicts or fix problems caused by new
+patches.
 
-	M.
+
+Anna-Maria Gleixner (1):
+  rcu: Update documentation of rcu_read_unlock()
+
+Mike Galbraith (1):
+  futex: Handle transient "ownerless" rtmutex state correctly
+
+Peter Zijlstra (6):
+  futex: Cleanup refcounting
+  futex,rt_mutex: Introduce rt_mutex_init_waiter()
+  futex: Pull rt_mutex_futex_unlock() out from under hb->lock
+  futex: Rework futex_lock_pi() to use rt_mutex_*_proxy_lock()
+  futex: Futex_unlock_pi() determinism
+  futex,rt_mutex: Fix rt_mutex_cleanup_proxy_lock()
+
+Thomas Gleixner (3):
+  futex: Rename free_pi_state() to put_pi_state()
+  rtmutex: Make wait_lock irq safe
+  futex: Avoid freeing an active timer
+
+ include/linux/rcupdate.h        |   4 +-
+ kernel/futex.c                  | 245 +++++++++++++++++++++-----------
+ kernel/locking/rtmutex.c        | 185 +++++++++++++-----------
+ kernel/locking/rtmutex_common.h |   2 +-
+ 4 files changed, 262 insertions(+), 174 deletions(-)
+
 -- 
-Without deviation from the norm, progress is not possible.
-
+2.26.0.106.g9fadedd
 
