@@ -2,96 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03D63DCEF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F163DCEE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbhHBDgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 23:36:13 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:1842 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231361AbhHBDgK (ORCPT
+        id S231923AbhHBDUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 23:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230341AbhHBDUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 23:36:10 -0400
-X-UUID: 646c5d5928024c22a2ad7045ea5aa7fb-20210802
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=ZK3e9Sg7ghuyh77VEHKTRyGoBtj/73rumt2QQW4OnHM=;
-        b=I1sTjCKmkm3Pr3FQlnuF3fvH+3ffvbvnfU5jGUKMMyBKeEdvjbffWFmT0UgOc54aN3XB7mcpmbzdf9zdyu+YuZEAVI6qqmyHdgzzoMPKPRmvbbSD5UkRGPBsZDEaGvxPLXYQDRA3yioZUN31DLcaQpYvdULWrdjJh7q5kQuNep0=;
-X-UUID: 646c5d5928024c22a2ad7045ea5aa7fb-20210802
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1405854002; Mon, 02 Aug 2021 11:35:56 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS32N1.mediatek.inc (172.27.4.71) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 2 Aug 2021 11:35:49 +0800
-Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 2 Aug 2021 11:35:48 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     David Ahern <dsahern@kernel.org>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <rocco.yue@gmail.com>,
-        <chao.song@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
-        Rocco Yue <rocco.yue@mediatek.com>
-Subject: Re: [PATCH net-next v2] ipv6: add IFLA_INET6_RA_MTU to expose mtu value in the RA message
-Date:   Mon, 2 Aug 2021 11:19:24 +0800
-Message-ID: <20210802031924.3256-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <5be90cf4-f603-c2f2-fd7e-3886854457ba@gmail.com>
-References: <5be90cf4-f603-c2f2-fd7e-3886854457ba@gmail.com>
+        Sun, 1 Aug 2021 23:20:34 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1693BC06175F;
+        Sun,  1 Aug 2021 20:20:25 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id l19so23467032pjz.0;
+        Sun, 01 Aug 2021 20:20:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9FBEypF8PtZzHGWJIbK6kxhqMWYcW5O58D8wRuLNdb4=;
+        b=iwwjWFWbErUgwSZ5JTFABHWAFz6RQdWExB+ejf+w67NBrAt4zwVjSvTtOkKrTVW7Mc
+         WUWO3SU8vUF2SRCxZzqTZMBSYNrtDax6yMqnZYeAvVI01wFGQIRaFYsAvk/JFKKhRQd3
+         hWovFI7C5mGOhzQI1m2ltVIzStRVAJiKPJQoeUM4R3DUZso8lh+gkC/Mo7cukHlC8IRt
+         szhMJ6uOJQdr5sSUZiWnkWJLEUyUHtlKH7UZJgSHHJt+XPErXsdBp4JlrEgEAoF/DAff
+         kwJPgQO03kYe+HrP+FQxZhaz0gs4Oy03Nbrmlhde94809h0BPvySmpamjUwkHCjjwvKy
+         NykQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9FBEypF8PtZzHGWJIbK6kxhqMWYcW5O58D8wRuLNdb4=;
+        b=iB0Levy4/VZxzdn0e+nZpI4rWnN42XaQ4aTorsnTR/brkZOsf/QrjIxkIkHhwjc0nR
+         eUb2wZUikSEiyvoaK71eMJwoJCLaKKbaysGsywwajI6oIxRzzfhF1/wsZXahXTa0y+0J
+         acmIWHR1HtLieRWMoxaH0duBQf/1528NiHd4iqD4vgmDmdwsaZXDb9502WxxMh9pV/x7
+         WJ4K535AYPxD1XAP9rgZohJ+8bAqtdPGj+QJEmcrRUo3kIFcplmkjHWhJ5z9OCbJGP+y
+         SQHbjcTAjxPAvLm40nX6ytuCGdavD16jvKlEXjhQhEbIxXRHqJ/aJNj04YfT5VMcgHBq
+         L/pg==
+X-Gm-Message-State: AOAM531Y+2OKzvoxXd+HGQBgG5JQVl+VomkQWw3O9Mq6jgzUYtymYHqJ
+        mxeXm3FSJ/iTFvfcgQ0tYqct7OLbsI0=
+X-Google-Smtp-Source: ABdhPJwgZMSERCqtNCFOMa8STVZ80VB2G2omeD/flIXfdfGp+ZPB4sx6hA6XKMlbSOJszJzAKlVtwg==
+X-Received: by 2002:a17:902:a50f:b029:11a:cd45:9009 with SMTP id s15-20020a170902a50fb029011acd459009mr12632574plq.38.1627874424669;
+        Sun, 01 Aug 2021 20:20:24 -0700 (PDT)
+Received: from bobo.ibm.com (60-242-181-102.static.tpgi.com.au. [60.242.181.102])
+        by smtp.gmail.com with ESMTPSA id u27sm678055pfg.83.2021.08.01.20.20.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Aug 2021 20:20:24 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Anton Blanchard <anton@ozlabs.org>
+Subject: [PATCH v1] fs/epoll: use a per-cpu counter for user's watches count
+Date:   Mon,  2 Aug 2021 13:20:13 +1000
+Message-Id: <20210802032013.2751916-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 717DC6BBB0EEBCBF51C02B29FAF02E489CDAC93F80059C78A30F86F824E5FC2D2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIxLTA3LTMxIGF0IDExOjE3IC0wNjAwLCBEYXZpZCBBaGVybiB3cm90ZToNCk9u
-IDcvMzAvMjEgNzo1MiBQTSwgUm9jY28gWXVlIHdyb3RlOg0KPj4gSW4gdGhpcyB3YXksIGlmIHRo
-ZSBNVFUgdmFsdWVzIHRoYXQgdGhlIGRldmljZSByZWNlaXZlcyBmcm9tDQo+PiB0aGUgbmV0d29y
-ayBpbiB0aGUgUENPIElQdjQgYW5kIHRoZSBSQSBJUHY2IHByb2NlZHVyZXMgYXJlDQo+PiBkaWZm
-ZXJlbnQsIHRoZSB1c2VyIHNwYWNlIHByb2Nlc3MgY2FuIHJlYWQgcmFfbXR1IHRvIGdldA0KPj4g
-dGhlIG10dSB2YWx1ZSBjYXJyaWVkIGluIHRoZSBSQSBtZXNzYWdlIHdpdGhvdXQgd29ycnlpbmcN
-Cj4+IGFib3V0IHRoZSBpc3N1ZSBvZiBpcHY0IGJlaW5nIHN0dWNrIGR1ZSB0byB0aGUgbGF0ZSBh
-cnJpdmFsDQo+PiBvZiBSQSBtZXNzYWdlLiBBZnRlciBjb21wYXJpbmcgdGhlIHZhbHVlIG9mIHJh
-X210dSBhbmQgaXB2NA0KPj4gbXR1LCB0aGVuIHRoZSBkZXZpY2UgY2FuIHVzZSB0aGUgbG93ZXIg
-TVRVIHZhbHVlIGZvciBib3RoDQo+PiBJUHY0IGFuZCBJUHY2Lg0KPiANCj4geW91IGFyZSBzdG9y
-aW5nIHRoZSB2YWx1ZSBhbmQgc2VuZGluZyB0byB1c2Vyc3BhY2UgYnV0IG5ldmVyIHVzaW5nIGl0
-DQo+IHdoZW4gc2VuZGluZyBhIG1lc3NhZ2UuIFdoYXQncyB0aGUgcG9pbnRpbmcgb2YgcHJvY2Vz
-c2luZyB0aGUgTVRVIGluIHRoZQ0KPiBSQSBpZiB5b3UgYXJlIG5vdCBnb2luZyB0byB1c2UgaXQg
-dG8gY29udHJvbCBtZXNzYWdlIHNpemU/DQoNCkhpIERhdmlkLA0KDQpJbiB0aGUgcmVxdWlyZW1l
-bnQgb2YgbW9iaWxlIG9wZXJhdG9yIGF0JnQgaW4gMjAyMToNCkFUJlQgPENEUi1DRFMtMTE2PiBQ
-cmlvcml0aXplIExvd2VyIE1UVSB2YWx1ZToNCklmIHRoZSBNVFUgdmFsdWVzIHRoYXQgdGhlIGRl
-dmljZSByZWNlaXZlcyBmcm9tIHRoZSBuZXR3b3JrIGluIHRoZSBQQ08NCklQdjQgPENEUi1DRFMt
-MTEwPiBhbmQgdGhlIFJBIElQdjYgPENEUi1DRFMtMTEyPiBwcm9jZWR1cmVzIGFyZSBkaWZmZXJl
-bnQsDQp0aGVuIHRoZSBkZXZpY2Ugc2hhbGwgdXNlIHRoZSBsb3dlciBNVFUgdmFsdWUgZm9yIGJv
-dGggSVB2NCBhbmQgSVB2Ni4NCg0KQW5kIGluIHRoZSAzR1BQIDIzLjA2MDoNClRoZSBQRFAgUERV
-cyBzaGFsbCBiZSByb3V0ZWQgYW5kIHRyYW5zZmVycmVkIGJldHdlZW4gdGhlIE1TIGFuZCB0aGUg
-R0dTTg0Kb3IgUC1HVyBhcyBOLVBEVXMuIEluIG9yZGVyIHRvIGF2b2lkIElQIGxheWVyIGZyYWdt
-ZW50YXRpb24gYmV0d2VlbiB0aGUNCk1TIGFuZCB0aGUgR0dTTiBvciBQLUdXLCB0aGUgbGluayBN
-VFUgc2l6ZSBpbiB0aGUgTVMgc2hvdWxkIGJlIHNldCB0byB0aGUNCnZhbHVlIHByb3ZpZGVkIGJ5
-IHRoZSBuZXR3b3JrIGFzIGEgcGFydCBvZiB0aGUgSVAgY29uZmlndXJhdGlvbi4gVGhpcw0KYXBw
-bGllcyB0byBib3RoIElQdjYgYW5kIElQdjQuDQoNClRoYXQgbWVhbnMgdXNlciBuZWVkcyB0byBi
-ZSBhYmxlIHRvIGNvcnJlY3RseSByZWFkIHRoZSBtdHUgdmFsdWUgY2FycmllZA0KaW4gdGhlIFJB
-IG1lc3NhZ2Ugc28gdGhhdCB1c2VyIGNhbiBjb3JyZWN0bHkgY29tcGFyZSBQQ08gaXB2NCBtdHUg
-YW5kDQpSQSBpcHY2IG10dS4NCg0KPj4gQEAgLTU3NjEsNiArNTc2NSw3IEBAIHN0YXRpYyBpbnQg
-aW5ldDZfc2V0X2lmdG9rZW4oc3RydWN0IGluZXQ2X2RldiAqaWRldiwgc3RydWN0IGluNl9hZGRy
-ICp0b2tlbiwNCj4+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG5sYV9wb2xpY3kgaW5ldDZfYWZfcG9s
-aWN5W0lGTEFfSU5FVDZfTUFYICsgMV0gPSB7DQo+PiAgCVtJRkxBX0lORVQ2X0FERFJfR0VOX01P
-REVdCT0geyAudHlwZSA9IE5MQV9VOCB9LA0KPj4gIAlbSUZMQV9JTkVUNl9UT0tFTl0JCT0geyAu
-bGVuID0gc2l6ZW9mKHN0cnVjdCBpbjZfYWRkcikgfSwNCj4+ICsJW0lGTEFfSU5FVDZfUkFfTVRV
-XQkJPSB7IC50eXBlID0gTkxBX1UzMiB9LA0KPj4gIH07DQo+PiAgDQo+PiAgc3RhdGljIGludCBj
-aGVja19hZGRyX2dlbl9tb2RlKGludCBtb2RlKQ0KPiANCj4gSXRzIHZhbHVlIGlzIGRlcml2ZWQg
-ZnJvbSBhbiBSQSBub3Qgc2V0IGJ5IHVzZXJzcGFjZSwgc28gc2V0IHRoZSB0eXBlIHRvDQo+IE5M
-QV9SRUpFQ1Qgc28gdGhhdCBpbmV0Nl92YWxpZGF0ZV9saW5rX2FmIHdpbGwgcmVqZWN0IG1lc3Nh
-Z2VzIHRoYXQgaGF2ZQ0KPiBJRkxBX0lORVQ2X1JBX01UVSBzZXQuIFlvdSBjYW4gc2V0ICJyZWpl
-Y3RfbWVzc2FnZSIgaW4gdGhlIHBvbGljeSB0bw0KPiByZXR1cm4gYSBtZXNzYWdlIHRoYXQgIklG
-TEFfSU5FVDZfUkFfTVRVIGNhbiBub3QgYmUgc2V0Ii4NCg0Kd2lsbCBkby4NCg0KVGhhbmtzDQpS
-b2Njbw==
+This counter tracks the number of watches a user has, to compare against
+the 'max_user_watches' limit. This causes a scalability bottleneck on
+SPECjbb2015 on large systems as there is only one user. Changing to a
+per-cpu counter increases throughput of the benchmark by about 30% on a
+16-socket, > 1000 thread system.
+
+Reported-by: Anton Blanchard <anton@ozlabs.org>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+---
+ fs/eventpoll.c             | 18 ++++++++++--------
+ include/linux/sched/user.h |  3 ++-
+ kernel/user.c              |  9 +++++++++
+ 3 files changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index 1e596e1d0bba..648ed77f4164 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -723,7 +723,7 @@ static int ep_remove(struct eventpoll *ep, struct epitem *epi)
+ 	 */
+ 	call_rcu(&epi->rcu, epi_rcu_free);
+ 
+-	atomic_long_dec(&ep->user->epoll_watches);
++	percpu_counter_dec(&ep->user->epoll_watches);
+ 
+ 	return 0;
+ }
+@@ -1439,7 +1439,6 @@ static int ep_insert(struct eventpoll *ep, const struct epoll_event *event,
+ {
+ 	int error, pwake = 0;
+ 	__poll_t revents;
+-	long user_watches;
+ 	struct epitem *epi;
+ 	struct ep_pqueue epq;
+ 	struct eventpoll *tep = NULL;
+@@ -1449,11 +1448,15 @@ static int ep_insert(struct eventpoll *ep, const struct epoll_event *event,
+ 
+ 	lockdep_assert_irqs_enabled();
+ 
+-	user_watches = atomic_long_read(&ep->user->epoll_watches);
+-	if (unlikely(user_watches >= max_user_watches))
++	if (unlikely(percpu_counter_compare(&ep->user->epoll_watches,
++					    max_user_watches) >= 0))
+ 		return -ENOSPC;
+-	if (!(epi = kmem_cache_zalloc(epi_cache, GFP_KERNEL)))
++	percpu_counter_inc(&ep->user->epoll_watches);
++
++	if (!(epi = kmem_cache_zalloc(epi_cache, GFP_KERNEL))) {
++		percpu_counter_dec(&ep->user->epoll_watches);
+ 		return -ENOMEM;
++	}
+ 
+ 	/* Item initialization follow here ... */
+ 	INIT_LIST_HEAD(&epi->rdllink);
+@@ -1466,17 +1469,16 @@ static int ep_insert(struct eventpoll *ep, const struct epoll_event *event,
+ 		mutex_lock_nested(&tep->mtx, 1);
+ 	/* Add the current item to the list of active epoll hook for this file */
+ 	if (unlikely(attach_epitem(tfile, epi) < 0)) {
+-		kmem_cache_free(epi_cache, epi);
+ 		if (tep)
+ 			mutex_unlock(&tep->mtx);
++		kmem_cache_free(epi_cache, epi);
++		percpu_counter_dec(&ep->user->epoll_watches);
+ 		return -ENOMEM;
+ 	}
+ 
+ 	if (full_check && !tep)
+ 		list_file(tfile);
+ 
+-	atomic_long_inc(&ep->user->epoll_watches);
+-
+ 	/*
+ 	 * Add the current item to the RB tree. All RB tree operations are
+ 	 * protected by "mtx", and ep_insert() is called with "mtx" held.
+diff --git a/include/linux/sched/user.h b/include/linux/sched/user.h
+index 2462f7d07695..00ed419dd464 100644
+--- a/include/linux/sched/user.h
++++ b/include/linux/sched/user.h
+@@ -4,6 +4,7 @@
+ 
+ #include <linux/uidgid.h>
+ #include <linux/atomic.h>
++#include <linux/percpu_counter.h>
+ #include <linux/refcount.h>
+ #include <linux/ratelimit.h>
+ 
+@@ -13,7 +14,7 @@
+ struct user_struct {
+ 	refcount_t __count;	/* reference count */
+ #ifdef CONFIG_EPOLL
+-	atomic_long_t epoll_watches; /* The number of file descriptors currently watched */
++	struct percpu_counter epoll_watches; /* The number of file descriptors currently watched */
+ #endif
+ 	unsigned long unix_inflight;	/* How many files in flight in unix sockets */
+ 	atomic_long_t pipe_bufs;  /* how many pages are allocated in pipe buffers */
+diff --git a/kernel/user.c b/kernel/user.c
+index c82399c1618a..a2673f940506 100644
+--- a/kernel/user.c
++++ b/kernel/user.c
+@@ -138,6 +138,7 @@ static void free_user(struct user_struct *up, unsigned long flags)
+ {
+ 	uid_hash_remove(up);
+ 	spin_unlock_irqrestore(&uidhash_lock, flags);
++	percpu_counter_destroy(&up->epoll_watches);
+ 	kmem_cache_free(uid_cachep, up);
+ }
+ 
+@@ -185,6 +186,10 @@ struct user_struct *alloc_uid(kuid_t uid)
+ 
+ 		new->uid = uid;
+ 		refcount_set(&new->__count, 1);
++		if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
++			kmem_cache_free(uid_cachep, new);
++			return NULL;
++		}
+ 		ratelimit_state_init(&new->ratelimit, HZ, 100);
+ 		ratelimit_set_flags(&new->ratelimit, RATELIMIT_MSG_ON_RELEASE);
+ 
+@@ -195,6 +200,7 @@ struct user_struct *alloc_uid(kuid_t uid)
+ 		spin_lock_irq(&uidhash_lock);
+ 		up = uid_hash_find(uid, hashent);
+ 		if (up) {
++			percpu_counter_destroy(&new->epoll_watches);
+ 			kmem_cache_free(uid_cachep, new);
+ 		} else {
+ 			uid_hash_insert(new, hashent);
+@@ -216,6 +222,9 @@ static int __init uid_cache_init(void)
+ 	for(n = 0; n < UIDHASH_SZ; ++n)
+ 		INIT_HLIST_HEAD(uidhash_table + n);
+ 
++	if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
++		panic("percpu cpunter alloc failed");
++
+ 	/* Insert the root user immediately (init already runs as root) */
+ 	spin_lock_irq(&uidhash_lock);
+ 	uid_hash_insert(&root_user, uidhashentry(GLOBAL_ROOT_UID));
+-- 
+2.23.0
 
