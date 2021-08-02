@@ -2,107 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A51F3DE0A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2DF3DE0AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhHBU3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhHBU3S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:29:18 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C0EC06175F;
-        Mon,  2 Aug 2021 13:29:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=l+fsYpXHnA5UWflt6UdASmUhsqYZSqpyJ5dbaN1LNhI=; b=vjQduL25s9hj45Yfu4BTWPBTU
-        kSrAkTSvbBkmMoP+U+eq7jLxh9RY41POf05sbal5DLZUOHV14VyAkDosbwqMP6hNbjJNzszGxQOFb
-        5wYJIChsZvBSrMFJdmAcTH4YkXzYoyuavecHIGnNfsnYkoQHkamhrzD+2t/mLD6cSA8AE/lejVALP
-        o14n71qmu350xdj1XuaKMWTtEqYO2HM34dB006g4k7212DICITO8uYJP3CFtt6kaRoKcMqpnwP50V
-        UIFDzpfSBBtP1nJ9QQnkdI2ASdn0BAlsWuimFTpAKGqcXPn7safpQjAHW1AXfy3hNuN5xHrP1qriX
-        LkVuUtlRQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46868)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mAeYW-0006Ce-VV; Mon, 02 Aug 2021 21:29:00 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mAeYR-0003Bf-Ax; Mon, 02 Aug 2021 21:28:55 +0100
-Date:   Mon, 2 Aug 2021 21:28:55 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        Ludovic Desroches <Ludovic.Desroches@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Mark Brown <broonie@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Claudiu Beznea <Claudiu.Beznea@microchip.com>
-Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
- devm_clk_get for prepared and enabled clocks enabled clocks]
-Message-ID: <20210802202855.GL22278@shell.armlinux.org.uk>
-References: <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
- <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
- <20210728202547.7uvfwflpruku7yps@pengutronix.de>
- <20210728204033.GF22278@shell.armlinux.org.uk>
- <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
- <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
- <20210802094810.GJ22278@shell.armlinux.org.uk>
- <20210802152755.ibisunvibmwhiyry@pengutronix.de>
- <20210802163824.GK22278@shell.armlinux.org.uk>
- <CAHp75VcpA0vOwN8gBj2iikXW2dw+KCgZEM=QJ5Jx6UWqww=iCw@mail.gmail.com>
+        id S231368AbhHBU3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:29:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229729AbhHBU3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 16:29:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C577610A8;
+        Mon,  2 Aug 2021 20:29:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627936178;
+        bh=ARh9DG4tmIsdrfUtUTPBkpcqMfcJVlCT5toIiYasvPk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=TX40QJ9dwI2EgMqrYCge7MFeyMWOcZvO5Noztf2D6DAXlAtwAWisLF3hgaz04HbCj
+         iXNjxejwW6eyNbTzNZft0w7sK2wfKxFaNu2MxBROGxltUUdFta8fjBJlDpntD9URP6
+         rmHKP0V/JckHQzBePnr98wf8ZM3UJVC8dDEpwgqMwlMVUKudwcwf0yob0vRsJHeRDW
+         9o/Oop5xbrACDKfDnKv6N2xm9pL3Ou3vNr6erXw9mUdlmo8MnZ2wC4+zslNcTv7mG9
+         P6qAZ/HErMbjhqhdTr2HCbZUpDY7c72/YOYDLheGXz1KpHgTSk43rrLFxmYrJ/IvVH
+         koo5g8srn89QA==
+Subject: Re: [PATCH v2] compiler_attributes.h: move
+ __compiletime_{error|warning}
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Will Deacon <will@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20210802202326.1817503-1-ndesaulniers@google.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <1847b77a-093a-ce59-5c3b-1a21d3bb66c7@kernel.org>
+Date:   Mon, 2 Aug 2021 13:29:36 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcpA0vOwN8gBj2iikXW2dw+KCgZEM=QJ5Jx6UWqww=iCw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210802202326.1817503-1-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 08:13:05PM +0300, Andy Shevchenko wrote:
-> On Mon, Aug 2, 2021 at 7:38 PM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
-> > It probably depends on where you stand on power management and power
-> > efficiency issues. Personally, I would like to see more effort put
-> > into drivers to make them more power efficient, and I believe in the
-> > coming years, power efficiency is going to become a big issue.
+On 8/2/2021 1:23 PM, 'Nick Desaulniers' via Clang Built Linux wrote:
+> I'm working on adding support for __attribute__((__error__(""))) and
+> __attribute__((__warning__(""))) to Clang. To make use of these in
+> __compiletime_error and __compiletime_warning (as used by BUILD_BUG and
+> friends) for newer clang and detect/fallback for older versions of
+> clang, move these to compiler_attributes.h and guard them with
+> __has_attribute preprocessor guards.
 > 
-> While in the ideal world I 100% agree with the approach, IRL we have
-> to deal with constantly degrading quality of the code and instead of
-> thinking about power management and efficiency the absence of APIs
-> such as discussed provokes not only creating the power management
-> inefficient code, but also memory leaks here and there.
+> Link: https://reviews.llvm.org/D106030
+> Link: https://bugs.llvm.org/show_bug.cgi?id=16428
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1173
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-The point of my previous reply that you quoted above was to make a
-prediction, it wasn't a rejection of the approach.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+One comment below, please carry my tag forward in further revisions 
+unless they are significant.
+
+> ---
+> Changes v1 -> v2:
+> * Use __warning__ rather than warning in __has_attribute check, as per
+>    Nathan.
+> * Don't sort existing __GCC4_has_attribute_* defines.
+> 
+>   include/linux/compiler-gcc.h        |  3 ---
+>   include/linux/compiler_attributes.h | 24 ++++++++++++++++++++++++
+>   include/linux/compiler_types.h      |  6 ------
+>   3 files changed, 24 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+> index cb9217fc60af..21c36b69eb06 100644
+> --- a/include/linux/compiler-gcc.h
+> +++ b/include/linux/compiler-gcc.h
+> @@ -43,9 +43,6 @@
+>   
+>   #define __compiletime_object_size(obj) __builtin_object_size(obj, 0)
+>   
+> -#define __compiletime_warning(message) __attribute__((__warning__(message)))
+> -#define __compiletime_error(message) __attribute__((__error__(message)))
+> -
+>   #if defined(LATENT_ENTROPY_PLUGIN) && !defined(__CHECKER__)
+>   #define __latent_entropy __attribute__((latent_entropy))
+>   #endif
+> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+> index 67c5667f8042..fb08b843ab47 100644
+> --- a/include/linux/compiler_attributes.h
+> +++ b/include/linux/compiler_attributes.h
+> @@ -30,6 +30,7 @@
+>   # define __GCC4_has_attribute___assume_aligned__      1
+>   # define __GCC4_has_attribute___copy__                0
+>   # define __GCC4_has_attribute___designated_init__     0
+> +# define __GCC4_has_attribute___error__               1
+>   # define __GCC4_has_attribute___externally_visible__  1
+>   # define __GCC4_has_attribute___no_caller_saved_registers__ 0
+>   # define __GCC4_has_attribute___noclone__             1
+> @@ -39,6 +40,7 @@
+>   # define __GCC4_has_attribute___no_sanitize_undefined__ 1
+>   # define __GCC4_has_attribute___no_sanitize_coverage__ 0
+>   # define __GCC4_has_attribute___fallthrough__         0
+> +# define __GCC4_has_attribute___warning__             1
+>   #endif
+>   
+>   /*
+> @@ -138,6 +140,17 @@
+>   # define __designated_init
+>   #endif
+>   
+> +/*
+> + * Optional: only supported since clang >= 13.0
+
+Are you planning on petitioning for D106030 to be applied to 
+release/13.x when it is merged into main? If not, this should be updated 
+to 14.0.0 since that is main's current version.
+
+> + *
+> + *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-error-function-attribute
+> + */
+> +#if __has_attribute(__error__)
+> +# define __compiletime_error(msg)       __attribute__((__error__(msg)))
+> +#else
+> +# define __compiletime_error(msg)
+> +#endif
+> +
+>   /*
+>    * Optional: not supported by clang
+>    *
+> @@ -299,6 +312,17 @@
+>    */
+>   #define __must_check                    __attribute__((__warn_unused_result__))
+>   
+> +/*
+> + * Optional: only supported since clang >= 13.0
+> + *
+> + *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-warning-function-attribute
+> + */
+> +#if __has_attribute(__warning__)
+> +# define __compiletime_warning(msg)     __attribute__((__warning__(msg)))
+> +#else
+> +# define __compiletime_warning(msg)
+> +#endif
+> +
+>   /*
+>    *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-weak-function-attribute
+>    *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#index-weak-variable-attribute
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index e4ea86fc584d..b6ff83a714ca 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -294,12 +294,6 @@ struct ftrace_likely_data {
+>   #ifndef __compiletime_object_size
+>   # define __compiletime_object_size(obj) -1
+>   #endif
+> -#ifndef __compiletime_warning
+> -# define __compiletime_warning(message)
+> -#endif
+> -#ifndef __compiletime_error
+> -# define __compiletime_error(message)
+> -#endif
+>   
+>   #ifdef __OPTIMIZE__
+>   # define __compiletime_assert(condition, msg, prefix, suffix)		\
+> 
