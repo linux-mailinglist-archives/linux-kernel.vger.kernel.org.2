@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CFD3DD945
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832713DD9AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbhHBN7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33086 "EHLO mail.kernel.org"
+        id S236478AbhHBOCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:02:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235265AbhHBNww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:52:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A195760551;
-        Mon,  2 Aug 2021 13:51:39 +0000 (UTC)
+        id S236260AbhHBNzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:55:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE9C9611C0;
+        Mon,  2 Aug 2021 13:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912300;
-        bh=j34rqbkjDUG74k2x7CXphuk7DnB+5Qwigbx4HerbAuY=;
+        s=korg; t=1627912426;
+        bh=Ot5I9YkuEtp9rw6y8F0eyWRZTCPZgbGpZ0Y8fVrVNvo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=doxdH0FmxhMMoE245gQSvq7v5wsT4Zc38pRj8nap8RKCAlWO9eXK+2YRuahhWNKPd
-         SgZN0AsI6rT/naX8e/ZHiDKcmH/azVKsgKOZ6vty9GRdXNh9Kj11H17h8PincBVklU
-         oyMINp19Oy74L4GUuBuIyaAfK0BZXLfNe9j7Om3A=
+        b=t5Ps6WQLLOdlHnlkke5v03oigvYKmzfljSoruDYOH2ZXSdyXFn5teDqOHhQeoGhRe
+         WVi4/iPaamag3q4txR5QwFlcRhmVAJ2MUe0c+7Ab0Vbi9gio8fVD0aSRBS1E/AoxNz
+         NfN89GGiJzxpLq2CJUR1hlDZ1gPkZ6zWzWskx4Lo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shmuel Hazan <sh@tkos.co.il>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Baruch Siach <baruch@tkos.co.il>
-Subject: [PATCH 5.4 36/40] PCI: mvebu: Setup BAR0 in order to fix MSI
+        stable@vger.kernel.org, Dima Chumak <dchumak@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>, Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 53/67] net/mlx5e: Fix nullptr in mlx5e_hairpin_get_mdev()
 Date:   Mon,  2 Aug 2021 15:45:16 +0200
-Message-Id: <20210802134336.542092671@linuxfoundation.org>
+Message-Id: <20210802134340.852585962@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
-References: <20210802134335.408294521@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,92 +41,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shmuel Hazan <sh@tkos.co.il>
+From: Dima Chumak <dchumak@nvidia.com>
 
-commit 216f8e95aacc8e9690d8e2286c472671b65f4128 upstream.
+[ Upstream commit b1c2f6312c5005c928a72e668bf305a589d828d4 ]
 
-According to the Armada XP datasheet, section 10.2.6: "in order for
-the device to do a write to the MSI doorbell address, it needs to write
-to a register in the internal registers space".
+The result of __dev_get_by_index() is not checked for NULL and then gets
+dereferenced immediately.
 
-As a result of the requirement above, without this patch, MSI won't
-function and therefore some devices won't operate properly without
-pci=nomsi.
+Also, __dev_get_by_index() must be called while holding either RTNL lock
+or @dev_base_lock, which isn't satisfied by mlx5e_hairpin_get_mdev() or
+its callers. This makes the underlying hlist_for_each_entry() loop not
+safe, and can have adverse effects in itself.
 
-This requirement was not present at the time of writing this driver
-since the vendor u-boot always initializes all PCIe controllers
-(incl. BAR0 initialization) and for some time, the vendor u-boot was
-the only available bootloader for this driver's SoCs (e.g. A38x,A37x,
-etc).
+Fix by using dev_get_by_index() and handling nullptr return value when
+ifindex device is not found. Update mlx5e_hairpin_get_mdev() callers to
+check for possible PTR_ERR() result.
 
-Tested on an Armada 385 board on mainline u-boot (2020.4), without
-u-boot PCI initialization and the following PCIe devices:
-        - Wilocity Wil6200 rev 2 (wil6210)
-        - Qualcomm Atheros QCA6174 (ath10k_pci)
-
-Both failed to get a response from the device after loading the
-firmware and seem to operate properly with this patch.
-
-Link: https://lore.kernel.org/r/20200623060334.108444-1-sh@tkos.co.il
-Signed-off-by: Shmuel Hazan <sh@tkos.co.il>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc: Baruch Siach <baruch@tkos.co.il>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 77ab67b7f0f9 ("net/mlx5e: Basic setup of hairpin object")
+Addresses-Coverity: ("Dereference null return value")
+Signed-off-by: Dima Chumak <dchumak@nvidia.com>
+Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
+Reviewed-by: Roi Dayan <roid@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-mvebu.c |   16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c   | 33 +++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
 
---- a/drivers/pci/controller/pci-mvebu.c
-+++ b/drivers/pci/controller/pci-mvebu.c
-@@ -105,6 +105,7 @@ struct mvebu_pcie_port {
- 	struct mvebu_pcie_window memwin;
- 	struct mvebu_pcie_window iowin;
- 	u32 saved_pcie_stat;
-+	struct resource regs;
- };
- 
- static inline void mvebu_writel(struct mvebu_pcie_port *port, u32 val, u32 reg)
-@@ -149,7 +150,9 @@ static void mvebu_pcie_set_local_dev_nr(
- 
- /*
-  * Setup PCIE BARs and Address Decode Wins:
-- * BAR[0,2] -> disabled, BAR[1] -> covers all DRAM banks
-+ * BAR[0] -> internal registers (needed for MSI)
-+ * BAR[1] -> covers all DRAM banks
-+ * BAR[2] -> Disabled
-  * WIN[0-3] -> DRAM bank[0-3]
-  */
- static void mvebu_pcie_setup_wins(struct mvebu_pcie_port *port)
-@@ -203,6 +206,12 @@ static void mvebu_pcie_setup_wins(struct
- 	mvebu_writel(port, 0, PCIE_BAR_HI_OFF(1));
- 	mvebu_writel(port, ((size - 1) & 0xffff0000) | 1,
- 		     PCIE_BAR_CTRL_OFF(1));
-+
-+	/*
-+	 * Point BAR[0] to the device's internal registers.
-+	 */
-+	mvebu_writel(port, round_down(port->regs.start, SZ_1M), PCIE_BAR_LO_OFF(0));
-+	mvebu_writel(port, 0, PCIE_BAR_HI_OFF(0));
- }
- 
- static void mvebu_pcie_setup_hw(struct mvebu_pcie_port *port)
-@@ -708,14 +717,13 @@ static void __iomem *mvebu_pcie_map_regi
- 					      struct device_node *np,
- 					      struct mvebu_pcie_port *port)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index 59837af959d0..1ad1692a5b2d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -481,12 +481,32 @@ static void mlx5e_detach_mod_hdr(struct mlx5e_priv *priv,
+ static
+ struct mlx5_core_dev *mlx5e_hairpin_get_mdev(struct net *net, int ifindex)
  {
--	struct resource regs;
- 	int ret = 0;
++	struct mlx5_core_dev *mdev;
+ 	struct net_device *netdev;
+ 	struct mlx5e_priv *priv;
  
--	ret = of_address_to_resource(np, 0, &regs);
-+	ret = of_address_to_resource(np, 0, &port->regs);
- 	if (ret)
- 		return ERR_PTR(ret);
- 
--	return devm_ioremap_resource(&pdev->dev, &regs);
-+	return devm_ioremap_resource(&pdev->dev, &port->regs);
+-	netdev = __dev_get_by_index(net, ifindex);
++	netdev = dev_get_by_index(net, ifindex);
++	if (!netdev)
++		return ERR_PTR(-ENODEV);
++
+ 	priv = netdev_priv(netdev);
+-	return priv->mdev;
++	mdev = priv->mdev;
++	dev_put(netdev);
++
++	/* Mirred tc action holds a refcount on the ifindex net_device (see
++	 * net/sched/act_mirred.c:tcf_mirred_get_dev). So, it's okay to continue using mdev
++	 * after dev_put(netdev), while we're in the context of adding a tc flow.
++	 *
++	 * The mdev pointer corresponds to the peer/out net_device of a hairpin. It is then
++	 * stored in a hairpin object, which exists until all flows, that refer to it, get
++	 * removed.
++	 *
++	 * On the other hand, after a hairpin object has been created, the peer net_device may
++	 * be removed/unbound while there are still some hairpin flows that are using it. This
++	 * case is handled by mlx5e_tc_hairpin_update_dead_peer, which is hooked to
++	 * NETDEV_UNREGISTER event of the peer net_device.
++	 */
++	return mdev;
  }
  
- #define DT_FLAGS_TO_TYPE(flags)       (((flags) >> 24) & 0x03)
+ static int mlx5e_hairpin_create_transport(struct mlx5e_hairpin *hp)
+@@ -685,6 +705,10 @@ mlx5e_hairpin_create(struct mlx5e_priv *priv, struct mlx5_hairpin_params *params
+ 
+ 	func_mdev = priv->mdev;
+ 	peer_mdev = mlx5e_hairpin_get_mdev(dev_net(priv->netdev), peer_ifindex);
++	if (IS_ERR(peer_mdev)) {
++		err = PTR_ERR(peer_mdev);
++		goto create_pair_err;
++	}
+ 
+ 	pair = mlx5_core_hairpin_create(func_mdev, peer_mdev, params);
+ 	if (IS_ERR(pair)) {
+@@ -823,6 +847,11 @@ static int mlx5e_hairpin_flow_add(struct mlx5e_priv *priv,
+ 	int err;
+ 
+ 	peer_mdev = mlx5e_hairpin_get_mdev(dev_net(priv->netdev), peer_ifindex);
++	if (IS_ERR(peer_mdev)) {
++		NL_SET_ERR_MSG_MOD(extack, "invalid ifindex of mirred device");
++		return PTR_ERR(peer_mdev);
++	}
++
+ 	if (!MLX5_CAP_GEN(priv->mdev, hairpin) || !MLX5_CAP_GEN(peer_mdev, hairpin)) {
+ 		NL_SET_ERR_MSG_MOD(extack, "hairpin is not supported");
+ 		return -EOPNOTSUPP;
+-- 
+2.30.2
+
 
 
