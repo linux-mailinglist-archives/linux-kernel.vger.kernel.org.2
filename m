@@ -2,57 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78883DDBE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669E93DDBE3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234749AbhHBPHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:07:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59580 "EHLO mail.kernel.org"
+        id S234190AbhHBPIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:08:00 -0400
+Received: from mga01.intel.com ([192.55.52.88]:35026 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234291AbhHBPHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:07:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 716CA60FF2;
-        Mon,  2 Aug 2021 15:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627916810;
-        bh=NUdIGVwiZymoyNB/NN4kI7nxgXjg9XtLvBPXAOcs2bk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RR+g/cJtTrD9M2DX63ufO+0V+JDARSoR2JvxOBsY1rqroBmzmk093PDotL7P08gKC
-         nqInY6k6+td0SvNsDxUmvXWb3BtFohQSqA6m6wLAXEnpq05klahF/gtakgaRfbHU39
-         1yGwYLv+zRyCIFLRUPjJfY5hj5om3/VeOyu5IxvL3CNFrTqPiRo94w1D9isb9aIrX5
-         7JigCMnsmAh+XK2t7U2xZ0aq5fCWPh38WRXwa3A6oVhKZLLbR+0u54i2JdQ/qRPVG4
-         0zTls9MTaawy/8gxjrbUPApkwUbtY8s8x+y7IWwNjUsu+IMVoiLzBO6LgKIMTGmVIn
-         O/+9pmIb1QJHg==
-Date:   Mon, 2 Aug 2021 16:06:44 +0100
-From:   Will Deacon <will@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     joro@8bytes.org, robin.murphy@arm.com, baolu.lu@linux.intel.com,
-        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
-        thierry.reding@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
-        jonathanh@nvidia.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, digetx@gmail.com, mst@redhat.com,
-        jasowang@redhat.com, linux-kernel@vger.kernel.org,
-        chenxiang66@hisilicon.com
-Subject: Re: [PATCH v4 5/6] iova: Add iova_len argument to init_iova_domain()
-Message-ID: <20210802150644.GD28735@willie-the-truck>
-References: <1626259003-201303-1-git-send-email-john.garry@huawei.com>
- <1626259003-201303-6-git-send-email-john.garry@huawei.com>
+        id S234755AbhHBPHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:07:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="235401798"
+X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
+   d="scan'208";a="235401798"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 08:07:19 -0700
+X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
+   d="scan'208";a="520597918"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 08:07:16 -0700
+Received: by lahna (sSMTP sendmail emulation); Mon, 02 Aug 2021 18:07:14 +0300
+Date:   Mon, 2 Aug 2021 18:07:14 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, rajatxjain@gmail.com
+Subject: Re: [PATCH v3] thunderbolt: For dev authorization changes, include
+ the actual event in udev change notification
+Message-ID: <YQgKIok9DOTgmyvw@lahna>
+References: <20210730235304.3179882-1-rajatja@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1626259003-201303-6-git-send-email-john.garry@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210730235304.3179882-1-rajatja@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 06:36:42PM +0800, John Garry wrote:
-> Add max opt argument to init_iova_domain(), and use it to set the rcaches
-> range.
+Hi Rajat,
+
+On Fri, Jul 30, 2021 at 04:53:04PM -0700, Rajat Jain wrote:
+> For security, we would like to monitor and track when the thunderbolt
+> devices are authorized and deauthorized (i.e. when the thunderbolt sysfs
+> "authorized" attribute changes). Currently the userspace gets a udev
+> change notification when there is a change, but the state may have
+> changed (again) by the time we look at the authorized attribute in
+> sysfs. So an authorization event may go unnoticed. Thus make it easier
+> by informing the actual change (new value of authorized attribute) in
+> the udev change notification.
 > 
-> Also fix up all users to set this value (at 0, meaning use default).
+> The change is included as a key value "authorized=<val>" where <val>
+> is the new value of sysfs attribute "authorized", and is described at
+> Documentation/ABI/testing/sysfs-bus-thunderbolt under
+> /sys/bus/thunderbolt/devices/.../authorized
+> 
+> Signed-off-by: Rajat Jain <rajatja@google.com>
 
-Wrap that in init_iova_domain_defaults() to avoid the mysterious 0?
-
-Will
+I did some tiny changes to the title, commit message and the comment and
+applied to thunderbolt.git/next, thanks!
