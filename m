@@ -2,127 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0393DCEED
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1622F3DCEF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhHBD2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 23:28:30 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:34066 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhHBD22 (ORCPT
+        id S232062AbhHBDkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 23:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231425AbhHBDkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 23:28:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627874899; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=JCB8vVm40Ygev3lb2qOV67F7cVZ3peAJ9oCE0yR1aSk=;
- b=TcTkiLfAW7p/lk3jQVgXe07DZxTkB7yNLdnAvv1YUmFF65LW9zcxBMGymJSpaZCdBSma9IQl
- zHWBsFvVPF+7P3G4YhxSmkvSKKF5MGHm/BrgyKV02xWcJa8UsfxtxocCfZ8AUVJMtYhKsy62
- N6i+hTvjy3xQId5/O/4We4mWJzM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 610766529771b05b24beec4a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 03:28:18
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3CF53C43460; Mon,  2 Aug 2021 03:28:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7BC38C433F1;
-        Mon,  2 Aug 2021 03:28:17 +0000 (UTC)
+        Sun, 1 Aug 2021 23:40:45 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CDBC061796
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 20:40:37 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id y9so18775702iox.2
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 20:40:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xr7X3INp68/aHb+fLfHEXT7brOPsJnQpWqh+BxS2toY=;
+        b=LiuyPDjOiqxtQJsSBVLxKaDvy1dlayZ3PKlzxW9wtrimEOAXzoDfElSfvrSXHhPTkz
+         hYJObO8siTOJ4u0JjoUfq0HR0pJvLUhQK2UyghUCg8sLfzZTF+FZRQ8eSVvZ6ZoWmxhB
+         zyeBD5scfDVbWAiJ89ygyqR2eRNcbf1DRaLJs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xr7X3INp68/aHb+fLfHEXT7brOPsJnQpWqh+BxS2toY=;
+        b=qZI2kRjcTVTnBx9aMd9xOq67u6cmrxFBwb1t6q57RFWi2B5G1Fv6D0YRamWeuGTSFj
+         VAW98wez/LSzFoxto47CGy1MxT0HNNts5JAuIWoLGDhmFfne7XaD1wm0BZxMunC+4V5g
+         IYJaOBPoviUeKoZQLRX4U90uur/M5UgGzPJdp4niZTOQrxR3IZETtfFb7+LBZCHatOoL
+         NksfRM2Yb8SY6l0t3rfn5rcc1DfxGSxlNfdHELQPp5+en1LrDq97lDNPk9K94VL2A6IJ
+         jPKgDWbBE+gJ4PQ5RNFjlCyXvmqjvqWkHm5OPlk2upNUA9TWeK4IqQ8JWOk9yBeiTUwy
+         5ewQ==
+X-Gm-Message-State: AOAM532Z+JK/18QDaQojjU1w1j59yfEYNwzOPufzc/INxM3OR7Y3hLIA
+        cvPvrMPSHw+V5gMY4OgOvGefsZf/HR0Nz+oFRGpMWw==
+X-Google-Smtp-Source: ABdhPJwItvPct0QYddbjn/ZBRIlrhozZ9+0sIdd0TxqCVOowtY1O3c/Tt8Q3jSQWg6Ujnb4bjYO9KHe4YuO8OMslZZw=
+X-Received: by 2002:a02:aa8b:: with SMTP id u11mr12823631jai.43.1627875636594;
+ Sun, 01 Aug 2021 20:40:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Aug 2021 08:58:17 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
-In-Reply-To: <CAD=FV=VfvW1PqJiR7Lh5RNyR6EQ1E8JK0N+KqJiB8DK49oUZ4A@mail.gmail.com>
-References: <1620807083-5451-1-git-send-email-sibis@codeaurora.org>
- <1620807083-5451-3-git-send-email-sibis@codeaurora.org>
- <CAD=FV=VfvW1PqJiR7Lh5RNyR6EQ1E8JK0N+KqJiB8DK49oUZ4A@mail.gmail.com>
-Message-ID: <db28cb8d8f3057958bb2e059b8ac90ba@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210802030023.1748777-1-linux@roeck-us.net> <YQdmCaySpW4Dpz0t@google.com>
+In-Reply-To: <YQdmCaySpW4Dpz0t@google.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Mon, 2 Aug 2021 11:40:10 +0800
+Message-ID: <CAJMQK-jxYAUjT4g08Ctt0=NTdFoKMnHBqE9-Kgj94ymc8XOrCw@mail.gmail.com>
+Subject: Re: [PATCH] spi: mediatek: Fix fifo transfer
+To:     Tzung-Bi Shih <tzungbi@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-spi@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Hess <peter.hess@ph-home.de>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Hsin-Yi Wang <hsinyi@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-31 03:50, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, May 12, 2021 at 1:11 AM Sibi Sankar <sibis@codeaurora.org> 
-> wrote:
->> 
->> Add OPP tables required to scale DDR/L3 per freq-domain on SC7280 
->> SoCs.
->> 
->> Reviewed-by: Douglas Anderson <dianders@chromium.org>
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->> 
->> V3:
->>  * Rename cpu opp table nodes [Matthias]
->>  * Rename opp phandles [Doug]
->> 
->> Depends on the following patch series:
->> L3 Provider Support: 
->> https://lore.kernel.org/lkml/1618556290-28303-1-git-send-email-okukatla@codeaurora.org/
->> CPUfreq Support: 
->> https://lore.kernel.org/lkml/1618020280-5470-2-git-send-email-tdas@codeaurora.org/
->> RPMH Provider Support: 
->> https://lore.kernel.org/lkml/1619517059-12109-1-git-send-email-okukatla@codeaurora.org/
->> 
+On Mon, Aug 2, 2021 at 11:27 AM Tzung-Bi Shih <tzungbi@google.com> wrote:
+>
+> On Sun, Aug 01, 2021 at 08:00:23PM -0700, Guenter Roeck wrote:
+> > Fixes: 3a70dd2d0503 ("spi: mediatek: fix fifo rx mode")
+> > Cc: Peter Hess <peter.hess@ph-home.de>
+> > Cc: Frank Wunderlich <frank-w@public-files.de>
+> > Cc: Tzung-Bi Shih <tzungbi@google.com>
+> > Cc: Hsin-Yi Wang <hsinyi@google.com>
+> > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>
+> Tested-by: Tzung-Bi Shih <tzungbi@google.com>
+Tested-by: Hsin-Yi Wang <hsinyi@google.com>
 
-Doug,
-
-2 of the above 3 dependencies have
-landed. L3 provider still needs a
-re-spin.
-
-https://patchwork.kernel.org/project/linux-arm-msm/cover/1627581885-32165-1-git-send-email-sibis@codeaurora.org/
-
-We also have a new series ^^ on the
-list which will affect #2 merge.
-
-
->> It also depends on L3 and cpufreq dt nodes from the ^^ series to not 
->> have
->> overlapping memory regions.
->> 
->>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 215 
->> +++++++++++++++++++++++++++++++++++
->>  1 file changed, 215 insertions(+)
-> 
-> I see patch #1 in mainline now. Does that mean it's time to land patch
-> #2 in the Qualcomm tree now? ...or maybe it needs to be re-posted?
-> 
-
-> -Doug
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+tested on a mt8183 device.
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
