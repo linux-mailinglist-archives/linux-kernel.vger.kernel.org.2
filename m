@@ -2,80 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8720E3DCFE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 07:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3643DCFE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 07:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhHBFEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 01:04:31 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:5393 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhHBFEa (ORCPT
+        id S230525AbhHBFKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 01:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhHBFKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 01:04:30 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 01 Aug 2021 22:04:21 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 01 Aug 2021 22:04:18 -0700
-X-QCInternal: smtphost
-Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 02 Aug 2021 10:33:37 +0530
-Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
-        id B0DA73C19; Mon,  2 Aug 2021 10:33:36 +0530 (IST)
-From:   Sandeep Maheswaram <sanm@codeaurora.org>
-To:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pratham Pratap <prathampratap@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: [PATCH] arm64: dts: qcom: sc7280: Add interconnect properties for USB
-Date:   Mon,  2 Aug 2021 10:32:56 +0530
-Message-Id: <1627880576-22391-1-git-send-email-sanm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 2 Aug 2021 01:10:04 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43071C06175F;
+        Sun,  1 Aug 2021 22:09:54 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1627880992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RnEQXFeJRHcqEq37cWoAYuL8aZw025YjRcrt8VZWKyc=;
+        b=dQS3gYODbcm7tTDAL8XbHi5112o/kp1kGM/i133Iz4yx2zCwyON+BjKRz08uJvUPW3d+a3
+        kcxIB+40LqU5m25MNfMuw49F/LqC9ebOwqsa3e947c7v/275LQ5nVKULAYku3gc8fbK+vz
+        5JvyhCLVc1R0hM5WaXbvYdYt2DNjTL4=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH net-next] net: Keep vertical alignment
+Date:   Mon,  2 Aug 2021 13:09:37 +0800
+Message-Id: <20210802050937.604-1-yajun.deng@linux.dev>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add interconnect properties in USB DT nodes for sc7280.
+Those files under /proc/net/stat/ don't have vertical alignment, it looks
+very difficult. Modify the seq_printf statement, keep vertical alignment.
 
-Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+use seq_puts() instead of seq_printf(), avoid the warning.
+
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/core/neighbour.c | 7 ++++---
+ net/ipv4/route.c     | 7 ++++---
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 5764c5b..1558f99 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -1288,6 +1288,10 @@
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index c294addb7818..c018a27fc36b 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -3315,12 +3315,13 @@ static int neigh_stat_seq_show(struct seq_file *seq, void *v)
+ 	struct neigh_statistics *st = v;
  
- 			resets = <&gcc GCC_USB30_SEC_BCR>;
+ 	if (v == SEQ_START_TOKEN) {
+-		seq_printf(seq, "entries  allocs destroys hash_grows  lookups hits  res_failed  rcv_probes_mcast rcv_probes_ucast  periodic_gc_runs forced_gc_runs unresolved_discards table_fulls\n");
++		seq_puts(seq, "entries  allocs   destroys hash_grows lookups  hits     res_failed rcv_probes_mcast rcv_probes_ucast periodic_gc_runs forced_gc_runs unresolved_discards table_fulls\n");
+ 		return 0;
+ 	}
  
-+			interconnects = <&aggre1_noc MASTER_USB2 0 &mc_virt SLAVE_EBI1 0>,
-+					<&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_USB2 0>;
-+			interconnect-names = "usb-ddr", "apps-usb";
-+
- 			usb_2_dwc3: usb@8c00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x08c00000 0 0xe000>;
-@@ -1361,6 +1365,10 @@
+-	seq_printf(seq, "%08x  %08lx %08lx %08lx  %08lx %08lx  %08lx  "
+-			"%08lx %08lx  %08lx %08lx %08lx %08lx\n",
++	seq_puts(seq, "%08x %08lx %08lx %08lx   %08lx %08lx %08lx   "
++		      "%08lx         %08lx         %08lx         "
++		      "%08lx       %08lx            %08lx\n",
+ 		   atomic_read(&tbl->entries),
  
- 			resets = <&gcc GCC_USB30_PRIM_BCR>;
+ 		   st->allocs,
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 04754d55b3c1..68ca0e4072c1 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -276,12 +276,13 @@ static int rt_cpu_seq_show(struct seq_file *seq, void *v)
+ 	struct rt_cache_stat *st = v;
  
-+			interconnects = <&aggre1_noc MASTER_USB3_0 0 &mc_virt SLAVE_EBI1 0>,
-+					<&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_USB3_0 0>;
-+			interconnect-names = "usb-ddr", "apps-usb";
-+
- 			usb_1_dwc3: usb@a600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a600000 0 0xe000>;
+ 	if (v == SEQ_START_TOKEN) {
+-		seq_printf(seq, "entries  in_hit in_slow_tot in_slow_mc in_no_route in_brd in_martian_dst in_martian_src  out_hit out_slow_tot out_slow_mc  gc_total gc_ignored gc_goal_miss gc_dst_overflow in_hlist_search out_hlist_search\n");
++		seq_puts(seq, "entries  in_hit   in_slow_tot in_slow_mc in_no_route in_brd   in_martian_dst in_martian_src out_hit  out_slow_tot out_slow_mc gc_total gc_ignored gc_goal_miss gc_dst_overflow in_hlist_search out_hlist_search\n");
+ 		return 0;
+ 	}
+ 
+-	seq_printf(seq,"%08x  %08x %08x %08x %08x %08x %08x %08x "
+-		   " %08x %08x %08x %08x %08x %08x %08x %08x %08x \n",
++	seq_puts(seq, "%08x %08x %08x    %08x   %08x    %08x %08x       "
++		      "%08x       %08x %08x     %08x    %08x %08x   %08x     "
++		      "%08x        %08x        %08x\n",
+ 		   dst_entries_get_slow(&ipv4_dst_ops),
+ 		   0, /* st->in_hit */
+ 		   st->in_slow_tot,
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.32.0
 
