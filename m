@@ -2,152 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743C03DDD45
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4ED3DDD48
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbhHBQKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:10:55 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:44377 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbhHBQKy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:10:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627920644; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=RcmCVefjMH6l9oNkIcTgBxKj15suM9Nyc7u4Bfq5P6s=;
- b=AU+Pefk8LNRWkvMqTIxyGXqvUxP5gM7aYdjjoLVm8/4U59bVqmVzOj33fftUZRp3Jx8iaxT0
- BXGc4u5qEbHTCpz2w4ZC+gn3ItFG6/DvlQoG+Jct9u9sHCg++F4ua0ta53ZIkgrID5YZdtzy
- ewAh8KXybix6+EQY3aG0Chp7QSs=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 610818e117c2b4047dcb83d9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 16:10:09
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9181FC43217; Mon,  2 Aug 2021 16:10:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 436C1C433D3;
-        Mon,  2 Aug 2021 16:10:06 +0000 (UTC)
+        id S232481AbhHBQLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:11:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232069AbhHBQLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 12:11:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD9B461107;
+        Mon,  2 Aug 2021 16:10:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627920652;
+        bh=rglWHlzS0hDB02auQNohIp4iijeWGQuf2Ja7Qb4hYUM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=unCZl25uSNAUzvN7qGehQ9rQCneXxegVdslhG2QXGl0Q5ZOqSFALCnPRGxRuvhgP6
+         DLkenKRkOntptdvXrk3AhtIrOBKknYu5YOap23EHL5/KX4EKqfdv3TEePLzT0yCRQc
+         gi/9xNM0a984FHhLb939V90piXvxzsvKwySaMmeLQ6zjE05U9JYSJEDEstqMNojxDg
+         Yg/eNvfehj0znMejm8C4yb5GInF4Iud/ZFqmOKWO0/e1JUcy/Xo8Zt4ybXDhj8t5sd
+         /ZPyA63H4ACh53ampfTdyR62yHl7DHbSyQJES7sHBBW4OQ486PLYl2zCd+Dtdu9YOx
+         ZI8y8Q904Tc8g==
+Received: by mail-qv1-f54.google.com with SMTP id cg4so4081351qvb.5;
+        Mon, 02 Aug 2021 09:10:52 -0700 (PDT)
+X-Gm-Message-State: AOAM531kZ20GD9oIpUCgl0yaYkdzoJjQSvVuAodDvtch1CBvetSFGKs3
+        qt8fCvRvoSwQikq/sErxrf0osWUjOTt4UWjVVA==
+X-Google-Smtp-Source: ABdhPJzGQUjalfg03Ji3GXBsBmtGCSK/zTh5PrJJsVuj2U9Uk2JfYU1Debygp3dek7c3OE+8pMR8zpYBMxtmKWE4BYA=
+X-Received: by 2002:a0c:ff4b:: with SMTP id y11mr3347079qvt.50.1627920651928;
+ Mon, 02 Aug 2021 09:10:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Aug 2021 09:10:06 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
-        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dp: update is_connected status base on sink count
- at dp_pm_resume()
-In-Reply-To: <CAE-0n51cNywB2ThQxqS4iX-d7wR+rYXt8P33o9cUq9J6tT915A@mail.gmail.com>
-References: <1627507854-16733-1-git-send-email-khsieh@codeaurora.org>
- <CAE-0n51cNywB2ThQxqS4iX-d7wR+rYXt8P33o9cUq9J6tT915A@mail.gmail.com>
-Message-ID: <781ad3c4973b3f8dd83933a451b266b9@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210726083204.93196-1-mark.kettenis@xs4all.nl>
+ <20210726083204.93196-2-mark.kettenis@xs4all.nl> <20210726231848.GA1025245@robh.at.kernel.org>
+ <87sfzt1pg9.wl-maz@kernel.org>
+In-Reply-To: <87sfzt1pg9.wl-maz@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 2 Aug 2021 10:10:39 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLvqWiuib9s4PzX8pOQYJQ0eR7Gxz==J849eVJ5MDq4SA@mail.gmail.com>
+Message-ID: <CAL_JsqLvqWiuib9s4PzX8pOQYJQ0eR7Gxz==J849eVJ5MDq4SA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
+        devicetree@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Sven Peter <sven@svenpeter.dev>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Hector Martin <marcan@marcan.st>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-30 11:57, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-07-28 14:30:54)
->> Currently at dp_pm_resume() is_connected state is decided base on hpd 
->> connection
->> status only. This will put is_connected in wrongly "true" state at the 
->> scenario
->> that dongle attached to DUT but without hmdi cable connecting to it. 
->> Fix this
->> problem by adding read sink count from dongle and decided is_connected 
->> state base
->> on both sink count and hpd connection status.
->> 
-> 
-> Please add a Fixes tag.
-> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
->>  drivers/gpu/drm/msm/dp/dp_display.c | 23 +++++++++++++++++++++--
->>  1 file changed, 21 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
->> b/drivers/gpu/drm/msm/dp/dp_display.c
->> index 2b660e9..9bcb261 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->> @@ -1308,6 +1308,17 @@ static int dp_display_remove(struct 
->> platform_device *pdev)
->>         return 0;
->>  }
->> 
->> +static int dp_get_sink_count(struct dp_display_private *dp)
->> +{
->> +       u8 sink_count;
->> +
->> +       sink_count = drm_dp_read_sink_count(dp->aux);
-> 
-> drm_dp_read_sink_count() returns an int, not a u8. Comparing a u8 to
-> less than zero doesn't make any sense as it isn't signed.
-> 
->> +       if (sink_count < 0)
->> +               return 0;
->> +
->> +       return sink_count;
->> +}
-> 
-> We can drop this function and just have an int count in dp_pm_resume()
-> that is compared to < 0 and then ignored.
-> 
->> +
->>  static int dp_pm_resume(struct device *dev)
->>  {
->>         struct platform_device *pdev = to_platform_device(dev);
->> @@ -1327,14 +1338,22 @@ static int dp_pm_resume(struct device *dev)
->> 
->>         dp_catalog_ctrl_hpd_config(dp->catalog);
->> 
->> -       status = dp_catalog_link_is_connected(dp->catalog);
->> +       /*
->> +        * set sink to normal operation mode -- D0
->> +        * before dpcd read
->> +        */
->> +       dp_link_psm_config(dp->link, &dp->panel->link_info, false);
->> 
->> +       if ((status = dp_catalog_link_is_connected(dp->catalog)))
->> +               dp->link->sink_count = dp_get_sink_count(dp);
-> 
-> Do we need to call drm_dp_read_sink_count_cap() as well?
-no, we only need sink_count
-> 
->> +       else
->> +               dp->link->sink_count = 0;
->>         /*
->>          * can not declared display is connected unless
->>          * HDMI cable is plugged in and sink_count of
->>          * dongle become 1
->>          */
->> -       if (status && dp->link->sink_count)
-> 
-> Is 'status' used anymore? If not, please remove it.
-Yes, it still used which used to decided to perform dpcd read sink count 
-or not
-> 
->> +       if (dp->link->sink_count)
->>                 dp->dp_display.is_connected = true;
->>         else
->>                 dp->dp_display.is_connected = false;
+On Sun, Aug 1, 2021 at 3:31 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Tue, 27 Jul 2021 00:18:48 +0100,
+> Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Mon, Jul 26, 2021 at 10:32:00AM +0200, Mark Kettenis wrote:
+> > > From: Mark Kettenis <kettenis@openbsd.org>
+> > >
+> > > The Apple PCIe host controller is a PCIe host controller with
+> > > multiple root ports present in Apple ARM SoC platforms, including
+> > > various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > >
+> > > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> > > ---
+> > >  .../devicetree/bindings/pci/apple,pcie.yaml   | 166 ++++++++++++++++++
+> > >  MAINTAINERS                                   |   1 +
+> > >  2 files changed, 167 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > > new file mode 100644
+> > > index 000000000000..bfcbdee79c64
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > > @@ -0,0 +1,166 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Apple PCIe host controller
+> > > +
+> > > +maintainers:
+> > > +  - Mark Kettenis <kettenis@openbsd.org>
+> > > +
+> > > +description: |
+> > > +  The Apple PCIe host controller is a PCIe host controller with
+> > > +  multiple root ports present in Apple ARM SoC platforms, including
+> > > +  various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > > +  The controller incorporates Synopsys DesigWare PCIe logic to
+> > > +  implements its root ports.  But the ATU found on most DesignWare
+> > > +  PCIe host bridges is absent.
+> >
+> > blank line
+> >
+> > > +  All root ports share a single ECAM space, but separate GPIOs are
+> > > +  used to take the PCI devices on those ports out of reset.  Therefore
+> > > +  the standard "reset-gpio" and "max-link-speed" properties appear on
+> >
+> > reset-gpios
+> >
+> > > +  the child nodes that represent the PCI bridges that correspond to
+> > > +  the individual root ports.
+> >
+> > blank line
+> >
+> > > +  MSIs are handled by the PCIe controller and translated into regular
+> > > +  interrupts.  A range of 32 MSIs is provided.  These 32 MSIs can be
+> > > +  distributed over the root ports as the OS sees fit by programming
+> > > +  the PCIe controller's port registers.
+> > > +
+> > > +allOf:
+> > > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    items:
+> > > +      - const: apple,t8103-pcie
+> > > +      - const: apple,pcie
+> > > +
+> > > +  reg:
+> > > +    minItems: 3
+> > > +    maxItems: 5
+> > > +
+> > > +  reg-names:
+> > > +    minItems: 3
+> > > +    maxItems: 5
+> > > +    items:
+> > > +      - const: config
+> > > +      - const: rc
+> > > +      - const: port0
+> > > +      - const: port1
+> > > +      - const: port2
+> > > +
+> > > +  ranges:
+> > > +    minItems: 2
+> > > +    maxItems: 2
+> > > +
+> > > +  interrupts:
+> > > +    description:
+> > > +      Interrupt specifiers, one for each root port.
+> > > +    minItems: 1
+> > > +    maxItems: 3
+> > > +
+> > > +  msi-controller: true
+> > > +  msi-parent: true
+> > > +
+> > > +  msi-ranges:
+> > > +    description:
+> > > +      A list of pairs <intid span>, where "intid" is the first
+> > > +      interrupt number that can be used as an MSI, and "span" the size
+> > > +      of that range.
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> > > +    items:
+> > > +      minItems: 2
+> > > +      maxItems: 2
+> >
+> > I still have issues I raised on v1 with this property. It's genericish
+> > looking, but not generic. 'intid' as a single cell can't specify any
+> > parent interrupt such as a GIC which uses 3 cells. You could put in all
+> > the cells, but you'd still be assuming which cell you can increment.
+>
+> The GIC bindings already use similar abstractions, see what we do for
+> both GICv2m and GICv3 MBIs. Other MSI controllers use similar
+> properties (alpine and loongson, for example).
+
+That's the problem. Everyone making up their own crap.
+
+> > I think you should just list all these under 'interrupts' using
+> > interrupt-names to make your life easier:
+> >
+> > interrupt-names:
+> >   items:
+> >     - const: port0
+> >     - const: port1
+> >     - const: port2
+> >     - const: msi0
+> >     - const: msi1
+> >     - const: msi2
+> >     - const: msi3
+> >     ...
+> >
+> > Yeah, it's kind of verbose, but if the h/w block handles N interrupts,
+> > you should list N interrupts. The worst case for the above is N entries
+> > too if not contiguous.
+>
+> And that's where I beg to differ, again.
+>
+> Specifying interrupts like this gives the false impression that these
+> interrupts are generated by the device that owns them (the RC). Which
+> for MSIs is not the case.
+
+It's no different than an interrupt controller node having an
+interrupts property. The source is downstream and the interrupt
+controller is combining/translating the interrupts.
+
+The physical interrupt signals are connected to and originating in
+this block. That sounds like perfectly 'describing the h/w' to me.
+
+> This is not only verbose, this is
+> semantically dubious. And what should we do when the number of
+> possible interrupt is ridiculously large, as it is for the GICv3 ITS?
+
+I don't disagree with the verbose part. But that's not really an issue
+in this case.
+
+> I wish we had a standard way to express these constraints. Until we
+> do, I don't think enumerating individual interrupts is a practical
+> thing to do, nor that it actually represents the topology of the
+> system.
+
+The only way a standard way will happen is to stop accepting the
+custom properties.
+
+All the custom properties suffer from knowledge of what the parent
+interrupt controller is. To fix that, I think we need something like
+this:
+
+msi-ranges = <intspec base>, <intspec step>, <intspec end>;
+
+'intspec' is defined by the parent interrupt-controller cells. step is
+the value to add. And end is what to match on to stop aka the last
+interrupt in the range. For example, if the GIC is the parent, we'd
+have something like this:
+
+<GIC_SPI 123 0>, <0 1 0>, <GIC_SPI 124 0>
+
+Does this apply to cases other than MSI? I think so as don't we have
+the same type of properties with the low power mode shadow interrupt
+controllers?  So 'interrupt-ranges'?
+
+
+It looks to me like there's an assumption in the kernel that an MSI
+controller has a linear range of parent interrupts? Is that correct
+and something that's guaranteed? That assumption leaks into the
+existing bindings. It's fine for the kernel to assume that until
+there's a case that's not linear, but a common binding needs to be
+able handle a non-linear case.
+
+Rob
