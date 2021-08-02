@@ -2,126 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1258B3DD424
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6807F3DD425
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233291AbhHBKoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 06:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233218AbhHBKoU (ORCPT
+        id S233283AbhHBKpJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Aug 2021 06:45:09 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7914 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233167AbhHBKpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 06:44:20 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B8EC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 03:44:10 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id nh14so12855268pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 03:44:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=sUkGZKiJFUHXdJRo8lZOT7YsQ1JM5hP71TkDPnklmzo=;
-        b=rp8Pgy6HQTYz7cVX+UNgdkeJCLvJ9XPoAU3yqZXgbtvgw2Y4zu74wqxijCLER5h3d1
-         9IYtRJjXiSsGud5BWvLf3v7KkB5rye6N2lkoW/Pq1IvWe1ZODNYVOkkOC+/zaRsg7CJA
-         Rvuuq7ExBEHMZMJomnP1lenpEg0BLIBwh1An0oV1n8JnKD66FgQpYJGTreonjYIVFTpm
-         7juis0NnCL5K9sVRVF3Xypev48AHMNw4lN3RRAVkXgFsil6blxy0EHqU5wO7nrylmw39
-         ew1wiL5unCFrWDfe7sDk3aeIMjuTVMks4IjWg8/x3JTbd9YTmszZshuLWfMcGC5QdqEg
-         W1Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sUkGZKiJFUHXdJRo8lZOT7YsQ1JM5hP71TkDPnklmzo=;
-        b=A4I0FURgCDWaQ750FdMSPJd8IuEfBNVZF6MiIqpg17u4kLg+J/C+Epal0aHTue/4S3
-         1EYZoWb60Tb5VxTFd+9hDC6TZ2G2h2NEG1qHrktfxA+/m2O0TwwUIH5776o7ZTsMbVN9
-         N8kR4UZZ8frggIuI5u251TdoXu8JtBHOe473tVT0ZgmbI+9LPPKR1IMLgyoUz9HvRWHT
-         KDh6Bvv8fWo69STNymttdBO0cANJ4BMLCdJBso2Wfm80ALqGFysIqyfCMLujkT5OeoE7
-         tYvoSGgrt9X8AGXj4U81oNYgOG8vjODWeqAPd2LrLv3ILsTLEZY3H+GLrZoDqOBSgLUQ
-         BsyQ==
-X-Gm-Message-State: AOAM531E9xOIVpp+SUf5u6vDGh+n5qvKm2PnKoNHJ00KZ6BcD4SSffa1
-        ttD9oz0ADaaQ65j8pIH6+Vg=
-X-Google-Smtp-Source: ABdhPJz2ikv5xjHbyI2OQRLvHxw/dvvTn8uEDT12ePKFpN2DmxJzLaY3iw0lqtbey0zspJENCX73JQ==
-X-Received: by 2002:a63:4f21:: with SMTP id d33mr553007pgb.144.1627901049822;
-        Mon, 02 Aug 2021 03:44:09 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id 37sm12731593pgt.28.2021.08.02.03.44.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 03:44:09 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] locking/lockdep, drm: apply new lockdep assert in
- drm_auth.c
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, longman@redhat.com,
-        boqun.feng@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210731082458.1962043-1-desmondcheongzx@gmail.com>
- <YQesKIRQKYyTFyxJ@phenom.ffwll.local>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <4d871d0e-3b51-8a21-49e5-1a413bf71d4d@gmail.com>
-Date:   Mon, 2 Aug 2021 18:44:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YQesKIRQKYyTFyxJ@phenom.ffwll.local>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+        Mon, 2 Aug 2021 06:45:07 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GdZKv1czSz82xy;
+        Mon,  2 Aug 2021 18:41:07 +0800 (CST)
+Received: from dggema771-chm.china.huawei.com (10.1.198.213) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 18:44:56 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggema771-chm.china.huawei.com (10.1.198.213) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 18:44:56 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Mon, 2 Aug 2021 18:44:56 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        yangyicong <yangyicong@huawei.com>
+Subject: RE: [PATCH 7/9] sched/fair:
+Thread-Topic: [PATCH 7/9] sched/fair:
+Thread-Index: AdeHithpk+6MoH1nReOqdrhhcPaNRwAAAg3A
+Date:   Mon, 2 Aug 2021 10:44:56 +0000
+Message-ID: <15338f545c08409eb4b73af9c5d7d5aa@hisilicon.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.55]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 4:26 pm, Daniel Vetter wrote:
-> On Sat, Jul 31, 2021 at 04:24:56PM +0800, Desmond Cheong Zhi Xi wrote:
->> Hi,
->>
->> Following a discussion on the patch ("drm: use the lookup lock in
->> drm_is_current_master") [1], Peter Zijlstra proposed new lockdep_assert
->> helpers to make it convenient to compose lockdep checks together.
->>
->> This series includes the patch that introduces the new lockdep helpers,
->> then utilizes these helpers in drm_is_current_master_locked in the
->> following patch.
->>
->> v1 -> v2:
->> Patch 2:
->> - Updated the kerneldoc on the lock design of drm_file.master to explain
->> the use of lockdep_assert(). As suggested by Boqun Feng.
->>
->> Link: https://lore.kernel.org/lkml/20210722092929.244629-2-desmondcheongzx@gmail.com/ [1]
-> 
-> Can you pls also cc: this to intel-gfx so the local CI there can pick it
-> up and verify? Just to check we got it all.
-> -Daniel
-> 
 
-Oops my bad, I missed out the CI for this series. Will resend with the 
-proper cc.
 
-Best wishes,
-Desmond
+> -----Original Message-----
+> From: Mel Gorman [mailto:mgorman@techsingularity.net]
+> Sent: Monday, July 26, 2021 10:23 PM
+> To: LKML <linux-kernel@vger.kernel.org>
+> Cc: Ingo Molnar <mingo@kernel.org>; Peter Zijlstra <peterz@infradead.org>;
+> Vincent Guittot <vincent.guittot@linaro.org>; Valentin Schneider
+> <valentin.schneider@arm.com>; Aubrey Li <aubrey.li@linux.intel.com>; Mel
+> Gorman <mgorman@techsingularity.net>
+> Subject: [PATCH 7/9] sched/fair:
+> 
+> When scanning for a single CPU, the scan is limited based on the estimated
+> average idle time for a domain to reduce the risk that more time is spent
+> scanning for idle CPUs than we are idle for.
+> 
+> With SMT, if an idle core is expected to exist there is no scan depth
+> limits so the scan depth may or may not be related to average idle time.
+> Unfortunately has_idle_cores can be very inaccurate when workloads are
+> rapidly entering/exiting idle (e.g. hackbench).
+> 
+> As the scan depth is now proportional to cores and not CPUs, enforce
+> SIS_PROP for idle core scans.
+> 
+> The performance impact of this is variable and is neither a universal
+> gain nor loss. In some cases, has_idle_cores will be cleared prematurely
+> because the whole domain was not scanned but has_idle_cores is already
+> known to be an inaccurate heuristic. There is also additional cost because
+> time calculations are made even for an idle core scan and the delta is
+> calculated for both scan successes and failures. Finally, SMT siblings
+> may be used prematurely due to scan depth limitations.
+> 
+> On the flip side, scan depth is now consistent for both core and smt
+> scans. The reduction in scan depth improves performance in some cases
+> and wakeup latency is reduced in some cases.
+> 
+> There were few changes identified in the SIS statistics but notably,
+> "SIS Core Hit" was slightly reduced in tbench as thread counts increased,
+> presumably due to the core search depth being throttled.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  kernel/sched/fair.c | 33 +++++++++++++++++++--------------
+>  1 file changed, 19 insertions(+), 14 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 20b9255ebf97..b180205e6b25 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6232,7 +6232,7 @@ static int select_idle_cpu(struct task_struct *p, struct
+> sched_domain *sd, bool
+> 
+>  	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> 
+> -	if (sched_feat(SIS_PROP) && !has_idle_core) {
+> +	if (sched_feat(SIS_PROP)) {
+>  		u64 avg_cost, avg_idle, span_avg;
+>  		unsigned long now = jiffies;
+> 
+> @@ -6265,30 +6265,35 @@ static int select_idle_cpu(struct task_struct *p, struct
+> sched_domain *sd, bool
+>  		if (has_idle_core) {
+>  			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+>  			if ((unsigned int)i < nr_cpumask_bits)
+> -				return i;
+> +				break;
+> 
+> +			nr -= sched_smt_weight;
+>  		} else {
+> -			if (!--nr)
+> -				return -1;
+>  			idle_cpu = __select_idle_cpu(cpu, p);
+>  			if ((unsigned int)idle_cpu < nr_cpumask_bits)
+>  				break;
+> +			nr--;
+>  		}
+> +
+> +		if (nr < 0)
+> +			break;
+>  	}
+> 
+> -	if (has_idle_core)
+> -		set_idle_cores(target, false);
+> +	if ((unsigned int)idle_cpu < nr_cpumask_bits) {
+> +		if (has_idle_core)
+> +			set_idle_cores(target, false);
+
+For example, if we have 16 cpus(8 SMT2 cores). In case core7 is idle,
+we only have scanned core0+core1(cpu0-cpu3) and if these two cores
+are not idle, but here we set has_idle_cores to false while core7 is
+idle. It seems incorrect.
 
 > 
->>
->> Best wishes,
->> Desmond
->>
->> Desmond Cheong Zhi Xi (1):
->>    drm: add lockdep assert to drm_is_current_master_locked
->>
->> Peter Zijlstra (1):
->>    locking/lockdep: Provide lockdep_assert{,_once}() helpers
->>
->>   drivers/gpu/drm/drm_auth.c |  6 +++---
->>   include/drm/drm_file.h     |  4 ++++
->>   include/linux/lockdep.h    | 41 +++++++++++++++++++-------------------
->>   3 files changed, 28 insertions(+), 23 deletions(-)
->>
->> -- 
->> 2.25.1
->>
+> -	if (sched_feat(SIS_PROP) && !has_idle_core) {
+> -		time = cpu_clock(this) - time;
+> +		if (sched_feat(SIS_PROP)) {
+> +			time = cpu_clock(this) - time;
 > 
+> -		/*
+> -		 * Account for the scan cost of wakeups against the average
+> -		 * idle time.
+> -		 */
+> -		this_rq->wake_avg_idle -= min(this_rq->wake_avg_idle, time);
+> +			/*
+> +			 * Account for the scan cost of wakeups against the average
+> +			 * idle time.
+> +			 */
+> +			this_rq->wake_avg_idle -= min(this_rq->wake_avg_idle, time);
+> 
+> -		update_avg(&this_sd->avg_scan_cost, time);
+> +			update_avg(&this_sd->avg_scan_cost, time);
+> +		}
+>  	}
+> 
+>  	return idle_cpu;
+> --
+> 2.26.2
+
+Thanks
+Barry
 
