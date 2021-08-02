@@ -2,139 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9723DD0E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD7C3DD0E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232434AbhHBHA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:00:29 -0400
-Received: from mga17.intel.com ([192.55.52.151]:27827 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232297AbhHBHA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:00:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="193681317"
-X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
-   d="scan'208";a="193681317"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 00:00:10 -0700
-X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
-   d="scan'208";a="509949522"
-Received: from zengguan-mobl.ccr.corp.intel.com (HELO [10.238.0.133]) ([10.238.0.133])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 00:00:03 -0700
-Subject: Re: [PATCH 3/6] KVM: VMX: Detect Tertiary VM-Execution control when
- setup VMCS config
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hu, Robert" <robert.hu@intel.com>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        Robert Hoo <robert.hu@linux.intel.com>
-References: <20210716064808.14757-1-guang.zeng@intel.com>
- <20210716064808.14757-4-guang.zeng@intel.com> <YQHwa42jixqPPvVm@google.com>
-From:   Zeng Guang <guang.zeng@intel.com>
-Message-ID: <05faffb4-c22d-1cd5-7582-823de9dd109a@intel.com>
-Date:   Mon, 2 Aug 2021 14:59:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S232465AbhHBHCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232297AbhHBHCc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 03:02:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FD9C06175F;
+        Mon,  2 Aug 2021 00:02:23 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 09:02:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627887740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vAzZg5McgFlmYcY3vHHS7joGLgzy1wAKFe4TyqSJf4Q=;
+        b=UxfSwwajYsRzsd7ojnKcpaNOmN7Qek2ryXEVUm8tDjiwsxo1gyiHQR/Jvx2TWhmL6GWrTt
+        Z1MKfWCASnaLymQN4Qw/LsROvaRBUKdLzUAgK5Xzx72p3n+WeP5BfxDBVS8n1Bgohkn5uV
+        lKP5HbhfWgsWWr2Me2UvivJpdpM1qw32GVpgfGcJrehtxJRfNm3NkZLUXruzByJWJ0hRgm
+        c6UIrQ+uQ6hVi9FtWnGaz7pxvaQg2VEnclcTAn/x8nQTapwgC2lytRfF0j4gRmtx9ErcPW
+        SBDqPg3pFWafifT4R/YFxuI4tM2WNqTXF+G7i2z20AKXuwtH72lAC52hw2tOBQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627887740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vAzZg5McgFlmYcY3vHHS7joGLgzy1wAKFe4TyqSJf4Q=;
+        b=7o11tUdlH+hzGPbzr8mVCq+/Ij2napnOuvPAKqRc1dtUi3P8oY5JrMB9I7fo0Z6MtII0Rt
+        8x4wAdyQzs5hQNDw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: v5.14-rc3-rt1 losing wakeups?
+Message-ID: <20210802070218.5js3exubjxvsicx6@linutronix.de>
+References: <20210730110753.jvli6alm63h5lefy@linutronix.de>
+ <2ae27233ab091d09a7d1e971a47144b40dd51fa0.camel@gmx.de>
+ <87pmuzsf1p.ffs@tglx>
+ <6fce881efc3d8c24a5172528fe1f46ec2ddc0607.camel@gmx.de>
+ <ed1d5f9ec17a5b8d758c234562dad47cfc872ed8.camel@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <YQHwa42jixqPPvVm@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ed1d5f9ec17a5b8d758c234562dad47cfc872ed8.camel@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/2021 8:03 AM, Sean Christopherson wrote:
-> On Fri, Jul 16, 2021, Zeng Guang wrote:
->> @@ -4204,6 +4234,13 @@ vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
->>   #define vmx_adjust_sec_exec_exiting(vmx, exec_control, lname, uname) \
->>   	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, uname##_EXITING, true)
->>   
->> +static void vmx_compute_tertiary_exec_control(struct vcpu_vmx *vmx)
->> +{
->> +	u32 exec_control = vmcs_config.cpu_based_3rd_exec_ctrl;
-> This is incorrectly truncating the value.
->
->> +
->> +	vmx->tertiary_exec_control = exec_control;
->> +}
->> +
->>   static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
->>   {
->>   	struct kvm_vcpu *vcpu = &vmx->vcpu;
->> @@ -4319,6 +4356,11 @@ static void init_vmcs(struct vcpu_vmx *vmx)
->>   		secondary_exec_controls_set(vmx, vmx->secondary_exec_control);
->>   	}
->>   
->> +	if (cpu_has_tertiary_exec_ctrls()) {
->> +		vmx_compute_tertiary_exec_control(vmx);
->> +		tertiary_exec_controls_set(vmx, vmx->tertiary_exec_control);
-> IMO, the existing vmx->secondary_exec_control is an abomination that should not
-> exist.  Looking at the code, it's actually not hard to get rid, there's just one
-> annoying use in prepare_vmcs02_early() that requires a bit of extra work to get
-> rid of.
->
-> Anyways, for tertiary controls, I'd prefer to avoid the same mess and instead
-> follow vmx_exec_control(), both in functionality and in name:
->
->    static u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx)
->    {
-> 	return vmcs_config.cpu_based_3rd_exec_ctrl;
->    }
->
-> and:
->
-> 	if (cpu_has_tertiary_exec_ctrls())
-> 		tertiary_exec_controls_set(vmx, vmx_tertiary_exec_control(vmx));
->
-> and then the next patch becomes:
->
->    static u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx)
->    {
-> 	u64 exec_control = vmcs_config.cpu_based_3rd_exec_ctrl;
->
-> 	if (!kvm_vcpu_apicv_active(vcpu))
-> 		exec_control &= ~TERTIARY_EXEC_IPI_VIRT;
->
-> 	return exec_control;
->    }
->
->
-> And I'll work on a patch to purge vmx->secondary_exec_control.
-Ok, it looks much concise. I will change as you suggest. Thanks.
->> +	}
->> +
->>   	if (kvm_vcpu_apicv_active(&vmx->vcpu)) {
->>   		vmcs_write64(EOI_EXIT_BITMAP0, 0);
->>   		vmcs_write64(EOI_EXIT_BITMAP1, 0);
->> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
->> index 945c6639ce24..c356ceebe84c 100644
->> --- a/arch/x86/kvm/vmx/vmx.h
->> +++ b/arch/x86/kvm/vmx/vmx.h
->> @@ -266,6 +266,7 @@ struct vcpu_vmx {
->>   	u32		      msr_ia32_umwait_control;
->>   
->>   	u32 secondary_exec_control;
->> +	u64 tertiary_exec_control;
->>   
->>   	/*
->>   	 * loaded_vmcs points to the VMCS currently used in this vcpu. For a
->> -- 
->> 2.25.1
->>
+On 2021-08-01 17:14:49 [+0200], Mike Galbraith wrote:
+> On Sun, 2021-08-01 at 05:36 +0200, Mike Galbraith wrote:
+> > On Fri, 2021-07-30 at 22:49 +0200, Thomas Gleixner wrote:
+> > > >
+> > > > First symptom is KDE/Plasma's task manager going comatose.=C2=A0 No=
+tice soon
+> > >
+> > > KDE/Plasma points at the new fangled rtmutex based ww_mutex from
+> > > Peter.
+> >
+> > Seems not.=C2=A0 When booting KVM box with nomodeset, there's exactly o=
+ne
+> > early boot ww_mutex lock/unlock, ancient history at the failure point.
+>=20
+> As you've probably already surmised given it isn't the ww_mutex bits,
+> it's the wake_q bits.  Apply the below, 5.14-rt ceases to fail.  Take
+> perfectly healthy 5.13-rt, apply those bits, and it instantly begins
+> failing as 5.14-rt had been.
+
+Given what you have replied to the locking thread/
+ww_mutex_lock_interruptible() may I assume that the wake_q bits are fine
+and it is just the ww_mutex?
+
+Sebastian
