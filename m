@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE993DDF34
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250F43DDCAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhHBSdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:33:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53462 "EHLO mail.kernel.org"
+        id S235250AbhHBPqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:46:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:37832 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229551AbhHBSdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:33:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BB52610A8;
-        Mon,  2 Aug 2021 18:32:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627929179;
-        bh=Dvzptbd8ZTtD4syTBnOGc4lDUuSeivSX6Ocd36Xfy2Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S1VJogoxjRzd3f0pYSw3PEQHem6Z8utbiWqULBw23PJFv+Eza8cLeMLKYy5vKpdTQ
-         sOSU3iyFap2D0wd/+iWxq9CeDzXpscH3IHjlrjDjGjbab5gJHz6RzGrhilAUZkN27s
-         fanQHjqRKTzWbLBm6lNZt+2buYHy6AyoMrR+h/r4=
-Date:   Mon, 2 Aug 2021 17:46:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev
-Subject: Re: kernel BUG in new r8188eu
-Message-ID: <YQgTVWHmipH31NsA@kroah.com>
-References: <80042e9f-6811-38f3-010b-1c0951ba88db@lwfinger.net>
- <cef19337-5ff3-c0cd-33ef-4f9990bcd4ec@lwfinger.net>
- <YQfKohnSRWHjlht6@kroah.com>
- <147993920.vpeT8VCmXh@localhost.localdomain>
- <dad0fc63-5419-ac38-3c23-110e4063bbe6@lwfinger.net>
+        id S234974AbhHBPqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:46:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0119311D4;
+        Mon,  2 Aug 2021 08:46:45 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 074273F66F;
+        Mon,  2 Aug 2021 08:46:43 -0700 (PDT)
+Subject: Re: [Patch V2 0/2] iommu/arm-smmu: Fix races in iommu domain/group
+ creation
+To:     Will Deacon <will@kernel.org>, Ashish Mhetre <amhetre@nvidia.com>
+Cc:     vdumpa@nvidia.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <1623961837-12540-1-git-send-email-amhetre@nvidia.com>
+ <20210802151607.GF28735@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <9c38c53c-c145-097a-4c7e-40f1c06a1f01@arm.com>
+Date:   Mon, 2 Aug 2021 16:46:37 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dad0fc63-5419-ac38-3c23-110e4063bbe6@lwfinger.net>
+In-Reply-To: <20210802151607.GF28735@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 09:40:42AM -0500, Larry Finger wrote:
-> On 8/2/21 6:45 AM, Fabio M. De Francesco wrote:
-> > The following link points to a device that seems to be supported by this
-> > driver. It is just $4.99, but I'm not sure whether or not they ship to Europe
-> > (I suppose you're here):
-> > 
-> > https://www.amazon.com/gp/product/B00L28AN88/ref=ox_sc_act_title_1
-> > About this item:
-> > * Chipset:RTL8188EU
-> > * Standard: IEEE 802.11n,IEEE 802.11g, IEEE 802.11b
-> > * Supports 64/128 bit WEP, WPA encryption
-> > 
-> > Otherwise, I think that the following uses the same chip as the above.
-> > However, it costs a little more and, above all else, I'm not really sure if it
-> > works with r8188eu, since they write that the chip is a Realtek RTL8188EUS
-> > (please note that final "EUS"):
+On 2021-08-02 16:16, Will Deacon wrote:
+> On Fri, Jun 18, 2021 at 02:00:35AM +0530, Ashish Mhetre wrote:
+>> Multiple iommu domains and iommu groups are getting created for the devices
+>> sharing same SID. It is expected for devices sharing same SID to be in same
+>> iommu group and same iommu domain.
+>> This is leading to context faults when one device is accessing IOVA from
+>> other device which shouldn't be the case for devices sharing same SID.
+>> Fix this by protecting iommu domain and iommu group creation with mutexes.
 > 
-> The RTL8188EUS chips use the same driver as RTL8188EU. In fact, the one I am
-> using is the EUS variety.
+> Robin -- any chance you could take a look at these, please? You had some
+> comments on the first version which convinced me that they are needed,
+> but I couldn't tell whether you wanted to solve this a different way or not.
 
-Ah, nice to know, I've ordered this thing from my local supplier:
-	https://www.megekko.nl/product/2113/992461/USB-Wi-Fi-sticks/StarTech-com-USB-150-Mbps-Mini-draadloze-netwerkadapter-802-11n-g-1T1R-USB-Wi-Fi-adapter-wit
+Sorry, I was lamenting that this came to light due to the 
+of_iommu_configure() flow being yucky, but that wasn't meant to imply 
+that there aren't - or couldn't be in future - better reasons for 
+iommu_probe_device() to be robust against concurrency anyway. I do think 
+these are legitimate fixes to make in their own right, even if the 
+current need might get swept back under the rug in future.
 
-so I can test and not do stupid things like that commit...
+I would say, however, that the commit messages seem to focus too much on 
+the wrong details and aren't overly useful, and patch #2 is missing 
+Ashish's sign-off.
 
-thanks,
-
-greg k-h
+Thanks,
+Robin.
