@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A98E3DDF3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B633DDF57
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhHBSdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhHBSdw (ORCPT
+        id S231881AbhHBSfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:35:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59926 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232124AbhHBSfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:33:52 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98060C06175F;
-        Mon,  2 Aug 2021 11:33:41 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id e5so20650860pld.6;
-        Mon, 02 Aug 2021 11:33:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=cAw1tkEZIaQf1XKZ8ZPskjieinW7Gn80BrRVSD7BNas=;
-        b=S+48NUj9VUSfdTSXV2SBVdE2evl7BpXBpxsd9r5nul/lUWhs4EDL4+CxAWlXfdUwxX
-         /eQnbltedNzWe6BZ5ASq32HVmVOB+1yx0BzQRY//ZBrkr1lwbq2AdyS7ESm4P8mO9MkR
-         fTaqSngn3c2VLngq/HCwvVLbCyue1q0iG4Sy7ZJSWSnwEskHWPrssGJJzuot4AFxHMlJ
-         vvg3kcdLTQDtVlHE0lkElSGSo8E0AoXiC+p2T58rB+YSsHIGk++4yUH7/ugOAtVOwomZ
-         aji4cRTp9gF+QtiDdffkhzUq8BmUCTwIZ8sYeVJsCH84/rRWRqJhfTNwifF1jhZGXs1Q
-         JoAA==
+        Mon, 2 Aug 2021 14:35:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627929301;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wminINGDgWcNHoLPUasL8rgS7uCgoeCj4rIW6d1gFd0=;
+        b=YvBg4D6Ok09eOJC7TpSEwFAEQ2FIpkAD3RnFGXJllgtpEvvvY32RT1vEPaP+v9hID1svZ8
+        IadKbOyRJWI8L53OId502PzHZFsdKqe9b3ZT219OP8kpZrOG124J/W9kmYAeKeXtHkZ1v6
+        kb346tGfSInQ8X5ngvqAx7EFrrPb2rg=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-388-sa-sHLhyNgeUZagA4kstnw-1; Mon, 02 Aug 2021 14:35:00 -0400
+X-MC-Unique: sa-sHLhyNgeUZagA4kstnw-1
+Received: by mail-ej1-f70.google.com with SMTP id rv22-20020a17090710d6b029058c69e3adbbso4989409ejb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:35:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=cAw1tkEZIaQf1XKZ8ZPskjieinW7Gn80BrRVSD7BNas=;
-        b=hAVechauOxm2A3yynQJtzGcIfO4AXpEawpRYaifirSmaFNhUGvoD6TK8Yolj7Drt11
-         ylEc13tSBVzjtPHJI05xdg/fWm9A2l4aT1mmRoA9GS9OVeuKDxYZ8DRwJXJHg06h8GO9
-         ZaErwEju4R/UGi8vGN08f14vFwQPzW5IuxO4xZCDjCGmA2pV0td80tU28huOpezSu32N
-         uRRv4gFYVyu57v4No2sF1wS/KxQQ6oICfA1H+bXpNb8Z+wRRs9MMC/yw2UQznJ+Fus4i
-         0d6sN9Pab55SJX1ebXSGp0RvqUIh+d3HqjD776OHzmDRzJDpPYboyfzQR2SACsNXR8k4
-         /1ZA==
-X-Gm-Message-State: AOAM531nK/EEtVR+1asDerr4BKxgoVKrDp5OGE8lwJiYIH/ZlZj3DiQr
-        O7o4ruwCO5BK6FZUifbfaXg6mhFPN4//iMzv8FM=
-X-Google-Smtp-Source: ABdhPJxPnWZuK/p/IvVOkS9G8OZF1gvzoiNav4Ophp8X3FibKYJfyLIHHM4/m6NFmLmIVSZcLZ4Aaw==
-X-Received: by 2002:aa7:848e:0:b029:333:4742:edb3 with SMTP id u14-20020aa7848e0000b02903334742edb3mr17700750pfn.12.1627929220705;
-        Mon, 02 Aug 2021 11:33:40 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id z8sm439106pfa.113.2021.08.02.11.33.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wminINGDgWcNHoLPUasL8rgS7uCgoeCj4rIW6d1gFd0=;
+        b=GJ6WoOKJwNV/SMAoOzXyugFHkAfqEAuL8yJULgPuBU5KfDL0uGo/MRR8+yWXkFLH8g
+         TUm4ODCw8of0SEHq6q5wgWPTgbt2dOsbv+QY7XXNRHfxKXOqplnYIHqjvYD0Yta2lNh4
+         2Ft/+j0EskkbrLa7fYc8VLfSEhpRK4tYd9H7KSprk0cFreiwOcxBEULF6MUOmA11BYRW
+         Fgani+xjQLKS4mj24600f3KHEPYpEe4Dr1EIcITT9Nle/L50srmTvBhfarqLUUBqTP8V
+         mUAGqFkXgbLRDQrtQQgYs41cqYyYPmUdsuUe5EcBQbQqjs/o7xgdrtYpSOCYVO3nK4Ds
+         MDzQ==
+X-Gm-Message-State: AOAM531L438dqnftmGmN66y3yEqk2/7yEGrwO61AQdk8n7aiK7ZapMDX
+        LkZaMobw9qEiXmM8lk6SCWtNkSUSb0Oa5uFQdswGCi0CRk9TsIlYGIeWmHJON/OTD1nLfNb/ycl
+        aw+pznzEBVi68T+Julyh/LsJ3
+X-Received: by 2002:a50:fb18:: with SMTP id d24mr20985347edq.225.1627929299327;
+        Mon, 02 Aug 2021 11:34:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwoCyMdXrDgg3jX2cUmgPnbyHqQZI1zsIxFF27gl9okbIV2OgI+ba2TaS/45evhjSuB8kSK5g==
+X-Received: by 2002:a50:fb18:: with SMTP id d24mr20985334edq.225.1627929299147;
+        Mon, 02 Aug 2021 11:34:59 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id n13sm6705376eda.36.2021.08.02.11.34.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 11:33:40 -0700 (PDT)
-Message-ID: <61083a84.1c69fb81.38f1e.1cb1@mx.google.com>
-Date:   Mon, 02 Aug 2021 11:33:40 -0700 (PDT)
-X-Google-Original-Date: Mon, 02 Aug 2021 18:33:38 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-Subject: RE: [PATCH 5.13 000/104] 5.13.8-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 02 Aug 2021 11:34:58 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 20:34:56 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Harshavardhan Unnibhavi <harshanavkis@gmail.com>
+Cc:     stefanha@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        asias@redhat.com, mst@redhat.com, imbrenda@linux.vnet.ibm.com,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] VSOCK: handle VIRTIO_VSOCK_OP_CREDIT_REQUEST
+Message-ID: <20210802183456.zvr6raqtgwrm3s52@steredhat>
+References: <20210802173506.2383-1-harshanavkis@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210802173506.2383-1-harshanavkis@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  2 Aug 2021 15:43:57 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.13.8 release.
-> There are 104 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.8-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, Aug 02, 2021 at 07:35:06PM +0200, Harshavardhan Unnibhavi wrote:
+>The original implementation of the virtio-vsock driver does not
+>handle a VIRTIO_VSOCK_OP_CREDIT_REQUEST as required by the
+>virtio-vsock specification. The vsock device emulated by
+>vhost-vsock and the virtio-vsock driver never uses this request,
+>which was probably why nobody noticed it. However, another
+>implementation of the device may use this request type.
+>
+>Hence, this commit introduces a way to handle an explicit credit
+>request by responding with a corresponding credit update as
+>required by the virtio-vsock specification.
+>
+>Fixes: 06a8fc78367d ("VSOCK: Introduce virtio_vsock_common.ko")
+>
+>Signed-off-by: Harshavardhan Unnibhavi <harshanavkis@gmail.com>
+>---
+> net/vmw_vsock/virtio_transport_common.c | 3 +++
+> 1 file changed, 3 insertions(+)
+>
+>diff --git a/net/vmw_vsock/virtio_transport_common.c 
+>b/net/vmw_vsock/virtio_transport_common.c
+>index 169ba8b72a63..081e7ae93cb1 100644
+>--- a/net/vmw_vsock/virtio_transport_common.c
+>+++ b/net/vmw_vsock/virtio_transport_common.c
+>@@ -1079,6 +1079,9 @@ virtio_transport_recv_connected(struct sock *sk,
+> 		virtio_transport_recv_enqueue(vsk, pkt);
+> 		sk->sk_data_ready(sk);
+> 		return err;
+>+	case VIRTIO_VSOCK_OP_CREDIT_REQUEST:
+>+		virtio_transport_send_credit_update(vsk);
+>+		break;
+> 	case VIRTIO_VSOCK_OP_CREDIT_UPDATE:
+> 		sk->sk_write_space(sk);
+> 		break;
+>-- 2.17.1
+>
 
-5.13.8-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+The patch LGTM, thanks for fixing this long-time issue!
+
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
