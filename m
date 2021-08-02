@@ -2,184 +2,758 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713813DDE25
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536823DDE2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232871AbhHBQ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhHBQ6S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:58:18 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04717C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 09:58:08 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id j3so5241550plx.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 09:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=67UCcXw6Bwoz9yHjZZDcAJ+wIZA32YKluf+gMvwDLEg=;
-        b=AYyNS5HBgapBPr9RswDyouJAQcviXGYaBRing3fUZOGZ/CaN+DEPCDiRLPDi1oGf3g
-         AH0o3pLecIc8tzPHY/9A256deoWzNr+LNKvRr6DdM3fIDisWniBMC/CLUUf8Ntcf1pT5
-         Zd6U0zQ/DupQV8dYaahn6Nbj1zQWOWxLsXzE8Poz4x6gf+361OXm+2B5td35xkbHJV73
-         7jMDKuLSQK45yC+nug7PEC4bhebnRmh7Dy1jt1/BNYpwOAEALOsj3kCWlz4hfTTfBFe/
-         Y/bbQnOmjHAUgevRxnY9LbWH295Opk9Rq4DTHqA97KnMCdZRdxJXZywSyawku2LVSSiY
-         XD0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=67UCcXw6Bwoz9yHjZZDcAJ+wIZA32YKluf+gMvwDLEg=;
-        b=PPN4bkLg8AiZDVYb++Ms3GMtXtUG61o27DD9k5PxlzV2KOHkj1CHQtfqVOgaMKbMyO
-         nTIw+YDmZo8sgtSEaXZkjKZNrQgofzK7pSKlD3AvoeIAF8x8kEYi14hChZombSpFL7tQ
-         rQtM6movAcPzWLPcDhgFCG3dUp9zhSOFuaQpuE+rvTC52IanxhIETny1ig5Y79MCqRO9
-         W7kzHEgwuteG1FzLuc+e592cW5KlsMocNfg4NGsN2/mddwsssPl2rg8JhbWhUE7GW7aX
-         t0m6t1X3bs74aElSJBGoT7uVntpTPwoTFo+vnNMOLGlWX+79wIc+QHC1mUWuVrnLQJzM
-         3+7A==
-X-Gm-Message-State: AOAM530Vl7PgMMEP8fbFHcrZTwMcek2Qftb4hwlpLAPu1XQXRm6phep2
-        JJb7HVGvH/LZasIPUqbnoXV/Vg==
-X-Google-Smtp-Source: ABdhPJzd04ClYJnQ645mP57EXMTmUJraBrjjimwiy45nqkuGWAfqZEHd+NGWKFwE19xucv5mGbSWbg==
-X-Received: by 2002:a05:6a00:1951:b029:333:64d3:e1f1 with SMTP id s17-20020a056a001951b029033364d3e1f1mr17948484pfk.43.1627923487274;
-        Mon, 02 Aug 2021 09:58:07 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id o9sm13248081pfh.217.2021.08.02.09.58.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 09:58:06 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 16:58:03 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Edmondson <david.edmondson@oracle.com>
+        id S229801AbhHBQ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:59:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229744AbhHBQ7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 12:59:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E2BE610FF;
+        Mon,  2 Aug 2021 16:59:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627923565;
+        bh=/JYdTPz5X16e9SbA+qnWvvGXWdLwZvVpLlZX33Gw7iA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MGC33EcIzDAqw5tl9GKrXEkn6pkdTREYGKSz9dQqhyh2RH1ic0vLYQyspaIzI1uDM
+         praXt1HhUkkynDLdgWMOVewPx31KeoxagJzGBUDLUVeJWDEXVeTInaUzRMu1Ud/s1H
+         fX0HPuciAHD2xFVid5ih/a7xllQeMzO9HTsTdEpBSs5DLPSSmEOhCNZ8xJuGG5nY0r
+         4H7NJcEuhihC6z5VoWzy5qDxDKCSYcbe+5i57pGyy1EPrPKWyM6oPxLvKGptmYwkvH
+         3v8iIH/lcW4HfS0leK4Kd1zv5qeG5MKA9Fpo0aJXEGGlSZCGGjlMZcmjEYZ/gCwQNP
+         Yg5XBxjL/Kg7g==
+Date:   Mon, 2 Aug 2021 11:59:23 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        David Matlack <dmatlack@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v3 2/3] KVM: x86: On emulation failure, convey the exit
- reason, etc. to userspace
-Message-ID: <YQgkGwGkrleO7I2A@google.com>
-References: <20210729133931.1129696-1-david.edmondson@oracle.com>
- <20210729133931.1129696-3-david.edmondson@oracle.com>
- <YQR52JRv8jgj+Dv8@google.com>
- <cunk0l4mhjc.fsf@oracle.com>
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 03/14] PCI: Bulk conversion to
+ generic_handle_domain_irq()
+Message-ID: <20210802165923.GA1389656@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cunk0l4mhjc.fsf@oracle.com>
+In-Reply-To: <20210802162630.2219813-4-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021, David Edmondson wrote:
-> On Friday, 2021-07-30 at 22:14:48 GMT, Sean Christopherson wrote:
+On Mon, Aug 02, 2021 at 05:26:19PM +0100, Marc Zyngier wrote:
+> Wherever possible, replace constructs that match either
+> generic_handle_irq(irq_find_mapping()) or
+> generic_handle_irq(irq_linear_revmap()) to a single call to
+> generic_handle_domain_irq().
 > 
-> > On Thu, Jul 29, 2021, David Edmondson wrote:
-> >> +		__u64 exit_info1;
-> >> +		__u64 exit_info2;
-> >> +		__u32 intr_info;
-> >> +		__u32 error_code;
-> >> +	} exit_reason;
-> >
-> > Oooh, you're dumping all the fields in kvm_run.  That took me forever to realize
-> > because the struct is named "exit_reason".  Unless there's a naming conflict,
-> > 'data' would be the simplest, and if that's already taken, maybe 'info'?
-> >
-> > I'm also not sure an anonymous struct is going to be the easiest to maintain.
-> > I do like that the fields all have names, but on the other hand the data should
-> > be padded so that each field is in its own data[] entry when dumped to userspace.
-> > IMO, the padding complexity isn't worth the naming niceness since this code
-> > doesn't actually care about what each field contains.
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+
+Beautiful.  Applied to pci/irq for v5.15 so we can resolve any
+conflicts locally.  Thanks!
+
+> ---
+>  drivers/pci/controller/dwc/pci-dra7xx.c        | 16 ++++++----------
+>  drivers/pci/controller/dwc/pci-keystone.c      | 14 +++++---------
+>  .../pci/controller/dwc/pcie-designware-host.c  |  9 ++++-----
+>  drivers/pci/controller/dwc/pcie-uniphier.c     |  8 +++-----
+>  .../controller/mobiveil/pcie-mobiveil-host.c   | 15 ++++++---------
+>  drivers/pci/controller/pci-aardvark.c          |  5 ++---
+>  drivers/pci/controller/pci-ftpci100.c          |  2 +-
+>  drivers/pci/controller/pci-tegra.c             |  8 +++-----
+>  drivers/pci/controller/pci-xgene-msi.c         |  9 +++------
+>  drivers/pci/controller/pcie-altera-msi.c       | 10 ++++------
+>  drivers/pci/controller/pcie-altera.c           | 10 ++++------
+>  drivers/pci/controller/pcie-brcmstb.c          |  9 ++++-----
+>  drivers/pci/controller/pcie-iproc-msi.c        |  4 +---
+>  drivers/pci/controller/pcie-mediatek-gen3.c    | 13 ++++---------
+>  drivers/pci/controller/pcie-mediatek.c         | 12 ++++--------
+>  drivers/pci/controller/pcie-microchip-host.c   | 18 +++++++-----------
+>  drivers/pci/controller/pcie-rcar-host.c        |  8 +++-----
+>  drivers/pci/controller/pcie-rockchip-host.c    |  8 +++-----
+>  drivers/pci/controller/pcie-xilinx-cpm.c       |  4 ++--
+>  drivers/pci/controller/pcie-xilinx-nwl.c       | 13 +++----------
+>  drivers/pci/controller/pcie-xilinx.c           |  9 ++++-----
+>  21 files changed, 76 insertions(+), 128 deletions(-)
 > 
-> Given that this is avowedly not an ABI and that we are expecting any
-> (human) consumer to be intimate with the implementation to make sense of
-> it, is there really any requirement or need for padding?
-
-My thought with the padding was to force each field into its own data[] entry.
-E.g. if userspace does something like
-
-	for (i = 0; i < ndata; i++)
-		printf("\tdata[%d] = 0x%llx\n", i, data[i]);
-
-then padding will yield
-
-	data[0] = flags
-	data[1] = exit_reason
-	data[2] = exit_info1
-	data[3] = exit_info2
-	data[4] = intr_info
-	data[5] = error_code
-
-versus
-
-	data[0] = <flags>
-	data[1] = (exit_info1 << 32) | exit_reason
-	data[2] = (exit_info2 << 32) | (exit_info1 >> 32)
-	data[3] = (intr_info << 32) | (exit_info2 >> 32)
-	data[4] = error_code
-
-Changing exit_reason to a u64 would clean up the worst of the mangling, but until
-there's actually a 64-bit exit reason to dump, that's just a more subtle way to
-pad the data.
-
-> In your example below (most of which I'm fine with), the padding has the
-> effect of wasting space that could be used for another u64 of debug
-> data.
-
-Yes, but because it's not ABI, we can change it in the future if we get to the
-point where we want to dump more info and don't have space.  Until that time, I
-think it makes sense to prioritize readability with an ignorant (of the format)
-userspace over memory footprint.
-
-> > 	/*
-> > 	 * There's currently space for 13 entries, but 5 are used for the exit
-> > 	 * reason and info.  Restrict to 4 to reduce the maintenance burden
-> > 	 * when expanding kvm_run.emulation_failure in the future.
-> > 	 */
-> > 	if (WARN_ON_ONCE(ndata > 4))
-> > 		ndata = 4;
-> >
-> > 	if (insn_size) {
-> > 		ndata_start = 3;
-> > 		run->emulation_failure.flags =
-> > 			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
-> > 		run->emulation_failure.insn_size = insn_size;
-> > 		memset(run->emulation_failure.insn_bytes, 0x90,
-> > 		       sizeof(run->emulation_failure.insn_bytes));
-> > 		memcpy(run->emulation_failure.insn_bytes, insn_bytes, insn_size);
-> > 	} else {
-> > 		/* Always include the flags as a 'data' entry. */
-> > 		ndata_start = 1;
-> > 		run->emulation_failure.flags = 0;
-> > 	}
+> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
+> index 047cfbdc1330..fbbb78f6885e 100644
+> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
+> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
+> @@ -204,7 +204,7 @@ static int dra7xx_pcie_handle_msi(struct pcie_port *pp, int index)
+>  {
+>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>  	unsigned long val;
+> -	int pos, irq;
+> +	int pos;
+>  
+>  	val = dw_pcie_readl_dbi(pci, PCIE_MSI_INTR0_STATUS +
+>  				   (index * MSI_REG_CTRL_BLOCK_SIZE));
+> @@ -213,9 +213,8 @@ static int dra7xx_pcie_handle_msi(struct pcie_port *pp, int index)
+>  
+>  	pos = find_next_bit(&val, MAX_MSI_IRQS_PER_CTRL, 0);
+>  	while (pos != MAX_MSI_IRQS_PER_CTRL) {
+> -		irq = irq_find_mapping(pp->irq_domain,
+> -				       (index * MAX_MSI_IRQS_PER_CTRL) + pos);
+> -		generic_handle_irq(irq);
+> +		generic_handle_domain_irq(pp->irq_domain,
+> +					  (index * MAX_MSI_IRQS_PER_CTRL) + pos);
+>  		pos++;
+>  		pos = find_next_bit(&val, MAX_MSI_IRQS_PER_CTRL, pos);
+>  	}
+> @@ -257,7 +256,7 @@ static void dra7xx_pcie_msi_irq_handler(struct irq_desc *desc)
+>  	struct dw_pcie *pci;
+>  	struct pcie_port *pp;
+>  	unsigned long reg;
+> -	u32 virq, bit;
+> +	u32 bit;
+>  
+>  	chained_irq_enter(chip, desc);
+>  
+> @@ -276,11 +275,8 @@ static void dra7xx_pcie_msi_irq_handler(struct irq_desc *desc)
+>  	case INTB:
+>  	case INTC:
+>  	case INTD:
+> -		for_each_set_bit(bit, &reg, PCI_NUM_INTX) {
+> -			virq = irq_find_mapping(dra7xx->irq_domain, bit);
+> -			if (virq)
+> -				generic_handle_irq(virq);
+> -		}
+> +		for_each_set_bit(bit, &reg, PCI_NUM_INTX)
+> +			generic_handle_domain_irq(dra7xx->irq_domain, bit);
+>  		break;
+>  	}
+>  
+> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+> index bde3b2824e89..865258d8c53c 100644
+> --- a/drivers/pci/controller/dwc/pci-keystone.c
+> +++ b/drivers/pci/controller/dwc/pci-keystone.c
+> @@ -259,14 +259,12 @@ static void ks_pcie_handle_legacy_irq(struct keystone_pcie *ks_pcie,
+>  	struct dw_pcie *pci = ks_pcie->pci;
+>  	struct device *dev = pci->dev;
+>  	u32 pending;
+> -	int virq;
+>  
+>  	pending = ks_pcie_app_readl(ks_pcie, IRQ_STATUS(offset));
+>  
+>  	if (BIT(0) & pending) {
+> -		virq = irq_linear_revmap(ks_pcie->legacy_irq_domain, offset);
+> -		dev_dbg(dev, ": irq: irq_offset %d, virq %d\n", offset, virq);
+> -		generic_handle_irq(virq);
+> +		dev_dbg(dev, ": irq: irq_offset %d", offset);
+> +		generic_handle_domain_irq(ks_pcie->legacy_irq_domain, offset);
+>  	}
+>  
+>  	/* EOI the INTx interrupt */
+> @@ -579,7 +577,7 @@ static void ks_pcie_msi_irq_handler(struct irq_desc *desc)
+>  	struct pcie_port *pp = &pci->pp;
+>  	struct device *dev = pci->dev;
+>  	struct irq_chip *chip = irq_desc_get_chip(desc);
+> -	u32 vector, virq, reg, pos;
+> +	u32 vector, reg, pos;
+>  
+>  	dev_dbg(dev, "%s, irq %d\n", __func__, irq);
+>  
+> @@ -600,10 +598,8 @@ static void ks_pcie_msi_irq_handler(struct irq_desc *desc)
+>  			continue;
+>  
+>  		vector = offset + (pos << 3);
+> -		virq = irq_linear_revmap(pp->irq_domain, vector);
+> -		dev_dbg(dev, "irq: bit %d, vector %d, virq %d\n", pos, vector,
+> -			virq);
+> -		generic_handle_irq(virq);
+> +		dev_dbg(dev, "irq: bit %d, vector %d\n", pos, vector);
+> +		generic_handle_domain_irq(pp->irq_domain, vector);
+>  	}
+>  
+>  	chained_irq_exit(chip, desc);
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index a608ae1fad57..d1d9b8344ec9 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -55,7 +55,7 @@ static struct msi_domain_info dw_pcie_msi_domain_info = {
+>  /* MSI int handler */
+>  irqreturn_t dw_handle_msi_irq(struct pcie_port *pp)
+>  {
+> -	int i, pos, irq;
+> +	int i, pos;
+>  	unsigned long val;
+>  	u32 status, num_ctrls;
+>  	irqreturn_t ret = IRQ_NONE;
+> @@ -74,10 +74,9 @@ irqreturn_t dw_handle_msi_irq(struct pcie_port *pp)
+>  		pos = 0;
+>  		while ((pos = find_next_bit(&val, MAX_MSI_IRQS_PER_CTRL,
+>  					    pos)) != MAX_MSI_IRQS_PER_CTRL) {
+> -			irq = irq_find_mapping(pp->irq_domain,
+> -					       (i * MAX_MSI_IRQS_PER_CTRL) +
+> -					       pos);
+> -			generic_handle_irq(irq);
+> +			generic_handle_domain_irq(pp->irq_domain,
+> +						  (i * MAX_MSI_IRQS_PER_CTRL) +
+> +						  pos);
+>  			pos++;
+>  		}
+>  	}
+> diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
+> index 7e8bad326770..d842fd018129 100644
+> --- a/drivers/pci/controller/dwc/pcie-uniphier.c
+> +++ b/drivers/pci/controller/dwc/pcie-uniphier.c
+> @@ -235,7 +235,7 @@ static void uniphier_pcie_irq_handler(struct irq_desc *desc)
+>  	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
+>  	struct irq_chip *chip = irq_desc_get_chip(desc);
+>  	unsigned long reg;
+> -	u32 val, bit, virq;
+> +	u32 val, bit;
+>  
+>  	/* INT for debug */
+>  	val = readl(priv->base + PCL_RCV_INT);
+> @@ -257,10 +257,8 @@ static void uniphier_pcie_irq_handler(struct irq_desc *desc)
+>  	val = readl(priv->base + PCL_RCV_INTX);
+>  	reg = FIELD_GET(PCL_RCV_INTX_ALL_STATUS, val);
+>  
+> -	for_each_set_bit(bit, &reg, PCI_NUM_INTX) {
+> -		virq = irq_linear_revmap(priv->legacy_irq_domain, bit);
+> -		generic_handle_irq(virq);
+> -	}
+> +	for_each_set_bit(bit, &reg, PCI_NUM_INTX)
+> +		generic_handle_domain_irq(priv->legacy_irq_domain, bit);
+>  
+>  	chained_irq_exit(chip, desc);
+>  }
+> diff --git a/drivers/pci/controller/mobiveil/pcie-mobiveil-host.c b/drivers/pci/controller/mobiveil/pcie-mobiveil-host.c
+> index c637de3a389b..f3547aa60140 100644
+> --- a/drivers/pci/controller/mobiveil/pcie-mobiveil-host.c
+> +++ b/drivers/pci/controller/mobiveil/pcie-mobiveil-host.c
+> @@ -92,7 +92,7 @@ static void mobiveil_pcie_isr(struct irq_desc *desc)
+>  	u32 msi_data, msi_addr_lo, msi_addr_hi;
+>  	u32 intr_status, msi_status;
+>  	unsigned long shifted_status;
+> -	u32 bit, virq, val, mask;
+> +	u32 bit, val, mask;
+>  
+>  	/*
+>  	 * The core provides a single interrupt for both INTx/MSI messages.
+> @@ -114,11 +114,10 @@ static void mobiveil_pcie_isr(struct irq_desc *desc)
+>  		shifted_status >>= PAB_INTX_START;
+>  		do {
+>  			for_each_set_bit(bit, &shifted_status, PCI_NUM_INTX) {
+> -				virq = irq_find_mapping(rp->intx_domain,
+> -							bit + 1);
+> -				if (virq)
+> -					generic_handle_irq(virq);
+> -				else
+> +				int ret;
+> +				ret = generic_handle_domain_irq(rp->intx_domain,
+> +								bit + 1);
+> +				if (ret)
+>  					dev_err_ratelimited(dev, "unexpected IRQ, INT%d\n",
+>  							    bit);
+>  
+> @@ -155,9 +154,7 @@ static void mobiveil_pcie_isr(struct irq_desc *desc)
+>  		dev_dbg(dev, "MSI registers, data: %08x, addr: %08x:%08x\n",
+>  			msi_data, msi_addr_hi, msi_addr_lo);
+>  
+> -		virq = irq_find_mapping(msi->dev_domain, msi_data);
+> -		if (virq)
+> -			generic_handle_irq(virq);
+> +		generic_handle_domain_irq(msi->dev_domain, msi_data);
+>  
+>  		msi_status = readl_relaxed(pcie->apb_csr_base +
+>  					   MSI_STATUS_OFFSET);
+> diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> index c95ebe808f92..d3515e207e12 100644
+> --- a/drivers/pci/controller/pci-aardvark.c
+> +++ b/drivers/pci/controller/pci-aardvark.c
+> @@ -1049,7 +1049,7 @@ static void advk_pcie_handle_int(struct advk_pcie *pcie)
+>  {
+>  	u32 isr0_val, isr0_mask, isr0_status;
+>  	u32 isr1_val, isr1_mask, isr1_status;
+> -	int i, virq;
+> +	int i;
+>  
+>  	isr0_val = advk_readl(pcie, PCIE_ISR0_REG);
+>  	isr0_mask = advk_readl(pcie, PCIE_ISR0_MASK_REG);
+> @@ -1077,8 +1077,7 @@ static void advk_pcie_handle_int(struct advk_pcie *pcie)
+>  		advk_writel(pcie, PCIE_ISR1_INTX_ASSERT(i),
+>  			    PCIE_ISR1_REG);
+>  
+> -		virq = irq_find_mapping(pcie->irq_domain, i);
+> -		generic_handle_irq(virq);
+> +		generic_handle_domain_irq(pcie->irq_domain, i);
+>  	}
+>  }
+>  
+> diff --git a/drivers/pci/controller/pci-ftpci100.c b/drivers/pci/controller/pci-ftpci100.c
+> index aefef1986201..88980a44461d 100644
+> --- a/drivers/pci/controller/pci-ftpci100.c
+> +++ b/drivers/pci/controller/pci-ftpci100.c
+> @@ -314,7 +314,7 @@ static void faraday_pci_irq_handler(struct irq_desc *desc)
+>  	for (i = 0; i < 4; i++) {
+>  		if ((irq_stat & BIT(i)) == 0)
+>  			continue;
+> -		generic_handle_irq(irq_find_mapping(p->irqdomain, i));
+> +		generic_handle_domain_irq(p->irqdomain, i);
+>  	}
+>  
+>  	chained_irq_exit(irqchip, desc);
+> diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
+> index c979229a6d0d..36f898643a4c 100644
+> --- a/drivers/pci/controller/pci-tegra.c
+> +++ b/drivers/pci/controller/pci-tegra.c
+> @@ -1553,12 +1553,10 @@ static void tegra_pcie_msi_irq(struct irq_desc *desc)
+>  		while (reg) {
+>  			unsigned int offset = find_first_bit(&reg, 32);
+>  			unsigned int index = i * 32 + offset;
+> -			unsigned int irq;
+> +			int ret;
+>  
+> -			irq = irq_find_mapping(msi->domain->parent, index);
+> -			if (irq) {
+> -				generic_handle_irq(irq);
+> -			} else {
+> +			ret = generic_handle_domain_irq(msi->domain->parent, index);
+> +			if (ret) {
+>  				/*
+>  				 * that's weird who triggered this?
+>  				 * just clear it
+> diff --git a/drivers/pci/controller/pci-xgene-msi.c b/drivers/pci/controller/pci-xgene-msi.c
+> index 1c34c897a7e2..f1624bbb9f83 100644
+> --- a/drivers/pci/controller/pci-xgene-msi.c
+> +++ b/drivers/pci/controller/pci-xgene-msi.c
+> @@ -291,8 +291,7 @@ static void xgene_msi_isr(struct irq_desc *desc)
+>  	struct irq_chip *chip = irq_desc_get_chip(desc);
+>  	struct xgene_msi_group *msi_groups;
+>  	struct xgene_msi *xgene_msi;
+> -	unsigned int virq;
+> -	int msir_index, msir_val, hw_irq;
+> +	int msir_index, msir_val, hw_irq, ret;
+>  	u32 intr_index, grp_select, msi_grp;
+>  
+>  	chained_irq_enter(chip, desc);
+> @@ -330,10 +329,8 @@ static void xgene_msi_isr(struct irq_desc *desc)
+>  			 * CPU0
+>  			 */
+>  			hw_irq = hwirq_to_canonical_hwirq(hw_irq);
+> -			virq = irq_find_mapping(xgene_msi->inner_domain, hw_irq);
+> -			WARN_ON(!virq);
+> -			if (virq != 0)
+> -				generic_handle_irq(virq);
+> +			ret = generic_handle_domain_irq(xgene_msi->inner_domain, hw_irq);
+> +			WARN_ON_ONCE(ret);
+>  			msir_val &= ~(1 << intr_index);
+>  		}
+>  		grp_select &= ~(1 << msir_index);
+> diff --git a/drivers/pci/controller/pcie-altera-msi.c b/drivers/pci/controller/pcie-altera-msi.c
+> index 98aa1dccc6e6..7b1d3ebc34ec 100644
+> --- a/drivers/pci/controller/pcie-altera-msi.c
+> +++ b/drivers/pci/controller/pcie-altera-msi.c
+> @@ -55,7 +55,7 @@ static void altera_msi_isr(struct irq_desc *desc)
+>  	struct altera_msi *msi;
+>  	unsigned long status;
+>  	u32 bit;
+> -	u32 virq;
+> +	int ret;
+>  
+>  	chained_irq_enter(chip, desc);
+>  	msi = irq_desc_get_handler_data(desc);
+> @@ -65,11 +65,9 @@ static void altera_msi_isr(struct irq_desc *desc)
+>  			/* Dummy read from vector to clear the interrupt */
+>  			readl_relaxed(msi->vector_base + (bit * sizeof(u32)));
+>  
+> -			virq = irq_find_mapping(msi->inner_domain, bit);
+> -			if (virq)
+> -				generic_handle_irq(virq);
+> -			else
+> -				dev_err(&msi->pdev->dev, "unexpected MSI\n");
+> +			ret = generic_handle_domain_irq(msi->inner_domain, bit);
+> +			if (ret)
+> +				dev_err_ratelimited(&msi->pdev->dev, "unexpected MSI\n");
+>  		}
+>  	}
+>  
+> diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
+> index 523bd928b380..2513e9363236 100644
+> --- a/drivers/pci/controller/pcie-altera.c
+> +++ b/drivers/pci/controller/pcie-altera.c
+> @@ -646,7 +646,7 @@ static void altera_pcie_isr(struct irq_desc *desc)
+>  	struct device *dev;
+>  	unsigned long status;
+>  	u32 bit;
+> -	u32 virq;
+> +	int ret;
+>  
+>  	chained_irq_enter(chip, desc);
+>  	pcie = irq_desc_get_handler_data(desc);
+> @@ -658,11 +658,9 @@ static void altera_pcie_isr(struct irq_desc *desc)
+>  			/* clear interrupts */
+>  			cra_writel(pcie, 1 << bit, P2A_INT_STATUS);
+>  
+> -			virq = irq_find_mapping(pcie->irq_domain, bit);
+> -			if (virq)
+> -				generic_handle_irq(virq);
+> -			else
+> -				dev_err(dev, "unexpected IRQ, INT%d\n", bit);
+> +			ret = generic_handle_domain_irq(pcie->irq_domain, bit);
+> +			if (ret)
+> +				dev_err_ratelimited(dev, "unexpected IRQ, INT%d\n", bit);
+>  		}
+>  	}
+>  
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index 08bc788d9422..cc30215f5a43 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -476,7 +476,7 @@ static struct msi_domain_info brcm_msi_domain_info = {
+>  static void brcm_pcie_msi_isr(struct irq_desc *desc)
+>  {
+>  	struct irq_chip *chip = irq_desc_get_chip(desc);
+> -	unsigned long status, virq;
+> +	unsigned long status;
+>  	struct brcm_msi *msi;
+>  	struct device *dev;
+>  	u32 bit;
+> @@ -489,10 +489,9 @@ static void brcm_pcie_msi_isr(struct irq_desc *desc)
+>  	status >>= msi->legacy_shift;
+>  
+>  	for_each_set_bit(bit, &status, msi->nr) {
+> -		virq = irq_find_mapping(msi->inner_domain, bit);
+> -		if (virq)
+> -			generic_handle_irq(virq);
+> -		else
+> +		int ret;
+> +		ret = generic_handle_domain_irq(msi->inner_domain, bit);
+> +		if (ret)
+>  			dev_dbg(dev, "unexpected MSI\n");
+>  	}
+>  
+> diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
+> index 35a82124a126..757b7fbcdc59 100644
+> --- a/drivers/pci/controller/pcie-iproc-msi.c
+> +++ b/drivers/pci/controller/pcie-iproc-msi.c
+> @@ -326,7 +326,6 @@ static void iproc_msi_handler(struct irq_desc *desc)
+>  	struct iproc_msi *msi;
+>  	u32 eq, head, tail, nr_events;
+>  	unsigned long hwirq;
+> -	int virq;
+>  
+>  	chained_irq_enter(chip, desc);
+>  
+> @@ -362,8 +361,7 @@ static void iproc_msi_handler(struct irq_desc *desc)
+>  		/* process all outstanding events */
+>  		while (nr_events--) {
+>  			hwirq = decode_msi_hwirq(msi, eq, head);
+> -			virq = irq_find_mapping(msi->inner_domain, hwirq);
+> -			generic_handle_irq(virq);
+> +			generic_handle_domain_irq(msi->inner_domain, hwirq);
+>  
+>  			head++;
+>  			head %= EQ_LEN;
+> diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+> index f3aeb8d4eaca..17c59b0d6978 100644
+> --- a/drivers/pci/controller/pcie-mediatek-gen3.c
+> +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+> @@ -645,7 +645,6 @@ static void mtk_pcie_msi_handler(struct mtk_pcie_port *port, int set_idx)
+>  {
+>  	struct mtk_msi_set *msi_set = &port->msi_sets[set_idx];
+>  	unsigned long msi_enable, msi_status;
+> -	unsigned int virq;
+>  	irq_hw_number_t bit, hwirq;
+>  
+>  	msi_enable = readl_relaxed(msi_set->base + PCIE_MSI_SET_ENABLE_OFFSET);
+> @@ -659,8 +658,7 @@ static void mtk_pcie_msi_handler(struct mtk_pcie_port *port, int set_idx)
+>  
+>  		for_each_set_bit(bit, &msi_status, PCIE_MSI_IRQS_PER_SET) {
+>  			hwirq = bit + set_idx * PCIE_MSI_IRQS_PER_SET;
+> -			virq = irq_find_mapping(port->msi_bottom_domain, hwirq);
+> -			generic_handle_irq(virq);
+> +			generic_handle_domain_irq(port->msi_bottom_domain, hwirq);
+>  		}
+>  	} while (true);
+>  }
+> @@ -670,18 +668,15 @@ static void mtk_pcie_irq_handler(struct irq_desc *desc)
+>  	struct mtk_pcie_port *port = irq_desc_get_handler_data(desc);
+>  	struct irq_chip *irqchip = irq_desc_get_chip(desc);
+>  	unsigned long status;
+> -	unsigned int virq;
+>  	irq_hw_number_t irq_bit = PCIE_INTX_SHIFT;
+>  
+>  	chained_irq_enter(irqchip, desc);
+>  
+>  	status = readl_relaxed(port->base + PCIE_INT_STATUS_REG);
+>  	for_each_set_bit_from(irq_bit, &status, PCI_NUM_INTX +
+> -			      PCIE_INTX_SHIFT) {
+> -		virq = irq_find_mapping(port->intx_domain,
+> -					irq_bit - PCIE_INTX_SHIFT);
+> -		generic_handle_irq(virq);
+> -	}
+> +			      PCIE_INTX_SHIFT)
+> +		generic_handle_domain_irq(port->intx_domain,
+> +					  irq_bit - PCIE_INTX_SHIFT);
+>  
+>  	irq_bit = PCIE_MSI_SHIFT;
+>  	for_each_set_bit_from(irq_bit, &status, PCIE_MSI_SET_NUM +
+> diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+> index 25bee693834f..4cb5ea8e1069 100644
+> --- a/drivers/pci/controller/pcie-mediatek.c
+> +++ b/drivers/pci/controller/pcie-mediatek.c
+> @@ -602,7 +602,6 @@ static void mtk_pcie_intr_handler(struct irq_desc *desc)
+>  	struct mtk_pcie_port *port = irq_desc_get_handler_data(desc);
+>  	struct irq_chip *irqchip = irq_desc_get_chip(desc);
+>  	unsigned long status;
+> -	u32 virq;
+>  	u32 bit = INTX_SHIFT;
+>  
+>  	chained_irq_enter(irqchip, desc);
+> @@ -612,9 +611,8 @@ static void mtk_pcie_intr_handler(struct irq_desc *desc)
+>  		for_each_set_bit_from(bit, &status, PCI_NUM_INTX + INTX_SHIFT) {
+>  			/* Clear the INTx */
+>  			writel(1 << bit, port->base + PCIE_INT_STATUS);
+> -			virq = irq_find_mapping(port->irq_domain,
+> -						bit - INTX_SHIFT);
+> -			generic_handle_irq(virq);
+> +			generic_handle_domain_irq(port->irq_domain,
+> +						  bit - INTX_SHIFT);
+>  		}
+>  	}
+>  
+> @@ -623,10 +621,8 @@ static void mtk_pcie_intr_handler(struct irq_desc *desc)
+>  			unsigned long imsi_status;
+>  
+>  			while ((imsi_status = readl(port->base + PCIE_IMSI_STATUS))) {
+> -				for_each_set_bit(bit, &imsi_status, MTK_MSI_IRQS_NUM) {
+> -					virq = irq_find_mapping(port->inner_domain, bit);
+> -					generic_handle_irq(virq);
+> -				}
+> +				for_each_set_bit(bit, &imsi_status, MTK_MSI_IRQS_NUM)
+> +					generic_handle_domain_irq(port->inner_domain, bit);
+>  			}
+>  			/* Clear MSI interrupt status */
+>  			writel(MSI_STATUS, port->base + PCIE_INT_STATUS);
+> diff --git a/drivers/pci/controller/pcie-microchip-host.c b/drivers/pci/controller/pcie-microchip-host.c
+> index fdab8202ae5d..329f930d17aa 100644
+> --- a/drivers/pci/controller/pcie-microchip-host.c
+> +++ b/drivers/pci/controller/pcie-microchip-host.c
+> @@ -412,16 +412,14 @@ static void mc_handle_msi(struct irq_desc *desc)
+>  		port->axi_base_addr + MC_PCIE_BRIDGE_ADDR;
+>  	unsigned long status;
+>  	u32 bit;
+> -	u32 virq;
+> +	int ret;
+>  
+>  	status = readl_relaxed(bridge_base_addr + ISTATUS_LOCAL);
+>  	if (status & PM_MSI_INT_MSI_MASK) {
+>  		status = readl_relaxed(bridge_base_addr + ISTATUS_MSI);
+>  		for_each_set_bit(bit, &status, msi->num_vectors) {
+> -			virq = irq_find_mapping(msi->dev_domain, bit);
+> -			if (virq)
+> -				generic_handle_irq(virq);
+> -			else
+> +			ret = generic_handle_domain_irq(msi->dev_domain, bit);
+> +			if (ret)
+>  				dev_err_ratelimited(dev, "bad MSI IRQ %d\n",
+>  						    bit);
+>  		}
+> @@ -570,17 +568,15 @@ static void mc_handle_intx(struct irq_desc *desc)
+>  		port->axi_base_addr + MC_PCIE_BRIDGE_ADDR;
+>  	unsigned long status;
+>  	u32 bit;
+> -	u32 virq;
+> +	int ret;
+>  
+>  	status = readl_relaxed(bridge_base_addr + ISTATUS_LOCAL);
+>  	if (status & PM_MSI_INT_INTX_MASK) {
+>  		status &= PM_MSI_INT_INTX_MASK;
+>  		status >>= PM_MSI_INT_INTX_SHIFT;
+>  		for_each_set_bit(bit, &status, PCI_NUM_INTX) {
+> -			virq = irq_find_mapping(port->intx_domain, bit);
+> -			if (virq)
+> -				generic_handle_irq(virq);
+> -			else
+> +			ret = generic_handle_domain_irq(port->intx_domain, bit);
+> +			if (ret)
+>  				dev_err_ratelimited(dev, "bad INTx IRQ %d\n",
+>  						    bit);
+>  		}
+> @@ -745,7 +741,7 @@ static void mc_handle_event(struct irq_desc *desc)
+>  	events = get_events(port);
+>  
+>  	for_each_set_bit(bit, &events, NUM_EVENTS)
+> -		generic_handle_irq(irq_find_mapping(port->event_domain, bit));
+> +		generic_handle_domain_irq(port->event_domain, bit);
+>  
+>  	chained_irq_exit(chip, desc);
+>  }
+> diff --git a/drivers/pci/controller/pcie-rcar-host.c b/drivers/pci/controller/pcie-rcar-host.c
+> index 765cf2b45e24..00a8267eda14 100644
+> --- a/drivers/pci/controller/pcie-rcar-host.c
+> +++ b/drivers/pci/controller/pcie-rcar-host.c
+> @@ -486,12 +486,10 @@ static irqreturn_t rcar_pcie_msi_irq(int irq, void *data)
+>  
+>  	while (reg) {
+>  		unsigned int index = find_first_bit(&reg, 32);
+> -		unsigned int msi_irq;
+> +		int ret;
+>  
+> -		msi_irq = irq_find_mapping(msi->domain->parent, index);
+> -		if (msi_irq) {
+> -			generic_handle_irq(msi_irq);
+> -		} else {
+> +		ret = generic_handle_domain_irq(msi->domain->parent, index);
+> +		if (ret) {
+>  			/* Unknown MSI, just clear it */
+>  			dev_dbg(dev, "unexpected MSI\n");
+>  			rcar_pci_write_reg(pcie, BIT(index), PCIEMSIFR);
+> diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
+> index 78d04ac29cd5..c52316d0bfd2 100644
+> --- a/drivers/pci/controller/pcie-rockchip-host.c
+> +++ b/drivers/pci/controller/pcie-rockchip-host.c
+> @@ -517,7 +517,7 @@ static void rockchip_pcie_legacy_int_handler(struct irq_desc *desc)
+>  	struct device *dev = rockchip->dev;
+>  	u32 reg;
+>  	u32 hwirq;
+> -	u32 virq;
+> +	int ret;
+>  
+>  	chained_irq_enter(chip, desc);
+>  
+> @@ -528,10 +528,8 @@ static void rockchip_pcie_legacy_int_handler(struct irq_desc *desc)
+>  		hwirq = ffs(reg) - 1;
+>  		reg &= ~BIT(hwirq);
+>  
+> -		virq = irq_find_mapping(rockchip->irq_domain, hwirq);
+> -		if (virq)
+> -			generic_handle_irq(virq);
+> -		else
+> +		ret = generic_handle_domain_irq(rockchip->irq_domain, hwirq);
+> +		if (ret)
+>  			dev_err(dev, "unexpected IRQ, INT%d\n", hwirq);
+>  	}
+>  
+> diff --git a/drivers/pci/controller/pcie-xilinx-cpm.c b/drivers/pci/controller/pcie-xilinx-cpm.c
+> index 67937facd90c..95426df03200 100644
+> --- a/drivers/pci/controller/pcie-xilinx-cpm.c
+> +++ b/drivers/pci/controller/pcie-xilinx-cpm.c
+> @@ -222,7 +222,7 @@ static void xilinx_cpm_pcie_intx_flow(struct irq_desc *desc)
+>  			pcie_read(port, XILINX_CPM_PCIE_REG_IDRN));
+>  
+>  	for_each_set_bit(i, &val, PCI_NUM_INTX)
+> -		generic_handle_irq(irq_find_mapping(port->intx_domain, i));
+> +		generic_handle_domain_irq(port->intx_domain, i);
+>  
+>  	chained_irq_exit(chip, desc);
+>  }
+> @@ -282,7 +282,7 @@ static void xilinx_cpm_pcie_event_flow(struct irq_desc *desc)
+>  	val =  pcie_read(port, XILINX_CPM_PCIE_REG_IDR);
+>  	val &= pcie_read(port, XILINX_CPM_PCIE_REG_IMR);
+>  	for_each_set_bit(i, &val, 32)
+> -		generic_handle_irq(irq_find_mapping(port->cpm_domain, i));
+> +		generic_handle_domain_irq(port->cpm_domain, i);
+>  	pcie_write(port, val, XILINX_CPM_PCIE_REG_IDR);
+>  
+>  	/*
+> diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
+> index 8689311c5ef6..3d178d5b652b 100644
+> --- a/drivers/pci/controller/pcie-xilinx-nwl.c
+> +++ b/drivers/pci/controller/pcie-xilinx-nwl.c
+> @@ -318,18 +318,14 @@ static void nwl_pcie_leg_handler(struct irq_desc *desc)
+>  	struct nwl_pcie *pcie;
+>  	unsigned long status;
+>  	u32 bit;
+> -	u32 virq;
+>  
+>  	chained_irq_enter(chip, desc);
+>  	pcie = irq_desc_get_handler_data(desc);
+>  
+>  	while ((status = nwl_bridge_readl(pcie, MSGF_LEG_STATUS) &
+>  				MSGF_LEG_SR_MASKALL) != 0) {
+> -		for_each_set_bit(bit, &status, PCI_NUM_INTX) {
+> -			virq = irq_find_mapping(pcie->legacy_irq_domain, bit);
+> -			if (virq)
+> -				generic_handle_irq(virq);
+> -		}
+> +		for_each_set_bit(bit, &status, PCI_NUM_INTX)
+> +			generic_handle_domain_irq(pcie->legacy_irq_domain, bit);
+>  	}
+>  
+>  	chained_irq_exit(chip, desc);
+> @@ -340,16 +336,13 @@ static void nwl_pcie_handle_msi_irq(struct nwl_pcie *pcie, u32 status_reg)
+>  	struct nwl_msi *msi;
+>  	unsigned long status;
+>  	u32 bit;
+> -	u32 virq;
+>  
+>  	msi = &pcie->msi;
+>  
+>  	while ((status = nwl_bridge_readl(pcie, status_reg)) != 0) {
+>  		for_each_set_bit(bit, &status, 32) {
+>  			nwl_bridge_writel(pcie, 1 << bit, status_reg);
+> -			virq = irq_find_mapping(msi->dev_domain, bit);
+> -			if (virq)
+> -				generic_handle_irq(virq);
+> +			generic_handle_domain_irq(msi->dev_domain, bit);
+>  		}
+>  	}
+>  }
+> diff --git a/drivers/pci/controller/pcie-xilinx.c b/drivers/pci/controller/pcie-xilinx.c
+> index 14001febf59a..aa9bdcebc838 100644
+> --- a/drivers/pci/controller/pcie-xilinx.c
+> +++ b/drivers/pci/controller/pcie-xilinx.c
+> @@ -385,7 +385,7 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
+>  	}
+>  
+>  	if (status & (XILINX_PCIE_INTR_INTX | XILINX_PCIE_INTR_MSI)) {
+> -		unsigned int irq;
+> +		struct irq_domain *domain;
+>  
+>  		val = pcie_read(port, XILINX_PCIE_REG_RPIFR1);
+>  
+> @@ -399,19 +399,18 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
+>  		if (val & XILINX_PCIE_RPIFR1_MSI_INTR) {
+>  			val = pcie_read(port, XILINX_PCIE_REG_RPIFR2) &
+>  				XILINX_PCIE_RPIFR2_MSG_DATA;
+> -			irq = irq_find_mapping(port->msi_domain->parent, val);
+> +			domain = port->msi_domain->parent;
+>  		} else {
+>  			val = (val & XILINX_PCIE_RPIFR1_INTR_MASK) >>
+>  				XILINX_PCIE_RPIFR1_INTR_SHIFT;
+> -			irq = irq_find_mapping(port->leg_domain, val);
+> +			domain = port->leg_domain;
+>  		}
+>  
+>  		/* Clear interrupt FIFO register 1 */
+>  		pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
+>  			   XILINX_PCIE_REG_RPIFR1);
+>  
+> -		if (irq)
+> -			generic_handle_irq(irq);
+> +		generic_handle_domain_irq(domain, val);
+>  	}
+>  
+>  	if (status & XILINX_PCIE_INTR_SLV_UNSUPP)
+> -- 
+> 2.30.2
 > 
-> When we add another flag (presuming that we do, because if not there was
-> not much point in the flags) this will have to be restructured again. Is
-> there an objection to the original style? (prime ndata=1, flags=0, OR in
-> flags and adjust ndata as we go.)
-
-No objection, though if you OR in flags then you should truly _adjust_ ndata, not
-set it, e.g.
-
-        /* Always include the flags as a 'data' entry. */
-        ndata_start = 1;
-        run->emulation_failure.flags = 0;
-
-        if (insn_size) {
-                ndata_start += 2;  <----------------------- Adjust, not override
-                run->emulation_failure.flags |=
-                        KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
-                run->emulation_failure.insn_size = insn_size;
-                memset(run->emulation_failure.insn_bytes, 0x90,
-                       sizeof(run->emulation_failure.insn_bytes));
-                memcpy(run->emulation_failure.insn_bytes, insn_bytes, insn_size);
-        }
-
-> > 	memcpy(&run->internal.data[ndata_start], info, ARRAY_SIZE(info));
-> > 	memcpy(&run->internal.data[ndata_start + ARRAY_SIZE(info)], data, ndata);
-> > }
