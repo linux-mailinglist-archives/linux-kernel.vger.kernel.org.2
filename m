@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFE23DD585
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D683DD58B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233610AbhHBMTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:19:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34740 "EHLO mail.kernel.org"
+        id S233679AbhHBMUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:20:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233498AbhHBMTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:19:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E20260F35;
-        Mon,  2 Aug 2021 12:19:38 +0000 (UTC)
-Date:   Mon, 2 Aug 2021 14:19:35 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     John Ericson <mail@johnericson.me>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Jann Horn <jann@thejh.net>,
-        Christian Brauner <christian.brauner@canonical.com>
-Subject: Re: Leveraging pidfs for process creation without fork
-Message-ID: <20210802121935.dkiw627twcrxbh54@wittgenstein>
-References: <CAHmME9oHBtR4fBBUY8E_Oi7av-=OjOGkSNhQuMJMHhafCjazBw@mail.gmail.com>
- <CALCETrVGLx5yeHo7ExAmJZmPjVjcJiV7p1JOa4iUaW5DRoEvLQ@mail.gmail.com>
- <cf07f0732eb94dbfa67c9d56ceba738e@AcuMS.aculab.com>
- <f8457e20-c3cc-6e56-96a4-3090d7da0cb6@JohnEricson.me>
- <20210729142415.qovpzky537zkg3dp@wittgenstein>
- <YQNYs+BKenJHBMSP@zeniv-ca.linux.org.uk>
- <1468d75c-57ae-42aa-85ce-2bee8d403763@www.fastmail.com>
- <YQXRyMUGS5cDSbzu@zeniv-ca.linux.org.uk>
+        id S233631AbhHBMUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 08:20:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B12660FC2;
+        Mon,  2 Aug 2021 12:19:50 +0000 (UTC)
+Date:   Mon, 2 Aug 2021 13:19:48 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Oleksandr Tyshchenko <olekstysh@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Will Deacon <will@kernel.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>,
+        Wei Chen <Wei.Chen@arm.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [RFC PATCH 1/2] arm64: mm: Make virt_addr_valid to check for
+ pfn_valid again
+Message-ID: <20210802121947.GF18685@arm.com>
+References: <1627490656-1267-1-git-send-email-olekstysh@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQXRyMUGS5cDSbzu@zeniv-ca.linux.org.uk>
+In-Reply-To: <1627490656-1267-1-git-send-email-olekstysh@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 10:42:16PM +0000, Al Viro wrote:
-> On Sat, Jul 31, 2021 at 03:11:03PM -0700, John Ericson wrote:
-> > Do you mind pointing out one of those examples? I'm new to this, but if they follow a pattern I should be able to find the other examples based off it. I'm certainly curious to take a look :).
-> > 
-> > I hope these issues aren't to deep. Ideally there's a nice decoupling so the creating process is just manipulating "inert" data structures for the embryo that scheduler doesn't even need see, and then after the embryonic process is submitted, when the context switches to it for the first time that's a completely normal process without special cases.
-> > 
-> > The place complexity is hardest to avoid I think would be cleaning up the yet-unborn embryonic processes orphaned by exitted parent(s), because that will have to handle all the semi-initialized states those could be in (as opposed to real processes).
-> 
-> 	It's more on the exit/exec/coredump side, actually.  For
-> exit we want to be sure that no new live threads will appear in a
-> group once the last live thread has entered do_exit().  For
-> exec (de_thread(), for starters) you want to have all threads
-> except for the one that does execve() to be killed and your
-> thread to take over as group leader.  Look for the machinery there
-> and in do_exit()/release_task() involved into that.  For coredump
-> you want all threads except for dumper to be brought into do_exit()
-> and stopped there, for dumping one to be able to access their state.
-> 
-> 	Then there's fun with ->sighand treatment - the whole thing
-> critically relies upon ->sighand being shared for the entire thread
-> group; look at the ->sighand->siglock uses.
-> 
-> 	The whole area is full of rather subtle places.  Again, the
-> real headache comes from the exit and execve.  Embryonic threads are
-> passive; it's the ones already running that can (and do) cause PITA.
+Adding Mike and Anshuman,
 
-Iiuc, you're talking about adding a thread into a thread-group tg1 from
-a thread in another thread-group tg2. I don't think that's a very
-pressing use-case and I agree that that sounds rather nasty right now.
-Unless I'm missing something, a simple api to create something like a
-processes configuration context doesn't require this.
+On Wed, Jul 28, 2021 at 07:44:15PM +0300, Oleksandr Tyshchenko wrote:
+> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> 
+> The problem is that Arm's implementation of virt_addr_valid()
+> leads to memblock_is_map_memory() check, which will fail for
+> ZONE_DEVICE based addresses. But, the pfn_valid() check in turn
+> is able to cope with ZONE_DEVICE based memory.
+> 
+> You can find a good explanation of that problem at:
+> https://lore.kernel.org/lkml/1614921898-4099-2-git-send-email-anshuman.khandual@arm.com
+> 
+> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> ---
+> I am not quite sure whether it is a "correct" place and
+> the change itself, I just partially restored a behaviour before:
+> https://lore.kernel.org/lkml/20210511100550.28178-4-rppt@kernel.org
+> So, the target of this patch is to get a feedback how to resolve
+> this properly if, of course, this really needs to be resolved
+> (I might miss important bits here).
+> 
+> It is worth mentioning that patch doesn't fix the current code base
+> (if I am not mistaken, no one calls virt_addr_valid() on Arm64 for
+> ZONE_DEVICE based addresses at the moment, so it seems that nothing
+> is broken), the fix is intended for the subsequent patch in this
+> series that will try to enable Xen's "unpopulated-alloc" usage
+> on Arm (it was enabled on x86 so far).
+> Please see:
+> [RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to provide
+> unallocated space
+> 
+> The subsequent patch will enable the code where virt_addr_valid()
+> is used in drivers/xen/unpopulated-alloc.c:fill_list() to check that
+> a virtual address returned by memremap_pages() is valid.
+
+I wonder what the point of calling virt_addr_valid() in fill_list() is?
+If memremap_pages() succeeded, the pages were mapped at the returned
+vaddr, there's no need for an additional virt_addr_valid() check.
+
+> ---
+>  arch/arm64/include/asm/memory.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index 824a365..1a35a44 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -351,7 +351,7 @@ static inline void *phys_to_virt(phys_addr_t x)
+>  
+>  #define virt_addr_valid(addr)	({					\
+>  	__typeof__(addr) __addr = __tag_reset(addr);			\
+> -	__is_lm_address(__addr) && pfn_is_map_memory(virt_to_pfn(__addr));	\
+> +	__is_lm_address(__addr) && pfn_valid(virt_to_pfn(__addr));	\
+>  })
+
+pfn_valid() only guarantees the presence of a struct page but not
+necessarily that the virtual address is accessible (valid). So this
+change would break the NOMAP ranges case.
+
+-- 
+Catalin
