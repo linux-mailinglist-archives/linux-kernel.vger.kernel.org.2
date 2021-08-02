@@ -2,68 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7913DDBE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78883DDBE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234819AbhHBPHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:07:20 -0400
-Received: from 8bytes.org ([81.169.241.247]:53302 "EHLO theia.8bytes.org"
+        id S234749AbhHBPHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:07:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234687AbhHBPHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:07:01 -0400
-Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id E7D9235A;
-        Mon,  2 Aug 2021 17:06:48 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Joerg Roedel <jroedel@suse.de>, Nadav Amit <namit@vmware.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH] iommu/amd: Remove stale amd_iommu_unmap_flush usage
-Date:   Mon,  2 Aug 2021 17:06:43 +0200
-Message-Id: <20210802150643.3634-1-joro@8bytes.org>
-X-Mailer: git-send-email 2.31.1
+        id S234291AbhHBPHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:07:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 716CA60FF2;
+        Mon,  2 Aug 2021 15:06:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627916810;
+        bh=NUdIGVwiZymoyNB/NN4kI7nxgXjg9XtLvBPXAOcs2bk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RR+g/cJtTrD9M2DX63ufO+0V+JDARSoR2JvxOBsY1rqroBmzmk093PDotL7P08gKC
+         nqInY6k6+td0SvNsDxUmvXWb3BtFohQSqA6m6wLAXEnpq05klahF/gtakgaRfbHU39
+         1yGwYLv+zRyCIFLRUPjJfY5hj5om3/VeOyu5IxvL3CNFrTqPiRo94w1D9isb9aIrX5
+         7JigCMnsmAh+XK2t7U2xZ0aq5fCWPh38WRXwa3A6oVhKZLLbR+0u54i2JdQ/qRPVG4
+         0zTls9MTaawy/8gxjrbUPApkwUbtY8s8x+y7IWwNjUsu+IMVoiLzBO6LgKIMTGmVIn
+         O/+9pmIb1QJHg==
+Date:   Mon, 2 Aug 2021 16:06:44 +0100
+From:   Will Deacon <will@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     joro@8bytes.org, robin.murphy@arm.com, baolu.lu@linux.intel.com,
+        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
+        thierry.reding@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        jonathanh@nvidia.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, digetx@gmail.com, mst@redhat.com,
+        jasowang@redhat.com, linux-kernel@vger.kernel.org,
+        chenxiang66@hisilicon.com
+Subject: Re: [PATCH v4 5/6] iova: Add iova_len argument to init_iova_domain()
+Message-ID: <20210802150644.GD28735@willie-the-truck>
+References: <1626259003-201303-1-git-send-email-john.garry@huawei.com>
+ <1626259003-201303-6-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626259003-201303-6-git-send-email-john.garry@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On Wed, Jul 14, 2021 at 06:36:42PM +0800, John Garry wrote:
+> Add max opt argument to init_iova_domain(), and use it to set the rcaches
+> range.
+> 
+> Also fix up all users to set this value (at 0, meaning use default).
 
-Remove the new use of the variable introduced in the AMD driver branch.
-The variable was removed already in the iommu core branch, causing build
-errors when the brances are merged.
+Wrap that in init_iova_domain_defaults() to avoid the mysterious 0?
 
-Cc: Nadav Amit <namit@vmware.com>
-Cc: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- drivers/iommu/amd/init.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 239556c1f698..bdcf167b4afe 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -1850,11 +1850,9 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
- 		return ret;
- 
- 	if (iommu->cap & (1UL << IOMMU_CAP_NPCACHE)) {
--		if (!amd_iommu_unmap_flush)
--			pr_info("IOMMU batching is disabled due to virtualization\n");
--
-+		pr_info("Using strict mode due to virtualization\n");
-+		iommu_set_dma_strict();
- 		amd_iommu_np_cache = true;
--		amd_iommu_unmap_flush = true;
- 	}
- 
- 	init_iommu_perf_ctr(iommu);
--- 
-2.31.1
-
+Will
