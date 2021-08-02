@@ -2,98 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C753DD2D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12173DD2D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbhHBJVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232699AbhHBJVW (ORCPT
+        id S233064AbhHBJVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:21:52 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:56540 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232699AbhHBJVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:21:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432EFC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 02:21:13 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mAU86-0001ek-K3; Mon, 02 Aug 2021 11:21:02 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mAU84-0000Rl-GO; Mon, 02 Aug 2021 11:21:00 +0200
-Date:   Mon, 2 Aug 2021 11:21:00 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Olof Johansson <olof@lixom.net>,
+        Mon, 2 Aug 2021 05:21:51 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1729LXaf030014;
+        Mon, 2 Aug 2021 04:21:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1627896093;
+        bh=YMxXYRcOOZzWcRxCfyHyAuouRqLYkZ86TeNgdCgm/iQ=;
+        h=Subject:CC:References:From:Date:In-Reply-To;
+        b=n80Kv3u455hse6ybmRoxjnbFVdBL21hF4rjHIilz1k+xDjRBZ4ZV+knIZkilLL5Lm
+         a/KPCGMxSM6gdOHaF8K3o4+rvjzRv6XXHOL+xwondg8Bx0HWZGkYg0/tvc6M4g/wwg
+         An2SFwpe/hBOnEH9EfZJiVzBzlaKooBeAYVE9SKk=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1729LXWM103605
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 2 Aug 2021 04:21:33 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 2 Aug
+ 2021 04:21:33 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 2 Aug 2021 04:21:33 -0500
+Received: from [10.250.232.46] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1729LRQL024144;
+        Mon, 2 Aug 2021 04:21:28 -0500
+Subject: Re: [PATCH] dt-bindings: net: can: Document power-domains property
+CC:     Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>, soc@kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        =?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>,
-        Juergen Borleis <jbe@pengutronix.de>,
-        Ulrich =?utf-8?Q?=C3=96lmann?= <u.oelmann@pengutronix.de>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2 4/4] ARM: dts: add SKOV imx6q and imx6dl based boards
-Message-ID: <20210802092100.ctkncu6g4ka4rvtt@pengutronix.de>
-References: <20210714045349.10963-1-o.rempel@pengutronix.de>
- <20210714045349.10963-5-o.rempel@pengutronix.de>
- <20210726012043.GC5901@dragon>
+        Sriram Dash <sriram.dash@samsung.com>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210731045138.29912-1-a-govindraju@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <00760fc2-6731-8bad-4d3a-993acbc86bcc@ti.com>
+Date:   Mon, 2 Aug 2021 14:51:27 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210726012043.GC5901@dragon>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:19:00 up 242 days, 23:25, 24 users,  load average: 0.01, 0.06,
- 0.07
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210731045138.29912-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
-> > +	reg_vcc_mmc_io: regulator-vcc-mmc-io {
-> > +		pinctrl-names = "default";
-> > +		pinctrl-0 = <&pinctrl_vcc_mmc_io>;
-> > +		compatible = "regulator-gpio";
-> > +		vin-supply = <&reg_5v0>;
-> > +		regulator-name = "mmc_io_supply";
-> > +		regulator-type = "voltage";
-> > +		regulator-min-microvolt = <1800000>;
-> > +		regulator-max-microvolt = <3300000>;
-> > +		gpios = <&gpio7 13 GPIO_ACTIVE_HIGH>;
+Hi all,
+
+On 31/07/21 10:21 am, Aswath Govindraju wrote:
+> Document power-domains property for adding the Power domain provider.
 > 
-> enable-active-high?
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
 
-right, thx!
+Posted respin v2[1] for this patch, after removing the reference in
+description.
 
-> > +		states = <1800000 0x1>, <3300000 0x0>;
+[1] - https://lore.kernel.org/patchwork/patch/1470806/
+
+Thanks,
+Aswath
+
+>  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> Hmm, I do not see this 'states' in fixed-regulator.yaml.
+> diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> index a7b5807c5543..d633fe1da870 100644
+> --- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> @@ -104,6 +104,13 @@ properties:
+>            maximum: 32
+>      maxItems: 1
+>  
+> +  power-domains:
+> +    description:
+> +      Power domain provider node and an args specifier containing
+> +      the can device id value. Please see,
+> +      Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
+> +    maxItems: 1
+> +
+>    can-transceiver:
+>      $ref: can-transceiver.yaml#
+>  
+> 
 
-It is in gpio-regulator.yaml
-
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
