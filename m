@@ -2,156 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1B63DDDA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF883DDD99
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhHBQ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:27:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41538 "EHLO mail.kernel.org"
+        id S232411AbhHBQ0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:26:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:38366 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232834AbhHBQ1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:27:02 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 710446112D;
-        Mon,  2 Aug 2021 16:26:53 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mAamB-002WEi-SB; Mon, 02 Aug 2021 17:26:51 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel-team@android.com
-Subject: [PATCH v2 07/14] ARM: Bulk conversion to generic_handle_domain_irq()
-Date:   Mon,  2 Aug 2021 17:26:23 +0100
-Message-Id: <20210802162630.2219813-8-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210802162630.2219813-1-maz@kernel.org>
-References: <20210802162630.2219813-1-maz@kernel.org>
+        id S230224AbhHBQ0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 12:26:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52BBE11D4;
+        Mon,  2 Aug 2021 09:26:28 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.10.176])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 607AB3F66F;
+        Mon,  2 Aug 2021 09:26:26 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 17:26:23 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     will@kernel.org, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
+        wei.liu@kernel.org, kys@microsoft.com, sthemmin@microsoft.com,
+        ardb@kernel.org
+Subject: Re: [PATCH v11 3/5] arm64: hyperv: Initialize hypervisor on boot
+Message-ID: <20210802162623.GC59710@C02TD0UTHF1T.local>
+References: <1626793023-13830-1-git-send-email-mikelley@microsoft.com>
+ <1626793023-13830-4-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, tglx@linutronix.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, ley.foon.tan@intel.com, chris@zankel.net, jcmvbkbc@gmail.com, vgupta@synopsys.com, tsbogend@alpha.franken.de, robert.jarzmik@free.fr, linux@armlinux.org.uk, krzysztof.kozlowski@canonical.com, ysato@users.sourceforge.jp, dalias@libc.org, geert@linux-m68k.org, alexander.deucher@amd.com, christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch, robdclark@gmail.com, linus.walleij@linaro.org, lee.jones@linaro.org, lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com, bgolaszewski@baylibre.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626793023-13830-4-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wherever possible, replace constructs that match either
-generic_handle_irq(irq_find_mapping()) or
-generic_handle_irq(irq_linear_revmap()) to a single call to
-generic_handle_domain_irq().
+On Tue, Jul 20, 2021 at 07:57:01AM -0700, Michael Kelley wrote:
+> Add ARM64-specific code to initialize the Hyper-V
+> hypervisor when booting as a guest VM.
+> 
+> This code is built only when CONFIG_HYPERV is enabled.
+> 
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> ---
+>  arch/arm64/hyperv/Makefile   |  2 +-
+>  arch/arm64/hyperv/mshyperv.c | 83 ++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 84 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/hyperv/mshyperv.c
+> 
+> diff --git a/arch/arm64/hyperv/Makefile b/arch/arm64/hyperv/Makefile
+> index 1697d30..87c31c0 100644
+> --- a/arch/arm64/hyperv/Makefile
+> +++ b/arch/arm64/hyperv/Makefile
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -obj-y		:= hv_core.o
+> +obj-y		:= hv_core.o mshyperv.o
+> diff --git a/arch/arm64/hyperv/mshyperv.c b/arch/arm64/hyperv/mshyperv.c
+> new file mode 100644
+> index 0000000..2811fd0
+> --- /dev/null
+> +++ b/arch/arm64/hyperv/mshyperv.c
+> @@ -0,0 +1,83 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * Core routines for interacting with Microsoft's Hyper-V hypervisor,
+> + * including hypervisor initialization.
+> + *
+> + * Copyright (C) 2021, Microsoft, Inc.
+> + *
+> + * Author : Michael Kelley <mikelley@microsoft.com>
+> + */
+> +
+> +#include <linux/types.h>
+> +#include <linux/acpi.h>
+> +#include <linux/export.h>
+> +#include <linux/errno.h>
+> +#include <linux/version.h>
+> +#include <linux/cpuhotplug.h>
+> +#include <asm/mshyperv.h>
+> +
+> +static bool hyperv_initialized;
+> +
+> +static int __init hyperv_init(void)
+> +{
+> +	struct hv_get_vp_registers_output	result;
+> +	u32	a, b, c, d;
+> +	u64	guest_id;
+> +	int	ret;
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- arch/arm/common/sa1111.c           | 12 ++----------
- arch/arm/mach-pxa/pxa_cplds_irqs.c |  6 ++----
- arch/arm/mach-s3c/irq-s3c24xx.c    |  5 ++---
- 3 files changed, 6 insertions(+), 17 deletions(-)
+As Marc suggests, before looking at the FADT, you need something like:
 
-diff --git a/arch/arm/common/sa1111.c b/arch/arm/common/sa1111.c
-index ff5e0d04cb89..d17083c3fe2d 100644
---- a/arch/arm/common/sa1111.c
-+++ b/arch/arm/common/sa1111.c
-@@ -196,14 +196,6 @@ static int sa1111_map_irq(struct sa1111 *sachip, irq_hw_number_t hwirq)
- 	return irq_create_mapping(sachip->irqdomain, hwirq);
- }
- 
--static void sa1111_handle_irqdomain(struct irq_domain *irqdomain, int irq)
--{
--	struct irq_desc *d = irq_to_desc(irq_linear_revmap(irqdomain, irq));
--
--	if (d)
--		generic_handle_irq_desc(d);
--}
--
- /*
-  * SA1111 interrupt support.  Since clearing an IRQ while there are
-  * active IRQs causes the interrupt output to pulse, the upper levels
-@@ -234,11 +226,11 @@ static void sa1111_irq_handler(struct irq_desc *desc)
- 
- 	for (i = 0; stat0; i++, stat0 >>= 1)
- 		if (stat0 & 1)
--			sa1111_handle_irqdomain(irqdomain, i);
-+			generic_handle_domain_irq(irqdomain, i);
- 
- 	for (i = 32; stat1; i++, stat1 >>= 1)
- 		if (stat1 & 1)
--			sa1111_handle_irqdomain(irqdomain, i);
-+			generic_handle_domain_irq(irqdomain, i);
- 
- 	/* For level-based interrupts */
- 	desc->irq_data.chip->irq_unmask(&desc->irq_data);
-diff --git a/arch/arm/mach-pxa/pxa_cplds_irqs.c b/arch/arm/mach-pxa/pxa_cplds_irqs.c
-index bddfc7cd5d40..eda5a47d7fbb 100644
---- a/arch/arm/mach-pxa/pxa_cplds_irqs.c
-+++ b/arch/arm/mach-pxa/pxa_cplds_irqs.c
-@@ -39,10 +39,8 @@ static irqreturn_t cplds_irq_handler(int in_irq, void *d)
- 
- 	do {
- 		pending = readl(fpga->base + FPGA_IRQ_SET_CLR) & fpga->irq_mask;
--		for_each_set_bit(bit, &pending, CPLDS_NB_IRQ) {
--			generic_handle_irq(irq_find_mapping(fpga->irqdomain,
--							    bit));
--		}
-+		for_each_set_bit(bit, &pending, CPLDS_NB_IRQ)
-+			generic_handle_domain_irq(fpga->irqdomain, bit);
- 	} while (pending);
- 
- 	return IRQ_HANDLED;
-diff --git a/arch/arm/mach-s3c/irq-s3c24xx.c b/arch/arm/mach-s3c/irq-s3c24xx.c
-index 0c631c14a817..3edc5f614eef 100644
---- a/arch/arm/mach-s3c/irq-s3c24xx.c
-+++ b/arch/arm/mach-s3c/irq-s3c24xx.c
-@@ -298,7 +298,7 @@ static void s3c_irq_demux(struct irq_desc *desc)
- 	struct s3c_irq_data *irq_data = irq_desc_get_chip_data(desc);
- 	struct s3c_irq_intc *intc = irq_data->intc;
- 	struct s3c_irq_intc *sub_intc = irq_data->sub_intc;
--	unsigned int n, offset, irq;
-+	unsigned int n, offset;
- 	unsigned long src, msk;
- 
- 	/* we're using individual domains for the non-dt case
-@@ -318,8 +318,7 @@ static void s3c_irq_demux(struct irq_desc *desc)
- 	while (src) {
- 		n = __ffs(src);
- 		src &= ~(1 << n);
--		irq = irq_find_mapping(sub_intc->domain, offset + n);
--		generic_handle_irq(irq);
-+		generic_handle_domain_irq(sub_intc->domain, offset + n);
- 	}
- 
- 	chained_irq_exit(chip, desc);
--- 
-2.30.2
+	/*
+	 * Hyper-V VMs always have ACPI.
+	 */
+	if (acpi_disabled)
+		return 0;
 
+... where `acpi_disabled` is defined in <linux/acpi.h> (or via its
+includes), so you don't need to include any additional headers.
+
+> +
+> +	/*
+> +	 * If we're in a VM on Hyper-V, the ACPI hypervisor_id field will
+> +	 * have the string "MsHyperV".
+> +	 */
+> +	if (strncmp((char *)&acpi_gbl_FADT.hypervisor_id, "MsHyperV", 8))
+> +		return -EINVAL;
+
+As Marc suggests, it's no an error for a platform to not have Hyper-V,
+so returning 0 in tihs case would be preferable.
+
+Otherwise this looks fine to me.
+
+Thanks,
+Mark.
+
+> +
+> +	/* Setup the guest I[D */
+> +	guest_id = generate_guest_id(0, LINUX_VERSION_CODE, 0);
+> +	hv_set_vpreg(HV_REGISTER_GUEST_OSID, guest_id);
+> +
+> +	/* Get the features and hints from Hyper-V */
+> +	hv_get_vpreg_128(HV_REGISTER_FEATURES, &result);
+> +	ms_hyperv.features = result.as32.a;
+> +	ms_hyperv.priv_high = result.as32.b;
+> +	ms_hyperv.misc_features = result.as32.c;
+> +
+> +	hv_get_vpreg_128(HV_REGISTER_ENLIGHTENMENTS, &result);
+> +	ms_hyperv.hints = result.as32.a;
+> +
+> +	pr_info("Hyper-V: privilege flags low 0x%x, high 0x%x, hints 0x%x, misc 0x%x\n",
+> +		ms_hyperv.features, ms_hyperv.priv_high, ms_hyperv.hints,
+> +		ms_hyperv.misc_features);
+> +
+> +	/* Get information about the Hyper-V host version */
+> +	hv_get_vpreg_128(HV_REGISTER_HYPERVISOR_VERSION, &result);
+> +	a = result.as32.a;
+> +	b = result.as32.b;
+> +	c = result.as32.c;
+> +	d = result.as32.d;
+> +	pr_info("Hyper-V: Host Build %d.%d.%d.%d-%d-%d\n",
+> +		b >> 16, b & 0xFFFF, a,	d & 0xFFFFFF, c, d >> 24);
+> +
+> +	ret = hv_common_init();
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "arm64/hyperv_init:online",
+> +				hv_common_cpu_init, hv_common_cpu_die);
+> +	if (ret < 0) {
+> +		hv_common_free();
+> +		return ret;
+> +	}
+> +
+> +	hyperv_initialized = true;
+> +	return 0;
+> +}
+> +
+> +early_initcall(hyperv_init);
+> +
+> +bool hv_is_hyperv_initialized(void)
+> +{
+> +	return hyperv_initialized;
+> +}
+> +EXPORT_SYMBOL_GPL(hv_is_hyperv_initialized);
+> -- 
+> 1.8.3.1
+> 
