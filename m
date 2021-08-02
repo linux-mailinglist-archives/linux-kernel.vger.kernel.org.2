@@ -2,322 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878A23DD387
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0AC3DD38D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233128AbhHBKLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 06:11:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:32768 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231854AbhHBKLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 06:11:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF768D6E;
-        Mon,  2 Aug 2021 03:11:42 -0700 (PDT)
-Received: from bogus (unknown [10.57.37.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E1243F70D;
-        Mon,  2 Aug 2021 03:11:38 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 11:10:32 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
-        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
-        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
-        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andriy.Tryshnivskyy@opensynergy.com
-Subject: Re: [PATCH v6 07/17] firmware: arm_scmi: Handle concurrent and
- out-of-order messages
-Message-ID: <20210802101032.ozlidylogmdt2zqu@bogus>
-References: <20210712141833.6628-1-cristian.marussi@arm.com>
- <20210712141833.6628-8-cristian.marussi@arm.com>
+        id S233130AbhHBKR3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Aug 2021 06:17:29 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3546 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231357AbhHBKR2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 06:17:28 -0400
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GdYpF5Ldcz6B9ml;
+        Mon,  2 Aug 2021 18:17:09 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 12:17:16 +0200
+Received: from localhost (10.47.9.82) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 2 Aug 2021
+ 11:17:15 +0100
+Date:   Mon, 2 Aug 2021 11:16:47 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     tangbin <tangbin@cmss.chinamobile.com>
+CC:     Jonathan Cameron <jic23@kernel.org>, <knaack.h@gmx.de>,
+        <lars@metafoo.de>, <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
+        <festevam@gmail.com>, <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: adc: fsl-imx25-gcq: fix the right check and
+ simplify code
+Message-ID: <20210802111647.000012ee@Huawei.com>
+In-Reply-To: <b84ea3e4-5650-d6ac-36f6-98067b286b45@cmss.chinamobile.com>
+References: <20210727125209.28248-1-tangbin@cmss.chinamobile.com>
+        <20210731174551.188aee79@jic23-huawei>
+        <b84ea3e4-5650-d6ac-36f6-98067b286b45@cmss.chinamobile.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712141833.6628-8-cristian.marussi@arm.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.47.9.82]
+X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 03:18:23PM +0100, Cristian Marussi wrote:
-> Even though in case of asynchronous commands an SCMI platform server is
+On Mon, 2 Aug 2021 10:31:58 +0800
+tangbin <tangbin@cmss.chinamobile.com> wrote:
 
-Drop the term "server"
-
-> constrained to emit the delayed response message only after the related
-> message response has been sent, the configured underlying transport could
-> still deliver such messages together or in inverted order, causing races
-> due to the concurrent or out-of-order access to the underlying xfer.
+> Hi Jonathan:
 > 
-> Introduce a mechanism to grant exclusive access to an xfer in order to
-> properly serialize concurrent accesses to the same xfer originating from
-> multiple correlated messages.
+> On 2021/8/1 0:45, Jonathan Cameron wrote:
+> > On Tue, 27 Jul 2021 20:52:09 +0800
+> > Tang Bin <tangbin@cmss.chinamobile.com> wrote:
+> >  
+> >> For the function of platform_get_irq(), the example in platform.c is
+> >> *		int irq = platform_get_irq(pdev, 0);
+> >> *		if (irq < 0)
+> >> *			return irq;
+> >> So the return value of zero is unnecessary to check. And move it
+> >> up to a little bit can simplify the code jump.
+> >>
+> >> Co-developed-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> >> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> >> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>  
+> > Hi,
+> >
+> > Logically it is better to keep the irq handling all together, so
+> > I would prefer we didn't move it.  
+> Got it in this place.
+> >
+> > Also, platform_get_irq() is documented as never returning 0, so the current
+> > code is not incorrect.  As such, this looks like noise unless there is
+> > some plan to make use of the 0 return value?  What benefit do we get from
+> > this change?  
 > 
-> Add additional state information to xfer descriptors so as to be able to
-> identify out-of-order message deliveries and act accordingly:
+> Thanks for your reply, I think the benefit of this change maybe just 
+> simplify the code.
 > 
->  - when a delayed response is expected but delivered before the related
->    response, the synchronous response is considered as successfully
->    received and the delayed response processing is carried on as usual.
+> Because the return value is never equal to 0, so the check in here is 
+> redundant.
 > 
->  - when/if the missing synchronous response is subsequently received, it
->    is discarded as not congruent with the current state of the xfer, or
->    simply, because the xfer has been already released and so, now, the
->    monotonically increasing sequence number carried by the late response
->    is stale.
+> We can make the patch like this:
 > 
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
-> v5 --> v6
-> - added spinlock comment
-> ---
->  drivers/firmware/arm_scmi/common.h |  18 ++-
->  drivers/firmware/arm_scmi/driver.c | 229 ++++++++++++++++++++++++-----
->  2 files changed, 212 insertions(+), 35 deletions(-)
+> >> ---
+> >>   drivers/iio/adc/fsl-imx25-gcq.c | 12 ++++--------
+> >>   1 file changed, 4 insertions(+), 8 deletions(-)
+> >>
+> >> diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
+> >> index 8cb51cf7a..d28976f21 100644
+> >> --- a/drivers/iio/adc/fsl-imx25-gcq.c
+> >> +++ b/drivers/iio/adc/fsl-imx25-gcq.c
+> >> @@ -320,6 +320,10 @@ static int mx25_gcq_probe(struct platform_device *pdev)
+> >>   	if (ret)
+> >>   		return ret;
+> >>   
+> >> +	priv->irq = platform_get_irq(pdev, 0);
+> >> +	if (priv->irq < 0)
+> >> +		return priv->irq;
+> >> +
+> >>   	for (i = 0; i != 4; ++i) {
+> >>   		if (!priv->vref[i])
+> >>   			continue;
+> >> @@ -336,14 +340,6 @@ static int mx25_gcq_probe(struct platform_device *pdev)
+> >>   		goto err_vref_disable;
+> >>   	}
+> >>   
+> >> -	priv->irq = platform_get_irq(pdev, 0);
+> >> -	if (priv->irq <= 0) {
+> >> -		ret = priv->irq;
+> >> -		if (!ret)
+> >> -			ret = -ENXIO;
+> >> -		goto err_clk_unprepare;
+> >> -	}
+> >> -  
 > 
-> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-> index 2233d0a188fc..9efebe1406d2 100644
-> --- a/drivers/firmware/arm_scmi/common.h
-> +++ b/drivers/firmware/arm_scmi/common.h
-> @@ -19,6 +19,7 @@
->  #include <linux/module.h>
->  #include <linux/refcount.h>
->  #include <linux/scmi_protocol.h>
-> +#include <linux/spinlock.h>
->  #include <linux/types.h>
->  
->  #include <asm/unaligned.h>
-> @@ -145,6 +146,13 @@ struct scmi_msg {
->   * @pending: True for xfers added to @pending_xfers hashtable
->   * @node: An hlist_node reference used to store this xfer, alternatively, on
->   *	  the free list @free_xfers or in the @pending_xfers hashtable
-> + * @busy: An atomic flag to ensure exclusive write access to this xfer
-> + * @state: The current state of this transfer, with states transitions deemed
-> + *	   valid being:
-> + *	    - SCMI_XFER_SENT_OK -> SCMI_XFER_RESP_OK [ -> SCMI_XFER_DRESP_OK ]
-> + *	    - SCMI_XFER_SENT_OK -> SCMI_XFER_DRESP_OK
-> + *	      (Missing synchronous response is assumed OK and ignored)
-> + * @lock: A spinlock to protect state and busy fields.
->   */
->  struct scmi_xfer {
->  	int transfer_id;
-> @@ -156,6 +164,15 @@ struct scmi_xfer {
->  	refcount_t users;
->  	bool pending;
->  	struct hlist_node node;
-> +#define SCMI_XFER_FREE		0
-> +#define SCMI_XFER_BUSY		1
-> +	atomic_t busy;
-> +#define SCMI_XFER_SENT_OK	0
-> +#define SCMI_XFER_RESP_OK	1
-> +#define SCMI_XFER_DRESP_OK	2
-> +	int state;
-> +	/* A lock to protect state and busy fields */
-> +	spinlock_t lock;
->  };
->  
->  /*
-> @@ -392,5 +409,4 @@ bool shmem_poll_done(struct scmi_shared_mem __iomem *shmem,
->  void scmi_notification_instance_data_set(const struct scmi_handle *handle,
->  					 void *priv);
->  void *scmi_notification_instance_data_get(const struct scmi_handle *handle);
-> -
->  #endif /* _SCMI_COMMON_H */
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index 245ede223302..5ef33d692670 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -369,6 +369,7 @@ static struct scmi_xfer *scmi_xfer_get(const struct scmi_handle *handle,
->  
->  	if (!IS_ERR(xfer)) {
->  		refcount_set(&xfer->users, 1);
-> +		atomic_set(&xfer->busy, SCMI_XFER_FREE);
->  		xfer->transfer_id = atomic_inc_return(&transfer_last_id);
->  	}
->  	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> @@ -430,6 +431,168 @@ scmi_xfer_lookup_unlocked(struct scmi_xfers_info *minfo, u16 xfer_id)
->  	return xfer ?: ERR_PTR(-EINVAL);
->  }
->  
-> +/**
-> + * scmi_msg_response_validate  - Validate message type against state of related
-> + * xfer
-> + *
-> + * @cinfo: A reference to the channel descriptor.
-> + * @msg_type: Message type to check
-> + * @xfer: A reference to the xfer to validate against @msg_type
-> + *
-> + * This function checks if @msg_type is congruent with the current state of
-> + * a pending @xfer; if an asynchronous delayed response is received before the
-> + * related synchronous response (Out-of-Order Delayed Response) the missing
-> + * synchronous response is assumed to be OK and completed, carrying on with the
-> + * Delayed Response: this is done to address the case in which the underlying
-> + * SCMI transport can deliver such out-of-order responses.
-> + *
-> + * Context: Assumes to be called with xfer->lock already acquired.
-> + *
-> + * Return: 0 on Success, error otherwise
-> + */
-> +static inline int scmi_msg_response_validate(struct scmi_chan_info *cinfo,
-> +					     u8 msg_type,
-> +					     struct scmi_xfer *xfer)
-> +{
-> +	/*
-> +	 * Even if a response was indeed expected on this slot at this point,
-> +	 * a buggy platform could wrongly reply feeding us an unexpected
-> +	 * delayed response we're not prepared to handle: bail-out safely
-> +	 * blaming firmware.
-> +	 */
-> +	if (msg_type == MSG_TYPE_DELAYED_RESP && !xfer->async_done) {
-> +		dev_err(cinfo->dev,
-> +			"Delayed Response for %d not expected! Buggy F/W ?\n",
-> +			xfer->hdr.seq);
-> +		return -EINVAL;
-> +	}
-> +
-> +	switch (xfer->state) {
-> +	case SCMI_XFER_SENT_OK:
-> +		if (msg_type == MSG_TYPE_DELAYED_RESP) {
-> +			/*
-> +			 * Delayed Response expected but delivered earlier.
-> +			 * Assume message RESPONSE was OK and skip state.
-> +			 */
-> +			xfer->hdr.status = SCMI_SUCCESS;
-> +			xfer->state = SCMI_XFER_RESP_OK;
-> +			complete(&xfer->done);
-> +			dev_warn(cinfo->dev,
-> +				 "Received valid OoO Delayed Response for %d\n",
-> +				 xfer->hdr.seq);
-> +		}
-> +		break;
-> +	case SCMI_XFER_RESP_OK:
-> +		if (msg_type != MSG_TYPE_DELAYED_RESP)
-> +			return -EINVAL;
-> +		break;
-> +	case SCMI_XFER_DRESP_OK:
-> +		/* No further message expected once in SCMI_XFER_DRESP_OK */
+> 	priv->irq = platform_get_irq(pdev, 0);
+> 	if (priv->irq < 0) {
+> 		ret = priv->irq;
+> 		goto err_clk_unprepare;
+> 	}
+> 
+>      If you think this is ok, I will send V2 for you. If you think these 
+> change is meaningless,
 
-Do we really need this case ? If so, how can this happen.
+OK, it's a minor tidy up, so lets go with that, or perhaps this is even tidier?
+Assuming types of ret and irq are appropriate (I've not checked!)
 
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static bool scmi_xfer_is_free(struct scmi_xfer *xfer)
-> +{
-> +	int ret;
-> +
-> +	ret = atomic_cmpxchg(&xfer->busy, SCMI_XFER_FREE, SCMI_XFER_BUSY);
-> +
-> +	return ret == SCMI_XFER_FREE;
-> +}
-> +
-> +/**
-> + * scmi_xfer_command_acquire  -  Helper to lookup and acquire a command xfer
-> + *
-> + * @cinfo: A reference to the channel descriptor.
-> + * @msg_hdr: A message header to use as lookup key
-> + *
-> + * When a valid xfer is found for the sequence number embedded in the provided
-> + * msg_hdr, reference counting is properly updated and exclusive access to this
-> + * xfer is granted till released with @scmi_xfer_command_release.
-> + *
-> + * Return: A valid @xfer on Success or error otherwise.
-> + */
-> +static inline struct scmi_xfer *
-> +scmi_xfer_command_acquire(struct scmi_chan_info *cinfo, u32 msg_hdr)
-> +{
-> +	int ret;
-> +	unsigned long flags;
-> +	struct scmi_xfer *xfer;
-> +	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
-> +	struct scmi_xfers_info *minfo = &info->tx_minfo;
-> +	u8 msg_type = MSG_XTRACT_TYPE(msg_hdr);
-> +	u16 xfer_id = MSG_XTRACT_TOKEN(msg_hdr);
-> +
-> +	/* Are we even expecting this? */
-> +	spin_lock_irqsave(&minfo->xfer_lock, flags);
-> +	xfer = scmi_xfer_lookup_unlocked(minfo, xfer_id);
-> +	if (IS_ERR(xfer)) {
-> +		dev_err(cinfo->dev,
-> +			"Message for %d type %d is not expected!\n",
-> +			xfer_id, msg_type);
-> +		spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> +		return xfer;
-> +	}
-> +	refcount_inc(&xfer->users);
-> +	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> +
-> +	spin_lock_irqsave(&xfer->lock, flags);
-> +	ret = scmi_msg_response_validate(cinfo, msg_type, xfer);
-> +	/*
-> +	 * If a pending xfer was found which was also in a congruent state with
-> +	 * the received message, acquire exclusive access to it setting the busy
-> +	 * flag.
-> +	 * Spins only on the rare limit condition of concurrent reception of
-> +	 * RESP and DRESP for the same xfer.
-> +	 */
-> +	if (!ret) {
-> +		spin_until_cond(scmi_xfer_is_free(xfer));
 
-I agree with the discussion between you and Peter around this, so I assume
-it will be renamed or handled accordingly.
+	ret = platform_get_irq(pdev, 0);
+	if (ret)
+		goto err_clk_unprepare;
 
-> +		xfer->hdr.type = msg_type;
-> +	}
-> +	spin_unlock_irqrestore(&xfer->lock, flags);
-> +
-> +	if (ret) {
-> +		dev_err(cinfo->dev,
-> +			"Invalid message type:%d for %d - HDR:0x%X  state:%d\n",
-> +			msg_type, xfer_id, msg_hdr, xfer->state);
-> +		/* On error the refcount incremented above has to be dropped */
-> +		__scmi_xfer_put(minfo, xfer);
-> +		xfer = ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	return xfer;
-> +}
-> +
-> +static inline void scmi_xfer_command_release(struct scmi_info *info,
-> +					     struct scmi_xfer *xfer)
-> +{
-> +	atomic_set(&xfer->busy, SCMI_XFER_FREE);
-> +	__scmi_xfer_put(&info->tx_minfo, xfer);
-> +}
-> +
-> +/**
-> + * scmi_xfer_state_update  - Update xfer state
-> + *
-> + * @xfer: A reference to the xfer to update
-> + *
-> + * Context: Assumes to be called on an xfer exclusively acquired using the
-> + *	    busy flag.
-> + */
-> +static inline void scmi_xfer_state_update(struct scmi_xfer *xfer)
-> +{
-> +	switch (xfer->hdr.type) {
-> +	case MSG_TYPE_COMMAND:
-> +		xfer->state = SCMI_XFER_RESP_OK;
-> +		break;
-> +	case MSG_TYPE_DELAYED_RESP:
-> +		xfer->state = SCMI_XFER_DRESP_OK;
-> +		break;
-> +	}
-> +}
+	priv->irq = ret;
 
-Can't this be if () ..  else if(), switch sounds unnecessary for 2 conditions.
 
-Other than the things already discussed with you and Peter, don't have much to
-add ATM. I may look at this with fresh eyes once again in the next version.
+> 
+> just dropped this.
+> 
+> Thanks
+> 
+> Tang Bin
+> 
+> 
+> 
+> 
 
--- 
-Regards,
-Sudeep
