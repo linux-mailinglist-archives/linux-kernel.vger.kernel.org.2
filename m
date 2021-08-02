@@ -2,182 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853663DDDF5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52263DDE07
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhHBQuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhHBQuI (ORCPT
+        id S232985AbhHBQxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:53:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57971 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229945AbhHBQxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:50:08 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94418C06175F;
-        Mon,  2 Aug 2021 09:49:57 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id a19so24853640oiw.6;
-        Mon, 02 Aug 2021 09:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GJ/wB5SaZNzipWzV3cX8x7hHQDMnNXMgy0/0mwF3c/c=;
-        b=c/WdP0XbjY5Obu7GQps6Gyr4MVEfRvQUrAKedEOu6g6uu0PqglzkzCHtGJHf6nQu7F
-         HYKTahBkB8pPc6aHO9l1OwVWVAyhLai6im+cfV4E53zGI5pVf3QmdSjmp1zdRKPvHi40
-         f+mwRZHh7w0p9xZVI5MzZFLFwv4tCLMY6O7Ym7SAu47MA/9PKVeYULlifp31FgRXBoUc
-         I2cE2LmL/pc9r4mfGOT+k/pDpiWIYXE/Yc+yAyH87TAmYktX/3sEqrlcvheNiDeNYcZg
-         gD6qhtRx2NRRB1AGD0fTX0iP41Mgt3BEfZKp/6iu0RxyCQSQFwMkOzsFaXDtOTijnKop
-         UF8g==
+        Mon, 2 Aug 2021 12:53:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627923179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/5yXRDtcxx+lYhsKMFvTyTWw4OOI/miYLG3qItS8RDg=;
+        b=acrFbOQzwo3Wv3VT0uUJZIvGVIk560VO+aM8bmWrlYMfaFzSQbs/sRPrOzHbApfOwCSd84
+        oBTGMVb54qQu+SA9KBUHk1HYet9bMAM2+8f7ZaxWsYSqoB4cXscEmlKhrXWNYr0glnINRF
+        l8E2HNqXD20B6EFQdUXVKycfIOsyYwk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-234-MinoYQ_CMba6ulwNi3uV0g-1; Mon, 02 Aug 2021 12:52:58 -0400
+X-MC-Unique: MinoYQ_CMba6ulwNi3uV0g-1
+Received: by mail-wr1-f72.google.com with SMTP id a9-20020a0560000509b029015485b95d0cso1107378wrf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 09:52:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GJ/wB5SaZNzipWzV3cX8x7hHQDMnNXMgy0/0mwF3c/c=;
-        b=lzCqFWnCy32eIBKtQuITpLcPAAVNY7b6agbjQzZ5bu9fJhXif6pNf+W3r1sCK0GsEW
-         PLR0Dk8rdCh7pJ4XD2n3/WLUUE9y4g0kVKuuUCyZmqX4vJDCbrJmYsK/yF/fGy8KqDXa
-         9QiDv3K54ebXfgDsFh679CPVpyXxTlMdutkRThC66kuuvcKm6U4b6ZPflGN7cDuWpGwc
-         aBzgdHXyEGEOPOl67JvPvr+0yZfu5F5C0pclcQwHapfIXjehrqI8yAXLgw/cL4lCXyI/
-         MQ3vWLewRGyc9JyT2OQElsf2c1ystxUzzrLFuQiwt+iSgmoNtJddxG04pbHM3KQk0tE7
-         iBuQ==
-X-Gm-Message-State: AOAM5302QsD/OKpKXzd3z03n4P1y7jrV/322qZQsIBx62kzCNZrRZrNt
-        yFwPEdwRYzLIZFEfQ7R2MmGUtxUA932xJVQkCRo=
-X-Google-Smtp-Source: ABdhPJySjm9Fxl4xbbdV7e8Jqk9rZK0+R9OyCWTRZegqL6TBuGgx25YjNsIHRXxGHb0O3JTVf2N/XSr8e9sQaGYZ/mA=
-X-Received: by 2002:aca:3644:: with SMTP id d65mr11317889oia.88.1627922997057;
- Mon, 02 Aug 2021 09:49:57 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/5yXRDtcxx+lYhsKMFvTyTWw4OOI/miYLG3qItS8RDg=;
+        b=HSN4MF7l/Nx6BVnIOz/DXM8etV5oAuIn1hbn6y6oaMVRUhu5A1RKlNN+npg4n7nG6o
+         p9jPS/LYwFkvGWer/3eVOU91k3p+V3YVh8Xv+7zN59IWD/W30tdnrxn/1y2AExhXiewW
+         zzv8+DIVZuhuYS1XWcg6qoLrHD7ukLCcF5h6qRGupbzCECuUh4UH4xI4J4OgvR9BAYCJ
+         rBhyMlUiKfWAx7HGeWMYrqL1TNFClIZ/MvqCC4/TiKY8E+FyPfVxflMn3B429aP0Rnwd
+         XiTzp8I28/1po9NHFB25iYT8u/e1Np+1iEgL6EGL21v2s7atyV1Ks01pRta/XFvhcZO7
+         VV2Q==
+X-Gm-Message-State: AOAM530Poklqk3wBCtYJGIN76jZ7vs81d4WQgLyttspiUl4FLiFP+EIJ
+        4iYYE65W9zRD0mOpih8GdIRiUaKba1n65FjFPzVCoHJ5pC2ime20FDokvbPN/3KeiRyu6bbTziG
+        EgR9sxhsD9WL4Zqk4a9s77RMr
+X-Received: by 2002:a5d:6184:: with SMTP id j4mr18889841wru.340.1627923176987;
+        Mon, 02 Aug 2021 09:52:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzvhdCH2/tdqYCOMdRGFxIAzLd6brKr14f5SN7rUeCEDiOZsk0qTjmq/kSRJTHoau6cfGf9AQ==
+X-Received: by 2002:a5d:6184:: with SMTP id j4mr18889829wru.340.1627923176813;
+        Mon, 02 Aug 2021 09:52:56 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u11sm12164787wrt.89.2021.08.02.09.52.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 09:52:56 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SEV: improve the code readability for ASID
+ management
+To:     Sean Christopherson <seanjc@google.com>,
+        Mingwei Zhang <mizhang@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Alper Gun <alpergun@google.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Vipin Sharma <vipinsh@google.com>
+References: <20210731011304.3868795-1-mizhang@google.com>
+ <YQgamDDn6TVY/BoV@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <71a905a1-0a6f-0d7a-f8fe-237b9e5af05c@redhat.com>
+Date:   Mon, 2 Aug 2021 18:52:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <cover.1627709571.git.lucas.p.stankus@gmail.com>
- <1e652b88a367824e58fb71896b4a660204bd7a88.1627709571.git.lucas.p.stankus@gmail.com>
- <20210801190422.28fd5334@jic23-huawei>
-In-Reply-To: <20210801190422.28fd5334@jic23-huawei>
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-Date:   Mon, 2 Aug 2021 13:49:21 -0300
-Message-ID: <CACKVXZBH7M2qNSyCSPwe+M7n-n9jj4Ki5xc9aq0A5HTPB4FTeg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: iio: accel: Add binding documentation
- for ADXL313
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        robh+dt@kernel.org, "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
-        "Berghe, Darius" <Darius.Berghe@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YQgamDDn6TVY/BoV@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 1, 2021 at 3:01 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Sat, 31 Jul 2021 17:36:31 -0300
-> Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
->
-> > Add device tree binding documentation for ADXL313 3-axis accelerometer.
-> >
-> > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
->
-> Hi Lucas,
->
-> A few minor requests for additions inline, so we include everything
-> that is likely to be used by the driver in the longer term.
->
-> > ---
-> >  .../bindings/iio/accel/adi,adxl313.yaml       | 75 +++++++++++++++++++
-> >  1 file changed, 75 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml b/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
-> > new file mode 100644
-> > index 000000000000..31f11d7eaaae
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
-> > @@ -0,0 +1,75 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/accel/adi,adxl313.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Analog Devices ADXL313 3-Axis Digital Accelerometer
-> > +
-> > +maintainers:
-> > +  - Lucas Stankus <lucas.p.stankus@gmail.com>
-> > +
-> > +description: |
-> > +  Analog Devices ADXL313 3-Axis Digital Accelerometer that supports
-> > +  both I2C & SPI interfaces.
-> > +    https://www.analog.com/en/products/adxl313.html
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - adi,adxl313
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  spi-3wire: true
-> > +
-> > +  spi-cpha: true
-> > +
-> > +  spi-cpol: true
-> > +
-> > +  spi-max-frequency: true
-> > +
-> > +  interrupts:
-> > +    maxItems: 2
->
-> As board designers have an annoying habit of wiring up the second
-> interrupt only, please also provide interrupt-names so we can
-> know which one is connected if it's only one.
->
-> From a quick glance at the datasheet, I see this also has two powersupplies.
-> Please include
-> vddio-supply
-> vs-supply - annoyingly the s just stands for supply, but v-supply seems a bit to minimal.
->
+On 02/08/21 18:17, Sean Christopherson wrote:
+> 
+> Rather than adjusting the bitmap index, what about simply umping the bitmap size?
+> IIRC, current CPUs have 512 ASIDs, counting ASID 0, i.e. bumping the size won't
+> consume any additional memory.  And if it does, the cost is 8 bytes...
+> 
+> It'd be a bigger refactoring, but it should completely eliminate the mod-by-1
+> shenanigans, e.g. a partial patch could look like
 
-Thanks for the feedback, I'll change it for the v2!
+This is also okay by me if Mingwei agrees, of course.  I have already 
+queued his patch, but I can replace it with one using a nr_asids-sized 
+bitmap too.
 
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    i2c0 {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        /* Example for a I2C device node */
-> > +        accelerometer@53 {
-> > +            compatible = "adi,adxl313";
-> > +            reg = <0x53>;
-> > +            interrupt-parent = <&gpio0>;
-> > +            interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-> > +        };
-> > +    };
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    spi {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        /* Example for a SPI device node */
-> > +        accelerometer@0 {
-> > +            compatible = "adi,adxl313";
-> > +            reg = <0>;
-> > +            spi-max-frequency = <5000000>;
-> > +            spi-cpol;
-> > +            spi-cpha;
-> > +            interrupt-parent = <&gpio0>;
-> > +            interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-> > +        };
-> > +    };
->
+Paolo
+
