@@ -2,25 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F543DD099
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7384C3DD086
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232511AbhHBGcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:32:02 -0400
-Received: from smtpbg127.qq.com ([109.244.180.96]:27916 "EHLO smtpbg.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232437AbhHBGby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:31:54 -0400
-X-QQ-mid: bizesmtp41t1627885335t6snh1mb
+        id S232220AbhHBGbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:31:04 -0400
+Received: from smtpbg604.qq.com ([59.36.128.82]:51875 "EHLO smtpbg604.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229792AbhHBGbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 02:31:02 -0400
+X-Greylist: delayed 496 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Aug 2021 02:31:01 EDT
+X-QQ-mid: bizesmtp41t1627885344tq5561ka
 Received: from localhost.localdomain (unknown [113.89.245.207])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 02 Aug 2021 14:22:15 +0800 (CST)
+        id ; Mon, 02 Aug 2021 14:22:18 +0800 (CST)
 X-QQ-SSF: 01100000002000206000B00A0000000
-X-QQ-FEAT: tC2PljDBqdOnSOAMdfK8/oTKxZqOlTXJ/nzFj4aElef7BKEDnL9OqCXepP4ZR
-        wII5p+HPpxxMunVvTwyx2FgZWE9tJPFdxfiJKqw2X+4a2F4eNrAFaTcHPVXmgCkrukzzGp3
-        KwtTDKS/Ekha4OKV1kXsPOb8bHUS5C/tQkx3/HFozgD6ZVsigAYEmcALc4K7clp876XircB
-        KCsWzpvLQIa5eaTiH24TTCcE6/P5hN+l9lekbwINEOXTv1yQ0mFF0NbiODLpM/QF3JNSqaR
-        RaqTi0RdpOPU8jqUwuJIMzVr6/FvTSiRxnVIOah6bmkn/0vOl4GdXy10eXuYpMslPpkA==
+X-QQ-FEAT: +I1LNsReFTRaBe0n8cyJfpYfsGxVjZPD3N/FdcxwlrxZwKc7m/2gsZPIGovsH
+        XjkzYmg6tgcfos6kuz/rLPqQu/zHumGHTOeq+BU/G4OboZbFCvcMQNqoyqZ8Bb7wInD/etJ
+        iw7pmwaY/snfXSfqOVtrhOrBeoWQ2XC8bMAEhsQ8/OpL5eO3ZROyKgtIqIoIayYtdwr8+65
+        ghx3SMe3z/FTTrunvHG4xUlLGaOiMylfJjtftyBBskVahc2Ver3TEDEyeU8hnjPB3T0P+03
+        8tzJCi79USCGw1pjOn7JPWMhc60dgiPhdh6O7zcEwdvjxXQUcXCbzbea980DiYc1oSFHlgg
+        n/oPRQehSASnB8yK94=
 X-QQ-GoodBg: 0
 From:   Icenowy Zheng <icenowy@sipeed.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -33,105 +35,88 @@ To:     Rob Herring <robh+dt@kernel.org>,
         Andre Przywara <andre.przywara@arm.com>,
         Samuel Holland <samuel@sholland.org>
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Icenowy Zheng <icenowy@sipeed.com>
-Subject: [PATCH 00/17] Basical Allwinner R329 support
-Date:   Mon,  2 Aug 2021 14:21:55 +0800
-Message-Id: <20210802062212.73220-1-icenowy@sipeed.com>
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 01/17] rtc: sun6i: Fix time overflow handling
+Date:   Mon,  2 Aug 2021 14:21:56 +0800
+Message-Id: <20210802062212.73220-2-icenowy@sipeed.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210802062212.73220-1-icenowy@sipeed.com>
+References: <20210802062212.73220-1-icenowy@sipeed.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:sipeed.com:qybgspam:qybgspam1
+Feedback-ID: bizesmtp:sipeed.com:qybgspam:qybgspam4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset tries to add basical support for Allwinner R329 SoC to the
-Linux kernel, including clock/pintrl driver and MMC support.
+From: Andre Przywara <andre.przywara@arm.com>
 
-Three patches from the H616 patchset, which are used to support the RTC
-with linear day, are attached into this patchset. Other RTC-related
-patches of that patchset is not included, because the binding of the
-clock part there is still under discussion.
+Using "unsigned long" for UNIX timestamps is never a good idea, and
+comparing the value of such a variable against U32_MAX does not do
+anything useful on 32-bit systems.
 
-Then I added RTC binding and support (which is now only a struct
-addition). I added RTC into this patchset, with the same reason that
-H616 patchset contains RTC, which is to make the clock tree correct at
-the first inclusion.
+Use the proper time64_t type when dealing with timestamps, and avoid
+cutting down the time range unnecessarily. This also fixes the flawed
+check for the alarm time being too far into the future.
 
-After RTC, main basical SoC-specific part, pinctrl and CCU, come. The
-R329 CCU is something special because PLLs are in R-CCU, no main CCU.
+The check for this condition is actually somewhat theoretical, as the
+RTC counts till 2033 only anyways, and 2^32 seconds from now is not
+before the year 2157 - at which point I hope nobody will be using this
+hardware anymore.
 
-MMC support is added here because it's also a simple struct addition
-work, no main driver code change needed.
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+---
+ drivers/rtc/rtc-sun6i.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-Finally it comes the DT part. The DT binding of MaixSense, the device
-that I am working on now, is added. Then the DTSI for R329 SoC, the DTSI
-file for Sipeed Maix IIA SoM (which is utilized on MaixSense) and the
-main DT file for MaixSense are added.
-
-Andre Przywara (3):
-  rtc: sun6i: Fix time overflow handling
-  rtc: sun6i: Add support for linear day storage
-  rtc: sun6i: Add support for broken-down alarm registers
-
-Icenowy Zheng (14):
-  dt-bindings: rtc: sun6i: add compatible string for R329 RTC
-  rtc: sun6i: add support for R329 RTC
-  dt-bindings: pinctrl: document Allwinner R329 PIO and R-PIO
-  pinctrl: sunxi: add support for R329 CPUX pin controller
-  pinctrl: sunxi: add support for R329 R-PIO pin controller
-  dt-bindings: clock: sunxi-ng: add compatibles for R329 CCUs
-  clk: sunxi=ng: add support for R329 R-CCU
-  clk: sunxi-ng: add support for Allwinner R329 CCU
-  dt-bindings: mmc: sunxi-mmc: add R329 MMC compatible string
-  mmc: sunxi: add support for R329 MMC controllers
-  dt-bindings: arm: sunxi: add compatible strings for Sipeed MaixSense
-  arm64: allwinner: dts: add DTSI file for R329 SoC
-  arm64: allwinner: dts: r329: add DTSI file for Sipeed Maix IIA
-  arm64: allwinner: dts: r329: add support for Sipeed MaixSense
-
- .../devicetree/bindings/arm/sunxi.yaml        |   6 +
- .../clock/allwinner,sun4i-a10-ccu.yaml        |   4 +
- .../bindings/mmc/allwinner,sun4i-a10-mmc.yaml |   1 +
- .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml  |   4 +
- .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml |   6 +-
- arch/arm64/boot/dts/allwinner/Makefile        |   1 +
- .../dts/allwinner/sun50i-r329-maix-iia.dtsi   |  34 ++
- .../dts/allwinner/sun50i-r329-maixsense.dts   |  37 ++
- .../arm64/boot/dts/allwinner/sun50i-r329.dtsi | 244 ++++++++
- drivers/clk/sunxi-ng/Kconfig                  |  10 +
- drivers/clk/sunxi-ng/Makefile                 |   2 +
- drivers/clk/sunxi-ng/ccu-sun50i-r329-r.c      | 374 +++++++++++++
- drivers/clk/sunxi-ng/ccu-sun50i-r329-r.h      |  33 ++
- drivers/clk/sunxi-ng/ccu-sun50i-r329.c        | 526 ++++++++++++++++++
- drivers/clk/sunxi-ng/ccu-sun50i-r329.h        |  32 ++
- drivers/mmc/host/sunxi-mmc.c                  |  10 +
- drivers/pinctrl/sunxi/Kconfig                 |  10 +
- drivers/pinctrl/sunxi/Makefile                |   2 +
- drivers/pinctrl/sunxi/pinctrl-sun50i-r329-r.c | 292 ++++++++++
- drivers/pinctrl/sunxi/pinctrl-sun50i-r329.c   | 410 ++++++++++++++
- drivers/rtc/rtc-sun6i.c                       | 154 +++--
- include/dt-bindings/clock/sun50i-r329-ccu.h   |  73 +++
- include/dt-bindings/clock/sun50i-r329-r-ccu.h |  33 ++
- include/dt-bindings/reset/sun50i-r329-ccu.h   |  45 ++
- include/dt-bindings/reset/sun50i-r329-r-ccu.h |  24 +
- 25 files changed, 2320 insertions(+), 47 deletions(-)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-r329-maix-iia.dtsi
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-r329-maixsense.dts
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-r329.dtsi
- create mode 100644 drivers/clk/sunxi-ng/ccu-sun50i-r329-r.c
- create mode 100644 drivers/clk/sunxi-ng/ccu-sun50i-r329-r.h
- create mode 100644 drivers/clk/sunxi-ng/ccu-sun50i-r329.c
- create mode 100644 drivers/clk/sunxi-ng/ccu-sun50i-r329.h
- create mode 100644 drivers/pinctrl/sunxi/pinctrl-sun50i-r329-r.c
- create mode 100644 drivers/pinctrl/sunxi/pinctrl-sun50i-r329.c
- create mode 100644 include/dt-bindings/clock/sun50i-r329-ccu.h
- create mode 100644 include/dt-bindings/clock/sun50i-r329-r-ccu.h
- create mode 100644 include/dt-bindings/reset/sun50i-r329-ccu.h
- create mode 100644 include/dt-bindings/reset/sun50i-r329-r-ccu.h
-
+diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
+index adec1b14a8de..c551ebf0ac00 100644
+--- a/drivers/rtc/rtc-sun6i.c
++++ b/drivers/rtc/rtc-sun6i.c
+@@ -138,7 +138,7 @@ struct sun6i_rtc_dev {
+ 	const struct sun6i_rtc_clk_data *data;
+ 	void __iomem *base;
+ 	int irq;
+-	unsigned long alarm;
++	time64_t alarm;
+ 
+ 	struct clk_hw hw;
+ 	struct clk_hw *int_osc;
+@@ -510,10 +510,8 @@ static int sun6i_rtc_setalarm(struct device *dev, struct rtc_wkalrm *wkalrm)
+ 	struct sun6i_rtc_dev *chip = dev_get_drvdata(dev);
+ 	struct rtc_time *alrm_tm = &wkalrm->time;
+ 	struct rtc_time tm_now;
+-	unsigned long time_now = 0;
+-	unsigned long time_set = 0;
+-	unsigned long time_gap = 0;
+-	int ret = 0;
++	time64_t time_now, time_set;
++	int ret;
+ 
+ 	ret = sun6i_rtc_gettime(dev, &tm_now);
+ 	if (ret < 0) {
+@@ -528,9 +526,7 @@ static int sun6i_rtc_setalarm(struct device *dev, struct rtc_wkalrm *wkalrm)
+ 		return -EINVAL;
+ 	}
+ 
+-	time_gap = time_set - time_now;
+-
+-	if (time_gap > U32_MAX) {
++	if ((time_set - time_now) > U32_MAX) {
+ 		dev_err(dev, "Date too far in the future\n");
+ 		return -EINVAL;
+ 	}
+@@ -539,7 +535,7 @@ static int sun6i_rtc_setalarm(struct device *dev, struct rtc_wkalrm *wkalrm)
+ 	writel(0, chip->base + SUN6I_ALRM_COUNTER);
+ 	usleep_range(100, 300);
+ 
+-	writel(time_gap, chip->base + SUN6I_ALRM_COUNTER);
++	writel(time_set - time_now, chip->base + SUN6I_ALRM_COUNTER);
+ 	chip->alarm = time_set;
+ 
+ 	sun6i_rtc_setaie(wkalrm->enabled, chip);
 -- 
 2.30.2
 
