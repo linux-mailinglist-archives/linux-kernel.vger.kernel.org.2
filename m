@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5B73DDA81
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6CB3DD995
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238438AbhHBOPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:15:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47240 "EHLO mail.kernel.org"
+        id S236024AbhHBOBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:01:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236352AbhHBOCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:02:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AAEC611C5;
-        Mon,  2 Aug 2021 13:57:02 +0000 (UTC)
+        id S236231AbhHBNzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:55:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7426B6113D;
+        Mon,  2 Aug 2021 13:53:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912622;
-        bh=c3ELT/LzO++DLj+iIONOcmMj4XD+MDLUQjEsDxdt4Vw=;
+        s=korg; t=1627912421;
+        bh=ImPCBySZwg7mTQZobgxAAJo0iA67emeleqf2EXN0ehc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oXDSonKVEV+qaO+Pg+ExVzG1YcZPddKI33dgl0GOQ0Wf5Ese3QRIlqB/HeRy+DjQk
-         In7YuEbWGnqqPxa+W5dJDxFZnnDh04bz8PDplrihSNeqHpazf9lZzTe378+6D5syFx
-         wq/NF9f4OIvlKe3M2chnvfYE9xInZKY2lC6HkXNI=
+        b=i6H2N91+XJSxyfZAbuP7yVZOWy2OabfAWdlF5txhjRwaAVKezL0g6Ehg/iSpsIzvo
+         piIPnI04FoEAxkas2T+yzpasTsYJP6gLAqcqIbCFkJqkp2/QrrFLNJCvW0H7pLEXSJ
+         IP69TzVbAYjt+RnR15EMVAR+jTIFNsSoKbZOtJ4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Dickman <maord@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 076/104] net/mlx5e: Disable Rx ntuple offload for uplink representor
-Date:   Mon,  2 Aug 2021 15:45:13 +0200
-Message-Id: <20210802134346.519085439@linuxfoundation.org>
+Subject: [PATCH 5.10 51/67] skmsg: Make sk_psock_destroy() static
+Date:   Mon,  2 Aug 2021 15:45:14 +0200
+Message-Id: <20210802134340.779743297@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,123 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Dickman <maord@nvidia.com>
+From: Cong Wang <cong.wang@bytedance.com>
 
-[ Upstream commit 90b22b9bcd242a3ba238f2c6f7eab771799001f8 ]
+[ Upstream commit 8063e184e49011f6f3f34f6c358dc8a83890bb5b ]
 
-Rx ntuple offload is not supported in switchdev mode.
-Tryng to enable it cause kernel panic.
+sk_psock_destroy() is a RCU callback, I can't see any reason why
+it could be used outside.
 
- BUG: kernel NULL pointer dereference, address: 0000000000000008
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 80000001065a5067 P4D 80000001065a5067 PUD 106594067 PMD 0
- Oops: 0000 [#1] SMP PTI
- CPU: 7 PID: 1089 Comm: ethtool Not tainted 5.13.0-rc7_for_upstream_min_debug_2021_06_23_16_44 #1
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
- RIP: 0010:mlx5e_arfs_enable+0x70/0xd0 [mlx5_core]
- Code: 44 24 10 00 00 00 00 48 c7 44 24 18 00 00 00 00 49 63 c4 48 89 e2 44 89 e6 48 69 c0 20 08 00 00 48 89 ef 48 03 85 68 ac 00 00 <48> 8b 40 08 48 89 44 24 08 e8 d2 aa fd ff 48 83 05 82 96 18 00 01
- RSP: 0018:ffff8881047679e0 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: 0000004000000000 RCX: 0000004000000000
- RDX: ffff8881047679e0 RSI: 0000000000000000 RDI: ffff888115100880
- RBP: ffff888115100880 R08: ffffffffa00f6cb0 R09: ffff888104767a18
- R10: ffff8881151000a0 R11: ffff888109479540 R12: 0000000000000000
- R13: ffff888104767bb8 R14: ffff888115100000 R15: ffff8881151000a0
- FS:  00007f41a64ab740(0000) GS:ffff8882f5dc0000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000008 CR3: 0000000104cbc005 CR4: 0000000000370ea0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- Call Trace:
-  set_feature_arfs+0x1e/0x40 [mlx5_core]
-  mlx5e_handle_feature+0x43/0xa0 [mlx5_core]
-  mlx5e_set_features+0x139/0x1b0 [mlx5_core]
-  __netdev_update_features+0x2b3/0xaf0
-  ethnl_set_features+0x176/0x3a0
-  ? __nla_parse+0x22/0x30
-  genl_family_rcv_msg_doit+0xe2/0x140
-  genl_rcv_msg+0xde/0x1d0
-  ? features_reply_size+0xe0/0xe0
-  ? genl_get_cmd+0xd0/0xd0
-  netlink_rcv_skb+0x4e/0xf0
-  genl_rcv+0x24/0x40
-  netlink_unicast+0x1f6/0x2b0
-  netlink_sendmsg+0x225/0x450
-  sock_sendmsg+0x33/0x40
-  __sys_sendto+0xd4/0x120
-  ? __sys_recvmsg+0x4e/0x90
-  ? exc_page_fault+0x219/0x740
-  __x64_sys_sendto+0x25/0x30
-  do_syscall_64+0x3f/0x80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
- RIP: 0033:0x7f41a65b0cba
- Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb b8 0f 1f 00 f3 0f 1e fa 41 89 ca 64 8b 04 25 18 00 00 00 85 c0 75 15 b8 2c 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 76 c3 0f 1f 44 00 00 55 48 83 ec 30 44 89 4c
- RSP: 002b:00007ffd8d688358 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
- RAX: ffffffffffffffda RBX: 00000000010f42a0 RCX: 00007f41a65b0cba
- RDX: 0000000000000058 RSI: 00000000010f43b0 RDI: 0000000000000003
- RBP: 000000000047ae60 R08: 00007f41a667c000 R09: 000000000000000c
- R10: 0000000000000000 R11: 0000000000000246 R12: 00000000010f4340
- R13: 00000000010f4350 R14: 00007ffd8d688400 R15: 00000000010f42a0
- Modules linked in: mlx5_vdpa vhost_iotlb vdpa xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xt_addrtype iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter rpcrdma rdma_ucm ib_iser libiscsi scsi_transport_iscsi ib_umad ib_ipoib rdma_cm iw_cm ib_cm mlx5_ib ib_uverbs ib_core overlay mlx5_core ptp pps_core fuse
- CR2: 0000000000000008
- ---[ end trace c66523f2aba94b43 ]---
-
-Fixes: 7a9fb35e8c3a ("net/mlx5e: Do not reload ethernet ports when changing eswitch mode")
-Signed-off-by: Maor Dickman <maord@nvidia.com>
-Reviewed-by: Roi Dayan <roid@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Lorenz Bauer <lmb@cloudflare.com>
+Link: https://lore.kernel.org/bpf/20210127221501.46866-1-xiyou.wangcong@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 29 +++++++++++++------
- 1 file changed, 20 insertions(+), 9 deletions(-)
+ include/linux/skmsg.h | 1 -
+ net/core/skmsg.c      | 3 +--
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index d26b8ed51195..86a27b0b42cb 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -3825,6 +3825,24 @@ int mlx5e_set_features(struct net_device *netdev, netdev_features_t features)
- 	return 0;
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index 82126d529798..822c048934e3 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -395,7 +395,6 @@ static inline struct sk_psock *sk_psock_get(struct sock *sk)
  }
  
-+static netdev_features_t mlx5e_fix_uplink_rep_features(struct net_device *netdev,
-+						       netdev_features_t features)
-+{
-+	features &= ~NETIF_F_HW_TLS_RX;
-+	if (netdev->features & NETIF_F_HW_TLS_RX)
-+		netdev_warn(netdev, "Disabling hw_tls_rx, not supported in switchdev mode\n");
-+
-+	features &= ~NETIF_F_HW_TLS_TX;
-+	if (netdev->features & NETIF_F_HW_TLS_TX)
-+		netdev_warn(netdev, "Disabling hw_tls_tx, not supported in switchdev mode\n");
-+
-+	features &= ~NETIF_F_NTUPLE;
-+	if (netdev->features & NETIF_F_NTUPLE)
-+		netdev_warn(netdev, "Disabling ntuple, not supported in switchdev mode\n");
-+
-+	return features;
-+}
-+
- static netdev_features_t mlx5e_fix_features(struct net_device *netdev,
- 					    netdev_features_t features)
+ void sk_psock_stop(struct sock *sk, struct sk_psock *psock);
+-void sk_psock_destroy(struct rcu_head *rcu);
+ void sk_psock_drop(struct sock *sk, struct sk_psock *psock);
+ 
+ static inline void sk_psock_put(struct sock *sk, struct sk_psock *psock)
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index c4c224a5b9de..5dd5569f89bf 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -676,14 +676,13 @@ static void sk_psock_destroy_deferred(struct work_struct *gc)
+ 	kfree(psock);
+ }
+ 
+-void sk_psock_destroy(struct rcu_head *rcu)
++static void sk_psock_destroy(struct rcu_head *rcu)
  {
-@@ -3856,15 +3874,8 @@ static netdev_features_t mlx5e_fix_features(struct net_device *netdev,
- 			netdev_warn(netdev, "Disabling rxhash, not supported when CQE compress is active\n");
- 	}
+ 	struct sk_psock *psock = container_of(rcu, struct sk_psock, rcu);
  
--	if (mlx5e_is_uplink_rep(priv)) {
--		features &= ~NETIF_F_HW_TLS_RX;
--		if (netdev->features & NETIF_F_HW_TLS_RX)
--			netdev_warn(netdev, "Disabling hw_tls_rx, not supported in switchdev mode\n");
--
--		features &= ~NETIF_F_HW_TLS_TX;
--		if (netdev->features & NETIF_F_HW_TLS_TX)
--			netdev_warn(netdev, "Disabling hw_tls_tx, not supported in switchdev mode\n");
--	}
-+	if (mlx5e_is_uplink_rep(priv))
-+		features = mlx5e_fix_uplink_rep_features(netdev, features);
+ 	INIT_WORK(&psock->gc, sk_psock_destroy_deferred);
+ 	schedule_work(&psock->gc);
+ }
+-EXPORT_SYMBOL_GPL(sk_psock_destroy);
  
- 	mutex_unlock(&priv->state_lock);
- 
+ void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
+ {
 -- 
 2.30.2
 
