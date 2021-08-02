@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62693DD163
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF023DD154
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbhHBHlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:41:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20676 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232680AbhHBHlH (ORCPT
+        id S232577AbhHBHkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232542AbhHBHkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:41:07 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1727YcRL088949;
         Mon, 2 Aug 2021 03:40:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=eoTJEvz+JydVpcyo3wyKqaG3a7A5ENI2Xhcr/Kl0uXY=;
- b=gMEXa56QaoRSpZyYDaKXx55VeLP5SECgfxnl83QrKEkcgMHZCLfBPD982dnRE/HGjgoC
- tOEIMBYIOa+SFYrJhaPAyRida3UjC2So0Rr43KbC/90uAxOkKAJZgiEAVMALyfEyxkLe
- lGhUBLGoj9hSZni9IxbygeMQiWopz49by9xhlAIwJ8R28O+KAq19uiw2q7kzhllxgIz7
- jhfLVU50tssZzwSrkO/O9x/sIR2U7ZP1jeFAF9HGDX1lr6wpsMFJLg8gvHebkxg9h5nW
- 332+WoY49HiDKtMQAD7peE7bj14u7RZmeLr8TlX1jo8ZxDiNbsZgIaMzT2GIFSD6IhZs ew== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a5m019e8r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Aug 2021 03:40:40 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1727dBuZ004695;
-        Mon, 2 Aug 2021 07:40:39 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 3a4x58kkwq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Aug 2021 07:40:38 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1727eYks30212496
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 2 Aug 2021 07:40:34 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 586DEA405D;
-        Mon,  2 Aug 2021 07:40:34 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE6DCA4040;
-        Mon,  2 Aug 2021 07:40:29 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.36.88])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  2 Aug 2021 07:40:29 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, dan.j.williams@intel.com,
-        ira.weiny@intel.com, vishal.l.verma@intel.com
-Cc:     maddy@linux.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        kjain@linux.ibm.com, rnsastry@linux.ibm.com
-Subject: [PATCH v4 4/4] powerpc/papr_scm: Document papr_scm sysfs event format entries
-Date:   Mon,  2 Aug 2021 13:09:29 +0530
-Message-Id: <20210802073929.907431-5-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210802073929.907431-1-kjain@linux.ibm.com>
-References: <20210802073929.907431-1-kjain@linux.ibm.com>
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B06C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 00:40:30 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id d8so20289172wrm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 00:40:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Sx9QXrg4ZNFSGE92YcBO2jMOLGSWdnZV3pnibrZPh18=;
+        b=tjPY7t2oR2UaAFYwIndaYLJrxtKaLgx0xJHGU690X/w0JyP0SJVTWiDBbUtaidytVs
+         Ba7i1xxBjGDw/FYNL0WWyTKW7N/jYfcO5MhIiE9KgX8mpzZkotAX7dZHhm35ebvLaM+s
+         FoNIkvTQc/nctsx1iucIKw9tk+C+SCjF4iEEjoQhwQt5EXRAz5BXWAathnoIRYbBmknp
+         hd81KqsKFs3D6GQ4zPiMvs/PtYoYQ53Ug3qkukoCn1MQzjryBW6EMvl6o7O/uif8FhkD
+         lR+8adTcSJq1Q+pb8tP8j8RaOjfbrnZ4NR3hesMGtXobwidLlf04R7UadvEdISDLoBVp
+         acVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Sx9QXrg4ZNFSGE92YcBO2jMOLGSWdnZV3pnibrZPh18=;
+        b=K/arYlhl8wV2QGe04R4bGMF4Z7vuAfHvngnUCpEXeWddsqd7nzVzCY8KXj4XCPG8IC
+         hA5OZnkLNWMJ+2P38A619rtBZHjXmMVlKT1wfbsUE50HW8S5vMfqNUizvNcctZokmXv1
+         mHZvR0GxAbGca0qZy2jnMPB1KhItAkCrLsP6mkibqvUm3ePkjO5xN5g67n+AZHdOkgsj
+         pHMCjjcqpLtI/dkgoZ12fDY5c3yk8mkc37bjFAHgTBe2vPHX+N+T40LhL2+wLz37rLdU
+         Hnt4S6TJSFYqll8yf0kc7dQUOrDLHzgOZJsViWzhdKmx17wbkDVFRfef46LZMqBkyUi4
+         HzlA==
+X-Gm-Message-State: AOAM530o8q0RDnqRBKWMcByS5b8ezG70ojd1RF5AfdrPG9AeaeckC4Sy
+        CSNg6Ld+m1SBKPADqVd5jIG3zA==
+X-Google-Smtp-Source: ABdhPJwzsCg4tOXIFL2wAorTekhNfCSV3oJxRI6RVF//Uj3BHQ5IEzgTt52YzmGvSSSOzWlDua+sxA==
+X-Received: by 2002:a05:6000:1867:: with SMTP id d7mr8862526wri.393.1627890029108;
+        Mon, 02 Aug 2021 00:40:29 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id o22sm2087782wmq.3.2021.08.02.00.40.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 00:40:28 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 08:40:26 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v9 01/11] dt-bindings: mfd: axp20x: Add AXP305 compatible
+ (plus optional IRQ)
+Message-ID: <YQehakgWk/sp92to@google.com>
+References: <20210802003952.19942-1-andre.przywara@arm.com>
+ <20210802003952.19942-2-andre.przywara@arm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: EN59ABGtaZ000sASuNIwNFJwXfnEYNRA
-X-Proofpoint-GUID: EN59ABGtaZ000sASuNIwNFJwXfnEYNRA
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-02_01:2021-08-02,2021-08-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- mlxlogscore=999 lowpriorityscore=0 clxscore=1015 priorityscore=1501
- mlxscore=0 malwarescore=0 phishscore=0 bulkscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108020053
+In-Reply-To: <20210802003952.19942-2-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Details is added for the event, cpumask and format attributes
-in the ABI documentation.
+On Mon, 02 Aug 2021, Andre Przywara wrote:
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Madhavan Srinivasan <maddy@linux.ibm.com>
-Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
----
- Documentation/ABI/testing/sysfs-bus-papr-pmem | 31 +++++++++++++++++++
- 1 file changed, 31 insertions(+)
+> The AXP305 PMIC used on many boards with the H616 SoC seems to be fully
+> compatible to the AXP805 PMIC, so add the proper chain of compatible
+> strings.
+> 
+> Also at least on one board (Orangepi Zero2) there is no interrupt line
+> connected to the CPU, so make the "interrupts" property optional.
+> 
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/mfd/axp20x.txt | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-index 95254cec92bf..4d86252448f8 100644
---- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
-+++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-@@ -61,3 +61,34 @@ Description:
- 		* "CchRHCnt" : Cache Read Hit Count
- 		* "CchWHCnt" : Cache Write Hit Count
- 		* "FastWCnt" : Fast Write Count
-+
-+What:		/sys/devices/nmemX/format
-+Date:		June 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
-+Description:	(RO) Attribute group to describe the magic bits
-+                that go into perf_event_attr.config for a particular pmu.
-+                (See ABI/testing/sysfs-bus-event_source-devices-format).
-+
-+                Each attribute under this group defines a bit range of the
-+                perf_event_attr.config. Supported attribute is listed
-+                below::
-+
-+		    event  = "config:0-4"  - event ID
-+
-+		For example::
-+		    noopstat = "event=0x1"
-+
-+What:		/sys/devices/nmemX/events
-+Date:		June 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
-+Description:    (RO) Attribute group to describe performance monitoring
-+                events specific to papr-scm. Each attribute in this group describes
-+                a single performance monitoring event supported by this nvdimm pmu.
-+                The name of the file is the name of the event.
-+                (See ABI/testing/sysfs-bus-event_source-devices-events).
-+
-+What:		/sys/devices/nmemX/cpumask
-+Date:		June 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
-+Description:	(RO) This sysfs file exposes the cpumask which is designated to make
-+                HCALLs to retrieve nvdimm pmu event counter data.
+Applied, thanks.
+
 -- 
-2.26.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
