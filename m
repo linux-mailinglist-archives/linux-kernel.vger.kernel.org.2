@@ -2,188 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BFC3DE331
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DAA3DE336
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232546AbhHBXnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 19:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbhHBXnY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 19:43:24 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84CD4C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 16:43:13 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id x12-20020a05620a14acb02903b8f9d28c19so14182852qkj.23
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 16:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=yy9pyQojvK7Hdmo6VGo2Lui7HtlFWMn7Zh2eGYLAN30=;
-        b=UH3CUy9t8ryrDG4F3pv3TetQOMIQtKV6Y2LYsFhy+ponF7FuzwIOeDtuKfPCeNRPz7
-         qHv8bicgNi2Ms3bIMqrwpY0Md+goVKT37gdnPhhc2+yX4vG/W+X5cyUIn/dkmk2cLyF0
-         MRdcgQAGixOudrNX42SWMNzXoN/NtEIZjLBCDQl4+oKI8Pl+WlHKMJloWVrWpXB5Vm7P
-         Ssr1i3ElcLtqhCrLJGNmyjpeEgyd+YFIKF+sgrp6IBqZg7VKnHjNmygADAV0uwUssdse
-         Gi6DioUPgJIJ+D58vtaUZ8bRm/0K+LhPuz3XJtLMDhzu/CXC+QDLi2/WPpwFQ0LZjaMX
-         rd9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=yy9pyQojvK7Hdmo6VGo2Lui7HtlFWMn7Zh2eGYLAN30=;
-        b=I9S1uY4k93zH+AP8WD/Mijf1XUhDIob+c+zLb7jSWeGNIl3BdXxQW25+86rBB8altp
-         8GM7lRNjMR2LMydtY8N4AjzMtmGgnZsl4/XMv7rNiz+KfgG2YVIvPKsueHtlFwl9h5pR
-         MjfnlDLkj5i6o7jHDV7ntFG9dF/KHnDLM6NcYDj+u0dkr0IbEPUwF4eMz5vinvdUoBgT
-         RuvSm5a6xiydg2/L5TJ242Nv2EIkxi8SJQidz6SL3076Ugz5DqFFRHLkff0wUGwC04yg
-         /wcLEyPzYD5D8D2l4+WQHh94mbsYfPIcJmK67U96QJr4RQ6pkmEeIwyLVkOgu7nWX9Uj
-         ldSA==
-X-Gm-Message-State: AOAM531HZlHW2HKakFy6ZjTvjNJ+eyzMPBI0otmsQTvZlxAFURyQ00EK
-        xkgWCRgx24iSnXYJc6FibgLXZKvS28jcDTjZwZs=
-X-Google-Smtp-Source: ABdhPJxv56UYXw0HdwPKZZQFp3/zRO8zP8qIjavfTRIKYqCH5596UCuGHqajKqMv8WCVM5UAz4HoFd32fzVH1fyJqgg=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:3db0:42c:8665:a4ae])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:b44b:: with SMTP id
- e11mr18946709qvf.38.1627947792748; Mon, 02 Aug 2021 16:43:12 -0700 (PDT)
-Date:   Mon,  2 Aug 2021 16:43:03 -0700
-Message-Id: <20210802234304.3519577-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH] scripts/Makefile.clang: default to LLVM_IAS=1
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     Khem Raj <raj.khem@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        id S232691AbhHBXpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 19:45:25 -0400
+Received: from mga05.intel.com ([192.55.52.43]:31743 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232208AbhHBXpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 19:45:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="299141678"
+X-IronPort-AV: E=Sophos;i="5.84,290,1620716400"; 
+   d="scan'208";a="299141678"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 16:45:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,290,1620716400"; 
+   d="scan'208";a="568478400"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga004.jf.intel.com with ESMTP; 02 Aug 2021 16:45:11 -0700
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Mon, 2 Aug 2021 16:45:11 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Mon, 2 Aug 2021 16:45:11 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Mon, 2 Aug 2021 16:45:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O93L2zlJKQzfKNDydMbztzIf/OpuYDZj6CqXI5jpIrqk6ztOHONrit4TSREVG2pbirz03clE/Sk8o2OVt4ZfJMhm43m/c7brCvO1pWWW4aHvqZDRptOEyYIu0V+yiMngLPCYwgDuwwK+AaTMp9+D1rQAV7m/cHZXA7DRg5cpc0Mtj77qhazLOWwqQzh/scX7HGCeXcluZthdJx++lqJqjsDI4eIkRLZNAXYA9KLaRrO04OReIpjEr023IwXzL1D0bXhEONw3pHa7p1TUM4cnwBTOejH0UwYkOuYLjRKPDCcr3cfekCl1eJj8Mea8nxjEpdV8khMgOGAdHH/5mmQmpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=27jImUV8qzIlD1j/vl4R7W+sKkaieakMmKHphbV8vyo=;
+ b=TmcGvBWwmi8iNe7rZQmNGBrWFoTGr/Q+jiHAnAb7w3Z3HWCm0M+5HkNPopg7/RoVK420xxqMyk7hHEZXIERqdkh+B6cnewIAyZ5pXbwKfh5Ce8LRAjK2cY5xjcB+AleFfBtsN0vRvwQrBMVkneYBILYhWEkgZUjRxeHVlla9hc6+r/S2SBt16EmOB3yO1eDxS6ijaamibe1JFL7bOMWgpsVHEH58Xv9megWFVyYaooXxz478VGQ1m3e7UltsWt6lb3lHocQ4CISKKQS2/RGEBciaX9YYa4DkKGV6F7TYdFvLA7QVOgqKY2tfoF9AfhYJobuNIZ7B8fj2XPa/LcnUkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=27jImUV8qzIlD1j/vl4R7W+sKkaieakMmKHphbV8vyo=;
+ b=mbqXdn5wenmzSbo7Ehsr8F1UIoK9ukjXwHdlqk9A3Zwjqe/iQ5xQ+BAygg+0dUZBYflGppoMXVD/NB4IQGWX8h5A2zG5Rj3PM8KiWU4scSoziH/OfdCVIG6srRTqjFAZvrhris4PoVHiXgtAXI3deHDYaEGCV+BeIfRuJ+Eo3UA=
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by MWHPR11MB1837.namprd11.prod.outlook.com (2603:10b6:300:10f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17; Mon, 2 Aug
+ 2021 23:45:10 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::bd85:7a6a:a04c:af3a]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::bd85:7a6a:a04c:af3a%5]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
+ 23:45:10 +0000
+From:   "Keller, Jacob E" <jacob.e.keller@intel.com>
+To:     Richard Cochran <richardcochran@gmail.com>
+CC:     Arnd Bergmann <arnd@kernel.org>,
+        Nicolas Pitre <nicolas.pitre@linaro.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
+ dependencies
+Thread-Topic: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
+ dependencies
+Thread-Index: AQHXh68Y1owt0G/CUEakzTAdq+RvtqtgbT+AgAAzuICAADaFgIAACciQ
+Date:   Mon, 2 Aug 2021 23:45:09 +0000
+Message-ID: <CO1PR11MB508917A17F68DD927CD26A82D6EF9@CO1PR11MB5089.namprd11.prod.outlook.com>
+References: <20210802145937.1155571-1-arnd@kernel.org>
+ <20210802164907.GA9832@hoboy.vegasvil.org>
+ <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com>
+ <20210802230921.GA13623@hoboy.vegasvil.org>
+In-Reply-To: <20210802230921.GA13623@hoboy.vegasvil.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 505a98ab-3fdb-43c4-7081-08d9560f90a5
+x-ms-traffictypediagnostic: MWHPR11MB1837:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB1837BD7AB6421AACF5FC0AB2D6EF9@MWHPR11MB1837.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: i7espyIMkhdUobh5eqPQ70mmpeWi8JPTIt7Q1w7/5d5UttLBPM7L5jMypFj6SbaP0Q/f9w25Vzhwe/Yls/R/PyW3xXkfZI3a2EgmCPuIJb8v5lFGVz9qu/pWL4xsOc7hPuaMz4quteOSqsOlLRJ9+GSBguXBLemUOALp633nophA0JQ7Ir5XsDnjXSZNub0Pjq3dDjJIUux+Evqb0HcxcGod4Q6nz4GaFdVf0mSdJpGpyh4a/glXbDL5zHAch552wRwVY8GfJ5IslaNY7qrPkMTKRdQeyHxVCyT25sATSsf/HgYgEzAA/s11d3qfydGusON0frEefnzTzVlodalV1EgWLiV6EzYs2y/qque0x88XYvx5BcncPb2cii8LadX+8u/fLHBIX4vNLF/YZQxUuM+yHEOZpWDu/bFJR8SSV7AGDmIiQZVvjlCRQ7pqArY4t+N8uoETTXT+NuOgki6MCLWKSE44aih197WuQ9XM/WKPo56L8S9RAej4GPE3xVZAruVu0TTjBPkI0epGUBFFTz+Nwo80hTGuwjzY/y4taZPIbKbyS+T5YVrQPF/acZIYSlssXVRChSyOJ4uESJozq8pC7tfTbPCu+ULOFGq1VlFMhM21Ww8OzPYkzmZjZiu92dg+ptKfcfY/odeNESGb7ctnvdn+I6X2tv1EUSLpYNJCti5b+hATUmelMw1jl9fApvq8ma2UNolnZzvGQavmFg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(366004)(39860400002)(76116006)(71200400001)(4326008)(4744005)(66556008)(66446008)(316002)(66946007)(2906002)(38100700002)(186003)(52536014)(122000001)(66476007)(64756008)(7696005)(6916009)(478600001)(38070700005)(7416002)(8676002)(6506007)(53546011)(9686003)(26005)(55016002)(83380400001)(33656002)(54906003)(86362001)(5660300002)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?MGtrFxoacu/meWQFdlatIRet3x7n05nZDTg1s4MFKETBpM2VP/vBWO566OBK?=
+ =?us-ascii?Q?dj1L3xeas01L/r8vaJyKW05VjRwPmRF6NoP9bhBGp3kzqowzBzzqRHcBhoOq?=
+ =?us-ascii?Q?ozDx6hTExSR4pJlv/l232/b2FmwSVp3mkomYfQOoDITF6igWLv5/2WDuN9NS?=
+ =?us-ascii?Q?gq2/ctyqEEZYCwmOWumNxj+FFqZ4t1r8BwGy6BvapFs11sATif+4P+275cT3?=
+ =?us-ascii?Q?FUcu09NPo5DNC6b+O/z44VuYTczflqJhWfaON6znGAN+RAWrb7DVx1yrrf2a?=
+ =?us-ascii?Q?Grf8C6CAaFYwDDtuB/uF7npymD2XOkAtSHM7+oiKEZ6h/u3yvWFQxniK4n/A?=
+ =?us-ascii?Q?/ew7N1ShrCtMxG7YzMufULhmGGKFz21iNxACeU0vn0vUJFzq/lCQQ7fW7bPS?=
+ =?us-ascii?Q?p1bTRABrnuSYY3bs+ArlLZb+INIw8WICVTA4NI6/xGa0EFNemPaIR6k4y4Ek?=
+ =?us-ascii?Q?51v5ReM4LIiVhWqmF1BAN+XoLCc4Z1XIoka0B4j7O90Cbbm41ammVLlQ2cPb?=
+ =?us-ascii?Q?f/ks3bz22Bay4nKC7mGCMsRIpTkgJV/q4M/tz6EbwS3KtOLmx7bOGA/UFrWw?=
+ =?us-ascii?Q?ty7+Ww+gbJPR+oKbOepragQm3EUVgJCr41dRto+xSdgchykYfkZAWJp8oGBh?=
+ =?us-ascii?Q?eTfhWYsgqxUJD86k/JzHKndD0c3WqilRnOw7QY9xL5bs1dzL32MX5q4ErQ84?=
+ =?us-ascii?Q?qLpoSDQdxyosgmmfKWRlz6JvAVriZ6QEzKrbAx1TYgOD5isMq9DzGeHXSFpA?=
+ =?us-ascii?Q?RHm5N1QQF6pjpBi1un3taGkK+JQbEM0tJUflMgxZR33m/SQ/BjNvfO/owV+3?=
+ =?us-ascii?Q?8QNC2IGQPf2/cbtKCiBKBa3OUzPE9N2FarhVB0FPLrsEuYF+QNjiW67MvgFu?=
+ =?us-ascii?Q?O1Frg9U3CrpNwOWOe/X+tWB8IgL29/ktBQofxza5c6JTfp6wpjfxgm+GhvcV?=
+ =?us-ascii?Q?9HpY4vXmrsWg5mTCNkMmoQ88blZpHTy8blnF7ajofK+3Avd/nJOvW0x5jVL0?=
+ =?us-ascii?Q?p+u5AUrE+ApHDZ0YITp23RsRZaqQ+0oh45NIwGJFjGv0YLW+x3UBJaaJwKF3?=
+ =?us-ascii?Q?CVKtttM2IkLmxh81DfYoX5EzCzdy4/+un3vxS6kNLTujZkWOQkGXWNq8otGr?=
+ =?us-ascii?Q?2PsJu3FVkWuozNerkBtyuW3qZbg9HwzcO1XZNyAPqdJSvy/zOsI3KcMyAItF?=
+ =?us-ascii?Q?DGMt5nht/CYvpZuvyQWW1+mk6yP94PjqpZIXAqb+uLdwSbbjfVYx7zq8nHDo?=
+ =?us-ascii?Q?zMPZlaoZ0Mcey40CjvZg8TGq2AbILsRPriyq5QlTiDHiTcMgONNIzIJ6s3Rp?=
+ =?us-ascii?Q?Wg2E8pIg2CfSbKGwcVnaQgEz?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 505a98ab-3fdb-43c4-7081-08d9560f90a5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2021 23:45:09.9790
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LhVw3Hgkw/2Ffg9Gu35W79Ahl+quV1HS2e5qxIM6Rua+0z79i00x5r03/gusjWslekE+wrvK0Ylda+I8bPF/BwatKZrN4WZ+WcGHeQ5JoYY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1837
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM_IAS=1 controls enabling clang's integrated assembler via
--integrated-as. This was an explicit opt in until we could enable
-assembler support in Clang for more architecures. Now we have support
-and CI coverage of LLVM_IAS=1 for all architecures except a few more
-bugs affecting s390 and powerpc.
+> -----Original Message-----
+> From: Richard Cochran <richardcochran@gmail.com>
+> Sent: Monday, August 02, 2021 4:09 PM
+> To: Keller, Jacob E <jacob.e.keller@intel.com>
+> Cc: Arnd Bergmann <arnd@kernel.org>; Nicolas Pitre <nicolas.pitre@linaro.=
+org>;
+> Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L
+> <anthony.l.nguyen@intel.com>; David S. Miller <davem@davemloft.net>; Jaku=
+b
+> Kicinski <kuba@kernel.org>; Arnd Bergmann <arnd@arndb.de>; Kurt
+> Kanzenbach <kurt@linutronix.de>; Saleem, Shiraz <shiraz.saleem@intel.com>=
+;
+> Ertman, David M <david.m.ertman@intel.com>; intel-wired-lan@lists.osuosl.=
+org;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
+> dependencies
+>=20
+> On Mon, Aug 02, 2021 at 07:54:20PM +0000, Keller, Jacob E wrote:
+> > So go back to "select"?
+>=20
+> Why not keep it simple?
+>=20
+> PTP core:
+>    Boolean PTP_1588_CLOCK
+>=20
+> drivers:
+>    depends on PTP_1588_CLOCK
+>=20
+> Also, make Posix timers always part of the core.  Tinification is a
+> lost cause.
+>=20
+> Thanks,
+> Richard
 
-This commit flips the default from opt in via LLVM_IAS=1 to opt out via
-LLVM_IAS=0.  CI systems or developers that were previously doing builds
-with CC=clang or LLVM=1 without explicitly setting LLVM_IAS must now
-explicitly opt out via LLVM_IAS=0, otherwise they will be implicitly
-opted-in.
+Ok, so basically: if any driver that needs PTP core is on, PTP core is on, =
+with no way to disable it.
 
-This finally shortens the command line invocation when cross compiling
-with LLVM to simply:
-
-$ make ARCH=arm64 LLVM=1
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1434
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Note: base is:
-https://lore.kernel.org/lkml/20210802183910.1802120-1-ndesaulniers@google.com/
-
- Documentation/kbuild/llvm.rst | 14 ++++++++------
- Makefile                      |  2 +-
- arch/riscv/Makefile           |  2 +-
- scripts/Makefile.clang        |  6 +++---
- 4 files changed, 13 insertions(+), 11 deletions(-)
-
-diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-index f8a360958f4c..16712fab4d3a 100644
---- a/Documentation/kbuild/llvm.rst
-+++ b/Documentation/kbuild/llvm.rst
-@@ -60,17 +60,14 @@ They can be enabled individually. The full list of the parameters: ::
- 	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
- 	  HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
- 
--Currently, the integrated assembler is disabled by default. You can pass
--``LLVM_IAS=1`` to enable it.
-+Currently, the integrated assembler is enabled by default. You can pass
-+``LLVM_IAS=0`` to disable it.
- 
- Omitting CROSS_COMPILE
- ----------------------
- 
- As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
- 
--Unless ``LLVM_IAS=1`` is specified, ``CROSS_COMPILE`` is also used to derive
--``--prefix=<path>`` to search for the GNU assembler and linker.
--
- If ``CROSS_COMPILE`` is not specified, the ``--target=<triple>`` is inferred
- from ``ARCH``.
- 
-@@ -78,7 +75,12 @@ That means if you use only LLVM tools, ``CROSS_COMPILE`` becomes unnecessary.
- 
- For example, to cross-compile the arm64 kernel::
- 
--	make ARCH=arm64 LLVM=1 LLVM_IAS=1
-+	make ARCH=arm64 LLVM=1
-+
-+If ``LLVM_IAS=0`` is specified, ``CROSS_COMPILE`` is also used to derive
-+``--prefix=<path>`` to search for the GNU assembler and linker. ::
-+
-+	make ARCH=arm64 LLVM=1 LLVM_IAS=0 CROSS_COMPILE=aarch64-linux-gnu-
- 
- Supported Architectures
- -----------------------
-diff --git a/Makefile b/Makefile
-index 444558e62cbc..b24b48c9ebb7 100644
---- a/Makefile
-+++ b/Makefile
-@@ -845,7 +845,7 @@ else
- DEBUG_CFLAGS	+= -g
- endif
- 
--ifneq ($(LLVM_IAS),1)
-+ifeq ($(LLVM_IAS),0)
- KBUILD_AFLAGS	+= -Wa,-gdwarf-2
- endif
- 
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index bc74afdbf31e..807f7c94bc6f 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -41,7 +41,7 @@ endif
- ifeq ($(CONFIG_LD_IS_LLD),y)
- 	KBUILD_CFLAGS += -mno-relax
- 	KBUILD_AFLAGS += -mno-relax
--ifneq ($(LLVM_IAS),1)
-+ifeq ($(LLVM_IAS),0)
- 	KBUILD_CFLAGS += -Wa,-mno-relax
- 	KBUILD_AFLAGS += -Wa,-mno-relax
- endif
-diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-index 1f4e3eb70f88..3ae63bd35582 100644
---- a/scripts/Makefile.clang
-+++ b/scripts/Makefile.clang
-@@ -22,12 +22,12 @@ else
- CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
- endif # CROSS_COMPILE
- 
--ifeq ($(LLVM_IAS),1)
--CLANG_FLAGS	+= -integrated-as
--else
-+ifeq ($(LLVM_IAS),0)
- CLANG_FLAGS	+= -no-integrated-as
- GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
- CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-+else
-+CLANG_FLAGS	+= -integrated-as
- endif
- CLANG_FLAGS	+= -Werror=unknown-warning-option
- KBUILD_CFLAGS	+= $(CLANG_FLAGS)
-
-base-commit: d7a86429dbc691bf540688fcc8542cc20246a85b
-prerequisite-patch-id: 0d3072ecb5fd06ff6fd6ea81fe601f6c54c23910
-prerequisite-patch-id: 2654829756eb8a094a0ffad1679caa75a4d86619
-prerequisite-patch-id: a51e7885ca2376d008bbf146a5589da247806f7b
--- 
-2.32.0.554.ge1b32706d8-goog
+Thanks,
+Jake
 
