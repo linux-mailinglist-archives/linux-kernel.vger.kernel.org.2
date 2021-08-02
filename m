@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAF53DCE6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 02:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901E33DCE74
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 03:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhHBAzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 20:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
+        id S231880AbhHBBBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 21:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhHBAza (ORCPT
+        with ESMTP id S231426AbhHBBBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 20:55:30 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB98C06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 17:55:21 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id cb3so6142552ejb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 17:55:21 -0700 (PDT)
+        Sun, 1 Aug 2021 21:01:10 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD963C06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 18:01:00 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id y7so19964350eda.5
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 18:01:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ksajpnsjJzPlnTGdprn7ElzDNq6N2TCOP+6qf/O43zw=;
-        b=iN+YJH9WVXFJF82gYEqnQ0Z2Lp2scoDpO018/OJfQaGSejCiXf39lYREjmVD642jWV
-         P0HSiTYTStjzbYaRr4372O39f19spQq4qWyHx51/+sRBlJQd1mXbqPzL8pbCim98NmJu
-         wxPPcXDqiASQ50HnZWycIzT9tD9h9US2cClrshjK+hzRWiIZ3ea5n9E869agebFcbXiW
-         8vd+ShUR2V7yfbqgvk3/JYFu3MiwxCgo6/GoxUQi59NqmuKFx2KUItEcuhLR05BXOX2n
-         CnfO72oUdwOXStgHjMwmlRprEg6Me4x11h6xjWGZJTHg8SePAN9mZKe4B6I5UbVi/Xcm
-         WYgQ==
+        bh=cm0KptdwqXyK8TKHm7XLOYj0tPg3467M28lr2Jc9UKw=;
+        b=NMGzGGll+c8iBi74hvvQphtdZMvCr/lFuC9oAc02SMtvdeC9I1M7//GaegrTqgCh9P
+         WS8s1Do6DBBEGhxirmyFDPVAVApkJ/Pnb/kpN50Qi8DKezPnq/r8pRfrIl+hNBr30rr4
+         1trn73kZbWsD+9tbGrVhry3tP49kYH8AiyTzssYt53c+CnWAqsgrtxZ0ZfweD7bRx0Bu
+         lOnJtcYdkssF+pawKmOrPa3YKTpmS1+Em78NIhPfFhGtppD1ffOntpznkkYX3gMvxMB1
+         gYXImrQo2gEQfn7ydaIO1jGCGwqMXk5YGA4RI2T4fZnxGq0Jqce5PNPocKc8SEbAaQY/
+         fUJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ksajpnsjJzPlnTGdprn7ElzDNq6N2TCOP+6qf/O43zw=;
-        b=OiKuGzRN3C4wN9oVVDfYotWONs3wrDLFUXjvn/4Xd3wcBy4BlB9hXvIq280ZXMJeSj
-         vYfuiGrhogTvyFTw9UAs4jQbUZ35kZdS/nw2KakGugvb3nFQu1NwS/fQp/78J5ksCkq+
-         vXU2ihB0ARvyxS66Qr8IOMlKSueCL2HtvCLGu9JuKHu8RVRfqFHNynvmlm0wWHvFTSIA
-         sPl8VWHHSO8UfnvDXDJCmZ8Xq2zxHod0EvkEOtqR6btxmPaDAgzqc/QfVvKnFh2XS+Jr
-         3brtKPEEfmReem0mWl+Ej54zrayQiKKfcp9xLDU9NApqizuvBxH3k/7MFmuwIHsyxr3O
-         S4+w==
-X-Gm-Message-State: AOAM532MkjKAmiF8bqQYm80UpjVZ8qcV/vDJBTtA7tuTGXR7qDnpFTD6
-        wtZh2N/woP2C4YcCSAx/Ll2etfNL2Jc=
-X-Google-Smtp-Source: ABdhPJzI0jlYSuZH4DXXc/6divlLMe1Z6vgDAfJeBvZBwr+fxeKbNseWF3NzpiwRf2l5Ej2LOs/dHQ==
-X-Received: by 2002:a17:906:31d4:: with SMTP id f20mr12776750ejf.383.1627865720521;
-        Sun, 01 Aug 2021 17:55:20 -0700 (PDT)
+        bh=cm0KptdwqXyK8TKHm7XLOYj0tPg3467M28lr2Jc9UKw=;
+        b=kiZal+F4xLNDZIBH5rFq0j594+QV6tH5jOlLAOsA/PZy8Q+5qMJF/CHiYdRAMruTp6
+         xccHcH33oLqgWuUGm9OVpvPPRobZc9Oi42we4HGlL4CjTXn8xrFdRFb3qKQSmipNMWRm
+         9pME332Ei3aKcmGgXOEb+hpaXbAcHDHIXW/AGibP+eW6B0yxqwkew6qy1MMLwp+7Mvu6
+         Klb/MSHwkJ5lwI3GOXa9Y+NVsyCIBdwoIeY20340ZtFNVfn/PDiltkKMaEGZjENDvhwv
+         QGezG/lTZiLkLpOmmdbgvVA9YXOZk2IPV+wyMexC6Ztp6L0n28fy5SC0y2wiI3x25pMV
+         6UBA==
+X-Gm-Message-State: AOAM5304Bs8p8Px7bdADBq8Ef50Qm8cJxVA4npiBEDc1jbNM1udYhPX3
+        zoISQryKSCtmbi7ew35QlSQzxd2x3vU=
+X-Google-Smtp-Source: ABdhPJynj8LmyDz/Daft4vU1vB7w1EuZ83MIj7eQXyeFaMRRI6EUc3/+ILVAb66BYJIUO4EkHTXZlg==
+X-Received: by 2002:a05:6402:c81:: with SMTP id cm1mr16718210edb.355.1627866059365;
+        Sun, 01 Aug 2021 18:00:59 -0700 (PDT)
 Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
-        by smtp.gmail.com with ESMTPSA id b17sm620123edd.27.2021.08.01.17.55.19
+        by smtp.gmail.com with ESMTPSA id dh8sm4898756edb.14.2021.08.01.18.00.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Aug 2021 17:55:20 -0700 (PDT)
+        Sun, 01 Aug 2021 18:00:58 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Larry Finger <Larry.Finger@lwfinger.net>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
 Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH] staging: r8188eu: core: Remove rtw_mfree_all_stainfo()
-Date:   Mon,  2 Aug 2021 02:55:17 +0200
-Message-Id: <20210802005517.12815-1-fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: r8188eu: Remove set but unused variables
+Date:   Mon,  2 Aug 2021 03:00:56 +0200
+Message-Id: <20210802010056.20543-1-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,54 +63,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove rtw_mfree_all_stainfo() and the only line of code that calls
-it. This function simply takes a spinlock and iterates over a list 
-with no purpose. That iteration has no side effects.
+Remove set but unused variables. Issues detected by sparse.
 
 Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_sta_mgt.c | 22 ----------------------
- 1 file changed, 22 deletions(-)
+ drivers/staging/r8188eu/core/rtw_mlme.c        | 4 ----
+ drivers/staging/r8188eu/os_dep/osdep_service.c | 3 +--
+ 2 files changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-index feaf39fddf7c..dae845ace2ef 100644
---- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-+++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-@@ -161,34 +161,12 @@ void rtw_mfree_stainfo(struct sta_info *psta)
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
+index d692f1477cc8..dfe7a3621efe 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme.c
+@@ -759,7 +759,6 @@ void rtw_survey_event_callback(struct adapter	*adapter, u8 *pbuf)
+ void rtw_surveydone_event_callback(struct adapter	*adapter, u8 *pbuf)
+ {
+ 	struct	mlme_priv *pmlmepriv = &(adapter->mlmepriv);
+-	struct mlme_ext_priv *pmlmeext;
+ 	u8 timer_cancelled = 0;
  
+ 	spin_lock_bh(&pmlmepriv->lock);
+@@ -854,9 +853,6 @@ void rtw_surveydone_event_callback(struct adapter	*adapter, u8 *pbuf)
+ 		p2p_ps_wk_cmd(adapter, P2P_PS_SCAN_DONE, 0);
+ 
+ 	rtw_os_xmit_schedule(adapter);
+-
+-	pmlmeext = &adapter->mlmeextpriv;
+-
  }
  
--/*  this function is used to free the memory of lock || sema for all stainfos */
--void rtw_mfree_all_stainfo(struct sta_priv *pstapriv);
--void rtw_mfree_all_stainfo(struct sta_priv *pstapriv)
--{
--	struct list_head *plist, *phead;
--	struct sta_info *psta = NULL;
--
--	spin_lock_bh(&pstapriv->sta_hash_lock);
--
--	phead = get_list_head(&pstapriv->free_sta_queue);
--	plist = phead->next;
--
--	while (phead != plist) {
--		psta = container_of(plist, struct sta_info, list);
--		plist = plist->next;
--	}
--
--	spin_unlock_bh(&pstapriv->sta_hash_lock);
--}
--
- static void rtw_mfree_sta_priv_lock(struct sta_priv *pstapriv)
+ void rtw_dummy_event_callback(struct adapter *adapter, u8 *pbuf)
+diff --git a/drivers/staging/r8188eu/os_dep/osdep_service.c b/drivers/staging/r8188eu/os_dep/osdep_service.c
+index 99ddc535e5ea..f1257999e855 100644
+--- a/drivers/staging/r8188eu/os_dep/osdep_service.c
++++ b/drivers/staging/r8188eu/os_dep/osdep_service.c
+@@ -390,7 +390,7 @@ u64 rtw_division64(u64 x, u64 y)
+ 
+ void rtw_buf_update(u8 **buf, u32 *buf_len, u8 *src, u32 src_len)
  {
- #ifdef CONFIG_88EU_AP_MODE
- 	struct wlan_acl_pool *pacl_list = &pstapriv->acl_list;
- #endif
+-	u32 ori_len = 0, dup_len = 0;
++	u32 dup_len = 0;
+ 	u8 *ori = NULL;
+ 	u8 *dup = NULL;
  
--	 rtw_mfree_all_stainfo(pstapriv); /* be done before free sta_hash_lock */
--
- 	_rtw_spinlock_free(&pstapriv->free_sta_queue.lock);
+@@ -409,7 +409,6 @@ void rtw_buf_update(u8 **buf, u32 *buf_len, u8 *src, u32 src_len)
  
- 	_rtw_spinlock_free(&pstapriv->sta_hash_lock);
+ keep_ori:
+ 	ori = *buf;
+-	ori_len = *buf_len;
+ 
+ 	/* replace buf with dup */
+ 	*buf_len = 0;
 -- 
 2.32.0
 
