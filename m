@@ -2,237 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1CA3DDC58
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE223DDC5D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235176AbhHBPYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:24:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:37516 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235110AbhHBPYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:24:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5107511D4;
-        Mon,  2 Aug 2021 08:24:20 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.39.152])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9E1CD3F66F;
-        Mon,  2 Aug 2021 08:24:17 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Veronika kabatova <vkabatov@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: [PATCH v2 3/3] ACPI: Add memory semantics to acpi_os_map_memory()
-Date:   Mon,  2 Aug 2021 16:23:59 +0100
-Message-Id: <20210802152359.12623-4-lorenzo.pieralisi@arm.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
-References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
+        id S234951AbhHBPZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:25:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53430 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234789AbhHBPZ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:25:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627917918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xftexRmGJH8/1M/pkzb30LS03dbVSEsqIX9DeZUf7y0=;
+        b=Ed4YYt4MCHfoGFphkLw/0znWsZs7h4MnyNSksFhrUhf6ZAlw1YEvulkKnJ4dtoUb+IRnso
+        c1+hNhgWN2izZ5H1PJ9Isl6d0TLxqkQ8C72bx7A6XxQ82TPGoIL0rPVlrikNcQJEjLfXks
+        PvCclm3uJS3Funm5K+B3di6pLXzTJ8w=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-277-xb71L7g4NB2PwoJAFrUUKQ-1; Mon, 02 Aug 2021 11:25:17 -0400
+X-MC-Unique: xb71L7g4NB2PwoJAFrUUKQ-1
+Received: by mail-wm1-f71.google.com with SMTP id a18-20020a05600c2252b02902531dcdc68fso5183803wmm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:25:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xftexRmGJH8/1M/pkzb30LS03dbVSEsqIX9DeZUf7y0=;
+        b=BAyrO20GPnY61zFmYjskA3W9rCldxYEZpRGFbyAAj5BgHnbM07UuORPe3fJpm5OukU
+         YIYXXsriMUYDYzyBamiKLQXzAhGOt2NIxkkutpfUsaMrZX+CJP5yB4EGjm2kL0gLYflq
+         WHIGoNf8hGnYgiBb9f/BmMy6Desduy7c7tlS4Auwyi7SHvCd58gXYsTVTU3bbCPKvfvJ
+         NcjswlCPPoihEju2C1fevBREDPqmx5SbpnIf7TO59DFAX7p1/drLjeyoqAG4kDrOjpiV
+         ATaKZEK8CGczgbhpQFtJ7YKaYbr9vUdVMwwHU5JL/hFQFHYq8b2oSzaf8iu8Cz/q7cMC
+         XCDw==
+X-Gm-Message-State: AOAM532tfx6YiHqBMngCavicwRXEkQlqlm7WbvoA4apCDygLVsaNmfxd
+        U4gODiESjjpzF+UamKDuBWAAmj61kLMI+U5CKn3Q8R+UhZqfCd24553uUC/CS9PXulvrBP3dn4w
+        ZOzl+cmgktJxzg6ZD8ZwXcXeC
+X-Received: by 2002:adf:f550:: with SMTP id j16mr17963067wrp.91.1627917914731;
+        Mon, 02 Aug 2021 08:25:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9Fi4IxIqrXQ8Q59sUryuPklM/kVQ/ol76fUwEbKaqHpLrnllMncmn29lBNyvRUD+Yy3rDYw==
+X-Received: by 2002:adf:f550:: with SMTP id j16mr17963049wrp.91.1627917914542;
+        Mon, 02 Aug 2021 08:25:14 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id 19sm4293972wmj.48.2021.08.02.08.25.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 08:25:13 -0700 (PDT)
+Subject: Re: [PATCH v3 4/7] KVM: X86: Introduce mmu_rmaps_stat per-vm debugfs
+ file
+To:     Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210730220455.26054-1-peterx@redhat.com>
+ <20210730220455.26054-5-peterx@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8964c91d-761f-8fd4-e8c6-f85d6e318a45@redhat.com>
+Date:   Mon, 2 Aug 2021 17:25:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210730220455.26054-5-peterx@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memory attributes attached to memory regions depend on architecture
-specific mappings.
+On 31/07/21 00:04, Peter Xu wrote:
+> Use this file to dump rmap statistic information.  The statistic is done by
+> calculating the rmap count and the result is log-2-based.
+> 
+> An example output of this looks like (idle 6GB guest, right after boot linux):
+> 
+> Rmap_Count:     0       1       2-3     4-7     8-15    16-31   32-63   64-127  128-255 256-511 512-1023
+> Level=4K:       3086676 53045   12330   1272    502     121     76      2       0       0       0
+> Level=2M:       5947    231     0       0       0       0       0       0       0       0       0
+> Level=1G:       32      0       0       0       0       0       0       0       0       0       0
+> 
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>   arch/x86/kvm/x86.c | 113 +++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 113 insertions(+)
 
-For some memory regions, the attributes specified by firmware (eg
-uncached) are not sufficient to determine how a memory region should be
-mapped by an OS (for instance a region that is define as uncached in
-firmware can be mapped as Normal or Device memory on arm64) and
-therefore the OS must be given control on how to map the region to match
-the expected mapping behaviour (eg if a mapping is requested with memory
-semantics, it must allow unaligned accesses).
+This should be in debugfs.c, meaning that the kvm_mmu_slot_lpages() must 
+be in a header.  I think mmu.h should do, let me take a look and I can 
+post myself a v4 of these debugfs parts.
 
-Rework acpi_os_map_memory() and acpi_os_ioremap() back-end to split
-them into two separate code paths:
+Paolo
 
-acpi_os_memmap() -> memory semantics
-acpi_os_ioremap() -> MMIO semantics
-
-The split allows the architectural implementation back-ends to detect
-the default memory attributes required by the mapping in question
-(ie the mapping API defines the semantics memory vs MMIO) and map the
-memory accordingly.
-
-Link: https://lore.kernel.org/linux-arm-kernel/31ffe8fc-f5ee-2858-26c5-0fd8bdd68702@arm.com
-Tested-by: Hanjun Guo <guohanjun@huawei.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Hanjun Guo <guohanjun@huawei.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
----
- arch/arm64/include/asm/acpi.h |  3 +++
- arch/arm64/kernel/acpi.c      | 19 ++++++++++++++++---
- drivers/acpi/osl.c            | 23 ++++++++++++++++-------
- include/acpi/acpi_io.h        |  8 ++++++++
- 4 files changed, 43 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index bd68e1b7f29f..7535dc7cc5aa 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -50,6 +50,9 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
- void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
- #define acpi_os_ioremap acpi_os_ioremap
- 
-+void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
-+#define acpi_os_memmap acpi_os_memmap
-+
- typedef u64 phys_cpuid_t;
- #define PHYS_CPUID_INVALID INVALID_HWID
- 
-diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
-index f3851724fe35..1c9c2f7a1c04 100644
---- a/arch/arm64/kernel/acpi.c
-+++ b/arch/arm64/kernel/acpi.c
-@@ -273,7 +273,8 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
- 	return __pgprot(PROT_DEVICE_nGnRnE);
- }
- 
--void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-+static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
-+				       acpi_size size, bool memory)
- {
- 	efi_memory_desc_t *md, *region = NULL;
- 	pgprot_t prot;
-@@ -299,9 +300,11 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
- 	 * It is fine for AML to remap regions that are not represented in the
- 	 * EFI memory map at all, as it only describes normal memory, and MMIO
- 	 * regions that require a virtual mapping to make them accessible to
--	 * the EFI runtime services.
-+	 * the EFI runtime services. Determine the region default
-+	 * attributes by checking the requested memory semantics.
- 	 */
--	prot = __pgprot(PROT_DEVICE_nGnRnE);
-+	prot = memory ? __pgprot(PROT_NORMAL_NC) :
-+			__pgprot(PROT_DEVICE_nGnRnE);
- 	if (region) {
- 		switch (region->type) {
- 		case EFI_LOADER_CODE:
-@@ -361,6 +364,16 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
- 	return __ioremap(phys, size, prot);
- }
- 
-+void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-+{
-+	return __acpi_os_ioremap(phys, size, false);
-+}
-+
-+void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
-+{
-+	return __acpi_os_ioremap(phys, size, true);
-+}
-+
- /*
-  * Claim Synchronous External Aborts as a firmware first notification.
-  *
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index fdee0c6f4f7f..2fcd3bb9a3c1 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -284,7 +284,8 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
- #define should_use_kmap(pfn)   page_is_ram(pfn)
- #endif
- 
--static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
-+static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
-+			      bool memory)
- {
- 	unsigned long pfn;
- 
-@@ -294,7 +295,8 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
- 			return NULL;
- 		return (void __iomem __force *)kmap(pfn_to_page(pfn));
- 	} else
--		return acpi_os_ioremap(pg_off, pg_sz);
-+		return memory ? acpi_os_memmap(pg_off, pg_sz) :
-+				acpi_os_ioremap(pg_off, pg_sz);
- }
- 
- static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-@@ -309,9 +311,10 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
- }
- 
- /**
-- * acpi_os_map_iomem - Get a virtual address for a given physical address range.
-+ * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
-  * @phys: Start of the physical address range to map.
-  * @size: Size of the physical address range to map.
-+ * @memory: true if remapping memory, false if IO
-  *
-  * Look up the given physical address range in the list of existing ACPI memory
-  * mappings.  If found, get a reference to it and return a pointer to it (its
-@@ -321,8 +324,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-  * During early init (when acpi_permanent_mmap has not been set yet) this
-  * routine simply calls __acpi_map_table() to get the job done.
-  */
--void __iomem *__ref
--acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
-+static void __iomem *__ref
-+__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
- {
- 	struct acpi_ioremap *map;
- 	void __iomem *virt;
-@@ -353,7 +356,7 @@ acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
- 
- 	pg_off = round_down(phys, PAGE_SIZE);
- 	pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
--	virt = acpi_map(phys, size);
-+	virt = acpi_map(phys, size, memory);
- 	if (!virt) {
- 		mutex_unlock(&acpi_ioremap_lock);
- 		kfree(map);
-@@ -372,11 +375,17 @@ acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
- 	mutex_unlock(&acpi_ioremap_lock);
- 	return map->virt + (phys - map->phys);
- }
-+
-+void __iomem *__ref
-+acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
-+{
-+	return __acpi_os_map_iomem(phys, size, false);
-+}
- EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
- 
- void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
- {
--	return (__force void *)acpi_os_map_iomem(phys, size);
-+	return (__force void *)__acpi_os_map_iomem(phys, size, true);
- }
- EXPORT_SYMBOL_GPL(acpi_os_map_memory);
- 
-diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
-index a0094420303f..b69a2a1c144c 100644
---- a/include/acpi/acpi_io.h
-+++ b/include/acpi/acpi_io.h
-@@ -14,6 +14,14 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
- }
- #endif
- 
-+#ifndef acpi_os_memmap
-+static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
-+					    acpi_size size)
-+{
-+	return ioremap_cache(phys, size);
-+}
-+#endif
-+
- extern bool acpi_permanent_mmap;
- 
- void __iomem *__ref
--- 
-2.31.0
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index e44d8f7781b6..0877340dc6ff 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -30,6 +30,7 @@
+>   #include "hyperv.h"
+>   #include "lapic.h"
+>   #include "xen.h"
+> +#include "mmu/mmu_internal.h"
+>   
+>   #include <linux/clocksource.h>
+>   #include <linux/interrupt.h>
+> @@ -59,6 +60,7 @@
+>   #include <linux/mem_encrypt.h>
+>   #include <linux/entry-kvm.h>
+>   #include <linux/suspend.h>
+> +#include <linux/debugfs.h>
+>   
+>   #include <trace/events/kvm.h>
+>   
+> @@ -11193,6 +11195,117 @@ int kvm_arch_post_init_vm(struct kvm *kvm)
+>   	return kvm_mmu_post_init_vm(kvm);
+>   }
+>   
+> +/*
+> + * This covers statistics <1024 (11=log(1024)+1), which should be enough to
+> + * cover RMAP_RECYCLE_THRESHOLD.
+> + */
+> +#define  RMAP_LOG_SIZE  11
+> +
+> +static const char *kvm_lpage_str[KVM_NR_PAGE_SIZES] = { "4K", "2M", "1G" };
+> +
+> +static int kvm_mmu_rmaps_stat_show(struct seq_file *m, void *v)
+> +{
+> +	struct kvm_rmap_head *rmap;
+> +	struct kvm *kvm = m->private;
+> +	struct kvm_memory_slot *slot;
+> +	struct kvm_memslots *slots;
+> +	unsigned int lpage_size, index;
+> +	/* Still small enough to be on the stack */
+> +	unsigned int *log[KVM_NR_PAGE_SIZES], *cur;
+> +	int i, j, k, l, ret;
+> +
+> +	memset(log, 0, sizeof(log));
+> +
+> +	ret = -ENOMEM;
+> +	for (i = 0; i < KVM_NR_PAGE_SIZES; i++) {
+> +		log[i] = kzalloc(RMAP_LOG_SIZE * sizeof(unsigned int), GFP_KERNEL);
+> +		if (!log[i])
+> +			goto out;
+> +	}
+> +
+> +	mutex_lock(&kvm->slots_lock);
+> +	write_lock(&kvm->mmu_lock);
+> +
+> +	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+> +		slots = __kvm_memslots(kvm, i);
+> +		for (j = 0; j < slots->used_slots; j++) {
+> +			slot = &slots->memslots[j];
+> +			for (k = 0; k < KVM_NR_PAGE_SIZES; k++) {
+> +				rmap = slot->arch.rmap[k];
+> +				lpage_size = kvm_mmu_slot_lpages(slot, k + 1);
+> +				cur = log[k];
+> +				for (l = 0; l < lpage_size; l++) {
+> +					index = ffs(pte_list_count(&rmap[l]));
+> +					if (WARN_ON_ONCE(index >= RMAP_LOG_SIZE))
+> +						index = RMAP_LOG_SIZE - 1;
+> +					cur[index]++;
+> +				}
+> +			}
+> +		}
+> +	}
+> +
+> +	write_unlock(&kvm->mmu_lock);
+> +	mutex_unlock(&kvm->slots_lock);
+> +
+> +	/* index=0 counts no rmap; index=1 counts 1 rmap */
+> +	seq_printf(m, "Rmap_Count:\t0\t1\t");
+> +	for (i = 2; i < RMAP_LOG_SIZE; i++) {
+> +		j = 1 << (i - 1);
+> +		k = (1 << i) - 1;
+> +		seq_printf(m, "%d-%d\t", j, k);
+> +	}
+> +	seq_printf(m, "\n");
+> +
+> +	for (i = 0; i < KVM_NR_PAGE_SIZES; i++) {
+> +		seq_printf(m, "Level=%s:\t", kvm_lpage_str[i]);
+> +		cur = log[i];
+> +		for (j = 0; j < RMAP_LOG_SIZE; j++)
+> +			seq_printf(m, "%d\t", cur[j]);
+> +		seq_printf(m, "\n");
+> +	}
+> +
+> +	ret = 0;
+> +out:
+> +	for (i = 0; i < KVM_NR_PAGE_SIZES; i++)
+> +		if (log[i])
+> +			kfree(log[i]);
+> +
+> +	return ret;
+> +}
+> +
+> +static int kvm_mmu_rmaps_stat_open(struct inode *inode, struct file *file)
+> +{
+> +	struct kvm *kvm = inode->i_private;
+> +
+> +	if (!kvm_get_kvm_safe(kvm))
+> +		return -ENOENT;
+> +
+> +	return single_open(file, kvm_mmu_rmaps_stat_show, kvm);
+> +}
+> +
+> +static int kvm_mmu_rmaps_stat_release(struct inode *inode, struct file *file)
+> +{
+> +	struct kvm *kvm = inode->i_private;
+> +
+> +	kvm_put_kvm(kvm);
+> +
+> +	return single_release(inode, file);
+> +}
+> +
+> +static const struct file_operations mmu_rmaps_stat_fops = {
+> +	.open		= kvm_mmu_rmaps_stat_open,
+> +	.read		= seq_read,
+> +	.llseek		= seq_lseek,
+> +	.release	= kvm_mmu_rmaps_stat_release,
+> +};
+> +
+> +int kvm_arch_create_vm_debugfs(struct kvm *kvm)
+> +{
+> +	debugfs_create_file("mmu_rmaps_stat", 0644, kvm->debugfs_dentry, kvm,
+> +			    &mmu_rmaps_stat_fops);
+> +	return 0;
+> +}
+> +
+>   static void kvm_unload_vcpu_mmu(struct kvm_vcpu *vcpu)
+>   {
+>   	vcpu_load(vcpu);
+> 
 
