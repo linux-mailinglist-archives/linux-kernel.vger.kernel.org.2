@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8509B3DD800
+	by mail.lfdr.de (Postfix) with ESMTP id CF2763DD801
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234706AbhHBNtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:49:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57098 "EHLO mail.kernel.org"
+        id S234830AbhHBNtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:49:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234297AbhHBNrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:47:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF5DB610A2;
-        Mon,  2 Aug 2021 13:47:05 +0000 (UTC)
+        id S234239AbhHBNq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:46:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B38B60FC1;
+        Mon,  2 Aug 2021 13:46:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912026;
-        bh=p1i9Ntwco8a+1Gv6DXi0y8KCEjPG5CX5nItO6Bz3Qhk=;
+        s=korg; t=1627912006;
+        bh=JkSY3ycioVZNLgNmrHqts3OiCAFSHW9Sy0kYi5K4aUw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WUzpRKWxmY6J1+bUvMtlWM76VgC3CF06Qd2gFudse97/s60V8bmdHIngWjX0bZ4xc
-         mUVFrGMUzPZdli02rtBzinjQEmZIBVfc04DNp6lftzO7/tEskMf7r+6bWYXjXG+feT
-         6kIjQqMn8m7QCZ0HrfgbLYGu58wLAQZBz7AYFkTo=
+        b=GvNZomNBRgXwCwntjRWEwssXe4H3fcXIGdb0yBFcx22lVr8cBN9p7dUGSNqv4KOMS
+         g0Fjw93UzHoL72HySJveULXyQE2JDZa33M9cGKMcVtGzVofoIEMzucKaZrD31m7YDg
+         4jtyS3nfNSrq4Oy5EMEDYg8SyoR8rxYVyxioMKY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.9 15/32] x86/kvm: fix vcpu-id indexed array sizes
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 25/26] tulip: windbond-840: Fix missing pci_disable_device() in probe and remove
 Date:   Mon,  2 Aug 2021 15:44:35 +0200
-Message-Id: <20210802134333.409193485@linuxfoundation.org>
+Message-Id: <20210802134332.845536760@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
-References: <20210802134332.931915241@linuxfoundation.org>
+In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
+References: <20210802134332.033552261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit 76b4f357d0e7d8f6f0013c733e6cba1773c266d3 upstream.
+[ Upstream commit 76a16be07b209a3f507c72abe823bd3af1c8661a ]
 
-KVM_MAX_VCPU_ID is the maximum vcpu-id of a guest, and not the number
-of vcpu-ids. Fix array indexed by vcpu-id to have KVM_MAX_VCPU_ID+1
-elements.
+Replace pci_enable_device() with pcim_enable_device(),
+pci_disable_device() and pci_release_regions() will be
+called in release automatically.
 
-Note that this is currently no real problem, as KVM_MAX_VCPU_ID is
-an odd number, resulting in always enough padding being available at
-the end of those arrays.
-
-Nevertheless this should be fixed in order to avoid rare problems in
-case someone is using an even number for KVM_MAX_VCPU_ID.
-
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Message-Id: <20210701154105.23215-2-jgross@suse.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/ioapic.c |    2 +-
- arch/x86/kvm/ioapic.h |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/dec/tulip/winbond-840.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirec
- static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
- {
- 	ioapic->rtc_status.pending_eoi = 0;
--	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
-+	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
- }
+diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
+index 3c0e4d5c5fef..abc66eb13c35 100644
+--- a/drivers/net/ethernet/dec/tulip/winbond-840.c
++++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
+@@ -368,7 +368,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	int i, option = find_cnt < MAX_UNITS ? options[find_cnt] : 0;
+ 	void __iomem *ioaddr;
  
- static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
---- a/arch/x86/kvm/ioapic.h
-+++ b/arch/x86/kvm/ioapic.h
-@@ -42,13 +42,13 @@ struct kvm_vcpu;
+-	i = pci_enable_device(pdev);
++	i = pcim_enable_device(pdev);
+ 	if (i) return i;
  
- struct dest_map {
- 	/* vcpu bitmap where IRQ has been sent */
--	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
-+	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
+ 	pci_set_master(pdev);
+@@ -390,7 +390,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
  
- 	/*
- 	 * Vector sent to a given vcpu, only valid when
- 	 * the vcpu's bit in map is set
- 	 */
--	u8 vectors[KVM_MAX_VCPU_ID];
-+	u8 vectors[KVM_MAX_VCPU_ID + 1];
- };
+ 	ioaddr = pci_iomap(pdev, TULIP_BAR, netdev_res_size);
+ 	if (!ioaddr)
+-		goto err_out_free_res;
++		goto err_out_netdev;
  
+ 	for (i = 0; i < 3; i++)
+ 		((__le16 *)dev->dev_addr)[i] = cpu_to_le16(eeprom_read(ioaddr, i));
+@@ -469,8 +469,6 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
  
+ err_out_cleardev:
+ 	pci_iounmap(pdev, ioaddr);
+-err_out_free_res:
+-	pci_release_regions(pdev);
+ err_out_netdev:
+ 	free_netdev (dev);
+ 	return -ENODEV;
+@@ -1537,7 +1535,6 @@ static void w840_remove1(struct pci_dev *pdev)
+ 	if (dev) {
+ 		struct netdev_private *np = netdev_priv(dev);
+ 		unregister_netdev(dev);
+-		pci_release_regions(pdev);
+ 		pci_iounmap(pdev, np->base_addr);
+ 		free_netdev(dev);
+ 	}
+-- 
+2.30.2
+
 
 
