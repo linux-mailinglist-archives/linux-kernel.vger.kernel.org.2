@@ -2,102 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A603DD03B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844003DD041
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbhHBGDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhHBGDD (ORCPT
+        id S232207AbhHBGFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:05:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54041 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229792AbhHBGEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:03:03 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49204C06175F;
-        Sun,  1 Aug 2021 23:02:54 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 2 Aug 2021 02:04:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627884283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iLC4bwfdSbwF0yo5Y8i+abm/lowpqvGEJGzZXdiM5N0=;
+        b=bXOesDEU12+l0uQkVKu01uUwm2IE1VHArjaAPqLbm5V6CNAp4lroUGfs7A02NSD32CAmp2
+        CCGAgrv0/nxH78DnBEZGkPnj2L6iLyrhVosd7af2MqKvMc6Kr6EwoKnZYC9luM8b7eyq9T
+        GXoFPQt44AmfKWBm0HmtVosU8HXVPE4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-U5vS8WJCNpuEXxe4K_SxXQ-1; Mon, 02 Aug 2021 02:04:42 -0400
+X-MC-Unique: U5vS8WJCNpuEXxe4K_SxXQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GdS8p4BsNz9sRK;
-        Mon,  2 Aug 2021 16:02:48 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1627884171;
-        bh=n8jZx6w5lsO8h4k9sHk6uNDWOQkmiMu8W8QtD1+2nO8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=KhE/7yngTkzWfiGcIos1FbWPLpdyYidIZkO96Xmei+xSuXi1IHpFADnnXA8lTi0MH
-         8rXdS5lr94S+ItUlrRMXhROjhnXJMA37UrMObAbcX8Q+i9hF8253qAxVhVjQjuKhQI
-         PvbBC/XyMMPYxr6hx19BDj5H73ioBoa5cm499JaPS3/gJ6oNLVXdNndj18KA6ZP7zM
-         +0aCqQs7N8eHzd+lRqMP7OcsLf65/FC2gwY9aSeroiw2cwPAWtH6/VaGL0TNg3Amsh
-         uQZEZUitD1aOINQJieswBnfY5NUtPNl4aXBg6c9C+xIFrt+eHyeWBUx89pkyP+I1IA
-         m4/iHahE0wTcA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>, linuxppc-dev@lists.ozlabs.org
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>, linux-kernel@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>, kvm-ppc@vger.kernel.org
-Subject: Re: [PATCH kernel] powerpc/powernv: Check if powernv_rng is
- initialized
-In-Reply-To: <20210730044315.956125-1-aik@ozlabs.ru>
-References: <20210730044315.956125-1-aik@ozlabs.ru>
-Date:   Mon, 02 Aug 2021 16:02:48 +1000
-Message-ID: <87im0ol6yf.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A10DD185302A;
+        Mon,  2 Aug 2021 06:04:40 +0000 (UTC)
+Received: from gshan.redhat.com (vpn2-54-184.bne.redhat.com [10.64.54.184])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B3BCF1ABD8;
+        Mon,  2 Aug 2021 06:04:35 +0000 (UTC)
+From:   Gavin Shan <gshan@redhat.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        gerald.schaefer@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+        christophe.leroy@csgroup.eu, cai@lca.pw, catalin.marinas@arm.com,
+        will@kernel.org, vgupta@synopsys.com, akpm@linux-foundation.org,
+        chuhu@redhat.com, shan.gavin@gmail.com
+Subject: [PATCH v5 00/12] mm/debug_vm_pgtable: Enhancements
+Date:   Mon,  2 Aug 2021 14:04:07 +0800
+Message-Id: <20210802060419.1360913-1-gshan@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Kardashevskiy <aik@ozlabs.ru> writes:
-> The powernv-rng driver has 2 users - the bare metal powernv platform and
-> the KVM's H_RANDOM hcall. The hcall handler works fine when it is L0 KVM
-> but fails in L1 KVM as there is no support for the HW registers in L1 VMs
-> and such support is not advertised either (== no "ibm,power-rng" in
-> the FDT). So when a nested VM tries H_RANDOM, the L1 KVM crashes on
-> in_be64(rng->regs).
->
-> This checks the pointers and returns an error if the feature is not
-> set up.
->
-> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> ---
->
->
-> Randomly randomized H_RANDOM:
->
-> 00:00:45 executing program 10:
-> r0 = openat$kvm(0xffffffffffffff9c, &(0x7f0000000000), 0x0, 0x0)
-> r1 = ioctl$KVM_CREATE_VM(r0, 0x2000ae01, 0x0)
-> r2 = ioctl$KVM_CREATE_VCPU(r1, 0x2000ae41, 0x0)
-> ioctl$KVM_SET_REGS(r2, 0x8188ae82, &(0x7f00000001c0)={[0x0, 0x0, 0xffffffffffffffe1, 0x0, 0x0, 0x200000953, 0x0, 0xfffffffffffffffe, 0x0, 0x0, 0x2], 0x2000})
-> syz_kvm_setup_cpu$ppc64(0xffffffffffffffff, r2, &(0x7f0000e80000/0x180000)=nil, 0x0, 0x0, 0x0, 0x0, 0x0)
-> r3 = openat$kvm(0xffffffffffffff9c, &(0x7f0000000100), 0x0, 0x0)
-> syz_kvm_setup_cpu$ppc64(r1, r2, &(0x7f0000e70000/0x180000)=nil, &(0x7f0000000080)=[{0x0, &(0x7f0000000280)="0000e03d0080ef61e403ef790000ef650900ef61647b007c0000e03f0000ff63e403ff7b0000ff679952ff6370e63f7e0000603c00006360e4036378000063640003636018a8803c28bf8460e4038478ef97846436888460b6f6a03c88d6a560e403a5781beda564d879a5602665c03cb08dc660e403c67806b3c664966fc660d53fe03cddf1e760e403e7785c41e7646623e76022000044463fb1f20000803e00809462e403947a0000946604009462a6a6607f4abb4c130000603f00007b63e4037b7b00007b679a367b6332d9c17c201c994f7201004cbb7a603f72047b63e4037b7b955f7b6799947b636401607f", 0xf0}], 0x1, 0x0, &(0x7f00000000c0)=[@featur2={0x1, 0x1000}], 0x1)
->
->
-> cpu 0xd: Vector: 300 (Data Access) at [c00000001599f590]
->     pc: c00000000011d2bc: powernv_get_random_long+0x4c/0xc0
->     lr: c00000000011d298: powernv_get_random_long+0x28/0xc0
->     sp: c00000001599f830
->    msr: 800000000280b033
->    dar: 0
->  dsisr: 40000000
->   current = 0xc0000000614c7f80
->   paca    = 0xc0000000fff81700	 irqmask: 0x03	 irq_happened: 0x01
->     pid   = 31576, comm = syz-executor.10
->
-> Linux version 5.14.0-rc2-le_f29cf1ff9a23_a+fstn1 (aik@fstn1-p1) (gcc (Ubuntu 10.3.0-1ubuntu1) 10.3.0, GNU ld (GNU Binutils for Ubuntu) 2.36.1) #263 SMP Thu Jul 29 17:56:12 AEST 2021
-> enter ? for help
-> [c00000001599f860] c0000000001e45f8 kvmppc_pseries_do_hcall+0x5d8/0x2190
-> [c00000001599f8f0] c0000000001ea2dc kvmppc_vcpu_run_hv+0x31c/0x14d0
-> [c00000001599f9c0] c0000000001bd518 kvmppc_vcpu_run+0x48/0x60
-> [c00000001599f9f0] c0000000001b74b0 kvm_arch_vcpu_ioctl_run+0x580/0x7d0
-> [c00000001599fa90] c00000000019e6f8 kvm_vcpu_ioctl+0x418/0xd00
-> [c00000001599fc70] c00000000079d8c4 sys_ioctl+0xb44/0x2100
-> [c00000001599fd90] c00000000003b704 system_call_exception+0x224/0x410
-> [c00000001599fe10] c00000000000c0e8 system_call_vectored_common+0xe8/0x278
+There are couple of issues with current implementations and this series
+tries to resolve the issues:
 
-There would be no bug if KVM was using arch_get_random_seed_long(),
-because that defers to ppc_md, which is only populated when the RNG is
-setup correctly. That seems like a better fix?
+  (a) All needed information are scattered in variables, passed to various
+      test functions. The code is organized in pretty much relaxed fashion.
 
-cheers
+  (b) The page isn't allocated from buddy during page table entry modifying
+      tests. The page can be invalid, conflicting to the implementations
+      of set_xxx_at() on ARM64. The target page is accessed so that the
+      iCache can be flushed when execution permission is given on ARM64.
+      Besides, the target page can be unmapped and accessing to it causes
+      kernel crash.
+
+"struct pgtable_debug_args" is introduced to address issue (a). For issue
+(b), the used page is allocated from buddy in page table entry modifying
+tests. The corresponding tets will be skipped if we fail to allocate the
+(huge) page. For other test cases, the original page around to kernel
+symbol (@start_kernel) is still used.
+
+The patches are organized as below. PATCH[2-10] could be combined to one
+patch, but it will make the review harder:
+
+  PATCH[1] introduces "struct pgtable_debug_args" as place holder of all
+           needed information. With it, the old and new implementation
+           can coexist.
+  PATCH[2-10] uses "struct pgtable_debug_args" in various test functions.
+  PATCH[11] removes the unused code for old implementation.
+  PATCH[12] fixes the issue of corrupted page flag for ARM64
+
+Changelog
+=========
+v5:
+   * Pick r-bs from Anshuman and rebase to 5.14.rc4          (Gavin)
+   * Use args->start_p4dp to free p4d entries                (Anshuman)
+   * Introduce helper to allocate huge page in init_arg()    (Anshuman)
+   * Bail early if the allocated page doesn't exist in
+     swap_migration_tests() and correct the comments         (Anshuman)
+   * Add fixes tag to PATCH[v4 12/12]                        (Christophe)
+   * Address misc comments                                   (Anshuman)
+v4:
+   * Determine the page allocation method according to
+     MAX_ORDER                                               (Anshuman)
+   * Move existing comments to init_args()                   (Anshuman)
+   * Code refactoring as suggested by Anshuman               (Anshuman)
+   * Improved commit log and add comments for flush_dcache_page()
+     in PATCH[v4 12/12]                                      (Anshuman)
+   * Address misc comments                                   (Anshuman)
+v3:
+   * Fix the warning caused by allocating more pages than
+     (1 << (MAX_ORDER - 1)) in init_args()                   (syzbot)
+   * Fix build warning by dropping unused variables in separate
+     patches                                                 (0-day)
+   * Missed "WARN_ON(!pud_none(pud))" in pud_huge_tests() in
+     PATCH[v2 09/12]                                         (0-day)
+   * Fix the subjects for PATCH[05/12] and PATCH[09/12]      (Gavin)
+v2:
+   * Rename struct vm_pgtable_debug to struct pgtable_debug_args.
+     The parameter name to various test functions are renamed
+     to "@args"                                              (Anshuman)
+   * Code changes as suggested by Anshuman                   (Anshuman)
+
+Gavin Shan (12):
+  mm/debug_vm_pgtable: Introduce struct pgtable_debug_args
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in basic tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in leaf and
+    savewrite tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in protnone and
+    devmap tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in soft_dirty and
+    swap tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in migration and
+    thp tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PTE modifying
+    tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PMD modifying
+    tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PUD modifying
+    tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PGD and P4D
+    modifying tests
+  mm/debug_vm_pgtable: Remove unused code
+  mm/debug_vm_pgtable: Fix corrupted page flag
+
+ mm/debug_vm_pgtable.c | 916 +++++++++++++++++++++++++-----------------
+ 1 file changed, 558 insertions(+), 358 deletions(-)
+
+-- 
+2.23.0
+
