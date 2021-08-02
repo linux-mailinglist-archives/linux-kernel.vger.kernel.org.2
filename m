@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14583DD83B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 051253DD9C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234716AbhHBNui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:50:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58052 "EHLO mail.kernel.org"
+        id S235249AbhHBODe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:03:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234310AbhHBNr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:47:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC300610FD;
-        Mon,  2 Aug 2021 13:47:44 +0000 (UTC)
+        id S235407AbhHBNzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:55:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8ED59611C9;
+        Mon,  2 Aug 2021 13:54:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912065;
-        bh=joNAro/gVbiWLdK5wZF5BtH/rSA25Lcax58mBxFIgHk=;
+        s=korg; t=1627912446;
+        bh=jI+YS/i+yRrMJsmjX9PV8o/kWoZul4RIIHZhNbtJnWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nfd1SE7j4+ChRjH1IPt5sc9fU6WM5c32VtOMsKYK1eGCS8NVzuLFjF67hVFwSO1RC
-         pf8p7nikD7YwYyjR+HCs4xpdwneDr/YYytGPjhBLAAy3e30Ws5RtvMRaVIQxVL8/Mb
-         4gtU2OfqZAhY3W/C5bLSlw/sfQlLl8qOduvOnURY=
+        b=1iJhMfxkRi3Xr5Q4Mq8Rk6Xp4CsVnLbAPKnfBlilODGh/bi86kMzy4kMtUJHW9VOc
+         no91Zg2+7PGNvV2u0EsDCVBcSL0zVqLdZ/zzFR7XS42v6bZlQoltV15eKZ5nSA6s7D
+         9rQ4vbOVvZu4ueYfxHBh88sg1Ut/jXLEwj6X9zqU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 32/32] sis900: Fix missing pci_disable_device() in probe and remove
+Subject: [PATCH 5.10 29/67] bpf: Fix OOB read when printing XDP link fdinfo
 Date:   Mon,  2 Aug 2021 15:44:52 +0200
-Message-Id: <20210802134333.940594691@linuxfoundation.org>
+Message-Id: <20210802134340.007690469@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
-References: <20210802134332.931915241@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Lorenz Bauer <lmb@cloudflare.com>
 
-[ Upstream commit 89fb62fde3b226f99b7015280cf132e2a7438edf ]
+[ Upstream commit d6371c76e20d7d3f61b05fd67b596af4d14a8886 ]
 
-Replace pci_enable_device() with pcim_enable_device(),
-pci_disable_device() and pci_release_regions() will be
-called in release automatically.
+We got the following UBSAN report on one of our testing machines:
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+    ================================================================================
+    UBSAN: array-index-out-of-bounds in kernel/bpf/syscall.c:2389:24
+    index 6 is out of range for type 'char *[6]'
+    CPU: 43 PID: 930921 Comm: systemd-coredum Tainted: G           O      5.10.48-cloudflare-kasan-2021.7.0 #1
+    Hardware name: <snip>
+    Call Trace:
+     dump_stack+0x7d/0xa3
+     ubsan_epilogue+0x5/0x40
+     __ubsan_handle_out_of_bounds.cold+0x43/0x48
+     ? seq_printf+0x17d/0x250
+     bpf_link_show_fdinfo+0x329/0x380
+     ? bpf_map_value_size+0xe0/0xe0
+     ? put_files_struct+0x20/0x2d0
+     ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+     seq_show+0x3f7/0x540
+     seq_read_iter+0x3f8/0x1040
+     seq_read+0x329/0x500
+     ? seq_read_iter+0x1040/0x1040
+     ? __fsnotify_parent+0x80/0x820
+     ? __fsnotify_update_child_dentry_flags+0x380/0x380
+     vfs_read+0x123/0x460
+     ksys_read+0xed/0x1c0
+     ? __x64_sys_pwrite64+0x1f0/0x1f0
+     do_syscall_64+0x33/0x40
+     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    <snip>
+    ================================================================================
+    ================================================================================
+    UBSAN: object-size-mismatch in kernel/bpf/syscall.c:2384:2
+
+>From the report, we can infer that some array access in bpf_link_show_fdinfo at index 6
+is out of bounds. The obvious candidate is bpf_link_type_strs[BPF_LINK_TYPE_XDP] with
+BPF_LINK_TYPE_XDP == 6. It turns out that BPF_LINK_TYPE_XDP is missing from bpf_types.h
+and therefore doesn't have an entry in bpf_link_type_strs:
+
+    pos:	0
+    flags:	02000000
+    mnt_id:	13
+    link_type:	(null)
+    link_id:	4
+    prog_tag:	bcf7977d3b93787c
+    prog_id:	4
+    ifindex:	1
+
+Fixes: aa8d3a716b59 ("bpf, xdp: Add bpf_link-based XDP attachment API")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210719085134.43325-2-lmb@cloudflare.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sis/sis900.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ include/linux/bpf_types.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/sis/sis900.c b/drivers/net/ethernet/sis/sis900.c
-index ae9b983e8e5c..4a0e69a2d4f5 100644
---- a/drivers/net/ethernet/sis/sis900.c
-+++ b/drivers/net/ethernet/sis/sis900.c
-@@ -442,7 +442,7 @@ static int sis900_probe(struct pci_dev *pci_dev,
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index 2e6f568377f1..a8137bb6dd3c 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -133,4 +133,5 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_CGROUP, cgroup)
+ BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
+ #ifdef CONFIG_NET
+ BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
++BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
  #endif
- 
- 	/* setup various bits in PCI command register */
--	ret = pci_enable_device(pci_dev);
-+	ret = pcim_enable_device(pci_dev);
- 	if(ret) return ret;
- 
- 	i = pci_set_dma_mask(pci_dev, DMA_BIT_MASK(32));
-@@ -468,7 +468,7 @@ static int sis900_probe(struct pci_dev *pci_dev,
- 	ioaddr = pci_iomap(pci_dev, 0, 0);
- 	if (!ioaddr) {
- 		ret = -ENOMEM;
--		goto err_out_cleardev;
-+		goto err_out;
- 	}
- 
- 	sis_priv = netdev_priv(net_dev);
-@@ -576,8 +576,6 @@ err_unmap_tx:
- 		sis_priv->tx_ring_dma);
- err_out_unmap:
- 	pci_iounmap(pci_dev, ioaddr);
--err_out_cleardev:
--	pci_release_regions(pci_dev);
-  err_out:
- 	free_netdev(net_dev);
- 	return ret;
-@@ -2425,7 +2423,6 @@ static void sis900_remove(struct pci_dev *pci_dev)
- 		sis_priv->tx_ring_dma);
- 	pci_iounmap(pci_dev, sis_priv->ioaddr);
- 	free_netdev(net_dev);
--	pci_release_regions(pci_dev);
- }
- 
- #ifdef CONFIG_PM
 -- 
 2.30.2
 
