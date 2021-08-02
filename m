@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DFB3DD603
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416FA3DD604
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbhHBMvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:51:47 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:40589 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbhHBMvq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:51:46 -0400
-Received: by mail-wr1-f45.google.com with SMTP id p5so21378697wro.7;
-        Mon, 02 Aug 2021 05:51:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ln/22gR449DmeS8tOKA79D6nZ+VWBZEOwVh5p0o76H0=;
-        b=D9vt68gY8VjQzZGEiZPAkYQLWNanLArUIu+zYG+5/j9A04mhWF74oXjNE6wXJodK/u
-         A3A2wrShFxnf3ULZT1FOIKKMF8y9GTaHJOoJX9yK43/ALqCviFW1DU9Qca9axEKKxfzN
-         6tg5sTeplUtr/yNwEk4QnJxMhafjlqyPgQzU0Qs8SzvgDxijlAI5wBSJ0iJTzEmcRkje
-         aUHcLN9jTlSu6JnKX8gYIJfE3wifPxJQi7u8tEjJWWSZUtDiFqcK6SiXsERAlvJTNkbI
-         G6LsOKnOSrOI1AAdMTZgIn2CG2MBtvTdGzB2vueYrC5zAGZ5xzlZiv5AteUXZEcuS0UI
-         Q9iQ==
-X-Gm-Message-State: AOAM530QAaUJUVLjnKUjLdJFHJJCWpoNCm9l5HcGhemASEIYz9bS8JsY
-        SvPa9LSSKeepeeSVFguiEck=
-X-Google-Smtp-Source: ABdhPJyNS+4/t2DKARRNJrSlQ5J2nJHe2AuwGN68ZGGBSmDdTA8yO8H7ZgrE00WYaC+rP4pzIB7Gig==
-X-Received: by 2002:adf:e101:: with SMTP id t1mr17476003wrz.215.1627908695958;
-        Mon, 02 Aug 2021 05:51:35 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id x9sm10345292wmj.41.2021.08.02.05.51.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 05:51:35 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 12:51:33 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        nunodasneves@linux.microsoft.com
-Subject: Re: [PATCH v5] hyperv: root partition faults writing to VP ASSIST
- MSR PAGE
-Message-ID: <20210802125133.ci2jlg32mdfd5xds@liuwe-devbox-debian-v2>
-References: <20210731120519.17154-1-kumarpraveen@linux.microsoft.com>
+        id S233755AbhHBMwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:52:32 -0400
+Received: from [103.31.38.59] ([103.31.38.59]:52506 "EHLO gnuweeb.org"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232842AbhHBMwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 08:52:31 -0400
+Received: from [10.7.7.2] (unknown [68.183.184.174])
+        by gnuweeb.org (Postfix) with ESMTPSA id 9E92DBFC2A;
+        Mon,  2 Aug 2021 12:52:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=gnuweeb.org;
+        s=default; t=1627908739;
+        bh=9dMWCcCbqPK70BkGb3v5u2ZlddkJlkQvmwNyGfwCNY0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=EJiO+Ad5SHbv92sKxpB6MEf6KmMtSi5ulBYilpe/UjBcwQowgkJjTLssE+edrTD8A
+         zgjYCN+AyGk3pUKRxG1XPSLlbVOmi+5PRw0dwXAVP9I7KIFz8ATbi9yTUEcxWmoP8b
+         aVZfd98RRdgTje5itQUFljPztwGJ9EC/HdymeESJ9Qze+XUPb90sSZMfQj+qhD01mx
+         Z5unXSLvJk27yost5r6MLzQ0kbP20RgF4BlvtaCVTEwV6e/IsjcaIaqkV+JFlS5YRh
+         ReECLQn1YN6oXhG8Hz10lkPh5u40huVM15hMzKoi+3Ed0q9GUpxvGZIGe87RNnICmu
+         crlAZT7WFh+0Q==
+Subject: Re: WARNING: CPU: 0 PID: 12 at kernel/sched/fair.c:3306
+ update_blocked_averages+0x941/0x9a0
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Ammar Faizi <ammarfaizi2@gmail.com>
+References: <b18744a7-d300-59a8-a6d7-55ba88471252@gnuweeb.org>
+ <7473b5ba-72bf-7836-44a6-42851081a277@arm.com>
+From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Message-ID: <9d1680de-39e5-609c-7410-7baabfb079e5@gnuweeb.org>
+Date:   Mon, 2 Aug 2021 19:52:13 +0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210731120519.17154-1-kumarpraveen@linux.microsoft.com>
+In-Reply-To: <7473b5ba-72bf-7836-44a6-42851081a277@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 05:35:19PM +0530, Praveen Kumar wrote:
-> For Root partition the VP assist pages are pre-determined by the
-> hypervisor. The Root kernel is not allowed to change them to
-> different locations. And thus, we are getting below stack as in
-> current implementation Root is trying to perform write to specific
-> MSR.
-> 
-> [ 2.778197] unchecked MSR access error: WRMSR to 0x40000073 (tried to
-> write 0x0000000145ac5001) at rIP: 0xffffffff810c1084
-> (native_write_msr+0x4/0x30)
-> [ 2.784867] Call Trace:
-> [ 2.791507] hv_cpu_init+0xf1/0x1c0
-> [ 2.798144] ? hyperv_report_panic+0xd0/0xd0
-> [ 2.804806] cpuhp_invoke_callback+0x11a/0x440
-> [ 2.811465] ? hv_resume+0x90/0x90
-> [ 2.818137] cpuhp_issue_call+0x126/0x130
-> [ 2.824782] __cpuhp_setup_state_cpuslocked+0x102/0x2b0
-> [ 2.831427] ? hyperv_report_panic+0xd0/0xd0
-> [ 2.838075] ? hyperv_report_panic+0xd0/0xd0
-> [ 2.844723] ? hv_resume+0x90/0x90
-> [ 2.851375] __cpuhp_setup_state+0x3d/0x90
-> [ 2.858030] hyperv_init+0x14e/0x410
-> [ 2.864689] ? enable_IR_x2apic+0x190/0x1a0
-> [ 2.871349] apic_intr_mode_init+0x8b/0x100
-> [ 2.878017] x86_late_time_init+0x20/0x30
-> [ 2.884675] start_kernel+0x459/0x4fb
-> [ 2.891329] secondary_startup_64_no_verify+0xb0/0xbb
-> 
-> Since, the hypervisor already provides the VP assist page for root
-> partition, we need to memremap the memory from hypervisor for root
-> kernel to use. The mapping is done in hv_cpu_init during bringup and
-> is unmaped in hv_cpu_die during teardown.
-> 
-> Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
+On 8/2/21 3:42 PM, Dietmar Eggemann wrote:
+> So you're running with:
+>
+> 9e077b52d86a - sched/pelt: Check that *_avg are null when *_sum are
+> (2021-06-17 Vincent Guittot)
+>
+> but not with:
+>
+> ceb6ba45dc80 - sched/fair: Sync load_sum with load_avg after dequeue
+> (2021-07-02 Vincent Guittot)
+>
+> The SCHED_WARN_ON you're hitting is harmless and just tells you that the
+> PELT load_avg and load_sum part of one of your cfs_rq's is not aligned.
+> Has to be load (and not util or runnable) since load is the only one
+> still not fixed in f55966571d5e.
+>
+> This should go away once you applied ceb6ba45dc80.
 
-Looks good. I can fix a few styling issues in code and comments when I
-commit this patch.
+Alright, I have just moved to 5.14-rc4 and doesn't seem to have this
+issue anymore.
 
-Wei.
+Thanks for the response, Dietmar.
+
+  Ammar
+
