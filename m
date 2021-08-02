@@ -2,186 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1A73DD54D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DB03DD553
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhHBMK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
+        id S233591AbhHBMMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233518AbhHBMK5 (ORCPT
+        with ESMTP id S233516AbhHBMMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:10:57 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598C9C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 05:10:48 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id g76so28147737ybf.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 05:10:48 -0700 (PDT)
+        Mon, 2 Aug 2021 08:12:38 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2CBC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 05:12:28 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so24339804pji.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 05:12:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IokGs/ock9H3fPpCABnbBAUNhbT31L4t8yb0xlxFIy8=;
-        b=oPeKY+Mn1bWxGwC8jLRHIpeFGvMJPtDjw06oaa8Knjmr9RsGRNOLC5NJq52SJlKGFB
-         ugZVPyMeLkbm30ClxKj0tawg1XAbciSDD3yy0gj5ETJdyayUFQYqaNlBudYyb01s/u9G
-         RGZL9w88H9CojbM8tkZgSsHAPn9+RtwES0k1PO9kL3RnrjPFI+nlK2ls83dZoGBUOmL4
-         opQLTyDEgPEjjUv2SXSkvrjOhK34IDLLtiAKmUhQ/SEoey/4DEAi18DnDpNl/cxxtJuP
-         42TLxX41ZT0YvxDtrICkv18dONEoU7HQe1hF7Of8V/ma2skYjNN0Uic4nb/rFn0mvD8z
-         NY+A==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yhCy+jdg2z+Eckz1yvxcPdL/SuIBQamgSG0Pchby1eE=;
+        b=IHFEat4kyp7BJrcnOYKhWyx2BgxojQqKz+Q69zBBnJ9SF6H/hSn+HkbWOVx8/ye6ir
+         b/2N1/CLAwC6wSGNYMbfA6QLp/HMduvyqpQv0/r+QOCJNRawHSLCsegT5OYBch2dGAZt
+         vFsHXxQKt0chTg+3kP4mAeEs6RBwjb0C5OEag=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IokGs/ock9H3fPpCABnbBAUNhbT31L4t8yb0xlxFIy8=;
-        b=BEcywiGpSpndh1q3vQUk/opR9erMjB1oj4OGUn2947dJz1Kx22GIu7Vq7fmxygADqA
-         w0dq8wisCSstxFMwxjm3+92YuG6msBAdKx3ewTTuf5yDWvNm/a2f/z65x9RKZn6VGnKu
-         DqV/16Pqt6QOXtCb6pZUE36MOABOmIYURqLxeIN5hiYpj3+JljeXORItL/mXzzAZNsoz
-         vBFs33xZfEFTGMDlBWT0zOi1WsxJ+hCewciqvuQiqsRn30PV97bt0njtn/momqE8IG+E
-         libHihoX4w4gQTMiZI6ZbansNoRJjOCuWMRyvzXcWdHuhceM3ZiBSWwB7wjPZPMyvC3P
-         pB0Q==
-X-Gm-Message-State: AOAM533YulFkxBC5j0to+TlTsHYbXxO/ykhKdlUUyrkdtjFrglegF+vQ
-        D1Ta6BsPGQa11X9X8r+HG0O4enPdPhu+D6XMiWXGPQ==
-X-Google-Smtp-Source: ABdhPJxd/nHYE1HdonBqJGgu3Tqa+WZ9PmgGGn7DeGFK/iw+LvNCai1ySHkhSlmzifsAFlqatmlthT2JUhnQjRlcQcU=
-X-Received: by 2002:a25:3750:: with SMTP id e77mr20820613yba.469.1627906247652;
- Mon, 02 Aug 2021 05:10:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210716221744.5445-1-robert.marko@sartura.hr>
-In-Reply-To: <20210716221744.5445-1-robert.marko@sartura.hr>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 2 Aug 2021 14:10:36 +0200
-Message-ID: <CAMpxmJXy1L-OC7k+h6pOwFGNS8WntNSMjP1Kvu7tnCQvGNwnRw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] gpio: tn48m: Add support for Delta TN4810M CPLD
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yhCy+jdg2z+Eckz1yvxcPdL/SuIBQamgSG0Pchby1eE=;
+        b=gHsAZuutRatksGJo9BiX9dnUIjPPMZg7BxckQhynXdZOKqG+foumquSlTaVLcGihpn
+         Yzy9dcUD670ygIbNZUIo1IXAFyAG5FHCiqKy97KIDorTpEu8iOIBcOjIjjyxsK/2Iv6f
+         P9RGCgYRCdczzNGlWu8Nhvvsku1wNqXHsTvaLgZbeB0tRF3tyeD+atUn2lxaXq71bQOA
+         n2FqIlN8sETRXgyOKgDUSkUk/NNdVPVQNYFpEAZLmAC4d6K56M3+8MochPQ8VuUKszJ5
+         7nx6GKAChfILP02S4XL7qXq5TwPG6t3qf0XirENOizIwJX5kdJg8aIzhBmkKVE1zt7TA
+         wUAw==
+X-Gm-Message-State: AOAM5308RLmDGPCeLsyNNxc9K5OxZ7VWY+j8o1UgljojlNRHVvyNf93m
+        nQG4E48OUMJgqXlGN+xkdpGVnkJor8eTsQ==
+X-Google-Smtp-Source: ABdhPJw9D3QYvpfQwiLiGcde+JTyAT/xpxneIagpGhWlhr9nQI9AqvoEdzzBW/YWozCp7VcQCEgNIw==
+X-Received: by 2002:a17:90a:de18:: with SMTP id m24mr16795133pjv.78.1627906348032;
+        Mon, 02 Aug 2021 05:12:28 -0700 (PDT)
+Received: from localhost ([2401:fa00:9:14:cd34:e942:c094:baef])
+        by smtp.gmail.com with UTF8SMTPSA id w134sm11685775pfd.124.2021.08.02.05.12.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 05:12:27 -0700 (PDT)
+From:   Eizan Miyamoto <eizan@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     wenst@chromium.org, houlong.wei@mediatek.com, yong.wu@mediatek.com,
+        enric.balletbo@collabora.com, devicetree@vger.kernel.org,
+        chunkuang.hu@kernel.org, Eizan Miyamoto <eizan@chromium.org>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, luka.perkov@sartura.hr
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v6 0/9] Refactor MTK MDP driver into core/components
+Date:   Mon,  2 Aug 2021 22:12:06 +1000
+Message-Id: <20210802121215.703023-1-eizan@chromium.org>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 12:17 AM Robert Marko <robert.marko@sartura.hr> wrote:
->
-> Delta TN4810M uses a similar CPLD GPIO expander
-> like the TN48M, but it has pins for 48 SFP+ ports,
-> making a total of 192 pins.
-> It also provides the TX fault pins which the TN48M
-> does not.
->
-> Only TX disable pins like on the TN48M are output
-> ones.
->
-> Thankfully, regmap GPIO allows for the driver to be
-> easily extended to support the TN4810M.
->
-> Note that this patch depends on the following series:
-> https://patchwork.ozlabs.org/project/linux-gpio/list/?series=247538
->
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> ---
->  drivers/gpio/gpio-tn48m.c | 56 ++++++++++++++++++++++++++++++++++++---
->  1 file changed, 52 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-tn48m.c b/drivers/gpio/gpio-tn48m.c
-> index b12a6b4bc4b3..e429e7ade941 100644
-> --- a/drivers/gpio/gpio-tn48m.c
-> +++ b/drivers/gpio/gpio-tn48m.c
-> @@ -19,6 +19,10 @@ enum tn48m_gpio_type {
->         TN48M_SFP_TX_DISABLE = 1,
->         TN48M_SFP_PRESENT,
->         TN48M_SFP_LOS,
-> +       TN4810M_SFP_TX_DISABLE,
-> +       TN4810M_SFP_TX_FAULT,
-> +       TN4810M_SFP_PRESENT,
-> +       TN4810M_SFP_LOS,
->  };
->
->  static int tn48m_gpio_probe(struct platform_device *pdev)
-> @@ -46,17 +50,36 @@ static int tn48m_gpio_probe(struct platform_device *pdev)
->
->         config.regmap = regmap;
->         config.parent = &pdev->dev;
-> -       config.ngpio = 4;
-> +       config.ngpio_per_reg = 8;
->
->         switch (type) {
->         case TN48M_SFP_TX_DISABLE:
->                 config.reg_set_base = base;
-> +               config.ngpio = 4;
->                 break;
->         case TN48M_SFP_PRESENT:
->                 config.reg_dat_base = base;
-> +               config.ngpio = 4;
->                 break;
->         case TN48M_SFP_LOS:
->                 config.reg_dat_base = base;
-> +               config.ngpio = 4;
-> +               break;
-> +       case TN4810M_SFP_TX_DISABLE:
-> +               config.reg_set_base = base;
-> +               config.ngpio = 48;
-> +               break;
-> +       case TN4810M_SFP_TX_FAULT:
-> +               config.reg_dat_base = base;
-> +               config.ngpio = 48;
-> +               break;
-> +       case TN4810M_SFP_PRESENT:
-> +               config.reg_dat_base = base;
-> +               config.ngpio = 48;
-> +               break;
-> +       case TN4810M_SFP_LOS:
-> +               config.reg_dat_base = base;
-> +               config.ngpio = 48;
->                 break;
->         default:
->                 dev_err(&pdev->dev, "unknown type %d\n", type);
-> @@ -67,9 +90,34 @@ static int tn48m_gpio_probe(struct platform_device *pdev)
->  }
->
->  static const struct of_device_id tn48m_gpio_of_match[] = {
-> -       { .compatible = "delta,tn48m-gpio-sfp-tx-disable", .data = (void *)TN48M_SFP_TX_DISABLE },
-> -       { .compatible = "delta,tn48m-gpio-sfp-present", .data = (void *)TN48M_SFP_PRESENT },
-> -       { .compatible = "delta,tn48m-gpio-sfp-los", .data = (void *)TN48M_SFP_LOS },
-> +       {
-> +               .compatible = "delta,tn48m-gpio-sfp-tx-disable",
-> +               .data = (void *)TN48M_SFP_TX_DISABLE
-> +       },
-> +       {
-> +               .compatible = "delta,tn48m-gpio-sfp-present",
-> +               .data = (void *)TN48M_SFP_PRESENT
-> +       },
-> +       {
-> +               .compatible = "delta,tn48m-gpio-sfp-los",
-> +               .data = (void *)TN48M_SFP_LOS
-> +       },
-> +       {
-> +               .compatible = "delta,tn4810m-gpio-sfp-tx-disable",
-> +               .data = (void *)TN4810M_SFP_TX_DISABLE
-> +       },
-> +       {
-> +               .compatible = "delta,tn4810m-gpio-sfp-tx-fault",
-> +               .data = (void *)TN4810M_SFP_TX_FAULT
-> +       },
-> +       {
-> +               .compatible = "delta,tn4810m-gpio-sfp-present",
-> +               .data = (void *)TN4810M_SFP_PRESENT
-> +       },
-> +       {
-> +               .compatible = "delta,tn4810m-gpio-sfp-los",
-> +               .data = (void *)TN4810M_SFP_LOS
-> +       },
->         { }
->  };
->  MODULE_DEVICE_TABLE(of, tn48m_gpio_of_match);
-> --
-> 2.31.1
->
 
-This looks good to me. I suppose the other patches are going in
-through the MFD tree. I don't see anything that can fail here at
-build-time - can you confirm that I can pick these patches up
-separately for v5.15?
+This is an update to
+https://patchwork.kernel.org/project/linux-mediatek/list/?series=283075
+To address some comments and fixes.
 
-Bartosz
+This series has been verified to work on 5.13.
+
+
+Changes in v6:
+- Don't propagate errors from clock_on/off as an afterthought.
+- Split apart modifying mdp driver to be loadable from mmsys from
+  actually loading it from mmsys into two changs to make review easier.
+- Update devicetree bindings to reflect no longer needing the
+  mediatek,vpu property in the mdp_rdma0 device node.
+- Some stylistic cleanups.
+
+Changes in v5:
+- rebase and test on 5.13-next @ e2f74b13dbe6
+
+Changes in v4:
+- rebase and test on 5.13
+- don't depend on https://patchwork.kernel.org/project/linux-mediatek/list/?series=464873
+
+Changes in v3:
+- get mdp master from aliases instead of strcmp against of_node->name
+
+Changes in v2:
+- rebased onto Linux 5.12
+- 100 char line length allowance was utilized in a few places
+- Removal of a redundant dev_err() print at the end of
+  mtk_mdp_comp_init()
+- Instead of printing errors and ignoring them, I've added a patch to
+  correctly propagate them.
+- Use of C style comments.
+- Three additional patches were added to eliminate dependency on the
+  mediatek,vpu property inside the mdp_rdma0 device node.
+
+Eizan Miyamoto (9):
+  mtk-mdp: propagate errors from clock_on
+  mtk-mdp: add driver to probe mdp components
+  mtk-mdp: use pm_runtime in MDP component driver
+  media: mtk-mdp: don't pm_run_time_get/put for master comp in clock_on
+  mtk-mdp: make mdp driver to be loadable by platform_device_register*()
+  soc: mediatek: mmsys: instantiate mdp virtual device from mmsys
+  media: mtk-mdp: use mdp-rdma0 alias to point to MDP master
+  dts: mtk-mdp: remove mediatek,vpu property from primary MDP device
+  dt-bindings: mediatek: remove vpu requirement from mtk-mdp
+
+ .../bindings/media/mediatek-mdp.txt           |   3 -
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi      |   1 -
+ drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 268 +++++++++++++++--
+ drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  34 +--
+ drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 282 ++++++++++++------
+ drivers/media/platform/mtk-mdp/mtk_mdp_core.h |   3 +
+ drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c  |   4 +-
+ drivers/soc/mediatek/mtk-mmsys.c              |  20 +-
+ 8 files changed, 470 insertions(+), 145 deletions(-)
+
+-- 
+2.32.0.554.ge1b32706d8-goog
+
