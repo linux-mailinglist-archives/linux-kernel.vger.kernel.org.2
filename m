@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773053DE19A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985303DE19C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhHBVZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:25:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhHBVZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:25:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 279E560EEA;
-        Mon,  2 Aug 2021 21:25:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627939517;
-        bh=2Wbr8lKOxYcEnRVsPKJDVHQFpQA4L8T0K/kB3c4SpcE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qJFNt/e7Fj5ohb/1a8trJgNdnCgnAfyelKS/AVdOd3EvjK4cLpLdH9kKkNjxqTKEo
-         5D7lJ6uX/aVbToZRma6r3aUBZVoENvU6X5uxjjFJXycdtSBdjn72+HB7tlWOB5r7qh
-         EMgmYglJGJ/Fy9DRPtIoVp19QDmw8WeYmQSZlYtDhNg2SXucwSf7j24rYgYqf+AXXZ
-         3wcznbXA+b5ZpPS7DUFcoJpITPPooFdLVeqHsWoP46iBCqGVfnLLOaO3CortKp7UZa
-         fSTTZBKGgwS31xYy2lYM/GW60xRFkWAdwZJY0nvbIWlzgXcUPirUu3/xppwWf813Cs
-         oD/QkC7CDyXFg==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH v2] ASoC: Intel: boards: Fix CONFIG_SND_SOC_SDW_MOCKUP select
-Date:   Mon,  2 Aug 2021 14:24:10 -0700
-Message-Id: <20210802212409.3207648-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.32.0.264.g75ae10bc75
-In-Reply-To: <20210802190351.3201677-1-nathan@kernel.org>
-References: <20210802190351.3201677-1-nathan@kernel.org>
+        id S232544AbhHBV04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:26:56 -0400
+Received: from mail-il1-f172.google.com ([209.85.166.172]:38572 "EHLO
+        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230313AbhHBV0z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 17:26:55 -0400
+Received: by mail-il1-f172.google.com with SMTP id h18so17764712ilc.5;
+        Mon, 02 Aug 2021 14:26:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Szk4wIhknQuUacA+Q1dPMQsx0YA8Mud6H8BQF9JSdFg=;
+        b=M8LBYUCiGlb3ShnTRF8cV/BWvLAIeFAGeAbxKbqy6nv0+0e/9vJ8DSYMxIPMhR9rZ1
+         svjt8S4EJjCwLpM2XM0qgBx23JwU3Ft0HAM0YXXYMUP0HKLT7E39rDgyM73wW73PY4L8
+         spqR4QAzBA/ybkMf3e+uvCf/xqi4fJBV+ZIHznuJaaj1jr2QHkxd08R2eW3G0zv26PJg
+         +SVcgDKIVxnCQwLaU7cgfj5NfF3WN4esstDs4R7l0daXeJ8KmbCxA5H7Lv20ysahG+4I
+         0GaMO6KjvUvHiGsUIw4FR1CfzYAo+EvA1mj0lkEP2YjhctLY22rSV3M+9LWAaZfbEbA7
+         AMTg==
+X-Gm-Message-State: AOAM532fnhXpm4C9J79ZdIWjbELQw7e1NoGS3L77VEjC19YztZZaR+QS
+        y79OSiYBxZjdGkXuAx59Vw==
+X-Google-Smtp-Source: ABdhPJy20gVpw6QtakQT+Lh0Ki5QXcX31HbCjTyBfXP9bahiUXiLAhUpiRil7DbxzGI/iiOs3l2XBA==
+X-Received: by 2002:a05:6e02:1aa2:: with SMTP id l2mr27445ilv.224.1627939604911;
+        Mon, 02 Aug 2021 14:26:44 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id a17sm8291582ios.36.2021.08.02.14.26.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 14:26:44 -0700 (PDT)
+Received: (nullmailer pid 1642364 invoked by uid 1000);
+        Mon, 02 Aug 2021 21:26:43 -0000
+Date:   Mon, 2 Aug 2021 15:26:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        linux-iio@vger.kernel.org, Nuno.Sa@analog.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        charles-antoine.couret@essensium.com
+Subject: Re: [PATCH v4 4/5] dt-bindings: iio: adc: ad7949: add per channel
+ reference
+Message-ID: <YQhjE27mKQkQL1pr@robh.at.kernel.org>
+References: <20210727232906.980769-1-liambeguin@gmail.com>
+ <20210727232906.980769-5-liambeguin@gmail.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727232906.980769-5-liambeguin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH is enabled without
-CONFIG_EXPERT, there is a Kconfig warning about unmet dependencies:
+On Tue, 27 Jul 2021 19:29:05 -0400, Liam Beguin wrote:
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> Add bindings documentation describing per channel reference voltage
+> selection.
+> This adds the adi,internal-ref-microvolt property, and child nodes for
+> each channel. This is required to properly configure the ADC sample
+> request based on which reference source should be used for the
+> calculation.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> ---
+>  .../bindings/iio/adc/adi,ad7949.yaml          | 69 +++++++++++++++++--
+>  1 file changed, 65 insertions(+), 4 deletions(-)
+> 
 
-WARNING: unmet direct dependencies detected for SND_SOC_SDW_MOCKUP
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
-EXPERT [=n] && SOUNDWIRE [=y]
-  Selected by [y]:
-  - SND_SOC_INTEL_SOUNDWIRE_SOF_MACH [=y] && ...
-
-Selecting a symbol does not account for dependencies. There are three
-ways to resolve this:
-
-1. Make CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH select
-   CONFIG_SND_SOC_SDW_MOCKUP only if CONFIG_EXPERT is set.
-
-2. Make CONFIG_SND_SOC_SDW_MOCKUP's prompt depend on CONFIG_EXPERT so
-   that it can be selected by options that only depend on
-   CONFIG_SOUNDWIRE but still appear as a prompt to the user when
-   CONFIG_EXPERT is set.
-
-3. Make CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH imply
-   CONFIG_SND_SOC_SDW_MOCKUP, which will select
-   CONFIG_SND_SOC_SDW_MOCKUP when its dependencies are enabled but still
-   allow the user to disable it.
-
-Go with the third option as it gives the most flexibility while
-retaining the original intent of the select.
-
-Fixes: 0ccac3bcf356 ("ASoC: Intel: boards: sof_sdw: add SoundWire mockup codecs for tests")
-Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
-
-v1 -> v2:
-
-* Switch to imply rather than select ... if ... (Pierre-Louis).
-
-* Reword commit message to explain different solutions rather than
-  explain the problem in depth.
-
- sound/soc/intel/boards/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 046955bf717c..61b71d6c44cf 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -602,7 +602,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
- 	select SND_SOC_DMIC
- 	select SND_SOC_INTEL_HDA_DSP_COMMON
- 	select SND_SOC_INTEL_SOF_MAXIM_COMMON
--	select SND_SOC_SDW_MOCKUP
-+	imply SND_SOC_SDW_MOCKUP
- 	help
- 	  Add support for Intel SoundWire-based platforms connected to
- 	  MAX98373, RT700, RT711, RT1308 and RT715
-
-base-commit: 170c0d7460fc4aa522995ae4096b5a442f50a1fc
--- 
-2.32.0.264.g75ae10bc75
-
+Reviewed-by: Rob Herring <robh@kernel.org>
