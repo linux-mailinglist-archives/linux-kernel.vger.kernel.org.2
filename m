@@ -2,309 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2928D3DDAE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9413F3DDA98
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236306AbhHBOXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236175AbhHBOW5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:22:57 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B8AC07720F;
-        Mon,  2 Aug 2021 07:10:49 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id d2so11687823qto.6;
-        Mon, 02 Aug 2021 07:10:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:from:to:cc
-         :subject:references:in-reply-to;
-        bh=2X+kvVIkTXeU3G/rutGby/mSqVSEzt5UnQ7WKMI/d2I=;
-        b=Xv2UKFyUvbz+5h8eFQvVKZN36IG/7D4mrKmUQCy73IgqhpOtwtYtLZl3PP07PCRFg4
-         ctwlRebDWPg4r2+TxBOIibZjguq+pWw7AwqgQpu/egFKCK3udg0R4WYHG3pQb9lTbxuP
-         Rs4IbvJivNxX248IjAESaoh4nioL23y8kdZRW3Fsm2sTUvGnWqwKrZO5l0YZB85rzg0s
-         GoqYu/dQEGpGUgQMIayKaZWLLfgAkHG5nL7LKLBuPjvjwB7eEs8F9Gm4xtcFKplygcZN
-         le9O4r061wb4KEHMoiGefmluIhrkgXvJ/UT/TqXYUsEwbg935XPFMIIr+M39IKTWGmhB
-         6R/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:from:to:cc:subject:references:in-reply-to;
-        bh=2X+kvVIkTXeU3G/rutGby/mSqVSEzt5UnQ7WKMI/d2I=;
-        b=IhngyNvYyT0b0BBM1MmeNGw1QTVGhECSxEt+6PN1PXT/Wh0Yo+FIjNK7yRzVyWWvx3
-         TDIrH+WNFIM1+6EEI9M3CDpM70XCmz66fkrKj487AXd829Pfiwsr08GqAszxvVmrkINs
-         ktuaE1vnAqGkeBkhT/MfxV0tJ3iPFRNXrKpB6jEKKGkLO/FcyqHsSY1t8fqxA+2hchc1
-         IuT+GfpQ/q+kyyZmMfeXKr5vgEIFcoD/vMDWXZsHdkYKroBYVPyPq4qGtuWvKg0Abpz1
-         MpVDJTg60niDi2RCcaex6djChunCczN1Jlx0I2DNKjgMyESvhweE3MSBmrVkdyjrKfUF
-         dRYg==
-X-Gm-Message-State: AOAM5305Xn6QDXKm8alNqM0jx39A8/zz/NSBrx41zNgqV8yCyAfCClqe
-        fmCvkN/6r/1kBbH/LMOFUmc=
-X-Google-Smtp-Source: ABdhPJz9VTtHXR8ZvRkE9nbzG8r6HlFBgzDOgT4z+BCx8yj0ke68eM7zetabzXbvrZ7pIsG23m423Q==
-X-Received: by 2002:a05:622a:2cc:: with SMTP id a12mr14339747qtx.115.1627913448421;
-        Mon, 02 Aug 2021 07:10:48 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id m19sm4617639qtx.84.2021.08.02.07.10.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 07:10:47 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 02 Aug 2021 10:10:46 -0400
-Message-Id: <CD935LAT054Y.3JBJYUHXE55WA@shaak>
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Jonathan Cameron" <Jonathan.Cameron@huawei.com>
-Cc:     "Jonathan Cameron" <jic23@kernel.org>, <lars@metafoo.de>,
-        <Michael.Hennerich@analog.com>,
-        <charles-antoine.couret@essensium.com>, <Nuno.Sa@analog.com>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 2/5] iio: adc: ad7949: fix spi messages on non 14-bit
- controllers
-References: <20210727232906.980769-1-liambeguin@gmail.com>
- <20210727232906.980769-3-liambeguin@gmail.com>
- <20210731152921.2fcb53ab@jic23-huawei>
- <20210731155228.5cf77479@jic23-huawei> <CD8JT5A4TPLB.33HN2VCYJXKSS@shaak>
- <20210802112013.00000ff4@Huawei.com>
-In-Reply-To: <20210802112013.00000ff4@Huawei.com>
+        id S238987AbhHBOQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:16:28 -0400
+Received: from m32-153.88.com ([43.250.32.153]:15169 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238227AbhHBOLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:11:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=To:From:Date; bh=zQWRDMlxuYvEy8QnJiiJAjAsoNI8QnuO+SUDC
+        +yR8Ps=; b=GtE0fjNKzS3uUlP2Jee8Wv2tbMe6vfyWehh/ALOw7jEVtqjDH5dzC
+        I0BXm7MfadlYHo0GhPviYRaKzBEFGBsUse7ZFHgLpl74tVv9EPXJyaDTzBMmDszh
+        vmNDwOEwf9T9KZRdYAa1BCOp+wYOFaVCCH0G8pSpk7bpiqX0YUhlq0=
+Received: from [0.0.0.0] (unknown [113.251.11.248])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgCXFqft_AdhsMYXAA--.3575S3;
+        Mon, 02 Aug 2021 22:10:53 +0800 (CST)
+Subject: Re: [PATCH v3 9/9] docs: pdfdocs: Enable language-specific font
+ choice of zh_TW translations
+To:     Akira Yokosawa <akiyks@gmail.com>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
+ <48810e08-595f-fb87-603f-fa642823b84c@gmail.com>
+From:   Hu Haowen <src.res@email.cn>
+Message-ID: <e9130727-ad59-f147-f41a-9b3acc96d47e@email.cn>
+Date:   Mon, 2 Aug 2021 22:10:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <48810e08-595f-fb87-603f-fa642823b84c@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: GiKnCgCXFqft_AdhsMYXAA--.3575S3
+X-Coremail-Antispam: 1UD129KBjvdXoWruw4kJr4Uury5tFW7WF15Arb_yoWDJFbEya
+        1kXF4vv3W7Ar1IgFWrJr1kXF1FvF4rGr10yr15trZ5Za13Aws7Ar1DW3s5Za45WFsrurs8
+        C3Z5Xw18ZrnxXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUboAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wA2ocxC64kI
+        II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7
+        xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84AC
+        jcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F4
+        0EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_Cr1UJr1lOx8S6xCaFVCjc4AY6r1j
+        6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67
+        vIY487MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC
+        6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWw
+        C2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_
+        JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJV
+        WUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBI
+        daVFxhVjvjDU0xZFpf9x0Jj-VyxUUUUU=
+X-Originating-IP: [113.251.11.248]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Aug 2, 2021 at 6:20 AM EDT, Jonathan Cameron wrote:
-> On Sun, 01 Aug 2021 19:01:10 -0400
-> "Liam Beguin" <liambeguin@gmail.com> wrote:
->
-> > On Sat Jul 31, 2021 at 10:52 AM EDT, Jonathan Cameron wrote:
-> > > On Sat, 31 Jul 2021 15:29:21 +0100
-> > > Jonathan Cameron <jic23@kernel.org> wrote:
-> > > =20
-> > > > On Tue, 27 Jul 2021 19:29:03 -0400
-> > > > Liam Beguin <liambeguin@gmail.com> wrote:
-> > > >  =20
-> > > > > From: Liam Beguin <lvb@xiphos.com>
-> > > > >=20
-> > > > > This driver supports devices with 14-bit and 16-bit sample sizes.
-> > > > > This is not always handled properly by spi controllers and can fa=
-il. To
-> > > > > work around this limitation, pad samples to 16-bit and split the =
-sample
-> > > > > into two 8-bit messages in the event that only 8-bit messages are
-> > > > > supported by the controller.
-> > > > >=20
-> > > > > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > > > > ---
-> > > > >  drivers/iio/adc/ad7949.c | 62 ++++++++++++++++++++++++++++++++++=
-------
-> > > > >  1 file changed, 54 insertions(+), 8 deletions(-)
-> > > > >=20
-> > > > > diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
-> > > > > index 0b549b8bd7a9..f1702c54c8be 100644
-> > > > > --- a/drivers/iio/adc/ad7949.c
-> > > > > +++ b/drivers/iio/adc/ad7949.c
-> > > > > @@ -67,6 +67,7 @@ static const struct ad7949_adc_spec ad7949_adc_=
-spec[] =3D {
-> > > > >   * @indio_dev: reference to iio structure
-> > > > >   * @spi: reference to spi structure
-> > > > >   * @resolution: resolution of the chip
-> > > > > + * @bits_per_word: number of bits per SPI word
-> > > > >   * @cfg: copy of the configuration register
-> > > > >   * @current_channel: current channel in use
-> > > > >   * @buffer: buffer to send / receive data to / from device
-> > > > > @@ -77,6 +78,7 @@ struct ad7949_adc_chip {
-> > > > >  	struct iio_dev *indio_dev;
-> > > > >  	struct spi_device *spi;
-> > > > >  	u8 resolution;
-> > > > > +	u8 bits_per_word;
-> > > > >  	u16 cfg;
-> > > > >  	unsigned int current_channel;
-> > > > >  	u16 buffer ____cacheline_aligned;
-> > > > > @@ -86,19 +88,34 @@ static int ad7949_spi_write_cfg(struct ad7949=
-_adc_chip *ad7949_adc, u16 val,
-> > > > >  				u16 mask)
-> > > > >  {
-> > > > >  	int ret;
-> > > > > -	int bits_per_word =3D ad7949_adc->resolution;
-> > > > > -	int shift =3D bits_per_word - AD7949_CFG_REG_SIZE_BITS;   =20
-> > > >=20
-> > > > The define for this was removed in patch 1.  I'll fix that up whils=
-t applying by
-> > > > keeping it until this patch.  Please check build passes on intermed=
-iate points
-> > > > during a patch series as otherwise we may break bisectability and t=
-hat's really
-> > > > annoying if you are bisecting!
-> > > >=20
-> > > > Jonathan
-> > > >  =20
-> > > > >  	struct spi_message msg;
-> > > > >  	struct spi_transfer tx[] =3D {
-> > > > >  		{
-> > > > >  			.tx_buf =3D &ad7949_adc->buffer,
-> > > > >  			.len =3D 2,
-> > > > > -			.bits_per_word =3D bits_per_word,
-> > > > > +			.bits_per_word =3D ad7949_adc->bits_per_word,
-> > > > >  		},
-> > > > >  	};
-> > > > > =20
-> > > > > +	ad7949_adc->buffer =3D 0;
-> > > > >  	ad7949_adc->cfg =3D (val & mask) | (ad7949_adc->cfg & ~mask);
-> > > > > -	ad7949_adc->buffer =3D ad7949_adc->cfg << shift;
-> > > > > +
-> > > > > +	switch (ad7949_adc->bits_per_word) {
-> > > > > +	case 16:
-> > > > > +		ad7949_adc->buffer =3D ad7949_adc->cfg << 2;
-> > > > > +		break;
-> > > > > +	case 14:
-> > > > > +		ad7949_adc->buffer =3D ad7949_adc->cfg;
-> > > > > +		break;
-> > > > > +	case 8:
-> > > > > +		/* Here, type is big endian as it must be sent in two transfer=
-s */
-> > > > > +		ad7949_adc->buffer =3D (u16)cpu_to_be16(ad7949_adc->cfg << 2);=
- =20
-> > >
-> > > Gah, I wasn't thinking clearly when I suggested this. Sparse warns on
-> > > the
-> > > endian conversion
-> > >
-> > > One option is to resort to ignoring the fact we know it's aligned and
-> > > use the put_unaligned_be16() and get_unaligned_be16 calls which spars=
-e
-> > > seems to be
-> > > happy with. Alternative would be to just have a be16 buffer after the
-> > > existing
-> > > one in the iio_priv structure. Then you will have to change the vario=
-us
-> > > users
-> > > of iio_priv()->buffer to point to the new value if we are doing 8 bit
-> > > transfers.
-> > >
-> > > Whilst more invasive, this second option is the one I'd suggest. =20
-> >=20
-> > Understood, I'll go with your suggestion.
-> >=20
-> > Out of curiosity, other that being more explicit, is there another
-> > we'd rather not use {get,put}_unaligned_be16()?
->
-> We know it is aligned (as u16) so on a big endian platform that happens
-> to not handle unaligned accesses we will now be doing work which
-> wouldn't
-> be needed if there was a get_aligned_be16() that was more relaxed about
-> types than cpu_to_be16() etc.
->
-> So basically it looks odd and we will will be hiding that we are
-> smashing
-> data of potentially different ordering into the same structure field.
 
-Got it! Thanks for the explanation.
-
-Liam
-
+在 2021/8/2 下午6:00, Akira Yokosawa 写道:
+> The "TC" variant is supposed to be the choice for traditional
+> Chinese documents.
 >
-> >=20
-> > > Note that there will be no need to add an __cacheline_aligned marking=
- to
-> > > this
-> > > new element because it will be in a cachline that is only used for DM=
-A
-> > > simply being
-> > > after the other buffer element which is force to start on a new
-> > > cacheline. =20
-> >=20
-> > Noted, Thanks for taking the time to explaining this.
-> >=20
-> > Liam
-> >=20
-> > >
-> > > Jonathan
-> > >   =20
-> > > > > +		break;
-> > > > > +	default:
-> > > > > +		dev_err(&ad7949_adc->indio_dev->dev, "unsupported BPW\n");
-> > > > > +		return -EINVAL;
-> > > > > +	}
-> > > > > +
-> > > > >  	spi_message_init_with_transfers(&msg, tx, 1);
-> > > > >  	ret =3D spi_sync(ad7949_adc->spi, &msg);
-> > > > > =20
-> > > > > @@ -115,14 +132,12 @@ static int ad7949_spi_read_channel(struct a=
-d7949_adc_chip *ad7949_adc, int *val,
-> > > > >  {
-> > > > >  	int ret;
-> > > > >  	int i;
-> > > > > -	int bits_per_word =3D ad7949_adc->resolution;
-> > > > > -	int mask =3D GENMASK(ad7949_adc->resolution - 1, 0);
-> > > > >  	struct spi_message msg;
-> > > > >  	struct spi_transfer tx[] =3D {
-> > > > >  		{
-> > > > >  			.rx_buf =3D &ad7949_adc->buffer,
-> > > > >  			.len =3D 2,
-> > > > > -			.bits_per_word =3D bits_per_word,
-> > > > > +			.bits_per_word =3D ad7949_adc->bits_per_word,
-> > > > >  		},
-> > > > >  	};
-> > > > > =20
-> > > > > @@ -157,7 +172,25 @@ static int ad7949_spi_read_channel(struct ad=
-7949_adc_chip *ad7949_adc, int *val,
-> > > > > =20
-> > > > >  	ad7949_adc->current_channel =3D channel;
-> > > > > =20
-> > > > > -	*val =3D ad7949_adc->buffer & mask;
-> > > > > +	switch (ad7949_adc->bits_per_word) {
-> > > > > +	case 16:
-> > > > > +		*val =3D ad7949_adc->buffer;
-> > > > > +		/* Shift-out padding bits */
-> > > > > +		*val >>=3D 16 - ad7949_adc->resolution;
-> > > > > +		break;
-> > > > > +	case 14:
-> > > > > +		*val =3D ad7949_adc->buffer & GENMASK(13, 0);
-> > > > > +		break;
-> > > > > +	case 8:
-> > > > > +		/* Here, type is big endian as data was sent in two transfers =
-*/
-> > > > > +		*val =3D be16_to_cpu(ad7949_adc->buffer);
-> > > > > +		/* Shift-out padding bits */
-> > > > > +		*val >>=3D 16 - ad7949_adc->resolution;
-> > > > > +		break;
-> > > > > +	default:
-> > > > > +		dev_err(&ad7949_adc->indio_dev->dev, "unsupported BPW\n");
-> > > > > +		return -EINVAL;
-> > > > > +	}
-> > > > > =20
-> > > > >  	return 0;
-> > > > >  }
-> > > > > @@ -265,6 +298,7 @@ static int ad7949_spi_init(struct ad7949_adc_=
-chip *ad7949_adc)
-> > > > > =20
-> > > > >  static int ad7949_spi_probe(struct spi_device *spi)
-> > > > >  {
-> > > > > +	u32 spi_ctrl_mask =3D spi->controller->bits_per_word_mask;
-> > > > >  	struct device *dev =3D &spi->dev;
-> > > > >  	const struct ad7949_adc_spec *spec;
-> > > > >  	struct ad7949_adc_chip *ad7949_adc;
-> > > > > @@ -291,6 +325,18 @@ static int ad7949_spi_probe(struct spi_devic=
-e *spi)
-> > > > >  	indio_dev->num_channels =3D spec->num_channels;
-> > > > >  	ad7949_adc->resolution =3D spec->resolution;
-> > > > > =20
-> > > > > +	/* Set SPI bits per word */
-> > > > > +	if (spi_ctrl_mask & SPI_BPW_MASK(ad7949_adc->resolution)) {
-> > > > > +		ad7949_adc->bits_per_word =3D ad7949_adc->resolution;
-> > > > > +	} else if (spi_ctrl_mask =3D=3D SPI_BPW_MASK(16)) {
-> > > > > +		ad7949_adc->bits_per_word =3D 16;
-> > > > > +	} else if (spi_ctrl_mask =3D=3D SPI_BPW_MASK(8)) {
-> > > > > +		ad7949_adc->bits_per_word =3D 8;
-> > > > > +	} else {
-> > > > > +		dev_err(dev, "unable to find common BPW with spi controller\n"=
-);
-> > > > > +		return -EINVAL;
-> > > > > +	}
-> > > > > +
-> > > > >  	ad7949_adc->vref =3D devm_regulator_get(dev, "vref");
-> > > > >  	if (IS_ERR(ad7949_adc->vref)) {
-> > > > >  		dev_err(dev, "fail to request regulator\n");   =20
-> > > >  =20
-> >=20
+> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+> Cc: Hu Haowen <src.res@email.cn>
+
+
+Well done!
+
+Reviewed-by: Hu Haowen <src.res@email.cn>
+Tested-by: Hu Haowen <src.res@email.cn>
+
+Cheers,
+Hu Haowen
+
+
+> ---
+>  Documentation/translations/zh_TW/index.rst | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/Documentation/translations/zh_TW/index.rst b/Documentation/translations/zh_TW/index.rst
+> index 76981b2111f6..c02c4b5281e6 100644
+> --- a/Documentation/translations/zh_TW/index.rst
+> +++ b/Documentation/translations/zh_TW/index.rst
+> @@ -5,6 +5,7 @@
+>  	\renewcommand\thesection*
+>  	\renewcommand\thesubsection*
+>  	\kerneldocCJKon
+> +	\kerneldocBeginTC
+>  
+>  .. _linux_doc_zh_tw:
+>  
+> @@ -162,3 +163,6 @@ TODOList:
+>  
+>  * :ref:`genindex`
+>  
+> +.. raw:: latex
+> +
+> +	\kerneldocEndTC
 
