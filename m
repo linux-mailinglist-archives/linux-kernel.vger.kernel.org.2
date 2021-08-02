@@ -2,661 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB213DD4CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5373DD4D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233552AbhHBLjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:39:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46707 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233526AbhHBLjm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:39:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627904370;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1eb11UNcu8mEFKIdPzmiDn9WkPTsh759ib8CnfJVbb8=;
-        b=BzX0HVGqh+GvfEPC7/S1kw2nwxwE2wBgCQLo79N5yV6/VKlmKUSv65xqy6z+470zSrk3Hj
-        gsjtpSKOQUKmO1XCKW0R/jeMCcR4JYg3cehyggHuBVpZx4DdQqAFbPqlEF9faVyoZilKeV
-        4p8MZjQg5hpza3bEZZW115c+MeEJP0E=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-9whdZ4BSN-CqglcPI783HQ-1; Mon, 02 Aug 2021 07:39:29 -0400
-X-MC-Unique: 9whdZ4BSN-CqglcPI783HQ-1
-Received: by mail-ed1-f70.google.com with SMTP id de5-20020a0564023085b02903bb92fd182eso8642503edb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 04:39:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1eb11UNcu8mEFKIdPzmiDn9WkPTsh759ib8CnfJVbb8=;
-        b=Rjtxmnp7+/kUDcbUEirri+RBBqBKLXmjkCvt8RFdebllHi5yRpnc1493nT965B6flO
-         vgSL9xd7eRGEe6R0kjdmWl4lKgLXSzO9B29NhD+JYHNIAoyzMbS0tS5XhWrcnnihlA0G
-         E7ekc1HJLiZPc8akmkaX8ak5kb5nrg5I1C9ynxumjLRi2rVEc9ROJYsREMcDKt2lF9s8
-         IhZbGPOPpC3CyUumkUyFGgJUhsknyk1cqxR5mecRUqDQIkQ/l0C1JyYwXPtuOfkhifiB
-         lf1mhp+oK13Lx+UAPTEzqgWGmxk5MBD7N+Tt0c2NzvNEMx+nPqOtPsWrvCsEreMSd0u1
-         +Kuw==
-X-Gm-Message-State: AOAM533AWEARGLIcxKnyILadsg5dtLc+bfbMtkzDMcczAbo6lI1WMdnu
-        F7HWryhMzX2zYehiN8AdF0wVjCQsgIteM+JmbVzL+84JAKQh1ROuvCm+C1mZFzI7wTj6yeH+alp
-        UE/XTLzYpmlmMFxGlaIIz1VUjwGOkyn/g2GdSCLY967ANG3ZIaYSb70+IESNKt+ZwDB3T+THbGC
-        7K
-X-Received: by 2002:a17:907:11c4:: with SMTP id va4mr14928983ejb.37.1627904368033;
-        Mon, 02 Aug 2021 04:39:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwq9nd/zxRa7CiPUAPjpBkilNRPRt0iJW8XDKU/0rI04YBuKmPTU6QNCQOab711B8+Dud4Xmw==
-X-Received: by 2002:a17:907:11c4:: with SMTP id va4mr14928965ejb.37.1627904367762;
-        Mon, 02 Aug 2021 04:39:27 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id dn18sm5931780edb.42.2021.08.02.04.39.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 04:39:27 -0700 (PDT)
-Subject: Re: [PATCH v2] platform/x86: acer-wmi: Add Turbo Mode support for
- Acer PH315-53
-To:     Jafar Akhondali <jafar.akhoondali@gmail.com>, jlee@suse.com,
-        mgross@linux.intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CAMW3L+2yurdggGpYSHZw6x07SboxqYRrDA6B699=SagAVp6Euw@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f50d9ced-a2c3-7d46-01a0-794b31ee73a2@redhat.com>
-Date:   Mon, 2 Aug 2021 13:39:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAMW3L+2yurdggGpYSHZw6x07SboxqYRrDA6B699=SagAVp6Euw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S233564AbhHBLj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:39:56 -0400
+Received: from mga12.intel.com ([192.55.52.136]:45262 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233408AbhHBLjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 07:39:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="193032821"
+X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
+   d="scan'208";a="193032821"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 04:39:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
+   d="scan'208";a="501745746"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Aug 2021 04:39:45 -0700
+Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Mon, 2 Aug 2021 04:39:44 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Mon, 2 Aug 2021 04:39:44 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Mon, 2 Aug 2021 04:39:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KWNamQifR1lnJ6HTW5dLyRbNd1o/BT+rogBVtSs16Ef3JLPPupI/E42PKt4/l453/3LDiazFxgVBiYrfizPnwnmf1WFJT5qzkyTVpsEUileX9RWdkB2qMrcyeeAh+FSuxQIBkHkAbzlhrNuImOMtF3teTcN6k4TU7EZ4RdpkYbfIAkPArEQbEghetyZmWqFSgUrumOuteX115u39+uOgwobN0rqvwqezX6JYAcjLoynSYod2nRyMBdxQhJe7pd+T+6xHgPq83Ts3WAERZ5fuOwIxCB/t5fNzdayRYtTnwuito8CObs25SSOdwu5DD9U+YK8xcj0tCwO365FX4HzaZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0y7oZMry3eG9dVVyyXPXIQkbdCREfM/on2e8MSOmK5g=;
+ b=axncCj3w381L8pf078CYK+TmL857LObUCBnPPu3CCOcm+lsKx4HDHMaV3OfEKHXLG/SeMuwG/an3L0oRIUUs6A95qg8Pa1SsIqqPsFsgEnoQx1+bCvIlap4j6gzbDdrwqlbvkrjeqTsw3SH6ATNcT93vn9cGc/YCse1ULyHYzDEyXGZ+R32V6c4y0+yIi5sgbjcByBirK6I4sQ5XmI+xXXnPi4145Nu4MJS3F/Yw8OeKUPQxIKs3gxTU6xsBrDWwydDxZZY1P8NedyUBo7npmlE96Rn3qVFGnfKKtruu+QNWo+kMfpNbQkAho6Fb0LEYsxTKb4zwfy24I0uzYXn0vQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0y7oZMry3eG9dVVyyXPXIQkbdCREfM/on2e8MSOmK5g=;
+ b=NHB9A+h08ROt0w4LOiWPUoy8lO0zNOUAWeF2fWLRIwZRiuNTF4sRFTJYPvHZeqYJbXDd8C9/8B9Tl/y1uK+xRBVSgYARpeotPJoiq10EBN4JIch8IZGcKPHlqNtWSonNKwuq9f9ct7emqR1DhAooJsrRe5Rd1KDTyvf/CjyJphY=
+Received: from SN6PR11MB2589.namprd11.prod.outlook.com (2603:10b6:805:53::12)
+ by SA0PR11MB4624.namprd11.prod.outlook.com (2603:10b6:806:98::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Mon, 2 Aug
+ 2021 11:39:36 +0000
+Received: from SN6PR11MB2589.namprd11.prod.outlook.com
+ ([fe80::6e:364a:dc09:3d35]) by SN6PR11MB2589.namprd11.prod.outlook.com
+ ([fe80::6e:364a:dc09:3d35%5]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
+ 11:39:36 +0000
+From:   "Winiarska, Iwona" <iwona.winiarska@intel.com>
+To:     "linux@roeck-us.net" <linux@roeck-us.net>,
+        "zweiss@equinix.com" <zweiss@equinix.com>
+CC:     "corbet@lwn.net" <corbet@lwn.net>,
+        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 13/14] docs: hwmon: Document PECI drivers
+Thread-Topic: [PATCH 13/14] docs: hwmon: Document PECI drivers
+Thread-Index: AQHXd2r9gaflsnB05ke+TXWeCzETMKtXhuUAgAAe+4CACJFsgA==
+Date:   Mon, 2 Aug 2021 11:39:36 +0000
+Message-ID: <ad6b0ccbed7ad3e4a8b8519571f5c23cca22a12d.camel@intel.com>
+References: <20210712220447.957418-1-iwona.winiarska@intel.com>
+         <20210712220447.957418-14-iwona.winiarska@intel.com>
+         <20210727225808.GU8018@packtop>
+         <0521a076-9772-532f-2eab-8870464ca211@roeck-us.net>
+In-Reply-To: <0521a076-9772-532f-2eab-8870464ca211@roeck-us.net>
+Accept-Language: en-US, pl-PL
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+authentication-results: roeck-us.net; dkim=none (message not signed)
+ header.d=none;roeck-us.net; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 47fd3207-0ec6-4764-5a42-08d955aa34bd
+x-ms-traffictypediagnostic: SA0PR11MB4624:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA0PR11MB462487E74FC907B1C7CDAF50ECEF9@SA0PR11MB4624.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rtRuTozQkIazoccVe6rikUsNkrgsrzDyLLyCb2QqcurkHCbAZ91VASVNw/FRCt6CbBwfqIX7P6Ybur6MvuPXHl4pCoA7bRZKxb+lLAc/41L6N7WaBwvRTEkF0u1fDhDIeVpNCH+HSU185r1SS32oQ8XALOi8iWZjLZLhghvmo3HVbaZkYOvijbwCt7ZmdNGpffEYygYU+O2gBHs72vz59I+P98FBLjC3JzEsJl4MczBaVEXKPmLaVjRBqppNZFduM58vuu67n9HCSe1MjxCK7Puyrnv/AILFo9p49vwDVdE0NhmjoY6d1UCCvmQLHvgFQdKJNvKVc5S2et34PwobuzqZhe92hU2aSff4v4xkizP7jkXNj0yTBAkh01flVq1Zb1fEOQcCUWZs4Lmg2SU7qkQ0oXDLu210tMgqF/ZcrQZi1KZBB5nnGCSR6EzeILPZ6VXj4CFkYP0jlw6FBn7sc3UAP51LyTvgQFqRfOsEpOl+vcvt647pB/113pUxQfDCvvnnKuwgdb7o+GoXps4OlzhBWgEee/N/zB70sb8PQBLf7m8LqPl18c879lAQebVHM9ea/GSAedPO5f7sFNtcmVdE1NHOBvX89GZHpm1EyNETTFqbpTjVlKpmOks32uEXOVWbFxUR9c7BStGiZDwRjXYC4YiwV7Y32yStq9nAhfbMdrGBqVpMwkdG4eA3sQIHVqlo2UNtb2UcxuJkWPnA9OyJUx++BbDM12UnevI86KKzfNPCbRRqFCFPnl3D5TIN3B5wnGxELlDNuXcOh6HtPsJ0E/5R15huDVV44TOsZ0n8zzFI0WiN1o16ggZEoZ0fMrZ5+SsiTMWV6AddvJaGzepxZQE2PMzoqzTvjDCReQ8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2589.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(19273905006)(8936002)(26005)(6506007)(7416002)(38100700002)(122000001)(38070700005)(186003)(53546011)(91956017)(54906003)(2906002)(66446008)(86362001)(83380400001)(6486002)(2616005)(110136005)(6512007)(76116006)(36756003)(71200400001)(508600001)(966005)(66946007)(64756008)(66476007)(4326008)(66556008)(316002)(5660300002)(562404015)(563064011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RHVuWGRrd2hodHpqVkM3aVBGTWJPNTFYZWlCcW16YlhjTmxsbWtySXhCL2k0?=
+ =?utf-8?B?aHVuK0xrN0QvWXpZS09UVGVKUWxud2hzdzFuRldObkxNRHFqZ3NSUmFWd3Mz?=
+ =?utf-8?B?ZEswMVlEOGUrc3dsRVpRalNKR0cvai9wUHJGdDAyV2NVUXNYQWxpeURvSTFo?=
+ =?utf-8?B?R0c3cWVGczJnQWZQL3JxWjVzTEFHb0lQeVZacE9kVk5aZ2VPZ0FXZXJzZmNX?=
+ =?utf-8?B?aHp1VVYwOWlHMjRiVEt3WlRKWWhKV1F4ZDFhV3N3SFl2VzRVS1JQNzdrMTU0?=
+ =?utf-8?B?M2NrYzA3bjlEaVRoRXQrOHdFUkJlVnN5YS9hM3NnVG1jSmtoRzA3cTc4Q1A4?=
+ =?utf-8?B?ckJ2b2xTWGhDMGFYblg1SldmZit3ci9rc3UyZlN1YjgrMW80ZGFmLy9zVWZP?=
+ =?utf-8?B?YURRNDNRU2trVk5HZXhlNHJZZXduci9tTU1HMytjNEYyWFhvNXNuMm92MHFN?=
+ =?utf-8?B?NHYwN1dqYTJVYmdTSGdVUFFlODNyMGpCUFIvMDB2WVVWUlNPVGV1RHZzaHVC?=
+ =?utf-8?B?eW1FaUh4UUh1WXgzRDdhSGh2VGxmSk5FN3U1Tkl2YkVlSkRnKzl3USsyWmk3?=
+ =?utf-8?B?bmp0dk9XQXpRVytuVmFCbTJBZzFxWkZ1L3NLUzIwN1MxMWlQbzI4aUdrNVlo?=
+ =?utf-8?B?MFZuUTg0N1FScjFaa2FwQWQ5cnE0ZVloTHUrRXoxTk5NOFRJMG1QbHpwOWps?=
+ =?utf-8?B?R0VLdXZDMW5uYnM4aFVZbTIySVovVHByZUpickpQcENYNmhqU0xlakVXOWZw?=
+ =?utf-8?B?SmY0VTYzNXhQcVB6WFNPajNncXgzOXJNazUvTG5DamtCSmNiYWZDNEN1QnRV?=
+ =?utf-8?B?a25VT3ZyUUs0RzFOeEJ0dllnZW9UQXRqTFdXYlBMUGM4amF0Q2VtYmpvMnBP?=
+ =?utf-8?B?Uk4veEhvdFNGcXFwR0orZ2sxSHVmZ1NRMlBkZmVuZGVtYkhIVGM3WGxsSUIz?=
+ =?utf-8?B?SU5RcE9FazJKL3BIbUxKU05ZNjlSampscUs3UTRFVXBNVjVMZzJpdEhQeXZZ?=
+ =?utf-8?B?MnltWklTOHVwbE1WOVZHSmFzSUNDQWxpcUdQeWYwY01WNU5XalF4Z2JuWVZ5?=
+ =?utf-8?B?NHZzdmtrOE5oYlVvODJiWDA3cGVWWlpjaVloSWVsU24rendGUTFLWFYyVFNj?=
+ =?utf-8?B?ZGp4bWVVLzVSNDZNbnpXa0NQREphblI3eXNPWFFBZVBOenlvTDNKcTRXWnZk?=
+ =?utf-8?B?ZHF6Q2NtMlQzSUp5QWN0dUg4TVoxZGRMMGVNZHpFR3J3VlpBM0d2QlQyb29j?=
+ =?utf-8?B?bjNrSGRDS2dlWVVmeVNraktaREpjbngzdmI3d3N0R2RaRUh3V1ltMGJCc2tW?=
+ =?utf-8?B?MFZRWUI0MVBVdUhuZ0VkOEJCYzhkZnRxNzlKamNKdmZMcFBjZ0NTNmpvdU9v?=
+ =?utf-8?B?SVcxdGRQOU8vaHZ6anJZeXpyZjNtTldTTzczbnlad3R5VE1ReVQzWGVLQ0Zs?=
+ =?utf-8?B?T3pVQk5xdlV3VGxjMjZpRGF6eXA4STlVeHltV0x4YmRWY1QzN2YxSVVremVi?=
+ =?utf-8?B?WFVTKzJjNlkydndvN0o3dEtja1RvVzJkNnRTdTNzc1hVTDl6dXdGWDROT1hL?=
+ =?utf-8?B?ditUQXYrTWU2ajNMdFhCcDJRQTRoMVlobFdiZGs2TlEvZlYzZDZYRkw1SDFr?=
+ =?utf-8?B?dDNQajJtVVBkQjhnY2QvVzI2dk1ZSmNCVmtlRGdmc3BDNGlaZ2Y5a0RZR2tr?=
+ =?utf-8?B?azNXZXpLT2RpNGl6MUc4aWx0aVJKV0lwQVZDdXVnbEVqaU5qcmZrOE1mR0tO?=
+ =?utf-8?B?bW9pWFBhVmdXMTBYNUU2V3JVb2cxZVpMbUlPN2cvSExWai93S2EzMDZQTUtW?=
+ =?utf-8?B?S2MrcjNrMng3WGhRQXlydz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <94D59942851FCB41BE9B7FFFC41C9295@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2589.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47fd3207-0ec6-4764-5a42-08d955aa34bd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2021 11:39:36.6122
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Gsk+EUGBORkSeMchFxVj9B1NJNg3bRqSU4adRaZOBI5ODNI0BflMuN6+jbeiYEvg12LrMNRlKS8CEbNzvs2L+4jv5vAq74LtkzmSVWLuCw4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4624
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 7/12/21 12:25 AM, Jafar Akhondali wrote:
-> Looks like the previous patch got some indentation problems, here is
-> the fixed version.
-
-Thank you for the new version, this is much better.
-
-> 
-> The Acer Predator Helios series (usually denoted by PHxxx-yy) features
-> a special key above the keyboard named "TURBO". The turbo key does 3
-> things:
-> 1. Set all fan's speeds to TURBO mode
-> 2. Overclocks the CPU and GPU in the safe range
-> 3. Turn on an LED just below the turbo button
-> 
-> All of these actions are done by WMI function calls, and there is no
-> custom OC level for turbo. It acts as a flag for enabling turbo
-> mode instead of telling processors to use 1.3x of power.
-> 
-> I've run some benchmark tests and it worked fine:
-> 
-> GpuTest 0.7.0
-> http://www.geeks3d.com
-> 
-> Module: FurMark
-> Normal mode Score: 7289 points (FPS: 121)
-> Turbo mode Score: 7675 points (FPS: 127)
-> Settings:
-> - 1920x1080 fullscreen
-> - antialiasing: Off
-> - duration: 60000 ms
-> 
-> Renderer:
-> - GeForce RTX 2060/PCIe/SSE2
-> - OpenGL: 4.6.0 NVIDIA 460.32.03
-> 
-> This feature is presented by Acer officially and should not harm
-> hardware in any case.
-> 
-> A challenging part of implementing this feature is that calling overclocking
-> the function requires knowing the exact count of fans for CPU and GPU
-> for each model, which to the best of my knowledge is not available in
-> the kernel.
-> 
-> So after checking the official PredatorSense application methods, it
-> turned out they have provided the software the list of fans in each model.
-> I have access to the mentioned list, and all similar PH-iii-jj can be
-> added easily by matching "DMI_PRODUCT_NAME".
-> 
-> Creating a separate file for the gaming interface was not possible because
-> the current WMI event GUID is needed for the turbo button, and it's not possible
-> to register multiple functions on the same event GUID.
-> 
-> 
-> Some small indent problems have been also fixed.
-> 
-> Signed-off-by: JafarAkhondali <jafar.akhoondali@gmail.com>
-> ---
->  drivers/platform/x86/acer-wmi.c | 243 ++++++++++++++++++++++++++++++--
->  1 file changed, 231 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-> index 85db9403cc14..06b25ddf04ee 100644
-> --- a/drivers/platform/x86/acer-wmi.c
-> +++ b/drivers/platform/x86/acer-wmi.c
-> @@ -30,10 +30,12 @@
->  #include <linux/input/sparse-keymap.h>
->  #include <acpi/video.h>
-> 
-> +
->  MODULE_AUTHOR("Carlos Corbacho");
->  MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
->  MODULE_LICENSE("GPL");
-> 
-> +
->  /*
->   * Magic Number
->   * Meaning is unknown - this number is required for writing to ACPI for AMW0
-
-These 2 whitespace changes are unrelated to the turbo feature, please drop.
-
-> @@ -59,7 +61,10 @@ MODULE_LICENSE("GPL");
->  #define ACER_WMID_SET_BRIGHTNESS_METHODID    6
->  #define ACER_WMID_GET_THREEG_METHODID        10
->  #define ACER_WMID_SET_THREEG_METHODID        11
-> -
-
-Please keep the empty line here.
- 
-> +#define ACER_WMID_SET_GAMING_LED_METHODID 2
-> +#define ACER_WMID_GET_GAMING_LED_METHODID 4
-> +#define ACER_WMID_SET_GAMING_FAN_BEHAVIOR 14
-> +#define ACER_WMID_SET_GAMING_MISC_SETTING_METHODID 22
-
-And add an extra empty line here.
-
->  /*
->   * Acer ACPI method GUIDs
->   */
-> @@ -68,6 +73,7 @@ MODULE_LICENSE("GPL");
->  #define WMID_GUID1        "6AF4F258-B401-42FD-BE91-3D4AC2D7C0D3"
->  #define WMID_GUID2        "95764E09-FB56-4E83-B31A-37761F60994A"
->  #define WMID_GUID3        "61EF69EA-865C-4BC3-A502-A0DEBA0CB531"
-> +#define WMID_GUID4        "7A4DDFE7-5B5D-40B4-8595-4408E0CC7F56"
-> 
->  /*
->   * Acer ACPI event GUIDs
-> @@ -81,6 +87,7 @@ MODULE_ALIAS("wmi:676AA15E-6A47-4D9F-A2CC-1E6D18D14026");
->  enum acer_wmi_event_ids {
->      WMID_HOTKEY_EVENT = 0x1,
->      WMID_ACCEL_OR_KBD_DOCK_EVENT = 0x5,
-> +    WMID_GAMING_TURBO_KEY_EVENT = 0x7,
->  };
-> 
->  static const struct key_entry acer_wmi_keymap[] __initconst = {
-> @@ -144,6 +151,7 @@ struct event_return_value {
-> 
->  #define ACER_WMID3_GDS_TOUCHPAD        (1<<1)    /* Touchpad */
-> 
-> +
->  /* Hotkey Customized Setting and Acer Application Status.
->   * Set Device Default Value and Report Acer Application Status.
->   * When Acer Application starts, it will run this method to inform
-
-Unrelated whitespace change, please drop.
-
-> @@ -215,6 +223,9 @@ struct hotkey_function_type_aa {
->  #define ACER_CAP_THREEG            BIT(4)
->  #define ACER_CAP_SET_FUNCTION_MODE    BIT(5)
->  #define ACER_CAP_KBD_DOCK        BIT(6)
-> +#define ACER_CAP_TURBO_OC     BIT(7)
-> +#define ACER_CAP_TURBO_LED     BIT(8)
-> +#define ACER_CAP_TURBO_FAN     BIT(9)
-> 
->  /*
->   * Interface type flags
-> @@ -224,6 +235,7 @@ enum interface_flags {
->      ACER_AMW0_V2,
->      ACER_WMID,
->      ACER_WMID_v2,
-> +    ACER_WMID_GAMING,
->  };
-> 
->  #define ACER_DEFAULT_WIRELESS  0
-> @@ -290,6 +302,9 @@ struct wmi_interface {
->  /* The static interface pointer, points to the currently detected interface */
->  static struct wmi_interface *interface;
-> 
-> +/* The static gaming interface pointer, points to the currently
-> detected gaming interface */
-> +static struct wmi_interface *gaming_interface;
-> +
-
-The interface pointer stuff is intended to point to one of the
-4 types of main Acer WMI interfaces, since there is only one
-gamig interface, there is no need for this separate
-gaming_interface pointer, please drop it.
-
-
->  /*
->   * Embedded Controller quirks
->   * Some laptops require us to directly access the EC to either enable or query
-> @@ -301,6 +316,9 @@ struct quirk_entry {
->      u8 mailled;
->      s8 brightness;
->      u8 bluetooth;
-> +    u8 turbo;
-> +    u8 cpu_fans;
-> +    u8 gpu_fans;
->  };
-> 
->  static struct quirk_entry *quirks;
-> @@ -312,6 +330,10 @@ static void __init set_quirks(void)
-> 
->      if (quirks->brightness)
->          interface->capability |= ACER_CAP_BRIGHTNESS;
-> +
-> +    if (quirks->turbo)
-> +        gaming_interface->capability |= ACER_CAP_TURBO_OC | ACER_CAP_TURBO_LED
-> +                | ACER_CAP_TURBO_FAN;
-
-Just use interface->capability here.
-
->  }
-> 
->  static int __init dmi_matched(const struct dmi_system_id *dmi)
-> @@ -340,6 +362,12 @@ static struct quirk_entry quirk_acer_travelmate_2490 = {
->      .mailled = 1,
->  };
-> 
-> +static struct quirk_entry quirk_acer_predator_ph315_53 = {
-> +    .turbo = 1,
-> +    .cpu_fans = 1,
-> +    .gpu_fans = 1,
-> +};
-> +
->  /* This AMW0 laptop has no bluetooth */
->  static struct quirk_entry quirk_medion_md_98300 = {
->      .wireless = 1,
-> @@ -507,6 +535,15 @@ static const struct dmi_system_id acer_quirks[]
-> __initconst = {
->          },
->          .driver_data = &quirk_acer_travelmate_2490,
->      },
-> +    {
-> +        .callback = dmi_matched,
-> +        .ident = "Acer Predator PH315-53",
-> +        .matches = {
-> +            DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-> +            DMI_MATCH(DMI_PRODUCT_NAME, "Predator PH315-53"),
-> +        },
-> +        .driver_data = &quirk_acer_predator_ph315_53,
-> +    },
->      {
->          .callback = set_force_caps,
->          .ident = "Acer Aspire Switch 10E SW3-016",
-> @@ -903,7 +940,7 @@ static acpi_status __init AMW0_set_capabilities(void)
->       */
->      if (wmi_has_guid(AMW0_GUID2)) {
->          if ((quirks != &quirk_unknown) ||
-> -            !AMW0_set_cap_acpi_check_device())
-> +            !AMW0_set_cap_acpi_check_device())
->              interface->capability |= ACER_CAP_WIRELESS;
->          return AE_OK;
->      }
-
-Unrelated whitespace change, please drop.
-
-> @@ -1344,6 +1381,93 @@ static struct wmi_interface wmid_v2_interface = {
->      .type = ACER_WMID_v2,
->  };
-> 
-> +
-> +/*
-> + * WMID Gaming interface
-> + */
-> +
-> +static struct wmi_interface wmid_gaming_interface = {
-> +    .type = ACER_WMID_GAMING
-> +};
-
-Not necessary, please drop.
-
-> +
-> +static acpi_status
-> +WMI_gaming_execute_u64(u32 method_id, u64 in, u64 *out)
-> +{
-> +    struct acpi_buffer input = { (acpi_size) sizeof(u64), (void *)(&in) };
-> +    struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
-> +    union acpi_object *obj;
-> +    u32 tmp = 0;
-> +    acpi_status status;
-> +
-> +    status = wmi_evaluate_method(WMID_GUID4, 0, method_id, &input, &result);
-> +
-> +    if (ACPI_FAILURE(status))
-> +        return status;
-> +    obj = (union acpi_object *) result.pointer;
-> +
-> +    if (obj) {
-> +        if (obj->type == ACPI_TYPE_BUFFER &&
-> +            (obj->buffer.length == sizeof(u32) ||
-> +             obj->buffer.length == sizeof(u64))) {
-> +            tmp = *((u64 *) obj->buffer.pointer);
-
-You need to have a separate case for length == sizeof(u32), in that
-case you must use:
-
-		tmp = *((u32 *) obj->buffer.pointer);
-
-So that you don't read beyond the end of the buffer.
-
-> +        } else if (obj->type == ACPI_TYPE_INTEGER) {
-> +            tmp = (u64) obj->integer.value;
-> +        }
-> +    }
-> +
-> +    if (out)
-> +        *out = tmp;
-> +
-> +    kfree(result.pointer);
-> +
-> +    return status;
-> +}
-> +
-> +static acpi_status WMID_gaming_set_u64(u64 value, u32 cap)
-> +{
-> +    u32 method_id = 0;
-> +
-> +    switch (cap) {
-> +    case ACER_CAP_TURBO_LED:
-> +        method_id = ACER_WMID_SET_GAMING_LED_METHODID;
-> +        break;
-> +    case ACER_CAP_TURBO_FAN:
-> +        method_id = ACER_WMID_SET_GAMING_FAN_BEHAVIOR;
-> +        break;
-> +    case ACER_CAP_TURBO_OC:
-> +        method_id = ACER_WMID_SET_GAMING_MISC_SETTING_METHODID;
-> +        break;
-> +    default:
-> +        return AE_ERROR;
-
-AE_BAD_PARAMETER ?
-
-> +    }
-> +    return WMI_gaming_execute_u64(method_id, value, NULL);
-> +}
-> +
-> +static acpi_status WMID_gaming_get_u64(u64 *value, u32 cap)
-> +{
-> +    acpi_status status;
-> +    u64 result;
-> +    u64 input;
-> +    u32 method_id;
-> +
-> +
-> +    switch (cap) {
-> +    case ACER_CAP_TURBO_LED:
-> +        method_id = ACER_WMID_GET_GAMING_LED_METHODID;
-> +        input = 0x1;
-> +        break;
-> +    default:
-> +        return AE_ERROR;
-
-AE_BAD_PARAMETER ?
-
-> +    }
-> +
-> +    status = WMI_gaming_execute_u64(method_id, input, &result);
-> +    if (ACPI_SUCCESS(status))
-> +        *value = (u64) result;
-> +
-> +    return status;
-> +}
-> +
-> +
->  /*
->   * Generic Device (interface-independent)
->   */
-> @@ -1374,7 +1498,6 @@ static acpi_status get_u32(u32 *value, u32 cap)
->              status = WMID_get_u32(value, cap);
->          break;
->      }
-> -
->      return status;
->  }
-> 
-
-Unrelated whitespace change, please drop.
-
-> @@ -1422,6 +1545,34 @@ static acpi_status set_u32(u32 value, u32 cap)
->      return AE_BAD_PARAMETER;
->  }
-> 
-> +static acpi_status set_u64(u64 value, u32 cap)
-> +{
-> +    if (gaming_interface->capability & cap) {
-
-Just use interface->capability here and move this
-check into WMID_gaming_set_u64() and drop this
-(set_u64) function and instead use WMID_gaming_set_u64()
-directly.
-
-If the WMID_GUID4 GUID does not exist then wmi_evaluate_method()
-will catch this.
-
-
-> +        switch (gaming_interface->type) {
-> +        case ACER_WMID_GAMING:
-> +            return WMID_gaming_set_u64(value, cap);
-> +        default:
-> +            return AE_BAD_PARAMETER;
-> +        }
-> +    }
-> +    return AE_BAD_PARAMETER;
-> +}
-> +
-> +
-> +static acpi_status get_u64(u64 *value, u32 cap)
-> +{
-> +    acpi_status status = AE_ERROR;
-> +
-> +    if (gaming_interface->capability & cap) {
-
-Same here.
-
-> +        switch (gaming_interface->type) {
-> +        case ACER_WMID_GAMING:
-> +            status = WMID_gaming_get_u64(value, cap);
-> +            break;
-> +        }
-> +    }
-> +    return status;
-> +}
-> +
->  static void __init acer_commandline_init(void)
->  {
->      /*
-> @@ -1501,7 +1652,7 @@ static int acer_backlight_init(struct device *dev)
->      props.type = BACKLIGHT_PLATFORM;
->      props.max_brightness = max_brightness;
->      bd = backlight_device_register("acer-wmi", dev, NULL, &acer_bl_ops,
-> -                       &props);
-> +                       &props);
->      if (IS_ERR(bd)) {
->          pr_err("Could not register Acer backlight device\n");
->          acer_backlight_device = NULL;
-
-Unrelated whitespace change, please drop.
-
-> @@ -1575,6 +1726,67 @@ static int acer_gsensor_event(void)
->      return 0;
->  }
-> 
-> +/*
-> + *  Predator series turbo button
-> + */
-> +static int acer_toggle_turbo(void)
-> +{
-> +    /* Get current state from turbo button */
-> +    u64 turbo_led_state, gpu_fan_config1, gpu_fan_config2;
-> +    u8 i;
-> +
-> +    if (ACPI_FAILURE(get_u64(&turbo_led_state, ACER_CAP_TURBO_LED)))
-> +        return -1;
-> +
-> +    if (turbo_led_state) {
-> +        // turns off turbo led
-> +        set_u64(0x1, ACER_CAP_TURBO_LED);
-> +
-> +        // set FAN mode to auto
-> +        if (quirks->cpu_fans > 0)
-> +            gpu_fan_config2 |= 1;
-> +        for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-> +            gpu_fan_config2 |= 1 << (i + 1);
-> +        for (i = 0; i < quirks->gpu_fans; ++i)
-> +            gpu_fan_config2 |= 1 << (i + 3);
-> +        if (quirks->cpu_fans > 0)
-> +            gpu_fan_config1 |= 1;
-> +        for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-> +            gpu_fan_config1 |= 1 << (2 * i + 2);
-> +        for (i = 0; i < quirks->gpu_fans; ++i)
-> +            gpu_fan_config1 |= 1 << (2 * i + 6);
-> +        set_u64(gpu_fan_config2 | gpu_fan_config1 << 16, ACER_CAP_TURBO_FAN);
-> +
-> +        // set OC to normal
-> +        set_u64(0x5, ACER_CAP_TURBO_OC);
-> +        set_u64(0x7, ACER_CAP_TURBO_OC);
-> +    } else {
-> +        // turn on turbo led
-> +        set_u64(0x10001, ACER_CAP_TURBO_LED);
-> +
-> +        // set FAN to turbo mode
-> +        if (quirks->cpu_fans > 0)
-> +            gpu_fan_config2 |= 1;
-> +        for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-> +            gpu_fan_config2 |= 1 << (i + 1);
-> +        for (i = 0; i < quirks->gpu_fans; ++i)
-> +            gpu_fan_config2 |= 1 << (i + 3);
-> +        if (quirks->cpu_fans > 0)
-> +            gpu_fan_config1 |= 2;
-> +        for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-> +            gpu_fan_config1 |= 2 << (2 * i + 2);
-> +        for (i = 0; i < quirks->gpu_fans; ++i)
-> +            gpu_fan_config1 |= 2 << (2 * i + 6);
-> +        set_u64(gpu_fan_config2 | gpu_fan_config1 << 16, ACER_CAP_TURBO_FAN);
-> +
-> +        // set OC to turbo mode
-> +        set_u64(0x205, ACER_CAP_TURBO_OC);
-> +        set_u64(0x207, ACER_CAP_TURBO_OC);
-> +    }
-> +    return turbo_led_state;
-> +}
-> +
-> +
->  /*
->   * Switch series keyboard dock status
->   */
-> @@ -1605,7 +1817,7 @@ static void acer_kbd_dock_get_initial_state(void)
->      status = wmi_evaluate_method(WMID_GUID3, 0, 0x2, &input_buf, &output_buf);
->      if (ACPI_FAILURE(status)) {
->          pr_err("Error getting keyboard-dock initial status: %s\n",
-> -               acpi_format_exception(status));
-> +               acpi_format_exception(status));
->          return;
->      }
->
-
-Unrelated whitespace change, please drop.
- 
-> @@ -1618,7 +1830,7 @@ static void acer_kbd_dock_get_initial_state(void)
->      output = obj->buffer.pointer;
->      if (output[0] != 0x00 || (output[3] != 0x05 && output[3] != 0x45)) {
->          pr_err("Unexpected output [0]=0x%02x [3]=0x%02x getting
-> keyboard-dock initial status\n",
-> -               output[0], output[3]);
-> +               output[0], output[3]);
->          goto out_free_obj;
->      }
-> 
-
-Unrelated whitespace change, please drop.
-
-> @@ -1759,7 +1971,7 @@ static int acer_rfkill_init(struct device *dev)
->      rfkill_inited = true;
-> 
->      if ((ec_raw_mode || !wmi_has_guid(ACERWMID_EVENT_GUID)) &&
-> -        has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
-> +        has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
->          schedule_delayed_work(&acer_rfkill_work,
->              round_jiffies_relative(HZ));
-> 
-
-Unrelated whitespace change, please drop.
-
-> @@ -1782,7 +1994,7 @@ static int acer_rfkill_init(struct device *dev)
->  static void acer_rfkill_exit(void)
->  {
->      if ((ec_raw_mode || !wmi_has_guid(ACERWMID_EVENT_GUID)) &&
-> -        has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
-> +        has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
->          cancel_delayed_work_sync(&acer_rfkill_work);
-> 
->      if (has_cap(ACER_CAP_WIRELESS)) {
-
-Unrelated whitespace change, please drop.
-
-> @@ -1872,6 +2084,10 @@ static void acer_wmi_notify(u32 value, void *context)
->          acer_gsensor_event();
->          acer_kbd_dock_event(&return_value);
->          break;
-> +    case WMID_GAMING_TURBO_KEY_EVENT:
-> +        if (return_value.key_num == 0x4)
-> +            acer_toggle_turbo();
-> +        break;
->      default:
->          pr_warn("Unknown function number - %d - %d\n",
->              return_value.function, return_value.key_num);
-> @@ -2251,8 +2467,8 @@ static int __init acer_wmi_init(void)
->       * in the past quirk list.
->       */
->      if (wmi_has_guid(AMW0_GUID1) &&
-> -        !dmi_check_system(amw0_whitelist) &&
-> -        quirks == &quirk_unknown) {
-> +        !dmi_check_system(amw0_whitelist) &&
-> +        quirks == &quirk_unknown) {
->          pr_debug("Unsupported machine has AMW0_GUID1, unable to load\n");
->          return -ENODEV;
->      }
-
-Unrelated whitespace change, please drop.
-
-> @@ -2266,8 +2482,11 @@ static int __init acer_wmi_init(void)
->      if (!wmi_has_guid(AMW0_GUID1) && wmi_has_guid(WMID_GUID1))
->          interface = &wmid_interface;
-> 
-> -    if (wmi_has_guid(WMID_GUID3))
-> +    if (wmi_has_guid(WMID_GUID3)) {
->          interface = &wmid_v2_interface;
-> +        if (wmi_has_guid(WMID_GUID4))
-> +            gaming_interface = &wmid_gaming_interface;
-> +    }
-> 
-
-Since we don't need the gaming_interface this entire chunk
-can be dropped too.
-
->      if (interface)
->          dmi_walk(type_aa_dmi_decode, NULL);
-> @@ -2316,7 +2535,7 @@ static int __init acer_wmi_init(void)
->          interface->capability = force_caps;
-> 
->      if (wmi_has_guid(WMID_GUID3) &&
-> -        (interface->capability & ACER_CAP_SET_FUNCTION_MODE)) {
-> +        (interface->capability & ACER_CAP_SET_FUNCTION_MODE)) {
->          if (ACPI_FAILURE(acer_wmi_enable_rf_button()))
->              pr_warn("Cannot enable RF Button Driver\n");
-> 
-
-Unrelated whitespace change, please drop.
-
-
-Regards,
-
-Hans
-
+T24gVHVlLCAyMDIxLTA3LTI3IGF0IDE3OjQ5IC0wNzAwLCBHdWVudGVyIFJvZWNrIHdyb3RlOgo+
+IE9uIDcvMjcvMjEgMzo1OCBQTSwgWmV2IFdlaXNzIHdyb3RlOgo+ID4gT24gTW9uLCBKdWwgMTIs
+IDIwMjEgYXQgMDU6MDQ6NDZQTSBDRFQsIEl3b25hIFdpbmlhcnNrYSB3cm90ZToKPiA+ID4gRnJv
+bTogSmFlIEh5dW4gWW9vIDxqYWUuaHl1bi55b29AbGludXguaW50ZWwuY29tPgo+ID4gPiAKPiA+
+ID4gQWRkIGRvY3VtZW50YXRpb24gZm9yIHBlY2ktY3B1dGVtcCBkcml2ZXIgdGhhdCBwcm92aWRl
+cyBEVFMgdGhlcm1hbAo+ID4gPiByZWFkaW5ncyBmb3IgQ1BVIHBhY2thZ2VzIGFuZCBDUFUgY29y
+ZXMgYW5kIHBlY2ktZGltbXRlbXAgZHJpdmVyIHRoYXQKPiA+ID4gcHJvdmlkZXMgRFRTIHRoZXJt
+YWwgcmVhZGluZ3MgZm9yIERJTU1zLgo+ID4gPiAKPiA+ID4gU2lnbmVkLW9mZi1ieTogSmFlIEh5
+dW4gWW9vIDxqYWUuaHl1bi55b29AbGludXguaW50ZWwuY29tPgo+ID4gPiBDby1kZXZlbG9wZWQt
+Ynk6IEl3b25hIFdpbmlhcnNrYSA8aXdvbmEud2luaWFyc2thQGludGVsLmNvbT4KPiA+ID4gU2ln
+bmVkLW9mZi1ieTogSXdvbmEgV2luaWFyc2thIDxpd29uYS53aW5pYXJza2FAaW50ZWwuY29tPgo+
+ID4gPiBSZXZpZXdlZC1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3Nz
+YXJ0QGxpbnV4LmludGVsLmNvbT4KPiA+ID4gLS0tCj4gPiA+IERvY3VtZW50YXRpb24vaHdtb24v
+aW5kZXgucnN0wqDCoMKgwqDCoMKgwqDCoCB8wqAgMiArCj4gPiA+IERvY3VtZW50YXRpb24vaHdt
+b24vcGVjaS1jcHV0ZW1wLnJzdMKgIHwgOTMgKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4g
+PiA+IERvY3VtZW50YXRpb24vaHdtb24vcGVjaS1kaW1tdGVtcC5yc3QgfCA1OCArKysrKysrKysr
+KysrKysrKwo+ID4gPiBNQUlOVEFJTkVSU8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDIgKwo+ID4gPiA0IGZpbGVzIGNoYW5nZWQsIDE1NSBp
+bnNlcnRpb25zKCspCj4gPiA+IGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2h3bW9u
+L3BlY2ktY3B1dGVtcC5yc3QKPiA+ID4gY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24v
+aHdtb24vcGVjaS1kaW1tdGVtcC5yc3QKPiA+ID4gCj4gPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVu
+dGF0aW9uL2h3bW9uL2luZGV4LnJzdCBiL0RvY3VtZW50YXRpb24vaHdtb24vaW5kZXgucnN0Cj4g
+PiA+IGluZGV4IGJjMDE2MDFlYTgxYS4uY2M3NmI1YjNmNzkxIDEwMDY0NAo+ID4gPiAtLS0gYS9E
+b2N1bWVudGF0aW9uL2h3bW9uL2luZGV4LnJzdAo+ID4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2h3
+bW9uL2luZGV4LnJzdAo+ID4gPiBAQCAtMTU0LDYgKzE1NCw4IEBAIEhhcmR3YXJlIE1vbml0b3Jp
+bmcgS2VybmVsIERyaXZlcnMKPiA+ID4gwqDCoMKgIHBjZjg1OTEKPiA+ID4gwqDCoMKgIHBpbTQz
+MjgKPiA+ID4gwqDCoMKgIHBtNjc2NHRyCj4gPiA+ICvCoMKgIHBlY2ktY3B1dGVtcAo+ID4gPiAr
+wqDCoCBwZWNpLWRpbW10ZW1wCj4gPiA+IMKgwqDCoCBwbWJ1cwo+ID4gPiDCoMKgwqAgcG93cjEy
+MjAKPiA+ID4gwqDCoMKgIHB4ZTE2MTAKPiA+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24v
+aHdtb24vcGVjaS1jcHV0ZW1wLnJzdAo+ID4gPiBiL0RvY3VtZW50YXRpb24vaHdtb24vcGVjaS1j
+cHV0ZW1wLnJzdAo+ID4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4gPiBpbmRleCAwMDAwMDAw
+MDAwMDAuLmQzYTIxOGJhODEwYQo+ID4gPiAtLS0gL2Rldi9udWxsCj4gPiA+ICsrKyBiL0RvY3Vt
+ZW50YXRpb24vaHdtb24vcGVjaS1jcHV0ZW1wLnJzdAo+ID4gPiBAQCAtMCwwICsxLDkzIEBACj4g
+PiA+ICsuLiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5Cj4gPiA+ICsKPiA+
+ID4gK0tlcm5lbCBkcml2ZXIgcGVjaS1jcHV0ZW1wCj4gPiA+ICs9PT09PT09PT09PT09PT09PT09
+PT09PT09PQo+ID4gPiArCj4gPiA+ICtTdXBwb3J0ZWQgY2hpcHM6Cj4gPiA+ICvCoMKgwqDCoMKg
+wqDCoE9uZSBvZiBJbnRlbCBzZXJ2ZXIgQ1BVcyBsaXN0ZWQgYmVsb3cgd2hpY2ggaXMgY29ubmVj
+dGVkIHRvIGEgUEVDSQo+ID4gPiBidXMuCj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAqIEludGVsIFhlb24gRTUvRTcgdjMgc2VydmVyIHByb2Nlc3NvcnMKPiA+ID4gK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBJbnRlbCBYZW9uIEU1LTE0
+eHggdjMgZmFtaWx5Cj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgSW50ZWwgWGVvbiBFNS0yNHh4IHYzIGZhbWlseQo+ID4gPiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoEludGVsIFhlb24gRTUtMTZ4eCB2MyBm
+YW1pbHkKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqBJbnRlbCBYZW9uIEU1LTI2eHggdjMgZmFtaWx5Cj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgSW50ZWwgWGVvbiBFNS00Nnh4IHYzIGZhbWlseQo+
+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoEludGVs
+IFhlb24gRTctNDh4eCB2MyBmYW1pbHkKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqBJbnRlbCBYZW9uIEU3LTg4eHggdjMgZmFtaWx5Cj4gPiA+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAqIEludGVsIFhlb24gRTUvRTcgdjQgc2VydmVy
+IHByb2Nlc3NvcnMKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqBJbnRlbCBYZW9uIEU1LTE2eHggdjQgZmFtaWx5Cj4gPiA+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgSW50ZWwgWGVvbiBFNS0yNnh4IHY0IGZh
+bWlseQo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oEludGVsIFhlb24gRTUtNDZ4eCB2NCBmYW1pbHkKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBJbnRlbCBYZW9uIEU3LTQ4eHggdjQgZmFtaWx5Cj4g
+PiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgSW50ZWwg
+WGVvbiBFNy04OHh4IHY0IGZhbWlseQo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgKiBJbnRlbCBYZW9uIFNjYWxhYmxlIHNlcnZlciBwcm9jZXNzb3JzCj4gPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgSW50ZWwgWGVvbiBEIGZhbWls
+eQo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoElu
+dGVsIFhlb24gQnJvbnplIGZhbWlseQo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoEludGVsIFhlb24gU2lsdmVyIGZhbWlseQo+ID4gPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoEludGVsIFhlb24gR29sZCBm
+YW1pbHkKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqBJbnRlbCBYZW9uIFBsYXRpbnVtIGZhbWlseQo+ID4gPiArCj4gPiA+ICvCoMKgwqDCoMKgwqDC
+oERhdGFzaGVldDogQXZhaWxhYmxlIGZyb20gaHR0cDovL3d3dy5pbnRlbC5jb20vZGVzaWduL2xp
+dGVyYXR1cmUuaHRtCj4gPiA+ICsKPiA+ID4gK0F1dGhvcjogSmFlIEh5dW4gWW9vIDxqYWUuaHl1
+bi55b29AbGludXguaW50ZWwuY29tPgo+ID4gPiArCj4gPiA+ICtEZXNjcmlwdGlvbgo+ID4gPiAr
+LS0tLS0tLS0tLS0KPiA+ID4gKwo+ID4gPiArVGhpcyBkcml2ZXIgaW1wbGVtZW50cyBhIGdlbmVy
+aWMgUEVDSSBod21vbiBmZWF0dXJlIHdoaWNoIHByb3ZpZGVzIERpZ2l0YWwKPiA+ID4gK1RoZXJt
+YWwgU2Vuc29yIChEVFMpIHRoZXJtYWwgcmVhZGluZ3Mgb2YgdGhlIENQVSBwYWNrYWdlIGFuZCBD
+UFUgY29yZXMgdGhhdAo+ID4gPiBhcmUKPiA+ID4gK2FjY2Vzc2libGUgdmlhIHRoZSBwcm9jZXNz
+b3IgUEVDSSBpbnRlcmZhY2UuCj4gPiA+ICsKPiA+ID4gK0FsbCB0ZW1wZXJhdHVyZSB2YWx1ZXMg
+YXJlIGdpdmVuIGluIG1pbGxpZGVncmVlIENlbHNpdXMgYW5kIHdpbGwgYmUKPiA+ID4gbWVhc3Vy
+YWJsZQo+ID4gPiArb25seSB3aGVuIHRoZSB0YXJnZXQgQ1BVIGlzIHBvd2VyZWQgb24uCj4gPiA+
+ICsKPiA+ID4gK1N5c2ZzIGludGVyZmFjZQo+ID4gPiArLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4g
+PiArCj4gPiA+ICs9PT09PT09PT09PT09PT09PT09PT09PQo+ID4gPiA9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4gPiA+ICt0ZW1wMV9sYWJl
+bMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCJEaWUiCj4gPiA+ICt0ZW1wMV9pbnB1dMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoFByb3ZpZGVzIGN1cnJlbnQgZGllIHRlbXBlcmF0dXJlIG9mIHRoZSBD
+UFUgcGFja2FnZS4KPiA+ID4gK3RlbXAxX21heMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBQ
+cm92aWRlcyB0aGVybWFsIGNvbnRyb2wgdGVtcGVyYXR1cmUgb2YgdGhlIENQVQo+ID4gPiBwYWNr
+YWdlCj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+d2hpY2ggaXMgYWxzbyBrbm93biBhcyBUY29udHJvbC4KPiA+ID4gK3RlbXAxX2NyaXTCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoFByb3ZpZGVzIHNodXRkb3duIHRlbXBlcmF0dXJlIG9mIHRoZSBD
+UFUgcGFja2FnZQo+ID4gPiB3aGljaAo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoGlzIGFsc28ga25vd24gYXMgdGhlIG1heGltdW0gcHJvY2Vzc29y
+IGp1bmN0aW9uCj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgdGVtcGVyYXR1cmUsIFRqbWF4IG9yIFRwcm9jaG90Lgo+ID4gPiArdGVtcDFfY3JpdF9o
+eXN0wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBQcm92aWRlcyB0aGUgaHlzdGVyZXNp
+cyB2YWx1ZSBmcm9tIFRjb250cm9sCj4gPiA+IHRvIFRqbWF4IG9mCj4gPiA+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdGhlIENQVSBwYWNrYWdlLgo+ID4g
+PiArCj4gPiA+ICt0ZW1wMl9sYWJlbMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCJEVFMiCj4gPiA+
+ICt0ZW1wMl9pbnB1dMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoFByb3ZpZGVzIGN1cnJlbnQgRFRT
+IHRlbXBlcmF0dXJlIG9mIHRoZSBDUFUgcGFja2FnZS4KPiA+IAo+ID4gV291bGQgdGhpcyBiZSBh
+IGdvb2QgcGxhY2UgdG8gbm90ZSB0aGUgc2xpZ2h0bHkgY291bnRlci1pbnR1aXRpdmUgbmF0dXJl
+Cj4gPiBvZiBEVFMgcmVhZGluZ3M/wqAgaS5lLiBhZGQgc29tZXRoaW5nIGFsb25nIHRoZSBsaW5l
+cyBvZiAiVGhlIERUUyBzZW5zb3IKPiA+IHByb2R1Y2VzIGEgZGVsdGEgcmVsYXRpdmUgdG8gVGpt
+YXgsIHNvIG5lZ2F0aXZlIHZhbHVlcyBhcmUgbm9ybWFsIGFuZAo+ID4gdmFsdWVzIGFwcHJvYWNo
+aW5nIHplcm8gYXJlIGhvdC4iwqAgKEluIG15IGV4cGVyaWVuY2UgcGVvcGxlIHdobyBhcmVuJ3QK
+PiA+IGFscmVhZHkgZmFtaWxpYXIgd2l0aCBpdCB0ZW5kIHRvIHRoaW5rIHNvbWV0aGluZydzIHdy
+b25nIHdoZW4gYSBDUFUKPiA+IHRlbXBlcmF0dXJlIHJlYWRpbmcgc2hvd3MgLTUwQy4pCj4gPiAK
+PiAKPiBBbGwgYXR0cmlidXRlcyBzaGFsbCBmb2xsb3cgdGhlIEFCSSwgYW5kIHRoZSBkcml2ZXIg
+bXVzdCB0cmFuc2xhdGUgcmVwb3J0ZWQKPiB2YWx1ZXMgdG8gZGVncmVlcyBDLiBJZiB0aG9zZSBz
+ZW5zb3JzIGRvIG5vdCBmb2xsb3cgdGhlIEFCSSBhbmQgcmVwb3J0IHNvbWV0aGluZwo+IGVsc2Us
+IEkgd29uJ3QgYWNjZXB0IHRoZSBkcml2ZXIuCj4gCj4gR3VlbnRlcgoKU3VyZSwgSSBiZWxpZXZl
+IGFsbCBhdHRyaWJ1dGVzIGFscmVhZHkgZm9sbG93IHRoZSBBQkkgYW5kIHRoZSByZXBvcnRlZCB2
+YWx1ZXMKYXJlIGluIG1pbGxpZGVncmVlIENlbHNpdXMuCgpUaGFua3MKLUl3b25hCj4gCgo=
