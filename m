@@ -2,81 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998043DDC64
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E713DDC71
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235039AbhHBP1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
+        id S235126AbhHBP2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhHBP1T (ORCPT
+        with ESMTP id S234974AbhHBP21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:27:19 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35D2C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:27:09 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id b7so25043928edu.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:27:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kUFl9hAIN8lvCQA5YPKWnJI4Gz3za3JFaNPbXmZ8AK0=;
-        b=WUpp5ubyxqNvDpB2nne9zl3iv+RK+siCwm7zWe4sjPE0yERrqxd1OoPqajXgzpm0wB
-         zm88Vjj0fD+R23LidqDisxTggfv64kJT9MhIA8zRAFAhi7eQvjosWIv+JSlbNNEAuqqN
-         ms8VVHUvfF6UVl8kq8o4YPxX7mjSkO2eVd80pnKpuvRtK7iFmXuMV63n6T8XHXdmX7hg
-         dFygzT2+iwF3+q6enLxmRzcLuGAgg2C0asfpqedxZ9STOnEKCgAfY26eLFf+UpYWn+T7
-         u8s6/ppZihpobZ6QShK0aK1qKdw6eiE8dVr/bqbiMumngnqOcrpNwKujm2ILegnNk2FE
-         1Ddg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kUFl9hAIN8lvCQA5YPKWnJI4Gz3za3JFaNPbXmZ8AK0=;
-        b=q+FmOKdjQp/GX8dST8crqvETOvpV4Pde8E1Zg2oybr+DDVmPI44zUFjjG6MXIDQwGp
-         MY+ozZCzKMnvIoVXMXc62SmnqhOKXmBaXd6N2M/WSynsowtWIf1qK9wHSlWwgoA+7WDr
-         Om+mz9+vnV7lHw7PYfpdNImq5ni84xAxuiXLvYzx47CIWvDeSvA5EXZck/oW2MwsyXfG
-         VTHOE/64fepYbBcVQGCef1ZUiY8nniYfFHORSQKYWWOU4iE1IKPXHpLSAFf4WB/B+Qhs
-         HJZ9M3PZrWwI2FWmDdEoyuL7S3MZiJa8FuPqLEVkLCRTJ1RGT9AGBDZfgVeNx2lYxEs3
-         dOTg==
-X-Gm-Message-State: AOAM531No/w/OHZdcAoy96YbTxOz1Z03wqTJ4YCZG1OSCc5xf/oS29Al
-        YNe/kymoqtuAHZdWCDAwMgZ2wKWkD7wbS4uOcxgZmw==
-X-Google-Smtp-Source: ABdhPJxhDn6ZpCBmuDgar+9Ku9A9rJ17ctbY4fI34T93D8S8II3xubVHiIpCRBiLFHBi+mDYN59xAWFh+HcL0oRCGjs=
-X-Received: by 2002:aa7:c857:: with SMTP id g23mr19626574edt.100.1627918028334;
- Mon, 02 Aug 2021 08:27:08 -0700 (PDT)
+        Mon, 2 Aug 2021 11:28:27 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7396C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:28:17 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mAZrC-00076g-Hh; Mon, 02 Aug 2021 17:27:58 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mAZrA-0004Qi-3t; Mon, 02 Aug 2021 17:27:56 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mAZrA-0008Ni-1g; Mon, 02 Aug 2021 17:27:56 +0200
+Date:   Mon, 2 Aug 2021 17:27:55 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     alexandre.belloni@bootlin.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        thierry.reding@gmail.com, lee.jones@linaro.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Ludovic.Desroches@microchip.com, o.rempel@pengutronix.de,
+        andy.shevchenko@gmail.com, aardelean@deviqon.com,
+        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        broonie@kernel.org, Jonathan.Cameron@huawei.com,
+        linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, wsa@kernel.org, kernel@pengutronix.de,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        Claudiu.Beznea@microchip.com
+Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
+ devm_clk_get for prepared and enabled clocks enabled clocks]
+Message-ID: <20210802152755.ibisunvibmwhiyry@pengutronix.de>
+References: <20210722081817.2tsjzof4gvldq6ka@pengutronix.de>
+ <YPlfcbkxiBmB+vw1@kunai>
+ <CAHp75VfC=s12Unw3+Cn0ag71mM5i90=Jbwj4nYwB5cPKiUTRSA@mail.gmail.com>
+ <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
+ <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
+ <20210728202547.7uvfwflpruku7yps@pengutronix.de>
+ <20210728204033.GF22278@shell.armlinux.org.uk>
+ <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
+ <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
+ <20210802094810.GJ22278@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <20210731192637.3653796-1-lrizzo@google.com> <YQf9h+qvWCx6D7XT@8bytes.org>
- <CAMOZA0LEr+xM6RrsJErPMqHP7-0GdLmNDqbGVKbKTn92=Ncejg@mail.gmail.com> <YQgDfIcFW5h9TH+n@8bytes.org>
-In-Reply-To: <YQgDfIcFW5h9TH+n@8bytes.org>
-From:   Luigi Rizzo <lrizzo@google.com>
-Date:   Mon, 2 Aug 2021 17:26:57 +0200
-Message-ID: <CAMOZA0J7B=rnVpaa6WiMf3Hpr6=tk1QZeDRWjRFFW04FLx4n=A@mail.gmail.com>
-Subject: Re: [PATCH] amd/iommu: fix logic bug in amd_iommu_report_page_fault()
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Luigi Rizzo <rizzo.unipi@gmail.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4yhd4k7pc6ksrfur"
+Content-Disposition: inline
+In-Reply-To: <20210802094810.GJ22278@shell.armlinux.org.uk>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 4:39 PM Joerg Roedel <joro@8bytes.org> wrote:
->
-> On Mon, Aug 02, 2021 at 04:30:50PM +0200, Luigi Rizzo wrote:
-> > Ah didn't realize that. Thank you!
-> >
-> > Two questions on the topic:
-> > 1. how comes only the AMD driver is so verbose in reporting io page faults?
-> >    Neither intel nor other iommu drivers seem to log anything
->
-> What do you mean by 'verbose'? It is only a line per fault, and at least
-> the Intel driver also logs DMAR faults with one line per fault :)
 
-Ah never mind, I was grep'ing keywords from the amd message and
-there is almost zero overlap!
+--4yhd4k7pc6ksrfur
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks
-luigi
+Hello Russell,
+
+On Mon, Aug 02, 2021 at 10:48:10AM +0100, Russell King (Oracle) wrote:
+> On Sat, Jul 31, 2021 at 02:00:04PM +0200, Uwe Kleine-K=F6nig wrote:
+> > Hi Russell, hi Stephen,
+> >=20
+> > On Sat, Jul 31, 2021 at 12:41:19AM -0700, Stephen Boyd wrote:
+> > > +1 This patch doesn't fall under CCF maintainer.
+> >=20
+> > Given that CCF is the only implementer of devm_clk_get at least an Ack
+> > from your side would still be good I guess?
+>=20
+> I think devm_clk_get() should not be part of CCF but should be
+> part of the interface level - it's silly to have devm_clk_get()
+> being CCF but not clk_get(). The same should go for the other
+> devm wrappers around the plain clk_* interfaces.
+
+What is the practical difference between "Function X is part of CCF" and
+"Function X is part of the clk interface and there is only CCF who
+implements it"?
+
+> > I found a patch set adding devm variants of clk_enable (e.g.
+> > https://lore.kernel.org/patchwork/patch/755667/) but this approach is
+> > different as it also contains clk_get which IMHO makes more sense=20
+> > The discussion considered wrapping get+enable at one point, but I didn't
+> > find a followup.
+>=20
+> There have been several different approaches to wrapping things up,
+> but here's a question: should we make it easier to do the lazy thing
+> (get+enable) or should we make it easier to be power efficient?
+> Shouldn't we be encouraging people to write power efficient drivers?
+
+Yeah, sounds compelling, but I wonder if that's of practical importance.
+How many driver authors do you expect to lure into making a better
+driver just because devm_clk_get_prepared() doesn't exist? In contrast:
+How many drivers become simpler with devm_clk_get_prepared() and so
+it becomes easier to maintain them and easier to spot bugs?
+In the absence of devm_clk_get_prepared(), is it better that several
+frameworks (or drivers) open code it?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--4yhd4k7pc6ksrfur
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEIDvMACgkQwfwUeK3K
+7Alp/gf/YuHVn2QCiQY9Ln+XZfkad7QXQJYE0+fG2AJ7dxEy13P7sSRuADCYTAGu
+sE2xOSevHd7QQeJjY2UcjHahHyGJwJXMBKLouDyrPEhocQpBd3mp9ewBe1BL/jRH
+4Euz/1SRM2NSfTc9lw7QzxHD6tGOY6Lo6Qj34pE7gKel4UX9FrYOqCoq2YbViMoX
+nVueeVsmqp5pt+mB4tfNDWOA+H7dkH+LoGc0yggaVQW/K+rZqdr/qBYsFq7k4Zjv
+Csk4EcDMhWkDlTekyjRutr3F6uGoCFWvuu52IQqxkVfRVy35Zx0tBpzGtILDTVRB
+Ww69Vm7tkWdIyLcrczBXbDvc7FMunQ==
+=PmG8
+-----END PGP SIGNATURE-----
+
+--4yhd4k7pc6ksrfur--
