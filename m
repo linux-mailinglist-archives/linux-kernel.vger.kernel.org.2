@@ -2,176 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134E13DD276
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4153DD27B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232955AbhHBJAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:00:25 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:54950 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232814AbhHBJAW (ORCPT
+        id S232978AbhHBJAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:00:33 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:57724 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233005AbhHBJAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:00:22 -0400
-X-UUID: 10b4da1651f444a0b0d2202343630d3b-20210802
-X-UUID: 10b4da1651f444a0b0d2202343630d3b-20210802
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1618271833; Mon, 02 Aug 2021 17:00:10 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 2 Aug 2021 17:00:08 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 2 Aug 2021 17:00:08 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCH v8, 2/2] soc: mediatek: mmsys: Add mt8192 mmsys routing table
-Date:   Mon, 2 Aug 2021 16:59:33 +0800
-Message-ID: <1627894773-23872-3-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1627894773-23872-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1627894773-23872-1-git-send-email-yongqiang.niu@mediatek.com>
+        Mon, 2 Aug 2021 05:00:30 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 2CDAD1F423FC
+To:     "kernelci@groups.io" <kernelci@groups.io>
+Cc:     kernelci-members <kernelci-members@groups.io>,
+        automated-testing@lists.yoctoproject.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Summer Wang <wangsummer@google.com>,
+        linux-kselftest@vger.kernel.org, workflows@vger.kernel.org,
+        kunit-dev@googlegroups.com,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Subject: KernelCI Hackfest #2 - Sept 6-10 2021
+Message-ID: <74f7b4cf-926f-d8bd-19c2-375cfe7a12b2@collabora.com>
+Date:   Mon, 2 Aug 2021 10:00:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mt8192 has different routing registers than mt8183
+The first KernelCI hackfest[1] early June was successful in getting
+a number of kernel developers to work alongside the core KernelCI
+team.  Test coverage was increased in particular with kselftest,
+LTP, KUnit and a new test suite for libcamera.  We're now improving
+documentation and tooling to make it easier for anyone to get
+started.  Find out more about KernelCI on https://kernelci.org.
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
----
- drivers/soc/mediatek/mt8192-mmsys.h | 67 +++++++++++++++++++++++++++++++++++++
- drivers/soc/mediatek/mtk-mmsys.c    | 11 ++++++
- 2 files changed, 78 insertions(+)
- create mode 100644 drivers/soc/mediatek/mt8192-mmsys.h
+The second hackfest is scheduled for the 6th-10th September.  It
+should be a good opportunity to start discussing and working on
+upstream kernel testing topics ahead of the Linux Plumbers
+Conference[2].
 
-diff --git a/drivers/soc/mediatek/mt8192-mmsys.h b/drivers/soc/mediatek/mt8192-mmsys.h
-new file mode 100644
-index 0000000..0e4b233
---- /dev/null
-+++ b/drivers/soc/mediatek/mt8192-mmsys.h
-@@ -0,0 +1,67 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __SOC_MEDIATEK_MT8192_MMSYS_H
-+#define __SOC_MEDIATEK_MT8192_MMSYS_H
-+
-+#define MT8192_MMSYS_OVL_MOUT_EN		0xf04
-+#define MT8192_DISP_OVL1_2L_MOUT_EN		0xf08
-+#define MT8192_DISP_OVL0_2L_MOUT_EN		0xf18
-+#define MT8192_DISP_OVL0_MOUT_EN		0xf1c
-+#define MT8192_DISP_RDMA0_SEL_IN		0xf2c
-+#define MT8192_DISP_RDMA0_SOUT_SEL		0xf30
-+#define MT8192_DISP_CCORR0_SOUT_SEL		0xf34
-+#define MT8192_DISP_AAL0_SEL_IN			0xf38
-+#define MT8192_DISP_DITHER0_MOUT_EN		0xf3c
-+#define MT8192_DISP_DSI0_SEL_IN			0xf40
-+#define MT8192_DISP_OVL2_2L_MOUT_EN		0xf4c
-+
-+#define MT8192_DISP_OVL0_GO_BLEND			BIT(0)
-+#define MT8192_DITHER0_MOUT_IN_DSI0			BIT(0)
-+#define MT8192_OVL0_MOUT_EN_DISP_RDMA0			BIT(0)
-+#define MT8192_OVL2_2L_MOUT_EN_RDMA4			BIT(0)
-+#define MT8192_DISP_OVL0_GO_BG				BIT(1)
-+#define MT8192_DISP_OVL0_2L_GO_BLEND			BIT(2)
-+#define MT8192_DISP_OVL0_2L_GO_BG			BIT(3)
-+#define MT8192_OVL1_2L_MOUT_EN_RDMA1			BIT(4)
-+#define MT8192_OVL0_MOUT_EN_OVL0_2L			BIT(4)
-+#define MT8192_RDMA0_SEL_IN_OVL0_2L			0x3
-+#define MT8192_RDMA0_SOUT_COLOR0			0x1
-+#define MT8192_CCORR0_SOUT_AAL0				0x1
-+#define MT8192_AAL0_SEL_IN_CCORR0			0x1
-+#define MT8192_DSI0_SEL_IN_DITHER0			0x1
-+
-+static const struct mtk_mmsys_routes mmsys_mt8192_routing_table[] = {
-+	{
-+		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-+		MT8192_DISP_OVL0_2L_MOUT_EN, MT8192_OVL0_MOUT_EN_DISP_RDMA0,
-+	}, {
-+		DDP_COMPONENT_OVL_2L2, DDP_COMPONENT_RDMA4,
-+		MT8192_DISP_OVL2_2L_MOUT_EN, MT8192_OVL2_2L_MOUT_EN_RDMA4
-+	}, {
-+		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
-+		MT8192_DISP_DITHER0_MOUT_EN, MT8192_DITHER0_MOUT_IN_DSI0
-+	}, {
-+		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-+		MT8192_DISP_RDMA0_SEL_IN, MT8192_RDMA0_SEL_IN_OVL0_2L
-+	}, {
-+		DDP_COMPONENT_CCORR, DDP_COMPONENT_AAL0,
-+		MT8192_DISP_AAL0_SEL_IN, MT8192_AAL0_SEL_IN_CCORR0
-+	}, {
-+		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
-+		MT8192_DISP_DSI0_SEL_IN, MT8192_DSI0_SEL_IN_DITHER0
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
-+		MT8192_DISP_RDMA0_SOUT_SEL, MT8192_RDMA0_SOUT_COLOR0
-+	}, {
-+		DDP_COMPONENT_CCORR, DDP_COMPONENT_AAL0,
-+		MT8192_DISP_CCORR0_SOUT_SEL, MT8192_CCORR0_SOUT_AAL0
-+	}, {
-+		DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
-+		MT8192_MMSYS_OVL_MOUT_EN, MT8192_DISP_OVL0_GO_BG,
-+	}, {
-+		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-+		MT8192_MMSYS_OVL_MOUT_EN, MT8192_DISP_OVL0_2L_GO_BLEND,
-+	}
-+};
-+
-+#endif /* __SOC_MEDIATEK_MT8192_MMSYS_H */
-diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-index 080660e..de7b122 100644
---- a/drivers/soc/mediatek/mtk-mmsys.c
-+++ b/drivers/soc/mediatek/mtk-mmsys.c
-@@ -13,6 +13,7 @@
- #include "mtk-mmsys.h"
- #include "mt8167-mmsys.h"
- #include "mt8183-mmsys.h"
-+#include "mt8192-mmsys.h"
- 
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
- 	.clk_driver = "clk-mt2701-mm",
-@@ -52,6 +53,12 @@
- 	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
- };
- 
-+static const struct mtk_mmsys_driver_data mt8192_mmsys_driver_data = {
-+	.clk_driver = "clk-mt8192-mm",
-+	.routes = mmsys_mt8192_routing_table,
-+	.num_routes = ARRAY_SIZE(mmsys_mt8192_routing_table),
-+};
-+
- struct mtk_mmsys {
- 	void __iomem *regs;
- 	const struct mtk_mmsys_driver_data *data;
-@@ -157,6 +164,10 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
- 		.compatible = "mediatek,mt8183-mmsys",
- 		.data = &mt8183_mmsys_driver_data,
- 	},
-+	{
-+		.compatible = "mediatek,mt8192-mmsys",
-+		.data = &mt8192_mmsys_driver_data,
-+	},
- 	{ }
- };
- 
--- 
-1.8.1.1.dirty
+Here's the project board where anyone can already add some ideas:
 
+  https://github.com/orgs/kernelci/projects/5
+
+There is no registration system, but please reply to this email or
+send a message on IRC (#kernelci libera.chat) or kernelci.slack.com
+if you would like to take part so you'll get email updates and
+invitations to the meetings and open hours sessions online.  You
+may just drop in and out at any point during the hackfest as you
+see fit.
+
+The hackfest features:
+
+* Daily open hours online using Big Blue Button to discuss things
+  and get support from the KernelCI team
+
+* KernelCI team members available across most time zones to provide
+  quick feedback
+
+* A curated list of topics and a project board to help set
+  objectives and coordinate efforts between all contributors
+
+
+As always, KernelCI is at the service of the kernel community so
+please share any feedback you may have to help shape this upcoming
+hackfest in the best possible way.
+
+Thanks,
+Guillaume
+
+
+[1] https://foundation.kernelci.org/blog/2021/06/24/the-first-ever-kernelci-hackfest/
+[2] https://www.linuxplumbersconf.org/event/11/page/104-accepted-microconferences#cont-test
