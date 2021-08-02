@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9603DE1F8
+	by mail.lfdr.de (Postfix) with ESMTP id E19053DE1F9
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbhHBVy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
+        id S233333AbhHBVzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbhHBVye (ORCPT
+        with ESMTP id S232965AbhHBVye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Aug 2021 17:54:34 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEE4C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:54:23 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id e14so579474qkg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:54:23 -0700 (PDT)
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E75C0613D5
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:54:24 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id t66so18180691qkb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:54:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=vllONSCM3KraKyPXhV20IkRxy2MdqODsPqhupnQLd9g=;
-        b=FCHt4SLjRX4W0uKz1DC2INGR5UyRTa2DOy8SEOiO8odV0LjPUoY+8Xpup7M9GnxJUb
-         M6HoRE2ijwYz85dPiuZGos8rnp6tGoSSiDdIK+KNQPkUPjsGgUKSWEC3/EjNSuDXPf1D
-         xtWvr2VRWAjTPlT+W7jihLZucLsaD28uHw5zj1fOarSfM+vRhtRwZCuKxVeykXpY0e0M
-         hFMcLjZYveT88rLNMJPd772Qm0WC9fOe6KowiYIfy1izlRpTyV92Kz2HIYoYfWwoiznc
-         TvD4oG0+6DA0AcN97ItWekQTJFzr1XShyXpDasCVO0TX1C4KAy8+AaDBlxlYjLTcfQLr
-         ODXA==
+        bh=Wj2NAixWvJ4nO1FkxHbUkwp7sIToaWThfISCCFg6+8g=;
+        b=GscCSfNwt44SsxAiPP7NgcgGNAXIbZIzPwC6/zqeK9kfqT8QLhkAwdkgkT2aZY087m
+         5KxwAVR12ZBJ/ZeCQcNoNKBBF9L+Ds0Hj+DcneIUI8ImzTrkqH9HxKuMPLFmwQsIL2XK
+         bwuxoBK+4RmtzMm5BflhOQZqEsmZxQ0o70Zz2BcWeFPjp8YlBy4MF8vqjY80xbZLZ2jR
+         T/2CwFLk0SR/DPY1g0sIDtYy50PCkJHFZYvSBfOmijbPnYSoHafv4h7czA+iRWjP/ZpV
+         B1cOUnKsTAIUEMluLV/clockW2VvJCE1ndGhTSzVJhSqYABRu+HrJeFpQnkXSVhM/GCk
+         O37Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vllONSCM3KraKyPXhV20IkRxy2MdqODsPqhupnQLd9g=;
-        b=caexlyNmEAdOAVJVGxfyYWe7dO0xB0XRHF7Qe8Jendtpl41eup+FWj4Uqrz2lmxsB6
-         6NMOAST7rrrVD1B5yOhXCHSvHZFq47Oab+5QnMTzrJpHnGtFWadWPIuZN+/jskxmBJTK
-         bYYcVLjWdushHwVJDvuCF2p6ERTcJ3V0voSNP24R2n7sH5Zo3UQObeclNSU8Bt8pxwWq
-         jUa6KqmKMOj6ow0MVWGvEF/MsC0uwenGbJSfJhE7Kie6Hm5vFtZtqyq4Xw/4ZEJxTl3U
-         LMu7iEQgQACaFsHeuRTISyc62YVfnfeWlndnHQ3M3zW04cX9JR2oeXuOCR/v9Mgsviu0
-         KCyQ==
-X-Gm-Message-State: AOAM5306nI5kgQ5WSuK2v8YCYuvkYhA29E6j8GfDyqjqaEUfGbqr7Ss2
-        GhcEK4Gi+ANSZmW/eH/nm7LevA==
-X-Google-Smtp-Source: ABdhPJy481uCAJREXivorCHdWuWZlyVeqri0ToaKhEh9mzCiyb+NJMFr7CnItwoU5vg1cHArwmCvvQ==
-X-Received: by 2002:a05:620a:99b:: with SMTP id x27mr18189913qkx.138.1627941262162;
-        Mon, 02 Aug 2021 14:54:22 -0700 (PDT)
+        bh=Wj2NAixWvJ4nO1FkxHbUkwp7sIToaWThfISCCFg6+8g=;
+        b=Plui3lwrqJRJkx+pjBsy3DKYRD48Tmmgc/Dx+br/oBjYPymhZcBmURpRZvSXz6FXtT
+         0nrbyPaTIzSB3bTrGEvHCxL/IfILNeM13aa7QZ6FUDtozJh18WDlTAKy+at3tvCWgVUq
+         0Hb+wnSyxT+75FcHbnlM/TzheGdk9naVMEt08fHzgLC05zguAbBbCQIIOdhdnl+npLFO
+         ZEDlU1XjfUq5WgujcCXYA9za6OpcxFuHD5EKRAXRsGCXcWbNuODCeVcoQ0MiofGUB3+w
+         rCm/4AwBKHmTQcHqW3+ikefs6MmIwuh+OVdrBMxLvjxVOzkRVdVTJnlaPwukZ2leSWhg
+         GBmg==
+X-Gm-Message-State: AOAM531SJapTMIKUtbvQ+i7Y5B7QSw1sdqvjSRV6MPTesvxY9WoHwd5v
+        KCYqdidF0RstbhqxDxbJno4Rhg==
+X-Google-Smtp-Source: ABdhPJwzqgDG63F1SdAX7UqdvA9CoqJlGcLHTWFM7eFYSkHjmR9g6tQlWW8DN/xg+wexZixuMpniZg==
+X-Received: by 2002:a05:620a:a8f:: with SMTP id v15mr17503007qkg.257.1627941263546;
+        Mon, 02 Aug 2021 14:54:23 -0700 (PDT)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id v11sm5479216qtc.0.2021.08.02.14.54.20
+        by smtp.gmail.com with ESMTPSA id v11sm5479216qtc.0.2021.08.02.14.54.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 14:54:21 -0700 (PDT)
+        Mon, 02 Aug 2021 14:54:23 -0700 (PDT)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         ebiederm@xmission.com, kexec@lists.infradead.org,
@@ -60,9 +60,9 @@ To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         selindag@gmail.com, tyhicks@linux.microsoft.com,
         kernelfans@gmail.com, akpm@linux-foundation.org,
         madvenka@linux.microsoft.com
-Subject: [PATCH v16 08/15] arm64: kexec: configure EL2 vectors for kexec
-Date:   Mon,  2 Aug 2021 17:54:01 -0400
-Message-Id: <20210802215408.804942-9-pasha.tatashin@soleen.com>
+Subject: [PATCH v16 09/15] arm64: kexec: relocate in EL1 mode
+Date:   Mon,  2 Aug 2021 17:54:02 -0400
+Message-Id: <20210802215408.804942-10-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210802215408.804942-1-pasha.tatashin@soleen.com>
 References: <20210802215408.804942-1-pasha.tatashin@soleen.com>
@@ -72,155 +72,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we have a EL2 mode without VHE, the EL2 vectors are needed in order
-to switch to EL2 and jump to new world with hypervisor privileges.
+Since we are going to keep MMU enabled during relocation, we need to
+keep EL1 mode throughout the relocation.
 
-In preparation to MMU enabled relocation, configure our EL2 table now.
+Keep EL1 enabled, and switch EL2 only before entering the new world.
 
-Kexec uses #HVC_SOFT_RESTART to branch to the new world, so extend
-el1_sync vector that is provided by trans_pgd_copy_el2_vectors() to
-support this case.
-
+Suggested-by: James Morse <james.morse@arm.com>
 Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
 ---
- arch/arm64/Kconfig                |  2 +-
- arch/arm64/include/asm/kexec.h    |  1 +
- arch/arm64/kernel/asm-offsets.c   |  1 +
- arch/arm64/kernel/machine_kexec.c | 31 +++++++++++++++++++++++++++++++
- arch/arm64/mm/trans_pgd-asm.S     |  9 ++++++++-
- 5 files changed, 42 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/cpu-reset.h       |  3 +--
+ arch/arm64/kernel/machine_kexec.c   |  4 ++--
+ arch/arm64/kernel/relocate_kernel.S | 13 +++++++++++--
+ 3 files changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index b5b13a932561..86dc6ddd2b8a 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1138,7 +1138,7 @@ config CRASH_DUMP
+diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
+index 81b3d0fe7a63..296abbac7192 100644
+--- a/arch/arm64/kernel/cpu-reset.h
++++ b/arch/arm64/kernel/cpu-reset.h
+@@ -20,11 +20,10 @@ static inline void __noreturn __nocfi cpu_soft_restart(unsigned long entry,
+ {
+ 	typeof(__cpu_soft_restart) *restart;
  
- config TRANS_TABLE
- 	def_bool y
--	depends on HIBERNATION
-+	depends on HIBERNATION || KEXEC_CORE
+-	unsigned long el2_switch = is_hyp_nvhe();
+ 	restart = (void *)__pa_symbol(function_nocfi(__cpu_soft_restart));
  
- config XEN_DOM0
- 	def_bool y
-diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-index 00dbcc71aeb2..753a1c398898 100644
---- a/arch/arm64/include/asm/kexec.h
-+++ b/arch/arm64/include/asm/kexec.h
-@@ -96,6 +96,7 @@ struct kimage_arch {
- 	void *dtb;
- 	phys_addr_t dtb_mem;
- 	phys_addr_t kern_reloc;
-+	phys_addr_t el2_vectors;
- };
- 
- #ifdef CONFIG_KEXEC_FILE
-diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-index b41409b09d04..47ccb57b787e 100644
---- a/arch/arm64/kernel/asm-offsets.c
-+++ b/arch/arm64/kernel/asm-offsets.c
-@@ -174,6 +174,7 @@ int main(void)
- #endif
- #ifdef CONFIG_KEXEC_CORE
-   DEFINE(KIMAGE_ARCH_DTB_MEM,		offsetof(struct kimage, arch.dtb_mem));
-+  DEFINE(KIMAGE_ARCH_EL2_VECTORS,	offsetof(struct kimage, arch.el2_vectors));
-   DEFINE(KIMAGE_HEAD,			offsetof(struct kimage, head));
-   DEFINE(KIMAGE_START,			offsetof(struct kimage, start));
-   BLANK();
-diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
-index e210b19592c6..59a4b4172b68 100644
---- a/arch/arm64/kernel/machine_kexec.c
-+++ b/arch/arm64/kernel/machine_kexec.c
-@@ -21,6 +21,7 @@
- #include <asm/mmu.h>
- #include <asm/mmu_context.h>
- #include <asm/page.h>
-+#include <asm/trans_pgd.h>
- 
- #include "cpu-reset.h"
- 
-@@ -43,7 +44,9 @@ static void _kexec_image_info(const char *func, int line,
- 	pr_debug("    start:       %lx\n", kimage->start);
- 	pr_debug("    head:        %lx\n", kimage->head);
- 	pr_debug("    nr_segments: %lu\n", kimage->nr_segments);
-+	pr_debug("    dtb_mem: %pa\n", &kimage->arch.dtb_mem);
- 	pr_debug("    kern_reloc: %pa\n", &kimage->arch.kern_reloc);
-+	pr_debug("    el2_vectors: %pa\n", &kimage->arch.el2_vectors);
- 
- 	for (i = 0; i < kimage->nr_segments; i++) {
- 		pr_debug("      segment[%lu]: %016lx - %016lx, 0x%lx bytes, %lu pages\n",
-@@ -143,9 +146,27 @@ static void kexec_segment_flush(const struct kimage *kimage)
- 	}
+ 	cpu_install_idmap();
+-	restart(el2_switch, entry, arg0, arg1, arg2);
++	restart(0, entry, arg0, arg1, arg2);
+ 	unreachable();
  }
  
-+/* Allocates pages for kexec page table */
-+static void *kexec_page_alloc(void *arg)
-+{
-+	struct kimage *kimage = (struct kimage *)arg;
-+	struct page *page = kimage_alloc_control_pages(kimage, 0);
-+
-+	if (!page)
-+		return NULL;
-+
-+	memset(page_address(page), 0, PAGE_SIZE);
-+
-+	return page_address(page);
-+}
-+
- int machine_kexec_post_load(struct kimage *kimage)
- {
- 	void *reloc_code = page_to_virt(kimage->control_code_page);
-+	struct trans_pgd_info info = {
-+		.trans_alloc_page	= kexec_page_alloc,
-+		.trans_alloc_arg	= kimage,
-+	};
- 
- 	/* If in place, relocation is not used, only flush next kernel */
- 	if (kimage->head & IND_DONE) {
-@@ -154,6 +175,14 @@ int machine_kexec_post_load(struct kimage *kimage)
- 		return 0;
- 	}
- 
-+	kimage->arch.el2_vectors = 0;
-+	if (is_hyp_nvhe()) {
-+		int rc = trans_pgd_copy_el2_vectors(&info,
-+						    &kimage->arch.el2_vectors);
-+		if (rc)
-+			return rc;
-+	}
-+
- 	memcpy(reloc_code, arm64_relocate_new_kernel,
- 	       arm64_relocate_new_kernel_size);
- 	kimage->arch.kern_reloc = __pa(reloc_code);
-@@ -209,6 +238,8 @@ void machine_kexec(struct kimage *kimage)
- 		restart(is_hyp_nvhe(), kimage->start, kimage->arch.dtb_mem,
- 			0, 0);
+diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+index 59a4b4172b68..cf5d6f22a041 100644
+--- a/arch/arm64/kernel/machine_kexec.c
++++ b/arch/arm64/kernel/machine_kexec.c
+@@ -240,8 +240,8 @@ void machine_kexec(struct kimage *kimage)
  	} else {
-+		if (is_hyp_nvhe())
-+			__hyp_set_vectors(kimage->arch.el2_vectors);
- 		cpu_soft_restart(kimage->arch.kern_reloc, virt_to_phys(kimage),
- 				 0, 0);
+ 		if (is_hyp_nvhe())
+ 			__hyp_set_vectors(kimage->arch.el2_vectors);
+-		cpu_soft_restart(kimage->arch.kern_reloc, virt_to_phys(kimage),
+-				 0, 0);
++		cpu_soft_restart(kimage->arch.kern_reloc,
++				 virt_to_phys(kimage), 0, 0);
  	}
-diff --git a/arch/arm64/mm/trans_pgd-asm.S b/arch/arm64/mm/trans_pgd-asm.S
-index 831d6369494e..c1f2ed1be6de 100644
---- a/arch/arm64/mm/trans_pgd-asm.S
-+++ b/arch/arm64/mm/trans_pgd-asm.S
-@@ -24,7 +24,14 @@ SYM_CODE_START_LOCAL(el1_sync)
- 	msr	vbar_el2, x1
- 	mov	x0, xzr
- 	eret
--1:	/* Unexpected argument, set an error */
-+1:	cmp	x0, #HVC_SOFT_RESTART	/* Called from kexec */
-+	b.ne	2f
-+	mov	x0, x2
-+	mov	x2, x4
-+	mov	x4, x1
-+	mov	x1, x3
-+	br	x4
-+2:	/* Unexpected argument, set an error */
- 	mov_q	x0, HVC_STUB_ERR
- 	eret
- SYM_CODE_END(el1_sync)
+ 
+ 	BUG(); /* Should never get here. */
+diff --git a/arch/arm64/kernel/relocate_kernel.S b/arch/arm64/kernel/relocate_kernel.S
+index 63ea19868f63..b4fb97312a80 100644
+--- a/arch/arm64/kernel/relocate_kernel.S
++++ b/arch/arm64/kernel/relocate_kernel.S
+@@ -13,6 +13,7 @@
+ #include <asm/kexec.h>
+ #include <asm/page.h>
+ #include <asm/sysreg.h>
++#include <asm/virt.h>
+ 
+ /*
+  * arm64_relocate_new_kernel - Put a 2nd stage image in place and boot it.
+@@ -61,12 +62,20 @@ SYM_CODE_START(arm64_relocate_new_kernel)
+ 	isb
+ 
+ 	/* Start new image. */
++	ldr	x1, [x0, #KIMAGE_ARCH_EL2_VECTORS]	/* relocation start */
++	cbz	x1, .Lel1
++	ldr	x1, [x0, #KIMAGE_START]		/* relocation start */
++	ldr	x2, [x0, #KIMAGE_ARCH_DTB_MEM]	/* dtb address */
++	mov	x3, xzr
++	mov	x4, xzr
++	mov     x0, #HVC_SOFT_RESTART
++	hvc	#0				/* Jumps from el2 */
++.Lel1:
+ 	ldr	x4, [x0, #KIMAGE_START]		/* relocation start */
+ 	ldr	x0, [x0, #KIMAGE_ARCH_DTB_MEM]	/* dtb address */
+-	mov	x1, xzr
+ 	mov	x2, xzr
+ 	mov	x3, xzr
+-	br	x4
++	br	x4				/* Jumps from el1 */
+ SYM_CODE_END(arm64_relocate_new_kernel)
+ 
+ .align 3	/* To keep the 64-bit values below naturally aligned. */
 -- 
 2.25.1
 
