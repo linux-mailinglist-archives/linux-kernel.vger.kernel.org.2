@@ -2,76 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E45A3DD260
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8743DD262
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233131AbhHBIxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 04:53:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233133AbhHBIxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 04:53:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA26361057;
-        Mon,  2 Aug 2021 08:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627894380;
-        bh=GampQJdffLH3LWj8rSzcVbwCXl5Q0N87A/M7/gwDYh0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DSCIW9vYa3UVCGR1Q2/UZxAj4OXiaDwrpGgRENfpm6bAuZhh/oOYT/9G2hwztYGDf
-         5+MAhYbLMkpza5glUYE7naCWsPSifGkP96D+8drUpDOQ8prSVffOcXKEr09xI5Yisz
-         pOJywEcrz6yovZnRs+tqUecVf4Ah05cQpi2UukZTdra63cvN02I8Fib03N4bzLMJ2H
-         g8jsG6mXVyoMUAJxy/DcGDNJfYHBRWxeLvNwKY0V8bHyjAi2QRUmPkX3/7HfhX6pqM
-         7+JwC5u8vjnprzMz1lERm+/wp205OSv5CpS+/cvOOsVItQGYYyRmPkM0bMAzNWq+9O
-         aMDiUyFoHWyhQ==
-Date:   Mon, 2 Aug 2021 11:52:57 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/7] x86/sgx: Add infrastructure to identify SGX EPC
- pages
-Message-ID: <20210802085257.ia3uloyco4gj7yxp@kernel.org>
-References: <20210719182009.1409895-1-tony.luck@intel.com>
- <20210728204653.1509010-1-tony.luck@intel.com>
- <20210728204653.1509010-3-tony.luck@intel.com>
- <141602a3-ef61-01f0-4a3c-69f8e7012fcd@intel.com>
- <20210730003809.hp3nmqmgyysa45nz@kernel.org>
- <YQQsz/tvrQpqAbpX@google.com>
- <b7b6aabd-1f10-1b21-eaeb-102ead2989cd@intel.com>
- <20210730184400.GA1521057@agluck-desk2.amr.corp.intel.com>
+        id S232859AbhHBI4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 04:56:17 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:6470 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232711AbhHBI4P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 04:56:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UhkYtRe_1627894553;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UhkYtRe_1627894553)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 02 Aug 2021 16:55:54 +0800
+Subject: Re: [PATCH 2/2] virtio-console: remove unnecessary kmemdup()
+To:     Jiri Slaby <jirislaby@kernel.org>, gregkh@linuxfoundation.org,
+        amit@kernel.org, arnd@arndb.de
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, osandov@fb.com
+References: <20210801051655.79048-1-xianting.tian@linux.alibaba.com>
+ <b5554967-a683-96ae-deb9-2d4980d33b41@kernel.org>
+ <5ad81a0e-fbb2-a849-6db7-f5718633d282@linux.alibaba.com>
+ <a2598ec9-7bc9-be42-bcab-fa19c9e734f7@kernel.org>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <61a6d459-338b-7e77-c78e-3a069bbfd690@linux.alibaba.com>
+Date:   Mon, 2 Aug 2021 16:55:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730184400.GA1521057@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <a2598ec9-7bc9-be42-bcab-fa19c9e734f7@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 11:44:00AM -0700, Luck, Tony wrote:
-> On Fri, Jul 30, 2021 at 09:50:59AM -0700, Dave Hansen wrote:
-> > On 7/30/21 9:46 AM, Sean Christopherson wrote:
-> > > Out of curiosity, on multi-socket systems, are EPC sections clustered in a single
-> > > address range, or are they interleaved with regular RAM?  If they're clustered,
-> > > you could track the min/max across all sections to optimize the common case that
-> > > an address isn't in any EPC section.
-> > 
-> > They're interleaved on the systems that I've seen:
-> > 
-> > 	Socket 0 - RAM
-> > 	Socket 0 - EPC
-> > 	Socket 1 - RAM
-> > 	Socket 1 - EPC
-> > 
-> > It would probably be pretty expensive in terms of the physical address
-> > remapping resources to cluster them.
-> 
-> I thought xarray was overkill ... and it is ... but it makes the code
-> considerably shorter/simpler!
-> 
-> I think I'm going to go with it. Thanks to Jarkko for the suggestion.
 
-If it makes the code considerably simpler, that in my opinion justifies the
-minor size increase.
+在 2021/8/2 下午4:40, Jiri Slaby 写道:
+> On 02. 08. 21, 10:32, Xianting Tian wrote:
+>>
+>> 在 2021/8/2 下午3:25, Jiri Slaby 写道:
+>>> Hi,
+>>>
+>>> why is this 2/2? I seem (Lore neither) to find 1/2.
+>> You didn't receive 1/2?
+>> [PATCH 1/2] tty: hvc: pass DMA capable memory to put_chars()
+>> https://lkml.org/lkml/2021/8/1/8 <https://lkml.org/lkml/2021/8/1/8>
+>
+> Oh, I did, but it's not properly threaded. PLease fix your setup.
+Ok, thanks
+>
+>>> On 01. 08. 21, 7:16, Xianting Tian wrote:
+>>>> hvc framework will never pass stack memory to the put_chars() 
+>>>> function,
+>>>
+>>> Am I blind or missing something?
+>>>
+>>> hvc_console_print(...)
+>>> {
+>>>   char c[N_OUTBUF]
+>>> ...
+>>>   cons_ops[index]->put_chars(vtermnos[index], c, i);
+>>>
+>>> The same here:
+>>>
+>>> hvc_poll_put_char(..., char ch)
+>>> {
+>>> ...
+>>>    n = hp->ops->put_chars(hp->vtermno, &ch, 1);
+>>>
+>>> AFAICS both of them *pass* a pointer to stack variable.
+>>
+>> yes, I discussed the issue with Arnd before in below thread, you can 
+>> get the history, thanks
+>>
+>> https://lkml.org/lkml/2021/7/27/494 
+>> <https://lkml.org/lkml/2021/7/27/494>
+>
+> So is this a v2? You should have noted that. And what changed from v1 
+> too.
 
-/Jarkko
+I think yes, I should mentioned it in this patch, sorry for that:(
+
+>
+>>>> So the calling of kmemdup() is unnecessary, remove it.
+>>>>
+>>>> Fixes: c4baad5029 ("virtio-console: avoid DMA from stack")
+>>>
+>>> This patch doesn't "Fix" -- it reverts the commit. You should've 
+>>> CCed the author too.
+>>
+>> yes, we discussed ther issue in above thread, which we CCed the author.
+>
+> I don't see any input from the author?
+>
+>
+> Anyway, 1/2 does not even build, so you will send v3 with all the 
+> above fixed, hopefully.
+
+yes, I will send v3 patch after I figured out a better solution based on 
+Arnd's comments for the patch '1/2'.
+
+Do you have any other suggestion for the solution?
+
+thanks.
+
+>
+> thanks,
