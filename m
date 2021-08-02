@@ -2,89 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917D23DD9DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A13A3DDA9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237552AbhHBOEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:04:54 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:44338 "EHLO mx1.riseup.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235402AbhHBN5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:57:32 -0400
-Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4GdfhK2tmjzDxXp;
-        Mon,  2 Aug 2021 06:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1627912641; bh=Z65PMyFUa16d9Sdspmc+iNX0aYW4nm2Kdaiq9sG/QeQ=;
-        h=Subject:From:To:Cc:In-Reply-To:References:Date:From;
-        b=B7JGXIihvF4fUqOkgTpVvdC7Z2YQnqOYiqIQlR/xYNGTLk5sYlXZXrrNRqaB41f9x
-         OQXAMiXNe6RpN9/3//WfP3evUutO48L4VctJb8Rik1eXMXKTbtEo8XZSWpSogFTb+T
-         98GIbF/SMvEpH5RrWr6Zv+EJps02p6P9CGVa4z6Y=
-X-Riseup-User-ID: 2668D83796406052EE9BC3D2B5F80B355C6F7F5F7CB77A2C25E630036B0BFDF9
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews1.riseup.net (Postfix) with ESMTPSA id 4GdfhH5jSsz5vjx;
-        Mon,  2 Aug 2021 06:57:19 -0700 (PDT)
-Message-ID: <131a3c2eeffa885bfb3ee8e1c3316da6818c4310.camel@riseup.net>
-Subject: Re: [PATCH v4] HID: logitech-hidpp: battery: provide CAPACITY
- property for newer devices
-From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@riseup.net>
-To:     Hamza Mahfooz <someguy@effective-light.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Bastien Nocera <hadess@hadess.net>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org
-In-Reply-To: <20210802125232.65188-1-someguy@effective-light.com>
-References: <20210802125232.65188-1-someguy@effective-light.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-jSn/QtWNxsoPNSju7pKV"
-Date:   Mon, 02 Aug 2021 14:57:17 +0100
+        id S235378AbhHBOQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239844AbhHBOMn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:12:43 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A77DC01B0A1;
+        Mon,  2 Aug 2021 06:57:44 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id e3-20020a4ab9830000b029026ada3b6b90so416850oop.0;
+        Mon, 02 Aug 2021 06:57:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4innsOL2Q3KWcAqQhqXiBn1f8Lxu8dmaKQoSumnZeAQ=;
+        b=baBe0MLf4OGBzPDNUbm3SqMz8awtAC42JZbCrY8lNcgy+SIKA3mV20Sabr85Uclj1t
+         ulimS87lHCCYqmtw3yI1mXPXnA+HyXbwamwWqeOtNxnw/sHUQzGOUZ7pUw7Tg9FlS3fM
+         moMSkGtSAxBNug0WN0qY9P8SMJcoZA4wQeHLDyUx7u2OmM0QiCrkogZLKgUJZvjcN2bD
+         iyJOFJCxjaU0igeXBbEK3p/KbZpIV4da91luDcGi8U0QbdcKf/9Z1jkcb3Nrwb2l0Ltx
+         fMc4u3KA+7u+8bOdlJ7BaO+AdRxFIlN17MaeW4hd12cU6sQtwvXcnlyr28TR+wbFN99z
+         dDPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4innsOL2Q3KWcAqQhqXiBn1f8Lxu8dmaKQoSumnZeAQ=;
+        b=i9cMvTNU/zEQmdHiihcSKSESc/cBwJHVmNIHmvWXAgYRzjoWOzpXcQrcLYg4OUO/yz
+         0n0HC4HxTtxd2rbCv3FkS3kfx8bMPLhTNbfECg6mqNnfO12EbTFhgCGCdkZIPOlRJccG
+         Bzm7JG41PhDXhDlDZ2A4zasxldKJcEsuVau0R+fj59FOJsLvv7JK16iKjKtZDVYY3UCI
+         HHoVZEA1EEqSR0jaxV4kZRR1jHkafX2fY4Qz5mzm7PzvYIDoXcdxvMKzCmcdsxxGpxz/
+         aL6oRAOSYNNRlGEhJf/FV+FU/QarDK2QgsmtGzXy6Ik5zi9xjKtHwr3w3giQKC40X17E
+         oWrg==
+X-Gm-Message-State: AOAM533VM2m/mivfQPtwM9WItZUEWtD2Ke/5swP5PJ43DV1fd0Xo7+Q8
+        K+32yBMjEjY7pnGWJa1w7ok=
+X-Google-Smtp-Source: ABdhPJyiMuR6up32Ii8P3kcZU8ODU5bQh+TRUkFM/vZhIPbYC7x5JcFxqU3XUxk69wOs4DetH5ciig==
+X-Received: by 2002:a4a:ca8b:: with SMTP id x11mr10773342ooq.16.1627912663328;
+        Mon, 02 Aug 2021 06:57:43 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d24sm1793012oic.23.2021.08.02.06.57.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 06:57:42 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] spi: mediatek: Fix fifo transfer
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peter Hess <peter.hess@ph-home.de>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Hsin-Yi Wang <hsinyi@google.com>
+References: <20210802030023.1748777-1-linux@roeck-us.net>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <836776f1-5b8d-ba18-2bd7-3b21673a8b82@roeck-us.net>
+Date:   Mon, 2 Aug 2021 06:57:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210802030023.1748777-1-linux@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/1/21 8:00 PM, Guenter Roeck wrote:
+> Commit 3a70dd2d0503 ("spi: mediatek: fix fifo rx mode") claims that
+> fifo RX mode was never handled, and adds the presumably missing code
+> to the FIFO transfer function. However, the claim that receive data
+> was not handled is incorrect. It was handled as part of interrupt
+> handling after the transfer was complete. The code added with the above
+> mentioned commit reads data from the receive FIFO before the transfer
+> is started, which is wrong. This results in an actual transfer error
+> on a Hayato Chromebook.
+> 
+> Remove the code trying to handle receive data before the transfer is
+> started to fix the problem.
+> 
+> Fixes: 3a70dd2d0503 ("spi: mediatek: fix fifo rx mode")
+> Cc: Peter Hess <peter.hess@ph-home.de>
+> Cc: Frank Wunderlich <frank-w@public-files.de>
+> Cc: Tzung-Bi Shih <tzungbi@google.com>
+> Cc: Hsin-Yi Wang <hsinyi@google.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
 
---=-jSn/QtWNxsoPNSju7pKV
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I should have added here: If this patch isn't acceptable for some reason,
+commit 3a70dd2d0503 should be reverted because it is obviously wrong
+and introduces a severe regression.
 
-On Mon, 2021-08-02 at 08:52 -0400, Hamza Mahfooz wrote:
-> For devices that only support the BATTERY_VOLTAGE (0x1001) feature, UPowe=
-r
-> requires the additional information provided by this patch, to set them u=
-p.
->=20
-> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+Thanks,
+Guenter
 
-Thanks Hamza!
-
-Reviewed-by: Filipe La=C3=ADns <lains@riseup.net>
-
-Cheers,
-Filipe La=C3=ADns
-
---=-jSn/QtWNxsoPNSju7pKV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAmEH+bgACgkQ+JPGdIFq
-qV2QwxAAm7IGALONFgvyVWA6DvGYN874+OEyaq7dUZ+Hs9nc8bRYCErxT7/CvzUH
-1eKRyGXvSbT10vFfzeuyZ5GUp9PDohkk51ugUmb8NuoV/4eSx4q7j4EByJFd0fIB
-Y762u9lxrlhMpojw88XQ4FCZ6M2FyEUOv11WraV7hRyPwgdiESmmEBCp75mAgDUT
-6c0/i0kQAdk6Ahkg28OUqiyF2EoSg5WUdoVWG3t5kSciMdbD5FuZ3LV9M5OuIeXA
-GmV1/9OnFEfo4qotmjevz5lkrkXSAVTsxfQWn4i8dJ5D+FXbwSR2T3Ns8c9Lmo8i
-FIjMZ/AjAXqCat6YqglpD3aMGXrArIleJIS67/m4WN/PgokSWmq1KCMJD7lZbS6D
-FP0ITpgojM2b2fijHfyTvoDPbN8h1fg7GEFXxVF1qrIRMf/Cf7R+cJ1ccdBHpgbH
-fT9Lj6HpYUp5gTIWWvlANwTw75XhG7se5tzENuFHKfcKfgVg+C0rEMMKuUxGVOdM
-D4LLD/oiTlx0vIsAomH8pTwrDlsqPQH2NP0Wgc2fAbQ2Y2v0I4qYA6HiXj5eUF++
-pbpBpt8jM5FIxMwZFzCFxvighkDE+ALicZvIeWsAF0TA0qOSrGoCZ5t347T6m5c4
-ZLme9uP2CWnxwjHQXwZALlA2D1GlGZp3t4HsdvW1A+Hotgfux38=
-=fnhX
------END PGP SIGNATURE-----
-
---=-jSn/QtWNxsoPNSju7pKV--
+>   drivers/spi/spi-mt65xx.c | 19 +++++--------------
+>   1 file changed, 5 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
+> index 68dca8ceb3ad..7914255521c3 100644
+> --- a/drivers/spi/spi-mt65xx.c
+> +++ b/drivers/spi/spi-mt65xx.c
+> @@ -426,24 +426,15 @@ static int mtk_spi_fifo_transfer(struct spi_master *master,
+>   	mtk_spi_prepare_transfer(master, xfer);
+>   	mtk_spi_setup_packet(master);
+>   
+> -	cnt = xfer->len / 4;
+> -	if (xfer->tx_buf)
+> +	if (xfer->tx_buf) {
+> +		cnt = xfer->len / 4;
+>   		iowrite32_rep(mdata->base + SPI_TX_DATA_REG, xfer->tx_buf, cnt);
+> -
+> -	if (xfer->rx_buf)
+> -		ioread32_rep(mdata->base + SPI_RX_DATA_REG, xfer->rx_buf, cnt);
+> -
+> -	remainder = xfer->len % 4;
+> -	if (remainder > 0) {
+> -		reg_val = 0;
+> -		if (xfer->tx_buf) {
+> +		remainder = xfer->len % 4;
+> +		if (remainder > 0) {
+> +			reg_val = 0;
+>   			memcpy(&reg_val, xfer->tx_buf + (cnt * 4), remainder);
+>   			writel(reg_val, mdata->base + SPI_TX_DATA_REG);
+>   		}
+> -		if (xfer->rx_buf) {
+> -			reg_val = readl(mdata->base + SPI_RX_DATA_REG);
+> -			memcpy(xfer->rx_buf + (cnt * 4), &reg_val, remainder);
+> -		}
+>   	}
+>   
+>   	mtk_spi_enable_transfer(master);
+> 
 
