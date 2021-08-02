@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6753DDA3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6433DD95F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237489AbhHBOJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:09:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44056 "EHLO mail.kernel.org"
+        id S236326AbhHBN7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:59:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236907AbhHBOAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:00:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0D4F611C0;
-        Mon,  2 Aug 2021 13:56:05 +0000 (UTC)
+        id S235379AbhHBNxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:53:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83AB561152;
+        Mon,  2 Aug 2021 13:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912566;
-        bh=JVRvvpINC5kk+0QNBhD3y5xoeFxtrVrWwGd2uzlosz0=;
+        s=korg; t=1627912324;
+        bh=kLQyYho5OEJBNTSuOy5Qaz0n86WVDzpbQPXSzpVPAZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wx1o14XtRs3GJIJx+RKj1COad66xcxvnp2C8GvaPeWWHUkXqJYOm8ioNgJ8j+NLFq
-         b3zlj1JEJyFurPo6/d/jfJ+51/N7l45fX1+Av81z4bit0bJy70oWEesV2JXUEIyG4F
-         0MGaZxJPE0pp0T0qvVCO0oBU3riqgEn0sFfdYfCo=
+        b=Mo+lvmKyj3/4ZpU/tXhQ3NZY9X1gBm8cfFKSpMLL8OyZeBvpsmYlVNtQwzTnqx1LZ
+         S6BIKMlaCSWOXsbHrO/ZBuq1voPVEaUsR4LmtsDaSSe2phmooyQvg3NELkOUmvaDay
+         d8TWTFqiejlIEUGT88yzJdc6fEnrTOODbSfXGDyg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 049/104] tipc: fix implicit-connect for SYN+
+        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 06/40] x86/kvm: fix vcpu-id indexed array sizes
 Date:   Mon,  2 Aug 2021 15:44:46 +0200
-Message-Id: <20210802134345.646497104@linuxfoundation.org>
+Message-Id: <20210802134335.604829665@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
+References: <20210802134335.408294521@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,109 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit f8dd60de194817c86bf812700980762bb5a8d9a4 ]
+commit 76b4f357d0e7d8f6f0013c733e6cba1773c266d3 upstream.
 
-For implicit-connect, when it's either SYN- or SYN+, an ACK should
-be sent back to the client immediately. It's not appropriate for
-the client to enter established state only after receiving data
-from the server.
+KVM_MAX_VCPU_ID is the maximum vcpu-id of a guest, and not the number
+of vcpu-ids. Fix array indexed by vcpu-id to have KVM_MAX_VCPU_ID+1
+elements.
 
-On client side, after the SYN is sent out, tipc_wait_for_connect()
-should be called to wait for the ACK if timeout is set.
+Note that this is currently no real problem, as KVM_MAX_VCPU_ID is
+an odd number, resulting in always enough padding being available at
+the end of those arrays.
 
-This patch also restricts __tipc_sendstream() to call __sendmsg()
-only when it's in TIPC_OPEN state, so that the client can program
-in a single loop doing both connecting and data sending like:
+Nevertheless this should be fixed in order to avoid rare problems in
+case someone is using an even number for KVM_MAX_VCPU_ID.
 
-  for (...)
-      sendmsg(dest, buf);
-
-This makes the implicit-connect more implicit.
-
-Fixes: b97bf3fd8f6a ("[TIPC] Initial merge")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Message-Id: <20210701154105.23215-2-jgross@suse.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/socket.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ arch/x86/kvm/ioapic.c |    2 +-
+ arch/x86/kvm/ioapic.h |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 53af72824c9c..c52b0d00887b 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -160,6 +160,7 @@ static void tipc_sk_remove(struct tipc_sock *tsk);
- static int __tipc_sendstream(struct socket *sock, struct msghdr *m, size_t dsz);
- static int __tipc_sendmsg(struct socket *sock, struct msghdr *m, size_t dsz);
- static void tipc_sk_push_backlog(struct tipc_sock *tsk, bool nagle_ack);
-+static int tipc_wait_for_connect(struct socket *sock, long *timeo_p);
- 
- static const struct proto_ops packet_ops;
- static const struct proto_ops stream_ops;
-@@ -1525,8 +1526,13 @@ static int __tipc_sendmsg(struct socket *sock, struct msghdr *m, size_t dlen)
- 		rc = 0;
- 	}
- 
--	if (unlikely(syn && !rc))
-+	if (unlikely(syn && !rc)) {
- 		tipc_set_sk_state(sk, TIPC_CONNECTING);
-+		if (timeout) {
-+			timeout = msecs_to_jiffies(timeout);
-+			tipc_wait_for_connect(sock, &timeout);
-+		}
-+	}
- 
- 	return rc ? rc : dlen;
- }
-@@ -1574,7 +1580,7 @@ static int __tipc_sendstream(struct socket *sock, struct msghdr *m, size_t dlen)
- 		return -EMSGSIZE;
- 
- 	/* Handle implicit connection setup */
--	if (unlikely(dest)) {
-+	if (unlikely(dest && sk->sk_state == TIPC_OPEN)) {
- 		rc = __tipc_sendmsg(sock, m, dlen);
- 		if (dlen && dlen == rc) {
- 			tsk->peer_caps = tipc_node_get_capabilities(net, dnode);
-@@ -2708,9 +2714,10 @@ static int tipc_accept(struct socket *sock, struct socket *new_sock, int flags,
- 		       bool kern)
+--- a/arch/x86/kvm/ioapic.c
++++ b/arch/x86/kvm/ioapic.c
+@@ -91,7 +91,7 @@ static unsigned long ioapic_read_indirec
+ static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
  {
- 	struct sock *new_sk, *sk = sock->sk;
--	struct sk_buff *buf;
- 	struct tipc_sock *new_tsock;
-+	struct msghdr m = {NULL,};
- 	struct tipc_msg *msg;
-+	struct sk_buff *buf;
- 	long timeo;
- 	int res;
+ 	ioapic->rtc_status.pending_eoi = 0;
+-	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
++	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
+ }
  
-@@ -2755,19 +2762,17 @@ static int tipc_accept(struct socket *sock, struct socket *new_sock, int flags,
- 	}
+ static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
+--- a/arch/x86/kvm/ioapic.h
++++ b/arch/x86/kvm/ioapic.h
+@@ -43,13 +43,13 @@ struct kvm_vcpu;
+ 
+ struct dest_map {
+ 	/* vcpu bitmap where IRQ has been sent */
+-	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
++	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
  
  	/*
--	 * Respond to 'SYN-' by discarding it & returning 'ACK'-.
--	 * Respond to 'SYN+' by queuing it on new socket.
-+	 * Respond to 'SYN-' by discarding it & returning 'ACK'.
-+	 * Respond to 'SYN+' by queuing it on new socket & returning 'ACK'.
+ 	 * Vector sent to a given vcpu, only valid when
+ 	 * the vcpu's bit in map is set
  	 */
- 	if (!msg_data_sz(msg)) {
--		struct msghdr m = {NULL,};
--
- 		tsk_advance_rx_queue(sk);
--		__tipc_sendstream(new_sock, &m, 0);
- 	} else {
- 		__skb_dequeue(&sk->sk_receive_queue);
- 		__skb_queue_head(&new_sk->sk_receive_queue, buf);
- 		skb_set_owner_r(buf, new_sk);
- 	}
-+	__tipc_sendstream(new_sock, &m, 0);
- 	release_sock(new_sk);
- exit:
- 	release_sock(sk);
--- 
-2.30.2
-
+-	u8 vectors[KVM_MAX_VCPU_ID];
++	u8 vectors[KVM_MAX_VCPU_ID + 1];
+ };
+ 
+ 
 
 
