@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918183DD8B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B12B3DDA28
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235890AbhHBNyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:54:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33086 "EHLO mail.kernel.org"
+        id S236418AbhHBOG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:06:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234335AbhHBNts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:49:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2D2060FF2;
-        Mon,  2 Aug 2021 13:49:37 +0000 (UTC)
+        id S236757AbhHBN7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:59:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 551C76117A;
+        Mon,  2 Aug 2021 13:55:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912178;
-        bh=RUh4AusaX0Jn78izoGVYrMovVe91oBO13ieA2j5M3WM=;
+        s=korg; t=1627912559;
+        bh=CbHqfKkY1wgCkbRplNT5SH0BTFiahUojKwPdvoQlDTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pWUBmbe7rMfJpqm6z2XYyohA2EGOtoLzRbRw5z+OiT4stuhcLNv8VWNiXeoPYkFiS
-         nwVYUmV2B9Bd8jsmGkmYMstOn3iIRA2pd5v5DEu8HbWgJE1Ft8v7g1XH7nK7jMxssz
-         99033Vo35MEslJNbk0Ae7ZeXAwHNZpBouZV96fUI=
+        b=uHIUx96yTor7IAjy4b8cu4MP67Tb1pybaVHOm+rESCjQvPEjqt8SdDiOeSxIrQEBX
+         fLIw0S3csvLUOACdk7sgFPwehNy54VHh4HhklqHE9tEXgHAKWBniFPuCW+WpzQ7Y0D
+         uFHskB9TeVfcl0GXFOHpU49n2EiXhK8oIWiIkmHU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.19 05/30] x86/kvm: fix vcpu-id indexed array sizes
+        stable@vger.kernel.org,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        Imam Hassan Reza Biswas <imam.hassan.reza.biswas@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 046/104] i40e: Fix firmware LLDP agent related warning
 Date:   Mon,  2 Aug 2021 15:44:43 +0200
-Message-Id: <20210802134334.254730840@linuxfoundation.org>
+Message-Id: <20210802134345.540766466@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
-References: <20210802134334.081433902@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
 
-commit 76b4f357d0e7d8f6f0013c733e6cba1773c266d3 upstream.
+[ Upstream commit 71d6fdba4b2d82fdd883fec31dee77fbcf59773a ]
 
-KVM_MAX_VCPU_ID is the maximum vcpu-id of a guest, and not the number
-of vcpu-ids. Fix array indexed by vcpu-id to have KVM_MAX_VCPU_ID+1
-elements.
+Make warning meaningful for the user.
 
-Note that this is currently no real problem, as KVM_MAX_VCPU_ID is
-an odd number, resulting in always enough padding being available at
-the end of those arrays.
+Previously the trace:
+"Starting FW LLDP agent failed: error: I40E_ERR_ADMIN_QUEUE_ERROR, I40E_AQ_RC_EAGAIN"
+was produced when user tried to start Firmware LLDP agent,
+just after it was stopped with sequence:
+ethtool --set-priv-flags <dev> disable-fw-lldp on
+ethtool --set-priv-flags <dev> disable-fw-lldp off
+(without any delay between the commands)
+At that point the firmware is still processing stop command, the behavior
+is expected.
 
-Nevertheless this should be fixed in order to avoid rare problems in
-case someone is using an even number for KVM_MAX_VCPU_ID.
-
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Message-Id: <20210701154105.23215-2-jgross@suse.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: c1041d070437 ("i40e: Missing response checks in driver when starting/stopping FW LLDP")
+Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Tested-by: Imam Hassan Reza Biswas <imam.hassan.reza.biswas@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/ioapic.c |    2 +-
- arch/x86/kvm/ioapic.h |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirec
- static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
- {
- 	ioapic->rtc_status.pending_eoi = 0;
--	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
-+	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
- }
- 
- static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
---- a/arch/x86/kvm/ioapic.h
-+++ b/arch/x86/kvm/ioapic.h
-@@ -43,13 +43,13 @@ struct kvm_vcpu;
- 
- struct dest_map {
- 	/* vcpu bitmap where IRQ has been sent */
--	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
-+	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
- 
- 	/*
- 	 * Vector sent to a given vcpu, only valid when
- 	 * the vcpu's bit in map is set
- 	 */
--	u8 vectors[KVM_MAX_VCPU_ID];
-+	u8 vectors[KVM_MAX_VCPU_ID + 1];
- };
- 
- 
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index 3e822bad4851..d9e26f9713a5 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -5294,6 +5294,10 @@ flags_complete:
+ 					dev_warn(&pf->pdev->dev,
+ 						 "Device configuration forbids SW from starting the LLDP agent.\n");
+ 					return -EINVAL;
++				case I40E_AQ_RC_EAGAIN:
++					dev_warn(&pf->pdev->dev,
++						 "Stop FW LLDP agent command is still being processed, please try again in a second.\n");
++					return -EBUSY;
+ 				default:
+ 					dev_warn(&pf->pdev->dev,
+ 						 "Starting FW LLDP agent failed: error: %s, %s\n",
+-- 
+2.30.2
+
 
 
