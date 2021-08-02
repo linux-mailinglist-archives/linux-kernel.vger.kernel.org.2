@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAB13DD9E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153943DD9A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235057AbhHBOFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:05:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41636 "EHLO mail.kernel.org"
+        id S235747AbhHBOCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:02:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234711AbhHBN66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:58:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDA6061100;
-        Mon,  2 Aug 2021 13:55:21 +0000 (UTC)
+        id S235732AbhHBNyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:54:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AD9761155;
+        Mon,  2 Aug 2021 13:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912522;
-        bh=qoZEr6d8wVYq/9cZ+ZR4orz12XVv40Z+e7Uyce0nzw8=;
+        s=korg; t=1627912356;
+        bh=LLRrbjJ+8SIjP/v9qwB8N5PbdPl0TOslBFqsycMSAdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HUYWeEiVjebsoSPnWO+mZAPabNrt5bmwhQAjUpajqN5wzIzF4fz+jt9OHPtDdm7Bj
-         PaUsqKStOmCU7Zn1j9aG1aKrFrufEcEn0jy7FD/RK3xLcWK+koWvnkFJ+eK3rDzaoL
-         iyeq95nZERHJK808vrL3zNCwO/OxBzdIAEFK3HzU=
+        b=WVBGAROF+4jWd1FtxoRAGXtdUloa68v5IM4PDdcJWSvD4b1VFogpGpciGRmhtpwfz
+         Wyd+e9TwOgCFcRIVfLdUHrrQCHfnlZ2rpJC0e5SXcDfli+bF2eJK1mlpm+Zo61/I8u
+         o4AACRUNxIVLrMFisyMenuX6UKsRrBx6wOKYRmaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.13 031/104] io_uring: fix io_prep_async_link locking
+        stable@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.10 05/67] btrfs: mark compressed range uptodate only if all bio succeed
 Date:   Mon,  2 Aug 2021 15:44:28 +0200
-Message-Id: <20210802134345.042397812@linuxfoundation.org>
+Message-Id: <20210802134339.206023793@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Goldwyn Rodrigues <rgoldwyn@suse.de>
 
-commit 44eff40a32e8f5228ae041006352e32638ad2368 upstream.
+commit 240246f6b913b0c23733cfd2def1d283f8cc9bbe upstream.
 
-io_prep_async_link() may be called after arming a linked timeout,
-automatically making it unsafe to traverse the linked list. Guard
-with completion_lock if there was a linked timeout.
+In compression write endio sequence, the range which the compressed_bio
+writes is marked as uptodate if the last bio of the compressed (sub)bios
+is completed successfully. There could be previous bio which may
+have failed which is recorded in cb->errors.
 
-Cc: stable@vger.kernel.org # 5.9+
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Link: https://lore.kernel.org/r/93f7c617e2b4f012a2a175b3dab6bc2f27cebc48.1627304436.git.asml.silence@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Set the writeback range as uptodate only if cb->errors is zero, as opposed
+to checking only the last bio's status.
+
+Backporting notes: in all versions up to 4.4 the last argument is always
+replaced by "!cb->errors".
+
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io_uring.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ fs/btrfs/compression.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1258,8 +1258,17 @@ static void io_prep_async_link(struct io
- {
- 	struct io_kiocb *cur;
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -340,7 +340,7 @@ static void end_compressed_bio_write(str
+ 	cb->compressed_pages[0]->mapping = cb->inode->i_mapping;
+ 	btrfs_writepage_endio_finish_ordered(cb->compressed_pages[0],
+ 			cb->start, cb->start + cb->len - 1,
+-			bio->bi_status == BLK_STS_OK);
++			!cb->errors);
+ 	cb->compressed_pages[0]->mapping = NULL;
  
--	io_for_each_link(cur, req)
--		io_prep_async_work(cur);
-+	if (req->flags & REQ_F_LINK_TIMEOUT) {
-+		struct io_ring_ctx *ctx = req->ctx;
-+
-+		spin_lock_irq(&ctx->completion_lock);
-+		io_for_each_link(cur, req)
-+			io_prep_async_work(cur);
-+		spin_unlock_irq(&ctx->completion_lock);
-+	} else {
-+		io_for_each_link(cur, req)
-+			io_prep_async_work(cur);
-+	}
- }
- 
- static void io_queue_async_work(struct io_kiocb *req)
+ 	end_compressed_writeback(inode, cb);
 
 
