@@ -2,122 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B073DD346
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DFB3DD348
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233139AbhHBJsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        id S233144AbhHBJtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233093AbhHBJsd (ORCPT
+        with ESMTP id S233043AbhHBJtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:48:33 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14297C06175F;
-        Mon,  2 Aug 2021 02:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=EuWMmKq4SfpJmtGNCymVReAeRTht0Bdg7VG7/exrrCw=; b=yb4BJMeklOXEuLu6GHSoDZ382
-        JZ+rWCauEZ4nW4CeuE0cZ46WaGcFVsah2s21cKq7LWBnQZbSilf6ZLgm1RuMW2+efdfa4R5oUyS33
-        iccBCQjCQgM5WxFlRxXKmtigRhrVf2fIbr/kjSdntCaSPK/D8zcePV7r7YaMBQt0yQNKJ6QA0VJ0X
-        Iu3fG+7/u13Ps85rSxkMA/tDV/Cveq7ySLmUP6NX+6Rnu050OCnX8eWOpKaYVTfp0CmjhSVslUEO1
-        hPiAYviPJylj4ooTBA+mh8PgdUoSzVaICpIkOD3ZT0V1Q0Ui3+X/nCQ48Ry9XpBAs21GVdYNS0ler
-        mUH6f8Bdg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46850)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mAUYS-0005LR-30; Mon, 02 Aug 2021 10:48:16 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mAUYM-0002nN-Mu; Mon, 02 Aug 2021 10:48:10 +0100
-Date:   Mon, 2 Aug 2021 10:48:10 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Stephen Boyd <sboyd@kernel.org>, alexandre.belloni@bootlin.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        thierry.reding@gmail.com, lee.jones@linaro.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Ludovic.Desroches@microchip.com, o.rempel@pengutronix.de,
-        andy.shevchenko@gmail.com, aardelean@deviqon.com,
-        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        broonie@kernel.org, Jonathan.Cameron@huawei.com,
-        linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        wsa@kernel.org, kernel@pengutronix.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, Claudiu.Beznea@microchip.com
-Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
- devm_clk_get for prepared and enabled clocks enabled clocks]
-Message-ID: <20210802094810.GJ22278@shell.armlinux.org.uk>
-References: <YPkg0wtYIoHKpTUW@kunai>
- <20210722081817.2tsjzof4gvldq6ka@pengutronix.de>
- <YPlfcbkxiBmB+vw1@kunai>
- <CAHp75VfC=s12Unw3+Cn0ag71mM5i90=Jbwj4nYwB5cPKiUTRSA@mail.gmail.com>
- <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
- <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
- <20210728202547.7uvfwflpruku7yps@pengutronix.de>
- <20210728204033.GF22278@shell.armlinux.org.uk>
- <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
- <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
+        Mon, 2 Aug 2021 05:49:16 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647EDC06175F;
+        Mon,  2 Aug 2021 02:49:06 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id i10so19049398pla.3;
+        Mon, 02 Aug 2021 02:49:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zt2CmxMPCinxqJp6yrtjTUclK9S1FTTtiWMYSxiy/GI=;
+        b=ZrocBAx33mCo7FD0Delz4HXI9qBUKxXw3R6XrqNsnm1cjek5jerHGGILR/QxwsPaTb
+         +SucJ/QlyrKzqbbC3eDkdTLdmFeTYLKuaVnMwgCzD34K+4/ynQs1PfSvRTY+CGvTbe0o
+         vkpnyrh8PLnAbr7UbG5kS5i8ESgk0OZDU1iQSk7EK9p4IHuPpp1L9KNs9XWfH9wvujNS
+         yoBHU7smrAkC5zutX6a/VNa3FyB9nH78WxSvVVFO2gms7ZS63verdOCCWu+QtAIFoOLx
+         93fXWFP5Qd/hPnODOgcms23zaiEmWRNqymRtCZO7uKn0Dm38HInqxjbQEmf3hfcfrPWC
+         X0yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zt2CmxMPCinxqJp6yrtjTUclK9S1FTTtiWMYSxiy/GI=;
+        b=NOv5VnnbtJkB3ZAS3S/aCTSt1/lwbzpWfKXJtD46SIkTYMfDMxIxBRV+R+Dv8O/t+c
+         EVcGCwEtd8HJ81rnDyRkzNTBn9BNqpr6K5NjwQ8ndBVaOEJOTvPnv7wP7gueH1BQ/smP
+         dwlbB92BFc6oTA0bO9xq3yJrOw9n/6hwGTbQoIa2mJubZ5SZESUa63S/WSY4pLfZoxY2
+         sit9te8C4Z0O+Fs379GTBJ8vsMjbve+Rr3QOiuoU1s196bibdD+44zHwoAariqZWCFXL
+         Po8fJAoBw/Hr0iuVgZd6FtGyxU+FPo2dsPoa8f7g/ys01I615NslsfbRKwHVGPKg2VkA
+         XvBQ==
+X-Gm-Message-State: AOAM530HOWFEjNKEIQ4dYE9L46oqfGrhbmKqwAwYhIRebimmyiGVJyr1
+        D7vWxZ2m5rKsxV/pnGx4eIU=
+X-Google-Smtp-Source: ABdhPJxu7E8SWxoEGPkiAxp0/lyGkYbFVKh2OwF7riPn3GIbiAssizhr0GNrRvHcbzO8oG5Uw4gvPg==
+X-Received: by 2002:a17:90a:d190:: with SMTP id fu16mr16842017pjb.157.1627897746016;
+        Mon, 02 Aug 2021 02:49:06 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id k25sm10880127pfa.213.2021.08.02.02.49.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 02:49:05 -0700 (PDT)
+Subject: [PATCH v3 2/9] docs: pdfdocs: Add CJK-language-specific font settings
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
+        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+References: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <a7f14d16-46c6-4476-35cf-90afc2395a44@gmail.com>
+Date:   Mon, 2 Aug 2021 18:49:02 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 02:00:04PM +0200, Uwe Kleine-König wrote:
-> Hi Russell, hi Stephen,
-> 
-> On Sat, Jul 31, 2021 at 12:41:19AM -0700, Stephen Boyd wrote:
-> > +1 This patch doesn't fall under CCF maintainer.
-> 
-> Given that CCF is the only implementer of devm_clk_get at least an Ack
-> from your side would still be good I guess?
+zh_TW, ko_KR, and ja_JP translations have their preferred glyph sets
+different from that of zh_CN.
 
-I think devm_clk_get() should not be part of CCF but should be
-part of the interface level - it's silly to have devm_clk_get()
-being CCF but not clk_get(). The same should go for the other
-devm wrappers around the plain clk_* interfaces.
+To switch CJK font in the middle of the translations, introduce custom
+LaTeX macros listed below:
 
-> I found a patch set adding devm variants of clk_enable (e.g.
-> https://lore.kernel.org/patchwork/patch/755667/) but this approach is
-> different as it also contains clk_get which IMHO makes more sense 
-> The discussion considered wrapping get+enable at one point, but I didn't
-> find a followup.
+    \kerneldocBeginSC
+    \kerneldocEndSC
+    \kerneldocBeginTC
+    \kerneldocEndTC
+    \kerneldocBeginKR
+    \kerneldocEndKR
+    \kerneldocBeginJP
+    \kerneldocEndJP
 
-There have been several different approaches to wrapping things up,
-but here's a question: should we make it easier to do the lazy thing
-(get+enable) or should we make it easier to be power efficient?
-Shouldn't we be encouraging people to write power efficient drivers?
+, and embed a pair of macros in each language's index.rst.
 
-> > I still wonder if it would be better if we had some sort of DT binding
-> > that said "turn this clk on when the driver probes this device and keep
-> > it on until the driver is unbound".
-> 
-> This doesn't sound like a hardware property and so I don't think this
-> belongs into DT and I would be surprised if the dt maintainers would be
-> willing to accept an idea with this semantic.
+NOTE 1: Update of zh_TW/index.rst is deferred to a follow-up change.
 
-I really don't like that idea - enabling or disabling a clock is
-an implementation decision, one which can change over time. Even
-if a clock is required to be on for e.g. accessing device registers,
-we may decide that, if we want maximum power savings, to disable
-that clock when the device is not being used, but an initial driver
-implementation may not do that. If we encourage people to throw a
-property in DT, then the driver's runtime behaviour becomes a
-combination of the DT being used and the driver implementation.
-Let's keep that to a minimum.
+NOTE 2: Custom macros added here do not imply \kerneldocCJK(on|off).
+This is intentional.  For example, \kerneldocCJKoff needs to be
+at the top of Italian translations' index.rst for the footer of
+final zh_TW page to be properly typeset.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+ Documentation/conf.py                      | 51 +++++++++++++++++++++-
+ Documentation/translations/ja_JP/index.rst |  5 +++
+ Documentation/translations/ko_KR/index.rst |  2 +
+ Documentation/translations/zh_CN/index.rst |  5 +++
+ 4 files changed, 62 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index b440cb606d22..24e5427588e7 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -361,10 +361,51 @@ latex_elements['preamble']  +=3D '''
+ 	% This is needed for translations
+ 	\\usepackage{xeCJK}
+ 	\\setCJKmainfont{Noto Sans CJK SC}
++	\\setCJKsansfont{Noto Sans CJK SC}
++	\\setCJKmonofont{Noto Sans Mono CJK SC}
++	% CJK Language-specific font choices
++	\\newCJKfontfamily[SCmain]\\scmain{Noto Sans CJK SC}
++	\\newCJKfontfamily[SCsans]\\scsans{Noto Sans CJK SC}
++	\\newCJKfontfamily[SCmono]\\scmono{Noto Sans Mono CJK SC}
++	\\newCJKfontfamily[TCmain]\\tcmain{Noto Sans CJK TC}
++	\\newCJKfontfamily[TCsans]\\tcsans{Noto Sans CJK TC}
++	\\newCJKfontfamily[TCmono]\\tcmono{Noto Sans Mono CJK TC}
++	\\newCJKfontfamily[KRmain]\\krmain{Noto Sans CJK KR}
++	\\newCJKfontfamily[KRsans]\\krsans{Noto Sans CJK KR}
++	\\newCJKfontfamily[KRmono]\\krmono{Noto Sans Mono CJK KR}
++	\\newCJKfontfamily[JPmain]\\jpmain{Noto Sans CJK JP}
++	\\newCJKfontfamily[JPsans]\\jpsans{Noto Sans CJK JP}
++	\\newCJKfontfamily[JPmono]\\jpmono{Noto Sans Mono CJK JP}
+ 	% Define custom macros to on/off CJK
+ 	\\newcommand{\\kerneldocCJKon}{\\makexeCJKactive}
+ 	\\newcommand{\\kerneldocCJKoff}{\\makexeCJKinactive}
+-	% To customize \sphinxtableofcontents
++	\\newcommand{\\kerneldocBeginSC}{%
++	    \\begingroup%
++	    \\scmain%
++	}
++	\\newcommand{\\kerneldocEndSC}{\\endgroup}
++	\\newcommand{\\kerneldocBeginTC}{%
++	    \\begingroup%
++	    \\tcmain%
++	    \\renewcommand{\\CJKsfdefault}{TCsans}%
++	    \\renewcommand{\\CJKttdefault}{TCmono}%
++	}
++	\\newcommand{\\kerneldocEndTC}{\\endgroup}
++	\\newcommand{\\kerneldocBeginKR}{%
++	    \\begingroup%
++	    \\krmain%
++	    \\renewcommand{\\CJKsfdefault}{KRsans}%
++	    \\renewcommand{\\CJKttdefault}{KRmono}%
++	}
++	\\newcommand{\\kerneldocEndKR}{\\endgroup}
++	\\newcommand{\\kerneldocBeginJP}{%
++	    \\begingroup%
++	    \\jpmain%
++	    \\renewcommand{\\CJKsfdefault}{JPsans}%
++	    \\renewcommand{\\CJKttdefault}{JPmono}%
++	}
++	\\newcommand{\\kerneldocEndJP}{\\endgroup}
++	% To customize \\sphinxtableofcontents
+ 	\\usepackage{etoolbox}
+ 	% Inactivate CJK after tableofcontents
+ 	\\apptocmd{\\sphinxtableofcontents}{\\kerneldocCJKoff}{}{}
+@@ -372,6 +413,14 @@ latex_elements['preamble']  +=3D '''
+ 	% Custom macros to on/off CJK (Dummy)
+ 	\\newcommand{\\kerneldocCJKon}{}
+ 	\\newcommand{\\kerneldocCJKoff}{}
++	\\newcommand{\\kerneldocBeginSC}{}
++	\\newcommand{\\kerneldocEndSC}{}
++	\\newcommand{\\kerneldocBeginTC}{}
++	\\newcommand{\\kerneldocEndTC}{}
++	\\newcommand{\\kerneldocBeginKR}{}
++	\\newcommand{\\kerneldocEndKR}{}
++	\\newcommand{\\kerneldocBeginSC}{}
++	\\newcommand{\\kerneldocEndKR}{}
+     }
+ '''
+=20
+diff --git a/Documentation/translations/ja_JP/index.rst b/Documentation/t=
+ranslations/ja_JP/index.rst
+index f94ba62d41c3..88d4d98eed15 100644
+--- a/Documentation/translations/ja_JP/index.rst
++++ b/Documentation/translations/ja_JP/index.rst
+@@ -3,6 +3,7 @@
+ 	\renewcommand\thesection*
+ 	\renewcommand\thesubsection*
+ 	\kerneldocCJKon
++	\kerneldocBeginJP
+=20
+ Japanese translations
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+@@ -11,3 +12,7 @@ Japanese translations
+    :maxdepth: 1
+=20
+    howto
++
++.. raw:: latex
++
++	\kerneldocEndJP
+diff --git a/Documentation/translations/ko_KR/index.rst b/Documentation/t=
+ranslations/ko_KR/index.rst
+index 6ae258118bdf..f636b482fb4c 100644
+--- a/Documentation/translations/ko_KR/index.rst
++++ b/Documentation/translations/ko_KR/index.rst
+@@ -3,6 +3,7 @@
+ 	\renewcommand\thesection*
+ 	\renewcommand\thesubsection*
+ 	\kerneldocCJKon
++	\kerneldocBeginKR
+=20
+ =ED=95=9C=EA=B5=AD=EC=96=B4 =EB=B2=88=EC=97=AD
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+@@ -26,3 +27,4 @@
+ .. raw:: latex
+=20
+     \normalsize
++    \kerneldocEndKR
+diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/t=
+ranslations/zh_CN/index.rst
+index e0d51a167032..510ec10959fa 100644
+--- a/Documentation/translations/zh_CN/index.rst
++++ b/Documentation/translations/zh_CN/index.rst
+@@ -5,6 +5,7 @@
+ 	\renewcommand\thesection*
+ 	\renewcommand\thesubsection*
+ 	\kerneldocCJKon
++	\kerneldocBeginSC
+=20
+ .. _linux_doc_zh:
+=20
+@@ -189,3 +190,7 @@ TODOList:
+ ----------
+=20
+ * :ref:`genindex`
++
++.. raw:: latex
++
++	\kerneldocEndSC
+--=20
+2.17.1
+
+
+
