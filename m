@@ -2,35 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB953DD9F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9363DD84A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236076AbhHBOFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:05:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44056 "EHLO mail.kernel.org"
+        id S234264AbhHBNvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:51:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234854AbhHBN65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:58:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1242C61102;
-        Mon,  2 Aug 2021 13:55:23 +0000 (UTC)
+        id S234330AbhHBNr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:47:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16A3561100;
+        Mon,  2 Aug 2021 13:47:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912524;
-        bh=yosduxXD2clLVed6Vwmw2V0gfLWlIOHxG7KM7qRW608=;
+        s=korg; t=1627912069;
+        bh=Jak8ZkmCLa0oz8T4zwIaW/iDvItCwLsURakycKZ58Cc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=khX/bFCkTEudaGXxgC2MxFmvQaUCMhrs/+v4K380ZL6UNjUOAmtjWMlhBjuWgusLe
-         d+k9fykGPLpZRNwJswOZW8YnVmVD5VKOiVQsTXGhdsKxBZDSHhY4MG1Sfw2R9LN/kw
-         Wi98lSIGJEYvoxNexzXWiwx+H3S+LlHYj9geeF40=
+        b=jdmvde+VK8TtCaACCl9o1XAR1PbbnrM0B+dDaNzAsxXelQ+VzvIlUjPMRz1lixmCa
+         2Nj9NKEfmj+mVCUI2ruhdqqfPiTyKyMjkReuOQStCGrWvaDwQqeYbF+wjThIJYnvHL
+         1eqMHOUI+DT3gr2H2l4YqMTcMpbfP4TYqFcrOLMU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabian Ebner <f.ebner@proxmox.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.13 032/104] io_uring: dont block level reissue off completion path
+        stable@vger.kernel.org,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 09/32] hfs: add missing clean-up in hfs_fill_super
 Date:   Mon,  2 Aug 2021 15:44:29 +0200
-Message-Id: <20210802134345.073963914@linuxfoundation.org>
+Message-Id: <20210802134333.217499590@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
+References: <20210802134332.931915241@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +46,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-commit ef04688871f3386b6d40ade8f5c664290420f819 upstream.
+[ Upstream commit 16ee572eaf0d09daa4c8a755fdb71e40dbf8562d ]
 
-Some setups, like SCSI, can throw spurious -EAGAIN off the softirq
-completion path. Normally we expect this to happen inline as part
-of submission, but apparently SCSI has a weird corner case where it
-can happen as part of normal completions.
+Patch series "hfs: fix various errors", v2.
 
-This should be solved by having the -EAGAIN bubble back up the stack
-as part of submission, but previous attempts at this failed and we're
-not just quite there yet. Instead we currently use REQ_F_REISSUE to
-handle this case.
+This series ultimately aims to address a lockdep warning in
+hfs_find_init reported by Syzbot [1].
 
-For now, catch it in io_rw_should_reissue() and prevent a reissue
-from a bogus path.
+The work done for this led to the discovery of another bug, and the
+Syzkaller repro test also reveals an invalid memory access error after
+clearing the lockdep warning.  Hence, this series is broken up into
+three patches:
 
-Cc: stable@vger.kernel.org
-Reported-by: Fabian Ebner <f.ebner@proxmox.com>
-Tested-by: Fabian Ebner <f.ebner@proxmox.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+1. Add a missing call to hfs_find_exit for an error path in
+   hfs_fill_super
+
+2. Fix memory mapping in hfs_bnode_read by fixing calls to kmap
+
+3. Add lock nesting notation to tell lockdep that the observed locking
+   hierarchy is safe
+
+This patch (of 3):
+
+Before exiting hfs_fill_super, the struct hfs_find_data used in
+hfs_find_init should be passed to hfs_find_exit to be cleaned up, and to
+release the lock held on the btree.
+
+The call to hfs_find_exit is missing from an error path.  We add it back
+in by consolidating calls to hfs_find_exit for error paths.
+
+Link: https://syzkaller.appspot.com/bug?id=f007ef1d7a31a469e3be7aeb0fde0769b18585db [1]
+Link: https://lkml.kernel.org/r/20210701030756.58760-1-desmondcheongzx@gmail.com
+Link: https://lkml.kernel.org/r/20210701030756.58760-2-desmondcheongzx@gmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Reviewed-by: Viacheslav Dubeyko <slava@dubeyko.com>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/hfs/super.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2457,6 +2457,12 @@ static bool io_rw_should_reissue(struct
- 	 */
- 	if (percpu_ref_is_dying(&ctx->refs))
- 		return false;
-+	/*
-+	 * Play it safe and assume not safe to re-import and reissue if we're
-+	 * not in the original thread group (or in task context).
-+	 */
-+	if (!same_thread_group(req->task, current) || !in_task())
-+		return false;
- 	return true;
- }
- #else
+diff --git a/fs/hfs/super.c b/fs/hfs/super.c
+index bf6304a350a6..c2a5a0ca3948 100644
+--- a/fs/hfs/super.c
++++ b/fs/hfs/super.c
+@@ -427,14 +427,12 @@ static int hfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (!res) {
+ 		if (fd.entrylength > sizeof(rec) || fd.entrylength < 0) {
+ 			res =  -EIO;
+-			goto bail;
++			goto bail_hfs_find;
+ 		}
+ 		hfs_bnode_read(fd.bnode, &rec, fd.entryoffset, fd.entrylength);
+ 	}
+-	if (res) {
+-		hfs_find_exit(&fd);
+-		goto bail_no_root;
+-	}
++	if (res)
++		goto bail_hfs_find;
+ 	res = -EINVAL;
+ 	root_inode = hfs_iget(sb, &fd.search_key->cat, &rec);
+ 	hfs_find_exit(&fd);
+@@ -450,6 +448,8 @@ static int hfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	/* everything's okay */
+ 	return 0;
+ 
++bail_hfs_find:
++	hfs_find_exit(&fd);
+ bail_no_root:
+ 	pr_err("get root inode failed\n");
+ bail:
+-- 
+2.30.2
+
 
 
