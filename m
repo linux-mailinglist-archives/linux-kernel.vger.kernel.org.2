@@ -2,89 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49F93DD268
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB413DD272
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbhHBI6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 04:58:32 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:39899 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232711AbhHBI6a (ORCPT
+        id S232923AbhHBJAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:00:23 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:54942 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232797AbhHBJAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 04:58:30 -0400
-Received: by mail-wr1-f42.google.com with SMTP id b11so15225179wrx.6;
-        Mon, 02 Aug 2021 01:58:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3w/K1BHHPdxnw4BgvCO49QjL9Du7QDixwLU5epoJCOs=;
-        b=Wy6jb4B7sAb7Eg3ccboUFpNZ1vrE9l1oxNAzHRpv2I3xWimcrRyFOPNurFYv6xY2PE
-         BhqI3wcqnXKHpU0cxVCSlPhqpm8vp5pPp5ADn+bdz2pYvv42l2SEq1M9/Yvx1c0M+sqg
-         yKwupgsWKXwnr1KH4xf2cxty7UDSK40Ng18mtJ7/9s06Cm66g1RANUfGQ0USRp6JYrmL
-         F1PVRWHSEAtQdNFDfPf1tiYAE0B9X5DHGbT5ViFmQYQkmnejWJTXQrXJ72hRyghWQVo4
-         +pPXh/vUTld7WnHjoYLp38oeOxDN48YVfrP+V/xrcnxALv80VJbCE1jhWWp1QtU3BI/Q
-         x5MA==
-X-Gm-Message-State: AOAM532KvBeT3FxGJHYnduFWUWI9KptueDwNjX/SBqQulAG9/Kf6xWvm
-        GSkL2OidxDljA3z8IvHRucw=
-X-Google-Smtp-Source: ABdhPJx0/tMXH15yaWP4fTnBDctEXhuDmohjGavsyW1cAWu4hdthkDNgpjt8Fdob5jAXYMN8mboFgA==
-X-Received: by 2002:adf:d194:: with SMTP id v20mr16017994wrc.126.1627894698889;
-        Mon, 02 Aug 2021 01:58:18 -0700 (PDT)
-Received: from localhost ([149.172.45.165])
-        by smtp.gmail.com with ESMTPSA id l4sm3773280wrw.32.2021.08.02.01.58.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 01:58:18 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 01:58:17 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     will@kernel.org, hao.wu@intel.com, mark.rutland@arm.com,
-        trix@redhat.com, yilun.xu@intel.com, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, rnsastry@linux.ibm.com,
-        linux-perf-users@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3] fpga: dfl: fme: Fix cpu hotplug issue in performance
- reporting
-Message-ID: <YQezqZcOrePV/FnW@archbook>
-References: <20210713074216.208391-1-kjain@linux.ibm.com>
- <61495dc0-f496-992c-1d2a-9229a04e6e44@linux.ibm.com>
+        Mon, 2 Aug 2021 05:00:22 -0400
+X-UUID: 753824cad39942afb4423d7b88fc64c4-20210802
+X-UUID: 753824cad39942afb4423d7b88fc64c4-20210802
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 897656668; Mon, 02 Aug 2021 17:00:08 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 2 Aug 2021 17:00:06 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 2 Aug 2021 17:00:05 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Subject: [PATCH v8, 0/2] soc: mediatek: mmsys: add mt8192 mmsys support
+Date:   Mon, 2 Aug 2021 16:59:31 +0800
+Message-ID: <1627894773-23872-1-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <61495dc0-f496-992c-1d2a-9229a04e6e44@linux.ibm.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 01:15:00PM +0530, kajoljain wrote:
-> 
-> 
-> On 7/13/21 1:12 PM, Kajol Jain wrote:
-> > The performance reporting driver added cpu hotplug
-> > feature but it didn't add pmu migration call in cpu
-> > offline function.
-> > This can create an issue incase the current designated
-> > cpu being used to collect fme pmu data got offline,
-> > as based on current code we are not migrating fme pmu to
-> > new target cpu. Because of that perf will still try to
-> > fetch data from that offline cpu and hence we will not
-> > get counter data.
-> > 
-> > Patch fixed this issue by adding pmu_migrate_context call
-> > in fme_perf_offline_cpu function.
-> > 
-> > Fixes: 724142f8c42a ("fpga: dfl: fme: add performance reporting support")
-> > Tested-by: Xu Yilun <yilun.xu@intel.com>
-> > Acked-by: Wu Hao <hao.wu@intel.com>
-> > Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> > Cc: stable@vger.kernel.org
-> > ---
-> 
-> Any update on this patch? Please let me know if any changes required.
-> 
-> Thanks,
-> Kajol Jain
+base v5.14-rc1
 
-It's in my 'fixes' branch.
+Yongqiang Niu (2):
+  soc: mediatek: mmsys: add comp OVL_2L2/POSTMASK/RDMA4
+  soc: mediatek: mmsys: Add mt8192 mmsys routing table
 
-- Moritz
+ drivers/soc/mediatek/mt8192-mmsys.h    | 67 ++++++++++++++++++++++++++++++++++
+ drivers/soc/mediatek/mtk-mmsys.c       | 11 ++++++
+ include/linux/soc/mediatek/mtk-mmsys.h |  3 ++
+ 3 files changed, 81 insertions(+)
+ create mode 100644 drivers/soc/mediatek/mt8192-mmsys.h
+
+-- 
+1.8.1.1.dirty
+
