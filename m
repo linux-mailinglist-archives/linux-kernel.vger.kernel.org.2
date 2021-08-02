@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0A53DDC3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837403DDC41
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234584AbhHBPV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234401AbhHBPV2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:21:28 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE07C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:21:17 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id n2so24939770eda.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:21:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IVqYYLjGOPKQife1ID3vUeLHeieycL8YR2lT+WrDkFI=;
-        b=jXk2OP6NdkifNBX3E6RH9oS7ZXLx9+q+2q3xOOoj9K0IbOnbA4gvu+6Ib73oCOE2+4
-         co5XXYMkEK19URYAdQhG7BoLRgmfdl3EqO/zsJKs6M93XViQlJEcbzs247qmKig0vpeL
-         9p1Y5uwjjUOMWojKQLM4KpjugvMhZ1USBTL5m15wpNWenIj1KnGnpgL+SQZ8mVQI6cJW
-         qZPkDIVuBPW7TPbQdVZJxQFoKq+fGtNGpqYJ68yHhheWv2+PGoAmoDIy+OxHlAjz1pZx
-         Twf85Orbu8o8ZyYKrOLZ14eV/56wI3RiHhubWy10tO536HWR4hUv2Zri1IsOepYCRDtN
-         doug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IVqYYLjGOPKQife1ID3vUeLHeieycL8YR2lT+WrDkFI=;
-        b=gcQk0YE8f82le11SFKPaglIf77vrIMgoMNV3gFrfXo+A6GLUSQp6GTziXIZjrjcc7n
-         uf4DecQJWV0YP24AZ2u7n82YiYAwwGZQx7BQ9E/vUp/XwxsIVGaTVH4k2ABaI2lLLT7N
-         6sUzVs3Be34SFjSGIMM/EUgMQu/kB/dVOEngML6l/I8PKVhAkLBQ7ojUDlMWL6wAUCn7
-         hzijVVcpBPxiYRYLWOMf8ezY9/6aQ4VyZuPKQw4uUsrU8bRaI4UjsDLUN7H9BZkCIz3x
-         2Ya/OYDCgaI5hd30EPQFl5rLSsRle71It88KQx9xSqrNOzyjfccjQPXKXDfUnNzztBiU
-         QZKQ==
-X-Gm-Message-State: AOAM533o7pMwyXDZ/6lhl8GYTjP69W9OG6zCopF69qL5rPrVXR2YaX5S
-        EIfRBpLWPz2K2MK1qs590Rg=
-X-Google-Smtp-Source: ABdhPJyRxHIXCVK8ir4zjMfG4mHt+mmLmFPcDMV7K5upkC7HV6/82qpwTeO8YU8l+t2p3GXXsU/8Ag==
-X-Received: by 2002:a05:6402:1778:: with SMTP id da24mr20117959edb.385.1627917675986;
-        Mon, 02 Aug 2021 08:21:15 -0700 (PDT)
-Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
-        by smtp.gmail.com with ESMTPSA id oz27sm4703948ejb.90.2021.08.02.08.21.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 08:21:15 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Fix different base types in assignments and parameters
-Date:   Mon, 02 Aug 2021 17:21:14 +0200
-Message-ID: <4462633.k6rmAWbitH@localhost.localdomain>
-In-Reply-To: <2081658.ULrIQvW0dQ@localhost.localdomain>
-References: <20210730181452.23062-1-fmdefrancesco@gmail.com> <20210802140505.GZ1931@kadam> <2081658.ULrIQvW0dQ@localhost.localdomain>
+        id S234987AbhHBPWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:22:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234603AbhHBPWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:22:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3410F6113C;
+        Mon,  2 Aug 2021 15:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627917729;
+        bh=Si+hNK3DPr4uxf50uAtqbl4TH36wPrm2fxzPPe4dfhs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eNUmLo6PsdKJ5G1xJKUYiOV2A1gLj2NKX9BQA95QquPsSfLWb+d9sUD8ETLB6HaZ5
+         UZZLXApvJYba7yDgda2DgUksM5j/KsPY5YU0LhKF1xN+b+8087BEmIMPdv32ngmsFG
+         +LQjLqX3jX9UxpmdTHfNoPHPyJtBtuVPkk9fcyv/3uAvpf4NVHlpSpRA4Sv4NsZLEJ
+         Vqqa+ncgQNdF3x8KWxXnZo90PeqdE5U54M/kWjRcE4QgofHe5pcdb5ulBRzjQguJDG
+         qlwZi7328/8S0GfZM/9ZKsloe65RcYA2Q0xHZzcO6SFEJqY8gzOl80qPQfPkEr5vnh
+         2H1se8x88eRZw==
+Received: by mail-wr1-f47.google.com with SMTP id z4so21946496wrv.11;
+        Mon, 02 Aug 2021 08:22:09 -0700 (PDT)
+X-Gm-Message-State: AOAM533BQ23+BeWLbHwS0EK04Uf/cZENSEEdnOj1UXgKabk9Zih5FzHx
+        fBXW6PkgNfYhSoLjPjmhjeDSbK2iwY5z01ECBZI=
+X-Google-Smtp-Source: ABdhPJwo4NvX+dVJZBjSmdvIvz0RTbMiP/jqK0tWRgClan8YxDoQgFzXHr9ZWQZo4WaHXaYWjvrz7hImrkZvk68+afs=
+X-Received: by 2002:adf:fd90:: with SMTP id d16mr19227020wrr.105.1627917727845;
+ Mon, 02 Aug 2021 08:22:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20210802145449.1154565-1-arnd@kernel.org> <20210802080205.6a9f9bb1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210802080205.6a9f9bb1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 2 Aug 2021 17:21:52 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0-z+_bsVVjy5h+f=O27BfUjBOFJ1-18aQOmUwf4rZTKg@mail.gmail.com>
+Message-ID: <CAK8P3a0-z+_bsVVjy5h+f=O27BfUjBOFJ1-18aQOmUwf4rZTKg@mail.gmail.com>
+Subject: Re: [PATCH] net: sparx5: fix bitmask check
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Networking <netdev@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, August 2, 2021 4:26:33 PM CEST Fabio M. De Francesco wrote:
-> On Monday, August 2, 2021 4:05:05 PM CEST Dan Carpenter wrote:
-> > On Fri, Jul 30, 2021 at 08:14:52PM +0200, Fabio M. De Francesco wrote:
-> > > Fix sparse warnings of different base types in assignments
-> > > and in passing function parameters.
-> > 
-> > [...]
-> > > 
-> > > +	union {
-> > > +                unsigned int f0;
-> > > +                unsigned char f1[IPX_NODE_LEN];
-> > 
-> > What is going on here??  Why is f1 six bytes?
-> 
-> Please look at the third parameter of the latest memcpy() in this function.
-> 
+On Mon, Aug 2, 2021 at 5:02 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> I fixed this by moving the check out to a macro wrapper in net:
+> 6387f65e2acb ("net: sparx5: fix compiletime_assert for GCC 4.9")
 
-No, I'm wrong here. I must have exchanged in my mind the latest and the 
-memcpy() before the latest. So I see a '6' in the wrong memcpy().
+Ok, got it.
 
-I'll fix it ASAP.
+> > To make this also work on 32-bit architectures, change
+> > the GENMASK() to GENMASK_ULL().
+>
+> Would you mind resending just that part against net/master?
 
-Thanks,
+Done.
 
-Fabio
-
-
-
-
+        Arnd
