@@ -2,53 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90E43DD0BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CC03DD0C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbhHBGrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:47:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhHBGrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:47:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6976F60F11;
-        Mon,  2 Aug 2021 06:46:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627886820;
-        bh=rusHs7DnGFV9Lm/2QNoVAHy6+ABGVkY3Ql1sJ/q/ac0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ngbcaRspAKdysi3pypPlaZ1uvojuzwu6A9WP72L3TFD5kyXJAC8SMLelolUI9X2qw
-         9sUhheOzU3kd5NAKNZZ2jaS07H8KhrWFMauuHUSwqTfY3ZFQZRugkX3FvosmgpK2VM
-         XiIaqaZzhmoJKjEpW+2p34bD2X+7DQCze9ZZZi36vacVjAh0AEZChpzGehNm9HGaEu
-         Dsp04j4FXSC54UGGUlIpwrjJE4152fTS8UiQwPHOwRN+EgpdaQfZRqDlVnMHB+q0VV
-         lChNhNj5Rxu1B6kGoqUw7YvTxw2lhuUS3c4Bgux5LaDOFybMZgQrWk5GkqO5PgVCO3
-         0zp3z3EmRsU7A==
-Date:   Mon, 2 Aug 2021 12:16:55 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Jordy Zomer <jordy@pwning.systems>
-Cc:     dmaengine@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: usb-dmac: make usb_dmac_get_current_residue
- unsigned
-Message-ID: <YQeU31f1VXqS4x5g@matsya>
-References: <20210731091939.510816-1-jordy@pwning.systems>
+        id S232417AbhHBGsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:48:52 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46768 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhHBGsv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 02:48:51 -0400
+Date:   Mon, 2 Aug 2021 08:48:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627886921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xgf1w1Yr/16S3cF94i8thIesk7lQfXggo53DqXgkW/U=;
+        b=b8dBOzF271SQA/M35jNDcWW/IhmmpdbKIerURJYyAEdGo/BMTQYePCp7Kp37uX7YTtki8L
+        Quk3npsD7kHWAlG/lzr/10YsZVaClYNVb0pWKu5fxrbiAuhumMsLRov/7MRze2O5c1BLGV
+        aRN8wrIhrslJ7RXmfpkw9iy7Lil3Dnypr6VQxPdTgsqvd8Bo/myjLfVWM7TZjq+OAZro1C
+        YQYP4OOBzjLyZzcx0DYbr0ux3S1NFxvIkZuFK+zdOSnomphGraLukeQmTxU7Ua+PnteZLj
+        7psWSsS8YJVOz86nO9PjnoE2ZpiCuQOt0hJoEauNZMVhHF5ilfLJ2oXvNwvz+w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627886921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xgf1w1Yr/16S3cF94i8thIesk7lQfXggo53DqXgkW/U=;
+        b=hRfOp6IpGCycyJp2CE5/Aow8e1okWEvCw/bMhbGqS7OnkbbtRaFV3GaVSTxWdmr1qyEpZt
+        L5EkSCWl7pPDD9Bw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     chao.qin@intel.com, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, mgross@linux.intel.com, paul.mei@intel.com,
+        lili.li@intel.com
+Subject: Re: [PREEMPT_RT][PATCH] printk: Enhance the condition check of
+ msleep in pr_flush()
+Message-ID: <20210802064839.eukhmuxxv76uij3j@linutronix.de>
+References: <20210719022649.3444072-1-chao.qin@intel.com>
+ <87mtqiuzd4.fsf@jogness.linutronix.de>
+ <20210730140143.53wls2g7xf2ktdgv@linutronix.de>
+ <87k0l7svu5.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210731091939.510816-1-jordy@pwning.systems>
+In-Reply-To: <87k0l7svu5.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31-07-21, 11:19, Jordy Zomer wrote:
-> The usb_dmac_get_current_residue function used to
-> take a signed integer as a pos parameter.
-> The only callers of this function passes an unsigned integer to it.
-> Therefore to make it obviously safe, let's just make this an unsgined
-> integer as this is used in pointer arithmetics.
+On 2021-07-30 16:52:42 [+0206], John Ogness wrote:
+> On 2021-07-30, Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+> > I don't have more context but scheduling should work starting with
+> > SYSTEM_SCHEDULING.
+> 
+> I also thought this, but a quick test shows that is not the case. For
+> example, init/main.c:kernel_init() is called in preemptible context, but
+> msleep() will hang if called at the beginning of that function.
 
-Applied, thanks
+hmm. So the timer device is missing. Everything else is fine.
 
--- 
-~Vinod
+> John Ogness
+
+Sebastian
