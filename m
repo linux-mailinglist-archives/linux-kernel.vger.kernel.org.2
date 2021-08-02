@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7613DDA01
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACDC3DD874
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236235AbhHBOFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:05:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42416 "EHLO mail.kernel.org"
+        id S235084AbhHBNwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:52:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236442AbhHBN7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:59:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C02861185;
-        Mon,  2 Aug 2021 13:55:39 +0000 (UTC)
+        id S234514AbhHBNsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:48:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A84760551;
+        Mon,  2 Aug 2021 13:48:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912539;
-        bh=pla7McmYxp1G0LJaZfhMGfn9YoZxcBk/02lvATrKxxg=;
+        s=korg; t=1627912095;
+        bh=1yqFSfZW7LcjYBwmmxWCElw/fXIIy1D4JlGsxkNbb2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YcUtL9QIbxCe8p3wMnTNyJ+o8GZtiCrFiZLOSsF0H0HmdTYLts2gmjbI1XVJzqpff
-         OZ2Bg177rR6hKBeiyh7Smlehe/joQROsR0Jj0mqOBmaprkZRw+eXUSHkXBC+H3hewK
-         0qKMn2+mB6WCmUtLBH9PqzvHfDqL/ho4OnQx+yOA=
+        b=NXDF2z/vnpQUbS72CcdOCX5MjduaBR2kzP8NcB7XTfsT9jxE31fdUfqRDP24FJO6w
+         IvU4cPpzq32ac2WHc+gKxOPBCXgSjLbbr45pQHEDWTn+6Jn2MfLdMDzHecjZjnJAJc
+         k1/zePpln771S6MGiNHz9xP8BZvf8YHgmkU/1cKk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 038/104] platform/x86: amd-pmc: Fix missing unlock on error in amd_pmc_send_cmd()
-Date:   Mon,  2 Aug 2021 15:44:35 +0200
-Message-Id: <20210802134345.273054305@linuxfoundation.org>
+        stable@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: [PATCH 4.14 14/38] virtio_net: Do not pull payload in skb->head
+Date:   Mon,  2 Aug 2021 15:44:36 +0200
+Message-Id: <20210802134335.285560278@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +44,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 95edbbf78c3bdbd1daa921dd4a2e61c751e469ba ]
+commit 0f6925b3e8da0dbbb52447ca8a8b42b371aac7db upstream.
 
-Add the missing unlock before return from function amd_pmc_send_cmd()
-in the error handling case.
+Xuan Zhuo reported that commit 3226b158e67c ("net: avoid 32 x truesize
+under-estimation for tiny skbs") brought  a ~10% performance drop.
 
-Fixes: 95e1b60f8dc8 ("platform/x86: amd-pmc: Fix command completion code")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210715074327.1966083-1-yangyingliang@huawei.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The reason for the performance drop was that GRO was forced
+to chain sk_buff (using skb_shinfo(skb)->frag_list), which
+uses more memory but also cause packet consumers to go over
+a lot of overhead handling all the tiny skbs.
+
+It turns out that virtio_net page_to_skb() has a wrong strategy :
+It allocates skbs with GOOD_COPY_LEN (128) bytes in skb->head, then
+copies 128 bytes from the page, before feeding the packet to GRO stack.
+
+This was suboptimal before commit 3226b158e67c ("net: avoid 32 x truesize
+under-estimation for tiny skbs") because GRO was using 2 frags per MSS,
+meaning we were not packing MSS with 100% efficiency.
+
+Fix is to pull only the ethernet header in page_to_skb()
+
+Then, we change virtio_net_hdr_to_skb() to pull the missing
+headers, instead of assuming they were already pulled by callers.
+
+This fixes the performance regression, but could also allow virtio_net
+to accept packets with more than 128bytes of headers.
+
+Many thanks to Xuan Zhuo for his report, and his tests/help.
+
+Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
+Reported-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Link: https://www.spinics.net/lists/netdev/msg731397.html
+Co-Developed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: virtualization@lists.linux-foundation.org
+Acked-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/platform/x86/amd-pmc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/virtio_net.c   |   10 +++++++---
+ include/linux/virtio_net.h |   14 +++++++++-----
+ 2 files changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/platform/x86/amd-pmc.c b/drivers/platform/x86/amd-pmc.c
-index b1d6175a13b2..ca95c2a52e26 100644
---- a/drivers/platform/x86/amd-pmc.c
-+++ b/drivers/platform/x86/amd-pmc.c
-@@ -140,7 +140,7 @@ static int amd_pmc_send_cmd(struct amd_pmc_dev *dev, bool set)
- 				PMC_MSG_DELAY_MIN_US * RESPONSE_REGISTER_LOOP_MAX);
- 	if (rc) {
- 		dev_err(dev->dev, "failed to talk to SMU\n");
--		return rc;
-+		goto out_unlock;
- 	}
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -339,9 +339,13 @@ static struct sk_buff *page_to_skb(struc
+ 	offset += hdr_padded_len;
+ 	p += hdr_padded_len;
  
- 	/* Write zero to response register */
--- 
-2.30.2
-
+-	copy = len;
+-	if (copy > skb_tailroom(skb))
+-		copy = skb_tailroom(skb);
++	/* Copy all frame if it fits skb->head, otherwise
++	 * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
++	 */
++	if (len <= skb_tailroom(skb))
++		copy = len;
++	else
++		copy = ETH_HLEN;
+ 	skb_put_data(skb, p, copy);
+ 
+ 	len -= copy;
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -65,14 +65,18 @@ static inline int virtio_net_hdr_to_skb(
+ 	skb_reset_mac_header(skb);
+ 
+ 	if (hdr->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
+-		u16 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
+-		u16 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
++		u32 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
++		u32 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
++		u32 needed = start + max_t(u32, thlen, off + sizeof(__sum16));
++
++		if (!pskb_may_pull(skb, needed))
++			return -EINVAL;
+ 
+ 		if (!skb_partial_csum_set(skb, start, off))
+ 			return -EINVAL;
+ 
+ 		p_off = skb_transport_offset(skb) + thlen;
+-		if (p_off > skb_headlen(skb))
++		if (!pskb_may_pull(skb, p_off))
+ 			return -EINVAL;
+ 	} else {
+ 		/* gso packets without NEEDS_CSUM do not set transport_offset.
+@@ -100,14 +104,14 @@ retry:
+ 			}
+ 
+ 			p_off = keys.control.thoff + thlen;
+-			if (p_off > skb_headlen(skb) ||
++			if (!pskb_may_pull(skb, p_off) ||
+ 			    keys.basic.ip_proto != ip_proto)
+ 				return -EINVAL;
+ 
+ 			skb_set_transport_header(skb, keys.control.thoff);
+ 		} else if (gso_type) {
+ 			p_off = thlen;
+-			if (p_off > skb_headlen(skb))
++			if (!pskb_may_pull(skb, p_off))
+ 				return -EINVAL;
+ 		}
+ 	}
 
 
