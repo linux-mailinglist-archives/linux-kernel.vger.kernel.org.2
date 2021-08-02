@@ -2,271 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D083DD04E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAA23DD050
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhHBGGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232427AbhHBGGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:06:11 -0400
+Received: from mga06.intel.com ([134.134.136.31]:31095 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232226AbhHBGGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Aug 2021 02:06:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44826 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229805AbhHBGGA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:06:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627884351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Je4Dv8aM59Wogtb0aY/UhwL8JCtvR5TxALetT6mCZjw=;
-        b=GT4HX51Q9UtkH2Ao8PH/7623KF5rh62/ut5pRURtG3t2V/nHbOJclK2d6x+DgOZMDFjG1N
-        TL0DmvnsiSUtreQGieZB2P5PsatlSrDHAeNnluNGzyUOKqs67JmW7aG5dP8XGpdSx82IL9
-        1Q2iKECdPhL76u6wvtfjVfYOFUVo6Ko=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-28-6T36AfCEODS30BqMrqAxZQ-1; Mon, 02 Aug 2021 02:05:49 -0400
-X-MC-Unique: 6T36AfCEODS30BqMrqAxZQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2203F871803;
-        Mon,  2 Aug 2021 06:05:48 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-184.bne.redhat.com [10.64.54.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6BAE61ABD8;
-        Mon,  2 Aug 2021 06:05:42 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
-        gerald.schaefer@linux.ibm.com, aneesh.kumar@linux.ibm.com,
-        christophe.leroy@csgroup.eu, cai@lca.pw, catalin.marinas@arm.com,
-        will@kernel.org, vgupta@synopsys.com, akpm@linux-foundation.org,
-        chuhu@redhat.com, shan.gavin@gmail.com
-Subject: [PATCH v5 12/12] mm/debug_vm_pgtable: Fix corrupted page flag
-Date:   Mon,  2 Aug 2021 14:04:19 +0800
-Message-Id: <20210802060419.1360913-13-gshan@redhat.com>
-In-Reply-To: <20210802060419.1360913-1-gshan@redhat.com>
-References: <20210802060419.1360913-1-gshan@redhat.com>
+X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="274459328"
+X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
+   d="scan'208";a="274459328"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 23:05:51 -0700
+X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
+   d="scan'208";a="583790282"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 23:05:48 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id BFF0B203BC;
+        Mon,  2 Aug 2021 09:05:46 +0300 (EEST)
+Date:   Mon, 2 Aug 2021 09:05:46 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-hardening@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v2 1/2] media: staging/intel-ipu3: css: Fix wrong size
+ comparison
+Message-ID: <20210802060546.GL3@paasikivi.fi.intel.com>
+References: <cover.1627646101.git.gustavoars@kernel.org>
+ <184d96f95d6261b1a91704eb68adbd0a2e1c2cc2.1627646101.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <184d96f95d6261b1a91704eb68adbd0a2e1c2cc2.1627646101.git.gustavoars@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In page table entry modifying tests, set_xxx_at() are used to populate
-the page table entries. On ARM64, PG_arch_1 (PG_dcache_clean) flag is
-set to the target page flag if execution permission is given. The logic
-exits since commit 4f04d8f00545 ("arm64: MMU definitions"). The page
-flag is kept when the page is free'd to buddy's free area list. However,
-it will trigger page checking failure when it's pulled from the buddy's
-free area list, as the following warning messages indicate.
+Hi Gustavo,
 
-   BUG: Bad page state in process memhog  pfn:08000
-   page:0000000015c0a628 refcount:0 mapcount:0 \
-        mapping:0000000000000000 index:0x1 pfn:0x8000
-   flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
-   raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
-   raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-   page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
+I missed you already had sent v2...
 
-This fixes the issue by clearing PG_arch_1 through flush_dcache_page()
-after set_xxx_at() is called. For architectures other than ARM64, the
-unexpected overhead of cache flushing is acceptable.
+On Fri, Jul 30, 2021 at 07:08:13AM -0500, Gustavo A. R. Silva wrote:
+> There is a wrong comparison of the total size of the loaded firmware
+> css->fw->size with the size of a pointer to struct imgu_fw_header.
+> 
+> Fix this by using the right operand 'struct imgu_fw_header' for
+> sizeof, instead of 'struct imgu_fw_header *' and turn binary_header
+> into a flexible-array member. Also, adjust the relational operator
+> to be '<=' instead of '<', as it seems that the intention of the
+> comparison is to determine if the loaded firmware contains any
+> 'struct imgu_fw_info' items in the binary_header[] array than merely
+> the file_header (struct imgu_fw_bi_file_h).
+> 
+> The replacement of the one-element array with a flexible-array member
+> also help with the ongoing efforts to globally enable -Warray-bounds
+> and get us closer to being able to tighten the FORTIFY_SOURCE routines
+> on memcpy().
+> 
+> Link: https://github.com/KSPP/linux/issues/79
+> Link: https://github.com/KSPP/linux/issues/109
+> Fixes: 09d290f0ba21 ("media: staging/intel-ipu3: css: Add support for firmware management")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> 
+> It'd be just great if someone that knows this code better can confirm
+> these changes are correct. In particular the adjustment of the
+> relational operator. Thanks!
+> 
+> Changes in v2:
+>  - Use flexible array and adjust relational operator, accordingly.
 
-Fixes: a5c3b9ffb0f4 ("mm/debug_vm_pgtable: add tests validating advanced arch page table helpers")
-Signed-off-by: Gavin Shan <gshan@redhat.com>
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- mm/debug_vm_pgtable.c | 55 +++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 51 insertions(+), 4 deletions(-)
+The operator was just correct. The check is just there to see the firmware
+is at least as large as the struct as which it is being accessed.
 
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index b4fdc63a60f0..f0202a92226f 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -29,6 +29,8 @@
- #include <linux/start_kernel.h>
- #include <linux/sched/mm.h>
- #include <linux/io.h>
-+
-+#include <asm/cacheflush.h>
- #include <asm/pgalloc.h>
- #include <asm/tlbflush.h>
- 
-@@ -119,19 +121,28 @@ static void __init pte_basic_tests(struct pgtable_debug_args *args, int idx)
- 
- static void __init pte_advanced_tests(struct pgtable_debug_args *args)
- {
-+	struct page *page;
- 	pte_t pte;
- 
- 	/*
- 	 * Architectures optimize set_pte_at by avoiding TLB flush.
- 	 * This requires set_pte_at to be not used to update an
- 	 * existing pte entry. Clear pte before we do set_pte_at
-+	 *
-+	 * flush_dcache_page() is called after set_pte_at() to clear
-+	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-+	 * when it's released and page allocation check will fail when
-+	 * the page is allocated again. For architectures other than ARM64,
-+	 * the unexpected overhead of cache flushing is acceptable.
- 	 */
--	if (args->pte_pfn == ULONG_MAX)
-+	page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
-+	if (!page)
- 		return;
- 
- 	pr_debug("Validating PTE advanced\n");
- 	pte = pfn_pte(args->pte_pfn, args->page_prot);
- 	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-+	flush_dcache_page(page);
- 	ptep_set_wrprotect(args->mm, args->vaddr, args->ptep);
- 	pte = ptep_get(args->ptep);
- 	WARN_ON(pte_write(pte));
-@@ -143,6 +154,7 @@ static void __init pte_advanced_tests(struct pgtable_debug_args *args)
- 	pte = pte_wrprotect(pte);
- 	pte = pte_mkclean(pte);
- 	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-+	flush_dcache_page(page);
- 	pte = pte_mkwrite(pte);
- 	pte = pte_mkdirty(pte);
- 	ptep_set_access_flags(args->vma, args->vaddr, args->ptep, pte, 1);
-@@ -155,6 +167,7 @@ static void __init pte_advanced_tests(struct pgtable_debug_args *args)
- 	pte = pfn_pte(args->pte_pfn, args->page_prot);
- 	pte = pte_mkyoung(pte);
- 	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-+	flush_dcache_page(page);
- 	ptep_test_and_clear_young(args->vma, args->vaddr, args->ptep);
- 	pte = ptep_get(args->ptep);
- 	WARN_ON(pte_young(pte));
-@@ -213,15 +226,24 @@ static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx)
- 
- static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
- {
-+	struct page *page;
- 	pmd_t pmd;
- 	unsigned long vaddr = args->vaddr;
- 
- 	if (!has_transparent_hugepage())
- 		return;
- 
--	if (args->pmd_pfn == ULONG_MAX)
-+	page = (args->pmd_pfn != ULONG_MAX) ? pfn_to_page(args->pmd_pfn) : NULL;
-+	if (!page)
- 		return;
- 
-+	/*
-+	 * flush_dcache_page() is called after set_pmd_at() to clear
-+	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-+	 * when it's released and page allocation check will fail when
-+	 * the page is allocated again. For architectures other than ARM64,
-+	 * the unexpected overhead of cache flushing is acceptable.
-+	 */
- 	pr_debug("Validating PMD advanced\n");
- 	/* Align the address wrt HPAGE_PMD_SIZE */
- 	vaddr &= HPAGE_PMD_MASK;
-@@ -230,6 +252,7 @@ static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
- 
- 	pmd = pfn_pmd(args->pmd_pfn, args->page_prot);
- 	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmdp_set_wrprotect(args->mm, vaddr, args->pmdp);
- 	pmd = READ_ONCE(*args->pmdp);
- 	WARN_ON(pmd_write(pmd));
-@@ -241,6 +264,7 @@ static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
- 	pmd = pmd_wrprotect(pmd);
- 	pmd = pmd_mkclean(pmd);
- 	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmd = pmd_mkwrite(pmd);
- 	pmd = pmd_mkdirty(pmd);
- 	pmdp_set_access_flags(args->vma, vaddr, args->pmdp, pmd, 1);
-@@ -253,6 +277,7 @@ static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
- 	pmd = pmd_mkhuge(pfn_pmd(args->pmd_pfn, args->page_prot));
- 	pmd = pmd_mkyoung(pmd);
- 	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmdp_test_and_clear_young(args->vma, vaddr, args->pmdp);
- 	pmd = READ_ONCE(*args->pmdp);
- 	WARN_ON(pmd_young(pmd));
-@@ -339,21 +364,31 @@ static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx)
- 
- static void __init pud_advanced_tests(struct pgtable_debug_args *args)
- {
-+	struct page *page;
- 	unsigned long vaddr = args->vaddr;
- 	pud_t pud;
- 
- 	if (!has_transparent_hugepage())
- 		return;
- 
--	if (args->pud_pfn == ULONG_MAX)
-+	page = (args->pud_pfn != ULONG_MAX) ? pfn_to_page(args->pud_pfn) : NULL;
-+	if (!page)
- 		return;
- 
-+	/*
-+	 * flush_dcache_page() is called after set_pud_at() to clear
-+	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-+	 * when it's released and page allocation check will fail when
-+	 * the page is allocated again. For architectures other than ARM64,
-+	 * the unexpected overhead of cache flushing is acceptable.
-+	 */
- 	pr_debug("Validating PUD advanced\n");
- 	/* Align the address wrt HPAGE_PUD_SIZE */
- 	vaddr &= HPAGE_PUD_MASK;
- 
- 	pud = pfn_pud(args->pud_pfn, args->page_prot);
- 	set_pud_at(args->mm, vaddr, args->pudp, pud);
-+	flush_dcache_page(page);
- 	pudp_set_wrprotect(args->mm, vaddr, args->pudp);
- 	pud = READ_ONCE(*args->pudp);
- 	WARN_ON(pud_write(pud));
-@@ -367,6 +402,7 @@ static void __init pud_advanced_tests(struct pgtable_debug_args *args)
- 	pud = pud_wrprotect(pud);
- 	pud = pud_mkclean(pud);
- 	set_pud_at(args->mm, vaddr, args->pudp, pud);
-+	flush_dcache_page(page);
- 	pud = pud_mkwrite(pud);
- 	pud = pud_mkdirty(pud);
- 	pudp_set_access_flags(args->vma, vaddr, args->pudp, pud, 1);
-@@ -382,6 +418,7 @@ static void __init pud_advanced_tests(struct pgtable_debug_args *args)
- 	pud = pfn_pud(args->pud_pfn, args->page_prot);
- 	pud = pud_mkyoung(pud);
- 	set_pud_at(args->mm, vaddr, args->pudp, pud);
-+	flush_dcache_page(page);
- 	pudp_test_and_clear_young(args->vma, vaddr, args->pudp);
- 	pud = READ_ONCE(*args->pudp);
- 	WARN_ON(pud_young(pud));
-@@ -594,16 +631,26 @@ static void __init pgd_populate_tests(struct pgtable_debug_args *args) { }
- 
- static void __init pte_clear_tests(struct pgtable_debug_args *args)
- {
-+	struct page *page;
- 	pte_t pte = pfn_pte(args->pte_pfn, args->page_prot);
- 
--	if (args->pte_pfn == ULONG_MAX)
-+	page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
-+	if (!page)
- 		return;
- 
-+	/*
-+	 * flush_dcache_page() is called after set_pte_at() to clear
-+	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-+	 * when it's released and page allocation check will fail when
-+	 * the page is allocated again. For architectures other than ARM64,
-+	 * the unexpected overhead of cache flushing is acceptable.
-+	 */
- 	pr_debug("Validating PTE clear\n");
- #ifndef CONFIG_RISCV
- 	pte = __pte(pte_val(pte) | RANDOM_ORVALUE);
- #endif
- 	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-+	flush_dcache_page(page);
- 	barrier();
- 	pte_clear(args->mm, args->vaddr, args->ptep);
- 	pte = ptep_get(args->ptep);
+>  - Update changelog text.
+> 
+>  drivers/staging/media/ipu3/ipu3-css-fw.c | 2 +-
+>  drivers/staging/media/ipu3/ipu3-css-fw.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/ipu3/ipu3-css-fw.c b/drivers/staging/media/ipu3/ipu3-css-fw.c
+> index 45aff76198e2..630cb5186b48 100644
+> --- a/drivers/staging/media/ipu3/ipu3-css-fw.c
+> +++ b/drivers/staging/media/ipu3/ipu3-css-fw.c
+> @@ -124,7 +124,7 @@ int imgu_css_fw_init(struct imgu_css *css)
+>  	/* Check and display fw header info */
+>  
+>  	css->fwp = (struct imgu_fw_header *)css->fw->data;
+> -	if (css->fw->size < sizeof(struct imgu_fw_header *) ||
+> +	if (css->fw->size <= sizeof(struct imgu_fw_header) ||
+>  	    css->fwp->file_header.h_size != sizeof(struct imgu_fw_bi_file_h))
+>  		goto bad_fw;
+>  	if (sizeof(struct imgu_fw_bi_file_h) +
+> diff --git a/drivers/staging/media/ipu3/ipu3-css-fw.h b/drivers/staging/media/ipu3/ipu3-css-fw.h
+> index 3c078f15a295..c0bc57fd678a 100644
+> --- a/drivers/staging/media/ipu3/ipu3-css-fw.h
+> +++ b/drivers/staging/media/ipu3/ipu3-css-fw.h
+> @@ -171,7 +171,7 @@ struct imgu_fw_bi_file_h {
+>  
+>  struct imgu_fw_header {
+>  	struct imgu_fw_bi_file_h file_header;
+> -	struct imgu_fw_info binary_header[1];	/* binary_nr items */
+> +	struct imgu_fw_info binary_header[];	/* binary_nr items */
+>  };
+>  
+>  /******************* Firmware functions *******************/
+
 -- 
-2.23.0
+Regards,
 
+Sakari Ailus
