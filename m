@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07363DD8E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08BE3DD946
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235239AbhHBNzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:55:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34430 "EHLO mail.kernel.org"
+        id S235840AbhHBN7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:59:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234923AbhHBNub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:50:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 329A261102;
-        Mon,  2 Aug 2021 13:50:21 +0000 (UTC)
+        id S234133AbhHBNwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:52:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 772D660FC1;
+        Mon,  2 Aug 2021 13:51:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912221;
-        bh=NJOEvPpoLwptY8+Dkqrp/K+sE5xEPdIjyk6kEAlIF/M=;
+        s=korg; t=1627912310;
+        bh=19MS8kvwxsF3b3xQuAZ1NvLXusGWe0aGzbA3foiWk9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sOyp31tTJWP3FMmYa4ZJYk6SQynC8j2R4YyqJm0gqMUahZGZTqUSUDxrpS23pIGa2
-         Ous1WS5M9e7jZtXiB21gnP581+pGVfTViQ25URbED0mOZEeONUlzMGTB0liqr/vizg
-         GtfU3dSDRBB2dDJ9Qfo9TGhSjRqZ07QCJ+Y1EJks=
+        b=o+HXEv5RJXWxguhEQLAKCDFbnjh51LZ/6SHvxzSDpwDVoTDZNpbGtbC6uCog+PgHu
+         NvbZZ4LbTe3n2UKdzHcY4acY74N10kOwkTZ5EkItR4QRRoFDCKmGcMnrtMWSe49tbT
+         8zDTNuG+nTixgrWha4m/X17I5ZLGVNRTqdWUTs5o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        stable@vger.kernel.org,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.19 12/30] can: esd_usb2: fix memory leak
+Subject: [PATCH 5.4 10/40] can: j1939: j1939_xtp_rx_dat_one(): fix rxtimer value between consecutive TP.DT to 750ms
 Date:   Mon,  2 Aug 2021 15:44:50 +0200
-Message-Id: <20210802134334.474746498@linuxfoundation.org>
+Message-Id: <20210802134335.725290432@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
-References: <20210802134334.081433902@linuxfoundation.org>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
+References: <20210802134335.408294521@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,97 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-commit 928150fad41ba16df7fcc9f7f945747d0f56cbb6 upstream.
+commit c6eea1c8bda56737752465a298dc6ce07d6b8ce3 upstream.
 
-In esd_usb2_setup_rx_urbs() MAX_RX_URBS coherent buffers are allocated
-and there is nothing, that frees them:
+For receive side, the max time interval between two consecutive TP.DT
+should be 750ms.
 
-1) In callback function the urb is resubmitted and that's all
-2) In disconnect function urbs are simply killed, but URB_FREE_BUFFER
-   is not set (see esd_usb2_setup_rx_urbs) and this flag cannot be used
-   with coherent buffers.
-
-So, all allocated buffers should be freed with usb_free_coherent()
-explicitly.
-
-Side note: This code looks like a copy-paste of other can drivers. The
-same patch was applied to mcba_usb driver and it works nice with real
-hardware. There is no change in functionality, only clean-up code for
-coherent buffers.
-
-Fixes: 96d8e90382dc ("can: Add driver for esd CAN-USB/2 device")
-Link: https://lore.kernel.org/r/b31b096926dcb35998ad0271aac4b51770ca7cc8.1627404470.git.paskripkin@gmail.com
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Link: https://lore.kernel.org/r/1625569210-47506-1-git-send-email-zhangchangzhong@huawei.com
 Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/usb/esd_usb2.c |   16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ net/can/j1939/transport.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/can/usb/esd_usb2.c
-+++ b/drivers/net/can/usb/esd_usb2.c
-@@ -207,6 +207,8 @@ struct esd_usb2 {
- 	int net_count;
- 	u32 version;
- 	int rxinitdone;
-+	void *rxbuf[MAX_RX_URBS];
-+	dma_addr_t rxbuf_dma[MAX_RX_URBS];
- };
- 
- struct esd_usb2_net_priv {
-@@ -556,6 +558,7 @@ static int esd_usb2_setup_rx_urbs(struct
- 	for (i = 0; i < MAX_RX_URBS; i++) {
- 		struct urb *urb = NULL;
- 		u8 *buf = NULL;
-+		dma_addr_t buf_dma;
- 
- 		/* create a URB, and a buffer for it */
- 		urb = usb_alloc_urb(0, GFP_KERNEL);
-@@ -565,7 +568,7 @@ static int esd_usb2_setup_rx_urbs(struct
- 		}
- 
- 		buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
--					 &urb->transfer_dma);
-+					 &buf_dma);
- 		if (!buf) {
- 			dev_warn(dev->udev->dev.parent,
- 				 "No memory left for USB buffer\n");
-@@ -573,6 +576,8 @@ static int esd_usb2_setup_rx_urbs(struct
- 			goto freeurb;
- 		}
- 
-+		urb->transfer_dma = buf_dma;
-+
- 		usb_fill_bulk_urb(urb, dev->udev,
- 				  usb_rcvbulkpipe(dev->udev, 1),
- 				  buf, RX_BUFFER_SIZE,
-@@ -585,8 +590,12 @@ static int esd_usb2_setup_rx_urbs(struct
- 			usb_unanchor_urb(urb);
- 			usb_free_coherent(dev->udev, RX_BUFFER_SIZE, buf,
- 					  urb->transfer_dma);
-+			goto freeurb;
- 		}
- 
-+		dev->rxbuf[i] = buf;
-+		dev->rxbuf_dma[i] = buf_dma;
-+
- freeurb:
- 		/* Drop reference, USB core will take care of freeing it */
- 		usb_free_urb(urb);
-@@ -674,6 +683,11 @@ static void unlink_all_urbs(struct esd_u
- 	int i, j;
- 
- 	usb_kill_anchored_urbs(&dev->rx_submitted);
-+
-+	for (i = 0; i < MAX_RX_URBS; ++i)
-+		usb_free_coherent(dev->udev, RX_BUFFER_SIZE,
-+				  dev->rxbuf[i], dev->rxbuf_dma[i]);
-+
- 	for (i = 0; i < dev->net_count; i++) {
- 		priv = dev->nets[i];
- 		if (priv) {
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1869,7 +1869,7 @@ static void j1939_xtp_rx_dat_one(struct
+ 		if (!session->transmission)
+ 			j1939_tp_schedule_txtimer(session, 0);
+ 	} else {
+-		j1939_tp_set_rxtimeout(session, 250);
++		j1939_tp_set_rxtimeout(session, 750);
+ 	}
+ 	session->last_cmd = 0xff;
+ 	consume_skb(se_skb);
 
 
