@@ -2,116 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4843DD31F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82DD33DD2DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhHBJls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:41:48 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:57572 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231625AbhHBJlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:41:44 -0400
-X-Greylist: delayed 1155 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Aug 2021 05:41:42 EDT
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 1729LkuU019819
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 2 Aug 2021 11:21:46 +0200
-Received: from md1za8fc.ad001.siemens.net ([139.25.0.59])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 1729Ljod022415;
-        Mon, 2 Aug 2021 11:21:45 +0200
-Date:   Mon, 2 Aug 2021 11:21:42 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Farooq, Muhammad Hamza" <hamza.farooq@siemens.com>
-Subject: Re: [PATCH v2 0/4] add device drivers for Siemens Industrial PCs
-Message-ID: <20210802112142.065b46a5@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75Vfu1PoN6bH4ew99Ct9JS=d9KSXtM0EXV_T7VF211TW-Yg@mail.gmail.com>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
-        <CAHp75Vfu1PoN6bH4ew99Ct9JS=d9KSXtM0EXV_T7VF211TW-Yg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233090AbhHBJWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232711AbhHBJWX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 05:22:23 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7078C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 02:22:13 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id d131-20020a1c1d890000b02902516717f562so10562762wmd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 02:22:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XuMl146g7mclGYpsz+vV1OUnrRE5rQPP1q+8mYAGid4=;
+        b=bMO4Yuwwl/X1UlTBP10vd1lgINlkZLxp1MIhUI+h5Qa2T2734B4IXMD3SzQee71ZaQ
+         syOikuB6S74kyg0b2Yr4fgZXqUgXWt95l3oqciILiRi98hXLOywuYwGTO6vyP/hNd4iC
+         iVbW+GNXjX5zvYim3G1x1/wVGn6oQ8IehUv6iClJmZgwRSUN0Cds8OsESqtZ76aBesPh
+         3T2Hnuvp9J25XdSAVzm33ghkduu8yqb6nWk4FnL3BmMbvRwQEuZl3RvLj/lVFjibX+RM
+         cOJFUChRFT2rUfZyte311A51XxmT/X9F0o6DZdHUHqldoQpEVrwHOgM049dIOD23/qoS
+         GG7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XuMl146g7mclGYpsz+vV1OUnrRE5rQPP1q+8mYAGid4=;
+        b=rgN7gjXQ/saflu/4q4EzvGWV8VkC9RDw/l8ysSXJAGg2xceSX1r0Hc8xONv7Sogiig
+         MTX3gVmapvfU6ldli2nU8P+zhYVUlGpSslKUywrH607kEQSHg5EC8yjjvM6Rn26VWxKC
+         f08hofn/gls2NR+K/gDWSUCw8054YPkjj7MeXxKkgags3zpNJi3t6KcUzErgaRqbDoOd
+         fM1dIqJwOLTMx2oJSSwfY39NVSVqkFg9ujA2t3OKQoWOiaKTwQ+O3NCoDaKEIR7mACIw
+         wQn52ojk4OmsZGQ742y/gmFSJ/jDQ13l44Whoj9kw7H/Rrw9xuLp3PcSlnU3Xg5nCFBv
+         YDQQ==
+X-Gm-Message-State: AOAM533tH5LgBpkM+o+gGOWxsCrl8at0n0xzpnThfOQ8vSjkMkotK4bM
+        6njswzEi9MM6RjtrkdyAZbXcUQ==
+X-Google-Smtp-Source: ABdhPJyPj7EV8YTRcj2LwBVXx4j3qTJBkFztXU4NyNIm7T+22E6veE4Q+YZxYvX2kcMaDCDNXsNiOQ==
+X-Received: by 2002:a1c:452:: with SMTP id 79mr15504367wme.125.1627896132222;
+        Mon, 02 Aug 2021 02:22:12 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:186d:6344:a12c:5b26? ([2a01:e34:ed2f:f020:186d:6344:a12c:5b26])
+        by smtp.googlemail.com with ESMTPSA id n186sm10949241wme.40.2021.08.02.02.22.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 02:22:11 -0700 (PDT)
+Subject: Re: [PATCH] mfd/cpuidle: ux500: Rename driver symbol
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
+References: <20210802090859.3237509-1-linus.walleij@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <6429cf2a-63c2-d925-d5d9-24eff617d1c6@linaro.org>
+Date:   Mon, 2 Aug 2021 11:22:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210802090859.3237509-1-linus.walleij@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mon, 15 Mar 2021 12:55:13 +0200
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-
-> On Mon, Mar 15, 2021 at 12:12 PM Henning Schild
-> <henning.schild@siemens.com> wrote:
-> >
-> > changes since v1:
-> >
-> > - fixed lots of style issues found in v1
-> >   - (debug) printing
-> >   - header ordering
-> > - fixed license issues GPLv2 and SPDX in all files
-> > - module_platform_driver instead of __init __exit
-> > - wdt simplifications cleanup
-> > - lots of fixes in wdt driver, all that was found in v1
-> > - fixed dmi length in dmi helper
-> > - changed LED names to allowed ones
-> > - move led driver to simple/
-> > - switched pmc_atom to dmi callback with global variable
-> >
-> > --
-> >
-> > This series adds support for watchdogs and leds of several x86
-> > devices from Siemens.
-> >
-> > It is structured with a platform driver that mainly does
-> > identification of the machines. It might trigger loading of the
-> > actual device drivers by attaching devices to the platform bus.
-> >
-> > The identification is vendor specific, parsing a special binary DMI
-> > entry. The implementation of that platform identification is
-> > applied on pmc_atom clock quirks in the final patch.
-> >
-> > It is all structured in a way that we can easily add more devices
-> > and more platform drivers later. Internally we have some more code
-> > for hardware monitoring, more leds, watchdogs etc. This will follow
-> > some day.  
+On 02/08/2021 11:08, Linus Walleij wrote:
+> The PRCMU driver defines this as a DT node but there are no bindings
+> for it and it needs no data from the device tree. Just spawn the
+> device directly in the same way as the watchdog.
 > 
-> Thanks for an update!
+> Name it "db8500-cpuidle" since there are no ambitions to support any
+> more SoCs than this one.
 > 
-> I did review more thoughtfully the series and realized that you can
-> avoid that P2SB thingy and may the approach be much cleaner if you
-> register the real GPIO driver and convert your LEDs to be a GPIO LEDs.
-> Then you won't need any custom code for it (except some board file, or
-> what would be better to file _DSD in your ACPI tables.
+> This rids this annoying boot message:
+> [    0.032610] cpuidle-dbx500: Failed to locate of_node [id: 0]
+> 
+> However I think the device still spawns and work just fine, despite
+> not finding a device tree node.
+> 
+> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: linux-pm@vger.kernel.org
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-For the next generation of these machines i managed to involve the BIOS
-guys. Goal would be to describe as much as possible in a generic and
-standard way in ACPI, to reduce cost on driver dev and maint in the
-long run. Hopefully across OSs.
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-The first thing we wanted to look into is LEDs. The way they can be
-described for leds-gpio does not seem to be standard but at least seems
-generic. At the same time we contemplated whether to model the LEDs
-using the multicolor class.
+> ---
+> Rafael/Daniel: it would be perfect if one of you could ACK
+> this so that Lee can just merge this into the MFD tree as
+> a non-urgent fix.
+> ---
+>  drivers/cpuidle/cpuidle-ux500.c | 2 +-
+>  drivers/mfd/db8500-prcmu.c      | 6 ++++--
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/cpuidle/cpuidle-ux500.c b/drivers/cpuidle/cpuidle-ux500.c
+> index a2d34be17a09..f7d778580e9b 100644
+> --- a/drivers/cpuidle/cpuidle-ux500.c
+> +++ b/drivers/cpuidle/cpuidle-ux500.c
+> @@ -117,7 +117,7 @@ static int dbx500_cpuidle_probe(struct platform_device *pdev)
+>  
+>  static struct platform_driver dbx500_cpuidle_plat_driver = {
+>  	.driver = {
+> -		.name = "cpuidle-dbx500",
+> +		.name = "db8500-cpuidle",
+>  	},
+>  	.probe = dbx500_cpuidle_probe,
+>  };
+> diff --git a/drivers/mfd/db8500-prcmu.c b/drivers/mfd/db8500-prcmu.c
+> index 75049cf38832..64dd4f9a1e49 100644
+> --- a/drivers/mfd/db8500-prcmu.c
+> +++ b/drivers/mfd/db8500-prcmu.c
+> @@ -2951,14 +2951,16 @@ static const struct mfd_cell common_prcmu_devs[] = {
+>  		.pdata_size = sizeof(db8500_wdt_pdata),
+>  		.id = -1,
+>  	},
+> +	{
+> +		.name = "db8500-cpuidle",
+> +		.id = -1,
+> +	},
+>  };
+>  
+>  static const struct mfd_cell db8500_prcmu_devs[] = {
+>  	MFD_CELL_OF("db8500-prcmu-regulators", NULL,
+>  		    &db8500_regulators, sizeof(db8500_regulators), 0,
+>  		    "stericsson,db8500-prcmu-regulator"),
+> -	MFD_CELL_OF("cpuidle-dbx500",
+> -		    NULL, NULL, 0, 0, "stericsson,cpuidle-dbx500"),
+>  	MFD_CELL_OF("db8500-thermal",
+>  		    NULL, NULL, 0, 0, "stericsson,db8500-thermal"),
+>  };
+> 
 
-One thing that seems to speak against using multicolor seems to be
-missing ACPI "support", while regular LEDs can be described in ACPI, it
-does not seem like multicolor can. Or did we miss something?
 
-regards,
-Henning
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-> --
-> With Best Regards,
-> Andy Shevchenko
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
