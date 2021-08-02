@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE00F3DD7F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20663DDA00
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234304AbhHBNsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:48:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56780 "EHLO mail.kernel.org"
+        id S236170AbhHBOFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:05:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234208AbhHBNq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:46:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 712D360F6D;
-        Mon,  2 Aug 2021 13:46:48 +0000 (UTC)
+        id S236443AbhHBN7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:59:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 675166120D;
+        Mon,  2 Aug 2021 13:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912008;
-        bh=VvBuBiEOi4IMRx68PoRoXUSYbCgSvqJ/oUCpji9yI+w=;
+        s=korg; t=1627912541;
+        bh=+c53tSanS34N+6wuyCQziUeyxAyUg7S5Doy2u4NJt2I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0AxSDSnwL6zNTnP9OTQFmIGd9Ycpy27doc3ysnj4J3Ag/NM/vveZFQeDbb+dNurNy
-         FxHKwOcLGUD1vPCXUoARwmo5EgculmtIsQ2f6DHFctH5/Es6tiQbRPl6ElV9A9k+C4
-         l4OcJnEpmw5x2vDDmt7S9H99WCWy7oeAWPs3hFSE=
+        b=Woi4gjkuYPmPB0jtKWeaAdkz+uMzt9fx6qpC4Y93Re2A8Upn50wxVAmvszl4patWL
+         ft8hKBvqLuS5bMd14gYDJhnkLVlWQI0DlMRELDULkd3GxBS/iMNOi0eIdzGDzFOFf7
+         bZMlc9lhJ/cSjI75/dCg2wKdYSbRIexxg8PnNEfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Bob Pearson <rpearsonhpe@gmail.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 26/26] sis900: Fix missing pci_disable_device() in probe and remove
+Subject: [PATCH 5.13 039/104] RDMA/rxe: Fix memory leak in error path code
 Date:   Mon,  2 Aug 2021 15:44:36 +0200
-Message-Id: <20210802134332.873857383@linuxfoundation.org>
+Message-Id: <20210802134345.303620063@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
-References: <20210802134332.033552261@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +42,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Bob Pearson <rpearsonhpe@gmail.com>
 
-[ Upstream commit 89fb62fde3b226f99b7015280cf132e2a7438edf ]
+[ Upstream commit b18c7da63fcb46e2f9a093cc18d7c219e13a887c ]
 
-Replace pci_enable_device() with pcim_enable_device(),
-pci_disable_device() and pci_release_regions() will be
-called in release automatically.
+In rxe_mr_init_user() at the third error the driver fails to free the
+memory at mr->map. This patch adds code to do that.  This error only
+occurs if page_address() fails to return a non zero address which should
+never happen for 64 bit architectures.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/20210705164153.17652-1-rpearsonhpe@gmail.com
+Reported by: Haakon Bugge <haakon.bugge@oracle.com>
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+Reviewed-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Reviewed-by: Håkon Bugge <haakon.bugge@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sis/sis900.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_mr.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/sis/sis900.c b/drivers/net/ethernet/sis/sis900.c
-index dff5b56738d3..9fe5d13402e0 100644
---- a/drivers/net/ethernet/sis/sis900.c
-+++ b/drivers/net/ethernet/sis/sis900.c
-@@ -442,7 +442,7 @@ static int sis900_probe(struct pci_dev *pci_dev,
- #endif
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index fe2b7d223183..fa3d29825ef6 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -130,13 +130,14 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 	int			num_buf;
+ 	void			*vaddr;
+ 	int err;
++	int i;
  
- 	/* setup various bits in PCI command register */
--	ret = pci_enable_device(pci_dev);
-+	ret = pcim_enable_device(pci_dev);
- 	if(ret) return ret;
- 
- 	i = pci_set_dma_mask(pci_dev, DMA_BIT_MASK(32));
-@@ -468,7 +468,7 @@ static int sis900_probe(struct pci_dev *pci_dev,
- 	ioaddr = pci_iomap(pci_dev, 0, 0);
- 	if (!ioaddr) {
- 		ret = -ENOMEM;
--		goto err_out_cleardev;
+ 	umem = ib_umem_get(pd->ibpd.device, start, length, access);
+ 	if (IS_ERR(umem)) {
+-		pr_warn("err %d from rxe_umem_get\n",
+-			(int)PTR_ERR(umem));
++		pr_warn("%s: Unable to pin memory region err = %d\n",
++			__func__, (int)PTR_ERR(umem));
+ 		err = PTR_ERR(umem);
+-		goto err1;
 +		goto err_out;
  	}
  
- 	sis_priv = netdev_priv(net_dev);
-@@ -576,8 +576,6 @@ err_unmap_tx:
- 		sis_priv->tx_ring_dma);
- err_out_unmap:
- 	pci_iounmap(pci_dev, ioaddr);
--err_out_cleardev:
--	pci_release_regions(pci_dev);
-  err_out:
- 	free_netdev(net_dev);
- 	return ret;
-@@ -2425,7 +2423,6 @@ static void sis900_remove(struct pci_dev *pci_dev)
- 		sis_priv->tx_ring_dma);
- 	pci_iounmap(pci_dev, sis_priv->ioaddr);
- 	free_netdev(net_dev);
--	pci_release_regions(pci_dev);
+ 	mr->umem = umem;
+@@ -146,9 +147,9 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 
+ 	err = rxe_mr_alloc(mr, num_buf);
+ 	if (err) {
+-		pr_warn("err %d from rxe_mr_alloc\n", err);
+-		ib_umem_release(umem);
+-		goto err1;
++		pr_warn("%s: Unable to allocate memory for map\n",
++				__func__);
++		goto err_release_umem;
+ 	}
+ 
+ 	mr->page_shift = PAGE_SHIFT;
+@@ -168,10 +169,10 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 
+ 			vaddr = page_address(sg_page_iter_page(&sg_iter));
+ 			if (!vaddr) {
+-				pr_warn("null vaddr\n");
+-				ib_umem_release(umem);
++				pr_warn("%s: Unable to get virtual address\n",
++						__func__);
+ 				err = -ENOMEM;
+-				goto err1;
++				goto err_cleanup_map;
+ 			}
+ 
+ 			buf->addr = (uintptr_t)vaddr;
+@@ -194,7 +195,13 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 
+ 	return 0;
+ 
+-err1:
++err_cleanup_map:
++	for (i = 0; i < mr->num_map; i++)
++		kfree(mr->map[i]);
++	kfree(mr->map);
++err_release_umem:
++	ib_umem_release(umem);
++err_out:
+ 	return err;
  }
  
- #ifdef CONFIG_PM
 -- 
 2.30.2
 
