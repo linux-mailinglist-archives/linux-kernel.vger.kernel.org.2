@@ -2,95 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDCB3DD2C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA9F3DD2CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhHBJSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:18:53 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55740 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232670AbhHBJSw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:18:52 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1729IVVh028556;
-        Mon, 2 Aug 2021 04:18:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1627895911;
-        bh=4Z+3ysRgexbfccgrBWiUFU3xK2qFdvWRaUojKrBGN50=;
-        h=From:To:CC:Subject:Date;
-        b=JdKr7Fmp1rWuq1n1sMwaNqINY940i69NpzOkney8ldmSewGM+lf/pJREi0+Pi/STJ
-         BlwhV0eOP1rkAohzb5+1Qt3jbP2WANTNifiqljRGEzxf3r4gwv3O8UBleIOyaRI7Pm
-         SdPp6NPeWzPVj0KHTQqy2JIdZtl6Ri1OLJ9E/1cE=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1729IVWZ099533
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 2 Aug 2021 04:18:31 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 2 Aug
- 2021 04:18:31 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 2 Aug 2021 04:18:30 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1729IPBW101552;
-        Mon, 2 Aug 2021 04:18:25 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] dt-bindings: net: can: Document power-domains property
-Date:   Mon, 2 Aug 2021 14:48:22 +0530
-Message-ID: <20210802091822.16407-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S233035AbhHBJTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:19:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232670AbhHBJTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 05:19:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A32E604AC;
+        Mon,  2 Aug 2021 09:19:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627895973;
+        bh=29PlLx4+thAtabDg3X7ZcbW+1opEQwWBH6fLFAHy3Co=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gCkyiEewi29jbnkIJdo/yqVWamGdF2Ka6tXJP0HHqwzWu3BVkM9jFVmZ7b9e1g5Vk
+         wUW5y+tcdhWoBsSXOgPdxsrBTCjQC9HRrBb0dAdcCDMAg0SOIOX1dqCPHrD2rBJza3
+         d0b1a9L/MS5oEU/pGCoQrj13H6RV9aUGQfT57dv3ETNLhdeBldMMjIOY5gygVwBs54
+         czf9u3FT5HlECCXFj2by2ap70HaablB3zexjp8nJE9KbAs3VqoFG7ZJgzeFUbsZoPE
+         ZExHSwF1Aon476OvHYsl5DFEYZ+q1jj4AGnr8p/4qYXa968ZYr2XyCr8nqzbLFI60/
+         trO7kXNe2Pu2g==
+Date:   Mon, 2 Aug 2021 11:19:27 +0200
+From:   Robert Richter <rric@kernel.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drivers/edac/edac_mc: Remove all strcpy() uses
+Message-ID: <YQe4n5H00g3xhSbQ@rric.localdomain>
+References: <20210801143558.12674-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210801143558.12674-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document power-domains property for adding the Power domain provider.
+On 01.08.21 16:35:58, Len Baker wrote:
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
+> @@ -1114,10 +1116,12 @@ void edac_mc_handle_error(const enum hw_event_mc_err_type type,
+>  			*p = '\0';
+>  		} else {
+>  			if (p != e->label) {
+> -				strcpy(p, OTHER_LABEL);
+> +				strscpy(p, OTHER_LABEL, left);
+> +				left -= strlen(OTHER_LABEL);
+>  				p += strlen(OTHER_LABEL);
 
-Changes since v1:
-- removed reference in the description
+Those both must be strlen(p) now as otherwise 'left' could underflow
+(and p overflow).
 
- Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+-Robert
 
-diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-index a7b5807c5543..fb547e26c676 100644
---- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-+++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-@@ -104,6 +104,12 @@ properties:
-           maximum: 32
-     maxItems: 1
- 
-+  power-domains:
-+    description:
-+      Power domain provider node and an args specifier containing
-+      the can device id value.
-+    maxItems: 1
-+
-   can-transceiver:
-     $ref: can-transceiver.yaml#
- 
--- 
-2.17.1
-
+>  			}
+> -			strcpy(p, dimm->label);
+> +			strscpy(p, dimm->label, left);
+> +			left -= strlen(p);
+>  			p += strlen(p);
+>  		}
+> 
