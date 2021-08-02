@@ -2,70 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520753DE29E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6033DE2A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbhHBWkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 18:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
+        id S233043AbhHBWlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 18:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbhHBWkU (ORCPT
+        with ESMTP id S232094AbhHBWlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 18:40:20 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC51C06175F;
-        Mon,  2 Aug 2021 15:40:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mWzo8Djge4X2E23FPVHu3Yx5Ai4UZnTkJ05FNZFrWqk=; b=hqCvs3+1vdNa5zDoHJ7Zue04NV
-        HQBAJAH3rC3yOlRfe5iYtAZLGfvWP3crOgO10fM5Ne+ec2pt9H5ORhPFHcnqOyh+Yk2cHKWCW+1tg
-        Wt0Y8x4fSrMGGD6LfTgbOheG29WB615HyTJCngsOqThlML/gxYmfqevHb69aQn+YCxPfm/Rdl/VCy
-        IB3D6dZ3DdwPQ+SLJf5zcHHwSrqJsrFeJLPEVCCJrXbVVfocckOifCj+lqQWBx2vAizHWk1Zalx9b
-        p1myN0/BBdMLFJY3vQIMACJAt6/vNyw31Pvw7oCa9o7tRfeLRxuxVBh2TpTyl7W2G1gTllZw6GaSb
-        eTA2HA6Q==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mAgbK-000V3J-8H; Mon, 02 Aug 2021 22:40:02 +0000
-Date:   Mon, 2 Aug 2021 15:40:02 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Liang Wang <wangliang101@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     palmerdabbelt@google.com, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux@armlinux.org.uk,
-        linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
-        wangle6@huawei.com, kepler.chenxin@huawei.com,
-        nixiaoming@huawei.com, wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v3] lib: Use PFN_PHYS() in devmem_is_allowed()
-Message-ID: <YQh0Quhry/+dbTbn@bombadil.infradead.org>
-References: <20210731025057.78825-1-wangliang101@huawei.com>
+        Mon, 2 Aug 2021 18:41:05 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F5FC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 15:40:54 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t3so19292078plg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 15:40:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ak5j6PtmBPoE1bF08nfp5CsK+6RSogJq3bn6zejTSpg=;
+        b=h+FUvAgmxamgrp+BJEqSwqpnZJHF9D73Z52u7ojhnqm0sV35MSc2vqr9HM6X/XGkfa
+         jp48DzPwy96FsWZZG6ZqyWto0McutSdG2/EUhvrbdflu6KLpaz3CPOoIiQFmx2g7wqAS
+         RBcxkMpsFv5e/7Cs2i+54CyUQ3G7aGUe/sAaH7QJ4FgclkKAyllPP8qWsirLliLNbaSh
+         J1z7klCgJf1lIMmCDwV23pWeP3SFFIMrz5w44ozTkmJxzqW3AGo5OEi3qi7o5k1ZM+H3
+         4ShwBZqmI+CPemp8q+D30UShDFgkquN5b2y4TslWfFlUxXqgH1IeLE5jkW/cDPHMuTQ/
+         +snQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ak5j6PtmBPoE1bF08nfp5CsK+6RSogJq3bn6zejTSpg=;
+        b=bgP7Os4UMjtZPvzwb3X4GxS0hlcbr+f9nYD9qY3VJ1BS1AURJKrzt9wauVPXprScw8
+         RDtX6zk422axjLGn9vF//BzdvXyzuMGMC20h5QFEvIx4bKIZk2iTbB/zKJfww/uVhJ7n
+         2JFa1W/EPkxvc68uN0LiAARBX/TSygkE0sS5q26Wtp0a6/c9kzChXeQJwJRfJSJ94lf1
+         fPgjvMx/TIlQmB+ScgTUP8Rt8R4SoxKRs02OyPMVNqPdSE+un8+s5OrthcQEUNZlTFNS
+         PGF/DYwyXynzpYwvnwJKK1pWwvtJyYlLrt+5IKLLdUoS/8QlGnOd0grPInJtJ6HIO6VD
+         YoJQ==
+X-Gm-Message-State: AOAM532aNhA75klQv0F4rXSAV/yno4fJzYXxuOY1MIVxb4owLTBN3goE
+        onwTMS/G8yBNVZ8BV6uKdVaXcw==
+X-Google-Smtp-Source: ABdhPJy/Gee/LyY/H8Wbh1sViloEHwn2OFYpKQjdDDFYIxAxGcPcCM/I/zGgJDZI+aIpe7JM6Bmmuw==
+X-Received: by 2002:a65:5c48:: with SMTP id v8mr234643pgr.411.1627944053598;
+        Mon, 02 Aug 2021 15:40:53 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id h21sm2790921pfq.130.2021.08.02.15.40.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 15:40:52 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 22:40:49 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH v3 2/3] KVM: x86/mmu: Avoid collision with !PRESENT SPTEs
+ in TDP MMU lpage stats
+Message-ID: <YQh0cdZUIkfJGpeC@google.com>
+References: <20210730225939.3852712-1-mizhang@google.com>
+ <20210730225939.3852712-3-mizhang@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210731025057.78825-1-wangliang101@huawei.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20210730225939.3852712-3-mizhang@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 10:50:57AM +0800, Liang Wang wrote:
-> The physical address may exceed 32 bits on 32-bit systems with
-> more than 32 bits of physcial address,use PFN_PHYS() in devmem_is_allowed(),
-> or the physical address may overflow and be truncated.
-> We found this bug when mapping a high addresses through devmem tool,
-> when CONFIG_STRICT_DEVMEM is enabled on the ARM with ARM_LPAE and devmem
-> is used to map a high address that is not in the iomem address range,
-> an unexpected error indicating no permission is returned.
+On Fri, Jul 30, 2021 at 03:59:38PM -0700, Mingwei Zhang wrote:
+> From: Sean Christopherson <seanjc@google.com>
 > 
-> This bug was initially introduced from v2.6.37, and the function was moved
-> to lib when v5.11.
+> Factor in whether or not the old/new SPTEs are shadow-present when
+> adjusting the large page stats in the TDP MMU.  A modified MMIO SPTE can
+> toggle the page size bit, as bit 7 is used to store the MMIO generation,
+> i.e. is_large_pte() can get a false positive when called on a MMIO SPTE.
+> Ditto for nuking SPTEs with REMOVED_SPTE, which sets bit 7 in its magic
+> value.
 > 
-> Cc: Luis Chamberlain <mcgrof@kernel.org>
-> Fixes: 087aaffcdf9c ("ARM: implement CONFIG_STRICT_DEVMEM by disabling access to RAM via /dev/mem")
-> Fixes: 527701eda5f1 ("lib: Add a generic version of devmem_is_allowed()")
-> Cc: stable@vger.kernel.org # v2.6.37
-> Signed-off-by: Liang Wang <wangliang101@huawei.com>
+> Opportunistically move the logic below the check to verify at least one
+> of the old/new SPTEs is shadow present.
+> 
+> Use is/was_leaf even though is/was_present would suffice.  The code
+> generation is roughly equivalent since all flags need to be computed
+> prior to the code in question, and using the *_leaf flags will minimize
+> the diff in a future enhancement to account all pages, i.e. will change
+> the check to "is_leaf != was_leaf".
+> 
+> Reviewed-by: Ben Gardon <bgardon@google.com>
+> 
+> Fixes: 1699f65c8b65 ("kvm/x86: Fix 'lpages' kvm stat for TDM MMU")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> ---
 
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+Reviewed-by: David Matlack <dmatlack@google.com>
 
-  Luis
+>  arch/x86/kvm/mmu/tdp_mmu.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index caac4ddb46df..cba2ab5db2a0 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -413,6 +413,7 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>  	bool was_leaf = was_present && is_last_spte(old_spte, level);
+>  	bool is_leaf = is_present && is_last_spte(new_spte, level);
+>  	bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
+> +	bool was_large, is_large;
+>  
+>  	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
+>  	WARN_ON(level < PG_LEVEL_4K);
+> @@ -446,13 +447,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>  
+>  	trace_kvm_tdp_mmu_spte_changed(as_id, gfn, level, old_spte, new_spte);
+>  
+> -	if (is_large_pte(old_spte) != is_large_pte(new_spte)) {
+> -		if (is_large_pte(old_spte))
+> -			atomic64_sub(1, (atomic64_t*)&kvm->stat.lpages);
+> -		else
+> -			atomic64_add(1, (atomic64_t*)&kvm->stat.lpages);
+> -	}
+> -
+>  	/*
+>  	 * The only times a SPTE should be changed from a non-present to
+>  	 * non-present state is when an MMIO entry is installed/modified/
+> @@ -478,6 +472,18 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>  		return;
+>  	}
+>  
+> +	/*
+> +	 * Update large page stats if a large page is being zapped, created, or
+> +	 * is replacing an existing shadow page.
+> +	 */
+> +	was_large = was_leaf && is_large_pte(old_spte);
+> +	is_large = is_leaf && is_large_pte(new_spte);
+> +	if (was_large != is_large) {
+> +		if (was_large)
+> +			atomic64_sub(1, (atomic64_t *)&kvm->stat.lpages);
+> +		else
+> +			atomic64_add(1, (atomic64_t *)&kvm->stat.lpages);
+> +	}
+>  
+>  	if (was_leaf && is_dirty_spte(old_spte) &&
+>  	    (!is_present || !is_dirty_spte(new_spte) || pfn_changed))
+> -- 
+> 2.32.0.554.ge1b32706d8-goog
+> 
