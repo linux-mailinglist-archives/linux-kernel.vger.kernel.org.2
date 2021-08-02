@@ -2,116 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDC33DD0F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11853DD0FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhHBHJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhHBHJL (ORCPT
+        id S232448AbhHBHLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:11:14 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:34602 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229500AbhHBHLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:09:11 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11495C06175F;
-        Mon,  2 Aug 2021 00:09:02 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id j1so23934797pjv.3;
-        Mon, 02 Aug 2021 00:09:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AOZsXW9hACOugC8V16L56rF4ZBxWoq+nLcBwRkl2cto=;
-        b=HwJQrN8r9lqPPo8iQqAfHbUzAX50uItU3ykESKsSsauMl2NuEodC5PssntDI5v0uo9
-         ITM8jMZqaSyy98giZaI6A/ZKTAvAl2SQzNBF2ySdXZvD7IO4iBy+b4TJBL+xmAHWIf9E
-         MOHuFDmp0AzrccCuSmpUAYt/uuQr0/hqA8SzLTOrVX4Tn0sQnz4r64Fy35v217V1Okz1
-         M8GoAHHRcVJYKPwRfaS5MMoOi0RLw2KNEutmZcTeqr6pnuvjEcp+S2ERFvAZyvWjuyEL
-         W73z/AtuUqLHQbsGo021uxb0fCA08br/ejB4gfG9Cpcnq+v0mdmcvc9sJx5+apZDNoO5
-         PJqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AOZsXW9hACOugC8V16L56rF4ZBxWoq+nLcBwRkl2cto=;
-        b=PG7QDCYPT/euREx9jW/kmCU52bhIH9axlYAl2AsXu90tPpyqBDGxkWzvYPbrrJz2N/
-         9X3l1ID0FfrMs1X8wwN7CM9f9i/217XWlKwuEtA5cOJ1fxnVb7NaDJeaR4MwpkPZomI7
-         7PpSuhPH9zo+KXCL9+fYUz0X57HfvB8ziNoSg+WLNwMqwrDo8APGF+EGuJo1muFF4+9S
-         QNuqEbtqaeztd4QtSyV5NYsNCLJIa8g1kVv8I2uYtiNakuGFsTb4ei220NZWM+7uZ7lU
-         MNrEnNR4dIALCJP7QjRDlaIz8Jm0LJ9imEqy6LqVfew34LHFIe9o6Qmh7Zvj9KBBKuRC
-         gnGg==
-X-Gm-Message-State: AOAM533wBgs5WXK1Bi4asaT36rATOodxCBSjpoVNltcYEak1b4WFNFSX
-        8WDqT57BIlNSUTVkt/SvVnM=
-X-Google-Smtp-Source: ABdhPJzoCwMmpm+/FNSS9UEX0Mvdxk+Tn3aYpFcqdzxgnySrWhGudGNvYNOfUpjyJwBzO1VrD5jl7Q==
-X-Received: by 2002:a05:6a00:1307:b029:308:1e2b:a24b with SMTP id j7-20020a056a001307b02903081e2ba24bmr15371208pfu.57.1627888141449;
-        Mon, 02 Aug 2021 00:09:01 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id g20sm10391238pfj.69.2021.08.02.00.08.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Aug 2021 00:09:00 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <joerg.roedel@amd.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] perf/x86/amd: Don't touch the AMD64_EVENTSEL_HOSTONLY bit inside the guest
-Date:   Mon,  2 Aug 2021 15:08:50 +0800
-Message-Id: <20210802070850.35295-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 2 Aug 2021 03:11:12 -0400
+X-UUID: d092fcd1c8964348ba1f6b75c58d1fbc-20210802
+X-UUID: d092fcd1c8964348ba1f6b75c58d1fbc-20210802
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1437291148; Mon, 02 Aug 2021 15:11:01 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 2 Aug 2021 15:10:59 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 2 Aug 2021 15:10:58 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Subject: [PATCH v3] drm/mediatek: clear pending flag when cmdq packet is done
+Date:   Mon, 2 Aug 2021 15:10:26 +0800
+Message-ID: <1627888227-5757-1-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
+Change since v2:
+rebase
+https://patchwork.kernel.org/project/linux-mediatek/cover/20210712235014.42673-1-chunkuang.hu@kernel.org/
 
-If we use "perf record" in an AMD Milan guest, dmesg reports a #GP
-warning from an unchecked MSR access error on MSR_F15H_PERF_CTLx:
+Yongqiang Niu (1):
+  drm/mediatek: clear pending flag when cmdq packet is done.
 
-[] unchecked MSR access error: WRMSR to 0xc0010200 (tried to write
-0x0000020000110076) at rIP: 0xffffffff8106ddb4 (native_write_msr+0x4/0x20)
-[] Call Trace:
-[]  amd_pmu_disable_event+0x22/0x90
-[]  x86_pmu_stop+0x4c/0xa0
-[]  x86_pmu_del+0x3a/0x140
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 51 +++++++++++++++++++++++++++++----
+ 1 file changed, 46 insertions(+), 5 deletions(-)
 
-The AMD64_EVENTSEL_HOSTONLY bit is defined and used on the host,
-while the guest perf driver should avoid such use.
-
-Fixes: 1018faa6cf23 ("perf/x86/kvm: Fix Host-Only/Guest-Only counting with SVM disabled")
-Signed-off-by: Like Xu <likexu@tencent.com>
-Tested-by: Kim Phillips <kim.phillips@amd.com>
----
-v2: Add Fixes tag and Tested-by from Kim.
-v1: https://lore.kernel.org/lkml/20210720112605.63286-1-likexu@tencent.com/
-
- arch/x86/events/perf_event.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index d6003e08b055..1c3ae954a230 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -1116,8 +1116,9 @@ void x86_pmu_stop(struct perf_event *event, int flags);
- static inline void x86_pmu_disable_event(struct perf_event *event)
- {
- 	struct hw_perf_event *hwc = &event->hw;
-+	u64 disable_mask = __this_cpu_read(cpu_hw_events.perf_ctr_virt_mask);
- 
--	wrmsrl(hwc->config_base, hwc->config);
-+	wrmsrl(hwc->config_base, hwc->config & ~disable_mask);
- 
- 	if (is_counter_pair(hwc))
- 		wrmsrl(x86_pmu_config_addr(hwc->idx + 1), 0);
 -- 
-2.32.0
+1.8.1.1.dirty
 
