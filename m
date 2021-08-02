@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03D13DDA8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0323DD9D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236639AbhHBOPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:15:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49164 "EHLO mail.kernel.org"
+        id S236033AbhHBOEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:04:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237197AbhHBOEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:04:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 502376113C;
-        Mon,  2 Aug 2021 13:58:03 +0000 (UTC)
+        id S235786AbhHBN4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:56:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42B5F60F6D;
+        Mon,  2 Aug 2021 13:54:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912683;
-        bh=Qse8AYPvhI/vJl99cRwAlhzW6RodKYZVAvZgcVbh4+I=;
+        s=korg; t=1627912465;
+        bh=fvodgirbJz/RQvpMeDVfNe4kWcq9jASI9+NFQyIHmVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OO/0vO0DlNiTIUoXydPlti17cNZCW6c6Vl2BzryDjRVNgR8N0LngeTguSLL8dGsgf
-         BpL/0uQbmrNFsg7GV+LRvfcxrAbr0qQ2uOsMU4SUGpPvDsz1XJPWJwbXmQl8YjFadI
-         V+9vcAUoFG9LqkGeeR9+QTDwFEICfpKk1CrTtt0Q=
+        b=0vt515A05/lR6tmOO50ZGiFmyhbTR/p39aDPYqfNPwoUwwrUZ2d0x4yNP7HoE3kO2
+         fsSz/eS8S4w+7WUU7QeYFL1M2tTJuyWXXgudEbWpffRK+NsYr1PvLHOWfvaGX+5Cwi
+         Gel9xlkoamwON60+iT+43idmRNK1rueMZxqYSx78=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 089/104] sis900: Fix missing pci_disable_device() in probe and remove
-Date:   Mon,  2 Aug 2021 15:45:26 +0200
-Message-Id: <20210802134346.946615805@linuxfoundation.org>
+        stable@vger.kernel.org, marc.c.dionne@gmail.com,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 64/67] powerpc/pseries: Fix regression while building external modules
+Date:   Mon,  2 Aug 2021 15:45:27 +0200
+Message-Id: <20210802134341.236286250@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-[ Upstream commit 89fb62fde3b226f99b7015280cf132e2a7438edf ]
+commit 333cf507465fbebb3727f5b53e77538467df312a upstream.
 
-Replace pci_enable_device() with pcim_enable_device(),
-pci_disable_device() and pci_release_regions() will be
-called in release automatically.
+With commit c9f3401313a5 ("powerpc: Always enable queued spinlocks for
+64s, disable for others") CONFIG_PPC_QUEUED_SPINLOCKS is always
+enabled on ppc64le, external modules that use spinlock APIs are
+failing.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  ERROR: modpost: GPL-incompatible module XXX.ko uses GPL-only symbol 'shared_processor'
+
+Before the above commit, modules were able to build without any
+issues. Also this problem is not seen on other architectures. This
+problem can be workaround if CONFIG_UNINLINE_SPIN_UNLOCK is enabled in
+the config. However CONFIG_UNINLINE_SPIN_UNLOCK is not enabled by
+default and only enabled in certain conditions like
+CONFIG_DEBUG_SPINLOCKS is set in the kernel config.
+
+  #include <linux/module.h>
+  spinlock_t spLock;
+
+  static int __init spinlock_test_init(void)
+  {
+          spin_lock_init(&spLock);
+          spin_lock(&spLock);
+          spin_unlock(&spLock);
+          return 0;
+  }
+
+  static void __exit spinlock_test_exit(void)
+  {
+  	printk("spinlock_test unloaded\n");
+  }
+  module_init(spinlock_test_init);
+  module_exit(spinlock_test_exit);
+
+  MODULE_DESCRIPTION ("spinlock_test");
+  MODULE_LICENSE ("non-GPL");
+  MODULE_AUTHOR ("Srikar Dronamraju");
+
+Given that spin locks are one of the basic facilities for module code,
+this effectively makes it impossible to build/load almost any non GPL
+modules on ppc64le.
+
+This was first reported at https://github.com/openzfs/zfs/issues/11172
+
+Currently shared_processor is exported as GPL only symbol.
+Fix this for parity with other architectures by exposing
+shared_processor to non-GPL modules too.
+
+Fixes: 14c73bd344da ("powerpc/vcpu: Assume dedicated processors as non-preempt")
+Cc: stable@vger.kernel.org # v5.5+
+Reported-by: marc.c.dionne@gmail.com
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210729060449.292780-1-srikar@linux.vnet.ibm.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/sis/sis900.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ arch/powerpc/platforms/pseries/setup.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/sis/sis900.c b/drivers/net/ethernet/sis/sis900.c
-index 620c26f71be8..e267b7ce3a45 100644
---- a/drivers/net/ethernet/sis/sis900.c
-+++ b/drivers/net/ethernet/sis/sis900.c
-@@ -443,7 +443,7 @@ static int sis900_probe(struct pci_dev *pci_dev,
- #endif
+--- a/arch/powerpc/platforms/pseries/setup.c
++++ b/arch/powerpc/platforms/pseries/setup.c
+@@ -76,7 +76,7 @@
+ #include "../../../../drivers/pci/pci.h"
  
- 	/* setup various bits in PCI command register */
--	ret = pci_enable_device(pci_dev);
-+	ret = pcim_enable_device(pci_dev);
- 	if(ret) return ret;
+ DEFINE_STATIC_KEY_FALSE(shared_processor);
+-EXPORT_SYMBOL_GPL(shared_processor);
++EXPORT_SYMBOL(shared_processor);
  
- 	i = dma_set_mask(&pci_dev->dev, DMA_BIT_MASK(32));
-@@ -469,7 +469,7 @@ static int sis900_probe(struct pci_dev *pci_dev,
- 	ioaddr = pci_iomap(pci_dev, 0, 0);
- 	if (!ioaddr) {
- 		ret = -ENOMEM;
--		goto err_out_cleardev;
-+		goto err_out;
- 	}
- 
- 	sis_priv = netdev_priv(net_dev);
-@@ -581,8 +581,6 @@ err_unmap_tx:
- 			  sis_priv->tx_ring_dma);
- err_out_unmap:
- 	pci_iounmap(pci_dev, ioaddr);
--err_out_cleardev:
--	pci_release_regions(pci_dev);
-  err_out:
- 	free_netdev(net_dev);
- 	return ret;
-@@ -2499,7 +2497,6 @@ static void sis900_remove(struct pci_dev *pci_dev)
- 			  sis_priv->tx_ring_dma);
- 	pci_iounmap(pci_dev, sis_priv->ioaddr);
- 	free_netdev(net_dev);
--	pci_release_regions(pci_dev);
- }
- 
- static int __maybe_unused sis900_suspend(struct device *dev)
--- 
-2.30.2
-
+ int CMO_PrPSP = -1;
+ int CMO_SecPSP = -1;
 
 
