@@ -2,129 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206383DDC9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4B73DDC9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234996AbhHBPmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
+        id S235210AbhHBPmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:42:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbhHBPmC (ORCPT
+        with ESMTP id S235032AbhHBPml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:42:02 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EF7C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:41:53 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so522057pji.5
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:41:53 -0700 (PDT)
+        Mon, 2 Aug 2021 11:42:41 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0017EC06175F;
+        Mon,  2 Aug 2021 08:42:29 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id oz16so31547216ejc.7;
+        Mon, 02 Aug 2021 08:42:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=IPGFm1JVt7oI2MPX9jivaw8zoW+8Rnmc7/BPuCII8Jo=;
-        b=VwvaXSWrW68WjgLZEPqM4PM0EYl/IOdzxU8FSYgrgd33lc3Q+avni42/Rwj7BFvvDv
-         na5Pvihf1rbv4b+OL5zHiFsm702Us8bW25rO4MbeXrGyq+ApYbt3x4DCuhre3sM2jwLC
-         lcTOwpVumR221KSN7jnmm2w6B2RXK4GHYKbajgjEoWdzHPShLPGuZwZcBF+dW0yq82S0
-         zxkVbmBfvoZ7roUsctuu/8nvpKUhkE6XsmNAqa1xhsqhOiNQT2ENIrNPSghAd5O5rzt/
-         N7KpeEY1mItXsfx6LfgTVt61u5dmVqSoQmY69dsiXy48jA9++qzRLFyF17+g6XDmh3JO
-         NW+w==
+        bh=zs34S0ZCtslSiHpvRfcfD5NqWXVNRsl0rvFFEe/DzVE=;
+        b=MIGbOfeJDOB+6qL0tTWTM19ysoYssZnpbVpku3bSQvbeBHlscK2bSzV8i0sCUwPxEQ
+         wzTDYG7b3rtlECbq9g76QGuJHOKBlt2gVbv+mra0DCHa3RfOEzfL+S4kszyH6RUbRieo
+         DVAwLrNFlLUPev+NCkX5i98ozIrECRCPCmBu5uulTqvqtnu4vDcV9AbY3LZyT+j+V0jN
+         RXxJ0QOhznDzY3t2y5krvZWlbpmq5xOu3KOlWEzpQnYSp/jo9evJG++tyGjfSqW2yek1
+         GHg28xXfHoQ3CTL2HeupdvWSA1uobTY2MhfSa23kWcm+D/3xBDBxmhzv7+cP6TesE6nr
+         DnfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=IPGFm1JVt7oI2MPX9jivaw8zoW+8Rnmc7/BPuCII8Jo=;
-        b=PrNfNtuWvIKAGbjLwzUuTb+H8uaWc+HIlovqrqPP8kFQOBK8Lryl86pelNBt5+aiZu
-         gbXnoc06kBua7E/N5OP2Pv6tytz36O9UPLHfHp9PknwO5EaNvlqkrlcq6ni79zvrrte3
-         a/EMWDyrNq2Oak7xremBYicSxUPb3e7SYCs3wDVfV+nfyVn7/N6S2y+Zg6dNu9GCMTCY
-         ksAWSpQz7arXpCxMZ+c1804/DYsPRJcg9kgBgCpy9VfMj3xxC5bnKPjppscBGwGrHmql
-         Z1zcrCt+HXJobla4K5fancpNlO6W/yzJoUKlzW8RiYSNOrcM2pZNAkyfXKW1iPD8fV/v
-         hapw==
-X-Gm-Message-State: AOAM531+P9YI9qrTk3ux/4myes3JvtC5R703Qvm31DciUQDpyoeaf8Ly
-        423HOTegUlKN4YRM9JCOk5khhA==
-X-Google-Smtp-Source: ABdhPJyBZmJQKOQ93FLiKAY8bJep5+mWQ1DgLDqoZXSq76z6ETi50YV93BaQjdSZshivJlUEKVS+1g==
-X-Received: by 2002:aa7:8d56:0:b029:327:6dc:d254 with SMTP id s22-20020aa78d560000b029032706dcd254mr17568179pfe.69.1627918912777;
-        Mon, 02 Aug 2021 08:41:52 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id 198sm9871245pfu.32.2021.08.02.08.41.47
+        bh=zs34S0ZCtslSiHpvRfcfD5NqWXVNRsl0rvFFEe/DzVE=;
+        b=S8rKBlHJL55Qjklvkanhj7SxwJuQJBNADAvijzQUX4Z0lj2q7RlR5hhb8cMrtgD5CQ
+         fD5BQHtDqN/IEN43pNZoAkBcJgt7xwHBssRZ9SDSMeJMD98ZoqxbkrAtMA/LiREXWuQR
+         PxGUerxipm0Ok3I/XSN6Qy+r1oYG83NCwm0Gnuw49W0LjyWNJMl+Qz7Fc4vgi1UBL+IW
+         sPxV1fGZ8jRNC4uGQE4yQV/sFpcGjeb1IG6xWJ+6OkMOZWP8R0LyY/ZUS2P+aI0VUy+J
+         /Ve0xh0wl67d+7KLux4GgVL9Reeuqwn8f2+63fzk1Tjk0CEdbSoYzY65MPqWZ6Xv0LMO
+         Nuug==
+X-Gm-Message-State: AOAM533UKvArcYBtRyS9vtEkZ+slAAFC1GVxWd+ChnvRTfOYSQTFT6l4
+        IeRIjCSnIj2prVwJ+K1slsY=
+X-Google-Smtp-Source: ABdhPJyEjvOm7wA4orU4/gnMjfU4LJ5+DLlqavn510nlHLKRnEWzKyJUmKtNZg/IFP3CcCrMiOe41Q==
+X-Received: by 2002:a17:907:766c:: with SMTP id kk12mr15603022ejc.525.1627918948585;
+        Mon, 02 Aug 2021 08:42:28 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id d22sm4864989ejj.47.2021.08.02.08.42.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 08:41:51 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 23:41:45 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     acme@kernel.org, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
-        suzuki.poulose@arm.com, mike.leach@linaro.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH 6/6] perf cs-etm: Add warnings for missing DSOs
-Message-ID: <20210802154145.GC148327@leoy-ThinkPad-X240s>
-References: <20210729155805.2830-1-james.clark@arm.com>
- <20210729155805.2830-7-james.clark@arm.com>
+        Mon, 02 Aug 2021 08:42:28 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 18:42:26 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Eric Woudstra <ericwouds@gmail.com>,
+        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>
+Subject: Re: [RFC net-next v2 3/4] net: dsa: mt7530: set STP state also on
+ filter ID 1
+Message-ID: <20210802154226.qggqzkxe6urkx3yf@skbuf>
+References: <20210731191023.1329446-1-dqfext@gmail.com>
+ <20210731191023.1329446-4-dqfext@gmail.com>
+ <20210802134336.gv66le6u2z52kfkh@skbuf>
+ <20210802153129.1817825-1-dqfext@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729155805.2830-7-james.clark@arm.com>
+In-Reply-To: <20210802153129.1817825-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 04:58:05PM +0100, James Clark wrote:
-> Currently decode will silently fail if no binary data is available for
-> the decode. This is made worse if only partial data is available because
-> the decode will appear to work, but any trace from that missing DSO will
-> silently not be generated.
-> 
-> Add a UI popup once if there is any data missing, and then warn in the
-> bottom left for each individual DSO that's missing.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->  tools/perf/util/cs-etm.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 32ad92d3e454..e6851260d059 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -746,8 +746,16 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
->  
->  	len = dso__data_read_offset(al.map->dso, machine, offset, buffer, size);
->  
-> -	if (len <= 0)
-> +	if (len <= 0) {
-> +		ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n");
-> +		if (!al.map->dso->auxtrace_warned) {
-> +			pr_err("CS ETM Trace: Debug data not found for address %#"PRIx64" in %s\n",
-> +				    address,
-> +				    al.map->dso->long_name ? al.map->dso->long_name : "Unknown");
-> +			al.map->dso->auxtrace_warned = true;
-> +		}
+On Mon, Aug 02, 2021 at 11:31:29PM +0800, DENG Qingfang wrote:
+> On Mon, Aug 02, 2021 at 04:43:36PM +0300, Vladimir Oltean wrote:
+> > On Sun, Aug 01, 2021 at 03:10:21AM +0800, DENG Qingfang wrote:
+> > > --- a/drivers/net/dsa/mt7530.h
+> > > +++ b/drivers/net/dsa/mt7530.h
+> > > @@ -181,7 +181,7 @@ enum mt7530_vlan_egress_attr {
+> > >
+> > >  /* Register for port STP state control */
+> > >  #define MT7530_SSP_P(x)			(0x2000 + ((x) * 0x100))
+> > > -#define  FID_PST(x)			((x) & 0x3)
+> >
+> > Shouldn't these macros have _two_ arguments, the FID and the port state?
+> >
+> > > +#define  FID_PST(x)			(((x) & 0x3) * 0x5)
+> >
+> > "* 5": explanation?
+> >
+> > >  #define  FID_PST_MASK			FID_PST(0x3)
+> > >
+> > >  enum mt7530_stp_state {
+> > > --
+> > > 2.25.1
+> > >
+> >
+> > I don't exactly understand how this patch works, sorry.
+> > Are you altering port state only on bridged ports, or also on standalone
+> > ports after this patch? Are standalone ports in the proper STP state
+> > (FORWARDING)?
+>
+> The current code only sets FID 0's STP state. This patch sets both 0's and
+> 1's states.
+>
+> The *5 part is binary magic. [1:0] is FID 0's state, [3:2] is FID 1's state
+> and so on. Since 5 == 4'b0101, the value in [1:0] is copied to [3:2] after
+> the multiplication.
+>
+> Perhaps I should only change FID 1's state.
 
-This is very useful.
-
-Just one comment: in particularly if the perf fails to find the kernel
-symbols, the user needs to enable config "CONFIG_PROC_KCORE=y" or
-specify option "-k /path/to/vmlinux".  In this case, using 'perf
-archive' is not helpful.  So I think the UI warning can be imporved
-like:
-
-        ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n"
-                         " Enable CONFIG_PROC_KCORE or use option '-k /path/to/vmlinux' for kernel symbols\n");
-
-With this improvement, the patch looks good to me:
-
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
-
->  		return 0;
-> +	}
->  
->  	return len;
->  }
-> -- 
-> 2.28.0
-> 
+Keep the patches dumb for us mortals please.
+If you only change FID 1's state, I am concerned that the driver no
+longer initializes FID 0's port state, and might leave that to the
+default set by other pre-kernel initialization stage (bootloader?).
+So even if you might assume that standalone ports are FORWARDING, they
+might not be.
