@@ -2,216 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EFB3DE31A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE363DE31D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbhHBXag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 19:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233207AbhHBXad (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 19:30:33 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEB1C061796
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 16:30:23 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id l18so22242717ioh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 16:30:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wmjQVNSZtVohWFF+DxXEIMaU+MncLNjWBs6iyjh1uQ0=;
-        b=fLGI5ysy2kb16zeHNWiYoBNA7qEUZyanhSU47oANOIh5KEiyJWypnWyuNcgLuevSmL
-         Z+PDztWfXK4+xpK3mOvTT9F8swt+WmgEr+alzW7xHx/EpLgbu6AJCkTPYvGsFjriLt9U
-         X3T0DwfI0qukLvvILVaJuQEVbeqpuS5zqaY2S7kW5qbeGwVjSobyIhjhMspkeb3+SKr9
-         w2dMLu5srTyX7JnD3X/3GZJNS1kEnsRnmWGm3jhpZU/HRRhjn5NWHRRkX4zdYoJfSIoC
-         w5iO6WNcXf/3MGnEKbDSbqI5hLF0062/rpDY2PghSne6Af4acTdCS1D8AGTXTo2SRbDo
-         smYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wmjQVNSZtVohWFF+DxXEIMaU+MncLNjWBs6iyjh1uQ0=;
-        b=VrZNp1ucMexNTFr8+Ak1joIDXWnciNWqY/5NuYh23TWNBg1xTq7QX62IiIaFHf7MQp
-         z7Z+2ZVNVSuTWgjWyuaNCaqO58U0FmJsC9HMjy8RBcHOz8L5OitUf2Nz0llA2Nd/55Vg
-         HRqZeNJLvqSnHBAy1t7mBlLgO3AICIg/hy4ChKF2F1heXxf67bnkrp1L/Zw3oNN+IKWR
-         ZyGdWr/WOASU2ga64pSsFJRcuBPsCcqUeLiye2MvL/h6e0VL9TkoM4aOzYXs/r+TzZP5
-         NBJk6oi+w7FijqTB72hFbgKXNCyVwxlTQETZJ9ozt7HTY1BO9kOQeK84JiLoLk8+YLvk
-         WxMw==
-X-Gm-Message-State: AOAM531h8YxZ6J+kCjiqBBxx9PsUwb+0pu8WqetUOoY9r+Nzwt0w3g9j
-        VncL4hVomENIL4TLyQIDF+FblA==
-X-Google-Smtp-Source: ABdhPJzpEN+WtC0hdjPzcfHayTwUdwgoN2rTeVk0eaogV8FJXcHTRodX8uCpDOsRMScUUOXdBHqePg==
-X-Received: by 2002:a02:5d0a:: with SMTP id w10mr16888339jaa.47.1627947022980;
-        Mon, 02 Aug 2021 16:30:22 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id y17sm460883ilm.0.2021.08.02.16.30.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 16:30:22 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     robh+dt@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/1] Revert "Merge branch 'qcom-dts-updates'"
-Date:   Mon,  2 Aug 2021 18:30:19 -0500
-Message-Id: <20210802233019.800250-2-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210802233019.800250-1-elder@linaro.org>
-References: <20210802233019.800250-1-elder@linaro.org>
+        id S233207AbhHBXcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 19:32:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232425AbhHBXcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 19:32:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10DC560EC0;
+        Mon,  2 Aug 2021 23:31:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627947117;
+        bh=F7eyFt0babKm737hBTlUOArue8hBauwGDHaUACSscNA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UQ1QVfBx8nIB0NYHUCTYdvntPQuiuIOXKEWaJ6DcxZu7qyddYtx/fjNr3tHVyIaCr
+         aIVjhzL8uT8Z6s/jnQ4Pq11NH2fV8osLT13k5+WJ172XNvEMbLDKtbbAzy3w/qMxYe
+         CqoMvRanoKF09BeoYFva4wYZfVMCYenMt5zddxyQPUSOkbAqK6Ouzl+HBEpEIWM1ty
+         sIPe5TFZ678q2UXHebn/j+KiHHRtzn3qEegGKOVOmAzTAhr8e1GHWjD7kUlmbRLWQq
+         S/jTtYUTx8VG2driF+OOyuSS3DtBLlYGtSYXTDeMZ9rmqkUC3jFZuzR1H4NTYjbc9C
+         VG5SxtRG1HK+g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D28E95C0892; Mon,  2 Aug 2021 16:31:56 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 16:31:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jade Alglave <j.alglave@ucl.ac.uk>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210802233156.GM4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210605145739.GB1712909@rowland.harvard.edu>
+ <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210606012903.GA1723421@rowland.harvard.edu>
+ <20210606115336.GS18427@gate.crashing.org>
+ <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
+ <20210606182213.GA1741684@rowland.harvard.edu>
+ <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
+ <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
+ <20210607115234.GA7205@willie-the-truck>
+ <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit b79c6fba6cd7c49a7dbea9999e182f74cca63e19, reversing
-these changes made to 0ac26271344478ff718329fa9d4ef81d4bcbc43b:
+On Fri, Jul 30, 2021 at 06:20:22PM +0100, Jade Alglave wrote:
 
-  commit 6a0eb6c9d934 ("dt-bindings: net: qcom,ipa: make imem interconnect
-                       optional")
-  commit f8bd3c82bf7d ("arm64: dts: qcom: sc7280: add IPA information")
-  commit fd0f72c34bd9 ("arm64: dts: qcom: sc7180: define ipa_fw_mem node")
+[ . . . ]
 
-I intend for these commits to go through the Qualcomm repository, to
-avoid conflicting with other activity being merged there.
+> Sincere apologies in taking so long to reply. I attach a technical
+> report which describes the status of dependencies in the Arm memory
+> model. 
+> 
+> I have also released the corresponding cat files and a collection of
+> interesting litmus tests over here:
+> https://github.com/herd/herdtools7/commit/f80bd7c2e49d7d3adad22afc62ff4768d65bf830
+> 
+> I hope this material can help inform this conversation and I would love
+> to hear your thoughts.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- .../devicetree/bindings/net/qcom,ipa.yaml     | 18 ++++----
- arch/arm64/boot/dts/qcom/sc7180.dtsi          |  5 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi          | 43 -------------------
- 3 files changed, 8 insertions(+), 58 deletions(-)
+It is very good to see this!  A few random questions and comments below
+based on a couple of passes through this document.
 
-diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-index 4853ab7017bd9..ed88ba4b94df5 100644
---- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-+++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-@@ -87,18 +87,16 @@ properties:
-       - const: ipa-setup-ready
- 
-   interconnects:
--    minItems: 2
-     items:
--      - description: Path leading to system memory
--      - description: Path between the AP and IPA config space
--      - description: Path leading to internal memory
-+      - description: Interconnect path between IPA and main memory
-+      - description: Interconnect path between IPA and internal memory
-+      - description: Interconnect path between IPA and the AP subsystem
- 
-   interconnect-names:
--    minItems: 2
-     items:
-       - const: memory
--      - const: config
-       - const: imem
-+      - const: config
- 
-   qcom,smem-states:
-     $ref: /schemas/types.yaml#/definitions/phandle-array
-@@ -209,11 +207,11 @@ examples:
- 
-                 interconnects =
-                         <&rsc_hlos MASTER_IPA &rsc_hlos SLAVE_EBI1>,
--                        <&rsc_hlos MASTER_APPSS_PROC &rsc_hlos SLAVE_IPA_CFG>,
--                        <&rsc_hlos MASTER_IPA &rsc_hlos SLAVE_IMEM>;
-+                        <&rsc_hlos MASTER_IPA &rsc_hlos SLAVE_IMEM>,
-+                        <&rsc_hlos MASTER_APPSS_PROC &rsc_hlos SLAVE_IPA_CFG>;
-                 interconnect-names = "memory",
--                                     "config",
--                                     "imem";
-+                                     "imem",
-+                                     "config";
- 
-                 qcom,smem-states = <&ipa_smp2p_out 0>,
-                                    <&ipa_smp2p_out 1>;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 7e0ff917e548c..a9a052f8c63c8 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -110,11 +110,6 @@ tz_mem: memory@80b00000 {
- 			no-map;
- 		};
- 
--		ipa_fw_mem: memory@8b700000 {
--			reg = <0 0x8b700000 0 0x10000>;
--			no-map;
--		};
--
- 		rmtfs_mem: memory@94600000 {
- 			compatible = "qcom,rmtfs-mem";
- 			reg = <0x0 0x94600000 0x0 0x200000>;
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 5eb2b58ea23be..a8c274ad74c47 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -7,7 +7,6 @@
- 
- #include <dt-bindings/clock/qcom,gcc-sc7280.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
--#include <dt-bindings/interconnect/qcom,sc7280.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/mailbox/qcom-ipcc.h>
- #include <dt-bindings/power/qcom-aoss-qmp.h>
-@@ -64,11 +63,6 @@ cpucp_mem: memory@80b00000 {
- 			no-map;
- 			reg = <0x0 0x80b00000 0x0 0x100000>;
- 		};
--
--		ipa_fw_mem: memory@8b700000 {
--			reg = <0 0x8b700000 0 0x10000>;
--			no-map;
--		};
- 	};
- 
- 	cpus {
-@@ -514,43 +508,6 @@ mmss_noc: interconnect@1740000 {
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
--		ipa: ipa@1e40000 {
--			compatible = "qcom,sc7280-ipa";
--
--			iommus = <&apps_smmu 0x480 0x0>,
--				 <&apps_smmu 0x482 0x0>;
--			reg = <0 0x1e40000 0 0x8000>,
--			      <0 0x1e50000 0 0x4ad0>,
--			      <0 0x1e04000 0 0x23000>;
--			reg-names = "ipa-reg",
--				    "ipa-shared",
--				    "gsi";
--
--			interrupts-extended = <&intc 0 654 IRQ_TYPE_EDGE_RISING>,
--					      <&intc 0 432 IRQ_TYPE_LEVEL_HIGH>,
--					      <&ipa_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
--					      <&ipa_smp2p_in 1 IRQ_TYPE_EDGE_RISING>;
--			interrupt-names = "ipa",
--					  "gsi",
--					  "ipa-clock-query",
--					  "ipa-setup-ready";
--
--			clocks = <&rpmhcc RPMH_IPA_CLK>;
--			clock-names = "core";
--
--			interconnects = <&aggre2_noc MASTER_IPA 0 &mc_virt SLAVE_EBI1 0>,
--					<&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_IPA_CFG 0>;
--			interconnect-names = "memory",
--					     "config";
--
--			qcom,smem-states = <&ipa_smp2p_out 0>,
--					   <&ipa_smp2p_out 1>;
--			qcom,smem-state-names = "ipa-clock-enabled-valid",
--						"ipa-clock-enabled";
--
--			status = "disabled";
--		};
--
- 		tcsr_mutex: hwlock@1f40000 {
- 			compatible = "qcom,tcsr-mutex", "syscon";
- 			reg = <0 0x01f40000 0 0x40000>;
--- 
-2.27.0
+							Thanx, Paul
 
+------------------------------------------------------------------------
+
+o	Figure 2: The iico_data arc are essentially invisible after
+	printing, as in the text on the following page is darker
+	than these arcs.  I had similar difficulties with many
+	of the other diagrams.
+
+o	Figure 2: What does the "q" signify in the upper line of the
+	uppermost event-c box ("R0:X1q=x")?  I get that we are reading
+	register X1 and getting back the address of variable "x".  I am
+	assuming that the "R0" means that process 0 is doing a read,
+	but I cannot be sure.
+
+	I am assuming that the "proc: P0 poi:0" means that this is
+	the first instruction of process P0.  If this is incorrect,
+	please let me know.
+
+o	Figure 6 initializes X0, X1, X2, and X3, while Figure 4
+	initializes only X0 and X3.  Is this difference meaningful?
+	(My guess is that you have default-zero initialization so
+	that it does not matter, but I figured that I should ask.)
+
+o	Figure 6: The iico_ctrl arcs are easier to see on printed copy
+	than the iico_data arcs, but it would be nice if they were a
+	bit darker.  The rf-reg arcs are plainly visible.
+
+o	Figure 6: Why is there no po arc to the CSEL instruction?
+
+o	Section 1.3, "Swap instructions" paragraph.  Please supply
+	a litmus-test figure to go along with Figure 12.
+
+o	Figures 10 and 11: Having these on the same page was extremely
+	helpful, thank you!
+
+o	Figure 11: What does the "*" signify in the first line event "a:"
+	("a: Rx*q=0")?	Why is there no "*" in the corresponding event
+	in Figure 9?
+
+o	Figure 11: The ca arcs are nicely visible, but I am coming up
+	empty on hypotheses for their meaning.  Or is ca the new co?
+
+o	Figure 11: Why two po arcs into the CAS instruction?  Due
+	to independent register reads taht might proceed concurrently?
+	If so, why no po arc to event g?
+
+o	Figure 11: The connections between events a, f, and h lead me to
+	believe that the hardware is permitted to rewrite register X3
+	with the value previously read from X3 as opposed to the value
+	read from [X1].  Or maybe omit the write entirely.
+
+	I don't see anything wrong with taking this approach, but I
+	figured I should check.
+
+o	Section 2 I leave in Alan's capable hands.
+
+o	Section 3.1, "Dependency through registers": A "PE" is a
+	processing element or some such?
+
+o	Section 3.1, "Dependency through registers", first bullet:
+	The exclusion of Store Exclusive is to avoid ordering via
+	the 0/1 status store, correct?
+
+o	Section 3.1, "Address Dependency", second bullet, second
+	sub-bullet: OK, I will bite.  The dependency from the Branching
+	Effect is due to a load from the program counter or some such?
+	Or are there some special-purpose ARMv8 branch instructions that
+	I should look up.
+
+o	Figure 27, "MOV W5, W0": It took me a bit to figure out that
+	this instruction exists strictly for the benefit of the
+	"exists" clause.  Or am I missing something subtle?
+
+o	Section 4.1, "Interestingly, this notion of ``pick dependency...":
+	I suggest using something like "require" instead of "proscribe",
+	if that is what is meant.  The hamming distance between the
+	antonyms "proscribe" and "prescribe" is quite small, which can
+	result in errors both when writing and when reading.  :-(
+
+o	Figure 30: The discarding of register X3 is intentional, correct?
+	If so, it is indeed hard to imagine wanting ordering from this
+	code sequence.  Though I might once again be suffering from a
+	failure of imagination...
+
+o	Figure 32: The reason for this litmus test being allowed is that
+	the ordering through CSEL is sort of like a control dependency,
+	and control dependencies to loads do not force ordering, correct?
+	Or did I miss a turn in there somewhere?
+
+o	Section 4.2, "Pick Basic dependency": Should the second and
+	third bullets be indented under the first bullet?
+
+It will take at least another pass to get my head around pick
+dependencies, so I will stop here for the moment.
+
+Again, good stuff, and great to see the additional definition!
+
+							Thanx, Paul
