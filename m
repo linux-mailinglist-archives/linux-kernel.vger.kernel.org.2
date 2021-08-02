@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA263DDA71
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCBF3DDA85
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237119AbhHBOOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:14:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49254 "EHLO mail.kernel.org"
+        id S238559AbhHBOPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:15:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235374AbhHBODf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:03:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DB3761213;
-        Mon,  2 Aug 2021 13:57:24 +0000 (UTC)
+        id S235258AbhHBOD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:03:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56DD861104;
+        Mon,  2 Aug 2021 13:57:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912644;
-        bh=oX+PPv98BJSxwT/n1DseA7FzU7nRbflS69hyA3nJO5s=;
+        s=korg; t=1627912646;
+        bh=jiVEl3P0brZ/g6ojgB2OANVvi/m6JP3VxXG2oSSt0Jo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dN0i4s9mJcQEvv778Is+h92wzuqqgNJ+niPa1GrU0/NQU+hvuzzHAAonPjyoOqdtL
-         IN+Crof5f19ewl/9fh+Ik1lTT4Sc33+IQkdsOyuL0zYQaFcUD3enDf1vVQjtUvkzkZ
-         YTwXtsbXG+TdKqMnh6w1/cpSitIdDkblR9LbEVSA=
+        b=vi+ge7fy4vu/v1fxN7rINKwqBx4M73gUwLVFK6QKYLFEaAlQ2gvW4Q68bL1aUDCgB
+         xTcJkH65x/hNyJxbRmvfhxe3uqfrtpzVJA4CBeWnk6kAmsWWLhzylNv6KSpFuyuzpj
+         v66ml5/+PLL4ddRvN5Jnk6jPYMu+FJnS7vwcSrfk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ariel Levkovich <lariel@nvidia.com>,
-        Chris Mi <cmi@nvidia.com>, Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 085/104] net/mlx5: Fix mlx5_vport_tbl_attr chain from u16 to u32
-Date:   Mon,  2 Aug 2021 15:45:22 +0200
-Message-Id: <20210802134346.806357505@linuxfoundation.org>
+Subject: [PATCH 5.13 086/104] block: delay freeing the gendisk
+Date:   Mon,  2 Aug 2021 15:45:23 +0200
+Message-Id: <20210802134346.836377326@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
 References: <20210802134344.028226640@linuxfoundation.org>
@@ -41,36 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Mi <cmi@nvidia.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 740452e09cf5fc489ce60831cf11abef117b5d26 ]
+[ Upstream commit 340e84573878b2b9d63210482af46883366361b9 ]
 
-The offending refactor commit uses u16 chain wrongly. Actually, it
-should be u32.
+blkdev_get_no_open acquires a reference to the block_device through
+the block device inode and then tries to acquire a device model
+reference to the gendisk.  But at this point the disk migh already
+be freed (although the race is free).  Fix this by only freeing the
+gendisk from the whole device bdevs ->free_inode callback as well.
 
-Fixes: c620b772152b ("net/mlx5: Refactor tc flow attributes structure")
-CC: Ariel Levkovich <lariel@nvidia.com>
-Signed-off-by: Chris Mi <cmi@nvidia.com>
-Reviewed-by: Roi Dayan <roid@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: 22ae8ce8b892 ("block: simplify bdev/disk lookup in blkdev_get")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210722075402.983367-2-hch@lst.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/genhd.c  | 3 +--
+ fs/block_dev.c | 2 ++
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-index 64ccb2bc0b58..e0f6f75fd9d6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-@@ -629,7 +629,7 @@ struct esw_vport_tbl_namespace {
- };
+diff --git a/block/genhd.c b/block/genhd.c
+index ad7436bd60c1..e8968fd30b2b 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1124,10 +1124,9 @@ static void disk_release(struct device *dev)
+ 	disk_release_events(disk);
+ 	kfree(disk->random);
+ 	xa_destroy(&disk->part_tbl);
+-	bdput(disk->part0);
+ 	if (disk->queue)
+ 		blk_put_queue(disk->queue);
+-	kfree(disk);
++	bdput(disk->part0);	/* frees the disk */
+ }
+ struct class block_class = {
+ 	.name		= "block",
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 6cc4d4cfe0c2..e4a80bd4ddf1 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -812,6 +812,8 @@ static void bdev_free_inode(struct inode *inode)
+ 	free_percpu(bdev->bd_stats);
+ 	kfree(bdev->bd_meta_info);
  
- struct mlx5_vport_tbl_attr {
--	u16 chain;
-+	u32 chain;
- 	u16 prio;
- 	u16 vport;
- 	const struct esw_vport_tbl_namespace *vport_ns;
++	if (!bdev_is_partition(bdev))
++		kfree(bdev->bd_disk);
+ 	kmem_cache_free(bdev_cachep, BDEV_I(inode));
+ }
+ 
 -- 
 2.30.2
 
