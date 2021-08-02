@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499433DDB9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478173DDB9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234563AbhHBOzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:55:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53474 "EHLO mail.kernel.org"
+        id S234220AbhHBOyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:54:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233962AbhHBOzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:55:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FCAB603E9;
-        Mon,  2 Aug 2021 14:54:52 +0000 (UTC)
+        id S233962AbhHBOyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:54:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4492860F70;
+        Mon,  2 Aug 2021 14:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627916094;
-        bh=gd6OQ4Zwz+1XcZxjkz5g5AcMnW2ndyrD0KHsCPTjG68=;
-        h=From:To:Cc:Subject:Date:From;
-        b=d6TyXtee1UNYvKa4NyfTbn9v8ArDxAZs9TEMf6TOKU6UFANyssy4+uO9AEH4hnE7g
-         Z7XSy/gjLuNlLUczAPVgfLL1mQoEdwjfTZtoKUuqChgwPcF4WVpZ9I9oTkPs8+ChLH
-         YAIb7/5m16kZEWF+FJkleGb/ZfjhqxNzfLNZjP46NDEDvfNTn/wh/am1/lv1dVc+Qa
-         ZLD7uAZrVoGu5sVoa1uKVR5PmgNNN3Xli2ZXW1qIQkhrR0ez6isJhd8sMETzZ+AVOv
-         HrScd/admooZDplS2Xn+n2nX7MxtiY4+QtuwjFA9zcHUwpYDBaXo2wk90NeeD72rqi
-         WAfZbZXDSF6xQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: sparx5: fix bitmask check
-Date:   Mon,  2 Aug 2021 16:54:37 +0200
-Message-Id: <20210802145449.1154565-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        s=k20201202; t=1627916085;
+        bh=V6nVIfGdYZP3YW1zd8g4Q9eIJtnKJMX2I5ylnnnpUms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uQfHtnb4ckN39v/vai2uDyJFmryAMODfcLZG5YNipbRdTB2nvWHvWTavU5h9w+H4y
+         IXdZUYFr8B73AKk59/WfLDEQzJDCNET6iBqKmPnj4a3sG+qxZM/1GrVB77i4ld9W6E
+         3w2hkDacYAk1bOTowF/0u21pcT14s1R1si1O8e4+qwjCu+3GZJGBRHhqgdb+x1wI7G
+         Ajqp3okISFnQaIAiYA1LO3gSRjwDQIA4GyY3YB8Gs68IYtarrhlwTx3UV2SH15zouP
+         qqtcwvDtyv0OihYZ0v7SmUaw2Z0PLuuql75V7ACrYYYh6i3dyGOZpYXTi2t/cNOgUI
+         RZke/jEvIM9AA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CC864403F2; Mon,  2 Aug 2021 11:54:42 -0300 (-03)
+Date:   Mon, 2 Aug 2021 11:54:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, yao.jin@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        irogers@google.com, linuxarm@huawei.com
+Subject: Re: [PATCH 02/11] perf jevents: Relocate test events to cpu folder
+Message-ID: <YQgHMt4BsDeJnE09@kernel.org>
+References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
+ <1627566986-30605-3-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627566986-30605-3-git-send-email-john.garry@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Em Thu, Jul 29, 2021 at 09:56:17PM +0800, John Garry escreveu:
+> In future to add support for sys events, relocate the core and uncore
+> events to a cpu folder.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>  .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/branch.json | 0
+>  .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/cache.json  | 0
+>  .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/other.json  | 0
+>  .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/uncore.json | 0
+>  tools/perf/pmu-events/jevents.c                                 | 2 +-
+>  5 files changed, 1 insertion(+), 1 deletion(-)
+>  rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/branch.json (100%)
+>  rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/cache.json (100%)
+>  rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/other.json (100%)
+>  rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/uncore.json (100%)
+> 
+> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/branch.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/branch.json
+> similarity index 100%
+> rename from tools/perf/pmu-events/arch/test/test_cpu/branch.json
+> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/branch.json
+> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/cache.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/cache.json
+> similarity index 100%
+> rename from tools/perf/pmu-events/arch/test/test_cpu/cache.json
+> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/cache.json
+> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/other.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/other.json
+> similarity index 100%
+> rename from tools/perf/pmu-events/arch/test/test_cpu/other.json
+> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/other.json
+> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/uncore.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
+> similarity index 100%
+> rename from tools/perf/pmu-events/arch/test/test_cpu/uncore.json
+> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
+> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+> index 9604446f8360..405bdd36b9b9 100644
+> --- a/tools/perf/pmu-events/jevents.c
+> +++ b/tools/perf/pmu-events/jevents.c
+> @@ -814,7 +814,7 @@ static void print_mapping_test_table(FILE *outfp)
+>  	fprintf(outfp, "\t.cpuid = \"testcpu\",\n");
+>  	fprintf(outfp, "\t.version = \"v1\",\n");
+>  	fprintf(outfp, "\t.type = \"core\",\n");
+> -	fprintf(outfp, "\t.table = pme_test_cpu,\n");
+> +	fprintf(outfp, "\t.table = pme_test_soc_cpu,\n");
 
-Older compilers such as gcc-5.5 produce a warning in this driver
-when ifh_encode_bitfield() is not getting inlined:
+Humm, is this already generated by some script? I.e. this
+'pme_test_soc_cpu' table? Or does this works only when applying the full
+patchset?
 
-drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c: In function 'ifh_encode_bitfield':
-include/linux/compiler_types.h:333:38: error: call to '__compiletime_assert_545' declared with attribute error: Unsupported width, must be <= 40
-drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c:28:2: note: in expansion of macro 'compiletime_assert'
-  compiletime_assert(width <= 40, "Unsupported width, must be <= 40");
-  ^
+- Arnaldo
 
-Mark the function as __always_inline to make the check work correctly
-on all compilers. To make this also work on 32-bit architectures, change
-the GENMASK() to GENMASK_ULL().
+>  	fprintf(outfp, "},\n");
+>  }
+>  
+> -- 
+> 2.26.2
+> 
 
-Fixes: f3cad2611a77 ("net: sparx5: add hostmode with phylink support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c b/drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c
-index 9d485a9d1f1f..6f362f6708c6 100644
---- a/drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c
-+++ b/drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c
-@@ -13,14 +13,15 @@
-  */
- #define VSTAX 73
- 
--static void ifh_encode_bitfield(void *ifh, u64 value, u32 pos, u32 width)
-+static __always_inline void ifh_encode_bitfield(void *ifh, u64 value,
-+						u32 pos, u32 width)
- {
- 	u8 *ifh_hdr = ifh;
- 	/* Calculate the Start IFH byte position of this IFH bit position */
- 	u32 byte = (35 - (pos / 8));
- 	/* Calculate the Start bit position in the Start IFH byte */
- 	u32 bit  = (pos % 8);
--	u64 encode = GENMASK(bit + width - 1, bit) & (value << bit);
-+	u64 encode = GENMASK_ULL(bit + width - 1, bit) & (value << bit);
- 
- 	/* Max width is 5 bytes - 40 bits. In worst case this will
- 	 * spread over 6 bytes - 48 bits
 -- 
-2.29.2
 
+- Arnaldo
