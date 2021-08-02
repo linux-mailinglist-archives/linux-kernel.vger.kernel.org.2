@@ -2,298 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C813DE2A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31D53DE2A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbhHBWl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 18:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232259AbhHBWlZ (ORCPT
+        id S232695AbhHBWn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 18:43:58 -0400
+Received: from mail-io1-f53.google.com ([209.85.166.53]:44771 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231126AbhHBWny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 18:41:25 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D119C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 15:41:14 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id a20so21475189plm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 15:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ERdua6U4bSTzH0l6E81K5LHAS4wIWYMMPhvZRxNchl8=;
-        b=LY3Y9BkqOvKoxq8WqB9W7l9fErhgcu0FQ9tkrKcaE3kW5es6T2Jf/hpwWdVlue6Nfb
-         5uGgoKPNRBVqzbwGV/Iw9QBooiM9pWwPyd2LRcNEC5egDPyMnr5e+2omIVM2RS2QDuXt
-         ZGpoP9egiQs535tcZCASEt4/+Bu5qpi4pVvmly2h+1SDHlqSq15+76DLjc8k0FZuj7KJ
-         41cBE3u4SXpZvfTwfuFkyhifAa1ReFP0weCiYgGVM7KgOGgK1vA0LhSnel45XuF7dKnW
-         bTNXaPpHlC9MY+Gj98qHwhmIIWLanGu/7mLIMa9oKjn/peEySPSirDFSvRibzOXeue5/
-         e67Q==
+        Mon, 2 Aug 2021 18:43:54 -0400
+Received: by mail-io1-f53.google.com with SMTP id l18so22137650ioh.11;
+        Mon, 02 Aug 2021 15:43:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ERdua6U4bSTzH0l6E81K5LHAS4wIWYMMPhvZRxNchl8=;
-        b=KmHcY6+ciDDIf+Csre0MstR9d2pJfb5r9g/JqBlODwMTyHD9sTG7zt6wtjXcpMPdIZ
-         vuHpQsYIjI6Y5ZD8czBtRfsjHdUOtfjMTvsHPkgUcTanfW2TcpzYblfw+uHdATnKIEb8
-         sOsmyTXsVcMUpY19h//ZoIt3e+mmuT+442tFHoEsucCD0+P//VFryv4388nJKTPTHroT
-         TrbBq91SsHngQ+kw8CQIljjyxollQdkbuN9v2VW4qT3wHcoPrxsm7OCdXyvpnhhLdrSu
-         wOcJSxXKyHfnpjKaDZ08t4p9JqyGr57T3aPGsJS03Zctj476qsdP0te0UaYRrQ2fB64q
-         g+vw==
-X-Gm-Message-State: AOAM533wq5VviK40r00MMXAF1h38N5zB5E4RrxNRdGrY25EFlt17H9Fm
-        fU/sZ4uBZSAKNQcQH+gbyz70iw==
-X-Google-Smtp-Source: ABdhPJw5PKH8q0ybYhFMKD1HbIbl95pmI6Rz43Kcunx2CHxHM7qEp3+x/vsUwIAPMGrQzkvjb9DrmA==
-X-Received: by 2002:a17:902:7b83:b029:12c:2758:1d2d with SMTP id w3-20020a1709027b83b029012c27581d2dmr16012081pll.80.1627944073737;
-        Mon, 02 Aug 2021 15:41:13 -0700 (PDT)
-Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
-        by smtp.gmail.com with ESMTPSA id w4sm12949620pfj.42.2021.08.02.15.41.12
+        bh=dZQeOSXFojQ/l1coeyz3v+7kw8mcB04qq43zWtA+pMw=;
+        b=qZ7/ye2bjvmbD8GUum3SzhG/lJ6cRVsHC6Zw8AD2pTsXF1X1b7BrVA9cr2ded3HCf8
+         /ajazY+JyqsJzqqz5lqs3d25TfIxCXWO9A17kMFZSW/22KZWMgu+L6fiqll1hXqGsNCo
+         40lGbDdMLdREKIlPIRtNMe/enlaHt1RL6VMWKI46yFPVlCxNUxrwq8bByrdgMHG1AvML
+         SGOhv5Kg959hOJIJErpptnxthBuO2YCrsJxLSbespD0ukSJIsAi2HsU/Z6IgyQgJ0dB1
+         vExO0X+3f1v+uU92bnRDBtGNri5h6sKj6HAvRTBE7D+s5cuvuTA7O7XgD3EEq/h5+aE3
+         EKxw==
+X-Gm-Message-State: AOAM531yQchyQLoRAKPDpMV3iWFyolNXBWqol4dXNvfqmqk87/770C29
+        EqNtzxIEOFYfROozlqXp7Q==
+X-Google-Smtp-Source: ABdhPJzdYveVfBh6D9LQLlOIs/01MNBaaTgLMR6kAzQmBq3kcjvUwXmFQCrwbYglsuJAVrmMgx27KA==
+X-Received: by 2002:a02:90cb:: with SMTP id c11mr17116289jag.53.1627944223297;
+        Mon, 02 Aug 2021 15:43:43 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id b13sm456691ilc.33.2021.08.02.15.43.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 15:41:12 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 22:41:09 +0000
-From:   David Matlack <dmatlack@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH v3 3/3] KVM: x86/mmu: Add detailed page size stats
-Message-ID: <YQh0hcdwEd9Dr1nT@google.com>
-References: <20210730225939.3852712-1-mizhang@google.com>
- <20210730225939.3852712-4-mizhang@google.com>
+        Mon, 02 Aug 2021 15:43:42 -0700 (PDT)
+Received: (nullmailer pid 1760143 invoked by uid 1000);
+        Mon, 02 Aug 2021 22:43:40 -0000
+Date:   Mon, 2 Aug 2021 16:43:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     shruthi.sanil@intel.com
+Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
+        mgross@linux.intel.com, srikanth.thokala@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com
+Subject: Re: [PATCH v5 1/2] dt-bindings: timer: Add bindings for Intel Keem
+ Bay SoC Timer
+Message-ID: <YQh1HMMkJyO8g/RP@robh.at.kernel.org>
+References: <20210729053937.20281-1-shruthi.sanil@intel.com>
+ <20210729053937.20281-2-shruthi.sanil@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210730225939.3852712-4-mizhang@google.com>
+In-Reply-To: <20210729053937.20281-2-shruthi.sanil@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 03:59:39PM -0700, Mingwei Zhang wrote:
-> Existing KVM code tracks the number of large pages regardless of their
-> sizes. Therefore, when large page of 1GB (or larger) is adopted, the
-> information becomes less useful because lpages counts a mix of 1G and 2M
-> pages.
+On Thu, Jul 29, 2021 at 11:09:36AM +0530, shruthi.sanil@intel.com wrote:
+> From: Shruthi Sanil <shruthi.sanil@intel.com>
 > 
-> So remove the lpages since it is easy for user space to aggregate the info.
-> Instead, provide a comprehensive page stats of all sizes from 4K to 512G.
+> Add Device Tree bindings for the Timer IP, which can be used as
+> clocksource and clockevent device in the Intel Keem Bay SoC.
 > 
-> Suggested-by: Ben Gardon <bgardon@google.com>
-> Reviewed-by: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> Cc: Jing Zhang <jingzhangos@google.com>
-> Cc: David Matlack <dmatlack@google.com>
-> Cc: Sean Christopherson <seanjc@google.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
 > ---
-
-Reviewed-by: David Matlack <dmatlack@google.com>
-
->  arch/x86/include/asm/kvm_host.h | 10 +++++++++-
->  arch/x86/kvm/mmu.h              |  4 ++++
->  arch/x86/kvm/mmu/mmu.c          | 26 +++++++++++++-------------
->  arch/x86/kvm/mmu/tdp_mmu.c      | 15 ++-------------
->  arch/x86/kvm/x86.c              |  7 +++++--
->  5 files changed, 33 insertions(+), 29 deletions(-)
+>  .../bindings/timer/intel,keembay-timer.yaml   | 166 ++++++++++++++++++
+>  1 file changed, 166 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
 > 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 974cbfb1eefe..eb6edc36b3ed 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1206,9 +1206,17 @@ struct kvm_vm_stat {
->  	u64 mmu_recycled;
->  	u64 mmu_cache_miss;
->  	u64 mmu_unsync;
-> -	u64 lpages;
->  	u64 nx_lpage_splits;
->  	u64 max_mmu_page_hash_collisions;
-> +	union {
-> +		struct {
-> +			atomic64_t pages_4k;
-> +			atomic64_t pages_2m;
-> +			atomic64_t pages_1g;
-> +			atomic64_t pages_512g;
-> +		};
-> +		atomic64_t pages[4];
-> +	};
->  };
->  
->  struct kvm_vcpu_stat {
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 83e6c6965f1e..2883789fb5fb 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -240,4 +240,8 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
->  	return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
->  }
->  
-> +static inline void kvm_update_page_stats(struct kvm *kvm, int level, int count)
-> +{
-> +	atomic64_add(count, &kvm->stat.pages[level - 1]);
-> +}
->  #endif
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 442cc554ebd6..2308537b1807 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -594,10 +594,11 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
->   * state bits, it is used to clear the last level sptep.
->   * Returns non-zero if the PTE was previously valid.
->   */
-> -static int mmu_spte_clear_track_bits(u64 *sptep)
-> +static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
->  {
->  	kvm_pfn_t pfn;
->  	u64 old_spte = *sptep;
-> +	int level = sptep_to_sp(sptep)->role.level;
->  
->  	if (!spte_has_volatile_bits(old_spte))
->  		__update_clear_spte_fast(sptep, 0ull);
-> @@ -607,6 +608,8 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
->  	if (!is_shadow_present_pte(old_spte))
->  		return 0;
->  
-> +	kvm_update_page_stats(kvm, level, -1);
+> diff --git a/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml b/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+> new file mode 100644
+> index 000000000000..b2eb2459d09b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+> @@ -0,0 +1,166 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/timer/intel,keembay-timer.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  	pfn = spte_to_pfn(old_spte);
->  
->  	/*
-> @@ -984,9 +987,10 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
->  	}
->  }
->  
-> -static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
-> +static void pte_list_remove(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> +			    u64 *sptep)
->  {
-> -	mmu_spte_clear_track_bits(sptep);
-> +	mmu_spte_clear_track_bits(kvm, sptep);
->  	__pte_list_remove(sptep, rmap_head);
->  }
->  
-> @@ -1119,7 +1123,7 @@ static u64 *rmap_get_next(struct rmap_iterator *iter)
->  
->  static void drop_spte(struct kvm *kvm, u64 *sptep)
->  {
-> -	if (mmu_spte_clear_track_bits(sptep))
-> +	if (mmu_spte_clear_track_bits(kvm, sptep))
->  		rmap_remove(kvm, sptep);
->  }
->  
-> @@ -1129,7 +1133,6 @@ static bool __drop_large_spte(struct kvm *kvm, u64 *sptep)
->  	if (is_large_pte(*sptep)) {
->  		WARN_ON(sptep_to_sp(sptep)->role.level == PG_LEVEL_4K);
->  		drop_spte(kvm, sptep);
-> -		--kvm->stat.lpages;
->  		return true;
->  	}
->  
-> @@ -1386,7 +1389,7 @@ static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->  	while ((sptep = rmap_get_first(rmap_head, &iter))) {
->  		rmap_printk("spte %p %llx.\n", sptep, *sptep);
->  
-> -		pte_list_remove(rmap_head, sptep);
-> +		pte_list_remove(kvm, rmap_head, sptep);
->  		flush = true;
->  	}
->  
-> @@ -1421,13 +1424,13 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->  		need_flush = 1;
->  
->  		if (pte_write(pte)) {
-> -			pte_list_remove(rmap_head, sptep);
-> +			pte_list_remove(kvm, rmap_head, sptep);
->  			goto restart;
->  		} else {
->  			new_spte = kvm_mmu_changed_pte_notifier_make_spte(
->  					*sptep, new_pfn);
->  
-> -			mmu_spte_clear_track_bits(sptep);
-> +			mmu_spte_clear_track_bits(kvm, sptep);
->  			mmu_spte_set(sptep, new_spte);
->  		}
->  	}
-> @@ -2232,8 +2235,6 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
->  	if (is_shadow_present_pte(pte)) {
->  		if (is_last_spte(pte, sp->role.level)) {
->  			drop_spte(kvm, spte);
-> -			if (is_large_pte(pte))
-> -				--kvm->stat.lpages;
->  		} else {
->  			child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
->  			drop_parent_pte(child, spte);
-> @@ -2692,8 +2693,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
->  	trace_kvm_mmu_set_spte(level, gfn, sptep);
->  
->  	if (!was_rmapped) {
-> -		if (is_large_pte(*sptep))
-> -			++vcpu->kvm->stat.lpages;
-> +		kvm_update_page_stats(vcpu->kvm, level, 1);
->  		rmap_count = rmap_add(vcpu, sptep, gfn);
->  		if (rmap_count > RMAP_RECYCLE_THRESHOLD)
->  			rmap_recycle(vcpu, sptep, gfn);
-> @@ -5669,7 +5669,7 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
->  		if (sp->role.direct && !kvm_is_reserved_pfn(pfn) &&
->  		    sp->role.level < kvm_mmu_max_mapping_level(kvm, slot, sp->gfn,
->  							       pfn, PG_LEVEL_NUM)) {
-> -			pte_list_remove(rmap_head, sptep);
-> +			pte_list_remove(kvm, rmap_head, sptep);
->  
->  			if (kvm_available_flush_tlb_with_range())
->  				kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index cba2ab5db2a0..eae404c15364 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -413,7 +413,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->  	bool was_leaf = was_present && is_last_spte(old_spte, level);
->  	bool is_leaf = is_present && is_last_spte(new_spte, level);
->  	bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
-> -	bool was_large, is_large;
->  
->  	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
->  	WARN_ON(level < PG_LEVEL_4K);
-> @@ -472,18 +471,8 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->  		return;
->  	}
->  
-> -	/*
-> -	 * Update large page stats if a large page is being zapped, created, or
-> -	 * is replacing an existing shadow page.
-> -	 */
-> -	was_large = was_leaf && is_large_pte(old_spte);
-> -	is_large = is_leaf && is_large_pte(new_spte);
-> -	if (was_large != is_large) {
-> -		if (was_large)
-> -			atomic64_sub(1, (atomic64_t *)&kvm->stat.lpages);
-> -		else
-> -			atomic64_add(1, (atomic64_t *)&kvm->stat.lpages);
-> -	}
-> +	if (is_leaf != was_leaf)
-> +		kvm_update_page_stats(kvm, level, is_leaf ? 1 : -1);
->  
->  	if (was_leaf && is_dirty_spte(old_spte) &&
->  	    (!is_present || !is_dirty_spte(new_spte) || pfn_changed))
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 8166ad113fb2..e4dfcd5d83ad 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -235,9 +235,12 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
->  	STATS_DESC_COUNTER(VM, mmu_recycled),
->  	STATS_DESC_COUNTER(VM, mmu_cache_miss),
->  	STATS_DESC_ICOUNTER(VM, mmu_unsync),
-> -	STATS_DESC_ICOUNTER(VM, lpages),
->  	STATS_DESC_ICOUNTER(VM, nx_lpage_splits),
-> -	STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions)
-> +	STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions),
-> +	STATS_DESC_ICOUNTER(VM, pages_4k),
-> +	STATS_DESC_ICOUNTER(VM, pages_2m),
-> +	STATS_DESC_ICOUNTER(VM, pages_1g),
-> +	STATS_DESC_ICOUNTER(VM, pages_512g)
->  };
->  static_assert(ARRAY_SIZE(kvm_vm_stats_desc) ==
->  		sizeof(struct kvm_vm_stat) / sizeof(u64));
+> +title: Intel Keem Bay SoC Timers
+> +
+> +maintainers:
+> +  - Shruthi Sanil <shruthi.sanil@intel.com>
+> +
+> +description: |
+> +  The Intel Keem Bay timer driver supports 1 free running counter and 8 timers.
+> +  Each timer is capable of generating inividual interrupt.
+> +  Both the features are enabled through the timer general config register.
+> +
+> +  The parent node represents the common general configuration details and
+> +  the child nodes represents the counter and timers.
+> +
+> +properties:
+
+You need a 'compatible' here. Otherwise, how does one know what 
+'reg' contains. Also, without it, this schema will never be applied.
+
+> +  reg:
+> +    description: General configuration register address and length.
+> +    maxItems: 1
+> +
+> +  ranges: true
+> +
+> +  "#address-cells":
+> +    const: 2
+> +
+> +  "#size-cells":
+> +    const: 2
+> +
+> +required:
+> +  - reg
+> +  - ranges
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +patternProperties:
+> +  "^counter@[0-9a-f]+$":
+> +    type: object
+> +    description: Properties for Intel Keem Bay counter
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - intel,keembay-counter
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      clocks:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - clocks
+> +
+> +  "^timer@[0-9a-f]+$":
+> +    type: object
+> +    description: Properties for Intel Keem Bay timer
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - intel,keembay-timer
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      interrupts:
+> +        maxItems: 1
+> +
+> +      clocks:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - interrupts
+> +      - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #define KEEM_BAY_A53_TIM
+> +
+> +    soc {
+> +        #address-cells = <0x2>;
+> +        #size-cells = <0x2>;
+> +
+> +        gpt@20331000 {
+> +            reg = <0x0 0x20331000 0x0 0xc>;
+> +            ranges = <0x0 0x0 0x20330000 0xF0>;
+> +            #address-cells = <0x1>;
+> +            #size-cells = <0x1>;
+> +
+> +            counter@e8 {
+> +                compatible = "intel,keembay-counter";
+> +                reg = <0xe8 0x8>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@10 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x10 0xc>;
+> +                interrupts = <GIC_SPI 0x3 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@20 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x20 0xc>;
+> +                interrupts = <GIC_SPI 0x4 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@30 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x30 0xc>;
+> +                interrupts = <GIC_SPI 0x5 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@40 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x40 0xc>;
+> +                interrupts = <GIC_SPI 0x6 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@50 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x50 0xc>;
+> +                interrupts = <GIC_SPI 0x7 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@60 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x60 0xc>;
+> +                interrupts = <GIC_SPI 0x8 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@70 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x70 0xc>;
+> +                interrupts = <GIC_SPI 0x9 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@80 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x80 0xc>;
+> +                interrupts = <GIC_SPI 0xa IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +        };
+> +    };
+> +
+> +...
 > -- 
-> 2.32.0.554.ge1b32706d8-goog
+> 2.17.1
+> 
 > 
