@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2773DE152
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED383DE159
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbhHBVSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:18:53 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:34603 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231656AbhHBVSv (ORCPT
+        id S232564AbhHBVTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231635AbhHBVTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:18:51 -0400
-Received: (qmail 345682 invoked by uid 1000); 2 Aug 2021 17:18:41 -0400
-Date:   Mon, 2 Aug 2021 17:18:41 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Jade Alglave <j.alglave@ucl.ac.uk>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210802211841.GB344022@rowland.harvard.edu>
-References: <20210605145739.GB1712909@rowland.harvard.edu>
- <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu>
- <20210606115336.GS18427@gate.crashing.org>
- <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
- <20210606182213.GA1741684@rowland.harvard.edu>
- <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
- <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
- <20210607115234.GA7205@willie-the-truck>
- <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
+        Mon, 2 Aug 2021 17:19:36 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33171C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:19:26 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id t3so19080395plg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aVBuXMfiCfWt5hdMv6zWGnMRg21pnjj7QA/tDQ0Y95Q=;
+        b=zKexeWwWDxfxwxGu+RH3nuqraBaI9t5GFDWnDdsIK9A8wW/PHdQCbYXtBS+bX3AXzy
+         UfeMiL8pZOQz8AvL8E5WZtzODhwG6dL9IN5ycqw6bPzBbpQMMvUhjGKqzemWKpg1eNVC
+         hEkqhLmPZFdpIiRREY8kIX1U0040YnX2NiW6Cyle1aASfV9rOuLJ6N+lYrUMKDgvxJjc
+         AZV5NnrKBOEQxG0aTMWQdMWIiVwSGKLdFis48uBClIFvUJRMStXKb9zGNWTRgzno4INn
+         x55npPu8PhasCvXe7BC5CLNaaY5YENt45917beKl7Prb7ulUg8l7dAAuC9IFrZYORFC2
+         rbvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aVBuXMfiCfWt5hdMv6zWGnMRg21pnjj7QA/tDQ0Y95Q=;
+        b=pKyndVzEPQwuMz1OcIO6Hgd+MLa7ivBMDy1epxy7/msRZqTIk3nS6UokeF/qC+eX/V
+         2IuzgDL87q2U6nK1y0ipTvkvICPwhAhx1QO2MnBqK2LnRfjZ4egkyU9HZQpd+hGyK5+1
+         4MhYDpVh076XrfDgmPk8RPTxbWWWc5pRzHdktBJpYy17VNeyDAVXj94Pkl8A4o5WpmbE
+         2aaVHl/pR/ccmuph83APsxRoRW4+mFa37cKEApG/vVfz2m6NqsI2lSHJjJJeVYljxlOl
+         RwoBWyCGvJF3hjWZZxBKl2TQ+mBsNXe3B7EuS/riDd3NYmD9c7jYfcDxD5eeEPFfg2Qu
+         l6iQ==
+X-Gm-Message-State: AOAM531/CTtYs79DM0flSWb+DA790kwuwGrr7rTy+7tyODEerv1iGsts
+        CXqH4ICCmevQY6w7uh+t+8cu2g==
+X-Google-Smtp-Source: ABdhPJw5iuEF1I72i2Wlv49CHbTsllBAXTkInZEfpNrpHZpI8JXJHhz5DJQpobzibHM+k05k7kX1AQ==
+X-Received: by 2002:a17:902:cec2:b029:12c:bef0:ec4b with SMTP id d2-20020a170902cec2b029012cbef0ec4bmr3661093plg.74.1627939165685;
+        Mon, 02 Aug 2021 14:19:25 -0700 (PDT)
+Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
+        by smtp.gmail.com with ESMTPSA id 10sm12949212pjc.41.2021.08.02.14.19.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 14:19:25 -0700 (PDT)
+From:   Jiang Wang <jiang.wang@bytedance.com>
+To:     netdev@vger.kernel.org
+Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
+        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/5] sockmap: add sockmap support for unix stream socket
+Date:   Mon,  2 Aug 2021 21:19:04 +0000
+Message-Id: <20210802211912.116329-1-jiang.wang@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 06:20:22PM +0100, Jade Alglave wrote:
-> I hope this material can help inform this conversation and I would love
-> to hear your thoughts.
+This patch series add support for unix stream type
+for sockmap. Sockmap already supports TCP, UDP,
+unix dgram types. The unix stream support is similar
+to unix dgram.
 
-More comments...
+Also add selftests for unix stream type in sockmap tests.
 
-I find the herd-style diagrams (Figures 2, 3, 5, 7, 9, and so on) almost 
-impossible to decipher.  While they might be useful to people running 
-herd, they have several drawbacks for readers of this report:
 
-	They include multiple instructions, not just the one for which
-	you want to illustrate the internal dependencies.  How about
-	getting rid of the extraneous instructions?
+Jiang Wang (5):
+  af_unix: add read_sock for stream socket types
+  af_unix: add unix_stream_proto for sockmap
+  selftest/bpf: add tests for sockmap with unix stream type.
+  selftest/bpf: change udp to inet in some function names
+  selftest/bpf: add new tests in sockmap for unix stream to tcp.
 
-	Each box contains three lines of information, of which only the
-	first is really significant, and it is hard to figure out.  How 
-	about getting rid of the second and third lines, and replacing
-	things like "e: R0:X1q=x" in the first line with something more
-	along the lines of "RegR X0" or "tmp1 = RegR X0"?
+ include/net/af_unix.h                         |  8 +-
+ net/core/sock_map.c                           |  8 +-
+ net/unix/af_unix.c                            | 86 ++++++++++++++---
+ net/unix/unix_bpf.c                           | 96 ++++++++++++++-----
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 48 ++++++----
+ 5 files changed, 193 insertions(+), 53 deletions(-)
 
-	The "iico" in the dependency arrows doesn't add anything.
+v1 -> v2 :
+ - Call unhash in shutdown.
+ - Clean up unix_create1 a bit.
+ - Return -ENOTCONN if socket is not connected.
 
-Section 1.1 mentions order, data, and control Intrinsic dependencies but 
-doesn't give so much as a hint as to what they are.  Instead the reader 
-is forced to invent his own generalizations by reading through several 
-complex special-case examples.  There should be a short description of 
-what each Intrinsic dependency represents.  For instance, the first 
-sentence in 1.3 would be a great way to explain data dependencies.  (And 
-is it not true that control dependencies are mainly needed for 
-situations where an instruction's inputs and outputs may include the 
-same register or memory address, when it is necessary to enforce that 
-the input value is read before the output value is written?)
+v2 -> v3 :
+ - check for stream type in update_proto
+ - remove intermediate variable in __unix_stream_recvmsg
+ - fix compile warning in unix_stream_recvmsg
+-- 
+2.20.1
 
-Some of the dependencies listed for CAS are surprising, but there is no 
-explanation.  Why is C2 a control dependency rather than a data 
-dependency?  After all, the value read from [Xn] is stored in Xs in both 
-cases.  In fact, Df1 supersedes C2 in the failure case, doesn't it?  And 
-why are C1 and Ds1 a control and data dependency respectively rather 
-than both order dependencies?
-
-Section 2.1: Although the Store F is independent of the conditional 
-branch and so might be made visible to other observers early, isn't it 
-true that neither ARMv8 nor any other type of processor will do this?
-
-General question: How does this discussion of conditional branches 
-relate overall to the way computed branches are handled?
-
-Alan
