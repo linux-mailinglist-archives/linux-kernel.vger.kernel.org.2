@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A333DD213
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC813DD216
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232787AbhHBIfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 04:35:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232428AbhHBIfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 04:35:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C0761057;
-        Mon,  2 Aug 2021 08:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627893332;
-        bh=PS8OqBJDBxjaQi+snp59d5+ckpWtNZ6D8Vin4bKMsik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TunhCp3a96gik8QdNgRL27GGU/13kOdl9cXB+C3ytpwFLzI6jVrs1lyoDDvOBTM6j
-         it0CMqG6Oi01Aljxd91t7IASlMoifiE7qTkC4gQ6gHki7eS/Ud1ru4MoP9tqD67NL4
-         pzsEo+eDQCcG6pGOkc3KPFO8c5wA52lT5FEqscQZwXe1lI0ovFrnojpKQMuI940roJ
-         /H1holKg4U0zKDux8I6v11F31JvHiLCw0lCgbI4eLT0xZnsLzLBHek0lwhs2QRSZQd
-         Zk6oxqTsR0pV9gRc81qWBPwjpI/Rjdh8fxVsypUtJKk/ksyy2swC0S4FMoHQsErCmz
-         XYnq5J+Vps7rQ==
-Date:   Mon, 2 Aug 2021 11:35:28 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borys Movchan <borysmn@axis.com>
-Cc:     Borys Movchan <Borys.Movchan@axis.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>, kernel <kernel@axis.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-Message-ID: <20210802083528.yayuwm6mlkowrsh2@kernel.org>
-References: <20210728105730.10170-1-borysmn@axis.com>
- <20210728215819.vsdwh2fbct7wxwsu@kernel.org>
- <b12dad90-c9ed-2331-7e96-78ca5c3994e8@axis.com>
+        id S232796AbhHBIfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 04:35:50 -0400
+Received: from smtprelay0095.hostedemail.com ([216.40.44.95]:43942 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232799AbhHBIfs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 04:35:48 -0400
+Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 1695C180A8859;
+        Mon,  2 Aug 2021 08:35:38 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 7C09F2EBFBF;
+        Mon,  2 Aug 2021 08:35:36 +0000 (UTC)
+Message-ID: <3f55848b4612d1b17d95a4c36bec1dee2b1814f1.camel@perches.com>
+Subject: Re: [PATCH 1/2] rtlwifi: rtl8192de: Remove redundant variable
+ initializations
+From:   Joe Perches <joe@perches.com>
+To:     Colin King <colin.king@canonical.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 02 Aug 2021 01:35:35 -0700
+In-Reply-To: <20210731124044.101927-1-colin.king@canonical.com>
+References: <20210731124044.101927-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b12dad90-c9ed-2331-7e96-78ca5c3994e8@axis.com>
+X-Spam-Status: No, score=0.10
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 7C09F2EBFBF
+X-Stat-Signature: u1zu3eenyuecqkjwuh9k94wtp4dehu7u
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/Jsvet2KmRc4qR68KoJmWVobQU8MF3js4=
+X-HE-Tag: 1627893336-409696
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 04:24:01PM +0200, Borys Movchan wrote:
-> On 7/28/21 11:58 PM, Jarkko Sakkinen wrote:
-> > On Wed, Jul 28, 2021 at 12:57:30PM +0200, Borys Movchan wrote:
-> > > If something went wrong during the TPM firmware upgrade,
-> > > like power failure or the firmware image file get corrupted,
-> > > the TPM might end up in Upgrade or Failure mode upon the
-> > > next start. The state is persistent between the TPM power
-> > > cycle/restart.
-> > >
-> > > According to TPM specification:
-> > >  * If the TPM is in Upgrade mode, it will answer with
-> > >    TPM2_RC_UPGRADE to all commands except Field Upgrade
-> > >    related ones.
-> > >  * If the TPM is in Failure mode, it will allow performing
-> > >    TPM initialization but will not provide any crypto
-> > >    operations. Will happily respond to Field Upgrade calls.
-> > >
-> > > The fix adds the possibility to detect an active state of
-> > > the TPM and gives the user-space a chance to finish the
-> > > firmware upgrade/recover the TPM.
-> >
-> > This is different than telling what the patch does. It's just
-> > describing a goal, but does not describe how the driver is
-> > changed, and reasons for doing that.
-> >
-> > For instance, you check 'limited_mode' flag in a few sites.
-> > How can I know that those are exactly the locations where this
-> > needs to be done?
-> >
+On Sat, 2021-07-31 at 13:40 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Seems like I got what you are looking for. Let me try to explain the
-> reasoning
-> and doubts regarding what I meant under my change.
+> The variables rtstatus and place are being initialized with a values that
+> are never read, the initializations are redundant and can be removed.
 
-Please try to nail this in the commit message instead, and I'll
-then review that.
+trivia:
 
-/Jarkko
+> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
+[]
+> @@ -1362,7 +1362,7 @@ u8 rtl92d_get_rightchnlplace_for_iqk(u8 chnl)
+>  		132, 134, 136, 138, 140, 149, 151, 153, 155,
+>  		157, 159, 161, 163, 165
+>  	};
+> -	u8 place = chnl;
+> +	u8 place;
+>  
+> 
+>  	if (chnl > 14) {
+>  		for (place = 14; place < sizeof(channel_all); place++) {
+
+This line should probably be
+
+		for (place = 14; place < ARRAY_SIZE(channel_all); place++) {
+
