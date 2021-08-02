@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94BC3DDA09
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C15A3DDA0B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236924AbhHBOE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:04:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41636 "EHLO mail.kernel.org"
+        id S237030AbhHBOE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:04:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236070AbhHBN47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236071AbhHBN47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Aug 2021 09:56:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 722726115C;
-        Mon,  2 Aug 2021 13:54:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AEF361167;
+        Mon,  2 Aug 2021 13:54:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912480;
-        bh=Ix+EIv2FJ3EbJS8waMUtLO+G5ZHGIfvxMkbNAnRPKj8=;
+        s=korg; t=1627912483;
+        bh=J5jZaVtgq2HwXYklkyka55c+ubzUflzBxn1Q+IdGoJU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xo6MFl0nW1zWNuzQUe13AjvYg6//4Yxi4/+sUDSd9J1vlE5C4F8q+FOvIaWRZasCR
-         Ztb2gtbE5cd0wcCXCDmzv9DO77StHJ4gfePMvdSe2t9BO3KGX5EGOFnJlc+nbMRx/v
-         KqiI0O5D1qhyDJlnFXn8iaqHqRe/Saz/7zyLREWs=
+        b=eqToirT77xM5RNLha/VGez26HdUZEvEhVivjF96LQmqRKdqrFZODL0T2jfucXW0yy
+         7gH4xv9u0sBpPcuzlA0nt1cYdd2L3pdFQuGBm1AH5BbMISx9XNDvQyvY9Q8D2K/gTc
+         Om+2duSu9+z6+TNXbHhBnlutt6Bfi5QMQ3o97XOs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Chris Down <chris@chrisdown.name>,
-        Rik van Riel <riel@surriel.com>,
-        Michal Hocko <mhocko@suse.com>,
+        stable@vger.kernel.org, Wang Hai <wanghai38@huawei.com>,
         Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.13 012/104] mm: memcontrol: fix blocking rstat function called from atomic cgroup1 thresholding code
-Date:   Mon,  2 Aug 2021 15:44:09 +0200
-Message-Id: <20210802134344.419426208@linuxfoundation.org>
+Subject: [PATCH 5.13 013/104] mm/memcg: fix NULL pointer dereference in memcg_slab_free_hook()
+Date:   Mon,  2 Aug 2021 15:44:10 +0200
+Message-Id: <20210802134344.451782516@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
 References: <20210802134344.028226640@linuxfoundation.org>
@@ -45,79 +51,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Weiner <hannes@cmpxchg.org>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit 30def93565e5ba08676aa2b9083f253fc586dbed upstream.
+commit 121dffe20b141c9b27f39d49b15882469cbebae7 upstream.
 
-Dan Carpenter reports:
+When I use kfree_rcu() to free a large memory allocated by kmalloc_node(),
+the following dump occurs.
 
-    The patch 2d146aa3aa84: "mm: memcontrol: switch to rstat" from Apr
-    29, 2021, leads to the following static checker warning:
+  BUG: kernel NULL pointer dereference, address: 0000000000000020
+  [...]
+  Oops: 0000 [#1] SMP
+  [...]
+  Workqueue: events kfree_rcu_work
+  RIP: 0010:__obj_to_index include/linux/slub_def.h:182 [inline]
+  RIP: 0010:obj_to_index include/linux/slub_def.h:191 [inline]
+  RIP: 0010:memcg_slab_free_hook+0x120/0x260 mm/slab.h:363
+  [...]
+  Call Trace:
+    kmem_cache_free_bulk+0x58/0x630 mm/slub.c:3293
+    kfree_bulk include/linux/slab.h:413 [inline]
+    kfree_rcu_work+0x1ab/0x200 kernel/rcu/tree.c:3300
+    process_one_work+0x207/0x530 kernel/workqueue.c:2276
+    worker_thread+0x320/0x610 kernel/workqueue.c:2422
+    kthread+0x13d/0x160 kernel/kthread.c:313
+    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-	    kernel/cgroup/rstat.c:200 cgroup_rstat_flush()
-	    warn: sleeping in atomic context
+When kmalloc_node() a large memory, page is allocated, not slab, so when
+freeing memory via kfree_rcu(), this large memory should not be used by
+memcg_slab_free_hook(), because memcg_slab_free_hook() is is used for
+slab.
 
-    mm/memcontrol.c
-      3572  static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
-      3573  {
-      3574          unsigned long val;
-      3575
-      3576          if (mem_cgroup_is_root(memcg)) {
-      3577                  cgroup_rstat_flush(memcg->css.cgroup);
-			    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using page_objcgs_check() instead of page_objcgs() in
+memcg_slab_free_hook() to fix this bug.
 
-    This is from static analysis and potentially a false positive.  The
-    problem is that mem_cgroup_usage() is called from __mem_cgroup_threshold()
-    which holds an rcu_read_lock().  And the cgroup_rstat_flush() function
-    can sleep.
-
-      3578                  val = memcg_page_state(memcg, NR_FILE_PAGES) +
-      3579                          memcg_page_state(memcg, NR_ANON_MAPPED);
-      3580                  if (swap)
-      3581                          val += memcg_page_state(memcg, MEMCG_SWAP);
-      3582          } else {
-      3583                  if (!swap)
-      3584                          val = page_counter_read(&memcg->memory);
-      3585                  else
-      3586                          val = page_counter_read(&memcg->memsw);
-      3587          }
-      3588          return val;
-      3589  }
-
-__mem_cgroup_threshold() indeed holds the rcu lock.  In addition, the
-thresholding code is invoked during stat changes, and those contexts
-have irqs disabled as well.  If the lock breaking occurs inside the
-flush function, it will result in a sleep from an atomic context.
-
-Use the irqsafe flushing variant in mem_cgroup_usage() to fix this.
-
-Link: https://lkml.kernel.org/r/20210726150019.251820-1-hannes@cmpxchg.org
-Fixes: 2d146aa3aa84 ("mm: memcontrol: switch to rstat")
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Chris Down <chris@chrisdown.name>
-Reviewed-by: Rik van Riel <riel@surriel.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
+Link: https://lkml.kernel.org/r/20210728145655.274476-1-wanghai38@huawei.com
+Fixes: 270c6a71460e ("mm: memcontrol/slab: Use helpers to access slab page's memcg_data")
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/memcontrol.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ mm/slab.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3394,7 +3394,8 @@ static unsigned long mem_cgroup_usage(st
- 	unsigned long val;
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -350,7 +350,7 @@ static inline void memcg_slab_free_hook(
+ 			continue;
  
- 	if (mem_cgroup_is_root(memcg)) {
--		cgroup_rstat_flush(memcg->css.cgroup);
-+		/* mem_cgroup_threshold() calls here from irqsafe context */
-+		cgroup_rstat_flush_irqsafe(memcg->css.cgroup);
- 		val = memcg_page_state(memcg, NR_FILE_PAGES) +
- 			memcg_page_state(memcg, NR_ANON_MAPPED);
- 		if (swap)
+ 		page = virt_to_head_page(p[i]);
+-		objcgs = page_objcgs(page);
++		objcgs = page_objcgs_check(page);
+ 		if (!objcgs)
+ 			continue;
+ 
 
 
