@@ -2,73 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1372F3DD138
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26763DD13E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbhHBHc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:32:57 -0400
-Received: from mail-m17655.qiye.163.com ([59.111.176.55]:11326 "EHLO
-        mail-m17655.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232173AbhHBHc4 (ORCPT
+        id S232560AbhHBHdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:33:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20271 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232428AbhHBHdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:32:56 -0400
-Received: from ubuntu.localdomain (unknown [36.152.145.182])
-        by mail-m17655.qiye.163.com (Hmail) with ESMTPA id 717234014F;
-        Mon,  2 Aug 2021 15:32:44 +0800 (CST)
-From:   zhouchuangao <zhouchuangao@vivo.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        John Clements <john.clements@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Jinzhou Su <Jinzhou.Su@amd.com>,
-        Wenhui Sheng <Wenhui.Sheng@amd.com>,
-        Victor Zhao <Victor.Zhao@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     zhouchuangao <zhouchuangao@vivo.com>
-Subject: [PATCH] gpu/drm/amd: Remove duplicated include of drm_drv.h
-Date:   Mon,  2 Aug 2021 00:32:32 -0700
-Message-Id: <1627889555-56431-1-git-send-email-zhouchuangao@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUJCSktWH0hPQ0JNGR9PHU
-        5LVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MjY6Shw*Gj9MPTMKKjY#KDIi
-        NC4wFCxVSlVKTUlMQ0NCTk1OTUJMVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
-        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlOS083Bg++
-X-HM-Tid: 0a7b05c77c4eda01kuws717234014f
+        Mon, 2 Aug 2021 03:33:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627889593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oKwm+VrriTnIjZjtBTh8lfiPTFsXfXUu+LiwuOKDUz4=;
+        b=HNkpsTzEORCLdhKa6H0GOyrnOrPDoisJyha2RhOn6aioXqLqMY8dAC9JTKZq7ljPljMfhJ
+        5aRK+2zORdCh4rVrIZ3qxoGYovx2nuqSpqfjiL7ZvN8746TXbxa4M5XBiv7JpyodSmm+fh
+        3UhMCQ+UDQOQHz9BhgxUPg6pAZMoqXU=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-SuuJ7Ys6Pp6-IbRW3AgLmw-1; Mon, 02 Aug 2021 03:33:12 -0400
+X-MC-Unique: SuuJ7Ys6Pp6-IbRW3AgLmw-1
+Received: by mail-ej1-f70.google.com with SMTP id g21-20020a1709061e15b029052292d7c3b4so4300996ejj.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 00:33:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oKwm+VrriTnIjZjtBTh8lfiPTFsXfXUu+LiwuOKDUz4=;
+        b=jgIpp37Skx2Ozz/E+nOk3vVfNeaBpv1C/CEL5cvMX7JV0+Sx6HrH26Qqc0lEsBeLge
+         7WldaWuoyQ2OCFhsMBtsLXMQtkoGlu9uKBua7RfuA9FBL1uYnaSZPqf6a/e9KQU4/tDw
+         XkrgUJ3q4D0UZBSK+ZpHwcHNrimeociO+yv3B5Oy3+ZsBDed93ENPbtLe5OZGmzWGY4N
+         LQpEHEs9tFIF5F5h23SRzFkXfVFW7ZBugtsQLQ39NM0gthYQeVE/TJToKqK0iqDMHv0C
+         7j+ucmQ4yA5Icokmz4LnPEv8H2EfAp9xDzHSduWKCu6ySwTjjtAfFQh2hgDpkiBmijgh
+         QFDw==
+X-Gm-Message-State: AOAM532vq93rncbciENzwRc1gaXZwN17GqQBKts4cHNRwd9HqNPz9/Ca
+        uo9AP48MzIZM7jPoD0GcXxgdLxX8iUbVYBBc6JWDny3SQH9HcNJ6K7xsd3PNzXI8B5Cw4YdKzkd
+        /gaopQ9ccDpEZNTMUNJB7iVXf
+X-Received: by 2002:a17:906:948f:: with SMTP id t15mr14341824ejx.85.1627889590830;
+        Mon, 02 Aug 2021 00:33:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbsCOdlvVMel6wSv3vdUOaqGxihvei3PtY062A1Soqa5gEZO0krjA811OYtz6iN03PfgjegQ==
+X-Received: by 2002:a17:906:948f:: with SMTP id t15mr14341804ejx.85.1627889590666;
+        Mon, 02 Aug 2021 00:33:10 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n15sm5436746edw.70.2021.08.02.00.33.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 00:33:09 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 00/69] KVM: X86: TDX support
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <0d453d76-11e7-aeb9-b890-f457afbb6614@redhat.com>
+ <YQGLJrvjTNZAqU61@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <dc4c3fce-4d10-349c-7b21-00a64eaa9f71@redhat.com>
+Date:   Mon, 2 Aug 2021 09:33:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YQGLJrvjTNZAqU61@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Duplicate include header file <drm/drm_drv.h>
-line 28: #include <drm/drm_drv.h>
-line 44: #include <drm/drm_drv.h>
+On 28/07/21 18:51, Sean Christopherson wrote:
+> I strongly object to merging these two until we see the new SEAMLDR code:
+> 
+>    [RFC PATCH v2 02/69] KVM: X86: move kvm_cpu_vmxon() from vmx.c to virtext.h
+>    [RFC PATCH v2 03/69] KVM: X86: move out the definition vmcs_hdr/vmcs from kvm to x86
+> 
+> If the SEAMLDR code ends up being fully contained in KVM, then this is unnecessary
+> churn and exposes code outside of KVM that we may not want exposed (yet).  E.g.
+> setting and clearing CR4.VMXE (in the fault path) in cpu_vmxon() may not be
+> necessary/desirable for SEAMLDR, we simply can't tell without seeing the code.
 
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c | 2 --
- 1 file changed, 2 deletions(-)
+Fair enough (though, for patch 2, it's a bit weird to have vmxoff in 
+virtext.h and not vmxon).
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-index 3ec5099..05f864f 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-@@ -41,8 +41,6 @@
- #include "amdgpu_securedisplay.h"
- #include "amdgpu_atomfirmware.h"
- 
--#include <drm/drm_drv.h>
--
- static int psp_sysfs_init(struct amdgpu_device *adev);
- static void psp_sysfs_fini(struct amdgpu_device *adev);
- 
--- 
-2.7.4
+Paolo
 
