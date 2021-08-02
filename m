@@ -2,140 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A943DD16B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59EE3DD170
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232545AbhHBHnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:43:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:59680 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232435AbhHBHnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:43:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69F1B106F;
-        Mon,  2 Aug 2021 00:43:26 -0700 (PDT)
-Received: from [10.163.66.153] (unknown [10.163.66.153])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95A293F719;
-        Mon,  2 Aug 2021 00:43:22 -0700 (PDT)
-Subject: Re: [PATCH 07/10] arm64: Add erratum detection for TRBE overwrite in
- FILL mode
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
-References: <20210728135217.591173-1-suzuki.poulose@arm.com>
- <20210728135217.591173-8-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <4011d566-1a5b-51a3-dcee-09f60af0a7bb@arm.com>
-Date:   Mon, 2 Aug 2021 13:14:13 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210728135217.591173-8-suzuki.poulose@arm.com>
+        id S232570AbhHBHpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:45:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25942 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232482AbhHBHp3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 03:45:29 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1727Y5rd125744;
+        Mon, 2 Aug 2021 03:45:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=3GTKSoYuyeI7amyWljKoeZqQ+nHMylTD/J3zpAbpSkU=;
+ b=opXA+N2F/OyCTrMckSbOQvv0dIelBOVELlf0qOm/01gfXdjEuvk6vCiHmojnt3SMYS8K
+ bxW+LNNfiXRU7UgPKtR4usSebN/rk1tanddBuxxEMvc8FRtczuLXIVPnjwSFJgxozrim
+ zD8r7WT5rh1J5mZs1h0CVY2lRQwX67Qo2K9kKqyBQp7M/LNmVWXi/5p3gxxnDiJaCLN9
+ rZs1ekfust89aikdjGSboEL5x7zhilaaveAazi3oEk70xDpx1YXVJKNxQDDkLJ3jZa23
+ DxTIk25KIE8o9mHofZKFkLQtN+Lxjp+q7mu/NEr2rJCrB2HANs6cVKDtn15Evjr5PfHQ iQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a5kjutct4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Aug 2021 03:45:12 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1727cEhp137848;
+        Mon, 2 Aug 2021 03:45:11 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a5kjutcs5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Aug 2021 03:45:11 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1727bmXr009344;
+        Mon, 2 Aug 2021 07:45:09 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma01wdc.us.ibm.com with ESMTP id 3a4x5a7t7y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Aug 2021 07:45:09 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1727j9XO21889420
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 2 Aug 2021 07:45:09 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3602B2064;
+        Mon,  2 Aug 2021 07:45:08 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 09D95B2068;
+        Mon,  2 Aug 2021 07:45:04 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.36.88])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  2 Aug 2021 07:45:03 +0000 (GMT)
+Subject: Re: [PATCH v3] fpga: dfl: fme: Fix cpu hotplug issue in performance
+ reporting
+To:     will@kernel.org, hao.wu@intel.com, mark.rutland@arm.com
+Cc:     trix@redhat.com, yilun.xu@intel.com, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, rnsastry@linux.ibm.com,
+        linux-perf-users@vger.kernel.org, stable@vger.kernel.org
+References: <20210713074216.208391-1-kjain@linux.ibm.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <61495dc0-f496-992c-1d2a-9229a04e6e44@linux.ibm.com>
+Date:   Mon, 2 Aug 2021 13:15:00 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+In-Reply-To: <20210713074216.208391-1-kjain@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: RyHz5855e0unzEdNSw03Cg5mCfzhtRmF
+X-Proofpoint-GUID: W10U2EPBpxzuTFdcHfQHeMJ90pMtAAy-
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-02_01:2021-08-02,2021-08-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 phishscore=0 impostorscore=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 clxscore=1015 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108020053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
-> Arm Neoverse-N2 and the Cortex-A710 cores are affected
-> by a CPU erratum where the TRBE will overwrite the trace buffer
-> in FILL mode. The TRBE doesn't stop (as expected in FILL mode)
-> when it reaches the limit and wraps to the base to continue
-> writing upto 3 cache lines. This will overwrite any trace that
-> was written previously.
+On 7/13/21 1:12 PM, Kajol Jain wrote:
+> The performance reporting driver added cpu hotplug
+> feature but it didn't add pmu migration call in cpu
+> offline function.
+> This can create an issue incase the current designated
+> cpu being used to collect fme pmu data got offline,
+> as based on current code we are not migrating fme pmu to
+> new target cpu. Because of that perf will still try to
+> fetch data from that offline cpu and hence we will not
+> get counter data.
 > 
-> Add the Neoverse-N2 erratumi(#2139208) and Cortex-A710 erratum
-
-Small nit. Stray 'i' here  ^^^^
-
-> (#2119858) to the  detection logic.
+> Patch fixed this issue by adding pmu_migrate_context call
+> in fme_perf_offline_cpu function.
 > 
-> This will be used by the TRBE driver in later patches to work
-> around the issue. The detection has been kept with the core
-> arm64 errata framework list to make sure :
->   - We don't duplicate the framework in TRBE driver
->   - The errata detection is advertised like the rest
->     of the CPU errata.
-> 
-> Note that the Kconfig entries will be added after we have added
-> the work around in the TRBE driver, which depends on the cpucap
-> from here.
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Fixes: 724142f8c42a ("fpga: dfl: fme: add performance reporting support")
+> Tested-by: Xu Yilun <yilun.xu@intel.com>
+> Acked-by: Wu Hao <hao.wu@intel.com>
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> Cc: stable@vger.kernel.org
 > ---
->  arch/arm64/kernel/cpu_errata.c | 25 +++++++++++++++++++++++++
->  arch/arm64/tools/cpucaps       |  1 +
->  2 files changed, 26 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-> index e2c20c036442..ccd757373f36 100644
-> --- a/arch/arm64/kernel/cpu_errata.c
-> +++ b/arch/arm64/kernel/cpu_errata.c
-> @@ -340,6 +340,18 @@ static const struct midr_range erratum_1463225[] = {
->  };
->  #endif
->  
-> +#ifdef CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
-> +static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
-> +#ifdef CONFIG_ARM64_ERRATUM_2139208
-> +	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
-> +#endif
-> +#ifdef CONFIG_ARM64_ERRATUM_2119858
-> +	MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
-> +#endif
-> +	{},
-> +};
-> +#endif	/* CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE */
-> +
->  const struct arm64_cpu_capabilities arm64_errata[] = {
->  #ifdef CONFIG_ARM64_WORKAROUND_CLEAN_CACHE
->  	{
-> @@ -533,6 +545,19 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
->  		.capability = ARM64_WORKAROUND_NVIDIA_CARMEL_CNP,
->  		ERRATA_MIDR_ALL_VERSIONS(MIDR_NVIDIA_CARMEL),
->  	},
-> +#endif
-> +#ifdef CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
-> +	{
-> +		/*
-> +		 * The erratum work around is handled within the TRBE
-> +		 * driver and can be applied per-cpu. So, we can allow
-> +		 * a late CPU to come online with this erratum.
-> +		 */
-> +		.desc = "ARM erratum 2119858 or 2139208",
-> +		.capability = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
-> +		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
-> +		CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
-> +	},
->  #endif
->  	{
->  	}
-> diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-> index 49305c2e6dfd..1ccb92165bd8 100644
-> --- a/arch/arm64/tools/cpucaps
-> +++ b/arch/arm64/tools/cpucaps
-> @@ -53,6 +53,7 @@ WORKAROUND_1418040
->  WORKAROUND_1463225
->  WORKAROUND_1508412
->  WORKAROUND_1542419
-> +WORKAROUND_TRBE_OVERWRITE_FILL_MODE
->  WORKAROUND_CAVIUM_23154
->  WORKAROUND_CAVIUM_27456
->  WORKAROUND_CAVIUM_30115
-> 
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Any update on this patch? Please let me know if any changes required.
+
+Thanks,
+Kajol Jain
+
+>  drivers/fpga/dfl-fme-perf.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> ---
+> Changelog:
+> v2 -> v3:
+> - Added Acked-by tag
+> - Removed comment as suggested by Wu Hao
+> - Link to patch v2: https://lkml.org/lkml/2021/7/9/143
+> 
+> v1 -> v2:
+> - Add stable@vger.kernel.org in cc list
+> - Link to patch v1: https://lkml.org/lkml/2021/6/28/275
+> 
+> RFC -> PATCH v1
+> - Remove RFC tag
+> - Did nits changes on subject and commit message as suggested by Xu Yilun
+> - Added Tested-by tag
+> - Link to rfc patch: https://lkml.org/lkml/2021/6/28/112
+> ---
+> 
+> diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
+> index 4299145ef347..587c82be12f7 100644
+> --- a/drivers/fpga/dfl-fme-perf.c
+> +++ b/drivers/fpga/dfl-fme-perf.c
+> @@ -953,6 +953,8 @@ static int fme_perf_offline_cpu(unsigned int cpu, struct hlist_node *node)
+>  		return 0;
+>  
+>  	priv->cpu = target;
+> +	perf_pmu_migrate_context(&priv->pmu, cpu, target);
+> +
+>  	return 0;
+>  }
+>  
+> 
