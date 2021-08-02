@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7A03DD875
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09A03DDA07
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233994AbhHBNwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58622 "EHLO mail.kernel.org"
+        id S236390AbhHBOGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:06:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234434AbhHBNs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:48:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4B8F60527;
-        Mon,  2 Aug 2021 13:48:16 +0000 (UTC)
+        id S236439AbhHBN7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:59:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9473A61103;
+        Mon,  2 Aug 2021 13:55:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912097;
-        bh=1AHzE05BbaalJaN6KjfewZz5ZdvNI7ewp+MwKyy4qQk=;
+        s=korg; t=1627912544;
+        bh=tpqwPqZ4e4cMpqo6fbr9lU4eU/UzFrEs1TWJjKcclAE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U/QWw0367oOEijXyZ/CVmvRMzch7MRMO7NE8QWfKYfNdBhlluLgKHf9ojmmjz9Ao+
-         vBbS70PoeSB4q5GzV7xhB9GFFOxPg5vHQ53kJ3Di3Ni/wJX8k1Ud1iBSBGZ7boGsx3
-         QAqbcoUCmU7J/Xy2xJ2JHT2br5GQv5tyNwEfAaSc=
+        b=EXtSmybiEDNCbZHvk5HG1UZl6pi5OY9+HdMPmjWPu/baoWWW/YlJAicPew79vbAXo
+         BcibTajbmzIJgoQgWR2mieRTZWO8NDR79UNZbY71vLgW/pOH//kRl4abqYN8DXX3FY
+         wTI3cdfwzGZk7lecenH68oklmAFs1aY8PkslbF4c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: [PATCH 4.14 15/38] gro: ensure frag0 meets IP header alignment
+        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
+        kernel test robot <lkp@intel.com>,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 040/104] netfilter: nf_tables: fix audit memory leak in nf_tables_commit
 Date:   Mon,  2 Aug 2021 15:44:37 +0200
-Message-Id: <20210802134335.316313436@linuxfoundation.org>
+Message-Id: <20210802134345.336233969@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
-References: <20210802134334.835358048@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,75 +42,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-commit 38ec4944b593fd90c5ef42aaaa53e66ae5769d04 upstream.
+[ Upstream commit cfbe3650dd3ef2ea9a4420ca89d9a4df98af3fb6 ]
 
-After commit 0f6925b3e8da ("virtio_net: Do not pull payload in skb->head")
-Guenter Roeck reported one failure in his tests using sh architecture.
+In nf_tables_commit, if nf_tables_commit_audit_alloc fails, it does not
+free the adp variable.
 
-After much debugging, we have been able to spot silent unaligned accesses
-in inet_gro_receive()
+Fix this by adding nf_tables_commit_audit_free which frees
+the linked list with the head node adl.
 
-The issue at hand is that upper networking stacks assume their header
-is word-aligned. Low level drivers are supposed to reserve NET_IP_ALIGN
-bytes before the Ethernet header to make that happen.
+backtrace:
+  kmalloc include/linux/slab.h:591 [inline]
+  kzalloc include/linux/slab.h:721 [inline]
+  nf_tables_commit_audit_alloc net/netfilter/nf_tables_api.c:8439 [inline]
+  nf_tables_commit+0x16e/0x1760 net/netfilter/nf_tables_api.c:8508
+  nfnetlink_rcv_batch+0x512/0xa80 net/netfilter/nfnetlink.c:562
+  nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
+  nfnetlink_rcv+0x1fa/0x220 net/netfilter/nfnetlink.c:652
+  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+  netlink_unicast+0x2c7/0x3e0 net/netlink/af_netlink.c:1340
+  netlink_sendmsg+0x36b/0x6b0 net/netlink/af_netlink.c:1929
+  sock_sendmsg_nosec net/socket.c:702 [inline]
+  sock_sendmsg+0x56/0x80 net/socket.c:722
 
-This patch hardens skb_gro_reset_offset() to not allow frag0 fast-path
-if the fragment is not properly aligned.
-
-Some arches like x86, arm64 and powerpc do not care and define NET_IP_ALIGN
-as 0, this extra check will be a NOP for them.
-
-Note that if frag0 is not used, GRO will call pskb_may_pull()
-as many times as needed to pull network and transport headers.
-
-Fixes: 0f6925b3e8da ("virtio_net: Do not pull payload in skb->head")
-Fixes: 78a478d0efd9 ("gro: Inline skb_gro_header and cache frag0 virtual address")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: c520292f29b8 ("audit: log nftables configuration change events once per table")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/skbuff.h |    9 +++++++++
- net/core/dev.c         |    3 ++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -2785,6 +2785,15 @@ static inline void skb_propagate_pfmemal
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index a5db7c59ad4e..7512bb819dff 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -8479,6 +8479,16 @@ static int nf_tables_commit_audit_alloc(struct list_head *adl,
+ 	return 0;
  }
  
- /**
-+ * skb_frag_off() - Returns the offset of a skb fragment
-+ * @frag: the paged fragment
-+ */
-+static inline unsigned int skb_frag_off(const skb_frag_t *frag)
++static void nf_tables_commit_audit_free(struct list_head *adl)
 +{
-+	return frag->page_offset;
++	struct nft_audit_data *adp, *adn;
++
++	list_for_each_entry_safe(adp, adn, adl, list) {
++		list_del(&adp->list);
++		kfree(adp);
++	}
 +}
 +
-+/**
-  * skb_frag_page - retrieve the page referred to by a paged fragment
-  * @frag: the paged fragment
-  *
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4763,7 +4763,8 @@ static void skb_gro_reset_offset(struct
- 
- 	if (skb_mac_header(skb) == skb_tail_pointer(skb) &&
- 	    pinfo->nr_frags &&
--	    !PageHighMem(skb_frag_page(frag0))) {
-+	    !PageHighMem(skb_frag_page(frag0)) &&
-+	    (!NET_IP_ALIGN || !(skb_frag_off(frag0) & 3))) {
- 		NAPI_GRO_CB(skb)->frag0 = skb_frag_address(frag0);
- 		NAPI_GRO_CB(skb)->frag0_len = min_t(unsigned int,
- 						    skb_frag_size(frag0),
+ static void nf_tables_commit_audit_collect(struct list_head *adl,
+ 					   struct nft_table *table, u32 op)
+ {
+@@ -8543,6 +8553,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 		ret = nf_tables_commit_audit_alloc(&adl, trans->ctx.table);
+ 		if (ret) {
+ 			nf_tables_commit_chain_prepare_cancel(net);
++			nf_tables_commit_audit_free(&adl);
+ 			return ret;
+ 		}
+ 		if (trans->msg_type == NFT_MSG_NEWRULE ||
+@@ -8552,6 +8563,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 			ret = nf_tables_commit_chain_prepare(net, chain);
+ 			if (ret < 0) {
+ 				nf_tables_commit_chain_prepare_cancel(net);
++				nf_tables_commit_audit_free(&adl);
+ 				return ret;
+ 			}
+ 		}
+-- 
+2.30.2
+
 
 
