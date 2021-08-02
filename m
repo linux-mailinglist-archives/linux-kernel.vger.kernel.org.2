@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81FC3DD7CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36C93DD9FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234069AbhHBNsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:48:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56626 "EHLO mail.kernel.org"
+        id S234702AbhHBOFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:05:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234095AbhHBNqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:46:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED23960F6D;
-        Mon,  2 Aug 2021 13:46:41 +0000 (UTC)
+        id S236286AbhHBN7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:59:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 130D961154;
+        Mon,  2 Aug 2021 13:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912002;
-        bh=Ya/4acmD5+oL0bkBKlhN28c2G0R0pmpQAmwHkJIFPV4=;
+        s=korg; t=1627912537;
+        bh=oX4bt3aMhM2CYDvV680uKXCAwQn1fcA/pgcZgVoIkMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=diXx7fb6E+QprjvPBJHcLr2nfVMqfXd6Yd3lp8w6soYqcAeMfOiZgYZuiUdIsKC8X
-         5XANpqUK2O2NoS/uMtgeHbPJHYUg/EQ2wNx9LnTWSP7qCrdomxRF6nMIe6NemYyNTm
-         nF1K+yXnD8Z3Kou4InDNxxKpJLcj+Z07T8riDyoM=
+        b=vlpI2+yfiMTz8wD8aYjmMhix4TkoqpQiIFZ48kOCFBukdjne0S3hJRqfuVhjo2r+X
+         Qszvmmzdi3/tgamzMpzuN8HeIQYBXX5RXBj3N6Kb/1b8yTYsMjhlHldOVb7jsxAoT6
+         gIPFHeN5f3H0vgI4vfGNx26r0lQprjMqB448XPbM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 23/26] mlx4: Fix missing error code in mlx4_load_one()
-Date:   Mon,  2 Aug 2021 15:44:33 +0200
-Message-Id: <20210802134332.778713135@linuxfoundation.org>
+Subject: [PATCH 5.13 037/104] platform/x86: amd-pmc: Fix SMU firmware reporting mechanism
+Date:   Mon,  2 Aug 2021 15:44:34 +0200
+Message-Id: <20210802134345.240210722@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
-References: <20210802134332.033552261@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit 7e4960b3d66d7248b23de3251118147812b42da2 ]
+[ Upstream commit 4c06d35dfedf4c1fd03702e0f05292a69d020e21 ]
 
-The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'err'.
+It was lately understood that the current mechanism available in the
+driver to get SMU firmware info works only on internal SMU builds and
+there is a separate way to get all the SMU logging counters (addressed
+in the next patch). Hence remove all the smu info shown via debugfs as it
+is no more useful.
 
-Eliminate the follow smatch warning:
-
-drivers/net/ethernet/mellanox/mlx4/main.c:3538 mlx4_load_one() warn:
-missing error code 'err'.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 7ae0e400cd93 ("net/mlx4_core: Flexible (asymmetric) allocation of EQs and MSI-X vectors for PF/VFs")
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 156ec4731cb2 ("platform/x86: amd-pmc: Add AMD platform support for S2Idle")
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210629084803.248498-3-Shyam-sundar.S-k@amd.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/platform/x86/amd-pmc.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index b774ba64bd4b..913e0fd10fde 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -3222,6 +3222,7 @@ slave_start:
+diff --git a/drivers/platform/x86/amd-pmc.c b/drivers/platform/x86/amd-pmc.c
+index 1b5f149932c1..b1d6175a13b2 100644
+--- a/drivers/platform/x86/amd-pmc.c
++++ b/drivers/platform/x86/amd-pmc.c
+@@ -52,7 +52,6 @@
+ #define AMD_CPU_ID_PCO			AMD_CPU_ID_RV
+ #define AMD_CPU_ID_CZN			AMD_CPU_ID_RN
  
- 		if (!SRIOV_VALID_STATE(dev->flags)) {
- 			mlx4_err(dev, "Invalid SRIOV state\n");
-+			err = -EINVAL;
- 			goto err_close;
- 		}
- 	}
+-#define AMD_SMU_FW_VERSION		0x0
+ #define PMC_MSG_DELAY_MIN_US		100
+ #define RESPONSE_REGISTER_LOOP_MAX	200
+ 
+@@ -89,11 +88,6 @@ static inline void amd_pmc_reg_write(struct amd_pmc_dev *dev, int reg_offset, u3
+ #ifdef CONFIG_DEBUG_FS
+ static int smu_fw_info_show(struct seq_file *s, void *unused)
+ {
+-	struct amd_pmc_dev *dev = s->private;
+-	u32 value;
+-
+-	value = ioread32(dev->smu_base + AMD_SMU_FW_VERSION);
+-	seq_printf(s, "SMU FW Info: %x\n", value);
+ 	return 0;
+ }
+ DEFINE_SHOW_ATTRIBUTE(smu_fw_info);
+@@ -280,10 +274,6 @@ static int amd_pmc_probe(struct platform_device *pdev)
+ 	pci_dev_put(rdev);
+ 	base_addr = ((u64)base_addr_hi << 32 | base_addr_lo);
+ 
+-	dev->smu_base = devm_ioremap(dev->dev, base_addr, AMD_PMC_MAPPING_SIZE);
+-	if (!dev->smu_base)
+-		return -ENOMEM;
+-
+ 	dev->regbase = devm_ioremap(dev->dev, base_addr + AMD_PMC_BASE_ADDR_OFFSET,
+ 				    AMD_PMC_MAPPING_SIZE);
+ 	if (!dev->regbase)
 -- 
 2.30.2
 
