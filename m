@@ -2,224 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD5F3DCEC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 04:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9A03DCEC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 04:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbhHBCrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 22:47:19 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12436 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhHBCrS (ORCPT
+        id S231928AbhHBCrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 22:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229908AbhHBCrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 22:47:18 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GdMkw0WYZzcjk4;
-        Mon,  2 Aug 2021 10:43:36 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 10:47:05 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 10:47:04 +0800
-Subject: Re: [PATCH v2 2/3] arm64: Support page mapping percpu first chunk
- allocator
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
-        <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210720025105.103680-1-wangkefeng.wang@huawei.com>
- <20210720025105.103680-3-wangkefeng.wang@huawei.com>
- <20210801155302.GA29188@arm.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <c98e372c-be3e-0440-f37c-0dd0bf8f79c3@huawei.com>
-Date:   Mon, 2 Aug 2021 10:47:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Sun, 1 Aug 2021 22:47:40 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCC1C06175F;
+        Sun,  1 Aug 2021 19:47:31 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id u16so9499493ple.2;
+        Sun, 01 Aug 2021 19:47:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=XGbL8VwPWjiS4yy4Pnm/5ti4pl6SnxB74geqfXf2DB8=;
+        b=LT7iIak5S9eMVKEPZD7f0f9GaeTpf9fgxki9F73OG5+doNYssSWZ0f3lw9FdaLyodW
+         H+VftdRCAibeNawcMs/+wyMV07jxOnbL2d85GMVLWLny7/IBriAfc+cOb+mHA6nW71Sx
+         +5e9Xv+cfGX0tEiE7nHyJMElLi5Km8LSwGXHcZwBfY9cpcGfgAR2+q2AjdJQ1aNq95mA
+         ewqlpUaBT5mu9mYGHzlsh+9ZPR9mbnKe/5Nn193sVNPYJMVvCowTFjQMzJcfWdZF/BM9
+         ebe+OlZy1qPrEgPHdxuZBs0OXp5M+PrN3KdfC165JaM+goeJQfUbsVmboOQDq396IF8R
+         8SPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=XGbL8VwPWjiS4yy4Pnm/5ti4pl6SnxB74geqfXf2DB8=;
+        b=TXwiFGK+YyKKO0U1DeuAgDPrB9bWGyDr+dPnvN8PcKMI1tGtOySLbb/YW6dk8IgMzf
+         Bbtaegf2xGLNSIeW2QLF5uZaEJxYSGxrZ6yfMF2ojVuecz5TXBUxrWo0cVDn2dZmcLTF
+         q28b42rRRLRx1kaabWpwmgMDZOHZoDnZuZbsMPGiOA4L6nvgEzr10QgapKvZGuxApen4
+         8OI/gWYHOkJdQr+aLJ1puao9+++1JosH3fwMTu6brqE1MQ+/nN1L4bU9kfY7RQnnoPVJ
+         igVkB8guRG3y+aA2THRASBu3iqoswxxFb61ysr0d8txb2ErJVn+nVM6/3s89YW7wi84E
+         lmFA==
+X-Gm-Message-State: AOAM531XJp2AzXwBL3a5QhLPUAAXLSEO8y8Q5mtViayCcfITtF7RqHGd
+        vuo/1KkB/TwhJZxG1f0qt94=
+X-Google-Smtp-Source: ABdhPJxgLjle+X21msmkhScpohfSjneeqWivm7M3aHQYJvRXfoBdbPMfQOdSLJPQMzM3M/tZB5hKow==
+X-Received: by 2002:a17:903:20c1:b029:12c:4a37:5cbb with SMTP id i1-20020a17090320c1b029012c4a375cbbmr12001050plb.57.1627872450825;
+        Sun, 01 Aug 2021 19:47:30 -0700 (PDT)
+Received: from [10.106.0.86] ([45.135.186.29])
+        by smtp.gmail.com with ESMTPSA id l14sm9517229pfd.58.2021.08.01.19.47.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Aug 2021 19:47:30 -0700 (PDT)
+Subject: Re: [PATCH] drm/amdgpu: fix possible null-pointer dereference in
+ amdgpu_ttm_tt_populate()
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, airlied@linux.ie,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        Xinhui.Pan@amd.com, baijiaju1990@gmail.com,
+        alexander.deucher@amd.com, Philip.Yang@amd.com,
+        TOTE Robot <oslab@tsinghua.edu.cn>, sumit.semwal@linaro.org,
+        daniel@ffwll.ch, Felix.Kuehling@amd.com, airlied@redhat.com,
+        Oak.Zeng@amd.com, nirmoy.das@amd.com, tzimmermann@suse.de
+References: <20210731080437.74539-1-islituo@gmail.com>
+ <53ef6ff7-f793-5de4-4ab4-0efbfbfc0a54@amd.com>
+From:   Li Tuo <islituo@gmail.com>
+Message-ID: <fc060208-89b5-51aa-c956-adf7c42d6b79@gmail.com>
+Date:   Mon, 2 Aug 2021 10:47:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210801155302.GA29188@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <53ef6ff7-f793-5de4-4ab4-0efbfbfc0a54@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for your feedback! We will remove the null tests according to 
+your advice and prepare a V2 patch.
 
-On 2021/8/1 23:53, Catalin Marinas wrote:
-> On Tue, Jul 20, 2021 at 10:51:04AM +0800, Kefeng Wang wrote:
->> Percpu embedded first chunk allocator is the firstly option, but it
->> could fails on ARM64, eg,
->>    "percpu: max_distance=0x5fcfdc640000 too large for vmalloc space 0x781fefff0000"
->>    "percpu: max_distance=0x600000540000 too large for vmalloc space 0x7dffb7ff0000"
->>    "percpu: max_distance=0x5fff9adb0000 too large for vmalloc space 0x5dffb7ff0000"
+Best wishes,
+Tuo Li
+
+On 2021/8/2 1:19, Christian König wrote:
+> Am 31.07.21 um 10:04 schrieb Tuo Li:
+>> The variable ttm is assigned to the variable gtt, and the variable gtt
+>> is checked in:
+>>    if (gtt && gtt->userptr)
 >>
->> then we could meet "WARNING: CPU: 15 PID: 461 at vmalloc.c:3087 pcpu_get_vm_areas+0x488/0x838",
->> even the system could not boot successfully.
+>> This indicates that both ttm and gtt can be NULL.
+>> If so, a null-pointer dereference will occur:
+>>    if (ttm->page_flags & TTM_PAGE_FLAG_SG)
 >>
->> Let's implement page mapping percpu first chunk allocator as a fallback
->> to the embedding allocator to increase the robustness of the system.
-> It looks like x86, powerpc and sparc implement their own
-> setup_per_cpu_areas(). I had a quick look on finding some commonalities
-> but I think it's a lot more hassle to make a generic version out of them
-> (powerpc looks the simplest though). I think we could add a generic
-> variant with the arm64 support and later migrate other architectures to
-> it if possible.
-Ok, let's do it later, I could try to make some cleanup after the 
-patchset is merged ;)
-> The patch looks ok to me otherwise but I'd need an ack from Greg as it
-> touches drivers/.
-
-the arch_numa is only used ARM64 and riscv, the 
-NEED_PER_CPU_PAGE_FIRST_CHUNK
-
-is not enabled on RISCV, so it's no bad effect.
-
+>> Also, some null-pointer dereferences will occur in the function
+>> ttm_pool_alloc() which is called in:
+>>    return ttm_pool_alloc(&adev->mman.bdev.pool, ttm, ctx);
+>>
+>> To fix these possible null-pointer dereferences, the function returns
+>> -EINVAL when ttm is NULL.
 >
-> BTW, do we need something similar for the non-NUMA
-> setup_per_cpu_areas()? I can see this patch only enables
-> NEED_PER_CPU_PAGE_FIRST_CHUNK if NUMA.
+> NAK, the NULL test is just a leftover from when the objects where 
+> distinct.
 >
-> Leaving the rest of the patch below for Greg.
+> Please remove the NULL test instead.
 >
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Regards,
+> Christian.
+>
+>>
+>> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+>> Signed-off-by: Tuo Li <islituo@gmail.com>
 >> ---
->>   arch/arm64/Kconfig       |  4 ++
->>   drivers/base/arch_numa.c | 82 +++++++++++++++++++++++++++++++++++-----
->>   2 files changed, 76 insertions(+), 10 deletions(-)
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
 >>
->> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->> index b5b13a932561..eacb5873ded1 100644
->> --- a/arch/arm64/Kconfig
->> +++ b/arch/arm64/Kconfig
->> @@ -1045,6 +1045,10 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
->>   	def_bool y
->>   	depends on NUMA
->>   
->> +config NEED_PER_CPU_PAGE_FIRST_CHUNK
->> +	def_bool y
->> +	depends on NUMA
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c 
+>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+>> index 3a55f08e00e1..80440f799c09 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+>> @@ -1120,8 +1120,11 @@ static int amdgpu_ttm_tt_populate(struct 
+>> ttm_device *bdev,
+>>       struct amdgpu_device *adev = amdgpu_ttm_adev(bdev);
+>>       struct amdgpu_ttm_tt *gtt = (void *)ttm;
+>>   +    if (ttm == NULL)
+>> +        return -EINVAL;
 >> +
->>   source "kernel/Kconfig.hz"
->>   
->>   config ARCH_SPARSEMEM_ENABLE
->> diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
->> index 4cc4e117727d..563b2013b75a 100644
->> --- a/drivers/base/arch_numa.c
->> +++ b/drivers/base/arch_numa.c
->> @@ -14,6 +14,7 @@
->>   #include <linux/of.h>
->>   
->>   #include <asm/sections.h>
->> +#include <asm/pgalloc.h>
->>   
->>   struct pglist_data *node_data[MAX_NUMNODES] __read_mostly;
->>   EXPORT_SYMBOL(node_data);
->> @@ -168,22 +169,83 @@ static void __init pcpu_fc_free(void *ptr, size_t size)
->>   	memblock_free_early(__pa(ptr), size);
->>   }
->>   
->> +#ifdef CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK
->> +static void __init pcpu_populate_pte(unsigned long addr)
->> +{
->> +	pgd_t *pgd = pgd_offset_k(addr);
->> +	p4d_t *p4d;
->> +	pud_t *pud;
->> +	pmd_t *pmd;
->> +
->> +	p4d = p4d_offset(pgd, addr);
->> +	if (p4d_none(*p4d)) {
->> +		pud_t *new;
->> +
->> +		new = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->> +		if (!new)
->> +			goto err_alloc;
->> +		p4d_populate(&init_mm, p4d, new);
->> +	}
->> +
->> +	pud = pud_offset(p4d, addr);
->> +	if (pud_none(*pud)) {
->> +		pmd_t *new;
->> +
->> +		new = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->> +		if (!new)
->> +			goto err_alloc;
->> +		pud_populate(&init_mm, pud, new);
->> +	}
->> +
->> +	pmd = pmd_offset(pud, addr);
->> +	if (!pmd_present(*pmd)) {
->> +		pte_t *new;
->> +
->> +		new = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->> +		if (!new)
->> +			goto err_alloc;
->> +		pmd_populate_kernel(&init_mm, pmd, new);
->> +	}
->> +
->> +	return;
->> +
->> +err_alloc:
->> +	panic("%s: Failed to allocate %lu bytes align=%lx from=%lx\n",
->> +	      __func__, PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
->> +}
->> +#endif
->> +
->>   void __init setup_per_cpu_areas(void)
->>   {
->>   	unsigned long delta;
->>   	unsigned int cpu;
->> -	int rc;
->> +	int rc = -EINVAL;
->> +
->> +	if (pcpu_chosen_fc != PCPU_FC_PAGE) {
->> +		/*
->> +		 * Always reserve area for module percpu variables.  That's
->> +		 * what the legacy allocator did.
->> +		 */
->> +		rc = pcpu_embed_first_chunk(PERCPU_MODULE_RESERVE,
->> +					    PERCPU_DYNAMIC_RESERVE, PAGE_SIZE,
->> +					    pcpu_cpu_distance,
->> +					    pcpu_fc_alloc, pcpu_fc_free);
->> +#ifdef CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK
->> +		if (rc < 0)
->> +			pr_warn("PERCPU: %s allocator failed (%d), falling back to page size\n",
->> +				   pcpu_fc_names[pcpu_chosen_fc], rc);
->> +#endif
->> +	}
->>   
->> -	/*
->> -	 * Always reserve area for module percpu variables.  That's
->> -	 * what the legacy allocator did.
->> -	 */
->> -	rc = pcpu_embed_first_chunk(PERCPU_MODULE_RESERVE,
->> -				    PERCPU_DYNAMIC_RESERVE, PAGE_SIZE,
->> -				    pcpu_cpu_distance,
->> -				    pcpu_fc_alloc, pcpu_fc_free);
->> +#ifdef CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK
->> +	if (rc < 0)
->> +		rc = pcpu_page_first_chunk(PERCPU_MODULE_RESERVE,
->> +					   pcpu_fc_alloc,
->> +					   pcpu_fc_free,
->> +					   pcpu_populate_pte);
->> +#endif
->>   	if (rc < 0)
->> -		panic("Failed to initialize percpu areas.");
->> +		panic("Failed to initialize percpu areas (err=%d).", rc);
->>   
->>   	delta = (unsigned long)pcpu_base_addr - (unsigned long)__per_cpu_start;
->>   	for_each_possible_cpu(cpu)
->> -- 
->> 2.26.2
-> .
+>>       /* user pages are bound by amdgpu_ttm_tt_pin_userptr() */
+>> -    if (gtt && gtt->userptr) {
+>> +    if (gtt->userptr) {
+>>           ttm->sg = kzalloc(sizeof(struct sg_table), GFP_KERNEL);
+>>           if (!ttm->sg)
+>>               return -ENOMEM;
 >
+
