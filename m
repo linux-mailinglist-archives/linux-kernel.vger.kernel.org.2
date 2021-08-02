@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E5E3DD489
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2123DD48D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbhHBLUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
+        id S233434AbhHBLUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbhHBLUO (ORCPT
+        with ESMTP id S231881AbhHBLUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:20:14 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC38DC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 04:20:04 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id y1so1667836vsc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 04:20:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/JAmS8wvVy4y4SnKnMeVsMtIImqK8tLg7glG0zt3gSc=;
-        b=dsK2597aaj0CgIdvqVQkHR795RotwvG5A4/u70kJ0TJVekQ7IvIH1e5/Y6SgOgYA06
-         RK6naf1sK2M4kitQvktRTKv4M7MdN4gs+KXuymR1kkRXlKp76D+mptGYPvjrSGVS/vBc
-         /4nHen2KTAUvuu4sZxhkLzEuR1V5aIBapA2oxZbyAJ+ABjH1cRlfKYyqYaIGpJ0PNUEh
-         n/NbNcUYOfXE8IxJW94di4VPuLDdopPmzVRInWH5fzJnyEeIhju0MN7hzd4exLMUI1L+
-         E9WKFdhhu4Ky1IkFxHqS3XtbnnlRnm1F5jGZtYasXlwNamLCMusJ1YuVAE5qeFkadXF7
-         cCuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/JAmS8wvVy4y4SnKnMeVsMtIImqK8tLg7glG0zt3gSc=;
-        b=eVnADI9fcvcZyBquib41MZcejoGLjo5PXI0DW3nrhLn4r67N2AKU0SmeFHCjulsLmi
-         qdr7FZvNyOiwL1s4NOzD4E/tdZwvWEKHBbMTZu9Bxeqgbtigbw7QL/TQTTSUCppCvbPj
-         D3/fDZFL7hKG8WgDr3VJxzb6/vKAGwCUbJ3z89q7fl2YOUUS0D9pii4COzbTLbgsI5dM
-         gCTsPfGq9nH8MlcukSe2ELuXzl9kQSkw9WdTw853mg9PpH1cPL2Ih7nTAKUON7FpMxnD
-         67WZu2R+RYKXWZHWq5dSMt4+bKKub2sHsqga1QCz/CqwVP9nzVx7FAlKo1dOVSqxiDhu
-         fQ+g==
-X-Gm-Message-State: AOAM533CoBAo7tsz4DH0D2h5EQYi47DzVcXTA6n5Icsfo1ckszXI4hDu
-        Ep5vXUDUSXh9wvUqwlOv6+Uq82MYYzq2HJNjJxmyPQ==
-X-Google-Smtp-Source: ABdhPJzJHIgAeY0XPVt6k83LXFkjn4Bx2pIT8VR1WYLScF44QZW8nvELCz+m3nbWpUAQ+jdm76UPm+2TjUGdq7I+Fq0=
-X-Received: by 2002:a67:7c14:: with SMTP id x20mr830130vsc.42.1627903203796;
- Mon, 02 Aug 2021 04:20:03 -0700 (PDT)
+        Mon, 2 Aug 2021 07:20:46 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE92AC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 04:20:36 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GdbCN2p71z9s1l;
+        Mon,  2 Aug 2021 21:20:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1627903233;
+        bh=Ph52ycwEVB+Kr83e5k5zzEwv6lbCoXALW4ekLWI3mvY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=OyD8Aq4AaqIcoMdaKfnwOqsE8epJkeGEPf9zJ0mxrHVywJVEKvSUZj+8YoIcH1VE0
+         honyNi+z9ReapyZ4mk0fGsa4f3+TDmmba0/ty3GP7pNlm6LYVIBMCjhfutrxOxHu8U
+         sXMxTIGfAExBHy4IhWp21JGrCbgJ+3wenHoU1iroNBQ5voTWW6vLvDn8IZF88BqEG1
+         /H9zBHykLP4zxKizoJFitgHSqjAZTrCPkT/GNtGZIKgGPYlDfFDLg73RL/C+wl4gcp
+         xLa/w0jrpy0Nr/i4gK3JpxGP4X4LK3JHpDAQ4j1a8uYsQjEqJM8BSwqNCeKElZLAQp
+         CCvt/6/jf5VKA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, Robin Murphy <robin.murphy@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        iommu@lists.linux-foundation.org,
+        Claire Chang <tientzu@chromium.org>,
+        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] powerpc/svm: Don't issue ultracalls if
+ !mem_encrypt_active()
+In-Reply-To: <20210730114231.23445-1-will@kernel.org>
+References: <20210730114231.23445-1-will@kernel.org>
+Date:   Mon, 02 Aug 2021 21:20:30 +1000
+Message-ID: <871r7cks8x.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-References: <20210521134437.v2.1.Id1c70158722750aec0673d60c12e46a9c66bbfed@changeid>
- <CAD=FV=X8xgn=ueyryFZVA-VNLEU_sk8H29D08JaEpw2Qh2OFqQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=X8xgn=ueyryFZVA-VNLEU_sk8H29D08JaEpw2Qh2OFqQ@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 2 Aug 2021 13:19:27 +0200
-Message-ID: <CAPDyKFp_-mhb0i6oC7FxY5F_-206VZPBdTyBQyyd7rSnrHBUJg@mail.gmail.com>
-Subject: Re: [PATCH v2] PM: AVS: qcom-cpr: Use nvmem_cell_read_variable_le_u32()
-To:     Doug Anderson <dianders@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Niklas Cassel <niklas.cassel@linaro.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Niklas Cassel <nks@flawful.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 24 Jul 2021 at 01:05, Doug Anderson <dianders@chromium.org> wrote:
+Will Deacon <will@kernel.org> writes:
+> Commit ad6c00283163 ("swiotlb: Free tbl memory in swiotlb_exit()")
+> introduced a set_memory_encrypted() call to swiotlb_exit() so that the
+> buffer pages are returned to an encrypted state prior to being freed.
 >
-> Rafael / Bjorn,
+> Sachin reports that this leads to the following crash on a Power server:
 >
-> On Fri, May 21, 2021 at 1:45 PM Douglas Anderson <dianders@chromium.org> wrote:
-> >
-> > Let's delete the private function cpr_read_efuse() since it does the
-> > basically the same thing as the new API call
-> > nvmem_cell_read_variable_le_u32().
-> >
-> > Differences between the new API call and the old private function:
-> > * less error printing (I assume this is OK).
-> > * will give an error if the value doesn't fit in 32-bits (the old code
-> >   would have truncated silently).
-> >
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> > I haven't done any more than compile-test this. Mostly I'm just
-> > writing this patch because it helped provide inspiration for the
-> > general API function.
-> >
-> > Changes in v2:
-> > - Resending v1 as a singleton patch; dependency is merged in mainline.
-> >
-> >  drivers/soc/qcom/cpr.c | 43 +++++-------------------------------------
-> >  1 file changed, 5 insertions(+), 38 deletions(-)
+> [    0.010799] software IO TLB: tearing down default memory pool
+> [    0.010805] ------------[ cut here ]------------
+> [    0.010808] kernel BUG at arch/powerpc/kernel/interrupt.c:98!
 >
-> Are either of you interested in landing this? I guess Rafael landed
-> most of the recent changes to this driver, but it used to be under the
-> 'power' directory. Now that it's under 'drivers/soc/qcom' maybe it
-> should go through Bjorn's tree?
+> Nick spotted that this is because set_memory_encrypted() is issuing an
+> ultracall which doesn't exist for the processor, and should therefore
+> be gated by mem_encrypt_active() to mirror the x86 implementation.
+>
+> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> Cc: Claire Chang <tientzu@chromium.org>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Fixes: ad6c00283163 ("swiotlb: Free tbl memory in swiotlb_exit()")
+> Suggested-by: Nicholas Piggin <npiggin@gmail.com>
+> Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+> Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> Link: https://lore.kernel.org/r/1905CD70-7656-42AE-99E2-A31FC3812EAC@linux.vnet.ibm.com/
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  arch/powerpc/platforms/pseries/svm.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-Yes, that was exactly the intent of moving the files. I guess Bjorn
-has simply been busy.
+Thanks.
 
-Kind regards
-Uffe
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+
+
+I assume Konrad will take this via the swiotlb tree?
+
+cheers
