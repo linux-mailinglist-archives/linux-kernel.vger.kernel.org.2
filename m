@@ -2,36 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719AF3DD8FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15383DD931
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235829AbhHBNy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:54:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33012 "EHLO mail.kernel.org"
+        id S235784AbhHBN4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:56:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234429AbhHBNtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:49:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8062B61057;
-        Mon,  2 Aug 2021 13:49:33 +0000 (UTC)
+        id S234998AbhHBNux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:50:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 687C16112D;
+        Mon,  2 Aug 2021 13:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912174;
-        bh=qz3Qm9UzbMKkj0gqArsNkS5oZ2oF1xpS93lp+bgF/d4=;
+        s=korg; t=1627912236;
+        bh=rnZkppms87SENbqQ0YwaRx8DDxeQ3FjXlqmpA+j/hmA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bB0BYcdCDTuC0YWVjcVEWAm/KlTsV3euZDxvCvtm1tbv++ow8UGS6P579/ke7k3Zc
-         uAqLphm/S2HzWA8I76AWO3llN7zyeAebyTns7fM5X6M36x66N9Kfhpp0hmPZtl2w0C
-         YkTyqtRWifoRkr3NtdSyglBKRZJqfFy9gjOEVZQ8=
+        b=X8aY7dTu1r3d7NDYZMbdGS9bq2PJtQyEORHLKxIBbLqp5lbgPMdFvAxR/sFBuacoO
+         S64/rQoYFoRKCz3G6dRIZOPuTABlYwyzr6kRQVDTO6rIq707nwH9D4AIqt0+Xz7aXF
+         +x02auAklaEjlmp7uA3F6bQzbcicOcOWRjJ6Ak1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kiszka <jan.kiszka@siemens.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 03/30] x86/asm: Ensure asm/proto.h can be included stand-alone
+        stable@vger.kernel.org, Vlad Buslov <vladbu@mellanox.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+b47bc4f247856fb4d9e1@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 01/40] net_sched: check error pointer in tcf_dump_walker()
 Date:   Mon,  2 Aug 2021 15:44:41 +0200
-Message-Id: <20210802134334.192143820@linuxfoundation.org>
+Message-Id: <20210802134335.454274504@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
-References: <20210802134334.081433902@linuxfoundation.org>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
+References: <20210802134335.408294521@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -39,50 +46,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-[ Upstream commit f7b21a0e41171d22296b897dac6e4c41d2a3643c ]
+[ Upstream commit 580e4273d7a883ececfefa692c1f96bdbacb99b5 ]
 
-Fix:
+Although we take RTNL on dump path, it is possible to
+skip RTNL on insertion path. So the following race condition
+is possible:
 
-  ../arch/x86/include/asm/proto.h:14:30: warning: ‘struct task_struct’ declared \
-    inside parameter list will not be visible outside of this definition or declaration
-  long do_arch_prctl_64(struct task_struct *task, int option, unsigned long arg2);
-                               ^~~~~~~~~~~
+rtnl_lock()		// no rtnl lock
+			mutex_lock(&idrinfo->lock);
+			// insert ERR_PTR(-EBUSY)
+			mutex_unlock(&idrinfo->lock);
+tc_dump_action()
+rtnl_unlock()
 
-  .../arch/x86/include/asm/proto.h:40:34: warning: ‘struct task_struct’ declared \
-    inside parameter list will not be visible outside of this definition or declaration
-   long do_arch_prctl_common(struct task_struct *task, int option,
-                                    ^~~~~~~~~~~
+So we have to skip those temporary -EBUSY entries on dump path
+too.
 
-if linux/sched.h hasn't be included previously. This fixes a build error
-when this header is used outside of the kernel tree.
-
- [ bp: Massage commit message. ]
-
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/b76b4be3-cf66-f6b2-9a6c-3e7ef54f9845@web.de
+Reported-and-tested-by: syzbot+b47bc4f247856fb4d9e1@syzkaller.appspotmail.com
+Fixes: 0fedc63fadf0 ("net_sched: commit action insertions together")
+Cc: Vlad Buslov <vladbu@mellanox.com>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Jiri Pirko <jiri@resnulli.us>
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/proto.h | 2 ++
+ net/sched/act_api.c |    2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index 6e81788a30c1..0eaca7a130c9 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -4,6 +4,8 @@
+--- a/net/sched/act_api.c
++++ b/net/sched/act_api.c
+@@ -231,6 +231,8 @@ static int tcf_dump_walker(struct tcf_id
+ 		index++;
+ 		if (index < s_i)
+ 			continue;
++		if (IS_ERR(p))
++			continue;
  
- #include <asm/ldt.h>
- 
-+struct task_struct;
-+
- /* misc architecture specific prototypes */
- 
- void syscall_init(void);
--- 
-2.30.2
-
+ 		if (jiffy_since &&
+ 		    time_after(jiffy_since,
 
 
