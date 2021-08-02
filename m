@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923A83DD4A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B30C3DD4A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbhHBL1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:27:38 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51286 "EHLO
+        id S233508AbhHBL1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:27:42 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51306 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233408AbhHBL1S (ORCPT
+        with ESMTP id S233417AbhHBL1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:27:18 -0400
+        Mon, 2 Aug 2021 07:27:19 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 152481FF7B;
+        by smtp-out2.suse.de (Postfix) with ESMTP id 1832E1FF7F;
         Mon,  2 Aug 2021 11:27:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
         t=1627903628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OXNn5WZQMOzF4wr03lXtsXvUZdT/MzSbG6ALi9FuFQs=;
-        b=spi4hxPrfPbfKzcs5HYSTmLZgs1xLOJao7KvWx7hMPW7RokwubET99tONVa8BeKe+xuzfA
-        x7pIihZAuUswupxtkpPJBc9u71DHATL4bsW/QA9K1eK2q3clyXUun1lbNvzBDLn8Uu3t4V
-        Sh0ivM4XT4EMJSbMnxAzyZGPBHwbtiA=
+        bh=CzLqnDMPgV4X2TVtB9CFgIWVEvkNhP+8WThUlGoV9nM=;
+        b=id3afhjHrLuLzLNg3bp7J8byiyMuh8CFuwIGCFN6otealbcZu5ejOF0v0isNETl7pX95LT
+        yqRV3/bSa/bNsuXh239UDdOO0VvdKkvVvv1ltk5TcFB8EW+cL9y4dhEFx6fS0r4BpBOSNI
+        CROFn6rjmZerSr4OGTq4z1kt4euhP4E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
         s=susede2_ed25519; t=1627903628;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OXNn5WZQMOzF4wr03lXtsXvUZdT/MzSbG6ALi9FuFQs=;
-        b=eYynShd5yw1jJlWKW9dtxEI1pSjsFyfh5zeztYX8k5hWDhgnCC/AUqfb5g8X6bhUpk9YiL
-        8TAz5z/XvayCnRBQ==
+        bh=CzLqnDMPgV4X2TVtB9CFgIWVEvkNhP+8WThUlGoV9nM=;
+        b=mpOw64a8qGPcPLO0gAVPTqrEPqMvcIibjtGoa0VLDjHoaavLzOwGP22JXZ7jrfkQMWJPoh
+        6M2XbU6Dh2hnRkBA==
 Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 017EBA3BCA;
+        by relay2.suse.de (Postfix) with ESMTP id 08017A3BCB;
         Mon,  2 Aug 2021 11:27:08 +0000 (UTC)
 Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id F207C518C0B2; Mon,  2 Aug 2021 13:27:07 +0200 (CEST)
+        id 030F9518C0B4; Mon,  2 Aug 2021 13:27:08 +0200 (CEST)
 From:   Daniel Wagner <dwagner@suse.de>
 To:     linux-nvme@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -48,9 +48,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Hannes Reinecke <hare@suse.de>,
         Wen Xiong <wenxiong@us.ibm.com>,
         Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v4 7/8] nvme-tcp: Unfreeze queues on reconnect
-Date:   Mon,  2 Aug 2021 13:26:57 +0200
-Message-Id: <20210802112658.75875-8-dwagner@suse.de>
+Subject: [PATCH v4 8/8] nvme-rdma: Unfreeze queues on reconnect
+Date:   Mon,  2 Aug 2021 13:26:58 +0200
+Message-Id: <20210802112658.75875-9-dwagner@suse.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210802112658.75875-1-dwagner@suse.de>
 References: <20210802112658.75875-1-dwagner@suse.de>
@@ -60,34 +60,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During the queue teardown in nvme_tcp_teardown_io_queues() freeze is
+During the queue teardown in nvme_rdma_teardown_io_queues() freeze is
 called unconditionally. When we reconnect we need to pair the freeze
 with an unfreeze to avoid hanging I/Os. For newly created connection
 this is not needed.
 
-Fixes: 2875b0aecabe ("nvme-tcp: fix controller reset hang during traffic")
+Fixes: 9f98772ba307 ("nvme-rdma: fix controller reset hang during traffic")
 Signed-off-by: Daniel Wagner <dwagner@suse.de>
 ---
- drivers/nvme/host/tcp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/nvme/host/rdma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index 32268f24f62a..097f7dd10ed3 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -1819,9 +1819,11 @@ static int nvme_tcp_configure_io_queues(struct nvme_ctrl *ctrl, bool new)
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index de2a8950d282..21a8a5353af0 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -901,6 +901,8 @@ static int nvme_rdma_configure_admin_queue(struct nvme_rdma_ctrl *ctrl,
+ 			error = PTR_ERR(ctrl->ctrl.admin_q);
+ 			goto out_cleanup_fabrics_q;
  		}
- 		blk_mq_update_nr_hw_queues(ctrl->tagset,
- 			ctrl->queue_count - 1);
--		nvme_unfreeze(ctrl);
++	} else {
++		nvme_unfreeze(&ctrl->ctrl);
  	}
  
-+	if (!new)
-+		nvme_unfreeze(ctrl);
-+
- 	ret = nvme_tcp_start_io_queues(ctrl);
- 	if (ret)
- 		goto out_cleanup_connect_q;
+ 	error = nvme_rdma_start_queue(ctrl, 0);
 -- 
 2.29.2
 
