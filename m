@@ -2,180 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEF13DDC66
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192793DDC43
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235060AbhHBP1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:27:39 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3555 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235009AbhHBP1g (ORCPT
+        id S234985AbhHBPWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234603AbhHBPWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:27:36 -0400
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gdhh44YJHz6F7yZ;
-        Mon,  2 Aug 2021 23:27:16 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 17:27:25 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 16:27:23 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <axboe@kernel.dk>, <hch@lst.de>, <ming.lei@redhat.com>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <tglx@linutronix.de>, John Garry <john.garry@huawei.com>
-Subject: [RFC PATCH] null_blk: Add pseudo-managed interrupts support
-Date:   Mon, 2 Aug 2021 23:22:36 +0800
-Message-ID: <1627917756-122544-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Mon, 2 Aug 2021 11:22:49 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F66BC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:22:39 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id y200so20692932iof.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:22:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=UKJ2lydVyCb3AzexZBgFToc2Ys1NLmv5j88NPB8DmN4=;
+        b=PAySSlQy5i7aBN6gGbT7Uq1O9nRDc1/U+x+A+HrpoX8O9HOKuFDxl8+FMR+0vjgb0M
+         qvORb4H5u7azjVKg8QsKeRA7hPZXwdJevd+0pxJVbPKqAT8z8vRBxowDdCMItsJza33l
+         uFnQ3xIeKIX+eZ/oA5KVLcKvz9qI0MIQweHgz5xZLVEYwY4ypNqhKYiXkqhwiHHCtpSS
+         nWZ1l+6stYrwwrbqd9IBtetyM+ixUqY2McqkU9R8A9PbnE5Oge1iCz2SUbPkmu13ac16
+         QkJaQfa4w1/4qVOyuIsEQ2pgb2v+EluXxhM8xPohIn+Z6uKqK/wdDdClJNvLHbSJX/DW
+         sV7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=UKJ2lydVyCb3AzexZBgFToc2Ys1NLmv5j88NPB8DmN4=;
+        b=MkgYvifwbifNeH88Mweo0AV0FINy93NT2a1i9dEwQWTgKw1ApHgFR8vaPrWGJ37BgG
+         16jQizaTdHSF3pARGjD/H5ZAsdtbgmbYMUnm3BWC97lQSQTWGDTOAyvT2avBcsAUmcVG
+         0bEklnfZqQ2Hh8ejs1Yii/MKVNw87IEmkIJFFvKhXQbtzndbGwuSH/Zn/yh1eEkksKfB
+         ZHagyzo2QX4ek3/J1vaLUdY6NZYZRtqbjaqGUu4FLZr+YjVr61YJBiEoMxAqSUQfoAeI
+         g/WmpDzi5jCnt834+7XuNqqdC6lfUuYbeAy7j4nRSRSE0m9EiLaszJS40rzSFZu7ff/3
+         t2Aw==
+X-Gm-Message-State: AOAM533PuY/Pi+D3cDH/eVgCNVADmO/lFPVstlYmtjn8gPhAO4VH13q6
+        fBpWcmIfgvsUbEf+wGUuyJPeHy78F4HGg6jp5EE=
+X-Google-Smtp-Source: ABdhPJxq9v0G1V6XFxSqjE9zvV/3DFR8L+Jx/dHJRZ3SxPCZ0k8jAthPiH3ubC5ui9OyNZb61q2zO4RJyTccNysYLq4=
+X-Received: by 2002:a02:90d0:: with SMTP id c16mr15181411jag.106.1627917758658;
+ Mon, 02 Aug 2021 08:22:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Received: by 2002:a05:6e02:120e:0:0:0:0 with HTTP; Mon, 2 Aug 2021 08:22:37
+ -0700 (PDT)
+Reply-To: mrmichelduku@outlook.com
+From:   michel <dukumichel09@gmail.com>
+Date:   Mon, 2 Aug 2021 15:22:37 +0000
+Message-ID: <CAJYsJ_E8sHo5pKDG045gnC3P_tqHu=mLd=tGN9wXCYyiCXaQ4g@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-blk-mq supports draining HW queues contexts of active requests for when
-the underlying HW uses managed interrupts signaling and all associated
-CPUs are offlined.
+Hello,
 
-Testing this feature may be difficult as appropriate HW may not be
-available or certain configurations may also be difficult to create.
+With due respect to your person, I make this contact with you as I
+believe that you can be of great assistance to me. I need your urgent
+assistance in transferring the sum of $11.3million to your private
+account Where this money can be shared between us.
 
-Add pseudo-managed interrupt support by making requests timeout when no
-CPUs are online in the hctx cpumask at completion.
+The money has been here in our Bank lying dormant for years now
+without anybody coming for the claim. I want to release the money to
+you as the relative to our deceased customer (the account owner) who
+died in a plane crash with his family since October 2005.
 
-A new irqmode is added, NULL_IRQ_MANAGED. This mode is based on a timer,
-as a time window needs to be created between "submission and completion"
-for the CPU(s) to go offline, which other modes like softirq would not
-provide.
+By indicating your interest I will send you the full details on how
+the business will be executed.
 
-Signed-off-by: John Garry <john.garry@huawei.com>
----
-Based on v5.14-rc4 + "[PATCH V6 0/3] blk-mq: fix blk_mq_alloc_request_hctx"
-
-Sending as an RFC to gauge interest before sending proper.
-
-diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-index d734e9ee1546..25484acfd6df 100644
---- a/drivers/block/null_blk/main.c
-+++ b/drivers/block/null_blk/main.c
-@@ -76,6 +76,7 @@ enum {
- 	NULL_IRQ_NONE		= 0,
- 	NULL_IRQ_SOFTIRQ	= 1,
- 	NULL_IRQ_TIMER		= 2,
-+	NULL_IRQ_MANAGED	= 3,
- };
- 
- enum {
-@@ -181,7 +182,7 @@ static int g_irqmode = NULL_IRQ_SOFTIRQ;
- static int null_set_irqmode(const char *str, const struct kernel_param *kp)
- {
- 	return null_param_store_val(str, &g_irqmode, NULL_IRQ_NONE,
--					NULL_IRQ_TIMER);
-+					NULL_IRQ_MANAGED);
- }
- 
- static const struct kernel_param_ops null_irqmode_param_ops = {
-@@ -190,7 +191,7 @@ static const struct kernel_param_ops null_irqmode_param_ops = {
- };
- 
- device_param_cb(irqmode, &null_irqmode_param_ops, &g_irqmode, 0444);
--MODULE_PARM_DESC(irqmode, "IRQ completion handler. 0-none, 1-softirq, 2-timer");
-+MODULE_PARM_DESC(irqmode, "IRQ completion handler. 0-none, 1-softirq, 2-timer, 3-pseudo managed");
- 
- static unsigned long g_completion_nsec = 10000;
- module_param_named(completion_nsec, g_completion_nsec, ulong, 0444);
-@@ -716,7 +717,18 @@ static void end_cmd(struct nullb_cmd *cmd)
- 
- static enum hrtimer_restart null_cmd_timer_expired(struct hrtimer *timer)
- {
--	end_cmd(container_of(timer, struct nullb_cmd, timer));
-+	struct nullb_cmd *cmd = container_of(timer, struct nullb_cmd, timer);
-+	struct nullb_queue *nq = cmd->nq;
-+	struct request *rq = cmd->rq;
-+	struct blk_mq_hw_ctx *hctx = rq->mq_hctx;
-+
-+	if ((nq->dev->irqmode == NULL_IRQ_MANAGED) &&
-+	    (cpumask_any_and(hctx->cpumask, cpu_online_mask) >= nr_cpu_ids)) {
-+		/* All CPUs associated are offline -> trigger a timeout */
-+		cmd->fake_timeout = true;
-+	} else {
-+		end_cmd(cmd);
-+	}
- 
- 	return HRTIMER_NORESTART;
- }
-@@ -1333,6 +1345,7 @@ static inline void nullb_complete_cmd(struct nullb_cmd *cmd)
- 		end_cmd(cmd);
- 		break;
- 	case NULL_IRQ_TIMER:
-+	case NULL_IRQ_MANAGED:
- 		null_cmd_end_timer(cmd);
- 		break;
- 	}
-@@ -1488,7 +1501,8 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
- 
- 	might_sleep_if(hctx->flags & BLK_MQ_F_BLOCKING);
- 
--	if (nq->dev->irqmode == NULL_IRQ_TIMER) {
-+	if (nq->dev->irqmode == NULL_IRQ_TIMER ||
-+	    nq->dev->irqmode == NULL_IRQ_MANAGED) {
- 		hrtimer_init(&cmd->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
- 		cmd->timer.function = null_cmd_timer_expired;
- 	}
-@@ -1568,12 +1582,23 @@ static int null_init_hctx(struct blk_mq_hw_ctx *hctx, void *driver_data,
- 	return 0;
- }
- 
-+static int null_map_queues(struct blk_mq_tag_set *set)
-+{
-+	struct blk_mq_queue_map *qmap = &set->map[HCTX_TYPE_DEFAULT];
-+
-+	if (g_irqmode == NULL_IRQ_MANAGED)
-+		qmap->use_managed_irq = 1;
-+
-+	return blk_mq_map_queues(qmap);
-+}
-+
- static const struct blk_mq_ops null_mq_ops = {
- 	.queue_rq       = null_queue_rq,
- 	.complete	= null_complete_rq,
- 	.timeout	= null_timeout_rq,
- 	.init_hctx	= null_init_hctx,
- 	.exit_hctx	= null_exit_hctx,
-+	.map_queues	= null_map_queues,
- };
- 
- static void null_del_dev(struct nullb *nullb)
-@@ -1761,7 +1786,7 @@ static int null_validate_conf(struct nullb_device *dev)
- 		dev->submit_queues = 1;
- 
- 	dev->queue_mode = min_t(unsigned int, dev->queue_mode, NULL_Q_MQ);
--	dev->irqmode = min_t(unsigned int, dev->irqmode, NULL_IRQ_TIMER);
-+	dev->irqmode = min_t(unsigned int, dev->irqmode, NULL_IRQ_MANAGED);
- 
- 	/* Do memory allocation, so set blocking */
- 	if (dev->memory_backed)
-@@ -1961,6 +1986,12 @@ static int __init null_init(void)
- 		pr_err("legacy IO path no longer available\n");
- 		return -EINVAL;
- 	}
-+
-+	if (g_queue_mode == NULL_Q_BIO && g_irqmode == NULL_IRQ_MANAGED) {
-+		pr_err("bio queue mode not supported with pseudo-managed irqs\n");
-+		return -EINVAL;
-+	}
-+
- 	if (g_queue_mode == NULL_Q_MQ && g_use_per_node_hctx) {
- 		if (g_submit_queues != nr_online_nodes) {
- 			pr_warn("submit_queues param is set to %u.\n",
--- 
-2.26.2
-
+Best Regards,
+Michel Duku.
