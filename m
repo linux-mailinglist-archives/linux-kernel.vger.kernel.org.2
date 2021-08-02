@@ -2,112 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0823DD081
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4743DD07C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhHBGaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:30:04 -0400
-Received: from smtpbg587.qq.com ([113.96.223.105]:34185 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhHBGaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:30:02 -0400
-X-Greylist: delayed 394 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Aug 2021 02:30:01 EDT
-X-QQ-Spam: true
-X-QQ-mid: bizesmtp41t1627885392twhm8kke
-Received: from localhost.localdomain (unknown [113.89.245.207])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 02 Aug 2021 14:23:11 +0800 (CST)
-X-QQ-SSF: 01100000002000206000B00A0000000
-From:   Icenowy Zheng <icenowy@sipeed.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Icenowy Zheng <icenowy@sipeed.com>
-Subject: [PATCH 17/17] arm64: allwinner: dts: r329: add support for Sipeed MaixSense
-Date:   Mon,  2 Aug 2021 14:22:12 +0800
-Message-Id: <20210802062212.73220-18-icenowy@sipeed.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210802062212.73220-1-icenowy@sipeed.com>
-References: <20210802062212.73220-1-icenowy@sipeed.com>
+        id S232254AbhHBG2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:28:32 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60272 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230432AbhHBG23 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 02:28:29 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E07CA1FF2C;
+        Mon,  2 Aug 2021 06:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627885694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6O4ovfEUNzace1WQB0NeGLBJmSbRWBaTfA/jz5eGKhU=;
+        b=iekKpJ/FslvYsDvvZ82fpdm2vUtlLGMkBtK78wzaekb+Qk7ht7qwOi8jim1KAZlT5MBqOw
+        /D4TEqIau7O5ebh+Rxwe4sF7sa2tsnufabuAG+xPb3GZ28ayU+B4ptzFRqQfydNDQqp4BV
+        e5bwJxE3QHXGF43kpWrhdtZDLtlByAo=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id BC5BBA3BBE;
+        Mon,  2 Aug 2021 06:28:13 +0000 (UTC)
+Date:   Mon, 2 Aug 2021 08:28:13 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] mm/memcg: Fix incorrect flushing of lruvec data in
+ obj_stock
+Message-ID: <YQeQfX3t8k+U3MIL@dhcp22.suse.cz>
+References: <20210802022827.10192-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:sipeed.com:qybgspam:qybgspam3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802022827.10192-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sipeed MaixSense is a R329 devkit based on Maix IIA SoM.
+On Sun 01-08-21 22:28:27, Waiman Long wrote:
+> When mod_objcg_state() is called with a pgdat that is different from
+> that in the obj_stock, the old lruvec data cached in obj_stock are
+> flushed out. Unfortunately, they were flushed to the new pgdat and
+> hence the wrong node, not the one cached in obj_stock.
 
-Add support for it.
+It would be great to explicitly mention user observable problems here. I
+do assume this will make slab stats skewed but the effect wouldn't be
+very big, right?
 
-Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
----
- arch/arm64/boot/dts/allwinner/Makefile        |  1 +
- .../dts/allwinner/sun50i-r329-maixsense.dts   | 37 +++++++++++++++++++
- 2 files changed, 38 insertions(+)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-r329-maixsense.dts
+> Fix that by flushing the data to the cached pgdat instead.
+> 
+> Fixes: 68ac5b3c8db2 ("mm/memcg: cache vmstat data in percpu memcg_stock_pcp")
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-index a96d9d2d8dd8..80a336d480ac 100644
---- a/arch/arm64/boot/dts/allwinner/Makefile
-+++ b/arch/arm64/boot/dts/allwinner/Makefile
-@@ -37,3 +37,4 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-orangepi-one-plus.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
-+dtb-$(CONFIG_ARCH_SUNXI) += sun50i-r329-maixsense.dtb
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-r329-maixsense.dts b/arch/arm64/boot/dts/allwinner/sun50i-r329-maixsense.dts
-new file mode 100644
-index 000000000000..1876b9d0b080
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-r329-maixsense.dts
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+// Copyright (c) 2021 Sipeed
-+
-+/dts-v1/;
-+
-+#include "sun50i-r329-maix-iia.dtsi"
-+
-+/ {
-+	model = "Sipeed MaixSense";
-+	compatible = "sipeed,maixsense", "sipeed,maix-iia",
-+		     "allwinner,sun50i-r329";
-+
-+	aliases {
-+		serial0 = &uart0;
-+		mmc0 = &mmc0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&mmc0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mmc0_pf_pins>;
-+
-+	vmmc-supply = <&reg_vcc3v3>;
-+	bus-width = <4>;
-+	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>; /* PF6 */
-+	status = "okay";
-+};
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart0_pb_pins>;
-+	status = "okay";
-+};
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/memcontrol.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index ae1f5d0cb581..881ec4ddddcd 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3106,17 +3106,19 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  		stock->cached_pgdat = pgdat;
+>  	} else if (stock->cached_pgdat != pgdat) {
+>  		/* Flush the existing cached vmstat data */
+> +		struct pglist_data *oldpg = stock->cached_pgdat;
+> +
+> +		stock->cached_pgdat = pgdat;
+>  		if (stock->nr_slab_reclaimable_b) {
+> -			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_RECLAIMABLE_B,
+> +			mod_objcg_mlstate(objcg, oldpg, NR_SLAB_RECLAIMABLE_B,
+>  					  stock->nr_slab_reclaimable_b);
+>  			stock->nr_slab_reclaimable_b = 0;
+>  		}
+>  		if (stock->nr_slab_unreclaimable_b) {
+> -			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_UNRECLAIMABLE_B,
+> +			mod_objcg_mlstate(objcg, oldpg, NR_SLAB_UNRECLAIMABLE_B,
+>  					  stock->nr_slab_unreclaimable_b);
+>  			stock->nr_slab_unreclaimable_b = 0;
+>  		}
+> -		stock->cached_pgdat = pgdat;
+
+Minor nit. Is there any reason to move the cached_pgdat? TBH I found the
+original way better from the readability POV.
+
+>  	}
+>  
+>  	bytes = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
+> -- 
+> 2.18.1
+
 -- 
-2.30.2
-
+Michal Hocko
+SUSE Labs
