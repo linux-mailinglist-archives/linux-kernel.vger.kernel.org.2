@@ -2,194 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A59A3DDAD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9BC3DDADC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235423AbhHBOWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
+        id S235920AbhHBOWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234867AbhHBOW0 (ORCPT
+        with ESMTP id S235963AbhHBOWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:22:26 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF0EC08EAF5;
-        Mon,  2 Aug 2021 07:07:25 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id l4so24085667ljq.4;
-        Mon, 02 Aug 2021 07:07:25 -0700 (PDT)
+        Mon, 2 Aug 2021 10:22:39 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412A2C0701F8;
+        Mon,  2 Aug 2021 07:09:00 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id t3so17633081plg.9;
+        Mon, 02 Aug 2021 07:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QSRmyGOQKi26XFJcHlkzbFSHx2fpkufJxW98dYtkbJM=;
-        b=u0Y9ayklqAWjyoyQ60wihHL84rHSb1g62wltZ0Iwp5Qd83r7B9QQs+EV54HcOVA/ul
-         kOLj+m6FA4Dv5tFupwjD4Blybv3lMbku6KWYfSXUo2GIRL8NZN0U5oAzrG2IhoioUBNQ
-         G0nx5OvEa57rhD4p9HOD5q7ADJoBK6uOW0Tjil92uzefZ56DDwn2yBS54fKgxtga4kq6
-         THp49KV9AYDMKnKJHT8ubp+6XkppSgozjTfCz19+BUk4BRBETAdDUzh8iSyVopVsfNuk
-         PmES+9USYeUprBPpfgf3FdjU5uPdasTPrPfcxdAspZZ7YbEbJGzHH4UrGUZnS2gHkW/u
-         OoJQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/cdM8HpdDM3Yh7GGE7exLVKVMbD9iA/9tyiszM+STgg=;
+        b=EyGzIbCm/4WfGRl2TIpRtI8exR5hEZdzfziWgkyJF2rPPiSQ75H+98IAopMmYevfFk
+         Ov/fJ43JIQnILsE3s/0qzNMc0nrf6uUXE2j26BExy5g7B3BpTmvtolJxygg5zsp4OzjQ
+         /7pE2ruUo+gM4LDOxH4S0QCLE3cZn8HjYiXLd7zaPCzN5tcqN75mDO2ycYHk5nf3h82W
+         fzBmyU3qV/42PwBr8KexEQmrjqnx6SCVYEPtgGSjDXNVb1Uffuv26Hb9ID8hcdFyzcOI
+         2ZeoAyGM+UdW1S66kVSqZMjoR5QEIes/nzm112DtVAisubEuzui0RUvnkB/UUMAP1zyE
+         JLjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QSRmyGOQKi26XFJcHlkzbFSHx2fpkufJxW98dYtkbJM=;
-        b=nZKnVLzKonDphSM2i7S/AoQBnxeUiPsl/345CqmveVxXSBJ+OcbaBLZi7pCm7JTNMb
-         FUQFjqSX4fWxJyMbPdJfqMAO6V/YzTAWrTQ4EX6DP+Dc+NH1pjHKbrxnalQUacgp91c3
-         vttH6EN3Qj0ex6MixFCxs8tK3M9vydgD08GlyG9bKBD2NVKY46GyQEZ/GpqgeWzhqfvX
-         KTW4qM7kUAoRTDYMxxJ7TGt5QpWBsLkNizLJZmRPYvdYvpHsyMBat41s//B4RFxVUfNI
-         7Jrrh4oWsa/rOaA4AphEkyullOSFID32y2N4NkF2Zk5XU4jpVzYb+c0bnoK5Zk0QJG5o
-         orrw==
-X-Gm-Message-State: AOAM532bKwbKSKHj8UlWeIeqQexC9pf8Jhr8gUv2mKxZmpM7PPHg6yLf
-        p8/3ZdDARW3e1XkNv9nWPfM=
-X-Google-Smtp-Source: ABdhPJz+OFyTx3UdWqBUphRa9VvAMkkbPhcsHju7u0s9/D1D4dhNHRLtgWWgqzFVJMtDcasY9YnF+w==
-X-Received: by 2002:a2e:98d1:: with SMTP id s17mr10996439ljj.457.1627913243692;
-        Mon, 02 Aug 2021 07:07:23 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id q66sm884304ljb.83.2021.08.02.07.07.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 07:07:23 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 17:07:21 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v1 4/4] gpio: dwapb: Get rid of legacy platform data
-Message-ID: <20210802140721.vxhqidrkcxo3ex53@mobilestation>
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
- <20210726125436.58685-4-andriy.shevchenko@linux.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/cdM8HpdDM3Yh7GGE7exLVKVMbD9iA/9tyiszM+STgg=;
+        b=KCWguRI6XpOC4NANbUmdJU8A2dKRuK8R8fYdNL+T/y2i5pq1CEhNeHe45HxKcHKw7Z
+         86ge4xwUvuutP+xU1LxjDEeMvvNjEsVWu2kVa3U1QxxpQMMqARf+5y4M5fp/khkhQT23
+         WayH5FKCOBE0JERAK67O8grW/MY7MUbLdbbWxBbVYcVSUcyh3kvrpJ027G0GPXcFrgJd
+         UpAq0gShQ9irj3syRYMy17jpzm0mTlxc4mw7VdyGEl2MeNxeiaz/fntlkl+o3aK2BXvW
+         IafCL2rZu5XdS8ynS5ivAMw16b68P7ejnCqw++4vWtdbqJ+rzfAWUBmbl4xjDMNqrhOw
+         FRkw==
+X-Gm-Message-State: AOAM531p54V5x9dsA35BewNi8pOllVsm8IvlHH0EVAzNGznsHIXa1fAx
+        kOnx+1AHhY0DeljgNcI3H8g=
+X-Google-Smtp-Source: ABdhPJz9/oIt1d6cc74gFPmQ4IHl6g1R2CxfQ4Ko9VZ15V7BmdIE77nzkycqmmDE/JgZuYIJykKPEQ==
+X-Received: by 2002:aa7:8148:0:b029:31b:10b4:f391 with SMTP id d8-20020aa781480000b029031b10b4f391mr16506898pfn.69.1627913339735;
+        Mon, 02 Aug 2021 07:08:59 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:18:efec::4b1])
+        by smtp.gmail.com with ESMTPSA id fz10sm11071046pjb.40.2021.08.02.07.08.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 07:08:59 -0700 (PDT)
+Subject: Re: [PATCH 13/13] HV/Storvsc: Add Isolation VM support for storvsc
+ driver
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, will@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, rientjes@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, xen-devel@lists.xenproject.org,
+        pgonda@google.com, david@redhat.com, keescook@chromium.org,
+        hannes@cmpxchg.org, sfr@canb.auug.org.au,
+        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
+        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com, anparri@microsoft.com
+References: <20210728145232.285861-1-ltykernel@gmail.com>
+ <20210728145232.285861-14-ltykernel@gmail.com> <YQfxA/AYfOqyqNh0@8bytes.org>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <eaeb75b7-7e98-ad2d-0e2c-0565b9db79dd@gmail.com>
+Date:   Mon, 2 Aug 2021 22:08:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210726125436.58685-4-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <YQfxA/AYfOqyqNh0@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 03:54:36PM +0300, Andy Shevchenko wrote:
-> Platform data is a legacy interface to supply device properties
-> to the driver. In this case we don't have anymore in-kernel users
-> for it. Just remove it for good.
+On 8/2/2021 9:20 PM, Joerg Roedel wrote:
+> On Wed, Jul 28, 2021 at 10:52:28AM -0400, Tianyu Lan wrote:
+>> In Isolation VM, all shared memory with host needs to mark visible
+>> to host via hvcall. vmbus_establish_gpadl() has already done it for
+>> storvsc rx/tx ring buffer. The page buffer used by vmbus_sendpacket_
+>> mpb_desc() still need to handle. Use DMA API to map/umap these
+>> memory during sending/receiving packet and Hyper-V DMA ops callback
+>> will use swiotlb function to allocate bounce buffer and copy data
+>> from/to bounce buffer.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpio/gpio-dwapb.c                | 28 +++++++++++++++---------
->  include/linux/platform_data/gpio-dwapb.h | 24 --------------------
->  2 files changed, 18 insertions(+), 34 deletions(-)
->  delete mode 100644 include/linux/platform_data/gpio-dwapb.h
+> I am wondering why you dont't use DMA-API unconditionally? It provides
+> enough abstraction to do the right thing for isolated and legacy VMs.
 > 
-> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-> index e3011d4e17b0..b9dd0ba812dc 100644
-> --- a/drivers/gpio/gpio-dwapb.c
-> +++ b/drivers/gpio/gpio-dwapb.c
-> @@ -16,7 +16,6 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> -#include <linux/platform_data/gpio-dwapb.h>
->  #include <linux/platform_device.h>
->  #include <linux/property.h>
->  #include <linux/reset.h>
-> @@ -48,6 +47,7 @@
->  
->  #define DWAPB_DRIVER_NAME	"gpio-dwapb"
->  #define DWAPB_MAX_PORTS		4
-> +#define DWAPB_MAX_GPIOS		32
->  
->  #define GPIO_EXT_PORT_STRIDE	0x04 /* register stride 32 bits */
->  #define GPIO_SWPORT_DR_STRIDE	0x0c /* register stride 3*32 bits */
-> @@ -63,6 +63,19 @@
->  
->  #define DWAPB_NR_CLOCKS		2
->  
 
-> +struct dwapb_port_property {
-> +	struct fwnode_handle *fwnode;
-> +	unsigned int idx;
-> +	unsigned int ngpio;
-> +	unsigned int gpio_base;
-> +	int irq[DWAPB_MAX_GPIOS];
-> +};
-> +
-> +struct dwapb_platform_data {
-> +	struct dwapb_port_property *properties;
-> +	unsigned int nports;
-> +};
-> +
->  struct dwapb_gpio;
-
-If you need to resend the series anyway could you please move the
-structures declarations to being below the forward declaration of the
-dwapb_gpio structure? Of course it's not that critical, but for the
-sake of just not to have the later one left somewhere in the middle of
-the unrelated structures and for at least to keep some order in the
-declarations.
-
-Then feel free to add:
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
-
-The whole series has been tested on Baikal-T1 SoC:
-Tested-by: Serge Semin <fancer.lancer@gmail.com>
-
--Sergey
-
->  
->  #ifdef CONFIG_PM_SLEEP
-> @@ -670,17 +683,12 @@ static int dwapb_gpio_probe(struct platform_device *pdev)
->  	unsigned int i;
->  	struct dwapb_gpio *gpio;
->  	int err;
-> +	struct dwapb_platform_data *pdata;
->  	struct device *dev = &pdev->dev;
-> -	struct dwapb_platform_data *pdata = dev_get_platdata(dev);
-> -
-> -	if (!pdata) {
-> -		pdata = dwapb_gpio_get_pdata(dev);
-> -		if (IS_ERR(pdata))
-> -			return PTR_ERR(pdata);
-> -	}
->  
-> -	if (!pdata->nports)
-> -		return -ENODEV;
-> +	pdata = dwapb_gpio_get_pdata(dev);
-> +	if (IS_ERR(pdata))
-> +		return PTR_ERR(pdata);
->  
->  	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
->  	if (!gpio)
-> diff --git a/include/linux/platform_data/gpio-dwapb.h b/include/linux/platform_data/gpio-dwapb.h
-> deleted file mode 100644
-> index 535e5ed549d9..000000000000
-> --- a/include/linux/platform_data/gpio-dwapb.h
-> +++ /dev/null
-> @@ -1,24 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0-only */
-> -/*
-> - * Copyright(c) 2014 Intel Corporation.
-> - */
-> -
-> -#ifndef GPIO_DW_APB_H
-> -#define GPIO_DW_APB_H
-> -
-> -#define DWAPB_MAX_GPIOS		32
-> -
-> -struct dwapb_port_property {
-> -	struct fwnode_handle *fwnode;
-> -	unsigned int	idx;
-> -	unsigned int	ngpio;
-> -	unsigned int	gpio_base;
-> -	int		irq[DWAPB_MAX_GPIOS];
-> -};
-> -
-> -struct dwapb_platform_data {
-> -	struct dwapb_port_property *properties;
-> -	unsigned int nports;
-> -};
-> -
-> -#endif
-> -- 
-> 2.30.2
-> 
+In VMbus, there is already a similar bounce buffer design and so there 
+is no need to call DMA-API for such buffer. Calling DMA-API is to use
+swiotlb bounce buffer for those buffer which hasn't been covered. This
+is why need to conditionally call DMA API.
