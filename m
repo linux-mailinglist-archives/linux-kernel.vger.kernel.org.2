@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14283DD072
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EBD3DD08C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbhHBGX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:23:26 -0400
-Received: from smtpbg126.qq.com ([106.55.201.22]:28000 "EHLO smtpbg587.qq.com"
+        id S232301AbhHBGbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:31:35 -0400
+Received: from smtpbg127.qq.com ([109.244.180.96]:17739 "EHLO smtpbg.qq.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232305AbhHBGXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:23:21 -0400
-X-QQ-mid: bizesmtp41t1627885378thkqeux2
+        id S232335AbhHBGbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 02:31:33 -0400
+X-QQ-mid: bizesmtp41t1627885381tjgna1ec
 Received: from localhost.localdomain (unknown [113.89.245.207])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 02 Aug 2021 14:22:57 +0800 (CST)
+        id ; Mon, 02 Aug 2021 14:23:00 +0800 (CST)
 X-QQ-SSF: 01100000002000206000B00A0000000
-X-QQ-FEAT: zuISFTXeVwLI7T7y7eeg4g78iC351nEVHKQd2b+SncmfD3a+XPdRldWBHL5MP
-        U+jKj8T2vm+sT1R4NldxCktYHKAPu5c/UfCarfief8tPYl50Xoqzs4DSt5s9XXdwmmVL51Q
-        b+VorZom+X2Q86oOr27dY8kNUaK6+/0ksH1sCse47cdnapwVWmzK9PpJ38dQbsdaVd0LIZH
-        lX7J+3pJJAoKPXjyTbyBzy6sSf3JafkX/MJdLOvzY4+JvCDG7AWrICMCD4BYty3qHcVLYlL
-        1uMggGxxMV963YowffSGLScmf1pRDxMvCn0t8dbs9JCR4PUXG4Wd2+l6O8r3KYRlLM8711+
-        DOI7BmrqhOw0dTh7ok=
+X-QQ-FEAT: XmdeD7Vz7XKEsenA8qfKJDlKqKH3OcmWavfxlSV4LwfNutVbexd3xxZ3DfGKr
+        mkLVAcjVB3Ej69bBWC/TkI9LF6AkY88Bl07MScJP6Z0YBgXxjG7g/iUKKtp70SX/mYdNYsx
+        zWSYTTI60ch03XlsFcIq+/lge06X5JNocvmgFeA3J9SmlxiGHUDa4CK3WKvFZqvzhizUGAT
+        AMX+NdR6Yu0nKcMCytkB3g4yqf5925emvg7E/gTDy90R7W8+sln957rLMzIHEDgqG/1KzAe
+        QLlRCD0MRhim3nUhx75OVleBhJJT2PTI3L1p4iKeRRXZ3mK1NlmQsR2J44J5BGHLkLqoqLo
+        f9cRUElgITHg9pOrUo=
 X-QQ-GoodBg: 0
 From:   Icenowy Zheng <icenowy@sipeed.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -36,44 +36,58 @@ To:     Rob Herring <robh+dt@kernel.org>,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
         Icenowy Zheng <icenowy@sipeed.com>
-Subject: [PATCH 12/17] dt-bindings: mmc: sunxi-mmc: add R329 MMC compatible string
-Date:   Mon,  2 Aug 2021 14:22:07 +0800
-Message-Id: <20210802062212.73220-13-icenowy@sipeed.com>
+Subject: [PATCH 13/17] mmc: sunxi: add support for R329 MMC controllers
+Date:   Mon,  2 Aug 2021 14:22:08 +0800
+Message-Id: <20210802062212.73220-14-icenowy@sipeed.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210802062212.73220-1-icenowy@sipeed.com>
 References: <20210802062212.73220-1-icenowy@sipeed.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:sipeed.com:qybgspam:qybgspam2
+Feedback-ID: bizesmtp:sipeed.com:qybgspam:qybgspam1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-R329 SoC has two MMC controllers similar to ones in the previous
-Allwinner SoCs. However, as R329 has no eMMC controller, the two MMC
-controllers look like a mixture of previous SoCs' ordinary MMC
-controller and eMMC controller.
+The two MMC controllers in Allwinner R329 have a mixed feature set
+comparing to the previous SoCs' ordinary MMC and eMMC controllers.
 
-Add a compatible string for R329 MMC controllers.
+Add support for them.
 
 Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
 ---
- .../devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml         | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mmc/host/sunxi-mmc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml b/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml
-index 4f62ad6ce50c..3e8c3c747a9b 100644
---- a/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml
-+++ b/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml
-@@ -28,6 +28,7 @@ properties:
-       - const: allwinner,sun50i-a64-mmc
-       - const: allwinner,sun50i-a100-emmc
-       - const: allwinner,sun50i-a100-mmc
-+      - const: allwinner,sun50i-r329-mmc
-       - items:
-           - const: allwinner,sun8i-a83t-mmc
-           - const: allwinner,sun7i-a20-mmc
+diff --git a/drivers/mmc/host/sunxi-mmc.c b/drivers/mmc/host/sunxi-mmc.c
+index 2702736a1c57..0c9f66785286 100644
+--- a/drivers/mmc/host/sunxi-mmc.c
++++ b/drivers/mmc/host/sunxi-mmc.c
+@@ -1199,6 +1199,15 @@ static const struct sunxi_mmc_cfg sun50i_a100_emmc_cfg = {
+ 	.needs_new_timings = true,
+ };
+ 
++static const struct sunxi_mmc_cfg sun50i_r329_cfg = {
++	.idma_des_size_bits = 13,
++	.idma_des_shift = 2,
++	.clk_delays = NULL,
++	.can_calibrate = true,
++	.mask_data0 = true,
++	.needs_new_timings = true,
++};
++
+ static const struct of_device_id sunxi_mmc_of_match[] = {
+ 	{ .compatible = "allwinner,sun4i-a10-mmc", .data = &sun4i_a10_cfg },
+ 	{ .compatible = "allwinner,sun5i-a13-mmc", .data = &sun5i_a13_cfg },
+@@ -1209,6 +1218,7 @@ static const struct of_device_id sunxi_mmc_of_match[] = {
+ 	{ .compatible = "allwinner,sun50i-a64-emmc", .data = &sun50i_a64_emmc_cfg },
+ 	{ .compatible = "allwinner,sun50i-a100-mmc", .data = &sun50i_a100_cfg },
+ 	{ .compatible = "allwinner,sun50i-a100-emmc", .data = &sun50i_a100_emmc_cfg },
++	{ .compatible = "allwinner,sun50i-r329-mmc", .data = &sun50i_r329_cfg },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, sunxi_mmc_of_match);
 -- 
 2.30.2
 
