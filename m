@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30863DD7C1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2933DD9A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234373AbhHBNsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:48:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56432 "EHLO mail.kernel.org"
+        id S234368AbhHBOCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:02:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234109AbhHBNqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:46:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BBE061057;
-        Mon,  2 Aug 2021 13:46:33 +0000 (UTC)
+        id S235747AbhHBNyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:54:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3618761183;
+        Mon,  2 Aug 2021 13:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627911993;
-        bh=AQdRtbEklsMatPJvXlOJbnAN69r6mMvhpup5NRvTdu0=;
+        s=korg; t=1627912358;
+        bh=k+5vxf2jg4fS0EDyw3i+2FAXvaetqSfv4NJ24XYIk6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VhCODGJhsIapzVZPBGxipYL5EO7R7deYSVaAJVxDIAb1i5HTNbtLWjU/3cGvAG4Pp
-         Q1bqDWdWFVpQXh+d8uUYgGOzd5gmJN0IbrQat07NWzRL2wu5QV+qoTt8WMg3XCUJ+3
-         Sz1EhE9Q2HhkwVY+co43NDaID7QKT/daeERuDHZs=
+        b=BK+HIw2jghYrk/4hwwPk0NwHJz7M9sh5QIqxilI04hmy3R6WTTjzNfUtlPBRqXGLI
+         QfdwalRqowr209TFF0I9wTU8WE5GxfmnyMglpoaUkfjPv+obVh97efQyerflWbtPq/
+         uEUes1r1m1nM+oFEtHJR7kpxKfY6K+Sn+lf4KHL4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kiszka <jan.kiszka@siemens.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 19/26] x86/asm: Ensure asm/proto.h can be included stand-alone
+        stable@vger.kernel.org, PGNd <pgnet.dev@gmail.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.10 06/67] Revert "ACPI: resources: Add checks for ACPI IRQ override"
 Date:   Mon,  2 Aug 2021 15:44:29 +0200
-Message-Id: <20210802134332.655434834@linuxfoundation.org>
+Message-Id: <20210802134339.237262137@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
-References: <20210802134332.033552261@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,50 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-[ Upstream commit f7b21a0e41171d22296b897dac6e4c41d2a3643c ]
+commit e0eef3690dc66b3ecc6e0f1267f332403eb22bea upstream.
 
-Fix:
+The commit 0ec4e55e9f57 ("ACPI: resources: Add checks for ACPI IRQ
+override") introduces regression on some platforms, at least it makes
+the UART can't get correct irq setting on two different platforms,
+and it makes the kernel can't bootup on these two platforms.
 
-  ../arch/x86/include/asm/proto.h:14:30: warning: ‘struct task_struct’ declared \
-    inside parameter list will not be visible outside of this definition or declaration
-  long do_arch_prctl_64(struct task_struct *task, int option, unsigned long arg2);
-                               ^~~~~~~~~~~
+This reverts commit 0ec4e55e9f571f08970ed115ec0addc691eda613.
 
-  .../arch/x86/include/asm/proto.h:40:34: warning: ‘struct task_struct’ declared \
-    inside parameter list will not be visible outside of this definition or declaration
-   long do_arch_prctl_common(struct task_struct *task, int option,
-                                    ^~~~~~~~~~~
-
-if linux/sched.h hasn't be included previously. This fixes a build error
-when this header is used outside of the kernel tree.
-
- [ bp: Massage commit message. ]
-
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/b76b4be3-cf66-f6b2-9a6c-3e7ef54f9845@web.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Regression-discuss: https://bugzilla.kernel.org/show_bug.cgi?id=213031
+Reported-by: PGNd <pgnet.dev@gmail.com>
+Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/proto.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/acpi/resource.c |    9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index a4a77286cb1d..ae6f1592530b 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -3,6 +3,8 @@
+--- a/drivers/acpi/resource.c
++++ b/drivers/acpi/resource.c
+@@ -430,13 +430,6 @@ static void acpi_dev_get_irqresource(str
+ 	}
+ }
  
- #include <asm/ldt.h>
- 
-+struct task_struct;
-+
- /* misc architecture specific prototypes */
- 
- void syscall_init(void);
--- 
-2.30.2
-
+-static bool irq_is_legacy(struct acpi_resource_irq *irq)
+-{
+-	return irq->triggering == ACPI_EDGE_SENSITIVE &&
+-		irq->polarity == ACPI_ACTIVE_HIGH &&
+-		irq->shareable == ACPI_EXCLUSIVE;
+-}
+-
+ /**
+  * acpi_dev_resource_interrupt - Extract ACPI interrupt resource information.
+  * @ares: Input ACPI resource object.
+@@ -475,7 +468,7 @@ bool acpi_dev_resource_interrupt(struct
+ 		}
+ 		acpi_dev_get_irqresource(res, irq->interrupts[index],
+ 					 irq->triggering, irq->polarity,
+-					 irq->shareable, irq_is_legacy(irq));
++					 irq->shareable, true);
+ 		break;
+ 	case ACPI_RESOURCE_TYPE_EXTENDED_IRQ:
+ 		ext_irq = &ares->data.extended_irq;
 
 
