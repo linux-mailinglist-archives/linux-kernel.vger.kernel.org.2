@@ -2,215 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F47F3DDCA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133673DDCA5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235256AbhHBPoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
+        id S235064AbhHBPpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234551AbhHBPoW (ORCPT
+        with ESMTP id S234551AbhHBPpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:44:22 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062F0C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:44:12 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id n12-20020a05600c3b8cb029025a67bbd40aso3915535wms.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:44:11 -0700 (PDT)
+        Mon, 2 Aug 2021 11:45:30 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FB6C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:45:19 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id d6so17465555edt.7
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
          :cc;
-        bh=zAWuQ/JvoX+qW03VDGPJ9Ofp3oF3NSH0evX+ItLfT0M=;
-        b=OY1dHlSBGhnSjUiSRde6FOpi/D/J7vDN3qiynTmUlf6bnERXdwDmKC+7PzgqdLk2VQ
-         6k3GrRyW36WgMN0o5BCwydoFGH4LJ3/Td+yTEL2V0YgpV6njdbtogAPjJdjk3Zbc5vED
-         uxDQrZlBUxtd99jT+x1vQWolvyWpM4AFa8GYKJBYNk9U6K9uhIivv3UR8tFoz+b2YCyd
-         3+K4ynU4wb5PxA9Sg88UzIdL+uzuohxlpQG0/uGCx/97aBGwwyM9AMyl7xf+OhyBmuOK
-         qWl1yv2dQPqzDtWlA5msz53nVoSicHeDAYeGDn/2tdS/3UYQQB+gKVYy19uWXoVYrYMX
-         vYKw==
+        bh=cMN4yc6Yg7k+g95Y7UmZLiL/P6GU424U+ZDesgvhHgU=;
+        b=cQd6eHU1xNXbRSjFnHyZg5KKJ8qwmS312QYTIhTlKOvZHVz+vU5I1tTgW2BB0RFmES
+         Z4EHxLLnIiMwBth28LK4Ahje7aFFktra/pnP5cFCug4SnUwmR6zGodWlrj8VYbluAqwQ
+         YJi6LnO/Ryc3z7LAq+QKYt/TWmkRz5mZvE24aY7yFfW1JyXLaItJHEt86+y67qOOSTgE
+         mt1yMy2iPuaKgK7CcNnSNx9YTscgoOCJgITwkVx9FihmNPRfqw5HHHBcqiZE9PhLGbYK
+         lT1UqDwf/AQYapSCuVZ3aNLNUS30d0WEkBVdFHWhYEwB6rusx/Ph3bHdvZGhEx6h+usA
+         nqnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
          :message-id:subject:to:cc;
-        bh=zAWuQ/JvoX+qW03VDGPJ9Ofp3oF3NSH0evX+ItLfT0M=;
-        b=EGJazFyqQ6prnhyODjGLkOMpIQwji0Ej/v4xwL/3VFG+4BFqqcUFJK8farXM5zz/0W
-         ZZm7pf9viXEMevlf0eIwqnq9LF4kG968zFo7f+RBSZlJOGKTpa/bGvLmV6klszpCZwvX
-         YKQs9gzgcl2csnnjRrI4jaEqX/3yM8mxELLOUL3wX2njKNDK62pff+IjeW90m6hD16Sp
-         VpAkUqnsTsoSLTM/3OAeo4onAYbBHPCSD7hMgppGhaP4FfI3hCbO9cxpx+C2sT9y/TCs
-         g38pPA1MaYtsr1CHGJ3a5CwWPQn7kiwlMKb3lwg5HsCJ2gARgWzH86WHre7Sm3y4Y8Sq
-         pqIQ==
-X-Gm-Message-State: AOAM531XKZap4qkhPr00q+Vk5CUL5RY8+uZZ4VPyYAMzMLb857kCSDw0
-        VfqkM4aoiizmepszfW+/FT5CU5UlEauOd4zvv6cjdg==
-X-Google-Smtp-Source: ABdhPJwQk3PjsXlhmERVCZwrj08dYks7ZMB1H5WlB2pmNXlDk+r6SlCK3idLXagGaVe4isrMvVOoC3dYiM8MzdRPtiM=
-X-Received: by 2002:a7b:c0cc:: with SMTP id s12mr49605wmh.0.1627919050360;
- Mon, 02 Aug 2021 08:44:10 -0700 (PDT)
+        bh=cMN4yc6Yg7k+g95Y7UmZLiL/P6GU424U+ZDesgvhHgU=;
+        b=jz1P4Q4kX83Otc1N1HfQyLwvYN/yEVxiCJ6DpMoKsnibs+5S6ksLKR/xs6STGW9rXF
+         AUbzh+5zgkDZehwLuQNwb8EbqkkNIIWtOfhtFy9FQI5zVITfxbnZ/Z58M7QQOsW0J0Qf
+         hM/iJnyZa2hx7EPNPQDQ5/VMpfBz/sOUIgjrtwfMWSeAh7yJrhGJyPoh/5v7jgrsHC4u
+         +Z9xCf0654/Lz1MuqEgagE85isSKZi9wEdlV6mTuBgpL3f9EwhUs4qKpmo5PCPOx1n2t
+         R+6+1V6B7PIyKxHZhdmkoHcCtQLJZ7uJ0pD2PDiS7sFwameGx+VBrBBxn5UyQrigljIn
+         uNMA==
+X-Gm-Message-State: AOAM530BxxfzlIUX9Ki4j27eqarNOHP1iG5jliiN11FCmVVXSrvpCb1V
+        GT5dObHO7L9agv+RVhDqM4a9LOre0+kKmDBc7IU=
+X-Google-Smtp-Source: ABdhPJxT71L+T05yz/hq+Tsn15GIbWhZTIbquxkVkxucO5ulY894g/8MmOt6pCNq9/8xQxw7L9Urp1FEelq55p0lqoU=
+X-Received: by 2002:a05:6402:274f:: with SMTP id z15mr20502581edd.21.1627919118096;
+ Mon, 02 Aug 2021 08:45:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210721090706.21523-1-james.clark@arm.com> <20210721090706.21523-3-james.clark@arm.com>
- <CAJ9a7Viap53OgrM2e_DU4+oymFB41jspbKbvEVFQWROt7ifuXw@mail.gmail.com>
- <20210731060312.GB7437@leoy-ThinkPad-X240s> <CAJ9a7VhdLaP3rkXwscAQpVe+jSgcx02WjY=RmiBkaCB6ObGTjQ@mail.gmail.com>
- <20210802150358.GA148327@leoy-ThinkPad-X240s>
-In-Reply-To: <20210802150358.GA148327@leoy-ThinkPad-X240s>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Mon, 2 Aug 2021 16:43:59 +0100
-Message-ID: <CAJ9a7VhBU4QYWYbzJs2Z91k=NC+xYnmKJ-HH9CKiNdpDxsY1SA@mail.gmail.com>
-Subject: Re: [PATCH 2/6] perf cs-etm: Initialise architecture based on TRCIDR1
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Al Grant <al.grant@arm.com>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        John Garry <john.garry@huawei.com>,
+Received: by 2002:a17:906:3018:0:0:0:0 with HTTP; Mon, 2 Aug 2021 08:45:17
+ -0700 (PDT)
+In-Reply-To: <20210802141245.1146772-1-arnd@kernel.org>
+References: <20210802141245.1146772-1-arnd@kernel.org>
+From:   Martin Guy <martinwguy@gmail.com>
+Date:   Mon, 2 Aug 2021 17:45:17 +0200
+Message-ID: <CAL4-wQqCL1S-GYu7VKJeTT37wh=rR=SMUuwgKiXnnn_Y=uydOA@mail.gmail.com>
+Subject: Re: [PATCH] ARM: ep93xx: remove MaverickCrunch support
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        soc@kernel.org, Nikita Shubin <nikita.shubin@maquefel.me>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Hubert Feurstein <hubert.feurstein@contec.at>,
+        Lukasz Majewski <lukma@denx.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+On 02/08/2021, Arnd Bergmann <arnd@kernel.org> wrote:
+> The MaverickCrunch support for ep93xx never made it into glibc
 
-On Mon, 2 Aug 2021 at 16:04, Leo Yan <leo.yan@linaro.org> wrote:
+This is true, but is not needed except for preserving FP registers in
+catch/throw exeptions or longjmps.
+
+> was removed from gcc in its 4.8 release in 2012.
+
+I was sad about that, as I had managed to get it working correctly in
+4.2 4.3 and 4.4.
+Unfortunately the GCC ARM maintainer at the time was paid by ARM, and
+they had no interest in it, as I gather the ARM-Cirrus partnership
+ended up disappointingly.
+
+> It is now one of
+> the last parts of arch/arm/ that fails to build with the clang
+> integrated assembler
+
+Even if crunch support is not configured?
+
+> According to Hartley Sweeten:
 >
-> Hi Mike,
->
-> On Mon, Aug 02, 2021 at 03:04:14PM +0100, Mike Leach wrote:
->
-> [...]
->
-> > > > > +#define TRCIDR1_TRCARCHMIN_SHIFT 4
-> > > > > +#define TRCIDR1_TRCARCHMIN_MASK  GENMASK(7, 4)
-> > > > > +#define TRCIDR1_TRCARCHMIN(x)    (((x) & TRCIDR1_TRCARCHMIN_MASK) >> TRCIDR1_TRCARCHMIN_SHIFT)
-> > > > > +static enum _ocsd_arch_version cs_etm_decoder__get_arch_ver(u32 reg_idr1)
-> > > > > +{
-> > > > > +       /*
-> > > > > +        * If the ETM trace minor version is 4 or more then we can assume
-> > > > > +        * the architecture is ARCH_AA64 rather than just V8
-> > > > > +        */
-> > > > > +       return TRCIDR1_TRCARCHMIN(reg_idr1) >= 4 ? ARCH_AA64 : ARCH_V8;
-> > > > > +}
-> > > >
-> > > > This is true for ETM4.x & ETE 1.x (arch 5.x) but not ETM 3.x
-> > > > Probably need to beef up this comment or the function name to emphasise this.
-> > >
-> > > Yeah, I think it's good to change the function name.  Eventually, this
-> > > function should only be used for ETM4.x and ETE.
-> > >
-> > > Another minor comment is: can we refine the arch version number, e.g.
-> > > change the OpenCSD's macro "ARCH_AA64" to "ARCH_V8R4", (or
-> > > "ARCH_V8R3_AA64"), this can give more clear clue what's the ETM version.
-> > >
-> >
-> > The purpose of these macros is to inform the decoder of the
-> > architecture of the PE - not the version of the ETM.
-> >
-> > These OpenCSD macros are defined by the library headers
-> > (ocsd_if_types.h) and not the perf headers.
-> > These have been published as the API / ABI for OpenCSD and as such
-> > changing them affects all OpenCSD clients, not just perf.
->
-> I understand these macros are defined in OpenCSD lib as APIs, since I
-> saw these macros have not been widely used in perf tool (e.g.
-> ARCH_AA64), so this is why I think it's good to take chance to refine
-> the naming conventions.
->
+>  "Martin Guy did a lot of work trying to get the maverick crunch working
+>   but I was never able to successfully use it for anything.
 
-The macros are used in other tools - so changing now affects those
-too. Not something I am prepared to do without good reason.
+>   It "kind" of works but depending on the EP93xx silicon revision
 
-> > This PE architecture version is used along with the core profile to
-> > determine which instructions are valid waypoint instructions to
-> > associate with atom elements when walking the program image during
-> > trace decode.
-> >
-> > From v8.3  onwards we moved away from filtering on specific
-> > architecture versions. This was due to two factors:-
-> > 1. The architectural rules now allow architectural features for one
-> > increment e.g. Arch 8.4, to be backported into  the previous increment
-> > - e,g, 8.3, which made this filtering more difficult to track.
-> > 2. After discussion with the PE architects it was clear that
-> > instructions in a later architect version would not re-use older
-> > opcodes from a previous one and  be nop / invalid in the earlier
-> > architectures. (certainly in the scope of AA64). Therefore
-> > the policy in the decoder is to check for all the instructions we know
-> > about for the latest version of architecture, even if we could be
-> > decoding an earlier architecture version. This means we may check for
-> > a few more opcodes than necessary for earlier version of the
-> > architecture, but the overall decode is more robust and easier to
-> > maintain.
-> >
-> > Therefore for any AA64 core beyond v8.3 - it is safe to use the
-> > ARCH_AA64 PE architecture version and the decoder will handle it.
->
-> I have no objection for current approach; but two things can cause
-> confusions and it might be difficult for maintenance:
->
-> - The first thing is now we base on the bit fields TRCIDR1::TRCARCHMIN
->   to decide the PE architecture version.  In the ETMv4 spec,
->   TRCIDR1::TRCARCHMIN is defined as the trace unit minor version,
->   so essentially it's a minor version number for tracer (ETM) but not
->   the PE architecture number.  But now we are using it to decide the
->   PE architecture number (8.3, 8.4, etc...).
->
+It works fine on all production revisions except D0 (the first one)
+which is so rare as to be unfindable. All the others from D1 on have
+the exact same HW bugs.
 
-This is a slight weakness in the implementation of perf. Ideally one
-does need to establish the architecture version of the PE - but perf
-/cs-etm is using an assumption regarding the profile and version of
-the core, according to the ETM / ETE versiom.
-That said - the ETM / ETE version numbers do have a strong
-relationship with PE architecture version numbers, so this assumption
-holds for the current supported devices.
+>   there are still a number of hardware bugs that either give imprecise or garbage results.
 
-> - The second thing is the macros' naming convention.
->   E.g. "AA64" gives me an impression it is a general naming "Arm Arch 64"
->   for all Arm 64-bit CPUs, it's something like an abbreviation for
->   "aarch64"; so seems to me it doesn't show any meaningful info for PE's
->   architecture version number.  This is why I proposed to use more
->   explict macro definition for architectures (e.g. ARCH_V8R3, ARCH_V8R4,
->   ARCH_V9R0, etc).
->
+Not my experience, See http://martinwguy.net/crunch/#CorrectnessTests
+If "imprecise" means "doesn't handle unnormalized FP values correctly"
+then yes, that's a feature if you need the 2.5 to 4gimes speedup it
+provides.
+But I would be interested (Hartley) if you have a concrete example.
 
-For modern cores it is sufficient for the decoder to know the profile
-and that it is aarch 64 - so yes the macro is simply saying this a
-general AA64 core.
-The macros for earlier versions are a little more specific as certain
-filtering is used according to the version of the PE.
+> This touches mostly the ep93xx platform,
 
-ARCH_V8R4,  ARCH_V9R0 etc would have no significance to the decoder
-and would not be useful. If we get to the stage where we need more
-specific PE architecture versions - then these can be added as
-required.
-Using the ARCH_AA64 macro means that we do not have to update the API
-for every version update of the architecture, and there are no changes
-required to the perf / cs-etm handling.
+The ep93xx is the only chip series it was ever included in.
 
-> If we really want to use ARCH_AA64, it's better to give some comments in
-> the code.
->
+> If there are remaining users of MaverickCrunch, they can use LTS
+> kernels for at least another five years before kernel support ends.
 
-There are comments in the OpenCSD headers, though additional ones in
-the perf  / cs-etm handling soruce code could be added.
+The only user ! am aware of is the HEAT deep space telescope in the Antarctic
+http://martinwguy.blogspot.com/2015/10/maverickcrunch-code-runs-on-heat-deep.html
 
-Regards
+Personally I have no problem with removing kernel support if that
+makes people's lives easier in some way.
 
-Mike
+  M
 
-
-> Thanks a lot for shared the background info.
->
-> Leo
-
-
-
--- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+   M
