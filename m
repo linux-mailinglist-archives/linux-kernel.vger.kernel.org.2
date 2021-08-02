@@ -2,271 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AB73DCF12
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 06:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017E73DCF1B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 06:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbhHBEBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 00:01:12 -0400
-Received: from mga17.intel.com ([192.55.52.151]:8832 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231410AbhHBEBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 00:01:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="193660645"
-X-IronPort-AV: E=Sophos;i="5.84,287,1620716400"; 
-   d="scan'208";a="193660645"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 21:01:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,287,1620716400"; 
-   d="scan'208";a="668971411"
-Received: from fedora29.sh.intel.com ([10.239.182.87])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Aug 2021 21:00:59 -0700
-From:   Pengfei Xu <pengfei.xu@intel.com>
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Pengfei Xu <pengfei.xu@intel.com>, Heng Su <heng.su@intel.com>,
-        Yu Yu-cheng <yu-cheng.yu@intel.com>,
-        Yu Fenghua <fenghua.yu@intel.com>,
-        Hansen Dave <dave.hansen@intel.com>,
-        Luck Tony <tony.luck@intel.com>,
-        Mehta Sohil <sohil.mehta@intel.com>,
-        Chen Yu C <yu.c.chen@intel.com>
-Subject: [RFC PATCH v2 2/2] selftests/xsave: add xsave test during and after signal handling
-Date:   Mon,  2 Aug 2021 12:00:04 +0800
-Message-Id: <672a1d26af50d7413d0cb02eb1685878ede0a535.1627457824.git.pengfei.xu@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1627457824.git.pengfei.xu@intel.com>
-References: <cover.1627457824.git.pengfei.xu@intel.com>
+        id S229624AbhHBEH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 00:07:29 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:34345 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhHBEH2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 00:07:28 -0400
+Received: by mail-io1-f72.google.com with SMTP id v18-20020a5ec1120000b02905286f544a84so10959514iol.1
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 21:07:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=9Wk7WJ2AalfetOwN+B2EmORMek+8iV47E0Dl7NfLfdE=;
+        b=JjOWbUSDqvFLQcGy0rSyvVEaadVv7AW26QpEyLVRmbZwyGiIu93agsx5it+OmdwmPo
+         10aqR6wk/b0OCemaYfmgl1cSwgX0VpdmTweo76rM0VUUiSv+19Yyktncie72C2X6LJHJ
+         hqlwq29idZXltLLVv1kqDrE472ScWJzSHMB+hbod0FPOxzxtAVuhaoYiN+OgcNw1qvsB
+         oGy/nM3R+JDQNmZpzx+xKc4fkX3BnmtikkjLkBglKW+SOu8fE1H89ZiJCrxtRPjw9F13
+         E6wmgHXrK7kEWNfRaVhfsRNemBC+cBZqMzImnn69i+ioMWTAHAmaayb4MtuQzATEwFGC
+         DFNA==
+X-Gm-Message-State: AOAM5319VD5tn4CVY+KGOBeYMvg28lUqEG3wfiLWNQZkzxDxkOv7blwl
+        VGepGwSLalNb8qaWpLrokfNoK9rZ+BEJWyKzVZZxrNg4NEvq
+X-Google-Smtp-Source: ABdhPJxYKgvtJeSsOJsK3ivfttNjcCGN7qbfp5MXh+tl/+q9dLKCM9D7cpnrWBxCnwg7WtHfvFpmmkUn5lcFTjq9wJvq5y8eImxC
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5e:9918:: with SMTP id t24mr516718ioj.24.1627877238118;
+ Sun, 01 Aug 2021 21:07:18 -0700 (PDT)
+Date:   Sun, 01 Aug 2021 21:07:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000084201105c88bb48a@google.com>
+Subject: [syzbot] general protection fault in hci_release_dev
+From:   syzbot <syzbot+47c6d0efbb7fe2f7a5b8@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, luiz.von.dentz@intel.com,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        penguin-kernel@I-love.SAKURA.ne.jp,
+        penguin-kernel@i-love.sakura.ne.jp, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to ensure that process XSAVE content is not affected by signal
-handling, this case tests process XSAVE content should not change in nested
-signal handling, and the XSAVE content should same before and after signal
-handling.
+Hello,
 
-Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
+syzbot found the following issue on:
+
+HEAD commit:    5a4cee98ea75 Add linux-next specific files for 20210728
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=146e451e300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=143f7094479da395
+dashboard link: https://syzkaller.appspot.com/bug?extid=47c6d0efbb7fe2f7a5b8
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=118c3162300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10500872300000
+
+The issue was bisected to:
+
+commit 73333364afebb5e45807139bc79e6a6574c1874b
+Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Date:   Mon Jul 26 21:12:04 2021 +0000
+
+    Bluetooth: defer cleanup of resources in hci_unregister_dev()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=169b6346300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=159b6346300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=119b6346300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+47c6d0efbb7fe2f7a5b8@syzkaller.appspotmail.com
+Fixes: 73333364afeb ("Bluetooth: defer cleanup of resources in hci_unregister_dev()")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000023: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000118-0x000000000000011f]
+CPU: 1 PID: 8467 Comm: syz-executor744 Not tainted 5.14.0-rc3-next-20210728-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:workqueue_sysfs_unregister kernel/workqueue.c:5732 [inline]
+RIP: 0010:destroy_workqueue+0x2e/0x800 kernel/workqueue.c:4386
+Code: 49 89 fe 41 55 41 54 55 53 48 83 ec 08 e8 aa 5c 29 00 49 8d be 18 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 2e 07 00 00 49 8b 9e 18 01 00 00 48 85 db 74 19
+RSP: 0018:ffffc90009577a98 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: 0000000000000023 RSI: ffffffff814c5bc6 RDI: 0000000000000118
+RBP: ffff8880131ad340 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81a39748 R11: 0000000000000000 R12: ffff8880131ac000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000480da8 CR3: 000000000b68e000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ hci_release_dev+0x125/0xb70 net/bluetooth/hci_core.c:4048
+ bt_host_release+0x15/0x20 net/bluetooth/hci_sysfs.c:86
+ device_release+0x9f/0x240 drivers/base/core.c:2193
+ kobject_cleanup lib/kobject.c:705 [inline]
+ kobject_release lib/kobject.c:736 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c8/0x540 lib/kobject.c:753
+ put_device+0x1b/0x30 drivers/base/core.c:3463
+ hci_uart_tty_close+0x1e4/0x2a0 drivers/bluetooth/hci_ldisc.c:546
+ tty_ldisc_close+0x110/0x190 drivers/tty/tty_ldisc.c:474
+ tty_ldisc_kill+0x94/0x150 drivers/tty/tty_ldisc.c:629
+ tty_ldisc_release+0xe3/0x2a0 drivers/tty/tty_ldisc.c:803
+ tty_release_struct+0x20/0xe0 drivers/tty/tty_io.c:1706
+ tty_release+0xc70/0x1200 drivers/tty/tty_io.c:1878
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0xbd4/0x2a60 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43da49
+Code: Unable to access opcode bytes at RIP 0x43da1f.
+RSP: 002b:00007ffc6bba0fb8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00000000004ae230 RCX: 000000000043da49
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000400488
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ae230
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+Modules linked in:
+---[ end trace 516dd52cdf23e662 ]---
+RIP: 0010:workqueue_sysfs_unregister kernel/workqueue.c:5732 [inline]
+RIP: 0010:destroy_workqueue+0x2e/0x800 kernel/workqueue.c:4386
+Code: 49 89 fe 41 55 41 54 55 53 48 83 ec 08 e8 aa 5c 29 00 49 8d be 18 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 2e 07 00 00 49 8b 9e 18 01 00 00 48 85 db 74 19
+RSP: 0018:ffffc90009577a98 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: 0000000000000023 RSI: ffffffff814c5bc6 RDI: 0000000000000118
+RBP: ffff8880131ad340 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81a39748 R11: 0000000000000000 R12: ffff8880131ac000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000480da8 CR3: 000000000b68e000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- tools/testing/selftests/xsave/.gitignore      |   1 +
- tools/testing/selftests/xsave/Makefile        |   2 +-
- .../selftests/xsave/xsave_signal_handle.c     | 184 ++++++++++++++++++
- 3 files changed, 186 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/xsave/xsave_signal_handle.c
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/xsave/.gitignore b/tools/testing/selftests/xsave/.gitignore
-index 00b9970360c4..b448d36186f3 100644
---- a/tools/testing/selftests/xsave/.gitignore
-+++ b/tools/testing/selftests/xsave/.gitignore
-@@ -1,2 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- xsave_instruction
-+xsave_signal_handle
-diff --git a/tools/testing/selftests/xsave/Makefile b/tools/testing/selftests/xsave/Makefile
-index dafdb0abdeb3..fedae2778297 100644
---- a/tools/testing/selftests/xsave/Makefile
-+++ b/tools/testing/selftests/xsave/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- CFLAGS := -g -Wall -mxsave -O2
- 
--TEST_GEN_PROGS := xsave_instruction
-+TEST_GEN_PROGS := xsave_instruction xsave_signal_handle
- 
- include ../lib.mk
-diff --git a/tools/testing/selftests/xsave/xsave_signal_handle.c b/tools/testing/selftests/xsave/xsave_signal_handle.c
-new file mode 100644
-index 000000000000..0afcba3a1bd5
---- /dev/null
-+++ b/tools/testing/selftests/xsave/xsave_signal_handle.c
-@@ -0,0 +1,184 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * It's for xsave/xrstor during signal handling tests
-+ */
-+
-+#include <stdio.h>
-+#include <stdint.h>
-+#include <stdlib.h>
-+#include <x86intrin.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include <sched.h>
-+#include <sys/wait.h>
-+#include <time.h>
-+
-+#include "../kselftest.h"
-+#include "xsave_common.h"
-+
-+static unsigned char *xsave_buf0, *xsave_buf1, *xsave_buf2, *xsave_buf3;
-+static int result[2];
-+
-+static void change_fpu_content(uint32_t ui32_random, double flt)
-+{
-+	asm volatile ("fldl %0" : : "m" (flt));
-+	asm volatile ("vbroadcastss %0, %%ymm0" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm1" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm2" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm3" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm4" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm5" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm6" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm7" : : "m" (ui32_random));
-+	#ifndef __i386__
-+	asm volatile ("vbroadcastss %0, %%ymm8" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm9" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm10" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm11" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm12" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm13" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm14" : : "m" (ui32_random));
-+	asm volatile ("vbroadcastss %0, %%ymm15" : : "m" (ui32_random));
-+	#endif
-+}
-+
-+static void usr1_handler(int signum, siginfo_t *info, void *__ctxp)
-+{
-+	uint32_t ui32_random;
-+	double flt;
-+	int xsave_size;
-+	const char *test_name = "Child XSAVE should not change in nested signal";
-+
-+	ui32_random = rand();
-+	flt = ui32_random/10000.0;
-+	if (signum == SIGUSR1) {
-+		ksft_print_msg("SIGUSR1:0x%x changed fld:%f & ymm0-15:0x%x\n",
-+			SIGUSR1, flt, ui32_random);
-+		change_fpu_content(ui32_random, flt);
-+	}
-+	xsave_size = get_xsave_size();
-+	XSAVE(xsave_buf2, SAVE_MASK);
-+	raise(SIGUSR2);
-+	XSAVE(xsave_buf3, SAVE_MASK);
-+	result[0] = check_xsave_buf(xsave_buf2, xsave_buf2, xsave_size, test_name,
-+				NO_CHANGE);
-+}
-+
-+static void usr2_handler(int signum, siginfo_t *info, void *__ctxp)
-+{
-+	uint32_t ui32_random;
-+	double flt;
-+
-+	ui32_random = rand();
-+	flt = ui32_random/10000.0;
-+	if (signum == SIGUSR2) {
-+		ksft_print_msg("SIGUSR2:0x%x changed fld:%f & ymm0-15:0x%x\n",
-+			SIGUSR2, flt, ui32_random);
-+		change_fpu_content(ui32_random, flt);
-+	}
-+}
-+
-+static void set_signal_handle(void)
-+{
-+	struct sigaction sigact;
-+
-+	memset(&sigact, 0, sizeof(sigact));
-+	if (sigemptyset(&sigact.sa_mask))
-+		execution_failed("FAIL: sigemptyset error\n");
-+
-+	sigact.sa_flags = SA_SIGINFO;
-+
-+	sigact.sa_sigaction = usr1_handler;
-+	if (sigaction(SIGUSR1, &sigact, NULL))
-+		execution_failed("FAIL: SIGUSR1 handling failed\n");
-+
-+	sigact.sa_sigaction = usr2_handler;
-+	if (sigaction(SIGUSR2, &sigact, NULL))
-+		execution_failed("FAIL: SIGUSR2 handling failed\n");
-+}
-+
-+static void sig_handle_xsave_test(void)
-+{
-+	int i, loop_times = 100, xsave_size;
-+	const char *sig_test_name0 = "Child XSAVE was same in nested signal test";
-+	const char *sig_test_name1 = "Child XSAVE content was same after signal";
-+
-+	xsave_size = get_xsave_size();
-+	/* SDM XSAVE: misalignment to a 64-byte boundary will result in #GP */
-+	xsave_buf0 = aligned_alloc(64, xsave_size);
-+	if (!xsave_buf0)
-+		execution_failed("aligned_alloc xsave_buf0 failed\n");
-+	xsave_buf1 = aligned_alloc(64, xsave_size);
-+	if (!xsave_buf1)
-+		execution_failed("aligned_alloc xsave_buf1 failed\n");
-+	xsave_buf2 = aligned_alloc(64, xsave_size);
-+	if (!xsave_buf2)
-+		execution_failed("aligned_alloc xsave_buf2 failed\n");
-+	xsave_buf3 = aligned_alloc(64, xsave_size);
-+	if (!xsave_buf3)
-+		execution_failed("aligned_alloc xsave_buf3 failed\n");
-+
-+	srand(time(NULL));
-+	result[0] = RESULT_PASS;
-+	result[1] = RESULT_PASS;
-+
-+	XSAVE(xsave_buf0, SAVE_MASK);
-+	for (i = 1; i <= loop_times; i++) {
-+		raise(SIGUSR1);
-+		XSAVE(xsave_buf1, SAVE_MASK);
-+		result[1] = check_xsave_buf(xsave_buf0, xsave_buf1, xsave_size,
-+						sig_test_name1, NO_CHANGE);
-+		if (result[1] != RESULT_PASS)
-+			break;
-+	}
-+
-+	check_result(result[0], sig_test_name0);
-+	check_result(result[1], sig_test_name1);
-+}
-+
-+static void test_xsave_sig_handle(void)
-+{
-+	const char *test_name0 = "xsave in child nested signal handling test";
-+	const char *test_name1 = "xsave after child signal handling test";
-+	pid_t child;
-+	int status, fd[2], readbuf[2];
-+
-+	set_signal_handle();
-+
-+	/* Use pipe to transfer test result of child process to parent process */
-+	if (pipe(fd) < 0)
-+		execution_failed("FAIL: create pipe failed\n");
-+
-+	/* Use child process testing to avoid abnormal blocking the next test */
-+	child = fork();
-+	if (child < 0)
-+		execution_failed("FAIL: create child pid failed\n");
-+	else if	(child == 0) {
-+		populate_fpu_regs();
-+		sig_handle_xsave_test();
-+		close(fd[0]);
-+		write(fd[1], &result, sizeof(result));
-+	} else {
-+		if (waitpid(child, &status, 0) != child ||
-+			!WIFEXITED(status))
-+			execution_failed("FAIL: Child died unexpectedly\n");
-+		else {
-+			close(fd[1]);
-+			read(fd[0], &readbuf, sizeof(readbuf));
-+
-+			check_result(readbuf[0], test_name0);
-+			check_result(readbuf[1], test_name1);
-+		}
-+	}
-+}
-+
-+int main(void)
-+{
-+	ksft_print_header();
-+	ksft_set_plan(2);
-+
-+	test_xsave_sig_handle();
-+
-+	ksft_exit(!ksft_get_fail_cnt());
-+}
--- 
-2.20.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
