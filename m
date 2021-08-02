@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901333DD2F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1E93DD2F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbhHBJaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:30:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232855AbhHBJaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:30:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 81C44610CE;
-        Mon,  2 Aug 2021 09:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627896606;
-        bh=8pmS78nH0Gs+QBVFcw890adFMY5Pf7CbCNmyYhP7wPw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NqZF8jKZNjEiygcdn5RMw/xzLaemjbzRLhHhjUaadu+78h6qB20Ulb1QGCdk7GfQs
-         PnEvsKYK0V91wZ/lMX3DE5XcEKqIezXkgzIxnx0TIVWY7Ruf0B5jxjCVq8ajXkSAsX
-         FOiQPj9JEXCoWK7nseAJt0bunQH2hDLweIS7n+8g0Vuag4jTwQ4eHbD0vi94STIxQY
-         t6/+fEB5zF+HdwdGTStPU98ciPHsHrLN4ECnL+Mg3LgHIc/zC984fk2D4QS14ziNYI
-         9xtoCzKth1tqgr/1JR0ecz6qwuKXvxySjdjDKNCsoHUfgXUqZe7hvm2ByANO2YC9Of
-         rV/FJBm2klhrQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7C3CD60A54;
-        Mon,  2 Aug 2021 09:30:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233080AbhHBJaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233005AbhHBJaW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 05:30:22 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C40DC0613D5
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 02:30:12 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id hw6so15954154ejc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 02:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=f1HK9jb2PQ2DqEz2QoT0GvdJtMzTubqzLBH4YtWvbD8=;
+        b=qlzzAKl99mr4Sh/6y6cubOOnm1iMmm72zq/21+QsW5osX+9q2T07ZFjgazah4/Rhbv
+         51njbmQrzW9V9CMBxmqrvws2sBSjeXHJybAPt5ira4IhmFf1GxTsb33VhPXlWBFpljiy
+         /S3NPXf203UNxk+stVVSoEIR5WmMv6cHZr+7vmsUyNdOfrRmI/ZmFi2UgAYjUp4g7eYv
+         Ym1hXN5+zatLKjMQdzziPkjRgogR784ozoaUH1guje3XxGM7tQb+UIAY+gx0vm9ZC/ps
+         tQbiU1TnLnKx8QrDuLKGpib3KCFtXbz8ADXC4T++b3y3C1le/yXT9m34d2C/QEGFnQOQ
+         tivQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=f1HK9jb2PQ2DqEz2QoT0GvdJtMzTubqzLBH4YtWvbD8=;
+        b=gZ+7okfDuXGpCSmqU12CIuR03H3Xdsh7OJ+EdDveSCFi5G94p+1nMAkxwN9zV2OLKp
+         gp71Z7YV5yW98OliFyOUwHXrMwYnV9hnBFCgXfHYuJacxs9IC2AxGx1Q2knyxxJfol6r
+         61Us/CWm/Kl4xaDAUvvRgCi3wHQ1VqD0ZJNbCWMiy1bfq1IFz/cJ4He209/WS4uZUDvP
+         GFxl0job/Dc0kYmM/MvcXmMiqvUmRkAIsCyebUNEEfzeSIWKsstA57Xoaa4gr2dNmXQs
+         4AASWUJhdjX/ADNE4elbQ7HCiU93c4kFOZSTMcjhMg1im//OyXEx/zn3Wa+Cjw8UbS1Q
+         Oo1g==
+X-Gm-Message-State: AOAM531HOaCywUlPvblsHKEwGpNawaTPrA7PRbL0PycJi+MFIUU3ouDd
+        GYOT424ySzj1sIPSO6pUnwZkGTF1B05BQG2LMxE=
+X-Google-Smtp-Source: ABdhPJxATuVb1LWjeVd4a+jNZPfEJQM9Nr0TZPHIA/hzFbiw/SQJNlhX78np9Q8raDHKD7jjDmfA6qsqLu+GCroD6S4=
+X-Received: by 2002:a17:906:585a:: with SMTP id h26mr14625957ejs.31.1627896610830;
+ Mon, 02 Aug 2021 02:30:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] niu: read property length only if we use it
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162789660650.5679.12923624139744072169.git-patchwork-notify@kernel.org>
-Date:   Mon, 02 Aug 2021 09:30:06 +0000
-References: <20210729074354.557-1-martin@kaiser.cx>
-In-Reply-To: <20210729074354.557-1-martin@kaiser.cx>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Received: by 2002:a50:cc92:0:0:0:0:0 with HTTP; Mon, 2 Aug 2021 02:30:10 -0700 (PDT)
+Reply-To: goedert_sheryl@yahoo.com
+From:   Sheryl Goedert <activationdept5@gmail.com>
+Date:   Mon, 2 Aug 2021 12:30:10 +0300
+Message-ID: <CA+k0Uf=7FPg1o52wjerKWSwOHyKrvJ7yVEYRa5mDzg6OtbcDuw@mail.gmail.com>
+Subject: =?UTF-8?B?57Sn5oCl5Zue5bqU?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Thu, 29 Jul 2021 09:43:54 +0200 you wrote:
-> In three places, the driver calls of_get_property and reads the property
-> length although the length is not used. Update the calls to not request
-> the length.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->  drivers/net/ethernet/sun/niu.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-
-Here is the summary with links:
-  - niu: read property length only if we use it
-    https://git.kernel.org/netdev/net-next/c/451395f798a3
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+LS0gDQrmiJHmmK/mnaXoh6rkvZvnvZfph4zovr7lt57nmoQgU2hlcnlsbCBHb2VkZXJ077yM5LuW
+5ZyoIDIwMjAg5bm0IDEg5pyIIDI5IOaXpeS4vuihjOeahOW8uuWKm+eQg+W9qeelqOS4rei1ouW+
+l+S6hiAzLjk2OQ0K5Lq/576O5YWD55qE5aS05aWW77yM5oiR55qE5aS05aWW5a+55oiR5p2l6K+0
+5piv5LiA56eN56Wd56aP77yM5Zug5q2k5oiR55qE5YWo5a625Lq66YO95ZCM5oSP6L+Z5qC35YGa
+44CCDQoNCuWGoOeKtueXheavkueahOeIhuWPkeS4jeS7heaYr+S4gOWcuumHjeWkp+eahOWBpeW6
+t+WNseacuu+8jOS5n+aYr+WvvOiHtOS6uuS7rOWkseS4mueahOW3qOWkp+e7j+a1juegtOWdj++8
+jOaJgOS7peaIkeiHquaEv+WGs+WumuaNkOi1oCAxLDUwMCwwMDAuMDAg5qyn5YWD77yIMTUwDQrk
+uIfmrKflhYPvvInmnaXluK7liqkgMTAg5Liq5Lq65ZKM5bCPIOS8geS4muOAgg0KDQrpgJrov4fm
+iJHnmoTnlLXlrZDpgq7ku7bkuI7miJHogZTns7vvvJpnb2VkZXJ0X3NoZXJ5bEB5YWhvby5jb20N
+CuassuS6huino+abtOWkmi/lrozmlbTnmoTnu4boioLvvIzor7fmjqXlj5fov5nkuKrku6PluIHk
+vZzkuLrmiJHlkozmiJHlrrbkurrnmoTnpLznianjgIINCg0K5pyA5aW955qE56Wd56aP77yMDQrp
+m6rojonCt+aIiOW+t+eJuQ0KZ29lZGVydF9zaGVyeWxAeWFob28uY29tDQo=
