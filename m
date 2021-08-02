@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BE43DD0F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDC33DD0F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhHBHHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:07:37 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:58432 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229500AbhHBHHg (ORCPT
+        id S232491AbhHBHJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhHBHJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:07:36 -0400
-X-UUID: 63fb95fb88ef46a9a61516fd821c764e-20210802
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=21ZQL0O+AYNYOVFc0STZ7qW2KMKVaTPFPt6AU1g4ZHY=;
-        b=WX6FnVSFJdUXjVhxXqOCRqwFQMaxZI7xH8q6uVRPDecNMKc8lNp+iGETgUqb/ZyFIE/O1EIFMttw7fS6uLyrQ2EcmRuLfnSrXhc3C2TfcQ6/C3ogCIisvzPSISmKORffyO0id1ZmeqbF8/dl3sRb3MOGcKzSdHF5FEfLtS8jHqE=;
-X-UUID: 63fb95fb88ef46a9a61516fd821c764e-20210802
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <chuanjia.liu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 17423531; Mon, 02 Aug 2021 15:07:24 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 2 Aug 2021 15:07:23 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 2 Aug 2021 15:07:22 +0800
-Message-ID: <1627888042.1118.2.camel@mhfsdcap03>
-Subject: Re: [PATCH v11 2/4] PCI: mediatek: Add new method to get shared
- pcie-cfg base address and parse node
-From:   Chuanjia Liu <chuanjia.liu@mediatek.com>
-To:     <robh+dt@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-CC:     <ryder.lee@mediatek.com>, <jianjun.wang@mediatek.com>,
-        <yong.wu@mediatek.com>, Frank Wunderlich <frank-w@public-files.de>,
-        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <chuanjia.liu@mediatek.com>
-Date:   Mon, 2 Aug 2021 15:07:22 +0800
-In-Reply-To: <20210719073456.28666-3-chuanjia.liu@mediatek.com>
-References: <20210719073456.28666-1-chuanjia.liu@mediatek.com>
-         <20210719073456.28666-3-chuanjia.liu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 2 Aug 2021 03:09:11 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11495C06175F;
+        Mon,  2 Aug 2021 00:09:02 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id j1so23934797pjv.3;
+        Mon, 02 Aug 2021 00:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AOZsXW9hACOugC8V16L56rF4ZBxWoq+nLcBwRkl2cto=;
+        b=HwJQrN8r9lqPPo8iQqAfHbUzAX50uItU3ykESKsSsauMl2NuEodC5PssntDI5v0uo9
+         ITM8jMZqaSyy98giZaI6A/ZKTAvAl2SQzNBF2ySdXZvD7IO4iBy+b4TJBL+xmAHWIf9E
+         MOHuFDmp0AzrccCuSmpUAYt/uuQr0/hqA8SzLTOrVX4Tn0sQnz4r64Fy35v217V1Okz1
+         M8GoAHHRcVJYKPwRfaS5MMoOi0RLw2KNEutmZcTeqr6pnuvjEcp+S2ERFvAZyvWjuyEL
+         W73z/AtuUqLHQbsGo021uxb0fCA08br/ejB4gfG9Cpcnq+v0mdmcvc9sJx5+apZDNoO5
+         PJqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AOZsXW9hACOugC8V16L56rF4ZBxWoq+nLcBwRkl2cto=;
+        b=PG7QDCYPT/euREx9jW/kmCU52bhIH9axlYAl2AsXu90tPpyqBDGxkWzvYPbrrJz2N/
+         9X3l1ID0FfrMs1X8wwN7CM9f9i/217XWlKwuEtA5cOJ1fxnVb7NaDJeaR4MwpkPZomI7
+         7PpSuhPH9zo+KXCL9+fYUz0X57HfvB8ziNoSg+WLNwMqwrDo8APGF+EGuJo1muFF4+9S
+         QNuqEbtqaeztd4QtSyV5NYsNCLJIa8g1kVv8I2uYtiNakuGFsTb4ei220NZWM+7uZ7lU
+         MNrEnNR4dIALCJP7QjRDlaIz8Jm0LJ9imEqy6LqVfew34LHFIe9o6Qmh7Zvj9KBBKuRC
+         gnGg==
+X-Gm-Message-State: AOAM533wBgs5WXK1Bi4asaT36rATOodxCBSjpoVNltcYEak1b4WFNFSX
+        8WDqT57BIlNSUTVkt/SvVnM=
+X-Google-Smtp-Source: ABdhPJzoCwMmpm+/FNSS9UEX0Mvdxk+Tn3aYpFcqdzxgnySrWhGudGNvYNOfUpjyJwBzO1VrD5jl7Q==
+X-Received: by 2002:a05:6a00:1307:b029:308:1e2b:a24b with SMTP id j7-20020a056a001307b02903081e2ba24bmr15371208pfu.57.1627888141449;
+        Mon, 02 Aug 2021 00:09:01 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id g20sm10391238pfj.69.2021.08.02.00.08.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Aug 2021 00:09:00 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <joerg.roedel@amd.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] perf/x86/amd: Don't touch the AMD64_EVENTSEL_HOSTONLY bit inside the guest
+Date:   Mon,  2 Aug 2021 15:08:50 +0800
+Message-Id: <20210802070850.35295-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA3LTE5IGF0IDE1OjM0ICswODAwLCBDaHVhbmppYSBMaXUgd3JvdGU6DQoN
-CkdlbnRseSBwaW5nLi4uDQo+IEZvciB0aGUgbmV3IGR0cyBmb3JtYXQsIGFkZCBhIG5ldyBtZXRo
-b2QgdG8gZ2V0DQo+IHNoYXJlZCBwY2llLWNmZyBiYXNlIGFkZHJlc3MgYW5kIHBhcnNlIG5vZGUu
-DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDaHVhbmppYSBMaXUgPGNodWFuamlhLmxpdUBtZWRpYXRl
-ay5jb20+DQo+IEFja2VkLWJ5OiBSeWRlciBMZWUgPHJ5ZGVyLmxlZUBtZWRpYXRlay5jb20+DQo+
-IC0tLQ0KPiAgZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVrLmMgfCA1MiArKysr
-KysrKysrKysrKysrKysrLS0tLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDM5IGluc2VydGlvbnMo
-KyksIDEzIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL2NvbnRy
-b2xsZXIvcGNpZS1tZWRpYXRlay5jIGIvZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlh
-dGVrLmMNCj4gaW5kZXggMjViZWU2OTM4MzRmLi45MjhlMDk4M2E5MDAgMTAwNjQ0DQo+IC0tLSBh
-L2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay5jDQo+ICsrKyBiL2RyaXZlcnMv
-cGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay5jDQo+IEBAIC0xNCw2ICsxNCw3IEBADQo+ICAj
-aW5jbHVkZSA8bGludXgvaXJxY2hpcC9jaGFpbmVkX2lycS5oPg0KPiAgI2luY2x1ZGUgPGxpbnV4
-L2lycWRvbWFpbi5oPg0KPiAgI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPg0KPiArI2luY2x1ZGUg
-PGxpbnV4L21mZC9zeXNjb24uaD4NCj4gICNpbmNsdWRlIDxsaW51eC9tc2kuaD4NCj4gICNpbmNs
-dWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gICNpbmNsdWRlIDxsaW51eC9vZl9hZGRyZXNzLmg+DQo+
-IEBAIC0yMyw2ICsyNCw3IEBADQo+ICAjaW5jbHVkZSA8bGludXgvcGh5L3BoeS5oPg0KPiAgI2lu
-Y2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPg0KPiAgI2luY2x1ZGUgPGxpbnV4L3BtX3J1
-bnRpbWUuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9yZWdtYXAuaD4NCj4gICNpbmNsdWRlIDxsaW51
-eC9yZXNldC5oPg0KPiAgDQo+ICAjaW5jbHVkZSAiLi4vcGNpLmgiDQo+IEBAIC0yMDcsNiArMjA5
-LDcgQEAgc3RydWN0IG10a19wY2llX3BvcnQgew0KPiAgICogc3RydWN0IG10a19wY2llIC0gUENJ
-ZSBob3N0IGluZm9ybWF0aW9uDQo+ICAgKiBAZGV2OiBwb2ludGVyIHRvIFBDSWUgZGV2aWNlDQo+
-ICAgKiBAYmFzZTogSU8gbWFwcGVkIHJlZ2lzdGVyIGJhc2UNCj4gKyAqIEBjZmc6IElPIG1hcHBl
-ZCByZWdpc3RlciBtYXAgZm9yIFBDSWUgY29uZmlnDQo+ICAgKiBAZnJlZV9jazogZnJlZS1ydW4g
-cmVmZXJlbmNlIGNsb2NrDQo+ICAgKiBAbWVtOiBub24tcHJlZmV0Y2hhYmxlIG1lbW9yeSByZXNv
-dXJjZQ0KPiAgICogQHBvcnRzOiBwb2ludGVyIHRvIFBDSWUgcG9ydCBpbmZvcm1hdGlvbg0KPiBA
-QCAtMjE1LDYgKzIxOCw3IEBAIHN0cnVjdCBtdGtfcGNpZV9wb3J0IHsNCj4gIHN0cnVjdCBtdGtf
-cGNpZSB7DQo+ICAJc3RydWN0IGRldmljZSAqZGV2Ow0KPiAgCXZvaWQgX19pb21lbSAqYmFzZTsN
-Cj4gKwlzdHJ1Y3QgcmVnbWFwICpjZmc7DQo+ICAJc3RydWN0IGNsayAqZnJlZV9jazsNCj4gIA0K
-PiAgCXN0cnVjdCBsaXN0X2hlYWQgcG9ydHM7DQo+IEBAIC02NTAsNyArNjU0LDExIEBAIHN0YXRp
-YyBpbnQgbXRrX3BjaWVfc2V0dXBfaXJxKHN0cnVjdCBtdGtfcGNpZV9wb3J0ICpwb3J0LA0KPiAg
-CQlyZXR1cm4gZXJyOw0KPiAgCX0NCj4gIA0KPiAtCXBvcnQtPmlycSA9IHBsYXRmb3JtX2dldF9p
-cnEocGRldiwgcG9ydC0+c2xvdCk7DQo+ICsJaWYgKG9mX2ZpbmRfcHJvcGVydHkoZGV2LT5vZl9u
-b2RlLCAiaW50ZXJydXB0LW5hbWVzIiwgTlVMTCkpDQo+ICsJCXBvcnQtPmlycSA9IHBsYXRmb3Jt
-X2dldF9pcnFfYnluYW1lKHBkZXYsICJwY2llX2lycSIpOw0KPiArCWVsc2UNCj4gKwkJcG9ydC0+
-aXJxID0gcGxhdGZvcm1fZ2V0X2lycShwZGV2LCBwb3J0LT5zbG90KTsNCj4gKw0KPiAgCWlmIChw
-b3J0LT5pcnEgPCAwKQ0KPiAgCQlyZXR1cm4gcG9ydC0+aXJxOw0KPiAgDQo+IEBAIC02ODIsNiAr
-NjkwLDEwIEBAIHN0YXRpYyBpbnQgbXRrX3BjaWVfc3RhcnR1cF9wb3J0X3YyKHN0cnVjdCBtdGtf
-cGNpZV9wb3J0ICpwb3J0KQ0KPiAgCQl2YWwgfD0gUENJRV9DU1JfTFRTU01fRU4ocG9ydC0+c2xv
-dCkgfA0KPiAgCQkgICAgICAgUENJRV9DU1JfQVNQTV9MMV9FTihwb3J0LT5zbG90KTsNCj4gIAkJ
-d3JpdGVsKHZhbCwgcGNpZS0+YmFzZSArIFBDSUVfU1lTX0NGR19WMik7DQo+ICsJfSBlbHNlIGlm
-IChwY2llLT5jZmcpIHsNCj4gKwkJdmFsID0gUENJRV9DU1JfTFRTU01fRU4ocG9ydC0+c2xvdCkg
-fA0KPiArCQkgICAgICBQQ0lFX0NTUl9BU1BNX0wxX0VOKHBvcnQtPnNsb3QpOw0KPiArCQlyZWdt
-YXBfdXBkYXRlX2JpdHMocGNpZS0+Y2ZnLCBQQ0lFX1NZU19DRkdfVjIsIHZhbCwgdmFsKTsNCj4g
-IAl9DQo+ICANCj4gIAkvKiBBc3NlcnQgYWxsIHJlc2V0IHNpZ25hbHMgKi8NCj4gQEAgLTk4NSw2
-ICs5OTcsNyBAQCBzdGF0aWMgaW50IG10a19wY2llX3N1YnN5c19wb3dlcnVwKHN0cnVjdCBtdGtf
-cGNpZSAqcGNpZSkNCj4gIAlzdHJ1Y3QgZGV2aWNlICpkZXYgPSBwY2llLT5kZXY7DQo+ICAJc3Ry
-dWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiA9IHRvX3BsYXRmb3JtX2RldmljZShkZXYpOw0KPiAg
-CXN0cnVjdCByZXNvdXJjZSAqcmVnczsNCj4gKwlzdHJ1Y3QgZGV2aWNlX25vZGUgKmNmZ19ub2Rl
-Ow0KPiAgCWludCBlcnI7DQo+ICANCj4gIAkvKiBnZXQgc2hhcmVkIHJlZ2lzdGVycywgd2hpY2gg
-YXJlIG9wdGlvbmFsICovDQo+IEBAIC05OTUsNiArMTAwOCwxNCBAQCBzdGF0aWMgaW50IG10a19w
-Y2llX3N1YnN5c19wb3dlcnVwKHN0cnVjdCBtdGtfcGNpZSAqcGNpZSkNCj4gIAkJCXJldHVybiBQ
-VFJfRVJSKHBjaWUtPmJhc2UpOw0KPiAgCX0NCj4gIA0KPiArCWNmZ19ub2RlID0gb2ZfZmluZF9j
-b21wYXRpYmxlX25vZGUoTlVMTCwgTlVMTCwNCj4gKwkJCQkJICAgIm1lZGlhdGVrLGdlbmVyaWMt
-cGNpZWNmZyIpOw0KPiArCWlmIChjZmdfbm9kZSkgew0KPiArCQlwY2llLT5jZmcgPSBzeXNjb25f
-bm9kZV90b19yZWdtYXAoY2ZnX25vZGUpOw0KPiArCQlpZiAoSVNfRVJSKHBjaWUtPmNmZykpDQo+
-ICsJCQlyZXR1cm4gUFRSX0VSUihwY2llLT5jZmcpOw0KPiArCX0NCj4gKw0KPiAgCXBjaWUtPmZy
-ZWVfY2sgPSBkZXZtX2Nsa19nZXQoZGV2LCAiZnJlZV9jayIpOw0KPiAgCWlmIChJU19FUlIocGNp
-ZS0+ZnJlZV9jaykpIHsNCj4gIAkJaWYgKFBUUl9FUlIocGNpZS0+ZnJlZV9jaykgPT0gLUVQUk9C
-RV9ERUZFUikNCj4gQEAgLTEwMjcsMjIgKzEwNDgsMjcgQEAgc3RhdGljIGludCBtdGtfcGNpZV9z
-ZXR1cChzdHJ1Y3QgbXRrX3BjaWUgKnBjaWUpDQo+ICAJc3RydWN0IGRldmljZSAqZGV2ID0gcGNp
-ZS0+ZGV2Ow0KPiAgCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbm9kZSA9IGRldi0+b2Zfbm9kZSwgKmNo
-aWxkOw0KPiAgCXN0cnVjdCBtdGtfcGNpZV9wb3J0ICpwb3J0LCAqdG1wOw0KPiAtCWludCBlcnI7
-DQo+ICsJaW50IGVyciwgc2xvdDsNCj4gKw0KPiArCXNsb3QgPSBvZl9nZXRfcGNpX2RvbWFpbl9u
-cihkZXYtPm9mX25vZGUpOw0KPiArCWlmIChzbG90IDwgMCkgew0KPiArCQlmb3JfZWFjaF9hdmFp
-bGFibGVfY2hpbGRfb2Zfbm9kZShub2RlLCBjaGlsZCkgew0KPiArCQkJZXJyID0gb2ZfcGNpX2dl
-dF9kZXZmbihjaGlsZCk7DQo+ICsJCQlpZiAoZXJyIDwgMCkgew0KPiArCQkJCWRldl9lcnIoZGV2
-LCAiZmFpbGVkIHRvIGdldCBkZXZmbjogJWRcbiIsIGVycik7DQo+ICsJCQkJZ290byBlcnJvcl9w
-dXRfbm9kZTsNCj4gKwkJCX0NCj4gIA0KPiAtCWZvcl9lYWNoX2F2YWlsYWJsZV9jaGlsZF9vZl9u
-b2RlKG5vZGUsIGNoaWxkKSB7DQo+IC0JCWludCBzbG90Ow0KPiArCQkJc2xvdCA9IFBDSV9TTE9U
-KGVycik7DQo+ICANCj4gLQkJZXJyID0gb2ZfcGNpX2dldF9kZXZmbihjaGlsZCk7DQo+IC0JCWlm
-IChlcnIgPCAwKSB7DQo+IC0JCQlkZXZfZXJyKGRldiwgImZhaWxlZCB0byBwYXJzZSBkZXZmbjog
-JWRcbiIsIGVycik7DQo+IC0JCQlnb3RvIGVycm9yX3B1dF9ub2RlOw0KPiArCQkJZXJyID0gbXRr
-X3BjaWVfcGFyc2VfcG9ydChwY2llLCBjaGlsZCwgc2xvdCk7DQo+ICsJCQlpZiAoZXJyKQ0KPiAr
-CQkJCWdvdG8gZXJyb3JfcHV0X25vZGU7DQo+ICAJCX0NCj4gLQ0KPiAtCQlzbG90ID0gUENJX1NM
-T1QoZXJyKTsNCj4gLQ0KPiAtCQllcnIgPSBtdGtfcGNpZV9wYXJzZV9wb3J0KHBjaWUsIGNoaWxk
-LCBzbG90KTsNCj4gKwl9IGVsc2Ugew0KPiArCQllcnIgPSBtdGtfcGNpZV9wYXJzZV9wb3J0KHBj
-aWUsIG5vZGUsIHNsb3QpOw0KPiAgCQlpZiAoZXJyKQ0KPiAtCQkJZ290byBlcnJvcl9wdXRfbm9k
-ZTsNCj4gKwkJCXJldHVybiBlcnI7DQo+ICAJfQ0KPiAgDQo+ICAJZXJyID0gbXRrX3BjaWVfc3Vi
-c3lzX3Bvd2VydXAocGNpZSk7DQoNCg==
+From: Like Xu <likexu@tencent.com>
+
+If we use "perf record" in an AMD Milan guest, dmesg reports a #GP
+warning from an unchecked MSR access error on MSR_F15H_PERF_CTLx:
+
+[] unchecked MSR access error: WRMSR to 0xc0010200 (tried to write
+0x0000020000110076) at rIP: 0xffffffff8106ddb4 (native_write_msr+0x4/0x20)
+[] Call Trace:
+[]  amd_pmu_disable_event+0x22/0x90
+[]  x86_pmu_stop+0x4c/0xa0
+[]  x86_pmu_del+0x3a/0x140
+
+The AMD64_EVENTSEL_HOSTONLY bit is defined and used on the host,
+while the guest perf driver should avoid such use.
+
+Fixes: 1018faa6cf23 ("perf/x86/kvm: Fix Host-Only/Guest-Only counting with SVM disabled")
+Signed-off-by: Like Xu <likexu@tencent.com>
+Tested-by: Kim Phillips <kim.phillips@amd.com>
+---
+v2: Add Fixes tag and Tested-by from Kim.
+v1: https://lore.kernel.org/lkml/20210720112605.63286-1-likexu@tencent.com/
+
+ arch/x86/events/perf_event.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index d6003e08b055..1c3ae954a230 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1116,8 +1116,9 @@ void x86_pmu_stop(struct perf_event *event, int flags);
+ static inline void x86_pmu_disable_event(struct perf_event *event)
+ {
+ 	struct hw_perf_event *hwc = &event->hw;
++	u64 disable_mask = __this_cpu_read(cpu_hw_events.perf_ctr_virt_mask);
+ 
+-	wrmsrl(hwc->config_base, hwc->config);
++	wrmsrl(hwc->config_base, hwc->config & ~disable_mask);
+ 
+ 	if (is_counter_pair(hwc))
+ 		wrmsrl(x86_pmu_config_addr(hwc->idx + 1), 0);
+-- 
+2.32.0
 
