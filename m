@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690493DD9D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917D23DD9DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237229AbhHBOEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:04:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41966 "EHLO mail.kernel.org"
+        id S237552AbhHBOEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:04:54 -0400
+Received: from mx1.riseup.net ([198.252.153.129]:44338 "EHLO mx1.riseup.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235619AbhHBN5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:57:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D13161155;
-        Mon,  2 Aug 2021 13:54:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627912490;
-        bh=ffsZcqleS2Msj4hKWIBmJ4DPBk3NI1GngO6NeU0SeTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VtSmunYUXbIIrXS3l/nVkmZXkowH6vo/7g7EKVHyGGAP/bs4NpsweEv1bYURFTDYP
-         hPZkudv6Q+a1gVJLvSugGrJCXJGILZJXjQzxFBTiIxO+EwtizHV5Ph4vUtdeyue8i9
-         dkMBvitTmr3l0I5+q7p3nWeLK1b9uacCWjCeefWIm0rWNNa/2bRiT4DpgiNkpZkaKH
-         uAJrliut8ve2C7rQIIMqyP5sSiyd+sOv9LtAQruboXcyd32Tn6PLVeBXRY3Ob2RSc8
-         n/n92HXPgxrkA9a9JptQmeZKFf4CSCofpomOhAAx+xF4xqHHhJZHAVliePCKrTO2Nf
-         6KwI1rx3CS2ag==
-Date:   Mon, 2 Aug 2021 14:54:46 +0100
-From:   Will Deacon <will@kernel.org>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        id S235402AbhHBN5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:57:32 -0400
+Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4GdfhK2tmjzDxXp;
+        Mon,  2 Aug 2021 06:57:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1627912641; bh=Z65PMyFUa16d9Sdspmc+iNX0aYW4nm2Kdaiq9sG/QeQ=;
+        h=Subject:From:To:Cc:In-Reply-To:References:Date:From;
+        b=B7JGXIihvF4fUqOkgTpVvdC7Z2YQnqOYiqIQlR/xYNGTLk5sYlXZXrrNRqaB41f9x
+         OQXAMiXNe6RpN9/3//WfP3evUutO48L4VctJb8Rik1eXMXKTbtEo8XZSWpSogFTb+T
+         98GIbF/SMvEpH5RrWr6Zv+EJps02p6P9CGVa4z6Y=
+X-Riseup-User-ID: 2668D83796406052EE9BC3D2B5F80B355C6F7F5F7CB77A2C25E630036B0BFDF9
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews1.riseup.net (Postfix) with ESMTPSA id 4GdfhH5jSsz5vjx;
+        Mon,  2 Aug 2021 06:57:19 -0700 (PDT)
+Message-ID: <131a3c2eeffa885bfb3ee8e1c3316da6818c4310.camel@riseup.net>
+Subject: Re: [PATCH v4] HID: logitech-hidpp: battery: provide CAPACITY
+ property for newer devices
+From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@riseup.net>
+To:     Hamza Mahfooz <someguy@effective-light.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] dma-iommu: pass SKIP_CPU_SYNC to swiotlb unmap
-Message-ID: <20210802135446.GE28547@willie-the-truck>
-References: <20210709033502.3545820-1-stevensd@google.com>
- <20210709033502.3545820-4-stevensd@google.com>
+Cc:     Bastien Nocera <hadess@hadess.net>, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org
+In-Reply-To: <20210802125232.65188-1-someguy@effective-light.com>
+References: <20210802125232.65188-1-someguy@effective-light.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-jSn/QtWNxsoPNSju7pKV"
+Date:   Mon, 02 Aug 2021 14:57:17 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709033502.3545820-4-stevensd@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 12:35:01PM +0900, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
-> 
-> If SKIP_CPU_SYNC isn't already set, then iommu_dma_unmap_(page|sg) has
-> already called iommu_dma_sync_(single|sg)_for_cpu, so there is no need
-> to copy from the bounce buffer again.
-> 
-> Signed-off-by: David Stevens <stevensd@chromium.org>
-> ---
->  drivers/iommu/dma-iommu.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index e79e274d2dc5..0a9a9a343e64 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -505,7 +505,8 @@ static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
->  	__iommu_dma_unmap(dev, dma_addr, size);
->  
->  	if (unlikely(is_swiotlb_buffer(phys)))
-> -		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
-> +		swiotlb_tbl_unmap_single(dev, phys, size, dir,
-> +					 attrs | DMA_ATTR_SKIP_CPU_SYNC);
->  }
 
-I think it would be cleaner to drop DMA_ATTR_SKIP_CPU_SYNC in the callers
-once they've called iommu_dma_sync_*_for_cpu().
+--=-jSn/QtWNxsoPNSju7pKV
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Will
+On Mon, 2021-08-02 at 08:52 -0400, Hamza Mahfooz wrote:
+> For devices that only support the BATTERY_VOLTAGE (0x1001) feature, UPowe=
+r
+> requires the additional information provided by this patch, to set them u=
+p.
+>=20
+> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+
+Thanks Hamza!
+
+Reviewed-by: Filipe La=C3=ADns <lains@riseup.net>
+
+Cheers,
+Filipe La=C3=ADns
+
+--=-jSn/QtWNxsoPNSju7pKV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAmEH+bgACgkQ+JPGdIFq
+qV2QwxAAm7IGALONFgvyVWA6DvGYN874+OEyaq7dUZ+Hs9nc8bRYCErxT7/CvzUH
+1eKRyGXvSbT10vFfzeuyZ5GUp9PDohkk51ugUmb8NuoV/4eSx4q7j4EByJFd0fIB
+Y762u9lxrlhMpojw88XQ4FCZ6M2FyEUOv11WraV7hRyPwgdiESmmEBCp75mAgDUT
+6c0/i0kQAdk6Ahkg28OUqiyF2EoSg5WUdoVWG3t5kSciMdbD5FuZ3LV9M5OuIeXA
+GmV1/9OnFEfo4qotmjevz5lkrkXSAVTsxfQWn4i8dJ5D+FXbwSR2T3Ns8c9Lmo8i
+FIjMZ/AjAXqCat6YqglpD3aMGXrArIleJIS67/m4WN/PgokSWmq1KCMJD7lZbS6D
+FP0ITpgojM2b2fijHfyTvoDPbN8h1fg7GEFXxVF1qrIRMf/Cf7R+cJ1ccdBHpgbH
+fT9Lj6HpYUp5gTIWWvlANwTw75XhG7se5tzENuFHKfcKfgVg+C0rEMMKuUxGVOdM
+D4LLD/oiTlx0vIsAomH8pTwrDlsqPQH2NP0Wgc2fAbQ2Y2v0I4qYA6HiXj5eUF++
+pbpBpt8jM5FIxMwZFzCFxvighkDE+ALicZvIeWsAF0TA0qOSrGoCZ5t347T6m5c4
+ZLme9uP2CWnxwjHQXwZALlA2D1GlGZp3t4HsdvW1A+Hotgfux38=
+=fnhX
+-----END PGP SIGNATURE-----
+
+--=-jSn/QtWNxsoPNSju7pKV--
+
