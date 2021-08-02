@@ -2,130 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1543DD2A9
+	by mail.lfdr.de (Postfix) with ESMTP id 98F043DD2AA
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbhHBJLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbhHBJLX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232881AbhHBJL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:11:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:60390 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232776AbhHBJLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Aug 2021 05:11:23 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86B9C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 02:11:13 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id b6so9679278lff.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 02:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LHYGauWDsrZ2HlePLC28Pt6z1sM76N+EjvyU9BFXlYo=;
-        b=nzEe/dplqrTZYCAJZeyHaVfCuBCcbIBbI4yqT40m89VrvGBXIz3Bj+VhpPlji1e08I
-         6XscaZWQbt2yli+zx219tZT4u3XvJ+rGz5KXP4h3MD2Rq2wIEBu4IgsMbHYuRVSLF3In
-         GVMQ57R9NyHk7bAF8ZQG/wBiv/Q8/iMIvgGDqnbLZvXHnVrBWC/7laJ2fFt1zbkg56tG
-         6W13cxxSOLfxUBjZgx/x+Z6rB7oYrmzID/hFJTIAnaEwsIPRLSiSjG9+A6Q45oZNvYUy
-         ze8JKAPyvRewz2u5iTi5h3UmKpE3GCKUjpDf84mc/Bo1WFvMSXUgTj6KPFDT3KY81Opl
-         4eSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LHYGauWDsrZ2HlePLC28Pt6z1sM76N+EjvyU9BFXlYo=;
-        b=d+sPqbOjeHwmAaBFM2gnQzl8c9wekFnrBaKBXCe4NU5B/22UjP2f351lBd72TpDnoj
-         qmtez2c0vSGUcV+LKLotR2HVWamKu9wp5lJTKj3qEpFzyWy4tkssMHZADLJ83uQnR78k
-         8RrmWyP/cSmyzxKiVCO0EPEnnCGZGxlrB7JgCky/3JlUPoVhRZUApwr7me5sUH5It1wx
-         Y/XduK6omPOVnM4O8grRYh8pyIpQY87xshZCNhHitvW+TaX4FJNS8Hb3LKq+cUNqFDaY
-         MZ3YlFdU/JAoN46U2uXC6nOwFK4Rd0hLY5c2wLAp0rSh+1QgXVID0CoT2p7tavtFbmuZ
-         4dSw==
-X-Gm-Message-State: AOAM530OTPCP3BKWTEaI/QRlEbiCvJas8fp3lYPAZq+UCYexv5c28Oa2
-        TOkgHYyd1uPi1PCiTGCFPF11Yg==
-X-Google-Smtp-Source: ABdhPJxJV0BW4030/O3dJxjHERyR35BHyeeMRS3ltMHAXXpOVt4oTEYJFcZPWrq67vEwIQ2pFOYlJw==
-X-Received: by 2002:ac2:5461:: with SMTP id e1mr8316977lfn.61.1627895472051;
-        Mon, 02 Aug 2021 02:11:12 -0700 (PDT)
-Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
-        by smtp.gmail.com with ESMTPSA id f1sm796340ljj.39.2021.08.02.02.11.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 02:11:11 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org
-Subject: [PATCH] mfd/cpuidle: ux500: Rename driver symbol
-Date:   Mon,  2 Aug 2021 11:08:59 +0200
-Message-Id: <20210802090859.3237509-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.31.1
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D379106F;
+        Mon,  2 Aug 2021 02:11:14 -0700 (PDT)
+Received: from [10.163.66.153] (unknown [10.163.66.153])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF64B3F70D;
+        Mon,  2 Aug 2021 02:11:10 -0700 (PDT)
+Subject: Re: [PATCH 10/10] arm64: errata: Add workaround for TSB flush
+ failures
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, will@kernel.org,
+        catalin.marinas@arm.com, james.morse@arm.com,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        leo.yan@linaro.org, mark.rutland@arm.com
+References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+ <20210728135217.591173-11-suzuki.poulose@arm.com>
+ <87mtq5a1gs.wl-maz@kernel.org> <c41330d9-c2a2-afbe-624f-77c1e94f0490@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <477c4943-7c35-8502-0291-4c0ed3a03905@arm.com>
+Date:   Mon, 2 Aug 2021 14:42:00 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <c41330d9-c2a2-afbe-624f-77c1e94f0490@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PRCMU driver defines this as a DT node but there are no bindings
-for it and it needs no data from the device tree. Just spawn the
-device directly in the same way as the watchdog.
 
-Name it "db8500-cpuidle" since there are no ambitions to support any
-more SoCs than this one.
 
-This rids this annoying boot message:
-[    0.032610] cpuidle-dbx500: Failed to locate of_node [id: 0]
-
-However I think the device still spawns and work just fine, despite
-not finding a device tree node.
-
-Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: linux-pm@vger.kernel.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-Rafael/Daniel: it would be perfect if one of you could ACK
-this so that Lee can just merge this into the MFD tree as
-a non-urgent fix.
----
- drivers/cpuidle/cpuidle-ux500.c | 2 +-
- drivers/mfd/db8500-prcmu.c      | 6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/cpuidle/cpuidle-ux500.c b/drivers/cpuidle/cpuidle-ux500.c
-index a2d34be17a09..f7d778580e9b 100644
---- a/drivers/cpuidle/cpuidle-ux500.c
-+++ b/drivers/cpuidle/cpuidle-ux500.c
-@@ -117,7 +117,7 @@ static int dbx500_cpuidle_probe(struct platform_device *pdev)
- 
- static struct platform_driver dbx500_cpuidle_plat_driver = {
- 	.driver = {
--		.name = "cpuidle-dbx500",
-+		.name = "db8500-cpuidle",
- 	},
- 	.probe = dbx500_cpuidle_probe,
- };
-diff --git a/drivers/mfd/db8500-prcmu.c b/drivers/mfd/db8500-prcmu.c
-index 75049cf38832..64dd4f9a1e49 100644
---- a/drivers/mfd/db8500-prcmu.c
-+++ b/drivers/mfd/db8500-prcmu.c
-@@ -2951,14 +2951,16 @@ static const struct mfd_cell common_prcmu_devs[] = {
- 		.pdata_size = sizeof(db8500_wdt_pdata),
- 		.id = -1,
- 	},
-+	{
-+		.name = "db8500-cpuidle",
-+		.id = -1,
-+	},
- };
- 
- static const struct mfd_cell db8500_prcmu_devs[] = {
- 	MFD_CELL_OF("db8500-prcmu-regulators", NULL,
- 		    &db8500_regulators, sizeof(db8500_regulators), 0,
- 		    "stericsson,db8500-prcmu-regulator"),
--	MFD_CELL_OF("cpuidle-dbx500",
--		    NULL, NULL, 0, 0, "stericsson,cpuidle-dbx500"),
- 	MFD_CELL_OF("db8500-thermal",
- 		    NULL, NULL, 0, 0, "stericsson,db8500-thermal"),
- };
--- 
-2.31.1
-
+On 7/29/21 4:11 PM, Suzuki K Poulose wrote:
+> On 29/07/2021 10:55, Marc Zyngier wrote:
+>> On Wed, 28 Jul 2021 14:52:17 +0100,
+>> Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>>>
+>>> Arm Neoverse-N2 (#2067961) and Cortex-A710 (#2054223) suffers
+>>> from errata, where a TSB (trace synchronization barrier)
+>>> fails to flush the trace data completely, when executed from
+>>> a trace prohibited region. In Linux we always execute it
+>>> after we have moved the PE to trace prohibited region. So,
+>>> we can apply the workaround everytime a TSB is executed.
+>>>
+>>> The work around is to issue two TSB consecutively.
+>>>
+>>> NOTE: This errata is defined as LOCAL_CPU_ERRATUM, implying
+>>> that a late CPU could be blocked from booting if it is the
+>>> first CPU that requires the workaround. This is because we
+>>> do not allow setting a cpu_hwcaps after the SMP boot. The
+>>> other alternative is to use "this_cpu_has_cap()" instead
+>>> of the faster system wide check, which may be a bit of an
+>>> overhead, given we may have to do this in nvhe KVM host
+>>> before a guest entry.
+>>>
+>>> Cc: Will Deacon <will@kernel.org>
+>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> Cc: Marc Zyngier <maz@kernel.org>
+>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> ---
+>>>   Documentation/arm64/silicon-errata.rst |  4 ++++
+>>>   arch/arm64/Kconfig                     | 31 ++++++++++++++++++++++++++
+>>>   arch/arm64/include/asm/barrier.h       | 17 +++++++++++++-
+>>>   arch/arm64/kernel/cpu_errata.c         | 19 ++++++++++++++++
+>>>   arch/arm64/tools/cpucaps               |  1 +
+>>>   5 files changed, 71 insertions(+), 1 deletion(-)
+>>
+>> [...]
+>>
+>>> diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
+>>> index 451e11e5fd23..3bc1ed436e04 100644
+>>> --- a/arch/arm64/include/asm/barrier.h
+>>> +++ b/arch/arm64/include/asm/barrier.h
+>>> @@ -23,7 +23,7 @@
+>>>   #define dsb(opt)    asm volatile("dsb " #opt : : : "memory")
+>>>     #define psb_csync()    asm volatile("hint #17" : : : "memory")
+>>> -#define tsb_csync()    asm volatile("hint #18" : : : "memory")
+>>> +#define __tsb_csync()    asm volatile("hint #18" : : : "memory")
+>>>   #define csdb()        asm volatile("hint #20" : : : "memory")
+>>>     #ifdef CONFIG_ARM64_PSEUDO_NMI
+>>> @@ -46,6 +46,21 @@
+>>>   #define dma_rmb()    dmb(oshld)
+>>>   #define dma_wmb()    dmb(oshst)
+>>>   +
+>>> +#define tsb_csync()                                \
+>>> +    do {                                    \
+>>> +        /*                                \
+>>> +         * CPUs affected by Arm Erratum 2054223 or 2067961 needs    \
+>>> +         * another TSB to ensure the trace is flushed.            \
+>>> +         */                                \
+>>> +        if (cpus_have_const_cap(ARM64_WORKAROUND_TSB_FLUSH_FAILURE)) {    \
+>>
+>> Could this be made a final cap instead? Or do you expect this to be
+>> usable before caps have been finalised?
+> 
+> Good point. This can be final cap.
+> 
+>>
+>>> +            __tsb_csync();                        \
+>>> +            __tsb_csync();                        \
+>>> +        } else {                            \
+>>> +            __tsb_csync();                        \
+>>> +        }                                \
+>>
+>> nit: You could keep one unconditional __tsb_csync().
+> 
+> I thought about that, I was worried if the CPU expects them back to back
+> without any other instructions in between them. Thinking about it a bit
+> more, it doesn't look like that is the case. I will confirm this and
+> change it accordingly.
+But its a very subtle change which might be difficult to debug and blame
+later on, if indeed both the instructions need to be back to back. Seems
+like just better to leave this unchanged.
