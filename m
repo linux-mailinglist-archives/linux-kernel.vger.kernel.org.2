@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0473DE1F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594ED3DE1F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbhHBVyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
+        id S233002AbhHBVyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbhHBVyX (ORCPT
+        with ESMTP id S229567AbhHBVyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:54:23 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54318C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:54:13 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id c18so18143137qke.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:54:13 -0700 (PDT)
+        Mon, 2 Aug 2021 17:54:25 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0887C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:54:14 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id s11so9638413qvz.7
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:54:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=gpKUHaMAwkHB+q+UElCl69jZKnxiURz6Ucy0xkR2ELY=;
-        b=mmGBEfnF9oZBlRuZblnuO8IgGciEd2V3OTlp4jdC//Y9f0WVpenL/OBOeVgveoRMwK
-         wGT90RC7SKYswp9xlxMNjNoEZxUXiYv1oApAYHpcxpWe8tf6N4lQTVgE2Rl8MF1Jhwak
-         IwElBw5j6ZSZWrGaDF64dNenVk8adI9vzpmEdI1vCNgmblGrXwAif7ZQ8wWR87WigxCn
-         MN3qDKfl2RADG4h1zeg2WiGTzf7ZyIXlFU6DWq3NQO/zuQkkRfp581JDmFTlPmXrnmFP
-         zxFEB75mCaToQgA6HJeeqdFJTs3x8N1jTVfZxqyMvfo/U22dsK/mdxKjhxQpuWjj5f6V
-         Sjvw==
+        bh=YKdfgXuhu2CUCgXa9ObvPNn0CQc7wFt5Zs9uSkuVOsA=;
+        b=gfWVCyeKZPOId7LZeYo8c368E3yisYg9Xgca9a9MXwLGcV4UeBg2K3NyHRFCulISgX
+         mzOOWsVW5Cu3kVe8g+ivsmp/XkslZNVQiEPBnpeJrtTUaP5EnwQOfPgvitPaJb9A38ox
+         rS9o9gA1l9Nv2Hzyj21wCeqyRVfajIISqCfIWnboqiNYT0W/W+YWZAUAoHqc7ZIAwG1W
+         TDKavvZTfY5W5SCP17yVqwJ1qO7EYdOivc3V8+arrtVLtLfp8VqqFtJBt4HXbcoos7z8
+         zZO8Ap9KwvLY0TSXIiUTdFBEri21hxWZVyZ1r0cbpMDWJAQ8MLln//7YMR1slBDSg3ec
+         13OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gpKUHaMAwkHB+q+UElCl69jZKnxiURz6Ucy0xkR2ELY=;
-        b=fcuHiP3Coe/pr4L636Bq3mJGNIHDDp3+D+2zSLo7nE27KWTqCFM4chAxwFWDQwUAR1
-         64d4PpE+tBv/Ja5tKm7t1vyuHKsuTfa+mrwLM19bDbTyhUWVied1CbLHmNZSKnDUaAY4
-         5Pbl2uUlvN5gNW16edHzc9rrKYBoCBo6jvKy86oFUHhsA8wf9FdE2lpIScUAOnfrUmDC
-         7LWqYLaVFSeKbNccWMeLqu0JNodeimiVwGwBEEReS0j2V9i+AD5J/rirqznE7ozU92fN
-         bkv08xgS5SgHSLAzmDZihSfsPtIQEtuLFtvsNrPJJ0I4HxRYCGukbjK/JG/cXqAzSzDt
-         8pSw==
-X-Gm-Message-State: AOAM531SmRtg8/YkdLPp0Jge+ey84Cf2luxsvKg+v2EJzkO/FttOMKhu
-        AnjlXM9qPntHH4vXuukBYR+7eA==
-X-Google-Smtp-Source: ABdhPJxUfhb3Dku9KW46dPB118JL9YX+skltVkhp7xJNLax/VRpKXlKrybwlyB5FLGyYAGhSLrA6sQ==
-X-Received: by 2002:a37:a058:: with SMTP id j85mr12147273qke.471.1627941252530;
-        Mon, 02 Aug 2021 14:54:12 -0700 (PDT)
+        bh=YKdfgXuhu2CUCgXa9ObvPNn0CQc7wFt5Zs9uSkuVOsA=;
+        b=OOlKMrbJ4mpZ8H051Bg1Kk5x/wr55JAgb28dg1fK8iB7Vf/k/e9c6njspHVbW39kPs
+         6ijRL5mgDweWmqgGe+6Zyz3E7HxWlLcnQBk80i38RbTrTaTUtgSP3ATSRGNKcnvrkcMF
+         hUBwiwuZ/ghXAfKgdeyCwIf4eb2S2T3Kg3B1OdWo0ABaPFY6H7YFTlNHg9ZBSDueJidB
+         lhYmK+VJGH2tcusgdW/A25IxLe0fDhKwX0KRJ55zYoaOIeVekjQQhigmPvA223O6Wizw
+         VLjnHzJ43IvgUhfhDdzt3vzDxI98ptYgmkGTqpvbTzFoGY1LUBlHsNptCROtLqXPy7XB
+         WkNQ==
+X-Gm-Message-State: AOAM532D/VLtduyiNXoQszjSe3GboIgBjc00bkxwsR8mDokvQyj2b+ZK
+        aW42Nfb+cWszaH7SsQrFZlw3vg==
+X-Google-Smtp-Source: ABdhPJye8pVKXRr53NzwS56TsDSey/dZjhEjDvIMOivgptTWN5vFfw2CKKx6GPR5mqVzfSe590ht6Q==
+X-Received: by 2002:a0c:be8e:: with SMTP id n14mr18289595qvi.16.1627941253896;
+        Mon, 02 Aug 2021 14:54:13 -0700 (PDT)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id v11sm5479216qtc.0.2021.08.02.14.54.11
+        by smtp.gmail.com with ESMTPSA id v11sm5479216qtc.0.2021.08.02.14.54.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 14:54:12 -0700 (PDT)
+        Mon, 02 Aug 2021 14:54:13 -0700 (PDT)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         ebiederm@xmission.com, kexec@lists.infradead.org,
@@ -60,9 +60,9 @@ To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         selindag@gmail.com, tyhicks@linux.microsoft.com,
         kernelfans@gmail.com, akpm@linux-foundation.org,
         madvenka@linux.microsoft.com
-Subject: [PATCH v16 01/15] arm64: kernel: add helper for booted at EL2 and not VHE
-Date:   Mon,  2 Aug 2021 17:53:54 -0400
-Message-Id: <20210802215408.804942-2-pasha.tatashin@soleen.com>
+Subject: [PATCH v16 02/15] arm64: trans_pgd: hibernate: Add trans_pgd_copy_el2_vectors
+Date:   Mon,  2 Aug 2021 17:53:55 -0400
+Message-Id: <20210802215408.804942-3-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210802215408.804942-1-pasha.tatashin@soleen.com>
 References: <20210802215408.804942-1-pasha.tatashin@soleen.com>
@@ -72,77 +72,302 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace places that contain logic like this:
-	is_hyp_mode_available() && !is_kernel_in_hyp_mode()
+Users of trans_pgd may also need a copy of vector table because it is
+also may be overwritten if a linear map can be overwritten.
 
-With a dedicated boolean function  is_hyp_nvhe(). This will be needed
-later in kexec in order to sooner switch back to EL2.
+Move setup of EL2 vectors from hibernate to trans_pgd, so it can be
+later shared with kexec as well.
 
-Suggested-by: James Morse <james.morse@arm.com>
 Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
 ---
- arch/arm64/include/asm/virt.h | 5 +++++
- arch/arm64/kernel/cpu-reset.h | 3 +--
- arch/arm64/kernel/hibernate.c | 2 +-
- arch/arm64/kernel/sdei.c      | 2 +-
- 4 files changed, 8 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/trans_pgd.h |  7 +++-
+ arch/arm64/include/asm/virt.h      |  2 ++
+ arch/arm64/kernel/hibernate-asm.S  | 52 ---------------------------
+ arch/arm64/kernel/hibernate.c      | 26 ++++++--------
+ arch/arm64/mm/Makefile             |  1 +
+ arch/arm64/mm/trans_pgd-asm.S      | 58 ++++++++++++++++++++++++++++++
+ arch/arm64/mm/trans_pgd.c          | 25 ++++++++++++-
+ 7 files changed, 101 insertions(+), 70 deletions(-)
+ create mode 100644 arch/arm64/mm/trans_pgd-asm.S
 
+diff --git a/arch/arm64/include/asm/trans_pgd.h b/arch/arm64/include/asm/trans_pgd.h
+index 5d08e5adf3d5..411323bda7a4 100644
+--- a/arch/arm64/include/asm/trans_pgd.h
++++ b/arch/arm64/include/asm/trans_pgd.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ 
+ /*
+- * Copyright (c) 2020, Microsoft Corporation.
++ * Copyright (c) 2021, Microsoft Corporation.
+  * Pavel Tatashin <pasha.tatashin@soleen.com>
+  */
+ 
+@@ -36,4 +36,9 @@ int trans_pgd_map_page(struct trans_pgd_info *info, pgd_t *trans_pgd,
+ int trans_pgd_idmap_page(struct trans_pgd_info *info, phys_addr_t *trans_ttbr0,
+ 			 unsigned long *t0sz, void *page);
+ 
++int trans_pgd_copy_el2_vectors(struct trans_pgd_info *info,
++			       phys_addr_t *el2_vectors);
++
++extern char trans_pgd_stub_vectors[];
++
+ #endif /* _ASM_TRANS_TABLE_H */
 diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
-index 7379f35ae2c6..a9457e96203c 100644
+index a9457e96203c..3c8af033a997 100644
 --- a/arch/arm64/include/asm/virt.h
 +++ b/arch/arm64/include/asm/virt.h
-@@ -128,6 +128,11 @@ static __always_inline bool is_protected_kvm_enabled(void)
- 		return cpus_have_final_cap(ARM64_KVM_PROTECTED_MODE);
- }
+@@ -67,6 +67,8 @@
+  */
+ extern u32 __boot_cpu_mode[2];
  
-+static inline bool is_hyp_nvhe(void)
-+{
-+	return is_hyp_mode_available() && !is_kernel_in_hyp_mode();
-+}
++#define ARM64_VECTOR_TABLE_LEN	SZ_2K
 +
- #endif /* __ASSEMBLY__ */
+ void __hyp_set_vectors(phys_addr_t phys_vector_base);
+ void __hyp_reset_vectors(void);
  
- #endif /* ! __ASM__VIRT_H */
-diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
-index 9a7b1262ef17..81b3d0fe7a63 100644
---- a/arch/arm64/kernel/cpu-reset.h
-+++ b/arch/arm64/kernel/cpu-reset.h
-@@ -20,8 +20,7 @@ static inline void __noreturn __nocfi cpu_soft_restart(unsigned long entry,
- {
- 	typeof(__cpu_soft_restart) *restart;
- 
--	unsigned long el2_switch = !is_kernel_in_hyp_mode() &&
--		is_hyp_mode_available();
-+	unsigned long el2_switch = is_hyp_nvhe();
- 	restart = (void *)__pa_symbol(function_nocfi(__cpu_soft_restart));
- 
- 	cpu_install_idmap();
+diff --git a/arch/arm64/kernel/hibernate-asm.S b/arch/arm64/kernel/hibernate-asm.S
+index 81c0186a5e32..a30a2c3f905e 100644
+--- a/arch/arm64/kernel/hibernate-asm.S
++++ b/arch/arm64/kernel/hibernate-asm.S
+@@ -112,56 +112,4 @@ alternative_insn "dc cvau, x4",  "dc civac, x4",  ARM64_WORKAROUND_CLEAN_CACHE
+ 	hvc	#0
+ 3:	ret
+ SYM_CODE_END(swsusp_arch_suspend_exit)
+-
+-/*
+- * Restore the hyp stub.
+- * This must be done before the hibernate page is unmapped by _cpu_resume(),
+- * but happens before any of the hyp-stub's code is cleaned to PoC.
+- *
+- * x24: The physical address of __hyp_stub_vectors
+- */
+-SYM_CODE_START_LOCAL(el1_sync)
+-	msr	vbar_el2, x24
+-	eret
+-SYM_CODE_END(el1_sync)
+-
+-.macro invalid_vector	label
+-SYM_CODE_START_LOCAL(\label)
+-	b \label
+-SYM_CODE_END(\label)
+-.endm
+-
+-	invalid_vector	el2_sync_invalid
+-	invalid_vector	el2_irq_invalid
+-	invalid_vector	el2_fiq_invalid
+-	invalid_vector	el2_error_invalid
+-	invalid_vector	el1_sync_invalid
+-	invalid_vector	el1_irq_invalid
+-	invalid_vector	el1_fiq_invalid
+-	invalid_vector	el1_error_invalid
+-
+-/* el2 vectors - switch el2 here while we restore the memory image. */
+-	.align 11
+-SYM_CODE_START(hibernate_el2_vectors)
+-	ventry	el2_sync_invalid		// Synchronous EL2t
+-	ventry	el2_irq_invalid			// IRQ EL2t
+-	ventry	el2_fiq_invalid			// FIQ EL2t
+-	ventry	el2_error_invalid		// Error EL2t
+-
+-	ventry	el2_sync_invalid		// Synchronous EL2h
+-	ventry	el2_irq_invalid			// IRQ EL2h
+-	ventry	el2_fiq_invalid			// FIQ EL2h
+-	ventry	el2_error_invalid		// Error EL2h
+-
+-	ventry	el1_sync			// Synchronous 64-bit EL1
+-	ventry	el1_irq_invalid			// IRQ 64-bit EL1
+-	ventry	el1_fiq_invalid			// FIQ 64-bit EL1
+-	ventry	el1_error_invalid		// Error 64-bit EL1
+-
+-	ventry	el1_sync_invalid		// Synchronous 32-bit EL1
+-	ventry	el1_irq_invalid			// IRQ 32-bit EL1
+-	ventry	el1_fiq_invalid			// FIQ 32-bit EL1
+-	ventry	el1_error_invalid		// Error 32-bit EL1
+-SYM_CODE_END(hibernate_el2_vectors)
+-
+ .popsection
 diff --git a/arch/arm64/kernel/hibernate.c b/arch/arm64/kernel/hibernate.c
-index 46a0b4d6e251..4c9533f4c0c4 100644
+index 4c9533f4c0c4..b96ef9060e4c 100644
 --- a/arch/arm64/kernel/hibernate.c
 +++ b/arch/arm64/kernel/hibernate.c
-@@ -49,7 +49,7 @@
- extern int in_suspend;
- 
+@@ -51,9 +51,6 @@ extern int in_suspend;
  /* Do we need to reset el2? */
--#define el2_reset_needed() (is_hyp_mode_available() && !is_kernel_in_hyp_mode())
-+#define el2_reset_needed() (is_hyp_nvhe())
+ #define el2_reset_needed() (is_hyp_nvhe())
  
- /* temporary el2 vectors in the __hibernate_exit_text section. */
- extern char hibernate_el2_vectors[];
-diff --git a/arch/arm64/kernel/sdei.c b/arch/arm64/kernel/sdei.c
-index 47f77d1234cb..d20620a1c51a 100644
---- a/arch/arm64/kernel/sdei.c
-+++ b/arch/arm64/kernel/sdei.c
-@@ -202,7 +202,7 @@ unsigned long sdei_arch_get_entry_point(int conduit)
- 	 * dropped to EL1 because we don't support VHE, then we can't support
- 	 * SDEI.
- 	 */
--	if (is_hyp_mode_available() && !is_kernel_in_hyp_mode()) {
-+	if (is_hyp_nvhe()) {
- 		pr_err("Not supported on this hardware/boot configuration\n");
- 		goto out_err;
+-/* temporary el2 vectors in the __hibernate_exit_text section. */
+-extern char hibernate_el2_vectors[];
+-
+ /* hyp-stub vectors, used to restore el2 during resume from hibernate. */
+ extern char __hyp_stub_vectors[];
+ 
+@@ -434,6 +431,7 @@ int swsusp_arch_resume(void)
+ 	void *zero_page;
+ 	size_t exit_size;
+ 	pgd_t *tmp_pg_dir;
++	phys_addr_t el2_vectors;
+ 	void __noreturn (*hibernate_exit)(phys_addr_t, phys_addr_t, void *,
+ 					  void *, phys_addr_t, phys_addr_t);
+ 	struct trans_pgd_info trans_info = {
+@@ -461,6 +459,14 @@ int swsusp_arch_resume(void)
+ 		return -ENOMEM;
  	}
+ 
++	if (el2_reset_needed()) {
++		rc = trans_pgd_copy_el2_vectors(&trans_info, &el2_vectors);
++		if (rc) {
++			pr_err("Failed to setup el2 vectors\n");
++			return rc;
++		}
++	}
++
+ 	exit_size = __hibernate_exit_text_end - __hibernate_exit_text_start;
+ 	/*
+ 	 * Copy swsusp_arch_suspend_exit() to a safe page. This will generate
+@@ -473,26 +479,14 @@ int swsusp_arch_resume(void)
+ 		return rc;
+ 	}
+ 
+-	/*
+-	 * The hibernate exit text contains a set of el2 vectors, that will
+-	 * be executed at el2 with the mmu off in order to reload hyp-stub.
+-	 */
+-	dcache_clean_inval_poc((unsigned long)hibernate_exit,
+-			    (unsigned long)hibernate_exit + exit_size);
+-
+ 	/*
+ 	 * KASLR will cause the el2 vectors to be in a different location in
+ 	 * the resumed kernel. Load hibernate's temporary copy into el2.
+ 	 *
+ 	 * We can skip this step if we booted at EL1, or are running with VHE.
+ 	 */
+-	if (el2_reset_needed()) {
+-		phys_addr_t el2_vectors = (phys_addr_t)hibernate_exit;
+-		el2_vectors += hibernate_el2_vectors -
+-			       __hibernate_exit_text_start;     /* offset */
+-
++	if (el2_reset_needed())
+ 		__hyp_set_vectors(el2_vectors);
+-	}
+ 
+ 	hibernate_exit(virt_to_phys(tmp_pg_dir), resume_hdr.ttbr1_el1,
+ 		       resume_hdr.reenter_kernel, restore_pblist,
+diff --git a/arch/arm64/mm/Makefile b/arch/arm64/mm/Makefile
+index f188c9092696..ff1e800ba7a1 100644
+--- a/arch/arm64/mm/Makefile
++++ b/arch/arm64/mm/Makefile
+@@ -7,6 +7,7 @@ obj-$(CONFIG_HUGETLB_PAGE)	+= hugetlbpage.o
+ obj-$(CONFIG_PTDUMP_CORE)	+= ptdump.o
+ obj-$(CONFIG_PTDUMP_DEBUGFS)	+= ptdump_debugfs.o
+ obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd.o
++obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd-asm.o
+ obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
+ obj-$(CONFIG_ARM64_MTE)		+= mteswap.o
+ KASAN_SANITIZE_physaddr.o	+= n
+diff --git a/arch/arm64/mm/trans_pgd-asm.S b/arch/arm64/mm/trans_pgd-asm.S
+new file mode 100644
+index 000000000000..831d6369494e
+--- /dev/null
++++ b/arch/arm64/mm/trans_pgd-asm.S
+@@ -0,0 +1,58 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++/*
++ * Copyright (c) 2021, Microsoft Corporation.
++ * Pavel Tatashin <pasha.tatashin@soleen.com>
++ */
++
++#include <linux/linkage.h>
++#include <asm/assembler.h>
++#include <asm/kvm_asm.h>
++
++.macro invalid_vector	label
++SYM_CODE_START_LOCAL(\label)
++	.align 7
++	b	\label
++SYM_CODE_END(\label)
++.endm
++
++.macro el1_sync_vector
++SYM_CODE_START_LOCAL(el1_sync)
++	.align 7
++	cmp	x0, #HVC_SET_VECTORS	/* Called from hibernate */
++	b.ne	1f
++	msr	vbar_el2, x1
++	mov	x0, xzr
++	eret
++1:	/* Unexpected argument, set an error */
++	mov_q	x0, HVC_STUB_ERR
++	eret
++SYM_CODE_END(el1_sync)
++.endm
++
++SYM_CODE_START(trans_pgd_stub_vectors)
++	invalid_vector	hyp_stub_el2t_sync_invalid	// Synchronous EL2t
++	invalid_vector	hyp_stub_el2t_irq_invalid	// IRQ EL2t
++	invalid_vector	hyp_stub_el2t_fiq_invalid	// FIQ EL2t
++	invalid_vector	hyp_stub_el2t_error_invalid	// Error EL2t
++
++	invalid_vector	hyp_stub_el2h_sync_invalid	// Synchronous EL2h
++	invalid_vector	hyp_stub_el2h_irq_invalid	// IRQ EL2h
++	invalid_vector	hyp_stub_el2h_fiq_invalid	// FIQ EL2h
++	invalid_vector	hyp_stub_el2h_error_invalid	// Error EL2h
++
++	el1_sync_vector					// Synchronous 64-bit EL1
++	invalid_vector	hyp_stub_el1_irq_invalid	// IRQ 64-bit EL1
++	invalid_vector	hyp_stub_el1_fiq_invalid	// FIQ 64-bit EL1
++	invalid_vector	hyp_stub_el1_error_invalid	// Error 64-bit EL1
++
++	invalid_vector	hyp_stub_32b_el1_sync_invalid	// Synchronous 32-bit EL1
++	invalid_vector	hyp_stub_32b_el1_irq_invalid	// IRQ 32-bit EL1
++	invalid_vector	hyp_stub_32b_el1_fiq_invalid	// FIQ 32-bit EL1
++	invalid_vector	hyp_stub_32b_el1_error_invalid	// Error 32-bit EL1
++	.align 11
++SYM_INNER_LABEL(__trans_pgd_stub_vectors_end, SYM_L_LOCAL)
++SYM_CODE_END(trans_pgd_stub_vectors)
++
++# Check the trans_pgd_stub_vectors didn't overflow
++.org . - (__trans_pgd_stub_vectors_end - trans_pgd_stub_vectors) + SZ_2K
+diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
+index 527f0a39c3da..a08cf313c858 100644
+--- a/arch/arm64/mm/trans_pgd.c
++++ b/arch/arm64/mm/trans_pgd.c
+@@ -5,7 +5,7 @@
+  *
+  * This file derived from: arch/arm64/kernel/hibernate.c
+  *
+- * Copyright (c) 2020, Microsoft Corporation.
++ * Copyright (c) 2021, Microsoft Corporation.
+  * Pavel Tatashin <pasha.tatashin@soleen.com>
+  *
+  */
+@@ -322,3 +322,26 @@ int trans_pgd_idmap_page(struct trans_pgd_info *info, phys_addr_t *trans_ttbr0,
+ 
+ 	return 0;
+ }
++
++/*
++ * Create a copy of the vector table so we can call HVC_SET_VECTORS or
++ * HVC_SOFT_RESTART from contexts where the table may be overwritten.
++ */
++int trans_pgd_copy_el2_vectors(struct trans_pgd_info *info,
++			       phys_addr_t *el2_vectors)
++{
++	void *hyp_stub = trans_alloc(info);
++
++	if (!hyp_stub)
++		return -ENOMEM;
++	*el2_vectors = virt_to_phys(hyp_stub);
++	memcpy(hyp_stub, &trans_pgd_stub_vectors, ARM64_VECTOR_TABLE_LEN);
++	caches_clean_inval_pou((unsigned long)hyp_stub,
++			       (unsigned long)hyp_stub +
++			       ARM64_VECTOR_TABLE_LEN);
++	dcache_clean_inval_poc((unsigned long)hyp_stub,
++			       (unsigned long)hyp_stub +
++			       ARM64_VECTOR_TABLE_LEN);
++
++	return 0;
++}
 -- 
 2.25.1
 
