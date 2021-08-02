@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DBE3DDA41
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F643DD9AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237670AbhHBOKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:10:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48778 "EHLO mail.kernel.org"
+        id S236423AbhHBOCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:02:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235760AbhHBOBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:01:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6175B6120A;
-        Mon,  2 Aug 2021 13:56:25 +0000 (UTC)
+        id S235914AbhHBNyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:54:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07CED610FE;
+        Mon,  2 Aug 2021 13:52:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912585;
-        bh=99hvyO5qMVk98AqKl/fF4u+qk5kGAoJmDIq+Qk8jPuc=;
+        s=korg; t=1627912380;
+        bh=fxTKlP8bCqlQHIzZGwX0bK1SBTINMya2l7UTR2QEIg8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RcU6krjo+uoMW4w6l8snnwbiDgDGumg5OxAxwZYr/8jA2Lq2FImZfpdZ38VMoEnoa
-         4/I3LAEfek9bvB0fpxfqkY958u6rUE67utyzMlWrRrxi5lIEE+bMRh07x2r7s+bHhp
-         0CfD/Z/UkPFErowEWfMH0cHy4XIdEoEusdekPssw=
+        b=gNqh/5Td5mgy+lQc5twhm3lgCjsIaL/XrZL++3qXOucVI8rhgRhGB0N2CFc28BEgz
+         Ovszwxvk88c+gJZiSvStbHJMjcmJIblOI7b8VD0NB0T+RM6SR6DmYcT+gnz2+zddss
+         I5YNTTz1DBrGl2nOvexO08ZY9oL3PaM9Otca4+w4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        Imam Hassan Reza Biswas <imam.hassan.reza.biswas@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 060/104] can: mcp251xfd: mcp251xfd_irq(): stop timestamping worker in case error in IRQ
+Subject: [PATCH 5.10 34/67] i40e: Fix firmware LLDP agent related warning
 Date:   Mon,  2 Aug 2021 15:44:57 +0200
-Message-Id: <20210802134345.976601792@linuxfoundation.org>
+Message-Id: <20210802134340.183880856@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
 
-[ Upstream commit ef68a717960658e6a1e5f08adb0574326e9a12c2 ]
+[ Upstream commit 71d6fdba4b2d82fdd883fec31dee77fbcf59773a ]
 
-In case an error occurred in the IRQ handler, the chip status is
-dumped via devcoredump and all IRQs are disabled, but the chip stays
-powered for further analysis.
+Make warning meaningful for the user.
 
-The chip is in an undefined state and will not receive any CAN frames,
-so shut down the timestamping worker, which reads the TBC register
-regularly, too. This avoids any CRC read error messages if there is a
-communication problem with the chip.
+Previously the trace:
+"Starting FW LLDP agent failed: error: I40E_ERR_ADMIN_QUEUE_ERROR, I40E_AQ_RC_EAGAIN"
+was produced when user tried to start Firmware LLDP agent,
+just after it was stopped with sequence:
+ethtool --set-priv-flags <dev> disable-fw-lldp on
+ethtool --set-priv-flags <dev> disable-fw-lldp off
+(without any delay between the commands)
+At that point the firmware is still processing stop command, the behavior
+is expected.
 
-Fixes: efd8d98dfb90 ("can: mcp251xfd: add HW timestamp infrastructure")
-Link: https://lore.kernel.org/r/20210724155131.471303-1-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: c1041d070437 ("i40e: Missing response checks in driver when starting/stopping FW LLDP")
+Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Tested-by: Imam Hassan Reza Biswas <imam.hassan.reza.biswas@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index e0ae00e34c7b..d371af7ab496 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -2300,6 +2300,7 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
- 		   err, priv->regs_status.intf);
- 	mcp251xfd_dump(priv);
- 	mcp251xfd_chip_interrupts_disable(priv);
-+	mcp251xfd_timestamp_stop(priv);
- 
- 	return handled;
- }
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index 874073f7f024..a952ae07d253 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -5106,6 +5106,10 @@ flags_complete:
+ 					dev_warn(&pf->pdev->dev,
+ 						 "Device configuration forbids SW from starting the LLDP agent.\n");
+ 					return -EINVAL;
++				case I40E_AQ_RC_EAGAIN:
++					dev_warn(&pf->pdev->dev,
++						 "Stop FW LLDP agent command is still being processed, please try again in a second.\n");
++					return -EBUSY;
+ 				default:
+ 					dev_warn(&pf->pdev->dev,
+ 						 "Starting FW LLDP agent failed: error: %s, %s\n",
 -- 
 2.30.2
 
