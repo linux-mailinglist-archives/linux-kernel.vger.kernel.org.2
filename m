@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713B53DD791
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13C13DD9DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234040AbhHBNqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:46:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55716 "EHLO mail.kernel.org"
+        id S237673AbhHBOE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:04:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233981AbhHBNqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:46:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D85461107;
-        Mon,  2 Aug 2021 13:46:03 +0000 (UTC)
+        id S234291AbhHBN6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:58:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13CB5610CC;
+        Mon,  2 Aug 2021 13:55:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627911963;
-        bh=miLBWkeV2yx67TZZro3Le3H1NmG4pwULDT7H9T15OpQ=;
+        s=korg; t=1627912511;
+        bh=pS5jcD3S2fm+uMBqOrdXI3F1v1qyPMs0J1KWeXKdWvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E0D0TSXStJ4Ag0+NPoX3l2X/8Iz5XyGkdm4G7C0EF3ZOcZJntpBRl/q4Lh3aGGn/h
-         CZDzZy3VlQqDfAC7ZHSceT9ukQ8gEXKF3sdjS3CT/PO+xEssXUvnGPX8/o2qQ04hGw
-         iU+Q5totWhfLDSpRXd16QMtkh9VCtF7gcaalsDls=
+        b=cMbGsPyydQePmxqfYaBwoe/bd8CsOKL3lfFORbPpLBsUA00GE6OmwJVIpQnaHYuwV
+         WKOjCHgGpTERS/o8ixTOpj/ZgJC25ORfcBTjbpUj4SDHC+KBoqrxYQzA8OULxOV5Lx
+         o03dc43GLPk9bdh0g0lBdiGrwW2DsxKX8vZ6FRWs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Junxiao Bi <junxiao.bi@oracle.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Jun Piao <piaojun@huawei.com>, Mark Fasheh <mark@fasheh.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 13/26] ocfs2: fix zero out valid data
+        stable@vger.kernel.org, Lijo Lazar <Lijo.Lazar@amd.com>,
+        Pratik Vishwakarma <Pratik.Vishwakarma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.13 026/104] drm/amdgpu: Check pmops for desired suspend state
 Date:   Mon,  2 Aug 2021 15:44:23 +0200
-Message-Id: <20210802134332.466382183@linuxfoundation.org>
+Message-Id: <20210802134344.882224526@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
-References: <20210802134332.033552261@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junxiao Bi <junxiao.bi@oracle.com>
+From: Pratik Vishwakarma <Pratik.Vishwakarma@amd.com>
 
-commit f267aeb6dea5e468793e5b8eb6a9c72c0020d418 upstream.
+commit 91e273712ab8dd8c31924ac7714b21e011137e98 upstream.
 
-If append-dio feature is enabled, direct-io write and fallocate could
-run in parallel to extend file size, fallocate used "orig_isize" to
-record i_size before taking "ip_alloc_sem", when
-ocfs2_zeroout_partial_cluster() zeroout EOF blocks, i_size maybe already
-extended by ocfs2_dio_end_io_write(), that will cause valid data zeroed
-out.
+[Why]
+User might change the suspend behaviour from OS.
 
-Link: https://lkml.kernel.org/r/20210722054923.24389-1-junxiao.bi@oracle.com
-Fixes: 6bba4471f0cc ("ocfs2: fix data corruption by fallocate")
-Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[How]
+Check with pm for target suspend state and set s0ix
+flag only for s2idle state.
+
+v2: User might change default suspend state, use target state
+v3: squash in build fix
+
+Suggested-by: Lijo Lazar <Lijo.Lazar@amd.com>
+Signed-off-by: Pratik Vishwakarma <Pratik.Vishwakarma@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ocfs2/file.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/ocfs2/file.c
-+++ b/fs/ocfs2/file.c
-@@ -1939,7 +1939,6 @@ static int __ocfs2_change_file_space(str
- 		goto out_inode_unlock;
- 	}
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+@@ -26,6 +26,7 @@
+ #include <linux/slab.h>
+ #include <linux/power_supply.h>
+ #include <linux/pm_runtime.h>
++#include <linux/suspend.h>
+ #include <acpi/video.h>
+ #include <acpi/actbl.h>
  
--	orig_isize = i_size_read(inode);
- 	switch (sr->l_whence) {
- 	case 0: /*SEEK_SET*/
- 		break;
-@@ -1947,7 +1946,7 @@ static int __ocfs2_change_file_space(str
- 		sr->l_start += f_pos;
- 		break;
- 	case 2: /*SEEK_END*/
--		sr->l_start += orig_isize;
-+		sr->l_start += i_size_read(inode);
- 		break;
- 	default:
- 		ret = -EINVAL;
-@@ -2002,6 +2001,7 @@ static int __ocfs2_change_file_space(str
- 		ret = -EINVAL;
+@@ -906,7 +907,7 @@ bool amdgpu_acpi_is_s0ix_supported(struc
+ #if defined(CONFIG_AMD_PMC) || defined(CONFIG_AMD_PMC_MODULE)
+ 	if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
+ 		if (adev->flags & AMD_IS_APU)
+-			return true;
++			return pm_suspend_target_state == PM_SUSPEND_TO_IDLE;
  	}
- 
-+	orig_isize = i_size_read(inode);
- 	/* zeroout eof blocks in the cluster. */
- 	if (!ret && change_size && orig_isize < size) {
- 		ret = ocfs2_zeroout_partial_cluster(inode, orig_isize,
+ #endif
+ 	return false;
 
 
