@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F243DE173
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B2A3DE175
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbhHBVUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39030 "EHLO
+        id S233069AbhHBVUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232690AbhHBVUs (ORCPT
+        with ESMTP id S231675AbhHBVUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Aug 2021 17:20:48 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22BCC06175F;
-        Mon,  2 Aug 2021 14:20:37 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id x7so25625149ljn.10;
-        Mon, 02 Aug 2021 14:20:37 -0700 (PDT)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEC8C06175F;
+        Mon,  2 Aug 2021 14:20:38 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id b6so13394654lff.10;
+        Mon, 02 Aug 2021 14:20:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rASBzWdiFOBTgYEDJa3bivw9a46okAlIQP0Tfm4nC8A=;
-        b=FQiKgSsEDcoIt2H6fyFDJaNQnYuG8heZv1ZBcIr6T7Q0CK3HwqoF/3Iy3wN95pEmf4
-         d31ih/l9Qei4tKaXZVCzxRPXZo2Xvq6UbKLkIWSJzaR/0ElanMn/+XmNAN9ogPIFqVrC
-         +CSTjvEVDTxHFG1jMdKy6A1eAXm5i3NtogT3e/dB6BquiDSkyayTELfit83Of3r8roli
-         wmBuZ244KIGEWjIFNTBnz5ZxrEG+4iZsLdOXdVxr3VXygUHirA6fMUpvhofYELqbvUVO
-         rP9p1Nbssh7fLXh7rBUr9m8qrNhShRIVDRxvEByTC1KFsbPRcuF/kuuYe8s98Ubkf5Ff
-         4c4g==
+        bh=Nw2Y0y0fghw+sFEgC64gNuaGBHW1wy1WhSDHTe1H5dY=;
+        b=qmXEfvlt5ZJukJLd9J/LlnBeRZua9XCr1Ch+H6TojPzJUVw2OdyhKOH/AD4m4Ovc4r
+         TnGDK50jm8XGwBLP/0ofVakvt8CL4G10ZxmZR8/PPdbDa40yOxSC38V2S9OdG8kNio2D
+         FUsgGdrn79JHiPpg4++88HQo0UVDY2yMU0jbmOb2pXLBzEsGP4+8slA0K1azYRoueenf
+         /O9OCvMfac+EJePzlHMD6Wrp7UPttGknhKnqmL7Swz5d+j9E1a6ef61mS8gVkxC2K8qO
+         z2QGyhUbgWmqqjKdkBa2IUICopXhdOdd3pzoKr3W0UcHxqBr5DJMeGXGQWvXpa8QDc+z
+         cY6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rASBzWdiFOBTgYEDJa3bivw9a46okAlIQP0Tfm4nC8A=;
-        b=C2FwlH4oRY0V9LSrGiyZ60G2fB7Uue1TXljPmtMT+VQIfUbk4GzSxkr5mgblnDkI3z
-         R7C6KGWDHvX4pZqYhyegtnSqmcPkLUbgyv5rhh+UtIRgfkSIKPURxMrp+WznRKTOzxNp
-         W7VThYWlu1VdY8/WHIGufPawyReZr+JoJOdX6wzzNQOqPNUUCTSPJ/n4NNyPyz5aO81o
-         5LpDrZcpuJgmzGelBMd4qs/xHWTukXp8AlyqAVi//C2wLHrI2WDKVACEjFgZkP7mzodF
-         tSur2Hq4+r8YDyLjmgHMMfEWTeogRtFJK3IPGs64T/l2V+HB9KiRVx1ismul7BKcSa2i
-         cjyg==
-X-Gm-Message-State: AOAM5320bM5xUd7bQ5tC9HpFj8lxV0QVaOfI0y+Yk+GUjX5bRrLwQLFh
-        rRE3G5VdvLvPGGPUzfWO0Yw=
-X-Google-Smtp-Source: ABdhPJwtPNIURT8QFecxu2moDBJdq0IjbMWXCo9xAzTSHyledhmCT7344ianMMPx/AyU4b8uYDFcUw==
-X-Received: by 2002:a2e:881a:: with SMTP id x26mr12492672ljh.101.1627939236319;
+        bh=Nw2Y0y0fghw+sFEgC64gNuaGBHW1wy1WhSDHTe1H5dY=;
+        b=ZLuI1M6SnPXYG2zRU32I9UOIDKhLJ2sh/IupBNCzLcQ691qSfaXlFbqMl3cZei9S3G
+         8uzbOYzaLYrDZuKIDWmiMfFXC4Fo4/KUvZ2L8MNGYkQ9c5WWvnxGFWSwAvJPbs/ZlfOi
+         kcHYlA4Ijsc6qZHEEgjxV77v1w218KWNo0AKa60Vk/dVPZ5cRKwuy+8wscZoYUo3A8tu
+         ljWc3RPEVox/De4tQ/R47JO3zFMJY6u23DB58xL9Z/1K/rBtzO8hX7MxhvapNOZeUKh/
+         9KdD8aUTy+QuPwCCOZ0nsgXFab0sMg5KYzux8BFXsRrYQvxtDWXNV9n1gcsvUW8qnDZd
+         0XMw==
+X-Gm-Message-State: AOAM532Xqogt9g97tJbDSGwDc9nH7MvFe97eMSTXNHcEozRupam9l/X9
+        kmk/1PVASLRKc9aEt6LZjug=
+X-Google-Smtp-Source: ABdhPJwfQ9REISquOUPaYiCcW3Jms2LLuB4Cg71HUCHKdwVrw7zHtR+QhhAVEi+TWk+BpkSAzpfZTw==
+X-Received: by 2002:a05:6512:169d:: with SMTP id bu29mr9951423lfb.160.1627939236961;
         Mon, 02 Aug 2021 14:20:36 -0700 (PDT)
 Received: from localhost.localdomain (94-29-22-96.dynamic.spd-mgts.ru. [94.29.22.96])
-        by smtp.gmail.com with ESMTPSA id p14sm764942lfa.117.2021.08.02.14.20.35
+        by smtp.gmail.com with ESMTPSA id p14sm764942lfa.117.2021.08.02.14.20.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 14:20:35 -0700 (PDT)
+        Mon, 02 Aug 2021 14:20:36 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -55,9 +55,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
         linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v2 01/15] ARM: tegra: Add SoC thermal sensor to Tegra30 device-trees
-Date:   Tue,  3 Aug 2021 00:19:33 +0300
-Message-Id: <20210802211947.19715-2-digetx@gmail.com>
+Subject: [PATCH v2 02/15] ARM: tegra: ouya: Add interrupt to temperature sensor node
+Date:   Tue,  3 Aug 2021 00:19:34 +0300
+Message-Id: <20210802211947.19715-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210802211947.19715-1-digetx@gmail.com>
 References: <20210802211947.19715-1-digetx@gmail.com>
@@ -67,154 +67,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the on-chip SoC thermal sensor to Tegra30 device-trees. Now CPU
-temperature reporting and thermal throttling is available on all Tegra30
-devices universally.
+The TEMP_ALERT pin of LM90 temperature sensor is connected to Tegra SoC.
+Add interrupt property to the temperature sensor and enable it in pinmux,
+for completeness.
 
+Tested-by: Matt Merhar <mattmerhar@protonmail.com>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra30.dtsi | 87 ++++++++++++++++++++++++++++++++--
- 1 file changed, 83 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/tegra30-ouya.dts | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30.dtsi
-index c577c191be4b..eaf4951d9ff8 100644
---- a/arch/arm/boot/dts/tegra30.dtsi
-+++ b/arch/arm/boot/dts/tegra30.dtsi
-@@ -5,6 +5,7 @@
- #include <dt-bindings/pinctrl/pinctrl-tegra.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/soc/tegra-pmc.h>
-+#include <dt-bindings/thermal/thermal.h>
+diff --git a/arch/arm/boot/dts/tegra30-ouya.dts b/arch/arm/boot/dts/tegra30-ouya.dts
+index ab8744f3d72d..90db5ff72537 100644
+--- a/arch/arm/boot/dts/tegra30-ouya.dts
++++ b/arch/arm/boot/dts/tegra30-ouya.dts
+@@ -124,12 +124,11 @@ cpu_temp: nct1008@4c {
+ 			compatible = "onnn,nct1008";
+ 			reg = <0x4c>;
+ 			vcc-supply = <&sys_3v3_reg>;
++
++			interrupt-parent = <&gpio>;
++			interrupts = <TEGRA_GPIO(CC, 2) IRQ_TYPE_EDGE_FALLING>;
++
+ 			#thermal-sensor-cells = <1>;
+-/*
+- *			The interrupt is bugged, once triggered it never clears.
+- *			interrupt-parent = <&gpio>;
+- *			interrupts = <TEGRA_GPIO(CC, 2) IRQ_TYPE_LEVEL_LOW>;
+- */
+ 		};
  
- #include "tegra30-peripherals-opp.dtsi"
- 
-@@ -800,6 +801,20 @@ fuse@7000f800 {
- 		reset-names = "fuse";
+ 		pmic: pmic@2d {
+@@ -4376,8 +4375,8 @@ pcc2 {
+ 		nvidia,pins = "pcc2";
+ 		nvidia,function = "i2s4";
+ 		nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+-		nvidia,tristate = <TEGRA_PIN_ENABLE>;
+-		nvidia,enable-input = <TEGRA_PIN_DISABLE>;
++		nvidia,tristate = <TEGRA_PIN_DISABLE>;
++		nvidia,enable-input = <TEGRA_PIN_ENABLE>;
  	};
- 
-+	tsensor: tsensor@70014000 {
-+		compatible = "nvidia,tegra30-tsensor";
-+		reg = <0x70014000 0x500>;
-+		interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&tegra_car TEGRA30_CLK_TSENSOR>;
-+		resets = <&tegra_car TEGRA30_CLK_TSENSOR>;
-+
-+		assigned-clocks = <&tegra_car TEGRA30_CLK_TSENSOR>;
-+		assigned-clock-parents = <&tegra_car TEGRA30_CLK_CLK_M>;
-+		assigned-clock-rates = <500000>;
-+
-+		#thermal-sensor-cells = <1>;
-+	};
-+
- 	hda@70030000 {
- 		compatible = "nvidia,tegra30-hda";
- 		reg = <0x70030000 0x10000>;
-@@ -1062,32 +1077,36 @@ cpus {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu@0 {
-+		cpu0: cpu@0 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <0>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@1 {
-+		cpu1: cpu@1 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <1>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@2 {
-+		cpu2: cpu@2 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <2>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@3 {
-+		cpu3: cpu@3 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <3>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 	};
- 
-@@ -1102,4 +1121,64 @@ pmu {
- 				     <&{/cpus/cpu@2}>,
- 				     <&{/cpus/cpu@3}>;
- 	};
-+
-+	thermal-zones {
-+		tsensor0-thermal {
-+			polling-delay-passive = <1000>; /* milliseconds */
-+			polling-delay = <5000>; /* milliseconds */
-+
-+			thermal-sensors = <&tsensor 0>;
-+
-+			trips {
-+				level1_trip: dvfs-alert {
-+					/* throttle at 80C until temperature drops to 79.8C */
-+					temperature = <80000>;
-+					hysteresis = <200>;
-+					type = "passive";
-+				};
-+
-+				level2_trip: cpu-div2-throttle {
-+					/* hardware CPU x2 freq throttle at 85C */
-+					temperature = <85000>;
-+					hysteresis = <200>;
-+					type = "hot";
-+				};
-+
-+				level3_trip: soc-critical {
-+					/* hardware shut down at 90C */
-+					temperature = <90000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&level1_trip>;
-+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&actmon THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
-+		};
-+
-+		tsensor1-thermal {
-+			status = "disabled";
-+
-+			polling-delay-passive = <1000>; /* milliseconds */
-+			polling-delay = <0>; /* milliseconds */
-+
-+			thermal-sensors = <&tsensor 1>;
-+
-+			trips {
-+				dvfs-alert {
-+					temperature = <80000>;
-+					hysteresis = <200>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+	};
- };
+ 	sdmmc4_rst_n_pcc3 {
+ 		nvidia,pins = "sdmmc4_rst_n_pcc3";
 -- 
 2.32.0
 
