@@ -2,319 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEA73DE2C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82E03DE2C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhHBWzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 18:55:45 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:34214 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbhHBWzo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 18:55:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627944934; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=et8p+DAPYDSsZ9VpFh08G64kkSN965airz+DVWjDetc=;
- b=cOzvJCG03JLJXyFMNpfWM4Vrpe8iiSBwEIInNwIJeVlRVv/55QZy08uKcS6PNobvSfZw/90p
- sESpIP35ICnMIAvfW5qHb9xMhQoT0YRCYqbhI2n5+2MiHvbVK/JKCz8DjL4tr31mObD8JHsH
- KCsp8g4W520to+J/4qjvy/8amAg=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 610877d04815712f3a1f099f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 22:55:12
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E8260C4338A; Mon,  2 Aug 2021 22:55:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B4D15C433D3;
-        Mon,  2 Aug 2021 22:55:10 +0000 (UTC)
+        id S232516AbhHBW4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 18:56:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231920AbhHBW4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 18:56:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C48ED60EE8;
+        Mon,  2 Aug 2021 22:56:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627944961;
+        bh=c9nH0VoS4XSqz71VDqTxwB417lLMKbQsxFUEFp/TEUU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=SyH5TyJTxARJoxPRItch2OjAKegOQdZwgPIyPJmxzAcw2nax4lRioo7bRLQ1dyoBo
+         5YEg8epkg4a8gD7V7CwWj2edkN65IFbj4WOXjSu8Eh3FxEXKHdTenrwSC/4n9OJW0S
+         2vQScKOR/S7JHgJUsH8KEzwqqfAUyyUxwchW5qLS1m2w3SSLslaA2tCY5Beh+RE3DO
+         yMlUAgbCeTRWmst81DluPOuCKh2tuE2YV2V7VcBRGcx+OtsUUogFY0wbAHKaFB+tyA
+         N3AE3MWMpu0CgfqQiscIEPKGfZJxw9/ssYKBHUF5BckdDi9i1elFABEuVpLA8MH5ES
+         mEI15YeuV6jFg==
+Date:   Mon, 2 Aug 2021 17:55:59 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v13 5/9] PCI: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210802225559.GA1472320@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Aug 2021 15:55:10 -0700
-From:   abhinavk@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [Freedreno] [PATCH 01/11] drm/msm/dsi: add support for dsc data
-In-Reply-To: <20210715065203.709914-2-vkoul@kernel.org>
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-2-vkoul@kernel.org>
-Message-ID: <c411e4d60efd3029b2dc6b0d899ea8a9@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210801142518.1224-6-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-14 23:51, Vinod Koul wrote:
-> Display Stream Compression (DSC) parameters need to be calculated. Add
-> helpers and struct msm_display_dsc_config in msm_drv for this
-> msm_display_dsc_config uses drm_dsc_config for DSC parameters.
+On Sun, Aug 01, 2021 at 07:55:14PM +0530, Amey Narkhede wrote:
+> Add reset_method sysfs attribute to enable user to query and set user
+> preferred device reset methods and their ordering.
 > 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
 > ---
-> Changes since RFC:
->  - Drop the DT parsing code
->  - Port dsc param calculation from downstream
+>  Documentation/ABI/testing/sysfs-bus-pci |  19 +++++
+>  drivers/pci/pci-sysfs.c                 |   1 +
+>  drivers/pci/pci.c                       | 105 ++++++++++++++++++++++++
+>  drivers/pci/pci.h                       |   2 +
+>  4 files changed, 127 insertions(+)
 > 
->  drivers/gpu/drm/msm/dsi/dsi_host.c | 133 +++++++++++++++++++++++++++++
->  drivers/gpu/drm/msm/msm_drv.h      |  21 +++++
->  2 files changed, 154 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> index 8a10e4343281..e1e5d91809b5 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> @@ -30,6 +30,8 @@
-> 
->  #define DSI_RESET_TOGGLE_DELAY_MS 20
-> 
-> +static int dsi_populate_dsc_params(struct msm_display_dsc_config 
-> *dsc);
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> index ef00fada2efb..ef66b62bf025 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-pci
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> @@ -121,6 +121,25 @@ Description:
+>  		child buses, and re-discover devices removed earlier
+>  		from this part of the device tree.
+>  
+> +What:		/sys/bus/pci/devices/.../reset_method
+> +Date:		March 2021
+> +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
+> +Description:
+> +		Some devices allow an individual function to be reset
+> +		without affecting other functions in the same slot.
 > +
->  static int dsi_get_version(const void __iomem *base, u32 *major, u32 
-> *minor)
->  {
->  	u32 ver;
-> @@ -156,6 +158,7 @@ struct msm_dsi_host {
->  	struct regmap *sfpb;
-> 
->  	struct drm_display_mode *mode;
-> +	struct msm_display_dsc_config *dsc;
-> 
->  	/* connected device info */
->  	struct device_node *device_node;
-> @@ -1744,6 +1747,136 @@ static int dsi_host_parse_lane_data(struct
-> msm_dsi_host *msm_host,
->  	return -EINVAL;
->  }
-> 
-> +static u32 dsi_dsc_rc_buf_thresh[DSC_NUM_BUF_RANGES - 1] = {
-> +	0x0e, 0x1c, 0x2a, 0x38, 0x46, 0x54, 0x62,
-> +	0x69, 0x70, 0x77, 0x79, 0x7b, 0x7d, 0x7e
-> +};
+> +		For devices that have this support, a file named
+> +		reset_method will be present in sysfs. Initially reading
+> +		this file will give names of the device supported reset
+> +		methods and their ordering. After write, this file will
+> +		give names and ordering of currently enabled reset methods.
+> +		Writing the name or space separated list of names of any of
+> +		the device supported reset methods to this file will set
+> +		the reset methods and their ordering to be used when
+> +		resetting the device. Writing empty string to this file
+> +		will disable ability to reset the device and writing
+> +		"default" will return to the original value.
 > +
-> +/* only 8bpc, 8bpp added */
-> +static char min_qp[DSC_NUM_BUF_RANGES] = {
-> +	0, 0, 1, 1, 3, 3, 3, 3, 3, 3, 5, 5, 5, 7, 13
-> +};
-> +
-> +static char max_qp[DSC_NUM_BUF_RANGES] = {
-> +	4, 4, 5, 6, 7, 7, 7, 8, 9, 10, 11, 12, 13, 13, 15
-> +};
-> +
-> +static char bpg_offset[DSC_NUM_BUF_RANGES] = {
-> +	2, 0, 0, -2, -4, -6, -8, -8, -8, -10, -10, -12, -12, -12, -12
-> +};
-> +
-> +static int dsi_populate_dsc_params(struct msm_display_dsc_config *dsc)
+>  What:		/sys/bus/pci/devices/.../reset
+>  Date:		July 2009
+>  Contact:	Michael S. Tsirkin <mst@redhat.com>
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 316f70c3e3b4..54ee7193b463 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1491,6 +1491,7 @@ const struct attribute_group *pci_dev_groups[] = {
+>  	&pci_dev_config_attr_group,
+>  	&pci_dev_rom_attr_group,
+>  	&pci_dev_reset_attr_group,
+> +	&pci_dev_reset_method_attr_group,
+>  	&pci_dev_vpd_attr_group,
+>  #ifdef CONFIG_DMI
+>  	&pci_dev_smbios_attr_group,
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 932dd21e759b..c496cd164aca 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -5132,6 +5132,111 @@ static const struct pci_reset_fn_method pci_reset_fn_methods[] = {
+>  	{ pci_reset_bus_function, .name = "bus" },
+>  };
+>  
+> +static ssize_t reset_method_show(struct device *dev,
+> +				 struct device_attribute *attr,
+> +				 char *buf)
+
+Looks like "buf" would fit on the previous line.
+
 > +{
-> +	int mux_words_size;
-> +	int groups_per_line, groups_total;
-> +	int min_rate_buffer_size;
-> +	int hrd_delay;
-> +	int pre_num_extra_mux_bits, num_extra_mux_bits;
-> +	int slice_bits;
-> +	int target_bpp_x16;
-> +	int data;
-> +	int final_value, final_scale;
-> +	int i;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	ssize_t len = 0;
+> +	int i, m;
 > +
-> +	dsc->drm->rc_model_size = 8192;
-> +	dsc->drm->first_line_bpg_offset = 12;
-> +	dsc->drm->rc_edge_factor = 6;
-> +	dsc->drm->rc_tgt_offset_high = 3;
-> +	dsc->drm->rc_tgt_offset_low = 3;
-> +	dsc->drm->simple_422 = 0;
-> +	dsc->drm->convert_rgb = 1;
-> +	dsc->drm->vbr_enable = 0;
+> +	for (i = 0; i < PCI_NUM_RESET_METHODS; i++) {
+> +		m = pdev->reset_methods[i];
+> +		if (!m)
+> +			break;
 > +
-> +	/* handle only bpp = bpc = 8 */
-> +	for (i = 0; i < DSC_NUM_BUF_RANGES - 1 ; i++)
-> +		dsc->drm->rc_buf_thresh[i] = dsi_dsc_rc_buf_thresh[i];
-> +
-> +	for (i = 0; i < DSC_NUM_BUF_RANGES; i++) {
-> +		dsc->drm->rc_range_params[i].range_min_qp = min_qp[i];
-> +		dsc->drm->rc_range_params[i].range_max_qp = max_qp[i];
-> +		dsc->drm->rc_range_params[i].range_bpg_offset = bpg_offset[i];
+> +		len += sysfs_emit_at(buf, len, "%s%s", len ? " " : "",
+> +				     pci_reset_fn_methods[m].name);
 > +	}
 > +
-> +	dsc->drm->initial_offset = 6144; /* Not bpp 12 */
-> +	if (dsc->drm->bits_per_pixel != 8)
-> +		dsc->drm->initial_offset = 2048;	/* bpp = 12 */
+> +	if (len)
+> +		len += sysfs_emit_at(buf, len, "\n");
 > +
-> +	mux_words_size = 48;		/* bpc == 8/10 */
-> +	if (dsc->drm->bits_per_component == 12)
-> +		mux_words_size = 64;
-> +
-> +	dsc->drm->initial_xmit_delay = 512;
-> +	dsc->drm->initial_scale_value = 32;
-> +	dsc->drm->first_line_bpg_offset = 12;
-> +	dsc->drm->line_buf_depth = dsc->drm->bits_per_component + 1;
-> +
-> +	/* bpc 8 */
-> +	dsc->drm->flatness_min_qp = 3;
-> +	dsc->drm->flatness_max_qp = 12;
-> +	dsc->det_thresh_flatness = 7 + 2 * (dsc->drm->bits_per_component - 
-> 8);
-> +	dsc->drm->rc_quant_incr_limit0 = 11;
-> +	dsc->drm->rc_quant_incr_limit1 = 11;
-> +	dsc->drm->mux_word_size = DSC_MUX_WORD_SIZE_8_10_BPC;
-> +
-> +	/* FIXME: need to call drm_dsc_compute_rc_parameters() so that rest 
-> of
-> +	 * params are calculated
-> +	 */
-> +	dsc->slice_last_group_size = 3 - (dsc->drm->slice_width % 3);
-> +	groups_per_line = DIV_ROUND_UP(dsc->drm->slice_width, 3);
-> +	dsc->drm->slice_chunk_size = dsc->drm->slice_width *
-> dsc->drm->bits_per_pixel / 8;
-> +	if ((dsc->drm->slice_width * dsc->drm->bits_per_pixel) % 8)
-> +		dsc->drm->slice_chunk_size++;
-> +
-> +	/* rbs-min */
-> +	min_rate_buffer_size =  dsc->drm->rc_model_size - 
-> dsc->drm->initial_offset +
-> +				dsc->drm->initial_xmit_delay * dsc->drm->bits_per_pixel +
-> +				groups_per_line * dsc->drm->first_line_bpg_offset;
-> +
-> +	hrd_delay = DIV_ROUND_UP(min_rate_buffer_size, 
-> dsc->drm->bits_per_pixel);
-> +
-> +	dsc->drm->initial_dec_delay = hrd_delay - 
-> dsc->drm->initial_xmit_delay;
-> +
-> +	dsc->drm->initial_scale_value = 8 * dsc->drm->rc_model_size /
-> +				       (dsc->drm->rc_model_size - dsc->drm->initial_offset);
-> +
-> +	slice_bits = 8 * dsc->drm->slice_chunk_size * dsc->drm->slice_height;
-> +
-> +	groups_total = groups_per_line * dsc->drm->slice_height;
-> +
-> +	data = dsc->drm->first_line_bpg_offset * 2048;
-> +
-> +	dsc->drm->nfl_bpg_offset = DIV_ROUND_UP(data, (dsc->drm->slice_height 
-> - 1));
-> +
-> +	pre_num_extra_mux_bits = 3 * (mux_words_size + (4 *
-> dsc->drm->bits_per_component + 4) - 2);
-> +
-> +	num_extra_mux_bits = pre_num_extra_mux_bits - (mux_words_size -
-> +			     ((slice_bits - pre_num_extra_mux_bits) % mux_words_size));
-> +
-> +	data = 2048 * (dsc->drm->rc_model_size - dsc->drm->initial_offset +
-> num_extra_mux_bits);
-> +	dsc->drm->slice_bpg_offset = DIV_ROUND_UP(data, groups_total);
-> +
-> +	/* bpp * 16 + 0.5 */
-> +	data = dsc->drm->bits_per_pixel * 16;
-> +	data *= 2;
-> +	data++;
-> +	data /= 2;
-> +	target_bpp_x16 = data;
-> +
-> +	data = (dsc->drm->initial_xmit_delay * target_bpp_x16) / 16;
-> +	final_value =  dsc->drm->rc_model_size - data + num_extra_mux_bits;
-As we discussed, can you please check why there is an additional + 8 and 
-/16 in the upstream final_offset calculation?
-If we can eliminate or root-cause the difference in the calculations, 
-either this patch can be substantially reduced or
-we will atleast know for future reference what was the delta and can 
-leave a comment.
-> +	dsc->drm->final_offset = final_value;
-> +
-> +	final_scale = 8 * dsc->drm->rc_model_size / (dsc->drm->rc_model_size
-> - final_value);
-> +
-> +
-> +	data = (final_scale - 9) * (dsc->drm->nfl_bpg_offset +
-> dsc->drm->slice_bpg_offset);
-> +	dsc->drm->scale_increment_interval = (2048 * dsc->drm->final_offset) 
-> / data;
-> +
-> +	dsc->drm->scale_decrement_interval = groups_per_line /
-> (dsc->drm->initial_scale_value - 8);
-> +
-> +	return 0;
+> +	return len;
 > +}
 > +
->  static int dsi_host_parse_dt(struct msm_dsi_host *msm_host)
->  {
->  	struct device *dev = &msm_host->pdev->dev;
-> diff --git a/drivers/gpu/drm/msm/msm_drv.h 
-> b/drivers/gpu/drm/msm/msm_drv.h
-> index 2668941df529..65bff0176b66 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.h
-> +++ b/drivers/gpu/drm/msm/msm_drv.h
-> @@ -30,6 +30,7 @@
->  #include <drm/drm_plane_helper.h>
->  #include <drm/drm_probe_helper.h>
->  #include <drm/drm_fb_helper.h>
-> +#include <drm/drm_dsc.h>
->  #include <drm/msm_drm.h>
->  #include <drm/drm_gem.h>
-> 
-> @@ -134,6 +135,23 @@ struct msm_drm_thread {
->  	struct kthread_worker *worker;
->  };
-> 
-> +/* DSC config */
-> +struct msm_display_dsc_config {
-> +	struct drm_dsc_config *drm;
-> +	u8 scr_rev;
-Can scr_rev also move into drm_dsc_config? SCR itself is not QC 
-specific. Its just telling there was a change request
-for that DSC revision.
-In QC side, we only use this scr_rev to have some different tables. This 
-can even be true for other vendors.
-So moving this to drm_dsc_config will only help.
+> +static ssize_t reset_method_store(struct device *dev,
+> +				  struct device_attribute *attr,
+> +				  const char *buf, size_t count)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	int i = 0;
+> +	char *name, *options = NULL;
 > +
-> +	u32 initial_lines;
-> +	u32 pkt_per_line;
-> +	u32 bytes_in_slice;
-> +	u32 bytes_per_pkt;
-> +	u32 eol_byte_num;
-> +	u32 pclk_per_line;
-> +	u32 slice_last_group_size;
-> +	u32 det_thresh_flatness;
-> +	u32 extra_width;
-> +	u32 pps_delay_ms;
+> +	if (count >= (PAGE_SIZE - 1))
+> +		return -EINVAL;
+> +
+> +	if (sysfs_streq(buf, "")) {
+> +		pdev->reset_methods[0] = 0;
+> +		pci_warn(pdev, "All device reset methods disabled by user");
+> +		return count;
+> +	}
+
+I think it's possible for the user to disable all reset methods by
+supplying only junk.  Maybe this check could be moved to the end of
+the function to catch both the "empty input" and the "input contains
+only junk" cases?
+
+> +	if (sysfs_streq(buf, "default")) {
+> +		pci_init_reset_methods(pdev);
+> +		return count;
+> +	}
+> +
+> +	options = kstrndup(buf, count, GFP_KERNEL);
+> +	if (!options)
+> +		return -ENOMEM;
+> +
+
+  i = 0;
+
+here so it's nearer the loop it controls.
+
+> +	while ((name = strsep(&options, " ")) != NULL) {
+> +		int m;
+> +
+> +		if (sysfs_streq(name, ""))
+> +			continue;
+> +
+> +		name = strim(name);
+> +
+> +		for (m = 1; m < PCI_NUM_RESET_METHODS && i < PCI_NUM_RESET_METHODS; m++) {
+> +			if (sysfs_streq(name, pci_reset_fn_methods[m].name) &&
+> +			    !pci_reset_fn_methods[m].reset_fn(pdev, 1)) {
+> +				pdev->reset_methods[i++] = m;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (m == PCI_NUM_RESET_METHODS) {
+> +			kfree(options);
+> +			return -EINVAL;
+
+In this case, I think we have actually updated pdev->reset_methods[],
+but we still return -EINVAL, right?  If we decide to silently ignore
+unrecognized methods, we probably should return success here.
+
+> +
+> +		}
+> +	}
+> +
+> +	if (i < PCI_NUM_RESET_METHODS)
+> +		pdev->reset_methods[i] = 0;
+> +
+> +	if (!pci_reset_fn_methods[1].reset_fn(pdev, 1) && pdev->reset_methods[0] != 1)
+
+Looks longer than 80 columns?  "Fixed" by rewrapping in patch 9/9, but
+would be better to fix here.
+
+> +		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
+> +
+> +	kfree(options);
+> +
+> +	return count;
+> +}
+> +static DEVICE_ATTR_RW(reset_method);
+> +
+> +static struct attribute *pci_dev_reset_method_attrs[] = {
+> +	&dev_attr_reset_method.attr,
+> +	NULL,
 > +};
 > +
->  struct msm_drm_private {
-> 
->  	struct drm_device *dev;
-> @@ -227,6 +245,9 @@ struct msm_drm_private {
->  	/* Properties */
->  	struct drm_property *plane_property[PLANE_PROP_MAX_NUM];
-> 
-> +	/* DSC configuration */
-> +	struct msm_display_dsc_config *dsc;
+> +static umode_t pci_dev_reset_method_attr_is_visible(struct kobject *kobj,
+> +						    struct attribute *a, int n)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
 > +
->  	/* VRAM carveout, used when no IOMMU: */
->  	struct {
->  		unsigned long size;
+> +	if (!pci_reset_supported(pdev))
+> +		return 0;
+> +
+> +	return a->mode;
+> +}
+> +
+> +const struct attribute_group pci_dev_reset_method_attr_group = {
+> +	.attrs = pci_dev_reset_method_attrs,
+> +	.is_visible = pci_dev_reset_method_attr_is_visible,
+> +};
+> +
+>  /**
+>   * __pci_reset_function_locked - reset a PCI device function while holding
+>   * the @dev mutex lock.
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 7438953745e0..31458d48eda7 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -714,4 +714,6 @@ static inline int pci_acpi_program_hp_params(struct pci_dev *dev)
+>  extern const struct attribute_group aspm_ctrl_attr_group;
+>  #endif
+>  
+> +extern const struct attribute_group pci_dev_reset_method_attr_group;
+> +
+>  #endif /* DRIVERS_PCI_H */
+> -- 
+> 2.32.0
+> 
