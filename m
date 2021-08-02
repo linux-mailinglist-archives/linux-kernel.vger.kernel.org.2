@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F1C3DDE91
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 135283DDE96
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhHBRcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 13:32:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229551AbhHBRcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 13:32:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADD3E60F9C;
-        Mon,  2 Aug 2021 17:32:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627925562;
-        bh=nzMkdhv3POtG3zvpzV0a8euM5ymp9crTb0VXJfr2NZY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R9SORd0CcnUnzpwtu7poOMOuyVEbiH8QHjn7je2PHslgUlcOSxVKOUZY+kUpROehU
-         kVJOcoqGNrV7kbwchIFOQmQ/USYaewlVIBEojdG6VUmqsaArOTt/UGQ7IG7t2/kTQi
-         cKs3aK4M7ztNjf2/z+hwhFSAPu3pslD9jRErNrjkrg2mrhiJOWwy1Wn5O0rBdVuvJ5
-         AdiFnDj5Ww+G1qrGSCiAeQ3jP2NprHqgdQ4hLiAIZyLbInO7Uz4N16gpRT3UD5bFuu
-         Q9BpyOz7H7uAo7ZHBKx4yQedWAmqsv1+w+6sZsm8amy1nttmrHaIwy85acm6Y/0tRb
-         aOwXwM67DUJig==
-Date:   Mon, 2 Aug 2021 18:32:28 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Parshuram Thombare <pthombar@cadence.com>
-Cc:     lukas@wunner.de, linux-spi@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-kernel@vger.kernel.org, mparab@cadence.com,
-        jpawar@cadence.com
-Subject: Re: [PATCH v2 0/2] add support for Cadence's XSPI controller
-Message-ID: <20210802173228.GM4668@sirena.org.uk>
-References: <1626855118-25327-1-git-send-email-pthombar@cadence.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5V5c01chtBAiSHoy"
-Content-Disposition: inline
-In-Reply-To: <1626855118-25327-1-git-send-email-pthombar@cadence.com>
-X-Cookie: There's only one everything.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230301AbhHBRf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 13:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhHBRf2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 13:35:28 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE60C06175F;
+        Mon,  2 Aug 2021 10:35:18 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id h13so8897902wrp.1;
+        Mon, 02 Aug 2021 10:35:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=r6bg/D0h+hHSSt2k/0GZqDs26DAnYPWQv+c56O1rXQU=;
+        b=ZoxugyjH6qgO8Kba98UUpQzsZ9N43kL4yEKf1+fQud+NY6AFPeIxgDgbyN7fcAmDMS
+         SA9va3fbiBXU9YuqD/+A32zwTr7+RHXhaK5dOpe6UxixF/w6iwC0VljThqc0IrMp+PWz
+         iOZPr6XLe4drRxPLsWL7NR60sL+y9qNNQhS3dn5IBeH3BS3dgrap+CD/qt3GDipDTRYR
+         xDyQjk6hrlTIaalzUoeRHYdvB0LPWUmLQMAlfVi22n4+FwujniF0mTgs63/AqJT8mljP
+         XgS1cBakqXYZJNgXWgNgcn2ZDS2qvkzqv8MhrXXWaX+cuNmohDCWkPX6Wm86g8gaQzpa
+         ZT7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=r6bg/D0h+hHSSt2k/0GZqDs26DAnYPWQv+c56O1rXQU=;
+        b=ZxtE1Ylzsd5E5e9WpILIjBbH/k9dja9jXcaovMDf2GKJM82K/U614PCxb20lNDpXbv
+         Vt3qfSqPowxIo9Aeg/krX7PdgPH2XqrsE54O6Qb8G+IiggiDq7BNQGdYqYhniuscjjX7
+         uHzOmh5dFcRteOwbhvOYf88SRdHAxH0AZK+Vwml36IKJv+YkKZ0RkL66bB4tMkNM2yYn
+         8IU11Ayk0he9A0viqzF4vhl8deUAlFRU7ERSeIwCkqHmofgYKtc0Qrj8svVJeHbqr5sm
+         MUvdpr0eGlRvJTLbwoYVfP7tl9JuTZ1sRmn92rCRhHWk7lxdAkqAxHBaAI7xKVSZWiCN
+         D1xw==
+X-Gm-Message-State: AOAM533n7f5nkp+oR0yv+rKU/cOLfCt/pPWoXtbNy90h7CVwFe1p3cyO
+        ITf0y8WCZ8rwEV4Ua8/qIyw=
+X-Google-Smtp-Source: ABdhPJzC+4l7ytCLAIQxQkriQ1JBuZu+PO3Qay8vSNbgdj3ZUV7INvXpfVRnKdQweqiqMlP9y7cpiw==
+X-Received: by 2002:a5d:4386:: with SMTP id i6mr18852593wrq.249.1627925717477;
+        Mon, 02 Aug 2021 10:35:17 -0700 (PDT)
+Received: from hack-haven.speedport.ip (p200300ca17195e20d9703d2c4e611570.dip0.t-ipconnect.de. [2003:ca:1719:5e20:d970:3d2c:4e61:1570])
+        by smtp.googlemail.com with ESMTPSA id g5sm22101wmh.31.2021.08.02.10.35.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 10:35:17 -0700 (PDT)
+From:   Harshavardhan Unnibhavi <harshanavkis@gmail.com>
+To:     stefanha@redhat.com, sgarzare@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, asias@redhat.com, mst@redhat.com,
+        imbrenda@linux.vnet.ibm.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Harshavardhan Unnibhavi <harshanavkis@gmail.com>
+Subject: [PATCH net] VSOCK: handle VIRTIO_VSOCK_OP_CREDIT_REQUEST
+Date:   Mon,  2 Aug 2021 19:35:06 +0200
+Message-Id: <20210802173506.2383-1-harshanavkis@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The original implementation of the virtio-vsock driver does not
+handle a VIRTIO_VSOCK_OP_CREDIT_REQUEST as required by the
+virtio-vsock specification. The vsock device emulated by
+vhost-vsock and the virtio-vsock driver never uses this request,
+which was probably why nobody noticed it. However, another
+implementation of the device may use this request type.
 
---5V5c01chtBAiSHoy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hence, this commit introduces a way to handle an explicit credit
+request by responding with a corresponding credit update as
+required by the virtio-vsock specification.
 
-On Wed, Jul 21, 2021 at 10:11:58AM +0200, Parshuram Thombare wrote:
-> This patch series adds support for Cadence's XSPI controller.
-> This controller supports multiple work modes e.g.
-> STIG (Software Triggered Instruction Generator) mode, ACMD PIO
-> and CDMA modes, direct mode.
+Fixes: 06a8fc78367d ("VSOCK: Introduce virtio_vsock_common.ko")
 
-As documented in submitting-patches.rst please send patches to the=20
-maintainers for the code you would like to change.  The normal kernel
-workflow is that people apply patches from their inboxes, if they aren't
-copied they are likely to not see the patch at all and it is much more
-difficult to apply patches.
+Signed-off-by: Harshavardhan Unnibhavi <harshanavkis@gmail.com>
+---
+ net/vmw_vsock/virtio_transport_common.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---5V5c01chtBAiSHoy
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index 169ba8b72a63..081e7ae93cb1 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -1079,6 +1079,9 @@ virtio_transport_recv_connected(struct sock *sk,
+ 		virtio_transport_recv_enqueue(vsk, pkt);
+ 		sk->sk_data_ready(sk);
+ 		return err;
++	case VIRTIO_VSOCK_OP_CREDIT_REQUEST:
++		virtio_transport_send_credit_update(vsk);
++		break;
+ 	case VIRTIO_VSOCK_OP_CREDIT_UPDATE:
+ 		sk->sk_write_space(sk);
+ 		break;
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEILCsACgkQJNaLcl1U
-h9AVPAgAhRJUXOi+h6EXJmyUxnpM+7zHQGYvjPHZYv2VvWol6cE/pvYU5OEjXIEq
-aqw/qknfIlHY1yxEY5y1f4aK5in4j7WdnZ/13CgloX9JXBYBQ0SCMqiuySpc1Ie3
-OjrT+Z9a/R7rDqYqiD9TVQfJ12FyujH/rzgN8KUP45rpgXNZe4bSpPRpVRnXEMh4
-eoi1YkKS3sDCYSXWEiMEq6zQ+lnrjnJ3mvs5noBsA5C5FTLNC3HRQUURK+teGbvp
-4CneGudGAUqZ+iPq8OgYg9lt4ArYvOeQNJ1oWmEaK/MXGhGR9aDhYNYWfLlmBuGY
-Jg26IVTRp7BuKDpEo86/jk6GZA7SiQ==
-=QJL2
------END PGP SIGNATURE-----
-
---5V5c01chtBAiSHoy--
