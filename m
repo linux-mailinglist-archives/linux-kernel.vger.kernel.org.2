@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192793DDC43
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC863DDC44
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbhHBPWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234603AbhHBPWt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:22:49 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F66BC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:22:39 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id y200so20692932iof.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:22:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=UKJ2lydVyCb3AzexZBgFToc2Ys1NLmv5j88NPB8DmN4=;
-        b=PAySSlQy5i7aBN6gGbT7Uq1O9nRDc1/U+x+A+HrpoX8O9HOKuFDxl8+FMR+0vjgb0M
-         qvORb4H5u7azjVKg8QsKeRA7hPZXwdJevd+0pxJVbPKqAT8z8vRBxowDdCMItsJza33l
-         uFnQ3xIeKIX+eZ/oA5KVLcKvz9qI0MIQweHgz5xZLVEYwY4ypNqhKYiXkqhwiHHCtpSS
-         nWZ1l+6stYrwwrbqd9IBtetyM+ixUqY2McqkU9R8A9PbnE5Oge1iCz2SUbPkmu13ac16
-         QkJaQfa4w1/4qVOyuIsEQ2pgb2v+EluXxhM8xPohIn+Z6uKqK/wdDdClJNvLHbSJX/DW
-         sV7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=UKJ2lydVyCb3AzexZBgFToc2Ys1NLmv5j88NPB8DmN4=;
-        b=MkgYvifwbifNeH88Mweo0AV0FINy93NT2a1i9dEwQWTgKw1ApHgFR8vaPrWGJ37BgG
-         16jQizaTdHSF3pARGjD/H5ZAsdtbgmbYMUnm3BWC97lQSQTWGDTOAyvT2avBcsAUmcVG
-         0bEklnfZqQ2Hh8ejs1Yii/MKVNw87IEmkIJFFvKhXQbtzndbGwuSH/Zn/yh1eEkksKfB
-         ZHagyzo2QX4ek3/J1vaLUdY6NZYZRtqbjaqGUu4FLZr+YjVr61YJBiEoMxAqSUQfoAeI
-         g/WmpDzi5jCnt834+7XuNqqdC6lfUuYbeAy7j4nRSRSE0m9EiLaszJS40rzSFZu7ff/3
-         t2Aw==
-X-Gm-Message-State: AOAM533PuY/Pi+D3cDH/eVgCNVADmO/lFPVstlYmtjn8gPhAO4VH13q6
-        fBpWcmIfgvsUbEf+wGUuyJPeHy78F4HGg6jp5EE=
-X-Google-Smtp-Source: ABdhPJxq9v0G1V6XFxSqjE9zvV/3DFR8L+Jx/dHJRZ3SxPCZ0k8jAthPiH3ubC5ui9OyNZb61q2zO4RJyTccNysYLq4=
-X-Received: by 2002:a02:90d0:: with SMTP id c16mr15181411jag.106.1627917758658;
- Mon, 02 Aug 2021 08:22:38 -0700 (PDT)
+        id S235015AbhHBPW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:22:58 -0400
+Received: from mga04.intel.com ([192.55.52.120]:40341 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234995AbhHBPW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:22:57 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="211605926"
+X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
+   d="scan'208";a="211605926"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 08:22:48 -0700
+X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
+   d="scan'208";a="419348696"
+Received: from nradovan-mobl.amr.corp.intel.com (HELO [10.212.45.122]) ([10.212.45.122])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 08:22:47 -0700
+Subject: Re: [PATCH] x86/asm: fix gcc-5 enqcmds() build failure
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org
+References: <20210802145356.1154321-1-arnd@kernel.org>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <196808b0-fa78-eab4-d68b-45bded788f86@intel.com>
+Date:   Mon, 2 Aug 2021 08:22:46 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Received: by 2002:a05:6e02:120e:0:0:0:0 with HTTP; Mon, 2 Aug 2021 08:22:37
- -0700 (PDT)
-Reply-To: mrmichelduku@outlook.com
-From:   michel <dukumichel09@gmail.com>
-Date:   Mon, 2 Aug 2021 15:22:37 +0000
-Message-ID: <CAJYsJ_E8sHo5pKDG045gnC3P_tqHu=mLd=tGN9wXCYyiCXaQ4g@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210802145356.1154321-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-With due respect to your person, I make this contact with you as I
-believe that you can be of great assistance to me. I need your urgent
-assistance in transferring the sum of $11.3million to your private
-account Where this money can be shared between us.
+On 8/2/2021 7:53 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Building drivers/dma/idxd/submit.o with gcc-5.5 results in a cryptic
+> error messages:
+>
+> arch/x86/include/asm/special_insns.h: Assembler messages:
+> arch/x86/include/asm/special_insns.h:286: Error: operand size mismatch for `setz'
+> make[5]: *** [scripts/Makefile.build:272: drivers/dma/idxd/submit.o] Error 1
+>
+> It seems that this happens for 32-bit arguments when the instruction
+> expects an 8-bit argument. Change the type of the local variable
+> accordingly to get a clean build.
+>
+> Fixes: 7f5933f81bd8 ("x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction")
+> Fixes: 8e50d392652f ("dmaengine: idxd: Add shared workqueue support") # guessed
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-The money has been here in our Bank lying dormant for years now
-without anybody coming for the claim. I want to release the money to
-you as the relative to our deceased customer (the account owner) who
-died in a plane crash with his family since October 2005.
+Acked-by: Dave Jiang <dave.jiang@intel.com>
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
+Thanks!
 
-Best Regards,
-Michel Duku.
+> ---
+>   arch/x86/include/asm/special_insns.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+> index f3fbb84ff8a7..33264839f99e 100644
+> --- a/arch/x86/include/asm/special_insns.h
+> +++ b/arch/x86/include/asm/special_insns.h
+> @@ -275,7 +275,7 @@ static inline int enqcmds(void __iomem *dst, const void *src)
+>   {
+>   	const struct { char _[64]; } *__src = src;
+>   	struct { char _[64]; } __iomem *__dst = dst;
+> -	int zf;
+> +	u8 zf;
+>   
+>   	/*
+>   	 * ENQCMDS %(rdx), rax
