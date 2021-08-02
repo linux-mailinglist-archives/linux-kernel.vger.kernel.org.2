@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E91B3DD95B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7BD3DD8A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234302AbhHBOAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40684 "EHLO mail.kernel.org"
+        id S234309AbhHBNyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:54:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236077AbhHBNy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:54:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8530B611CE;
-        Mon,  2 Aug 2021 13:53:06 +0000 (UTC)
+        id S234504AbhHBNtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:49:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6FB661029;
+        Mon,  2 Aug 2021 13:49:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912387;
-        bh=uQA00636DhftkDXnt8Orn9kC8cnTw9fDbYKzxjacgvY=;
+        s=korg; t=1627912165;
+        bh=g7xzlURTxicIpANFeFlnBbiOHqROcRF6ixa7g2qFe2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZEQaYCpGSr+MCEl7i/osykaZKQaIthdXC5H7hlzloJKJAzGlnkDcWMmM4S50lZOY/
-         XDx92RP1V+w+eadVrS2IivCgN57mwM1OopVm4oxoGFcCCToa6vB+pZb4fNKwhA99pD
-         mzJ1eiN3PekWt/jJmtr+ps7kaOcsKfYCqSzIHAz4=
+        b=P2heMiiuosmOAOcl4G1Ygu/m4zkXz5FR8NEn/GoXC8F84elDLa93Sbgk0y+rKY4ya
+         PG8o9vHN8pNMH6yxIFJ7UbP3aB11yMCTNU9vaby7fYUtKM+Lm+iQvI0v57a9Ql5ZTs
+         FxsK4UsfEC0+ZmpnfbvfeKuUjSxSV37kIWr5Cu7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 37/67] tipc: fix implicit-connect for SYN+
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Krister Johansen <kjlx@templeofstupid.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 4.14 38/38] Revert "perf map: Fix dso->nsinfo refcounting"
 Date:   Mon,  2 Aug 2021 15:45:00 +0200
-Message-Id: <20210802134340.287944875@linuxfoundation.org>
+Message-Id: <20210802134336.028927997@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,109 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-[ Upstream commit f8dd60de194817c86bf812700980762bb5a8d9a4 ]
+commit 9bac1bd6e6d36459087a728a968e79e37ebcea1a upstream.
 
-For implicit-connect, when it's either SYN- or SYN+, an ACK should
-be sent back to the client immediately. It's not appropriate for
-the client to enter established state only after receiving data
-from the server.
+This makes 'perf top' abort in some cases, and the right fix will
+involve surgery that is too much to do at this stage, so revert for now
+and fix it in the next merge window.
 
-On client side, after the SYN is sent out, tipc_wait_for_connect()
-should be called to wait for the ACK if timeout is set.
+This reverts commit 2d6b74baa7147251c30a46c4996e8cc224aa2dc5.
 
-This patch also restricts __tipc_sendstream() to call __sendmsg()
-only when it's in TIPC_OPEN state, so that the client can program
-in a single loop doing both connecting and data sending like:
-
-  for (...)
-      sendmsg(dest, buf);
-
-This makes the implicit-connect more implicit.
-
-Fixes: b97bf3fd8f6a ("[TIPC] Initial merge")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Riccardo Mancini <rickyman7@gmail.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Krister Johansen <kjlx@templeofstupid.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/socket.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ tools/perf/util/map.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 9f7cc9e1e4ef..694c432b9710 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -148,6 +148,7 @@ static void tipc_sk_remove(struct tipc_sock *tsk);
- static int __tipc_sendstream(struct socket *sock, struct msghdr *m, size_t dsz);
- static int __tipc_sendmsg(struct socket *sock, struct msghdr *m, size_t dsz);
- static void tipc_sk_push_backlog(struct tipc_sock *tsk, bool nagle_ack);
-+static int tipc_wait_for_connect(struct socket *sock, long *timeo_p);
- 
- static const struct proto_ops packet_ops;
- static const struct proto_ops stream_ops;
-@@ -1508,8 +1509,13 @@ static int __tipc_sendmsg(struct socket *sock, struct msghdr *m, size_t dlen)
- 		rc = 0;
- 	}
- 
--	if (unlikely(syn && !rc))
-+	if (unlikely(syn && !rc)) {
- 		tipc_set_sk_state(sk, TIPC_CONNECTING);
-+		if (timeout) {
-+			timeout = msecs_to_jiffies(timeout);
-+			tipc_wait_for_connect(sock, &timeout);
-+		}
-+	}
- 
- 	return rc ? rc : dlen;
- }
-@@ -1557,7 +1563,7 @@ static int __tipc_sendstream(struct socket *sock, struct msghdr *m, size_t dlen)
- 		return -EMSGSIZE;
- 
- 	/* Handle implicit connection setup */
--	if (unlikely(dest)) {
-+	if (unlikely(dest && sk->sk_state == TIPC_OPEN)) {
- 		rc = __tipc_sendmsg(sock, m, dlen);
- 		if (dlen && dlen == rc) {
- 			tsk->peer_caps = tipc_node_get_capabilities(net, dnode);
-@@ -2686,9 +2692,10 @@ static int tipc_accept(struct socket *sock, struct socket *new_sock, int flags,
- 		       bool kern)
- {
- 	struct sock *new_sk, *sk = sock->sk;
--	struct sk_buff *buf;
- 	struct tipc_sock *new_tsock;
-+	struct msghdr m = {NULL,};
- 	struct tipc_msg *msg;
-+	struct sk_buff *buf;
- 	long timeo;
- 	int res;
- 
-@@ -2733,19 +2740,17 @@ static int tipc_accept(struct socket *sock, struct socket *new_sock, int flags,
- 	}
- 
- 	/*
--	 * Respond to 'SYN-' by discarding it & returning 'ACK'-.
--	 * Respond to 'SYN+' by queuing it on new socket.
-+	 * Respond to 'SYN-' by discarding it & returning 'ACK'.
-+	 * Respond to 'SYN+' by queuing it on new socket & returning 'ACK'.
- 	 */
- 	if (!msg_data_sz(msg)) {
--		struct msghdr m = {NULL,};
+--- a/tools/perf/util/map.c
++++ b/tools/perf/util/map.c
+@@ -216,8 +216,6 @@ struct map *map__new(struct machine *mac
+ 			if (type != MAP__FUNCTION)
+ 				dso__set_loaded(dso, map->type);
+ 		}
 -
- 		tsk_advance_rx_queue(sk);
--		__tipc_sendstream(new_sock, &m, 0);
- 	} else {
- 		__skb_dequeue(&sk->sk_receive_queue);
- 		__skb_queue_head(&new_sk->sk_receive_queue, buf);
- 		skb_set_owner_r(buf, new_sk);
+-		nsinfo__put(dso->nsinfo);
+ 		dso->nsinfo = nsi;
+ 		dso__put(dso);
  	}
-+	__tipc_sendstream(new_sock, &m, 0);
- 	release_sock(new_sk);
- exit:
- 	release_sock(sk);
--- 
-2.30.2
-
 
 
