@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D963DD7E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAB13DD9E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234428AbhHBNs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:48:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56038 "EHLO mail.kernel.org"
+        id S235057AbhHBOFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:05:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234083AbhHBNqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:46:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CAD860527;
-        Mon,  2 Aug 2021 13:46:30 +0000 (UTC)
+        id S234711AbhHBN66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:58:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDA6061100;
+        Mon,  2 Aug 2021 13:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627911991;
-        bh=3q494ZTRD0FYNLe8FGVRRXJETCXL4zPyz71GQjS4XJk=;
+        s=korg; t=1627912522;
+        bh=qoZEr6d8wVYq/9cZ+ZR4orz12XVv40Z+e7Uyce0nzw8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uol6b1V+7XBOOpF9Vaasnqajkz/eu+seODVSiWck0jF5BbdvSjqj20w+BDCvlrpjB
-         BiigJaPTSzqXPW0B7fhqkg8Ih5eCmiWsl9AI3NRBsSzVFU1F1v88MTgzTGBhjBGUfY
-         g1R/nOcxK+0l432eqAWwcIoybzAk4Y6sfKYqwgzE=
+        b=HUYWeEiVjebsoSPnWO+mZAPabNrt5bmwhQAjUpajqN5wzIzF4fz+jt9OHPtDdm7Bj
+         PaUsqKStOmCU7Zn1j9aG1aKrFrufEcEn0jy7FD/RK3xLcWK+koWvnkFJ+eK3rDzaoL
+         iyeq95nZERHJK808vrL3zNCwO/OxBzdIAEFK3HzU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Shannon Nelson <shannon.lee.nelson@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Jakma <paul@jakma.org>
-Subject: [PATCH 4.4 18/26] NIU: fix incorrect error return, missed in previous revert
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.13 031/104] io_uring: fix io_prep_async_link locking
 Date:   Mon,  2 Aug 2021 15:44:28 +0200
-Message-Id: <20210802134332.623517363@linuxfoundation.org>
+Message-Id: <20210802134345.042397812@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
-References: <20210802134332.033552261@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Jakma <paul@jakma.org>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-commit 15bbf8bb4d4ab87108ecf5f4155ec8ffa3c141d6 upstream.
+commit 44eff40a32e8f5228ae041006352e32638ad2368 upstream.
 
-Commit 7930742d6, reverting 26fd962, missed out on reverting an incorrect
-change to a return value.  The niu_pci_vpd_scan_props(..) == 1 case appears
-to be a normal path - treating it as an error and return -EINVAL was
-breaking VPD_SCAN and causing the driver to fail to load.
+io_prep_async_link() may be called after arming a linked timeout,
+automatically making it unsafe to traverse the linked list. Guard
+with completion_lock if there was a linked timeout.
 
-Fix, so my Neptune card works again.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Shannon Nelson <shannon.lee.nelson@gmail.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable <stable@vger.kernel.org>
-Fixes: 7930742d ('Revert "niu: fix missing checks of niu_pci_eeprom_read"')
-Signed-off-by: Paul Jakma <paul@jakma.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: stable@vger.kernel.org # 5.9+
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/93f7c617e2b4f012a2a175b3dab6bc2f27cebc48.1627304436.git.asml.silence@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/sun/niu.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/io_uring.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/sun/niu.c
-+++ b/drivers/net/ethernet/sun/niu.c
-@@ -8213,8 +8213,9 @@ static int niu_pci_vpd_fetch(struct niu
- 		err = niu_pci_vpd_scan_props(np, here, end);
- 		if (err < 0)
- 			return err;
-+		/* ret == 1 is not an error */
- 		if (err == 1)
--			return -EINVAL;
-+			return 0;
- 	}
- 	return 0;
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1258,8 +1258,17 @@ static void io_prep_async_link(struct io
+ {
+ 	struct io_kiocb *cur;
+ 
+-	io_for_each_link(cur, req)
+-		io_prep_async_work(cur);
++	if (req->flags & REQ_F_LINK_TIMEOUT) {
++		struct io_ring_ctx *ctx = req->ctx;
++
++		spin_lock_irq(&ctx->completion_lock);
++		io_for_each_link(cur, req)
++			io_prep_async_work(cur);
++		spin_unlock_irq(&ctx->completion_lock);
++	} else {
++		io_for_each_link(cur, req)
++			io_prep_async_work(cur);
++	}
  }
+ 
+ static void io_queue_async_work(struct io_kiocb *req)
 
 
