@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016313DE133
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A763DE136
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhHBVFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:05:33 -0400
-Received: from mga03.intel.com ([134.134.136.65]:44789 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231605AbhHBVFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:05:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="213565262"
-X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
-   d="scan'208";a="213565262"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 14:05:20 -0700
-X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
-   d="scan'208";a="501960736"
-Received: from skarumur-mobl.amr.corp.intel.com (HELO [10.212.72.192]) ([10.212.72.192])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 14:05:18 -0700
-Subject: Re: [PATCH] ASoC: Intel: boards: Fix CONFIG_SND_SOC_SDW_MOCKUP select
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20210802190351.3201677-1-nathan@kernel.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3929126b-b4f0-bdf5-56f5-28662c7b7b44@linux.intel.com>
-Date:   Mon, 2 Aug 2021 16:05:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S231750AbhHBVGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231605AbhHBVGe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 17:06:34 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D2EC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:06:25 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id z18so3888358ybg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4Gsk+PU6zv89mFYfFw3XbKhLrnW0DMZFFqe7xZQfb8k=;
+        b=f4jCW1Q8XIGNV8OibA8486wQbNvDzvRs7inZpSU50AT1zf+1dggjCx+NvLT6vP+sU8
+         RkwtH8wx0ov2K7pkUNwHW1o+3vX9UIxVZHk6eThI0eFWvCp7qbco/iRhz6hqPh+tuipQ
+         P4TgM4jJd371kZhrg+03Avzt6tF+gMBK15AM+nvRgnQ27HOXrprBefRlJNarze5fE03m
+         OcnjM5rvSqwmLRpVO1q6owHuFKHjuBaaJsFMpiDehejIlWWQmabZ+FwcLSZJIobhJDNL
+         uqv9uWA2Snc9PqOo3SdXjINIZFCdnQp0MxKiE38cCsBKCiYJ78Ewxr8Z+nM+eMuOpJdQ
+         XxQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4Gsk+PU6zv89mFYfFw3XbKhLrnW0DMZFFqe7xZQfb8k=;
+        b=QBSyCqtnhj2B0kWb3ew0uBAXtvRPlbue6NC+auJRn0rOuH7yYC2kUKMmkwwHdvyzHM
+         2fuOVX9BHgbQyAjG0Bno9cNS0aVysRFK+gkTAQSTP6sljYZXDG8xUJc2INJanIe/L1nR
+         7ZqXrSqtrVyl6kvEqPmtJwPV+qHN0b9ha8sRjGeTe8/rDbQyh1S7kIttNOMDpz3RBb8h
+         vMtNsYCcbTnj63s1CB+xuR0G98kTxfugkzOsUAmVaHa1W4CE+/jJnh5azVCBrgPZSmGQ
+         9kS02MPZ6xCag1paEDm//QDwmAONO55IcI62rsZ29JwreQA8jztEIGtSf+goaqEZD7ze
+         TtCw==
+X-Gm-Message-State: AOAM533B+w+8twlycHI1iT7utV2ZT5hIzY+ab5WWvUDGqSecJC55gEUF
+        AIiKDEJhHbpcB+uZGLkzz5NXaLEnUhAOCUqOJsjhSg==
+X-Google-Smtp-Source: ABdhPJyil4dfkBNuBySZ9Tmrp2EXIOmUc/V/ajCIHcCBl2HqK0RSea3yeuHIKeY7PpdvgDhSQnqoL0uQuzdYcxeXOnc=
+X-Received: by 2002:a05:6902:1549:: with SMTP id r9mr24716376ybu.308.1627938384181;
+ Mon, 02 Aug 2021 14:06:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210802190351.3201677-1-nathan@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210802183910.1802120-1-ndesaulniers@google.com> <20210802183910.1802120-2-ndesaulniers@google.com>
+In-Reply-To: <20210802183910.1802120-2-ndesaulniers@google.com>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Mon, 2 Aug 2021 14:06:13 -0700
+Message-ID: <CAFP8O3Jc=iwzAQojgBZZzdT8iVBY9TO6GLTq+0vkXoo6L5JJ-A@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] Makefile: move initial clang flag handling into scripts/Makefile.clang
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/2/21 2:03 PM, Nathan Chancellor wrote:
-> When CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH is enabled without
-> CONFIG_EXPERT, there is a Kconfig warning about unmet dependencies:
-> 
-> WARNING: unmet direct dependencies detected for SND_SOC_SDW_MOCKUP
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
-> EXPERT [=n] && SOUNDWIRE [=y]
->   Selected by [y]:
->   - SND_SOC_INTEL_SOUNDWIRE_SOF_MACH [=y] && ...
-> 
-> Selecting a symbol does not account for dependencies so if symbol A
-> selects symbol B which depends on symbol C, symbol B or its select of
-> symbol A should depend on symbol C as well.
-> 
-> Make the CONFIG_SND_SOC_SDW_MOCKUP select in
-> CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH depend on CONFIG_EXPERT as the
-> help text for CONFIG_SND_SOC_SDW_MOCKUP indicates it is intended to be a
-> development option.
-> 
-> Fixes: 0ccac3bcf356 ("ASoC: Intel: boards: sof_sdw: add SoundWire mockup codecs for tests")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Mon, Aug 2, 2021 at 11:39 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> With some of the changes we'd like to make to CROSS_COMPILE, the initial
+> block of clang flag handling which controls things like the target triple,
+> whether or not to use the integrated assembler and how to find GAS,
+> and erroring on unknown warnings is becoming unwieldy. Move it into its
+> own file under scripts/.
+>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 > ---
-> 
-> An alternative here is if CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH wants
-> to unconditionally select CONFIG_SND_SOC_SDW_MOCKUP, the "depends on
-> EXPERT" can be moved to the prompt (tristate "..." if EXPERT). I am
-> happy to send a new patch if that is what is desired.
+>  MAINTAINERS            |  1 +
+>  Makefile               | 15 +--------------
+>  scripts/Makefile.clang | 14 ++++++++++++++
+>  3 files changed, 16 insertions(+), 14 deletions(-)
+>  create mode 100644 scripts/Makefile.clang
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 19135a9d778e..3af8d39f43ef 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4501,6 +4501,7 @@ B:        https://github.com/ClangBuiltLinux/linux/issues
+>  C:     irc://chat.freenode.net/clangbuiltlinux
+>  F:     Documentation/kbuild/llvm.rst
+>  F:     include/linux/compiler-clang.h
+> +F:     scripts/Makefile.clang
+>  F:     scripts/clang-tools/
+>  K:     \b(?i:clang|llvm)\b
+>
+> diff --git a/Makefile b/Makefile
+> index 6b555f64df06..444558e62cbc 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -586,20 +586,7 @@ endif
+>  CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -n 1))
+>
+>  ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+> -ifneq ($(CROSS_COMPILE),)
+> -CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+> -endif
+> -ifeq ($(LLVM_IAS),1)
+> -CLANG_FLAGS    += -integrated-as
+> -else
+> -CLANG_FLAGS    += -no-integrated-as
+> -GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> -CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> -endif
+> -CLANG_FLAGS    += -Werror=unknown-warning-option
+> -KBUILD_CFLAGS  += $(CLANG_FLAGS)
+> -KBUILD_AFLAGS  += $(CLANG_FLAGS)
+> -export CLANG_FLAGS
+> +include $(srctree)/scripts/Makefile.clang
+>  endif
+>
+>  # Include this also for config targets because some architectures need
+> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> new file mode 100644
+> index 000000000000..297932e973d4
+> --- /dev/null
+> +++ b/scripts/Makefile.clang
+> @@ -0,0 +1,14 @@
+> +ifneq ($(CROSS_COMPILE),)
+> +CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+> +endif
+> +ifeq ($(LLVM_IAS),1)
+> +CLANG_FLAGS    += -integrated-as
 
-Thanks for the patch Nathan, I added this depends on EXPERT and forgot
-about it when I updated the machine driver.
+-i* options are for includes. -fintegrated-as is the canonical spelling.
+Since -fintegrated-as is the default (for most llvm/lib/Target/
+targets and the ones clang builds actually support),
+it can even be deleted.
 
-Maybe a better alternate would be
-
-imply SND_SOC_SDW_MOCKUP
-
-We don't necessarily want the EXPERT part to be shown in the machine
-driver lists.
-
-
-> 
->  sound/soc/intel/boards/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-> index 046955bf717c..8284c46d7435 100644
-> --- a/sound/soc/intel/boards/Kconfig
-> +++ b/sound/soc/intel/boards/Kconfig
-> @@ -602,7 +602,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
->  	select SND_SOC_DMIC
->  	select SND_SOC_INTEL_HDA_DSP_COMMON
->  	select SND_SOC_INTEL_SOF_MAXIM_COMMON
-> -	select SND_SOC_SDW_MOCKUP
-> +	select SND_SOC_SDW_MOCKUP if EXPERT
->  	help
->  	  Add support for Intel SoundWire-based platforms connected to
->  	  MAX98373, RT700, RT711, RT1308 and RT715
-> 
-> base-commit: 170c0d7460fc4aa522995ae4096b5a442f50a1fc
-> 
+> +else
+> +CLANG_FLAGS    += -no-integrated-as
+> +GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> +CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> +endif
+> +CLANG_FLAGS    += -Werror=unknown-warning-option
+> +KBUILD_CFLAGS  += $(CLANG_FLAGS)
+> +KBUILD_AFLAGS  += $(CLANG_FLAGS)
+> +export CLANG_FLAGS
+> --
+> 2.32.0.554.ge1b32706d8-goog
+>
