@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E296F3DDA3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3203DDA36
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235356AbhHBOIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:08:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41966 "EHLO mail.kernel.org"
+        id S235893AbhHBOHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:07:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236972AbhHBOAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:00:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0BF760F36;
-        Mon,  2 Aug 2021 13:56:16 +0000 (UTC)
+        id S233826AbhHBOAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:00:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA302611C4;
+        Mon,  2 Aug 2021 13:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912577;
-        bh=W197chaIuqbqCG8MDUNuoZCxccGMLkS6E9plZlF+100=;
+        s=korg; t=1627912579;
+        bh=1RJNlDgxjwTRj8QaxVR1lvEESJEU3rryxWrpvzeXMls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lweybdc60PgXgXQGJ56Fqt0Njez3uuDCfzv3hveyTKPmLrHGKFrhBwZ2kX9ETeI6q
-         K61vKhYOPF/PpjmU9RhvQHM9tobbw55YnN/JtzKDVyHA34I82tUog/5xoO8WTMIwUt
-         1zclzLnzyB7JG/0xR3BQ4v9EmQwo1wHPdjEMnNqw=
+        b=wpFpwc+LKJkMxbZG6k4RCpTqTgVUD1iLV/yGkb1z8xesvm3sN3zhnBkOcHWOGSJ1q
+         Tuu/wr9STxr+MXos1Qdu+TF+unmgzSkb6TnZf5RERYuAgjb5woAq6/JLpavE04Dg6V
+         WTcB/lmOGGkmF04HNtMXr/CDYLE7eDmHriuUTkQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
-        Ping Cheng <ping.cheng@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 5.13 022/104] HID: wacom: Re-enable touch by default for Cintiq 24HDT / 27QHDT
-Date:   Mon,  2 Aug 2021 15:44:19 +0200
-Message-Id: <20210802134344.744632510@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>,
+        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.13 023/104] net: stmmac: add est_irq_status callback function for GMAC 4.10 and 5.10
+Date:   Mon,  2 Aug 2021 15:44:20 +0200
+Message-Id: <20210802134344.782108284@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
 References: <20210802134344.028226640@linuxfoundation.org>
@@ -40,43 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gerecke <killertofu@gmail.com>
+From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
 
-commit 6ca2350e11f09d5d3e53777d1eff8ff6d300ed93 upstream.
+commit 94cbe7db7d757c2d481c3617ab5579a28cfc2175 upstream.
 
-Commit 670e90924bfe ("HID: wacom: support named keys on older devices")
-added support for sending named events from the soft buttons on the
-24HDT and 27QHDT. In the process, however, it inadvertantly disabled the
-touchscreen of the 24HDT and 27QHDT by default. The
-`wacom_set_shared_values` function would normally enable touch by default
-but because it checks the state of the non-shared `has_mute_touch_switch`
-flag and `wacom_setup_touch_input_capabilities` sets the state of the
-/shared/ version, touch ends up being disabled by default.
+Assign dwmac5_est_irq_status to est_irq_status callback function for
+GMAC 4.10 and 5.10. With this, EST related interrupts could be handled
+properly.
 
-This patch sets the non-shared flag, letting `wacom_set_shared_values`
-take care of copying the value over to the shared version and setting
-the default touch state to "on".
-
-Fixes: 670e90924bfe ("HID: wacom: support named keys on older devices")
-CC: stable@vger.kernel.org # 5.4+
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: e49aa315cb01 ("net: stmmac: EST interrupts handling and error reporting")
+Cc: <stable@vger.kernel.org> # 5.13.x
+Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+Acked-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hid/wacom_wac.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -3831,7 +3831,7 @@ int wacom_setup_touch_input_capabilities
- 		    wacom_wac->shared->touch->product == 0xF6) {
- 			input_dev->evbit[0] |= BIT_MASK(EV_SW);
- 			__set_bit(SW_MUTE_DEVICE, input_dev->swbit);
--			wacom_wac->shared->has_mute_touch_switch = true;
-+			wacom_wac->has_mute_touch_switch = true;
- 		}
- 		fallthrough;
- 
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+@@ -1249,6 +1249,7 @@ const struct stmmac_ops dwmac410_ops = {
+ 	.config_l3_filter = dwmac4_config_l3_filter,
+ 	.config_l4_filter = dwmac4_config_l4_filter,
+ 	.est_configure = dwmac5_est_configure,
++	.est_irq_status = dwmac5_est_irq_status,
+ 	.fpe_configure = dwmac5_fpe_configure,
+ 	.fpe_send_mpacket = dwmac5_fpe_send_mpacket,
+ 	.fpe_irq_status = dwmac5_fpe_irq_status,
+@@ -1300,6 +1301,7 @@ const struct stmmac_ops dwmac510_ops = {
+ 	.config_l3_filter = dwmac4_config_l3_filter,
+ 	.config_l4_filter = dwmac4_config_l4_filter,
+ 	.est_configure = dwmac5_est_configure,
++	.est_irq_status = dwmac5_est_irq_status,
+ 	.fpe_configure = dwmac5_fpe_configure,
+ 	.fpe_send_mpacket = dwmac5_fpe_send_mpacket,
+ 	.fpe_irq_status = dwmac5_fpe_irq_status,
 
 
