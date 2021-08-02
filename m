@@ -2,128 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F67C3DD350
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC3F3DD34E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbhHBJvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
+        id S233159AbhHBJuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232699AbhHBJvA (ORCPT
+        with ESMTP id S232699AbhHBJun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:51:00 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09C1C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 02:50:50 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id u25so23443820oiv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 02:50:50 -0700 (PDT)
+        Mon, 2 Aug 2021 05:50:43 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7C9C06175F;
+        Mon,  2 Aug 2021 02:50:32 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id a20so19107523plm.0;
+        Mon, 02 Aug 2021 02:50:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b8yWPewOpxEQv7YrShVluvsDfJILeyLSFc02MK8M4Jg=;
-        b=mMdp1X5UVpP6BtslW98Pmn4WGS1V9KMePYP8jFuWMlGsfFdVwyUBDVmyVKhoK/mgiz
-         DYwQ1Zg2pcEy3GWarwo8/Wed2E+Ds2XfD0k14pt9t/GSwknmApk7fsT4ggMBI0LtK40b
-         Jim8WOzKtRLSorL6DSdLgzRXLObY2uvcZY2A4HHPYVmPQdSDgVGU33VbgB12AmY7lKxK
-         uGy4Axny7H1i0ytJLGPNUs1yHBUJeNlpy+9D26T3VDLPFM9/uyNQgkRjZ56JOdWuJsCB
-         0NYIK0SLGxShbXLtxVLRbCeCUI7mEUBhQHjpTRIB2JVaG2fZSVG2fviPN34iILOIFOPi
-         JDxg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pYYxiw41X17NhD1Q5oNmXyZafkiZ20OypLI54Gm/l6w=;
+        b=PBYV5ZO7ap/7i/caSWm7Ts73J38ANeTq1O619lapI5kkEvLUTd+Y7F4LQK76SNgmJq
+         0owGMbx/YtU7hA+wR1Fvbi5vAjh6efQB8CpmeA2vG/eSQNMN7MR3PPC6tp5s0TVvweG/
+         zoznDx//m+Jj99qUo5V6jUcJ+mc3x6hQ8uIiRyP6gw5YP6qFh50J9p7r8Pf04e8Q6fvZ
+         qUnR3QTXPmiZUvCY+7jNBvRs9tuTh5C0K9Tz0kuDdLNHJupMcFxLlR2x3KGKMVTiGtAa
+         JNhQKL4utJrRmhLDkaBoVIwE2oTtdP+7OXyqSx4BWB+h+8ybLN0AKNGwD2d5TEg6y3yW
+         OdcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b8yWPewOpxEQv7YrShVluvsDfJILeyLSFc02MK8M4Jg=;
-        b=ujPZH1/irC1JY9WTHjSBYG1Spt2VevLEuPhmabf7DoKMPg4YIKyhkVgCGobz2vF5UP
-         2tGE6fOaoywG3pGvmeXi849AppN7WLi1beJRBW6H+pFjSoCCT2A7CmNJ4/DCl6Txl6Gi
-         7f6h6bW/YbTgG1sR6uqq/iZAJ9aTTUlNgQdgkWER0FC1ZWFlCJ/+3Kzj9iAExELfzj96
-         8GNiuKGY/h4TPJgn8zn2xFPTJZBMXwn881rv6bCj9Zc9blXeWA4easYsXtXAiOCyLcRY
-         IR189hV5QKeqoipj8qYPq9kQIiTiQpprC9aI/PAHPTSeX/aODoB+gEOetcXsZMy55LtX
-         k1Kw==
-X-Gm-Message-State: AOAM531ExUrltCEqPUHWuyqkif44O7iceg8nXUFPHCKRE0vtv6lI/6Ih
-        ew4WdYlnLs5Lx8//TTpnlyvhVyJ9uNih7OixbNP54A==
-X-Google-Smtp-Source: ABdhPJzkv07umAxyH1yzoI9pdizT6IMTPQXJOtx/ojWMS2eL8ogaXJ4KJCr2SDpEzW1Kb2Mrr8zYqtsaHVWwT/ZBeiE=
-X-Received: by 2002:aca:2102:: with SMTP id 2mr9817151oiz.67.1627897849884;
- Mon, 02 Aug 2021 02:50:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pYYxiw41X17NhD1Q5oNmXyZafkiZ20OypLI54Gm/l6w=;
+        b=Y12QgF2m2O1fyMgdXXHbiH5tkHkFkGL8pREO6WiF6TW/SaTPw+K7cizjHTMLGSELgw
+         vhJu2fknqpBinI4Wh6pQePTdp7Kcz2TmtGA7xJR0yDiLtROubM8gbVr3oxY5+HTQjvXi
+         IGwW0KwPtbTrY561jt1usWqB66fo6RAOGP+4xnuWVCLmMIJO1AFFX2KGJsULj12Ln/gY
+         woxJRmld4K3J9UW5G4G+zkPdp29anGDIKwUUdQjTdZYkQRqJTGmwCbB+gRWNL12ghO0a
+         c1B2ADP3jL6w1Klc/gtxRFtBTJQ0j1Voo6degqeAPzLCi/daZdzeYtod1csBQ03l29e4
+         gYDQ==
+X-Gm-Message-State: AOAM530w+pzj3ASEJmYYD39f++Pj1Zyp97y17xMUiXxYO4IU/A3bO4KG
+        cVyRu5sKYfF7YvrbtIx28MA=
+X-Google-Smtp-Source: ABdhPJyngiOh2Q+gMrC1PpzeTiWlpjrxWkYfZauoV8AxRynoQQFODJmI42SbA9qy7MI6uyyjuEPnDg==
+X-Received: by 2002:a63:154d:: with SMTP id 13mr1171759pgv.116.1627897832462;
+        Mon, 02 Aug 2021 02:50:32 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id 31sm6585437pgy.26.2021.08.02.02.50.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 02:50:32 -0700 (PDT)
+Subject: [PATCH v3 3/9] docs: pdfdocs: Choose Serif font as CJK mainfont if
+ possible
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
+        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+References: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <ab7400aa-24d8-06ad-74b4-8a83ef343e47@gmail.com>
+Date:   Mon, 2 Aug 2021 18:50:29 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210729132818.4091769-1-qperret@google.com> <20210729132818.4091769-10-qperret@google.com>
-In-Reply-To: <20210729132818.4091769-10-qperret@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Mon, 2 Aug 2021 11:50:13 +0200
-Message-ID: <CA+EHjTzYP3W4w3-EufkxWrFtGuCs6=SuO9XegAGAAp46EDF1VQ@mail.gmail.com>
-Subject: Re: [PATCH v3 09/21] KVM: arm64: Tolerate re-creating hyp mappings to
- set software bits
-To:     Quentin Perret <qperret@google.com>
-Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        dbrazdil@google.com, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
+"Noto Serif CJK SC" and its variants suit better with the roman font
+of Latin letters.
 
-On Thu, Jul 29, 2021 at 3:28 PM Quentin Perret <qperret@google.com> wrote:
->
-> The current hypervisor stage-1 mapping code doesn't allow changing an
-> existing valid mapping. Relax this condition by allowing changes that
-> only target software bits, as that will soon be needed to annotate shared
-> pages.
->
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/kvm/hyp/pgtable.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 1ee1168ac32d..2689fcb7901d 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -362,6 +362,21 @@ static int hyp_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
->         return 0;
->  }
->
-> +static bool hyp_pte_needs_update(kvm_pte_t old, kvm_pte_t new)
-> +{
-> +       /*
-> +        * Tolerate KVM recreating the exact same mapping, or changing software
-> +        * bits if the existing mapping was valid.
-> +        */
-> +       if (old == new)
-> +               return false;
+On some distros such as Fedora, it is possible to partially install
+"Noto Sans CJK" fonts.
+So, if the Serif fonts are not found on the system, fall back to the
+Sans fonts.
 
-The added comment clarifies the rationale here. Thanks.
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+ Documentation/conf.py | 41 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 36 insertions(+), 5 deletions(-)
 
-Reviewed-by: Fuad Tabba <tabba@google.com>
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 24e5427588e7..980be06df723 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -360,20 +360,48 @@ latex_elements['preamble']  += '''
+     \\IfFontExistsTF{Noto Sans CJK SC}{
+ 	% This is needed for translations
+ 	\\usepackage{xeCJK}
+-	\\setCJKmainfont{Noto Sans CJK SC}
++	\\IfFontExistsTF{Noto Serif CJK SC}{
++	    \\setCJKmainfont{Noto Serif CJK SC}
++	}{
++	    \\setCJKmainfont{Noto Sans CJK SC}
++	}
+ 	\\setCJKsansfont{Noto Sans CJK SC}
+ 	\\setCJKmonofont{Noto Sans Mono CJK SC}
+ 	% CJK Language-specific font choices
+-	\\newCJKfontfamily[SCmain]\\scmain{Noto Sans CJK SC}
++	\\IfFontExistsTF{Noto Serif CJK SC}{
++	    \\newCJKfontfamily[SCmain]\\scmain{Noto Serif CJK SC}
++	    \\newCJKfontfamily[SCserif]\\scserif{Noto Serif CJK SC}
++	}{
++	    \\newCJKfontfamily[SCmain]\\scmain{Noto Sans CJK SC}
++	    \\newCJKfontfamily[SCserif]\\scserif{Noto Sans CJK SC}
++	}
+ 	\\newCJKfontfamily[SCsans]\\scsans{Noto Sans CJK SC}
+ 	\\newCJKfontfamily[SCmono]\\scmono{Noto Sans Mono CJK SC}
+-	\\newCJKfontfamily[TCmain]\\tcmain{Noto Sans CJK TC}
++	\\IfFontExistsTF{Noto Serif CJK TC}{
++	    \\newCJKfontfamily[TCmain]\\tcmain{Noto Serif CJK TC}
++	    \\newCJKfontfamily[TCserif]\\tcserif{Noto Serif CJK TC}
++	}{
++	    \\newCJKfontfamily[TCmain]\\tcmain{Noto Sans CJK TC}
++	    \\newCJKfontfamily[TCserif]\\tcserif{Noto Sans CJK TC}
++	}
+ 	\\newCJKfontfamily[TCsans]\\tcsans{Noto Sans CJK TC}
+ 	\\newCJKfontfamily[TCmono]\\tcmono{Noto Sans Mono CJK TC}
+-	\\newCJKfontfamily[KRmain]\\krmain{Noto Sans CJK KR}
++	\\IfFontExistsTF{Noto Serif CJK KR}{
++	    \\newCJKfontfamily[KRmain]\\krmain{Noto Serif CJK KR}
++	    \\newCJKfontfamily[KRserif]\\krserif{Noto Serif CJK KR}
++	}{
++	    \\newCJKfontfamily[KRmain]\\krmain{Noto Sans CJK KR}
++	    \\newCJKfontfamily[KRserif]\\krserif{Noto Sans CJK KR}
++	}
+ 	\\newCJKfontfamily[KRsans]\\krsans{Noto Sans CJK KR}
+ 	\\newCJKfontfamily[KRmono]\\krmono{Noto Sans Mono CJK KR}
+-	\\newCJKfontfamily[JPmain]\\jpmain{Noto Sans CJK JP}
++	\\IfFontExistsTF{Noto Serif CJK JP}{
++	    \\newCJKfontfamily[JPmain]\\jpmain{Noto Serif CJK JP}
++	    \\newCJKfontfamily[JPserif]\\jpserif{Noto Serif CJK JP}
++	}{
++	    \\newCJKfontfamily[JPmain]\\jpmain{Noto Sans CJK JP}
++	    \\newCJKfontfamily[JPserif]\\jpserif{Noto Sans CJK JP}
++	}
+ 	\\newCJKfontfamily[JPsans]\\jpsans{Noto Sans CJK JP}
+ 	\\newCJKfontfamily[JPmono]\\jpmono{Noto Sans Mono CJK JP}
+ 	% Define custom macros to on/off CJK
+@@ -387,6 +415,7 @@ latex_elements['preamble']  += '''
+ 	\\newcommand{\\kerneldocBeginTC}{%
+ 	    \\begingroup%
+ 	    \\tcmain%
++	    \\renewcommand{\\CJKrmdefault}{TCserif}%
+ 	    \\renewcommand{\\CJKsfdefault}{TCsans}%
+ 	    \\renewcommand{\\CJKttdefault}{TCmono}%
+ 	}
+@@ -394,6 +423,7 @@ latex_elements['preamble']  += '''
+ 	\\newcommand{\\kerneldocBeginKR}{%
+ 	    \\begingroup%
+ 	    \\krmain%
++	    \\renewcommand{\\CJKrmdefault}{KRserif}%
+ 	    \\renewcommand{\\CJKsfdefault}{KRsans}%
+ 	    \\renewcommand{\\CJKttdefault}{KRmono}%
+ 	}
+@@ -401,6 +431,7 @@ latex_elements['preamble']  += '''
+ 	\\newcommand{\\kerneldocBeginJP}{%
+ 	    \\begingroup%
+ 	    \\jpmain%
++	    \\renewcommand{\\CJKrmdefault}{JPserif}%
+ 	    \\renewcommand{\\CJKsfdefault}{JPsans}%
+ 	    \\renewcommand{\\CJKttdefault}{JPmono}%
+ 	}
+-- 
+2.17.1
 
-/fuad
 
-
-
-/fuad
-
-> +       if (!kvm_pte_valid(old))
-> +               return true;
-> +
-> +       return !WARN_ON((old ^ new) & ~KVM_PTE_LEAF_ATTR_HI_SW);
-> +}
-> +
->  static bool hyp_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->                                     kvm_pte_t *ptep, struct hyp_map_data *data)
->  {
-> @@ -371,9 +386,8 @@ static bool hyp_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->         if (!kvm_block_mapping_supported(addr, end, phys, level))
->                 return false;
->
-> -       /* Tolerate KVM recreating the exact same mapping */
->         new = kvm_init_valid_leaf_pte(phys, data->attr, level);
-> -       if (old != new && !WARN_ON(kvm_pte_valid(old)))
-> +       if (hyp_pte_needs_update(old, new))
->                 smp_store_release(ptep, new);
->
->         data->phys += granule;
-> --
-> 2.32.0.432.gabb21c7263-goog
->
