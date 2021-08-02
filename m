@@ -2,93 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5663DDC01
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DE63DDC0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234837AbhHBPMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234688AbhHBPMS (ORCPT
+        id S234865AbhHBPND convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Aug 2021 11:13:03 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3552 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234492AbhHBPNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:12:18 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06372C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:12:09 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id k4-20020a17090a5144b02901731c776526so32137531pjm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=klAhZ2sU9gQG5ENBY3HDvrJiKEjR8pMVXktb66OKWL0=;
-        b=jKEiC+1+wv6ZB11QhU5jHhEwmc9DVdSPRgnk67Rt2w0A5wqNOr4tNqhVt6lusxC9Ah
-         5d1+hCyOHE+fLf+Gy3bXEg20t7HU24ziIxYynA89ykCfIW7ypTWg+MW55U55NeSeUEXj
-         UsRzILNoY6I72xAtKWPZe3vOzlaD7jx5hIkbWQqRXqJtLjYsTxXdd/E9tS+x8Mc2PKI0
-         2UBFV8fnPQPN900/dc+OftFuW+KjvWlM5Cksvjbdj1C+rtQY7sOvvbRycHZ80VVqzuE2
-         G0AFgRaNy/GyFwNIXOX+jekapwkzhJ5M3JIIoHArBthZxjDJZ70beVvEuqcmwBt8/7Tt
-         wRYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=klAhZ2sU9gQG5ENBY3HDvrJiKEjR8pMVXktb66OKWL0=;
-        b=IX784f+k9ELY77742XkcdAqTjAnwERnNiWt7rzWMJEBxULNB0JOIq+rz/SwgYl0yxQ
-         Xz+CV3MEJQsM+isU2oDporZ9pNqOtwmAmC107AoBxJK4EoEPG6Fzq+0QCUZJCqFuNbtN
-         lROz20oDoFKXFa4LdYwUN96SislJ1swgvS1xKIhk1JG6RUxZ64qJMv2BQqGJlK0s42BF
-         Edhntf5akAeZ8To4pwS2g8q8h6eP+4mIw13/0tREDvnLyou4WQZweaMlAVYneLz2fRHc
-         Z2nBljPtoj1lZTWr6Mq1gpZZA/T7pHpWEAuk2DGhJatMwss+T8dtobYWJeeKgZjVhzdB
-         DqAA==
-X-Gm-Message-State: AOAM532EHo/RLtksQpG5RGP7kT4toqIaX0PABO+xNTX/qzvF/bNTrzPX
-        tS2bop3IHIcVz/ckTspfT6wJOA==
-X-Google-Smtp-Source: ABdhPJx4We5Vp8zurMbskwONkrhJTYkjFYQ4XojOsZi/g68Rn9EvVwc7Nu0w9PCvFt0O1Y726aW4uQ==
-X-Received: by 2002:a63:5fd4:: with SMTP id t203mr1490500pgb.141.1627917128408;
-        Mon, 02 Aug 2021 08:12:08 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 198sm9797349pfu.32.2021.08.02.08.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 08:12:07 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 15:12:04 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com
-Subject: Re: [RFC PATCH v2 00/69] KVM: X86: TDX support
-Message-ID: <YQgLRLPz3YNiIVK6@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <0d453d76-11e7-aeb9-b890-f457afbb6614@redhat.com>
- <YQGLJrvjTNZAqU61@google.com>
- <dc4c3fce-4d10-349c-7b21-00a64eaa9f71@redhat.com>
+        Mon, 2 Aug 2021 11:13:01 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GdhMG52n0z6BB9y;
+        Mon,  2 Aug 2021 23:12:42 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 17:12:49 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Mon, 2 Aug 2021 17:12:49 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
+ digest_list_del
+Thread-Topic: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
+ digest_list_del
+Thread-Index: AQHXgjzPxJ6WuoGgH0KyG3D/y7w0xqtaWSsAgADBDpCAAD+ygIAAIhjQgAS3MgCAACHtEA==
+Date:   Mon, 2 Aug 2021 15:12:49 +0000
+Message-ID: <1b853c35bb8c41c98c51af1116d5eac6@huawei.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+         <20210726163700.2092768-7-roberto.sassu@huawei.com>
+         <c9dffd9d29df095660beaa631ff252c4b33629a0.camel@linux.ibm.com>
+         <ef7c85dcb096479e95c8c60ccda4d700@huawei.com>
+         <1ef95096bee13578b3f906dd9f708c6af9d6ff18.camel@linux.ibm.com>
+         <555bf01bee4b4ea7a9bee658366d535a@huawei.com>
+ <3e6a54d4be87a3eafc45c85d013250d17aa0835e.camel@linux.ibm.com>
+In-Reply-To: <3e6a54d4be87a3eafc45c85d013250d17aa0835e.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc4c3fce-4d10-349c-7b21-00a64eaa9f71@redhat.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021, Paolo Bonzini wrote:
-> On 28/07/21 18:51, Sean Christopherson wrote:
-> > I strongly object to merging these two until we see the new SEAMLDR code:
-> > 
-> >    [RFC PATCH v2 02/69] KVM: X86: move kvm_cpu_vmxon() from vmx.c to virtext.h
-> >    [RFC PATCH v2 03/69] KVM: X86: move out the definition vmcs_hdr/vmcs from kvm to x86
-> > 
-> > If the SEAMLDR code ends up being fully contained in KVM, then this is unnecessary
-> > churn and exposes code outside of KVM that we may not want exposed (yet).  E.g.
-> > setting and clearing CR4.VMXE (in the fault path) in cpu_vmxon() may not be
-> > necessary/desirable for SEAMLDR, we simply can't tell without seeing the code.
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Monday, August 2, 2021 4:42 PM
+> Hi Roberto,
 > 
-> Fair enough (though, for patch 2, it's a bit weird to have vmxoff in
-> virtext.h and not vmxon).
+> On Fri, 2021-07-30 at 13:16 +0000, Roberto Sassu wrote:
+> 
+> > The reason of storing the actions performed by IMA on the
+> > digest lists helps to determine for which purpose they can be
+> > used. If digest lists are used only for measurement purpose,
+> > it should be sufficient that digest lists are measured. The
+> > same applies for appraisal.
+> 
+> Is that assumption correct?   How would you know if the digests lists
+> are only being used one way and not the other.  For example, assuming
+> that the digest lists are stored on protected media, the digest lists
+> could be measured, but would not necessarily be appraised.
 
-I don't really disagree, but vmxoff is already in virtext.h for the emergency
-reboot stuff.  This series only touches the vmxon code.
+Hi Mimi
+
+the actions performed by IMA on the digest lists are recorded
+in the digest_list_item structure. These can be retrieved when
+IMA calls diglim_digest_get_info() (actually it is the OR of the
+actions for the digest lists that contain the digest passed as a
+query).
+
+At the moment, DIGLIM can only know whether a digest list
+has been measured or not (with the return value of
+ima_measure_critical_data()). In the next patch set, I add the
+changes to get the actions from the integrity_iint_cache().
+
+> > > Adding the kernel_read_file() "READING_DIGEST_LIST" support in IMA
+> does
+> > > not seem to be optional.  IMA would then be calculating the digest list
+> > > file hash twice, once in kernel_read_file() and then, again, in
+> > > ima_measure_critical_data().
+> >
+> > I didn't include also this part: I retrieve the integrity_iint_cache for
+> > the opened file descriptor and I get the flags from there. If the
+> > IMA_MEASURED flag is set, it is not necessary to call also
+> > ima_measure_critical_data().
+> 
+> Right, assuming the file is in policy, the digest would already be
+> stored in the iint cache.
+> 
+> > > > > I understand that with your changes to ima_measure_critical_data(),
+> > > > > which are now in next-integrity-testing branch, allow IMA to calculate
+> > > > > the file data hash.
+> > > >
+> > > > Yes, correct. But actually there is another useful use case.
+> > > > If digest lists are not in the format supported by the kernel,
+> > > > the user space parser has to convert them before uploading
+> > > > them to the kernel.
+> > > >
+> > > > ima_measure_critical_data() would in this case measure
+> > > > the converted digest list (it is written directly, without
+> > > > sending the file path). It is easier to attest the result,
+> > > > instead of determining whether the user space parser
+> > > > produced the expected result (by checking the files it
+> > > > read).
+> > >
+> > > The application to properly convert the digest list file data into the
+> > > appropriate format would need to be trusted.  I'm concerned that not
+> > > requiring the converted data to be signed and the signature verified is
+> > > introducing a new integrity gap.  Perhaps between an LSM policy,
+> > > limiting which files may be read by the application, and an IMA policy,
+> > > requiring all files read by this application to be measured and the
+> > > signature verified, this integrity gap could be averted.
+> >
+> > It is the weakest point in the chain, yes. Relying on existing LSMs
+> > didn't seem to me a good idea, as:
+> > - a new policy must be installed
+> > - we must be sure that the policy is really enforced
+> > - we need to support different LSMs (SELinux for Fedora,
+> >   Apparmor for SUSE)
+> > - there might be no LSM we can rely on
+> >
+> > For these reasons, I developed a new LSM. Its purpose is to
+> > identify the user space parser and for each file it opens, ensure
+> > that the file has been measured or appraised by IMA. If one of
+> > these actions are missing, it will not be set in the digest list the
+> > user space parser uploads to the kernel (which means that IMA
+> > will ignore the digest list for that specific action).
+> 
+> Properly identifying (all) user space parser(s) would be critical.  It
+> would be simpler and  safer to require the converted data be signed.
+
+I agree, it would be much easier. However, it would require changes
+to the building infrastructure of Linux distribution vendors, which
+might limit the applicability of DIGLIM.
+
+With the user space parser taking care of the conversion, distributions
+can do appraisal of executables and shared libraries with an update of:
+- the kernel: to add DIGLIM
+- dracut: to add required digest lists in the initial ram disk
+- rpm (plugin): to extract the RPM header and its signature and write
+  them to a file that is uploaded to the kernel by the user space parser
+
+I'm planning to append the signature at the end of the RPM header
+(and use appraise_type=modsig) to avoid the dependency on the
+'initramfs: add support for xattrs in the initial ram disk' patch set
+(which I might try to resume in the future).
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> thanks,
+> 
+> Mimi
+
