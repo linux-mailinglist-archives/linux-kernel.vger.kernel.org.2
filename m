@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA5A3DDB50
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94753DDB59
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234257AbhHBOot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:44:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47820 "EHLO mail.kernel.org"
+        id S234427AbhHBOqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:46:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233925AbhHBOos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:44:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EA1760E97;
-        Mon,  2 Aug 2021 14:44:38 +0000 (UTC)
+        id S234199AbhHBOqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:46:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D3D560F58;
+        Mon,  2 Aug 2021 14:45:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627915478;
-        bh=sJWwqysH7JYnXzYI5IZmt2yWUBjHmLLt/xg7tbEgjqE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X6uQQVAvHrpTIo5AXQD5rIZEeujsT5rHIHVcNYc6K2eFrVtdIn5Uyv6nqM4/vxOgI
-         82v/ZLG7ts4TdmvB0dukNgIaZbJbZ4KP+6/maoz9RA9rGRhVxY0GdnAgK0Lfkd/NA8
-         CjuIZsoumxVB/XToSGAuoUXKIvWFdPukJvBW6Uwh5JRIC9Xao56pvQF+s9gdkIAKJU
-         SUOEjJLdbG5EdnS6fdevAJ9DNkZk5Uu8Ar0HtDySmkt9pCtQMfzt4L5vFAUXvcdidk
-         tY2bnk7SmITJbYgCfmwOIiB0kdkZd/K0s1sbsM6NevDn50pokFKT67rdSzA9jrBI9a
-         K6U7Vtubi3mjg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5A967403F2; Mon,  2 Aug 2021 11:44:36 -0300 (-03)
-Date:   Mon, 2 Aug 2021 11:44:36 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     mathieu.poirier@linaro.org, coresight@lists.linaro.org,
-        linux-perf-users@vger.kernel.org, leo.yan@linaro.org,
-        suzuki.poulose@arm.com, mike.leach@linaro.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH 1/6] perf tools: Add WARN_ONCE equivalent for UI
- warnings
-Message-ID: <YQgE1CBje091cL3t@kernel.org>
-References: <20210729155805.2830-1-james.clark@arm.com>
- <20210729155805.2830-2-james.clark@arm.com>
+        s=k20201202; t=1627915552;
+        bh=sJP3kplkYoVIAiDtyEQqNFB2bgle50xC0DmUOkFui78=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SoeHworG2RS8PpgNkijH3TP21diEkcUYY5UYpkL+k1kahjno/E53sU1kub3EByT81
+         HG128DxfQh+asQruzHZW18TPgSTUVD3JkjK1WqbHkf3PFLVvbOtwbw7+/PtEOS2SXI
+         jTI7ECxuAvwpydR1uS6jbN2fONOB5OO5d/heAY1tiseNvMAVIC60CeCgdyGmUeMxIk
+         zLki39bw57/uLvgRttCeuCgOXyo1Ts/fGbF9+QPU2oncmYpKkj7VsSxZwZxXk1b/uQ
+         B+eZ0uzOSzshiUSC49gwkj8/gn86ACxhTEq/OkU22UshnFECOhcJ5g3hrkLqjxBbh2
+         H2g6p/HXuTn4w==
+Received: by pali.im (Postfix)
+        id BBD95B98; Mon,  2 Aug 2021 16:45:50 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/6] serial: mvebu-uart: Support for higher baudrates
+Date:   Mon,  2 Aug 2021 16:45:23 +0200
+Message-Id: <20210802144529.1520-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210624224909.6350-1-pali@kernel.org>
+References: <20210624224909.6350-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729155805.2830-2-james.clark@arm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 29, 2021 at 04:58:00PM +0100, James Clark escreveu:
-> Currently WARN_ONCE prints to stderr and corrupts the TUI. Add
-> equivalent methods for UI warnings.
+This patch series add support for baudrates higher than 230400 on
+Marvell Armada 37xx boards.
 
-This one and the the next 3 seem clean and useful, applying and then
-waiting for people to comment on the coresight specific ones.
+Please review these patches as they touch both Device Tree bindings and
+mvebu-uart.c driver.
 
-- Arnaldo
- 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->  tools/perf/util/debug.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/tools/perf/util/debug.h b/tools/perf/util/debug.h
-> index 48f631966067..f99468a7f681 100644
-> --- a/tools/perf/util/debug.h
-> +++ b/tools/perf/util/debug.h
-> @@ -22,6 +22,13 @@ extern int debug_data_convert;
->  	eprintf(0, verbose, pr_fmt(fmt), ##__VA_ARGS__)
->  #define pr_warning(fmt, ...) \
->  	eprintf(0, verbose, pr_fmt(fmt), ##__VA_ARGS__)
-> +#define pr_warning_once(fmt, ...) ({		\
-> +	static int __warned;			\
-> +	if (unlikely(!__warned)) {		\
-> +		pr_warning(fmt, ##__VA_ARGS__); \
-> +		__warned = 1;			\
-> +	}					\
-> +})
->  #define pr_info(fmt, ...) \
->  	eprintf(0, verbose, pr_fmt(fmt), ##__VA_ARGS__)
->  #define pr_debug(fmt, ...) \
-> @@ -55,6 +62,13 @@ void trace_event(union perf_event *event);
->  
->  int ui__error(const char *format, ...) __printf(1, 2);
->  int ui__warning(const char *format, ...) __printf(1, 2);
-> +#define ui__warning_once(format, ...) ({		\
-> +	static int __warned;				\
-> +	if (unlikely(!__warned)) {			\
-> +		ui__warning(format, ##__VA_ARGS__);	\
-> +		__warned = 1;				\
-> +	}						\
-> +})
->  
->  void pr_stat(const char *fmt, ...);
->  
-> -- 
-> 2.28.0
-> 
+Changes in v4:
+* converted armada3700-uart-clock documentation to YAML
+* split documentation changes into two commits:
+  - first which adds clock documentation
+  - second which updates UART documentation
+
+Changes in v3:
+v3 is rebased on top of Linus master branch and all already applied patches
+were dropped. There are no changes in patches itself since v2.
+
+Pali Rohár (6):
+  math64: New DIV_U64_ROUND_CLOSEST helper
+  serial: mvebu-uart: implement UART clock driver for configuring UART
+    base clock
+  dt-bindings: mvebu-uart: document DT bindings for
+    marvell,armada-3700-uart-clock
+  dt-bindings: mvebu-uart: update information about UART clock
+  arm64: dts: marvell: armada-37xx: add device node for UART clock and
+    use it
+  serial: mvebu-uart: implement support for baudrates higher than 230400
+
+ .../bindings/clock/armada3700-uart-clock.yaml |  49 ++
+ .../devicetree/bindings/serial/mvebu-uart.txt |   9 +-
+ .../arm64/boot/dts/marvell/armada-3720-db.dts |   4 +
+ .../dts/marvell/armada-3720-espressobin.dtsi  |   4 +
+ .../dts/marvell/armada-3720-turris-mox.dts    |   4 +
+ .../boot/dts/marvell/armada-3720-uDPU.dts     |   4 +
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi  |  15 +-
+ drivers/tty/serial/Kconfig                    |   1 +
+ drivers/tty/serial/mvebu-uart.c               | 592 +++++++++++++++++-
+ include/linux/math64.h                        |  13 +
+ 10 files changed, 674 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
 
 -- 
+2.20.1
 
-- Arnaldo
