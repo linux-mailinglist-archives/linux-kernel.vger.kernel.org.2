@@ -2,108 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFC13DDF07
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6479C3DDF0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhHBSW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
+        id S230253AbhHBSXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhHBSWZ (ORCPT
+        with ESMTP id S230194AbhHBSXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:22:25 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B482CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:22:14 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id a26so35270541lfr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:22:14 -0700 (PDT)
+        Mon, 2 Aug 2021 14:23:10 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B59AC061760;
+        Mon,  2 Aug 2021 11:23:01 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id t25so5436222uar.13;
+        Mon, 02 Aug 2021 11:23:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qEMNnzSOXFkx4zqOs12jH8ZYvFJqk18OmR+HJSOJ3W8=;
-        b=MIXKdn7N1OctHmKnkjaXeGpZ7kxCpE5a9R8Sr/w5NP1d2hyTxn0YW6RnRf3Jmn6fkS
-         k5VD3rULzx0+Y0G02giLP2xvLgl4RYMRrJiRQ7SHJgekX6G/BbQjKF1LaKNQppxqz/ir
-         ZH4B12s4cMQ0S1cmBY60Qn4fM6aW+P5vEM2/BQh/HoYlmyXbqo/EWkGqeK245k5iMnMb
-         mTIroyETOjUXYuVfHeTDFMujuzxvo1qaeHZnSAK9msf8dRCDgS1w0BqlVSiR0nqTbnDM
-         fFBKDADVBS2dolO/2XIuCTuRs/IoQytJLB1jJWxb0N6vCG0BJ8ep6BU8R7frJQscjm7g
-         rFdw==
+         :cc:content-transfer-encoding;
+        bh=6ApN7kLqibhyq1qI7/ZsZatouw7YTs2JP48UHp8aQ/A=;
+        b=lsUKFilECheVKjSF1JXecXfsKOXJnDixp3QcQmPbn5tKCVnyKquYeKSCqr9duESTs1
+         eQKJveOEWYkZ2y42vAPA3JWEFqGchWZCl6XIv0ixEyewqTy7BKCWtqqODu5T9cwyLEZa
+         +cZKYYgeQwvBYkB3DTM9w9Uy+QOrrSLjlrqiwkZCYHiq5/YniokYTzaRXXfA+WQj/HvI
+         5wEEct/cFVaQHmdVxPLkrXsGnOQwkxcH7fBoAE2TRomWXFF6i3xKFOcKMkerwzTG9a6Z
+         dm3qOSrsFhGvIWhB+qgz428NcKQLvI2QxTn8Pl0bTbraBd2B3lj5vboE+g2HQOq/iCh6
+         3oTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qEMNnzSOXFkx4zqOs12jH8ZYvFJqk18OmR+HJSOJ3W8=;
-        b=UXoknadBNyfdMxM629UomGTvl6z/FFgbKNEP+058rkzQX+j2FZMMZR5UzKgAN7Sq6H
-         DfBmnM41nshTrjVbnTnJryaMurAti+c5UW5ZuXHHS6YwMoXV8bz8y27umu06mfnElQJy
-         UkWBlP137HjD2Azq9d1ATKOdnyO3C67Vqw+JYyW725r3JtzT8JxNMDmeCPFhLf4pKc2O
-         7e2XBojsq0JCOi55lz+GAS9nhdDtzcRim0Espa8Kib+2y23ig309C+EyoqOVbvqaHrvq
-         9JSlGUgbpmzcASikX891+fmrTNqP4CaSSLExZxiKzz/0mPbpYwIcjjVr1zzxuqZDg01v
-         0DWA==
-X-Gm-Message-State: AOAM533+9RSI/sbDuAvsRWQySgjho1lTSgFai5EmLISj4RuyVxziE9ZJ
-        37qXrC4V3k3jFS0ZGLW1JGvtnl/IRgIpfCWJWz8+NA==
-X-Google-Smtp-Source: ABdhPJxcYlGXtYmUroPjvcUEK5ZmY95Amr81xUD17/YhUMojtwlLtT0Bv1ZxTPAQaIVYfuHIgM1WAF+Mx2tHIFXoR0k=
-X-Received: by 2002:ac2:4105:: with SMTP id b5mr13446968lfi.153.1627928532714;
- Mon, 02 Aug 2021 11:22:12 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6ApN7kLqibhyq1qI7/ZsZatouw7YTs2JP48UHp8aQ/A=;
+        b=fe0NvzOUPQKKya1S0dc4ZdQRbeeU6lNXQCx0jpw/Pw4mQPTaDUJYkZJ3FJy/wRjljL
+         /SrxXLQs8hEE6KHrkxJ6xz4nH46Lg01TPyWlrTjv1cDQR4Rh2KjAt1wj9BakR73aW1v8
+         MgvDTzFCNehl8iz1O2cfr3ARm6cu34jGRW80H86CzRWZ8LAKZXgYm8kpg/e2/4RdzJei
+         gW7+O+YXPzboQhVyOckSWt2Ay1zNFhjkiwJddCNG2yFAZlk0JcSCo+B6JP+2HFsNNcR1
+         Zw9saTjzI/neF0WT3Bt7dmGCn4eIhI5kLKf0u4sp1EnMP+I0j5N5exsPP03ScNQYxCWO
+         m4LQ==
+X-Gm-Message-State: AOAM531dXqsNKeSN6P+PWMZR2szNSi2ESKTMaw3OeBS5ji/J7OgEGBt3
+        wT4qponuHw/zGjYHijGgFIeDA23c4vGMwVmUN6E=
+X-Google-Smtp-Source: ABdhPJxOGW9lt2I4UeiOBWzfIUEg64BUWAC2wuJshjV0PXtCqkZkrJ/D3hYer3ZuXL4h9KAqQ9EEcAaYjSF9+V0eGOQ=
+X-Received: by 2002:ab0:7187:: with SMTP id l7mr11832750uao.13.1627928580293;
+ Mon, 02 Aug 2021 11:23:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210802174139.1908760-1-ramjiyani@google.com>
-In-Reply-To: <20210802174139.1908760-1-ramjiyani@google.com>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Mon, 2 Aug 2021 11:22:01 -0700
-Message-ID: <CAHRSSEzUcSpWxQzjhGoDsk3uTm=anFri2jHVKDoLrCXVY8i0WA@mail.gmail.com>
-Subject: Re: [PATCH] binder: Add invalid handle info in user error log
-To:     Ramji Jiyani <ramjiyani@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org
+References: <CAJfuBxxVEVwj=hGa+FoQUV6i7BtoUbiJwGunnRq26Fp=Ax2ziQ@mail.gmail.com>
+ <8057650.rSI8SBESIY@natalenko.name> <98103103-c517-59d2-a4d6-9b0758cbdfc1@kernel.dk>
+ <CAJfuBxwJam5=s3Rr06RyLoO19s3HTBomnNi6P3dw59s_b7we+Q@mail.gmail.com> <FE6B2429-5846-4EE8-896A-691BD11C76D0@linaro.org>
+In-Reply-To: <FE6B2429-5846-4EE8-896A-691BD11C76D0@linaro.org>
+From:   jim.cromie@gmail.com
+Date:   Mon, 2 Aug 2021 12:22:34 -0600
+Message-ID: <CAJfuBxxVD-A0uSB6gOAUj_FDi=kKNSRvavBCPxAGu_b=f3QrnQ@mail.gmail.com>
+Subject: Re: 5.14.0-rc1 KASAN use after free
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        LKML <linux-kernel@vger.kernel.org>, linux-block@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 10:41 AM 'Ramji Jiyani' via kernel-team
-<kernel-team@android.com> wrote:
+On Mon, Aug 2, 2021 at 8:21 AM Paolo Valente <paolo.valente@linaro.org> wro=
+te:
 >
-> In case of a fail transaction to the target node; user error log currently
-
-nit: I'd rephrase this to something like  "In the case of a failed
-transaction, only the thread and process id are logged. Add the handle
-info..."
-
-> only prints the thread and process id. Add handle info for the reference
-> to the target node in user error log to aid debugging.
 >
-> Signed-off-by: Ramji Jiyani <ramjiyani@google.com>
-
-Acked-by: Todd Kjos <tkjos@google.com>
-
-> ---
->  drivers/android/binder.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index bcec598b89f2..d9030cb6b1e4 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -2547,8 +2547,8 @@ static void binder_transaction(struct binder_proc *proc,
->                                                 ref->node, &target_proc,
->                                                 &return_error);
->                         } else {
-> -                               binder_user_error("%d:%d got transaction to invalid handle\n",
-> -                                                 proc->pid, thread->pid);
-> +                               binder_user_error("%d:%d got transaction to invalid handle, %u\n",
-> +                                                 proc->pid, thread->pid, tr->target.handle);
->                                 return_error = BR_FAILED_REPLY;
->                         }
->                         binder_proc_unlock(proc);
-> --
-> 2.32.0.554.ge1b32706d8-goog
+> > Il giorno 23 lug 2021, alle ore 15:08, jim.cromie@gmail.com ha scritto:
+> >
+> > On Sun, Jul 18, 2021 at 5:58 PM Jens Axboe <axboe@kernel.dk> wrote:
+> >>
+> >> On 7/18/21 3:08 PM, Oleksandr Natalenko wrote:
+> >>> + Paolo, Jens et al.
+> >>>
+> >>> On =C4=8Dtvrtek 15. =C4=8Dervence 2021 16:32:29 CEST jim.cromie@gmail=
+.com wrote:
+> >>>> hi all,
+> >>>>
+> >>>> I noticed this report this morning, from 3 days ago,
+> >>>> about 10 minutes after boot.
+> >>>> Its easiest to ignore it, and I dont want to make a fuss,
+> >>>> but it looks useful to someone
+> >>>>
+> >>>>
+> >>>> [   33.663464] Bluetooth: RFCOMM ver 1.11
+> >>>> [  646.343628]
+> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D [
+> >>>> 646.343649] BUG: KASAN: use-after-free in bfq_get_queue+0x47d/0x900 =
+[
+> >>>> 646.343680] Read of size 8 at addr ffff88810d864a00 by task
+> >>>> journal-offline/1639
+> >>
+> >> There are only a few commits between 5.13 and master in this area, see
+> >> attached. I'd just start reverting from the top, one by one, and see
+> >> which one is causing the issue. Jim, would that be feasible?
+> >>
+> >
+> > oops, didn't see this earlier.
+> > It hasnt happened since, I can try to recreate mid-next-week
+> >
 >
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> Still nothing?
+>
+
+Nada.
+
+up to an hour ago, I was still running that installed kernel.
+I just rebooted to it and ran a virtme session on it
+(because of a possible 9p related trigger)
+no sign of kasan err.
+
+Im gonna boot rc4 built in the same build-dir,
+I dont think Ive messed with the config,
+but its a long-shot anyway to reproduce,
+since same kernel image didnt do it 2nd time.
+
+
+> Thanks,
+> Paolo
+>
+> >
+> >> --
+> >> Jens Axboe
 >
