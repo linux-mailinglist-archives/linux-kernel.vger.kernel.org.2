@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACE43DDC38
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA653DDC3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234870AbhHBPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:19:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36928 "EHLO mail.kernel.org"
+        id S234787AbhHBPTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:19:38 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:35331 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234614AbhHBPTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:19:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6591D60FD8;
-        Mon,  2 Aug 2021 15:18:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627917530;
-        bh=U6CN0PhWEJhWY3mV7ebsRA4d/EhmRmKPYW5M7ZP0IqU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oAG6QRU1mp4M9hZ76rOLUQTdQ/mnDwzPJFMq+gmb9NwA56dXwlGuhA5wcD4PM7OHg
-         Ifi+oFvKc04+Q8LjeRz6sqynMF+9C1+dPQlcJQVesxk+gqPClhHi7UaW5LPSCElRDn
-         4mil4a7cEetd/XkDKLNgDFGX3eUA4X5eesJ+pmX3t+DW5ucXyUHKhi8GHt9DVP09oV
-         76pFsqOBjbIfk2un7U9F4H8D9/7svDeMlrnb62q6vJRnddd92qDDTr39HUoKFCr8YU
-         NLEacPhsxaWgGC+Ckwvfi1r9xoW33TnZNbq9FqS/f8lYWpNpp3QHFbPh9Vi+NttNiq
-         xrLE4r0IY0J0A==
-From:   Mark Brown <broonie@kernel.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lucas De Marchi <lucas.demarchi@intel.com>
-Subject: linux-next: manual merge of the drm-intel tree with the drm-intel-fixes tree
-Date:   Mon,  2 Aug 2021 16:18:33 +0100
-Message-Id: <20210802151833.15348-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S234233AbhHBPTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:19:35 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GdhW0386Pz9sVF;
+        Mon,  2 Aug 2021 17:19:24 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2QnmngloUx-q; Mon,  2 Aug 2021 17:19:24 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GdhW02BD3z9sV7;
+        Mon,  2 Aug 2021 17:19:24 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 303AA8B776;
+        Mon,  2 Aug 2021 17:19:24 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id yCPwypI_1JZp; Mon,  2 Aug 2021 17:19:24 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.107])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 089A38B763;
+        Mon,  2 Aug 2021 17:19:23 +0200 (CEST)
+Subject: Re: [PATCH v3 31/41] powerpc/32: Dismantle EXC_XFER_STD/LITE/TEMPLATE
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Nick Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Stan Johnson <userm57@yahoo.com>
+References: <cover.1615552866.git.christophe.leroy@csgroup.eu>
+ <ca5795d04a220586b7037dbbbe6951dfa9e768eb.1615552867.git.christophe.leroy@csgroup.eu>
+ <666e3ab4-372-27c2-4621-7cc3933756dd@linux-m68k.org>
+ <20210731173954.Horde.fV2Xkw7-sxjG0DUcZ_JO_g3@messagerie.c-s.fr>
+ <1d601b7c-1e39-e372-39a5-e1e98e56e2a5@linux-m68k.org>
+From:   LEROY Christophe <christophe.leroy@csgroup.eu>
+Message-ID: <9b64dde3-6ebd-b446-41d9-61e8cb0d8c39@csgroup.eu>
+Date:   Mon, 2 Aug 2021 17:19:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <1d601b7c-1e39-e372-39a5-e1e98e56e2a5@linux-m68k.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
 
-Today's linux-next merge of the drm-intel tree got a conflict in:
 
-  drivers/gpu/drm/i915/intel_device_info.c
+Le 01/08/2021 à 03:21, Finn Thain a écrit :
+> On Sat, 31 Jul 2021, Christophe Leroy wrote:
+> 
+>>>
+>>> Stan Johnson contacted me about a regression in mainline that he
+>>> observed on his G3 Powerbooks. Using 'git bisect' we determined that
+>>> this patch was the cause of the regression, i.e. commit 4c0104a83fc3
+>>> ("powerpc/32: Dismantle EXC_XFER_STD/LITE/TEMPLATE").
+>>>
+>>> When testing 4c0104a83fc and all subsequent builds, various user
+>>> processes were liable to segfault. Here is the console log that Stan
+>>> provided:
+>>
+>> Hi, i will be able to look at that more in details next week, however I
+>> have a few preliminary qurstions.
+>>
+>> Can you reliabily reproduce the problem with the said commit, and can
+>> you reliabily run without problem with the parent commit ?
+> 
+> Yes and yes. (I already asked Stan to establish those things before I
+> contacted the list.)
 
-between commit:
+I think I found the problem with that commit. Can you retry with the 
+following change:
 
-  0f9ed3b2c9ec ("drm/i915/display/cnl+: Handle fused off DSC")
-
-from the drm-intel-fixes tree and commit:
-
-  a4d082fc194a ("drm/i915: rename/remove CNL registers")
-
-from the drm-intel tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-diff --cc drivers/gpu/drm/i915/intel_device_info.c
-index e0a10f36acc1,305facedd284..000000000000
---- a/drivers/gpu/drm/i915/intel_device_info.c
-+++ b/drivers/gpu/drm/i915/intel_device_info.c
+diff --git a/arch/powerpc/kernel/head_book3s_32.S 
+b/arch/powerpc/kernel/head_book3s_32.S
+index 0a3d7d4a9ec4..a294103a91a1 100644
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -299,7 +299,7 @@ ALT_MMU_FTR_SECTION_END_IFSET(MMU_FTR_HPTE_TABLE)
+  	EXCEPTION_PROLOG_1
+  	EXCEPTION_PROLOG_2 0x300 DataAccess handle_dar_dsisr=1
+  	prepare_transfer_to_handler
+-	lwz	r5, _DSISR(r11)
++	lwz	r5, _DSISR(r1)
+  	andis.	r0, r5, DSISR_DABRMATCH@h
+  	bne-	1f
+  	bl	do_page_fault
+---
+Thanks
+Christophe
