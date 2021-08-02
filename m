@@ -2,202 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E183DDDC9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA39D3DDDD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232742AbhHBQf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:35:58 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:12432 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230139AbhHBQf5 (ORCPT
+        id S232539AbhHBQip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229640AbhHBQio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:35:57 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 172GUNSS007186;
-        Mon, 2 Aug 2021 09:35:42 -0700
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2176.outbound.protection.outlook.com [104.47.73.176])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3a6265332r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Aug 2021 09:35:41 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KKu1CYunTkf7+pkp3M976vKa58lRB8HA9jR1s4f1DJVYSOjdJT7Tmh0YcE8gBYV7HD7mA8HFbuPY7/he0sDErH9pgv2nod7rtZBGO6pS5FyhDnPWuQ89Ov0ZqKNTd8ddcpFdGwm5vb1HUJL6OV1IRXoGG+z3hhpqkf3wjjSGImgCTCOwVXLnuC3rEWhXPMhdErnzkT2henw3P5Y9fzNuMVaLWkcCCSNgHeC9Zkkkh95PrvXek7q/eWiF32+hFvI8/YL7JLa3A/rRmZTm1apw8b/jPoN9Us5glsKlJRe0dVsbbhpMXGBwOkrKZZhRuUMMlOLIo8fRWChMaEakZi5t2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Aqn/GgO4sjqodFwoIqRzBPmLwSWUto1BpH6b/fe8NME=;
- b=OO9YYU2616bl8OXBqleelvc7MAcIt0VRF7QW7CdydJsnbnTlxg1P+lo8uO9w+hxR9HUte5toaxDDeCkhO1TkXbYpzFbn5IcyEC+xVGzzUgUZWfRe2CyTNHkG9QItFAyJl2teLHWbpCC6gpH5QoIs/33dIeROjeukYp6J8GvwoE5qsfpsx1MF/ObmynyCPn/dS9MkROrsrnjWmsTV50uWOez+qqzG2Nbx7qOZz3HIlA5B8tyEa99qPVqukCF6f4zOgEYT0sLs2ZU4luA29c6BiPiAJ6fu0l6qo551Eo853HoHIBEP2qPLUyrwWzN6lQJ3XVb9ViDI9DGNw1oEGMYBMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Aqn/GgO4sjqodFwoIqRzBPmLwSWUto1BpH6b/fe8NME=;
- b=pQD++wgZD4xS6Wi/TaPICZV36/nMIaWjfu4JWHphQOhDeOjgGjeJD5jHnS4c25ipd/0ExF1KOBC4lEuGBa77J6U5BuZia04IdAeUFiBK48a1pxhdPswoWPupm10CIaKpjOTp0kPkqDGXgNlPfthxqgVze8Mrk87mMIkl1B/F2HE=
-Received: from SJ0PR18MB3882.namprd18.prod.outlook.com (2603:10b6:a03:2c8::13)
- by BYAPR18MB3064.namprd18.prod.outlook.com (2603:10b6:a03:10a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.26; Mon, 2 Aug
- 2021 16:35:40 +0000
-Received: from SJ0PR18MB3882.namprd18.prod.outlook.com
- ([fe80::6513:d2ca:d44a:537c]) by SJ0PR18MB3882.namprd18.prod.outlook.com
- ([fe80::6513:d2ca:d44a:537c%9]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
- 16:35:40 +0000
-From:   Shai Malin <smalin@marvell.com>
-To:     Kees Cook <keescook@chromium.org>
-CC:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>,
-        Ariel Elior <aelior@marvell.com>
-Subject: Re: [PATCH 42/64] net: qede: Use memset_after() for counters
-Thread-Topic: [PATCH 42/64] net: qede: Use memset_after() for counters
-Thread-Index: AdeHu2WnTRdoaKwFSqaAMCIXmimw8Q==
-Date:   Mon, 2 Aug 2021 16:35:39 +0000
-Message-ID: <SJ0PR18MB3882AB903407280EB87DFF5FCCEF9@SJ0PR18MB3882.namprd18.prod.outlook.com>
-Accept-Language: he-IL, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=marvell.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 84e4bf04-176d-4a11-a847-08d955d39087
-x-ms-traffictypediagnostic: BYAPR18MB3064:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR18MB3064A6F0307B253297413C61CCEF9@BYAPR18MB3064.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: M1zOZggx0KKdCkGkvPxFUwoiriex9E5a+Cwn6R0ed5hilD/gsN2i9C3dfhnleTawIMOkPLItqATHYfmMamlDC5keJndVm0DEFc/zak+6ctgQswwY7uBpJqiTqYwaq8TkzARjikZPCOJ9zDe0idEQrb1/RQZCPZyPNhdIhnGozzBazHYpXVarnbwSkhlHkiFdmk4xyUYKgjJNm1GpnIAcdJj2NQsTqeAfNkNbP6r5MXrHrqBy5nd0d7pYlvWNk25GNqj7pWdtrFdCnYyER2KTWmPhRvnDLWbHADLJ4cfQEbnuC+tufTziywbidBWmY8mOzAt6ofZK656Eld5pO2RsDE10PKwtb6YGUsT5RtQxKoWXWiyy/SLmHH2eCMH3gLzdECSQc6vVaeJQBqs1MEBDqf4+PRUolgVsftzTT3MdCPYyiOqDiifSOTcMc8j5EA6u5EX9d07MBj0p2p8ocv5Ku6bBKLryHuzHHoEfFiaY0DmZwUdhhZyYPCvmjgzH3cF0dfHkhRPR3+FODgE44HKBgYQ8aLni4IzMtJQBbnkl8peUb8q26RFqbGQ3XsbWBZaQDNcNU37ntn0m8uuJ76R9m0w8GNK1QoqZlsiDpon+Y8BYXSZEbjtlFE5MOvJ2c7D+RP0VxoWtva29N9Min69xXgh7PgWg9PH3mTPn7fM39DzLlqEw/uvSg0kTldscoyW9xZXqteYZ2Jdr19HFmTWkcA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB3882.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(376002)(366004)(39860400002)(26005)(8676002)(8936002)(186003)(66446008)(64756008)(66556008)(66946007)(66476007)(6506007)(5660300002)(2906002)(52536014)(38070700005)(9686003)(316002)(7696005)(54906003)(38100700002)(122000001)(55016002)(478600001)(4326008)(76116006)(6916009)(107886003)(86362001)(83380400001)(71200400001)(7416002)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0aGPhJtrEbsiGt50IbhEOw44CngPsjfqoA2FpWc88KXgacu96/Ti+zkGTXwu?=
- =?us-ascii?Q?oyAO1aHeW2l8299+xy0TuStZ9uXLP5quDTmVT4jHlgJaaceaJSjsPSayvOaX?=
- =?us-ascii?Q?/mIfPkZxQ4YkogVI0aZ49xeRFs6LtTg9a9binCEODPVJZsRtMfbs0tm9QWqf?=
- =?us-ascii?Q?IuYXGjFduw89ErHt14KcFkLdQdgbpPPKchM+gru9LkS8cfVo6QJQWr3WGaw0?=
- =?us-ascii?Q?S+qwPaxSc5TuhG87ZMRbpR5xOQp70mUJYzfWhzPqsMvFYbLQ1gXcQ52dmlV0?=
- =?us-ascii?Q?mfoqbSXOraVHLUZKxsCyCR+PBshaVfocZldRTy2kqCX5vCXa+08bgP43/cnF?=
- =?us-ascii?Q?Em0QiO1W+otbj6T9NY3h5dNOL1DCojNCAMeA3JvWHXVOjStVcsTEYrIcRQ8F?=
- =?us-ascii?Q?w85fYHf0vHENrUh8bdRxShEKe5pPqiB8UjvrR9sxpL/kr1s4QvWSq7Dl4zSm?=
- =?us-ascii?Q?C97rnA3d0SuI4A8nGsQRZ6l6RnTJPitvtkmJQbwcVJdzrVGQsJOiIBLmWB0J?=
- =?us-ascii?Q?N9czFcyHjj4ioO9fwd1jGZMsZPMXNNzfI6eVFC3YVdeyPJFMd2JPDmi1+wle?=
- =?us-ascii?Q?m1kvTLcyN5ZKHu/yadWP5CB7WZyjlmcT8MbZekapmPXExhmcWsyNLPxU4+Z6?=
- =?us-ascii?Q?pDqMEnUPDtmgVGd3YlL2oBEC6+emVjufhLw47iPiLE+ihBLvTGsJnfgiYEv4?=
- =?us-ascii?Q?88hL9MfJW3bfnP5f67Ac0vrlfaJlGNiSaF9XwWNWRH9crmvuN4qp6YOANb2D?=
- =?us-ascii?Q?Gabbi5lzEoTW/UIuRob14zdfLj+RejZRJ7mBK2Dys/rDg6MtY6+d9r2lXAc3?=
- =?us-ascii?Q?mujNkDSc4E8pqeXvnUvG2ptbLz5H9SlM1krW70VNbhC6pYC12SOLzdZP8WMJ?=
- =?us-ascii?Q?XknpYGmhVk8ZpiAE5nlSKN9svaUfLmvtOrbL9fh4ATAQw6ghHXjfItE31KFv?=
- =?us-ascii?Q?EL0gwV5g2qG7+PwegYegp9qgaDOb9BCCUPYQcn1OuQ3ZRDAqcLvYqYDXJ101?=
- =?us-ascii?Q?LaaMI6hWJxQDfGT5O7vg8bBj0oet3yinEeqpp3+h9naFc5/4Jzs3B9wxaxzd?=
- =?us-ascii?Q?EQk5EqVYC0bihbq4OSmfJFWtl0in4BIerfCQug9pmyu6f/7jC4hnPtWh67z1?=
- =?us-ascii?Q?T+BuN3DPkS40vKMdQqFoF0SASHC1QibhrDMAClfJQiqHqDSyn+K7H5W5P1fE?=
- =?us-ascii?Q?5GY1ZA7J7SfQmGOxdkppJ+yBKo1RUgAlenFiuXhWxWyEmTp+vo521T8KOCmN?=
- =?us-ascii?Q?m7Mm0A1UJdda0UHEvzYpqZjfRQl1ZVIhLzaP506AX+J/zaiNXlZuaNQXfEl3?=
- =?us-ascii?Q?pfA/qmJ7mVhEOZHZJU5kYxQN?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 2 Aug 2021 12:38:44 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626C9C06175F;
+        Mon,  2 Aug 2021 09:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=2C5VpDvj4kp12ZP3fbrD/BbegWSigYIIIq38MkNNSfo=; b=hxhcVz2qm9o0yLFpGk1SYcoHF
+        Wodep1rqY0KYRewJxH1HNutRiIyNnLcsfFFJXK0pLy4JMS0Y+Q00eEALPAjZF/E88PHgAuUWrEV7R
+        7RFY/jMJqxD6dcxMyu3GKV5wJcKbqsbLrhp604K8raxA7uF1hWFysvkVQGu7Hmwfhe921uQjmco7k
+        Orst7YoxF6wmS97e7jXieXl/iegssZYMzEnZCNTfs0RiFH8HQjj7iFHVG4euTh2Ku61Hp+T0oj12H
+        mzJelcqgmFGXZLq7trh1ErTuVE6ywE1Syi8lLtsdc7bDtDQzGYom28l7JBBxXg5CFLU1/xMKb5DVf
+        YnDgRptgQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46858)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mAaxP-0005x4-VN; Mon, 02 Aug 2021 17:38:27 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mAaxM-00032D-Kg; Mon, 02 Aug 2021 17:38:24 +0100
+Date:   Mon, 2 Aug 2021 17:38:24 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     alexandre.belloni@bootlin.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        thierry.reding@gmail.com, lee.jones@linaro.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Ludovic.Desroches@microchip.com, o.rempel@pengutronix.de,
+        andy.shevchenko@gmail.com, aardelean@deviqon.com,
+        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        broonie@kernel.org, Jonathan.Cameron@huawei.com,
+        linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, wsa@kernel.org, kernel@pengutronix.de,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        Claudiu.Beznea@microchip.com
+Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
+ devm_clk_get for prepared and enabled clocks enabled clocks]
+Message-ID: <20210802163824.GK22278@shell.armlinux.org.uk>
+References: <YPlfcbkxiBmB+vw1@kunai>
+ <CAHp75VfC=s12Unw3+Cn0ag71mM5i90=Jbwj4nYwB5cPKiUTRSA@mail.gmail.com>
+ <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
+ <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
+ <20210728202547.7uvfwflpruku7yps@pengutronix.de>
+ <20210728204033.GF22278@shell.armlinux.org.uk>
+ <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
+ <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
+ <20210802094810.GJ22278@shell.armlinux.org.uk>
+ <20210802152755.ibisunvibmwhiyry@pengutronix.de>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB3882.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84e4bf04-176d-4a11-a847-08d955d39087
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2021 16:35:39.9870
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UySO1HYRFB5385NWKQM8f4ddgP+fe/cT2PwmeTem7EtVvOADGIf5EU2cnh34qgpNuxixoNQd5H0ugPhHMj1SkQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR18MB3064
-X-Proofpoint-ORIG-GUID: 5FxVOV93Oc6wFh5q-ZaL3krJVytn8HZK
-X-Proofpoint-GUID: 5FxVOV93Oc6wFh5q-ZaL3krJVytn8HZK
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-02_07:2021-08-02,2021-08-02 signatures=0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210802152755.ibisunvibmwhiyry@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 07:23:00PM +0300, Kees Cook wrote:
-> On Mon, Aug 02, 2021 at 02:29:28PM +0000, Shai Malin wrote:
-> > On Tue, Jul 31, 2021 at 07:07:00PM -0300, Kees Cook wrote:
-> > > On Tue, Jul 27, 2021 at 01:58:33PM -0700, Kees Cook wrote:
-> > > > In preparation for FORTIFY_SOURCE performing compile-time and run-t=
-ime
-> > > > field bounds checking for memset(), avoid intentionally writing acr=
-oss
-> > > > neighboring fields.
-> > > >
-> > > > Use memset_after() so memset() doesn't get confused about writing
-> > > > beyond the destination member that is intended to be the starting p=
-oint
-> > > > of zeroing through the end of the struct.
-> > > >
-> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > > ---
-> > > > The old code seems to be doing the wrong thing: starting from not t=
-he
-> > > > first member, but sized for the whole struct. Which is correct?
-> > >
-> > > Quick ping on this question.
-> > >
-> > > The old code seems to be doing the wrong thing: it starts from the se=
-cond
-> > > member and writes beyond int_info, clobbering qede_lock:
-> >
-> > Thanks for highlighting the problem, but actually, the memset is redund=
-ant.
-> > We will remove it so the change will not be needed.
-> >
-> > >
-> > > struct qede_dev {
-> > >         ...
-> > >         struct qed_int_info             int_info;
-> > >
-> > >         /* Smaller private variant of the RTNL lock */
-> > >         struct mutex                    qede_lock;
-> > >         ...
-> > >
-> > >
-> > > struct qed_int_info {
-> > >         struct msix_entry       *msix;
-> > >         u8                      msix_cnt;
-> > >
-> > >         /* This should be updated by the protocol driver */
-> > >         u8                      used_cnt;
-> > > };
-> > >
-> > > Should this also clear the "msix" member, or should this not write
-> > > beyond int_info? This patch does the latter.
-> >
-> > It should clear only the msix_cnt, no need to clear the entire
-> > qed_int_info structure.
->=20
-> Should used_cnt be cleared too? It is currently. Better yet, what patch
-> do you suggest I replace this proposed one with? :)
+On Mon, Aug 02, 2021 at 05:27:55PM +0200, Uwe Kleine-König wrote:
+> Hello Russell,
+> 
+> On Mon, Aug 02, 2021 at 10:48:10AM +0100, Russell King (Oracle) wrote:
+> > I think devm_clk_get() should not be part of CCF but should be
+> > part of the interface level - it's silly to have devm_clk_get()
+> > being CCF but not clk_get(). The same should go for the other
+> > devm wrappers around the plain clk_* interfaces.
+> 
+> What is the practical difference between "Function X is part of CCF" and
+> "Function X is part of the clk interface and there is only CCF who
+> implements it"?
 
-In qede_sync_free_irqs(), just after:
-  edev->int_info.used_cnt =3D 0;
-Please add:
-  edev->int_info.msix_cnt =3D 0;
+clkdev is maintained by me as part of the API, and provides clk_get()
+functionality for all clk implementations. To then have devm_clk_get(),
+which merely provides a wrapper around clk_get() adding the devm
+semantics being part of CCF is not sane - devm_clk_get() isn't
+specific to CCF or in fact any clk API implementation.
 
-Thanks!
+> > There have been several different approaches to wrapping things up,
+> > but here's a question: should we make it easier to do the lazy thing
+> > (get+enable) or should we make it easier to be power efficient?
+> > Shouldn't we be encouraging people to write power efficient drivers?
+> 
+> Yeah, sounds compelling, but I wonder if that's of practical importance.
+> How many driver authors do you expect to lure into making a better
+> driver just because devm_clk_get_prepared() doesn't exist? In contrast:
+> How many drivers become simpler with devm_clk_get_prepared() and so
+> it becomes easier to maintain them and easier to spot bugs?
+> In the absence of devm_clk_get_prepared(), is it better that several
+> frameworks (or drivers) open code it?
 
->=20
-> Thanks for looking at this!
->=20
-> -Kees
->=20
-> --
-> Kees Cook
+It probably depends on where you stand on power management and power
+efficiency issues. Personally, I would like to see more effort put
+into drivers to make them more power efficient, and I believe in the
+coming years, power efficiency is going to become a big issue.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
