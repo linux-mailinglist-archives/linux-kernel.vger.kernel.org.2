@@ -2,160 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F2C3DE2F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB2D3DE2FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232856AbhHBXQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 19:16:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232588AbhHBXQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 19:16:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DCBB60EC0;
-        Mon,  2 Aug 2021 23:16:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627946204;
-        bh=3ptfVM59zuF6UcjTL1TI2rMJkJS7oye0pG8ghT5vEmQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Y0SIXoT9NyYYYfU9X6oKmpBTSgusjlgb4xakAEd/TK6RFo+w4De7J2fo30tNiLYjP
-         F/gBXwN7yZnqNj/AjBjaj5DcNqbtwbj3T+1CtmEtxB2zxHmwdEGokGqm9Z+bxKBN6E
-         IZhcMR7JLBOwXAKhYf5mbPi0vLlklMsxBv2rmQB+qG8AHkeCgrdqkEzxgreGo4qkkE
-         KF0R8IpPJFDW00CBacLD9bpONGKpGNT41dpq4ID6w4b3tIvFzD7iMVzT+AQolEdqPc
-         K87g4tnLDodIiPFdafhSsQsnyA4nPvhNpghsSOY6+lU8LprPbD6Po0yUK2S257OG7C
-         EtItq7fS7VMDg==
-Date:   Mon, 2 Aug 2021 18:16:43 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v1 1/1] x86/PCI: Introduce pcibios_is_irq_managed() helper
-Message-ID: <20210802231643.GA1474171@bjorn-Precision-5520>
+        id S232565AbhHBXVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 19:21:55 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:54452 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232130AbhHBXVy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 19:21:54 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 172NLcWS079290;
+        Mon, 2 Aug 2021 18:21:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1627946498;
+        bh=lc5YJ8jr/E5ZmP2CWWKqbC9l2F6bbQuMBKIPXRsXrj0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ov8i+FhBad/ALU5fBbKNdscJmj8sNbP2fc6GWZZE48DTDSKzKNa+uS+k93eLujAUA
+         n3G2kw46FpBlUkjnb+2FACzgqorI2IXjhFbmn/GEUXI/3OOmN4nyURPkQsyyfUODh/
+         VzhrZzFpKoEJ3PR2sHu2tYvPD46zznsdq00ODPyY=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 172NLc13081622
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 2 Aug 2021 18:21:38 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 2 Aug
+ 2021 18:21:38 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 2 Aug 2021 18:21:38 -0500
+Received: from [10.250.38.176] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 172NLclb033302;
+        Mon, 2 Aug 2021 18:21:38 -0500
+Subject: Re: [PATCH v2 1/5] remoteproc: Add support for detach-only during
+ shutdown
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Praneeth Bajjuri <praneeth@ti.com>,
+        Hari Nagalla <hnagalla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210723220248.6554-1-s-anna@ti.com>
+ <20210723220248.6554-2-s-anna@ti.com> <20210802184431.GC3051951@p14s>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <cd399fef-6db7-72eb-933f-7454a043ed14@ti.com>
+Date:   Mon, 2 Aug 2021 18:21:38 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730205355.26504-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210802184431.GC3051951@p14s>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 11:53:55PM +0300, Andy Shevchenko wrote:
-> The check for irq_managed flag along with non-zero irq is an idiom
-> for x86 PCI implementation. Introduce helper and switch users over
-> using it.
+Hi Mathieu,
+
+On 8/2/21 1:44 PM, Mathieu Poirier wrote:
+> On Fri, Jul 23, 2021 at 05:02:44PM -0500, Suman Anna wrote:
+>> The remoteproc core has support for both stopping and detaching a
+>> remote processor that was attached to previously, through both the
+>> remoteproc sysfs and cdev interfaces. The rproc_shutdown() though
+>> unconditionally only uses the stop functionality at present. This
+>> may not be the default desired functionality for all the remoteproc
+>> platform drivers.
+>>
+>> Enhance the remoteproc core logic to key off the presence of the
+>> .stop() ops and allow the individual remoteproc drivers to continue
+>> to use the standard rproc_add() and rproc_del() API. This allows
+>> the remoteproc drivers to only do detach if supported when the driver
+>> is uninstalled, and the remote processor continues to run undisturbed
+>> even after the driver removal.
+>>
+>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>> ---
+>> v2: Addressed various review comments from v1
+>>  - Reworked the logic to not use remoteproc detach_on_shutdown and
+>>    rely only on rproc callback ops
+>>  - Updated the last para of the patch description
+>> v1: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210522000309.26134-3-s-anna@ti.com/
+>>
+>>  drivers/remoteproc/remoteproc_cdev.c  | 7 +++++++
+>>  drivers/remoteproc/remoteproc_core.c  | 5 ++++-
+>>  drivers/remoteproc/remoteproc_sysfs.c | 6 ++++++
+>>  3 files changed, 17 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
+>> index 4ad98b0b8caa..16c932beed88 100644
+>> --- a/drivers/remoteproc/remoteproc_cdev.c
+>> +++ b/drivers/remoteproc/remoteproc_cdev.c
+>> @@ -42,6 +42,13 @@ static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_
+>>  		    rproc->state != RPROC_ATTACHED)
+>>  			return -EINVAL;
+>>  
+>> +		if (rproc->state == RPROC_ATTACHED &&
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  arch/x86/include/asm/pci.h   | 4 ++++
->  arch/x86/pci/intel_mid_pci.c | 5 ++---
->  arch/x86/pci/irq.c           | 4 ++--
->  drivers/acpi/pci_irq.c       | 4 ++--
->  4 files changed, 10 insertions(+), 7 deletions(-)
+> This is already checked just above.
 > 
-> diff --git a/arch/x86/include/asm/pci.h b/arch/x86/include/asm/pci.h
-> index d2c76c8d8cfd..ac25470c9558 100644
-> --- a/arch/x86/include/asm/pci.h
-> +++ b/arch/x86/include/asm/pci.h
-> @@ -92,6 +92,10 @@ void pcibios_scan_root(int bus);
->  struct irq_routing_table *pcibios_get_irq_routing_table(void);
->  int pcibios_set_irq_routing(struct pci_dev *dev, int pin, int irq);
->  
-> +static inline bool pcibios_irq_is_managed(struct pci_dev *dev)
-> +{
-> +	return dev->irq_managed && dev->irq > 0;
-> +}
->  
->  #define HAVE_PCI_MMAP
->  #define arch_can_pci_mmap_wc()	pat_enabled()
-> diff --git a/arch/x86/pci/intel_mid_pci.c b/arch/x86/pci/intel_mid_pci.c
-> index f04742caf62b..0da287bcabf5 100644
-> --- a/arch/x86/pci/intel_mid_pci.c
-> +++ b/arch/x86/pci/intel_mid_pci.c
-> @@ -230,7 +230,7 @@ static int intel_mid_pci_irq_enable(struct pci_dev *dev)
->  	int ret;
->  	u8 gsi;
->  
-> -	if (dev->irq_managed && dev->irq > 0)
-> +	if (pcibios_irq_is_managed(dev))
->  		return 0;
->  
->  	ret = pci_read_config_byte(dev, PCI_INTERRUPT_LINE, &gsi);
-> @@ -290,8 +290,7 @@ static int intel_mid_pci_irq_enable(struct pci_dev *dev)
->  
->  static void intel_mid_pci_irq_disable(struct pci_dev *dev)
->  {
-> -	if (!mp_should_keep_irq(&dev->dev) && dev->irq_managed &&
-> -	    dev->irq > 0) {
-> +	if (pcibios_irq_is_managed(dev) && !mp_should_keep_irq(&dev->dev)) {
->  		mp_unmap_irq(dev->irq);
->  		dev->irq_managed = 0;
->  	}
-> diff --git a/arch/x86/pci/irq.c b/arch/x86/pci/irq.c
-> index d3a73f9335e1..ce3927b68f9e 100644
-> --- a/arch/x86/pci/irq.c
-> +++ b/arch/x86/pci/irq.c
-> @@ -1210,7 +1210,7 @@ static int pirq_enable_irq(struct pci_dev *dev)
->  			struct pci_dev *temp_dev;
->  			int irq;
->  
-> -			if (dev->irq_managed && dev->irq > 0)
-> +			if (pcibios_irq_is_managed(dev))
->  				return 0;
->  
->  			irq = IO_APIC_get_PCI_irq_vector(dev->bus->number,
-> @@ -1280,7 +1280,7 @@ bool mp_should_keep_irq(struct device *dev)
->  static void pirq_disable_irq(struct pci_dev *dev)
->  {
->  	if (io_apic_assign_pci_irqs && !mp_should_keep_irq(&dev->dev) &&
-> -	    dev->irq_managed && dev->irq) {
-> +	    pcibios_irq_is_managed(dev)) {
->  		mp_unmap_irq(dev->irq);
->  		dev->irq = 0;
->  		dev->irq_managed = 0;
-> diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
-> index b63954c36e86..b463bdd2dbb5 100644
-> --- a/drivers/acpi/pci_irq.c
-> +++ b/drivers/acpi/pci_irq.c
-> @@ -397,7 +397,7 @@ int __acpi_pci_irq_enable(struct pci_dev *dev, int polarity)
->  		return 0;
->  	}
->  
-> -	if (dev->irq_managed && dev->irq > 0)
-> +	if (pcibios_irq_is_managed(dev))
->  		return 0;
->  
->  	entry = acpi_pci_irq_lookup(dev, pin);
-> @@ -486,7 +486,7 @@ void acpi_pci_irq_disable(struct pci_dev *dev)
->  	u8 pin;
->  
->  	pin = dev->pin;
-> -	if (!pin || !dev->irq_managed || dev->irq <= 0)
-> +	if (!pin || !pcibios_irq_is_managed(dev))
+>> +		    !rproc->ops->stop) {
 
-This file may be compiled for x86, arm64, and ia64, but it looks like
-you only defined pcibios_irq_is_managed() for x86.
+Well, this is checking for both conditions, and not just the stop ops
+independently. We expect to have .stop() defined normally for both regular
+remoteproc mode and attached mode where you want to stop (and not detach), but
+as you can see, I am supporting only detach and so will not have .stop() defined
+ with RPROC_ATTACHED.
 
-We used to have a generic pci_has_managed_irq() that was the same as
-your pcibios_irq_is_managed(), but it was removed by 67b4eab91caf
-("Revert "PCI: Add helpers to manage pci_dev->irq and
-pci_dev->irq_managed"").
-
-I'm sorry that pdev->irq_managed got added without a comment by
-cffe0a2b5a34 ("x86, irq: Keep balance of IOAPIC pin reference count").
-Even reading that commit log, I'm not sure exactly what it means.  The
-log says:
-
-  So flag irq_managed is introduced to track whether IRQ number is
-  assigned by OS and to protect pirq_enable_irq(), acpi_pci_irq_enable()
-  and intel_mid_pci_irq_enable() from reentrance.
-
->  		return;
->  
->  	/* Keep IOAPIC pin configuration when suspending */
-> -- 
-> 2.30.2
 > 
+> This is checked in rproc_stop() where -EINVAL is returned if ops::stop has not
+> been provided.
+
+rproc_shutdown() actually doesn't return any status, so all its internal
+checking gets ignored and a success is returned today.
+
+> 
+>> +			dev_err(&rproc->dev,
+>> +				"stop not supported for this rproc, use detach\n");
+> 
+> The standard error message from the shell should be enough here, the same way it
+> is enough when the "start" and "stop" scenarios fail.
+
+Thought this was a bit more informative, but sure this trace can be dropped.
+
+> 
+>> +			return -EINVAL;
+>> +		}
+>> +
+>>  		rproc_shutdown(rproc);
+>>  	} else if (!strncmp(cmd, "detach", len)) {
+>>  		if (rproc->state != RPROC_ATTACHED)
+>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+>> index 7de5905d276a..ab9e52180b04 100644
+>> --- a/drivers/remoteproc/remoteproc_core.c
+>> +++ b/drivers/remoteproc/remoteproc_core.c
+>> @@ -2075,7 +2075,10 @@ void rproc_shutdown(struct rproc *rproc)
+>>  	if (!atomic_dec_and_test(&rproc->power))
+>>  		goto out;
+>>  
+>> -	ret = rproc_stop(rproc, false);
+>> +	if (rproc->state == RPROC_ATTACHED && !rproc->ops->stop)
+>> +		ret = __rproc_detach(rproc);
+>> +	else
+>> +		ret = rproc_stop(rproc, false);
+> 
+> As I indicated in my last review I think rproc_shutdown() and rproc_del() should
+> be decoupled and the right call made in the platform drivers based on the state
+> of the remote processor.  
+
+We have various remoteproc API provided in pairs - rproc_alloc()/rproc_free(),
+rproc_add()/rproc_del(), rproc_boot()/rproc_shutdown() and
+rproc_attach()/rproc_detach(). The drivers are configuring conditions for
+auto-boot and RPROC_DETACHED. The reason they are coupled is primarily because
+of the auto-boot done during rproc_add(). And we handle the RPROC_DETACHED case
+just as well in rproc_boot().
+
+While what you have suggested works, but I am not quite convinced on this
+asymmetric usage, and why this state-machine logic should be split between the
+core and remoteproc drivers differently between attach and detach. To me,
+calling rproc_detach() in remoteproc drivers would have made sense only if they
+are also calling rproc_attach().
+
+
+Conditions such as the above make the core code
+> brittle, difficult to understand and tedious to maintain.
+
+The logic I have added actually makes rproc_shutdown behavior to be on par with
+the rproc_boot().
+
+regards
+Suman
+
+> 
+> Thanks,
+> Mathieu
+> 
+>>  	if (ret) {
+>>  		atomic_inc(&rproc->power);
+>>  		goto out;
+>> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+>> index ea8b89f97d7b..133e766f38d4 100644
+>> --- a/drivers/remoteproc/remoteproc_sysfs.c
+>> +++ b/drivers/remoteproc/remoteproc_sysfs.c
+>> @@ -206,6 +206,12 @@ static ssize_t state_store(struct device *dev,
+>>  		    rproc->state != RPROC_ATTACHED)
+>>  			return -EINVAL;
+>>  
+>> +		if (rproc->state == RPROC_ATTACHED &&
+>> +		    !rproc->ops->stop) {
+>> +			dev_err(&rproc->dev, "stop not supported for this rproc, use detach\n");
+>> +			return -EINVAL;
+>> +		}
+>> +
+>>  		rproc_shutdown(rproc);
+>>  	} else if (sysfs_streq(buf, "detach")) {
+>>  		if (rproc->state != RPROC_ATTACHED)
+>> -- 
+>> 2.32.0
+>>
+
