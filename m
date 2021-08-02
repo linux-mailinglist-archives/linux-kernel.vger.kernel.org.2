@@ -2,88 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB333DD755
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CFD3DD765
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233957AbhHBNkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:40:00 -0400
-Received: from mail-il1-f175.google.com ([209.85.166.175]:35404 "EHLO
-        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233742AbhHBNj6 (ORCPT
+        id S234053AbhHBNkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:40:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35968 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233973AbhHBNkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:39:58 -0400
-Received: by mail-il1-f175.google.com with SMTP id k3so16455624ilu.2;
-        Mon, 02 Aug 2021 06:39:48 -0700 (PDT)
+        Mon, 2 Aug 2021 09:40:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627911613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WKwQt8hS8BrVUXgi476JAPrD0widSfYwWzVDlE+fv9w=;
+        b=SN/powEelJP4C9d/6KHkkeRZBjt9siO20hZLvxqcK2pfFAv51cu/XK0eT/KzbJCqn86UW4
+        AhZ4i4ISxX0/dD6e1Yr3Hh1PO7r/7RfYV08AXQEHL0SrAOh65MnV9LgCcVo+tcZEdEaPY4
+        yVqEpzwbL4ueyxSvaupl0FhBQ+518Oc=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-U5WsKXAROyur4V-jCi-h3Q-1; Mon, 02 Aug 2021 09:40:12 -0400
+X-MC-Unique: U5WsKXAROyur4V-jCi-h3Q-1
+Received: by mail-ej1-f69.google.com with SMTP id n9-20020a1709063789b02905854bda39fcso4699956ejc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 06:40:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=lMmS75BBYZrZwVcj5qdcK5fUdGJveeoFTuyQ8W/piWQ=;
-        b=oF/UliNQKvfHIuEpwFIVDHIVlW5EDp8UkQHKRuu7G7icDaNdUT1H84/4FN/IFMiHXY
-         joUvg3Etvu44jnm1tbNvijO39d6ySc+mG6HhdHPq4FGz8F2FSVXgpCEVRDBN2Dp89PwQ
-         iQZybJluG3OwNlqUl0s5QhVkuQwiNXh7EYFQwWzHbmsexPdq6h3hNLLUsa2dP1iCgZiB
-         xJSi2He91lxLEnRgmadDHFjRPK4ZNqCbIZ5KuV7Fkh+ddtinq4O+1M5+/m2Q77ca8VMV
-         9ytHHxaGk0YY2TIgkxHpP4Lo0dC24tGvcCizzEVnt9c0Pe5TK/RwuW2V4/Vs87n2jmlX
-         LYOQ==
-X-Gm-Message-State: AOAM531Y2pGxFYPGIfOtFNlfbKauMOz4LUQRv+P5k1y49YI4sNAeXbaO
-        RLWNbSBoL7r+J71tvV6f2Q==
-X-Google-Smtp-Source: ABdhPJxf0ZYJw/fZMjM13lKgISlILvCh3tx8qSjPrDlSPJvoPKdLXZWuZRtIDYY0v4IMl6TM5bc5uw==
-X-Received: by 2002:a92:ca8f:: with SMTP id t15mr617420ilo.262.1627911588427;
-        Mon, 02 Aug 2021 06:39:48 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id i7sm5609333ilk.7.2021.08.02.06.39.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 06:39:47 -0700 (PDT)
-Received: (nullmailer pid 918762 invoked by uid 1000);
-        Mon, 02 Aug 2021 13:39:43 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-Cc:     Dragos.Bogdan@analog.com, robh+dt@kernel.org,
-        linux-iio@vger.kernel.org, lars@metafoo.de,
-        Darius.Berghe@analog.com, Michael.Hennerich@analog.com,
-        devicetree@vger.kernel.org, jic23@kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WKwQt8hS8BrVUXgi476JAPrD0widSfYwWzVDlE+fv9w=;
+        b=AS/8uQ75sKj+TZNHNT88etLAgjfzdOCTJwIAy8ypr3mmhvmuueFkHulRXpmQgaGB1v
+         kXOZV/QCD0S5D4bBzygDg950yuqjl9S56Zb2XjTNM6xfhP1WqKSOOLudSlhN28yNshPF
+         0yhQ6+TDxijwtEIR0poCH/pd6Fg/NUE91KCETdxVnH82E0m0NcUIZurTwUD68KZUNJ7o
+         InaBudzDjpqLOQKIg+tJ2FEVkVJgU52b7gtxPY4lNF3alJkF8HFdqcE/SKoPb9JdmJQR
+         L3WMRKWRsI00Fq+BpuW4WHb2sDJ3hpLq/nduHXF6M9RTr9iQsN0VAUQC5e2wasNNWvEC
+         gXZA==
+X-Gm-Message-State: AOAM5328yVwS+HvG9FlP+B1628wI3/kIFdypNJbYwMvB7gDyYGGMOvpG
+        LyIufcnXw1itS5AfXz4ZsGAyDDZ5spceipBN/NUBWcrT1IfP2BryzaM1Hpv3qyQ7ZHjGtoR1vL/
+        L75nknR4PJLuh8dvNBVUxS1kl
+X-Received: by 2002:a05:6402:1a3a:: with SMTP id be26mr19172049edb.232.1627911611267;
+        Mon, 02 Aug 2021 06:40:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzUWEzOJJD/hxS92H0wTVDl/3c+XTETCnw/2v3cRopIXxvPQkBYzXV1oByaHJLt1XJdso7X1Q==
+X-Received: by 2002:a05:6402:1a3a:: with SMTP id be26mr19172028edb.232.1627911611022;
+        Mon, 02 Aug 2021 06:40:11 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x42sm6170929edy.86.2021.08.02.06.40.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 06:40:10 -0700 (PDT)
+Subject: Re: [PATCH v2] KVM: const-ify all relevant uses of struct
+ kvm_memory_slot
+To:     Hamza Mahfooz <someguy@effective-light.com>,
         linux-kernel@vger.kernel.org
-In-Reply-To: <1e652b88a367824e58fb71896b4a660204bd7a88.1627709571.git.lucas.p.stankus@gmail.com>
-References: <cover.1627709571.git.lucas.p.stankus@gmail.com> <1e652b88a367824e58fb71896b4a660204bd7a88.1627709571.git.lucas.p.stankus@gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: iio: accel: Add binding documentation for ADXL313
-Date:   Mon, 02 Aug 2021 07:39:43 -0600
-Message-Id: <1627911583.064913.918761.nullmailer@robh.at.kernel.org>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+References: <20210730222704.61672-1-someguy@effective-light.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <fcab24b9-0573-9165-20e9-683586e86bdf@redhat.com>
+Date:   Mon, 2 Aug 2021 15:40:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210730222704.61672-1-someguy@effective-light.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Jul 2021 17:36:31 -0300, Lucas Stankus wrote:
-> Add device tree binding documentation for ADXL313 3-axis accelerometer.
-> 
-> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
-> ---
->  .../bindings/iio/accel/adi,adxl313.yaml       | 75 +++++++++++++++++++
->  1 file changed, 75 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
-> 
+On 31/07/21 00:27, Hamza Mahfooz wrote:
+> @@ -1440,7 +1440,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>   
+>   struct slot_rmap_walk_iterator {
+>   	/* input fields. */
+> -	struct kvm_memory_slot *slot;
+> +	const struct kvm_memory_slot *slot;
+>   	gfn_t start_gfn;
+>   	gfn_t end_gfn;
+>   	int start_level;
+> @@ -1467,16 +1467,20 @@ rmap_walk_init_level(struct slot_rmap_walk_iterator *iterator, int level)
+>   
+>   static void
+>   slot_rmap_walk_init(struct slot_rmap_walk_iterator *iterator,
+> -		    struct kvm_memory_slot *slot, int start_level,
+> +		    const struct kvm_memory_slot *slot, int start_level,
+>   		    int end_level, gfn_t start_gfn, gfn_t end_gfn)
+>   {
+> -	iterator->slot = slot;
+> -	iterator->start_level = start_level;
+> -	iterator->end_level = end_level;
+> -	iterator->start_gfn = start_gfn;
+> -	iterator->end_gfn = end_gfn;
+> +	struct slot_rmap_walk_iterator iter = {
+> +		.slot = slot,
+> +		.start_gfn = start_gfn,
+> +		.end_gfn = end_gfn,
+> +		.start_level = start_level,
+> +		.end_level = end_level
+> +	};
+> +
+> +	rmap_walk_init_level(&iter, start_level);
+>   
+> -	rmap_walk_init_level(iterator, iterator->start_level);
+> +	memcpy(iterator, &iter, sizeof(struct slot_rmap_walk_iterator));
+>   }
+>   
+>   static bool slot_rmap_walk_okay(struct slot_rmap_walk_iterator *iterator)
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+I don't understand, just changing the argument works.  There is no need 
+to change the body of the function.
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl313.example.dt.yaml: accelerometer@53: interrupts: [[0, 4]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl313.example.dt.yaml: accelerometer@0: interrupts: [[0, 4]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
-\ndoc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1511954
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+Paolo
 
