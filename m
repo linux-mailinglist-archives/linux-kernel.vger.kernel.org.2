@@ -2,113 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C513DD44F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B6C3DD453
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233390AbhHBKsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 06:48:55 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:55485 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233218AbhHBKsx (ORCPT
+        id S233303AbhHBKwP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Aug 2021 06:52:15 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7915 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233176AbhHBKwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 06:48:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1627901324; x=1659437324;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TK416wLbqT9UDE6WEJeilEIagVGG4FyRZEIJ5bkTLTE=;
-  b=CYzuZLmTOdEHM1BefFg3IYG+c5wvivF/f4TabZbtuXYR4mJhmdlKinw8
-   uKmFNhWu+6x1T8txzp3ehWE4EiDypbW2D2g8jt1lWTvzwDPdeAg7rS1gv
-   mchQ2TEuH2b9IdJrMAhANaaFOwS7aGKOeE/xEC4z/SIK4TJP3/Vyp8mVV
-   SFpvbItP8mY1b/cqEVivCUFBz+QMNeU+O53AjWsbq2nikUNjI4uPoCALh
-   yqlskk3R9EOitVX5Bo3vtwWr0G/LaKeV7d2VTnqL59WgzAv+fjFwmLw5/
-   qDhoP/8tP+FKAIou4v0ekPLvLjEdLEBFLqzGphyBZKDqEyjwY2JrD9cHm
-   w==;
-IronPort-SDR: 2r7+p/05xC0erTJhj4ITNbSEouGfSKMFZ68M4EJ0IPYH/X3wXAPJtDjhOoBNj6kZ/fKTpJeOIe
- lb3pIYsT0P9ZqDWjNqt5bNTmJS46MiLwu4N7n0Gs5jd8zJu+UfH3Q64jZEEp9w2V1ByvZwd7/q
- /3kUSoSgUzRk2OcowlcwO0bnmZdZth3ijoMNoSvdzByJDnzd7kB4684hhyKZpVUsMaGvav1hns
- /vACv1X8s/tAyg/gNftC3DQ9gmr4UYsbdE8bh8Hql1eLJMBxUo0B/a7GtYY9LC1osHJ51PXWVT
- Vi08I2Di1DpeuJTZABgFIeQ5
-X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
-   d="scan'208";a="138413805"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Aug 2021 03:48:44 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 03:48:43 -0700
-Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 2 Aug 2021 03:48:38 -0700
-Message-ID: <16d7c1fd8ecaa10ed040e04261045274231ca654.camel@microchip.com>
-Subject: Re: [PATCH v3 net-next 10/10] net: dsa: microchip: add support for
- vlan operations
-From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <robh+dt@kernel.org>,
-        <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
-        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
-Date:   Mon, 2 Aug 2021 16:18:36 +0530
-In-Reply-To: <20210731150838.2pigkik3iaeguflz@skbuf>
-References: <20210723173108.459770-1-prasanna.vengateshan@microchip.com>
-         <20210723173108.459770-11-prasanna.vengateshan@microchip.com>
-         <20210731150838.2pigkik3iaeguflz@skbuf>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 2 Aug 2021 06:52:14 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GdZV40Yttz82jX;
+        Mon,  2 Aug 2021 18:48:12 +0800 (CST)
+Received: from dggema721-chm.china.huawei.com (10.3.20.85) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 18:52:01 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggema721-chm.china.huawei.com (10.3.20.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 18:52:01 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Mon, 2 Aug 2021 18:52:01 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        yangyicong <yangyicong@huawei.com>
+Subject: RE: [PATCH 7/9] sched/fair: Enforce proportional scan limits when
+ scanning for an idle core
+Thread-Topic: [PATCH 7/9] sched/fair: Enforce proportional scan limits when
+ scanning for an idle core
+Thread-Index: AQHXgghk3nTW1qcKWUGNOvwzGAgDfKtgFAig
+Date:   Mon, 2 Aug 2021 10:52:01 +0000
+Message-ID: <58167022b9074ed9951b09ab6ba1983e@hisilicon.com>
+References: <20210726102247.21437-1-mgorman@techsingularity.net>
+ <20210726102247.21437-8-mgorman@techsingularity.net>
+In-Reply-To: <20210726102247.21437-8-mgorman@techsingularity.net>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.55]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-07-31 at 18:08 +0300, Vladimir Oltean wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> content is safe
-> 
-> On Fri, Jul 23, 2021 at 11:01:08PM +0530, Prasanna Vengateshan wrote:
-> > +static int lan937x_port_vlan_add(struct dsa_switch *ds, int port,
-> > +                              const struct switchdev_obj_port_vlan *vlan,
-> > +                              struct netlink_ext_ack *extack)
-> > +{
-> > +     bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-> > +     struct ksz_device *dev = ds->priv;
-> > +     struct lan937x_vlan vlan_entry;
-> > +     int ret;
-> > +
-> > +     ret = lan937x_get_vlan_table(dev, vlan->vid, &vlan_entry);
-> > +     if (ret < 0) {
-> > +             NL_SET_ERR_MSG_MOD(extack, "Failed to get vlan table\n");
-> 
-> The NL_SET_ERR_MSG_MOD function already adds the \n at the end.
 
-i will remove \n from other places as well for NL_SET_ERR_MSG_MOD.
 
+> -----Original Message-----
+> From: Mel Gorman [mailto:mgorman@techsingularity.net]
+> Sent: Monday, July 26, 2021 10:23 PM
+> To: LKML <linux-kernel@vger.kernel.org>
+> Cc: Ingo Molnar <mingo@kernel.org>; Peter Zijlstra <peterz@infradead.org>;
+> Vincent Guittot <vincent.guittot@linaro.org>; Valentin Schneider
+> <valentin.schneider@arm.com>; Aubrey Li <aubrey.li@linux.intel.com>; Mel
+> Gorman <mgorman@techsingularity.net>
+> Subject: [PATCH 7/9] sched/fair: Enforce proportional scan limits when scanning
+> for an idle core
 > 
-> > +             return ret;
-> > 
-> > +
-> > +     /* change PVID */
-> > +     if (vlan->flags & BRIDGE_VLAN_INFO_PVID) {
-> > +             ret = lan937x_pwrite16(dev, port, REG_PORT_DEFAULT_VID,
-> > +                                    vlan->vid);
-> > +             if (ret < 0) {
-> > +                     NL_SET_ERR_MSG_MOD(extack, "Failed to set pvid\n");
-> > +                     return ret;
-> > +             }
-> > +     }
-> > +
-> > +     return 0;
-> > +}
+> When scanning for a single CPU, the scan is limited based on the estimated
+> average idle time for a domain to reduce the risk that more time is spent
+> scanning for idle CPUs than we are idle for.
 > 
-> Side question: do you think the ds->configure_vlan_while_not_filtering = false
-> from ksz9477.c and ksz8795.c serve any purpose, considering that you did
-> not need this setting for lan937x? If not, could you please send a patch
-> to remove that setting from those 2 other KSZ drivers? Thanks.
+> With SMT, if an idle core is expected to exist there is no scan depth
+> limits so the scan depth may or may not be related to average idle time.
+> Unfortunately has_idle_cores can be very inaccurate when workloads are
+> rapidly entering/exiting idle (e.g. hackbench).
+> 
+> As the scan depth is now proportional to cores and not CPUs, enforce
+> SIS_PROP for idle core scans.
+> 
+> The performance impact of this is variable and is neither a universal
+> gain nor loss. In some cases, has_idle_cores will be cleared prematurely
+> because the whole domain was not scanned but has_idle_cores is already
+> known to be an inaccurate heuristic. There is also additional cost because
+> time calculations are made even for an idle core scan and the delta is
+> calculated for both scan successes and failures. Finally, SMT siblings
+> may be used prematurely due to scan depth limitations.
+> 
+> On the flip side, scan depth is now consistent for both core and smt
+> scans. The reduction in scan depth improves performance in some cases
+> and wakeup latency is reduced in some cases.
+> 
+> There were few changes identified in the SIS statistics but notably,
+> "SIS Core Hit" was slightly reduced in tbench as thread counts increased,
+> presumably due to the core search depth being throttled.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  kernel/sched/fair.c | 33 +++++++++++++++++++--------------
+>  1 file changed, 19 insertions(+), 14 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 20b9255ebf97..b180205e6b25 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6232,7 +6232,7 @@ static int select_idle_cpu(struct task_struct *p, struct
+> sched_domain *sd, bool
+> 
+>  	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> 
+> -	if (sched_feat(SIS_PROP) && !has_idle_core) {
+> +	if (sched_feat(SIS_PROP)) {
+>  		u64 avg_cost, avg_idle, span_avg;
+>  		unsigned long now = jiffies;
+> 
+> @@ -6265,30 +6265,35 @@ static int select_idle_cpu(struct task_struct *p, struct
+> sched_domain *sd, bool
+>  		if (has_idle_core) {
+>  			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+>  			if ((unsigned int)i < nr_cpumask_bits)
+> -				return i;
+> +				break;
+> 
+> +			nr -= sched_smt_weight;
+>  		} else {
+> -			if (!--nr)
+> -				return -1;
+>  			idle_cpu = __select_idle_cpu(cpu, p);
+>  			if ((unsigned int)idle_cpu < nr_cpumask_bits)
+>  				break;
+> +			nr--;
+>  		}
+> +
+> +		if (nr < 0)
+> +			break;
+>  	}
+> 
+> -	if (has_idle_core)
+> -		set_idle_cores(target, false);
+> +	if ((unsigned int)idle_cpu < nr_cpumask_bits) {
+> +		if (has_idle_core)
+> +			set_idle_cores(target, false);
+> 
 
-Sure, I will add this patch in my next submission.
+For example, if we have 16 cpus(8 SMT2 cores). In case core7 is idle,
+we only have scanned core0+core1(cpu0-cpu3) and if these two cores
+are not idle, but here we set has_idle_cores to false while core7 is
+idle. It seems incorrect.
 
+> -	if (sched_feat(SIS_PROP) && !has_idle_core) {
+> -		time = cpu_clock(this) - time;
+> +		if (sched_feat(SIS_PROP)) {
+> +			time = cpu_clock(this) - time;
+> 
+> -		/*
+> -		 * Account for the scan cost of wakeups against the average
+> -		 * idle time.
+> -		 */
+> -		this_rq->wake_avg_idle -= min(this_rq->wake_avg_idle, time);
+> +			/*
+> +			 * Account for the scan cost of wakeups against the average
+> +			 * idle time.
+> +			 */
+> +			this_rq->wake_avg_idle -= min(this_rq->wake_avg_idle, time);
+> 
+> -		update_avg(&this_sd->avg_scan_cost, time);
+> +			update_avg(&this_sd->avg_scan_cost, time);
+> +		}
+>  	}
+> 
+>  	return idle_cpu;
+> --
+> 2.26.2
+
+
+Thanks
+Barry
 
