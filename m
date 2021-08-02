@@ -2,198 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560EF3DE301
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16F23DE30A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbhHBXYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 19:24:39 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:29420 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbhHBXYh (ORCPT
+        id S233129AbhHBX2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 19:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232425AbhHBX2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 19:24:37 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627946667; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=hFy9UGV4bwGkQ7pQHCAXe5mbwQW2kPvxAkdDKqiLWdc=;
- b=tky+TX5EHtkPcWaaw2ywjN84k+ytqCCHWAjM3dma/9eD23Mt6Q+1LJytLtpCCXsL9WDV0mFa
- cFuJzTE7Nvg7PwFh2oeUSPHex+N8ZF5ONebRqS69JrqrXsqUEod9aahGYJEbZsB1PESbjyDH
- WVHiRG5F30c2rI39xcTpJWohSGI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 61087eaa9771b05b242f0630 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 23:24:26
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B4B01C433D3; Mon,  2 Aug 2021 23:24:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6DB70C433F1;
-        Mon,  2 Aug 2021 23:24:25 +0000 (UTC)
+        Mon, 2 Aug 2021 19:28:07 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4DFC061798
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 16:27:56 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id ba4so7537536vsb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 16:27:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QlzAmryyyeDSDQ1srUNZEgdUE1Lb18Ti4rrmaegWVkw=;
+        b=Ajmr1ho9O5wL+Ew02Av/bUFYn8XmF5TlaNe9PnsD4qjKZxYPBh8Ge6NcYutRfxIzUc
+         JzKbAgn+JG95Zms5Z5w0a2ZuyOjUQWCuyc9IxcYp61b9ECvW9FXLrqERM7GgSVg8cNHW
+         zOJHKvgJHXFIZAc7W7wvYHcGLp3zh5CaIo49Ttue+NXQGnSzoEWNn5lQSeOtryypEVU7
+         B/RKTe48HxHJspuGTebmsxIS1Wg/+LaA22N5jp/iqCGfOvsWgWY2BRLf/F33Bivk3UBt
+         2+f/FYN/8cvKYlCMFXDkVTvCA/ocfTaDlhP7x+uxHc+w6C7WVl0L13Zk6bdrEHKgsX4C
+         gC9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QlzAmryyyeDSDQ1srUNZEgdUE1Lb18Ti4rrmaegWVkw=;
+        b=K4qnE4ltsXcBspVUtobwqWA/c+RRGfYgiYgTmY767AGuJwVOnXp0DOhecBj3JhaJ04
+         gDTwN7jDTh00uA7g8CFky/fWNleVU6X4ipktbMwTwFVJZyvnbyfU6/QhliRgX/bUlUxG
+         PbbDFVLU534NMMSqUAb+YwzmD9DVRwWtBjAiryGunltkT55lyoQGEt+8dCYQMtsBVtFj
+         qtPVW61mhQ6LVdjOv0rQztbgwqlCaseGGgluGeOAVARkYJxitSEz2AgZ3oktczfOm032
+         uFv9QMNBae5x1opFdIF0Kv6y3b6DtUpKbzV7cG7fkjde2dN3iMhTOCkj8laQ2+75lsl1
+         LKOg==
+X-Gm-Message-State: AOAM531HB2TLT5jjhokfdpZuQ5AKmepsmPJEO+dxa1f1PG8JNNOfDTPR
+        lQM9KKzxFtiZR35hI1CZpulTB05OMajWF/AoU2yGuQ==
+X-Google-Smtp-Source: ABdhPJzJ3U5wtXY2YCtx/k4DqUJTlrgpZ48cDKUw9DVG41O8Yu+2eqmJVsghdHYCgAijN2Q95YtCA/yFaRSlHV3vfbA=
+X-Received: by 2002:a67:f60e:: with SMTP id k14mr12216795vso.30.1627946875840;
+ Mon, 02 Aug 2021 16:27:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Aug 2021 16:24:25 -0700
-From:   abhinavk@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [Freedreno] [PATCH 04/11] drm/msm/disp/dpu1: Add DSC support in
- RM
-In-Reply-To: <20210715065203.709914-5-vkoul@kernel.org>
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-5-vkoul@kernel.org>
-Message-ID: <7d656b2265ade461cae993c691d31ab8@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <5e35b0a7-13aa-3c62-ca49-14af2fcb2a08@canonical.com> <c3486111-0ec9-9679-d2a2-68b2f33a2450@canonical.com>
+ <CAPLW+4kbnJEBkc0D=RWt59JxBan8X1uDy6sSXBiYAq8N9FDV6A@mail.gmail.com>
+ <13f166bb-7103-25d5-35a6-8ec53a1f1817@canonical.com> <2dacc205-04ce-c206-a393-50ba0d5aa1a7@canonical.com>
+In-Reply-To: <2dacc205-04ce-c206-a393-50ba0d5aa1a7@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Tue, 3 Aug 2021 02:27:44 +0300
+Message-ID: <CAPLW+4=1Anr6rCWEBL04D81aEAEVKD5cGE+ObXH3q-HNHce07w@mail.gmail.com>
+Subject: Re: [PATCH 00/12] Add minimal support for Exynos850 SoC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-14 23:51, Vinod Koul wrote:
-> This add the bits in RM to enable the DSC blocks
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h |  1 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c  | 32 +++++++++++++++++++++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h  |  1 +
->  3 files changed, 34 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> index d6717d6672f7..d56c05146dfe 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> @@ -165,6 +165,7 @@ struct dpu_global_state {
->  	uint32_t ctl_to_enc_id[CTL_MAX - CTL_0];
->  	uint32_t intf_to_enc_id[INTF_MAX - INTF_0];
->  	uint32_t dspp_to_enc_id[DSPP_MAX - DSPP_0];
-> +	uint32_t dsc_to_enc_id[DSC_MAX - DSC_0];
->  };
-> 
->  struct dpu_global_state
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> index fd2d104f0a91..4da6d72b7996 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> @@ -11,6 +11,7 @@
->  #include "dpu_hw_intf.h"
->  #include "dpu_hw_dspp.h"
->  #include "dpu_hw_merge3d.h"
-> +#include "dpu_hw_dsc.h"
->  #include "dpu_encoder.h"
->  #include "dpu_trace.h"
-> 
-> @@ -75,6 +76,14 @@ int dpu_rm_destroy(struct dpu_rm *rm)
->  			dpu_hw_intf_destroy(hw);
->  		}
->  	}
-> +	for (i = 0; i < ARRAY_SIZE(rm->dsc_blks); i++) {
-> +		struct dpu_hw_dsc *hw;
-> +
-> +		if (rm->intf_blks[i]) {
-same comment as dmitry on this 
-https://patchwork.freedesktop.org/patch/444070/?series=90413&rev=2
-> +			hw = to_dpu_hw_dsc(rm->dsc_blks[i]);
-> +			dpu_hw_dsc_destroy(hw);
-> +		}
-> +	}
-> 
->  	return 0;
->  }
-> @@ -221,6 +230,19 @@ int dpu_rm_init(struct dpu_rm *rm,
->  		rm->dspp_blks[dspp->id - DSPP_0] = &hw->base;
->  	}
-> 
-> +	for (i = 0; i < cat->dsc_count; i++) {
-> +		struct dpu_hw_dsc *hw;
-> +		const struct dpu_dsc_cfg *dsc = &cat->dsc[i];
-> +
-> +		hw = dpu_hw_dsc_init(dsc->id, mmio, cat);
-> +		if (IS_ERR_OR_NULL(hw)) {
-> +			rc = PTR_ERR(hw);
-> +			DPU_ERROR("failed dsc object creation: err %d\n", rc);
-> +			goto fail;
-> +		}
-> +		rm->dsc_blks[dsc->id - DSC_0] = &hw->base;
-> +	}
-> +
->  	return 0;
-> 
->  fail:
-> @@ -476,6 +498,9 @@ static int _dpu_rm_reserve_intf(
->  	}
-> 
->  	global_state->intf_to_enc_id[idx] = enc_id;
-> +
-> +	global_state->dsc_to_enc_id[0] = enc_id;
-> +	global_state->dsc_to_enc_id[1] = enc_id;
->  	return 0;
->  }
-agree with dmitry again here, why are DSCs being reserved in the 
-_dpu_rm_reserve_intf function?
-First, for clarity, they should be in a function of their own.
-Allocating the DSCs has to also account for the PP availability of that 
-DSC and other factors need to
-be considered as well.
-I suggest checking _sde_rm_reserve_dsc() from downstream to improve the 
-DSC reservation logic.
-> 
-> @@ -567,6 +592,8 @@ void dpu_rm_release(struct dpu_global_state 
-> *global_state,
->  		ARRAY_SIZE(global_state->ctl_to_enc_id), enc->base.id);
->  	_dpu_rm_clear_mapping(global_state->intf_to_enc_id,
->  		ARRAY_SIZE(global_state->intf_to_enc_id), enc->base.id);
-> +	_dpu_rm_clear_mapping(global_state->dsc_to_enc_id,
-> +		ARRAY_SIZE(global_state->dsc_to_enc_id), enc->base.id);
->  }
-> 
->  int dpu_rm_reserve(
-> @@ -640,6 +667,11 @@ int dpu_rm_get_assigned_resources(struct dpu_rm 
-> *rm,
->  		hw_to_enc_id = global_state->dspp_to_enc_id;
->  		max_blks = ARRAY_SIZE(rm->dspp_blks);
->  		break;
-> +	case DPU_HW_BLK_DSC:
-> +		hw_blks = rm->dsc_blks;
-> +		hw_to_enc_id = global_state->dsc_to_enc_id;
-> +		max_blks = ARRAY_SIZE(rm->dsc_blks);
-> +		break;
->  	default:
->  		DPU_ERROR("blk type %d not managed by rm\n", type);
->  		return 0;
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> index 1f12c8d5b8aa..278d2a510b80 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> @@ -30,6 +30,7 @@ struct dpu_rm {
->  	struct dpu_hw_blk *intf_blks[INTF_MAX - INTF_0];
->  	struct dpu_hw_blk *dspp_blks[DSPP_MAX - DSPP_0];
->  	struct dpu_hw_blk *merge_3d_blks[MERGE_3D_MAX - MERGE_3D_0];
-> +	struct dpu_hw_blk *dsc_blks[DSC_MAX - DSC_0];
-> 
->  	uint32_t lm_max_width;
->  };
+On Sat, 31 Jul 2021 at 11:12, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 31/07/2021 09:29, Krzysztof Kozlowski wrote:
+> > On 30/07/2021 21:02, Sam Protsenko wrote:
+> >> Hi Krzysztof,
+> >>
+> >> On Fri, 30 Jul 2021 at 20:21, Krzysztof Kozlowski
+> >> <krzysztof.kozlowski@canonical.com> wrote:
+> >>>
+> >>> On 30/07/2021 17:18, Krzysztof Kozlowski wrote:
+> >>>> On 30/07/2021 16:49, Sam Protsenko wrote:
+> >>>>> This patch series adds initial platform support for Samsung Exynos850
+> >>>>> SoC [1]. With this patchset it's possible to run the kernel with BusyBox
+> >>>>> rootfs as a RAM disk. More advanced platform support (like MMC driver
+> >>>>> additions) will be added later. The idea is to keep the first submission
+> >>>>> minimal to ease the review, and then build up on top of that.
+> >>>>>
+> >>>>> [1] https://www.samsung.com/semiconductor/minisite/exynos/products/mobileprocessor/exynos-850/
+> >>>>>
+> >>>>
+> >>>> Great work!
+> >>>>
+> >>
+> >> Thanks, Krzysztof! And thank you for reviewing the whole series.
+> >>
+> >>>> What's the SoC revision number (should be accessible via
+> >>>> /sys/bus/soc/devices/soc0/)? Recent wrap in numbering of Exynos chips
+> >>>> might bring confusion...
+> >>
+> >> # cat /sys/devices/soc0/revision
+> >> 0
+> >
+> > soc_id but you're right it won't be set for unknown SoCs. You need to
+> > extend drivers/soc/samsung/exynos-chipid.c to parse new values (E3830000
+> > for product ID) and maybe new register offsets (previous offset is 0x0,
+> > for 3830 is 0x10 I think). Also revision mask might change.
+> >
+> >>> Judging by vendor's sources it is quite confusing. It looks mostly like
+> >>> Exynos3830 but in few other cases it uses Exynos9 compatibles (Exynos9,
+> >>> Exynos9820). Only in few places there is Exynos850. Marketing department
+> >>> made it so confusing...  The revision embedded in SoC would be very
+> >>> interesting.
+> >>>
+> >>
+> >> As I understand, this SoC is called Exynos850 everywhere now.
+> >> Exynos3830 is its old name, not used anymore. As you noticed from
+> >> patch #2, it shares some definitions with Exynos9 SoC, so I guess some
+> >> software is similar for both architectures. Not sure about hardware
+> >> though, never worked with Exynos9 CPUs. Anyway, I asked Samsung
+> >> representatives about naming, and it seems like we should stick to
+> >> "Exynos850" name, even in code.
+> >
+> >
+> > Since the chip identifies itself as E3830000, I would prefer naming
+> > matching real product ID instead of what is pushed by marketing or sales
+> > representatives. The marketing names don't have to follow any
+> > engineering rules, they can be changed and renamed. Sales follows rather
+> > money and corporate rules, not consistency for upstream project.
+>
+> On the other hand we have already two exceptions for naming
+> inconsistency - Exynos3250 identifies itself as 3472 (which is confusing
+> because 3250 is two core and there is a separate quad-core
+> Exyons3472...) and Exynos5800 is actually marketing name for a revision
+> of Exynos5422. Maybe indeed will be easier to go with the branded name
+> 850...
+>
+
+Well, chip engraving says "3830", but I was specifically told to stick
+to "850" in upstream kernel. I can presume there was some mix ups with
+this naming, and it might be the case it's better to stick to "850"
+exactly to avoid further confusion. Yes, I can see that
+EXYNOS3830_SOC_ID = 0xE3830000 in chipid driver, but we can return
+"EXYNOS850" string for that const, right? If you google "Exynos850"
+and "Exynos3830", it's obvious everybody uses the former, so I'd
+appreciate if we can stick to "850" in the end.
+
+>
+> Best regards,
+> Krzysztof
