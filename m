@@ -2,194 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF3A3DD556
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 657623DD576
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbhHBMMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233594AbhHBMMn (ORCPT
+        id S233577AbhHBMPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:15:55 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:55492 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233498AbhHBMPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:12:43 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310F4C061796
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 05:12:33 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id w17so28053961ybl.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 05:12:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FkCp4kdPQ6v+pD/rtKzXxvtpigTWSSTz78u5tHl7Xw0=;
-        b=oW3C6jQOKtE2Ij6HWnrX36JyH29DLnGDBkzqnseCD3B7Sg45+lwtJoAJZ6sE1xwsBV
-         1uBHXVrgz4+y/kx88AZx4qgoDD2KPTmkBnKw+/OWNDXkL0mWqawKi4O+O5aykFa1JYsh
-         OGVPL6HQPx5AECzgnWCey3MdUAHaOsAFWBpK9JJwxRnr2cv4E0UwqHZS2mvcAHDSXbGy
-         G7/4O+2vt9i5Agaj6h56yWKGWaoep+YCpCW5Q/CDVe3ce1xuv8YzU4KuFO0KKYSykm+8
-         /pRoi3FaG/XftwBg2ylo1IwT7R2sGyysK4tkr1v3bWyHZ2/+V/fqiEhBhliFfjUwg+/w
-         u4EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FkCp4kdPQ6v+pD/rtKzXxvtpigTWSSTz78u5tHl7Xw0=;
-        b=rQYMzy/87DpGLw+Umxu2J/dDiRiHN0HgRhl0+oLLP2f22I4HDkL/Vp0aoG7mWs2Rc+
-         MIkkKA57zV/+7Q9k8GkEFJgpOo/uqpksA3mrMvLztMRduRbT673g05uD6749AfDf3jiW
-         +cCXIDBiIJcnwJaN97lp3dvq1LpXOactOaphv28GGQf+20XwtOqyubA3FCmNhdgsBfNK
-         EEqKaYzq+9owVK9LJs5cU8hJEVDHw1IaH3EP0jd31FzWDuLkuwtqmKRHQDOrq0HCaJ9S
-         ThP1Lwnr8QwMriZ7hATUGF4AtNreUY1BzD5+z+WhF1OCtl42XeGzANzzfkJUP6bxSOQZ
-         FmhA==
-X-Gm-Message-State: AOAM531IzjuthSoS8kCjXACV83AwYT6FSeOd/2TWFRsFBD6eIbQGrdPw
-        YdVBScrH4h6UeAwm1SqEVk4CFoQyzV4TZuwRdZBatw==
-X-Google-Smtp-Source: ABdhPJy6a5HZVxB9QkM1YtlwtQkCC0+Bz2t7K/BwPm0KVMjX6zhDgVGwtwfL/HS+j98n5oZ4L6lpPPFQBXirLB10Zn8=
-X-Received: by 2002:a25:48c7:: with SMTP id v190mr20238398yba.312.1627906352461;
- Mon, 02 Aug 2021 05:12:32 -0700 (PDT)
+        Mon, 2 Aug 2021 08:15:54 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UhmnTvb_1627906541;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UhmnTvb_1627906541)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 02 Aug 2021 20:15:42 +0800
+Date:   Mon, 2 Aug 2021 20:15:41 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Andreas Gruenbacher <agruenba@redhat.com>,
+        "Darrick J . Wong" <djwong@kernel.org>
+Cc:     linux-erofs@lists.ozlabs.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v9] iomap: Support file tail packing
+Message-ID: <YQfh7V0lvLNx0QlR@B-P7TQMD6M-0146.local>
+Mail-Followup-To: Andreas Gruenbacher <agruenba@redhat.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-erofs@lists.ozlabs.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210727025956.80684-1-hsiangkao@linux.alibaba.com>
+ <CAHc6FU5x3XOTyu8vooReSZ-hacfTdo3cu7wFJRcQrfTH8NkVeg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210716221744.5445-1-robert.marko@sartura.hr> <CAMpxmJXy1L-OC7k+h6pOwFGNS8WntNSMjP1Kvu7tnCQvGNwnRw@mail.gmail.com>
-In-Reply-To: <CAMpxmJXy1L-OC7k+h6pOwFGNS8WntNSMjP1Kvu7tnCQvGNwnRw@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 2 Aug 2021 14:12:21 +0200
-Message-ID: <CAMpxmJVJzaRRe5XyyZM6qOzpi2t36hSbsTec=M3EUk9w17W4qQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] gpio: tn48m: Add support for Delta TN4810M CPLD
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, luka.perkov@sartura.hr
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHc6FU5x3XOTyu8vooReSZ-hacfTdo3cu7wFJRcQrfTH8NkVeg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 2:10 PM Bartosz Golaszewski
-<bgolaszewski@baylibre.com> wrote:
->
-> On Sat, Jul 17, 2021 at 12:17 AM Robert Marko <robert.marko@sartura.hr> wrote:
-> >
-> > Delta TN4810M uses a similar CPLD GPIO expander
-> > like the TN48M, but it has pins for 48 SFP+ ports,
-> > making a total of 192 pins.
-> > It also provides the TX fault pins which the TN48M
-> > does not.
-> >
-> > Only TX disable pins like on the TN48M are output
-> > ones.
-> >
-> > Thankfully, regmap GPIO allows for the driver to be
-> > easily extended to support the TN4810M.
-> >
-> > Note that this patch depends on the following series:
-> > https://patchwork.ozlabs.org/project/linux-gpio/list/?series=247538
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > ---
-> >  drivers/gpio/gpio-tn48m.c | 56 ++++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 52 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpio-tn48m.c b/drivers/gpio/gpio-tn48m.c
-> > index b12a6b4bc4b3..e429e7ade941 100644
-> > --- a/drivers/gpio/gpio-tn48m.c
-> > +++ b/drivers/gpio/gpio-tn48m.c
-> > @@ -19,6 +19,10 @@ enum tn48m_gpio_type {
-> >         TN48M_SFP_TX_DISABLE = 1,
-> >         TN48M_SFP_PRESENT,
-> >         TN48M_SFP_LOS,
-> > +       TN4810M_SFP_TX_DISABLE,
-> > +       TN4810M_SFP_TX_FAULT,
-> > +       TN4810M_SFP_PRESENT,
-> > +       TN4810M_SFP_LOS,
-> >  };
-> >
-> >  static int tn48m_gpio_probe(struct platform_device *pdev)
-> > @@ -46,17 +50,36 @@ static int tn48m_gpio_probe(struct platform_device *pdev)
-> >
-> >         config.regmap = regmap;
-> >         config.parent = &pdev->dev;
-> > -       config.ngpio = 4;
-> > +       config.ngpio_per_reg = 8;
-> >
-> >         switch (type) {
-> >         case TN48M_SFP_TX_DISABLE:
-> >                 config.reg_set_base = base;
-> > +               config.ngpio = 4;
-> >                 break;
-> >         case TN48M_SFP_PRESENT:
-> >                 config.reg_dat_base = base;
-> > +               config.ngpio = 4;
-> >                 break;
-> >         case TN48M_SFP_LOS:
-> >                 config.reg_dat_base = base;
-> > +               config.ngpio = 4;
-> > +               break;
-> > +       case TN4810M_SFP_TX_DISABLE:
-> > +               config.reg_set_base = base;
-> > +               config.ngpio = 48;
-> > +               break;
-> > +       case TN4810M_SFP_TX_FAULT:
-> > +               config.reg_dat_base = base;
-> > +               config.ngpio = 48;
-> > +               break;
-> > +       case TN4810M_SFP_PRESENT:
-> > +               config.reg_dat_base = base;
-> > +               config.ngpio = 48;
-> > +               break;
-> > +       case TN4810M_SFP_LOS:
-> > +               config.reg_dat_base = base;
-> > +               config.ngpio = 48;
-> >                 break;
-> >         default:
-> >                 dev_err(&pdev->dev, "unknown type %d\n", type);
-> > @@ -67,9 +90,34 @@ static int tn48m_gpio_probe(struct platform_device *pdev)
-> >  }
-> >
-> >  static const struct of_device_id tn48m_gpio_of_match[] = {
-> > -       { .compatible = "delta,tn48m-gpio-sfp-tx-disable", .data = (void *)TN48M_SFP_TX_DISABLE },
-> > -       { .compatible = "delta,tn48m-gpio-sfp-present", .data = (void *)TN48M_SFP_PRESENT },
-> > -       { .compatible = "delta,tn48m-gpio-sfp-los", .data = (void *)TN48M_SFP_LOS },
-> > +       {
-> > +               .compatible = "delta,tn48m-gpio-sfp-tx-disable",
-> > +               .data = (void *)TN48M_SFP_TX_DISABLE
-> > +       },
-> > +       {
-> > +               .compatible = "delta,tn48m-gpio-sfp-present",
-> > +               .data = (void *)TN48M_SFP_PRESENT
-> > +       },
-> > +       {
-> > +               .compatible = "delta,tn48m-gpio-sfp-los",
-> > +               .data = (void *)TN48M_SFP_LOS
-> > +       },
-> > +       {
-> > +               .compatible = "delta,tn4810m-gpio-sfp-tx-disable",
-> > +               .data = (void *)TN4810M_SFP_TX_DISABLE
-> > +       },
-> > +       {
-> > +               .compatible = "delta,tn4810m-gpio-sfp-tx-fault",
-> > +               .data = (void *)TN4810M_SFP_TX_FAULT
-> > +       },
-> > +       {
-> > +               .compatible = "delta,tn4810m-gpio-sfp-present",
-> > +               .data = (void *)TN4810M_SFP_PRESENT
-> > +       },
-> > +       {
-> > +               .compatible = "delta,tn4810m-gpio-sfp-los",
-> > +               .data = (void *)TN4810M_SFP_LOS
-> > +       },
-> >         { }
-> >  };
-> >  MODULE_DEVICE_TABLE(of, tn48m_gpio_of_match);
-> > --
-> > 2.31.1
-> >
->
-> This looks good to me. I suppose the other patches are going in
-> through the MFD tree. I don't see anything that can fail here at
-> build-time - can you confirm that I can pick these patches up
-> separately for v5.15?
->
-> Bartosz
+Hi Andreas,
 
-Scratch that, I now saw Linus' comment about the special purpose pins
-under the other series. Let's clear that up first.
+On Sun, Aug 01, 2021 at 02:03:33PM +0200, Andreas Gruenbacher wrote:
+> On Tue, Jul 27, 2021 at 5:00 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
 
-Bart
+...
+
+> > +static int iomap_write_begin_inline(struct inode *inode,
+> > +               struct page *page, struct iomap *srcmap)
+> > +{
+> > +       /* needs more work for the tailpacking case, disable for now */
+> 
+> Nit: the comma should be a semicolon or period here.
+
+Sorry for some delay (busy in other things...)
+
+Yeah, that's fine to me, in English contexts it'd be better like that
+(there is some punctuation rule difference between languages.)
+
+
+Hi Darrick,
+Should I resend v10 for this punctuation change or could you kindly
+help revise this?
+
+(btw, would you mind set up a for-next iomap branch so I could rebase
+ other EROFS patches on iomap for-next, thank you very much!)
+
+Thanks,
+Gao Xiang
