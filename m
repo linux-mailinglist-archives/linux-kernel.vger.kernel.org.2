@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31B83DD6D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E173DD6D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbhHBNTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59488 "EHLO
+        id S233865AbhHBNUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233769AbhHBNTi (ORCPT
+        with ESMTP id S233691AbhHBNUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:19:38 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D4CC061760
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 06:19:28 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id x7so23863657ljn.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 06:19:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hJM5ZCvKgC8eQ0kPpge6XKSN4iTKO7yNBaLGlM9S+lM=;
-        b=e1LoWT/8fsnaMq8nG6pnHW7pRXYn5rICiBbIuelEsEjW4akkXOPidg0GF/kMuPJoDS
-         Vy2kXHulT6QVOzM6G2IVkxUsXTseKxqjfjbxG4vXRVWulPxYL2CfWf8YQEdYd9rv4aW2
-         j8LhLSoR2S45HNOoZDoMFGNw2M6r7l3bENzCkgvL/dKjekAV+a5XsRSZ7MCYy5ht37YK
-         9cUA8Em5tXssSxODfjLaRZdP2JzR4A60atnvIaEvnosVBEQguHmzSbI6oFNSi1O7yKeO
-         3ouxgZKRpwq0wgNIzj5rUfYWIMRJVeWTXx0YfL4tZbTiLZuWbyExAE5OlNem3byQIVaH
-         LeXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hJM5ZCvKgC8eQ0kPpge6XKSN4iTKO7yNBaLGlM9S+lM=;
-        b=TSKMz3pXySnT9dezrJOXwNbEeVjPPKFJiK27G1vc6MTwYjDLDKee1bKbKMsGU6cMrM
-         tGT4SsWrYfxkZEUV5uPdWpE2WIvTWaid+AILUimqlvUuVJVDDCTUkxZn9Eqj1QM+yDBo
-         9Mhsb4YUUOBdf13qhlcyUEIHaf6w6BK3+U+76Im4NZ7ngN+bIy0Ic4ebDtthgQ5amNTC
-         836EIKZ85gs9pY1unnpLRN4kNIKtrGxEwHn8HyC8TM6uCynPYGHh0n8whxAixXMowlrW
-         AyWJLFs0bSf3m2zR7JdES0tTVMRVZ5P/bj5OekXrYEMsMAhO2lK14ZE+vX0XutJDsFB8
-         ebVQ==
-X-Gm-Message-State: AOAM533rnmoNNMp+mY9zkgTJeFDTXRUJiy1zeIq+6PtMuYxfTS9+juh+
-        PNKbbwFprYn5YcuFHjcxNC1PeUGQAspfkBcvIS+BGg==
-X-Google-Smtp-Source: ABdhPJwU0SPMw8r5qBhku5qCgwvkuKIVBr4Voxz2sci0C63jCAhPlLwVqSAwS7/OIGWp4o7fddK707JvTiltM0kff2o=
-X-Received: by 2002:a2e:b04e:: with SMTP id d14mr11727782ljl.74.1627910367088;
- Mon, 02 Aug 2021 06:19:27 -0700 (PDT)
+        Mon, 2 Aug 2021 09:20:34 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743D4C06175F;
+        Mon,  2 Aug 2021 06:20:24 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 69583379; Mon,  2 Aug 2021 15:20:20 +0200 (CEST)
+Date:   Mon, 2 Aug 2021 15:20:03 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, will@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, rientjes@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, xen-devel@lists.xenproject.org,
+        pgonda@google.com, david@redhat.com, keescook@chromium.org,
+        hannes@cmpxchg.org, sfr@canb.auug.org.au,
+        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
+        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com, anparri@microsoft.com
+Subject: Re: [PATCH 13/13] HV/Storvsc: Add Isolation VM support for storvsc
+ driver
+Message-ID: <YQfxA/AYfOqyqNh0@8bytes.org>
+References: <20210728145232.285861-1-ltykernel@gmail.com>
+ <20210728145232.285861-14-ltykernel@gmail.com>
 MIME-Version: 1.0
-References: <1626868353-96475-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1626868353-96475-5-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <YQMIhBPwcNw1YqMq@robh.at.kernel.org> <CACRpkdYrHTMLL_CQi0BoNZsXV3=2dBK38pkvd+EEkuPrzoG_Cw@mail.gmail.com>
- <2f5d9197-4a5e-08b5-7e47-595d337478d2@xilinx.com>
-In-Reply-To: <2f5d9197-4a5e-08b5-7e47-595d337478d2@xilinx.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 2 Aug 2021 15:19:15 +0200
-Message-ID: <CACRpkdZu2-EE1hqJ4nVA5uxaPuJRGWDH_ciKxRvrNncQ2Pyd5w@mail.gmail.com>
-Subject: Re: [PATCH 4/4] arm: dts: zynq: Replace 'io-standard' with
- 'power-source' property
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        git <git@xilinx.com>, saikrishna12468@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728145232.285861-14-ltykernel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 2:46 PM Michal Simek <michal.simek@xilinx.com> wrote:
+On Wed, Jul 28, 2021 at 10:52:28AM -0400, Tianyu Lan wrote:
+> In Isolation VM, all shared memory with host needs to mark visible
+> to host via hvcall. vmbus_establish_gpadl() has already done it for
+> storvsc rx/tx ring buffer. The page buffer used by vmbus_sendpacket_
+> mpb_desc() still need to handle. Use DMA API to map/umap these
+> memory during sending/receiving packet and Hyper-V DMA ops callback
+> will use swiotlb function to allocate bounce buffer and copy data
+> from/to bounce buffer.
 
-> Linux Zynq pinctrl driver and in tree dts files are using io-standard
-> properties at least from 2015.
+I am wondering why you dont't use DMA-API unconditionally? It provides
+enough abstraction to do the right thing for isolated and legacy VMs.
 
-Ooops my wrong.
+Regards,
 
-What about supporting both the new property and io-standard as
-a fallback, simply?
-
-Yours,
-Linus Walleij
+	Joerg
