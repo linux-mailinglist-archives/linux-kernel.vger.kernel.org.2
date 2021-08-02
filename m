@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3723B3DDBC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7DA3DDBC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234651AbhHBPDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:03:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57446 "EHLO mail.kernel.org"
+        id S234694AbhHBPDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:03:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234313AbhHBPC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:02:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83DFD61057;
-        Mon,  2 Aug 2021 15:02:49 +0000 (UTC)
+        id S234313AbhHBPDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:03:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A397F61057;
+        Mon,  2 Aug 2021 15:02:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627916570;
-        bh=x3384DuzlBVuP/rse1XT/S2qDVugvuYeETtPdlo4z7c=;
+        s=k20201202; t=1627916579;
+        bh=nS6WPDPr88n8oDDSgoEL5dgbm9vIRBu7xdEtK4TWgt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZOrMd+UOqrEjzH1W/uk/Y9mS+4IH9lD2YecCDp5i+VXA4jE+K0INS3ce2r2uSdoa6
-         IYwXDKLkwQ5u1OBcYn9nWsFOTIKF/7MM2HjEK03QgazigQC95acL9T5PscO80rSaw3
-         8JN+ZuWwwUoufHHpYZr+/w/WkQAlGHBJgOVPMv5cjlgAxErOCGR0R5G2pJE6IoXUdr
-         fRswaKCqIFSdMRnENh3dN8F59PHUBVSWh/h58QXVn1xPXO7NUMfb7WOuAmwUNBig8O
-         8W3aGFPoQG7c3s+m/8y6U9S2lGK3UIsIYns9eNTza/Ueotp4pfE4FHe3mMkV2hsIsE
-         XEGzCXONCa+NQ==
+        b=qQ5e9oz43I9pYmR1Ika1qyA/pz9x1re6Y8/ajUu1oIBvdDX7tHYTyB2KOwmo/PrGO
+         GJK4UmJ60B+ccFMLJrxh/8QUy6k1eXVpyI09DGuUAdVvKJKRcQnM4hKGYepsN5wE0v
+         Za5fqSHMBAhqcUoZFjBN3s9FIzAzR6ZLzDBhPrZA+f19O5CJ0vvqqSfL1zB37udae3
+         tvl0aoDhvWYwD/F3ETLK+rdnBzncSlQX9QJHZOjmidDw/xE0Uq1dsRsn7TNhIWZgun
+         jDptCLMST7rlvi+Wl8t6zhAY+ItlgyJ/eSOw5NXAu7CbpvfRWo0elZzb9VRoFhNo33
+         9oKvDF7rBkvGg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Icenowy Zheng <icenowy@sipeed.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regmap: allow const array for {devm_,}regmap_field_bulk_alloc reg_fields
-Date:   Mon,  2 Aug 2021 16:02:32 +0100
-Message-Id: <162791623913.28098.17676239882362578796.b4-ty@kernel.org>
+To:     alsa-devel@alsa-project.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Colin King <colin.king@canonical.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ASoC: rsnd: make some arrays static const, makes object smaller
+Date:   Mon,  2 Aug 2021 16:02:35 +0100
+Message-Id: <162791613030.1468.1113702427634488424.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210802063741.76301-1-icenowy@sipeed.com>
-References: <20210802063741.76301-1-icenowy@sipeed.com>
+In-Reply-To: <20210801063237.137998-1-colin.king@canonical.com>
+References: <20210801063237.137998-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,23 +45,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 14:37:41 +0800, Icenowy Zheng wrote:
-> The reg_fields array fed to {devm_}regmap_field_bulk_alloc is currently
-> not const, which is not correct on semantics (the functions shouldn't
-> change reg_field contents) and prevents pre-defined const reg_field
-> array to be used.
+On Sun, 1 Aug 2021 07:32:37 +0100, Colin King wrote:
+> Don't populate arrays on the stack but instead them static const.
+> Makes the object code smaller by 242 bytes.
 > 
-> As the implementation of this function doesn't change the content of it,
-> just add const to its prototype.
+> Before:
+>    text    data     bss     dec     hex filename
+>   23827    8764       0   32591    7f4f ./sound/soc/sh/rcar/ssi.o
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] regmap: allow const array for {devm_,}regmap_field_bulk_alloc reg_fields
-      commit: 29c34975c9391d3ad1fd5dd3c92ba0d41afe9549
+[1/1] ASoC: rsnd: make some arrays static const, makes object smaller
+      commit: 6dfeb70276def839aa605edd274f8e9f6189dba3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
