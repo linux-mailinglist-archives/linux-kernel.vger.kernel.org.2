@@ -2,208 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB2D3DE2FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087153DE2FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbhHBXVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 19:21:55 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:54452 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232130AbhHBXVy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 19:21:54 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 172NLcWS079290;
-        Mon, 2 Aug 2021 18:21:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1627946498;
-        bh=lc5YJ8jr/E5ZmP2CWWKqbC9l2F6bbQuMBKIPXRsXrj0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ov8i+FhBad/ALU5fBbKNdscJmj8sNbP2fc6GWZZE48DTDSKzKNa+uS+k93eLujAUA
-         n3G2kw46FpBlUkjnb+2FACzgqorI2IXjhFbmn/GEUXI/3OOmN4nyURPkQsyyfUODh/
-         VzhrZzFpKoEJ3PR2sHu2tYvPD46zznsdq00ODPyY=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 172NLc13081622
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 2 Aug 2021 18:21:38 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 2 Aug
- 2021 18:21:38 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 2 Aug 2021 18:21:38 -0500
-Received: from [10.250.38.176] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 172NLclb033302;
-        Mon, 2 Aug 2021 18:21:38 -0500
-Subject: Re: [PATCH v2 1/5] remoteproc: Add support for detach-only during
- shutdown
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210723220248.6554-1-s-anna@ti.com>
- <20210723220248.6554-2-s-anna@ti.com> <20210802184431.GC3051951@p14s>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <cd399fef-6db7-72eb-933f-7454a043ed14@ti.com>
-Date:   Mon, 2 Aug 2021 18:21:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232627AbhHBXWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 19:22:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232208AbhHBXWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 19:22:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 872B460EE6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 23:22:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627946521;
+        bh=3UoqdS3ZjZO9aG1FWGZpLNJXpg3edmkfj19jMqgZlag=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fZhBqZC5RN6LFgGTGAhcn9gnxLB6jXBYSgOOOb3AzHHBvQBRGi0ncfOX+8XzA3G+b
+         uRWDWytkUy+fILgu0GiBK/xlCsIiOBJQ/P3aTSYFsoynHfrSRGezrzY5rQRd+d1tgd
+         enAjzKNkNQdAzL+CTW3IRAwInHu8WyyFLBFFzk5EGN7hpEs6yf1f5A3PRM2jhtoJgN
+         aIa3A7EByOkol74HKb3UynsYZFhIl+Ut5hDk5XNUxCSB+Oropz9drSfdJcjcK1XQiv
+         X2tzH143UQee2M7iIboGmRrlKHp/F5y1/gSMFEAGvWufIPxVp2UVwvahkDHr0mtcln
+         Fb4lPigquJArA==
+Received: by mail-ej1-f42.google.com with SMTP id u3so873553ejz.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 16:22:01 -0700 (PDT)
+X-Gm-Message-State: AOAM533aCXBQAHr55tfeHXwZY/r+t1dBSMVRNntpQrTiGYfzBXlI+djV
+        M7tsEGH59rcrX8n8QGbqSLB9Ka661mlofGgfBA==
+X-Google-Smtp-Source: ABdhPJzVHbdqkXZSKJFkdObdtrHHP6P1rJNANKJM5suYmF9hkJsLk9QTqNsPcHe3pRC+2S0r6+TIODJy9UBBYIcSj/0=
+X-Received: by 2002:a17:906:2451:: with SMTP id a17mr17629191ejb.75.1627946520087;
+ Mon, 02 Aug 2021 16:22:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210802184431.GC3051951@p14s>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210714101141.2089082-1-enric.balletbo@collabora.com> <20210714121116.v2.7.Idbb4727ddf00ba2fe796b630906baff10d994d89@changeid>
+In-Reply-To: <20210714121116.v2.7.Idbb4727ddf00ba2fe796b630906baff10d994d89@changeid>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 3 Aug 2021 07:21:49 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__EA323tC+BswgTfx4EM9FF8Hf9AAkqoxuacuxQwr4SnA@mail.gmail.com>
+Message-ID: <CAAOTY__EA323tC+BswgTfx4EM9FF8Hf9AAkqoxuacuxQwr4SnA@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] drm/mediatek: mtk_dsi: Reset the dsi0 hardware
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+Hi, Enric:
 
-On 8/2/21 1:44 PM, Mathieu Poirier wrote:
-> On Fri, Jul 23, 2021 at 05:02:44PM -0500, Suman Anna wrote:
->> The remoteproc core has support for both stopping and detaching a
->> remote processor that was attached to previously, through both the
->> remoteproc sysfs and cdev interfaces. The rproc_shutdown() though
->> unconditionally only uses the stop functionality at present. This
->> may not be the default desired functionality for all the remoteproc
->> platform drivers.
->>
->> Enhance the remoteproc core logic to key off the presence of the
->> .stop() ops and allow the individual remoteproc drivers to continue
->> to use the standard rproc_add() and rproc_del() API. This allows
->> the remoteproc drivers to only do detach if supported when the driver
->> is uninstalled, and the remote processor continues to run undisturbed
->> even after the driver removal.
->>
->> Signed-off-by: Suman Anna <s-anna@ti.com>
->> ---
->> v2: Addressed various review comments from v1
->>  - Reworked the logic to not use remoteproc detach_on_shutdown and
->>    rely only on rproc callback ops
->>  - Updated the last para of the patch description
->> v1: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210522000309.26134-3-s-anna@ti.com/
->>
->>  drivers/remoteproc/remoteproc_cdev.c  | 7 +++++++
->>  drivers/remoteproc/remoteproc_core.c  | 5 ++++-
->>  drivers/remoteproc/remoteproc_sysfs.c | 6 ++++++
->>  3 files changed, 17 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
->> index 4ad98b0b8caa..16c932beed88 100644
->> --- a/drivers/remoteproc/remoteproc_cdev.c
->> +++ b/drivers/remoteproc/remoteproc_cdev.c
->> @@ -42,6 +42,13 @@ static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_
->>  		    rproc->state != RPROC_ATTACHED)
->>  			return -EINVAL;
->>  
->> +		if (rproc->state == RPROC_ATTACHED &&
-> 
-> This is already checked just above.
-> 
->> +		    !rproc->ops->stop) {
+Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2021=E5=B9=
+=B47=E6=9C=8814=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=886:12=E5=AF=AB=
+=E9=81=93=EF=BC=9A
+>
+> Reset dsi0 HW to default when power on. This prevents to have different
+> settingbetween the bootloader and the kernel.
+>
+> As not all Mediatek boards have the reset consumer configured in their
+> board description, also is not needed on all of them, the reset is option=
+al,
+> so the change is compatible with all boards.
 
-Well, this is checking for both conditions, and not just the stop ops
-independently. We expect to have .stop() defined normally for both regular
-remoteproc mode and attached mode where you want to stop (and not detach), but
-as you can see, I am supporting only detach and so will not have .stop() defined
- with RPROC_ATTACHED.
+Acked-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-> 
-> This is checked in rproc_stop() where -EINVAL is returned if ops::stop has not
-> been provided.
-
-rproc_shutdown() actually doesn't return any status, so all its internal
-checking gets ignored and a success is returned today.
-
-> 
->> +			dev_err(&rproc->dev,
->> +				"stop not supported for this rproc, use detach\n");
-> 
-> The standard error message from the shell should be enough here, the same way it
-> is enough when the "start" and "stop" scenarios fail.
-
-Thought this was a bit more informative, but sure this trace can be dropped.
-
-> 
->> +			return -EINVAL;
->> +		}
->> +
->>  		rproc_shutdown(rproc);
->>  	} else if (!strncmp(cmd, "detach", len)) {
->>  		if (rproc->state != RPROC_ATTACHED)
->> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
->> index 7de5905d276a..ab9e52180b04 100644
->> --- a/drivers/remoteproc/remoteproc_core.c
->> +++ b/drivers/remoteproc/remoteproc_core.c
->> @@ -2075,7 +2075,10 @@ void rproc_shutdown(struct rproc *rproc)
->>  	if (!atomic_dec_and_test(&rproc->power))
->>  		goto out;
->>  
->> -	ret = rproc_stop(rproc, false);
->> +	if (rproc->state == RPROC_ATTACHED && !rproc->ops->stop)
->> +		ret = __rproc_detach(rproc);
->> +	else
->> +		ret = rproc_stop(rproc, false);
-> 
-> As I indicated in my last review I think rproc_shutdown() and rproc_del() should
-> be decoupled and the right call made in the platform drivers based on the state
-> of the remote processor.  
-
-We have various remoteproc API provided in pairs - rproc_alloc()/rproc_free(),
-rproc_add()/rproc_del(), rproc_boot()/rproc_shutdown() and
-rproc_attach()/rproc_detach(). The drivers are configuring conditions for
-auto-boot and RPROC_DETACHED. The reason they are coupled is primarily because
-of the auto-boot done during rproc_add(). And we handle the RPROC_DETACHED case
-just as well in rproc_boot().
-
-While what you have suggested works, but I am not quite convinced on this
-asymmetric usage, and why this state-machine logic should be split between the
-core and remoteproc drivers differently between attach and detach. To me,
-calling rproc_detach() in remoteproc drivers would have made sense only if they
-are also calling rproc_attach().
-
-
-Conditions such as the above make the core code
-> brittle, difficult to understand and tedious to maintain.
-
-The logic I have added actually makes rproc_shutdown behavior to be on par with
-the rproc_boot().
-
-regards
-Suman
-
-> 
-> Thanks,
-> Mathieu
-> 
->>  	if (ret) {
->>  		atomic_inc(&rproc->power);
->>  		goto out;
->> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
->> index ea8b89f97d7b..133e766f38d4 100644
->> --- a/drivers/remoteproc/remoteproc_sysfs.c
->> +++ b/drivers/remoteproc/remoteproc_sysfs.c
->> @@ -206,6 +206,12 @@ static ssize_t state_store(struct device *dev,
->>  		    rproc->state != RPROC_ATTACHED)
->>  			return -EINVAL;
->>  
->> +		if (rproc->state == RPROC_ATTACHED &&
->> +		    !rproc->ops->stop) {
->> +			dev_err(&rproc->dev, "stop not supported for this rproc, use detach\n");
->> +			return -EINVAL;
->> +		}
->> +
->>  		rproc_shutdown(rproc);
->>  	} else if (sysfs_streq(buf, "detach")) {
->>  		if (rproc->state != RPROC_ATTACHED)
->> -- 
->> 2.32.0
->>
-
+>
+> Cc: Jitao Shi <jitao.shi@mediatek.com>
+> Suggested-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+>
+> (no changes since v1)
+>
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
+k/mtk_dsi.c
+> index ae403c67cbd9..d8b81e2ab841 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/phy/phy.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/reset.h>
+>
+>  #include <video/mipi_display.h>
+>  #include <video/videomode.h>
+> @@ -980,8 +981,10 @@ static int mtk_dsi_bind(struct device *dev, struct d=
+evice *master, void *data)
+>         struct mtk_dsi *dsi =3D dev_get_drvdata(dev);
+>
+>         ret =3D mtk_dsi_encoder_init(drm, dsi);
+> +       if (ret)
+> +               return ret;
+>
+> -       return ret;
+> +       return device_reset_optional(dev);
+>  }
+>
+>  static void mtk_dsi_unbind(struct device *dev, struct device *master,
+> --
+> 2.30.2
+>
