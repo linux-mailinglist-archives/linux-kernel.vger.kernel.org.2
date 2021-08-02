@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3853DD808
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A181B3DDA04
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234180AbhHBNtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:49:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57254 "EHLO mail.kernel.org"
+        id S236298AbhHBOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:05:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234129AbhHBNrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:47:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4005360527;
-        Mon,  2 Aug 2021 13:47:12 +0000 (UTC)
+        id S236445AbhHBN7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:59:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C16B86113A;
+        Mon,  2 Aug 2021 13:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912032;
-        bh=PTKHef7/1KwNBx3M/xRqz3zbDFV1TQC+jLV4zizl9T8=;
+        s=korg; t=1627912546;
+        bh=zcmlo7zc7DGAIT0Vch6TvX/N7HW0XdjlfpGcs1JaJ9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DQyEB/2q8gBjtpi1kUluAjmb+yenmIQ7NPcS5NQohEZExm14hdeftfpSdan5cnH4b
-         kSfi25dtuPW/+S1nz3bAZoNNXML9jOqEyTYv4pFSjPn1l0LdBmJq2kJ+Z9tMdeN4aH
-         lwQBHo+mqV6ojMbiEaNOY3sows+8RCDg//qb82Sg=
+        b=ofZ0OCwldRS9XZDhQYmkwhpRJciKohMbyvskt8hyoG/iqwFdH/QsKSCywO1YpIiNs
+         fhR5zoyH2WhfGLj4AI8/7p7l0ydhuv5C1KtWLoFuhxyQwlngBdX50hwMgVxhG0WXba
+         xh4u5PwMFUVI3amfCIulTCcHyAU2auKwv3thdRxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.9 18/32] can: usb_8dev: fix memory leak
+        stable@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 041/104] bpf: Fix OOB read when printing XDP link fdinfo
 Date:   Mon,  2 Aug 2021 15:44:38 +0200
-Message-Id: <20210802134333.502877440@linuxfoundation.org>
+Message-Id: <20210802134345.371373589@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
-References: <20210802134332.931915241@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,94 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Lorenz Bauer <lmb@cloudflare.com>
 
-commit 0e865f0c31928d6a313269ef624907eec55287c4 upstream.
+[ Upstream commit d6371c76e20d7d3f61b05fd67b596af4d14a8886 ]
 
-In usb_8dev_start() MAX_RX_URBS coherent buffers are allocated and
-there is nothing, that frees them:
+We got the following UBSAN report on one of our testing machines:
 
-1) In callback function the urb is resubmitted and that's all
-2) In disconnect function urbs are simply killed, but URB_FREE_BUFFER
-   is not set (see usb_8dev_start) and this flag cannot be used with
-   coherent buffers.
+    ================================================================================
+    UBSAN: array-index-out-of-bounds in kernel/bpf/syscall.c:2389:24
+    index 6 is out of range for type 'char *[6]'
+    CPU: 43 PID: 930921 Comm: systemd-coredum Tainted: G           O      5.10.48-cloudflare-kasan-2021.7.0 #1
+    Hardware name: <snip>
+    Call Trace:
+     dump_stack+0x7d/0xa3
+     ubsan_epilogue+0x5/0x40
+     __ubsan_handle_out_of_bounds.cold+0x43/0x48
+     ? seq_printf+0x17d/0x250
+     bpf_link_show_fdinfo+0x329/0x380
+     ? bpf_map_value_size+0xe0/0xe0
+     ? put_files_struct+0x20/0x2d0
+     ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+     seq_show+0x3f7/0x540
+     seq_read_iter+0x3f8/0x1040
+     seq_read+0x329/0x500
+     ? seq_read_iter+0x1040/0x1040
+     ? __fsnotify_parent+0x80/0x820
+     ? __fsnotify_update_child_dentry_flags+0x380/0x380
+     vfs_read+0x123/0x460
+     ksys_read+0xed/0x1c0
+     ? __x64_sys_pwrite64+0x1f0/0x1f0
+     do_syscall_64+0x33/0x40
+     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    <snip>
+    ================================================================================
+    ================================================================================
+    UBSAN: object-size-mismatch in kernel/bpf/syscall.c:2384:2
 
-So, all allocated buffers should be freed with usb_free_coherent()
-explicitly.
+>From the report, we can infer that some array access in bpf_link_show_fdinfo at index 6
+is out of bounds. The obvious candidate is bpf_link_type_strs[BPF_LINK_TYPE_XDP] with
+BPF_LINK_TYPE_XDP == 6. It turns out that BPF_LINK_TYPE_XDP is missing from bpf_types.h
+and therefore doesn't have an entry in bpf_link_type_strs:
 
-Side note: This code looks like a copy-paste of other can drivers. The
-same patch was applied to mcba_usb driver and it works nice with real
-hardware. There is no change in functionality, only clean-up code for
-coherent buffers.
+    pos:	0
+    flags:	02000000
+    mnt_id:	13
+    link_type:	(null)
+    link_id:	4
+    prog_tag:	bcf7977d3b93787c
+    prog_id:	4
+    ifindex:	1
 
-Fixes: 0024d8ad1639 ("can: usb_8dev: Add support for USB2CAN interface from 8 devices")
-Link: https://lore.kernel.org/r/d39b458cd425a1cf7f512f340224e6e9563b07bd.1627404470.git.paskripkin@gmail.com
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: aa8d3a716b59 ("bpf, xdp: Add bpf_link-based XDP attachment API")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210719085134.43325-2-lmb@cloudflare.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/usb_8dev.c |   15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ include/linux/bpf_types.h | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -148,7 +148,8 @@ struct usb_8dev_priv {
- 	u8 *cmd_msg_buffer;
- 
- 	struct mutex usb_8dev_cmd_lock;
--
-+	void *rxbuf[MAX_RX_URBS];
-+	dma_addr_t rxbuf_dma[MAX_RX_URBS];
- };
- 
- /* tx frame */
-@@ -744,6 +745,7 @@ static int usb_8dev_start(struct usb_8de
- 	for (i = 0; i < MAX_RX_URBS; i++) {
- 		struct urb *urb = NULL;
- 		u8 *buf;
-+		dma_addr_t buf_dma;
- 
- 		/* create a URB, and a buffer for it */
- 		urb = usb_alloc_urb(0, GFP_KERNEL);
-@@ -753,7 +755,7 @@ static int usb_8dev_start(struct usb_8de
- 		}
- 
- 		buf = usb_alloc_coherent(priv->udev, RX_BUFFER_SIZE, GFP_KERNEL,
--					 &urb->transfer_dma);
-+					 &buf_dma);
- 		if (!buf) {
- 			netdev_err(netdev, "No memory left for USB buffer\n");
- 			usb_free_urb(urb);
-@@ -761,6 +763,8 @@ static int usb_8dev_start(struct usb_8de
- 			break;
- 		}
- 
-+		urb->transfer_dma = buf_dma;
-+
- 		usb_fill_bulk_urb(urb, priv->udev,
- 				  usb_rcvbulkpipe(priv->udev,
- 						  USB_8DEV_ENDP_DATA_RX),
-@@ -778,6 +782,9 @@ static int usb_8dev_start(struct usb_8de
- 			break;
- 		}
- 
-+		priv->rxbuf[i] = buf;
-+		priv->rxbuf_dma[i] = buf_dma;
-+
- 		/* Drop reference, USB core will take care of freeing it */
- 		usb_free_urb(urb);
- 	}
-@@ -847,6 +854,10 @@ static void unlink_all_urbs(struct usb_8
- 
- 	usb_kill_anchored_urbs(&priv->rx_submitted);
- 
-+	for (i = 0; i < MAX_RX_URBS; ++i)
-+		usb_free_coherent(priv->udev, RX_BUFFER_SIZE,
-+				  priv->rxbuf[i], priv->rxbuf_dma[i]);
-+
- 	usb_kill_anchored_urbs(&priv->tx_submitted);
- 	atomic_set(&priv->active_tx_urbs, 0);
- 
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index f883f01a5061..def596a85752 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -132,4 +132,5 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_CGROUP, cgroup)
+ BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
+ #ifdef CONFIG_NET
+ BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
++BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
+ #endif
+-- 
+2.30.2
+
 
 
