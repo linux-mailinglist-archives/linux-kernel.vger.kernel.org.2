@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491673DD957
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42B33DD89F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236867AbhHBN77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:59:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33052 "EHLO mail.kernel.org"
+        id S235079AbhHBNxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:53:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235882AbhHBNyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:54:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6A7260527;
-        Mon,  2 Aug 2021 13:52:57 +0000 (UTC)
+        id S234918AbhHBNt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:49:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FB3A60551;
+        Mon,  2 Aug 2021 13:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912378;
-        bh=zT1pm3HVlnomMr6unaHZszA+IgMFL0pf5w5LxSQZrJI=;
+        s=korg; t=1627912158;
+        bh=2WWcYQm+dZ7yM1iIeL46e7e1LUpINqWnXlg2XQ8Tla4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oqesMmLn2SXecAkFXtPD0LxeYW1leGu1zQ5ygWLxsJJ+LVY5Efhfef3ZWQF0qZdDK
-         bv589CuOTqZdqzmW/TExZp7RiVLykqlrgOJOnihWhHpyZ546yemdE4VLyzKE96WkWx
-         hbYgw+kXPmzBp8TvwV+kUUx0l6yKYcvqj11LeBtE=
+        b=Q29R0wsgi6Jz51Tw1+CUm5dQhKd8cDS7WtRN4TItLPyoyh0wsRrE5JtFeCIp3E6Wg
+         jKd513eKnOcuB2TdWDRYyee1VKeyaey0jBFjabfAO4msjJr7zIRLrQB5JmVKh6Sx3q
+         NFHuNpaC4eGGM3/fWHIrH2Ioq4vdGnei7QOeh1dg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 33/67] i40e: Fix logic of disabling queues
-Date:   Mon,  2 Aug 2021 15:44:56 +0200
-Message-Id: <20210802134340.152228134@linuxfoundation.org>
+Subject: [PATCH 4.14 35/38] tulip: windbond-840: Fix missing pci_disable_device() in probe and remove
+Date:   Mon,  2 Aug 2021 15:44:57 +0200
+Message-Id: <20210802134335.938324573@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,157 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 65662a8dcdd01342b71ee44234bcfd0162e195af ]
+[ Upstream commit 76a16be07b209a3f507c72abe823bd3af1c8661a ]
 
-Correct the message flow between driver and firmware when disabling
-queues.
+Replace pci_enable_device() with pcim_enable_device(),
+pci_disable_device() and pci_release_regions() will be
+called in release automatically.
 
-Previously in case of PF reset (due to required reinit after reconfig),
-the error like: "VSI seid 397 Tx ring 60 disable timeout" could show up
-occasionally. The error was not a real issue of hardware or firmware,
-it was caused by wrong sequence of messages invoked by the driver.
-
-Fixes: 41c445ff0f48 ("i40e: main driver core")
-Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 58 ++++++++++++---------
- 1 file changed, 34 insertions(+), 24 deletions(-)
+ drivers/net/ethernet/dec/tulip/winbond-840.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 52e31f712a54..112a18dd13c4 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -4425,11 +4425,10 @@ int i40e_control_wait_tx_q(int seid, struct i40e_pf *pf, int pf_q,
- }
+diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
+index 32d7229544fa..e3b4345b2cc8 100644
+--- a/drivers/net/ethernet/dec/tulip/winbond-840.c
++++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
+@@ -367,7 +367,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	int i, option = find_cnt < MAX_UNITS ? options[find_cnt] : 0;
+ 	void __iomem *ioaddr;
  
- /**
-- * i40e_vsi_control_tx - Start or stop a VSI's rings
-+ * i40e_vsi_enable_tx - Start a VSI's rings
-  * @vsi: the VSI being configured
-- * @enable: start or stop the rings
-  **/
--static int i40e_vsi_control_tx(struct i40e_vsi *vsi, bool enable)
-+static int i40e_vsi_enable_tx(struct i40e_vsi *vsi)
- {
- 	struct i40e_pf *pf = vsi->back;
- 	int i, pf_q, ret = 0;
-@@ -4438,7 +4437,7 @@ static int i40e_vsi_control_tx(struct i40e_vsi *vsi, bool enable)
- 	for (i = 0; i < vsi->num_queue_pairs; i++, pf_q++) {
- 		ret = i40e_control_wait_tx_q(vsi->seid, pf,
- 					     pf_q,
--					     false /*is xdp*/, enable);
-+					     false /*is xdp*/, true);
- 		if (ret)
- 			break;
+-	i = pci_enable_device(pdev);
++	i = pcim_enable_device(pdev);
+ 	if (i) return i;
  
-@@ -4447,7 +4446,7 @@ static int i40e_vsi_control_tx(struct i40e_vsi *vsi, bool enable)
+ 	pci_set_master(pdev);
+@@ -389,7 +389,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
  
- 		ret = i40e_control_wait_tx_q(vsi->seid, pf,
- 					     pf_q + vsi->alloc_queue_pairs,
--					     true /*is xdp*/, enable);
-+					     true /*is xdp*/, true);
- 		if (ret)
- 			break;
+ 	ioaddr = pci_iomap(pdev, TULIP_BAR, netdev_res_size);
+ 	if (!ioaddr)
+-		goto err_out_free_res;
++		goto err_out_netdev;
+ 
+ 	for (i = 0; i < 3; i++)
+ 		((__le16 *)dev->dev_addr)[i] = cpu_to_le16(eeprom_read(ioaddr, i));
+@@ -468,8 +468,6 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ err_out_cleardev:
+ 	pci_iounmap(pdev, ioaddr);
+-err_out_free_res:
+-	pci_release_regions(pdev);
+ err_out_netdev:
+ 	free_netdev (dev);
+ 	return -ENODEV;
+@@ -1537,7 +1535,6 @@ static void w840_remove1(struct pci_dev *pdev)
+ 	if (dev) {
+ 		struct netdev_private *np = netdev_priv(dev);
+ 		unregister_netdev(dev);
+-		pci_release_regions(pdev);
+ 		pci_iounmap(pdev, np->base_addr);
+ 		free_netdev(dev);
  	}
-@@ -4545,32 +4544,25 @@ int i40e_control_wait_rx_q(struct i40e_pf *pf, int pf_q, bool enable)
- }
- 
- /**
-- * i40e_vsi_control_rx - Start or stop a VSI's rings
-+ * i40e_vsi_enable_rx - Start a VSI's rings
-  * @vsi: the VSI being configured
-- * @enable: start or stop the rings
-  **/
--static int i40e_vsi_control_rx(struct i40e_vsi *vsi, bool enable)
-+static int i40e_vsi_enable_rx(struct i40e_vsi *vsi)
- {
- 	struct i40e_pf *pf = vsi->back;
- 	int i, pf_q, ret = 0;
- 
- 	pf_q = vsi->base_queue;
- 	for (i = 0; i < vsi->num_queue_pairs; i++, pf_q++) {
--		ret = i40e_control_wait_rx_q(pf, pf_q, enable);
-+		ret = i40e_control_wait_rx_q(pf, pf_q, true);
- 		if (ret) {
- 			dev_info(&pf->pdev->dev,
--				 "VSI seid %d Rx ring %d %sable timeout\n",
--				 vsi->seid, pf_q, (enable ? "en" : "dis"));
-+				 "VSI seid %d Rx ring %d enable timeout\n",
-+				 vsi->seid, pf_q);
- 			break;
- 		}
- 	}
- 
--	/* Due to HW errata, on Rx disable only, the register can indicate done
--	 * before it really is. Needs 50ms to be sure
--	 */
--	if (!enable)
--		mdelay(50);
--
- 	return ret;
- }
- 
-@@ -4583,29 +4575,47 @@ int i40e_vsi_start_rings(struct i40e_vsi *vsi)
- 	int ret = 0;
- 
- 	/* do rx first for enable and last for disable */
--	ret = i40e_vsi_control_rx(vsi, true);
-+	ret = i40e_vsi_enable_rx(vsi);
- 	if (ret)
- 		return ret;
--	ret = i40e_vsi_control_tx(vsi, true);
-+	ret = i40e_vsi_enable_tx(vsi);
- 
- 	return ret;
- }
- 
-+#define I40E_DISABLE_TX_GAP_MSEC	50
-+
- /**
-  * i40e_vsi_stop_rings - Stop a VSI's rings
-  * @vsi: the VSI being configured
-  **/
- void i40e_vsi_stop_rings(struct i40e_vsi *vsi)
- {
-+	struct i40e_pf *pf = vsi->back;
-+	int pf_q, err, q_end;
-+
- 	/* When port TX is suspended, don't wait */
- 	if (test_bit(__I40E_PORT_SUSPENDED, vsi->back->state))
- 		return i40e_vsi_stop_rings_no_wait(vsi);
- 
--	/* do rx first for enable and last for disable
--	 * Ignore return value, we need to shutdown whatever we can
--	 */
--	i40e_vsi_control_tx(vsi, false);
--	i40e_vsi_control_rx(vsi, false);
-+	q_end = vsi->base_queue + vsi->num_queue_pairs;
-+	for (pf_q = vsi->base_queue; pf_q < q_end; pf_q++)
-+		i40e_pre_tx_queue_cfg(&pf->hw, (u32)pf_q, false);
-+
-+	for (pf_q = vsi->base_queue; pf_q < q_end; pf_q++) {
-+		err = i40e_control_wait_rx_q(pf, pf_q, false);
-+		if (err)
-+			dev_info(&pf->pdev->dev,
-+				 "VSI seid %d Rx ring %d dissable timeout\n",
-+				 vsi->seid, pf_q);
-+	}
-+
-+	msleep(I40E_DISABLE_TX_GAP_MSEC);
-+	pf_q = vsi->base_queue;
-+	for (pf_q = vsi->base_queue; pf_q < q_end; pf_q++)
-+		wr32(&pf->hw, I40E_QTX_ENA(pf_q), 0);
-+
-+	i40e_vsi_wait_queues_disabled(vsi);
- }
- 
- /**
 -- 
 2.30.2
 
