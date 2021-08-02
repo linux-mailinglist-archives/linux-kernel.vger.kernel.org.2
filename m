@@ -2,184 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91F73DE104
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53643DE109
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhHBUvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbhHBUvI (ORCPT
+        id S232458AbhHBUwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:52:34 -0400
+Received: from mail-io1-f43.google.com ([209.85.166.43]:43007 "EHLO
+        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231397AbhHBUwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:51:08 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0F9C06175F;
-        Mon,  2 Aug 2021 13:50:58 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id w10so12598004qtj.3;
-        Mon, 02 Aug 2021 13:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cI3bAw8ypmiDHJdkJBXoE/YVWFtSuOmaJtoMVmodDns=;
-        b=df+Nxs07hhZVldp5Si0NYQLfbLRt8i7Mw869Pdb/LIBoaZNpqGq8RZMVNst6CzxuXJ
-         JPslwzdvx9RBZrHA8dcACcLvLu9/RpRXy2b+JIqBirQvw1vD2WWAZV4bDqyndC/qtLMK
-         dCgPmROybIJ8/5fX5kT1JwdMdj4yXELSJbs1Kdv+TBw+3x8M5ZtFrYVLIuccrRTYzT6e
-         wY3v0CTGnblF3pSsusQGAhXzqb2UwEatgSOY5S0q68UAf7nLoAFMXEW7RUTYA4GnW44F
-         vcRcmp6ZX9ljfSSuFzcaNl+MR+eiS8vwyGUyD2z9QV+SLJChADH6sdl//hA81A1VNSu9
-         kchA==
+        Mon, 2 Aug 2021 16:52:31 -0400
+Received: by mail-io1-f43.google.com with SMTP id h1so21837627iol.9;
+        Mon, 02 Aug 2021 13:52:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cI3bAw8ypmiDHJdkJBXoE/YVWFtSuOmaJtoMVmodDns=;
-        b=ISWqBeC8QDlGTSPpQXK5U5ie//fD9g4jfbAnoRUeESguXvAm6acI3Gfy25gqR6VpRy
-         aG75DRFLSowMehE41TfX+wYiSdOnXXTBVbf+IF7dKns5q8u3bADkzDoQlpO+71bIgp4Y
-         cK4uQMkdWC1ZWcUlNXIWgEtCIUCVLt7M3lHJQZmeZRZDnD+D9cqDHb4FbojuVy5nekbH
-         QJbAxsyuww4yS+/2WcMqPkPBrj5Av7lVTojLR43KngsCiK869y1RcuSt5T822tVXfeND
-         AlpBDhGM8zU6nNplHhwAEMz1QcH1AasClaIPm/PcFtdEr+aU9nLusIoeExmLlz9by8XH
-         SYcg==
-X-Gm-Message-State: AOAM531wz/KWBBb34ThsiMNn8ZbnQzQSt+j411AbnIgsJ+UMp2tct1xc
-        h7bqDcHyaIai3j7wnfcfjg==
-X-Google-Smtp-Source: ABdhPJzTB7qbhI8W9WNQjiD8aM6UxJAT1AHXEltCXm7G9PSLr8Y4uZ8p0UFPfAtH0h0pG4HpimknGg==
-X-Received: by 2002:ac8:7e86:: with SMTP id w6mr16025808qtj.194.1627937457370;
-        Mon, 02 Aug 2021 13:50:57 -0700 (PDT)
-Received: from bytedance.attlocal.net (ec2-13-57-97-131.us-west-1.compute.amazonaws.com. [13.57.97.131])
-        by smtp.gmail.com with ESMTPSA id f12sm6570944qke.37.2021.08.02.13.50.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yluws7qZTg+lZJa9EBZtSYXJTFq4n6d9IGJLeWwyM7c=;
+        b=eCxYtMPNCe3vJvhlYLwCRwO53afuCYvgLbXDXh3mbqpMJn02neh64tPt+QvzId9M18
+         zqXevSeTqMhATtnsIZZ2zEbOW8tuSDs1QHRwlxMbY6HH5XNsT9JfLR/DtI+t4+7aX0lu
+         m9MYkOnk8th24DVALNzNKpy7WzrGCTCoUPH9nAaODgUVJCDry8yo512Rg8k9RHHtYTbO
+         KkrBhgUe3ahRG2yeb8738uS0cLcH+rdgUkOahHuTO4sivUJvvT5aLZYSmD9xpj2MChZz
+         vJI5v0whDGHTBoHLg8yjHsvhk4byKwU0iqX3neuAgwtfRd5SzEvQqleqXkvjIAOy8F9C
+         oo6g==
+X-Gm-Message-State: AOAM530Z2wCv+AAEkvqN0DamYLvqFpSyh8oZBkDLDUT/fPi78ggAxOp6
+        bOHUxFAbEq2k4v2XZ7/RNg==
+X-Google-Smtp-Source: ABdhPJzgPbQDiHA+qIELIl5HXjaLIKyaqZMqtxwNzDCa0MmRET+HhufCquRhbYGxOpdkdVlj3alEJA==
+X-Received: by 2002:a02:4444:: with SMTP id o65mr16381031jaa.24.1627937539823;
+        Mon, 02 Aug 2021 13:52:19 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id p17sm6197085ilp.83.2021.08.02.13.52.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 13:50:56 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Shuah Khan <shuah@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Peilin Ye <peilin.ye@bytedance.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH net-next 2/2] tc-testing/ingress: Add control-plane selftests for clsact egress mini-Qdisc option
-Date:   Mon,  2 Aug 2021 13:50:36 -0700
-Message-Id: <165f9fb53d04c62e11f87c98ee317fb9a5aaa277.1627936393.git.peilin.ye@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <1931ca440b47344fe357d5438aeab4b439943d10.1627936393.git.peilin.ye@bytedance.com>
-References: <1931ca440b47344fe357d5438aeab4b439943d10.1627936393.git.peilin.ye@bytedance.com>
+        Mon, 02 Aug 2021 13:52:19 -0700 (PDT)
+Received: (nullmailer pid 1588583 invoked by uid 1000);
+        Mon, 02 Aug 2021 20:52:17 -0000
+Date:   Mon, 2 Aug 2021 14:52:17 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH] dt-bindings: auxdisplay: img-ascii-lcd: Convert to
+ json-schema
+Message-ID: <YQhbATd6RfTO8huV@robh.at.kernel.org>
+References: <6e74aa466d39ddc9abe502e054d04e8cc7b76b40.1627402094.git.geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e74aa466d39ddc9abe502e054d04e8cc7b76b40.1627402094.git.geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <peilin.ye@bytedance.com>
+On Tue, 27 Jul 2021 18:10:34 +0200, Geert Uytterhoeven wrote:
+> Convert the Device Tree binding documentation for ASCII LCD displays on
+> Imagination Technologies boards to json-schema.
+> 
+> Drop bogus regmap property.
+> Add example.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  .../bindings/auxdisplay/img,ascii-lcd.yaml    | 54 +++++++++++++++++++
+>  .../bindings/auxdisplay/img-ascii-lcd.txt     | 17 ------
+>  MAINTAINERS                                   |  2 +-
+>  3 files changed, 55 insertions(+), 18 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/auxdisplay/img,ascii-lcd.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/auxdisplay/img-ascii-lcd.txt
+> 
 
-Recently we added a new clsact egress mini-Qdisc option for sch_ingress.
-Add a few control-plane tdc.py selftests for it.
-
-Depends on kernel patch "net/sched: sch_ingress: Support clsact egress
-mini-Qdisc option", as well as iproute2 patch "tc/ingress: Introduce
-clsact egress mini-Qdisc option".
-
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
----
- .../tc-testing/tc-tests/qdiscs/ingress.json   | 84 +++++++++++++++++++
- 1 file changed, 84 insertions(+)
-
-diff --git a/tools/testing/selftests/tc-testing/tc-tests/qdiscs/ingress.json b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/ingress.json
-index d99dba6e2b1a..2cde11b2ea9b 100644
---- a/tools/testing/selftests/tc-testing/tc-tests/qdiscs/ingress.json
-+++ b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/ingress.json
-@@ -98,5 +98,89 @@
-         "teardown": [
-             "$IP link del dev $DUMMY type dummy"
-         ]
-+    },
-+    {
-+        "id": "8e8c",
-+        "name": "Enable clsact egress mini-qdisc for ingress",
-+        "category": [
-+            "qdisc",
-+            "ingress"
-+        ],
-+        "setup": [
-+            "$IP link add dev $DUMMY type dummy || /bin/true",
-+            "$TC qdisc add dev $DUMMY ingress"
-+        ],
-+        "cmdUnderTest": "$TC qdisc change dev $DUMMY ingress clsact-on",
-+        "expExitCode": "0",
-+        "verifyCmd": "$TC qdisc show dev $DUMMY",
-+        "matchPattern": "qdisc ingress ffff:.*clsact",
-+        "matchCount": "1",
-+        "teardown": [
-+            "$IP link del dev $DUMMY type dummy"
-+        ]
-+    },
-+    {
-+        "id": "3a76",
-+        "name": "Disable clsact egress mini-qdisc for ingress",
-+        "category": [
-+            "qdisc",
-+            "ingress"
-+        ],
-+        "setup": [
-+            "$IP link add dev $DUMMY type dummy || /bin/true",
-+            "$TC qdisc add dev $DUMMY ingress",
-+            "$TC qdisc change dev $DUMMY ingress clsact-on"
-+        ],
-+        "cmdUnderTest": "$TC qdisc change dev $DUMMY ingress clsact-off",
-+        "expExitCode": "0",
-+        "verifyCmd": "$TC qdisc show dev $DUMMY",
-+        "matchPattern": "qdisc ingress ffff:.*clsact",
-+        "matchCount": "0",
-+        "teardown": [
-+            "$IP link del dev $DUMMY type dummy"
-+        ]
-+    },
-+    {
-+        "id": "7b2b",
-+        "name": "Enable clsact egress mini-qdisc for ingress twice",
-+        "category": [
-+            "qdisc",
-+            "ingress"
-+        ],
-+        "setup": [
-+            "$IP link add dev $DUMMY type dummy || /bin/true",
-+            "$TC qdisc add dev $DUMMY ingress",
-+            "$TC qdisc change dev $DUMMY ingress clsact-on"
-+        ],
-+        "cmdUnderTest": "$TC qdisc change dev $DUMMY ingress clsact-on",
-+        "expExitCode": "2",
-+        "verifyCmd": "$TC qdisc show dev $DUMMY",
-+        "matchPattern": "qdisc ingress ffff:.*clsact",
-+        "matchCount": "1",
-+        "teardown": [
-+            "$IP link del dev $DUMMY type dummy"
-+        ]
-+    },
-+    {
-+        "id": "05ab",
-+        "name": "Disable clsact egress mini-qdisc for ingress twice",
-+        "category": [
-+            "qdisc",
-+            "ingress"
-+        ],
-+        "setup": [
-+            "$IP link add dev $DUMMY type dummy || /bin/true",
-+            "$TC qdisc add dev $DUMMY ingress",
-+            "$TC qdisc change dev $DUMMY ingress clsact-on",
-+            "$TC qdisc change dev $DUMMY ingress clsact-off"
-+        ],
-+        "cmdUnderTest": "$TC qdisc change dev $DUMMY ingress clsact-off",
-+        "expExitCode": "2",
-+        "verifyCmd": "$TC qdisc show dev $DUMMY",
-+        "matchPattern": "qdisc ingress ffff:.*clsact",
-+        "matchCount": "0",
-+        "teardown": [
-+            "$IP link del dev $DUMMY type dummy"
-+        ]
-     }
- ]
--- 
-2.20.1
-
+Added a type to 'offset' and applied, thanks!
