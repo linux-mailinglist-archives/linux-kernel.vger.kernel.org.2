@@ -2,97 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641663DDC34
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACE43DDC38
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234688AbhHBPSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234401AbhHBPS2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:18:28 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F64C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:18:18 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id a93so10858701ybi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:18:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tJ1uiAC38lCN+0H0I78DV/eCZT2iUHzDU8u0RM5YfYA=;
-        b=pLsXyILmbXYu2do4b3rFmOGziHdYL9UNQsLwfWZyIetia3BQXACnMYlnj+w/1n+aQA
-         PFI0mcGUUdVZXRHfFcjwxW2VAuIsf+eLw9zJMbxZ8hwm2Q0wXaGL5pVKD87obS90lRNV
-         dYc0O1b16aaO+HJzeUBovtx+VPXSgMEz1WswnBz8wX+sdqrj+5dmaG+xc697O9Uzsqst
-         UL9fiAWod1DwjvbInUypjuVY0wgmAfrfO79W/OY2gLX+qg+GdWZWSqpLm/YHDguYIRSE
-         IIHzDdo7snt30Yil82D/0tRxuX5F2xSi8tutLG0bc/N5UGaix3U3MDVG96qaZ5V7xbc3
-         PiZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tJ1uiAC38lCN+0H0I78DV/eCZT2iUHzDU8u0RM5YfYA=;
-        b=UKqQc9XIJ+hmSMWHQwXxrbjaCCwUXgoFfDOiFhVPVXo61E1xWPrk0MiRfNX48azzXA
-         ZRo5y31ql4cNIlcU3TIoftEJgBYPjv6aL2pJNZpCuUEG6K3PxR2btaBUVUi3XfvpfFnU
-         JUGXeGVMNkJCUe9rAlzIzJOlAlv8UfL/dCoDQ4Y9N0z/dbWHRqM+l9nZ4AOz3ZUWLxmZ
-         QopH64jZ8QMfwNnfZyW/g7oW+eRl8h+0dAFIzh056eIpcEA097TJbjMKc/upoIBZbSH1
-         OZBIqcMUIJCRUMvxdFVfXvxMzSLdxI8IpxkyBw9bGy6wdgyeYaaiR//zwENMa18eLU+V
-         T30A==
-X-Gm-Message-State: AOAM530TyxveiBwHRfAPckRWK4IT2doQmDMqD4oXwUtbCIC9mMZSJT6o
-        p6Wn/H4NN6nA5xwq9cFXLtYQtzq7UwlwVjDPpqFnVg==
-X-Google-Smtp-Source: ABdhPJzGzA4UnM5kRs1UQzFPL8q8WFiZ1p+oa8e0d56G3jdfg33oeS336bhtiTKKz9AVqUc9Dh88DIfJc5L8qiLA+G4=
-X-Received: by 2002:a25:505:: with SMTP id 5mr21859792ybf.157.1627917497620;
- Mon, 02 Aug 2021 08:18:17 -0700 (PDT)
+        id S234870AbhHBPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:19:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234614AbhHBPTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:19:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6591D60FD8;
+        Mon,  2 Aug 2021 15:18:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627917530;
+        bh=U6CN0PhWEJhWY3mV7ebsRA4d/EhmRmKPYW5M7ZP0IqU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oAG6QRU1mp4M9hZ76rOLUQTdQ/mnDwzPJFMq+gmb9NwA56dXwlGuhA5wcD4PM7OHg
+         Ifi+oFvKc04+Q8LjeRz6sqynMF+9C1+dPQlcJQVesxk+gqPClhHi7UaW5LPSCElRDn
+         4mil4a7cEetd/XkDKLNgDFGX3eUA4X5eesJ+pmX3t+DW5ucXyUHKhi8GHt9DVP09oV
+         76pFsqOBjbIfk2un7U9F4H8D9/7svDeMlrnb62q6vJRnddd92qDDTr39HUoKFCr8YU
+         NLEacPhsxaWgGC+Ckwvfi1r9xoW33TnZNbq9FqS/f8lYWpNpp3QHFbPh9Vi+NttNiq
+         xrLE4r0IY0J0A==
+From:   Mark Brown <broonie@kernel.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lucas De Marchi <lucas.demarchi@intel.com>
+Subject: linux-next: manual merge of the drm-intel tree with the drm-intel-fixes tree
+Date:   Mon,  2 Aug 2021 16:18:33 +0100
+Message-Id: <20210802151833.15348-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <cover.1626429286.git.matthias.schiffer@ew.tq-group.com>
- <34be64092b7b4d0c75085a8c729f5f6fcfb56b61.1626429286.git.matthias.schiffer@ew.tq-group.com>
- <CACRpkdbaE+07ZZigct+JS-MU79U_D2nC82a-LcXm93KW5+xA_A@mail.gmail.com>
-In-Reply-To: <CACRpkdbaE+07ZZigct+JS-MU79U_D2nC82a-LcXm93KW5+xA_A@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 2 Aug 2021 17:18:06 +0200
-Message-ID: <CAMpxmJUdsqYd6P54fdJyigbvDsu8P9QmgVBO06b40YksjArYXw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/7] gpio: tqmx86: really make IRQ optional
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Lee Jones <lee.jones@linaro.org>, Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 6:16 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Fri, Jul 16, 2021 at 12:01 PM Matthias Schiffer
-> <matthias.schiffer@ew.tq-group.com> wrote:
->
-> > The tqmx86 MFD driver was passing IRQ 0 for "no IRQ" in the past. This
-> > causes warnings with newer kernels.
-> >
-> > Prepare the gpio-tqmx86 driver for the fixed MFD driver by handling a
-> > missing IRQ properly.
-> >
-> > Fixes: b868db94a6a7 ("gpio: tqmx86: Add GPIO from for this IO controller")
-> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> > ---
-> >
-> > v2: add Fixes line
-> > v3: no changes
->
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
->
-> I suppose Lee will merge this into MFD with the rest of the patches?
-> I don't see anything stopping Bart from just merging this one patch
-> into the GPIO tree though. Only runtime dependencies.
->
-> Yours,
-> Linus Walleij
+Hi all,
 
-I applied this patch for fixes and will shortly send a PR with some
-other fixes to Linus.
+Today's linux-next merge of the drm-intel tree got a conflict in:
 
-Bart
+  drivers/gpu/drm/i915/intel_device_info.c
+
+between commit:
+
+  0f9ed3b2c9ec ("drm/i915/display/cnl+: Handle fused off DSC")
+
+from the drm-intel-fixes tree and commit:
+
+  a4d082fc194a ("drm/i915: rename/remove CNL registers")
+
+from the drm-intel tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+diff --cc drivers/gpu/drm/i915/intel_device_info.c
+index e0a10f36acc1,305facedd284..000000000000
+--- a/drivers/gpu/drm/i915/intel_device_info.c
++++ b/drivers/gpu/drm/i915/intel_device_info.c
