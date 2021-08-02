@@ -2,129 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A283DD11A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5835D3DD13B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbhHBHZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:25:26 -0400
-Received: from mail-ej1-f51.google.com ([209.85.218.51]:41856 "EHLO
-        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231649AbhHBHZZ (ORCPT
+        id S232538AbhHBHdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232428AbhHBHdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:25:25 -0400
-Received: by mail-ej1-f51.google.com with SMTP id x11so28410026ejj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 00:25:15 -0700 (PDT)
+        Mon, 2 Aug 2021 03:33:10 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5BDC06175F;
+        Mon,  2 Aug 2021 00:33:00 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id t9so19070931lfc.6;
+        Mon, 02 Aug 2021 00:33:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BXCiU0xKGBVbZ2icElVqPuQRsbpvE6+lSfin6xZD3cE=;
+        b=ck5Y31M1VmZAD0RegHR6Ig5OfAtmbEyU5/b90SvojsQ6H88/KrKavwsCJmhEbgui7t
+         qxNpfFUa+BHClM6nzQG5tImqKJsRf25vMLyIhl2ZMZ0+Co3jilQZmUxDLp4MgGxr69uN
+         TpJNl8ztIoYBV1wfiykxi6iTRhKjuvJr33V8J56oGy0EyOmL2Yr7btjLVWNfKsn8Y+A1
+         JyaVevAIixICrX2q7+h3xoP9pbTHlXZrWC6VkHSM7ZC5jqiQ43E8lDzWM8sgths2mx0F
+         3vqW3B3PdPbt/ibT8+wD+NyFPpLaegU0ocNtSWo9AtYeWHlWL8fDsp/k5QlGvBHVlYnR
+         VyBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=WcetUWPb8culgJfYwcXyd4enV0COOIi+oGgXXHCJxs8=;
-        b=kTt84qINj5N5gTXBGk9fMhNsqnP+XO5ahzaHBM/BHhvdufKyM810SIVRSNAk6h6CmI
-         Zj+4UZ4b2JTdSHVlegPyXXfbVasbDqhA4SSmDsX3Gm1c7D4+I4usHLMoFcGprbzwswGU
-         SreMiL8EgR/17sO3oM5V5vIMHYyODpXyd51ODUVE6CsP5s5mQK+/kNZ0BMoGoHe1YHMh
-         pZhrYp0OLM07LSvQ2gXJRp85y5tlwiU8lUpfmzMLn0RdLZxkHBt0n0J5Z02V3xZDatpO
-         9DyMBgECgCsgqba7k5s8ck8rovsb4TXWHm+PQ1tyTypmPLN4locXqdq4NH3XKzsB3V+o
-         W/6w==
-X-Gm-Message-State: AOAM5334cCPBenRM1G9DTQRmObf2dUSdQJgsPR5NJEE6DjrwFG2x4vWa
-        dJL0Fp+jm2hHHq0qGNMl3sQ=
-X-Google-Smtp-Source: ABdhPJxWTIdE9MBJiFVNAsUjUXU9AE4QP/vAPTBU9gQDwWpXVj1nFXiA6JbVTS8aEqGldEf1vZCzFQ==
-X-Received: by 2002:a17:906:394:: with SMTP id b20mr14197279eja.462.1627889114838;
-        Mon, 02 Aug 2021 00:25:14 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id i11sm5384121eds.72.2021.08.02.00.25.14
+        bh=BXCiU0xKGBVbZ2icElVqPuQRsbpvE6+lSfin6xZD3cE=;
+        b=Yb0orle3dOtTdSChQgiugqayLemNtkPjGTqLjeHQLcthby4lRBDgV/gdqgkPBzRKzf
+         +g7NbjbYwv3k7n+2RisblNp5bv8UdygB/9hqlEBKhYsR2WXvdXNE/9Hs7YQoB7YOkzAx
+         ctL6sqW6DnUran+DA3eNmLzp55A73kmR09+lIwD5r8aSDHOl+P0hPrphF5TP8ii4dM3q
+         xej7HnY542Wqqn5x2vSYaCkVwmtj/0FJLG+BAJt8Ah/qrsB2F8PmUCKZoZDZ+aI4jo41
+         SDOeiJshHNKF7RL7v0xxp7QSnm8Mtb7IKJFc+sDyGx5aq4NlUphiufvIyyTClS3mmbSU
+         711A==
+X-Gm-Message-State: AOAM530Lh5sf4NRQHQm+ofhciRXmeEM2XGrLRpR/rirlgxREEw/ug4sD
+        bxIEnhZIf7gIRoStzUkUScxue/DLW4A=
+X-Google-Smtp-Source: ABdhPJxy6slPPxcwzHe4g7r6e2LrNwaR8rGgOPgFbqUShhMyGjWYhynChcsju2u/IqjSDBwJD28G5g==
+X-Received: by 2002:a05:6512:3d26:: with SMTP id d38mr11098294lfv.411.1627889579245;
+        Mon, 02 Aug 2021 00:32:59 -0700 (PDT)
+Received: from [192.168.1.49] ([109.197.204.123])
+        by smtp.gmail.com with ESMTPSA id d16sm879996lfv.223.2021.08.02.00.32.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 00:25:14 -0700 (PDT)
-Subject: Re: [PATCH 2/2] virtio-console: remove unnecessary kmemdup()
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>,
-        gregkh@linuxfoundation.org, amit@kernel.org, arnd@arndb.de
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, osandov@fb.com
-References: <20210801051655.79048-1-xianting.tian@linux.alibaba.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <b5554967-a683-96ae-deb9-2d4980d33b41@kernel.org>
-Date:   Mon, 2 Aug 2021 09:25:13 +0200
+        Mon, 02 Aug 2021 00:32:58 -0700 (PDT)
+Subject: Re: [PATCH 3/7] Input: ep93xx_keypad: Prepare clock before using it
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
+ <20210613233041.128961-4-alexander.sverdlin@gmail.com>
+ <YMfQR8iM9be5Qg8+@google.com>
+ <9bf87ee0e1c2a97b0a1b98734e34e456f84ea3d7.camel@gmail.com>
+ <YM60mjew2mqMAMRO@google.com>
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Message-ID: <ff37fd74-d9a6-36d5-326b-3b4a87e39682@gmail.com>
+Date:   Mon, 2 Aug 2021 09:28:34 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210801051655.79048-1-xianting.tian@linux.alibaba.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
+In-Reply-To: <YM60mjew2mqMAMRO@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello Dmitry!
 
-why is this 2/2? I seem (Lore neither) to find 1/2.
-
-On 01. 08. 21, 7:16, Xianting Tian wrote:
-> hvc framework will never pass stack memory to the put_chars() function,
-
-Am I blind or missing something?
-
-hvc_console_print(...)
-{
-   char c[N_OUTBUF]
-...
-   cons_ops[index]->put_chars(vtermnos[index], c, i);
-
-The same here:
-
-hvc_poll_put_char(..., char ch)
-{
-...
-    n = hp->ops->put_chars(hp->vtermno, &ch, 1);
-
-AFAICS both of them *pass* a pointer to stack variable.
-
-> So the calling of kmemdup() is unnecessary, remove it.
+On 20/06/2021 05:23, Dmitry Torokhov wrote:
+>>>> Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+>>>> to Common Clock Framework.
+>>>
+>>> Can this be merged standalone?
+>>
+>> In principle, yes, but I thought it would be easier if the patches
+>> would go via the same path as CCF conversion.
 > 
-> Fixes: c4baad5029 ("virtio-console: avoid DMA from stack")
-
-This patch doesn't "Fix" -- it reverts the commit. You should've CCed 
-the author too.
-
-> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-> ---
->   drivers/char/virtio_console.c | 12 ++----------
->   1 file changed, 2 insertions(+), 10 deletions(-)
+> OK, in this case:
 > 
-> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-> index 7eaf303a7..4ed3ffb1d 100644
-> --- a/drivers/char/virtio_console.c
-> +++ b/drivers/char/virtio_console.c
-> @@ -1117,8 +1117,6 @@ static int put_chars(u32 vtermno, const char *buf, int count)
->   {
->   	struct port *port;
->   	struct scatterlist sg[1];
-> -	void *data;
-> -	int ret;
->   
->   	if (unlikely(early_put_chars))
->   		return early_put_chars(vtermno, buf, count);
-> @@ -1127,14 +1125,8 @@ static int put_chars(u32 vtermno, const char *buf, int count)
->   	if (!port)
->   		return -EPIPE;
->   
-> -	data = kmemdup(buf, count, GFP_ATOMIC);
-> -	if (!data)
-> -		return -ENOMEM;
-> -
-> -	sg_init_one(sg, data, count);
-> -	ret = __send_to_port(port, sg, 1, count, data, false);
-> -	kfree(data);
-> -	return ret;
-> +	sg_init_one(sg, buf, count);
-> +	return __send_to_port(port, sg, 1, count, (void *)buf, false);
->   }
->   
->   /*
-> 
+> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
+Seems that this doesn't work as we planned and two patches of the series
+were already taken in by the respective maintainers.
+Could you please apply this patch as well to your tree?
 
--- 
-js
-suse labs
+--
+Alex.
