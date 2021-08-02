@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3A93DD894
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 687E73DD83A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234783AbhHBNxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:53:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60288 "EHLO mail.kernel.org"
+        id S234960AbhHBNud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234092AbhHBNtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:49:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 836C3610FD;
-        Mon,  2 Aug 2021 13:48:56 +0000 (UTC)
+        id S234139AbhHBNrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:47:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EA4B610FC;
+        Mon,  2 Aug 2021 13:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912137;
-        bh=gSdtKr0cRYtGAPGsVhL7WmzBPiOB29M1QA8/jgqgXGo=;
+        s=korg; t=1627912048;
+        bh=mYSAb2tblnHSTGfIlA7dILXS4txeVAS9pK0nlQbYLr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P8KTFeYaMnM4oiMHie9qgrmDSHSgt/qJJKEsHOCfa+6e8jvU69D0j9d92OtkOmENY
-         IbUKykCSHpknf8R1ka8RnwWXvHTXgD6biaWpMEybzlxCak1pbps2NmwMITeR8/D+Hr
-         kIjDROw1VskkW64EZin5FOu0/xbIAddjd0rtCv0g=
+        b=UIMasPlRYJOUTaVXWCyfXhWzGgqTkIjb7dHZ/K4+sBczcQhv7lInebRtUB/tyntXo
+         CpxQCvK5RBfo1bnjuLnJAZyFuNhF6VaTkM4hSizDoVukUre4/UAUM1wewaad9zxvCQ
+         iU0f4iV9QSKfUBfb8lSktK+Av2cjff/AYSFiqFRE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 04/38] af_unix: fix garbage collect vs MSG_PEEK
-Date:   Mon,  2 Aug 2021 15:44:26 +0200
-Message-Id: <20210802134334.972631041@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 07/32] net/802/garp: fix memleak in garp_request_join()
+Date:   Mon,  2 Aug 2021 15:44:27 +0200
+Message-Id: <20210802134333.158621637@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
-References: <20210802134334.835358048@linuxfoundation.org>
+In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
+References: <20210802134332.931915241@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,110 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit cbcf01128d0a92e131bd09f1688fe032480b65ca upstream.
+[ Upstream commit 42ca63f980842918560b25f0244307fd83b4777c ]
 
-unix_gc() assumes that candidate sockets can never gain an external
-reference (i.e.  be installed into an fd) while the unix_gc_lock is
-held.  Except for MSG_PEEK this is guaranteed by modifying inflight
-count under the unix_gc_lock.
+I got kmemleak report when doing fuzz test:
 
-MSG_PEEK does not touch any variable protected by unix_gc_lock (file
-count is not), yet it needs to be serialized with garbage collection.
-Do this by locking/unlocking unix_gc_lock:
+BUG: memory leak
+unreferenced object 0xffff88810c909b80 (size 64):
+  comm "syz", pid 957, jiffies 4295220394 (age 399.090s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 08 00 00 00 01 02 00 04  ................
+  backtrace:
+    [<00000000ca1f2e2e>] garp_request_join+0x285/0x3d0
+    [<00000000bf153351>] vlan_gvrp_request_join+0x15b/0x190
+    [<0000000024005e72>] vlan_dev_open+0x706/0x980
+    [<00000000dc20c4d4>] __dev_open+0x2bb/0x460
+    [<0000000066573004>] __dev_change_flags+0x501/0x650
+    [<0000000035b42f83>] rtnl_configure_link+0xee/0x280
+    [<00000000a5e69de0>] __rtnl_newlink+0xed5/0x1550
+    [<00000000a5258f4a>] rtnl_newlink+0x66/0x90
+    [<00000000506568ee>] rtnetlink_rcv_msg+0x439/0xbd0
+    [<00000000b7eaeae1>] netlink_rcv_skb+0x14d/0x420
+    [<00000000c373ce66>] netlink_unicast+0x550/0x750
+    [<00000000ec74ce74>] netlink_sendmsg+0x88b/0xda0
+    [<00000000381ff246>] sock_sendmsg+0xc9/0x120
+    [<000000008f6a2db3>] ____sys_sendmsg+0x6e8/0x820
+    [<000000008d9c1735>] ___sys_sendmsg+0x145/0x1c0
+    [<00000000aa39dd8b>] __sys_sendmsg+0xfe/0x1d0
 
- 1) increment file count
+Calling garp_request_leave() after garp_request_join(), the attr->state
+is set to GARP_APPLICANT_VO, garp_attr_destroy() won't be called in last
+transmit event in garp_uninit_applicant(), the attr of applicant will be
+leaked. To fix this leak, iterate and free each attr of applicant before
+rerturning from garp_uninit_applicant().
 
- 2) lock/unlock barrier to make sure incremented file count is visible
-    to garbage collection
-
- 3) install file into fd
-
-This is a lock barrier (unlike smp_mb()) that ensures that garbage
-collection is run completely before or completely after the barrier.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/unix/af_unix.c |   51 +++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 49 insertions(+), 2 deletions(-)
+ net/802/garp.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -1521,6 +1521,53 @@ out:
- 	return err;
+diff --git a/net/802/garp.c b/net/802/garp.c
+index b38ee6dcba45..5239b8f244e7 100644
+--- a/net/802/garp.c
++++ b/net/802/garp.c
+@@ -206,6 +206,19 @@ static void garp_attr_destroy(struct garp_applicant *app, struct garp_attr *attr
+ 	kfree(attr);
  }
  
-+static void unix_peek_fds(struct scm_cookie *scm, struct sk_buff *skb)
++static void garp_attr_destroy_all(struct garp_applicant *app)
 +{
-+	scm->fp = scm_fp_dup(UNIXCB(skb).fp);
++	struct rb_node *node, *next;
++	struct garp_attr *attr;
 +
-+	/*
-+	 * Garbage collection of unix sockets starts by selecting a set of
-+	 * candidate sockets which have reference only from being in flight
-+	 * (total_refs == inflight_refs).  This condition is checked once during
-+	 * the candidate collection phase, and candidates are marked as such, so
-+	 * that non-candidates can later be ignored.  While inflight_refs is
-+	 * protected by unix_gc_lock, total_refs (file count) is not, hence this
-+	 * is an instantaneous decision.
-+	 *
-+	 * Once a candidate, however, the socket must not be reinstalled into a
-+	 * file descriptor while the garbage collection is in progress.
-+	 *
-+	 * If the above conditions are met, then the directed graph of
-+	 * candidates (*) does not change while unix_gc_lock is held.
-+	 *
-+	 * Any operations that changes the file count through file descriptors
-+	 * (dup, close, sendmsg) does not change the graph since candidates are
-+	 * not installed in fds.
-+	 *
-+	 * Dequeing a candidate via recvmsg would install it into an fd, but
-+	 * that takes unix_gc_lock to decrement the inflight count, so it's
-+	 * serialized with garbage collection.
-+	 *
-+	 * MSG_PEEK is special in that it does not change the inflight count,
-+	 * yet does install the socket into an fd.  The following lock/unlock
-+	 * pair is to ensure serialization with garbage collection.  It must be
-+	 * done between incrementing the file count and installing the file into
-+	 * an fd.
-+	 *
-+	 * If garbage collection starts after the barrier provided by the
-+	 * lock/unlock, then it will see the elevated refcount and not mark this
-+	 * as a candidate.  If a garbage collection is already in progress
-+	 * before the file count was incremented, then the lock/unlock pair will
-+	 * ensure that garbage collection is finished before progressing to
-+	 * installing the fd.
-+	 *
-+	 * (*) A -> B where B is on the queue of A or B is on the queue of C
-+	 * which is on the queue of listening socket A.
-+	 */
-+	spin_lock(&unix_gc_lock);
-+	spin_unlock(&unix_gc_lock);
++	for (node = rb_first(&app->gid);
++	     next = node ? rb_next(node) : NULL, node != NULL;
++	     node = next) {
++		attr = rb_entry(node, struct garp_attr, node);
++		garp_attr_destroy(app, attr);
++	}
 +}
 +
- static int unix_scm_to_skb(struct scm_cookie *scm, struct sk_buff *skb, bool send_fds)
+ static int garp_pdu_init(struct garp_applicant *app)
  {
- 	int err = 0;
-@@ -2146,7 +2193,7 @@ static int unix_dgram_recvmsg(struct soc
- 		sk_peek_offset_fwd(sk, size);
+ 	struct sk_buff *skb;
+@@ -612,6 +625,7 @@ void garp_uninit_applicant(struct net_device *dev, struct garp_application *appl
  
- 		if (UNIXCB(skb).fp)
--			scm.fp = scm_fp_dup(UNIXCB(skb).fp);
-+			unix_peek_fds(&scm, skb);
- 	}
- 	err = (flags & MSG_TRUNC) ? skb->len - skip : size;
+ 	spin_lock_bh(&app->lock);
+ 	garp_gid_event(app, GARP_EVENT_TRANSMIT_PDU);
++	garp_attr_destroy_all(app);
+ 	garp_pdu_queue(app);
+ 	spin_unlock_bh(&app->lock);
  
-@@ -2387,7 +2434,7 @@ unlock:
- 			/* It is questionable, see note in unix_dgram_recvmsg.
- 			 */
- 			if (UNIXCB(skb).fp)
--				scm.fp = scm_fp_dup(UNIXCB(skb).fp);
-+				unix_peek_fds(&scm, skb);
- 
- 			sk_peek_offset_fwd(sk, chunk);
- 
+-- 
+2.30.2
+
 
 
