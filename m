@@ -2,129 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78E63DCED5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821C33DCEDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhHBDAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 23:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhHBDAg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 23:00:36 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECAAC06175F;
-        Sun,  1 Aug 2021 20:00:26 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id z6-20020a9d24860000b02904d14e47202cso7538604ota.4;
-        Sun, 01 Aug 2021 20:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l3jwA3sv7LfeA88bUhgOgpW0zu8BYSUhLdnLV59eV+k=;
-        b=nN+LqWCqdJi31kINH3VCdWbNQxabUcc6kCWZM/JDlZGdJS3mNFTdb5GfvIgONTNa0Z
-         O6jGoRTIdJGUOfTBi0Fev2GSzQq9XD2Hxd2bVFvGctcmz0bMext+57L+gJyk6PyYW8p7
-         PVZOhhANlRCccizrYkr1uBsM4Sj5+mIT0x6yNEf/Lk1u8mTyByJOsJRtQtY+m/OtlU5z
-         qvNcIO1MX0VPp29isyXQu8ZstXCqBpTWcR45/Lwkkkh8hcsytZ/vZuL15og1wIlbRlgh
-         zV5bgBigCb4Wz6Z+OjO/mOJwT6Ws11MUXhhb2q3LZq3fpA/tRZCYqjrrQFq4i/s+Kg1c
-         ryZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=l3jwA3sv7LfeA88bUhgOgpW0zu8BYSUhLdnLV59eV+k=;
-        b=q5+WUfuMMD+u5PjxKkoGbfXt2SzmU6izHivvV3oVCzGpT6H/5ZcK0CgG5AXZ1AwK6R
-         +dg1yq3T44/Ju0ttkbeM76OrNX7eFHJAtXjfNCl604L1m9Cs+okDm9FzwNbe35+J0ruH
-         ncM18TB4ae0iSNVFwknWlN/B/ABLT4vwB07kXbV4n4j8e9xqRWoSJmiBPgu1wur/Cpvl
-         RMOjG6UIXs+DXNNmtzUVhO/nrvWVK60+kgqIFEER34jZuPLy3m5QMfYvTOXKug1Sa96B
-         /POfGP025/xDgrmq/7WbfMJbQ5y5uMNgnq+0nnfhWGqljlrhB13TTD1P0/9noM381Ndc
-         M9dg==
-X-Gm-Message-State: AOAM532o9/LOvYZTYhOJQlsjLedGX3lDBSL0QVC6+2NDeTGC/qlBTkK9
-        10zrWqhWRqXYOS4HxSRd3U0=
-X-Google-Smtp-Source: ABdhPJzuuKDnVe+pBy7XiqDsOeM4T7BN4LlDQWdk+BDgTjDdIAj9y5QYr6zeVZxiH9PNnZNAcQFH7A==
-X-Received: by 2002:a05:6830:2696:: with SMTP id l22mr10773429otu.286.1627873226329;
-        Sun, 01 Aug 2021 20:00:26 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m35sm40242ooi.38.2021.08.01.20.00.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Aug 2021 20:00:25 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Peter Hess <peter.hess@ph-home.de>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Hsin-Yi Wang <hsinyi@google.com>
-Subject: [PATCH] spi: mediatek: Fix fifo transfer
-Date:   Sun,  1 Aug 2021 20:00:23 -0700
-Message-Id: <20210802030023.1748777-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        id S231785AbhHBDQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 23:16:03 -0400
+Received: from mga02.intel.com ([134.134.136.20]:13653 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231361AbhHBDP4 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 23:15:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="200548069"
+X-IronPort-AV: E=Sophos;i="5.84,287,1620716400"; 
+   d="scan'208";a="200548069"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 20:15:46 -0700
+X-IronPort-AV: E=Sophos;i="5.84,287,1620716400"; 
+   d="scan'208";a="509810527"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 20:15:43 -0700
+Subject: Re: [PATCH v3 1/2] perf pmu: Add PMU alias support
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com
+References: <20210730070717.30997-1-yao.jin@linux.intel.com>
+ <20210730070717.30997-2-yao.jin@linux.intel.com>
+ <071252c1bcf72a3fddd5664ca82b05b6589957cc.camel@gmail.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <f44cef59-7ea3-f589-0fdc-919f687b9f5c@linux.intel.com>
+Date:   Mon, 2 Aug 2021 11:15:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <071252c1bcf72a3fddd5664ca82b05b6589957cc.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3a70dd2d0503 ("spi: mediatek: fix fifo rx mode") claims that
-fifo RX mode was never handled, and adds the presumably missing code
-to the FIFO transfer function. However, the claim that receive data
-was not handled is incorrect. It was handled as part of interrupt
-handling after the transfer was complete. The code added with the above
-mentioned commit reads data from the receive FIFO before the transfer
-is started, which is wrong. This results in an actual transfer error
-on a Hayato Chromebook.
+Hi Riccardo,
 
-Remove the code trying to handle receive data before the transfer is
-started to fix the problem.
+On 7/30/2021 4:28 PM, Riccardo Mancini wrote:
+> Hi,
+> 
+> thanks for your quick revision.
+> 
+> There is still one small memory issue with a variable not being freed, which I
+> noticed when running this patchset together with John's patchset.
+> 
+> On Fri, 2021-07-30 at 15:07 +0800, Jin Yao wrote:
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> A perf uncore PMU may have two PMU names, a real name and an alias. The
+>> alias is exported at /sys/bus/event_source/devices/uncore_*/alias.
+>> The perf tool should support the alias as well.
+>>
+>> Add alias_name in the struct perf_pmu to store the alias. For the PMU
+>> which doesn't have an alias. It's NULL.
+>>
+>> Introduce two X86 specific functions to retrieve the real name and the
+>> alias separately.
+>>
+>> Only go through the sysfs to retrieve the mapping between the real name
+>> and the alias once. The result is cached in a list, uncore_pmu_list.
+>>
+>> Nothing changed for the other ARCHs.
+>>
+>> With the patch, the perf tool can monitor the PMU with either the real
+>> name or the alias.
+>>
+>> Use the real name,
+>>   $ perf stat -e uncore_cha_2/event=1/ -x,
+>>     4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
+>>
+>> Use the alias,
+>>   $ perf stat -e uncore_type_0_2/event=1/ -x,
+>>     3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
+>>
+>> Co-developed-by: Jin Yao <yao.jin@linux.intel.com>
+>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> ---
+>> v3:
+>>   - Use fgets to read alias string from sysfs.
+>>   - Resource cleanup.
+>>
+>> v2:
+>>   - No change.
+>>
+>>   tools/perf/arch/x86/util/pmu.c | 129 ++++++++++++++++++++++++++++++++-
+>>   tools/perf/util/parse-events.y |   3 +-
+>>   tools/perf/util/pmu.c          |  26 ++++++-
+>>   tools/perf/util/pmu.h          |   5 ++
+>>   4 files changed, 158 insertions(+), 5 deletions(-)
+>>
+> <SNIP>
+>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>> index 44b90d638ad5..cc9af7942e7b 100644
+>> --- a/tools/perf/util/pmu.c
+>> +++ b/tools/perf/util/pmu.c
+>> @@ -944,13 +944,28 @@ static int pmu_max_precise(const char *name)
+>>          return max_precise;
+>>   }
+>>   
+>> -static struct perf_pmu *pmu_lookup(const char *name)
+>> +char * __weak
+>> +pmu_find_real_name(const char *name)
+>> +{
+>> +       return strdup(name);
+>> +}
+>> +
+>> +char * __weak
+>> +pmu_find_alias_name(const char *name __maybe_unused)
+>> +{
+>> +       return NULL;
+>> +}
+>> +
+>> +static struct perf_pmu *pmu_lookup(const char *lookup_name)
+>>   {
+>>          struct perf_pmu *pmu;
+>> +       char *name;
+>>          LIST_HEAD(format);
+>>          LIST_HEAD(aliases);
+>>          __u32 type;
+>>   
+>> +       name = pmu_find_real_name(lookup_name);
+> 
+> name is not freed if one of the following checks fails.
+> 
+> 	/*
+> 	 * The pmu data we store & need consists of the pmu
+> 	 * type value and format definitions. Load both right
+> 	 * now.
+> 	 */
+> 	if (pmu_format(name, &format))
+> 		return NULL;
+> 
+> 	/*
+> 	 * Check the type first to avoid unnecessary work.
+> 	 */
+> 	if (pmu_type(name, &type))
+> 		return NULL;
+> 
+> 	if (pmu_aliases(name, &aliases))
+> 		return NULL;
+> 
+> Thanks,
+> Riccardo
+> 
 
-Fixes: 3a70dd2d0503 ("spi: mediatek: fix fifo rx mode")
-Cc: Peter Hess <peter.hess@ph-home.de>
-Cc: Frank Wunderlich <frank-w@public-files.de>
-Cc: Tzung-Bi Shih <tzungbi@google.com>
-Cc: Hsin-Yi Wang <hsinyi@google.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/spi/spi-mt65xx.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+Thanks so much for pointing this out. I also find I need to rebase the patch because it has some 
+conflicts with John's patch. I will prepare v4 (which will be based on tmp.perf/urgent).
 
-diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-index 68dca8ceb3ad..7914255521c3 100644
---- a/drivers/spi/spi-mt65xx.c
-+++ b/drivers/spi/spi-mt65xx.c
-@@ -426,24 +426,15 @@ static int mtk_spi_fifo_transfer(struct spi_master *master,
- 	mtk_spi_prepare_transfer(master, xfer);
- 	mtk_spi_setup_packet(master);
- 
--	cnt = xfer->len / 4;
--	if (xfer->tx_buf)
-+	if (xfer->tx_buf) {
-+		cnt = xfer->len / 4;
- 		iowrite32_rep(mdata->base + SPI_TX_DATA_REG, xfer->tx_buf, cnt);
--
--	if (xfer->rx_buf)
--		ioread32_rep(mdata->base + SPI_RX_DATA_REG, xfer->rx_buf, cnt);
--
--	remainder = xfer->len % 4;
--	if (remainder > 0) {
--		reg_val = 0;
--		if (xfer->tx_buf) {
-+		remainder = xfer->len % 4;
-+		if (remainder > 0) {
-+			reg_val = 0;
- 			memcpy(&reg_val, xfer->tx_buf + (cnt * 4), remainder);
- 			writel(reg_val, mdata->base + SPI_TX_DATA_REG);
- 		}
--		if (xfer->rx_buf) {
--			reg_val = readl(mdata->base + SPI_RX_DATA_REG);
--			memcpy(xfer->rx_buf + (cnt * 4), &reg_val, remainder);
--		}
- 	}
- 
- 	mtk_spi_enable_transfer(master);
--- 
-2.25.1
+Thanks
+Jin Yao
 
+> 
+>> @@ -973,7 +988,8 @@ static struct perf_pmu *pmu_lookup(const char *name)
+>>                  return NULL;
+>>   
+>>          pmu->cpus = pmu_cpumask(name);
+>> -       pmu->name = strdup(name);
+>> +       pmu->name = name;
+>> +       pmu->alias_name = pmu_find_alias_name(name);
+>>          pmu->type = type;
+>>          pmu->is_uncore = pmu_is_uncore(name);
+>>          if (pmu->is_uncore)
+>> @@ -1003,7 +1019,8 @@ static struct perf_pmu *pmu_find(const char *name)
+>>          struct perf_pmu *pmu;
+>>   
+>>          list_for_each_entry(pmu, &pmus, list)
+>> -               if (!strcmp(pmu->name, name))
+>> +               if (!strcmp(pmu->name, name) ||
+>> +                   (pmu->alias_name && !strcmp(pmu->alias_name, name)))
+>>                          return pmu;
+>>   
+>>          return NULL;
+>> @@ -1898,6 +1915,9 @@ bool perf_pmu__has_hybrid(void)
+>>   
+>>   int perf_pmu__match(char *pattern, char *name, char *tok)
+>>   {
+>> +       if (!name)
+>> +               return -1;
+>> +
+>>          if (fnmatch(pattern, name, 0))
+>>                  return -1;
+>>   
+>> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+>> index 926da483a141..f6ca9f6a06ef 100644
+>> --- a/tools/perf/util/pmu.h
+>> +++ b/tools/perf/util/pmu.h
+>> @@ -21,6 +21,7 @@ enum {
+>>   #define PERF_PMU_FORMAT_BITS 64
+>>   #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
+>>   #define CPUS_TEMPLATE_CPU      "%s/bus/event_source/devices/%s/cpus"
+>> +#define MAX_PMU_NAME_LEN 128
+>>   
+>>   struct perf_event_attr;
+>>   
+>> @@ -32,6 +33,7 @@ struct perf_pmu_caps {
+>>   
+>>   struct perf_pmu {
+>>          char *name;
+>> +       char *alias_name;       /* PMU alias name */
+>>          char *id;
+>>          __u32 type;
+>>          bool selectable;
+>> @@ -135,4 +137,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu,
+>> __u64 config,
+>>   bool perf_pmu__has_hybrid(void);
+>>   int perf_pmu__match(char *pattern, char *name, char *tok);
+>>   
+>> +char *pmu_find_real_name(const char *name);
+>> +char *pmu_find_alias_name(const char *name);
+>> +
+>>   #endif /* __PMU_H */
+> 
+> 
