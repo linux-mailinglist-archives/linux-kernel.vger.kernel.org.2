@@ -2,141 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092D93DE079
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555813DE077
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhHBULK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbhHBULI (ORCPT
+        id S231191AbhHBULH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:11:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46442 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230506AbhHBULG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:11:08 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF4AC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 13:10:59 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id 185so21736801iou.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 13:10:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7JjQd+ZR7FC88NvaO1/ik1OCoriiWj0SLnlnN+EI6+8=;
-        b=Ywy6YSPDF52dLo6oCY5yw62rQn3QAGehVNzZ6Dv5DUDeIKKP92UUQMDs8CtPL3DiJE
-         1OefmpRqTUy2v0i+OjdR8oZzMg4nynlv5vAj5zU5UTqYK+LOVP879lP4OgXBf1HRHyTb
-         wRdcZGFEXh59XgJTvMCpApDLIgiAGWfm6ke6p74FuSBJTpCI3GZILGpVFdH3JYVE85Q5
-         ZxXmdpQ+aUkvo7nhN0KIamvaJ88+5VGe1ycZtK0Ryi+litocRaf+THOt43sEpqEh9MHX
-         O/azej0FQFGlnTyXYL4bF3WjwHs/L5jx0++1/bn7zm90xoaGqaqgpY8hWouHTvTgbeei
-         SOtA==
+        Mon, 2 Aug 2021 16:11:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627935055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LA8evM7BHjBr4jABvi1M9utaaAjmimAJTMztodEqWno=;
+        b=Sdbwc2nyDANJY1mFTAktqUhIeYe1Hs7Q9uW6bdmTOawW+OsHzwxayFV7TqtNuUqjreizyr
+        j5JSnYuDyIG8hmLLiH6bWL9w4EvJjicSw4UpSNJxrIfxK+EzjzDXCRTBlca2ypY62nWf5h
+        CsDI2jPkmvvVZ2z/by52UsefAJR7tZU=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-483-j0lU5-KKNSK37K6YjT4mVA-1; Mon, 02 Aug 2021 16:10:54 -0400
+X-MC-Unique: j0lU5-KKNSK37K6YjT4mVA-1
+Received: by mail-ej1-f69.google.com with SMTP id e8-20020a1709060808b02904f7606bd58fso5117534ejd.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 13:10:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7JjQd+ZR7FC88NvaO1/ik1OCoriiWj0SLnlnN+EI6+8=;
-        b=srZsgyJXmOr8v2utmz3RtG0e2fd7yyLQOAl46v8NEQ02VL/t/0F9z9+3+F/Pye3dhW
-         eoRrGxD5msB7jsZiEew1GXs94JHRymqyajkbD2rDWjILmIYXOxe8HRKLTI7KOeBMgT4Z
-         OofzC56f37SAyJkUnme8LgB+nPmZYVc4DaL6KrspiOBz0qH8qeKQpQlyHuGukyucVMCZ
-         i16oIlMAWPpAUC4trG2fw6a09pGMwPC1KTKqCDBlZkbxv0bp8w6tUnX+uqqwxqFtFT7x
-         Fxe4mEhIRRid6hGdH4n9JK16o9q27uwLTSlb1qRyw0LvbqkNgyJyjXEcaBg1NBQbgyN+
-         ExRw==
-X-Gm-Message-State: AOAM531Lk0dbPEO4E1omUjSWbJBFIBQbRyoyQ/y0qWqMuZKRRnkxXkaE
-        2oaTXyy0cIWeUWzDew/vn2w2mh1AcCV4GG+XYvRqtw==
-X-Google-Smtp-Source: ABdhPJz9KoWJcLNs4XLiWG7XBcXDfyud1ryml8h+jHng7dNSa3OM43gzesT4vPjQfdkKmf49a+ZVhPYPExOqvjEyZE4=
-X-Received: by 2002:a05:6638:35a8:: with SMTP id v40mr16688614jal.126.1627935058394;
- Mon, 02 Aug 2021 13:10:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LA8evM7BHjBr4jABvi1M9utaaAjmimAJTMztodEqWno=;
+        b=ISvAYORaqrWFdBJX47ZBCtEgjTNXtE+2AXhKMFnDximPlnVpGeIq7u+UROeujrn81o
+         x6sFBtNUSqOlhPLdk1oSib2rlpMn4TY3XUbOxe/C5r0Lv0WI1jvHLRN6UyTqXvkntsAP
+         Z/q3dNb1Oq+dUQkV/AbmRtIGoUPuq5AU7E1j8K2LrPpAgYtonpeSGYutyJe3MjY2++Z4
+         swpileRti4IXHbKz0qeXs3z+5b+02hQeu8PQjDYFdtxV4oWzPz5JAhNmdMWueTEXgP2F
+         tvjtJ3mmelQ9BJzP1dqPFXnqvrT3w4HZXhm3WU8GYwKX5FM22Qpb8ROVijWCmTdErYNm
+         PFeA==
+X-Gm-Message-State: AOAM531/BeQQT4DKTR/z3oj51CoHyPOw/OvLi8GnvjseY06U7cE3Rj5d
+        RW//ymH2mxIGFQZJd9LcT0m9UR89EcnBfToFyUS4EK++SDYB5I3hW+BHvb2lmRDXaz7LmHb5GxY
+        atC6yQPLFvkvOUxqbll1eGplA
+X-Received: by 2002:a17:906:4b18:: with SMTP id y24mr16671488eju.42.1627935053630;
+        Mon, 02 Aug 2021 13:10:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQDGepqRHg1s0zF2qekNjn1VPDNh8LoMDbONxjezTZrGQTTG2YxoZ166f6S0JBTqWT6JZH/A==
+X-Received: by 2002:a17:906:4b18:: with SMTP id y24mr16671470eju.42.1627935053501;
+        Mon, 02 Aug 2021 13:10:53 -0700 (PDT)
+Received: from redhat.com ([2.55.140.205])
+        by smtp.gmail.com with ESMTPSA id g8sm6748637edw.89.2021.08.02.13.10.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 13:10:52 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 16:10:48 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     fuguancheng <fuguancheng@bytedance.com>
+Cc:     jasowang@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, arseny.krasnov@kaspersky.com,
+        andraprs@amazon.com, colin.king@canonical.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] VSOCK DRIVER: Add multi-cid support for guest
+Message-ID: <20210802160815-mutt-send-email-mst@kernel.org>
+References: <20210802120720.547894-1-fuguancheng@bytedance.com>
+ <20210802120720.547894-2-fuguancheng@bytedance.com>
 MIME-Version: 1.0
-References: <20210726153846.245305071@linuxfoundation.org> <20210726153852.445207631@linuxfoundation.org>
- <CAMn1gO42sPYDajZN7MuysTeGJmxvby=sFuU1eXt0APo_Y5FFSQ@mail.gmail.com> <YQOCUu0nALesF1HB@kroah.com>
-In-Reply-To: <YQOCUu0nALesF1HB@kroah.com>
-From:   Peter Collingbourne <pcc@google.com>
-Date:   Mon, 2 Aug 2021 13:10:47 -0700
-Message-ID: <CAMn1gO4TqPccK6GqiB8zzm=CzQd-kqGBh0HrVf_2W_VpaSq_+A@mail.gmail.com>
-Subject: Re: [PATCH 5.13 191/223] selftest: use mmap instead of posix_memalign
- to allocate memory
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Alistair Delva <adelva@google.com>,
-        William McVicker <willmcvicker@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Mitch Phillips <mitchp@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        donnyxia@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802120720.547894-2-fuguancheng@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 9:38 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Jul 29, 2021 at 10:58:11AM -0700, Peter Collingbourne wrote:
-> > On Mon, Jul 26, 2021 at 9:16 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > From: Peter Collingbourne <pcc@google.com>
-> > >
-> > > commit 0db282ba2c12c1515d490d14a1ff696643ab0f1b upstream.
-> > >
-> > > This test passes pointers obtained from anon_allocate_area to the
-> > > userfaultfd and mremap APIs.  This causes a problem if the system
-> > > allocator returns tagged pointers because with the tagged address ABI
-> > > the kernel rejects tagged addresses passed to these APIs, which would
-> > > end up causing the test to fail.  To make this test compatible with such
-> > > system allocators, stop using the system allocator to allocate memory in
-> > > anon_allocate_area, and instead just use mmap.
-> > >
-> > > Link: https://lkml.kernel.org/r/20210714195437.118982-3-pcc@google.com
-> > > Link: https://linux-review.googlesource.com/id/Icac91064fcd923f77a83e8e133f8631c5b8fc241
-> > > Fixes: c47174fc362a ("userfaultfd: selftest")
-> > > Co-developed-by: Lokesh Gidra <lokeshgidra@google.com>
-> > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> > > Signed-off-by: Peter Collingbourne <pcc@google.com>
-> > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> > > Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > > Cc: Dave Martin <Dave.Martin@arm.com>
-> > > Cc: Will Deacon <will@kernel.org>
-> > > Cc: Andrea Arcangeli <aarcange@redhat.com>
-> > > Cc: Alistair Delva <adelva@google.com>
-> > > Cc: William McVicker <willmcvicker@google.com>
-> > > Cc: Evgenii Stepanov <eugenis@google.com>
-> > > Cc: Mitch Phillips <mitchp@google.com>
-> > > Cc: Andrey Konovalov <andreyknvl@gmail.com>
-> > > Cc: <stable@vger.kernel.org>    [5.4]
-> > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > >  tools/testing/selftests/vm/userfaultfd.c |    6 ++++--
-> > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > >
-> > > --- a/tools/testing/selftests/vm/userfaultfd.c
-> > > +++ b/tools/testing/selftests/vm/userfaultfd.c
-> > > @@ -197,8 +197,10 @@ static int anon_release_pages(char *rel_
-> > >
-> > >  static void anon_allocate_area(void **alloc_area)
-> > >  {
-> > > -       if (posix_memalign(alloc_area, page_size, nr_pages * page_size)) {
-> > > -               fprintf(stderr, "out of memory\n");
-> > > +       *alloc_area = mmap(NULL, nr_pages * page_size, PROT_READ | PROT_WRITE,
-> > > +                          MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-> > > +       if (*alloc_area == MAP_FAILED)
-> >
-> > Hi Greg,
-> >
-> > It looks like your backport of this patch (and the backports to stable
-> > kernels) are missing a left brace here.
->
-> Already fixed up in the latest -rc releases, right?
+On Mon, Aug 02, 2021 at 08:07:17PM +0800, fuguancheng wrote:
+> diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
+> index c998860d7bbc..a3ea99f6fc7f 100644
+> --- a/include/uapi/linux/vhost.h
+> +++ b/include/uapi/linux/vhost.h
+> @@ -17,6 +17,13 @@
+>  
+>  #define VHOST_FILE_UNBIND -1
+>  
+> +/* structs used for hypervisors to send cid info. */
+> +
+> +struct multi_cid_message {
+> +	u32 number_cid;
+> +	u64 *cid;
+> +};
+> +
+>  /* ioctls */
+>  
+>  #define VHOST_VIRTIO 0xAF
 
-It looks like you fixed it on linux-4.19.y and linux-5.4.y, but not
-linux-4.14.y, linux-5.10.y or linux-5.13.y.
 
-Peter
+In this case, a kernel pointer in a UAPI struct is suspicious.
+So is padding after number_cid.
+
+-- 
+MST
+
