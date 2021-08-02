@@ -2,309 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BE73DDF1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2093DDF1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhHBS06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
+        id S230286AbhHBS1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhHBS05 (ORCPT
+        with ESMTP id S229571AbhHBS1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:26:57 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEFAC061760
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:26:46 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id j3so5531523plx.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:26:46 -0700 (PDT)
+        Mon, 2 Aug 2021 14:27:20 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0731EC06175F;
+        Mon,  2 Aug 2021 11:27:10 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id l11-20020a7bcf0b0000b0290253545c2997so535080wmg.4;
+        Mon, 02 Aug 2021 11:27:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A1o2lDhPT/6cGgERYCSRzb8fnPH3JMVhax0hOZScz18=;
-        b=qZJ+CEDi3CZkD/DZsPkrv/jtf5Pcnf1H3zzG448FkQ4f2XXr3+lko5zeX5n+kM51AQ
-         QoKP+h231MyW/LxPRu2eXdKRepSyKwpXuUF8z6mMOhVxd4PcjrXWp02rctb30/m8bFZD
-         5wQKAeO8gCB2h7MS5vQSuTrTIQmL0JL2+LOlOTPtcuXkS0Urv6gfrVCD9iqOkYim6pXk
-         15bnbLc5vn+FzRFjiVAcv2YPWcM2LtfEaTfsezbSHp/vs9FRP4ahMOah6fF1CpMuezqN
-         1ntcCDGs8EB4wR7mvlKRSzrqoPDkDxOpN/wGKUbc/GXPgO9LCxJUgbaSr2ZBBQZmCDKp
-         82XQ==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=DTKhTm7Ptg33LCmAo/w+iCwbuM4MPLTXMtIM7VJDESs=;
+        b=XSipToRaSYK8r/yD7Y2zbkP6xbYJje+aooSF0mhT0oVLuyaMKIePaSg1zx3ZCe8RbB
+         kS/zCjZ24853zmMTLuE+JMDuQ/seXGbLPh0BYIj1AbbbudTfAOnPO6ATTr7ruQfi+OuM
+         harDKQpcKQdzKJlIfCjqbcDlDmVI84AYKvIHQ6fBG1BqnTk9jUMbtVQz8WKzaUCLLnS5
+         nFZw1RzFeWCd7OfGppbdPpaBi5h2c7gjY6A8S8ngAC3APaD2+EAeXGDu/aZC/pgOSHhy
+         rwdfCq5trcb1HvacEODObZ5X5WYYx3LmWsaJ+G/95MC4DAjT+LEDXrMOQNqVwTlJR9Dk
+         mWFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A1o2lDhPT/6cGgERYCSRzb8fnPH3JMVhax0hOZScz18=;
-        b=WyNOQpAdcqrlCz9lEi3PFT53vgPdMtzgENt6q6whrGknY9osNk1nmZo8NZAzj4H/aZ
-         Doai9uW7tSAd5/xYN6IrnJyZ84XxbhpyOXVEgN/tFYzUwF6c4geYqya0i9o/B9oo/lCB
-         st36QF0o8vgmYgLfZeMDhP8mGzzULWy/bcSgkct/K0e5FFqK3GhZGR1Y9k6OZB0z3pZd
-         RT5jaFwLQCkuJPZl0tK1MlBAiZZRjGCh/oCsWrnMYykF3h5CHxoIbxib2Ztt8RPpYhTn
-         c6QTk87Tx70Yamfv77w9yQ/8TLCX5G58i86RZMCTSSh3c8k1gSfWkSyKYGVHKcoK4zll
-         gedQ==
-X-Gm-Message-State: AOAM530q+khYspWS0yzGdX7/sqJy9ZereouPkC5/tqnFUwzjLQzMNYJu
-        8lnkG80wHq+TWD34wFQ2gHIVCQ==
-X-Google-Smtp-Source: ABdhPJy8HE9E3V/Liprvtmeo+WTWbVv7IENifQ5fgX6dxtoqMnz1OeHQ5esOg+gXsM4uY6cGGpH9sg==
-X-Received: by 2002:a17:90a:6782:: with SMTP id o2mr182712pjj.165.1627928806217;
-        Mon, 02 Aug 2021 11:26:46 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id h24sm12803131pfn.180.2021.08.02.11.26.44
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=DTKhTm7Ptg33LCmAo/w+iCwbuM4MPLTXMtIM7VJDESs=;
+        b=gXYOWXjju2U9okUmcWK0Rq/+GajPNVXpBSmQRNo1pF3fLJrA5RzZR/hy/2rET6ogdF
+         iO0jQ8MDO4uQnfqccLYiTBQsVbbfHM0vOK7NwRiZE7G6F/LoRwMaATdP4eIWdQvCmCo5
+         ORJbXURfxV4+4fSZuc5je/wgVoN3xuBGb1w1ku6Mv1tEVOfpT8R0CZLlTeq+mQ4Tm5X6
+         TmIs6kiiR0SxWL6VhakQZlPxnVQjEtpyq4QKG5E/xNVAUm8iJDHiD3Uq0UlWeYUjnkbp
+         oChG4Vj6Mu8P0YqCM/VNJGNzlcmDl3fxWZLIATOxXFdk7wHVMe1KL20gc5WZDDr88ekD
+         zyIw==
+X-Gm-Message-State: AOAM5305pnqaiP4T7tX+UHBjDmY4QXnub08fxf+rT3aDrwGyNNFDrpGz
+        Ytt+GRo1oH3gQ04BGTHGVsg=
+X-Google-Smtp-Source: ABdhPJymktIwUnfQLR4bmt28w5+VecVM+04e+/xdZY89WAq8zBoRUTO9t6fdiK4z/lEwUTGG2ZhK6A==
+X-Received: by 2002:a7b:c5c7:: with SMTP id n7mr18520297wmk.5.1627928828647;
+        Mon, 02 Aug 2021 11:27:08 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id w5sm14025259wro.45.2021.08.02.11.27.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 11:26:45 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 12:26:43 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] remoteproc: k3-dsp: Add support for IPC-only mode
- for all K3 DSPs
-Message-ID: <20210802182643.GB3051951@p14s>
-References: <20210723220248.6554-1-s-anna@ti.com>
- <20210723220248.6554-6-s-anna@ti.com>
+        Mon, 02 Aug 2021 11:27:08 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 20:27:06 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Xiang Chen <chenxiang66@hisilicon.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] crypto: sun8i-ss: fix multiple memory leaks in
+ sun8i_ss_hash_run
+Message-ID: <YQg4+skrb9dxMgHw@Red>
+References: <20210726152533.2281139-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210723220248.6554-6-s-anna@ti.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210726152533.2281139-1-mudongliangabcd@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 05:02:48PM -0500, Suman Anna wrote:
-> Add support to the K3 DSP remoteproc driver to configure all the C66x
-> and C71x cores on J721E SoCs to be either in IPC-only mode or the
-> traditional remoteproc mode. The IPC-only mode expects that the remote
-> processors are already booted by the bootloader, and only perform the
-> minimum steps required to initialize and deinitialize the virtio IPC
-> transports. The remoteproc mode allows the kernel remoteproc driver to
-> do the regular load and boot and other device management operations for
-> a DSP.
+Le Mon, Jul 26, 2021 at 11:25:21PM +0800, Dongliang Mu a écrit :
+> In sun8i_ss_hash_run, all the dma_mmap_sg/single will cause memory leak
+> due to no corresponding unmap operation if errors happen.
 > 
-> The IPC-only mode for a DSP is detected and configured at driver probe
-> time by querying the System Firmware for the DSP power and reset state
-> and/or status and making sure that the DSP is indeed started by the
-> bootloaders, otherwise the device is configured for remoteproc mode.
-> 
-> Support for IPC-only mode is achieved through .attach(), .detach() and
-> .get_loaded_rsc_table() callback ops and zeroing out the regular rproc
-> ops .prepare(), .unprepare(), .start() and .stop(). The resource table
-> follows a design-by-contract approach and is expected to be at the base
-> of the DDR firmware region reserved for each remoteproc, it is mostly
-> expected to contain only the virtio device and trace resource entries.
-> 
-> NOTE:
-> The driver cannot configure a DSP core for remoteproc mode by any
-> means without rebooting the kernel if that DSP core has been started
-> by a bootloader.  This is the current desired behavior and can be
-> enhanced in the future if the feature is needed.
-> 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
-> v2: Addressed various review comments from v1
->  - Reworked the logic to not use remoteproc detach_on_shutdown and
->    local ipc-only state flags
->  - Plugged in the required IPC-only ops dynamically with the regular
->    remoteproc-mode ops zeroed out
->  - Dropped all the unneeded error checks in start, stop, prepare, 
->    unprepare, attach and detach callbacks
->  - Callback function descriptions updated to reflect the mode they
->    apply to
->  - Dropped unused r_state variable in probe
->  - Switched to dev_info for the mode information traces from dev_err
->  - Revised the last 2 paras of the patch description
-> v1: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210522000309.26134-7-s-anna@ti.com/
-> 
->  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 132 +++++++++++++++++++---
->  1 file changed, 115 insertions(+), 17 deletions(-)
+> Fix this by adding error handling part for all the dma_mmap_sg/single.
 > 
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Hello
 
-> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-> index faf60a274e8d..6eaecf02aee5 100644
-> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-> @@ -260,7 +260,8 @@ static int k3_dsp_rproc_request_mbox(struct rproc *rproc)
->   * used to release the global reset on C66x DSPs to allow loading into the DSP
->   * internal RAMs. The .prepare() ops is invoked by remoteproc core before any
->   * firmware loading, and is followed by the .start() ops after loading to
-> - * actually let the C66x DSP cores run.
-> + * actually let the C66x DSP cores run. This callback is invoked only in
-> + * remoteproc mode.
->   */
->  static int k3_dsp_rproc_prepare(struct rproc *rproc)
->  {
-> @@ -284,7 +285,7 @@ static int k3_dsp_rproc_prepare(struct rproc *rproc)
->   * powering down the C66x DSP cores. The cores themselves are only halted in the
->   * .stop() callback through the local reset, and the .unprepare() ops is invoked
->   * by the remoteproc core after the remoteproc is stopped to balance the global
-> - * reset.
-> + * reset. This callback is invoked only in remoteproc mode.
->   */
->  static int k3_dsp_rproc_unprepare(struct rproc *rproc)
->  {
-> @@ -305,7 +306,7 @@ static int k3_dsp_rproc_unprepare(struct rproc *rproc)
->   *
->   * This function will be invoked only after the firmware for this rproc
->   * was loaded, parsed successfully, and all of its resource requirements
-> - * were met.
-> + * were met. This callback is invoked only in remoteproc mode.
->   */
->  static int k3_dsp_rproc_start(struct rproc *rproc)
->  {
-> @@ -346,7 +347,7 @@ static int k3_dsp_rproc_start(struct rproc *rproc)
->   * Stop the DSP remote processor.
->   *
->   * This function puts the DSP processor into reset, and finishes processing
-> - * of any pending messages.
-> + * of any pending messages. This callback is invoked only in remoteproc mode.
->   */
->  static int k3_dsp_rproc_stop(struct rproc *rproc)
->  {
-> @@ -359,6 +360,78 @@ static int k3_dsp_rproc_stop(struct rproc *rproc)
->  	return 0;
->  }
->  
-> +/*
-> + * Attach to a running DSP remote processor (IPC-only mode)
-> + *
-> + * This rproc attach callback only needs to request the mailbox, the remote
-> + * processor is already booted, so there is no need to issue any TI-SCI
-> + * commands to boot the DSP core. This callback is invoked only in IPC-only
-> + * mode.
-> + */
-> +static int k3_dsp_rproc_attach(struct rproc *rproc)
-> +{
-> +	struct k3_dsp_rproc *kproc = rproc->priv;
-> +	struct device *dev = kproc->dev;
-> +	int ret;
-> +
-> +	ret = k3_dsp_rproc_request_mbox(rproc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_info(dev, "DSP initialized in IPC-only mode\n");
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Detach from a running DSP remote processor (IPC-only mode)
-> + *
-> + * This rproc detach callback performs the opposite operation to attach callback
-> + * and only needs to release the mailbox, the DSP core is not stopped and will
-> + * be left to continue to run its booted firmware. This callback is invoked only
-> + * in IPC-only mode.
-> + */
-> +static int k3_dsp_rproc_detach(struct rproc *rproc)
-> +{
-> +	struct k3_dsp_rproc *kproc = rproc->priv;
-> +	struct device *dev = kproc->dev;
-> +
-> +	mbox_free_channel(kproc->mbox);
-> +	dev_info(dev, "DSP deinitialized in IPC-only mode\n");
-> +	return 0;
-> +}
-> +
-> +/*
-> + * This function implements the .get_loaded_rsc_table() callback and is used
-> + * to provide the resource table for a booted DSP in IPC-only mode. The K3 DSP
-> + * firmwares follow a design-by-contract approach and are expected to have the
-> + * resource table at the base of the DDR region reserved for firmware usage.
-> + * This provides flexibility for the remote processor to be booted by different
-> + * bootloaders that may or may not have the ability to publish the resource table
-> + * address and size through a DT property. This callback is invoked only in
-> + * IPC-only mode.
-> + */
-> +static struct resource_table *k3_dsp_get_loaded_rsc_table(struct rproc *rproc,
-> +							  size_t *rsc_table_sz)
-> +{
-> +	struct k3_dsp_rproc *kproc = rproc->priv;
-> +	struct device *dev = kproc->dev;
-> +
-> +	if (!kproc->rmem[0].cpu_addr) {
-> +		dev_err(dev, "memory-region #1 does not exist, loaded rsc table can't be found");
-> +		return ERR_PTR(-ENOMEM);
-> +	}
-> +
-> +	/*
-> +	 * NOTE: The resource table size is currently hard-coded to a maximum
-> +	 * of 256 bytes. The most common resource table usage for K3 firmwares
-> +	 * is to only have the vdev resource entry and an optional trace entry.
-> +	 * The exact size could be computed based on resource table address, but
-> +	 * the hard-coded value suffices to support the IPC-only mode.
-> +	 */
-> +	*rsc_table_sz = 256;
-> +	return (struct resource_table *)kproc->rmem[0].cpu_addr;
-> +}
-> +
->  /*
->   * Custom function to translate a DSP device address (internal RAMs only) to a
->   * kernel virtual address.  The DSPs can access their RAMs at either an internal
-> @@ -605,6 +678,7 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
->  	struct k3_dsp_rproc *kproc;
->  	struct rproc *rproc;
->  	const char *fw_name;
-> +	bool p_state = false;
->  	int ret = 0;
->  	int ret1;
->  
-> @@ -683,19 +757,43 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
->  		goto release_tsp;
->  	}
->  
-> -	/*
-> -	 * ensure the DSP local reset is asserted to ensure the DSP doesn't
-> -	 * execute bogus code in .prepare() when the module reset is released.
-> -	 */
-> -	if (data->uses_lreset) {
-> -		ret = reset_control_status(kproc->reset);
-> -		if (ret < 0) {
-> -			dev_err(dev, "failed to get reset status, status = %d\n",
-> -				ret);
-> -			goto release_mem;
-> -		} else if (ret == 0) {
-> -			dev_warn(dev, "local reset is deasserted for device\n");
-> -			k3_dsp_rproc_reset(kproc);
-> +	ret = kproc->ti_sci->ops.dev_ops.is_on(kproc->ti_sci, kproc->ti_sci_id,
-> +					       NULL, &p_state);
-> +	if (ret) {
-> +		dev_err(dev, "failed to get initial state, mode cannot be determined, ret = %d\n",
-> +			ret);
-> +		goto release_mem;
-> +	}
-> +
-> +	/* configure J721E devices for either remoteproc or IPC-only mode */
-> +	if (p_state) {
-> +		dev_info(dev, "configured DSP for IPC-only mode\n");
-> +		rproc->state = RPROC_DETACHED;
-> +		/* override rproc ops with only required IPC-only mode ops */
-> +		rproc->ops->prepare = NULL;
-> +		rproc->ops->unprepare = NULL;
-> +		rproc->ops->start = NULL;
-> +		rproc->ops->stop = NULL;
-> +		rproc->ops->attach = k3_dsp_rproc_attach;
-> +		rproc->ops->detach = k3_dsp_rproc_detach;
-> +		rproc->ops->get_loaded_rsc_table = k3_dsp_get_loaded_rsc_table;
-> +	} else {
-> +		dev_info(dev, "configured DSP for remoteproc mode\n");
-> +		/*
-> +		 * ensure the DSP local reset is asserted to ensure the DSP
-> +		 * doesn't execute bogus code in .prepare() when the module
-> +		 * reset is released.
-> +		 */
-> +		if (data->uses_lreset) {
-> +			ret = reset_control_status(kproc->reset);
-> +			if (ret < 0) {
-> +				dev_err(dev, "failed to get reset status, status = %d\n",
-> +					ret);
-> +				goto release_mem;
-> +			} else if (ret == 0) {
-> +				dev_warn(dev, "local reset is deasserted for device\n");
-> +				k3_dsp_rproc_reset(kproc);
-> +			}
->  		}
->  	}
->  
-> -- 
-> 2.32.0
-> 
+I have nearly the same comment than on your sun8i-ce patch, (copy result only if err===0 and wording).
+
+Regards
