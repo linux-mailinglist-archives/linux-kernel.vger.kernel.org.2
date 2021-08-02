@@ -2,189 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D0F3DE2F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F2C3DE2F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhHBXQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 19:16:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59712 "EHLO mail.kernel.org"
+        id S232856AbhHBXQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 19:16:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232192AbhHBXQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 19:16:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B321560EC0;
-        Mon,  2 Aug 2021 23:16:35 +0000 (UTC)
+        id S232588AbhHBXQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 19:16:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DCBB60EC0;
+        Mon,  2 Aug 2021 23:16:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627946195;
-        bh=0CE6qR/gop+OdKgxD/k5bSNptqvMl6JQUMWiGm6+tfw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JL0zMLYdH8Ohwr0tKC+IKekf9Qbx/szIeRH9N8fqiDCVhLUwEpH0OaP2BmrUBBOMe
-         J3d2gpr0JPj+pzFs3AWElm9jmuiqcZnxjHChKTXJAQWwlWelFoGHHNcIj/UBCcLnlB
-         h+/MMl4u+SZq16NuI3C67q2HZweSwyOitqWIgJD4HZT4Pqc+pJPJqABOSeKxHrUCDM
-         UlgJqUlXToOjoMEgH6wjA7bNQI2Kc+VnewJDgfZWG6m3nFPYTIICwkoTRuYHNTfKLJ
-         UtRDwZ81YzKbbrKn4oTHVbrTX8+pRytq8MdWuHIh/97vwkaZJ75slHtGja2GXC0iCN
-         pDLNuM01n7y5A==
-Received: by mail-ed1-f51.google.com with SMTP id n2so26623713eda.10;
-        Mon, 02 Aug 2021 16:16:35 -0700 (PDT)
-X-Gm-Message-State: AOAM53019CpA/WjU0yg72JJeKz+ZX1dD7yRS7r8t1NtU+9vjLYt08Trz
-        i8GDcZP7e3vzPu4s3VKHbX5Tx32MRyzFNmwUKg==
-X-Google-Smtp-Source: ABdhPJxJAhueT9lDCmD6Pnv55JDItfMv10i4eCO+yqwvWYDC+oNsWVEH5yVZqBJ6i6TEgSsxIe1LvfnoD9+mHDpuKCw=
-X-Received: by 2002:aa7:c6d3:: with SMTP id b19mr21633222eds.303.1627946194379;
- Mon, 02 Aug 2021 16:16:34 -0700 (PDT)
+        s=k20201202; t=1627946204;
+        bh=3ptfVM59zuF6UcjTL1TI2rMJkJS7oye0pG8ghT5vEmQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Y0SIXoT9NyYYYfU9X6oKmpBTSgusjlgb4xakAEd/TK6RFo+w4De7J2fo30tNiLYjP
+         F/gBXwN7yZnqNj/AjBjaj5DcNqbtwbj3T+1CtmEtxB2zxHmwdEGokGqm9Z+bxKBN6E
+         IZhcMR7JLBOwXAKhYf5mbPi0vLlklMsxBv2rmQB+qG8AHkeCgrdqkEzxgreGo4qkkE
+         KF0R8IpPJFDW00CBacLD9bpONGKpGNT41dpq4ID6w4b3tIvFzD7iMVzT+AQolEdqPc
+         K87g4tnLDodIiPFdafhSsQsnyA4nPvhNpghsSOY6+lU8LprPbD6Po0yUK2S257OG7C
+         EtItq7fS7VMDg==
+Date:   Mon, 2 Aug 2021 18:16:43 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v1 1/1] x86/PCI: Introduce pcibios_is_irq_managed() helper
+Message-ID: <20210802231643.GA1474171@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <1627888227-5757-1-git-send-email-yongqiang.niu@mediatek.com> <1627888227-5757-2-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1627888227-5757-2-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 3 Aug 2021 07:16:23 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-7MNrO5my3_9EAeSVxtsVC-dGTZH31tph9TpY3faAdwQ@mail.gmail.com>
-Message-ID: <CAAOTY_-7MNrO5my3_9EAeSVxtsVC-dGTZH31tph9TpY3faAdwQ@mail.gmail.com>
-Subject: Re: [PATCH v3] drm/mediatek: clear pending flag when cmdq packet is done.
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730205355.26504-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
-
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=
-=882=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:11=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> In cmdq mode, packet may be flushed before it is executed, so
-> the pending flag should be cleared after cmdq packet is done.
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+On Fri, Jul 30, 2021 at 11:53:55PM +0300, Andy Shevchenko wrote:
+> The check for irq_managed flag along with non-zero irq is an idiom
+> for x86 PCI implementation. Introduce helper and switch users over
+> using it.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 51 +++++++++++++++++++++++++++=
-++----
->  1 file changed, 46 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
-diatek/mtk_drm_crtc.c
-> index 4c25e33..2a2d43e 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -267,6 +267,40 @@ static void ddp_cmdq_cb(struct mbox_client *cl, void=
- *mssg)
+>  arch/x86/include/asm/pci.h   | 4 ++++
+>  arch/x86/pci/intel_mid_pci.c | 5 ++---
+>  arch/x86/pci/irq.c           | 4 ++--
+>  drivers/acpi/pci_irq.c       | 4 ++--
+>  4 files changed, 10 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/pci.h b/arch/x86/include/asm/pci.h
+> index d2c76c8d8cfd..ac25470c9558 100644
+> --- a/arch/x86/include/asm/pci.h
+> +++ b/arch/x86/include/asm/pci.h
+> @@ -92,6 +92,10 @@ void pcibios_scan_root(int bus);
+>  struct irq_routing_table *pcibios_get_irq_routing_table(void);
+>  int pcibios_set_irq_routing(struct pci_dev *dev, int pin, int irq);
+>  
+> +static inline bool pcibios_irq_is_managed(struct pci_dev *dev)
+> +{
+> +	return dev->irq_managed && dev->irq > 0;
+> +}
+>  
+>  #define HAVE_PCI_MMAP
+>  #define arch_can_pci_mmap_wc()	pat_enabled()
+> diff --git a/arch/x86/pci/intel_mid_pci.c b/arch/x86/pci/intel_mid_pci.c
+> index f04742caf62b..0da287bcabf5 100644
+> --- a/arch/x86/pci/intel_mid_pci.c
+> +++ b/arch/x86/pci/intel_mid_pci.c
+> @@ -230,7 +230,7 @@ static int intel_mid_pci_irq_enable(struct pci_dev *dev)
+>  	int ret;
+>  	u8 gsi;
+>  
+> -	if (dev->irq_managed && dev->irq > 0)
+> +	if (pcibios_irq_is_managed(dev))
+>  		return 0;
+>  
+>  	ret = pci_read_config_byte(dev, PCI_INTERRUPT_LINE, &gsi);
+> @@ -290,8 +290,7 @@ static int intel_mid_pci_irq_enable(struct pci_dev *dev)
+>  
+>  static void intel_mid_pci_irq_disable(struct pci_dev *dev)
 >  {
->         struct mtk_drm_crtc *mtk_crtc =3D container_of(cl, struct mtk_drm=
-_crtc, cmdq_cl);
->         struct cmdq_cb_data *data =3D mssg;
-> +       struct mtk_crtc_state *state;
-> +       unsigned int i;
-> +
-> +       state =3D to_mtk_crtc_state(mtk_crtc->base.state);
-> +
-> +       if (state->pending_config) {
+> -	if (!mp_should_keep_irq(&dev->dev) && dev->irq_managed &&
+> -	    dev->irq > 0) {
+> +	if (pcibios_irq_is_managed(dev) && !mp_should_keep_irq(&dev->dev)) {
+>  		mp_unmap_irq(dev->irq);
+>  		dev->irq_managed = 0;
+>  	}
+> diff --git a/arch/x86/pci/irq.c b/arch/x86/pci/irq.c
+> index d3a73f9335e1..ce3927b68f9e 100644
+> --- a/arch/x86/pci/irq.c
+> +++ b/arch/x86/pci/irq.c
+> @@ -1210,7 +1210,7 @@ static int pirq_enable_irq(struct pci_dev *dev)
+>  			struct pci_dev *temp_dev;
+>  			int irq;
+>  
+> -			if (dev->irq_managed && dev->irq > 0)
+> +			if (pcibios_irq_is_managed(dev))
+>  				return 0;
+>  
+>  			irq = IO_APIC_get_PCI_irq_vector(dev->bus->number,
+> @@ -1280,7 +1280,7 @@ bool mp_should_keep_irq(struct device *dev)
+>  static void pirq_disable_irq(struct pci_dev *dev)
+>  {
+>  	if (io_apic_assign_pci_irqs && !mp_should_keep_irq(&dev->dev) &&
+> -	    dev->irq_managed && dev->irq) {
+> +	    pcibios_irq_is_managed(dev)) {
+>  		mp_unmap_irq(dev->irq);
+>  		dev->irq = 0;
+>  		dev->irq_managed = 0;
+> diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
+> index b63954c36e86..b463bdd2dbb5 100644
+> --- a/drivers/acpi/pci_irq.c
+> +++ b/drivers/acpi/pci_irq.c
+> @@ -397,7 +397,7 @@ int __acpi_pci_irq_enable(struct pci_dev *dev, int polarity)
+>  		return 0;
+>  	}
+>  
+> -	if (dev->irq_managed && dev->irq > 0)
+> +	if (pcibios_irq_is_managed(dev))
+>  		return 0;
+>  
+>  	entry = acpi_pci_irq_lookup(dev, pin);
+> @@ -486,7 +486,7 @@ void acpi_pci_irq_disable(struct pci_dev *dev)
+>  	u8 pin;
+>  
+>  	pin = dev->pin;
+> -	if (!pin || !dev->irq_managed || dev->irq <= 0)
+> +	if (!pin || !pcibios_irq_is_managed(dev))
 
-No matter pending_config is true or not, it would be false after this.
-So we could simply drop this checking.
+This file may be compiled for x86, arm64, and ia64, but it looks like
+you only defined pcibios_irq_is_managed() for x86.
 
-> +               state->pending_config =3D false;
-> +       }
-> +
-> +       if (mtk_crtc->pending_planes) {
-> +               for (i =3D 0; i < mtk_crtc->layer_nr; i++) {
-> +                       struct drm_plane *plane =3D &mtk_crtc->planes[i];
-> +                       struct mtk_plane_state *plane_state;
-> +
-> +                       plane_state =3D to_mtk_plane_state(plane->state);
-> +
-> +                       if (plane_state->pending.config)
+We used to have a generic pci_has_managed_irq() that was the same as
+your pcibios_irq_is_managed(), but it was removed by 67b4eab91caf
+("Revert "PCI: Add helpers to manage pci_dev->irq and
+pci_dev->irq_managed"").
 
-Ditto.
+I'm sorry that pdev->irq_managed got added without a comment by
+cffe0a2b5a34 ("x86, irq: Keep balance of IOAPIC pin reference count").
+Even reading that commit log, I'm not sure exactly what it means.  The
+log says:
 
-> +                               plane_state->pending.config =3D false;
-> +               }
-> +               mtk_crtc->pending_planes =3D false;
-> +       }
-> +
-> +       if (mtk_crtc->pending_async_planes) {
-> +               for (i =3D 0; i < mtk_crtc->layer_nr; i++) {
-> +                       struct drm_plane *plane =3D &mtk_crtc->planes[i];
-> +                       struct mtk_plane_state *plane_state;
-> +
-> +                       plane_state =3D to_mtk_plane_state(plane->state);
-> +
-> +                       if (plane_state->pending.async_config)
+  So flag irq_managed is introduced to track whether IRQ number is
+  assigned by OS and to protect pirq_enable_irq(), acpi_pci_irq_enable()
+  and intel_mid_pci_irq_enable() from reentrance.
 
-Ditto.
-
-Regards,
-Chun-Kuang.
-
-> +                               plane_state->pending.async_config =3D fal=
-se;
-> +               }
-> +               mtk_crtc->pending_async_planes =3D false;
-> +       }
->
->         mtk_crtc->cmdq_vblank_cnt =3D 0;
->         mtk_drm_cmdq_pkt_destroy(mtk_crtc->cmdq_chan, data->pkt);
-> @@ -423,7 +457,8 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc=
-,
->                                     state->pending_vrefresh, 0,
->                                     cmdq_handle);
->
-> -               state->pending_config =3D false;
-> +               if (!cmdq_handle)
-> +                       state->pending_config =3D false;
->         }
->
->         if (mtk_crtc->pending_planes) {
-> @@ -443,9 +478,12 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crt=
-c,
->                                 mtk_ddp_comp_layer_config(comp, local_lay=
-er,
->                                                           plane_state,
->                                                           cmdq_handle);
-> -                       plane_state->pending.config =3D false;
-> +                       if (!cmdq_handle)
-> +                               plane_state->pending.config =3D false;
->                 }
-> -               mtk_crtc->pending_planes =3D false;
-> +
-> +               if (!cmdq_handle)
-> +                       mtk_crtc->pending_planes =3D false;
->         }
->
->         if (mtk_crtc->pending_async_planes) {
-> @@ -465,9 +503,12 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crt=
-c,
->                                 mtk_ddp_comp_layer_config(comp, local_lay=
-er,
->                                                           plane_state,
->                                                           cmdq_handle);
-> -                       plane_state->pending.async_config =3D false;
-> +                       if (!cmdq_handle)
-> +                               plane_state->pending.async_config =3D fal=
-se;
->                 }
-> -               mtk_crtc->pending_async_planes =3D false;
-> +
-> +               if (!cmdq_handle)
-> +                       mtk_crtc->pending_async_planes =3D false;
->         }
->  }
->
-> --
-> 1.8.1.1.dirty
->
+>  		return;
+>  
+>  	/* Keep IOAPIC pin configuration when suspending */
+> -- 
+> 2.30.2
+> 
