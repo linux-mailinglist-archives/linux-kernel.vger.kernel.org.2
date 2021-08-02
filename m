@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B885C3DD713
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D24A3DD71A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233884AbhHBNac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233769AbhHBNaa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:30:30 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4D5C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 06:30:20 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id z11so2050526edb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 06:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jrreXR6UtcIQ40BKCYv/SEEKLdouMTALz5I4T+6sWrM=;
-        b=aNyBU50Us47KWtvrCC7mIgnvgP1OgTGesTZoLa+PBWAv3gHMDiZDNvZj+Czcx7GPQo
-         5+nFDcAlRfrcTrD0oHT8CaJY+N7FMojj7eQmDNxFRUw6ef8dIP7vWau6c7R2jQCYQeFj
-         GhF2UJprkDEVpPyU5IWGbWZw9ijzhsUw4bU5oNHOrpdp/hB713lgPVbXojCkbciUSMi+
-         O8ZkzaaZWqYlIcVp+hZlOs8gF52Q90SZwvMtY8I3A5dC/+jjroyAldAs2M3kcUfM9rOz
-         7DhDBcnL5H62xi309FWVrxSAS16oLgepMAw/QTZWCRwEXrAUE1EbW3Y0VefzGvDzVj8/
-         lZyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jrreXR6UtcIQ40BKCYv/SEEKLdouMTALz5I4T+6sWrM=;
-        b=ZdSNrjqJIJEwXlh4KrVRRHEyQZ16cUNdn1PQT/+iFYeGVGof5x0rpfRbW+9EJOrH6k
-         Et7LpjvChyC5N5Nubey+0unp+iMiT3Sbu7UspFNfr9TK61napRbQgvsi0SUooGWZeSj9
-         jkmV8KERObrLz5cvN/kjwLz8KS6TUIpjS5+H/5PqfeSgSds7yr7b/mtoK8ckl0dMoDTn
-         LOTUoaWjMia8iZsy8eYNZj/gnkl7MovffoYiMox/BP0nBXAO1J3RlQqyKSdw18BejXgu
-         7dn6nKrDYx9EpyYreHq0MH78zfzbJqk5pNCX2nxGfcvvSGRLxy5jGoovvAEzmjNLnxne
-         fwkQ==
-X-Gm-Message-State: AOAM530e9nrw5AsZnQt/0VsvAAaTBe4GAqje9JvYkm5I7/Eyf9WzV+Bo
-        nIQ0kapi8OvayrPiuzq6AiM=
-X-Google-Smtp-Source: ABdhPJyWoi3s/QzC/UVBQzWia2WycF5Acx1lqCUh74Zj0If1008XEGMlcCZzdcQ7OGuAXmr5W0pDkw==
-X-Received: by 2002:aa7:cb86:: with SMTP id r6mr19113930edt.181.1627911019046;
-        Mon, 02 Aug 2021 06:30:19 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.207])
-        by smtp.gmail.com with ESMTPSA id d9sm6016267edu.19.2021.08.02.06.30.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 06:30:18 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 15:30:15 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        id S233964AbhHBNax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:30:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233867AbhHBNav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:30:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5381260F6D;
+        Mon,  2 Aug 2021 13:30:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627911042;
+        bh=AopIBg3UQuNzGUn6zHPTl2RUpxi1CeIiSyyBhV3W0IU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nHwL3XngEiLQt4Didk/zSnyxzEHhLvI/h87NYzxgJW8aV9nergHLrRivaMg8Z2AZO
+         8kuEw4+FZosbZe4uikBvFP1Sml89L/BSeuj5Ff25UAMW6Pcy7EYLRaZp/DGE9vk/Q3
+         xr2oL845xDL4K22oGmVfyU0UzhLgn1e1K8khfY9wEkWXOOG6qbBH+ZnjQ3/qqnk0GR
+         WXPH12PIZS96YbDsPp9MnZp6cvrcg1r/6GlQq0HFHKMI0yyFCqvnI/99FWO93aoC5q
+         +9Um+bb8RbypSIvULxhV0A5kejZrgqd8NNxdC4uS2WUXxGe8MAXKh0p/EIZPA13Hpc
+         EN7cMXB+23UFQ==
+Date:   Mon, 2 Aug 2021 14:30:38 +0100
+From:   Will Deacon <will@kernel.org>
+To:     David Stevens <stevensd@chromium.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] staging: rtl8723bs: remove unnecessary parentheses
-Message-ID: <20210802133015.GA1419@agape.jhs>
-References: <cover.1627656773.git.fabioaiuto83@gmail.com>
- <fca83a857ebb158cf395ea31f1834c04402c39e4.1627656773.git.fabioaiuto83@gmail.com>
- <20210802130551.GY1931@kadam>
+Subject: Re: [PATCH v2 1/4] dma-iommu: fix sync_sg with swiotlb
+Message-ID: <20210802133037.GB28547@willie-the-truck>
+References: <20210709033502.3545820-1-stevensd@google.com>
+ <20210709033502.3545820-2-stevensd@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210802130551.GY1931@kadam>
+In-Reply-To: <20210709033502.3545820-2-stevensd@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dan,
-
-On Mon, Aug 02, 2021 at 04:05:51PM +0300, Dan Carpenter wrote:
+On Fri, Jul 09, 2021 at 12:34:59PM +0900, David Stevens wrote:
+> From: David Stevens <stevensd@chromium.org>
 > 
-> Please fold patches 2, 3 and 4 together.  It counts as one patch because
-> it's "tidying up the condition".
+> The is_swiotlb_buffer function takes the physical address of the swiotlb
+> buffer, not the physical address of the original buffer. The sglist
+> contains the physical addresses of the original buffer, so for the
+> sync_sg functions to work properly when a bounce buffer might have been
+> used, we need to use iommu_iova_to_phys to look up the physical address.
+> This is what sync_single does, so call that function on each sglist
+> segment.
 > 
-> regards,
-> dan carpenter
+> The previous code mostly worked because swiotlb does the transfer on map
+> and unmap. However, any callers which use DMA_ATTR_SKIP_CPU_SYNC with
+> sglists or which call sync_sg would not have had anything copied to the
+> bounce buffer.
 > 
+> Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
+> Signed-off-by: David Stevens <stevensd@chromium.org>
+> ---
+>  drivers/iommu/dma-iommu.c | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 7bcdd1205535..eac65302439e 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -811,14 +811,14 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
+>  	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
+>  		return;
+>  
+> -	for_each_sg(sgl, sg, nelems, i) {
+> -		if (!dev_is_dma_coherent(dev))
+> -			arch_sync_dma_for_cpu(sg_phys(sg), sg->length, dir);
+> -
+> -		if (is_swiotlb_buffer(sg_phys(sg)))
+> +	if (dev_is_untrusted(dev))
+> +		for_each_sg(sgl, sg, nelems, i)
+> +			iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
+> +						      sg->length, dir);
+> +	else
+> +		for_each_sg(sgl, sg, nelems, i)
+>  			swiotlb_sync_single_for_cpu(dev, sg_phys(sg),
+>  						    sg->length, dir);
 
-ok I will next time I'll be submitting a similar cleaning,
-they are already in staging-next...
+Doesn't this skip arch_sync_dma_for_cpu() for non-coherent trusted devices?
 
-thank you,
+Why not skip the extra dev_is_untrusted(dev) call here and just call
+iommu_dma_sync_single_for_cpu() for each entry regardless?
 
-fabio
+Will
