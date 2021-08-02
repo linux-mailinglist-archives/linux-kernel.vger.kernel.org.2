@@ -2,133 +2,379 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2FC3DE061
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E32C3DE067
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhHBUF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhHBUF0 (ORCPT
+        id S231258AbhHBUHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:07:51 -0400
+Received: from lan.nucleusys.com ([92.247.61.126]:39158 "EHLO
+        zzt.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229729AbhHBUHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:05:26 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392A5C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 13:05:16 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id p38so20914356lfa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 13:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HB3dfAanD6v/DibZ+Kd9MP5PZZX+18PKh7cDBPxAeHs=;
-        b=ptyOG8hVKeJFevLxjCDUGzEhuSpZVEdMhDg+ywQnIWCracEKgYNJi9MyuD507zg3Eq
-         doKw0YYpy3+9o+JFlSBQTwidtTbAq/pCC0+1OUtEuGXvon5JYsygoPX6N6QUxPNwLecd
-         dGRPriNZp5jImD5F5U8MlOwLn3i0kGKTMQu8TVzPmTftKU/9lo7bbqVTkkpuKAx/PUSW
-         jiBeP+zM1R/b4geXHK+h+upY1oHpTKGY01BvxD0hnkWN9TGqJgSlpJHuDvg7R3BlOky5
-         4GgMumBWGK6P4QfI9acGmi0hXOcdxN3Gy+//oD79tKf96Yi5qkwrLtvtQy4dYRne726K
-         qBjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HB3dfAanD6v/DibZ+Kd9MP5PZZX+18PKh7cDBPxAeHs=;
-        b=VZA2ELGLaz98TEcP4vEXvZc2jsanJzfGbDRx3921khSnP/0WFMXyXLpgvKS7ocZVG1
-         4r0yPsVEYRSTKmnyrwJh1LBFElG2Dcz84uCF6TXyq9J1qTRS6joQVGYL0y9Xe9ucGIhs
-         tdwzcb7cdzjJA8Z7z7Rvg7quVVN0haluuSEWfqmvjaI8fETa3jM6qeSA7da27F1l1+Ve
-         bj8mceRE6CZP+3iiEFaq+n9/hA4qjQ1PMVTROPSL6XVtfTJx0cRfaCL1CRVlRJSzJgf+
-         FerBQ2OMbAI5GuY9RVjgR4B9pMSJH6JYIRyQggwjWkPu5VRBY2Q7vvxeF4tdux0BUKtQ
-         9EJg==
-X-Gm-Message-State: AOAM53149FEbOfv3mzL+WOI31/8vj5Cw7aUyp/EQe67/3hMLaUTfiG9e
-        01lFYPn0RSnZDh+vpJNdz+CPKfkC3+pZnZObHz/CVQ==
-X-Google-Smtp-Source: ABdhPJw8jY5UdHR872LonjGRIaliKSNWHXm1Rd2gXr1lTdg2PAg9+PKcz61b46s8PaG0GQQyveidYUX3SYA87Pal2eA=
-X-Received: by 2002:a05:6512:c23:: with SMTP id z35mr14088907lfu.299.1627934714208;
- Mon, 02 Aug 2021 13:05:14 -0700 (PDT)
+        Mon, 2 Aug 2021 16:07:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=0H+H00nWVO6VfCb2eeIqzFDpD25sJ9JBC6p+BAxc+hg=; b=gdtIfl8Le5IHwGoXogPmKYMmvZ
+        18p8pm5JUeiqr0seafU7GR+yfvXKf5ER7d19U+Y12tfauY1ppfIhDceeE4203eD0nV035YqvIcTUW
+        nf5yZp65NSScYf05aWA2D0vRRWgdl5RaokrxSn+zsmu4D12EXVQ6F3NkP7rdygRcbyt8=;
+Received: from [94.26.108.4] (helo=carbon)
+        by zzt.nucleusys.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <petkan@nucleusys.com>)
+        id 1mAeDc-000DZE-Dy; Mon, 02 Aug 2021 23:07:26 +0300
+Date:   Mon, 2 Aug 2021 23:07:23 +0300
+From:   Petko Manolov <petkan@nucleusys.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Subject: Re: [PATCH] net: pegasus: fix uninit-value in get_interrupt_interval
+Message-ID: <YQhQe4bdoEAef8bj@carbon>
+Mail-Followup-To: Pavel Skripkin <paskripkin@gmail.com>,
+        davem@davemloft.net, kuba@kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+References: <20210730214411.1973-1-paskripkin@gmail.com>
+ <YQaVS5UwG6RFsL4t@carbon>
+ <20210801223513.06bede26@gmail.com>
 MIME-Version: 1.0
-References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
- <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
- <YPpfo2z8feq0vTlE@dhcp22.suse.cz> <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
- <YPqDnqULylkkzQG5@dhcp22.suse.cz> <CALvZod4=9aEd9tUdku293uhVQ4mqsfYckCOKzqxXVTDYsmaVtQ@mail.gmail.com>
- <CAJuCfpGmpwTv92joNuVPaEJg1PigtGQn2daywHaqF4TXjuiCWQ@mail.gmail.com>
- <CALvZod7Vb2MKgCcSYtsMd8F4sFb2K7jQk3AGSECYfKvd3MNqzQ@mail.gmail.com>
- <YP5jyLeYsN3JtdX8@dhcp22.suse.cz> <CALvZod4M6mF3VvAdade3n5fE1E0LQp+CeJHWLc+pHmZqqAhepg@mail.gmail.com>
- <CAJuCfpHObuK7jOcqdme9fU5=zFoteaY+5f2_uKdW0VQJa6H7OQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpHObuK7jOcqdme9fU5=zFoteaY+5f2_uKdW0VQJa6H7OQ@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 2 Aug 2021 13:05:03 -0700
-Message-ID: <CALvZod7-0zra65jTUUYx6Oi17GPbRtHpAtVysiTX4_=bfqthPA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210801223513.06bede26@gmail.com>
+X-Spam_score: -1.0
+X-Spam_bar: -
+X-Spam_report: Spam detection software, running on the system "zzt.nucleusys.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ @@CONTACT_ADDRESS@@ for details.
+ Content preview:  On 21-08-01 22:35:13, Pavel Skripkin wrote: > On Sun, 1 Aug
+    2021 15:36:27 +0300 > Petko Manolov <petkan@nucleusys.com> wrote: > > > On
+    21-07-31 00:44:11, Pavel Skripkin wrote: > > > Syzbot reported un [...] 
+ Content analysis details:   (-1.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 12:54 PM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Mon, Jul 26, 2021 at 6:44 AM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > On Mon, Jul 26, 2021 at 12:27 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > [...]
-> > >
-> > > Is process_mrelease on all of them really necessary? I thought that the
-> > > primary reason for the call is to guarantee a forward progress in cases
-> > > where the userspace OOM victim cannot die on SIGKILL. That should be
-> > > more an exception than a normal case, no?
-> > >
-> >
-> > I am thinking of using this API in this way: On user-defined OOM
-> > condition, kill a job/cgroup and unconditionally reap all of its
-> > processes. Keep monitoring the situation and if it does not improve go
-> > for another kill and reap.
-> >
-> > I can add additional logic in between kill and reap to see if reap is
-> > necessary but unconditionally reaping is more simple.
-> >
-> > >
-> > > > An alternative would be to have a cgroup specific interface for
-> > > > reaping similar to cgroup.kill.
-> > >
-> > > Could you elaborate?
-> > >
-> >
-> > I mentioned this in [1] where I was thinking if it makes sense to
-> > overload cgroup.kill to also add the SIGKILLed processes in
-> > oom_reaper_list. The downside would be that there will be one thread
-> > doing the reaping and the syscall approach allows userspace to reap in
-> > multiple threads. I think for now, I would go with whatever Suren is
-> > proposing and we can always add more stuff if need arises.
-> >
-> > [1] https://lore.kernel.org/containers/CALvZod4jsb6bFzTOS4ZRAJGAzBru0oWanAhezToprjACfGm+ew@mail.gmail.com/
->
-> Hi Folks,
-> So far I don't think there was any request for further changes.
-> Anything else you would want me to address or are we in a good shape
-> wrt this feature?
-> If so, would people who had a chance to review this patchset be
-> willing to endorse it with their Reviewed-by or Acked-by?
+On 21-08-01 22:35:13, Pavel Skripkin wrote:
+> On Sun, 1 Aug 2021 15:36:27 +0300
+> Petko Manolov <petkan@nucleusys.com> wrote:
+> 
+> > On 21-07-31 00:44:11, Pavel Skripkin wrote:
+> > > Syzbot reported uninit value pegasus_probe(). The problem was in missing
+> > > error handling.
+> > > 
+> > > get_interrupt_interval() internally calls read_eprom_word() which can fail
+> > > in some cases. For example: failed to receive usb control message. These
+> > > cases should be handled to prevent uninit value bug, since
+> > > read_eprom_word() will not initialize passed stack variable in case of
+> > > internal failure.
+> > 
+> > Well, this is most definitelly a bug.
+> > 
+> > ACK!
+> > 
+> > 
+> > 		Petko
+> > 
+> > 
+> 
+> Thank you, Petko!
+> 
+> 
+> BTW: I found a lot uses of {get,set}_registers without error checking. I
+> think, some of them could be fixed easily (like in enable_eprom_write), but, I
+> guess, disable_eprom_write is not so easy. For example, if we cannot disable
+> eprom should we retry? If not, will device get in some unexpected state?
+> 
+> Im not familiar with this device, but I can prepare a patch to wrap all these
+> calls with proper error checking
 
-I think with Michal's suggestion to use a killable mmap lock, at least
-I am good with the patch.
+Here goes a preliminary patch that should apply on top of your, maybe with just
+a few warnings.  This is a review only diff, not the real patch.  It's against
+5.14-rc4.
+
+I am mildly curious why syzbot didn't catch the same type of bug in
+enable_net_traffic() and setup_pegasus_II() for example.
+
+
+		Petko
+
+---
+
+diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
+index 9a907182569c..eafbe8107907 100644
+--- a/drivers/net/usb/pegasus.c
++++ b/drivers/net/usb/pegasus.c
+@@ -26,6 +26,8 @@
+  *		...
+  *		v0.9.3	simplified [get|set]_register(s), async update registers
+  *			logic revisited, receive skb_pool removed.
++ *		v1.0.1	add error checking for set_register(s)(), see if calling
++ *			get_registers() has failed and print a message accordingly.
+  */
+ 
+ #include <linux/sched.h>
+@@ -45,7 +47,7 @@
+ /*
+  * Version Information
+  */
+-#define DRIVER_VERSION "v0.9.3 (2013/04/25)"
++#define DRIVER_VERSION "v1.0.1 (2021/08/01)"
+ #define DRIVER_AUTHOR "Petko Manolov <petkan@nucleusys.com>"
+ #define DRIVER_DESC "Pegasus/Pegasus II USB Ethernet driver"
+ 
+@@ -132,9 +134,15 @@ static int get_registers(pegasus_t *pegasus, __u16 indx, __u16 size, void *data)
+ static int set_registers(pegasus_t *pegasus, __u16 indx, __u16 size,
+ 			 const void *data)
+ {
+-	return usb_control_msg_send(pegasus->usb, 0, PEGASUS_REQ_SET_REGS,
++	int ret;
++
++	ret = usb_control_msg_send(pegasus->usb, 0, PEGASUS_REQ_SET_REGS,
+ 				    PEGASUS_REQT_WRITE, 0, indx, data, size,
+ 				    1000, GFP_NOIO);
++	if (ret < 0)
++		netif_dbg(pegasus, drv, pegasus->net, "%s failed with %d\n", __func__, ret);
++
++	return ret;
+ }
+ 
+ /*
+@@ -145,10 +153,15 @@ static int set_registers(pegasus_t *pegasus, __u16 indx, __u16 size,
+ static int set_register(pegasus_t *pegasus, __u16 indx, __u8 data)
+ {
+ 	void *buf = &data;
++	int ret;
+ 
+-	return usb_control_msg_send(pegasus->usb, 0, PEGASUS_REQ_SET_REG,
++	ret = usb_control_msg_send(pegasus->usb, 0, PEGASUS_REQ_SET_REG,
+ 				    PEGASUS_REQT_WRITE, data, indx, buf, 1,
+ 				    1000, GFP_NOIO);
++	if (ret < 0)
++		netif_dbg(pegasus, drv, pegasus->net, "%s failed with %d\n", __func__, ret);
++
++	return ret;
+ }
+ 
+ static int update_eth_regs_async(pegasus_t *pegasus)
+@@ -188,10 +201,9 @@ static int update_eth_regs_async(pegasus_t *pegasus)
+ 
+ static int __mii_op(pegasus_t *p, __u8 phy, __u8 indx, __u16 *regd, __u8 cmd)
+ {
+-	int i;
+-	__u8 data[4] = { phy, 0, 0, indx };
++	int i, ret = -ETIMEDOUT;
+ 	__le16 regdi;
+-	int ret = -ETIMEDOUT;
++	__u8 data[4] = { phy, 0, 0, indx };
+ 
+ 	if (cmd & PHY_WRITE) {
+ 		__le16 *t = (__le16 *) & data[1];
+@@ -211,8 +223,9 @@ static int __mii_op(pegasus_t *p, __u8 phy, __u8 indx, __u16 *regd, __u8 cmd)
+ 		goto fail;
+ 	if (cmd & PHY_READ) {
+ 		ret = get_registers(p, PhyData, 2, &regdi);
++		if (ret < 0)
++			goto fail;
+ 		*regd = le16_to_cpu(regdi);
+-		return ret;
+ 	}
+ 	return 0;
+ fail:
+@@ -235,9 +248,13 @@ static int write_mii_word(pegasus_t *pegasus, __u8 phy, __u8 indx, __u16 *regd)
+ static int mdio_read(struct net_device *dev, int phy_id, int loc)
+ {
+ 	pegasus_t *pegasus = netdev_priv(dev);
++	int ret;
+ 	u16 res;
+ 
+-	read_mii_word(pegasus, phy_id, loc, &res);
++	ret = read_mii_word(pegasus, phy_id, loc, &res);
++	if (ret < 0)
++		return ret;
++
+ 	return (int)res;
+ }
+ 
+@@ -251,10 +268,9 @@ static void mdio_write(struct net_device *dev, int phy_id, int loc, int val)
+ 
+ static int read_eprom_word(pegasus_t *pegasus, __u8 index, __u16 *retdata)
+ {
+-	int i;
+-	__u8 tmp = 0;
++	int ret, i;
+ 	__le16 retdatai;
+-	int ret;
++	__u8 tmp = 0;
+ 
+ 	set_register(pegasus, EpromCtrl, 0);
+ 	set_register(pegasus, EpromOffset, index);
+@@ -262,21 +278,25 @@ static int read_eprom_word(pegasus_t *pegasus, __u8 index, __u16 *retdata)
+ 
+ 	for (i = 0; i < REG_TIMEOUT; i++) {
+ 		ret = get_registers(pegasus, EpromCtrl, 1, &tmp);
++		if (ret < 0)
++			goto fail;
+ 		if (tmp & EPROM_DONE)
+ 			break;
+-		if (ret == -ESHUTDOWN)
+-			goto fail;
+ 	}
+-	if (i >= REG_TIMEOUT)
++	if (i >= REG_TIMEOUT) {
++		ret = -ETIMEDOUT;
+ 		goto fail;
++	}
+ 
+ 	ret = get_registers(pegasus, EpromData, 2, &retdatai);
++	if (ret < 0)
++		goto fail;
+ 	*retdata = le16_to_cpu(retdatai);
+ 	return ret;
+ 
+ fail:
+-	netif_warn(pegasus, drv, pegasus->net, "%s failed\n", __func__);
+-	return -ETIMEDOUT;
++	netif_dbg(pegasus, drv, pegasus->net, "%s failed\n", __func__);
++	return ret;
+ }
+ 
+ #ifdef	PEGASUS_WRITE_EEPROM
+@@ -324,10 +344,10 @@ static int write_eprom_word(pegasus_t *pegasus, __u8 index, __u16 data)
+ 	return ret;
+ 
+ fail:
+-	netif_warn(pegasus, drv, pegasus->net, "%s failed\n", __func__);
++	netif_dbg(pegasus, drv, pegasus->net, "%s failed\n", __func__);
+ 	return -ETIMEDOUT;
+ }
+-#endif				/* PEGASUS_WRITE_EEPROM */
++#endif	/* PEGASUS_WRITE_EEPROM */
+ 
+ static inline int get_node_id(pegasus_t *pegasus, u8 *id)
+ {
+@@ -367,19 +387,21 @@ static void set_ethernet_addr(pegasus_t *pegasus)
+ 	return;
+ err:
+ 	eth_hw_addr_random(pegasus->net);
+-	dev_info(&pegasus->intf->dev, "software assigned MAC address.\n");
++	netif_dbg(pegasus, drv, pegasus->net, "software assigned MAC address.\n");
+ 
+ 	return;
+ }
+ 
+ static inline int reset_mac(pegasus_t *pegasus)
+ {
++	int ret, i;
+ 	__u8 data = 0x8;
+-	int i;
+ 
+ 	set_register(pegasus, EthCtrl1, data);
+ 	for (i = 0; i < REG_TIMEOUT; i++) {
+-		get_registers(pegasus, EthCtrl1, 1, &data);
++		ret = get_registers(pegasus, EthCtrl1, 1, &data);
++		if (ret < 0)
++			goto fail;
+ 		if (~data & 0x08) {
+ 			if (loopback)
+ 				break;
+@@ -402,22 +424,29 @@ static inline int reset_mac(pegasus_t *pegasus)
+ 	}
+ 	if (usb_dev_id[pegasus->dev_index].vendor == VENDOR_ELCON) {
+ 		__u16 auxmode;
+-		read_mii_word(pegasus, 3, 0x1b, &auxmode);
++		ret = read_mii_word(pegasus, 3, 0x1b, &auxmode);
++		if (ret < 0)
++			goto fail;
+ 		auxmode |= 4;
+ 		write_mii_word(pegasus, 3, 0x1b, &auxmode);
+ 	}
+ 
+ 	return 0;
++fail:
++	netif_dbg(pegasus, drv, pegasus->net, "%s failed\n", __func__);
++	return ret;
+ }
+ 
+ static int enable_net_traffic(struct net_device *dev, struct usb_device *usb)
+ {
+-	__u16 linkpart;
+-	__u8 data[4];
+ 	pegasus_t *pegasus = netdev_priv(dev);
+ 	int ret;
++	__u16 linkpart;
++	__u8 data[4];
+ 
+-	read_mii_word(pegasus, pegasus->phy, MII_LPA, &linkpart);
++	ret = read_mii_word(pegasus, pegasus->phy, MII_LPA, &linkpart);
++	if (ret < 0)
++		goto fail;
+ 	data[0] = 0xc8; /* TX & RX enable, append status, no CRC */
+ 	data[1] = 0;
+ 	if (linkpart & (ADVERTISE_100FULL | ADVERTISE_10FULL))
+@@ -435,11 +464,16 @@ static int enable_net_traffic(struct net_device *dev, struct usb_device *usb)
+ 	    usb_dev_id[pegasus->dev_index].vendor == VENDOR_LINKSYS2 ||
+ 	    usb_dev_id[pegasus->dev_index].vendor == VENDOR_DLINK) {
+ 		u16 auxmode;
+-		read_mii_word(pegasus, 0, 0x1b, &auxmode);
++		ret = read_mii_word(pegasus, 0, 0x1b, &auxmode);
++		if (ret < 0)
++			goto fail;
+ 		auxmode |= 4;
+ 		write_mii_word(pegasus, 0, 0x1b, &auxmode);
+ 	}
+ 
++	return 0;
++fail:
++	netif_dbg(pegasus, drv, pegasus->net, "%s failed\n", __func__);
+ 	return ret;
+ }
+ 
+@@ -447,9 +481,9 @@ static void read_bulk_callback(struct urb *urb)
+ {
+ 	pegasus_t *pegasus = urb->context;
+ 	struct net_device *net;
++	u8 *buf = urb->transfer_buffer;
+ 	int rx_status, count = urb->actual_length;
+ 	int status = urb->status;
+-	u8 *buf = urb->transfer_buffer;
+ 	__u16 pkt_len;
+ 
+ 	if (!pegasus)
+@@ -1049,6 +1083,7 @@ static __u8 mii_phy_probe(pegasus_t *pegasus)
+ 
+ static inline void setup_pegasus_II(pegasus_t *pegasus)
+ {
++	int ret;
+ 	__u8 data = 0xa5;
+ 
+ 	set_register(pegasus, Reg1d, 0);
+@@ -1060,7 +1095,9 @@ static inline void setup_pegasus_II(pegasus_t *pegasus)
+ 		set_register(pegasus, Reg7b, 2);
+ 
+ 	set_register(pegasus, 0x83, data);
+-	get_registers(pegasus, 0x83, 1, &data);
++	ret = get_registers(pegasus, 0x83, 1, &data);
++	if (ret < 0)
++		goto fail;
+ 
+ 	if (data == 0xa5)
+ 		pegasus->chip = 0x8513;
+@@ -1075,6 +1112,8 @@ static inline void setup_pegasus_II(pegasus_t *pegasus)
+ 		set_register(pegasus, Reg81, 6);
+ 	else
+ 		set_register(pegasus, Reg81, 2);
++fail:
++	netif_dbg(pegasus, drv, pegasus->net, "%s failed\n", __func__);
+ }
+ 
+ static void check_carrier(struct work_struct *work)
+
