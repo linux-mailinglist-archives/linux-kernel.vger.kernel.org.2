@@ -2,76 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9369F3DDBDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D933DDBDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234705AbhHBPGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:06:54 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40593 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234291AbhHBPGu (ORCPT
+        id S234598AbhHBPFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:05:47 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:34244 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234340AbhHBPFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:06:50 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 172F5HMY027185
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 2 Aug 2021 11:05:18 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 7350D15C3DD2; Mon,  2 Aug 2021 11:05:17 -0400 (EDT)
-Date:   Mon, 2 Aug 2021 11:05:17 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com, kari.argillander@gmail.com,
-        oleksandr@natalenko.name
-Subject: Re: [PATCH v27 00/10] NTFS read-write driver GPL implementation by
- Paragon Software
-Message-ID: <YQgJrYPphDC4W4Q3@mit.edu>
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210729162459.GA3601405@magnolia>
- <YQdlJM6ngxPoeq4U@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQdlJM6ngxPoeq4U@mit.edu>
+        Mon, 2 Aug 2021 11:05:46 -0400
+Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
+        by mail.holtmann.org (Postfix) with ESMTPSA id B92E9CED0B;
+        Mon,  2 Aug 2021 17:05:33 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH 1/1] Bluetooth: btusb: Enable MSFT extension for Mediatek
+ Chip (MT7921)
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210802125941.29078-1-mark-yw.chen@mediatek.com>
+Date:   Mon, 2 Aug 2021 17:05:33 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>, chris.lu@mediatek.com,
+        will-cy.lee@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        michaelfsun@google.com, shawnku@google.com, jemele@google.com,
+        apusaka@google.com
+Content-Transfer-Encoding: 7bit
+Message-Id: <838E84AB-1F38-45A3-A5B7-27CE134FFD49@holtmann.org>
+References: <20210802125941.29078-1-mark-yw.chen@mediatek.com>
+To:     =?utf-8?B?Ik1hcmstWVcgQ2hlbiAo6Zmz5o+a5paHKSI=?= 
+        <Mark-YW.Chen@mediatek.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It should also noted that apparently ntfs3 does not properly support
-user namespaces, such that generic/317 fails:
+Hi Mark,
 
-generic/317		[10:37:19][    7.024574] run fstests generic/317 at 2021-08-02 10:37:19
- [10:37:19]- output mismatch (see /results/ntfs3/results-default/generic/317.out.bad)
-    --- tests/generic/317.out	2021-08-01 20:47:35.000000000 -0400
-    +++ /results/ntfs3/results-default/generic/317.out.bad	2021-08-02 10:37:19.930687003 -0400
-    @@ -13,8 +13,8 @@
-     From init_user_ns
-       File: "$SCRATCH_MNT/file1"
-       Size: 0            Filetype: Regular File
-    -  Mode: (0644/-rw-r--r--)         Uid: (qa_user)  Gid: (qa_user)
-    +  Mode: (0755/-rwxr-xr-x)         Uid: (0)  Gid: (0)
-     From user_ns
-       File: "$SCRATCH_MNT/file1"
-    ...
-    (Run 'diff -u /root/xfstests/tests/generic/317.out /results/ntfs3/results-default/generic/317.out.bad'  to see the entire diff)
-Ran: generic/317
-Failures: generic/317
+> The Mdiatek MT7921(7961) support MSFT HCI extensions, we are using
+> 0xFD30 for VsMsftOpCode.
+> 
+> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
+> ---
+> drivers/bluetooth/btusb.c | 2 ++
+> 1 file changed, 2 insertions(+)
 
+patch has been applied to bluetooth-next tree.
 
-Is Paragon Software willing to commit to fixing these and other bugs?
-Better yet, it would be nice if Paragon Software could improve its
-testing and other QA processes.
+Regards
 
-Furthermore, container developers should note that ntfs3 is not
-currently safe for use with containers.
+Marcel
 
-   	   	    	       	      - Ted
