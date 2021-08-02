@@ -2,138 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C103DDEEC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077943DDEEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhHBSJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47888 "EHLO
+        id S230167AbhHBSJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhHBSJA (ORCPT
+        with ESMTP id S229537AbhHBSJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:09:00 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B30C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:08:50 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id x7-20020a170902b407b029012c8cffc695so8256747plr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:08:50 -0700 (PDT)
+        Mon, 2 Aug 2021 14:09:24 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76242C06175F;
+        Mon,  2 Aug 2021 11:09:14 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id e21so20577631pla.5;
+        Mon, 02 Aug 2021 11:09:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=j+JSAL2TyTO06rmOJxXfenDO1JaBiOx8vJieMlI9pfs=;
-        b=UcuHbh2lDaqGs/MbwByb6nz+B/co5nzT1R6NZhmA9NdIsZ040uo8xyHQh0XBBND7N5
-         FI3HwlivUGntgnh0D27Em+HiAYwCVDKhqhfH8YZqQr00B7tzgf1u57utnYjG6aBwlvLF
-         zFfPvhhCPnxnqP3fbByF+3iehSxCd4BIkM9ceagxD6y9bOjLtC0LxoDDrFvIVYdK6RUz
-         W6vlGioEeNf8j8C4Zerh4WMqwFyKa206rBGYI+IDnAWVAHEZrfbfIqzVOHQfXRNGygq5
-         9DkbD0DIugA89cd7d6aIje5OBCTvhjnYkYEirB168/1Atr4V9lq2mK4GRyUBBX6ij9wm
-         +FEg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=T2v/c84JGgZj8frH8nCtCcL6naJ0wiQBy76zvSdrpt0=;
+        b=JlNE/WLk87Wu2Wsfx1md0X2XnnGc4XtjkXVv1c0A/uyB8pMdhhlq/JHomOX/IqskPU
+         p7jbBxco4djceLFb7pfxzFqpKFqRf5cGAwMx656yWmrO/RKUVyd9hsi67sruX0OeJX7b
+         /YSdpnlmREUD/x4E5HmoZ2Zbwm/bjEgb/564reAIYjdU0Zvvce9bMylGCQlaB+BZO+/x
+         jIYVDR66XhlMGKLgJxF1fU5wNQV50wvzLrJv1gg5qmBmF8UNGbX6kaEzAT+r/Exk47BI
+         oUxORf2S9ji7xJYEiyJ1VMp1oyd36mJx45zjmltU1BJETwWu1bGghRWloO9srbsjZTbV
+         qGYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=j+JSAL2TyTO06rmOJxXfenDO1JaBiOx8vJieMlI9pfs=;
-        b=Ke8F7HqI1kxz3JN6pxYV/0fE2IdvXauozJVkb7SR77EAoA1NtKHXpkZLrjNG+g6758
-         1gAuaBBmbkGUYQ9gVr2kck1rhVf3rX7mH15jfbFtavU6AGqn+oLIm/Frro2ckhUryuMN
-         6ekVYUoHp4eCEk00rbLWxtwYVSGcEMFyvCB4A9aY4QMemahRvYxlfv39Y1WfNi8CdCeg
-         W3Jh9q7aPdA/9WVGbA1JuWW7eHjSyvGGzuwiUBXjtlr2kQCRnA5nHTrF874cjhUA3xWz
-         OFlOfQw3/0Ijy43ETrA8BuYtKK741C4dGyWM/8gPAVS+a+kMV5YnvWYSdX5wFj5W6711
-         O1cw==
-X-Gm-Message-State: AOAM532LjX5whuCcn9jIbU3y3eBqRDcGqPo2Lx/q6We72/2mGYjNqbBL
-        srZp+6ZVtxqmK35XUZg2mjl+zLtoUuHpVg==
-X-Google-Smtp-Source: ABdhPJyd4GLuBK30tc+5jzFp8zuC3MlneqxzEE85Lh3H94nGR7V9ZsC5tnunYlguKVQtH2odY7sLIdyuQCtq3Q==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:75f8:2e73:f9c:f799])
- (user=shakeelb job=sendgmr) by 2002:a17:90b:3d6:: with SMTP id
- go22mr18047527pjb.40.1627927729598; Mon, 02 Aug 2021 11:08:49 -0700 (PDT)
-Date:   Mon,  2 Aug 2021 11:08:18 -0700
-Message-Id: <20210802180819.1110165-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH] slub: fix kmalloc_pagealloc_invalid_free unit test
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=T2v/c84JGgZj8frH8nCtCcL6naJ0wiQBy76zvSdrpt0=;
+        b=KazcSCraZ+isItBLI0l+lZVr1SeDQXz+QQxBjL0nxd4Pw0uXIM8hO//42dLhrstKop
+         P3shGLNLzTdhPnJgw1GRb2f5M1FYNFOP6N/4jfuV7+QTS+LGdXwad0DQSMe0TzwCytjT
+         n93t1CMWIrIBGC9Fa9kEw3zK3eWkNtwqej4btwGOwqLJa+TJsQkiRjOIl4yNcIkRRZGr
+         ddlJSIsAYqrYKMIcNbqpIcWzw+bhCdpRW/UeFmez4hONuqjzWCRC841kLRmpudoP9Ban
+         dGLeVMjCwHU8597K89Wnvow7+qBGgZinhpoTytimXI5gEYPT+vIKegwiz4NXY8MoSNcu
+         9h+Q==
+X-Gm-Message-State: AOAM533BWYIEyHAMAhJEXNoaXGCPi79pNDSOhj9CpVaLhMZ1BcomTBAx
+        5WQJhSdfOM3GX5/6Qbn7gZQ=
+X-Google-Smtp-Source: ABdhPJwlOQXf/tuXtqwaHwV52O2Rnw9+gwyxKG+X4MW5FvmW0aAMt6vDnC8Y3faKtiuOVlOlE4H9AQ==
+X-Received: by 2002:a63:f62:: with SMTP id 34mr2460375pgp.159.1627927754057;
+        Mon, 02 Aug 2021 11:09:14 -0700 (PDT)
+Received: from localhost.localdomain ([49.36.83.2])
+        by smtp.gmail.com with ESMTPSA id d2sm14333379pgk.57.2021.08.02.11.09.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Aug 2021 11:09:13 -0700 (PDT)
+From:   Raag Jadav <raagjadav@gmail.com>
+To:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Raag Jadav <raagjadav@gmail.com>
+Subject: [PATCH] arm64: dts: ls1046a: fix eeprom entries
+Date:   Mon,  2 Aug 2021 23:39:02 +0530
+Message-Id: <1627927742-8675-1-git-send-email-raagjadav@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The unit test kmalloc_pagealloc_invalid_free makes sure that for the
-higher order slub allocation which goes to page allocator, the free is
-called with the correct address i.e. the virtual address of the head
-page.
+ls1046afrwy and ls1046ardb boards have CAT24C04[1] and CAT24C05[2]
+eeproms respectively. Both are 4Kb (512 bytes) in size.
+Remove multi-address entries, as we have auto-rollover support
+in at24 driver.
 
-The commit f227f0faf63b ("slub: fix unreclaimable slab stat for bulk
-free") unified the free code paths for page allocator based slub
-allocations but instead of using the address passed by the caller, it
-extracted the address from the page. Thus making the unit test
-kmalloc_pagealloc_invalid_free moot. So, fix this by using the address
-passed by the caller.
+[1] https://www.onsemi.com/pdf/datasheet/cat24c01-d.pdf
+[2] https://www.onsemi.com/pdf/datasheet/cat24c03-d.pdf
 
-Should we fix this? I think yes because dev expect kasan to catch these
-type of programming bugs.
-
-Fixes: f227f0faf63b ("slub: fix unreclaimable slab stat for bulk free")
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-
+Signed-off-by: Raag Jadav <raagjadav@gmail.com>
 ---
- mm/slub.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts | 8 +-------
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts  | 7 +------
+ 2 files changed, 2 insertions(+), 13 deletions(-)
 
-diff --git a/mm/slub.c b/mm/slub.c
-index af984e4990e8..60aeedc436d5 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3236,12 +3236,12 @@ struct detached_freelist {
- 	struct kmem_cache *s;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts b/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
+index db3d303..83afe21 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
+@@ -83,15 +83,9 @@
+ 			};
+ 
+ 			eeprom@52 {
+-				compatible = "atmel,24c512";
++				compatible = "atmel,24c04";
+ 				reg = <0x52>;
+ 			};
+-
+-			eeprom@53 {
+-				compatible = "atmel,24c512";
+-				reg = <0x53>;
+-			};
+-
+ 		};
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
+index 60acdf0..d220f98 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
+@@ -59,14 +59,9 @@
+ 	};
+ 
+ 	eeprom@52 {
+-		compatible = "atmel,24c512";
++		compatible = "atmel,24c04";
+ 		reg = <0x52>;
+ 	};
+-
+-	eeprom@53 {
+-		compatible = "atmel,24c512";
+-		reg = <0x53>;
+-	};
  };
  
--static inline void free_nonslab_page(struct page *page)
-+static inline void free_nonslab_page(struct page *page, void *object)
- {
- 	unsigned int order = compound_order(page);
- 
- 	VM_BUG_ON_PAGE(!PageCompound(page), page);
--	kfree_hook(page_address(page));
-+	kfree_hook(object);
- 	mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B, -(PAGE_SIZE << order));
- 	__free_pages(page, order);
- }
-@@ -3282,7 +3282,7 @@ int build_detached_freelist(struct kmem_cache *s, size_t size,
- 	if (!s) {
- 		/* Handle kalloc'ed objects */
- 		if (unlikely(!PageSlab(page))) {
--			free_nonslab_page(page);
-+			free_nonslab_page(page, object);
- 			p[size] = NULL; /* mark object processed */
- 			return size;
- 		}
-@@ -4258,7 +4258,7 @@ void kfree(const void *x)
- 
- 	page = virt_to_head_page(x);
- 	if (unlikely(!PageSlab(page))) {
--		free_nonslab_page(page);
-+		free_nonslab_page(page, object);
- 		return;
- 	}
- 	slab_free(page->slab_cache, page, object, NULL, 1, _RET_IP_);
+ &i2c3 {
 -- 
-2.32.0.554.ge1b32706d8-goog
+2.7.4
 
