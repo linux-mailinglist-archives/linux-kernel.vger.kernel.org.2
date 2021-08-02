@@ -2,171 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6953DD770
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C058B3DD771
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234030AbhHBNkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233826AbhHBNkf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:40:35 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87243C06175F;
-        Mon,  2 Aug 2021 06:40:25 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id m9so23946976ljp.7;
-        Mon, 02 Aug 2021 06:40:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Jv8pADUt4yLh8Zvkj2Wwg6PjtKLLuSJnq1IBfyqLTPQ=;
-        b=fHbHSk+ly2b1uuApY9A3faV6nTgSnmMnZJbaz5Dj7ZByMy45dqUSUkHo2otbrCKk2x
-         +81RCNfKeZr/LOVvcwCxoBMrBooaJAT8C4RNVqNcLju3A22ut7ehW7s/0MEzQTt77Dn8
-         9SVsBPVGqzt88Obk92BaO5QFpkTM/ljHSH+nOLk+9LRhoP+qwgAC/3vd1zZ6iXczIPwP
-         0Tf6RFlNJCTls7LUi8P6XhX1s1VPSl0kf5lR2hi0aGHPaazzBLpgXHRTUUPYDtbi3/aQ
-         g2NkkzfwTiayX6AtbLHtUPrTw/gtRBG3VtApXTtOUs8gvqR8qpgWUKr3JC0QDBG+GqRF
-         FfBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jv8pADUt4yLh8Zvkj2Wwg6PjtKLLuSJnq1IBfyqLTPQ=;
-        b=Gdczc7SenZ689x7ULcxht9SkCz88nNrEzNFYGXpbaV4maHBu2sfuK9JfYhRNdLFafa
-         V9dda8fI99jX+sSxbxurwdr0vzlOHR4LXGaVvrabY31X9se0GWr4dgpmMarexmu8Ph57
-         QHgGPjVODxKh9jnuOkAYTSoVmnJJFrBrDECYWXvHaXnKd7CnZHk/zNcaIVVnzuoaSDL+
-         G/jMRTKiMihSEvY5VpeZhBjrAEp5b9/8m+/fpdXd0gW64uHcKnYzeXbpfYnA/NU16Nzd
-         mi7Der6UTQQWUls5d1ynVsZl4UPAjfGcy5Cxypb8iAl27VwFEP4K3bhQqqzBj+5TacOX
-         VZ2A==
-X-Gm-Message-State: AOAM533dCYHC/1LbVzfdqmkuZXpMscr21Dsig7VwzjPR7Dmz7c7YeChx
-        LBWeF0+By6pP5e8wZDzxg8A=
-X-Google-Smtp-Source: ABdhPJxrR08Mepotg5t2qwFcX1z1f1faX8x6Vf0zkF6B/lDjqWbtZmiBqiRyXu+zZdvtKgAsx9cOJA==
-X-Received: by 2002:a2e:bf27:: with SMTP id c39mr11284669ljr.59.1627911623896;
-        Mon, 02 Aug 2021 06:40:23 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id o10sm962492lfl.129.2021.08.02.06.40.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 06:40:23 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 16:40:21 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v1 1/4] gpio: dwapb: Unify ACPI enumeration checks in
- get_irq() and configure_irqs()
-Message-ID: <20210802134021.flrkpmlrcjfxdrdr@mobilestation>
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
+        id S233973AbhHBNlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233826AbhHBNlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:41:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33C2760527;
+        Mon,  2 Aug 2021 13:41:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627911664;
+        bh=T6TWUTiAj92VMQeo9D2L0JR2kOWfrkEOeOZopIPa0VE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d/64efJ5zA/m+402dzhCDuHrU2jY302WfZWrU+aWmVSFHB1r9t/c9Ab73NR7fKLfe
+         IoAEEoJQ30itvaAF29kVH6quNSN4mjIxSxmydFAcKu51wVrt6JsExy0KpsL9Ri8mT/
+         iqBVItJ5uzfqnkHnB8CnRj5GQ3mj7oAt/r8joL1VY0vXNpBjh4N0ZwIbNDKBNOBvk6
+         X20sNlhtmkKu1Dfmp0IdqZB32qAbKqSIax+SRATS7pS+pAZ8fG0zMQ+YD+rY03DsDq
+         csW0RHmrSHGsDqA+wlyUfpWOpADzoo0GYh7LcIuXlSKtrAHWTU8HLodoysKTKP2nJn
+         req52quV0YsyA==
+Date:   Mon, 2 Aug 2021 14:40:59 +0100
+From:   Will Deacon <will@kernel.org>
+To:     David Stevens <stevensd@chromium.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] dma-iommu: fix arch_sync_dma for map with swiotlb
+Message-ID: <20210802134059.GC28547@willie-the-truck>
+References: <20210709033502.3545820-1-stevensd@google.com>
+ <20210709033502.3545820-3-stevensd@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210709033502.3545820-3-stevensd@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy
-Thanks for the cleanup series. A tiny note is below.
-
-On Mon, Jul 26, 2021 at 03:54:33PM +0300, Andy Shevchenko wrote:
-> Shared IRQ is only enabled for ACPI enumeration, there is no need
-> to have a special flag for that, since we simple can test if device
-> has been enumerated by ACPI. This unifies the checks in dwapb_get_irq()
-> and dwapb_configure_irqs().
+On Fri, Jul 09, 2021 at 12:35:00PM +0900, David Stevens wrote:
+> From: David Stevens <stevensd@chromium.org>
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> When calling arch_sync_dma, we need to pass it the memory that's
+> actually being used for dma. When using swiotlb bounce buffers, this is
+> the bounce buffer. Move arch_sync_dma into the __iommu_dma_map_swiotlb
+> helper, so it can use the bounce buffer address if necessary. This also
+> means it is no longer necessary to call iommu_dma_sync_sg_for_device in
+> iommu_dma_map_sg for untrusted devices.
+> 
+> Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
+> Signed-off-by: David Stevens <stevensd@chromium.org>
 > ---
->  drivers/gpio/gpio-dwapb.c                | 13 ++++++-------
->  drivers/mfd/intel_quark_i2c_gpio.c       |  1 -
->  include/linux/platform_data/gpio-dwapb.h |  1 -
->  3 files changed, 6 insertions(+), 9 deletions(-)
+>  drivers/iommu/dma-iommu.c | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-> index 3eb13d6d31ef..f6ae69d5d644 100644
-> --- a/drivers/gpio/gpio-dwapb.c
-> +++ b/drivers/gpio/gpio-dwapb.c
-> @@ -436,12 +436,7 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
->  	pirq->irqchip.irq_set_wake = dwapb_irq_set_wake;
->  #endif
->  
-
-> -	if (!pp->irq_shared) {
-> -		girq->num_parents = pirq->nr_irqs;
-> -		girq->parents = pirq->irq;
-> -		girq->parent_handler_data = gpio;
-> -		girq->parent_handler = dwapb_irq_handler;
-> -	} else {
-> +	if (has_acpi_companion(gpio->dev)) {
-
-Before this patch the platform flag irq_shared has been as kind of a
-hint regarding the shared IRQ case being covered here. But now it
-doesn't seem obvious why we've got the ACPI and ACPI-less cases
-differently handled. What about adding a small comment about that?
-E.g. like this: "Intel ACPI-based platforms mostly have the DW APB
-GPIO IRQ lane shared between several devices. In that case the
-parental IRQ has to be handled in the shared way so to be properly
-delivered to all the connected devices." or something more detailed
-for your preference. After that the rest of the comments in the
-if-clause could be discarded.
-
-Other than that, feel free to add:
->  drivers/gpio/gpio-dwapb.c                | 13 ++++++-------
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
-Tested-by: Serge Semin <fancer.lancer@gmail.com>
-
--Sergey
-
->  		/* This will let us handle the parent IRQ in the driver */
->  		girq->num_parents = 0;
->  		girq->parents = NULL;
-> @@ -458,6 +453,11 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
->  			dev_err(gpio->dev, "error requesting IRQ\n");
->  			goto err_kfree_pirq;
->  		}
-> +	} else {
-> +		girq->num_parents = pirq->nr_irqs;
-> +		girq->parents = pirq->irq;
-> +		girq->parent_handler_data = gpio;
-> +		girq->parent_handler = dwapb_irq_handler;
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index eac65302439e..e79e274d2dc5 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -574,6 +574,9 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+>  		memset(padding_start, 0, padding_size);
 >  	}
 >  
->  	girq->chip = &pirq->irqchip;
-> @@ -581,7 +581,6 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
->  			pp->ngpio = DWAPB_MAX_GPIOS;
->  		}
->  
-> -		pp->irq_shared	= false;
->  		pp->gpio_base	= -1;
->  
->  		/*
-> diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
-> index 01935ae4e9e1..a43993e38b6e 100644
-> --- a/drivers/mfd/intel_quark_i2c_gpio.c
-> +++ b/drivers/mfd/intel_quark_i2c_gpio.c
-> @@ -227,7 +227,6 @@ static int intel_quark_gpio_setup(struct pci_dev *pdev)
->  	pdata->properties->ngpio	= INTEL_QUARK_MFD_NGPIO;
->  	pdata->properties->gpio_base	= INTEL_QUARK_MFD_GPIO_BASE;
->  	pdata->properties->irq[0]	= pci_irq_vector(pdev, 0);
-> -	pdata->properties->irq_shared	= true;
->  
->  	cell->platform_data = pdata;
->  	cell->pdata_size = sizeof(*pdata);
-> diff --git a/include/linux/platform_data/gpio-dwapb.h b/include/linux/platform_data/gpio-dwapb.h
-> index 0aa5c6720259..535e5ed549d9 100644
-> --- a/include/linux/platform_data/gpio-dwapb.h
-> +++ b/include/linux/platform_data/gpio-dwapb.h
-> @@ -14,7 +14,6 @@ struct dwapb_port_property {
->  	unsigned int	ngpio;
->  	unsigned int	gpio_base;
->  	int		irq[DWAPB_MAX_GPIOS];
-> -	bool		irq_shared;
->  };
->  
->  struct dwapb_platform_data {
-> -- 
-> 2.30.2
-> 
+> +	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> +		arch_sync_dma_for_device(phys, org_size, dir);
+
+I think this relies on the swiotlb buffers residing in the linear mapping
+(i.e. where phys_to_virt() is reliable), which doesn't look like a safe
+assumption to me.
+
+Will
