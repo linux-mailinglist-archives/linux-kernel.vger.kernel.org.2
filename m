@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFE33DD8B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71ACA3DD8A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236091AbhHBNy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:54:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33536 "EHLO mail.kernel.org"
+        id S234777AbhHBNx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234770AbhHBNuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:50:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D96DD61103;
-        Mon,  2 Aug 2021 13:49:52 +0000 (UTC)
+        id S233719AbhHBNta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:49:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C7D960FA0;
+        Mon,  2 Aug 2021 13:49:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912193;
-        bh=KFdNe7Jh42YGEmZ1gQ/r+HkoAS86CXfZzlbotX9vKuE=;
+        s=korg; t=1627912160;
+        bh=QnfZFrJxQUEGBbtwaQ6h3iB1rrwG0NwCaCY4gQllYVY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DIYpwKXSU1QInMWd57X9TP+H87Cs2IWRX81S4wRqsub6mpzoeksFetRJTVo0zSajR
-         SNTyCrt9HGW8TGSGbnRLVKeXdO2dGA11cdWaxG3OmRHFWtkpQNRKqkNGQ00g6Kx3lj
-         hS7T+7ZB20sF2+4B452EkMMdpWYsQL7AnJStYVps=
+        b=x361RwUKz5Glr0TNyJ4tP1sH+73L/V1LZuTU94PEYIIf21anYwtg8CuFS5mHEbqhe
+         JIjJEmu4nEYTAEGgTXovA25venFllnWoTKh3M+V1ejMFkOA6mezk+c/7gjKCWwWtzV
+         4cD9V0t7oUo8EOUpE+fIsBY01teeQXMibG9jYmII=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 20/30] tipc: fix sleeping in tipc accept routine
+Subject: [PATCH 4.14 36/38] sis900: Fix missing pci_disable_device() in probe and remove
 Date:   Mon,  2 Aug 2021 15:44:58 +0200
-Message-Id: <20210802134334.714170253@linuxfoundation.org>
+Message-Id: <20210802134335.968857303@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
-References: <20210802134334.081433902@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit d237a7f11719ff9320721be5818352e48071aab6 ]
+[ Upstream commit 89fb62fde3b226f99b7015280cf132e2a7438edf ]
 
-The release_sock() is blocking function, it would change the state
-after sleeping. In order to evaluate the stated condition outside
-the socket lock context, switch to use wait_woken() instead.
+Replace pci_enable_device() with pcim_enable_device(),
+pci_disable_device() and pci_release_regions() will be
+called in release automatically.
 
-Fixes: 6398e23cdb1d8 ("tipc: standardize accept routine")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/socket.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/sis/sis900.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 3c41fb8edc5f..6aead6deaa6c 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -2440,7 +2440,7 @@ static int tipc_listen(struct socket *sock, int len)
- static int tipc_wait_for_accept(struct socket *sock, long timeo)
- {
- 	struct sock *sk = sock->sk;
--	DEFINE_WAIT(wait);
-+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 	int err;
+diff --git a/drivers/net/ethernet/sis/sis900.c b/drivers/net/ethernet/sis/sis900.c
+index 43b090f61cdc..aebc85a5e08a 100644
+--- a/drivers/net/ethernet/sis/sis900.c
++++ b/drivers/net/ethernet/sis/sis900.c
+@@ -441,7 +441,7 @@ static int sis900_probe(struct pci_dev *pci_dev,
+ #endif
  
- 	/* True wake-one mechanism for incoming connections: only
-@@ -2449,12 +2449,12 @@ static int tipc_wait_for_accept(struct socket *sock, long timeo)
- 	 * anymore, the common case will execute the loop only once.
- 	*/
- 	for (;;) {
--		prepare_to_wait_exclusive(sk_sleep(sk), &wait,
--					  TASK_INTERRUPTIBLE);
- 		if (timeo && skb_queue_empty(&sk->sk_receive_queue)) {
-+			add_wait_queue(sk_sleep(sk), &wait);
- 			release_sock(sk);
--			timeo = schedule_timeout(timeo);
-+			timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, timeo);
- 			lock_sock(sk);
-+			remove_wait_queue(sk_sleep(sk), &wait);
- 		}
- 		err = 0;
- 		if (!skb_queue_empty(&sk->sk_receive_queue))
-@@ -2466,7 +2466,6 @@ static int tipc_wait_for_accept(struct socket *sock, long timeo)
- 		if (signal_pending(current))
- 			break;
+ 	/* setup various bits in PCI command register */
+-	ret = pci_enable_device(pci_dev);
++	ret = pcim_enable_device(pci_dev);
+ 	if(ret) return ret;
+ 
+ 	i = pci_set_dma_mask(pci_dev, DMA_BIT_MASK(32));
+@@ -467,7 +467,7 @@ static int sis900_probe(struct pci_dev *pci_dev,
+ 	ioaddr = pci_iomap(pci_dev, 0, 0);
+ 	if (!ioaddr) {
+ 		ret = -ENOMEM;
+-		goto err_out_cleardev;
++		goto err_out;
  	}
--	finish_wait(sk_sleep(sk), &wait);
- 	return err;
+ 
+ 	sis_priv = netdev_priv(net_dev);
+@@ -575,8 +575,6 @@ err_unmap_tx:
+ 		sis_priv->tx_ring_dma);
+ err_out_unmap:
+ 	pci_iounmap(pci_dev, ioaddr);
+-err_out_cleardev:
+-	pci_release_regions(pci_dev);
+  err_out:
+ 	free_netdev(net_dev);
+ 	return ret;
+@@ -2423,7 +2421,6 @@ static void sis900_remove(struct pci_dev *pci_dev)
+ 		sis_priv->tx_ring_dma);
+ 	pci_iounmap(pci_dev, sis_priv->ioaddr);
+ 	free_netdev(net_dev);
+-	pci_release_regions(pci_dev);
  }
  
+ #ifdef CONFIG_PM
 -- 
 2.30.2
 
