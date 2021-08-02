@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1113DDB88
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B893DDB92
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhHBOwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:52:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233925AbhHBOwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:52:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B45E60F70;
-        Mon,  2 Aug 2021 14:52:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627915921;
-        bh=6t51VO9yCjRtkFGlvwCg/xuFX5HR4ZRg5q15g2jcCKw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jmhwzY2WNEivRJ2JEN0fyJxqDv4j+d2EC8B19QZN6u1vj/o5cL1KVY+/HS5LSB3fd
-         wugLh1HC71glvGjuOume0HoTAuLyjVY7NdXuGdF9j9QwQ/nv1AN6VCcOYVbyJA8XVj
-         obDBnCoxyjunn6wW4x8hF46W1nCKS24P7slC+tWX2KIs4Ipb28wNo1n5ekta+kqKeR
-         Fd9Si5v+IfIhfEdFeexGYx6WjPIDvhgZt1BIxb33mBo1c/knqyOG4CmeGkuyQ8h3Ij
-         nKmIupR9JD7kDUOve/1Tg8f0zmu4heC4rpzDhkyv6VPr56tcFvQOyxrnNISkuup51J
-         +GnbaITXO1IIQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 80BA1403F2; Mon,  2 Aug 2021 11:51:58 -0300 (-03)
-Date:   Mon, 2 Aug 2021 11:51:58 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     mathieu.poirier@linaro.org, coresight@lists.linaro.org,
-        linux-perf-users@vger.kernel.org, leo.yan@linaro.org,
-        suzuki.poulose@arm.com, mike.leach@linaro.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH 6/6] perf cs-etm: Add warnings for missing DSOs
-Message-ID: <YQgGjlWtbaNApkp6@kernel.org>
-References: <20210729155805.2830-1-james.clark@arm.com>
- <20210729155805.2830-7-james.clark@arm.com>
+        id S234620AbhHBOxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234579AbhHBOxT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:53:19 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9C8C061796
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 07:53:09 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id e19so31323653ejs.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 07:53:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h2IiuJBcGGHlU+MZOjJcOdM9TvLs3ZLSnxY+XqABa0c=;
+        b=USbbLnzqSe8hzqWM6MzvtVB4fSWYo4OClr3p9ww33ZPRsdM8MzcX/U7glKcc5rddND
+         HlSvxeOH4qaLa+CbTy62XQzUpI6/GDhqUl3Raf1NKZgSSj4fDDUpHr9+1sEAiWsAenaZ
+         IBPwEAMHf+4PBDzd/06RF7q5oYEOW7F5tjLioL8BXQqxLT2JB3YZO5VAOO+7xMcUSnwj
+         9cTNw/c9HMe1miCLXfK2CBsy/RZu7J95iOEwE1oEVe6xo6m+akJWMQaqeX5IMLAh+6n5
+         rv8uMfOYFTwjNgdDV016+hPQsaISP6NMFbMPdKBd4w6jZLjvmQ/Q4s1zdushGvo6wIYT
+         rRkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h2IiuJBcGGHlU+MZOjJcOdM9TvLs3ZLSnxY+XqABa0c=;
+        b=MT6+MSLJKohG8DFz5cQPk8MUg7nH4JYu3FmuTJlXg+1gwAZrodagGQmgBiZN3+QA1g
+         er2wdO5sWjh/jtqSigmmuEpfvsnNHuIvtQX8c6IVH9GyRdvtpV9iM6bf9BjVxT91xO9w
+         suPKfZLX4PmIxXbZsA35l8awksD0aRZd28WWdJN9rC4BJdrbeuEe1O+8YnWy05ey2dmt
+         GwbwlVNMHH/JwbodAuyCrB6736p3X9c0neIdIY5eE+5ybiwmkJ173i35eL7pmtDlvswi
+         nNypOGb3gOdo9B2ndhUIJn2B/ntdkeWngiyMkY3gI1TTTVzabf8wKixDVvRjmXBBo80N
+         nZ/A==
+X-Gm-Message-State: AOAM532IOvRPnsjHzn/4rE1D0PEh6biWnRjT8HmUztDPyPQeYBXOZ8Qj
+        YAfdZHWBq0C7YeiPK/+GMsKzHVNpK3WuiFDo46e4Dg==
+X-Google-Smtp-Source: ABdhPJyBbigDvWGHVWOmQazVw8pxVXKqhiol21T3Dx4QXWONixp+CbjlyQf4i6I2RwpRHQdtWK86vFVNoEXF75wGOZc=
+X-Received: by 2002:a17:907:7895:: with SMTP id ku21mr15674328ejc.265.1627915987486;
+ Mon, 02 Aug 2021 07:53:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729155805.2830-7-james.clark@arm.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210729132818.4091769-1-qperret@google.com> <20210729132818.4091769-16-qperret@google.com>
+In-Reply-To: <20210729132818.4091769-16-qperret@google.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Mon, 2 Aug 2021 16:52:31 +0200
+Message-ID: <CA+EHjTxrdA3wVsBe7zwvvGUGgoWuaGwuWCBL0k2+FcAdTGB=Qw@mail.gmail.com>
+Subject: Re: [PATCH v3 15/21] KVM: arm64: Introduce addr_is_memory()
+To:     Quentin Perret <qperret@google.com>
+Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        dbrazdil@google.com, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 29, 2021 at 04:58:05PM +0100, James Clark escreveu:
-> Currently decode will silently fail if no binary data is available for
-> the decode. This is made worse if only partial data is available because
-> the decode will appear to work, but any trace from that missing DSO will
-> silently not be generated.
-> 
-> Add a UI popup once if there is any data missing, and then warn in the
-> bottom left for each individual DSO that's missing.
+Hi Quentin.
 
-Looks ok to me (the last 3 patches in this series, the rest I applied
-already), can I get some Acked-by/Reviewed-by from the CoreSight people?
+On Thu, Jul 29, 2021 at 3:28 PM Quentin Perret <qperret@google.com> wrote:
+>
+> Introduce a helper usable in nVHE protected mode to check whether a
+> physical address is in a RAM region or not.
+>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/kvm/hyp/include/nvhe/mem_protect.h | 1 +
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 7 +++++++
+>  2 files changed, 8 insertions(+)
+>
+> diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> index cc86598654b9..5968fbbb3514 100644
+> --- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> +++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> @@ -51,6 +51,7 @@ extern const u8 pkvm_hyp_id;
+>  int __pkvm_prot_finalize(void);
+>  int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end);
+>
+> +bool addr_is_memory(phys_addr_t phys);
+
+I'm just wondering about the naming of the function. I understand what
+you're trying to achieve with it, but an address without a unit that
+conveys size or type seems to be missing something. Would
+memregion_addr_is_memory or something like that be a better
+description, since it is what find_mem_range finds?
 
 Thanks,
+/fuad
 
-- Arnaldo
- 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->  tools/perf/util/cs-etm.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 32ad92d3e454..e6851260d059 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -746,8 +746,16 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
->  
->  	len = dso__data_read_offset(al.map->dso, machine, offset, buffer, size);
->  
-> -	if (len <= 0)
-> +	if (len <= 0) {
-> +		ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n");
-> +		if (!al.map->dso->auxtrace_warned) {
-> +			pr_err("CS ETM Trace: Debug data not found for address %#"PRIx64" in %s\n",
-> +				    address,
-> +				    al.map->dso->long_name ? al.map->dso->long_name : "Unknown");
-> +			al.map->dso->auxtrace_warned = true;
-> +		}
->  		return 0;
-> +	}
->  
->  	return len;
+
+>  int host_stage2_idmap_locked(u64 start, u64 end, enum kvm_pgtable_prot prot);
+>  int host_stage2_set_owner_locked(u64 start, u64 end, u8 owner_id);
+>  int kvm_host_prepare_stage2(void *pgt_pool_base);
+> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> index bb18940c3d12..4532f3d55a1a 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> @@ -196,6 +196,13 @@ static bool find_mem_range(phys_addr_t addr, struct kvm_mem_range *range)
+>         return false;
 >  }
-> -- 
-> 2.28.0
-> 
-
--- 
-
-- Arnaldo
+>
+> +bool addr_is_memory(phys_addr_t phys)
+> +{
+> +       struct kvm_mem_range range;
+> +
+> +       return find_mem_range(phys, &range);
+> +}
+> +
+>  static bool range_is_memory(u64 start, u64 end)
+>  {
+>         struct kvm_mem_range r1, r2;
+> --
+> 2.32.0.432.gabb21c7263-goog
+>
