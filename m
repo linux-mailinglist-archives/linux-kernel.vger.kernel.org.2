@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0543DD951
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964963DD899
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236547AbhHBN7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:59:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33468 "EHLO mail.kernel.org"
+        id S234339AbhHBNx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:53:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235758AbhHBNyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:54:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 858B66115B;
-        Mon,  2 Aug 2021 13:52:42 +0000 (UTC)
+        id S234789AbhHBNtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:49:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75F1B60EBB;
+        Mon,  2 Aug 2021 13:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912363;
-        bh=RUh4AusaX0Jn78izoGVYrMovVe91oBO13ieA2j5M3WM=;
+        s=korg; t=1627912147;
+        bh=XwBRdNzQ8bhr3FxMYdiLgpab1x5S1ZUiuwwhtvHt4Ks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XpempK6MNjUJtMTHfxZl+7VbH/gJvredy6pPgwf6OBIUIgzaGt0kEhrYvSKN7/Uz9
-         CNuaeG3NDMM3pUvWeUoopnxSnnBamnV/r4yE52eltG6azW6YCy+kPitS3C0TtdEclh
-         gDMlaElIi2opMOGseRacbx0a7z+aDjtaUDNO3H6U=
+        b=LpxlUDrgxdl7D/qtEkxRGJqkc6C5XWjw2CI4/EiVt9yiONh6kNdq/r0rsCn2uZ3le
+         uoopBk3vN/HHeLa7QsmP8txa8MYDGQCpdr/X4KM7MyNtCIFu9ATUpaLlq7wLveFAxg
+         wSnfuwTYQnWAdLGsAAscxOnAxMJ5puEPlrLBzNuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 08/67] x86/kvm: fix vcpu-id indexed array sizes
+        stable@vger.kernel.org,
+        =?UTF-8?q?S=C3=A9rgio?= <surkamp@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 09/38] sctp: move 198 addresses from unusable to private scope
 Date:   Mon,  2 Aug 2021 15:44:31 +0200
-Message-Id: <20210802134339.303797471@linuxfoundation.org>
+Message-Id: <20210802134335.132297405@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-commit 76b4f357d0e7d8f6f0013c733e6cba1773c266d3 upstream.
+[ Upstream commit 1d11fa231cabeae09a95cb3e4cf1d9dd34e00f08 ]
 
-KVM_MAX_VCPU_ID is the maximum vcpu-id of a guest, and not the number
-of vcpu-ids. Fix array indexed by vcpu-id to have KVM_MAX_VCPU_ID+1
-elements.
+The doc draft-stewart-tsvwg-sctp-ipv4-00 that restricts 198 addresses
+was never published. These addresses as private addresses should be
+allowed to use in SCTP.
 
-Note that this is currently no real problem, as KVM_MAX_VCPU_ID is
-an odd number, resulting in always enough padding being available at
-the end of those arrays.
+As Michael Tuexen suggested, this patch is to move 198 addresses from
+unusable to private scope.
 
-Nevertheless this should be fixed in order to avoid rare problems in
-case someone is using an even number for KVM_MAX_VCPU_ID.
-
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Message-Id: <20210701154105.23215-2-jgross@suse.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Sérgio <surkamp@gmail.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/ioapic.c |    2 +-
- arch/x86/kvm/ioapic.h |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ include/net/sctp/constants.h | 4 +---
+ net/sctp/protocol.c          | 3 ++-
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirec
- static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
- {
- 	ioapic->rtc_status.pending_eoi = 0;
--	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
-+	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
- }
+diff --git a/include/net/sctp/constants.h b/include/net/sctp/constants.h
+index d4da07048aa3..cbf96458ce22 100644
+--- a/include/net/sctp/constants.h
++++ b/include/net/sctp/constants.h
+@@ -348,8 +348,7 @@ enum {
+ #define SCTP_SCOPE_POLICY_MAX	SCTP_SCOPE_POLICY_LINK
  
- static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
---- a/arch/x86/kvm/ioapic.h
-+++ b/arch/x86/kvm/ioapic.h
-@@ -43,13 +43,13 @@ struct kvm_vcpu;
+ /* Based on IPv4 scoping <draft-stewart-tsvwg-sctp-ipv4-00.txt>,
+- * SCTP IPv4 unusable addresses: 0.0.0.0/8, 224.0.0.0/4, 198.18.0.0/24,
+- * 192.88.99.0/24.
++ * SCTP IPv4 unusable addresses: 0.0.0.0/8, 224.0.0.0/4, 192.88.99.0/24.
+  * Also, RFC 8.4, non-unicast addresses are not considered valid SCTP
+  * addresses.
+  */
+@@ -357,7 +356,6 @@ enum {
+ 	((htonl(INADDR_BROADCAST) == a) ||  \
+ 	 ipv4_is_multicast(a) ||	    \
+ 	 ipv4_is_zeronet(a) ||		    \
+-	 ipv4_is_test_198(a) ||		    \
+ 	 ipv4_is_anycast_6to4(a))
  
- struct dest_map {
- 	/* vcpu bitmap where IRQ has been sent */
--	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
-+	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
- 
- 	/*
- 	 * Vector sent to a given vcpu, only valid when
- 	 * the vcpu's bit in map is set
- 	 */
--	u8 vectors[KVM_MAX_VCPU_ID];
-+	u8 vectors[KVM_MAX_VCPU_ID + 1];
- };
- 
- 
+ /* Flags used for the bind address copy functions.  */
+diff --git a/net/sctp/protocol.c b/net/sctp/protocol.c
+index d5cf05efddfd..868b97607601 100644
+--- a/net/sctp/protocol.c
++++ b/net/sctp/protocol.c
+@@ -423,7 +423,8 @@ static enum sctp_scope sctp_v4_scope(union sctp_addr *addr)
+ 		retval = SCTP_SCOPE_LINK;
+ 	} else if (ipv4_is_private_10(addr->v4.sin_addr.s_addr) ||
+ 		   ipv4_is_private_172(addr->v4.sin_addr.s_addr) ||
+-		   ipv4_is_private_192(addr->v4.sin_addr.s_addr)) {
++		   ipv4_is_private_192(addr->v4.sin_addr.s_addr) ||
++		   ipv4_is_test_198(addr->v4.sin_addr.s_addr)) {
+ 		retval = SCTP_SCOPE_PRIVATE;
+ 	} else {
+ 		retval = SCTP_SCOPE_GLOBAL;
+-- 
+2.30.2
+
 
 
