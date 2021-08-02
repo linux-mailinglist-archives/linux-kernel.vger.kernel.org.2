@@ -2,71 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1E93DD2F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545B93DD2FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233080AbhHBJaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbhHBJaW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:30:22 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C40DC0613D5
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 02:30:12 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id hw6so15954154ejc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 02:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=f1HK9jb2PQ2DqEz2QoT0GvdJtMzTubqzLBH4YtWvbD8=;
-        b=qlzzAKl99mr4Sh/6y6cubOOnm1iMmm72zq/21+QsW5osX+9q2T07ZFjgazah4/Rhbv
-         51njbmQrzW9V9CMBxmqrvws2sBSjeXHJybAPt5ira4IhmFf1GxTsb33VhPXlWBFpljiy
-         /S3NPXf203UNxk+stVVSoEIR5WmMv6cHZr+7vmsUyNdOfrRmI/ZmFi2UgAYjUp4g7eYv
-         Ym1hXN5+zatLKjMQdzziPkjRgogR784ozoaUH1guje3XxGM7tQb+UIAY+gx0vm9ZC/ps
-         tQbiU1TnLnKx8QrDuLKGpib3KCFtXbz8ADXC4T++b3y3C1le/yXT9m34d2C/QEGFnQOQ
-         tivQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=f1HK9jb2PQ2DqEz2QoT0GvdJtMzTubqzLBH4YtWvbD8=;
-        b=gZ+7okfDuXGpCSmqU12CIuR03H3Xdsh7OJ+EdDveSCFi5G94p+1nMAkxwN9zV2OLKp
-         gp71Z7YV5yW98OliFyOUwHXrMwYnV9hnBFCgXfHYuJacxs9IC2AxGx1Q2knyxxJfol6r
-         61Us/CWm/Kl4xaDAUvvRgCi3wHQ1VqD0ZJNbCWMiy1bfq1IFz/cJ4He209/WS4uZUDvP
-         GFxl0job/Dc0kYmM/MvcXmMiqvUmRkAIsCyebUNEEfzeSIWKsstA57Xoaa4gr2dNmXQs
-         4AASWUJhdjX/ADNE4elbQ7HCiU93c4kFOZSTMcjhMg1im//OyXEx/zn3Wa+Cjw8UbS1Q
-         Oo1g==
-X-Gm-Message-State: AOAM531HOaCywUlPvblsHKEwGpNawaTPrA7PRbL0PycJi+MFIUU3ouDd
-        GYOT424ySzj1sIPSO6pUnwZkGTF1B05BQG2LMxE=
-X-Google-Smtp-Source: ABdhPJxATuVb1LWjeVd4a+jNZPfEJQM9Nr0TZPHIA/hzFbiw/SQJNlhX78np9Q8raDHKD7jjDmfA6qsqLu+GCroD6S4=
-X-Received: by 2002:a17:906:585a:: with SMTP id h26mr14625957ejs.31.1627896610830;
- Mon, 02 Aug 2021 02:30:10 -0700 (PDT)
+        id S233001AbhHBJeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:34:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:60616 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232699AbhHBJeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 05:34:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 78F6A106F;
+        Mon,  2 Aug 2021 02:33:54 -0700 (PDT)
+Received: from [10.163.66.153] (unknown [10.163.66.153])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B2A83F70D;
+        Mon,  2 Aug 2021 02:33:51 -0700 (PDT)
+Subject: Re: [PATCH 09/10] arm64: Enable workaround for TRBE overwrite in FILL
+ mode
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
+References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+ <20210728135217.591173-10-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <d07995fd-90a2-34d7-31c6-417ef1469a75@arm.com>
+Date:   Mon, 2 Aug 2021 15:04:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: by 2002:a50:cc92:0:0:0:0:0 with HTTP; Mon, 2 Aug 2021 02:30:10 -0700 (PDT)
-Reply-To: goedert_sheryl@yahoo.com
-From:   Sheryl Goedert <activationdept5@gmail.com>
-Date:   Mon, 2 Aug 2021 12:30:10 +0300
-Message-ID: <CA+k0Uf=7FPg1o52wjerKWSwOHyKrvJ7yVEYRa5mDzg6OtbcDuw@mail.gmail.com>
-Subject: =?UTF-8?B?57Sn5oCl5Zue5bqU?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210728135217.591173-10-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LS0gDQrmiJHmmK/mnaXoh6rkvZvnvZfph4zovr7lt57nmoQgU2hlcnlsbCBHb2VkZXJ077yM5LuW
-5ZyoIDIwMjAg5bm0IDEg5pyIIDI5IOaXpeS4vuihjOeahOW8uuWKm+eQg+W9qeelqOS4rei1ouW+
-l+S6hiAzLjk2OQ0K5Lq/576O5YWD55qE5aS05aWW77yM5oiR55qE5aS05aWW5a+55oiR5p2l6K+0
-5piv5LiA56eN56Wd56aP77yM5Zug5q2k5oiR55qE5YWo5a625Lq66YO95ZCM5oSP6L+Z5qC35YGa
-44CCDQoNCuWGoOeKtueXheavkueahOeIhuWPkeS4jeS7heaYr+S4gOWcuumHjeWkp+eahOWBpeW6
-t+WNseacuu+8jOS5n+aYr+WvvOiHtOS6uuS7rOWkseS4mueahOW3qOWkp+e7j+a1juegtOWdj++8
-jOaJgOS7peaIkeiHquaEv+WGs+WumuaNkOi1oCAxLDUwMCwwMDAuMDAg5qyn5YWD77yIMTUwDQrk
-uIfmrKflhYPvvInmnaXluK7liqkgMTAg5Liq5Lq65ZKM5bCPIOS8geS4muOAgg0KDQrpgJrov4fm
-iJHnmoTnlLXlrZDpgq7ku7bkuI7miJHogZTns7vvvJpnb2VkZXJ0X3NoZXJ5bEB5YWhvby5jb20N
-CuassuS6huino+abtOWkmi/lrozmlbTnmoTnu4boioLvvIzor7fmjqXlj5fov5nkuKrku6PluIHk
-vZzkuLrmiJHlkozmiJHlrrbkurrnmoTnpLznianjgIINCg0K5pyA5aW955qE56Wd56aP77yMDQrp
-m6rojonCt+aIiOW+t+eJuQ0KZ29lZGVydF9zaGVyeWxAeWFob28uY29tDQo=
+
+
+On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
+> Now that we have the work around implmented in the TRBE
+
+				Typo ^^^^^
+
+> driver, add the Kconfig entries and document the errata.
+> 
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  Documentation/arm64/silicon-errata.rst |  4 +++
+>  arch/arm64/Kconfig                     | 39 ++++++++++++++++++++++++++
+>  2 files changed, 43 insertions(+)
+> 
+> diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
+> index d410a47ffa57..2f99229d993c 100644
+> --- a/Documentation/arm64/silicon-errata.rst
+> +++ b/Documentation/arm64/silicon-errata.rst
+> @@ -92,12 +92,16 @@ stable kernels.
+>  +----------------+-----------------+-----------------+-----------------------------+
+>  | ARM            | Cortex-A77      | #1508412        | ARM64_ERRATUM_1508412       |
+>  +----------------+-----------------+-----------------+-----------------------------+
+> +| ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
+> ++----------------+-----------------+-----------------+-----------------------------+
+>  | ARM            | Neoverse-N1     | #1188873,1418040| ARM64_ERRATUM_1418040       |
+>  +----------------+-----------------+-----------------+-----------------------------+
+>  | ARM            | Neoverse-N1     | #1349291        | N/A                         |
+>  +----------------+-----------------+-----------------+-----------------------------+
+>  | ARM            | Neoverse-N1     | #1542419        | ARM64_ERRATUM_1542419       |
+>  +----------------+-----------------+-----------------+-----------------------------+
+> +| ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
+> ++----------------+-----------------+-----------------+-----------------------------+
+>  | ARM            | MMU-500         | #841119,826419  | N/A                         |
+>  +----------------+-----------------+-----------------+-----------------------------+
+>  +----------------+-----------------+-----------------+-----------------------------+
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index b5b13a932561..ad301045dafc 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -669,6 +669,45 @@ config ARM64_ERRATUM_1508412
+>  
+>  	  If unsure, say Y.
+>  
+> +config ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+> +	bool
+
+Should this be moved to the earlier patch (7/10) which detects the erratum ?
+Might be better to add the definition in Kconfig (even though not selected)
+when using it for the first time. 
+
+> +
+> +config ARM64_ERRATUM_2119858
+> +	bool "Cortex-A710: 2119858: workaround TRBE overwriting trace data in FILL mode"
+> +	default y
+> +	depends on CORESIGHT_TRBE
+> +	select ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+> +	help
+> +	  This option adds the workaround for ARM Cortex-A710 erratum 2119858.
+> +
+> +	  Affected Cortex-A710 cores could overwrite upto 3 cache lines of trace
+> +	  data at the base of the buffer (ponited by TRBASER_EL1) in FILL mode in
+
+				Typo	  ^^^^^^
+
+> +	  the event of a WRAP event.
+> +
+> +	  Work around the issue by always making sure we move the TRBPTR_EL1 by
+> +	  256bytes before enabling the buffer and filling the first 256bytes of
+
+Nit:   space ^^							space ^^
+
+> +	  the buffer with ETM ignore packets upon disabling.
+> +
+> +	  If unsure, say Y.
+> +
+> +config ARM64_ERRATUM_2139208
+> +	bool "Neoverse-N2: 2139208: workaround TRBE overwriting trace data in FILL mode"
+> +	default y
+> +	depends on CORESIGHT_TRBE
+> +	select ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+> +	help
+> +	  This option adds the workaround for ARM Neoverse-N2 erratum 2139208.
+> +
+> +	  Affected Neoverse-N2 cores could overwrite upto 3 cache lines of trace
+> +	  data at the base of the buffer (ponited by TRBASER_EL1) in FILL mode in
+
+				Typo	  ^^^^^^
+
+> +	  the event of a WRAP event.
+> +
+> +	  Work around the issue by always making sure we move the TRBPTR_EL1 by
+> +	  256bytes before enabling the buffer and filling the first 256bytes of
+
+Nit:   space ^^							space ^^
+
+> +	  the buffer with ETM ignore packets upon disabling.
+> +
+> +	  If unsure, say Y.
+> +
+>  config CAVIUM_ERRATUM_22375
+>  	bool "Cavium erratum 22375, 24313"
+>  	default y
+> 
+
+Otherwise LGTM.
+
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
