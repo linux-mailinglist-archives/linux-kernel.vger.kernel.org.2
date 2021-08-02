@@ -2,256 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D20D3DDE2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6E83DDE2F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhHBRDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 13:03:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhHBRDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 13:03:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C00F60F6E;
-        Mon,  2 Aug 2021 17:02:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627923777;
-        bh=sJnuLZVcTC5tlrXJXjxx1R2NazTGzbzKKu+BheYkeZM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ANCYcEJzYQQh9pcpw5fVLWIu2nMstr9U2tX1c+oNm+KRE9dVeyk1QNDXfSVFnrjHx
-         HVDjntKzOQJMAdyxzMAfOK9nFGMZyLXHhSs7FN3XDmS374H3O+V4ghw8TRNfy8GHxX
-         MmGlZB3IAY1PIvUUylPT0KFPrj3KBpfeZVz6zO1Ub/9NG5y6H10GyKQ1voPaQVymhj
-         acKcXaGuq+A1ejHYgOVShFHpTLMI/XiyUx7zuK71rl8HmIYuDAoDZnp/qvKVk8fjTU
-         /gWxFCk1KKN6ml6NYAiLj1PV8az7qfErrFOcS66ZVUge+x7E7N2j2wPkb/Ni8xD2KW
-         YKFUl5bJ1scFA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 39B365C0892; Mon,  2 Aug 2021 10:02:57 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 10:02:57 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Chao Gao <chao.gao@intel.com>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [clocksource]  8901ecc231:  stress-ng.lockbus.ops_per_sec -9.5%
- regression
-Message-ID: <20210802170257.GL4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210521083322.GG25531@xsang-OptiPlex-9020>
- <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
- <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
- <20210526064922.GD5262@shbuild999.sh.intel.com>
- <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
- <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
- <20210802062008.GA24720@gao-cwp>
+        id S229979AbhHBRDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 13:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229622AbhHBRDU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 13:03:20 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BC6C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 10:03:11 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so32606239pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 10:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7ZboOedxV5HocqOHed9R2rRbrksyFeYlZ+bzi9mMGLY=;
+        b=LxqcaZ5ls/BOk7qlIHclYJaTgBc2zgv0mf+NcRmW6VNMuOkd3+mRfSMmBy3x3DmtJ/
+         hEPoMS+w5jwfrazMQS9fnffRSiC0ySFHteH86CjbojEfmv66jO5Er9mCohSihq/6J5de
+         YzOwaTt1q40A2OKERsE7PGWVOBkk1qYHboQDXcFotsSfi+QBnm4QWsF2gCwI5SV5t4xQ
+         qRkPRiISU58yhasSB3FT/dUvBzp27Fm/4bhX9nG06REZGvWsZdjtnG/iUXmqSS2/jw1l
+         ClKrnmyp4qtHbS5AjfsFX60e/N/CmcR3S0LUce+QxyP1frI0B2Qb+EhkooN/y/uytWph
+         iw1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7ZboOedxV5HocqOHed9R2rRbrksyFeYlZ+bzi9mMGLY=;
+        b=ltuxtgcHEIUYPpFUIrAJ/8LCG+rDtdlnAbc+aCQ0tZNxKjS1eWM3jjpD2qc7Fg04Tc
+         oXb/uOSTDbaoZpg7qQZqyq+9KYmgF39jA4IgG7bkt3t/SJd2S87K0khihvCtGh92IfvD
+         Eg1adLuGcCdfjHunN/y+KI/xu3bjnchwbSt18wsGyXnpkfJIU5cpgx1SkHpkzmA0GLlE
+         u3w38uEGvStxSyei964KiumBbkIHaJI4XtRaNQB79CXy2T+VP3+ywJdPi7eELxABkJoU
+         FaPLYB/PmuMsRgySQQeSmKlSissbMg/MZ/Yxe4+aawAUY4rJUO+hmmxcse4e8CS43Niy
+         iLzQ==
+X-Gm-Message-State: AOAM5307NhEtFSzL/6DQrZXBLgdibDd4o7tWeEClEDN1qBOyrba7UYLI
+        UrGbQVo2jQbMsrSJJLgicmzCEelSHnakzw==
+X-Google-Smtp-Source: ABdhPJzuVMYUebwEDSBI4cgcoZX8B3pB36R84r8+jtf5HlnloTUgZf6D9ns/m8VfbywUtVzecbWQog==
+X-Received: by 2002:a17:902:6904:b029:fb:42b6:e952 with SMTP id j4-20020a1709026904b02900fb42b6e952mr14857532plk.16.1627923790701;
+        Mon, 02 Aug 2021 10:03:10 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id t12sm544131pgo.56.2021.08.02.10.03.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 10:03:09 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 11:03:07 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        linux-perf-users@vger.kernel.org, leo.yan@linaro.org,
+        suzuki.poulose@arm.com, mike.leach@linaro.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 6/6] perf cs-etm: Add warnings for missing DSOs
+Message-ID: <20210802170307.GA3050918@p14s>
+References: <20210729155805.2830-1-james.clark@arm.com>
+ <20210729155805.2830-7-james.clark@arm.com>
+ <YQgGjlWtbaNApkp6@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210802062008.GA24720@gao-cwp>
+In-Reply-To: <YQgGjlWtbaNApkp6@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 02:20:09PM +0800, Chao Gao wrote:
-> [snip]
-> >commit 48ebcfbfd877f5d9cddcc03c91352a8ca7b190af
-> >Author: Paul E. McKenney <paulmck@kernel.org>
-> >Date:   Thu May 27 11:03:28 2021 -0700
-> >
-> >    clocksource: Forgive repeated long-latency watchdog clocksource reads
-> >    
-> >    Currently, the clocksource watchdog reacts to repeated long-latency
-> >    clocksource reads by marking that clocksource unstable on the theory that
-> >    these long-latency reads are a sign of a serious problem.  And this theory
-> >    does in fact have real-world support in the form of firmware issues [1].
-> >    
-> >    However, it is also possible to trigger this using stress-ng on what
-> >    the stress-ng man page terms "poorly designed hardware" [2].  And it
-> >    is not necessarily a bad thing for the kernel to diagnose cases where
-> >    high-stress workloads are being run on hardware that is not designed
-> >    for this sort of use.
-> >    
-> >    Nevertheless, it is quite possible that real-world use will result in
-> >    some situation requiring that high-stress workloads run on hardware
-> >    not designed to accommodate them, and also requiring that the kernel
-> >    refrain from marking clocksources unstable.
-> >    
-> >    Therefore, provide an out-of-tree patch that reacts to this situation
-> >    by leaving the clocksource alone, but using the old 62.5-millisecond
-> >    skew-detection threshold in response persistent long-latency reads.
-> >    In addition, the offending clocksource is marked for re-initialization
-> >    in this case, which both restarts that clocksource with a clean bill of
-> >    health and avoids false-positive skew reports on later watchdog checks.
+On Mon, Aug 02, 2021 at 11:51:58AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jul 29, 2021 at 04:58:05PM +0100, James Clark escreveu:
+> > Currently decode will silently fail if no binary data is available for
+> > the decode. This is made worse if only partial data is available because
+> > the decode will appear to work, but any trace from that missing DSO will
+> > silently not be generated.
+> > 
+> > Add a UI popup once if there is any data missing, and then warn in the
+> > bottom left for each individual DSO that's missing.
 > 
-> Hi Paul,
+> Looks ok to me (the last 3 patches in this series, the rest I applied
+> already), can I get some Acked-by/Reviewed-by from the CoreSight people?
+>
+
+I have a substantial backlog of patches to go through and I will be away for the
+next two weeks.  As such it will be some time before I get to review this set.
+
+Regards,
+Mathieu
+
+> Thanks,
 > 
-> Sorry to dig out this old thread.
-
-Not a problem, especially given that this is still an experimental patch
-(marked with "EXP" in -rcu).  So one remaining question is "what is this
-patch really supposed to do, if anything?"
-
-> I am testing with this patch in a VM, but I find sometimes re-initialization
-> after coarse-grained skew check may not happen as expected because ...
+> - Arnaldo
+>  
+> > Signed-off-by: James Clark <james.clark@arm.com>
+> > ---
+> >  tools/perf/util/cs-etm.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> > index 32ad92d3e454..e6851260d059 100644
+> > --- a/tools/perf/util/cs-etm.c
+> > +++ b/tools/perf/util/cs-etm.c
+> > @@ -746,8 +746,16 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
+> >  
+> >  	len = dso__data_read_offset(al.map->dso, machine, offset, buffer, size);
+> >  
+> > -	if (len <= 0)
+> > +	if (len <= 0) {
+> > +		ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n");
+> > +		if (!al.map->dso->auxtrace_warned) {
+> > +			pr_err("CS ETM Trace: Debug data not found for address %#"PRIx64" in %s\n",
+> > +				    address,
+> > +				    al.map->dso->long_name ? al.map->dso->long_name : "Unknown");
+> > +			al.map->dso->auxtrace_warned = true;
+> > +		}
+> >  		return 0;
+> > +	}
+> >  
+> >  	return len;
+> >  }
+> > -- 
+> > 2.28.0
+> > 
 > 
-> >    
-> >    Link: https://lore.kernel.org/lkml/20210513155515.GB23902@xsang-OptiPlex-9020/ # [1]
-> >    Link: https://lore.kernel.org/lkml/20210521083322.GG25531@xsang-OptiPlex-9020/ # [2]
-> >    Link: https://lore.kernel.org/lkml/20210521084405.GH25531@xsang-OptiPlex-9020/
-> >    Link: https://lore.kernel.org/lkml/20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1/
-> >    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >
-> >diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
-> >index 01df12395c0e..b72a969f7b93 100644
-> >--- a/kernel/time/clocksource-wdtest.c
-> >+++ b/kernel/time/clocksource-wdtest.c
-> >@@ -146,13 +146,12 @@ static int wdtest_func(void *arg)
-> > 		else if (i <= max_cswd_read_retries)
-> > 			s = ", expect message";
-> > 		else
-> >-			s = ", expect clock skew";
-> >+			s = ", expect coarse-grained clock skew check and re-initialization";
-> > 		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
-> > 		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
-> > 		schedule_timeout_uninterruptible(2 * HZ);
-> > 		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
-> >-		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
-> >-			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
-> >+		WARN_ON_ONCE(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE);
-> > 		wdtest_ktime_clocksource_reset();
-> > 	}
-> > 
-> >diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> >index 4485635b69f5..6c0820779bd3 100644
-> >--- a/kernel/time/clocksource.c
-> >+++ b/kernel/time/clocksource.c
-> >@@ -225,13 +225,13 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
-> > 				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
-> > 					smp_processor_id(), watchdog->name, nretries);
-> > 			}
-> >-			return true;
-> >+			return false;
-> > 		}
-> > 	}
-> > 
-> >-	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, marking unstable\n",
-> >+	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
-> > 		smp_processor_id(), watchdog->name, wd_delay, nretries);
-> >-	return false;
-> >+	return true;
-> > }
-> > 
-> > static u64 csnow_mid;
-> >@@ -355,6 +355,7 @@ static void clocksource_watchdog(struct timer_list *unused)
-> > 	int next_cpu, reset_pending;
-> > 	int64_t wd_nsec, cs_nsec;
-> > 	struct clocksource *cs;
-> >+	bool coarse;
-> > 	u32 md;
-> > 
-> > 	spin_lock(&watchdog_lock);
-> >@@ -372,11 +373,7 @@ static void clocksource_watchdog(struct timer_list *unused)
-> > 			continue;
-> > 		}
-> > 
-> >-		if (!cs_watchdog_read(cs, &csnow, &wdnow)) {
-> >-			/* Clock readout unreliable, so give it up. */
-> >-			__clocksource_unstable(cs);
-> >-			continue;
-> >-		}
-> >+		coarse = cs_watchdog_read(cs, &csnow, &wdnow);
-> > 
-> > 		/* Clocksource initialized ? */
-> > 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
-> >@@ -402,7 +399,13 @@ static void clocksource_watchdog(struct timer_list *unused)
-> > 			continue;
-> > 
-> > 		/* Check the deviation from the watchdog clocksource. */
-> >-		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
-> >+		if (coarse) {
-> >+			md = 62500 * NSEC_PER_USEC;
-> >+			cs->flags &= ~CLOCK_SOURCE_WATCHDOG;
-> >+			pr_warn("timekeeping watchdog on CPU%d: %s coarse-grained %lu.%03lu ms clock-skew check followed by re-initialization\n", smp_processor_id(), watchdog->name, md / NSEC_PER_MSEC, md % NSEC_PER_MSEC / NSEC_PER_USEC);
+> -- 
 > 
-> ... this message on CPU5 doesn't show up in below kernel logs.
-> Do you think it is a bug? if yes, any idea to resolve it?
-> 
-> [  498.571086] clocksource: timekeeping watchdog on CPU1: hpet read-back delay of 432490ns, attempt 4, coarse-grained skew check followed by re-initialization
-> [  498.572867] clocksource: timekeeping watchdog on CPU1: hpet coarse-grained 62.500 ms clock-skew check followed by re-initialization
-> [  504.071959] clocksource: timekeeping watchdog on CPU4: hpet read-back delay of 1679880ns, attempt 4, coarse-grained skew check followed by re-initialization
-> [  504.073817] clocksource: timekeeping watchdog on CPU4: hpet coarse-grained 62.500 ms clock-skew check followed by re-initialization
-> [  504.568821] clocksource: timekeeping watchdog on CPU5: hpet read-back delay of 554880ns, attempt 4, coarse-grained skew check followed by re-initialization
-
-Up to this point, the clocksource passed the coarse-grained checks.
-So at the very least, the "followed by re-initialization" is misleading.
-I will change this message.
-
-And yes, I would have expected the additional "62.500 ms clock-skew check"
-message from CPU5, like we see from CPU1 and CPU4 above.  However, this
-message will be omitted if there is a watchdog reset pending or if the
-clocksource has not yet been initialized.  Which could well have happened
-in this case.
-
-> [  505.067666] clocksource: timekeeping watchdog on CPU6: hpet retried 3 times before success
-> [  505.068593] clocksource: timekeeping watchdog on CPU6: Marking clocksource 'tsc' as unstable because the skew is too large:
-> [  505.069596] clocksource:                       'hpet' wd_nsec: 499376790 wd_now: be2f200d wd_last: bb3522fe mask: ffffffff
-> [  505.071131] clocksource:                       'tsc' cs_nsec: 498867307 cs_now: 103895c060a cs_last: 1034aea96ea mask: ffffffffffffffff
-> [  505.072994] clocksource:                       'tsc' is current clocksource.
-> [  505.074748] tsc: Marking TSC unstable due to clocksource watchdog
-
-And here the clocksource failed the coarse-grained check and marked
-the clocksource as unstable.  Perhaps because the previous read
-forced a coarse-grained check.  Except that this should have forced
-a reinitialization.  Ah, it looks like I need to suppress setting
-CLOCK_SOURCE_WATCHDOG if coarse-grained checks have been enabled.
-That could cause false-positive failure for the next check, after all.
-
-And perhaps make cs_watchdog_read() modify its print if there is
-a watchdog reset pending or if the current clocksource has the
-CLOCK_SOURCE_WATCHDOG flag cleared.
-
-Perhaps as shown in the additional patch below, to be folded into the
-original?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index cfa992250c388..62da2485fd574 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -230,8 +230,13 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
- 		}
- 	}
- 
--	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
--		smp_processor_id(), watchdog->name, wd_delay, nretries);
-+	if ((cs->flags & CLOCK_SOURCE_WATCHDOG) && !atomic_read(&watchdog_reset_pending)) {
-+		pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
-+			smp_processor_id(), watchdog->name, wd_delay, nretries);
-+	} else {
-+		pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, awaiting re-initialization\n",
-+			smp_processor_id(), watchdog->name, wd_delay, nretries);
-+	}
- 	return true;
- }
- 
-@@ -379,7 +384,8 @@ static void clocksource_watchdog(struct timer_list *unused)
- 		/* Clocksource initialized ? */
- 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
- 		    atomic_read(&watchdog_reset_pending)) {
--			cs->flags |= CLOCK_SOURCE_WATCHDOG;
-+			if (!coarse)
-+				cs->flags |= CLOCK_SOURCE_WATCHDOG;
- 			cs->wd_last = wdnow;
- 			cs->cs_last = csnow;
- 			continue;
+> - Arnaldo
