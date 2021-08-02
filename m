@@ -2,126 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CFD3DD765
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6953DD770
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbhHBNkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:40:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35968 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233973AbhHBNkX (ORCPT
+        id S234030AbhHBNkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233826AbhHBNkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:40:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627911613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WKwQt8hS8BrVUXgi476JAPrD0widSfYwWzVDlE+fv9w=;
-        b=SN/powEelJP4C9d/6KHkkeRZBjt9siO20hZLvxqcK2pfFAv51cu/XK0eT/KzbJCqn86UW4
-        AhZ4i4ISxX0/dD6e1Yr3Hh1PO7r/7RfYV08AXQEHL0SrAOh65MnV9LgCcVo+tcZEdEaPY4
-        yVqEpzwbL4ueyxSvaupl0FhBQ+518Oc=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-U5WsKXAROyur4V-jCi-h3Q-1; Mon, 02 Aug 2021 09:40:12 -0400
-X-MC-Unique: U5WsKXAROyur4V-jCi-h3Q-1
-Received: by mail-ej1-f69.google.com with SMTP id n9-20020a1709063789b02905854bda39fcso4699956ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 06:40:12 -0700 (PDT)
+        Mon, 2 Aug 2021 09:40:35 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87243C06175F;
+        Mon,  2 Aug 2021 06:40:25 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id m9so23946976ljp.7;
+        Mon, 02 Aug 2021 06:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Jv8pADUt4yLh8Zvkj2Wwg6PjtKLLuSJnq1IBfyqLTPQ=;
+        b=fHbHSk+ly2b1uuApY9A3faV6nTgSnmMnZJbaz5Dj7ZByMy45dqUSUkHo2otbrCKk2x
+         +81RCNfKeZr/LOVvcwCxoBMrBooaJAT8C4RNVqNcLju3A22ut7ehW7s/0MEzQTt77Dn8
+         9SVsBPVGqzt88Obk92BaO5QFpkTM/ljHSH+nOLk+9LRhoP+qwgAC/3vd1zZ6iXczIPwP
+         0Tf6RFlNJCTls7LUi8P6XhX1s1VPSl0kf5lR2hi0aGHPaazzBLpgXHRTUUPYDtbi3/aQ
+         g2NkkzfwTiayX6AtbLHtUPrTw/gtRBG3VtApXTtOUs8gvqR8qpgWUKr3JC0QDBG+GqRF
+         FfBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WKwQt8hS8BrVUXgi476JAPrD0widSfYwWzVDlE+fv9w=;
-        b=AS/8uQ75sKj+TZNHNT88etLAgjfzdOCTJwIAy8ypr3mmhvmuueFkHulRXpmQgaGB1v
-         kXOZV/QCD0S5D4bBzygDg950yuqjl9S56Zb2XjTNM6xfhP1WqKSOOLudSlhN28yNshPF
-         0yhQ6+TDxijwtEIR0poCH/pd6Fg/NUE91KCETdxVnH82E0m0NcUIZurTwUD68KZUNJ7o
-         InaBudzDjpqLOQKIg+tJ2FEVkVJgU52b7gtxPY4lNF3alJkF8HFdqcE/SKoPb9JdmJQR
-         L3WMRKWRsI00Fq+BpuW4WHb2sDJ3hpLq/nduHXF6M9RTr9iQsN0VAUQC5e2wasNNWvEC
-         gXZA==
-X-Gm-Message-State: AOAM5328yVwS+HvG9FlP+B1628wI3/kIFdypNJbYwMvB7gDyYGGMOvpG
-        LyIufcnXw1itS5AfXz4ZsGAyDDZ5spceipBN/NUBWcrT1IfP2BryzaM1Hpv3qyQ7ZHjGtoR1vL/
-        L75nknR4PJLuh8dvNBVUxS1kl
-X-Received: by 2002:a05:6402:1a3a:: with SMTP id be26mr19172049edb.232.1627911611267;
-        Mon, 02 Aug 2021 06:40:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUWEzOJJD/hxS92H0wTVDl/3c+XTETCnw/2v3cRopIXxvPQkBYzXV1oByaHJLt1XJdso7X1Q==
-X-Received: by 2002:a05:6402:1a3a:: with SMTP id be26mr19172028edb.232.1627911611022;
-        Mon, 02 Aug 2021 06:40:11 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x42sm6170929edy.86.2021.08.02.06.40.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 06:40:10 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: const-ify all relevant uses of struct
- kvm_memory_slot
-To:     Hamza Mahfooz <someguy@effective-light.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-References: <20210730222704.61672-1-someguy@effective-light.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <fcab24b9-0573-9165-20e9-683586e86bdf@redhat.com>
-Date:   Mon, 2 Aug 2021 15:40:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jv8pADUt4yLh8Zvkj2Wwg6PjtKLLuSJnq1IBfyqLTPQ=;
+        b=Gdczc7SenZ689x7ULcxht9SkCz88nNrEzNFYGXpbaV4maHBu2sfuK9JfYhRNdLFafa
+         V9dda8fI99jX+sSxbxurwdr0vzlOHR4LXGaVvrabY31X9se0GWr4dgpmMarexmu8Ph57
+         QHgGPjVODxKh9jnuOkAYTSoVmnJJFrBrDECYWXvHaXnKd7CnZHk/zNcaIVVnzuoaSDL+
+         G/jMRTKiMihSEvY5VpeZhBjrAEp5b9/8m+/fpdXd0gW64uHcKnYzeXbpfYnA/NU16Nzd
+         mi7Der6UTQQWUls5d1ynVsZl4UPAjfGcy5Cxypb8iAl27VwFEP4K3bhQqqzBj+5TacOX
+         VZ2A==
+X-Gm-Message-State: AOAM533dCYHC/1LbVzfdqmkuZXpMscr21Dsig7VwzjPR7Dmz7c7YeChx
+        LBWeF0+By6pP5e8wZDzxg8A=
+X-Google-Smtp-Source: ABdhPJxrR08Mepotg5t2qwFcX1z1f1faX8x6Vf0zkF6B/lDjqWbtZmiBqiRyXu+zZdvtKgAsx9cOJA==
+X-Received: by 2002:a2e:bf27:: with SMTP id c39mr11284669ljr.59.1627911623896;
+        Mon, 02 Aug 2021 06:40:23 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id o10sm962492lfl.129.2021.08.02.06.40.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 06:40:23 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 16:40:21 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v1 1/4] gpio: dwapb: Unify ACPI enumeration checks in
+ get_irq() and configure_irqs()
+Message-ID: <20210802134021.flrkpmlrcjfxdrdr@mobilestation>
+References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210730222704.61672-1-someguy@effective-light.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/21 00:27, Hamza Mahfooz wrote:
-> @@ -1440,7 +1440,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->   
->   struct slot_rmap_walk_iterator {
->   	/* input fields. */
-> -	struct kvm_memory_slot *slot;
-> +	const struct kvm_memory_slot *slot;
->   	gfn_t start_gfn;
->   	gfn_t end_gfn;
->   	int start_level;
-> @@ -1467,16 +1467,20 @@ rmap_walk_init_level(struct slot_rmap_walk_iterator *iterator, int level)
->   
->   static void
->   slot_rmap_walk_init(struct slot_rmap_walk_iterator *iterator,
-> -		    struct kvm_memory_slot *slot, int start_level,
-> +		    const struct kvm_memory_slot *slot, int start_level,
->   		    int end_level, gfn_t start_gfn, gfn_t end_gfn)
->   {
-> -	iterator->slot = slot;
-> -	iterator->start_level = start_level;
-> -	iterator->end_level = end_level;
-> -	iterator->start_gfn = start_gfn;
-> -	iterator->end_gfn = end_gfn;
-> +	struct slot_rmap_walk_iterator iter = {
-> +		.slot = slot,
-> +		.start_gfn = start_gfn,
-> +		.end_gfn = end_gfn,
-> +		.start_level = start_level,
-> +		.end_level = end_level
-> +	};
-> +
-> +	rmap_walk_init_level(&iter, start_level);
->   
-> -	rmap_walk_init_level(iterator, iterator->start_level);
-> +	memcpy(iterator, &iter, sizeof(struct slot_rmap_walk_iterator));
->   }
->   
->   static bool slot_rmap_walk_okay(struct slot_rmap_walk_iterator *iterator)
+Hello Andy
+Thanks for the cleanup series. A tiny note is below.
 
-I don't understand, just changing the argument works.  There is no need 
-to change the body of the function.
+On Mon, Jul 26, 2021 at 03:54:33PM +0300, Andy Shevchenko wrote:
+> Shared IRQ is only enabled for ACPI enumeration, there is no need
+> to have a special flag for that, since we simple can test if device
+> has been enumerated by ACPI. This unifies the checks in dwapb_get_irq()
+> and dwapb_configure_irqs().
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/gpio/gpio-dwapb.c                | 13 ++++++-------
+>  drivers/mfd/intel_quark_i2c_gpio.c       |  1 -
+>  include/linux/platform_data/gpio-dwapb.h |  1 -
+>  3 files changed, 6 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+> index 3eb13d6d31ef..f6ae69d5d644 100644
+> --- a/drivers/gpio/gpio-dwapb.c
+> +++ b/drivers/gpio/gpio-dwapb.c
+> @@ -436,12 +436,7 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
+>  	pirq->irqchip.irq_set_wake = dwapb_irq_set_wake;
+>  #endif
+>  
 
-Paolo
+> -	if (!pp->irq_shared) {
+> -		girq->num_parents = pirq->nr_irqs;
+> -		girq->parents = pirq->irq;
+> -		girq->parent_handler_data = gpio;
+> -		girq->parent_handler = dwapb_irq_handler;
+> -	} else {
+> +	if (has_acpi_companion(gpio->dev)) {
 
+Before this patch the platform flag irq_shared has been as kind of a
+hint regarding the shared IRQ case being covered here. But now it
+doesn't seem obvious why we've got the ACPI and ACPI-less cases
+differently handled. What about adding a small comment about that?
+E.g. like this: "Intel ACPI-based platforms mostly have the DW APB
+GPIO IRQ lane shared between several devices. In that case the
+parental IRQ has to be handled in the shared way so to be properly
+delivered to all the connected devices." or something more detailed
+for your preference. After that the rest of the comments in the
+if-clause could be discarded.
+
+Other than that, feel free to add:
+>  drivers/gpio/gpio-dwapb.c                | 13 ++++++-------
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
+Tested-by: Serge Semin <fancer.lancer@gmail.com>
+
+-Sergey
+
+>  		/* This will let us handle the parent IRQ in the driver */
+>  		girq->num_parents = 0;
+>  		girq->parents = NULL;
+> @@ -458,6 +453,11 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
+>  			dev_err(gpio->dev, "error requesting IRQ\n");
+>  			goto err_kfree_pirq;
+>  		}
+> +	} else {
+> +		girq->num_parents = pirq->nr_irqs;
+> +		girq->parents = pirq->irq;
+> +		girq->parent_handler_data = gpio;
+> +		girq->parent_handler = dwapb_irq_handler;
+>  	}
+>  
+>  	girq->chip = &pirq->irqchip;
+> @@ -581,7 +581,6 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
+>  			pp->ngpio = DWAPB_MAX_GPIOS;
+>  		}
+>  
+> -		pp->irq_shared	= false;
+>  		pp->gpio_base	= -1;
+>  
+>  		/*
+> diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
+> index 01935ae4e9e1..a43993e38b6e 100644
+> --- a/drivers/mfd/intel_quark_i2c_gpio.c
+> +++ b/drivers/mfd/intel_quark_i2c_gpio.c
+> @@ -227,7 +227,6 @@ static int intel_quark_gpio_setup(struct pci_dev *pdev)
+>  	pdata->properties->ngpio	= INTEL_QUARK_MFD_NGPIO;
+>  	pdata->properties->gpio_base	= INTEL_QUARK_MFD_GPIO_BASE;
+>  	pdata->properties->irq[0]	= pci_irq_vector(pdev, 0);
+> -	pdata->properties->irq_shared	= true;
+>  
+>  	cell->platform_data = pdata;
+>  	cell->pdata_size = sizeof(*pdata);
+> diff --git a/include/linux/platform_data/gpio-dwapb.h b/include/linux/platform_data/gpio-dwapb.h
+> index 0aa5c6720259..535e5ed549d9 100644
+> --- a/include/linux/platform_data/gpio-dwapb.h
+> +++ b/include/linux/platform_data/gpio-dwapb.h
+> @@ -14,7 +14,6 @@ struct dwapb_port_property {
+>  	unsigned int	ngpio;
+>  	unsigned int	gpio_base;
+>  	int		irq[DWAPB_MAX_GPIOS];
+> -	bool		irq_shared;
+>  };
+>  
+>  struct dwapb_platform_data {
+> -- 
+> 2.30.2
+> 
