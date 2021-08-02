@@ -2,77 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C058B3DD771
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5E73DD775
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbhHBNlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233826AbhHBNlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:41:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33C2760527;
-        Mon,  2 Aug 2021 13:41:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627911664;
-        bh=T6TWUTiAj92VMQeo9D2L0JR2kOWfrkEOeOZopIPa0VE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d/64efJ5zA/m+402dzhCDuHrU2jY302WfZWrU+aWmVSFHB1r9t/c9Ab73NR7fKLfe
-         IoAEEoJQ30itvaAF29kVH6quNSN4mjIxSxmydFAcKu51wVrt6JsExy0KpsL9Ri8mT/
-         iqBVItJ5uzfqnkHnB8CnRj5GQ3mj7oAt/r8joL1VY0vXNpBjh4N0ZwIbNDKBNOBvk6
-         X20sNlhtmkKu1Dfmp0IdqZB32qAbKqSIax+SRATS7pS+pAZ8fG0zMQ+YD+rY03DsDq
-         csW0RHmrSHGsDqA+wlyUfpWOpADzoo0GYh7LcIuXlSKtrAHWTU8HLodoysKTKP2nJn
-         req52quV0YsyA==
-Date:   Mon, 2 Aug 2021 14:40:59 +0100
-From:   Will Deacon <will@kernel.org>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        id S233850AbhHBNnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:43:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46381 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233719AbhHBNnL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:43:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627911781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SLB5Wppyf3HhgKlJbKvVGRoxW2c24dGzTvH4Hy2jF/Y=;
+        b=C2dbVH+Lhs+mCnaFimGQfOuTjJAYXUB4EP0h5v8ubalBaeqqluItAB3KlhrLT3W+IoWVC/
+        JDdeHe0wKEH7UGLudkEQv7ONe0MgnFNMcjZJZBS+cdV7o0b12eg+ObiJJwG/qiIpdCH+U4
+        Oe6jDVh6Ct5BOHTp41LbmgAEuVadI/0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-JuQcQM-sPHeTqE6vTHQ0gw-1; Mon, 02 Aug 2021 09:43:00 -0400
+X-MC-Unique: JuQcQM-sPHeTqE6vTHQ0gw-1
+Received: by mail-ed1-f69.google.com with SMTP id s8-20020a0564020148b02903948b71f25cso8782251edu.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 06:43:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SLB5Wppyf3HhgKlJbKvVGRoxW2c24dGzTvH4Hy2jF/Y=;
+        b=PBNl12ZbFkm+pizQl9YProjZA6HhcsBhKtC9sYImNQx1SdE0KIWsb8DETHMf3p84wx
+         ggr8ItDhd228uCMHcRANBNsjjYgml4UZqdb+HJn4U+Ytbh6LC/QlefZ4uyZr+1b1/YTt
+         31Gka3djnSFxBDvnXqNqiTEhlrlPgloSpzsPFVTQlaxOLcX+pyCyY1rgPJBmJZAqu5uE
+         O/h+ZbffNbPEr36CU8scQyob0Twiz7aYerCPjOpyuRzKrtq5oTgE7KTAWy6r0yyFeCRF
+         xGzTQc0EcQyXehZ0vskTgiy1JMWDkzK1e//ILqQ/U/ApT344H87VWW+z0M8p7uJFd1n7
+         st2w==
+X-Gm-Message-State: AOAM531GsLKouqc8PnUbK8ZWTpHEV5BXxdsPzBkGMFdzPK2YYj1zy1Q3
+        qFqsuFJmkuS8qRGY/Q3fMexNkuZ2YGCmp9iUhlHaugMiIErPrRV97mKNuiirz5JBGQdLO6PZUog
+        TR/I6ri5b6IyHUKv1ljxWf0q0
+X-Received: by 2002:a17:906:b351:: with SMTP id cd17mr15955960ejb.36.1627911779590;
+        Mon, 02 Aug 2021 06:42:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw42KADDqSCxnBjQagyeBWMBJYH2GNJQ+isAlFVy8Aq7jtoj+DcyNpXJj2+GajVJYGf0thj9g==
+X-Received: by 2002:a17:906:b351:: with SMTP id cd17mr15955937ejb.36.1627911779411;
+        Mon, 02 Aug 2021 06:42:59 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id oz31sm4545973ejb.54.2021.08.02.06.42.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 06:42:59 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 15:42:51 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     fuguancheng <fuguancheng@bytedance.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, arseny.krasnov@kaspersky.com,
+        andraprs@amazon.com, colin.king@canonical.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] dma-iommu: fix arch_sync_dma for map with swiotlb
-Message-ID: <20210802134059.GC28547@willie-the-truck>
-References: <20210709033502.3545820-1-stevensd@google.com>
- <20210709033502.3545820-3-stevensd@google.com>
+Subject: Re: [PATCH 0/4] Add multi-cid support for vsock driver
+Message-ID: <20210802134251.hgg2wnepia4cjwnv@steredhat>
+References: <20210802120720.547894-1-fuguancheng@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210709033502.3545820-3-stevensd@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210802120720.547894-1-fuguancheng@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 12:35:00PM +0900, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
-> 
-> When calling arch_sync_dma, we need to pass it the memory that's
-> actually being used for dma. When using swiotlb bounce buffers, this is
-> the bounce buffer. Move arch_sync_dma into the __iommu_dma_map_swiotlb
-> helper, so it can use the bounce buffer address if necessary. This also
-> means it is no longer necessary to call iommu_dma_sync_sg_for_device in
-> iommu_dma_map_sg for untrusted devices.
-> 
-> Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
-> Signed-off-by: David Stevens <stevensd@chromium.org>
-> ---
->  drivers/iommu/dma-iommu.c | 16 +++++++---------
->  1 file changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index eac65302439e..e79e274d2dc5 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -574,6 +574,9 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->  		memset(padding_start, 0, padding_size);
->  	}
->  
-> +	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> +		arch_sync_dma_for_device(phys, org_size, dir);
+On Mon, Aug 02, 2021 at 08:07:16PM +0800, fuguancheng wrote:
+>This patchset enables the user to specify additional CIDS for host and
+>guest when booting up the guest machine. The guest's additional CIDS cannot
+>be repeated, and can be used to communicate with the host. The user can
+>also choose to specify a set of additional host cids, which can be
+>used to communicate with the guest who specify them. The original
+>CID(VHOST_DEFAULT_CID) is still available for host. The guest cid field is
+>deleted.
+>
+>To ensure that multiple guest CID maps to the same vhost_vsock struct,
+>a struct called vhost_vsock_ref is added.  The function of vhost_vsock_ref
+>is simply used to allow multiple guest CIDS map to the
+>same vhost_vsock struct.
+>
+>If not specified, the host and guest will now use the first CID specified
+>in the array for connect operation. If the host or guest wants to use
+>one specific CID, the bind operation can be performed before the connect
+>operation so that the vsock_auto_bind operation can be avoided.
+>
+>Hypervisors such as qemu needs to be modified to use this feature. The
+>required changes including at least the following:
+>1. Invoke the modified ioctl call with the request code
+>VHOST_VSOCK_SET_GUEST_CID. Also see struct multi_cid_message for
+>arguments used in this ioctl call.
+>2. Write new arguments to the emulated device config space.
+>3. Modify the layout of the data written to the device config space.
+>See struct virtio_vsock_config for reference.
 
-I think this relies on the swiotlb buffers residing in the linear mapping
-(i.e. where phys_to_virt() is reliable), which doesn't look like a safe
-assumption to me.
+Can you please describe a use case?
 
-Will
+vsock was created to be zero configuration, we're complicating enough 
+here, we should have a particular reason.
+
+Also I gave a quick view and it seems to me that you change 
+virtio_vsock_config, are you sure it works if one of the two peers 
+doesn't support multiple CIDs?
+
+Maybe we'd need a new feature bit, and we'd definitely need to discuss 
+specification changes with virtio-comment@lists.oasis-open.org first.
+
+How does the guest or host applications know which CIDs are assigned to 
+them?
+
+Please use the RFC tag if the patches are not in good shape.
+Patches seem hard to review, please avoid adding code that is removed 
+later (e.g.  multi_cid_message), and try not to break the backward 
+compatibility.
+
+Thanks,
+Stefano
+
