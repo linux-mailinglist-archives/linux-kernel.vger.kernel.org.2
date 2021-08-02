@@ -2,174 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DE63DDC0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D643DDC0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234865AbhHBPND convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Aug 2021 11:13:03 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3552 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234492AbhHBPNB (ORCPT
+        id S234908AbhHBPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:13:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45929 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234870AbhHBPND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:13:01 -0400
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GdhMG52n0z6BB9y;
-        Mon,  2 Aug 2021 23:12:42 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 17:12:49 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Mon, 2 Aug 2021 17:12:49 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
- digest_list_del
-Thread-Topic: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
- digest_list_del
-Thread-Index: AQHXgjzPxJ6WuoGgH0KyG3D/y7w0xqtaWSsAgADBDpCAAD+ygIAAIhjQgAS3MgCAACHtEA==
-Date:   Mon, 2 Aug 2021 15:12:49 +0000
-Message-ID: <1b853c35bb8c41c98c51af1116d5eac6@huawei.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
-         <20210726163700.2092768-7-roberto.sassu@huawei.com>
-         <c9dffd9d29df095660beaa631ff252c4b33629a0.camel@linux.ibm.com>
-         <ef7c85dcb096479e95c8c60ccda4d700@huawei.com>
-         <1ef95096bee13578b3f906dd9f708c6af9d6ff18.camel@linux.ibm.com>
-         <555bf01bee4b4ea7a9bee658366d535a@huawei.com>
- <3e6a54d4be87a3eafc45c85d013250d17aa0835e.camel@linux.ibm.com>
-In-Reply-To: <3e6a54d4be87a3eafc45c85d013250d17aa0835e.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 2 Aug 2021 11:13:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627917174;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FlQM01HNtSla1rT64ZaWW6Fmv7bpSqm5nw3CEk/DlHw=;
+        b=h/DZQPVsDZTSdIGrSj6m0G27LMSHabo+WuW7xhuKV98DIgKiwRJkcoq1OQGcdw0jEsoWLa
+        IF8bouUbrlP45KJoZJL0bBmSP0ykZR2vZKvRptwtmUuRtD7aZIT8sPfxzjvbvgIo4kC+eK
+        B29HOb1MV5ILWPZrhkUMDoX2qLR3YQY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-182-gWlFCY3qOMGP5JyxdurC9g-1; Mon, 02 Aug 2021 11:12:52 -0400
+X-MC-Unique: gWlFCY3qOMGP5JyxdurC9g-1
+Received: by mail-wm1-f71.google.com with SMTP id g187-20020a1c20c40000b02902458d430db6so2978599wmg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:12:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FlQM01HNtSla1rT64ZaWW6Fmv7bpSqm5nw3CEk/DlHw=;
+        b=ZK8A0c2XjtwYw6c3i8TLon+Q3Ocy6C4+byWSL/mR4Hp/er0zq4VE3PcuG+9h5PpLrM
+         jRpi7mOHvaKIGyX6Tg2CzXr9tpJ77N3rAX2fl2dzvxr73MfGWzTp9KE0JsPUxA7eS0Dm
+         OFOI87Gnf5889f+ZqH+dWjRwnCef6xOnWT2UXizAITkGRAw9bhB4tRAjzLfLncsIzmK9
+         +dZmwgXXrqWcHExsRvxCSR2lPWAO7AUlamB+izg5WNXuYlNsqKNbZ5mIrqKb7+JZ1eYV
+         ikOBVk6MMj111BYcMlVUgp7tXwtlAYmfO5vtkm1KLLPJcKrcDbvfIwBiHCDjMg3Ql9hF
+         vj3g==
+X-Gm-Message-State: AOAM533yuB3BP/O2NvwZtxPMgbDnUlEu8JSXFqEHeHBebaARnb8z9c8F
+        4Y6JU9UyYj6Te/s+U2xX2eyoJICYTIcwzeHJoZSonLLOsBAvw1WP9M2WyUx6L17UKjj3V6WDdD4
+        cJ39dy4JP1Nt5cDpKXHj5Y8w=
+X-Received: by 2002:adf:9d88:: with SMTP id p8mr18813265wre.409.1627917171761;
+        Mon, 02 Aug 2021 08:12:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxER3KiFPE1LkWXXA8ZvTD5NMlwB/glpb57kT+jyibKqXepxR3M+pdxJqdmDMjGMOojTxDKGw==
+X-Received: by 2002:adf:9d88:: with SMTP id p8mr18813247wre.409.1627917171555;
+        Mon, 02 Aug 2021 08:12:51 -0700 (PDT)
+Received: from localhost (79-67-181-135.dynamic.dsl.as9105.com. [79.67.181.135])
+        by smtp.gmail.com with ESMTPSA id j14sm11695291wru.58.2021.08.02.08.12.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 08:12:50 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 16:12:50 +0100
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        penguin-kernel@i-love.sakura.ne.jp, rientjes@google.com,
+        llong@redhat.com, neelx@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/oom_kill: show oom eligibility when displaying the
+ current memory state of all tasks
+Message-ID: <20210802151250.lqn5fu5pioygsry6@ava.usersys.com>
+X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
+X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
+References: <20210730162002.279678-1-atomlin@redhat.com>
+ <YQeR8FTlzrojIbSo@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YQeR8FTlzrojIbSo@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Monday, August 2, 2021 4:42 PM
-> Hi Roberto,
-> 
-> On Fri, 2021-07-30 at 13:16 +0000, Roberto Sassu wrote:
-> 
-> > The reason of storing the actions performed by IMA on the
-> > digest lists helps to determine for which purpose they can be
-> > used. If digest lists are used only for measurement purpose,
-> > it should be sufficient that digest lists are measured. The
-> > same applies for appraisal.
-> 
-> Is that assumption correct?   How would you know if the digests lists
-> are only being used one way and not the other.  For example, assuming
-> that the digest lists are stored on protected media, the digest lists
-> could be measured, but would not necessarily be appraised.
+On Mon 2021-08-02 08:34 +0200, Michal Hocko wrote:
+> If you really want/need to make any change here then I would propose to
+> either add E(eligible)/I(ligible) column without any specifics or
+> consistently skip over all tasks which are not eligible.
 
-Hi Mimi
+How about the suggestion made by David i.e. exposing the value returned by
+oom_badness(), as if I understand correctly, this would provide a more
+complete picture with regard to the rationale used?
 
-the actions performed by IMA on the digest lists are recorded
-in the digest_list_item structure. These can be retrieved when
-IMA calls diglim_digest_get_info() (actually it is the OR of the
-actions for the digest lists that contain the digest passed as a
-query).
 
-At the moment, DIGLIM can only know whether a digest list
-has been measured or not (with the return value of
-ima_measure_critical_data()). In the next patch set, I add the
-changes to get the actions from the integrity_iint_cache().
+Kind regards,
 
-> > > Adding the kernel_read_file() "READING_DIGEST_LIST" support in IMA
-> does
-> > > not seem to be optional.  IMA would then be calculating the digest list
-> > > file hash twice, once in kernel_read_file() and then, again, in
-> > > ima_measure_critical_data().
-> >
-> > I didn't include also this part: I retrieve the integrity_iint_cache for
-> > the opened file descriptor and I get the flags from there. If the
-> > IMA_MEASURED flag is set, it is not necessary to call also
-> > ima_measure_critical_data().
-> 
-> Right, assuming the file is in policy, the digest would already be
-> stored in the iint cache.
-> 
-> > > > > I understand that with your changes to ima_measure_critical_data(),
-> > > > > which are now in next-integrity-testing branch, allow IMA to calculate
-> > > > > the file data hash.
-> > > >
-> > > > Yes, correct. But actually there is another useful use case.
-> > > > If digest lists are not in the format supported by the kernel,
-> > > > the user space parser has to convert them before uploading
-> > > > them to the kernel.
-> > > >
-> > > > ima_measure_critical_data() would in this case measure
-> > > > the converted digest list (it is written directly, without
-> > > > sending the file path). It is easier to attest the result,
-> > > > instead of determining whether the user space parser
-> > > > produced the expected result (by checking the files it
-> > > > read).
-> > >
-> > > The application to properly convert the digest list file data into the
-> > > appropriate format would need to be trusted.  I'm concerned that not
-> > > requiring the converted data to be signed and the signature verified is
-> > > introducing a new integrity gap.  Perhaps between an LSM policy,
-> > > limiting which files may be read by the application, and an IMA policy,
-> > > requiring all files read by this application to be measured and the
-> > > signature verified, this integrity gap could be averted.
-> >
-> > It is the weakest point in the chain, yes. Relying on existing LSMs
-> > didn't seem to me a good idea, as:
-> > - a new policy must be installed
-> > - we must be sure that the policy is really enforced
-> > - we need to support different LSMs (SELinux for Fedora,
-> >   Apparmor for SUSE)
-> > - there might be no LSM we can rely on
-> >
-> > For these reasons, I developed a new LSM. Its purpose is to
-> > identify the user space parser and for each file it opens, ensure
-> > that the file has been measured or appraised by IMA. If one of
-> > these actions are missing, it will not be set in the digest list the
-> > user space parser uploads to the kernel (which means that IMA
-> > will ignore the digest list for that specific action).
-> 
-> Properly identifying (all) user space parser(s) would be critical.  It
-> would be simpler and  safer to require the converted data be signed.
-
-I agree, it would be much easier. However, it would require changes
-to the building infrastructure of Linux distribution vendors, which
-might limit the applicability of DIGLIM.
-
-With the user space parser taking care of the conversion, distributions
-can do appraisal of executables and shared libraries with an update of:
-- the kernel: to add DIGLIM
-- dracut: to add required digest lists in the initial ram disk
-- rpm (plugin): to extract the RPM header and its signature and write
-  them to a file that is uploaded to the kernel by the user space parser
-
-I'm planning to append the signature at the end of the RPM header
-(and use appraise_type=modsig) to avoid the dependency on the
-'initramfs: add support for xattrs in the initial ram disk' patch set
-(which I might try to resume in the future).
-
-Thanks
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> thanks,
-> 
-> Mimi
+-- 
+Aaron Tomlin
 
