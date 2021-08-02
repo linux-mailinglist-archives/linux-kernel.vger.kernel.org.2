@@ -2,67 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA34E3DDE59
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C2A3DDE5D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhHBRVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 13:21:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229593AbhHBRVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 13:21:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68AB260F58;
-        Mon,  2 Aug 2021 17:21:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627924861;
-        bh=ggRngNHSSAss9GqeQqhYBpnDVCqYEfbvF4AwpCkBQmg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Sh6U3LdRshnPTaG4zGADE9rz5HK2nMu92L5xYhu119iuegIriFZ6PO5bFhy3BlzRS
-         NLtV5tRMZ48kSvKbVlpicLk65JGOvP1mbwoLQ7JMkVq9WrPEj6sU0EwQt9CDENRMlN
-         bddwzyDt/cY3G6sSYcgVPINb6vuWXPISxVntJoIahWDTbnSv4xRE+tP2j99tE95lUe
-         qYmWjbdoMbz+W339cuxuzrMxi+ZUbjXd07NwLHI2aoEBOvbBJG0xtJr5Qatf8t7cEL
-         RlN1KuHU+iMFKSbApRZTBur1iCoX8YNfdd8LXbj3+XWjbNuN1ZrTm+EfSKT4yGGUvU
-         1lKFv48yLcSMQ==
-Date:   Mon, 2 Aug 2021 10:21:00 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Nicholas Richardson <richardsonnick@google.com>
-Cc:     davem@davemloft.net, nrrichar@ncsu.edu, arunkaly@google.com,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Leesoo Ahn <dev@ooseel.net>, Di Zhu <zhudi21@huawei.com>,
-        Yejune Deng <yejune.deng@gmail.com>,
-        Ye Bin <yebin10@huawei.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pktgen: Fix invalid clone_skb override
-Message-ID: <20210802102100.5292367a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210802171210.2191096-1-richardsonnick@google.com>
-References: <20210802071126.3b311638@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210802171210.2191096-1-richardsonnick@google.com>
+        id S230265AbhHBRWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 13:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhHBRWV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 13:22:21 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030B2C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 10:22:11 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id d6so17877545edt.7
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 10:22:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=h2WFxDixB/3t9fazJ8CAmz6nn6qFdm6PXqRa55jZXDc=;
+        b=IGA65fp6Y9kJutWjUbrVyl2Fs2yX4Y5Nyw28VRkXSOrXNKV4pwbGtsURCm+e8WZpUR
+         x0mtLdrpESyaHaw5TKqAI4w4xDOMKeUyHWzIHWMLfffMCzKuK37dchQ901kx1R8JCCCc
+         6i0KLFK3B4yuhCa1XgAC3ZyvHMLOtcSTV1I39so7gLs1g2zafIyK5AdnKEns1eKgIRoJ
+         nGtoTkpucKVO/x5axn0iLPo+QW+yyDIGhhfKvmu0Pzf9DKd3u0Lv6XI1hGK1b0+n7pl7
+         +k94W8iuHbX4nsGDg8w9cs/qu5UN3+k2ssGkVkTrkr9PxQhyEot9u7KqB5CxRtuG5T85
+         3bgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=h2WFxDixB/3t9fazJ8CAmz6nn6qFdm6PXqRa55jZXDc=;
+        b=cKu0tbGY9uVHT+KHjphRQ60vyYi4iYGFqa2hAgTmK412IUJiqtypwMhKScsNA/Nal9
+         TtSCvqbf9zY4hBIJpG5EPi4Xw3uy/a+2mUZPel6kAIDqiAxNiV3D+3r/6ktv7BZTy7gf
+         t6UCYMAMluauXfDcSJB4ePvm8IJMg0yhcMmUeMfoV18HZ2R9tXS/OtaclrO6ysiurQMs
+         7tkuaCF/1Re7WB2od/RIuldUUOhHfTQyYfJegUyNdZSavh7cTVzm+zdRzw1I4vdFveiD
+         NnsPHaPaZSmC+/7PtBQrBJgs1/sCQVUYTWBq6HL0YJuqB+grHZ4q62MagSQrlOyCIRx2
+         id1Q==
+X-Gm-Message-State: AOAM533K8yYW6eeVCLowj4klEPGFvKKvwQJ9pJKhIuxPojQqZRzUrxPR
+        bhbdQ1juvfgurlV8jl7tu2+N6XSaXd8xx/07hahiRg==
+X-Google-Smtp-Source: ABdhPJz19+tyHdDM44MeIwvI3vcyw7uKr8xbYUpmMeohq0U2lnKM5LfUtJK3ERmgE2kBTYOttq+f+oTgLkTURIWbxDQ=
+X-Received: by 2002:a50:9ae3:: with SMTP id p90mr20511605edb.154.1627924929507;
+ Mon, 02 Aug 2021 10:22:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1626868353-96475-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <1626868353-96475-5-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <YQMIhBPwcNw1YqMq@robh.at.kernel.org> <CACRpkdYrHTMLL_CQi0BoNZsXV3=2dBK38pkvd+EEkuPrzoG_Cw@mail.gmail.com>
+ <2f5d9197-4a5e-08b5-7e47-595d337478d2@xilinx.com> <CACRpkdZu2-EE1hqJ4nVA5uxaPuJRGWDH_ciKxRvrNncQ2Pyd5w@mail.gmail.com>
+In-Reply-To: <CACRpkdZu2-EE1hqJ4nVA5uxaPuJRGWDH_ciKxRvrNncQ2Pyd5w@mail.gmail.com>
+From:   Michal Simek <monstr@monstr.eu>
+Date:   Mon, 2 Aug 2021 19:21:58 +0200
+Message-ID: <CAHTX3dLbRcfBhaqfbcK=RbQOAG5uxpSzHmMx7aP+QYHaP-idew@mail.gmail.com>
+Subject: Re: [PATCH 4/4] arm: dts: zynq: Replace 'io-standard' with
+ 'power-source' property
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        git <git@xilinx.com>, saikrishna12468@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  2 Aug 2021 17:12:07 +0000 Nicholas Richardson wrote:
-> From: Nick Richardson <richardsonnick@google.com>
-> 
-> When the netif_receive xmit_mode is set, a line is supposed to set
-> clone_skb to a default 0 value. This line is not reached due to a line
-> that checks if clone_skb is more than zero and returns -ENOTSUPP.
-> 
-> Removes line that defaults clone_skb to zero.
+po 2. 8. 2021 v 15:20 odes=C3=ADlatel Linus Walleij
+<linus.walleij@linaro.org> napsal:
+>
+> On Fri, Jul 30, 2021 at 2:46 PM Michal Simek <michal.simek@xilinx.com> wr=
+ote:
+>
+> > Linux Zynq pinctrl driver and in tree dts files are using io-standard
+> > properties at least from 2015.
+>
+> Ooops my wrong.
+>
+> What about supporting both the new property and io-standard as
+> a fallback, simply?
 
-s/Removes/Remove/
-s/defaults/sets/
+That's exactly what I have Sai to do and PIN_CONFIG_IOSTANDARD is still the=
+re.
 
-> -ENOTSUPP is returned
-> if clone_skb is more than zero. 
+https://lore.kernel.org/linux-arm-kernel/1626868353-96475-1-git-send-email-=
+lakshmi.sai.krishna.potthuri@xilinx.com/T/#md7d304d9d8f746e51d909237b9073f2=
+ae8930543
 
-That's already mentioned in the previous paragraph.
+But IIRC I have also asked to show any warning message when io
+standard property is used to convert to new property.
 
-> If clone_skb is equal to zero then the
-> xmit_mode is set to netif_receive as usual and no error is returned.
+Thanks,
+Michal
 
-Please add the explanation why clone_skb can't be negative to the
-commit message.
+
+--=20
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
