@@ -2,127 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCE73DDD51
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4D43DDD57
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhHBQMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:12:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229780AbhHBQMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:12:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E9EA60F9C;
-        Mon,  2 Aug 2021 16:12:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627920732;
-        bh=b2Ng61RAPlMVP2k8p8ptM8+ZLyJnqh59TBkLJy5ROis=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FB6RhytU9h1IMIKzRWu6GmLzfCEBjk6A6rHDieSWy6K/7PP1AFgKx9dq2kwTHFCzd
-         96MaL/uwcP5Fa2sUBheTQ6kHqmxsFUaNqmPubydLZvP96CB2xWespEO0qCy4S4bf1s
-         64Wn5fBpxIwpst/c9+Uue/GKmDdOf7CbaeqxCeCc7U1ZWCmNcD8Ukah0f1QYNfSNMH
-         pmVu5gX6k4DPHSTUAAbIfNp97VAE7oHns/Gz1vxI3UGZRR3x4pvo/i/vVyluLojbRb
-         44MjxhWYGFkSZkPEruKKiiwocVA2+J5Yct+2FsADX+6Y9o4Ld+VfGByp9IedbE3py5
-         LmcCM5PZdGYVA==
-Date:   Mon, 2 Aug 2021 17:12:06 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        srimuc <srimuc@codeaurora.org>, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, robdclark@chromium.org
-Subject: Re: [PATCH] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to
- system pm callbacks
-Message-ID: <20210802161206.GA29168@willie-the-truck>
-References: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
+        id S232077AbhHBQNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229780AbhHBQNT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 12:13:19 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6757DC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 09:13:10 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id c16so20175501plh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 09:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N9riSg2fac+VoTKhkzLfWrBDE+0l5wS73gV2Grz1oJo=;
+        b=DZtWqGU4zIj2q2wG2EX5uEXZEA37v3g9XZl91m6pb2VzC3ia/H4tD9JI9GNfFao4oJ
+         ux+Po8ZNy3yzxrxivaS1i9Y9Iedzp6zoD6awc7A9RtIUdPF3ByWUG7ysQqyOixB+OFvl
+         JTV2EJdKVt+T2yv3QT+4JLrXz/EOknP/1IMDg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N9riSg2fac+VoTKhkzLfWrBDE+0l5wS73gV2Grz1oJo=;
+        b=UcE+VocNRd1nJkwAx1BMflTIfLr/V1+aHW7So7WPpYLKt/ZLsNcFJcOs3AfIhMfKbX
+         X5WW5/bnKUlpBOKYji2kRic5SiIu2pYdzFrBUIW/yU2R4k5ibk5Shi8aBTqVKqp/TSeb
+         cSeP0D6Pbu+qE0ws6x72crJ3THnI1AtZdQfCHjTSY+XpWSaCpCB+FfVhxbfoB4f/zkO3
+         Pn+gMYh1yv1hwkoJ127ghEBbqj7NSsFGEnQjaTchaQlgM5WZWi71lUWsHMkC/pt11q6p
+         DviQCICCzpml6qhTasP1g7dpL8u6HuCjzxVkWZHEkt1e8K3hX6FHjRxgApOjI3FgR2BS
+         ngcA==
+X-Gm-Message-State: AOAM530Bupyjp/+mxO+naE74r2fjHZIf4kAwjIyBMu+7saaNYVE2yjF+
+        Eg2s4K3FO7j5FN+lELSCi+9FPQ==
+X-Google-Smtp-Source: ABdhPJwzHMx3iRd4NLHmuMWHjpb/4Amiy4/Pkj9WGz085r9gFSYGpW9rTPrZa44cpxRJZC226SXyyA==
+X-Received: by 2002:a17:90a:ab0b:: with SMTP id m11mr17527651pjq.221.1627920789933;
+        Mon, 02 Aug 2021 09:13:09 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v30sm10717478pgk.25.2021.08.02.09.13.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 09:13:09 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 09:13:08 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Len Baker <len.baker@gmx.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-hardening@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers/input: Remove all strcpy() uses in favor of
+ strscpy()
+Message-ID: <202108020912.3807510B4B@keescook>
+References: <20210801144316.12841-1-len.baker@gmx.com>
+ <20210801145959.GI22278@shell.armlinux.org.uk>
+ <922b0d99b6397adc44761abaed12c019dc0b9e88.camel@perches.com>
+ <4962ac72a94bc5826960dab855b5e2f47a4d1b9a.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <4962ac72a94bc5826960dab855b5e2f47a4d1b9a.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 03:03:22PM +0530, Sai Prakash Ranjan wrote:
-> Some clocks for SMMU can have parent as XO such as gpu_cc_hub_cx_int_clk
-> of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states in
-> such cases, we would need to drop the XO clock vote in unprepare call and
-> this unprepare callback for XO is in RPMh (Resource Power Manager-Hardened)
-> clock driver which controls RPMh managed clock resources for new QTI SoCs
-> and is a blocking call.
+On Sun, Aug 01, 2021 at 09:55:28AM -0700, Joe Perches wrote:
+> On Sun, 2021-08-01 at 09:39 -0700, Joe Perches wrote:
+> > On Sun, 2021-08-01 at 16:00 +0100, Russell King (Oracle) wrote:
+> > > On Sun, Aug 01, 2021 at 04:43:16PM +0200, Len Baker wrote:
+> > > > strcpy() performs no bounds checking on the destination buffer. This
+> > > > could result in linear overflows beyond the end of the buffer, leading
+> > > > to all kinds of misbehaviors. The safe replacement is strscpy().
+> []
+> > > So if the string doesn't fit, it's fine to silently truncate it?
+> > > 
+> > > Rather than converting every single strcpy() in the kernel to
+> > > strscpy(), maybe there should be some consideration given to how the
+> > > issue of a strcpy() that overflows the buffer should be handled.
+> > > E.g. in the case of a known string such as the above, if it's longer
+> > > than the destination, should we find a way to make the compiler issue
+> > > a warning at compile time?
 > 
-> Given we cannot have a sleeping calls such as clk_bulk_prepare() and
-> clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
-> operations like map and unmap can be in atomic context and are in fast
-> path, add this prepare and unprepare call to drop the XO vote only for
-> system pm callbacks since it is not a fast path and we expect the system
-> to enter deep sleep states with system pm as opposed to runtime pm.
+> (apologies for the earlier blank reply, sometimes I dislike my email client)
 > 
-> This is a similar sequence of clock requests (prepare,enable and
-> disable,unprepare) in arm-smmu probe and remove.
+> stracpy could do that with a trivial addition like below:
 > 
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> Co-developed-by: Rajendra Nayak <rnayak@codeaurora.org>
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
->  drivers/iommu/arm/arm-smmu/arm-smmu.c | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
-
-[+Rob]
-
-How does this work with that funny GPU which writes to the SMMU registers
-directly? Does the SMMU need to remain independently clocked for that to
-work or is it all in the same clock domain?
-
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> index d3c6f54110a5..9561ba4c5d39 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> @@ -2277,6 +2277,13 @@ static int __maybe_unused arm_smmu_runtime_suspend(struct device *dev)
->  
->  static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
->  {
-> +	int ret;
-> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
-> +
-> +	ret = clk_bulk_prepare(smmu->num_clks, smmu->clks);
-> +	if (ret)
-> +		return ret;
-> +
->  	if (pm_runtime_suspended(dev))
->  		return 0;
-
-If we subsequently fail to enable the clks in arm_smmu_runtime_resume()
-should we unprepare them again?
-
-Will
-
-> @@ -2285,10 +2292,19 @@ static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
->  
->  static int __maybe_unused arm_smmu_pm_suspend(struct device *dev)
->  {
-> +	int ret = 0;
-> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
-> +
->  	if (pm_runtime_suspended(dev))
-> -		return 0;
-> +		goto clk_unprepare;
->  
-> -	return arm_smmu_runtime_suspend(dev);
-> +	ret = arm_smmu_runtime_suspend(dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +clk_unprepare:
-> +	clk_bulk_unprepare(smmu->num_clks, smmu->clks);
-> +	return ret;
->  }
->  
->  static const struct dev_pm_ops arm_smmu_pm_ops = {
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+> Old lkml references:
 > 
+> https://lore.kernel.org/lkml/cover.1563889130.git.joe@perches.com/
+> and
+> https://lore.kernel.org/lkml/56dc4de7e0db153cb10954ac251cb6c27c33da4a.camel@perches.com/
+> 
+> But Linus T wants a copy_string mechanism instead:
+> https://lore.kernel.org/lkml/CAHk-=wgqQKoAnhmhGE-2PBFt7oQs9LLAATKbYa573UO=DPBE0Q@mail.gmail.com/
+> 
+> /**
+>  * stracpy - Copy a C-string into an array of char/u8/s8 or equivalent
+>  * @dest: Where to copy the string, must be an array of char and not a pointer
+>  * @src: String to copy, may be a pointer or const char array
+>  *
+>  * Helper for strscpy().
+>  * Copies a maximum of sizeof(@dest) bytes of @src with %NUL termination.
+>  *
+>  * A BUILD_BUG_ON is used for cases where @dest is not a char array or
+>  * @src is a char array and is larger than @dest.
+>  *
+>  * Returns:
+>  * * The number of characters copied (not including the trailing %NUL)
+>  * * -E2BIG if @dest is a zero size array or @src was truncated.
+>  */
+> #define stracpy(dest, src)						\
+> ({									\
+> 	BUILD_BUG_ON(!(__same_type(dest, char[]) ||			\
+> 		       __same_type(dest, unsigned char[]) ||		\
+> 		       __same_type(dest, signed char[])));		\
+> 	BUILD_BUG_ON((__same_type(src, char[]) ||			\
+> 		      __same_type(src, unsigned char[]) ||		\
+> 		      __same_type(src, signed char[])) &&		\
+> 		     ARRAY_SIZE(src) > ARRAY_SIZE(dest));		\
+> 									\
+> 	strscpy(dest, src, ARRAY_SIZE(dest));				\
+> })
+
+I'm wondering, instead, if we could convert strcpy() into this instead
+of adding another API? I.e. convert all the places that warn (if this
+were strcpy), and then land the conversion.
+
+-- 
+Kees Cook
