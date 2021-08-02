@@ -2,218 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2F13DE01E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 21:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD093DE01D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 21:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhHBTeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 15:34:46 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:53750 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229571AbhHBTeo (ORCPT
+        id S230427AbhHBTe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 15:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230369AbhHBTeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 15:34:44 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 172JVnkh005010;
-        Mon, 2 Aug 2021 19:34:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=mDYFy+gFWK9sEMQhmpjsER0xI/yO4InbkMCwLi3lyRc=;
- b=bFZQaNGltfVA5+VZmW0v69VVMCR5MqvwBg2/3VzzFiTY50WsuFNhf4dTnOrcDVuOLov6
- yEVbPnVu/sLUHO2kGPPtxzmgeseYmaeX2yzZZ4rO6mVcSVJ+Zxgzh2n/kIp5RYomTDA/
- +MDiWSQM4T0ymjBZQ8FRQwptfl5Z0RIS+FWCTpYqm02wGZJyqnWtJGc4lMZfM5sOs7rL
- tdAzqGmYYR4tk95QTF4hfHDJXoROa3+LKsyZldGxOlvWclMBDPrkkS6Nj9gr6i5zpIBU
- OyFnc3+7B6glDYPUEspCkPP9pjCHzgBJVloOyst7oYNrgpJ81dBzL4mmqfKNYDU2Gr4f NA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=mDYFy+gFWK9sEMQhmpjsER0xI/yO4InbkMCwLi3lyRc=;
- b=eQGAvDujyeqVLatutzIY3cxOxvE2zOdZKi5If4k+YXN+fl84AZfRybzmiPxvmDvp3b59
- l52UJITddMCyixxduY3CiugL9OMMxytNj+ef7f0o/zIVlGtdPUiL4U12fHT6L8or9UPz
- r2mt73lo4mL+cv6gK/llGdwQl2VDpS9sY/ZkTLcGIyM2S0slAhR8ZoUiO2jM3QhYVLSC
- USvyn9W2B5TZzyesmE9e+LdSW31+/k7FQ6FEgCX/iG7q9DXnrSN5ZuzOkWF8NzSsaWjA
- znu8UYGvzJ246Yskr/Nuev7iOYbUMGFf/5KvgNGDgDadncsmLHp+85ZlnAkjWLIbVHrg jg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a5wy1je1e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 02 Aug 2021 19:34:16 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 172JU2ms157131;
-        Mon, 2 Aug 2021 19:34:15 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
-        by aserp3030.oracle.com with ESMTP id 3a4vjcjb35-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 02 Aug 2021 19:34:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K2eiVTcMj3wjJIgMvGotBSBdhGnJdmkIwaJ4cz3Qgfd58OENhIKEaYRwJxnb3UtnHgAUlfhN+AO3nlH6QXUVvS7tWDPq4XCYiik4+R9+EqJ1tjUwBqKnSmkBbEZthxENOdJ7AeaJLiEjocX9yYA7NDxXuoB+X3hdGkJTaPXkBLiF0AyJBrjyG42uAEV4wupNwA4sLfBeej9/IhDw0SPDRGnKi2cVmG2qdL6igNKIJudTFlOn4M3xXk1oNPDEKXAkEhlf0cXSrT/Ch94PBYGdfQWoFXD5tbhUCJJ0I0TFRF+L/C0teuxHxE1ayy/3g0CdeerRR8TnuCDc+o1fmQ12Sg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mDYFy+gFWK9sEMQhmpjsER0xI/yO4InbkMCwLi3lyRc=;
- b=N6rszee3zBcq7p6AUjVZ+YWZLsVh0tDGnae0GsXTtXsSN8p8Fpayf1KbLWEUwMdux8FZs0ZNb6aGua9EvSg4EuSGwKakUhCSo9uV6pdE05vq7YJs52Ue5VkXVmzhAM5KTBDtu4e0CESsOo8siIDSaxJsqJYbfIwBdvlsQWGYyCnY5HhZMwlPuiLwl5FwR4vPg6tI0BiZhNMRuEnIMMekXMUZWyLJt3yDezydgr3uosAr/qkS3fdh/U/gem32/DE4zpCHao/r2j3kBMrOK2frWPYnk4PanSRsYTgd56RLbnc6l9bd30G0zmL6S0N315L4bPcmbLGZkXdjAuiBeSlU1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 2 Aug 2021 15:34:25 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0372DC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 12:34:16 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id f9-20020a05600c1549b029025b0f5d8c6cso166959wmg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 12:34:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mDYFy+gFWK9sEMQhmpjsER0xI/yO4InbkMCwLi3lyRc=;
- b=foifXm1bND4d3FXle33wqGeLyWvGvLMxUa7VCmZ+yttjXii8cawAhuTs/q1uDxp7nyrCjeiT2t5mAGQITDAzroayjniuVuPTnIiJFB+kNQ2B1C8+LptL3y3qoGZF6zWTBpRko+n1lrZ8PvhnNkK3JHnhh9v+f/hOjHx2fCABZxY=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from SN6PR10MB2943.namprd10.prod.outlook.com (2603:10b6:805:d4::19)
- by SA2PR10MB4538.namprd10.prod.outlook.com (2603:10b6:806:115::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Mon, 2 Aug
- 2021 19:34:13 +0000
-Received: from SN6PR10MB2943.namprd10.prod.outlook.com
- ([fe80::7c0c:7f1d:bbb2:b43]) by SN6PR10MB2943.namprd10.prod.outlook.com
- ([fe80::7c0c:7f1d:bbb2:b43%5]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
- 19:34:13 +0000
-Subject: Re: [PATCH v4 1/8] nvme-fc: Update hardware queues before using them
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>,
-        Wen Xiong <wenxiong@us.ibm.com>,
-        James Smart <jsmart2021@gmail.com>
-References: <20210802112658.75875-1-dwagner@suse.de>
- <20210802112658.75875-2-dwagner@suse.de>
-From:   Himanshu Madhani <himanshu.madhani@oracle.com>
-Organization: Oracle
-Message-ID: <1c295011-12bc-4748-58b9-2e1ec1483f5e@oracle.com>
-Date:   Mon, 2 Aug 2021 14:34:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210802112658.75875-2-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0701CA0031.namprd07.prod.outlook.com
- (2603:10b6:803:2d::34) To SN6PR10MB2943.namprd10.prod.outlook.com
- (2603:10b6:805:d4::19)
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rq+ltFtxq6QGLrtVVVbQSe4ITIw9nhfOELXOR4+25M8=;
+        b=WDO6Iv1WYEdJv/5NagVRmkCqItY7nRIKa/vbCV+ywo7s4c1NXCgIBpDjaHAJMLqjiZ
+         SXgSyoQ6OT7slAXY0kJ7sFa0HqI9xxccDl1hnF1NLNmip2fif7n/j4m6xaK3fmdR7LJu
+         FEIhQvJJCW5/GR62rSZadpoN46kdpmiDPq+p+UEpA+Rz6Vh+EWc9MGEXAWOVA7JTPc2G
+         JYHRhqJ4X0uM4uNJ6M/IYuG/atMUfx4eABSsiokxxLq/RcS/mH76eird8nuGqu7M7z3Q
+         U1XEsuh6ZtnOtc4IrX18OrKhXdvArS+Ask8dWaenDevhtBGUhMqksB9yWxUXFu2l/8gr
+         XPTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rq+ltFtxq6QGLrtVVVbQSe4ITIw9nhfOELXOR4+25M8=;
+        b=bkLPegt8ixmhGtdBKuUvavJLWI64xWxxpIyWUBcLfSwD6UMXAhZ1bg+xhPvaFmMvq5
+         Trg8meBFiH7MO3CddaJggPG2cwQW/GPszB44n8zjb6ugEisJsdwuEacdbA+QWaLIzzAS
+         ObSMWGfT2Z1zyBLfJznMZOo+NCW0/tp+NIVG79vUG3yX1DhZ+GukU46ru81ZiJJdtxid
+         GaX9DEf1Kgd9J9RLTqDghvsHypdi+nTnd6gqYmp6OuY0xh+t26ilaTgjtITgOdPVHzfu
+         Q+TtrX+BbaKuNDz0Z8NpxcLPU7JsN1O09F2GySOJ8ap8yeNl+Ml/qLgyhgNqe8cTNJO2
+         ratQ==
+X-Gm-Message-State: AOAM531G80fWh12Fy3z8fbfN4Pdrc+ApOJJqJVVKOgcr4sbFDxdoiEyq
+        QhY/Itxpsp2JPuFTs1ZwawU=
+X-Google-Smtp-Source: ABdhPJznJrBr1EuEURDODqCwO/8EN+zkbGJXUmQZlfx/e/94iIMiABsuh7ekN13mEXL1XkPUVWq4og==
+X-Received: by 2002:a05:600c:2197:: with SMTP id e23mr8177620wme.22.1627932854633;
+        Mon, 02 Aug 2021 12:34:14 -0700 (PDT)
+Received: from pc ([196.235.140.151])
+        by smtp.gmail.com with ESMTPSA id o2sm10950571wmq.30.2021.08.02.12.34.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 12:34:14 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 20:34:11 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Oliver Neukum <oliver@neukum.org>
+Subject: Re: [PATCH v2] bluetooth: bcm203x: update the reference count of udev
+Message-ID: <20210802193411.GA1006176@pc>
+References: <20210731154102.GA908767@pc>
+ <9B2209B6-D371-432B-A3F5-F1CD7C7967A3@holtmann.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2606:b400:2001:93:8000::b52] (2606:b400:8004:44::1e) by SN4PR0701CA0031.namprd07.prod.outlook.com (2603:10b6:803:2d::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17 via Frontend Transport; Mon, 2 Aug 2021 19:34:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a3edb1af-aa55-4171-21b3-08d955ec8223
-X-MS-TrafficTypeDiagnostic: SA2PR10MB4538:
-X-Microsoft-Antispam-PRVS: <SA2PR10MB45381CC6A55FA88134E30333E6EF9@SA2PR10MB4538.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:751;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gbiErUBC71tjRsDop2SsAgSPg+efPs9q1L0DuBe3IOv2Tarp/UUwem2wGoMpBvFoK/YLc4iZIeT2W8kWpMqCGroeF6MrpTqCP0QtnAOLsFnE+94s8mKk7zmnECgLDXnx0pS1s8Vj8ObHfTBt2VbZqImT788R8wUjqvvJrtgSQfDHYOgAP6vrZ9Mwtxdmy5B9HVUFn9uODkFNtK5CX487kJpY63d9c7/Vf+hoL+SPwVrF4GI+JdC/nvN0RQFXltHkl2mg4HkZnqh1D3qsiHCmit61VKZFBr3bQ/slRqifJjj3CLQI86xULrkPk0TgdD4GSn0fj2bUQFnPexw0cCQn+u9sqp4vPQKrSTUT5K3iv6MzIMOGNcGmyj3JQF7nRtMTGgTMhkilW5PHzXsu1bLyHiLRSJX28V4WRsWMQifzWnVArtd4Jb3HV1+tu7mN7D0y7FDghkOCc6SVPZ8EAaP/0jvZ0lVmCyUNwd4pgynJIlTTrqPAc9PF5h1cs7amocvAzPItPbBoE4tHuWNizlu2R7v0XjsXbjdzh87uEm3kAuqQGnYZ8aF8V9wRVDHOdvffkvA8+ZmZe//eaNvv1d+VSyRyP0xNMciVmOS5Oj/LXMgT55Opv8/QpyBN3+VlxqRhlXYm5uuqCNwh/+UIxYgpvExNG5CtF7xVL9y+2qZlZ7kPu69btjxOziKlMlHtoVzTLt/bfRjif01PyDW7LAPwyhZ+lbQM3AgEdpaBAxRa8Js=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB2943.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(396003)(366004)(39860400002)(86362001)(8936002)(66556008)(66476007)(8676002)(186003)(66946007)(31696002)(36756003)(83380400001)(15650500001)(2906002)(36916002)(316002)(44832011)(38100700002)(7416002)(2616005)(53546011)(4326008)(31686004)(5660300002)(54906003)(6486002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MFdmMitiVUl0VDVheWxhNGNEN3hZazFnNk5nTyt2UlNnamxJaHR0UHpEOFAx?=
- =?utf-8?B?RUd0MzRmeHhnM0RxalpnZ3YzcC90QkdLQllFYnJ5SjNhbkdrUUxEeWhxZUZJ?=
- =?utf-8?B?ZWhRNG1SUENrQTRyNS8rVXk0ZzZUS2s1NlJEZUNmaDdMeGFRU01qbDV5RlZ3?=
- =?utf-8?B?YjBWQjA0NS85aG81VEY1akpRSENGQitiakhGNk1vSk9KTm9nR29DYVIrSEpS?=
- =?utf-8?B?WHREYXJIYmg2RjFFQXowQVJyNFk3U2hWTUJtL1hRaUxwUm5HV1ZqcUNJZ0tW?=
- =?utf-8?B?QnRxeTZCREhUSFl1Q3QwTWROd2lGaGlLbEpaQTRUMVRSdnBkWGljNXhET0RQ?=
- =?utf-8?B?STZIa0JJTkFSK3NLbEpZN2hNS0VzYWlPVWhwdUs4dXRxRmRUb3FnRFRsby9u?=
- =?utf-8?B?S1BCbGQzZlRuZWI1cjJCeE5HU3hmWEtYZUdsUmN2NXpoVzJQMU1DVWdIWTM1?=
- =?utf-8?B?WXV0MXcxdkdMWjJXZVZXSjdPYk51NFBQK3pyZ04yYUkrcWF5Y29yRzVMMjlr?=
- =?utf-8?B?TXRtQU5xa0lqU0NuZzg3WWhLZTQyeUNxOVFwaHk5TloveHE1S2NiUk81VDI1?=
- =?utf-8?B?Nm5MUzlhY1NSbk42ekdFaGsxOExEeW5WNUhsa3VrN1hCdlZRVGpPN3RUQWta?=
- =?utf-8?B?OXdZc2ovaHNWY2JCaFZqZ0w1Y2dqQzFJV0FCOEhpZnd6WExRZXd2T0NOMUpF?=
- =?utf-8?B?UVZxWW1qUGVVTXBLRlFiZDY0aVNSN1V5aWlzcHNqaGNWRmlHQVExK2p0b0hC?=
- =?utf-8?B?VkhmVFNSS1c0d29ZZzV0djlJZHpwb3lYSHl1MjFCUGUvNHdZNFgyUEdtcnhN?=
- =?utf-8?B?bFNHeG1qbDcvbzB6eEwwV253dVg2UTRNL3M3VzE0UkowcVNhc0JqN0QreVZp?=
- =?utf-8?B?MXNUNXMrL1RaUUd3UUZ5VjVvRjk2d3Nha2pkN1VNeithRU5mT1g4M1MwQUtQ?=
- =?utf-8?B?am9YL21zelBENDhsNzlUTmJqWDVhVzdDS0FQNFBqL1NpZDY1bFBWUTZ3dWIv?=
- =?utf-8?B?bG1EL2hYRjVWcG91MnJXaStoZUNieDRvcjd1R3djam9Gd2hkNXEyNm1JTHZh?=
- =?utf-8?B?aTlSbGgzK0xXR0tBR1ExanJzKzZtWVBBRy9Va240aG1KcitWMDBCOS9sK2E3?=
- =?utf-8?B?dTBsUVVLNDNnUEpPamhqb1VLaDltdnh4WTZ1U3oxNGFvMUIrWDhGSThhR2VL?=
- =?utf-8?B?RjBud0dRVlMwRlcwQmJ3UG4vR3pVOU9wMGVvR1RuK3l5cmlOWGVNWTRsYmxE?=
- =?utf-8?B?dkxhQ29pdU1Zc3FCUi80c0pEdExXeUg5T1RXZHBobEM2U3A5cmo4bExPcGJl?=
- =?utf-8?B?dDZaSjJPaGd1SGh3bEc4OXh0RVRZSWVQV2locVF3eEQyQ1hjZW5BVmI4WVJW?=
- =?utf-8?B?eWFxanI4Z21MVHo5MlU5SzZpWkQ2NjV3RXZQWWEvTVV1cURXRW1YTloraEg4?=
- =?utf-8?B?YUc1K3hLUGlkbXRtdUVQSEJjTDdrKyt0OGpQb0NSNXF0cXlnOFFQOFBjRkpY?=
- =?utf-8?B?WFV1cFA2UDhPSXlzUXl6dEs5Qk8vangxU1Y1TlFpUVVXaHR6MEs0bGtqU2Ri?=
- =?utf-8?B?RTg3b3pHZEtMWTdZaVJwMzlWR1dibXhJRXRrMDVkeVV2TWQreW9vVGlkM0Zu?=
- =?utf-8?B?aG84b2FMSlpiekE2aWl2cXhPL2lxOVRFQkNaU2d6dEpqWVN4WnZMYmJDVnZw?=
- =?utf-8?B?T0dGSVc5YitHdjZldkYvTERFdHdwR0tEczJ0K1VGZmE4WnBXcXhnQ1g4MTkx?=
- =?utf-8?B?RHllMFFrTk1VZDJJaWJHQ2oyenFhQmFiU1cxekNqb1hGSEFGY3lhdklscHNF?=
- =?utf-8?B?dTIvVmZNQ080MHNnQzIrdz09?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3edb1af-aa55-4171-21b3-08d955ec8223
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB2943.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2021 19:34:13.4548
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IB+7URzDPkYvQDXSMFKmnwvXKofpcmNalbnBfAt0xQQ6FQ+My9K0efv2PdCCgDH0N45vy2qBxRRF0p/YD/Xkxsucnq65XUE2INmJ0MZpo78=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4538
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10064 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- suspectscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108020125
-X-Proofpoint-GUID: nE5NGqwvNeZkJOsvRp2mPvf33kViiCbn
-X-Proofpoint-ORIG-GUID: nE5NGqwvNeZkJOsvRp2mPvf33kViiCbn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9B2209B6-D371-432B-A3F5-F1CD7C7967A3@holtmann.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/2/21 6:26 AM, Daniel Wagner wrote:
-> In case the number of hardware queues changes, do the update the
-> tagset and ctx to hctx first before using the mapping to recreate and
-> connnect the IO queues.
+On Sun, Aug 01, 2021 at 08:01:06PM +0200, Marcel Holtmann wrote:
+> Hi Salah,
 > 
-> Reviewed-by: James Smart <jsmart2021@gmail.com>
-> Reviewed-by: Ming Lei <ming.lei@redhat.com>
-> Reviewed-by: Hannes Reinecke <hare@suse.de>
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/host/fc.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
+> > Use usb_get_dev() to increment the reference count of the usb device
+> > structure in order to avoid releasing the structure while it is still in
+> > use. And use usb_put_dev() to decrement the reference count and thus,
+> > when it will be equal to 0 the structure will be released.
+> > 
+> > Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> > ---
+> > Change since v1:
+> > 	Modification of the description
+> > 
+> > drivers/bluetooth/bcm203x.c | 4 +++-
+> > 1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/bluetooth/bcm203x.c b/drivers/bluetooth/bcm203x.c
+> > index e667933c3d70..547d35425d70 100644
+> > --- a/drivers/bluetooth/bcm203x.c
+> > +++ b/drivers/bluetooth/bcm203x.c
+> > @@ -166,7 +166,7 @@ static int bcm203x_probe(struct usb_interface *intf, const struct usb_device_id
+> > 	if (!data)
+> > 		return -ENOMEM;
+> > 
+> > -	data->udev  = udev;
+> > +	data->udev  = usb_get_dev(udev);
+> > 	data->state = BCM203X_LOAD_MINIDRV;
+> > 
+> > 	data->urb = usb_alloc_urb(0, GFP_KERNEL);
+> > @@ -244,6 +244,8 @@ static void bcm203x_disconnect(struct usb_interface *intf)
+> > 
+> > 	usb_set_intfdata(intf, NULL);
+> > 
+> > +	usb_put_dev(data->udev);
+> > +
+> > 	usb_free_urb(data->urb);
+> > 	kfree(data->fw_data);
+> > 	kfree(data->buffer);
 > 
-> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-> index 7f462af1b02a..8a903769364f 100644
-> --- a/drivers/nvme/host/fc.c
-> +++ b/drivers/nvme/host/fc.c
-> @@ -2951,14 +2951,6 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
->   	if (ctrl->ctrl.queue_count == 1)
->   		return 0;
->   
-> -	ret = nvme_fc_create_hw_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
-> -	if (ret)
-> -		goto out_free_io_queues;
-> -
-> -	ret = nvme_fc_connect_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
-> -	if (ret)
-> -		goto out_delete_hw_queues;
-> -
->   	if (prior_ioq_cnt != nr_io_queues) {
->   		dev_info(ctrl->ctrl.device,
->   			"reconnect: revising io queue count from %d to %d\n",
-> @@ -2968,6 +2960,14 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
->   		nvme_unfreeze(&ctrl->ctrl);
->   	}
->   
-> +	ret = nvme_fc_create_hw_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
-> +	if (ret)
-> +		goto out_free_io_queues;
-> +
-> +	ret = nvme_fc_connect_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
-> +	if (ret)
-> +		goto out_delete_hw_queues;
-> +
->   	return 0;
->   
->   out_delete_hw_queues:
+> I do not understand this. If this is something broken, then it is broken in
+> btusb.c as well and that driver is heavily used by all sorts of devices. So
+> we should have seen bug reports about this.
 > 
+> Regards
+> 
+> Marcel
+> 
+Hi Marcel,
 
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+The patch is based on the following documentation of usb_get_dev():
 
--- 
-Himanshu Madhani                                Oracle Linux Engineering
+[quote]
+Each live reference to a device should be refcounted.
+
+Drivers for USB interfaces should normally record such references in their
+probe() methods, when they bind to an interface, and release them by calling 
+usb_put_dev(), in their disconnect() methods.
+[/quote]
+
+Regards
+
+Salah
