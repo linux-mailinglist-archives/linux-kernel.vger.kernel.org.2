@@ -2,121 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A6E3DD47E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3823DD480
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbhHBLOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:14:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33884 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbhHBLOo (ORCPT
+        id S233391AbhHBLQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231881AbhHBLQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:14:44 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 26F8521C2F;
-        Mon,  2 Aug 2021 11:14:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627902874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pFXbUA/npgsJimUjktGzlNShlCBsUVgSGGwA9ygYx1M=;
-        b=FMKAn1haAEGcrI4uzbLy2n503nPYCSvDqQhDAGK7UZ//DsWH9h7hNzH8tx039cr/hE1PX/
-        tg826pLpdqufS5qRg0DDS9k7kBKSMk0Y3uZa1760p8qCu/GOYhzgg3CG5SQFGIO2kC2h9G
-        SPbId/Xs5TiGXkyLEyMUgUfytiXftOM=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 58655A3B83;
-        Mon,  2 Aug 2021 11:14:33 +0000 (UTC)
-Date:   Mon, 2 Aug 2021 13:14:29 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Widawsky, Ben" <ben.widawsky@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v6 1/6] mm/mempolicy: Add MPOL_PREFERRED_MANY for
- multiple preferred nodes
-Message-ID: <YQfTlSy/vmI3ELgR@dhcp22.suse.cz>
-References: <20210728141156.GC43486@shbuild999.sh.intel.com>
- <YQGB5cB5NlgOuNIN@dhcp22.suse.cz>
- <20210729070918.GA96680@shbuild999.sh.intel.com>
- <YQKvZDXmRSVVRvfi@dhcp22.suse.cz>
- <20210729151242.GA42865@shbuild999.sh.intel.com>
- <YQLVf3pkQTHLemAZ@dhcp22.suse.cz>
- <20210730030502.GA87066@shbuild999.sh.intel.com>
- <YQOeAgPS9+FUseIx@dhcp22.suse.cz>
- <20210730071840.GA87305@shbuild999.sh.intel.com>
- <20210802081130.GA42490@shbuild999.sh.intel.com>
+        Mon, 2 Aug 2021 07:16:54 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7D6C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 04:16:44 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id k4-20020a17090a5144b02901731c776526so31065562pjm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 04:16:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=R6GXUz7kzvPzppSdt3z4/dwHpwHS0zM/rSsMW9Edp1o=;
+        b=IB3AOEneq/zsq6WG+K9Dx+tGjfWRzwSos4X1zR4PK+YOdHjaXNYL+0d057isGuH2bp
+         U1W2OX/daOjme+rPee8zQnzgqRJAaGgxNrWL0BzDRHlIRLSoBhqcfSAbhSGu9/V/5ZGX
+         pNXt5U9rcLjZaMOLU5H4hquh/+M0URu80NcCEFuDGcn/C6XhLUpotKnW6HWdgmRsr7i5
+         YdLHgFQcEcMvs9YG3QjLXQwRP3jCFCoIewoczCg5c3CpsUT9AGa5ZJqy/aDQdLiVANFk
+         iS3wKFtJaCr2GGVr7SSUY99Te33U+xpiBOFLChL37z3CgkwBq+XxxT0cm3YNiAnUGEps
+         nhcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=R6GXUz7kzvPzppSdt3z4/dwHpwHS0zM/rSsMW9Edp1o=;
+        b=CxbJQxlkbzdCcKKVz/HG6UchpaCmzeidg1SZHJqgOpeIK0M4fJKmbum0hzL18KrgDv
+         kYN2QPlWBC+7LxQoD+tGwEivc6t8oQm08Uh6X0B5a42XmZrbSWY2Iv8AE2Ia89pcWJRx
+         RY7Sf7utgw1B4Uxkp9L+8aGxru7hBUTcH2wg22vQiROZhfym+mnrN9pRFCUaRdcOWnfb
+         CpLdNfsT5RIwb2kqf0b4aTvicvT0xyElZeUUWinu2yRh7tINP0s44MFQnRV+61AZk9H7
+         GKJ3keuV5hp3Fj9U3VL2zY8/EaMx71N10klnYGxBlbn1qoabe8Kz/7FtzpgZWsERyNUo
+         6PVw==
+X-Gm-Message-State: AOAM531Belzjs/i2rSNQteXiKtB6Mi4XXGqce7p6v0hZAPkT9bZ1T4ko
+        +lOAQYo3EdTouP4XwzSSqtc=
+X-Google-Smtp-Source: ABdhPJwfTXmmpUNkLpa4I7JfKlBw46SS76hdMpnno6UD5NxuaRk4EFtZTA3ZOXumH8zJRoqx6KSJCw==
+X-Received: by 2002:a17:90a:e2c8:: with SMTP id fr8mr16316205pjb.131.1627903004035;
+        Mon, 02 Aug 2021 04:16:44 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id p11sm10231087pju.20.2021.08.02.04.16.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 04:16:43 -0700 (PDT)
+Subject: Re: [PATCH] mtd: fix lock hierarchy in deregister_mtd_blktrans
+To:     miquel.raynal@bootlin.com
+Cc:     richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Hillf Danton <hdanton@sina.com>
+References: <20210717100719.728829-1-desmondcheongzx@gmail.com>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <999b1450-949e-fd90-6bf2-7fd4452158bb@gmail.com>
+Date:   Mon, 2 Aug 2021 19:16:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802081130.GA42490@shbuild999.sh.intel.com>
+In-Reply-To: <20210717100719.728829-1-desmondcheongzx@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 02-08-21 16:11:30, Feng Tang wrote:
-> On Fri, Jul 30, 2021 at 03:18:40PM +0800, Tang, Feng wrote:
-> [snip]
-> > > > One thing is, it's possible that 'nd' is not set in the preferred
-> > > > nodemask. 
-> > > 
-> > > Yes, and there shouldn't be any problem with that.  The given node is
-> > > only used to get the respective zonelist (order distance ordered list of
-> > > zones to try). get_page_from_freelist will then use the preferred node
-> > > mask to filter this zone list. Is that more clear now?
-> > 
-> > Yes, from the code, the policy_node() is always coupled with
-> > policy_nodemask(), which secures the 'nodemask' limit. Thanks for
-> > the clarification!
+On 17/7/21 6:07 pm, Desmond Cheong Zhi Xi wrote:
+> There is a lock hierarchy of major_names_lock --> mtd_table_mutex. One
+> existing chain is as follows:
 > 
-> Hi Michal,
+> 1. major_names_lock --> loop_ctl_mutex (when blk_request_module calls
+> loop_probe)
 > 
-> To ensure the nodemask limit, the policy_nodemask() also needs some
-> change to return the nodemask for 'prefer-many' policy, so here is a
-> updated 1/6 patch, which mainly changes the node/nodemask selection
-> for 'prefer-many' policy, could you review it? thanks!
+> 2. loop_ctl_mutex --> bdev->bd_mutex (when loop_control_ioctl calls
+> loop_remove, which then calls del_gendisk)
+> 
+> 3. bdev->bd_mutex --> mtd_table_mutex (when blkdev_get_by_dev calls
+> __blkdev_get, which then calls blktrans_open)
+> 
+> Since unregister_blkdev grabs the major_names_lock, we need to call it
+> outside the critical section for mtd_table_mutex, otherwise we invert
+> the lock hierarchy.
+> 
+> Reported-by: Hillf Danton <hdanton@sina.com>
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> ---
+>   drivers/mtd/mtd_blkdevs.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> index 7d26cfe24d05..87e26788ef60 100644
+> --- a/drivers/mtd/mtd_blkdevs.c
+> +++ b/drivers/mtd/mtd_blkdevs.c
+> @@ -563,8 +563,8 @@ int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr)
+>   	list_for_each_entry_safe(dev, next, &tr->devs, list)
+>   		tr->remove_dev(dev);
+>   
+> -	unregister_blkdev(tr->major, tr->name);
+>   	mutex_unlock(&mtd_table_mutex);
+> +	unregister_blkdev(tr->major, tr->name);
+>   
+>   	BUG_ON(!list_empty(&tr->devs));
+>   	return 0;
+> 
 
-right, I have mixed it with get_policy_nodemask
+Hi Miquèl,
 
-> @@ -1875,8 +1897,13 @@ static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
->   */
->  nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
->  {
-> -	/* Lower zones don't get a nodemask applied for MPOL_BIND */
-> -	if (unlikely(policy->mode == MPOL_BIND) &&
-> +	int mode = policy->mode;
-> +
-> +	/*
-> +	 * Lower zones don't get a nodemask applied for 'bind' and
-> +	 * 'prefer-many' policies
-> +	 */
-> +	if (unlikely(mode == MPOL_BIND || mode == MPOL_PREFERRED_MANY) &&
->  			apply_policy_zone(policy, gfp_zone(gfp)) &&
->  			cpuset_nodemask_valid_mems_allowed(&policy->nodes))
->  		return &policy->nodes;
+Just a friendly ping, this patch is part 2 of fixing the lock hierarchy 
+inversion between major_names_lock and mtd_table_mutex that was 
+identified by Hillf Danton.
 
-Isn't this just too cryptic? Why didn't you simply
-	if (mode == MPOL_PREFERRED_MANY)
-		return &policy->mode;
-
-in addition to the existing code? I mean why would you even care about
-cpusets? Those are handled at the page allocator layer and will further
-filter the given nodemask. 
-
--- 
-Michal Hocko
-SUSE Labs
+Best wishes,
+Desmond
