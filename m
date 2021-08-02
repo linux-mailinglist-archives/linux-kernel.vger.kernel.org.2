@@ -2,113 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6403DDFE7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 21:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51ACF3DDFF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 21:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhHBTQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 15:16:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229755AbhHBTQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 15:16:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27F2860EE8;
-        Mon,  2 Aug 2021 19:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627931783;
-        bh=nB/idNrPLD9uz+xKPp20zN8CmDGUyr8ewkfN6nqYGFY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=CgZFdceTX69vnFjhfnfYTv7I4FmULK7iy/CMOih6trreL7q0juNhnieIc7iYd+CNn
-         2PX5jLmfEzGY4XNe/ewlOh3xYCgl4zQclVtn44ttiuVH12INNhXD2vXsiQEn7OHEpS
-         ZeomECrUbtFI49xxTJfKeOrGSN1aymV4jJHU3O9/tiM99/ptMqXFY4lT+gpUr4kpUQ
-         CgXbVgZ2y19j1m8h1Tm5VLTRqoFg5CO8g5MBy1apPc33ZtfnmSFcjwHHQzCtcD2GDL
-         P+oi46Iib+nOJnvnmlyYxx7Ps+6NPvoHNOMjqTV2NVC5dVcHwTHnGQXy0P82706KqV
-         uCsl2Dd/FecZA==
-Subject: Re: [PATCH v6 3/3] Documentation/llvm: update CROSS_COMPILE
- inferencing
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20210802183910.1802120-1-ndesaulniers@google.com>
- <20210802183910.1802120-4-ndesaulniers@google.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <95712f4c-9da5-b7b6-f617-b6b686b6eadc@kernel.org>
-Date:   Mon, 2 Aug 2021 12:16:21 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S229847AbhHBTYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 15:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhHBTYC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 15:24:02 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97739C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 12:23:52 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id e21so20824051pla.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 12:23:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B7DjdkPmiNfssE6oJFgPeeCfIkNhAcR7dx6Gq0zHJUo=;
+        b=TKsjy8XEtnq+lBJdZsVEulqwq61tqWTOFQdtt236SJnYWAX0N38AnkKvYcW5se91Ns
+         omBDgVmYo9H/Djau5cBepkNyUeW5Cn0HzVjVNuS7X7UZQagnPz+Q2LXUSAACe1OnFIpB
+         ci+wKDhtcoBL30x4rdnvaJj9qtn/uBUzl0a1s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B7DjdkPmiNfssE6oJFgPeeCfIkNhAcR7dx6Gq0zHJUo=;
+        b=jJC/IMDBCWYGYbqwuJDiurftKRZnYDJkXrIMM/YZlpAOGIklRBHv6Rj9jQ6l0rjZao
+         FKOJplFRM6QIuOUosvrOTxNYkHHP+NlSa8Buwm5w+RinopwPoHn2jpq7KPCdEqLi15b4
+         QtctpeZcOvL3okQw4/pBYUc0G8Es+NZ/N0Tqgm2dGmXS0/cxW/+POeJKdbVYM3VL1xwj
+         AC3FTezT4xI0zA+UwNEjKYnf5HzxKrdx4XiwHbroYVDdRCSbIg5dhS3mTRKOVr+5aKZ7
+         3DFsUu4APKh95vqbf5iMeP7YJqQUkdhC0oS4MqEHae6k7SA9BBx676wnolLp+R+hGcxL
+         MiEQ==
+X-Gm-Message-State: AOAM530wgDVJGvlxDzktXPRJsMnnRy2oy+L3/vJXufvuHfhYJbHiEv6p
+        d2jSmvxKc05y3sd2oFCpPIjjfw==
+X-Google-Smtp-Source: ABdhPJzLbHxsNfPmg1MFTunQhRAZSeJez9H4MweaRSTh8SvN7/TcPdFHn9OO7RQ7MNoTLDCsiNcTGw==
+X-Received: by 2002:a63:cf0a:: with SMTP id j10mr1642904pgg.4.1627932232140;
+        Mon, 02 Aug 2021 12:23:52 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:7a52:cd2f:35b4:3b14])
+        by smtp.gmail.com with UTF8SMTPSA id y64sm13994788pgy.32.2021.08.02.12.23.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 12:23:51 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 12:23:48 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Prasad Malisetty <pmaliset@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        vbadigan@codeaurora.org, sallenki@codeaurora.org
+Subject: Re: [PATCH v4 2/4] arm64: dts: qcom: sc7280: Add PCIe and PHY
+ related nodes
+Message-ID: <YQhGRB3wBgQ1Kw9E@google.com>
+References: <1626443927-32028-1-git-send-email-pmaliset@codeaurora.org>
+ <1626443927-32028-3-git-send-email-pmaliset@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210802183910.1802120-4-ndesaulniers@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1626443927-32028-3-git-send-email-pmaliset@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/2021 11:39 AM, 'Nick Desaulniers' via Clang Built Linux wrote:
-> As noted by Masahiro, document how we can generally infer CROSS_COMPILE
-> (and the more specific details about --target and --prefix) based on
-> ARCH.
+On Fri, Jul 16, 2021 at 07:28:45PM +0530, Prasad Malisetty wrote:
+> Add PCIe controller and PHY nodes for sc7280 SOC.
 > 
-> Change use of env vars to command line parameters.
-> 
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Reviewed-by: Fangrui Song <maskray@google.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-
-Thanks for the update, I think this is much easier for non-CBL folks to 
-understand.
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
+> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
 > ---
-> Changes v5 -> v6:
-> * Pick up Fangrui's RB tag.
-> * Change use of env vars to command line parameters for consistency.
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 125 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 125 insertions(+)
 > 
->   Documentation/kbuild/llvm.rst | 19 ++++++++++++++++++-
->   1 file changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> index b18401d2ba82..f8a360958f4c 100644
-> --- a/Documentation/kbuild/llvm.rst
-> +++ b/Documentation/kbuild/llvm.rst
-> @@ -38,7 +38,7 @@ Cross Compiling
->   A single Clang compiler binary will typically contain all supported backends,
->   which can help simplify cross compiling. ::
->   
-> -	ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CC=clang
-> +	make ARCH=arm64 CC=clang CROSS_COMPILE=aarch64-linux-gnu-
->   
->   ``CROSS_COMPILE`` is not used to prefix the Clang compiler binary, instead
->   ``CROSS_COMPILE`` is used to set a command line flag: ``--target=<triple>``. For
-> @@ -63,6 +63,23 @@ They can be enabled individually. The full list of the parameters: ::
->   Currently, the integrated assembler is disabled by default. You can pass
->   ``LLVM_IAS=1`` to enable it.
->   
-> +Omitting CROSS_COMPILE
-> +----------------------
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index a8c274a..06baf88 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -15,6 +15,7 @@
+>  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  #include <dt-bindings/thermal/thermal.h>
+> +#include <dt-bindings/gpio/gpio.h>
+>  
+>  / {
+>  	interrupt-parent = <&intc>;
+> @@ -546,6 +547,118 @@
+>  			#power-domain-cells = <1>;
+>  		};
+>  
+> +		pcie1: pci@1c08000 {
+> +			compatible = "qcom,pcie-sc7280", "qcom,pcie-sm8250", "snps,dw-pcie";
+> +			reg = <0 0x01c08000 0 0x3000>,
+> +			      <0 0x40000000 0 0xf1d>,
+> +			      <0 0x40000f20 0 0xa8>,
+> +			      <0 0x40001000 0 0x1000>,
+> +			      <0 0x40100000 0 0x100000>;
 > +
-> +As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
+> +			reg-names = "parf", "dbi", "elbi", "atu", "config";
+> +			device_type = "pci";
+> +			linux,pci-domain = <1>;
+> +			bus-range = <0x00 0xff>;
+> +			num-lanes = <2>;
 > +
-> +Unless ``LLVM_IAS=1`` is specified, ``CROSS_COMPILE`` is also used to derive
-> +``--prefix=<path>`` to search for the GNU assembler and linker.
+> +			#address-cells = <3>;
+> +			#size-cells = <2>;
 > +
-> +If ``CROSS_COMPILE`` is not specified, the ``--target=<triple>`` is inferred
-> +from ``ARCH``.
+> +			ranges = <0x01000000 0x0 0x40200000 0x0 0x40200000 0x0 0x100000>,
+> +				 <0x02000000 0x0 0x40300000 0x0 0x40300000 0x0 0x1fd00000>;
 > +
-> +That means if you use only LLVM tools, ``CROSS_COMPILE`` becomes unnecessary.
+> +			interrupts = <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "msi";
+> +			#interrupt-cells = <1>;
+> +			interrupt-map-mask = <0 0 0 0x7>;
+> +			interrupt-map = <0 0 0 1 &intc 0 434 IRQ_TYPE_LEVEL_HIGH>,
+> +					<0 0 0 2 &intc 0 435 IRQ_TYPE_LEVEL_HIGH>,
+> +					<0 0 0 3 &intc 0 438 IRQ_TYPE_LEVEL_HIGH>,
+> +					<0 0 0 4 &intc 0 439 IRQ_TYPE_LEVEL_HIGH>;
 > +
-> +For example, to cross-compile the arm64 kernel::
+> +			clocks = <&gcc GCC_PCIE_1_PIPE_CLK>,
+> +				 <&gcc GCC_PCIE_1_PIPE_CLK_SRC>,
+> +				 <&pcie1_lane 0>,
+> +				 <&rpmhcc RPMH_CXO_CLK>,
+> +				 <&gcc GCC_PCIE_1_AUX_CLK>,
+> +				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
+> +				 <&gcc GCC_PCIE_1_MSTR_AXI_CLK>,
+> +				 <&gcc GCC_PCIE_1_SLV_AXI_CLK>,
+> +				 <&gcc GCC_PCIE_1_SLV_Q2A_AXI_CLK>,
+> +				 <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>,
+> +				 <&gcc GCC_DDRSS_PCIE_SF_CLK>;
 > +
-> +	make ARCH=arm64 LLVM=1 LLVM_IAS=1
+> +			clock-names = "pipe",
+> +				      "pipe_mux",
+> +				      "phy_pipe",
+> +				      "ref",
+> +				      "aux",
+> +				      "cfg",
+> +				      "bus_master",
+> +				      "bus_slave",
+> +				      "slave_q2a",
+> +				      "tbu",
+> +				      "ddrss_sf_tbu";
 > +
->   Supported Architectures
->   -----------------------
->   
-> 
+> +			assigned-clocks = <&gcc GCC_PCIE_1_AUX_CLK>;
+> +			assigned-clock-rates = <19200000>;
+> +
+> +			resets = <&gcc GCC_PCIE_1_BCR>;
+> +			reset-names = "pci";
+> +
+> +			power-domains = <&gcc GCC_PCIE_1_GDSC>;
+> +
+> +			phys = <&pcie1_lane>;
+> +			phy-names = "pciephy";
+> +
+> +			perst-gpio = <&tlmm 2 GPIO_ACTIVE_LOW>;
+> +			pinctrl-names = "default";
+> +			pinctrl-0 = <&pcie1_default_state>;
+> +
+> +			iommus = <&apps_smmu 0x1c80 0x1>;
+> +
+> +			iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
+> +				    <0x100 &apps_smmu 0x1c81 0x1>;
+> +
+> +			status = "disabled";
+> +		};
+> +
+> +		pcie1_phy: phy@1c0e000 {
+> +			compatible = "qcom,sm8250-qmp-gen3x2-pcie-phy";
+> +			reg = <0 0x01c0e000 0 0x1c0>;
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+> +			ranges;
+> +			clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
+> +				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
+> +				 <&gcc GCC_PCIE_CLKREF_EN>,
+> +				 <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
+> +			clock-names = "aux", "cfg_ahb", "ref", "refgen";
+> +
+> +			resets = <&gcc GCC_PCIE_1_PHY_BCR>;
+> +			reset-names = "phy";
+> +
+> +			assigned-clocks = <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
+> +			assigned-clock-rates = <100000000>;
+> +
+> +			status = "disabled";
+> +
+> +			pcie1_lane: lanes@1c0e200 {
+> +				reg = <0 0x01c0e200 0 0x170>,
+> +				      <0 0x01c0e400 0 0x200>,
+> +				      <0 0x01c0ea00 0 0x1f0>,
+> +				      <0 0x01c0e600 0 0x170>,
+> +				      <0 0x01c0e800 0 0x200>,
+> +				      <0 0x01c0ee00 0 0xf4>;
+> +				clocks = <&rpmhcc RPMH_CXO_CLK>;
+> +				clock-names = "pipe0";
+> +
+> +				#phy-cells = <0>;
+> +				#clock-cells = <1>;
+> +				clock-output-names = "pcie_1_pipe_clk";
+> +			};
+> +		};
+> +
+>  		stm@6002000 {
+>  			compatible = "arm,coresight-stm", "arm,primecell";
+>  			reg = <0 0x06002000 0 0x1000>,
+> @@ -1185,6 +1298,18 @@
+>  				pins = "gpio46", "gpio47";
+>  				function = "qup13";
+>  			};
+> +
+> +			pcie1_default_state: pcie1-default-state {
+> +				clkreq {
+> +					pins = "gpio79";
+> +					function = "pcie1_clkreqn";
+> +				};
+> +
+> +				wake-n {
+> +					pins = "gpio3";
+> +					function = "gpio";
+> +				};
+
+This could be essentially any GPIO, right? Does it really make sense to
+have this node in the SoC file? I would say it belongs in the board file.
