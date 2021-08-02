@@ -2,640 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5572B3DE08E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E42D3DE093
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhHBUUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:20:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35195 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229729AbhHBUUs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:20:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627935638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lYH60gJpCg8wFsELo1ByQts1CdUqSFKUUU+BBKD7WDg=;
-        b=QRcdgSovpbebKfT7i+RF4rqX78Roa93ch19dZTX1q6TzBQaGoY8pon/FF/342X3yWb8wSd
-        ips7tK7RRqFVLOTlYkui2aPcQWZ9vy3SDBkbIlWQioFEiT2/vHq5TVOFXj5/JSooF6iOWM
-        tSS/6UoyVBc/62jB3Gs1ePrViAcmaXQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-4DATM9TPMz2pDsGCDSSkNw-1; Mon, 02 Aug 2021 16:20:36 -0400
-X-MC-Unique: 4DATM9TPMz2pDsGCDSSkNw-1
-Received: by mail-ed1-f71.google.com with SMTP id c1-20020aa7df010000b02903bb5c6f746eso9310643edy.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 13:20:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lYH60gJpCg8wFsELo1ByQts1CdUqSFKUUU+BBKD7WDg=;
-        b=Uhdz28LRarBTEA/ZMKJJRCaI5tvpIX92MwvOfoDlfKzOQvonPpIcPzmVKZJO0wgNwK
-         jFaTAa3Kbmo82NvZd66iqUysOslpn0BOHCoiTWj4x5uuvpRtRt4Yz+S5ZCQgz6XIPbQJ
-         AwQY1Nf+hPjiJiIpiMGjsLiuoIT0VM/7xTyKf5NPqjI+BQ22yeIcZ6WRdYFKj41HFnUL
-         0i3JrnCi5Tliv0x3e4AVmUWSKVikD+P2lik96SQapOlQvETe2cJTqPtxpItSyt/z71dF
-         mVfvIIBko2WexUDK9qjwRMkQKWnphOxaGf8wJS6RzZXOeXe8PKqLaueVWBZnvPBiL07L
-         NIyw==
-X-Gm-Message-State: AOAM530FGBHT8xC2s/ZaOl5+h1aaesysbeoo3rR7V0rkJLAtGghecwWW
-        CR88gXFBslAzu2yTzavVNHQbwYyz0qI1QFmy0H9YTPno9L0Bwr2fjz/LDtESLBwIn7sWQWBQ2TR
-        D94z6v8ICBeLz0wQ7zE/75J+Y
-X-Received: by 2002:a17:907:2058:: with SMTP id pg24mr17304499ejb.315.1627935635630;
-        Mon, 02 Aug 2021 13:20:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNObW5q1IP6WqK4TCphQaUTzjdngOTrnHQZIkLfU7YFK/3j8v+/uqxNT4tPH6bOwqjXzCsfg==
-X-Received: by 2002:a17:907:2058:: with SMTP id pg24mr17304472ejb.315.1627935635293;
-        Mon, 02 Aug 2021 13:20:35 -0700 (PDT)
-Received: from redhat.com ([2.55.140.205])
-        by smtp.gmail.com with ESMTPSA id s24sm5204737ejd.19.2021.08.02.13.20.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 13:20:34 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 16:20:30 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     fuguancheng <fuguancheng@bytedance.com>
-Cc:     jasowang@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
-        davem@davemloft.net, kuba@kernel.org, arseny.krasnov@kaspersky.com,
-        andraprs@amazon.com, colin.king@canonical.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] VSOCK DRIVER: Add multi-cid support for guest
-Message-ID: <20210802161503-mutt-send-email-mst@kernel.org>
-References: <20210802120720.547894-1-fuguancheng@bytedance.com>
- <20210802120720.547894-2-fuguancheng@bytedance.com>
+        id S231312AbhHBUVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:21:06 -0400
+Received: from mail-eopbgr80052.outbound.protection.outlook.com ([40.107.8.52]:27294
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231367AbhHBUVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 16:21:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mr5r9bnZvNdVCI7tePrkrTeazPSDoiSydjw7QGxNfCtkXeRUQF98KEMknCLBJlpDNG7JjwHdGFv6neQRe6ojovI5CiiKpFdsIz2JDfvnSkhOOz4j8+2kBhnJ+QR9eYNDP6gv1g8A385L90WmGBHtMznxa33xR/7F6BnPU8Yz2A1y2X4fbR1Gyd98GZOsa/bsY5heFkhySZNf6IvIKPQQBNX4xZ95bRT2IQkW60r0XjxN/wu5AlGIJQ+ZNoCs6U1lLZkyhyGRlkHn/2HO+gLA29U1twzPizzgEmE+94T9mP5NC890mfbEYq3Hpb49lhOH5N98nl9m7o08YTzvNvN0Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M26dBlMJsr3ZJwPdEx0rUoJZIp8oBqYgbOc9zjRx2sU=;
+ b=JbcfoqSbCe0HSoXhkquKXUJndrnqoG7Yp+c0+N0msjVoYqjyA31Aj5+MUgGVnoP63oPc+90OxcF6kqvk1wU9z+gigr09xExhAnHu+i0M2jwZsudKfFBxxoySXYJmMhlCtWlHWz1L+aHRSrwPxErzf1Ue0dzkjO5g2StfbXK8arzYsn/LoGbYlh4EdsJmJqWbbiMML3QM/YER2qawGT+vexV0srBJtwDuDF3g9hNm0oGzYgW2DIAgmKfEIkW5kcbi42ctEPYoMSgqAdLRybyI5HaaMwAjhaj1ACwf0FqAT2KnnOS7UJYmF5fy2urtAjwK475qTuSnoUj3SA0fAr55tA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M26dBlMJsr3ZJwPdEx0rUoJZIp8oBqYgbOc9zjRx2sU=;
+ b=R1KTZeA3sD2P2M2ZatUrDsxI0ivu15V0QU01WOgG/EzSBrn/InUXM9nn+nnZF/VgupnjtGmcWMtLxNnVw53KjsRDx4AKikvspUL5weXNaPZmrhPd/y9fJ/y22Ywc6Ir0+Y/ovy38VW6BJ0lyHr7ZiDk1qhqohHRN8Q0vyAY11HM=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB7119.eurprd04.prod.outlook.com (2603:10a6:800:12e::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Mon, 2 Aug
+ 2021 20:20:48 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
+ 20:20:47 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Simon Horman <simon.horman@corigine.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Ivan Vecera <ivecera@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Networking <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "oss-drivers@corigine.com" <oss-drivers@corigine.com>
+Subject: Re: [PATCH] switchdev: add Kconfig dependencies for bridge
+Thread-Topic: [PATCH] switchdev: add Kconfig dependencies for bridge
+Thread-Index: AQHXh61yQBka7eM/OUS0Ww/tlViNv6tgZe6AgAAjW4CAAAnwgIAADhEAgAAHHIA=
+Date:   Mon, 2 Aug 2021 20:20:47 +0000
+Message-ID: <20210802202047.sqc6yef75dcoowuc@skbuf>
+References: <20210802144813.1152762-1-arnd@kernel.org>
+ <20210802162250.GA12345@corigine.com>
+ <CAK8P3a0R1wvqNE=tGAZt0GPTZFQVw=0Y3AX0WCK4hMWewBc2qA@mail.gmail.com>
+ <20210802190459.ruhfa23xcoqg2vj6@skbuf>
+ <CAK8P3a1sT+bJitQH6B5=+bnKzn-LMJX1LnQtGTBptuDG-co94g@mail.gmail.com>
+In-Reply-To: <CAK8P3a1sT+bJitQH6B5=+bnKzn-LMJX1LnQtGTBptuDG-co94g@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 149df573-17c7-41c2-c881-08d955f303db
+x-ms-traffictypediagnostic: VI1PR04MB7119:
+x-microsoft-antispam-prvs: <VI1PR04MB711973005C89F9BC57DF6755E0EF9@VI1PR04MB7119.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fiLTNTjBc4JDjIJ+fM0eIZLwrE32qdEGPlmEM2S7G+SzLv+jSLOhZ7NRh8Ox6pdE4blniFKkuVoisum3s9XtJCjVlHjj68J1y8phTA013Oh0B/bDtkRkhNFYw6TKey2d2xs+MSG1QhDsi37WWGikc2kTi319WPlHIMcY7X0XtYIuQ3aRL8mlbSmmlkEHBis2TK0yAryJqAZB4yzdZ2/qHOXCZVRrIWe8kJKOIi3LcVTOnIhEeRkzw05SfYghu0MiFFlQxVmQyKegBDvEsB8PYH3BzMlJ5l+E/F7pVQH/r6hFYnMu5Pbqj8A0eidyMdd6ClKUFIDekiWkTEEpUoJQAlwLXHnzz+CERQ6tbmFpJ0sWCbia0c7m+/VijnA5sb0Xl7QCezjv8KQhSbbg15WFK3eq58ROg5cu7bPb3kJRU3QUYjFSQPEmFf3Qw70alyZhdQxrKkndF9WZqFjXWAA+VXGp+S66+EJluB9cdGK/zSaDg7h6zReJGEhJXB73HGEzyaEKSIanLhvgcUJAzb2ch51LRST2BWTBvYFft0M6HWbwK7CH72q2cqSzTk8Q0HF1HUiELUwTEWm8W2DNQkLHQHNbRGhYzjk9lXWLaAVOGOBC56YIaxW4I/dU6N08e+FmrDl/kfUd4QU7nlEQPDMYULLIo1OHWVrTP3j0wDJEAxCvW6p7S7bNztv0RSR9yNEzOfarbPVEcN49FwUlkMGsuw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(346002)(136003)(376002)(39860400002)(396003)(186003)(33716001)(86362001)(76116006)(38070700005)(66446008)(26005)(6486002)(122000001)(316002)(54906003)(38100700002)(7416002)(5660300002)(4326008)(66946007)(6916009)(2906002)(8676002)(8936002)(53546011)(71200400001)(6506007)(9686003)(6512007)(83380400001)(64756008)(66556008)(66476007)(44832011)(1076003)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5/XCrQGuRjZwNXw17mPky6Hhi3EMlZ24q4/Kx8Zv7KQQi6x+XtSpOcA+s0Xp?=
+ =?us-ascii?Q?TQ9tIADsjqbazf71nMn5gbbDDMkuyWqpfxbB2JKY/9NyMEpODd9eEM7DdUmD?=
+ =?us-ascii?Q?HXZWh6SDvhi6rkdVkGro2HtWMFFESLe1U3znPPhtoyosArgi71DiueB80/1r?=
+ =?us-ascii?Q?DdyO/jeRI+s73op1M23LGn26gJdXCmDurU0U74CtSoh1pFtjuRet3kLUVKi+?=
+ =?us-ascii?Q?qCueUWqeKp+3MScBlYO6Ogxk8apfwQxhtlbMpBa8+npBlGMx7Go99irZd5bh?=
+ =?us-ascii?Q?MMYpQTn3X3+n9/WPDb3qO9Oygy8fSkv6L1nBVvUJC90ftkEqeRsrIHEZzWki?=
+ =?us-ascii?Q?mkGKnN5+9q0IP+apyWZsscUZ7d3P7U49FFJN/ANCBcWvpVwdGUCjAoZexz82?=
+ =?us-ascii?Q?He0I4ccC46dHz9aIAkiYkBxVUM0rir6MTuXI7PJK8m2WY9XkC++rNeV5GYSS?=
+ =?us-ascii?Q?M5RK4/QxnHshctNdM/XLCxRmm0OjH78s1OZVrvFFT/D2M2vpKLeZUpYSEsWG?=
+ =?us-ascii?Q?vqPnzZt/IR8ESbzMOz51s6Vfi5AqtG9mtvIFk4nlLhU00AHtswuXBt188n6U?=
+ =?us-ascii?Q?racY2rF7P86OVTTVjGoX1p7iRqer1/wzdGXtxPFK5fQsI5cFth3f4J0U5UDK?=
+ =?us-ascii?Q?qE4GeYzZQEbkzJ5rUduSkuE7gm9iAjP9q5U7rxir9NL3qd5nawhUFAqKqW5M?=
+ =?us-ascii?Q?xVrzlqNy+gbiGVe7VgsSHjnjZC6Evoki1W7Dmyz+Lp01BxfnAoyDdFqe4eUk?=
+ =?us-ascii?Q?7Y2t6TngKcsCYs4S3VptYu3bX2W1PSAzmcYWHnhLOijvKecS3exrFDIdMPye?=
+ =?us-ascii?Q?t7Y1ZyLrOfyegWESi6jX9IAGsRK+rBX4r71tXXkmtRJTD/OTfIs7EQgsOCRa?=
+ =?us-ascii?Q?b4UFt2LbYJaZNP/mT21dDZjk5JGpGPmmY6YDh/y91Ehsb9TZdPmp0HC3OzfW?=
+ =?us-ascii?Q?D25HJ6YB+nwv57G/1Q7vfbLIdW/9qHWWaZSqCkWz2lf09bI1ykPQ9LKL5WQ3?=
+ =?us-ascii?Q?lsvQlUyoCQ9/E9UfmTbkbKa8QHAjqtw/gJjvU9kKw9eDRtksG4/Zx6ZcnzW4?=
+ =?us-ascii?Q?LGdJBTvGV0+DRO8qGenpncSvyM4XzEwHppj6UlYS2yxkL7MEQbAfZq5Mhbha?=
+ =?us-ascii?Q?8otYk/d0AgSpvIvkUxZunV8uww04YqKQG4mMZ6hhEsm70Ffxx3elQLGybTAI?=
+ =?us-ascii?Q?skQrQiODcaWrtmCGZyTmiIPaMn7F7nfLEPlMiHKVtNp3z3b5me28qvRQCWCq?=
+ =?us-ascii?Q?X3J0LPbLdGL2KNWZ0rG2Lavs2OOAy/2056qxT4xgysnMyrS7+8LaNfeSRPio?=
+ =?us-ascii?Q?pyRgPP/T0mOpzMIdM4HlO8r9?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <66D7CD25520E78469E6616D59F8EDEDA@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802120720.547894-2-fuguancheng@bytedance.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 149df573-17c7-41c2-c881-08d955f303db
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2021 20:20:47.8176
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UvfZB1CQnbwGZ7GuEszncas3KoqIQYV7myf/+3NgMlT9agBfCx2dhY91h2x7sS0th/TjKhotDP8B5z1vdixtqw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 08:07:17PM +0800, fuguancheng wrote:
-> This patch allowes the user to specify multiple additional CIDS
-> for the guest that can be used for communication between host
-> and guest.
-> 
-> The guest reads the additional cids from the device config space.
-> The device config space layout can be found at uapi/linux/virtio_vsock.h
-> The existing ioctl call for device VHOST_VIRTIO with request code
-> VHOST_VSOCK_SET_GUEST_CID is modified to notify the host for the
-> additional guest CIDS.
-> 
-> Signed-off-by: fuguancheng <fuguancheng@bytedance.com>
-> ---
->  drivers/vhost/vhost.h             |   5 ++
->  drivers/vhost/vsock.c             | 173 +++++++++++++++++++++++++++++---------
->  include/net/af_vsock.h            |   1 +
->  include/uapi/linux/vhost.h        |   7 ++
->  include/uapi/linux/virtio_vsock.h |   3 +-
->  net/vmw_vsock/af_vsock.c          |   6 +-
->  net/vmw_vsock/virtio_transport.c  |  72 ++++++++++++++--
->  net/vmw_vsock/vsock_loopback.c    |   8 ++
->  8 files changed, 222 insertions(+), 53 deletions(-)
-> 
-> diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-> index 638bb640d6b4..52bd143ccf0c 100644
-> --- a/drivers/vhost/vhost.h
-> +++ b/drivers/vhost/vhost.h
-> @@ -25,6 +25,11 @@ struct vhost_work {
->  	unsigned long		flags;
->  };
->  
-> +struct multi_cid_message {
-> +	u32 number_cid;
-> +	u64 *cid;
-> +};
-> +
->  /* Poll a file (eventfd or socket) */
->  /* Note: there's nothing vhost specific about this structure. */
->  struct vhost_poll {
-> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-> index f249622ef11b..f66c87de91b8 100644
-> --- a/drivers/vhost/vsock.c
-> +++ b/drivers/vhost/vsock.c
-> @@ -43,12 +43,25 @@ enum {
->  static DEFINE_MUTEX(vhost_vsock_mutex);
->  static DEFINE_READ_MOSTLY_HASHTABLE(vhost_vsock_hash, 8);
->  
-> +struct vhost_vsock_ref {
-> +	struct vhost_vsock *vsock;
-> +	struct hlist_node ref_hash;
-> +	u32 cid;
-> +};
-> +
-> +static bool vhost_transport_contain_cid(u32 cid)
-> +{
-> +	if (cid == VHOST_VSOCK_DEFAULT_HOST_CID)
-> +		return true;
-> +	return false;
-> +}
-> +
->  struct vhost_vsock {
->  	struct vhost_dev dev;
->  	struct vhost_virtqueue vqs[2];
->  
->  	/* Link to global vhost_vsock_hash, writes use vhost_vsock_mutex */
-> -	struct hlist_node hash;
-> +	struct vhost_vsock_ref *ref_list;
->  
->  	struct vhost_work send_pkt_work;
->  	spinlock_t send_pkt_list_lock;
-> @@ -56,7 +69,8 @@ struct vhost_vsock {
->  
->  	atomic_t queued_replies;
->  
-> -	u32 guest_cid;
-> +	u32 *cids;
-> +	u32 num_cid;
->  	bool seqpacket_allow;
->  };
->  
-> @@ -70,23 +84,49 @@ static u32 vhost_transport_get_local_cid(void)
->   */
->  static struct vhost_vsock *vhost_vsock_get(u32 guest_cid)
->  {
-> -	struct vhost_vsock *vsock;
-> +	struct vhost_vsock_ref *ref;
->  
-> -	hash_for_each_possible_rcu(vhost_vsock_hash, vsock, hash, guest_cid) {
-> -		u32 other_cid = vsock->guest_cid;
-> +	hash_for_each_possible_rcu(vhost_vsock_hash, ref, ref_hash, guest_cid) {
-> +		u32 other_cid = ref->cid;
->  
->  		/* Skip instances that have no CID yet */
->  		if (other_cid == 0)
->  			continue;
->  
->  		if (other_cid == guest_cid)
-> -			return vsock;
-> +			return ref->vsock;
->  
->  	}
->  
->  	return NULL;
->  }
->  
-> +static int check_if_cid_valid(u64 guest_cid, struct vhost_vsock *vsock)
-> +{
-> +	struct vhost_vsock *other;
-> +
-> +	if (guest_cid <= VMADDR_CID_HOST || guest_cid == U32_MAX)
-> +		return -EINVAL;
-> +
-> +	/* 64-bit CIDs are not yet supported */
-> +	if (guest_cid > U32_MAX)
-> +		return -EINVAL;
-> +	/* Refuse if CID is assigned to the guest->host transport (i.e. nested
-> +	 * VM), to make the loopback work.
-> +	 */
-> +	if (vsock_find_cid(guest_cid))
-> +		return -EADDRINUSE;
-> +	/* Refuse if CID is already in use */
-> +	mutex_lock(&vhost_vsock_mutex);
-> +	other = vhost_vsock_get(guest_cid);
-> +	if (other) {
-> +		mutex_unlock(&vhost_vsock_mutex);
-> +		return -EADDRINUSE;
-> +	}
-> +	mutex_unlock(&vhost_vsock_mutex);
-> +	return 0;
-> +}
-> +
->  static void
->  vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
->  			    struct vhost_virtqueue *vq)
-> @@ -427,6 +467,7 @@ static struct virtio_transport vhost_transport = {
->  		.module                   = THIS_MODULE,
->  
->  		.get_local_cid            = vhost_transport_get_local_cid,
-> +		.contain_cid              = vhost_transport_contain_cid,
->  
->  		.init                     = virtio_transport_do_socket_init,
->  		.destruct                 = virtio_transport_destruct,
-> @@ -542,9 +583,9 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
->  		virtio_transport_deliver_tap_pkt(pkt);
->  
->  		/* Only accept correctly addressed packets */
-> -		if (le64_to_cpu(pkt->hdr.src_cid) == vsock->guest_cid &&
-> -		    le64_to_cpu(pkt->hdr.dst_cid) ==
-> -		    vhost_transport_get_local_cid())
-> +		if (vsock->num_cid > 0 &&
-> +		    (pkt->hdr.src_cid) == vsock->cids[0] &&
-> +		    le64_to_cpu(pkt->hdr.dst_cid) == vhost_transport_get_local_cid())
->  			virtio_transport_recv_pkt(&vhost_transport, pkt);
->  		else
->  			virtio_transport_free_pkt(pkt);
-> @@ -655,6 +696,10 @@ static int vhost_vsock_stop(struct vhost_vsock *vsock)
->  
->  static void vhost_vsock_free(struct vhost_vsock *vsock)
->  {
-> +	if (vsock->ref_list)
-> +		kvfree(vsock->ref_list);
-> +	if (vsock->cids)
-> +		kvfree(vsock->cids);
->  	kvfree(vsock);
->  }
->  
-> @@ -677,7 +722,9 @@ static int vhost_vsock_dev_open(struct inode *inode, struct file *file)
->  		goto out;
->  	}
->  
-> -	vsock->guest_cid = 0; /* no CID assigned yet */
-> +	vsock->ref_list = NULL;
-> +	vsock->cids = NULL;
-> +	vsock->num_cid = 0;
->  
->  	atomic_set(&vsock->queued_replies, 0);
->  
-> @@ -739,11 +786,14 @@ static void vhost_vsock_reset_orphans(struct sock *sk)
->  
->  static int vhost_vsock_dev_release(struct inode *inode, struct file *file)
->  {
-> +	int index;
->  	struct vhost_vsock *vsock = file->private_data;
->  
->  	mutex_lock(&vhost_vsock_mutex);
-> -	if (vsock->guest_cid)
-> -		hash_del_rcu(&vsock->hash);
-> +	if (vsock->num_cid) {
-> +		for (index = 0; index < vsock->num_cid; index++)
-> +			hash_del_rcu(&vsock->ref_list[index].ref_hash);
-> +	}
->  	mutex_unlock(&vhost_vsock_mutex);
->  
->  	/* Wait for other CPUs to finish using vsock */
-> @@ -774,41 +824,80 @@ static int vhost_vsock_dev_release(struct inode *inode, struct file *file)
->  	return 0;
->  }
->  
-> -static int vhost_vsock_set_cid(struct vhost_vsock *vsock, u64 guest_cid)
-> +static int vhost_vsock_set_cid(struct vhost_vsock *vsock, u64 __user *cids, u32 number_cid)
->  {
-> -	struct vhost_vsock *other;
-> +	u64 cid;
-> +	int i, ret;
->  
-> -	/* Refuse reserved CIDs */
-> -	if (guest_cid <= VMADDR_CID_HOST ||
-> -	    guest_cid == U32_MAX)
-> +	if (number_cid <= 0)
->  		return -EINVAL;
-> -
-> -	/* 64-bit CIDs are not yet supported */
-> -	if (guest_cid > U32_MAX)
-> -		return -EINVAL;
-> -
-> -	/* Refuse if CID is assigned to the guest->host transport (i.e. nested
-> -	 * VM), to make the loopback work.
-> -	 */
-> -	if (vsock_find_cid(guest_cid))
-> -		return -EADDRINUSE;
-> -
-> -	/* Refuse if CID is already in use */
-> -	mutex_lock(&vhost_vsock_mutex);
-> -	other = vhost_vsock_get(guest_cid);
-> -	if (other && other != vsock) {
-> +	/* delete the old CIDs. */
-> +	if (vsock->num_cid) {
-> +		mutex_lock(&vhost_vsock_mutex);
-> +		for (i = 0; i < vsock->num_cid; i++)
-> +			hash_del_rcu(&vsock->ref_list[i].ref_hash);
->  		mutex_unlock(&vhost_vsock_mutex);
-> -		return -EADDRINUSE;
-> +		kvfree(vsock->ref_list);
-> +		vsock->ref_list = NULL;
-> +		kvfree(vsock->cids);
-> +		vsock->cids = NULL;
-> +	}
-> +	vsock->num_cid = number_cid;
-> +	vsock->cids = kmalloc_array(vsock->num_cid, sizeof(u32),
-> +				    GFP_KERNEL | __GFP_RETRY_MAYFAIL);
-> +	if (!vsock->cids) {
-> +		vsock->num_cid = 0;
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +	vsock->ref_list = kvmalloc_array(vsock->num_cid, sizeof(*vsock->ref_list),
-> +			       GFP_KERNEL | __GFP_RETRY_MAYFAIL);
-> +	if (!vsock->ref_list) {
-> +		vsock->num_cid = 0;
-> +		ret = -ENOMEM;
-> +		goto out;
->  	}
->  
-> -	if (vsock->guest_cid)
-> -		hash_del_rcu(&vsock->hash);
-> -
-> -	vsock->guest_cid = guest_cid;
-> -	hash_add_rcu(vhost_vsock_hash, &vsock->hash, vsock->guest_cid);
-> -	mutex_unlock(&vhost_vsock_mutex);
-> +	for (i = 0; i < number_cid; i++) {
-> +		if (copy_from_user(&cid, cids + i, sizeof(cid))) {
-> +			/* record where we failed, to clean up the ref in hash table. */
-> +			vsock->num_cid = i;
-> +			ret = -EFAULT;
-> +			goto out;
-> +		}
-> +		ret = check_if_cid_valid(cid, vsock);
-> +		if (ret) {
-> +			vsock->num_cid = i;
-> +			goto out;
-> +		}
->  
-> +		vsock->cids[i] = (u32)cid;
-> +		vsock->ref_list[i].cid = vsock->cids[i];
-> +		vsock->ref_list[i].vsock = vsock;
-> +		mutex_lock(&vhost_vsock_mutex);
-> +		hash_add_rcu(vhost_vsock_hash, &vsock->ref_list[i].ref_hash,
-> +			     vsock->cids[i]);
-> +		mutex_unlock(&vhost_vsock_mutex);
-> +	}
->  	return 0;
-> +
-> +out:
-> +	/* Handle the memory release here. */
-> +	if (vsock->num_cid) {
-> +		mutex_lock(&vhost_vsock_mutex);
-> +		for (i = 0; i < vsock->num_cid; i++)
-> +			hash_del_rcu(&vsock->ref_list[i].ref_hash);
-> +		mutex_unlock(&vhost_vsock_mutex);
-> +		vsock->num_cid = 0;
-> +	}
-> +	if (vsock->ref_list)
-> +		kvfree(vsock->ref_list);
-> +	if (vsock->cids)
-> +		kvfree(vsock->cids);
-> +	/* Set it to null to prevent double release. */
-> +	vsock->ref_list = NULL;
-> +	vsock->cids = NULL;
-> +	return ret;
->  }
->  
->  static int vhost_vsock_set_features(struct vhost_vsock *vsock, u64 features)
-> @@ -852,16 +941,16 @@ static long vhost_vsock_dev_ioctl(struct file *f, unsigned int ioctl,
->  {
->  	struct vhost_vsock *vsock = f->private_data;
->  	void __user *argp = (void __user *)arg;
-> -	u64 guest_cid;
->  	u64 features;
->  	int start;
->  	int r;
-> +	struct multi_cid_message cid_message;
->  
->  	switch (ioctl) {
->  	case VHOST_VSOCK_SET_GUEST_CID:
-> -		if (copy_from_user(&guest_cid, argp, sizeof(guest_cid)))
-> +		if (copy_from_user(&cid_message, argp, sizeof(cid_message)))
->  			return -EFAULT;
-> -		return vhost_vsock_set_cid(vsock, guest_cid);
-> +		return vhost_vsock_set_cid(vsock, cid_message.cid, cid_message.number_cid);
->  	case VHOST_VSOCK_SET_RUNNING:
->  		if (copy_from_user(&start, argp, sizeof(start)))
->  			return -EFAULT;
-> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
-> index ab207677e0a8..d0fc08fb9cac 100644
-> --- a/include/net/af_vsock.h
-> +++ b/include/net/af_vsock.h
-> @@ -170,6 +170,7 @@ struct vsock_transport {
->  
->  	/* Addressing. */
->  	u32 (*get_local_cid)(void);
-> +	bool (*contain_cid)(u32 cid);
->  };
->  
->  /**** CORE ****/
-> diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
-> index c998860d7bbc..a3ea99f6fc7f 100644
-> --- a/include/uapi/linux/vhost.h
-> +++ b/include/uapi/linux/vhost.h
-> @@ -17,6 +17,13 @@
->  
->  #define VHOST_FILE_UNBIND -1
->  
-> +/* structs used for hypervisors to send cid info. */
-> +
-> +struct multi_cid_message {
-> +	u32 number_cid;
-> +	u64 *cid;
-> +};
-> +
->  /* ioctls */
->  
->  #define VHOST_VIRTIO 0xAF
-> diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
-> index 3dd3555b2740..0afc14446b01 100644
-> --- a/include/uapi/linux/virtio_vsock.h
-> +++ b/include/uapi/linux/virtio_vsock.h
-> @@ -42,7 +42,8 @@
->  #define VIRTIO_VSOCK_F_SEQPACKET	1	/* SOCK_SEQPACKET supported */
->  
->  struct virtio_vsock_config {
-> -	__le64 guest_cid;
-> +	__le32 number_cid;
-> +	__le64 cids[];
+On Mon, Aug 02, 2021 at 09:55:20PM +0200, Arnd Bergmann wrote:
+> On Mon, Aug 2, 2021 at 9:05 PM Vladimir Oltean <vladimir.oltean@nxp.com> =
+wrote:
+> >
+> > On Mon, Aug 02, 2021 at 08:29:25PM +0200, Arnd Bergmann wrote:
+> > > If this looks correct to you, I can submit it as a standalone patch.
+> >
+> > I think it's easiest I just ask you to provide a .config that triggers
+> > actual build failures and we can go from there.
+>=20
+> This one is with an arm64 allmodconfig, plus
+>=20
+> CONFIG_PTP_1588_CLOCK=3Dy
+> CONFIG_TI_K3_AM65_CPTS=3Dy
+> CONFIG_TI_K3_AM65_CPSW_NUSS=3Dy
 
-Config space should be generally limited to ~256 bytes.
-That is < 32 cids. Enough? I would implement an interface where
-you write a number and read back a cid, instead.
+Yeah, ok, I remember now, I saw that TI_CPSW_SWITCHDEV is tristate, and
+incorrectly thought that TI_K3_AM65_CPSW_SWITCHDEV (which is mostly a
+copy-paste job of the main cpsw anyway, makes you cringe that they wrote
+a separate driver for it) is tristate too.
 
-
->  } __attribute__((packed));
->
-
-You want a feature bit for this.
-
-  
->  enum virtio_vsock_event_id {
-> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-> index 3e02cc3b24f8..4e1fbe74013f 100644
-> --- a/net/vmw_vsock/af_vsock.c
-> +++ b/net/vmw_vsock/af_vsock.c
-> @@ -507,13 +507,13 @@ EXPORT_SYMBOL_GPL(vsock_assign_transport);
->  
->  bool vsock_find_cid(unsigned int cid)
->  {
-> -	if (transport_g2h && cid == transport_g2h->get_local_cid())
-> +	if (transport_g2h && transport_g2h->contain_cid(cid))
->  		return true;
->  
-> -	if (transport_h2g && cid == VMADDR_CID_HOST)
-> +	if (transport_h2g && transport_h2g->contain_cid(cid))
->  		return true;
->  
-> -	if (transport_local && cid == VMADDR_CID_LOCAL)
-> +	if (transport_local && transport_local->contain_cid(cid))
->  		return true;
->  
->  	return false;
-> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-> index e0c2c992ad9c..5f256a57d9ae 100644
-> --- a/net/vmw_vsock/virtio_transport.c
-> +++ b/net/vmw_vsock/virtio_transport.c
-> @@ -61,10 +61,41 @@ struct virtio_vsock {
->  	bool event_run;
->  	struct virtio_vsock_event event_list[8];
->  
-> -	u32 guest_cid;
-> +	/* The following fields are used to hold additional cids given by the hypervisor
-> +	 * such as qemu.
-> +	 */
-> +	u32 number_cid;
-> +	u32 *cids;
-> +
->  	bool seqpacket_allow;
->  };
->  
-> +static bool virtio_transport_contain_cid(u32 cid)
-> +{
-> +	struct virtio_vsock *vsock;
-> +	bool ret;
-> +	u32 num_cid;
-> +
-> +	num_cid = 0;
-> +	rcu_read_lock();
-> +	vsock = rcu_dereference(the_virtio_vsock);
-> +	if (!vsock || !vsock->number_cid) {
-> +		ret = false;
-> +		goto out_rcu;
-> +	}
-> +
-> +	for (num_cid = 0; num_cid < vsock->number_cid; num_cid++) {
-> +		if (vsock->cids[num_cid] == cid) {
-> +			ret = true;
-> +			goto out_rcu;
-> +		}
-> +	}
-> +	ret = false;
-> +out_rcu:
-> +	rcu_read_unlock();
-> +	return ret;
-> +}
-> +
->  static u32 virtio_transport_get_local_cid(void)
->  {
->  	struct virtio_vsock *vsock;
-> @@ -72,12 +103,12 @@ static u32 virtio_transport_get_local_cid(void)
->  
->  	rcu_read_lock();
->  	vsock = rcu_dereference(the_virtio_vsock);
-> -	if (!vsock) {
-> +	if (!vsock || !vsock->number_cid) {
->  		ret = VMADDR_CID_ANY;
->  		goto out_rcu;
->  	}
->  
-> -	ret = vsock->guest_cid;
-> +	ret = vsock->cids[0];
->  out_rcu:
->  	rcu_read_unlock();
->  	return ret;
-> @@ -176,7 +207,7 @@ virtio_transport_send_pkt(struct virtio_vsock_pkt *pkt)
->  		goto out_rcu;
->  	}
->  
-> -	if (le64_to_cpu(pkt->hdr.dst_cid) == vsock->guest_cid) {
-> +	if (le64_to_cpu(pkt->hdr.dst_cid) == vsock->cids[0]) {
->  		virtio_transport_free_pkt(pkt);
->  		len = -ENODEV;
->  		goto out_rcu;
-> @@ -368,10 +399,33 @@ static void virtio_vsock_update_guest_cid(struct virtio_vsock *vsock)
->  {
->  	struct virtio_device *vdev = vsock->vdev;
->  	__le64 guest_cid;
-> +	__le32 number_cid;
-> +	u32 index;
->  
-> -	vdev->config->get(vdev, offsetof(struct virtio_vsock_config, guest_cid),
-> -			  &guest_cid, sizeof(guest_cid));
-> -	vsock->guest_cid = le64_to_cpu(guest_cid);
-> +	vdev->config->get(vdev, offsetof(struct virtio_vsock_config, number_cid),
-> +			  &number_cid, sizeof(number_cid));
-
-need to handle existing devices without the feature.
-
-> +	vsock->number_cid = le32_to_cpu(number_cid);
-> +
-> +	/* number_cid must be greater than 0 in the config space
-> +	 * to use this feature.
-> +	 */
-> +	if (vsock->number_cid > 0) {
-> +		vsock->cids = kmalloc_array(vsock->number_cid, sizeof(u32), GFP_KERNEL);
-> +		if (!vsock->cids) {
-> +			/* Space allocated failed, reset number_cid to 0.
-> +			 * only use the original guest_cid.
-> +			 */
-> +			vsock->number_cid = 0;
-> +		}
-> +	}
-> +
-> +	for (index = 0; index < vsock->number_cid; index++) {
-> +		vdev->config->get(vdev,
-> +				  offsetof(struct virtio_vsock_config, cids)
-> +				  + index * sizeof(uint64_t),
-> +				  &guest_cid, sizeof(guest_cid));
-> +		vsock->cids[index] = le64_to_cpu(guest_cid);
-
-You just drop high bits here. Unlikely to behave well if they
-are not 0.
-
-
-> +	}
->  }
->  
->  /* event_lock must be held */
-> @@ -451,6 +505,7 @@ static struct virtio_transport virtio_transport = {
->  		.module                   = THIS_MODULE,
->  
->  		.get_local_cid            = virtio_transport_get_local_cid,
-> +		.contain_cid              = virtio_transport_contain_cid,
->  
->  		.init                     = virtio_transport_do_socket_init,
->  		.destruct                 = virtio_transport_destruct,
-> @@ -594,6 +649,8 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
->  	}
->  
->  	vsock->vdev = vdev;
-> +	vsock->cids = NULL;
-> +	vsock->number_cid = 0;
->  
->  	ret = virtio_find_vqs(vsock->vdev, VSOCK_VQ_MAX,
->  			      vsock->vqs, callbacks, names,
-> @@ -713,6 +770,7 @@ static void virtio_vsock_remove(struct virtio_device *vdev)
->  
->  	mutex_unlock(&the_virtio_vsock_mutex);
->  
-> +	kfree(vsock->cids);
->  	kfree(vsock);
->  }
->  
-> diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
-> index 169a8cf65b39..3abbbaff34eb 100644
-> --- a/net/vmw_vsock/vsock_loopback.c
-> +++ b/net/vmw_vsock/vsock_loopback.c
-> @@ -63,6 +63,13 @@ static int vsock_loopback_cancel_pkt(struct vsock_sock *vsk)
->  	return 0;
->  }
->  
-> +static bool vsock_loopback_contain_cid(u32 cid)
-> +{
-> +	if (cid == VMADDR_CID_LOCAL)
-> +		return true;
-> +	return false;
-> +}
-> +
->  static bool vsock_loopback_seqpacket_allow(u32 remote_cid);
->  
->  static struct virtio_transport loopback_transport = {
-> @@ -70,6 +77,7 @@ static struct virtio_transport loopback_transport = {
->  		.module                   = THIS_MODULE,
->  
->  		.get_local_cid            = vsock_loopback_get_local_cid,
-> +		.contain_cid              = vsock_loopback_contain_cid,
->  
->  		.init                     = virtio_transport_do_socket_init,
->  		.destruct                 = virtio_transport_destruct,
-> -- 
-> 2.11.0
-> 
-> 
-
+The options are either to make TI_K3_AM65_CPSW_SWITCHDEV tristate like
+TI_CPSW_SWITCHDEV is, and to edit the Makefile accordingly to make
+am65-cpsw-switchdev.o part of obj-$(CONFIG_TI_K3_AM65_CPSW_SWITCHDEV),
+or to extend the BRIDGE || BRIDGE=3Dn dependency to TI_K3_AM65_CPSW_NUSS
+which is the direct tristate dependency of CONFIG_TI_K3_AM65_CPSW_SWITCHDEV=
+,
+and to make CONFIG_TI_K3_AM65_CPSW_SWITCHDEV simply depend on BRIDGE.=
