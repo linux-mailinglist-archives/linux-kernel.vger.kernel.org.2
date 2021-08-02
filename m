@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655543DD226
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499133DD229
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhHBIlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 04:41:10 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:39223 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhHBIlJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 04:41:09 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1M28O9-1mCOFH3r1F-002aqF; Mon, 02 Aug 2021 10:40:58 +0200
-Received: by mail-wm1-f53.google.com with SMTP id m19so9914427wms.0;
-        Mon, 02 Aug 2021 01:40:58 -0700 (PDT)
-X-Gm-Message-State: AOAM533kulorwX2PcfUeRC0u8B7N30vqSxV1bS6vRchyhjEsrrxG2jp+
-        748EYmHtNrvQZXoE0oxHP3SN9orLh4FJA/Jq/pI=
-X-Google-Smtp-Source: ABdhPJz5worb+3mDgS5BfVO7ARMLM4dzAlkpaueUK5XPmilhwkpYyqD2IgZhtv48MM0fLgUXIA9RUQdA6/gsZXu3Zf4=
-X-Received: by 2002:a05:600c:414b:: with SMTP id h11mr15307818wmm.120.1627893658610;
- Mon, 02 Aug 2021 01:40:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <00000000000014105005c87cffdc@google.com> <20210801131406.1750-1-hdanton@sina.com>
- <6f05c1a9-801a-6174-048a-90688a23941d@nvidia.com>
-In-Reply-To: <6f05c1a9-801a-6174-048a-90688a23941d@nvidia.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 2 Aug 2021 10:40:42 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0dX1GRDTUp50kW81dD-dUw_=H4sx6tyeCVJea-FOBCQA@mail.gmail.com>
-Message-ID: <CAK8P3a0dX1GRDTUp50kW81dD-dUw_=H4sx6tyeCVJea-FOBCQA@mail.gmail.com>
-Subject: Re: [syzbot] possible deadlock in br_ioctl_call
-To:     Nikolay Aleksandrov <nikolay@nvidia.com>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+34fe5894623c4ab1b379@syzkaller.appspotmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        bridge@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+        id S232819AbhHBIlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 04:41:39 -0400
+Received: from mout.gmx.net ([212.227.17.20]:45945 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229917AbhHBIli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 04:41:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627893647;
+        bh=S8Xjk9BlVfspQ9rOgHHKP13Ws7GQo5c0vYJFxqf7KEI=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Ph8rAEQv8CKTv9fgNQZvQ9O3/4W4p9Igh+elJtNRxYbTnYNqiLQqhuwqjXI936lQC
+         1kq6Z5x5p43qWFvnb1ViciFiekDIjg5G8+FEBA5YJ4Caa/5+kHQ02G+FvxknPnYAgW
+         onKnmHr8bcB573DjtIv0Zhxj65MIHB9iJf6YlL/8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.151.211]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MRmfi-1mcXye42xu-00TAF1; Mon, 02
+ Aug 2021 10:40:47 +0200
+Message-ID: <5609f8ed59d5881a5aa7319ee41356a66397e0ed.camel@gmx.de>
+Subject: Re: v5.14-rc3-rt1 losing wakeups?
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Date:   Mon, 02 Aug 2021 10:40:45 +0200
+In-Reply-To: <20210802082545.bykz23s3ouwa4drn@linutronix.de>
+References: <20210730110753.jvli6alm63h5lefy@linutronix.de>
+         <2ae27233ab091d09a7d1e971a47144b40dd51fa0.camel@gmx.de>
+         <87pmuzsf1p.ffs@tglx>
+         <6fce881efc3d8c24a5172528fe1f46ec2ddc0607.camel@gmx.de>
+         <ed1d5f9ec17a5b8d758c234562dad47cfc872ed8.camel@gmx.de>
+         <20210802070218.5js3exubjxvsicx6@linutronix.de>
+         <edd2f9fd1489e1ff05bf526a3059a1dbb81107df.camel@gmx.de>
+         <20210802082545.bykz23s3ouwa4drn@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:56wepSUXVz28L9Dna4gNb3O/IaR3lTv8C3dEgk5bPc/SRiGKmTN
- n7lA5HD4lBzKvygf95qcK2lEW63L0VUwlXWHafLNnQ/6NwMH13oqCdhXBY5Rq49Ms9UoVVp
- jJcfU+9kYaT88SaHLBkyMI+BLrdLtqUzhDGjqsnFl7nORGVtGBD+ZP/0YAc9aj7VZFVP8tp
- FBRymqzZ1wuwUAl8z/uuA==
+User-Agent: Evolution 3.40.3 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:itZvzHXk3JGEXP95h2LLHeYaLCtpKj75B4rV0gmdV/bVSUhJsTm
+ TJH99CDhAHaFCRZf1F3vkzlHU7SYX1CcTZIeiW29dpQmBzArYcrXKWWzpLIWLtmxiosoeux
+ xkbeZDRFehbjMXMBggino9JsTGNpAmtiZpvGMWDL6Opz7dgtO0cPUAnzPRdxmxUwb+LfvFG
+ I2CGeCHzEIBJmU4hVhj3g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6g4JBgcJbPU=:eq3AJ28JQj2DfOYIw+XS9F
- wsH/BQYJnCECBopLQ7L+ZZRPQpKGwmvaJd3N8jlb9e/iQFy6jb7pkMd3yvGl6go836yAVHUOY
- oH/EXTNSG+uDZJNwjV/z7bmZCvSInUETMD+WKqDsijAxfaAeQKlGwQFHWUzIbaPNyDFXIyWa1
- 6KFPu2g+H3LloCk52dGWVpmsgztye7qcsxvDoL9EJCwvxxJ5XKJAF69DzkUxOKGViKfrAmroC
- DAsz/IJUyh7mjIzx8grBjP1uXLXPTocZBAFkXQH4NADcKAH4xStD9Ijj7DLI0dehZEwt/m3oH
- qLAJqO41ZjtFnstHeOCnoKwBZ8so+hydoHY19yS8FupcQ9Xoz4g6WV59AwM5Qcb5NUk/R3Fo6
- 819UeTdPPYbjb3KmMNd+t2xhb9KzuawhuBlZYRpZPaaYO2DEbIf8hkT+nB+uub790VEH74WHb
- YE5UpHhsgnLoTCTrb4QvVRl3dgKhQ5wsG7K05df41bvD5zEw4YohwsGR06N1HhON0vJ1H9buj
- YUOboChnqYvrijcwFeE50mfWR5f7KWvTcsRvjMkVWgwlN/RJhBm98tEV7FF17KZZKqYLw1cRZ
- GZ/j2axGXmmou0dWdWHuv37hhNdHCEsIRPwY7c1twPVoMEnBrF/eEdcLJ1AaCb5KsFJRIGCFx
- RrH/90YeGFfR5jVo4vkRZM6r6ZG4z0TuM/J0O5iEpJsJpcuyUG72DAF9cEvCY3aLd2MveV48a
- keU6lTgk+dnY2PdrWkelbzXSkKfei9ureMAbMd1WRey+BMsKLMKU6XHeywzNY0D12i9BOtqMf
- 22aebCPHq40Oq1n9V0dW9pVO5gVlt5VlbsuxWKZGQSGMtDhDMe9CbhGD+3jKorjUB2oyuz/
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wRMyjVW0UtU=:xZHTwNlpyqCjDlC8CJtKgv
+ OpeJdymA9GZB6mhD52fGe7OrlvhpN8qxg+4MnwwdgHDh/RFOfuHeFmkPmUbBbWkwDULNQf6d7
+ n86JShLSbW7liNXa01vvi3tJQtWsCBVUCBEOvEURFQRU0yHTVJpREC0YTwBNpgr6hPwSP/7n9
+ POhW1ExsWfAqEWo+URa+GrdlTIDQ1xIbfYJj+hP+3GDs5FVDxUWnlYNpZZTRfIwG+TjPVibV0
+ 5pKoOEi6SldoCraRkz5kim9pWY/dXjC1x5vhCazMq2NBFDMPccd+cr7KwQcfJ3a6ad2vzaOLH
+ Djl3Mcz358q2kObYWy8iQtilpmFmkHTACDA+wbQGEBv326JIe9oW/CQ1ge2pfCRi6p5Q6DgkB
+ eLGROdfwtE0qMRgYW+1RJ+MEe/mfUReSBzwVru8qFZ9NetEohY6x6ZMH+xNSUWPZ1vtwAOgQs
+ PCQO5StnKBnELf17QOaFUeOf1/dCMfqpn5TWJHHCxLqxebEekjVvd9LMbJi/Nxew/q2ZYjuZp
+ 9mfeXDFhmaF9q6DFE72Ez8c9+l5KoCFxOyG/jcBofLpHEvn1YvkodhU565sSomCfuH+pPl7W6
+ n/TCUxdI5vcWrN2Piagj2y204iThBV7q7jgQFaLqhhSt6MnCXPTSU8oh7gfBzYiguRwjKea0z
+ 3tr89O9cLXPm01od7JPLjFDSvRWkj6vz4SF8Jlv64WfpCVb29QyPSxemVYmXjLEFtb0ONLpzq
+ jNjALfhVLWCZ3DNwGV0d6/rNxeKRr3cOq1KJNYH7EOTscgX8nNdIKKnvNhABb1nRAZ8BVv+JQ
+ GRjP4HYq3MOIwL7nrwABGjmHSGbmbXvsa65vPqH0+9mthzTSRmYu1EAzY6qdaUiKdtTimWLZD
+ emHdQLHJkc5Ej6QQQlVNkFZl4jcibqXIJLzbsIIYCPFsU+IkP6u7eorIkz+xaM0CakLpP+YJs
+ niE4x7Xg2Pv1QEfYxZeckQUsIt8jGqztQQX267zroZv8xN6P3Apr/RznSV6nVGR4xASFh2kdJ
+ CLcy28Y4nYf4qy99Hkandc/b/Mx5+Y3lpyALZTayMJFgQQz8xYPYSmrEhDR0pVgAiI/s5ociP
+ 5m2koIJtPXoDIkNjg+vEufxAV2Vdo4v6Uc2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 10:30 AM Nikolay Aleksandrov <nikolay@nvidia.com> wrote:
-> On 01/08/2021 16:14, Hillf Danton wrote:
-> > On Sun, 01 Aug 2021 03:34:24 -0700
-> >> syzbot found the following issue on:
+On Mon, 2021-08-02 at 10:25 +0200, Sebastian Andrzej Siewior wrote:
 >
-> Thanks, but it will need more work, the bridge ioctl calls were divided in two parts
-> before: one was deviceless called by sock_ioctl and didn't expect rtnl to be held, the other was
-> with a device called by dev_ifsioc() and expected rtnl to be held.
-> Then ad2f99aedf8f ("net: bridge: move bridge ioctls out of .ndo_do_ioctl")
-> united them in a single ioctl stub, but didn't take care of the locking expectations.
-> For sock_ioctl now we acquire  (1) br_ioctl_mutex, (2) rtnl and for dev_ifsioc we
-> acquire (1) rtnl, (2) br_ioctl_mutex as the lockdep warning has demonstrated.
+> Okay. So the ww-mutex bits are not the cure then. All you do is booting
+> KDE/Plasma in kvm with virtio as GPU or did I mix up things?
 
-Right, sorry about causing problems here.
+My VMs are all full on clones of my desktop box, running KDE/Plasma
+desktop, CPUS are setup to mirror my i4790, and they get half of box's
+ram.  VMs are a "mini-me" wart hanging off the side of the real box,
+NFS mounting various spots of the host where the data won't fit its
+64GB virtual disk.  Display is Spice, video is QXL.
 
-> That fix above can work if rtnl gets reacquired by the ioctl in the proper switch cases.
-> To avoid playing even more locking games it'd probably be best to always acquire and
-> release rtnl by the bridge ioctl which will need a bit more work.
->
-> Arnd, should I take care of it?
+	-Mike
 
-That would be best I think. As you have already analyzed the problem and come
-up with a possible solution, I'm sure you will get to a better fix
-more quickly than
-I would.
-
-Thanks,
-
-       Arnd
