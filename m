@@ -2,67 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E449D3DD4A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545D53DD4B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233423AbhHBL1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:27:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33668 "EHLO mail.kernel.org"
+        id S233431AbhHBLdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:33:45 -0400
+Received: from mga01.intel.com ([192.55.52.88]:26669 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233255AbhHBL10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:27:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59C1A60FC2;
-        Mon,  2 Aug 2021 11:27:15 +0000 (UTC)
-Date:   Mon, 2 Aug 2021 12:27:12 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, anshuman.khandual@arm.com,
-        will@kernel.org, james.morse@arm.com, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, leo.yan@linaro.org, maz@kernel.org,
-        mark.rutland@arm.com
-Subject: Re: [PATCH 10/10] arm64: errata: Add workaround for TSB flush
- failures
-Message-ID: <20210802112712.GE18685@arm.com>
-References: <20210728135217.591173-1-suzuki.poulose@arm.com>
- <20210728135217.591173-11-suzuki.poulose@arm.com>
+        id S233255AbhHBLdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 07:33:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="235364585"
+X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
+   d="scan'208";a="235364585"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 04:33:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
+   d="scan'208";a="510105180"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Aug 2021 04:33:27 -0700
+Date:   Mon, 2 Aug 2021 19:33:26 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Widawsky, Ben" <ben.widawsky@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v6 1/6] mm/mempolicy: Add MPOL_PREFERRED_MANY for
+ multiple preferred nodes
+Message-ID: <20210802113326.GA78980@shbuild999.sh.intel.com>
+References: <YQGB5cB5NlgOuNIN@dhcp22.suse.cz>
+ <20210729070918.GA96680@shbuild999.sh.intel.com>
+ <YQKvZDXmRSVVRvfi@dhcp22.suse.cz>
+ <20210729151242.GA42865@shbuild999.sh.intel.com>
+ <YQLVf3pkQTHLemAZ@dhcp22.suse.cz>
+ <20210730030502.GA87066@shbuild999.sh.intel.com>
+ <YQOeAgPS9+FUseIx@dhcp22.suse.cz>
+ <20210730071840.GA87305@shbuild999.sh.intel.com>
+ <20210802081130.GA42490@shbuild999.sh.intel.com>
+ <YQfTlSy/vmI3ELgR@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210728135217.591173-11-suzuki.poulose@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YQfTlSy/vmI3ELgR@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 02:52:17PM +0100, Suzuki K Poulose wrote:
-> Arm Neoverse-N2 (#2067961) and Cortex-A710 (#2054223) suffers
-> from errata, where a TSB (trace synchronization barrier)
-> fails to flush the trace data completely, when executed from
-> a trace prohibited region. In Linux we always execute it
-> after we have moved the PE to trace prohibited region. So,
-> we can apply the workaround everytime a TSB is executed.
+On Mon, Aug 02, 2021 at 01:14:29PM +0200, Michal Hocko wrote:
+> On Mon 02-08-21 16:11:30, Feng Tang wrote:
+> > On Fri, Jul 30, 2021 at 03:18:40PM +0800, Tang, Feng wrote:
+> > [snip]
+> > > > > One thing is, it's possible that 'nd' is not set in the preferred
+> > > > > nodemask. 
+> > > > 
+> > > > Yes, and there shouldn't be any problem with that.  The given node is
+> > > > only used to get the respective zonelist (order distance ordered list of
+> > > > zones to try). get_page_from_freelist will then use the preferred node
+> > > > mask to filter this zone list. Is that more clear now?
+> > > 
+> > > Yes, from the code, the policy_node() is always coupled with
+> > > policy_nodemask(), which secures the 'nodemask' limit. Thanks for
+> > > the clarification!
+> > 
+> > Hi Michal,
+> > 
+> > To ensure the nodemask limit, the policy_nodemask() also needs some
+> > change to return the nodemask for 'prefer-many' policy, so here is a
+> > updated 1/6 patch, which mainly changes the node/nodemask selection
+> > for 'prefer-many' policy, could you review it? thanks!
 > 
-> The work around is to issue two TSB consecutively.
+> right, I have mixed it with get_policy_nodemask
 > 
-> NOTE: This errata is defined as LOCAL_CPU_ERRATUM, implying
-> that a late CPU could be blocked from booting if it is the
-> first CPU that requires the workaround. This is because we
-> do not allow setting a cpu_hwcaps after the SMP boot. The
-> other alternative is to use "this_cpu_has_cap()" instead
-> of the faster system wide check, which may be a bit of an
-> overhead, given we may have to do this in nvhe KVM host
-> before a guest entry.
+> > @@ -1875,8 +1897,13 @@ static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
+> >   */
+> >  nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
+> >  {
+> > -	/* Lower zones don't get a nodemask applied for MPOL_BIND */
+> > -	if (unlikely(policy->mode == MPOL_BIND) &&
+> > +	int mode = policy->mode;
+> > +
+> > +	/*
+> > +	 * Lower zones don't get a nodemask applied for 'bind' and
+> > +	 * 'prefer-many' policies
+> > +	 */
+> > +	if (unlikely(mode == MPOL_BIND || mode == MPOL_PREFERRED_MANY) &&
+> >  			apply_policy_zone(policy, gfp_zone(gfp)) &&
+> >  			cpuset_nodemask_valid_mems_allowed(&policy->nodes))
+> >  		return &policy->nodes;
 > 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Isn't this just too cryptic? Why didn't you simply
+> 	if (mode == MPOL_PREFERRED_MANY)
+> 		return &policy->mode;
+> 
+> in addition to the existing code? I mean why would you even care about
+> cpusets? Those are handled at the page allocator layer and will further
+> filter the given nodemask. 
 
-With Marc's comments addressed:
+Ok, I will follow your suggestion and keep 'bind' handling unchanged.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+And to be honest, I don't fully understand the current handling for
+'bind' policy, will the returning NULL for 'bind' policy open a
+sideway for the strict 'bind' limit. 
+
+Thanks,
+Feng
+
+
+> -- 
+> Michal Hocko
+> SUSE Labs
