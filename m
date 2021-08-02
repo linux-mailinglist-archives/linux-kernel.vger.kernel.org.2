@@ -2,232 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06E43DD608
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737473DD613
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233723AbhHBMxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:53:19 -0400
-Received: from mga06.intel.com ([134.134.136.31]:31381 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232629AbhHBMxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:53:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="274511422"
-X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
-   d="scan'208";a="274511422"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 05:53:07 -0700
-X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
-   d="scan'208";a="520498828"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.168.136]) ([10.249.168.136])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 05:53:03 -0700
-Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
-To:     Sean Christopherson <seanjc@google.com>, Tao Xu <tao3.xu@intel.com>
-Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210525051204.1480610-1-tao3.xu@intel.com>
- <YQRkBI9RFf6lbifZ@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
-Date:   Mon, 2 Aug 2021 20:53:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S233771AbhHBMzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:55:46 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:18372 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233665AbhHBMzo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 08:55:44 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 172CqFTt022929;
+        Mon, 2 Aug 2021 12:55:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=DMhPBbB9HsVjWPoR/Ct9eLEdunDaMgcdQClkb4SpWGU=;
+ b=BU+CeSb1nwc18fVlIU0nJP1y2x+4Crip8KQbufx7tCCJIkLl0oNRyBnffT/KOaqyKpEq
+ GQpG2TSRp31ZcvDKFQUa+aAURXBPoxZnnB3Q7+Y+tbOqnJsUvfn6hWf3fajHHwLCLgeE
+ GCeFDY355Gm/kvvHFfMx48yaF94rQJALWh+4u8OfY8ieszDgfA9rVRdne6nsfdpP77YT
+ XZoh87DZ/uz0OX0DIMEZ8gwgiNVBRA2cAQ+xAfVLP5aBlz5uy7gdH7sJtJKmTPwWGLor
+ L/BX/9TT2752LQUjbA6eBPcqXmSK8pWRFU4KOEZcU/0lWnGY/7xBY9gKhAyFmmr2uk7g 5g== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=DMhPBbB9HsVjWPoR/Ct9eLEdunDaMgcdQClkb4SpWGU=;
+ b=EYE6PdXeDjZdCOYEil3f0KDMdMcEYJPndn1ttFtcAxLI0w+8P4+QmAFQZYtg02ce3A0Z
+ 0OHHsEjyRx76EroSqRBZZWu4cTmClSjqu2YsxkCwMtHPzx43c91Erzxyjok+CNLc2fF0
+ CX4hCuEK9kQM5whvbh/L9Hp+KfdrbnZ9U/oIzejMAK2KERm8arMbGh7MLHr+QChDvtVg
+ XJ6HgXJn8klg6Eu4Aq42kgCPlAYpKLX9TI/rNf7PzOdAt/Td2MGLImtR0LLpdNpCul5M
+ PynzyhssePlexJgh3lr0TLHFNHY6xC+4P8fjG12OJdsTXKPYHv5zxthzjAUYcjFv8Y5N AA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a6fxh8566-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 02 Aug 2021 12:55:30 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 172CpFHO074970;
+        Mon, 2 Aug 2021 12:55:29 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
+        by userp3020.oracle.com with ESMTP id 3a5g9t1w1n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 02 Aug 2021 12:55:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GH6wLkkJPbTrX+LH1zIvEBY29O6XZa3NXr6dtosi7LOQFdWsqxkHqud54XNouYoLiHNoZ74K7RxhzRXlB2WiW9dB8fNSUuoztBIMk/S3sZuDNJRMuUGdlccx4U/K3a6rC6DACiye6FblyKGBZZbvE9B8v0Tfp6WPF+nHipfGyOowCrNlTXM7B5HhU0bXGGjcNGPYP3bpY+pFzPQ9+esKhCfb4xKTVcDui/I8M7BwOk9hFICBkSYAvbmDNlXxQxSxWiI3EoWcmIwODcv50qR0ZyPYVQgID9fpbAbwWtguGX2XhZRGkB9xTSaiVP/g+rcaMTxUrirEPy9XXUFsWD9bZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DMhPBbB9HsVjWPoR/Ct9eLEdunDaMgcdQClkb4SpWGU=;
+ b=eIPF9v5cNVzyY/s8bAR1IcZVKWcSDERF0e09HG/E2tCvMOepmayg2VskZZpldh2oN3UY0iICGXRpQBB7M/uOn2a0deyuQ8qMolQS1Rmzkgum5sjbmQEvC+ptyP/ii6KuKcdnnsZSnPhNKPqgsrS5zqHwjMANlYVvN6M0ivWzUsqJN9wpJwKgavp+ROLItcbRmlBVyidpvkBoQZWnl3ORO4OoSAwT5AvH/yTuwdwOYeWrfzk2JeyVD4p/KBFdll3zHljLxBsu/fVql81/zzcfAyU9J3EfX9uXF43z8jaGwu8wBuJEjcLCakVGlnhx+VX86yM4iCT/GRtvKKz6rxJvWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DMhPBbB9HsVjWPoR/Ct9eLEdunDaMgcdQClkb4SpWGU=;
+ b=dwD5r1KifCvkW306IgBGxy/BwAO5GGmobVe9zHGFqlhaaYhGhOmLR7tSfT5prTOMUtbYSLVnbqEanSne5GEsHj8d3hCZEiqM07JEB2jsDZlWGRJ6CJzMBkQTqir7TdZxlpmX9TGlX8v31WCwVw9qqRmrxdUp/v3+8ADcvxXq9Ns=
+Authentication-Results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1902.namprd10.prod.outlook.com
+ (2603:10b6:300:10d::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Mon, 2 Aug
+ 2021 12:55:27 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
+ 12:55:27 +0000
+Date:   Mon, 2 Aug 2021 15:55:07 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     "kbuild@lists.01.org" <kbuild@lists.01.org>,
+        "lkp@intel.com" <lkp@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sean Anderson <seanga2@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [kbuild] drivers/pinctrl/pinctrl-k210.c:970 k210_fpioa_probe()
+ warn: 'pdata->clk' not released on lines: 962,968.
+Message-ID: <20210802125507.GJ25548@kadam>
+References: <202107302010.QfgLffbI-lkp@intel.com>
+ <DM6PR04MB708187FE0B622791011BEEB7E7EE9@DM6PR04MB7081.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR04MB708187FE0B622791011BEEB7E7EE9@DM6PR04MB7081.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0065.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::7)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-In-Reply-To: <YQRkBI9RFf6lbifZ@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (102.222.70.252) by JNAP275CA0065.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Mon, 2 Aug 2021 12:55:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7209275d-0fbd-42ed-e27f-08d955b4ccc2
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1902:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB19029FD4F6AD23C0A8E36C548EEF9@MWHPR10MB1902.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /pFoIKAkFtbSmJlV7Dp10CltUpQk61s0J3X7i7Z/DxsICfO/myfRSCyGwFQSkP+2UeQtBLykJYDW3ijdFtcbEXIPsGyIX2ErbeZIyhcwSoaQqZ/08haxSMhnnw4ra0Onx6UVuu/dTVAbsMBHF+IifqPiavWLHmxHTQQCBG48MBExDnm45r/dWmKg1TZ/bl5Dqzpp1oNoiHe+L7frPZlclJ08MFplFF7SNYb3xYGbVDY49q7Vv1digalg7LVve4d1tufsdph7LuypAmQpEyte2bxVLK4Zgzt5WejC1E2u6Unin4wHnrYMlFDc13rchNU1g4ZuTcYQ8fhmt3rx8DJ6XfRJB8AlFao8TH+YRWiqCcr3PvJ4C4bTA4hjkG6bXAtlhNbwXeUp0XdsmPQo+r8Utx7+qHVY77/M0rlvFA9rvfzMlEBwagY0RGDetMxwYzAWduTdUqHRQ+52IwBtjdWYe1Y8A+G2idbb50YbLvuTEuakG6uG2yJH9uJl3oCj8U/0hOMFJK75iDb+zSzrlA/CgppBk8g2Sr63MVethKbU+jeYw7q3U2KWV/yXsqojtEJlBZuDsPEt4Ks4zfeZThaBVuS/0fBgUVUeRjjq/0t0QkVmH3i5IxkTzpt5HtZubiP82nPS7LPe51wLmmZkdHXvKu7TftzCdZkAJ0sgtHRAy9tr5na+d/xaQWXisCeE5usKCUyuZm3c4QpIO8PSQUFRtg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6916009)(55016002)(186003)(9686003)(1076003)(8676002)(54906003)(33656002)(26005)(38100700002)(83380400001)(4326008)(5660300002)(38350700002)(508600001)(9576002)(66476007)(33716001)(66946007)(956004)(316002)(6666004)(6496006)(44832011)(2906002)(52116002)(8936002)(66556008)(4744005)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LBKmxdzeuV0ourfNWLMG2+bt44ExwPObGdj/DR29TTRED3zgoOZV2PBWy53U?=
+ =?us-ascii?Q?yS6n+kolEiA7KqVqQwvfx018HZYECG2i6MJ7IhQMT8UZ8FMeKGDMhiE5fE+x?=
+ =?us-ascii?Q?GuHktjSO73wV3Biw79myIFCoBJ9fSe1ebdfZKrChTlqWoMsVGBiWIHfOme1u?=
+ =?us-ascii?Q?4BIbxS6pUz7KTgisvyqxAjQcnhRhDPk3ZjrKCvAnjKVH7OjwifKxd1gGPxFq?=
+ =?us-ascii?Q?plmKCDeGLMU90p9w4PhV5h167fc8PlUXHzP/xq9Quv08AT/6kb9Rs02om/2t?=
+ =?us-ascii?Q?TEPA3R1scXiAYjeHgNGnoPSYe1xIsjCBZkcteEMDVIfC8VkziA0RZi4nE4R0?=
+ =?us-ascii?Q?fBDszxn1sX2EhXHK7QP0krT8ShgLRTFdS8GFpCCNWajQiOSp/00v7DnieV7u?=
+ =?us-ascii?Q?GrNcnzG1jMPu3BOaLHTYVVrf6A/c8EbN8MrkQnQFnyTrklQaaEdf3loMLGMc?=
+ =?us-ascii?Q?H+/Q/aa/A7uJtI5e0yXTDG16tOpHVSrMmgifEkhmOen+bzvp7pPj4MzFv7cE?=
+ =?us-ascii?Q?bMyz2s6z/d4QvOcwvujnXd6I5Z2cZQVouqKPhVHi7qDX2V8v/4XUmGa+La2v?=
+ =?us-ascii?Q?DhTXpD35SxCt1UVkMRiWEPCM4djkNSxr0XXGHbv42Q+fVpB5Ny3iUXlSWuHk?=
+ =?us-ascii?Q?3YgJXT5D/02fcKFvQRAtDuXubKxWtFhg7f/GRgQrw/uSi+k86W4vO1OuYFXV?=
+ =?us-ascii?Q?jx0HA2jHsh730mjOW08me8UGtJ3Odpi1OfBdlhbLQUpRW4nX6Xu05P7NiGfu?=
+ =?us-ascii?Q?Ikj/pOp2wmpmwRWvlHUMA7ra6RSmkUPTBFMKxgtMnPefUEC/ODFEn8gMJAxE?=
+ =?us-ascii?Q?xNxxhrfLHqmQvF4aJ8HOVxyXZWhfVkrdnBhbBXN3aLUR77mP6md/Y58glx0e?=
+ =?us-ascii?Q?9yu7mgAQTt6Z113gC748QFSN6E+G5eI43JZuKBxqCJmhj6tm8jm6rGy+OfM/?=
+ =?us-ascii?Q?KVkb2TpWBiH0eUPc7kFkDY7Ykhq3zU2CAC5V7MUhVpcBEkoo1JMdqS4mAdR3?=
+ =?us-ascii?Q?RINui1/YaYhbeFNKKoYl2X802bVF3DZApS4LRsfBhpGfr1+2ZK2cgwzQlkA7?=
+ =?us-ascii?Q?pmSzZ535zX4BXc78qD/X8UmlerBAMna2wdJfqFvlu9t8xy2gLdaSwq9aDidP?=
+ =?us-ascii?Q?sR80649/1LlL1KQlUraJPyUAjrKEEdhC6W6BIvRAJljBYt6Ke2KxIo6kF3wR?=
+ =?us-ascii?Q?wNb5A1430jWZjpUvP5H1TfWRk/5xxGw6ofbicUetYsN0R9aRyI7ztAq42ZFJ?=
+ =?us-ascii?Q?TJIM5Vak848TpKVJVftF66c26OF8UPL3DeQoGTBpVzEzutN0ih0gQqyjQtm4?=
+ =?us-ascii?Q?g1PoQRco5x5MLjPUSt4WWuGm?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7209275d-0fbd-42ed-e27f-08d955b4ccc2
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2021 12:55:26.9263
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VuyVad8+GSgFGFKlf7el4dJ9XKTEUOV244Pqg8u2XmalYSIGCva21xjGmlNUjnC+AgwRCbbyIuP8f0qs76kSDox8FuKrAU1rvW2Vgw+0pwQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1902
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10063 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
+ spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=921 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108020086
+X-Proofpoint-GUID: mPCWoypuYgrfZiJXmtIR3g_9yEGAZTwr
+X-Proofpoint-ORIG-GUID: mPCWoypuYgrfZiJXmtIR3g_9yEGAZTwr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/2021 4:41 AM, Sean Christopherson wrote:
-> On Tue, May 25, 2021, Tao Xu wrote:
->>   #endif /* __KVM_X86_VMX_CAPS_H */
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 4bceb5ca3a89..c0ad01c88dac 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -205,6 +205,10 @@ module_param(ple_window_max, uint, 0444);
->>   int __read_mostly pt_mode = PT_MODE_SYSTEM;
->>   module_param(pt_mode, int, S_IRUGO);
->>   
->> +/* Default is 0, less than 0 (for example, -1) disables notify window. */
->> +static int __read_mostly notify_window;
+On Sun, Aug 01, 2021 at 10:50:51PM +0000, Damien Le Moal wrote:
 > 
-> I'm not sure I like the idea of trusting ucode to select an appropriate internal
-> threshold.  Unless the internal threshold is architecturally defined to be at
-> least N nanoseconds or whatever, I think KVM should provide its own sane default.
-> E.g. it's not hard to imagine a scenario where a ucode patch gets rolled out that
-> adjusts the threshold and starts silently degrading guest performance.
+> I can add the clk_unprepare_disable() call to avoid the warning, but that is
+> rather pointless as the system will not boot at all if there is an error here.
+> Thoughts ?
 
-You mean when internal threshold gets smaller somehow, and cases 
-false-positive that leads unexpected VM exit on normal instruction? In 
-this case, we set increase the vmcs.notify_window in KVM.
+These static checker warnings just a one time email service.  If you
+don't want to free resources then that's fine.  If people run Smatch
+manually then they'll still see the warnings but the kbuild bot won't
+email about it again.
 
-I think there is no better to avoid this case if ucode changes internal 
-threshold. Unless KVM's default notify_window is bigger enough.
 
-> Even if the internal threshold isn't architecturally constrained, it would be very,
-> very helpful if Intel could publish the per-uarch/stepping thresholds, e.g. to give
-> us a ballpark idea of how agressive KVM can be before it risks false positives.
-
-Even Intel publishes the internal threshold, we still need to provide a 
-final best_value (internal + vmcs.notify_window). Then what's that value?
-
-If we have an option for final best_value, then I think it's OK to just 
-let vmcs.notify_window = best_value. Then the true final value is 
-best_value + internal.
-  - if it's a normal instruction, it should finish within best_value or 
-best_value + internal. So it makes no difference.
-  - if it's an instruction in malicious case, it won't go to next 
-instruction whether wait for best_value or best_value + internal.
-
->> +module_param(notify_window, int, 0644);
-> 
-> I really like the idea of making the module param writable, but doing so will
-> require far more effort.  At an absolute minimum, the module param would need to
-> be snapshotted at VM creation time, a la lapic_timer_advance_ns, otherwise the
-> behavior is non-deterministic.
-> 
-> But I don't think snapshotting is a worthwhile approach because the main reason
-> for adjusting the window while guests are running is probably going to be to relax
-> the window because guest's are observing degraded performance.  
-
-Let's make it non-writable.
-
-> Hopefully that
-> never happens, but the "CPU adds a magic internal buffer" behavior makes me more
-> than a bit nervous.
-
-If we don't trust internal value, we can just treat it as 0.
-
-> And on the other hand, adding a ton of logic to forcefully update every VMCS is
-> likely overkill.
-> 
-> So, that takes us back to providing a sane, somewhat conservative default.  I've
-> said in the past that ideally the notify_window would be as small as possible,
-> but pushing it down to single digit cycles swings the pendulum too far in the
-> other direction.
-> 
->> +
->>   static DEFINE_STATIC_KEY_FALSE(vmx_l1d_should_flush);
->>   static DEFINE_STATIC_KEY_FALSE(vmx_l1d_flush_cond);
->>   static DEFINE_MUTEX(vmx_l1d_flush_mutex);
->> @@ -2539,7 +2543,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
->>   			SECONDARY_EXEC_PT_USE_GPA |
->>   			SECONDARY_EXEC_PT_CONCEAL_VMX |
->>   			SECONDARY_EXEC_ENABLE_VMFUNC |
->> -			SECONDARY_EXEC_BUS_LOCK_DETECTION;
->> +			SECONDARY_EXEC_BUS_LOCK_DETECTION |
->> +			SECONDARY_EXEC_NOTIFY_VM_EXITING;
->>   		if (cpu_has_sgx())
->>   			opt2 |= SECONDARY_EXEC_ENCLS_EXITING;
->>   		if (adjust_vmx_controls(min2, opt2,
->> @@ -4376,6 +4381,9 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
->>   	if (!vcpu->kvm->arch.bus_lock_detection_enabled)
->>   		exec_control &= ~SECONDARY_EXEC_BUS_LOCK_DETECTION;
->>   
->> +	if (cpu_has_notify_vm_exiting() && notify_window < 0)
->> +		exec_control &= ~SECONDARY_EXEC_NOTIFY_VM_EXITING;
->> +
->>   	vmx->secondary_exec_control = exec_control;
->>   }
->>   
->> @@ -4423,6 +4431,9 @@ static void init_vmcs(struct vcpu_vmx *vmx)
->>   		vmx->ple_window_dirty = true;
->>   	}
->>   
->> +	if (cpu_has_notify_vm_exiting() && notify_window >= 0)
->> +		vmcs_write32(NOTIFY_WINDOW, notify_window);
-> 
-> I'm all for punting full nested support to a future patch, but _this_ patch
-> absolutely needs to apply KVM's notify_window to vmcs02, otherwise L1 can simply
-> run in L2 to avoid the restriction.  init_vmcs() is used only for vmcs01, i.e.
-> prepare_vmcs02_constant_state() needs to set the correct vmcs.NOTIFY_WINDOW,
-> and prepare_vmcs02_early() needs to set/clear SECONDARY_EXEC_NOTIFY_VM_EXITING
-> appropriately.
-
-Thanks for pointing it out. We will fix it in next version.
-
->> +
->>   	vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, 0);
->>   	vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, 0);
->>   	vmcs_write32(CR3_TARGET_COUNT, 0);           /* 22.2.1 */
->> @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
->>   	return 0;
->>   }
->>   
->> +static int handle_notify(struct kvm_vcpu *vcpu)
->> +{
->> +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
->> +
->> +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
-> 
-> What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
-
-It means whether the VM context is corrupted and not valid in the VMCS.
-
->> +		/*
->> +		 * Notify VM exit happened while executing iret from NMI,
->> +		 * "blocked by NMI" bit has to be set before next VM entry.
->> +		 */
->> +		if (enable_vnmi &&
->> +		    (exit_qual & INTR_INFO_UNBLOCK_NMI))
->> +			vmcs_set_bits(GUEST_INTERRUPTIBILITY_INFO,
->> +				      GUEST_INTR_STATE_NMI);
-> 
-> Hmm, logging of some kind is probably a good idea if this exit occurs, e.g. so
-> that the host can (a) get an indication that a guest is potentially malicious and
-> (b) rule out (or confirm) notify_window exits as the source of degraded guest
-> performance.
-> 
-> Maybe add a per-vCPU stat, "u64 notify_window_exits"?
-
-Good idea.
-
-> Another thought would be to also do pr_info/warn_ratelimited if a vCPU gets
-> multiple notify_window exits and doesn't appear to be making forward progress,
-> e.g. same RIP observed two notify_window exits in a row.  Even if the guest is
-> making forward progress, displaying the guest RIP and instruction (if possible)
-> could be useful in triaging why the guest appears to be getting false positives.
-
-I suppose kvm_exit trace can be used if we find there are too many 
-notify_exit.
-
->> +		return 1;
->> +	}
->> +
->> +	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
->> +	vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_NO_EVENT_WINDOW;
->> +	vcpu->run->internal.ndata = 1;
->> +	vcpu->run->internal.data[0] = exit_qual;
-> 
-> Unless an invalid context can _never_ happen, or is already fatal to the guest,
-
-As I explained, invalid means VM context is corrupted and not valid in 
-VMCS. We have no choice.
-
-> I don't think effectively killing the guest is a good idea.  KVM doesn't know
-> for certain that the guest was being malicious, all it knows is that the CPU
-> didn't open an event window for some arbitrary amount of time (arbitrary because
-> the internal threshold is likely to be uarch specific).  KVM is getting exits,
-> which means it's getting a chance to check for signals, etc..., so resuming the
-> guest is ok.
-> 
->> +
->> +	return 0;
->> +}
->> +
->>   /*
->>    * The exit handlers return 1 if the exit was handled fully and guest execution
->>    * may resume.  Otherwise they set the kvm_run parameter to indicate what needs
->> @@ -5699,6 +5735,7 @@ static int (*kvm_vmx_exit_handlers[])(struct kvm_vcpu *vcpu) = {
->>   	[EXIT_REASON_PREEMPTION_TIMER]	      = handle_preemption_timer,
->>   	[EXIT_REASON_ENCLS]		      = handle_encls,
->>   	[EXIT_REASON_BUS_LOCK]                = handle_bus_lock_vmexit,
->> +	[EXIT_REASON_NOTIFY]		      = handle_notify,
->>   };
->>   
-
+regards,
+dan carpenter
