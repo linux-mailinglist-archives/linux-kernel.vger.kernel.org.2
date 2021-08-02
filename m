@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D553DDC32
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641663DDC34
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbhHBPR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60588 "EHLO
+        id S234688AbhHBPSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234460AbhHBPR2 (ORCPT
+        with ESMTP id S234401AbhHBPS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:17:28 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E44C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:17:18 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so6403473pjs.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:17:18 -0700 (PDT)
+        Mon, 2 Aug 2021 11:18:28 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F64C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:18:18 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id a93so10858701ybi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:18:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xb8HOmuPTAxJ7T5xR6e4z7KGNGhgi+GnOoQmDeQ4d8E=;
-        b=na3fYEqx7lUMrXT+mnoG9cExJCmY7bgYn1X9PTL4Z+t+jgYKxyFGxtez2PzJryo/Ju
-         /d7t/KfU4tJUV0+GAyyMOtV+eLLzIbd4QQD47k//k614s6b1Kt3EYhNBACa7DtCwBCgi
-         JNZzflIJlWqU/QxMO6p3psckER771ekSUWgal7glI5podLFNQCWt851uwpcsVgpQLQkn
-         n6BhgaNPGOnPMj++ntzDueAEYl2ATgLFQr5leH1Y1GLcaHEwgg8QQXMIO6pK4KU7KwJx
-         MBJThA7+/ff7ugTwiLkwfIm3xDRUU8HnkJJkl1Bxwjq81pvKLniFNAA+X1DdpVWegRYS
-         WfIA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tJ1uiAC38lCN+0H0I78DV/eCZT2iUHzDU8u0RM5YfYA=;
+        b=pLsXyILmbXYu2do4b3rFmOGziHdYL9UNQsLwfWZyIetia3BQXACnMYlnj+w/1n+aQA
+         PFI0mcGUUdVZXRHfFcjwxW2VAuIsf+eLw9zJMbxZ8hwm2Q0wXaGL5pVKD87obS90lRNV
+         dYc0O1b16aaO+HJzeUBovtx+VPXSgMEz1WswnBz8wX+sdqrj+5dmaG+xc697O9Uzsqst
+         UL9fiAWod1DwjvbInUypjuVY0wgmAfrfO79W/OY2gLX+qg+GdWZWSqpLm/YHDguYIRSE
+         IIHzDdo7snt30Yil82D/0tRxuX5F2xSi8tutLG0bc/N5UGaix3U3MDVG96qaZ5V7xbc3
+         PiZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xb8HOmuPTAxJ7T5xR6e4z7KGNGhgi+GnOoQmDeQ4d8E=;
-        b=DsBQme3ew+PBQHUxcJhbQ9mV8aE+R8afbdEqcc8rgEEs6Tr+ZJ1UHqxiPykSUpab0L
-         pZAYMus4uW/yyfltntydgzSmq/cCKbentMUoDZ7ZW7d8zz0Rp38crTHtDjJc6cehkrhs
-         y3iTbcdZ1lPqAEqRGIkV4XDCO9nj1g3KoqqLJp2PzSIUqZ80Is1L6fq5IllrD3hYwzbN
-         ztb21SbxNFjYc/06Ve16wEMXTzF1he/sKYzXS4mt97puQKJH/w6cdQZCvcnxgR8WMhs1
-         vnsNPlwTCkyAm4HwNAiMrxmQt+XCWpzxw37xScWxNhJ3YPaAUrJmrUOCzjkUI4s8By9v
-         CJuw==
-X-Gm-Message-State: AOAM5329CzrA5WXBMqt3JUY7LtPnMnOciLsYSFaaAvvLHCvANhXg/5+T
-        Zvaktjri+qyobqO9GFV15GNBrg==
-X-Google-Smtp-Source: ABdhPJw+6FnSBQB8oQaVjz+nnBTezKYAPlod64rZDb5S+XFBEYmGXWsaE98+V1M2xlQL5POiXS+9aw==
-X-Received: by 2002:a17:90a:fd10:: with SMTP id cv16mr1865144pjb.134.1627917438233;
-        Mon, 02 Aug 2021 08:17:18 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id j19sm12306155pfr.82.2021.08.02.08.17.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 08:17:17 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 23:17:10 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     acme@kernel.org, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
-        suzuki.poulose@arm.com, mike.leach@linaro.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH 5/6] perf cs-etm: Improve Coresight zero timestamp
- warning
-Message-ID: <20210802151710.GB148327@leoy-ThinkPad-X240s>
-References: <20210729155805.2830-1-james.clark@arm.com>
- <20210729155805.2830-6-james.clark@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tJ1uiAC38lCN+0H0I78DV/eCZT2iUHzDU8u0RM5YfYA=;
+        b=UKqQc9XIJ+hmSMWHQwXxrbjaCCwUXgoFfDOiFhVPVXo61E1xWPrk0MiRfNX48azzXA
+         ZRo5y31ql4cNIlcU3TIoftEJgBYPjv6aL2pJNZpCuUEG6K3PxR2btaBUVUi3XfvpfFnU
+         JUGXeGVMNkJCUe9rAlzIzJOlAlv8UfL/dCoDQ4Y9N0z/dbWHRqM+l9nZ4AOz3ZUWLxmZ
+         QopH64jZ8QMfwNnfZyW/g7oW+eRl8h+0dAFIzh056eIpcEA097TJbjMKc/upoIBZbSH1
+         OZBIqcMUIJCRUMvxdFVfXvxMzSLdxI8IpxkyBw9bGy6wdgyeYaaiR//zwENMa18eLU+V
+         T30A==
+X-Gm-Message-State: AOAM530TyxveiBwHRfAPckRWK4IT2doQmDMqD4oXwUtbCIC9mMZSJT6o
+        p6Wn/H4NN6nA5xwq9cFXLtYQtzq7UwlwVjDPpqFnVg==
+X-Google-Smtp-Source: ABdhPJzGzA4UnM5kRs1UQzFPL8q8WFiZ1p+oa8e0d56G3jdfg33oeS336bhtiTKKz9AVqUc9Dh88DIfJc5L8qiLA+G4=
+X-Received: by 2002:a25:505:: with SMTP id 5mr21859792ybf.157.1627917497620;
+ Mon, 02 Aug 2021 08:18:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729155805.2830-6-james.clark@arm.com>
+References: <cover.1626429286.git.matthias.schiffer@ew.tq-group.com>
+ <34be64092b7b4d0c75085a8c729f5f6fcfb56b61.1626429286.git.matthias.schiffer@ew.tq-group.com>
+ <CACRpkdbaE+07ZZigct+JS-MU79U_D2nC82a-LcXm93KW5+xA_A@mail.gmail.com>
+In-Reply-To: <CACRpkdbaE+07ZZigct+JS-MU79U_D2nC82a-LcXm93KW5+xA_A@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 2 Aug 2021 17:18:06 +0200
+Message-ID: <CAMpxmJUdsqYd6P54fdJyigbvDsu8P9QmgVBO06b40YksjArYXw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/7] gpio: tqmx86: really make IRQ optional
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Lee Jones <lee.jones@linaro.org>, Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 04:58:04PM +0100, James Clark wrote:
-> Only show the warning if the user hasn't already set timeless mode and
-> improve the text because there was ambiguity around the meaning of '...'
-> 
-> Change the warning to a UI warning instead of printing straight to
-> stderr because this corrupts the UI when perf report TUI is used. The UI
-> warning function also handles printing to stderr when in perf script
-> mode.
-> 
-> Suggested-by: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: James Clark <james.clark@arm.com>
+On Fri, Jul 23, 2021 at 6:16 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Fri, Jul 16, 2021 at 12:01 PM Matthias Schiffer
+> <matthias.schiffer@ew.tq-group.com> wrote:
+>
+> > The tqmx86 MFD driver was passing IRQ 0 for "no IRQ" in the past. This
+> > causes warnings with newer kernels.
+> >
+> > Prepare the gpio-tqmx86 driver for the fixed MFD driver by handling a
+> > missing IRQ properly.
+> >
+> > Fixes: b868db94a6a7 ("gpio: tqmx86: Add GPIO from for this IO controller")
+> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > ---
+> >
+> > v2: add Fixes line
+> > v3: no changes
+>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> I suppose Lee will merge this into MFD with the rest of the patches?
+> I don't see anything stopping Bart from just merging this one patch
+> into the GPIO tree though. Only runtime dependencies.
+>
+> Yours,
+> Linus Walleij
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
+I applied this patch for fixes and will shortly send a PR with some
+other fixes to Linus.
 
-> ---
->  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> index 3e1a05bc82cc..5084bd2ca6eb 100644
-> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> @@ -324,8 +324,11 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
->  		 * underflow.
->  		 */
->  		packet_queue->cs_timestamp = 0;
-> -		WARN_ONCE(true, "Zero Coresight timestamp found at Idx:%" OCSD_TRC_IDX_STR
-> -				". Decoding may be improved with --itrace=Z...\n", indx);
-> +		if (!cs_etm__etmq_is_timeless(etmq))
-> +			pr_warning_once("Zero Coresight timestamp found at Idx:%" OCSD_TRC_IDX_STR
-> +					". Decoding may be improved by prepending 'Z' to your current --itrace arguments.\n",
-> +					indx);
-> +
->  	} else if (packet_queue->instr_count > elem->timestamp) {
->  		/*
->  		 * Sanity check that the elem->timestamp - packet_queue->instr_count would not
-> -- 
-> 2.28.0
-> 
+Bart
