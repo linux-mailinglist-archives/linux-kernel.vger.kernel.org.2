@@ -2,133 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7678E3DE0F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5C93DE0FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhHBUqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:46:21 -0400
-Received: from mail-il1-f174.google.com ([209.85.166.174]:34530 "EHLO
-        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232124AbhHBUqQ (ORCPT
+        id S232294AbhHBUrT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Aug 2021 16:47:19 -0400
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:15451 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231338AbhHBUrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:46:16 -0400
-Received: by mail-il1-f174.google.com with SMTP id a14so17693818ila.1;
-        Mon, 02 Aug 2021 13:46:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PwNLwfql2TFidgftm+20PqZGJxrE90FZO8vc6Q4OqWU=;
-        b=LgunEat+spKDd4siEU5NRB4gkyMIi6wehkM8irtmZSHEKPvw2JXZ3FSqWKnK9wnf6P
-         30kqwSIC3bm3AYJqGccrnoiinnKuGLUC2tXrVkxEn23o1SdT6Htf0i6FcxeamzewrmBA
-         /fYTlfRWD2do74PnoGDnk6NN3kJR7zSZG+sTXccLjRmDqWhcWzvr9tVziNNAI4HR2Y+G
-         76s/VMZIVQdVKaprjVEwty6R/gc8KWvLlq1M9IFShWbnJuhhQYSOnCNxeJPJoPJdzi/Z
-         N5Ekcwl8fVbEqud7vr2+btfF1J7mXIeETVCHdgzWEELTE3Rj9OLsMPWrnG6v4uZVNn1r
-         ryIg==
-X-Gm-Message-State: AOAM531spAOdrFVC1ADSMAM1vHwGk3vHHfF4FIdCJAK7TePF0H3RzNik
-        XFvo0aGf1rL5K4+XArdI1g==
-X-Google-Smtp-Source: ABdhPJyKUZPKMxPr44uq64bPWQISlXw3RSM+CNofGBCMC54z+helrxqXvtUGIn8Db0zpdGeL1L7cFg==
-X-Received: by 2002:a92:d8d1:: with SMTP id l17mr867040ilo.187.1627937164802;
-        Mon, 02 Aug 2021 13:46:04 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id x11sm6293473ilu.3.2021.08.02.13.46.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 13:46:04 -0700 (PDT)
-Received: (nullmailer pid 1578674 invoked by uid 1000);
-        Mon, 02 Aug 2021 20:46:02 -0000
-Date:   Mon, 2 Aug 2021 14:46:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, peda@axentia.se
-Subject: Re: [PATCH v2 2/2] i2c: mux: pca954x: Support multiple devices on a
- single reset line
-Message-ID: <YQhZimPDbNJk5nbR@robh.at.kernel.org>
-References: <20210727160315.15575-1-eajames@linux.ibm.com>
- <20210727160315.15575-3-eajames@linux.ibm.com>
+        Mon, 2 Aug 2021 16:47:16 -0400
+Date:   Mon, 02 Aug 2021 20:47:01 +0000
+Authentication-Results: mail-40131.protonmail.ch; dkim=none
+To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Cc:     richard@sigma-star.at, Andrew Morton <akpm@linux-foundation.org>
+Reply-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: Re: [PATCH] Log if a core dump is aborted due to changed file permissions
+Message-ID: <76fdf2e7-272f-8771-3a88-ab387ec8954b@sigma-star.at>
+In-Reply-To: <20210701233151.102720-1-david.oberhollenzer@sigma-star.at>
+References: <20210701233151.102720-1-david.oberhollenzer@sigma-star.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727160315.15575-3-eajames@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.0 required=10.0 tests=ALL_TRUSTED shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 11:03:15AM -0500, Eddie James wrote:
-> Some systems connect several PCA954x devices to a single reset GPIO. For
-> these devices to get out of reset and probe successfully, each device must
-> defer the probe until the GPIO has been hogged. Accomplish this by
-> attempting to grab a new "reset-shared-hogged" devicetree property, but
-> expect it to fail with EPROBE_DEFER or EBUSY.
-> 
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Friendly ping :-)
+
+On 7/2/21 1:31 AM, David Oberhollenzer wrote:
+> For obvious security reasons, a core dump is aborted if the
+> filesystem cannot preserve ownership or permissions of the
+> dump file.
+>
+> This affects filesystems like e.g. vfat, but also something like
+> a 9pfs share in a Qemu test setup, running as a regular user,
+> depending on the security model used. In those cases, the result
+> is an empty core file and a confused user.
+>
+> To hopefully safe other people a lot of time figuring out the
+> cause, this patch adds a simple log message for those specific
+> cases.
+>
+> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 > ---
->  drivers/i2c/muxes/i2c-mux-pca954x.c | 46 +++++++++++++++++++++++------
->  1 file changed, 37 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
-> index 4ad665757dd8..376b54ffb590 100644
-> --- a/drivers/i2c/muxes/i2c-mux-pca954x.c
-> +++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-> @@ -434,15 +434,43 @@ static int pca954x_probe(struct i2c_client *client,
->  	i2c_set_clientdata(client, muxc);
->  	data->client = client;
->  
-> -	/* Reset the mux if a reset GPIO is specified. */
-> -	gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-> -	if (IS_ERR(gpio))
-> -		return PTR_ERR(gpio);
-> -	if (gpio) {
-> -		udelay(1);
-> -		gpiod_set_value_cansleep(gpio, 0);
-> -		/* Give the chip some time to recover. */
-> -		udelay(1);
-> +	/*
-> +	 * Grab the shared, hogged gpio that controls the mux reset. We expect
-> +	 * this to fail with either EPROBE_DEFER or EBUSY. The only purpose of
-> +	 * trying to get it is to make sure the gpio controller has probed up
-> +	 * and hogged the line to take the mux out of reset, meaning that the
-> +	 * mux is ready to be probed up. Don't try and set the line any way; in
-> +	 * the event we actually successfully get the line (if it wasn't
-> +	 * hogged) then we immediately release it, since there is no way to
-> +	 * sync up the line between muxes.
-> +	 */
-> +	gpio = gpiod_get_optional(dev, "reset-shared-hogged", 0);
-> +	if (IS_ERR(gpio)) {
-> +		ret = PTR_ERR(gpio);
-> +		if (ret != -EBUSY)
-> +			return ret;
-
-Why can't you just do this with the existing 'reset-gpios' property? 
-What's the usecase where you'd want to fail probe because EBUSY other 
-than an error in your DT.
-
-> +	} else {
-> +		if (gpio) {
-> +			/* This is really a problem since now we don't know the
-> +			 * state of the gpio. Log a warning and keep trying to
-> +			 * probe the mux just in case it works.
-> +			 */
-> +			dev_warn(dev, "got hogged reset line, expect error\n");
-> +			gpiod_put(gpio);
-> +		} else {
-> +			/* Reset the mux if a reset GPIO is specified. */
-> +			gpio = devm_gpiod_get_optional(dev, "reset",
-> +						       GPIOD_OUT_HIGH);
-> +			if (IS_ERR(gpio))
-> +				return PTR_ERR(gpio);
-> +
-> +			if (gpio) {
-> +				udelay(1);
-> +				gpiod_set_value_cansleep(gpio, 0);
-> +				/* Give the chip some time to recover. */
-> +				udelay(1);
-> +			}
+>   fs/coredump.c | 13 +++++++++++--
+>   1 file changed, 11 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index c3d8fc14b993..3e53d3e18b0e 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -782,10 +777,17 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+>   		 * filesystem.
+>   		 */
+>   		mnt_userns = file_mnt_user_ns(cprm.file);
+> -		if (!uid_eq(i_uid_into_mnt(mnt_userns, inode), current_fsuid()))
+> +		if (!uid_eq(i_uid_into_mnt(mnt_userns, inode),
+> +			    current_fsuid())) {
+> +			pr_info_ratelimited("Core dump to |%s aborted: cannot preserve file owner\n",
+> +					    cn.corename);
+>   			goto close_fail;
+> -		if ((inode->i_mode & 0677) != 0600)
 > +		}
->  	}
->  
->  	data->chip = device_get_match_data(dev);
-> -- 
-> 2.27.0
-> 
-> 
+> +		if ((inode->i_mode & 0677) != 0600) {
+> +			pr_info_ratelimited("Core dump to |%s aborted: cannot preserve file permissions\n",
+> +					    cn.corename);
+>   			goto close_fail;
+> +		}
+>   		if (!(cprm.file->f_mode & FMODE_CAN_WRITE))
+>   			goto close_fail;
+>   		if (do_truncate(mnt_userns, cprm.file->f_path.dentry,
+> --
+> 2.31.1
+>
+
+
