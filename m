@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4743DD07C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EFA3DD0A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbhHBG2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:28:32 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60272 "EHLO
+        id S232280AbhHBGek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:34:40 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33504 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230432AbhHBG23 (ORCPT
+        with ESMTP id S229734AbhHBGej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:28:29 -0400
+        Mon, 2 Aug 2021 02:34:39 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E07CA1FF2C;
-        Mon,  2 Aug 2021 06:28:14 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 9162A1FF2D;
+        Mon,  2 Aug 2021 06:34:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627885694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1627886068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6O4ovfEUNzace1WQB0NeGLBJmSbRWBaTfA/jz5eGKhU=;
-        b=iekKpJ/FslvYsDvvZ82fpdm2vUtlLGMkBtK78wzaekb+Qk7ht7qwOi8jim1KAZlT5MBqOw
-        /D4TEqIau7O5ebh+Rxwe4sF7sa2tsnufabuAG+xPb3GZ28ayU+B4ptzFRqQfydNDQqp4BV
-        e5bwJxE3QHXGF43kpWrhdtZDLtlByAo=
+        bh=r84XX0cm6bFzKGGOBYj6/SjXRF+HDztprWThoilY/aQ=;
+        b=seGuGpoQD999s3SgQHtTQ/Ro2wIOmNv/Iu0GtiamSBaAWqerWVzcZ1n4c3MIsXNfbGNTcV
+        +5IHSVyjr52wLlMHT3jnxBnyeclOZeNgERBNfqaSrOmYy5pA6aCUu/iPgrGgAPNgA5x+7L
+        +2+/wuUPZSQtRfHm7w7cJt9mIDV4Yo4=
 Received: from suse.cz (unknown [10.100.201.86])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id BC5BBA3BBE;
-        Mon,  2 Aug 2021 06:28:13 +0000 (UTC)
-Date:   Mon, 2 Aug 2021 08:28:13 +0200
+        by relay2.suse.de (Postfix) with ESMTPS id 13E37A3B83;
+        Mon,  2 Aug 2021 06:34:28 +0000 (UTC)
+Date:   Mon, 2 Aug 2021 08:34:24 +0200
 From:   Michal Hocko <mhocko@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] mm/memcg: Fix incorrect flushing of lruvec data in
- obj_stock
-Message-ID: <YQeQfX3t8k+U3MIL@dhcp22.suse.cz>
-References: <20210802022827.10192-1-longman@redhat.com>
+To:     Aaron Tomlin <atomlin@redhat.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        penguin-kernel@i-love.sakura.ne.jp, rientjes@google.com,
+        llong@redhat.com, neelx@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/oom_kill: show oom eligibility when displaying the
+ current memory state of all tasks
+Message-ID: <YQeR8FTlzrojIbSo@dhcp22.suse.cz>
+References: <20210730162002.279678-1-atomlin@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210802022827.10192-1-longman@redhat.com>
+In-Reply-To: <20210730162002.279678-1-atomlin@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 01-08-21 22:28:27, Waiman Long wrote:
-> When mod_objcg_state() is called with a pgdat that is different from
-> that in the obj_stock, the old lruvec data cached in obj_stock are
-> flushed out. Unfortunately, they were flushed to the new pgdat and
-> hence the wrong node, not the one cached in obj_stock.
-
-It would be great to explicitly mention user observable problems here. I
-do assume this will make slab stats skewed but the effect wouldn't be
-very big, right?
-
-> Fix that by flushing the data to the cached pgdat instead.
+On Fri 30-07-21 17:20:02, Aaron Tomlin wrote:
+> Changes since v2:
+>  - Use single character (e.g. 'R' for MMF_OOM_SKIP) as suggested
+>    by Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+>  - Add new header to oom_dump_tasks documentation
+>  - Provide further justification
 > 
-> Fixes: 68ac5b3c8db2 ("mm/memcg: cache vmstat data in percpu memcg_stock_pcp")
-> Signed-off-by: Waiman Long <longman@redhat.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-> ---
->  mm/memcontrol.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index ae1f5d0cb581..881ec4ddddcd 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3106,17 +3106,19 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->  		stock->cached_pgdat = pgdat;
->  	} else if (stock->cached_pgdat != pgdat) {
->  		/* Flush the existing cached vmstat data */
-> +		struct pglist_data *oldpg = stock->cached_pgdat;
-> +
-> +		stock->cached_pgdat = pgdat;
->  		if (stock->nr_slab_reclaimable_b) {
-> -			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_RECLAIMABLE_B,
-> +			mod_objcg_mlstate(objcg, oldpg, NR_SLAB_RECLAIMABLE_B,
->  					  stock->nr_slab_reclaimable_b);
->  			stock->nr_slab_reclaimable_b = 0;
->  		}
->  		if (stock->nr_slab_unreclaimable_b) {
-> -			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_UNRECLAIMABLE_B,
-> +			mod_objcg_mlstate(objcg, oldpg, NR_SLAB_UNRECLAIMABLE_B,
->  					  stock->nr_slab_unreclaimable_b);
->  			stock->nr_slab_unreclaimable_b = 0;
->  		}
-> -		stock->cached_pgdat = pgdat;
+> The output generated by dump_tasks() can be helpful to determine why
+> there was an OOM condition and which rogue task potentially caused it.
+> Please note that this is only provided when sysctl oom_dump_tasks is
+> enabled.
+> 
+> At the present time, when showing potential OOM victims, we do not
+> exclude any task that are not OOM eligible e.g.
 
-Minor nit. Is there any reason to move the cached_pgdat? TBH I found the
-original way better from the readability POV.
+Well, this is not precise. We do exclude ineligible. Consider tasks that
+are outside of the OOM domain for example. You are right that we are not
+excluding all of them though.
 
->  	}
->  
->  	bytes = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
-> -- 
-> 2.18.1
+> those that have
+> MMF_OOM_SKIP set; it is possible that the last OOM killable victim was
+> already OOM killed, yet the OOM reaper failed to reclaim memory and set
+> MMF_OOM_SKIP. This can be confusing (or perhaps even be misleading) to the
+> viewer. Now, we already unconditionally display a task's oom_score_adj_min
+> value that can be set to OOM_SCORE_ADJ_MIN which is indicative of an
+> "unkillable" task.
+> 
+> This patch provides a clear indication with regard to the OOM ineligibility
+> (and why) of each displayed task with the addition of a new column namely
+> "oom_skipped". An example is provided below:
+> 
+>     [ 5084.524970] [ pid ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj oom_skipped name
+>     [ 5084.526397] [660417]     0 660417    35869      683   167936        0         -1000 M conmon
+>     [ 5084.526400] [660452]     0 660452   175834      472    86016        0          -998  pod
+>     [ 5084.527460] [752415]     0 752415    35869      650   172032        0         -1000 M conmon
+>     [ 5084.527462] [752575] 1001050000 752575   184205    11158   700416        0           999  npm
+>     [ 5084.527467] [753606] 1001050000 753606   183380    46843  2134016        0           999  node
+>     [ 5084.527581] Memory cgroup out of memory: Killed process 753606 (node) total-vm:733520kB, anon-rss:161228kB, file-rss:26144kB, shmem-rss:0kB, UID:1001050000
+> 
+> So, a single character 'M' is for OOM_SCORE_ADJ_MIN, 'R' MMF_OOM_SKIP and
+> 'V' for in_vfork().
+
+I have to say I dislike this for two reasons. First and foremost it
+makes parsing unnecessarily more complex. Now you have a potentially
+an empty column to special case. Secondly MMF_OOM_SKIP is an internal
+state that shouldn't really leak to userspace IMO. in_vfork is a racy
+check and M is already expressed via oom_score_adj so it duplicates an
+existing information.
+
+If you really want/need to make any change here then I would propose to
+either add E(eligible)/I(ligible) column without any specifics or
+consistently skip over all tasks which are not eligible.
+> 2.31.1
 
 -- 
 Michal Hocko
