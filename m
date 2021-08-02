@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8CE3DD91A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DBE3DDA41
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236181AbhHBN5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:57:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34138 "EHLO mail.kernel.org"
+        id S237670AbhHBOKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:10:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235092AbhHBNvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:51:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D10CC610A2;
-        Mon,  2 Aug 2021 13:50:53 +0000 (UTC)
+        id S235760AbhHBOBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:01:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6175B6120A;
+        Mon,  2 Aug 2021 13:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912254;
-        bh=kE9Bk9DFA1RgdtiMAimfsy3v2qOuPct73DWDjzSZdYw=;
+        s=korg; t=1627912585;
+        bh=99hvyO5qMVk98AqKl/fF4u+qk5kGAoJmDIq+Qk8jPuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EzzVsli69QYV6BimMGamFQAi+C+Hin/jHuqgYtpW4Xe3Q8QTLGvDH9H48mLS7tRH2
-         W1fapNmE0NmN1aZgSSFpBWPb0EPjmBkDk6e8kFb2Ikt7SWdurMpt3MGTCE/gupv741
-         oH8/moZvXlFIxSxpBZUGa4LGCG9bnp1nip5vfO4g=
+        b=RcU6krjo+uoMW4w6l8snnwbiDgDGumg5OxAxwZYr/8jA2Lq2FImZfpdZ38VMoEnoa
+         4/I3LAEfek9bvB0fpxfqkY958u6rUE67utyzMlWrRrxi5lIEE+bMRh07x2r7s+bHhp
+         0CfD/Z/UkPFErowEWfMH0cHy4XIdEoEusdekPssw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Shannon Nelson <shannon.lee.nelson@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Jakma <paul@jakma.org>
-Subject: [PATCH 5.4 17/40] NIU: fix incorrect error return, missed in previous revert
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 060/104] can: mcp251xfd: mcp251xfd_irq(): stop timestamping worker in case error in IRQ
 Date:   Mon,  2 Aug 2021 15:44:57 +0200
-Message-Id: <20210802134335.942785105@linuxfoundation.org>
+Message-Id: <20210802134345.976601792@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
-References: <20210802134335.408294521@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Jakma <paul@jakma.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-commit 15bbf8bb4d4ab87108ecf5f4155ec8ffa3c141d6 upstream.
+[ Upstream commit ef68a717960658e6a1e5f08adb0574326e9a12c2 ]
 
-Commit 7930742d6, reverting 26fd962, missed out on reverting an incorrect
-change to a return value.  The niu_pci_vpd_scan_props(..) == 1 case appears
-to be a normal path - treating it as an error and return -EINVAL was
-breaking VPD_SCAN and causing the driver to fail to load.
+In case an error occurred in the IRQ handler, the chip status is
+dumped via devcoredump and all IRQs are disabled, but the chip stays
+powered for further analysis.
 
-Fix, so my Neptune card works again.
+The chip is in an undefined state and will not receive any CAN frames,
+so shut down the timestamping worker, which reads the TBC register
+regularly, too. This avoids any CRC read error messages if there is a
+communication problem with the chip.
 
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Shannon Nelson <shannon.lee.nelson@gmail.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable <stable@vger.kernel.org>
-Fixes: 7930742d ('Revert "niu: fix missing checks of niu_pci_eeprom_read"')
-Signed-off-by: Paul Jakma <paul@jakma.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: efd8d98dfb90 ("can: mcp251xfd: add HW timestamp infrastructure")
+Link: https://lore.kernel.org/r/20210724155131.471303-1-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sun/niu.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/sun/niu.c
-+++ b/drivers/net/ethernet/sun/niu.c
-@@ -8191,8 +8191,9 @@ static int niu_pci_vpd_fetch(struct niu
- 		err = niu_pci_vpd_scan_props(np, here, end);
- 		if (err < 0)
- 			return err;
-+		/* ret == 1 is not an error */
- 		if (err == 1)
--			return -EINVAL;
-+			return 0;
- 	}
- 	return 0;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index e0ae00e34c7b..d371af7ab496 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -2300,6 +2300,7 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
+ 		   err, priv->regs_status.intf);
+ 	mcp251xfd_dump(priv);
+ 	mcp251xfd_chip_interrupts_disable(priv);
++	mcp251xfd_timestamp_stop(priv);
+ 
+ 	return handled;
  }
+-- 
+2.30.2
+
 
 
