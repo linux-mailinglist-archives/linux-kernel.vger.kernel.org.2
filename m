@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8213DD8EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8263DDA72
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235570AbhHBNz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:55:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34462 "EHLO mail.kernel.org"
+        id S237212AbhHBOOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:14:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234959AbhHBNud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:50:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BE8961106;
-        Mon,  2 Aug 2021 13:50:23 +0000 (UTC)
+        id S234770AbhHBOED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:04:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 805526112E;
+        Mon,  2 Aug 2021 13:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912223;
-        bh=Tg6mV7ogNQ7LAcwdRc+vZa5u7Bw+xscjw6gMRxGquT4=;
+        s=korg; t=1627912649;
+        bh=2GTZP091eKfU7pZPiLcAbWAP8+o0WKkT2uVkwuBOflY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UFp7qucWNhhFu7s08q4EIhI0vxJDXVne/9ETevkfHuJlREyKDcYNjbeizOMYGLvJp
-         VXiOKru4wjtX5ZDyIkANcYciTcpiCMH5RRGcv6g68kBJkuOYtwP8j2LiEuXH60b3m8
-         m/ORDNn1pBRl1yuK+WsV3tBD/b0DD+Lv2d9Yv7pA=
+        b=ZfiugUhIRiw0XcYyZk13cabljuu9RqoLzev7rlrtzNf5SfoQTdQ0bZy3OgwRT8kCl
+         HrMQLDe6jUxYhKN7olf4TgjxiGLyIV8jHynDJPFr9ZcjMb5etNFA5gEwvIljCS3cAY
+         Mht2ihEyGpXzg/H8P3ww0tyAHbRZP+I4xxMRiZI8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Shannon Nelson <shannon.lee.nelson@gmail.com>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Paul Jakma <paul@jakma.org>
-Subject: [PATCH 4.19 13/30] NIU: fix incorrect error return, missed in previous revert
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
+Subject: [PATCH 5.13 054/104] net: qrtr: fix memory leaks
 Date:   Mon,  2 Aug 2021 15:44:51 +0200
-Message-Id: <20210802134334.505649075@linuxfoundation.org>
+Message-Id: <20210802134345.791913780@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
-References: <20210802134334.081433902@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Jakma <paul@jakma.org>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 15bbf8bb4d4ab87108ecf5f4155ec8ffa3c141d6 upstream.
+[ Upstream commit 52f3456a96c06760b9bfae460e39596fec7af22e ]
 
-Commit 7930742d6, reverting 26fd962, missed out on reverting an incorrect
-change to a return value.  The niu_pci_vpd_scan_props(..) == 1 case appears
-to be a normal path - treating it as an error and return -EINVAL was
-breaking VPD_SCAN and causing the driver to fail to load.
+Syzbot reported memory leak in qrtr. The problem was in unputted
+struct sock. qrtr_local_enqueue() function calls qrtr_port_lookup()
+which takes sock reference if port was found. Then there is the following
+check:
 
-Fix, so my Neptune card works again.
+if (!ipc || &ipc->sk == skb->sk) {
+	...
+	return -ENODEV;
+}
 
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Shannon Nelson <shannon.lee.nelson@gmail.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable <stable@vger.kernel.org>
-Fixes: 7930742d ('Revert "niu: fix missing checks of niu_pci_eeprom_read"')
-Signed-off-by: Paul Jakma <paul@jakma.org>
+Since we should drop the reference before returning from this function and
+ipc can be non-NULL inside this if, we should add qrtr_port_put() inside
+this if.
+
+The similar corner case is in qrtr_endpoint_post() as Manivannan
+reported. In case of sock_queue_rcv_skb() failure we need to put
+port reference to avoid leaking struct sock pointer.
+
+Fixes: e04df98adf7d ("net: qrtr: Remove receive worker")
+Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
+Reported-and-tested-by: syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sun/niu.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/qrtr/qrtr.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/sun/niu.c
-+++ b/drivers/net/ethernet/sun/niu.c
-@@ -8192,8 +8192,9 @@ static int niu_pci_vpd_fetch(struct niu
- 		err = niu_pci_vpd_scan_props(np, here, end);
- 		if (err < 0)
- 			return err;
-+		/* ret == 1 is not an error */
- 		if (err == 1)
--			return -EINVAL;
-+			return 0;
+diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
+index f2efaa4225f9..67993bcfecde 100644
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -518,8 +518,10 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
+ 		if (!ipc)
+ 			goto err;
+ 
+-		if (sock_queue_rcv_skb(&ipc->sk, skb))
++		if (sock_queue_rcv_skb(&ipc->sk, skb)) {
++			qrtr_port_put(ipc);
+ 			goto err;
++		}
+ 
+ 		qrtr_port_put(ipc);
  	}
- 	return 0;
- }
+@@ -839,6 +841,8 @@ static int qrtr_local_enqueue(struct qrtr_node *node, struct sk_buff *skb,
+ 
+ 	ipc = qrtr_port_lookup(to->sq_port);
+ 	if (!ipc || &ipc->sk == skb->sk) { /* do not send to self */
++		if (ipc)
++			qrtr_port_put(ipc);
+ 		kfree_skb(skb);
+ 		return -ENODEV;
+ 	}
+-- 
+2.30.2
+
 
 
