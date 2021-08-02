@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006713DDE23
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066063DDDA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbhHBQ5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:57:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhHBQ5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:57:05 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E69916112E;
-        Mon,  2 Aug 2021 16:56:55 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mAamG-002WEi-NP; Mon, 02 Aug 2021 17:26:56 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        id S233083AbhHBQ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233093AbhHBQ1a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 12:27:30 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425E1C0617B1
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 09:27:13 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id t66so17175767qkb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 09:27:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hfG5pLLGBVmijGs7xD1CuYUYuRgtJdbg/w8jfytxMq8=;
+        b=KCMBWwrB7rl9OU23KgEVRMNrHkjI1UKzf688kWLXVEwgeNJcNUEFn/VqxfBmj/RpNi
+         fU7laMr621aEhNdbx+OdRBeG+gRjYLKUtX6YwfYdGH1jiOfiYbFh9RvqsE7G7X2Hcr6L
+         IJD1goHuBubu29rquTw+430JSLxAt+s34C3IcQXoIbHdotn0TAHF96EnLgoC091BV6D8
+         vKRxR4BW5FYKCX85Vyxg7ZVVfl6YOhLMldCnEvHDcsFJe8Fwf2EhaQjExoDYOarkFf0Y
+         O41YnyeQ9I6FHv+VtEkpTJAWuNqqcU0IxGZo2xIbPmfEF6kRc4gS1MBxUmJXU2e9LQ32
+         Knxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hfG5pLLGBVmijGs7xD1CuYUYuRgtJdbg/w8jfytxMq8=;
+        b=NeJDOTXKPF6aInEbueKu1Z56jK2Hf7mJuUFYLprPPpWJux2YWtRMYxhGMGa++yXSCA
+         yXy6Fb/tf50eDk39FteapJGZRqo+//f3OQxKdbHI7dq7liAsXn0NYvmSFajZl7+9gVUD
+         +Pmdt6MV/d6gCMEKH3kaGSBh2IfbBW7dGqFPpkFngqHoqD8bEeT67WdM/81VuZsa0maX
+         g714Ykr1r3uUn3L3anLrKpItGNOKV029lfC1MGi09DdcPEgv2+Fkuotrp3RsG1tgZ36S
+         zJ2q3N+3mheFVrcxqd3nVxRs5cy5O2vrr69pN1eriZ4TAQmiV9jfFfd9BpCO6++3YQpg
+         T9zg==
+X-Gm-Message-State: AOAM530zJ6CnJKSOec5hKWy8te75Q9tejhbJ6Obn+N3e1bzPGDPnADoO
+        4ACDvxN/pyfLH8CQ7oG1nB/xmOu6Oh4cRzdLIEQ=
+X-Google-Smtp-Source: ABdhPJw2gIhU+kR4Sx6iXg7nZweEAbd8+bVuItdW1omD41KUb06isEtVR9mByToT58siGUrRB/NUDTpHz2hl5JtZxys=
+X-Received: by 2002:a37:64d:: with SMTP id 74mr16642727qkg.407.1627921632473;
+ Mon, 02 Aug 2021 09:27:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210731214211.657280-1-jim.cromie@gmail.com> <20210731214211.657280-6-jim.cromie@gmail.com>
+In-Reply-To: <20210731214211.657280-6-jim.cromie@gmail.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Mon, 2 Aug 2021 17:27:01 +0100
+Message-ID: <CACvgo53iF4Gk3XhQAtogf52CBFuB9tDxp+Mp8A1UwcvEOQto6Q@mail.gmail.com>
+Subject: Re: [PATCH v4 5/7] i915/gvt: control pr_debug("gvt:")s with bits in parameters/debug_gvt
+To:     Jim Cromie <jim.cromie@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel-team@android.com
-Subject: [PATCH v2 14/14] Documentation: Update irq_domain.rst with new lookup APIs
-Date:   Mon,  2 Aug 2021 17:26:30 +0100
-Message-Id: <20210802162630.2219813-15-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210802162630.2219813-1-maz@kernel.org>
-References: <20210802162630.2219813-1-maz@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, tglx@linutronix.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, ley.foon.tan@intel.com, chris@zankel.net, jcmvbkbc@gmail.com, vgupta@synopsys.com, tsbogend@alpha.franken.de, robert.jarzmik@free.fr, linux@armlinux.org.uk, krzysztof.kozlowski@canonical.com, ysato@users.sourceforge.jp, dalias@libc.org, geert@linux-m68k.org, alexander.deucher@amd.com, christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch, robdclark@gmail.com, linus.walleij@linaro.org, lee.jones@linaro.org, lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com, bgolaszewski@baylibre.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ashley Thomas <Ashley.Thomas2@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Wyatt Wood <Wyatt.Wood@amd.com>, Jessica Yu <jeyu@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Joe Perches <joe@perches.com>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Catch up with the recent irqdomain updates, and document
-{generic_,}handle_domain_irq(), irq_resolve_mapping() as well
-as the deprecation of some of the older APIs.
+Hi Jim,
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- Documentation/core-api/irq/irq-domain.rst | 28 ++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+On Sat, 31 Jul 2021 at 22:42, Jim Cromie <jim.cromie@gmail.com> wrote:
 
-diff --git a/Documentation/core-api/irq/irq-domain.rst b/Documentation/core-api/irq/irq-domain.rst
-index 53283b3729a1..6979b4af2c1f 100644
---- a/Documentation/core-api/irq/irq-domain.rst
-+++ b/Documentation/core-api/irq/irq-domain.rst
-@@ -55,8 +55,24 @@ exist then it will allocate a new Linux irq_desc, associate it with
- the hwirq, and call the .map() callback so the driver can perform any
- required hardware setup.
- 
--When an interrupt is received, irq_find_mapping() function should
--be used to find the Linux IRQ number from the hwirq number.
-+Once a mapping has been established, it can be retrieved or used via a
-+variety of methods:
-+
-+- irq_resolve_mapping() returns a pointer to the irq_desc structure
-+  for a given domain and hwirq number, and NULL if there was no
-+  mapping.
-+- irq_find_mapping() returns a Linux IRQ number for a given domain and
-+  hwirq number, and 0 if there was no mapping
-+- irq_linear_revmap() is now identical to irq_find_mapping(), and is
-+  deprecated
-+- generic_handle_domain_irq() handles an interrupt described by a
-+  domain and a hwirq number
-+- handle_domain_irq() does the same thing for root interrupt
-+  controllers and deals with the set_irq_reg()/irq_enter() sequences
-+  that most architecture requires
-+
-+Note that irq domain lookups must happen in contexts that are
-+compatible with a RCU read-side critical section.
- 
- The irq_create_mapping() function must be called *atleast once*
- before any call to irq_find_mapping(), lest the descriptor will not
-@@ -137,7 +153,9 @@ required.  Calling irq_create_direct_mapping() will allocate a Linux
- IRQ number and call the .map() callback so that driver can program the
- Linux IRQ number into the hardware.
- 
--Most drivers cannot use this mapping.
-+Most drivers cannot use this mapping, and it is now gated on the
-+CONFIG_IRQ_DOMAIN_NOMAP option. Please refrain from introducing new
-+users of this API.
- 
- Legacy
- ------
-@@ -157,6 +175,10 @@ for IRQ numbers that are passed to struct device registrations.  In that
- case the Linux IRQ numbers cannot be dynamically assigned and the legacy
- mapping should be used.
- 
-+As the name implies, the *_legacy() functions are deprecated and only
-+exist to ease the support of ancient platforms. No new users should be
-+added.
-+
- The legacy map assumes a contiguous range of IRQ numbers has already
- been allocated for the controller and that the IRQ number can be
- calculated by adding a fixed offset to the hwirq number, and
--- 
-2.30.2
+> DYNDBG_BITMAP_DESC(__gvt_debug, "dyndbg bitmap desc",
+>         { "gvt: cmd: ",  "command processing" },
+>         { "gvt: core: ", "core help" },
+>         { "gvt: dpy: ",  "display help" },
+>         { "gvt: el: ",   "help" },
+>         { "gvt: irq: ",  "help" },
+>         { "gvt: mm: ",   "help" },
+>         { "gvt: mmio: ", "help" },
+>         { "gvt: render: ", "help" },
+>         { "gvt: sched: " "help" });
+>
+Previous commit removed the space after the colon. The above example
+needs updating.
 
+This concludes a casual read-through on my end. Hope it helps o/
+-Emil
