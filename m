@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94303DD616
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29033DD625
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbhHBM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:56:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46595 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233703AbhHBM4r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:56:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627908997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2DzC+yjcVqrBoVSC1YNBa9TsPyUNKnFGI0GNkxt8Nu8=;
-        b=EJFfv57sWFtcl+MYWbXEujvEcGQKD4WW2cezFl7207ygdBuwIelvGidPCKGbLKs1oY4aLy
-        2YF6DYoVN3BUxUavOyCbsWSFLDPd4FaIOAmmE54F/q+8354KoSxTBkIqvZrvun0qdJ0CbL
-        6ml2EpjuvyIkoNoDZoUmMe2W103ZPHY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-zV2dXcYROMGONcETvhyTcg-1; Mon, 02 Aug 2021 08:56:36 -0400
-X-MC-Unique: zV2dXcYROMGONcETvhyTcg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4D641B18BC0;
-        Mon,  2 Aug 2021 12:56:35 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 541AA69CB7;
-        Mon,  2 Aug 2021 12:56:35 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     mlevitsk@redhat.com
-Subject: [PATCH RFC] KVM: nSVM: remove useless kvm_clear_*_queue
-Date:   Mon,  2 Aug 2021 08:56:34 -0400
-Message-Id: <20210802125634.309874-1-pbonzini@redhat.com>
+        id S233815AbhHBM6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:58:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232629AbhHBM6Q (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 08:58:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C29560E09;
+        Mon,  2 Aug 2021 12:58:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627909087;
+        bh=3nRIOCHIQMck4hhnlunp2JWBMRr1XL9Ld88U9Zvw+GM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FddZZEUgEbQKH54AgrclVRRzOyILA9eXNtvrijWuCejs1dB83JHSlCAaF4VZDLH7s
+         T0cZ2qVZ+ch2rBC+gHJpH3s/Iu1hQs1eWXcchhHrCMdI5YJSerQJyZl7ja1Js2LXIF
+         NuPGtPklfSn1rfDpdRNs08OZoZ4q40+TPuGtEQV9GZQ2rD1OuHgXQ+ccx4gUTz58hZ
+         binyT9JrX/TLBBtntG/Fe2TVV1bbD8ndEXvipjYu2CV1swfeeSuSgNlmr55W7A3xe9
+         YazVJ3ToheKvomPMRvUBangf1GBlUu9v30fIdX4XRpg9D6JA0ehTU8YsgacUyQFgwU
+         mnE5OwRG74cng==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EB71D403F2; Mon,  2 Aug 2021 09:58:04 -0300 (-03)
+Date:   Mon, 2 Aug 2021 09:58:04 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v2 0/2] perf vendor events intel: Add core events and
+ metrics for Elkhartlake
+Message-ID: <YQfr3NFtOH3tu5ZV@kernel.org>
+References: <20210802053440.21035-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802053440.21035-1-yao.jin@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For an event to be in injected state when nested_svm_vmrun executes,
-it must have come from exitintinfo when svm_complete_interrupts ran:
+Em Mon, Aug 02, 2021 at 01:34:38PM +0800, Jin Yao escreveu:
+> Add JSON events and metrics for Elkhartlake to perf.
+> 
+> Based on JSON list v1.02:
+> 
+> https://download.01.org/perfmon/EHL/
 
-  vcpu_enter_guest
-   static_call(kvm_x86_run) -> svm_vcpu_run
-    svm_complete_interrupts
-     // now the event went from "exitintinfo" to "injected"
-   static_call(kvm_x86_handle_exit) -> handle_exit
-    svm_invoke_exit_handler
-      vmrun_interception
-       nested_svm_vmrun
+Thanks, applied.
 
-However, no event could have been in exitintinfo before a VMRUN
-vmexit.  The code in svm.c is a bit more permissive than the one
-in vmx.c:
+- Arnaldo
 
-        if (is_external_interrupt(svm->vmcb->control.exit_int_info) &&
-            exit_code != SVM_EXIT_EXCP_BASE + PF_VECTOR &&
-            exit_code != SVM_EXIT_NPF && exit_code != SVM_EXIT_TASK_SWITCH &&
-            exit_code != SVM_EXIT_INTR && exit_code != SVM_EXIT_NMI)
-
-but in any case, a VMRUN instruction would not even start to execute
-during an attempted event delivery.
-
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 61738ff8ef33..5e13357da21e 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -659,11 +659,6 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
- 		goto out;
- 	}
  
--
--	/* Clear internal status */
--	kvm_clear_exception_queue(vcpu);
--	kvm_clear_interrupt_queue(vcpu);
--
- 	/*
- 	 * Since vmcb01 is not in use, we can use it to store some of the L1
- 	 * state.
--- 
-2.27.0
+> v2:
+> ---
+> Based on JSON list v1.02.
+> Patchset is based on tmp.perf/core branch.
+> 
+> v1:
+> ---
+> Based on JSON list v1.01
+> 
+> Jin Yao (2):
+>   perf vendor events intel: Add core event list for Elkhartlake
+>   perf vendor events intel: Add basic metrics for Elkhartlake
+> 
+>  .../arch/x86/elkhartlake/cache.json           | 226 ++++++++++
+>  .../arch/x86/elkhartlake/ehl-metrics.json     |  57 +++
+>  .../arch/x86/elkhartlake/floating-point.json  |  24 +
+>  .../arch/x86/elkhartlake/frontend.json        |  93 ++++
+>  .../arch/x86/elkhartlake/memory.json          |  86 ++++
+>  .../arch/x86/elkhartlake/other.json           | 424 ++++++++++++++++++
+>  .../arch/x86/elkhartlake/pipeline.json        | 278 ++++++++++++
+>  .../arch/x86/elkhartlake/virtual-memory.json  | 273 +++++++++++
+>  tools/perf/pmu-events/arch/x86/mapfile.csv    |   1 +
+>  9 files changed, 1462 insertions(+)
+>  create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/cache.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/ehl-metrics.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/floating-point.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/frontend.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/memory.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/other.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/pipeline.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/virtual-memory.json
+> 
+> -- 
+> 2.17.1
+> 
 
+-- 
+
+- Arnaldo
