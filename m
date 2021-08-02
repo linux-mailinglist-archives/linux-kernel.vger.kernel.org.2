@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D2C3DD956
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C603F3DD91B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236767AbhHBN7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:59:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
+        id S234717AbhHBN5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:57:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235855AbhHBNya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:54:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91231610CC;
-        Mon,  2 Aug 2021 13:52:55 +0000 (UTC)
+        id S235064AbhHBNvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:51:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A244361029;
+        Mon,  2 Aug 2021 13:50:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912376;
-        bh=VZmg7G6FLytuAFScgXgIqOhNSdDYIumoebdYUvguD0A=;
+        s=korg; t=1627912252;
+        bh=9iOhJBdlcqIJ5sG0i0P6ZQUDdcU1hO4zvkJ2c+vCd+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p53P0YOpeGL6gLlPp7FlRguknqQB39ljt8Y0d1l4mxlT3yrKCiQAgSMXHTbObzYDR
-         yWRhPH2T9WQyhPRNH0Ra1np+KYaXS5GHtGIieGIMJC40lKHo0LzRq8Ihh0ZUZFUrTM
-         v4T+ZsTNid61bhKPXGNczFiXFP9LlJpBqEA6NbyA=
+        b=ZGj7eHcHFST8Il4ihjT7tuzjrm+iGi0M+8P7BpkWc9Akgc+Fkn8RmE4KPklzNKOHI
+         mSSF1Js+u6sx0m5k0GFF8m57ylL2o3jMXBQ9FR7CS2nGlCFiwFaZlQBW+/7eg92SQ9
+         vANjOoCpolVG5H6+j/HcqgAbQWaMF4b9CjAz765s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 32/67] netfilter: nft_nat: allow to specify layer 4 protocol NAT only
-Date:   Mon,  2 Aug 2021 15:44:55 +0200
-Message-Id: <20210802134340.121458247@linuxfoundation.org>
+        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
+        Ping Cheng <ping.cheng@wacom.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 5.4 16/40] HID: wacom: Re-enable touch by default for Cintiq 24HDT / 27QHDT
+Date:   Mon,  2 Aug 2021 15:44:56 +0200
+Message-Id: <20210802134335.911477380@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
+References: <20210802134335.408294521@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Jason Gerecke <killertofu@gmail.com>
 
-[ Upstream commit a33f387ecd5aafae514095c2c4a8c24f7aea7e8b ]
+commit 6ca2350e11f09d5d3e53777d1eff8ff6d300ed93 upstream.
 
-nft_nat reports a bogus EAFNOSUPPORT if no layer 3 information is specified.
+Commit 670e90924bfe ("HID: wacom: support named keys on older devices")
+added support for sending named events from the soft buttons on the
+24HDT and 27QHDT. In the process, however, it inadvertantly disabled the
+touchscreen of the 24HDT and 27QHDT by default. The
+`wacom_set_shared_values` function would normally enable touch by default
+but because it checks the state of the non-shared `has_mute_touch_switch`
+flag and `wacom_setup_touch_input_capabilities` sets the state of the
+/shared/ version, touch ends up being disabled by default.
 
-Fixes: d07db9884a5f ("netfilter: nf_tables: introduce nft_validate_register_load()")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch sets the non-shared flag, letting `wacom_set_shared_values`
+take care of copying the value over to the shared version and setting
+the default touch state to "on".
+
+Fixes: 670e90924bfe ("HID: wacom: support named keys on older devices")
+CC: stable@vger.kernel.org # 5.4+
+Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
+Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nft_nat.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/hid/wacom_wac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nft_nat.c b/net/netfilter/nft_nat.c
-index 4bcf33b049c4..ea53fd999f46 100644
---- a/net/netfilter/nft_nat.c
-+++ b/net/netfilter/nft_nat.c
-@@ -201,7 +201,9 @@ static int nft_nat_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
- 		alen = sizeof_field(struct nf_nat_range, min_addr.ip6);
- 		break;
- 	default:
--		return -EAFNOSUPPORT;
-+		if (tb[NFTA_NAT_REG_ADDR_MIN])
-+			return -EAFNOSUPPORT;
-+		break;
- 	}
- 	priv->family = family;
+--- a/drivers/hid/wacom_wac.c
++++ b/drivers/hid/wacom_wac.c
+@@ -3829,7 +3829,7 @@ int wacom_setup_touch_input_capabilities
+ 		    wacom_wac->shared->touch->product == 0xF6) {
+ 			input_dev->evbit[0] |= BIT_MASK(EV_SW);
+ 			__set_bit(SW_MUTE_DEVICE, input_dev->swbit);
+-			wacom_wac->shared->has_mute_touch_switch = true;
++			wacom_wac->has_mute_touch_switch = true;
+ 		}
+ 		/* fall through */
  
--- 
-2.30.2
-
 
 
