@@ -2,153 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA9A3DE16C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649FA3DE16F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233374AbhHBVUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38754 "EHLO
+        id S232729AbhHBVUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232814AbhHBVTs (ORCPT
+        with ESMTP id S231675AbhHBVUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:19:48 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80657C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:19:38 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id k4-20020a17090a5144b02901731c776526so851569pjm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:19:38 -0700 (PDT)
+        Mon, 2 Aug 2021 17:20:47 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C18C06175F;
+        Mon,  2 Aug 2021 14:20:37 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id l4so25651540ljq.4;
+        Mon, 02 Aug 2021 14:20:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=P804EkvFn0VAlLFLpkTDkQMHTFJyfBf84bJVijuk6QE=;
-        b=DdRM6RkLT2CfJXxydidDPFezCeqrJBYnZM2Q0qbNom/dxQQ9q2LuQiUbhbx7feGTdZ
-         G+X0GLsokPOXtXzc9i2rxbQ7afnk5Emfd46M//DX18f7pwkcxSP4MBDwqI6pfGsEAE+e
-         D3v8j47bG9k7r1EptkGUKTN/GJxRGVRY5f3nkaXfuPunCbMD6uHWFCsRephw4l6ZlgwI
-         eyBBXhOz6MYPBZe/xZrkDW4jRBNGT1aTSYsl9R87nZROAgoKkCTWcn3l6w+GHLezSvei
-         4Es7dqYf/Xt2h5ol0w2JbUkOwaYxcrZLfTOTQmI9GfB3YFwoZWCME4qADqJp01eWr+U3
-         bA8w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y5HDwcPgFO0wIL6EDiNp4UExa/hSrgV/KUielM+lB70=;
+        b=NkZ7fYBaE9n0IXzNOS3qlCvM5o82ewlJh+lSYQ3AMpYr2fWIvSiEqPbemGMEKAeus/
+         ryVMMMsGT8d2SVAHYFge2gUQcEM7yiTRp05cJxvJ4e++xoz1pLhWVbMlaOZdqBIerB+Z
+         a+4lzupKwfQ5h5QwMQRcjKEC+AnAX4VQVzyBJFRspUGYdaVGru+NlzKsJdsSX/Qq5j3h
+         It5NO7Shqlqw3TOy9lzbHO1raXvvmDErX7JDhQqXSYYkZDdsvYX2Emnet+1NIaF6/eVn
+         0N3wpnX7/Upr+YZQcSePBBqCvkkdyMQXu/VB/RIP6/X+w8DFurd4Tey3lg3XRj5Qyojg
+         xwIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=P804EkvFn0VAlLFLpkTDkQMHTFJyfBf84bJVijuk6QE=;
-        b=r+g6nEJ6g7pHYeMLrtJemB6kTOTVpML5PQzQE/BGAZ/iNAJ7vL5iHjmQzqv19SOY5m
-         CQOtNPL2Qf6UsbMYGidvMbjR1VVi93E7tdNr/E9CnII4jTuc4mDQvfpIBO2scu6YIeTO
-         gxNF/LQ0krifym5AkOMYQMBn4RMcDP26OsmsLs88/l77Ui+AttRVphxfnJv1j04YNPZ+
-         /G4G8T582ihn28Zu7mTF5Ko11hUI6Bj3YKaK/x3rS80a9ZLajn1We+vsAiZQAZswP2hA
-         CWZWx1vjIu3tKNaBLKyDEsWMZKiaHdtdOM7+MHUFfsym5wPesrKYT98HJ9fG6p94iFXX
-         rHUg==
-X-Gm-Message-State: AOAM531w9zTrZRzLKDZjfIb2pJFF6C6Q1yI69WiBq6jc3RRYJQuthXEL
-        Q5ZSS7+KdOvTB5i0ah0yiUYJmQ==
-X-Google-Smtp-Source: ABdhPJz002j3RAze6d/+DEB4Us9NBfz/uKhtE5PjbnvPLunzjqVXQbanx8bEoFu316+v1nIW3IHl+g==
-X-Received: by 2002:a65:5c83:: with SMTP id a3mr217102pgt.287.1627939178084;
-        Mon, 02 Aug 2021 14:19:38 -0700 (PDT)
-Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id 10sm12949212pjc.41.2021.08.02.14.19.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y5HDwcPgFO0wIL6EDiNp4UExa/hSrgV/KUielM+lB70=;
+        b=YDjOWvF3xE7gdAZgoOBMib+1vNeAx3zCwG1RwrXLWI+G0ivnrCzPmqVeQGHLINQ5ab
+         w5i2nsHdfPC0Vy3M+UKEIFOE8hY6N/5fR+9z1azq4BflgwBFMkp6yA5VtJ25CFVofU/S
+         U0vYNfBgOmSOeFuzQ6b8ge6BZaOt/liHR+FY/QlVULzkacaQH3ykvMj8PRXtjfHFu6jB
+         nQTJG+dPqKYnVx4anN/YPo2uyDWVXMfUNVa0XuUB/XapyzJQEuWSIv/qdL1raWphZTVT
+         haYoOicZAvI7wvdJWn7EjaeH32VRUt5uzw0QOOnGBrYbBbPwxDbE8e4h1x9mAARArNyp
+         1rbA==
+X-Gm-Message-State: AOAM532II87L9PVqpwYN+Y38Wh8PNMk8UlGiT7OlnCuQT667DCmXhXI3
+        S3LzRMbe2B628+SWBLdYFxcBAdnHRcY=
+X-Google-Smtp-Source: ABdhPJxz6GR2DBrKxSEb8jADdnaAMave3FPgC0Xe/Kl63jvfnxlKrmevs8xiDm+VM8OTF/0ffp3/og==
+X-Received: by 2002:a2e:98d1:: with SMTP id s17mr12043645ljj.457.1627939235458;
+        Mon, 02 Aug 2021 14:20:35 -0700 (PDT)
+Received: from localhost.localdomain (94-29-22-96.dynamic.spd-mgts.ru. [94.29.22.96])
+        by smtp.gmail.com with ESMTPSA id p14sm764942lfa.117.2021.08.02.14.20.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 14:19:37 -0700 (PDT)
-From:   Jiang Wang <jiang.wang@bytedance.com>
-To:     netdev@vger.kernel.org
-Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v3 5/5] selftest/bpf: add new tests in sockmap for unix stream to tcp.
-Date:   Mon,  2 Aug 2021 21:19:09 +0000
-Message-Id: <20210802211912.116329-6-jiang.wang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210802211912.116329-1-jiang.wang@bytedance.com>
-References: <20210802211912.116329-1-jiang.wang@bytedance.com>
+        Mon, 02 Aug 2021 14:20:35 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH v2 00/15] Tegra ARM32 device-tree improvements for 5.15
+Date:   Tue,  3 Aug 2021 00:19:32 +0300
+Message-Id: <20210802211947.19715-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two new test cases in sockmap tests, where unix stream is
-redirected to tcp and vice versa.
+This series:
 
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c    | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+  - adds SoC thermal sensor node
+  - adds interrupt for LM90 to Ouya, AC100, Nexus 7 and A500 devices
+  - fixes interrupt of LM90 sensor for all boards
+  - removes bogus VBUS regulators from A500 device-tree
+  - improves thermal zones of Nexus 7 and A500 devices based on previous
+    discussion with Daniel Lezcano [1]
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 07ed8081f..afa14fb66 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -1884,7 +1884,7 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
- 	xclose(p0);
- }
- 
--static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+static void inet_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
- {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-@@ -1899,9 +1899,13 @@ static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	skel->bss->test_ingress = false;
- 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				    REDIR_EGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				    REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
- 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				    REDIR_INGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				    REDIR_INGRESS);
- 
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
- }
-@@ -1961,7 +1965,7 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
- 
- }
- 
--static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+static void unix_inet_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
- {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-@@ -1976,9 +1980,13 @@ static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	skel->bss->test_ingress = false;
- 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				     REDIR_EGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				     REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
- 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				     REDIR_INGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				     REDIR_INGRESS);
- 
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
- }
-@@ -1994,8 +2002,8 @@ static void test_udp_unix_redir(struct test_sockmap_listen *skel, struct bpf_map
- 	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name, __func__);
- 	if (!test__start_subtest(s))
- 		return;
--	udp_unix_skb_redir_to_connected(skel, map, family);
--	unix_udp_skb_redir_to_connected(skel, map, family);
-+	inet_unix_skb_redir_to_connected(skel, map, family);
-+	unix_inet_skb_redir_to_connected(skel, map, family);
- }
- 
- static void run_tests(struct test_sockmap_listen *skel, struct bpf_map *map,
+[1] https://lore.kernel.org/lkml/1abadc69-1dd1-5939-c089-37a84be4781b@linaro.org/
+
+Changelog:
+
+v2: - Added these new minor patches:
+
+  ARM: tegra: acer-a500: Add power supplies to accelerometer
+  ARM: tegra: acer-a500: Use verbose variant of atmel,wakeup-method
+
+Dmitry Osipenko (15):
+  ARM: tegra: Add SoC thermal sensor to Tegra30 device-trees
+  ARM: tegra: ouya: Add interrupt to temperature sensor node
+  ARM: tegra: paz00: Add interrupt to temperature sensor node
+  ARM: tegra: nexus7: Add interrupt to temperature sensor node
+  ARM: tegra: acer-a500: Add interrupt to temperature sensor node
+  ARM: tegra: nyan: Correct interrupt trigger type of temperature sensor
+  ARM: tegra: apalis: Correct interrupt trigger type of temperature
+    sensor
+  ARM: tegra: cardhu: Correct interrupt trigger type of temperature
+    sensor
+  ARM: tegra: dalmore: Correct interrupt trigger type of temperature
+    sensor
+  ARM: tegra: jetson-tk1: Correct interrupt trigger type of temperature
+    sensor
+  ARM: tegra: acer-a500: Remove bogus USB VBUS regulators
+  ARM: tegra: acer-a500: Add power supplies to accelerometer
+  ARM: tegra: acer-a500: Use verbose variant of atmel,wakeup-method
+    value
+  ARM: tegra: acer-a500: Improve thermal zones
+  ARM: tegra: nexus7: Improve thermal zones
+
+ arch/arm/boot/dts/tegra114-dalmore.dts        |  2 +-
+ arch/arm/boot/dts/tegra124-apalis-v1.2.dtsi   |  2 +-
+ arch/arm/boot/dts/tegra124-apalis.dtsi        |  2 +-
+ arch/arm/boot/dts/tegra124-jetson-tk1.dts     |  2 +-
+ arch/arm/boot/dts/tegra124-nyan.dtsi          |  2 +-
+ .../boot/dts/tegra20-acer-a500-picasso.dts    | 90 ++++++++++++-------
+ arch/arm/boot/dts/tegra20-paz00.dts           |  4 +
+ .../tegra30-asus-nexus7-grouper-common.dtsi   | 60 ++++++++++++-
+ arch/arm/boot/dts/tegra30-cardhu.dtsi         |  2 +-
+ arch/arm/boot/dts/tegra30-ouya.dts            | 13 ++-
+ arch/arm/boot/dts/tegra30.dtsi                | 87 +++++++++++++++++-
+ 11 files changed, 211 insertions(+), 55 deletions(-)
+
 -- 
-2.20.1
+2.32.0
 
