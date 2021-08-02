@@ -2,77 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416FA3DD604
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBDD3DD60F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233755AbhHBMwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:52:32 -0400
-Received: from [103.31.38.59] ([103.31.38.59]:52506 "EHLO gnuweeb.org"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232842AbhHBMwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:52:31 -0400
-Received: from [10.7.7.2] (unknown [68.183.184.174])
-        by gnuweeb.org (Postfix) with ESMTPSA id 9E92DBFC2A;
-        Mon,  2 Aug 2021 12:52:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=gnuweeb.org;
-        s=default; t=1627908739;
-        bh=9dMWCcCbqPK70BkGb3v5u2ZlddkJlkQvmwNyGfwCNY0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=EJiO+Ad5SHbv92sKxpB6MEf6KmMtSi5ulBYilpe/UjBcwQowgkJjTLssE+edrTD8A
-         zgjYCN+AyGk3pUKRxG1XPSLlbVOmi+5PRw0dwXAVP9I7KIFz8ATbi9yTUEcxWmoP8b
-         aVZfd98RRdgTje5itQUFljPztwGJ9EC/HdymeESJ9Qze+XUPb90sSZMfQj+qhD01mx
-         Z5unXSLvJk27yost5r6MLzQ0kbP20RgF4BlvtaCVTEwV6e/IsjcaIaqkV+JFlS5YRh
-         ReECLQn1YN6oXhG8Hz10lkPh5u40huVM15hMzKoi+3Ed0q9GUpxvGZIGe87RNnICmu
-         crlAZT7WFh+0Q==
-Subject: Re: WARNING: CPU: 0 PID: 12 at kernel/sched/fair.c:3306
- update_blocked_averages+0x941/0x9a0
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Ammar Faizi <ammarfaizi2@gmail.com>
-References: <b18744a7-d300-59a8-a6d7-55ba88471252@gnuweeb.org>
- <7473b5ba-72bf-7836-44a6-42851081a277@arm.com>
-From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Message-ID: <9d1680de-39e5-609c-7410-7baabfb079e5@gnuweeb.org>
-Date:   Mon, 2 Aug 2021 19:52:13 +0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233760AbhHBMyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:54:36 -0400
+Received: from mta-06-3.privateemail.com ([198.54.127.59]:5833 "EHLO
+        MTA-06-3.privateemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232629AbhHBMyc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 08:54:32 -0400
+Received: from mta-06.privateemail.com (localhost [127.0.0.1])
+        by mta-06.privateemail.com (Postfix) with ESMTP id 79C9018000BA;
+        Mon,  2 Aug 2021 08:54:22 -0400 (EDT)
+Received: from hal-station.. (unknown [10.20.151.212])
+        by mta-06.privateemail.com (Postfix) with ESMTPA id 8CA5F18000B5;
+        Mon,  2 Aug 2021 08:54:21 -0400 (EDT)
+From:   Hamza Mahfooz <someguy@effective-light.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
+        Bastien Nocera <hadess@hadess.net>,
+        Hamza Mahfooz <someguy@effective-light.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org
+Subject: [PATCH v4] HID: logitech-hidpp: battery: provide CAPACITY property for newer devices
+Date:   Mon,  2 Aug 2021 08:52:32 -0400
+Message-Id: <20210802125232.65188-1-someguy@effective-light.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <7473b5ba-72bf-7836-44a6-42851081a277@arm.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/21 3:42 PM, Dietmar Eggemann wrote:
-> So you're running with:
->
-> 9e077b52d86a - sched/pelt: Check that *_avg are null when *_sum are
-> (2021-06-17 Vincent Guittot)
->
-> but not with:
->
-> ceb6ba45dc80 - sched/fair: Sync load_sum with load_avg after dequeue
-> (2021-07-02 Vincent Guittot)
->
-> The SCHED_WARN_ON you're hitting is harmless and just tells you that the
-> PELT load_avg and load_sum part of one of your cfs_rq's is not aligned.
-> Has to be load (and not util or runnable) since load is the only one
-> still not fixed in f55966571d5e.
->
-> This should go away once you applied ceb6ba45dc80.
+For devices that only support the BATTERY_VOLTAGE (0x1001) feature, UPower
+requires the additional information provided by this patch, to set them up.
 
-Alright, I have just moved to 5.14-rc4 and doesn't seem to have this
-issue anymore.
+Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+---
 
-Thanks for the response, Dietmar.
+v2: use ARRAY_SIZE() and set voltages[]'s size to 100
 
-  Ammar
+v3: add a check to ensure that exactly 100 elements are in voltages[]
+
+v4: add a note regarding the voltage curve and introduce a bounds check on
+    the reported voltage
+---
+ drivers/hid/hid-logitech-hidpp.c | 44 +++++++++++++++++++++++++++++++-
+ 1 file changed, 43 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index 61635e629469..c4226883904b 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -1331,6 +1331,43 @@ static int hidpp20_battery_get_battery_voltage(struct hidpp_device *hidpp,
+ 	return 0;
+ }
+ 
++static int hidpp20_map_battery_capacity(struct hid_device *hid_dev, int voltage)
++{
++	/* NB: This voltage curve doesn't necessarily map perfectly to all
++	 * devices that implement the BATTERY_VOLTAGE feature. This is because
++	 * there are a few devices that use different battery technology.
++	 */
++
++	static const int voltages[] = {
++		4186, 4156, 4143, 4133, 4122, 4113, 4103, 4094, 4086, 4075,
++		4067, 4059, 4051, 4043, 4035, 4027, 4019, 4011, 4003, 3997,
++		3989, 3983, 3976, 3969, 3961, 3955, 3949, 3942, 3935, 3929,
++		3922, 3916, 3909, 3902, 3896, 3890, 3883, 3877, 3870, 3865,
++		3859, 3853, 3848, 3842, 3837, 3833, 3828, 3824, 3819, 3815,
++		3811, 3808, 3804, 3800, 3797, 3793, 3790, 3787, 3784, 3781,
++		3778, 3775, 3772, 3770, 3767, 3764, 3762, 3759, 3757, 3754,
++		3751, 3748, 3744, 3741, 3737, 3734, 3730, 3726, 3724, 3720,
++		3717, 3714, 3710, 3706, 3702, 3697, 3693, 3688, 3683, 3677,
++		3671, 3666, 3662, 3658, 3654, 3646, 3633, 3612, 3579, 3537
++	};
++
++	int i;
++
++	BUILD_BUG_ON(ARRAY_SIZE(voltages) != 100);
++
++	if (unlikely(voltage < 3500 || voltage >= 5000))
++		hid_warn_once(hid_dev,
++			      "%s: possibly using the wrong voltage curve\n",
++			      __func__);
++
++	for (i = 0; i < ARRAY_SIZE(voltages); i++) {
++		if (voltage >= voltages[i])
++			return ARRAY_SIZE(voltages) - i;
++	}
++
++	return 0;
++}
++
+ static int hidpp20_query_battery_voltage_info(struct hidpp_device *hidpp)
+ {
+ 	u8 feature_type;
+@@ -1354,6 +1391,8 @@ static int hidpp20_query_battery_voltage_info(struct hidpp_device *hidpp)
+ 
+ 	hidpp->battery.status = status;
+ 	hidpp->battery.voltage = voltage;
++	hidpp->battery.capacity = hidpp20_map_battery_capacity(hidpp->hid_dev,
++							       voltage);
+ 	hidpp->battery.level = level;
+ 	hidpp->battery.charge_type = charge_type;
+ 	hidpp->battery.online = status != POWER_SUPPLY_STATUS_NOT_CHARGING;
+@@ -1378,6 +1417,8 @@ static int hidpp20_battery_voltage_event(struct hidpp_device *hidpp,
+ 
+ 	if (voltage != hidpp->battery.voltage || status != hidpp->battery.status) {
+ 		hidpp->battery.voltage = voltage;
++		hidpp->battery.capacity = hidpp20_map_battery_capacity(hidpp->hid_dev,
++								       voltage);
+ 		hidpp->battery.status = status;
+ 		hidpp->battery.level = level;
+ 		hidpp->battery.charge_type = charge_type;
+@@ -3717,7 +3758,8 @@ static int hidpp_initialize_battery(struct hidpp_device *hidpp)
+ 	num_battery_props = ARRAY_SIZE(hidpp_battery_props) - 3;
+ 
+ 	if (hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_MILEAGE ||
+-	    hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_PERCENTAGE)
++	    hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_PERCENTAGE ||
++	    hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_VOLTAGE)
+ 		battery_props[num_battery_props++] =
+ 				POWER_SUPPLY_PROP_CAPACITY;
+ 
+-- 
+2.32.0
 
