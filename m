@@ -2,133 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D4B3DD4D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134EB3DD4DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbhHBLlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S233453AbhHBLpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233382AbhHBLlO (ORCPT
+        with ESMTP id S233382AbhHBLpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:41:14 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31CDC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 04:41:04 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so5427440pjs.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 04:41:04 -0700 (PDT)
+        Mon, 2 Aug 2021 07:45:19 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF74C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 04:45:09 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id x11so29492666ejj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 04:45:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xTkDa/ACi/D65DC2OxA9X5m/GDgoFMDOoOCJhTIhmhU=;
-        b=kywCCPnNcLBnwITG/LLTn48sY4+SvUzWjOsFveN2xbM3cIqBsHCovEzy62vQcPg3jd
-         M3muojo9dcE01Ap9UVGCcBldRN3cyG8tmPuzFJZRJZCXK+au/WM/ERjXtjcSJMsZsL1c
-         i6W/AkRO8BMBnJicGyxVBLEyBH31giGjMgQmPmdJ04GovuamtoSC9PElxkTyrN74VcDj
-         cvJ0zCYNWYAa8Xn7KSbbHoDhs21gnTn2nTZ+w40zFKR4H0TvypuDD6GG7MPccOpSBzl9
-         u27PcvKrl01g+taP4fMqN2TrejqHE6kfPYyqMa2/V9Hooc6FQCAHR8aCie2EJRFqbFI1
-         I2fw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=QQYCpHJmp8uC7aFvit0nfPjJGJp7mRZxxtVuqB2tCDY=;
+        b=azqj+BfZoaRebYhVFIG0bWlGPdH/zX31M4uyrGiwqPqsqXbFlLfVu0hseU967UBS5I
+         kHtVg2Aftmdh5iI2HUyVlETQdTbdzXbcb5wmlUbuG/TLeAnOXIxcp3tkdrNeaH/tqGz4
+         Ushb+yW+VERF2Dw/FlNGleRyAayiw80zljifk11XGAaV9NPIrYeWDhQDa8BUutA6pr+R
+         PzBUK1+YTnyM8pjUBx0Wp+GSIAQ2MjWDv/MAckgtK4ApkEsULWzINpdl4pPsGwTj7UYs
+         oN0toPcq23FDjNHIGajBaQ2qUuAKk/SG9FA7lsJ0irOCOZ/6ahWGswEx3kdVlOL9evB7
+         6/Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=xTkDa/ACi/D65DC2OxA9X5m/GDgoFMDOoOCJhTIhmhU=;
-        b=QAvDY7IwhIHbwLx6fkY3pzfpYdqAXgK6x4PmgLiM2EI/67WxKZ1G1EERhgDkmg8CVw
-         NzLuQdK6mvKejvTRefsHCka3pymzyG0wl77kx5vB1RijssNfzp/aVB7c8HyQ0CIPOOYw
-         6+O/23DtBpNW0sVDLVLRUDyk05yAAMOvPI7KPAoLFHWurTUP8yl1LbCvDiXtW+P+qAE8
-         IEgk3OIj1es8WmiqxmrmLt9OSUa7X/z6I9hz4hQN8Mbqlv3G0n3WmFUkBeG39vPtn3fF
-         J1gOrL9QM0JVJuIMTZv7gTDaw+baIJ7OfSPMg0fw2gnLpgO6gIv5sFL9JyjGjiDiryXv
-         hEdg==
-X-Gm-Message-State: AOAM532zBoqNeT1IKIvuu/cSzY7egFN9DQSmhOKLUsTFjFX5ziSlySv3
-        OFQAbeq/oCoF7fmM2YbJpBc=
-X-Google-Smtp-Source: ABdhPJxV9z4iZ/OeGvOL6LXX/jdsc1xQQsfmgcL0Q1Ewlmrai6QiKnuiX0z7kSBWqgT8yFYxDWlUXg==
-X-Received: by 2002:a17:902:ac82:b029:12c:798a:6d26 with SMTP id h2-20020a170902ac82b029012c798a6d26mr13925543plr.54.1627904464314;
-        Mon, 02 Aug 2021 04:41:04 -0700 (PDT)
-Received: from Likes-MacBook-Pro.local ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id a12sm914411pfg.120.2021.08.02.04.41.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 04:41:03 -0700 (PDT)
-Subject: Re: [perf] fuzzer triggers unchecked MSR access error: WRMSR to 0x318
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Vince Weaver <vincent.weaver@maine.edu>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Liang, Kan" <kan.liang@intel.com>
-References: <37881148-a43e-5fd4-817c-a875adc7a15f@maine.edu>
- <YQJxka3dxgdIdebG@hirez.programming.kicks-ass.net>
- <45bee582-0f89-5125-82e7-92caf8b741ea@linux.intel.com>
- <YQLJhAiYQKtvvhjJ@hirez.programming.kicks-ass.net>
-From:   Like Xu <like.xu.linux@gmail.com>
-Organization: Tencent
-Message-ID: <e3fd66b0-778a-21c5-5f01-e91db0099cc3@gmail.com>
-Date:   Mon, 2 Aug 2021 19:40:54 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QQYCpHJmp8uC7aFvit0nfPjJGJp7mRZxxtVuqB2tCDY=;
+        b=VWI5kp9z1Eb1/LnvGUyDgPI9TcAPWPozHRGHGpD1xtjS2Y8CE+bjj2cmjdRy2xvCrI
+         P1/amPVeC61f2F3WC+q++Zy04SXCEfY4EFkvn+IuQvfLW5HIQrYfRRd0gOeGaMb5RNu7
+         bFD9F46IqJ/UwChF+qXF9ozifA18WIWO9jx0CgR0fijk9zj9emSySm6NuPkUsRhDZISy
+         47ZyUzq8ewiPqIUC7QnUp6aeLl8bwndxdlBmB1wXzImWK+nif0bmjcT3VkplaUPQte13
+         MTk3JxZrfIMm/WLLTtfwX6uZ2b4K9lunmHqL3gFJ8drpJi2BIaevUIGaO9uyjt3cwhMO
+         moNA==
+X-Gm-Message-State: AOAM532GEysfrKjUGJ9uYFNPgym0AD9xoYuLodIzQ4OpBPdIuwPayBoW
+        oZLfBfl+QAbgFAft/yty7xhTe/dczX8=
+X-Google-Smtp-Source: ABdhPJyNZB7XXcSbXyYBqLnZMUEY1Yqr4bx+VwLeu/9cH9+EIBji/FiOy++e9eSF1/j+lMqi73qz+g==
+X-Received: by 2002:a17:906:3b87:: with SMTP id u7mr15219773ejf.66.1627904708359;
+        Mon, 02 Aug 2021 04:45:08 -0700 (PDT)
+Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
+        by smtp.gmail.com with ESMTPSA id q8sm5876246edv.95.2021.08.02.04.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 04:45:07 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-staging@lists.linux.dev
+Subject: Re: kernel BUG in new r8188eu
+Date:   Mon, 02 Aug 2021 13:45:06 +0200
+Message-ID: <147993920.vpeT8VCmXh@localhost.localdomain>
+In-Reply-To: <YQfKohnSRWHjlht6@kroah.com>
+References: <80042e9f-6811-38f3-010b-1c0951ba88db@lwfinger.net> <cef19337-5ff3-c0cd-33ef-4f9990bcd4ec@lwfinger.net> <YQfKohnSRWHjlht6@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <YQLJhAiYQKtvvhjJ@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/7/2021 11:30 pm, Peter Zijlstra wrote:
-> On Thu, Jul 29, 2021 at 09:21:01AM -0400, Liang, Kan wrote:
->>
->>
->> On 7/29/2021 5:14 AM, Peter Zijlstra wrote:
->>> On Wed, Jul 28, 2021 at 12:49:43PM -0400, Vince Weaver wrote:
->>>> [32694.087403] unchecked MSR access error: WRMSR to 0x318 (tried to write 0x0000000000000000) at rIP: 0xffffffff8106f854 (native_write_msr+0x4/0x20)
->>>> [32694.101374] Call Trace:
->>>> [32694.103974]  perf_clear_dirty_counters+0x86/0x100
->>>
->>> Hmm.. if I read this right that's MSR_ARCH_PERFMON_FIXED_CTR0 + i, given
->>> that FIXED_CTR0 is 0x309 that gives i == 15, which is FIXED_BTS.
->>>
->>> I'm thinking something like this ought to cure things.
->>>
->>> ---
->>>    arch/x86/events/core.c | 12 +++++++-----
->>>    1 file changed, 7 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
->>> index 1eb45139fcc6..04edf8017961 100644
->>> --- a/arch/x86/events/core.c
->>> +++ b/arch/x86/events/core.c
->>> @@ -2489,13 +2489,15 @@ void perf_clear_dirty_counters(void)
->>>    		return;
->>>    	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
->>> -		/* Metrics and fake events don't have corresponding HW counters. */
->>> -		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
->>> -			continue;
->>> -		else if (i >= INTEL_PMC_IDX_FIXED)
->>> +		if (i >= INTEL_PMC_IDX_FIXED) {
->>> +			/* Metrics and fake events don't have corresponding HW counters. */
->>> +			if ((i - INTEL_PMC_IDX_FIXED) >= x86_pmu.num_counters_fixed)
->>
->> Yes, the fix is better. My previous implementation tries to pick up all the
->> special cases. It's very likely to miss some special cases like FIXED_BTS
->> and probably any new fake events added later if there are.
->> Thanks for the fix.
->>
->> The x86_pmu.num_counters_fixed should work well on HSW. But we have hybrid
->> machines now. I think we can use
->> hybrid(cpuc->pmu, num_counters_fixed) instead, which should be more
->> accurate.
+Hi Greg,
+
+On Monday, August 2, 2021 12:36:18 PM CEST Greg Kroah-Hartman wrote:
+> On Sun, Aug 01, 2021 at 03:15:52PM -0500, Larry Finger wrote:
+> > On 8/1/21 1:31 AM, Greg Kroah-Hartman wrote:
+> > > I am worried that my "remove the wrapper" logic got something wrong
+> > > here, so if you could test the revert of that, I would appreciate it.
+> > > 
+> > > I think I need to go buy one of these devices so I can test cleanups
+> > > locally...
+> > 
+> > The bad commit was 9ff1cc4ef80e ("staging: r8188eu: remove rtw_buf_free()
+> > function").
+> > 
+> > Looking at it, the only difference between the original wrapper and the 
+new
+> > code is that the wrapper zeros the len variable before the kfree() call, 
+but
+> > making that change did not help. Reverting that patch restores the old
+> > behavior.
 > 
-> Yes, good point. I guess I still need to adjust to the hybrid world.
+> Ah, doh, that was my fault, sorry, that patch was incorrect (odd git id,
+> don't know where that came from, it's a different id in my tree.)  Let
+> me revert this commit and then will redo it correctly.
 
-I recently enabled guest BTS and encountered the same call trace.
+The commit to revert should be c7e88ecbe328.
 
-For the proposal hybrid(cpuc->pmu, num_counters_fixed),
-Tested-by: Like Xu <likexu@tencent.com>
+> 
+> thanks for finding this.
+> 
+> > There are lots of these on Ebay from $2.47 up with free shipping!
+> 
+> Any hints on the name for how to figure out which devices are supported
+> by this driver?
+
+The following link points to a device that seems to be supported by this 
+driver. It is just $4.99, but I'm not sure whether or not they ship to Europe 
+(I suppose you're here):
+
+https://www.amazon.com/gp/product/B00L28AN88/ref=ox_sc_act_title_1
+ 
+About this item: 
+* Chipset:RTL8188EU 
+* Standard: IEEE 802.11n,IEEE 802.11g, IEEE 802.11b 
+* Supports 64/128 bit WEP, WPA encryption 
+
+Otherwise, I think that the following uses the same chip as the above. 
+However, it costs a little more and, above all else, I'm not really sure if it 
+works with r8188eu, since they write that the chip is a Realtek RTL8188EUS 
+(please note that final "EUS"):
+
+https://www.amazon.it/Asus-USB-N10-NANO-N150-compatibile/dp/B081758CWC/
+ref=sr_1_1
+
+Thanks,
+
+Fabio
+
+
+> thanks,
+> 
+> greg k-h
+
+
 
 
