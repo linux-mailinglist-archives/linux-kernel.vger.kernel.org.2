@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582FC3DCEB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 04:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E133DCEBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 04:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbhHBCgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 22:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhHBCgc (ORCPT
+        id S231818AbhHBCjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 22:39:17 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7910 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhHBCjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 22:36:32 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135CAC0613D3;
-        Sun,  1 Aug 2021 19:36:23 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GdMZP2s0Lz9sT6;
-        Mon,  2 Aug 2021 12:36:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1627871780;
-        bh=3h+pDmgdaEzjLhKsKsWflOl3eTtWNpO0qlqcc3HN5gw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=a1WosJ0KTXjCRMYjN+wSNFc6ThlMWt6oNtTvbiU08VVh18S12fqbdg7dtDkTBwLa5
-         mW8V1Rs4z1BYZuL+pODWPRcD9vbuP8wr01nokBcoTqy49p0SZolAkJwet6ROF0SgEd
-         HIz4pn3qWuGGanDbWuW4js0/5hgiIlpoNRE/cyUZxz2eu0jNe7yDYVqAQscP9GPFnE
-         qSf68THatsIhId+0A9UWQp8CymuJZBASivoSVD4ldWSNoXSko1yGGp69QbvPTzYUiQ
-         G0ZV6Ba/iniZMiL5MNvLUDtAPk+yDPaeM5eVp48+0XyP3sN+LVB9D69GzgsiEom2l/
-         2x/ybfb3/4spg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Guo Ren <guoren@kernel.org>, linux-mips@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Albert Ou <aou@eecs.berkeley.edu>,
-        linuxppc-dev@lists.ozlabs.org,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Subject: Re: [PATCH v2] arch: vdso: remove if-conditionals of
- $(c-gettimeofday-y)
-In-Reply-To: <20210731060020.12913-1-masahiroy@kernel.org>
-References: <20210731060020.12913-1-masahiroy@kernel.org>
-Date:   Mon, 02 Aug 2021 12:36:08 +1000
-Message-ID: <87v94ozi7b.fsf@mpe.ellerman.id.au>
+        Sun, 1 Aug 2021 22:39:16 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GdMYH6z5zz82x6;
+        Mon,  2 Aug 2021 10:35:15 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 10:39:05 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 10:39:04 +0800
+Subject: Re: [PATCH v2 1/3] vmalloc: Choose a better start address in
+ vm_area_register_early()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     Will Deacon <will@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
+        <linux-mm@kvack.org>
+References: <20210720025105.103680-1-wangkefeng.wang@huawei.com>
+ <20210720025105.103680-2-wangkefeng.wang@huawei.com>
+ <20210801152311.GB28489@arm.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <0de87be6-7041-c58b-a01f-3d6e3333c6f0@huawei.com>
+Date:   Mon, 2 Aug 2021 10:39:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210801152311.GB28489@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masahiro Yamada <masahiroy@kernel.org> writes:
-> arm, arm64, csky, mips, powerpc always select GENERIC_GETTIMEOFDAY,
-> hence $(gettimeofday-y) never becomes empty.
->
-> riscv conditionally selects GENERIC_GETTIMEOFDAY when MMU=y && 64BIT=y,
-> but arch/riscv/kernel/vdso/vgettimeofday.o is built only under that
-> condition. So, you can always define CFLAGS_vgettimeofday.o
->
-> Remove all the meaningless conditionals.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
-> Changes in v2:
->   - Fix csky as well
->
->  arch/arm/vdso/Makefile              |  4 ----
->  arch/arm64/kernel/vdso/Makefile     |  5 +----
->  arch/arm64/kernel/vdso32/Makefile   |  3 ---
->  arch/csky/kernel/vdso/Makefile      |  4 +---
->  arch/mips/vdso/Makefile             |  2 --
->  arch/powerpc/kernel/vdso32/Makefile | 14 ++++++--------
->  arch/powerpc/kernel/vdso64/Makefile | 14 ++++++--------
 
-I noticed this the other day and was puzzled why we still needed
-the conditional, thanks for cleaning it up.
+On 2021/8/1 23:23, Catalin Marinas wrote:
+> On Tue, Jul 20, 2021 at 10:51:03AM +0800, Kefeng Wang wrote:
+>> There are some fixed locations in the vmalloc area be reserved
+>> in ARM(see iotable_init()) and ARM64(see map_kernel()), but for
+>> pcpu_page_first_chunk(), it calls vm_area_register_early() and
+>> choose VMALLOC_START as the start address of vmap area which
+>> could be conflicted with above address, then could trigger a
+>> BUG_ON in vm_area_add_early().
+>>
+>> Let's choose the end of existing address range in vmlist as the
+>> start address instead of VMALLOC_START to avoid the BUG_ON.
+>>
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>> ---
+>>   mm/vmalloc.c | 8 +++++---
+>>   1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+>> index d5cd52805149..a98cf97f032f 100644
+>> --- a/mm/vmalloc.c
+>> +++ b/mm/vmalloc.c
+>> @@ -2238,12 +2238,14 @@ void __init vm_area_add_early(struct vm_struct *vm)
+>>    */
+>>   void __init vm_area_register_early(struct vm_struct *vm, size_t align)
+>>   {
+>> -	static size_t vm_init_off __initdata;
+>> +	unsigned long vm_start = VMALLOC_START;
+>> +	struct vm_struct *tmp;
+>>   	unsigned long addr;
+>>   
+>> -	addr = ALIGN(VMALLOC_START + vm_init_off, align);
+>> -	vm_init_off = PFN_ALIGN(addr + vm->size) - VMALLOC_START;
+>> +	for (tmp = vmlist; tmp; tmp = tmp->next)
+>> +		vm_start = (unsigned long)tmp->addr + tmp->size;
+>>   
+>> +	addr = ALIGN(vm_start, align);
+>>   	vm->addr = (void *)addr;
+>>   
+>>   	vm_area_add_early(vm);
+> Is there a risk of breaking other architectures? It doesn't look like to
+> me but I thought I'd ask.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Before this patch, vm_init_off is to record the offset from VMALLOC_START,
 
-cheers
+but it use VMALLOC_START as start address on the function 
+vm_area_register_early()
+
+called firstly,  this will cause the BUG_ON.
+
+With this patch, the most important change is that we choose the start 
+address via
+
+dynamic calculate the 'start' address by traversing the list.
+
+[wkf@localhost linux-next]$ git grep vm_area_register_early
+arch/alpha/mm/init.c: vm_area_register_early(&console_remap_vm, PAGE_SIZE);
+arch/x86/xen/p2m.c:     vm_area_register_early(&vm, PMD_SIZE * 
+PMDS_PER_MID_PAGE);
+mm/percpu.c:    vm_area_register_early(&vm, PAGE_SIZE);
+[wkf@localhost linux-next]$ git grep vm_area_add_early
+arch/arm/mm/ioremap.c:  vm_area_add_early(vm);
+arch/arm64/mm/mmu.c:    vm_area_add_early(vma);
+
+x86/alpha won't call vm_area_add_early(), only arm64 could call both vm_area_add_early()
+and  vm_area_register_early() when this patchset is merged. so it won't break other architectures.
+
+>
+> Also, instead of always picking the end, could we search for a range
+> that fits?
+We only need a space in vmalloc range,  using end or a range in the 
+middle is not different.
+>
