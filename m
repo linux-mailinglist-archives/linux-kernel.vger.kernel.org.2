@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE95F3DD208
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A333DD213
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbhHBIb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 04:31:59 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44940 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbhHBIb5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 04:31:57 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1728VXJE010222;
-        Mon, 2 Aug 2021 03:31:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1627893093;
-        bh=pSAZGmb9+ZZIRIq5mLynkHawfEAYvLAK0jyf9EHdzDA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=bnwTqOM4baLr/jbQA2G3WkNOsl589ZmsX3fYPkA3r6dXSkAgdyq5p948ExrWHk+Wa
-         kgY4d3KGh4uqTWUE8FVGEnMgih58mZRGWZcWVC3LWY0OOq8cAGFFP7+yRRZkqmEXnR
-         KBa2Win/U3byICEerGMHJvJtEAXeV72p1cDY85bI=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1728VXb7024136
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 2 Aug 2021 03:31:33 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 2 Aug
- 2021 03:31:33 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 2 Aug 2021 03:31:33 -0500
-Received: from [10.250.232.46] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1728VR7D078697;
-        Mon, 2 Aug 2021 03:31:28 -0500
-Subject: Re: [PATCH] dt-bindings: net: can: Document power-domains property
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210731045138.29912-1-a-govindraju@ti.com>
- <20210802071047.n6mxecdohahhzifr@pengutronix.de>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <a38447f6-c7c6-751f-b8ff-ae2b1077cccc@ti.com>
-Date:   Mon, 2 Aug 2021 14:01:26 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232787AbhHBIfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 04:35:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232428AbhHBIfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 04:35:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C0761057;
+        Mon,  2 Aug 2021 08:35:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627893332;
+        bh=PS8OqBJDBxjaQi+snp59d5+ckpWtNZ6D8Vin4bKMsik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TunhCp3a96gik8QdNgRL27GGU/13kOdl9cXB+C3ytpwFLzI6jVrs1lyoDDvOBTM6j
+         it0CMqG6Oi01Aljxd91t7IASlMoifiE7qTkC4gQ6gHki7eS/Ud1ru4MoP9tqD67NL4
+         pzsEo+eDQCcG6pGOkc3KPFO8c5wA52lT5FEqscQZwXe1lI0ovFrnojpKQMuI940roJ
+         /H1holKg4U0zKDux8I6v11F31JvHiLCw0lCgbI4eLT0xZnsLzLBHek0lwhs2QRSZQd
+         Zk6oxqTsR0pV9gRc81qWBPwjpI/Rjdh8fxVsypUtJKk/ksyy2swC0S4FMoHQsErCmz
+         XYnq5J+Vps7rQ==
+Date:   Mon, 2 Aug 2021 11:35:28 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Borys Movchan <borysmn@axis.com>
+Cc:     Borys Movchan <Borys.Movchan@axis.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, kernel <kernel@axis.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] tpm: Add Upgrade/Reduced mode support for TPM2 modules
+Message-ID: <20210802083528.yayuwm6mlkowrsh2@kernel.org>
+References: <20210728105730.10170-1-borysmn@axis.com>
+ <20210728215819.vsdwh2fbct7wxwsu@kernel.org>
+ <b12dad90-c9ed-2331-7e96-78ca5c3994e8@axis.com>
 MIME-Version: 1.0
-In-Reply-To: <20210802071047.n6mxecdohahhzifr@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b12dad90-c9ed-2331-7e96-78ca5c3994e8@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-On 02/08/21 12:40 pm, Marc Kleine-Budde wrote:
-> On 31.07.2021 10:21:38, Aswath Govindraju wrote:
->> Document power-domains property for adding the Power domain provider.
->>
->> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->> ---
->>  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
->> index a7b5807c5543..d633fe1da870 100644
->> --- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
->> +++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
->> @@ -104,6 +104,13 @@ properties:
->>            maximum: 32
->>      maxItems: 1
->>  
->> +  power-domains:
->> +    description:
->> +      Power domain provider node and an args specifier containing
->> +      the can device id value. Please see,
->> +      Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
+On Fri, Jul 30, 2021 at 04:24:01PM +0200, Borys Movchan wrote:
+> On 7/28/21 11:58 PM, Jarkko Sakkinen wrote:
+> > On Wed, Jul 28, 2021 at 12:57:30PM +0200, Borys Movchan wrote:
+> > > If something went wrong during the TPM firmware upgrade,
+> > > like power failure or the firmware image file get corrupted,
+> > > the TPM might end up in Upgrade or Failure mode upon the
+> > > next start. The state is persistent between the TPM power
+> > > cycle/restart.
+> > >
+> > > According to TPM specification:
+> > >  * If the TPM is in Upgrade mode, it will answer with
+> > >    TPM2_RC_UPGRADE to all commands except Field Upgrade
+> > >    related ones.
+> > >  * If the TPM is in Failure mode, it will allow performing
+> > >    TPM initialization but will not provide any crypto
+> > >    operations. Will happily respond to Field Upgrade calls.
+> > >
+> > > The fix adds the possibility to detect an active state of
+> > > the TPM and gives the user-space a chance to finish the
+> > > firmware upgrade/recover the TPM.
+> >
+> > This is different than telling what the patch does. It's just
+> > describing a goal, but does not describe how the driver is
+> > changed, and reasons for doing that.
+> >
+> > For instance, you check 'limited_mode' flag in a few sites.
+> > How can I know that those are exactly the locations where this
+> > needs to be done?
+> >
 > 
-> Why are you referring to a TI specific file in a generic binding?
-> 
+> Seems like I got what you are looking for. Let me try to explain the
+> reasoning
+> and doubts regarding what I meant under my change.
 
-I was trying to refer to an example. If it shouldn't be referred then I
-will remove it an post a post a respin.
+Please try to nail this in the commit message instead, and I'll
+then review that.
 
-Thanks,
-Aswath
-
-> Marc
-> 
-
+/Jarkko
