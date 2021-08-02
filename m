@@ -2,135 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C603DD81D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407A63DD77D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbhHBNtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:49:51 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16033 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234358AbhHBNrg (ORCPT
+        id S234026AbhHBNoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:44:09 -0400
+Received: from gateway33.websitewelcome.com ([192.185.145.216]:49182 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233719AbhHBNoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:47:36 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GdfNb1kVWzZwdR;
-        Mon,  2 Aug 2021 21:43:43 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 21:47:15 +0800
-Received: from thunder-town.china.huawei.com (10.174.179.0) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 21:47:14 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable <stable@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Sasha Levin <sasha.levin@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: [PATCH 4.4 06/11] futex: Futex_unlock_pi() determinism
-Date:   Mon, 2 Aug 2021 21:46:19 +0800
-Message-ID: <20210802134624.1934-7-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210802134624.1934-1-thunder.leizhen@huawei.com>
-References: <20210802134624.1934-1-thunder.leizhen@huawei.com>
+        Mon, 2 Aug 2021 09:44:07 -0400
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 1402211A2F6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:43:48 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id AYENm6g7IjSwzAYENmgLyj; Mon, 02 Aug 2021 08:43:47 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ofCX79+Rdf3KA3ygQd5aThXKKbcOK34wLcXaAGModx0=; b=Rw0CtDE1sjh2NVCk9V6FIHr2ha
+        fm459NwtYD/fFi5HNqYS7vFodXN3cuSisRlKnLm4Tdffp66F/Il285vyvcvIJ4qFA+frcMr9mezf4
+        +hqngJI5USHqj+hxTyx8uxCXuMHDZ2rg+T6sMnUkqMUSgGS2OT3QPnUN8u8Rp6vs9NcBVAjZUoW2V
+        GGHqg1FDzFn1qFj7zUea+eNNphWNYuhOtiLMNqLYnqCgwB3saNkSgmwfUnZoGz0Ly4Lpfy+SD0GQG
+        2AYe5Knt9xfNY2w5TULaJGjUEmK9VTH7/Io3W1z4rzObmbJOsZ2xy39aiNWTCypZ7WGsbHrv06uqb
+        hdjeKb1w==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:56648 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mAYEM-001O0n-Lf; Mon, 02 Aug 2021 08:43:46 -0500
+Subject: Re: [PATCH v2 1/2] media: staging/intel-ipu3: css: Fix wrong size
+ comparison
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-hardening@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <cover.1627646101.git.gustavoars@kernel.org>
+ <184d96f95d6261b1a91704eb68adbd0a2e1c2cc2.1627646101.git.gustavoars@kernel.org>
+ <20210802060546.GL3@paasikivi.fi.intel.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <3c9ac43d-09ca-e5d5-83a8-7b6d23928763@embeddedor.com>
+Date:   Mon, 2 Aug 2021 08:46:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210802060546.GL3@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mAYEM-001O0n-Lf
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:56648
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+Hi Sakari,
 
-[ Upstream commit bebe5b514345f09be2c15e414d076b02ecb9cce8 ]
+On 8/2/21 01:05, Sakari Ailus wrote:
+> Hi Gustavo,
+> 
+> I missed you already had sent v2...
+> 
+> On Fri, Jul 30, 2021 at 07:08:13AM -0500, Gustavo A. R. Silva wrote:
+>> There is a wrong comparison of the total size of the loaded firmware
+>> css->fw->size with the size of a pointer to struct imgu_fw_header.
+>>
+>> Fix this by using the right operand 'struct imgu_fw_header' for
+>> sizeof, instead of 'struct imgu_fw_header *' and turn binary_header
+>> into a flexible-array member. Also, adjust the relational operator
+>> to be '<=' instead of '<', as it seems that the intention of the
+>> comparison is to determine if the loaded firmware contains any
+>> 'struct imgu_fw_info' items in the binary_header[] array than merely
+>> the file_header (struct imgu_fw_bi_file_h).
+>>
+>> The replacement of the one-element array with a flexible-array member
+>> also help with the ongoing efforts to globally enable -Warray-bounds
+>> and get us closer to being able to tighten the FORTIFY_SOURCE routines
+>> on memcpy().
+>>
+>> Link: https://github.com/KSPP/linux/issues/79
+>> Link: https://github.com/KSPP/linux/issues/109
+>> Fixes: 09d290f0ba21 ("media: staging/intel-ipu3: css: Add support for firmware management")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>
+>> It'd be just great if someone that knows this code better can confirm
+>> these changes are correct. In particular the adjustment of the
+>> relational operator. Thanks!
+>>
+>> Changes in v2:
+>>  - Use flexible array and adjust relational operator, accordingly.
+> 
+> The operator was just correct. The check is just there to see the firmware
+> is at least as large as the struct as which it is being accessed.
 
-The problem with returning -EAGAIN when the waiter state mismatches is that
-it becomes very hard to proof a bounded execution time on the
-operation. And seeing that this is a RT operation, this is somewhat
-important.
+I'm a bit confused, so based on your reply to v1 of this series, this patch
+is now correct, right?
 
-While in practise; given the previous patch; it will be very unlikely to
-ever really take more than one or two rounds, proving so becomes rather
-hard.
+The operator in v1 _was_ correct as long as the one-element array wasn't
+transformed into a flexible array, right?
 
-However, now that modifying wait_list is done while holding both hb->lock
-and wait_lock, the scenario can be avoided entirely by acquiring wait_lock
-while still holding hb-lock. Doing a hand-over, without leaving a hole.
+Notice that generally speaking flexible-array members don't occupy space in the
+containing structure:
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: juri.lelli@arm.com
-Cc: bigeasy@linutronix.de
-Cc: xlpang@redhat.com
-Cc: rostedt@goodmis.org
-Cc: mathieu.desnoyers@efficios.com
-Cc: jdesfossez@efficios.com
-Cc: dvhart@infradead.org
-Cc: bristot@redhat.com
-Link: http://lkml.kernel.org/r/20170322104152.112378812@infradead.org
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- kernel/futex.c | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
+$ pahole -C imgu_fw_header drivers/staging/media/ipu3/ipu3-css-fw.o
+struct imgu_fw_header {
+	struct imgu_fw_bi_file_h   file_header;          /*     0    72 */
+	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
+	struct imgu_fw_info        binary_header[] __attribute__((__aligned__(8))); /*    72     0 */
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index 45f00a2fb59c554..8f6372d3a1feea0 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1555,15 +1555,10 @@ static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_pi_state *pi_
- 	WAKE_Q(wake_q);
- 	int ret = 0;
- 
--	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
- 	new_owner = rt_mutex_next_owner(&pi_state->pi_mutex);
--	if (!new_owner) {
-+	if (WARN_ON_ONCE(!new_owner)) {
- 		/*
--		 * Since we held neither hb->lock nor wait_lock when coming
--		 * into this function, we could have raced with futex_lock_pi()
--		 * such that we might observe @this futex_q waiter, but the
--		 * rt_mutex's wait_list can be empty (either still, or again,
--		 * depending on which side we land).
-+		 * As per the comment in futex_unlock_pi() this should not happen.
- 		 *
- 		 * When this happens, give up our locks and try again, giving
- 		 * the futex_lock_pi() instance time to complete, either by
-@@ -3020,15 +3015,18 @@ retry:
- 		if (pi_state->owner != current)
- 			goto out_unlock;
- 
-+		get_pi_state(pi_state);
- 		/*
--		 * Grab a reference on the pi_state and drop hb->lock.
-+		 * Since modifying the wait_list is done while holding both
-+		 * hb->lock and wait_lock, holding either is sufficient to
-+		 * observe it.
- 		 *
--		 * The reference ensures pi_state lives, dropping the hb->lock
--		 * is tricky.. wake_futex_pi() will take rt_mutex::wait_lock to
--		 * close the races against futex_lock_pi(), but in case of
--		 * _any_ fail we'll abort and retry the whole deal.
-+		 * By taking wait_lock while still holding hb->lock, we ensure
-+		 * there is no point where we hold neither; and therefore
-+		 * wake_futex_pi() must observe a state consistent with what we
-+		 * observed.
- 		 */
--		get_pi_state(pi_state);
-+		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
- 		spin_unlock(&hb->lock);
- 
- 		ret = wake_futex_pi(uaddr, uval, pi_state);
--- 
-2.26.0.106.g9fadedd
+	/* size: 72, cachelines: 2, members: 2 */
+	/* forced alignments: 1 */
+	/* last cacheline: 8 bytes */
+} __attribute__((__aligned__(8)));
 
+$ pahole -C imgu_fw_header drivers/staging/media/ipu3/ipu3-css-fw.o
+struct imgu_fw_header {
+	struct imgu_fw_bi_file_h   file_header;          /*     0    72 */
+	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
+	struct imgu_fw_info        binary_header[1] __attribute__((__aligned__(8))); /*    72  1200 */
+
+	/* size: 1272, cachelines: 20, members: 2 */
+	/* forced alignments: 1 */
+	/* last cacheline: 56 bytes */
+} __attribute__((__aligned__(8)));
+
+So, now that the flexible array transformation is included in the same patch as the
+bugfix, the operator is changed from '<' to '<='
+
+Can you please confirm if this v2 is now correct? if so, it'd be great to have your
+Reviewed-by tag. :)
+
+Thanks!
+--
+Gustavo
+
+> 
+>>  - Update changelog text.
+>>
+>>  drivers/staging/media/ipu3/ipu3-css-fw.c | 2 +-
+>>  drivers/staging/media/ipu3/ipu3-css-fw.h | 2 +-
+>>  2 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/staging/media/ipu3/ipu3-css-fw.c b/drivers/staging/media/ipu3/ipu3-css-fw.c
+>> index 45aff76198e2..630cb5186b48 100644
+>> --- a/drivers/staging/media/ipu3/ipu3-css-fw.c
+>> +++ b/drivers/staging/media/ipu3/ipu3-css-fw.c
+>> @@ -124,7 +124,7 @@ int imgu_css_fw_init(struct imgu_css *css)
+>>  	/* Check and display fw header info */
+>>  
+>>  	css->fwp = (struct imgu_fw_header *)css->fw->data;
+>> -	if (css->fw->size < sizeof(struct imgu_fw_header *) ||
+>> +	if (css->fw->size <= sizeof(struct imgu_fw_header) ||
+>>  	    css->fwp->file_header.h_size != sizeof(struct imgu_fw_bi_file_h))
+>>  		goto bad_fw;
+>>  	if (sizeof(struct imgu_fw_bi_file_h) +
+>> diff --git a/drivers/staging/media/ipu3/ipu3-css-fw.h b/drivers/staging/media/ipu3/ipu3-css-fw.h
+>> index 3c078f15a295..c0bc57fd678a 100644
+>> --- a/drivers/staging/media/ipu3/ipu3-css-fw.h
+>> +++ b/drivers/staging/media/ipu3/ipu3-css-fw.h
+>> @@ -171,7 +171,7 @@ struct imgu_fw_bi_file_h {
+>>  
+>>  struct imgu_fw_header {
+>>  	struct imgu_fw_bi_file_h file_header;
+>> -	struct imgu_fw_info binary_header[1];	/* binary_nr items */
+>> +	struct imgu_fw_info binary_header[];	/* binary_nr items */
+>>  };
+>>  
+>>  /******************* Firmware functions *******************/
+> 
