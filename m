@@ -2,106 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6493A3DD0DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9723DD0E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbhHBG6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:58:13 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50480 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232443AbhHBG6J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:58:09 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id BABD121FC1;
-        Mon,  2 Aug 2021 06:57:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627887479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tUbU3ZzRUqhVzk9x8OM8/LVLgiQh8b75TwEVEjI/pNU=;
-        b=u9FnFt7I8zkmPHO6z9sNU8KK593faYfo5bs0tUNTJh16t19zT5bFXpimOXs3mueplDYVkw
-        U5DyEemPVD3nA7/YaiJ3vdjc55ZZGbcA9LKNxBcuqOrkay0Qi9XsACNWIL8O3wU9HKL1UU
-        RrRiqtqE9aWaxXTMGbj3wpsJj4eW0SM=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8E9FEA3BB2;
-        Mon,  2 Aug 2021 06:57:59 +0000 (UTC)
-Date:   Mon, 2 Aug 2021 08:57:56 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: cleanup racy sum avoidance code
-Message-ID: <YQeXdPV8cUNIOUB5@dhcp22.suse.cz>
-References: <20210728012243.3369123-1-shakeelb@google.com>
+        id S232434AbhHBHA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:00:29 -0400
+Received: from mga17.intel.com ([192.55.52.151]:27827 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232297AbhHBHA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 03:00:27 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="193681317"
+X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
+   d="scan'208";a="193681317"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 00:00:10 -0700
+X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
+   d="scan'208";a="509949522"
+Received: from zengguan-mobl.ccr.corp.intel.com (HELO [10.238.0.133]) ([10.238.0.133])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 00:00:03 -0700
+Subject: Re: [PATCH 3/6] KVM: VMX: Detect Tertiary VM-Execution control when
+ setup VMCS config
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Hu, Robert" <robert.hu@intel.com>,
+        "Gao, Chao" <chao.gao@intel.com>,
+        Robert Hoo <robert.hu@linux.intel.com>
+References: <20210716064808.14757-1-guang.zeng@intel.com>
+ <20210716064808.14757-4-guang.zeng@intel.com> <YQHwa42jixqPPvVm@google.com>
+From:   Zeng Guang <guang.zeng@intel.com>
+Message-ID: <05faffb4-c22d-1cd5-7582-823de9dd109a@intel.com>
+Date:   Mon, 2 Aug 2021 14:59:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728012243.3369123-1-shakeelb@google.com>
+In-Reply-To: <YQHwa42jixqPPvVm@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 27-07-21 18:22:43, Shakeel Butt wrote:
-> We used to have per-cpu memcg and lruvec stats and the readers have to
-> traverse and sum the stats from each cpu. This summing was racy and may
-> expose transient negative values. So, an explicit check was added to
-> avoid such scenarios. Now these stats are moved to rstat infrastructure
-> and are no more per-cpu, so we can remove the fixup for transient
-> negative values.
-> 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-> ---
->  include/linux/memcontrol.h | 15 ++-------------
->  1 file changed, 2 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 7028d8e4a3d7..5f2a39a43d47 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -991,30 +991,19 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
->  
->  static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
->  {
-> -	long x = READ_ONCE(memcg->vmstats.state[idx]);
-> -#ifdef CONFIG_SMP
-> -	if (x < 0)
-> -		x = 0;
-> -#endif
-> -	return x;
-> +	return READ_ONCE(memcg->vmstats.state[idx]);
->  }
->  
->  static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
->  					      enum node_stat_item idx)
->  {
->  	struct mem_cgroup_per_node *pn;
-> -	long x;
->  
->  	if (mem_cgroup_disabled())
->  		return node_page_state(lruvec_pgdat(lruvec), idx);
->  
->  	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> -	x = READ_ONCE(pn->lruvec_stats.state[idx]);
-> -#ifdef CONFIG_SMP
-> -	if (x < 0)
-> -		x = 0;
-> -#endif
-> -	return x;
-> +	return READ_ONCE(pn->lruvec_stats.state[idx]);
->  }
->  
->  static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
-> -- 
-> 2.32.0.432.gabb21c7263-goog
-
--- 
-Michal Hocko
-SUSE Labs
+On 7/29/2021 8:03 AM, Sean Christopherson wrote:
+> On Fri, Jul 16, 2021, Zeng Guang wrote:
+>> @@ -4204,6 +4234,13 @@ vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
+>>   #define vmx_adjust_sec_exec_exiting(vmx, exec_control, lname, uname) \
+>>   	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, uname##_EXITING, true)
+>>   
+>> +static void vmx_compute_tertiary_exec_control(struct vcpu_vmx *vmx)
+>> +{
+>> +	u32 exec_control = vmcs_config.cpu_based_3rd_exec_ctrl;
+> This is incorrectly truncating the value.
+>
+>> +
+>> +	vmx->tertiary_exec_control = exec_control;
+>> +}
+>> +
+>>   static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+>>   {
+>>   	struct kvm_vcpu *vcpu = &vmx->vcpu;
+>> @@ -4319,6 +4356,11 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+>>   		secondary_exec_controls_set(vmx, vmx->secondary_exec_control);
+>>   	}
+>>   
+>> +	if (cpu_has_tertiary_exec_ctrls()) {
+>> +		vmx_compute_tertiary_exec_control(vmx);
+>> +		tertiary_exec_controls_set(vmx, vmx->tertiary_exec_control);
+> IMO, the existing vmx->secondary_exec_control is an abomination that should not
+> exist.  Looking at the code, it's actually not hard to get rid, there's just one
+> annoying use in prepare_vmcs02_early() that requires a bit of extra work to get
+> rid of.
+>
+> Anyways, for tertiary controls, I'd prefer to avoid the same mess and instead
+> follow vmx_exec_control(), both in functionality and in name:
+>
+>    static u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx)
+>    {
+> 	return vmcs_config.cpu_based_3rd_exec_ctrl;
+>    }
+>
+> and:
+>
+> 	if (cpu_has_tertiary_exec_ctrls())
+> 		tertiary_exec_controls_set(vmx, vmx_tertiary_exec_control(vmx));
+>
+> and then the next patch becomes:
+>
+>    static u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx)
+>    {
+> 	u64 exec_control = vmcs_config.cpu_based_3rd_exec_ctrl;
+>
+> 	if (!kvm_vcpu_apicv_active(vcpu))
+> 		exec_control &= ~TERTIARY_EXEC_IPI_VIRT;
+>
+> 	return exec_control;
+>    }
+>
+>
+> And I'll work on a patch to purge vmx->secondary_exec_control.
+Ok, it looks much concise. I will change as you suggest. Thanks.
+>> +	}
+>> +
+>>   	if (kvm_vcpu_apicv_active(&vmx->vcpu)) {
+>>   		vmcs_write64(EOI_EXIT_BITMAP0, 0);
+>>   		vmcs_write64(EOI_EXIT_BITMAP1, 0);
+>> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+>> index 945c6639ce24..c356ceebe84c 100644
+>> --- a/arch/x86/kvm/vmx/vmx.h
+>> +++ b/arch/x86/kvm/vmx/vmx.h
+>> @@ -266,6 +266,7 @@ struct vcpu_vmx {
+>>   	u32		      msr_ia32_umwait_control;
+>>   
+>>   	u32 secondary_exec_control;
+>> +	u64 tertiary_exec_control;
+>>   
+>>   	/*
+>>   	 * loaded_vmcs points to the VMCS currently used in this vcpu. For a
+>> -- 
+>> 2.25.1
+>>
