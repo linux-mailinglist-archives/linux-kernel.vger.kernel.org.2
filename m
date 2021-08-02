@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94853DE1C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2653DE1D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbhHBVkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:40:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46346 "EHLO mail.kernel.org"
+        id S231843AbhHBVtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:49:46 -0400
+Received: from gate.crashing.org ([63.228.1.57]:46054 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhHBVkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:40:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3193660F9C;
-        Mon,  2 Aug 2021 21:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1627940423;
-        bh=PTjmIT0FyL9vrQDQubxChFqAemPGmMIiB/y0LI5d3Cw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vsqKoarz9SSKlE1tvLTLWONR2nY4ncmciCUty30+LD5LZWfUKqrjCBRbsaD4R1oWy
-         AJyLkZ334jqwIa4PdUWdDM5RJM9qZRy7UoIwmd/YINwBYpSkvR0n+wEnkH1Ob5jomM
-         Dm1WiMdM6mT0E1U2q/HDeYQjxEh/pipnTndHvKfY=
-Date:   Mon, 2 Aug 2021 14:40:20 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, richard@sigma-star.at
-Subject: Re: [PATCH] Log if a core dump is aborted due to changed file
- permissions
-Message-Id: <20210802144020.1d898eeaedc615776b0d2996@linux-foundation.org>
-In-Reply-To: <20210701233151.102720-1-david.oberhollenzer@sigma-star.at>
-References: <20210701233151.102720-1-david.oberhollenzer@sigma-star.at>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230050AbhHBVtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 17:49:45 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 172Lg8IZ011901;
+        Mon, 2 Aug 2021 16:42:08 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 172Lg7U0011900;
+        Mon, 2 Aug 2021 16:42:07 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Mon, 2 Aug 2021 16:42:07 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-arch@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        masahiroy@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/3] isystem: delete global -isystem compile option
+Message-ID: <20210802214207.GP1583@gate.crashing.org>
+References: <20210801201336.2224111-1-adobriyan@gmail.com> <20210801201336.2224111-3-adobriyan@gmail.com> <20210801213247.GM1583@gate.crashing.org> <YQeT5QRXc3CzK9nL@localhost.localdomain> <20210802164747.GN1583@gate.crashing.org> <YQhVyOdQKUnvz1n5@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQhVyOdQKUnvz1n5@localhost.localdomain>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  2 Jul 2021 01:31:51 +0200 David Oberhollenzer <david.oberhollenzer@sigma-star.at> wrote:
-
-> For obvious security reasons, a core dump is aborted if the
-> filesystem cannot preserve ownership or permissions of the
-> dump file.
+On Mon, Aug 02, 2021 at 11:30:00PM +0300, Alexey Dobriyan wrote:
+> On Mon, Aug 02, 2021 at 11:47:47AM -0500, Segher Boessenkool wrote:
+> > The kernel *cannot* make up its own types for this.  It has to use the
+> > types it is required to use (by C, by the ABIs, etc.)  So why
+> > reimplement this?
 > 
-> This affects filesystems like e.g. vfat, but also something like
-> a 9pfs share in a Qemu test setup, running as a regular user,
-> depending on the security model used. In those cases, the result
-> is an empty core file and a confused user.
+> Yes, it can. gcc headers have stuff like this:
 > 
-> To hopefully safe other people a lot of time figuring out the
-> cause, this patch adds a simple log message for those specific
-> cases.
+> 	#define __PTRDIFF_TYPE__ long int
+> 	#define __SIZE_TYPE__ long unsigned int
+> 
+> If gcc can defined standard types, kernel can too.
 
-Seems sane.
+The kernel *has to* use those exact same types.  So why on earth do you
+feel you should reimplement this?
 
-> --- a/fs/coredump.c
-> +++ b/fs/coredump.c
-> @@ -782,10 +777,17 @@ void do_coredump(const kernel_siginfo_t *siginfo)
->  		 * filesystem.
->  		 */
->  		mnt_userns = file_mnt_user_ns(cprm.file);
-> -		if (!uid_eq(i_uid_into_mnt(mnt_userns, inode), current_fsuid()))
-> +		if (!uid_eq(i_uid_into_mnt(mnt_userns, inode),
-> +			    current_fsuid())) {
-> +			pr_info_ratelimited("Core dump to |%s aborted: cannot preserve file owner\n",
+> > > noreturn, alignas newest C standard
+> > > are next.
+> > 
+> > What is wrong with <stdalign.h> and <stdnoreturn.h>?
+> 
+> These two are actually quite nice.
+> 
+> Have you seen <stddef.h>? Loads of macrology crap.
+> Kernel can ship nicer one.
 
-But why the "|%s"?  This signifies dump-to-pipe, yes?  Don't we need
-the below?
+It is a pretty tame file.  And it works correctly for *all* targets,
+including all Linux targets.  Why reimplement this?  No, it takes
+virtually no resources to compile this.  And you do not have to maintain
+it *at all*, the compiler will take care of it.  It is standard.
 
---- a/fs/coredump.c~log-if-a-core-dump-is-aborted-due-to-changed-file-permissions-fix
-+++ a/fs/coredump.c
-@@ -784,12 +784,12 @@ void do_coredump(const kernel_siginfo_t
- 		mnt_userns = file_mnt_user_ns(cprm.file);
- 		if (!uid_eq(i_uid_into_mnt(mnt_userns, inode),
- 			    current_fsuid())) {
--			pr_info_ratelimited("Core dump to |%s aborted: cannot preserve file owner\n",
-+			pr_info_ratelimited("Core dump to %s aborted: cannot preserve file owner\n",
- 					    cn.corename);
- 			goto close_fail;
- 		}
- 		if ((inode->i_mode & 0677) != 0600) {
--			pr_info_ratelimited("Core dump to |%s aborted: cannot preserve file permissions\n",
-+			pr_info_ratelimited("Core dump to %s aborted: cannot preserve file permissions\n",
- 					    cn.corename);
- 			goto close_fail;
- 		}
-_
+> > > They are userspace headers in the sense they are external to the project
+> > > just like userspace programs are external to the kernel.
+> > 
+> > So you are going to rewrite all of the rest of GCC inside the kernel
+> > project as well?
+> 
+> What an argument. "the rest of GCC" is already there except for stdarg.h.
 
+???
+
+That is there as well.  But you want to remove it.
+
+"The rest of GCC" is everything in cc1 (the compiler binary), in libgcc
+(not that the kernel wants that either on most targets, although it is
+required), etc.  A few GB of binary goodness.
+
+> > > Kernel chose to be self-contained.
+> > 
+> > That is largely historical, imo.  Nowadays this is less necessary.
+> 
+> I kind of agree as in kernel should use int8_t and stuff because they
+> are standard.
+
+s8 is a much nicer name, heh.  But it could
+  #define s8 int8_t
+certainly.
+
+What I meant was the kernel wanted to avoid standard headers because
+those traditionally have been a bit problematic.  But decades have gone
+by, and nowadays the kernel's own headers are at least as bad.
+
+> Also, -isystem removal disables <float.h> and <stdatomic.h> which is
+> desireable.
+
+Why?  Do you think  #include <float.h>  will ever make it past code
+review?  Do you need to throw up extra barriers so people will have a
+harder time changing that policy, if ever they think that a good idea?
+
+> > > It will be used for intrinsics where necessary.
+> > 
+> > Like, everywhere.
+> 
+> No, where necessary. Patch demostrates there are only a few places which
+> want -isystem back.
+
+Yes, where necessary, that is what I said.  So, potentially everywhere.
+An arch can decide to use some builtin in a generic header, for example.
+
+Your patch makes for more work in the future, that is the best it does.
+
+
+Segher
