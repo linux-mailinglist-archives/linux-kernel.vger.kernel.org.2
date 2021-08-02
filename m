@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1243DCEFA
+	by mail.lfdr.de (Postfix) with ESMTP id A593A3DCEFB
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhHBDud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232106AbhHBDug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 23:50:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231962AbhHBDud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 1 Aug 2021 23:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbhHBDub (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 23:50:31 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFF1C06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 20:50:21 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id o17-20020a4a64110000b0290263e1ba7ff9so4107815ooc.2
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 20:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UJdzLFPEPPSSNUSmHlQ5Vfo+J9yTyV4ONJFREZVAKmE=;
-        b=FuuyhhdrRTDGqfebyucyzloiFBJjgi1Y/zNGJfvMhJnxVnIxd9msRtGnLmwNGeIhmv
-         1s4LcXhEg7OhDaa1v8B0J+RKjBHc9DpxjinKdWo/44DhwG0P9f73x2tKlwq+MhzWUOyS
-         rDFOO+gaZcwmRcA+lEI2C9xub+38sCJnV0ND+zsmU/ln6sBH0EAqDOOOWRNIp6vDSiNp
-         Xso4yuk7drKlEgXHNPDnF8UIZ25jukg9BOTUL4v8EGe5xz/9KgqQ981K/i/Q4kAtgyns
-         RCO/pPjInR/Y7a52e9ZuKX4yDqXDjeefWC8felz8EJ7yP3Iad4qpjixHmp78ujHQOygK
-         yNpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=UJdzLFPEPPSSNUSmHlQ5Vfo+J9yTyV4ONJFREZVAKmE=;
-        b=BQFIGqQd1eMxhC39YpIOU+xY/lfnDRoio5Y7czCLWsmGixjwvvEcWHQ9rnz4RVV084
-         LMjJXjRyNYL5uc/5LAPj2hIQXbsULx1/8R4PiLynJbcVsDKlkRfEufy5MxTBYzBryT9i
-         crm2dg3wcfI7IT1VkQnF5TIi/TBPZILLRWxSRgs67JcLxNWLcM+vPxH+FyBVd3QFpvPq
-         A4ZYhv4NaL6dzo/FggQUMXI9kv0w9ZdRoefa/TjfSsqw3qTmc2GaddKtAhKCJNNZSMpE
-         qzI796LyP1lKSK9b2uLwFsOoBm/W1KgMcI3jlUjFlkDDTJcTfeoJddtmd7kQuyaWr3xA
-         xxZg==
-X-Gm-Message-State: AOAM530hGeP1CVHnMvjiAP6ViDGho9kIsqNTZKSux8zXbxK035sPmUo/
-        ipEutyyb1JhiBPLLFacFKptGyTEGGMY=
-X-Google-Smtp-Source: ABdhPJxCTWScq28eRpXB70MMlTUjEuAyJVv42S8dkvwNGBqNmZE2PksqBYA1VmQzaw1sqxFktSesLw==
-X-Received: by 2002:a4a:e589:: with SMTP id o9mr9382116oov.43.1627876220101;
-        Sun, 01 Aug 2021 20:50:20 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 45sm1714664oty.16.2021.08.01.20.50.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Aug 2021 20:50:19 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 1 Aug 2021 20:50:18 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.14-rc4
-Message-ID: <20210802035018.GA1851632@roeck-us.net>
-References: <CAHk-=whv0g5YqoRXc8oxqJX3r+GP1dN3ia_Qg_V6UTjhi8vg8w@mail.gmail.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B740660EE3;
+        Mon,  2 Aug 2021 03:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627876224;
+        bh=opJ5gu9x7UciOeMeynSO0qidOZojcFELh0cNar5tv/I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qFeaS362ZUS5m316imhTVo9z0CVK3McRy3h1KCr5ib7dNnMJ2ZgJ6DJ9JpjBxbfKA
+         4dLLQbE1ZpKI2jSDO7JJPwsE76z7S26pPC+qymP3LL2nRd6lPpW5dIBbUthBwf7cA2
+         wMDYdRvKXjavH1q46GhJPh+8gqQjGMLt2uMh4JKzxMZbaYiSFlhTLx99NJvUj98Ndm
+         vzCf13gejtK7uVlvrrvjoqXojN7GpK5+COrBhPrMXvQCqqTM3rVYU+hIm7naXuKAfe
+         DEPuJ2roU2G13Gq26YU2XLc9HoogMVb1quU0z39nKCayDl6m2t4gOj05hWAWSnQv9X
+         DKOWLO7AmyH3g==
+Date:   Mon, 2 Aug 2021 09:20:20 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+        sanyog.r.kale@intel.com, bard.liao@intel.com
+Subject: Re: [PATCH] soundwire: cadence: add paranoid check on self-clearing
+ bits
+Message-ID: <YQdrfNA08UITBjvB@matsya>
+References: <20210714051349.13064-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whv0g5YqoRXc8oxqJX3r+GP1dN3ia_Qg_V6UTjhi8vg8w@mail.gmail.com>
+In-Reply-To: <20210714051349.13064-1-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 01, 2021 at 05:25:04PM -0700, Linus Torvalds wrote:
-> Nothing to see here, entirely normal rc4.  It's mostly a very nice and
-> flat diffstat - so small spread out changes - with the exception of a
-> couple of blips in selftests and the xfs fixes.
+On 14-07-21, 13:13, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> Mostly drivers, some arch updates, networking, plus tooling and
-> selftests. Nothing odd stands out.
+> The Cadence IP exposes a small number of self-clearing bits in
+> the MCP_CONTROL and MCP_CONFIG_UPDATE registers.
 > 
+> We currently do not check that those bits are indeed cleared,
+> e.g. during resume operations. That could lead to resuming peripheral
+> devices too early.
+> 
+> In addition, if we happen to read these registers, update one of the
+> fields and write the register back, we may be writing stale data that
+> might have been cleared in hardware. These sort of race conditions
+> could lead to e.g. doing a hw_reset twice or stopping a clock that
+> just restarted. There is no clear way of avoiding these potential race
+> conditions other than making sure that these registers fields are
+> cleared before any read-modify-write sequence. If we detect this sort
+> of errors, we only log them since there is no clear recovery
+> possible. The only way out is likely to restart the IP with a
+> suspend/resume cycle.
+> 
+> Note that the checks are performed before updating the registers, as
+> well as after the Intel 'sync go' sequence in multi-link mode. That
+> should cover both the start and end of suspend/resume hardware
+> configurations. The Multi-Master mode gates the configuration updates
+> until the 'sync go' signal is asserted, so we only check on init and
+> after the end of the 'sync go' sequence.
+> 
+> The duration of the usleep_range() was defined by the GSYNC frequency
+> used in multi-master mode. With a 4kHz frequency, any configuration
+> change might be deferred by up to 250us. Extending the range to
+> 1000-1500us should guarantee that the configuration change is
+> completed without any significant impact on the overall resume
+> time.
 
-Same from the testing side of things.
+There were some checkpatch warns, but I think code will looks worse if
+we split lines up, so applied now
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 474 pass: 473 fail: 1
-Failed tests:
-	arm:z2:pxa_defconfig:nodebug:nocd:nofs:nonvme:noscsi:notests:novirt:nofdt:flash8,384k,2:rootfs
-
-Guenter
+-- 
+~Vinod
