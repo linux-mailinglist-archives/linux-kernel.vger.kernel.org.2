@@ -2,57 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D933DDBDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7913DDBE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbhHBPFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:05:47 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:34244 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234340AbhHBPFq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:05:46 -0400
-Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
-        by mail.holtmann.org (Postfix) with ESMTPSA id B92E9CED0B;
-        Mon,  2 Aug 2021 17:05:33 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH 1/1] Bluetooth: btusb: Enable MSFT extension for Mediatek
- Chip (MT7921)
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210802125941.29078-1-mark-yw.chen@mediatek.com>
-Date:   Mon, 2 Aug 2021 17:05:33 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>, chris.lu@mediatek.com,
-        will-cy.lee@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
-        BlueZ <linux-bluetooth@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        michaelfsun@google.com, shawnku@google.com, jemele@google.com,
-        apusaka@google.com
-Content-Transfer-Encoding: 7bit
-Message-Id: <838E84AB-1F38-45A3-A5B7-27CE134FFD49@holtmann.org>
-References: <20210802125941.29078-1-mark-yw.chen@mediatek.com>
-To:     =?utf-8?B?Ik1hcmstWVcgQ2hlbiAo6Zmz5o+a5paHKSI=?= 
-        <Mark-YW.Chen@mediatek.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        id S234819AbhHBPHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:07:20 -0400
+Received: from 8bytes.org ([81.169.241.247]:53302 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234687AbhHBPHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:07:01 -0400
+Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id E7D9235A;
+        Mon,  2 Aug 2021 17:06:48 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Joerg Roedel <jroedel@suse.de>, Nadav Amit <namit@vmware.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH] iommu/amd: Remove stale amd_iommu_unmap_flush usage
+Date:   Mon,  2 Aug 2021 17:06:43 +0200
+Message-Id: <20210802150643.3634-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+From: Joerg Roedel <jroedel@suse.de>
 
-> The Mdiatek MT7921(7961) support MSFT HCI extensions, we are using
-> 0xFD30 for VsMsftOpCode.
-> 
-> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
-> ---
-> drivers/bluetooth/btusb.c | 2 ++
-> 1 file changed, 2 insertions(+)
+Remove the new use of the variable introduced in the AMD driver branch.
+The variable was removed already in the iommu core branch, causing build
+errors when the brances are merged.
 
-patch has been applied to bluetooth-next tree.
+Cc: Nadav Amit <namit@vmware.com>
+Cc: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ drivers/iommu/amd/init.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Regards
-
-Marcel
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index 239556c1f698..bdcf167b4afe 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -1850,11 +1850,9 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
+ 		return ret;
+ 
+ 	if (iommu->cap & (1UL << IOMMU_CAP_NPCACHE)) {
+-		if (!amd_iommu_unmap_flush)
+-			pr_info("IOMMU batching is disabled due to virtualization\n");
+-
++		pr_info("Using strict mode due to virtualization\n");
++		iommu_set_dma_strict();
+ 		amd_iommu_np_cache = true;
+-		amd_iommu_unmap_flush = true;
+ 	}
+ 
+ 	init_iommu_perf_ctr(iommu);
+-- 
+2.31.1
 
