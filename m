@@ -2,138 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27C93DD47C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A6E3DD47E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbhHBLOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbhHBLOI (ORCPT
+        id S233371AbhHBLOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:14:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33884 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231881AbhHBLOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:14:08 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB65DC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 04:13:57 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id i39-20020a9d17270000b02904cf73f54f4bso3364819ota.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 04:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0CfDLtrkCkMzvLd35FEs6eMwBrh1e58lQcLyXALKvq0=;
-        b=AybFJOtKRe0q6jJhqwD86EFrT14YFKKUCn0/lX25FdoRhTsyaZ6uPTsCg/y0ubJqCO
-         z/Ap1RHVChJarWRV1k+rH/fX/V4fmA4obJqont8F6g1d3ckqT7Vwpdll97eRr8n54TVe
-         no5UyzPnO+eGTcIgU4Py4/s+xQKjE1Y4DsVo7wfz3fKgAXXo9aGFCsDxRxOd8pCms28s
-         eYg6g1qgj6fIIXsNYwhK+FKg/U0izdC0WLdlaY0+aFI2rEx+U7B4xOIQpkJjyXQjIEfl
-         fEK3BsXeSe3kbUyaTWSsnt8Y94PtzisV7qFyHIjbUX4l7SGMM3rbjKz7LifoSAUA0FrV
-         EKwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0CfDLtrkCkMzvLd35FEs6eMwBrh1e58lQcLyXALKvq0=;
-        b=CkvtEngiFyv0LA//FngvWn01ptTRjjHR6OMlzu1CYyAlNXKS03F0tSknwDpLbvWrhO
-         5TvIS9yYeU69Np/HZkFQAw2ZVsC/IP7BjohYST9Og+Uhozw66LyUHTgdQYzHs4gAg7Zo
-         84rhfFgNeNcR1P3AWeB1aYfP81bobLjtTO8daTaitMTAJ11Xv35LOzeF9/74VADOASWQ
-         swPIDGGFqWRSTg3T7dh2TTV+UsW3swSZqtQ9GDyMQvp5DxOQaHfuPmEt7gGOdxiKPsn+
-         lFJjkwg15mOpPLMIL7wi2X4a5wlT++WfavMEzfYFEgylihINUKUf5x7QW65cPjtOMDOP
-         8+WA==
-X-Gm-Message-State: AOAM5323kov3VtWRKMsXRDmZ9Q8E6dxdpI8qhxwNkGSfBee4nxJTfCC3
-        9ZP4jjaxsAkFSUaCVeRV8hXSc9apYFnnauqu7JZLdw==
-X-Google-Smtp-Source: ABdhPJxRpcv8YUt/d5raKHTBgJ8s47A7Jkisqse/dDL12s34vizVFXgZbUpeOvNeTac/Ai7ulOfMTQki8uGGCwIVlzk=
-X-Received: by 2002:a9d:4b02:: with SMTP id q2mr11320334otf.52.1627902836962;
- Mon, 02 Aug 2021 04:13:56 -0700 (PDT)
+        Mon, 2 Aug 2021 07:14:44 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 26F8521C2F;
+        Mon,  2 Aug 2021 11:14:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627902874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pFXbUA/npgsJimUjktGzlNShlCBsUVgSGGwA9ygYx1M=;
+        b=FMKAn1haAEGcrI4uzbLy2n503nPYCSvDqQhDAGK7UZ//DsWH9h7hNzH8tx039cr/hE1PX/
+        tg826pLpdqufS5qRg0DDS9k7kBKSMk0Y3uZa1760p8qCu/GOYhzgg3CG5SQFGIO2kC2h9G
+        SPbId/Xs5TiGXkyLEyMUgUfytiXftOM=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 58655A3B83;
+        Mon,  2 Aug 2021 11:14:33 +0000 (UTC)
+Date:   Mon, 2 Aug 2021 13:14:29 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Widawsky, Ben" <ben.widawsky@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v6 1/6] mm/mempolicy: Add MPOL_PREFERRED_MANY for
+ multiple preferred nodes
+Message-ID: <YQfTlSy/vmI3ELgR@dhcp22.suse.cz>
+References: <20210728141156.GC43486@shbuild999.sh.intel.com>
+ <YQGB5cB5NlgOuNIN@dhcp22.suse.cz>
+ <20210729070918.GA96680@shbuild999.sh.intel.com>
+ <YQKvZDXmRSVVRvfi@dhcp22.suse.cz>
+ <20210729151242.GA42865@shbuild999.sh.intel.com>
+ <YQLVf3pkQTHLemAZ@dhcp22.suse.cz>
+ <20210730030502.GA87066@shbuild999.sh.intel.com>
+ <YQOeAgPS9+FUseIx@dhcp22.suse.cz>
+ <20210730071840.GA87305@shbuild999.sh.intel.com>
+ <20210802081130.GA42490@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-References: <20210729132818.4091769-1-qperret@google.com> <20210729132818.4091769-14-qperret@google.com>
-In-Reply-To: <20210729132818.4091769-14-qperret@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Mon, 2 Aug 2021 13:13:20 +0200
-Message-ID: <CA+EHjTxTaPc=bt_kyXf0TE85v5eyHnq0o3KQ3Pd6+kOwmm5oMw@mail.gmail.com>
-Subject: Re: [PATCH v3 13/21] KVM: arm64: Expose host stage-2 manipulation helpers
-To:     Quentin Perret <qperret@google.com>
-Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        dbrazdil@google.com, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802081130.GA42490@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
+On Mon 02-08-21 16:11:30, Feng Tang wrote:
+> On Fri, Jul 30, 2021 at 03:18:40PM +0800, Tang, Feng wrote:
+> [snip]
+> > > > One thing is, it's possible that 'nd' is not set in the preferred
+> > > > nodemask. 
+> > > 
+> > > Yes, and there shouldn't be any problem with that.  The given node is
+> > > only used to get the respective zonelist (order distance ordered list of
+> > > zones to try). get_page_from_freelist will then use the preferred node
+> > > mask to filter this zone list. Is that more clear now?
+> > 
+> > Yes, from the code, the policy_node() is always coupled with
+> > policy_nodemask(), which secures the 'nodemask' limit. Thanks for
+> > the clarification!
+> 
+> Hi Michal,
+> 
+> To ensure the nodemask limit, the policy_nodemask() also needs some
+> change to return the nodemask for 'prefer-many' policy, so here is a
+> updated 1/6 patch, which mainly changes the node/nodemask selection
+> for 'prefer-many' policy, could you review it? thanks!
 
-On Thu, Jul 29, 2021 at 3:28 PM Quentin Perret <qperret@google.com> wrote:
->
-> We will need to manipulate the host stage-2 page-table from outside
-> mem_protect.c soon. Introduce two functions allowing this, and make
-> them usable to users of mem_protect.h.
->
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  2 ++
->  arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 17 ++++++++++++++++-
->  2 files changed, 18 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-> index ae355bfd8c01..47c2a0c51612 100644
-> --- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-> +++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-> @@ -49,6 +49,8 @@ extern struct host_kvm host_kvm;
->  int __pkvm_prot_finalize(void);
->  int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end);
->
-> +int host_stage2_idmap_locked(u64 start, u64 end, enum kvm_pgtable_prot prot);
-> +int host_stage2_set_owner_locked(u64 start, u64 end, u8 owner_id);
->  int kvm_host_prepare_stage2(void *pgt_pool_base);
->  void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt);
->
-> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> index 70c57d2c3024..a7f6134789e0 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> @@ -272,6 +272,21 @@ static int host_stage2_adjust_range(u64 addr, struct kvm_mem_range *range)
->         return 0;
->  }
->
-> +int host_stage2_idmap_locked(u64 start, u64 end, enum kvm_pgtable_prot prot)
-> +{
-> +       hyp_assert_lock_held(&host_kvm.lock);
-> +
-> +       return host_stage2_try(__host_stage2_idmap, start, end, prot);
-> +}
-> +
-> +int host_stage2_set_owner_locked(u64 start, u64 end, u8 owner_id)
-> +{
-> +       hyp_assert_lock_held(&host_kvm.lock);
-> +
-> +       return host_stage2_try(kvm_pgtable_stage2_set_owner, &host_kvm.pgt,
-> +                              start, end - start, &host_s2_pool, owner_id);
-> +}
+right, I have mixed it with get_policy_nodemask
 
-This is a potential issue elsewhere as well, but all functions in
-kvm_pgtable.h, including kvm_pgtable_stage2_set_owner, specify an
-address range via address and size. The two you have introduced here
-take a start and an end. I'm not sure if making these two consistent
-with the ones in kvm_pgtable.h would be good, or would just complicate
-things in other places.
-
-Thanks,
-/fuad
-
->  static bool host_stage2_force_pte_cb(u64 addr, u64 end, enum kvm_pgtable_prot prot)
+> @@ -1875,8 +1897,13 @@ static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
+>   */
+>  nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
 >  {
->         /*
-> @@ -309,7 +324,7 @@ static int host_stage2_idmap(u64 addr)
->         if (ret)
->                 goto unlock;
->
-> -       ret = host_stage2_try(__host_stage2_idmap, range.start, range.end, prot);
-> +       ret = host_stage2_idmap_locked(range.start, range.end, prot);
->  unlock:
->         hyp_spin_unlock(&host_kvm.lock);
->
-> --
-> 2.32.0.432.gabb21c7263-goog
->
+> -	/* Lower zones don't get a nodemask applied for MPOL_BIND */
+> -	if (unlikely(policy->mode == MPOL_BIND) &&
+> +	int mode = policy->mode;
+> +
+> +	/*
+> +	 * Lower zones don't get a nodemask applied for 'bind' and
+> +	 * 'prefer-many' policies
+> +	 */
+> +	if (unlikely(mode == MPOL_BIND || mode == MPOL_PREFERRED_MANY) &&
+>  			apply_policy_zone(policy, gfp_zone(gfp)) &&
+>  			cpuset_nodemask_valid_mems_allowed(&policy->nodes))
+>  		return &policy->nodes;
+
+Isn't this just too cryptic? Why didn't you simply
+	if (mode == MPOL_PREFERRED_MANY)
+		return &policy->mode;
+
+in addition to the existing code? I mean why would you even care about
+cpusets? Those are handled at the page allocator layer and will further
+filter the given nodemask. 
+
+-- 
+Michal Hocko
+SUSE Labs
