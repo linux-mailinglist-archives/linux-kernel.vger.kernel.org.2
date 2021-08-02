@@ -2,126 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861923DD649
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F11D3DD64C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233894AbhHBNAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:00:08 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:32354 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233883AbhHBNAH (ORCPT
+        id S233889AbhHBNAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233718AbhHBNAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Aug 2021 09:00:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627909198; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=IYmX3vUPkg+ubeSfl6k4KFsqTWARHNbMrBlR5kA54iw=;
- b=PUHzKyS/fpB9OHZ/25d1zWehvKpw2MUHqzr+ScfaVhnb8Rwxf7Vl/Rty18WRJyR9nJem4wcC
- 5dokatkrej+Eii0IG65rCGyoF4ZBSjo57bH05qiov/NAw2Cr4dnxqPe2Sc7ZHQxPQSfjHbv9
- VH9GaR1iSB0RjIoPtrNs6TnxqNc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6107ec3c290ea35ee6030372 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 12:59:40
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2EEA8C43460; Mon,  2 Aug 2021 12:59:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 73A54C433F1;
-        Mon,  2 Aug 2021 12:59:39 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Aug 2021 18:29:39 +0530
-From:   skakit@codeaurora.org
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21356C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 05:59:58 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mAXXl-0001w6-BG; Mon, 02 Aug 2021 14:59:45 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:1a4:7dc:3804:a9bc])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 3E8D365EB3D;
+        Mon,  2 Aug 2021 12:59:42 +0000 (UTC)
+Date:   Mon, 2 Aug 2021 14:59:40 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH V7 0/3] Convert qcom pmic gpio bindings to YAML
-In-Reply-To: <CACRpkdYsDNDcCYWOygN+V=1LFBZ6-PHYaePy5truR9ybVzkMUg@mail.gmail.com>
-References: <1627029074-23449-1-git-send-email-skakit@codeaurora.org>
- <CACRpkdYsDNDcCYWOygN+V=1LFBZ6-PHYaePy5truR9ybVzkMUg@mail.gmail.com>
-Message-ID: <c8d6f1cdb64bcaca0f429b4e535d4cad@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>
+Subject: Re: [PATCH v2 1/6] arm64: dts: ti: k3-am65-mcu: Add Support for MCAN
+Message-ID: <20210802125940.w2djzwuwysco566p@pengutronix.de>
+References: <20210726101012.26983-1-a-govindraju@ti.com>
+ <20210726101012.26983-2-a-govindraju@ti.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xdpgrz6pysvgzjon"
+Content-Disposition: inline
+In-Reply-To: <20210726101012.26983-2-a-govindraju@ti.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-On 2021-07-30 15:28, Linus Walleij wrote:
-> Hi Satya,
-> 
-> On Fri, Jul 23, 2021 at 10:32 AM satya priya <skakit@codeaurora.org> 
-> wrote:
->> 
->> satya priya (3):
->>   dt-bindings: mfd: pm8008: Add gpio-ranges and spmi-gpio compatible
->>   dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom pmic gpio 
->> bindings
->>     to YAML
->>   dt-bindings: pinctrl: qcom-pmic-gpio: Remove the interrupts property
->> 
->>  .../devicetree/bindings/mfd/qcom,pm8008.yaml       |  13 +-
->>  .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 288 
->> ---------------------
->>  .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 239 
->> +++++++++++++++++
->>  3 files changed, 249 insertions(+), 291 deletions(-)
->>  delete mode 100644 
->> Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
->>  create mode 100644 
->> Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
-> 
-> I tried to apply these patches to the pinctrl tree but there is a 
-> conflict
-> because I merged these patches (I think):
-> 0ac2c2aebf82 dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible for
-> SA8155p-adp
-> ffdf4cecac07 dt-bindings: pinctrl: qcom,pmic-gpio: Arrange compatibles
-> alphabetically
-> 
-> Can you please rebase the patches on top of this branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/log/?h=devel
-> 
+--xdpgrz6pysvgzjon
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sure, but I don't see above patches present on this branch, anyway I 
-found them on linux-next, will rebase on linux-next.
-Hope that's not a problem.
+On 26.07.2021 15:40:07, Aswath Govindraju wrote:
+> From: Faiz Abbas <faiz_abbas@ti.com>
+>=20
+> Add Support for two MCAN controllers present on the am65x SOC. Both suppo=
+rt
+> classic CAN messages as well as CAN-FD.
+>=20
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi | 30 +++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dt=
+s/ti/k3-am65-mcu.dtsi
+> index c93ff1520a0e..6445f2d976e8 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> @@ -159,6 +159,36 @@
+>  		};
+>  	};
+> =20
+> +	m_can0: mcan@40528000 {
+> +		compatible =3D "bosch,m_can";
+> +		reg =3D <0x0 0x40528000 0x0 0x400>,
+> +		      <0x0 0x40500000 0x0 0x4400>;
+> +		reg-names =3D "m_can", "message_ram";
+> +		power-domains =3D <&k3_pds 102 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks =3D <&k3_clks 102 0>, <&k3_clks 102 5>;
+> +		clock-names =3D "cclk", "hclk";
 
-> then resend so I can apply them?
-> 
-> Include Bhupesh on Cc so we get confirmation that this ends up as 
-> intended.
-> 
+The binding says the first should be hclk.
 
-Okay.
+|  clock-names:
+|    items:
+|      - const: hclk
+|      - const: cclk
 
-Thanks,
-Satya Priya
+Please also fix in the other dts files.
 
-> Thanks,
-> Linus Walleij
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--xdpgrz6pysvgzjon
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEH7DoACgkQqclaivrt
+76kxjwf9Gmlc6XvgdcEz4U7PNHFbVNMc1088UadMxSH07/kQAaRW90wlWXKlQTG2
+tVFCdoj5cPqT4PVeqf1k5F/N/WicVa8SHTKZcpLQz1GZLVbXmVgI6zRKJOHVtGfI
+32g9po0Xol0E5kPtMusw954W0elkTGO2CuWkhQ5DwODL3GElegqKfrz3IWueiR7E
+Zk8GjJRdmP1BqFiokaT+/TEOSWMrzHNXO2EYahaEO6YEoc7CjA66eP+4tmH560rs
+Kgr56k7Rghl5uF843geaZinyWPJLfH04K0yDnaKIltW9aLuavAABcHITJhsNO2fS
+fjR/9fVIdGaorFu77/7WjEgeFw/51A==
+=O+hV
+-----END PGP SIGNATURE-----
+
+--xdpgrz6pysvgzjon--
