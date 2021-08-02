@@ -2,84 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC263DDBB2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B777D3DDBBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234456AbhHBO7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233981AbhHBO7v (ORCPT
+        id S234518AbhHBPBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:01:45 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11714 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234211AbhHBPBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:59:51 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2144C06175F;
-        Mon,  2 Aug 2021 07:59:40 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id hs10so22705875ejc.0;
-        Mon, 02 Aug 2021 07:59:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rl9nBCVxzHPtjQlQ0C1CUCK9L5CCBMPqge/fuO5g570=;
-        b=QfuVMUAbRZVIcbiMc0Ds9QIQOYLAib+/PWA56KbU2GDZNdEiF01uoTugf8+AP5Un4+
-         MIK7gB5olrFRatb2B3foEI1aCTgoxFpS1OsvE6k4YboC+hVt9ABTLTrPT5vNL004azEz
-         wElAFPIpPINVrUVhSNGSKUEByA4G40Zw+AtiZKyrvKdHbcUI7OxrdYgyi7onENIlOk0V
-         YOgstrSj2qsmWcGzYpZjNn7Bw568HANofloiCQ7V4akLJJWx1Ze/PpxdBLx0VHHxa1nv
-         CzXbEv+/2oLqYXMV/S7JiBmlocH4owBK/Y4OT393EU+R5QUg67fxdL0nE3SmC5SYDUtF
-         tKEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rl9nBCVxzHPtjQlQ0C1CUCK9L5CCBMPqge/fuO5g570=;
-        b=BHaNNZKroXT5javMOGSKYhQi42wXacTtDSFV63P24pDNV/xJhXiT6yJFX3S6+PBOzn
-         lDCaa6oag1b+InkxxzoK+L6s632pTmDEP8d2CaiAxjvGisvQq3bYJ2CEilad5myDPYYW
-         s9avZPvjKLjDySBcE8WahUnCZ5wcDmmKdtwski2CXPPEEJiivZpRIrsMuk4BEKe0NtEu
-         L/x7N5h+5Ery6euo48RLMskqzcyTLHef8HEFYP05VwmkPL56fdkVJt4MO/gHq3wTJSun
-         J/4hgHF/Xet1VPHuu0+upTPPGOctkfV7cSk1kcLzjqEiUhngY4T7EJv9aMeBwE9DP6LD
-         Lx9Q==
-X-Gm-Message-State: AOAM532uUxC38ndeeUOqaYlYQp3d5ZN+eT8TD0uErU/3q7PZKXy7EHoB
-        3SVI4aXar4HvNn3Z+k+bLRs=
-X-Google-Smtp-Source: ABdhPJwcvnIPWi00cg7ALyxChVDvyGVR4WZAbajX0P0irbXHfmvvRiSFIjNlXstacO/wFShKiFsAvQ==
-X-Received: by 2002:a17:906:9c84:: with SMTP id fj4mr15524669ejc.180.1627916379353;
-        Mon, 02 Aug 2021 07:59:39 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id ks26sm4715190ejb.58.2021.08.02.07.59.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 07:59:38 -0700 (PDT)
-From:   Ioana Ciornei <ciorneiioana@gmail.com>
-X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
-Date:   Mon, 2 Aug 2021 17:59:37 +0300
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
-        Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-        kuba@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net
-Subject: Re: [PATCH] net: convert fib_treeref from int to refcount_t
-Message-ID: <20210802145937.hjguodaqphxoabdt@skbuf>
-References: <20210729071350.28919-1-yajun.deng@linux.dev>
- <20210802133727.bml3be3tpjgld45j@skbuf>
- <2033809a-1a07-1f5d-7732-f10f6e094f3d@gmail.com>
+        Mon, 2 Aug 2021 11:01:43 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 172EXhc2112433;
+        Mon, 2 Aug 2021 11:01:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=tU+Dh7yViSX+arhzY6wi+MNmaJDKyBkP/td5MGDEVQA=;
+ b=obypbEYMUT0DRZoROC89kxdOeObkAnvcqG63XXOsE5QUelM0USpAWZYourKAk4w8OoCS
+ WloHbDE/Q6Fv6BBsoaRbpl4AzDRUyvcaqd9ptQZAUJO91/qWk89FhFyWTmRH8GCB/dfR
+ z1Cu/S0Xw0b7uywJa4eqeLoZ/fskGddUWRFVcynQ5pyt0D4zm/OJAem2mAbh/XEG6xPF
+ K4uUsG4a9QG7znmL+belUJzAPg3MSoR2jB8QH6ZEOuNWXLrMSYu/9/xcQOZ/69DFnFv+
+ 2Pkv/KuMezmnQPYQMn7d6usr5gDo81CPDvctHymsqMl4Hn0YEIkYUu+7EcQ1V5HDTECM CA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a5s279fnf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Aug 2021 11:01:22 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 172ExBlB007905;
+        Mon, 2 Aug 2021 15:01:21 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3a4wshn1q8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Aug 2021 15:01:20 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 172EwRLH32113108
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 2 Aug 2021 14:58:27 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 840DFA4072;
+        Mon,  2 Aug 2021 15:01:18 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8ABF9A407D;
+        Mon,  2 Aug 2021 15:01:16 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.118.203])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  2 Aug 2021 15:01:16 +0000 (GMT)
+Message-ID: <1efee8d7f62fb0e413f6e28d40af62610b8ce450.camel@linux.ibm.com>
+Subject: Re: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
+ digest_list_del
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Igor Stoppa <igor.stoppa@huawei.com>
+Date:   Mon, 02 Aug 2021 11:01:15 -0400
+In-Reply-To: <96c7cd3d19254e84a6cb45b2a940e944@huawei.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+         <20210726163700.2092768-7-roberto.sassu@huawei.com>
+         <c9dffd9d29df095660beaa631ff252c4b33629a0.camel@linux.ibm.com>
+         <ef7c85dcb096479e95c8c60ccda4d700@huawei.com>
+         <1ef95096bee13578b3f906dd9f708c6af9d6ff18.camel@linux.ibm.com>
+         <555bf01bee4b4ea7a9bee658366d535a@huawei.com>
+         <2c731f07bd08f01f2a3e032814bc65ae9a8494ad.camel@linux.ibm.com>
+         <bd0787e0ee4f47baa41abf47976e536c@huawei.com>
+         <96c7cd3d19254e84a6cb45b2a940e944@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ZQwL0SeAMMVVukqfkoWNXexSkUKdmvJ7
+X-Proofpoint-GUID: ZQwL0SeAMMVVukqfkoWNXexSkUKdmvJ7
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2033809a-1a07-1f5d-7732-f10f6e094f3d@gmail.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-02_05:2021-08-02,2021-08-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 spamscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ lowpriorityscore=0 clxscore=1011 impostorscore=0 malwarescore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108020094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 08:36:59AM -0600, David Ahern wrote:
-> On 8/2/21 7:37 AM, Ioana Ciornei wrote:
-> > Unfortunately, with this patch applied I get into the following WARNINGs
-> > when booting over NFS:
+On Mon, 2021-08-02 at 08:14 +0000, Roberto Sassu wrote:
+> > From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
+> > Sent: Friday, July 30, 2021 4:25 PM
+> > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > > Sent: Friday, July 30, 2021 4:03 PM
+> > > Hi Roberto,
+> > >
+> > > On Fri, 2021-07-30 at 13:16 +0000, Roberto Sassu wrote:
+> > > > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > > > > Sent: Friday, July 30, 2021 2:40 PM
+> > >
+> > > > > "critical data", in this context, should probably be used for verifying
+> > > > > the in memory file digests and other state information haven't been
+> > > > > compromised.
+> > > >
+> > > > Actually, this is what we are doing currently. To keep the
+> > > > implementation simple, once the file or the buffer are uploaded
+> > > > to the kernel, they will not be modified, just accessed through
+> > > > the indexes.
+> > >
+> > > My main concern about digest lists is their integrity, from loading the
+> > > digest lists to their being stored in memory.  A while back, there was
+> > > some work on defining a write once memory allocator.  I don't recall
+> > > whatever happened to it.  This would be a perfect usecase for that
+> > > memory allocator.
+> > 
+> > Adding Igor in CC.
+> > 
+> > Regarding loading, everything uploaded to the kernel is carefully
+> > evaluated. This should not be a concern. Regarding making them
+> > read-only, probably if you can subvert digest lists you can also
+> > remove the read-only protection (unless you use an hypervisor).
 > 
-> Can you test the attached?
-> 
+> I briefly talked with Igor. He also agreed with that, and added that
+> it could make it more difficult for an attacker to also disable the
+> protection. However, he is not planning to submit an update soon,
+> so I wouldn't consider this an option for now.
 
-Yep, it fixes the problem.
+Hi Roberto, Greg,
 
-Thanks!
+As long as others understand and agree to the risk, the IMA details can
+be worked out.
 
--Ioana
+thanks,
+
+Mimi
+
