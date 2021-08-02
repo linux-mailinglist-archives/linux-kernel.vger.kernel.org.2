@@ -2,35 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107563DD9FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329BC3DD841
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235332AbhHBOFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:05:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40742 "EHLO mail.kernel.org"
+        id S234516AbhHBNuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:50:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236279AbhHBN7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:59:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 863D06113B;
-        Mon,  2 Aug 2021 13:55:30 +0000 (UTC)
+        id S234184AbhHBNsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:48:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20E86610CC;
+        Mon,  2 Aug 2021 13:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912531;
-        bh=1HkeSCeLRg6gOHPEhMcea2MXL6I0yll1FZ3p332yxgE=;
+        s=korg; t=1627912073;
+        bh=v1qiqfhFMO1GSTZsyfLloq/DE5Y82veJh03AVlehs40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FnyvNkUMDyYMeRDXFyHoVXqbbTPsY/Jg6TaA9i0xDL5X1VHeAI8QxZSI/k9IJ3Wzl
-         u356ZXKHjAWueu7FWvunhK7pdAqho8D4eKdiOF1/CGhcG8M5/VcYb0c6iFJgXtAJPQ
-         /RA9OSdZTsDTGRdwSdCXT9/fVAAjaN17fpzuq6pY=
+        b=SaYUoITGtrTwmYG5adbaA2fO07yNo5Q6KBM2tN1qzecAI/OVG0ZUiPn9+sCTWg9CF
+         XCysuOLklkieJCUGNmMKL4roBam6/zRjwM8BfOvaEzclU4OiJQGO39aR7U/0Kn2rtz
+         MOxuyvavmerAZ65C91386vE3vvNGMBGyrjc2vIAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.13 034/104] cfg80211: Fix possible memory leak in function cfg80211_bss_update
+        stable@vger.kernel.org,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        syzbot+b718ec84a87b7e73ade4@syzkaller.appspotmail.com,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 11/32] hfs: add lock nesting notation to hfs_find_init
 Date:   Mon,  2 Aug 2021 15:44:31 +0200
-Message-Id: <20210802134345.149149752@linuxfoundation.org>
+Message-Id: <20210802134333.284790750@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
+References: <20210802134332.931915241@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +47,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-commit f9a5c358c8d26fed0cc45f2afc64633d4ba21dff upstream.
+[ Upstream commit b3b2177a2d795e35dc11597b2609eb1e7e57e570 ]
 
-When we exceed the limit of BSS entries, this function will free the
-new entry, however, at this time, it is the last door to access the
-inputed ies, so these ies will be unreferenced objects and cause memory
-leak.
-Therefore we should free its ies before deallocating the new entry, beside
-of dropping it from hidden_list.
+Syzbot reports a possible recursive lock in [1].
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Link: https://lore.kernel.org/r/20210628132334.851095-1-phind.uet@gmail.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This happens due to missing lock nesting information.  From the logs, we
+see that a call to hfs_fill_super is made to mount the hfs filesystem.
+While searching for the root inode, the lock on the catalog btree is
+grabbed.  Then, when the parent of the root isn't found, a call to
+__hfs_bnode_create is made to create the parent of the root.  This
+eventually leads to a call to hfs_ext_read_extent which grabs a lock on
+the extents btree.
+
+Since the order of locking is catalog btree -> extents btree, this lock
+hierarchy does not lead to a deadlock.
+
+To tell lockdep that this locking is safe, we add nesting notation to
+distinguish between catalog btrees, extents btrees, and attributes
+btrees (for HFS+).  This has already been done in hfsplus.
+
+Link: https://syzkaller.appspot.com/bug?id=f007ef1d7a31a469e3be7aeb0fde0769b18585db [1]
+Link: https://lkml.kernel.org/r/20210701030756.58760-4-desmondcheongzx@gmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Reported-by: syzbot+b718ec84a87b7e73ade4@syzkaller.appspotmail.com
+Tested-by: syzbot+b718ec84a87b7e73ade4@syzkaller.appspotmail.com
+Reviewed-by: Viacheslav Dubeyko <slava@dubeyko.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/scan.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/hfs/bfind.c | 14 +++++++++++++-
+ fs/hfs/btree.h |  7 +++++++
+ 2 files changed, 20 insertions(+), 1 deletion(-)
 
---- a/net/wireless/scan.c
-+++ b/net/wireless/scan.c
-@@ -1744,16 +1744,14 @@ cfg80211_bss_update(struct cfg80211_regi
- 			 * be grouped with this beacon for updates ...
- 			 */
- 			if (!cfg80211_combine_bsses(rdev, new)) {
--				kfree(new);
-+				bss_ref_put(rdev, new);
- 				goto drop;
- 			}
- 		}
+diff --git a/fs/hfs/bfind.c b/fs/hfs/bfind.c
+index de69d8a24f6d..7f2ef95dcd05 100644
+--- a/fs/hfs/bfind.c
++++ b/fs/hfs/bfind.c
+@@ -24,7 +24,19 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
+ 	fd->key = ptr + tree->max_key_len + 2;
+ 	hfs_dbg(BNODE_REFS, "find_init: %d (%p)\n",
+ 		tree->cnid, __builtin_return_address(0));
+-	mutex_lock(&tree->tree_lock);
++	switch (tree->cnid) {
++	case HFS_CAT_CNID:
++		mutex_lock_nested(&tree->tree_lock, CATALOG_BTREE_MUTEX);
++		break;
++	case HFS_EXT_CNID:
++		mutex_lock_nested(&tree->tree_lock, EXTENTS_BTREE_MUTEX);
++		break;
++	case HFS_ATTR_CNID:
++		mutex_lock_nested(&tree->tree_lock, ATTR_BTREE_MUTEX);
++		break;
++	default:
++		return -EINVAL;
++	}
+ 	return 0;
+ }
  
- 		if (rdev->bss_entries >= bss_entries_limit &&
- 		    !cfg80211_bss_expire_oldest(rdev)) {
--			if (!list_empty(&new->hidden_list))
--				list_del(&new->hidden_list);
--			kfree(new);
-+			bss_ref_put(rdev, new);
- 			goto drop;
- 		}
+diff --git a/fs/hfs/btree.h b/fs/hfs/btree.h
+index 2715f416b5a8..308b5f1af65b 100644
+--- a/fs/hfs/btree.h
++++ b/fs/hfs/btree.h
+@@ -12,6 +12,13 @@ typedef int (*btree_keycmp)(const btree_key *, const btree_key *);
  
+ #define NODE_HASH_SIZE  256
+ 
++/* B-tree mutex nested subclasses */
++enum hfs_btree_mutex_classes {
++	CATALOG_BTREE_MUTEX,
++	EXTENTS_BTREE_MUTEX,
++	ATTR_BTREE_MUTEX,
++};
++
+ /* A HFS BTree held in memory */
+ struct hfs_btree {
+ 	struct super_block *sb;
+-- 
+2.30.2
+
 
 
