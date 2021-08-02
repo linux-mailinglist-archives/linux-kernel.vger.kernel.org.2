@@ -2,26 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19EE3DD08A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DDB3DD07A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhHBGbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:31:18 -0400
-Received: from smtpbg604.qq.com ([59.36.128.82]:47546 "EHLO smtpbg604.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232298AbhHBGbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:31:11 -0400
-X-QQ-mid: bizesmtp41t1627885358tbu3l0yk
+        id S232201AbhHBG2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:28:08 -0400
+Received: from smtpbg127.qq.com ([109.244.180.96]:42861 "EHLO smtpbg.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229988AbhHBG2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 02:28:04 -0400
+X-Greylist: delayed 309 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Aug 2021 02:28:01 EDT
+X-QQ-mid: bizesmtp41t1627885361t7r18b0s
 Received: from localhost.localdomain (unknown [113.89.245.207])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 02 Aug 2021 14:22:37 +0800 (CST)
+        id ; Mon, 02 Aug 2021 14:22:39 +0800 (CST)
 X-QQ-SSF: 01100000002000206000B00A0000000
-X-QQ-FEAT: vCa7dv7JIu4AIx2Tnge217fKbr8I+9aySDaTdWFJ3NmXbL2fQ9dSIbBGlM+83
-        ru1igvgEiL5Hy2fg6PqltX08K2mD8Pju4Ms6o744hzViRvCNdm2TIsx3USxZG4rUjGaEuvF
-        xy6WmM/AVs9XK2yqUT1YVKiBA681i7WjdVUOb8/UIcL0Zjm80IAoXvqq/zLRT/KDrDHz3rg
-        g0D0G84TcEt030BGvc9/lAO4uPLETSgv98VvSaxhfizck80Xb01rWXLQh721aenrTSHi1CA
-        y2iwP2vas0ToE9IhYK4RYQI6aISrsEWcyJjybkRAxOHLr7sNGak8rNnlvPfZb1VyDW8tCi+
-        8ezpdaX7hB0oWwYkmE=
+X-QQ-FEAT: 7laTFqblRPgAJ6jR/WR92mkDWhvfBB2kGAde6cXqpA4eyp8AfURMplyUrtDME
+        Dpsmawmn8jV9+0U0826Qi/gWSBxr61sYEYe7QvWf5GzUl8eGe1wSzF5VG+zf038g1xbHO73
+        iYEtFbYY0+GO119PmXdhgPwcYzN77mOsZOzlW2rFW9b6pTcd+POnMjAde2Px+cgO5ORhLPP
+        mzcAGTmeaXgeAZOHFdRWDl0YlW1a/Xt/6dJ5JmHk1MuZN41LMlfhGsgYGqf+SgoWFhKGBL7
+        xl8lKmyFJ3UTbPB1ZKKzrOZYnMJoNeHoSJWP97aJq4+rMj0ZQdaBhXjYqimsDSJxt+L24LF
+        saoVEYJZrgwdEMMASM=
 X-QQ-GoodBg: 0
 From:   Icenowy Zheng <icenowy@sipeed.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -36,69 +37,59 @@ To:     Rob Herring <robh+dt@kernel.org>,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
         Icenowy Zheng <icenowy@sipeed.com>
-Subject: [PATCH 05/17] rtc: sun6i: add support for R329 RTC
-Date:   Mon,  2 Aug 2021 14:22:00 +0800
-Message-Id: <20210802062212.73220-6-icenowy@sipeed.com>
+Subject: [PATCH 06/17] dt-bindings: pinctrl: document Allwinner R329 PIO and R-PIO
+Date:   Mon,  2 Aug 2021 14:22:01 +0800
+Message-Id: <20210802062212.73220-7-icenowy@sipeed.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210802062212.73220-1-icenowy@sipeed.com>
 References: <20210802062212.73220-1-icenowy@sipeed.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:sipeed.com:qybgspam:qybgspam4
+Feedback-ID: bizesmtp:sipeed.com:qybgspam:qybgspam1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allwinner R329 SoC has a RTC with similar clock control capability to
-H6, but its day storage changed to be linear, similar to the one in H616
-RTC.
+Allwinner R329 have two pin controllers similar to previous Allwinner
+SoCs, PIO and R-PIO.
 
-Add support for it.
+Add compatible strings for them.
 
 Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
 ---
- drivers/rtc/rtc-sun6i.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ .../bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml         | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
-index 752bea949050..06eca57e5215 100644
---- a/drivers/rtc/rtc-sun6i.c
-+++ b/drivers/rtc/rtc-sun6i.c
-@@ -386,6 +386,24 @@ static void __init sun50i_h6_rtc_clk_init(struct device_node *node)
- CLK_OF_DECLARE_DRIVER(sun50i_h6_rtc_clk, "allwinner,sun50i-h6-rtc",
- 		      sun50i_h6_rtc_clk_init);
+diff --git a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+index cce63c3cc463..802fba3fa34d 100644
+--- a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
+@@ -55,6 +55,8 @@ properties:
+       - allwinner,sun50i-h6-r-pinctrl
+       - allwinner,sun50i-h616-pinctrl
+       - allwinner,sun50i-h616-r-pinctrl
++      - allwinner,sun50i-r329-pinctrl
++      - allwinner,sun50i-r329-r-pinctrl
+       - allwinner,suniv-f1c100s-pinctrl
+       - nextthing,gr8-pinctrl
  
-+static const struct sun6i_rtc_clk_data sun50i_r329_rtc_data = {
-+	.rc_osc_rate = 16000000,
-+	.fixed_prescaler = 32,
-+	.has_prescaler = 1,
-+	.has_out_clk = 1,
-+	.export_iosc = 1,
-+	.has_losc_en = 1,
-+	.has_auto_swt = 1,
-+};
-+
-+static void __init sun50i_r329_rtc_clk_init(struct device_node *node)
-+{
-+	sun6i_rtc_clk_init(node, &sun50i_r329_rtc_data);
-+}
-+
-+CLK_OF_DECLARE_DRIVER(sun50i_r329_rtc_clk, "allwinner,sun50i-r329-rtc",
-+		      sun50i_r329_rtc_clk_init);
-+
- /*
-  * The R40 user manual is self-conflicting on whether the prescaler is
-  * fixed or configurable. The clock diagram shows it as fixed, but there
-@@ -791,6 +809,8 @@ static const struct of_device_id sun6i_rtc_dt_ids[] = {
- 	{ .compatible = "allwinner,sun8i-v3-rtc" },
- 	{ .compatible = "allwinner,sun50i-h5-rtc" },
- 	{ .compatible = "allwinner,sun50i-h6-rtc" },
-+	{ .compatible = "allwinner,sun50i-r329-rtc",
-+		.data = (void *)RTC_LINEAR_DAY },
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, sun6i_rtc_dt_ids);
+@@ -189,6 +191,7 @@ allOf:
+             - allwinner,sun6i-a31-pinctrl
+             - allwinner,sun6i-a31s-pinctrl
+             - allwinner,sun50i-h6-pinctrl
++            - allwinner,sun50i-r329-pinctrl
+ 
+     then:
+       properties:
+@@ -204,6 +207,7 @@ allOf:
+             - allwinner,sun8i-a83t-pinctrl
+             - allwinner,sun50i-a64-pinctrl
+             - allwinner,sun50i-h5-pinctrl
++            - allwinner,sun50i-r329-r-pinctrl
+             - allwinner,suniv-f1c100s-pinctrl
+ 
+     then:
 -- 
 2.30.2
 
