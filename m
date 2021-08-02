@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02313DDA9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68EE3DDA9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236071AbhHBOQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
+        id S236435AbhHBOQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235705AbhHBOM6 (ORCPT
+        with ESMTP id S236412AbhHBONL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:12:58 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8D1C044007;
-        Mon,  2 Aug 2021 06:58:44 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id bq29so8292350lfb.5;
-        Mon, 02 Aug 2021 06:58:44 -0700 (PDT)
+        Mon, 2 Aug 2021 10:13:11 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A66C044027;
+        Mon,  2 Aug 2021 06:59:14 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id h9so15601933ejs.4;
+        Mon, 02 Aug 2021 06:59:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=lUrLfWKHwEhlXNu+G+ug5oDQiGH2kq3pcgFyRRDl+Po=;
-        b=DuiizHMIrtaxRR9PWeYyrgAjcEkkLcAh2CDMqXaZUN6T9kqeDYCwMqni+hLezeJUZP
-         QW6tIm44eipXWIerOOZoKTMnQqNHRdcY1WXG8U+XHrIowsaXsxSA9Y2xr1dE3P6cS3M3
-         yDsEvLb5QKpI9Fqm33EMAxzABXRxwDKMM3+Qb2UpW64E4jb9vG58bieij1xmFK4OEc5S
-         3qZh0cFTL8DYUL7dCpcapw3L3GqW/WEmbXSAVf+JvRDIHaDhwlPdWpKe3mjGUTcFiwZ6
-         edFdtvkKulBR4RTEfl7nzUFoslDXz2JLX3QBqS87MtEb0oGKqQvB10Zed3X5fwI+5DA6
-         +OvQ==
+        bh=MihKPbXWLuAHmHFbjCvlbQGWvDP7j/7zWzZnY5mOiqw=;
+        b=sFa9Aa4INuqL14NQ4sv3j2caM780TjKWwuEefU4xzCpXWpu96Ssp6nDWTdUlPfwGbh
+         1cTuMDghaIdyd7FwqZ++36zWyw+6K1PDjIyiK6haw4Ik+TZtWynM4Q9+xe7bG53WnSip
+         r0rP/SIf2Tc/sY8ipxIe5amaIQJt4M7JRDTz6NKbcDJATQAGXC+Y0eAMZhy2UEj3cyuq
+         Eb222JnZifkoCTGlRWD8IMMDx0uPaNHEjzf1SFvldkZHfQODOWhB3P4Z9WIivIDgPZJO
+         60wjSOqdTVnb59O8vl9fXLqE9Bsy6gR7lDK1CrI2/7OqcoLbdfA/041kBi/dgadWF447
+         7GFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=lUrLfWKHwEhlXNu+G+ug5oDQiGH2kq3pcgFyRRDl+Po=;
-        b=TnRvM2lcHUFgJbUVsDw7Bt8fnS9Yq8sN+mg81EfgOLdOFl3tMEtu01V8Ysa2NV1iHY
-         ak1iv5sS/AjauQhL+hkf7azwGs4Mjca11+fUX1Fhzn5p7EniRDShWiKg2ziA0bhzCwso
-         k7hgEd+mGOvmQDMJSX7vm0vAC+6ZYJBY0ICbjuIIIx2+N456ROxlHIC85Q8yewZ8a56N
-         36k3bPto5002DnlMp4WuGzn3eV/PN77jGpoG0D+XSrq7MXmUOZNCvKNl0tWtiZIrDh9F
-         h0GHWuIBAYzXo0tgOd8TZ4pRsrjX3JJnSIkkUAR/ilu73wFdzhYFjUXTByPDdW0Z76Cb
-         g5kQ==
-X-Gm-Message-State: AOAM532+s7BFO5UqPbC4QL+yxcZEoZYRWtFBd9cGTbSSK6vByzwGZrY5
-        O/wke3lvoRK3oqxu3c7hOT0=
-X-Google-Smtp-Source: ABdhPJxxC5kwQl8bk0MXIADHQnZjmGCGtons4lKKmkx7ojsSH/ec5mrPjiGZkqwDJlbHiwJorl6X8g==
-X-Received: by 2002:ac2:4ec3:: with SMTP id p3mr12355176lfr.556.1627912722499;
-        Mon, 02 Aug 2021 06:58:42 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id o19sm961005lfk.299.2021.08.02.06.58.41
+        bh=MihKPbXWLuAHmHFbjCvlbQGWvDP7j/7zWzZnY5mOiqw=;
+        b=WcSnP3EVMt8Mw6TZ3+jpemvTI+COovu//LUn+IF6Pbf1JQG6beqy+pEge6cx9MbZKU
+         rw10apYIZig6vsH4UmaVkCO4fx9y2McXhpVnka86SnutF3euJyw53BA7rJonAYMuFuHZ
+         7KoHnsXWVGrrZYC6J/Bk+nwe5/H3uYGDTSTxw2jQ0ke4GAMFVDXqMdWVtD9HtSBtGB4B
+         Qs0kGCBAVY05QancFbMJLL9XnsRw7of0V/4fbfJpCL9gIZ82Va/PTFXLbZyVv5Y7GwZE
+         5p7Ut3zwKno0mdGO8x5PEKqOFtx7+iGfwXF+tkjRLS0+7dJDGlaoNq1EP2PsaZfx6Anx
+         Y68g==
+X-Gm-Message-State: AOAM531H9jTz8QP8T7i0IpCFMJ/PXRapR26QLbXQKXn+hwgaOqWyisk4
+        Fwyne7Sf97r/uCDlbkMIyxs=
+X-Google-Smtp-Source: ABdhPJwpH+ntlOKfXt+DPJwa1ewViuJFhyfswfqjMUWJyaJWoA2ecLH0HFCLb8zfOP7fYTF0lPfUZg==
+X-Received: by 2002:a17:906:309a:: with SMTP id 26mr15651618ejv.153.1627912753220;
+        Mon, 02 Aug 2021 06:59:13 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id n17sm6102896edr.84.2021.08.02.06.59.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 06:58:41 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 16:58:39 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v1 2/4] gpio: dwapb: Read GPIO base from gpio-base
- property
-Message-ID: <20210802135839.4clqd34npppwasyh@mobilestation>
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
- <20210726125436.58685-2-andriy.shevchenko@linux.intel.com>
+        Mon, 02 Aug 2021 06:59:12 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 16:59:11 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
+        netdev@vger.kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
+ for microchip lan937x
+Message-ID: <20210802135911.inpu6khavvwsfjsp@skbuf>
+References: <20210723173108.459770-1-prasanna.vengateshan@microchip.com>
+ <20210723173108.459770-6-prasanna.vengateshan@microchip.com>
+ <20210731150416.upe5nwkwvwajhwgg@skbuf>
+ <49678cce02ac03edc6bbbd1afb5f67606ac3efc2.camel@microchip.com>
+ <20210802121550.gqgbipqdvp5x76ii@skbuf>
+ <YQfvXTEbyYFMLH5u@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210726125436.58685-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <YQfvXTEbyYFMLH5u@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc Rob
+On Mon, Aug 02, 2021 at 03:13:01PM +0200, Andrew Lunn wrote:
+> In general, the MAC does nothing, and passes the value to the PHY. The
+> PHY inserts delays as requested. To address Vladimir point,
+> PHY_INTERFACE_MODE_RGMII_TXID would mean the PHY adds delay in the TX
+> direction, and assumes the RX delay comes from somewhere else,
+> probably the PCB.
 
-On Mon, Jul 26, 2021 at 03:54:34PM +0300, Andy Shevchenko wrote:
-> For backward compatibility with some legacy devices introduce
-> a new (*) property gpio-base to read GPIO base. This will allow
-> further cleanup of the driver.
+For the PHY, that is the only portion where things are clear.
+
+> I only recommend the MAC adds delays when the PHY cannot, or there is
+> no PHY, e.g. SoC to switch, or switch to switch link. There are a few
+> MAC drivers that do add delays, mostly because that is how the vendor
+> crap tree does it.
 > 
-> *) Note, it's not new for GPIO library since mockup driver is
->    using it already.
+> So as i said, what you propose is O.K, it follows this general rule of
+> thumb.
 
-You are right but I don't think it's a good idea to advertise the
-pure Linux-internal property "gpio-base" to any use-case like OF
-and ACPI FW nodes. Especially seeing we don't have it described in the
-DT-bindings and noting that the mockup driver is dedicated for the
-GPIO tests only. What about restricting the property usage for the
-SW-nodes only by adding an additional check: is_software_node() here?
+The "rule of thumb" for a MAC driver is actually applied in reverse by
+most MAC drivers compared to what Russell described should be happening.
+For example, mv88e6xxx_port_set_rgmii_delay():
 
-@Linus, @Bartosz, @Rob, what do you think about that?
+	switch (mode) {
+	case PHY_INTERFACE_MODE_RGMII_RXID:
+		reg |= MV88E6XXX_PORT_MAC_CTL_RGMII_DELAY_RXCLK;
 
--Sergey
+The mv88e6xxx is a MAC, so when it has a phy-mode = "rgmii-rxid", it
+should assume it is connected to a link partner (PHY or otherwise) that
+has applied the RXCLK delay already. So it should only be concerned with
+the TXCLK delay. That is my point. I am just trying to lay out the
+points to Prasanna that would make a sane system going forward. I am not
+sure that we actually have an in-tree driver that is sane in that
+regard.
 
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpio/gpio-dwapb.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-> index f6ae69d5d644..e3011d4e17b0 100644
-> --- a/drivers/gpio/gpio-dwapb.c
-> +++ b/drivers/gpio/gpio-dwapb.c
-> @@ -581,7 +581,8 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
->  			pp->ngpio = DWAPB_MAX_GPIOS;
->  		}
->  
-> -		pp->gpio_base	= -1;
-> +		if (fwnode_property_read_u32(fwnode, "gpio-base", &pp->gpio_base))
-> +			pp->gpio_base = -1;
->  
->  		/*
->  		 * Only port A can provide interrupts in all configurations of
-> -- 
-> 2.30.2
-> 
+That discussion, and Russell's point, was here, btw:
+https://patchwork.ozlabs.org/project/netdev/patch/20200616074955.GA9092@laureti-dev/#2461123
