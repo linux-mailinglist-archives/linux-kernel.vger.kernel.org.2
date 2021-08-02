@@ -2,47 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4373DD2ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901333DD2F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhHBJ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:27:01 -0400
-Received: from 8bytes.org ([81.169.241.247]:52248 "EHLO theia.8bytes.org"
+        id S233041AbhHBJaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:30:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232711AbhHBJ07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:26:59 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id C0B98806; Mon,  2 Aug 2021 11:26:49 +0200 (CEST)
-Date:   Mon, 2 Aug 2021 11:26:48 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     John Garry <john.garry@huawei.com>, Nadav Amit <namit@vmware.com>,
-        Will Deacon <will@kernel.org>,
-        Jiajun Cao <caojiajun@vmware.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/7] iommu/amd: Enable page-selective flushes
-Message-ID: <YQe6WPWRl9M4Jot0@8bytes.org>
-References: <20210723093209.714328-1-namit@vmware.com>
+        id S232855AbhHBJaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 05:30:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 81C44610CE;
+        Mon,  2 Aug 2021 09:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627896606;
+        bh=8pmS78nH0Gs+QBVFcw890adFMY5Pf7CbCNmyYhP7wPw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=NqZF8jKZNjEiygcdn5RMw/xzLaemjbzRLhHhjUaadu+78h6qB20Ulb1QGCdk7GfQs
+         PnEvsKYK0V91wZ/lMX3DE5XcEKqIezXkgzIxnx0TIVWY7Ruf0B5jxjCVq8ajXkSAsX
+         FOiQPj9JEXCoWK7nseAJt0bunQH2hDLweIS7n+8g0Vuag4jTwQ4eHbD0vi94STIxQY
+         t6/+fEB5zF+HdwdGTStPU98ciPHsHrLN4ECnL+Mg3LgHIc/zC984fk2D4QS14ziNYI
+         9xtoCzKth1tqgr/1JR0ecz6qwuKXvxySjdjDKNCsoHUfgXUqZe7hvm2ByANO2YC9Of
+         rV/FJBm2klhrQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7C3CD60A54;
+        Mon,  2 Aug 2021 09:30:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210723093209.714328-1-namit@vmware.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] niu: read property length only if we use it
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162789660650.5679.12923624139744072169.git-patchwork-notify@kernel.org>
+Date:   Mon, 02 Aug 2021 09:30:06 +0000
+References: <20210729074354.557-1-martin@kaiser.cx>
+In-Reply-To: <20210729074354.557-1-martin@kaiser.cx>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 02:32:02AM -0700, Nadav Amit wrote:
-> Nadav Amit (6):
->   iommu/amd: Selective flush on unmap
->   iommu/amd: Do not use flush-queue when NpCache is on
->   iommu: Factor iommu_iotlb_gather_is_disjoint() out
->   iommu/amd: Tailored gather logic for AMD
->   iommu/amd: Sync once for scatter-gather operations
->   iommu/amd: Use only natural aligned flushes in a VM
-> 
-> Robin Murphy (1):
->   iommu: Improve iommu_iotlb_gather helpers
+Hello:
 
-Applied, thanks Nadav.
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Thu, 29 Jul 2021 09:43:54 +0200 you wrote:
+> In three places, the driver calls of_get_property and reads the property
+> length although the length is not used. Update the calls to not request
+> the length.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>  drivers/net/ethernet/sun/niu.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+
+Here is the summary with links:
+  - niu: read property length only if we use it
+    https://git.kernel.org/netdev/net-next/c/451395f798a3
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
