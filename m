@@ -2,76 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E153DDDC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8213DDDC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232620AbhHBQdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:33:38 -0400
-Received: from mail-lf1-f49.google.com ([209.85.167.49]:43742 "EHLO
-        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhHBQdh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:33:37 -0400
-Received: by mail-lf1-f49.google.com with SMTP id b6so11975149lff.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 09:33:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JmBOQh62T1UV9eRoKSnknXI5E7fc6g51r7kEChZ41/A=;
-        b=P9klfYdbU+OVdE9AXz84+gzNfpAD+G9pdyd9//47WeUutANhwp5lzXTxNyTXiKIB3y
-         7JGHHneahawtmMq2lLLlT0OdNqkX4sCUMGZipGoBzCNxakT3tQe0HmJDyQOYZUsPPPUF
-         xfuUXa37EJjq2as9ne47d//dehFAP0PyqHcnjGpg3Pegj4lplSd01AJF3+cvXcwKxLVp
-         fXj6MjvyaoJHhZKchrGTu9M2C/Q6/q35Dc7J9WbbnD7XU2zrV2Zbf4xYA273h/jNmjDQ
-         cOyYA0H4tUyu81OwzsgolNJ8FXSVjQgLf9BwhtKMGKzS76zAlmdnFNbb6dnecaYfcpT/
-         E/Cw==
-X-Gm-Message-State: AOAM532ahon9Ra5or6ZvwGatemkITwFkPcAREdXg3TUQxU/P52YJqUQ1
-        W26fqlDlSvWc0o2CyOUubMXK57XzNQ0OrHq9N5s=
-X-Google-Smtp-Source: ABdhPJwW5SOPwKA2YKJQcOU+M2dfVX+1FdDYZvHWRRQQmFlmjP1c81ZSMLZQW4iewN13hIiwuN7206awhNSbktdjmD0=
-X-Received: by 2002:a05:6512:3ba7:: with SMTP id g39mr13948336lfv.494.1627922005673;
- Mon, 02 Aug 2021 09:33:25 -0700 (PDT)
+        id S229972AbhHBQe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:34:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229622AbhHBQe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 12:34:29 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E85D61029;
+        Mon,  2 Aug 2021 16:34:19 +0000 (UTC)
+Date:   Mon, 2 Aug 2021 12:34:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [RFC PATCH 0/3] tracing/boot: Add histogram syntax support in
+ boot-time tracing
+Message-ID: <20210802123417.54b263ec@oasis.local.home>
+In-Reply-To: <162791821009.552329.4358174280895732459.stgit@devnote2>
+References: <162791821009.552329.4358174280895732459.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210719223153.1618812-1-namhyung@kernel.org> <YPaQ94VCtYWSXYnh@krava>
- <YQfwLP4Ebsc3Wzb2@kernel.org>
-In-Reply-To: <YQfwLP4Ebsc3Wzb2@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 2 Aug 2021 09:33:14 -0700
-Message-ID: <CAM9d7cijTT9DFec1LRHM0PFwRe6zZ7qE-n9Yw2Qu1hDhLdTfDQ@mail.gmail.com>
-Subject: Re: [PATCHSET v3 0/5] perf inject: Fix broken data with mixed input/output
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+On Tue,  3 Aug 2021 00:30:10 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-On Mon, Aug 2, 2021 at 6:16 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> Em Tue, Jul 20, 2021 at 11:01:43AM +0200, Jiri Olsa escreveu:
-> > On Mon, Jul 19, 2021 at 03:31:48PM -0700, Namhyung Kim wrote:
-> > > The perf inject processes the input data and produces an output with
-> > > injected data according to the given options.  During the work, it
-> > > assumes the input and output files have the same format - either a
-> > > regular file or a pipe.  This works for the obvious cases, but
-> > > sometimes makes a trouble when input and output have different
-> > > formats (like for debugging).
->
-> > >  * changes in v3
-> > >   - use task-clock:u in the pipe-test.sh
->
-> > Acked-by: Jiri Olsa <jolsa@redhat.com>
->
-> Thanks, applied.
->
-> Had to do some adjustments due to minor conflicts, can you please check
-> tmp.perf/core?
+> Hi,
+> 
+> Here is a series of patches for boot-time tracing to add histogram
+> syntax extension and fixes a build issue.
 
-Thanks, it looks good to me!
-Namhyung
+Cool, I'll try to look at this, this week.
+
+Thanks Masami!
+
+-- Steve
+
+
+> 
+> Currently, the boot-time tracing only supports per-event actions
+> for setting trigger actions. This is enough for short actions
+> like 'traceon', 'traceoff', 'snapshot' etc. However, it is not good
+> for the 'hist' trigger action because it is usually too long to write
+> it in a single string especially if it has an 'onmatch' action.
+>
