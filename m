@@ -2,144 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DD33DD2DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FD03DD2F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233090AbhHBJWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232711AbhHBJWX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:22:23 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7078C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 02:22:13 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id d131-20020a1c1d890000b02902516717f562so10562762wmd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 02:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XuMl146g7mclGYpsz+vV1OUnrRE5rQPP1q+8mYAGid4=;
-        b=bMO4Yuwwl/X1UlTBP10vd1lgINlkZLxp1MIhUI+h5Qa2T2734B4IXMD3SzQee71ZaQ
-         syOikuB6S74kyg0b2Yr4fgZXqUgXWt95l3oqciILiRi98hXLOywuYwGTO6vyP/hNd4iC
-         iVbW+GNXjX5zvYim3G1x1/wVGn6oQ8IehUv6iClJmZgwRSUN0Cds8OsESqtZ76aBesPh
-         3T2Hnuvp9J25XdSAVzm33ghkduu8yqb6nWk4FnL3BmMbvRwQEuZl3RvLj/lVFjibX+RM
-         cOJFUChRFT2rUfZyte311A51XxmT/X9F0o6DZdHUHqldoQpEVrwHOgM049dIOD23/qoS
-         GG7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XuMl146g7mclGYpsz+vV1OUnrRE5rQPP1q+8mYAGid4=;
-        b=rgN7gjXQ/saflu/4q4EzvGWV8VkC9RDw/l8ysSXJAGg2xceSX1r0Hc8xONv7Sogiig
-         MTX3gVmapvfU6ldli2nU8P+zhYVUlGpSslKUywrH607kEQSHg5EC8yjjvM6Rn26VWxKC
-         f08hofn/gls2NR+K/gDWSUCw8054YPkjj7MeXxKkgags3zpNJi3t6KcUzErgaRqbDoOd
-         fM1dIqJwOLTMx2oJSSwfY39NVSVqkFg9ujA2t3OKQoWOiaKTwQ+O3NCoDaKEIR7mACIw
-         wQn52ojk4OmsZGQ742y/gmFSJ/jDQ13l44Whoj9kw7H/Rrw9xuLp3PcSlnU3Xg5nCFBv
-         YDQQ==
-X-Gm-Message-State: AOAM533tH5LgBpkM+o+gGOWxsCrl8at0n0xzpnThfOQ8vSjkMkotK4bM
-        6njswzEi9MM6RjtrkdyAZbXcUQ==
-X-Google-Smtp-Source: ABdhPJyPj7EV8YTRcj2LwBVXx4j3qTJBkFztXU4NyNIm7T+22E6veE4Q+YZxYvX2kcMaDCDNXsNiOQ==
-X-Received: by 2002:a1c:452:: with SMTP id 79mr15504367wme.125.1627896132222;
-        Mon, 02 Aug 2021 02:22:12 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:186d:6344:a12c:5b26? ([2a01:e34:ed2f:f020:186d:6344:a12c:5b26])
-        by smtp.googlemail.com with ESMTPSA id n186sm10949241wme.40.2021.08.02.02.22.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 02:22:11 -0700 (PDT)
-Subject: Re: [PATCH] mfd/cpuidle: ux500: Rename driver symbol
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
-References: <20210802090859.3237509-1-linus.walleij@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <6429cf2a-63c2-d925-d5d9-24eff617d1c6@linaro.org>
-Date:   Mon, 2 Aug 2021 11:22:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210802090859.3237509-1-linus.walleij@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S232990AbhHBJ26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:28:58 -0400
+Received: from mxhk.zte.com.cn ([63.217.80.70]:65136 "EHLO mxhk.zte.com.cn"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232699AbhHBJ25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 05:28:57 -0400
+Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
+        by Forcepoint Email with ESMTPS id CFEBA59B1816667B0274;
+        Mon,  2 Aug 2021 17:28:46 +0800 (CST)
+Received: from zte.com.cn ([10.30.12.200])
+        by mse-fl1.zte.com.cn with SMTP id 1729RBhG074249;
+        Mon, 2 Aug 2021 17:27:39 +0800 (GMT-8)
+        (envelope-from yang.yang29@zte.com.cn)
+Date:   Mon, 2 Aug 2021 17:25:30 +0800 (CST)
+X-Zmail-TransId: 2b0360f94f56dff0dc4f
+X-Mailer: Zmail v1.0
+Message-ID: <202107221858308514719@zte.com.cn>
+Mime-Version: 1.0
+From:   <yang.yang29@zte.com.cn>
+To:     <rth@twiddle.net>, <ink@jurassic.park.msu.ru>, <mattst88@gmail.com>
+Cc:     <linux-alpha@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?B?W1BBVENIXSBhbHBoYTogcmVtb3ZlIHVubmVlZGVkIHZhcmlhYmxl?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl1.zte.com.cn 1729RBhG074249
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2021 11:08, Linus Walleij wrote:
-> The PRCMU driver defines this as a DT node but there are no bindings
-> for it and it needs no data from the device tree. Just spawn the
-> device directly in the same way as the watchdog.
-> 
-> Name it "db8500-cpuidle" since there are no ambitions to support any
-> more SoCs than this one.
-> 
-> This rids this annoying boot message:
-> [    0.032610] cpuidle-dbx500: Failed to locate of_node [id: 0]
-> 
-> However I think the device still spawns and work just fine, despite
-> not finding a device tree node.
-> 
-> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: linux-pm@vger.kernel.org
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+This is a warning in coccicheck. Unneeded variable "status".
 
-> ---
-> Rafael/Daniel: it would be perfect if one of you could ACK
-> this so that Lee can just merge this into the MFD tree as
-> a non-urgent fix.
-> ---
->  drivers/cpuidle/cpuidle-ux500.c | 2 +-
->  drivers/mfd/db8500-prcmu.c      | 6 ++++--
->  2 files changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/cpuidle/cpuidle-ux500.c b/drivers/cpuidle/cpuidle-ux500.c
-> index a2d34be17a09..f7d778580e9b 100644
-> --- a/drivers/cpuidle/cpuidle-ux500.c
-> +++ b/drivers/cpuidle/cpuidle-ux500.c
-> @@ -117,7 +117,7 @@ static int dbx500_cpuidle_probe(struct platform_device *pdev)
->  
->  static struct platform_driver dbx500_cpuidle_plat_driver = {
->  	.driver = {
-> -		.name = "cpuidle-dbx500",
-> +		.name = "db8500-cpuidle",
->  	},
->  	.probe = dbx500_cpuidle_probe,
->  };
-> diff --git a/drivers/mfd/db8500-prcmu.c b/drivers/mfd/db8500-prcmu.c
-> index 75049cf38832..64dd4f9a1e49 100644
-> --- a/drivers/mfd/db8500-prcmu.c
-> +++ b/drivers/mfd/db8500-prcmu.c
-> @@ -2951,14 +2951,16 @@ static const struct mfd_cell common_prcmu_devs[] = {
->  		.pdata_size = sizeof(db8500_wdt_pdata),
->  		.id = -1,
->  	},
-> +	{
-> +		.name = "db8500-cpuidle",
-> +		.id = -1,
-> +	},
->  };
->  
->  static const struct mfd_cell db8500_prcmu_devs[] = {
->  	MFD_CELL_OF("db8500-prcmu-regulators", NULL,
->  		    &db8500_regulators, sizeof(db8500_regulators), 0,
->  		    "stericsson,db8500-prcmu-regulator"),
-> -	MFD_CELL_OF("cpuidle-dbx500",
-> -		    NULL, NULL, 0, 0, "stericsson,cpuidle-dbx500"),
->  	MFD_CELL_OF("db8500-thermal",
->  		    NULL, NULL, 0, 0, "stericsson,db8500-thermal"),
->  };
-> 
+Reported-by: Zeal Robot <zealci@zte.com.cn> 
+Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+---
+ arch/alpha/kernel/err_titan.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-
+diff --git a/arch/alpha/kernel/err_titan.c b/arch/alpha/kernel/err_titan.c
+index 0ffb2feea42a..85d91da86ec4 100644
+--- a/arch/alpha/kernel/err_titan.c
++++ b/arch/alpha/kernel/err_titan.c
+@@ -589,7 +589,6 @@ titan_register_error_handlers(void)
+ static int
+ privateer_process_680_frame(struct el_common *mchk_header, int print)
+ {
+-    int status = MCHK_DISPOSITION_UNKNOWN_ERROR;
+ #ifdef CONFIG_VERBOSE_MCHECK
+     struct el_PRIVATEER_envdata_mcheck *emchk =
+         (struct el_PRIVATEER_envdata_mcheck *)
+@@ -598,7 +597,7 @@ privateer_process_680_frame(struct el_common *mchk_header, int print)
+     /* TODO - categorize errors, for now, no error */
+ 
+     if (!print)
+-        return status;
++        return MCHK_DISPOSITION_UNKNOWN_ERROR;
+ 
+     /* TODO - decode instead of just dumping... */
+     printk("%s  Summary Flags:         %016llx\n"
+@@ -624,7 +623,7 @@ privateer_process_680_frame(struct el_common *mchk_header, int print)
+            emchk->code);
+ #endif /* CONFIG_VERBOSE_MCHECK */
+ 
+-    return status;
++    return MCHK_DISPOSITION_UNKNOWN_ERROR;
+ }
+ 
+ int
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.25.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
