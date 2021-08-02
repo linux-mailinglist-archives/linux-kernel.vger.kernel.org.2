@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6E83DDE2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4B43DDE32
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhHBRDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 13:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhHBRDU (ORCPT
+        id S229879AbhHBRHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 13:07:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52693 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229500AbhHBRHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 13:03:20 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BC6C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 10:03:11 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so32606239pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 10:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7ZboOedxV5HocqOHed9R2rRbrksyFeYlZ+bzi9mMGLY=;
-        b=LxqcaZ5ls/BOk7qlIHclYJaTgBc2zgv0mf+NcRmW6VNMuOkd3+mRfSMmBy3x3DmtJ/
-         hEPoMS+w5jwfrazMQS9fnffRSiC0ySFHteH86CjbojEfmv66jO5Er9mCohSihq/6J5de
-         YzOwaTt1q40A2OKERsE7PGWVOBkk1qYHboQDXcFotsSfi+QBnm4QWsF2gCwI5SV5t4xQ
-         qRkPRiISU58yhasSB3FT/dUvBzp27Fm/4bhX9nG06REZGvWsZdjtnG/iUXmqSS2/jw1l
-         ClKrnmyp4qtHbS5AjfsFX60e/N/CmcR3S0LUce+QxyP1frI0B2Qb+EhkooN/y/uytWph
-         iw1A==
+        Mon, 2 Aug 2021 13:07:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627924020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V4lwMKCC7NlkG4ATSmT+uT5CYPJxY1OG3QxbgWoAHRM=;
+        b=Xf0xKK8SsBf7sjbdq8ShhvsO3NV3OtFUbhw/SvfFcbGiBiOJ0d1uleAzvv6pY13BzhGUoY
+        PZlipct8phIjSY2jgFvHrfGTTTsSjWpNIAFT9cqzj+lrLymreqwX3duvRENAy0ajc5k4gA
+        1n9wzLD4xW0F3HKjoP8o3zxJOkuyjwQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-422-xpsptzWAOoC-ztydD4_IEw-1; Mon, 02 Aug 2021 13:06:52 -0400
+X-MC-Unique: xpsptzWAOoC-ztydD4_IEw-1
+Received: by mail-wr1-f72.google.com with SMTP id d12-20020a056000186cb02901548bff164dso699416wri.18
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 10:06:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7ZboOedxV5HocqOHed9R2rRbrksyFeYlZ+bzi9mMGLY=;
-        b=ltuxtgcHEIUYPpFUIrAJ/8LCG+rDtdlnAbc+aCQ0tZNxKjS1eWM3jjpD2qc7Fg04Tc
-         oXb/uOSTDbaoZpg7qQZqyq+9KYmgF39jA4IgG7bkt3t/SJd2S87K0khihvCtGh92IfvD
-         Eg1adLuGcCdfjHunN/y+KI/xu3bjnchwbSt18wsGyXnpkfJIU5cpgx1SkHpkzmA0GLlE
-         u3w38uEGvStxSyei964KiumBbkIHaJI4XtRaNQB79CXy2T+VP3+ywJdPi7eELxABkJoU
-         FaPLYB/PmuMsRgySQQeSmKlSissbMg/MZ/Yxe4+aawAUY4rJUO+hmmxcse4e8CS43Niy
-         iLzQ==
-X-Gm-Message-State: AOAM5307NhEtFSzL/6DQrZXBLgdibDd4o7tWeEClEDN1qBOyrba7UYLI
-        UrGbQVo2jQbMsrSJJLgicmzCEelSHnakzw==
-X-Google-Smtp-Source: ABdhPJzuVMYUebwEDSBI4cgcoZX8B3pB36R84r8+jtf5HlnloTUgZf6D9ns/m8VfbywUtVzecbWQog==
-X-Received: by 2002:a17:902:6904:b029:fb:42b6:e952 with SMTP id j4-20020a1709026904b02900fb42b6e952mr14857532plk.16.1627923790701;
-        Mon, 02 Aug 2021 10:03:10 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id t12sm544131pgo.56.2021.08.02.10.03.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 10:03:09 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 11:03:07 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-perf-users@vger.kernel.org, leo.yan@linaro.org,
-        suzuki.poulose@arm.com, mike.leach@linaro.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH 6/6] perf cs-etm: Add warnings for missing DSOs
-Message-ID: <20210802170307.GA3050918@p14s>
-References: <20210729155805.2830-1-james.clark@arm.com>
- <20210729155805.2830-7-james.clark@arm.com>
- <YQgGjlWtbaNApkp6@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V4lwMKCC7NlkG4ATSmT+uT5CYPJxY1OG3QxbgWoAHRM=;
+        b=RD9VLpXV+aux2Nld9xFsR9NffjSW84j5xarlgon81+Kx7dC1TfzVFzIrhM/VAFW98D
+         3cOx9r3pX1VhsCMU8BZemiR9U3a3IofpxOD/zKXEIVUKH3bHhS8EY/h9bA+U/pbRPPnJ
+         WGc8/ZPO6zMwSCIReIePO2wCf4x3zlfcJcX5lIoV+l6ZFP+6ae7EjcmGiVIRkE1V2gZC
+         HQcQv8qz3zlM5C57p02MRTPNp5uZD4EIhG6ccqVFZ4izUFEnlHvY/ck6JbVblFVE1ST8
+         Fn6Dx7i38t0kwEp6IJZqa1Bv41G0WW6KkcwcrREs/sS3A1SnhTnm1PPx1VV0m0KpN8gZ
+         Om1w==
+X-Gm-Message-State: AOAM5310auLxXUgkh1iB14k1SiJaW6bNOjK0oA+/CR1l14tZb9Pk481D
+        6DX2Vcns/PYuUKTV7KFXa5D4e/NxlDUnerYh+O36DcoRX077c+MmaNPqOIPGLcuRzmEvl+ri6e0
+        HFxycnsibOv9RJsuj4jztuaht
+X-Received: by 2002:adf:f1c6:: with SMTP id z6mr18972753wro.207.1627924011235;
+        Mon, 02 Aug 2021 10:06:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyo5sPteImDc9abUNEZYX0kzt1dGg74F8oz5KGqicdPKEDIqO068oh3dyWbeHS0FkMU9BubBg==
+X-Received: by 2002:adf:f1c6:: with SMTP id z6mr18972742wro.207.1627924011077;
+        Mon, 02 Aug 2021 10:06:51 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j6sm10537227wmq.29.2021.08.02.10.06.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 10:06:50 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: Exit to userspace when kvm_check_nested_events
+ fails
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210728115317.1930332-1-pbonzini@redhat.com>
+ <87o8am62ac.fsf@vitty.brq.redhat.com>
+ <73c45041-6bb3-801c-bd80-f48b2e525548@redhat.com>
+ <YQGZpPUC5TViIRih@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f309e9ff-92f3-8dd3-6c31-071e02b9c387@redhat.com>
+Date:   Mon, 2 Aug 2021 19:06:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQgGjlWtbaNApkp6@kernel.org>
+In-Reply-To: <YQGZpPUC5TViIRih@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 11:51:58AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Jul 29, 2021 at 04:58:05PM +0100, James Clark escreveu:
-> > Currently decode will silently fail if no binary data is available for
-> > the decode. This is made worse if only partial data is available because
-> > the decode will appear to work, but any trace from that missing DSO will
-> > silently not be generated.
-> > 
-> > Add a UI popup once if there is any data missing, and then warn in the
-> > bottom left for each individual DSO that's missing.
-> 
-> Looks ok to me (the last 3 patches in this series, the rest I applied
-> already), can I get some Acked-by/Reviewed-by from the CoreSight people?
->
+On 28/07/21 19:53, Sean Christopherson wrote:
+> Alternatively, what about punting all of this in favor of targeting the full
+> cleanup[*] for 5.15?  I believe I have the bandwidth to pick that up.
 
-I have a substantial backlog of patches to go through and I will be away for the
-next two weeks.  As such it will be some time before I get to review this set.
+That's fine of course.  I'll keep this in queue for the moment so that I 
+can at least run Jim's testcase, but otherwise won't merge it to kvm/next.
 
-Regards,
-Mathieu
+Paolo
 
-> Thanks,
-> 
-> - Arnaldo
->  
-> > Signed-off-by: James Clark <james.clark@arm.com>
-> > ---
-> >  tools/perf/util/cs-etm.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> > index 32ad92d3e454..e6851260d059 100644
-> > --- a/tools/perf/util/cs-etm.c
-> > +++ b/tools/perf/util/cs-etm.c
-> > @@ -746,8 +746,16 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
-> >  
-> >  	len = dso__data_read_offset(al.map->dso, machine, offset, buffer, size);
-> >  
-> > -	if (len <= 0)
-> > +	if (len <= 0) {
-> > +		ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n");
-> > +		if (!al.map->dso->auxtrace_warned) {
-> > +			pr_err("CS ETM Trace: Debug data not found for address %#"PRIx64" in %s\n",
-> > +				    address,
-> > +				    al.map->dso->long_name ? al.map->dso->long_name : "Unknown");
-> > +			al.map->dso->auxtrace_warned = true;
-> > +		}
-> >  		return 0;
-> > +	}
-> >  
-> >  	return len;
-> >  }
-> > -- 
-> > 2.28.0
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
