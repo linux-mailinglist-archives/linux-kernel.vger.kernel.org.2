@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26BA3DE0EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170FB3DE0EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhHBUok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:44:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59178 "EHLO mail.kernel.org"
+        id S232390AbhHBUoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:44:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232216AbhHBUoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:44:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4540E604D7;
-        Mon,  2 Aug 2021 20:44:29 +0000 (UTC)
+        id S231659AbhHBUom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 16:44:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D92FF60F93;
+        Mon,  2 Aug 2021 20:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627937069;
-        bh=knoH2cdCXTM2mbLN1i5m2fnGMDLvpU6bTazpD8ALCvY=;
+        s=k20201202; t=1627937072;
+        bh=Jtdbyw1KtfZCbl5QABW1yDpMjvPPKCrXpdVs6/siGp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PIKntqSSOeVJCJZrboiUiQMe+ehZnhNMRZqzmWtCaWWzVhF+GPu2djKQnb8h8OL90
-         qduhWNjrDtqtKHRW8rez+UXZkmXM9funm0bCK2Mz//V4twUpxWJfoNAmmSii4rAgE5
-         vatjacrAaVJzjx+VgTb85DL9Jjac1P0W9phQ/pYlh9YNDLP0zskL6cqyC6ArFC4JQp
-         jaj9Y7G8Px9mUUxFl6Ja8kus3pn9H1dcO3v7fz7Glw1EqKj1humN9Fg2wC5c9CwUNJ
-         AgVXoAbVSvEZfPfGGtbAO0z7jHfS0eAVROhHERjeNar+nHzh8111rYj9SiGNseM1WM
-         a8YUyQaLuX0TQ==
+        b=i6GO5xdG7FdvsjacXaTTLv1vh9cr04K3iTE1lLTT7ZFDwsSelwsSg6Uc3NBF0f8xx
+         /MCTbqOJYsdvl9ke6NfAZ/zAKkWl2Yz8IBdTCjRWxXS8vldsYUnvj5s/zEIqROko9Y
+         cElwZxLdQRr9tB6MBPeP4KdKX5+faQQf8Va+kp0lPz27yr+6HfEAORg5gvlJhPP7WF
+         Pm1HnXUMSgpu71XsVXkyb++TI8JImTXHfISIhkkzC1H69Iz9KAiMK9Jpel6HXEGPwI
+         hPgq2nnh41hYE1RyEZj9wsBnSIC4u+6th+DFVeptsZo/lvjetEn6Ji3CC9qIGx9Kkh
+         bW5BoGwAyddcQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Colin King <colin.king@canonical.com>,
+To:     vkoul@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
         alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: tlv320aic32x4: make array clocks static, makes object smaller
-Date:   Mon,  2 Aug 2021 21:44:12 +0100
-Message-Id: <162793640673.55982.9347751869143903771.b4-ty@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, srinivas.kandagatla@linaro.org,
+        sanyog.r.kale@intel.com, tiwai@suse.de, bard.liao@intel.com,
+        vinod.koul@linaro.org, pierre-louis.bossart@linux.intel.com
+Subject: Re: [PATCH v2 0/6] soundwire/ASoC: abstract platform-dependent bases
+Date:   Mon,  2 Aug 2021 21:44:13 +0100
+Message-Id: <162793640708.55982.13298433414874844018.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210801064807.138641-1-colin.king@canonical.com>
-References: <20210801064807.138641-1-colin.king@canonical.com>
+In-Reply-To: <20210723115451.7245-1-yung-chuan.liao@linux.intel.com>
+References: <20210723115451.7245-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,13 +43,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Aug 2021 07:48:07 +0100, Colin King wrote:
-> Don't populate the array clocks on the stack but instead it
-> static. Makes the object code smaller by 316 bytes.
+On Fri, 23 Jul 2021 19:54:45 +0800, Bard Liao wrote:
+> shim base and alh base are platform-dependent. This series suggests
+> to use variables for those bases. It allows us to use different bases
+> for new platforms.
 > 
-> Before:
->    text    data     bss     dec     hex filename
->   63668   28264       0   91932   1671c ./sound/soc/codecs/tlv320aic32x4.o
+> v2:
+>  - Update the commit message of "soundwire: move intel sdw register
+>    definitions to sdw_intel.h"
 > 
 > [...]
 
@@ -59,8 +60,18 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tlv320aic32x4: make array clocks static, makes object smaller
-      commit: ea9df9840fd5d766b9e98b0073890de4be68b062
+[1/6] soundwire: move intel sdw register definitions to sdw_intel.h
+      commit: f01639589e252a6f72c04716e1b5f9bb10e2debc
+[2/6] ASoC: SOF: intel: add sdw_shim/alh_base to sof_intel_dsp_desc
+      commit: 1cbf6443f0de6489044909b35962ba71940d48fe
+[3/6] ASoC: SOF: intel: hda: remove HDA_DSP_REG_SNDW_WAKE_STS definition
+      commit: 781dd3c822683f4b5dc332b68ac49d2db3d400e9
+[4/6] ASoC: SOF: intel: move sof_intel_dsp_desc() forward
+      commit: 2f1315ae94b46bf0d5b4be29be15cc3641364404
+[5/6] ASoC: SOF: intel: add snd_sof_dsp_check_sdw_irq ops
+      commit: 198fa4bcf6a1e8685b43e37790d45f3ebcbc2784
+[6/6] soundwire: intel: introduce shim and alh base
+      commit: 60e9feb781dfe84158b4ec7a4d61c5103e96e6f3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
