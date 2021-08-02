@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2763DD801
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7613DDA01
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234830AbhHBNtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:49:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56714 "EHLO mail.kernel.org"
+        id S236235AbhHBOFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:05:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234239AbhHBNq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:46:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B38B60FC1;
-        Mon,  2 Aug 2021 13:46:46 +0000 (UTC)
+        id S236442AbhHBN7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:59:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C02861185;
+        Mon,  2 Aug 2021 13:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912006;
-        bh=JkSY3ycioVZNLgNmrHqts3OiCAFSHW9Sy0kYi5K4aUw=;
+        s=korg; t=1627912539;
+        bh=pla7McmYxp1G0LJaZfhMGfn9YoZxcBk/02lvATrKxxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GvNZomNBRgXwCwntjRWEwssXe4H3fcXIGdb0yBFcx22lVr8cBN9p7dUGSNqv4KOMS
-         g0Fjw93UzHoL72HySJveULXyQE2JDZa33M9cGKMcVtGzVofoIEMzucKaZrD31m7YDg
-         4jtyS3nfNSrq4Oy5EMEDYg8SyoR8rxYVyxioMKY8=
+        b=YcUtL9QIbxCe8p3wMnTNyJ+o8GZtiCrFiZLOSsF0H0HmdTYLts2gmjbI1XVJzqpff
+         OZ2Bg177rR6hKBeiyh7Smlehe/joQROsR0Jj0mqOBmaprkZRw+eXUSHkXBC+H3hewK
+         0qKMn2+mB6WCmUtLBH9PqzvHfDqL/ho4OnQx+yOA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 25/26] tulip: windbond-840: Fix missing pci_disable_device() in probe and remove
+Subject: [PATCH 5.13 038/104] platform/x86: amd-pmc: Fix missing unlock on error in amd_pmc_send_cmd()
 Date:   Mon,  2 Aug 2021 15:44:35 +0200
-Message-Id: <20210802134332.845536760@linuxfoundation.org>
+Message-Id: <20210802134345.273054305@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
-References: <20210802134332.033552261@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 76a16be07b209a3f507c72abe823bd3af1c8661a ]
+[ Upstream commit 95edbbf78c3bdbd1daa921dd4a2e61c751e469ba ]
 
-Replace pci_enable_device() with pcim_enable_device(),
-pci_disable_device() and pci_release_regions() will be
-called in release automatically.
+Add the missing unlock before return from function amd_pmc_send_cmd()
+in the error handling case.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: 95e1b60f8dc8 ("platform/x86: amd-pmc: Fix command completion code")
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210715074327.1966083-1-yangyingliang@huawei.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/dec/tulip/winbond-840.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/platform/x86/amd-pmc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
-index 3c0e4d5c5fef..abc66eb13c35 100644
---- a/drivers/net/ethernet/dec/tulip/winbond-840.c
-+++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
-@@ -368,7 +368,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	int i, option = find_cnt < MAX_UNITS ? options[find_cnt] : 0;
- 	void __iomem *ioaddr;
- 
--	i = pci_enable_device(pdev);
-+	i = pcim_enable_device(pdev);
- 	if (i) return i;
- 
- 	pci_set_master(pdev);
-@@ -390,7 +390,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	ioaddr = pci_iomap(pdev, TULIP_BAR, netdev_res_size);
- 	if (!ioaddr)
--		goto err_out_free_res;
-+		goto err_out_netdev;
- 
- 	for (i = 0; i < 3; i++)
- 		((__le16 *)dev->dev_addr)[i] = cpu_to_le16(eeprom_read(ioaddr, i));
-@@ -469,8 +469,6 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- err_out_cleardev:
- 	pci_iounmap(pdev, ioaddr);
--err_out_free_res:
--	pci_release_regions(pdev);
- err_out_netdev:
- 	free_netdev (dev);
- 	return -ENODEV;
-@@ -1537,7 +1535,6 @@ static void w840_remove1(struct pci_dev *pdev)
- 	if (dev) {
- 		struct netdev_private *np = netdev_priv(dev);
- 		unregister_netdev(dev);
--		pci_release_regions(pdev);
- 		pci_iounmap(pdev, np->base_addr);
- 		free_netdev(dev);
+diff --git a/drivers/platform/x86/amd-pmc.c b/drivers/platform/x86/amd-pmc.c
+index b1d6175a13b2..ca95c2a52e26 100644
+--- a/drivers/platform/x86/amd-pmc.c
++++ b/drivers/platform/x86/amd-pmc.c
+@@ -140,7 +140,7 @@ static int amd_pmc_send_cmd(struct amd_pmc_dev *dev, bool set)
+ 				PMC_MSG_DELAY_MIN_US * RESPONSE_REGISTER_LOOP_MAX);
+ 	if (rc) {
+ 		dev_err(dev->dev, "failed to talk to SMU\n");
+-		return rc;
++		goto out_unlock;
  	}
+ 
+ 	/* Write zero to response register */
 -- 
 2.30.2
 
