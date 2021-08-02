@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6E33DDA42
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98513DD921
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237925AbhHBOKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:10:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48968 "EHLO mail.kernel.org"
+        id S235369AbhHBN5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:57:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234806AbhHBOBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:01:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8779261184;
-        Mon,  2 Aug 2021 13:56:27 +0000 (UTC)
+        id S234990AbhHBNvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:51:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42A3260F41;
+        Mon,  2 Aug 2021 13:50:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912588;
-        bh=eG0MVS+ns74U2oOzbqDmKfPXvRJohM30sdCjJ9bqqww=;
+        s=korg; t=1627912258;
+        bh=hdiXrvsG9NBKG+5eMK1AkbMzZVab2LrkHtcz0zqCmyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nY7+7kgG5OJ14blnOBMOhmogyGHwQhAyx+jJpp2r6ljBsKLk1fcsvalHXIv8sSP1A
-         wVfuAAQ3IZ4F4Tz+EdnES+uHIWq8eMD3h9Hbc8MTOxKyjkz2fH6U7hd2X8A0et0alk
-         5L/HuVG2vabUBDc1HAHCoKIv1qADqfEK5UgnCYOI=
+        b=pLuOBjFOusYYTtgS1pasyvsSPijOkbef+2gM5SAtMo3AOUDjhtUVEat+WdcmLcC5l
+         FS53K8PKk/2VuKKZd6Qes2nBLsL8sF5u2CA4Kw6tX1EpKo+BzZO57i5FkPS3iRsR+m
+         UJIFZn38T6jeIoynLS373HTjN/bxvtibIUx5LLoU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuang Li <shuali@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 061/104] tipc: do not write skb_shinfo frags when doing decrytion
-Date:   Mon,  2 Aug 2021 15:44:58 +0200
-Message-Id: <20210802134346.006568285@linuxfoundation.org>
+        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.4 19/40] cfg80211: Fix possible memory leak in function cfg80211_bss_update
+Date:   Mon,  2 Aug 2021 15:44:59 +0200
+Message-Id: <20210802134336.003473216@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
+References: <20210802134335.408294521@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-[ Upstream commit 3cf4375a090473d240281a0d2b04a3a5aaeac34b ]
+commit f9a5c358c8d26fed0cc45f2afc64633d4ba21dff upstream.
 
-One skb's skb_shinfo frags are not writable, and they can be shared with
-other skbs' like by pskb_copy(). To write the frags may cause other skb's
-data crash.
+When we exceed the limit of BSS entries, this function will free the
+new entry, however, at this time, it is the last door to access the
+inputed ies, so these ies will be unreferenced objects and cause memory
+leak.
+Therefore we should free its ies before deallocating the new entry, beside
+of dropping it from hidden_list.
 
-So before doing en/decryption, skb_cow_data() should always be called for
-a cloned or nonlinear skb if req dst is using the same sg as req src.
-While at it, the likely branch can be removed, as it will be covered
-by skb_cow_data().
-
-Note that esp_input() has the same issue, and I will fix it in another
-patch. tipc_aead_encrypt() doesn't have this issue, as it only processes
-linear data in the unlikely branch.
-
-Fixes: fc1b6d6de220 ("tipc: introduce TIPC encryption & authentication")
-Reported-by: Shuang Li <shuali@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Link: https://lore.kernel.org/r/20210628132334.851095-1-phind.uet@gmail.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/crypto.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ net/wireless/scan.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c
-index e5c43d4d5a75..c9391d38de85 100644
---- a/net/tipc/crypto.c
-+++ b/net/tipc/crypto.c
-@@ -898,16 +898,10 @@ static int tipc_aead_decrypt(struct net *net, struct tipc_aead *aead,
- 	if (unlikely(!aead))
- 		return -ENOKEY;
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -1250,16 +1250,14 @@ cfg80211_bss_update(struct cfg80211_regi
+ 			 * be grouped with this beacon for updates ...
+ 			 */
+ 			if (!cfg80211_combine_bsses(rdev, new)) {
+-				kfree(new);
++				bss_ref_put(rdev, new);
+ 				goto drop;
+ 			}
+ 		}
  
--	/* Cow skb data if needed */
--	if (likely(!skb_cloned(skb) &&
--		   (!skb_is_nonlinear(skb) || !skb_has_frag_list(skb)))) {
--		nsg = 1 + skb_shinfo(skb)->nr_frags;
--	} else {
--		nsg = skb_cow_data(skb, 0, &unused);
--		if (unlikely(nsg < 0)) {
--			pr_err("RX: skb_cow_data() returned %d\n", nsg);
--			return nsg;
--		}
-+	nsg = skb_cow_data(skb, 0, &unused);
-+	if (unlikely(nsg < 0)) {
-+		pr_err("RX: skb_cow_data() returned %d\n", nsg);
-+		return nsg;
- 	}
+ 		if (rdev->bss_entries >= bss_entries_limit &&
+ 		    !cfg80211_bss_expire_oldest(rdev)) {
+-			if (!list_empty(&new->hidden_list))
+-				list_del(&new->hidden_list);
+-			kfree(new);
++			bss_ref_put(rdev, new);
+ 			goto drop;
+ 		}
  
- 	/* Allocate memory for the AEAD operation */
--- 
-2.30.2
-
 
 
