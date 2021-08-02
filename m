@@ -2,199 +2,592 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407A63DD77D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947A33DD86A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234026AbhHBNoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:44:09 -0400
-Received: from gateway33.websitewelcome.com ([192.185.145.216]:49182 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233719AbhHBNoH (ORCPT
+        id S235035AbhHBNv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:51:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16034 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234362AbhHBNrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:44:07 -0400
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 1402211A2F6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:43:48 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id AYENm6g7IjSwzAYENmgLyj; Mon, 02 Aug 2021 08:43:47 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ofCX79+Rdf3KA3ygQd5aThXKKbcOK34wLcXaAGModx0=; b=Rw0CtDE1sjh2NVCk9V6FIHr2ha
-        fm459NwtYD/fFi5HNqYS7vFodXN3cuSisRlKnLm4Tdffp66F/Il285vyvcvIJ4qFA+frcMr9mezf4
-        +hqngJI5USHqj+hxTyx8uxCXuMHDZ2rg+T6sMnUkqMUSgGS2OT3QPnUN8u8Rp6vs9NcBVAjZUoW2V
-        GGHqg1FDzFn1qFj7zUea+eNNphWNYuhOtiLMNqLYnqCgwB3saNkSgmwfUnZoGz0Ly4Lpfy+SD0GQG
-        2AYe5Knt9xfNY2w5TULaJGjUEmK9VTH7/Io3W1z4rzObmbJOsZ2xy39aiNWTCypZ7WGsbHrv06uqb
-        hdjeKb1w==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:56648 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1mAYEM-001O0n-Lf; Mon, 02 Aug 2021 08:43:46 -0500
-Subject: Re: [PATCH v2 1/2] media: staging/intel-ipu3: css: Fix wrong size
- comparison
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-hardening@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <cover.1627646101.git.gustavoars@kernel.org>
- <184d96f95d6261b1a91704eb68adbd0a2e1c2cc2.1627646101.git.gustavoars@kernel.org>
- <20210802060546.GL3@paasikivi.fi.intel.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <3c9ac43d-09ca-e5d5-83a8-7b6d23928763@embeddedor.com>
-Date:   Mon, 2 Aug 2021 08:46:20 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 2 Aug 2021 09:47:36 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GdfNb5nnKzZwdb;
+        Mon,  2 Aug 2021 21:43:43 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 21:47:16 +0800
+Received: from thunder-town.china.huawei.com (10.174.179.0) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 21:47:15 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable <stable@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Sasha Levin <sasha.levin@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: [PATCH 4.4 07/11] rtmutex: Make wait_lock irq safe
+Date:   Mon, 2 Aug 2021 21:46:20 +0800
+Message-ID: <20210802134624.1934-8-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
+In-Reply-To: <20210802134624.1934-1-thunder.leizhen@huawei.com>
+References: <20210802134624.1934-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210802060546.GL3@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1mAYEM-001O0n-Lf
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:56648
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+From: Thomas Gleixner <tglx@linutronix.de>
 
-On 8/2/21 01:05, Sakari Ailus wrote:
-> Hi Gustavo,
-> 
-> I missed you already had sent v2...
-> 
-> On Fri, Jul 30, 2021 at 07:08:13AM -0500, Gustavo A. R. Silva wrote:
->> There is a wrong comparison of the total size of the loaded firmware
->> css->fw->size with the size of a pointer to struct imgu_fw_header.
->>
->> Fix this by using the right operand 'struct imgu_fw_header' for
->> sizeof, instead of 'struct imgu_fw_header *' and turn binary_header
->> into a flexible-array member. Also, adjust the relational operator
->> to be '<=' instead of '<', as it seems that the intention of the
->> comparison is to determine if the loaded firmware contains any
->> 'struct imgu_fw_info' items in the binary_header[] array than merely
->> the file_header (struct imgu_fw_bi_file_h).
->>
->> The replacement of the one-element array with a flexible-array member
->> also help with the ongoing efforts to globally enable -Warray-bounds
->> and get us closer to being able to tighten the FORTIFY_SOURCE routines
->> on memcpy().
->>
->> Link: https://github.com/KSPP/linux/issues/79
->> Link: https://github.com/KSPP/linux/issues/109
->> Fixes: 09d290f0ba21 ("media: staging/intel-ipu3: css: Add support for firmware management")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>
->> It'd be just great if someone that knows this code better can confirm
->> these changes are correct. In particular the adjustment of the
->> relational operator. Thanks!
->>
->> Changes in v2:
->>  - Use flexible array and adjust relational operator, accordingly.
-> 
-> The operator was just correct. The check is just there to see the firmware
-> is at least as large as the struct as which it is being accessed.
+[ Upstream commit b4abf91047cf054f203dcfac97e1038388826937 ]
 
-I'm a bit confused, so based on your reply to v1 of this series, this patch
-is now correct, right?
+Sasha reported a lockdep splat about a potential deadlock between RCU boosting
+rtmutex and the posix timer it_lock.
 
-The operator in v1 _was_ correct as long as the one-element array wasn't
-transformed into a flexible array, right?
+CPU0					CPU1
 
-Notice that generally speaking flexible-array members don't occupy space in the
-containing structure:
+rtmutex_lock(&rcu->rt_mutex)
+  spin_lock(&rcu->rt_mutex.wait_lock)
+					local_irq_disable()
+					spin_lock(&timer->it_lock)
+					spin_lock(&rcu->mutex.wait_lock)
+--> Interrupt
+    spin_lock(&timer->it_lock)
 
-$ pahole -C imgu_fw_header drivers/staging/media/ipu3/ipu3-css-fw.o
-struct imgu_fw_header {
-	struct imgu_fw_bi_file_h   file_header;          /*     0    72 */
-	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
-	struct imgu_fw_info        binary_header[] __attribute__((__aligned__(8))); /*    72     0 */
+This is caused by the following code sequence on CPU1
 
-	/* size: 72, cachelines: 2, members: 2 */
-	/* forced alignments: 1 */
-	/* last cacheline: 8 bytes */
-} __attribute__((__aligned__(8)));
+     rcu_read_lock()
+     x = lookup();
+     if (x)
+     	spin_lock_irqsave(&x->it_lock);
+     rcu_read_unlock();
+     return x;
 
-$ pahole -C imgu_fw_header drivers/staging/media/ipu3/ipu3-css-fw.o
-struct imgu_fw_header {
-	struct imgu_fw_bi_file_h   file_header;          /*     0    72 */
-	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
-	struct imgu_fw_info        binary_header[1] __attribute__((__aligned__(8))); /*    72  1200 */
+We could fix that in the posix timer code by keeping rcu read locked across
+the spinlocked and irq disabled section, but the above sequence is common and
+there is no reason not to support it.
 
-	/* size: 1272, cachelines: 20, members: 2 */
-	/* forced alignments: 1 */
-	/* last cacheline: 56 bytes */
-} __attribute__((__aligned__(8)));
+Taking rt_mutex.wait_lock irq safe prevents the deadlock.
 
-So, now that the flexible array transformation is included in the same patch as the
-bugfix, the operator is changed from '<' to '<='
+Reported-by: Sasha Levin <sasha.levin@oracle.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Paul McKenney <paulmck@linux.vnet.ibm.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ kernel/locking/rtmutex.c | 135 +++++++++++++++++++++------------------
+ 1 file changed, 72 insertions(+), 63 deletions(-)
 
-Can you please confirm if this v2 is now correct? if so, it'd be great to have your
-Reviewed-by tag. :)
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index 98e45a2e1236e30..18154e10d63a23b 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -163,13 +163,14 @@ static inline void mark_rt_mutex_waiters(struct rt_mutex *lock)
+  * 2) Drop lock->wait_lock
+  * 3) Try to unlock the lock with cmpxchg
+  */
+-static inline bool unlock_rt_mutex_safe(struct rt_mutex *lock)
++static inline bool unlock_rt_mutex_safe(struct rt_mutex *lock,
++					unsigned long flags)
+ 	__releases(lock->wait_lock)
+ {
+ 	struct task_struct *owner = rt_mutex_owner(lock);
+ 
+ 	clear_rt_mutex_waiters(lock);
+-	raw_spin_unlock(&lock->wait_lock);
++	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
+ 	/*
+ 	 * If a new waiter comes in between the unlock and the cmpxchg
+ 	 * we have two situations:
+@@ -211,11 +212,12 @@ static inline void mark_rt_mutex_waiters(struct rt_mutex *lock)
+ /*
+  * Simple slow path only version: lock->owner is protected by lock->wait_lock.
+  */
+-static inline bool unlock_rt_mutex_safe(struct rt_mutex *lock)
++static inline bool unlock_rt_mutex_safe(struct rt_mutex *lock,
++					unsigned long flags)
+ 	__releases(lock->wait_lock)
+ {
+ 	lock->owner = NULL;
+-	raw_spin_unlock(&lock->wait_lock);
++	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
+ 	return true;
+ }
+ #endif
+@@ -497,7 +499,6 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 	int ret = 0, depth = 0;
+ 	struct rt_mutex *lock;
+ 	bool detect_deadlock;
+-	unsigned long flags;
+ 	bool requeue = true;
+ 
+ 	detect_deadlock = rt_mutex_cond_detect_deadlock(orig_waiter, chwalk);
+@@ -540,7 +541,7 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 	/*
+ 	 * [1] Task cannot go away as we did a get_task() before !
+ 	 */
+-	raw_spin_lock_irqsave(&task->pi_lock, flags);
++	raw_spin_lock_irq(&task->pi_lock);
+ 
+ 	/*
+ 	 * [2] Get the waiter on which @task is blocked on.
+@@ -624,7 +625,7 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 	 * operations.
+ 	 */
+ 	if (!raw_spin_trylock(&lock->wait_lock)) {
+-		raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++		raw_spin_unlock_irq(&task->pi_lock);
+ 		cpu_relax();
+ 		goto retry;
+ 	}
+@@ -655,7 +656,7 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 		/*
+ 		 * No requeue[7] here. Just release @task [8]
+ 		 */
+-		raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++		raw_spin_unlock(&task->pi_lock);
+ 		put_task_struct(task);
+ 
+ 		/*
+@@ -663,14 +664,14 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 		 * If there is no owner of the lock, end of chain.
+ 		 */
+ 		if (!rt_mutex_owner(lock)) {
+-			raw_spin_unlock(&lock->wait_lock);
++			raw_spin_unlock_irq(&lock->wait_lock);
+ 			return 0;
+ 		}
+ 
+ 		/* [10] Grab the next task, i.e. owner of @lock */
+ 		task = rt_mutex_owner(lock);
+ 		get_task_struct(task);
+-		raw_spin_lock_irqsave(&task->pi_lock, flags);
++		raw_spin_lock(&task->pi_lock);
+ 
+ 		/*
+ 		 * No requeue [11] here. We just do deadlock detection.
+@@ -685,8 +686,8 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 		top_waiter = rt_mutex_top_waiter(lock);
+ 
+ 		/* [13] Drop locks */
+-		raw_spin_unlock_irqrestore(&task->pi_lock, flags);
+-		raw_spin_unlock(&lock->wait_lock);
++		raw_spin_unlock(&task->pi_lock);
++		raw_spin_unlock_irq(&lock->wait_lock);
+ 
+ 		/* If owner is not blocked, end of chain. */
+ 		if (!next_lock)
+@@ -707,7 +708,7 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 	rt_mutex_enqueue(lock, waiter);
+ 
+ 	/* [8] Release the task */
+-	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++	raw_spin_unlock(&task->pi_lock);
+ 	put_task_struct(task);
+ 
+ 	/*
+@@ -725,14 +726,14 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 		 */
+ 		if (prerequeue_top_waiter != rt_mutex_top_waiter(lock))
+ 			wake_up_process(rt_mutex_top_waiter(lock)->task);
+-		raw_spin_unlock(&lock->wait_lock);
++		raw_spin_unlock_irq(&lock->wait_lock);
+ 		return 0;
+ 	}
+ 
+ 	/* [10] Grab the next task, i.e. the owner of @lock */
+ 	task = rt_mutex_owner(lock);
+ 	get_task_struct(task);
+-	raw_spin_lock_irqsave(&task->pi_lock, flags);
++	raw_spin_lock(&task->pi_lock);
+ 
+ 	/* [11] requeue the pi waiters if necessary */
+ 	if (waiter == rt_mutex_top_waiter(lock)) {
+@@ -786,8 +787,8 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 	top_waiter = rt_mutex_top_waiter(lock);
+ 
+ 	/* [13] Drop the locks */
+-	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
+-	raw_spin_unlock(&lock->wait_lock);
++	raw_spin_unlock(&task->pi_lock);
++	raw_spin_unlock_irq(&lock->wait_lock);
+ 
+ 	/*
+ 	 * Make the actual exit decisions [12], based on the stored
+@@ -810,7 +811,7 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 	goto again;
+ 
+  out_unlock_pi:
+-	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++	raw_spin_unlock_irq(&task->pi_lock);
+  out_put_task:
+ 	put_task_struct(task);
+ 
+@@ -820,7 +821,7 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ /*
+  * Try to take an rt-mutex
+  *
+- * Must be called with lock->wait_lock held.
++ * Must be called with lock->wait_lock held and interrupts disabled
+  *
+  * @lock:   The lock to be acquired.
+  * @task:   The task which wants to acquire the lock
+@@ -830,8 +831,6 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
+ static int try_to_take_rt_mutex(struct rt_mutex *lock, struct task_struct *task,
+ 				struct rt_mutex_waiter *waiter)
+ {
+-	unsigned long flags;
+-
+ 	/*
+ 	 * Before testing whether we can acquire @lock, we set the
+ 	 * RT_MUTEX_HAS_WAITERS bit in @lock->owner. This forces all
+@@ -916,7 +915,7 @@ static int try_to_take_rt_mutex(struct rt_mutex *lock, struct task_struct *task,
+ 	 * case, but conditionals are more expensive than a redundant
+ 	 * store.
+ 	 */
+-	raw_spin_lock_irqsave(&task->pi_lock, flags);
++	raw_spin_lock(&task->pi_lock);
+ 	task->pi_blocked_on = NULL;
+ 	/*
+ 	 * Finish the lock acquisition. @task is the new owner. If
+@@ -925,7 +924,7 @@ static int try_to_take_rt_mutex(struct rt_mutex *lock, struct task_struct *task,
+ 	 */
+ 	if (rt_mutex_has_waiters(lock))
+ 		rt_mutex_enqueue_pi(task, rt_mutex_top_waiter(lock));
+-	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++	raw_spin_unlock(&task->pi_lock);
+ 
+ takeit:
+ 	/* We got the lock. */
+@@ -945,7 +944,7 @@ takeit:
+  *
+  * Prepare waiter and propagate pi chain
+  *
+- * This must be called with lock->wait_lock held.
++ * This must be called with lock->wait_lock held and interrupts disabled
+  */
+ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
+ 				   struct rt_mutex_waiter *waiter,
+@@ -956,7 +955,6 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
+ 	struct rt_mutex_waiter *top_waiter = waiter;
+ 	struct rt_mutex *next_lock;
+ 	int chain_walk = 0, res;
+-	unsigned long flags;
+ 
+ 	/*
+ 	 * Early deadlock detection. We really don't want the task to
+@@ -970,7 +968,7 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
+ 	if (owner == task)
+ 		return -EDEADLK;
+ 
+-	raw_spin_lock_irqsave(&task->pi_lock, flags);
++	raw_spin_lock(&task->pi_lock);
+ 	__rt_mutex_adjust_prio(task);
+ 	waiter->task = task;
+ 	waiter->lock = lock;
+@@ -983,12 +981,12 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
+ 
+ 	task->pi_blocked_on = waiter;
+ 
+-	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++	raw_spin_unlock(&task->pi_lock);
+ 
+ 	if (!owner)
+ 		return 0;
+ 
+-	raw_spin_lock_irqsave(&owner->pi_lock, flags);
++	raw_spin_lock(&owner->pi_lock);
+ 	if (waiter == rt_mutex_top_waiter(lock)) {
+ 		rt_mutex_dequeue_pi(owner, top_waiter);
+ 		rt_mutex_enqueue_pi(owner, waiter);
+@@ -1003,7 +1001,7 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
+ 	/* Store the lock on which owner is blocked or NULL */
+ 	next_lock = task_blocked_on_lock(owner);
+ 
+-	raw_spin_unlock_irqrestore(&owner->pi_lock, flags);
++	raw_spin_unlock(&owner->pi_lock);
+ 	/*
+ 	 * Even if full deadlock detection is on, if the owner is not
+ 	 * blocked itself, we can avoid finding this out in the chain
+@@ -1019,12 +1017,12 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
+ 	 */
+ 	get_task_struct(owner);
+ 
+-	raw_spin_unlock(&lock->wait_lock);
++	raw_spin_unlock_irq(&lock->wait_lock);
+ 
+ 	res = rt_mutex_adjust_prio_chain(owner, chwalk, lock,
+ 					 next_lock, waiter, task);
+ 
+-	raw_spin_lock(&lock->wait_lock);
++	raw_spin_lock_irq(&lock->wait_lock);
+ 
+ 	return res;
+ }
+@@ -1033,15 +1031,14 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
+  * Remove the top waiter from the current tasks pi waiter tree and
+  * queue it up.
+  *
+- * Called with lock->wait_lock held.
++ * Called with lock->wait_lock held and interrupts disabled.
+  */
+ static void mark_wakeup_next_waiter(struct wake_q_head *wake_q,
+ 				    struct rt_mutex *lock)
+ {
+ 	struct rt_mutex_waiter *waiter;
+-	unsigned long flags;
+ 
+-	raw_spin_lock_irqsave(&current->pi_lock, flags);
++	raw_spin_lock(&current->pi_lock);
+ 
+ 	waiter = rt_mutex_top_waiter(lock);
+ 
+@@ -1063,7 +1060,7 @@ static void mark_wakeup_next_waiter(struct wake_q_head *wake_q,
+ 	 */
+ 	lock->owner = (void *) RT_MUTEX_HAS_WAITERS;
+ 
+-	raw_spin_unlock_irqrestore(&current->pi_lock, flags);
++	raw_spin_unlock(&current->pi_lock);
+ 
+ 	wake_q_add(wake_q, waiter->task);
+ }
+@@ -1071,7 +1068,7 @@ static void mark_wakeup_next_waiter(struct wake_q_head *wake_q,
+ /*
+  * Remove a waiter from a lock and give up
+  *
+- * Must be called with lock->wait_lock held and
++ * Must be called with lock->wait_lock held and interrupts disabled. I must
+  * have just failed to try_to_take_rt_mutex().
+  */
+ static void remove_waiter(struct rt_mutex *lock,
+@@ -1080,12 +1077,11 @@ static void remove_waiter(struct rt_mutex *lock,
+ 	bool is_top_waiter = (waiter == rt_mutex_top_waiter(lock));
+ 	struct task_struct *owner = rt_mutex_owner(lock);
+ 	struct rt_mutex *next_lock;
+-	unsigned long flags;
+ 
+-	raw_spin_lock_irqsave(&current->pi_lock, flags);
++	raw_spin_lock(&current->pi_lock);
+ 	rt_mutex_dequeue(lock, waiter);
+ 	current->pi_blocked_on = NULL;
+-	raw_spin_unlock_irqrestore(&current->pi_lock, flags);
++	raw_spin_unlock(&current->pi_lock);
+ 
+ 	/*
+ 	 * Only update priority if the waiter was the highest priority
+@@ -1094,7 +1090,7 @@ static void remove_waiter(struct rt_mutex *lock,
+ 	if (!owner || !is_top_waiter)
+ 		return;
+ 
+-	raw_spin_lock_irqsave(&owner->pi_lock, flags);
++	raw_spin_lock(&owner->pi_lock);
+ 
+ 	rt_mutex_dequeue_pi(owner, waiter);
+ 
+@@ -1106,7 +1102,7 @@ static void remove_waiter(struct rt_mutex *lock,
+ 	/* Store the lock on which owner is blocked or NULL */
+ 	next_lock = task_blocked_on_lock(owner);
+ 
+-	raw_spin_unlock_irqrestore(&owner->pi_lock, flags);
++	raw_spin_unlock(&owner->pi_lock);
+ 
+ 	/*
+ 	 * Don't walk the chain, if the owner task is not blocked
+@@ -1118,12 +1114,12 @@ static void remove_waiter(struct rt_mutex *lock,
+ 	/* gets dropped in rt_mutex_adjust_prio_chain()! */
+ 	get_task_struct(owner);
+ 
+-	raw_spin_unlock(&lock->wait_lock);
++	raw_spin_unlock_irq(&lock->wait_lock);
+ 
+ 	rt_mutex_adjust_prio_chain(owner, RT_MUTEX_MIN_CHAINWALK, lock,
+ 				   next_lock, NULL, current);
+ 
+-	raw_spin_lock(&lock->wait_lock);
++	raw_spin_lock_irq(&lock->wait_lock);
+ }
+ 
+ /*
+@@ -1167,11 +1163,11 @@ void rt_mutex_init_waiter(struct rt_mutex_waiter *waiter)
+  * __rt_mutex_slowlock() - Perform the wait-wake-try-to-take loop
+  * @lock:		 the rt_mutex to take
+  * @state:		 the state the task should block in (TASK_INTERRUPTIBLE
+- * 			 or TASK_UNINTERRUPTIBLE)
++ *			 or TASK_UNINTERRUPTIBLE)
+  * @timeout:		 the pre-initialized and started timer, or NULL for none
+  * @waiter:		 the pre-initialized rt_mutex_waiter
+  *
+- * lock->wait_lock must be held by the caller.
++ * Must be called with lock->wait_lock held and interrupts disabled
+  */
+ static int __sched
+ __rt_mutex_slowlock(struct rt_mutex *lock, int state,
+@@ -1199,13 +1195,13 @@ __rt_mutex_slowlock(struct rt_mutex *lock, int state,
+ 				break;
+ 		}
+ 
+-		raw_spin_unlock(&lock->wait_lock);
++		raw_spin_unlock_irq(&lock->wait_lock);
+ 
+ 		debug_rt_mutex_print_deadlock(waiter);
+ 
+ 		schedule();
+ 
+-		raw_spin_lock(&lock->wait_lock);
++		raw_spin_lock_irq(&lock->wait_lock);
+ 		set_current_state(state);
+ 	}
+ 
+@@ -1242,15 +1238,24 @@ rt_mutex_slowlock(struct rt_mutex *lock, int state,
+ 		  enum rtmutex_chainwalk chwalk)
+ {
+ 	struct rt_mutex_waiter waiter;
++	unsigned long flags;
+ 	int ret = 0;
+ 
+ 	rt_mutex_init_waiter(&waiter);
+ 
+-	raw_spin_lock(&lock->wait_lock);
++	/*
++	 * Technically we could use raw_spin_[un]lock_irq() here, but this can
++	 * be called in early boot if the cmpxchg() fast path is disabled
++	 * (debug, no architecture support). In this case we will acquire the
++	 * rtmutex with lock->wait_lock held. But we cannot unconditionally
++	 * enable interrupts in that early boot case. So we need to use the
++	 * irqsave/restore variants.
++	 */
++	raw_spin_lock_irqsave(&lock->wait_lock, flags);
+ 
+ 	/* Try to acquire the lock again: */
+ 	if (try_to_take_rt_mutex(lock, current, NULL)) {
+-		raw_spin_unlock(&lock->wait_lock);
++		raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
+ 		return 0;
+ 	}
+ 
+@@ -1279,7 +1284,7 @@ rt_mutex_slowlock(struct rt_mutex *lock, int state,
+ 	 */
+ 	fixup_rt_mutex_waiters(lock);
+ 
+-	raw_spin_unlock(&lock->wait_lock);
++	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
+ 
+ 	/* Remove pending timer: */
+ 	if (unlikely(timeout))
+@@ -1308,6 +1313,7 @@ static inline int __rt_mutex_slowtrylock(struct rt_mutex *lock)
+  */
+ static inline int rt_mutex_slowtrylock(struct rt_mutex *lock)
+ {
++	unsigned long flags;
+ 	int ret;
+ 
+ 	/*
+@@ -1319,14 +1325,14 @@ static inline int rt_mutex_slowtrylock(struct rt_mutex *lock)
+ 		return 0;
+ 
+ 	/*
+-	 * The mutex has currently no owner. Lock the wait lock and
+-	 * try to acquire the lock.
++	 * The mutex has currently no owner. Lock the wait lock and try to
++	 * acquire the lock. We use irqsave here to support early boot calls.
+ 	 */
+-	raw_spin_lock(&lock->wait_lock);
++	raw_spin_lock_irqsave(&lock->wait_lock, flags);
+ 
+ 	ret = __rt_mutex_slowtrylock(lock);
+ 
+-	raw_spin_unlock(&lock->wait_lock);
++	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -1338,7 +1344,10 @@ static inline int rt_mutex_slowtrylock(struct rt_mutex *lock)
+ static bool __sched rt_mutex_slowunlock(struct rt_mutex *lock,
+ 					struct wake_q_head *wake_q)
+ {
+-	raw_spin_lock(&lock->wait_lock);
++	unsigned long flags;
++
++	/* irqsave required to support early boot calls */
++	raw_spin_lock_irqsave(&lock->wait_lock, flags);
+ 
+ 	debug_rt_mutex_unlock(lock);
+ 
+@@ -1375,10 +1384,10 @@ static bool __sched rt_mutex_slowunlock(struct rt_mutex *lock,
+ 	 */
+ 	while (!rt_mutex_has_waiters(lock)) {
+ 		/* Drops lock->wait_lock ! */
+-		if (unlock_rt_mutex_safe(lock) == true)
++		if (unlock_rt_mutex_safe(lock, flags) == true)
+ 			return false;
+ 		/* Relock the rtmutex and try again */
+-		raw_spin_lock(&lock->wait_lock);
++		raw_spin_lock_irqsave(&lock->wait_lock, flags);
+ 	}
+ 
+ 	/*
+@@ -1389,7 +1398,7 @@ static bool __sched rt_mutex_slowunlock(struct rt_mutex *lock,
+ 	 */
+ 	mark_wakeup_next_waiter(wake_q, lock);
+ 
+-	raw_spin_unlock(&lock->wait_lock);
++	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
+ 
+ 	/* check PI boosting */
+ 	return true;
+@@ -1680,10 +1689,10 @@ int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+ {
+ 	int ret;
+ 
+-	raw_spin_lock(&lock->wait_lock);
++	raw_spin_lock_irq(&lock->wait_lock);
+ 
+ 	if (try_to_take_rt_mutex(lock, task, NULL)) {
+-		raw_spin_unlock(&lock->wait_lock);
++		raw_spin_unlock_irq(&lock->wait_lock);
+ 		return 1;
+ 	}
+ 
+@@ -1704,7 +1713,7 @@ int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+ 	if (unlikely(ret))
+ 		remove_waiter(lock, waiter);
+ 
+-	raw_spin_unlock(&lock->wait_lock);
++	raw_spin_unlock_irq(&lock->wait_lock);
+ 
+ 	debug_rt_mutex_print_deadlock(waiter);
+ 
+@@ -1754,14 +1763,14 @@ int rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
+ {
+ 	int ret;
+ 
+-	raw_spin_lock(&lock->wait_lock);
++	raw_spin_lock_irq(&lock->wait_lock);
+ 
+ 	set_current_state(TASK_INTERRUPTIBLE);
+ 
+ 	/* sleep on the mutex */
+ 	ret = __rt_mutex_slowlock(lock, TASK_INTERRUPTIBLE, to, waiter);
+ 
+-	raw_spin_unlock(&lock->wait_lock);
++	raw_spin_unlock_irq(&lock->wait_lock);
+ 
+ 	return ret;
+ }
+-- 
+2.26.0.106.g9fadedd
 
-Thanks!
---
-Gustavo
-
-> 
->>  - Update changelog text.
->>
->>  drivers/staging/media/ipu3/ipu3-css-fw.c | 2 +-
->>  drivers/staging/media/ipu3/ipu3-css-fw.h | 2 +-
->>  2 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/staging/media/ipu3/ipu3-css-fw.c b/drivers/staging/media/ipu3/ipu3-css-fw.c
->> index 45aff76198e2..630cb5186b48 100644
->> --- a/drivers/staging/media/ipu3/ipu3-css-fw.c
->> +++ b/drivers/staging/media/ipu3/ipu3-css-fw.c
->> @@ -124,7 +124,7 @@ int imgu_css_fw_init(struct imgu_css *css)
->>  	/* Check and display fw header info */
->>  
->>  	css->fwp = (struct imgu_fw_header *)css->fw->data;
->> -	if (css->fw->size < sizeof(struct imgu_fw_header *) ||
->> +	if (css->fw->size <= sizeof(struct imgu_fw_header) ||
->>  	    css->fwp->file_header.h_size != sizeof(struct imgu_fw_bi_file_h))
->>  		goto bad_fw;
->>  	if (sizeof(struct imgu_fw_bi_file_h) +
->> diff --git a/drivers/staging/media/ipu3/ipu3-css-fw.h b/drivers/staging/media/ipu3/ipu3-css-fw.h
->> index 3c078f15a295..c0bc57fd678a 100644
->> --- a/drivers/staging/media/ipu3/ipu3-css-fw.h
->> +++ b/drivers/staging/media/ipu3/ipu3-css-fw.h
->> @@ -171,7 +171,7 @@ struct imgu_fw_bi_file_h {
->>  
->>  struct imgu_fw_header {
->>  	struct imgu_fw_bi_file_h file_header;
->> -	struct imgu_fw_info binary_header[1];	/* binary_nr items */
->> +	struct imgu_fw_info binary_header[];	/* binary_nr items */
->>  };
->>  
->>  /******************* Firmware functions *******************/
-> 
