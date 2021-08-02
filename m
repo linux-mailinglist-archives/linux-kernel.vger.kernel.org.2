@@ -2,405 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C399F3DE262
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2383DE266
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbhHBWSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 18:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbhHBWSv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 18:18:51 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57136C06175F;
-        Mon,  2 Aug 2021 15:18:40 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id t9so23450946lfc.6;
-        Mon, 02 Aug 2021 15:18:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=0Y6mLId8/eNaU2rxoPkMHiRy8LVDM741u6TqTI08CsI=;
-        b=CHcsBFqJZQAMXuAjzF2b+4iaxbrp7ylgY6pNGmlqoI/stOw2MZ/wCxZ+XvIEqITY+V
-         0H9QnajKyk88xeZsureSZy7sKtGYkk7vej9sILgkXdLGM7dNnIOgmnzb25mQQF7tL+JJ
-         FiNvCeJzH9PWhQLkG0lp+auwhCtmwSbNhtrbIQYReqXo4ctJEkAOquRz7+uK24R9F5qN
-         kEpRSmSN2UNZDlMHe1xNI+Z0J3T1pmIeLEYtzBuMPDEgWz3iX9WwxrKu7BGPx6Lrl9Nd
-         5eVjSuKMW9VW9QfEzqFT+3JsC/nEuFL/qOIA/7npBqx6uiIT8b1vt36r/1Dvn2+AdEdZ
-         vXqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0Y6mLId8/eNaU2rxoPkMHiRy8LVDM741u6TqTI08CsI=;
-        b=rREEfh7lX/H7imVrAgPTAheSVsbWKlfNxITngME3BBC3CTJbS/b0m/aMwA/CKaheWu
-         W5OrMT58rI/aoEvACw+0sMe7FG6f0eNEoD8hUuXirNLKbhClRQHUr7RgcuJolLd6oCVo
-         eSg5A8+AsoVNLAau4E/IPPtED1d1i8x5fFUza3+iBlvuNCoVWoRD1t1zZ2nZ+yjdd9tu
-         1jRhRmRC1OMJeaMnqL1NoZ7nNZ4SODbuGO2xJ0UVoHfnxdrE1ORFOohOSUZ8EAfAz+3X
-         dABl0pklg4PcpKL7ZW4qWyQebQal1jf+CsFivfVRmfhLW3OZIr6Gvz2+cuznHbFa6q7m
-         nM3w==
-X-Gm-Message-State: AOAM5300+u0DV6fhKSQNWUXNvzBUP/CdLTh/OiDD835TFcL789Kn6+Pw
-        KdZDpwv1j78hkcD76huUMYM=
-X-Google-Smtp-Source: ABdhPJxarDMzpPz27uQ5kENblh8KcS9u5e/v0B2bMsgkuZnKGLHBrMlnceBhOu+j0VJyYhrKRUacNQ==
-X-Received: by 2002:a05:6512:b84:: with SMTP id b4mr6952061lfv.186.1627942718656;
-        Mon, 02 Aug 2021 15:18:38 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.225.185])
-        by smtp.gmail.com with ESMTPSA id l21sm948252ljc.94.2021.08.02.15.18.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 15:18:38 -0700 (PDT)
-Subject: Re: [PATCH] net: pegasus: fix uninit-value in get_interrupt_interval
-To:     davem@davemloft.net, kuba@kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
-References: <20210730214411.1973-1-paskripkin@gmail.com>
- <YQaVS5UwG6RFsL4t@carbon> <20210801223513.06bede26@gmail.com>
- <YQhQe4bdoEAef8bj@carbon>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <56e4a418-2e33-43f1-45e6-fa1dcc92060f@gmail.com>
-Date:   Tue, 3 Aug 2021 01:18:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232078AbhHBWVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 18:21:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230156AbhHBWVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 18:21:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BDB960F36;
+        Mon,  2 Aug 2021 22:21:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627942864;
+        bh=6aX9/Bt43bl53L5jhqHaKlrsxRZ9CIuNwap0K/eMxSI=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=mSLG9Aklw9l2tZh+9Ck1je3fPLx6Cx6xxjMAW7fSE/V1HWI6/XQCVKWpP6/pQBMOB
+         22ocuHFpnDUYWx2Twvo8dxCvxwrQTp6lfMTkmxwRK53cFndvgcEP3PepFLfg3yy5Ys
+         LUaeKzMQGtbglBhtUTP3putUHhy8tzsOPckRboB/jiKpq85pbOJz4Og/B+Auj9Ajqo
+         s5RqQkbK5fgw2y7Mg/gYOTcZ63QeYkd01U2KaXOu7qaYiAw4BbZdDDOdun5uS8/CuM
+         ZrNLkb+UaARq2NHJyNdDDShf9L+DXTrCHY0hf856ETnjbktU483zB5uUpWUXA96wu4
+         cVXXBW+BjbdAg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <YQhQe4bdoEAef8bj@carbon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210801103448.3329333-2-iskren.chernev@gmail.com>
+References: <20210801103448.3329333-1-iskren.chernev@gmail.com> <20210801103448.3329333-2-iskren.chernev@gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: clk: qcom: gcc-sm6115: Document SM6115 GCC
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Date:   Mon, 02 Aug 2021 15:21:02 -0700
+Message-ID: <162794286285.714452.14111966516954708252@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/21 11:07 PM, Petko Manolov wrote:
-> On 21-08-01 22:35:13, Pavel Skripkin wrote:
->> On Sun, 1 Aug 2021 15:36:27 +0300
->> Petko Manolov <petkan@nucleusys.com> wrote:
->> 
->> > On 21-07-31 00:44:11, Pavel Skripkin wrote:
->> > > Syzbot reported uninit value pegasus_probe(). The problem was in missing
->> > > error handling.
->> > > 
->> > > get_interrupt_interval() internally calls read_eprom_word() which can fail
->> > > in some cases. For example: failed to receive usb control message. These
->> > > cases should be handled to prevent uninit value bug, since
->> > > read_eprom_word() will not initialize passed stack variable in case of
->> > > internal failure.
->> > 
->> > Well, this is most definitelly a bug.
->> > 
->> > ACK!
->> > 
->> > 
->> > 		Petko
->> > 
->> > 
->> 
->> Thank you, Petko!
->> 
->> 
->> BTW: I found a lot uses of {get,set}_registers without error checking. I
->> think, some of them could be fixed easily (like in enable_eprom_write), but, I
->> guess, disable_eprom_write is not so easy. For example, if we cannot disable
->> eprom should we retry? If not, will device get in some unexpected state?
->> 
->> Im not familiar with this device, but I can prepare a patch to wrap all these
->> calls with proper error checking
-> 
-> Here goes a preliminary patch that should apply on top of your, maybe with just
-> a few warnings.  This is a review only diff, not the real patch.  It's against
-> 5.14-rc4.
-> 
-> I am mildly curious why syzbot didn't catch the same type of bug in
-> enable_net_traffic() and setup_pegasus_II() for example.
-> 
-> 
-> 		Petko
-> 
+Quoting Iskren Chernev (2021-08-01 03:34:47)
+> Add device tree bindings for global clock controller on SM6115 and
+> SM4250 SoCs (pin and software compatible).
+>=20
+> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
 > ---
-> 
-> diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
-> index 9a907182569c..eafbe8107907 100644
-> --- a/drivers/net/usb/pegasus.c
-> +++ b/drivers/net/usb/pegasus.c
-> @@ -26,6 +26,8 @@
->    *		...
->    *		v0.9.3	simplified [get|set]_register(s), async update registers
->    *			logic revisited, receive skb_pool removed.
-> + *		v1.0.1	add error checking for set_register(s)(), see if calling
-> + *			get_registers() has failed and print a message accordingly.
->    */
->   
->   #include <linux/sched.h>
-> @@ -45,7 +47,7 @@
->   /*
->    * Version Information
->    */
-> -#define DRIVER_VERSION "v0.9.3 (2013/04/25)"
-> +#define DRIVER_VERSION "v1.0.1 (2021/08/01)"
->   #define DRIVER_AUTHOR "Petko Manolov <petkan@nucleusys.com>"
->   #define DRIVER_DESC "Pegasus/Pegasus II USB Ethernet driver"
->   
-> @@ -132,9 +134,15 @@ static int get_registers(pegasus_t *pegasus, __u16 indx, __u16 size, void *data)
->   static int set_registers(pegasus_t *pegasus, __u16 indx, __u16 size,
->   			 const void *data)
->   {
-> -	return usb_control_msg_send(pegasus->usb, 0, PEGASUS_REQ_SET_REGS,
-> +	int ret;
+>  .../bindings/clock/qcom,gcc-sm6115.yaml       |  74 +++++++
+>  include/dt-bindings/clock/qcom,gcc-sm6115.h   | 201 ++++++++++++++++++
+>  2 files changed, 275 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm61=
+15.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-sm6115.h
+>=20
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.yaml=
+ b/Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.yaml
+> new file mode 100644
+> index 000000000000..c8c9eb82b9b4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/qcom,gcc-sm6115.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	ret = usb_control_msg_send(pegasus->usb, 0, PEGASUS_REQ_SET_REGS,
->   				    PEGASUS_REQT_WRITE, 0, indx, data, size,
->   				    1000, GFP_NOIO);
-> +	if (ret < 0)
-> +		netif_dbg(pegasus, drv, pegasus->net, "%s failed with %d\n", __func__, ret);
+> +title: Qualcomm Global Clock & Reset Controller Binding for SM6115 and S=
+M4250
 > +
-> +	return ret;
->   }
->   
->   /*
-> @@ -145,10 +153,15 @@ static int set_registers(pegasus_t *pegasus, __u16 indx, __u16 size,
->   static int set_register(pegasus_t *pegasus, __u16 indx, __u8 data)
->   {
->   	void *buf = &data;
-> +	int ret;
->   
-> -	return usb_control_msg_send(pegasus->usb, 0, PEGASUS_REQ_SET_REG,
-> +	ret = usb_control_msg_send(pegasus->usb, 0, PEGASUS_REQ_SET_REG,
->   				    PEGASUS_REQT_WRITE, data, indx, buf, 1,
->   				    1000, GFP_NOIO);
-> +	if (ret < 0)
-> +		netif_dbg(pegasus, drv, pegasus->net, "%s failed with %d\n", __func__, ret);
+> +maintainers:
+> +  - Iskren Chernev <iskren.chernev@gmail.com>
 > +
-> +	return ret;
->   }
->   
->   static int update_eth_regs_async(pegasus_t *pegasus)
-> @@ -188,10 +201,9 @@ static int update_eth_regs_async(pegasus_t *pegasus)
->   
->   static int __mii_op(pegasus_t *p, __u8 phy, __u8 indx, __u16 *regd, __u8 cmd)
->   {
-> -	int i;
-> -	__u8 data[4] = { phy, 0, 0, indx };
-> +	int i, ret = -ETIMEDOUT;
->   	__le16 regdi;
-> -	int ret = -ETIMEDOUT;
-> +	__u8 data[4] = { phy, 0, 0, indx };
->   
->   	if (cmd & PHY_WRITE) {
->   		__le16 *t = (__le16 *) & data[1];
-> @@ -211,8 +223,9 @@ static int __mii_op(pegasus_t *p, __u8 phy, __u8 indx, __u16 *regd, __u8 cmd)
->   		goto fail;
->   	if (cmd & PHY_READ) {
->   		ret = get_registers(p, PhyData, 2, &regdi);
-> +		if (ret < 0)
-> +			goto fail;
->   		*regd = le16_to_cpu(regdi);
-> -		return ret;
->   	}
->   	return 0;
->   fail:
-> @@ -235,9 +248,13 @@ static int write_mii_word(pegasus_t *pegasus, __u8 phy, __u8 indx, __u16 *regd)
->   static int mdio_read(struct net_device *dev, int phy_id, int loc)
->   {
->   	pegasus_t *pegasus = netdev_priv(dev);
-> +	int ret;
->   	u16 res;
->   
-> -	read_mii_word(pegasus, phy_id, loc, &res);
-> +	ret = read_mii_word(pegasus, phy_id, loc, &res);
-> +	if (ret < 0)
-> +		return ret;
+> +description: |
+> +  Qualcomm global clock control module which supports the clocks, resets=
+ and
+> +  power domains on SM4250/6115.
 > +
->   	return (int)res;
->   }
->   
-> @@ -251,10 +268,9 @@ static void mdio_write(struct net_device *dev, int phy_id, int loc, int val)
->   
->   static int read_eprom_word(pegasus_t *pegasus, __u8 index, __u16 *retdata)
->   {
-> -	int i;
-> -	__u8 tmp = 0;
-> +	int ret, i;
->   	__le16 retdatai;
-> -	int ret;
-> +	__u8 tmp = 0;
->   
->   	set_register(pegasus, EpromCtrl, 0);
->   	set_register(pegasus, EpromOffset, index);
-> @@ -262,21 +278,25 @@ static int read_eprom_word(pegasus_t *pegasus, __u8 index, __u16 *retdata)
->   
->   	for (i = 0; i < REG_TIMEOUT; i++) {
->   		ret = get_registers(pegasus, EpromCtrl, 1, &tmp);
-> +		if (ret < 0)
-> +			goto fail;
->   		if (tmp & EPROM_DONE)
->   			break;
-> -		if (ret == -ESHUTDOWN)
-> -			goto fail;
->   	}
-> -	if (i >= REG_TIMEOUT)
-> +	if (i >= REG_TIMEOUT) {
-> +		ret = -ETIMEDOUT;
->   		goto fail;
-> +	}
->   
->   	ret = get_registers(pegasus, EpromData, 2, &retdatai);
-> +	if (ret < 0)
-> +		goto fail;
->   	*retdata = le16_to_cpu(retdatai);
->   	return ret;
->   
->   fail:
-> -	netif_warn(pegasus, drv, pegasus->net, "%s failed\n", __func__);
-> -	return -ETIMEDOUT;
-> +	netif_dbg(pegasus, drv, pegasus->net, "%s failed\n", __func__);
-> +	return ret;
->   }
->   
->   #ifdef	PEGASUS_WRITE_EEPROM
-> @@ -324,10 +344,10 @@ static int write_eprom_word(pegasus_t *pegasus, __u8 index, __u16 data)
->   	return ret;
->   
->   fail:
-> -	netif_warn(pegasus, drv, pegasus->net, "%s failed\n", __func__);
-> +	netif_dbg(pegasus, drv, pegasus->net, "%s failed\n", __func__);
->   	return -ETIMEDOUT;
->   }
-> -#endif				/* PEGASUS_WRITE_EEPROM */
-> +#endif	/* PEGASUS_WRITE_EEPROM */
->   
->   static inline int get_node_id(pegasus_t *pegasus, u8 *id)
->   {
-> @@ -367,19 +387,21 @@ static void set_ethernet_addr(pegasus_t *pegasus)
->   	return;
->   err:
->   	eth_hw_addr_random(pegasus->net);
-> -	dev_info(&pegasus->intf->dev, "software assigned MAC address.\n");
-> +	netif_dbg(pegasus, drv, pegasus->net, "software assigned MAC address.\n");
->   
->   	return;
->   }
+> +  See also:
+> +  - dt-bindings/clock/qcom,gcc-sm6115.h
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,gcc-sm6115
+> +
+> +  clocks:
+> +    items:
+> +      - description: Board XO source
+> +      - description: Sleep clock source
+> +      - description: PLL test clock source (Optional clock)
 
-Not related to the patch, but, maybe, we should remove this return?
+Please drop this last one
 
->   
->   static inline int reset_mac(pegasus_t *pegasus)
->   {
-> +	int ret, i;
->   	__u8 data = 0x8;
-> -	int i;
->   
->   	set_register(pegasus, EthCtrl1, data);
->   	for (i = 0; i < REG_TIMEOUT; i++) {
-> -		get_registers(pegasus, EthCtrl1, 1, &data);
-> +		ret = get_registers(pegasus, EthCtrl1, 1, &data);
-> +		if (ret < 0)
-> +			goto fail;
->   		if (~data & 0x08) {
->   			if (loopback)
->   				break;
-> @@ -402,22 +424,29 @@ static inline int reset_mac(pegasus_t *pegasus)
->   	}
->   	if (usb_dev_id[pegasus->dev_index].vendor == VENDOR_ELCON) {
->   		__u16 auxmode;
-> -		read_mii_word(pegasus, 3, 0x1b, &auxmode);
-> +		ret = read_mii_word(pegasus, 3, 0x1b, &auxmode);
-> +		if (ret < 0)
-> +			goto fail;
->   		auxmode |= 4;
->   		write_mii_word(pegasus, 3, 0x1b, &auxmode);
->   	}
->   
->   	return 0;
-> +fail:
-> +	netif_dbg(pegasus, drv, pegasus->net, "%s failed\n", __func__);
-> +	return ret;
->   }
->   
->   static int enable_net_traffic(struct net_device *dev, struct usb_device *usb)
->   {
-> -	__u16 linkpart;
-> -	__u8 data[4];
->   	pegasus_t *pegasus = netdev_priv(dev);
->   	int ret;
-> +	__u16 linkpart;
-> +	__u8 data[4];
->   
-> -	read_mii_word(pegasus, pegasus->phy, MII_LPA, &linkpart);
-> +	ret = read_mii_word(pegasus, pegasus->phy, MII_LPA, &linkpart);
-> +	if (ret < 0)
-> +		goto fail;
->   	data[0] = 0xc8; /* TX & RX enable, append status, no CRC */
->   	data[1] = 0;
->   	if (linkpart & (ADVERTISE_100FULL | ADVERTISE_10FULL))
-> @@ -435,11 +464,16 @@ static int enable_net_traffic(struct net_device *dev, struct usb_device *usb)
->   	    usb_dev_id[pegasus->dev_index].vendor == VENDOR_LINKSYS2 ||
->   	    usb_dev_id[pegasus->dev_index].vendor == VENDOR_DLINK) {
->   		u16 auxmode;
-> -		read_mii_word(pegasus, 0, 0x1b, &auxmode);
-> +		ret = read_mii_word(pegasus, 0, 0x1b, &auxmode);
-> +		if (ret < 0)
-> +			goto fail;
->   		auxmode |= 4;
->   		write_mii_word(pegasus, 0, 0x1b, &auxmode);
->   	}
->   
-> +	return 0;
-> +fail:
-> +	netif_dbg(pegasus, drv, pegasus->net, "%s failed\n", __func__);
->   	return ret;
->   }
->   
-> @@ -447,9 +481,9 @@ static void read_bulk_callback(struct urb *urb)
->   {
->   	pegasus_t *pegasus = urb->context;
->   	struct net_device *net;
-> +	u8 *buf = urb->transfer_buffer;
->   	int rx_status, count = urb->actual_length;
->   	int status = urb->status;
-> -	u8 *buf = urb->transfer_buffer;
->   	__u16 pkt_len;
->   
->   	if (!pegasus)
-> @@ -1049,6 +1083,7 @@ static __u8 mii_phy_probe(pegasus_t *pegasus)
->   
->   static inline void setup_pegasus_II(pegasus_t *pegasus)
->   {
-> +	int ret;
->   	__u8 data = 0xa5;
->   
->   	set_register(pegasus, Reg1d, 0);
-> @@ -1060,7 +1095,9 @@ static inline void setup_pegasus_II(pegasus_t *pegasus)
->   		set_register(pegasus, Reg7b, 2);
->   
->   	set_register(pegasus, 0x83, data);
-> -	get_registers(pegasus, 0x83, 1, &data);
-> +	ret = get_registers(pegasus, 0x83, 1, &data);
-> +	if (ret < 0)
-> +		goto fail;
->   
->   	if (data == 0xa5)
->   		pegasus->chip = 0x8513;
-> @@ -1075,6 +1112,8 @@ static inline void setup_pegasus_II(pegasus_t *pegasus)
->   		set_register(pegasus, Reg81, 6);
->   	else
->   		set_register(pegasus, Reg81, 2);
-> +fail:
-> +	netif_dbg(pegasus, drv, pegasus->net, "%s failed\n", __func__);
->   }
->   
->   static void check_carrier(struct work_struct *work)
-> 
+> +
+> +  clock-names:
+> +    items:
+> +      - const: bi_tcxo
+> +      - const: sleep_clk
+> +      - const: core_bi_pll_test_se # Optional clock
 
-Looks good to me.
+And this last one. The test input is never used. I'd make this the same
+as gcc-sc7180, i.e. have the always on XO as an input in case it is
+needed.
 
-Build test didn't generate any warnings (tested on top of v5.14-rc4 with 
-yours and mine patches applied). Smatch didn't generate any warnings as 
-well.
-
-I found two more places, where read_mii_word() is used without error 
-checking: pegasus_ioctl() and mii_phy_probe(). If I understand 
-correctly, mii_phy_probe() is more dangerous one, since it's used in 
-->probe().
-
-
-With regards,
-Pavel Skripkin
+> +
+> +  '#clock-cells':
+> +    const: 1
