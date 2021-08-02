@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9463DDA05
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627373DD95A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236337AbhHBOGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:06:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
+        id S235284AbhHBOAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:00:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236448AbhHBN7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:59:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0FC161168;
-        Mon,  2 Aug 2021 13:55:47 +0000 (UTC)
+        id S235645AbhHBNyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:54:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF56D61163;
+        Mon,  2 Aug 2021 13:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912548;
-        bh=0SxXdrzgCMf+XGpPMBcK0MfRTFpmHNYKS0tjM7kJg/8=;
+        s=korg; t=1627912343;
+        bh=aD7IiEmTI7yrt/iGBkXHMfaZrzPwI37ZRx3xDpsq6lc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qBJbta2lAtAV/Cn9tFlIwkHg4YhKZAL3Cg8djdgdzbJE3LVOJjadfbtipGFHpZOGh
-         QHZ0fGLeN3fwqBc58LospUVaRWtm2vm+bhxYjSYVu6YRzLZ7YR4RCETLCxvJQq2CRi
-         2FP9TP6G5fHChbEy9JTcPbwk5R4qnn85FUIFwbkU=
+        b=2AUOqIYrbadbPS1XD80eNF7ZOP55lSQ/YmBp8/QbO2BYc2Pn9CladFU63piB0kZYM
+         zEJ/fYVJ7M4fCXyPauWOZ9lX/WmPt2ZEaxl2ygLTvBWmBKXngLAPb3u7z+3WyGkNc+
+         n64j/ScB3oSPN56127YOUArBxeky5tulvlRHv4PQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 042/104] mac80211: fix enabling 4-address mode on a sta vif after assoc
-Date:   Mon,  2 Aug 2021 15:44:39 +0200
-Message-Id: <20210802134345.409860407@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.10 17/67] can: ems_usb: fix memory leak
+Date:   Mon,  2 Aug 2021 15:44:40 +0200
+Message-Id: <20210802134339.602503223@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,92 +39,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit a5d3cbdb09ff1f52cbe040932e06c8b9915c6dad ]
+commit 9969e3c5f40c166e3396acc36c34f9de502929f6 upstream.
 
-Notify the driver about the 4-address mode change and also send a nulldata
-packet to the AP to notify it about the change
+In ems_usb_start() MAX_RX_URBS coherent buffers are allocated and
+there is nothing, that frees them:
 
-Fixes: 1ff4e8f2dec8 ("mac80211: notify the driver when a sta uses 4-address mode")
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20210702050111.47546-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+1) In callback function the urb is resubmitted and that's all
+2) In disconnect function urbs are simply killed, but URB_FREE_BUFFER
+   is not set (see ems_usb_start) and this flag cannot be used with
+   coherent buffers.
+
+So, all allocated buffers should be freed with usb_free_coherent()
+explicitly.
+
+Side note: This code looks like a copy-paste of other can drivers. The
+same patch was applied to mcba_usb driver and it works nice with real
+hardware. There is no change in functionality, only clean-up code for
+coherent buffers.
+
+Fixes: 702171adeed3 ("ems_usb: Added support for EMS CPC-USB/ARM7 CAN/USB interface")
+Link: https://lore.kernel.org/r/59aa9fbc9a8cbf9af2bbd2f61a659c480b415800.1627404470.git.paskripkin@gmail.com
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/cfg.c         | 19 +++++++++++++++++++
- net/mac80211/ieee80211_i.h |  2 ++
- net/mac80211/mlme.c        |  4 ++--
- 3 files changed, 23 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/ems_usb.c |   14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 7a99892e5aba..9f1443459852 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -152,6 +152,8 @@ static int ieee80211_change_iface(struct wiphy *wiphy,
- 				  struct vif_params *params)
- {
- 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
-+	struct ieee80211_local *local = sdata->local;
-+	struct sta_info *sta;
- 	int ret;
+--- a/drivers/net/can/usb/ems_usb.c
++++ b/drivers/net/can/usb/ems_usb.c
+@@ -255,6 +255,8 @@ struct ems_usb {
+ 	unsigned int free_slots; /* remember number of available slots */
  
- 	ret = ieee80211_if_change_type(sdata, type);
-@@ -162,7 +164,24 @@ static int ieee80211_change_iface(struct wiphy *wiphy,
- 		RCU_INIT_POINTER(sdata->u.vlan.sta, NULL);
- 		ieee80211_check_fast_rx_iface(sdata);
- 	} else if (type == NL80211_IFTYPE_STATION && params->use_4addr >= 0) {
-+		struct ieee80211_if_managed *ifmgd = &sdata->u.mgd;
+ 	struct ems_cpc_msg active_params; /* active controller parameters */
++	void *rxbuf[MAX_RX_URBS];
++	dma_addr_t rxbuf_dma[MAX_RX_URBS];
+ };
+ 
+ static void ems_usb_read_interrupt_callback(struct urb *urb)
+@@ -587,6 +589,7 @@ static int ems_usb_start(struct ems_usb
+ 	for (i = 0; i < MAX_RX_URBS; i++) {
+ 		struct urb *urb = NULL;
+ 		u8 *buf = NULL;
++		dma_addr_t buf_dma;
+ 
+ 		/* create a URB, and a buffer for it */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+@@ -596,7 +599,7 @@ static int ems_usb_start(struct ems_usb
+ 		}
+ 
+ 		buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
+-					 &urb->transfer_dma);
++					 &buf_dma);
+ 		if (!buf) {
+ 			netdev_err(netdev, "No memory left for USB buffer\n");
+ 			usb_free_urb(urb);
+@@ -604,6 +607,8 @@ static int ems_usb_start(struct ems_usb
+ 			break;
+ 		}
+ 
++		urb->transfer_dma = buf_dma;
 +
-+		if (params->use_4addr == ifmgd->use_4addr)
-+			return 0;
+ 		usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 2),
+ 				  buf, RX_BUFFER_SIZE,
+ 				  ems_usb_read_bulk_callback, dev);
+@@ -619,6 +624,9 @@ static int ems_usb_start(struct ems_usb
+ 			break;
+ 		}
+ 
++		dev->rxbuf[i] = buf;
++		dev->rxbuf_dma[i] = buf_dma;
 +
- 		sdata->u.mgd.use_4addr = params->use_4addr;
-+		if (!ifmgd->associated)
-+			return 0;
-+
-+		mutex_lock(&local->sta_mtx);
-+		sta = sta_info_get(sdata, ifmgd->bssid);
-+		if (sta)
-+			drv_sta_set_4addr(local, sdata, &sta->sta,
-+					  params->use_4addr);
-+		mutex_unlock(&local->sta_mtx);
-+
-+		if (params->use_4addr)
-+			ieee80211_send_4addr_nullfunc(local, sdata);
+ 		/* Drop reference, USB core will take care of freeing it */
+ 		usb_free_urb(urb);
  	}
+@@ -684,6 +692,10 @@ static void unlink_all_urbs(struct ems_u
  
- 	if (sdata->vif.type == NL80211_IFTYPE_MONITOR) {
-diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
-index 648696b49f89..1e1d2e72de4a 100644
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -2045,6 +2045,8 @@ void ieee80211_dynamic_ps_timer(struct timer_list *t);
- void ieee80211_send_nullfunc(struct ieee80211_local *local,
- 			     struct ieee80211_sub_if_data *sdata,
- 			     bool powersave);
-+void ieee80211_send_4addr_nullfunc(struct ieee80211_local *local,
-+				   struct ieee80211_sub_if_data *sdata);
- void ieee80211_sta_tx_notify(struct ieee80211_sub_if_data *sdata,
- 			     struct ieee80211_hdr *hdr, bool ack, u16 tx_time);
+ 	usb_kill_anchored_urbs(&dev->rx_submitted);
  
-diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
-index b1c44fa63a06..9bed6464c5bd 100644
---- a/net/mac80211/mlme.c
-+++ b/net/mac80211/mlme.c
-@@ -1115,8 +1115,8 @@ void ieee80211_send_nullfunc(struct ieee80211_local *local,
- 	ieee80211_tx_skb(sdata, skb);
- }
++	for (i = 0; i < MAX_RX_URBS; ++i)
++		usb_free_coherent(dev->udev, RX_BUFFER_SIZE,
++				  dev->rxbuf[i], dev->rxbuf_dma[i]);
++
+ 	usb_kill_anchored_urbs(&dev->tx_submitted);
+ 	atomic_set(&dev->active_tx_urbs, 0);
  
--static void ieee80211_send_4addr_nullfunc(struct ieee80211_local *local,
--					  struct ieee80211_sub_if_data *sdata)
-+void ieee80211_send_4addr_nullfunc(struct ieee80211_local *local,
-+				   struct ieee80211_sub_if_data *sdata)
- {
- 	struct sk_buff *skb;
- 	struct ieee80211_hdr *nullfunc;
--- 
-2.30.2
-
 
 
