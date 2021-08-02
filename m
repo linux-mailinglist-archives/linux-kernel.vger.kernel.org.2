@@ -2,258 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3A93DCE69
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 02:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAF53DCE6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 02:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbhHBAlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 20:41:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:57404 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232329AbhHBAlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 20:41:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 54FE3139F;
-        Sun,  1 Aug 2021 17:41:07 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7788F3F66F;
-        Sun,  1 Aug 2021 17:41:05 -0700 (PDT)
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org
-Subject: [PATCH v9 11/11] arm64: dts: allwinner: h616: Add X96 Mate TV box support
-Date:   Mon,  2 Aug 2021 01:39:52 +0100
-Message-Id: <20210802003952.19942-12-andre.przywara@arm.com>
-X-Mailer: git-send-email 2.14.1
-In-Reply-To: <20210802003952.19942-1-andre.przywara@arm.com>
-References: <20210802003952.19942-1-andre.przywara@arm.com>
+        id S231696AbhHBAzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 20:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230421AbhHBAza (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 1 Aug 2021 20:55:30 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB98C06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 17:55:21 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id cb3so6142552ejb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 17:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ksajpnsjJzPlnTGdprn7ElzDNq6N2TCOP+6qf/O43zw=;
+        b=iN+YJH9WVXFJF82gYEqnQ0Z2Lp2scoDpO018/OJfQaGSejCiXf39lYREjmVD642jWV
+         P0HSiTYTStjzbYaRr4372O39f19spQq4qWyHx51/+sRBlJQd1mXbqPzL8pbCim98NmJu
+         wxPPcXDqiASQ50HnZWycIzT9tD9h9US2cClrshjK+hzRWiIZ3ea5n9E869agebFcbXiW
+         8vd+ShUR2V7yfbqgvk3/JYFu3MiwxCgo6/GoxUQi59NqmuKFx2KUItEcuhLR05BXOX2n
+         CnfO72oUdwOXStgHjMwmlRprEg6Me4x11h6xjWGZJTHg8SePAN9mZKe4B6I5UbVi/Xcm
+         WYgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ksajpnsjJzPlnTGdprn7ElzDNq6N2TCOP+6qf/O43zw=;
+        b=OiKuGzRN3C4wN9oVVDfYotWONs3wrDLFUXjvn/4Xd3wcBy4BlB9hXvIq280ZXMJeSj
+         vYfuiGrhogTvyFTw9UAs4jQbUZ35kZdS/nw2KakGugvb3nFQu1NwS/fQp/78J5ksCkq+
+         vXU2ihB0ARvyxS66Qr8IOMlKSueCL2HtvCLGu9JuKHu8RVRfqFHNynvmlm0wWHvFTSIA
+         sPl8VWHHSO8UfnvDXDJCmZ8Xq2zxHod0EvkEOtqR6btxmPaDAgzqc/QfVvKnFh2XS+Jr
+         3brtKPEEfmReem0mWl+Ej54zrayQiKKfcp9xLDU9NApqizuvBxH3k/7MFmuwIHsyxr3O
+         S4+w==
+X-Gm-Message-State: AOAM532MkjKAmiF8bqQYm80UpjVZ8qcV/vDJBTtA7tuTGXR7qDnpFTD6
+        wtZh2N/woP2C4YcCSAx/Ll2etfNL2Jc=
+X-Google-Smtp-Source: ABdhPJzI0jlYSuZH4DXXc/6divlLMe1Z6vgDAfJeBvZBwr+fxeKbNseWF3NzpiwRf2l5Ej2LOs/dHQ==
+X-Received: by 2002:a17:906:31d4:: with SMTP id f20mr12776750ejf.383.1627865720521;
+        Sun, 01 Aug 2021 17:55:20 -0700 (PDT)
+Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
+        by smtp.gmail.com with ESMTPSA id b17sm620123edd.27.2021.08.01.17.55.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Aug 2021 17:55:20 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: r8188eu: core: Remove rtw_mfree_all_stainfo()
+Date:   Mon,  2 Aug 2021 02:55:17 +0200
+Message-Id: <20210802005517.12815-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The X96 Mate is an Allwinner H616 based TV box, featuring:
-  - Four ARM Cortex-A53 cores, Mali-G31 MP2 GPU
-  - 2GiB/4GiB RAM (fully usable!)
-  - 16/32/64GiB eMMC
-  - 100Mbps Ethernet (via embedded AC200 EPHY, not yet supported)
-  - Unsupported Allwinner WiFi chip
-  - 2 x USB 2.0 host ports
-  - HDMI port
-  - IR receiver
-  - 5V/2A DC power supply via barrel plug
+Remove rtw_mfree_all_stainfo() and the only line of code that calls
+it. This function simply takes a spinlock and iterates over a list 
+with no purpose. That iteration has no side effects.
 
-For more information see: https://linux-sunxi.org/X96_Mate
-
-Add a basic devicetree for it, with SD card and eMMC working, as
-well as serial and the essential peripherals, like the AXP PMIC.
-
-This DT is somewhat minimal, and should work on many other similar TV
-boxes with the Allwinner H616 chip.
-
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/Makefile        |   1 +
- .../dts/allwinner/sun50i-h616-x96-mate.dts    | 178 ++++++++++++++++++
- 2 files changed, 179 insertions(+)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-x96-mate.dts
+ drivers/staging/r8188eu/core/rtw_sta_mgt.c | 22 ----------------------
+ 1 file changed, 22 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-index 62f8d43cf84d..14053c566601 100644
---- a/arch/arm64/boot/dts/allwinner/Makefile
-+++ b/arch/arm64/boot/dts/allwinner/Makefile
-@@ -38,3 +38,4 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
-+dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-x96-mate.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-x96-mate.dts
-new file mode 100644
-index 000000000000..6334f4e20fd0
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-x96-mate.dts
-@@ -0,0 +1,178 @@
-+// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-+/*
-+ * Copyright (C) 2021 Arm Ltd.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sun50i-h616.dtsi"
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+/ {
-+	model = "X96 Mate";
-+	compatible = "hechuang,x96-mate", "allwinner,sun50i-h616";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	reg_vcc5v: vcc5v {
-+		/* board wide 5V supply directly from the DC input */
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc-5v";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+};
-+
-+&ir {
-+	status = "okay";
-+};
-+
-+&mmc0 {
-+	vmmc-supply = <&reg_dcdce>;
-+	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>;	/* PF6 */
-+	bus-width = <4>;
-+	status = "okay";
-+};
-+
-+&mmc2 {
-+	vmmc-supply = <&reg_dcdce>;
-+	vqmmc-supply = <&reg_bldo1>;
-+	bus-width = <8>;
-+	non-removable;
-+	cap-mmc-hw-reset;
-+	mmc-ddr-1_8v;
-+	mmc-hs200-1_8v;
-+	status = "okay";
-+};
-+
-+&r_rsb {
-+	status = "okay";
-+
-+	axp305: pmic@745 {
-+		compatible = "x-powers,axp305", "x-powers,axp805",
-+			     "x-powers,axp806";
-+		interrupt-controller;
-+		#interrupt-cells = <1>;
-+		#address-cells = <0>;
-+		reg = <0x745>;
-+
-+		x-powers,self-working-mode;
-+		vina-supply = <&reg_vcc5v>;
-+		vinb-supply = <&reg_vcc5v>;
-+		vinc-supply = <&reg_vcc5v>;
-+		vind-supply = <&reg_vcc5v>;
-+		vine-supply = <&reg_vcc5v>;
-+		aldoin-supply = <&reg_vcc5v>;
-+		bldoin-supply = <&reg_vcc5v>;
-+		cldoin-supply = <&reg_vcc5v>;
-+
-+		regulators {
-+			reg_aldo1: aldo1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc-sys";
-+			};
-+
-+			/* Enabled by the Android BSP */
-+			reg_aldo2: aldo2 {
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc3v3-ext";
-+				status = "disabled";
-+			};
-+
-+			/* Enabled by the Android BSP */
-+			reg_aldo3: aldo3 {
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc3v3-ext2";
-+				status = "disabled";
-+			};
-+
-+			reg_bldo1: bldo1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-name = "vcc1v8";
-+			};
-+
-+			/* Enabled by the Android BSP */
-+			reg_bldo2: bldo2 {
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-name = "vcc1v8-2";
-+				status = "disabled";
-+			};
-+
-+			bldo3 {
-+				/* unused */
-+			};
-+
-+			bldo4 {
-+				/* unused */
-+			};
-+
-+			cldo1 {
-+				regulator-min-microvolt = <2500000>;
-+				regulator-max-microvolt = <2500000>;
-+				regulator-name = "vcc2v5";
-+			};
-+
-+			cldo2 {
-+				/* unused */
-+			};
-+
-+			cldo3 {
-+				/* unused */
-+			};
-+
-+			reg_dcdca: dcdca {
-+				regulator-always-on;
-+				regulator-min-microvolt = <810000>;
-+				regulator-max-microvolt = <1080000>;
-+				regulator-name = "vdd-cpu";
-+			};
-+
-+			reg_dcdcc: dcdcc {
-+				regulator-always-on;
-+				regulator-min-microvolt = <810000>;
-+				regulator-max-microvolt = <1080000>;
-+				regulator-name = "vdd-gpu-sys";
-+			};
-+
-+			reg_dcdcd: dcdcd {
-+				regulator-always-on;
-+				regulator-min-microvolt = <1360000>;
-+				regulator-max-microvolt = <1360000>;
-+				regulator-name = "vdd-dram";
-+			};
-+
-+			reg_dcdce: dcdce {
-+				regulator-boot-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc-eth-mmc";
-+			};
-+
-+			sw {
-+				/* unused */
-+			};
-+		};
-+	};
-+};
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart0_ph_pins>;
-+	status = "okay";
-+};
+diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+index feaf39fddf7c..dae845ace2ef 100644
+--- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
++++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+@@ -161,34 +161,12 @@ void rtw_mfree_stainfo(struct sta_info *psta)
+ 
+ }
+ 
+-/*  this function is used to free the memory of lock || sema for all stainfos */
+-void rtw_mfree_all_stainfo(struct sta_priv *pstapriv);
+-void rtw_mfree_all_stainfo(struct sta_priv *pstapriv)
+-{
+-	struct list_head *plist, *phead;
+-	struct sta_info *psta = NULL;
+-
+-	spin_lock_bh(&pstapriv->sta_hash_lock);
+-
+-	phead = get_list_head(&pstapriv->free_sta_queue);
+-	plist = phead->next;
+-
+-	while (phead != plist) {
+-		psta = container_of(plist, struct sta_info, list);
+-		plist = plist->next;
+-	}
+-
+-	spin_unlock_bh(&pstapriv->sta_hash_lock);
+-}
+-
+ static void rtw_mfree_sta_priv_lock(struct sta_priv *pstapriv)
+ {
+ #ifdef CONFIG_88EU_AP_MODE
+ 	struct wlan_acl_pool *pacl_list = &pstapriv->acl_list;
+ #endif
+ 
+-	 rtw_mfree_all_stainfo(pstapriv); /* be done before free sta_hash_lock */
+-
+ 	_rtw_spinlock_free(&pstapriv->free_sta_queue.lock);
+ 
+ 	_rtw_spinlock_free(&pstapriv->sta_hash_lock);
 -- 
-2.17.6
+2.32.0
 
