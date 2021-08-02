@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2933DD9A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5B23DD893
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234368AbhHBOCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:02:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60854 "EHLO mail.kernel.org"
+        id S234497AbhHBNxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:53:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235747AbhHBNyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:54:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3618761183;
-        Mon,  2 Aug 2021 13:52:38 +0000 (UTC)
+        id S234165AbhHBNtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:49:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1434360551;
+        Mon,  2 Aug 2021 13:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912358;
-        bh=k+5vxf2jg4fS0EDyw3i+2FAXvaetqSfv4NJ24XYIk6w=;
+        s=korg; t=1627912143;
+        bh=mTGxb1Ejz9EMtgv3s0iB2uOWO/0q9PqqAQqhujIkmYw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BK+HIw2jghYrk/4hwwPk0NwHJz7M9sh5QIqxilI04hmy3R6WTTjzNfUtlPBRqXGLI
-         QfdwalRqowr209TFF0I9wTU8WE5GxfmnyMglpoaUkfjPv+obVh97efQyerflWbtPq/
-         uEUes1r1m1nM+oFEtHJR7kpxKfY6K+Sn+lf4KHL4=
+        b=osLNyrChrIp0wMfPbjWe2fyRE9Urvnho7exNfFGb/pAYTv+1T4pPTxm9A/RlJdMtt
+         B89iYVOMXD5vVVqhDqtxepJdQY4InSqfznuOT2NNLb35L1J1mGSXN4FfROFEF4/biS
+         qTN0bzG1PxTsYv6r5BMLBMOHyD1Q14GB09E/apfc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, PGNd <pgnet.dev@gmail.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.10 06/67] Revert "ACPI: resources: Add checks for ACPI IRQ override"
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 07/38] net/802/garp: fix memleak in garp_request_join()
 Date:   Mon,  2 Aug 2021 15:44:29 +0200
-Message-Id: <20210802134339.237262137@linuxfoundation.org>
+Message-Id: <20210802134335.068510222@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit e0eef3690dc66b3ecc6e0f1267f332403eb22bea upstream.
+[ Upstream commit 42ca63f980842918560b25f0244307fd83b4777c ]
 
-The commit 0ec4e55e9f57 ("ACPI: resources: Add checks for ACPI IRQ
-override") introduces regression on some platforms, at least it makes
-the UART can't get correct irq setting on two different platforms,
-and it makes the kernel can't bootup on these two platforms.
+I got kmemleak report when doing fuzz test:
 
-This reverts commit 0ec4e55e9f571f08970ed115ec0addc691eda613.
+BUG: memory leak
+unreferenced object 0xffff88810c909b80 (size 64):
+  comm "syz", pid 957, jiffies 4295220394 (age 399.090s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 08 00 00 00 01 02 00 04  ................
+  backtrace:
+    [<00000000ca1f2e2e>] garp_request_join+0x285/0x3d0
+    [<00000000bf153351>] vlan_gvrp_request_join+0x15b/0x190
+    [<0000000024005e72>] vlan_dev_open+0x706/0x980
+    [<00000000dc20c4d4>] __dev_open+0x2bb/0x460
+    [<0000000066573004>] __dev_change_flags+0x501/0x650
+    [<0000000035b42f83>] rtnl_configure_link+0xee/0x280
+    [<00000000a5e69de0>] __rtnl_newlink+0xed5/0x1550
+    [<00000000a5258f4a>] rtnl_newlink+0x66/0x90
+    [<00000000506568ee>] rtnetlink_rcv_msg+0x439/0xbd0
+    [<00000000b7eaeae1>] netlink_rcv_skb+0x14d/0x420
+    [<00000000c373ce66>] netlink_unicast+0x550/0x750
+    [<00000000ec74ce74>] netlink_sendmsg+0x88b/0xda0
+    [<00000000381ff246>] sock_sendmsg+0xc9/0x120
+    [<000000008f6a2db3>] ____sys_sendmsg+0x6e8/0x820
+    [<000000008d9c1735>] ___sys_sendmsg+0x145/0x1c0
+    [<00000000aa39dd8b>] __sys_sendmsg+0xfe/0x1d0
 
-Regression-discuss: https://bugzilla.kernel.org/show_bug.cgi?id=213031
-Reported-by: PGNd <pgnet.dev@gmail.com>
-Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Calling garp_request_leave() after garp_request_join(), the attr->state
+is set to GARP_APPLICANT_VO, garp_attr_destroy() won't be called in last
+transmit event in garp_uninit_applicant(), the attr of applicant will be
+leaked. To fix this leak, iterate and free each attr of applicant before
+rerturning from garp_uninit_applicant().
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/resource.c |    9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ net/802/garp.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -430,13 +430,6 @@ static void acpi_dev_get_irqresource(str
- 	}
+diff --git a/net/802/garp.c b/net/802/garp.c
+index 2dac647ff420..237f6f076355 100644
+--- a/net/802/garp.c
++++ b/net/802/garp.c
+@@ -206,6 +206,19 @@ static void garp_attr_destroy(struct garp_applicant *app, struct garp_attr *attr
+ 	kfree(attr);
  }
  
--static bool irq_is_legacy(struct acpi_resource_irq *irq)
--{
--	return irq->triggering == ACPI_EDGE_SENSITIVE &&
--		irq->polarity == ACPI_ACTIVE_HIGH &&
--		irq->shareable == ACPI_EXCLUSIVE;
--}
--
- /**
-  * acpi_dev_resource_interrupt - Extract ACPI interrupt resource information.
-  * @ares: Input ACPI resource object.
-@@ -475,7 +468,7 @@ bool acpi_dev_resource_interrupt(struct
- 		}
- 		acpi_dev_get_irqresource(res, irq->interrupts[index],
- 					 irq->triggering, irq->polarity,
--					 irq->shareable, irq_is_legacy(irq));
-+					 irq->shareable, true);
- 		break;
- 	case ACPI_RESOURCE_TYPE_EXTENDED_IRQ:
- 		ext_irq = &ares->data.extended_irq;
++static void garp_attr_destroy_all(struct garp_applicant *app)
++{
++	struct rb_node *node, *next;
++	struct garp_attr *attr;
++
++	for (node = rb_first(&app->gid);
++	     next = node ? rb_next(node) : NULL, node != NULL;
++	     node = next) {
++		attr = rb_entry(node, struct garp_attr, node);
++		garp_attr_destroy(app, attr);
++	}
++}
++
+ static int garp_pdu_init(struct garp_applicant *app)
+ {
+ 	struct sk_buff *skb;
+@@ -612,6 +625,7 @@ void garp_uninit_applicant(struct net_device *dev, struct garp_application *appl
+ 
+ 	spin_lock_bh(&app->lock);
+ 	garp_gid_event(app, GARP_EVENT_TRANSMIT_PDU);
++	garp_attr_destroy_all(app);
+ 	garp_pdu_queue(app);
+ 	spin_unlock_bh(&app->lock);
+ 
+-- 
+2.30.2
+
 
 
