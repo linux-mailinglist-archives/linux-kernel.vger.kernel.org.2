@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E463DE191
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773053DE19A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232803AbhHBVWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:22:36 -0400
-Received: from pb-smtp2.pobox.com ([64.147.108.71]:56285 "EHLO
-        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbhHBVWd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:22:33 -0400
-Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
-        by pb-smtp2.pobox.com (Postfix) with ESMTP id 3AE0DD1F9E;
-        Mon,  2 Aug 2021 17:22:21 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-        :to:cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=CRe+PDqlDBc1oefWEPXwlMOMctNURIEIHe/d9Q
-        t60Zw=; b=m56WwsFDwPpRT2I7QecE9QLtZve1ynAPPvMtr86IMieAQ0k64QIjcG
-        ere3sLLtO6zvM5XKKEBpLA8U5yOsgOFdCEFYNjnjyv6YFtjUzpti+ITFKrna8M+t
-        hD4UfkW89CoeS57/fwcMo5aLVf0BKL2f6JdTGHEv5wnY7sE4HMEuA=
-Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp2.pobox.com (Postfix) with ESMTP id 306C3D1F9D;
-        Mon,  2 Aug 2021 17:22:21 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=CRe+PDqlDBc1oefWEPXwlMOMctNURIEIHe/d9Qt60Zw=; b=ieIfu5e1D8DeXYWVBpJ3d47r+18sJuZPvVsfKLoBGLvrJ7QCly8af887QGWpjGtlqC2Q0DlUCVdRiqDh8fGFYNz0LDeMezu17uoVXLzjP4HiDrUKICoTGn66qmkxcr5UFcacvfUy/fmF4pjGlREKRXTM4p+y0kPcXqu/WWCbsDM=
-Received: from yoda.home (unknown [96.21.170.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id 55557D1F9C;
-        Mon,  2 Aug 2021 17:22:20 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id ED3792DA09B9;
-        Mon,  2 Aug 2021 17:22:18 -0400 (EDT)
-Date:   Mon, 2 Aug 2021 17:22:18 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Arnd Bergmann <arnd@kernel.org>
-cc:     "Keller, Jacob E" <jacob.e.keller@intel.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
- dependencies
-In-Reply-To: <CAK8P3a379=Qi7g7Hmf299GgM-6g32Them81uYXPqRDZDro_azg@mail.gmail.com>
-Message-ID: <7q2p5954-3062-po4-ps5r-9n30n5663ns3@syhkavp.arg>
-References: <20210802145937.1155571-1-arnd@kernel.org> <20210802164907.GA9832@hoboy.vegasvil.org> <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com> <CAK8P3a3P6=ZROxT8daW83mRp7z5rYAQydetWFXQoYF7Y5_KLHA@mail.gmail.com> <CO1PR11MB50892367410160A8364DBF69D6EF9@CO1PR11MB5089.namprd11.prod.outlook.com>
- <CAK8P3a379=Qi7g7Hmf299GgM-6g32Them81uYXPqRDZDro_azg@mail.gmail.com>
+        id S232525AbhHBVZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:25:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229567AbhHBVZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 17:25:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 279E560EEA;
+        Mon,  2 Aug 2021 21:25:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627939517;
+        bh=2Wbr8lKOxYcEnRVsPKJDVHQFpQA4L8T0K/kB3c4SpcE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=qJFNt/e7Fj5ohb/1a8trJgNdnCgnAfyelKS/AVdOd3EvjK4cLpLdH9kKkNjxqTKEo
+         5D7lJ6uX/aVbToZRma6r3aUBZVoENvU6X5uxjjFJXycdtSBdjn72+HB7tlWOB5r7qh
+         EMgmYglJGJ/Fy9DRPtIoVp19QDmw8WeYmQSZlYtDhNg2SXucwSf7j24rYgYqf+AXXZ
+         3wcznbXA+b5ZpPS7DUFcoJpITPPooFdLVeqHsWoP46iBCqGVfnLLOaO3CortKp7UZa
+         fSTTZBKGgwS31xYy2lYM/GW60xRFkWAdwZJY0nvbIWlzgXcUPirUu3/xppwWf813Cs
+         oD/QkC7CDyXFg==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v2] ASoC: Intel: boards: Fix CONFIG_SND_SOC_SDW_MOCKUP select
+Date:   Mon,  2 Aug 2021 14:24:10 -0700
+Message-Id: <20210802212409.3207648-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.32.0.264.g75ae10bc75
+In-Reply-To: <20210802190351.3201677-1-nathan@kernel.org>
+References: <20210802190351.3201677-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: B87DEF62-F3D7-11EB-A6DA-FD8818BA3BAF-78420484!pb-smtp2.pobox.com
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021, Arnd Bergmann wrote:
+When CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH is enabled without
+CONFIG_EXPERT, there is a Kconfig warning about unmet dependencies:
 
-> On Mon, Aug 2, 2021 at 10:46 PM Keller, Jacob E
-> <jacob.e.keller@intel.com> wrote:
-> 
-> > > You can do something like it for a particular symbol though, such as
-> > >
-> > > config MAY_USE_PTP_1588_CLOCK
-> > >        def_tristate PTP_1588_CLOCK || !PTP_1588_CLOCK
-> > >
-> > >  config E1000E
-> > >         tristate "Intel(R) PRO/1000 PCI-Express Gigabit Ethernet support"
-> > >         depends on PCI && (!SPARC32 || BROKEN)
-> > > +       depends on MAY_USE_PTP_1588_CLOCK
-> > >         select CRC32
-> > > -       imply PTP_1588_CLOCK
-> >
-> > What about "integrates"?
-> 
-> Maybe, we'd need to look at whether that fits for the other users of the
-> "A || !A" trick.
+WARNING: unmet direct dependencies detected for SND_SOC_SDW_MOCKUP
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
+EXPERT [=n] && SOUNDWIRE [=y]
+  Selected by [y]:
+  - SND_SOC_INTEL_SOUNDWIRE_SOF_MACH [=y] && ...
 
-I implemented "conditional dependencies" at the time, which is syntactic 
-sugar to express the above as:
+Selecting a symbol does not account for dependencies. There are three
+ways to resolve this:
 
-	depends on A if A != n
+1. Make CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH select
+   CONFIG_SND_SOC_SDW_MOCKUP only if CONFIG_EXPERT is set.
 
-	depends on A if A
+2. Make CONFIG_SND_SOC_SDW_MOCKUP's prompt depend on CONFIG_EXPERT so
+   that it can be selected by options that only depend on
+   CONFIG_SOUNDWIRE but still appear as a prompt to the user when
+   CONFIG_EXPERT is set.
 
-etc.
+3. Make CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH imply
+   CONFIG_SND_SOC_SDW_MOCKUP, which will select
+   CONFIG_SND_SOC_SDW_MOCKUP when its dependencies are enabled but still
+   allow the user to disable it.
 
-http://lkml.iu.edu/hypermail/linux/kernel/2004.2/09783.html
+Go with the third option as it gives the most flexibility while
+retaining the original intent of the select.
 
-But Masahiro shut it down.
+Fixes: 0ccac3bcf356 ("ASoC: Intel: boards: sof_sdw: add SoundWire mockup codecs for tests")
+Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
 
+v1 -> v2:
 
-Nicolas
+* Switch to imply rather than select ... if ... (Pierre-Louis).
+
+* Reword commit message to explain different solutions rather than
+  explain the problem in depth.
+
+ sound/soc/intel/boards/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 046955bf717c..61b71d6c44cf 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -602,7 +602,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_INTEL_HDA_DSP_COMMON
+ 	select SND_SOC_INTEL_SOF_MAXIM_COMMON
+-	select SND_SOC_SDW_MOCKUP
++	imply SND_SOC_SDW_MOCKUP
+ 	help
+ 	  Add support for Intel SoundWire-based platforms connected to
+ 	  MAX98373, RT700, RT711, RT1308 and RT715
+
+base-commit: 170c0d7460fc4aa522995ae4096b5a442f50a1fc
+-- 
+2.32.0.264.g75ae10bc75
+
