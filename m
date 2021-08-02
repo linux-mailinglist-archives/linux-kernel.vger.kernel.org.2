@@ -2,104 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61F73DD56F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF3A3DD556
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233754AbhHBMNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
+        id S233606AbhHBMMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233737AbhHBMNo (ORCPT
+        with ESMTP id S233594AbhHBMMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:13:44 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BC6C061796
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 05:13:35 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id z3so18051772plg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 05:13:35 -0700 (PDT)
+        Mon, 2 Aug 2021 08:12:43 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310F4C061796
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 05:12:33 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id w17so28053961ybl.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 05:12:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HDPzoYjZtoVX4U5Es17iDsWrlk5dXQdhxxWK8WvZJKk=;
-        b=HameHyIb+/s0EEF3wfW+k+xsNePhdcg72nrFLgZfi6a40siVuJWf8qwoRWpsdNhUol
-         Ot0L6yQ0sC4+nuiyK5KdSz5PYaBFbTveqjyYaj4yu/BAffYZwt3Ibn0bzzo22mteK8Ll
-         hPjOeb0pswAwia42lc1i8yZt+8XLUYFZiEILc=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FkCp4kdPQ6v+pD/rtKzXxvtpigTWSSTz78u5tHl7Xw0=;
+        b=oW3C6jQOKtE2Ij6HWnrX36JyH29DLnGDBkzqnseCD3B7Sg45+lwtJoAJZ6sE1xwsBV
+         1uBHXVrgz4+y/kx88AZx4qgoDD2KPTmkBnKw+/OWNDXkL0mWqawKi4O+O5aykFa1JYsh
+         OGVPL6HQPx5AECzgnWCey3MdUAHaOsAFWBpK9JJwxRnr2cv4E0UwqHZS2mvcAHDSXbGy
+         G7/4O+2vt9i5Agaj6h56yWKGWaoep+YCpCW5Q/CDVe3ce1xuv8YzU4KuFO0KKYSykm+8
+         /pRoi3FaG/XftwBg2ylo1IwT7R2sGyysK4tkr1v3bWyHZ2/+V/fqiEhBhliFfjUwg+/w
+         u4EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HDPzoYjZtoVX4U5Es17iDsWrlk5dXQdhxxWK8WvZJKk=;
-        b=kw7I2p0YarTnH+s7/mgWoqU6cJSgRtVwrQB8686kyvF31+O9RozcC4SXp1Gx3pgiHK
-         IHeLYSlOu+dSzya7uRGHb4HTVW5b99m68PnUVpI/wnKCpdg9lLPCQA5Gqg7WRczfPeqn
-         viTcSmx7c/v/9aTLB0EhDWjl9qBksssQRrxeXGuoiWtE0G556fqRpuc8jCQplHaSIcHX
-         HjBtLYqZnhTfBJYzyhXPa7ZAlCjL/vwqhdV9cR5hytXQXLBPhSPfioUJZCERgxvkV0vB
-         GNElKDj/mPBTTT2iXm9nx0fthKxMzlWNPuH94NunRSNqg5XD1QZ5xu2EYOkNCtR7z74C
-         QZCQ==
-X-Gm-Message-State: AOAM531i/8xMN9rzv2Agb+UYNo33FkIPMV2CbqSGmk4U1LyJiCaGOOrD
-        H/Q9O+XYd4VZzFbnl4w6UVxrxpZVsRyeHg==
-X-Google-Smtp-Source: ABdhPJxNe95Bvo0uxDfI4w/MLwItpJuNHSmDwr9PfTqtnF5875XwqVD2aRlV7qfPD4tT31EMdTqkdg==
-X-Received: by 2002:a17:90b:33ce:: with SMTP id lk14mr5959359pjb.118.1627906414646;
-        Mon, 02 Aug 2021 05:13:34 -0700 (PDT)
-Received: from localhost ([2401:fa00:9:14:cd34:e942:c094:baef])
-        by smtp.gmail.com with UTF8SMTPSA id i24sm11931639pfr.207.2021.08.02.05.13.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 05:13:34 -0700 (PDT)
-From:   Eizan Miyamoto <eizan@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     wenst@chromium.org, houlong.wei@mediatek.com, yong.wu@mediatek.com,
-        enric.balletbo@collabora.com, devicetree@vger.kernel.org,
-        chunkuang.hu@kernel.org, Eizan Miyamoto <eizan@chromium.org>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v6 9/9] dt-bindings: mediatek: remove vpu requirement from mtk-mdp
-Date:   Mon,  2 Aug 2021 22:12:15 +1000
-Message-Id: <20210802220943.v6.9.If10dbdfade9f48710e485efe79e53e6e65144a2f@changeid>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-In-Reply-To: <20210802121215.703023-1-eizan@chromium.org>
-References: <20210802121215.703023-1-eizan@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FkCp4kdPQ6v+pD/rtKzXxvtpigTWSSTz78u5tHl7Xw0=;
+        b=rQYMzy/87DpGLw+Umxu2J/dDiRiHN0HgRhl0+oLLP2f22I4HDkL/Vp0aoG7mWs2Rc+
+         MIkkKA57zV/+7Q9k8GkEFJgpOo/uqpksA3mrMvLztMRduRbT673g05uD6749AfDf3jiW
+         +cCXIDBiIJcnwJaN97lp3dvq1LpXOactOaphv28GGQf+20XwtOqyubA3FCmNhdgsBfNK
+         EEqKaYzq+9owVK9LJs5cU8hJEVDHw1IaH3EP0jd31FzWDuLkuwtqmKRHQDOrq0HCaJ9S
+         ThP1Lwnr8QwMriZ7hATUGF4AtNreUY1BzD5+z+WhF1OCtl42XeGzANzzfkJUP6bxSOQZ
+         FmhA==
+X-Gm-Message-State: AOAM531IzjuthSoS8kCjXACV83AwYT6FSeOd/2TWFRsFBD6eIbQGrdPw
+        YdVBScrH4h6UeAwm1SqEVk4CFoQyzV4TZuwRdZBatw==
+X-Google-Smtp-Source: ABdhPJy6a5HZVxB9QkM1YtlwtQkCC0+Bz2t7K/BwPm0KVMjX6zhDgVGwtwfL/HS+j98n5oZ4L6lpPPFQBXirLB10Zn8=
+X-Received: by 2002:a25:48c7:: with SMTP id v190mr20238398yba.312.1627906352461;
+ Mon, 02 Aug 2021 05:12:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210716221744.5445-1-robert.marko@sartura.hr> <CAMpxmJXy1L-OC7k+h6pOwFGNS8WntNSMjP1Kvu7tnCQvGNwnRw@mail.gmail.com>
+In-Reply-To: <CAMpxmJXy1L-OC7k+h6pOwFGNS8WntNSMjP1Kvu7tnCQvGNwnRw@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 2 Aug 2021 14:12:21 +0200
+Message-ID: <CAMpxmJVJzaRRe5XyyZM6qOzpi2t36hSbsTec=M3EUk9w17W4qQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] gpio: tn48m: Add support for Delta TN4810M CPLD
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, luka.perkov@sartura.hr
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is no longer needed by the mtk-mdp driver
+On Mon, Aug 2, 2021 at 2:10 PM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+>
+> On Sat, Jul 17, 2021 at 12:17 AM Robert Marko <robert.marko@sartura.hr> wrote:
+> >
+> > Delta TN4810M uses a similar CPLD GPIO expander
+> > like the TN48M, but it has pins for 48 SFP+ ports,
+> > making a total of 192 pins.
+> > It also provides the TX fault pins which the TN48M
+> > does not.
+> >
+> > Only TX disable pins like on the TN48M are output
+> > ones.
+> >
+> > Thankfully, regmap GPIO allows for the driver to be
+> > easily extended to support the TN4810M.
+> >
+> > Note that this patch depends on the following series:
+> > https://patchwork.ozlabs.org/project/linux-gpio/list/?series=247538
+> >
+> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > ---
+> >  drivers/gpio/gpio-tn48m.c | 56 ++++++++++++++++++++++++++++++++++++---
+> >  1 file changed, 52 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpio-tn48m.c b/drivers/gpio/gpio-tn48m.c
+> > index b12a6b4bc4b3..e429e7ade941 100644
+> > --- a/drivers/gpio/gpio-tn48m.c
+> > +++ b/drivers/gpio/gpio-tn48m.c
+> > @@ -19,6 +19,10 @@ enum tn48m_gpio_type {
+> >         TN48M_SFP_TX_DISABLE = 1,
+> >         TN48M_SFP_PRESENT,
+> >         TN48M_SFP_LOS,
+> > +       TN4810M_SFP_TX_DISABLE,
+> > +       TN4810M_SFP_TX_FAULT,
+> > +       TN4810M_SFP_PRESENT,
+> > +       TN4810M_SFP_LOS,
+> >  };
+> >
+> >  static int tn48m_gpio_probe(struct platform_device *pdev)
+> > @@ -46,17 +50,36 @@ static int tn48m_gpio_probe(struct platform_device *pdev)
+> >
+> >         config.regmap = regmap;
+> >         config.parent = &pdev->dev;
+> > -       config.ngpio = 4;
+> > +       config.ngpio_per_reg = 8;
+> >
+> >         switch (type) {
+> >         case TN48M_SFP_TX_DISABLE:
+> >                 config.reg_set_base = base;
+> > +               config.ngpio = 4;
+> >                 break;
+> >         case TN48M_SFP_PRESENT:
+> >                 config.reg_dat_base = base;
+> > +               config.ngpio = 4;
+> >                 break;
+> >         case TN48M_SFP_LOS:
+> >                 config.reg_dat_base = base;
+> > +               config.ngpio = 4;
+> > +               break;
+> > +       case TN4810M_SFP_TX_DISABLE:
+> > +               config.reg_set_base = base;
+> > +               config.ngpio = 48;
+> > +               break;
+> > +       case TN4810M_SFP_TX_FAULT:
+> > +               config.reg_dat_base = base;
+> > +               config.ngpio = 48;
+> > +               break;
+> > +       case TN4810M_SFP_PRESENT:
+> > +               config.reg_dat_base = base;
+> > +               config.ngpio = 48;
+> > +               break;
+> > +       case TN4810M_SFP_LOS:
+> > +               config.reg_dat_base = base;
+> > +               config.ngpio = 48;
+> >                 break;
+> >         default:
+> >                 dev_err(&pdev->dev, "unknown type %d\n", type);
+> > @@ -67,9 +90,34 @@ static int tn48m_gpio_probe(struct platform_device *pdev)
+> >  }
+> >
+> >  static const struct of_device_id tn48m_gpio_of_match[] = {
+> > -       { .compatible = "delta,tn48m-gpio-sfp-tx-disable", .data = (void *)TN48M_SFP_TX_DISABLE },
+> > -       { .compatible = "delta,tn48m-gpio-sfp-present", .data = (void *)TN48M_SFP_PRESENT },
+> > -       { .compatible = "delta,tn48m-gpio-sfp-los", .data = (void *)TN48M_SFP_LOS },
+> > +       {
+> > +               .compatible = "delta,tn48m-gpio-sfp-tx-disable",
+> > +               .data = (void *)TN48M_SFP_TX_DISABLE
+> > +       },
+> > +       {
+> > +               .compatible = "delta,tn48m-gpio-sfp-present",
+> > +               .data = (void *)TN48M_SFP_PRESENT
+> > +       },
+> > +       {
+> > +               .compatible = "delta,tn48m-gpio-sfp-los",
+> > +               .data = (void *)TN48M_SFP_LOS
+> > +       },
+> > +       {
+> > +               .compatible = "delta,tn4810m-gpio-sfp-tx-disable",
+> > +               .data = (void *)TN4810M_SFP_TX_DISABLE
+> > +       },
+> > +       {
+> > +               .compatible = "delta,tn4810m-gpio-sfp-tx-fault",
+> > +               .data = (void *)TN4810M_SFP_TX_FAULT
+> > +       },
+> > +       {
+> > +               .compatible = "delta,tn4810m-gpio-sfp-present",
+> > +               .data = (void *)TN4810M_SFP_PRESENT
+> > +       },
+> > +       {
+> > +               .compatible = "delta,tn4810m-gpio-sfp-los",
+> > +               .data = (void *)TN4810M_SFP_LOS
+> > +       },
+> >         { }
+> >  };
+> >  MODULE_DEVICE_TABLE(of, tn48m_gpio_of_match);
+> > --
+> > 2.31.1
+> >
+>
+> This looks good to me. I suppose the other patches are going in
+> through the MFD tree. I don't see anything that can fail here at
+> build-time - can you confirm that I can pick these patches up
+> separately for v5.15?
+>
+> Bartosz
 
-Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
----
+Scratch that, I now saw Linus' comment about the special purpose pins
+under the other series. Let's clear that up first.
 
-(no changes since v1)
-
- Documentation/devicetree/bindings/media/mediatek-mdp.txt | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/media/mediatek-mdp.txt b/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-index caa24943da33..4c325585f68f 100644
---- a/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-@@ -4,8 +4,6 @@ Media Data Path is used for scaling and color space conversion.
- 
- Required properties (controller node):
- - compatible: "mediatek,mt8173-mdp"
--- mediatek,vpu: the node of video processor unit, see
--  Documentation/devicetree/bindings/media/mediatek-vpu.txt for details.
- 
- Required properties (all function blocks, child node):
- - compatible: Should be one of
-@@ -41,7 +39,6 @@ Example:
- 		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 		iommus = <&iommu M4U_PORT_MDP_RDMA0>;
- 		mediatek,larb = <&larb0>;
--		mediatek,vpu = <&vpu>;
- 	};
- 
- 	mdp_rdma1: rdma@14002000 {
--- 
-2.32.0.554.ge1b32706d8-goog
-
+Bart
