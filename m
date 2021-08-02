@@ -2,218 +2,497 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E343DD591
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B003DD593
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233616AbhHBMV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:21:57 -0400
-Received: from mx0a-002c1b01.pphosted.com ([148.163.151.68]:25008 "EHLO
-        mx0a-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233557AbhHBMV4 (ORCPT
+        id S233659AbhHBMWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233557AbhHBMWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:21:56 -0400
-Received: from pps.filterd (m0127837.ppops.net [127.0.0.1])
-        by mx0a-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 172CDXhp005402;
-        Mon, 2 Aug 2021 05:20:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version;
- s=proofpoint20171006; bh=UYgl1V6wsYPRx9DDTlSB5c4x6jrcAbJULet4UyrqJuk=;
- b=thgvSznRsruYPQSPReo4khoI16wsFQMZMe0tF6lDIZNRKcKAPsOHB+GbgDKy49nPLCNb
- EaLdSskaimQ/YowTQ9ouKLjrVplYtKwempOMJSNCIbX4NG9AVuX6rfdJtuIj/lmDfVuW
- zF9Niyl9QoKLitEu7V/LFazC1hqI7eHbs3JyOhrwqzq53nifA4CRyC4D2rutUqEvHOu3
- 6RQdUEcXj8IvTYHUT3nW7o1CR/uQ4YZnQ6A7NZWrj8KhBS8+q3RFd5RKt7SHfbw+09da
- nu0WpR9UrAwNck1OtO+/9ddB0FG+/zJRFE6u76q3U7acPuw4GPIi9yHs+TP++zOQMvqP 8A== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2174.outbound.protection.outlook.com [104.47.59.174])
-        by mx0a-002c1b01.pphosted.com with ESMTP id 3a6ajkgp9m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Aug 2021 05:20:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CSh67aTCOsWtf9HsG2lGIbXHrhB2FIm3bevs0TEubcWw+r68RTeVYS3MJwQWqpbyHotAmr7EtPgjMeLkQja006mSzRYAgNa/y1wyVoBe2SSSG7addB/udRL5sN5a8YWRHJVJ4KLaAUal7JwZXmh94OC86GBqs0BA7ouXBu2CyIBgQfzjj8Bmev8gjeAUanAk0xwpcgHuGc1cl6kCQjnfURVMQggki3GQAj7FpeIhFVAbd72saB46bMxcwyXWLvZgvA7h7YuuVE0h8kbkE9w9gt6XZn5W85g6yaxmKfmjnCyV0EXCDZUnh4tI5KZlYOhyt75vaWNFiaEL2HWS5zl7Ag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UYgl1V6wsYPRx9DDTlSB5c4x6jrcAbJULet4UyrqJuk=;
- b=XPWUxqqf+tnmkU7kbVZVidsSR4w1flWOjcNR1mK5v0gVO7FnYgNS5hLdFgZ0GIqpG7TLdrLF17GOzCWuA6eKkfuFeXy0d+MXbUxfj/JBH6bDUYjWFL3/I2TfGjRFPAjOnlUIp1ISgitzPX5xZdp9UpAPb2k/yE3Cg7svYwoK0+d28vQh4poz/OQ+WWG999Hx+gB+Aei3zI01pY1HGbDJn7xIxJ6ZHVRwMW9HYo8SMWqqXolx3+hQeoceUYIeVPGxRphgHyPlA8lVmElfukn8ygTo/fAIXQ2ryf0hY2nly0o1VpOcx4z1IuhahG5T9Tbdz3eBFeCZ1REO4UZHCYba1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
- dkim=pass header.d=nutanix.com; arc=none
-Received: from DM6PR02MB5578.namprd02.prod.outlook.com (2603:10b6:5:79::13) by
- DM8PR02MB7895.namprd02.prod.outlook.com (2603:10b6:8:10::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4373.18; Mon, 2 Aug 2021 12:20:18 +0000
-Received: from DM6PR02MB5578.namprd02.prod.outlook.com
- ([fe80::159:22bc:800a:52b8]) by DM6PR02MB5578.namprd02.prod.outlook.com
- ([fe80::159:22bc:800a:52b8%6]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
- 12:20:18 +0000
-From:   Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        Mon, 2 Aug 2021 08:22:06 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FEEC06175F;
+        Mon,  2 Aug 2021 05:21:56 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id h14so21223045wrx.10;
+        Mon, 02 Aug 2021 05:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Oc28NEUR2qzYd1JLhoz1FjO1y+ZM2YnVY5dr6kZyeLc=;
+        b=DDq0QgMzWOhj8+21F6+axeUqMCHfKgkVAkqBDuxjzkqrUcN5zyBn7pyTsLBqN8iJGR
+         rBdiDp341klMMxNP57pVHA/D1cuFOpHr6BhEypxkqEa3plgd7oAaqdsklxKUn5c4MXtN
+         7L1MukfSkpF9gJEkn9Y9ni0fa7nxhmlon7da17t7ULEBe/HnTFE9ZElBfVKOUyedjFDN
+         aAyrt+/fYoIwSCQyOxYsnBc/ITGucUMd7IXyyvOra+tXSyC/I86ZR1el9Kudt3ofTcVw
+         joo2QdQ004I/Z/vI9fKkFXE784g8uiNPH7wMcwaTcH5WrD1ahFjV3lSkIB3K57C3TB30
+         dbmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Oc28NEUR2qzYd1JLhoz1FjO1y+ZM2YnVY5dr6kZyeLc=;
+        b=PU1Jq7gzKdO9Vkedhlp+UNMnl5KdKaWgymZWSu7bjymjOHJFeJk2nTbFsluSkQddHo
+         bMkYdEHWSAymVnTFF+nBuiJAbeJLjEtXSzaqZxO7k0fx/wf5lMOVUnKsTQMZ+RrRqOj+
+         Dh1Z8LaguKK7G4zeiFDygPZVaCSeog6fcjSmXDg8/PbTJqrCoQgJSD4hA8ZO7gA/o8J2
+         Lh6aaURbfneQ91EWw/eaWWTym9PJOgFXR2/+o2lF3Vu0kfZZJmUR4Bu3fIgnpEE/bOmo
+         DBWl6n73ZxK4W8oauCWUoiK2aToiTcvmYKlZ6ywHNuXdtwHh6Zd83GDVVrwaAfnloSht
+         pLYg==
+X-Gm-Message-State: AOAM5335KjEVrndbE6IuSxQwFipvGso+HKSvQbG9+8B/h3b18FRnsOjR
+        KsRBPZcCFjMvtO++690oPj8=
+X-Google-Smtp-Source: ABdhPJxQ17Lfnbleyg80FyS52AOrv7Xzqto8qbM7Oo8gLv/oLaAezTIx4Bia+6JnoLQLf0lhc1grsw==
+X-Received: by 2002:adf:8b86:: with SMTP id o6mr13230010wra.116.1627906914658;
+        Mon, 02 Aug 2021 05:21:54 -0700 (PDT)
+Received: from [10.8.0.10] ([195.53.121.100])
+        by smtp.gmail.com with ESMTPSA id d5sm10917493wre.77.2021.08.02.05.21.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 05:21:54 -0700 (PDT)
+Subject: Re: [PATCH v2] ioctl_userfaultfd.2, userfaultfd.2: add minor fault
+ mode
+To:     Mike Rapoport <rppt@kernel.org>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
         Peter Xu <peterx@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "adobriyan@gmail.com" <adobriyan@gmail.com>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "vincenzo.frascino@arm.com" <vincenzo.frascino@arm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "chinwen.chang@mediatek.com" <chinwen.chang@mediatek.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        "jannh@google.com" <jannh@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <flosch@nutanix.com>,
-        "Carl Waldspurger [C]" <carl.waldspurger@nutanix.com>,
-        Jonathan Davies <jond@nutanix.com>
-Subject: Re: [PATCH 0/1] pagemap: swap location for shared pages
-Thread-Topic: [PATCH 0/1] pagemap: swap location for shared pages
-Thread-Index: AQHXhV03Yn0KGuSOXk+WDmcI0wFSWqtbxgnmgARgvoA=
-Date:   Mon, 2 Aug 2021 12:20:17 +0000
-Message-ID: <6EEF4945-0574-4F24-A950-1DB292F698BC@nutanix.com>
-References: <20210730160826.63785-1-tiberiu.georgescu@nutanix.com>
- <87y29nbtji.fsf@disp2133>
-In-Reply-To: <87y29nbtji.fsf@disp2133>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.100.0.2.22)
-authentication-results: xmission.com; dkim=none (message not signed)
- header.d=none;xmission.com; dmarc=none action=none header.from=nutanix.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fc66a51b-804c-49fe-4d52-08d955afe3e1
-x-ms-traffictypediagnostic: DM8PR02MB7895:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM8PR02MB789525DE28D33235860BB1D8E6EF9@DM8PR02MB7895.namprd02.prod.outlook.com>
-x-proofpoint-crosstenant: true
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1jl1YmNRPQfiHtFJ+R87slMHmzVfXwHTTSLpWhblNoCK2PNn+plyImOqgyLgaQETXYgm1OUKZUxajqN28HGJv0uNoGeKJDNVCZfOZqUFHwWJjraFXdnvH39M/8aLYrgmpHbYSltfJv2vtJ6yxgQEj6/tN6AFsKagYCMgNhmmuSqbAVI5LsKNx+0RFqnV2yBN11Xly/4/cD/+fI9gjilmnk1AHCYl0PJB7WaXWtR8n0Q3Gi46mFUdPcUz+P8ueaGQ3t40nlpRk3Lcx4PKJIZJhsFVLhSl7G2MDlHEAdsEi10T/B6o0C3NktR0gjww8USR5NBAQJ8stpYry94+NC2q0LhQNBZJIxUOoavHxXQfxM0+diSXyH8T0mTHSMoi0HAY0qV3GkSPqGnpC2cWW5OQdelwDe5ta7a6wxYD0FaqgOsajWutjPGQkF8so27cioEacw/MRpCW8HIjN+ZnkgxPeyb8gLbWFh6pxoGESOMk2NWbb6zfCRgP77lBMf06hMrlBanwjLcmXahMcNDiZxUVQRSQ80AkfSvw69lhgOO3U5khIPEQa0g17JflrWvS2ykHs3ZSygVOiHCfkwQ8tEkpsxAyPITO1ovjPzVVXrzdqTPzXWIlYU+PKUkj65soVfkO9ZVSDMRBzSu2XqyvgyxEFV38BtYE8KvtDfTg3rzyOOd0wYJASojrhk6rGmPzBbBh3BXzGOiyXj9G2MWWZqaIe2MZQoWZmcsj951xZs0/2d9BdTa24WMD5AYEDj3dHX+mqw84i3Bd5YEVp0x8zshoYsyXblydHqsyTdn+PR9WGDqiPzCCDqyR6NdP8v85dU49
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR02MB5578.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(396003)(136003)(366004)(6916009)(186003)(36756003)(122000001)(54906003)(5660300002)(38100700002)(45080400002)(8676002)(33656002)(478600001)(6486002)(83380400001)(4326008)(71200400001)(107886003)(66476007)(66946007)(2616005)(64756008)(966005)(316002)(7416002)(6512007)(91956017)(44832011)(76116006)(53546011)(2906002)(66556008)(38070700005)(8936002)(6506007)(66446008)(86362001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?56mJMW/Yw7GMK2x09VyTcNuGOY+GuX3JL6iOmiVzs3Aac77pdw750D3o4pbB?=
- =?us-ascii?Q?k2w03PH0DDrX1twDWisWkSqk2O0g6UomD+0ehZso538glm3w3QvJOtFtDO54?=
- =?us-ascii?Q?AS2jWiujzFqmWl8p2/NT6gnT07j5mn8l5+2KQO4+hPzoRFknlbDgeNPmVmRJ?=
- =?us-ascii?Q?Wdd0o9VQHAvZ353v9aYYRflevsPVb3M7o0uN28V9CO/ATXa/F7XnAZ0pVnde?=
- =?us-ascii?Q?bPe3rBfbVbYr6UNglbClflr9+VNXA2PScEYlm67RtVsly1301CUt9791Y0DD?=
- =?us-ascii?Q?nAw5Uz/TOcN3gX5xNUfa4Nxd+uU7LjhZeuNKllkNJOoNMhKJR6tK6Lf47hwJ?=
- =?us-ascii?Q?ENQBbqMtTymBqcWoH47cYELhoKP+87SmdeSjyOfr+aTMGRKY7gtotXTj4V5T?=
- =?us-ascii?Q?YPfu5AT1u8qbqr5E9WME3uH9KdRS+8scD/qV/H3Z+TAKAptetasXy4XJGzpM?=
- =?us-ascii?Q?fvNv+E88WBjupauIBdwuEOvYk0JicoAYs183z/xpi7JDYgLbEBLHKbI8mslv?=
- =?us-ascii?Q?IVjj0TTwf+HBocgal4Z0hASJe97+3m1RjU2jfL5nifRm41qubcHn1ZsB5Zfq?=
- =?us-ascii?Q?K9KXcxuIX97trNLtevDc5lkfE2qmdQ1mivJphH/eN/aSNFL83Q4zwOgX33Z2?=
- =?us-ascii?Q?gZeIItt+MqlQV/nm54Q/eq7nHL1wZCJFuLkq4tDFmXxXRU/wgEHA7ixawed6?=
- =?us-ascii?Q?OH6VxirkPaeQqYOfGaE14z+cOhbkEBgtWaQrNd76ptR7ep3PNSarGDnUVgDo?=
- =?us-ascii?Q?NSoWUMiKaOmlqXlBget1ZJKTzbLvfhRoYqasoVwaOYeUji2aJgQcPVhBiQNN?=
- =?us-ascii?Q?CwYV3r3KmlpK08mItMk7jmHilW3iYw+6uM0DBqKYyyTKm/DyM9c43x4/xj3E?=
- =?us-ascii?Q?1GXrGjSDmfHCeIda6656QH2UqDuKneR+A38oEBVeiiysvNcMqmnYgwFEELbB?=
- =?us-ascii?Q?nerTssR2fEymHi5oay10jpPO0l7fColjwSE6aeXgWYnI1x83hiRXvh2DvndD?=
- =?us-ascii?Q?O243lpiYnFK7X+KyzLFomOAyAzgxHIyO7arFUZF9ZaPX2/IkvBeLWQoPg6zx?=
- =?us-ascii?Q?RN7/IJsZSc8ucLWFP8Q0Bvy94TKenKsZwva8iiwWsHvTHN7oTKkLIC+y3rrE?=
- =?us-ascii?Q?OuITHm+1kWs++VWk8cSazdU05dmPW3+JWYwfviM4wYFBLEFkXJH1+476RReA?=
- =?us-ascii?Q?toFAdMS5ksdARWmhQG/s8L2V1QoCBuVfNb5VQicdwgsruW9UqFpeQrbQD+Yk?=
- =?us-ascii?Q?N28xIqjTN3aA5h1xSDCbc8zKqKVswKlfPVrzSOUtY+nb7oG/tJb9pUUxVM9W?=
- =?us-ascii?Q?51bOi+NOcUvTdh1wmchd08CW0WkwEHf+d+F6OrL40Lr/OgAIkK3Cc3nKElI7?=
- =?us-ascii?Q?0WKh0K4vpQ8Qcvd5/wm0VT3D94GJ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <EC982FA3852EC245BAA3EDCCCE7F7866@namprd02.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        LKML <linux-kernel@vger.kernel.org>, linux-man@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>
+References: <20210604195622.1249588-1-axelrasmussen@google.com>
+ <CAJHvVcjzi-7Wvrho1LqWiQC2WNbtg0XGf6-JBRcDZS1=banbVA@mail.gmail.com>
+ <YQfVRuV2Ab2rlKVI@kernel.org>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <1add2552-ea36-12a2-b3b1-6e97f6f84e00@gmail.com>
+Date:   Mon, 2 Aug 2021 14:21:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: nutanix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR02MB5578.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc66a51b-804c-49fe-4d52-08d955afe3e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2021 12:20:17.8568
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DGgJP1i6A2M2U3GtWeFpnvcFCrvZgE7MY/tc7rVy+74dn5WJ3jR0/e25ldOnqlRxlVuDa4gA0Z017W/3K79QxZ/BzYHNry4uRDnJanvWJCM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR02MB7895
-X-Proofpoint-ORIG-GUID: 0Oxqt4L1lx01Nm8NkOKXK9DwWHwLb7NK
-X-Proofpoint-GUID: 0Oxqt4L1lx01Nm8NkOKXK9DwWHwLb7NK
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-02_05:2021-08-02,2021-08-02 signatures=0
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <YQfVRuV2Ab2rlKVI@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mike, Axel,
 
-> On 30 Jul 2021, at 18:28, Eric W. Biederman <ebiederm@xmission.com> wrote=
-:
->=20
-> Tiberiu A Georgescu <tiberiu.georgescu@nutanix.com> writes:
->=20
->> This patch follows up on a previous RFC:
->> 20210714152426.216217-1-tiberiu.georgescu@nutanix.com
->>=20
->> When a page allocated using the MAP_SHARED flag is swapped out, its page=
-map
->> entry is cleared. In many cases, there is no difference between swapped-=
-out
->> shared pages and newly allocated, non-dirty pages in the pagemap
->> interface.
->=20
-> What is the point?
+On 8/2/21 1:21 PM, Mike Rapoport wrote:
+> (added man-pages maintainers)
 
-The reason why this patch is important has been discussed in my RFC
-patch and on this thread:
-https://lore.kernel.org/lkml/20210715201651.212134-1-peterx@redhat.com/.
-The most relevant reply should be Ivan's:
-https://lore.kernel.org/lkml/CY4PR0201MB3460E372956C0E1B8D33F904E9E39@CY4PR=
-0201MB3460.namprd02.prod.outlook.com/
+Thanks!  If I'm not CCed, I may not notice the email, depending on the 
+traffic of the lists, and the amount of time I have ;)
 
-In short, this swap information helps us enhance live migration in some cas=
-es.
->=20
-> You say a shared swapped out page is the same as a clean shared page
-> and you are exactly correct.  What is the point in knowing a shared
-> page was swapped out?  What does is the gain?
->=20
-What I meant was that shared swapped out pages and clean shared pages
-have their ptes identical pre-patch. I understand they are somewhat similar
-concepts when it comes to file shared pages, where swapping is done
-directly on the disk.
+> 
+> On Tue, Jul 27, 2021 at 09:32:34AM -0700, Axel Rasmussen wrote:
+>> Any remaining issues with this patch? I just realized today it was
+>> never merged. 5.13 (which contains this new feature) was released some
+>> weeks ago.
 
-Our case focuses on anonymous pages and shared pages with identical=20
-underlying behaviour (like pages allocated using memfd). These pages get=20
-cleared once the runtime is over, and the difference between allocated,
-but uninitialised pages, and dirty pages that have been swapped out is=20
-significant, as the former could still contain usable data.
+Please see some minor formatting issues I commented below.
+Other than that, it looks good to me.
 
-The post-patch pagemap entry now contains the swap type and offset for
-swapped out pages, regardless of whether the page is private or shared.
-This, by definition of the pagemap, should be the correct behaviour.
+Thanks,
 
-> I tried to understand the point by looking at your numbers below
-> and everything I could see looked worse post patch.
+Alex
 
-Indeed, the numbers are mostly bigger post-patch. It is a tradeoff between
-correctness and performance. However, the tradeoff is not inconvenient on s=
-parse=20
-single accesses, and it can be made significantly faster by leveraging batc=
-hing.
-In future work, the performance can be improved by leveraging a mechanism=20
-proposed by Peter Xu: Special PTEs:
-https://lore.kernel.org/lkml/20210715201422.211004-1-peterx@redhat.com/
+>>
+>> On Fri, Jun 4, 2021 at 12:56 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+>>>
+>>> Userfaultfd minor fault mode is supported starting from Linux 5.13.
+>>>
+>>> This commit adds a description of the new mode, as well as the new ioctl
+>>> used to resolve such faults. The two go hand-in-hand: one can't resolve
+>>> a minor fault without continue, and continue can't be used to resolve
+>>> any other kind of fault.
+>>>
+>>> This patch covers just the hugetlbfs implementation (in 5.13). Support
+>>> for shmem is forthcoming, but as it has not yet made it into a kernel
+>>> release candidate, it will be added in a future commit.
+>>>
+>>> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+>>> ---
+>>>   man2/ioctl_userfaultfd.2 | 125 ++++++++++++++++++++++++++++++++++++---
+>>>   man2/userfaultfd.2       |  79 ++++++++++++++++++++-----
+>>>   2 files changed, 182 insertions(+), 22 deletions(-)
+>>>
+>>> diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
+>>> index 504f61d4b..7b990c24a 100644
+>>> --- a/man2/ioctl_userfaultfd.2
+>>> +++ b/man2/ioctl_userfaultfd.2
+>>> @@ -214,6 +214,10 @@ memory accesses to the regions registered with userfaultfd.
+>>>   If this feature bit is set,
+>>>   .I uffd_msg.pagefault.feat.ptid
+>>>   will be set to the faulted thread ID for each page-fault message.
+>>> +.TP
+>>> +.BR UFFD_FEATURE_MINOR_HUGETLBFS " (since Linux 5.13)"
+>>> +If this feature bit is set, the kernel supports registering userfaultfd ranges
+>>> +in minor mode on hugetlbfs-backed memory areas.
 
-The main concern of the RFC was that the xarray check would slow down
-checking empty pages significantly. Thankfully, we can only see a small=20
-overhead when no allocated shared page is dirtied.
+See the folowing extract from man-pages(7):
 
->=20
-> Eric
->=20
-Hope I was able to clarifiy a few things. Now, having laid out the context,
-please have another look at my proposed patch.
+    Use semantic newlines
+        In the source of a manual page,  new  sentences  should  be
+        started  on  new  lines, and long sentences should be split
+        into lines at clause breaks  (commas,  semicolons,  colons,
+        and  so on).  This convention, sometimes known as "semantic
+        newlines", makes it easier to see the  effect  of  patches,
+        which often operate at the level of individual sentences or
+        sentence clauses.
 
-Thank you,
-Tibi=
+A trick to check if some text is correct at first glance, is that the 
+following regex should rarely match:
+[,;:.] \+\w
+
+Multi-sentence parenthetical expressions should also go on separate 
+lines normally.
+
+I'd for example break the above text into:
+
+[
+If this feature bit is set,
+the kernel supports registering userfaultfd ranges
+in minor mode on hugetlbfs-backed memory areas
+]
+
+Note the break after the comma, and another break at a sensible point 
+(you already did that one correctly in this example, but some below don't).
+
+
+>>>   .PP
+>>>   The returned
+>>>   .I ioctls
+>>> @@ -240,6 +244,11 @@ operation is supported.
+>>>   The
+>>>   .B UFFDIO_WRITEPROTECT
+>>>   operation is supported.
+>>> +.TP
+>>> +.B 1 << _UFFDIO_CONTINUE
+>>> +The
+>>> +.B UFFDIO_CONTINUE
+>>> +operation is supported.
+>>>   .PP
+>>>   This
+>>>   .BR ioctl (2)
+>>> @@ -278,14 +287,8 @@ by the current kernel version.
+>>>   (Since Linux 4.3.)
+>>>   Register a memory address range with the userfaultfd object.
+>>>   The pages in the range must be "compatible".
+>>> -.PP
+>>> -Up to Linux kernel 4.11,
+>>> -only private anonymous ranges are compatible for registering with
+>>> -.BR UFFDIO_REGISTER .
+>>> -.PP
+>>> -Since Linux 4.11,
+>>> -hugetlbfs and shared memory ranges are also compatible with
+>>> -.BR UFFDIO_REGISTER .
+>>> +Please refer to the list of register modes below for the compatible memory
+>>> +backends for each mode.
+
+Regarding semantic newlines mentioned above:
+
+Here for example, a more sensible point to break the line would be just 
+after (or maybe before, up to you) the first "for".
+
+>>>   .PP
+>>>   The
+>>>   .I argp
+>>> @@ -324,9 +327,16 @@ the specified range:
+>>>   .TP
+>>>   .B UFFDIO_REGISTER_MODE_MISSING
+>>>   Track page faults on missing pages.
+>>> +Since Linux 4.3, only private anonymous ranges are compatible.
+>>> +Since Linux 4.11, hugetlbfs and shared memory ranges are also compatible.
+>>>   .TP
+>>>   .B UFFDIO_REGISTER_MODE_WP
+>>>   Track page faults on write-protected pages.
+>>> +Since Linux 5.7, only private anonymous ranges are compatible.
+>>> +.TP
+>>> +.B UFFDIO_REGISTER_MODE_MINOR
+>>> +Track minor page faults.
+>>> +Since Linux 5.13, only hugetlbfs ranges are compatible.
+>>>   .PP
+>>>   If the operation is successful, the kernel modifies the
+>>>   .I ioctls
+>>> @@ -735,6 +745,105 @@ or not registered with userfaultfd write-protect mode.
+>>>   .TP
+>>>   .B EFAULT
+>>>   Encountered a generic fault during processing.
+>>> +.\"
+>>> +.SS UFFDIO_CONTINUE
+>>> +(Since Linux 5.13.)
+>>> +Resolve a minor page fault by installing page table entries for existing pages
+>>> +in the page cache.
+>>> +.PP
+>>> +The
+>>> +.I argp
+>>> +argument is a pointer to a
+>>> +.I uffdio_continue
+>>> +structure as shown below:
+>>> +.PP
+>>> +.in +4n
+>>> +.EX
+>>> +struct uffdio_continue {
+>>> +    struct uffdio_range range; /* Range to install PTEs for and continue */
+>>> +    __u64 mode;                /* Flags controlling the behavior of continue */
+>>> +    __s64 mapped;              /* Number of bytes mapped, or negated error */
+>>> +};
+>>> +.EE
+>>> +.in
+>>> +.PP
+>>> +The following value may be bitwise ORed in
+>>> +.IR mode
+>>> +to change the behavior of the
+>>> +.B UFFDIO_CONTINUE
+>>> +operation:
+>>> +.TP
+>>> +.B UFFDIO_CONTINUE_MODE_DONTWAKE
+>>> +Do not wake up the thread that waits for page-fault resolution.
+>>> +.PP
+>>> +The
+>>> +.I mapped
+>>> +field is used by the kernel to return the number of bytes
+>>> +that were actually mapped, or an error in the same manner as
+>>> +.BR UFFDIO_COPY .
+>>> +If the value returned in the
+>>> +.I mapped
+>>> +field doesn't match the value that was specified in
+>>> +.IR range.len ,
+>>> +the operation fails with the error
+>>> +.BR EAGAIN .
+>>> +The
+>>> +.I mapped
+>>> +field is output-only;
+>>> +it is not read by the
+>>> +.B UFFDIO_CONTINUE
+>>> +operation.
+>>> +.PP
+>>> +This
+>>> +.BR ioctl (2)
+>>> +operation returns 0 on success.
+>>> +In this case, the entire area was mapped.
+>>> +On error, \-1 is returned and
+>>> +.I errno
+>>> +is set to indicate the error.
+>>> +Possible errors include:
+>>> +.TP
+>>> +.B EAGAIN
+>>> +The number of bytes mapped (i.e., the value returned in the
+>>> +.I mapped
+>>> +field) does not equal the value that was specified in the
+>>> +.I range.len
+>>> +field.
+>>> +.TP
+>>> +.B EINVAL
+>>> +Either
+>>> +.I range.start
+>>> +or
+>>> +.I range.len
+>>> +was not a multiple of the system page size; or
+>>> +.I range.len
+>>> +was zero; or the range specified was invalid.
+>>> +.TP
+>>> +.B EINVAL
+>>> +An invalid bit was specified in the
+>>> +.IR mode
+>>> +field.
+>>> +.TP
+>>> +.B EEXIST
+>>> +One or more pages were already mapped in the given range.
+>>> +.TP
+>>> +.B ENOENT
+>>> +The faulting process has changed its virtual memory layout simultaneously with
+>>> +an outstanding
+>>> +.B UFFDIO_CONTINUE
+>>> +operation.
+>>> +.TP
+>>> +.B ENOMEM
+>>> +Allocating memory needed to setup the page table mappings failed.
+>>> +.TP
+>>> +.B EFAULT
+>>> +No existing page could be found in the page cache for the given range.
+>>> +.TP
+>>> +.BR ESRCH
+>>> +The faulting process has exited at the time of a
+>>> +.B UFFDIO_CONTINUE
+>>> +operation.
+>>> +.\"
+>>>   .SH RETURN VALUE
+>>>   See descriptions of the individual operations, above.
+>>>   .SH ERRORS
+>>> diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
+>>> index 593c189d8..07f53c6ff 100644
+>>> --- a/man2/userfaultfd.2
+>>> +++ b/man2/userfaultfd.2
+>>> @@ -78,7 +78,7 @@ all memory ranges that were registered with the object are unregistered
+>>>   and unread events are flushed.
+>>>   .\"
+>>>   .PP
+>>> -Userfaultfd supports two modes of registration:
+>>> +Userfaultfd supports three modes of registration:
+>>>   .TP
+>>>   .BR UFFDIO_REGISTER_MODE_MISSING " (since 4.10)"
+>>>   When registered with
+>>> @@ -92,6 +92,18 @@ or an
+>>>   .B UFFDIO_ZEROPAGE
+>>>   ioctl.
+>>>   .TP
+>>> +.BR UFFDIO_REGISTER_MODE_MINOR " (since 5.13)"
+>>> +When registered with
+>>> +.B UFFDIO_REGISTER_MODE_MINOR
+>>> +mode, user-space will receive a page-fault notification
+
+s/user-space/user space/
+
+See the following extract from man-pages(7):
+
+    Preferred terms
+        The  following  table  lists some preferred terms to use in
+        man pages, mainly to ensure consistency across pages.
+
+        Term                 Avoid using              Notes
+        ─────────────────────────────────────────────────────────────
+        [...]
+        user space           userspace
+
+However, when user space is used as an adjective, per the usual English 
+rules, we write "user-space".  Example: "a user-space program".
+
+>>> +when a minor page fault occurs.
+>>> +That is, when a backing page is in the page cache, but
+>>> +page table entries don't yet exist.
+>>> +The faulted thread will be stopped from execution until the page fault is
+>>> +resolved from user-space by an
+>>> +.B UFFDIO_CONTINUE
+>>> +ioctl.
+>>> +.TP
+>>>   .BR UFFDIO_REGISTER_MODE_WP " (since 5.7)"
+>>>   When registered with
+>>>   .B UFFDIO_REGISTER_MODE_WP
+>>> @@ -212,9 +224,10 @@ a page fault occurring in the requested memory range, and satisfying
+>>>   the mode defined at the registration time, will be forwarded by the kernel to
+>>>   the user-space application.
+>>>   The application can then use the
+>>> -.B UFFDIO_COPY
+>>> +.B UFFDIO_COPY ,
+>>> +.B UFFDIO_ZEROPAGE ,
+>>>   or
+>>> -.B UFFDIO_ZEROPAGE
+>>> +.B UFFDIO_CONTINUE
+>>>   .BR ioctl (2)
+>>>   operations to resolve the page fault.
+>>>   .PP
+>>> @@ -318,6 +331,43 @@ should have the flag
+>>>   cleared upon the faulted page or range.
+>>>   .PP
+>>>   Write-protect mode supports only private anonymous memory.
+>>> +.\"
+>>> +.SS Userfaultfd minor fault mode (since 5.13)
+>>> +Since Linux 5.13, userfaultfd supports minor fault mode.
+>>> +In this mode, fault messages are produced not for major faults (where the
+>>> +page was missing), but rather for minor faults, where a page exists in the page
+>>> +cache, but the page table entries are not yet present.
+>>> +The user needs to first check availability of this feature using
+>>> +.B UFFDIO_API
+>>> +ioctl against the feature bit
+>>> +.B UFFD_FEATURE_MINOR_HUGETLBFS
+>>> +before using this feature.
+>>> +.PP
+>>> +To register with userfaultfd minor fault mode, the user needs to initiate the
+>>> +.B UFFDIO_REGISTER
+>>> +ioctl with mode
+>>> +.B UFFD_REGISTER_MODE_MINOR
+>>> +set.
+>>> +.PP
+>>> +When a minor fault occurs, user-space will receive a page-fault notification
+>>> +whose
+>>> +.I uffd_msg.pagefault.flags
+>>> +will have the
+>>> +.B UFFD_PAGEFAULT_FLAG_MINOR
+>>> +flag set.
+>>> +.PP
+>>> +To resolve a minor page fault, the handler should decide whether or not the
+>>> +existing page contents need to be modified first.
+>>> +If so, this should be done in-place via a second, non-userfaultfd-registered
+>>> +mapping to the same backing page (e.g., by mapping the hugetlbfs file twice).
+>>> +Once the page is considered "up to date", the fault can be resolved by
+>>> +initiating an
+>>> +.B UFFDIO_CONTINUE
+>>> +ioctl, which installs the page table entries and (by default) wakes up the
+>>> +faulting thread(s).
+>>> +.PP
+>>> +Minor fault mode supports only hugetlbfs-backed memory.
+>>> +.\"
+>>>   .SS Reading from the userfaultfd structure
+>>>   Each
+>>>   .BR read (2)
+>>> @@ -456,19 +506,20 @@ For
+>>>   the following flag may appear:
+>>>   .RS
+>>>   .TP
+>>> -.B UFFD_PAGEFAULT_FLAG_WRITE
+>>> -If the address is in a range that was registered with the
+>>> -.B UFFDIO_REGISTER_MODE_MISSING
+>>> -flag (see
+>>> -.BR ioctl_userfaultfd (2))
+>>> -and this flag is set, this a write fault;
+>>> -otherwise it is a read fault.
+>>> +.B UFFD_PAGEFAULT_FLAG_WP
+>>> +If this flag is set, then the fault was a write-protect fault.
+>>>   .TP
+>>> +.B UFFD_PAGEFAULT_FLAG_MINOR
+>>> +If this flag is set, then the fault was a minor fault.
+>>> +.TP
+>>> +.B UFFD_PAGEFAULT_FLAG_WRITE
+>>> +If this flag is set, then the fault was a write fault.
+>>> +.HP
+
+See the following extract from groff_man(7):
+
+    Deprecated features
+        Use of the following is discouraged.
+
+        [...]
+
+        .HP [indent]
+               Set up a paragraph with a hanging left  indentation.
+               The  indent argument, if present, is handled as with
+               .TP.
+
+               Use of this presentation‐level macro is  deprecated.
+               While it is universally portable to legacy Unix sys‐
+               tems, a hanging indentation cannot be expressed nat‐
+               urally  under HTML, and many HTML‐based manual view‐
+               ers simply interpret it as a starter  for  a  normal
+               paragraph.  Thus, any information or distinction you
+               tried to express with the indentation may be lost.
+
+I'd just use .PP here, I think.
+
+
+>>> +If neither
+>>>   .B UFFD_PAGEFAULT_FLAG_WP
+>>> -If the address is in a range that was registered with the
+>>> -.B UFFDIO_REGISTER_MODE_WP
+>>> -flag, when this bit is set, it means it is a write-protect fault.
+>>> -Otherwise it is a page-missing fault.
+>>> +nor
+>>> +.B UFFD_PAGEFAULT_FLAG_MINOR
+>>> +are set, then the fault was a missing fault.
+>>>   .RE
+>>>   .TP
+>>>   .I pagefault.feat.pid
+>>> --
+>>> 2.32.0.rc1.229.g3e70b5a671-goog
+>>>
+>>
+> 
+
+
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
