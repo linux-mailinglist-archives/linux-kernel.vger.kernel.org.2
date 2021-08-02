@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A18C3DE0B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466AF3DE0B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhHBUcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhHBUcR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:32:17 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3D0C061760;
-        Mon,  2 Aug 2021 13:32:05 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id a192-20020a1c7fc90000b0290253b32e8796so652607wmd.0;
-        Mon, 02 Aug 2021 13:32:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M1nBUo4KZ7/feK13SK1ltjciiCFL6QbXAmkAclXDcwk=;
-        b=jE2IKMDJCKiu0+a2EeiLzhAmvFml5I8A0zkmXmFK3ZyQXlSQ97rdMAB7ZaYdAHijd3
-         Vzvu8Mp17UBwHT2nih+IFxaiZFGHuFM1DriOKm7vudR+6k3VGnEc5NVUlSRHYAIwzROs
-         HQNhFf5hHNFHMDSPC7V4AsPHQbXgylyxoPpNT1YcXaAwPgrdoOKA3YI0LzQHUfSP8Ig/
-         qpmzQExuMPpumfAMIxc8zZJI5/iEsZbjA8LuYqBgsqbIk0wrQrvauJ7hZmi0i2uCsSBH
-         /DiDgqCOPCPXVja/fb5w2KS/D/Zygf/ZGuSXkWaSIUqdhen2wuB+i0gVMdFb5fLFdvh6
-         XR+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M1nBUo4KZ7/feK13SK1ltjciiCFL6QbXAmkAclXDcwk=;
-        b=mq/d35kY22nNuKSaE42kw7cJ56ozirXbbo/tUkZOGhd0Gt+H8Z6QAkgqneUG1yzG62
-         5jUm3zPPScXH1erlHp5nvF8ra0ZrTi123XSk7Pdnu0pPPKYdJ4UwVcGN3VwCNO3CoEkC
-         PAQvwxmrTWqSKimTDSmpo8+FhamgRlIKolvRKJYQZPqgeor3wT93a6KS9K6T4T4RmElu
-         80vQNoI6Xa8hsWyMZzgANwD7rBcmgKAY+joyAyky+3YzXJUAW+y/jJU7zPrJwSUrr7R1
-         9t6cE7GUDaKkYthkz84xm6dFEvEdZyRKTmS3g61IPJmBl0mEosCoEx8If2aZqVImedHg
-         QIug==
-X-Gm-Message-State: AOAM530xc0yfgxAyI+fIgALo6aBpfcMlDhGksLkgS2I9kQK52qKFj6Dv
-        AAXXNBnUwkQoOzGrI37edw==
-X-Google-Smtp-Source: ABdhPJywcnySifupCI+7bkrOwR1Br6hJZav/murBPhZkaBphO5C0vq9XjyYzQ+BUWPpZaGgnsr67YQ==
-X-Received: by 2002:a05:600c:2909:: with SMTP id i9mr689355wmd.74.1627936324376;
-        Mon, 02 Aug 2021 13:32:04 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.249.181])
-        by smtp.gmail.com with ESMTPSA id s9sm12474226wra.80.2021.08.02.13.32.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 13:32:04 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 23:32:02 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, masahiroy@kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 3/3] isystem: delete global -isystem compile option
-Message-ID: <YQhWQkbN+pe354RW@localhost.localdomain>
-References: <20210801201336.2224111-1-adobriyan@gmail.com>
- <20210801201336.2224111-3-adobriyan@gmail.com>
- <YQg2+C4Z98BMFucg@archlinux-ax161>
+        id S231434AbhHBUch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:32:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230448AbhHBUcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 16:32:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2325360F93;
+        Mon,  2 Aug 2021 20:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627936346;
+        bh=RjKhF4hB/2KcuyIWUfAzYtZZ8R9Gf1asDHL4YKxZRlk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XoKTKyFs/895DJ6gXNmOgln+KqAa1z/0hs5DJFFQCBLqrUB564mpKLe6QnoO5cP9j
+         wxRdd4t9mU89DkAij4LuWxqWQDtN/neVRA4rHZLlrjwb6JBunIp0V+HOFOLKUtlGpQ
+         s34cVHvM020folN28dy0+Twb4aP68R0ri4L7UYw1CGgMjIf/6cTwKLJu/xBV9csgC1
+         DtKKBTE/EWHmPw1tbLdI84zn5VzRc261nA6egX6EYiLIMBbVQvbJUJXzF7lZpPxGD8
+         NPUOwBOJNSX2q1lHqjin2RYHrl1kOMEGOdPDEhdigZ0kNZDZim5dO8cUpfDSasDaVL
+         QvjmZ9EnV57DA==
+Received: by mail-wm1-f47.google.com with SMTP id n11so11151866wmd.2;
+        Mon, 02 Aug 2021 13:32:26 -0700 (PDT)
+X-Gm-Message-State: AOAM532sSqzUHJ6slFAIVFW1KtkwZG4IH6ocOy+YOZgwefTJCVOIXrTz
+        5ofSlaCllwtbwx4mnj0LTWxc6aqZDputlPgR1W8=
+X-Google-Smtp-Source: ABdhPJzYGkFqLqspaoCqN00TaY6q2TQGENW8z+Kn/ypsgZ93keijuGyG0Uyz98n3cAQoC3RU3kB3ITgGfxsX8sNbmis=
+X-Received: by 2002:a7b:ce10:: with SMTP id m16mr626048wmc.75.1627936344707;
+ Mon, 02 Aug 2021 13:32:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YQg2+C4Z98BMFucg@archlinux-ax161>
+References: <20210802145937.1155571-1-arnd@kernel.org> <20210802164907.GA9832@hoboy.vegasvil.org>
+ <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com>
+In-Reply-To: <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 2 Aug 2021 22:32:08 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3P6=ZROxT8daW83mRp7z5rYAQydetWFXQoYF7Y5_KLHA@mail.gmail.com>
+Message-ID: <CAK8P3a3P6=ZROxT8daW83mRp7z5rYAQydetWFXQoYF7Y5_KLHA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK dependencies
+To:     "Keller, Jacob E" <jacob.e.keller@intel.com>
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Nicolas Pitre <nicolas.pitre@linaro.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 11:18:32AM -0700, Nathan Chancellor wrote:
-> On Sun, Aug 01, 2021 at 11:13:36PM +0300, Alexey Dobriyan wrote:
-> > In theory, it enables "leakage" of userspace headers into kernel which
-> > may present licensing problem.
-> > 
-> > In practice, only stdarg.h was used, stdbool.h is trivial and SIMD
-> > intrinsics are contained to a few architectures and aren't global
-> > problem.
-> > 
-> > In general, kernel is very self contained code and -isystem removal
-> > will further isolate it from Ring Threeland influence.
-> > 
-> > nds32 keeps -isystem globally due to intrisics used in entrenched header.
-> > 
-> > -isystem is selectively reenabled for some files.
-> > 
-> > Not compile tested on hexagon.
-> 
-> With this series on top of v5.14-rc4 and a tangential patch to fix
-> another issue, ARCH=hexagon defconfig and allmodconfig show no issues.
-> 
-> Tested-by: Nathan Chancellor <nathan@kernel> # build (hexagon)
+On Mon, Aug 2, 2021 at 9:54 PM Keller, Jacob E <jacob.e.keller@intel.com> wrote:
+>
+> So go back to "select"?
+>
+> It looks like Arnd proposed in the thread a solution that did a sort of
+> "please enable this" but still let you disable it.
+>
+> An alternative (unfortunately per-driver...) solution was to setup the
+> drivers so that they gracefully fall back to disabling PTP if the PTP
+> core support is not reachable.. but that obviously requires that drivers
+> do the right thing, and at least Intel drivers have not tested this
+> properly.
+>
+> I'm definitely in favor of removing "implies" entirely. The semantics
+> are unclear, and the fact that it doesn't handle the case of "i'm
+> builtin, so my implies can't be modules"...
+>
+> I don't really like the syntax of the double "depends on A || !A".. I'd
+> prefer if we had some keyword for this, since it would be more obvious
+> and not run against the standard logic (A || !A is a tautology!)
 
-Oh wow, small miracle. Thank you!
+I think the main reason we don't have a keyword for it is that nobody
+so far has come up with an English word that expresses what it is
+supposed to mean.
 
-Where can I find a cross-compiler? This link doesn't seem to have one
-https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/11.1.0/
+You can do something like it for a particular symbol though, such as
+
+config MAY_USE_PTP_1588_CLOCK
+       def_tristate PTP_1588_CLOCK || !PTP_1588_CLOCK
+
+ config E1000E
+        tristate "Intel(R) PRO/1000 PCI-Express Gigabit Ethernet support"
+        depends on PCI && (!SPARC32 || BROKEN)
++       depends on MAY_USE_PTP_1588_CLOCK
+        select CRC32
+-       imply PTP_1588_CLOCK
+
+
+          Arnd
