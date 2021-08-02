@@ -2,94 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EE03DE145
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C29D3DE146
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbhHBVLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:11:21 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43924 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231730AbhHBVLU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:11:20 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mAfDB-000GxW-Na; Mon, 02 Aug 2021 23:11:04 +0200
-Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mAfDB-000IKM-7H; Mon, 02 Aug 2021 23:11:01 +0200
-Subject: Re: [PATCH net-next 1/2] net/sched: sch_ingress: Support clsact
- egress mini-Qdisc option
-To:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Peilin Ye <peilin.ye@bytedance.com>, ast@kernel.org,
-        john.fastabend@gmail.com
-References: <1931ca440b47344fe357d5438aeab4b439943d10.1627936393.git.peilin.ye@bytedance.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <672e6f13-bf58-d542-6712-e6f803286373@iogearbox.net>
-Date:   Mon, 2 Aug 2021 23:10:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <1931ca440b47344fe357d5438aeab4b439943d10.1627936393.git.peilin.ye@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S232521AbhHBVLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:11:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232532AbhHBVLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 17:11:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B394260F93;
+        Mon,  2 Aug 2021 21:11:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1627938674;
+        bh=cm7muV9F/ODKslswuJhxzkBNiwyzG0gD+vtM60gPhbE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=u3I2X+JYXJoZq0hA/qhUG9Ex6O8eXfSWXslSFRa+GFm0QkqtGzdxXkqdaSKXBCMe0
+         cwuJ5YUeU5con606LctAJk6Pbfw32ShpUriVhaAvUF0/O1moipe2ByJEgcFwK9udsG
+         9I/XiZkbegLXUcXcqc8IOHj1M679PDRnPvuhkvYw=
+Date:   Mon, 2 Aug 2021 14:11:14 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Luigi Rizzo <lrizzo@google.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Add mmap_assert_locked() annotations to find_vma*()
+Message-Id: <20210802141114.7fe599b17d87cecbc4d5b70b@linux-foundation.org>
+In-Reply-To: <CAMOZA0+mAC-tHDehzqMVP4rd7wggY_DPofRdH=GMouZA9DRC1w@mail.gmail.com>
+References: <20210731175341.3458608-1-lrizzo@google.com>
+        <20210801123335.6a7f8e1ee1e52ea64db80323@linux-foundation.org>
+        <CAMOZA0+mAC-tHDehzqMVP4rd7wggY_DPofRdH=GMouZA9DRC1w@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26251/Mon Aug  2 10:18:34 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/21 10:49 PM, Peilin Ye wrote:
-> From: Peilin Ye <peilin.ye@bytedance.com>
-> 
-> If the ingress Qdisc is in use, currently it is not possible to add
-> another clsact egress mini-Qdisc to the same device without taking down
-> the ingress Qdisc, since both sch_ingress and sch_clsact use the same
-> handle (0xFFFF0000).
-> 
-> Add a "change" option for sch_ingress, so that users can enable or disable
-> a clsact egress mini-Qdisc, without suffering from downtime:
-> 
->      $ tc qdisc add dev eth0 ingress
->      $ tc qdisc change dev eth0 ingress clsact-on
-> 
-> Then users can add filters to the egress mini-Qdisc as usual:
-> 
->      $ tc filter add dev eth0 egress protocol ip prio 10 \
-> 	    matchall action skbmod swap mac
-> 
-> Deleting the ingress Qdisc removes the egress mini-Qdisc as well.  To
-> remove egress mini-Qdisc only, use:
-> 
->      $ tc qdisc change dev eth0 ingress clsact-off
-> 
-> Finally, if the egress mini-Qdisc is enabled, the "show" command will
-> print out a "clsact" flag to indicate it:
-> 
->      $ tc qdisc show ingress
->      qdisc ingress ffff: dev eth0 parent ffff:fff1 ----------------
->      $ tc qdisc change dev eth0 ingress clsact-on
->      $ tc qdisc show ingress
->      qdisc ingress ffff: dev eth0 parent ffff:fff1 ---------------- clsact
-> 
-> Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-> Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
+On Mon, 2 Aug 2021 02:16:14 +0200 Luigi Rizzo <lrizzo@google.com> wrote:
 
-NAK, just use clsact qdisc in the first place which has both ingress and egress
-support instead of adding such hack. You already need to change your scripts for
-clsact-on, so just swap 'tc qdisc add dev eth0 ingress' to 'tc qdisc add dev eth0
-clsact' w/o needing to change kernel.
+> > Well, it isn't cost-free.  find_vma() is called a lot and a surprising
+> > number of systems apparently run with CONFIG_DEBUG_VM.  Why do you
+> > think this cost is justified?
+> 
+> I assume you are concerned with the cost of mmap_assert_locked() ?
+> 
+> I'd say the justification is the same as for all asserts:
+> at some point some code change may miss the required lock, and the
+> asserts are there to catch elusive race conditions,
+> 
+> There are in fact already instances of mmap_locked_assert()
+> right before find_vma() in walk_page_range(), and a couple before
+> calls to __get_user_pages().
+> 
+> As for the cost, I'd think that if CONFIG_DEBUG_VM is set,
+> one does it on purpose to catch errors and is prepared to pay
+> the cost (in this case the atomic_read(counter) in rwsem_is_locked(),
+> the counter should be hot).
+> 
+> FWIW I have instrumented find_vma() on a fast machine using kstats
+> 
+>    https://github.com/luigirizzo/lr-cstats
+> 
+> (load the module then enable the trace with
+>   echo "trace pcpu:find_vma bits 3" > /sys/kernel/debug/kstats/_control
+> and monitor the time with
+>   watch "grep CPUS /sys/kernel/debug/kstats/find_vma"
+> 
+> I didn't run anything especially intensive except some network
+> benchmarks, but I have collected ~2M samples with the following
+> distribution of find_vma() time in nanoseconds in 3 configs:
+> 
+> CONFIGURATION         p10   p50   p90   p95   p98
+> 
+> no-debug               89   109   214   332    605
+> debug                 331   369   603   862   1338
+> debug+this patch      337   369   603   863   1339
+> 
+> As you can see, just compiling a debug kernel, even without this patch,
+> makes the function 3x more expensive. The effect of this patch is
+> not measurable (the differences are below measurement error).
 
-Thanks,
-Daniel
+Cool, thanks, that's convincing.
