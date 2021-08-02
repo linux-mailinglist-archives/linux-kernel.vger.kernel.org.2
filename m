@@ -2,76 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578613DDA8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1603DD794
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236790AbhHBOPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:15:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237204AbhHBOEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:04:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7900161260;
-        Mon,  2 Aug 2021 13:58:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912685;
-        bh=MPHsQuE030JQqiIiwJ34bXTE5tePz8iIak62bxWmKVw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rF5gR/ILLAhaBlRci9yX+SAD/jmyzD0y+KpL04bprLG7yU7143BB5dpFUh6SWYjKA
-         ZWol9L9rAr4FBdMUmJLFQRZvDtgg5J5xT66FeMXxbN/aCGqQZstcmEbjxXREfmmdaE
-         ptFRPRyVBliAy9FgtMYsI+S4tZYFjAP704C/3/T0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 090/104] can: hi311x: fix a signedness bug in hi3110_cmd()
-Date:   Mon,  2 Aug 2021 15:45:27 +0200
-Message-Id: <20210802134346.976637047@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S234160AbhHBNq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234014AbhHBNqN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:46:13 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B41C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 06:46:04 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id d15so3629047vka.13
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 06:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RB17MU1pJAfRQkn/6jvNyWpVmGH7Icd/hgOnLlEzxuk=;
+        b=F5ASIru8EOb8b8ijHzOub5FKpL7CkNGrP/d38JvlhjC4EZQb4iHRHWmoHA99e522SR
+         DudGw4ze9SBj/QThHZHNn3eBE4gaiiwfiWkoA84+VmIQOahuMLfOCst9BsGiGPYhyhcg
+         1/SP/TOZczxWNXOzV6gLXF6xl7FwEnXCaGwOBSIqLnLLlbK3BgElbOQEHltY5Lzk0etI
+         p19bOUg4+/T1NhUQFD/CsIivwMBF1Gacc4DEcLrtL0X94Wgc5kGAfH9FtdnNSx6DtcPz
+         KbiHk+DDKEUVtXJEl2WzSWw92KUqI+0SSS6Td1/DoPK7ndr5VU/zMpev/hZOde2R+vO8
+         FgdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RB17MU1pJAfRQkn/6jvNyWpVmGH7Icd/hgOnLlEzxuk=;
+        b=gMLey7ZQPHmenIyqJzDVZbWgF3Ts8C9lA6ULMosEhKV7pW0NpLy5ttSVDkHhBKvQGz
+         aiaETl0bYHdBoGq0G8WwQ/TdPXq4XpdMum1LzR/tttFLZL1Z8nZOrXCZ6x8SxNbjCoXQ
+         cBqj7Bmvldkz3W1/oNtlldy1Zq5uoDHaZVzYowUoJHjk3XZ5EVSeRLKNmMyqKOxxeSqu
+         g8/uV8+Hwz5hxgcaiFCHrrM3Mh3P49GPGYguRm+kfrvuCKcb7ENlk1zsp8Prq/bgKIxu
+         hg91nLUuKOak717U6b2x/N7EVnQWSm5Xvb1tB/KUEDm4+NHNtEvt732wHTaM+JFL2cW6
+         8jaw==
+X-Gm-Message-State: AOAM5304tYhPlh89O66e0zGWpyHQO6OGsndjKrxEdYmwjrlyZkN4Rn1R
+        z62vnS6vcO3+Rjz82kqI3LTbsK+tS2iz7HZhAtbTkA==
+X-Google-Smtp-Source: ABdhPJys3C0NSF1OSBF2pdtOJrpc0ETgxFdEBsdyOedgw8e0aQQ3cCChzifcy/n0XDDC0J14ljAcg9DyT2dg6iAQlhM=
+X-Received: by 2002:a1f:cf47:: with SMTP id f68mr8719981vkg.7.1627911963456;
+ Mon, 02 Aug 2021 06:46:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <57783ece7ddae55f2bda2f59f452180bff744ea0.1626257398.git.geert+renesas@glider.be>
+In-Reply-To: <57783ece7ddae55f2bda2f59f452180bff744ea0.1626257398.git.geert+renesas@glider.be>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 2 Aug 2021 15:45:27 +0200
+Message-ID: <CAPDyKFoDULrvVJxRNQBjS-p6FynzXN_Az2eXkf9ag4CjYcsLNg@mail.gmail.com>
+Subject: Re: [PATCH v2] staging: board: Fix uninitialized spinlock when
+ attaching genpd
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+On Wed, 14 Jul 2021 at 12:13, Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> On Armadillo-800-EVA with CONFIG_DEBUG_SPINLOCK=y:
+>
+>     BUG: spinlock bad magic on CPU#0, swapper/1
+>      lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+>     CPU: 0 PID: 1 Comm: swapper Not tainted 5.11.0-rc5-armadillo-00036-gbbca04be7a80-dirty #287
+>     Hardware name: Generic R8A7740 (Flattened Device Tree)
+>     [<c010c3c8>] (unwind_backtrace) from [<c010a49c>] (show_stack+0x10/0x14)
+>     [<c010a49c>] (show_stack) from [<c0159534>] (do_raw_spin_lock+0x20/0x94)
+>     [<c0159534>] (do_raw_spin_lock) from [<c040858c>] (dev_pm_get_subsys_data+0x8c/0x11c)
+>     [<c040858c>] (dev_pm_get_subsys_data) from [<c05fbcac>] (genpd_add_device+0x78/0x2b8)
+>     [<c05fbcac>] (genpd_add_device) from [<c0412db4>] (of_genpd_add_device+0x34/0x4c)
+>     [<c0412db4>] (of_genpd_add_device) from [<c0a1ea74>] (board_staging_register_device+0x11c/0x148)
+>     [<c0a1ea74>] (board_staging_register_device) from [<c0a1eac4>] (board_staging_register_devices+0x24/0x28)
+>
+> of_genpd_add_device() is called before platform_device_register(), as it
+> needs to attach the genpd before the device is probed.  But the spinlock
+> is only initialized when the device is registered.
+>
+> Fix this by open-coding the spinlock initialization, cfr.
+> device_pm_init_common() in the internal drivers/base code, and in the
+> SuperH early platform code.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> Exposed by fw_devlinks changing probe order.
+> Masked before due to an unrelated wait context check failure, which
+> disabled any further spinlock checks.
+> https://lore.kernel.org/linux-acpi/CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com
+>
+> v2:
+>   - Improve code comment.
+> ---
+>  drivers/staging/board/board.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/staging/board/board.c b/drivers/staging/board/board.c
+> index cb6feb34dd401ae3..f980af0373452cab 100644
+> --- a/drivers/staging/board/board.c
+> +++ b/drivers/staging/board/board.c
+> @@ -136,6 +136,7 @@ int __init board_staging_register_clock(const struct board_staging_clk *bsc)
+>  static int board_staging_add_dev_domain(struct platform_device *pdev,
+>                                         const char *domain)
+>  {
+> +       struct device *dev = &pdev->dev;
+>         struct of_phandle_args pd_args;
+>         struct device_node *np;
+>
+> @@ -148,7 +149,11 @@ static int board_staging_add_dev_domain(struct platform_device *pdev,
+>         pd_args.np = np;
+>         pd_args.args_count = 0;
+>
+> -       return of_genpd_add_device(&pd_args, &pdev->dev);
+> +       /* Initialization similar to device_pm_init_common() */
+> +       spin_lock_init(&dev->power.lock);
+> +       dev->power.early_init = true;
+> +
+> +       return of_genpd_add_device(&pd_args, dev);
 
-[ Upstream commit f6b3c7848e66e9046c8a79a5b88fd03461cc252b ]
+It looks like the only device that is being managed here, is a
+platform device that corresponds to the sh_mobile_lcdc_driver
+(drivers/video/fbdev/sh_mobile_lcdcfb.c).
 
-The hi3110_cmd() is supposed to return zero on success and negative
-error codes on failure, but it was accidentally declared as a u8 when
-it needs to be an int type.
+Wouldn't it be better to move the domain information into the platform
+data of the above platform device and then deal with the attach to the
+genpd from the sh_mobile_lcdc_driver?
 
-Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
-Link: https://lore.kernel.org/r/20210729141246.GA1267@kili
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/can/spi/hi311x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In this way, the behaviour would be more consistent with others
+probe/attach to genpd - and $subject patch would not be needed.
 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index 6f5d6d04a8b9..c84a198776c7 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -218,7 +218,7 @@ static int hi3110_spi_trans(struct spi_device *spi, int len)
- 	return ret;
- }
- 
--static u8 hi3110_cmd(struct spi_device *spi, u8 command)
-+static int hi3110_cmd(struct spi_device *spi, u8 command)
- {
- 	struct hi3110_priv *priv = spi_get_drvdata(spi);
- 
--- 
-2.30.2
+>  }
+>  #else
+>  static inline int board_staging_add_dev_domain(struct platform_device *pdev,
+> --
+> 2.25.1
+>
 
-
-
+Kind regards
+Uffe
