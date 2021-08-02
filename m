@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5B23DD893
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E583DD9E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbhHBNxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:53:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59710 "EHLO mail.kernel.org"
+        id S234899AbhHBOFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234165AbhHBNtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:49:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1434360551;
-        Mon,  2 Aug 2021 13:49:02 +0000 (UTC)
+        id S235909AbhHBN7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:59:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 383B1610FD;
+        Mon,  2 Aug 2021 13:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912143;
-        bh=mTGxb1Ejz9EMtgv3s0iB2uOWO/0q9PqqAQqhujIkmYw=;
+        s=korg; t=1627912526;
+        bh=Z6C+iaBIA7e0xMzMq2365IxgphhBS5NSUy7RdbSHsGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=osLNyrChrIp0wMfPbjWe2fyRE9Urvnho7exNfFGb/pAYTv+1T4pPTxm9A/RlJdMtt
-         B89iYVOMXD5vVVqhDqtxepJdQY4InSqfznuOT2NNLb35L1J1mGSXN4FfROFEF4/biS
-         qTN0bzG1PxTsYv6r5BMLBMOHyD1Q14GB09E/apfc=
+        b=ULvDV4KVPYW7gQE0LSnK1mH16PbTwVdIBe0Vlxkld21ITQPRmGQ2b9fbK3NU7gS7B
+         kcK6C0t5u/z/9Zqd2vCjDwF/RLWqD5buySx1lBFOQj9MhLuPSmqOBCERk/WC5xO4cp
+         7+/bo3dD7kva8vSij58q6DA9zlnFPLhE9rVcdQUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 07/38] net/802/garp: fix memleak in garp_request_join()
-Date:   Mon,  2 Aug 2021 15:44:29 +0200
-Message-Id: <20210802134335.068510222@linuxfoundation.org>
+        stable@vger.kernel.org, Hao Xu <haoxu@linux.alibaba.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.13 033/104] io_uring: fix poll requests leaking second poll entries
+Date:   Mon,  2 Aug 2021 15:44:30 +0200
+Message-Id: <20210802134345.107815242@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
-References: <20210802134334.835358048@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,84 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Hao Xu <haoxu@linux.alibaba.com>
 
-[ Upstream commit 42ca63f980842918560b25f0244307fd83b4777c ]
+commit a890d01e4ee016978776e45340e521b3bbbdf41f upstream.
 
-I got kmemleak report when doing fuzz test:
+For pure poll requests, it doesn't remove the second poll wait entry
+when it's done, neither after vfs_poll() or in the poll completion
+handler. We should remove the second poll wait entry.
+And we use io_poll_remove_double() rather than io_poll_remove_waitqs()
+since the latter has some redundant logic.
 
-BUG: memory leak
-unreferenced object 0xffff88810c909b80 (size 64):
-  comm "syz", pid 957, jiffies 4295220394 (age 399.090s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 08 00 00 00 01 02 00 04  ................
-  backtrace:
-    [<00000000ca1f2e2e>] garp_request_join+0x285/0x3d0
-    [<00000000bf153351>] vlan_gvrp_request_join+0x15b/0x190
-    [<0000000024005e72>] vlan_dev_open+0x706/0x980
-    [<00000000dc20c4d4>] __dev_open+0x2bb/0x460
-    [<0000000066573004>] __dev_change_flags+0x501/0x650
-    [<0000000035b42f83>] rtnl_configure_link+0xee/0x280
-    [<00000000a5e69de0>] __rtnl_newlink+0xed5/0x1550
-    [<00000000a5258f4a>] rtnl_newlink+0x66/0x90
-    [<00000000506568ee>] rtnetlink_rcv_msg+0x439/0xbd0
-    [<00000000b7eaeae1>] netlink_rcv_skb+0x14d/0x420
-    [<00000000c373ce66>] netlink_unicast+0x550/0x750
-    [<00000000ec74ce74>] netlink_sendmsg+0x88b/0xda0
-    [<00000000381ff246>] sock_sendmsg+0xc9/0x120
-    [<000000008f6a2db3>] ____sys_sendmsg+0x6e8/0x820
-    [<000000008d9c1735>] ___sys_sendmsg+0x145/0x1c0
-    [<00000000aa39dd8b>] __sys_sendmsg+0xfe/0x1d0
-
-Calling garp_request_leave() after garp_request_join(), the attr->state
-is set to GARP_APPLICANT_VO, garp_attr_destroy() won't be called in last
-transmit event in garp_uninit_applicant(), the attr of applicant will be
-leaked. To fix this leak, iterate and free each attr of applicant before
-rerturning from garp_uninit_applicant().
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 88e41cf928a6 ("io_uring: add multishot mode for IORING_OP_POLL_ADD")
+Cc: stable@vger.kernel.org # 5.13+
+Signed-off-by: Hao Xu <haoxu@linux.alibaba.com>
+Link: https://lore.kernel.org/r/20210728030322.12307-1-haoxu@linux.alibaba.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/802/garp.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ fs/io_uring.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/net/802/garp.c b/net/802/garp.c
-index 2dac647ff420..237f6f076355 100644
---- a/net/802/garp.c
-+++ b/net/802/garp.c
-@@ -206,6 +206,19 @@ static void garp_attr_destroy(struct garp_applicant *app, struct garp_attr *attr
- 	kfree(attr);
- }
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4924,7 +4924,6 @@ static bool io_poll_complete(struct io_k
+ 	if (req->poll.events & EPOLLONESHOT)
+ 		flags = 0;
+ 	if (!io_cqring_fill_event(ctx, req->user_data, error, flags)) {
+-		io_poll_remove_waitqs(req);
+ 		req->poll.done = true;
+ 		flags = 0;
+ 	}
+@@ -4948,6 +4947,7 @@ static void io_poll_task_func(struct cal
  
-+static void garp_attr_destroy_all(struct garp_applicant *app)
-+{
-+	struct rb_node *node, *next;
-+	struct garp_attr *attr;
-+
-+	for (node = rb_first(&app->gid);
-+	     next = node ? rb_next(node) : NULL, node != NULL;
-+	     node = next) {
-+		attr = rb_entry(node, struct garp_attr, node);
-+		garp_attr_destroy(app, attr);
-+	}
-+}
-+
- static int garp_pdu_init(struct garp_applicant *app)
- {
- 	struct sk_buff *skb;
-@@ -612,6 +625,7 @@ void garp_uninit_applicant(struct net_device *dev, struct garp_application *appl
+ 		done = io_poll_complete(req, req->result);
+ 		if (done) {
++			io_poll_remove_double(req);
+ 			hash_del(&req->hash_node);
+ 		} else {
+ 			req->result = 0;
+@@ -5136,7 +5136,7 @@ static __poll_t __io_arm_poll_handler(st
+ 		ipt->error = -EINVAL;
  
- 	spin_lock_bh(&app->lock);
- 	garp_gid_event(app, GARP_EVENT_TRANSMIT_PDU);
-+	garp_attr_destroy_all(app);
- 	garp_pdu_queue(app);
- 	spin_unlock_bh(&app->lock);
- 
--- 
-2.30.2
-
+ 	spin_lock_irq(&ctx->completion_lock);
+-	if (ipt->error)
++	if (ipt->error || (mask && (poll->events & EPOLLONESHOT)))
+ 		io_poll_remove_double(req);
+ 	if (likely(poll->head)) {
+ 		spin_lock(&poll->head->lock);
+@@ -5207,7 +5207,6 @@ static bool io_arm_poll_handler(struct i
+ 	ret = __io_arm_poll_handler(req, &apoll->poll, &ipt, mask,
+ 					io_async_wake);
+ 	if (ret || ipt.error) {
+-		io_poll_remove_double(req);
+ 		spin_unlock_irq(&ctx->completion_lock);
+ 		return false;
+ 	}
 
 
