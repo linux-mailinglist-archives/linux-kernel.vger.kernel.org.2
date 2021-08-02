@@ -2,169 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27963DE2E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E4D3DE2E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232327AbhHBXIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 19:08:34 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:29506 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhHBXIb (ORCPT
+        id S232547AbhHBXJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 19:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231126AbhHBXJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 19:08:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627945702; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=u2fKWWH1QLsGjTyMx+r7+X2+8jw9mmapYxT4cTm9Wq0=;
- b=qKO5xLDHfFNdzXOfIC+k7vN62tYK7mslirImGzyDX2AMjbE+EGWOZPLThht6095/dKAqMGso
- z20hsQojflwS/08z3DenmZz4SdIlNPXsHeulZbcxMGWaCOFbpEpfeptco2VR9cSfMQ7xqp+m
- erPD+hUbFT2GlSg1D/ZUwi2j2fo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 61087acc4815712f3a2a06d5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 23:07:56
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 81E4AC43460; Mon,  2 Aug 2021 23:07:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9127AC433D3;
-        Mon,  2 Aug 2021 23:07:54 +0000 (UTC)
+        Mon, 2 Aug 2021 19:09:35 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27261C06175F;
+        Mon,  2 Aug 2021 16:09:25 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id k1so21449406plt.12;
+        Mon, 02 Aug 2021 16:09:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Djjsh3U3kf0GEGTy91dZfQ0DmMQTXFKs0ubb2qtf9XA=;
+        b=hhyaaXIxPWQLMto0I8ziPj3villrDtRMFjYWpdMPc00wdBCnN1hrq1NRKraiQwglvR
+         JGbcVdAdWTWLChRm1vx8dz91bd2g/PxCtY5Nzt6KfsOb24sflKhjLI7Wfph7oQdFIaWf
+         Dmwd0Ul/o9fFOawyxqOk5Ua1CLmXhy+M7XzQl8UUcvo2x82S0U7h0lyvgOgFsNk9MS4+
+         V0emi3Q28Ttdyv38yHM3M3zwrXSRmqLhuF9T5mNDxm1N3CZnIaZo8BN/vfYmWXh9winG
+         ushjT3T/ovn5SdC4BGL6g8qbbA5sfdC7ljPYIVC5qnJ+wag4Xgu8kTIYz8w3bnXkljHr
+         Gs+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Djjsh3U3kf0GEGTy91dZfQ0DmMQTXFKs0ubb2qtf9XA=;
+        b=VTFY++Xbw5TaqRkrDFNVzELgGHNhs6RPMzwHzg1agOqRK1xW83OzvbIiQsVTeH6Kss
+         RBSimQ45ZJ8QDQbZoD3ca6vJkUTAOT/JT08GIPoqfOqWi4BBTNskn1K+xvxxa13dc9KE
+         X6cDui83MZQZyZRvHxsHfJWMXDAa7rtzEeu8bTMh9NXJUvfoHkdO0REqwz7kLGlbdcw6
+         HxI1pVZS22UWrSM7oc5uisL4wiEJQDJqhataLUif7IZK0zJlJHdhJQmFQhujkr6xddGS
+         jww6bRa4FzkFQumAGGsKDMlrpRu5VcNxMVmuDKz03K1XY8ySF53BSLOHZ5I7expae8d4
+         y2TQ==
+X-Gm-Message-State: AOAM533s/qFhM+ZQNDXv5DZdQT/4ti5+gUUT4p8tWOenUCk+/bbxtc5S
+        Ro1rO8fTPMvPjJL0U5GqPYs=
+X-Google-Smtp-Source: ABdhPJxF5lDXa0N5v7SXE4P1xCfBjRXp+j9ztLXti7YYk4GohVYB0VTfXZiBiGp6b8aHc5NVKchMYA==
+X-Received: by 2002:a17:90b:514:: with SMTP id r20mr19213687pjz.80.1627945764662;
+        Mon, 02 Aug 2021 16:09:24 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id v1sm15035565pgj.40.2021.08.02.16.09.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 16:09:24 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 16:09:21 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     "Keller, Jacob E" <jacob.e.keller@intel.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Nicolas Pitre <nicolas.pitre@linaro.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
+ dependencies
+Message-ID: <20210802230921.GA13623@hoboy.vegasvil.org>
+References: <20210802145937.1155571-1-arnd@kernel.org>
+ <20210802164907.GA9832@hoboy.vegasvil.org>
+ <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Aug 2021 16:07:54 -0700
-From:   abhinavk@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [Freedreno] [PATCH 03/11] drm/msm/disp/dpu1: Add support for DSC
- in pingpong block
-In-Reply-To: <20210715065203.709914-4-vkoul@kernel.org>
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-4-vkoul@kernel.org>
-Message-ID: <3ad3ca623d9b88e3350071313324a924@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-14 23:51, Vinod Koul wrote:
-> In SDM845, DSC can be enabled by writing to pingpong block registers, 
-> so
-> add support for DSC in hw_pp
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c   | 32 +++++++++++++++++++
->  .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h   | 14 ++++++++
->  2 files changed, 46 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
-> index 245a7a62b5c6..07fc131ca9aa 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
-> @@ -28,6 +28,9 @@
->  #define PP_FBC_MODE                     0x034
->  #define PP_FBC_BUDGET_CTL               0x038
->  #define PP_FBC_LOSSY_MODE               0x03C
-> +#define PP_DSC_MODE                     0x0a0
-> +#define PP_DCE_DATA_IN_SWAP             0x0ac
-> +#define PP_DCE_DATA_OUT_SWAP            0x0c8
-> 
->  #define PP_DITHER_EN			0x000
->  #define PP_DITHER_BITDEPTH		0x004
-> @@ -245,6 +248,32 @@ static u32 dpu_hw_pp_get_line_count(struct
-> dpu_hw_pingpong *pp)
->  	return line;
->  }
-> 
-> +static int dpu_hw_pp_dsc_enable(struct dpu_hw_pingpong *pp)
-> +{
-> +	struct dpu_hw_blk_reg_map *c = &pp->hw;
-> +
-> +	DPU_REG_WRITE(c, PP_DSC_MODE, 1);
-> +	return 0;
-> +}
-> +
-> +static void dpu_hw_pp_dsc_disable(struct dpu_hw_pingpong *pp)
-> +{
-> +	struct dpu_hw_blk_reg_map *c = &pp->hw;
-> +
-> +	DPU_REG_WRITE(c, PP_DSC_MODE, 0);
-> +}
-> +
-> +static int dpu_hw_pp_setup_dsc(struct dpu_hw_pingpong *pp)
-> +{
-> +	struct dpu_hw_blk_reg_map *pp_c = &pp->hw;
-> +	int data;
-> +
-> +	data = DPU_REG_READ(pp_c, PP_DCE_DATA_OUT_SWAP);
-> +	data |= BIT(18); /* endian flip */
-> +	DPU_REG_WRITE(pp_c, PP_DCE_DATA_OUT_SWAP, data);
-> +	return 0;
-> +}
-> +
->  static void _setup_pingpong_ops(struct dpu_hw_pingpong *c,
->  				unsigned long features)
->  {
-> @@ -256,6 +285,9 @@ static void _setup_pingpong_ops(struct 
-> dpu_hw_pingpong *c,
->  	c->ops.get_autorefresh = dpu_hw_pp_get_autorefresh_config;
->  	c->ops.poll_timeout_wr_ptr = dpu_hw_pp_poll_timeout_wr_ptr;
->  	c->ops.get_line_count = dpu_hw_pp_get_line_count;
-> +	c->ops.setup_dsc = dpu_hw_pp_setup_dsc;
-> +	c->ops.enable_dsc = dpu_hw_pp_dsc_enable;
-> +	c->ops.disable_dsc = dpu_hw_pp_dsc_disable;
-> 
->  	if (test_bit(DPU_PINGPONG_DITHER, &features))
->  		c->ops.setup_dither = dpu_hw_pp_setup_dither;
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
-> index 845b9ce80e31..5058e41ffbc0 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
-> @@ -124,6 +124,20 @@ struct dpu_hw_pingpong_ops {
->  	 */
->  	void (*setup_dither)(struct dpu_hw_pingpong *pp,
->  			struct dpu_hw_dither_cfg *cfg);
-> +	/**
-> +	 * Enable DSC
-> +	 */
-> +	int (*enable_dsc)(struct dpu_hw_pingpong *pp);
-> +
-> +	/**
-> +	 * Disable DSC
-> +	 */
-> +	void (*disable_dsc)(struct dpu_hw_pingpong *pp);
-> +
-> +	/**
-> +	 * Setup DSC
-> +	 */
-> +	int (*setup_dsc)(struct dpu_hw_pingpong *pp);
->  };
-> 
->  struct dpu_hw_pingpong {
+On Mon, Aug 02, 2021 at 07:54:20PM +0000, Keller, Jacob E wrote:
+> So go back to "select"?
+
+Why not keep it simple?
+
+PTP core:
+   Boolean PTP_1588_CLOCK
+
+drivers:
+   depends on PTP_1588_CLOCK
+
+Also, make Posix timers always part of the core.  Tinification is a
+lost cause.
+
+Thanks,
+Richard
+
