@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8682B3DDA89
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D2C3DD956
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237165AbhHBOP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:15:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49752 "EHLO mail.kernel.org"
+        id S236767AbhHBN7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:59:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236161AbhHBOEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:04:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DD7261221;
-        Mon,  2 Aug 2021 13:57:37 +0000 (UTC)
+        id S235855AbhHBNya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:54:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91231610CC;
+        Mon,  2 Aug 2021 13:52:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912657;
-        bh=OsS/rRFLl2PFBkhmD+pIWqIO46DwB/7ba+05uYcWTx8=;
+        s=korg; t=1627912376;
+        bh=VZmg7G6FLytuAFScgXgIqOhNSdDYIumoebdYUvguD0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uZuOW7G2lVQM0f5wY3YVL5D0G0EN7Dom7onlMYdfnZagEjMVqMeMYla9GhbgQs9Df
-         YaN8p4fZ9xN5ltk1R1cRkVpnJ+kDm7MfDz+WzrJyMlisNp/YTDZ80ayHvEfue9t2QC
-         MD0kQVo86vvWjDFTZgwZ4xlkiFHkWWdAncRjN1+w=
+        b=p53P0YOpeGL6gLlPp7FlRguknqQB39ljt8Y0d1l4mxlT3yrKCiQAgSMXHTbObzYDR
+         yWRhPH2T9WQyhPRNH0Ra1np+KYaXS5GHtGIieGIMJC40lKHo0LzRq8Ihh0ZUZFUrTM
+         v4T+ZsTNid61bhKPXGNczFiXFP9LlJpBqEA6NbyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shannon Nelson <snelson@pensando.io>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 058/104] ionic: fix up dim accounting for tx and rx
+Subject: [PATCH 5.10 32/67] netfilter: nft_nat: allow to specify layer 4 protocol NAT only
 Date:   Mon,  2 Aug 2021 15:44:55 +0200
-Message-Id: <20210802134345.913128251@linuxfoundation.org>
+Message-Id: <20210802134340.121458247@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,94 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shannon Nelson <snelson@pensando.io>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 76ed8a4a00b484dcccef819ef2618bcf8e46f560 ]
+[ Upstream commit a33f387ecd5aafae514095c2c4a8c24f7aea7e8b ]
 
-We need to count the correct Tx and/or Rx packets for dynamic
-interrupt moderation, depending on which we're processing on
-the queue interrupt.
+nft_nat reports a bogus EAFNOSUPPORT if no layer 3 information is specified.
 
-Fixes: 04a834592bf5 ("ionic: dynamic interrupt moderation")
-Signed-off-by: Shannon Nelson <snelson@pensando.io>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: d07db9884a5f ("netfilter: nf_tables: introduce nft_validate_register_load()")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/pensando/ionic/ionic_txrx.c  | 28 ++++++++++++++-----
- 1 file changed, 21 insertions(+), 7 deletions(-)
+ net/netfilter/nft_nat.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
-index 9d3a04110685..1c6e2b9fc96b 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
-@@ -451,11 +451,12 @@ void ionic_rx_empty(struct ionic_queue *q)
- 	q->tail_idx = 0;
- }
- 
--static void ionic_dim_update(struct ionic_qcq *qcq)
-+static void ionic_dim_update(struct ionic_qcq *qcq, int napi_mode)
- {
- 	struct dim_sample dim_sample;
- 	struct ionic_lif *lif;
- 	unsigned int qi;
-+	u64 pkts, bytes;
- 
- 	if (!qcq->intr.dim_coal_hw)
- 		return;
-@@ -463,10 +464,23 @@ static void ionic_dim_update(struct ionic_qcq *qcq)
- 	lif = qcq->q.lif;
- 	qi = qcq->cq.bound_q->index;
- 
-+	switch (napi_mode) {
-+	case IONIC_LIF_F_TX_DIM_INTR:
-+		pkts = lif->txqstats[qi].pkts;
-+		bytes = lif->txqstats[qi].bytes;
+diff --git a/net/netfilter/nft_nat.c b/net/netfilter/nft_nat.c
+index 4bcf33b049c4..ea53fd999f46 100644
+--- a/net/netfilter/nft_nat.c
++++ b/net/netfilter/nft_nat.c
+@@ -201,7 +201,9 @@ static int nft_nat_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
+ 		alen = sizeof_field(struct nf_nat_range, min_addr.ip6);
+ 		break;
+ 	default:
+-		return -EAFNOSUPPORT;
++		if (tb[NFTA_NAT_REG_ADDR_MIN])
++			return -EAFNOSUPPORT;
 +		break;
-+	case IONIC_LIF_F_RX_DIM_INTR:
-+		pkts = lif->rxqstats[qi].pkts;
-+		bytes = lif->rxqstats[qi].bytes;
-+		break;
-+	default:
-+		pkts = lif->txqstats[qi].pkts + lif->rxqstats[qi].pkts;
-+		bytes = lif->txqstats[qi].bytes + lif->rxqstats[qi].bytes;
-+		break;
-+	}
-+
- 	dim_update_sample(qcq->cq.bound_intr->rearm_count,
--			  lif->txqstats[qi].pkts,
--			  lif->txqstats[qi].bytes,
--			  &dim_sample);
-+			  pkts, bytes, &dim_sample);
- 
- 	net_dim(&qcq->dim, dim_sample);
- }
-@@ -487,7 +501,7 @@ int ionic_tx_napi(struct napi_struct *napi, int budget)
- 				     ionic_tx_service, NULL, NULL);
- 
- 	if (work_done < budget && napi_complete_done(napi, work_done)) {
--		ionic_dim_update(qcq);
-+		ionic_dim_update(qcq, IONIC_LIF_F_TX_DIM_INTR);
- 		flags |= IONIC_INTR_CRED_UNMASK;
- 		cq->bound_intr->rearm_count++;
  	}
-@@ -526,7 +540,7 @@ int ionic_rx_napi(struct napi_struct *napi, int budget)
- 		ionic_rx_fill(cq->bound_q);
+ 	priv->family = family;
  
- 	if (work_done < budget && napi_complete_done(napi, work_done)) {
--		ionic_dim_update(qcq);
-+		ionic_dim_update(qcq, IONIC_LIF_F_RX_DIM_INTR);
- 		flags |= IONIC_INTR_CRED_UNMASK;
- 		cq->bound_intr->rearm_count++;
- 	}
-@@ -572,7 +586,7 @@ int ionic_txrx_napi(struct napi_struct *napi, int budget)
- 		ionic_rx_fill(rxcq->bound_q);
- 
- 	if (rx_work_done < budget && napi_complete_done(napi, rx_work_done)) {
--		ionic_dim_update(qcq);
-+		ionic_dim_update(qcq, 0);
- 		flags |= IONIC_INTR_CRED_UNMASK;
- 		rxcq->bound_intr->rearm_count++;
- 	}
 -- 
 2.30.2
 
