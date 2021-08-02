@@ -2,175 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACD63DD10B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E7E3DD110
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhHBHOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbhHBHOV (ORCPT
+        id S232221AbhHBHSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:18:34 -0400
+Received: from wforward3-smtp.messagingengine.com ([64.147.123.22]:46001 "EHLO
+        wforward3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231649AbhHBHSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:14:21 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EBDC06175F;
-        Mon,  2 Aug 2021 00:14:12 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id j18-20020a17090aeb12b029017737e6c349so14868578pjz.0;
-        Mon, 02 Aug 2021 00:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oYGE701/ldiF9KITcm5HXRiWM/dLf2ZAwVce1ur94Jk=;
-        b=DIRDfI+J9salXANALN6k12/S6q39hYPOE12NNmePaVxc44rIbPEt3P9fkaPpOQbB/p
-         n1lhtrjyjBx1h4dApSOEFpEYm6jaGWMZmI+7u8GnCNldJNac6p4EuNwDN/E5XKWOKrD5
-         l7lswtEMlnKH3qo8qr+QohR9gO2+7UMglJuqFU2Qo1QacDlZO4w8gJgDD8GaqPK9qfL4
-         U/UGy6ldgTJDD5veSbeEeDCHmakmEBT0MWXykeBh1EHCTersBnBr0XMTqBLbxrcKTbEO
-         P9k4V2mRP9YWf1WqrghvuErISXE9SQTAN5SWDW6LuChTUN0H9gzMhWhBjhZos0A1x9MW
-         Qa/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oYGE701/ldiF9KITcm5HXRiWM/dLf2ZAwVce1ur94Jk=;
-        b=BDcj2N5CBJcRoFhrywFVW0oeMeRa51c7SYGMMUMZli6oZ9Hu7do0kxSEqsyDJI3ZJ2
-         8gxMayEIl7t7Qi6jnlZ/42y5TtPQEUZ1WmvgAJgMhFTgm57qgBYli5PAWVmO1HtXmwU5
-         68GC7J8Y4umthsxwc9wiUne0qJJuoAF4qe4C7L54zflD0po5ZQpEGDeDqSuJIJF7ZSFU
-         9m7DrDc6CG4zYFczX6mnf/F0xN7IDSLyZEQ+rFAZjjUTYIfmphmy228KLObnxgabOsZL
-         GiPiftN09KbPSVx1OwBj6YcX18GleTwtVkE1K0LZDv5idH8pJPrGKedyciep8wnwe+Vx
-         mBkg==
-X-Gm-Message-State: AOAM530LyMowo8yokRT/tOAoJcWWaKV+fw7mO+diggW6Nh2RdbPX6pEc
-        udtIGHL0zFoc5Odpsin9lLSIGRMJr1YycQ==
-X-Google-Smtp-Source: ABdhPJwsyeWiLLqfHUyWXSj4bhFKoFz5Dy8Kja7ki47VV1ZtfvLOUGmXFl7BnFo7/wRgnTIJvPCtMQ==
-X-Received: by 2002:a62:e90b:0:b029:30e:4530:8dca with SMTP id j11-20020a62e90b0000b029030e45308dcamr15418664pfh.17.1627888451608;
-        Mon, 02 Aug 2021 00:14:11 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id 20sm10883973pfi.170.2021.08.02.00.14.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 00:14:11 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     jasowang@redhat.com
-Cc:     john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org,
-        shuah@kernel.org, mst@redhat.com, zhang.yunkai@zte.com.cn,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] tools: remove unneeded semicolon
-Date:   Mon,  2 Aug 2021 00:14:49 -0700
-Message-Id: <20210802071449.588393-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 2 Aug 2021 03:18:33 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailforward.west.internal (Postfix) with ESMTP id 211651AC00CC;
+        Mon,  2 Aug 2021 03:18:20 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 02 Aug 2021 03:18:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=WBgQhr
+        7+uwTed/8uhlgXLoHO+0NWliI4QXXIGZ4PZXU=; b=mR12apI/NAdLtGleYVSnlK
+        m3YmcjnAWdIvUTs11/BuFxCQALMND+8duWD6j1W4nIhUPkfSQJ6xRVZpenOzZH1s
+        y6rYi50/P9xI0uIVKxnp7T+WHZw75jNW6QWwkyX5/gtWTDQbC4wI7RBwOFdutp5a
+        HA7R6h55ZlUxeeEPwImvd4HIy3d93G722BxZzurA7gjv06eHRI9QtRCIFxo74qJ1
+        5tKuaoHZhzL+4C9phvIaBJmagOuuDYQF1x6pK/0MYxwWCOJ6jNgUo8bQMtnrB9C7
+        J5K21h3/v8YSU6IlT6uOCEEUOkJCiplkyIISYkzk3TqIMiZAAR954DG2VjXTum/w
+        ==
+X-ME-Sender: <xms:OpwHYfN4A86KRf3lxe2wq6PNUIuuuDUpIWxLA0WhSmgpGPL1VKW8sA>
+    <xme:OpwHYZ_tHlgBAMFnP_4siH1lC71VRPnCYhEUGnl0qSU5_Zcumh2xmiSOmJ4XdBNFH
+    j1zBspoHRKMSQyoMM0>
+X-ME-Received: <xmr:OpwHYeRenDbqDtMrQ16zFY5ou0Z2PW3su6wr155xnE1hSOdDarQTkMzQ3SVJvPYWUXJxP-Ibs0OQ2R2jiAmxnIO-H2Xvez1fUXDCk7dNUSg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddriedugdellecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefvufgjfhfhfffkgggtsehttdertddttddtnecuhfhrohhmpeffrghvihguucfg
+    ughmohhnughsohhnuceoughmvgesughmvgdrohhrgheqnecuggftrfgrthhtvghrnhephf
+    ekgeeutddvgeffffetheejvdejieetgfefgfffudegffffgeduheegteegleeknecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepughmvgesughmvg
+    drohhrgh
+X-ME-Proxy: <xmx:OpwHYTur6DSQsHj5VXa9ko0qBswkNKy8NcRIIBQr8U9pka2sDkbBEA>
+    <xmx:OpwHYXeuj9F13p4Vaxtos9eqPJuSjJnRpT5kHgqHjVflh9Tbw8kOtQ>
+    <xmx:OpwHYf3Ohtk1NYdwLzTW5FCT4pcE8qHBJhSPzuQx3GiwbYXQ9Wumsg>
+    <xmx:O5wHYS2Ty3tixOqXVkMEO8LdP0CS6-UPlcZKjhkikz-sKDgtOg21S5asc-bwGes1>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 2 Aug 2021 03:18:16 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 5a5976c4;
+        Mon, 2 Aug 2021 07:18:15 +0000 (UTC)
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        David Matlack <dmatlack@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH v3 3/3] KVM: x86: SGX must obey the
+ KVM_INTERNAL_ERROR_EMULATION protocol
+In-Reply-To: <YQR6XgkjaGfGhesl@google.com>
+References: <20210729133931.1129696-1-david.edmondson@oracle.com>
+ <20210729133931.1129696-4-david.edmondson@oracle.com>
+ <YQR6XgkjaGfGhesl@google.com>
+From:   David Edmondson <dme@dme.org>
+Date:   Mon, 02 Aug 2021 08:18:15 +0100
+Message-ID: <cunmtq0mi14.fsf@dme.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+On Friday, 2021-07-30 at 22:17:02 GMT, Sean Christopherson wrote:
 
-Fix the following coccicheck REVIEW:
-./tools/testing/selftests/timers/inconsistency-check.c:75:2-3 REVIEW
-Unneeded semicolon
-./tools/testing/selftests/timers/set-timer-lat.c:83:2-3 REVIEW Unneeded
-semicolon
-./tools/virtio/virtio-trace/trace-agent-ctl.c:78:2-3 REVIEW Unneeded
-semicolon
-./tools/testing/selftests/timers/nanosleep.c:75:2-3 REVIEW Unneeded
-semicolon
-./tools/testing/selftests/timers/nsleep-lat.c:75:2-3 REVIEW Unneeded
-semicolon
-./tools/testing/selftests/timers/alarmtimer-suspend.c:82:2-3 REVIEW
-Unneeded semicolon
+> On Thu, Jul 29, 2021, David Edmondson wrote:
+>> When passing the failing address and size out to user space, SGX must
+>> ensure not to trample on the earlier fields of the emulation_failure
+>> sub-union of struct kvm_run.
+>> 
+>> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+>> ---
+>>  arch/x86/kvm/vmx/sgx.c | 8 +++-----
+>>  1 file changed, 3 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/vmx/sgx.c b/arch/x86/kvm/vmx/sgx.c
+>> index 6693ebdc0770..63fb93163383 100644
+>> --- a/arch/x86/kvm/vmx/sgx.c
+>> +++ b/arch/x86/kvm/vmx/sgx.c
+>> @@ -53,11 +53,9 @@ static int sgx_get_encls_gva(struct kvm_vcpu *vcpu, unsigned long offset,
+>>  static void sgx_handle_emulation_failure(struct kvm_vcpu *vcpu, u64 addr,
+>>  					 unsigned int size)
+>>  {
+>> -	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+>> -	vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
+>> -	vcpu->run->internal.ndata = 2;
+>> -	vcpu->run->internal.data[0] = addr;
+>> -	vcpu->run->internal.data[1] = size;
+>> +	uint64_t data[2] = { addr, size };
+>> +
+>> +	kvm_prepare_emulation_failure_exit(vcpu, false, data, sizeof(data));
+>
+> Assuming we go with my suggestion to have kvm_prepare_emulation_failure_exit()
+> capture the exit reason/info, it's probably worth converting all the
+> KVM_EXIT_INTERNAL_ERROR paths in sgx.c, even though the others don't clobber flags.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
----
- tools/testing/selftests/timers/alarmtimer-suspend.c  | 2 +-
- tools/testing/selftests/timers/inconsistency-check.c | 2 +-
- tools/testing/selftests/timers/nanosleep.c           | 2 +-
- tools/testing/selftests/timers/nsleep-lat.c          | 2 +-
- tools/testing/selftests/timers/set-timer-lat.c       | 2 +-
- tools/virtio/virtio-trace/trace-agent-ctl.c          | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/timers/alarmtimer-suspend.c b/tools/testing/selftests/timers/alarmtimer-suspend.c
-index 4da09dbf83ba..54da4b088f4c 100644
---- a/tools/testing/selftests/timers/alarmtimer-suspend.c
-+++ b/tools/testing/selftests/timers/alarmtimer-suspend.c
-@@ -79,7 +79,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
-diff --git a/tools/testing/selftests/timers/inconsistency-check.c b/tools/testing/selftests/timers/inconsistency-check.c
-index 022d3ffe3fbf..e6756d9c60a7 100644
---- a/tools/testing/selftests/timers/inconsistency-check.c
-+++ b/tools/testing/selftests/timers/inconsistency-check.c
-@@ -72,7 +72,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
-diff --git a/tools/testing/selftests/timers/nanosleep.c b/tools/testing/selftests/timers/nanosleep.c
-index 71b5441c2fd9..433a09676aeb 100644
---- a/tools/testing/selftests/timers/nanosleep.c
-+++ b/tools/testing/selftests/timers/nanosleep.c
-@@ -72,7 +72,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
-diff --git a/tools/testing/selftests/timers/nsleep-lat.c b/tools/testing/selftests/timers/nsleep-lat.c
-index eb3e79ed7b4a..a7ca9825e106 100644
---- a/tools/testing/selftests/timers/nsleep-lat.c
-+++ b/tools/testing/selftests/timers/nsleep-lat.c
-@@ -72,7 +72,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
-diff --git a/tools/testing/selftests/timers/set-timer-lat.c b/tools/testing/selftests/timers/set-timer-lat.c
-index 50da45437daa..d60bbcad487f 100644
---- a/tools/testing/selftests/timers/set-timer-lat.c
-+++ b/tools/testing/selftests/timers/set-timer-lat.c
-@@ -80,7 +80,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
-diff --git a/tools/virtio/virtio-trace/trace-agent-ctl.c b/tools/virtio/virtio-trace/trace-agent-ctl.c
-index 73d253d4b559..39860be6e2d8 100644
---- a/tools/virtio/virtio-trace/trace-agent-ctl.c
-+++ b/tools/virtio/virtio-trace/trace-agent-ctl.c
-@@ -75,7 +75,7 @@ static int wait_order(int ctl_fd)
- 
- 		if (ret)
- 			break;
--	};
-+	}
- 
- 	return ret;
- 
--- 
-2.25.1
-
+Okay.
