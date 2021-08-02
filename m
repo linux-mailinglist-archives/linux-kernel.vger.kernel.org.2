@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408753DD8BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C123DD926
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236255AbhHBNzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:55:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33012 "EHLO mail.kernel.org"
+        id S235875AbhHBN5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:57:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234735AbhHBNuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:50:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF4FC60FC4;
-        Mon,  2 Aug 2021 13:50:03 +0000 (UTC)
+        id S234614AbhHBNvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:51:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB81961100;
+        Mon,  2 Aug 2021 13:51:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912204;
-        bh=9s0+jIRRx+lf0HGF/rUXYbRC0k0MzN9myWE59gt82XA=;
+        s=korg; t=1627912267;
+        bh=MnNewfPaXUXgVf9a7IQXTsEKHvccMFYpDYVLAZeRXwA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SypAS0+XbGDX7k5aPkfXU4A9qG39n70TRK3j7VfyJFM6EgcDMbCxygb16v35LEB9y
-         XVJqM7W6WJDBmT12i6OQ7p/bw6kQOTfEDG3txxrbBZO0HFfl8WP4OWypihFFE0yQaH
-         CgPGfb/G8lebGr9TTjPrHkIx63FyUoCACPt5WRnA=
+        b=kSIOODbEYk10C5R4eOP4zmTOl2y6JeIRqRJtv5rKVEjp/Q/XfvtRJGIZOOobCemb7
+         4Ca+obQ4Zf4orNiV4/pPLNahxD2U68bQV7WOC9I/wI6KSINpjFRVWn9Nbl/PfCOtZ/
+         AmbFUG1GvuTwCPHLYM+Bszs5y3y305q4XCzEBg/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        Imam Hassan Reza Biswas <imam.hassan.reza.biswas@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/30] tulip: windbond-840: Fix missing pci_disable_device() in probe and remove
+Subject: [PATCH 5.4 23/40] i40e: Fix firmware LLDP agent related warning
 Date:   Mon,  2 Aug 2021 15:45:03 +0200
-Message-Id: <20210802134334.892201802@linuxfoundation.org>
+Message-Id: <20210802134336.132235092@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
-References: <20210802134334.081433902@linuxfoundation.org>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
+References: <20210802134335.408294521@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
 
-[ Upstream commit 76a16be07b209a3f507c72abe823bd3af1c8661a ]
+[ Upstream commit 71d6fdba4b2d82fdd883fec31dee77fbcf59773a ]
 
-Replace pci_enable_device() with pcim_enable_device(),
-pci_disable_device() and pci_release_regions() will be
-called in release automatically.
+Make warning meaningful for the user.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Previously the trace:
+"Starting FW LLDP agent failed: error: I40E_ERR_ADMIN_QUEUE_ERROR, I40E_AQ_RC_EAGAIN"
+was produced when user tried to start Firmware LLDP agent,
+just after it was stopped with sequence:
+ethtool --set-priv-flags <dev> disable-fw-lldp on
+ethtool --set-priv-flags <dev> disable-fw-lldp off
+(without any delay between the commands)
+At that point the firmware is still processing stop command, the behavior
+is expected.
+
+Fixes: c1041d070437 ("i40e: Missing response checks in driver when starting/stopping FW LLDP")
+Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Tested-by: Imam Hassan Reza Biswas <imam.hassan.reza.biswas@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/dec/tulip/winbond-840.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
-index 70cb2d689c2c..79bdd2a79dbd 100644
---- a/drivers/net/ethernet/dec/tulip/winbond-840.c
-+++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
-@@ -367,7 +367,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	int i, option = find_cnt < MAX_UNITS ? options[find_cnt] : 0;
- 	void __iomem *ioaddr;
- 
--	i = pci_enable_device(pdev);
-+	i = pcim_enable_device(pdev);
- 	if (i) return i;
- 
- 	pci_set_master(pdev);
-@@ -389,7 +389,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	ioaddr = pci_iomap(pdev, TULIP_BAR, netdev_res_size);
- 	if (!ioaddr)
--		goto err_out_free_res;
-+		goto err_out_netdev;
- 
- 	for (i = 0; i < 3; i++)
- 		((__le16 *)dev->dev_addr)[i] = cpu_to_le16(eeprom_read(ioaddr, i));
-@@ -468,8 +468,6 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- err_out_cleardev:
- 	pci_iounmap(pdev, ioaddr);
--err_out_free_res:
--	pci_release_regions(pdev);
- err_out_netdev:
- 	free_netdev (dev);
- 	return -ENODEV;
-@@ -1535,7 +1533,6 @@ static void w840_remove1(struct pci_dev *pdev)
- 	if (dev) {
- 		struct netdev_private *np = netdev_priv(dev);
- 		unregister_netdev(dev);
--		pci_release_regions(pdev);
- 		pci_iounmap(pdev, np->base_addr);
- 		free_netdev(dev);
- 	}
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index 2288a3855e52..5e20d5082532 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -5087,6 +5087,10 @@ flags_complete:
+ 					dev_warn(&pf->pdev->dev,
+ 						 "Device configuration forbids SW from starting the LLDP agent.\n");
+ 					return -EINVAL;
++				case I40E_AQ_RC_EAGAIN:
++					dev_warn(&pf->pdev->dev,
++						 "Stop FW LLDP agent command is still being processed, please try again in a second.\n");
++					return -EBUSY;
+ 				default:
+ 					dev_warn(&pf->pdev->dev,
+ 						 "Starting FW LLDP agent failed: error: %s, %s\n",
 -- 
 2.30.2
 
