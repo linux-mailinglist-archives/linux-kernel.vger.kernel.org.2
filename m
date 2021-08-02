@@ -2,206 +2,433 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02963DCF00
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423933DCF01
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbhHBDwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 23:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhHBDwJ (ORCPT
+        id S232161AbhHBDwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 23:52:19 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7911 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232123AbhHBDwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 23:52:09 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DFCC06175F;
-        Sun,  1 Aug 2021 20:52:00 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id k2so634932plk.13;
-        Sun, 01 Aug 2021 20:52:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ewn+EI6qbIfdhlpZR/OWbSCkPz5dXjXMmqvAd/fj+PE=;
-        b=t2D+HKyskSkmLy6VTqcNWp227BboiDJjuNRpS0ZpN2BusRewXoqdEWsN+Hi04GMNxJ
-         V9XHiqFbsuuIv/We6qruyQTaDwEb1WQ0sDJ9D1NAes5r4Xerms6oyLHV1V1UG9i0/40m
-         26nQY8Lvh1kWlFEoOWBmij9Y7DJtuxgzZP18jsGAae7XRM1blbW33YBDLzIXyNMK3vBv
-         FukpQl9Rxal3KL3bE3HaCHauGndcfGv6RUQ+dTy5HhYWibI8FgFIt/FYLI7wYy8a3/Xe
-         VjbENDgTEWYd1GPsxetZ8pfaZvVXt5qDJ2C/WVxxl+ckpVGy9Ue8vuDnA5OsPduv0fgd
-         KF5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ewn+EI6qbIfdhlpZR/OWbSCkPz5dXjXMmqvAd/fj+PE=;
-        b=F3ppLceCi0IcAY8Kib8Se3bcY1vEmOpY+jxkh3KENLOQI59Z8GIuPAmFbfWw0DseRj
-         GtmSjyp2+NRsFtCpzAo5HQfkNRc6453O3tccrnxXd9pji0U8Prk1A5Wbknw331HEnmdN
-         WalK3nz5/B3pyQaqvWt0Jwy+grmq63kFcAKejMu92D9Jmy5z11L/MEtyE87v/jj99IGI
-         PEKQJV0msH6k7tN6/H+yl47HKQe3CzvuBF/4pOr0k/u40Fs3MXbGu5Ttd0xaO/V1/nfM
-         mzm2SKLQachszp2akCQJieLCN1br09ETVV4dYNWU4Meio3tkZV+T1JJMpJcFt28QwOFQ
-         q1dw==
-X-Gm-Message-State: AOAM532OFSRQWl2+zBXz/eJ8KQiGehSlaBvsXhPzXE3k4sBFf3Kjp4GS
-        E4pJQNalAlvNoBonmAq/K0U=
-X-Google-Smtp-Source: ABdhPJxQdR4jx0TvLHkCp6Yn/JEJkf3QFIzNdouN66uji6mPYbRyGQqe0Q96GhGLnBH+kWKgHQP4dQ==
-X-Received: by 2002:a65:615a:: with SMTP id o26mr4535441pgv.177.1627876319581;
-        Sun, 01 Aug 2021 20:51:59 -0700 (PDT)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id x24sm8894471pjk.43.2021.08.01.20.51.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 01 Aug 2021 20:51:59 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     axboe@kernel.dk, tj@kernel.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: [PATCH v3] blk-throtl: optimize IOPS throttle for large IO scenarios
-Date:   Mon,  2 Aug 2021 11:51:56 +0800
-Message-Id: <65869aaad05475797d63b4c3fed4f529febe3c26.1627876014.git.brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sun, 1 Aug 2021 23:52:17 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GdP9T1KySz80Qv;
+        Mon,  2 Aug 2021 11:48:13 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 11:52:02 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 2 Aug
+ 2021 11:52:01 +0800
+Subject: Re: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210719122417.10355-1-liuqi115@huawei.com>
+ <20210721174153.34c1898dc9eea135eb0b8be8@kernel.org>
+ <332df5b7d7bb4bd096b6521ffefaabe6@hisilicon.com>
+ <20210723000318.5594c86e7c454aed82d9465d@kernel.org>
+ <e63531dc8b7040219761e72fb9b1e74a@hisilicon.com>
+ <20210731101537.a64063d84e86d7910bd58a96@kernel.org>
+ <6a97dff6c33c4b84887223de2502bd3d@hisilicon.com>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <2f32fff3-6b58-583f-8e85-06ec1553d3f4@huawei.com>
+Date:   Mon, 2 Aug 2021 11:52:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <6a97dff6c33c4b84887223de2502bd3d@hisilicon.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
 
-After patch 54efd50 (block: make generic_make_request handle
-arbitrarily sized bios), the IO through io-throttle may be larger,
-and these IOs may be further split into more small IOs. However,
-IOPS throttle does not seem to be aware of this change, which
-makes the calculation of IOPS of large IOs incomplete, resulting
-in disk-side IOPS that does not meet expectations. Maybe we should
-fix this problem.
 
-We can reproduce it by set max_sectors_kb of disk to 128, set
-blkio.write_iops_throttle to 100, run a dd instance inside blkio
-and use iostat to watch IOPS:
+On 2021/7/31 20:21, Song Bao Hua (Barry Song) wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Masami Hiramatsu [mailto:mhiramat@kernel.org]
+>> Sent: Saturday, July 31, 2021 1:16 PM
+>> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+>> Cc: liuqi (BA) <liuqi115@huawei.com>; catalin.marinas@arm.com;
+>> will@kernel.org; naveen.n.rao@linux.ibm.com; anil.s.keshavamurthy@intel.com;
+>> davem@davemloft.net; linux-arm-kernel@lists.infradead.org; Zengtao (B)
+>> <prime.zeng@hisilicon.com>; robin.murphy@arm.com; Linuxarm
+>> <linuxarm@huawei.com>; linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+>>
+>> On Fri, 30 Jul 2021 10:04:06 +0000
+>> "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com> wrote:
+>>
+>>>>>>>
+>>>>>>> Hi Qi,
+>>>>>>>
+>>>>>>> Thanks for your effort!
+>>>>>>>
+>>>>>>> On Mon, 19 Jul 2021 20:24:17 +0800
+>>>>>>> Qi Liu <liuqi115@huawei.com> wrote:
+>>>>>>>
+>>>>>>>> This patch introduce optprobe for ARM64. In optprobe, probed
+>>>>>>>> instruction is replaced by a branch instruction to detour
+>>>>>>>> buffer. Detour buffer contains trampoline code and a call to
+>>>>>>>> optimized_callback(). optimized_callback() calls opt_pre_handler()
+>>>>>>>> to execute kprobe handler.
+>>>>>>>
+>>>>>>> OK so this will replace only one instruction.
+>>>>>>>
+>>>>>>>>
+>>>>>>>> Limitations:
+>>>>>>>> - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
+>>>>>>>> guarantee the offset between probe point and kprobe pre_handler
+>>>>>>>> is not larger than 128MiB.
+>>>>>>>
+>>>>>>> Hmm, shouldn't we depends on !CONFIG_ARM64_MODULE_PLTS? Or,
+>>>>>>> allocate an intermediate trampoline area similar to arm optprobe
+>>>>>>> does.
+>>>>>>
+>>>>>> Depending on !CONFIG_ARM64_MODULE_PLTS will totally disable
+>>>>>> RANDOMIZE_BASE according to arch/arm64/Kconfig:
+>>>>>> config RANDOMIZE_BASE
+>>>>>> 	bool "Randomize the address of the kernel image"
+>>>>>> 	select ARM64_MODULE_PLTS if MODULES
+>>>>>> 	select RELOCATABLE
+>>>>>
+>>>>> Yes, but why it is required for "RANDOMIZE_BASE"?
+>>>>> Does that imply the module call might need to use PLT in
+>>>>> some cases?
+>>>>>
+>>>>>>
+>>>>>> Depending on !RANDOMIZE_MODULE_REGION_FULL seems to be still
+>>>>>> allowing RANDOMIZE_BASE via avoiding long jump according to:
+>>>>>> arch/arm64/Kconfig:
+>>>>>>
+>>>>>> config RANDOMIZE_MODULE_REGION_FULL
+>>>>>> 	bool "Randomize the module region over a 4 GB range"
+>>>>>> 	depends on RANDOMIZE_BASE
+>>>>>> 	default y
+>>>>>> 	help
+>>>>>> 	  Randomizes the location of the module region inside a 4 GB window
+>>>>>> 	  covering the core kernel. This way, it is less likely for modules
+>>>>>> 	  to leak information about the location of core kernel data structures
+>>>>>> 	  but it does imply that function calls between modules and the core
+>>>>>> 	  kernel will need to be resolved via veneers in the module PLT.
+>>>>>>
+>>>>>> 	  When this option is not set, the module region will be randomized
+>> over
+>>>>>> 	  a limited range that contains the [_stext, _etext] interval of the
+>>>>>> 	  core kernel, so branch relocations are always in range.
+>>>>>
+>>>>> Hmm, this dependency looks strange. If it always in range, don't we need
+>>>>> PLT for modules?
+>>>>>
+>>>>> Cataline, would you know why?
+>>>>> Maybe it's a KASLR's Kconfig issue?
+>>>>
+>>>> I actually didn't see any problem after making this change:
+>>>>
+>>>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>>>> index e07e7de9ac49..6440671b72e0 100644
+>>>> --- a/arch/arm64/Kconfig
+>>>> +++ b/arch/arm64/Kconfig
+>>>> @@ -1781,7 +1781,6 @@ config RELOCATABLE
+>>>>
+>>>>   config RANDOMIZE_BASE
+>>>>          bool "Randomize the address of the kernel image"
+>>>> -       select ARM64_MODULE_PLTS if MODULES
+>>>>          select RELOCATABLE
+>>>>          help
+>>>>            Randomizes the virtual address at which the kernel image is
+>>>> @@ -1801,6 +1800,7 @@ config RANDOMIZE_BASE
+>>>>   config RANDOMIZE_MODULE_REGION_FULL
+>>>>          bool "Randomize the module region over a 4 GB range"
+>>>>          depends on RANDOMIZE_BASE
+>>>> +       select ARM64_MODULE_PLTS if MODULES
+>>>>          default y
+>>>>          help
+>>>>            Randomizes the location of the module region inside a 4 GB window
+>>>>
+>>>> and having this config:
+>>>> # zcat /proc/config.gz | grep RANDOMIZE_BASE
+>>>> CONFIG_RANDOMIZE_BASE=y
+>>>>
+>>>> # zcat /proc/config.gz | grep RANDOMIZE_MODULE_REGION_FULL
+>>>> # CONFIG_RANDOMIZE_MODULE_REGION_FULL is not set
+>>>>
+>>>> # zcat /proc/config.gz | grep ARM64_MODULE_PLTS
+>>>> # CONFIG_ARM64_MODULE_PLTS is not set
+>>>>
+>>>> Modules work all good:
+>>>> # lsmod
+>>>> Module                  Size  Used by
+>>>> btrfs                1355776  0
+>>>> blake2b_generic        20480  0
+>>>> libcrc32c              16384  1 btrfs
+>>>> xor                    20480  1 btrfs
+>>>> xor_neon               16384  1 xor
+>>>> zstd_compress         163840  1 btrfs
+>>>> raid6_pq              110592  1 btrfs
+>>>> ctr                    16384  0
+>>>> md5                    16384  0
+>>>> ip_tunnel              32768  0
+>>>> ipv6                  442368  28
+>>>>
+>>>>
+>>>> I am not quite sure if there is a corner case. If no,
+>>>> I would think the kconfig might be some improper.
+>>>
+>>> The corner case is that even CONFIG_RANDOMIZE_MODULE_REGION_FULL
+>>> is not enabled, but if CONFIG_ARM64_MODULE_PLTS is enabled, when
+>>> we can't get memory from the 128MB area in case the area is exhausted,
+>>> we will fall back in module_alloc() to a 2GB area as long as either
+>>> of the below two conditions is met:
+>>>
+>>> 1. KASAN is not enabled
+>>> 2. KASAN is enabled and CONFIG_KASAN_VMALLOC is also enabled.
+>>>
+>>> void *module_alloc(unsigned long size)
+>>> {
+>>> 	u64 module_alloc_end = module_alloc_base + MODULES_VSIZE;
+>>> 	gfp_t gfp_mask = GFP_KERNEL;
+>>> 	void *p;
+>>>
+>>> 	/* Silence the initial allocation */
+>>> 	if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS))
+>>> 		gfp_mask |= __GFP_NOWARN;
+>>>
+>>> 	if (IS_ENABLED(CONFIG_KASAN_GENERIC) ||
+>>> 	    IS_ENABLED(CONFIG_KASAN_SW_TAGS))
+>>> 		/* don't exceed the static module region - see below */
+>>> 		module_alloc_end = MODULES_END;
+>>>
+>>> 	p = __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
+>>> 				module_alloc_end, gfp_mask, PAGE_KERNEL, 0,
+>>> 				NUMA_NO_NODE, __builtin_return_address(0));
+>>>
+>>> 	if (!p && IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+>>> 	    (IS_ENABLED(CONFIG_KASAN_VMALLOC) ||
+>>> 	     (!IS_ENABLED(CONFIG_KASAN_GENERIC) &&
+>>> 	      !IS_ENABLED(CONFIG_KASAN_SW_TAGS))))
+>>> 		/*
+>>> 		 * KASAN without KASAN_VMALLOC can only deal with module
+>>> 		 * allocations being served from the reserved module region,
+>>> 		 * since the remainder of the vmalloc region is already
+>>> 		 * backed by zero shadow pages, and punching holes into it
+>>> 		 * is non-trivial. Since the module region is not randomized
+>>> 		 * when KASAN is enabled without KASAN_VMALLOC, it is even
+>>> 		 * less likely that the module region gets exhausted, so we
+>>> 		 * can simply omit this fallback in that case.
+>>> 		 */
+>>> 		p = __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
+>>> 				module_alloc_base + SZ_2G, GFP_KERNEL,
+>>> 				PAGE_KERNEL, 0, NUMA_NO_NODE,
+>>> 				__builtin_return_address(0));
+>>>
+>>> 	if (p && (kasan_module_alloc(p, size) < 0)) {
+>>> 		vfree(p);
+>>> 		return NULL;
+>>> 	}
+>>>
+>>> 	return p;
+>>> }
+>>>
+>>> This should be happening quite rarely. But maybe arm64's document
+>>> needs some minor fixup, otherwise, it is quite confusing.
+>>
+>> OK, so CONFIG_KASAN_VLALLOC=y and CONFIG_ARM64_MODULE_PLTS=y, the
+>> module_alloc()
+>> basically returns the memory in 128MB region, but can return the memory in 2GB
+>> region. (This is OK because optprobe can filter it out)
+>> But CONFIG_RANDOMIZE_MODULE_REGION_FULL=y, there is almost no chance to get
+>> the memory in 128MB region.
+>>
+>> Hmm, for the optprobe in kernel text, maybe we can define 'optinsn_alloc_start'
+>> by 'module_alloc_base - (SZ_2G - MODULES_VADDR)' and use __vmalloc_node_range()
+>> to avoid this issue. But that is only for the kernel. For the modules, we may
+>> always out of 128MB region.
+> 
+> If we can have some separate PLT entries in each module for optprobe,
+> we should be able to short-jump to the PLT entry and then PLT entry
+> will further long-jump to detour out of the range. That is exactly
+> the duty of PLT.
+> 
+> Right now, arm64 has support on dynamic_ftrace by adding a
+> section in module for ftrace PLT.
+> arch/arm64/include/asm/module.lds.h:
+> SECTIONS {
+> #ifdef CONFIG_ARM64_MODULE_PLTS
+> 	.plt 0 (NOLOAD) : { BYTE(0) }
+> 	.init.plt 0 (NOLOAD) : { BYTE(0) }
+> 	.text.ftrace_trampoline 0 (NOLOAD) : { BYTE(0) }
+> #endif
+> ...
+> }
+> 
+> arch/arm64/kernel/module.c will initialize some PLT entries
+> for ftrace:
+> 
+> static int module_init_ftrace_plt(const Elf_Ehdr *hdr,
+> 				  const Elf_Shdr *sechdrs,
+> 				  struct module *mod)
+> {
+> #if defined(CONFIG_ARM64_MODULE_PLTS) && defined(CONFIG_DYNAMIC_FTRACE)
+> 	const Elf_Shdr *s;
+> 	struct plt_entry *plts;
+> 
+> 	s = find_section(hdr, sechdrs, ".text.ftrace_trampoline");
+> 	if (!s)
+> 		return -ENOEXEC;
+> 
+> 	plts = (void *)s->sh_addr;
+> 
+> 	__init_plt(&plts[FTRACE_PLT_IDX], FTRACE_ADDR);
+> 
+> 	if (IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_REGS))
+> 		__init_plt(&plts[FTRACE_REGS_PLT_IDX], FTRACE_REGS_ADDR);
+> 
+> 	mod->arch.ftrace_trampolines = plts;
+> #endif
+> 	return 0;
+> }
+> 
+> Ftrace will then use those PLT entries in arch/arm64/kernel/ftrace.c:
+> static struct plt_entry *get_ftrace_plt(struct module *mod, unsigned long addr)
+> {
+> #ifdef CONFIG_ARM64_MODULE_PLTS
+> 	struct plt_entry *plt = mod->arch.ftrace_trampolines;
+> 
+> 	if (addr == FTRACE_ADDR)
+> 		return &plt[FTRACE_PLT_IDX];
+> 	if (addr == FTRACE_REGS_ADDR &&
+> 	    IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_REGS))
+> 		return &plt[FTRACE_REGS_PLT_IDX];
+> #endif
+> 	return NULL;
+> }
+> 
+> /*
+>   * Turn on the call to ftrace_caller() in instrumented function
+>   */
+> int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+> {
+> 	unsigned long pc = rec->ip;
+> 	u32 old, new;
+> 	long offset = (long)pc - (long)addr;
+> 
+> 	if (offset < -SZ_128M || offset >= SZ_128M) {
+> 		struct module *mod;
+> 		struct plt_entry *plt;
+> 
+> 		if (!IS_ENABLED(CONFIG_ARM64_MODULE_PLTS))
+> 			return -EINVAL;
+> 
+> 		/*
+> 		 * On kernels that support module PLTs, the offset between the
+> 		 * branch instruction and its target may legally exceed the
+> 		 * range of an ordinary relative 'bl' opcode. In this case, we
+> 		 * need to branch via a trampoline in the module.
+> 		 *
+> 		 * NOTE: __module_text_address() must be called with preemption
+> 		 * disabled, but we can rely on ftrace_lock to ensure that 'mod'
+> 		 * retains its validity throughout the remainder of this code.
+> 		 */
+> 		preempt_disable();
+> 		mod = __module_text_address(pc);
+> 		preempt_enable();
+> 
+> 		if (WARN_ON(!mod))
+> 			return -EINVAL;
+> 
+> 		plt = get_ftrace_plt(mod, addr);
+> 		if (!plt) {
+> 			pr_err("ftrace: no module PLT for %ps\n", (void *)addr);
+> 			return -EINVAL;
+> 		}
+> 
+> 		addr = (unsigned long)plt;
+> 	}
+> 
+> 	old = aarch64_insn_gen_nop();
+> 	new = aarch64_insn_gen_branch_imm(pc, addr, AARCH64_INSN_BRANCH_LINK);
+> 
+> 	return ftrace_modify_code(pc, old, new, true);
+> }
+> 
+> This might be the direction to go later. Anyway, "Rome wasn't built
+> in a day", for this stage, we might focus on optprobe for the case
+> of non-randomized module region :-).
+> 
+> BTW, @liuqi, if users set "nokaslr" in bootargs, will your optprobe
+> always work and not fall back to normal kprobe even we remove the
+> dependency on RANDOMIZED_MODULE_REGION_FULL?
+> 
+Hi Barry,
 
-dd if=/dev/zero of=/dev/sdb bs=1M count=1000 oflag=direct
+I do some tests on Hip08 platform, using nokaslr in booting cmdline and 
+remove dependency on RANDOMIZED_MODULE_REGION_FULL, optprobe seems work.
+Here is the log:
 
-As a result, without this change the average IOPS is 1995, with
-this change the IOPS is 98.
+estuary:/$ uname -a
+Linux (none) 5.13.0-rc4+ #37 SMP PREEMPT Mon Aug 2 08:13:37 CST 2021 
+aarch64 GNU/Linux
+estuary:/$ zcat /proc/config.gz | grep RANDOMIZE_MODULE_REGION
+CONFIG_RANDOMIZE_MODULE_REGION_FULL=y
+estuary:/$ zcat /proc/config.gz | grep OPTPROBE
+CONFIG_OPTPROBES=y
+CONFIG_HAVE_OPTPROBES=y
+estuary:/$ cat /proc/cmdline
+console=ttyAMA0,115200 earlycon=pl011,0x9000000 kpti=off nokaslr
+estuary:/$ cat /sys/bus/platform/devices/hello_driver/kprobe_test
+[   61.304143] do_empty returned 0 and took 200 ns to execute
+[   61.304662] do_empty returned 0 and took 110 ns to execute
+[   61.305196] do_empty returned 0 and took 100 ns to execute
+[   61.305745] do_empty returned 0 and took 90 ns to execute
+[   61.306262] do_empty returned 0 and took 90 ns to execute
+[   61.306781] do_empty returned 0 and took 90 ns to execute
+[   61.307286] do_empty returned 0 and took 90 ns to execute
+[   61.307798] do_empty returned 0 and took 90 ns to execute
+[   61.308314] do_empty returned 0 and took 90 ns to execute
+[   61.308828] do_empty returned 0 and took 90 ns to execute
+[   61.309323] do_empty returned 0 and took 80 ns to execute
+[   61.309832] do_empty returned 0 and took 80 ns to execute
+[   61.310357] do_empty returned 0 and took 80 ns to execute
+[   61.310871] do_empty returned 0 and took 80 ns to execute
+[   61.311361] do_empty returned 0 and took 80 ns to execute
+[   61.311851] do_empty returned 0 and took 90 ns to execute
+[   61.312358] do_empty returned 0 and took 90 ns to execute
+[   61.312879] do_empty returned 0 and took 80 ns to execute
 
-v3: Optimize the use of atomic variables.
-v2: Use atomic variables to solve synchronization problems.
+Thanks,
+Qi
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- block/blk-merge.c    |  2 ++
- block/blk-throttle.c | 32 ++++++++++++++++++++++++++++++++
- block/blk.h          |  2 ++
- 3 files changed, 36 insertions(+)
-
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index a11b3b53717e..22eeaad190d7 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -348,6 +348,8 @@ void __blk_queue_split(struct bio **bio, unsigned int *nr_segs)
- 		trace_block_split(split, (*bio)->bi_iter.bi_sector);
- 		submit_bio_noacct(*bio);
- 		*bio = split;
-+
-+		blk_throtl_charge_bio_split(*bio);
- 	}
- }
- 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index b1b22d863bdf..55c49015e533 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -178,6 +178,9 @@ struct throtl_grp {
- 	unsigned int bad_bio_cnt; /* bios exceeding latency threshold */
- 	unsigned long bio_cnt_reset_time;
- 
-+	atomic_t io_split_cnt[2];
-+	atomic_t last_io_split_cnt[2];
-+
- 	struct blkg_rwstat stat_bytes;
- 	struct blkg_rwstat stat_ios;
- };
-@@ -777,6 +780,8 @@ static inline void throtl_start_new_slice_with_credit(struct throtl_grp *tg,
- 	tg->bytes_disp[rw] = 0;
- 	tg->io_disp[rw] = 0;
- 
-+	atomic_set(&tg->io_split_cnt[rw], 0);
-+
- 	/*
- 	 * Previous slice has expired. We must have trimmed it after last
- 	 * bio dispatch. That means since start of last slice, we never used
-@@ -799,6 +804,9 @@ static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw)
- 	tg->io_disp[rw] = 0;
- 	tg->slice_start[rw] = jiffies;
- 	tg->slice_end[rw] = jiffies + tg->td->throtl_slice;
-+
-+	atomic_set(&tg->io_split_cnt[rw], 0);
-+
- 	throtl_log(&tg->service_queue,
- 		   "[%c] new slice start=%lu end=%lu jiffies=%lu",
- 		   rw == READ ? 'R' : 'W', tg->slice_start[rw],
-@@ -1031,6 +1039,9 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
- 				jiffies + tg->td->throtl_slice);
- 	}
- 
-+	if (iops_limit != UINT_MAX)
-+		tg->io_disp[rw] += atomic_xchg(&tg->io_split_cnt[rw], 0);
-+
- 	if (tg_with_in_bps_limit(tg, bio, bps_limit, &bps_wait) &&
- 	    tg_with_in_iops_limit(tg, bio, iops_limit, &iops_wait)) {
- 		if (wait)
-@@ -2052,12 +2063,14 @@ static void throtl_downgrade_check(struct throtl_grp *tg)
- 	}
- 
- 	if (tg->iops[READ][LIMIT_LOW]) {
-+		tg->last_io_disp[READ] += atomic_xchg(&tg->last_io_split_cnt[READ], 0);
- 		iops = tg->last_io_disp[READ] * HZ / elapsed_time;
- 		if (iops >= tg->iops[READ][LIMIT_LOW])
- 			tg->last_low_overflow_time[READ] = now;
- 	}
- 
- 	if (tg->iops[WRITE][LIMIT_LOW]) {
-+		tg->last_io_disp[WRITE] += atomic_xchg(&tg->last_io_split_cnt[WRITE], 0);
- 		iops = tg->last_io_disp[WRITE] * HZ / elapsed_time;
- 		if (iops >= tg->iops[WRITE][LIMIT_LOW])
- 			tg->last_low_overflow_time[WRITE] = now;
-@@ -2176,6 +2189,25 @@ static inline void throtl_update_latency_buckets(struct throtl_data *td)
- }
- #endif
- 
-+void blk_throtl_charge_bio_split(struct bio *bio)
-+{
-+	struct blkcg_gq *blkg = bio->bi_blkg;
-+	struct throtl_grp *parent = blkg_to_tg(blkg);
-+	struct throtl_service_queue *parent_sq;
-+	bool rw = bio_data_dir(bio);
-+
-+	do {
-+		if (!parent->has_rules[rw])
-+			break;
-+
-+		atomic_inc(&parent->io_split_cnt[rw]);
-+		atomic_inc(&parent->last_io_split_cnt[rw]);
-+
-+		parent_sq = parent->service_queue.parent_sq;
-+		parent = sq_to_tg(parent_sq);
-+	} while (parent);
-+}
-+
- bool blk_throtl_bio(struct bio *bio)
- {
- 	struct request_queue *q = bio->bi_bdev->bd_disk->queue;
-diff --git a/block/blk.h b/block/blk.h
-index 4b885c0f6708..fb9ec838e4b9 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -293,11 +293,13 @@ int create_task_io_context(struct task_struct *task, gfp_t gfp_mask, int node);
- extern int blk_throtl_init(struct request_queue *q);
- extern void blk_throtl_exit(struct request_queue *q);
- extern void blk_throtl_register_queue(struct request_queue *q);
-+extern void blk_throtl_charge_bio_split(struct bio *bio);
- bool blk_throtl_bio(struct bio *bio);
- #else /* CONFIG_BLK_DEV_THROTTLING */
- static inline int blk_throtl_init(struct request_queue *q) { return 0; }
- static inline void blk_throtl_exit(struct request_queue *q) { }
- static inline void blk_throtl_register_queue(struct request_queue *q) { }
-+static inline void blk_throtl_charge_bio_split(struct bio *bio) { }
- static inline bool blk_throtl_bio(struct bio *bio) { return false; }
- #endif /* CONFIG_BLK_DEV_THROTTLING */
- #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
--- 
-2.30.0
+>>
+>> Thank you,
+>>
+>> --
+>> Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> Thanks
+> Barry
+> .
+> 
 
