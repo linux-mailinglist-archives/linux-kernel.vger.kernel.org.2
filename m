@@ -2,88 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B30C3DD4A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E449D3DD4A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 13:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbhHBL1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 07:27:42 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51306 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233417AbhHBL1T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 07:27:19 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1832E1FF7F;
-        Mon,  2 Aug 2021 11:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627903628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CzLqnDMPgV4X2TVtB9CFgIWVEvkNhP+8WThUlGoV9nM=;
-        b=id3afhjHrLuLzLNg3bp7J8byiyMuh8CFuwIGCFN6otealbcZu5ejOF0v0isNETl7pX95LT
-        yqRV3/bSa/bNsuXh239UDdOO0VvdKkvVvv1ltk5TcFB8EW+cL9y4dhEFx6fS0r4BpBOSNI
-        CROFn6rjmZerSr4OGTq4z1kt4euhP4E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627903628;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CzLqnDMPgV4X2TVtB9CFgIWVEvkNhP+8WThUlGoV9nM=;
-        b=mpOw64a8qGPcPLO0gAVPTqrEPqMvcIibjtGoa0VLDjHoaavLzOwGP22JXZ7jrfkQMWJPoh
-        6M2XbU6Dh2hnRkBA==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 08017A3BCB;
-        Mon,  2 Aug 2021 11:27:08 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id 030F9518C0B4; Mon,  2 Aug 2021 13:27:08 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>,
-        Wen Xiong <wenxiong@us.ibm.com>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v4 8/8] nvme-rdma: Unfreeze queues on reconnect
-Date:   Mon,  2 Aug 2021 13:26:58 +0200
-Message-Id: <20210802112658.75875-9-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210802112658.75875-1-dwagner@suse.de>
-References: <20210802112658.75875-1-dwagner@suse.de>
+        id S233423AbhHBL1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 07:27:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233255AbhHBL10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 07:27:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59C1A60FC2;
+        Mon,  2 Aug 2021 11:27:15 +0000 (UTC)
+Date:   Mon, 2 Aug 2021 12:27:12 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, anshuman.khandual@arm.com,
+        will@kernel.org, james.morse@arm.com, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, leo.yan@linaro.org, maz@kernel.org,
+        mark.rutland@arm.com
+Subject: Re: [PATCH 10/10] arm64: errata: Add workaround for TSB flush
+ failures
+Message-ID: <20210802112712.GE18685@arm.com>
+References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+ <20210728135217.591173-11-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728135217.591173-11-suzuki.poulose@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During the queue teardown in nvme_rdma_teardown_io_queues() freeze is
-called unconditionally. When we reconnect we need to pair the freeze
-with an unfreeze to avoid hanging I/Os. For newly created connection
-this is not needed.
+On Wed, Jul 28, 2021 at 02:52:17PM +0100, Suzuki K Poulose wrote:
+> Arm Neoverse-N2 (#2067961) and Cortex-A710 (#2054223) suffers
+> from errata, where a TSB (trace synchronization barrier)
+> fails to flush the trace data completely, when executed from
+> a trace prohibited region. In Linux we always execute it
+> after we have moved the PE to trace prohibited region. So,
+> we can apply the workaround everytime a TSB is executed.
+> 
+> The work around is to issue two TSB consecutively.
+> 
+> NOTE: This errata is defined as LOCAL_CPU_ERRATUM, implying
+> that a late CPU could be blocked from booting if it is the
+> first CPU that requires the workaround. This is because we
+> do not allow setting a cpu_hwcaps after the SMP boot. The
+> other alternative is to use "this_cpu_has_cap()" instead
+> of the faster system wide check, which may be a bit of an
+> overhead, given we may have to do this in nvhe KVM host
+> before a guest entry.
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Fixes: 9f98772ba307 ("nvme-rdma: fix controller reset hang during traffic")
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- drivers/nvme/host/rdma.c | 2 ++
- 1 file changed, 2 insertions(+)
+With Marc's comments addressed:
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index de2a8950d282..21a8a5353af0 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -901,6 +901,8 @@ static int nvme_rdma_configure_admin_queue(struct nvme_rdma_ctrl *ctrl,
- 			error = PTR_ERR(ctrl->ctrl.admin_q);
- 			goto out_cleanup_fabrics_q;
- 		}
-+	} else {
-+		nvme_unfreeze(&ctrl->ctrl);
- 	}
- 
- 	error = nvme_rdma_start_queue(ctrl, 0);
--- 
-2.29.2
-
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
