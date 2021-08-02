@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39AD3DE2B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451293DE2B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbhHBWxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 18:53:04 -0400
-Received: from mail-io1-f54.google.com ([209.85.166.54]:42942 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhHBWxD (ORCPT
+        id S232245AbhHBWx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 18:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231126AbhHBWxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 18:53:03 -0400
-Received: by mail-io1-f54.google.com with SMTP id h1so22161785iol.9;
-        Mon, 02 Aug 2021 15:52:52 -0700 (PDT)
+        Mon, 2 Aug 2021 18:53:54 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F3FC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 15:53:43 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id c16so23185927wrp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 15:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=f6XStbR+3/dZBpwh4Gq6VDFs804yZWcR+sdlfpTwgVg=;
+        b=DB/uIBJxbYHzpEZKZgP6ZhrgdyPC3Hccy+ll+rrmSds7L65imoP40EcpAyDXUosmne
+         MZuue7j8P8gqb17eElU6oSLukduvJWXPnfOXvUTZWmMXzwawxN9yVxw3WQ4Z4zIMnC31
+         hI2yJe8iEi6ebrWTgPQtsU08knqS0CmNtfkm3ezBVnP2uL8GFUTRDQkC3ztv5adkFGCf
+         aqB4yrh1a58HIzYJtUR+lA1VuBLAm/stpzBFDl32iAdABAaZC4Ah9qM7NSdPSomgmVks
+         pGeoULAok6sqXYvQsAZEsMep/Ix1anjMGQWNx3TTxsMgA6PUh+xSv6KlEpG/Um/NRFCe
+         Fq5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l3k+Dbfzm+AqaMGsa9092gdtZIDl2wnkPj179mOLIQU=;
-        b=Qz9wolmYPooB3iq6Tqvg3QnyolbWh+Y/X54Zz1oXVh5X/dcYbLZys6c3hNK2SEGttp
-         3CTo6GN2tjcyWsYzNM0zcq7TwjPxRVb6Pp3paJGHA57g5/+8CjgF8FQKAVKl7lr5qAIV
-         OV9FNRHarIEiGyG3D9bc+qbE67FWIwdcUnbZxAowjsHvH0kmlXLcambKpiBjB9z8DpkA
-         Y3/fUk/zjVcDQnmN2FlGjUAqn+x5Hhd+abmksBuEIRHNloZdWOyhWZdc7iogoZstOQ4D
-         8/3cItswrVJ5jTN34hISBQyIxBIjiTIaJJOvgmJTN6YkJypNKc4a1ABuU9Cuqu5pZdKa
-         +LQg==
-X-Gm-Message-State: AOAM531y+E+prkRhjF7X3oaPnMxfpwYWSAusMPdpY4ju5YP/Y8qHfFLs
-        n+dUA2MGdW77bCUYHvZANQ==
-X-Google-Smtp-Source: ABdhPJznWzBh8yim+/rRl7z+13aP35MOjjOhi/HQygnLIKFNXeK/GJDcDCZv+NZWetNtviITcmGj6A==
-X-Received: by 2002:a02:698f:: with SMTP id e137mr14018833jac.89.1627944771812;
-        Mon, 02 Aug 2021 15:52:51 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id b8sm5982485ilh.74.2021.08.02.15.52.49
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=f6XStbR+3/dZBpwh4Gq6VDFs804yZWcR+sdlfpTwgVg=;
+        b=KULJFOnkxukOcA1id+OzWhUt7hMujuTLrKyTMSY6d4iFjlL+eeGtciCndM9zcqqXiz
+         m74P1uXOqsMuP+4PKXyspf1m815C3/pLNUFd3AG1K2HaNXShwAn7C/ED9/l7gNNaR9Nw
+         s5MJ1WurSy0SPbJQGqyH3feFDCOgVLjUsCCPy8JaTiProysgAV86PZRkHX8hH6JkOa8P
+         So1AxE2qfV8fq7b4kRKZfid5AoU/bQJhVCE/q5kSqsIRB6siLFFsgDsXXv+ALKCfzHJ0
+         IarSADKiVsRAxxbuqYstGxBKJ7aTIBIJasDfLGuLHdtjdVeolJWNBKVqxUYCxWKzT1j7
+         RYYQ==
+X-Gm-Message-State: AOAM530Xa4j/+itRfvL0ZFBVFz6qSsRdVbhFJAxlJvDhHVBfQdWvyV7f
+        Iv/lSxU6JndH53n1FoMW0iU=
+X-Google-Smtp-Source: ABdhPJzFQ/L/4ZUaER8RmCQGH9ygBTjFjh2WilXQX9maipYmFA7RN7EDKhIQQ/rBmlXwTyJyPoiv0Q==
+X-Received: by 2002:a05:6000:10d0:: with SMTP id b16mr20183524wrx.332.1627944822237;
+        Mon, 02 Aug 2021 15:53:42 -0700 (PDT)
+Received: from pc ([196.235.140.151])
+        by smtp.gmail.com with ESMTPSA id q14sm12520389wrs.8.2021.08.02.15.53.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 15:52:51 -0700 (PDT)
-Received: (nullmailer pid 1774382 invoked by uid 1000);
-        Mon, 02 Aug 2021 22:52:48 -0000
-Date:   Mon, 2 Aug 2021 16:52:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     martin.botka@somainline.org, daniel.lezcano@linaro.org,
-        bartosz.dudziak@snejp.pl, ~postmarketos/upstreaming@lists.sr.ht,
-        stephan@gerhold.net, agross@kernel.org, rjw@rjwysocki.net,
-        phone-devel@vger.kernel.org, marijn.suijten@somainline.org,
-        linux-arm-msm@vger.kernel.org, jeffrey.l.hugo@gmail.com,
-        jami.kettunen@somainline.org, devicetree@vger.kernel.org,
-        konrad.dybcio@somainline.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, bjorn.andersson@linaro.org
-Subject: Re: [PATCH v8 2/5] dt-bindings: soc: qcom: Add devicetree binding
- for QCOM SPM
-Message-ID: <YQh3QJN6jkYLAFrj@robh.at.kernel.org>
-References: <20210729155609.608159-1-angelogioacchino.delregno@somainline.org>
- <20210729155609.608159-3-angelogioacchino.delregno@somainline.org>
+        Mon, 02 Aug 2021 15:53:41 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 23:53:39 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] sound: usb: get lock before calling  usb_enable_autosuspend()
+Message-ID: <20210802225339.GA1461793@pc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729155609.608159-3-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jul 2021 17:56:06 +0200, AngeloGioacchino Del Regno wrote:
-> Add devicetree binding for Qualcomm Subsystem Power Manager (SPM).
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> ---
->  .../bindings/soc/qcom/qcom,spm.yaml           | 58 +++++++++++++++++++
->  1 file changed, 58 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,spm.yaml
-> 
+Based on the documentation of usb_enable_autosuspend(), the
+caller must hold udev's device lock.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ sound/usb/card.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 2f6a62416c05..9290ba0acd5f 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -907,8 +907,13 @@ static void usb_audio_disconnect(struct usb_interface *intf)
+ 		}
+ 	}
+ 
+-	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
+-		usb_enable_autosuspend(interface_to_usbdev(intf));
++	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND) {
++		struct usb_device *udev = interface_to_usbdev(intf);
++
++		usb_lock_device(udev);
++		usb_enable_autosuspend(udev);
++		usb_unlock_device(udev);
++	}
+ 
+ 	chip->num_interfaces--;
+ 	if (chip->num_interfaces <= 0) {
+-- 
+2.25.1
+
