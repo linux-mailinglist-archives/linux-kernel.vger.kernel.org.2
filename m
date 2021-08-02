@@ -2,247 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4ED3DDD48
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBCF3DDD4E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbhHBQLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:11:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34218 "EHLO mail.kernel.org"
+        id S232640AbhHBQLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:11:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232069AbhHBQLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:11:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD9B461107;
-        Mon,  2 Aug 2021 16:10:52 +0000 (UTC)
+        id S232524AbhHBQLN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 12:11:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AE5F60F58;
+        Mon,  2 Aug 2021 16:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627920652;
-        bh=rglWHlzS0hDB02auQNohIp4iijeWGQuf2Ja7Qb4hYUM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=unCZl25uSNAUzvN7qGehQ9rQCneXxegVdslhG2QXGl0Q5ZOqSFALCnPRGxRuvhgP6
-         DLkenKRkOntptdvXrk3AhtIrOBKknYu5YOap23EHL5/KX4EKqfdv3TEePLzT0yCRQc
-         gi/9xNM0a984FHhLb939V90piXvxzsvKwySaMmeLQ6zjE05U9JYSJEDEstqMNojxDg
-         Yg/eNvfehj0znMejm8C4yb5GInF4Iud/ZFqmOKWO0/e1JUcy/Xo8Zt4ybXDhj8t5sd
-         /ZPyA63H4ACh53ampfTdyR62yHl7DHbSyQJES7sHBBW4OQ486PLYl2zCd+Dtdu9YOx
-         ZI8y8Q904Tc8g==
-Received: by mail-qv1-f54.google.com with SMTP id cg4so4081351qvb.5;
-        Mon, 02 Aug 2021 09:10:52 -0700 (PDT)
-X-Gm-Message-State: AOAM531kZ20GD9oIpUCgl0yaYkdzoJjQSvVuAodDvtch1CBvetSFGKs3
-        qt8fCvRvoSwQikq/sErxrf0osWUjOTt4UWjVVA==
-X-Google-Smtp-Source: ABdhPJzGQUjalfg03Ji3GXBsBmtGCSK/zTh5PrJJsVuj2U9Uk2JfYU1Debygp3dek7c3OE+8pMR8zpYBMxtmKWE4BYA=
-X-Received: by 2002:a0c:ff4b:: with SMTP id y11mr3347079qvt.50.1627920651928;
- Mon, 02 Aug 2021 09:10:51 -0700 (PDT)
+        s=k20201202; t=1627920663;
+        bh=yfVAU2+U7wpt2YMmE79sPe/T4DFxPBTA0ytzHgKV31I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ChHMkaLCqCFmaMpkB4M3EkQVg2+PuSyzXDhNMsUXXGS9o9xFGeI37VI3l1kyMiVpH
+         AMJ/NSWwXeZezwnPngPbRbfmxYs1mXbr7hXLtCWLBKFvvvZur+p2VIc9e7KKwRvwnn
+         aNP5AZIgurwFlGW1qu3JWx7JslJkWZhVL7cWbf+seW3uGYF9woQlynxNrQer9vP7C/
+         5bSRRmhs05hXftoyeD2+jI5lFDy7vzH1K7sm/gzwI8O1cq/qJyO2daGFvPYZ7Od1sr
+         SyzmnJKAyx8X5Db5jcs2W5zsZHHyOKW3im6Xh3QX053ND3GpYW0SXuDuRWjfEGiJB0
+         40EiGnozfhP8Q==
+Date:   Mon, 2 Aug 2021 09:11:02 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, Andrei Vagin <avagin@gmail.com>
+Subject: Re: [PATCH v2] sock: allow reading and changing sk_userlocks with
+ setsockopt
+Message-ID: <20210802091102.314fa0f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <9ead0d04-f243-b637-355c-af11af45fb5a@virtuozzo.com>
+References: <20210730160708.6544-1-ptikhomirov@virtuozzo.com>
+        <20210730094631.106b8bec@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <9ead0d04-f243-b637-355c-af11af45fb5a@virtuozzo.com>
 MIME-Version: 1.0
-References: <20210726083204.93196-1-mark.kettenis@xs4all.nl>
- <20210726083204.93196-2-mark.kettenis@xs4all.nl> <20210726231848.GA1025245@robh.at.kernel.org>
- <87sfzt1pg9.wl-maz@kernel.org>
-In-Reply-To: <87sfzt1pg9.wl-maz@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 2 Aug 2021 10:10:39 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLvqWiuib9s4PzX8pOQYJQ0eR7Gxz==J849eVJ5MDq4SA@mail.gmail.com>
-Message-ID: <CAL_JsqLvqWiuib9s4PzX8pOQYJQ0eR7Gxz==J849eVJ5MDq4SA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
-        devicetree@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        Sven Peter <sven@svenpeter.dev>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Hector Martin <marcan@marcan.st>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 1, 2021 at 3:31 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Tue, 27 Jul 2021 00:18:48 +0100,
-> Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Mon, Jul 26, 2021 at 10:32:00AM +0200, Mark Kettenis wrote:
-> > > From: Mark Kettenis <kettenis@openbsd.org>
-> > >
-> > > The Apple PCIe host controller is a PCIe host controller with
-> > > multiple root ports present in Apple ARM SoC platforms, including
-> > > various iPhone and iPad devices and the "Apple Silicon" Macs.
-> > >
-> > > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> > > ---
-> > >  .../devicetree/bindings/pci/apple,pcie.yaml   | 166 ++++++++++++++++++
-> > >  MAINTAINERS                                   |   1 +
-> > >  2 files changed, 167 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> > > new file mode 100644
-> > > index 000000000000..bfcbdee79c64
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> > > @@ -0,0 +1,166 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Apple PCIe host controller
-> > > +
-> > > +maintainers:
-> > > +  - Mark Kettenis <kettenis@openbsd.org>
-> > > +
-> > > +description: |
-> > > +  The Apple PCIe host controller is a PCIe host controller with
-> > > +  multiple root ports present in Apple ARM SoC platforms, including
-> > > +  various iPhone and iPad devices and the "Apple Silicon" Macs.
-> > > +  The controller incorporates Synopsys DesigWare PCIe logic to
-> > > +  implements its root ports.  But the ATU found on most DesignWare
-> > > +  PCIe host bridges is absent.
-> >
-> > blank line
-> >
-> > > +  All root ports share a single ECAM space, but separate GPIOs are
-> > > +  used to take the PCI devices on those ports out of reset.  Therefore
-> > > +  the standard "reset-gpio" and "max-link-speed" properties appear on
-> >
-> > reset-gpios
-> >
-> > > +  the child nodes that represent the PCI bridges that correspond to
-> > > +  the individual root ports.
-> >
-> > blank line
-> >
-> > > +  MSIs are handled by the PCIe controller and translated into regular
-> > > +  interrupts.  A range of 32 MSIs is provided.  These 32 MSIs can be
-> > > +  distributed over the root ports as the OS sees fit by programming
-> > > +  the PCIe controller's port registers.
-> > > +
-> > > +allOf:
-> > > +  - $ref: /schemas/pci/pci-bus.yaml#
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    items:
-> > > +      - const: apple,t8103-pcie
-> > > +      - const: apple,pcie
-> > > +
-> > > +  reg:
-> > > +    minItems: 3
-> > > +    maxItems: 5
-> > > +
-> > > +  reg-names:
-> > > +    minItems: 3
-> > > +    maxItems: 5
-> > > +    items:
-> > > +      - const: config
-> > > +      - const: rc
-> > > +      - const: port0
-> > > +      - const: port1
-> > > +      - const: port2
-> > > +
-> > > +  ranges:
-> > > +    minItems: 2
-> > > +    maxItems: 2
-> > > +
-> > > +  interrupts:
-> > > +    description:
-> > > +      Interrupt specifiers, one for each root port.
-> > > +    minItems: 1
-> > > +    maxItems: 3
-> > > +
-> > > +  msi-controller: true
-> > > +  msi-parent: true
-> > > +
-> > > +  msi-ranges:
-> > > +    description:
-> > > +      A list of pairs <intid span>, where "intid" is the first
-> > > +      interrupt number that can be used as an MSI, and "span" the size
-> > > +      of that range.
-> > > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> > > +    items:
-> > > +      minItems: 2
-> > > +      maxItems: 2
-> >
-> > I still have issues I raised on v1 with this property. It's genericish
-> > looking, but not generic. 'intid' as a single cell can't specify any
-> > parent interrupt such as a GIC which uses 3 cells. You could put in all
-> > the cells, but you'd still be assuming which cell you can increment.
->
-> The GIC bindings already use similar abstractions, see what we do for
-> both GICv2m and GICv3 MBIs. Other MSI controllers use similar
-> properties (alpine and loongson, for example).
+On Mon, 2 Aug 2021 11:26:09 +0300 Pavel Tikhomirov wrote:
+> On 30.07.2021 19:46, Jakub Kicinski wrote:
+> > On Fri, 30 Jul 2021 19:07:08 +0300 Pavel Tikhomirov wrote:  
+> >> SOCK_SNDBUF_LOCK and SOCK_RCVBUF_LOCK flags disable automatic socket
+> >> buffers adjustment done by kernel (see tcp_fixup_rcvbuf() and
+> >> tcp_sndbuf_expand()). If we've just created a new socket this adjustment
+> >> is enabled on it, but if one changes the socket buffer size by
+> >> setsockopt(SO_{SND,RCV}BUF*) it becomes disabled.
+> >>
+> >> CRIU needs to call setsockopt(SO_{SND,RCV}BUF*) on each socket on
+> >> restore as it first needs to increase buffer sizes for packet queues
+> >> restore and second it needs to restore back original buffer sizes. So
+> >> after CRIU restore all sockets become non-auto-adjustable, which can
+> >> decrease network performance of restored applications significantly.
+> >>
+> >> CRIU need to be able to restore sockets with enabled/disabled adjustment
+> >> to the same state it was before dump, so let's add special setsockopt
+> >> for it.
+> >>
+> >> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>  
+> > 
+> > The patchwork bot is struggling to ingest this, please double check it
+> > applies cleanly to net-next.  
+> 
+> I checked that it applies cleanly to net-next:
+> 
+> [snorch@fedora linux]$ git am 
+> ~/Downloads/patches/ptikhomirov/setsockopt-sk_userlocks/\[PATCH\ v2\]\ 
+> sock\:\ allow\ reading\ and\ changing\ sk_userlocks\ with\ setsockopt.eml
+> 
+> [snorch@fedora linux]$ git log --oneline
+> c339520aadd5 (HEAD -> net-next) sock: allow reading and changing 
+> sk_userlocks with setsockopt
+> 
+> d39e8b92c341 (net-next/master) Merge 
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next
+> 
+> Probably it was some temporary problem and now it's OK? 
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210730160708.6544-1-ptikhomirov@virtuozzo.com/
 
-That's the problem. Everyone making up their own crap.
+Indeed, must have been resolved by the merge of net into net-next which
+happened on Saturday? Regardless, would you mind reposting? There is no
+way for me to retry the patchwork checks.
 
-> > I think you should just list all these under 'interrupts' using
-> > interrupt-names to make your life easier:
-> >
-> > interrupt-names:
-> >   items:
-> >     - const: port0
-> >     - const: port1
-> >     - const: port2
-> >     - const: msi0
-> >     - const: msi1
-> >     - const: msi2
-> >     - const: msi3
-> >     ...
-> >
-> > Yeah, it's kind of verbose, but if the h/w block handles N interrupts,
-> > you should list N interrupts. The worst case for the above is N entries
-> > too if not contiguous.
->
-> And that's where I beg to differ, again.
->
-> Specifying interrupts like this gives the false impression that these
-> interrupts are generated by the device that owns them (the RC). Which
-> for MSIs is not the case.
+And one more thing..
 
-It's no different than an interrupt controller node having an
-interrupts property. The source is downstream and the interrupt
-controller is combining/translating the interrupts.
+> +	case SO_BUF_LOCK:
+> +		sk->sk_userlocks = (sk->sk_userlocks & ~SOCK_BUF_LOCK_MASK) |
+> +				   (val & SOCK_BUF_LOCK_MASK);
 
-The physical interrupt signals are connected to and originating in
-this block. That sounds like perfectly 'describing the h/w' to me.
+What's the thinking on silently ignoring unsupported flags on set
+rather than rejecting? I feel like these days we lean towards explicit
+rejects.
 
-> This is not only verbose, this is
-> semantically dubious. And what should we do when the number of
-> possible interrupt is ridiculously large, as it is for the GICv3 ITS?
+> +	case SO_BUF_LOCK:
+> +		v.val = sk->sk_userlocks & (SOCK_SNDBUF_LOCK | SOCK_RCVBUF_LOCK);
+> +		break;
 
-I don't disagree with the verbose part. But that's not really an issue
-in this case.
+The mask could you be used here.
 
-> I wish we had a standard way to express these constraints. Until we
-> do, I don't think enumerating individual interrupts is a practical
-> thing to do, nor that it actually represents the topology of the
-> system.
-
-The only way a standard way will happen is to stop accepting the
-custom properties.
-
-All the custom properties suffer from knowledge of what the parent
-interrupt controller is. To fix that, I think we need something like
-this:
-
-msi-ranges = <intspec base>, <intspec step>, <intspec end>;
-
-'intspec' is defined by the parent interrupt-controller cells. step is
-the value to add. And end is what to match on to stop aka the last
-interrupt in the range. For example, if the GIC is the parent, we'd
-have something like this:
-
-<GIC_SPI 123 0>, <0 1 0>, <GIC_SPI 124 0>
-
-Does this apply to cases other than MSI? I think so as don't we have
-the same type of properties with the low power mode shadow interrupt
-controllers?  So 'interrupt-ranges'?
-
-
-It looks to me like there's an assumption in the kernel that an MSI
-controller has a linear range of parent interrupts? Is that correct
-and something that's guaranteed? That assumption leaks into the
-existing bindings. It's fine for the kernel to assume that until
-there's a case that's not linear, but a common binding needs to be
-able handle a non-linear case.
-
-Rob
+Just to double check - is the expectation that the value returned is
+completely opaque to the user space? The defines in question are not
+part of uAPI.
