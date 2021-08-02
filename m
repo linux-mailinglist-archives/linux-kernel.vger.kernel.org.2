@@ -2,188 +2,848 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DAA3DE336
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D3A3DE337
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhHBXpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 19:45:25 -0400
-Received: from mga05.intel.com ([192.55.52.43]:31743 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232208AbhHBXpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 19:45:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="299141678"
-X-IronPort-AV: E=Sophos;i="5.84,290,1620716400"; 
-   d="scan'208";a="299141678"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 16:45:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,290,1620716400"; 
-   d="scan'208";a="568478400"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga004.jf.intel.com with ESMTP; 02 Aug 2021 16:45:11 -0700
-Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Mon, 2 Aug 2021 16:45:11 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Mon, 2 Aug 2021 16:45:11 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Mon, 2 Aug 2021 16:45:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O93L2zlJKQzfKNDydMbztzIf/OpuYDZj6CqXI5jpIrqk6ztOHONrit4TSREVG2pbirz03clE/Sk8o2OVt4ZfJMhm43m/c7brCvO1pWWW4aHvqZDRptOEyYIu0V+yiMngLPCYwgDuwwK+AaTMp9+D1rQAV7m/cHZXA7DRg5cpc0Mtj77qhazLOWwqQzh/scX7HGCeXcluZthdJx++lqJqjsDI4eIkRLZNAXYA9KLaRrO04OReIpjEr023IwXzL1D0bXhEONw3pHa7p1TUM4cnwBTOejH0UwYkOuYLjRKPDCcr3cfekCl1eJj8Mea8nxjEpdV8khMgOGAdHH/5mmQmpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=27jImUV8qzIlD1j/vl4R7W+sKkaieakMmKHphbV8vyo=;
- b=TmcGvBWwmi8iNe7rZQmNGBrWFoTGr/Q+jiHAnAb7w3Z3HWCm0M+5HkNPopg7/RoVK420xxqMyk7hHEZXIERqdkh+B6cnewIAyZ5pXbwKfh5Ce8LRAjK2cY5xjcB+AleFfBtsN0vRvwQrBMVkneYBILYhWEkgZUjRxeHVlla9hc6+r/S2SBt16EmOB3yO1eDxS6ijaamibe1JFL7bOMWgpsVHEH58Xv9megWFVyYaooXxz478VGQ1m3e7UltsWt6lb3lHocQ4CISKKQS2/RGEBciaX9YYa4DkKGV6F7TYdFvLA7QVOgqKY2tfoF9AfhYJobuNIZ7B8fj2XPa/LcnUkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=27jImUV8qzIlD1j/vl4R7W+sKkaieakMmKHphbV8vyo=;
- b=mbqXdn5wenmzSbo7Ehsr8F1UIoK9ukjXwHdlqk9A3Zwjqe/iQ5xQ+BAygg+0dUZBYflGppoMXVD/NB4IQGWX8h5A2zG5Rj3PM8KiWU4scSoziH/OfdCVIG6srRTqjFAZvrhris4PoVHiXgtAXI3deHDYaEGCV+BeIfRuJ+Eo3UA=
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by MWHPR11MB1837.namprd11.prod.outlook.com (2603:10b6:300:10f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17; Mon, 2 Aug
- 2021 23:45:10 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::bd85:7a6a:a04c:af3a]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::bd85:7a6a:a04c:af3a%5]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
- 23:45:10 +0000
-From:   "Keller, Jacob E" <jacob.e.keller@intel.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-CC:     Arnd Bergmann <arnd@kernel.org>,
-        Nicolas Pitre <nicolas.pitre@linaro.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
- dependencies
-Thread-Topic: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
- dependencies
-Thread-Index: AQHXh68Y1owt0G/CUEakzTAdq+RvtqtgbT+AgAAzuICAADaFgIAACciQ
-Date:   Mon, 2 Aug 2021 23:45:09 +0000
-Message-ID: <CO1PR11MB508917A17F68DD927CD26A82D6EF9@CO1PR11MB5089.namprd11.prod.outlook.com>
-References: <20210802145937.1155571-1-arnd@kernel.org>
- <20210802164907.GA9832@hoboy.vegasvil.org>
- <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com>
- <20210802230921.GA13623@hoboy.vegasvil.org>
-In-Reply-To: <20210802230921.GA13623@hoboy.vegasvil.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 505a98ab-3fdb-43c4-7081-08d9560f90a5
-x-ms-traffictypediagnostic: MWHPR11MB1837:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB1837BD7AB6421AACF5FC0AB2D6EF9@MWHPR11MB1837.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: i7espyIMkhdUobh5eqPQ70mmpeWi8JPTIt7Q1w7/5d5UttLBPM7L5jMypFj6SbaP0Q/f9w25Vzhwe/Yls/R/PyW3xXkfZI3a2EgmCPuIJb8v5lFGVz9qu/pWL4xsOc7hPuaMz4quteOSqsOlLRJ9+GSBguXBLemUOALp633nophA0JQ7Ir5XsDnjXSZNub0Pjq3dDjJIUux+Evqb0HcxcGod4Q6nz4GaFdVf0mSdJpGpyh4a/glXbDL5zHAch552wRwVY8GfJ5IslaNY7qrPkMTKRdQeyHxVCyT25sATSsf/HgYgEzAA/s11d3qfydGusON0frEefnzTzVlodalV1EgWLiV6EzYs2y/qque0x88XYvx5BcncPb2cii8LadX+8u/fLHBIX4vNLF/YZQxUuM+yHEOZpWDu/bFJR8SSV7AGDmIiQZVvjlCRQ7pqArY4t+N8uoETTXT+NuOgki6MCLWKSE44aih197WuQ9XM/WKPo56L8S9RAej4GPE3xVZAruVu0TTjBPkI0epGUBFFTz+Nwo80hTGuwjzY/y4taZPIbKbyS+T5YVrQPF/acZIYSlssXVRChSyOJ4uESJozq8pC7tfTbPCu+ULOFGq1VlFMhM21Ww8OzPYkzmZjZiu92dg+ptKfcfY/odeNESGb7ctnvdn+I6X2tv1EUSLpYNJCti5b+hATUmelMw1jl9fApvq8ma2UNolnZzvGQavmFg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(366004)(39860400002)(76116006)(71200400001)(4326008)(4744005)(66556008)(66446008)(316002)(66946007)(2906002)(38100700002)(186003)(52536014)(122000001)(66476007)(64756008)(7696005)(6916009)(478600001)(38070700005)(7416002)(8676002)(6506007)(53546011)(9686003)(26005)(55016002)(83380400001)(33656002)(54906003)(86362001)(5660300002)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?MGtrFxoacu/meWQFdlatIRet3x7n05nZDTg1s4MFKETBpM2VP/vBWO566OBK?=
- =?us-ascii?Q?dj1L3xeas01L/r8vaJyKW05VjRwPmRF6NoP9bhBGp3kzqowzBzzqRHcBhoOq?=
- =?us-ascii?Q?ozDx6hTExSR4pJlv/l232/b2FmwSVp3mkomYfQOoDITF6igWLv5/2WDuN9NS?=
- =?us-ascii?Q?gq2/ctyqEEZYCwmOWumNxj+FFqZ4t1r8BwGy6BvapFs11sATif+4P+275cT3?=
- =?us-ascii?Q?FUcu09NPo5DNC6b+O/z44VuYTczflqJhWfaON6znGAN+RAWrb7DVx1yrrf2a?=
- =?us-ascii?Q?Grf8C6CAaFYwDDtuB/uF7npymD2XOkAtSHM7+oiKEZ6h/u3yvWFQxniK4n/A?=
- =?us-ascii?Q?/ew7N1ShrCtMxG7YzMufULhmGGKFz21iNxACeU0vn0vUJFzq/lCQQ7fW7bPS?=
- =?us-ascii?Q?p1bTRABrnuSYY3bs+ArlLZb+INIw8WICVTA4NI6/xGa0EFNemPaIR6k4y4Ek?=
- =?us-ascii?Q?51v5ReM4LIiVhWqmF1BAN+XoLCc4Z1XIoka0B4j7O90Cbbm41ammVLlQ2cPb?=
- =?us-ascii?Q?f/ks3bz22Bay4nKC7mGCMsRIpTkgJV/q4M/tz6EbwS3KtOLmx7bOGA/UFrWw?=
- =?us-ascii?Q?ty7+Ww+gbJPR+oKbOepragQm3EUVgJCr41dRto+xSdgchykYfkZAWJp8oGBh?=
- =?us-ascii?Q?eTfhWYsgqxUJD86k/JzHKndD0c3WqilRnOw7QY9xL5bs1dzL32MX5q4ErQ84?=
- =?us-ascii?Q?qLpoSDQdxyosgmmfKWRlz6JvAVriZ6QEzKrbAx1TYgOD5isMq9DzGeHXSFpA?=
- =?us-ascii?Q?RHm5N1QQF6pjpBi1un3taGkK+JQbEM0tJUflMgxZR33m/SQ/BjNvfO/owV+3?=
- =?us-ascii?Q?8QNC2IGQPf2/cbtKCiBKBa3OUzPE9N2FarhVB0FPLrsEuYF+QNjiW67MvgFu?=
- =?us-ascii?Q?O1Frg9U3CrpNwOWOe/X+tWB8IgL29/ktBQofxza5c6JTfp6wpjfxgm+GhvcV?=
- =?us-ascii?Q?9HpY4vXmrsWg5mTCNkMmoQ88blZpHTy8blnF7ajofK+3Avd/nJOvW0x5jVL0?=
- =?us-ascii?Q?p+u5AUrE+ApHDZ0YITp23RsRZaqQ+0oh45NIwGJFjGv0YLW+x3UBJaaJwKF3?=
- =?us-ascii?Q?CVKtttM2IkLmxh81DfYoX5EzCzdy4/+un3vxS6kNLTujZkWOQkGXWNq8otGr?=
- =?us-ascii?Q?2PsJu3FVkWuozNerkBtyuW3qZbg9HwzcO1XZNyAPqdJSvy/zOsI3KcMyAItF?=
- =?us-ascii?Q?DGMt5nht/CYvpZuvyQWW1+mk6yP94PjqpZIXAqb+uLdwSbbjfVYx7zq8nHDo?=
- =?us-ascii?Q?zMPZlaoZ0Mcey40CjvZg8TGq2AbILsRPriyq5QlTiDHiTcMgONNIzIJ6s3Rp?=
- =?us-ascii?Q?Wg2E8pIg2CfSbKGwcVnaQgEz?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232771AbhHBXpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 19:45:39 -0400
+Received: from pb-smtp2.pobox.com ([64.147.108.71]:63948 "EHLO
+        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232736AbhHBXpd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 19:45:33 -0400
+Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id D72CDD2F29;
+        Mon,  2 Aug 2021 19:45:16 -0400 (EDT)
+        (envelope-from junio@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=from:to:cc
+        :subject:date:message-id:mime-version:content-type
+        :content-transfer-encoding; s=sasl; bh=quK/VyW6OD+q0PTZAwCOWkeQV
+        wGnvxeMRUgScDgxITA=; b=oP7UW35mLlZsyZ9udqbVlSpiBeWuE/I25To2wi2jm
+        39IeKJaKJms87DMS3o9InV4jnuz2qjwPudZgYQP2hrN9YsQ/xwMg4aUYt8+t4BPq
+        gDVLczFFhDhHSwzhrbqtCPJdGxtr6JNUQsl1o+fEZ86oDSbMN3v6wxQiOM/tTUsc
+        o4=
+Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id CE2A1D2F26;
+        Mon,  2 Aug 2021 19:45:16 -0400 (EDT)
+        (envelope-from junio@pobox.com)
+Received: from pobox.com (unknown [35.196.71.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id 232A1D2F24;
+        Mon,  2 Aug 2021 19:45:16 -0400 (EDT)
+        (envelope-from junio@pobox.com)
+From:   Junio C Hamano <gitster@pobox.com>
+To:     git@vger.kernel.org
+Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Subject: [ANNOUNCE] Git v2.33.0-rc0
+Date:   Mon, 02 Aug 2021 16:45:15 -0700
+Message-ID: <xmqqbl6fv2b8.fsf@gitster.g>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 505a98ab-3fdb-43c4-7081-08d9560f90a5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2021 23:45:09.9790
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LhVw3Hgkw/2Ffg9Gu35W79Ahl+quV1HS2e5qxIM6Rua+0z79i00x5r03/gusjWslekE+wrvK0Ylda+I8bPF/BwatKZrN4WZ+WcGHeQ5JoYY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1837
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+X-Pobox-Relay-ID: B01077C8-F3EB-11EB-AA27-FD8818BA3BAF-77302942!pb-smtp2.pobox.com
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Richard Cochran <richardcochran@gmail.com>
-> Sent: Monday, August 02, 2021 4:09 PM
-> To: Keller, Jacob E <jacob.e.keller@intel.com>
-> Cc: Arnd Bergmann <arnd@kernel.org>; Nicolas Pitre <nicolas.pitre@linaro.=
-org>;
-> Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L
-> <anthony.l.nguyen@intel.com>; David S. Miller <davem@davemloft.net>; Jaku=
-b
-> Kicinski <kuba@kernel.org>; Arnd Bergmann <arnd@arndb.de>; Kurt
-> Kanzenbach <kurt@linutronix.de>; Saleem, Shiraz <shiraz.saleem@intel.com>=
-;
-> Ertman, David M <david.m.ertman@intel.com>; intel-wired-lan@lists.osuosl.=
-org;
-> netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
-> dependencies
->=20
-> On Mon, Aug 02, 2021 at 07:54:20PM +0000, Keller, Jacob E wrote:
-> > So go back to "select"?
->=20
-> Why not keep it simple?
->=20
-> PTP core:
->    Boolean PTP_1588_CLOCK
->=20
-> drivers:
->    depends on PTP_1588_CLOCK
->=20
-> Also, make Posix timers always part of the core.  Tinification is a
-> lost cause.
->=20
-> Thanks,
-> Richard
+An early preview release Git v2.33.0-rc0 is now available for
+testing at the usual places.  It is comprised of 350 non-merge
+commits since v2.32.0, contributed by 61 people, 18 of which are
+new faces [*].
 
-Ok, so basically: if any driver that needs PTP core is on, PTP core is on, =
-with no way to disable it.
+The tarballs are found at:
 
-Thanks,
-Jake
+    https://www.kernel.org/pub/software/scm/git/testing/
+
+The following public repositories all have a copy of the
+'v2.33.0-rc0' tag and the 'master' branch that the tag points at:
+
+  url =3D https://git.kernel.org/pub/scm/git/git
+  url =3D https://kernel.googlesource.com/pub/scm/git/git
+  url =3D git://repo.or.cz/alt-git.git
+  url =3D https://github.com/gitster/git
+
+New contributors whose contributions weren't in v2.32.0 are as follows.
+Welcome to the Git development community!
+
+  Anders H=C3=B6ckersten, Andrew Berry, Andy AO, Beshr Kayali,
+  dorgon.chang, edef, Fabian Wermelinger, Gregory Anders, Greg
+  Pflaum, Hu Jialun, Jason Hatton, Julian Verdurmen, Matthew
+  Hughes, Michael Schindler, Reuven Y, Stephen Manz, Tao Klerks,
+  and Teng Long.
+
+Returning contributors who helped this release are as follows.
+Thanks for your continued support.
+
+  =C3=86var Arnfj=C3=B6r=C3=B0 Bjarmason, Alex Henrie, Anders Kaseorg,
+  Andrei Rybak, Andrzej Hunt, Atharva Raykar, Bagas Sanjaya,
+  brian m. carlson, Carlo Marcelo Arenas Bel=C3=B3n, Christian Couder,
+  Dennis Ameling, Denton Liu, Derrick Stolee, =C4=90o=C3=A0n Tr=E1=BA=A7n=
+ C=C3=B4ng
+  Danh, Elijah Newren, Emily Shaffer, Eric Sunshine, Eric Wong,
+  Felipe Contreras, Han-Wen Nienhuys, Jean-No=C3=ABl Avila, Jeff King,
+  Jiang Xin, Johannes Schindelin, Jonathan Nieder, Jonathan Tan,
+  Josh Steadmon, Junio C Hamano, Kaartic Sivaraam, Martin =C3=85gren,
+  Matheus Tavares, Matthew Rogers, Matthias A=C3=9Fhauer, Nicolas
+  Pitre, Patrick Steinhardt, Philippe Blain, Ren=C3=A9 Scharfe,
+  Sergey Organov, Shourya Shukla, Taylor Blau, Thomas Braun,
+  Wolfgang M=C3=BCller, and ZheNing Hu.
+
+[*] We are counting not just the authorship contribution but issue
+    reporting, mentoring, helping and reviewing that are recorded in
+    the commit trailers.
+
+----------------------------------------------------------------
+
+Git 2.33 Release Notes (draft)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+
+Backward compatibility notes
+----------------------------
+
+ * The "-m" option in "git log -m" that does not specify which format,
+   if any, of diff is desired did not have any visible effect; it now
+   implies some form of diff (by default "--patch") is produced.
+
+   You can disable the diff output with "git log -m --no-patch", but
+   then there probably isn't much point in passing "-m" in the first
+   place ;-).
+
+
+Updates since Git 2.32
+----------------------
+
+UI, Workflows & Features
+
+ * "git send-email" learned the "--sendmail-cmd" command line option
+   and the "sendemail.sendmailCmd" configuration variable, which is a
+   more sensible approach than the current way of repurposing the
+   "smtp-server" that is meant to name the server to instead name the
+   command to talk to the server.
+
+ * The "-m" option in "git log -m" that does not specify which format,
+   if any, of diff is desired did not have any visible effect; it now
+   implies some form of diff (by default "--patch") is produced.
+
+ * The userdiff pattern for C# learned the token "record".
+
+ * "git rev-list" learns to omit the "commit <object-name>" header
+   lines from the output with the `--no-commit-header` option.
+
+ * "git worktree add --lock" learned to record why the worktree is
+   locked with a custom message.
+
+
+Performance, Internal Implementation, Development Support etc.
+
+ * The code to handle the "--format" option in "for-each-ref" and
+   friends made too many string comparisons on %(atom)s used in the
+   format string, which has been corrected by converting them into
+   enum when the format string is parsed.
+
+ * Use the hashfile API in the codepath that writes the index file to
+   reduce code duplication.
+
+ * Repeated rename detections in a sequence of mergy operations have
+   been optimize out.
+
+ * Preliminary clean-up of tests before the main reftable changes
+   hits the codebase.
+
+ * The backend for "diff -G/-S" has been updated to use pcre2 engine
+   when available.
+
+ * Use ".DELETE_ON_ERROR" pseudo target to simplify our Makefile.
+
+ * Code cleanup around struct_type_init() functions.
+
+ * "git send-email" optimization.
+
+ * GitHub Actions / CI update.
+   (merge 0dc787a9f2 js/ci-windows-update later to maint).
+
+ * Object accesses in repositories with many alternate object store
+   have been optimized.
+
+ * "git log" has been optimized not to waste cycles to load ref
+   decoration data that may not be needed.
+
+ * Many "printf"-like helper functions we have have been annotated
+   with __attribute__() to catch placeholder/parameter mismatches.
+
+ * Tests that cover protocol bits have been updated and helpers
+   used there have been consolidated.
+
+ * The CI gained a new job to run "make sparse" check.
+
+ * "git status" codepath learned to work with sparsely populated index
+   without hydrating it fully.
+
+ * A guideline for gender neutral documentation has been added.
+
+ * Documentation on "git diff -l<n>" and diff.renameLimit have been
+   updated, and the defaults for these limits have been raised.
+
+ * The completion support used to offer alternate spelling of options
+   that exist only for compatibility, which has been corrected.
+
+ * "TEST_OUTPUT_DIRECTORY=3Dthere make test" failed to work, which has
+   been corrected.
+
+ * "git bundle" gained more test coverage.
+
+ * "git read-tree" had a codepath where blobs are fetched one-by-one
+   from the promisor remote, which has been corrected to fetch in bulk.
+
+
+Fixes since v2.32
+-----------------
+
+ * We historically rejected a very short string as an author name
+   while accepting a patch e-mail, which has been loosened.
+   (merge 72ee47ceeb ef/mailinfo-short-name later to maint).
+
+ * The parallel checkout codepath did not initialize object ID field
+   used to talk to the worker processes in a futureproof way.
+
+ * Rewrite code that triggers undefined behaviour warning.
+   (merge aafa5df0df jn/size-t-casted-to-off-t-fix later to maint).
+
+ * The description of "fast-forward" in the glossary has been updated.
+   (merge e22f2daed0 ry/clarify-fast-forward-in-glossary later to maint).
+
+ * Recent "git clone" left a temporary directory behind when the
+   transport layer returned an failure.
+   (merge 6aacb7d861 jk/clone-clean-upon-transport-error later to maint).
+
+ * "git fetch" over protocol v2 left its side of the socket open after
+   it finished speaking, which unnecessarily wasted the resource on
+   the other side.
+   (merge ae1a7eefff jk/fetch-pack-v2-half-close-early later to maint).
+
+ * The command line completion (in contrib/) learned that "git diff"
+   takes the "--anchored" option.
+   (merge d1e7c2cac9 tb/complete-diff-anchored later to maint).
+
+ * "git-svn" tests assumed that "locale -a", which is used to pick an
+   available UTF-8 locale, is available everywhere.  A knob has been
+   introduced to allow testers to specify a suitable locale to use.
+   (merge 482c962de4 dd/svn-test-wo-locale-a later to maint).
+
+ * Update "git subtree" to work better on Windows.
+   (merge 77f37de39f js/subtree-on-windows-fix later to maint).
+
+ * Remove multimail from contrib/
+   (merge f74d11471f js/no-more-multimail later to maint).
+
+ * Make the codebase MSAN clean.
+   (merge 4dbc55e87d ah/uninitialized-reads-fix later to maint).
+
+ * Work around inefficient glob substitution in older versions of bash
+   by rewriting parts of a test.
+   (merge eb87c6f559 jx/t6020-with-older-bash later to maint).
+
+ * Avoid duplicated work while building reachability bitmaps.
+   (merge aa9ad6fee5 jk/bitmap-tree-optim later to maint).
+
+ * We broke "GIT_SKIP_TESTS=3Dt?000" to skip certain tests in recent
+   update, which got fixed.
+
+ * The side-band demultiplexer that is used to display progress output
+   from the remote end did not clear the line properly when the end of
+   line hits at a packet boundary, which has been corrected.
+
+ * Some test scripts assumed that readlink(1) was universally
+   installed and available, which is not the case.
+   (merge 7c0afdf23c jk/test-without-readlink-1 later to maint).
+
+ * Recent update to completion script (in contrib/) broke those who
+   use the __git_complete helper to define completion to their custom
+   command.
+   (merge cea232194d fw/complete-cmd-idx-fix later to maint).
+
+ * Output from some of our tests were affected by the width of the
+   terminal that they were run in, which has been corrected by
+   exporting a fixed value in the COLUMNS environment.
+   (merge c49a177bec ab/fix-columns-to-80-during-tests later to maint).
+
+ * On Windows, mergetool has been taught to find kdiff3.exe just like
+   it finds winmerge.exe.
+   (merge 47eb4c6890 ms/mergetools-kdiff3-on-windows later to maint).
+
+ * When we cannot figure out how wide the terminal is, we use a
+   fallback value of 80 ourselves (which cannot be avoided), but when
+   we run the pager, we export it in COLUMNS, which forces the pager
+   to use the hardcoded value, even when the pager is perfectly
+   capable to figure it out itself.  Stop exporting COLUMNS when we
+   fall back on the hardcoded default value for our own use.
+   (merge 9b6e2c8b98 js/stop-exporting-bogus-columns later to maint).
+
+ * "git cat-file --batch-all-objects"" misbehaved when "--batch" is in
+   use and did not ask for certain object traits.
+   (merge ee02ac6164 zh/cat-file-batch-fix later to maint).
+
+ * Some code and doc clarification around "git push".
+
+ * The "union" conflict resultion variant misbehaved when used with
+   binary merge driver.
+   (merge 382b601acd jk/union-merge-binary later to maint).
+
+ * Prevent "git p4" from failing to submit changes to binary file.
+   (merge 54662d5958 dc/p4-binary-submit-fix later to maint).
+
+ * "git grep --and -e foo" ought to have been diagnosed as an error
+   but instead segfaulted, which has been corrected.
+   (merge fe7fe62d8d rs/grep-parser-fix later to maint).
+
+ * The merge code had funny interactions between content based rename
+   detection and directory rename detection.
+   (merge 3585d0ea23 en/merge-dir-rename-corner-case-fix later to maint).
+
+ * When rebuilding the multi-pack index file reusing an existing one,
+   we used to blindly trust the existing file and ended up carrying
+   corrupted data into the updated file, which has been corrected.
+   (merge f89ecf7988 tb/midx-use-checksum later to maint).
+
+ * Update the location of system-side configuration file on Windows.
+   (merge e355307692 js/gfw-system-config-loc-fix later to maint).
+
+ * Code recently added to support common ancestry negotiation during
+   "git push" did not sanity check its arguments carefully enough.
+   (merge eff40457a4 ab/fetch-negotiate-segv-fix later to maint).
+
+ * Update the documentation not to assume users are of certain gender
+   and adds to guidelines to do so.
+   (merge 46a237f42f ds/gender-neutral-doc later to maint).
+
+ * "git commit --allow-empty-message" won't abort the operation upon
+   an empty message, but the hint shown in the editor said otherwise.
+   (merge 6f70f00b4f hj/commit-allow-empty-message later to maint).
+
+ * The code that gives an error message in "git multi-pack-index" when
+   no subcommand is given tried to print a NULL pointer as a strong,
+   which has been corrected.
+   (merge 88617d11f9 tb/reverse-midx later to maint).
+
+ * CI update.
+   (merge a066a90db6 js/ci-check-whitespace-updates later to maint).
+
+ * Documentation fix for "git pull --rebase=3Dno".
+   (merge d3236becec fc/pull-no-rebase-merges-theirs-into-ours later to m=
+aint).
+
+ * A race between repacking and using pack bitmaps has been corrected.
+   (merge dc1daacdcc jk/check-pack-valid-before-opening-bitmap later to m=
+aint).
+
+ * Other code cleanup, docfix, build fix, etc.
+   (merge bfe35a6165 ah/doc-describe later to maint).
+   (merge f302c1e4aa jc/clarify-revision-range later to maint).
+   (merge 3127ff90ea tl/fix-packfile-uri-doc later to maint).
+   (merge a84216c684 jk/doc-color-pager later to maint).
+   (merge 4e0a64a713 ab/trace2-squelch-gcc-warning later to maint).
+   (merge 225f7fa847 ps/rev-list-object-type-filter later to maint).
+   (merge 5317dfeaed dd/honor-users-tar-in-tests later to maint).
+   (merge ace6d8e3d6 tk/partial-clone-repack-doc later to maint).
+   (merge 7ba68e0cf1 js/trace2-discard-event-docfix later to maint).
+   (merge 8603c419d3 fc/doc-default-to-upstream-config later to maint).
+   (merge 1d72b604ef jk/revision-squelch-gcc-warning later to maint).
+   (merge abcb66c614 ar/typofix later to maint).
+   (merge 9853830787 ah/graph-typofix later to maint).
+   (merge aac578492d ab/config-hooks-path-testfix later to maint).
+   (merge 98c7656a18 ar/more-typofix later to maint).
+   (merge 6fb9195f6c jk/doc-max-pack-size later to maint).
+   (merge 4184cbd635 ar/mailinfo-memcmp-to-skip-prefix later to maint).
+   (merge 91d2347033 ar/doc-libera-chat-in-my-first-contrib later to main=
+t).
+   (merge 338abb0f04 ab/cmd-foo-should-return later to maint).
+   (merge 546096a5cb ab/xdiff-bug-cleanup later to maint).
+   (merge b7b793d1e7 ab/progress-cleanup later to maint).
+   (merge d94f9b8e90 ba/object-info later to maint).
+   (merge 52ff891c03 ar/test-code-cleanup later to maint).
+   (merge a0538e5c8b dd/document-log-decorate-default later to maint).
+   (merge ce24797d38 mr/cmake later to maint).
+   (merge 9eb542f2ee ab/pre-auto-gc-hook-test later to maint).
+   (merge 9fffc38583 bk/doc-commit-typofix later to maint).
+   (merge 1cf823d8f0 ks/submodule-cleanup later to maint).
+   (merge ebbf5d2b70 js/config-mak-windows-pcre-fix later to maint).
+   (merge 617480d75b hn/refs-iterator-peel-returns-boolean later to maint=
+).
+   (merge 6a24cc71ed ar/submodule-helper-include-cleanup later to maint).
+   (merge 5632e838f8 rs/khash-alloc-cleanup later to maint).
+   (merge b1d87fbaf1 jk/typofix later to maint).
+   (merge e04170697a ab/gitignore-discovery-doc later to maint).
+   (merge 8232a0ff48 dl/packet-read-response-end-fix later to maint).
+   (merge eb448631fb dl/diff-merge-base later to maint).
+   (merge c510928a25 hn/refs-debug-empty-prefix later to maint).
+   (merge ddcb189d9d tb/bitmap-type-filter-comment-fix later to maint).
+   (merge 878b399734 pb/submodule-recurse-doc later to maint).
+   (merge 734283855f jk/config-env-doc later to maint).
+
+----------------------------------------------------------------
+
+Changes since v2.32.0 are as follows:
+
+Alex Henrie (6):
+      merge: don't translate literal commands
+      stash: don't translate literal commands
+      submodule: use the imperative mood to describe the --files option
+      fetch: improve grammar of "shallow roots" message
+      setup: split "extensions found" messages into singular and plural
+      graph: improve grammar of "invalid color" error message
+
+Anders H=C3=B6ckersten (1):
+      describe-doc: clarify default length of abbreviation
+
+Andrei Rybak (7):
+      t: fix whitespace around &&
+      mailinfo: use starts_with() when checking scissors
+      *: fix typos which duplicate a word
+      blame: correct name of config option in docs
+      t: fix typos in test messages
+      git-worktree.txt: fix typo in example path
+      help: convert git_cmd to page in one place
+
+Andrew Berry (1):
+      docs: .gitignore parsing is to the top of the repo
+
+Andrzej Hunt (3):
+      bulk-checkin: make buffer reuse more obvious and safer
+      split-index: use oideq instead of memcmp to compare object_id's
+      builtin/checkout--worker: zero-initialise struct to avoid MSAN comp=
+laints
+
+Atharva Raykar (2):
+      MyFirstContribution: link #git-devel to Libera Chat
+      submodule--helper: remove redundant include
+
+Beshr Kayali (1):
+      Documentation: fix typo in the --patch option of the commit command
+
+Carlo Marcelo Arenas Bel=C3=B3n (1):
+      config.mak.uname: PCRE1 cleanup
+
+Dennis Ameling (2):
+      cmake(windows): set correct path to the system Git config
+      ci (vs-build): build with NO_GETTEXT
+
+Denton Liu (2):
+      pkt-line: replace "stateless separator" with "response end"
+      git-diff: fix missing --merge-base docs
+
+Derrick Stolee (21):
+      hashfile: use write_in_full()
+      csum-file.h: increase hashfile buffer size
+      read-cache: use hashfile instead of git_hash_ctx
+      read-cache: delete unused hashing methods
+      *: fix typos
+      sparse-index: skip indexes with unmerged entries
+      sparse-index: include EXTENDED flag when expanding
+      t1092: replace incorrect 'echo' with 'cat'
+      t1092: expand repository data shape
+      t1092: add tests for status/add and sparse files
+      unpack-trees: preserve cache_bottom
+      unpack-trees: compare sparse directories correctly
+      unpack-trees: rename unpack_nondirectories()
+      unpack-trees: unpack sparse directory entries
+      dir.c: accept a directory as part of cone-mode patterns
+      diff-lib: handle index diffs with sparse dirs
+      status: skip sparse-checkout percentage with sparse-index
+      status: use sparse-index throughout
+      wt-status: expand added sparse directory entries
+      fsmonitor: integrate with sparse index
+      t1092: document bad sparse-checkout behavior
+
+Elijah Newren (29):
+      t6423: rename file within directory that other side renamed
+      Documentation/technical: describe remembering renames optimization
+      fast-rebase: change assert() to BUG()
+      fast-rebase: write conflict state to working tree, index, and HEAD
+      t6429: testcases for remembering renames
+      merge-ort: add data structures for in-memory caching of rename dete=
+ction
+      merge-ort: populate caches of rename detection results
+      merge-ort: add code to check for whether cached renames can be reus=
+ed
+      merge-ort: avoid accidental API mis-use
+      merge-ort: preserve cached renames for the appropriate side
+      merge-ort: add helper functions for using cached renames
+      merge-ort: handle interactions of caching and rename/rename(1to1) c=
+ases
+      merge-ort, diffcore-rename: employ cached renames when possible
+      merge-ort: replace string_list_df_name_compare with faster alternat=
+ive
+      diffcore-rename: avoid unnecessary strdup'ing in break_idx
+      Fix various issues found in comments
+      merge-ort: miscellaneous touch-ups
+      promisor-remote: output trace2 statistics for number of objects fet=
+ched
+      t6421: add tests checking for excessive object downloads during mer=
+ge
+      diffcore-rename: allow different missing_object_cb functions
+      diffcore-rename: use a different prefetch for basename comparisons
+      merge-ort: add prefetching for content merges
+      t6423: test directory renames causing rename-to-self
+      merge-ort: ensure we consult df_conflict and path_conflicts
+      merge-recursive: handle rename-to-self case
+      diff: correct warning message when renameLimit exceeded
+      doc: clarify documentation for rename/copy limits
+      diffcore-rename: treat a rename_limit of 0 as unlimited
+      rename: bump limit defaults yet again
+
+Eric Wong (6):
+      xmmap: inform Linux users of tuning knobs on ENOMEM
+      speed up alt_odb_usable() with many alternates
+      avoid strlen via strbuf_addstr in link_alt_odb_entry
+      make object_directory.loose_objects_subdir_seen a bitmap
+      oidcpy_with_padding: constify `src' arg
+      oidtree: a crit-bit tree for odb_loose_cache
+
+Fabian Wermelinger (1):
+      completion: bash: fix late declaration of __git_cmd_idx
+
+Felipe Contreras (32):
+      doc: refactor common asciidoc dependencies
+      doc: improve asciidoc dependencies
+      doc: remove unnecessary rm instances
+      doc: simplify Makefile using .DELETE_ON_ERROR
+      doc: avoid using rm directly
+      push: rename !triangular to same_remote
+      push: hedge code of default=3Dsimple
+      push: copy code to setup_push_simple()
+      push: reorganize setup_push_simple()
+      push: simplify setup_push_simple()
+      push: remove unused code in setup_push_upstream()
+      doc: push: explain default=3Dsimple correctly
+      push: create new get_upstream_ref() helper
+      push: return immediately in trivial switch case
+      push: split switch cases
+      push: factor out null branch check
+      push: only get the branch when needed
+      push: make setup_push_* return the dst
+      push: trivial simplifications
+      push: get rid of all the setup_push_* functions
+      push: factor out the typical case
+      push: remove redundant check
+      push: remove trivial function
+      push: only check same_remote when needed
+      push: don't get a full remote object
+      doc: merge: mention default of defaulttoupstream
+      doc: avoid using the gender of other people
+      comments: avoid using the gender of our users
+      pull: cleanup autostash check
+      pull: trivial cleanup
+      pull: trivial whitespace style fix
+      doc: pull: fix rebase=3Dfalse documentation
+
+Gregory Anders (1):
+      git-send-email: add option to specify sendmail command
+
+Han-Wen Nienhuys (26):
+      refs: make explicit that ref_iterator_peel returns boolean
+      t4202: split testcase for invalid HEAD symref and HEAD hash
+      t/helper/ref-store: initialize oid in resolve-ref
+      t9300: check ref existence using test-helper rather than a file sys=
+tem check
+      t5601: read HEAD using rev-parse
+      t1401: use tar to snapshot and restore repo state
+      t1401-symbolic-ref: avoid direct filesystem access
+      t1413: use tar to save and restore entire .git directory
+      t1301: fix typo in error message
+      t5000: reformat indentation to the latest fashion
+      t5000: inspect HEAD using git-rev-parse
+      t7003: use rev-parse rather than FS inspection
+      t5304: restyle: trim empty lines, drop ':' before >
+      t5304: use "reflog expire --all" to clear the reflog
+      test-lib: provide test prereq REFFILES
+      t1407: require REFFILES for for_each_reflog test
+      t1414: mark corruption test with REFFILES
+      t2017: mark --orphan/logAllRefUpdates=3Dfalse test as REFFILES
+      t1404: mark tests that muck with .git directly as REFFILES.
+      t7900: stop checking for loose refs
+      t7003: check reflog existence only for REFFILES
+      t4202: mark bogus head hash test with REFFILES
+      t1415: set REFFILES for test specific to storage format
+      t1415: avoid direct filesystem access for writing refs
+      t7509: avoid direct file access for writing CHERRY_PICK_HEAD
+      refs/debug: quote prefix
+
+Hu Jialun (2):
+      commit: reorganise commit hint strings
+      commit: remove irrelavent prompt on `--allow-empty-message`
+
+Jean-No=C3=ABl Avila (1):
+      help: fix small typo in error message
+
+Jeff King (26):
+      clone: clean up directory after transport_fetch_refs() failure
+      fetch-pack: signal v2 server that we are done making requests
+      doc: explain the use of color.pager
+      doc: warn people against --max-pack-size
+      ll_binary_merge(): handle XDL_MERGE_FAVOR_UNION
+      ll_union_merge(): pass name labels to ll_xdl_merge()
+      ll_union_merge(): rename path_unused parameter
+      add_pending_object_with_path(): work around "gcc -O3" complaint
+      bitmaps: don't recurse into trees already in the bitmap
+      t: use portable wrapper for readlink(1)
+      pretty.h: update and expand docstring for userformat_find_requireme=
+nts()
+      log: avoid loading decorations for userformats that don't need it
+      object.h: expand docstring for lookup_unknown_object()
+      object.h: add lookup_object_by_type() function
+      load_ref_decorations(): avoid parsing non-tag objects
+      add_ref_decoration(): rename s/type/deco_type/
+      test-lib: avoid accidental globbing in match_pattern_list()
+      doc/rev-list-options: fix duplicate word typo
+      load_ref_decorations(): fix decoration with tags
+      t0000: clear GIT_SKIP_TESTS before running sub-tests
+      doc/git-config: explain --file instead of referring to GIT_CONFIG
+      doc/git-config: clarify GIT_CONFIG environment variable
+      doc/git-config: simplify "override" advice for FILES section
+      pack-bitmap: check pack validity when opening bitmap
+      ci: run "apt-get update" before "apt-get install"
+      ci/install-dependencies: handle "sparse" job package installs
+
+Jiang Xin (5):
+      t6020: fix incompatible parameter expansion
+      sideband: don't lose clear-to-eol at packet boundary
+      test: compare raw output, not mangle tabs and spaces
+      test: refactor to use "test_commit" to create commits
+      test: refactor to use "get_abbrev_oid" to get abbrev oid
+
+Johannes Schindelin (15):
+      multimail: stop shipping a copy
+      subtree: fix the GIT_EXEC_PATH sanity check to work on Windows
+      subtree: fix assumption about the directory separator
+      pager: avoid setting COLUMNS when we're guessing its value
+      mingw: move Git for Windows' system config where users expect it
+      config: normalize the path of the system gitconfig
+      ci: use the new GitHub Action to download git-sdk-64-minimal
+      ci (vs-build): use `cmd` to copy the DLLs, not `powershell`
+      ci: upgrade to using actions/{up,down}load-artifacts v2
+      ci (windows): transfer also the Git-tracked files to the test jobs
+      artifacts-tar: respect NO_GETTEXT
+      ci: accelerate the checkout
+      ci: run `make sparse` as part of the GitHub workflow
+      ci(check-whitespace): stop requiring a read/write token
+      ci(check-whitespace): restrict to the intended commits
+
+Jonathan Nieder (1):
+      xsize_t: avoid implementation defined behavior when len < 0
+
+Jonathan Tan (7):
+      repository: move global r_f_p_c to repo struct
+      promisor-remote: support per-repository config
+      submodule: refrain from filtering GIT_CONFIG_COUNT
+      run-command: refactor subprocess env preparation
+      promisor-remote: teach lazy-fetch in any repo
+      unpack-trees: refactor prefetching code
+      cache-tree: prefetch in partial clone read-tree
+
+Josh Steadmon (1):
+      docs: fix api-trace2 doc for "too_many_files" event
+
+Julian Verdurmen (1):
+      userdiff: add support for C# record types
+
+Junio C Hamano (10):
+      revisions(7): clarify that most commands take a single revision ran=
+ge
+      The first batch post Git 2.32
+      The second batch
+      The third batch
+      The fourth batch
+      CodingGuidelines: recommend gender-neutral description
+      The fifth batch
+      The sixth batch
+      The seventh batch
+      Git 2.33-rc0
+
+Kaartic Sivaraam (1):
+      submodule: remove unnecessary `prefix` based option logic
+
+Matheus Tavares (1):
+      parallel-checkout: send the new object_id algo field to the workers
+
+Matthew Rogers (3):
+      cmake: add knob to disable vcpkg
+      cmake: create compile_commands.json by default
+      cmake: add warning for ignored MSGFMT_EXE
+
+Michael Schindler (1):
+      mergetools/kdiff3: make kdiff3 work on Windows too
+
+Patrick Steinhardt (2):
+      perf: fix when running with TEST_OUTPUT_DIRECTORY
+      t0000: fix test if run with TEST_OUTPUT_DIRECTORY
+
+Philippe Blain (2):
+      parse-options: don't complete option aliases by default
+      doc: clarify description of 'submodule.recurse'
+
+Ren=C3=A9 Scharfe (2):
+      grep: report missing left operand of --and
+      khash: clarify that allocations never fail
+
+Reuven Y (1):
+      docs: improve fast-forward in glossary content
+
+Sergey Organov (10):
+      t4013: test that "-m" alone has no effect in "git log"
+      t4013: test "git log -m --raw"
+      t4013: test "git log -m --stat"
+      t4013: test "git diff-tree -m"
+      t4013: test "git diff-index -m"
+      diff-merges: move specific diff-index "-m" handling to diff-index
+      git-svn: stop passing "-m" to "git rev-list"
+      stash list: stop passing "-m" to "git log"
+      diff-merges: rename "combined_imply_patch" to "merges_imply_patch"
+      diff-merges: let "-m" imply "-p"
+
+Stephen Manz (3):
+      t2400: clean up '"add" worktree with lock' test
+      worktree: mark lock strings with `_()` for translation
+      worktree: teach `add` to accept --reason <string> with --lock
+
+Tao Klerks (1):
+      Remove warning that repack only works on non-promisor packfiles
+
+Taylor Blau (6):
+      csum-file: introduce checksum_valid()
+      commit-graph: rewrite to use checksum_valid()
+      midx: don't reuse corrupt MIDXs when writing
+      midx: report checksum mismatches during 'verify'
+      multi-pack-index: fix potential segfault without sub-command
+      pack-bitmap: clarify comment in filter_bitmap_exclude_type()
+
+Teng Long (1):
+      packfile-uri.txt: fix blobPackfileUri description
+
+Thomas Braun (1):
+      completion: add --anchored to diff's options
+
+Wolfgang M=C3=BCller (1):
+      rev-parse: mark die() messages for translation
+
+ZheNing Hu (4):
+      ref-filter: add objectsize to used_atom
+      ref-filter: introduce enum atom_type
+      cat-file: handle trivial --batch format with --batch-all-objects
+      cat-file: merge two block into one
+
+brian m. carlson (1):
+      rev-list: add option for --pretty=3Dformat without header
+
+dorgon.chang (1):
+      git-p4: fix failed submit by skip non-text data files
+
+edef (1):
+      mailinfo: don't discard names under 3 characters
+
+=C3=86var Arnfj=C3=B6r=C3=B0 Bjarmason (90):
+      test-lib: bring $remove_trash out of retirement
+      test-lib tests: remove dead GIT_TEST_FRAMEWORK_SELFTEST variable
+      test-lib-functions: reword "test_commit --append" docs
+      test-lib-functions: document test_commit --no-tag
+      test-lib functions: add an --annotated option to "test_commit"
+      describe tests: convert setup to use test_commit
+      test-lib functions: add --printf option to test_commit
+      submodule tests: use symbolic-ref --short to discover branch name
+      test-lib: reformat argument list in test_create_repo()
+      test-lib: do not show advice about init.defaultBranch under --verbo=
+se
+      test-lib: split up and deprecate test_create_repo()
+      grep/pcre2 tests: reword comments referring to kwset
+      pickaxe tests: refactor to use test_commit --append --printf
+      pickaxe tests: add test for diffgrep_consume() internals
+      pickaxe tests: add test for "log -S" not being a regex
+      pickaxe tests: test for -G, -S and --find-object incompatibility
+      pickaxe tests: add missing test for --no-pickaxe-regex being an err=
+or
+      pickaxe: die when -G and --pickaxe-regex are combined
+      pickaxe: die when --find-object and --pickaxe-all are combined
+      diff.h: move pickaxe fields together again
+      pickaxe/style: consolidate declarations and assignments
+      perf: add performance test for pickaxe
+      pickaxe: refactor function selection in diffcore-pickaxe()
+      pickaxe: assert that we must have a needle under -G or -S
+      pickaxe -S: support content with NULs under --pickaxe-regex
+      pickaxe: rename variables in has_changes() for brevity
+      pickaxe -S: slightly optimize contains()
+      xdiff-interface: prepare for allowing early return
+      xdiff-interface: allow early return from xdiff_emit_line_fn
+      pickaxe -G: terminate early on matching lines
+      pickaxe -G: don't special-case create/delete
+      xdiff users: use designated initializers for out_line
+      xdiff-interface: replace discard_hunk_line() with a flag
+      describe tests: improve test for --work-tree & --dirty
+      describe tests: refactor away from glob matching
+      describe tests: don't rely on err.actual from "check_describe"
+      describe tests: fix nested "test_expect_success" call
+      describe tests: support -C in "check_describe"
+      trace2: refactor to avoid gcc warning under -O3
+      send-email tests: support GIT_TEST_PERL_FATAL_WARNINGS=3Dtrue
+      send-email tests: test for boolean variables without a value
+      send-email: remove non-working support for "sendemail.smtpssl"
+      send-email: refactor sendemail.smtpencryption config parsing
+      send-email: copy "config_regxp" into git-send-email.perl
+      send-email: lazily load config for a big speedup
+      send-email: lazily shell out to "git var"
+      send-email: use function syntax instead of barewords
+      send-email: get rid of indirect object syntax
+      send-email: lazily load modules for a big speedup
+      perl: lazily load some common Git.pm setup code
+      send-email: move trivial config handling to Perl
+      perl: nano-optimize by replacing Cwd::cwd() with Cwd::getcwd()
+      protocol-caps.h: add newline at end of file
+      read-cache.c: don't guard calls to progress.c API
+      xdiff: use BUG(...), not xdl_bug(...)
+      builtins + test helpers: use return instead of exit() in cmd_*
+      mktag tests: parse out options in helper
+      mktag tests: invert --no-strict test
+      show-branch tests: rename the one "show-branch" test file
+      show-branch tests: modernize test code
+      pre-commit hook tests: don't leave "actual" nonexisting on failure
+      gc tests: add a test for the "pre-auto-gc" hook
+      mktag tests: test hash-object --literally and unreachable fsck
+      mktag tests: test update-ref and reachable fsck
+      mktag tests: test for-each-ref
+      mktag tests: test fast-export
+      show-branch: don't <COLOR></RESET> for space characters
+      show-branch tests: add missing tests
+      Makefile: add and use the ".DELETE_ON_ERROR" flag
+      test-lib.sh: set COLUMNS=3D80 for --verbose repeatability
+      send-pack.c: move "no refs in common" abort earlier
+      fetch: document the --negotiate-only option
+      *.h: move some *_INIT to designated initializers
+      *.c *_init(): define in terms of corresponding *_INIT macro
+      dir.[ch]: replace dir_init() with DIR_INIT
+      string-list.[ch]: add a string_list_init_{nodup,dup}()
+      string-list.h users: change to use *_{nodup,dup}()
+      bundle cmd: stop leaking memory from parse_options_cmd_bundle()
+      bundle.c: use a temporary variable for OIDs and names
+      bundle: remove "ref_list" in favor of string-list.c API
+      imap-send.c: use less verbose strbuf_fread() idiom
+      fetch: fix segfault in --negotiate-only without --negotiation-tip=3D=
+*
+      *.c static functions: don't forward-declare __attribute__
+      sequencer.c: move static function to avoid forward decl
+      *.c static functions: add missing __attribute__((format))
+      *.h: add a few missing __attribute__((format))
+      advice.h: add missing __attribute__((format)) & fix usage
+      test-lib-functions: use test-tool for [de]packetize()
+      bundle tests: use ">file" not ": >file"
+      bundle tests: use test_cmp instead of grep
+
+=C4=90o=C3=A0n Tr=E1=BA=A7n C=C3=B4ng Danh (6):
+      t: use configured TAR instead of tar
+      doc/log: correct default for --decorate
+      t: use user-specified utf-8 locale for testing svn
+      test-lib-functions: introduce test_stdout_line_count
+      t6400: preserve git ls-files exit status code
+      t6402: preserve git exit status code
 
