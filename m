@@ -2,107 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4C03DD111
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2773DD116
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbhHBHTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:19:36 -0400
-Received: from mout.gmx.net ([212.227.17.22]:35675 "EHLO mout.gmx.net"
+        id S232512AbhHBHUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 03:20:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:29688 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231649AbhHBHTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:19:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627888716;
-        bh=ChXftOXR8yVdG8QFcMQASenelvUXOPCJeJpZQsMwvlE=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=SmYy47/NlEiRWSDLAnRcwHnFt8iTbyLVWrc673/b1voLPOKUGd+ks+3rAzvCNmwk7
-         05WJHYNhgck4qOVgPR9WowK5ykGwvQ+iJTTHMFuLsbPCCuCfQTl7PfhyYwg4YWx33p
-         Tus2fswo5drk2lZrOnBPXw1LGu3z8fwG6MbyCy7g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.151.211]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MmlTC-1mqhGU0fvq-00jrhr; Mon, 02
- Aug 2021 09:18:36 +0200
-Message-ID: <edd2f9fd1489e1ff05bf526a3059a1dbb81107df.camel@gmx.de>
-Subject: Re: v5.14-rc3-rt1 losing wakeups?
-From:   Mike Galbraith <efault@gmx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Date:   Mon, 02 Aug 2021 09:18:34 +0200
-In-Reply-To: <20210802070218.5js3exubjxvsicx6@linutronix.de>
-References: <20210730110753.jvli6alm63h5lefy@linutronix.de>
-         <2ae27233ab091d09a7d1e971a47144b40dd51fa0.camel@gmx.de>
-         <87pmuzsf1p.ffs@tglx>
-         <6fce881efc3d8c24a5172528fe1f46ec2ddc0607.camel@gmx.de>
-         <ed1d5f9ec17a5b8d758c234562dad47cfc872ed8.camel@gmx.de>
-         <20210802070218.5js3exubjxvsicx6@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        id S232467AbhHBHUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 03:20:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627888812; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=FJaar6n31/KsrmSPJWQ9jmxpQoRbAsgaDgmJ7zbo9Ow=;
+ b=Xj3UI//IWFjGlPK3KodqolY5rH8uPm8baqc032xrUu4Eij7uU1JvC/HbwUXBv2du2GniyKtQ
+ U2KRNWkO9PXckhf3LKen80BHIUgchIiWOve53NLJ9tN/MTGSFLi+2j+A5PNm0aUL9W/0Uz3/
+ DtOTvIPC4LSDUMFmntrydk3AwFk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 61079c97b653fbdadd75f06b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 07:19:51
+ GMT
+Sender: luoj=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AA122C4323A; Mon,  2 Aug 2021 07:19:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43F96C433D3;
+        Mon,  2 Aug 2021 07:19:48 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:OrmG8K3WPQzzonRq7UWFT87Uq2HB4IWHezwt+GbZX9tGA294hhs
- XD8g1aR2yNbXbtoodtufOfmdEuUH4tZIMrwdtLU69dpeAz8+ZIuzQGEfg+5Ssmpkb4L71wL
- v6BdvznPwocY5ejD/DiCzC9odwIO7zpPL7Ke6Y/7Ncy9lmZeCzb8L6XVXG69DZXZ/K9joZz
- 3ZdeWFrHZMM/g7Vg6e1KA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4Kt1Hr6+MTs=:fEN+JqB6ucweQH6gafMznS
- 4GJE9CtG1mkLkf4dDwovE0SnmDjo6CqXeS7+cNaP/kw14Vmx2BkxO3GjuyIKZZRxuDABaTkxH
- 0K581b0T7YC/j4GwuwALa9/d4PEUPU8pziP3y0LxYzjua8Gk0LEzixcB4qvyZDCOGfQdZQNJP
- 8mOueg2XqUpvoc3Ryzw4hmQleM8ALKUUSjZChaBdWXY3qWNjAKHbBgBDAVZQLPqicYatLgBeL
- wER7nQvAYnZ+MLHrBXviPAFkOmCQukqPmo5zHNmBkfaFeyYZbZ7xle/+GUENd5KrvtLO5W6yg
- n/Ao5EbIP2Go550RLU3CcVMBbM6s3iYNNAMytpi3pW7CanIMi0hNzkTD9z2U9TiygC+NyCzmh
- 6gZaOPEjdp7hp1dU4LJGRIbDfCpccN+LZGoNR9eAcuqdpBRVRBpVp4ebyxWXrANFzmC/zKMoh
- blP0smrCw6tib35T9bYUBA8qr2PAkN1lOXgRddh15in54xCyOzbV/RnIpwrDyzM8bGFWaXah1
- +s+QVuBpgeBseQD0sKd4a9P3eHM4qBROvp0Szt/0G3LeEaVc1p5JG4ghLxJi1kDYTyaLehCnD
- hzfLYEcEztD0nMKt3NRpasLN/enuspL9FMH+aSGvmkVT2aK4x9Pw5JjKvzOZo9BUXNWqsvllk
- KIdHWGAaVPF4ZGm52mXsN1Tly3q4Jms8GnZiNq5rEjQzFNS8thcdg9pCzK7WGIEV090VlUOdw
- OPO1hNKyeoSFT6z77hviatJGvhQzxn2iHKyVRiCtv4H9wdBtRCbi7Rw6L0cEb3hUgK9K+h62j
- 1e068Lo2A8c/FVihTDmrYzeAnlgK9SXx5b04PwpcNdUQ9XgOhTtBeCqPTiGXTpj3kYj/U6RLC
- PLSFUN3X8HSsn7/RLsnxfhunSiMfbmT3dsdeX53NczQ+3+L3TUHhkdn9Use2x/2DuG9gxnl3g
- AJZ1GYO02hn0HeJ3eVxusr15f9OTLJFLBNcUIUYazmery63zYB+vNHNnZ7fNavy1dfKhGO4fb
- P7ERAWZMg5T5dkQRIotdGsNWWD6U7vc7kcJB1i+kRQM578vek7Z6CSkHztHGHC4x3nGndezGz
- Yd3MVSECGc+GbEUS5YEYMZyK8OIkqZ0B2V8
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 02 Aug 2021 15:19:48 +0800
+From:   luoj@codeaurora.org
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Gross, Andy" <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Robert Marko <robert.marko@sartura.hr>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree@vger.kernel.org, Sricharan <sricharan@codeaurora.org>
+Subject: Re: [PATCH 3/3] dt-bindings: net: rename Qualcomm IPQ MDIO bindings
+In-Reply-To: <CAL_Jsq+=Vyy7_EQ_A7JW4ZfqpPU=6eCyUYMnPORChGvefw-yTA@mail.gmail.com>
+References: <20210729125358.5227-1-luoj@codeaurora.org>
+ <20210729125358.5227-3-luoj@codeaurora.org>
+ <CAL_Jsq+=Vyy7_EQ_A7JW4ZfqpPU=6eCyUYMnPORChGvefw-yTA@mail.gmail.com>
+Message-ID: <7873e70dcf4fe749521bd9c985571742@codeaurora.org>
+X-Sender: luoj@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-08-02 at 09:02 +0200, Sebastian Andrzej Siewior wrote:
-> On 2021-08-01 17:14:49 [+0200], Mike Galbraith wrote:
-> > On Sun, 2021-08-01 at 05:36 +0200, Mike Galbraith wrote:
-> > > On Fri, 2021-07-30 at 22:49 +0200, Thomas Gleixner wrote:
-> > > > >
-> > > > > First symptom is KDE/Plasma's task manager going comatose.=C2=A0=
- Notice soon
-> > > >
-> > > > KDE/Plasma points at the new fangled rtmutex based ww_mutex from
-> > > > Peter.
-> > >
-> > > Seems not.=C2=A0 When booting KVM box with nomodeset, there's exactl=
-y one
-> > > early boot ww_mutex lock/unlock, ancient history at the failure poin=
-t.
-> >
-> > As you've probably already surmised given it isn't the ww_mutex bits,
-> > it's the wake_q bits.=C2=A0 Apply the below, 5.14-rt ceases to fail.=
-=C2=A0 Take
-> > perfectly healthy 5.13-rt, apply those bits, and it instantly begins
-> > failing as 5.14-rt had been.
->
-> Given what you have replied to the locking thread/
-> ww_mutex_lock_interruptible() may I assume that the wake_q bits are fine
-> and it is just the ww_mutex?
-
-Nope.  Before I even reverted the wake_q bits, I assembled a tree with
-the ww_mutex changes completely removed to be absolutely certain that
-they were innocent, and it indeed did retain its lost wakeup woes
-despite complete loss of newfangled ww_mutex.  5.13-rt acquired those
-same wakeup woes by receiving ONLY the wake_q bits, and 5.14-rt was
-cured of those woes by ONLY them being reverted. I'm not seeing the
-why, but those bits are either the source or the trigger of 5.14-rt
-lost wakeup woes... they're toxic in some way shape fashion or form.
-
-	-Mike
-
+On 2021-07-30 01:29, Rob Herring wrote:
+> On Thu, Jul 29, 2021 at 6:54 AM Luo Jie <luoj@codeaurora.org> wrote:
+>> 
+>> rename ipq4019-mdio.yaml to ipq-mdio.yaml for supporting more
+>> ipq boards such as ipq40xx, ipq807x, ipq60xx and ipq50xx.
+>> 
+>> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+>> ---
+>>  ...m,ipq4019-mdio.yaml => qcom,ipq-mdio.yaml} | 32 
+>> ++++++++++++++++---
+>>  1 file changed, 28 insertions(+), 4 deletions(-)
+>>  rename Documentation/devicetree/bindings/net/{qcom,ipq4019-mdio.yaml 
+>> => qcom,ipq-mdio.yaml} (58%)
+>> 
+>> diff --git 
+>> a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml 
+>> b/Documentation/devicetree/bindings/net/qcom,ipq-mdio.yaml
+>> similarity index 58%
+>> rename from 
+>> Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+>> rename to Documentation/devicetree/bindings/net/qcom,ipq-mdio.yaml
+>> index 0c973310ada0..5bdeb461523b 100644
+>> --- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+>> +++ b/Documentation/devicetree/bindings/net/qcom,ipq-mdio.yaml
+>> @@ -1,10 +1,10 @@
+>>  # SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>>  %YAML 1.2
+>>  ---
+>> -$id: http://devicetree.org/schemas/net/qcom,ipq4019-mdio.yaml#
+>> +$id: http://devicetree.org/schemas/net/qcom,ipq-mdio.yaml#
+>>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>> 
+>> -title: Qualcomm IPQ40xx MDIO Controller Device Tree Bindings
+>> +title: Qualcomm IPQ MDIO Controller Device Tree Bindings
+>> 
+>>  maintainers:
+>>    - Robert Marko <robert.marko@sartura.hr>
+>> @@ -14,7 +14,9 @@ allOf:
+>> 
+>>  properties:
+>>    compatible:
+>> -    const: qcom,ipq4019-mdio
+>> +    oneOf:
+>> +      - const: qcom,ipq4019-mdio
+>> +      - const: qcom,ipq-mdio
+> 
+> This is more than the commit log suggests. A generic compatible by
+> itself is not sufficient. If other chips have the same block, just use
+> 'qcom,ipq4019-mdio'. They should also have a compatible for the new
+> SoC in case it's not 'the same'.
+> 
+> Also, use 'enum' rather than oneOf plus const.
+> 
+> Hi Rob
+> Thanks for the comments, will keep the compatible "qcom,ipq4019-mdio" 
+> unchanged,
+> and add the new compatible name by using 'enum' in the next patch set.
+> the commit log will be updated in the next patch set.
+>> 
+>>    "#address-cells":
+>>      const: 1
+>> @@ -23,7 +25,29 @@ properties:
+>>      const: 0
+>> 
+>>    reg:
+>> -    maxItems: 1
+>> +    maxItems: 2
+> 
+> This breaks compatibility because now 1 entry is not valid.
+> 
+> will update it by using "minItems: 1, maxItems: 2" in the next patch 
+> set.
+> 
+>> +
+>> +  clocks:
+>> +    items:
+>> +      - description: MDIO clock
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: gcc_mdio_ahb_clk
+>> +
+>> +  resets:
+>> +    items:
+>> +      - description: MDIO reset & GEPHY hardware reset
+>> +
+>> +  reset-names:
+>> +    items:
+>> +      - const: gephy_mdc_rst
+> 
+> These all now apply to 'qcom,ipq4019-mdio'. The h/w had no clocks or
+> resets and now does?
+> 
+> You don't need *-names when there is only 1.
+> 
+> Hi Rob
+> thanks for the comment, clocks is for configuring the source clock of 
+> MDIO bus,
+> which is apply to ipq4019 and the new chip set such as ipq807x, ipq50xx 
+> and ipq60xx,
+> which is not configured because of uboot configuring it, kernel should 
+> not depends on
+> the configuration of uboot, so i add it.
+> will remove the *-name in the next patch set.
+> 
+>> +  phy-reset-gpios:
+>> +    maxItems: 3
+>> +    description:
+>> +      The phandle and specifier for the GPIO that controls the RESET
+>> +      lines of PHY devices on that MDIO bus.
+> 
+> This belongs in the phy node since the reset is connected to the phy.
+> 
+> since the phylib code can't satisfy resetting PHY in IPQ chipset, 
+> phylib resets phy by
+> configuring GPIO output value to 1, then to 0. however the PHY reset in 
+> IPQ chipset need
+> to configuring GPIO output value to 0, then to 1 for the PHY reset, so 
+> i put the phy-reset-gpios here.
+> 
+>> 
+>>  required:
+>>    - compatible
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
