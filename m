@@ -2,83 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EA33DD549
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1A73DD54D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233603AbhHBMJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:09:43 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:25708 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233446AbhHBMJm (ORCPT
+        id S233576AbhHBMK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233518AbhHBMK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:09:42 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app10-12010 (RichMail) with SMTP id 2eea6107e06c852-e82ce; Mon, 02 Aug 2021 20:09:19 +0800 (CST)
-X-RM-TRANSID: 2eea6107e06c852-e82ce
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee36107e06b2e6-80095;
-        Mon, 02 Aug 2021 20:09:19 +0800 (CST)
-X-RM-TRANSID: 2ee36107e06b2e6-80095
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH v2] iio: adc: fsl-imx25-gcq: fix the right check and simplify code
-Date:   Mon,  2 Aug 2021 20:09:29 +0800
-Message-Id: <20210802120929.33760-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        Mon, 2 Aug 2021 08:10:57 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598C9C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 05:10:48 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id g76so28147737ybf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 05:10:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IokGs/ock9H3fPpCABnbBAUNhbT31L4t8yb0xlxFIy8=;
+        b=oPeKY+Mn1bWxGwC8jLRHIpeFGvMJPtDjw06oaa8Knjmr9RsGRNOLC5NJq52SJlKGFB
+         ugZVPyMeLkbm30ClxKj0tawg1XAbciSDD3yy0gj5ETJdyayUFQYqaNlBudYyb01s/u9G
+         RGZL9w88H9CojbM8tkZgSsHAPn9+RtwES0k1PO9kL3RnrjPFI+nlK2ls83dZoGBUOmL4
+         opQLTyDEgPEjjUv2SXSkvrjOhK34IDLLtiAKmUhQ/SEoey/4DEAi18DnDpNl/cxxtJuP
+         42TLxX41ZT0YvxDtrICkv18dONEoU7HQe1hF7Of8V/ma2skYjNN0Uic4nb/rFn0mvD8z
+         NY+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IokGs/ock9H3fPpCABnbBAUNhbT31L4t8yb0xlxFIy8=;
+        b=BEcywiGpSpndh1q3vQUk/opR9erMjB1oj4OGUn2947dJz1Kx22GIu7Vq7fmxygADqA
+         w0dq8wisCSstxFMwxjm3+92YuG6msBAdKx3ewTTuf5yDWvNm/a2f/z65x9RKZn6VGnKu
+         DqV/16Pqt6QOXtCb6pZUE36MOABOmIYURqLxeIN5hiYpj3+JljeXORItL/mXzzAZNsoz
+         vBFs33xZfEFTGMDlBWT0zOi1WsxJ+hCewciqvuQiqsRn30PV97bt0njtn/momqE8IG+E
+         libHihoX4w4gQTMiZI6ZbansNoRJjOCuWMRyvzXcWdHuhceM3ZiBSWwB7wjPZPMyvC3P
+         pB0Q==
+X-Gm-Message-State: AOAM533YulFkxBC5j0to+TlTsHYbXxO/ykhKdlUUyrkdtjFrglegF+vQ
+        D1Ta6BsPGQa11X9X8r+HG0O4enPdPhu+D6XMiWXGPQ==
+X-Google-Smtp-Source: ABdhPJxd/nHYE1HdonBqJGgu3Tqa+WZ9PmgGGn7DeGFK/iw+LvNCai1ySHkhSlmzifsAFlqatmlthT2JUhnQjRlcQcU=
+X-Received: by 2002:a25:3750:: with SMTP id e77mr20820613yba.469.1627906247652;
+ Mon, 02 Aug 2021 05:10:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210716221744.5445-1-robert.marko@sartura.hr>
+In-Reply-To: <20210716221744.5445-1-robert.marko@sartura.hr>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 2 Aug 2021 14:10:36 +0200
+Message-ID: <CAMpxmJXy1L-OC7k+h6pOwFGNS8WntNSMjP1Kvu7tnCQvGNwnRw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] gpio: tn48m: Add support for Delta TN4810M CPLD
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, luka.perkov@sartura.hr
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the function of platform_get_irq(), the example in platform.c is
- *	int irq = platform_get_irq(pdev, 0);
- *	if (irq < 0)
- *		return irq;
-the return value of zero is unnecessary to check, so make the right
-check and simplify code.
+On Sat, Jul 17, 2021 at 12:17 AM Robert Marko <robert.marko@sartura.hr> wrote:
+>
+> Delta TN4810M uses a similar CPLD GPIO expander
+> like the TN48M, but it has pins for 48 SFP+ ports,
+> making a total of 192 pins.
+> It also provides the TX fault pins which the TN48M
+> does not.
+>
+> Only TX disable pins like on the TN48M are output
+> ones.
+>
+> Thankfully, regmap GPIO allows for the driver to be
+> easily extended to support the TN4810M.
+>
+> Note that this patch depends on the following series:
+> https://patchwork.ozlabs.org/project/linux-gpio/list/?series=247538
+>
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> ---
+>  drivers/gpio/gpio-tn48m.c | 56 ++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 52 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-tn48m.c b/drivers/gpio/gpio-tn48m.c
+> index b12a6b4bc4b3..e429e7ade941 100644
+> --- a/drivers/gpio/gpio-tn48m.c
+> +++ b/drivers/gpio/gpio-tn48m.c
+> @@ -19,6 +19,10 @@ enum tn48m_gpio_type {
+>         TN48M_SFP_TX_DISABLE = 1,
+>         TN48M_SFP_PRESENT,
+>         TN48M_SFP_LOS,
+> +       TN4810M_SFP_TX_DISABLE,
+> +       TN4810M_SFP_TX_FAULT,
+> +       TN4810M_SFP_PRESENT,
+> +       TN4810M_SFP_LOS,
+>  };
+>
+>  static int tn48m_gpio_probe(struct platform_device *pdev)
+> @@ -46,17 +50,36 @@ static int tn48m_gpio_probe(struct platform_device *pdev)
+>
+>         config.regmap = regmap;
+>         config.parent = &pdev->dev;
+> -       config.ngpio = 4;
+> +       config.ngpio_per_reg = 8;
+>
+>         switch (type) {
+>         case TN48M_SFP_TX_DISABLE:
+>                 config.reg_set_base = base;
+> +               config.ngpio = 4;
+>                 break;
+>         case TN48M_SFP_PRESENT:
+>                 config.reg_dat_base = base;
+> +               config.ngpio = 4;
+>                 break;
+>         case TN48M_SFP_LOS:
+>                 config.reg_dat_base = base;
+> +               config.ngpio = 4;
+> +               break;
+> +       case TN4810M_SFP_TX_DISABLE:
+> +               config.reg_set_base = base;
+> +               config.ngpio = 48;
+> +               break;
+> +       case TN4810M_SFP_TX_FAULT:
+> +               config.reg_dat_base = base;
+> +               config.ngpio = 48;
+> +               break;
+> +       case TN4810M_SFP_PRESENT:
+> +               config.reg_dat_base = base;
+> +               config.ngpio = 48;
+> +               break;
+> +       case TN4810M_SFP_LOS:
+> +               config.reg_dat_base = base;
+> +               config.ngpio = 48;
+>                 break;
+>         default:
+>                 dev_err(&pdev->dev, "unknown type %d\n", type);
+> @@ -67,9 +90,34 @@ static int tn48m_gpio_probe(struct platform_device *pdev)
+>  }
+>
+>  static const struct of_device_id tn48m_gpio_of_match[] = {
+> -       { .compatible = "delta,tn48m-gpio-sfp-tx-disable", .data = (void *)TN48M_SFP_TX_DISABLE },
+> -       { .compatible = "delta,tn48m-gpio-sfp-present", .data = (void *)TN48M_SFP_PRESENT },
+> -       { .compatible = "delta,tn48m-gpio-sfp-los", .data = (void *)TN48M_SFP_LOS },
+> +       {
+> +               .compatible = "delta,tn48m-gpio-sfp-tx-disable",
+> +               .data = (void *)TN48M_SFP_TX_DISABLE
+> +       },
+> +       {
+> +               .compatible = "delta,tn48m-gpio-sfp-present",
+> +               .data = (void *)TN48M_SFP_PRESENT
+> +       },
+> +       {
+> +               .compatible = "delta,tn48m-gpio-sfp-los",
+> +               .data = (void *)TN48M_SFP_LOS
+> +       },
+> +       {
+> +               .compatible = "delta,tn4810m-gpio-sfp-tx-disable",
+> +               .data = (void *)TN4810M_SFP_TX_DISABLE
+> +       },
+> +       {
+> +               .compatible = "delta,tn4810m-gpio-sfp-tx-fault",
+> +               .data = (void *)TN4810M_SFP_TX_FAULT
+> +       },
+> +       {
+> +               .compatible = "delta,tn4810m-gpio-sfp-present",
+> +               .data = (void *)TN4810M_SFP_PRESENT
+> +       },
+> +       {
+> +               .compatible = "delta,tn4810m-gpio-sfp-los",
+> +               .data = (void *)TN4810M_SFP_LOS
+> +       },
+>         { }
+>  };
+>  MODULE_DEVICE_TABLE(of, tn48m_gpio_of_match);
+> --
+> 2.31.1
+>
 
-Co-developed-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
-Changes from v1
- - change the code to the original place and make it simple.
- - change the commit message.
----
- drivers/iio/adc/fsl-imx25-gcq.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+This looks good to me. I suppose the other patches are going in
+through the MFD tree. I don't see anything that can fail here at
+build-time - can you confirm that I can pick these patches up
+separately for v5.15?
 
-diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
-index 8cb51cf7a..2cdf45aa8 100644
---- a/drivers/iio/adc/fsl-imx25-gcq.c
-+++ b/drivers/iio/adc/fsl-imx25-gcq.c
-@@ -336,14 +336,11 @@ static int mx25_gcq_probe(struct platform_device *pdev)
- 		goto err_vref_disable;
- 	}
- 
--	priv->irq = platform_get_irq(pdev, 0);
--	if (priv->irq <= 0) {
--		ret = priv->irq;
--		if (!ret)
--			ret = -ENXIO;
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
- 		goto err_clk_unprepare;
--	}
- 
-+	priv->irq = ret;
- 	ret = request_irq(priv->irq, mx25_gcq_irq, 0, pdev->name, priv);
- 	if (ret) {
- 		dev_err(dev, "Failed requesting IRQ\n");
--- 
-2.20.1.windows.1
-
-
-
+Bartosz
