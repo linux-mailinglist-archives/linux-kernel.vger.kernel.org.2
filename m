@@ -2,140 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4FE3DDF09
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A4E3DDF12
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhHBSXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
+        id S230397AbhHBSYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhHBSXE (ORCPT
+        with ESMTP id S229640AbhHBSYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:23:04 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D33DC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:22:54 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id j77so27946298ybj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:22:54 -0700 (PDT)
+        Mon, 2 Aug 2021 14:24:04 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC0BC06175F;
+        Mon,  2 Aug 2021 11:23:54 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id t9so22378692lfc.6;
+        Mon, 02 Aug 2021 11:23:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WpAP0boYKgMSl+EEAfMqGAcS1DBVrnYXR6p3McRuuF8=;
-        b=KlMxq4MfUxuE4wxvHzy/b64JIYB/khWpUguGIPzgKEmNeHHmr5FP9tLSQwLDHvPx0w
-         +x0/5c2lijkljpgCsjjcQDt4QDKuZuv5UY3N4tLODMVHOqjtqHyJqJqMoKjhwD+8gYsw
-         f5f6DaG0rlmzwPVYqNg3BSwoYkx90Nnb5bHKs=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=A2cWlW6pgYuSWsahIzYgGPs6I4RK+uZng7TRkUqOaAw=;
+        b=H1pn8GH7wXvWvYwTnbs7bdMHPlwqcM/iJScEzxQ/zAkWypusygPPbvku3eSuT190yN
+         zPFRoZCvktkuxqoleBgK8y5Uzv5Fmeqd1bbhmRsU+8MxXxRw8T8y+0sHploztJ2+QVqn
+         K58S/JnExlUO6oIXV0tFWcBYPeYiwBJRkgmKCMuWnC+4A28bNtIqaxlBVCyURf9FOwKk
+         4FnjEmQtRKc+BFOug7/xn0azcogjPR+odU0hl0SM8YwaLE6GnhT3w/niXT/0cWqbRgq8
+         MzqMNgzev0LA/KsZ9+9+qg6oaNg1l98gmbVMYv/uMejRIVq6umScHxBgKK4OnEdG/ZwO
+         QAiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WpAP0boYKgMSl+EEAfMqGAcS1DBVrnYXR6p3McRuuF8=;
-        b=p0gMARPZSxQ1+8TS2JGuXHZuEfRdtaB5KIufCM7Wf+nYXH5+VzsslNtuzWPK1P7H9M
-         yU+NPK2BxylKD8L/gLZqYHX67w24f637Lwuzve+ZCLPkwiZWJAB+RF3Akmquk8H2q54L
-         URbOkfXBK2ttIodL0GTqEd/NTtkJWY+1ZyXbpPJAoezzqcVuCBtjjzJU3m1sO+kttVMQ
-         QjTVwEGrGDzq03uMuvLn+Xecy3KD3C+fs6qoHjPsNUA14CEE1Jm574SLHGer5qTq1qMU
-         dkpDONBAbA100eUVeMjH49VBmZyU8L9cxuIbI1EQwurqiXZFsuWgCFlYpSi0Xl7LLxuK
-         u57A==
-X-Gm-Message-State: AOAM530XFYk2t0kNMGzzfy1bCeR/Pns/aG8Kh8zMoTmPe2DTRUMQN5Xf
-        dULnp9eIAh5abVP2T1ZqSBE3z1TwL4+OD+56seuN
-X-Google-Smtp-Source: ABdhPJynNZIyUvDVGGyRh+IbdUlssdg8o1eWgR0yeR8vNlVh2L5U96YBAQGX7dRj9k0KPeGehWEsCQ07LvSHzf9+hAY=
-X-Received: by 2002:a25:84c7:: with SMTP id x7mr21646394ybm.447.1627928573559;
- Mon, 02 Aug 2021 11:22:53 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A2cWlW6pgYuSWsahIzYgGPs6I4RK+uZng7TRkUqOaAw=;
+        b=ZFSD4EGWeLsfw4QOuveV6jasRhvNynglh6HqG6ZA8RYH5HylrqMJKvnjyYYBlHMDhn
+         PQr5g5yuZBFFdppkcIIN6G1YjSaa5mrvtgkWSJA0EYr3BCODDW8RXHvtIuPtxhQqdxV2
+         kQ0h6tC40sjHDNhRB2BKNj1sqIjdvXMl9qWCTrdbUIo+O49VJzVKe0geSes8bABOB4ab
+         sGN4PZWxJ/o44k1THFldvoDiPVrSsiWFuZ5tagYMcZ/PBLbngEgkozzHn/csgehGaVNG
+         ITDf0+A8a66KOiwUJImd4erhk4UrYjPMneHD7AuNqCkRNWzbwShYwOXj+3PSPzz3OyrN
+         wdKg==
+X-Gm-Message-State: AOAM533pOkVgSmLC5ZyuodLAhPrRF9AVFVXidBfbFXDyNHgo3iLFiDHg
+        iBshAneJJDV4f8v5yiQuzesFjaLwxPk=
+X-Google-Smtp-Source: ABdhPJxmeetaV9/wDLh3f6TYJLqFwfzcDKekE86b0K3MFq343cGfeWSlBYy2uLtfZPYyOQFzUh4IaA==
+X-Received: by 2002:ac2:5f78:: with SMTP id c24mr13366081lfc.199.1627928632378;
+        Mon, 02 Aug 2021 11:23:52 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-22-96.dynamic.spd-mgts.ru. [94.29.22.96])
+        by smtp.googlemail.com with ESMTPSA id f23sm911482ljm.34.2021.08.02.11.23.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 11:23:51 -0700 (PDT)
+Subject: Re: [PATCH v7 02/37] soc/tegra: pmc: Implement attach_dev() of power
+ domain drivers
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+References: <20210701232728.23591-1-digetx@gmail.com>
+ <20210701232728.23591-3-digetx@gmail.com>
+ <CAPDyKFrtWDYJo_NjS8306Z9ykbg7XZ55jC9hKEBMGkcrx1=4kQ@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <1034458d-78e0-5036-e278-6fee5d0d75ac@gmail.com>
+Date:   Mon, 2 Aug 2021 21:23:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210723214031.3251801-1-atish.patra@wdc.com> <20210723214031.3251801-4-atish.patra@wdc.com>
- <20210726070030.GB9035@lst.de> <CAOnJCU+qRznBTn9Mt6t_DE6UUz6_LuaBBuOmnURS2Yh3pmpjvg@mail.gmail.com>
- <20210727085244.GA20609@lst.de>
-In-Reply-To: <20210727085244.GA20609@lst.de>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Mon, 2 Aug 2021 11:22:42 -0700
-Message-ID: <CAOnJCUJgCHOR5nifNVjkQawKniGf81Zvsh226brdAPuLNkXAdQ@mail.gmail.com>
-Subject: Re: [RFC 3/5] dma-mapping: Enable global non-coherent pool support
- for RISC-V
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        iommu@lists.linux-foundation.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAPDyKFrtWDYJo_NjS8306Z9ykbg7XZ55jC9hKEBMGkcrx1=4kQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 1:52 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Mon, Jul 26, 2021 at 03:47:54PM -0700, Atish Patra wrote:
-> > arch_dma_set_uncached works as well in this case. However, mips,
-> > niops2 & xtensa uses a
-> > fixed (via config) value for the offset. Similar approach can't be
-> > used here because the platform specific
-> > offset value has to be determined at runtime so that a single kernel
-> > image can boot on all platforms.
->
-> Nothing in the interface requires a fixed offset.  And using the offset
-> has one enormous advantage in that there is no need to declare a
-> statically sized pool - allocations are fully dynamic.  And any kind of
-> fixed pool tends to cause huge problems.
->
-> > 1. a new DT property so that arch specific code is aware of the
-> > non-cacheable window offset.
->
-> Yes.
->
-> > individual device if a per-device non-cacheable
-> >    window support is required in future. As of now, the beagleV memory
->
-> If you require a per-device noncachable area you can use the per-device
-> coherent pools.  But why would you want that?
->
-> > region lies in 0x10_0000_00000 - x17_FFFF_FFFF
-> >    which is mapped to start of DRAM 0x80000000. All of the
-> > non-coherent devices can do 32bit DMA only.
->
-> Adjust ZONE_DMA32 so that it takes the uncached offset into account.
->
-> > > > -     mem = dma_init_coherent_memory(phys_addr, phys_addr, size, true);
-> > > > +     if (phys_addr == device_addr)
-> > > > +             mem = dma_init_coherent_memory(phys_addr, device_addr, size, true);
-> > > > +     else
-> > > > +             mem = dma_init_coherent_memory(phys_addr, device_addr, size, false);
-> > >
-> > > Nak.  The phys_addr != device_addr support is goign away.  This needs
-> >
-> > ok.
-> >
-> > > to be filled in using dma-ranges property hanging of the struct device.
-> >
-> > struct device is only accessible in rmem_dma_device_init. I couldn't
-> > find a proper way to access it during
-> > dma_reserved_default_memory setup under global pool.
-> >
-> > Does that mean we should use a per-device memory pool instead of a
-> > global non-coherent pool ?
->
-> Indeed, that would be a problem in this case.  But if we can just
-> use the uncached offset directly I think everything will be much
-> simpler.
+02.08.2021 17:48, Ulf Hansson пишет:
+...
+>> +       if (!list_empty(&genpd->child_links)) {
+>> +               link = list_first_entry(&genpd->child_links, struct gpd_link,
+>> +                                       child_node);
+>> +               core_genpd = link->parent;
+>> +       } else {
+>> +               core_genpd = genpd;
+>> +       }
+> 
+> This looks a bit odd to me. A genpd provider shouldn't need to walk
+> these links as these are considered internals to genpd. Normally this
+> needs lockings, etc.
+> 
+> Why exactly do you need this?
 
-Yes. I was planning to change this to use an uncached offset.
-However, the planned mass production for beaglev starlight sbc is
-cancelled now [1].
-As there is no other board that requires an uncached offset, I don't
-think there is no usecase
-for adding uncached offset support for RISC-V right now. I will
-revisit(hopefully we don't have to)
-this in case any platform implements uncached window support in future.
+We have a chain of PMC domain -> core domain, both domains are created
+and liked together by this PMC driver. Devices are attached to either
+PMC domain or to core domain. PMC domain doesn't handle the performance
+changes, performance requests go down to the core domain.
 
-[1] https://www.cnx-software.com/2021/07/31/beaglev-starlight-sbc-wont-be-mass-manufactured-redesigned-beaglev-risc-v-sbc-expected-in-q1-2022/
--- 
-Regards,
-Atish
+This is needed in order to translate the device's OPP into performance
+state of the core domain, based on the domain to which device is attached.
+
+>> +
+>> +       pd_opp_table = dev_pm_opp_get_opp_table(&core_genpd->dev);
+>> +       if (IS_ERR(pd_opp_table)) {
+>> +               dev_err(&genpd->dev, "failed to get OPP table of %s: %pe\n",
+>> +                       dev_name(&core_genpd->dev), pd_opp_table);
+>> +               ret = PTR_ERR(pd_opp_table);
+>> +               goto put_dev_opp;
+>> +       }
+>> +
+>> +       pd_opp = dev_pm_opp_xlate_required_opp(opp_table, pd_opp_table, opp);
+>> +       if (IS_ERR(pd_opp)) {
+>> +               dev_err(&genpd->dev,
+>> +                       "failed to xlate required OPP for %luHz of %s: %pe\n",
+>> +                       rate, dev_name(dev), pd_opp);
+>> +               ret = PTR_ERR(pd_opp);
+>> +               goto put_pd_opp_table;
+>> +       }
+>> +
+>> +       /*
+>> +        * The initialized state will be applied by GENPD core on the first
+>> +        * RPM-resume of the device.  This means that drivers don't need to
+>> +        * explicitly initialize performance state.
+>> +        */
+>> +       state = pm_genpd_opp_to_performance_state(&core_genpd->dev, pd_opp);
+>> +       gpd_data->rpm_pstate = state;
+> 
+> Could the above be replaced with Rajendra's suggestion [1], which
+> changes genpd to internally during attach, to set a default
+> performance state when there is a "required-opp" specified in the
+> device  node?
+
+It's not a "static" performance level here, but any level depending on
+h/w state left from bootloader and etc. The performance level
+corresponds to the voltage of the core domain, hence we need to
+initialize the voltage vote before device is resumed.
