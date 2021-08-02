@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59AC3DDCB8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF7E3DDCCB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235352AbhHBPs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbhHBPs5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:48:57 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F709C06175F;
-        Mon,  2 Aug 2021 08:48:48 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso559958pjf.4;
-        Mon, 02 Aug 2021 08:48:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=iFEvhb+pWS2fHWjo0SPK+/xVkX5ExnAVIzPe3nLKKpI=;
-        b=gkFlepEtWgxNsrASRfaQY1uh8Mj1erqxFQyyuDQKRDZoyjFfTKzszqOVZfchtHwSxB
-         EayR11JSZNgAg968gT6S5f08lqOqp40AozL+gcIs7p5U/u2OvSV997QvGXceRBSUSyq0
-         8/6BeEz2l8ggw7ohQ7L9Aqemvo6H9iS/AjnavSo+8Sgpyfrw4pMw/juAPvShadnZ2p8G
-         XdZMWRPfIFvuGlHWcniw9F9dTzaQXIVkbANdvzc8rBVJgzP+WjOZSWpCFVWshcxHwMRc
-         FJBkEMGTYBwjm7Q7JKTBiVdV+ncrbrvMr3zySwWg7xAfLcyzwHYcG1lj6KnPs2mk69GR
-         ANgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=iFEvhb+pWS2fHWjo0SPK+/xVkX5ExnAVIzPe3nLKKpI=;
-        b=MQdKrF5SP3C578dUjo7aYHUEl1LZAQ8zCnNv7UQ+sfTVm0nUt6vGvFZnTrcgHhqnCU
-         W01YBSb+3aSrtVwBvFTXMS5gBuLmkT9a/Qyp+3r2Vi72DpkIHXQMC2yo2goRAbIlcUn1
-         CmgXFIQjRqFj18+T7S/fa6AHnimMbL6KeoI8z1z1Z+tinqLCV5n4SgGzTHYn71wweRQ9
-         KpDS8zZCnv/nMasj/keazhG/7QXMT+8hCtew0mt3IvJFjn0EnrfRPwqn+IZeE5weuseG
-         Meerg/WXrL1L2AcUBufcsRPMDFhHw6obkscBqG7lUoiafBZILiQa2PYRAbu9oCtilZcf
-         POYg==
-X-Gm-Message-State: AOAM530TVyk0GoNyajzJS+gfy8G09pdj3rA3E+aFNcZqzRvbs7VDRWzs
-        Z8ST8dbI80bZ3SKF7oqT0ek=
-X-Google-Smtp-Source: ABdhPJzqXW1OAkAAZZra+6fqNo9oVwsleYwCd0ZWR5t9Yaba1OfMRtzMKyaaxDMQLw96sEu64UB2ZQ==
-X-Received: by 2002:a62:8fd4:0:b029:3af:3fa7:c993 with SMTP id n203-20020a628fd40000b02903af3fa7c993mr16580168pfd.77.1627919327667;
-        Mon, 02 Aug 2021 08:48:47 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id v13sm11244135pja.44.2021.08.02.08.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 08:48:47 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Woudstra <ericwouds@gmail.com>,
-        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>
-Subject: Re: [RFC net-next v2 4/4] Revert "mt7530 mt7530_fdb_write only set ivl bit vid larger than 1"
-Date:   Mon,  2 Aug 2021 23:48:38 +0800
-Message-Id: <20210802154838.1817958-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210802134409.dro5zjp5ymocpglf@skbuf>
-References: <20210731191023.1329446-1-dqfext@gmail.com> <20210731191023.1329446-5-dqfext@gmail.com> <20210802134409.dro5zjp5ymocpglf@skbuf>
+        id S235375AbhHBPtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:49:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235374AbhHBPtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:49:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C36610FB;
+        Mon,  2 Aug 2021 15:48:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627919332;
+        bh=/oCmfcGrQAmFx1W8R27Lyovp/i6hZiYv1kKsPSGL6SE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BmUc15QeO4nlCy9PmcJA0udAkJrcK8xboBOEuwvNV5iqLGiMW9UyElhtpl+vfzhnI
+         k4c13dlB+zqiiEq3usEOiuDtr8NN30uGDHOe9sfgh0kQo0rLahsA9VRn753Qxowv+j
+         vys7JP5w8GtfeWWyw51kXX25L5VibpEvrUcvs5TkLZk21Y9evqwgqGa9vzIzxyaAC7
+         3MdWuK5Go0hzh9BFRBdWp23xMhIwSH6AEjmmlF2+UijCumFmGuLOl7v90OzLJtCffZ
+         AoaHCKn3uUk2UpRgM9na4Ei4f0abgFECdXwxi5zxiz17acOyBprqa2oBYuJ3HJhUiq
+         dAzUCOpO2HSFg==
+Date:   Mon, 2 Aug 2021 16:48:38 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Eric Huang <JinhuiEric.Huang@amd.com>
+Subject: Re: linux-next: manual merge of the amdgpu tree with Linus' tree
+Message-ID: <20210802154838.GG4668@sirena.org.uk>
+References: <20210802151053.14982-1-broonie@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nhYGnrYv1PEJ5gA2"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210802151053.14982-1-broonie@kernel.org>
+X-Cookie: There's only one everything.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 04:44:09PM +0300, Vladimir Oltean wrote:
-> Would you mind explaining what made VID 1 special in Eric's patch in the
-> first place?
 
-The default value of all ports' PVID is 1, which is copied into the FDB
-entry, even if the ports are VLAN unaware. So running `bridge fdb show`
-will show entries like `dev sw0p0 vlan 1 self` even on a VLAN-unaware
-bridge.
+--nhYGnrYv1PEJ5gA2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Eric probably thought VID 1 is the FDB of all VLAN-unaware bridges, but
-that is not true. And his patch probably cause a new issue that FDB is
-inaccessible in a VLAN-**aware** bridge with PVID 1.
+On Mon, Aug 02, 2021 at 04:10:53PM +0100, Mark Brown wrote:
+> + 	if (dev->device_info->asic_family == CHIP_ALDEBARAN) {
+> + 		err = amdgpu_amdkfd_gpuvm_sync_memory(dev->kgd,
+> + 				(struct kgd_mem *) mem, true);
+> + 		if (err) {
+> + 			pr_debug("Sync memory failed, wait interrupted by user signal\n");
+> + 			goto sync_memory_failed;
 
-This series sets PVID to 0 on VLAN-unaware ports, so `bridge fdb show`
-will no longer print `vlan 1` on VLAN-unaware bridges, and we don't
-need special case in port_fdb_{add,del} for assisted learning.
+Ugh, no.  This is broken because that label is gone.  I'll stack some
+more fixups on.
+
+--nhYGnrYv1PEJ5gA2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEIE9UACgkQJNaLcl1U
+h9BRKwf/TOYnEpnuc/Vrs+1IMbNAhqu6g7a6epGr7jUD4rrA1OI6lJ/Z/9/e0y74
+sNQrEqCMtuqEwUGcJJJYSxNtu0ZNkleR8IbVvu1k5WtHo/Y3A28LEIwPefvgTzYG
+DkPrQ1RKZdYDijwpK+9ZHdI2xYhkQ9vN6c2ZLVVuQyiLoXgvqEESXOpaYvLzOVVn
+iu2oewlU4PjA8nKkY2//Xjgljdq/3nnr9M73xVdqBc9p1symjzKO9Uma5G8hfVU4
++pft8FO9igKwVDo8ZUJkGSqzpJqWA5Kr8RWCDMhP0RlU+bdaxtftSa0/jZGJ10Dn
+KqYl+tfp7hKbQ/B/FeNmCE42JXs2Jw==
+=1LgJ
+-----END PGP SIGNATURE-----
+
+--nhYGnrYv1PEJ5gA2--
