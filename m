@@ -2,70 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B6D3DDA7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5C03DD782
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237452AbhHBOO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:14:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49060 "EHLO mail.kernel.org"
+        id S233970AbhHBNqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:46:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237120AbhHBOEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:04:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FE7A61250;
-        Mon,  2 Aug 2021 13:58:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912681;
-        bh=MhNPi2JdnrrlnTq1wlVrt7SFbv/+OFwl/mU8FeAPQOk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UUsaMqvPvTGWwv0EG7Umcvn/d1tKq4FLRQ65Euer464MgXKXa4S1WyZlNZPsJHlxz
-         quHnHR/mBy27JeQRBin7i4OKx2/gIwgnJg2IBBNVGwpmgm6XyMpMchO0sRvH/K+JXX
-         66u46JkVBsDO5yVCo3vtBTtW2+4jYvnB38yroxjM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.13 104/104] octeontx2-af: Remove unnecessary devm_kfree
-Date:   Mon,  2 Aug 2021 15:45:41 +0200
-Message-Id: <20210802134347.420679949@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S233863AbhHBNqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:46:02 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E52060F6D;
+        Mon,  2 Aug 2021 13:45:53 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mAYGN-002Spk-Pn; Mon, 02 Aug 2021 14:45:51 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kvmarm@lists.cs.columbia.edu
+Subject: Re: [PATCH] KVM: ARM: count remote TLB flushes
+Date:   Mon,  2 Aug 2021 14:45:47 +0100
+Message-Id: <162791193623.3441939.13198222517993801713.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210727103251.16561-1-pbonzini@redhat.com>
+References: <20210727103251.16561-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: pbonzini@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sunil Goutham <sgoutham@marvell.com>
+On Tue, 27 Jul 2021 12:32:51 +0200, Paolo Bonzini wrote:
+> KVM/ARM has an architecture-specific implementation of
+> kvm_flush_remote_tlbs; however, unlike the generic one,
+> it does not count the flushes in kvm->stat.remote_tlb_flush,
+> so that it inexorably remained stuck to zero.
 
-commit d72e91efcae12f2f24ced984d00d60517c677857 upstream.
+Applied to next, thanks!
 
-Remove devm_kfree of memory where VLAN entry to RVU PF mapping
-info is saved. This will be freed anyway at driver exit.
-Having this could result in warning from devm_kfree() if
-the memory is not allocated due to errors in rvu_nix_block_init()
-before nix_setup_txvlan().
+[1/1] KVM: ARM: count remote TLB flushes
+      commit: 38f703663d4c82ead5b51b8860deeef19d6dcb6d
 
-Fixes: 9a946def264d ("octeontx2-af: Modify nix_vtag_cfg mailbox to support TX VTAG entries")
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c |    1 -
- 1 file changed, 1 deletion(-)
+Cheers,
 
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-@@ -3587,7 +3587,6 @@ static void rvu_nix_block_freemem(struct
- 		vlan = &nix_hw->txvlan;
- 		kfree(vlan->rsrc.bmap);
- 		mutex_destroy(&vlan->rsrc_lock);
--		devm_kfree(rvu->dev, vlan->entry2pfvf_map);
- 
- 		mcast = &nix_hw->mcast;
- 		qmem_free(rvu->dev, mcast->mce_ctx);
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
 
 
