@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6323DD360
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33203DD369
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhHBJv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:51:56 -0400
-Received: from 8bytes.org ([81.169.241.247]:52296 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232699AbhHBJvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:51:55 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 0C338379; Mon,  2 Aug 2021 11:51:43 +0200 (CEST)
-Date:   Mon, 2 Aug 2021 11:51:41 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
-        ming-fan.chen@mediatek.com, yi.kuo@mediatek.com,
-        acourbot@chromium.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Xia Jiang <xia.jiang@mediatek.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Eizan Miyamoto <eizan@chromium.org>,
-        anthony.huang@mediatek.com,
-        Frank Wunderlich <frank-w@public-files.de>
-Subject: Re: [PATCH v7 00/12] Clean up "mediatek,larb"
-Message-ID: <YQfALZNWyw8VKODp@8bytes.org>
-References: <20210730025238.22456-1-yong.wu@mediatek.com>
+        id S233186AbhHBJv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233176AbhHBJv6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 05:51:58 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F52DC0613D5;
+        Mon,  2 Aug 2021 02:51:49 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id e5so19031060pld.6;
+        Mon, 02 Aug 2021 02:51:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rSvZVCk/b4lxtMrQbI5kKo6ZH+53Muvk1QfohkjMfWQ=;
+        b=o6LQCpplPt+icWPEHbKaQRMkxOAejINbTeRiO/3YRlw+GDij/NuKgi0Vk73BjoslDV
+         8cygSgqRS/9zcQyJR+1glwYl+Oedc+7o6Ujh/wsRJ2ZRTAO5KiL/nMe6wu5jGdcMVwQn
+         uIrjSh2yOWRQ+MF+bbyNns5eJvlDNL7Tp86d6vdLN3zj22UpfaZ4aKo2U0zbHud7EiCu
+         zGh3C3YzpJU2TLds4/yA0Sxm9hDsrG+2Aw64vRJyjjRgXHldtH5YkihrLvkx4o/MQr8i
+         bgYbkYCWkzes5gmR76SZRVlUP689YrCH1LUZ5G3J+o56uGu0fFVomAIT8g9G4SjzH4aF
+         De2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rSvZVCk/b4lxtMrQbI5kKo6ZH+53Muvk1QfohkjMfWQ=;
+        b=siHXSIwsmAiRqUsMeijUnTdMZ0pZx3TzITpY2Nv37aqZl0Vv7EgnHhrWR9DrzyrBpQ
+         zZJDYIDAKDBCcsInbFZp8chq6eAgRwstpo+5mH0IO+uIWN/FzkGynYu/Gr7h31zNOyLk
+         aVnTRhoaI/i5n/KTZsK+Ztgav5guxqCYDR33Pwe2aS5YC37ez91i5cpisTiJIDNJnJ8D
+         snaIW5cRHPx1cXZlKo4A5M0lQZapStaZlw3VpZBuDzR5KDGGXvJ35go664IUUynGI1Yz
+         iJQrJxZ5s5OEkv/8/kiWpBSLEOczqkGGpUOslYEGzDlyg00l6R/cXbPoE47gUJUZUXZE
+         vy6w==
+X-Gm-Message-State: AOAM533o+T+S8lqd/diVlII5RmjSfJu89clK1Jkf0FtuaxnMelPCY4ap
+        1CE1R4iRCiLyQX23c0SQpv8=
+X-Google-Smtp-Source: ABdhPJw2LOje+GZYbQog/yQS/5WnF59msN+/7Mp4i9o299dg7UF20relEobhVXBtiKDULMzGNhi7og==
+X-Received: by 2002:a17:90a:a78d:: with SMTP id f13mr16098143pjq.206.1627897908680;
+        Mon, 02 Aug 2021 02:51:48 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id t17sm10928794pfg.93.2021.08.02.02.51.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 02:51:48 -0700 (PDT)
+Subject: [PATCH v3 4/9] docs: pdfdocs: Preserve inter-phrase space in Korean
+ translations
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
+        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+References: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <9e0adaa3-2462-ab8b-3a72-8a0c93ff1cec@gmail.com>
+Date:   Mon, 2 Aug 2021 18:51:45 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730025238.22456-1-yong.wu@mediatek.com>
+In-Reply-To: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 10:52:26AM +0800, Yong Wu wrote:
->  .../display/mediatek/mediatek,disp.txt        |  9 ----
->  .../bindings/media/mediatek-jpeg-decoder.yaml |  9 ----
->  .../bindings/media/mediatek-jpeg-encoder.yaml |  9 ----
->  .../bindings/media/mediatek-mdp.txt           |  8 ----
->  .../bindings/media/mediatek-vcodec.txt        |  4 --
->  arch/arm/boot/dts/mt2701.dtsi                 |  2 -
->  arch/arm/boot/dts/mt7623n.dtsi                |  5 --
->  arch/arm64/boot/dts/mediatek/mt8173.dtsi      | 16 -------
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  6 ---
->  drivers/gpu/drm/mediatek/mtk_disp_ovl.c       |  9 +++-
->  drivers/gpu/drm/mediatek/mtk_disp_rdma.c      |  9 +++-
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c       | 15 +++---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   | 36 +--------------
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   |  1 -
->  drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  5 +-
->  drivers/iommu/mtk_iommu.c                     | 24 +++++++++-
->  drivers/iommu/mtk_iommu_v1.c                  | 31 ++++++++++++-
->  .../media/platform/mtk-jpeg/mtk_jpeg_core.c   | 45 +-----------------
->  .../media/platform/mtk-jpeg/mtk_jpeg_core.h   |  2 -
->  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 46 +------------------
->  drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  2 -
->  drivers/media/platform/mtk-mdp/mtk_mdp_core.c |  1 -
->  .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   | 37 ++-------------
->  .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  3 --
->  .../platform/mtk-vcodec/mtk_vcodec_enc.c      |  1 -
->  .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   | 44 ++----------------
->  drivers/memory/mtk-smi.c                      | 14 ------
->  include/soc/mediatek/smi.h                    | 20 --------
->  28 files changed, 92 insertions(+), 321 deletions(-)
+In Korean typesetting, inter-phrase spaces in Hangul text have
+a similar role as the inter-word spaces in Latin text.
+They can be preserved by the \xeCJKsetup{CJKspace=true} option.
 
-So this is likely not going through the IOMMU tree, given Matthias has
-reviewed the IOMMU changes you can add my Acked-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+ Documentation/conf.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 980be06df723..2ccfe4442acc 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -426,6 +426,7 @@ latex_elements['preamble']  += '''
+ 	    \\renewcommand{\\CJKrmdefault}{KRserif}%
+ 	    \\renewcommand{\\CJKsfdefault}{KRsans}%
+ 	    \\renewcommand{\\CJKttdefault}{KRmono}%
++	    \\xeCJKsetup{CJKspace = true} % For inter-phrase space
+ 	}
+ 	\\newcommand{\\kerneldocEndKR}{\\endgroup}
+ 	\\newcommand{\\kerneldocBeginJP}{%
+-- 
+2.17.1
+
+
