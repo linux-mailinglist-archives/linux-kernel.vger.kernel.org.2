@@ -2,109 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B113DDCD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 606B03DDCDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235328AbhHBPzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhHBPzG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:55:06 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD1CC06175F;
-        Mon,  2 Aug 2021 08:54:56 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id t3so18016455plg.9;
-        Mon, 02 Aug 2021 08:54:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tb85RMd9lzkgRNrQJGP8oYSwbsR7j/RmW0SM+oKm+9g=;
-        b=biJkJVShAZPizW0Zk8lJBNq+QNccEkZm+iMXZnSFhrigzxYnbHH+BJBEr2i8XGZWVp
-         51Mcc51l9cMacwkF0FJpj9eX5ZAR9njx5pi/20fvo9UkfZ4mWeyvNaUIt9J0mT+wF4Dm
-         FfxX8Ret+gxR+fQP37ljnO6OQnUFTwOogDXXKRNoJW15qez7xW8iKi5tc2kprlvnJxGJ
-         cvSt/zTLSQq7BBhA0FIGRagPNMKsmKbxHtN5JtiHIKhZOduPsaUIyzbQBFsGhZbxFtDA
-         kkcETgljLWf/V6b/eZVRCnyesCUFgh7Aiyx8z+tRWH/zk5LFWkHRdxu4J1HV2/K5711c
-         FnVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tb85RMd9lzkgRNrQJGP8oYSwbsR7j/RmW0SM+oKm+9g=;
-        b=ADlN18JyG2qs+MuVFUnuYkWu57Sp/NColBDcK2jt6Bf20o8CQKd0spcQ50J9lcuEl7
-         6zKRpAwMoIcgXjFRapg2M9A6reMCKxemwui5EkQiU2YM4XX6L6I9elAH4qVBno878wMx
-         agzdlbDDjL3GtRgSu0GSl1qIU20aeLiPeC37EIXuqV9zAZP7uo4Eec0QvMywkTcn42GU
-         lMrYZfBQ5F6I+w7R8qtLSZlm1Q6o5wph43eZlbdffbU9oaQMtywjtmmpLJyTlhd0f7uP
-         cUhMNcJoQbSfnWp5NU+OqcbVaXJ6zosOp3DMeP/LXcKj3DN0asjpG2cjxY/4LdadfLkW
-         9bRA==
-X-Gm-Message-State: AOAM531sVbti3wFeqkdJ5iFP+0nzr6t/gyRMD5x3nEi9WZ+hz/hz1dND
-        1pi/KEbp+AB0p04ZaEn5hdj70/BKnlxxgAKoe1E=
-X-Google-Smtp-Source: ABdhPJy0Jqcrx1ia5Jl2W6+BUhbaj9OxP6HDKEm12FPAajn32MMtkxVsT8QkgABU3DD4jhlELo8RWN55xab2LobApWI=
-X-Received: by 2002:aa7:860e:0:b029:3bd:7e49:7a14 with SMTP id
- p14-20020aa7860e0000b02903bd7e497a14mr5793319pfn.40.1627919696170; Mon, 02
- Aug 2021 08:54:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
- <20210726125436.58685-4-andriy.shevchenko@linux.intel.com> <20210802140721.vxhqidrkcxo3ex53@mobilestation>
-In-Reply-To: <20210802140721.vxhqidrkcxo3ex53@mobilestation>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 2 Aug 2021 18:54:16 +0300
-Message-ID: <CAHp75Vf0a=SFPz8atUaDP=M=m9Umny4+msUaVT1gBWuHXPnOrQ@mail.gmail.com>
-Subject: Re: [PATCH v1 4/4] gpio: dwapb: Get rid of legacy platform data
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S235390AbhHBPz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:55:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235260AbhHBPzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:55:25 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F095661101;
+        Mon,  2 Aug 2021 15:55:15 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mAaHZ-002VoN-TK; Mon, 02 Aug 2021 16:55:14 +0100
+Date:   Mon, 02 Aug 2021 16:55:13 +0100
+Message-ID: <87lf5j265a.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
+        wei.liu@kernel.org, kys@microsoft.com, sthemmin@microsoft.com,
+        ardb@kernel.org
+Subject: Re: [PATCH v11 3/5] arm64: hyperv: Initialize hypervisor on boot
+In-Reply-To: <1626793023-13830-4-git-send-email-mikelley@microsoft.com>
+References: <1626793023-13830-1-git-send-email-mikelley@microsoft.com>
+        <1626793023-13830-4-git-send-email-mikelley@microsoft.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mikelley@microsoft.com, will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org, wei.liu@kernel.org, kys@microsoft.com, sthemmin@microsoft.com, ardb@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 5:23 PM Serge Semin <fancer.lancer@gmail.com> wrote:
-> On Mon, Jul 26, 2021 at 03:54:36PM +0300, Andy Shevchenko wrote:
-> > Platform data is a legacy interface to supply device properties
-> > to the driver. In this case we don't have anymore in-kernel users
-> > for it. Just remove it for good.
+On Tue, 20 Jul 2021 15:57:01 +0100,
+Michael Kelley <mikelley@microsoft.com> wrote:
+> 
+> Add ARM64-specific code to initialize the Hyper-V
+> hypervisor when booting as a guest VM.
+> 
+> This code is built only when CONFIG_HYPERV is enabled.
+> 
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> ---
+>  arch/arm64/hyperv/Makefile   |  2 +-
+>  arch/arm64/hyperv/mshyperv.c | 83 ++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 84 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/hyperv/mshyperv.c
+> 
+> diff --git a/arch/arm64/hyperv/Makefile b/arch/arm64/hyperv/Makefile
+> index 1697d30..87c31c0 100644
+> --- a/arch/arm64/hyperv/Makefile
+> +++ b/arch/arm64/hyperv/Makefile
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -obj-y		:= hv_core.o
+> +obj-y		:= hv_core.o mshyperv.o
+> diff --git a/arch/arm64/hyperv/mshyperv.c b/arch/arm64/hyperv/mshyperv.c
+> new file mode 100644
+> index 0000000..2811fd0
+> --- /dev/null
+> +++ b/arch/arm64/hyperv/mshyperv.c
+> @@ -0,0 +1,83 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * Core routines for interacting with Microsoft's Hyper-V hypervisor,
+> + * including hypervisor initialization.
+> + *
+> + * Copyright (C) 2021, Microsoft, Inc.
+> + *
+> + * Author : Michael Kelley <mikelley@microsoft.com>
+> + */
+> +
+> +#include <linux/types.h>
+> +#include <linux/acpi.h>
+> +#include <linux/export.h>
+> +#include <linux/errno.h>
+> +#include <linux/version.h>
+> +#include <linux/cpuhotplug.h>
+> +#include <asm/mshyperv.h>
+> +
+> +static bool hyperv_initialized;
+> +
+> +static int __init hyperv_init(void)
+> +{
+> +	struct hv_get_vp_registers_output	result;
+> +	u32	a, b, c, d;
+> +	u64	guest_id;
+> +	int	ret;
+> +
+> +	/*
+> +	 * If we're in a VM on Hyper-V, the ACPI hypervisor_id field will
+> +	 * have the string "MsHyperV".
+> +	 */
+> +	if (strncmp((char *)&acpi_gbl_FADT.hypervisor_id, "MsHyperV", 8))
+> +		return -EINVAL;
 
+Before going ahead and parsing the local FADT copy, it would be
+prudent to test that you are actually on an ACPI system, specially
+given that this function is unconditionally called, even on DT
+systems.  In the same vein, returning -EINVAL when failing to find
+Hyper-V is a bit excessive.
 
-> > +struct dwapb_port_property {
-> > +     struct fwnode_handle *fwnode;
-> > +     unsigned int idx;
-> > +     unsigned int ngpio;
-> > +     unsigned int gpio_base;
-> > +     int irq[DWAPB_MAX_GPIOS];
-> > +};
-> > +
-> > +struct dwapb_platform_data {
-> > +     struct dwapb_port_property *properties;
-> > +     unsigned int nports;
-> > +};
-> > +
-> >  struct dwapb_gpio;
->
-> If you need to resend the series anyway could you please move the
-> structures declarations to being below the forward declaration of the
-> dwapb_gpio structure? Of course it's not that critical, but for the
-> sake of just not to have the later one left somewhere in the middle of
-> the unrelated structures and for at least to keep some order in the
-> declarations.
+> +
+> +	/* Setup the guest ID */
+> +	guest_id = generate_guest_id(0, LINUX_VERSION_CODE, 0);
+> +	hv_set_vpreg(HV_REGISTER_GUEST_OSID, guest_id);
+> +
+> +	/* Get the features and hints from Hyper-V */
+> +	hv_get_vpreg_128(HV_REGISTER_FEATURES, &result);
+> +	ms_hyperv.features = result.as32.a;
+> +	ms_hyperv.priv_high = result.as32.b;
+> +	ms_hyperv.misc_features = result.as32.c;
+> +
+> +	hv_get_vpreg_128(HV_REGISTER_ENLIGHTENMENTS, &result);
+> +	ms_hyperv.hints = result.as32.a;
+> +
+> +	pr_info("Hyper-V: privilege flags low 0x%x, high 0x%x, hints 0x%x, misc 0x%x\n",
+> +		ms_hyperv.features, ms_hyperv.priv_high, ms_hyperv.hints,
+> +		ms_hyperv.misc_features);
+> +
+> +	/* Get information about the Hyper-V host version */
+> +	hv_get_vpreg_128(HV_REGISTER_HYPERVISOR_VERSION, &result);
+> +	a = result.as32.a;
+> +	b = result.as32.b;
+> +	c = result.as32.c;
+> +	d = result.as32.d;
+> +	pr_info("Hyper-V: Host Build %d.%d.%d.%d-%d-%d\n",
+> +		b >> 16, b & 0xFFFF, a,	d & 0xFFFFFF, c, d >> 24);
+> +
+> +	ret = hv_common_init();
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "arm64/hyperv_init:online",
+> +				hv_common_cpu_init, hv_common_cpu_die);
+> +	if (ret < 0) {
+> +		hv_common_free();
+> +		return ret;
+> +	}
+> +
+> +	hyperv_initialized = true;
+> +	return 0;
+> +}
+> +
+> +early_initcall(hyperv_init);
+> +
+> +bool hv_is_hyperv_initialized(void)
+> +{
+> +	return hyperv_initialized;
+> +}
+> +EXPORT_SYMBOL_GPL(hv_is_hyperv_initialized);
 
-Fine with me, I'll modify accordingly in the next version, thanks for
-the review!
+Thanks,
 
-> Then feel free to add:
-> Acked-by: Serge Semin <fancer.lancer@gmail.com>
->
-> The whole series has been tested on Baikal-T1 SoC:
-> Tested-by: Serge Semin <fancer.lancer@gmail.com>
+	M.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Without deviation from the norm, progress is not possible.
