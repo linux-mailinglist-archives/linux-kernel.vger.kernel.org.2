@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD7C3DD879
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E900B3DD8AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbhHBNwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:52:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59412 "EHLO mail.kernel.org"
+        id S235779AbhHBNy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:54:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234545AbhHBNsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:48:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E4CD6112F;
-        Mon,  2 Aug 2021 13:48:23 +0000 (UTC)
+        id S233907AbhHBNtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:49:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 518C060EBB;
+        Mon,  2 Aug 2021 13:49:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912103;
-        bh=gbvOpWXixT7F4E4J9FR9oNUSUmoAcmgZ2ske3iZvqhA=;
+        s=korg; t=1627912171;
+        bh=/e5zulU3h+QDkdbo2OsZDNCrGnJk/UFrA8CCIRWVNCI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vfph0BhjMFgK4Y3KyoYTD8Dmo23qAWR1ok9g2orQZGn/mtPHGRPc/0bkiDQkjyhFi
-         zJdoWoBTfa2iqu33xrD0rYEnroXuI8V27L/p+e1CveM/t0P5PhqJfF2koEcA/gIqd5
-         z3NLqdbapaP+dM7GYCrwX3kJdYRJ3Zm2JgIkWTS4=
+        b=mcnJ8k9CGRwfslYFV8ZBOWWq+zZbThGN+LZxb/TPCjKgTGA5/SUMo7zSvwFbmnEWa
+         HRgELYNzIKu0njFkw5lJ17vwGgIP8p7UGGwQTo5a3vkzSiYLfRmx0GsVmBsGQ0BlMJ
+         OyQkHq9WttBKpLTxQUVnRDmCP792IYU5QJiiS4tw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Junxiao Bi <junxiao.bi@oracle.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 18/38] ocfs2: issue zeroout to EOF blocks
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: [PATCH 4.19 02/30] gro: ensure frag0 meets IP header alignment
 Date:   Mon,  2 Aug 2021 15:44:40 +0200
-Message-Id: <20210802134335.407982263@linuxfoundation.org>
+Message-Id: <20210802134334.163184381@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
-References: <20210802134334.835358048@linuxfoundation.org>
+In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
+References: <20210802134334.081433902@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,186 +44,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junxiao Bi <junxiao.bi@oracle.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 9449ad33be8480f538b11a593e2dda2fb33ca06d upstream.
+commit 38ec4944b593fd90c5ef42aaaa53e66ae5769d04 upstream.
 
-For punch holes in EOF blocks, fallocate used buffer write to zero the
-EOF blocks in last cluster.  But since ->writepage will ignore EOF
-pages, those zeros will not be flushed.
+After commit 0f6925b3e8da ("virtio_net: Do not pull payload in skb->head")
+Guenter Roeck reported one failure in his tests using sh architecture.
 
-This "looks" ok as commit 6bba4471f0cc ("ocfs2: fix data corruption by
-fallocate") will zero the EOF blocks when extend the file size, but it
-isn't.  The problem happened on those EOF pages, before writeback, those
-pages had DIRTY flag set and all buffer_head in them also had DIRTY flag
-set, when writeback run by write_cache_pages(), DIRTY flag on the page
-was cleared, but DIRTY flag on the buffer_head not.
+After much debugging, we have been able to spot silent unaligned accesses
+in inet_gro_receive()
 
-When next write happened to those EOF pages, since buffer_head already
-had DIRTY flag set, it would not mark page DIRTY again.  That made
-writeback ignore them forever.  That will cause data corruption.  Even
-directio write can't work because it will fail when trying to drop pages
-caches before direct io, as it found the buffer_head for those pages
-still had DIRTY flag set, then it will fall back to buffer io mode.
+The issue at hand is that upper networking stacks assume their header
+is word-aligned. Low level drivers are supposed to reserve NET_IP_ALIGN
+bytes before the Ethernet header to make that happen.
 
-To make a summary of the issue, as writeback ingores EOF pages, once any
-EOF page is generated, any write to it will only go to the page cache,
-it will never be flushed to disk even file size extends and that page is
-not EOF page any more.  The fix is to avoid zero EOF blocks with buffer
-write.
+This patch hardens skb_gro_reset_offset() to not allow frag0 fast-path
+if the fragment is not properly aligned.
 
-The following code snippet from qemu-img could trigger the corruption.
+Some arches like x86, arm64 and powerpc do not care and define NET_IP_ALIGN
+as 0, this extra check will be a NOP for them.
 
-  656   open("6b3711ae-3306-4bdd-823c-cf1c0060a095.conv.2", O_RDWR|O_DIRECT|O_CLOEXEC) = 11
-  ...
-  660   fallocate(11, FALLOC_FL_KEEP_SIZE|FALLOC_FL_PUNCH_HOLE, 2275868672, 327680 <unfinished ...>
-  660   fallocate(11, 0, 2275868672, 327680) = 0
-  658   pwrite64(11, "
+Note that if frag0 is not used, GRO will call pskb_may_pull()
+as many times as needed to pull network and transport headers.
 
-Link: https://lkml.kernel.org/r/20210722054923.24389-2-junxiao.bi@oracle.com
-Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 0f6925b3e8da ("virtio_net: Do not pull payload in skb->head")
+Fixes: 78a478d0efd9 ("gro: Inline skb_gro_header and cache frag0 virtual address")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ocfs2/file.c |   99 +++++++++++++++++++++++++++++++++-----------------------
- 1 file changed, 60 insertions(+), 39 deletions(-)
+ include/linux/skbuff.h |    9 +++++++++
+ net/core/dev.c         |    3 ++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
---- a/fs/ocfs2/file.c
-+++ b/fs/ocfs2/file.c
-@@ -1535,6 +1535,45 @@ static void ocfs2_truncate_cluster_pages
- 	}
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -2789,6 +2789,15 @@ static inline void skb_propagate_pfmemal
  }
  
-+/*
-+ * zero out partial blocks of one cluster.
-+ *
-+ * start: file offset where zero starts, will be made upper block aligned.
-+ * len: it will be trimmed to the end of current cluster if "start + len"
-+ *      is bigger than it.
+ /**
++ * skb_frag_off() - Returns the offset of a skb fragment
++ * @frag: the paged fragment
 + */
-+static int ocfs2_zeroout_partial_cluster(struct inode *inode,
-+					u64 start, u64 len)
++static inline unsigned int skb_frag_off(const skb_frag_t *frag)
 +{
-+	int ret;
-+	u64 start_block, end_block, nr_blocks;
-+	u64 p_block, offset;
-+	u32 cluster, p_cluster, nr_clusters;
-+	struct super_block *sb = inode->i_sb;
-+	u64 end = ocfs2_align_bytes_to_clusters(sb, start);
-+
-+	if (start + len < end)
-+		end = start + len;
-+
-+	start_block = ocfs2_blocks_for_bytes(sb, start);
-+	end_block = ocfs2_blocks_for_bytes(sb, end);
-+	nr_blocks = end_block - start_block;
-+	if (!nr_blocks)
-+		return 0;
-+
-+	cluster = ocfs2_bytes_to_clusters(sb, start);
-+	ret = ocfs2_get_clusters(inode, cluster, &p_cluster,
-+				&nr_clusters, NULL);
-+	if (ret)
-+		return ret;
-+	if (!p_cluster)
-+		return 0;
-+
-+	offset = start_block - ocfs2_clusters_to_blocks(sb, cluster);
-+	p_block = ocfs2_clusters_to_blocks(sb, p_cluster) + offset;
-+	return sb_issue_zeroout(sb, p_block, nr_blocks, GFP_NOFS);
++	return frag->page_offset;
 +}
 +
- static int ocfs2_zero_partial_clusters(struct inode *inode,
- 				       u64 start, u64 len)
- {
-@@ -1544,6 +1583,7 @@ static int ocfs2_zero_partial_clusters(s
- 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
- 	unsigned int csize = osb->s_clustersize;
- 	handle_t *handle;
-+	loff_t isize = i_size_read(inode);
++/**
+  * skb_frag_page - retrieve the page referred to by a paged fragment
+  * @frag: the paged fragment
+  *
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5400,7 +5400,8 @@ static void skb_gro_reset_offset(struct
  
- 	/*
- 	 * The "start" and "end" values are NOT necessarily part of
-@@ -1564,6 +1604,26 @@ static int ocfs2_zero_partial_clusters(s
- 	if ((start & (csize - 1)) == 0 && (end & (csize - 1)) == 0)
- 		goto out;
- 
-+	/* No page cache for EOF blocks, issue zero out to disk. */
-+	if (end > isize) {
-+		/*
-+		 * zeroout eof blocks in last cluster starting from
-+		 * "isize" even "start" > "isize" because it is
-+		 * complicated to zeroout just at "start" as "start"
-+		 * may be not aligned with block size, buffer write
-+		 * would be required to do that, but out of eof buffer
-+		 * write is not supported.
-+		 */
-+		ret = ocfs2_zeroout_partial_cluster(inode, isize,
-+					end - isize);
-+		if (ret) {
-+			mlog_errno(ret);
-+			goto out;
-+		}
-+		if (start >= isize)
-+			goto out;
-+		end = isize;
-+	}
- 	handle = ocfs2_start_trans(osb, OCFS2_INODE_UPDATE_CREDITS);
- 	if (IS_ERR(handle)) {
- 		ret = PTR_ERR(handle);
-@@ -1862,45 +1922,6 @@ out:
- }
- 
- /*
-- * zero out partial blocks of one cluster.
-- *
-- * start: file offset where zero starts, will be made upper block aligned.
-- * len: it will be trimmed to the end of current cluster if "start + len"
-- *      is bigger than it.
-- */
--static int ocfs2_zeroout_partial_cluster(struct inode *inode,
--					u64 start, u64 len)
--{
--	int ret;
--	u64 start_block, end_block, nr_blocks;
--	u64 p_block, offset;
--	u32 cluster, p_cluster, nr_clusters;
--	struct super_block *sb = inode->i_sb;
--	u64 end = ocfs2_align_bytes_to_clusters(sb, start);
--
--	if (start + len < end)
--		end = start + len;
--
--	start_block = ocfs2_blocks_for_bytes(sb, start);
--	end_block = ocfs2_blocks_for_bytes(sb, end);
--	nr_blocks = end_block - start_block;
--	if (!nr_blocks)
--		return 0;
--
--	cluster = ocfs2_bytes_to_clusters(sb, start);
--	ret = ocfs2_get_clusters(inode, cluster, &p_cluster,
--				&nr_clusters, NULL);
--	if (ret)
--		return ret;
--	if (!p_cluster)
--		return 0;
--
--	offset = start_block - ocfs2_clusters_to_blocks(sb, cluster);
--	p_block = ocfs2_clusters_to_blocks(sb, p_cluster) + offset;
--	return sb_issue_zeroout(sb, p_block, nr_blocks, GFP_NOFS);
--}
--
--/*
-  * Parts of this function taken from xfs_change_file_space()
-  */
- static int __ocfs2_change_file_space(struct file *file, struct inode *inode,
+ 	if (skb_mac_header(skb) == skb_tail_pointer(skb) &&
+ 	    pinfo->nr_frags &&
+-	    !PageHighMem(skb_frag_page(frag0))) {
++	    !PageHighMem(skb_frag_page(frag0)) &&
++	    (!NET_IP_ALIGN || !(skb_frag_off(frag0) & 3))) {
+ 		NAPI_GRO_CB(skb)->frag0 = skb_frag_address(frag0);
+ 		NAPI_GRO_CB(skb)->frag0_len = min_t(unsigned int,
+ 						    skb_frag_size(frag0),
 
 
