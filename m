@@ -2,153 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6DF3DE132
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 016313DE133
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbhHBVFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:05:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35998 "EHLO mail.kernel.org"
+        id S231743AbhHBVFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:05:33 -0400
+Received: from mga03.intel.com ([134.134.136.65]:44789 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231194AbhHBVFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:05:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DCC360F11;
-        Mon,  2 Aug 2021 21:05:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627938310;
-        bh=1CC6Xn8O5VfdL27ctk5p97kfsc4n9bixRSyPS7rPUAM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VyF3R1c8Gmz23NgeJ0vyufxaFMjNfiQhrTo2aEMtosyT3vRvkXigYjX5Yo2fc5HTs
-         x+2C2iv4JcZ9R1cLc6kz3t44/XFoJIFq5fihMdX9eTW4q0huu5b+JGAZvrMf7MYUpO
-         Ufi1JghQnvQVLR2IjFgeZFGVDXC328Bp4ANQKuLYttb3X3bB0vOv+fMQSENMxoT5P3
-         r5oW3QsRf71XMcfM9yy4Rpjy0r1Ll9BBSFHdROLLJgWM7OHV/TNiQy62Lkds+AE+5s
-         GlsNysvoZWDk3vb/4pei5LiHRezJKM09zO7NS7kNzw+9ts5GM2Um7fzCpOMKniFYbV
-         5jKlU9IN6mIxQ==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] scripts/recordmcount.pl: Remove check_objcopy() and $can_use_local
-Date:   Mon,  2 Aug 2021 14:03:07 -0700
-Message-Id: <20210802210307.3202472-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.32.0.264.g75ae10bc75
+        id S231605AbhHBVFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 17:05:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="213565262"
+X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
+   d="scan'208";a="213565262"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 14:05:20 -0700
+X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
+   d="scan'208";a="501960736"
+Received: from skarumur-mobl.amr.corp.intel.com (HELO [10.212.72.192]) ([10.212.72.192])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 14:05:18 -0700
+Subject: Re: [PATCH] ASoC: Intel: boards: Fix CONFIG_SND_SOC_SDW_MOCKUP select
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20210802190351.3201677-1-nathan@kernel.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <3929126b-b4f0-bdf5-56f5-28662c7b7b44@linux.intel.com>
+Date:   Mon, 2 Aug 2021 16:05:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210802190351.3201677-1-nathan@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building ARCH=riscv allmodconfig with llvm-objcopy, the objcopy
-version warning from this script appears:
 
-WARNING: could not find objcopy version or version is less than 2.17.
-        Local function references are disabled.
 
-The check_objcopy() function in scripts/recordmcount.pl is set up to
-parse GNU objcopy's version string, not llvm-objcopy's, which triggers
-the warning.
+On 8/2/21 2:03 PM, Nathan Chancellor wrote:
+> When CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH is enabled without
+> CONFIG_EXPERT, there is a Kconfig warning about unmet dependencies:
+> 
+> WARNING: unmet direct dependencies detected for SND_SOC_SDW_MOCKUP
+>   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
+> EXPERT [=n] && SOUNDWIRE [=y]
+>   Selected by [y]:
+>   - SND_SOC_INTEL_SOUNDWIRE_SOF_MACH [=y] && ...
+> 
+> Selecting a symbol does not account for dependencies so if symbol A
+> selects symbol B which depends on symbol C, symbol B or its select of
+> symbol A should depend on symbol C as well.
+> 
+> Make the CONFIG_SND_SOC_SDW_MOCKUP select in
+> CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH depend on CONFIG_EXPERT as the
+> help text for CONFIG_SND_SOC_SDW_MOCKUP indicates it is intended to be a
+> development option.
+> 
+> Fixes: 0ccac3bcf356 ("ASoC: Intel: boards: sof_sdw: add SoundWire mockup codecs for tests")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+> 
+> An alternative here is if CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH wants
+> to unconditionally select CONFIG_SND_SOC_SDW_MOCKUP, the "depends on
+> EXPERT" can be moved to the prompt (tristate "..." if EXPERT). I am
+> happy to send a new patch if that is what is desired.
 
-Commit 799c43415442 ("kbuild: thin archives make default for all archs")
-made binutils 2.20 mandatory and commit ba64beb17493 ("kbuild: check the
-minimum assembler version in Kconfig") enforces this at configuration
-time so just remove check_objcopy() and $can_use_local instead, assuming
---globalize-symbol is always available.
+Thanks for the patch Nathan, I added this depends on EXPERT and forgot
+about it when I updated the machine driver.
 
-llvm-objcopy has supported --globalize-symbol since LLVM 7.0.0 in 2018
-and the minimum version for building the kernel with LLVM is 10.0.1 so
-there is no issue introduced:
+Maybe a better alternate would be
 
-https://github.com/llvm/llvm-project/commit/ee5be798dae30d5f9414b01f76ff807edbc881aa
+imply SND_SOC_SDW_MOCKUP
 
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- Makefile                |  1 -
- scripts/recordmcount.pl | 40 ----------------------------------------
- 2 files changed, 41 deletions(-)
+We don't necessarily want the EXPERT part to be shown in the machine
+driver lists.
 
-diff --git a/Makefile b/Makefile
-index 27a072cffcb9..b6ee64dd435e 100644
---- a/Makefile
-+++ b/Makefile
-@@ -546,7 +546,6 @@ export RCS_TAR_IGNORE := --exclude SCCS --exclude BitKeeper --exclude .svn \
- PHONY += scripts_basic
- scripts_basic:
- 	$(Q)$(MAKE) $(build)=scripts/basic
--	$(Q)rm -f .tmp_quiet_recordmcount
- 
- PHONY += outputmakefile
- ifdef building_out_of_srctree
-diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
-index c17e48020ec3..8f6b13ae46bf 100755
---- a/scripts/recordmcount.pl
-+++ b/scripts/recordmcount.pl
-@@ -173,39 +173,6 @@ my $mcount_regex;	# Find the call site to mcount (return offset)
- my $mcount_adjust;	# Address adjustment to mcount offset
- my $alignment;		# The .align value to use for $mcount_section
- my $section_type;	# Section header plus possible alignment command
--my $can_use_local = 0; 	# If we can use local function references
--
--# Shut up recordmcount if user has older objcopy
--my $quiet_recordmcount = ".tmp_quiet_recordmcount";
--my $print_warning = 1;
--$print_warning = 0 if ( -f $quiet_recordmcount);
--
--##
--# check_objcopy - whether objcopy supports --globalize-symbols
--#
--#  --globalize-symbols came out in 2.17, we must test the version
--#  of objcopy, and if it is less than 2.17, then we can not
--#  record local functions.
--sub check_objcopy
--{
--    open (IN, "$objcopy --version |") or die "error running $objcopy";
--    while (<IN>) {
--	if (/objcopy.*\s(\d+)\.(\d+)/) {
--	    $can_use_local = 1 if ($1 > 2 || ($1 == 2 && $2 >= 17));
--	    last;
--	}
--    }
--    close (IN);
--
--    if (!$can_use_local && $print_warning) {
--	print STDERR "WARNING: could not find objcopy version or version " .
--	    "is less than 2.17.\n" .
--	    "\tLocal function references are disabled.\n";
--	open (QUIET, ">$quiet_recordmcount");
--	printf QUIET "Disables the warning from recordmcount.pl\n";
--	close QUIET;
--    }
--}
- 
- if ($arch =~ /(x86(_64)?)|(i386)/) {
-     if ($bits == 64) {
-@@ -434,8 +401,6 @@ if ($filename =~ m,^(.*)(\.\S),) {
- my $mcount_s = $dirname . "/.tmp_mc_" . $prefix . ".s";
- my $mcount_o = $dirname . "/.tmp_mc_" . $prefix . ".o";
- 
--check_objcopy();
--
- #
- # Step 1: find all the local (static functions) and weak symbols.
- #         't' is local, 'w/W' is weak
-@@ -473,11 +438,6 @@ sub update_funcs
- 
-     # is this function static? If so, note this fact.
-     if (defined $locals{$ref_func}) {
--
--	# only use locals if objcopy supports globalize-symbols
--	if (!$can_use_local) {
--	    return;
--	}
- 	$convert{$ref_func} = 1;
-     }
- 
 
-base-commit: c500bee1c5b2f1d59b1081ac879d73268ab0ff17
--- 
-2.32.0.264.g75ae10bc75
-
+> 
+>  sound/soc/intel/boards/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+> index 046955bf717c..8284c46d7435 100644
+> --- a/sound/soc/intel/boards/Kconfig
+> +++ b/sound/soc/intel/boards/Kconfig
+> @@ -602,7 +602,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
+>  	select SND_SOC_DMIC
+>  	select SND_SOC_INTEL_HDA_DSP_COMMON
+>  	select SND_SOC_INTEL_SOF_MAXIM_COMMON
+> -	select SND_SOC_SDW_MOCKUP
+> +	select SND_SOC_SDW_MOCKUP if EXPERT
+>  	help
+>  	  Add support for Intel SoundWire-based platforms connected to
+>  	  MAX98373, RT700, RT711, RT1308 and RT715
+> 
+> base-commit: 170c0d7460fc4aa522995ae4096b5a442f50a1fc
+> 
