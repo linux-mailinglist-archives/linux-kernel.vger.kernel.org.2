@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6787F3DD871
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8509B3DD800
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234478AbhHBNwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:52:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57350 "EHLO mail.kernel.org"
+        id S234706AbhHBNtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:49:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234339AbhHBNsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:48:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B95F610FD;
-        Mon,  2 Aug 2021 13:48:12 +0000 (UTC)
+        id S234297AbhHBNrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:47:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF5DB610A2;
+        Mon,  2 Aug 2021 13:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912092;
-        bh=YTPvfpgFAf7NSRIcewhyH260OAH+FPd8xc2h6u6Up2s=;
+        s=korg; t=1627912026;
+        bh=p1i9Ntwco8a+1Gv6DXi0y8KCEjPG5CX5nItO6Bz3Qhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=po444eYaHxgyemwGVOiZ6HVVC/ltxIrrJD3DIbuDP07Edk6ZLSZd0tqvDhuahd3Jq
-         Mg9JkDNkNXa4jMAGjM+RqMKVv2OW9XZcyyyeqW7773ofcf/CKV5QMIAnAClAwGfJDH
-         68s+Q+MkkNE7jv0q1BFUZWETMHosPVxIMHB9dufQ=
+        b=WUzpRKWxmY6J1+bUvMtlWM76VgC3CF06Qd2gFudse97/s60V8bmdHIngWjX0bZ4xc
+         mUVFrGMUzPZdli02rtBzinjQEmZIBVfc04DNp6lftzO7/tEskMf7r+6bWYXjXG+feT
+         6kIjQqMn8m7QCZ0HrfgbLYGu58wLAQZBz7AYFkTo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 13/38] ARM: dts: versatile: Fix up interrupt controller node names
+        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.9 15/32] x86/kvm: fix vcpu-id indexed array sizes
 Date:   Mon,  2 Aug 2021 15:44:35 +0200
-Message-Id: <20210802134335.255401516@linuxfoundation.org>
+Message-Id: <20210802134333.409193485@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
-References: <20210802134334.835358048@linuxfoundation.org>
+In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
+References: <20210802134332.931915241@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,72 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit 82a1c67554dff610d6be4e1982c425717b3c6a23 ]
+commit 76b4f357d0e7d8f6f0013c733e6cba1773c266d3 upstream.
 
-Once the new schema interrupt-controller/arm,vic.yaml is added, we get
-the below warnings:
+KVM_MAX_VCPU_ID is the maximum vcpu-id of a guest, and not the number
+of vcpu-ids. Fix array indexed by vcpu-id to have KVM_MAX_VCPU_ID+1
+elements.
 
-        arch/arm/boot/dts/versatile-ab.dt.yaml:
-        intc@10140000: $nodename:0: 'intc@10140000' does not match
-        '^interrupt-controller(@[0-9a-f,]+)*$'
+Note that this is currently no real problem, as KVM_MAX_VCPU_ID is
+an odd number, resulting in always enough padding being available at
+the end of those arrays.
 
-	arch/arm/boot/dts/versatile-ab.dt.yaml:
-	intc@10140000: 'clear-mask' does not match any of the regexes
+Nevertheless this should be fixed in order to avoid rare problems in
+case someone is using an even number for KVM_MAX_VCPU_ID.
 
-Fix the node names for the interrupt controller to conform
-to the standard node name interrupt-controller@.. Also drop invalid
-clear-mask property.
-
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210701132118.759454-1-sudeep.holla@arm.com'
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Message-Id: <20210701154105.23215-2-jgross@suse.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/versatile-ab.dts | 5 ++---
- arch/arm/boot/dts/versatile-pb.dts | 2 +-
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ arch/x86/kvm/ioapic.c |    2 +-
+ arch/x86/kvm/ioapic.h |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/versatile-ab.dts b/arch/arm/boot/dts/versatile-ab.dts
-index a9000d22b2c0..873889ddecbe 100644
---- a/arch/arm/boot/dts/versatile-ab.dts
-+++ b/arch/arm/boot/dts/versatile-ab.dts
-@@ -155,16 +155,15 @@
- 		#size-cells = <1>;
- 		ranges;
+--- a/arch/x86/kvm/ioapic.c
++++ b/arch/x86/kvm/ioapic.c
+@@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirec
+ static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
+ {
+ 	ioapic->rtc_status.pending_eoi = 0;
+-	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
++	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
+ }
  
--		vic: intc@10140000 {
-+		vic: interrupt-controller@10140000 {
- 			compatible = "arm,versatile-vic";
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
- 			reg = <0x10140000 0x1000>;
--			clear-mask = <0xffffffff>;
- 			valid-mask = <0xffffffff>;
- 		};
+ static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
+--- a/arch/x86/kvm/ioapic.h
++++ b/arch/x86/kvm/ioapic.h
+@@ -42,13 +42,13 @@ struct kvm_vcpu;
  
--		sic: intc@10003000 {
-+		sic: interrupt-controller@10003000 {
- 			compatible = "arm,versatile-sic";
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
-diff --git a/arch/arm/boot/dts/versatile-pb.dts b/arch/arm/boot/dts/versatile-pb.dts
-index 06a0fdf24026..e7e751a858d8 100644
---- a/arch/arm/boot/dts/versatile-pb.dts
-+++ b/arch/arm/boot/dts/versatile-pb.dts
-@@ -7,7 +7,7 @@
+ struct dest_map {
+ 	/* vcpu bitmap where IRQ has been sent */
+-	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
++	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
  
- 	amba {
- 		/* The Versatile PB is using more SIC IRQ lines than the AB */
--		sic: intc@10003000 {
-+		sic: interrupt-controller@10003000 {
- 			clear-mask = <0xffffffff>;
- 			/*
- 			 * Valid interrupt lines mask according to
--- 
-2.30.2
-
+ 	/*
+ 	 * Vector sent to a given vcpu, only valid when
+ 	 * the vcpu's bit in map is set
+ 	 */
+-	u8 vectors[KVM_MAX_VCPU_ID];
++	u8 vectors[KVM_MAX_VCPU_ID + 1];
+ };
+ 
+ 
 
 
