@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA123DD5FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DFB3DD603
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbhHBMuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:50:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233736AbhHBMur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:50:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31A2E60F58;
-        Mon,  2 Aug 2021 12:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627908637;
-        bh=3MKa7wkl36ZJdn/Xya+VfMjlloeBPMGrEJKPARDl+yQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DxTuvGr3pW6lB1+3AQgFJu9HPjbAUosWqP6/9JWJz3LeNTIPpxD/F/a1D7jrcb2ZT
-         +/FYU6dQKC6lYf6oTXbeUAV5Ktvza34J84OhoAGva0cmythnZjuSkmUSi7sSJGyj7H
-         lQz3rD7EOzaKmuCUi+bi+XUPqxvIUOtDDWrisnIHNQO3A1ZRi5q2ltRqt/jBiKmhXc
-         KhDHv3cde1TW9PuskA/3YtYrgLTosUEJsOulfC3AiTcxJ0/xtgqEsWK2Up4rM+ZCd/
-         khkmw00tUWx07XG+laKvEPGNrnGkU0PsKfui1s3QPIIJLzT059cbe/j/TC9IZzrIFz
-         P7O69YhvrI2eg==
-Received: by pali.im (Postfix)
-        id BE1C1B98; Mon,  2 Aug 2021 14:50:34 +0200 (CEST)
-Date:   Mon, 2 Aug 2021 14:50:34 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     Glibc <libc-alpha@sourceware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org
-Subject: Re: Document the types "struct termios" and "struct termios2"
-Message-ID: <20210802125034.gubtf24tsm7lkh3k@pali>
-References: <ef6a352d-4926-9cdc-9894-e387866a00c4@gmail.com>
+        id S233751AbhHBMvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:51:47 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:40589 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232842AbhHBMvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 08:51:46 -0400
+Received: by mail-wr1-f45.google.com with SMTP id p5so21378697wro.7;
+        Mon, 02 Aug 2021 05:51:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ln/22gR449DmeS8tOKA79D6nZ+VWBZEOwVh5p0o76H0=;
+        b=D9vt68gY8VjQzZGEiZPAkYQLWNanLArUIu+zYG+5/j9A04mhWF74oXjNE6wXJodK/u
+         A3A2wrShFxnf3ULZT1FOIKKMF8y9GTaHJOoJX9yK43/ALqCviFW1DU9Qca9axEKKxfzN
+         6tg5sTeplUtr/yNwEk4QnJxMhafjlqyPgQzU0Qs8SzvgDxijlAI5wBSJ0iJTzEmcRkje
+         aUHcLN9jTlSu6JnKX8gYIJfE3wifPxJQi7u8tEjJWWSZUtDiFqcK6SiXsERAlvJTNkbI
+         G6LsOKnOSrOI1AAdMTZgIn2CG2MBtvTdGzB2vueYrC5zAGZ5xzlZiv5AteUXZEcuS0UI
+         Q9iQ==
+X-Gm-Message-State: AOAM530QAaUJUVLjnKUjLdJFHJJCWpoNCm9l5HcGhemASEIYz9bS8JsY
+        SvPa9LSSKeepeeSVFguiEck=
+X-Google-Smtp-Source: ABdhPJyNS+4/t2DKARRNJrSlQ5J2nJHe2AuwGN68ZGGBSmDdTA8yO8H7ZgrE00WYaC+rP4pzIB7Gig==
+X-Received: by 2002:adf:e101:: with SMTP id t1mr17476003wrz.215.1627908695958;
+        Mon, 02 Aug 2021 05:51:35 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id x9sm10345292wmj.41.2021.08.02.05.51.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 05:51:35 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 12:51:33 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        nunodasneves@linux.microsoft.com
+Subject: Re: [PATCH v5] hyperv: root partition faults writing to VP ASSIST
+ MSR PAGE
+Message-ID: <20210802125133.ci2jlg32mdfd5xds@liuwe-devbox-debian-v2>
+References: <20210731120519.17154-1-kumarpraveen@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ef6a352d-4926-9cdc-9894-e387866a00c4@gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210731120519.17154-1-kumarpraveen@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ linux-serial
+On Sat, Jul 31, 2021 at 05:35:19PM +0530, Praveen Kumar wrote:
+> For Root partition the VP assist pages are pre-determined by the
+> hypervisor. The Root kernel is not allowed to change them to
+> different locations. And thus, we are getting below stack as in
+> current implementation Root is trying to perform write to specific
+> MSR.
+> 
+> [ 2.778197] unchecked MSR access error: WRMSR to 0x40000073 (tried to
+> write 0x0000000145ac5001) at rIP: 0xffffffff810c1084
+> (native_write_msr+0x4/0x30)
+> [ 2.784867] Call Trace:
+> [ 2.791507] hv_cpu_init+0xf1/0x1c0
+> [ 2.798144] ? hyperv_report_panic+0xd0/0xd0
+> [ 2.804806] cpuhp_invoke_callback+0x11a/0x440
+> [ 2.811465] ? hv_resume+0x90/0x90
+> [ 2.818137] cpuhp_issue_call+0x126/0x130
+> [ 2.824782] __cpuhp_setup_state_cpuslocked+0x102/0x2b0
+> [ 2.831427] ? hyperv_report_panic+0xd0/0xd0
+> [ 2.838075] ? hyperv_report_panic+0xd0/0xd0
+> [ 2.844723] ? hv_resume+0x90/0x90
+> [ 2.851375] __cpuhp_setup_state+0x3d/0x90
+> [ 2.858030] hyperv_init+0x14e/0x410
+> [ 2.864689] ? enable_IR_x2apic+0x190/0x1a0
+> [ 2.871349] apic_intr_mode_init+0x8b/0x100
+> [ 2.878017] x86_late_time_init+0x20/0x30
+> [ 2.884675] start_kernel+0x459/0x4fb
+> [ 2.891329] secondary_startup_64_no_verify+0xb0/0xbb
+> 
+> Since, the hypervisor already provides the VP assist page for root
+> partition, we need to memremap the memory from hypervisor for root
+> kernel to use. The mapping is done in hv_cpu_init during bringup and
+> is unmaped in hv_cpu_die during teardown.
+> 
+> Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
 
-On Monday 02 August 2021 14:38:43 Alejandro Colomar (man-pages) wrote:
-> Hi,
-> 
-> From a few patches of Pali and their subsequent discussions,
+Looks good. I can fix a few styling issues in code and comments when I
+commit this patch.
 
-For others, link to patch with code example:
-https://lore.kernel.org/linux-man/20210801135146.14849-1-pali@kernel.org/
-
-And links to other discussions:
-https://lore.kernel.org/linux-man/20210725225506.7404-1-pali@kernel.org/t/#u
-https://lore.kernel.org/linux-man/20210730105353.10424-1-pali@kernel.org/t/#u
-https://lore.kernel.org/linux-man/20210730153044.23673-1-pali@kernel.org/t/#u
-
-> it was clear
-> that those types need to be documented (the most appropriate place being
-> system_data_types(7), with link pages termios-struct(3) and
-> termios2-struct(3)).
-> 
-> The most important part (the one we had problems with) being which headers
-> should be included for each type (and for each version of the type
-> (kernel/glibc)).  That includes the recommended header, and other headers
-> that _shall_ also provide the type.
-> 
-> Is there someone that knows those types enough to write such documentation
-> and wants to do it? :)
-> 
-> Thanks,
-> 
-> Alex
-> 
-> -- 
-> Alejandro Colomar
-> Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-> http://www.alejandro-colomar.es/
+Wei.
