@@ -2,95 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451293DE2B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC613DE2BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhHBWx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 18:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhHBWxy (ORCPT
+        id S232586AbhHBWy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 18:54:26 -0400
+Received: from mail-il1-f181.google.com ([209.85.166.181]:39865 "EHLO
+        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231126AbhHBWyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 18:53:54 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F3FC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 15:53:43 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id c16so23185927wrp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 15:53:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=f6XStbR+3/dZBpwh4Gq6VDFs804yZWcR+sdlfpTwgVg=;
-        b=DB/uIBJxbYHzpEZKZgP6ZhrgdyPC3Hccy+ll+rrmSds7L65imoP40EcpAyDXUosmne
-         MZuue7j8P8gqb17eElU6oSLukduvJWXPnfOXvUTZWmMXzwawxN9yVxw3WQ4Z4zIMnC31
-         hI2yJe8iEi6ebrWTgPQtsU08knqS0CmNtfkm3ezBVnP2uL8GFUTRDQkC3ztv5adkFGCf
-         aqB4yrh1a58HIzYJtUR+lA1VuBLAm/stpzBFDl32iAdABAaZC4Ah9qM7NSdPSomgmVks
-         pGeoULAok6sqXYvQsAZEsMep/Ix1anjMGQWNx3TTxsMgA6PUh+xSv6KlEpG/Um/NRFCe
-         Fq5g==
+        Mon, 2 Aug 2021 18:54:20 -0400
+Received: by mail-il1-f181.google.com with SMTP id r1so17933288iln.6;
+        Mon, 02 Aug 2021 15:54:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=f6XStbR+3/dZBpwh4Gq6VDFs804yZWcR+sdlfpTwgVg=;
-        b=KULJFOnkxukOcA1id+OzWhUt7hMujuTLrKyTMSY6d4iFjlL+eeGtciCndM9zcqqXiz
-         m74P1uXOqsMuP+4PKXyspf1m815C3/pLNUFd3AG1K2HaNXShwAn7C/ED9/l7gNNaR9Nw
-         s5MJ1WurSy0SPbJQGqyH3feFDCOgVLjUsCCPy8JaTiProysgAV86PZRkHX8hH6JkOa8P
-         So1AxE2qfV8fq7b4kRKZfid5AoU/bQJhVCE/q5kSqsIRB6siLFFsgDsXXv+ALKCfzHJ0
-         IarSADKiVsRAxxbuqYstGxBKJ7aTIBIJasDfLGuLHdtjdVeolJWNBKVqxUYCxWKzT1j7
-         RYYQ==
-X-Gm-Message-State: AOAM530Xa4j/+itRfvL0ZFBVFz6qSsRdVbhFJAxlJvDhHVBfQdWvyV7f
-        Iv/lSxU6JndH53n1FoMW0iU=
-X-Google-Smtp-Source: ABdhPJzFQ/L/4ZUaER8RmCQGH9ygBTjFjh2WilXQX9maipYmFA7RN7EDKhIQQ/rBmlXwTyJyPoiv0Q==
-X-Received: by 2002:a05:6000:10d0:: with SMTP id b16mr20183524wrx.332.1627944822237;
-        Mon, 02 Aug 2021 15:53:42 -0700 (PDT)
-Received: from pc ([196.235.140.151])
-        by smtp.gmail.com with ESMTPSA id q14sm12520389wrs.8.2021.08.02.15.53.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ws7DlLtnnswMnz4Iv79PgHKEEMwGY+Hyjh4kHnupODQ=;
+        b=T9BBnnXgg7Uz3FTRybQ1tIozJMbDV6yo4ie+/LC6ENaRWaMlvZqFkIhWwstwRcUcm5
+         cpLquYBedVtJlm3VELIPMQYvgA0mFvrCH4EzvFYJuFjIZ3qj6kM4cIPIudMq6EKwXqXZ
+         U4N5DUGsPk3vjJ0bew9X/gid0EX8ikDF+CoB6iW0SUpfjtV8+BnlR9lIvnwkfL9TbbDF
+         p/3OM3ZN22AjqOla8en7aMqabWb4VXwP9oxLKP5XQCP9CRN56RMeNTCLW+/BE0ODJDbh
+         ktOtG/+TaAs7vwodcT0HWiEuKw/kSltFGe3b267g0AdPX68zE85M6pRkGmXk6dBUcJXp
+         rwEw==
+X-Gm-Message-State: AOAM532bmZevb6wfnFhMUvWChZ1ZfoUUMTKCgNrvLxTUoB6E4rPHUeFk
+        gBk1o7AKytj1v1nuhftYAA==
+X-Google-Smtp-Source: ABdhPJxR+DvEPJiW5Ohrap4Z45QueUlCz6siPp+LC7c3y/KSGP97bxFsq9mhb7deasgXjUf0AOOfrg==
+X-Received: by 2002:a92:cb52:: with SMTP id f18mr2529805ilq.97.1627944849513;
+        Mon, 02 Aug 2021 15:54:09 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id t24sm8106777ioh.24.2021.08.02.15.54.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 15:53:41 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 23:53:39 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] sound: usb: get lock before calling  usb_enable_autosuspend()
-Message-ID: <20210802225339.GA1461793@pc>
+        Mon, 02 Aug 2021 15:54:08 -0700 (PDT)
+Received: (nullmailer pid 1776439 invoked by uid 1000);
+        Mon, 02 Aug 2021 22:54:06 -0000
+Date:   Mon, 2 Aug 2021 16:54:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     marijn.suijten@somainline.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, rjw@rjwysocki.net,
+        bartosz.dudziak@snejp.pl, bjorn.andersson@linaro.org,
+        jeffrey.l.hugo@gmail.com, martin.botka@somainline.org,
+        agross@kernel.org, konrad.dybcio@somainline.org,
+        jami.kettunen@somainline.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-kernel@vger.kernel.org, stephan@gerhold.net,
+        linux-arm-msm@vger.kernel.org, daniel.lezcano@linaro.org
+Subject: Re: [PATCH v8 5/5] dt-bindings: soc: qcom: spm: Document SDM660 and
+ MSM8998 compatibles
+Message-ID: <YQh3jjIUTnmHyzft@robh.at.kernel.org>
+References: <20210729155609.608159-1-angelogioacchino.delregno@somainline.org>
+ <20210729155609.608159-6-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210729155609.608159-6-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on the documentation of usb_enable_autosuspend(), the
-caller must hold udev's device lock.
+On Thu, 29 Jul 2021 17:56:09 +0200, AngeloGioacchino Del Regno wrote:
+> The driver was updated to add SAW2 v4.1 support for new SoCs: document
+> the new compatibles.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  .../bindings/soc/qcom/qcom,spm.yaml           | 22 +++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
----
- sound/usb/card.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 2f6a62416c05..9290ba0acd5f 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -907,8 +907,13 @@ static void usb_audio_disconnect(struct usb_interface *intf)
- 		}
- 	}
- 
--	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
--		usb_enable_autosuspend(interface_to_usbdev(intf));
-+	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND) {
-+		struct usb_device *udev = interface_to_usbdev(intf);
-+
-+		usb_lock_device(udev);
-+		usb_enable_autosuspend(udev);
-+		usb_unlock_device(udev);
-+	}
- 
- 	chip->num_interfaces--;
- 	if (chip->num_interfaces <= 0) {
--- 
-2.25.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
