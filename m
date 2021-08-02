@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD2A3DD9DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FEC3DD7F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237623AbhHBOE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:04:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42958 "EHLO mail.kernel.org"
+        id S234398AbhHBNsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:48:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234435AbhHBN6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:58:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D857B60EBB;
-        Mon,  2 Aug 2021 13:55:08 +0000 (UTC)
+        id S234269AbhHBNrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:47:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2B5160FF2;
+        Mon,  2 Aug 2021 13:46:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912509;
-        bh=VWn1pRYRch8VQtd9CdKf2P13Rx3yuBIScbJ1pJ6oaHs=;
+        s=korg; t=1627912015;
+        bh=+TbxYEZT3IXSthwpO6A8R0xgy2cihLk8uOxAnY25psc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZJm00q2eiSGTfXjOzeGSQWFG8xZK1gWWzuK30Qm0VBokaZSodshpGu+KcqAUr+pLO
-         dCaMac4NvCnXE8agIblON6uuEWf/vO21FUyr+UY6sRU+p9JKixleBbYbcoOzlm4LSa
-         rT+go6KJj/3JDDz5+sR7v1N6LoWPoTpSOpWWxvYQ=
+        b=RYoU0JpApyk4xFx8ctDvZnRv8QBTDsbSCOhG74wdGUQwuysH1trCxvM7hjZFk8Hhx
+         N8z9yBaB/dz96lPl/kUVXhDW93kul3AJnw0z0a3lkItpRIX+HSfmoQs1URNOjrMbrO
+         6KnQfW8cs5voju4H2YCIOxKa244HfHWsIQmOXfzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cyr Aric <aric.cyr@amd.com>,
-        Solomon Chiu <solomon.chiu@amd.com>,
-        Dale Zhao <dale.zhao@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.13 025/104] drm/amd/display: ensure dentist display clock update finished in DCN20
+        stable@vger.kernel.org, Hoang Le <hoang.h.le@dektech.com.au>,
+        Jon Maloy <jon.maloy@ericsson.com>,
+        Ying Xue <ying.xue@windriver.com>,
+        kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 4.9 02/32] tipc: Fix backport of b77413446408fdd256599daf00d5be72b5f3e7c6
 Date:   Mon,  2 Aug 2021 15:44:22 +0200
-Message-Id: <20210802134344.850997612@linuxfoundation.org>
+Message-Id: <20210802134333.008488234@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
+References: <20210802134332.931915241@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dale Zhao <dale.zhao@amd.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit b53e041d8e4308f7324999398aec092dbcb130f5 upstream.
+Clang warns:
 
-[Why]
-We don't check DENTIST_DISPCLK_CHG_DONE to ensure dentist
-display clockis updated to target value. In some scenarios with large
-display clock margin, it will deliver unfinished display clock and cause
-issues like display black screen.
+net/tipc/link.c:896:23: warning: variable 'hdr' is uninitialized when
+used here [-Wuninitialized]
+        imp = msg_importance(hdr);
+                             ^~~
+net/tipc/link.c:890:22: note: initialize the variable 'hdr' to silence
+this warning
+        struct tipc_msg *hdr;
+                            ^
+                             = NULL
+1 warning generated.
 
-[How]
-Checking DENTIST_DISPCLK_CHG_DONE to ensure display clock
-has been update to target value before driver do other clock related
-actions.
+The backport of commit b77413446408 ("tipc: fix NULL deref in
+tipc_link_xmit()") to 4.9 as commit 310014f572a5 ("tipc: fix NULL deref
+in tipc_link_xmit()") added the hdr initialization above the
 
-Reviewed-by: Cyr Aric <aric.cyr@amd.com>
-Acked-by: Solomon Chiu <solomon.chiu@amd.com>
-Signed-off-by: Dale Zhao <dale.zhao@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+    if (unlikely(msg_size(hdr) > mtu)) {
+
+like in the upstream commit; however, in 4.9, that check is below imp's
+first use because commit 365ad353c256 ("tipc: reduce risk of user
+starvation during link congestion") is not present. This results in hdr
+being used uninitialized.
+
+Fix this by moving hdr's initialization before imp and after the if
+check like the original backport did.
+
+Cc: Hoang Le <hoang.h.le@dektech.com.au>
+Cc: Jon Maloy <jon.maloy@ericsson.com>
+Cc: Ying Xue <ying.xue@windriver.com>
+Fixes: 310014f572a5 ("tipc: fix NULL deref in tipc_link_xmit()")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c |    2 +-
+ net/tipc/link.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c
-@@ -135,7 +135,7 @@ void dcn20_update_clocks_update_dentist(
+--- a/net/tipc/link.c
++++ b/net/tipc/link.c
+@@ -893,6 +893,7 @@ int tipc_link_xmit(struct tipc_link *l,
+ 	if (pkt_cnt <= 0)
+ 		return 0;
  
- 	REG_UPDATE(DENTIST_DISPCLK_CNTL,
- 			DENTIST_DISPCLK_WDIVIDER, dispclk_wdivider);
--//	REG_WAIT(DENTIST_DISPCLK_CNTL, DENTIST_DISPCLK_CHG_DONE, 1, 5, 100);
-+	REG_WAIT(DENTIST_DISPCLK_CNTL, DENTIST_DISPCLK_CHG_DONE, 1, 50, 1000);
- 	REG_UPDATE(DENTIST_DISPCLK_CNTL,
- 			DENTIST_DPPCLK_WDIVIDER, dppclk_wdivider);
- 	REG_WAIT(DENTIST_DISPCLK_CNTL, DENTIST_DPPCLK_CHG_DONE, 1, 5, 100);
++	hdr = buf_msg(skb_peek(list));
+ 	imp = msg_importance(hdr);
+ 	/* Match msg importance against this and all higher backlog limits: */
+ 	if (!skb_queue_empty(backlogq)) {
+@@ -902,7 +903,6 @@ int tipc_link_xmit(struct tipc_link *l,
+ 		}
+ 	}
+ 
+-	hdr = buf_msg(skb_peek(list));
+ 	if (unlikely(msg_size(hdr) > mtu)) {
+ 		skb_queue_purge(list);
+ 		return -EMSGSIZE;
 
 
