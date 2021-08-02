@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24543DDF77
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5CF3DDF88
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhHBSoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:44:05 -0400
-Received: from gateway22.websitewelcome.com ([192.185.47.168]:16283 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229677AbhHBSoE (ORCPT
+        id S229793AbhHBSre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhHBSrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:44:04 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 9A0626224D
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 13:43:29 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id AcuPm3Ghz7sOiAcuPmfh7M; Mon, 02 Aug 2021 13:43:29 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=8InOL0ejiLyEWxVwkpX8eoucd2mZJBACbDxgmHEzhOQ=; b=mXWctaOzd7dzUuPAn2aONxs6zB
-        lUstrMJu7NbagAng6LNdnkXEAmwi4teiwaRfl4UlADHBBpbDzU3CtkzCyrFe73oxSZGkuDohYR2UC
-        KsvwbFiY02wbmqP0R8HT1MTtWNWwANFFBH13dnEFxBKTuTUxBQHUyoBjDFLi58CLYebvt2YZMoVFq
-        3ec/7rgnQ82F6vKDWziQhZWeQDI9O979COBvEq5VnLv1Dq0ClbrtGN/21fEJHx8T7XkT9A46aelK+
-        nXqaiTpkqWa4Sl80osGgcsfNfbefTkOQbL+Uopr8BGlYjKiuPM7D/K+SZqh5rSSOn04RTwnogSBE3
-        IbGxyIKg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:57258 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1mAcuP-003Q28-2T; Mon, 02 Aug 2021 13:43:29 -0500
-Subject: Re: [PATCH][next] net/ipv4: Replace one-element array with
- flexible-array member
-To:     patchwork-bot+netdevbpf@kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210731170830.GA48844@embeddedor>
- <162791400741.18419.5941105433257893840.git-patchwork-notify@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <6d3c2ba1-ea01-dbc1-1e18-1ba9c7a15181@embeddedor.com>
-Date:   Mon, 2 Aug 2021 13:46:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 2 Aug 2021 14:47:33 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F4EC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:47:23 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so239492pja.5
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dsauZAnzB9AyD5J4J9mAeEFxLwVVinDD+qnnMIl8EZo=;
+        b=gjfGI/BKiYavobOussivM7E9HIvVWJTwsVefRfNXdPEAxK++5mhcGH6EOiAm51SOJY
+         VY35HILT82aGYNQdpZYSCqv31GJMBgCayeJ5jRf/3oBQyMqqSxcxBcUQcmjjD9nNqABM
+         T8AjlVP/eH64LqanVs12L4JmflMQ49QVXF+1U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dsauZAnzB9AyD5J4J9mAeEFxLwVVinDD+qnnMIl8EZo=;
+        b=Qvz+8qw7rVtmq6hoaaE0c3Na6yPYM+WT/CSZkcQIAO7E9K3CgWmaYvJn5ErPbx/jPp
+         Kc/2wIu4KVVirWtDDmec9gDpWDr9wgMDmUkPh1fEMFHvpgeU2bFliECH7eJ3XFX/GBc9
+         bNqqw0RV9i4+y8ybQawrypiGHHsPddfJaGiNsxre9BQU7T7ZuzQiqutFKtPqklN+r4nM
+         VqYMpUqkeT7O5Lqnrep+uH9zQTAWtM/fl9JEC8+6vsUfD2jMAx9v+Bu99iySyhctKoFi
+         KXRPKolMU5vE1GqWiBXfvs2ZeAl4pS+zkX/Ui3A7MyWbvP7eKUalxLoe+MPhVVOhSba7
+         NQag==
+X-Gm-Message-State: AOAM5300EgIDSJm+WcEs6EFc+dGkgFd3WBmkfw9S7GGvdbQST1D/bJcv
+        kipKVTDL/a9wsZmDaIQZMu/pFgnj7QixXQ==
+X-Google-Smtp-Source: ABdhPJyUkXYSP9WrCKharwtPrqtVNasqW+2CKMfsFBYD/WOY5RRwpcyJklwXsn8AeRVklRsz65AT4A==
+X-Received: by 2002:a17:90a:d190:: with SMTP id fu16mr264674pjb.157.1627930042928;
+        Mon, 02 Aug 2021 11:47:22 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:8875:fb28:686e:1c31])
+        by smtp.gmail.com with ESMTPSA id l11sm13356483pfd.187.2021.08.02.11.47.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 11:47:22 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH 1/2] platform/chrome: cros_ec_proto: Update feature check
+Date:   Mon,  2 Aug 2021 11:47:10 -0700
+Message-Id: <20210802184711.3872372-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
 MIME-Version: 1.0
-In-Reply-To: <162791400741.18419.5941105433257893840.git-patchwork-notify@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1mAcuP-003Q28-2T
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:57258
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+EC feature flags now require more than 32 bits to be represented. In
+order to make cros_ec_check_features() usable for more recent features,
+update it to account for the extra 32 bits of features.
 
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+---
+ drivers/platform/chrome/cros_ec_proto.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-On 8/2/21 09:20, patchwork-bot+netdevbpf@kernel.org wrote:
-> Hello:
-> 
-> This patch was applied to netdev/net-next.git (refs/heads/master):
-> 
-> On Sat, 31 Jul 2021 12:08:30 -0500 you wrote:
->> There is a regular need in the kernel to provide a way to declare having
->> a dynamically sized set of trailing elements in a structure. Kernel code
->> should always use “flexible array members”[1] for these cases. The older
->> style of one-element or zero-length arrays should no longer be used[2].
->>
->> Use an anonymous union with a couple of anonymous structs in order to
->> keep userspace unchanged:
->>
->> [...]
-> 
-> Here is the summary with links:
->   - [next] net/ipv4: Replace one-element array with flexible-array member
->     https://git.kernel.org/netdev/net-next/c/2d3e5caf96b9
+diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
+index a7404d69b2d3..772edad80593 100644
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -813,6 +813,7 @@ EXPORT_SYMBOL(cros_ec_get_host_event);
+ int cros_ec_check_features(struct cros_ec_dev *ec, int feature)
+ {
+ 	struct cros_ec_command *msg;
++	u32 mask;
+ 	int ret;
+ 
+ 	if (ec->features[0] == -1U && ec->features[1] == -1U) {
+@@ -839,7 +840,12 @@ int cros_ec_check_features(struct cros_ec_dev *ec, int feature)
+ 		kfree(msg);
+ 	}
+ 
+-	return ec->features[feature / 32] & EC_FEATURE_MASK_0(feature);
++	if (feature >= 32)
++		mask = EC_FEATURE_MASK_1(feature);
++	else
++		mask = EC_FEATURE_MASK_0(feature);
++
++	return ec->features[feature / 32] & mask;
+ }
+ EXPORT_SYMBOL_GPL(cros_ec_check_features);
+ 
+-- 
+2.32.0.554.ge1b32706d8-goog
 
-arghh... this has a bug. Sorry, Dave. I will send a fix for this, shortly.
-
---
-Gustavo
