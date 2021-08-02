@@ -2,61 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055473DD74F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB6C3DD760
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhHBNjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:39:42 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:57220 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233719AbhHBNjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:39:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=5lw41H6w70pZFPZYn804ztO37u1ine6njh7Mo1mlvr8=; b=Ik5YqngM3Pu8FIsibgGI90LXCE
-        /MbmLCGpkr20VvijZkNxPwyjDhC82eFgOjL0CuRmQQEbKBSaMfKmEtEJ52MTI2YiRMe/O1M1BA4Qz
-        rtNMwAGJTST96S/bLC7mu0acx88lcVBdMFAiArFPcR5+11vN2tc1dRMVMW7AmAgp6cRQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mAYA9-00FpNJ-7T; Mon, 02 Aug 2021 15:39:25 +0200
-Date:   Mon, 2 Aug 2021 15:39:25 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     luoj@codeaurora.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Gross, Andy" <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Robert Marko <robert.marko@sartura.hr>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree@vger.kernel.org, Sricharan <sricharan@codeaurora.org>
-Subject: Re: [PATCH 3/3] dt-bindings: net: rename Qualcomm IPQ MDIO bindings
-Message-ID: <YQf1jdsUc8S7tTBy@lunn.ch>
-References: <20210729125358.5227-1-luoj@codeaurora.org>
- <20210729125358.5227-3-luoj@codeaurora.org>
- <CAL_Jsq+=Vyy7_EQ_A7JW4ZfqpPU=6eCyUYMnPORChGvefw-yTA@mail.gmail.com>
- <7873e70dcf4fe749521bd9c985571742@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7873e70dcf4fe749521bd9c985571742@codeaurora.org>
+        id S234034AbhHBNkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:40:08 -0400
+Received: from mail-il1-f179.google.com ([209.85.166.179]:43686 "EHLO
+        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234032AbhHBNkF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:40:05 -0400
+Received: by mail-il1-f179.google.com with SMTP id x7so13111533ilh.10;
+        Mon, 02 Aug 2021 06:39:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=TENNApnA3pRK87RRsfp5wpxG2YcnGhsJlA20WbVifLk=;
+        b=HswowOqsvG5bejucUm8i5rR1YCKkLAOALcRD/UyxWYWC0C+qwwrScFgG6BjiLmdR3X
+         j58yRYfI78iLnIRZbZoZbil39ORVlTz2qKWdzb2NKiJIF4jFMwmSF0Pa13/XVFtZHLSX
+         X67h7TrjzEMB7AwuK4RM4VqIHClHiUnLVCA9MWxPA/LTNuIL/UQxCgt4exyru4gvEMbS
+         j+KiRm6wHq+c6xQcWYBgxd+mWxL3YeNSoUwnZD+Q18wLMMJeDceHMH5eBZp2HMG+3gcs
+         td29jC0BqQVseq0WodkearWjjZY2YYhUGdLWHDrUDHCkfT6j+z94zB5ui3p+2h6KeBrp
+         6Tmw==
+X-Gm-Message-State: AOAM533mnS140ohCI+HTaPtFd2mzKlwRs4ENUJv9EO0CstVDPCeePr90
+        Wf5aHIWZmnnDrshaApxPFw==
+X-Google-Smtp-Source: ABdhPJzfosP56bJdNxD4Ijzp2ZlTM+40hrVsN+FY9mSl/e1GMizabh/TW6EXI++5V3KCEafHRE7mkw==
+X-Received: by 2002:a05:6e02:1bcc:: with SMTP id x12mr1141093ilv.275.1627911594639;
+        Mon, 02 Aug 2021 06:39:54 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id q7sm7459028iow.12.2021.08.02.06.39.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 06:39:54 -0700 (PDT)
+Received: (nullmailer pid 918766 invoked by uid 1000);
+        Mon, 02 Aug 2021 13:39:43 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Iskren Chernev <iskren.chernev@gmail.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <20210801103448.3329333-2-iskren.chernev@gmail.com>
+References: <20210801103448.3329333-1-iskren.chernev@gmail.com> <20210801103448.3329333-2-iskren.chernev@gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: clk: qcom: gcc-sm6115: Document SM6115 GCC
+Date:   Mon, 02 Aug 2021 07:39:43 -0600
+Message-Id: <1627911583.087441.918765.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > since the phylib code can't satisfy resetting PHY in IPQ chipset, phylib
-> > resets phy by
-> > configuring GPIO output value to 1, then to 0. however the PHY reset in
-> > IPQ chipset need
-> > to configuring GPIO output value to 0, then to 1 for the PHY reset, so i
-> > put the phy-reset-gpios here.
+On Sun, 01 Aug 2021 13:34:47 +0300, Iskren Chernev wrote:
+> Add device tree bindings for global clock controller on SM6115 and
+> SM4250 SoCs (pin and software compatible).
+> 
+> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+> ---
+>  .../bindings/clock/qcom,gcc-sm6115.yaml       |  74 +++++++
+>  include/dt-bindings/clock/qcom,gcc-sm6115.h   | 201 ++++++++++++++++++
+>  2 files changed, 275 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-sm6115.h
+> 
 
-Look at the active low DT property of a GPIO.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-     Andrew
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.example.dt.yaml: clock-controller@1400000: clocks: [[4294967295, 0], [4294967295]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.example.dt.yaml: clock-controller@1400000: clock-names: ['bi_tcxo', 'sleep_clk'] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.yaml
+\ndoc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1512028
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
