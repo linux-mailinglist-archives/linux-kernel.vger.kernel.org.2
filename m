@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB68A3DD0B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6FC3DD0B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhHBGiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:38:17 -0400
-Received: from smtpbg128.qq.com ([106.55.201.39]:33753 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232240AbhHBGiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:38:15 -0400
-X-QQ-mid: bizesmtp42t1627886272t1ba813m
-Received: from localhost.localdomain (unknown [113.89.245.207])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 02 Aug 2021 14:37:51 +0800 (CST)
-X-QQ-SSF: 01100000002000208000D00A0000000
-X-QQ-FEAT: XGV+RRZ8vFzS9N5nc1Ll/UPHCSh7Odr8Q/src8aDVWIveDQXJ6EX/1Pa3B1wt
-        HPloZlkdoRp7Xa+yGhow5FMn17rpRraMmQNq3GsBSSLAh3/hkWNymO9mG+CpJE8JurPTXCJ
-        diw4+T8r28CYcPHk1eCSMDO13KfKTMLJhHohvgY0XTnI54GDFqQ2mPp2VSJo4Dgi3AImMQN
-        ovkYfp1xKSqcfTr5XS3htmtfGu2NGKfnNRoks5EQWBOLqo+HI1BnAbM4k+zZQbxsG2vyOJX
-        IthlmPP96GZCoSwC9oBe3anPrpRDHDfHFKgScyLBsAfT2jsxmkyzEorkJP5WE0uUxTmXJPg
-        76GZWKgT5Fo7w+Qw3ny8t9FHVmypQ==
-X-QQ-GoodBg: 0
-From:   Icenowy Zheng <icenowy@sipeed.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Icenowy Zheng <icenowy@sipeed.com>
-Subject: [PATCH] regmap: allow const array for {devm_,}regmap_field_bulk_alloc reg_fields
-Date:   Mon,  2 Aug 2021 14:37:41 +0800
-Message-Id: <20210802063741.76301-1-icenowy@sipeed.com>
-X-Mailer: git-send-email 2.30.2
+        id S232330AbhHBGnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhHBGm7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 02:42:59 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE94CC06175F;
+        Sun,  1 Aug 2021 23:42:49 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id k4so9716391wms.3;
+        Sun, 01 Aug 2021 23:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BLpYFCEhMxHCYOJofpDOBnsrLOpomdik6GbpkfmrbEo=;
+        b=lxYQjRPo7UXjm1H9eY2abYSOBagbxy3grS+nrpt94yVfDuQQDLFjSmpCYReTly+NMm
+         Fb6o6xPlrEvvPdY8iATiegFaJBfJZcLKN7qmg41+a3vxxiKSeci7BsXBn9ENnmruEGlq
+         3zuZW8DQwMUpuVkUruZBRpZSZqEM315zhCaBaLmzhoFJ1kHytRaJSbTwRaQRr8hpPXxY
+         +lGpN3+bZA6IDCwCs4eiFX/kT9Vwtc1kxR1HgqqYtjjrSTUQejSXSasuw5Xs9eHBNwYf
+         6p/J4vr35PGVCXSyjTmyr4Sk494k8jwZpGauPdepm+RZ5xQdV1raeOuly+kut0V0IRAS
+         xGRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BLpYFCEhMxHCYOJofpDOBnsrLOpomdik6GbpkfmrbEo=;
+        b=TwXP0BI+IlaiYPJ9T5YEyBGkDmOTLb7/peCzenDZAIYPqJ1XsKhvOwBL1dzpVVvwKE
+         Qt51u6C+6wxCAxoK/WWakGjWoQDpSKvmHWzRrIwRqXLIahk/jitWc2/SuxFD6ViS3rnM
+         inVuhjlvREzmJShIMFEikNVziKQDQfOxMzv8EaWltq4m5eBnMrwuYVcSk4yAPiJ0wAaD
+         gyi8yy2aWzgbn8Qslcbow6E5XEEqQd76g9IMar7mCnQREcMs5r3v9SJf4l/Fo0EXsS6H
+         K/0O/VIYEet8ct4PUehtk9kwaLKYKrVFWgBQW/M9WsRYzph8XKszLj6zufIBXkzqMMiM
+         aO8g==
+X-Gm-Message-State: AOAM532SVU0Uma5wPaVgBXzwin/CkZyFW4YkQ4iyKkc0XIwVuhhKRfR3
+        rXIw9PA4GPI3kxGR6umr+g==
+X-Google-Smtp-Source: ABdhPJxo16iUjyVIeQ9xmvVvuQlDGuzxRLyLiI++9qUbTiA6r1gF/Vs2kZ1oNCsICDMajf7DIB0MlQ==
+X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr10525990wml.84.1627886568347;
+        Sun, 01 Aug 2021 23:42:48 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.248.142])
+        by smtp.gmail.com with ESMTPSA id k186sm11178355wme.45.2021.08.01.23.42.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Aug 2021 23:42:47 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 09:42:45 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     akpm@linux-foundation.org, linux-arch@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        masahiroy@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/3] isystem: delete global -isystem compile option
+Message-ID: <YQeT5QRXc3CzK9nL@localhost.localdomain>
+References: <20210801201336.2224111-1-adobriyan@gmail.com>
+ <20210801201336.2224111-3-adobriyan@gmail.com>
+ <20210801213247.GM1583@gate.crashing.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:sipeed.com:qybgspam:qybgspam5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210801213247.GM1583@gate.crashing.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reg_fields array fed to {devm_}regmap_field_bulk_alloc is currently
-not const, which is not correct on semantics (the functions shouldn't
-change reg_field contents) and prevents pre-defined const reg_field
-array to be used.
+On Sun, Aug 01, 2021 at 04:32:47PM -0500, Segher Boessenkool wrote:
+> On Sun, Aug 01, 2021 at 11:13:36PM +0300, Alexey Dobriyan wrote:
+> > In theory, it enables "leakage" of userspace headers into kernel which
+> > may present licensing problem.
+> 
+> > -NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
+> > +NOSTDINC_FLAGS += -nostdinc
+> 
+> This is removing the compiler's own include files.  These are required
+> for all kinds of basic features, and required to be compliant to the C
+> standard at all.
 
-As the implementation of this function doesn't change the content of it,
-just add const to its prototype.
+No they are not required. Kernel uses its own bool, uintptr_t and
+static_assert, memset(), CHAR_BIT. noreturn, alignas newest C standard
+are next.
 
-Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
----
- drivers/base/regmap/regmap.c | 4 ++--
- include/linux/regmap.h       | 5 +++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+This version changelog didn't mention but kernel would use
+-ffreestanding too if not other problems with the flag.
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index dcfa99ea7f31..6ad41d0720ba 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -1298,7 +1298,7 @@ EXPORT_SYMBOL_GPL(devm_regmap_field_alloc);
-  */
- int regmap_field_bulk_alloc(struct regmap *regmap,
- 			    struct regmap_field **rm_field,
--			    struct reg_field *reg_field,
-+			    const struct reg_field *reg_field,
- 			    int num_fields)
- {
- 	struct regmap_field *rf;
-@@ -1334,7 +1334,7 @@ EXPORT_SYMBOL_GPL(regmap_field_bulk_alloc);
- int devm_regmap_field_bulk_alloc(struct device *dev,
- 				 struct regmap *regmap,
- 				 struct regmap_field **rm_field,
--				 struct reg_field *reg_field,
-+				 const struct reg_field *reg_field,
- 				 int num_fields)
- {
- 	struct regmap_field *rf;
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index f5f08dd0a116..77755196277c 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -1269,12 +1269,13 @@ void devm_regmap_field_free(struct device *dev,	struct regmap_field *field);
- 
- int regmap_field_bulk_alloc(struct regmap *regmap,
- 			     struct regmap_field **rm_field,
--			     struct reg_field *reg_field,
-+			     const struct reg_field *reg_field,
- 			     int num_fields);
- void regmap_field_bulk_free(struct regmap_field *field);
- int devm_regmap_field_bulk_alloc(struct device *dev, struct regmap *regmap,
- 				 struct regmap_field **field,
--				 struct reg_field *reg_field, int num_fields);
-+				 const struct reg_field *reg_field,
-+				 int num_fields);
- void devm_regmap_field_bulk_free(struct device *dev,
- 				 struct regmap_field *field);
- 
--- 
-2.30.2
+> These are not "userspace headers", that is what
+> -nostdinc takes care of already.
 
+They are userspace headers in the sense they are external to the project
+just like userspace programs are external to the kernel.
+
+> In the case of GCC all these headers are GPL-with-runtime-exception, so
+> claiming this can cause licensing problems is fearmongering.
+
+I agree licensing problem doesn't really exist.
+It would take gcc drop-in replacement with authors insane enough to not
+license standard headers properly.
+
+> I strongly advise against doing this.
+
+Kernel chose to be self-contained. -isystem removal makes sense then.
+It will be used for intrinsics where necessary.
