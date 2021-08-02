@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D5B3DDA34
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BB83DD85D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235625AbhHBOHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:07:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47228 "EHLO mail.kernel.org"
+        id S234715AbhHBNvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:51:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236894AbhHBOAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:00:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7FA161131;
-        Mon,  2 Aug 2021 13:56:03 +0000 (UTC)
+        id S234143AbhHBNrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:47:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE1CB61106;
+        Mon,  2 Aug 2021 13:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912564;
-        bh=xqTop5vJ2hPVdOglnU23P6uM14ee8Aq+6WU0/y6ZLAQ=;
+        s=korg; t=1627912052;
+        bh=8G3Wb+6OXBJJ4C+pVYqw5cEC5/+uqdpJgwVsGIa16sc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=do3aFEVFazh3jhIDZS1V37o9pw/Jiw1+PVCfvuTSrcyUnUv798jziO0efxRSzhV8O
-         mmGnTFYiMOm3Fad/DC/44Tco0iEP/r79VirGc0fiXV43KjuMVtwuvbRL6kdanbfv4z
-         D7qGhv6cHdVH4kmgq6uB8pDECenaakwIdbeAp7hA=
+        b=qUoxLgaMhmG0MtpIk5a5mugFjWgU6HHmbe8ywl3545Lu9dqMMy1yJNyKASRAOxjYG
+         03Is19+cEvPc+z5rDdDwQxH2ubnuCu2JU7SXTL3o22YWM3T5qw9A2BDt3aDqdlwoSV
+         J/ReJzp+vLOYGzcFtCrPCD2AX1i1M3IDLobMYAEU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Jedrzej Jagielski <jedrzej.jagielski@intel.com>,
-        Imam Hassan Reza Biswas <imam.hassan.reza.biswas@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 048/104] i40e: Fix log TC creation failure when max num of queues is exceeded
-Date:   Mon,  2 Aug 2021 15:44:45 +0200
-Message-Id: <20210802134345.616667840@linuxfoundation.org>
+Subject: [PATCH 4.9 26/32] netfilter: nft_nat: allow to specify layer 4 protocol NAT only
+Date:   Mon,  2 Aug 2021 15:44:46 +0200
+Message-Id: <20210802134333.748856187@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
+References: <20210802134332.931915241@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit ea52faae1d17cd3048681d86d2e8641f44de484d ]
+[ Upstream commit a33f387ecd5aafae514095c2c4a8c24f7aea7e8b ]
 
-Fix missing failed message if driver does not have enough queues to
-complete TC command. Without this fix no message is displayed in dmesg.
+nft_nat reports a bogus EAFNOSUPPORT if no layer 3 information is specified.
 
-Fixes: a9ce82f744dc ("i40e: Enable 'channel' mode in mqprio for TC configs")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
-Tested-by: Imam Hassan Reza Biswas <imam.hassan.reza.biswas@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: d07db9884a5f ("netfilter: nf_tables: introduce nft_validate_register_load()")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/netfilter/nft_nat.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 0207c5ceecf6..4e5c53a6265c 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -7290,6 +7290,8 @@ static int i40e_validate_mqprio_qopt(struct i40e_vsi *vsi,
+diff --git a/net/netfilter/nft_nat.c b/net/netfilter/nft_nat.c
+index d2510e432c18..d338d69a0e0b 100644
+--- a/net/netfilter/nft_nat.c
++++ b/net/netfilter/nft_nat.c
+@@ -157,7 +157,9 @@ static int nft_nat_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
+ 		alen = FIELD_SIZEOF(struct nf_nat_range, min_addr.ip6);
+ 		break;
+ 	default:
+-		return -EAFNOSUPPORT;
++		if (tb[NFTA_NAT_REG_ADDR_MIN])
++			return -EAFNOSUPPORT;
++		break;
  	}
- 	if (vsi->num_queue_pairs <
- 	    (mqprio_qopt->qopt.offset[i] + mqprio_qopt->qopt.count[i])) {
-+		dev_err(&vsi->back->pdev->dev,
-+			"Failed to create traffic channel, insufficient number of queues.\n");
- 		return -EINVAL;
- 	}
- 	if (sum_max_rate > i40e_get_link_speed(vsi)) {
+ 	priv->family = family;
+ 
 -- 
 2.30.2
 
