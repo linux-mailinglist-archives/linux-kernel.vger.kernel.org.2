@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9BB3DD61D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94303DD616
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhHBM45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbhHBM4z (ORCPT
+        id S233773AbhHBM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:56:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46595 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233703AbhHBM4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:56:55 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D4BC061760;
-        Mon,  2 Aug 2021 05:56:46 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so13938206pjb.2;
-        Mon, 02 Aug 2021 05:56:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/GYPS7X+85wR6YC8425aJSok3ZXyi4U2bTyYNUsfO5w=;
-        b=pyQkhPeDqOZN1lKQvpgjaZhDuqcfBH++qI9Yz80iquDkO6oGt+tBuSPtyV0nMGVBJ1
-         M2E5aA/XAnoteOyDQT8M+x5AliZKopkoGnInKwL3m2QqBiWDu36W26gL/YPC8K/KeYlr
-         lKiZUAf6XKEOBg70NsE3K9fU4mOPUUIoCYKqtgQQ2HjvRH1Q+CjUYFOowxeVCbfkbnu7
-         GXswmjuYPprsxcXIE4NienyvsAMjibDdMeps+gxmOrpMJQUHeDF7e/9b+DgNRmsrf0dj
-         R82WDqtlRqQuveuh5cTGWXuurfZKwGo+CrnXy7KJkYXeft1AWFi82RFU5cJODZER7tHh
-         HwOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/GYPS7X+85wR6YC8425aJSok3ZXyi4U2bTyYNUsfO5w=;
-        b=rrQnvroREh2lzghJkvH2U/ojYO3L0NmRV7JJFuYQUXDTIqPGYR6Rcij7ihjFmzgNJQ
-         mkdaOkLN1jYbe5o32gpwVSeeujdufvy3hKZaUXkRTqNpIskdgh5zN/Ndwyay3hZvIyrL
-         n+Dn7iGXruIGy5LNhbFluSoNHOfha6Oj+Mw0pYbERbZ5Mcoo8rza+5NER0XsnryI+w40
-         C7g+fONcn788RhZd0MEVV4pHdjPTzWDrGP83kg6BsdzLptgypFvOG/dmNOyDR0l/vUWu
-         HZhI+snNNzdulBGXoHqTsp1ZGxsVowjZ2IlTPvalbDHT7/XJRUnncPksy0YflbysJYI5
-         TU7Q==
-X-Gm-Message-State: AOAM533ThRRBnRAPRb96QhFcxQ0mzS4Ya2ROpZpS1VCxA/Mpof/3bP/V
-        qap4wV5zVSIH2t8/CssSYe0=
-X-Google-Smtp-Source: ABdhPJyLDEEPYFYa8bCYhczgLUorbl2lwmF46SVfXQIXh/rESGtdQ+84YDRl3Rg46/KGbl2xu2SCOw==
-X-Received: by 2002:a17:902:b48b:b029:12c:59b:dc44 with SMTP id y11-20020a170902b48bb029012c059bdc44mr14086944plr.47.1627909005643;
-        Mon, 02 Aug 2021 05:56:45 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
-        by smtp.gmail.com with ESMTPSA id g7sm6679837pfv.66.2021.08.02.05.56.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 05:56:45 -0700 (PDT)
-Subject: Re: [PATCH 04/13] HV: Mark vmbus ring buffer visible to host in
- Isolation VM
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, will@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, rientjes@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        rppt@kernel.org, kirill.shutemov@linux.intel.com,
-        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, xen-devel@lists.xenproject.org,
-        pgonda@google.com, david@redhat.com, keescook@chromium.org,
-        hannes@cmpxchg.org, sfr@canb.auug.org.au,
-        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, anparri@microsoft.com
-References: <20210728145232.285861-1-ltykernel@gmail.com>
- <20210728145232.285861-5-ltykernel@gmail.com> <YQfgH04t2SqacnHn@8bytes.org>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <173823d1-280c-d34e-be2c-157b55bb6bc3@gmail.com>
-Date:   Mon, 2 Aug 2021 20:56:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 2 Aug 2021 08:56:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627908997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2DzC+yjcVqrBoVSC1YNBa9TsPyUNKnFGI0GNkxt8Nu8=;
+        b=EJFfv57sWFtcl+MYWbXEujvEcGQKD4WW2cezFl7207ygdBuwIelvGidPCKGbLKs1oY4aLy
+        2YF6DYoVN3BUxUavOyCbsWSFLDPd4FaIOAmmE54F/q+8354KoSxTBkIqvZrvun0qdJ0CbL
+        6ml2EpjuvyIkoNoDZoUmMe2W103ZPHY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-449-zV2dXcYROMGONcETvhyTcg-1; Mon, 02 Aug 2021 08:56:36 -0400
+X-MC-Unique: zV2dXcYROMGONcETvhyTcg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4D641B18BC0;
+        Mon,  2 Aug 2021 12:56:35 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 541AA69CB7;
+        Mon,  2 Aug 2021 12:56:35 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     mlevitsk@redhat.com
+Subject: [PATCH RFC] KVM: nSVM: remove useless kvm_clear_*_queue
+Date:   Mon,  2 Aug 2021 08:56:34 -0400
+Message-Id: <20210802125634.309874-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YQfgH04t2SqacnHn@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For an event to be in injected state when nested_svm_vmrun executes,
+it must have come from exitintinfo when svm_complete_interrupts ran:
 
+  vcpu_enter_guest
+   static_call(kvm_x86_run) -> svm_vcpu_run
+    svm_complete_interrupts
+     // now the event went from "exitintinfo" to "injected"
+   static_call(kvm_x86_handle_exit) -> handle_exit
+    svm_invoke_exit_handler
+      vmrun_interception
+       nested_svm_vmrun
 
-On 8/2/2021 8:07 PM, Joerg Roedel wrote:
-> On Wed, Jul 28, 2021 at 10:52:19AM -0400, Tianyu Lan wrote:
->> +	if (type == HV_GPADL_BUFFER)
->> +		index = 0;
->> +	else
->> +		index = channel->gpadl_range[1].gpadlhandle ? 2 : 1;
-> 
-> Hmm... This doesn't look very robust. Can you set fixed indexes for
-> different buffer types? HV_GPADL_BUFFER already has fixed index 0. But
-> as it is implemented here you risk that index 2 gets overwritten by
-> subsequent calls.
+However, no event could have been in exitintinfo before a VMRUN
+vmexit.  The code in svm.c is a bit more permissive than the one
+in vmx.c:
 
-Both second and third are HV_GPADL_RING type. One is send ring and the
-other is receive ring. The driver keeps the order to allocate rx and
-tx buffer. You are right this is not robust and will add a mutex to keep
-the order.
+        if (is_external_interrupt(svm->vmcb->control.exit_int_info) &&
+            exit_code != SVM_EXIT_EXCP_BASE + PF_VECTOR &&
+            exit_code != SVM_EXIT_NPF && exit_code != SVM_EXIT_TASK_SWITCH &&
+            exit_code != SVM_EXIT_INTR && exit_code != SVM_EXIT_NMI)
+
+but in any case, a VMRUN instruction would not even start to execute
+during an attempted event delivery.
+
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/svm/nested.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 61738ff8ef33..5e13357da21e 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -659,11 +659,6 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
+ 		goto out;
+ 	}
+ 
+-
+-	/* Clear internal status */
+-	kvm_clear_exception_queue(vcpu);
+-	kvm_clear_interrupt_queue(vcpu);
+-
+ 	/*
+ 	 * Since vmcb01 is not in use, we can use it to store some of the L1
+ 	 * state.
+-- 
+2.27.0
+
