@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122D93DD8B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AFB3DDA45
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236152AbhHBNzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:55:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33720 "EHLO mail.kernel.org"
+        id S238330AbhHBOLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:11:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234468AbhHBNuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:50:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 697F461100;
-        Mon,  2 Aug 2021 13:49:59 +0000 (UTC)
+        id S235060AbhHBOBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:01:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1161B6120E;
+        Mon,  2 Aug 2021 13:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912199;
-        bh=FndJ1ltxFPginKLxbfbbkoswSQLimv+mTAj00VtZxtU=;
+        s=korg; t=1627912594;
+        bh=DRGdif0+md7ffSLCRW0MUogZtHNJWeZBOKThkqeTa5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dcju4q+F66CEVY+PUE2xMquDsNMISDRNDaYyoBQbtxJmdO1B3jrcQyuIIfSafWCWW
-         TijFj20vQRhWN5YbuWUJZDaopgZ/8C1S4Vn4k97UATR7a+AGvVutDQzEUpDBOSUy9E
-         6dpQN9vWeMd+f2YFMZWFXULpQ5Rnr/CjgwwEAdiU=
+        b=aGwaEE6pC3QYfOAieqaw/V5h2DHt4lftV5wYpnL/8P8ezCn1geNObJfQUgIgrnLqA
+         UiKHJIafs3F0JKo87TopOqFj8jvGkF0n6VPZHdkIT3c5VbL7k8lakto430oHWz7bDd
+         xznmdsYRcpaDe7nUaS3T3MFKWmcg1IGgUQjtFoHE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        Mark Bloch <mbloch@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Kevin Lo <kevlo@kevlo.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 23/30] net/mlx5: Fix flow table chaining
+Subject: [PATCH 5.13 064/104] net: phy: broadcom: re-add check for PHY_BRCM_DIS_TXCRXC_NOENRGY on the BCM54811 PHY
 Date:   Mon,  2 Aug 2021 15:45:01 +0200
-Message-Id: <20210802134334.811360207@linuxfoundation.org>
+Message-Id: <20210802134346.100599184@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
-References: <20210802134334.081433902@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,86 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+From: Kevin Lo <kevlo@kevlo.org>
 
-[ Upstream commit 8b54874ef1617185048029a3083d510569e93751 ]
+[ Upstream commit ad4e1e48a6291f7fb53fbef38ca264966ffd65c9 ]
 
-Fix a bug when flow table is created in priority that already
-has other flow tables as shown in the below diagram.
-If the new flow table (FT-B) has the lowest level in the priority,
-we need to connect the flow tables from the previous priority (p0)
-to this new table. In addition when this flow table is destroyed
-(FT-B), we need to connect the flow tables from the previous
-priority (p0) to the next level flow table (FT-C) in the same
-priority of the destroyed table (if exists).
+Restore PHY_ID_BCM54811 accidently removed by commit 5d4358ede8eb.
 
-                       ---------
-                       |root_ns|
-                       ---------
-                            |
-            --------------------------------
-            |               |              |
-       ----------      ----------      ---------
-       |p(prio)-x|     |   p-y  |      |   p-n |
-       ----------      ----------      ---------
-            |               |
-     ----------------  ------------------
-     |ns(e.g bypass)|  |ns(e.g. kernel) |
-     ----------------  ------------------
-            |            |           |
-	-------	       ------       ----
-        |  p0 |        | p1 |       |p2|
-        -------        ------       ----
-           |             |    \
-        --------       ------- ------
-        | FT-A |       |FT-B | |FT-C|
-        --------       ------- ------
-
-Fixes: f90edfd279f3 ("net/mlx5_core: Connect flow tables")
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: 5d4358ede8eb ("net: phy: broadcom: Allow BCM54210E to configure APD")
+Signed-off-by: Kevin Lo <kevlo@kevlo.org>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/phy/broadcom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-index a38a0c86705a..774f0a619a6d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-@@ -904,17 +904,19 @@ static int connect_fwd_rules(struct mlx5_core_dev *dev,
- static int connect_flow_table(struct mlx5_core_dev *dev, struct mlx5_flow_table *ft,
- 			      struct fs_prio *prio)
- {
--	struct mlx5_flow_table *next_ft;
-+	struct mlx5_flow_table *next_ft, *first_ft;
- 	int err = 0;
- 
- 	/* Connect_prev_fts and update_root_ft_create are mutually exclusive */
- 
--	if (list_empty(&prio->node.children)) {
-+	first_ft = list_first_entry_or_null(&prio->node.children,
-+					    struct mlx5_flow_table, node.list);
-+	if (!first_ft || first_ft->level > ft->level) {
- 		err = connect_prev_fts(dev, ft, prio);
- 		if (err)
- 			return err;
- 
--		next_ft = find_next_chained_ft(prio);
-+		next_ft = first_ft ? first_ft : find_next_chained_ft(prio);
- 		err = connect_fwd_rules(dev, ft, next_ft);
- 		if (err)
- 			return err;
-@@ -1945,7 +1947,7 @@ static int disconnect_flow_table(struct mlx5_flow_table *ft)
- 				node.list) == ft))
- 		return 0;
- 
--	next_ft = find_next_chained_ft(prio);
-+	next_ft = find_next_ft(ft);
- 	err = connect_fwd_rules(dev, next_ft, ft);
- 	if (err)
- 		return err;
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index 7bf3011b8e77..83aea5c5cd03 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -288,7 +288,7 @@ static void bcm54xx_adjust_rxrefclk(struct phy_device *phydev)
+ 	if (phydev->dev_flags & PHY_BRCM_DIS_TXCRXC_NOENRGY) {
+ 		if (BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54210E ||
+ 		    BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54810 ||
+-		    BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54210E)
++		    BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54811)
+ 			val |= BCM54XX_SHD_SCR3_RXCTXC_DIS;
+ 		else
+ 			val |= BCM54XX_SHD_SCR3_TRDDAPD;
 -- 
 2.30.2
 
