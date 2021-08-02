@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1563DDFB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F19D3DDFC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 21:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhHBS7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
+        id S230372AbhHBTBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 15:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhHBS7O (ORCPT
+        with ESMTP id S229607AbhHBTBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:59:14 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8039C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:59:04 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so304934pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:59:04 -0700 (PDT)
+        Mon, 2 Aug 2021 15:01:05 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7BEC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 12:00:55 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 21so25276735oin.8
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 12:00:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ohR8MWK5z6tQgaHzKRw4z/9ZmwZHAJlnfek7VuSAWHE=;
-        b=L2XLjUI8HeOqDyYuw9UZPUofbh1myp7tASYZwPPGk1eYrihjC7WlcdMVrBDbf5o8yt
-         TblwUbG7lhiV1NGwUK4evO3ikpN8AHycGh6Wff5qujpld8ERJrhT8+HYFxsUw2WCDuyG
-         FcamSDP7RkvedijB0Eva2Q8J6DHoorwAZdpAk+QN2Vv3iBmpzelHklnasHrdDcTWeX5h
-         dCCZ//wqNcJ5NFdMhXRj/F8h4p/bEqpI2bKFc9yAW8XdriJZMrrIRrHNfKe9bE38XZyv
-         GNjcTLQyN0QBTIuKPjzv0Wg4a8XhWKdK0mKVfhCxY0A5GEQYwRe+WwoHJ6L7NN6BiRAs
-         lDBQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nbrc0x7cBePFWpue6P0CQy4Z2rROhmn1R5Qbq29mtWk=;
+        b=mY2MMpizcw6Sj9yi5PQnA4xrr7aT0f6pxShy7s9f0RQOhanYcGVkoRA07y0Bsh/qdd
+         iw3MGtB6UYkz0tF6he4rhTl55dZGVYybvR8zgCA83a9FRZ1GBA49B+oXHnmoJ+g+bWrd
+         tieUmLjeOuOtAky2s6peDZa6+VRmk/G1HE+gUPm6KdCZV6QmQKaLHSRmkLssIocoUMlq
+         1qE2c5pqlgz5udxH1R6ceMM2x8fGx9wiYYuCHZBuo+rniDizQeXX7eOOnGKsVfKDyvWy
+         ox2+aU/PmObjbPbBh7fasmhEbAAfrPoeQFAtm07GAuTKd1VKrPgESJoWOrFtNZb+Ztkv
+         72EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ohR8MWK5z6tQgaHzKRw4z/9ZmwZHAJlnfek7VuSAWHE=;
-        b=RfRj8n9eqwAhUUsiLn3E/LeXUL0TDY64r3zB0aUiIVQkSOUEEf5+yrEvhlUNEjiLmd
-         VpnB7wA49hp3XQtgt/sbR4Q7FhX+WSZz3MmxN5N7j2hsYcQr80Y3gPWY3BB3DXhxfwLt
-         P4sfZ7imjnK1tvf0KSSXggr4rniXuNDrAnQ36vuTF+EpZXXWqR8Im661WEXO0zjMwDca
-         XPyaz07YhekzZBdZalqHpnZR1gwUr8SuOSHCl2/nkUuHwywGlnfNAik8dZ0PVSKCDUTV
-         a2YXW8uM5VR4rV5MuWj2KjTWV+smOw2HKzyWeMVEzBYzDzGp6WhlctrYM3Iw68rCChw9
-         0LxA==
-X-Gm-Message-State: AOAM533sT9F6T15CviS3o4njT9mIRS5VusaRy5h+P9OIozvWkayD4xhb
-        Ee/SLOO2XpuMsAQc+0F4VZU4Iw==
-X-Google-Smtp-Source: ABdhPJw0PZIQU+a+lKpgEKgrBypeszyyvsh48xyNukQdoijIoZro31ZDTgCwHQ9cjrxbem1kEDfS7g==
-X-Received: by 2002:a63:f145:: with SMTP id o5mr234562pgk.273.1627930744547;
-        Mon, 02 Aug 2021 11:59:04 -0700 (PDT)
-Received: from sspatil2.c.googlers.com (190.40.105.34.bc.googleusercontent.com. [34.105.40.190])
-        by smtp.gmail.com with ESMTPSA id c14sm615337pjr.3.2021.08.02.11.59.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 11:59:04 -0700 (PDT)
-Subject: Re: [PATCH 1/1] fs: pipe: wakeup readers everytime new data written
- is to pipe
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable <stable@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-References: <20210729222635.2937453-1-sspatil@android.com>
- <20210729222635.2937453-2-sspatil@android.com>
- <CAHk-=wh-DWvsFykwAy6uwyv24nasJ39d7SHT+15x+xEXBtSm_Q@mail.gmail.com>
- <cee514d6-8551-8838-6d61-098d04e226ca@android.com>
- <CAHk-=wjStQurUzSAPVajL6Rj=CaPuSSgwaMO=0FJzFvSD66ACw@mail.gmail.com>
- <CAHk-=wjrfasYJUaZ-rJmYt9xa=DqmJ5-sVRG7cJ2X8nNcSXp9g@mail.gmail.com>
-From:   Sandeep Patil <sspatil@android.com>
-Message-ID: <fc0e2c8a-96cc-7787-6866-3802a1d5c50e@android.com>
-Date:   Mon, 2 Aug 2021 18:59:03 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nbrc0x7cBePFWpue6P0CQy4Z2rROhmn1R5Qbq29mtWk=;
+        b=b/bn6pKU+MGTfl2lG0vGpXQuBC7CBe3wh+FPE8VmL7U0vj0mi+fjhiwGnTpQVRUvlq
+         z5BBQdcRhHjr5oXpqajP3hemMdgYpO2eB+CL+LAMw0c0K2Ki1LznXLAWJKkXAbaURA4F
+         Bu9M8rAUGrnJWfT7oh55uNoksOOczIejlIU0EwxXz6XCta8lZRz/TL+wgVY6geGZ0UKt
+         7A1He5mSYcE5HN+AXYacdd1Q2gbbsmDlaZwR3K8yXguPQqlAFOqQDK/CK/MF3YltPZ7S
+         ngU2zuwHR0Q/MFnK/z72d0jExwLzpvQEC+a6iOMzq4IR++obtJ2j4t9onXAVUEB+6cfj
+         4Wiw==
+X-Gm-Message-State: AOAM532Dv6p9S9JBlTEdoBavcpe7LwCeUmQmmBX8kUQ6DY1ZoDlN/MpS
+        /cYbaGGxOrmvCrsJtpoHsdNmxne8aCgU72l2wUg=
+X-Google-Smtp-Source: ABdhPJzvruV9/L01NSfd/N3KeYc5cMMjB7KrWCYzZhNaVKsPAtHsNwOUIPCfEfaY2OjNgL+guDmnHj/A6MELoI80HOs=
+X-Received: by 2002:aca:53ca:: with SMTP id h193mr320764oib.5.1627930854745;
+ Mon, 02 Aug 2021 12:00:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjrfasYJUaZ-rJmYt9xa=DqmJ5-sVRG7cJ2X8nNcSXp9g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1627889555-56431-1-git-send-email-zhouchuangao@vivo.com>
+In-Reply-To: <1627889555-56431-1-git-send-email-zhouchuangao@vivo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 2 Aug 2021 15:00:43 -0400
+Message-ID: <CADnq5_Peu054E8AOZ0Wo5Sg-ADR0F_pwaT6_e5PmN_ji3=BmWw@mail.gmail.com>
+Subject: Re: [PATCH] gpu/drm/amd: Remove duplicated include of drm_drv.h
+To:     zhouchuangao <zhouchuangao@vivo.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        John Clements <john.clements@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Wenhui Sheng <Wenhui.Sheng@amd.com>,
+        Victor Zhao <Victor.Zhao@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/21 10:53 PM, Linus Torvalds wrote:
-> On Fri, Jul 30, 2021 at 12:23 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
->> I'll mull it over a bit more, but whatever I'll do I'll do before rc4
->> and mark it for stable.
-> 
-> Ok, I ended up committing the minimal possible change (and fixing up
-> the comment above it).
-> 
-> It's very much *not* the original behavior either, but that original
-> behavior was truly insane ("wake up for each hunk written"), and I'm
-> trying to at least keep the kernel code from doing actively stupid
-> things.
-> 
-> Since that old patch of mine worked for your test-case, then clearly
-> that realm-core library didn't rely on _that_ kind of insane internal
-> kernel implementation details exposed as semantics. So The minimal
-> patch basically says "each write() system call wil do at least one
-> wake-up, whether really necessary or not".
-> 
-> I also intentionally kept the read side untouched, in that there
-> apparently still isn't a case that would need the confused semantics
-> for read events.
-> 
-> End result: the commit message is a lot bigger than the patch, with
-> most of it being trying to explain the background.
-> 
-> I've pushed it out as commit 3a34b13a88ca ("pipe: make pipe writes
-> always wake up readers"). Holler if you notice anything odd remaining.
+On Mon, Aug 2, 2021 at 3:32 AM zhouchuangao <zhouchuangao@vivo.com> wrote:
+>
+> Duplicate include header file <drm/drm_drv.h>
+> line 28: #include <drm/drm_drv.h>
+> line 44: #include <drm/drm_drv.h>
+>
+> Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
 
-Since what you merged isn't different than what I tested, I don't
-expect any surprises but I will test it regardless. I will come back
-if I see anything unexpected.
+Applied.  Thanks!
 
-Thanks for the explanation about the default behavior earlier
-in the thread.
+Alex
 
-- ssp
+
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+> index 3ec5099..05f864f 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+> @@ -41,8 +41,6 @@
+>  #include "amdgpu_securedisplay.h"
+>  #include "amdgpu_atomfirmware.h"
+>
+> -#include <drm/drm_drv.h>
+> -
+>  static int psp_sysfs_init(struct amdgpu_device *adev);
+>  static void psp_sysfs_fini(struct amdgpu_device *adev);
+>
+> --
+> 2.7.4
+>
