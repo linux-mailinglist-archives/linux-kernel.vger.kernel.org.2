@@ -2,124 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBE73DD2AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93203DD2B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 11:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhHBJMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 05:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbhHBJMY (ORCPT
+        id S232989AbhHBJOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 05:14:48 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58762 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232871AbhHBJOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:12:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47BDAC06175F;
-        Mon,  2 Aug 2021 02:12:15 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627895533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I27DYbxJUYQ+kE3eUIbMjQoSNxzM2tRsRutJFBumFGM=;
-        b=gJ/p0xWPKsw2PEeZp4MuDvRWTc37/hTH7Kj/vjplyRpgHkgn+ba5Ev7xa4i5RgWQdBazyG
-        mPCixscS8mzjnRgoBSWhcWYjVI176nfEfosRZognczOUqu814JlcNl2DDeJsVRFhTso6gc
-        jIvXCJK6JuZTX62HUqnLvLknCT8LMoDUfJxJdBhmvZ+XiwdJ2Jvd5vFTfbNMib8lBlK1MS
-        j4EWCgKd6AW02+XO/N8HhVDKthGAW4/GWntaWou0O8GW2uJndgh0rUaLIJTTeEvKunUWIS
-        Pw7wp8xRruEaR1yhCCX7mIh9Xj2MYDOfmt8R/jfmEnM+g+YLFx+U2/ltM27nxg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627895533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I27DYbxJUYQ+kE3eUIbMjQoSNxzM2tRsRutJFBumFGM=;
-        b=QP1qjqahbDJUX/V3ZNeOch/2JkWRsYHEmaI89cY1yU/Fg/V1wIK8aA5r8chTRedkdftZWJ
-        Q8Zg115yUGt12mCg==
-To:     Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: v5.14-rc3-rt1 losing wakeups?
-In-Reply-To: <ed1d5f9ec17a5b8d758c234562dad47cfc872ed8.camel@gmx.de>
-References: <20210730110753.jvli6alm63h5lefy@linutronix.de>
- <2ae27233ab091d09a7d1e971a47144b40dd51fa0.camel@gmx.de>
- <87pmuzsf1p.ffs@tglx>
- <6fce881efc3d8c24a5172528fe1f46ec2ddc0607.camel@gmx.de>
- <ed1d5f9ec17a5b8d758c234562dad47cfc872ed8.camel@gmx.de>
-Date:   Mon, 02 Aug 2021 11:12:12 +0200
-Message-ID: <87k0l42osz.ffs@tglx>
+        Mon, 2 Aug 2021 05:14:32 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D0BDD1FF54;
+        Mon,  2 Aug 2021 09:14:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627895661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=M0wV6lwFfROco+TITXP/8PqqejX24mSDpZVSzC6Ez5w=;
+        b=ejlpYeDlMy0PHYo/D0CWo36OsQsSj7ejGv9CX4w1f/zcfiDNlFht75Mkkli/+nLzZ32QMX
+        OJqI/OwXvQGP9W/BFAugmCYIi4uagLiiMmKXp9DPkRmPzops0N7LLToehzmyPzIUmnb2aq
+        tsbOhWb//ntnt70Vd9Ffb74wNBhwn3U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627895661;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=M0wV6lwFfROco+TITXP/8PqqejX24mSDpZVSzC6Ez5w=;
+        b=BLSWB3QfiZmFyMbDlnhNktttJkxpeNHo95bUITJcF/ymEMeU3eXD5TJP4dnWPfJ9nOY1bR
+        rmTKDlj/IXhQFPDg==
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id 06F04A3B83;
+        Mon,  2 Aug 2021 09:14:21 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 17828)
+        id ECB7C518C087; Mon,  2 Aug 2021 11:14:20 +0200 (CEST)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>,
+        Wen Xiong <wenxiong@us.ibm.com>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v4 0/8] Handle update hardware queues and queue freeze more carefully
+Date:   Mon,  2 Aug 2021 11:14:11 +0200
+Message-Id: <20210802091419.56425-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mike,
+Hi,
 
-On Sun, Aug 01 2021 at 17:14, Mike Galbraith wrote:
-
-> On Sun, 2021-08-01 at 05:36 +0200, Mike Galbraith wrote:
->> On Fri, 2021-07-30 at 22:49 +0200, Thomas Gleixner wrote:
->> > >
->> > > First symptom is KDE/Plasma's task manager going comatose.=C2=A0 Not=
-ice soon
->> >
->> > KDE/Plasma points at the new fangled rtmutex based ww_mutex from
->> > Peter.
->>
->> Seems not.=C2=A0 When booting KVM box with nomodeset, there's exactly one
->> early boot ww_mutex lock/unlock, ancient history at the failure point.
->
-> As you've probably already surmised given it isn't the ww_mutex bits,
-> it's the wake_q bits.  Apply the below, 5.14-rt ceases to fail.  Take
-> perfectly healthy 5.13-rt, apply those bits, and it instantly begins
-> failing as 5.14-rt had been.
-
-now staring at it makes it pretty obvious. When I picked up Peter's
-patch I thought about it briefly and then ignored my doubts :(
-
->  /* RT mutex specific wake_q wrappers */
-> -static __always_inline void rt_mutex_wake_q_add(struct rt_wake_q_head *w=
-qh,
-> +static __always_inline void rt_mutex_wake_q_add(struct rt_mutex_wake_q_h=
-ead *wqh,
->  						struct rt_mutex_waiter *w)
->  {
->  	if (IS_ENABLED(CONFIG_PREEMPT_RT) && w->wake_state !=3D TASK_NORMAL) {
-> -		wake_q_add(&wqh->rt_head, w->task);
-> +		get_task_struct(w->task);
-> +		wqh->rtlock_task =3D w->task;
-
-This is the key. With the original asymmetric version the wake_q_add for
-wake_state !=3D TASK_NORMAL is storing the task unconditionally in
-wqh->rtlock_task.
-
-With that wake_q_add() we end up with the following situation:
-
-Some code, e.g. futex does:
-
-     wake_q_add(..., task)
-
-which links task->wake_q->next is !NULL. Ergo the wake_q_add() in the
-rtmutex code bails out. Same the other way round if the rtmutex side
-queues first then the second - regular wakeup - will not be queued.
-
-There's two ways to fix that:
-
-  1) Go back to my original version
-
-  2) Add another wake_q head to task_struct
-
-#2 is overkill IMO simply because the rtlock wait is not subject to
-multiple wakeups.
-
-Thanks a lot Mike for tracking this down!
+This update version makes sure the unfreeze call is done when
+recreating the queues. I was able to reproduce hanging I/Os when we go
+into error recovery mode for FC and TCP [1]. Unfortunatly, I don't
+have access to a RDMA setup to verify but as the code is identically
+to the TCP, RDMA looks to like to suffer from the same problem.
 
 Thanks,
+Daniel
 
-        tglx
+[1] https://lore.kernel.org/linux-nvme/20210730094907.5vg7qebggttibogz@beryllium.lan/
+    https://lore.kernel.org/linux-nvme/20210730113415.wezsrvxv5cu4yz4x@beryllium.lan/
+
+
+v1:
+ - https://lore.kernel.org/linux-nvme/20210625101649.49296-1-dwagner@suse.de/
+v2:
+ - https://lore.kernel.org/linux-nvme/20210708092755.15660-1-dwagner@suse.de/
+ - reviewed tags collected
+ - added 'update hardware queues' for all transport
+ - added fix for fc hanger in nvme_wait_freeze_timeout
+v3:
+ - https://lore.kernel.org/linux-nvme/20210720124353.127959-1-dwagner@suse.de/
+ - dropped 'nvme-fc: Freeze queues before destroying them'
+ - added James' two patches
+v4:
+ - added 'nvme-*: Unfreeze queues on reconnect'
+ - added Hannes' reviewed tags
+ 
+
+Daniel Wagner (5):
+  nvme-fc: Update hardware queues before using them
+  nvme-rdma: Update number of hardware queues before using them
+  nvme-fc: Wait with a timeout for queue to freeze
+  nvme-tcp: Unfreeze queues on reconnect
+  nvme-rdma: Unfreeze queues on reconnect
+
+Hannes Reinecke (1):
+  nvme-tcp: Update number of hardware queues before using them
+
+James Smart (2):
+  nvme-fc: avoid race between time out and tear down
+  nvme-fc: fix controller reset hang during traffic
+
+ drivers/nvme/host/fc.c   | 28 +++++++++++++++++++---------
+ drivers/nvme/host/rdma.c | 15 ++++++++-------
+ drivers/nvme/host/tcp.c  | 18 +++++++++---------
+ 3 files changed, 36 insertions(+), 25 deletions(-)
+
+-- 
+2.29.2
+
