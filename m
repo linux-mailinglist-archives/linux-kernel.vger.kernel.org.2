@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBB13DE0E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26BA3DE0EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232152AbhHBUoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:44:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59052 "EHLO mail.kernel.org"
+        id S232322AbhHBUok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:44:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231194AbhHBUoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:44:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5555E610FB;
-        Mon,  2 Aug 2021 20:44:22 +0000 (UTC)
+        id S232216AbhHBUoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 16:44:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4540E604D7;
+        Mon,  2 Aug 2021 20:44:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627937062;
-        bh=Cgk3kYA9A8Fe0MkJ3IArEFUyV3QWUPaplz9QppWpzYc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PoGIkpksbdNTqmas5Ju8aLUJUHE2VXnHVa8u0mLqoN2DJk32IUxefe6dYWeC/czzZ
-         kds8iS3SIy0lik0i1pUxupuF7uje/QNepPI9/UFJAJjchXS1Hg423x+rwi3487vWSw
-         BJTT4dGKGpW9AlIortl1ak1nLqlUcQbTWufkoQit7/u5ZnKjdNubBDwlMncwaj+HRX
-         FrWYWp9QTyBy5pRggPCjnBX/h9tFlSrIYYxgZ61cna6Xrxvg/vHo75Q/dwQYwDHpdw
-         f2wVjfy09ZhICzUtLky+KzPMfwXxeUf6tgYycrXcTXcGVlPDIYyCrvOhkoS7kzoPjr
-         vBvFbf14YhhAw==
-Received: by mail-wm1-f49.google.com with SMTP id e25-20020a05600c4b99b0290253418ba0fbso759861wmp.1;
-        Mon, 02 Aug 2021 13:44:22 -0700 (PDT)
-X-Gm-Message-State: AOAM532QX1RqqZRHbS9PBi70boEuo8EoLD/dOOjqJpiBCRfN1/rSF8F0
-        Prhwp3vzuDy/EOBq5ECFI8w1F4UOvYXqPeqjJ9s=
-X-Google-Smtp-Source: ABdhPJzZliXA2hOgIqx700o9V8Zjjcs/EHxx3DVnpQyQ9Oc9/nINX0q75mxOl4QwBPmPGWMbtCwoCU+xWqGb4ZMl1gQ=
-X-Received: by 2002:a05:600c:3b08:: with SMTP id m8mr712652wms.84.1627937061005;
- Mon, 02 Aug 2021 13:44:21 -0700 (PDT)
+        s=k20201202; t=1627937069;
+        bh=knoH2cdCXTM2mbLN1i5m2fnGMDLvpU6bTazpD8ALCvY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=PIKntqSSOeVJCJZrboiUiQMe+ehZnhNMRZqzmWtCaWWzVhF+GPu2djKQnb8h8OL90
+         qduhWNjrDtqtKHRW8rez+UXZkmXM9funm0bCK2Mz//V4twUpxWJfoNAmmSii4rAgE5
+         vatjacrAaVJzjx+VgTb85DL9Jjac1P0W9phQ/pYlh9YNDLP0zskL6cqyC6ArFC4JQp
+         jaj9Y7G8Px9mUUxFl6Ja8kus3pn9H1dcO3v7fz7Glw1EqKj1humN9Fg2wC5c9CwUNJ
+         AgVXoAbVSvEZfPfGGtbAO0z7jHfS0eAVROhHERjeNar+nHzh8111rYj9SiGNseM1WM
+         a8YUyQaLuX0TQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Colin King <colin.king@canonical.com>,
+        alsa-devel@alsa-project.org
+Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: tlv320aic32x4: make array clocks static, makes object smaller
+Date:   Mon,  2 Aug 2021 21:44:12 +0100
+Message-Id: <162793640673.55982.9347751869143903771.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210801064807.138641-1-colin.king@canonical.com>
+References: <20210801064807.138641-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20210802144813.1152762-1-arnd@kernel.org> <20210802162250.GA12345@corigine.com>
- <CAK8P3a0R1wvqNE=tGAZt0GPTZFQVw=0Y3AX0WCK4hMWewBc2qA@mail.gmail.com>
- <20210802190459.ruhfa23xcoqg2vj6@skbuf> <CAK8P3a1sT+bJitQH6B5=+bnKzn-LMJX1LnQtGTBptuDG-co94g@mail.gmail.com>
- <20210802202047.sqc6yef75dcoowuc@skbuf>
-In-Reply-To: <20210802202047.sqc6yef75dcoowuc@skbuf>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 2 Aug 2021 22:44:04 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0hLcNvR0Td1fpu6N0r1Hb7uSq0HPKkF30uCANuDg-SrQ@mail.gmail.com>
-Message-ID: <CAK8P3a0hLcNvR0Td1fpu6N0r1Hb7uSq0HPKkF30uCANuDg-SrQ@mail.gmail.com>
-Subject: Re: [PATCH] switchdev: add Kconfig dependencies for bridge
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Simon Horman <simon.horman@corigine.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Ivan Vecera <ivecera@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Networking <netdev@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "oss-drivers@corigine.com" <oss-drivers@corigine.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 10:21 PM Vladimir Oltean <vladimir.oltean@nxp.com> wrote:
->
-> On Mon, Aug 02, 2021 at 09:55:20PM +0200, Arnd Bergmann wrote:
-> > On Mon, Aug 2, 2021 at 9:05 PM Vladimir Oltean <vladimir.oltean@nxp.com> wrote:
-> > >
-> > > On Mon, Aug 02, 2021 at 08:29:25PM +0200, Arnd Bergmann wrote:
-> > > > If this looks correct to you, I can submit it as a standalone patch.
-> > >
-> > > I think it's easiest I just ask you to provide a .config that triggers
-> > > actual build failures and we can go from there.
-> >
-> > This one is with an arm64 allmodconfig, plus
-> >
-> > CONFIG_PTP_1588_CLOCK=y
-> > CONFIG_TI_K3_AM65_CPTS=y
-> > CONFIG_TI_K3_AM65_CPSW_NUSS=y
->
-> Yeah, ok, I remember now, I saw that TI_CPSW_SWITCHDEV is tristate, and
-> incorrectly thought that TI_K3_AM65_CPSW_SWITCHDEV (which is mostly a
-> copy-paste job of the main cpsw anyway, makes you cringe that they wrote
-> a separate driver for it) is tristate too.
+On Sun, 1 Aug 2021 07:48:07 +0100, Colin King wrote:
+> Don't populate the array clocks on the stack but instead it
+> static. Makes the object code smaller by 316 bytes.
+> 
+> Before:
+>    text    data     bss     dec     hex filename
+>   63668   28264       0   91932   1671c ./sound/soc/codecs/tlv320aic32x4.o
+> 
+> [...]
 
-Right.
+Applied to
 
-> The options are either to make TI_K3_AM65_CPSW_SWITCHDEV tristate like
-> TI_CPSW_SWITCHDEV is, and to edit the Makefile accordingly to make
-> am65-cpsw-switchdev.o part of obj-$(CONFIG_TI_K3_AM65_CPSW_SWITCHDEV),
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-This probably won't work as this is currently part of the ti-am65-cpsw-nuss.ko
-module, so I would assume that it's not easy to separate from the main module.
+Thanks!
 
-> or to extend the BRIDGE || BRIDGE=n dependency to TI_K3_AM65_CPSW_NUSS
-> which is the direct tristate dependency of CONFIG_TI_K3_AM65_CPSW_SWITCHDEV,
+[1/1] ASoC: tlv320aic32x4: make array clocks static, makes object smaller
+      commit: ea9df9840fd5d766b9e98b0073890de4be68b062
 
-That would work, but it's slightly more heavy-handed than my proposal, as this
-prevents TI_K3_AM65_CPSW_NUSS from being built-in when BRIDGE is a module,
-even when switchdev support is completely disabled.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> and to make CONFIG_TI_K3_AM65_CPSW_SWITCHDEV simply depend on BRIDGE.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This would not be needed then I think.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-       Arnd
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
