@@ -2,80 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E490C3DD45D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD283DD463
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhHBK4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 06:56:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44038 "EHLO mail.kernel.org"
+        id S233385AbhHBK4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 06:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232553AbhHBK4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 06:56:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99A0860FD8;
-        Mon,  2 Aug 2021 10:55:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627901751;
-        bh=FydgtdwsRp9EnGLAnZNQbni8BGi4iPlFDNZ5+Emj/bA=;
+        id S232553AbhHBK4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 06:56:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFC9D60FA0;
+        Mon,  2 Aug 2021 10:56:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627901800;
+        bh=h+7I0H8rF/Is64jUPUf1bffmm3WwpS87lete8aEqJRI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MvBW1mFBfhWkp0RBKF+6rg70GNMqy/Ec+rGLHr9Ib+LS8A4Wn5wG+szv9Xfj8Z6QI
-         6fUU9w5xm+BMjbL9SbQ0Oso5xWOJ89CdZuCx2EF1mHeGKGSqOKSWyyDXtlZiM+X7VM
-         l6LHTB6s9uL2CWcNTxtbGafHUBYmR24zuSfY+KRQOVaCTmDzulBFvuP5vqjUPF/STf
-         GZAlfD1MvRTjG2fhXvc6VcceLei2ZKbtfdSkQxmg6r2vWyg1rKF4+s7Bvl1XGDyY76
-         nqYofb5tXVzNHKDJ1m7EUsm3XyckKGDN1FlCa2R4Sqn1VxZZvZ7cMat6rEfaDEADzU
-         kXlX2gcQrkz5Q==
-Date:   Mon, 2 Aug 2021 11:55:45 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Georgi Djakov <djakov@kernel.org>, isaacm@codeaurora.org,
-        David Airlie <airlied@linux.ie>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Sean Paul <sean@poorly.run>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm@vger.kernel.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/3] iommu/drm/msm: Allow non-coherent masters to use
- system cache
-Message-ID: <20210802105544.GA27657@willie-the-truck>
-References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
- <20210728140052.GB22887@mms-0441>
- <8b2742c8891abe4fec3664730717a089@codeaurora.org>
+        b=GvATdkkoc2VbLAmP00SHg0cv07aLz8LGN4QS1SwDpd4ZNMMsM/zcPlzAh/XSyZ5F7
+         YVJNzzef5lkGNL3K43RsqDn9e1ED7KSBKwB89uMZy+8z21cNOAWz0Mzxy2wcTE5qbC
+         voykBx81DgFi24tnvRkKATvnnlQUEyjvAJ+W2pNk=
+Date:   Mon, 2 Aug 2021 12:56:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sandeep Patil <sspatil@android.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.13 001/104] pipe: make pipe writes always wake
+ up readers
+Message-ID: <YQfPZAytBFdFJeH7@kroah.com>
+References: <20210802104831.2095760-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8b2742c8891abe4fec3664730717a089@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210802104831.2095760-1-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 10:08:22AM +0530, Sai Prakash Ranjan wrote:
-> On 2021-07-28 19:30, Georgi Djakov wrote:
-> > On Mon, Jan 11, 2021 at 07:45:02PM +0530, Sai Prakash Ranjan wrote:
-> > > commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
-> > > removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
-> > > the memory type setting required for the non-coherent masters to use
-> > > system cache. Now that system cache support for GPU is added, we will
-> > > need to set the right PTE attribute for GPU buffers to be sys cached.
-> > > Without this, the system cache lines are not allocated for GPU.
-> > > 
-> > > So the patches in this series introduces a new prot flag IOMMU_LLC,
-> > > renames IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
-> > > and makes GPU the user of this protection flag.
-> > 
-> > Thank you for the patchset! Are you planning to refresh it, as it does
-> > not apply anymore?
-> > 
+On Mon, Aug 02, 2021 at 06:46:48AM -0400, Sasha Levin wrote:
+> From: Linus Torvalds <torvalds@linux-foundation.org>
 > 
-> I was waiting on Will's reply [1]. If there are no changes needed, then
-> I can repost the patch.
+> commit 3a34b13a88caeb2800ab44a4918f230041b37dd9 upstream.
+> 
+> Since commit 1b6b26ae7053 ("pipe: fix and clarify pipe write wakeup
+> logic") we have sanitized the pipe write logic, and would only try to
+> wake up readers if they needed it.
+> 
+> In particular, if the pipe already had data in it before the write,
+> there was no point in trying to wake up a reader, since any existing
+> readers must have been aware of the pre-existing data already.  Doing
+> extraneous wakeups will only cause potential thundering herd problems.
+> 
+> However, it turns out that some Android libraries have misused the EPOLL
+> interface, and expected "edge triggered" be to "any new write will
+> trigger it".  Even if there was no edge in sight.
+> 
+> Quoting Sandeep Patil:
+>  "The commit 1b6b26ae7053 ('pipe: fix and clarify pipe write wakeup
+>   logic') changed pipe write logic to wakeup readers only if the pipe
+>   was empty at the time of write. However, there are libraries that
+>   relied upon the older behavior for notification scheme similar to
+>   what's described in [1]
+> 
+>   One such library 'realm-core'[2] is used by numerous Android
+>   applications. The library uses a similar notification mechanism as GNU
+>   Make but it never drains the pipe until it is full. When Android moved
+>   to v5.10 kernel, all applications using this library stopped working.
+> 
+>   The library has since been fixed[3] but it will be a while before all
+>   applications incorporate the updated library"
+> 
+> Our regression rule for the kernel is that if applications break from
+> new behavior, it's a regression, even if it was because the application
+> did something patently wrong.  Also note the original report [4] by
+> Michal Kerrisk about a test for this epoll behavior - but at that point
+> we didn't know of any actual broken use case.
+> 
+> So add the extraneous wakeup, to approximate the old behavior.
+> 
+> [ I say "approximate", because the exact old behavior was to do a wakeup
+>   not for each write(), but for each pipe buffer chunk that was filled
+>   in. The behavior introduced by this change is not that - this is just
+>   "every write will cause a wakeup, whether necessary or not", which
+>   seems to be sufficient for the broken library use. ]
+> 
+> It's worth noting that this adds the extraneous wakeup only for the
+> write side, while the read side still considers the "edge" to be purely
+> about reading enough from the pipe to allow further writes.
+> 
+> See commit f467a6a66419 ("pipe: fix and clarify pipe read wakeup logic")
+> for the pipe read case, which remains that "only wake up if the pipe was
+> full, and we read something from it".
+> 
+> Link: https://lore.kernel.org/lkml/CAHk-=wjeG0q1vgzu4iJhW5juPkTsjTYmiqiMUYAebWW+0bam6w@mail.gmail.com/ [1]
+> Link: https://github.com/realm/realm-core [2]
+> Link: https://github.com/realm/realm-core/issues/4666 [3]
+> Link: https://lore.kernel.org/lkml/CAKgNAkjMBGeAwF=2MKK758BhxvW58wYTgYKB2V-gY1PwXxrH+Q@mail.gmail.com/ [4]
+> Link: https://lore.kernel.org/lkml/20210729222635.2937453-1-sspatil@android.com/
+> Reported-by: Sandeep Patil <sspatil@android.com>
+> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  fs/pipe.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 
-I still think you need to handle the mismatched alias, no? You're adding
-a new memory type to the SMMU which doesn't exist on the CPU side. That
-can't be right.
+This is already in the 5.13 queue, did you mean to send this again?
 
-Will
+thanks,
+
+greg k-h
