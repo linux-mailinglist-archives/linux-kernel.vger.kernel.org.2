@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2363DE231
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1461D3DE23E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232977AbhHBWKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 18:10:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232164AbhHBWKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 18:10:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B0D8F61038;
-        Mon,  2 Aug 2021 22:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627942206;
-        bh=7Zobgdu8H+pRVzPBJTTYr02jgO5p6AzjuT070XbfWNU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kiuv9buDVmrsmcoPIua26Ahc2moO+IPaYY8B9RNpOdrFJ2Pf0KF+/m5X4k791KeZP
-         3IBsIC1wD4WiPLrsxLJlxBVzglK8GZsjtseFNjucXxQnq4HT27sSuZnnKyDAwA7Hm+
-         v0fI7DWmpvDqNyuNww6S8HtU9FjFR4qIOO0SWNoPk43WzVHizePC3XK5SGxtkdREhy
-         z16tIMdJZUbui2qg1aPT8rZL7CcM0eirhMQH2J/c1REm2sznTAYy3YcSV4iqUcHZAc
-         UoT+FeWS2KaUQMc3D9S19JFn6tZB+Y/vWTyxq+vH/aIC3coB4xYtCRfOWWAT4UfmT2
-         ixLEX3mkLnQaA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A2E6C60A45;
-        Mon,  2 Aug 2021 22:10:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232058AbhHBWOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 18:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231827AbhHBWN7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 18:13:59 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8063DC06175F;
+        Mon,  2 Aug 2021 15:13:49 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id y34so36406998lfa.8;
+        Mon, 02 Aug 2021 15:13:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+LY1B0NtA0JK5a08N4iEr/UtsIVulJFgN2MwPHf+hzE=;
+        b=W4o8h76qDEBZT08972HXsxiyJvUJs66TEj46yzF4P6vCXqcCaTdYTnvZ9tAPLrb7Xc
+         EqC9AMGEXzC4bQRm9z4Cz+b5obOYTPJxOa4464ZB3lJTZtoVHXuFEqOTdFC48Ubwm77T
+         yLf9KnvlVXcrQbiMQt0b8WMlSwjGR1ELBehR3ucuYEBhce2r9L3i59YaqQfdIexDlFTt
+         KJ5ZNHM9MNzeZKUcrgdLfREcGILRM1T4sEbDUrgkhcIioUBP2abZS2t/Sjf0dFjg+96z
+         NhMt1D5b1Me6pnmrZoYSweJKun9ye4xzd2pbKhTc0Yzttdlj7h11qJnsTK1bw0Mw2RJU
+         iY5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+LY1B0NtA0JK5a08N4iEr/UtsIVulJFgN2MwPHf+hzE=;
+        b=piLUh5QkuDFFQjlkgETf3UIkC94ONl9kFeP8Rnri9eQ70y/yVyHjCL2GyLqIc5CHdL
+         jm318oaH0xskVodLU9YuCf8yEL0L1I+V8ukLhOU14ROg62zulyroWBVoti8xnc5Jwl97
+         E8bwkB7yzWFJrEM5eIDio5/836Iwc/YG7VmrsDA3oGqfMHZ2KP1ZUrw7V7TUIgC76V5W
+         TzKYmrCIeSwfzZrgtf9sJNoTMZO+tkUVpQWLnbeqXFNb1opyeThXh+lZYsq9Pi/CYkLQ
+         1gKN6foIfofwIp6zX59ihbLU1UCKFNcut9g8R/acDVNqwaoiw7MZjW7F80JwTB0GAXuo
+         aqEQ==
+X-Gm-Message-State: AOAM533JNckxVixUcwZMJXCgAha1SWTtBB7LSiCiUn105QpPATu4OaLS
+        IY/7w+HZ7Odr9+W7lKIuWO8=
+X-Google-Smtp-Source: ABdhPJyOe00fOlmprnifb2gQlZGYqeZyMI27H2Z6qrdIeJS+KLfDZvcsJ/u4X/ah51z/dC1pnMeNkg==
+X-Received: by 2002:ac2:4c29:: with SMTP id u9mr4117887lfq.410.1627942427885;
+        Mon, 02 Aug 2021 15:13:47 -0700 (PDT)
+Received: from localhost.localdomain (94-29-22-96.dynamic.spd-mgts.ru. [94.29.22.96])
+        by smtp.gmail.com with ESMTPSA id c10sm960167ljn.11.2021.08.02.15.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 15:13:47 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/4] Tegra FUSE clock improvements for 5.15
+Date:   Tue,  3 Aug 2021 01:13:32 +0300
+Message-Id: <20210802221336.32016-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: 3c509: make the array if_names static const,
- makes object smaller
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162794220666.7989.3587377271310503245.git-patchwork-notify@kernel.org>
-Date:   Mon, 02 Aug 2021 22:10:06 +0000
-References: <20210801152650.146572-1-colin.king@canonical.com>
-In-Reply-To: <20210801152650.146572-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hello,
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This series improves handling of the FUSE clock by keeping it enabled only
+when necessary.
 
-On Sun,  1 Aug 2021 16:26:50 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Don't populate the array if_names on the stack but instead it
-> static const. Makes the object code smaller by 99 bytes.
-> 
-> Before:
->    text    data     bss     dec     hex filename
->   27886   10752     672   39310    998e ./drivers/net/ethernet/3com/3c509.o
-> 
-> [...]
+Dmitry Osipenko (4):
+  soc/tegra: fuse: Clear fuse->clk on driver probe failure
+  soc/tegra: fuse: Add runtime PM support
+  soc/tegra: fuse: Enable fuse clock on suspend for Tegra124
+  clk: tegra: Remove CLK_IS_CRITICAL flag from fuse clock
 
-Here is the summary with links:
-  - net: 3c509: make the array if_names static const, makes object smaller
-    https://git.kernel.org/netdev/net-next/c/771edeabcb95
+ drivers/clk/tegra/clk-tegra-periph.c  |  6 +--
+ drivers/soc/tegra/fuse/fuse-tegra.c   | 60 +++++++++++++++++++++++++++
+ drivers/soc/tegra/fuse/fuse-tegra20.c | 11 +++--
+ drivers/soc/tegra/fuse/fuse-tegra30.c | 16 ++++---
+ drivers/soc/tegra/fuse/fuse.h         |  2 +
+ 5 files changed, 81 insertions(+), 14 deletions(-)
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+-- 
+2.32.0
 
