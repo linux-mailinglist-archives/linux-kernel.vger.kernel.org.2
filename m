@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6CB3DD995
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1A33DDA80
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236024AbhHBOBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:01:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40902 "EHLO mail.kernel.org"
+        id S238421AbhHBOPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236231AbhHBNzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:55:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7426B6113D;
-        Mon,  2 Aug 2021 13:53:41 +0000 (UTC)
+        id S236353AbhHBOCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:02:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9189D61206;
+        Mon,  2 Aug 2021 13:57:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912421;
-        bh=ImPCBySZwg7mTQZobgxAAJo0iA67emeleqf2EXN0ehc=;
+        s=korg; t=1627912625;
+        bh=BX+yWh97LQhZaktYnVrL82g/nJzEZjkgIoevaOt8Kno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i6H2N91+XJSxyfZAbuP7yVZOWy2OabfAWdlF5txhjRwaAVKezL0g6Ehg/iSpsIzvo
-         piIPnI04FoEAxkas2T+yzpasTsYJP6gLAqcqIbCFkJqkp2/QrrFLNJCvW0H7pLEXSJ
-         IP69TzVbAYjt+RnR15EMVAR+jTIFNsSoKbZOtJ4Q=
+        b=bPLhYvEhAellKJZGsaETSSiPDJKqbqwZCN6Xlw57BUcPfQBz7v2gyaxepkA5L2NTe
+         dph4kIXZJcaEBerHoxO76i15/ok9XBvrAQ3iNtcWO4AlOM7xG8TsjBF84w2aCI3ykc
+         qw2VPsLQ5ZsjY6RwhQsHw1LY4fGbnobJou+2MGuI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
+        stable@vger.kernel.org, Maor Dickman <maord@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 51/67] skmsg: Make sk_psock_destroy() static
+Subject: [PATCH 5.13 077/104] net/mlx5: E-Switch, Set destination vport vhca id only when merged eswitch is supported
 Date:   Mon,  2 Aug 2021 15:45:14 +0200
-Message-Id: <20210802134340.779743297@linuxfoundation.org>
+Message-Id: <20210802134346.549045440@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+From: Maor Dickman <maord@nvidia.com>
 
-[ Upstream commit 8063e184e49011f6f3f34f6c358dc8a83890bb5b ]
+[ Upstream commit c671972534c6f7fce789ac8156a2bc3bd146f806 ]
 
-sk_psock_destroy() is a RCU callback, I can't see any reason why
-it could be used outside.
+Destination vport vhca id is valid flag is set only merged eswitch isn't supported.
+Change destination vport vhca id value to be set also only when merged eswitch
+is supported.
 
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20210127221501.46866-1-xiyou.wangcong@gmail.com
+Fixes: e4ad91f23f10 ("net/mlx5e: Split offloaded eswitch TC rules for port mirroring")
+Signed-off-by: Maor Dickman <maord@nvidia.com>
+Reviewed-by: Roi Dayan <roid@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/skmsg.h | 1 -
- net/core/skmsg.c      | 3 +--
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 82126d529798..822c048934e3 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -395,7 +395,6 @@ static inline struct sk_psock *sk_psock_get(struct sock *sk)
- }
- 
- void sk_psock_stop(struct sock *sk, struct sk_psock *psock);
--void sk_psock_destroy(struct rcu_head *rcu);
- void sk_psock_drop(struct sock *sk, struct sk_psock *psock);
- 
- static inline void sk_psock_put(struct sock *sk, struct sk_psock *psock)
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index c4c224a5b9de..5dd5569f89bf 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -676,14 +676,13 @@ static void sk_psock_destroy_deferred(struct work_struct *gc)
- 	kfree(psock);
- }
- 
--void sk_psock_destroy(struct rcu_head *rcu)
-+static void sk_psock_destroy(struct rcu_head *rcu)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+index d18a28a6e9a6..91571156a89d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+@@ -382,10 +382,11 @@ esw_setup_vport_dest(struct mlx5_flow_destination *dest, struct mlx5_flow_act *f
  {
- 	struct sk_psock *psock = container_of(rcu, struct sk_psock, rcu);
- 
- 	INIT_WORK(&psock->gc, sk_psock_destroy_deferred);
- 	schedule_work(&psock->gc);
- }
--EXPORT_SYMBOL_GPL(sk_psock_destroy);
- 
- void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
- {
+ 	dest[dest_idx].type = MLX5_FLOW_DESTINATION_TYPE_VPORT;
+ 	dest[dest_idx].vport.num = esw_attr->dests[attr_idx].rep->vport;
+-	dest[dest_idx].vport.vhca_id =
+-		MLX5_CAP_GEN(esw_attr->dests[attr_idx].mdev, vhca_id);
+-	if (MLX5_CAP_ESW(esw->dev, merged_eswitch))
++	if (MLX5_CAP_ESW(esw->dev, merged_eswitch)) {
++		dest[dest_idx].vport.vhca_id =
++			MLX5_CAP_GEN(esw_attr->dests[attr_idx].mdev, vhca_id);
+ 		dest[dest_idx].vport.flags |= MLX5_FLOW_DEST_VPORT_VHCA_ID;
++	}
+ 	if (esw_attr->dests[attr_idx].flags & MLX5_ESW_DEST_ENCAP) {
+ 		if (pkt_reformat) {
+ 			flow_act->action |= MLX5_FLOW_CONTEXT_ACTION_PACKET_REFORMAT;
 -- 
 2.30.2
 
