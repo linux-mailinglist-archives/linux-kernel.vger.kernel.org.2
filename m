@@ -2,117 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA39D3DDDD4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8F13DDDE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 18:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbhHBQip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 12:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhHBQio (ORCPT
+        id S232884AbhHBQla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 12:41:30 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3563 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhHBQl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 12:38:44 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626C9C06175F;
-        Mon,  2 Aug 2021 09:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=2C5VpDvj4kp12ZP3fbrD/BbegWSigYIIIq38MkNNSfo=; b=hxhcVz2qm9o0yLFpGk1SYcoHF
-        Wodep1rqY0KYRewJxH1HNutRiIyNnLcsfFFJXK0pLy4JMS0Y+Q00eEALPAjZF/E88PHgAuUWrEV7R
-        7RFY/jMJqxD6dcxMyu3GKV5wJcKbqsbLrhp604K8raxA7uF1hWFysvkVQGu7Hmwfhe921uQjmco7k
-        Orst7YoxF6wmS97e7jXieXl/iegssZYMzEnZCNTfs0RiFH8HQjj7iFHVG4euTh2Ku61Hp+T0oj12H
-        mzJelcqgmFGXZLq7trh1ErTuVE6ywE1Syi8lLtsdc7bDtDQzGYom28l7JBBxXg5CFLU1/xMKb5DVf
-        YnDgRptgQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46858)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mAaxP-0005x4-VN; Mon, 02 Aug 2021 17:38:27 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mAaxM-00032D-Kg; Mon, 02 Aug 2021 17:38:24 +0100
-Date:   Mon, 2 Aug 2021 17:38:24 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     alexandre.belloni@bootlin.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        thierry.reding@gmail.com, lee.jones@linaro.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Ludovic.Desroches@microchip.com, o.rempel@pengutronix.de,
-        andy.shevchenko@gmail.com, aardelean@deviqon.com,
-        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        broonie@kernel.org, Jonathan.Cameron@huawei.com,
-        linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, wsa@kernel.org, kernel@pengutronix.de,
-        akpm@linux-foundation.org, torvalds@linux-foundation.org,
-        Claudiu.Beznea@microchip.com
-Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
- devm_clk_get for prepared and enabled clocks enabled clocks]
-Message-ID: <20210802163824.GK22278@shell.armlinux.org.uk>
-References: <YPlfcbkxiBmB+vw1@kunai>
- <CAHp75VfC=s12Unw3+Cn0ag71mM5i90=Jbwj4nYwB5cPKiUTRSA@mail.gmail.com>
- <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
- <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
- <20210728202547.7uvfwflpruku7yps@pengutronix.de>
- <20210728204033.GF22278@shell.armlinux.org.uk>
- <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
- <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
- <20210802094810.GJ22278@shell.armlinux.org.uk>
- <20210802152755.ibisunvibmwhiyry@pengutronix.de>
+        Mon, 2 Aug 2021 12:41:29 -0400
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GdkKL5RtDz6FFxb;
+        Tue,  3 Aug 2021 00:41:10 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 18:41:18 +0200
+Received: from [10.47.87.154] (10.47.87.154) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 2 Aug 2021
+ 17:41:17 +0100
+Subject: Re: [PATCH v4 5/6] iova: Add iova_len argument to init_iova_domain()
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
+CC:     <joro@8bytes.org>, <baolu.lu@linux.intel.com>,
+        <iommu@lists.linux-foundation.org>, <linuxarm@huawei.com>,
+        <thierry.reding@gmail.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <jonathanh@nvidia.com>, <sakari.ailus@linux.intel.com>,
+        <bingbu.cao@intel.com>, <tian.shu.qiu@intel.com>,
+        <mchehab@kernel.org>, <gregkh@linuxfoundation.org>,
+        <digetx@gmail.com>, <mst@redhat.com>, <jasowang@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <chenxiang66@hisilicon.com>
+References: <1626259003-201303-1-git-send-email-john.garry@huawei.com>
+ <1626259003-201303-6-git-send-email-john.garry@huawei.com>
+ <20210802150644.GD28735@willie-the-truck>
+ <c6be0b9f-531b-dc12-2747-3acbecfcd531@huawei.com>
+ <1d06eda1-9961-d023-f5e7-fe87e768f067@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <a7c2ce29-ca28-83a3-6432-a508df9825ac@huawei.com>
+Date:   Mon, 2 Aug 2021 17:40:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210802152755.ibisunvibmwhiyry@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <1d06eda1-9961-d023-f5e7-fe87e768f067@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.87.154]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 05:27:55PM +0200, Uwe Kleine-König wrote:
-> Hello Russell,
+On 02/08/2021 17:16, Robin Murphy wrote:
+> On 2021-08-02 17:06, John Garry wrote:
+>> On 02/08/2021 16:06, Will Deacon wrote:
+>>> On Wed, Jul 14, 2021 at 06:36:42PM +0800, John Garry wrote:
+>>>> Add max opt argument to init_iova_domain(), and use it to set the 
+>>>> rcaches
+>>>> range.
+>>>>
+>>>> Also fix up all users to set this value (at 0, meaning use default).
+>>> Wrap that in init_iova_domain_defaults() to avoid the mysterious 0?
+>>
+>> Sure, I can do something like that. I actually did have separate along 
+>> those lines in v3 before I decided to change it.
 > 
-> On Mon, Aug 02, 2021 at 10:48:10AM +0100, Russell King (Oracle) wrote:
-> > I think devm_clk_get() should not be part of CCF but should be
-> > part of the interface level - it's silly to have devm_clk_get()
-> > being CCF but not clk_get(). The same should go for the other
-> > devm wrappers around the plain clk_* interfaces.
+> Y'know, at this point I'm now starting to seriously wonder whether 
+> moving the rcaches into iommu_dma_cookie wouldn't make a whole lot of 
+> things simpler... :/
+
+As I see, the rcache stuff isn't really specific to IOVA anyway, so it 
+seems sane.
+
 > 
-> What is the practical difference between "Function X is part of CCF" and
-> "Function X is part of the clk interface and there is only CCF who
-> implements it"?
+> Does that sound like crazy talk to you, or an idea worth entertaining?
 
-clkdev is maintained by me as part of the API, and provides clk_get()
-functionality for all clk implementations. To then have devm_clk_get(),
-which merely provides a wrapper around clk_get() adding the devm
-semantics being part of CCF is not sane - devm_clk_get() isn't
-specific to CCF or in fact any clk API implementation.
+If you're going to start moving things, has anyone considered putting 
+rcache support in lib as a generic solution to "Magazines and Vmem: .." 
+paper?
 
-> > There have been several different approaches to wrapping things up,
-> > but here's a question: should we make it easier to do the lazy thing
-> > (get+enable) or should we make it easier to be power efficient?
-> > Shouldn't we be encouraging people to write power efficient drivers?
-> 
-> Yeah, sounds compelling, but I wonder if that's of practical importance.
-> How many driver authors do you expect to lure into making a better
-> driver just because devm_clk_get_prepared() doesn't exist? In contrast:
-> How many drivers become simpler with devm_clk_get_prepared() and so
-> it becomes easier to maintain them and easier to spot bugs?
-> In the absence of devm_clk_get_prepared(), is it better that several
-> frameworks (or drivers) open code it?
-
-It probably depends on where you stand on power management and power
-efficiency issues. Personally, I would like to see more effort put
-into drivers to make them more power efficient, and I believe in the
-coming years, power efficiency is going to become a big issue.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thanks,
+John
