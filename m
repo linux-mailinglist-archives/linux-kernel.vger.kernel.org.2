@@ -2,230 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D6A3DE2AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFB93DE2AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 00:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbhHBWvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 18:51:08 -0400
-Received: from mail-io1-f46.google.com ([209.85.166.46]:41833 "EHLO
-        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhHBWvH (ORCPT
+        id S232834AbhHBWwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 18:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232130AbhHBWwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 18:51:07 -0400
-Received: by mail-io1-f46.google.com with SMTP id r6so13879071ioj.8;
-        Mon, 02 Aug 2021 15:50:56 -0700 (PDT)
+        Mon, 2 Aug 2021 18:52:04 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494C5C06175F;
+        Mon,  2 Aug 2021 15:51:53 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id o185so25940619oih.13;
+        Mon, 02 Aug 2021 15:51:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Gc7O31W9o/ImGg2xRSYFF5T9hdypGeqEYgTYqohoq0k=;
+        b=Oyd8OU0NqfFZPvv6vbZ/1gCZ06byBJNjjqj5k6R0A1LC0tTLUAJRGbxdId+r10d/L4
+         wFGsOTihTxkItKcPc/gVv4mTCPnB6yqk+JKtKYbKGIdsng6rdPHt1kfdRwe3rxa2CD2S
+         Q4YQUJyPVni0r/jVOaDjaIQRWHFf08N7+BUwM3eHXJJm/k9txsgeitsuLUvCpS2iKOj4
+         V0J6wbS8I8RYAPNrt1Me+TiVHmk1r0tji7pRj+eK5vzUgsznn4tfLGwampV19VW+OxB7
+         qRmiLu7MOCC5tpPQ4Exi3egcJ64WAO5yFq9gIZ3hcWuStjFEzgIOG14WwQ/0Zyi1eP8v
+         /rYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i/F4j+M7HVJEvHKJ2P+dsejOG3GT9RgPPzMUplBDxmc=;
-        b=OBZ0woradCx25ma2M2hI3YBHOMQYiL7xVzIl9R8jAR91Fs65W2dOBmDCBckmhDz6va
-         XQfWY60pf2/eRNeesEjnSxyFywP0M2xn5kjbT/u46GvIhM5VX1WgYIa7Cqe8AvXwMNst
-         oUMxvCbZ5tVls4OnIBbWW/2qbHEwIuX+xnHxsn/Uv99o42SRL2vmJhOIdlgkzHq2d2L7
-         ua/1n27yahmyYciQmJreOzGYmG5PayUF6tIj7MsbsxTxOLzwM8W6kC+oM4lcfI2mmcsF
-         pI+Ie9KbMjWajZZZ+nBfFO79cfWfEJZCBdQ4hTAxfCzw8hmrOHnlZyATjLPL6PZqG0aj
-         9jZA==
-X-Gm-Message-State: AOAM530I+ddGKXUabO0PQdo+Q9OfT8iUBxD66rZF71G62NJDig28NgF4
-        g+89mGh9PzddXXBI0PwP+g==
-X-Google-Smtp-Source: ABdhPJzU91hJ+fXSq9vSjd/JxyD8l3kfaa55GgZIbbDJZmhB9B9cdKN8uNK/sV04rNOQVY5XCRa9aA==
-X-Received: by 2002:a05:6638:4115:: with SMTP id ay21mr16712898jab.13.1627944656371;
-        Mon, 02 Aug 2021 15:50:56 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id s21sm7996018iot.33.2021.08.02.15.50.54
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=Gc7O31W9o/ImGg2xRSYFF5T9hdypGeqEYgTYqohoq0k=;
+        b=oYIVIv0P0myU71XBXdB7zAUX2YAnmOM6FR2WbCWJbt6gGuKc15JhPaBdZePgtvx+Sg
+         LVXnqdFuq4IEA5aGz5jgUyffCAg3epL8tu9oY+QsnS1V7cJ7i5f0d+HAwSc6MoUWFix1
+         2Qq1//3V1Z0SKPiDo7pS3GfqQmIXYzCSmB2UiNclK/lya9g6kzT0QJ6GXNzQ7INQq3Gu
+         tKp64qViHQAxswe5+14kEUb7DxaomZ8pFjJLTV787Xgi8g7p3RajSmtmzkBxh8w/MKMi
+         5Y0/9q1wF5QwmMaeABRsx1qv5hC02JbrWiqUeG4FfJ5YFIscKWzKLIAblBeROwUM5f8w
+         oVLw==
+X-Gm-Message-State: AOAM5317PAXCJd+4w/ptm3aNs+P4QgoC0tmc3wnX/zX+u26Q9Fr76vcW
+        bUstn9OU2CEIJgXXku/LBiQ=
+X-Google-Smtp-Source: ABdhPJzaeWHyE8wIYgnLy1P8X5cZdb9wecQgbe2joW39eEe7VB9o+YQTblkontFfbwYs7qBBfPYclQ==
+X-Received: by 2002:a54:4806:: with SMTP id j6mr12526276oij.66.1627944712738;
+        Mon, 02 Aug 2021 15:51:52 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r1sm1967921ooc.16.2021.08.02.15.51.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 15:50:55 -0700 (PDT)
-Received: (nullmailer pid 1771316 invoked by uid 1000);
-        Mon, 02 Aug 2021 22:50:53 -0000
-Date:   Mon, 2 Aug 2021 16:50:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH 3/5] dt-bindings: PCI: kirin: Add support for Kirin970
-Message-ID: <YQh2zcFSKW+qucAG@robh.at.kernel.org>
-References: <cover.1627559126.git.mchehab+huawei@kernel.org>
- <2cf7bd80d0b54f7658a64febf79d3a36e70aba86.1627559126.git.mchehab+huawei@kernel.org>
- <CAL_Jsq+JgWMf8XPdHQ9GRdA+7EODJ47vwuz0jGkkyeETZPXz9Q@mail.gmail.com>
- <20210729210337.6fc9a92c@coco.lan>
+        Mon, 02 Aug 2021 15:51:52 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 2 Aug 2021 15:51:50 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Carlos Alberto Lopez Perez <clopez@igalia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>, Pali Rohar <pali@kernel.org>
+Subject: Re: [PATCH] hwmon: (dell-smm) Add Dell Precision 7510 to fan control
+ whitelist
+Message-ID: <20210802225150.GA2134522@roeck-us.net>
+References: <20210802131538.8660-1-clopez@igalia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210729210337.6fc9a92c@coco.lan>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210802131538.8660-1-clopez@igalia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 09:03:37PM +0200, Mauro Carvalho Chehab wrote:
-> Em Thu, 29 Jul 2021 09:20:15 -0600
-> Rob Herring <robh@kernel.org> escreveu:
+On Mon, Aug 02, 2021 at 02:15:38PM +0100, Carlos Alberto Lopez Perez wrote:
+> This allows manual PWM control without the BIOS fighting back on Dell
+> Precision 7510. Meanwhile at it, also sort alphabetically the entries
+> of the i8k_whitelist_fan_control struct.
 > 
-> > On Thu, Jul 29, 2021 at 5:56 AM Mauro Carvalho Chehab
-> > <mchehab+huawei@kernel.org> wrote:
-> > >
-> > > Add a new compatible, plus the new bindings needed by
-> > > HiKey970 board.
-> > >
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---
-> > >  .../bindings/pci/hisilicon,kirin-pcie.yaml    | 61 ++++++++++++++++++-
-> > >  1 file changed, 60 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-> > > index 90cab09e8d4b..bb0c3a081d68 100644
-> > > --- a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-> > > +++ b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-> > > @@ -24,11 +24,13 @@ properties:
-> > >      contains:
-> > >        enum:
-> > >          - hisilicon,kirin960-pcie
-> > > +        - hisilicon,kirin970-pcie
-> > >
-> > >    reg:
-> > >      description: |
-> > >        Should contain dbi, apb, config registers location and length.
-> > > -      For HiKey960, it should also contain phy.
-> > > +      For HiKey960, it should also contain phy. All other devices
-> > > +      should use a separate phy driver.
-> > >      minItems: 3
-> > >      maxItems: 4
-> > >
-> > > @@ -47,6 +49,7 @@ examples:
-> > >    - |
-> > >      #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > >      #include <dt-bindings/clock/hi3660-clock.h>
-> > > +    #include <dt-bindings/clock/hi3670-clock.h>
-> > >
-> > >      soc {
-> > >        #address-cells = <2>;
-> > > @@ -83,4 +86,60 @@ examples:
-> > >          clock-names = "pcie_phy_ref", "pcie_aux", "pcie_apb_phy",
-> > >                        "pcie_apb_sys", "pcie_aclk";
-> > >        };
-> > > +
-> > > +      pcie@f5000000 {
-> > > +        compatible = "hisilicon,kirin970-pcie";
-> > > +        reg = <0x0 0xf4000000 0x0 0x1000000>,
-> > > +              <0x0 0xfc180000 0x0 0x1000>,
-> > > +              <0x0 0xf5000000 0x0 0x2000>;
-> > > +        reg-names = "dbi", "apb", "config";
-> > > +        bus-range = <0x0  0x1>;
-> > > +        msi-parent = <&its_pcie>;
-> > > +        #address-cells = <3>;
-> > > +        #size-cells = <2>;
-> > > +        device_type = "pci";
-> > > +        phys = <&pcie_phy>;
-> > > +        ranges = <0x02000000 0x0 0x00000000
-> > > +                  0x0 0xf6000000
-> > > +                  0x0 0x02000000>;
-> > > +        num-lanes = <1>;
-> > > +        #interrupt-cells = <1>;
-> > > +        interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
-> > > +        interrupt-names = "msi";
-> > > +        interrupt-map-mask = <0 0 0 7>;
-> > > +        interrupt-map = <0x0 0 0 1 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-> > > +                        <0x0 0 0 2 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-> > > +                        <0x0 0 0 3 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-> > > +                        <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
-> > > +        pcie@4,0 { // Lane 4: M.2
-> > > +          reg = <0 0 0 0 0>;
-> > > +          compatible = "pciclass,0604";
-> > > +          device_type = "pci";
-> > > +          reset-gpios = <&gpio7 1 0>;
-> > > +          clkreq-gpios = <&gpio27 3 0 >;  
-> > 
-> > Looking at the schematics some more, this is not right. CLKREQ# is an
-> > input from the device, and they are not connected to any GPIO (just
-> > pulled high) on hikey970. These GPIOs are simply clock enables and
-> > very much specific to hikey. So I'd call this 'hisilicon,clken-gpios'
-> > and you can just stick them in the host bridge node.
-> > 
-> 
-> Ok. If I understood your review, the schema will then be:
-> 
->       pcie@f4000000 {
->         compatible = "hisilicon,kirin970-pcie";
->         reg = <0x0 0xf4000000 0x0 0x1000000>,
->               <0x0 0xfc180000 0x0 0x1000>,
->               <0x0 0xf5000000 0x0 0x2000>;
->         reg-names = "dbi", "apb", "config";
->         bus-range = <0x0  0x1>;
->         msi-parent = <&its_pcie>;
->         #address-cells = <3>;
->         #size-cells = <2>;
->         device_type = "pci";
->         phys = <&pcie_phy>;
->         ranges = <0x02000000 0x0 0x00000000
->                   0x0 0xf6000000
->                   0x0 0x02000000>;
->         num-lanes = <1>;
->         #interrupt-cells = <1>;
->         interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
->         interrupt-names = "msi";
->         interrupt-map-mask = <0 0 0 7>;
->         interrupt-map = <0x0 0 0 1 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
->                         <0x0 0 0 2 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
->                         <0x0 0 0 3 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
->                         <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
->         reset-gpios = <&gpio7 0 0>;
-> 
->         pcie@0 { // Lane 0: upstream
->           reg = <0 0 0 0 0>;
->           compatible = "pciclass,0604";
->           device_type = "pci";
->           #address-cells = <3>;
->           #size-cells = <2>;
->           hisilicon,clken-gpios = <&gpio27 3 0 >, <&gpio17 0 0 >, <&gpio20 6 0 >;
+> Signed-off-by: Carlos Alberto Lopez Perez <clopez@igalia.com>
+> Acked-by: Pali Rohár <pali@kernel.org>
 
-Up one more level.
+Applied.
 
->           ranges;
-> 
->           pcie@1,0 { // Lane 4: M.2
->             reg = <0x800 0 0 0 0>;
->             compatible = "pciclass,0604";
->             device_type = "pci";
->             reset-gpios = <&gpio3 1 0>;
->             #address-cells = <3>;
->             #size-cells = <2>;
->             ranges;
->           };
-> 
->           pcie@5,0 { // Lane 5: Mini PCIe
->             reg = <0x2800 0 0 0 0>;
->             compatible = "pciclass,0604";
->             device_type = "pci";
->             reset-gpios = <&gpio27 4 0 >;
->             #address-cells = <3>;
->             #size-cells = <2>;
->             ranges;
->           };
-> 
->           pcie@7,0 { // Lane 7: Ethernet
+Thanks,
+Guenter
 
-Port 7 is lane 6 and Port 9 is lane 7. So I think it should be 'Lane 6'. 
-
->             reg = <0x3800 0 0 0 0>;
->             compatible = "pciclass,0604";
->             device_type = "pci";
->             reset-gpios = <&gpio25 2 0 >;
->             #address-cells = <3>;
->             #size-cells = <2>;
->             ranges;
->           };
->         };
->       };
->     };
+> ---
+>  drivers/hwmon/dell-smm-hwmon.c | 24 ++++++++++++++++--------
+>  1 file changed, 16 insertions(+), 8 deletions(-)
 > 
-> Right?
-> 
-> After updating the dt-schema from your git tree, the above doesn't 
-> generate warnings anymore.
-> 
-> Thanks,
-> Mauro
-> 
+> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
+> index f2221ca0aa7b..a677c8a4ef29 100644
+> --- a/drivers/hwmon/dell-smm-hwmon.c
+> +++ b/drivers/hwmon/dell-smm-hwmon.c
+> @@ -1186,14 +1186,6 @@ static const struct i8k_fan_control_data i8k_fan_control_data[] = {
+>  };
+>  
+>  static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
+> -	{
+> -		.ident = "Dell Precision 5530",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> -			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Precision 5530"),
+> -		},
+> -		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+> -	},
+>  	{
+>  		.ident = "Dell Latitude 5480",
+>  		.matches = {
+> @@ -1218,6 +1210,22 @@ static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
+>  		},
+>  		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+>  	},
+> +	{
+> +		.ident = "Dell Precision 5530",
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Precision 5530"),
+> +		},
+> +		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+> +	},
+> +	{
+> +		.ident = "Dell Precision 7510",
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Precision 7510"),
+> +		},
+> +		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+> +	},
+>  	{ }
+>  };
+>  
