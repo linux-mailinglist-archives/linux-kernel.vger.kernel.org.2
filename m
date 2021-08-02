@@ -2,142 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A13A3DDA9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02313DDA9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235378AbhHBOQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        id S236071AbhHBOQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239844AbhHBOMn (ORCPT
+        with ESMTP id S235705AbhHBOM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:12:43 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A77DC01B0A1;
-        Mon,  2 Aug 2021 06:57:44 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id e3-20020a4ab9830000b029026ada3b6b90so416850oop.0;
-        Mon, 02 Aug 2021 06:57:44 -0700 (PDT)
+        Mon, 2 Aug 2021 10:12:58 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8D1C044007;
+        Mon,  2 Aug 2021 06:58:44 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id bq29so8292350lfb.5;
+        Mon, 02 Aug 2021 06:58:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4innsOL2Q3KWcAqQhqXiBn1f8Lxu8dmaKQoSumnZeAQ=;
-        b=baBe0MLf4OGBzPDNUbm3SqMz8awtAC42JZbCrY8lNcgy+SIKA3mV20Sabr85Uclj1t
-         ulimS87lHCCYqmtw3yI1mXPXnA+HyXbwamwWqeOtNxnw/sHUQzGOUZ7pUw7Tg9FlS3fM
-         moMSkGtSAxBNug0WN0qY9P8SMJcoZA4wQeHLDyUx7u2OmM0QiCrkogZLKgUJZvjcN2bD
-         iyJOFJCxjaU0igeXBbEK3p/KbZpIV4da91luDcGi8U0QbdcKf/9Z1jkcb3Nrwb2l0Ltx
-         fMc4u3KA+7u+8bOdlJ7BaO+AdRxFIlN17MaeW4hd12cU6sQtwvXcnlyr28TR+wbFN99z
-         dDPg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lUrLfWKHwEhlXNu+G+ug5oDQiGH2kq3pcgFyRRDl+Po=;
+        b=DuiizHMIrtaxRR9PWeYyrgAjcEkkLcAh2CDMqXaZUN6T9kqeDYCwMqni+hLezeJUZP
+         QW6tIm44eipXWIerOOZoKTMnQqNHRdcY1WXG8U+XHrIowsaXsxSA9Y2xr1dE3P6cS3M3
+         yDsEvLb5QKpI9Fqm33EMAxzABXRxwDKMM3+Qb2UpW64E4jb9vG58bieij1xmFK4OEc5S
+         3qZh0cFTL8DYUL7dCpcapw3L3GqW/WEmbXSAVf+JvRDIHaDhwlPdWpKe3mjGUTcFiwZ6
+         edFdtvkKulBR4RTEfl7nzUFoslDXz2JLX3QBqS87MtEb0oGKqQvB10Zed3X5fwI+5DA6
+         +OvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4innsOL2Q3KWcAqQhqXiBn1f8Lxu8dmaKQoSumnZeAQ=;
-        b=i9cMvTNU/zEQmdHiihcSKSESc/cBwJHVmNIHmvWXAgYRzjoWOzpXcQrcLYg4OUO/yz
-         0n0HC4HxTtxd2rbCv3FkS3kfx8bMPLhTNbfECg6mqNnfO12EbTFhgCGCdkZIPOlRJccG
-         Bzm7JG41PhDXhDlDZ2A4zasxldKJcEsuVau0R+fj59FOJsLvv7JK16iKjKtZDVYY3UCI
-         HHoVZEA1EEqSR0jaxV4kZRR1jHkafX2fY4Qz5mzm7PzvYIDoXcdxvMKzCmcdsxxGpxz/
-         aL6oRAOSYNNRlGEhJf/FV+FU/QarDK2QgsmtGzXy6Ik5zi9xjKtHwr3w3giQKC40X17E
-         oWrg==
-X-Gm-Message-State: AOAM533VM2m/mivfQPtwM9WItZUEWtD2Ke/5swP5PJ43DV1fd0Xo7+Q8
-        K+32yBMjEjY7pnGWJa1w7ok=
-X-Google-Smtp-Source: ABdhPJyiMuR6up32Ii8P3kcZU8ODU5bQh+TRUkFM/vZhIPbYC7x5JcFxqU3XUxk69wOs4DetH5ciig==
-X-Received: by 2002:a4a:ca8b:: with SMTP id x11mr10773342ooq.16.1627912663328;
-        Mon, 02 Aug 2021 06:57:43 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d24sm1793012oic.23.2021.08.02.06.57.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 06:57:42 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] spi: mediatek: Fix fifo transfer
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peter Hess <peter.hess@ph-home.de>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Hsin-Yi Wang <hsinyi@google.com>
-References: <20210802030023.1748777-1-linux@roeck-us.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <836776f1-5b8d-ba18-2bd7-3b21673a8b82@roeck-us.net>
-Date:   Mon, 2 Aug 2021 06:57:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lUrLfWKHwEhlXNu+G+ug5oDQiGH2kq3pcgFyRRDl+Po=;
+        b=TnRvM2lcHUFgJbUVsDw7Bt8fnS9Yq8sN+mg81EfgOLdOFl3tMEtu01V8Ysa2NV1iHY
+         ak1iv5sS/AjauQhL+hkf7azwGs4Mjca11+fUX1Fhzn5p7EniRDShWiKg2ziA0bhzCwso
+         k7hgEd+mGOvmQDMJSX7vm0vAC+6ZYJBY0ICbjuIIIx2+N456ROxlHIC85Q8yewZ8a56N
+         36k3bPto5002DnlMp4WuGzn3eV/PN77jGpoG0D+XSrq7MXmUOZNCvKNl0tWtiZIrDh9F
+         h0GHWuIBAYzXo0tgOd8TZ4pRsrjX3JJnSIkkUAR/ilu73wFdzhYFjUXTByPDdW0Z76Cb
+         g5kQ==
+X-Gm-Message-State: AOAM532+s7BFO5UqPbC4QL+yxcZEoZYRWtFBd9cGTbSSK6vByzwGZrY5
+        O/wke3lvoRK3oqxu3c7hOT0=
+X-Google-Smtp-Source: ABdhPJxxC5kwQl8bk0MXIADHQnZjmGCGtons4lKKmkx7ojsSH/ec5mrPjiGZkqwDJlbHiwJorl6X8g==
+X-Received: by 2002:ac2:4ec3:: with SMTP id p3mr12355176lfr.556.1627912722499;
+        Mon, 02 Aug 2021 06:58:42 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id o19sm961005lfk.299.2021.08.02.06.58.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 06:58:41 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 16:58:39 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v1 2/4] gpio: dwapb: Read GPIO base from gpio-base
+ property
+Message-ID: <20210802135839.4clqd34npppwasyh@mobilestation>
+References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
+ <20210726125436.58685-2-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210802030023.1748777-1-linux@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726125436.58685-2-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/1/21 8:00 PM, Guenter Roeck wrote:
-> Commit 3a70dd2d0503 ("spi: mediatek: fix fifo rx mode") claims that
-> fifo RX mode was never handled, and adds the presumably missing code
-> to the FIFO transfer function. However, the claim that receive data
-> was not handled is incorrect. It was handled as part of interrupt
-> handling after the transfer was complete. The code added with the above
-> mentioned commit reads data from the receive FIFO before the transfer
-> is started, which is wrong. This results in an actual transfer error
-> on a Hayato Chromebook.
++Cc Rob
+
+On Mon, Jul 26, 2021 at 03:54:34PM +0300, Andy Shevchenko wrote:
+> For backward compatibility with some legacy devices introduce
+> a new (*) property gpio-base to read GPIO base. This will allow
+> further cleanup of the driver.
 > 
-> Remove the code trying to handle receive data before the transfer is
-> started to fix the problem.
+> *) Note, it's not new for GPIO library since mockup driver is
+>    using it already.
+
+You are right but I don't think it's a good idea to advertise the
+pure Linux-internal property "gpio-base" to any use-case like OF
+and ACPI FW nodes. Especially seeing we don't have it described in the
+DT-bindings and noting that the mockup driver is dedicated for the
+GPIO tests only. What about restricting the property usage for the
+SW-nodes only by adding an additional check: is_software_node() here?
+
+@Linus, @Bartosz, @Rob, what do you think about that?
+
+-Sergey
+
 > 
-> Fixes: 3a70dd2d0503 ("spi: mediatek: fix fifo rx mode")
-> Cc: Peter Hess <peter.hess@ph-home.de>
-> Cc: Frank Wunderlich <frank-w@public-files.de>
-> Cc: Tzung-Bi Shih <tzungbi@google.com>
-> Cc: Hsin-Yi Wang <hsinyi@google.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
-
-I should have added here: If this patch isn't acceptable for some reason,
-commit 3a70dd2d0503 should be reverted because it is obviously wrong
-and introduces a severe regression.
-
-Thanks,
-Guenter
-
->   drivers/spi/spi-mt65xx.c | 19 +++++--------------
->   1 file changed, 5 insertions(+), 14 deletions(-)
+>  drivers/gpio/gpio-dwapb.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-> index 68dca8ceb3ad..7914255521c3 100644
-> --- a/drivers/spi/spi-mt65xx.c
-> +++ b/drivers/spi/spi-mt65xx.c
-> @@ -426,24 +426,15 @@ static int mtk_spi_fifo_transfer(struct spi_master *master,
->   	mtk_spi_prepare_transfer(master, xfer);
->   	mtk_spi_setup_packet(master);
->   
-> -	cnt = xfer->len / 4;
-> -	if (xfer->tx_buf)
-> +	if (xfer->tx_buf) {
-> +		cnt = xfer->len / 4;
->   		iowrite32_rep(mdata->base + SPI_TX_DATA_REG, xfer->tx_buf, cnt);
-> -
-> -	if (xfer->rx_buf)
-> -		ioread32_rep(mdata->base + SPI_RX_DATA_REG, xfer->rx_buf, cnt);
-> -
-> -	remainder = xfer->len % 4;
-> -	if (remainder > 0) {
-> -		reg_val = 0;
-> -		if (xfer->tx_buf) {
-> +		remainder = xfer->len % 4;
-> +		if (remainder > 0) {
-> +			reg_val = 0;
->   			memcpy(&reg_val, xfer->tx_buf + (cnt * 4), remainder);
->   			writel(reg_val, mdata->base + SPI_TX_DATA_REG);
->   		}
-> -		if (xfer->rx_buf) {
-> -			reg_val = readl(mdata->base + SPI_RX_DATA_REG);
-> -			memcpy(xfer->rx_buf + (cnt * 4), &reg_val, remainder);
-> -		}
->   	}
->   
->   	mtk_spi_enable_transfer(master);
+> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+> index f6ae69d5d644..e3011d4e17b0 100644
+> --- a/drivers/gpio/gpio-dwapb.c
+> +++ b/drivers/gpio/gpio-dwapb.c
+> @@ -581,7 +581,8 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
+>  			pp->ngpio = DWAPB_MAX_GPIOS;
+>  		}
+>  
+> -		pp->gpio_base	= -1;
+> +		if (fwnode_property_read_u32(fwnode, "gpio-base", &pp->gpio_base))
+> +			pp->gpio_base = -1;
+>  
+>  		/*
+>  		 * Only port A can provide interrupts in all configurations of
+> -- 
+> 2.30.2
 > 
-
