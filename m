@@ -2,81 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A3A3DCF04
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AF83DCF06
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 05:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhHBDwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Aug 2021 23:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
+        id S232068AbhHBD4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Aug 2021 23:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhHBDwy (ORCPT
+        with ESMTP id S231361AbhHBD42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Aug 2021 23:52:54 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F115FC06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Aug 2021 20:52:44 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id mt6so23497094pjb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Aug 2021 20:52:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=A3yKS+S7QoJvrWR3TZgGwfqKMa4csSkUIxpozB45T0I=;
-        b=JbdgHXn8BqA6VObKsM1YIVzlM95LSeknR8y3MqPj4mhnyN+yIJgJmAUg/tOHXWFGsG
-         GeyGgKrEzdm5UCmLOqLN7PJE6ctcii87TL69HsB4uXnd6JokA4xDCdTKXnMmJXux+ePD
-         lzelYyw9pih4uFt7LtyKQYPqovc5yV4y3EQLRiEtwKvZLsPh8M3dUtXgBQ92JHUS2Jho
-         embusR3VheIPACQ4QV2YKbSvdq+0fjXqhmj+Wodm0cprofcnsE/xyhwQ1lMB8YdA7pW6
-         0GNhsi44ikQq1m1ADGOruqUWlS+IpoXv6wFCEYNV3X9/tFZezPUbV232M7YKgUOwY4dm
-         2K6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=A3yKS+S7QoJvrWR3TZgGwfqKMa4csSkUIxpozB45T0I=;
-        b=iW9zW6oeluFDnCtfO9Z6qG5crREWdSml3EXV+vA1jO81Y/FyNvJzUAVKgzjykoeNi7
-         Kz6BqwKyg1HXao0Mywgf7Z82fk2jWwH8OOBiRmNl1QzRAsaaag6AIaFCpPNFIWJ4qiM0
-         4JIYmif/IuqvpGjryfqc9mhwZFKC998MPdoM8r35cBUFTBqzgEPiz675NARGN4/bYW8j
-         2L/Bu/zxcWDF7dj+av0dqD0uEMYIyHZJyQgbToKHvo06lki4zjMXWfPKBFy+cKUETlxH
-         8ohBd7vBfT32WJ00AXvAnSGj2NfAuhIRjDRUvr1GZpG3KAbPHlnHQbvoWBXyyJJoojjI
-         v6Rg==
-X-Gm-Message-State: AOAM530pM5i72wz95MCDyitJbDO8f0N6rVKa8bcaiDTghS2OWk17huLE
-        uOw+ztpjbot+gyit9LiMsc31oA==
-X-Google-Smtp-Source: ABdhPJz6z1WTyI2ZQ4BaEg9i9nTjk6BpSo1784NNW9rhjhvUrLzlbfTKxsxM/ypFbaLOnxKY9gpv/Q==
-X-Received: by 2002:a17:902:db07:b029:12c:bdf3:73a3 with SMTP id m7-20020a170902db07b029012cbdf373a3mr1126168plx.5.1627876364212;
-        Sun, 01 Aug 2021 20:52:44 -0700 (PDT)
-Received: from [2620:15c:17:3:f081:306b:20f6:7d15] ([2620:15c:17:3:f081:306b:20f6:7d15])
-        by smtp.gmail.com with ESMTPSA id ci23sm8715400pjb.47.2021.08.01.20.52.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Aug 2021 20:52:43 -0700 (PDT)
-Date:   Sun, 1 Aug 2021 20:52:42 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Luigi Rizzo <lrizzo@google.com>
-cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        Joerg Roedel <joro@8bytes.org>, rizzo.unipi@gmail.com,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: Re: [PATCH] amd/iommu: fix logic bug in
- amd_iommu_report_page_fault()
-In-Reply-To: <20210731192637.3653796-1-lrizzo@google.com>
-Message-ID: <6d9bf4fc-4956-70fd-6d80-2b0ee92a571@google.com>
-References: <20210731192637.3653796-1-lrizzo@google.com>
+        Sun, 1 Aug 2021 23:56:28 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B71C06175F;
+        Sun,  1 Aug 2021 20:56:19 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1627876576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fc3KsDptB/sfJlBGqlKuVw7Qc6/CwmcXsOI/DvDRC/k=;
+        b=LeQHJ/2kB7ORcHfPMrHgqeIzKUfNoeJ/i0nAQz+6fF31Mwi/XnyNavuWZwVJ/XALjXGFuP
+        Ai8sF3pa5wFAkgk90Jl1yNhwJrc6kBKolSr/b41KD0vld2NT00c+FFzAsZ5ply41J0jh/2
+        Q/v8UTVXckESgQmQs6FYGYG7ZegQKbs=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH net-next] net: ipv4/ipv6: rename procfs dentry
+Date:   Mon,  2 Aug 2021 11:56:00 +0800
+Message-Id: <20210802035600.29799-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Jul 2021, Luigi Rizzo wrote:
+The "default" name just represents the initial value, anyone can modify
+it in user. It is more appropriate to use "current" name.
 
-> amd_iommu_report_page_fault() has two print paths, depending on whether or
-> not it can find a pci device. But the code erroneously enters the second
-> path if the rate limiter in the first path triggers:
->   if (dev_data && ratelimit(A)) { A; } else if (ratelimit(B)) { B; }
-> The correct code should be
->   if (dev_data) { if (ratelimit(A)) { A;} } else if (ratelimit(B)) { B; }
-> 
-> Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ net/core/neighbour.c | 2 +-
+ net/ipv4/devinet.c   | 2 +-
+ net/ipv6/addrconf.c  | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-Acked-by: David Rientjes <rientjes@google.com>
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index 53e85c70c6e5..e831b9adf1e4 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -3648,7 +3648,7 @@ int neigh_sysctl_register(struct net_device *dev, struct neigh_parms *p,
+ 		       sizeof(t->neigh_vars[NEIGH_VAR_GC_INTERVAL]));
+ 	} else {
+ 		struct neigh_table *tbl = p->tbl;
+-		dev_name_source = "default";
++		dev_name_source = "current";
+ 		t->neigh_vars[NEIGH_VAR_GC_INTERVAL].data = &tbl->gc_interval;
+ 		t->neigh_vars[NEIGH_VAR_GC_THRESH1].data = &tbl->gc_thresh1;
+ 		t->neigh_vars[NEIGH_VAR_GC_THRESH2].data = &tbl->gc_thresh2;
+diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
+index c82aded8da7d..b716c5d1c821 100644
+--- a/net/ipv4/devinet.c
++++ b/net/ipv4/devinet.c
+@@ -2696,7 +2696,7 @@ static __net_init int devinet_init_net(struct net *net)
+ 	if (err < 0)
+ 		goto err_reg_all;
+ 
+-	err = __devinet_sysctl_register(net, "default",
++	err = __devinet_sysctl_register(net, "current",
+ 					NETCONFA_IFINDEX_DEFAULT, dflt);
+ 	if (err < 0)
+ 		goto err_reg_dflt;
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index db0a89810f28..614fe500f308 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -7002,7 +7002,7 @@ static int __addrconf_sysctl_register(struct net *net, char *dev_name,
+ 
+ 	if (!strcmp(dev_name, "all"))
+ 		ifindex = NETCONFA_IFINDEX_ALL;
+-	else if (!strcmp(dev_name, "default"))
++	else if (!strcmp(dev_name, "current"))
+ 		ifindex = NETCONFA_IFINDEX_DEFAULT;
+ 	else
+ 		ifindex = idev->dev->ifindex;
+@@ -7112,7 +7112,7 @@ static int __net_init addrconf_init_net(struct net *net)
+ 	if (err < 0)
+ 		goto err_reg_all;
+ 
+-	err = __addrconf_sysctl_register(net, "default", NULL, dflt);
++	err = __addrconf_sysctl_register(net, "current", NULL, dflt);
+ 	if (err < 0)
+ 		goto err_reg_dflt;
+ #endif
+-- 
+2.32.0
 
-This would be very helpful so we don't erroneously classify these KERN_ERR 
-messages as dangerous.
