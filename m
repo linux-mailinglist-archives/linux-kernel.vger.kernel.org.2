@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550903DD986
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE203DD985
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235772AbhHBOBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:01:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33500 "EHLO mail.kernel.org"
+        id S235194AbhHBOBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:01:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236138AbhHBNzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:55:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EFF661101;
-        Mon,  2 Aug 2021 13:53:26 +0000 (UTC)
+        id S236156AbhHBNzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:55:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5399561185;
+        Mon,  2 Aug 2021 13:53:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912406;
-        bh=9eraPd7F0GpE6e0FfPsLMF2EuL8kWXIqoMRRAsaVHqY=;
+        s=korg; t=1627912408;
+        bh=UfUyn9/pYIKv79cGUxfwYbkVUZbl5aotPAlYrdeQfqQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EKXIWTvCZ9EsrF8EyK09Wv/kJ9xg4W5LFH2QL9ZekCoHlccipKNE7p93qKa4biZVi
-         UdECTjBxelObgPaNuwiKUi8yhGJOqHN4WEH6eh+KvrN3OjWpePeJycd2TdnWmK09Ur
-         0rWC5T4NnLJbBW+bkEI2fitEjGyU5vdka11IEykE=
+        b=t5VD5L9FtQkKuUZ0DvMZMmon7TwE9g2bR5u0jxJbpCog+tlmYB+BhpHMrL5SVwaTe
+         HfRRakeT0OROJK/BxckhKL0ciqfGMLdJDcKZZwa3AIZi0gt3Kf0kB2hLM0YXMR0E8u
+         oNVvRtZ9nuUqs1JFiZefDOjrjjv6hd6JkfqxzrP0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geetha sowjanya <gakula@marvell.com>,
-        Sunil Kovvuri Goutham <Sunil.Goutham@cavium.com>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 45/67] octeontx2-pf: Fix interface down flag on error
-Date:   Mon,  2 Aug 2021 15:45:08 +0200
-Message-Id: <20210802134340.561715991@linuxfoundation.org>
+Subject: [PATCH 5.10 46/67] mlx4: Fix missing error code in mlx4_load_one()
+Date:   Mon,  2 Aug 2021 15:45:09 +0200
+Message-Id: <20210802134340.600483859@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
 References: <20210802134339.023067817@linuxfoundation.org>
@@ -41,87 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geetha sowjanya <gakula@marvell.com>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit 69f0aeb13bb548e2d5710a350116e03f0273302e ]
+[ Upstream commit 7e4960b3d66d7248b23de3251118147812b42da2 ]
 
-In the existing code while changing the number of TX/RX
-queues using ethtool the PF/VF interface resources are
-freed and reallocated (otx2_stop and otx2_open is called)
-if the device is in running state. If any resource allocation
-fails in otx2_open, driver free already allocated resources
-and return. But again, when the number of queues changes
-as the device state still running oxt2_stop is called.
-In which we try to free already freed resources leading
-to driver crash.
-This patch fixes the issue by setting the INTF_DOWN flag on
-error and free the resources in otx2_stop only if the flag is
-not set.
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'err'.
 
-Fixes: 50fe6c02e5ad ("octeontx2-pf: Register and handle link notifications")
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Kovvuri Goutham <Sunil.Goutham@cavium.com>
+Eliminate the follow smatch warning:
+
+drivers/net/ethernet/mellanox/mlx4/main.c:3538 mlx4_load_one() warn:
+missing error code 'err'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: 7ae0e400cd93 ("net/mlx4_core: Flexible (asymmetric) allocation of EQs and MSI-X vectors for PF/VFs")
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c | 7 +++----
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c      | 5 +++++
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-index 662fb80dbb9d..c6d408de0605 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-@@ -230,15 +230,14 @@ static int otx2_set_channels(struct net_device *dev,
- 	err = otx2_set_real_num_queues(dev, channel->tx_count,
- 				       channel->rx_count);
- 	if (err)
--		goto fail;
-+		return err;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+index 00c84656b2e7..28ac4693da3c 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -3535,6 +3535,7 @@ slave_start:
  
- 	pfvf->hw.rx_queues = channel->rx_count;
- 	pfvf->hw.tx_queues = channel->tx_count;
- 	pfvf->qset.cq_cnt = pfvf->hw.tx_queues +  pfvf->hw.rx_queues;
- 
--fail:
- 	if (if_up)
--		dev->netdev_ops->ndo_open(dev);
-+		err = dev->netdev_ops->ndo_open(dev);
- 
- 	netdev_info(dev, "Setting num Tx rings to %d, Rx rings to %d success\n",
- 		    pfvf->hw.tx_queues, pfvf->hw.rx_queues);
-@@ -342,7 +341,7 @@ static int otx2_set_ringparam(struct net_device *netdev,
- 	qs->rqe_cnt = rx_count;
- 
- 	if (if_up)
--		netdev->netdev_ops->ndo_open(netdev);
-+		return netdev->netdev_ops->ndo_open(netdev);
- 
- 	return 0;
- }
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 9fef9be015e5..044a5b1196ac 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1592,6 +1592,7 @@ int otx2_open(struct net_device *netdev)
- err_tx_stop_queues:
- 	netif_tx_stop_all_queues(netdev);
- 	netif_carrier_off(netdev);
-+	pf->flags |= OTX2_FLAG_INTF_DOWN;
- err_free_cints:
- 	otx2_free_cints(pf, qidx);
- 	vec = pci_irq_vector(pf->pdev,
-@@ -1619,6 +1620,10 @@ int otx2_stop(struct net_device *netdev)
- 	struct otx2_rss_info *rss;
- 	int qidx, vec, wrk;
- 
-+	/* If the DOWN flag is set resources are already freed */
-+	if (pf->flags & OTX2_FLAG_INTF_DOWN)
-+		return 0;
-+
- 	netif_carrier_off(netdev);
- 	netif_tx_stop_all_queues(netdev);
- 
+ 		if (!SRIOV_VALID_STATE(dev->flags)) {
+ 			mlx4_err(dev, "Invalid SRIOV state\n");
++			err = -EINVAL;
+ 			goto err_close;
+ 		}
+ 	}
 -- 
 2.30.2
 
