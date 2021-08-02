@@ -2,73 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E1E3DE044
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 21:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0283DE047
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 21:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhHBTp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 15:45:29 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:58120 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229551AbhHBTp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 15:45:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=MUZNsDfGKRYBiGTVq1DSjcKaGnXi5YAFEO+SQ2j/yPg=; b=sv+uNh5SvFu5R3uY1pzfPSReZv
-        Nyc7FeOQv2KVJZ7tVbNoMbhanTbY98hZHVIrUgQkyCfm42SetAJs25j9dBaueNsNgkCA9kVdqTaoL
-        M6U+03m5lJI7T7w4eefTRADyagNT9kAn1La8hZm18A87nX3Iv7VHDFsjfV179eg5cl+g=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mAdsA-00FrsC-NB; Mon, 02 Aug 2021 21:45:14 +0200
-Date:   Mon, 2 Aug 2021 21:45:14 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net-next v3 2/6] net: dsa: qca: ar9331: make proper
- initial port defaults
-Message-ID: <YQhLSg3Vr1pvVHsW@lunn.ch>
-References: <20210802131037.32326-1-o.rempel@pengutronix.de>
- <20210802131037.32326-3-o.rempel@pengutronix.de>
- <20210802140345.zreovwix6nuyjwjy@skbuf>
+        id S231146AbhHBTq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 15:46:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48455 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229691AbhHBTqZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 15:46:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627933574;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u4LSyR/0hL97TpqHNN7IRSJmq939orqyXRewz9/HhmU=;
+        b=DnsxoZIr7cBwKawm3gdKJJmiFfByy0pbZZ0dI3n5SpMT+mrwlWhG0JOQGTGOAyVb5EyBk/
+        gmN6DXD5wwEbYEgc7YkeNgWOgVmxB5++E7sr/Wt6JdTM4nHUkWSs+s0SNEZB9R9o4MwfAM
+        1Wf9sUobgbAECXcTjmnSuiZIdya9YBk=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-543-osFWYwuTN9aJrQzVNok5iw-1; Mon, 02 Aug 2021 15:46:12 -0400
+X-MC-Unique: osFWYwuTN9aJrQzVNok5iw-1
+Received: by mail-ej1-f69.google.com with SMTP id q19-20020a1709064cd3b02904c5f93c0124so5063918ejt.14
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 12:46:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u4LSyR/0hL97TpqHNN7IRSJmq939orqyXRewz9/HhmU=;
+        b=NWA/5ZSxDqmAaL2cfhgEbQhZCgm77Y1p1AkhwnEhH85kci4tTQKe+7zRS7YbCEsAYD
+         WkWORCyilzZwGwID3SXV5GOr40WSJHn+/MlSNSbu/mhE/R2LCjfD5i70IdDUescOJLAe
+         w+pe4cCEV6INmtU8J1f0WLI84pZjXXZoGJ5BjY+4y/ewBsTgfh4DlG/5uqJdd2+lPYwQ
+         cH4MaCVD1IiRMJGmhZ/WHzU1IYAc+qrPZiD2H7kHQOim4hAjBEwMH2HaC8WIW553V46U
+         5Vtdjtiads7KckXWpP1+tOO35KCmWq4Qz+ktWD3ThCTMFGZo5VqG+UQazQEsl+dfgd0o
+         oiLw==
+X-Gm-Message-State: AOAM531AE5kkYltIdBQsGxUgov0FQimHuKZ0Bt7GmRRV7ax/t3o+CcNm
+        xs0N/69GtBA7atVqxc6z6wbIOcxiHoDAqcNqIrjwvToAA1n3196CUdQ+Fhl5WJx8GEKQfSRPRoB
+        FyEe5m/o0IpkXG8UqL1O5YNCG
+X-Received: by 2002:a05:6402:26d1:: with SMTP id x17mr22009498edd.126.1627933571722;
+        Mon, 02 Aug 2021 12:46:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwUxeZQ8QWOaFM+a5MHs53Gufa4vyRbkQJ+aLrM7GKCmZ6HoO4YrMab1RKippOjDtVlBAYgBQ==
+X-Received: by 2002:a05:6402:26d1:: with SMTP id x17mr22009484edd.126.1627933571594;
+        Mon, 02 Aug 2021 12:46:11 -0700 (PDT)
+Received: from redhat.com ([2.55.140.205])
+        by smtp.gmail.com with ESMTPSA id b3sm5036362ejb.7.2021.08.02.12.46.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 12:46:11 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 15:46:05 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Harshavardhan Unnibhavi <harshanavkis@gmail.com>
+Cc:     stefanha@redhat.com, sgarzare@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, asias@redhat.com, imbrenda@linux.vnet.ibm.com,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] VSOCK: handle VIRTIO_VSOCK_OP_CREDIT_REQUEST
+Message-ID: <20210802152624-mutt-send-email-mst@kernel.org>
+References: <20210802173506.2383-1-harshanavkis@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210802140345.zreovwix6nuyjwjy@skbuf>
+In-Reply-To: <20210802173506.2383-1-harshanavkis@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +/* AGE_TIME_COEF is not documented. This is "works for me" value */
-> > +#define AR9331_SW_AT_AGE_TIME_COEF		6900
+On Mon, Aug 02, 2021 at 07:35:06PM +0200, Harshavardhan Unnibhavi wrote:
+> The original implementation of the virtio-vsock driver does not
+> handle a VIRTIO_VSOCK_OP_CREDIT_REQUEST as required by the
+> virtio-vsock specification. The vsock device emulated by
+> vhost-vsock and the virtio-vsock driver never uses this request,
+> which was probably why nobody noticed it. However, another
+> implementation of the device may use this request type.
 > 
-> Not documented, not used either, it seems.
-> "Works for you" based on what?
-
-It is used in a later patch. Ideally it would of been introduced in
-that patch to make this more obvious.
-
-> >  #define AR9331_SW_REG_MDIO_CTRL			0x98
-> >  #define AR9331_SW_MDIO_CTRL_BUSY		BIT(31)
-> >  #define AR9331_SW_MDIO_CTRL_MASTER_EN		BIT(30)
-> > @@ -101,6 +111,46 @@
-> >  	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
-> >  	 AR9331_SW_PORT_STATUS_SPEED_M)
+> Hence, this commit introduces a way to handle an explicit credit
+> request by responding with a corresponding credit update as
+> required by the virtio-vsock specification.
 > 
-> Is this patch material for "net"? If standalone ports is all that ar9331
-> supports, then it would better not do packet forwarding in lack of a
-> bridge device.
+> Fixes: 06a8fc78367d ("VSOCK: Introduce virtio_vsock_common.ko")
+> 
+> Signed-off-by: Harshavardhan Unnibhavi <harshanavkis@gmail.com>
 
-It does seem like this patch should be considered for stable, if by
-default all ports can talk with all ports when not part of a bridge.
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-	Andrew
+> ---
+>  net/vmw_vsock/virtio_transport_common.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> index 169ba8b72a63..081e7ae93cb1 100644
+> --- a/net/vmw_vsock/virtio_transport_common.c
+> +++ b/net/vmw_vsock/virtio_transport_common.c
+> @@ -1079,6 +1079,9 @@ virtio_transport_recv_connected(struct sock *sk,
+>  		virtio_transport_recv_enqueue(vsk, pkt);
+>  		sk->sk_data_ready(sk);
+>  		return err;
+> +	case VIRTIO_VSOCK_OP_CREDIT_REQUEST:
+> +		virtio_transport_send_credit_update(vsk);
+> +		break;
+>  	case VIRTIO_VSOCK_OP_CREDIT_UPDATE:
+>  		sk->sk_write_space(sk);
+>  		break;
+> -- 
+> 2.17.1
+
