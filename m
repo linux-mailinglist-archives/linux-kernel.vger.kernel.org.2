@@ -2,119 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 960E23DE095
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A5E3DE098
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhHBUVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:21:23 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:19437 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbhHBUVR (ORCPT
+        id S231626AbhHBUVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:21:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21922 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230095AbhHBUVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:21:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627935668; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=PfQwQqGamk2yhFVMH0cYk8jlQ4TdleftFj0Bcd2uREU=; b=M2E6xx/eVvLyBtVZwH55+EIaFvq8m9Ib9M0yFN87t+2qbXv9V1AdVt8+XUSNdSoAJLQi60Yr
- b4NQ5MNS2HiCvKCpHgnK6xmZe79K3sHfzZrVae0wV76n7yyElSWxwDPb+tjZhLZWNvT7DgiB
- zhBodH9bJnDRGFaiztdJrmDQQqU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 610853af9771b05b248a7947 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 20:21:03
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9D273C43217; Mon,  2 Aug 2021 20:21:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4D6BC433F1;
-        Mon,  2 Aug 2021 20:21:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A4D6BC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Mon, 2 Aug 2021 16:21:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627935704;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nZJ2bhBWwA0LZ+VBVsgySygKSYSWVNXAFAku40qnCTw=;
+        b=KBAWnuKUDvr1WSF3sQsTXHCuR5GbVJDBDRWjpYmtV1xAHwjjuM2b3yd0+yOJ8dQYWgKEtT
+        v+of01pJdxUrZS0vXJ0QqKNO1zlokt+U1oyADmLXjWtyXSnXAu1OyBK7ZjzhtMC0j5XrJb
+        NOGmIlaFaPUXY3dgjvcMWXqyqQzmgCs=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-Eawnms5tNLq64oPKJD5V2g-1; Mon, 02 Aug 2021 16:21:43 -0400
+X-MC-Unique: Eawnms5tNLq64oPKJD5V2g-1
+Received: by mail-ej1-f72.google.com with SMTP id o16-20020a1709066010b0290593804ff1e1so3465944ejj.19
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 13:21:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nZJ2bhBWwA0LZ+VBVsgySygKSYSWVNXAFAku40qnCTw=;
+        b=W1NJsXaM1G/jx52P0cqw5KTBqK9SfVvUERfQyXQEuXKkUD3JTSulGDbMw8XapxFlfL
+         T53BdOtxzbzSkvYo+A420fL6fJFZXzU5tL+FoT8cFIJbgmLGHIsPjWQLSHNVd8pOujRG
+         nX7JsTU0yxQ7NuE6SW/P+ORpyTDpmT9JJ7LOfavwp8I6SQvK7/cHSxCeGGYw529HssMp
+         TlQ0YtUHh614CjksL/47Q+qGCRfseYmOoCl+n8zmOFk4mR61KQ5h65ThqBrhlcE3BbKk
+         M9aYQMH+DjiKx24QDwa0z/Eo5vQ29mEVlVn8jfhYESNfBplQmKSDs7E4UxYP0ij/aQ7l
+         H4aQ==
+X-Gm-Message-State: AOAM530WMyfMQOzQHWCVtTzBPD+/1htv9UXySHugzk6pdwW4CpHPP8tv
+        n19iwRZ9Dul5H4IuwoSCl8rsdkJiS9+gUQ0a+yLDbTMYeV4iKUnsnvdqiYYCkWhVzxnADtslF6Q
+        MXXUoKeht5f/OTUWmfTLz4+aI
+X-Received: by 2002:a05:6402:514e:: with SMTP id n14mr21858767edd.129.1627935702047;
+        Mon, 02 Aug 2021 13:21:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLxuoBXOKeZ2Gk3OBbPWhzbkg9zy7nptJari08wguyDBRuf7wpsWw8MvrrZcTEuWohqALx5A==
+X-Received: by 2002:a05:6402:514e:: with SMTP id n14mr21858756edd.129.1627935701885;
+        Mon, 02 Aug 2021 13:21:41 -0700 (PDT)
+Received: from redhat.com ([2.55.140.205])
+        by smtp.gmail.com with ESMTPSA id k20sm5085851ejr.93.2021.08.02.13.21.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 13:21:41 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 16:21:36 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     fuguancheng <fuguancheng@bytedance.com>
+Cc:     jasowang@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, arseny.krasnov@kaspersky.com,
+        andraprs@amazon.com, colin.king@canonical.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/msm/dp: update is_connected status base on sink count at dp_pm_resume()
-Date:   Mon,  2 Aug 2021 13:20:55 -0700
-Message-Id: <1627935655-4090-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+Subject: Re: [PATCH 0/4] Add multi-cid support for vsock driver
+Message-ID: <20210802162038-mutt-send-email-mst@kernel.org>
+References: <20210802120720.547894-1-fuguancheng@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802120720.547894-1-fuguancheng@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently at dp_pm_resume() is_connected state is decided base on hpd connection
-status only. This will put is_connected in wrongly "true" state at the scenario
-that dongle attached to DUT but without hmdi cable connecting to it. Fix this
-problem by adding read sink count from dongle and decided is_connected state base
-on both sink count and hpd connection status.
+On Mon, Aug 02, 2021 at 08:07:16PM +0800, fuguancheng wrote:
+> This patchset enables the user to specify additional CIDS for host and
+> guest when booting up the guest machine. The guest's additional CIDS cannot
+> be repeated, and can be used to communicate with the host. The user can
+> also choose to specify a set of additional host cids, which can be
+> used to communicate with the guest who specify them. The original
+> CID(VHOST_DEFAULT_CID) is still available for host. The guest cid field is
+> deleted.
+> 
+> To ensure that multiple guest CID maps to the same vhost_vsock struct,
+> a struct called vhost_vsock_ref is added.  The function of vhost_vsock_ref
+> is simply used to allow multiple guest CIDS map to the
+> same vhost_vsock struct.
+> 
+> If not specified, the host and guest will now use the first CID specified
+> in the array for connect operation. If the host or guest wants to use
+> one specific CID, the bind operation can be performed before the connect
+> operation so that the vsock_auto_bind operation can be avoided.
+> 
+> Hypervisors such as qemu needs to be modified to use this feature. The
+> required changes including at least the following:
+> 1. Invoke the modified ioctl call with the request code
+> VHOST_VSOCK_SET_GUEST_CID. Also see struct multi_cid_message for
+> arguments used in this ioctl call.
+> 2. Write new arguments to the emulated device config space.
+> 3. Modify the layout of the data written to the device config space.
+> See struct virtio_vsock_config for reference.
+> 
+> I have tested this setup with iperf3.  The communication between host
+> and guest using original CID or additional CIDS worked normally.
+> Not tested in extreme conditions where memory is insufficient.
+> 
+> Linux kernel newbies here, any suggestions are welcomed.
+> Thanks in advance!
 
-Changes in v2:
--- remove dp_get_sink_count() cand call drm_dp_read_sink_count()
+Could you supply a bit info about the motivation for this feature?
+I wonder whether it's be better to have multiple VQs
+instead of tweaking the CID in the message header.
 
-Fixes: d9aa6571b28ba ("drm/msm/dp: check sink_count before update is_connected status")
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 8b69114..6dcb78e 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -1403,6 +1403,7 @@ static int dp_pm_resume(struct device *dev)
- 	struct msm_dp *dp_display = platform_get_drvdata(pdev);
- 	struct dp_display_private *dp;
- 	u32 status;
-+	int sink_count = 0;
- 
- 	dp = container_of(dp_display, struct dp_display_private, dp_display);
- xlog(__func__, 1,0,0, dp->core_initialized, dp_display->power_on);
-@@ -1417,15 +1418,26 @@ xlog(__func__, 1,0,0, dp->core_initialized, dp_display->power_on);
- 
- 	dp_catalog_ctrl_hpd_config(dp->catalog);
- 
--	status = dp_catalog_link_is_connected(dp->catalog);
-+	/*
-+	 * set sink to normal operation mode -- D0
-+	 * before dpcd read
-+	 */
-+	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
-+
-+	/* if sink conencted, do dpcd read sink count */
-+	if ((status = dp_catalog_link_is_connected(dp->catalog))) {
-+		sink_count = drm_dp_read_sink_count(dp->aux);
-+		if (sink_count < 0)
-+			sink_count = 0;
-+	}
- 
-+	dp->link->sink_count = sink_count;
- 	/*
- 	 * can not declared display is connected unless
- 	 * HDMI cable is plugged in and sink_count of
- 	 * dongle become 1
- 	 */
--xlog(__func__, 0x12,0,0, 0, dp->link->sink_count);
--	if (status && dp->link->sink_count)
-+	if (dp->link->sink_count)
- 		dp->dp_display.is_connected = true;
- 	else
- 		dp->dp_display.is_connected = false;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> fuguancheng (4):
+>   VSOCK DRIVER: Add multi-cid support for guest
+>   VSOCK DRIVER: support communication using additional guest cid
+>   VSOCK DRIVER: support specifying additional cids for host
+>   VSOCK DRIVER: support communication using host additional cids
+> 
+>  drivers/vhost/vsock.c                   | 338 ++++++++++++++++++++++++++++----
+>  include/net/af_vsock.h                  |   5 +
+>  include/uapi/linux/vhost.h              |   9 +
+>  include/uapi/linux/virtio_vsock.h       |   8 +-
+>  net/vmw_vsock/af_vsock.c                |  28 ++-
+>  net/vmw_vsock/virtio_transport.c        | 129 +++++++++++-
+>  net/vmw_vsock/virtio_transport_common.c |   5 +-
+>  net/vmw_vsock/vsock_loopback.c          |   8 +
+>  8 files changed, 471 insertions(+), 59 deletions(-)
+> 
+> -- 
+> 2.11.0
+> 
+> 
 
