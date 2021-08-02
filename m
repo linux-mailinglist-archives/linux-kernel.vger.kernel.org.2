@@ -2,185 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B223DE155
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2773DE152
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhHBVS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231952AbhHBVS4 (ORCPT
+        id S231824AbhHBVSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:18:53 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:34603 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231656AbhHBVSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:18:56 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF66C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:18:46 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id n6so25606755ljp.9
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:18:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1Z9yRMRPvPvhNhspEK5nK4+ikbIcB7z17ForMSSXLIM=;
-        b=kXYzxNBoPnSs60tSumVikXkgLSMYmd8MP0QG9/neTn5fMj+4x9WawziIkd++CZ5Qlt
-         LECxLgnwPznfHsA5PWYTAUZcwobBzWh80Tt4aQXaaleOkLjYK0Mq8RzPk9nZGdeDgm7R
-         lkW3sfjIbPL7zqRIDSArn2AXnywcz5L+8EHVNZ3jIkshvWrqL3H+IKcB9RiEbL5S1rgk
-         5cMPRVE4Hi0IN3Sgbpol4+Risi2OaHtQSi4Iv/bPa8vkqp9Jm21EP5vhwyGCaQIHI9UQ
-         eR4HDqRpIYqeWX7Py7Bjt5DgbZkzxHEN9++aKaW38yML2aT/Cmg3hJDrK+U5vy1nsObC
-         c+BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1Z9yRMRPvPvhNhspEK5nK4+ikbIcB7z17ForMSSXLIM=;
-        b=qvGCvv4GQj7glIBLSdA4Sx7N6X+8oAn2gqu4TYrPh5s7+DWlo36QIy/RVUie25VWWj
-         S9b5Msjba/Ax8y0hdJPF5q1gGekrHKN9XzzEoE5Hc6ILrerL0WSRuvxYm78TD+GkcceV
-         W9/47HLViWyjY1Bkf/XEGzzuosAVxiFtqHsMhbOlapQAk4j/g37cF5UBpK76c4puXfwR
-         bpplG3oHO0FHXqVaimdzFruthLvGtWmjTQIjTWbiz9+juMDvN+9osRMBpJ/xFVnKEPil
-         7sNabGJ4wE2vsPWmG2IhhSIpWLj34b/BEy1jYOSUNHt1GRxWuPGDlO7JmA3lxMdbsboG
-         wObg==
-X-Gm-Message-State: AOAM531R7keTR6TjrjnZnsf7JR7e9CjfEUbvj27+6EnqXwtG8ztzZxqn
-        MHI/2kZGfbcxmHqjQj/KCDKX2sb8jec8tm5jVFcR0A==
-X-Google-Smtp-Source: ABdhPJwhxcINA21tw/Nuh+g4OW6UTFPkym/AwtBxtV+7RU8HofOMbVlwuzsG1pckNPkn3uhcMoULO3vL7zZPoqOBHDA=
-X-Received: by 2002:a2e:9304:: with SMTP id e4mr12467173ljh.244.1627939124801;
- Mon, 02 Aug 2021 14:18:44 -0700 (PDT)
+        Mon, 2 Aug 2021 17:18:51 -0400
+Received: (qmail 345682 invoked by uid 1000); 2 Aug 2021 17:18:41 -0400
+Date:   Mon, 2 Aug 2021 17:18:41 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Jade Alglave <j.alglave@ucl.ac.uk>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210802211841.GB344022@rowland.harvard.edu>
+References: <20210605145739.GB1712909@rowland.harvard.edu>
+ <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210606012903.GA1723421@rowland.harvard.edu>
+ <20210606115336.GS18427@gate.crashing.org>
+ <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
+ <20210606182213.GA1741684@rowland.harvard.edu>
+ <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
+ <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
+ <20210607115234.GA7205@willie-the-truck>
+ <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
 MIME-Version: 1.0
-References: <20210802210307.3202472-1-nathan@kernel.org>
-In-Reply-To: <20210802210307.3202472-1-nathan@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 2 Aug 2021 14:18:33 -0700
-Message-ID: <CAKwvOdmG0Ahieq27y29zqqEfjDu4NiC8j1fDg8c6RPnWVhdSsA@mail.gmail.com>
-Subject: Re: [PATCH] scripts/recordmcount.pl: Remove check_objcopy() and $can_use_local
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 2:05 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> When building ARCH=riscv allmodconfig with llvm-objcopy, the objcopy
-> version warning from this script appears:
->
-> WARNING: could not find objcopy version or version is less than 2.17.
->         Local function references are disabled.
->
-> The check_objcopy() function in scripts/recordmcount.pl is set up to
-> parse GNU objcopy's version string, not llvm-objcopy's, which triggers
-> the warning.
->
-> Commit 799c43415442 ("kbuild: thin archives make default for all archs")
-> made binutils 2.20 mandatory and commit ba64beb17493 ("kbuild: check the
-> minimum assembler version in Kconfig") enforces this at configuration
-> time so just remove check_objcopy() and $can_use_local instead, assuming
-> --globalize-symbol is always available.
->
-> llvm-objcopy has supported --globalize-symbol since LLVM 7.0.0 in 2018
-> and the minimum version for building the kernel with LLVM is 10.0.1 so
-> there is no issue introduced:
->
-> https://github.com/llvm/llvm-project/commit/ee5be798dae30d5f9414b01f76ff807edbc881aa
+On Fri, Jul 30, 2021 at 06:20:22PM +0100, Jade Alglave wrote:
+> I hope this material can help inform this conversation and I would love
+> to hear your thoughts.
 
-^ should this be a Link: tag?
+More comments...
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+I find the herd-style diagrams (Figures 2, 3, 5, 7, 9, and so on) almost 
+impossible to decipher.  While they might be useful to people running 
+herd, they have several drawbacks for readers of this report:
 
->
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->  Makefile                |  1 -
->  scripts/recordmcount.pl | 40 ----------------------------------------
->  2 files changed, 41 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 27a072cffcb9..b6ee64dd435e 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -546,7 +546,6 @@ export RCS_TAR_IGNORE := --exclude SCCS --exclude BitKeeper --exclude .svn \
->  PHONY += scripts_basic
->  scripts_basic:
->         $(Q)$(MAKE) $(build)=scripts/basic
-> -       $(Q)rm -f .tmp_quiet_recordmcount
->
->  PHONY += outputmakefile
->  ifdef building_out_of_srctree
-> diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
-> index c17e48020ec3..8f6b13ae46bf 100755
-> --- a/scripts/recordmcount.pl
-> +++ b/scripts/recordmcount.pl
-> @@ -173,39 +173,6 @@ my $mcount_regex;  # Find the call site to mcount (return offset)
->  my $mcount_adjust;     # Address adjustment to mcount offset
->  my $alignment;         # The .align value to use for $mcount_section
->  my $section_type;      # Section header plus possible alignment command
-> -my $can_use_local = 0;         # If we can use local function references
-> -
-> -# Shut up recordmcount if user has older objcopy
-> -my $quiet_recordmcount = ".tmp_quiet_recordmcount";
-> -my $print_warning = 1;
-> -$print_warning = 0 if ( -f $quiet_recordmcount);
-> -
-> -##
-> -# check_objcopy - whether objcopy supports --globalize-symbols
-> -#
-> -#  --globalize-symbols came out in 2.17, we must test the version
-> -#  of objcopy, and if it is less than 2.17, then we can not
-> -#  record local functions.
-> -sub check_objcopy
-> -{
-> -    open (IN, "$objcopy --version |") or die "error running $objcopy";
-> -    while (<IN>) {
-> -       if (/objcopy.*\s(\d+)\.(\d+)/) {
-> -           $can_use_local = 1 if ($1 > 2 || ($1 == 2 && $2 >= 17));
-> -           last;
-> -       }
-> -    }
-> -    close (IN);
-> -
-> -    if (!$can_use_local && $print_warning) {
-> -       print STDERR "WARNING: could not find objcopy version or version " .
-> -           "is less than 2.17.\n" .
-> -           "\tLocal function references are disabled.\n";
-> -       open (QUIET, ">$quiet_recordmcount");
-> -       printf QUIET "Disables the warning from recordmcount.pl\n";
-> -       close QUIET;
-> -    }
-> -}
->
->  if ($arch =~ /(x86(_64)?)|(i386)/) {
->      if ($bits == 64) {
-> @@ -434,8 +401,6 @@ if ($filename =~ m,^(.*)(\.\S),) {
->  my $mcount_s = $dirname . "/.tmp_mc_" . $prefix . ".s";
->  my $mcount_o = $dirname . "/.tmp_mc_" . $prefix . ".o";
->
-> -check_objcopy();
-> -
->  #
->  # Step 1: find all the local (static functions) and weak symbols.
->  #         't' is local, 'w/W' is weak
-> @@ -473,11 +438,6 @@ sub update_funcs
->
->      # is this function static? If so, note this fact.
->      if (defined $locals{$ref_func}) {
-> -
-> -       # only use locals if objcopy supports globalize-symbols
-> -       if (!$can_use_local) {
-> -           return;
-> -       }
->         $convert{$ref_func} = 1;
->      }
->
->
-> base-commit: c500bee1c5b2f1d59b1081ac879d73268ab0ff17
-> --
-> 2.32.0.264.g75ae10bc75
->
+	They include multiple instructions, not just the one for which
+	you want to illustrate the internal dependencies.  How about
+	getting rid of the extraneous instructions?
 
+	Each box contains three lines of information, of which only the
+	first is really significant, and it is hard to figure out.  How 
+	about getting rid of the second and third lines, and replacing
+	things like "e: R0:X1q=x" in the first line with something more
+	along the lines of "RegR X0" or "tmp1 = RegR X0"?
 
--- 
-Thanks,
-~Nick Desaulniers
+	The "iico" in the dependency arrows doesn't add anything.
+
+Section 1.1 mentions order, data, and control Intrinsic dependencies but 
+doesn't give so much as a hint as to what they are.  Instead the reader 
+is forced to invent his own generalizations by reading through several 
+complex special-case examples.  There should be a short description of 
+what each Intrinsic dependency represents.  For instance, the first 
+sentence in 1.3 would be a great way to explain data dependencies.  (And 
+is it not true that control dependencies are mainly needed for 
+situations where an instruction's inputs and outputs may include the 
+same register or memory address, when it is necessary to enforce that 
+the input value is read before the output value is written?)
+
+Some of the dependencies listed for CAS are surprising, but there is no 
+explanation.  Why is C2 a control dependency rather than a data 
+dependency?  After all, the value read from [Xn] is stored in Xs in both 
+cases.  In fact, Df1 supersedes C2 in the failure case, doesn't it?  And 
+why are C1 and Ds1 a control and data dependency respectively rather 
+than both order dependencies?
+
+Section 2.1: Although the Store F is independent of the conditional 
+branch and so might be made visible to other observers early, isn't it 
+true that neither ARMv8 nor any other type of processor will do this?
+
+General question: How does this discussion of conditional branches 
+relate overall to the way computed branches are handled?
+
+Alan
