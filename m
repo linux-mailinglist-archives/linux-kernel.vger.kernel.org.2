@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B981C3DD962
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E223DD877
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236957AbhHBOAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:00:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34094 "EHLO mail.kernel.org"
+        id S234659AbhHBNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:52:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235229AbhHBNxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:53:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B8BE61166;
-        Mon,  2 Aug 2021 13:52:18 +0000 (UTC)
+        id S234474AbhHBNs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:48:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E06E361029;
+        Mon,  2 Aug 2021 13:48:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912339;
-        bh=qyXlOGeHt9NXmAZXVnILEg/+ZdVRHOo4Ox82SzfCijc=;
+        s=korg; t=1627912099;
+        bh=RUh4AusaX0Jn78izoGVYrMovVe91oBO13ieA2j5M3WM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lk71PkK+rxxAOtS6cJ0HFQUspEhvpPb2FsinuFBAR4nqrpGiuKFrWr49DU/AKN44P
-         nwg2hp5NC2QQ3++zN+CpknWHg2tdXfQCGqGPNcRGjWSKuuEC07SZwOBUg0vrB1C6DP
-         w+XQ0a2iLq1+E4tX+yyeNn2HZCKY5hGExfLtCJp4=
+        b=U/G11u0s+WmdTAkzotxDhI+mG1tiJ62JVjkZkUWsr+aDNfvsWE2YsZjKFkit1KA/D
+         IAtrZZEZTsNXgN9L9Ya3Iq+D9J2C0pwqwOuvaBYg4+MHd4XQVlTpWnLDGLAyzL3Tsr
+         A8mv9FhsMD68fyywbFza6a24uLku2g+L+KlvPgCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yasushi SHOJI <yasushi.shoji@gmail.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Yasushi SHOJI <yashi@spacecubics.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.10 15/67] can: mcba_usb_start(): add missing urb->transfer_dma initialization
+        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.14 16/38] x86/kvm: fix vcpu-id indexed array sizes
 Date:   Mon,  2 Aug 2021 15:44:38 +0200
-Message-Id: <20210802134339.541354225@linuxfoundation.org>
+Message-Id: <20210802134335.346946965@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+References: <20210802134334.835358048@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Juergen Gross <jgross@suse.com>
 
-commit fc43fb69a7af92839551f99c1a96a37b77b3ae7a upstream.
+commit 76b4f357d0e7d8f6f0013c733e6cba1773c266d3 upstream.
 
-Yasushi reported, that his Microchip CAN Analyzer stopped working
-since commit 91c02557174b ("can: mcba_usb: fix memory leak in
-mcba_usb"). The problem was in missing urb->transfer_dma
-initialization.
+KVM_MAX_VCPU_ID is the maximum vcpu-id of a guest, and not the number
+of vcpu-ids. Fix array indexed by vcpu-id to have KVM_MAX_VCPU_ID+1
+elements.
 
-In my previous patch to this driver I refactored mcba_usb_start() code
-to avoid leaking usb coherent buffers. To archive it, I passed local
-stack variable to usb_alloc_coherent() and then saved it to private
-array to correctly free all coherent buffers on ->close() call. But I
-forgot to initialize urb->transfer_dma with variable passed to
-usb_alloc_coherent().
+Note that this is currently no real problem, as KVM_MAX_VCPU_ID is
+an odd number, resulting in always enough padding being available at
+the end of those arrays.
 
-All of this was causing device to not work, since dma addr 0 is not
-valid and following log can be found on bug report page, which points
-exactly to problem described above.
+Nevertheless this should be fixed in order to avoid rare problems in
+case someone is using an even number for KVM_MAX_VCPU_ID.
 
-| DMAR: [DMA Write] Request device [00:14.0] PASID ffffffff fault addr 0 [fault reason 05] PTE Write access is not set
-
-Fixes: 91c02557174b ("can: mcba_usb: fix memory leak in mcba_usb")
-Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=990850
-Link: https://lore.kernel.org/r/20210725103630.23864-1-paskripkin@gmail.com
-Cc: linux-stable <stable@vger.kernel.org>
-Reported-by: Yasushi SHOJI <yasushi.shoji@gmail.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Tested-by: Yasushi SHOJI <yashi@spacecubics.com>
-[mkl: fixed typos in commit message - thanks Yasushi SHOJI]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Message-Id: <20210701154105.23215-2-jgross@suse.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/usb/mcba_usb.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/ioapic.c |    2 +-
+ arch/x86/kvm/ioapic.h |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -653,6 +653,8 @@ static int mcba_usb_start(struct mcba_pr
- 			break;
- 		}
+--- a/arch/x86/kvm/ioapic.c
++++ b/arch/x86/kvm/ioapic.c
+@@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirec
+ static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
+ {
+ 	ioapic->rtc_status.pending_eoi = 0;
+-	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
++	bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
+ }
  
-+		urb->transfer_dma = buf_dma;
-+
- 		usb_fill_bulk_urb(urb, priv->udev,
- 				  usb_rcvbulkpipe(priv->udev, MCBA_USB_EP_IN),
- 				  buf, MCBA_USB_RX_BUFF_SIZE,
+ static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
+--- a/arch/x86/kvm/ioapic.h
++++ b/arch/x86/kvm/ioapic.h
+@@ -43,13 +43,13 @@ struct kvm_vcpu;
+ 
+ struct dest_map {
+ 	/* vcpu bitmap where IRQ has been sent */
+-	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
++	DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
+ 
+ 	/*
+ 	 * Vector sent to a given vcpu, only valid when
+ 	 * the vcpu's bit in map is set
+ 	 */
+-	u8 vectors[KVM_MAX_VCPU_ID];
++	u8 vectors[KVM_MAX_VCPU_ID + 1];
+ };
+ 
+ 
 
 
