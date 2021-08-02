@@ -2,102 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4443DDF5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9433DDF62
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhHBSiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:38:17 -0400
-Received: from mga06.intel.com ([134.134.136.31]:61248 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhHBSiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:38:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="274574200"
-X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
-   d="scan'208";a="274574200"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 11:38:05 -0700
-X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; 
-   d="scan'208";a="666746113"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 11:38:02 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mAcp2-004S1r-7f; Mon, 02 Aug 2021 21:37:56 +0300
-Date:   Mon, 2 Aug 2021 21:37:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v1 1/4] gpio: dwapb: Unify ACPI enumeration checks in
- get_irq() and configure_irqs()
-Message-ID: <YQg7hNKlUlkz/fkv@smile.fi.intel.com>
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
- <20210802134021.flrkpmlrcjfxdrdr@mobilestation>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802134021.flrkpmlrcjfxdrdr@mobilestation>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S230201AbhHBSj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhHBSj1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 14:39:27 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA869C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 11:39:17 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id e78-20020a2569510000b029059206351038so4955917ybc.22
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 11:39:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=WTdy23QqSO2DMUu2Ys+7R1vYJMU/74du8VLy/2Y4DPA=;
+        b=vGeI3BYBkGKRi6LHTihmZGbPjuFbs0b9QT5/pySpO0cIAIaUYmd5rtlYB7T4o43Sk4
+         cDi4l4mFb1gtH6ii4bX12t8K5wqQIUfT2M52ci3FV25/4kXPuTsYvkkQYQsTmU1vbahd
+         LcsJqXOQycyQcdJrtUY/AaDnMMZfe72AYB/Z8djUZDn6drxtGFE1vi++B27uQ7IWCVDM
+         5HUlJY7Rk4pXHmVaz2tDSBMfV/7T0QpavDpABpYq3UZ4Ejh3MyIpZneo55Trjf3XMxhm
+         EvnkVjJFpp689uLowYjggVmKbcClMvTXsvrPDL0dyqh8g+kvnsXSvEYKgaC9Ov92yahe
+         fM4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=WTdy23QqSO2DMUu2Ys+7R1vYJMU/74du8VLy/2Y4DPA=;
+        b=cMJNnLuHLV7+ANmUSpX0MnpNWpGU06t0WPPBck8bXUoisgEfU3MW1lF6oK/rF7mY3c
+         RLcdAIFNCkjFZWhrd8f5PARoAJ+DY9eNjtlVfwC7SX2E+N1jxdxXMXhIhZS40iiIB8o3
+         8Vb4yXwZjdUizrmSYCnNKplgc+GFLuevSd954YudbEhfKOti3IFpurx41V2XTvwoSNy0
+         6C90cqQXJ1Y0P8mJpcj4t950o+YQXZA5yGsHq9nU4VsGn+b5iV5sKJ1DAu27w2h73tvt
+         at6x32um3AdUKcK8r7oXLkAj6McmYX+v2XKdbi9gxbSkXIHszOijtfyrL/ILzNYy87Eg
+         UfLg==
+X-Gm-Message-State: AOAM532TKhrb8WEqXRh5RAHkdUBBE2oe3XfAfPWPXoD5tq3O2lpC+ftE
+        u2I48i3d+LKuGbLrN8pLYweGmmYvaeQThg3AoRI=
+X-Google-Smtp-Source: ABdhPJxdctAO0E67NQtmSrPN7peVgzEK7d1WAOiYXjH1alhAAamkoXKrI8QF7jn7wwguFYL6QSB2xEXlmrT45L0zWJ4=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:3db0:42c:8665:a4ae])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:1209:: with SMTP id
+ 9mr23717204ybs.166.1627929556907; Mon, 02 Aug 2021 11:39:16 -0700 (PDT)
+Date:   Mon,  2 Aug 2021 11:39:07 -0700
+Message-Id: <20210802183910.1802120-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH v6 0/3] infer --target from SRCARCH for CC=clang
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 04:40:21PM +0300, Serge Semin wrote:
-> Hello Andy
-> Thanks for the cleanup series. A tiny note is below.
+We get constant feedback that the command line invocation of make is too
+long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
+target triple, or is an absolute path outside of $PATH, but it's mostly
+redundant for a given ARCH.
 
-Thanks for review!
+Instead, let's infer --target from SRCARCH, and move some flag handling into a
+new file included from the top level Makefile.
 
-> On Mon, Jul 26, 2021 at 03:54:33PM +0300, Andy Shevchenko wrote:
-> > Shared IRQ is only enabled for ACPI enumeration, there is no need
-> > to have a special flag for that, since we simple can test if device
-> > has been enumerated by ACPI. This unifies the checks in dwapb_get_irq()
-> > and dwapb_configure_irqs().
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> >  drivers/gpio/gpio-dwapb.c                | 13 ++++++-------
-> >  drivers/mfd/intel_quark_i2c_gpio.c       |  1 -
-> >  include/linux/platform_data/gpio-dwapb.h |  1 -
-> >  3 files changed, 6 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-> > index 3eb13d6d31ef..f6ae69d5d644 100644
-> > --- a/drivers/gpio/gpio-dwapb.c
-> > +++ b/drivers/gpio/gpio-dwapb.c
-> > @@ -436,12 +436,7 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
-> >  	pirq->irqchip.irq_set_wake = dwapb_irq_set_wake;
-> >  #endif
-> >  
-> 
-> > -	if (!pp->irq_shared) {
-> > -		girq->num_parents = pirq->nr_irqs;
-> > -		girq->parents = pirq->irq;
-> > -		girq->parent_handler_data = gpio;
-> > -		girq->parent_handler = dwapb_irq_handler;
-> > -	} else {
-> > +	if (has_acpi_companion(gpio->dev)) {
-> 
-> Before this patch the platform flag irq_shared has been as kind of a
-> hint regarding the shared IRQ case being covered here. But now it
-> doesn't seem obvious why we've got the ACPI and ACPI-less cases
-> differently handled. What about adding a small comment about that?
-> E.g. like this: "Intel ACPI-based platforms mostly have the DW APB
-> GPIO IRQ lane shared between several devices. In that case the
-> parental IRQ has to be handled in the shared way so to be properly
-> delivered to all the connected devices." or something more detailed
-> for your preference. After that the rest of the comments in the
-> if-clause could be discarded.
+Changes v5 -> v6:
+* Use indirection as per Linus.
+* Change hexagon triple to use -musl rather than -gnu. glibc doesn't
+  have support for hexagon, and hexagon-linux-musl is the triple we use
+  in CI.
+  https://github.com/ClangBuiltLinux/continuous-integration2/blob/d659897d1700894d67feb64fe28e298da399a287/generator.yml#L53
+* Pick up Fangrui's RB.
+* Reorder use of Env vars in documentation to use command line
+  parameters instead, for consistency.
 
-Sure!
+Changes v4 -> v5:
+* Include previously missing first patch!
+
+Changes v3 -> v4:
+* Remove the requirement that LLVM_IAS=1 be set, as per Masahiro.
+* Remove the Documentation/ change from patch 2, as per Masahiro and
+  Nathan.
+* Add Documentation/ change as patch 3, from Masahiro.
+* Reword commit message of patch 2, as per Nathan.
+* Change patch 2 oneline to refer to --target and CC=clang (not
+  CROSS_COMPILE).
+* Carry Arnd's and Nathan's AB/RB/TB tags, confirmed ok on IRC+discord.
+
+Changes v2 -> v3:
+* Remove requirement that LLVM=1 be set. Instead, if building with just
+  CC=clang LLVM_IAS=1 instead of LLVM=1 LLVM_IAS=1, you should use
+  LD=ld.lld explicitly, or LD=aarch64-linux-gnu-ld. (As per Masahiro)
+  Example:
+
+  $ ARCH=arm64 make CC=clang LLVM_IAS=1 LD=ld.lld OBJCOPY=llvm-objcopy \
+    STRIP=llvm-strip -j72 defconfig all
+
+  (It's still preferable to use LLVM=1 IMO, but this is maximally
+  flexible.)
+* Change oneliner from LLVM=1 to CC=clang.
+* Update Docs slightly.
+
+Changes v1 -> v2:
+* patch 1/2 untouched.
+* Fix typos in commit message as per Geert and Masahiro.
+* Use SRCARCH instead of ARCH, simplifying x86 handling, as per
+  Masahiro. Add his sugguested by tag.
+* change commit oneline from 'drop' to 'infer.'
+* Add detail about explicit host --target and relationship of ARCH to
+  SRCARCH, as per Masahiro.
+
+Nick Desaulniers (3):
+  Makefile: move initial clang flag handling into scripts/Makefile.clang
+  Makefile: infer --target from ARCH for CC=clang
+  Documentation/llvm: update CROSS_COMPILE inferencing
+
+ Documentation/kbuild/llvm.rst | 19 ++++++++++++++++++-
+ MAINTAINERS                   |  1 +
+ Makefile                      | 15 +--------------
+ scripts/Makefile.clang        | 35 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 55 insertions(+), 15 deletions(-)
+ create mode 100644 scripts/Makefile.clang
 
 
+base-commit: d7a86429dbc691bf540688fcc8542cc20246a85b
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.32.0.554.ge1b32706d8-goog
 
