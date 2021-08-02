@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6A53DDAC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AA33DDABF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236141AbhHBOUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:20:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36826 "EHLO mail.kernel.org"
+        id S235020AbhHBOUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:20:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234921AbhHBOUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236458AbhHBOUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Aug 2021 10:20:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 82F41610CC;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 774BF61029;
         Mon,  2 Aug 2021 14:20:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1627914007;
-        bh=NfDZfjR0sUHnJkqTaXSLEjcmGyrcr7yymqNvT36xPgI=;
+        bh=aA+DZslmPStiTUWZaOPkeOB9KFkUCERmtFZuhkcNalA=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=GU0MyHmwNs1MgavaMsxH4BGmuU1OFcqJ76jsJFH8eIqvuPs5BeXHxlK/WjQzt7KaD
-         W0blE3QKmc4CrfXmk9LnrYwCMqULO8jSngV8jAKnvZP/7gSC70DvN/BH0xcsLVR1nC
-         62UYHOp1M6HKSrGSD5LgRC2Lzu+6CTwlRP+BmW3DKknjO84Vr9Xyj+UWHGvI8/3228
-         vl42EEZxKipFGUycKWoucoZLCDYmZffBq4rkg1vGoz2KZ6MVGuddzsxjeNcCv/TKAn
-         +DxCnUtOODEC2G1kCMQMhUKPkVGqTmCSC00lJciYIPx0ixvKMsUXPV+F0Apy0sMR31
-         xqoWmNDXpeKKg==
+        b=Np54+P/Q3UY6sdUBVkzAL2jWHzmZX2A1tbgPqMJw1h4dJbgdhMxCZFS/0n1mtO1eN
+         IXAcWNMbQClVXQMDMzHZ4i+/RlqWF+stlN/7esmMdAgV5PAkC1pphWAo7F6oOfCxTA
+         obkaxUHc2PvdomYXKqHGwGoUdapcIVa2043Y3t/wmVb31GnI1EZ6QErT1jzeAiJ1WL
+         7I1BHZSjHrn2wwh/v8LYWPK7ZMX112w4s37zAUP8np1E67WZsqQeMw637PZ2TX5N2O
+         tHCckEwoaRLGCjfSe0XCErYao3CxAitJnok2ve03hOSC0Jfed8Bv4asuuPcNyEOAzZ
+         yAcRUfpiBPO3w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7D12960A45;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 71DBA609D2;
         Mon,  2 Aug 2021 14:20:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] nfc: hci: pass callback data param as pointer in
- nci_request()
+Subject: Re: [PATCH] cavium: switch from 'pci_' to 'dma_' API
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162791400750.18419.3531561992313522609.git-patchwork-notify@kernel.org>
+Message-Id: <162791400746.18419.15767649410545938098.git-patchwork-notify@kernel.org>
 Date:   Mon, 02 Aug 2021 14:20:07 +0000
-References: <20210731102144.57764-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210731102144.57764-1-krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, bongsu.jeon@samsung.com,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <27c2b1a5152add2b3ecdfded40f562c5e4abed14.1627714392.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <27c2b1a5152add2b3ecdfded40f562c5e4abed14.1627714392.git.christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     dchickles@marvell.com, sburla@marvell.com, fmanlunas@marvell.com,
+        davem@davemloft.net, kuba@kernel.org, sgoutham@marvell.com,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,22 +48,20 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Sat, 31 Jul 2021 12:21:44 +0200 you wrote:
-> The nci_request() receives a callback function and unsigned long data
-> argument "opt" which is passed to the callback.  Almost all of the
-> nci_request() callers pass pointer to a stack variable as data argument.
-> Only few pass scalar value (e.g. u8).
+On Sat, 31 Jul 2021 09:10:00 +0200 you wrote:
+> The wrappers in include/linux/pci-dma-compat.h should go away.
 > 
-> All such callbacks do not modify passed data argument and in previous
-> commit they were made as const.  However passing pointers via unsigned
-> long removes the const annotation.  The callback could simply cast
-> unsigned long to a pointer to writeable memory.
+> The patch has been generated with the coccinelle script below. It has been
+> hand modified to use 'dma_set_mask_and_coherent()' instead of
+> 'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
+> 
+> It has been compile tested.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v3] nfc: hci: pass callback data param as pointer in nci_request()
-    https://git.kernel.org/netdev/net-next/c/35d7a6f1fb53
+  - cavium: switch from 'pci_' to 'dma_' API
+    https://git.kernel.org/netdev/net-next/c/1e0dd56e962e
 
 You are awesome, thank you!
 --
