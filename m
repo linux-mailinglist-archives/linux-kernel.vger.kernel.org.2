@@ -2,181 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A891D3DE09E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485443DE0A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhHBUXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhHBUXs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:23:48 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F1DC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 13:23:38 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id q9-20020a05620a0c89b02903ba3e0f08d7so13952664qki.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 13:23:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=quBrtaOgjAqR5zBsPoxqwYQ7Dgoy04UF3Qc7dSvcQS4=;
-        b=KjdDl7F1qjkZMvJSMo8co3v9t2uvyS6MH7doDW+Q+phYRB7qBgswVWmwdDfHgDl6gG
-         OPZWFYTb45J5CmNDf7+T8ozjloBAbuKR3P6JvogVbk3wZQTFj72o3FAPk7gEnTXqiHZe
-         lgtggXi+Gdv+wegMQcYFr5MjylaY4hUv4Q4FaahAaiLkdjDSc5jmSCiQuQf6nm2POS76
-         3d2LixcFaSZef1a8LXeZyioExDS/hDfJ95BOL5zApspS22Zy6LfHk3onKMGWijWT98iH
-         ckNZF13xwsr0iViX9EUUFYboTf8BMGitTzOhW5CjhTNoTSvKKl3Ve0KpVfEv/6VuKfm6
-         7FNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=quBrtaOgjAqR5zBsPoxqwYQ7Dgoy04UF3Qc7dSvcQS4=;
-        b=G7Z63KxgoWNeCD0XaaTiRX5DkRr6KR7Ezg1+CXIMAxeCcWcvFz0MicRDKXA6ADEvim
-         YhwqXaKOWRND6OCE/eMPT9iBOis74+S1kai4gqV+c82FAWFcDmETNuF7UwK4gukMBNxE
-         N/bN58xumbwJh68kR4sRvutGhx4UhCOokEIrkUMGbKIHcSO6TGknXwFBfwpPf0W86oXK
-         L38e9AA03oATFCYdWmHVbxioVeWGzwboN0LoHTE3KUsRn+4mdrGeLEDKDgjwAYRYm4sI
-         E2eJ43w1BqpdSSKT+YuWNxvxIrz85sikbE2v00FnBY6JsFy/wBPm2KGBnHTODyVMarK+
-         D6WA==
-X-Gm-Message-State: AOAM533gYdq6TbXeHm1bmwuuXyljseJ/FztjljUh7NRRZKAIsfmzZjQp
-        JokVCBEPw4P/wg8+XM1vu45mviSAS2KHu0lNl64=
-X-Google-Smtp-Source: ABdhPJwigrBubrndrKFDrxT6WVgfac5ftF9BwiF9ExJ/Q+35W8R8RwFhc5veoITKngyKKlVPSjXr+DLABaJPTXtBTPU=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:3db0:42c:8665:a4ae])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:b408:: with SMTP id
- u8mr7832672qve.33.1627935817494; Mon, 02 Aug 2021 13:23:37 -0700 (PDT)
-Date:   Mon,  2 Aug 2021 13:23:20 -0700
-Message-Id: <20210802202326.1817503-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH v2] compiler_attributes.h: move __compiletime_{error|warning}
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S230001AbhHBUZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:25:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229729AbhHBUZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 16:25:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9C2060EB5;
+        Mon,  2 Aug 2021 20:25:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627935946;
+        bh=O7HnUTXVprmZ4/8oq1gddhA3XEmFUduDhZhLrUMIH2Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VLb6ZLcm+8JPluUSOOKG2uWsYPoVvhY2z2qZhgx+FzVzGwVMUcMCg7d2timrMJcCy
+         a+ab6rKXoYMyXbH1MsuqMvAFkG7Zuj+unTzJ3iuZsDCR6abmC3OaGHOHHMhsp0L3JI
+         pEV4YVSMPUkYMri5AUTevEiB1DRAbRi6lPckODvCXhKzbZxq/fexNgUoULMZuWP5Up
+         jklO48ZC14THUHASjGSn5LxJTd5fphlrQPfRv71DaecEpQjkfYOiQIVG5XY4vCLYdY
+         B75TRL9KVdRGhgnVmghUZDtd6ccTEDRv/gf51zZRu08gDo+oKYNkF9x6END+oAEfQq
+         LuWJBHfK2MWqQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Date:   Mon,  2 Aug 2021 21:25:31 +0100
+Message-Id: <20210802202531.40356-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm working on adding support for __attribute__((__error__(""))) and
-__attribute__((__warning__(""))) to Clang. To make use of these in
-__compiletime_error and __compiletime_warning (as used by BUILD_BUG and
-friends) for newer clang and detect/fallback for older versions of
-clang, move these to compiler_attributes.h and guard them with
-__has_attribute preprocessor guards.
+Hi all,
 
-Link: https://reviews.llvm.org/D106030
-Link: https://bugs.llvm.org/show_bug.cgi?id=16428
-Link: https://github.com/ClangBuiltLinux/linux/issues/1173
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes v1 -> v2:
-* Use __warning__ rather than warning in __has_attribute check, as per
-  Nathan.
-* Don't sort existing __GCC4_has_attribute_* defines.
+Today's linux-next merge of the net-next tree got a conflict in:
 
- include/linux/compiler-gcc.h        |  3 ---
- include/linux/compiler_attributes.h | 24 ++++++++++++++++++++++++
- include/linux/compiler_types.h      |  6 ------
- 3 files changed, 24 insertions(+), 9 deletions(-)
+  drivers/net/dsa/sja1105/sja1105_main.c
 
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index cb9217fc60af..21c36b69eb06 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -43,9 +43,6 @@
- 
- #define __compiletime_object_size(obj) __builtin_object_size(obj, 0)
- 
--#define __compiletime_warning(message) __attribute__((__warning__(message)))
--#define __compiletime_error(message) __attribute__((__error__(message)))
--
- #if defined(LATENT_ENTROPY_PLUGIN) && !defined(__CHECKER__)
- #define __latent_entropy __attribute__((latent_entropy))
- #endif
-diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-index 67c5667f8042..fb08b843ab47 100644
---- a/include/linux/compiler_attributes.h
-+++ b/include/linux/compiler_attributes.h
-@@ -30,6 +30,7 @@
- # define __GCC4_has_attribute___assume_aligned__      1
- # define __GCC4_has_attribute___copy__                0
- # define __GCC4_has_attribute___designated_init__     0
-+# define __GCC4_has_attribute___error__               1
- # define __GCC4_has_attribute___externally_visible__  1
- # define __GCC4_has_attribute___no_caller_saved_registers__ 0
- # define __GCC4_has_attribute___noclone__             1
-@@ -39,6 +40,7 @@
- # define __GCC4_has_attribute___no_sanitize_undefined__ 1
- # define __GCC4_has_attribute___no_sanitize_coverage__ 0
- # define __GCC4_has_attribute___fallthrough__         0
-+# define __GCC4_has_attribute___warning__             1
- #endif
- 
- /*
-@@ -138,6 +140,17 @@
- # define __designated_init
- #endif
- 
-+/*
-+ * Optional: only supported since clang >= 13.0
-+ *
-+ *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-error-function-attribute
-+ */
-+#if __has_attribute(__error__)
-+# define __compiletime_error(msg)       __attribute__((__error__(msg)))
-+#else
-+# define __compiletime_error(msg)
-+#endif
-+
- /*
-  * Optional: not supported by clang
-  *
-@@ -299,6 +312,17 @@
-  */
- #define __must_check                    __attribute__((__warn_unused_result__))
- 
-+/*
-+ * Optional: only supported since clang >= 13.0
-+ *
-+ *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-warning-function-attribute
-+ */
-+#if __has_attribute(__warning__)
-+# define __compiletime_warning(msg)     __attribute__((__warning__(msg)))
-+#else
-+# define __compiletime_warning(msg)
-+#endif
-+
- /*
-  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-weak-function-attribute
-  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#index-weak-variable-attribute
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index e4ea86fc584d..b6ff83a714ca 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -294,12 +294,6 @@ struct ftrace_likely_data {
- #ifndef __compiletime_object_size
- # define __compiletime_object_size(obj) -1
- #endif
--#ifndef __compiletime_warning
--# define __compiletime_warning(message)
--#endif
--#ifndef __compiletime_error
--# define __compiletime_error(message)
--#endif
- 
- #ifdef __OPTIMIZE__
- # define __compiletime_assert(condition, msg, prefix, suffix)		\
--- 
-2.32.0.554.ge1b32706d8-goog
+between commit:
 
+  589918df9322 ("net: dsa: sja1105: be stateless with FDB entries on SJA1105P/Q/R/S/SJA1110 too")
+
+from the net tree and commit:
+
+  0fac6aa098ed ("net: dsa: sja1105: delete the best_effort_vlan_filtering mode")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+diff --cc drivers/net/dsa/sja1105/sja1105_main.c
+index 8667c9754330,5ab1676a7448..000000000000
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@@ -1445,23 -1474,25 +1499,29 @@@ int sja1105pqrs_fdb_add(struct dsa_swit
+  	/* Search for an existing entry in the FDB table */
+  	l2_lookup.macaddr = ether_addr_to_u64(addr);
+  	l2_lookup.vlanid = vid;
+ -	l2_lookup.iotag = SJA1105_S_TAG;
+  	l2_lookup.mask_macaddr = GENMASK_ULL(ETH_ALEN * 8 - 1, 0);
+- 	l2_lookup.mask_vlanid = VLAN_VID_MASK;
++ 	if (priv->vlan_aware) {
++ 		l2_lookup.mask_vlanid = VLAN_VID_MASK;
++ 		l2_lookup.mask_iotag = BIT(0);
++ 	} else {
++ 		l2_lookup.mask_vlanid = 0;
++ 		l2_lookup.mask_iotag = 0;
++ 	}
+  	l2_lookup.destports = BIT(port);
+  
+ +	tmp = l2_lookup;
+ +
+  	rc = sja1105_dynamic_config_read(priv, BLK_IDX_L2_LOOKUP,
+ -					 SJA1105_SEARCH, &l2_lookup);
+ -	if (rc == 0) {
+ -		/* Found and this port is already in the entry's
+ +					 SJA1105_SEARCH, &tmp);
+ +	if (rc == 0 && tmp.index != SJA1105_MAX_L2_LOOKUP_COUNT - 1) {
+ +		/* Found a static entry and this port is already in the entry's
+  		 * port mask => job done
+  		 */
+ -		if (l2_lookup.destports & BIT(port))
+ +		if ((tmp.destports & BIT(port)) && tmp.lockeds)
+  			return 0;
+ +
+ +		l2_lookup = tmp;
+ +
+  		/* l2_lookup.index is populated by the switch in case it
+  		 * found something.
+  		 */
+@@@ -1536,8 -1537,15 +1596,14 @@@ int sja1105pqrs_fdb_del(struct dsa_swit
+  
+  	l2_lookup.macaddr = ether_addr_to_u64(addr);
+  	l2_lookup.vlanid = vid;
+ -	l2_lookup.iotag = SJA1105_S_TAG;
+  	l2_lookup.mask_macaddr = GENMASK_ULL(ETH_ALEN * 8 - 1, 0);
+- 	l2_lookup.mask_vlanid = VLAN_VID_MASK;
++ 	if (priv->vlan_aware) {
++ 		l2_lookup.mask_vlanid = VLAN_VID_MASK;
++ 		l2_lookup.mask_iotag = BIT(0);
++ 	} else {
++ 		l2_lookup.mask_vlanid = 0;
++ 		l2_lookup.mask_iotag = 0;
++ 	}
+  	l2_lookup.destports = BIT(port);
+  
+  	rc = sja1105_dynamic_config_read(priv, BLK_IDX_L2_LOOKUP,
