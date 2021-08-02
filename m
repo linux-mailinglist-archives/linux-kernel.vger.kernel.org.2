@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBAF3DD1E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D00E3DD1E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 10:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhHBIYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 04:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232562AbhHBIYr (ORCPT
+        id S232786AbhHBIZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 04:25:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47440 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232562AbhHBIZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 04:24:47 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA9FC06175F;
-        Mon,  2 Aug 2021 01:24:37 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id t68so15864245qkf.8;
-        Mon, 02 Aug 2021 01:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=ftTeMsaFnDexLSsj0nGTDXOHs2swkIukHz+IHoPpb08=;
-        b=C6cZSCXNc/U/zMxeSznrfNGCQDPT9YaWeg7N83KUpHQbZ9lqWaKc4y1rutI0uqYtox
-         VPwgdxAESB1yAOtySnvc2+qFvTpoTPZsNBU4NiuoYgKF+NeHXQitootbEoJm/Ghhx9gn
-         UVo2GjCg8sWEumHX/8vWA6lck+OGXkEQcl+/jAzHPxYzVu/cm441rheh7jYW8Rfw3fN2
-         LTHPiRjaoBq5JgB8atin5L2zRw/4KvRoa17Vexso+TXxUeX4OHEVIhDsinNmYQctd7Y8
-         XsHu5juyI1gWKMKJiiboxPVgZ1PEW8qI2PzifuMLr8j7TDFITmFUzt6b7vxhUm1wyvVx
-         eGYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=ftTeMsaFnDexLSsj0nGTDXOHs2swkIukHz+IHoPpb08=;
-        b=bHz3cj0O8qDpSonrCExUbOVVXh2LG0TAZdkz0iIrQZItrOPCCvXwTcWYvqzxWi1e3V
-         2d320Spg8sd1RPI0z/GwPfItihahebUmEQi4etVbk48/JczR6IcYipGNScBW2hiwWDLt
-         apWAazl7v2cXYpW4bWM3YuoKsBh728Oq/4mtqDynScOGh5SXtpG4WI5bgt1eCXa0gPdE
-         1FRnl4RcPvCHZeMOY1cXVdrWiGJH9YSnYFwKBoaogxOAjMwi+MPDgef9ttyGUpmS1Kk7
-         IqYDNvNPR8fsYfUGVAnCE56PVLUIhMmEr+F84WQEZ74OZcDGGjfj2XDrREpat7YHA/Wm
-         EHFQ==
-X-Gm-Message-State: AOAM533tX5hubH/e1LXszqwIXNnFOHWKaoS9q7LKQ3dMA4qVpMADSO/o
-        8/ObuiMO30d9xAbblaIBegQ=
-X-Google-Smtp-Source: ABdhPJzuef6atXq/Y4rgBbRia4RuROrkMmcvKkZwi4YHK3ZuGrSmQ27cOTbRwdc1AP9x9tWnCDXxXg==
-X-Received: by 2002:a05:620a:903:: with SMTP id v3mr14231864qkv.235.1627892676371;
-        Mon, 02 Aug 2021 01:24:36 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id l12sm4427681qtx.45.2021.08.02.01.24.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 01:24:35 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
-        amit@kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
-        foersleo@amazon.de, Greg Thelen <gthelen@google.com>,
-        jgowans@amazon.com, mheyne@amazon.de,
-        David Rientjes <rientjes@google.com>, sieberf@amazon.com,
-        Vlastimil Babka <vbabka@suse.cz>, linux-damon@amazon.com,
-        Linux MM <linux-mm@kvack.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, Wei Xu <weixugc@google.com>,
-        Paul Turner <pjt@google.com>, Yu Zhao <yuzhao@google.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [PATCH v34 00/13] Introduce Data Access MONitor (DAMON)
-Date:   Mon,  2 Aug 2021 08:24:24 +0000
-Message-Id: <20210802082424.19584-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210728083643.5873-1-sjpark@amazon.de>
+        Mon, 2 Aug 2021 04:25:57 -0400
+Date:   Mon, 2 Aug 2021 10:25:45 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627892747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1xX182M09BsP3t5u5fpQK/eK6k4BYOmOPJnY2+XJBF4=;
+        b=gMqKvYjGqdl+Su3vDIaJQrjyu8HfNvauCLg9/R6VRlnhgE6Kn+Dfx2d5wuRmHegPRFQ+7S
+        5PGxIDgDlu1v1QSyLmWOyyQEEQ/JpCRY1AAUYg1uPVwxuLE/+n2vVJbb0KRhwhn1TXSLEL
+        AAj8azCo/s10DFVTG7pNZySlNDqJ2AQlBrfanhweqP7vxWRYTTYIkJP9QBowWvyvJvJvbP
+        vq692K/gw+pktOZPjiwCBg4nFOJppE+DRoQ8CDzyx3pqwgBCkCGROHeLvYLNLqR+GWqHK2
+        vek8ZmufYCqmHVFPD+LmVqjYU6v1LkJVhjHN2lEuswGRIUndIo7fuVQGJlqwSg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627892747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1xX182M09BsP3t5u5fpQK/eK6k4BYOmOPJnY2+XJBF4=;
+        b=fZuvLCL2R0DgklSVisM/9asgJSrfB3DLVYfILV+j5h9q5l/2KboTHartbl3OXspLb9iqFM
+        n55gTLpeTaYM+4DA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: v5.14-rc3-rt1 losing wakeups?
+Message-ID: <20210802082545.bykz23s3ouwa4drn@linutronix.de>
+References: <20210730110753.jvli6alm63h5lefy@linutronix.de>
+ <2ae27233ab091d09a7d1e971a47144b40dd51fa0.camel@gmx.de>
+ <87pmuzsf1p.ffs@tglx>
+ <6fce881efc3d8c24a5172528fe1f46ec2ddc0607.camel@gmx.de>
+ <ed1d5f9ec17a5b8d758c234562dad47cfc872ed8.camel@gmx.de>
+ <20210802070218.5js3exubjxvsicx6@linutronix.de>
+ <edd2f9fd1489e1ff05bf526a3059a1dbb81107df.camel@gmx.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <edd2f9fd1489e1ff05bf526a3059a1dbb81107df.camel@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On 2021-08-02 09:18:34 [+0200], Mike Galbraith wrote:
+> Nope.  Before I even reverted the wake_q bits, I assembled a tree with
+> the ww_mutex changes completely removed to be absolutely certain that
+> they were innocent, and it indeed did retain its lost wakeup woes
+> despite complete loss of newfangled ww_mutex.  5.13-rt acquired those
+> same wakeup woes by receiving ONLY the wake_q bits, and 5.14-rt was
+> cured of those woes by ONLY them being reverted. I'm not seeing the
+> why, but those bits are either the source or the trigger of 5.14-rt
+> lost wakeup woes... they're toxic in some way shape fashion or form.
 
-Hello Andrew,
+Okay. So the ww-mutex bits are not the cure then. All you do is booting
+KDE/Plasma in kvm with virtio as GPU or did I mix up things?
 
-On Wed, 28 Jul 2021 08:36:43 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
+> 	-Mike
 
-[...]
-> Now all the patches have at least one 'Reviewed-by:' or 'Acked-by:' tags.  We
-> didn't find serious problems since v26[5], which was posted about four months
-> ago. so I'm thinking this patchset has passed the minimum qualification.  If
-> you think there are more things to be done before this patchset is merged in
-> the -mm tree or mainline, please let me know.  If not, Andrew, I'd like you to
-> consider merging this patchset into '-mm' tree.
-
-I'm wondering if you had a chance to consider that.  If you had the chance but
-this patchset didn't convince you, could you please let me know your concerns
-so that I can make some progress?
-
-
-Thanks,
-SeongJae Park
-
-[...]
+Sebastian
