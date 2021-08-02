@@ -2,90 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001443DD73B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449543DD6BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233942AbhHBNf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:35:59 -0400
-Received: from fanzine.igalia.com ([178.60.130.6]:41368 "EHLO
-        fanzine.igalia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233925AbhHBNf4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:35:56 -0400
-X-Greylist: delayed 1180 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Aug 2021 09:35:55 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com; s=20170329;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=fpzHzOgb2FZjPrS+PEZ6zZ/AvzAw7jgjSdIsGJX7H8U=;
-        b=F+dhpVbqJxjOgwYB+uNEKP8zlopKAt3XrenCUhacGZylWVWb5m7GSirgA20/RwN9Iqsypr1azcvGtZnSfZ079rtqsmNoehjPPDZ5fgoiWhVXQev/NwgULxAWLcn3IQDOespHjXysjam/QSatVYLqXIHxrbY0JaJ+mKlLJ0hfXot2vQ+WTLaY/gLbGT/j3pZPhuQjfcZNnElTcm+qy94oUWZZ6kdYYm2hr49snMiu9RUkQThvlppksr6oIjJQ/idv0C23wy8GKj0zqQTCWJqL+li52MQkJGHD1PaF2T/krS4PeFgWq8pk3A0GRBYnSYz9/djB8o1WuMtJHImIhbZSeg==;
-Received: from bl23-140-245.dsl.telepac.pt ([144.64.140.245] helo=trinity.bot.igalia.com)
-        by fanzine.igalia.com with esmtpsa 
-        (Cipher TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim)
-        id 1mAXnX-0000VB-Lo; Mon, 02 Aug 2021 15:16:03 +0200
-From:   Carlos Alberto Lopez Perez <clopez@igalia.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-hwmon@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, Pali Rohar <pali@kernel.org>,
-        Carlos Alberto Lopez Perez <clopez@igalia.com>
-Subject: [PATCH] hwmon: (dell-smm) Add Dell Precision 7510 to fan control whitelist
-Date:   Mon,  2 Aug 2021 14:15:38 +0100
-Message-Id: <20210802131538.8660-1-clopez@igalia.com>
-X-Mailer: git-send-email 2.20.1
+        id S233786AbhHBNQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:16:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233764AbhHBNQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:16:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BE5D60F6D;
+        Mon,  2 Aug 2021 13:16:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627910190;
+        bh=1Ex0+3uTcYZ6jvFeDk088gY4QbGXw0sF3nCd8f5WDt4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l3vUA9I2Jv/CJhN9WkDO95RjcFbaoJO8T05X0i4RuuBqzMVBTma4bZgizE7xnF5gA
+         lBcGXFdITRWDjvxecXOkXNnQrFCqPPOhEPVE9jfReArFKChwl7c4r2IFzbeWcra8l2
+         eiweUhr9vGbbdzq85322CNcaZSg8mSNdaNtdGjjlZHyzx/TJdS1z/9nR0jqLA7wB4G
+         +fELEpfqYXXdPMr2kwGz3dX2v5AOCc1V+0060JqK1aV/5fL7v0+xvuYZBEGIMlkSFf
+         zMWIIw9Mdg7Gj+dpPGCn8HMIKKlRl0wbtqIgU8NVKjg9/Co7BPouCB0OEbx85vEkJs
+         GgsKBi3EVPxzQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4A0EB403F2; Mon,  2 Aug 2021 10:16:28 -0300 (-03)
+Date:   Mon, 2 Aug 2021 10:16:28 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCHSET v3 0/5] perf inject: Fix broken data with mixed
+ input/output
+Message-ID: <YQfwLP4Ebsc3Wzb2@kernel.org>
+References: <20210719223153.1618812-1-namhyung@kernel.org>
+ <YPaQ94VCtYWSXYnh@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPaQ94VCtYWSXYnh@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows manual PWM control without the BIOS fighting back on Dell
-Precision 7510. Meanwhile at it, also sort alphabetically the entries
-of the i8k_whitelist_fan_control struct.
+Em Tue, Jul 20, 2021 at 11:01:43AM +0200, Jiri Olsa escreveu:
+> On Mon, Jul 19, 2021 at 03:31:48PM -0700, Namhyung Kim wrote:
+> > The perf inject processes the input data and produces an output with
+> > injected data according to the given options.  During the work, it
+> > assumes the input and output files have the same format - either a
+> > regular file or a pipe.  This works for the obvious cases, but
+> > sometimes makes a trouble when input and output have different
+> > formats (like for debugging).
 
-Signed-off-by: Carlos Alberto Lopez Perez <clopez@igalia.com>
----
- drivers/hwmon/dell-smm-hwmon.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+> >  * changes in v3
+> >   - use task-clock:u in the pipe-test.sh
+ 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-index f2221ca0aa7b..a677c8a4ef29 100644
---- a/drivers/hwmon/dell-smm-hwmon.c
-+++ b/drivers/hwmon/dell-smm-hwmon.c
-@@ -1186,14 +1186,6 @@ static const struct i8k_fan_control_data i8k_fan_control_data[] = {
- };
+Thanks, applied.
+
+Had to do some adjustments due to minor conflicts, can you please check
+tmp.perf/core?
+
+- Arnaldo
  
- static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
--	{
--		.ident = "Dell Precision 5530",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
--			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Precision 5530"),
--		},
--		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
--	},
- 	{
- 		.ident = "Dell Latitude 5480",
- 		.matches = {
-@@ -1218,6 +1210,22 @@ static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
- 		},
- 		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
- 	},
-+	{
-+		.ident = "Dell Precision 5530",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Precision 5530"),
-+		},
-+		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
-+	},
-+	{
-+		.ident = "Dell Precision 7510",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Precision 7510"),
-+		},
-+		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
-+	},
- 	{ }
- };
- 
+> thanks,
+> jirka
+> 
+> > 
+> >  * changes in v2
+> >   - factor out perf_event__synthesize_for_pipe
+> >   - add a shell test for pipe operations
+> > 
+> > 
+> > For example, this patchset fixed the following cases
+> > 
+> >  1. input: pipe, output: file
+> > 
+> >   # perf record -a -o - sleep 1 | perf inject -b -o perf-pipe.data
+> >   # perf report -i perf-pipe.data
+> > 
+> >  2. input: file, output: pipe
+> > 
+> >   # perf record -a -B sleep 1
+> >   # perf inject -b -i perf.data | perf report -i -
+> > 
+> > 
+> > Thanks,
+> > Namhyung
+> > 
+> > 
+> > Namhyung Kim (5):
+> >   perf tools: Remove repipe argument from perf_session__new()
+> >   perf tools: Pass a fd to perf_file_header__read_pipe()
+> >   perf inject: Fix output from a pipe to a file
+> >   perf inject: Fix output from a file to a pipe
+> >   perf tools: Add pipe_test.sh to verify pipe operations
+> > 
+> >  tools/perf/bench/synthesize.c       |  4 +-
+> >  tools/perf/builtin-annotate.c       |  2 +-
+> >  tools/perf/builtin-buildid-cache.c  |  2 +-
+> >  tools/perf/builtin-buildid-list.c   |  2 +-
+> >  tools/perf/builtin-c2c.c            |  2 +-
+> >  tools/perf/builtin-diff.c           |  4 +-
+> >  tools/perf/builtin-evlist.c         |  2 +-
+> >  tools/perf/builtin-inject.c         | 38 ++++++++++++++--
+> >  tools/perf/builtin-kmem.c           |  2 +-
+> >  tools/perf/builtin-kvm.c            |  4 +-
+> >  tools/perf/builtin-lock.c           |  2 +-
+> >  tools/perf/builtin-mem.c            |  3 +-
+> >  tools/perf/builtin-record.c         | 40 +++--------------
+> >  tools/perf/builtin-report.c         |  2 +-
+> >  tools/perf/builtin-sched.c          |  4 +-
+> >  tools/perf/builtin-script.c         |  4 +-
+> >  tools/perf/builtin-stat.c           |  4 +-
+> >  tools/perf/builtin-timechart.c      |  3 +-
+> >  tools/perf/builtin-top.c            |  2 +-
+> >  tools/perf/builtin-trace.c          |  2 +-
+> >  tools/perf/tests/shell/pipe_test.sh | 69 +++++++++++++++++++++++++++++
+> >  tools/perf/tests/topology.c         |  4 +-
+> >  tools/perf/util/data-convert-bt.c   |  2 +-
+> >  tools/perf/util/data-convert-json.c |  2 +-
+> >  tools/perf/util/header.c            | 12 ++---
+> >  tools/perf/util/header.h            |  2 +-
+> >  tools/perf/util/session.c           | 11 ++---
+> >  tools/perf/util/session.h           | 12 ++++-
+> >  tools/perf/util/synthetic-events.c  | 53 +++++++++++++++++++++-
+> >  tools/perf/util/synthetic-events.h  |  6 +++
+> >  30 files changed, 217 insertions(+), 84 deletions(-)
+> >  create mode 100755 tools/perf/tests/shell/pipe_test.sh
+> > 
+> > -- 
+> > 2.32.0.402.g57bb445576-goog
+> > 
+> 
+
 -- 
-2.20.1
 
+- Arnaldo
