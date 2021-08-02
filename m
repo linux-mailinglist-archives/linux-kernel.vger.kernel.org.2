@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA0E3DDE8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0B43DDE87
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 19:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbhHBRaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 13:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38572 "EHLO mail.kernel.org"
+        id S230400AbhHBRaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 13:30:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230167AbhHBR35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 13:29:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4A6261104;
-        Mon,  2 Aug 2021 17:29:47 +0000 (UTC)
+        id S229607AbhHBR3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 13:29:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D34FA61102;
+        Mon,  2 Aug 2021 17:29:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627925387;
-        bh=3fH4xyackk6mzT6bM4HMVhu7V3Ju4e+WsPSUFZe9ocs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rXxLds+xYAIL51sRiYyzmBMbZbFErWa4iZYSsEafH3FA/ZXVo71xzyi5U9m/5HVis
-         IyfJmxMgjJWasy3YjYfvyT2wZXWARqv/mVPnfTLMnkyJDMNUp+ErVxzWuz9rEVP99D
-         i6mgf8KlpTGPpmSBSwVZstWcwCosq2EYWCGGOXg8Jw1F9aUtG28qkkxy0d1Ip1+8Ju
-         29q1MRfLo6M30LI6JYJ909ST4gRMRFiPq0R6yTc0zT+R4l9GxN1KCd8mQN0QwwXttl
-         Z7ZTQNn4YGU/4t0coyGzGAsa5wPpuPSJvhDNDXkapNsnd4C1SJBTE1zPsUd5Mf8wPG
-         QoDMGtFr/CRtQ==
-Received: by mail-qk1-f182.google.com with SMTP id x3so17322381qkl.6;
-        Mon, 02 Aug 2021 10:29:47 -0700 (PDT)
-X-Gm-Message-State: AOAM532zRg9uOZNqnsko7+uwH5LL7X26OQVR4bly8EzwXqgasPcCmA6/
-        lKjx+6Ev7WG1gtagTG0OoNyZTBKYj5oAAmQMPg==
-X-Google-Smtp-Source: ABdhPJw3rhsg3xt3WZxvRf6C3TDMvQ/nYPKknmsyDFIXTD5vr9EXh4l0mA5SLbhh2MtpltohbhbaF0Ho6Gb7u+i9Dw8=
-X-Received: by 2002:a37:6353:: with SMTP id x80mr16678360qkb.464.1627925386913;
- Mon, 02 Aug 2021 10:29:46 -0700 (PDT)
+        s=k20201202; t=1627925384;
+        bh=CW+mp2qidRVwZuQRESt49L6zsHui5LNvQSbJNC6LeVE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GJuxzopT4ZZ8IP7n6PDsaXGTnmND1JBKaef9LYBwxNX3ZZwt+Ch+6o0qBNDCJtud1
+         KehPtmMIKy4vZzh5qbRRpxnBkoDSFUpK/Qf44+LUI3dScFDQIkIcZL1FMvPAgZisU2
+         CQgHBAcNY6O2xFRRjDEeJIv/gEXIU6DCxc17oD7gipRSDfuc5I373kwPTgKNYn8gkn
+         Ok9uP2iamkjtNeAOXjgQET4zOjkQktxmiO5pWwXOFuDxYqWHMLBgMSKlxg5xtvpxQH
+         br4+qjZTrR9qwSZG8Po9ZVSDNnzcSzdkNk6wew0AR9dmnOWMDzx/rXa27tQjS7BSYs
+         CEVcHQBzKVclA==
+Received: by pali.im (Postfix)
+        id 9AAF4B98; Mon,  2 Aug 2021 19:29:41 +0200 (CEST)
+Date:   Mon, 2 Aug 2021 19:29:41 +0200
+From:   Pali Rohar <pali@kernel.org>
+To:     Carlos Alberto Lopez Perez <clopez@igalia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>
+Subject: Re: [PATCH] hwmon: (dell-smm) Add Dell Precision 7510 to fan control
+ whitelist
+Message-ID: <20210802172941.is2e4bxpsnuwslew@pali>
+References: <20210802131538.8660-1-clopez@igalia.com>
 MIME-Version: 1.0
-References: <1626868353-96475-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1626868353-96475-5-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <YQMIhBPwcNw1YqMq@robh.at.kernel.org> <bc5185eb-8051-89ca-4a5f-c4e5fc90a7f2@xilinx.com>
-In-Reply-To: <bc5185eb-8051-89ca-4a5f-c4e5fc90a7f2@xilinx.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 2 Aug 2021 11:29:35 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+281knebcN--jQgYWtDQO4OV6ZO5CvnYpaYqrAaiGmPQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+281knebcN--jQgYWtDQO4OV6ZO5CvnYpaYqrAaiGmPQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] arm: dts: zynq: Replace 'io-standard' with
- 'power-source' property
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        git <git@xilinx.com>, saikrishna12468@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210802131538.8660-1-clopez@igalia.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 10:59 PM Michal Simek <michal.simek@xilinx.com> wrote:
->
->
->
-> On 7/29/21 9:59 PM, Rob Herring wrote:
-> > On Wed, Jul 21, 2021 at 05:22:33PM +0530, Sai Krishna Potthuri wrote:
-> >> Replace 'io-standard' property with 'power-source' property in all zynq dts
-> >> files to be in sync with Zynq pinctrl driver.
-> >>
-> >> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-> >> ---
-> >>  arch/arm/boot/dts/zynq-ebaz4205.dts |  8 ++++----
-> >>  arch/arm/boot/dts/zynq-microzed.dts |  2 +-
-> >>  arch/arm/boot/dts/zynq-zc702.dts    | 20 ++++++++++----------
-> >>  arch/arm/boot/dts/zynq-zc706.dts    | 18 +++++++++---------
-> >>  4 files changed, 24 insertions(+), 24 deletions(-)
-> >>
-> >> diff --git a/arch/arm/boot/dts/zynq-ebaz4205.dts b/arch/arm/boot/dts/zynq-ebaz4205.dts
-> >> index b0b836aedd76..be7eae611fb7 100644
-> >> --- a/arch/arm/boot/dts/zynq-ebaz4205.dts
-> >> +++ b/arch/arm/boot/dts/zynq-ebaz4205.dts
-> >> @@ -57,7 +57,7 @@
-> >>
-> >>              conf {
-> >>                      groups = "gpio0_20_grp", "gpio0_32_grp";
-> >> -                    io-standard = <3>;
-> >> +                    power-source = <3>;
-> >
-> > This will break using a new DT with a kernel without patch 3.
-> >
->
-> What do you suggest? Not to update any old DT?
+On Monday 02 August 2021 14:15:38 Carlos Alberto Lopez Perez wrote:
+> This allows manual PWM control without the BIOS fighting back on Dell
+> Precision 7510. Meanwhile at it, also sort alphabetically the entries
+> of the i8k_whitelist_fan_control struct.
+> 
+> Signed-off-by: Carlos Alberto Lopez Perez <clopez@igalia.com>
 
-Your options are don't change the dts files, patch 3 needs to go to
-stable kernels, or you document the breakage (if you don't care).
+Acked-by: Pali Rohár <pali@kernel.org>
 
-Rob
+> ---
+>  drivers/hwmon/dell-smm-hwmon.c | 24 ++++++++++++++++--------
+>  1 file changed, 16 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
+> index f2221ca0aa7b..a677c8a4ef29 100644
+> --- a/drivers/hwmon/dell-smm-hwmon.c
+> +++ b/drivers/hwmon/dell-smm-hwmon.c
+> @@ -1186,14 +1186,6 @@ static const struct i8k_fan_control_data i8k_fan_control_data[] = {
+>  };
+>  
+>  static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
+> -	{
+> -		.ident = "Dell Precision 5530",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> -			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Precision 5530"),
+> -		},
+> -		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+> -	},
+>  	{
+>  		.ident = "Dell Latitude 5480",
+>  		.matches = {
+> @@ -1218,6 +1210,22 @@ static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
+>  		},
+>  		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+>  	},
+> +	{
+> +		.ident = "Dell Precision 5530",
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Precision 5530"),
+> +		},
+> +		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+> +	},
+> +	{
+> +		.ident = "Dell Precision 7510",
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Precision 7510"),
+> +		},
+> +		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+> +	},
+>  	{ }
+>  };
+>  
+> -- 
+> 2.20.1
+> 
