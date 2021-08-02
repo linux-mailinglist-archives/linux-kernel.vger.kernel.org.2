@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA923DE07B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DB83DE080
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 22:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhHBUMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 16:12:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23227 "EHLO
+        id S229612AbhHBUOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 16:14:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36646 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230095AbhHBUMP (ORCPT
+        by vger.kernel.org with ESMTP id S230001AbhHBUOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 16:12:15 -0400
+        Mon, 2 Aug 2021 16:14:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627935125;
+        s=mimecast20190719; t=1627935230;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=q52w6Q4YtuhtQOV0oJmgEUraWN88/oaIpPIXQ4cq1HY=;
-        b=LE0/8pkSOZcet6YCYBENzHDVMIQNfhM6lL7mYED5VZpbWc/H8slVirXD3rhjcKyI92EgD6
-        yN/RyDTZS5WQdGMT6ZG6V3DpEte1/YuyCgdLXHeNgJzuS0Fi4feQ5VqvbCKsr/oaqZBzgZ
-        sCwnvaNRb5VuCIlJWDoGqikhrSuGTOc=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-M-5y0w_DMv-pv833eeJMPg-1; Mon, 02 Aug 2021 16:12:03 -0400
-X-MC-Unique: M-5y0w_DMv-pv833eeJMPg-1
-Received: by mail-ej1-f72.google.com with SMTP id k22-20020a1709061596b02905a370b2f477so115606ejd.17
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 13:12:03 -0700 (PDT)
+        bh=lvAKbFSCFU59TOTJPC3/cAvD7UXJ3lZqXOvWWs7Do/0=;
+        b=hSuLcPG1CJzhYeh0bNxDwujwAgNKqr623VzF/Ngsv6byu2CweCHJyJYIGqyOE/NLYLdBzg
+        s2gdJzx2ylRLI/Ad+0LC6Q4JelJ/myCBj8tBsPT80ieY/JgyF2pBWj6pmTwYHAz3i4bis+
+        DnatKFXq764j6x6kR8wo7K0pDn8frw4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-373-IR-xOoKyOESHJIn_y3RvUQ-1; Mon, 02 Aug 2021 16:13:49 -0400
+X-MC-Unique: IR-xOoKyOESHJIn_y3RvUQ-1
+Received: by mail-ed1-f71.google.com with SMTP id ay20-20020a0564022034b02903bc515b673dso9365766edb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 13:13:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=q52w6Q4YtuhtQOV0oJmgEUraWN88/oaIpPIXQ4cq1HY=;
-        b=M9BqCPn7AlHonYvmvwx4jXvH8ieKNuVQUrp5ondmFdLJi4EX8ir0pWZMNkuGqQKG/R
-         Um1TY55V7d7efp8l09ZCpqA2KAoD4d+JWQnKwHA2jQRZM3dvQknoEglFNBlEMnqorp6m
-         YX9RPlKLHlbUBA1aF+4C5+u0JgGcNmcqIP+lREsyUOrF0dFCfXQjUmJ4A1S+xKzkOmoG
-         tYlnadf711yD2CfbXHYIKcsFMDMQWf+P/naFVQw/wgq1+dUtutKiY4fU3wzqgzU6LCXM
-         sX/gu7W+JE5dEGhKiQjMzJ5Ea0bZKQif1CYzJmHJsv5KJXUItiVKT293Ig1kMML7bvWF
-         y1EA==
-X-Gm-Message-State: AOAM533nCOrSAx9ddwoSlOZMJga5nsjW6QLy/SW7EqiQBP23YWeNY9Qy
-        1PSgZc9xF86+yllenfFPkuWFP6VqMJ0xwlB8snuuciNswwYCA65tWIUih65lmYPc5nq0ZKSE/T+
-        BK/0KG7Cg6N3L/YVJ1h9WSU8y
-X-Received: by 2002:aa7:c0d1:: with SMTP id j17mr21235856edp.217.1627935122739;
-        Mon, 02 Aug 2021 13:12:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyfr39sns4u7IHD+697IXe7EyNtPI7YycI0ox/3uN10j7vd/YANYQrljcKZhj+LRbcxif46Ug==
-X-Received: by 2002:aa7:c0d1:: with SMTP id j17mr21235843edp.217.1627935122638;
-        Mon, 02 Aug 2021 13:12:02 -0700 (PDT)
+        bh=lvAKbFSCFU59TOTJPC3/cAvD7UXJ3lZqXOvWWs7Do/0=;
+        b=h3hEQtyLcn0TWJ5NoNIBbSVNpmIEqtTMxCPEikwF2NNzaF36MVzAOO10mhhrxtu2kE
+         rWOYADImsmGv7I5hxB7NSIzjOnQ1NS3dbIkIlq7O7oTOJbz7UNGY6HJnaM/HXk06SCYk
+         naz2y7HOeDK6+CP6Ub25ZUr6XRXaWZV7M0Jcwln3a5gnTMriBkOE7Q1PzBXfRfsZFr8v
+         79HtNq5j09ORG60NqS+7Z7W9dNuhGIZkVPiTLncc66DnXrpjMdc8ghE7VFi599fyuWQq
+         dy5LTgfrqoRVR+WZyKh//b5W7U6K2pdbM8piNqxydiX8gYDRxTNwwirRf2DheB8Fj57q
+         ZNIA==
+X-Gm-Message-State: AOAM533W4CcRia9F9sKCNeMz5IjCTWBx2HpRfn02NVwjAwgeT0zy+lNK
+        ohzrHS2Z9Rth6bd5sIlGoewh9Jl61q21sHfN0DSf6vJ6btDyIYxkLEqeSlKD4zZVIb9AaV62+q/
+        cJARwVaj87+Le70N30cyyUPb0
+X-Received: by 2002:a50:9350:: with SMTP id n16mr21099668eda.176.1627935228271;
+        Mon, 02 Aug 2021 13:13:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzU6tBMdbFDrItN+Pjs2g1o8FRDEi2q6zyU0jPrfqeUAovxmkXpeJ8x0MoP+XNjVZM/InUOOA==
+X-Received: by 2002:a50:9350:: with SMTP id n16mr21099649eda.176.1627935228137;
+        Mon, 02 Aug 2021 13:13:48 -0700 (PDT)
 Received: from redhat.com ([2.55.140.205])
-        by smtp.gmail.com with ESMTPSA id o7sm4957679ejy.48.2021.08.02.13.11.59
+        by smtp.gmail.com with ESMTPSA id yc29sm5141187ejb.104.2021.08.02.13.13.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 13:12:02 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 16:11:57 -0400
+        Mon, 02 Aug 2021 13:13:47 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 16:13:41 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     fuguancheng <fuguancheng@bytedance.com>
 Cc:     jasowang@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
@@ -58,35 +58,110 @@ Cc:     jasowang@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
         andraprs@amazon.com, colin.king@canonical.com, kvm@vger.kernel.org,
         virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] VSOCK DRIVER: Add multi-cid support for guest
-Message-ID: <20210802161055-mutt-send-email-mst@kernel.org>
+Subject: Re: [PATCH 2/4] VSOCK DRIVER: support communication using additional
+ guest cid
+Message-ID: <20210802161257-mutt-send-email-mst@kernel.org>
 References: <20210802120720.547894-1-fuguancheng@bytedance.com>
- <20210802120720.547894-2-fuguancheng@bytedance.com>
+ <20210802120720.547894-3-fuguancheng@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210802120720.547894-2-fuguancheng@bytedance.com>
+In-Reply-To: <20210802120720.547894-3-fuguancheng@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 08:07:17PM +0800, fuguancheng wrote:
-> diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
-> index 3dd3555b2740..0afc14446b01 100644
-> --- a/include/uapi/linux/virtio_vsock.h
-> +++ b/include/uapi/linux/virtio_vsock.h
-> @@ -42,7 +42,8 @@
->  #define VIRTIO_VSOCK_F_SEQPACKET	1	/* SOCK_SEQPACKET supported */
+On Mon, Aug 02, 2021 at 08:07:18PM +0800, fuguancheng wrote:
+> Changes in this patch are made to allow the guest communicate
+> with the host using the additional cids specified when
+> creating the guest.
+> 
+> In original settings, the packet sent with the additional CIDS will
+> be rejected when received by the host, the newly added function
+> vhost_vsock_contain_cid will fix this error.
+> 
+> Now that we have multiple CIDS, the VMADDR_CID_ANY now behaves like
+> this:
+> 1. The client will use the first available cid specified in the cids
+> array if VMADDR_CID_ANY is used.
+> 2. The host will still use the original default CID.
+> 3. If a guest server binds to VMADDR_CID_ANY, then the server can
+> choose to connect to any of the available CIDs for this guest.
+> 
+> Signed-off-by: fuguancheng <fuguancheng@bytedance.com>
+> ---
+>  drivers/vhost/vsock.c                   | 14 +++++++++++++-
+>  net/vmw_vsock/af_vsock.c                |  2 +-
+>  net/vmw_vsock/virtio_transport_common.c |  5 ++++-
+>  3 files changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+> index f66c87de91b8..013f8ebf8189 100644
+> --- a/drivers/vhost/vsock.c
+> +++ b/drivers/vhost/vsock.c
+> @@ -74,6 +74,18 @@ struct vhost_vsock {
+>  	bool seqpacket_allow;
+>  };
 >  
->  struct virtio_vsock_config {
-> -	__le64 guest_cid;
-> +	__le32 number_cid;
-> +	__le64 cids[];
->  } __attribute__((packed));
+> +static bool
+> +vhost_vsock_contain_cid(struct vhost_vsock *vsock, u32 cid)
+> +{
+> +	u32 index;
+> +
+> +	for (index = 0; index < vsock->num_cid; index++) {
+> +		if (cid == vsock->cids[index])
+> +			return true;
+> +	}
+> +	return false;
+> +}
+> +
+>  static u32 vhost_transport_get_local_cid(void)
+>  {
+>  	return VHOST_VSOCK_DEFAULT_HOST_CID;
 
-any host/guest interface change needs to copy the virtio TC.
-packing here is a bad idea imho, just add explicit padding.
+Doing this linear scan on data path is not going to scale
+well with lots of CIDs.
 
--- 
-MST
+> @@ -584,7 +596,7 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
+>  
+>  		/* Only accept correctly addressed packets */
+>  		if (vsock->num_cid > 0 &&
+> -		    (pkt->hdr.src_cid) == vsock->cids[0] &&
+> +			vhost_vsock_contain_cid(vsock, pkt->hdr.src_cid) &&
+>  		    le64_to_cpu(pkt->hdr.dst_cid) == vhost_transport_get_local_cid())
+>  			virtio_transport_recv_pkt(&vhost_transport, pkt);
+>  		else
+> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> index 4e1fbe74013f..c22ae7101e55 100644
+> --- a/net/vmw_vsock/af_vsock.c
+> +++ b/net/vmw_vsock/af_vsock.c
+> @@ -251,7 +251,7 @@ static struct sock *__vsock_find_connected_socket(struct sockaddr_vm *src,
+>  	list_for_each_entry(vsk, vsock_connected_sockets(src, dst),
+>  			    connected_table) {
+>  		if (vsock_addr_equals_addr(src, &vsk->remote_addr) &&
+> -		    dst->svm_port == vsk->local_addr.svm_port) {
+> +		    vsock_addr_equals_addr(&vsk->local_addr, dst)) {
+>  			return sk_vsock(vsk);
+>  		}
+>  	}
+> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> index 169ba8b72a63..cb45e2f801f1 100644
+> --- a/net/vmw_vsock/virtio_transport_common.c
+> +++ b/net/vmw_vsock/virtio_transport_common.c
+> @@ -197,7 +197,10 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
+>  	if (unlikely(!t_ops))
+>  		return -EFAULT;
+>  
+> -	src_cid = t_ops->transport.get_local_cid();
+> +	if (vsk->local_addr.svm_cid != VMADDR_CID_ANY)
+> +		src_cid = vsk->local_addr.svm_cid;
+> +	else
+> +		src_cid = t_ops->transport.get_local_cid();
+>  	src_port = vsk->local_addr.svm_port;
+>  	if (!info->remote_cid) {
+>  		dst_cid	= vsk->remote_addr.svm_cid;
+> -- 
+> 2.11.0
+> 
+> 
 
