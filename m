@@ -2,106 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D093DD16C
+	by mail.lfdr.de (Postfix) with ESMTP id A0A943DD16B
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 09:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbhHBHni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 03:43:38 -0400
-Received: from mailgw.kylinos.cn ([123.150.8.42]:4203 "EHLO nksmu.kylinos.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232531AbhHBHnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232545AbhHBHnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 2 Aug 2021 03:43:37 -0400
-X-UUID: bf244a08b01545c0a3c76fca0c5f9e7b-20210802
-X-UUID: bf244a08b01545c0a3c76fca0c5f9e7b-20210802
-X-User: lizhenneng@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by nksmu.kylinos.cn
-        (envelope-from <lizhenneng@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 439848347; Mon, 02 Aug 2021 15:41:48 +0800
-From:   Zhenneng Li <lizhenneng@kylinos.cn>
-Cc:     Zhenneng Li <lizhenneng@kylinos.cn>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/radeon: Update pitch for page flip
-Date:   Mon,  2 Aug 2021 15:43:10 +0800
-Message-Id: <20210802074310.1526526-1-lizhenneng@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+Received: from foss.arm.com ([217.140.110.172]:59680 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232435AbhHBHnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 03:43:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69F1B106F;
+        Mon,  2 Aug 2021 00:43:26 -0700 (PDT)
+Received: from [10.163.66.153] (unknown [10.163.66.153])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95A293F719;
+        Mon,  2 Aug 2021 00:43:22 -0700 (PDT)
+Subject: Re: [PATCH 07/10] arm64: Add erratum detection for TRBE overwrite in
+ FILL mode
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
+References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+ <20210728135217.591173-8-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <4011d566-1a5b-51a3-dcee-09f60af0a7bb@arm.com>
+Date:   Mon, 2 Aug 2021 13:14:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-        boundary="Add_By_Label_Mail_Nextpart_001"
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210728135217.591173-8-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Add_By_Label_Mail_Nextpart_001
-Content-Type: text/plain;
-Content-Transfer-Encoding: 8bit
 
 
-When primary bo is updated, crtc's pitch may
-have not been updated, this will lead to show
-disorder content when user changes display mode,
-we update crtc's pitch in page flip to avoid
-this bug.
-This refers to amdgpu's pageflip.
+On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
+> Arm Neoverse-N2 and the Cortex-A710 cores are affected
+> by a CPU erratum where the TRBE will overwrite the trace buffer
+> in FILL mode. The TRBE doesn't stop (as expected in FILL mode)
+> when it reaches the limit and wraps to the base to continue
+> writing upto 3 cache lines. This will overwrite any trace that
+> was written previously.
+> 
+> Add the Neoverse-N2 erratumi(#2139208) and Cortex-A710 erratum
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Zhenneng Li <lizhenneng@kylinos.cn>
----
- drivers/gpu/drm/radeon/evergreen.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Small nit. Stray 'i' here  ^^^^
 
-diff --git a/drivers/gpu/drm/radeon/evergreen.c b/drivers/gpu/drm/radeon/evergreen.c
-index 36a888e1b179..eeb590d2dec2 100644
---- a/drivers/gpu/drm/radeon/evergreen.c
-+++ b/drivers/gpu/drm/radeon/evergreen.c
-@@ -28,6 +28,7 @@
- 
- #include <drm/drm_vblank.h>
- #include <drm/radeon_drm.h>
-+#include <drm/drm_fourcc.h>
- 
- #include "atom.h"
- #include "avivod.h"
-@@ -1414,10 +1415,15 @@ void evergreen_page_flip(struct radeon_device *rdev, int crtc_id, u64 crtc_base,
- 			 bool async)
- {
- 	struct radeon_crtc *radeon_crtc = rdev->mode_info.crtcs[crtc_id];
-+	struct drm_framebuffer *fb = radeon_crtc->base.primary->fb;
- 
--	/* update the scanout addresses */
-+	/* flip at hsync for async, default is vsync */
- 	WREG32(EVERGREEN_GRPH_FLIP_CONTROL + radeon_crtc->crtc_offset,
- 	       async ? EVERGREEN_GRPH_SURFACE_UPDATE_H_RETRACE_EN : 0);
-+	/* update pitch */
-+	WREG32(EVERGREEN_GRPH_PITCH + radeon_crtc->crtc_offset,
-+	       fb->pitches[0] / fb->format->cpp[0]);
-+	/* update the scanout addresses */
- 	WREG32(EVERGREEN_GRPH_PRIMARY_SURFACE_ADDRESS_HIGH + radeon_crtc->crtc_offset,
- 	       upper_32_bits(crtc_base));
- 	WREG32(EVERGREEN_GRPH_PRIMARY_SURFACE_ADDRESS + radeon_crtc->crtc_offset,
--- 
-2.25.1
+> (#2119858) to the  detection logic.
+> 
+> This will be used by the TRBE driver in later patches to work
+> around the issue. The detection has been kept with the core
+> arm64 errata framework list to make sure :
+>   - We don't duplicate the framework in TRBE driver
+>   - The errata detection is advertised like the rest
+>     of the CPU errata.
+> 
+> Note that the Kconfig entries will be added after we have added
+> the work around in the TRBE driver, which depends on the cpucap
+> from here.
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  arch/arm64/kernel/cpu_errata.c | 25 +++++++++++++++++++++++++
+>  arch/arm64/tools/cpucaps       |  1 +
+>  2 files changed, 26 insertions(+)
+> 
+> diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
+> index e2c20c036442..ccd757373f36 100644
+> --- a/arch/arm64/kernel/cpu_errata.c
+> +++ b/arch/arm64/kernel/cpu_errata.c
+> @@ -340,6 +340,18 @@ static const struct midr_range erratum_1463225[] = {
+>  };
+>  #endif
+>  
+> +#ifdef CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+> +static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
+> +#ifdef CONFIG_ARM64_ERRATUM_2139208
+> +	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
+> +#endif
+> +#ifdef CONFIG_ARM64_ERRATUM_2119858
+> +	MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
+> +#endif
+> +	{},
+> +};
+> +#endif	/* CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE */
+> +
+>  const struct arm64_cpu_capabilities arm64_errata[] = {
+>  #ifdef CONFIG_ARM64_WORKAROUND_CLEAN_CACHE
+>  	{
+> @@ -533,6 +545,19 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
+>  		.capability = ARM64_WORKAROUND_NVIDIA_CARMEL_CNP,
+>  		ERRATA_MIDR_ALL_VERSIONS(MIDR_NVIDIA_CARMEL),
+>  	},
+> +#endif
+> +#ifdef CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+> +	{
+> +		/*
+> +		 * The erratum work around is handled within the TRBE
+> +		 * driver and can be applied per-cpu. So, we can allow
+> +		 * a late CPU to come online with this erratum.
+> +		 */
+> +		.desc = "ARM erratum 2119858 or 2139208",
+> +		.capability = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
+> +		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
+> +		CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
+> +	},
+>  #endif
+>  	{
+>  	}
+> diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
+> index 49305c2e6dfd..1ccb92165bd8 100644
+> --- a/arch/arm64/tools/cpucaps
+> +++ b/arch/arm64/tools/cpucaps
+> @@ -53,6 +53,7 @@ WORKAROUND_1418040
+>  WORKAROUND_1463225
+>  WORKAROUND_1508412
+>  WORKAROUND_1542419
+> +WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>  WORKAROUND_CAVIUM_23154
+>  WORKAROUND_CAVIUM_27456
+>  WORKAROUND_CAVIUM_30115
+> 
 
-
---Add_By_Label_Mail_Nextpart_001
-
-Content-type: Text/plain
-
-No virus found
-		Checked by Hillstone Network AntiVirus
-
---Add_By_Label_Mail_Nextpart_001--
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
