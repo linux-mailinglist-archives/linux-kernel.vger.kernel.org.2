@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0F33DD84C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724D03DD960
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234667AbhHBNvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:51:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57350 "EHLO mail.kernel.org"
+        id S236630AbhHBN7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 09:59:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234379AbhHBNsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:48:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AC3F61057;
-        Mon,  2 Aug 2021 13:47:55 +0000 (UTC)
+        id S235775AbhHBNy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:54:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B183260F41;
+        Mon,  2 Aug 2021 13:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627912075;
-        bh=/YLE1i6wXKxsu9XqjoLR7bM/xs7iFwxeKPsG/6BQkwM=;
+        s=korg; t=1627912365;
+        bh=voG3CVZomaCHcJwbP4BJ0FYFj/FXmFV8kOSaUwIg700=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y4wH31WEzTqCOsdGmQTiCCaA4jlrN2TGKClhgeObfogsfRt42wy4x9DGB4XdNv2s+
-         FoJEUvaUs8A2OuROHNghaUXhR5viqyTKMBDSITK72T9yIfAxlvSfP6Y1rGWePfnSNA
-         W5Gcr/jJP451/y/f5jyrjuZjWet4K6y9ERt4JssA=
+        b=DmHwLBeSUFOkC7jfuBCy0K3ljsfhCKvIgVnibFC6fzYvxSpo5odpr9UTtjd+CyE0J
+         V9xbhaFJnR5zDILgWBL9QF4/O+c4VcoONdq1db3LRtTgkYT7q0frkJuyMYSpnTxbA/
+         1As9KndGO3fTiCf/EQvkv7iex2IYsOakrv5rS10Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 12/32] ARM: dts: versatile: Fix up interrupt controller node names
+        stable@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 09/67] KVM: add missing compat KVM_CLEAR_DIRTY_LOG
 Date:   Mon,  2 Aug 2021 15:44:32 +0200
-Message-Id: <20210802134333.315221261@linuxfoundation.org>
+Message-Id: <20210802134339.333434436@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
-References: <20210802134332.931915241@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+References: <20210802134339.023067817@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,65 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit 82a1c67554dff610d6be4e1982c425717b3c6a23 ]
+commit 8750f9bbda115f3f79bfe43be85551ee5e12b6ff upstream.
 
-Once the new schema interrupt-controller/arm,vic.yaml is added, we get
-the below warnings:
+The arguments to the KVM_CLEAR_DIRTY_LOG ioctl include a pointer,
+therefore it needs a compat ioctl implementation.  Otherwise,
+32-bit userspace fails to invoke it on 64-bit kernels; for x86
+it might work fine by chance if the padding is zero, but not
+on big-endian architectures.
 
-        arch/arm/boot/dts/versatile-ab.dt.yaml:
-        intc@10140000: $nodename:0: 'intc@10140000' does not match
-        '^interrupt-controller(@[0-9a-f,]+)*$'
-
-	arch/arm/boot/dts/versatile-ab.dt.yaml:
-	intc@10140000: 'clear-mask' does not match any of the regexes
-
-Fix the node names for the interrupt controller to conform
-to the standard node name interrupt-controller@.. Also drop invalid
-clear-mask property.
-
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210701132118.759454-1-sudeep.holla@arm.com'
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Thomas Sattler
+Cc: stable@vger.kernel.org
+Fixes: 2a31b9db1535 ("kvm: introduce manual dirty log reprotect")
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/versatile-ab.dts |    5 ++---
- arch/arm/boot/dts/versatile-pb.dts |    2 +-
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ virt/kvm/kvm_main.c |   28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
---- a/arch/arm/boot/dts/versatile-ab.dts
-+++ b/arch/arm/boot/dts/versatile-ab.dts
-@@ -154,16 +154,15 @@
- 		#size-cells = <1>;
- 		ranges;
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -3896,6 +3896,16 @@ struct compat_kvm_dirty_log {
+ 	};
+ };
  
--		vic: intc@10140000 {
-+		vic: interrupt-controller@10140000 {
- 			compatible = "arm,versatile-vic";
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
- 			reg = <0x10140000 0x1000>;
--			clear-mask = <0xffffffff>;
- 			valid-mask = <0xffffffff>;
- 		};
- 
--		sic: intc@10003000 {
-+		sic: interrupt-controller@10003000 {
- 			compatible = "arm,versatile-sic";
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
---- a/arch/arm/boot/dts/versatile-pb.dts
-+++ b/arch/arm/boot/dts/versatile-pb.dts
-@@ -6,7 +6,7 @@
- 
- 	amba {
- 		/* The Versatile PB is using more SIC IRQ lines than the AB */
--		sic: intc@10003000 {
-+		sic: interrupt-controller@10003000 {
- 			clear-mask = <0xffffffff>;
- 			/*
- 			 * Valid interrupt lines mask according to
++struct compat_kvm_clear_dirty_log {
++	__u32 slot;
++	__u32 num_pages;
++	__u64 first_page;
++	union {
++		compat_uptr_t dirty_bitmap; /* one bit per page */
++		__u64 padding2;
++	};
++};
++
+ static long kvm_vm_compat_ioctl(struct file *filp,
+ 			   unsigned int ioctl, unsigned long arg)
+ {
+@@ -3905,6 +3915,24 @@ static long kvm_vm_compat_ioctl(struct f
+ 	if (kvm->mm != current->mm)
+ 		return -EIO;
+ 	switch (ioctl) {
++#ifdef CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT
++	case KVM_CLEAR_DIRTY_LOG: {
++		struct compat_kvm_clear_dirty_log compat_log;
++		struct kvm_clear_dirty_log log;
++
++		if (copy_from_user(&compat_log, (void __user *)arg,
++				   sizeof(compat_log)))
++			return -EFAULT;
++		log.slot	 = compat_log.slot;
++		log.num_pages	 = compat_log.num_pages;
++		log.first_page	 = compat_log.first_page;
++		log.padding2	 = compat_log.padding2;
++		log.dirty_bitmap = compat_ptr(compat_log.dirty_bitmap);
++
++		r = kvm_vm_ioctl_clear_dirty_log(kvm, &log);
++		break;
++	}
++#endif
+ 	case KVM_GET_DIRTY_LOG: {
+ 		struct compat_kvm_dirty_log compat_log;
+ 		struct kvm_dirty_log log;
 
 
