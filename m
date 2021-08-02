@@ -2,485 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05013DDAA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F123DDAE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235253AbhHBOSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 10:18:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47387 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238124AbhHBOQc (ORCPT
+        id S234286AbhHBOYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236254AbhHBOYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:16:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627913782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nZqfKZzbTUBRPXqE+WeXWJfvXCTFxHbXBmjAjfpVQps=;
-        b=WrfhgBOoc5WhkH9mNlWC3tvAwZEfK5cOezPo4cf5xebZ13yvxb4NBNj9NgB2Cw2d5UQIfy
-        5JE2xaTg+qAc6GglFpL2EnvXh8T4Ls+rIpkdLtACHgzJ8KgwP93BEjpcyqf4oxjOzQd9RI
-        Pv3b/Fd5yeSJr6MpwX25LR4SSmpQdqE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-OJGBWtxmMGmNKSsvy3As6w-1; Mon, 02 Aug 2021 10:16:18 -0400
-X-MC-Unique: OJGBWtxmMGmNKSsvy3As6w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14C47760C1;
-        Mon,  2 Aug 2021 14:16:17 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 43B8E5D6CF;
-        Mon,  2 Aug 2021 14:16:16 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 2051441752A3; Mon,  2 Aug 2021 11:16:11 -0300 (-03)
-Date:   Mon, 2 Aug 2021 11:16:11 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Nitesh Lal <nilal@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: [patch 1/4] add basic task isolation prctl interface
-Message-ID: <20210802141611.GA40008@fuller.cnet>
-References: <20210730201827.269106165@fuller.cnet>
- <20210730202010.240095394@fuller.cnet>
- <CAFki+LkQVQOe+5aNEKWDvLdnjWjxzKWOiqOvBZzeuPWX+G=XgA@mail.gmail.com>
+        Mon, 2 Aug 2021 10:24:17 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44222C09B139
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 07:17:27 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id m11so11710666qtx.7
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 07:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lU4fWdbkHIbaESmwaFovFXTvcyMDqKiNbuZS1etsQvI=;
+        b=cZBXn9YhMfiAIO+dsYROQ3IWMF2xrwr/imdQK8VJ7V8HB//j9+/Gf7NZt3McnI0FHm
+         zV4T8AbA+c0ffAmttlbSkJ5j0lOV9hxjUpfIpB7rxmiaJaZErZxYX41VD1Qc5ADnL+rf
+         bKI1TBtTilGKl7XkGUiCRw2DvfKsZsQZB1rdxrN5CfnvtABm6jA4CAe1AaJyRJA2GBgm
+         UyGEku2mLmZ27L/H6fqvgKqAbas09hFDzaAFxujdBHG/XhGrSd+rPxR28AuGKuJqpOaj
+         WPXfb/COMjYz0jHEjjmxxIMX3w75rto0/U3u2ihRY9jzFnD0VQrxJS3+pPqaDYffFDjU
+         4Dbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lU4fWdbkHIbaESmwaFovFXTvcyMDqKiNbuZS1etsQvI=;
+        b=OY3s/6aOevYclDmRSJSrYW0JW3nykJZg+dgF4emMvxFMNKf+WezzcqdYsVNAloA25P
+         +8Rxtjwds01vE0QYCEdkHnHl6DK4cH6KIuuo1OmGgo5ct53v6aQt7cseF7W/SH4oszCc
+         xdRRQtJjF+4Ssgy3zudAveQp3hZ3mTyNd/eOoU+ajANmbpB07RKa5JLYJw2XD8Xq+Vn9
+         fS2CgqEBlUyKYzw20CvfcESSdmwUpLKoHZfR76/uFhuwJ+vBl9hK+1TXw7QrOVKXODPd
+         pVKOCbsU6zkhM5WRIMyUVf9i/21tKfciWmA+6KuzRzNgREDTrFbKAaKOHUHJtgCdg0wQ
+         tl1g==
+X-Gm-Message-State: AOAM530xC62j49ZcqgAguElXxb10nNhxeJR8VS0ILK1neYfrkBQgW3HJ
+        e60ZaIszMV9bMKWPQ78GjI4=
+X-Google-Smtp-Source: ABdhPJxskWloj0/7FVsnJ9YivMN7uJRmjhpENWZRjSDDthn/8KsLqyfoYAd5DWnMSTmFXtyiNUdlfA==
+X-Received: by 2002:a05:622a:1a9f:: with SMTP id s31mr14445494qtc.151.1627913846469;
+        Mon, 02 Aug 2021 07:17:26 -0700 (PDT)
+Received: from [192.168.1.201] (pool-74-96-87-9.washdc.fios.verizon.net. [74.96.87.9])
+        by smtp.googlemail.com with ESMTPSA id q11sm5812336qkm.56.2021.08.02.07.17.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 07:17:25 -0700 (PDT)
+From:   Sean Anderson <seanga2@gmail.com>
+Subject: Re: [kbuild] drivers/pinctrl/pinctrl-k210.c:970 k210_fpioa_probe()
+ warn: 'pdata->clk' not released on lines: 962,968.
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "kbuild@lists.01.org" <kbuild@lists.01.org>
+Cc:     "lkp@intel.com" <lkp@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <202107302010.QfgLffbI-lkp@intel.com>
+ <DM6PR04MB708187FE0B622791011BEEB7E7EE9@DM6PR04MB7081.namprd04.prod.outlook.com>
+Message-ID: <68285071-073b-6d84-0650-02e77965c878@gmail.com>
+Date:   Mon, 2 Aug 2021 10:17:24 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFki+LkQVQOe+5aNEKWDvLdnjWjxzKWOiqOvBZzeuPWX+G=XgA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <DM6PR04MB708187FE0B622791011BEEB7E7EE9@DM6PR04MB7081.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 10:02:03AM -0400, Nitesh Lal wrote:
-> On Fri, Jul 30, 2021 at 4:21 PM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+On 8/1/21 6:50 PM, Damien Le Moal wrote:
+> On 2021/07/30 22:46, Dan Carpenter wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+>> head:   764a5bc89b12b82c18ce7ca5d7c1b10dd748a440
+>> commit: d4c34d09ab03e1e631fe195ddf35365a1273be9c pinctrl: Add RISC-V Canaan Kendryte K210 FPIOA driver
+>> config: riscv-randconfig-m031-20210730 (attached as .config)
+>> compiler: riscv64-linux-gcc (GCC) 10.3.0
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>>
+>> smatch warnings:
+>> drivers/pinctrl/pinctrl-k210.c:970 k210_fpioa_probe() warn: 'pdata->clk' not released on lines: 962,968.
+>>
+>> vim +970 drivers/pinctrl/pinctrl-k210.c
+>>
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  925  static int k210_fpioa_probe(struct platform_device *pdev)
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  926  {
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  927  	struct device *dev = &pdev->dev;
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  928  	struct device_node *np = dev->of_node;
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  929  	struct k210_fpioa_data *pdata;
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  930  	int ret;
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  931
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  932  	dev_info(dev, "K210 FPIOA pin controller\n");
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  933
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  934  	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  935  	if (!pdata)
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  936  		return -ENOMEM;
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  937
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  938  	pdata->dev = dev;
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  939  	platform_set_drvdata(pdev, pdata);
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  940
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  941  	pdata->fpioa = devm_platform_ioremap_resource(pdev, 0);
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  942  	if (IS_ERR(pdata->fpioa))
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  943  		return PTR_ERR(pdata->fpioa);
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  944
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  945  	pdata->clk = devm_clk_get(dev, "ref");
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  946  	if (IS_ERR(pdata->clk))
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  947  		return PTR_ERR(pdata->clk);
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  948
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  949  	ret = clk_prepare_enable(pdata->clk);
+>>                                                        ^^^^^^^^^^^^^^^^^^
+>>
+>>
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  950  	if (ret)
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  951  		return ret;
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  952
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  953  	pdata->pclk = devm_clk_get_optional(dev, "pclk");
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  954  	if (!IS_ERR(pdata->pclk))
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  955  		clk_prepare_enable(pdata->pclk);
+>>                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>> No error handling
+>>
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  956
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  957  	pdata->sysctl_map =
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  958  		syscon_regmap_lookup_by_phandle_args(np,
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  959  						"canaan,k210-sysctl-power",
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  960  						1, &pdata->power_offset);
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  961  	if (IS_ERR(pdata->sysctl_map))
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  962  		return PTR_ERR(pdata->sysctl_map);
+>>
+>> Do we need to clk_unprepare_disable() before returning?
+>>
+>>
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  963
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  964  	k210_fpioa_init_ties(pdata);
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  965
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  966  	pdata->pctl = pinctrl_register(&k210_pinctrl_desc, dev, (void *)pdata);
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  967  	if (IS_ERR(pdata->pctl))
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  968  		return PTR_ERR(pdata->pctl);
+>>
+>> Here too.
 > 
-> > Add basic prctl task isolation interface, which allows
-> > informing the kernel that application is executing
-> > latency sensitive code (where interruptions are undesired).
-> >
-> > Interface is described by task_isolation.rst (added by this patch).
-> >
-> > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-> >
-> >
->  [...]
-> 
-> +extern void __tsk_isol_exit(struct task_struct *tsk);
-> > +
-> > +static inline void tsk_isol_exit(struct task_struct *tsk)
-> > +{
-> > +       if (tsk->isol_info)
-> > +               __tsk_isol_exit(tsk);
-> > +}
-> > +
-> > +
-> >
-> 
-> nit: we can get rid of this extra line.
-> 
-> 
-> > +int prctl_task_isolation_feat(unsigned long arg2, unsigned long arg3,
-> > +                             unsigned long arg4, unsigned long arg5);
-> > +int prctl_task_isolation_get(unsigned long arg2, unsigned long arg3,
-> > +                            unsigned long arg4, unsigned long arg5);
-> > +int prctl_task_isolation_set(unsigned long arg2, unsigned long arg3,
-> > +                            unsigned long arg4, unsigned long arg5);
-> > +int prctl_task_isolation_ctrl_get(unsigned long arg2, unsigned long arg3,
-> > +                                 unsigned long arg4, unsigned long arg5);
-> > +int prctl_task_isolation_ctrl_set(unsigned long arg2, unsigned long arg3,
-> > +                                 unsigned long arg4, unsigned long arg5);
-> > +
-> > +#else
-> > +
-> > +static inline void tsk_isol_exit(struct task_struct *tsk)
-> > +{
-> > +}
-> > +
-> > +static inline int prctl_task_isolation_feat(unsigned long arg2,
-> > +                                           unsigned long arg3,
-> > +                                           unsigned long arg4,
-> > +                                           unsigned long arg5)
-> > +{
-> > +       return -EOPNOTSUPP;
-> > +}
-> > +
-> > +static inline int prctl_task_isolation_get(unsigned long arg2,
-> > +                                          unsigned long arg3,
-> > +                                          unsigned long arg4,
-> > +                                          unsigned long arg5)
-> > +{
-> > +       return -EOPNOTSUPP;
-> > +}
-> > +
-> > +static inline int prctl_task_isolation_set(unsigned long arg2,
-> > +                                          unsigned long arg3,
-> > +                                          unsigned long arg4,
-> > +                                          unsigned long arg5)
-> > +{
-> > +       return -EOPNOTSUPP;
-> > +}
-> > +
-> > +static inline int prctl_task_isolation_ctrl_get(unsigned long arg2,
-> > +                                               unsigned long arg3,
-> > +                                               unsigned long arg4,
-> > +                                               unsigned long arg5)
-> > +{
-> > +       return -EOPNOTSUPP;
-> > +}
-> > +
-> > +static inline int prctl_task_isolation_ctrl_set(unsigned long arg2,
-> > +                                               unsigned long arg3,
-> > +                                               unsigned long arg4,
-> > +                                               unsigned long arg5)
-> > +{
-> > +       return -EOPNOTSUPP;
-> > +}
-> > +
-> > +#endif /* CONFIG_CPU_ISOLATION */
-> > +
-> > +#endif /* __LINUX_TASK_ISOL_H */
-> > Index: linux-2.6/kernel/task_isolation.c
-> > ===================================================================
-> > --- /dev/null
-> > +++ linux-2.6/kernel/task_isolation.c
-> > @@ -0,0 +1,274 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + *  Implementation of task isolation.
-> > + *
-> > + * Authors:
-> > + *   Chris Metcalf <cmetcalf@mellanox.com>
-> > + *   Alex Belits <abelits@belits.com>
-> > + *   Yuri Norov <ynorov@marvell.com>
-> > + *   Marcelo Tosatti <mtosatti@redhat.com>
-> > + */
-> > +
-> > +#include <linux/sched.h>
-> > +#include <linux/task_isolation.h>
-> > +#include <linux/prctl.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/kobject.h>
-> > +#include <linux/string.h>
-> > +#include <linux/sysfs.h>
-> > +#include <linux/init.h>
-> > +
-> > +static unsigned long default_quiesce_mask;
-> > +
-> > +static int tsk_isol_alloc_context(struct task_struct *task)
-> > +{
-> > +       struct isol_info *info;
-> > +
-> > +       info = kzalloc(sizeof(*info), GFP_KERNEL);
-> > +       if (unlikely(!info))
-> > +               return -ENOMEM;
-> > +
-> > +       task->isol_info = info;
-> > +       return 0;
-> > +}
-> > +
-> > +void __tsk_isol_exit(struct task_struct *tsk)
-> > +{
-> > +       kfree(tsk->isol_info);
-> > +       tsk->isol_info = NULL;
-> > +}
-> > +
-> > +static int prctl_task_isolation_feat_quiesce(unsigned long type)
-> > +{
-> > +       switch (type) {
-> > +       case 0:
-> > +               return ISOL_F_QUIESCE_VMSTATS;
-> > +       case ISOL_F_QUIESCE_DEFMASK:
-> > +               return default_quiesce_mask;
-> > +       default:
-> > +               break;
-> > +       }
-> > +
-> > +       return -EINVAL;
-> > +}
-> > +
-> > +static int task_isolation_get_quiesce(void)
-> > +{
-> > +       if (current->isol_info != NULL)
-> >
-> 
-> Should replace the above with just 'if (current->isol_info)'.
-> 
-> +               return current->isol_info->quiesce_mask;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int task_isolation_set_quiesce(unsigned long quiesce_mask)
-> > +{
-> > +       if (quiesce_mask != ISOL_F_QUIESCE_VMSTATS && quiesce_mask != 0)
-> > +               return -EINVAL;
-> > +
-> > +       current->isol_info->quiesce_mask = quiesce_mask;
-> > +       return 0;
-> > +}
-> > +
-> > +int prctl_task_isolation_feat(unsigned long feat, unsigned long arg3,
-> > +                             unsigned long arg4, unsigned long arg5)
-> > +{
-> > +       switch (feat) {
-> > +       case 0:
-> > +               return ISOL_F_QUIESCE;
-> > +       case ISOL_F_QUIESCE:
-> > +               return prctl_task_isolation_feat_quiesce(arg3);
-> > +       default:
-> > +               break;
-> > +       }
-> > +       return -EINVAL;
-> > +}
-> > +
-> > +int prctl_task_isolation_get(unsigned long feat, unsigned long arg3,
-> > +                            unsigned long arg4, unsigned long arg5)
-> > +{
-> > +       switch (feat) {
-> > +       case ISOL_F_QUIESCE:
-> > +               return task_isolation_get_quiesce();
-> > +       default:
-> > +               break;
-> > +       }
-> > +       return -EINVAL;
-> > +}
-> > +
-> > +int prctl_task_isolation_set(unsigned long feat, unsigned long arg3,
-> > +                            unsigned long arg4, unsigned long arg5)
-> > +{
-> > +       int ret;
-> > +       bool err_free_ctx = false;
-> > +
-> > +       if (current->isol_info == NULL)
-> >
-> 
-> Can replace this with 'if (!current->isol_info).
-> There are other places below where similar improvement can be done.
-> 
-> 
-> > +               err_free_ctx = true;
-> > +
-> > +       ret = tsk_isol_alloc_context(current);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       switch (feat) {
-> > +       case ISOL_F_QUIESCE:
-> > +               ret = task_isolation_set_quiesce(arg3);
-> > +               if (ret)
-> > +                       break;
-> > +               return 0;
-> > +       default:
-> > +               break;
-> > +       }
-> > +
-> > +       if (err_free_ctx)
-> > +               __tsk_isol_exit(current);
-> > +       return -EINVAL;
-> > +}
-> > +
-> > +int prctl_task_isolation_ctrl_set(unsigned long feat, unsigned long arg3,
-> > +                                 unsigned long arg4, unsigned long arg5)
-> > +{
-> > +       if (current->isol_info == NULL)
-> > +               return -EINVAL;
-> > +
-> > +       if (feat != ISOL_F_QUIESCE && feat != 0)
-> > +               return -EINVAL;
-> > +
-> > +       current->isol_info->active_mask = feat;
-> > +       return 0;
-> > +}
-> > +
-> > +int prctl_task_isolation_ctrl_get(unsigned long arg2, unsigned long arg3,
-> > +                                 unsigned long arg4, unsigned long arg5)
-> > +{
-> > +       if (current->isol_info == NULL)
-> > +               return 0;
-> > +
-> > +       return current->isol_info->active_mask;
-> > +}
-> > +
-> > +struct qoptions {
-> > +       unsigned long mask;
-> > +       char *name;
-> > +};
-> > +
-> > +static struct qoptions qopts[] = {
-> > +       {ISOL_F_QUIESCE_VMSTATS, "vmstat"},
-> > +};
-> > +
-> > +#define QLEN (sizeof(qopts) / sizeof(struct qoptions))
-> > +
-> > +static ssize_t default_quiesce_store(struct kobject *kobj,
-> > +                                    struct kobj_attribute *attr,
-> > +                                    const char *buf, size_t count)
-> > +{
-> > +       char *p, *s;
-> > +       unsigned long defmask = 0;
-> > +
-> > +       s = (char *)buf;
-> > +       if (count == 1 && strlen(strim(s)) == 0) {
-> > +               default_quiesce_mask = 0;
-> > +               return count;
-> > +       }
-> > +
-> > +       while ((p = strsep(&s, ",")) != NULL) {
-> > +               int i;
-> > +               bool found = false;
-> > +
-> > +               if (!*p)
-> > +                       continue;
-> > +
-> > +               for (i = 0; i < QLEN; i++) {
-> > +                       struct qoptions *opt = &qopts[i];
-> > +
-> > +                       if (strncmp(strim(p), opt->name,
-> > strlen(opt->name)) == 0) {
-> > +                               defmask |= opt->mask;
-> > +                               found = true;
-> > +                               break;
-> > +                       }
-> > +               }
-> > +               if (found == true)
-> > +                       continue;
-> > +               return -EINVAL;
-> > +       }
-> > +       default_quiesce_mask = defmask;
-> > +
-> > +       return count;
-> > +}
-> > +
-> > +#define MAXARRLEN 100
-> > +
-> > +static ssize_t default_quiesce_show(struct kobject *kobj,
-> > +                                   struct kobj_attribute *attr, char *buf)
-> > +{
-> > +       int i;
-> > +       char tbuf[MAXARRLEN] = "";
-> > +
-> > +       for (i = 0; i < QLEN; i++) {
-> > +               struct qoptions *opt = &qopts[i];
-> > +
-> > +               if (default_quiesce_mask & opt->mask) {
-> > +                       strlcat(tbuf, opt->name, MAXARRLEN);
-> > +                       strlcat(tbuf, "\n", MAXARRLEN);
-> > +               }
-> > +       }
-> > +
-> > +       return sprintf(buf, "%s", tbuf);
-> > +}
-> > +
-> > +static struct kobj_attribute default_quiesce_attr =
-> > +                               __ATTR_RW(default_quiesce);
-> > +
-> > +static ssize_t available_quiesce_show(struct kobject *kobj,
-> > +                                     struct kobj_attribute *attr, char
-> > *buf)
-> > +{
-> > +       int i;
-> > +       char tbuf[MAXARRLEN] = "";
-> > +
-> > +       for (i = 0; i < QLEN; i++) {
-> > +               struct qoptions *opt = &qopts[i];
-> > +
-> > +               strlcat(tbuf, opt->name, MAXARRLEN);
-> > +               strlcat(tbuf, "\n", MAXARRLEN);
-> > +       }
-> > +
-> > +       return sprintf(buf, "%s", tbuf);
-> > +}
-> > +
-> > +static struct kobj_attribute available_quiesce_attr =
-> > +                               __ATTR_RO(available_quiesce);
-> > +
-> > +static struct attribute *task_isol_attrs[] = {
-> > +       &available_quiesce_attr.attr,
-> > +       &default_quiesce_attr.attr,
-> > +       NULL,
-> > +};
-> > +
-> > +static const struct attribute_group task_isol_attr_group = {
-> > +       .attrs = task_isol_attrs,
-> > +       .bin_attrs = NULL,
-> > +};
-> > +
-> > +static int __init task_isol_ksysfs_init(void)
-> > +{
-> > +       int ret;
-> > +       struct kobject *task_isol_kobj;
-> > +
-> > +       task_isol_kobj = kobject_create_and_add("task_isolation",
-> > +                                               kernel_kobj);
-> > +       if (!task_isol_kobj) {
-> > +               ret = -ENOMEM;
-> > +               goto out;
-> > +       }
-> > +
-> > +       ret = sysfs_create_group(task_isol_kobj, &task_isol_attr_group);
-> > +       if (ret)
-> > +               goto out_task_isol_kobj;
-> > +
-> > +       return 0;
-> > +
-> > +out_task_isol_kobj:
-> > +       kobject_put(task_isol_kobj);
-> > +out:
-> > +       return ret;
-> > +}
-> > +
-> > +arch_initcall(task_isol_ksysfs_init);
-> > Index: linux-2.6/samples/Kconfig
-> > ===================================================================
-> > --- linux-2.6.orig/samples/Kconfig
-> > +++ linux-2.6/samples/Kconfig
-> > @@ -223,4 +223,11 @@ config SAMPLE_WATCH_QUEUE
-> >           Build example userspace program to use the new mount_notify(),
-> >           sb_notify() syscalls and the KEYCTL_WATCH_KEY keyctl() function.
-> >
-> > +config SAMPLE_TASK_ISOLATION
-> > +       bool "task isolation sample"
-> > +       depends on CC_CAN_LINK && HEADERS_INSTALL
-> > +       help
-> > +         Build example userspace program to use prctl task isolation
-> > +         interface.
-> > +
-> >  endif # SAMPLES
-> > Index: linux-2.6/samples/Makefile
-> > ===================================================================
-> > --- linux-2.6.orig/samples/Makefile
-> > +++ linux-2.6/samples/Makefile
-> > @@ -30,3 +30,4 @@ obj-$(CONFIG_SAMPLE_INTEL_MEI)                += mei/
-> >  subdir-$(CONFIG_SAMPLE_WATCHDOG)       += watchdog
-> >  subdir-$(CONFIG_SAMPLE_WATCH_QUEUE)    += watch_queue
-> >  obj-$(CONFIG_DEBUG_KMEMLEAK_TEST)      += kmemleak/
-> > +subdir-$(CONFIG_SAMPLE_TASK_ISOLATION) += task_isolation
-> > Index: linux-2.6/samples/task_isolation/Makefile
-> > ===================================================================
-> > --- /dev/null
-> > +++ linux-2.6/samples/task_isolation/Makefile
-> > @@ -0,0 +1,4 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +userprogs-always-y += task_isolation
-> > +
-> > +userccflags += -I usr/include
-> >
-> >
-> >
-> I am wondering if it is possible to further split this patch into smaller
-> ones?
+> I can add the clk_unprepare_disable() call to avoid the warning, but that is
+> rather pointless as the system will not boot at all if there is an error here.
+> Thoughts ?
 
-OK, will try to split in smaller patches and fix the
-style issues.
+IMO, you should still handle the error so the user gets some warning
+about not being able to enable the clock instead of crashing at some
+later point.
 
-Thanks.
+--Sean
+
+> 
+>>
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  969
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12 @970  	return 0;
+>> d4c34d09ab03e1 Damien Le Moal 2021-01-12  971  }
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>>
+>> _______________________________________________
+>> kbuild mailing list -- kbuild@lists.01.org
+>> To unsubscribe send an email to kbuild-leave@lists.01.org
+>>
+>>
+> 
+> 
 
