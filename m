@@ -2,281 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016653DE2DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27963DE2E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 01:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbhHBXGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 19:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232130AbhHBXG3 (ORCPT
+        id S232327AbhHBXIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 19:08:34 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:29506 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231126AbhHBXIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 19:06:29 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE3BC061764
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 16:06:18 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id bg4so10433295vsb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 16:06:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xpyVU3ei/AP0KmybjlqX88a6HrifRHguk/VSuzK6yLo=;
-        b=ohEu439CYwzdTzfT11BrJ44b15ggEvl6dUJjbnhwnZVt5QmMPMHbfZX+Y4vMm5gv2x
-         MBIpC1bQ+TY5lKTRmdNBt+pW38dNcGDFpfFiy/EnwvOvW+uomleQyojIFn6NIDyDghgR
-         XwH7Ud7MvQ2uk7HCNkeYZb8G4Zpa4COEHhPw4zGqht5omFkvUnxcLaOqJ0KA2Ohi/Tgz
-         A1k5o3iiTu7IF+YkXGofinmq0KwAhxekEOP9ivHeh0DJZIBoe/2/dUc/xbHK7oVNhdno
-         YMIy56Zp5BRQFzJAJhqmPmnbJ3o+TeAJntwXv7E8QGwHBbCjaDq2BY2doN6FCTdEWg/2
-         92GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xpyVU3ei/AP0KmybjlqX88a6HrifRHguk/VSuzK6yLo=;
-        b=UmDPkqgkd0Y1CItJaL/JeMxpVNVvM5aYM42JnYCCgTuy1Neu0ilgJwvqK4U5kW83dH
-         yJA2CLagRtAKSscu4Gn1Jo9dEHHWwKN52ZHxhL6pucIj9juPnN3rWY60wD/5bRA8Wtz/
-         q5tHqb7cocrIE5XXDUhAi4qShEiHS4FHq8gttdQC5ANE1rzfof4j3nqcVJdaycs/wuNV
-         s6SL3A/JBTSuSpTqbBZ2RjVmP8XduoJMIr4v7qexigUHqCcxAygfr7qkU+0fGOl4Yb6H
-         rLl5Rh2mMzNL6ofnQ8dRvC1k0PcAtm1mvxh5nDglh5r4OAu8V6lSwKfh/5EbVx7aP80h
-         a/1w==
-X-Gm-Message-State: AOAM5338cuSRsjkQh0RQDyXwgVQTAGaFBOpzR1oi4mWq9dl49vhUaeBJ
-        H7kiZp4LYhnkMCkqFxy6E5nL9x20vS0K+Ja6yc/iPQ==
-X-Google-Smtp-Source: ABdhPJy4VIZWnscV1Z5U3ENe5sVJSmubutu5e/54rLKoUQ9TLsjSTGstTYauXexlME0HYczpKQNgpC7vEN1H5rzIAmc=
-X-Received: by 2002:a05:6102:21b:: with SMTP id z27mr12281035vsp.27.1627945576875;
- Mon, 02 Aug 2021 16:06:16 -0700 (PDT)
+        Mon, 2 Aug 2021 19:08:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627945702; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=u2fKWWH1QLsGjTyMx+r7+X2+8jw9mmapYxT4cTm9Wq0=;
+ b=qKO5xLDHfFNdzXOfIC+k7vN62tYK7mslirImGzyDX2AMjbE+EGWOZPLThht6095/dKAqMGso
+ z20hsQojflwS/08z3DenmZz4SdIlNPXsHeulZbcxMGWaCOFbpEpfeptco2VR9cSfMQ7xqp+m
+ erPD+hUbFT2GlSg1D/ZUwi2j2fo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 61087acc4815712f3a2a06d5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 02 Aug 2021 23:07:56
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 81E4AC43460; Mon,  2 Aug 2021 23:07:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9127AC433D3;
+        Mon,  2 Aug 2021 23:07:54 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <20210730144922.29111-5-semen.protsenko@linaro.org> <a1701931-136e-235c-8392-a3f64c050d74@canonical.com>
-In-Reply-To: <a1701931-136e-235c-8392-a3f64c050d74@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 3 Aug 2021 02:06:05 +0300
-Message-ID: <CAPLW+4mMCzzyqqJTse-UEpjQoVu1b-9Xz3_3L=nmg63uKYFnGw@mail.gmail.com>
-Subject: Re: [PATCH 04/12] tty: serial: samsung: Init USI to keep clocks running
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 02 Aug 2021 16:07:54 -0700
+From:   abhinavk@codeaurora.org
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [Freedreno] [PATCH 03/11] drm/msm/disp/dpu1: Add support for DSC
+ in pingpong block
+In-Reply-To: <20210715065203.709914-4-vkoul@kernel.org>
+References: <20210715065203.709914-1-vkoul@kernel.org>
+ <20210715065203.709914-4-vkoul@kernel.org>
+Message-ID: <3ad3ca623d9b88e3350071313324a924@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 at 19:32, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 30/07/2021 16:49, Sam Protsenko wrote:
-> > UART block is a part of USI (Universal Serial Interface) IP-core in
-> > Samsung SoCs since Exynos9810 (e.g. in Exynos850). USI allows one to
-> > enable one of three types of serial interface: UART, SPI or I2C. That's
-> > possible because USI shares almost all internal circuits within each
-> > protocol. USI also provides some additional registers so it's possible
-> > to configure it.
-> >
-> > One USI register called USI_OPTION has reset value of 0x0. Because of
-> > this the clock gating behavior is controlled by hardware (HWACG =
-> > Hardware Auto Clock Gating), which simply means the serial won't work
-> > after reset as is. In order to make it work, USI_OPTION[2:1] bits must
-> > be set to 0b01, so that HWACG is controlled manually (by software).
-> > Bits meaning:
-> >   - CLKREQ_ON = 1: clock is continuously provided to IP
-> >   - CLKSTOP_ON = 0: drive IP_CLKREQ to High (needs to be set along with
-> >                     CLKREQ_ON = 1)
-> >
-> > USI is not present on older chips, like s3c2410, s3c2412, s3c2440,
-> > s3c6400, s5pv210, exynos5433, exynos4210. So the new boolean field
-> > '.has_usi' was added to struct s3c24xx_uart_info. USI registers will be
-> > only actually accessed when '.has_usi' field is set to "1".
-> >
-> > This feature is needed for further serial enablement on Exynos850, but
-> > some other new Exynos chips (like Exynos9810) may benefit from this
-> > feature as well.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  drivers/tty/serial/samsung_tty.c | 33 +++++++++++++++++++++++++++++++-
-> >  include/linux/serial_s3c.h       |  9 +++++++++
-> >  2 files changed, 41 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> > index 9fbc61151c2e..0f3cbd0b37e3 100644
-> > --- a/drivers/tty/serial/samsung_tty.c
-> > +++ b/drivers/tty/serial/samsung_tty.c
-> > @@ -65,6 +65,7 @@ enum s3c24xx_port_type {
-> >  struct s3c24xx_uart_info {
-> >       char                    *name;
-> >       enum s3c24xx_port_type  type;
-> > +     unsigned int            has_usi;
-> >       unsigned int            port_type;
-> >       unsigned int            fifosize;
-> >       unsigned long           rx_fifomask;
-> > @@ -1352,6 +1353,29 @@ static int apple_s5l_serial_startup(struct uart_port *port)
-> >       return ret;
-> >  }
-> >
-> > +static void exynos_usi_init(struct uart_port *port)
-> > +{
-> > +     struct s3c24xx_uart_port *ourport = to_ourport(port);
-> > +     struct s3c24xx_uart_info *info = ourport->info;
-> > +
-> > +     if (!info->has_usi)
-> > +             return;
-> > +
-> > +     /*
-> > +      * USI_RESET is an active High signal. Reset value of USI_RESET is 0x1
-> > +      * to drive stable value to PAD. Due to this feature, the USI_RESET must
-> > +      * be cleared (set as 0x0) before starting a transaction.
->
-> "before starting a transaction" suggests it is related with transaction
-> or something before starting it. Don't you need it simply after reset or
-> resume?
->
-
-Not sure what you are suggesting. USI_RESET is set to "1" at start up
-(means USI block hangs in reset state), so we have to make it "0"
-(that's what this code does); only then UART becomes functional and
-UART transactions can be performed. And exynos_usi_init() is called
-exactly where you hinted: at init and on resume.
-
-Anyway, the whole comment is confusing, I'll simplify and rework it in
-v2. Please let me know if I'm missing the point though.
-
-> > +      */
-> > +     wr_regl(port, USI_CON, USI_RESET);
->
-> You are clearing entire register, not only USI_RESET bitfield. Is it
-> really what you want?
->
-
-Yeah, USI_CON[31:1] bits are reserved, and the reset value of this
-register is 0x00000001. But anyway, I'm going to rework that code like
-this, for clarity and consistence:
-
-8<--------------------------------------------------------------------->8
-    /* Clear the software reset of USI block (it's set at startup) */
-    val = rd_regl(port, USI_CON);
-    val &= ~(USI_RESET_MASK)
-    wr_regl(port, USI_CON, val);
-    udelay(1);
-
-    /* Continuously provide the clock to USI IP w/o gating (for Rx mode) */
-    val = rd_regl(port, USI_OPTION);
-    val &= ~USI_HWACG_MASK;
-    val |= USI_HWACG_CLKREQ_ON;
-    wr_regl(port, USI_OPTION, val);
-8<--------------------------------------------------------------------->8
-
-> > +     udelay(1);
-> > +
-> > +     /*
-> > +      * Set the HWACG option bit in case of UART Rx mode.
-> > +      * CLKREQ_ON = 1, CLKSTOP_ON = 0 (set USI_OPTION[2:1] = 0x1).
-> > +      */
-> > +     wr_regl(port, USI_OPTION, USI_HWACG_CLKREQ_ON);
-> > +}
-> > +
-> >  /* power power management control */
-> >
-> >  static void s3c24xx_serial_pm(struct uart_port *port, unsigned int level,
-> > @@ -1379,6 +1403,7 @@ static void s3c24xx_serial_pm(struct uart_port *port, unsigned int level,
-> >               if (!IS_ERR(ourport->baudclk))
-> >                       clk_prepare_enable(ourport->baudclk);
-> >
-> > +             exynos_usi_init(port);
-> >               break;
-> >       default:
-> >               dev_err(port->dev, "s3c24xx_serial: unknown pm %d\n", level);
-> > @@ -2102,6 +2127,8 @@ static int s3c24xx_serial_init_port(struct s3c24xx_uart_port *ourport,
-> >       if (ret)
-> >               pr_warn("uart: failed to enable baudclk\n");
-> >
-> > +     exynos_usi_init(port);
-> > +
-> >       /* Keep all interrupts masked and cleared */
-> >       switch (ourport->info->type) {
-> >       case TYPE_S3C6400:
-> > @@ -2750,10 +2777,11 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
-> >  #endif
-> >
-> >  #if defined(CONFIG_ARCH_EXYNOS)
-> > -#define EXYNOS_COMMON_SERIAL_DRV_DATA                                \
-> > +#define EXYNOS_COMMON_SERIAL_DRV_DATA_USI(_has_usi)          \
-> >       .info = &(struct s3c24xx_uart_info) {                   \
-> >               .name           = "Samsung Exynos UART",        \
-> >               .type           = TYPE_S3C6400,                 \
-> > +             .has_usi        = _has_usi,                     \
-> >               .port_type      = PORT_S3C6400,                 \
-> >               .has_divslot    = 1,                            \
-> >               .rx_fifomask    = S5PV210_UFSTAT_RXMASK,        \
-> > @@ -2773,6 +2801,9 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
-> >               .has_fracval    = 1,                            \
-> >       }                                                       \
-> >
-> > +#define EXYNOS_COMMON_SERIAL_DRV_DATA                                \
-> > +     EXYNOS_COMMON_SERIAL_DRV_DATA_USI(0)
-> > +
-> >  static struct s3c24xx_serial_drv_data exynos4210_serial_drv_data = {
-> >       EXYNOS_COMMON_SERIAL_DRV_DATA,
-> >       .fifosize = { 256, 64, 16, 16 },
-> > diff --git a/include/linux/serial_s3c.h b/include/linux/serial_s3c.h
-> > index f6c3323fc4c5..013c2646863e 100644
-> > --- a/include/linux/serial_s3c.h
-> > +++ b/include/linux/serial_s3c.h
-> > @@ -28,6 +28,15 @@
-> >  #define S3C2410_UFSTAT         (0x18)
-> >  #define S3C2410_UMSTAT         (0x1C)
-> >
-> > +/* USI Control Register offset */
-> > +#define USI_CON                      (0xC4)
-> > +/* USI Option Register offset */
-> > +#define USI_OPTION           (0xC8)
-> > +/* USI_CON[0] = 0b0: clear USI global software reset (Active High) */
-> > +#define USI_RESET            (0<<0)
->
-> Just 0x0. I understand you wanted to hint it is a bit field, but the
-> shift of 0 actually creates more questions.
->
-
-After some consideration I decided to adhere to existing style and do
-something like this (in v2):
-
-8<--------------------------------------------------------------------->8
-#define USI_CON          (0xC4)
-#define USI_OPTION      (0xC8)
-
-#define USI_CON_RESET_CLEAR        (0<<0)
-#define USI_CON_RESET_SET        (1<<0)
-#define USI_CON_RESET_MASK        (1<<0)
-
-#define USI_OPTION_HWACG_CLKREQ_ON    (1<<1)
-#define USI_OPTION_HWACG_CLKSTOP_ON    (1<<2)
-#define USI_OPTION_HWACG_MASK        (3<<1)
-8<--------------------------------------------------------------------->8
-
-The whole reason for those comments was missing public TRM. But in the
-end I decided it just looks ugly. Also, this way I can do RMW
-operation (discussed above) in more logical way.
-
-Please let me know if code snippets above look good to you.
-
->
-> Best regards,
-> Krzysztof
+On 2021-07-14 23:51, Vinod Koul wrote:
+> In SDM845, DSC can be enabled by writing to pingpong block registers, 
+> so
+> add support for DSC in hw_pp
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+>  .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c   | 32 +++++++++++++++++++
+>  .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h   | 14 ++++++++
+>  2 files changed, 46 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
+> index 245a7a62b5c6..07fc131ca9aa 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
+> @@ -28,6 +28,9 @@
+>  #define PP_FBC_MODE                     0x034
+>  #define PP_FBC_BUDGET_CTL               0x038
+>  #define PP_FBC_LOSSY_MODE               0x03C
+> +#define PP_DSC_MODE                     0x0a0
+> +#define PP_DCE_DATA_IN_SWAP             0x0ac
+> +#define PP_DCE_DATA_OUT_SWAP            0x0c8
+> 
+>  #define PP_DITHER_EN			0x000
+>  #define PP_DITHER_BITDEPTH		0x004
+> @@ -245,6 +248,32 @@ static u32 dpu_hw_pp_get_line_count(struct
+> dpu_hw_pingpong *pp)
+>  	return line;
+>  }
+> 
+> +static int dpu_hw_pp_dsc_enable(struct dpu_hw_pingpong *pp)
+> +{
+> +	struct dpu_hw_blk_reg_map *c = &pp->hw;
+> +
+> +	DPU_REG_WRITE(c, PP_DSC_MODE, 1);
+> +	return 0;
+> +}
+> +
+> +static void dpu_hw_pp_dsc_disable(struct dpu_hw_pingpong *pp)
+> +{
+> +	struct dpu_hw_blk_reg_map *c = &pp->hw;
+> +
+> +	DPU_REG_WRITE(c, PP_DSC_MODE, 0);
+> +}
+> +
+> +static int dpu_hw_pp_setup_dsc(struct dpu_hw_pingpong *pp)
+> +{
+> +	struct dpu_hw_blk_reg_map *pp_c = &pp->hw;
+> +	int data;
+> +
+> +	data = DPU_REG_READ(pp_c, PP_DCE_DATA_OUT_SWAP);
+> +	data |= BIT(18); /* endian flip */
+> +	DPU_REG_WRITE(pp_c, PP_DCE_DATA_OUT_SWAP, data);
+> +	return 0;
+> +}
+> +
+>  static void _setup_pingpong_ops(struct dpu_hw_pingpong *c,
+>  				unsigned long features)
+>  {
+> @@ -256,6 +285,9 @@ static void _setup_pingpong_ops(struct 
+> dpu_hw_pingpong *c,
+>  	c->ops.get_autorefresh = dpu_hw_pp_get_autorefresh_config;
+>  	c->ops.poll_timeout_wr_ptr = dpu_hw_pp_poll_timeout_wr_ptr;
+>  	c->ops.get_line_count = dpu_hw_pp_get_line_count;
+> +	c->ops.setup_dsc = dpu_hw_pp_setup_dsc;
+> +	c->ops.enable_dsc = dpu_hw_pp_dsc_enable;
+> +	c->ops.disable_dsc = dpu_hw_pp_dsc_disable;
+> 
+>  	if (test_bit(DPU_PINGPONG_DITHER, &features))
+>  		c->ops.setup_dither = dpu_hw_pp_setup_dither;
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
+> index 845b9ce80e31..5058e41ffbc0 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
+> @@ -124,6 +124,20 @@ struct dpu_hw_pingpong_ops {
+>  	 */
+>  	void (*setup_dither)(struct dpu_hw_pingpong *pp,
+>  			struct dpu_hw_dither_cfg *cfg);
+> +	/**
+> +	 * Enable DSC
+> +	 */
+> +	int (*enable_dsc)(struct dpu_hw_pingpong *pp);
+> +
+> +	/**
+> +	 * Disable DSC
+> +	 */
+> +	void (*disable_dsc)(struct dpu_hw_pingpong *pp);
+> +
+> +	/**
+> +	 * Setup DSC
+> +	 */
+> +	int (*setup_dsc)(struct dpu_hw_pingpong *pp);
+>  };
+> 
+>  struct dpu_hw_pingpong {
