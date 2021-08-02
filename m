@@ -2,304 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1D83DD3BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC133DD3BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhHBKdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 06:33:54 -0400
-Received: from mail-mw2nam12on2065.outbound.protection.outlook.com ([40.107.244.65]:31782
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233175AbhHBKdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 06:33:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tg5NAEuk0+jPP2Rr71HHKEWZCUvu5PSLL/UoVzyuZj7m9K/0B4rvJz0LE0UTWsOBjiocA+JdXMR9V3uTxgbRYMsU5hvMcVX3m8e7lgmZ5UTP4y+TuIdL8AlKncZFawJ0nypekjRaZGzRUAb96hcB9hVjGDgQw/2/nRQ5ysbSMeyX6XpONizuwyIaKjTWiHLfhgKEqjvT+Rmcbv1NJGkM0r3xd8A3o7l+DKi1rgJTKQZdSMmymEXc4Y3jVPa7oCEcXQMsvJ/MqRM/V90p3+b0rsFfAhVN8HBixFlqgEZyVvxpK538OFKM/P5TRwbUNjpU3XA/0cj79ySdnqfBrUixag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pBMBZw8IzCQLXgPAOyKvrBO4tJA5PgdcnipSFvQOR5s=;
- b=hOTYx1y0eR0+ajXaFNtdGzNRq7geeB7taB3oU3Dop+OFkmz4xwfo0OmflcpFGZb7jvbEa2VAOHKgprSldLmQjthh9WQUq/nT2ezJEJDssNyCx3j1WXcy0B5gGs4qPkRX8ahjrSPLwe1lbWzn6MvIZ8ViXfL8aH9ALgGDB/eZEtKwE1vi1kABsOi2ktxyXJ71bNSsgq5moda+o5hnRFU4CrYYysXca263XawCfnvcd+f5hpstidm0Ah2zKIfaOLJTN3eLYaAJ9tqDDm1txSQte5dgh5AkVE5dJfrGT5JqLhjKjeL8CtDoyj9lItDfWH0BSieTY5MNFufJXXFb10Wajw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pBMBZw8IzCQLXgPAOyKvrBO4tJA5PgdcnipSFvQOR5s=;
- b=eNdBZY6a5Eeym/hq1o0C7QA8RnK3uZHlI80TmqCGUltXf4yrOsmy7yjysdKaNThENaNcNBK94/+uZNqv+A/nbF7TnUBKCJrqiiuejeIXqhqdD3xn/FNSVJhmJhlbeBQaCc+hV1kWoN9XQy6wOZgwf4L+wzEDOyXegMrN9yaRcJ8=
-Received: from BN0PR04CA0181.namprd04.prod.outlook.com (2603:10b6:408:e9::6)
- by BY5PR12MB5541.namprd12.prod.outlook.com (2603:10b6:a03:1c6::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Mon, 2 Aug
- 2021 10:33:39 +0000
-Received: from BN8NAM11FT057.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:e9:cafe::42) by BN0PR04CA0181.outlook.office365.com
- (2603:10b6:408:e9::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend
- Transport; Mon, 2 Aug 2021 10:33:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT057.mail.protection.outlook.com (10.13.177.49) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4373.18 via Frontend Transport; Mon, 2 Aug 2021 10:33:39 +0000
-Received: from sanjuamdntb2.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Mon, 2 Aug
- 2021 05:33:35 -0500
-From:   Sanjay R Mehta <Sanju.Mehta@amd.com>
-To:     <vkoul@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <dan.j.williams@intel.com>,
-        <Thomas.Lendacky@amd.com>, <Shyam-sundar.S-k@amd.com>,
-        <Nehal-bakulchandra.Shah@amd.com>, <robh@kernel.org>,
-        <mchehab+samsung@kernel.org>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>
-Subject: [PATCH v11 3/3] dmaengine: ptdma: Add debugfs entries for PTDMA
-Date:   Mon, 2 Aug 2021 05:32:55 -0500
-Message-ID: <1627900375-80812-4-git-send-email-Sanju.Mehta@amd.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1627900375-80812-1-git-send-email-Sanju.Mehta@amd.com>
-References: <1627900375-80812-1-git-send-email-Sanju.Mehta@amd.com>
+        id S233278AbhHBKeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 06:34:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233235AbhHBKeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 06:34:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8F3A60F70;
+        Mon,  2 Aug 2021 10:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627900446;
+        bh=7VhNgp+WOAG4OkaTRNi7bvE0jsdpnh+V+oLCLJAToRI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TNwVrEE3VKbO0f8Ho0azUlbTMFuq+Qd0zxUZeCbNTIL6cSK4ASw/+19sTY2iwU/2I
+         LgDVUuRstAMltYHDSl+pjyP+PG8JR8nworvB7/b3YtLfj9AXDFJGiivefQUu71nd6R
+         QUM5dzuF86w3Lh9FbRrRn1hrzMUWuFDwgyfQ1TSo0JtMjmYP0YD15S72t4pC2XMD2S
+         /PvCoWjkdKzuhKaT7+9LD8IRSWHzRjbB2dFHDRKXtympB02pV3p8vbgkpbon1u9NCb
+         MAxoUz1JByHH1woAxQyyaW3q/sn9A+8Pzp7h1fK93nwMyzsjlnnMv7E1EWyxNDWVWZ
+         v+7PQa9qf8v+Q==
+Date:   Mon, 2 Aug 2021 11:34:01 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Bhaskara Budiredla <bbudiredla@marvell.com>
+Cc:     mark.rutland@arm.com, sgoutham@marvell.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] drivers: perf: Add LLC-TAD perf counter support
+Message-ID: <20210802103401.GA27583@willie-the-truck>
+References: <20210614135849.6076-1-bbudiredla@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3ff44697-f567-4acf-53c2-08d955a0fe2a
-X-MS-TrafficTypeDiagnostic: BY5PR12MB5541:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB5541770E121A9D7AFBA8E42BE5EF9@BY5PR12MB5541.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:22;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +e1lWi6bTJpJ2L8QaNZL+qw0cAIw465euJF8cjKshCaGWUOrD9GvNgYCRF44GtS6zn+jzKtgPOhWjr2Rb95LF7lGoTrJ/RffD+uGGBq94EwWGxD6KqpIgpDd9OV1OW/r2OzOmki4WhDAYd6Be+ey/gGAEdqGvKp/XOcXaj/pzM5xPOyUtzcTeBrb1J+ecn6HHLx6lvIj96BKaax/OCQ/dQVAHZDj9JalK7/PBDkqtGpeYvHwKPG2jKPk1DU3UC9Pug0LN3026rEQxbJ4hiOhcmj50R0gwGJtLMN13KRQDqbQSLx8ttqdwHwGl6GagUiFxo7zVEtzUPzuABUNB79Kg50DLmbvhgQ6B11JdQ10b7GLPDroaQptSFZGatzmKfCWbKTXAECgJWAGX9ZwpKSOwjZtIU3mpV7rhU+mjYhOmShNtpX+X86dULWjLStxYvNDV0L1Ot8ISxmbZkKVDbWlaL1Qcf+IihY/lxPrurWyGPOhTKn/D4Qzgn4yYFo2ze2OrAlWNeEmBtujGNJvCoWr1JNopf4yTXriYIJiEq7D9HFdl5mtTI7/7LpHYV0Oq06sPz3bWB+BH8EsnhZjW4tLBJGKBxBu/VGx+4sPy+mDf9n4pkzZ4GgW+T6zDFPRMvaRbolL01wtT6mTr1jLaGi2KN9M14RVZtwAVoMRcVc7F3Y5tV7HzeWbo7uX2RTRZPAImSxrGMjg1h0x7rIgajl2/jA4ycHhmfunbO/DDXdWhfk=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(6916009)(336012)(6666004)(26005)(186003)(16526019)(4326008)(426003)(36756003)(70206006)(82310400003)(2616005)(508600001)(81166007)(7696005)(8676002)(86362001)(5660300002)(36860700001)(54906003)(70586007)(356005)(8936002)(83380400001)(47076005)(316002)(2906002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2021 10:33:39.6511
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ff44697-f567-4acf-53c2-08d955a0fe2a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT057.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB5541
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614135849.6076-1-bbudiredla@marvell.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sanjay R Mehta <sanju.mehta@amd.com>
+On Mon, Jun 14, 2021 at 07:28:49PM +0530, Bhaskara Budiredla wrote:
+> This driver adds support for Last-level cache tag-and-data unit
+> (LLC-TAD) PMU that is featured in some of the Marvell's CN10K
+> infrastructure silicons.
+> 
+> The LLC is divided into 2N slices distributed across N Mesh tiles
+> in a single-socket configuration. The driver always configures the
+> same counter for all of the TADs. The user would end up effectively
+> reserving one of eight counters in every TAD to look across all TADs.
+> The occurrences of events are aggregated and presented to the user
+> at the end of an application run. The driver does not provide a way
+> for the user to partition TADs so that different TADs are used for
+> different applications.
+> 
+> The event counters are zeroed to start event counting to avoid any
+> rollover issues. TAD perf counters are 64-bit, so it's not currently
+> possible to overflow event counters at current mesh and core
+> frequencies.
 
-Expose data about the configuration and operation of the
-PTDMA through debugfs entries: device name, capabilities,
-configuration, statistics.
+I couldn't spot where you disable sampling events, which rely heavily on
+detecting overflow. Probably need PERF_PMU_CAP_NO_INTERRUPT.
 
-Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
----
- drivers/dma/ptdma/Makefile        |   2 +-
- drivers/dma/ptdma/ptdma-debugfs.c | 110 ++++++++++++++++++++++++++++++++++++++
- drivers/dma/ptdma/ptdma-dev.c     |   5 ++
- drivers/dma/ptdma/ptdma.h         |   6 +++
- 4 files changed, 122 insertions(+), 1 deletion(-)
- create mode 100644 drivers/dma/ptdma/ptdma-debugfs.c
+> To measure tad pmu events use perf tool stat command. For instance:
+> 
+> perf stat -e tad_dat_msh_in_dss,tad_req_msh_out_any <application>
+> perf stat -e tad_alloc_any,tad_hit_any,tad_tag_rd <application>
+> 
+> Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
+> ---
+>  .../bindings/perf/marvell-cn10k-tad-pmu.txt   |  20 +
 
-diff --git a/drivers/dma/ptdma/Makefile b/drivers/dma/ptdma/Makefile
-index a528cb0..ce54102 100644
---- a/drivers/dma/ptdma/Makefile
-+++ b/drivers/dma/ptdma/Makefile
-@@ -5,6 +5,6 @@
- 
- obj-$(CONFIG_AMD_PTDMA) += ptdma.o
- 
--ptdma-objs := ptdma-dev.o ptdma-dmaengine.o
-+ptdma-objs := ptdma-dev.o ptdma-dmaengine.o ptdma-debugfs.o
- 
- ptdma-$(CONFIG_PCI) += ptdma-pci.o
-diff --git a/drivers/dma/ptdma/ptdma-debugfs.c b/drivers/dma/ptdma/ptdma-debugfs.c
-new file mode 100644
-index 0000000..5277a2a
---- /dev/null
-+++ b/drivers/dma/ptdma/ptdma-debugfs.c
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * AMD Passthrough DMA device driver
-+ * -- Based on the CCP driver
-+ *
-+ * Copyright (C) 2016,2021 Advanced Micro Devices, Inc.
-+ *
-+ * Author: Sanjay R Mehta <sanju.mehta@amd.com>
-+ * Author: Gary R Hook <gary.hook@amd.com>
-+ */
-+
-+#include <linux/debugfs.h>
-+#include <linux/seq_file.h>
-+
-+#include "ptdma.h"
-+
-+/* DebugFS helpers */
-+#define	MAX_NAME_LEN	20
-+#define	RI_VERSION_NUM	0x0000003F
-+
-+#define	RI_NUM_VQM	0x00078000
-+#define	RI_NVQM_SHIFT	15
-+
-+static int pt_debugfs_info_show(struct seq_file *s, void *p)
-+{
-+	struct pt_device *pt = s->private;
-+	unsigned int regval;
-+
-+	seq_printf(s, "Device name: %s\n", dev_name(pt->dev));
-+	seq_printf(s, "   # Queues: %d\n", 1);
-+	seq_printf(s, "     # Cmds: %d\n", pt->cmd_count);
-+
-+	regval = ioread32(pt->io_regs + CMD_PT_VERSION);
-+
-+	seq_printf(s, "    Version: %d\n", regval & RI_VERSION_NUM);
-+	seq_puts(s, "    Engines:");
-+	seq_puts(s, "\n");
-+	seq_printf(s, "     Queues: %d\n", (regval & RI_NUM_VQM) >> RI_NVQM_SHIFT);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Return a formatted buffer containing the current
-+ * statistics of queue for PTDMA
-+ */
-+static int pt_debugfs_stats_show(struct seq_file *s, void *p)
-+{
-+	struct pt_device *pt = s->private;
-+
-+	seq_printf(s, "Total Interrupts Handled: %ld\n", pt->total_interrupts);
-+
-+	return 0;
-+}
-+
-+static int pt_debugfs_queue_show(struct seq_file *s, void *p)
-+{
-+	struct pt_cmd_queue *cmd_q = s->private;
-+	unsigned int regval;
-+
-+	if (!cmd_q)
-+		return 0;
-+
-+	seq_printf(s, "               Pass-Thru: %ld\n", cmd_q->total_pt_ops);
-+
-+	regval = ioread32(cmd_q->reg_control + 0x000C);
-+
-+	seq_puts(s, "      Enabled Interrupts:");
-+	if (regval & INT_EMPTY_QUEUE)
-+		seq_puts(s, " EMPTY");
-+	if (regval & INT_QUEUE_STOPPED)
-+		seq_puts(s, " STOPPED");
-+	if (regval & INT_ERROR)
-+		seq_puts(s, " ERROR");
-+	if (regval & INT_COMPLETION)
-+		seq_puts(s, " COMPLETION");
-+	seq_puts(s, "\n");
-+
-+	return 0;
-+}
-+
-+DEFINE_SHOW_ATTRIBUTE(pt_debugfs_info);
-+DEFINE_SHOW_ATTRIBUTE(pt_debugfs_queue);
-+DEFINE_SHOW_ATTRIBUTE(pt_debugfs_stats);
-+
-+void ptdma_debugfs_setup(struct pt_device *pt)
-+{
-+	struct pt_cmd_queue *cmd_q;
-+	char name[MAX_NAME_LEN + 1];
-+	struct dentry *debugfs_q_instance;
-+
-+	if (!debugfs_initialized())
-+		return;
-+
-+	debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
-+			    &pt_debugfs_info_fops);
-+
-+	debugfs_create_file("stats", 0400, pt->dma_dev.dbg_dev_root, pt,
-+			    &pt_debugfs_stats_fops);
-+
-+	cmd_q = &pt->cmd_q;
-+
-+	snprintf(name, MAX_NAME_LEN - 1, "q");
-+
-+	debugfs_q_instance =
-+		debugfs_create_dir(name, pt->dma_dev.dbg_dev_root);
-+
-+	debugfs_create_file("stats", 0400, debugfs_q_instance, cmd_q,
-+			    &pt_debugfs_queue_fops);
-+}
-diff --git a/drivers/dma/ptdma/ptdma-dev.c b/drivers/dma/ptdma/ptdma-dev.c
-index 42b9de3..354284a 100644
---- a/drivers/dma/ptdma/ptdma-dev.c
-+++ b/drivers/dma/ptdma/ptdma-dev.c
-@@ -102,6 +102,7 @@ int pt_core_perform_passthru(struct pt_cmd_queue *cmd_q,
- 	struct ptdma_desc desc;
- 
- 	cmd_q->cmd_error = 0;
-+	cmd_q->total_pt_ops++;
- 	memset(&desc, 0, sizeof(desc));
- 	desc.dw0 = CMD_DESC_DW0_VAL;
- 	desc.length = pt_engine->src_len;
-@@ -151,6 +152,7 @@ static irqreturn_t pt_core_irq_handler(int irq, void *data)
- 	bool err = true;
- 
- 	pt_core_disable_queue_interrupts(pt);
-+	pt->total_interrupts++;
- 	status = ioread32(cmd_q->reg_control + 0x0010);
- 	if (status) {
- 		cmd_q->int_status = status;
-@@ -253,6 +255,9 @@ int pt_core_init(struct pt_device *pt)
- 	if (ret)
- 		goto e_dmaengine;
- 
-+	/* Set up debugfs entries */
-+	ptdma_debugfs_setup(pt);
-+
- 	return 0;
- 
- e_dmaengine:
-diff --git a/drivers/dma/ptdma/ptdma.h b/drivers/dma/ptdma/ptdma.h
-index 1329c55..860e302 100644
---- a/drivers/dma/ptdma/ptdma.h
-+++ b/drivers/dma/ptdma/ptdma.h
-@@ -216,6 +216,8 @@ struct pt_cmd_queue {
- 	u32 q_status;
- 	u32 q_int_status;
- 	u32 cmd_error;
-+	/* Queue Statistics */
-+	unsigned long total_pt_ops;
- } ____cacheline_aligned;
- 
- struct pt_device {
-@@ -254,6 +256,9 @@ struct pt_device {
- 
- 	wait_queue_head_t lsb_queue;
- 
-+	/* Device Statistics */
-+	unsigned long total_interrupts;
-+
- 	struct pt_tasklet_data tdata;
- };
- 
-@@ -307,6 +312,7 @@ struct pt_dev_vdata {
- int pt_dmaengine_register(struct pt_device *pt);
- void pt_dmaengine_unregister(struct pt_device *pt);
- 
-+void ptdma_debugfs_setup(struct pt_device *pt);
- int pt_core_init(struct pt_device *pt);
- void pt_core_destroy(struct pt_device *pt);
- 
--- 
-2.7.4
+Adding the DT list for this ^^ as it looks a bit odd to me (also shouldn't
+it be in YAML?)
 
+>  drivers/perf/Kconfig                          |   7 +
+>  drivers/perf/Makefile                         |   1 +
+>  drivers/perf/marvell_cn10k_tad_pmu.c          | 428 ++++++++++++++++++
+
+-ENODOCUMENTATION
+
+>  4 files changed, 456 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/perf/marvell-cn10k-tad-pmu.txt
+>  create mode 100644 drivers/perf/marvell_cn10k_tad_pmu.c
+> 
+> diff --git a/Documentation/devicetree/bindings/perf/marvell-cn10k-tad-pmu.txt b/Documentation/devicetree/bindings/perf/marvell-cn10k-tad-pmu.txt
+> new file mode 100644
+> index 000000000000..8b1f753303e2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/perf/marvell-cn10k-tad-pmu.txt
+> @@ -0,0 +1,20 @@
+> +* Marvell CN10K LLC-TAD performace monitor unit
+> +
+> +Required properties:
+> +- compatible: must be:
+> +	"marvell,cn10k-tad-pmu"
+> +- tad-cnt: number of tad pmu regions
+> +- tad-page-size: size of entire tad block
+> +- tad-pmu-page-size: size of one tad pmu region
+> +- reg: physical address and size
+> +
+> +Example:
+> +
+> +/* Actual values updated by firmware at boot time */
+> +tad_pmu {
+> +	compatible = "marvell,cn10k-tad-pmu";
+> +	tad-cnt = <1>;
+> +	tad-page-size = <0x1000>;
+> +	tad-pmu-page-size = <0x1000>;
+> +	reg = <0x87e2 0x80000000 0x0 0x1000>;
+> +};
+> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+> index 77522e5efe11..73dca11f8080 100644
+> --- a/drivers/perf/Kconfig
+> +++ b/drivers/perf/Kconfig
+> @@ -137,6 +137,13 @@ config ARM_DMC620_PMU
+>  	  Support for PMU events monitoring on the ARM DMC-620 memory
+>  	  controller.
+>  
+> +config MARVELL_CN10K_TAD_PMU
+> +	tristate "Marvell CN10K LLC-TAD PMU"
+> +	depends on ARM64
+> +	help
+> +	  Provides support for Last-Level cache Tag-and-data Units (LLC-TAD)
+> +	  performance monitors on CN10K family silicons.
+> +
+>  source "drivers/perf/hisilicon/Kconfig"
+>  
+>  endmenu
+> diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
+> index 5260b116c7da..2db5418d5b0a 100644
+> --- a/drivers/perf/Makefile
+> +++ b/drivers/perf/Makefile
+> @@ -14,3 +14,4 @@ obj-$(CONFIG_THUNDERX2_PMU) += thunderx2_pmu.o
+>  obj-$(CONFIG_XGENE_PMU) += xgene_pmu.o
+>  obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
+>  obj-$(CONFIG_ARM_DMC620_PMU) += arm_dmc620_pmu.o
+> +obj-$(CONFIG_MARVELL_CN10K_TAD_PMU) += marvell_cn10k_tad_pmu.o
+> diff --git a/drivers/perf/marvell_cn10k_tad_pmu.c b/drivers/perf/marvell_cn10k_tad_pmu.c
+> new file mode 100644
+> index 000000000000..99878de481f0
+> --- /dev/null
+> +++ b/drivers/perf/marvell_cn10k_tad_pmu.c
+> @@ -0,0 +1,428 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Marvell CN10K LLC-TAD perf driver
+> + *
+> + * Copyright (C) 2021 Marvell.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#define pr_fmt(fmt) "tad_pmu: " fmt
+> +
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/cpuhotplug.h>
+> +#include <linux/perf_event.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/arm-smccc.h>
+> +
+> +#define TAD_PFC_OFFSET		0x0800
+> +#define TAD_PFC(counter)	(TAD_PFC_OFFSET | (counter << 3))
+> +#define TAD_PRF_OFFSET		0x0900
+> +#define TAD_PRF(counter)	(TAD_PRF_OFFSET | (counter << 3))
+> +#define TAD_PRF_CNTSEL_MASK	0xFF
+> +#define TAD_MAX_COUNTERS	8
+> +
+> +#define to_tad_pmu(p) (container_of(p, struct tad_pmu, pmu))
+> +
+> +struct tad_region {
+> +	void __iomem	*base;
+> +};
+> +
+> +struct tad_pmu {
+> +	struct pmu pmu;
+> +	struct tad_region *regions;
+> +	u32 region_cnt;
+> +	unsigned int cpu;
+> +	struct hlist_node node;
+> +	struct perf_event *events[TAD_MAX_COUNTERS];
+> +	DECLARE_BITMAP(counters_map, TAD_MAX_COUNTERS);
+> +};
+> +
+> +static int tad_pmu_cpuhp_state;
+> +
+> +static void tad_pmu_event_counter_read(struct perf_event *event)
+> +{
+> +	struct tad_pmu *tad_pmu = to_tad_pmu(event->pmu);
+> +	struct hw_perf_event *hwc = &event->hw;
+> +	u32 counter_idx = hwc->idx;
+> +	u64 delta, prev, new;
+> +	int i;
+> +
+> +	do {
+> +		prev = local64_read(&hwc->prev_count);
+> +		for (i = 0, new = 0; i < tad_pmu->region_cnt; i++)
+> +			new += readq(tad_pmu->regions[i].base +
+> +				     TAD_PFC(counter_idx));
+> +	} while (local64_cmpxchg(&hwc->prev_count, prev, new) != prev);
+> +
+> +	delta = (new - prev) & GENMASK_ULL(63, 0);
+> +	local64_add(delta, &event->count);
+> +}
+> +
+> +static void tad_pmu_event_counter_stop(struct perf_event *event, int flags)
+> +{
+> +	struct tad_pmu *tad_pmu = to_tad_pmu(event->pmu);
+> +	struct hw_perf_event *hwc = &event->hw;
+> +	u32 counter_idx = hwc->idx;
+> +	int i;
+> +
+> +	/* TAD()_PFC() stop counting on the write
+> +	 * which sets TAD()_PRF()[CNTSEL] == 0
+> +	 */
+> +	for (i = 0; i < tad_pmu->region_cnt; i++)
+> +		writeq(0, tad_pmu->regions[i].base + TAD_PRF(counter_idx));
+
+writeq_relaxed() should be sufficient for this (and the others in this
+driver), no?
+
+> +static ssize_t tad_pmu_event_show(struct device *dev,
+> +				struct device_attribute *attr, char *page)
+> +{
+> +	struct perf_pmu_events_attr *pmu_attr;
+> +
+> +	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
+> +	return sprintf(page, "event=0x%02llx\n", pmu_attr->id);
+> +}
+> +
+> +#define TAD_PMU_EVENT_ATTR(_name, _id)					\
+> +	(&((struct perf_pmu_events_attr[]) {				\
+> +		{ .attr = __ATTR(_name, 0444, tad_pmu_event_show, NULL),\
+> +		  .id = _id, }						\
+> +	})[0].attr.attr)
+
+Use PMU_EVENT_ATTR_ID instead?
+
+> +static int tad_pmu_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *node = pdev->dev.of_node;
+> +	struct tad_region *regions;
+> +	struct tad_pmu *tad_pmu;
+> +	struct resource *res;
+> +	u32 tad_pmu_page_size;
+> +	u32 tad_page_size;
+> +	u32 tad_cnt;
+> +	int i, ret;
+> +	char *name;
+> +
+> +	tad_pmu = devm_kzalloc(&pdev->dev, sizeof(*tad_pmu), GFP_KERNEL);
+> +	if (!tad_pmu)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, tad_pmu);
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "Mem resource not found\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = of_property_read_u32(node, "tad-page-size", &tad_page_size);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Can't find tad-page-size property\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = of_property_read_u32(node, "tad-pmu-page-size",
+> +				   &tad_pmu_page_size);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Can't find tad-pmu-page-size property\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = of_property_read_u32(node, "tad-cnt", &tad_cnt);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Can't find tad-cnt property\n");
+> +		return ret;
+> +	}
+> +
+> +	regions = kcalloc(tad_cnt, sizeof(*regions), GFP_KERNEL);
+
+devm_kcalloc() instead?
+
+Will
