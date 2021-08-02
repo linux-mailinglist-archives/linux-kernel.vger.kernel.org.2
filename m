@@ -2,291 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC133DD3BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01E53DD3C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233278AbhHBKeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233290AbhHBKfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 06:35:03 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26504 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231881AbhHBKfB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 06:35:01 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 172A4NG2173500;
         Mon, 2 Aug 2021 06:34:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233235AbhHBKeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 06:34:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8F3A60F70;
-        Mon,  2 Aug 2021 10:34:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627900446;
-        bh=7VhNgp+WOAG4OkaTRNi7bvE0jsdpnh+V+oLCLJAToRI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TNwVrEE3VKbO0f8Ho0azUlbTMFuq+Qd0zxUZeCbNTIL6cSK4ASw/+19sTY2iwU/2I
-         LgDVUuRstAMltYHDSl+pjyP+PG8JR8nworvB7/b3YtLfj9AXDFJGiivefQUu71nd6R
-         QUM5dzuF86w3Lh9FbRrRn1hrzMUWuFDwgyfQ1TSo0JtMjmYP0YD15S72t4pC2XMD2S
-         /PvCoWjkdKzuhKaT7+9LD8IRSWHzRjbB2dFHDRKXtympB02pV3p8vbgkpbon1u9NCb
-         MAxoUz1JByHH1woAxQyyaW3q/sn9A+8Pzp7h1fK93nwMyzsjlnnMv7E1EWyxNDWVWZ
-         v+7PQa9qf8v+Q==
-Date:   Mon, 2 Aug 2021 11:34:01 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Bhaskara Budiredla <bbudiredla@marvell.com>
-Cc:     mark.rutland@arm.com, sgoutham@marvell.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] drivers: perf: Add LLC-TAD perf counter support
-Message-ID: <20210802103401.GA27583@willie-the-truck>
-References: <20210614135849.6076-1-bbudiredla@marvell.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=r00k+UjFn2pP62ZTrfQkfAUimzcY0iIqFp/tRGXpoq0=;
+ b=XB+IyIVRuwsaGl5Cf36GJrmEG3pUanAUVbJd0L+oKz2n9pFqA/PMFgwKaU8Fqyy8Lva3
+ Kbt8Pm8E3v6Do/WIyQyINblL2EUrwMVz8/MgaVk9CKB/lYzJLp0Z77DY+Z/NLG27Hxbj
+ E9qpS5txHaS6nt9qU2jVBdzVhvDQmwEAwKpzUg/IADG8yUZYRc/KRZKQB9m3YaMNAQ/V
+ mqocdQdQhDdcY8hBX72GpQ0R0Ltra1dQR25fDeh1xYBUCQnH2894AsakTiIyquwCzLQd
+ SFjOXifLtRwVjfMNlR/0nvfzPGZm64KH9KxFjtA2pZJTcvqIwBuMeqWbhKoD7NaDevz8 Aw== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a5ks7xgv8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Aug 2021 06:34:20 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 172AY3xg012514;
+        Mon, 2 Aug 2021 10:34:18 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 3a4x594481-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Aug 2021 10:34:18 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 172AYEbo30605618
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 2 Aug 2021 10:34:14 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 99BA0520E2;
+        Mon,  2 Aug 2021 10:34:14 +0000 (GMT)
+Received: from sig-9-145-37-103.uk.ibm.com (unknown [9.145.37.103])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id AED60520D5;
+        Mon,  2 Aug 2021 10:34:13 +0000 (GMT)
+Message-ID: <a5a46d84866f69df8c9737ecd8b066b61f24960a.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 13/21] s390/pci: don't set failed sg dma_address to
+ DMA_MAPPING_ERROR
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Date:   Mon, 02 Aug 2021 12:34:13 +0200
+In-Reply-To: <20210723175008.22410-14-logang@deltatee.com>
+References: <20210723175008.22410-1-logang@deltatee.com>
+         <20210723175008.22410-14-logang@deltatee.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: zc7l-lzfyaxYg5Vm8LQLNSA4emMVITXD
+X-Proofpoint-GUID: zc7l-lzfyaxYg5Vm8LQLNSA4emMVITXD
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614135849.6076-1-bbudiredla@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-02_01:2021-08-02,2021-08-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 suspectscore=0 spamscore=0 adultscore=0
+ mlxscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108020069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 07:28:49PM +0530, Bhaskara Budiredla wrote:
-> This driver adds support for Last-level cache tag-and-data unit
-> (LLC-TAD) PMU that is featured in some of the Marvell's CN10K
-> infrastructure silicons.
+On Fri, 2021-07-23 at 11:50 -0600, Logan Gunthorpe wrote:
+> Setting the ->dma_address to DMA_MAPPING_ERROR is not part of
+> the ->map_sg calling convention, so remove it.
 > 
-> The LLC is divided into 2N slices distributed across N Mesh tiles
-> in a single-socket configuration. The driver always configures the
-> same counter for all of the TADs. The user would end up effectively
-> reserving one of eight counters in every TAD to look across all TADs.
-> The occurrences of events are aggregated and presented to the user
-> at the end of an application run. The driver does not provide a way
-> for the user to partition TADs so that different TADs are used for
-> different applications.
-> 
-> The event counters are zeroed to start event counting to avoid any
-> rollover issues. TAD perf counters are 64-bit, so it's not currently
-> possible to overflow event counters at current mesh and core
-> frequencies.
-
-I couldn't spot where you disable sampling events, which rely heavily on
-detecting overflow. Probably need PERF_PMU_CAP_NO_INTERRUPT.
-
-> To measure tad pmu events use perf tool stat command. For instance:
-> 
-> perf stat -e tad_dat_msh_in_dss,tad_req_msh_out_any <application>
-> perf stat -e tad_alloc_any,tad_hit_any,tad_tag_rd <application>
-> 
-> Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
+> Link: https://lore.kernel.org/linux-mips/20210716063241.GC13345@lst.de/
+> Suggested-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
 > ---
->  .../bindings/perf/marvell-cn10k-tad-pmu.txt   |  20 +
-
-Adding the DT list for this ^^ as it looks a bit odd to me (also shouldn't
-it be in YAML?)
-
->  drivers/perf/Kconfig                          |   7 +
->  drivers/perf/Makefile                         |   1 +
->  drivers/perf/marvell_cn10k_tad_pmu.c          | 428 ++++++++++++++++++
-
--ENODOCUMENTATION
-
->  4 files changed, 456 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/perf/marvell-cn10k-tad-pmu.txt
->  create mode 100644 drivers/perf/marvell_cn10k_tad_pmu.c
+>  arch/s390/pci/pci_dma.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/perf/marvell-cn10k-tad-pmu.txt b/Documentation/devicetree/bindings/perf/marvell-cn10k-tad-pmu.txt
-> new file mode 100644
-> index 000000000000..8b1f753303e2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/perf/marvell-cn10k-tad-pmu.txt
-> @@ -0,0 +1,20 @@
-> +* Marvell CN10K LLC-TAD performace monitor unit
-> +
-> +Required properties:
-> +- compatible: must be:
-> +	"marvell,cn10k-tad-pmu"
-> +- tad-cnt: number of tad pmu regions
-> +- tad-page-size: size of entire tad block
-> +- tad-pmu-page-size: size of one tad pmu region
-> +- reg: physical address and size
-> +
-> +Example:
-> +
-> +/* Actual values updated by firmware at boot time */
-> +tad_pmu {
-> +	compatible = "marvell,cn10k-tad-pmu";
-> +	tad-cnt = <1>;
-> +	tad-page-size = <0x1000>;
-> +	tad-pmu-page-size = <0x1000>;
-> +	reg = <0x87e2 0x80000000 0x0 0x1000>;
-> +};
-> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
-> index 77522e5efe11..73dca11f8080 100644
-> --- a/drivers/perf/Kconfig
-> +++ b/drivers/perf/Kconfig
-> @@ -137,6 +137,13 @@ config ARM_DMC620_PMU
->  	  Support for PMU events monitoring on the ARM DMC-620 memory
->  	  controller.
+> diff --git a/arch/s390/pci/pci_dma.c b/arch/s390/pci/pci_dma.c
+> index c78b02012764..be48e5b5bfcf 100644
+> --- a/arch/s390/pci/pci_dma.c
+> +++ b/arch/s390/pci/pci_dma.c
+> @@ -492,7 +492,6 @@ static int s390_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>  	for (i = 1; i < nr_elements; i++) {
+>  		s = sg_next(s);
 >  
-> +config MARVELL_CN10K_TAD_PMU
-> +	tristate "Marvell CN10K LLC-TAD PMU"
-> +	depends on ARM64
-> +	help
-> +	  Provides support for Last-Level cache Tag-and-data Units (LLC-TAD)
-> +	  performance monitors on CN10K family silicons.
-> +
->  source "drivers/perf/hisilicon/Kconfig"
+> -		s->dma_address = DMA_MAPPING_ERROR;
+>  		s->dma_length = 0;
 >  
->  endmenu
-> diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
-> index 5260b116c7da..2db5418d5b0a 100644
-> --- a/drivers/perf/Makefile
-> +++ b/drivers/perf/Makefile
-> @@ -14,3 +14,4 @@ obj-$(CONFIG_THUNDERX2_PMU) += thunderx2_pmu.o
->  obj-$(CONFIG_XGENE_PMU) += xgene_pmu.o
->  obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
->  obj-$(CONFIG_ARM_DMC620_PMU) += arm_dmc620_pmu.o
-> +obj-$(CONFIG_MARVELL_CN10K_TAD_PMU) += marvell_cn10k_tad_pmu.o
-> diff --git a/drivers/perf/marvell_cn10k_tad_pmu.c b/drivers/perf/marvell_cn10k_tad_pmu.c
-> new file mode 100644
-> index 000000000000..99878de481f0
-> --- /dev/null
-> +++ b/drivers/perf/marvell_cn10k_tad_pmu.c
-> @@ -0,0 +1,428 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Marvell CN10K LLC-TAD perf driver
-> + *
-> + * Copyright (C) 2021 Marvell.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#define pr_fmt(fmt) "tad_pmu: " fmt
-> +
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_device.h>
-> +#include <linux/cpuhotplug.h>
-> +#include <linux/perf_event.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/arm-smccc.h>
-> +
-> +#define TAD_PFC_OFFSET		0x0800
-> +#define TAD_PFC(counter)	(TAD_PFC_OFFSET | (counter << 3))
-> +#define TAD_PRF_OFFSET		0x0900
-> +#define TAD_PRF(counter)	(TAD_PRF_OFFSET | (counter << 3))
-> +#define TAD_PRF_CNTSEL_MASK	0xFF
-> +#define TAD_MAX_COUNTERS	8
-> +
-> +#define to_tad_pmu(p) (container_of(p, struct tad_pmu, pmu))
-> +
-> +struct tad_region {
-> +	void __iomem	*base;
-> +};
-> +
-> +struct tad_pmu {
-> +	struct pmu pmu;
-> +	struct tad_region *regions;
-> +	u32 region_cnt;
-> +	unsigned int cpu;
-> +	struct hlist_node node;
-> +	struct perf_event *events[TAD_MAX_COUNTERS];
-> +	DECLARE_BITMAP(counters_map, TAD_MAX_COUNTERS);
-> +};
-> +
-> +static int tad_pmu_cpuhp_state;
-> +
-> +static void tad_pmu_event_counter_read(struct perf_event *event)
-> +{
-> +	struct tad_pmu *tad_pmu = to_tad_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	u32 counter_idx = hwc->idx;
-> +	u64 delta, prev, new;
-> +	int i;
-> +
-> +	do {
-> +		prev = local64_read(&hwc->prev_count);
-> +		for (i = 0, new = 0; i < tad_pmu->region_cnt; i++)
-> +			new += readq(tad_pmu->regions[i].base +
-> +				     TAD_PFC(counter_idx));
-> +	} while (local64_cmpxchg(&hwc->prev_count, prev, new) != prev);
-> +
-> +	delta = (new - prev) & GENMASK_ULL(63, 0);
-> +	local64_add(delta, &event->count);
-> +}
-> +
-> +static void tad_pmu_event_counter_stop(struct perf_event *event, int flags)
-> +{
-> +	struct tad_pmu *tad_pmu = to_tad_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	u32 counter_idx = hwc->idx;
-> +	int i;
-> +
-> +	/* TAD()_PFC() stop counting on the write
-> +	 * which sets TAD()_PRF()[CNTSEL] == 0
-> +	 */
-> +	for (i = 0; i < tad_pmu->region_cnt; i++)
-> +		writeq(0, tad_pmu->regions[i].base + TAD_PRF(counter_idx));
+>  		if (s->offset || (size & ~PAGE_MASK) ||
 
-writeq_relaxed() should be sufficient for this (and the others in this
-driver), no?
+Acked-by: Niklas Schnelle <schnelle@linux.ibm.com>
 
-> +static ssize_t tad_pmu_event_show(struct device *dev,
-> +				struct device_attribute *attr, char *page)
-> +{
-> +	struct perf_pmu_events_attr *pmu_attr;
-> +
-> +	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
-> +	return sprintf(page, "event=0x%02llx\n", pmu_attr->id);
-> +}
-> +
-> +#define TAD_PMU_EVENT_ATTR(_name, _id)					\
-> +	(&((struct perf_pmu_events_attr[]) {				\
-> +		{ .attr = __ATTR(_name, 0444, tad_pmu_event_show, NULL),\
-> +		  .id = _id, }						\
-> +	})[0].attr.attr)
+Thanks!
 
-Use PMU_EVENT_ATTR_ID instead?
-
-> +static int tad_pmu_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *node = pdev->dev.of_node;
-> +	struct tad_region *regions;
-> +	struct tad_pmu *tad_pmu;
-> +	struct resource *res;
-> +	u32 tad_pmu_page_size;
-> +	u32 tad_page_size;
-> +	u32 tad_cnt;
-> +	int i, ret;
-> +	char *name;
-> +
-> +	tad_pmu = devm_kzalloc(&pdev->dev, sizeof(*tad_pmu), GFP_KERNEL);
-> +	if (!tad_pmu)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, tad_pmu);
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "Mem resource not found\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = of_property_read_u32(node, "tad-page-size", &tad_page_size);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Can't find tad-page-size property\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = of_property_read_u32(node, "tad-pmu-page-size",
-> +				   &tad_pmu_page_size);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Can't find tad-pmu-page-size property\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = of_property_read_u32(node, "tad-cnt", &tad_cnt);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Can't find tad-cnt property\n");
-> +		return ret;
-> +	}
-> +
-> +	regions = kcalloc(tad_cnt, sizeof(*regions), GFP_KERNEL);
-
-devm_kcalloc() instead?
-
-Will
