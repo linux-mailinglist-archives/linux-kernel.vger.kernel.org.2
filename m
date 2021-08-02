@@ -2,215 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5920F3DDCA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F47F3DDCA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 17:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235238AbhHBPn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 11:43:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235032AbhHBPnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 11:43:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C4B9610FB;
-        Mon,  2 Aug 2021 15:43:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627918994;
-        bh=6cailuMkhyBB9d0ZTXadcfD6Sa05EeQ6lw5qH7dMuws=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pf9qXWt9jzUmsOIxUZMGoBwmfg6lOCMSQDgbmWNLeol5ZxayXozJxGJTpFnYXOqSc
-         9ERJiHSI9np8gNmQycu5nNPm6sBuGnpN2us3cH+y12VkfaJNP1mZT4GtmejgvcdToO
-         iT34gdRyg78rKk2bp0mR9fdfTqGH1cypfI72Eg8cZHESTI5Jn7h4oubLmijjA8ZHa5
-         XDBs7Si3CwX8mkLzErFNYIzwvOz2AinoGl8HA5FTpcRQEAQabndmk3Z+0WIOGHSpGz
-         dBwdxdlXuutyyKBnwESJv+14VPz2DFMki2hr5UwsEtK7uM+IMA6xJlrLhjuu4/+19z
-         OteQNoqO7koyA==
-Date:   Mon, 2 Aug 2021 16:43:08 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Doug Anderson <dianders@chromium.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCHv3] iommu/arm-smmu: Optimize ->tlb_flush_walk() for qcom
- implementation
-Message-ID: <20210802154308.GG28735@willie-the-truck>
-References: <20210623134201.16140-1-saiprakash.ranjan@codeaurora.org>
+        id S235256AbhHBPoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 11:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234551AbhHBPoW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 11:44:22 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062F0C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 08:44:12 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id n12-20020a05600c3b8cb029025a67bbd40aso3915535wms.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 08:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zAWuQ/JvoX+qW03VDGPJ9Ofp3oF3NSH0evX+ItLfT0M=;
+        b=OY1dHlSBGhnSjUiSRde6FOpi/D/J7vDN3qiynTmUlf6bnERXdwDmKC+7PzgqdLk2VQ
+         6k3GrRyW36WgMN0o5BCwydoFGH4LJ3/Td+yTEL2V0YgpV6njdbtogAPjJdjk3Zbc5vED
+         uxDQrZlBUxtd99jT+x1vQWolvyWpM4AFa8GYKJBYNk9U6K9uhIivv3UR8tFoz+b2YCyd
+         3+K4ynU4wb5PxA9Sg88UzIdL+uzuohxlpQG0/uGCx/97aBGwwyM9AMyl7xf+OhyBmuOK
+         qWl1yv2dQPqzDtWlA5msz53nVoSicHeDAYeGDn/2tdS/3UYQQB+gKVYy19uWXoVYrYMX
+         vYKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zAWuQ/JvoX+qW03VDGPJ9Ofp3oF3NSH0evX+ItLfT0M=;
+        b=EGJazFyqQ6prnhyODjGLkOMpIQwji0Ej/v4xwL/3VFG+4BFqqcUFJK8farXM5zz/0W
+         ZZm7pf9viXEMevlf0eIwqnq9LF4kG968zFo7f+RBSZlJOGKTpa/bGvLmV6klszpCZwvX
+         YKQs9gzgcl2csnnjRrI4jaEqX/3yM8mxELLOUL3wX2njKNDK62pff+IjeW90m6hD16Sp
+         VpAkUqnsTsoSLTM/3OAeo4onAYbBHPCSD7hMgppGhaP4FfI3hCbO9cxpx+C2sT9y/TCs
+         g38pPA1MaYtsr1CHGJ3a5CwWPQn7kiwlMKb3lwg5HsCJ2gARgWzH86WHre7Sm3y4Y8Sq
+         pqIQ==
+X-Gm-Message-State: AOAM531XKZap4qkhPr00q+Vk5CUL5RY8+uZZ4VPyYAMzMLb857kCSDw0
+        VfqkM4aoiizmepszfW+/FT5CU5UlEauOd4zvv6cjdg==
+X-Google-Smtp-Source: ABdhPJwQk3PjsXlhmERVCZwrj08dYks7ZMB1H5WlB2pmNXlDk+r6SlCK3idLXagGaVe4isrMvVOoC3dYiM8MzdRPtiM=
+X-Received: by 2002:a7b:c0cc:: with SMTP id s12mr49605wmh.0.1627919050360;
+ Mon, 02 Aug 2021 08:44:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623134201.16140-1-saiprakash.ranjan@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210721090706.21523-1-james.clark@arm.com> <20210721090706.21523-3-james.clark@arm.com>
+ <CAJ9a7Viap53OgrM2e_DU4+oymFB41jspbKbvEVFQWROt7ifuXw@mail.gmail.com>
+ <20210731060312.GB7437@leoy-ThinkPad-X240s> <CAJ9a7VhdLaP3rkXwscAQpVe+jSgcx02WjY=RmiBkaCB6ObGTjQ@mail.gmail.com>
+ <20210802150358.GA148327@leoy-ThinkPad-X240s>
+In-Reply-To: <20210802150358.GA148327@leoy-ThinkPad-X240s>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Mon, 2 Aug 2021 16:43:59 +0100
+Message-ID: <CAJ9a7VhBU4QYWYbzJs2Z91k=NC+xYnmKJ-HH9CKiNdpDxsY1SA@mail.gmail.com>
+Subject: Re: [PATCH 2/6] perf cs-etm: Initialise architecture based on TRCIDR1
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Al Grant <al.grant@arm.com>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 07:12:01PM +0530, Sai Prakash Ranjan wrote:
-> Currently for iommu_unmap() of large scatter-gather list with page size
-> elements, the majority of time is spent in flushing of partial walks in
-> __arm_lpae_unmap() which is a VA based TLB invalidation invalidating
-> page-by-page on iommus like arm-smmu-v2 (TLBIVA).
-> 
-> For example: to unmap a 32MB scatter-gather list with page size elements
-> (8192 entries), there are 16->2MB buffer unmaps based on the pgsize (2MB
-> for 4K granule) and each of 2MB will further result in 512 TLBIVAs (2MB/4K)
-> resulting in a total of 8192 TLBIVAs (512*16) for 16->2MB causing a huge
-> overhead.
-> 
-> On qcom implementation, there are several performance improvements for
-> TLB cache invalidations in HW like wait-for-safe (for realtime clients
-> such as camera and display) and few others to allow for cache
-> lookups/updates when TLBI is in progress for the same context bank.
-> So the cost of over-invalidation is less compared to the unmap latency
-> on several usecases like camera which deals with large buffers. So,
-> ASID based TLB invalidations (TLBIASID) can be used to invalidate the
-> entire context for partial walk flush thereby improving the unmap
-> latency.
-> 
-> Non-strict mode can use this by default for all platforms given its
-> all about over-invalidation saving time on individual unmaps and
-> non-deterministic generally.
-> 
-> For this example of 32MB scatter-gather list unmap, this change results
-> in just 16 ASID based TLB invalidations (TLBIASIDs) as opposed to 8192
-> TLBIVAs thereby increasing the performance of unmaps drastically.
-> 
-> Test on QTI SM8150 SoC for 10 iterations of iommu_{map_sg}/unmap:
-> (average over 10 iterations)
-> 
-> Before this optimization:
-> 
->     size        iommu_map_sg      iommu_unmap
->       4K            2.067 us         1.854 us
->      64K            9.598 us         8.802 us
->       1M          148.890 us       130.718 us
->       2M          305.864 us        67.291 us
->      12M         1793.604 us       390.838 us
->      16M         2386.848 us       518.187 us
->      24M         3563.296 us       775.989 us
->      32M         4747.171 us      1033.364 us
-> 
-> After this optimization:
-> 
->     size        iommu_map_sg      iommu_unmap
->       4K            1.723 us         1.765 us
->      64K            9.880 us         8.869 us
->       1M          155.364 us       135.223 us
->       2M          303.906 us         5.385 us
->      12M         1786.557 us        21.250 us
->      16M         2391.890 us        27.437 us
->      24M         3570.895 us        39.937 us
->      32M         4755.234 us        51.797 us
-> 
-> This is further reduced once the map/unmap_pages() support gets in which
-> will result in just 1 TLBIASID as compared to 16 TLBIASIDs.
-> 
-> Real world data also shows big difference in unmap performance as below:
-> 
-> There were reports of camera frame drops because of high overhead in
-> iommu unmap without this optimization because of frequent unmaps issued
-> by camera of about 100MB/s taking more than 100ms thereby causing frame
-> drops.
-> 
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
-> 
-> Changes in v3:
->  * Move the logic to arm-smmu driver from io-pgtable (Robin)
->  * Use a new set of iommu_flush_ops->arm_smmu_s1_tlb_impl_ops and use it for qcom impl
-> 
-> Changes in v2:
->  * Add a quirk to choose tlb_flush_all in partial walk flush
->  * Set the quirk for QTI SoC implementation
-> 
-> ---
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 13 +++++++++++++
->  drivers/iommu/arm/arm-smmu/arm-smmu.c      | 17 ++++++++++++++++-
->  2 files changed, 29 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index 7771d40176de..218c71465819 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -10,6 +10,8 @@
->  
->  #include "arm-smmu.h"
->  
-> +extern const struct iommu_flush_ops arm_smmu_s1_tlb_impl_ops;
-> +
->  struct qcom_smmu {
->  	struct arm_smmu_device smmu;
->  	bool bypass_quirk;
-> @@ -146,6 +148,8 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
->  {
->  	struct adreno_smmu_priv *priv;
->  
-> +	pgtbl_cfg->tlb = &arm_smmu_s1_tlb_impl_ops;
-> +
->  	/* Only enable split pagetables for the GPU device (SID 0) */
->  	if (!qcom_adreno_smmu_is_gpu_device(dev))
->  		return 0;
-> @@ -185,6 +189,14 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
->  	{ }
->  };
->  
-> +static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
-> +		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
-> +{
-> +	pgtbl_cfg->tlb = &arm_smmu_s1_tlb_impl_ops;
-> +
-> +	return 0;
-> +}
-> +
->  static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
->  {
->  	unsigned int last_s2cr = ARM_SMMU_GR0_S2CR(smmu->num_mapping_groups - 1);
-> @@ -308,6 +320,7 @@ static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
->  }
->  
->  static const struct arm_smmu_impl qcom_smmu_impl = {
-> +	.init_context = qcom_smmu_init_context,
->  	.cfg_probe = qcom_smmu_cfg_probe,
->  	.def_domain_type = qcom_smmu_def_domain_type,
->  	.reset = qcom_smmu500_reset,
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> index d3c6f54110a5..f3845e822565 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> @@ -341,6 +341,12 @@ static void arm_smmu_tlb_add_page_s1(struct iommu_iotlb_gather *gather,
->  				  ARM_SMMU_CB_S1_TLBIVAL);
->  }
->  
-> +static void arm_smmu_tlb_inv_walk_impl_s1(unsigned long iova, size_t size,
-> +				     size_t granule, void *cookie)
-> +{
-> +	arm_smmu_tlb_inv_context_s1(cookie);
-> +}
-> +
->  static void arm_smmu_tlb_inv_walk_s2(unsigned long iova, size_t size,
->  				     size_t granule, void *cookie)
->  {
-> @@ -388,6 +394,12 @@ static const struct iommu_flush_ops arm_smmu_s1_tlb_ops = {
->  	.tlb_add_page	= arm_smmu_tlb_add_page_s1,
->  };
->  
-> +const struct iommu_flush_ops arm_smmu_s1_tlb_impl_ops = {
-> +	.tlb_flush_all	= arm_smmu_tlb_inv_context_s1,
-> +	.tlb_flush_walk	= arm_smmu_tlb_inv_walk_impl_s1,
-> +	.tlb_add_page	= arm_smmu_tlb_add_page_s1,
-> +};
+Hi Leo,
 
-Hmm, dunno about this. Wouldn't it be a lot cleaner if the tlb_flush_walk
-callbacks just did the right thing based on the smmu_domain (maybe in the
-arm_smmu_cfg?) rather than having an entirely new set of ops just because
-they're const and you can't overide the bit you want?
+On Mon, 2 Aug 2021 at 16:04, Leo Yan <leo.yan@linaro.org> wrote:
+>
+> Hi Mike,
+>
+> On Mon, Aug 02, 2021 at 03:04:14PM +0100, Mike Leach wrote:
+>
+> [...]
+>
+> > > > > +#define TRCIDR1_TRCARCHMIN_SHIFT 4
+> > > > > +#define TRCIDR1_TRCARCHMIN_MASK  GENMASK(7, 4)
+> > > > > +#define TRCIDR1_TRCARCHMIN(x)    (((x) & TRCIDR1_TRCARCHMIN_MASK) >> TRCIDR1_TRCARCHMIN_SHIFT)
+> > > > > +static enum _ocsd_arch_version cs_etm_decoder__get_arch_ver(u32 reg_idr1)
+> > > > > +{
+> > > > > +       /*
+> > > > > +        * If the ETM trace minor version is 4 or more then we can assume
+> > > > > +        * the architecture is ARCH_AA64 rather than just V8
+> > > > > +        */
+> > > > > +       return TRCIDR1_TRCARCHMIN(reg_idr1) >= 4 ? ARCH_AA64 : ARCH_V8;
+> > > > > +}
+> > > >
+> > > > This is true for ETM4.x & ETE 1.x (arch 5.x) but not ETM 3.x
+> > > > Probably need to beef up this comment or the function name to emphasise this.
+> > >
+> > > Yeah, I think it's good to change the function name.  Eventually, this
+> > > function should only be used for ETM4.x and ETE.
+> > >
+> > > Another minor comment is: can we refine the arch version number, e.g.
+> > > change the OpenCSD's macro "ARCH_AA64" to "ARCH_V8R4", (or
+> > > "ARCH_V8R3_AA64"), this can give more clear clue what's the ETM version.
+> > >
+> >
+> > The purpose of these macros is to inform the decoder of the
+> > architecture of the PE - not the version of the ETM.
+> >
+> > These OpenCSD macros are defined by the library headers
+> > (ocsd_if_types.h) and not the perf headers.
+> > These have been published as the API / ABI for OpenCSD and as such
+> > changing them affects all OpenCSD clients, not just perf.
+>
+> I understand these macros are defined in OpenCSD lib as APIs, since I
+> saw these macros have not been widely used in perf tool (e.g.
+> ARCH_AA64), so this is why I think it's good to take chance to refine
+> the naming conventions.
+>
 
-I don't think there's really an awful lot qcom-specific about the principle
-here -- there's a trade-off between over-invalidation and invalidation
-latency. That happens on the CPU as well.
+The macros are used in other tools - so changing now affects those
+too. Not something I am prepared to do without good reason.
 
-Will
+> > This PE architecture version is used along with the core profile to
+> > determine which instructions are valid waypoint instructions to
+> > associate with atom elements when walking the program image during
+> > trace decode.
+> >
+> > From v8.3  onwards we moved away from filtering on specific
+> > architecture versions. This was due to two factors:-
+> > 1. The architectural rules now allow architectural features for one
+> > increment e.g. Arch 8.4, to be backported into  the previous increment
+> > - e,g, 8.3, which made this filtering more difficult to track.
+> > 2. After discussion with the PE architects it was clear that
+> > instructions in a later architect version would not re-use older
+> > opcodes from a previous one and  be nop / invalid in the earlier
+> > architectures. (certainly in the scope of AA64). Therefore
+> > the policy in the decoder is to check for all the instructions we know
+> > about for the latest version of architecture, even if we could be
+> > decoding an earlier architecture version. This means we may check for
+> > a few more opcodes than necessary for earlier version of the
+> > architecture, but the overall decode is more robust and easier to
+> > maintain.
+> >
+> > Therefore for any AA64 core beyond v8.3 - it is safe to use the
+> > ARCH_AA64 PE architecture version and the decoder will handle it.
+>
+> I have no objection for current approach; but two things can cause
+> confusions and it might be difficult for maintenance:
+>
+> - The first thing is now we base on the bit fields TRCIDR1::TRCARCHMIN
+>   to decide the PE architecture version.  In the ETMv4 spec,
+>   TRCIDR1::TRCARCHMIN is defined as the trace unit minor version,
+>   so essentially it's a minor version number for tracer (ETM) but not
+>   the PE architecture number.  But now we are using it to decide the
+>   PE architecture number (8.3, 8.4, etc...).
+>
+
+This is a slight weakness in the implementation of perf. Ideally one
+does need to establish the architecture version of the PE - but perf
+/cs-etm is using an assumption regarding the profile and version of
+the core, according to the ETM / ETE versiom.
+That said - the ETM / ETE version numbers do have a strong
+relationship with PE architecture version numbers, so this assumption
+holds for the current supported devices.
+
+> - The second thing is the macros' naming convention.
+>   E.g. "AA64" gives me an impression it is a general naming "Arm Arch 64"
+>   for all Arm 64-bit CPUs, it's something like an abbreviation for
+>   "aarch64"; so seems to me it doesn't show any meaningful info for PE's
+>   architecture version number.  This is why I proposed to use more
+>   explict macro definition for architectures (e.g. ARCH_V8R3, ARCH_V8R4,
+>   ARCH_V9R0, etc).
+>
+
+For modern cores it is sufficient for the decoder to know the profile
+and that it is aarch 64 - so yes the macro is simply saying this a
+general AA64 core.
+The macros for earlier versions are a little more specific as certain
+filtering is used according to the version of the PE.
+
+ARCH_V8R4,  ARCH_V9R0 etc would have no significance to the decoder
+and would not be useful. If we get to the stage where we need more
+specific PE architecture versions - then these can be added as
+required.
+Using the ARCH_AA64 macro means that we do not have to update the API
+for every version update of the architecture, and there are no changes
+required to the perf / cs-etm handling.
+
+> If we really want to use ARCH_AA64, it's better to give some comments in
+> the code.
+>
+
+There are comments in the OpenCSD headers, though additional ones in
+the perf  / cs-etm handling soruce code could be added.
+
+Regards
+
+Mike
+
+
+> Thanks a lot for shared the background info.
+>
+> Leo
+
+
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
