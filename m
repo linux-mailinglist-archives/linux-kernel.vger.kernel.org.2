@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD19A3DD37A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF36F3DD37C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 12:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbhHBKAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 06:00:24 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7913 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232973AbhHBKAW (ORCPT
+        id S233192AbhHBKAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 06:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233185AbhHBKAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 06:00:22 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GdYLF5kG6z82wG;
-        Mon,  2 Aug 2021 17:56:21 +0800 (CST)
-Received: from [10.174.179.25] (10.174.179.25) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 2 Aug 2021 18:00:10 +0800
-Subject: Re: [PATCH 4/5] mm, memcg: avoid possible NULL pointer dereferencing
- in mem_cgroup_init()
-To:     Michal Hocko <mhocko@suse.com>
-CC:     Roman Gushchin <guro@fb.com>, <hannes@cmpxchg.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
-        <shakeelb@google.com>, <willy@infradead.org>, <alexs@kernel.org>,
-        <richard.weiyang@gmail.com>, <songmuchun@bytedance.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <cgroups@vger.kernel.org>
-References: <20210729125755.16871-1-linmiaohe@huawei.com>
- <20210729125755.16871-5-linmiaohe@huawei.com> <YQNuK+jN7pZLJTvT@carbon.lan>
- <YQOf0TKOXpGRQFHF@dhcp22.suse.cz>
- <f7a22702-cd08-6b15-48c7-68523c38060b@huawei.com>
- <YQeUATTCVMd1D7Ra@dhcp22.suse.cz>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <47daf062-f510-edb3-6ec7-f8e7615ad8a0@huawei.com>
-Date:   Mon, 2 Aug 2021 18:00:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 2 Aug 2021 06:00:33 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F4CC06175F;
+        Mon,  2 Aug 2021 03:00:23 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id c16so19047085plh.7;
+        Mon, 02 Aug 2021 03:00:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RcxOxac7/ciqF1QxRMn81p1ctmELfJnE42KUARmvkN8=;
+        b=Z8bglMB+t9575Ms2ZAcRnkzAhedfNKqIfcSN/eZO3ZoeVSk9IE7ufViBT2kGS2W2iF
+         2z6ZQ6lK6WJGXI07u3sXMTd/VhESBCki2q/mTvxtWbB7rYgatWM6kGFhQC7gKwJIEpEC
+         1E6Q9vOO7JM/yKvi7bI/4df/U9J0VgyJpoI/c5uVQNZZuzWNKbEuaW6rD/3kb78kYTzK
+         +P5CbXXUVR5G450yv+jJTNURVoLVdOWROBY2X9HqLPpDG08g8MfM2POp17F7BSegqpXo
+         5bmD/c5BrSgKGntRsPOCftVxZq7zEpg0mdmw2l396BEOKD8IsxR38VWqf+D8AUuuj23y
+         yzGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RcxOxac7/ciqF1QxRMn81p1ctmELfJnE42KUARmvkN8=;
+        b=iH1T+yacigmIi/2H37zDhK7ZTQfaeldBeARe7+BWbcSuVRqF2RIMeN+e8+GDxk7Qv2
+         lHGbmdcOYCkAvex3i0cvoqw7IgaTqQqX44W55CMORAikPWpksWhTJCzKH0FLBLGFrX9G
+         btqxangF2awZiDNJiRpvr62scpQ1KojMs0/By8kET5zLh6u+bfa1qzQUrMaIiJEJAaTS
+         1qAZXdG141iWFtrbbqERbNLn0TrkFu2iqdSwO5enmrVn6Wv10F/LlaZzG2bobfd0QtZ0
+         SpuoI4V+7wfuXIQcewOUxcBKk1PysS//lfCWfo6TYgwxkw361sHQ4aLd7rVdmCw4b5Id
+         iGTw==
+X-Gm-Message-State: AOAM530wkBEksY1FqwjySvjUfO/ktlX02Rh+LLeBMUQnZjiGUUCiRdnY
+        mzYcq68qUTF0Y3pcHI5y1sleNDFFCZQ=
+X-Google-Smtp-Source: ABdhPJwrCGlyl4YBZHPR+gqY5gRb0cHJ+o3PZYmv6BnKO6MBeWECMnDZLvv58nz+0+nRbWE5AmO8Pw==
+X-Received: by 2002:a17:90a:428e:: with SMTP id p14mr16775354pjg.92.1627898423128;
+        Mon, 02 Aug 2021 03:00:23 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id y24sm10399978pfp.191.2021.08.02.03.00.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 03:00:22 -0700 (PDT)
+Subject: [PATCH v3 9/9] docs: pdfdocs: Enable language-specific font choice of
+ zh_TW translations
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
+        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+References: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <48810e08-595f-fb87-603f-fa642823b84c@gmail.com>
+Date:   Mon, 2 Aug 2021 19:00:19 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YQeUATTCVMd1D7Ra@dhcp22.suse.cz>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.25]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/2 14:43, Michal Hocko wrote:
-> On Sat 31-07-21 10:05:51, Miaohe Lin wrote:
->> On 2021/7/30 14:44, Michal Hocko wrote:
->>> On Thu 29-07-21 20:12:43, Roman Gushchin wrote:
->>>> On Thu, Jul 29, 2021 at 08:57:54PM +0800, Miaohe Lin wrote:
->>>>> rtpn might be NULL in very rare case. We have better to check it before
->>>>> dereferencing it. Since memcg can live with NULL rb_tree_per_node in
->>>>> soft_limit_tree, warn this case and continue.
->>>>>
->>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>>> ---
->>>>>  mm/memcontrol.c | 2 ++
->>>>>  1 file changed, 2 insertions(+)
->>>>>
->>>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>>>> index 5b4592d1e0f2..70a32174e7c4 100644
->>>>> --- a/mm/memcontrol.c
->>>>> +++ b/mm/memcontrol.c
->>>>> @@ -7109,6 +7109,8 @@ static int __init mem_cgroup_init(void)
->>>>>  		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL,
->>>>>  				    node_online(node) ? node : NUMA_NO_NODE);
->>>>>  
->>>>> +		if (WARN_ON_ONCE(!rtpn))
->>>>> +			continue;
->>>>
->>>> I also really doubt that it makes any sense to continue in this case.
->>>> If this allocations fails (at the very beginning of the system's life, it's an __init function),
->>>> something is terribly wrong and panic'ing on a NULL-pointer dereference sounds like
->>>> a perfect choice.
->>>
->>> Moreover this is 24B allocation during early boot. Kernel will OOM and
->>> panic when not being able to find any victim. I do not think we need to
->>
->> Agree with you. But IMO it may not be a good idea to leave the rtpn without NULL check. We should defend
->> it though it could hardly happen. But I'm not insist on this check. I will drop this patch if you insist.
-> 
-> It is not that I would insist. I just do not see any point in the code
-> churn. This check is not going to ever trigger and there is nothing you
-> can do to recover anyway so crashing the kernel is likely the only
-> choice left.
-> 
+The "TC" variant is supposed to be the choice for traditional
+Chinese documents.
 
-I hope I get the point now. What you mean is nothing we can do to recover and panic'ing on a
-NULL-pointer dereference is a perfect choice ? Should we declare that we leave the rtpn without
-NULL check on purpose like below ?
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+Cc: Hu Haowen <src.res@email.cn>
+---
+ Documentation/translations/zh_TW/index.rst | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Many thanks.
+diff --git a/Documentation/translations/zh_TW/index.rst b/Documentation/translations/zh_TW/index.rst
+index 76981b2111f6..c02c4b5281e6 100644
+--- a/Documentation/translations/zh_TW/index.rst
++++ b/Documentation/translations/zh_TW/index.rst
+@@ -5,6 +5,7 @@
+ 	\renewcommand\thesection*
+ 	\renewcommand\thesubsection*
+ 	\kerneldocCJKon
++	\kerneldocBeginTC
+ 
+ .. _linux_doc_zh_tw:
+ 
+@@ -162,3 +163,6 @@ TODOList:
+ 
+ * :ref:`genindex`
+ 
++.. raw:: latex
++
++	\kerneldocEndTC
+-- 
+2.17.1
 
-@@ -7109,8 +7109,12 @@ static int __init mem_cgroup_init(void)
-                rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL,
-                                    node_online(node) ? node : NUMA_NO_NODE);
-
--               if (WARN_ON_ONCE(!rtpn))
--                       continue;
-+               /*
-+                * If this allocation fails (at the very beginning of the
-+                * system's life, it's an __init function), something is
-+                * terribly wrong and panic'ing on a NULL-pointer
-+                * dereference sounds like a perfect choice.
-+                */
-                rtpn->rb_root = RB_ROOT;
-                rtpn->rb_rightmost = NULL;
-                spin_lock_init(&rtpn->lock);
 
