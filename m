@@ -2,135 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D478E3DD5BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825FD3DD5C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 14:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbhHBMfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 08:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232682AbhHBMfi (ORCPT
+        id S233680AbhHBMg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 08:36:26 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:45170 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232629AbhHBMgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:35:38 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA10C06175F;
-        Mon,  2 Aug 2021 05:35:28 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id mt6so25034541pjb.1;
-        Mon, 02 Aug 2021 05:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=P17ATPCGukDO//xkLZQBZuaX2KkafCVoCkJP2PCc12U=;
-        b=uSz1V29fGX6wnfKClfnD5P1rh/6G4ybzLhb6KPWPPb6eZ2HEzfmHStIAm2N43ack5x
-         ETcWD1FyNZMQBoyjY4aCEFCx2Wfye33oL5jKcyzFy4TChrGqa8j99tNqb7Peud6qur0g
-         HSxbyh/S9VvDFpJm7czUM9e5UouUkzwjmLx3vV4iYXQnMQPDEp/wTYllcK7ITNHn68Dp
-         MOnWhBnFiANNaMTFuwQk3MvS8R2grVLz4JqJf+n7xVj3C562MTurnsVUTflJysxfQYhE
-         z53shCXQsRsAmcyYsm/NSjWT+vMCIAA2FisxRh/yWsZWWPV20EW7K2BRieMbbucA+e61
-         TZ8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=P17ATPCGukDO//xkLZQBZuaX2KkafCVoCkJP2PCc12U=;
-        b=X+OFDc/y+s1JIlq22pMnEiNDBHlSmiWXbnixxHzFnzgDcq3s9yF9lVRrMk+kULbAwJ
-         lxdDCGy2vMj8HXUM52Y0vG++9f26YCh4CAlsrSYMScTOdB8cZEpUYFUU3SAUUzjKVryo
-         r/gOg5QXPRXrE2BOVgAaexvNUaoREHwQphyLq4PDtUkmO9m5qMpvdo/ws6LtGWdoHvVc
-         315LqtaMYhkGNFeS2hMfVlPwKt9CdGcqLr0rRqZtL50ADEpbHJj3DA/YrQ4ZtDbglDaM
-         RKYMqi+NI2us5W6dR9A6TDa9NDKITAIIuHLvvxzWojNdiR3vvTCx2dDgcKCmU7KjEGam
-         ZZVQ==
-X-Gm-Message-State: AOAM531ezAbbWi2MqJ1lW4jKCOEo/EhOhrcBjoGFspELXtYMnUUf7pUu
-        6GKpK4i13K7LGNW4F8/EWPE=
-X-Google-Smtp-Source: ABdhPJzYaozKahVEd/Y/yLXvnuEsqWmP1RjZTZHrtR9OGLLZiEzcQgoWz5sbNZrtoNXJm1QhUBxNOw==
-X-Received: by 2002:a17:90b:4a90:: with SMTP id lp16mr16910701pjb.74.1627907727675;
-        Mon, 02 Aug 2021 05:35:27 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
-        by smtp.gmail.com with ESMTPSA id g11sm10696958pju.13.2021.08.02.05.35.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 05:35:27 -0700 (PDT)
-Subject: Re: [PATCH 01/13] x86/HV: Initialize GHCB page in Isolation VM
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, will@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, rientjes@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        rppt@kernel.org, kirill.shutemov@linux.intel.com,
-        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, xen-devel@lists.xenproject.org,
-        pgonda@google.com, david@redhat.com, keescook@chromium.org,
-        hannes@cmpxchg.org, sfr@canb.auug.org.au,
-        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, anparri@microsoft.com
-References: <20210728145232.285861-1-ltykernel@gmail.com>
- <20210728145232.285861-2-ltykernel@gmail.com> <YQfctjRm16IP0qZy@8bytes.org>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <e8918379-5c59-c718-3cec-27da931660e9@gmail.com>
-Date:   Mon, 2 Aug 2021 20:35:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 2 Aug 2021 08:36:25 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 172CRbXj004221;
+        Mon, 2 Aug 2021 14:36:01 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=lNlQryOYukRxWW8f/bdXPFu7SvefaiNkrOqMIxDBW5A=;
+ b=SNicw1KMoPB2QUKieZB27autKNKLweuCVn52YOcNd5E65aKsVGLdVwE5y4vCkVqqgm4g
+ 2B96gg1I0He/U7fCGwhM/wkHrMZ74dwnXPwSbY3YnLpu/k/pJj0w2R6sH1DDj6J0YNTw
+ R57dBWFcGNTf0dGmWO0PupEfB5cykC9HbB9X3ZIVChzIFkrqVQevcjduWEaWal3vWLto
+ WekB4SUorF6QXULFTJiqL9erAmOzWWxzzm2vG814HM60aTo0voVF7oY7NQfODZ1liHsB
+ Rx2lqjswPRsuBUX3RirDZ3B+VFeG0t4qycM+N1DgE5XzTIu5+e1iSUR6n4vO4a+fmO06 Tg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3a6cx518cc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Aug 2021 14:36:01 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5EAA0100034;
+        Mon,  2 Aug 2021 14:36:00 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 058CB222C93;
+        Mon,  2 Aug 2021 14:36:00 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 2 Aug
+ 2021 14:35:59 +0200
+Subject: Re: [PATCH] [media] c8sectpfe: c8sectpfe-dvb: Remove unused including
+ <linux/version.h>
+To:     Cai Huoqing <caihuoqing@baidu.com>, <mchehab@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210727053903.711-1-caihuoqing@baidu.com>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <f33dbe73-c7db-acc6-8f74-866ff74857e1@foss.st.com>
+Date:   Mon, 2 Aug 2021 14:35:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YQfctjRm16IP0qZy@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210727053903.711-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-02_05:2021-08-02,2021-08-02 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg:
-      Thanks for your review.
+Hi 
 
-
-On 8/2/2021 7:53 PM, Joerg Roedel wrote:
-> On Wed, Jul 28, 2021 at 10:52:16AM -0400, Tianyu Lan wrote:
->> +static int hyperv_init_ghcb(void)
->> +{
->> +	u64 ghcb_gpa;
->> +	void *ghcb_va;
->> +	void **ghcb_base;
->> +
->> +	if (!ms_hyperv.ghcb_base)
->> +		return -EINVAL;
->> +
->> +	rdmsrl(MSR_AMD64_SEV_ES_GHCB, ghcb_gpa);
->> +	ghcb_va = memremap(ghcb_gpa, HV_HYP_PAGE_SIZE, MEMREMAP_WB);
+On 7/27/21 7:39 AM, Cai Huoqing wrote:
+> Remove including <linux/version.h> that don't need it.
 > 
-> This deserves a comment. As I understand it, the GHCB pa is set by
-> Hyper-V or the paravisor, so the page does not need to be allocated by
-> Linux.
-> And it is not mapped unencrypted because the GHCB page is allocated
-> above the VTOM boundary?
-
-You are right. The ghdb page is allocated by paravisor and its physical 
-address is above VTOM boundary. Will add a comment to describe this.
-Thanks for suggestion.
-
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c | 1 -
+>  drivers/media/platform/sti/c8sectpfe/c8sectpfe-dvb.c  | 1 -
+>  2 files changed, 2 deletions(-)
 > 
->> @@ -167,6 +190,31 @@ static int hv_cpu_die(unsigned int cpu)
->>   {
->>   	struct hv_reenlightenment_control re_ctrl;
->>   	unsigned int new_cpu;
->> +	unsigned long flags;
->> +	void **input_arg;
->> +	void *pg;
->> +	void **ghcb_va = NULL;
->> +
->> +	local_irq_save(flags);
->> +	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
->> +	pg = *input_arg;
+> diff --git a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
+> index 338b205ae3a7..02dc78bd7fab 100644
+> --- a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
+> +++ b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
+> @@ -28,7 +28,6 @@
+>  #include <linux/usb.h>
+>  #include <linux/slab.h>
+>  #include <linux/time.h>
+> -#include <linux/version.h>
+>  #include <linux/wait.h>
+>  #include <linux/pinctrl/pinctrl.h>
+>  
+> diff --git a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-dvb.c b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-dvb.c
+> index 0560a9cb004b..feb48cb546d7 100644
+> --- a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-dvb.c
+> +++ b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-dvb.c
+> @@ -11,7 +11,6 @@
+>  #include <linux/delay.h>
+>  #include <linux/i2c.h>
+>  #include <linux/interrupt.h>
+> -#include <linux/version.h>
+>  
+>  #include <dt-bindings/media/c8sectpfe.h>
+>  
 > 
-> Pg is never used later on, why is it set?
 
-Sorry for noise. This should be removed during rebase and will fix in 
-the next version.
+Reviewed-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Thanks
+Patrice
