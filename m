@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D653B3DD79B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 15:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C939E3DD9DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 16:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234200AbhHBNqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 09:46:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55854 "EHLO mail.kernel.org"
+        id S237785AbhHBOFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 10:05:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234113AbhHBNqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 09:46:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C52960527;
-        Mon,  2 Aug 2021 13:46:07 +0000 (UTC)
+        id S236054AbhHBN6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:58:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65D7D61057;
+        Mon,  2 Aug 2021 13:55:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627911967;
-        bh=q9BfzDomZedtm90dS53k6AcUupc0ZGqFmbWYOJESi58=;
+        s=korg; t=1627912515;
+        bh=y/AA8DFSDyJWtCM/vYw+W485KR8wyONVOF3AFcNnqEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0sIQJvUjxn+cjIcJr6GQVFIBtTgq0KKqCFApMAIpUOagVSwZWWl2iYfN2yIWzA52s
-         c2v8wUNyo0oTSxrKbz82stFSfrz3PxTF/kA9wNiDYaigld2sZFXkU63L5vma0IVHTg
-         FPwfqX4cUUtpQ2zQ6DQLd6OO/wT6xi19aJzbNQw0=
+        b=tDw+0BlOkaT0b2esiOn6UoZFuegdrbvCNNm3qDsDIc0YFJd/CBmTdOa42rH3BvIw6
+         YI2wUxuBaQ0BeYrFIP6b6HjVOLd2yn5f1ZX2F271166SsssTwKtYK3LIL/ndF+1MUy
+         ejxvw1JnK93qEOqdUkLKiqCXkPe7XQYXcBQzBVlE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.4 15/26] can: usb_8dev: fix memory leak
+        stable@vger.kernel.org, Vojtech Pavlik <vojtech@ucw.cz>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.13 028/104] drm/amdgpu: Fix resource leak on probe error path
 Date:   Mon,  2 Aug 2021 15:44:25 +0200
-Message-Id: <20210802134332.523822865@linuxfoundation.org>
+Message-Id: <20210802134344.947755986@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
-References: <20210802134332.033552261@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+References: <20210802134344.028226640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,94 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Jiri Kosina <jkosina@suse.cz>
 
-commit 0e865f0c31928d6a313269ef624907eec55287c4 upstream.
+commit d47255d3f87338164762ac56df1f28d751e27246 upstream.
 
-In usb_8dev_start() MAX_RX_URBS coherent buffers are allocated and
-there is nothing, that frees them:
+This reverts commit 4192f7b5768912ceda82be2f83c87ea7181f9980.
 
-1) In callback function the urb is resubmitted and that's all
-2) In disconnect function urbs are simply killed, but URB_FREE_BUFFER
-   is not set (see usb_8dev_start) and this flag cannot be used with
-   coherent buffers.
+It is not true (as stated in the reverted commit changelog) that we never
+unmap the BAR on failure; it actually does happen properly on
+amdgpu_driver_load_kms() -> amdgpu_driver_unload_kms() ->
+amdgpu_device_fini() error path.
 
-So, all allocated buffers should be freed with usb_free_coherent()
-explicitly.
+What's worse, this commit actually completely breaks resource freeing on
+probe failure (like e.g. failure to load microcode), as
+amdgpu_driver_unload_kms() notices adev->rmmio being NULL and bails too
+early, leaving all the resources that'd normally be freed in
+amdgpu_acpi_fini() and amdgpu_device_fini() still hanging around, leading
+to all sorts of oopses when someone tries to, for example, access the
+sysfs and procfs resources which are still around while the driver is
+gone.
 
-Side note: This code looks like a copy-paste of other can drivers. The
-same patch was applied to mcba_usb driver and it works nice with real
-hardware. There is no change in functionality, only clean-up code for
-coherent buffers.
-
-Fixes: 0024d8ad1639 ("can: usb_8dev: Add support for USB2CAN interface from 8 devices")
-Link: https://lore.kernel.org/r/d39b458cd425a1cf7f512f340224e6e9563b07bd.1627404470.git.paskripkin@gmail.com
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 4192f7b57689 ("drm/amdgpu: unmap register bar on device init failure")
+Reported-by: Vojtech Pavlik <vojtech@ucw.cz>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/usb/usb_8dev.c |   15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -148,7 +148,8 @@ struct usb_8dev_priv {
- 	u8 *cmd_msg_buffer;
- 
- 	struct mutex usb_8dev_cmd_lock;
--
-+	void *rxbuf[MAX_RX_URBS];
-+	dma_addr_t rxbuf_dma[MAX_RX_URBS];
- };
- 
- /* tx frame */
-@@ -746,6 +747,7 @@ static int usb_8dev_start(struct usb_8de
- 	for (i = 0; i < MAX_RX_URBS; i++) {
- 		struct urb *urb = NULL;
- 		u8 *buf;
-+		dma_addr_t buf_dma;
- 
- 		/* create a URB, and a buffer for it */
- 		urb = usb_alloc_urb(0, GFP_KERNEL);
-@@ -756,7 +758,7 @@ static int usb_8dev_start(struct usb_8de
- 		}
- 
- 		buf = usb_alloc_coherent(priv->udev, RX_BUFFER_SIZE, GFP_KERNEL,
--					 &urb->transfer_dma);
-+					 &buf_dma);
- 		if (!buf) {
- 			netdev_err(netdev, "No memory left for USB buffer\n");
- 			usb_free_urb(urb);
-@@ -764,6 +766,8 @@ static int usb_8dev_start(struct usb_8de
- 			break;
- 		}
- 
-+		urb->transfer_dma = buf_dma;
-+
- 		usb_fill_bulk_urb(urb, priv->udev,
- 				  usb_rcvbulkpipe(priv->udev,
- 						  USB_8DEV_ENDP_DATA_RX),
-@@ -781,6 +785,9 @@ static int usb_8dev_start(struct usb_8de
- 			break;
- 		}
- 
-+		priv->rxbuf[i] = buf;
-+		priv->rxbuf_dma[i] = buf_dma;
-+
- 		/* Drop reference, USB core will take care of freeing it */
- 		usb_free_urb(urb);
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -3412,13 +3412,13 @@ int amdgpu_device_init(struct amdgpu_dev
+ 	r = amdgpu_device_get_job_timeout_settings(adev);
+ 	if (r) {
+ 		dev_err(adev->dev, "invalid lockup_timeout parameter syntax\n");
+-		goto failed_unmap;
++		return r;
  	}
-@@ -850,6 +857,10 @@ static void unlink_all_urbs(struct usb_8
  
- 	usb_kill_anchored_urbs(&priv->rx_submitted);
+ 	/* early init functions */
+ 	r = amdgpu_device_ip_early_init(adev);
+ 	if (r)
+-		goto failed_unmap;
++		return r;
  
-+	for (i = 0; i < MAX_RX_URBS; ++i)
-+		usb_free_coherent(priv->udev, RX_BUFFER_SIZE,
-+				  priv->rxbuf[i], priv->rxbuf_dma[i]);
-+
- 	usb_kill_anchored_urbs(&priv->tx_submitted);
- 	atomic_set(&priv->active_tx_urbs, 0);
+ 	/* doorbell bar mapping and doorbell index init*/
+ 	amdgpu_device_doorbell_init(adev);
+@@ -3644,10 +3644,6 @@ release_ras_con:
+ failed:
+ 	amdgpu_vf_error_trans_all(adev);
+ 
+-failed_unmap:
+-	iounmap(adev->rmmio);
+-	adev->rmmio = NULL;
+-
+ 	return r;
+ }
  
 
 
