@@ -2,45 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31943DDEE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0CC3DDEEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 20:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhHBSHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 14:07:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhHBSHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 14:07:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2318860EE3;
-        Mon,  2 Aug 2021 18:07:05 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Jason Wang <wangborong@cdjrlc.com>
-Cc:     Will Deacon <will@kernel.org>, maz@kernel.org,
-        amit.kachhap@arm.com, linux-kernel@vger.kernel.org,
-        suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org,
-        mark.rutland@arm.com, dbrazdil@google.com
-Subject: Re: [PATCH] arm64: unnecessary end 'return;' in void functions
-Date:   Mon,  2 Aug 2021 19:07:02 +0100
-Message-Id: <162792758531.21352.13618828441310922141.b4-ty@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210726123940.63232-1-wangborong@cdjrlc.com>
-References: <20210726123940.63232-1-wangborong@cdjrlc.com>
+        id S229843AbhHBSI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 14:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhHBSIY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 14:08:24 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8244BC06175F;
+        Mon,  2 Aug 2021 11:08:13 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id l18so22457435wrv.5;
+        Mon, 02 Aug 2021 11:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D2tEo2auWlRQbPn2RDM9SgFOD2D6wuYg38MJpC/JqLs=;
+        b=LIklMAl1SAtQKrTzKfjH7PBZsN64Txr+rI1UYmP44La1EG4ajOs9wGod3ZxB3masJZ
+         R5eWktMc2OYxAnR227Rh5w7/ywudpY9t87l5REuU136qE2ogCZhEiYEIY/2dAKc7oQ+p
+         FbS6aj9KhW34wPe8CfwvVd5gDAZr7adGYStQ20QjxQ/fpW7VJkYWhW1n1tWZ9E0a60Do
+         r9V2hWzcwBLkjEPjnwWNh/dYdbz2vIPi7e6C2y8x8F1jDaJMKV9Y2i8Fhm3QHfuVMOOh
+         jha/P4Z0JOC3E6hA+Eea54FFP3AWjDUwl7KyDdYK7pItXD9XnhyDdT6TgInEDZXNolfW
+         p4PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D2tEo2auWlRQbPn2RDM9SgFOD2D6wuYg38MJpC/JqLs=;
+        b=loHNDzK0aMswltzuWZI6i9xkBMvzLBV64ymngk3Z6AW3SMq0x3TMco8RkJLpPn2OIh
+         qaRmzwqs8KHThLFfuo6iyRedBWGYKwh1xxrGBqJ0NSA41HHgOO5ra36B2xaRp4XF1Vq7
+         Qk1PduXbMW/bhiYW/4NZ5ohq3H2kMwbK5I3TKpfVe3XPG1r31TBhK/D4zbuuq4N1Gjuv
+         oeceydynSl3boyLnHdssTAvN2lFS2El3VaplEKlzsJZWwNme64kHKJzRd2ebWO2XztIC
+         YYfGC0kxOQcxexJpgCvXeWf8BTv5nRDvk/iIz4Ypq88JzoxDGWFv0aR02ZQ0XZClOF67
+         alNQ==
+X-Gm-Message-State: AOAM532FvMsRXqbRBHCG8kbtzHckHVXiLHnoxpj4ciu+jK+D79KOXMqH
+        GSzaOcKB3ynQ1TflWQ07LLQ=
+X-Google-Smtp-Source: ABdhPJwxvyHBQ/s2bgXb56U3I7egILgA4GF1CqH8mGEDeQW67z72cjn1pZYKndtvHLm6znTrP42G9g==
+X-Received: by 2002:adf:82ae:: with SMTP id 43mr18840903wrc.73.1627927692206;
+        Mon, 02 Aug 2021 11:08:12 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5bfdd7.dynamic.kabel-deutschland.de. [95.91.253.215])
+        by smtp.gmail.com with ESMTPSA id w4sm54086wrm.24.2021.08.02.11.08.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 11:08:12 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: ufs: Remove useless if-state in ufshcd_add_command_trace
+Date:   Mon,  2 Aug 2021 20:08:03 +0200
+Message-Id: <20210802180803.100033-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 20:39:40 +0800, Jason Wang wrote:
-> The end 'return;' in a void function is useless and verbose. It can
-> be removed safely.
+From: Bean Huo <beanhuo@micron.com>
 
-Applied to arm64 (for-next/misc), thanks!
+ufshcd_add_cmd_upiu_trace() will be called anyway, so move
+if-state down, make code simpler.
 
-[1/1] arm64: unnecessary end 'return;' in void functions
-      https://git.kernel.org/arm64/c/8f1fbc975b86
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 064a44e628d6..02f54153fd6d 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -380,14 +380,11 @@ static void ufshcd_add_command_trace(struct ufs_hba *hba, unsigned int tag,
+ 	if (!cmd)
+ 		return;
+ 
+-	if (!trace_ufshcd_command_enabled()) {
+-		/* trace UPIU W/O tracing command */
+-		ufshcd_add_cmd_upiu_trace(hba, tag, str_t);
+-		return;
+-	}
+-
+ 	/* trace UPIU also */
+ 	ufshcd_add_cmd_upiu_trace(hba, tag, str_t);
++	if (!trace_ufshcd_command_enabled())
++		return;
++
+ 	opcode = cmd->cmnd[0];
+ 	lba = scsi_get_lba(cmd);
+ 
 -- 
-Catalin
+2.25.1
 
