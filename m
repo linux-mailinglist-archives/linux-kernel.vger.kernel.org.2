@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A763DE136
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3574D3DE13A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 23:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbhHBVGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 17:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
+        id S232127AbhHBVIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 17:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231605AbhHBVGe (ORCPT
+        with ESMTP id S231367AbhHBVId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:06:34 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D2EC061760
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:06:25 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id z18so3888358ybg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:06:24 -0700 (PDT)
+        Mon, 2 Aug 2021 17:08:33 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336EAC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 14:08:24 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so898381pjs.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 14:08:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4Gsk+PU6zv89mFYfFw3XbKhLrnW0DMZFFqe7xZQfb8k=;
-        b=f4jCW1Q8XIGNV8OibA8486wQbNvDzvRs7inZpSU50AT1zf+1dggjCx+NvLT6vP+sU8
-         RkwtH8wx0ov2K7pkUNwHW1o+3vX9UIxVZHk6eThI0eFWvCp7qbco/iRhz6hqPh+tuipQ
-         P4TgM4jJd371kZhrg+03Avzt6tF+gMBK15AM+nvRgnQ27HOXrprBefRlJNarze5fE03m
-         OcnjM5rvSqwmLRpVO1q6owHuFKHjuBaaJsFMpiDehejIlWWQmabZ+FwcLSZJIobhJDNL
-         uqv9uWA2Snc9PqOo3SdXjINIZFCdnQp0MxKiE38cCsBKCiYJ78Ewxr8Z+nM+eMuOpJdQ
-         XxQQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=r+yCbR4aJp8zyzE2y7OeM0ceDeFwWsVxE9/4Xwnp/zU=;
+        b=ms9T2O+C1K/8pNEX6LWIhUFgSQPNjdaCHgQOrWKEpDU/9oG9EbEWsLg2kiId288PjT
+         LjDsyFXix1wWkK6HBVasGDr0BtqqQvfSFaY0K9GcfqoWKLS/Hv2zyCQpvEestocUgRy4
+         3AeS0NKxe7MXuronwztPt1xCCnzbYqyewJ6jQBXFyKyDkZOFEzZ5054QAZPc4I+vopAX
+         Y5I7lrO1sdnyHHrTQacLfxKELNsfFQqhh1uSUkGzhBEOborunEFiTzPH1t3vqFp7XIV4
+         vxXmC5Jz7kej15r4Fys/L6QW8Ti9fPAXbyISci/LGUoheMFndp2PXJ1QjRSJ7dZuSXWZ
+         7BXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Gsk+PU6zv89mFYfFw3XbKhLrnW0DMZFFqe7xZQfb8k=;
-        b=QBSyCqtnhj2B0kWb3ew0uBAXtvRPlbue6NC+auJRn0rOuH7yYC2kUKMmkwwHdvyzHM
-         2fuOVX9BHgbQyAjG0Bno9cNS0aVysRFK+gkTAQSTP6sljYZXDG8xUJc2INJanIe/L1nR
-         7ZqXrSqtrVyl6kvEqPmtJwPV+qHN0b9ha8sRjGeTe8/rDbQyh1S7kIttNOMDpz3RBb8h
-         vMtNsYCcbTnj63s1CB+xuR0G98kTxfugkzOsUAmVaHa1W4CE+/jJnh5azVCBrgPZSmGQ
-         9kS02MPZ6xCag1paEDm//QDwmAONO55IcI62rsZ29JwreQA8jztEIGtSf+goaqEZD7ze
-         TtCw==
-X-Gm-Message-State: AOAM533B+w+8twlycHI1iT7utV2ZT5hIzY+ab5WWvUDGqSecJC55gEUF
-        AIiKDEJhHbpcB+uZGLkzz5NXaLEnUhAOCUqOJsjhSg==
-X-Google-Smtp-Source: ABdhPJyil4dfkBNuBySZ9Tmrp2EXIOmUc/V/ajCIHcCBl2HqK0RSea3yeuHIKeY7PpdvgDhSQnqoL0uQuzdYcxeXOnc=
-X-Received: by 2002:a05:6902:1549:: with SMTP id r9mr24716376ybu.308.1627938384181;
- Mon, 02 Aug 2021 14:06:24 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=r+yCbR4aJp8zyzE2y7OeM0ceDeFwWsVxE9/4Xwnp/zU=;
+        b=L8fqjHhVtERso1lsKuL9LUcOYGbnuRiQ6ZTCTWjTEGDY6OtWqcIB2jbmFjGbGkzeD6
+         7R+/lkj1jjBbenNIrI40R9gwEPuvFnk5cmXAPfiEmv6vCJfxFZDhCmhf23O+FYLUl8Ew
+         lXyFp0F9PKCGmlW19pleV5WZOV/jU3YAqr3pP7CBNTbE+MLtqpsrJ99St4owPE6nXVxK
+         uoETkvaXlNO5SIJ2YvCcApN2LzOmlG37VS7h+aiV1jdeXD96pv/3NE55YGMd8rDLi/Ba
+         IpGuKksKSazahMHr5MDHqX5ssOCECt0MNZG6zBvFlF0gFYTbxTMBbt5+eRnBsJ4Rmjsu
+         YHkw==
+X-Gm-Message-State: AOAM532YDqD4UQjo/O9riEs+/33087Ci0f0F5XwoUezV/ZAoxCavALUo
+        h5Mfbdt879yIMQqsSVRFCSntl9Xxp7QjYPYNheM=
+X-Google-Smtp-Source: ABdhPJwmr1mmk2ERM9A2Fh7pcBupm9EdpeT20gTcRWBtAFGm/bqn1DMdWaMBE3P+YYdebuG0HrRVDn+760lylFeydNo=
+X-Received: by 2002:a17:90b:215:: with SMTP id fy21mr18845502pjb.203.1627938503587;
+ Mon, 02 Aug 2021 14:08:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210802183910.1802120-1-ndesaulniers@google.com> <20210802183910.1802120-2-ndesaulniers@google.com>
-In-Reply-To: <20210802183910.1802120-2-ndesaulniers@google.com>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Mon, 2 Aug 2021 14:06:13 -0700
-Message-ID: <CAFP8O3Jc=iwzAQojgBZZzdT8iVBY9TO6GLTq+0vkXoo6L5JJ-A@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] Makefile: move initial clang flag handling into scripts/Makefile.clang
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>
+Received: by 2002:a05:6a10:418c:0:0:0:0 with HTTP; Mon, 2 Aug 2021 14:08:23
+ -0700 (PDT)
+Reply-To: compaorekone34@gmail.com
+From:   Kone Compaore <abbttnab20@gmail.com>
+Date:   Mon, 2 Aug 2021 14:08:23 -0700
+Message-ID: <CAEKSJ0RgKORyGAWD2o=rdx0Ap5iGjujhJkt5n8_CEQrQtdOpoA@mail.gmail.com>
+Subject: Greetings from Kone
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 11:39 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> With some of the changes we'd like to make to CROSS_COMPILE, the initial
-> block of clang flag handling which controls things like the target triple,
-> whether or not to use the integrated assembler and how to find GAS,
-> and erroring on unknown warnings is becoming unwieldy. Move it into its
-> own file under scripts/.
->
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  MAINTAINERS            |  1 +
->  Makefile               | 15 +--------------
->  scripts/Makefile.clang | 14 ++++++++++++++
->  3 files changed, 16 insertions(+), 14 deletions(-)
->  create mode 100644 scripts/Makefile.clang
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 19135a9d778e..3af8d39f43ef 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4501,6 +4501,7 @@ B:        https://github.com/ClangBuiltLinux/linux/issues
->  C:     irc://chat.freenode.net/clangbuiltlinux
->  F:     Documentation/kbuild/llvm.rst
->  F:     include/linux/compiler-clang.h
-> +F:     scripts/Makefile.clang
->  F:     scripts/clang-tools/
->  K:     \b(?i:clang|llvm)\b
->
-> diff --git a/Makefile b/Makefile
-> index 6b555f64df06..444558e62cbc 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -586,20 +586,7 @@ endif
->  CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -n 1))
->
->  ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
-> -ifneq ($(CROSS_COMPILE),)
-> -CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> -endif
-> -ifeq ($(LLVM_IAS),1)
-> -CLANG_FLAGS    += -integrated-as
-> -else
-> -CLANG_FLAGS    += -no-integrated-as
-> -GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> -CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> -endif
-> -CLANG_FLAGS    += -Werror=unknown-warning-option
-> -KBUILD_CFLAGS  += $(CLANG_FLAGS)
-> -KBUILD_AFLAGS  += $(CLANG_FLAGS)
-> -export CLANG_FLAGS
-> +include $(srctree)/scripts/Makefile.clang
->  endif
->
->  # Include this also for config targets because some architectures need
-> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-> new file mode 100644
-> index 000000000000..297932e973d4
-> --- /dev/null
-> +++ b/scripts/Makefile.clang
-> @@ -0,0 +1,14 @@
-> +ifneq ($(CROSS_COMPILE),)
-> +CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> +endif
-> +ifeq ($(LLVM_IAS),1)
-> +CLANG_FLAGS    += -integrated-as
+-- 
+Greetings to you and your family.
 
--i* options are for includes. -fintegrated-as is the canonical spelling.
-Since -fintegrated-as is the default (for most llvm/lib/Target/
-targets and the ones clang builds actually support),
-it can even be deleted.
+My name is Mr. Kone Compaore, the auditing general with the bank,
+Africa Develop bank (ADB) Ouagadougou, Burkina Faso, in West Africa. I
+am contacting you to seek our honesty and sincere cooperation in
+confidential manner to transfer the sum of 15.5 (Fifteen million five
+hundred thousand Dollars) to your existing or new bank account.
 
-> +else
-> +CLANG_FLAGS    += -no-integrated-as
-> +GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> +CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> +endif
-> +CLANG_FLAGS    += -Werror=unknown-warning-option
-> +KBUILD_CFLAGS  += $(CLANG_FLAGS)
-> +KBUILD_AFLAGS  += $(CLANG_FLAGS)
-> +export CLANG_FLAGS
-> --
-> 2.32.0.554.ge1b32706d8-goog
->
+This money belongs to one of our bank client, a Libyan oil exporter
+who was working with the former Libyan government; I learn t that he
+was killed by the revolutionary forces since October 2011. Our bank is
+planning to transfer this entire fund into the government public
+treasury as unclaimed fund if nobody comes to claim the money from our
+bank after four years without account activities .
+
+We did not know each other before, but due to the fact that the
+deceased is a foreigner, the bank will welcome any claim from a
+foreigner without any suspect, that is why I decided to look for
+someone whim I can trust to come and claim the fund from our bank.
+
+I will endorse your name in the deceased client file here in my office
+which will indicate to that the deceased is your legal joint account
+business partner or family member next of kin to the deceased and
+officially the bank will transfer the fund to your bank account within
+seven working days in accordance to our banking inheritance rules and
+fund claim regulation.
+
+I will share 40% for you and 60% for me after the fund is transferred
+to your bank account, we need to act fast to complete this transaction
+within seven days. I will come to your country to collect my share
+after the fund is transferred to your bank account in your country. I
+hope that you will not disappoint me after the fund is transferred to
+your bank account in your country.
+
+Waiting for your urgent response today
+Yours sincerely
+
+Kone Compaore
