@@ -2,182 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056033DD051
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD5B3DD052
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Aug 2021 08:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhHBGI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 02:08:57 -0400
-Received: from mga14.intel.com ([192.55.52.115]:42989 "EHLO mga14.intel.com"
+        id S231206AbhHBGM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 02:12:57 -0400
+Received: from mga02.intel.com ([134.134.136.20]:46078 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229805AbhHBGIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 02:08:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="213121282"
+        id S229792AbhHBGM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 02:12:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10063"; a="200566005"
 X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
-   d="scan'208";a="213121282"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 23:08:46 -0700
-X-ExtLoop1: 1
+   d="scan'208";a="200566005"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 23:12:47 -0700
 X-IronPort-AV: E=Sophos;i="5.84,288,1620716400"; 
-   d="scan'208";a="440442988"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga007.fm.intel.com with ESMTP; 01 Aug 2021 23:08:46 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Sun, 1 Aug 2021 23:08:45 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Sun, 1 Aug 2021 23:08:45 -0700
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.47) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Sun, 1 Aug 2021 23:08:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aW3WOWFaWDn/mvFuGLC8HAPg9YWoWoZVbrX7zTVUYN3tExYP+ENd9i4wp+Ud9mg1Yc/N9Gl/wXmqGPJE3GrX0BFXFvRmQB9HLCDYWZ7VGLtbsMGeEwJyRPewV8IsJl65/MZmhLI5ZVmew1Zy3yGgSOP3UHDvwbKy20ZBmU9BhNgehUSnzkLBil+Ms/9inzGTd8XTOPCYouWcGNHHJTe5wXAOQzdGhpRyMfAFwqTsDtqDXv724+CEw4LBcBWFJBERTWNYqbBg1w8G8Ku1sjXYd//ZkjKEy7JHnzPow2vNOGHCDfVtC/7rrHXglFfl2QZ1T6a7LMlddw3bLpw516Vh+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3MelHppGwvS9v2HlOYyRfLoVYrH4ZXRAQXky9phcn0w=;
- b=TMmfVnfT00/t58p1PNY7O72bIfsG0xKkdMtJkYLIzs3f6w/tMR50JW4dhndqnFKn4Mmp5a84JLo1WUziybgEnxIJEr1Z5aqG12H1049Vj3fwZG3vFO2YpVtRj3hRVlPu0dvS/X/nvHUwySWsZgKON4A3k5u24YyMO5YLG7VtOCNoQ6UPY/tjuMpXOghwI1HTeuoXR0yclRJSDOU5w8R20gRIPQGGAS28TkC+i5LuAlBFIKbvuRHjZkYhR2RBKtJcojp+pN6m3oUzauwZzhJN0kswLv07rhpwhgUJTJzVSfy6e222PyXoEDbUugMvNjoHcVSKu9ZgXvBiPqPbguGxCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3MelHppGwvS9v2HlOYyRfLoVYrH4ZXRAQXky9phcn0w=;
- b=B7CDuVNj4/p9ospmUwfw0lQyYtV/U5dBurnhIhKT7HE7PU9RcPcN8vSrW3WhI988/9MV4V6dE0SctmbZePJzLDFr1RuumMW51APCusX43t2HQOoSl/ORVjJEiWgP0ioGiuQRvQradeDj5hZVeb6QzhnVcW2cd7mfnemdBDzu2ZE=
-Received: from DM6PR11MB3802.namprd11.prod.outlook.com (2603:10b6:5:143::30)
- by DM5PR11MB0025.namprd11.prod.outlook.com (2603:10b6:4:63::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Mon, 2 Aug
- 2021 06:08:38 +0000
-Received: from DM6PR11MB3802.namprd11.prod.outlook.com
- ([fe80::69c6:1b3c:1597:cb37]) by DM6PR11MB3802.namprd11.prod.outlook.com
- ([fe80::69c6:1b3c:1597:cb37%6]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
- 06:08:38 +0000
-From:   "Qin, Chao" <chao.qin@intel.com>
-To:     John Ogness <john.ogness@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "Mei, Paul" <paul.mei@intel.com>, "Li, Lili" <lili.li@intel.com>
-Subject: RE: [PREEMPT_RT][PATCH] printk: Enhance the condition check of msleep
- in pr_flush()
-Thread-Topic: [PREEMPT_RT][PATCH] printk: Enhance the condition check of
- msleep in pr_flush()
-Thread-Index: AQHXfEaHiU7PgYfePkWUMKzzHnOuTatKY8eAgBE6hoCAAAyRAIAEJD7Q
-Date:   Mon, 2 Aug 2021 06:08:38 +0000
-Message-ID: <DM6PR11MB38028688CCDB34E3A2100DEA92EF9@DM6PR11MB3802.namprd11.prod.outlook.com>
-References: <20210719022649.3444072-1-chao.qin@intel.com>
- <87mtqiuzd4.fsf@jogness.linutronix.de>
- <20210730140143.53wls2g7xf2ktdgv@linutronix.de>
- <87k0l7svu5.fsf@jogness.linutronix.de>
-In-Reply-To: <87k0l7svu5.fsf@jogness.linutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 97f2bf89-e6a7-4a06-95b2-08d9557bf842
-x-ms-traffictypediagnostic: DM5PR11MB0025:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR11MB0025412D46D7E341941FF9C392EF9@DM5PR11MB0025.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Y/6DHBqfPZD/7S76EaoYbeUVgu19mcyfZKyLSCWJYGk10izMpVyeDKOqfEb9NZ0Ng+lV87oULomPciBnhxdByQ8jQ/PQ5gdWeXTmMLLtTLOYPvFrw7Ks3SmzPsixjWQh0sgsgiBvPdqh9KVKbGn60mpk3TVWZw/fimrtyMeQTwsOTWLiwXT6ioJAH0/TiVKjx8MQl96I3fS0/g9JFYD0cFgpVTBwLFMIc98vPDsRgMv3jbbYCz47pKW4hIk9sdePPoYQnnHVzguynXHH6d8zT1EOxh4H/GbD8y6/MlrahgOd2DkPv1KuI70mG5+k/F+p4b/upqQGQcueXh/pQBVzkuSJ4pSfOKbxxArs1zDoL3/lK3wxh6AmGDUUTMqxcXawkoUxxjx5sIDg4aRGbiJoxN2OZR8pzONlY1paKbCxhrPD9j1MjNMjo4T4AE+acCJqngwnwbDntqXaTG5pP/pY8n1MiVQUGN5AU3uYgfjKKvq+9jJvFUr7VGt5FKXBWszx/5+32AB5P3H6hARvW0SzmqlF4/EdSEaPdp4f0Z6C19NdnW7lfeQBVb7U0Eh780pBBQNhsl/QYcuwLg1YchVv2Ybmczhzy54HHQroCJFIuT6Yr525zg9yBCF9hHrNXjim2IrT30XGjTB7qBqmIWxPRBKK9kaC87p1z9gkr+lmCmSOB6cLCietCR2MSOvz93kRjpljjnqk5XNBOiOtIhmJuDbNsTkTnU5YaHQDWYW1LQQbgG6h0n3lepHe6slzsxezetN/Fq3nGvfLFGnkB5SC9oaIdNWEOAR6UO8KDg6C/g8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3802.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(136003)(39860400002)(366004)(83380400001)(86362001)(122000001)(38100700002)(7696005)(4326008)(6506007)(8936002)(26005)(8676002)(76116006)(66946007)(53546011)(5660300002)(54906003)(66556008)(2906002)(9686003)(33656002)(55016002)(66476007)(64756008)(186003)(478600001)(110136005)(52536014)(316002)(966005)(38070700005)(66446008)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gHmebVQ9NmhRrZYmBg1ASFrkSIXK7rMpjrpgQghl5XhO0x3TRiQtpB7+Kcna?=
- =?us-ascii?Q?9usJHyir02CIuvP2vIHqUOtClPkstT4Geyl4YW8EMf6I6pLD4FuM4f8Tfw8l?=
- =?us-ascii?Q?CFJZzzsAWTkDk56TDJdPKO0iIOMgAaRPKZIgAp/CMphmnr0cyLHGlST8hgCN?=
- =?us-ascii?Q?8JErAU4U7ggetcjJmMVYyZoJvH+hkoLsZaiHlJ4SSez+Erw3adakacySBNCy?=
- =?us-ascii?Q?zrIT/tVC73NIIGT9t36frtAjHnUfrhqEWV/0+L5uHWPtoXTTu3ekKWVaheHD?=
- =?us-ascii?Q?9bR/zHwdnpJSmki03ob0VJ1nZ0BAjJoDENPIviVgkfezao9vH5CGeQJpoTTo?=
- =?us-ascii?Q?IGcYR7XuMoT9knT95RDvF1dEegUF8pkA5G970RJ8tVi+8sD0dtyYfKsmk+2d?=
- =?us-ascii?Q?daf/SlvVBxivDK4Qv8f8zgUC3FRwT/W7kJ13T4Kh7l/5H957YHo2Cz2VczLI?=
- =?us-ascii?Q?tyxemYijkNvwajtpy1sLzWka8eZXdL81umnaeIG/E0GLvH6mkXsAjT0fJfQ7?=
- =?us-ascii?Q?EWp34PL4GoR6MNmLcdkAQ4UT0g7/6QmBz8HIAeiMHqaPb5wvQmltExBw7jXb?=
- =?us-ascii?Q?TNTRqQChNcsZmFHvUwEMZ57GKekH/G9P1EA+2L1yOvrxIL7mMmta/pWxl/9U?=
- =?us-ascii?Q?9FOXGh3wTujliMJQV5Vd+9oBcjWMnyrldRwogl/4kIojD/mIKd2YrcQBKEzQ?=
- =?us-ascii?Q?QLRwZV2pbJNAxm2pO0MpRrut+Odil9CaqWKS5gbF3on7ef8tvD76B/qlBdVC?=
- =?us-ascii?Q?C9xqDdeGVpujmIUHiFzO70uwfquqzlQDJ7T78kEJRMJ3JC4GEP5rJA7E3I7S?=
- =?us-ascii?Q?OY3lwtXH8ekBbg/BGmGUe1iUGCCGqwhnkN0Qt1MciTTTLxcIR0mjAEssdanW?=
- =?us-ascii?Q?+sjSZxX6K+DOyBYkVw0ZSOUibKSYbLl+Ei3AXOnzRG6md70Y0PI3qfvrXiEb?=
- =?us-ascii?Q?aKY49Scl8nOU3HTBXzlzDxdiGb32uBg7D77qyKjJ8IR9n3svVCVBujU1rjPo?=
- =?us-ascii?Q?QJ5Bz9dIO6LiTY8EHVBCN5NoCi5Pm2bR048A6WFW+Idbc/Fu8O6O5BQAscFs?=
- =?us-ascii?Q?3kB/ZfLTgqrzcr43pnNyfQ7OQtVaLBdZF365Qmy7Ncvj2hi/aq9UHu/zzPJM?=
- =?us-ascii?Q?NR+rthL1A8CnHnzagrHDB9yey7H0c9W0jp0a0wslF6xyqy1wc1ELyd0utraF?=
- =?us-ascii?Q?EG3vplGE6ihlipHChu76IE6R0nMrhmgJC4TKUO0ZF/X/kB2nn/W/0ty1sOSs?=
- =?us-ascii?Q?CHNlsbXSMoAqvxKbJQZaRVp21/qRy+GPX9MYZNXtS8esyUOL9dHVfxmS7tyR?=
- =?us-ascii?Q?UTpbfQJ2PaNajlGQDsG0sFoe?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="509929037"
+Received: from gao-cwp.sh.intel.com (HELO gao-cwp) ([10.239.159.133])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2021 23:12:43 -0700
+Date:   Mon, 2 Aug 2021 14:20:09 +0800
+From:   Chao Gao <chao.gao@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [clocksource]  8901ecc231:  stress-ng.lockbus.ops_per_sec -9.5%
+ regression
+Message-ID: <20210802062008.GA24720@gao-cwp>
+References: <20210521083322.GG25531@xsang-OptiPlex-9020>
+ <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
+ <20210526064922.GD5262@shbuild999.sh.intel.com>
+ <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3802.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97f2bf89-e6a7-4a06-95b2-08d9557bf842
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2021 06:08:38.3307
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VEDWmjn2u9S+sfVHtrS7tUCjQ5K3kuyCb8clzNMmp1rvSCuu7jnticmtdG/+NpDv0BS8psmOkocaBDelNchvMA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB0025
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As John Ogness commented, I also found it would hang if sleep when >=3D SYS=
-TEM_SCHEDULING.
-
- And as in commit https://lore.kernel.org/lkml/20170516184736.272225698@lin=
-utronix.de/,  it should enable sleep right when the scheduler starts workin=
-g(>=3D SYSTEM_RUNNING).
-
--Chao.
-
------Original Message-----
-From: John Ogness <john.ogness@linutronix.de>=20
-Sent: Friday, July 30, 2021 10:47 PM
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Qin, Chao <chao.qin@intel.com>; linux-kernel@vger.kernel.org; linux-rt-=
-users@vger.kernel.org; tglx@linutronix.de; rostedt@goodmis.org; mgross@linu=
-x.intel.com; Mei, Paul <paul.mei@intel.com>; Li, Lili <lili.li@intel.com>
-Subject: Re: [PREEMPT_RT][PATCH] printk: Enhance the condition check of msl=
-eep in pr_flush()
-
-On 2021-07-30, Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
-> On 2021-07-19 17:01:51 [+0206], John Ogness wrote:
->> On 2021-07-19, chao.qin@intel.com wrote:
->> > --- a/kernel/printk/printk.c
->> > +++ b/kernel/printk/printk.c
->> > @@ -3620,7 +3620,8 @@ bool pr_flush(int timeout_ms, bool reset_on_prog=
-ress)
->> >  	u64 diff;
->> >  	u64 seq;
->> > =20
->> > -	may_sleep =3D (preemptible() && !in_softirq());
->> > +	may_sleep =3D (preemptible() && !in_softirq()
->> > +			&& (system_state >=3D SYSTEM_RUNNING));
+[snip]
+>commit 48ebcfbfd877f5d9cddcc03c91352a8ca7b190af
+>Author: Paul E. McKenney <paulmck@kernel.org>
+>Date:   Thu May 27 11:03:28 2021 -0700
 >
-> I don't have more context but scheduling should work starting with=20
-> SYSTEM_SCHEDULING.
+>    clocksource: Forgive repeated long-latency watchdog clocksource reads
+>    
+>    Currently, the clocksource watchdog reacts to repeated long-latency
+>    clocksource reads by marking that clocksource unstable on the theory that
+>    these long-latency reads are a sign of a serious problem.  And this theory
+>    does in fact have real-world support in the form of firmware issues [1].
+>    
+>    However, it is also possible to trigger this using stress-ng on what
+>    the stress-ng man page terms "poorly designed hardware" [2].  And it
+>    is not necessarily a bad thing for the kernel to diagnose cases where
+>    high-stress workloads are being run on hardware that is not designed
+>    for this sort of use.
+>    
+>    Nevertheless, it is quite possible that real-world use will result in
+>    some situation requiring that high-stress workloads run on hardware
+>    not designed to accommodate them, and also requiring that the kernel
+>    refrain from marking clocksources unstable.
+>    
+>    Therefore, provide an out-of-tree patch that reacts to this situation
+>    by leaving the clocksource alone, but using the old 62.5-millisecond
+>    skew-detection threshold in response persistent long-latency reads.
+>    In addition, the offending clocksource is marked for re-initialization
+>    in this case, which both restarts that clocksource with a clean bill of
+>    health and avoids false-positive skew reports on later watchdog checks.
 
-I also thought this, but a quick test shows that is not the case. For examp=
-le, init/main.c:kernel_init() is called in preemptible context, but
-msleep() will hang if called at the beginning of that function.
+Hi Paul,
 
-John Ogness
+Sorry to dig out this old thread.
+
+I am testing with this patch in a VM, but I find sometimes re-initialization
+after coarse-grained skew check may not happen as expected because ...
+
+>    
+>    Link: https://lore.kernel.org/lkml/20210513155515.GB23902@xsang-OptiPlex-9020/ # [1]
+>    Link: https://lore.kernel.org/lkml/20210521083322.GG25531@xsang-OptiPlex-9020/ # [2]
+>    Link: https://lore.kernel.org/lkml/20210521084405.GH25531@xsang-OptiPlex-9020/
+>    Link: https://lore.kernel.org/lkml/20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1/
+>    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>
+>diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
+>index 01df12395c0e..b72a969f7b93 100644
+>--- a/kernel/time/clocksource-wdtest.c
+>+++ b/kernel/time/clocksource-wdtest.c
+>@@ -146,13 +146,12 @@ static int wdtest_func(void *arg)
+> 		else if (i <= max_cswd_read_retries)
+> 			s = ", expect message";
+> 		else
+>-			s = ", expect clock skew";
+>+			s = ", expect coarse-grained clock skew check and re-initialization";
+> 		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
+> 		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
+> 		schedule_timeout_uninterruptible(2 * HZ);
+> 		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
+>-		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
+>-			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
+>+		WARN_ON_ONCE(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE);
+> 		wdtest_ktime_clocksource_reset();
+> 	}
+> 
+>diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+>index 4485635b69f5..6c0820779bd3 100644
+>--- a/kernel/time/clocksource.c
+>+++ b/kernel/time/clocksource.c
+>@@ -225,13 +225,13 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+> 				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
+> 					smp_processor_id(), watchdog->name, nretries);
+> 			}
+>-			return true;
+>+			return false;
+> 		}
+> 	}
+> 
+>-	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, marking unstable\n",
+>+	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
+> 		smp_processor_id(), watchdog->name, wd_delay, nretries);
+>-	return false;
+>+	return true;
+> }
+> 
+> static u64 csnow_mid;
+>@@ -355,6 +355,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+> 	int next_cpu, reset_pending;
+> 	int64_t wd_nsec, cs_nsec;
+> 	struct clocksource *cs;
+>+	bool coarse;
+> 	u32 md;
+> 
+> 	spin_lock(&watchdog_lock);
+>@@ -372,11 +373,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+> 			continue;
+> 		}
+> 
+>-		if (!cs_watchdog_read(cs, &csnow, &wdnow)) {
+>-			/* Clock readout unreliable, so give it up. */
+>-			__clocksource_unstable(cs);
+>-			continue;
+>-		}
+>+		coarse = cs_watchdog_read(cs, &csnow, &wdnow);
+> 
+> 		/* Clocksource initialized ? */
+> 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
+>@@ -402,7 +399,13 @@ static void clocksource_watchdog(struct timer_list *unused)
+> 			continue;
+> 
+> 		/* Check the deviation from the watchdog clocksource. */
+>-		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
+>+		if (coarse) {
+>+			md = 62500 * NSEC_PER_USEC;
+>+			cs->flags &= ~CLOCK_SOURCE_WATCHDOG;
+>+			pr_warn("timekeeping watchdog on CPU%d: %s coarse-grained %lu.%03lu ms clock-skew check followed by re-initialization\n", smp_processor_id(), watchdog->name, md / NSEC_PER_MSEC, md % NSEC_PER_MSEC / NSEC_PER_USEC);
+
+... this message on CPU5 doesn't show up in below kernel logs.
+Do you think it is a bug? if yes, any idea to resolve it?
+
+[  498.571086] clocksource: timekeeping watchdog on CPU1: hpet read-back delay of 432490ns, attempt 4, coarse-grained skew check followed by re-initialization
+[  498.572867] clocksource: timekeeping watchdog on CPU1: hpet coarse-grained 62.500 ms clock-skew check followed by re-initialization
+[  504.071959] clocksource: timekeeping watchdog on CPU4: hpet read-back delay of 1679880ns, attempt 4, coarse-grained skew check followed by re-initialization
+[  504.073817] clocksource: timekeeping watchdog on CPU4: hpet coarse-grained 62.500 ms clock-skew check followed by re-initialization
+[  504.568821] clocksource: timekeeping watchdog on CPU5: hpet read-back delay of 554880ns, attempt 4, coarse-grained skew check followed by re-initialization
+[  505.067666] clocksource: timekeeping watchdog on CPU6: hpet retried 3 times before success
+[  505.068593] clocksource: timekeeping watchdog on CPU6: Marking clocksource 'tsc' as unstable because the skew is too large:
+[  505.069596] clocksource:                       'hpet' wd_nsec: 499376790 wd_now: be2f200d wd_last: bb3522fe mask: ffffffff
+[  505.071131] clocksource:                       'tsc' cs_nsec: 498867307 cs_now: 103895c060a cs_last: 1034aea96ea mask: ffffffffffffffff
+[  505.072994] clocksource:                       'tsc' is current clocksource.
+[  505.074748] tsc: Marking TSC unstable due to clocksource watchdog
+
+Thanks
+-Chao
+
+>+		} else {
+>+			md = cs->uncertainty_margin + watchdog->uncertainty_margin;
+>+		}
+> 		if (abs(cs_nsec - wd_nsec) > md) {
+> 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
+> 				smp_processor_id(), cs->name);
