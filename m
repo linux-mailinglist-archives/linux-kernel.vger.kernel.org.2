@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4E83DE682
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2DF3DE679
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234129AbhHCGAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 02:00:04 -0400
-Received: from mga01.intel.com ([192.55.52.88]:34948 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234106AbhHCF74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 01:59:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="235529266"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="235529266"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 22:59:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="479233401"
-Received: from shbuild999.sh.intel.com ([10.239.146.151])
-  by fmsmga008.fm.intel.com with ESMTP; 02 Aug 2021 22:59:43 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
-        Feng Tang <feng.tang@intel.com>
-Subject: [PATCH v7 5/5] mm/mempolicy: unify the create() func for bind/interleave/prefer-many policies
-Date:   Tue,  3 Aug 2021 13:59:22 +0800
-Message-Id: <1627970362-61305-6-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1627970362-61305-1-git-send-email-feng.tang@intel.com>
-References: <1627970362-61305-1-git-send-email-feng.tang@intel.com>
+        id S233959AbhHCF7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 01:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233749AbhHCF7k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 01:59:40 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947E3C06175F;
+        Mon,  2 Aug 2021 22:59:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=JFNAfoid2EflvMqbUdr93kxhjGBAuQTt0bwl7NJG+yI=; b=Jao0VIrbTAZbSu26/KOpMR6jzU
+        yUOfrChLrufy0HVxHl4tXESKFph39/WYHnXER5g0q9SlbNrAVvo2AxXPW5WE6BrpfOSGsiYH/4D3+
+        P8cgv9IXkKVSSYotxIr7YBGDTdWPifEugAG/399Vm2/pUBgXS1oeoQ0e3H5CC19Hvql3Xc05YrlvQ
+        wqHHgJjsiuB74D6JJZX4s3rJ/PyzPu9p7cqm1r97ovxUNEKiRRZXtIWuVO8F7kg/8++H1PJWYqo3k
+        FOSU3v7VDvJij42T877qTBjoLWGehMBzHqEmw3Zl+9kypsdnvPS41W49gSrCFnet8GWQW1++YAurE
+        MiZiFfhQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mAnSY-005LHc-KX; Tue, 03 Aug 2021 05:59:27 +0000
+Subject: Re: mmotm 2021-08-02-18-51 uploaded
+To:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+References: <20210803015202.vA3c5O7uP%akpm@linux-foundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <3ac66120-99f0-c627-c783-500993ff3da0@infradead.org>
+Date:   Mon, 2 Aug 2021 22:59:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210803015202.vA3c5O7uP%akpm@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As they all do the same thing: sanity check and save nodemask info, create
-one mpol_new_nodemask() to reduce redundancy.
+On 8/2/21 6:52 PM, akpm@linux-foundation.org wrote:
+> The mm-of-the-moment snapshot 2021-08-02-18-51 has been uploaded to
+> 
+>     https://www.ozlabs.org/~akpm/mmotm/
+> 
+> mmotm-readme.txt says
+> 
+> README for mm-of-the-moment:
+> 
+> https://www.ozlabs.org/~akpm/mmotm/
+> 
+> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> more than once a week.
+> 
+> You will need quilt to apply these patches to the latest Linus release (5.x
+> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+> https://ozlabs.org/~akpm/mmotm/series
+> 
+> The file broken-out.tar.gz contains two datestamp files: .DATE and
+> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+> followed by the base kernel version against which this patch series is to
+> be applied.
+> 
 
-Signed-off-by: Feng Tang <feng.tang@intel.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
- mm/mempolicy.c | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
+Andrew:
 
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index e437fe96acd0..14710960d1d4 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -192,7 +192,7 @@ static void mpol_relative_nodemask(nodemask_t *ret, const nodemask_t *orig,
- 	nodes_onto(*ret, tmp, *rel);
- }
- 
--static int mpol_new_interleave(struct mempolicy *pol, const nodemask_t *nodes)
-+static int mpol_new_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
- {
- 	if (nodes_empty(*nodes))
- 		return -EINVAL;
-@@ -210,22 +210,6 @@ static int mpol_new_preferred(struct mempolicy *pol, const nodemask_t *nodes)
- 	return 0;
- }
- 
--static int mpol_new_preferred_many(struct mempolicy *pol, const nodemask_t *nodes)
--{
--	if (nodes_empty(*nodes))
--		return -EINVAL;
--	pol->nodes = *nodes;
--	return 0;
--}
--
--static int mpol_new_bind(struct mempolicy *pol, const nodemask_t *nodes)
--{
--	if (nodes_empty(*nodes))
--		return -EINVAL;
--	pol->nodes = *nodes;
--	return 0;
--}
--
- /*
-  * mpol_set_nodemask is called after mpol_new() to set up the nodemask, if
-  * any, for the new policy.  mpol_new() has already validated the nodes
-@@ -405,7 +389,7 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
- 		.rebind = mpol_rebind_default,
- 	},
- 	[MPOL_INTERLEAVE] = {
--		.create = mpol_new_interleave,
-+		.create = mpol_new_nodemask,
- 		.rebind = mpol_rebind_nodemask,
- 	},
- 	[MPOL_PREFERRED] = {
-@@ -413,14 +397,14 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
- 		.rebind = mpol_rebind_preferred,
- 	},
- 	[MPOL_BIND] = {
--		.create = mpol_new_bind,
-+		.create = mpol_new_nodemask,
- 		.rebind = mpol_rebind_nodemask,
- 	},
- 	[MPOL_LOCAL] = {
- 		.rebind = mpol_rebind_default,
- 	},
- 	[MPOL_PREFERRED_MANY] = {
--		.create = mpol_new_preferred_many,
-+		.create = mpol_new_nodemask,
- 		.rebind = mpol_rebind_preferred,
- 	},
- };
+In linux-next.patch, drivers/net/mctp/Makefile is an empty file, so
+patch tools don't include/track it.  Not having it causes build errors
+in mmotm.  Just put a comment in it like so:
+
+# dummy file for now
+
+and builds will not have so many errors.
+
+
 -- 
-2.14.1
+~Randy
 
