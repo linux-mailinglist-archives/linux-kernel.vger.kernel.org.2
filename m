@@ -2,278 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA063DEAE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9923DEAE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbhHCK17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235385AbhHCK1t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:27:49 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D718DC061796;
-        Tue,  3 Aug 2021 03:27:38 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so20218103ota.11;
-        Tue, 03 Aug 2021 03:27:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=c2dWDh4qz5shxMaI1v8BLUSw4NsbRWOk0Fbsat4Rxj4=;
-        b=RoFyMpupNoDPEzLg2DKdP+au/RS5CuuGDUHXtGu1RkcYxW6GFlCRRKzUL7zhwDxiZ+
-         kI/c+CKnoO72HDaasytFAnoA+Rr3zprlcTf3w6BaXMXKI+DYOX8PpPV+s/e099fsFvjy
-         LMy4vLYBOYgUu0ttk9mw5NlysnLm3B9bv/3dNnom6ITW7Y7WaGhLRPjFP9aYRd5QaZN2
-         lmzNI/TGQA5ydxvLtIhCW3jyihqtrcoy1voO2N+Q7nKIiJ2hQqQ8BS650lVOwAdHqWR2
-         D/7094ZSod7RCNq5C52ctnTteseqzpbnVYtTzy2ieql3XW4pk+ws3ijHPt277VI0CEpF
-         6GOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=c2dWDh4qz5shxMaI1v8BLUSw4NsbRWOk0Fbsat4Rxj4=;
-        b=MqiAgO+pFDoxnQBGAM+Q8iY7CD1IN3/HPahesVBAUBJsnpiz0ILOOt0DhAuxY8T30F
-         eMBrXGUXcnm7lG84GRjGhLY7t3s9LsTqKbr9jtzIREGu34cmYcgRHbzLG6elx/DDNU4S
-         naGPQrg6KCM36wqi/8XvZ/z1y421+g0kUpNdwZcJMoU8jIOUPUs8zUugw9TeVl+oEd3Y
-         QBteJ1EdQ2lZnMtua9TDL26rjEqhU9rL6Rsc//dCP6BNB2owMGv13c2GYkETkO/aHIZa
-         CmgxXqlMtuVrhn75l0JhBElXs/ZvHqGWe1vcMsDvfBNN5qd3IF4SU6hr7aEZD19bPp7m
-         LsVA==
-X-Gm-Message-State: AOAM5308dDzJa6Saxg1KGfjqjCGKKNZNLyABAZessH9b12pflf8764gD
-        ThaumOkD6lg939uI3TB+OQJascB53ld1m8ZpY5o=
-X-Google-Smtp-Source: ABdhPJxyCw7GErMEHcrHo3IkI06W10/FjV9+tC5KWit6K9LxuXzZQeQjC3r+ppbNL1d9vOz0oYMaXrmkuhWDSYYa1yU=
-X-Received: by 2002:a9d:d86:: with SMTP id 6mr1355705ots.362.1627986458256;
- Tue, 03 Aug 2021 03:27:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210802121215.703023-1-eizan@chromium.org> <20210802220943.v6.7.I2049e180dca12e0d1b3178bfc7292dcf9e05ac28@changeid>
-In-Reply-To: <20210802220943.v6.7.I2049e180dca12e0d1b3178bfc7292dcf9e05ac28@changeid>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Tue, 3 Aug 2021 12:27:26 +0200
-Message-ID: <CAFqH_527RL56P=zEg7yTaeeqTvFOjT3ThxpX-Qumk25dR6+-bA@mail.gmail.com>
-Subject: Re: [PATCH v6 7/9] media: mtk-mdp: use mdp-rdma0 alias to point to
- MDP master
-To:     Eizan Miyamoto <eizan@chromium.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S235428AbhHCK2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:28:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:46794 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235040AbhHCK2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 06:28:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4ABB106F;
+        Tue,  3 Aug 2021 03:28:07 -0700 (PDT)
+Received: from e123648.arm.com (unknown [10.57.9.94])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EA3D43F40C;
+        Tue,  3 Aug 2021 03:28:02 -0700 (PDT)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Chris.Redpath@arm.com, lukasz.luba@arm.com,
+        dietmar.eggemann@arm.com, morten.rasmussen@arm.com,
+        qperret@google.com, linux-pm@vger.kernel.org,
+        stable@vger.kernel.org, peterz@infradead.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, vincent.guittot@linaro.org,
+        mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
+        segall@google.com, mgorman@suse.de, bristot@redhat.com,
+        CCj.Yeh@mediatek.com
+Subject: [PATCH v3] PM: EM: Increase energy calculation precision
+Date:   Tue,  3 Aug 2021 11:27:43 +0100
+Message-Id: <20210803102744.23654-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eizan,
+The Energy Model (EM) provides useful information about device power in
+each performance state to other subsystems like: Energy Aware Scheduler
+(EAS). The energy calculation in EAS does arithmetic operation based on
+the EM em_cpu_energy(). Current implementation of that function uses
+em_perf_state::cost as a pre-computed cost coefficient equal to:
+cost = power * max_frequency / frequency.
+The 'power' is expressed in milli-Watts (or in abstract scale).
 
-Thank you for your patch.
+There are corner cases when the EAS energy calculation for two Performance
+Domains (PDs) return the same value. The EAS compares these values to
+choose smaller one. It might happen that this values are equal due to
+rounding error. In such scenario, we need better resolution, e.g. 1000
+times better. To provide this possibility increase the resolution in the
+em_perf_state::cost for 64-bit architectures. The cost of increasing
+resolution on 32-bit is pretty high (64-bit division) and is not justified
+since there are no new 32bit big.LITTLE EAS systems expected which would
+benefit from this higher resolution.
 
-Missatge de Eizan Miyamoto <eizan@chromium.org> del dia dl., 2 d=E2=80=99ag=
-.
-2021 a les 14:14:
->
-> ... Instead of depending on the presence of a mediatek,vpu property in
+This patch allows to avoid the rounding to milli-Watt errors, which might
+occur in EAS energy estimation for each PD. The rounding error is common
+for small tasks which have small utilization value.
 
-Looks like there is something missing in the commit message?
+There are two places in the code where it makes a difference:
+1. In the find_energy_efficient_cpu() where we are searching for
+best_delta. We might suffer there when two PDs return the same result,
+like in the example below.
 
-> the device node.
->
-> That property was originally added to link to the vpu node so that the
-> mtk_mdp_core driver could pass the right device to
-> vpu_wdt_reg_handler(). However in a previous patch in this series,
-> the driver has been modified to search the device tree for that node
-> instead.
->
-> That property was also used to indicate the primary MDP device, so that
-> it can be passed to the V4L2 subsystem as well as register it to be
-> used when setting up queues in the open() callback for the filesystem
-> device node that is created. In this case, assuming that the primary
-> MDP device is the one with a specific alias seems useable because the
-> alternative is to add a property to the device tree which doesn't
-> actually represent any facet of hardware (i.e., this being the primary
-> MDP device is a software decision). In other words, this solution is
-> equally as arbitrary, but at least it doesn't add a property to a
-> device node where said property is unrelated to the hardware present.
->
-> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
+Scenario:
+Low utilized system e.g. ~200 sum_util for PD0 and ~220 for PD1. There
+are quite a few small tasks ~10-15 util. These tasks would suffer for
+the rounding error. These utilization values are typical when running games
+on Android. One of our partners has reported 5..10mA less battery drain
+when running with increased resolution.
 
-Other than the above,
+Some details:
+We have two PDs: PD0 (big) and PD1 (little)
+Let's compare w/o patch set ('old') and w/ patch set ('new')
+We are comparing energy w/ task and w/o task placed in the PDs
 
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+a) 'old' w/o patch set, PD0
+task_util = 13
+cost = 480
+sum_util_w/o_task = 215
+sum_util_w_task = 228
+scale_cpu = 1024
+energy_w/o_task = 480 * 215 / 1024 = 100.78 => 100
+energy_w_task = 480 * 228 / 1024 = 106.87 => 106
+energy_diff = 106 - 100 = 6
+(this is equal to 'old' PD1's energy_diff in 'c)')
 
+b) 'new' w/ patch set, PD0
+task_util = 13
+cost = 480 * 1000 = 480000
+sum_util_w/o_task = 215
+sum_util_w_task = 228
+energy_w/o_task = 480000 * 215 / 1024 = 100781
+energy_w_task = 480000 * 228 / 1024  = 106875
+energy_diff = 106875 - 100781 = 6094
+(this is not equal to 'new' PD1's energy_diff in 'd)')
 
+c) 'old' w/o patch set, PD1
+task_util = 13
+cost = 160
+sum_util_w/o_task = 283
+sum_util_w_task = 293
+scale_cpu = 355
+energy_w/o_task = 160 * 283 / 355 = 127.55 => 127
+energy_w_task = 160 * 296 / 355 = 133.41 => 133
+energy_diff = 133 - 127 = 6
+(this is equal to 'old' PD0's energy_diff in 'a)')
 
-> ---
->
-> (no changes since v1)
->
->  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 56 +++++++++++++------
->  drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 36 ++++++++----
->  2 files changed, 64 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/medi=
-a/platform/mtk-mdp/mtk_mdp_comp.c
-> index 85ef274841a3..9527649de98e 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> @@ -151,29 +151,50 @@ void mtk_mdp_comp_clock_off(struct mtk_mdp_comp *co=
-mp)
->                 mtk_smi_larb_put(comp->larb_dev);
->  }
->
-> -static int mtk_mdp_comp_bind(struct device *dev, struct device *master, =
-void *data)
-> +/*
-> + * The MDP master device node is identified by the device tree alias
-> + * "mdp-rdma0".
-> + */
-> +static bool is_mdp_master(struct device *dev)
-> +{
-> +       struct device_node *aliases, *mdp_rdma0_node;
-> +       const char *mdp_rdma0_path;
-> +
-> +       if (!dev->of_node)
-> +               return false;
-> +
-> +       aliases =3D of_find_node_by_path("/aliases");
-> +       if (!aliases) {
-> +               dev_err(dev, "no aliases found for mdp-rdma0");
-> +               return false;
-> +       }
-> +
-> +       mdp_rdma0_path =3D of_get_property(aliases, "mdp-rdma0", NULL);
-> +       if (!mdp_rdma0_path) {
-> +               dev_err(dev, "get mdp-rdma0 property of /aliases failed")=
-;
-> +               return false;
-> +       }
-> +
-> +       mdp_rdma0_node =3D of_find_node_by_path(mdp_rdma0_path);
-> +       if (!mdp_rdma0_node) {
-> +               dev_err(dev, "path resolution failed for %s", mdp_rdma0_p=
-ath);
-> +               return false;
-> +       }
-> +
-> +       return dev->of_node =3D=3D mdp_rdma0_node;
-> +}
-> +
-> +static int mtk_mdp_comp_bind(struct device *dev, struct device *master,
-> +                       void *data)
->  {
->         struct mtk_mdp_comp *comp =3D dev_get_drvdata(dev);
->         struct mtk_mdp_dev *mdp =3D data;
-> -       struct device_node *vpu_node;
->
->         mtk_mdp_register_component(mdp, comp);
->
-> -       /*
-> -        * If this component has a "mediatek-vpu" property, it is respons=
-ible for
-> -        * notifying the mdp master driver about it so it can be further =
-initialized
-> -        * later.
-> -        */
-> -       vpu_node =3D of_parse_phandle(dev->of_node, "mediatek,vpu", 0);
-> -       if (vpu_node) {
-> +       if (is_mdp_master(dev)) {
->                 int ret;
->
-> -               mdp->vpu_dev =3D of_find_device_by_node(vpu_node);
-> -               if (WARN_ON(!mdp->vpu_dev)) {
-> -                       dev_err(dev, "vpu pdev failed\n");
-> -                       of_node_put(vpu_node);
-> -               }
-> -
->                 ret =3D v4l2_device_register(dev, &mdp->v4l2_dev);
->                 if (ret) {
->                         dev_err(dev, "Failed to register v4l2 device\n");
-> @@ -187,9 +208,8 @@ static int mtk_mdp_comp_bind(struct device *dev, stru=
-ct device *master, void *da
->                 }
->
->                 /*
-> -                * presence of the "mediatek,vpu" property in a device no=
-de
-> -                * indicates that it is the primary MDP rdma device and M=
-DP DMA
-> -                * ops should be handled by its DMA callbacks.
-> +                * MDP DMA ops will be handled by the DMA callbacks assoc=
-iated with this
-> +                * device;
->                  */
->                 mdp->rdma_dev =3D dev;
->         }
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/medi=
-a/platform/mtk-mdp/mtk_mdp_core.c
-> index 50eafcc9993d..6a775463399c 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> @@ -150,8 +150,9 @@ static void release_of(struct device *dev, void *data=
-)
->
->  static int mtk_mdp_master_bind(struct device *dev)
->  {
-> -       int status;
->         struct mtk_mdp_dev *mdp =3D dev_get_drvdata(dev);
-> +       struct device_node *vpu_node;
-> +       int status;
->
->         status =3D component_bind_all(dev, mdp);
->         if (status) {
-> @@ -159,15 +160,30 @@ static int mtk_mdp_master_bind(struct device *dev)
->                 goto err_component_bind_all;
->         }
->
-> -       if (mdp->vpu_dev) {
-> -               int ret =3D vpu_wdt_reg_handler(mdp->vpu_dev, mtk_mdp_res=
-et_handler, mdp,
-> -                                         VPU_RST_MDP);
-> -               if (ret) {
-> -                       dev_err(dev, "Failed to register reset handler\n"=
-);
-> -                       goto err_wdt_reg;
-> -               }
-> -       } else {
-> -               dev_err(dev, "no vpu_dev found\n");
-> +       if (mdp->rdma_dev =3D=3D NULL) {
-> +               dev_err(dev, "Primary MDP device not found");
-> +               status =3D -ENODEV;
-> +               goto err_component_bind_all;
-> +       }
-> +
-> +       vpu_node =3D of_find_node_by_name(NULL, "vpu");
-> +       if (!vpu_node) {
-> +               dev_err(dev, "unable to find vpu node");
-> +               status =3D -ENODEV;
-> +               goto err_wdt_reg;
-> +       }
-> +
-> +       mdp->vpu_dev =3D of_find_device_by_node(vpu_node);
-> +       if (!mdp->vpu_dev) {
-> +               dev_err(dev, "unable to find vpu device");
-> +               status =3D -ENODEV;
-> +               goto err_wdt_reg;
-> +       }
-> +
-> +       status =3D vpu_wdt_reg_handler(mdp->vpu_dev, mtk_mdp_reset_handle=
-r, mdp, VPU_RST_MDP);
-> +       if (status) {
-> +               dev_err(dev, "Failed to register reset handler\n");
-> +               goto err_wdt_reg;
->         }
->
->         status =3D mtk_mdp_register_m2m_device(mdp);
-> --
-> 2.32.0.554.ge1b32706d8-goog
->
+d) 'new' w/ patch set, PD1
+task_util = 13
+cost = 160 * 1000 = 160000
+sum_util_w/o_task = 283
+sum_util_w_task = 293
+scale_cpu = 355
+energy_w/o_task = 160000 * 283 / 355 = 127549
+energy_w_task = 160000 * 296 / 355 =   133408
+energy_diff = 133408 - 127549 = 5859
+(this is not equal to 'new' PD0's energy_diff in 'b)')
+
+2. Difference in the 6% energy margin filter at the end of
+find_energy_efficient_cpu(). With this patch the margin comparison also
+has better resolution, so it's possible to have better task placement
+thanks to that.
+
+Fixes: 27871f7a8a341ef ("PM: Introduce an Energy Model management framework")
+Reported-by: CCJ Yeh <CCj.Yeh@mediatek.com>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+---
+
+v3 changes:
+- adjusted patch description according to Dietmar's comments
+- added Dietmar's review tag
+- added one empty line in the code to separate them
+
+ include/linux/energy_model.h | 16 ++++++++++++++++
+ kernel/power/energy_model.c  |  4 +++-
+ 2 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+index 3f221dbf5f95..1834752c5617 100644
+--- a/include/linux/energy_model.h
++++ b/include/linux/energy_model.h
+@@ -53,6 +53,22 @@ struct em_perf_domain {
+ #ifdef CONFIG_ENERGY_MODEL
+ #define EM_MAX_POWER 0xFFFF
+ 
++/*
++ * Increase resolution of energy estimation calculations for 64-bit
++ * architectures. The extra resolution improves decision made by EAS for the
++ * task placement when two Performance Domains might provide similar energy
++ * estimation values (w/o better resolution the values could be equal).
++ *
++ * We increase resolution only if we have enough bits to allow this increased
++ * resolution (i.e. 64-bit). The costs for increasing resolution when 32-bit
++ * are pretty high and the returns do not justify the increased costs.
++ */
++#ifdef CONFIG_64BIT
++#define em_scale_power(p) ((p) * 1000)
++#else
++#define em_scale_power(p) (p)
++#endif
++
+ struct em_data_callback {
+ 	/**
+ 	 * active_power() - Provide power at the next performance state of
+diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+index 0f4530b3a8cd..a332ccd829e2 100644
+--- a/kernel/power/energy_model.c
++++ b/kernel/power/energy_model.c
+@@ -170,7 +170,9 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
+ 	/* Compute the cost of each performance state. */
+ 	fmax = (u64) table[nr_states - 1].frequency;
+ 	for (i = 0; i < nr_states; i++) {
+-		table[i].cost = div64_u64(fmax * table[i].power,
++		unsigned long power_res = em_scale_power(table[i].power);
++
++		table[i].cost = div64_u64(fmax * power_res,
+ 					  table[i].frequency);
+ 	}
+ 
+-- 
+2.17.1
+
