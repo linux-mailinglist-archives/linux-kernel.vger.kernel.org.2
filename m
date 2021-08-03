@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4C73DF45E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD0E3DF462
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237230AbhHCSLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 14:11:40 -0400
-Received: from smtprelay0214.hostedemail.com ([216.40.44.214]:48354 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S238708AbhHCSLg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 14:11:36 -0400
-Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 03FE0180A5AE4;
-        Tue,  3 Aug 2021 18:11:24 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 901B21124F6;
-        Tue,  3 Aug 2021 18:11:22 +0000 (UTC)
-Message-ID: <39b42c868d1aa01bb421733aac32f072dc85e393.camel@perches.com>
-Subject: Re: [PATCH 3/3] rtlwifi: rtl8192de: fix array size limit in for-loop
-From:   Joe Perches <joe@perches.com>
-To:     Colin King <colin.king@canonical.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 03 Aug 2021 11:11:21 -0700
-In-Reply-To: <20210803144949.79433-3-colin.king@canonical.com>
-References: <20210803144949.79433-1-colin.king@canonical.com>
-         <20210803144949.79433-3-colin.king@canonical.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S238751AbhHCSLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 14:11:52 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:36584 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229812AbhHCSLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 14:11:51 -0400
+Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
+        by mail.ispras.ru (Postfix) with ESMTPS id 5FE6640D3BFF;
+        Tue,  3 Aug 2021 18:11:36 +0000 (UTC)
+From:   Evgeny Novikov <novikov@ispras.ru>
+To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        David E Box <david.e.box@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: [PATCH] platform/x86: intel_pmc_core: Fix potential buffer overflows
+Date:   Tue,  3 Aug 2021 21:11:35 +0300
+Message-Id: <20210803181135.22298-1-novikov@ispras.ru>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 901B21124F6
-X-Spam-Status: No, score=-0.81
-X-Stat-Signature: f43mm98h5s78yd93cws6ugihst4azt4w
-X-Rspamd-Server: rspamout02
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18QSI7hc6+5FTVBkzOo7iXdxLGDbZcQUPY=
-X-HE-Tag: 1628014282-693020
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-03 at 15:49 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the size of the entire array is being used in a for-loop
-> for the element count. While this works since the elements are u8
-> sized, it is preferred to use ARRAY_SIZE to get the element count
-> of the array.
-[]
-> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-[]
-> @@ -1366,7 +1366,7 @@ u8 rtl92d_get_rightchnlplace_for_iqk(u8 chnl)
->  	u8 place = chnl;
-> 
->  	if (chnl > 14) {
-> -		for (place = 14; place < sizeof(channel_all); place++) {
-> +		for (place = 14; place < ARRAY_SIZE(channel_all); place++) {
->  			if (channel_all[place] == chnl)
->  				return place - 13;
->  		}
+It looks like pmc_core_get_low_power_modes() mixes up modes and
+priorities. In addition to invalid behavior, potentially this can
+cause buffer overflows since the driver reads priorities from the
+register and then it uses them as indexes for array lpm_priority
+that can contain 8 elements at most. The patch swaps modes and
+priorities.
 
-Thanks.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-It seems a relatively common copy/paste use in rtlwifi
+Fixes: 005125bfd70e ("platform/x86: intel_pmc_core: Handle sub-states generically")
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+---
+ drivers/platform/x86/intel_pmc_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-$ git grep -P -n 'for\b.*<\s*sizeof\s*\(\s*\w+\w*\)\s*;' drivers/net/wireless/realtek/rtlwifi/
-drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:893:               for (place = 14; place < sizeof(channel5g); place++) {
-drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:1368:              for (place = 14; place < sizeof(channel_all); place++) {
-drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:2430:      for (i = 0; i < sizeof(channel5g); i++)
-drivers/net/wireless/realtek/rtlwifi/rtl8192ee/phy.c:2781:              for (place = 14; place < sizeof(channel_all); place++) {
-drivers/net/wireless/realtek/rtlwifi/rtl8723be/phy.c:2170:              for (place = 14; place < sizeof(channel_all); place++) {
-drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:3610:              for (place = 14; place < sizeof(channel_all); place++)
-
-
+diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+index b0e486a6bdfb..667b3df03764 100644
+--- a/drivers/platform/x86/intel_pmc_core.c
++++ b/drivers/platform/x86/intel_pmc_core.c
+@@ -1469,8 +1469,8 @@ static void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
+ 		int pri0 = GENMASK(3, 0) & priority;
+ 		int pri1 = (GENMASK(7, 4) & priority) >> 4;
+ 
+-		lpm_priority[pri0] = mode;
+-		lpm_priority[pri1] = mode + 1;
++		lpm_priority[mode] = pri0;
++		lpm_priority[mode + 1] = pri1;
+ 	}
+ 
+ 	/*
+-- 
+2.26.2
 
