@@ -2,115 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9EA3DF296
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC193DF2A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234056AbhHCQeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:34:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:52136 "EHLO foss.arm.com"
+        id S233573AbhHCQhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:37:14 -0400
+Received: from mga02.intel.com ([134.134.136.20]:56666 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233816AbhHCQeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:34:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1CFF139F;
-        Tue,  3 Aug 2021 09:33:58 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 702013F66F;
-        Tue,  3 Aug 2021 09:33:56 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 17:33:54 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Yanfei Xu <yanfei.xu@windriver.com>
-Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
- non-release of rcu_node ->lock
-Message-ID: <20210803163354.smx5dvferfebcvzi@e107158-lin.cambridge.arm.com>
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-2-paulmck@kernel.org>
- <20210803142458.teveyn6t2gwifdcp@e107158-lin.cambridge.arm.com>
- <20210803155226.GQ4397@paulmck-ThinkPad-P17-Gen-1>
- <20210803161221.igae6y6xa6mlzltn@e107158-lin.cambridge.arm.com>
- <20210803162855.GT4397@paulmck-ThinkPad-P17-Gen-1>
+        id S233449AbhHCQhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:37:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="200900149"
+X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
+   d="scan'208";a="200900149"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 09:36:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
+   d="scan'208";a="636665141"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga005.jf.intel.com with ESMTP; 03 Aug 2021 09:36:48 -0700
+Received: from alobakin-mobl.ger.corp.intel.com (eflejszm-mobl2.ger.corp.intel.com [10.213.26.164])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 173GahEo029968;
+        Tue, 3 Aug 2021 17:36:44 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: [PATCH net-next 00/21] ethtool, stats: introduce and use standard XDP stats
+Date:   Tue,  3 Aug 2021 18:36:20 +0200
+Message-Id: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210803162855.GT4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/03/21 09:28, Paul E. McKenney wrote:
-> On Tue, Aug 03, 2021 at 05:12:21PM +0100, Qais Yousef wrote:
-> > On 08/03/21 08:52, Paul E. McKenney wrote:
-> > > On Tue, Aug 03, 2021 at 03:24:58PM +0100, Qais Yousef wrote:
-> > > > Hi
-> > > > 
-> > > > On 07/21/21 13:21, Paul E. McKenney wrote:
-> > > > > From: Yanfei Xu <yanfei.xu@windriver.com>
-> > > > > 
-> > > > > If rcu_print_task_stall() is invoked on an rcu_node structure that does
-> > > > > not contain any tasks blocking the current grace period, it takes an
-> > > > > early exit that fails to release that rcu_node structure's lock.  This
-> > > > > results in a self-deadlock, which is detected by lockdep.
-> > > > > 
-> > > > > To reproduce this bug:
-> > > > > 
-> > > > > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
-> > > > > 
-> > > > > This will also result in other complaints, including RCU's scheduler
-> > > > > hook complaining about blocking rather than preemption and an rcutorture
-> > > > > writer stall.
-> > > > > 
-> > > > > Only a partial RCU CPU stall warning message will be printed because of
-> > > > > the self-deadlock.
-> > > > > 
-> > > > > This commit therefore releases the lock on the rcu_print_task_stall()
-> > > > > function's early exit path.
-> > > > > 
-> > > > > Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> > > > > Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > ---
-> > > > 
-> > > > We are seeing similar stall/deadlock issue on android 5.10 kernel, is the fix
-> > > > relevant here? Trying to apply the patches and test, but the problem is tricky
-> > > > to reproduce so thought worth asking first.
-> > > 
-> > > Looks like the relevant symptoms to me, so I suggest trying this series
-> > > from -rcu:
-> > > 
-> > > 8baded711edc ("rcu: Fix to include first blocked task in stall warning")
-> > > f6b3995a8b56 ("rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock")
-> > 
-> > Great thanks. These are the ones we picked as the rest was a bit tricky to
-> > apply on 5.10.
-> > 
-> > While at it, we see these errors too though they look harmless. They happen
-> > all the time
-> > 
-> > 	[  595.292685] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #02!!!"}
-> > 	[  595.301467] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > 	[  595.389353] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > 	[  595.397454] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > 	[  595.417112] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > 	[  595.425215] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > 	[  595.438807] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > 
-> > I used to see them on mainline a while back but seem to have been fixed.
-> > Something didn't get backported to 5.10 perhaps?
-> 
-> I believe that you need at least this one:
-> 
-> 47c218dcae65 ("tick/sched: Prevent false positive softirq pending warnings on RT")
+This series follows the Jakub's work on standard statistics and
+unifies XDP statistics across [most of] the drivers.
+The only driver left unconverted is mlx5 -- it has rather complex
+statistics, so I believe it would be better to leave this up to
+its developers.
 
-Thanks! Shall try that.
+The stats itself consists of 12 counters:
+ - packets: number of frames passed to bpf_prog_run_xdp();
+ - errors: number of general XDP errors, if driver has one unified counter;
+ - aborted: number of XDP_ABORTED returns;
+ - drop: number of XDP_DROP returns;
+ - invalid: number of returns of unallowed values (i.e. not XDP_*);
+ - pass: number of XDP_PASS returns;
+ - redirect: number of successfully performed XDP_REDIRECT requests;
+ - redirect_errors: number of failed XDP_REDIRECT requests;
+ - tx: number of successfully performed XDP_TX requests;
+ - tx_errors: number of failed XDP_TX requests;
+ - xmit: number of xdp_frames successfully transmitted via .ndo_xdp_xmit();
+ - xmit_drops: number of frames dropped from .ndo_xdp_xmit().
 
-Cheers
+As most drivers stores them on a per-channel basis, Ethtool standard
+stats infra has been expanded to support this. A new nested
+attribute has been added which indicated that the fields enclosed
+in this block are related to one particular channel. If Ethtool
+utility is older than the kernel, those blocks will just be skipped
+with no errors.
+When the stats are not per-channel, Ethtool core treats them as
+regular and so does Ethtool utility display them. Otherwise,
+the example output looks like:
 
---
-Qais Yousef
+$ ./ethtool -S enp175s0f0 --all-groups
+Standard stats for enp175s0f0:
+[ snip ]
+channel0-xdp-aborted: 1
+channel0-xdp-drop: 2
+channel0-xdp-illegal: 3
+channel0-xdp-pass: 4
+channel0-xdp-redirect: 5
+[ snip ]
+
+...and the JSON output looks like:
+
+[ snip ]
+        "xdp": {
+            "per-channel": [
+                "channel0": {
+                    "aborted": 1,
+                    "drop": 2,
+                    "illegal": 3,
+                    "pass": 4,
+                    "redirect": 5,
+[ snip ]
+                } ]
+        }
+[ snip ]
+
+Rouhly half of the commits are present to unify XDP stats logics
+across the drivers, and the first two are preparatory/housekeeping.
+
+This set is also available here: [0]
+
+[0] https://github.com/alobakin/linux/tree/xdp_stats
+
+Alexander Lobakin (21):
+  ethtool, stats: use a shorthand pointer in stats_prepare_data()
+  ethtool, stats: add compile-time checks for standard stats
+  ethtool, stats: introduce standard XDP statistics
+  ethernet, dpaa2: simplify per-channel Ethtool stats counting
+  ethernet, dpaa2: convert to standard XDP stats
+  ethernet, ena: constify src and syncp args of ena_safe_update_stat()
+  ethernet, ena: convert to standard XDP stats
+  ethernet, enetc: convert to standard XDP stats
+  ethernet, mvneta: rename xdp_xmit_err to xdp_xmit_drops
+  ethernet, mvneta: convert to standard XDP stats
+  ethernet, mvpp2: rename xdp_xmit_err to xdp_xmit_drops
+  ethernet, mvpp2: convert to standard XDP stats
+  ethernet, sfc: convert to standard XDP stats
+  veth: rename rx_drops to xdp_errors
+  veth: rename xdp_xmit_errors to xdp_xmit_drops
+  veth: rename drop xdp_ suffix from packets and bytes stats
+  veth: convert to standard XDP stats
+  virtio-net: rename xdp_tx{,__drops} SQ stats to xdp_xmit{,__drops}
+  virtio-net: don't mix error-caused drops with XDP_DROP cases
+  virtio-net: convert to standard XDP stats
+  Documentation, ethtool-netlink: update standard statistics
+    documentation
+
+ Documentation/networking/ethtool-netlink.rst  |  45 +++--
+ drivers/net/ethernet/amazon/ena/ena_ethtool.c |  50 +++++-
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.h  |   7 +-
+ .../ethernet/freescale/dpaa2/dpaa2-ethtool.c  |  38 +++-
+ .../ethernet/freescale/enetc/enetc_ethtool.c  |  58 ++++--
+ drivers/net/ethernet/marvell/mvneta.c         | 112 ++++++------
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h    |   2 +-
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  96 +++-------
+ drivers/net/ethernet/sfc/ef100_ethtool.c      |   2 +
+ drivers/net/ethernet/sfc/ethtool.c            |   2 +
+ drivers/net/ethernet/sfc/ethtool_common.c     |  35 +++-
+ drivers/net/ethernet/sfc/ethtool_common.h     |   3 +
+ drivers/net/veth.c                            | 167 ++++++++++--------
+ drivers/net/virtio_net.c                      |  76 ++++++--
+ include/linux/ethtool.h                       |  36 ++++
+ include/uapi/linux/ethtool.h                  |   2 +
+ include/uapi/linux/ethtool_netlink.h          |  34 ++++
+ net/ethtool/netlink.h                         |   1 +
+ net/ethtool/stats.c                           | 163 +++++++++++++++--
+ net/ethtool/strset.c                          |   5 +
+ 20 files changed, 659 insertions(+), 275 deletions(-)
+
+-- 
+2.31.1
+
