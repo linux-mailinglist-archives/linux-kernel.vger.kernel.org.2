@@ -2,83 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899893DE9A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE633DE9FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235046AbhHCJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234506AbhHCJZe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:25:34 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5B1C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:25:21 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id az7so19252545qkb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:25:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
-        b=soSnfWAATNmpAe6ZQ2j5ak7EhVrbLv937C6+1XwjX9Fs5UZ/bAvbAVxSmA98koDFDu
-         Kf3SBszPIxgmp2szPJ9E8a+ywQ1uI5o2YaHDwBkcqfCnoKA0HTImXx1S4wgvyWUbxYaF
-         mVFcjpUKdKgxWQmEcUcPy//R4A+INDCw0AJdVEIYAhnz35gziNzz6P86X9B016IN4Csk
-         wkpjym5OK3f4lYaWLccvEtKLUegtIYzs+yN00wrpPcx4Ol1/OPhnDBzoBcrcE/3ddQwZ
-         byyt0rw2u9geWhA5bziQsgrC+ZZuJfGrotVQJDJ2qWlwXTNoMu5+Ood4UMUtcNsWEsHZ
-         0How==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
-        b=crNSk4DDMbTcfgLFVRItWwkSTzujJHljnEaH97OCt2XwNE9wvTkdm7/k/hANpWwn0A
-         XxYktMwAvfbNvYF2+h3wmw52HsplsJ9B4rXe+br7WhoNSCqRvrQH+GWlWber7OLtR8mo
-         n33g4CmTmGWqT8YVpicz8b3DSNugzC4EG4eYT6plVsDr+HvKuKplFEgCAm3U0nStT2JQ
-         /DnxBcCbn+ZeVr1FPtGE+r2L9oLiUd1/TsUuUNSx/lNWSbQbK0oHpyxAw9qlZFifnYon
-         x+ZZUDb+aCyhyfcXTuZ7NcolGxjnBkNRd5gKUo7dNmzuyTzkbXIPcWjMNgDnA0Bli6kC
-         5YLg==
-X-Gm-Message-State: AOAM531q2ND5ch84B5xEM0a98CjS8YMm7N+SY1OnaLfZ5ao/UIwCnlKk
-        t2Xmciw5Wn6QCPIPrB/zpl2idpHy5KekFPAPujU=
-X-Google-Smtp-Source: ABdhPJz2syIqV8+Zxe8kY0OvM+gj/kYvtjzN1nLkTAm9TuV2pdCNz+2T7kGPica+HcupjeqUcxFdsdW9mCKWu7hhNwU=
-X-Received: by 2002:a37:634e:: with SMTP id x75mr18535616qkb.35.1627982720989;
- Tue, 03 Aug 2021 02:25:20 -0700 (PDT)
+        id S235252AbhHCJt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:49:29 -0400
+Received: from mga12.intel.com ([192.55.52.136]:49530 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235178AbhHCJtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 05:49:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="193234232"
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="asc'?scan'208";a="193234232"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 02:49:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="asc'?scan'208";a="479414890"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
+  by fmsmga008.fm.intel.com with ESMTP; 03 Aug 2021 02:49:07 -0700
+Date:   Tue, 3 Aug 2021 17:27:01 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 01/21] drm/i915/gvt: integrate into the main Makefile
+Message-ID: <20210803092701.GE13928@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20210721155355.173183-1-hch@lst.de>
+ <20210721155355.173183-2-hch@lst.de>
 MIME-Version: 1.0
-Reply-To: zahirikeen@gmail.com
-Sender: igaidam913@gmail.com
-Received: by 2002:a05:6214:e4b:0:0:0:0 with HTTP; Tue, 3 Aug 2021 02:25:20
- -0700 (PDT)
-From:   Zahiri Keen <zahirikeen2@gmail.com>
-Date:   Tue, 3 Aug 2021 09:25:20 +0000
-X-Google-Sender-Auth: BUIsg66FzOnMdoK0OvkypeJXR6g
-Message-ID: <CAEfhoOZ5ijdLvyqRCWPdpf=5HJ3gws0yz4Rz_5+hpMfEizdAGg@mail.gmail.com>
-Subject: URGENT.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="VB1oQhYtJt8uuzk+"
+Content-Disposition: inline
+In-Reply-To: <20210721155355.173183-2-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
 
-            I have a Mutual/Beneficial Business Project that would be
-beneficial to you. I only have two questions to ask of you, if you are
-interested.
+--VB1oQhYtJt8uuzk+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-1. Can you handle this project?
-2. Can I give you this trust?
+On 2021.07.21 17:53:35 +0200, Christoph Hellwig wrote:
+> Remove the separately included Makefile and just use the relative
+> reference from the main i915 Makefile as for source files in other
+> subdirectories.
+>
 
-Please note that the deal requires high level of maturity, honesty and
-secrecy. This will involve moving some money from my office, on trust
-to your hands or bank account. Also note that i will do everything to
-make sure that the money is moved as a purely legitimate fund, so you
-will not be exposed to any risk.
+We agreed to make gvt mostly self-contained in its own directory
+before. Although I don't think we would change files much later, but
+still need to get ack from i915 maintainers.
 
-I request for your full co-operation. I will give you details and
-procedure when I receive your reply, to commence this transaction, I
-require you to immediately indicate your interest by a return reply. I
-will be waiting for your response in a timely manner.
+Thanks
 
-Contact  Email: zahirikeen@gmail.com
-Best Regard,
-Mr Zahiri Keen.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/gpu/drm/i915/Makefile     | 29 ++++++++++++++++++++++++-----
+>  drivers/gpu/drm/i915/gvt/Makefile |  9 ---------
+>  drivers/gpu/drm/i915/gvt/trace.h  |  2 +-
+>  3 files changed, 25 insertions(+), 15 deletions(-)
+>  delete mode 100644 drivers/gpu/drm/i915/gvt/Makefile
+>=20
+> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+> index 4f22cac1c49b..2153f67705b8 100644
+> --- a/drivers/gpu/drm/i915/Makefile
+> +++ b/drivers/gpu/drm/i915/Makefile
+> @@ -289,11 +289,30 @@ i915-$(CONFIG_DRM_I915_SELFTEST) +=3D \
+> =20
+>  # virtual gpu code
+>  i915-y +=3D i915_vgpu.o
+> -
+> -ifeq ($(CONFIG_DRM_I915_GVT),y)
+> -i915-y +=3D intel_gvt.o
+> -include $(src)/gvt/Makefile
+> -endif
+> +i915-$(CONFIG_DRM_I915_GVT) +=3D \
+> +	intel_gvt.o \
+> +	gvt/gvt.o \
+> +	gvt/aperture_gm.o \
+> +	gvt/handlers.o \
+> +	gvt/vgpu.o \
+> +	gvt/trace_points.o \
+> +	gvt/firmware.o \
+> +	gvt/interrupt.o \
+> +	gvt/gtt.o \
+> +	gvt/cfg_space.o \
+> +	gvt/opregion.o \
+> +	gvt/mmio.o \
+> +	gvt/display.o \
+> +	gvt/edid.o \
+> +	gvt/execlist.o \
+> +	gvt/scheduler.o \
+> +	gvt/sched_policy.o \
+> +	gvt/mmio_context.o \
+> +	gvt/cmd_parser.o \
+> +	gvt/debugfs.o \
+> +	gvt/fb_decoder.o \
+> +	gvt/dmabuf.o \
+> +	gvt/page_track.o
+> =20
+>  obj-$(CONFIG_DRM_I915) +=3D i915.o
+>  obj-$(CONFIG_DRM_I915_GVT_KVMGT) +=3D gvt/kvmgt.o
+> diff --git a/drivers/gpu/drm/i915/gvt/Makefile b/drivers/gpu/drm/i915/gvt=
+/Makefile
+> deleted file mode 100644
+> index ea8324abc784..000000000000
+> --- a/drivers/gpu/drm/i915/gvt/Makefile
+> +++ /dev/null
+> @@ -1,9 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -GVT_DIR :=3D gvt
+> -GVT_SOURCE :=3D gvt.o aperture_gm.o handlers.o vgpu.o trace_points.o fir=
+mware.o \
+> -	interrupt.o gtt.o cfg_space.o opregion.o mmio.o display.o edid.o \
+> -	execlist.o scheduler.o sched_policy.o mmio_context.o cmd_parser.o debug=
+fs.o \
+> -	fb_decoder.o dmabuf.o page_track.o
+> -
+> -ccflags-y				+=3D -I $(srctree)/$(src) -I $(srctree)/$(src)/$(GVT_DIR)/
+> -i915-y					+=3D $(addprefix $(GVT_DIR)/, $(GVT_SOURCE))
+> diff --git a/drivers/gpu/drm/i915/gvt/trace.h b/drivers/gpu/drm/i915/gvt/=
+trace.h
+> index 6d787750d279..348f57f8301d 100644
+> --- a/drivers/gpu/drm/i915/gvt/trace.h
+> +++ b/drivers/gpu/drm/i915/gvt/trace.h
+> @@ -379,5 +379,5 @@ TRACE_EVENT(render_mmio,
+>  #undef TRACE_INCLUDE_PATH
+>  #define TRACE_INCLUDE_PATH .
+>  #undef TRACE_INCLUDE_FILE
+> -#define TRACE_INCLUDE_FILE trace
+> +#define TRACE_INCLUDE_FILE gvt/trace
+>  #include <trace/define_trace.h>
+> --=20
+> 2.30.2
+>=20
+> _______________________________________________
+> intel-gvt-dev mailing list
+> intel-gvt-dev@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
+
+--VB1oQhYtJt8uuzk+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYQkL2gAKCRCxBBozTXgY
+J/5cAJ9pYxk2Ta7nNyfkoU3IN2SErPcQnACfTJy/bnXqPaXazunMj0R8cAC1kzI=
+=KO+V
+-----END PGP SIGNATURE-----
+
+--VB1oQhYtJt8uuzk+--
