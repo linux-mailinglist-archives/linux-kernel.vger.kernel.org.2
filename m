@@ -2,213 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576723DF330
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D163DF339
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237303AbhHCQvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234639AbhHCQu5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:50:57 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B78C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 09:50:46 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id j3so9342043plx.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 09:50:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Iqc5j4y63ceZj/9amRDa8SAqtdQrRV532yAoOjCbGJ0=;
-        b=UCCx6wetZlH2P5F0XTnB5ifaSVUINJ0jxO5NBKItpkhx9/a4x3//vx2ys6flv2Fv+/
-         hCcZhkMA7LP9ekE6mHaLUzkBQjZB8NLSoB7Z1fpi0NQ7gWUf1356A8ah4rrReFsj6O3E
-         iDCn4GQIT/2CNdbHlheIA76CPIPd0A6MVBWlYDs+jIGbKPN12cMr2rMpq8k5DEFMlV/H
-         l+5kVX1fDOg2DGtoDAY/xIR86WC2AlEPzeQPz1NtPn6x+6UqqWHd2P1JDCscw1GPJFsj
-         pdZ72F4UbIXtlFsG3sJbVJZB4Eg3eOYwXNCRpj/rSOIcjekDJKLHuQdW4iM2ezXHzeUO
-         Vcxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Iqc5j4y63ceZj/9amRDa8SAqtdQrRV532yAoOjCbGJ0=;
-        b=A4LCvDDWYmqZZlnCuSWpWkwSEg1I8ky1MhRYLuwY9K2qtTL9KWaFQHFnRf0wjSmgr6
-         xz1IwzyJzEmFyd19wlbmtlPcEhAF4xauwL4uZuotN9/lltaTzfjfksN9D6F70aeHCgi/
-         idcaq5Sn8fPqe4GX75bO49TSseOrCLIfNa7BkChdKPEtsbvrPTm6q797bQOAUGINXpc2
-         5Nf95L8RxGFtGScnf7GkppDjfIrPIuA2JO4yTnx0jiu4LlGUXjh8T7USEd1PWC8zGqww
-         xvBF7hPkPHJ3j8+sc2icqo3CHfxtjxYhIl8ejYug7l98G5DwuVfBBKV2BnzytIF+Rput
-         uu8g==
-X-Gm-Message-State: AOAM531LFPKsrO83nImU/MOQEAcCM4iGuJh/pkSpN47SE+8Z5rnkYYXI
-        EwBvpxSF1xUDSl8Zhr0DMs3rkw==
-X-Google-Smtp-Source: ABdhPJw8iQ11fvYVuOgf2IP7iRVkV6c4R80x9lXlBQ6Gxn5cDdDBq4q9gfbAANsRw2Bpdxco+vvnhg==
-X-Received: by 2002:a17:90a:4fa3:: with SMTP id q32mr5445650pjh.123.1628009446069;
-        Tue, 03 Aug 2021 09:50:46 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id l11sm17179890pfd.187.2021.08.03.09.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 09:50:45 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 16:50:41 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        id S237431AbhHCQw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:52:26 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30450 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237436AbhHCQwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:52:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="200924730"
+X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
+   d="scan'208";a="200924730"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 09:51:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
+   d="scan'208";a="521321090"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga002.fm.intel.com with ESMTP; 03 Aug 2021 09:51:47 -0700
+Received: from alobakin-mobl.ger.corp.intel.com (mszymcza-mobl.ger.corp.intel.com [10.213.25.231])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 173Gpg76004325;
+        Tue, 3 Aug 2021 17:51:42 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Marc Orr <marcorr@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Alper Gun <alpergun@google.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v2] KVM: SVM: improve the code readability for ASID
- management
-Message-ID: <YQlz4YDu/W8+YsZl@google.com>
-References: <20210802180903.159381-1-mizhang@google.com>
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: [PATCH ethtool-next 0/5] stats: add support for per-channel and XDP standard stats
+Date:   Tue,  3 Aug 2021 18:51:35 +0200
+Message-Id: <20210803165140.172-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802180903.159381-1-mizhang@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Tom and Brijesh
+This series adds bits to support per-channel standard statistics,
+mentions the new "xdp" group of standard stats landed in Linux with
+commit 44eee6116fda ("ethtool, stats: introduce standard XDP statistics")
+and fixes one typo in the man page while at it.
 
-On Mon, Aug 02, 2021, Mingwei Zhang wrote:
-> KVM SEV code uses bitmaps to manage ASID states. ASID 0 was always skipped
-> because it is never used by VM. Thus, in existing code, ASID value and its
-> bitmap postion always has an 'offset-by-1' relationship.
-> 
-> Both SEV and SEV-ES shares the ASID space, thus KVM uses a dynamic range
-> [min_asid, max_asid] to handle SEV and SEV-ES ASIDs separately.
-> 
-> Existing code mixes the usage of ASID value and its bitmap position by
-> using the same variable called 'min_asid'.
-> 
-> Fix the min_asid usage: ensure that its usage is consistent with its name;
-> allocate extra size for ASID 0 to ensure that each ASID has the same value
-> with its bitmap position. Add comments on ASID bitmap allocation to clarify
-> the size change.
-> 
-> v1 -> v2:
->  - change ASID bitmap size to incorporate ASID 0 [sean]
->  - remove the 'fixes' line in commit message. [sean/joerg]
-> 
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Marc Orr <marcorr@google.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Alper Gun <alpergun@google.com>
-> Cc: Dionna Glaze <dionnaglaze@google.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Vipin Sharma <vipinsh@google.com>
-> Cc: Peter Gonda <pgonda@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> ---
+The original series for the kernel part is here: [0]
 
-...
+[0] https://lore.kernel.org/netdev/20210803163641.3743-1-alexandr.lobakin@intel.com
 
-> @@ -156,11 +157,11 @@ static int sev_asid_new(struct kvm_sev_info *sev)
->  		goto e_uncharge;
->  	}
->  
-> -	__set_bit(pos, sev_asid_bitmap);
-> +	__set_bit(asid, sev_asid_bitmap);
+Alexander Lobakin (5):
+  sync UAPI header copies
+  stats: factor out one stat field printing
+  stats: add support for per-channel statistics [blocks]
+  man: fix typo for "rmon" standard stat type
+  man: mention XDP standard statistics in help and man page
 
+ ethtool.8.in                 |   5 +-
+ ethtool.c                    |   2 +-
+ netlink/stats.c              | 114 +++++++++++++++++++++++++++++------
+ uapi/linux/ethtool.h         |   6 +-
+ uapi/linux/ethtool_netlink.h |  51 +++++++++++++++-
+ uapi/linux/if_link.h         |  20 ++++++
+ uapi/linux/net_tstamp.h      |  17 +++++-
+ uapi/linux/netlink.h         |   5 +-
+ 8 files changed, 190 insertions(+), 30 deletions(-)
 
-This patch missed sev_asid_free(). 
+-- 
+2.31.1
 
-And on a very related topic, I'm pretty sure the VMCB+ASID invalidation logic
-indexes sev_vmcbs incorrectly.  pre_sev_run() indexes sev_vmcbs by the ASID,
-whereas sev_asid_free() indexes by ASID-1, i.e. on free KVM nullifies the wrong
-sev_vmcb entry.  sev_cpu_init() allocates for max_sev_asid+1, so indexing by
-ASID appears to be the intended behavior.  That code is also a good candidate for
-conversion to nr_asids in this patch.
-
-For the sev_vmcbs bug:
-
-From 78c334121adaa51a2a84942ec65dceefd3752590 Mon Sep 17 00:00:00 2001
-From: Sean Christopherson <seanjc@google.com>
-Date: Tue, 3 Aug 2021 09:27:46 -0700
-Subject: [PATCH] KVM: SVM: Fix off-by-one indexing when nullifying last used
- SEV VMCB
-
-Use the raw ASID, not ASID-1, when nullifying the last used VMCB when
-freeing an SEV ASID.  The consumer, pre_sev_run(), indexes the array by
-the raw ASID, thus KVM could get a false negative when checking for a
-different VMCB if KVM manages to reallocate the same ASID+VMCB combo for
-a new VM.
-
-Note, this cannot cause a functional issue _in the current code_, as
-pre_sev_run() also checks which pCPU last did VMRUN for the vCPU, and
-last_vmentry_cpu is initialized to -1 during vCPU creation, i.e. is
-guaranteed to mismatch on the first VMRUN.  However, prior to commit
-8a14fe4f0c54 ("kvm: x86: Move last_cpu into kvm_vcpu_arch as
-last_vmentry_cpu"), SVM tracked pCPU on its own and zero-initialized the
-last_cpu variable.  Thus it's theoretically possible that older versions
-of KVM could miss a TLB flush if the first VMRUN is on pCPU0 and the ASID
-and VMCB exactly match those of a prior VM.
-
-Fixes: 70cd94e60c73 ("KVM: SVM: VMRUN should use associated ASID when SEV is enabled")
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/sev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 9f1585f40c85..f4f5d554eaaa 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -189,7 +189,7 @@ static void sev_asid_free(struct kvm_sev_info *sev)
-
- 	for_each_possible_cpu(cpu) {
- 		sd = per_cpu(svm_data, cpu);
--		sd->sev_vmcbs[pos] = NULL;
-+		sd->sev_vmcbs[sev->asid] = NULL;
- 	}
-
- 	mutex_unlock(&sev_bitmap_lock);
---
-2.32.0.554.ge1b32706d8-goog
-
-And fixup for this patch:
-
-
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index f3df1eba0c72..416ae0b687fc 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -180,13 +180,12 @@ static int sev_get_asid(struct kvm *kvm)
- static void sev_asid_free(struct kvm_sev_info *sev)
- {
- 	struct svm_cpu_data *sd;
--	int cpu, pos;
-+	int cpu;
- 	enum misc_res_type type;
- 
- 	mutex_lock(&sev_bitmap_lock);
- 
--	pos = sev->asid - 1;
--	__set_bit(pos, sev_reclaim_asid_bitmap);
-+	__set_bit(sev->asid, sev_reclaim_asid_bitmap);
- 
- 	for_each_possible_cpu(cpu) {
- 		sd = per_cpu(svm_data, cpu);
-@@ -1928,7 +1927,7 @@ int sev_cpu_init(struct svm_cpu_data *sd)
- 	if (!sev_enabled)
- 		return 0;
- 
--	sd->sev_vmcbs = kcalloc(max_sev_asid + 1, sizeof(void *), GFP_KERNEL);
-+	sd->sev_vmcbs = kcalloc(nr_asids, sizeof(void *), GFP_KERNEL);
- 	if (!sd->sev_vmcbs)
- 		return -ENOMEM;
- 
---
