@@ -2,156 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6280B3DE7A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAF63DE7A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234275AbhHCH54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:57:56 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:56428
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234148AbhHCH5z (ORCPT
+        id S234148AbhHCH6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:58:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27722 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234269AbhHCH6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:57:55 -0400
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 0159A3F045
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:57:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627977464;
-        bh=XT27LvhXCtWQtHsOtnNCUTHBoi4eZ4v51vF7/L9hL5E=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=PMdQALfaIl9D+he0/s0x2JUA6RXZfro3cN7ShrjzUEhQh7sJx5j2coRu4HTRIMBK0
-         QxcxCrzu7LIlJLUWu5LNs02DDuxBZTyL1kHxoI8OShWHJgeq9d/9Q/WOzWlyrWmRU/
-         n3qERHDtAY8k9BRzwAj1wq/nTnbXqL3MtuewqnYpmxpZdRiJS6VtRpAi0kOTk0L6MR
-         kFUqhjCEGv02lornXtvXxBL82jM8uaL2e6sBGi7Z+43kA6CR1fwDffjqwiPdovrsko
-         UN5VHTAslJKWY6oukcfeoTEIqVbPpscIrznftSLVhOP935RmbKzxbT8L4bF+fT7WK9
-         lt5cNKiQ8cU0A==
-Received: by mail-ej1-f69.google.com with SMTP id k21-20020a1709062a55b0290590e181cc34so4596825eje.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:57:43 -0700 (PDT)
+        Tue, 3 Aug 2021 03:58:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627977523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4067Q/uBr5whrrksAorpAMgFNv8fx79XPkLrnKf4gpY=;
+        b=GsYFhZt0eeN7o6OmcSp59Y3ZBqGFQJPDhZgS3Z0hWFoJuGkoqWS9w+upgFHXJGjMTDac++
+        XAJ07zL6HQiAkQFSyyinvydU+J0PqWiaSmmyB/Zve7namqIHO+533Mw5BDqK/aVe3BLYu/
+        nBo96LvmrcVOXaI23SHi/QClOF8f+Vo=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-j-NQOmwTOr63DbsrCUtMLg-1; Tue, 03 Aug 2021 03:58:42 -0400
+X-MC-Unique: j-NQOmwTOr63DbsrCUtMLg-1
+Received: by mail-pj1-f72.google.com with SMTP id v9-20020a17090a7c09b02901778a2a8fd6so2221233pjf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:58:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XT27LvhXCtWQtHsOtnNCUTHBoi4eZ4v51vF7/L9hL5E=;
-        b=Ke95Ekd/VogDCISfiLocz7RbVuCmGQWg1OkObShP8h4TrG9ULYyXwUA7Vj2gJ9Yw7X
-         gwvO2SFFvqlwDGYa+ictWyCUgevf1bBSmROa56Y12jNs/457/YXoIMG9lZ99Ma04TxGE
-         Krm1ColU9YjzMI99LgwT5cXyQZfze4IzCl7777Bdag+GdTEuSzhfKCY8uF8hXJjWtU+G
-         PmUzNzs/Acq+FQbIJ3L/a4erfH67Whh3NjzGkRUsnQPaBnXcEI+HIbmg2SoSRq/ch1AT
-         E+AMN3Mx9i/YnmfDcuq5eLb5/ncS+3/Y91rCI5mOsdyjC6QWj+E510+Vzebet/JtruIP
-         UKBg==
-X-Gm-Message-State: AOAM533+5zRKEnoGydrPWWfHjPIcNPuFBN7MkqxacPVwAA0uncXxhtp1
-        jm5o95Fj0f5CXn1TgNk1z5dM0VjQFV3cRlxPqSq8ItVMQzBuZFKnGSNp4dToHDXxtoz8aNlbJz+
-        ToUV/zksC4n8i1dWzU+ArTTc8S3UidNuG90WGMLC/1g==
-X-Received: by 2002:a05:6402:35c7:: with SMTP id z7mr23863135edc.85.1627977463363;
-        Tue, 03 Aug 2021 00:57:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0JGqu++FOOsm7/ygatKxidsI66MQcmo0glaMlJa90SqJmBuO36pTl5KpxAqeMlEHo+jYCNQ==
-X-Received: by 2002:a05:6402:35c7:: with SMTP id z7mr23863125edc.85.1627977463203;
-        Tue, 03 Aug 2021 00:57:43 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.43.172])
-        by smtp.gmail.com with ESMTPSA id t10sm6092065edv.34.2021.08.03.00.57.42
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=4067Q/uBr5whrrksAorpAMgFNv8fx79XPkLrnKf4gpY=;
+        b=XtCGuBDZVy0kfmRo7FsjZFPr6Ct4FxXYCCd2+BhUr6RkHUKhGoZ4hXRysjoqNboibM
+         Nj0Ti3n30YF5vChITGg7zincNBm4DDOIm4FGLxuOdxIqM6ey4uB7kazEnVdIxQFSe8b1
+         dMnr2soIJCYJxGE4XxHGIm+tUm1h9z/Iz/r9ixyywx6nSytiJVuyRnmsHATpomuOA8ml
+         3HhU8l1Ov/aMHBwUaEd8xFG8/SJtwS4XFrYa8oAysepEKVcZevmXollmQng5YeK23S0c
+         Z0i9AV365ta4da03F6lc54ooEUVmeX3pXXJNGL9/e0dnhRWhKI9haLepkD2KGHh7Y2cj
+         fG+A==
+X-Gm-Message-State: AOAM533NLbr4FV1n6QaWgWnFP7/ACi9uf31bWWG1q6cgtT2RCqyo90Oa
+        4M+fJJmPBsAU+jROGDZ00lmpVB6VYKo3PghNElb8hjTPzvcEF2/DgsbzvnDV8V3Mhqo385CYIis
+        c0X9PMvZwJW2KF522/xJMcf1TwimZX0cPVKPT3qwzSuhrLLT4dIJ8y5pFJfiNX6ktERcyx31d6a
+        zo
+X-Received: by 2002:a62:64ce:0:b029:3b8:90c:6eec with SMTP id y197-20020a6264ce0000b02903b8090c6eecmr13054254pfb.9.1627977520865;
+        Tue, 03 Aug 2021 00:58:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwjX5wUayvV2kr5HqNyIW/IueFG/FKVhos2G8U/pZi0sFBb3YPj3+qYU1BLVJyBkEZqQdqW6A==
+X-Received: by 2002:a62:64ce:0:b029:3b8:90c:6eec with SMTP id y197-20020a6264ce0000b02903b8090c6eecmr13054211pfb.9.1627977520538;
+        Tue, 03 Aug 2021 00:58:40 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id s133sm4953282pfs.190.2021.08.03.00.58.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 00:57:42 -0700 (PDT)
-Subject: Re: [PATCH] memory: fsl_ifc: fix leak of irq and nand_irq in
- fsl_ifc_ctrl_probe
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210803075159.2823913-1-mudongliangabcd@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <81ccbbb5-5499-7a75-88ba-bae5328ffbf9@canonical.com>
-Date:   Tue, 3 Aug 2021 09:57:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 03 Aug 2021 00:58:40 -0700 (PDT)
+Subject: Re: [PATCH v10 04/17] vdpa: Fail the vdpa_reset() if fail to set
+ device status to zero
+To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
+        stefanha@redhat.com, sgarzare@redhat.com, parav@nvidia.com,
+        hch@infradead.org, christian.brauner@canonical.com,
+        rdunlap@infradead.org, willy@infradead.org,
+        viro@zeniv.linux.org.uk, axboe@kernel.dk, bcrl@kvack.org,
+        corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org,
+        gregkh@linuxfoundation.org, zhe.he@windriver.com,
+        xiaodong.liu@intel.com, joe@perches.com
+Cc:     songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210729073503.187-1-xieyongji@bytedance.com>
+ <20210729073503.187-5-xieyongji@bytedance.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <39a191f6-555b-d2e6-e712-735b540526d0@redhat.com>
+Date:   Tue, 3 Aug 2021 15:58:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210803075159.2823913-1-mudongliangabcd@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210729073503.187-5-xieyongji@bytedance.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2021 09:51, Dongliang Mu wrote:
-> In fsl_ifc_ctrl_probe, if fsl_ifc_ctrl_init fails, we should free the
-> resources allocated by irq_of_parse_and_map.
 
-Your code is doing much more. You also touch nand_irq, not only
-fsl_ifc_ctrl_init(). This looks incorrect as IRQ is optional, isn't it?
-
-The problem is entirely different than you described here - the error
-paths of fsl_ifc_ctrl_init() and request_irq() are wrong. They do not
-release resources in proper paths.
-
-
-
-Best regards,
-Krzysztof
-
-> 
-> Fix this by adjusting the error handling code.
-> 
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+ÔÚ 2021/7/29 ÏÂÎç3:34, Xie Yongji Ð´µÀ:
+> Re-read the device status to ensure it's set to zero during
+> resetting. Otherwise, fail the vdpa_reset() after timeout.
+>
+> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 > ---
->  drivers/memory/fsl_ifc.c | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-> index d062c2f8250f..391390dd3dcb 100644
-> --- a/drivers/memory/fsl_ifc.c
-> +++ b/drivers/memory/fsl_ifc.c
-> @@ -258,12 +258,17 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
->  	/* get the nand machine irq */
->  	fsl_ifc_ctrl_dev->nand_irq =
->  			irq_of_parse_and_map(dev->dev.of_node, 1);
-> +	if (fsl_ifc_ctrl_dev->nand_irq == 0) {
-> +		dev_err(&dev->dev, "failed to get nand_irq resource for IFC\n");
-> +		ret = -ENODEV;
-> +		goto err_unmap_irq;
+>   include/linux/vdpa.h | 15 ++++++++++++++-
+>   1 file changed, 14 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> index 406d53a606ac..d1a80ef05089 100644
+> --- a/include/linux/vdpa.h
+> +++ b/include/linux/vdpa.h
+> @@ -6,6 +6,7 @@
+>   #include <linux/device.h>
+>   #include <linux/interrupt.h>
+>   #include <linux/vhost_iotlb.h>
+> +#include <linux/delay.h>
+>   
+>   /**
+>    * struct vdpa_calllback - vDPA callback definition.
+> @@ -340,12 +341,24 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
+>   	return vdev->dma_dev;
+>   }
+>   
+> -static inline void vdpa_reset(struct vdpa_device *vdev)
+> +#define VDPA_RESET_TIMEOUT_MS 1000
+> +
+> +static inline int vdpa_reset(struct vdpa_device *vdev)
+>   {
+>   	const struct vdpa_config_ops *ops = vdev->config;
+> +	int timeout = 0;
+>   
+>   	vdev->features_valid = false;
+>   	ops->set_status(vdev, 0);
+> +	while (ops->get_status(vdev)) {
+> +		timeout += 20;
+> +		if (timeout > VDPA_RESET_TIMEOUT_MS)
+> +			return -EIO;
+> +
+> +		msleep(20);
 > +	}
->  
->  	fsl_ifc_ctrl_dev->dev = &dev->dev;
->  
->  	ret = fsl_ifc_ctrl_init(fsl_ifc_ctrl_dev);
->  	if (ret < 0)
-> -		goto err;
-> +		goto err_unmap_nandirq;
->  
->  	init_waitqueue_head(&fsl_ifc_ctrl_dev->nand_wait);
->  
-> @@ -272,7 +277,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
->  	if (ret != 0) {
->  		dev_err(&dev->dev, "failed to install irq (%d)\n",
->  			fsl_ifc_ctrl_dev->irq);
-> -		goto err_irq;
-> +		goto err_unmap_nandirq;
->  	}
->  
->  	if (fsl_ifc_ctrl_dev->nand_irq) {
-> @@ -281,17 +286,17 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
->  		if (ret != 0) {
->  			dev_err(&dev->dev, "failed to install irq (%d)\n",
->  				fsl_ifc_ctrl_dev->nand_irq);
-> -			goto err_nandirq;
-> +			goto err_free_irq;
->  		}
->  	}
->  
->  	return 0;
->  
-> -err_nandirq:
-> -	free_irq(fsl_ifc_ctrl_dev->nand_irq, fsl_ifc_ctrl_dev);
-> -	irq_dispose_mapping(fsl_ifc_ctrl_dev->nand_irq);
-> -err_irq:
-> +err_free_irq:
->  	free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
-> +err_unmap_nandirq:
-> +	irq_dispose_mapping(fsl_ifc_ctrl_dev->nand_irq);
-> +err_unmap_irq:
->  	irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
->  err:
->  	iounmap(fsl_ifc_ctrl_dev->gregs);
-> 
+
+
+I wonder if it's better to do this in the vDPA parent?
+
+Thanks
+
+
+> +
+> +	return 0;
+>   }
+>   
+>   static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
 
