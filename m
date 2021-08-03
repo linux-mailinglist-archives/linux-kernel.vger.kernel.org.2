@@ -2,127 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A857F3DF691
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 421563DF693
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhHCUqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 16:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhHCUqW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 16:46:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23FBC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 13:46:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=KwS04zHg80LQteaaJobSnff6xWOJoAvmuOYagGyDQF4=; b=PthhJ80FjQaA8i2j/Kg9nRLzzr
-        sZmzKLtRmRiU1lzAAjuchNbDcd4Myid9/ylayGQCny9psXGTPI4EGrfUbcKqeWw+93M7+QtQO5COP
-        izl6wOwr8aaw1WE/FUEjiI57WdMavJ5ngmlQE/4C8i46JaCrezMDyYAJCaZlW+eUxD9erOGSieo/G
-        acg6ab4dEDnXyq8/XhQDAWrpokupCqy0CcHby79fFnKkzPwtY7qEMbowkeoGYsXMD4sbZMnPul/uT
-        ZGC49ziFqxs5lQ+Pmw40f2RhIZJhesK7z64RwRi8gPieMKFN2v6F13261wmgyyMBOLiM2laMCCLLZ
-        QxZVuMpA==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mB1Ig-004Bw0-BI; Tue, 03 Aug 2021 20:46:10 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH -next/-mmotm] kernel/user.c: fix build when POLL not enabled
-Date:   Tue,  3 Aug 2021 13:46:09 -0700
-Message-Id: <20210803204609.32329-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S231271AbhHCUrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 16:47:25 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:38932 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229551AbhHCUrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 16:47:24 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mB1Jb-0003eZ-Ux; Tue, 03 Aug 2021 22:47:07 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Michael Riesch <michael.riesch@wolfvision.net>
+Cc:     Rob Herring <robh+dt@kernel.org>, Liang Chen <cl@rock-chips.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Simon Xue <xxm@rock-chips.com>
+Subject: Re: [PATCH 4/5] arm64: dts: rockchip: rk3568-evb1-v10: add pinctrl and alias to emmc node
+Date:   Tue, 03 Aug 2021 22:47:07 +0200
+Message-ID: <4739137.8F6SAcFxjW@diego>
+In-Reply-To: <20210803185309.10013-5-michael.riesch@wolfvision.net>
+References: <20210803185309.10013-1-michael.riesch@wolfvision.net> <20210803185309.10013-5-michael.riesch@wolfvision.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build errors in kernel/user.c when CONFIG_EPOLL is not set/enabled.
+Am Dienstag, 3. August 2021, 20:53:08 CEST schrieb Michael Riesch:
+> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+> index f3fd4a6813a2..3ac70a8183c4 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+> @@ -16,6 +16,7 @@
+>  	aliases {
+>  		ethernet0 = &gmac0;
+>  		ethernet1 = &gmac1;
+> +		emmc = &sdhci;
 
-../kernel/user.c: In function ‘free_user’:
-../kernel/user.c:141:30: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
-  percpu_counter_destroy(&up->epoll_watches);
-                              ^~~~~~~~~~~~~
-In file included from ../include/linux/sched/user.h:7:0,
-                 from ../kernel/user.c:17:
-../kernel/user.c: In function ‘alloc_uid’:
-../kernel/user.c:189:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
-   if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
-                                 ^
-../kernel/user.c:203:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
-    percpu_counter_destroy(&new->epoll_watches);
-                                 ^~~~~~~~~~~~~
-In file included from ../include/linux/sched/user.h:7:0,
-                 from ../kernel/user.c:17:
-../kernel/user.c: In function ‘uid_cache_init’:
-../kernel/user.c:225:37: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
-  if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
-                                     ^
-Also fix type: "cpunter" -> "counter" in a panic message.
+what is this supposed to do?
 
-Fixes: e75b89477811 ("fs/epoll: use a per-cpu counter for user's watches count")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Nick Piggin <npiggin@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
----
- kernel/user.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+I don't think "emmc" is defined as any form of alias, instead
+mmc aliases generally are more "mmcX" for X 0,1,etc .
 
---- mmotm-2021-0802-1851.orig/kernel/user.c
-+++ mmotm-2021-0802-1851/kernel/user.c
-@@ -137,9 +137,11 @@ static void free_user(struct user_struct
- 	__releases(&uidhash_lock)
- {
- 	uid_hash_remove(up);
-+#ifdef CONFIG_EPOLL
- 	spin_unlock_irqrestore(&uidhash_lock, flags);
- 	percpu_counter_destroy(&up->epoll_watches);
- 	kmem_cache_free(uid_cachep, up);
-+#endif
- }
- 
- /*
-@@ -186,10 +188,12 @@ struct user_struct *alloc_uid(kuid_t uid
- 
- 		new->uid = uid;
- 		refcount_set(&new->__count, 1);
-+#ifdef CONFIG_EPOLL
- 		if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
- 			kmem_cache_free(uid_cachep, new);
- 			return NULL;
- 		}
-+#endif
- 		ratelimit_state_init(&new->ratelimit, HZ, 100);
- 		ratelimit_set_flags(&new->ratelimit, RATELIMIT_MSG_ON_RELEASE);
- 
-@@ -200,7 +204,9 @@ struct user_struct *alloc_uid(kuid_t uid
- 		spin_lock_irq(&uidhash_lock);
- 		up = uid_hash_find(uid, hashent);
- 		if (up) {
-+#ifdef CONFIG_EPOLL
- 			percpu_counter_destroy(&new->epoll_watches);
-+#endif
- 			kmem_cache_free(uid_cachep, new);
- 		} else {
- 			uid_hash_insert(new, hashent);
-@@ -222,8 +228,10 @@ static int __init uid_cache_init(void)
- 	for(n = 0; n < UIDHASH_SZ; ++n)
- 		INIT_HLIST_HEAD(uidhash_table + n);
- 
-+#ifdef CONFIG_EPOLL
- 	if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
--		panic("percpu cpunter alloc failed");
-+		panic("percpu counter alloc failed");
-+#endif
- 
- 	/* Insert the root user immediately (init already runs as root) */
- 	spin_lock_irq(&uidhash_lock);
+Heiko
+
+>  	};
+>  
+>  	chosen: chosen {
+> @@ -347,6 +348,8 @@
+>  	bus-width = <8>;
+>  	max-frequency = <200000000>;
+>  	non-removable;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&emmc_bus8 &emmc_clk &emmc_cmd &emmc_datastrobe>;
+>  	status = "okay";
+>  };
+>  
+> 
+
+
+
+
