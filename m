@@ -2,126 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AE13DF435
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08AA3DF438
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238490AbhHCRz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:55:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20474 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238468AbhHCRz5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:55:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628013346;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=TSdLbIa17Dn1sbXRatCyAZJSnstw1gwhMZIeM9izR74=;
-        b=cUNoU1SqV00jwPoy7I/OiWnmAFjg0QLu9jYaEVm460aO3s2K6m0Y+t9wuhokqxHA4WA2CW
-        iZokNpjTek1UfZ7ONZvpzWStn0sIq97oeQ7qtzngis6CQvO1Z+KCzZ2YulIFPoPc/McfWi
-        ZvjIf18Az0Zm9bQ4R4eyCLYdzvAQ3Yo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-108-mJ0SJSudN9-XCPEmJb--rQ-1; Tue, 03 Aug 2021 13:55:43 -0400
-X-MC-Unique: mJ0SJSudN9-XCPEmJb--rQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F91B190A7A0;
-        Tue,  3 Aug 2021 17:55:41 +0000 (UTC)
-Received: from llong.com (unknown [10.22.33.76])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C560A19C44;
-        Tue,  3 Aug 2021 17:55:35 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Luis Goncalves <lgoncalv@redhat.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] mm/memcg: Disable task obj_stock for PREEMPT_RT
-Date:   Tue,  3 Aug 2021 13:55:19 -0400
-Message-Id: <20210803175519.22298-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S238503AbhHCR5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:57:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233343AbhHCR5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 13:57:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C458F60EE9;
+        Tue,  3 Aug 2021 17:56:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628013418;
+        bh=otxBD+W8br1qAlPGK0SncEhzdtcUQKKIHlh6UHZyLfk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lhw38K4tL11M/lh4pwWznrPoaZd2gBJdCWZq9ndQWobV4sb09fz6I3kYXuIchqyZy
+         diCyclbOg3yYofB1q/6ZlIM9BC/q+7mYElSt6Ng3sjO3iSOb+lpV4IMVr8gBeiq/5q
+         47Ex0edUSEDPk3cMB1ZCUo1HvmzYWiSuWOOCSrocDc5kXiTs7xc1Csnk6t2+DmYIP6
+         9b0EX2XABw7yhvb1gtz5oi5z3h750VqIZRV3CApJwyD3zAiRVWHYp2Yl/h6FN6ovVm
+         jtyx6Y2+QQwMmfjrkYQY0tlai3m584goy/5ItWVjBGjXIzrbYJNR2i7pbCc6K2nALF
+         zW37x9AVJDY/Q==
+Date:   Tue, 3 Aug 2021 20:56:54 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
+Message-ID: <YQmDZpbCy3uTS5jv@unreal>
+References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
+ <20210803162507.GA2892108@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803162507.GA2892108@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For PREEMPT_RT kernel, preempt_disable() and local_irq_save()
-are typically converted to local_lock() and local_lock_irqsave()
-respectively. These two variants of local_lock() are essentially
-the same. Thus, there is no performance advantage in choosing one
-over the other.
+On Tue, Aug 03, 2021 at 01:25:07PM -0300, Jason Gunthorpe wrote:
+> On Sun, Aug 01, 2021 at 05:20:50PM +0800, Li Zhijian wrote:
+> > ibv_advise_mr(3) says:
+> > EFAULT In one of the following: o When the range requested is out of the  MR  bounds,
+> >        or  when  parts of it are not part of the process address space. o One of the
+> >        lkeys provided in the scatter gather list is invalid or with wrong write access
+> > 
+> > Actually get_prefetchable_mr() will return NULL if it see above conditions
+> 
+> No, get_prefetchable_mr() returns NULL if the mkey is invalid
 
-As there is no point in maintaining two different sets of obj_stock,
-it is simpler and more efficient to just disable task_obj and use
-only irq_obj for PREEMPT_RT. However, task_obj will still be there
-in the memcg_stock_pcp structure even though it is not used in this
-configuration.
+And what is this?
+  1701 static struct mlx5_ib_mr *                         
+  1702 get_prefetchable_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
+  1703                     u32 lkey)
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- mm/memcontrol.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+...
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 87c883227f90..4f80770cb97b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2120,12 +2120,22 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
-  * which is cheap in non-preempt kernel. The interrupt context object stock
-  * can only be accessed after disabling interrupt. User context code can
-  * access interrupt object stock, but not vice versa.
-+ *
-+ * For PREEMPT_RT kernel, preempt_disable() and local_irq_save() may have
-+ * to be changed to variants of local_lock(). This eliminates the
-+ * performance advantage of using preempt_disable(). Fall back to always
-+ * use local_irq_save() and use only irq_obj for simplicity.
-  */
-+static inline bool use_task_obj_stock(void)
-+{
-+	return !IS_ENABLED(CONFIG_PREEMPT_RT) && likely(in_task());
-+}
-+
- static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
- {
- 	struct memcg_stock_pcp *stock;
- 
--	if (likely(in_task())) {
-+	if (use_task_obj_stock()) {
- 		*pflags = 0UL;
- 		preempt_disable();
- 		stock = this_cpu_ptr(&memcg_stock);
-@@ -2139,7 +2149,7 @@ static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
- 
- static inline void put_obj_stock(unsigned long flags)
- {
--	if (likely(in_task()))
-+	if (use_task_obj_stock())
- 		preempt_enable();
- 	else
- 		local_irq_restore(flags);
-@@ -2212,7 +2222,7 @@ static void drain_local_stock(struct work_struct *dummy)
- 
- 	stock = this_cpu_ptr(&memcg_stock);
- 	drain_obj_stock(&stock->irq_obj);
--	if (in_task())
-+	if (use_task_obj_stock())
- 		drain_obj_stock(&stock->task_obj);
- 	drain_stock(stock);
- 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
-@@ -3217,7 +3227,7 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- {
- 	struct mem_cgroup *memcg;
- 
--	if (in_task() && stock->task_obj.cached_objcg) {
-+	if (use_task_obj_stock() && stock->task_obj.cached_objcg) {
- 		memcg = obj_cgroup_memcg(stock->task_obj.cached_objcg);
- 		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
- 			return true;
--- 
-2.18.1
+  1721         /* prefetch with write-access must be supported by the MR */
+  1722         if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
+  1723             !mr->umem->writable) {
+  1724                 mr = NULL;
+  1725                 goto end;
+  1726         }
 
+
+> 
+> The above is talking about the address, which is checked inside
+> pagefault_mr() and does return EFAULT for all the cases I can see?
+> 
+> Jason
