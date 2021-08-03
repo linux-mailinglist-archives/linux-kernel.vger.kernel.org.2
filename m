@@ -2,189 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CE93DE8BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B8B3DE8C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234698AbhHCIrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:47:35 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:60085 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234636AbhHCIre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:47:34 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id D17485C010B;
-        Tue,  3 Aug 2021 04:47:23 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 03 Aug 2021 04:47:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=aJKr0KVs8QcUt
-        m3RX8xITDONv6rq8qkUuYgrQHmakOQ=; b=aLyD8jdgh/Qd2qjl7svQtc3r51qT4
-        HAqAqLzBEwlIwufFVdMBPZTwgJJEpYnlruGW3az5ll+BwceWV5iHfERwCJfcmR2e
-        HLkDsqvtjXPZumjAzckZGDdGFO1XADvlQmcbuISnEQ5jzu9aia0tSfW+9L4Ol/Bh
-        lfvSj97Xu9z83EPp7EsNLiu3hlQuw3NIr3XUqrrhekgKyiGbF28mAwJk26SvXQWf
-        q3j+CHMwtgeaZ/3j3p6zCj7iy9sxqBprUADLIcvCjAZfBS9CWaodiJp40rvDF2Q9
-        6zvJ3LM8TgH6RhHgFzfVw07omHPc7v4w3EcEs3KLmQe2cj4BQPUl/0YYw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=aJKr0KVs8QcUtm3RX8xITDONv6rq8qkUuYgrQHmakOQ=; b=cbrIBpyH
-        qupt09N3eWVpZGXGpzHsPlQJ/6iDZeZTdcr0iFd1nie2owE0ThYgR7iVYiTqxAxS
-        PBd4UxdZQc3gNo0strYUxSVQYMfq0qqDZaKb4kZOfQLAPTmQ3nUfkoltSWlZnP8u
-        zPCLSYFfuOJa3slWwuniL+TjeQ74SltWdeRPuED1g3eyt0hLSPH3VJEs5BHzyMie
-        j3T+ExnrGEFYs+fix8rBthNcx2zTkiYxjCB1pKu7pRECEC5Ex28UYQUemcmuc919
-        PkGJ2qDrgOdcT/ifd6Dxz5WrCUKOz4k4IIbKsC1gegcN6e95MrzVVrSy9+HHb1Rp
-        cqpBBthxiud4Sg==
-X-ME-Sender: <xms:mwIJYTGynJqNUmH9LRP_dvLunpYN7p4m5wEV6zjl5NaZNvk94bIUEg>
-    <xme:mwIJYQUB8qdewKjlgNmycweEjRLgPBr2BRYz97ofu4HdrfTxvRGPV8tR4BmXQJZ0n
-    hjvGrix_DGQAJbquBE>
-X-ME-Received: <xmr:mwIJYVJF8Sw1E-VpWugQPxV2BvKAE4bH_xbBQHOnWnGBWbNYOY62wiYqatEbdQ36_7KNYKml95A4_C3S0Ha029Os8Tyn2fmSW8e3JLRY8fuizQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieeggddthecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghi
-    rhesrghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepgeegtdetjeekge
-    eguefgheeuvedugedvteejveeiudegvddtkeffkeehtdetudfhnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhish
-    htrghirhdvfedrmhgv
-X-ME-Proxy: <xmx:mwIJYRGcfS8D-ehridAcUPbYHZtbSLQPiZke5pP43BhugaGsT9M4Ow>
-    <xmx:mwIJYZV9ouy5Rl4g-vxGaxdymQfxnQpeYu8W0lUbRh0MevhnBVSjhw>
-    <xmx:mwIJYcPyRTpKDKH_QN263NOakBo0q8wmVyDenVe6RXb_U4mHuUsuaA>
-    <xmx:mwIJYYHWIdHoWQzn3r-hYWxMoZbuzGVeymv1cG6srpkiWyRii2W3Dw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 3 Aug 2021 04:47:20 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
-        broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v8 11/11] ARM: dts: imx7d: remarkable2: Enable lcdif
-Date:   Tue,  3 Aug 2021 18:47:08 +1000
-Message-Id: <20210803084708.254-2-alistair@alistair23.me>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210803084708.254-1-alistair@alistair23.me>
-References: <20210803084708.254-1-alistair@alistair23.me>
+        id S234513AbhHCIro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:47:44 -0400
+Received: from mail-mw2nam12on2044.outbound.protection.outlook.com ([40.107.244.44]:41313
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234636AbhHCIrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:47:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ebu/CRLSTEB96A6m6q26O+f6eNWdd/Z/SKRDSReGUPWld1AJLxH/Aq8OT1keFJ36OGBRE5NJBQyfmtgwEWJlaj8DZYY54dEV307lvds3SCaAIUFqwNXg+agUg6F+UA0SG9a18Hss8pEcn8wb1kf5n1+sCVgWhIqEHvSKAffVAfFnZVGu4OPLDQIJMATf5TQJonWtLuHo/aAma9ceguuwpNR1xb6D5Dk9OwVSQt1kVtLPYDfjXcsCnU2ktwGvTdwIaiytdHsPYRFIOhrIjIpg+ZrCJ/wWTqoicoLS1YgK0TbEJorRJf5qADBSQlMA8Fyt1cgRf0hSptc6jIgeeVzW3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EXBwYP7st40rGibKMa9B+wZxh/5OhfACV7msPtUoaPQ=;
+ b=jN12gVvPfhE/6tkvt+dPE2vLzu8d0gu0pxkpi+yWuIuDrf5yL4R/7b/IYuS/g7Uu8NB2iEx7tuBttDrCT06DQ2Alu+GifEIYVYJp3Zh5kULVnsS2LsD45xLyRIenN7RH7rxG8oXLm/J5mUqD8+y2iSFkOvj6b5lmQre7tVdHbuSaGXw1532X3ZbefxCYovu/nG0GDSnxczJ94w2ZMCB0k+n+BzOW8vUXPh+CC3m+l8/u8qT0X+4boKVQtx1Cd0SQecf6OptYPov71MKMvpa8XomyOTghxVd69G2nZKAwkP7lKJ5B7uTxTscy2AlszA16iqaD1rnoThQWl8nwy4qY4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EXBwYP7st40rGibKMa9B+wZxh/5OhfACV7msPtUoaPQ=;
+ b=V2WQgYnm8kbVGGYpA/ob/mtFmccO9hThk0ts8wAtXzBJrbLMjMgtFiiQfNWLddRWtpCnjJtJNhWuA7R+5QK8CfHR3kJbflZYTfFAMWxuVFTApj1jui7I70tyHS1mrIsfmlm7r7qMxUvJHLLYzBefto/l8WAtnUtfUPiSMRiwPaw=
+Received: from BN9PR12MB5384.namprd12.prod.outlook.com (2603:10b6:408:105::20)
+ by BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.28; Tue, 3 Aug
+ 2021 08:47:24 +0000
+Received: from BN9PR12MB5384.namprd12.prod.outlook.com
+ ([fe80::69d4:43bb:10a6:6349]) by BN9PR12MB5384.namprd12.prod.outlook.com
+ ([fe80::69d4:43bb:10a6:6349%6]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 08:47:24 +0000
+From:   "S, Shirish" <Shirish.S@amd.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] sched/debug: print column titles of
+ show_state_filter()[V2]
+Thread-Topic: [PATCH] sched/debug: print column titles of
+ show_state_filter()[V2]
+Thread-Index: AQHXeGApwcMMUKvQ2UeYt2AcIPdlB6thl0RA
+Date:   Tue, 3 Aug 2021 08:47:24 +0000
+Message-ID: <BN9PR12MB53844B3412546087B8C80AFBF2F09@BN9PR12MB5384.namprd12.prod.outlook.com>
+References: <20210714032705.79726-1-shirish.s@amd.com>
+In-Reply-To: <20210714032705.79726-1-shirish.s@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2021-08-03T08:47:20Z;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP 2.0;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=ca840ee9-aa4e-454a-8273-f3b2cc808c58;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=1
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 041395e6-e6f8-4816-9b7e-08d9565b5098
+x-ms-traffictypediagnostic: BN9PR12MB5129:
+x-microsoft-antispam-prvs: <BN9PR12MB5129F3DD04B26CB4E1F1097DF2F09@BN9PR12MB5129.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:274;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cZEYtuSKVk7TWQp0ivKY8IDg5kz/z25hes4KlQa5mIdYZrgoV1SaClEOnJDtJfR30QZ6WOTYTrC0aKLSSdvcJ/vSfwYAf8f3+FgdlxeXsQHAJ6Yvt0BR8f92+IW+T4/0Z3moxWuvJdz5//7VH2o+RlPC9eAd5Vbc7d2snSVeD/UjLgwtXsxmV2xnyCB+lacdd529hztlwSK0EuPzbHLR1raVSMpj4K/NMmuNWQ3Mcdgiz7IgT+t/hwN9nUOg+NrktQzlp3AQXSck218//8te57thP8FAN9qQgYmwwYS4xiwIA+j+pLMnOrfucDq72x1klB4ty0iSHmWtC60x1IhZCGFn6bvSxgaBug1isXB+aKEzI3B7y7RF3FvHem2STttSePERLvulth2usDsht3FQOAoHy8130NYZQawh1aHzup5jDTD+ugb6L1Ee951ngKoG40vN7NmFenFEa+JmFdXHv3Grp5da1xXQR6M/FeGyPqAqhihgS+4hiR0QZ0BSBMwAIzy3jfnNLAykOQoCSqTe/Ouocm6uLAMrdNzYsVf11EJrJM1Awz2Lv5nL17TITfiKoVQ4zvcycGHdpAE/dAYCcIcA4JhlFwHeH7K5W6HJTfW0YohWfWs63T3k/FMX40zZkAHsHdEWJNUXjqSktnFex/HEogoM1dqt8lO43FSh42MyN7TiDQvkE/2KJACgD5LRXF0gHRxMJdofqHCIaXa+TA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5384.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(346002)(39860400002)(136003)(5660300002)(38070700005)(53546011)(38100700002)(76116006)(26005)(7696005)(71200400001)(2906002)(6506007)(186003)(83380400001)(110136005)(33656002)(7416002)(66556008)(66946007)(55236004)(4326008)(66446008)(8936002)(66476007)(86362001)(8676002)(478600001)(316002)(122000001)(64756008)(9686003)(52536014)(55016002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?x46ovSYGB/ItGuqngb5fUojQhhtbg3fgPNDHHxt/eezuXej8WULkaZ5HcuoA?=
+ =?us-ascii?Q?hteSLQyTC3cZiSp9E6QrRhqkKdItibFRgfhCmDwvcz4T4C9F4rx+eDxtADtD?=
+ =?us-ascii?Q?lCoYnaY9R8UCMi8nUSyZrpmriYvlUuxTYdennMvZ6wddTEcIwjAJWR6qMLSx?=
+ =?us-ascii?Q?m2HTacjzXbQ6dryAwzQ5OXAhqaljGS2cOt6RVaUfaY8qJH7ml9ETm/h31qVp?=
+ =?us-ascii?Q?CuS7ZHyLrONlIpVvSnbJkTsV5bwDq0LN9SECdfHO9vSpa7JxfeFORig5DjJE?=
+ =?us-ascii?Q?QOiUEScWp87y3iYQhY9TZ6d03t4LqAyVSlG+8aa1RGZNSv8AiNm3BqP+twOf?=
+ =?us-ascii?Q?ah4HzGj/0mJO4D5xamzhnA/bbvqitLJ/cBlW1mwgjzow2n5PsORdJ9jYOfcn?=
+ =?us-ascii?Q?Qfh8KvrwuQ7B6QPHLm6qvh3DVN7Abl4hbpy/njSyaJl6JhAS/Dn4VKBWq+py?=
+ =?us-ascii?Q?NKp1cneSn/FZfx9rzzYs2VGEhvt6oRIhKtaJshj5NRDYwNRapfiAlNCCbv0Z?=
+ =?us-ascii?Q?3ZvrPMMY8rxeOPIaGPowdcsqUFPL8s1jILsYP5JRz10dA0F9QVdw8LHM1g57?=
+ =?us-ascii?Q?+1/YqfjADXOu0sVBUYUf8JUmtqcaB6S/MMn+mPpUwhuyb+c++VTfuzKJ9fmD?=
+ =?us-ascii?Q?HZOhxZPKEBASKmsd+vV+TU632IKj9bwzHZo9gk0CYFbjbmO16D9XnAFiFaK4?=
+ =?us-ascii?Q?Mrp60sHFfSwLl7O+xhe1vjZS0JF0H0H0/8JE/c1T5QbpeCtfL/rPdOOwiBl/?=
+ =?us-ascii?Q?4Cx5PjK2vepHgLKkf1a2n4naRsdoupo4+mM9T1XPr1nbXfMRdeuTJCrLTqk9?=
+ =?us-ascii?Q?nB75Sok96ltimBXD9GIovUtU0AIB3tiglARyQIoFffgBmziajkul/aUoZSma?=
+ =?us-ascii?Q?ABY/g0ygW0g2AgVNUHd5iDzCl49MaQILDhEDUc95TxBMI99ht8P1aS8jeQRI?=
+ =?us-ascii?Q?ByHPUEgNywvX3DY8YyWYR1lHTNmGX0xF7t+64t8Dhv+TZGFrD4Nc62+hPiwz?=
+ =?us-ascii?Q?tTA5UZfmIaP5q4v3v8SAB4nF3GY3ut7tnsCuruih3OzA20Wck0rsYiO4+C05?=
+ =?us-ascii?Q?nDsLYFu7hg54s/pgHTCro14180L1xDZnXjwLHpqmszxnN1z0mem0Ee+Cga09?=
+ =?us-ascii?Q?TAbAFBkbE2dLcrIAatObLsHnjLUuGtfsX5DqOcvVfYerpt59tdiY4ttBKN4e?=
+ =?us-ascii?Q?aM7iMvtBZ5qKlHtCdt4uMWQ22Nv8ES6fbmE+19ZOiYKoJiuYoyx9tyKCb7ni?=
+ =?us-ascii?Q?duGRyvfsi+n3eSmmX/A8cH69EhmNzNNprM9xsUeEwRJFtr2DYaIId7VUqPRt?=
+ =?us-ascii?Q?GNthauSrtjW/Vj7kVwSXYU8+?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5384.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 041395e6-e6f8-4816-9b7e-08d9565b5098
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2021 08:47:24.2054
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /qqSNvcAm4CchDF9u7HrCVBkSp9MMSj9UbUUNo+lTJSM9QVH/9WihrYSmKU0G+o6ehK+Ez6xjTzSjrGsgQT2PA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Connect the dispaly on the reMarkable2.
+[Public]
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
+Can we get this patch merged ?
+Any thoughts?
+
+
+Regards,
+Shirish S
+
+-----Original Message-----
+From: S, Shirish <Shirish.S@amd.com>=20
+Sent: Wednesday, July 14, 2021 8:57 AM
+To: Ingo Molnar <mingo@redhat.com>; Peter Zijlstra <peterz@infradead.org>; =
+Juri Lelli <juri.lelli@redhat.com>; Vincent Guittot <vincent.guittot@linaro=
+.org>; Dietmar Eggemann <dietmar.eggemann@arm.com>; Steven Rostedt <rostedt=
+@goodmis.org>; Ben Segall <bsegall@google.com>; Mel Gorman <mgorman@suse.de=
+>; Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: linux-kernel@vger.kernel.org; S, Shirish <Shirish.S@amd.com>
+Subject: [PATCH] sched/debug: print column titles of show_state_filter()[V2=
+]
+
+This addition in the debug output shall improve readablitly..
+Its not intuitive for users that the pid printed in last column is of paren=
+t process.
+
+v2: Dropped #ifdef logic
+
+Signed-off-by: Shirish S <shirish.s@amd.com>
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 ---
- arch/arm/boot/dts/imx7d-remarkable2.dts | 74 +++++++++++++++++++++++++
- 1 file changed, 74 insertions(+)
+ kernel/sched/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
-index 9bdae1c1236e..a75d12e0a67e 100644
---- a/arch/arm/boot/dts/imx7d-remarkable2.dts
-+++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-@@ -47,6 +47,16 @@ reg_digitizer: regulator-digitizer {
- 		startup-delay-us = <100000>; /* 100 ms */
- 	};
- 
-+	reg_sdoe: regulator-sdoe {
-+		compatible = "regulator-fixed";
-+		regulator-name = "SDOE";
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_sdoe_reg>;
-+		pinctrl-1 = <&pinctrl_sdoe_reg>;
-+		gpio = <&gpio3 27 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c index 2d9ff40f4661..=
+22cee4c0f4b1 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8194,6 +8194,9 @@ void show_state_filter(unsigned int state_filter)  {
+ 	struct task_struct *g, *p;
+=20
++	pr_info("  task%*s", BITS_PER_LONG =3D=3D 32 ? 38 : 46,
++		"PC stack   pid father\n");
 +
- 	wifi_pwrseq: wifi_pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		pinctrl-names = "default";
-@@ -55,6 +65,16 @@ wifi_pwrseq: wifi_pwrseq {
- 		clocks = <&clks IMX7D_CLKO2_ROOT_DIV>;
- 		clock-names = "ext_clock";
- 	};
-+
-+	panel {
-+		compatible = "eink,vb3300-kca";
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&display_out>;
-+			};
-+		};
-+	};
- };
- 
- &clks {
-@@ -114,6 +134,20 @@ reg_epdpmic: vcom {
- 	};
- };
- 
-+&lcdif {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_lcdif>;
-+	lcd-supply = <&reg_epdpmic>;
-+	lcd2-supply = <&reg_sdoe>;
-+	status = "okay";
-+
-+	port {
-+		display_out: endpoint {
-+			remote-endpoint = <&panel_in>;
-+		};
-+	};
-+};
-+
- &snvs_pwrkey {
- 	status = "okay";
- };
-@@ -228,6 +262,46 @@ MX7D_PAD_I2C4_SCL__I2C4_SCL		0x4000007f
- 		>;
- 	};
- 
-+	pinctrl_lcdif: lcdifgrp {
-+		fsl,pins = <
-+			MX7D_PAD_LCD_DATA00__LCD_DATA0		0x79
-+			MX7D_PAD_LCD_DATA01__LCD_DATA1		0x79
-+			MX7D_PAD_LCD_DATA02__LCD_DATA2		0x79
-+			MX7D_PAD_LCD_DATA03__LCD_DATA3		0x79
-+			MX7D_PAD_LCD_DATA04__LCD_DATA4		0x79
-+			MX7D_PAD_LCD_DATA05__LCD_DATA5		0x79
-+			MX7D_PAD_LCD_DATA06__LCD_DATA6		0x79
-+			MX7D_PAD_LCD_DATA07__LCD_DATA7		0x79
-+			MX7D_PAD_LCD_DATA08__LCD_DATA8		0x79
-+			MX7D_PAD_LCD_DATA09__LCD_DATA9		0x79
-+			MX7D_PAD_LCD_DATA10__LCD_DATA10		0x79
-+			MX7D_PAD_LCD_DATA11__LCD_DATA11		0x79
-+			MX7D_PAD_LCD_DATA12__LCD_DATA12		0x79
-+			MX7D_PAD_LCD_DATA13__LCD_DATA13		0x79
-+			MX7D_PAD_LCD_DATA14__LCD_DATA14		0x79
-+			MX7D_PAD_LCD_DATA15__LCD_DATA15		0x79
-+
-+			MX7D_PAD_LCD_DATA17__LCD_DATA17		0x79
-+			MX7D_PAD_LCD_DATA18__LCD_DATA18		0x79
-+			MX7D_PAD_LCD_DATA19__LCD_DATA19		0x79
-+			MX7D_PAD_LCD_DATA20__LCD_DATA20		0x79
-+			MX7D_PAD_LCD_DATA21__LCD_DATA21		0x79
-+
-+			MX7D_PAD_LCD_DATA23__LCD_DATA23		0x79
-+			MX7D_PAD_LCD_CLK__LCD_CLK		0x79
-+			MX7D_PAD_LCD_ENABLE__LCD_ENABLE		0x79
-+			MX7D_PAD_LCD_VSYNC__LCD_VSYNC		0x79
-+			MX7D_PAD_LCD_HSYNC__LCD_HSYNC		0x79
-+			MX7D_PAD_LCD_RESET__LCD_RESET		0x79
-+		>;
-+	};
-+
-+	pinctrl_sdoe_reg: sdoereggrp {
-+		fsl,pins = <
-+			MX7D_PAD_LCD_DATA22__GPIO3_IO27		0x74
-+		>;
-+	};
-+
- 	pinctrl_uart1: uart1grp {
- 		fsl,pins = <
- 			MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX	0x79
--- 
-2.31.1
-
+ 	rcu_read_lock();
+ 	for_each_process_thread(g, p) {
+ 		/*
+--
+2.17.1
