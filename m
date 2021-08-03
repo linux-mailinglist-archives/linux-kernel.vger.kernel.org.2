@@ -2,103 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25CA3DEBA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3A03DEBA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235478AbhHCLSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
+        id S235463AbhHCLWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234156AbhHCLSN (ORCPT
+        with ESMTP id S235254AbhHCLWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:18:13 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6FEC061757;
-        Tue,  3 Aug 2021 04:18:02 -0700 (PDT)
+        Tue, 3 Aug 2021 07:22:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66E6C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 04:22:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oCfToeqn1k3lFs3DOIR5EL/mFEuSqiZC986MzVwbPdU=; b=YOL9Vm4aXFmSu4ThuUzXqnI3hP
+        xbEEDdxX6CJ271tInSEedEQOmZypN7wwUxoTCKSJn+0k0hBQOJ3OwlX7e6j/ccHaUnND73fj1MFgd
+        M0ZgErz8X4EmE/JOqXTKRMngtIz1+gvm5WGT5P6UvqWBqYv/NafXs9tyuQdw3jhWCGT99hBnt6c9t
+        A/oFsFy1MhAobuHEQKQUeHbBK8ODwKyfKkOBXAgEpkTGJrgZGcg0Mdfq2z8TdONdSiAYKAmqI+kRS
+        BH3IziUukPn16BQsgtGbUV+ZU/j9VzZb+B2vj+mOA2eYs+sxhxQHBmPTRY2TCals4c2v3Qn+XdwEs
+        YtWoeHLg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mAsTc-004ZGI-Tq; Tue, 03 Aug 2021 11:21:01 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 17CF39862A8; Tue,  3 Aug 2021 13:20:51 +0200 (CEST)
+Date:   Tue, 3 Aug 2021 13:20:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [patch 58/63] futex: Prevent requeue_pi() lock nesting issue on
+ RT
+Message-ID: <20210803112051.GC8057@worktop.programming.kicks-ass.net>
+References: <20210730135007.155909613@linutronix.de>
+ <20210730135208.418508738@linutronix.de>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1627989479;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LgCqQlSSX2PcnXFJh1Yaw7vD5bKUCJpn+z41x69Wmwg=;
-        b=KUSvzizTn2JjWKrhAZYHOhoTmlZA/q9vTlYyNs50v9UnNeGdSiTvVRP5aJkpxua9wTZZKL
-        vutGwtvzIu0xHxkGwZQxu8rWsIQezy/bmyeysTtOjDYYC+2npCto3izoKRzU+cwdS3BEw3
-        FX8GeJ8Q9UoI6EQXS5ofH3RETq44Wf8=
-Date:   Tue, 03 Aug 2021 11:17:59 +0000
-Content-Type: multipart/mixed;
- boundary="--=_RainLoop_288_567298312.1627989479"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yajun.deng@linux.dev
-Message-ID: <7177b79774f6be76431ff4af9fa164f8@linux.dev>
-Subject: Fwd: Re: [PATCH] net: convert fib_treeref from int to refcount_t
-To:     m.szyprowski@samsung.com
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <2033809a-1a07-1f5d-7732-f10f6e094f3d@gmail.com>
-References: <2033809a-1a07-1f5d-7732-f10f6e094f3d@gmail.com>
- <20210729071350.28919-1-yajun.deng@linux.dev>
- <20210802133727.bml3be3tpjgld45j@skbuf>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730135208.418508738@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 30, 2021 at 03:51:05PM +0200, Thomas Gleixner wrote:
+> @@ -3082,27 +3302,22 @@ static int futex_unlock_pi(u32 __user *u
+>  }
+>  
+>  /**
+> - * handle_early_requeue_pi_wakeup() - Detect early wakeup on the initial futex
+> + * handle_early_requeue_pi_wakeup() - Handle early wakeup on the initial futex
+>   * @hb:		the hash_bucket futex_q was original enqueued on
+>   * @q:		the futex_q woken while waiting to be requeued
+> - * @key2:	the futex_key of the requeue target futex
+>   * @timeout:	the timeout associated with the wait (NULL if none)
+>   *
+> - * Detect if the task was woken on the initial futex as opposed to the requeue
+> - * target futex.  If so, determine if it was a timeout or a signal that caused
+> - * the wakeup and return the appropriate error code to the caller.  Must be
+> - * called with the hb lock held.
+> + * Determine the cause for the early wakeup.
+>   *
+>   * Return:
+> - *  -  0 = no early wakeup detected;
+> - *  - <0 = -ETIMEDOUT or -ERESTARTNOINTR
+> + *  -EWOULDBLOCK or -ETIMEDOUT or -ERESTARTNOINTR
+>   */
+>  static inline
+>  int handle_early_requeue_pi_wakeup(struct futex_hash_bucket *hb,
+> -				   struct futex_q *q, union futex_key *key2,
+> +				   struct futex_q *q,
+>  				   struct hrtimer_sleeper *timeout)
+>  {
+> -	int ret = 0;
+> +	int ret;
+>  
+>  	/*
+>  	 * With the hb lock held, we avoid races while we process the wakeup.
+> @@ -3111,22 +3326,21 @@ int handle_early_requeue_pi_wakeup(struc
+>  	 * It can't be requeued from uaddr2 to something else since we don't
+>  	 * support a PI aware source futex for requeue.
+>  	 */
+> -	if (!match_futex(&q->key, key2)) {
+> -		WARN_ON(q->lock_ptr && (&hb->lock != q->lock_ptr));
+> -		/*
+> -		 * We were woken prior to requeue by a timeout or a signal.
+> -		 * Unqueue the futex_q and determine which it was.
+> -		 */
+> -		plist_del(&q->list, &hb->chain);
+> -		hb_waiters_dec(hb);
+> +	WARN_ON_ONCE(&hb->lock != q->lock_ptr);
+>  
+> -		/* Handle spurious wakeups gracefully */
+> -		ret = -EWOULDBLOCK;
+> -		if (timeout && !timeout->task)
+> -			ret = -ETIMEDOUT;
+> -		else if (signal_pending(current))
+> -			ret = -ERESTARTNOINTR;
+> -	}
+> +	/*
+> +	 * We were woken prior to requeue by a timeout or a signal.
+> +	 * Unqueue the futex_q and determine which it was.
+> +	 */
+> +	plist_del(&q->list, &hb->chain);
+> +	hb_waiters_dec(hb);
+> +
+> +	/* Handle spurious wakeups gracefully */
+> +	ret = -EWOULDBLOCK;
+> +	if (timeout && !timeout->task)
+> +		ret = -ETIMEDOUT;
+> +	else if (signal_pending(current))
+> +		ret = -ERESTARTNOINTR;
+>  	return ret;
+>  }
 
-----=_RainLoop_288_567298312.1627989479
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+AFAICT this change is a separate cleanup, possible because the only
+callsite already does that match_futex() test before calling this.
 
-This patch from David Ahern was applied in the newest net-next.=0A=0A----=
----- Forwarded message -------=0AFrom: "David Ahern" <dsahern@gmail.com>=
-=0ATo: "Ioana Ciornei" <ciorneiioana@gmail.com>, "Yajun Deng" <yajun.deng=
-@linux.dev>=0ACC: davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ip=
-v6.org, dsahern@kernel.org,=0Anetdev@vger.kernel.org, linux-kernel@vger.k=
-ernel.org, linux-decnet-user@lists.sourceforge.net=0ASent: August 2, 2021=
- 10:36 PM=0ASubject: Re: [PATCH] net: convert fib_treeref from int to ref=
-count_t=0AOn 8/2/21 7:37 AM, Ioana Ciornei wrote:=0A=0A> Unfortunately, w=
-ith this patch applied I get into the following WARNINGs=0A> when booting=
- over NFS:=0A=0ACan you test the attached?=0A=0AThanks,
-
-----=_RainLoop_288_567298312.1627989479
-Content-Type: application/octet-stream;
- name="0001-ipv4-Fix-refcount-warning-for-new-fib_info.patch"
-Content-Disposition: attachment;
- filename="0001-ipv4-Fix-refcount-warning-for-new-fib_info.patch"
-Content-Transfer-Encoding: base64
-
-RnJvbSBlYzlkMTY5ZWIzM2U2YTY1ZGI2NDE3OTI4MjFjYzZhMjU5ZWQ5MzYyIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBEYXZpZCBBaGVybiA8ZHNhaGVybkBrZXJuZWwub3Jn
-PgpEYXRlOiBNb24sIDIgQXVnIDIwMjEgMDg6Mjk6MjYgLTA2MDAKU3ViamVjdDogW1BBVENI
-IG5ldC1uZXh0XSBpcHY0OiBGaXggcmVmY291bnQgd2FybmluZyBmb3IgbmV3IGZpYl9pbmZv
-CgpJb2FuYSByZXBvcnRlZCBhIHJlZmNvdW50IHdhcm5pbmcgd2hlbiBib290aW5nIG92ZXIg
-TkZTOgoKWyAgICA1LjA0MjUzMl0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0t
-LS0tClsgICAgNS4wNDcxODRdIHJlZmNvdW50X3Q6IGFkZGl0aW9uIG9uIDA7IHVzZS1hZnRl
-ci1mcmVlLgpbICAgIDUuMDUyMzI0XSBXQVJOSU5HOiBDUFU6IDcgUElEOiAxIGF0IGxpYi9y
-ZWZjb3VudC5jOjI1IHJlZmNvdW50X3dhcm5fc2F0dXJhdGUrMHhhNC8weDE1MAouLi4KWyAg
-ICA1LjE2NzIwMV0gQ2FsbCB0cmFjZToKWyAgICA1LjE2OTYzNV0gIHJlZmNvdW50X3dhcm5f
-c2F0dXJhdGUrMHhhNC8weDE1MApbICAgIDUuMTc0MDY3XSAgZmliX2NyZWF0ZV9pbmZvKzB4
-YzAwLzB4YzkwClsgICAgNS4xNzc5ODJdICBmaWJfdGFibGVfaW5zZXJ0KzB4OGMvMHg2MjAK
-WyAgICA1LjE4MTg5M10gIGZpYl9tYWdpYy5pc3JhLjArMHgxMTAvMHgxMWMKWyAgICA1LjE4
-NTg5MV0gIGZpYl9hZGRfaWZhZGRyKzB4YjgvMHgxOTAKWyAgICA1LjE4OTYyOV0gIGZpYl9p
-bmV0YWRkcl9ldmVudCsweDhjLzB4MTQwCgpmaWJfdHJlZXJlZiBuZWVkcyB0byBiZSBzZXQg
-YWZ0ZXIga3phbGxvYy4gVGhlIG9sZCBjb2RlIGhhZCBhICsrIHdoaWNoCmxlZCB0byB0aGUg
-Y29uZnVzaW9uIHdoZW4gdGhlIGludCB3YXMgcmVwbGFjZWQgYnkgYSByZWZjb3VudF90LgoK
-Rml4ZXM6IDc5OTc2ODkyZjdlYSAoIm5ldDogY29udmVydCBmaWJfdHJlZXJlZiBmcm9tIGlu
-dCB0byByZWZjb3VudF90IikKU2lnbmVkLW9mZi1ieTogRGF2aWQgQWhlcm4gPGRzYWhlcm5A
-a2VybmVsLm9yZz4KUmVwb3J0ZWQtYnk6IElvYW5hIENpb3JuZWkgPGNpb3JuZWlpb2FuYUBn
-bWFpbC5jb20+CkNjOiBZYWp1biBEZW5nIDx5YWp1bi5kZW5nQGxpbnV4LmRldj4KLS0tCiBu
-ZXQvaXB2NC9maWJfc2VtYW50aWNzLmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
-cnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9uZXQvaXB2NC9maWJfc2Vt
-YW50aWNzLmMgYi9uZXQvaXB2NC9maWJfc2VtYW50aWNzLmMKaW5kZXggZmExOWY0Y2RmM2E0
-Li5mMjlmZWI3NzcyZGEgMTAwNjQ0Ci0tLSBhL25ldC9pcHY0L2ZpYl9zZW1hbnRpY3MuYwor
-KysgYi9uZXQvaXB2NC9maWJfc2VtYW50aWNzLmMKQEAgLTE1NTEsNyArMTU1MSw3IEBAIHN0
-cnVjdCBmaWJfaW5mbyAqZmliX2NyZWF0ZV9pbmZvKHN0cnVjdCBmaWJfY29uZmlnICpjZmcs
-CiAJCXJldHVybiBvZmk7CiAJfQogCi0JcmVmY291bnRfaW5jKCZmaS0+ZmliX3RyZWVyZWYp
-OworCXJlZmNvdW50X3NldCgmZmktPmZpYl90cmVlcmVmLCAxKTsKIAlyZWZjb3VudF9zZXQo
-JmZpLT5maWJfY2xudHJlZiwgMSk7CiAJc3Bpbl9sb2NrX2JoKCZmaWJfaW5mb19sb2NrKTsK
-IAlobGlzdF9hZGRfaGVhZCgmZmktPmZpYl9oYXNoLAotLSAKMi4yNC4zIChBcHBsZSBHaXQt
-MTI4KQoK
-
-----=_RainLoop_288_567298312.1627989479--
+I think it might be worth splitting out, just to reduce the complexity
+of this patch.
