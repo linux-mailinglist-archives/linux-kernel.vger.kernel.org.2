@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE813DF5F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475FA3DF600
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240336AbhHCTr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239635AbhHCTr0 (ORCPT
+        id S240329AbhHCTum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:50:42 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54646 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240286AbhHCTuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:47:26 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30802C061757;
-        Tue,  3 Aug 2021 12:47:14 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id n12-20020a05600c3b8cb029025a67bbd40aso2489211wms.0;
-        Tue, 03 Aug 2021 12:47:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=P9aiSezR2L9zKHRc/DTVFiGJI8KeD7eYMrBCd83E65k=;
-        b=tYo1zDL9AXhMmibS0P/VBJCdntJtJFWIMfe+Wo9MJqu/k0IbIXw0UAeFzSJli19jun
-         9SMc0NEzyxyOAG4c2L3piXZc3bxIaixrZY99i744tHNnYrfBE2B9vbdD4eUt1qSmd8j1
-         W4+ieRmyfd4DGoBPdfQQ2ocYZvJS0K7V6EM4plFuDFZJ1FHiq57YR9jJ0EUFmeVYg1w5
-         LsQ6AX2FrFEyFP9oUBCkhpOYnyMStLS1CcHncqFtvinJnY0jIMULNhgiez1Df/NAUCDZ
-         aycpXaOU/hq0DSe+unDSJAC7XB1EKreS/QKtvMCcBi1/NV4S86SmQUoe0ZJ+Retvqmst
-         4xZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=P9aiSezR2L9zKHRc/DTVFiGJI8KeD7eYMrBCd83E65k=;
-        b=iIlzxvg7PNS/iZtl9Fp/tEoo/nHrpOzB5yMG509Ltne99XtFmFCMEg28aqpax0IcL2
-         lKdIJvkVXOcboULBMDathiUDe+6bZ2fs/Qjufx7VMqBpY3XycdxunezhaedeKHdwxHzz
-         Wkk6anCGw3MKnj2keQBAI5FC06sDdRLSQTUPxRQBE+bJbU6anIlR0JDUGF1lHFMDX6do
-         eNY3pQoB7awMYYJfxqEkX7mQDviPTpmd4HA1dCQt4CAv5ME/Wp+tI3SpnbV7ODBji8AP
-         M/Jm7PomLKdvqMKK6iCZW85wVCXwZEEj/mKE6kDZ40FfUP3T6rHA6XVNU9RKtVsMZMbV
-         vF8w==
-X-Gm-Message-State: AOAM533olOMo/UJEgQgT6wbACZy8L1whN0cNtL6ZQ4tfy5cu3G8LEWI4
-        dIs7D51Y+OPQtxt7PgUSbYU=
-X-Google-Smtp-Source: ABdhPJxOQ+mrsnCxRAbe4+KT36gd5bmSgkEcJjwha2ymTZXo8EUuNdgVXchqhAl2yaNi+grUpajcMA==
-X-Received: by 2002:a7b:c416:: with SMTP id k22mr5964817wmi.177.1628020032791;
-        Tue, 03 Aug 2021 12:47:12 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a13a.dip0.t-ipconnect.de. [217.229.161.58])
-        by smtp.gmail.com with ESMTPSA id a12sm3489179wmj.22.2021.08.03.12.47.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 12:47:12 -0700 (PDT)
-Subject: Re: [PATCH v1 2/5] platform/surface: aggregator: Use
- serdev_acpi_get_uart_resource() helper
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        Tue, 3 Aug 2021 15:50:39 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6985E1C0B76; Tue,  3 Aug 2021 21:50:27 +0200 (CEST)
+Date:   Tue, 3 Aug 2021 21:50:27 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Pavel Machek <pavel@denx.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <20210803192905.72246-1-andriy.shevchenko@linux.intel.com>
- <20210803192905.72246-2-andriy.shevchenko@linux.intel.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <ae6b9e16-7036-ed23-1fd8-9b10627a8737@gmail.com>
-Date:   Tue, 3 Aug 2021 21:47:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/67] 5.10.56-rc1 review
+Message-ID: <20210803195026.GA16178@duo.ucw.cz>
+References: <20210802134339.023067817@linuxfoundation.org>
+ <20210803192607.GA14540@duo.ucw.cz>
+ <c1d12ff5-06d5-075c-e01f-5184ffb09e69@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <20210803192905.72246-2-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
+Content-Disposition: inline
+In-Reply-To: <c1d12ff5-06d5-075c-e01f-5184ffb09e69@roeck-us.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/21 9:29 PM, Andy Shevchenko wrote:
-> serdev provides a generic helper to get UART Serial Bus resources.
-> Use it instead of open coded variant.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Thanks! Looks good to me.
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+On Tue 2021-08-03 12:37:29, Guenter Roeck wrote:
+> On 8/3/21 12:26 PM, Pavel Machek wrote:
+> > Hi!
+> >=20
+> > > This is the start of the stable review cycle for the 5.10.56 release.
+> > > There are 67 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, plea=
+se
+> > > let me know.
+> >=20
+> > Not sure what went wrong, but 50 or so patches disappeared from the que=
+ue:
+> >=20
+> > 48156f3dce81b215b9d6dd524ea34f7e5e029e6b (origin/queue/5.10) btrfs: fix=
+ lost inode on log replay after mix of fsync, rename and inode eviction
+> > 474a423936753742c112e265b5481dddd8c02f33 btrfs: fix race causing unnece=
+ssary inode logging during link and rename
+> > 2fb9fc485825505e31b634b68d4c05e193a224da Revert "drm/i915: Propagate er=
+rors on awaiting already signaled fences"
+> > b1c92988bfcb7aa46bdf8198541f305c9ff2df25 drm/i915: Revert "drm/i915/gem=
+: Asynchronous cmdparser"
+> > 11fe69a17195cf58eff523f26f90de50660d0100 (tag: v5.10.55) Linux 5.10.55
+> > 984e93b8e20731f83e453dd056f8a3931b4a66e5 ipv6: ip6_finish_output2: set
+> > sk into newly allocated nskb
+>=20
+> FWIW, the git repository matches the shortlog and summary.
 
-> ---
->   drivers/platform/surface/aggregator/core.c | 9 +--------
->   1 file changed, 1 insertion(+), 8 deletions(-)
-> 
-> diff --git a/drivers/platform/surface/aggregator/core.c b/drivers/platform/surface/aggregator/core.c
-> index 279d9df19c01..c61bbeeec2df 100644
-> --- a/drivers/platform/surface/aggregator/core.c
-> +++ b/drivers/platform/surface/aggregator/core.c
-> @@ -301,20 +301,13 @@ static acpi_status ssam_serdev_setup_via_acpi_crs(struct acpi_resource *rsc,
->   						  void *ctx)
->   {
->   	struct serdev_device *serdev = ctx;
-> -	struct acpi_resource_common_serialbus *serial;
->   	struct acpi_resource_uart_serialbus *uart;
->   	bool flow_control;
->   	int status = 0;
->   
-> -	if (rsc->type != ACPI_RESOURCE_TYPE_SERIAL_BUS)
-> +	if (!serdev_acpi_get_uart_resource(rsc, &uart))
->   		return AE_OK;
->   
-> -	serial = &rsc->data.common_serial_bus;
-> -	if (serial->type != ACPI_RESOURCE_SERIAL_TYPE_UART)
-> -		return AE_OK;
-> -
-> -	uart = &rsc->data.uart_serial_bus;
-> -
->   	/* Set up serdev device. */
->   	serdev_device_set_baudrate(serdev, uart->default_baud_rate);
->   
-> 
+git log --pretty=3Doneline origin/linux-5.10.y
+
+seems to match shortlog/summary.
+
+git log --pretty=3Doneline origin/queue/5.10
+
+is unexpectedly short. Short changelog can also be seen on the web:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/=
+log/?h=3Dqueue/5.10
+
+(and 4.19/ 4.4 repositories have same problem, it is even more visible
+there.)
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--PEIAKu/WMn1b1Hv9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYQmeAgAKCRAw5/Bqldv6
+8ghVAJ0VlPMDvINjJnbUASgZCsjtl9njWQCfau/5hcbmAp5MxRjf3dGrLZe+3wI=
+=L0DM
+-----END PGP SIGNATURE-----
+
+--PEIAKu/WMn1b1Hv9--
