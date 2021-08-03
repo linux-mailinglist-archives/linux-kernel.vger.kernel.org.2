@@ -2,27 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31543DE451
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3434B3DE453
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233442AbhHCCVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 22:21:47 -0400
-Received: from smtpbg704.qq.com ([203.205.195.105]:35522 "EHLO
-        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233197AbhHCCVq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 22:21:46 -0400
-X-QQ-mid: bizesmtp47t1627957257tlega6xp
+        id S233602AbhHCCWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 22:22:19 -0400
+Received: from smtpbgsg2.qq.com ([54.254.200.128]:38844 "EHLO smtpbgsg2.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233197AbhHCCWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 22:22:15 -0400
+X-QQ-mid: bizesmtp45t1627957302thei1lum
 Received: from localhost.localdomain (unknown [113.57.152.160])
         by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 03 Aug 2021 10:20:55 +0800 (CST)
+        id ; Tue, 03 Aug 2021 10:21:40 +0800 (CST)
 X-QQ-SSF: 0140000000200050B000B00A0000000
-X-QQ-FEAT: O9RHVi+JMbLJ0Fdz7CPoA5Cadmt7q/l6gGyCp0zHoidFrQIlpv6YzlQX+QfNb
-        GX+JBiB0VQLs8JHgmnlwabGEQLC07UM7HJKqVCVY47cwI8wZLapVZ00B/gOk0o5ZUpGYFgx
-        BLX1lz1WKOSN4sLEqnql/yy1D9ubgMUh7LaHxIasvx+dlrYixaJgVY2pc5Ct2S62LVsWMSW
-        fyqg3fq+ZP5INVV5mHv6jYnz4zwlLNOTMryGtAjNLSxp5BkXnG35kyK2Q51TqCjwXpNTIDL
-        DaQWwLfRMObMca3fDulrWWOHcIyNK0savYxiTjPamsb9zckyoi8SRzEeX9GHQ8tfFowOuBp
-        IofzeEiRNEEXETKF3tvqTLKQAPCGgsmOjAQ53BbEplbthhxM14=
+X-QQ-FEAT: MkqyadvNeuyxjZIm2hJdArg7SV8yzdsvbLK6Y6xb0ttcNTPP/FKlv+ZdjWkXO
+        KBvyGU5YBUm27g2KvNTfwPInE3X21bb+GTUQMANXHKqwBS266i6pXJwUXaiE3upD2sKSrZj
+        zDHDc4MLcRSxgqEsGz3cOHAj1e1GLCyCuvNvKxswmMUIAU110pi/Id/EA9R0APQ98FO8RPC
+        /V7yd8QAbcTMQbeSxEakDXbwrgp1sCjucauksQGC/HAyz2nY6JmBwFQhQFEJrDLYTkxTq2m
+        ++nbwdrWoRh/KLcHCezU43m4rNipg7OWEaFUdlP83SittTbkXYFSy7llEtiKxdg3YA/qn93
+        o2Us9++2ZpV9TK2wX2NZPp+YxIYQzMyW9ORVEagyxrBM+Z5FTQ=
 X-QQ-GoodBg: 2
 From:   Hao Chen <chenhaoa@uniontech.com>
 To:     peppe.cavallaro@st.com
@@ -32,13 +31,13 @@ Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, Hao Chen <chenhaoa@uniontech.com>
 Subject: [net-next,v8] net: stmmac: optimize check in ops '.begin'
-Date:   Tue,  3 Aug 2021 10:20:08 +0800
-Message-Id: <20210803022008.21284-1-chenhaoa@uniontech.com>
+Date:   Tue,  3 Aug 2021 10:20:52 +0800
+Message-Id: <20210803022052.21897-1-chenhaoa@uniontech.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
 X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
