@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27903DF6A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5814C3DF6A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhHCUwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 16:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
+        id S231599AbhHCUzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 16:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhHCUwj (ORCPT
+        with ESMTP id S231351AbhHCUzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 16:52:39 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEABEC061757;
-        Tue,  3 Aug 2021 13:52:27 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id v8-20020a0568301bc8b02904d5b4e5ca3aso9767365ota.13;
-        Tue, 03 Aug 2021 13:52:27 -0700 (PDT)
+        Tue, 3 Aug 2021 16:55:11 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDAC5C061757;
+        Tue,  3 Aug 2021 13:54:58 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id l19so31377564pjz.0;
+        Tue, 03 Aug 2021 13:54:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VtphRU8oFphgqW5P1QLuJue1xk+Dt0j5gKSN+F1DYxk=;
-        b=U7VCqY0WXTGadjSfnxfoaKYmee/gjmyDh45M1yOpdumZVN+km8uYA5i2zmyczuD8vC
-         TDThmysG5EOvIIWfeWzzsKb0HA1zMXSLyqu/Ie8gGbB1WGycxkHNUaB0auSBDVfu64vW
-         XA8m7nAaNKGwzPOAlDjA4VYQlp3T6coP9jH8//DadGZLe0N/DDvMx/Om8H4bmy9dH1Ra
-         JDd4ev5S2KIh63RYmQprOXftGWmJx8bfcSU7hz+Pnqq0ZszFqWeN86ewOs8Se2b6qc7+
-         lzeejxUJEt8iHwlXND5muYkeAVfFH1p+eqsnQ7RxN2cHMlY3qR6ST3eQgk1oz/fAiBhr
-         fnHw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fdylwn2n74tpR+dsWsjP/bwzBe3S+Rlc3LYTO8ZCWZQ=;
+        b=l9fZdUew/MpTEpSojEPYEEdc0zxAo1HHixUWdhHlEHdpHIshPwparH7XWXlHbjxA8v
+         ctM9OO/9FcF58W6HBtinH+ReHHdq/tezdhU43DpX+ZLTvYN6CgLQX+s4+EMW4gfmyu6e
+         P5L8Ze81jYnAk8RTRFDGeK4U5hVStj5Hk81CwIcXSrlodmX5yovcsraCDplm7P7JPvJu
+         wIyjL29bt0YZjebC+IBqi8Jq8zyjM0ylEmGk8dw2VKVdFbzC0VH2MljYGKPOZDYYB3UV
+         8v9WAnF4bohNN0plE7xEDDhJ3jV5JYHmhfRBxTAko2o0Rf30SRG8VK3zcdd+ToLLZEdj
+         Cy4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VtphRU8oFphgqW5P1QLuJue1xk+Dt0j5gKSN+F1DYxk=;
-        b=PO5k0sszxjsehiCcK8P5cFTVzWFrILJmixg0A17JiFqdIs4Rqn1EpI4jj92i+imFFz
-         YpAfRmF7e7BA3pkXuroeAtIrQ37+YJ5PblSCUQNxjJZQ8ZAxNnPDV8irvql08z1ICGnN
-         C/uWd1CAWU027XJ7/Kg1mDaqWJvbk+COZ/Fv60Hbb+rRbgolfgtYypUIdPVW5Ti0wFlH
-         CM1u9zwREln05Cwzkn/LSbsCyWaA9bA4IAhkHb6W6R9JwGW14Nrcnski9LkCj5Fsh/JN
-         T4LLi8p4yj9RBDF9nbPU1EQK8WnffwQcuvFV3SAM+f2CRsnt96tsfLp8hPtlAAEEb/4q
-         qMog==
-X-Gm-Message-State: AOAM533Mw79N0R+ge6m9USryJlbMYaSEBZgpmyQ7Xk1QJ7QYX8ouNB58
-        73k7okcCLWy63GkG8KksiKmGGxaX7eM=
-X-Google-Smtp-Source: ABdhPJyBoTrMlO3Oi4wC4m7X3eNMpBoVGZcEPHwiLqIfRVdRy9e2O5wOnTXYF1YcEWnsS6a7wL5/pw==
-X-Received: by 2002:a9d:63da:: with SMTP id e26mr149665otl.153.1628023946961;
-        Tue, 03 Aug 2021 13:52:26 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g1sm29698otk.21.2021.08.03.13.52.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 13:52:26 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 5.10 00/67] 5.10.56-rc1 review
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20210802134339.023067817@linuxfoundation.org>
- <20210803192607.GA14540@duo.ucw.cz>
- <c1d12ff5-06d5-075c-e01f-5184ffb09e69@roeck-us.net>
- <20210803195026.GA16178@duo.ucw.cz>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <fb1e3a3a-9e6b-f397-c803-054fe96fc3c4@roeck-us.net>
-Date:   Tue, 3 Aug 2021 13:52:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fdylwn2n74tpR+dsWsjP/bwzBe3S+Rlc3LYTO8ZCWZQ=;
+        b=FEb4A6Jx2M3JhTRt40qsXRCZXu99nuPFIN165SjYV6uFBKcXlsLHiWWQfHbgIdLOYB
+         XpUFu/0R2+7BXx7lxCb0xnSzfuwsba0atnR/wjsk0IFibxaj1iAt07wn1aFXBhzyRFyF
+         Q4KGh61FYb+EYnfE4YbMCBbrKpBIm7yjD0oAnTwwPVYXaGslt4o7FUupMhVz3wvJZN0y
+         tKkFr4XlTIySHXBKL88Dsg9PgDjVVMWbME2OxNAtoVci74mxlpxETJPHFiqISz1+DwNC
+         uq5zDjBqW6SRuuOvOMbBtl0h+BGFsWhrqfiy4SvVwLb5PyPyzHSYjeAj+42Fs4HLdOOJ
+         5T4g==
+X-Gm-Message-State: AOAM531v9xg1pacNtXvi0OeYpvtCPhKRsODP5DLbA3ZCgCOooF/H96XJ
+        ilDeH0WeONECc8OvkLQGRKY=
+X-Google-Smtp-Source: ABdhPJxZCrtJ77fz1VoQjBY8XsXtnDCHDlBHfVKDsk4VUlOLAdwdRZYStnj5wA7x0+s+7pI7ybJI+g==
+X-Received: by 2002:aa7:8683:0:b029:3c4:877b:da34 with SMTP id d3-20020aa786830000b02903c4877bda34mr2764594pfo.69.1628024098477;
+        Tue, 03 Aug 2021 13:54:58 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id h16sm80861pfn.215.2021.08.03.13.54.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 13:54:57 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 13:54:55 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Nicolas Pitre <nico@fluxnic.net>,
+        "Keller, Jacob E" <jacob.e.keller@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
+ dependencies
+Message-ID: <20210803205455.GA3517@hoboy.vegasvil.org>
+References: <20210802145937.1155571-1-arnd@kernel.org>
+ <20210802164907.GA9832@hoboy.vegasvil.org>
+ <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com>
+ <20210802230921.GA13623@hoboy.vegasvil.org>
+ <CAK8P3a2XjgbEkYs6R7Q3RCZMV7v90gu_v82RVfFVs-VtUzw+_w@mail.gmail.com>
+ <20210803155556.GD32663@hoboy.vegasvil.org>
+ <20210803161434.GE32663@hoboy.vegasvil.org>
+ <CAK8P3a2Wt9gnO4Ts_4Jw1+qpBj8HQc50jU2szjmR8MmZL9wrgQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210803195026.GA16178@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2Wt9gnO4Ts_4Jw1+qpBj8HQc50jU2szjmR8MmZL9wrgQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/21 12:50 PM, Pavel Machek wrote:
-> On Tue 2021-08-03 12:37:29, Guenter Roeck wrote:
->> On 8/3/21 12:26 PM, Pavel Machek wrote:
->>> Hi!
->>>
->>>> This is the start of the stable review cycle for the 5.10.56 release.
->>>> There are 67 patches in this series, all will be posted as a response
->>>> to this one.  If anyone has any issues with these being applied, please
->>>> let me know.
->>>
->>> Not sure what went wrong, but 50 or so patches disappeared from the queue:
->>>
->>> 48156f3dce81b215b9d6dd524ea34f7e5e029e6b (origin/queue/5.10) btrfs: fix lost inode on log replay after mix of fsync, rename and inode eviction
->>> 474a423936753742c112e265b5481dddd8c02f33 btrfs: fix race causing unnecessary inode logging during link and rename
->>> 2fb9fc485825505e31b634b68d4c05e193a224da Revert "drm/i915: Propagate errors on awaiting already signaled fences"
->>> b1c92988bfcb7aa46bdf8198541f305c9ff2df25 drm/i915: Revert "drm/i915/gem: Asynchronous cmdparser"
->>> 11fe69a17195cf58eff523f26f90de50660d0100 (tag: v5.10.55) Linux 5.10.55
->>> 984e93b8e20731f83e453dd056f8a3931b4a66e5 ipv6: ip6_finish_output2: set
->>> sk into newly allocated nskb
->>
->> FWIW, the git repository matches the shortlog and summary.
-> 
-> git log --pretty=oneline origin/linux-5.10.y
-> 
-> seems to match shortlog/summary.
-> 
-> git log --pretty=oneline origin/queue/5.10
-> 
-> is unexpectedly short. Short changelog can also be seen on the web:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/log/?h=queue/5.10
-> 
-> (and 4.19/ 4.4 repositories have same problem, it is even more visible
-> there.)
-> 
 
-Ah, that explains it. No idea what the queue/ branches are for.
-My scripts use the linux- branches.
+On Tue, Aug 03, 2021 at 07:00:49PM +0200, Arnd Bergmann wrote:
 
-Guenter
+> If you turn all those 'select' lines into 'depends on', this will work, but it's
+> not actually much different from what I'm suggesting.
+
+"depends" instead of "select" works for me.  I just want it simple and clear.
+
+> Maybe we can do it
+> in two steps: first fix the build failure by replacing all the 'imply'
+> statements
+> with the correct dependencies, and then you send a patch on top that
+> turns PPS and PTP_1588_CLOCK into bool options.
+
+Sounds good.
+
+Thanks,
+Richard
