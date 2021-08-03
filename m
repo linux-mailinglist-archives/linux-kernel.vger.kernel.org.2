@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F0C3DF68F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A857F3DF691
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhHCUpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 16:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
+        id S231211AbhHCUqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 16:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhHCUph (ORCPT
+        with ESMTP id S229551AbhHCUqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 16:45:37 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8416CC061757;
-        Tue,  3 Aug 2021 13:45:25 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id cf5so772351edb.2;
-        Tue, 03 Aug 2021 13:45:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8ZbatCuwF0ejzY/254BQh4plkI8mltXs2twaQnckgMI=;
-        b=p6BnMCoQVqlyPBcxlHpgLvhxDtbmUN84h5PkOllCD755g4MCf/UKkPDMAXladxB+fB
-         ItXeBPNZU1eu9qpp2s5qRNf19y0GWfCc4yrZUM81hGss6a03DsR62OdzljQaK7beX4u2
-         6O0AeUatpKRyCVLH5f1CDB73J/mah8Eangexn4iulbgM3QdMIK10G8SMlbKBxBPMIQV/
-         H2hRARFM/WDnnDj9FIHnoiBbr7QTnZbd/iubtmfctpxrvCom9vD8ZBXQ2iDcgfyIqucm
-         Y7GGg4o3zIqe8U26oZdecITIO1v8XS/OujFchRVeQHCvAUQFxXRFEueD3DvJ3VSMbqOG
-         vt5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8ZbatCuwF0ejzY/254BQh4plkI8mltXs2twaQnckgMI=;
-        b=tP3qrxzCc1XNXAC28TUBTXAQMFo9VZlK/CUR4VhMz8qz0joYkKieOOrZ+uYlRVUkhW
-         sN0Nk7u0PxEuroyJgVxDxcboR5mTFYan6VRytyiIl7FFRzDwwvW81mm/HbgM5HLRWxpJ
-         zgUTZ+Iz+Ss6vYgl2tphBetdIdtE+u84XwW89kdB8VAp05uYh9fTp6RadTzm+MMkMfiB
-         tlFki44tzaH7zDMF7qdvwoZfJ35UgTBQfZ8db28xXiIZ/QQXxIm+Id8Jd1EciqI0BwHt
-         h6aYuAjEcG0sbaCWBWC2Y1mIyDgB2Mx7LNi+zjBg42HG4ZMJuxH64CV+a7EvZxP92Qu5
-         tchw==
-X-Gm-Message-State: AOAM532N28wb0sSltqaXFfxoqJb1qWmKCCcljGcJVCH052BTdn/D1PFK
-        jhgcEOhEBjIExR/757CKQZC4OyDII4ZtnaT3Fww=
-X-Google-Smtp-Source: ABdhPJxRXiJDPGTIfneS7YyQ40d3AXe1t8qEhKVPNz8CIijfGmO3fHXUd9wo1ewgVlv71M9TOcDpUS40b9+EssDoF4k=
-X-Received: by 2002:a05:6402:54d:: with SMTP id i13mr27685680edx.179.1628023524096;
- Tue, 03 Aug 2021 13:45:24 -0700 (PDT)
+        Tue, 3 Aug 2021 16:46:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23FBC061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 13:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=KwS04zHg80LQteaaJobSnff6xWOJoAvmuOYagGyDQF4=; b=PthhJ80FjQaA8i2j/Kg9nRLzzr
+        sZmzKLtRmRiU1lzAAjuchNbDcd4Myid9/ylayGQCny9psXGTPI4EGrfUbcKqeWw+93M7+QtQO5COP
+        izl6wOwr8aaw1WE/FUEjiI57WdMavJ5ngmlQE/4C8i46JaCrezMDyYAJCaZlW+eUxD9erOGSieo/G
+        acg6ab4dEDnXyq8/XhQDAWrpokupCqy0CcHby79fFnKkzPwtY7qEMbowkeoGYsXMD4sbZMnPul/uT
+        ZGC49ziFqxs5lQ+Pmw40f2RhIZJhesK7z64RwRi8gPieMKFN2v6F13261wmgyyMBOLiM2laMCCLLZ
+        QxZVuMpA==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mB1Ig-004Bw0-BI; Tue, 03 Aug 2021 20:46:10 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH -next/-mmotm] kernel/user.c: fix build when POLL not enabled
+Date:   Tue,  3 Aug 2021 13:46:09 -0700
+Message-Id: <20210803204609.32329-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210729201100.3994-1-linux.amoon@gmail.com> <20210729201100.3994-4-linux.amoon@gmail.com>
-In-Reply-To: <20210729201100.3994-4-linux.amoon@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 3 Aug 2021 22:45:13 +0200
-Message-ID: <CAFBinCAVaaXd+jXBtA9RETP5AavOfeUVZLkU1ohGT2Lmx+H1cw@mail.gmail.com>
-Subject: Re: [PATCHv1 3/3] net: stmmac: dwmac-meson8b: Add reset controller
- for ethernet phy
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        devicetree@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
+Fix build errors in kernel/user.c when CONFIG_EPOLL is not set/enabled.
 
-On Thu, Jul 29, 2021 at 10:11 PM Anand Moon <linux.amoon@gmail.com> wrote:
->
-> Add reset controller for Ethernet phy reset on every boot for
-> Amlogic SoC.
-I think this description does not match what's going on inside the SoC:
-- for all SoCs earlier than GXL the PHY is external so the reset for
-the PHY is a GPIO
-- the reset line you are passing in the .dts belongs to the Ethernet
-controller on SoCs earlier than GXL
-- I *believe* that the rset line which you're passing in the .dts
-belongs to the Ethernet controller AND the built-in MDIO mux on GXL
-and newer, see also [0]
-- from how the PRG_ETH registers work I doubt that these are connected
-to a reset line (as they're managing mostly delays and protocol - so I
-don't see what would be reset). This is speculation though.
+../kernel/user.c: In function ‘free_user’:
+../kernel/user.c:141:30: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+  percpu_counter_destroy(&up->epoll_watches);
+                              ^~~~~~~~~~~~~
+In file included from ../include/linux/sched/user.h:7:0,
+                 from ../kernel/user.c:17:
+../kernel/user.c: In function ‘alloc_uid’:
+../kernel/user.c:189:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+   if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
+                                 ^
+../kernel/user.c:203:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+    percpu_counter_destroy(&new->epoll_watches);
+                                 ^~~~~~~~~~~~~
+In file included from ../include/linux/sched/user.h:7:0,
+                 from ../kernel/user.c:17:
+../kernel/user.c: In function ‘uid_cache_init’:
+../kernel/user.c:225:37: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+  if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
+                                     ^
+Also fix type: "cpunter" -> "counter" in a panic message.
 
+Fixes: e75b89477811 ("fs/epoll: use a per-cpu counter for user's watches count")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Nick Piggin <npiggin@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+---
+ kernel/user.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-Best regards,
-Martin
-
-
-[0] https://lore.kernel.org/linux-amlogic/553e127c-9839-d15b-d435-c01f18c7be48@gmail.com/
+--- mmotm-2021-0802-1851.orig/kernel/user.c
++++ mmotm-2021-0802-1851/kernel/user.c
+@@ -137,9 +137,11 @@ static void free_user(struct user_struct
+ 	__releases(&uidhash_lock)
+ {
+ 	uid_hash_remove(up);
++#ifdef CONFIG_EPOLL
+ 	spin_unlock_irqrestore(&uidhash_lock, flags);
+ 	percpu_counter_destroy(&up->epoll_watches);
+ 	kmem_cache_free(uid_cachep, up);
++#endif
+ }
+ 
+ /*
+@@ -186,10 +188,12 @@ struct user_struct *alloc_uid(kuid_t uid
+ 
+ 		new->uid = uid;
+ 		refcount_set(&new->__count, 1);
++#ifdef CONFIG_EPOLL
+ 		if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
+ 			kmem_cache_free(uid_cachep, new);
+ 			return NULL;
+ 		}
++#endif
+ 		ratelimit_state_init(&new->ratelimit, HZ, 100);
+ 		ratelimit_set_flags(&new->ratelimit, RATELIMIT_MSG_ON_RELEASE);
+ 
+@@ -200,7 +204,9 @@ struct user_struct *alloc_uid(kuid_t uid
+ 		spin_lock_irq(&uidhash_lock);
+ 		up = uid_hash_find(uid, hashent);
+ 		if (up) {
++#ifdef CONFIG_EPOLL
+ 			percpu_counter_destroy(&new->epoll_watches);
++#endif
+ 			kmem_cache_free(uid_cachep, new);
+ 		} else {
+ 			uid_hash_insert(new, hashent);
+@@ -222,8 +228,10 @@ static int __init uid_cache_init(void)
+ 	for(n = 0; n < UIDHASH_SZ; ++n)
+ 		INIT_HLIST_HEAD(uidhash_table + n);
+ 
++#ifdef CONFIG_EPOLL
+ 	if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
+-		panic("percpu cpunter alloc failed");
++		panic("percpu counter alloc failed");
++#endif
+ 
+ 	/* Insert the root user immediately (init already runs as root) */
+ 	spin_lock_irq(&uidhash_lock);
