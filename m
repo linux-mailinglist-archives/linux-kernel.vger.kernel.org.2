@@ -2,178 +2,537 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECDD3DE713
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0623DE717
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbhHCHOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:14:15 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:30706 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234065AbhHCHON (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:14:13 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17375MUJ006829;
-        Tue, 3 Aug 2021 00:13:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=79998fF840Dkp1r85lrkR0Hrx1OGK4+YPPULC29XaVU=;
- b=BHdHla4gn44VGrNW9wfr1B9ZLxUfrUOcdGGdJ4AFVO6nkIPSam4d1OpzD3+iZUobmvT7
- 7wNJJNzicBb72YtHDK76GI7K7a7audDzjrM5Qa6AaA2DW5e6mOaJd0T/ShFfQCNrGy4S
- KFblB9ukZlenK6bWB78YthydEpBn1+/78Ho= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a6nmmbjt2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 03 Aug 2021 00:13:42 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 3 Aug 2021 00:13:41 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B/CJMp5pIr8mkFrNekugpXcBVL79J4kLlfLCoHJOD+0bLgsoIVIaHhEmEP7P2vrBCJTBdqYr0jovSffsN1DnBQF6Mph126KrcLe25K2KcAF0Lx30GG1AYN/4yLnf/PPdFlnS5ADcq/vVO0ffJow1BNScpI0AHzFNlFqtkGh3qR10RI2umA9CRR18Ffo1PncWuZcee6GMRUSW3+UZEYW5WsdYINdKi59jVooZR5xdDyEWeIUjZBAOLImmS6l6uMSN9t2jEz9e2dFSvNln2i0lgxo8UK4G+L5Vp3PdO4d5zk4Dg+AlX0MGgyaciPsyF5r3jvYTi9WsVK0359pQG+UMmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=79998fF840Dkp1r85lrkR0Hrx1OGK4+YPPULC29XaVU=;
- b=k9DVZ8Made3zJc7uxsd4eMUYZJs6D3+AFxdX+l0lKM1HY3zZZc6fu30KShaUnKHp4oZ8w8SzybzZ9kuXlZ/OJ6ZxcUtQL0vozW1vOqrTsq63JgIsVAd2TuwhealgO6s6mKNFyF/FzbcNqMCDQA0+Ke8JITmtIFDkxSoYziQDqXv3oEtgA4kOOS8xjFlK02WQVRBiEbuyUcDezvdBq51LFBrrzN3mXYLJffeKHIUFFqxBRTkChD8oxu/MdHS/+Kch++vRd14f69z/I7q2yDS4gZLu05A1PCGXwhrxr13PbD1fZMb4/keAhqgrE/lszEttCopA3QehxYcRDhWPF4A6wQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by SJ0PR15MB4646.namprd15.prod.outlook.com (2603:10b6:a03:37b::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Tue, 3 Aug
- 2021 07:13:35 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::9520:2bcd:e6fd:1dc7]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::9520:2bcd:e6fd:1dc7%6]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
- 07:13:35 +0000
-From:   Roman Gushchin <guro@fb.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     Miaohe Lin <linmiaohe@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "alexs@kernel.org" <alexs@kernel.org>,
-        "richard.weiyang@gmail.com" <richard.weiyang@gmail.com>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
-Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
-Thread-Topic: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
-Thread-Index: AQHXhHlhZOi6jIG+t0KCX9QHt+1jRata1uiAgAA+YwCAAUmkAIAEypsAgAAvQ4CAAAvKgIAAAJyJ
-Date:   Tue, 3 Aug 2021 07:13:35 +0000
-Message-ID: <898130C3-FDF2-41C2-81DD-D33721C977C6@fb.com>
-References: <20210729125755.16871-1-linmiaohe@huawei.com>
- <20210729125755.16871-3-linmiaohe@huawei.com> <YQNsxVPsRSBZcfGG@carbon.lan>
- <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
- <4a3c23c4-054c-2896-29c5-8cf9a4deee98@huawei.com>
- <YQi6lOT6j2DtOGlT@carbon.dhcp.thefacebook.com>
- <95629d91-6ae8-b445-e7fc-b51c888cad59@huawei.com>,<YQjsHTW+46bG9XsV@dhcp22.suse.cz>
-In-Reply-To: <YQjsHTW+46bG9XsV@dhcp22.suse.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6c91caa8-9f83-499b-1ed5-08d9564e35c1
-x-ms-traffictypediagnostic: SJ0PR15MB4646:
-x-microsoft-antispam-prvs: <SJ0PR15MB46463C88BCF5219BEDA23098BEF09@SJ0PR15MB4646.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:2803;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eKEaVOrIfad2vPmYvGIu3OuqZQ1Ujp/LRQDWoAEaHK+0DA8p+IPW0JNqpITx2bMPp2kei/4RK+DNbxfcDmYVYtOmgh+cLwB6SWKWMNaAhmJynyK3pPt91S+yyYvjpTSt0BjIbNg2ftKrKNBp/fHpg9KTdpDeu8gf449a28BsHkyVF6EjUspkrS+F4uQJBQL7ag+YdKYLMekLIOurGRez9G5UVPdSE0Q5iNbx7fBTrDOiMA/ZC/UtKoREP8xmwyWFtwqUhfXOw2/XFecvpEz3U4OydAkWNnBmvCtNFyz3UYDg1fAialRO1zlmLSN9cXW666I/1TuUXmk3ifp+Tt0Dqjrj0LUevyQebWGHDzMek6B7qIoKcazFtpNexkagi/A0lbCuwXGlHapChoAuAMBemKnV8G4HsyITf8mvplhi4WDehcCm44SiDevvQKddbLvNjRJiFAyjbN9eUIlI9MTanTko8xGbtvxW6wj3CoD3vWvuu/Qy771TDt9lbHaSRy8ofZ8QHbp/Gzgwf4nBhokPCEM13MdvVg5UQgpdqdCXPxzM0eT68WIF9aG81Br/IcgwLlnRvuKnNYDjxG23B+hL2nHRwpklYkAd8/xxi4xsGezwsfFg9S6+VvBn4iACkd1gCnboeQdB0d27qI8xN6Axkj1PZa60vlMcLkOV9xFuXhtxgn8wMMjiWLUC233W61THRKb697BAc5QQNzDD8uEcDMeNaEok/3W19z9iuED4gbk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(39860400002)(346002)(136003)(36756003)(53546011)(6506007)(2906002)(38100700002)(6486002)(86362001)(122000001)(71200400001)(8676002)(316002)(478600001)(6512007)(38070700005)(5660300002)(54906003)(66476007)(2616005)(6916009)(76116006)(186003)(8936002)(83380400001)(7416002)(4326008)(66556008)(64756008)(66446008)(33656002)(66946007)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QmxWSUNBd2w1dEVCaGtaMlRueEFHa0thOUo3cnRtbmNzTU9rN1RoTUZINW5V?=
- =?utf-8?B?Z3FuMHA1ZEFRVTk3REt3clM0bU0reGo5VWd5VHo1cDhLZFA3U3NDRlEvZWM2?=
- =?utf-8?B?dHRkcUVCN3NoWjhLNm0zWkI5T2xYVGUvLzJ6S3RGSHNwUTBZRFhFVGVEaFNL?=
- =?utf-8?B?WTVGdDJWb20rMUFJdE1lUlZreURLakJQZjVQUmw2eVIwSWNZZVI0K1cybjhU?=
- =?utf-8?B?bGRRMDhlMjdSVEhJN2RRZ2U4U2hJaGQrN1RNNmlXNzlKREYvbmFsVlNOemN4?=
- =?utf-8?B?VlNvOVpMTmpjODAyZllOQTgvak1nQ2ZJMkt6clA2YVA1R1ZhRVNzT0NGTXl6?=
- =?utf-8?B?a3NXQ3BIbjFuMWZnSTBNMGFGbUdBeGpkQXJLWWpaRktVSmw4L2N2MFhoa1NZ?=
- =?utf-8?B?cmExZmNUejJFci81cjJxZTVmbFgwaW1qRjR5Q3dOd2s1M3ZJejVNZWFJMm5O?=
- =?utf-8?B?eUZlbHlmcFhmeHdtckhVZCtMQ1NUWlRZMXBnSUtleG9sTGlPMjVqNVdpTS9X?=
- =?utf-8?B?cmN0eVdxcWQ0NmpKdDhQaU9oUzVTeVFFazdwWVpzZFRRcHgremZJa2svbzll?=
- =?utf-8?B?RG1nSmhLRTZLZ2N6MXJvRHVxN3p4NFI2dHVQS29qNytRYmVKbERCdktiamx2?=
- =?utf-8?B?L2JPWTNHRnpuZWVUMFkvV1htRnhmaStXUjN3aFVKQ1ZtL2pyQXlWRktUS3pE?=
- =?utf-8?B?Z2c3UUoyd1kxaHRRWGZDZVF4Z3FKMzlyNVRXMVM1dkcrOUQ3Z01ReHlxbDlo?=
- =?utf-8?B?YmhQUUxsR3Q3bENFdisvSFNhQTZOSlY4aWJOUUVBdENlVDRCRU9XRE85U3li?=
- =?utf-8?B?S0hCTlZpeUhiV1g0NENZOWJlNm9LdzkvRFpCM3hHSEVUbCsvNnNTMExLaHpy?=
- =?utf-8?B?RVRKdk1iU1hxMk5ETWpJRFhlbUxva0lTQnduNGcrb0FFWWNhU3c2MWlVZXQ3?=
- =?utf-8?B?TTk0VHRvSE9UWExwWE0xUmNGSVdleHh4bFhPM1VlK3FmYk9BZDVHaVh3bjhm?=
- =?utf-8?B?aGpiUDNOaDNja244WnA4aVdQVDVHS0hjcnJ6QUFvQXc1d2ZUV3BJMGsxaHBX?=
- =?utf-8?B?V2w5TDhjY3p0TllpMDByVHJDSjl6ZVJTN2RDc2hYRWlSSytkOFBGZ1pvT2hn?=
- =?utf-8?B?c0RXZ01DUlhJZlBMeWF1TnovNTNuSVFrWkpSRGNtSmRObXpMSSs4T2xHMVdD?=
- =?utf-8?B?WUdiUVFKUTN4KzlScXduRTNwSW94dWZHUkorMW9YWGxDYTAwcG1aN21iTmZv?=
- =?utf-8?B?UHRSUkpETG5LKzlYWHdvd2FNcE9aR2VEaVh4QWFqQmkydisyYnphNTBwVTBF?=
- =?utf-8?B?Zk02V2R4SjBSSWJYdVVOSlNQL1d3bjhvQWNXeE5VTVdnQ01SUitTUG1RblVy?=
- =?utf-8?B?T3FZakNKNjZLbzUralllNzFNejBtWk0wejVsTU14Z1JMV2NOOEU3c2hESHhL?=
- =?utf-8?B?WmlGelpaOHBmZVcvY3gxaWNiYUczaFdVWFJoQ2t4UVo2MWozVHpSYXRabjFu?=
- =?utf-8?B?aHBHZkdlRzlZc0paWnRlY2JOczNYeWx0NUpEMStDenl5L2tNUHB0K0Q2OEdD?=
- =?utf-8?B?SVNlUGVLdGR2L1NpL1VIRENrNktNUHFkUTY2MlVXenJTUmI0emNGd1RIcHFX?=
- =?utf-8?B?N0RzMnNlMlZLRG53Y2locnluTTMyaU1tTkV2WlkvdmJEZ01nWXI3WHp3YWxH?=
- =?utf-8?B?TXI2SGtlT1JNbGswbnlGa2dZNk40RDhGYjNCdWw3V2drSUZoeEZnR2dBNmZ2?=
- =?utf-8?B?eFlOaEkxcnhIWkZyRi9aWTV2SUhpVVdsUXU3UytJeEFLVG00WTlnWk9EUFJ4?=
- =?utf-8?B?Y3BFdndpejFCbnVlbXhnTUNOdW9oazZJdlNnLy9kR1ZWKzVxRTJ4Zytka25p?=
- =?utf-8?Q?K/8ym9Ont0RC5?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S234235AbhHCHPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:15:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234130AbhHCHO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 03:14:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46E9160FA0;
+        Tue,  3 Aug 2021 07:14:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627974886;
+        bh=eFn1K3fdPrNqwe9I159rEqHqV3wJfPRPO+P++S8nnYE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MfieJf4wihJPGRubean8OR/JLPCzUSV99o9aO8h2Q6DEG8h07xanWtwWIzWcw7oah
+         yNhyt8GASJmXJNyDdd8jUHGA1Y2manPe2IqzzvuubLTUOtweU/0OHntfiSfzp0DLeS
+         dLHS9thsusAt1x515Sim7aczleJyLKS7MHboRy7kIl+wr6YbIx66r+xnsSqNN/thk9
+         u6xkzVXui71fLiZ7GDHZqmbtlY519/I5ZX9PMIH62VdI27nccsqBo4tGcTSIniX5TL
+         TQXZO89iP05Iv/yi3QPe2JoBpnjK1Z/yck0qf8rsAbfyGJPrAucXpgTW78+Gz6sZsF
+         t8ClEyvc7gjJw==
+Received: by mail-ot1-f51.google.com with SMTP id v8-20020a0568301bc8b02904d5b4e5ca3aso7677113ota.13;
+        Tue, 03 Aug 2021 00:14:46 -0700 (PDT)
+X-Gm-Message-State: AOAM532z9k5IPc7deYSjNZO5CUDEI+s9dvrI5FuL3t92xt89nagKzii/
+        W5wxQWIxCkWQH3cVdw1VKyLLRQOVGXp5X/LTq8k=
+X-Google-Smtp-Source: ABdhPJzbUcgc9DSrNZVpTa40+A3V9nYiDvl4SPND3rsLNGOgUs2s3JSpF81JiL99ewHcSUXS8sSQsjRbmieXuivi42I=
+X-Received: by 2002:a9d:5c2:: with SMTP id 60mr42529otd.77.1627974885653; Tue,
+ 03 Aug 2021 00:14:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c91caa8-9f83-499b-1ed5-08d9564e35c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2021 07:13:35.7943
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vclONUnK+b84OSzA1XPtMn1P6fq+UZ93P4XPgly0sxghxjFFufzPsfcZy1rLu1QT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4646
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: 6eQZDRQcsRWjvL6gkoAKWyO8xzSgZJW1
-X-Proofpoint-ORIG-GUID: 6eQZDRQcsRWjvL6gkoAKWyO8xzSgZJW1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-03_02:2021-08-02,2021-08-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- clxscore=1015 priorityscore=1501 impostorscore=0 phishscore=0 mlxscore=0
- adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=969 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108030048
-X-FB-Internal: deliver
+References: <20210801201336.2224111-1-adobriyan@gmail.com> <20210801201336.2224111-2-adobriyan@gmail.com>
+In-Reply-To: <20210801201336.2224111-2-adobriyan@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 3 Aug 2021 09:14:34 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHA64+6j2HRwxmh0Q9L2X65bWrURBHSBEnGCgmoAemTSw@mail.gmail.com>
+Message-ID: <CAMj1kXHA64+6j2HRwxmh0Q9L2X65bWrURBHSBEnGCgmoAemTSw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] isystem: ship and use stdarg.h
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SeKAmWQgZ28gd2l0aCBhdG9taWNfZGVjKCkuDQoNClNlbnQgZnJvbSBteSBpUGhvbmUNCg0KPiBP
-biBBdWcgMywgMjAyMSwgYXQgMDA6MTEsIE1pY2hhbCBIb2NrbyA8bWhvY2tvQHN1c2UuY29tPiB3
-cm90ZToNCj4gDQo+IO+7v09uIFR1ZSAwMy0wOC0yMSAxNDoyOToxMywgTWlhb2hlIExpbiB3cm90
-ZToNCj4gWy4uLl0NCj4+IGRpZmYgLS1naXQgYS9tbS9tZW1jb250cm9sLmMgYi9tbS9tZW1jb250
-cm9sLmMNCj4+IGluZGV4IDYxNmQxYTcyZWNlMy4uNjIxMGIxMTI0OTI5IDEwMDY0NA0KPj4gLS0t
-IGEvbW0vbWVtY29udHJvbC5jDQo+PiArKysgYi9tbS9tZW1jb250cm9sLmMNCj4+IEBAIC0yMjA4
-LDExICsyMjA4LDExIEBAIHN0YXRpYyB2b2lkIHJlZmlsbF9zdG9jayhzdHJ1Y3QgbWVtX2Nncm91
-cCAqbWVtY2csIHVuc2lnbmVkIGludCBucl9wYWdlcykNCj4+ICAqLw0KPj4gc3RhdGljIHZvaWQg
-ZHJhaW5fYWxsX3N0b2NrKHN0cnVjdCBtZW1fY2dyb3VwICpyb290X21lbWNnKQ0KPj4gew0KPj4g
-LSAgICAgICBzdGF0aWMgREVGSU5FX01VVEVYKHBlcmNwdV9jaGFyZ2VfbXV0ZXgpOw0KPj4gICAg
-ICAgIGludCBjcHUsIGN1cmNwdTsNCj4+ICsgICAgICAgc3RhdGljIGF0b21pY190IGRyYWluZXIg
-PSBBVE9NSUNfSU5JVCgwKTsNCj4+IA0KPj4gICAgICAgIC8qIElmIHNvbWVvbmUncyBhbHJlYWR5
-IGRyYWluaW5nLCBhdm9pZCBhZGRpbmcgcnVubmluZyBtb3JlIHdvcmtlcnMuICovDQo+PiAtICAg
-ICAgIGlmICghbXV0ZXhfdHJ5bG9jaygmcGVyY3B1X2NoYXJnZV9tdXRleCkpDQo+PiArICAgICAg
-IGlmIChhdG9taWNfY21weGNoZygmZHJhaW5lciwgMCwgMSkgIT0gMCkNCj4+ICAgICAgICAgICAg
-ICAgIHJldHVybjsNCj4+ICAgICAgICAvKg0KPj4gICAgICAgICAqIE5vdGlmeSBvdGhlciBjcHVz
-IHRoYXQgc3lzdGVtLXdpZGUgImRyYWluIiBpcyBydW5uaW5nDQo+PiBAQCAtMjI0NCw3ICsyMjQ0
-LDcgQEAgc3RhdGljIHZvaWQgZHJhaW5fYWxsX3N0b2NrKHN0cnVjdCBtZW1fY2dyb3VwICpyb290
-X21lbWNnKQ0KPj4gICAgICAgICAgICAgICAgfQ0KPj4gICAgICAgIH0NCj4+ICAgICAgICBwdXRf
-Y3B1KCk7DQo+PiAtICAgICAgIG11dGV4X3VubG9jaygmcGVyY3B1X2NoYXJnZV9tdXRleCk7DQo+
-PiArICAgICAgIGF0b21pY19zZXQoJmRyYWluZXIsIDApOw0KPiANCj4gYXRvbWljX3NldCBkb2Vz
-bid0IGltcGx5IG1lbW9yeSBiYXJyaWVyIElJUkMuIElzIHRoaXMgc2FmZT8NCj4gDQo+IC0tIA0K
-PiBNaWNoYWwgSG9ja28NCj4gU1VTRSBMYWJzDQo=
+On Sun, 1 Aug 2021 at 22:13, Alexey Dobriyan <adobriyan@gmail.com> wrote:
+>
+> Ship minimal stdarg.h (1 type, 4 macros) as <linux/stdarg.h>.
+> stdarg.h is the only userspace header commonly used in the kernel.
+>
+
+I /think/ I know why this is a good thing, but it is always better to
+spell it out.
+
+So with a better explanation in the commit log:
+
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+
+> GPL 2 version of <stdarg.h> can be extracted from
+> http://archive.debian.org/debian/pool/main/g/gcc-4.2/gcc-4.2_4.2.4.orig.tar.gz
+>
+> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> Cc: Len Brown <lenb@kernel.org>
+> Cc: linux-acpi@vger.kernel.org
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: linux-efi@vger.kernel.org
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> ---
+>  arch/parisc/kernel/firmware.c                         |  2 +-
+>  arch/powerpc/kernel/prom_init.c                       |  2 +-
+>  arch/powerpc/kernel/rtas.c                            |  2 +-
+>  arch/powerpc/kernel/udbg.c                            |  2 +-
+>  arch/s390/boot/pgm_check_info.c                       |  2 +-
+>  arch/x86/boot/boot.h                                  |  2 +-
+>  drivers/firmware/efi/libstub/efi-stub-helper.c        |  2 +-
+>  drivers/firmware/efi/libstub/vsprintf.c               |  2 +-
+>  drivers/gpu/drm/amd/display/dc/dc_helper.c            |  2 +-
+>  drivers/gpu/drm/drm_print.c                           |  2 +-
+>  drivers/isdn/capi/capiutil.c                          |  2 +-
+>  drivers/macintosh/via-cuda.c                          |  2 +-
+>  drivers/macintosh/via-pmu.c                           |  2 +-
+>  .../atomisp/pci/hive_isp_css_include/print_support.h  |  2 +-
+>  drivers/staging/media/atomisp/pci/ia_css_env.h        |  2 +-
+>  .../pci/runtime/debug/interface/ia_css_debug.h        |  2 +-
+>  drivers/staging/media/atomisp/pci/sh_css_internal.h   |  2 +-
+>  fs/befs/debug.c                                       |  2 +-
+>  fs/reiserfs/prints.c                                  |  2 +-
+>  fs/ufs/super.c                                        |  2 +-
+>  include/acpi/platform/acgcc.h                         |  2 +-
+>  include/linux/kernel.h                                |  2 +-
+>  include/linux/printk.h                                |  2 +-
+>  include/linux/stdarg.h                                | 11 +++++++++++
+>  include/linux/string.h                                |  2 +-
+>  lib/debug_info.c                                      |  3 +--
+>  lib/kasprintf.c                                       |  2 +-
+>  lib/kunit/string-stream.h                             |  2 +-
+>  lib/vsprintf.c                                        |  2 +-
+>  mm/kfence/report.c                                    |  2 +-
+>  net/batman-adv/log.c                                  |  2 +-
+>  31 files changed, 41 insertions(+), 31 deletions(-)
+>  create mode 100644 include/linux/stdarg.h
+>
+> diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
+> index 665b70086685..7034227dbdf3 100644
+> --- a/arch/parisc/kernel/firmware.c
+> +++ b/arch/parisc/kernel/firmware.c
+> @@ -51,7 +51,7 @@
+>   *                                     prumpf  991016
+>   */
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  #include <linux/delay.h>
+>  #include <linux/init.h>
+> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+> index a5bf355ce1d6..10664633f7e3 100644
+> --- a/arch/powerpc/kernel/prom_init.c
+> +++ b/arch/powerpc/kernel/prom_init.c
+> @@ -14,7 +14,7 @@
+>  /* we cannot use FORTIFY as it brings in new symbols */
+>  #define __NO_FORTIFY
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/kernel.h>
+>  #include <linux/string.h>
+>  #include <linux/init.h>
+> diff --git a/arch/powerpc/kernel/rtas.c b/arch/powerpc/kernel/rtas.c
+> index 99f2cce635fb..ff80bbad22a5 100644
+> --- a/arch/powerpc/kernel/rtas.c
+> +++ b/arch/powerpc/kernel/rtas.c
+> @@ -7,7 +7,7 @@
+>   * Copyright (C) 2001 IBM.
+>   */
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/kernel.h>
+>  #include <linux/types.h>
+>  #include <linux/spinlock.h>
+> diff --git a/arch/powerpc/kernel/udbg.c b/arch/powerpc/kernel/udbg.c
+> index 01595e8cafe7..b1544b2f6321 100644
+> --- a/arch/powerpc/kernel/udbg.c
+> +++ b/arch/powerpc/kernel/udbg.c
+> @@ -5,7 +5,7 @@
+>   * c 2001 PPC 64 Team, IBM Corp
+>   */
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/types.h>
+>  #include <linux/sched.h>
+>  #include <linux/console.h>
+> diff --git a/arch/s390/boot/pgm_check_info.c b/arch/s390/boot/pgm_check_info.c
+> index 3a46abed2549..b7d8dd88bbf2 100644
+> --- a/arch/s390/boot/pgm_check_info.c
+> +++ b/arch/s390/boot/pgm_check_info.c
+> @@ -1,5 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include <linux/kernel.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/string.h>
+>  #include <linux/ctype.h>
+>  #include <asm/stacktrace.h>
+> @@ -8,7 +9,6 @@
+>  #include <asm/setup.h>
+>  #include <asm/sclp.h>
+>  #include <asm/uv.h>
+> -#include <stdarg.h>
+>  #include "boot.h"
+>
+>  const char hex_asc[] = "0123456789abcdef";
+> diff --git a/arch/x86/boot/boot.h b/arch/x86/boot/boot.h
+> index ca866f1cca2e..34c9dbb6a47d 100644
+> --- a/arch/x86/boot/boot.h
+> +++ b/arch/x86/boot/boot.h
+> @@ -18,7 +18,7 @@
+>
+>  #ifndef __ASSEMBLY__
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/types.h>
+>  #include <linux/edd.h>
+>  #include <asm/setup.h>
+> diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
+> index ae87dded989d..d489bdc645fe 100644
+> --- a/drivers/firmware/efi/libstub/efi-stub-helper.c
+> +++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+> @@ -7,7 +7,7 @@
+>   * Copyright 2011 Intel Corporation; author Matt Fleming
+>   */
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  #include <linux/ctype.h>
+>  #include <linux/efi.h>
+> diff --git a/drivers/firmware/efi/libstub/vsprintf.c b/drivers/firmware/efi/libstub/vsprintf.c
+> index 1088e288c04d..71c71c222346 100644
+> --- a/drivers/firmware/efi/libstub/vsprintf.c
+> +++ b/drivers/firmware/efi/libstub/vsprintf.c
+> @@ -10,7 +10,7 @@
+>   * Oh, it's a waste of space, but oh-so-yummy for debugging.
+>   */
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  #include <linux/compiler.h>
+>  #include <linux/ctype.h>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dc_helper.c b/drivers/gpu/drm/amd/display/dc/dc_helper.c
+> index a612ba6dc389..ab6bc5d79012 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dc_helper.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dc_helper.c
+> @@ -28,9 +28,9 @@
+>   */
+>
+>  #include <linux/delay.h>
+> +#include <linux/stdarg.h>
+>
+>  #include "dm_services.h"
+> -#include <stdarg.h>
+>
+>  #include "dc.h"
+>  #include "dc_dmub_srv.h"
+> diff --git a/drivers/gpu/drm/drm_print.c b/drivers/gpu/drm/drm_print.c
+> index 111b932cf2a9..f783d4963d4b 100644
+> --- a/drivers/gpu/drm/drm_print.c
+> +++ b/drivers/gpu/drm/drm_print.c
+> @@ -25,7 +25,7 @@
+>
+>  #define DEBUG /* for pr_debug() */
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  #include <linux/io.h>
+>  #include <linux/moduleparam.h>
+> diff --git a/drivers/isdn/capi/capiutil.c b/drivers/isdn/capi/capiutil.c
+> index f26bf3c66d7e..d7ae42edc4a8 100644
+> --- a/drivers/isdn/capi/capiutil.c
+> +++ b/drivers/isdn/capi/capiutil.c
+> @@ -379,7 +379,7 @@ static char *pnames[] =
+>         /*2f */ "Useruserdata"
+>  };
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  /*-------------------------------------------------------*/
+>  static _cdebbuf *bufprint(_cdebbuf *cdb, char *fmt, ...)
+> diff --git a/drivers/macintosh/via-cuda.c b/drivers/macintosh/via-cuda.c
+> index 3581abfb0c6a..cd267392289c 100644
+> --- a/drivers/macintosh/via-cuda.c
+> +++ b/drivers/macintosh/via-cuda.c
+> @@ -9,7 +9,7 @@
+>   *
+>   * Copyright (C) 1996 Paul Mackerras.
+>   */
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/types.h>
+>  #include <linux/errno.h>
+>  #include <linux/kernel.h>
+> diff --git a/drivers/macintosh/via-pmu.c b/drivers/macintosh/via-pmu.c
+> index 4bdd4c45e7a7..4b98bc26a94b 100644
+> --- a/drivers/macintosh/via-pmu.c
+> +++ b/drivers/macintosh/via-pmu.c
+> @@ -18,7 +18,7 @@
+>   *    a sleep or a freq. switch
+>   *
+>   */
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/mutex.h>
+>  #include <linux/types.h>
+>  #include <linux/errno.h>
+> diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_include/print_support.h b/drivers/staging/media/atomisp/pci/hive_isp_css_include/print_support.h
+> index 540b405cc0f7..a3c7f3de6d17 100644
+> --- a/drivers/staging/media/atomisp/pci/hive_isp_css_include/print_support.h
+> +++ b/drivers/staging/media/atomisp/pci/hive_isp_css_include/print_support.h
+> @@ -16,7 +16,7 @@
+>  #ifndef __PRINT_SUPPORT_H_INCLUDED__
+>  #define __PRINT_SUPPORT_H_INCLUDED__
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  extern int (*sh_css_printf)(const char *fmt, va_list args);
+>  /* depends on host supplied print function in ia_css_init() */
+> diff --git a/drivers/staging/media/atomisp/pci/ia_css_env.h b/drivers/staging/media/atomisp/pci/ia_css_env.h
+> index 6b38723b27cd..3b89bbd837a0 100644
+> --- a/drivers/staging/media/atomisp/pci/ia_css_env.h
+> +++ b/drivers/staging/media/atomisp/pci/ia_css_env.h
+> @@ -17,7 +17,7 @@
+>  #define __IA_CSS_ENV_H
+>
+>  #include <type_support.h>
+> -#include <stdarg.h> /* va_list */
+> +#include <linux/stdarg.h> /* va_list */
+>  #include "ia_css_types.h"
+>  #include "ia_css_acc_types.h"
+>
+> diff --git a/drivers/staging/media/atomisp/pci/runtime/debug/interface/ia_css_debug.h b/drivers/staging/media/atomisp/pci/runtime/debug/interface/ia_css_debug.h
+> index 5e6e7447ae00..e37ef4232c55 100644
+> --- a/drivers/staging/media/atomisp/pci/runtime/debug/interface/ia_css_debug.h
+> +++ b/drivers/staging/media/atomisp/pci/runtime/debug/interface/ia_css_debug.h
+> @@ -19,7 +19,7 @@
+>  /*! \file */
+>
+>  #include <type_support.h>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include "ia_css_types.h"
+>  #include "ia_css_binary.h"
+>  #include "ia_css_frame_public.h"
+> diff --git a/drivers/staging/media/atomisp/pci/sh_css_internal.h b/drivers/staging/media/atomisp/pci/sh_css_internal.h
+> index 3c669ec79b68..496faa7297a5 100644
+> --- a/drivers/staging/media/atomisp/pci/sh_css_internal.h
+> +++ b/drivers/staging/media/atomisp/pci/sh_css_internal.h
+> @@ -20,7 +20,7 @@
+>  #include <math_support.h>
+>  #include <type_support.h>
+>  #include <platform_support.h>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  #if !defined(ISP2401)
+>  #include "input_formatter.h"
+> diff --git a/fs/befs/debug.c b/fs/befs/debug.c
+> index eb7bd6c692c7..02fa66fb82c2 100644
+> --- a/fs/befs/debug.c
+> +++ b/fs/befs/debug.c
+> @@ -14,7 +14,7 @@
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>  #ifdef __KERNEL__
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/string.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/kernel.h>
+> diff --git a/fs/reiserfs/prints.c b/fs/reiserfs/prints.c
+> index 500f2000eb41..30319dc33c18 100644
+> --- a/fs/reiserfs/prints.c
+> +++ b/fs/reiserfs/prints.c
+> @@ -8,7 +8,7 @@
+>  #include <linux/string.h>
+>  #include <linux/buffer_head.h>
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  static char error_buf[1024];
+>  static char fmt_buf[1024];
+> diff --git a/fs/ufs/super.c b/fs/ufs/super.c
+> index 74028b5a7b0a..00a01471ea05 100644
+> --- a/fs/ufs/super.c
+> +++ b/fs/ufs/super.c
+> @@ -70,7 +70,7 @@
+>  #include <linux/module.h>
+>  #include <linux/bitops.h>
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  #include <linux/uaccess.h>
+>
+> diff --git a/include/acpi/platform/acgcc.h b/include/acpi/platform/acgcc.h
+> index f6656be81760..fb172a03a753 100644
+> --- a/include/acpi/platform/acgcc.h
+> +++ b/include/acpi/platform/acgcc.h
+> @@ -22,7 +22,7 @@ typedef __builtin_va_list va_list;
+>  #define va_arg(v, l)            __builtin_va_arg(v, l)
+>  #define va_copy(d, s)           __builtin_va_copy(d, s)
+>  #else
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #endif
+>  #endif
+>
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index 1b2f0a7e00d6..2776423a587e 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -2,7 +2,7 @@
+>  #ifndef _LINUX_KERNEL_H
+>  #define _LINUX_KERNEL_H
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/align.h>
+>  #include <linux/limits.h>
+>  #include <linux/linkage.h>
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index e834d78f0478..9f3f29ea348e 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -2,7 +2,7 @@
+>  #ifndef __KERNEL_PRINTK__
+>  #define __KERNEL_PRINTK__
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/init.h>
+>  #include <linux/kern_levels.h>
+>  #include <linux/linkage.h>
+> diff --git a/include/linux/stdarg.h b/include/linux/stdarg.h
+> new file mode 100644
+> index 000000000000..c8dc7f4f390c
+> --- /dev/null
+> +++ b/include/linux/stdarg.h
+> @@ -0,0 +1,11 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +#ifndef _LINUX_STDARG_H
+> +#define _LINUX_STDARG_H
+> +
+> +typedef __builtin_va_list va_list;
+> +#define va_start(v, l) __builtin_va_start(v, l)
+> +#define va_end(v)      __builtin_va_end(v)
+> +#define va_arg(v, T)   __builtin_va_arg(v, T)
+> +#define va_copy(d, s)  __builtin_va_copy(d, s)
+> +
+> +#endif
+> diff --git a/include/linux/string.h b/include/linux/string.h
+> index b48d2d28e0b1..5e96d656be7a 100644
+> --- a/include/linux/string.h
+> +++ b/include/linux/string.h
+> @@ -6,7 +6,7 @@
+>  #include <linux/types.h>       /* for size_t */
+>  #include <linux/stddef.h>      /* for NULL */
+>  #include <linux/errno.h>       /* for E2BIG */
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <uapi/linux/string.h>
+>
+>  extern char *strndup_user(const char __user *, long);
+> diff --git a/lib/debug_info.c b/lib/debug_info.c
+> index 36daf753293c..cc4723c74af5 100644
+> --- a/lib/debug_info.c
+> +++ b/lib/debug_info.c
+> @@ -5,8 +5,6 @@
+>   * CONFIG_DEBUG_INFO_REDUCED. Please do not add actual code. However,
+>   * adding appropriate #includes is fine.
+>   */
+> -#include <stdarg.h>
+> -
+>  #include <linux/cred.h>
+>  #include <linux/crypto.h>
+>  #include <linux/dcache.h>
+> @@ -22,6 +20,7 @@
+>  #include <linux/net.h>
+>  #include <linux/sched.h>
+>  #include <linux/slab.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/types.h>
+>  #include <net/addrconf.h>
+>  #include <net/sock.h>
+> diff --git a/lib/kasprintf.c b/lib/kasprintf.c
+> index bacf7b83ccf0..cd2f5974ed98 100644
+> --- a/lib/kasprintf.c
+> +++ b/lib/kasprintf.c
+> @@ -5,7 +5,7 @@
+>   *  Copyright (C) 1991, 1992  Linus Torvalds
+>   */
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/export.h>
+>  #include <linux/slab.h>
+>  #include <linux/types.h>
+> diff --git a/lib/kunit/string-stream.h b/lib/kunit/string-stream.h
+> index 5e94b623454f..43f9508a55b4 100644
+> --- a/lib/kunit/string-stream.h
+> +++ b/lib/kunit/string-stream.h
+> @@ -11,7 +11,7 @@
+>
+>  #include <linux/spinlock.h>
+>  #include <linux/types.h>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  struct string_stream_fragment {
+>         struct kunit *test;
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 26c83943748a..3bcb7be03f93 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -17,7 +17,7 @@
+>   * - scnprintf and vscnprintf
+>   */
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>  #include <linux/build_bug.h>
+>  #include <linux/clk.h>
+>  #include <linux/clk-provider.h>
+> diff --git a/mm/kfence/report.c b/mm/kfence/report.c
+> index 2a319c21c939..4b891dd75650 100644
+> --- a/mm/kfence/report.c
+> +++ b/mm/kfence/report.c
+> @@ -5,7 +5,7 @@
+>   * Copyright (C) 2020, Google LLC.
+>   */
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  #include <linux/kernel.h>
+>  #include <linux/lockdep.h>
+> diff --git a/net/batman-adv/log.c b/net/batman-adv/log.c
+> index f0e5d1429662..7a93a1e94c40 100644
+> --- a/net/batman-adv/log.c
+> +++ b/net/batman-adv/log.c
+> @@ -7,7 +7,7 @@
+>  #include "log.h"
+>  #include "main.h"
+>
+> -#include <stdarg.h>
+> +#include <linux/stdarg.h>
+>
+>  #include "trace.h"
+>
+> --
+> 2.31.1
+>
