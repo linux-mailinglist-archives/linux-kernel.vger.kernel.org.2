@@ -2,136 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF693DE661
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23DB3DE668
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbhHCF4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 01:56:03 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58556 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230096AbhHCF4C (ORCPT
+        id S233869AbhHCF5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 01:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230096AbhHCF5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 01:56:02 -0400
-X-UUID: bbba513bc73b4d04b62552d945b14081-20210803
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=nnUKDbyFZW3JVZ0V6b9Q1wtkI9K03QZZSPTEVvJYTFo=;
-        b=QFaoDQ1BiEh/SEPueX3+f9tyxPEJ3eds/jJ/UwJzqn/DBfXWFm9LGPvgj8107VBLSs+hjYAZp3qIeC4yx73yHZf6cyT1v9KsfB0sndOi/f7/3MaLA57XxTtzfqwILz87mGL0NqY/04jDDCVraPN1sbOQEOmLxGHJD2gjSFRnCLI=;
-X-UUID: bbba513bc73b4d04b62552d945b14081-20210803
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <yee.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 593171222; Tue, 03 Aug 2021 13:55:48 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 3 Aug 2021 13:55:47 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 3 Aug 2021 13:55:47 +0800
-Message-ID: <a200fcaf086b590d5c675eea8e0546fa9db9849e.camel@mediatek.com>
-Subject: Re: [PATCH v3 1/1] arm64/cpufeature: Optionally disable MTE via
- command-line
-From:   Yee Lee <yee.lee@mediatek.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     <linux-kernel@vger.kernel.org>, <nicholas.Tang@mediatek.com>,
-        <Kuan-Ying.lee@mediatek.com>, <chinwen.chang@mediatek.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Will Deacon <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Marc Zyngier <maz@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Fuad Tabba <tabba@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Tue, 3 Aug 2021 13:55:47 +0800
-In-Reply-To: <20210802153036.GH18685@arm.com>
-References: <20210730144957.30938-1-yee.lee@mediatek.com>
-         <20210730144957.30938-2-yee.lee@mediatek.com>
-         <20210802153036.GH18685@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 3 Aug 2021 01:57:45 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08BFC06175F;
+        Mon,  2 Aug 2021 22:57:33 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id nd39so34607446ejc.5;
+        Mon, 02 Aug 2021 22:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qQa6pcdJaaMybmAqLpeWfvCz1Z6vyYF74Ui12REMt0Y=;
+        b=MKDI89hQxBB75T66Cxr+3sMAw5RTYmdxyXrIbty6Fk59/5zzGTnvkmKmleFqN7Jl4/
+         fr5wWt5vi2YO94IbLbdIr77talJ7AWKAw2Z8LLOxUjKQPDCjyRhqxP/xkWNqVZbqCTcX
+         xduJiYwAynfga8rpYKq87G/LaPvwc8g9egsj5PVAjWMDF7x5KNZJcmQ7sUvEcO1Xq3E+
+         VTta3CDQwO+yaST3/C2rP8cNGBaxZx0CTARZhRVwV95fr9VgtWHlN3NONyW+9Uy7NhAf
+         zf53rvZlzOCW07YgMCoi8JMZKRtMCoefnl6AGGu7yJO+FNdqAXilSlNUhlfykpk73VH3
+         EV1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qQa6pcdJaaMybmAqLpeWfvCz1Z6vyYF74Ui12REMt0Y=;
+        b=adzF7+me6cpoiIMpwDo/aGxFKpRYk97NefPOsSw5Rx5KeMMlHXuWFJs3UTpDIaIX5P
+         IjJwEUNR9vwPXg0JJ0EgXcFnHG0SGV2SDp659QiAGuAgJ3/+mXLAY9XCpXlJsSNtfIvQ
+         9kA1NDxIJHjqkP9VQMZyxW1By77mbJAN4OjD2nGRBH7AHqOrqU7usaTpQ82toIeuVKWq
+         INjtWBJoAFBvgX33HtXWWe68DSHdfRSHDsyfjVeB/DfhG1Eu4wWhLg+Dll6j5p9G3kyg
+         QY7NHekmBMiMqG7JU/EQOi27MlPRU9W0DYoeXFjf3fPXHqZFgxRA8QI+C8RXTue+bQCI
+         3E2g==
+X-Gm-Message-State: AOAM531aZpAfdgu9YkNIevfwylUUnmE5i8gW+Sm/gvfxqaoJX/1ObMwe
+        apAaQuW/sWMpIX8Rqt7xVskdOpVn4gnNbEMMQj0=
+X-Google-Smtp-Source: ABdhPJxPMFgHsfkBt7LZofGu0k24QG5zQkPYVOdEGwglJ8jIO0bAUlV1qhoCbD6yKmhAwpZJDSBysbj4kczcgbP4GYw=
+X-Received: by 2002:a17:906:4784:: with SMTP id cw4mr18747979ejc.160.1627970252517;
+ Mon, 02 Aug 2021 22:57:32 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210726152724.2281408-1-mudongliangabcd@gmail.com> <YQg4lehajLpQjyPd@Red>
+In-Reply-To: <YQg4lehajLpQjyPd@Red>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Tue, 3 Aug 2021 13:57:06 +0800
+Message-ID: <CAD-N9QWvR-7caWCnk1CMo8sWPEC=CfKU2_v=YkTVr0o5L7wehA@mail.gmail.com>
+Subject: Re: [PATCH] crypto: sun8i-ce: fix multiple memory leaks in sun8i_ce_hash_run
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA4LTAyIGF0IDE2OjMwICswMTAwLCBDYXRhbGluIE1hcmluYXMgd3JvdGU6
-DQo+IE9uIEZyaSwgSnVsIDMwLCAyMDIxIGF0IDEwOjQ5OjUzUE0gKzA4MDAsIHllZS5sZWVAbWVk
-aWF0ZWsuY29tIHdyb3RlOg0KPiA+IEZyb206IFllZSBMZWUgPHllZS5sZWVAbWVkaWF0ZWsuY29t
-Pg0KPiA+IA0KPiA+IEZvciBzb21lIGxvdy1lbmQgZGV2aWNlcyB3aXRoIGxpbWl0ZWQgcmVzb3Vy
-Y2VzLA0KPiA+IE1URSBuZWVkcyB0byBiZSBvcHRpb25hbGx5IGRpc2FibGVkIHRvIHNhdmUgc3lz
-dGVtDQo+ID4gY29zdHMgc3VjaCBhcyB0YWcgbWVtb3J5IGFuZCBmaXJtd2FyZSBjb250cm9scy4N
-Cj4gDQo+IEkgdW5kZXJzdGFuZCB0aGUgY29zdCBvZiB1c2luZyBNVEUgYnV0IEkgZG9uJ3QgZnVs
-bHkgZ2V0IHdoYXQgeW91DQo+IG1lYW4NCj4gYnkgZmlybXdhcmUgY29udHJvbHMuIElmIHRoZSBJ
-RF9BQTY0UEZSMV9FTDEuTVRFIHJlcG9ydHMgdGhhdCBNVEUgaXMNCj4gcHJlc2VudCwgdGhlIGZp
-cm13YXJlIHNob3VsZCBoYXZlIGluaXRpYWxpc2VkIE1URSBjb3JyZWN0bHkgKGUuZy4gdGFnDQo+
-IGFsbG9jYXRpb24gc3RvcmFnZSwgU0NSX0VMMy5BVEEpIGFuZCBub3QgcmVseSBvbiBhIGtlcm5l
-bCBjb21tYW5kDQo+IGxpbmUNCj4gYXJndW1lbnQgdGhhdCBtYXkgb3IgbWF5IG5vdCBiZSBwcmVz
-ZW50Lg0KDQpUaGFua3MgZm9yIHRoZSByZW1pbmRpbmcuIA0KWWVzLCBpdCBzZWVtcyBub3QgYWJs
-ZSB0byBmdWxseSBkaXNhYmxlIE1URS4NClRoaXMgc3RpbGwgcHJvdmlkZXMgYW4gb3B0aW9uIGlu
-IHJ1bnRpbWUgZm9yIGV2YWx1YXRpb24gYW5kIHRlc3QuDQpBbmQgaXQgaXMgYWxzbyB1c2VmdWwg
-Zm9yIGZpcm13YXJlIGRldmVsb3BtZW50IGFuZCBodyBpc3N1ZSB3b3JrYXJvdW5kLg0KPiANCj4g
-PiBUaGlzIGFsbG93cyBJRF9BQTY0UEZSMV9FTDEuTVRFIHRvIGJlIG92ZXJyaWRkZW4gb24gDQo+
-ID4gaXRzIHNoYWRvdyB2YWx1ZSBieSBnaXZpbmcgImFybTY0Lm5vbXRlIiBvbiBjbWRsaW5lLA0K
-PiA+IGFuZCB0byBzdXBwcmVzcyBNVEUgZmVhdHVyZS4NCj4gPiANCj4gPiBTdWdnZXN0ZWQtYnk6
-IE1hcmMgWnluZ2llciA8bWF6QGtlcm5lbC5vcmc+DQo+ID4gU3VnZ2VzdGVkLWJ5OiBTdXp1a2kg
-SyBQb3Vsb3NlIDxzdXp1a2kucG91bG9zZUBhcm0uY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFll
-ZSBMZWUgPHllZS5sZWVAbWVkaWF0ZWsuY29tPg0KPiANCj4gV2hpbGUgdGhpcyBwYXRjaCBhcHBl
-YXJzIHRvIGRpc2FibGUgTVRFLCBJIGRvbid0IHRoaW5rIGl0IGNhbiBmdWxseQ0KPiBwcmV2ZW50
-IHRoZSBhY2Nlc3MgdG8gdGhlIGFsbG9jYXRpb24gdGFnIHN0b3JhZ2UsIHNvIHRoZSBmaXJtd2Fy
-ZQ0KPiBtdXN0DQo+IHN0aWxsIGluaXRpYWxpc2UgaXQgY29ycmVjdGx5Lg0KPiANCj4gVGhlIGlz
-c3VlIGlzIHRoYXQgX19jcHVfc2V0dXAgYWxyZWFkeSBjb25maWd1cmVzIHRoZSBNQUlSX0VMMQ0K
-PiByZWdpc3Rlcg0KPiB0byB1c2UgTm9ybWFsIFRhZ2dlZCBtZW1vcnkgZm9yIHRoZSBrZXJuZWwg
-bWFwcGluZyBhbmQgU0NUTFJfRUwxLkFUQQ0KPiBpcw0KPiBzZXQuIFRoZSBUQ0YgZmllbGQgaXMg
-emVybywgc28gbm8gdGFnIGNoZWNraW5nLCBidXQgSSBjb3VsZG4ndCBmaWd1cmUNCj4gb3V0IGZy
-b20gdGhlIEFSTSBBUk0gd2hldGhlciB0aGlzIGFsc28gcHJldmVudHMgTERSL1NUUiBmcm9tDQo+
-IGF0dGVtcHRpbmcNCj4gdG8gZmV0Y2ggdGhlIGFsbG9jYXRpb24gdGFncy4gSSB0aGluayBpdCdz
-IG9ubHkgdGhlIEFUQSBiaXQgYW5kIHRoZQ0KPiBNQUlSDQo+IGNvbmZpZ3VyYXRpb24uDQo+IA0K
-PiBXaXRoIHRoaXMgcGF0Y2gsIEtBU0FOX0hXX1RBR1MgKGlmIGNvbmZpZ3VyZWQpIHdvbid0IGJl
-IHVzZWQgYW5kIE1URQ0KPiB3aWxsIG5vdCBiZSBwcmVzZW50ZWQgdG8gdXNlciBhcHBsaWNhdGlv
-bnMsIGlmIHRoYXQncyB3aGF0IHlvdSB3YW50LA0KPiBidXQNCj4gZG9lcyBub3QgZnVsbHkgZGlz
-YWJsZSBNVEUuDQo+IA0KPiBTaW5jZSBNYXkgdGhpcyB5ZWFyLCB0aGUgQVJNIEFSTSB3YXMgdXBk
-YXRlZCBzbyB0aGF0DQo+IFNDVExSX0VMMS5BVEEvQVRBMA0KPiBhcmUgbm90IHBlcm1pdHRlZCB0
-byBiZSBjYWNoZWQgaW4gdGhlIFRMQi4gV2UgY291bGQgdGhlcmVmb3JlIG1vdmUNCj4gdGhlDQo+
-IHNldHRpbmcgdG8gY3B1X2VuYWJsZV9tdGUoKS4gU29tZXRoaW5nIGxpa2UgYmVsb3csIHVudGVz
-dGVkICh0byBiZQ0KPiBmb2xkZWQgaW50byB5b3VyIHBhdGNoKToNCj4gDQpvay4gd2lsbCBiZSBp
-bnRlZ3JhdGVkIGluIHY0IGFuZCB0ZXN0ZWQuDQoNCkJSLA0KWWVlDQoNCj4gZGlmZiAtLWdpdCBh
-L2FyY2gvYXJtNjQvaW5jbHVkZS9hc20vc3lzcmVnLmgNCj4gYi9hcmNoL2FybTY0L2luY2x1ZGUv
-YXNtL3N5c3JlZy5oDQo+IGluZGV4IGFhNTM5NTRjMmY2Yi4uY2FjMjM0NTVhMmI1IDEwMDY0NA0K
-PiAtLS0gYS9hcmNoL2FybTY0L2luY2x1ZGUvYXNtL3N5c3JlZy5oDQo+ICsrKyBiL2FyY2gvYXJt
-NjQvaW5jbHVkZS9hc20vc3lzcmVnLmgNCj4gQEAgLTY5OCw4ICs2OTgsNyBAQA0KPiAgCShTQ1RM
-Ul9FTHhfTSAgICB8IFNDVExSX0VMeF9DICAgIHwgU0NUTFJfRUx4X1NBICAgfA0KPiBTQ1RMUl9F
-TDFfU0EwICAgfCBcDQo+ICAJIFNDVExSX0VMMV9TRUQgIHwgU0NUTFJfRUx4X0kgICAgfCBTQ1RM
-Ul9FTDFfRFpFICB8DQo+IFNDVExSX0VMMV9VQ1QgICB8IFwNCj4gIAkgU0NUTFJfRUwxX05UV0Ug
-fCBTQ1RMUl9FTHhfSUVTQiB8IFNDVExSX0VMMV9TUEFOIHwNCj4gU0NUTFJfRUx4X0lURlNCIHwg
-XA0KPiAtCSBTQ1RMUl9FTHhfQVRBICB8IFNDVExSX0VMMV9BVEEwIHwgRU5ESUFOX1NFVF9FTDEg
-fA0KPiBTQ1RMUl9FTDFfVUNJICAgfCBcDQo+IC0JIFNDVExSX0VMMV9FUEFOIHwgU0NUTFJfRUwx
-X1JFUzEpDQo+ICsJIEVORElBTl9TRVRfRUwxIHwgU0NUTFJfRUwxX1VDSSAgfCBTQ1RMUl9FTDFf
-RVBBTiB8DQo+IFNDVExSX0VMMV9SRVMxKQ0KPiANCj4gIC8qIE1BSVJfRUx4IG1lbW9yeSBhdHRy
-aWJ1dGVzICh1c2VkIGJ5IExpbnV4KSAqLw0KPiAgI2RlZmluZSBNQUlSX0FUVFJfREVWSUNFX25H
-blJuRQkJVUwoMHgwMCkNCj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQva2VybmVsL2NwdWZlYXR1
-cmUuYw0KPiBiL2FyY2gvYXJtNjQva2VybmVsL2NwdWZlYXR1cmUuYw0KPiBpbmRleCA5MDM1YzM2
-N2QwOGIuLjIzYjFlM2Q4MzYwMyAxMDA2NDQNCj4gLS0tIGEvYXJjaC9hcm02NC9rZXJuZWwvY3B1
-ZmVhdHVyZS5jDQo+ICsrKyBiL2FyY2gvYXJtNjQva2VybmVsL2NwdWZlYXR1cmUuYw0KPiBAQCAt
-MTg0MSw2ICsxODQxLDkgQEAgc3RhdGljIHZvaWQgYnRpX2VuYWJsZShjb25zdCBzdHJ1Y3QNCj4g
-YXJtNjRfY3B1X2NhcGFiaWxpdGllcyAqX191bnVzZWQpDQo+ICAjaWZkZWYgQ09ORklHX0FSTTY0
-X01URQ0KPiAgc3RhdGljIHZvaWQgY3B1X2VuYWJsZV9tdGUoc3RydWN0IGFybTY0X2NwdV9jYXBh
-YmlsaXRpZXMgY29uc3QgKmNhcCkNCj4gIHsNCj4gKwlzeXNyZWdfY2xlYXJfc2V0KHNjdGxyX2Vs
-MSwgMCwgU0NUTFJfRUx4X0FUQSB8IFNDVExSX0VMMV9BVEEwKTsNCj4gKwlpc2IoKTsNCj4gKw0K
-PiAgCS8qDQo+ICAJICogQ2xlYXIgdGhlIHRhZ3MgaW4gdGhlIHplcm8gcGFnZS4gVGhpcyBuZWVk
-cyB0byBiZSBkb25lIHZpYQ0KPiB0aGUNCj4gIAkgKiBsaW5lYXIgbWFwIHdoaWNoIGhhcyB0aGUg
-VGFnZ2VkIGF0dHJpYnV0ZS4NCj4gDQo=
+On Tue, Aug 3, 2021 at 2:25 AM Corentin Labbe <clabbe.montjoie@gmail.com> w=
+rote:
+>
+> Le Mon, Jul 26, 2021 at 11:27:12PM +0800, Dongliang Mu a =C3=A9crit :
+> > In sun8i_ce_hash_run, all the dma_mmap_sg/single will cause memory leak
+> > due to no corresponding unmap operation if errors happen.
+> >
+> > Fix this by adding error handling part for all the dma_mmap_sg/single.
+> >
+>
+> I think it could be better worded, error handling is already there (but b=
+ad).
 
+Sure. How about "Fix this by freeing the objects allocated by
+dma_mmap_sg/single when errors occur."?
+
+>
+> > Fixes: 56f6d5aee88d ("crypto: sun8i-ce - support hash algorithms")
+> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > ---
+> >  .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 28 +++++++++----------
+> >  1 file changed, 13 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/driver=
+s/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+> > index 88194718a806..d454ad99deee 100644
+> > --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+> > +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+> > @@ -286,16 +286,14 @@ int sun8i_ce_hash_run(struct crypto_engine *engin=
+e, void *breq)
+> >
+> >       /* the padding could be up to two block. */
+> >       buf =3D kzalloc(bs * 2, GFP_KERNEL | GFP_DMA);
+> > -     if (!buf) {
+> > -             err =3D -ENOMEM;
+> > -             goto theend;
+>
+> Please keep all goto error for being consistent.
+
+OK, no problem.
+
+BTW, usually for the 1st malloc failure, I prefer returning with errno dire=
+ctly.
+
+>
+> > -     }
+> > +     if (!buf)
+> > +             return -ENOMEM;
+> >       bf =3D (__le32 *)buf;
+> >
+> >       result =3D kzalloc(digestsize, GFP_KERNEL | GFP_DMA);
+> >       if (!result) {
+> > -             err =3D -ENOMEM;
+> > -             goto theend;
+> > +             kfree(buf);
+> > +             return -ENOMEM;
+> >       }
+> >
+> >       flow =3D rctx->flow;
+> > @@ -321,7 +319,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine,=
+ void *breq)
+> >       if (nr_sgs <=3D 0 || nr_sgs > MAX_SG) {
+> >               dev_err(ce->dev, "Invalid sg number %d\n", nr_sgs);
+> >               err =3D -EINVAL;
+> > -             goto theend;
+> > +             goto err_result;
+> >       }
+> >
+> >       len =3D areq->nbytes;
+> > @@ -334,7 +332,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine,=
+ void *breq)
+> >       if (len > 0) {
+> >               dev_err(ce->dev, "remaining len %d\n", len);
+> >               err =3D -EINVAL;
+> > -             goto theend;
+> > +             goto err_unmap_sg;
+> >       }
+> >       addr_res =3D dma_map_single(ce->dev, result, digestsize, DMA_FROM=
+_DEVICE);
+> >       cet->t_dst[0].addr =3D cpu_to_le32(addr_res);
+> > @@ -342,7 +340,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine,=
+ void *breq)
+> >       if (dma_mapping_error(ce->dev, addr_res)) {
+> >               dev_err(ce->dev, "DMA map dest\n");
+> >               err =3D -EINVAL;
+> > -             goto theend;
+> > +             goto err_unmap_sg;
+> >       }
+> >
+> >       byte_count =3D areq->nbytes;
+> > @@ -392,7 +390,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine,=
+ void *breq)
+> >       if (dma_mapping_error(ce->dev, addr_pad)) {
+> >               dev_err(ce->dev, "DMA error on padding SG\n");
+> >               err =3D -EINVAL;
+> > -             goto theend;
+> > +             goto err_addr_res;
+> >       }
+> >
+> >       if (ce->variant->hash_t_dlen_in_bits)
+> > @@ -405,15 +403,15 @@ int sun8i_ce_hash_run(struct crypto_engine *engin=
+e, void *breq)
+> >       err =3D sun8i_ce_run_task(ce, flow, crypto_tfm_alg_name(areq->bas=
+e.tfm));
+> >
+> >       dma_unmap_single(ce->dev, addr_pad, j * 4, DMA_TO_DEVICE);
+> > +err_addr_res:
+> > +     dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+> > +err_unmap_sg:
+> >       dma_unmap_sg(ce->dev, areq->src, sg_nents(areq->src),
+> >                    DMA_TO_DEVICE);
+> > -     dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+> > -
+> > -
+> >       memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
+>
+> The result should be copied only when everything is ok. Please add a "if =
+(!err)"
+
+Sure.
+
+>
+> Thanks for your work
+> Regards
