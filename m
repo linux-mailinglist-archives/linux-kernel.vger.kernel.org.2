@@ -2,114 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840C23DEF40
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CF73DEF3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236303AbhHCNsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:48:15 -0400
-Received: from mga06.intel.com ([134.134.136.31]:29443 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236192AbhHCNsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:48:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="274748525"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="274748525"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 06:48:00 -0700
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="521256824"
-Received: from vmustya-mobl1.amr.corp.intel.com (HELO [10.213.171.71]) ([10.213.171.71])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 06:47:58 -0700
-Subject: Re: [PATCH] ASoC: Intel: sof_rt5682: Add support for max98360a
- speaker amp
-To:     Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
-        alsa-devel@alsa-project.org
-Cc:     kai.vehmanen@linux.intel.com, mac.chiang@intel.com,
-        broonie@kernel.org, brent.lu@intel.com, bard.liao@intel.com,
-        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
-        perex@perex.cz, linux-kernel@vger.kernel.org
-References: <20210803083035.342889-1-malik_hsu@wistron.corp-partner.google.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a81fab45-689a-63b9-efbd-143d925b6658@linux.intel.com>
-Date:   Tue, 3 Aug 2021 08:43:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S236215AbhHCNqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232748AbhHCNqG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 09:46:06 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB995C0613D5
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:45:54 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id p21so29043886edi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 06:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iLnRfpyJvjR8TuAqQswR0J3zsW8FGGiK4F3r2vWum9M=;
+        b=D6H/9ljakjYnSpBOO4qF5SCNaeje+yO/X6HbSLyf1XjZLehZAF0+UCd+pOsZCenr5J
+         /SU1ArosXx59JgIUTyZppMTTES2IF5VPAQFWPG/X2rYn2pQm+ogP62rKq3JDLDWeaymT
+         RgZkWndiT755iPdrDgN1oooEZnzhcOqT6syPeAuOBpAXP//9n2V/FU/ytIfnUV7R2LHM
+         a8/Sscr4PsiDUDqrR0tCUolr3Cq6ssk3s1F4EOCFScz9FYm2w5+JCjDY0bYgy30cFPJ1
+         DClkxXa3dW8o4FKXAClvZGz0X86a4oQJRvwo8bncb5aOY6ZROx8in/+o93X4rXCmiz8B
+         w/yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iLnRfpyJvjR8TuAqQswR0J3zsW8FGGiK4F3r2vWum9M=;
+        b=t5vQTcBdMbj9406wHbriFdKpkaum6yBH3H4irF7HFH1DxnWFVKFCftuicnaoDdjGW0
+         +RN+zMSahA6a1i2Tf/09pN+RABIMrMUcYl2uyW2QpyHYMGZloB/zpz9wKuP2kju2TXpz
+         rta76Ld3EJItGZEvtHMKCI6rzWy5C4t0YpZCgaqO0qXakIIUNYlfwcE9rggUj0706NJV
+         DaAYRLupjF9wchKmkQLEp9RPt/O5SCdlYa4bhCuMsUMwFHNXeJeiX2DjaADpUedxPyUY
+         5owS4xJWlaA6JFBSFSRI+C+AMnisGb8s7OXwpis1ngFA4qZ/igwuJ3wDItIXSKNzXuQG
+         yV7Q==
+X-Gm-Message-State: AOAM531+2f0c50KYSgLwz7wmvlIxtuiysJQfCphYp0nNeSFNrvvnOjIp
+        MmuVrDDgiYt8JSdzMzphTG3FnXLfQr1WVKLWTWu5xg==
+X-Google-Smtp-Source: ABdhPJz+Y8ekWJDeoT9uI5GS8jSRM9G3pewbffKoLeVCtd8dor4XBH4os92lxGMbKXGtK16UF25xWME/ihPWTdYtRyA=
+X-Received: by 2002:aa7:cb9a:: with SMTP id r26mr26001428edt.78.1627998353103;
+ Tue, 03 Aug 2021 06:45:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210803083035.342889-1-malik_hsu@wistron.corp-partner.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210802134332.931915241@linuxfoundation.org>
+In-Reply-To: <20210802134332.931915241@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 3 Aug 2021 19:15:42 +0530
+Message-ID: <CA+G9fYtD2BR2Z0jOs0iRNSeyQartZamF=-eXGZvqqtpzbjNSTQ@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/32] 4.9.278-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2 Aug 2021 at 19:17, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.278 release.
+> There are 32 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.278-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On 8/3/21 3:30 AM, Malik_Hsu wrote:
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-missing commit message?
+## Build
+* kernel: 4.9.278-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: f567818b24a32b0562fc2306ffed54821ee69c38
+* git describe: v4.9.277-33-gf567818b24a3
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+77-33-gf567818b24a3
 
-> Signed-off-by: Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>
-> ---
->  sound/soc/intel/boards/sof_rt5682.c               |  9 +++++++++
->  sound/soc/intel/common/soc-acpi-intel-adl-match.c | 13 +++++++++++++
->  2 files changed, 22 insertions(+)
-> 
-> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-> index 39217223d50c..8d727dd37f12 100644
-> --- a/sound/soc/intel/boards/sof_rt5682.c
-> +++ b/sound/soc/intel/boards/sof_rt5682.c
-> @@ -1043,6 +1043,15 @@ static const struct platform_device_id board_ids[] = {
->  					SOF_RT5682_SSP_AMP(2) |
->  					SOF_RT5682_NUM_HDMIDEV(4)),
->  	},
-> +	{
-> +		.name = "adl_max98360a_rt5682",
-> +		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-> +					SOF_RT5682_SSP_CODEC(0) |
-> +					SOF_SPEAKER_AMP_PRESENT |
-> +					SOF_RT5682_SSP_AMP(2) |
-> +					SOF_MAX98360A_SPEAKER_AMP_PRESENT |
-> +					SOF_RT5682_NUM_HDMIDEV(4)),
+## No regressions (compared to v4.9.277-13-gf890c3a34d9b)
 
-Can you clarify why BT offload is missing?
+## No fixes (compared to v4.9.277-13-gf890c3a34d9b)
 
-if it's supported in hardware, it doesn't hurt to add a capability in
-the machine driver, you can always disable it in the topology file.
+## Test result summary
+ total: 63809, pass: 49610, fail: 616, skip: 11807, xfail: 1776,
 
-> +	},
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(platform, board_ids);
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> index a0f6a69c7038..6855c9e65236 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> @@ -280,6 +280,11 @@ static const struct snd_soc_acpi_codecs adl_max98357a_amp = {
->  	.codecs = {"MX98357A"}
->  };
->  
-> +static const struct snd_soc_acpi_codecs adl_max98360a_amp = {
-> +	.num_codecs = 1,
-> +	.codecs = {"MX98360A"}
-> +};
-> +
->  struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
->  	{
->  		.id = "10EC5682",
-> @@ -297,6 +302,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
->  		.sof_fw_filename = "sof-adl.ri",
->  		.sof_tplg_filename = "sof-adl-max98357a-rt5682.tplg",
->  	},
-> +	{
-> +		.id = "10EC5682",
-> +		.drv_name = "adl_max98360a_rt5682",
-> +		.machine_quirk = snd_soc_acpi_codec_list,
-> +		.quirk_data = &adl_max98360a_amp,
-> +		.sof_fw_filename = "sof-adl.ri",
-> +		.sof_tplg_filename = "sof-adl-max98357a-rt5682.tplg",
-> +	},
->  	{},
->  };
->  EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_adl_machines);
-> 
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
