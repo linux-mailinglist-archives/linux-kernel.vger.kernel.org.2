@@ -2,205 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1F13DEDD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EBB3DEDD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235988AbhHCMYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 08:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235700AbhHCMYT (ORCPT
+        id S235731AbhHCM2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 08:28:54 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:49830
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235309AbhHCM2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 08:24:19 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81630C0613D5
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 05:24:08 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id z7so23196691iog.13
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 05:24:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sSAJdBXerSiLD/jae6wSlhsV/AYk+DynXxE+wOZYVUg=;
-        b=bRVwX6iPyAZEcpuyB4yiUnUe+peBOZ6yDCqxfRHK/MWWbE8extM3sSfAt80FJslR6X
-         w7dtV2Q8CnEkU3c2O9xunDbtV6DjsudWluolBahN/iVlRWXcGhWPKHd5aioLLzH8Ee7g
-         S4xBD5bemnxGWjWWt/Sahnh3ca8DkVBQ29A70=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sSAJdBXerSiLD/jae6wSlhsV/AYk+DynXxE+wOZYVUg=;
-        b=BLQUyamACcfzYVqxf7JtKw2yxmwYMq9PM1vxh9RERloaiK5ppDP7NFRPB8DSA9cbDu
-         NG2l+NemJGpztB4dl4U7a5wP43oP6ofd4gQlJHeWesEagb9TSbGHZy2wZ9f7BNqyqT8Q
-         NJo1XUuCc+O9YpiEKXFGaK9ehT04NUdLn8PnZt4RYVWT0TptFl+k7JkymAlqPHQ5a5md
-         T9jU5uBDjJGSJWuFDA/mx8/BADbimsRU8VjlNnCSeUahU++gQ95PuD5oBkbWkoouqPtp
-         9UZkG5ews/egEoQWtv9GQMta1vlXDBbzk5RntwHUi61hlmm2K09giOdun72wsqnT0zqG
-         pSZg==
-X-Gm-Message-State: AOAM532JclOswOBQGC5gr0wRHs0Hv++BGZuCKpkxTIhugDe7XZ97HtN0
-        NsA7+bMVCBZCDmZ24xYkIu7kAnSc//ivynE1
-X-Google-Smtp-Source: ABdhPJzEGU9BDQUsOAVRriRZRQdWv2S8IfGFXRpD5rGJTVc1Hwa4BETVCCidP6Tqo9bvfIRHF54dBg==
-X-Received: by 2002:a5d:9284:: with SMTP id s4mr605937iom.131.1627993447634;
-        Tue, 03 Aug 2021 05:24:07 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id k2sm6244589ior.40.2021.08.03.05.24.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 05:24:06 -0700 (PDT)
-Subject: Re: [PATCH net-next 1/3] dt-bindings: net: qcom,ipa: make imem
- interconnect optional
-To:     Rob Herring <robh@kernel.org>
-Cc:     Alex Elder <elder@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Gross, Andy" <agross@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Evan Green <evgreen@chromium.org>, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, Alex Elder <elder@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210719212456.3176086-1-elder@linaro.org>
- <20210719212456.3176086-2-elder@linaro.org>
- <20210723205252.GA2550230@robh.at.kernel.org>
- <6c1779aa-c90c-2160-f8b9-497fb8c32dc5@ieee.org>
- <CAL_JsqKTdUxro-tgCQBzhudaUFQ5GejJL2EMuX2ArcP0JTiG3g@mail.gmail.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <8e75f8b0-5677-42b0-54fe-06e7c69f6669@ieee.org>
-Date:   Tue, 3 Aug 2021 07:24:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 3 Aug 2021 08:28:52 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id D154A3F09C;
+        Tue,  3 Aug 2021 12:28:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627993719;
+        bh=oXGtMXBZ6/OGmpA64zDaYIoChgBpydPk9ddxo6Jrg+c=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=cl6lKJkA1kWqtnek77yG6ZDauzengYEyslQAmlke+/fKzcUd5URP+119L6+WU4+0J
+         vufZbJu/7E2+bvdxVwlBBfgO9FEyuOOOtAH9/9kPLQPfuDDZHO0Dna27WuGK2J+aBr
+         yGtbQOaRQ+gu2mUOXIbDzUpN1kT73/BC48lbrSUPKJbD3A+R8xzguds9yWO2QdOBmm
+         +/2kl6c0ZOMYamQv3YsqP8Ydziv70so/hF/HmYgzV325PQq4i7P49ryTu19ixD0yIe
+         KCbhtM5JuEMLA0Ti84hcJaT4Klobkthv1o1AQwto30KyIFZtsMrgtBkM9eA7JHLMeI
+         vwJQ9N/nJjkPA==
+From:   Colin King <colin.king@canonical.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][V2] ALSA: usb-audio: make array static const, makes object smaller
+Date:   Tue,  3 Aug 2021 13:28:39 +0100
+Message-Id: <20210803122839.7143-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKTdUxro-tgCQBzhudaUFQ5GejJL2EMuX2ArcP0JTiG3g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 10:33 AM, Rob Herring wrote:
-> On Mon, Jul 26, 2021 at 9:59 AM Alex Elder <elder@ieee.org> wrote:
->>
->> On 7/23/21 3:52 PM, Rob Herring wrote:
->>> On Mon, Jul 19, 2021 at 04:24:54PM -0500, Alex Elder wrote:
->>>> On some newer SoCs, the interconnect between IPA and SoC internal
->>>> memory (imem) is not used.  Reflect this in the binding by moving
->>>> the definition of the "imem" interconnect to the end and defining
->>>> minItems to be 2 for both the interconnects and interconnect-names
->>>> properties.
->>>>
->>>> Signed-off-by: Alex Elder <elder@linaro.org>
->>>> ---
->>>>    .../devicetree/bindings/net/qcom,ipa.yaml      | 18 ++++++++++--------
->>>>    1 file changed, 10 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
->>>> index ed88ba4b94df5..4853ab7017bd9 100644
->>>> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
->>>> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
->>>> @@ -87,16 +87,18 @@ properties:
->>>>          - const: ipa-setup-ready
->>>>
->>>>      interconnects:
->>>> +    minItems: 2
->>>>        items:
->>>> -      - description: Interconnect path between IPA and main memory
->>>> -      - description: Interconnect path between IPA and internal memory
->>>> -      - description: Interconnect path between IPA and the AP subsystem
->>>> +      - description: Path leading to system memory
->>>> +      - description: Path between the AP and IPA config space
->>>> +      - description: Path leading to internal memory
->>>>
->>>>      interconnect-names:
->>>> +    minItems: 2
->>>>        items:
->>>>          - const: memory
->>>> -      - const: imem
->>>>          - const: config
->>>> +      - const: imem
->>>
->>> What about existing users? This will generate warnings. Doing this for
->>> the 2nd item would avoid the need for .dts updates:
->>>
->>> - enum: [ imem, config ]
+From: Colin Ian King <colin.king@canonical.com>
 
-In other words:
+Don't populate array names_to_check on the stack but instead it
+static.  Makes the object code smaller by 56 bytes.  Also clean
+up checkpatch warning by adding extra const for names_to_check
+and pointer s.
 
-   interconnect-names:
-     minItems: 2
-     items:
-       - const: memory
-       - enum: [ imem, config ]
-       - const: imem
+Before:
+    text    data     bss     dec     hex filename
+  103512   34380       0  137892   21aa4 ./sound/usb/mixer.o
 
-What do I do with the "interconnects" descriptions in that case?
-How do I make the "interconnect-names" specified this way align
-with the described interconnect values?  Is that necessary?
+After:
+    text    data     bss     dec     hex filename
+  103264   34572       0  137836   21a6c ./sound/usb/mixer.o
 
->> If I understand correctly, the effect of this would be that
->> the second item can either be "imem" or "config", and the third
->> (if present) could only be "imem"?
-> 
-> Yes for the 2nd, but the 3rd item could only be 'config'.
+(gcc version 10.2.0)
 
-Sorry, yes, that's what I meant.  I might have misread the
-diff output.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
 
->> And you're saying that otherwise, existing users (the only
->> one it applies to at the moment is "sdm845.dtsi") would
->> produce warnings, because the interconnects are listed
->> in an order different from what the binding specifies.
->>
->> Is that correct?
-> 
-> Yes.
-> 
->> If so, what you propose suggests "imem" could be listed twice.
->> It doesn't make sense, and maybe it's precluded in other ways
->> so that's OK.
-> 
-> Good observation. There are generic checks that the strings are unique.
+V2: Clean up checkpatch warning on const-ness for names_to_check.
+    Add extra const to clean up build warning on pointer s.
+---
+ sound/usb/mixer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I think I don't like that quite as much, because that
-"no duplicates" rule is implied.  It also avoids any
-confusion in the "respectively" relationship between
-interconnects and interconnect-names.
-
-I understand what you're suggesting though, and I would
-be happy to update the binding in the way you suggest.
-I'd like to hear what you say about my questions above
-before doing so.
-
->>   But I'd be happy to update "sdm845.dtsi" to
->> address your concern.  (Maybe that's something you would rather
->> avoid?)
-> 
-> Better to not change DT if you don't have to. You're probably okay if
-> all clients (consumers of the dtb) used names and didn't care about
-
-In the IPA driver, wherever names are specified for things in DT,
-names (only) are used to look them up.  So I'm "probably okay."
-
-> the order. And I have no idea if all users of SDM845 are okay with a
-> DTB change being required. That's up to QCom maintainers. I only care
-> that ABI breakages are documented as such.
-> 
->> Also, I need to make a separate update to "sm8350.dtsi" because
->> that was defined before I understood what I do now about the
->> interconnects.  It uses the wrong names, and should combine
->> its first two interconnects into just one.
-> 
-> If the interconnects was ignored in that case, then the change doesn't matter.
-
-That platform is not yet fully supported by the IPA driver, thus
-there is (so far) no instance where it is used.  Resolving this
-is part of enabling support for that.
-
-Thanks.
-
-					-Alex
-
-
-> Rob
-> 
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index db7cb6b6dc4e..43bc59575a6e 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1572,9 +1572,9 @@ static size_t append_ctl_name(struct snd_kcontrol *kctl, const char *str)
+ static void check_no_speaker_on_headset(struct snd_kcontrol *kctl,
+ 					struct snd_card *card)
+ {
+-	const char *names_to_check[] = {
++	static const char * const names_to_check[] = {
+ 		"Headset", "headset", "Headphone", "headphone", NULL};
+-	const char **s;
++	const char * const *s;
+ 	bool found = false;
+ 
+ 	if (strcmp("Speaker", kctl->id.name))
+-- 
+2.31.1
 
