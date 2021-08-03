@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C833DEDE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4263DEDE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235879AbhHCMdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 08:33:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:48782 "EHLO foss.arm.com"
+        id S235858AbhHCMew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 08:34:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:48818 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234524AbhHCMdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 08:33:16 -0400
+        id S234524AbhHCMeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 08:34:50 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5475411FB;
-        Tue,  3 Aug 2021 05:33:05 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8C6D11FB;
+        Tue,  3 Aug 2021 05:34:39 -0700 (PDT)
 Received: from [10.57.36.239] (unknown [10.57.36.239])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1499C3F40C;
-        Tue,  3 Aug 2021 05:33:02 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 878B43F40C;
+        Tue,  3 Aug 2021 05:34:37 -0700 (PDT)
 Subject: Re: [PATCH 3/6] perf cs-etm: Save TRCDEVARCH register
 To:     Leo Yan <leo.yan@linaro.org>, Mike Leach <mike.leach@linaro.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -39,8 +39,8 @@ References: <20210721090706.21523-1-james.clark@arm.com>
  <CAJ9a7Vjz_CMugYrLcAqr_aFsK6jYcqR3xLwJUi9KTXB3aPjnEQ@mail.gmail.com>
  <20210731063731.GC7437@leoy-ThinkPad-X240s>
 From:   James Clark <james.clark@arm.com>
-Message-ID: <6d1954d2-28bc-4b70-25fc-e74d63cc86cd@arm.com>
-Date:   Tue, 3 Aug 2021 13:33:01 +0100
+Message-ID: <9156d7a1-3676-ab98-2c38-26f9765b845c@arm.com>
+Date:   Tue, 3 Aug 2021 13:34:36 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
@@ -55,47 +55,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 31/07/2021 07:37, Leo Yan wrote:
-> I checked ETMv4.3 and ETMv4.4 spec (ARM IHI0064E for ETMv4.3 and ARM
-> IHI0064F for ETMv4.4), both clarify ETMv4 has the register TRCDEVARCH;
-> thus TRCDEVARCH is not a new register introduced by ETE.
+>>> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+>>> index 85168d87b2d7..65a863bdf5cc 100644
+>>> --- a/tools/perf/arch/arm/util/cs-etm.c
+>>> +++ b/tools/perf/arch/arm/util/cs-etm.c
+>>> @@ -53,6 +53,7 @@ static const char *metadata_etmv4_ro[CS_ETMV4_PRIV_MAX] = {
+>>>         [CS_ETMV4_TRCIDR2]              = "trcidr/trcidr2",
+>>>         [CS_ETMV4_TRCIDR8]              = "trcidr/trcidr8",
+>>>         [CS_ETMV4_TRCAUTHSTATUS]        = "mgmt/trcauthstatus",
+>>> +       [CS_ETE_TRCDEVARCH]             = "mgmt/trcdevarch"
+> ETMv4 supports TRCDEVARCH, so I think it's good to use the naming
+> "CS_ETMV4_TRCDEVARCH"?
 > 
-> For this case, it's good to directly add a new field in the metadata
-> array for recording register TRCDEVARCH.
 
-This might be true, but the OpenCSD library doesn't take TRCDEVARCH as a config
-parameter for ETMv4 so it couldn't be used. This is the struct:
+Based on the other discussions do you still think I should do this?
 
-        typedef struct _ocsd_etmv4_cfg 
-        {
-        uint32_t                reg_idr0;    /**< ID0 register */
-        uint32_t                reg_idr1;    /**< ID1 register */
-        uint32_t                reg_idr2;    /**< ID2 register */
-        uint32_t                reg_idr8;
-        uint32_t                reg_idr9;   
-        uint32_t                reg_idr10;
-        uint32_t                reg_idr11;
-        uint32_t                reg_idr12;
-        uint32_t                reg_idr13;
-        uint32_t                reg_configr;  /**< Config Register */
-        uint32_t                reg_traceidr;  /**< Trace Stream ID register */
-        ocsd_arch_version_t    arch_ver;   /**< Architecture version */
-        ocsd_core_profile_t    core_prof;  /**< Core Profile */
-        } ocsd_etmv4_cfg;
+As part of the new magic number I moved it into a new enum so it
+might be clearer now?
 
-And this is ETE where TRCDEVARCH is used:
-
-        typedef struct _ocsd_ete_cfg
-        {
-        uint32_t                reg_idr0;       /**< ID0 register */
-        uint32_t                reg_idr1;       /**< ID1 register */
-        uint32_t                reg_idr2;       /**< ID2 register */
-        uint32_t                reg_idr8;       /**< ID8 - maxspec */
-        uint32_t                reg_devarch;    /**< DevArch register */
-        uint32_t                reg_configr;    /**< Config Register */
-        uint32_t                reg_traceidr;   /**< Trace Stream ID register */
-        ocsd_arch_version_t    arch_ver;        /**< Architecture version */
-        ocsd_core_profile_t    core_prof;       /**< Core Profile */
-        } ocsd_ete_cfg;
-
-Thanks
 James
