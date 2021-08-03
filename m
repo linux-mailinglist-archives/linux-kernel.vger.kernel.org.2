@@ -2,109 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E89F3DF1DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B893DF1E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237166AbhHCP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237050AbhHCP4L (ORCPT
+        id S237176AbhHCP42 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Aug 2021 11:56:28 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:4025 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237143AbhHCP40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:56:11 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74054C061757;
-        Tue,  3 Aug 2021 08:56:00 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id u16so15720613ple.2;
-        Tue, 03 Aug 2021 08:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ivy58r2kivR0IDLu2ysn29+/bFLlJiQgmJM5f0+1TU8=;
-        b=YpvHrlLtAC/82eD1F5VPmxocamDF2v/5NUkB+nZG2kScLLhe1HmgaWo6cxJ3DD14qb
-         CXx4sL+W0TNp+R6i2/Gjf9NPFOsgwDBvB1V+iqu1jxYQ6P2IU64R55QtY9x4T2bkRFXv
-         6dqlrn5y3NZCjUKOO8B5nvIg45bINpE7zY4CQzGj62GrdjMcVGCpanLNuUMdzYgvgh5n
-         Y100Mh+uB9ntJve6v0LYoe9Vufn+0yv3K8/3MfC8H2qf84CjVXoYLWNYFCOebIkpELUi
-         D00onjRAMXrNLN95dUNsof6ZX3ne2VFN/1iK8Ml1iZZL6splVPQCHdFJ3R+4DAQhRv7Q
-         U2dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ivy58r2kivR0IDLu2ysn29+/bFLlJiQgmJM5f0+1TU8=;
-        b=UECw4fI03DYz5O4qreH1NdNJ2+A5INtTx0A4l5Z9z+SNt4UnCB3Xjg4KBuImJ/tIfB
-         BkSnVi2w6j2Znx9KdBkGYO5SNj2281Pl/SeoCzfQ4bXqrLTCHdiBCzgvTde44mr0LJff
-         aylErdfcahZpTLfDnepJ/POGAATK5L2KCDo8QJnzTr/Sf/STH+WCsBfBgw6xdbQxyE8Q
-         Q+nWMKYT5xNC0FvtFRdoa/6FXkawvkzSfVZ0yxuP0QRJEUWJCEqJOmi2lVGUS7ZIxBGi
-         KxCXSISIhS2+rVcau6qmx1J3HtcrVniw9bVy2jK9tE5MRPGbhOiHtMb9g89iiOhgiTNT
-         /3GQ==
-X-Gm-Message-State: AOAM533EFN4BdezrQP+HQUZqUcMH1NlKJI3WJOOyYe6s73YOx1hLsgBV
-        TCwDd4tGSAAR2ZJfrcGHU1w=
-X-Google-Smtp-Source: ABdhPJwi+PBAE9X9yHieg25vVfZDqPdndcDuK9bQP9ZkhxyH4kFOLvw+2FG9Yp3HU+c/jslReS1V1A==
-X-Received: by 2002:a17:90a:d245:: with SMTP id o5mr5168127pjw.105.1628006160005;
-        Tue, 03 Aug 2021 08:56:00 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id r4sm14461041pjo.46.2021.08.03.08.55.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 08:55:59 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 08:55:56 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Keller, Jacob E" <jacob.e.keller@intel.com>,
-        Nicolas Pitre <nicolas.pitre@linaro.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
- dependencies
-Message-ID: <20210803155556.GD32663@hoboy.vegasvil.org>
-References: <20210802145937.1155571-1-arnd@kernel.org>
- <20210802164907.GA9832@hoboy.vegasvil.org>
- <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com>
- <20210802230921.GA13623@hoboy.vegasvil.org>
- <CAK8P3a2XjgbEkYs6R7Q3RCZMV7v90gu_v82RVfFVs-VtUzw+_w@mail.gmail.com>
+        Tue, 3 Aug 2021 11:56:26 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4GfKCL1Y7lzmmZs;
+        Tue,  3 Aug 2021 23:53:02 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 23:56:10 +0800
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.2176.012; Tue, 3 Aug 2021 16:56:09 +0100
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     Will Deacon <will@kernel.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>,
+        "qperret@google.com" <qperret@google.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU schedule
+ out
+Thread-Topic: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU schedule
+ out
+Thread-Index: AQHXhGar1JrryboKrU+7h+yU/0K2/6thny2AgAAaZCCAACXigIAAEl3Q
+Date:   Tue, 3 Aug 2021 15:56:08 +0000
+Message-ID: <58bf7a27a4c440c685c6b1e7c9325441@huawei.com>
+References: <20210729104009.382-1-shameerali.kolothum.thodi@huawei.com>
+ <20210729104009.382-5-shameerali.kolothum.thodi@huawei.com>
+ <20210803114034.GB30853@willie-the-truck>
+ <ee2863107d614ef8a36006b5aa912eca@huawei.com>
+ <20210803153036.GA31125@willie-the-truck>
+In-Reply-To: <20210803153036.GA31125@willie-the-truck>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.86.18]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2XjgbEkYs6R7Q3RCZMV7v90gu_v82RVfFVs-VtUzw+_w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 08:59:02AM +0200, Arnd Bergmann wrote:
-> It may well be a lost cause, but a build fix is not the time to nail down
-> that decision. The fix I proposed (with the added MAY_USE_PTP_1588_CLOCK
-> symbol) is only two extra lines and leaves everything else working for the
-> moment.
 
-Well, then we'll have TWO ugly and incomprehensible Kconfig hacks,
-imply and MAY_USE.
 
-Can't we fix this once and for all?
+> -----Original Message-----
+> From: Will Deacon [mailto:will@kernel.org]
+> Sent: 03 August 2021 16:31
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> Cc: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
+> linux-kernel@vger.kernel.org; maz@kernel.org; catalin.marinas@arm.com;
+> james.morse@arm.com; julien.thierry.kdev@gmail.com;
+> suzuki.poulose@arm.com; jean-philippe@linaro.org;
+> Alexandru.Elisei@arm.com; qperret@google.com; Linuxarm
+> <linuxarm@huawei.com>
+> Subject: Re: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU
+> schedule out
+> 
+> On Tue, Aug 03, 2021 at 12:55:25PM +0000, Shameerali Kolothum Thodi
+> wrote:
+> > > > diff --git a/arch/arm64/kvm/vmid.c b/arch/arm64/kvm/vmid.c
+> > > > index 5584e84aed95..5fd51f5445c1 100644
+> > > > --- a/arch/arm64/kvm/vmid.c
+> > > > +++ b/arch/arm64/kvm/vmid.c
+> > > > @@ -116,6 +116,12 @@ static u64 new_vmid(struct kvm_vmid
+> > > *kvm_vmid)
+> > > >  	return idx2vmid(vmid) | generation;
+> > > >  }
+> > > >
+> > > > +/* Call with preemption disabled */
+> > > > +void kvm_arm_vmid_clear_active(void)
+> > > > +{
+> > > > +	atomic64_set(this_cpu_ptr(&active_vmids), 0);
+> > > > +}
+> > >
+> > > I think this is very broken, as it will force everybody to take the
+> > > slow-path when they see an active_vmid of 0.
+> >
+> > Yes. I have seen that happening in my test setup.
+> 
+> Why didn't you say so?!
 
-Seriously, "imply" has been nothing but a major PITA since day one,
-and all to save 22 kb.  I can't think of another subsystem which
-tolerates so much pain for so little gain.
+Sorry. I thought of getting some performance numbers with and
+without this patch and measure the impact. But didn't quite get time
+to finish it yet.
+ 
+> 
+> > > It also doesn't solve the issue I mentioned before, as an active_vmid of 0
+> > > means that the reserved vmid is preserved.
+> > >
+> > > Needs more thought...
+> >
+> > How about we clear all the active_vmids in kvm_arch_free_vm() if it
+> > matches the kvm_vmid->id ? But we may have to hold the lock
+> > there
+> 
+> I think we have to be really careful not to run into the "suspended
+> animation" problem described in ae120d9edfe9 ("ARM: 7767/1: let the ASID
+> allocator handle suspended animation") if we go down this road.
+
+
+Ok. I will go through that.
+ 
+> Maybe something along the lines of:
+> 
+> ROLLOVER
+> 
+>   * Take lock
+>   * Inc generation
+>     => This will force everybody down the slow path
+>   * Record active VMIDs
+>   * Broadcast TLBI
+>     => Only active VMIDs can be dirty
+>     => Reserve active VMIDs and mark as allocated
+> 
+> VCPU SCHED IN
+> 
+>   * Set active VMID
+>   * Check generation
+>   * If mismatch then:
+>         * Take lock
+>         * Try to match a reserved VMID
+>         * If no reserved VMID, allocate new
+> 
+> VCPU SCHED OUT
+> 
+>   * Clear active VMID
+> 
+> but I'm not daft enough to think I got it right first time. I think it
+> needs both implementing *and* modelling in TLA+ before we merge it!
+> 
+
+Ok. I need some time to digest the above first :).
+
+On another note, how serious do you think is the problem of extra
+reservation of the VMID space? Just wondering if we can skip this
+patch for now or not..
 
 Thanks,
-Richard
-
-
-> I would suggest we merge that first and then raise the question
-> about whether to give up on tinyfication on the summit list, there are a few
-> other things that have come up that would also benefit from trying less hard,
-> but if we overdo this, we can get to the point of hurting even systems that are
-> otherwise still well supported (64MB MIPS/ARMv5 SoCs, small boot partitions,
-> etc.).
-> 
->         Arnd
+Shameer
