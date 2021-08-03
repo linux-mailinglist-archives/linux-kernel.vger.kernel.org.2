@@ -2,157 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99983DEEFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031023DEF01
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236258AbhHCNUG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Aug 2021 09:20:06 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12442 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236045AbhHCNUF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:20:05 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GfFkV5ZHJzckN7;
-        Tue,  3 Aug 2021 21:16:18 +0800 (CST)
-Received: from dggeme703-chm.china.huawei.com (10.1.199.99) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 3 Aug 2021 21:19:51 +0800
-Received: from dggeme703-chm.china.huawei.com ([10.9.48.230]) by
- dggeme703-chm.china.huawei.com ([10.9.48.230]) with mapi id 15.01.2176.012;
- Tue, 3 Aug 2021 21:19:51 +0800
-From:   "limingwang (A)" <limingwang@huawei.com>
-To:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>
-CC:     Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v19 11/17] RISC-V: KVM: Implement MMU notifiers
-Thread-Topic: [PATCH v19 11/17] RISC-V: KVM: Implement MMU notifiers
-Thread-Index: AQHXgqwy4s+Z/E3/sE6z7Q5kXgZ04KthiTvA
-Date:   Tue, 3 Aug 2021 13:19:51 +0000
-Message-ID: <38734ad1008a46169dcd89e1ded9ac62@huawei.com>
-References: <20210727055450.2742868-1-anup.patel@wdc.com>
- <20210727055450.2742868-12-anup.patel@wdc.com>
-In-Reply-To: <20210727055450.2742868-12-anup.patel@wdc.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.187.17]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S236310AbhHCNYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:24:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236228AbhHCNYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 09:24:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A4BC60EB9;
+        Tue,  3 Aug 2021 13:24:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627997052;
+        bh=o3dWD+NtSdOsjF8zTizWlT8Zz2qjfP7d2UK7eV2zcx4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oJoyztAawT1ekxaSi4QoOSf8H2WrU+IKOIlgDS8KtFz3nQ4oUmlWnfqwAcGPOIgRm
+         ixCJbu5S8Xqhh4OAXzLmtnVDiWessoBrsi/L5dQVGv6ki9aYpoPOXy4zSuJA8snbk5
+         1lLsiIhsj4Ew57bxMAqaPeM+AyyFVYMFZVC3X+9Ajk+W5GErX4ZQhm2Bim2mWdWZdM
+         nhIIz68trv6MAYiVrzQ29JYwY+7/YqP5rQF8L14L3Gd1ITp/PQnA2nN9yuCFvCJX7u
+         0zC5DlaLeW8MvuXieoV82mrA7aAhyYQx3G1t8tWe8C9UQ8Q3qL0rA5WZYzaHdFYYsC
+         9dEX8IN7OVnOg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2F5E9403F2; Tue,  3 Aug 2021 10:24:09 -0300 (-03)
+Date:   Tue, 3 Aug 2021 10:24:09 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
+        suzuki.poulose@arm.com, mike.leach@linaro.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 6/6] perf cs-etm: Add warnings for missing DSOs
+Message-ID: <YQlDefz+g45dqFsP@kernel.org>
+References: <20210729155805.2830-1-james.clark@arm.com>
+ <20210729155805.2830-7-james.clark@arm.com>
+ <20210802154145.GC148327@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802154145.GC148327@leoy-ThinkPad-X240s>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c index
-> fa9a4f9b9542..4b294113c63b 100644
-> --- a/arch/riscv/kvm/mmu.c
-> +++ b/arch/riscv/kvm/mmu.c
-> @@ -300,7 +300,8 @@ static void stage2_op_pte(struct kvm *kvm, gpa_t
-> addr,
->  	}
->  }
+Em Mon, Aug 02, 2021 at 11:41:45PM +0800, Leo Yan escreveu:
+> On Thu, Jul 29, 2021 at 04:58:05PM +0100, James Clark wrote:
+> > Currently decode will silently fail if no binary data is available for
+> > the decode. This is made worse if only partial data is available because
+> > the decode will appear to work, but any trace from that missing DSO will
+> > silently not be generated.
+> > 
+> > Add a UI popup once if there is any data missing, and then warn in the
+> > bottom left for each individual DSO that's missing.
+> > 
+> > Signed-off-by: James Clark <james.clark@arm.com>
+> > ---
+> >  tools/perf/util/cs-etm.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> > index 32ad92d3e454..e6851260d059 100644
+> > --- a/tools/perf/util/cs-etm.c
+> > +++ b/tools/perf/util/cs-etm.c
+> > @@ -746,8 +746,16 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
+> >  
+> >  	len = dso__data_read_offset(al.map->dso, machine, offset, buffer, size);
+> >  
+> > -	if (len <= 0)
+> > +	if (len <= 0) {
+> > +		ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n");
+> > +		if (!al.map->dso->auxtrace_warned) {
+> > +			pr_err("CS ETM Trace: Debug data not found for address %#"PRIx64" in %s\n",
+> > +				    address,
+> > +				    al.map->dso->long_name ? al.map->dso->long_name : "Unknown");
+> > +			al.map->dso->auxtrace_warned = true;
+> > +		}
 > 
-> -static void stage2_unmap_range(struct kvm *kvm, gpa_t start, gpa_t size)
-> +static void stage2_unmap_range(struct kvm *kvm, gpa_t start,
-> +			       gpa_t size, bool may_block)
->  {
->  	int ret;
->  	pte_t *ptep;
-> @@ -325,6 +326,13 @@ static void stage2_unmap_range(struct kvm *kvm,
-> gpa_t start, gpa_t size)
+> This is very useful.
 > 
->  next:
->  		addr += page_size;
-> +
-> +		/*
-> +		 * If the range is too large, release the kvm->mmu_lock
-> +		 * to prevent starvation and lockup detector warnings.
-> +		 */
-> +		if (may_block && addr < end)
-> +			cond_resched_lock(&kvm->mmu_lock);
->  	}
->  }
+> Just one comment: in particularly if the perf fails to find the kernel
+> symbols, the user needs to enable config "CONFIG_PROC_KCORE=y" or
+> specify option "-k /path/to/vmlinux".  In this case, using 'perf
+> archive' is not helpful.  So I think the UI warning can be imporved
+> like:
 > 
-> @@ -405,7 +413,6 @@ static int stage2_ioremap(struct kvm *kvm, gpa_t gpa,
-> phys_addr_t hpa,
->  out:
->  	stage2_cache_flush(&pcache);
->  	return ret;
-> -
->  }
+>         ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n"
+>                          " Enable CONFIG_PROC_KCORE or use option '-k /path/to/vmlinux' for kernel symbols\n");
+
+one can also use debuginfod-client, which, as time passes, probably will
+be the main way of finding DSOs now that we have build-ids in
+PERF_RECORD_MMAP2 and debuginfod servers such as:
+
+export DEBUGINFOD_URLS=https://debuginfod.fedoraproject.org/
+
+https://fedoraproject.org/wiki/Debuginfod
+ 
+> With this improvement, the patch looks good to me:
 > 
->  void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm, @@
-> -547,7 +554,7 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
->  	spin_lock(&kvm->mmu_lock);
->  	if (ret)
->  		stage2_unmap_range(kvm, mem->guest_phys_addr,
-> -				   mem->memory_size);
-> +				   mem->memory_size, false);
->  	spin_unlock(&kvm->mmu_lock);
-> 
->  out:
-> @@ -555,6 +562,73 @@ int kvm_arch_prepare_memory_region(struct kvm
-> *kvm,
->  	return ret;
->  }
-> 
-> +bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
-> +{
-> +	if (!kvm->arch.pgd)
-> +		return 0;
-> +
-> +	stage2_unmap_range(kvm, range->start << PAGE_SHIFT,
-> +			   (range->end - range->start) << PAGE_SHIFT,
-> +			   range->may_block);
-> +	return 0;
-> +}
-> +
-> +bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range) {
-> +	int ret;
-> +	kvm_pfn_t pfn = pte_pfn(range->pte);
-> +
-> +	if (!kvm->arch.pgd)
-> +		return 0;
-> +
-> +	WARN_ON(range->end - range->start != 1);
-> +
-> +	ret = stage2_map_page(kvm, NULL, range->start << PAGE_SHIFT,
-> +			      __pfn_to_phys(pfn), PAGE_SIZE, true, true);
-> +	if (ret) {
-> +		kvm_err("Failed to map stage2 page (error %d)\n", ret);
-> +		return 1;
-> +	}
+> Reviewed-by: Leo Yan <leo.yan@linaro.org>
 
-Hi, Anup
+Does this apply to the other 5 patches in this series?
 
-I think that it is not appropriate to add kvm_err here, because stage2_set_pte function
-may apply for memory based on the pcache parameter. If the value of pcache is NULL,
-stage2_set_pte function considers that there is not enough memory and here an invalid
-error log is generated.
+- Arnaldo
+ 
+> >  		return 0;
+> > +	}
+> >  
+> >  	return len;
+> >  }
+> > -- 
+> > 2.28.0
+> > 
 
-As an example, this error log is printed when a VM is migrating. But finally the VM migration
-is successful. And if the kvm_err is added to the same position in the ARM architecture, the
-same error log is also printed.
+-- 
 
-Mingwang
-
-> +	return 0;
-> +}
-> +
-
+- Arnaldo
