@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7E43DEC02
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35DC3DEC0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235695AbhHCLgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
+        id S235768AbhHCLgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235559AbhHCLgR (ORCPT
+        with ESMTP id S235706AbhHCLg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:36:17 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1E7C061757;
-        Tue,  3 Aug 2021 04:36:06 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id h13so11493673wrp.1;
-        Tue, 03 Aug 2021 04:36:06 -0700 (PDT)
+        Tue, 3 Aug 2021 07:36:27 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21008C061764;
+        Tue,  3 Aug 2021 04:36:12 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id h13so11493990wrp.1;
+        Tue, 03 Aug 2021 04:36:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=6ERoO6r7b7bdnRvImyvbdNkxCXw0B3a96lAkHo2TAmc=;
-        b=Pk+RzGBAfV8k+BC3uVzXBBgKRU/9Ll3guBjNlC9e967SJVyvgdnpPko5ab7DqNjR6U
-         FY6FUeKD/zxgnt4Z7Lnfh/DIXLyJRRroLuXANJctMbeP+8yqqbJBd39NbMtUYIxIlLSS
-         OWazTi9pZa49vrNQgxu4s4K/lXOWgSAGt9orxdCvQFhZdgbgvlmVTFY2ic/q6YNNeAnH
-         JUvMYo5xUjOw3XjGYLm6s9JZmNvCPipDnf73iUwEQ2mwMtzGtboClMgiJxvGyu2Gakmz
-         C3Ip8aPRypTJuCrEgC1Lf6itE2qKsfwnZl4clrzUdbTH9L92O3HXG3MHxoKb+ol4gze4
-         fDVQ==
+        bh=sTKYBnBKKsh1beNAYDR2xmYVPiIYdU0sotGuAnpEEyI=;
+        b=c1DRXF4SH9nGuIlcc07AgsTIPweMjNjGI03eK91dNJovsSwh8jQC4hwurUWVFZX+zo
+         eiZbcynA5kgxO/Zdqp3lCVBzi2a/4o4IWsHR8jTla3xsctpRxOzIQ40MbsjbvYbuPdtd
+         yW6KC5cAlj6nQeof+Gy26NpZd7FQvN5FQF1eWCGb7vdgl5a//AIy8Y7eCEsW+vkybQlG
+         NZssOv34eduvrNP51VOyuwasukTnkl/mhXEiWR26wKwE8RiiLHDTWto2H06vz0IZW7iy
+         /jteWituQMVjRmq/mCCgiRf7utWVTBFMOnvxsGpxhoLqradL9+Bq26fKOkZth+5VIGo2
+         Nl0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=6ERoO6r7b7bdnRvImyvbdNkxCXw0B3a96lAkHo2TAmc=;
-        b=T0Oq6M+OowPewXtIcTK5DpbqMcDCKRdXdpIK72mU7aLh6Iq7b+8FNpOG6fbhSaDSTj
-         NYnGPQh628UGxNYdMl7PbhOZiblqyIP4oRuhcmT4OcSmYXPXMdfyfX6R7W/r6GVTu2ak
-         hXEhaf+Q1KEMpW+FdjGx3aB+s7dOUFipuGjAEF6EfL9zkFaxW75KjykZ8LZByHfmfxLh
-         iVbbauA37U1BBLSsXD+FAAVeshsPFBLpHcuiMWhgJQlTFM4rj7vvVa7w6UDDUp7FxbBk
-         YmetmGYv+KzWUtMV2yfyuwGxaup5tmMFvn1AcgG28i/ysOz8D3h5tSD/yd+8+2gLEMBi
-         IxVw==
-X-Gm-Message-State: AOAM533jFVfNxYO/o00IqinUakemXjAq27AjiscCsMqoNZbw9aBIpxks
-        Uy5jkD38VRN61M8MhYYfCtE=
-X-Google-Smtp-Source: ABdhPJzH0axP2mZ4ihgpWQkk8GJdzOlKW99HWkPqI4rw1+rTyJBcXNi80NTHL1VVNxM2G/PIkq/4QQ==
-X-Received: by 2002:a5d:45c5:: with SMTP id b5mr22467111wrs.32.1627990564648;
-        Tue, 03 Aug 2021 04:36:04 -0700 (PDT)
+        bh=sTKYBnBKKsh1beNAYDR2xmYVPiIYdU0sotGuAnpEEyI=;
+        b=hjLAjegYxFl0owvlFeHNtRg3Kt2ALEj+CxP5ho+QrGjCDaaYymcioSkYrlbMJvH5eQ
+         b3z/X9APxE4SXNx+hkPQoJHu3RsH0QZ7KX1Q2e3z6NsVyJenmf2M52FdtshrPX5W1FNV
+         m7AnIM+QSDF739qEVdozguVErB6HYrschn+S3wOuEdBKAQzP71YrFMC5UR3TAsLoEI1n
+         nXCu+mZq8z44CkLBoxtNDeAq/f4CnYbZlnXcCU6iyti0LrbYJlJoRzPRUk5qL34rWYqT
+         8U48yJZIcifDVJEGO0MsW87J7+pwGfdBbX2jV8Sj4u+cfR5/DpBnn3TSQsuqmg5C6wIx
+         l9dw==
+X-Gm-Message-State: AOAM533SKRmX4CN4tYghjqrhQtbb95UYXJTAZk724+68g3GlCuXIVaIc
+        7lXGg6lxOlkGVx04t3R8NMg=
+X-Google-Smtp-Source: ABdhPJxTzq4/0XGZJ0WFxWUhPJ0fqA4GhoGMSdqkYTT4aCMU87bvwqyrcnlnnN8RUg5QYaTyPV+lCw==
+X-Received: by 2002:a05:6000:120f:: with SMTP id e15mr22049966wrx.399.1627990570652;
+        Tue, 03 Aug 2021 04:36:10 -0700 (PDT)
 Received: from felia.fritz.box ([2001:16b8:2de7:c500:a5d6:9db:2c2c:b89d])
-        by smtp.gmail.com with ESMTPSA id m14sm13961364wrs.56.2021.08.03.04.36.00
+        by smtp.gmail.com with ESMTPSA id m14sm13961364wrs.56.2021.08.03.04.36.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 04:36:02 -0700 (PDT)
+        Tue, 03 Aug 2021 04:36:07 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -62,9 +62,9 @@ Cc:     "H . Peter Anvin" <hpa@zytor.com>,
         platform-driver-x86@vger.kernel.org,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 1/9] x86/entry: correct reference to intended CONFIG_64_BIT
-Date:   Tue,  3 Aug 2021 13:35:23 +0200
-Message-Id: <20210803113531.30720-2-lukas.bulwahn@gmail.com>
+Subject: [PATCH 2/9] x86, olpc: correct condition to intended CONFIG_OLPC_XO15_SCI
+Date:   Tue,  3 Aug 2021 13:35:24 +0200
+Message-Id: <20210803113531.30720-3-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210803113531.30720-1-lukas.bulwahn@gmail.com>
 References: <20210803113531.30720-1-lukas.bulwahn@gmail.com>
@@ -72,37 +72,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 662a0221893a ("x86/entry: Fix AC assertion") adds a condition with
-IS_ENABLED(CONFIG_64_BIT), but the intended config is called CONFIG_64BIT,
-as defined in ./arch/x86/Kconfig.
+The refactoring in commit ec9964b48033 ("Platform: OLPC: Move
+EC-specific functionality out from x86") introduces an
+ifdef CONFIG_OLPC_XO1_5_SCI, however the config is actually called
+"CONFIG_OLPC_XO15_SCI".
 
 Fortunately, ./scripts/checkkconfigsymbols.py warns:
 
-64_BIT
-Referencing files: arch/x86/include/asm/entry-common.h
+OLPC_XO1_5_SCI
+Referencing files: arch/x86/platform/olpc/olpc.c
 
-Correct the reference to the intended config symbol.
+Correct this ifdef condition to the intended config symbol.
 
-Fixes: 662a0221893a ("x86/entry: Fix AC assertion")
+Fixes: ec9964b48033 ("Platform: OLPC: Move EC-specific functionality out from x86")
 Suggested-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/x86/include/asm/entry-common.h | 2 +-
+ arch/x86/platform/olpc/olpc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/entry-common.h b/arch/x86/include/asm/entry-common.h
-index 14ebd2196569..43184640b579 100644
---- a/arch/x86/include/asm/entry-common.h
-+++ b/arch/x86/include/asm/entry-common.h
-@@ -25,7 +25,7 @@ static __always_inline void arch_check_user_regs(struct pt_regs *regs)
- 		 * For !SMAP hardware we patch out CLAC on entry.
- 		 */
- 		if (boot_cpu_has(X86_FEATURE_SMAP) ||
--		    (IS_ENABLED(CONFIG_64_BIT) && boot_cpu_has(X86_FEATURE_XENPV)))
-+		    (IS_ENABLED(CONFIG_64BIT) && boot_cpu_has(X86_FEATURE_XENPV)))
- 			mask |= X86_EFLAGS_AC;
+diff --git a/arch/x86/platform/olpc/olpc.c b/arch/x86/platform/olpc/olpc.c
+index ee2beda590d0..1d4a00e767ec 100644
+--- a/arch/x86/platform/olpc/olpc.c
++++ b/arch/x86/platform/olpc/olpc.c
+@@ -274,7 +274,7 @@ static struct olpc_ec_driver ec_xo1_driver = {
  
- 		WARN_ON_ONCE(flags & mask);
+ static struct olpc_ec_driver ec_xo1_5_driver = {
+ 	.ec_cmd = olpc_xo1_ec_cmd,
+-#ifdef CONFIG_OLPC_XO1_5_SCI
++#ifdef CONFIG_OLPC_XO15_SCI
+ 	/*
+ 	 * XO-1.5 EC wakeups are available when olpc-xo15-sci driver is
+ 	 * compiled in
 -- 
 2.17.1
 
