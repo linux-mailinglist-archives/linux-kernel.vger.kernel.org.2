@@ -2,323 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17743DEACA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46A73DEACE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235409AbhHCKZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:25:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:46726 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235382AbhHCKY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:24:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55F361396;
-        Tue,  3 Aug 2021 03:24:35 -0700 (PDT)
-Received: from [10.163.67.68] (unknown [10.163.67.68])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FF6B3F40C;
-        Tue,  3 Aug 2021 03:24:31 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH 08/10] coresight: trbe: Workaround TRBE errat overwrite in
- FILL mode
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
-References: <20210728135217.591173-1-suzuki.poulose@arm.com>
- <20210728135217.591173-9-suzuki.poulose@arm.com>
-Message-ID: <7edeb6de-5de6-e9b1-c684-a7f5782d9a7b@arm.com>
-Date:   Tue, 3 Aug 2021 15:55:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235171AbhHCK1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234863AbhHCK1O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 06:27:14 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A8CC061764;
+        Tue,  3 Aug 2021 03:27:03 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id t128so27666284oig.1;
+        Tue, 03 Aug 2021 03:27:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SqM/oJoSvzSobxq+NRIrAXdGV2FVgUmDDxPLkyPPcTQ=;
+        b=GO+GBvXQjZzUcn2PSHWiy5aNWfSj5Nflq8cZPBm1/eE2/rGkZoAsGtVLfSuNeNXjZJ
+         uDOvdJpreBU+ep8b59D4dzlzOPK7J/bFtKnnPAtIxQe/ScQFO+Y3gxNHQu/boyq+m+zy
+         F0riRgYC72zY0QIvLLvJdKmgz7aAXLZzyD8Um+DXUSwcObVsiqhHQu+AOx/i6mXo6pQ/
+         R1Ojm6zF4OaaW/QCwGn+deanoAfRHZd5cE0u2TsiaaH7eYauxH/R8XAKqK2nEGL8D9fe
+         jJs1TMN3HJyxXiOTZizOFzXOxC873CEprgwEXqLX3sP2/WDPORm4ShAX3WX/nNBptr48
+         MKxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SqM/oJoSvzSobxq+NRIrAXdGV2FVgUmDDxPLkyPPcTQ=;
+        b=i5NmLVCXxZv19yXwGV4PXQnyX9gkyVwYEEuIgmVYRbbhpfILHjooXP0H6MfCr8Vt+X
+         ndRULZFjuG/L4a8wrwynWnM4FFJmL7/xSc+NlZJr5Ker5dKYmwaw2OMQln0R+y6jK0as
+         if2wuhW6al7ZVGhFDxZMAjq5k0yPTBDQlClTUE/uM8OfRmisvujchVa6SVxkinqe4ed+
+         xy3ppPigipcUxshrhhbQ/PxcKW4sSv3AgBEnT2aNMVLBo+1fIf4OaixijGYGqUF5DrY+
+         6BaMzRvde7rMWY7DJuZLfrDHJvvnpNBb7QHweM4H78E+xs/PLq7HRbE1xGmDdvKZR8ac
+         TOEg==
+X-Gm-Message-State: AOAM530wkUavAQzgyIj0LUMX3ETuDXS1nCF7uBQwbKVWt6VAs6pf9kv9
+        kGSQYWRMTI7ng7C6y8k4AoqM/7ZbiInP8IIJB38=
+X-Google-Smtp-Source: ABdhPJyuVxKpBkp+AM1eSSbFrWppWiASs+gUV+Cz2msdcywU5eJmvTXn6woluOElwpzG8OB7EryTrYZxlB1RDVgeILE=
+X-Received: by 2002:a05:6808:20aa:: with SMTP id s42mr2431911oiw.129.1627986422784;
+ Tue, 03 Aug 2021 03:27:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210728135217.591173-9-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210802121215.703023-1-eizan@chromium.org> <20210802220943.v6.3.I909f5375d930f5d0cc877128e30e2a67078b674c@changeid>
+In-Reply-To: <20210802220943.v6.3.I909f5375d930f5d0cc877128e30e2a67078b674c@changeid>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Tue, 3 Aug 2021 12:26:50 +0200
+Message-ID: <CAFqH_50CLCXSQ=24MpPMQb5DtC6k3iUaWp5dLrbjfAr-3MBpBQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/9] mtk-mdp: use pm_runtime in MDP component driver
+To:     Eizan Miyamoto <eizan@chromium.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Eizan,
+
+Thank you for your patch.
+
+Missatge de Eizan Miyamoto <eizan@chromium.org> del dia dl., 2 d=E2=80=99ag=
+.
+2021 a les 14:14:
+>
+> Without this change, the MDP components are not fully integrated into
+> the runtime power management subsystem, and the MDP driver does not
+> work.
+>
+> For each of the component device drivers to be able to call
+> pm_runtime_get/put_sync() a pointer to the component's device struct
+> had to be added to struct mtk_mdp_comp, set by mtk_mdp_comp_init().
+>
+> Note that the dev argument to mtk_mdp_comp_clock_on/off() has been
+> removed. Those functions used to be called from the "master" mdp driver
+> in mtk_mdp_core.c, but the component's device pointer no longer
+> corresponds to the mdp master device pointer, which is not the right
+> device to pass to pm_runtime_put/get_sync() which we had to add to get
+> the driver to work properly.
+>
+> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
+
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
 
-On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
-> ARM Neoverse-N2 (#2139208) and Cortex-A710(##2119858) suffers from
-> an erratum, which when triggered, might cause the TRBE to overwrite
-> the trace data already collected in FILL mode, in the event of a WRAP.
-> i.e, the TRBE doesn't stop writing the data, instead wraps to the base
-> and could write upto 3 cache line size worth trace. Thus, this could
-> corrupt the trace at the "BASE" pointer.
-> 
-> The workaround is to program the write pointer 256bytes from the
-> base, such that if the erratum is triggered, it doesn't overwrite
-> the trace data that was captured. This skipped region could be
-> padded with ignore packets at the end of the session, so that
-> the decoder sees a continuous buffer with some padding at the
-> beginning. The trace data written at the base is considered
-> lost as the limit could have been in the middle of the perf
-> ring buffer, and jumping to the "base" is not acceptable.
-
-If the write pointer is guaranteed to have always started beyond
-[base + 256] and then wraps around. Why cannot the initial trace
-at [base .. base + 256] not to be considered for perf ?
-
-> We set the flags already to indicate that some amount of trace
-> was lost during the FILL event IRQ. So this is fine.
-
-Right, from perf data flag point of view it is not a problem.
-But I am still wondering why cannot the trace at the base can
-not be consumed by perf.
-
-> 
-> One important change with the work around is, we program the
-> TRBBASER_EL1 to current page where we are allowed to write.
-> Otherwise, it could overwrite a region that may be consumed
-> by the perf. Towards this, we always make sure that the
-
-While enabling TRBE after required reconfiguration, this will
-cause both TRBBASER_EL1 and TRBPTR_EL1 to change each time
-around (basically TRBBASER_EL1 follows handle->head) ?
-
-> "handle->head" and thus the trbe_write is PAGE_SIZE aligned,
-> so that we can set the BASE to the PAGE base and move the
-> TRBPTR to the 256bytes offset.
-
-Now that base needs to follow handle->head, both needs to be
-PAGE_SIZE aligned (including the write pointer) because base
-pointer needs to be PAGE_SIZE aligned ?
-
-> 
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 111 +++++++++++++++++--
->  1 file changed, 102 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index 9ea28813182b..cd997ed5d918 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -17,6 +17,7 @@
->  
->  #include <asm/barrier.h>
->  #include <asm/cputype.h>
-> +#include <asm/cpufeature.h>
->  
->  #include "coresight-self-hosted-trace.h"
->  #include "coresight-trbe.h"
-> @@ -84,9 +85,17 @@ struct trbe_buf {
->   * per TRBE instance, we keep track of the list of errata that
->   * affects the given instance of the TRBE.
->   */
-> -#define TRBE_ERRATA_MAX			0
-> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE	0
-> +#define TRBE_ERRATA_MAX				1
-
-Although I am not sure how to achieve it, TRBE_ERRATA_MAX should be
-derived from errata cpucap start and end markers which identify all
-TRBE specific erratas. The hard coding above could be avoided.
-
-> +
-> +/*
-> + * Safe limit for the number of bytes that may be overwritten
-> + * when the erratum is triggered.
-
-Specify which errata ?
-
-> + */
-> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP	256
-
-Needs to have _BYTES. TRBE_ERRATA_OVERWRITE_FILL_MODE_SKIP_BYTES ?
-
->  
->  static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
-> +	[TRBE_WORKAROUND_OVERWRITE_FILL_MODE] = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
-
-s/TRBE_WORKAROUND_OVERWRITE_FILL_MODE/TRBE_ERRATA_OVERWRITE_FILL_MODE instead ?
-
-ARM64_WORKAROUND_TRBE_XXX -----> TRBE_ERRATA_XXX
-
+>
+> (no changes since v1)
+>
+>  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 24 +++++++++++++++----
+>  drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  6 +++--
+>  drivers/media/platform/mtk-mdp/mtk_mdp_core.c |  7 +++---
+>  3 files changed, 27 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/medi=
+a/platform/mtk-mdp/mtk_mdp_comp.c
+> index 7a0e3acffab9..472c261b01e8 100644
+> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/of_address.h>
+>  #include <linux/of_platform.h>
+>  #include <soc/mediatek/smi.h>
+> +#include <linux/pm_runtime.h>
+>
+>  #include "mtk_mdp_comp.h"
+>  #include "mtk_mdp_core.h"
+> @@ -50,14 +51,22 @@ static const struct of_device_id mtk_mdp_comp_driver_=
+dt_match[] =3D {
 >  };
->  
->  /*
-> @@ -531,10 +540,13 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
->  	if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
->  		return TRBE_FAULT_ACT_FATAL;
->  
-> -	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
-> -		if (get_trbe_write_pointer() == get_trbe_base_pointer())
-> -			return TRBE_FAULT_ACT_WRAP;
-> -	}
-> +	/*
-> +	 * It is not necessary to verify the TRBPTR == TRBBASER to detect
-> +	 * a FILL event. Moreover, CPU errata could make this check invalid.
-> +	 */
-
-Why should the check be dropped for CPU instances which dont have the errata ?
-
-> +	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED))
-> +		return TRBE_FAULT_ACT_WRAP;
-> +
->  	return TRBE_FAULT_ACT_SPURIOUS;
->  }
->  
-> @@ -544,6 +556,7 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
+>  MODULE_DEVICE_TABLE(of, mtk_mdp_comp_driver_dt_match);
+>
+> -int mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp)
+> +int mtk_mdp_comp_clock_on(struct mtk_mdp_comp *comp)
 >  {
->  	u64 write;
->  	u64 start_off, end_off;
-> +	u64 size;
->  
->  	/*
->  	 * If the TRBE has wrapped around the write pointer has
-> @@ -559,7 +572,18 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
->  
->  	if (WARN_ON_ONCE(end_off < start_off))
->  		return 0;
-> -	return (end_off - start_off);
+>         int i, err, status;
+>
+>         if (comp->larb_dev) {
+>                 err =3D mtk_smi_larb_get(comp->larb_dev);
+>                 if (err)
+> -                       dev_err(dev, "failed to get larb, err %d.\n", err=
+);
+> +                       dev_err(comp->dev, "failed to get larb, err %d.\n=
+", err);
+> +       }
 > +
-> +	size = end_off - start_off;
-> +	/*
-> +	 * If the TRBE is affected by the following erratum, we must fill
-> +	 * the space we skipped with IGNORE packets. And we are always
-> +	 * guaranteed to have at least a PAGE_SIZE space in the buffer.
-> +	 */
-> +	if (trbe_has_erratum(TRBE_WORKAROUND_OVERWRITE_FILL_MODE, buf->cpudata) &&
-> +	    !WARN_ON(size < TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP))
-
-Why warn here ? The skid can some times be less than 256 bytes. OR because
-now write pointer alignment is PAGE_SIZE (from later code), size too needs
-to be always a PAGE_SIZE multiple ?
-
-> +		__trbe_pad_buf(buf, start_off, TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP);
+> +       err =3D pm_runtime_get_sync(comp->dev);
+> +       if (err < 0) {
+> +               dev_err(comp->dev,
+> +                       "failed to runtime get, err %d.\n",
+> +                       err);
+> +               return err;
+>         }
+>
+>         for (i =3D 0; i < ARRAY_SIZE(comp->clk); i++) {
+> @@ -66,7 +75,7 @@ int mtk_mdp_comp_clock_on(struct device *dev, struct mt=
+k_mdp_comp *comp)
+>                 err =3D clk_prepare_enable(comp->clk[i]);
+>                 if (err) {
+>                         status =3D err;
+> -                       dev_err(dev, "failed to enable clock, err %d. i:%=
+d\n", err, i);
+> +                       dev_err(comp->dev, "failed to enable clock, err %=
+d. i:%d\n", err, i);
+>                         goto err_clk_prepare_enable;
+>                 }
+>         }
+> @@ -80,10 +89,12 @@ int mtk_mdp_comp_clock_on(struct device *dev, struct =
+mtk_mdp_comp *comp)
+>                 clk_disable_unprepare(comp->clk[i]);
+>         }
+>
+> +       pm_runtime_put_sync(comp->dev);
 > +
-> +	return size;
+>         return status;
 >  }
->  
->  static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
-> @@ -704,20 +728,73 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->  	return size;
->  }
->  
-> +
-> +static int trbe_apply_work_around_before_enable(struct trbe_buf *buf)
-> +{
-> +	/*
-> +	 * TRBE_WORKAROUND_OVERWRITE_FILL_MODE causes the TRBE to overwrite a few cache
-> +	 * line size from the "TRBBASER_EL1" in the event of a "FILL".
-> +	 * Thus, we could loose some amount of the trace at the base.
-> +	 *
-> +	 * To work around this:
-> +	 * - Software must leave 256bytes of space from the base, so that
-> +	 *   the trace collected now is not overwritten.
-> +	 * - Fill the first 256bytes with IGNORE packets for the decoder
-> +	 *   to ignore at the end of the session, so that the decoder ignores
-> +	 *   this gap.
-> +	 *
-> +	 * This also means that, the TRBE driver must set the TRBBASER_EL1
-> +	 * such that, when the erratum is triggered, it doesn't overwrite
-> +	 * the "area" outside the area marked by (handle->head, +size).
-> +	 * So, we make sure that the handle->head is always PAGE aligned,
-> +	 * by tweaking the required alignment for the TRBE (trbe_align).
-> +	 * And when we enable the TRBE,
-> +	 *
-> +	 *   - move the TRBPTR_EL1 to 256bytes past the starting point.
-> +	 *     So that any trace collected in this run is not overwritten.
-> +	 *
-> +	 *   - set the TRBBASER_EL1 to the original trbe_write. This will
-> +	 *     ensure that, if the TRBE hits the erratum, it would only
-> +	 *     write within the region allowed for the TRBE.
-> +	 *
-> +	 * At the trace collection time, we always pad the skipped bytes
-> +	 * with IGNORE packets to make sure the decoder doesn't see any
-> +	 * overwritten packets.
-> +	 */
-> +	if (trbe_has_erratum(TRBE_WORKAROUND_OVERWRITE_FILL_MODE, buf->cpudata)) {
-> +		if (WARN_ON(!IS_ALIGNED(buf->trbe_write, PAGE_SIZE)))
-> +			return -EINVAL;
-> +		buf->trbe_hw_base = buf->trbe_write;
-> +		buf->trbe_write += TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP;
-
-Not sure if I really understood this correctly, but would not the
-above keep on reducing the usable buffer space for TRBE each time
-around ? BTW buffer adjustment complexity here requires a proper
-ASCII diagram based illustration like before.
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int __arm_trbe_enable(struct trbe_buf *buf,
->  			     struct perf_output_handle *handle)
+>
+> -void mtk_mdp_comp_clock_off(struct device *dev, struct mtk_mdp_comp *com=
+p)
+> +int mtk_mdp_comp_clock_off(struct mtk_mdp_comp *comp)
 >  {
-> +	int ret = 0;
+>         int i;
+>
+> @@ -95,6 +106,8 @@ void mtk_mdp_comp_clock_off(struct device *dev, struct=
+ mtk_mdp_comp *comp)
+>
+>         if (comp->larb_dev)
+>                 mtk_smi_larb_put(comp->larb_dev);
 > +
->  	buf->trbe_limit = compute_trbe_buffer_limit(handle);
->  	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
->  	if (buf->trbe_limit == buf->trbe_base) {
-> -		trbe_stop_and_truncate_event(handle);
-> -		return -ENOSPC;
-> +		ret = -ENOSPC;
-> +		goto err;
->  	}
->  	/* Set the base of the TRBE to the buffer base */
->  	buf->trbe_hw_base = buf->trbe_base;
-> +
-> +	ret = trbe_apply_work_around_before_enable(buf);
-> +	if (ret)
-> +		goto err;
-> +
->  	*this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
->  	trbe_enable_hw(buf);
->  	return 0;
-> +err:
-> +	trbe_stop_and_truncate_event(handle);
-> +	return ret;
+> +       return pm_runtime_put_sync(comp->dev);
 >  }
->  
->  static int arm_trbe_enable(struct coresight_device *csdev, u32 mode, void *data)
-> @@ -1003,7 +1080,23 @@ static void arm_trbe_probe_cpu(void *info)
->  		pr_err("Unsupported alignment on cpu %d\n", cpu);
->  		goto cpu_clear;
->  	}
-> -	cpudata->trbe_align = cpudata->trbe_hw_align;
-> +
-> +	/*
-> +	 * If the TRBE is affected by erratum TRBE_WORKAROUND_OVERWRITE_FILL_MODE,
-
-Better to address it with the original errata name i.e
-ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE instead. But not a big issue
-though.
-
-> +	 * we must always program the TBRPTR_EL1, 256bytes from a page
-> +	 * boundary, with TRBBASER_EL1 set to the page, to prevent
-> +	 * TRBE over-writing 256bytes at TRBBASER_EL1 on FILL event.
-> +	 *
-> +	 * Thus make sure we always align our write pointer to a PAGE_SIZE,
-> +	 * which also guarantees that we have at least a PAGE_SIZE space in
-> +	 * the buffer (TRBLIMITR is PAGE aligned) and thus we can skip
-> +	 * the required bytes at the base.
-> +	 */
-
-Should not TRBPTR_EL1 be aligned to 256 bytes instead, as TRBBASER_EL1 is
-always at PAGE_SIZE boundary. Hence TRBPTR_EL1 could never be in between
-base and [base + 256 bytes]. Why alignment needs to go all the way upto
-PAGE_SIZE instead ? OR am I missing something here ?
-
-> +	if (trbe_has_erratum(TRBE_WORKAROUND_OVERWRITE_FILL_MODE, cpudata))
-> +		cpudata->trbe_align = PAGE_SIZE;
-> +	else
-> +		cpudata->trbe_align = cpudata->trbe_hw_align;
-> +
->  	cpudata->trbe_flag = get_trbe_flag_update(trbidr);
->  	cpudata->cpu = cpu;
->  	cpudata->drvdata = drvdata;
-> 
-
-I will visit this patch again. Not sure if I really understand all this
-changes correctly enough.
+>
+>  static int mtk_mdp_comp_bind(struct device *dev, struct device *master, =
+void *data)
+> @@ -103,6 +116,7 @@ static int mtk_mdp_comp_bind(struct device *dev, stru=
+ct device *master, void *da
+>         struct mtk_mdp_dev *mdp =3D data;
+>
+>         mtk_mdp_register_component(mdp, comp);
+> +       pm_runtime_enable(dev);
+>
+>         return 0;
+>  }
+> @@ -113,6 +127,7 @@ static void mtk_mdp_comp_unbind(struct device *dev, s=
+truct device *master,
+>         struct mtk_mdp_comp *comp =3D dev_get_drvdata(dev);
+>         struct mtk_mdp_dev *mdp =3D data;
+>
+> +       pm_runtime_disable(dev);
+>         mtk_mdp_unregister_component(mdp, comp);
+>  }
+>
+> @@ -132,6 +147,7 @@ int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, stru=
+ct device *dev)
+>                  (enum mtk_mdp_comp_type)of_device_get_match_data(dev);
+>
+>         INIT_LIST_HEAD(&comp->node);
+> +       comp->dev =3D dev;
+>
+>         for (i =3D 0; i < ARRAY_SIZE(comp->clk); i++) {
+>                 comp->clk[i] =3D of_clk_get(node, i);
+> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h b/drivers/medi=
+a/platform/mtk-mdp/mtk_mdp_comp.h
+> index df5fc4c94f90..f2e22e7e7c45 100644
+> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
+> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
+> @@ -12,17 +12,19 @@
+>   * @node:      list node to track sibing MDP components
+>   * @clk:       clocks required for component
+>   * @larb_dev:  SMI device required for component
+> + * @dev:       component's device
+>   */
+>  struct mtk_mdp_comp {
+>         struct list_head        node;
+>         struct clk              *clk[2];
+> +       struct device           *dev;
+>         struct device           *larb_dev;
+>  };
+>
+>  int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, struct device *dev);
+>
+> -int mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp)=
+;
+> -void mtk_mdp_comp_clock_off(struct device *dev, struct mtk_mdp_comp *com=
+p);
+> +int mtk_mdp_comp_clock_on(struct mtk_mdp_comp *comp);
+> +int mtk_mdp_comp_clock_off(struct mtk_mdp_comp *comp);
+>
+>  extern struct platform_driver mtk_mdp_component_driver;
+>
+> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/medi=
+a/platform/mtk-mdp/mtk_mdp_core.c
+> index b813a822439a..714154450981 100644
+> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> @@ -58,7 +58,7 @@ static int mtk_mdp_clock_on(struct mtk_mdp_dev *mdp)
+>         int err;
+>
+>         list_for_each_entry(comp_node, &mdp->comp_list, node) {
+> -               err =3D mtk_mdp_comp_clock_on(dev, comp_node);
+> +               err =3D mtk_mdp_comp_clock_on(comp_node);
+>                 if (err) {
+>                         status =3D err;
+>                         goto err_mtk_mdp_comp_clock_on;
+> @@ -69,18 +69,17 @@ static int mtk_mdp_clock_on(struct mtk_mdp_dev *mdp)
+>
+>  err_mtk_mdp_comp_clock_on:
+>         list_for_each_entry_continue_reverse(comp_node, &mdp->comp_list, =
+node)
+> -               mtk_mdp_comp_clock_off(dev, comp_node);
+> +               mtk_mdp_comp_clock_off(comp_node);
+>
+>         return status;
+>  }
+>
+>  static void mtk_mdp_clock_off(struct mtk_mdp_dev *mdp)
+>  {
+> -       struct device *dev =3D &mdp->pdev->dev;
+>         struct mtk_mdp_comp *comp_node;
+>
+>         list_for_each_entry(comp_node, &mdp->comp_list, node)
+> -               mtk_mdp_comp_clock_off(dev, comp_node);
+> +               mtk_mdp_comp_clock_off(comp_node);
+>  }
+>
+>  static void mtk_mdp_wdt_worker(struct work_struct *work)
+> --
+> 2.32.0.554.ge1b32706d8-goog
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
