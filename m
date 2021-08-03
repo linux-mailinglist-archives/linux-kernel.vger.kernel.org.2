@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98393DF391
+	by mail.lfdr.de (Postfix) with ESMTP id 271953DF38F
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238011AbhHCRHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:07:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38744 "EHLO mail.kernel.org"
+        id S237909AbhHCRHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:07:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237518AbhHCRGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237542AbhHCRGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Aug 2021 13:06:20 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1D6F610FF;
-        Tue,  3 Aug 2021 17:06:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08BB761179;
+        Tue,  3 Aug 2021 17:06:09 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAxrj-002ubz-T2; Tue, 03 Aug 2021 13:06:07 -0400
+        id 1mAxrj-002uc2-Tr; Tue, 03 Aug 2021 13:06:07 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -28,9 +28,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v3 13/22] libtracefs: Add error message when compare fields fail
-Date:   Tue,  3 Aug 2021 13:05:57 -0400
-Message-Id: <20210803170606.694085-14-rostedt@goodmis.org>
+Subject: [PATCH v3 14/22] libtracefs: Add error message for grouping events in SQL filter
+Date:   Tue,  3 Aug 2021 13:05:58 -0400
+Message-Id: <20210803170606.694085-15-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210803170606.694085-1-rostedt@goodmis.org>
 References: <20210803170606.694085-1-rostedt@goodmis.org>
@@ -42,69 +42,113 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-If the processing of comparing fields fail due to not existing or because
-they are not compatible to compare, report a proper error message.
+One requirement for the SQL filter in tracefs_sql() is that the WHERE
+clause (filter) can only filter the FROM and JOIN events with "&&".
+
+That is, you can not have:
+
+  sched_switch.next_pid == 0 || sched_waking.pid == 0
+
+As the filtering one event stops the synthetic event, having an ||
+conjunction makes no sense.
+
+Add an error message that explains this when it is found.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/tracefs-sqlhist.c | 36 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+ src/tracefs-sqlhist.c | 35 +++++++++++++++++++++++++----------
+ 1 file changed, 25 insertions(+), 10 deletions(-)
 
 diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 041d7077c3eb..acd3e0242d65 100644
+index acd3e0242d65..a0d934b4cd68 100644
 --- a/src/tracefs-sqlhist.c
 +++ b/src/tracefs-sqlhist.c
-@@ -1029,6 +1029,38 @@ static void selection_error(struct tep_handle *tep,
- 	test_field_exists(tep, sb, expr);
+@@ -802,21 +802,36 @@ static int build_compare(struct tracefs_synth *synth,
+ 	return ret;
  }
  
-+static void compare_error(struct tep_handle *tep,
-+			    struct sqlhist_bison *sb, struct expr *expr)
+-static int do_verify_filter(struct filter *filter,
++static int verify_filter_error(struct sqlhist_bison *sb, struct expr *expr,
++			       const char *event)
 +{
-+	struct compare *compare = &expr->compare;
++	struct field *field = &expr->field;
 +
-+	switch (errno) {
-+	case ENODEV:
-+	case EBADE:
-+		break;
-+	default:
-+		/* System error */
-+		return;
-+	}
++	sb->line_no = expr->line;
++	sb->line_idx = expr->idx;
 +
-+	/* ENODEV means that an event or field does not exist */
-+	if (errno == ENODEV) {
-+		if (test_field_exists(tep, sb, compare->lval))
-+			return;
-+		if (test_field_exists(tep, sb, compare->rval))
-+			return;
-+		return;
-+	}
-+
-+	/* fields exist, but values are not compatible */
-+	sb->line_no = compare->lval->line;
-+	sb->line_idx = compare->lval->idx;
-+
-+	parse_error(sb, compare->lval->field.raw,
-+		    "'%s' is not compatible to compare with '%s'\n",
-+		    compare->lval->field.raw, compare->rval->field.raw);
++	parse_error(sb, field->raw,
++		    "event '%s' can not be grouped or '||' together with '%s'\n"
++		    "All filters between '&&' must be for the same event\n",
++		    field->event, event);
++	return -1;
 +}
 +
- static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 					 const char *name,
- 					 struct sql_table *table)
-@@ -1121,8 +1153,10 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
++static int do_verify_filter(struct sqlhist_bison *sb, struct filter *filter,
+ 			    const char **system, const char **event)
+ {
+ 	int ret;
  
- 		ret = build_compare(synth, start_system, end_system,
- 				    &expr->compare);
--		if (ret < 0)
-+		if (ret < 0) {
-+			compare_error(tep, table->sb, expr);
- 			goto free;
-+		}
+ 	if (filter->type == FILTER_OR ||
+ 	    filter->type == FILTER_AND) {
+-		ret = do_verify_filter(&filter->lval->filter, system, event);
++		ret = do_verify_filter(sb, &filter->lval->filter, system, event);
+ 		if (ret)
+ 			return ret;
+-		return do_verify_filter(&filter->rval->filter, system, event);
++		return do_verify_filter(sb, &filter->rval->filter, system, event);
+ 	}
+ 	if (filter->type == FILTER_GROUP ||
+ 	    filter->type == FILTER_NOT_GROUP) {
+-		return do_verify_filter(&filter->lval->filter, system, event);
++		return do_verify_filter(sb, &filter->lval->filter, system, event);
  	}
  
- 	for (expr = table->where; expr; expr = expr->next) {
+ 	/*
+@@ -831,12 +846,12 @@ static int do_verify_filter(struct filter *filter,
+ 
+ 	if (filter->lval->field.system != *system ||
+ 	    filter->lval->field.event_name != *event)
+-		return -1;
++		return verify_filter_error(sb, filter->lval, *event);
+ 
+ 	return 0;
+ }
+ 
+-static int verify_filter(struct filter *filter,
++static int verify_filter(struct sqlhist_bison *sb, struct filter *filter,
+ 			 const char **system, const char **event)
+ {
+ 	int ret;
+@@ -848,17 +863,17 @@ static int verify_filter(struct filter *filter,
+ 	case FILTER_NOT_GROUP:
+ 		break;
+ 	default:
+-		return do_verify_filter(filter, system, event);
++		return do_verify_filter(sb, filter, system, event);
+ 	}
+ 
+-	ret = do_verify_filter(&filter->lval->filter, system, event);
++	ret = do_verify_filter(sb, &filter->lval->filter, system, event);
+ 	if (ret)
+ 		return ret;
+ 
+ 	switch (filter->type) {
+ 	case FILTER_OR:
+ 	case FILTER_AND:
+-		return do_verify_filter(&filter->rval->filter, system, event);
++		return do_verify_filter(sb, &filter->rval->filter, system, event);
+ 	default:
+ 		return 0;
+ 	}
+@@ -1165,7 +1180,7 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
+ 		bool *started;
+ 		bool start;
+ 
+-		ret = verify_filter(&expr->filter, &filter_system,
++		ret = verify_filter(table->sb, &expr->filter, &filter_system,
+ 				    &filter_event);
+ 		if (ret < 0)
+ 			goto free;
 -- 
 2.30.2
 
