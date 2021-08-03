@@ -2,155 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211A93DF487
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FB73DF49D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238918AbhHCSSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 14:18:02 -0400
-Received: from mail-dm6nam12on2061.outbound.protection.outlook.com ([40.107.243.61]:12641
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238252AbhHCSSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 14:18:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LEPVPSatRKGVcaG4eq9T2GoRs23SXGeyNXaR2YS2NzwBNMJ63Tav2q5vg0RiB42VyCo0VlOu5Z4SCdNLzymFl1sKBwn/CfDxZvJy+B+6ZqBlt7rGLHFqPKHUtM7UdC/sjARJOhg/japJwRQJmz9W0j4iT2unE6VDrE8zv9RsiqsRgEEVw3Aq3Ohf3YID/UxznrIQMHjPs2zq+Lf+fjfSPt4a+7YWyXqzHLBldIaIb5BYMJ8OFdPNflAk+m5B1eApfJOum5wEdWoJA/NhF8kb0OE6DpIKlNEE1fzb/AhxrL2UNdYXmGMuuNRNdKVZEYyKl/l6ICH1XTKKZv6OstGa/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+KC0h+4yoaZej1HwBDecMiCY5nK/FqDqIpOUN7Uf04U=;
- b=XTMoDzJd/DHgg0+rRGyk+KeQgZOIc2vcn55A6SJkbDqtlWCVN4P6b7iGI7zhwwZnhklwAzX3rpJ06gVu4NIsUntAR6oBFLm+EIKffhBP+3WWe2TgrS1UQHCzge4qMjPtTQ4S57u07JGzmIa2Y4Q7WZIHvQr5+mhVXFuDWR6wLZocG3DGvFd4vl2pKfLQiYeefDIeNRXAumv42OG0QAgOhOzRSkRGl3V0+m5LwHPL8msYkao5JsoSMhplWlCoGsIGbXRH1q0gOIbFI3sM55GRNaneEwugMpYPqB5N6k9uSZs6/dAE+3VYxbvHlg19PEDcE9uI9yfCC9CAl3k8SqJk5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+KC0h+4yoaZej1HwBDecMiCY5nK/FqDqIpOUN7Uf04U=;
- b=hmCvEoqETUFlYxIbMatDt7dxJzByZQvwLOLiV6JQGpU7op1jkdf3aTptjBeG2Mvr4sBKqaDShRJfisemaOg+/6LTUXtNAp2MSmH96phiuzSkkYUlIqfOagVAJ1roXjy3va3tdCmu3QSiTb48+Zu59QL8JBMla0I/kwvOLgui+4IWxQjIdzIIGBRqeknyrh08f0hq7UWE15Tghg2h5A7PtPG1zitKzHgJxWrQ+PGHzd5NaKyhZSXZsrUi2AThKkpjx8cP++irKdSoJ0ItqsvN95PU2v+CcQ/yVht/xG8IKiJ4FTX9rvtfjsu5a7Q3Bh7fYfhYPWcNKrj0Z8Sv+s/0JA==
-Received: from MWHPR02CA0019.namprd02.prod.outlook.com (2603:10b6:300:4b::29)
- by MWHPR12MB1839.namprd12.prod.outlook.com (2603:10b6:300:10b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Tue, 3 Aug
- 2021 18:17:48 +0000
-Received: from CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:4b:cafe::f3) by MWHPR02CA0019.outlook.office365.com
- (2603:10b6:300:4b::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend
- Transport; Tue, 3 Aug 2021 18:17:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- CO1NAM11FT006.mail.protection.outlook.com (10.13.174.246) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4373.18 via Frontend Transport; Tue, 3 Aug 2021 18:17:47 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Aug
- 2021 11:17:47 -0700
-Received: from localhost (172.20.187.6) by DRHQMAIL107.nvidia.com (10.27.9.16)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Aug 2021 18:17:46
- +0000
-Date:   Tue, 3 Aug 2021 21:17:42 +0300
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Doug Ledford <dledford@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, Mark Zhang <markz@mellanox.com>,
-        "Christoph Hellwig" <hch@infradead.org>
-Subject: Re: [PATCH rdma-next v1 0/7] Separate user/kernel QP creation logic
-Message-ID: <YQmIRgF7UOZLSX9W@unreal>
-References: <cover.1626857976.git.leonro@nvidia.com>
- <YQmGsMPyLQ2decBD@unreal>
- <20210803181312.GD1721383@nvidia.com>
+        id S239066AbhHCSVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 14:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239097AbhHCSVL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 14:21:11 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E49C06175F;
+        Tue,  3 Aug 2021 11:20:59 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so5104969pjb.2;
+        Tue, 03 Aug 2021 11:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7wjJjxr5NY0mlwpeyO/0mlW4pSwnhPT8csogJcd6W20=;
+        b=oTWlF+ytCtIPrUcUvp8jE0sc3VSofJeRtWtO50ijRo8f4zlLr1u+0xzEwZr5wKCb3S
+         kafEZY+V7A1q1MGb7sfDAAg9/QhwYKV2pK0upfGL3mTUpGB/TEo+ymwfJd9bsRt18yoY
+         57JKveqpiuCBW7pDdTBcPeGR3cioqGdDn7F/I9DvN283Sm6U8H5ar9nLcYP3JNeopFVx
+         /Amsh+qQ6e5PC2cDVkSDGuak4hOLwgmk2n0d9L/gzCKK7l2MTSNLFcXskIvxqTCHY/bJ
+         r2VLi3663hCYx2AtShEcDY3J0kbhIiiuNiiLUJj6Z/POYZNte3GmzrOWeDdWywb6rhRG
+         4kwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7wjJjxr5NY0mlwpeyO/0mlW4pSwnhPT8csogJcd6W20=;
+        b=lVZEkzAYJiphTWazviuC4+ByFfw98E6KB4n/XteRTX4JPDMhhf4hp/XG+6Q0xTXSXd
+         OcyIiXdXat08kzTHQqbJeJmgBAxI/5Au66ad6WQn6rT3Eod2QS8aHH+4O+cXb++8sYqz
+         uaxFGagtY9sAVVDPtYFjiTm8BWoutsv488GCL8AvEC7+/ROtAmDrNV1BIBJfarrS7JPo
+         H0EbXh7voA76aTIpAasw4QmG4ujsGk2a46sb+aovpad0RXgbS2nw83jNyLPZw27i5JbL
+         2uDhRdNyhuLr81NQMfSrtEYpueWj+KkFXpXtOEaZqLdeMapfdk2zh3iGu0V2N7s1X36m
+         rf/g==
+X-Gm-Message-State: AOAM531GpjCD0Qsq11LIjBYaVi90xeGazVg0QzEH+glN0D9vNCogwxSx
+        ytPST3m5JXbmIZ32cG/GL6NNGVW14Oy+WzmZRoI=
+X-Google-Smtp-Source: ABdhPJzZT0+vtNBMGVaB8Nb80jJILp9VjVeN4ZHUp/Ifl25xewd/m4FajCdsFVO6zIQQgTLr+fZlDuaC9zZgdT9ply8=
+X-Received: by 2002:a17:90a:b10b:: with SMTP id z11mr5690793pjq.181.1628014858846;
+ Tue, 03 Aug 2021 11:20:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210803181312.GD1721383@nvidia.com>
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 067383bc-5fe9-48ae-2dfe-08d956aaff74
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1839:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB18399A9732CBDBBC555A63F7BDF09@MWHPR12MB1839.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /k+DaM49uXxuRe7/Cwersg2+L3QsMz9JaxLLz+IfDnJkuFYGT0lKcR1/Tp+3lb/w+R5IKUl2+ffHQC+C4EYEjmHUZsyetzsKZI04s4OKZUjp2hMe8SZU1K8/nactC1olF7zXK7Piy+4INhxmF12dF7sdPoam+vukIe0p+AunxiNQ5QO0M1TrdxAp01JObPRPKl5rydaWr4uswT6w7/Rl8cWNimzcHNuhLAzwWgR/PSQuQEP7j5TglewpgEJTj+5HXyreiXLZamn1rU2QpG2zhgKvlyY697FcF0cHllCGSd/FS/C29z7O/wVDofG0FecYJmJI5F/L3RMP3BHVOf7HSCwg6yHaBFtj/l5EjMqcIuuSXYLndhZeLP8+nJS7qUiEiJ+DgFsUdvd/qcw/O6BFwezgXLP1ekjHJghO3NgXfP73ETpXal79X2Xnrb2rNOXOkO736LkgBNwRWpl6Q4cTn3VQU4bZiuIcchPlfsNzUMeXgPe4JQQUmkkgewTV8zqXkTbi5/9g+6dyly5brI1uAIvD/7GNlDWpTlan8+d/5gg1T4oEUnib6AVu2G6LCIbV0VTImYkTjNVE9+8lnvEk8d76CRIPY3LkFs3s3furF/HprbUMdgSl27u7fSv4g7a6HKa1lwhjczR12N/RB53wZ/5cvXzg6C6N+Njm2fnruVLbj6g3Wqm44irTLzS1pDje5S3QhLUVsKH2b8u4qr0Z/UGzPUGAHyUFwgDK5MF5wSDuZywAeYV5xcS3NXoNaEqd6Flir7fMFOkYwIxTqX1OtnluXAK6r0JilXYz190TMqU=
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(7916004)(4636009)(136003)(39860400002)(376002)(346002)(396003)(36840700001)(46966006)(86362001)(82740400003)(7636003)(2906002)(426003)(36860700001)(6636002)(356005)(316002)(336012)(33716001)(8936002)(478600001)(54906003)(4326008)(83380400001)(9686003)(186003)(82310400003)(70586007)(26005)(70206006)(16526019)(8676002)(6862004)(5660300002)(47076005)(6666004)(966005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 18:17:47.7970
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 067383bc-5fe9-48ae-2dfe-08d956aaff74
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1839
+References: <20210803102428.6476-1-Mason.Zhang@mediatek.com>
+In-Reply-To: <20210803102428.6476-1-Mason.Zhang@mediatek.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 3 Aug 2021 21:20:19 +0300
+Message-ID: <CAHp75VcPhBB+21wVErWRq+mSDaCkpQBovn+xvMbXyfENnuu40Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] spi: mediatek: modify set_cs_timing callback
+To:     Mason Zhang <Mason.Zhang@mediatek.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 03:13:12PM -0300, Jason Gunthorpe wrote:
-> On Tue, Aug 03, 2021 at 09:10:56PM +0300, Leon Romanovsky wrote:
-> > On Wed, Jul 21, 2021 at 12:07:03PM +0300, Leon Romanovsky wrote:
-> > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > 
-> > > Changelog:
-> > > iv1:
-> > >  * Fixed typo: incline -> inline/
-> > >  * Dropped ib_create_qp_uverbs() wrapper in favour of direct call.
-> > >  * Moved kernel-doc to the actual ib_create_qp() function that users will use.
-> > > v0: https://lore.kernel.org/lkml/cover.1626846795.git.leonro@nvidia.com
-> > > 
-> > > Hi,
-> > > 
-> > > The "QP allocation" series shows clearly how convoluted the create QP
-> > > flow and especially XRC_TGT flow, where it calls to kernel verb just
-> > > to pass some parameters as NULL to the user create QP verb.
-> > > 
-> > > This series is a small step to make clean XRC_TGT flow by providing
-> > > more clean user/kernel create QP verb separation.
-> > > 
-> > > It is based on the "QP allocation" series.
-> > > 
-> > > Thanks
-> > > 
-> > > Leon Romanovsky (7):
-> > >   RDMA/mlx5: Delete not-available udata check
-> > >   RDMA/core: Delete duplicated and unreachable code
-> > >   RDMA/core: Remove protection from wrong in-kernel API usage
-> > >   RDMA/core: Reorganize create QP low-level functions
-> > >   RDMA/core: Configure selinux QP during creation
-> > >   RDMA/core: Properly increment and decrement QP usecnts
-> > >   RDMA/core: Create clean QP creations interface for uverbs
-> > > 
-> > >  drivers/infiniband/core/core_priv.h           |  59 +----
-> > >  drivers/infiniband/core/uverbs_cmd.c          |  31 +--
-> > >  drivers/infiniband/core/uverbs_std_types_qp.c |  29 +--
-> > >  drivers/infiniband/core/verbs.c               | 208 +++++++++++-------
-> > >  drivers/infiniband/hw/mlx5/qp.c               |   3 -
-> > >  include/rdma/ib_verbs.h                       |  16 +-
-> > >  6 files changed, 157 insertions(+), 189 deletions(-)
-> > 
-> > Jason,
-> > 
-> > Can we progress with this series too?
-> 
-> It doesn't apply, can you resend it quickly?
+On Tue, Aug 3, 2021 at 1:42 PM Mason Zhang <Mason.Zhang@mediatek.com> wrote:
+>
+> This patch modified set_cs_timing callback:
+>   1 support spi_device set cs_timing in their driver;
+>   2 support set absolute time but no clk count, because;
+>     clk src will change in different platform;
+>   3 call this function in prepare_message but not in other API.
 
-Why?
+Perhaps it should be 3 patches?
 
-It is in my tree and it was on top of QP allocation patches.
+...
 
-Thanks
+> +static int mtk_spi_set_hw_cs_timing(struct spi_device *spi)
+> +{
+> +       struct mtk_spi *mdata = spi_master_get_devdata(spi->master);
+> +       struct spi_delay *cs_setup = &spi->cs_setup;
+> +       struct spi_delay *cs_hold = &spi->cs_hold;
+> +       struct spi_delay *cs_inactive = &spi->cs_inactive;
+> +       u16 setup, hold, inactive;
+> +       u32 reg_val;
+> +       int delay;
+> +
+> +       delay = spi_delay_to_ns(cs_setup, NULL);
+> +       if (delay < 0)
+> +               return delay;
+> +       setup = (delay / 1000) * DIV_ROUND_UP(mdata->spi_clk_hz, 1000000);
 
+1000 is NSEC_PER_USEC (here and below)?
 
-> 
-> Jason
+> +       delay = spi_delay_to_ns(cs_hold, NULL);
+> +       if (delay < 0)
+> +               return delay;
+> +       hold = (delay / 1000) * DIV_ROUND_UP(mdata->spi_clk_hz, 1000000);
+> +
+> +       delay = spi_delay_to_ns(cs_inactive, NULL);
+> +       if (delay < 0)
+> +               return delay;
+> +       inactive = (delay / 1000) * DIV_ROUND_UP(mdata->spi_clk_hz, 1000000);
+
+> +       setup    = setup ? setup : 1;
+> +       hold     = hold ? hold : 1;
+> +       inactive = inactive ? inactive : 1;
+
+All of these can be simplified by using ?: (short ternary) form.
+
+> +       reg_val = readl(mdata->base + SPI_CFG0_REG);
+> +       if (mdata->dev_comp->enhance_timing) {
+> +               reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
+> +               reg_val |= (((hold - 1) & 0xffff)
+> +                          << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
+> +               reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
+> +               reg_val |= (((setup - 1) & 0xffff)
+> +                          << SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
+> +       } else {
+> +               reg_val &= ~(0xff << SPI_CFG0_CS_HOLD_OFFSET);
+> +               reg_val |= (((hold - 1) & 0xff) << SPI_CFG0_CS_HOLD_OFFSET);
+> +               reg_val &= ~(0xff << SPI_CFG0_CS_SETUP_OFFSET);
+> +               reg_val |= (((setup - 1) & 0xff)
+> +                           << SPI_CFG0_CS_SETUP_OFFSET);
+> +       }
+> +       writel(reg_val, mdata->base + SPI_CFG0_REG);
+> +
+> +       reg_val = readl(mdata->base + SPI_CFG1_REG);
+> +       reg_val &= ~SPI_CFG1_CS_IDLE_MASK;
+> +       reg_val |= (((inactive - 1) & 0xff) << SPI_CFG1_CS_IDLE_OFFSET);
+> +       writel(reg_val, mdata->base + SPI_CFG1_REG);
+> +
+> +       return 0;
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
