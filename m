@@ -2,119 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922E83DF6EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AFE3DF6F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232609AbhHCVfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 17:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbhHCVfo (ORCPT
+        id S232702AbhHCVjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 17:39:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54063 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232384AbhHCVjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 17:35:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A32C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 14:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+CGFH2KuXULxjiGsSPbBmX3Z4HJgTBGPotNROlzN7oA=; b=H/SNooprUGPWyJ6gAapA29Ymxe
-        89vwATnDaX4E3F8Vuz2X6+8122oyuPdvLjI4obaTc63TbEeSeJPzzKeClCr6f3t1zyMyQv3xOoNDw
-        1f2kCM6I+8BbNUhvKxeWH2QIUGQJ4xXf7+ys5jTfFYen1x3JEdrc22iZN+viX+3h5h7hM6AHmFIFP
-        9nTwwr7TW6IGgCtSYsKR1DkSRPKYtItSG/dtQlQRl+c2+oLgfRW6SoOg07xtZWuLpc9nkpwoLAwkk
-        NmZJBOSMGMG1o74g7BygKsQGZsD7l+ZXe8hnirUibJUOds2ETuH9QMB7B3ybnLfWkuudIhCc5B4Zj
-        47bN07eQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mB23Q-00572u-ST; Tue, 03 Aug 2021 21:34:35 +0000
-Date:   Tue, 3 Aug 2021 22:34:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Subject: Re: [PATCH v3 2/7] x86/sgx: Add infrastructure to identify SGX EPC
- pages
-Message-ID: <YQm2ZM9+cWmBFJH7@casper.infradead.org>
-References: <20210719182009.1409895-1-tony.luck@intel.com>
- <20210728204653.1509010-1-tony.luck@intel.com>
- <20210728204653.1509010-3-tony.luck@intel.com>
- <141602a3-ef61-01f0-4a3c-69f8e7012fcd@intel.com>
- <20210730003809.hp3nmqmgyysa45nz@kernel.org>
- <YQQsz/tvrQpqAbpX@google.com>
- <b7b6aabd-1f10-1b21-eaeb-102ead2989cd@intel.com>
- <20210730184400.GA1521057@agluck-desk2.amr.corp.intel.com>
- <c75cf4b5-fe56-54cf-681f-6e5b6b83d0e2@intel.com>
- <259e12df49b9495cb6b326e52c9ffe51@intel.com>
+        Tue, 3 Aug 2021 17:39:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628026772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EM3F3OHS2L2GE9YJO2LmAbAEq5eEZ/246ein95lIcos=;
+        b=Jbvn6aBnx4MaTAoXGn+r9TlxfTQ12mkXa7m512U6/dsKOeju9fVlnBskHUEnmXG2ZnYPtq
+        KVsMLdGCfY4XMxLukkaokv1SlaXG/1WOBnu/0FnbW0026QJJamrqXnKvsiH6B+B72mEPhZ
+        3ZqmYiy8uOfrlfBEwJqDYzn2dPnEt/E=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-586-8QIFatvCNxSMjOj-_xV6uQ-1; Tue, 03 Aug 2021 17:38:25 -0400
+X-MC-Unique: 8QIFatvCNxSMjOj-_xV6uQ-1
+Received: by mail-wm1-f72.google.com with SMTP id o26-20020a05600c511ab0290252d0248251so166406wms.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 14:38:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EM3F3OHS2L2GE9YJO2LmAbAEq5eEZ/246ein95lIcos=;
+        b=glm9XNeHKAPnUg+XPX70BOswYWhNFMhqOnN0lOQXR9KLJnuIT7mcgxO+hacStjc0Jy
+         NNzGn6+oLRfpjItCrbLjL8WmjQr2K9d52yX74FQQjDE/PLGIFrv+wiQT6P0AU5mTLZO/
+         g7UIVqoTDUp1DhN7Ioe96VK0txnNTBnUeOnrA/3pErV95efvbW6YAzXahBWis4FrWUYD
+         810CtLz7EkQNhXa6Va5U3D9fmX6wMVL6mg1mr0srLApRUKXeFj+jS0EWfHvTi50E7OMg
+         mSInVNlByScXGiOCNacK/UUHoajzVrqtljoUfaAcGUkDKJ8gtTLMKW3ywH6F6iFkQEi0
+         D5lA==
+X-Gm-Message-State: AOAM530/ua8OAT9x1uc0hEG71a6Bx0YGyqaROvIJQ+fynV3PT7V4sGR/
+        ZEHDY/20DY0r2dG+BAc1gX8mmHXFO4AcKIjiEe3ZLCBxDLVhGi0yBUjU9imaKgun6ZRjlipEZa0
+        dXAs3sukrf9WI+7RP2GNTZu9p3rzCLrbNyjZ7vZpj
+X-Received: by 2002:adf:dd8b:: with SMTP id x11mr24885007wrl.357.1628026704024;
+        Tue, 03 Aug 2021 14:38:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZzs1zl2V3LTsadj+4bR4O6BnVBDX/GlTJnBJVWvnotmNbJsR03yyQqgOjRCTvd6UqzZnYP7e1CCrvtQ8KSCA=
+X-Received: by 2002:adf:dd8b:: with SMTP id x11mr24884995wrl.357.1628026703875;
+ Tue, 03 Aug 2021 14:38:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <259e12df49b9495cb6b326e52c9ffe51@intel.com>
+References: <20210803191818.993968-1-agruenba@redhat.com> <20210803191818.993968-4-agruenba@redhat.com>
+ <YQmtnuqDwBIBf4N+@zeniv-ca.linux.org.uk>
+In-Reply-To: <YQmtnuqDwBIBf4N+@zeniv-ca.linux.org.uk>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Tue, 3 Aug 2021 23:38:12 +0200
+Message-ID: <CAHc6FU7iAPOPO7gtDjpSAVyHwgJ7HQPEhDC_2T__DM8GPW5crQ@mail.gmail.com>
+Subject: Re: [PATCH v5 03/12] Turn fault_in_pages_{readable,writeable} into fault_in_{readable,writeable}
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, ocfs2-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 11:35:38PM +0000, Luck, Tony wrote:
-> >	xa_store_range(&epc_page_ranges,
-> >		       section->phys_addr,
-> >		       section->end_phys_addr, ...);
+On Tue, Aug 3, 2021 at 10:57 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Tue, Aug 03, 2021 at 09:18:09PM +0200, Andreas Gruenbacher wrote:
+> > Turn fault_in_pages_{readable,writeable} into versions that return the number
+> > of bytes faulted in instead of returning a non-zero value when any of the
+> > requested pages couldn't be faulted in.  This supports the existing users that
+> > require all pages to be faulted in, but also new users that are happy if any
+> > pages can be faulted in.
 > >
-> > ... you did it based on PFNs:
+> > Neither of these functions is entirely trivial and it doesn't seem useful to
+> > inline them, so move them to mm/gup.c.
 > >
-> >	xa_store_range(&epc_page_ranges,
-> >		       section->phys_addr     >> PAGE_SHIFT,
-> >		       section->end_phys_addr >> PAGE_SHIFT, ...);
-> >
-> > SGX sections are at *least* page-aligned, so this should be fine.
-> 
-> I found xa_dump() (hidden inside #ifdef XA_DEBUG)
-> 
-> Trying both with and without the >> PAGE_SHIFT made no difference
-> to the number of lines of console output that xa_dump() spits out.
-> 266 either way.
-> 
-> There are only two ranges on this system
-> 
-> [   11.937592] sgx: EPC section 0x8000c00000-0x807f7fffff
-> [   11.945811] sgx: EPC section 0x10000c00000-0x1007fffffff
-> 
-> So I'm a little bit sad that xarray appears to have broken them up
-> into a bunch of pieces.
+> > Rename the functions to fault_in_{readable,writeable} to make sure that code
+> > that uses them can be fixed instead of breaking silently.
+>
+> Sigh...  We'd already discussed that; it's bloody pointless.  Making short
+> fault-in return success - absolutely.  Reporting exact number of bytes is
+> not going to be of any use to callers.
 
-That's inherent in the (current) back end data structure, I'm afraid.
-As a radix tree, it can only look up based on the N bits available at
-each level of the tree, so if your entry is an aligned power-of-64,
-everything is nice and neat, and you're a single entry at one level
-of the tree.  If you're an arbitrary range, things get more complicated,
-and I have to do a little dance to redirect the lookup towards the
-canonical entry.
+I'm not actually convinced that you're right about this. Let's see
+what we'll end up with; we can always strip things down in the end.
 
-Liam and I are working on a new replacement data structure called the
-Maple Tree, but it's not yet ready to replace the radix tree back end.
-It looks like it would be perfect for your case; there would be five
-entries in it, stored in one 256-byte node:
+Thanks,
+Andreas
 
-	NULL
-0x8000bfffff
-	p1
-0x807f7fffff
-	NULL
-0x10000c00000
-	p2
-0x1007fffffff
-	NULL
-0xffff'ffff'ffff'ffff
-
-It would actually turn into a linear scan, because that's just the
-fastest way to find something in a list of five elements.  A third
-range would take us to a list of seven elements, which still fits
-in a single node.  Once we get to more than that, you'd have a
-two-level tree, which would work until you have more than ~20 ranges.
-
-We could do better for your case by storing 10x (start, end, p) in each
-leaf node, but we're (currently) optimising for VMAs which tend to be
-tightly packed, meaning that an implicit 'start' element is a better
-choice as it gives us 15x (end, p) pairs.
