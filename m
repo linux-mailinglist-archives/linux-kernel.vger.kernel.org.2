@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1195F3DF006
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6C63DF007
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236432AbhHCOR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:17:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56902 "EHLO
+        id S236834AbhHCOR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:17:59 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57036 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236488AbhHCORU (ORCPT
+        with ESMTP id S236549AbhHCORV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:17:20 -0400
+        Tue, 3 Aug 2021 10:17:21 -0400
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1628000229;
@@ -19,33 +19,28 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ukfQ/itW8n54fN+jgxjD4o8zeGy/ZlKFFUejHTJbsn0=;
-        b=mEthALokmZMcCteDvF09DIiAu1JPAcuV5+J7tg9dttOtDh6jw77AtOaBnqImkqPMyMrmUs
-        PeeaRKRb2NZRYn6TMcNApdfqF9RXxv/UxTy+zsdKu5RWbdlSJA3dYeeTF9W5kmaNe38dZy
-        mD8Ttlb8RiDXHtQBDaR5uZdSY+w36KM6EeCjFqOClAhkneOjil1w6RJU5xH0QV3q2WKeLL
-        EQC9PV887AcptAUgBl/HsfDghcTonF81ftEOXkwJRyUEVW1jk5HAhJuHEGdlG7SUlP34ut
-        7MWo/v6oP15qFMfHnQFoo7Vn1nxt91epL/88QsKgFYPwmniK/s1oiO2Mywz/1A==
+        bh=clbqKT1fPD2WJMpM6uc7v0qE6R46vwL2Klxs/fx6jpw=;
+        b=SHp+acffAFQJTevPnSm+5yKV+s+2pXMIke8PmGtImP6eDVosdG/thA5sw1SpFHZ5WV0RrG
+        uiLcFbBCc06KBblqI8fxVcN7DFDmdAT5ARYm6ACu7urd3hYGeWVHibV4ZobqcaBOYrkZa8
+        9vFWJh/IxFgYhcsfrWgrrogb79VpctI/nQIeUjDn4xCxE5gnA5+t4cCLrZ7wBQBCVYZYqY
+        E3mobc+LOJ1SgCVRq5I6K+4VxrUKTW0sKL0DkO6MX6jy9KOsfWihXj4MFd8Yjzht37fzS+
+        AT0yqPqeB7FLChIR4nwV5CKbAA5WsmdF+/qcm+R3KkH1rx+BcsJDJjVQljjgwA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1628000229;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ukfQ/itW8n54fN+jgxjD4o8zeGy/ZlKFFUejHTJbsn0=;
-        b=gwyhrxEueeU6LrsIcsijaBZI6vTZwfluKDVpE9Yej2ErvUyKKB73K9wtb5KO6+1icEms2K
-        qrFUV+aWfsW6Q5Bg==
+        bh=clbqKT1fPD2WJMpM6uc7v0qE6R46vwL2Klxs/fx6jpw=;
+        b=KasqPCA2Yv2pD4a/l519/xfeCJKQq/BCmwrsxivp1w2ab5SofeYkr2EkFl5wuJbdv6exjq
+        lxEBXSmWJNXBssAg==
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 14/38] coresight: Replace deprecated CPU-hotplug functions.
-Date:   Tue,  3 Aug 2021 16:15:57 +0200
-Message-Id: <20210803141621.780504-15-bigeasy@linutronix.de>
+        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org
+Subject: [PATCH 15/38] md/raid5: Replace deprecated CPU-hotplug functions.
+Date:   Tue,  3 Aug 2021 16:15:58 +0200
+Message-Id: <20210803141621.780504-16-bigeasy@linutronix.de>
 In-Reply-To: <20210803141621.780504-1-bigeasy@linutronix.de>
 References: <20210803141621.780504-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -61,38 +56,37 @@ cpus_read_lock() and cpus_read_unlock().
 Replace deprecated CPU-hotplug functions with the official version.
 The behavior remains unchanged.
 
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: coresight@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
+Cc: Song Liu <song@kernel.org>
+Cc: linux-raid@vger.kernel.org
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/hwtracing/coresight/coresight-cpu-debug.c | 4 ++--
+ drivers/md/raid5.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hw=
-tracing/coresight/coresight-cpu-debug.c
-index 9731d3a960735..00de46565bc40 100644
---- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
-+++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-@@ -588,11 +588,11 @@ static int debug_probe(struct amba_device *adev, cons=
-t struct amba_id *id)
-=20
- 	drvdata->base =3D base;
-=20
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index b8436e4930ed8..02ed53b20654c 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -2437,7 +2437,7 @@ static int resize_chunks(struct r5conf *conf, int new=
+_disks, int new_sectors)
+ 	    conf->scribble_sectors >=3D new_sectors)
+ 		return 0;
+ 	mddev_suspend(conf->mddev);
 -	get_online_cpus();
 +	cpus_read_lock();
- 	per_cpu(debug_drvdata, drvdata->cpu) =3D drvdata;
- 	ret =3D smp_call_function_single(drvdata->cpu, debug_init_arch_data,
- 				       drvdata, 1);
+=20
+ 	for_each_present_cpu(cpu) {
+ 		struct raid5_percpu *percpu;
+@@ -2449,7 +2449,7 @@ static int resize_chunks(struct r5conf *conf, int new=
+_disks, int new_sectors)
+ 			break;
+ 	}
+=20
 -	put_online_cpus();
 +	cpus_read_unlock();
-=20
- 	if (ret) {
- 		dev_err(dev, "CPU%d debug arch init failed\n", drvdata->cpu);
+ 	mddev_resume(conf->mddev);
+ 	if (!err) {
+ 		conf->scribble_disks =3D new_disks;
 --=20
 2.32.0
 
