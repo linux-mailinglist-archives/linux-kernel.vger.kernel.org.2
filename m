@@ -2,106 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F7A3DF582
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664C63DF57A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239641AbhHCTXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239608AbhHCTXG (ORCPT
+        id S239563AbhHCTWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:22:43 -0400
+Received: from mail-il1-f169.google.com ([209.85.166.169]:46630 "EHLO
+        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238837AbhHCTWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:23:06 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE81C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 12:22:55 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id f27so5710326vsp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 12:22:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bJgCHqhMD9Em6pMGw1fdW71SGx2aFTx82DIaIl2I9Ys=;
-        b=CCddak14A+GM99hSHiu7epE76CqnYUYPzTR8h1703l29SibcAt1oNz/tPnUdW1DmjF
-         pnT0myJvC3kJ+armd3cw4bpjqyeCx1kPWmtvBMag0p5kfaqMqfcI5aLe/JZyHvQMD/ua
-         bBXLn8scFNTU2y0g0w/rf0qbHQbFN+YN1LNyvJy11lMwBacFG7HJnSPUdDBCM+8QyuRJ
-         Qe3tHD0Dm+ExU/8lrN1RitNdJH4MsDtW5yB1F9Mc6Bqjlw7c3gI5wl6kpcTz5CpVLbQ8
-         4d6R1LTBWBMAfPQ9YP9mFbeSOAc8PxnCib1aRnb4uwiUOaSBPKqvWr2MiZFyQfwOTRkt
-         Y3dA==
+        Tue, 3 Aug 2021 15:22:41 -0400
+Received: by mail-il1-f169.google.com with SMTP id r5so20486163ilc.13;
+        Tue, 03 Aug 2021 12:22:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bJgCHqhMD9Em6pMGw1fdW71SGx2aFTx82DIaIl2I9Ys=;
-        b=jf6w0rVhfgkhnTadz3MtnsUdRzfnGT9HcKEmiZMmH56aRBewWucQKo1LvKNfQB1Emr
-         htwWHveQLPwnq9luCA313sFT7ex1+ozaZpDU9PTu3wwdWPPUImLYCCQr0lgfmRYDb0u+
-         vi/iO1YAYjG2EnSgygcGVROymDhSAXWHFP4lAyUEVrOA3j3qiOz1ignEdd9V2k7KWpAW
-         2BqjmLYKmvYT4/KEgnFEyvDFInzqbM2/GeQhyrc8A7lnEV8QYwqdlJ80c3+FHARNLoHu
-         8VLlel5wRe14DkEPa3Zm6gz4kfiWB2V+dnmM1t0PyGc6ucQPM/H8FgFCE7GVvb7J/Yuy
-         mKJQ==
-X-Gm-Message-State: AOAM532SG2Mk8+DcWOwH0Q1gqV/w7kJL1QG8uTGBKCkNOPvQl62psq2E
-        a9Uy4jwjD8U0C5skIsL9LdqsdcNZ9v83tqfRSMySaw==
-X-Google-Smtp-Source: ABdhPJx6WntRS1LwyAOVtG21buIXDaq5qKX689ipeUgnlSJIEfOSkf5j1LpCyFsVGCBiGtStKsd8QaYpng+Q1ojf1+8=
-X-Received: by 2002:a67:d393:: with SMTP id b19mr2327100vsj.49.1628018574319;
- Tue, 03 Aug 2021 12:22:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i62AD3moOWwFAL7Cs6cq2TGwdGazIQUY9cbfa6j5bi0=;
+        b=F6jpSe5n1qdDD2whrJaCyhzSJ0Lf/mTLhjy/r+KJXK5tJomhMGgs0cD6n2yUoG+0GX
+         salf5uigL6Rdjdmbta0MT6KlxYEPrqesJk8RCAs70aOJTH5IEm+EbfpCJocb4P64DsGU
+         x+dFhb+YeYDZR0qB4xliaH6tUI+wmF4VtzfEKreudnzy0NmJM0DdIcxeFqiwowocqydb
+         wk3RQo45WpnO00uW79B2QrOZPxk6NUqzM8yvH0Lacp31OFTG3m5RXPw6QT1OlKUZ80ja
+         k+/guNjSdvkJ/IWhQncQ8G0gxs2J8oX3c/GwR8agTb9BntTc/Mgo6b1MNupDxx7zB4MI
+         bFxw==
+X-Gm-Message-State: AOAM531SKwJu5uqXIr+vFbnJOy1Led1tVV9MvAsTUOkrXIzaEEbtVAPH
+        dzgNcuwpCk7gfU/Tq8TxgQ==
+X-Google-Smtp-Source: ABdhPJwgh9BcVJvgkrinoh/evNe99kSmeAxGbfAvV8Fpg6hFfbIYPTrPAVYCd4p/k1Pi06KLy82qQA==
+X-Received: by 2002:a05:6e02:1e06:: with SMTP id g6mr621165ila.41.1628018549853;
+        Tue, 03 Aug 2021 12:22:29 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id p1sm7769629ilh.47.2021.08.03.12.22.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 12:22:29 -0700 (PDT)
+Received: (nullmailer pid 3593480 invoked by uid 1000);
+        Tue, 03 Aug 2021 19:22:27 -0000
+Date:   Tue, 3 Aug 2021 13:22:27 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wsd_upstream@mediatek.com
+Subject: Re: [PATCH v13 1/2] dt-bindings: cpufreq: add bindings for MediaTek
+ cpufreq HW
+Message-ID: <YQmXc2kofIZacBRw@robh.at.kernel.org>
+References: <1627574891-26514-1-git-send-email-hector.yuan@mediatek.com>
+ <1627574891-26514-2-git-send-email-hector.yuan@mediatek.com>
 MIME-Version: 1.0
-References: <20210803091314.3051302-1-kyletso@google.com> <8dd797be-8912-62e4-a8da-00b8edbfb65b@roeck-us.net>
-In-Reply-To: <8dd797be-8912-62e4-a8da-00b8edbfb65b@roeck-us.net>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Tue, 3 Aug 2021 12:22:18 -0700
-Message-ID: <CAPTae5KO2cAgCWVOPB+D+bMtDRaH=LhoASKYdAM2_J31Q6ehGA@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Keep other events when receiving FRS
- and Sourcing_vbus events
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Kyle Tso <kyletso@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627574891-26514-2-git-send-email-hector.yuan@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 6:48 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 8/3/21 2:13 AM, Kyle Tso wrote:
-> > When receiving FRS and Sourcing_Vbus events from low-level drivers, keep
-> > other events which come a bit earlier so that they will not be ignored
-> > in the event handler.
-> >
-> > Fixes: 8dc4bd073663 ("usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)")
-> > Cc: Badhri Jagan Sridharan <badhri@google.com>
-> > Signed-off-by: Kyle Tso <kyletso@google.com>
->
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Badhri Jagan Sridharan <badhri@google.com>
->
-> > ---
-> >   drivers/usb/typec/tcpm/tcpm.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > index 5b22a1c931a9..b9bb63d749ec 100644
-> > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > @@ -5369,7 +5369,7 @@ EXPORT_SYMBOL_GPL(tcpm_pd_hard_reset);
-> >   void tcpm_sink_frs(struct tcpm_port *port)
-> >   {
-> >       spin_lock(&port->pd_event_lock);
-> > -     port->pd_events = TCPM_FRS_EVENT;
-> > +     port->pd_events |= TCPM_FRS_EVENT;
-> >       spin_unlock(&port->pd_event_lock);
-> >       kthread_queue_work(port->wq, &port->event_work);
-> >   }
-> > @@ -5378,7 +5378,7 @@ EXPORT_SYMBOL_GPL(tcpm_sink_frs);
-> >   void tcpm_sourcing_vbus(struct tcpm_port *port)
-> >   {
-> >       spin_lock(&port->pd_event_lock);
-> > -     port->pd_events = TCPM_SOURCING_VBUS;
-> > +     port->pd_events |= TCPM_SOURCING_VBUS;
-> >       spin_unlock(&port->pd_event_lock);
-> >       kthread_queue_work(port->wq, &port->event_work);
-> >   }
-> >
->
+On Fri, Jul 30, 2021 at 12:08:10AM +0800, Hector Yuan wrote:
+> From: "Hector.Yuan" <hector.yuan@mediatek.com>
+> 
+> Add devicetree bindings for MediaTek HW driver.
+> 
+> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> ---
+>  .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |   70 ++++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> new file mode 100644
+> index 0000000..6bb2c97
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> @@ -0,0 +1,70 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/cpufreq/cpufreq-mediatek-hw.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek's CPUFREQ Bindings
+> +
+> +maintainers:
+> +  - Hector Yuan <hector.yuan@mediatek.com>
+> +
+> +description:
+> +  CPUFREQ HW is a hardware engine used by MediaTek
+> +  SoCs to manage frequency in hardware. It is capable of controlling frequency
+> +  for multiple clusters.
+
+Strange choice of line breaks.
+
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,cpufreq-hw
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description: |
+
+Don't need '|' unless there's formatting to preserve.
+
+> +      Addresses and sizes for the memory of the
+> +      HW bases in each frequency domain.
+
+'Each entry corresponds to a register bank for each frequency 
+domain present.'
+
+> +
+> +  "#performance-domain-cells":
+> +    description:
+> +      Number of cells in a performance domain specifier. Typically 1 for nodes
+> +      providing multiple performance domains (e.g. performance controllers),
+> +      but can be any value as specified by device tree binding documentation
+> +      of particular provider.
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#performance-domain-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    cpus {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            cpu0: cpu@0 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                performance-domains = <&performance 0>;
+> +                reg = <0x000>;
+> +            };
+> +    };
+> +
+> +    /* ... */
+> +
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        performance: performance-controller@11bc00 {
+> +            compatible = "mediatek,cpufreq-hw";
+> +            reg = <0 0x0011bc10 0 0x120>, <0 0x0011bd30 0 0x120>;
+> +
+> +            #performance-domain-cells = <1>;
+> +        };
+> +    };
+> -- 
+> 1.7.9.5
+> 
+> 
