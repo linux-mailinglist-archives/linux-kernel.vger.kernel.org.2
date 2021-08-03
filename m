@@ -2,100 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1692C3DE90D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818153DE8E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234844AbhHCI6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234559AbhHCI6N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:58:13 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906BFC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 01:58:01 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id b1-20020a17090a8001b029017700de3903so2306502pjn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 01:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=We/acfPRwhLDIriskY+WhTs3fSv02ptiPnn+28cRj7A=;
-        b=AON2BLn5KWQ1f81r9+ETwq2QTbnE0R0SXzm344y6YYW1JiGmfnsVLU40ZtO11Uwnl7
-         vjbjWghraNrMVX5KyD8bGpk/0JQapsek6XIAT7PmsKylAMf8HFg8Unq2X/uww4YNrVx6
-         l3PpQaUZ+paSQfTbRNOWYgUhB+wc54aKmerIFNtZR5rQJf+03zXem/rWuK6MGvFKHOtO
-         SX17H1h8JeL2bHO2yUx6k7mmBz4xFVct3gvhmG2bSdo9HxJJf9OW4nYJEDTG98UJkUOU
-         a7FbJwVhTybxcU91hWRlU/M8uG82KH1sR/pB+5o87WZI+aXetU3ZbEQXQVBe0FVCuoAg
-         u2+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=We/acfPRwhLDIriskY+WhTs3fSv02ptiPnn+28cRj7A=;
-        b=XPNlwrJKRtWNV+jS63RVjGgwyK0crMzdf0yuwfzq+Lc0wf2b55vEb71huS/oOTqbIZ
-         fjfS2OW89hAzcujzKmB9XZXy+N/jSOYFJspvPLGZa99r2eIJcQEa2GydZ6yhkz2QlhVE
-         5X8YhM1Xuaf8OvjzIigI/qZKC/NY3D7gOgGTlrxNZ4LhLfuMjnXMyEn+L4VPr7ac0r1D
-         RRrNJiJc1OShm/46sLdu8W9ehppNNMWUfbaO9oF8MZdakXZAb7Jq0yw5OL/zp07rS+5w
-         jBPdhiVaw8JXTuv6m/iQL3tIw2xkfwqDQXBPBkekGzpWEVrZAZqpRZedPq2Ax3Rtop9m
-         GHAg==
-X-Gm-Message-State: AOAM531N6pU8ki8p4LgNoCNaMTRUfbVVJQPRVlWwygUYtxGOFCgbfBwd
-        QRPrN2TRcViWD9FUQbDaZV4Sl3XvReZ+HSi1W5t5cA==
-X-Google-Smtp-Source: ABdhPJy4+zhCiecjkitlZnXmMY+QF2JUQXqeTtvV0bDg2mPfFE4UEZt1+Sa27wjHyuHyYTkH3MypYSqH3s9CCd0MU7k=
-X-Received: by 2002:a63:f961:: with SMTP id q33mr590820pgk.82.1627981081075;
- Tue, 03 Aug 2021 01:58:01 -0700 (PDT)
+        id S234695AbhHCIuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:50:51 -0400
+Received: from mga05.intel.com ([192.55.52.43]:1280 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234582AbhHCIus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:50:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="299220310"
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="scan'208";a="299220310"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:50:37 -0700
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="scan'208";a="670072435"
+Received: from gao-cwp.sh.intel.com (HELO gao-cwp) ([10.239.159.133])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:50:34 -0700
+Date:   Tue, 3 Aug 2021 16:58:00 +0800
+From:   Chao Gao <chao.gao@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [clocksource]  8901ecc231:  stress-ng.lockbus.ops_per_sec -9.5%
+ regression
+Message-ID: <20210803085759.GA31621@gao-cwp>
+References: <20210521083322.GG25531@xsang-OptiPlex-9020>
+ <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
+ <20210526064922.GD5262@shbuild999.sh.intel.com>
+ <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
+ <20210802062008.GA24720@gao-cwp>
+ <20210802170257.GL4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <20210802233339.25285-1-broonie@kernel.org>
-In-Reply-To: <20210802233339.25285-1-broonie@kernel.org>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Tue, 3 Aug 2021 09:57:50 +0100
-Message-ID: <CAA=Fs0k95E3FN-9rwzSQcK4JmejHDKBbvk-yhRynJBTbqBNVxQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the staging tree with the net-next tree
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg KH <greg@kroah.com>, "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802170257.GL4397@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Aug 2021 at 00:33, Mark Brown <broonie@kernel.org> wrote:
+On Mon, Aug 02, 2021 at 10:02:57AM -0700, Paul E. McKenney wrote:
+>On Mon, Aug 02, 2021 at 02:20:09PM +0800, Chao Gao wrote:
+>> [snip]
+>> >commit 48ebcfbfd877f5d9cddcc03c91352a8ca7b190af
+>> >Author: Paul E. McKenney <paulmck@kernel.org>
+>> >Date:   Thu May 27 11:03:28 2021 -0700
+>> >
+>> >    clocksource: Forgive repeated long-latency watchdog clocksource reads
+>> >    
+>> >    Currently, the clocksource watchdog reacts to repeated long-latency
+>> >    clocksource reads by marking that clocksource unstable on the theory that
+>> >    these long-latency reads are a sign of a serious problem.  And this theory
+>> >    does in fact have real-world support in the form of firmware issues [1].
+>> >    
+>> >    However, it is also possible to trigger this using stress-ng on what
+>> >    the stress-ng man page terms "poorly designed hardware" [2].  And it
+>> >    is not necessarily a bad thing for the kernel to diagnose cases where
+>> >    high-stress workloads are being run on hardware that is not designed
+>> >    for this sort of use.
+>> >    
+>> >    Nevertheless, it is quite possible that real-world use will result in
+>> >    some situation requiring that high-stress workloads run on hardware
+>> >    not designed to accommodate them, and also requiring that the kernel
+>> >    refrain from marking clocksources unstable.
+>> >    
+>> >    Therefore, provide an out-of-tree patch that reacts to this situation
+>> >    by leaving the clocksource alone, but using the old 62.5-millisecond
+>> >    skew-detection threshold in response persistent long-latency reads.
+>> >    In addition, the offending clocksource is marked for re-initialization
+>> >    in this case, which both restarts that clocksource with a clean bill of
+>> >    health and avoids false-positive skew reports on later watchdog checks.
+>> 
+>> Hi Paul,
+>> 
+>> Sorry to dig out this old thread.
 >
-> Hi all,
->
-> Today's linux-next merge of the staging tree got conflicts in:
->
->   drivers/staging/r8188eu/include/rtw_android.h
->   drivers/staging/r8188eu/os_dep/rtw_android.c
->
-> between commit:
->
->   89939e890605 ("staging: rtlwifi: use siocdevprivate")
->
-> from the net-next tree and commit:
->
->   2b42bd58b321 ("staging: r8188eu: introduce new os_dep dir for RTL8188eu driver")
->
-> from the staging tree.
->
-> I fixed it up using the net-next version and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
+>Not a problem, especially given that this is still an experimental patch
+>(marked with "EXP" in -rcu).  So one remaining question is "what is this
+>patch really supposed to do, if anything?".
 
-Dear Mark,
+We are testing with TDX [1] and analyzing why kernel in a TD, or Trust Domain,
+sometimes spots a large TSC skew. We have inspected tsc hardware/ucode/tdx
+module to ensure no hardware issue, and also ported tsc_sync.c to a userspace
+tool such that this tool can help to constantly check if tsc is synchronized
+when some workload is running. Finally, we believe that the large TSC skew 
+spotted by TD kernel is a false positive.
 
-Thank you for your e-mail - not sure what is going on here as the
-r8188eu files are totally new - the net-next commit is touching files
-from a different directory (rtl8188eu) so perhaps it is getting
-confused and considering it a rename or similar? Regardless, all
-commits for r8188eu subdirectory should come from staging, as it is a
-different driver.
+Your patches (those are merged) have improved clocksource watchdog a lot to
+reduce false-positives. But due to the nature of TDX, switching between TD
+and host takes more time. Then, the time window between two reads from
+watchdog clocksource in cs_watchdog_read() increases, so does the
+probability of the two reads being interrupted by whatever on host. Then,
+sometimes, especially when there are heavy workloads in both host and TD,
+the maximum number of retries in cs_watchdog_read() is exceeded and tsc is
+marked unstable.
 
-Regards,
-Phil
+Then we apply this out-of-tree patch, it helps to further reduce
+false-positives. But TD kernel still observes TSC skew in some cases. After
+a close look into kernel logs, we find patterns in those cases: an expected
+re-initialization somehow doesn't happen. That's why we raise this issue
+and ask for your advice.
+
+[1]: https://software.intel.com/content/www/us/en/develop/articles/intel-trust-domain-extensions.html
+
+>And here the clocksource failed the coarse-grained check and marked
+>the clocksource as unstable.  Perhaps because the previous read
+>forced a coarse-grained check.  Except that this should have forced
+>a reinitialization.  Ah, it looks like I need to suppress setting
+>CLOCK_SOURCE_WATCHDOG if coarse-grained checks have been enabled.
+>That could cause false-positive failure for the next check, after all.
+>
+>And perhaps make cs_watchdog_read() modify its print if there is
+>a watchdog reset pending or if the current clocksource has the
+>CLOCK_SOURCE_WATCHDOG flag cleared.
+>
+>Perhaps as shown in the additional patch below, to be folded into the
+>original?
+
+Thanks. Will test with below patch applied.
+
+Thanks
+Chao
+>
+>							Thanx, Paul
+>
+>------------------------------------------------------------------------
+>
+>diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+>index cfa992250c388..62da2485fd574 100644
+>--- a/kernel/time/clocksource.c
+>+++ b/kernel/time/clocksource.c
+>@@ -230,8 +230,13 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+> 		}
+> 	}
+> 
+>-	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
+>-		smp_processor_id(), watchdog->name, wd_delay, nretries);
+>+	if ((cs->flags & CLOCK_SOURCE_WATCHDOG) && !atomic_read(&watchdog_reset_pending)) {
+>+		pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
+>+			smp_processor_id(), watchdog->name, wd_delay, nretries);
+>+	} else {
+>+		pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, awaiting re-initialization\n",
+>+			smp_processor_id(), watchdog->name, wd_delay, nretries);
+>+	}
+> 	return true;
+> }
+> 
+>@@ -379,7 +384,8 @@ static void clocksource_watchdog(struct timer_list *unused)
+> 		/* Clocksource initialized ? */
+> 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
+> 		    atomic_read(&watchdog_reset_pending)) {
+>-			cs->flags |= CLOCK_SOURCE_WATCHDOG;
+>+			if (!coarse)
+>+				cs->flags |= CLOCK_SOURCE_WATCHDOG;
+> 			cs->wd_last = wdnow;
+> 			cs->cs_last = csnow;
+> 			continue;
