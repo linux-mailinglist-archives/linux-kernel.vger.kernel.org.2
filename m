@@ -2,203 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA1C3DF3CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4913DF3D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237915AbhHCRTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:19:08 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3573 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237741AbhHCRTC (ORCPT
+        id S237952AbhHCRT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237836AbhHCRTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:19:02 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GfM652nYgz6DJsk;
-        Wed,  4 Aug 2021 01:18:37 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 3 Aug 2021 19:18:47 +0200
-Received: from localhost (10.210.169.87) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 3 Aug 2021
- 18:18:46 +0100
-Date:   Tue, 3 Aug 2021 18:18:18 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        <robh+dt@kernel.org>, "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
-        "Berghe, Darius" <Darius.Berghe@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] iio: accel: Add driver support for ADXL313
-Message-ID: <20210803181818.00001743@Huawei.com>
-In-Reply-To: <CACKVXZD9nnAYb1bHNp32dzoGE3xnBPd6NR=9PNXkPVBSaPpaKw@mail.gmail.com>
-References: <cover.1627709571.git.lucas.p.stankus@gmail.com>
-        <8f13da2603ebede1c8c2d89f4ec2d9900a331250.1627709571.git.lucas.p.stankus@gmail.com>
-        <20210801191210.19044c90@jic23-huawei>
-        <CACKVXZD9nnAYb1bHNp32dzoGE3xnBPd6NR=9PNXkPVBSaPpaKw@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Tue, 3 Aug 2021 13:19:24 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B106C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 10:19:12 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id a93so16814303ybi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 10:19:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ease6Bm6+dYO/uI5+kt9cx0YuwGkjF//n2DwGz99/N8=;
+        b=TKDsSCcLpNBZT1j0QmGrbeKuBdTl/zfuIZXU6+MkSTkD7Ahdq5p9NgaW7hh9Cp99l2
+         MS2VP4Gj46jIc3wOwMJUGT02Otc+5TQui50zqeXhcAvOSZNoxd7kOQCZqb+g9GnTto5W
+         j2wylHxy7k5LkGkku8iHp/tUK/0w3ASWtR/IkF/XruCEOrGJPymWtUy/GZzHRmNNN6LY
+         X8WVAs4CJywuFTQ70SvMhrLia7ri0lqA+vMNT6Oc2OMVRUpU6up9F+lt4AY9aakKalvN
+         PCOdJXGAhDX/O+/egvR8DDnb6AjysMtWl6SK73TybIfBrJ/kh+eyxdQvP1BN1j9ax8Rk
+         5emw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ease6Bm6+dYO/uI5+kt9cx0YuwGkjF//n2DwGz99/N8=;
+        b=b+wPZyuImt0GIlLqh1eUdbGgcmJKNrMcFPS1Yx/GJEqH2qpnfa6TAPCIEUIRll62DS
+         daJF21m1DtACfS3QoZt1hOlVSNJ7LHtNVseGshjw3ZU1EV/VmGBeAoKReYT7H5GK4xgl
+         2FgrYNQ+jqz8HqwNuwLthzJ/fn1dN2AXk99uEgkvAPXovcKnPd+4Q7lgxev6BdrbxhhW
+         1jRwXYudlc9473GYpWpBFgsxpTLRG4o7y9gd2kp+n7gJWBjsVdE12Z76cFEVsqrAHcRu
+         xO+Wm9IhDRLjQNxpsoDDobEFfrwBuAlbX/hgGwV55lp5vB8N+2/bQQNftgDGfZZ1w31k
+         43zQ==
+X-Gm-Message-State: AOAM533lBYs9bO+NBc2NDt2HVTNAKDBeZzhamX1MoVJYLUPb6qjo3QtV
+        lkvDUjBQfNqBBDYvKtKeQdGhx1eCYEzUxdDlsBtBuw==
+X-Google-Smtp-Source: ABdhPJxJ9Go27O6MYURKg3BsXlQyfpQgLOUbfQkaxflJgO/w1vwhSpIZOsObpoFRTdH7vsAUwJroozpS36h0i4WrMrk=
+X-Received: by 2002:a25:49c2:: with SMTP id w185mr26981788yba.294.1628011151536;
+ Tue, 03 Aug 2021 10:19:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.169.87]
-X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210802221431.2251210-1-surenb@google.com> <95eff329-a7b1-dc2d-026c-fd61e476c846@redhat.com>
+In-Reply-To: <95eff329-a7b1-dc2d-026c-fd61e476c846@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 3 Aug 2021 10:19:00 -0700
+Message-ID: <CAJuCfpFU++hzqA=ouy+G39agC0dymntadOJfLDzKC25fwM6z3w@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] mm: introduce process_mrelease system call
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 14:15:53 -0300
-Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
+On Tue, Aug 3, 2021 at 12:48 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> [...]
+>
+> > Previously I proposed a number of alternatives to accomplish this:
+> > - https://lore.kernel.org/patchwork/patch/1060407 extending
+>
+> I have no idea how stable these links are. Referencing via message id is
+> the common practice. For this link, we'd use
+>
+> https://lkml.kernel.org/r/20190411014353.113252-3-surenb@google.com/
+>
+> instead.
 
-> On Sun, Aug 1, 2021 at 3:09 PM Jonathan Cameron <jic23@kernel.org> wrote:
+Ack.
+
+>
+> > pidfd_send_signal to allow memory reaping using oom_reaper thread;
+> > - https://lore.kernel.org/patchwork/patch/1338196 extending
+> > pidfd_send_signal to reap memory of the target process synchronously from
+> > the context of the caller;
+> > - https://lore.kernel.org/patchwork/patch/1344419/ to add MADV_DONTNEED
+> > support for process_madvise implementing synchronous memory reaping.
 > >
-> > On Sat, 31 Jul 2021 17:36:48 -0300
-> > Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
-> >  
-> > > ADXL313 is a small, thin, low power, 3-axis accelerometer with high
-> > > resolution measurement up to +/-4g. It includes an integrated 32-level
-> > > FIFO and has activity and inactivity sensing capabilities.
-> > >
-> > > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
-> > >
-> > > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>  
+> > The end of the last discussion culminated with suggestion to introduce a
+> > dedicated system call (https://lore.kernel.org/patchwork/patch/1344418/#1553875)
+> > The reasoning was that the new variant of process_madvise
+> >    a) does not work on an address range
+> >    b) is destructive
+> >    c) doesn't share much code at all with the rest of process_madvise
+> >  From the userspace point of view it was awkward and inconvenient to provide
+> > memory range for this operation that operates on the entire address space.
+> > Using special flags or address values to specify the entire address space
+> > was too hacky.
+>
+> I'd condense this description and only reference previous discussions to
+> put a main focus on what this patch actually does. Like
+>
+> "
+> After previous discussions [1, 2, 3] the decision was made to introduce
+> a dedicated system call to cover this use case.
+>
+> ...
+>
+> [1] https://lkml.kernel.org/r/20190411014353.113252-3-surenb@google.com/
+> "
+>
+
+Ack.
+
 > >
-> > Very nice.  A few really minor things inline.
+> > The API is as follows,
 > >
-> > Jonathan
-> >  
-> 
-> Thanks for the feedback!
-> 
-> I'll change the minor things for the v2.
-> 
-
-...
-
-> > > +
-> > > +static int adxl313_setup(struct device *dev, struct adxl313_data *data)
-> > > +{
-> > > +     unsigned int regval;
-> > > +     int ret;
-> > > +
-> > > +     /* Ensures the device is in a consistent state after start up */
-> > > +     ret = regmap_write(data->regmap, ADXL313_REG_SOFT_RESET,
-> > > +                        ADXL313_SOFT_RESET);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     if (device_property_read_bool(dev, "spi-3wire")) {  
+> >            int process_mrelease(int pidfd, unsigned int flags);
 > >
-> > Rather odd to see spi specific stuff in here.  Perhaps provide a callback to
-> > common probe if it needs to be done at this point in bringing the device up.
-> > However, I think you can just do this before calling the common_probe()
-> >  
-> 
-> I'm doing this here because of the device reset, so whatever I write
-> to the register before it would be overwritten in setup. The datasheet
-> doesn't say that resetting the device is strictly necessary, but I
-> figured it would be better to do so to force consistency.
-> 
-> If I drop the reset, I'd be able to do it before the core probe call
-> and, from what I'm seeing here, the startup seems to be consistent
-> without it. Do you think it's best to drop the device reset?
-Ah. I'd missed that.  Fair enough.
-
-In this case, I'd pass in a function pointer from the spi module. If the
-function pointer is provided, call it to spi specific setup, if NULL
-don't call it (so we don't need to provide an empty stub in the i2c side of things).
-
-> 
-> > > +             ret = regmap_write(data->regmap, ADXL313_REG_DATA_FORMAT,
-> > > +                                ADXL313_SPI_3WIRE);
-> > > +             if (ret)
-> > > +                     return ret;
-> > > +     }
-> > > +
-> > > +     ret = regmap_read(data->regmap, ADXL313_REG_DEVID0, &regval);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     if (regval != ADXL313_DEVID0) {
-> > > +             dev_err(dev, "Invalid manufacturer ID: 0x%02x\n", regval);
-> > > +             return -ENODEV;
-> > > +     }
-> > > +
-> > > +     ret = regmap_read(data->regmap, ADXL313_REG_DEVID1, &regval);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-
-...
-
-> > > diff --git a/drivers/iio/accel/adxl313_spi.c b/drivers/iio/accel/adxl313_spi.c
-> > > new file mode 100644
-> > > index 000000000000..7c58c9ff8985
-> > > --- /dev/null
-> > > +++ b/drivers/iio/accel/adxl313_spi.c
-> > > @@ -0,0 +1,74 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > +/*
-> > > + * ADXL313 3-Axis Digital Accelerometer
-> > > + *
-> > > + * Copyright (c) 2021 Lucas Stankus <lucas.p.stankus@gmail.com>
-> > > + *
-> > > + * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
-> > > + */
-> > > +
-> > > +#include <linux/module.h>
-> > > +#include <linux/regmap.h>
-> > > +#include <linux/spi/spi.h>
-> > > +
-> > > +#include "adxl313.h"
-> > > +
-> > > +static const struct regmap_config adxl313_spi_regmap_config = {
-> > > +     .reg_bits       = 8,
-> > > +     .val_bits       = 8,
-> > > +     .rd_table       = &adxl313_readable_regs_table,
-> > > +     .wr_table       = &adxl313_writable_regs_table,
-> > > +     .max_register   = 0x39,
-> > > +      /* Setting bits 7 and 6 enables multiple-byte read */
-> > > +     .read_flag_mask = BIT(7) | BIT(6)
-> > > +};
-> > > +
-> > > +static int adxl313_spi_probe(struct spi_device *spi)
-> > > +{
-> > > +     const struct spi_device_id *id = spi_get_device_id(spi);
-> > > +     struct regmap *regmap;
-> > > +     int ret;
-> > > +
-> > > +     regmap = devm_regmap_init_spi(spi, &adxl313_spi_regmap_config);
-> > > +     if (IS_ERR(regmap)) {
-> > > +             dev_err(&spi->dev, "Error initializing spi regmap: %ld\n",
-> > > +                     PTR_ERR(regmap));
-> > > +             return PTR_ERR(regmap);
-> > > +     }
-> > > +
-> > > +     ret = adxl313_core_probe(&spi->dev, regmap, id->name);
-> > > +     if (ret < 0)
-> > > +             return ret;
-> > > +
-> > > +     return regmap_update_bits(regmap, ADXL313_REG_POWER_CTL,
-> > > +                               ADXL313_I2C_DISABLE, ADXL313_I2C_DISABLE);  
+> >          DESCRIPTION
+> >            The process_mrelease() system call is used to free the memory of
+> >            a process which was sent a SIGKILL signal.
 > >
-> > Why is this only done after the rest of probe?  Needs a comment perhaps.
-> > Normally I'd expect the core probe and hence exposure of the device
-> > to userspace etc to be the last thing done.
-> >  
-> 
-> I'm doing this here for the same reason as for the spi-3wire setup. So
-> if I drop the reset in the probe, the bits could be updated before it.
+> >            The pidfd selects the process referred to by the PID file
+> >            descriptor.
+> >            (See pidofd_open(2) for further information)
+> >
+> >            The flags argument is reserved for future use; currently, this
+> >            argument must be specified as 0.
+> >
+> >          RETURN VALUE
+> >            On success, process_mrelease() returns 0. On error, -1 is
+> >            returned and errno is set to indicate the error.
+> >
+> >          ERRORS
+> >            EBADF  pidfd is not a valid PID file descriptor.
+> >
+> >            EAGAIN Failed to release part of the address space.
+> >
+> >            EINTR  The call was interrupted by a signal; see signal(7).
+> >
+> >            EINVAL flags is not 0.
+> >
+> >            EINVAL The task does not have a pending SIGKILL or its memory is
+> >                   shared with another process with no pending SIGKILL.
+>
+> Hm, I do wonder if it would make sense to have a mode (e.g., via a flag)
+> to reap all but shared memory from a dying process. Future work.
 
-Put that in the function that you pass as a pointer to core_probe() - then you
-can do them both at the same time and at an appropriate point.
+Agree. Let's keep it simple for now and will expand when the need arises.
 
+>
+> >
+> >            ENOSYS This system call is not supported by kernels built with no
+> >                   MMU support (CONFIG_MMU=n).
+>
+> Maybe "This system call is not supported, for example, without MMU
+> support built into Linux."
 
-Jonathan
+Ack.
+
+>
+> >
+> >            ESRCH  The target process does not exist (i.e., it has terminated
+> >                   and been waited on).
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> > changes in v4:
+> > - Replaced mmap_read_lock() with mmap_read_lock_killable(), per Michal Hocko
+> > - Added EINTR error in the manual pages documentation
+> >
+> >   mm/oom_kill.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 58 insertions(+)
+> >
+> > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> > index c729a4c4a1ac..86727794b0a8 100644
+> > --- a/mm/oom_kill.c
+> > +++ b/mm/oom_kill.c
+> > @@ -28,6 +28,7 @@
+> >   #include <linux/sched/task.h>
+> >   #include <linux/sched/debug.h>
+> >   #include <linux/swap.h>
+> > +#include <linux/syscalls.h>
+> >   #include <linux/timex.h>
+> >   #include <linux/jiffies.h>
+> >   #include <linux/cpuset.h>
+> > @@ -1141,3 +1142,60 @@ void pagefault_out_of_memory(void)
+> >       out_of_memory(&oc);
+> >       mutex_unlock(&oom_lock);
+> >   }
+> > +
+> > +SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> > +{
+> > +#ifdef CONFIG_MMU
+> > +     struct mm_struct *mm = NULL;
+> > +     struct task_struct *task;
+> > +     unsigned int f_flags;
+> > +     struct pid *pid;
+> > +     long ret = 0;
+> > +
+> > +     if (flags != 0)
+>
+> if (flags)
+
+Ack.
+
+>
+> > +             return -EINVAL;
+> > +
+> > +     pid = pidfd_get_pid(pidfd, &f_flags);
+> > +     if (IS_ERR(pid))
+> > +             return PTR_ERR(pid);
+> > +
+> > +     task = get_pid_task(pid, PIDTYPE_PID);
+> > +     if (!task) {
+> > +             ret = -ESRCH;
+> > +             goto put_pid;
+> > +     }
+> > +
+> > +     /*
+> > +      * If the task is dying and in the process of releasing its memory
+> > +      * then get its mm.
+> > +      */
+> > +     task_lock(task);
+> > +     if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
+> > +             mm = task->mm;
+> > +             mmget(mm);
+> > +     }
+> > +     task_unlock(task);
+> > +     if (!mm) {
+> > +             ret = -EINVAL;
+> > +             goto put_task;
+> > +     }
+> > +
+> > +     if (mmap_read_lock_killable(mm)) {
+> > +             ret = -EINTR;
+> > +             goto put_mm;
+> > +     }
+> > +     if (!__oom_reap_task_mm(mm))
+> > +             ret = -EAGAIN;
+>
+> I'm not an expert on __oom_reap_task_mm(), but the whole approach makes
+> sense to. So feel free to add my
+>
+> Acked-by: David Hildenbrand <david@redhat.com>
+
+Thanks! I see Michal also asked for some documentation changes and a
+simple code change, so I won't roll your Acked-by automatically into
+the next version but would appreciate it on the final version :)
+Will post the next rev later today or tomorrow morning.
+Thanks for the review!
+
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
