@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34653DF091
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9863DF093
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236619AbhHCOoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236502AbhHCOoF (ORCPT
+        id S234360AbhHCOpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:45:16 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:13272 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236234AbhHCOpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:44:05 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E8BC0617A3;
-        Tue,  3 Aug 2021 07:43:48 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id gs8so36677403ejc.13;
-        Tue, 03 Aug 2021 07:43:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=21UEaA5NxYYRGJ/hxwmq634fV1jMJGF++85jofJtE4A=;
-        b=Q4oH2X4OQYM73if3DK/fZ+5YpoM9OTrVM+kYPYrIMzB92rcHm/00kpquUGrft3M6Aq
-         bhog5UVno6hGuaED69POea7w3kKwejBNU7W4OFPcWxF3DYJOVA9wCODq6ljR8oB/Xqlq
-         CixV30eSX2w8G1JCJkff317rU62YhLloYVuz0tIErdz4OEWfrs8GY4N9I0/zXb6OpHD2
-         5LmCa/uXKuUFxtym0ZiM8YUE+TRaKAtwLRnmIlBQ/ytnN8IANA/MDIO9tr02tEOX2kMC
-         AXih8MH8W/HtLxJH9iEafug5VMjfm6+tx7JJaWwJhcz+xFlrAjuPKPqv5Axc1VWQk8qi
-         KJcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=21UEaA5NxYYRGJ/hxwmq634fV1jMJGF++85jofJtE4A=;
-        b=iD04e0mSxLnCjQAGT3X3bBk8p3gJN9Otah6JntAoSzDyu1thIEgLTzEQZ9oarCqhOB
-         pht54ETuoJyKlD/lEueYIa8caue2jU4Z+RKQ/5/H1CgkqBHrVAWF3qZlC7C2tm05RfAt
-         56fl+0Gj2I6oPtHxgq5GKGq2bRE9yCbB9KdoHatffdjwAoMDhqSYjh7nprTq8nXujWct
-         0BiPWdnqNALYcDFmfH+w/NKhGTFzHhS6EGD6QqMeKkZMg/bAplZHcqUY8VgKu4iRA4br
-         BYCWk/FVSmTy8W5kF1RtIoHVWvLdI09KGf9LpTVKNoL8rQVwWgO13sy+zbrS+Vd2QHEE
-         xjgg==
-X-Gm-Message-State: AOAM530kjmBZQt1rDYPr0eV1fAQVoAoEwm1MKtixq6kYPeLHNAZtnGaJ
-        bh8y84F+J6Wbd4h6qdkTIU0=
-X-Google-Smtp-Source: ABdhPJxBxb7VU3wDfc3Bj+zyEzT3+H5FmMb9p5alU9qeXPwGhB2s1WjRkH53fmF9Kynm+p4O7FWrrg==
-X-Received: by 2002:a17:906:2dc5:: with SMTP id h5mr10464333eji.515.1628001827204;
-        Tue, 03 Aug 2021 07:43:47 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id dg20sm8120790edb.13.2021.08.03.07.43.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 07:43:46 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 17:43:45 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Woudstra <ericwouds@gmail.com>,
-        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: Re: [PATCH net-next 3/4] net: dsa: mt7530: set STP state on filter
- ID 1
-Message-ID: <20210803144345.jmucndmrflnqlfo3@skbuf>
-References: <20210803124022.2912298-1-dqfext@gmail.com>
- <20210803124022.2912298-4-dqfext@gmail.com>
+        Tue, 3 Aug 2021 10:45:12 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GfHbD2QVmz81hq;
+        Tue,  3 Aug 2021 22:40:08 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 22:44:58 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 22:44:56 +0800
+Subject: Re: [PATCH] slub: fix unreclaimable slab stat for bulk free
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>
+CC:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "David Rientjes" <rientjes@google.com>,
+        Michal Hocko <mhocko@suse.com>, "Roman Gushchin" <guro@fb.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Linux MM" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210728155354.3440560-1-shakeelb@google.com>
+ <8c14efe2-69dc-6eab-3cd5-c042576770e7@huawei.com>
+ <CALvZod6usxk99KFhQVXGxBadsYpUyQ3QuwfSDa_sbqSLjBEgnA@mail.gmail.com>
+ <35a0b75a-f348-d21c-4ff4-fadba0c4db02@huawei.com>
+ <43cf4e71-4dd4-dc37-a70f-553fe5cba126@suse.cz>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <c5d57083-3666-ef75-4269-fbeb5809ddfd@huawei.com>
+Date:   Tue, 3 Aug 2021 22:44:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803124022.2912298-4-dqfext@gmail.com>
+In-Reply-To: <43cf4e71-4dd4-dc37-a70f-553fe5cba126@suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 08:40:21PM +0800, DENG Qingfang wrote:
-> As filter ID 1 is the only one used for bridges, set STP state on it.
-> 
-> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> ---
-> RFC -> v1: only set FID 1's state
-> 
->  drivers/net/dsa/mt7530.c | 3 ++-
->  drivers/net/dsa/mt7530.h | 4 ++--
->  2 files changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-> index 12f449a54833..8d84d7ddad38 100644
-> --- a/drivers/net/dsa/mt7530.c
-> +++ b/drivers/net/dsa/mt7530.c
-> @@ -1147,7 +1147,8 @@ mt7530_stp_state_set(struct dsa_switch *ds, int port, u8 state)
->  		break;
->  	}
->  
-> -	mt7530_rmw(priv, MT7530_SSP_P(port), FID_PST_MASK, stp_state);
-> +	mt7530_rmw(priv, MT7530_SSP_P(port), FID1_PST_MASK,
-> +		   FID1_PST(stp_state));
->  }
->  
->  static int
-> diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-> index a308886fdebc..53b7bb1f5368 100644
-> --- a/drivers/net/dsa/mt7530.h
-> +++ b/drivers/net/dsa/mt7530.h
-> @@ -181,8 +181,8 @@ enum mt7530_vlan_egress_attr {
->  
->  /* Register for port STP state control */
->  #define MT7530_SSP_P(x)			(0x2000 + ((x) * 0x100))
-> -#define  FID_PST(x)			((x) & 0x3)
-> -#define  FID_PST_MASK			FID_PST(0x3)
-> +#define  FID1_PST(x)			(((x) & 0x3) << 2)
-> +#define  FID1_PST_MASK			FID1_PST(0x3)
 
-Not a reason to resend, but I still would have expected a macro:
+On 2021/8/3 22:29, Vlastimil Babka wrote:
+> On 8/3/21 4:24 PM, Kefeng Wang wrote:
+>> On 2021/7/29 22:03, Shakeel Butt wrote:
+>>> On Wed, Jul 28, 2021 at 11:52 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>>>> On 2021/7/28 23:53, Shakeel Butt wrote:
+>>> I don't have a strong opinion on this. Please send a patch with
+>>> reasoning if you want WARN_ON_ONCE here.
+>> Ok, we met a BUG_ON(!PageCompound(page)) in kfree() twice in lts4.4, we are
+>> still debugging it.
+>>
+>> It's different to analyses due to no vmcore, and can't be reproduced.
+>>
+>> WARN_ON() here could help us to notice the issue.
+>>
+>> Also is there any experience or known fix/way to debug this kinds of issue?
+>> memory corruption?
+> This would typically be a use-after-free/double-free - a problem of the slab
+> user, not slab itself.
 
-#define FID_PST(fid, state)		((state) & 0x3) << ((fid) * 2)
-#define FID_PST_MASK(fid)		FID_PST(fid, 0x3)
+We enable KASAN to find whether or not there are some UAF/double free, 
+no related
 
-#define FID_STANDALONE			0
-#define FID_BRIDGED			1
+log for now.
 
-and called with:
+>
+>> Any suggestion will be appreciated, thanks.
+> debug_pagealloc could help to catch a use-after-free earlier
 
-	mt7530_rmw(priv, MT7530_SSP_P(port), FID_PST_MASK(FID_BRIDGED),
-		   FID_PST(FID_BRIDGED, stp_state));
+OK, will try this, thanks.
 
->  
->  enum mt7530_stp_state {
->  	MT7530_STP_DISABLED = 0,
-> -- 
-> 2.25.1
-> 
-
-Anyhow.
-
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+>
+>>> .
+>>>
+> .
+>
