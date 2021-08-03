@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5020A3DEAF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FDA3DEB00
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235299AbhHCKcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:32:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57979 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235229AbhHCKcn (ORCPT
+        id S235507AbhHCKfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235458AbhHCKef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:32:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627986748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cbPTa2hEWdD7Y8ezaxCFaxMcbtkwVc60EGzp199OkUI=;
-        b=IgwI4MQ+9twVZqvHjZPiEqeXmTNhftHHunW/pNyynSa61Gsm7BlYXiZbDU+FQYpuVEmOJ8
-        KSJe+yuvi1hfJwOYNAX3l45e1q30sAoW7BnhXZIDKRJC+UgbVkHgStTiOpQZK0fvjyDVuA
-        5hpn+PE6GjyFlGTMP0g3M6t5xidBX/I=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-472-n1Xrql6DOGS5C6KKCGc9CA-1; Tue, 03 Aug 2021 06:32:27 -0400
-X-MC-Unique: n1Xrql6DOGS5C6KKCGc9CA-1
-Received: by mail-wm1-f72.google.com with SMTP id d72-20020a1c1d4b0000b029025164ff3ebfso767793wmd.7
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 03:32:26 -0700 (PDT)
+        Tue, 3 Aug 2021 06:34:35 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AC7C06179A;
+        Tue,  3 Aug 2021 03:34:14 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id t3so21046581plg.9;
+        Tue, 03 Aug 2021 03:34:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gUlOdJ9XQT6Y1TLMVY7TvS0f9TdTpUJkbcu/euswTpI=;
+        b=OVGAJCGQgKOfrQtMQ+7oLZn99a1NlqUPMTDYPgr7T9jc92sQG/9KI8DH0WfHC+/HiE
+         saufWO4B0WzYKSYqksSWu5YnTe0LBW0kDJG9cc9cXJ55JMOlW9mgc4HxYDnFNTlQbkNi
+         dBCm1uqNi8kfufYnmAyNtGBKzB9qBGA+SXDKn2X/Ls7CFl3F4qAgWj1dHnIg9DuDIKu1
+         XEiufcn580Usz96z7gH9cW2vzLamg9tdNJBtiaW53Y6zaR9eHIu57raRdPDmSznS52Z+
+         NMe474lh61Fc5mMDSo8gM3x4Ba348w+2PlOZdMX8DqlG0DGtqigoyUobasMWjUkAuD/D
+         qWAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cbPTa2hEWdD7Y8ezaxCFaxMcbtkwVc60EGzp199OkUI=;
-        b=ApYph/4cXc2peO9lEfOUgLHkY0NalGsaIlZiOduv8gu9MpwJERWE5bhyS1j734StsM
-         9571Y/GriPr60zsMGXqYbQyEPkdz7ZhcvFqfGwqk5G/HaBg9CQAjlNi2HMhBr9mS5dWI
-         FMgO4ppW3HJBgT81REmgCjnY0UmrADQiEQ9YIIqRLCYB/vNHE/I5o2efyxvLPh8KIKpL
-         B7hCWK77upC2YZFSpxLK9AiVVD31hPfGLoB9NLBNKESV5LeNd0oNEn0we28sI6F27My5
-         lNz4zfbbwaHBy3m9I3ybfUEaItIHE3ZVMMSrIFZ0luRWrZqAJOjrWmU6N6kG+1f9QPRy
-         oAeQ==
-X-Gm-Message-State: AOAM532D+dhr8OHxdaZWSD6MVOaQl0Hzsgi8bi/zR+8lkzOYfmP2jDs3
-        K7pl4vxxMRHDGB3iIVRFbwWMjqSwRbg5xcOgxaiOido3TGOEQHPMTHyoR7MBZTkwbEYHkYOUEhi
-        bJv7TJ42L6nWdWG1Vq9WCZmY=
-X-Received: by 2002:a1c:4487:: with SMTP id r129mr3499611wma.62.1627986745758;
-        Tue, 03 Aug 2021 03:32:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwiuH6Yxazd1Xa3OEWf5D3y4JCoKEmscKsCBIsfPdBqyBkrM8+JwgVbCHp81+RoANDH5/xcIQ==
-X-Received: by 2002:a1c:4487:: with SMTP id r129mr3499602wma.62.1627986745629;
-        Tue, 03 Aug 2021 03:32:25 -0700 (PDT)
-Received: from localhost ([79.67.181.135])
-        by smtp.gmail.com with ESMTPSA id d15sm7442140wri.96.2021.08.03.03.32.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 03:32:25 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 11:32:22 +0100
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        penguin-kernel@i-love.sakura.ne.jp, rientjes@google.com,
-        llong@redhat.com, neelx@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm/oom_kill: show oom eligibility when displaying the
- current memory state of all tasks
-Message-ID: <20210803103222.wethf6pj3rh2b2uq@ava.usersys.com>
-X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
-X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
-References: <20210730162002.279678-1-atomlin@redhat.com>
- <YQeR8FTlzrojIbSo@dhcp22.suse.cz>
- <20210802151250.lqn5fu5pioygsry6@ava.usersys.com>
- <YQjq1mXDXcS1CMMO@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gUlOdJ9XQT6Y1TLMVY7TvS0f9TdTpUJkbcu/euswTpI=;
+        b=HOvztEg2mw+FYBdNU/Rb2N3bSx5Icvr9Gk1iFiMtbok4SWNWYRuGSOnDa1solXHOVC
+         YMLQxNqDuOLdGr3TaOnND01pqFZqYsdXqjuoTPNao3FZh0Ai7WBfSaBaiNq9jCk6zz41
+         e9KqLnMQ8D8EsZl/tBLFhXyoXjb+JWWv27xcsEd6xWFpsZOMfttzfHfwgUG/XSrkAjgL
+         3BrL+0h35v0PoMKFptIbEQkUgcYbtd3dQVYVl2lmUc+gtfklA63WVPzZbcDs9M874lWD
+         +LSS++Ke7g/ZvRYb3e0raUKtMu2IS5JhPquBbJBUnI1MBEvWEcn0yGBUHrhog0ol2kWA
+         2jJg==
+X-Gm-Message-State: AOAM532GSaCFeK8MnzsFRGI/IjTfSS4qSDCJczChZG69Sx35Ty5MNRNF
+        5Z10abpSLjTpNGhj5rOjR4TcSwQQUHu6Ihtf7ly3tSlN50YfGw==
+X-Google-Smtp-Source: ABdhPJy8/GLzJXE0Sbq4RzvQ2nMWzsr/B9cP3HzwsDbrXs4gyEVrA0uvccH3J3UGBLIYJ9viNfcDuohGBOr5NXxaViI=
+X-Received: by 2002:a17:902:b713:b029:12b:b249:693f with SMTP id
+ d19-20020a170902b713b029012bb249693fmr1633411pls.17.1627986854331; Tue, 03
+ Aug 2021 03:34:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YQjq1mXDXcS1CMMO@dhcp22.suse.cz>
+References: <20210723075858.376378-1-andrew@aj.id.au> <CAHp75VeQML7njMZ6x8kC-ZJVexC1xJ6n1cB3JneVMAVfuOJgWw@mail.gmail.com>
+ <d019990e-a725-4ef5-bb54-aadee9d18b86@www.fastmail.com> <CAHp75Vc2W+WmwNj1AvH6EiT_80c+5gADV9QzK+asHxpd1Ucppw@mail.gmail.com>
+ <6cc64039-f82a-4c1e-ad2c-16fad7aa3178@www.fastmail.com> <CAHp75Vdx9QA7dmSWK8GHxBBxP0uYjrz=Gm=75yqaWbBX6k3v=w@mail.gmail.com>
+ <50aaf381-8cda-4656-9222-f23fda75d3bc@www.fastmail.com>
+In-Reply-To: <50aaf381-8cda-4656-9222-f23fda75d3bc@www.fastmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 3 Aug 2021 13:33:38 +0300
+Message-ID: <CAHp75Ve-6zKE9UX+LR022cGAA6xvd8CeLnnKE_fT3snnzmNusA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/6] leds: Fix pca955x GPIO pin mappings
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>, Pavel Machek <pavel@ucw.cz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-08-03 09:05 +0200, Michal Hocko wrote:
-> There were some attempts to print oom_score during OOM. E.g.
-> http://lkml.kernel.org/r/20190808183247.28206-1-echron@arista.com. That
-> one was rejected on the grounds that the number on its own doesn't
-> really present any real value. It is really only valuable when comparing
-> to other potential oom victims. I have to say I am still worried about
-> printing this internal scoring as it should have really been an
-> implementation detail but with /proc/<pid>/oom_score this is likely a
-> lost battle and I am willing to give up on that front.
+On Tue, Aug 3, 2021 at 7:07 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> On Thu, 29 Jul 2021, at 17:10, Andy Shevchenko wrote:
+> > On Thu, Jul 29, 2021 at 3:39 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > > On Wed, 28 Jul 2021, at 18:43, Andy Shevchenko wrote:
+> > > > On Wed, Jul 28, 2021 at 8:43 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > > > > However, userspace would never have
+> > > > > got the results it expected with the existing driver implementation, so
+> > > > > I guess you could argue that no such (useful) userspace exists. Given
+> > > > > that, we could adopt the strategy of always defining a gpiochip
+> > > > > covering the whole pin space, and parts of the devicetree binding just
+> > > > > become redundant.
+> > > >
+> > > > I'm lost now. GPIO has its own userspace ABI, how does it work right
+> > > > now in application to this chip?
+> > >
+> > > As above, it "works" if the GPIOs specified in the devicetree are
+> > > contiguous from line 0. It's broken if they're not.
+> >
+> > So, "it never works" means there is no bug. Now, what we need is to
+> > keep the same enumeration scheme, but if you wish to be used half/half
+> > (or any other ratio), the driver should do like the above mentioned
+> > PWM, i.e. register entire space and depending on the requestor either
+> > proceed with a line or mark it as BUSY.
+> >
+> > Ideally, looking into what the chip can do, this should be indeed
+> > converted to some like pin control + PWM + LED + GPIO drivers. Then
+> > the function in pin mux configuration can show what exactly is enabled
+> > on the certain line(s).
+>
+> So just to clarify, you want both solutions here?
+>
+> 1. A gpiochip that covers the entire pin space
+> 2. A pinmux implementation that manages pin allocation to the different drivers
+>
+> In that case we can largely leave this series as is? We only need to
+> adjust how we configure the gpiochip by dropping the pin-mapping
+> implementation?
 
-Understood.
+Nope. It's far from what I think of. Re-reading again your cover
+letter it points out that pin mux per se does not exist in the
+hardware. In this case things become a bit too complicated, but we
+still may manage to handle them. Before I was thinking about this
+hierarchy
 
-> I am still not entirely convinced this is worth doing though.
-> oom_badness is not a cheap operation. task_lock has to be taken again
-> during dump_tasks for each task so the already quite expensive operation
-> will be more so. Is this really something we cannot live without?
+1. pinmux driver (which is actually the main driver here)
+2. LED driver (using regmap API)
+3. GPIO driver (via gpio-regmap)
+4. PWM driver.
 
-Fair enough and I now agree, it is unquestionably not worth it.
+Now what we need here is some kind of "virtual" pinmux. Do I
+understand correctly?
 
-
-
-Kind regards,
+To be clear: I do not like putting everything into one driver when the
+logical parts may be separated.
 
 -- 
-Aaron Tomlin
-
+With Best Regards,
+Andy Shevchenko
