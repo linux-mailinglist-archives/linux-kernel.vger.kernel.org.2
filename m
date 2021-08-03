@@ -2,50 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A483DE6A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC793DE6AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbhHCGU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 02:20:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230096AbhHCGUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 02:20:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA86560F9C;
-        Tue,  3 Aug 2021 06:20:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627971642;
-        bh=KFMCVPIMKcMJnCLKQzmv4zHTkJF8NX258rq+X+2IlNU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QHeyNy9c/FoMaBXWIR0Beybldvq2gTmYZ+OU8jX1ir0h4pJ6xbhAN1hp8DLSVdXLP
-         aBOBDk+OFrTPQ5fTiD/g6kXnoswV0R/8eaTTsUlAE9k5PgZ+KJMRpBCFdZANEIWDNb
-         ScBadz22q2MWE2UmRpkSUW7BCL3ijShCtXiFMa7k=
-Date:   Tue, 3 Aug 2021 08:20:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: r8188eu: core: Change the length of an array
-Message-ID: <YQjgN/Xx5LUYtzz0@kroah.com>
-References: <20210802203020.9679-1-fmdefrancesco@gmail.com>
- <20210803061441.GK25548@kadam>
+        id S233909AbhHCG32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 02:29:28 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13227 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230096AbhHCG31 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 02:29:27 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gf4hj4X4Mz1CRwp;
+        Tue,  3 Aug 2021 14:29:09 +0800 (CST)
+Received: from [10.174.179.25] (10.174.179.25) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 14:29:13 +0800
+Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
+To:     Roman Gushchin <guro@fb.com>
+CC:     Michal Hocko <mhocko@suse.com>, <hannes@cmpxchg.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
+        <shakeelb@google.com>, <willy@infradead.org>, <alexs@kernel.org>,
+        <richard.weiyang@gmail.com>, <songmuchun@bytedance.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>
+References: <20210729125755.16871-1-linmiaohe@huawei.com>
+ <20210729125755.16871-3-linmiaohe@huawei.com> <YQNsxVPsRSBZcfGG@carbon.lan>
+ <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
+ <4a3c23c4-054c-2896-29c5-8cf9a4deee98@huawei.com>
+ <YQi6lOT6j2DtOGlT@carbon.dhcp.thefacebook.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <95629d91-6ae8-b445-e7fc-b51c888cad59@huawei.com>
+Date:   Tue, 3 Aug 2021 14:29:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803061441.GK25548@kadam>
+In-Reply-To: <YQi6lOT6j2DtOGlT@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.25]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 09:14:42AM +0300, Dan Carpenter wrote:
-> On Mon, Aug 02, 2021 at 10:30:20PM +0200, Fabio M. De Francesco wrote:
-> > IPX_NODE_LEN == 6, while addr.f1 should only have 4 elements.
-> > Replace IPX_NODE_LEN with 4. In the while, remove the excess spaces
-> > before the fields of the union.
-> > 
-> > Fixes: 56febcc2595e ("staging: r8188eu: Fix different base types in assignments and parameters")
+On 2021/8/3 11:40, Roman Gushchin wrote:
+> On Sat, Jul 31, 2021 at 10:29:52AM +0800, Miaohe Lin wrote:
+>> On 2021/7/30 14:50, Michal Hocko wrote:
+>>> On Thu 29-07-21 20:06:45, Roman Gushchin wrote:
+>>>> On Thu, Jul 29, 2021 at 08:57:52PM +0800, Miaohe Lin wrote:
+>>>>> Since percpu_charge_mutex is only used inside drain_all_stock(), we can
+>>>>> narrow the scope of percpu_charge_mutex by moving it here.
+>>>>>
+>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>> ---
+>>>>>  mm/memcontrol.c | 2 +-
+>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>>>>> index 6580c2381a3e..a03e24e57cd9 100644
+>>>>> --- a/mm/memcontrol.c
+>>>>> +++ b/mm/memcontrol.c
+>>>>> @@ -2050,7 +2050,6 @@ struct memcg_stock_pcp {
+>>>>>  #define FLUSHING_CACHED_CHARGE	0
+>>>>>  };
+>>>>>  static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
+>>>>> -static DEFINE_MUTEX(percpu_charge_mutex);
+>>>>>  
+>>>>>  #ifdef CONFIG_MEMCG_KMEM
+>>>>>  static void drain_obj_stock(struct obj_stock *stock);
+>>>>> @@ -2209,6 +2208,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>>>>>   */
+>>>>>  static void drain_all_stock(struct mem_cgroup *root_memcg)
+>>>>>  {
+>>>>> +	static DEFINE_MUTEX(percpu_charge_mutex);
+>>>>>  	int cpu, curcpu;
+>>>>
+>>>> It's considered a good practice to protect data instead of code paths. After
+>>>> the proposed change it becomes obvious that the opposite is done here: the mutex
+>>>> is used to prevent a simultaneous execution of the code of the drain_all_stock()
+>>>> function.
+>>>
+>>> The purpose of the lock was indeed to orchestrate callers more than any
+>>> data structure consistency.
+>>>  
+>>>> Actually we don't need a mutex here: nobody ever sleeps on it. So I'd replace
+>>>> it with a simple atomic variable or even a single bitfield. Then the change will
+>>>> be better justified, IMO.
+>>>
+>>> Yes, mutex can be replaced by an atomic in a follow up patch.
+>>>
+>>
+>> Thanks for both of you. It's a really good suggestion. What do you mean is something like below？
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 616d1a72ece3..508a96e80980 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -2208,11 +2208,11 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>>   */
+>>  static void drain_all_stock(struct mem_cgroup *root_memcg)
+>>  {
+>> -       static DEFINE_MUTEX(percpu_charge_mutex);
+>>         int cpu, curcpu;
+>> +       static atomic_t drain_all_stocks = ATOMIC_INIT(-1);
+>>
+>>         /* If someone's already draining, avoid adding running more workers. */
+>> -       if (!mutex_trylock(&percpu_charge_mutex))
+>> +       if (!atomic_inc_not_zero(&drain_all_stocks))
+>>                 return;
 > 
-> Ugh...  I really feel we'd be better off reverting that patch entirely.
+> It should work, but why not a simple atomic_cmpxchg(&drain_all_stocks, 0, 1) and
+> initialize it to 0? Maybe it's just my preference, but IMO (0, 1) is easier
+> to understand than (-1, 0) here. Not a strong opinion though, up to you.
+> 
 
-I do too, let me go revert that...
+I think this would improve the readability. What you mean is something like below ?
+
+Many thanks.
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 616d1a72ece3..6210b1124929 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2208,11 +2208,11 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+  */
+ static void drain_all_stock(struct mem_cgroup *root_memcg)
+ {
+-       static DEFINE_MUTEX(percpu_charge_mutex);
+        int cpu, curcpu;
++       static atomic_t drainer = ATOMIC_INIT(0);
+
+        /* If someone's already draining, avoid adding running more workers. */
+-       if (!mutex_trylock(&percpu_charge_mutex))
++       if (atomic_cmpxchg(&drainer, 0, 1) != 0)
+                return;
+        /*
+         * Notify other cpus that system-wide "drain" is running
+@@ -2244,7 +2244,7 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
+                }
+        }
+        put_cpu();
+-       mutex_unlock(&percpu_charge_mutex);
++       atomic_set(&drainer, 0);
+ }
+
+> Thanks!
+> .
+> 
+
