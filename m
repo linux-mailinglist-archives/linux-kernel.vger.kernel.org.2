@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6263DEA10
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCAA3DEA16
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbhHCJxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234506AbhHCJxw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:53:52 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78ED7C06175F;
-        Tue,  3 Aug 2021 02:53:40 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id hs10so26815891ejc.0;
-        Tue, 03 Aug 2021 02:53:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dgsj6CTDrsaNTpuA4GdhQx2YF7HuEDl0c2L0lnwehSY=;
-        b=CfhcTcYDjwDTtd0VrShCAR8CfjBqkmBZqd99U5BYpH7XFXZl2i+HU/iiO1z9cJUHxM
-         xdaQqQ+bn/GFYHCpooywv1Kj8p3Kx6FcFLKeqOhQ6OQ+qXoJilSp/1MrhjZtANAqDlbs
-         2zxdVB+jCCypmZ5GrJxkQ7m1UsHwb7tJUj+R2pPqelqJLYi4DZkVYNhqNBDTTOzwJXKZ
-         VLPi5py22alr6jHriUXQM43kxACoWCmwkGHddBD05zjeEL34Qz7Uu3bsV7xQYAh/ed/8
-         A7IbqK/be9SxwRDA673bPvRyd4gJuSwF66KyjvtukgA1AUH4br0Z6PbHQDyQPDy3cH/z
-         35ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dgsj6CTDrsaNTpuA4GdhQx2YF7HuEDl0c2L0lnwehSY=;
-        b=BUv7IW6USsTZEHHOIQ8+/rwL2DzLwLR0q87SBX5KBZSlhrYNyoyq6mfFw8gmvh1byD
-         lR55AQN7oLB+8DdMMLaUNkHC5D+9ucldwqoXT5RQ1Y9rFyjcVSBZJQ6yyRLgt6Pz4wKh
-         M0ZOUmVHKx11Lqo/Tggr9my0i7FCOBolxF9R7/z+jdIXMrRdHJf6klJx85CbGf4/BgvU
-         muEI3+J9Yeeufg8iufJ7OaU08MjE6M3AYWHWG2va+SOmHlMUBuaYkM6+D4fr4lOn8Zew
-         ClSGDcLvmApoW83uHn8IXbCLuHpQqhkPR54oe2Xww3cUAbAfbyklGKZigFczf4zXQqju
-         QJiQ==
-X-Gm-Message-State: AOAM5318z+CD/+kgnT0t20j2ZYxDr+7ILFsETyoaCUKBApJO3DBPsGjH
-        7ZbPK19SUatOGPdHsIy9tnQ=
-X-Google-Smtp-Source: ABdhPJyWlHsbH/UsftZd2WIdgR05CFr2JSLN68JwopqLRoKcKe1kNzrhFJ3Wd2/hTP9dJ3TIHiblBg==
-X-Received: by 2002:a17:907:2096:: with SMTP id pv22mr15815530ejb.443.1627984419027;
-        Tue, 03 Aug 2021 02:53:39 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id b1sm6018136ejz.24.2021.08.03.02.53.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 02:53:38 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 12:53:37 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net 1/1] net: dsa: qca: ar9331: reorder MDIO write
- sequence
-Message-ID: <20210803095337.5x643xg3axpv5ixl@skbuf>
-References: <20210803063746.3600-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803063746.3600-1-o.rempel@pengutronix.de>
+        id S235000AbhHCJyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:54:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:45654 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234649AbhHCJyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 05:54:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A433C11D4;
+        Tue,  3 Aug 2021 02:54:41 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 906433F40C;
+        Tue,  3 Aug 2021 02:54:38 -0700 (PDT)
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
+        catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
+        ink@jurassic.park.msu.ru, jonas@southpole.se,
+        juri.lelli@redhat.com, linux@armlinux.org.uk, luto@kernel.org,
+        mark.rutland@arm.com, mattst88@gmail.com, mingo@redhat.com,
+        monstr@monstr.eu, mpe@ellerman.id.au, paulmck@kernel.org,
+        paulus@samba.org, peterz@infradead.org, rth@twiddle.net,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tglx@linutronix.de, vincent.guittot@linaro.org, will@kernel.org
+Subject: [PATCH v4 00/10] thread_info: use helpers to snapshot thread flags
+Date:   Tue,  3 Aug 2021 10:54:18 +0100
+Message-Id: <20210803095428.17009-1-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 08:37:46AM +0200, Oleksij Rempel wrote:
-> In case of this switch we work with 32bit registers on top of 16bit
-> bus. Some registers (for example access to forwarding database) have
-> trigger bit on the first 16bit half of request and the result +
-> configuration of request in the second half. Without this patch, we would
-> trigger database operation and overwrite result in one run.
-> 
-> To make it work properly, we should do the second part of transfer
-> before the first one is done.
-> 
-> So far, this rule seems to work for all registers on this switch.
-> 
-> Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> ---
+As thread_info::flags scan be manipulated by remote threads, it is
+necessary to use atomics or READ_ONCE() to ensure that code manipulates
+a consistent snapshot, but we open-code plain accesses to
+thread_info::flags across the kernel tree.
 
-I don't really like to chase a patch to make sure my review tags get
-propagated, but anyway:
+Generally we get away with this, but tools like KCSAN legitimately warn
+that there is a data-race, and this is potentially fragile with compiler
+optimizations, LTO, etc.
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+These patches introduce new helpers to snahpshot the thread flags, with
+the intent being that these should replace all plain accesses.
 
-https://patchwork.kernel.org/project/netdevbpf/patch/20210802131037.32326-2-o.rempel@pengutronix.de/
+Since v1 [1]:
+* Drop RFC
+* Make read_ti_thread_flags() __always_inline
+* Clarify commit messages
+* Fix typo in arm64 patch
+* Accumulate Reviewed-by / Acked-by tags
+* Drop powerpc patch to avoid potential conflicts (per [2])
+
+Since v2 [3]:
+* Rebase to v5.14-rc1
+* Reinstate powerpc patch
+
+Since v3 [4]:
+* Rebase to v5.14-rc4
+
+[1] https://lore.kernel.org/r/20210609122001.18277-1-mark.rutland@arm.com
+[2] https://lore.kernel.org/r/87k0mvtgeb.fsf@mpe.ellerman.id.au
+[3] https://lore.kernel.org/r/20210621090602.16883-1-mark.rutland@arm.com
+[4] https://lore.kernel.org/r/20210713113842.2106-1-mark.rutland@arm.com
+
+Thanks,
+Mark.
+
+Mark Rutland (10):
+  thread_info: add helpers to snapshot thread flags
+  entry: snapshot thread flags
+  sched: snapshot thread flags
+  alpha: snapshot thread flags
+  arm: snapshot thread flags
+  arm64: snapshot thread flags
+  microblaze: snapshot thread flags
+  openrisc: snapshot thread flags
+  powerpc: snapshot thread flags
+  x86: snapshot thread flags
+
+ arch/alpha/kernel/signal.c          |  2 +-
+ arch/arm/kernel/signal.c            |  2 +-
+ arch/arm/mm/alignment.c             |  2 +-
+ arch/arm64/kernel/ptrace.c          |  4 ++--
+ arch/arm64/kernel/signal.c          |  2 +-
+ arch/arm64/kernel/syscall.c         |  4 ++--
+ arch/microblaze/kernel/signal.c     |  2 +-
+ arch/openrisc/kernel/signal.c       |  2 +-
+ arch/powerpc/kernel/interrupt.c     | 13 ++++++-------
+ arch/powerpc/kernel/ptrace/ptrace.c |  3 +--
+ arch/x86/kernel/process.c           |  8 ++++----
+ arch/x86/kernel/process.h           |  6 +++---
+ arch/x86/mm/tlb.c                   |  2 +-
+ include/linux/entry-kvm.h           |  2 +-
+ include/linux/thread_info.h         | 14 ++++++++++++++
+ kernel/entry/common.c               |  4 ++--
+ kernel/entry/kvm.c                  |  4 ++--
+ kernel/sched/core.c                 |  2 +-
+ 18 files changed, 45 insertions(+), 33 deletions(-)
+
+-- 
+2.11.0
+
