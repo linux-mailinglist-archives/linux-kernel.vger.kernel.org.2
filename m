@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8DA3DF080
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9B43DF08C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236646AbhHCOjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:39:39 -0400
-Received: from mga04.intel.com ([192.55.52.120]:57339 "EHLO mga04.intel.com"
+        id S236622AbhHCOoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:44:05 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60056 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236412AbhHCOje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:39:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="211837191"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="211837191"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 07:39:23 -0700
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="419683121"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 07:39:07 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1mAvZJ-004lU3-S4; Tue, 03 Aug 2021 17:38:57 +0300
-Date:   Tue, 3 Aug 2021 17:38:57 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, kernel@pengutronix.de,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Russell Currey <ruscur@russell.cc>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Michael Buesch <m@bues.ch>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] PCI: Adapt all code locations to not use struct
- pci_dev::driver directly
-Message-ID: <YQlVAcOGDrDO8500@smile.fi.intel.com>
-References: <20210803100150.1543597-1-u.kleine-koenig@pengutronix.de>
- <20210803100150.1543597-6-u.kleine-koenig@pengutronix.de>
+        id S234360AbhHCOnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 10:43:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=ACG/s8bQyXMAoKivsxoVT6bV/5aODUI1FE4W/+TE7Po=; b=u9tMLfCgSHBBxy+9+7rKPi9g/W
+        TOqN+109lJMs5yOmt1Hj3kMEm+PXC+li+8Imm24m2ctMG+Iy2LJO4x5WbRxYmSjgJiFQprP1KOCC5
+        SbDmI7fxD1lWXo3oBT41FaNra1U10i5h1k2RQMssR5r/AUFXQHw+5OG9su517YxokOIs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mAvdQ-00Fyig-Vw; Tue, 03 Aug 2021 16:43:12 +0200
+Date:   Tue, 3 Aug 2021 16:43:12 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
+        netdev@vger.kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
+ for microchip lan937x
+Message-ID: <YQlWAHSTQ4K3/zet@lunn.ch>
+References: <20210723173108.459770-1-prasanna.vengateshan@microchip.com>
+ <20210723173108.459770-6-prasanna.vengateshan@microchip.com>
+ <20210731150416.upe5nwkwvwajhwgg@skbuf>
+ <YQXJHA+z+hXjxe6+@lunn.ch>
+ <20210802213353.qu5j3gn4753xlj43@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210803100150.1543597-6-u.kleine-koenig@pengutronix.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210802213353.qu5j3gn4753xlj43@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 12:01:49PM +0200, Uwe Kleine-König wrote:
-> This prepares removing the driver member of struct pci_dev which holds the
-> same information than struct pci_dev::dev->driver.
+On Tue, Aug 03, 2021 at 12:33:53AM +0300, Vladimir Oltean wrote:
+> On Sun, Aug 01, 2021 at 12:05:16AM +0200, Andrew Lunn wrote:
+> > > So you support both the cases where an internal PHY is described using
+> > > OF bindings, and where the internal PHY is implicitly accessed using the
+> > > slave_mii_bus of the switch, at a PHY address equal to the port number,
+> > > and with no phy-handle or fixed-link device tree property for that port?
+> > > 
+> > > Do you need both alternatives? The first is already more flexible than
+> > > the second.
+> > 
+> > The first is also much more verbose in DT, and the second generally
+> > just works without any DT. What can be tricky with the second is
+> > getting PHY interrupts to work, but it is possible, the mv88e6xxx does
+> > it.
+> 
+> - The explicit phy-handle is more verbose as far as the DT description
+>   goes for one particular use case of indirect internal PHY access, but
+>   it also leads to less complex code (more uniform with other usage
+>   patterns in the kernel). What is tricky with an implicit phy-handle is
+>   trivial without it. This makes a difference with DM_DSA in U-Boot,
+>   where I would really like to avoid bloating the code and just support
+>   2 options for a DSA switch port: either a phy-handle or a fixed-link.
+>   These two are already "Turing-complete" (they can describe any system)
+>   so I only see the implicit phy-handle as a helping hand for a few lazy
+>   DT writers. Since I have been pushing back that we shouldn't bloat
+>   U-Boot with implicit phy-handle logic when it doesn't give a concrete
+>   benefit, and have gotten a push back in return that Linux does allow
+>   it and it would be desirable for one DT binding to cover all, I now
+>   need to promote the more generic approach for Linux going forward too.
+> 
+> - If the switch has the ability for its internal PHYs to be accessed
+>   directly over MDIO pins instead of using indirect SPI transfers, using
+>   a phy-handle is a generic way to handle both cases, while the implicit
+>   phy-handle does not give you that option.
+> 
+> - If there is complex pinmuxing in the SoC and one port can either be
+>   connected to an internal 100base-T1 or to a 100base-TX PHY, and this
+>   is not detectable by software, this cannot be dealt with using an
+>   implicit phy-handle if the 100base-T1 and 100base-TX PHYs are not at
+>   the same address.
+> 
+> - In general, if the internal PHYs are not at an MDIO address equal to
+>   the port number, this cannot be dealt with using the implicit
+>   phy-handle method.
 
-...
+There are good reasons to use an explicit phy-handle, and i would
+never block such code. However, implicit is historically how it was
+done. There are many DT blobs which assume it works. So implicit is
+not going away.
 
-> +	struct pci_driver *pdrv;
+If you want to only support explicit in U-Boot, that is fine. I would
+suggest making this clear in the U-Boot documentation.
 
-Missed blank line here and everywhere else. I don't remember if it's a
-checkpatch who complains on this.
-
-> +	return (pdev && (pdrv = pci_driver_of_dev(pdev))) ? pdrv->name : "<null>";
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+	Andrew
