@@ -2,245 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746C53DE88D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112D03DE890
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhHCIjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:39:22 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48950 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234554AbhHCIjV (ORCPT
+        id S234593AbhHCIkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234423AbhHCIkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:39:21 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5C4A521F2C;
-        Tue,  3 Aug 2021 08:39:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627979949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qMMIqngp44OTuqTueUK6qbrRh7OeIMoHp5ZvzTcwQAk=;
-        b=SW4ZCWdloq+8uqcLLICJrlrrcmbDHxn1aoNHAVys0V8v7TibNPDd/QEFlGb4pf0XI+JjZc
-        mYZ6xcO5mX9riOG8i2ztH9JcCyK3r2OMHisB5CBNd2VSWulO8GV2gbqnyqxVGdl/xixR/e
-        4MDQgAjFDWWgRUD6vCU/N/zeSR7JQxI=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 12B9EA3BD1;
-        Tue,  3 Aug 2021 08:39:09 +0000 (UTC)
-Date:   Tue, 3 Aug 2021 10:39:07 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, rientjes@google.com,
-        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
-        hch@infradead.org, oleg@redhat.com, david@redhat.com,
-        jannh@google.com, shakeelb@google.com, luto@kernel.org,
-        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
-        timmurray@google.com, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 1/2] mm: introduce process_mrelease system call
-Message-ID: <YQkAqwZIF+AnpexA@dhcp22.suse.cz>
-References: <20210802221431.2251210-1-surenb@google.com>
+        Tue, 3 Aug 2021 04:40:19 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DF9C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 01:40:08 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id v20so13961286eda.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 01:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CRakoksKAuPF3/d2S73RYrpu1epFEAqqfntqG1htuL4=;
+        b=znB/3Myq5X4zIUS4gde9Mg9tjF1aDURQoZRlblRrqyGfbh4thbo1YaTMC3saVRKlPP
+         674PLsaWG5jbekrevWBMIoUcWWthld+vntKBZb4jvxn+hlJwNqMA1fH1WSmw5KoYsi+0
+         S0O2YjFpmJDAdotybDaOg8jaDusDTfgpfi7xfwxyuo/GLh4XEjfPYJRUItJxzXn4mNNo
+         oKJVunX+F1ZH7M6+vhPA0Z0B3HKoIZDUl+7NUcleOOSpjexBogw+aT2kprwNAXZhGo6j
+         RrhwGmeD9j3EVhN69gd7/7zGDkMHX1+M2PspnLojdVAG6o86HlgS5lmHP1mCqaqF4vtm
+         hsxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CRakoksKAuPF3/d2S73RYrpu1epFEAqqfntqG1htuL4=;
+        b=AKUzIVTWDylAx7pNSH/wkl4xbA8Uey0WXv3iq9sKe1iRaQ/2AOJfjK1jwxFITBmmo+
+         lf2oKndssfitZnlr9FoBJmppyr3/XjsSg6S6ItlcF6Co7PU3/V9VelEN3mgl96SOmuKC
+         xyjbG9WDnuCvETGS/LwxGJHTBfk9ZeXGjNgMOFOgCBK4VC8fy+TwNG4KjMbBKinBfeV/
+         HLlA/rdH6Dho7AKRHbGxMgVsXSz/X57VDv3RgZF6EiLCNlZbcQbMWVRHd0OelzctgSxo
+         QR9LgtaKvaid0FxnPQMuiXKRd8+OI2pvNLSk+82UY2O+DV1u2uwclFqG0tsgBFb2vB4Z
+         I/gA==
+X-Gm-Message-State: AOAM5336Eu/m3lGt0/43oSJzrg2+LjKdaiuAkHqjwU7iciyMLScHAI/1
+        r+0qKKoBvmT2otvsT/XAQ0adkEPplgY4liwXymBM
+X-Google-Smtp-Source: ABdhPJziVMvbOy20Edn+NVtfYzb6y08nWOl2Zx+frMXDG7ucgHCSE76xDftYnLe8xR0cQVvoPf0Q/Fgl17K812vHpL0=
+X-Received: by 2002:a05:6402:74f:: with SMTP id p15mr23843570edy.195.1627980007349;
+ Tue, 03 Aug 2021 01:40:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802221431.2251210-1-surenb@google.com>
+References: <20210729073503.187-1-xieyongji@bytedance.com> <20210729073503.187-17-xieyongji@bytedance.com>
+ <eab9e694-42a5-9382-b829-1b7fade8a5ab@redhat.com>
+In-Reply-To: <eab9e694-42a5-9382-b829-1b7fade8a5ab@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Tue, 3 Aug 2021 16:39:56 +0800
+Message-ID: <CACycT3sRewP1kfwdFCNU+=Jn1gSB1jrB7pVd-q6Mvq29R6dW4A@mail.gmail.com>
+Subject: Re: [PATCH v10 16/17] vduse: Introduce VDUSE - vDPA Device in Userspace
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 02-08-21 15:14:30, Suren Baghdasaryan wrote:
-> In modern systems it's not unusual to have a system component monitoring
-> memory conditions of the system and tasked with keeping system memory
-> pressure under control. One way to accomplish that is to kill
-> non-essential processes to free up memory for more important ones.
-> Examples of this are Facebook's OOM killer daemon called oomd and
-> Android's low memory killer daemon called lmkd.
-> For such system component it's important to be able to free memory
-> quickly and efficiently. Unfortunately the time process takes to free
-> up its memory after receiving a SIGKILL might vary based on the state
-> of the process (uninterruptible sleep), size and OPP level of the core
-> the process is running. A mechanism to free resources of the target
-> process in a more predictable way would improve system's ability to
-> control its memory pressure.
-> Introduce process_mrelease system call that releases memory of a dying
-> process from the context of the caller. This way the memory is freed in
-> a more controllable way with CPU affinity and priority of the caller.
-> The workload of freeing the memory will also be charged to the caller.
-> The operation is allowed only on a dying process.
-> 
-> Previously I proposed a number of alternatives to accomplish this:
-> - https://lore.kernel.org/patchwork/patch/1060407 extending
+On Tue, Aug 3, 2021 at 3:30 PM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/7/29 =E4=B8=8B=E5=8D=883:35, Xie Yongji =E5=86=99=E9=81=93=
+:
+> > This VDUSE driver enables implementing software-emulated vDPA
+> > devices in userspace. The vDPA device is created by
+> > ioctl(VDUSE_CREATE_DEV) on /dev/vduse/control. Then a char device
+> > interface (/dev/vduse/$NAME) is exported to userspace for device
+> > emulation.
+> >
+> > In order to make the device emulation more secure, the device's
+> > control path is handled in kernel. A message mechnism is introduced
+> > to forward some dataplane related control messages to userspace.
+> >
+> > And in the data path, the DMA buffer will be mapped into userspace
+> > address space through different ways depending on the vDPA bus to
+> > which the vDPA device is attached. In virtio-vdpa case, the MMU-based
+> > software IOTLB is used to achieve that. And in vhost-vdpa case, the
+> > DMA buffer is reside in a userspace memory region which can be shared
+> > to the VDUSE userspace processs via transferring the shmfd.
+> >
+> > For more details on VDUSE design and usage, please see the follow-on
+> > Documentation commit.
+> >
+> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> > ---
+> >   Documentation/userspace-api/ioctl/ioctl-number.rst |    1 +
+> >   drivers/vdpa/Kconfig                               |   10 +
+> >   drivers/vdpa/Makefile                              |    1 +
+> >   drivers/vdpa/vdpa_user/Makefile                    |    5 +
+> >   drivers/vdpa/vdpa_user/vduse_dev.c                 | 1541 +++++++++++=
++++++++++
+> >   include/uapi/linux/vduse.h                         |  220 +++
+> >   6 files changed, 1778 insertions(+)
+> >   create mode 100644 drivers/vdpa/vdpa_user/Makefile
+> >   create mode 100644 drivers/vdpa/vdpa_user/vduse_dev.c
+> >   create mode 100644 include/uapi/linux/vduse.h
+> >
+> > diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Docum=
+entation/userspace-api/ioctl/ioctl-number.rst
+> > index 1409e40e6345..293ca3aef358 100644
+> > --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > @@ -300,6 +300,7 @@ Code  Seq#    Include File                         =
+                  Comments
+> >   'z'   10-4F  drivers/s390/crypto/zcrypt_api.h                        =
+conflict!
+> >   '|'   00-7F  linux/media.h
+> >   0x80  00-1F  linux/fb.h
+> > +0x81  00-1F  linux/vduse.h
+> >   0x89  00-06  arch/x86/include/asm/sockios.h
+> >   0x89  0B-DF  linux/sockios.h
+> >   0x89  E0-EF  linux/sockios.h                                         =
+SIOCPROTOPRIVATE range
+> > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> > index a503c1b2bfd9..6e23bce6433a 100644
+> > --- a/drivers/vdpa/Kconfig
+> > +++ b/drivers/vdpa/Kconfig
+> > @@ -33,6 +33,16 @@ config VDPA_SIM_BLOCK
+> >         vDPA block device simulator which terminates IO request in a
+> >         memory buffer.
+> >
+> > +config VDPA_USER
+> > +     tristate "VDUSE (vDPA Device in Userspace) support"
+> > +     depends on EVENTFD && MMU && HAS_DMA
+> > +     select DMA_OPS
+> > +     select VHOST_IOTLB
+> > +     select IOMMU_IOVA
+> > +     help
+> > +       With VDUSE it is possible to emulate a vDPA Device
+> > +       in a userspace program.
+> > +
+> >   config IFCVF
+> >       tristate "Intel IFC VF vDPA driver"
+> >       depends on PCI_MSI
+> > diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
+> > index 67fe7f3d6943..f02ebed33f19 100644
+> > --- a/drivers/vdpa/Makefile
+> > +++ b/drivers/vdpa/Makefile
+> > @@ -1,6 +1,7 @@
+> >   # SPDX-License-Identifier: GPL-2.0
+> >   obj-$(CONFIG_VDPA) +=3D vdpa.o
+> >   obj-$(CONFIG_VDPA_SIM) +=3D vdpa_sim/
+> > +obj-$(CONFIG_VDPA_USER) +=3D vdpa_user/
+> >   obj-$(CONFIG_IFCVF)    +=3D ifcvf/
+> >   obj-$(CONFIG_MLX5_VDPA) +=3D mlx5/
+> >   obj-$(CONFIG_VP_VDPA)    +=3D virtio_pci/
+> > diff --git a/drivers/vdpa/vdpa_user/Makefile b/drivers/vdpa/vdpa_user/M=
+akefile
+> > new file mode 100644
+> > index 000000000000..260e0b26af99
+> > --- /dev/null
+> > +++ b/drivers/vdpa/vdpa_user/Makefile
+> > @@ -0,0 +1,5 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +vduse-y :=3D vduse_dev.o iova_domain.o
+> > +
+> > +obj-$(CONFIG_VDPA_USER) +=3D vduse.o
+> > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_use=
+r/vduse_dev.c
+> > new file mode 100644
+> > index 000000000000..6addc62e7de6
+> > --- /dev/null
+> > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > @@ -0,0 +1,1541 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * VDUSE: vDPA Device in Userspace
+> > + *
+> > + * Copyright (C) 2020-2021 Bytedance Inc. and/or its affiliates. All r=
+ights reserved.
+> > + *
+> > + * Author: Xie Yongji <xieyongji@bytedance.com>
+> > + *
+> > + */
+> > +
+> > +#include <linux/init.h>
+> > +#include <linux/module.h>
+> > +#include <linux/cdev.h>
+> > +#include <linux/device.h>
+> > +#include <linux/eventfd.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/wait.h>
+> > +#include <linux/dma-map-ops.h>
+> > +#include <linux/poll.h>
+> > +#include <linux/file.h>
+> > +#include <linux/uio.h>
+> > +#include <linux/vdpa.h>
+> > +#include <linux/nospec.h>
+> > +#include <uapi/linux/vduse.h>
+> > +#include <uapi/linux/vdpa.h>
+> > +#include <uapi/linux/virtio_config.h>
+> > +#include <uapi/linux/virtio_ids.h>
+> > +#include <uapi/linux/virtio_blk.h>
+> > +#include <linux/mod_devicetable.h>
+> > +
+> > +#include "iova_domain.h"
+> > +
+> > +#define DRV_AUTHOR   "Yongji Xie <xieyongji@bytedance.com>"
+> > +#define DRV_DESC     "vDPA Device in Userspace"
+> > +#define DRV_LICENSE  "GPL v2"
+> > +
+> > +#define VDUSE_DEV_MAX (1U << MINORBITS)
+> > +#define VDUSE_BOUNCE_SIZE (64 * 1024 * 1024)
+> > +#define VDUSE_IOVA_SIZE (128 * 1024 * 1024)
+> > +#define VDUSE_REQUEST_TIMEOUT 30
+>
+>
+> I think we need make this as a module parameter. 0 probably means we
+> need to wait for ever.
+>
+> This can help in the case when the userspace is attached by GDB. If
+> Michael is still not happy, we can find other solution (e.g only offload
+> the datapath).
+>
 
-Please use the msg-id based urls https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
+OK, a device attribute might be better.
 
-> pidfd_send_signal to allow memory reaping using oom_reaper thread;
-> - https://lore.kernel.org/patchwork/patch/1338196 extending
-
-https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
-
-> pidfd_send_signal to reap memory of the target process synchronously from
-> the context of the caller;
-> - https://lore.kernel.org/patchwork/patch/1344419/ to add MADV_DONTNEED
-> support for process_madvise implementing synchronous memory reaping.
-
-https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
-
-> The end of the last discussion culminated with suggestion to introduce a
-> dedicated system call (https://lore.kernel.org/patchwork/patch/1344418/#1553875)
-
-https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
-
-> The reasoning was that the new variant of process_madvise
->   a) does not work on an address range
->   b) is destructive
->   c) doesn't share much code at all with the rest of process_madvise
-> >From the userspace point of view it was awkward and inconvenient to provide
-> memory range for this operation that operates on the entire address space.
-> Using special flags or address values to specify the entire address space
-> was too hacky.
-> 
-> The API is as follows,
-> 
->           int process_mrelease(int pidfd, unsigned int flags);
-> 
->         DESCRIPTION
->           The process_mrelease() system call is used to free the memory of
->           a process which was sent a SIGKILL signal.
-
-This is not really precise. The implementation will allow to use the
-syscall on any exiting or fatal signal received process. Not just those
-that have been SIGKILLed, right? For the purpose of the man page I would
-go with exiting process for the wording.
- 
->           The pidfd selects the process referred to by the PID file
->           descriptor.
->           (See pidofd_open(2) for further information)
-> 
->           The flags argument is reserved for future use; currently, this
->           argument must be specified as 0.
-> 
->         RETURN VALUE
->           On success, process_mrelease() returns 0. On error, -1 is
->           returned and errno is set to indicate the error.
-> 
->         ERRORS
->           EBADF  pidfd is not a valid PID file descriptor.
-> 
->           EAGAIN Failed to release part of the address space.
-> 
->           EINTR  The call was interrupted by a signal; see signal(7).
-> 
->           EINVAL flags is not 0.
-> 
->           EINVAL The task does not have a pending SIGKILL or its memory is
->                  shared with another process with no pending SIGKILL.
-
-again, wording here. I would go with
-	    EINVAL The memory of the task cannot be released because the
-	           process is not exiting, the address space is shared
-		   with an alive process or there is a core dump is in
-		   progress..
-> 
->           ENOSYS This system call is not supported by kernels built with no
->                  MMU support (CONFIG_MMU=n).
-> 
->           ESRCH  The target process does not exist (i.e., it has terminated
->                  and been waited on).
-> 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
-> changes in v4:
-> - Replaced mmap_read_lock() with mmap_read_lock_killable(), per Michal Hocko
-> - Added EINTR error in the manual pages documentation
-> 
->  mm/oom_kill.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 58 insertions(+)
-> 
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index c729a4c4a1ac..86727794b0a8 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -28,6 +28,7 @@
->  #include <linux/sched/task.h>
->  #include <linux/sched/debug.h>
->  #include <linux/swap.h>
-> +#include <linux/syscalls.h>
->  #include <linux/timex.h>
->  #include <linux/jiffies.h>
->  #include <linux/cpuset.h>
-> @@ -1141,3 +1142,60 @@ void pagefault_out_of_memory(void)
->  	out_of_memory(&oc);
->  	mutex_unlock(&oom_lock);
->  }
-> +
-> +SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
-> +{
-> +#ifdef CONFIG_MMU
-> +	struct mm_struct *mm = NULL;
-> +	struct task_struct *task;
-> +	unsigned int f_flags;
-> +	struct pid *pid;
-> +	long ret = 0;
-> +
-> +	if (flags != 0)
-> +		return -EINVAL;
-> +
-> +	pid = pidfd_get_pid(pidfd, &f_flags);
-> +	if (IS_ERR(pid))
-> +		return PTR_ERR(pid);
-> +
-> +	task = get_pid_task(pid, PIDTYPE_PID);
-> +	if (!task) {
-> +		ret = -ESRCH;
-> +		goto put_pid;
-> +	}
-> +
-> +	/*
-> +	 * If the task is dying and in the process of releasing its memory
-> +	 * then get its mm.
-> +	 */
-> +	task_lock(task);
-
-Don't we need find_lock_task_mm here?
-
-> +	if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
-> +		mm = task->mm;
-> +		mmget(mm);
-> +	}
-> +	task_unlock(task);
-> +	if (!mm) {
-
-Do we want to treat MMF_OOM_SKIP as a failure?
-
-> +		ret = -EINVAL;
-> +		goto put_task;
-> +	}
-> +
-> +	if (mmap_read_lock_killable(mm)) {
-> +		ret = -EINTR;
-> +		goto put_mm;
-> +	}
-> +	if (!__oom_reap_task_mm(mm))
-> +		ret = -EAGAIN;
-> +	mmap_read_unlock(mm);
-> +
-> +put_mm:
-> +	mmput(mm);
-> +put_task:
-> +	put_task_struct(task);
-> +put_pid:
-> +	put_pid(pid);
-> +	return ret;
-> +#else
-> +	return -ENOSYS;
-> +#endif /* CONFIG_MMU */
-> +}
-> -- 
-> 2.32.0.554.ge1b32706d8-goog
-
--- 
-Michal Hocko
-SUSE Labs
+Thanks,
+Yongji
