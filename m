@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4893DEFE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D844B3DEFE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236505AbhHCORS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:17:18 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56838 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236451AbhHCORR (ORCPT
+        id S236537AbhHCORT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236488AbhHCORR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Aug 2021 10:17:17 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9747EC06175F;
+        Tue,  3 Aug 2021 07:17:06 -0700 (PDT)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1628000225;
@@ -19,30 +22,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Sm/mbbSEULPCMgAW2owXXRPFYMbLoPd9z3ObO+na4Bc=;
-        b=WLFcDdUBRry0Kl0oTRwemr+vQgzdfmVCevWPzRa9VV/uysZEU0FsxfqooOtTA9Fae2w44V
-        YfrywOLT4NJTKGFJZ+WY+xKRX/BdlEVFyVw37DENRB/ew5xXD/RXwqtSt79e0KqwCfyST8
-        7FchLj+9FMCL7k08kkcZDjXSGCNBUECe/hxRC37LH/bx8qoNTYuP8tK5uobWqyVq8R9mWt
-        jcQE6zFTRZkpB+xwE4YfkIyEEnMs8W/WcsxqYhVmvKLQYGn2GEwQNe0mPyMippJJ5ujVQt
-        PR4gpdfUt54AQcQ8cqRjY0jNVrgInluQVUKrgU871rM1R52ECtAAT/NRLV9Oyw==
+        bh=myV3fFPpmckxFi8iG+1Cz4HE7geihL0CQ+OBM5u9Dbk=;
+        b=g2RGayE7tYJ78jHshfPZKWu5U5dR72hCbCO1rsQHagt9X7BHN68a8LUoBHtBq48oPWseii
+        xv68Biasr4LjXE3GkNSkIoUD/rIh5GbfaJL9w1laDLWZzdSRV8B9+H32R3RWPCNPC9WA7h
+        Xlvcs9eyUlwYCfjTRofzo/VUZHRe1UpcGy6nZHqUhfn0sbzhFqSS3yRBcj5CeB56QeQpgf
+        XaxXqJjOx2+8eIDrCx1pTGazRBJTR+96a11/+KgImr4XdUtrQT0Mj0X8leV6+HmzvTPBnX
+        Z9iLwn5xy5I8iXDdU0P/WCEa6eyBDSUxdzy4J//JxG7d4LswGV7NuCegCV5CPw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1628000225;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Sm/mbbSEULPCMgAW2owXXRPFYMbLoPd9z3ObO+na4Bc=;
-        b=2QBFhOXmEGXvtEsKlKb2jIqGDA/Wpn+GLCwAnnyrVRFbu9drTk47NxdKhl0zzNRujDC3Fn
-        aJF/ckL1Uem0GdDA==
+        bh=myV3fFPpmckxFi8iG+1Cz4HE7geihL0CQ+OBM5u9Dbk=;
+        b=EOz/aqqRv+PoPnF3qErKabqMDj7hgItZeIjKJNOZHB4wZs6VB+l82ZuzfLyQ9emawL5PeM
+        uz+dzyv6P9PsRsBA==
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-doc@vger.kernel.org
-Subject: [PATCH 01/38] Documentation: Replace deprecated CPU-hotplug functions.
-Date:   Tue,  3 Aug 2021 16:15:44 +0200
-Message-Id: <20210803141621.780504-2-bigeasy@linutronix.de>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Subject: [PATCH 02/38] MIPS: Replace deprecated CPU-hotplug functions.
+Date:   Tue,  3 Aug 2021 16:15:45 +0200
+Message-Id: <20210803141621.780504-3-bigeasy@linutronix.de>
 In-Reply-To: <20210803141621.780504-1-bigeasy@linutronix.de>
 References: <20210803141621.780504-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -55,52 +57,87 @@ The functions get_online_cpus() and put_online_cpus() have been
 deprecated during the CPU hotplug rework. They map directly to
 cpus_read_lock() and cpus_read_unlock().
 
-Update the documentation accordingly.
+Replace deprecated CPU-hotplug functions with the official version.
+The behavior remains unchanged.
 
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: linux-doc@vger.kernel.org
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- Documentation/core-api/cpu_hotplug.rst | 2 +-
- Documentation/trace/ftrace.rst         | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/kernel/mips-mt-fpaff.c | 10 +++++-----
+ arch/mips/kernel/process.c       |  4 ++--
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/core-api/cpu_hotplug.rst b/Documentation/core-ap=
-i/cpu_hotplug.rst
-index a2c96bec5ee8d..1122cd3044c0e 100644
---- a/Documentation/core-api/cpu_hotplug.rst
-+++ b/Documentation/core-api/cpu_hotplug.rst
-@@ -220,7 +220,7 @@ goes online (offline) and during initial setup (shutdow=
-n) of the driver. However
- each registration and removal function is also available with a ``_nocalls=
-``
- suffix which does not invoke the provided callbacks if the invocation of t=
-he
- callbacks is not desired. During the manual setup (or teardown) the functi=
-ons
--``get_online_cpus()`` and ``put_online_cpus()`` should be used to inhibit =
-CPU
-+``cpus_read_lock()`` and ``cpus_read_unlock()`` should be used to inhibit =
-CPU
- hotplug operations.
+diff --git a/arch/mips/kernel/mips-mt-fpaff.c b/arch/mips/kernel/mips-mt-fp=
+aff.c
+index 6c590ef276482..67e130d3f0385 100644
+--- a/arch/mips/kernel/mips-mt-fpaff.c
++++ b/arch/mips/kernel/mips-mt-fpaff.c
+@@ -76,13 +76,13 @@ asmlinkage long mipsmt_sys_sched_setaffinity(pid_t pid,=
+ unsigned int len,
+ 	if (copy_from_user(&new_mask, user_mask_ptr, sizeof(new_mask)))
+ 		return -EFAULT;
 =20
+-	get_online_cpus();
++	cpus_read_lock();
+ 	rcu_read_lock();
 =20
-diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-index cfc81e98e0b8a..4e5b26f03d5b1 100644
---- a/Documentation/trace/ftrace.rst
-+++ b/Documentation/trace/ftrace.rst
-@@ -2762,7 +2762,7 @@ A list of available functions that you can add to the=
-se files is
-   put_prev_task_idle
-   kmem_cache_create
-   pick_next_task_rt
--  get_online_cpus
-+  cpus_read_lock
-   pick_next_task_fair
-   mutex_lock
-   [...]
+ 	p =3D find_process_by_pid(pid);
+ 	if (!p) {
+ 		rcu_read_unlock();
+-		put_online_cpus();
++		cpus_read_unlock();
+ 		return -ESRCH;
+ 	}
+=20
+@@ -147,7 +147,7 @@ asmlinkage long mipsmt_sys_sched_setaffinity(pid_t pid,=
+ unsigned int len,
+ 	free_cpumask_var(cpus_allowed);
+ out_put_task:
+ 	put_task_struct(p);
+-	put_online_cpus();
++	cpus_read_unlock();
+ 	return retval;
+ }
+=20
+@@ -166,7 +166,7 @@ asmlinkage long mipsmt_sys_sched_getaffinity(pid_t pid,=
+ unsigned int len,
+ 	if (len < real_len)
+ 		return -EINVAL;
+=20
+-	get_online_cpus();
++	cpus_read_lock();
+ 	rcu_read_lock();
+=20
+ 	retval =3D -ESRCH;
+@@ -182,7 +182,7 @@ asmlinkage long mipsmt_sys_sched_getaffinity(pid_t pid,=
+ unsigned int len,
+=20
+ out_unlock:
+ 	rcu_read_unlock();
+-	put_online_cpus();
++	cpus_read_unlock();
+ 	if (retval)
+ 		return retval;
+ 	if (copy_to_user(user_mask_ptr, &mask, real_len))
+diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+index 73c8e7990a973..95aa86fa60778 100644
+--- a/arch/mips/kernel/process.c
++++ b/arch/mips/kernel/process.c
+@@ -859,10 +859,10 @@ int mips_set_process_fp_mode(struct task_struct *task=
+, unsigned int value)
+ 	 * scheduled in then it will already have picked up the new FP mode
+ 	 * whilst doing so.
+ 	 */
+-	get_online_cpus();
++	cpus_read_lock();
+ 	for_each_cpu_and(cpu, &process_cpus, cpu_online_mask)
+ 		work_on_cpu(cpu, prepare_for_fp_mode_switch, NULL);
+-	put_online_cpus();
++	cpus_read_unlock();
+=20
+ 	return 0;
+ }
 --=20
 2.32.0
 
