@@ -2,189 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB22D3DE91E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382793DE921
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234947AbhHCJBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:01:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28135 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234690AbhHCJB3 (ORCPT
+        id S234961AbhHCJBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234631AbhHCJBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:01:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627981278;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pKHXn9wnTp9qRrDvUqHWpePjL7Y3hrbra/6xW/dla90=;
-        b=i2GmHkTtKvwab5yr2VLy8d3OzP5Yu5366PdB8wBfuniNBbF4CcJWFwIpRHdD6Pi7HLI3Lw
-        9QX5OAndZVmBFvEF3JeYfzatWiy57KkI7odUZ0yv+TEH+mmOmxjWYh2W2rz41rTPwXvdVx
-        /cA5ikfkzWGKKLwbz1JAukXGJTixZME=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-CfReJm_aP6qSnq-HUG1FCg-1; Tue, 03 Aug 2021 05:01:14 -0400
-X-MC-Unique: CfReJm_aP6qSnq-HUG1FCg-1
-Received: by mail-wr1-f70.google.com with SMTP id l12-20020a5d6d8c0000b029015488313d96so1595940wrs.15
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:01:14 -0700 (PDT)
+        Tue, 3 Aug 2021 05:01:44 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD03C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:01:34 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id w6so27429221oiv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=xUCQLTJHLMWIwjOk7GbpaIHrEiFMhqmAaVSQLefOhbc=;
+        b=GLArkjtdPgvCSnduTwRmjHH0GAo9b6Zfk37Ca+kYmtHHwq4RS5QnDFBfcMeehY9CEL
+         L7XvbwO2q0Gfa5/gVbzx+rh51yNdz2hqv2L1nvqrLTQeIttnjUrctF6dWXUx3aQ4fqmv
+         hlGdFxf/Ac9K84ELw8cCSCQ4T6mWyzsPFpBLs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pKHXn9wnTp9qRrDvUqHWpePjL7Y3hrbra/6xW/dla90=;
-        b=MAJPPv4hxRpWzCqQ6YyhxPmrgtriTrZavDmk2sKStzdsXlBYsjFOyZO+YgcVfQ6KgG
-         VaJcWx4FSmyw1oOlVuygriGvmxzxdy0OnhB71N5C3PAYGmVMgFJdKrmZDMxm6u07XmTI
-         pP0oPiTv6wFZe8i+Wff5vU31OxwAbqvWQ6kQoqG7qlKdawO1NHw+IaxU5WdZbD4g6tkD
-         34il6Q02uxBeCm5APOle5N+7jTbm8awQH/dmba6DFTrLPlqU+coj+gJMA5MLBoS10m/S
-         NBs+qYwKU19BFW8rEnanqwMTbfB7ScizPuTeqENG/mS+/4nmYyyj6MhJgkTPaajSyOAX
-         pK0g==
-X-Gm-Message-State: AOAM531UMhPKUctvn16i75zycsxAJGjLHLrO4JxbF1Z9bqd9/tSHBEgK
-        KBPvwIC/tQMSTGEnWqIiao2j4NbS7PS1UeKIRYzweTFNKqFjhM/H4Y1U24XbdZmeu6wwRC0Ochc
-        aIxt2eQGI7p4HMqhl9tHU3IOS
-X-Received: by 2002:a1c:46c4:: with SMTP id t187mr3244029wma.64.1627981273321;
-        Tue, 03 Aug 2021 02:01:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxSMW8XDmM6IKA3v4gzcbw7RQQimpJW2BqmCZ8OTl1PXZEjUdI1YetIiIV7wNFHI9aSeYjXEg==
-X-Received: by 2002:a1c:46c4:: with SMTP id t187mr3244005wma.64.1627981273140;
-        Tue, 03 Aug 2021 02:01:13 -0700 (PDT)
-Received: from [192.168.10.118] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id a16sm14072483wrx.7.2021.08.03.02.01.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 02:01:12 -0700 (PDT)
-Subject: Re: [PATCH v3 09/12] KVM: x86: hyper-v: Deactivate APICv only when
- AutoEOI feature is in use
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20210802183329.2309921-1-mlevitsk@redhat.com>
- <20210802183329.2309921-10-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4209384b-68f3-a0d2-24da-3b047422f114@redhat.com>
-Date:   Tue, 3 Aug 2021 11:01:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=xUCQLTJHLMWIwjOk7GbpaIHrEiFMhqmAaVSQLefOhbc=;
+        b=kJiS/rwjDwHct6qnVw3mF+Hw7C8irAYqj8xigdiGGsRdlIUn6nhpDQyWSLPjupXsR2
+         QL5hIv6Zg7ugJcK+rXe/zDYYk+OcmkoibzMH+PI5g+Ei19fvGMRzIbYW4fLs99447hE9
+         R7Mtz0AnWOJhro7gd0AL2enz6QvYrbH+TKO/bHV1iy2dwj+2+bhB7N8DKV++PtZMfSWO
+         +l0jwRd48sNeNa6qO9x7W4065/imN8pRs3QXDB0LGh6k9fz6rwu/PIQ3cr9bS6soY+da
+         6jj0Ai+FsRVXC9Hvpp7fWBY9RYOdB6RtelsZk9FZJzlpmeihmM7g4owKltrrG7Gg8d9C
+         Buiw==
+X-Gm-Message-State: AOAM532sJjSihNMWaMJKwCd0/ygsJbmkxxeZyQuoWpzKHWXtX59tBGbO
+        LlAYpovMPQRNR8aYJyP678d9DD/oQkQci51WPmSlqQ==
+X-Google-Smtp-Source: ABdhPJzGuEtdB7bf7PJVfXlAaT1Nq8s0bZVsqUmh/GEvGvYp5hC0GqqhWmyijlaI9GXkCG3G08uwk6yRrfKWqP8vaYo=
+X-Received: by 2002:a05:6808:114a:: with SMTP id u10mr13972869oiu.19.1627981292067;
+ Tue, 03 Aug 2021 02:01:32 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 3 Aug 2021 02:01:31 -0700
 MIME-Version: 1.0
-In-Reply-To: <20210802183329.2309921-10-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1626435974-14462-1-git-send-email-sbhanu@codeaurora.org>
+References: <1626435974-14462-1-git-send-email-sbhanu@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 3 Aug 2021 02:01:31 -0700
+Message-ID: <CAE-0n53tzuU-1Gb+krJKjJ5k=hmeBex1=qmJO+zLZBCL5DBhWw@mail.gmail.com>
+Subject: Re: [PATCH V4] mmc: sdhci-msm: Update the software timeout value for sdhc
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
+        adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, sartgarg@codeaurora.org,
+        rnayak@codeaurora.org, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/21 20:33, Maxim Levitsky wrote:
-> From: Vitaly Kuznetsov <vkuznets@redhat.com>
-> 
-> APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
-> SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
-> however, possible to track whether the feature was actually used by the
-> guest and only inhibit APICv/AVIC when needed.
-> 
-> TLFS suggests a dedicated 'HV_DEPRECATING_AEOI_RECOMMENDED' flag to let
-> Windows know that AutoEOI feature should be avoided. While it's up to
-> KVM userspace to set the flag, KVM can help a bit by exposing global
-> APICv/AVIC enablement.
-> 
-> Maxim:
->     - always set HV_DEPRECATING_AEOI_RECOMMENDED in kvm_get_hv_cpuid,
->       since this feature can be used regardless of AVIC
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+Quoting Shaik Sajida Bhanu (2021-07-16 04:46:14)
+> Whenever SDHC run at clock rate 50MHZ or below, the hardware data
+> timeout value will be 21.47secs, which is approx. 22secs and we have
+> a current software timeout value as 10secs. We have to set software
+> timeout value more than the hardware data timeout value to avioid seeing
+> the below register dumps.
+>
+> [  332.953670] mmc2: Timeout waiting for hardware interrupt.
+> [  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
+> [  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
+> [  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
+> [  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
+> [  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
+> [  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
+> [  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
+> [  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
+> [  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
+> [  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+> [  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
+> [  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
+> [  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
+> [  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+> [  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
+> [  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
+> 0x0000000ffffff218
+> [  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
+> -----------
+> [  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
+> 0x6000642c | DLL cfg2: 0x0020a000
+> [  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
+> 0x00000000 | DDR cfg: 0x80040873
+> [  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
+> 0xf88218a8 Vndr func3: 0x02626040
+> [  333.102371] mmc2: sdhci: ============================================
+>
+> So, set software timeout value more than hardware timeout value.
+>
+
+Should this be tagged for stable trees?
+
+> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 > ---
->   arch/x86/include/asm/kvm_host.h |  3 +++
->   arch/x86/kvm/hyperv.c           | 27 +++++++++++++++++++++------
->   2 files changed, 24 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 80323b5fb20a..55b1f79d9c43 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -988,6 +988,9 @@ struct kvm_hv {
->   	/* How many vCPUs have VP index != vCPU index */
->   	atomic_t num_mismatched_vp_indexes;
->   
-> +	/* How many SynICs use 'AutoEOI' feature */
-> +	atomic_t synic_auto_eoi_used;
-> +
->   	struct hv_partition_assist_pg *hv_pa_pg;
->   	struct kvm_hv_syndbg hv_syndbg;
->   };
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index b07592ca92f0..638f3c559623 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
-> @@ -88,6 +88,10 @@ static bool synic_has_vector_auto_eoi(struct kvm_vcpu_hv_synic *synic,
->   static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
->   				int vector)
->   {
-> +	struct kvm_vcpu *vcpu = hv_synic_to_vcpu(synic);
-> +	struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
-> +	int auto_eoi_old, auto_eoi_new;
-> +
->   	if (vector < HV_SYNIC_FIRST_VALID_VECTOR)
->   		return;
->   
-> @@ -96,10 +100,25 @@ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
->   	else
->   		__clear_bit(vector, synic->vec_bitmap);
->   
-> +	auto_eoi_old = bitmap_weight(synic->auto_eoi_bitmap, 256);
-> +
->   	if (synic_has_vector_auto_eoi(synic, vector))
->   		__set_bit(vector, synic->auto_eoi_bitmap);
->   	else
->   		__clear_bit(vector, synic->auto_eoi_bitmap);
-> +
-> +	auto_eoi_new = bitmap_weight(synic->auto_eoi_bitmap, 256);
-> +
-> +	/* Hyper-V SynIC auto EOI SINTs are not compatible with APICV */
-> +	if (!auto_eoi_old && auto_eoi_new) {
-> +		if (atomic_inc_return(&hv->synic_auto_eoi_used) == 1)
-> +			kvm_request_apicv_update(vcpu->kvm, false,
-> +						APICV_INHIBIT_REASON_HYPERV);
-> +	} else if (!auto_eoi_new && auto_eoi_old) {
-> +		if (atomic_dec_return(&hv->synic_auto_eoi_used) == 0)
-> +			kvm_request_apicv_update(vcpu->kvm, true,
-> +						APICV_INHIBIT_REASON_HYPERV);
-> +	}
->   }
->   
->   static int synic_set_sint(struct kvm_vcpu_hv_synic *synic, int sint,
-> @@ -933,12 +952,6 @@ int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
->   
->   	synic = to_hv_synic(vcpu);
->   
-> -	/*
-> -	 * Hyper-V SynIC auto EOI SINT's are
-> -	 * not compatible with APICV, so request
-> -	 * to deactivate APICV permanently.
-> -	 */
-> -	kvm_request_apicv_update(vcpu->kvm, false, APICV_INHIBIT_REASON_HYPERV);
->   	synic->active = true;
->   	synic->dont_zero_synic_pages = dont_zero_synic_pages;
->   	synic->control = HV_SYNIC_CONTROL_ENABLE;
-> @@ -2466,6 +2479,8 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
->   				ent->eax |= HV_X64_ENLIGHTENED_VMCS_RECOMMENDED;
->   			if (!cpu_smt_possible())
->   				ent->eax |= HV_X64_NO_NONARCH_CORESHARING;
-> +
-> +			ent->eax |= HV_DEPRECATING_AEOI_RECOMMENDED;
->   			/*
->   			 * Default number of spinlock retry attempts, matches
->   			 * HyperV 2016.
-> 
-
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-
+>
+> Changes since V3:
+>         - Addressed minor comments from Adrain Hunter and retained his
+>           Acked-by Signed-off.
+>
+> Changes since V2:
+>         - Updated 22 with 22LL to avoid compiler warning as
+>           suggested by Adrian Hunter.
+>         - Added a check to update software data timeout value if its value
+>           is less than the calculated hardware data timeout value as suggested
+>           by Veerabhadrarao Badiganti.
+> Changes since V1:
+>         - Moved software data timeout update part to qcom specific file
+>           as suggested by Veerabhadrarao Badiganti.
