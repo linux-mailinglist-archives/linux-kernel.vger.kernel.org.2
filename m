@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE473DF112
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E233DF114
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236452AbhHCPJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:09:03 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:41124 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234206AbhHCPJC (ORCPT
+        id S236886AbhHCPJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:09:35 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:57128
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236685AbhHCPJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:09:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Uht0IwF_1628003329;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Uht0IwF_1628003329)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 03 Aug 2021 23:08:50 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org
-Cc:     baolin.wang@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/swap: Remove the unused get_kernel_page()
-Date:   Tue,  3 Aug 2021 23:07:04 +0800
-Message-Id: <a6137b871658cdbd0cde9fbeecf2168bc8ec87e9.1628002955.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 3 Aug 2021 11:09:19 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 87E4E3F070;
+        Tue,  3 Aug 2021 15:09:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628003344;
+        bh=yujcAW928JS1+WAa5ppXQvA0AiE4xUVDj/s66hatc0A=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=mREzlHPwx8jgCXwCQp5AweexjLomZrqnpv852tP8GEMfnDNQ9EJZuB1sab7bJNrGk
+         D7QfrRHgwLxawch47XtG9QsCVQPOGIvpgWHr9SDIg4f0MgRHnL21bIUQVP2+lKueKF
+         rQOEhkLmppi2Cu5ldSdAZmpjBIL8PyThXJuBTn8v47zgboCQ+mtaKrMNVaCgRcR76q
+         +rGSxnkpHTe/HkOjautuv4a3h4TvjTJX2hajKOnSSLz9oXKWYardQxD98JjMDR3Igu
+         jr//IdPSl+37xIHBh7CDoSUnpfddVTA3gkeTcmcXkrDffArQJxK9mAkPKq6n45huO4
+         F+/KQhEPocRXw==
+From:   Colin King <colin.king@canonical.com>
+To:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] brcmfmac: firmware: Fix uninitialized variable ret
+Date:   Tue,  3 Aug 2021 16:09:04 +0100
+Message-Id: <20210803150904.80119-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now there are no users of the get_kernel_page() function,
-thus remove it.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Currently the variable ret is uninitialized and is only set if
+the pointer alt_path is non-null. Fix this by ininitializing ret
+to zero.
+
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: 5ff013914c62 ("brcmfmac: firmware: Allow per-board firmware binaries")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- include/linux/mm.h |  1 -
- mm/swap.c          | 22 ----------------------
- 2 files changed, 23 deletions(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 7bc883c..dbfee57 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1953,7 +1953,6 @@ int __account_locked_vm(struct mm_struct *mm, unsigned long pages, bool inc,
- struct kvec;
- int get_kernel_pages(const struct kvec *iov, int nr_pages, int write,
- 			struct page **pages);
--int get_kernel_page(unsigned long start, int write, struct page **pages);
- struct page *get_dump_page(unsigned long addr);
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+index adfdfc654b10..4f387e868120 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+@@ -680,7 +680,7 @@ int brcmf_fw_get_firmwares(struct device *dev, struct brcmf_fw_request *req,
+ 	struct brcmf_fw_item *first = &req->items[0];
+ 	struct brcmf_fw *fwctx;
+ 	char *alt_path;
+-	int ret;
++	int ret = 0;
  
- extern int try_to_release_page(struct page * page, gfp_t gfp_mask);
-diff --git a/mm/swap.c b/mm/swap.c
-index 6f382ab..645b733 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -180,28 +180,6 @@ int get_kernel_pages(const struct kvec *kiov, int nr_segs, int write,
- }
- EXPORT_SYMBOL_GPL(get_kernel_pages);
- 
--/*
-- * get_kernel_page() - pin a kernel page in memory
-- * @start:	starting kernel address
-- * @write:	pinning for read/write, currently ignored
-- * @pages:	array that receives pointer to the page pinned.
-- *		Must be at least nr_segs long.
-- *
-- * Returns 1 if page is pinned. If the page was not pinned, returns
-- * -errno. The page returned must be released with a put_page() call
-- * when it is finished with.
-- */
--int get_kernel_page(unsigned long start, int write, struct page **pages)
--{
--	const struct kvec kiov = {
--		.iov_base = (void *)start,
--		.iov_len = PAGE_SIZE
--	};
--
--	return get_kernel_pages(&kiov, 1, write, pages);
--}
--EXPORT_SYMBOL_GPL(get_kernel_page);
--
- static void pagevec_lru_move_fn(struct pagevec *pvec,
- 	void (*move_fn)(struct page *page, struct lruvec *lruvec))
- {
+ 	brcmf_dbg(TRACE, "enter: dev=%s\n", dev_name(dev));
+ 	if (!fw_cb)
 -- 
-1.8.3.1
+2.31.1
 
