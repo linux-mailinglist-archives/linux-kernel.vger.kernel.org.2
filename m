@@ -2,93 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735CF3DE72F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DAD3DE730
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhHCH2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233966AbhHCH2F (ORCPT
+        id S234212AbhHCH2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:28:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42468 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234108AbhHCH2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:28:05 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFC9C06175F;
-        Tue,  3 Aug 2021 00:27:53 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id z18so5750297ybg.8;
-        Tue, 03 Aug 2021 00:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C0npjgl+HG6crVvxafwBN6vIxikeVgWfSY9pE6rAYAA=;
-        b=q1ybkuphZ8XwwP1UWgfZwuXU3QIAycNN3HcwkuYW3bYCNdph0SEdA1be+M1hOLsewD
-         oDbLm34QbW3+3N2aA/gecXVShOZpAq37D8475xWlSSqW5BdfM721jMO2e3PdJYJn79VE
-         rJcWDcLaUCiN//ZHi+Edp65SYI5bRaB6OkOFBF3Od5RUbBHt5PR5/WZmBtkbl4cVxKhl
-         b5Y0lPHHhY4XtC3jqDhRisooemDS9Iw8er1y4YGb1OySAvEAt+f2Uj6w9n892MjwDjdQ
-         FfZcnIYfvN/tykfweQ5kiwGqOiyw1pJAfqhSDRMlzyoas1JDpdK/Tgcoh6/AxAi7RIz+
-         npNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C0npjgl+HG6crVvxafwBN6vIxikeVgWfSY9pE6rAYAA=;
-        b=taf4RFFmPLjNXRxitNlFecTnjbKknDCxEwrOpJuglIWY6X/ct/qcowTQMLOxvRCQmk
-         03t+Md3Jqaal3F38dA0NQNo1oB8JNhnVDNG+rSm/gwpZCNyRUbPi5NNqOPjcNapR9X6r
-         6eAqBPYIUBmKQZ7Zp/553+T6G6zOHFzHW3fMgGYutkh8NpKlZHntgwkQctWW1/y9s+Xj
-         cJ2XKXB9qrFLuXnzQm9AtNJCahnmjGBkbK5Qc1bElxvRencCV2jYxQKq9kloYGupG8jj
-         /5Q0PiFOJc+LMYc3wa7zVXWHGd+0hJiPpqJTjhgN4HYVYtD1dXbrGGKNIzPzJ+IEcjVw
-         3z1g==
-X-Gm-Message-State: AOAM532b8ZOkLABfr0rUHQz/cL889BXm5g3GbjounJvnlWxcOclop7WP
-        AKAmzkympUnfFNQWAWKJTqStYDPgw6woah8cSk0=
-X-Google-Smtp-Source: ABdhPJzij8OZbRZgZ3RMD6+dyy/1WHOYYmERYbqjs0KqznvBC4+9fFCc5ArDbPP05yg+LkRPp/HON3cAb7YVYZaXEjw=
-X-Received: by 2002:a25:f310:: with SMTP id c16mr19079345ybs.464.1627975673074;
- Tue, 03 Aug 2021 00:27:53 -0700 (PDT)
+        Tue, 3 Aug 2021 03:28:06 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B490C20010;
+        Tue,  3 Aug 2021 07:27:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627975674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wuIGTu+T5iM4gV2NreSfqAlufJJUZ957ha88L+oyogc=;
+        b=ffPnT6IT5q1xKUJXVgjcL901Ov2a69NYiPyHx1+Bs4Cbr4VGwvsntpN35cb37aoIkc3Ve7
+        XCP50BxcQfHCaDDVkfzq2BtntlqQVlQJxBA6jMJ8GH4XRw8lbKAoPq8r0B4SWLIiS5PFQ1
+        Mc+vR8f9wGNEVeByrJnEV2bgBgs2Z6I=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 9D9ADA3BC9;
+        Tue,  3 Aug 2021 07:27:53 +0000 (UTC)
+Date:   Tue, 3 Aug 2021 09:27:52 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Miaohe Lin <linmiaohe@huawei.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "alexs@kernel.org" <alexs@kernel.org>,
+        "richard.weiyang@gmail.com" <richard.weiyang@gmail.com>,
+        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
+Message-ID: <YQjv+DzdX3CuVfIo@dhcp22.suse.cz>
+References: <20210729125755.16871-1-linmiaohe@huawei.com>
+ <20210729125755.16871-3-linmiaohe@huawei.com>
+ <YQNsxVPsRSBZcfGG@carbon.lan>
+ <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
+ <4a3c23c4-054c-2896-29c5-8cf9a4deee98@huawei.com>
+ <YQi6lOT6j2DtOGlT@carbon.dhcp.thefacebook.com>
+ <95629d91-6ae8-b445-e7fc-b51c888cad59@huawei.com>
+ <YQjsHTW+46bG9XsV@dhcp22.suse.cz>
+ <898130C3-FDF2-41C2-81DD-D33721C977C6@fb.com>
 MIME-Version: 1.0
-References: <20210803042347.679499-1-rostedt@goodmis.org> <20210803042347.679499-2-rostedt@goodmis.org>
-In-Reply-To: <20210803042347.679499-2-rostedt@goodmis.org>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 3 Aug 2021 09:27:42 +0200
-Message-ID: <CAKXUXMzMW5NeCjxXDQEmC-imrbg3AGR4sg+TOwnj0eFRyLSb4g@mail.gmail.com>
-Subject: Re: [PATCH v2 01/21] libtracefs: Added new API tracefs_sql()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        Daniel Black <daniel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <898130C3-FDF2-41C2-81DD-D33721C977C6@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 6:23 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
->
-> This adds the API tracefs_sql() that takes a tep_handle handler, a name,
-> and a SQL string and parses it to produce a tracefs_synth synthetic event
-> handler.
->
-> Currently it only supports simple SQL of the type:
->
->   SELECT start.common_pid AS pid, end.common_timestamp.usecs AS usecs
->     FROM sched_waking AS start JOIN sched_switch AS end
->     ON start.pid = end.next_pid
->
-> Special thanks to:
->
->   Lukas Bulwahn for first introducing the idea at RT Summit on the Summit
->     Spring of 2019.
+On Tue 03-08-21 07:13:35, Roman Gushchin wrote:
+> I’d go with atomic_dec().
 
-Thanks, Steven, for putting this idea to life.
-
-I hope that the tracing users appreciate this new declarative
-interface using SQL and it makes tracing events easier comprehensible
-to a larger community of users.
-
-Lukas
+which is not implying memory barriers either. You would need
+atomic_dec_return or some other explicit barrier IIRC.
+-- 
+Michal Hocko
+SUSE Labs
