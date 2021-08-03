@@ -2,124 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382793DE921
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A143DE926
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234961AbhHCJBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
+        id S234988AbhHCJCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234631AbhHCJBo (ORCPT
+        with ESMTP id S234948AbhHCJCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:01:44 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD03C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:01:34 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id w6so27429221oiv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:01:34 -0700 (PDT)
+        Tue, 3 Aug 2021 05:02:21 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D16C061796
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:02:09 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id n2so28028910eda.10
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:02:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=xUCQLTJHLMWIwjOk7GbpaIHrEiFMhqmAaVSQLefOhbc=;
-        b=GLArkjtdPgvCSnduTwRmjHH0GAo9b6Zfk37Ca+kYmtHHwq4RS5QnDFBfcMeehY9CEL
-         L7XvbwO2q0Gfa5/gVbzx+rh51yNdz2hqv2L1nvqrLTQeIttnjUrctF6dWXUx3aQ4fqmv
-         hlGdFxf/Ac9K84ELw8cCSCQ4T6mWyzsPFpBLs=
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3wZFhZTC8zZY+D9UvhMcL30+qrKHqoBqQtpm1vOADzM=;
+        b=JKe8MBo/Q/9jJiWfNFv7/6FozVELAtit9lfH9d5TxXXMYzq/K+Pmkq5MZfy0MK2cFu
+         cx6FhhWxNDc+0E1xzGVvot63Tu4Ur8FkAtBApXV5HGWA7B6YAue4z52aDqp2cPeuObcM
+         NbvLlt0iETqmIH/loBFX6RmK5lnhTeVCMIO5KKZH9Z5CWgGXEldHbQTMQQrf9uJEnfFB
+         86l/PEM0xk2vAai/1RJXq5azCxa1fJfFP2bTdkelMNkruzkW1VP4XZZrR/YihWu8I9cm
+         wPq3kJhM7XQVmw7qPL2HCPQ0a2PjgZxJc4l7AroO/DlUf8xZiD0v/CMDlg12kwVoA4f6
+         XDfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=xUCQLTJHLMWIwjOk7GbpaIHrEiFMhqmAaVSQLefOhbc=;
-        b=kJiS/rwjDwHct6qnVw3mF+Hw7C8irAYqj8xigdiGGsRdlIUn6nhpDQyWSLPjupXsR2
-         QL5hIv6Zg7ugJcK+rXe/zDYYk+OcmkoibzMH+PI5g+Ei19fvGMRzIbYW4fLs99447hE9
-         R7Mtz0AnWOJhro7gd0AL2enz6QvYrbH+TKO/bHV1iy2dwj+2+bhB7N8DKV++PtZMfSWO
-         +l0jwRd48sNeNa6qO9x7W4065/imN8pRs3QXDB0LGh6k9fz6rwu/PIQ3cr9bS6soY+da
-         6jj0Ai+FsRVXC9Hvpp7fWBY9RYOdB6RtelsZk9FZJzlpmeihmM7g4owKltrrG7Gg8d9C
-         Buiw==
-X-Gm-Message-State: AOAM532sJjSihNMWaMJKwCd0/ygsJbmkxxeZyQuoWpzKHWXtX59tBGbO
-        LlAYpovMPQRNR8aYJyP678d9DD/oQkQci51WPmSlqQ==
-X-Google-Smtp-Source: ABdhPJzGuEtdB7bf7PJVfXlAaT1Nq8s0bZVsqUmh/GEvGvYp5hC0GqqhWmyijlaI9GXkCG3G08uwk6yRrfKWqP8vaYo=
-X-Received: by 2002:a05:6808:114a:: with SMTP id u10mr13972869oiu.19.1627981292067;
- Tue, 03 Aug 2021 02:01:32 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 3 Aug 2021 02:01:31 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3wZFhZTC8zZY+D9UvhMcL30+qrKHqoBqQtpm1vOADzM=;
+        b=WbdLouVp0lolrTq2nZrk2ianYeI76wI6gePaKJcOpkkhJDaiAkzufG5u3M65iaUSgg
+         gahiYuPN3frI+01xhnslWaiNxtOUzdDJEHBl8UMKARng4xCnmrlN4iDVpKmF3sfFTAfV
+         Ee9tQk4rftp98yEvBSzuSwlma+gdTt4aSs0wTxRwEvuuD0+ih07DcYA8rmWiUcpm1U4F
+         HYu4VEXe4P9d1odySIsJebIcR/ycnwKmrEy7tyGb6ZT4ApnagiXinhSGBSv5HaJwfwPz
+         uYE2bcZfmt1ofH6qaB+ysgezz8uYwYRDLOUTabCGGI6KmYf0jUXrNijgkP3FCA//Byhq
+         t5Yw==
+X-Gm-Message-State: AOAM532tJ09CLdJMUXrqy9FKyp33Kbt1WmU12+c+K4Z+qApYT4kLz9KX
+        vsZHrKvsfGyC/SVxoeyIivAqxmnfv5w3/1qoYKQV
+X-Google-Smtp-Source: ABdhPJyS6bOrWfuvjmdwVRGONpMTv6Y0zVE0kh7I9sjtSTBg5XbDmv85P6yS8Pkoi3kNsB54rx4AF9ZFKn4Qu8vMSM8=
+X-Received: by 2002:aa7:c50a:: with SMTP id o10mr23739559edq.118.1627981328237;
+ Tue, 03 Aug 2021 02:02:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1626435974-14462-1-git-send-email-sbhanu@codeaurora.org>
-References: <1626435974-14462-1-git-send-email-sbhanu@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 3 Aug 2021 02:01:31 -0700
-Message-ID: <CAE-0n53tzuU-1Gb+krJKjJ5k=hmeBex1=qmJO+zLZBCL5DBhWw@mail.gmail.com>
-Subject: Re: [PATCH V4] mmc: sdhci-msm: Update the software timeout value for sdhc
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
-        adrian.hunter@intel.com, ulf.hansson@linaro.org
-Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        vbadigan@codeaurora.org, rampraka@codeaurora.org,
-        sayalil@codeaurora.org, sartgarg@codeaurora.org,
-        rnayak@codeaurora.org, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
+References: <20210729073503.187-1-xieyongji@bytedance.com> <20210729073503.187-3-xieyongji@bytedance.com>
+ <a0ab081a-db06-6b7a-b22e-4ace96a5c7db@redhat.com>
+In-Reply-To: <a0ab081a-db06-6b7a-b22e-4ace96a5c7db@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Tue, 3 Aug 2021 17:01:57 +0800
+Message-ID: <CACycT3sdx8nA8fh3pjO_=pbiM+Bs5y+h4fuGkFQEsRSaBnph7Q@mail.gmail.com>
+Subject: Re: [PATCH v10 02/17] file: Export receive_fd() to modules
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Shaik Sajida Bhanu (2021-07-16 04:46:14)
-> Whenever SDHC run at clock rate 50MHZ or below, the hardware data
-> timeout value will be 21.47secs, which is approx. 22secs and we have
-> a current software timeout value as 10secs. We have to set software
-> timeout value more than the hardware data timeout value to avioid seeing
-> the below register dumps.
+On Tue, Aug 3, 2021 at 3:46 PM Jason Wang <jasowang@redhat.com> wrote:
 >
-> [  332.953670] mmc2: Timeout waiting for hardware interrupt.
-> [  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
-> [  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
-> [  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
-> [  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
-> [  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
-> [  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
-> [  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
-> [  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
-> [  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
-> [  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
-> [  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
-> [  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
-> [  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
-> [  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
-> [  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
-> [  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
-> 0x0000000ffffff218
-> [  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
-> -----------
-> [  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
-> 0x6000642c | DLL cfg2: 0x0020a000
-> [  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
-> 0x00000000 | DDR cfg: 0x80040873
-> [  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
-> 0xf88218a8 Vndr func3: 0x02626040
-> [  333.102371] mmc2: sdhci: ============================================
 >
-> So, set software timeout value more than hardware timeout value.
+> =E5=9C=A8 2021/7/29 =E4=B8=8B=E5=8D=883:34, Xie Yongji =E5=86=99=E9=81=93=
+:
+> > Export receive_fd() so that some modules can use
+> > it to pass file descriptor between processes without
+> > missing any security stuffs.
+> >
+> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> > ---
+> >   fs/file.c            | 6 ++++++
+> >   include/linux/file.h | 7 +++----
+> >   2 files changed, 9 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/fs/file.c b/fs/file.c
+> > index 86dc9956af32..210e540672aa 100644
+> > --- a/fs/file.c
+> > +++ b/fs/file.c
+> > @@ -1134,6 +1134,12 @@ int receive_fd_replace(int new_fd, struct file *=
+file, unsigned int o_flags)
+> >       return new_fd;
+> >   }
+> >
+> > +int receive_fd(struct file *file, unsigned int o_flags)
+> > +{
+> > +     return __receive_fd(file, NULL, o_flags);
+>
+>
+> Any reason that receive_fd_user() can live in the file.h?
 >
 
-Should this be tagged for stable trees?
+Since no modules use it.
 
-> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->
-> Changes since V3:
->         - Addressed minor comments from Adrain Hunter and retained his
->           Acked-by Signed-off.
->
-> Changes since V2:
->         - Updated 22 with 22LL to avoid compiler warning as
->           suggested by Adrian Hunter.
->         - Added a check to update software data timeout value if its value
->           is less than the calculated hardware data timeout value as suggested
->           by Veerabhadrarao Badiganti.
-> Changes since V1:
->         - Moved software data timeout update part to qcom specific file
->           as suggested by Veerabhadrarao Badiganti.
+Thanks,
+Yongji
