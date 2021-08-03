@@ -2,235 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71F43DF267
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0C03DF269
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233308AbhHCQYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232174AbhHCQXZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:23:25 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F760C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 09:23:14 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so5421390pjh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 09:23:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jkw6T5ev+Fs+Fpp8cUH9tIjFS5V4c7J1YQazOGamb6w=;
-        b=tEjPC6XTpj3hMilcc3IEqfPUn54plIKY7ZNrNJ3lyv3781aWbfE8V8sIeCGi+5Cq3E
-         d6UO/q3AlmrklGSX86HTvJNYunrgjgWEBDT4UK1+LOujVuVBfF0iT+6gGez9/MiquJiX
-         g8oA5V4859WIeL03mPCsaLakeYW9fATd/njiOxfuxZQxhKl5o7yiclgkrN9ivMjZOomW
-         2kY7nXcmsoPRzB4BtlZkY2uf13ujl1OeT4TqHKVhhktlyRDKgmAyntx6l8n/jgIHSW8d
-         KBp0osA298v+lZ8N5bf0FiLt8Hc8MJ1JfE/WZc0EA2P+AHDUnvdzBjxZ7q/mDuxQAG+4
-         +2xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jkw6T5ev+Fs+Fpp8cUH9tIjFS5V4c7J1YQazOGamb6w=;
-        b=bGng4CbOxiiNYBnb29voc4kcu+v7zoVayg8gCN3Bl2+Hk+ELVW4KvZN6XJrHeAd/nW
-         I3899elJELtl9PBjiXgHulGx4jWxP76iVGuGFnTlz7PmgGGo/TJqbsG76nB8KdT68lVO
-         Rww1czZNp8k4Fb/LaaoAo1ZwiHe3GvOtnkLsT2WwOfmjELdSUj/sJ+koQWLvjP2duL4L
-         T8wVZzO2DqDna6l5nM8JZhPB93M6KLBlRSsDhVNRaHO8a6Rpmxwwrm1F4ID3z/ewoyFa
-         77MToqvcOXmTXQ9lGZtDqFw/FLRojyFcDhGg7ibe+KdZUjraer6uemAHovpO+oFuGti2
-         qJrg==
-X-Gm-Message-State: AOAM532dfkUzolf+3DCWvhuFpUQj1cMH2I0c1IuFjgnj5ystRPUaS0dx
-        d64YxpDQTMWRfExDkcKu5r3RWQ==
-X-Google-Smtp-Source: ABdhPJxY+66Jmd0X0MXxt2obmlJFXlC1SFco3jraQ+LL1Pu2ExK9k8a8svl3a2ik8y+q5nqyn3bhRg==
-X-Received: by 2002:a17:902:850a:b029:12c:8da9:8bd2 with SMTP id bj10-20020a170902850ab029012c8da98bd2mr19301659plb.58.1628007793996;
-        Tue, 03 Aug 2021 09:23:13 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id t1sm15125166pgr.65.2021.08.03.09.23.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 09:23:13 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 10:23:11 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] remoteproc: Add support for detach-only during
- shutdown
-Message-ID: <20210803162311.GB3091608@p14s>
-References: <20210723220248.6554-1-s-anna@ti.com>
- <20210723220248.6554-2-s-anna@ti.com>
- <20210802184431.GC3051951@p14s>
- <cd399fef-6db7-72eb-933f-7454a043ed14@ti.com>
-MIME-Version: 1.0
+        id S233353AbhHCQZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:25:27 -0400
+Received: from mail-co1nam11on2084.outbound.protection.outlook.com ([40.107.220.84]:56193
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233319AbhHCQZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:25:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CqNgql7GSNxeT5sg+WyUyuS479a/dOCAhipa6nOoXrlFUTfvxp4gGu9xXEO2YT9Ceg3F53SOyl/tMOaSysNCzR9GETCYKx/jqVzKHSMxacdAwttfGJJKHUsClviLm7bQrZSTqgdU+FHEwL2M55uSfBR4+XcSKHnxT5Y+2mFQfc42y28Cm6n8VdVVHhWwRCnnss44rNI1A8jqmaFjzxG5RwG8XM3AfNIaXDVFSd00r7ExRxxuonFO87mNxHqoXxQFxiR113H0VgLZZNGWIJ/e/lu2YxzV3bj6Ap8pNcved6y+ts1qLFsE6fVsbB93jcGBcdDULJ1JO9TpjLcjlU1Gkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+bSrgEVsPee3fmFzfxVJHc/4OcLlIqaAQgGhd0NwqHI=;
+ b=oDjRg7USBpADsgQ16AInhVuSkmSRhZtJOdKl1CUm9RYxo+H48+QYyWvEGZTgBxgtuBtbOi7fZZrzmZRA0TzaUZfhKIym5hRBRSK9XhxkzNTtUpEAaKlYaafTR19/9Qp1ccQXofQlCMQt1TKkGmtiCtSIXtM4WwV0ACmZBhaVokJ2ElcUS+VR2jO9A8oAQ79ThWcK7k2QL2bXSgeG4jHzh8oyCoXxpZG+TIHSmMJTi7OphGd80bYIbCczf9yv+MeKeRcrGqVJFcKfD2DXWJ2DOTOxTCOBx2Ebdv019UdwFc67ZjitWhdBKt24UMlIQr2RjYP2NWTcmbeKyiFWHERRug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+bSrgEVsPee3fmFzfxVJHc/4OcLlIqaAQgGhd0NwqHI=;
+ b=hV1nO8+uYTfOi3ZrhtbvhkBzX5tMbno7R1RLYC1ts447++IY/bCnpaWFOg0ruKIJZUvVtdoORg3hywEZPBx8DOzTTsQfPWN/EXDaqm9q9tYxEPq6DE7AEUy43EHpcaW9ma6+zgabSuYeKLo0kxGyScMJdCoe34yW4P0sYZNwCWCMGzZaJAqCdCwrLdCu+YZEahcgOHO77kbdvIz+YTp0x3JU6T/pDm7+EpPiy+MkUa88CrfiTi+UA1UC3peC0Tfp4GSpJg2F4xDdK6UQgFaNkNLSPEYVJuuKg42iT/ynpO4odlClA0skK2+5D/KkUwwBxWIubLzJjGsuxXNUZIyrxA==
+Authentication-Results: cn.fujitsu.com; dkim=none (message not signed)
+ header.d=none;cn.fujitsu.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5030.namprd12.prod.outlook.com (2603:10b6:208:313::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19; Tue, 3 Aug
+ 2021 16:25:08 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 16:25:08 +0000
+Date:   Tue, 3 Aug 2021 13:25:07 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Li Zhijian <lizhijian@cn.fujitsu.com>
+Cc:     leon@kernel.org, dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
+Message-ID: <20210803162507.GA2892108@nvidia.com>
+References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cd399fef-6db7-72eb-933f-7454a043ed14@ti.com>
+In-Reply-To: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
+X-ClientProxiedBy: BLAPR03CA0034.namprd03.prod.outlook.com
+ (2603:10b6:208:32d::9) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by BLAPR03CA0034.namprd03.prod.outlook.com (2603:10b6:208:32d::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21 via Frontend Transport; Tue, 3 Aug 2021 16:25:08 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mAxE3-00C8Or-8c; Tue, 03 Aug 2021 13:25:07 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 257c6672-b171-4c87-27ae-08d9569b424b
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5030:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5030EF4F71363E805002608FC2F09@BL1PR12MB5030.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2150;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vz3Tj4l8EhfwZUY/jcxrASTngRzSlLDA9yhXekfvHOYTJnqFdCKqTMX90HqnTziTAq9+1y2+h2zWBZNpfTJ7nrCyC+0ooB27Nc6c7gWkFCgH17AG8MHHrsy2xIBTR9O/1m0q9R8sBtqiyX/tOu7wQINwqlM6zQtLdee6aNLFeYPffa0gbbV9uGn8syi1UkcxM75tB6JyJDNRLu0PzvtnDPtZUPtYj2N/M3i0VYCAJ6zQTdaFf5SEcjgDmvx/SCZHi+KmZfF0EI+RUznoh9RoVbkBpMNbu7Ks/t8vDgH3E4On60/68zPchdPWSLei/9kCunNaESuLS/dKc+nwMI0F2NhsFCuOMGnq8UtHWGEBMxq6/F4HQYZrhGQWotQaC4e0m3GGih4lLrJCFeom+KxGLtQT69RsXmhVfdS2dQn1wSUPgrkd48AnJ5c7rQWCeUBnfYHeAHmn1O3vwLI/5wWOsA5ejbU3YhrwhObkKMxaMcTeCN/1Fs1dNSLf4rpwD6lX8FthBYw8Cf6mKa9kT3cAIyYKqg7B0X9ZTHrwNHZNz+yMYnycPwayiwEvBL21hBhui7aZEwYgUcek4lezK//yy3hAGdphsJRY9bPKJ8aMicCG3tUXHNFKd/XkyR9UxPXf4OKSFrP/sh8RBdm8HlDjsA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(376002)(366004)(426003)(8676002)(5660300002)(26005)(4744005)(86362001)(66946007)(6916009)(66556008)(316002)(9746002)(9786002)(66476007)(2616005)(186003)(478600001)(8936002)(83380400001)(2906002)(33656002)(38100700002)(36756003)(4326008)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SDbNtgAiDp17I9B3g2EZRETT3lggPlNWswAAeuIb19gByoL0lLK1VrA7DNSy?=
+ =?us-ascii?Q?l/MDoeV/GU8nqfjeE1KL2tBHRV+PA1MvZ+BnkB05KiW3E5IvzhUoYFB8l11X?=
+ =?us-ascii?Q?rX1b41z20IcMo3wGN699As2JPt/WEeqMG3vKt+hv4URvcYUMl5jr3vIBxi0B?=
+ =?us-ascii?Q?H2Pd3Az2z3fTYWMKr0CoYcA2OFwsZ0bk7JcSdoY52n+1NjJ3xUkmx9KwqvKK?=
+ =?us-ascii?Q?sO8EaxvuDlo91VDJReREzVnJRhzkNNZ4VTBTW9Ii9I1p8i2kvsUXil89dUMn?=
+ =?us-ascii?Q?07hYg1eDrTx3IQNGnBUEI1SY6l3kSErNwN63IYdFt37FxV0d4KI9LlcRhrcW?=
+ =?us-ascii?Q?8usCSOw9yqlHnboV71emG3vR/Ti6EHHqIGSe74XUEPUn7wAtGOhDUz6YCbxO?=
+ =?us-ascii?Q?I/OgHZGBV//swiiPNVDNmjYXTMqqzUiluQeZSOrfU7Q0RvukLTYRFMUaKSrY?=
+ =?us-ascii?Q?COqIK6b0f6UOdb2zF5VvDkZesgkAHMUQRc/NuLmEtzJwgUji7rBE+Oy9LyLx?=
+ =?us-ascii?Q?ffLLeGj8oDW5/aui2psfmGdMFQo2OhnpjSgpFtHG4Dvo+NPRaIxpIWcTgppF?=
+ =?us-ascii?Q?W9Bfqwk6JiIPfmPkzYwMpJ+P57um2/iUU/GnlrQ4EKrae84rDaY3OxEFm4bz?=
+ =?us-ascii?Q?OAbCQJt52mzylcWGNWfFTUWJ1896gYh2FSfJuG2Q3jlBBmdIF9epw3ExYJE2?=
+ =?us-ascii?Q?7SOmgemNLsHqykZUoGnqPYZ7oF4QvgKVp/aC2kepv/WHRkIzgzfd3/PbMh3o?=
+ =?us-ascii?Q?9414/jMxm+pGhVOTGOBH6d+O2x/unts/lU11Fkd7pWFQdTt3hhnsf65vJALo?=
+ =?us-ascii?Q?A+oJ+N9TQtCg/+2g0OKtUScOifIBLQN/od2KRbxK7YHhUrKGiORwzqRtJ4NL?=
+ =?us-ascii?Q?fJc9FSmA1SnZ3t1oKJOYb0Er+7mKyYQ5icOiQKK73bOT+oeHmQiyxVCaXGI/?=
+ =?us-ascii?Q?3ML1RLTUBb4QROafDetNzvoU2CvXfJx0Y/kNZ7lbNP1AFRArjE8Liim37oJX?=
+ =?us-ascii?Q?TpKz/+G0eig4IvEFKZ9v9Nxaefv6/1AuBwXG312UF5oUtQ90s6NYYMDy3iHp?=
+ =?us-ascii?Q?gag3Q4ZPpQ33fnOXTaCEyiG8WpcvVAvns6SFreZMLr7hvirtKZ0gBnBQhM9J?=
+ =?us-ascii?Q?KT5r4qqIXbepaVVWYm5OV0CuX8kmVb9hyIWX7N/I6rqUMUPfEOqw5AM6wSGV?=
+ =?us-ascii?Q?LmuDuAtfN2TK8NIjKfsnU1Tdu0Yr4xk6ZggpYRjO3HNHSTxYCDUQIj/4YJWj?=
+ =?us-ascii?Q?HecxoQ+Aawn7GvqKgXgPjSQoMHvN+wA30zyAYRBUAzRwi0kGht0OI4IiGj4Y?=
+ =?us-ascii?Q?xQ04tQr4JBigl/alQjpjzo+f?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 257c6672-b171-4c87-27ae-08d9569b424b
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 16:25:08.3678
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hcBISQiCUQ4bTVrJUx3U9dAu97Vmhx05+lI+gzAM+v8DlDzIWMc54iWwjikd/b/3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5030
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good morning,
+On Sun, Aug 01, 2021 at 05:20:50PM +0800, Li Zhijian wrote:
+> ibv_advise_mr(3) says:
+> EFAULT In one of the following: o When the range requested is out of the  MR  bounds,
+>        or  when  parts of it are not part of the process address space. o One of the
+>        lkeys provided in the scatter gather list is invalid or with wrong write access
+> 
+> Actually get_prefetchable_mr() will return NULL if it see above conditions
 
-On Mon, Aug 02, 2021 at 06:21:38PM -0500, Suman Anna wrote:
-> Hi Mathieu,
-> 
-> On 8/2/21 1:44 PM, Mathieu Poirier wrote:
-> > On Fri, Jul 23, 2021 at 05:02:44PM -0500, Suman Anna wrote:
-> >> The remoteproc core has support for both stopping and detaching a
-> >> remote processor that was attached to previously, through both the
-> >> remoteproc sysfs and cdev interfaces. The rproc_shutdown() though
-> >> unconditionally only uses the stop functionality at present. This
-> >> may not be the default desired functionality for all the remoteproc
-> >> platform drivers.
-> >>
-> >> Enhance the remoteproc core logic to key off the presence of the
-> >> .stop() ops and allow the individual remoteproc drivers to continue
-> >> to use the standard rproc_add() and rproc_del() API. This allows
-> >> the remoteproc drivers to only do detach if supported when the driver
-> >> is uninstalled, and the remote processor continues to run undisturbed
-> >> even after the driver removal.
-> >>
-> >> Signed-off-by: Suman Anna <s-anna@ti.com>
-> >> ---
-> >> v2: Addressed various review comments from v1
-> >>  - Reworked the logic to not use remoteproc detach_on_shutdown and
-> >>    rely only on rproc callback ops
-> >>  - Updated the last para of the patch description
-> >> v1: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210522000309.26134-3-s-anna@ti.com/
-> >>
-> >>  drivers/remoteproc/remoteproc_cdev.c  | 7 +++++++
-> >>  drivers/remoteproc/remoteproc_core.c  | 5 ++++-
-> >>  drivers/remoteproc/remoteproc_sysfs.c | 6 ++++++
-> >>  3 files changed, 17 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
-> >> index 4ad98b0b8caa..16c932beed88 100644
-> >> --- a/drivers/remoteproc/remoteproc_cdev.c
-> >> +++ b/drivers/remoteproc/remoteproc_cdev.c
-> >> @@ -42,6 +42,13 @@ static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_
-> >>  		    rproc->state != RPROC_ATTACHED)
-> >>  			return -EINVAL;
-> >>  
-> >> +		if (rproc->state == RPROC_ATTACHED &&
-> > 
-> > This is already checked just above.
-> > 
-> >> +		    !rproc->ops->stop) {
-> 
-> Well, this is checking for both conditions, and not just the stop ops
-> independently. We expect to have .stop() defined normally for both regular
-> remoteproc mode and attached mode where you want to stop (and not detach), but
-> as you can see, I am supporting only detach and so will not have .stop() defined
->  with RPROC_ATTACHED.
-> 
-> > 
-> > This is checked in rproc_stop() where -EINVAL is returned if ops::stop has not
-> > been provided.
-> 
-> rproc_shutdown() actually doesn't return any status, so all its internal
-> checking gets ignored and a success is returned today.
-> 
+No, get_prefetchable_mr() returns NULL if the mkey is invalid
 
-That is correct, and I have suggested to add a return value in my previous
-review.
+The above is talking about the address, which is checked inside
+pagefault_mr() and does return EFAULT for all the cases I can see?
 
-> > 
-> >> +			dev_err(&rproc->dev,
-> >> +				"stop not supported for this rproc, use detach\n");
-> > 
-> > The standard error message from the shell should be enough here, the same way it
-> > is enough when the "start" and "stop" scenarios fail.
-> 
-> Thought this was a bit more informative, but sure this trace can be dropped.
-> 
-> > 
-> >> +			return -EINVAL;
-> >> +		}
-> >> +
-> >>  		rproc_shutdown(rproc);
-> >>  	} else if (!strncmp(cmd, "detach", len)) {
-> >>  		if (rproc->state != RPROC_ATTACHED)
-> >> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> >> index 7de5905d276a..ab9e52180b04 100644
-> >> --- a/drivers/remoteproc/remoteproc_core.c
-> >> +++ b/drivers/remoteproc/remoteproc_core.c
-> >> @@ -2075,7 +2075,10 @@ void rproc_shutdown(struct rproc *rproc)
-> >>  	if (!atomic_dec_and_test(&rproc->power))
-> >>  		goto out;
-> >>  
-> >> -	ret = rproc_stop(rproc, false);
-> >> +	if (rproc->state == RPROC_ATTACHED && !rproc->ops->stop)
-> >> +		ret = __rproc_detach(rproc);
-> >> +	else
-> >> +		ret = rproc_stop(rproc, false);
-> > 
-> > As I indicated in my last review I think rproc_shutdown() and rproc_del() should
-> > be decoupled and the right call made in the platform drivers based on the state
-> > of the remote processor.  
-> 
-> We have various remoteproc API provided in pairs - rproc_alloc()/rproc_free(),
-> rproc_add()/rproc_del(), rproc_boot()/rproc_shutdown() and
-> rproc_attach()/rproc_detach(). The drivers are configuring conditions for
-> auto-boot and RPROC_DETACHED. The reason they are coupled is primarily because
-> of the auto-boot done during rproc_add(). And we handle the RPROC_DETACHED case
-> just as well in rproc_boot().
->
-
-The difference with rproc_boot() is that we are checking only the state of the
-remoteproc, everything else related to the remote processor operations is
-seamlessly handles by the state machine.  It is also tied to the
-rproc_trigger_auto_boot() mechanic - decoupling that would be messy without
-bringing any advantages other than keeping with a semantic symmetry.
-
-> While what you have suggested works, but I am not quite convinced on this
-> asymmetric usage, and why this state-machine logic should be split between the
-> core and remoteproc drivers differently between attach and detach. To me,
-> calling rproc_detach() in remoteproc drivers would have made sense only if they
-> are also calling rproc_attach().
-
-As pointed out above I see rproc_boot() as a special case but if that really
-concerns you I'm open to consider patches that will take rproc_attach() out of
-rproc_boot(). 
-
-> 
-> 
-> Conditions such as the above make the core code
-> > brittle, difficult to understand and tedious to maintain.
-> 
-> The logic I have added actually makes rproc_shutdown behavior to be on par with
-> the rproc_boot().
-> 
-> regards
-> Suman
-> 
-> > 
-> > Thanks,
-> > Mathieu
-> > 
-> >>  	if (ret) {
-> >>  		atomic_inc(&rproc->power);
-> >>  		goto out;
-> >> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-> >> index ea8b89f97d7b..133e766f38d4 100644
-> >> --- a/drivers/remoteproc/remoteproc_sysfs.c
-> >> +++ b/drivers/remoteproc/remoteproc_sysfs.c
-> >> @@ -206,6 +206,12 @@ static ssize_t state_store(struct device *dev,
-> >>  		    rproc->state != RPROC_ATTACHED)
-> >>  			return -EINVAL;
-> >>  
-> >> +		if (rproc->state == RPROC_ATTACHED &&
-> >> +		    !rproc->ops->stop) {
-> >> +			dev_err(&rproc->dev, "stop not supported for this rproc, use detach\n");
-> >> +			return -EINVAL;
-> >> +		}
-> >> +
-> >>  		rproc_shutdown(rproc);
-> >>  	} else if (sysfs_streq(buf, "detach")) {
-> >>  		if (rproc->state != RPROC_ATTACHED)
-> >> -- 
-> >> 2.32.0
-> >>
-> 
+Jason
