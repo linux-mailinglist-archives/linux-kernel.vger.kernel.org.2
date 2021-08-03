@@ -2,135 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808993DF1E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62CA3DF1EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237197AbhHCP5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237113AbhHCP5e (ORCPT
+        id S237160AbhHCP7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:59:11 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.165]:36076 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237131AbhHCP7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:57:34 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F365EC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 08:57:22 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id u16so15725038ple.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 08:57:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PUbLeF6P+RfV2ZMxgILEyWJ1iWI9JJBoF3+HQdIEp0o=;
-        b=uEOqguzLfN7sxpk0hpNOYoi9naF81pEJsvlwL2+Hzf9X4jF3wJu7wk9ZTlzyX6qWI+
-         qfV6C+nj8EL/HvTpF0FgN6WzgJiduGzthDy5w5YBvhVLdmtdzgfDWteklLMP5gukp2TV
-         gWwhSTtlL1ZjU8HvVso6A+ozmA+KQ74GVJQg3y7FjwhjMzdkoiVcBQhcCas1PTRL/Cs1
-         u8gUEdYB4L+Eg86K6hrdHnu8w8rY/sFkr3CyghJVfGH35hAMG85XbJk0lSlIB+AVFR4A
-         bJIREME8V/XhMCh/mWv9IMenXWihHo2scEnXQGND/ztC/fzn+R9IWsCQSALCrBnf0x5v
-         7wVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PUbLeF6P+RfV2ZMxgILEyWJ1iWI9JJBoF3+HQdIEp0o=;
-        b=sd5DBaRN4wbjmHy3/OLGKWOLjw/PqZCI16vBjebxpcGQeNyTDnvOC1KAUa3kp+XqMH
-         9Zxrx1KWtctufSuBvq6z67NhrQaxwKp2oYvy71FkyBZEfnF7W2+LUHg4bNBJPXNHPlXS
-         zsOU8vukAPppyBDBVHu7a/ffSg0k83+6kJA9spXavWEi6YW0QaItiH0tmfmw35MlugBS
-         NPlMQn8CkVR80dFvqutf8JRAoJIas3SN055XuwYM3b9SiZ4eBEJoaKYZJ/Z13v1vmWU8
-         Ygxng1OZyc/65GdZ1+8XcZv1a80xmDs18nD43LGW/3qQSf/R/WsGKzFJ1YvErqdkq8u4
-         tU3Q==
-X-Gm-Message-State: AOAM531JHEIBvfF2YP3AU5aD5gYkj54f4x3pmxkqG/xOeIRKZQZ+KUP5
-        4VWoMeeJ2PL9aVOEIXiwy0mIJQ==
-X-Google-Smtp-Source: ABdhPJyCNNlnYJSNBk0rXf5Z1I+OpS/E5ZuAiTayefhIQ6JoKww4ArLbVfGJBQvXyAavllg6CDngrg==
-X-Received: by 2002:aa7:9470:0:b029:3c4:d63d:38bf with SMTP id t16-20020aa794700000b02903c4d63d38bfmr371218pfq.24.1628006242332;
-        Tue, 03 Aug 2021 08:57:22 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b7sm15773399pfl.195.2021.08.03.08.57.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 08:57:21 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 15:57:18 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [RFC PATCH] kvm/x86: Keep root hpa in prev_roots as much as
- possible
-Message-ID: <YQlnXlmt9JvzRn+f@google.com>
-References: <20210525213920.3340-1-jiangshanlai@gmail.com>
- <YQLuBDZ2MlNlIoH4@google.com>
- <CAJhGHyCU-Om3NWLVg-kbUE7FZD1nNZft8+KeCDH3cr_FDaitXQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyCU-Om3NWLVg-kbUE7FZD1nNZft8+KeCDH3cr_FDaitXQ@mail.gmail.com>
+        Tue, 3 Aug 2021 11:59:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628006307;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=mU3eT7eyGsL5o6LF8h+YK7bclXW4GXpf5fpmDUrcIzU=;
+    b=nlZQVoanb18I3z7wIRRMbvOjqNJXGdBzEiIlUkhXUsWy76YbvNAsAfvfBgjOdRKEaD
+    U29d7bn6ardkbbrpOq1Zqqz3Gh0jnE00shaf+vEjFcBY2WLTdd6ajrcGNrVNdku0E/oS
+    z3EP2PWzZ4E0bqt8Xuy4JM/fArKzo4CH2EDI4iFg4SRRi6HQcx+0Jk23kLaLt4pC1oGc
+    dM0S6TURFE+bKosjdfOw1MPAK1BMjVMavaJyqxeNv6p8srMQjmSMhhJPQwyGoXe4jhN7
+    htFB2QF/uVeiR8s2okhFIuGGcKuRZaQzUw2302hT5o0sGaw5ae5LGL7yf7ou7YjDZqTr
+    bfvw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NIGH/jrwDOqAdo="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.30.1 DYNA|AUTH)
+    with ESMTPSA id K060b1x73FwN0fL
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 3 Aug 2021 17:58:23 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH 0/2] Regex fixes for mips and x86 cross-compile
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CAKwvOd=FdZsQZCGqqpnbzgVZ+s2=ffyh337RwqyTAzHMcjUb+w@mail.gmail.com>
+Date:   Tue, 3 Aug 2021 17:58:22 +0200
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Jessica Yu <jeyu@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel@pyra-handheld.com,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <BFB4FABC-60B7-445D-ACEB-4AAE177AF8D4@goldelico.com>
+References: <cover.1625734629.git.hns@goldelico.com>
+ <4AC1CCE9-CCAF-4D4B-BAD5-CEB9E5155FDF@goldelico.com>
+ <CAKwvOd=FdZsQZCGqqpnbzgVZ+s2=ffyh337RwqyTAzHMcjUb+w@mail.gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021, Lai Jiangshan wrote:
-> On Fri, Jul 30, 2021 at 2:06 AM Sean Christopherson <seanjc@google.com> wrote:
-> > Ha, we can do this without increasing the memory footprint and without co-opting
-> > a bit from pgd or hpa.  Because of compiler alignment/padding, the u8s and bools
-> > between mmu_role and prev_roots already occupy 8 bytes, even though the actual
-> > size is 4 bytes.  In total, we need room for 4 roots (3 previous + current), i.e.
-> > 4 bytes.  If a separate array is used, no additional memory is consumed and no
-> > masking is needed when reading/writing e.g. pgd.
-> >
-> > The cost is an extra swap() when updating the prev_roots LRU, but that's peanuts
-> > and would likely be offset by masking anyways.
-> >
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > index 99f37781a6fc..13bb3c3a60b4 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -424,10 +424,12 @@ struct kvm_mmu {
-> >         hpa_t root_hpa;
-> >         gpa_t root_pgd;
-> >         union kvm_mmu_role mmu_role;
-> > +       bool root_unsync;
-> >         u8 root_level;
-> >         u8 shadow_root_level;
-> >         u8 ept_ad;
-> >         bool direct_map;
-> > +       bool unsync_roots[KVM_MMU_NUM_PREV_ROOTS];
-> >         struct kvm_mmu_root_info prev_roots[KVM_MMU_NUM_PREV_ROOTS];
-> >
-> 
-> Hello
-> 
-> I think it is too complicated.  And it is hard to accept to put "unsync"
-> out of struct kvm_mmu_root_info when they should be bound to each other.
+Hi all,
+any chance to get that reviewed and merged into v5.15-rc1 and backported =
+to stable?
+Thank you,
+Nikolaus Schaller
 
-I agree it's a bit ugly to have the separate unsync_roots array, but I don't see
-how it's any more complex.  It's literally a single swap() call.
 
-> How about this:
-> - KVM_MMU_NUM_PREV_ROOTS
-> + KVM_MMU_NUM_CACHED_ROOTS
-> - mmu->prev_roots[KVM_MMU_NUM_PREV_ROOTS]
-> + mmu->cached_roots[KVM_MMU_NUM_CACHED_ROOTS]
+> Am 19.07.2021 um 22:37 schrieb Nick Desaulniers =
+<ndesaulniers@google.com>:
+>=20
+> + Masahiro, linux-kbuild (EOM)
+>=20
+> On Mon, Jul 19, 2021 at 12:07 PM H. Nikolaus Schaller =
+<hns@goldelico.com> wrote:
+>>=20
+>> Any chance that it gets merged?
+>>=20
+>>> Am 08.07.2021 um 10:57 schrieb H. Nikolaus Schaller =
+<hns@goldelico.com>:
+>>>=20
+>>> Trying to run the x86 relocs tool on a BSD based HOSTCC (cross
+>>> compilation environment) leads to errors like
+>>>=20
+>>> VOFFSET arch/x86/boot/compressed/../voffset.h - due to: vmlinux
+>>> CC      arch/x86/boot/compressed/misc.o - due to: =
+arch/x86/boot/compressed/../voffset.h
+>>> OBJCOPY arch/x86/boot/compressed/vmlinux.bin - due to: vmlinux
+>>> RELOCS  arch/x86/boot/compressed/vmlinux.relocs - due to: vmlinux
+>>> empty (sub)expressionarch/x86/boot/compressed/Makefile:118: recipe =
+for target 'arch/x86/boot/compressed/vmlinux.relocs' failed
+>>> make[3]: *** [arch/x86/boot/compressed/vmlinux.relocs] Error 1
+>>>=20
+>>> and when cross compiling a MIPS kernel on a BSD based HOSTCC
+>>> we get errors like
+>>>=20
+>>> SYNC    include/config/auto.conf.cmd - due to: .config
+>>> egrep: empty (sub)expression
+>>> UPD     include/config/kernel.release
+>>> HOSTCC  scripts/dtc/dtc.o - due to target missing
+>>>=20
+>>> It turns out that relocs.c on x86 uses patterns like
+>>>=20
+>>>      "something(|_end)"
+>>>=20
+>>> while MIPS uses egrep with
+>>>=20
+>>>      (|MINOR_|PATCHLEVEL_)
+>>>=20
+>>> In both cases it is not valid syntax or gives undefined results
+>>> according to POSIX 9.5.3 ERE Grammar
+>>>=20
+>>>      =
+https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html
+>>>=20
+>>> It seems to be silently accepted by the Linux regcmp() or egrep
+>>> implementation while a BSD host complains.
+>>>=20
+>>> Such patterns can be replaced by a transformation like
+>>>=20
+>>>      "(|p1|p2)" -> "(p1|p2)?"
+>>>=20
+>>> Test Linux:
+>>>=20
+>>> root@letux:~# echo foo | egrep '^(|foo)$'
+>>> foo
+>>> root@letux:~# echo fool | egrep '^(foo)?$'
+>>> root@letux:~# echo fun | egrep '^(|foo)$'
+>>> root@letux:~# echo f | egrep '^(|foo)$'
+>>> root@letux:~# echo | egrep '^(|foo)$'
+>>>=20
+>>> root@letux:~# echo foo | egrep '^(foo)?$'
+>>> foo
+>>> root@letux:~# echo fool | egrep '^(foo)?$'
+>>> root@letux:~# echo fun | egrep '^(foo)?$'
+>>> root@letux:~# echo f | egrep '^(foo)?$'
+>>> root@letux:~# echo | egrep '^(foo)?$'
+>>>=20
+>>> root@letux:~#
+>>>=20
+>>> Test BSD:
+>>>=20
+>>> iMac:master hns$ echo foo | egrep '^(|foo)$'
+>>> egrep: empty (sub)expression
+>>> iMac:master hns$ echo fool | egrep '^(foo)?$'
+>>> egrep: empty (sub)expression
+>>> iMac:master hns$ echo fun | egrep '^(|foo)$'
+>>> egrep: empty (sub)expression
+>>> iMac:master hns$ echo f | egrep '^(|foo)$'
+>>> egrep: empty (sub)expression
+>>> iMac:master hns$ echo | egrep '^(|foo)$'
+>>> egrep: empty (sub)expression
+>>> iMac:master hns$ echo foo | egrep '^(foo)?$'
+>>> foo
+>>> iMac:master hns$ echo fool | egrep '^(foo)?$'
+>>> iMac:master hns$ echo fun | egrep '^(foo)?$'
+>>> iMac:master hns$ echo f | egrep '^(foo)?$'
+>>> iMac:master hns$ echo | egrep '^(foo)?$'
+>>>=20
+>>> iMac:master hns$
+>>>=20
+>>>=20
+>>> H. Nikolaus Schaller (2):
+>>> x86/tools/relocs: Fix non-POSIX regexp
+>>> arch: mips: Fix non-POSIX regexp
+>>>=20
+>>> arch/mips/Makefile      | 2 +-
+>>> arch/x86/tools/relocs.c | 8 ++++----
+>>> 2 files changed, 5 insertions(+), 5 deletions(-)
+>>>=20
+>>> --
+>>> 2.31.1
+>>>=20
+>>=20
+>=20
+>=20
+> --=20
+> Thanks,
+> ~Nick Desaulniers
 
-I don't have a strong preference on PREV vs CACHED.  CACHED is probably more
-intuitive, but KVM isn't truly caching the root, it's just tracking the HPA (and
-PGD for indirect MMUs), e.g. the root may no longer exist if the backing shadow
-page was zapped.  On the other hand, the main helper is cached_root_available()...
-
-> - mmu->root_hpa
-> + mmu->cached_roots[0].hpa
-> - mmu->root_pgd
-> + mmu->cached_roots[0].pgd
-> 
-> And using the bit63 in @pgd as the information that it is not requested
-
-FWIW, using bit 0 will likely generate more efficient code.
-
-> to sync since the last sync.
-
-Again, I don't have a super strong preference.  I don't hate or love either one :-)
-
-Vitaly, Paolo, any preferences on names and approaches for tracking if a "cached"
-root is unsync?
