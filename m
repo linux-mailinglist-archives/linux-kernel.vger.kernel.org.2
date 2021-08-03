@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869703DF0EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED243DF0F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236595AbhHCO7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:59:39 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:43645 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236787AbhHCO7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:59:34 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 173Ex3hJ016806
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 3 Aug 2021 16:59:03 +0200
-Received: from [167.87.38.215] ([167.87.38.215])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 173Ex2AO002751;
-        Tue, 3 Aug 2021 16:59:02 +0200
-Subject: Re: Faulty commit "watchdog: iTCO_wdt: Account for rebooting on
- second timeout"
-To:     Jean Delvare <jdelvare@suse.de>, linux-watchdog@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Michael Marley <michael@michaelmarley.com>
-References: <20210803165108.4154cd52@endymion>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <e13f45c4-70e2-e2c2-9513-ce38c8235b4f@siemens.com>
-Date:   Tue, 3 Aug 2021 16:59:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S236565AbhHCPAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:00:17 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:40604
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235773AbhHCPAO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 11:00:14 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Au1HY9K6Kdxj5lZVovAPXwMPXdLJyesId70hD?=
+ =?us-ascii?q?6qkRc202TiX2rauTdZggvyMc6wxhO03I++rgBEDoexq1yXcf2+cs1NmZMDUO9F?=
+ =?us-ascii?q?HJEKhSqbqn+THmFiHkn9Qx6Y5recFFZ+HNMQ=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,291,1620684000"; 
+   d="scan'208";a="389614604"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 17:00:02 +0200
+Date:   Tue, 3 Aug 2021 16:59:55 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: julia@hadrien
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+cc:     linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>
+Subject: [PATCH] powerpc/kexec: fix for_each_child.cocci warning
+Message-ID: <alpine.DEB.2.22.394.2108031654080.17639@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20210803165108.4154cd52@endymion>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.08.21 16:51, Jean Delvare wrote:
-> Hi all,
-> 
-> Commit cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on
-> second timeout") causes a regression on several systems. Symptoms are:
-> system reboots automatically after a short period of time if watchdog
-> is enabled (by systemd for example). This has been reported in bugzilla:
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=213809
-> 
-> Unfortunately this commit was backported to all stable kernel branches
-> (4.14, 4.19, 5.4, 5.10, 5.12 and 5.13). I'm not sure why that is the
-> case, BTW, as there is no Fixes tag and no Cc to stable@vger either.
-> And the fix is not trivial, has apparently not seen enough testing,
-> and addresses a problem that has a known and simple workaround. IMHO it
-> should never have been accepted as a stable patch in the first place.
-> Especially when the previous attempt to fix this issue already ended
-> with a regression and a revert.
-> 
-> Anyway... After a glance at the patch, I see what looks like a nice
-> thinko:
-> 
-> +	if (p->smi_res &&
-> +	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
-> 
-> The author most certainly meant inl(SMI_EN(p)) (the register's value)
-> and not SMI_EN(p) (the register's address).
-> 
+From: kernel test robot <lkp@intel.com>
 
-https://lkml.org/lkml/2021/7/26/349
+for_each_node_by_type should have of_node_put() before return.
 
-Jan
+Generated by: scripts/coccinelle/iterators/for_each_child.cocci
 
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+CC: Sumera Priyadarsini <sylphrenadin@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+---
+
+The code seems to have been this way since the beginning of time.  Perhaps
+the of_node_put is a no op for this code?
+
+ core_64.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/arch/powerpc/kexec/core_64.c
++++ b/arch/powerpc/kexec/core_64.c
+@@ -64,8 +64,10 @@ int default_machine_kexec_prepare(struct
+ 			begin = image->segment[i].mem;
+ 			end = begin + image->segment[i].memsz;
+
+-			if ((begin < high) && (end > low))
++			if ((begin < high) && (end > low)) {
++				of_node_put(node);
+ 				return -ETXTBSY;
++			}
+ 		}
+ 	}
+
