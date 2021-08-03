@@ -2,110 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F033DE8E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01383DE86E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234888AbhHCIuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:50:25 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.187]:18890 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234902AbhHCIuX (ORCPT
+        id S234474AbhHCIaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:30:03 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:56823 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234238AbhHCIaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:50:23 -0400
-X-Greylist: delayed 1323 seconds by postgrey-1.27 at vger.kernel.org; Tue, 03 Aug 2021 04:50:23 EDT
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id D0AFC93F99
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:28:07 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id ApmRmM3vO7sOiApmRmyKC4; Tue, 03 Aug 2021 03:28:07 -0500
-X-Authority-Reason: nr=8
-Received: from host-95-239-202-226.retail.telecomitalia.it ([95.239.202.226]:59954 helo=f34.bristot.me)
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1mApmQ-003t1l-Nz; Tue, 03 Aug 2021 03:28:07 -0500
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH] trace/osnoise: Rename main variable to tracer_main
-Date:   Tue,  3 Aug 2021 10:28:00 +0200
-Message-Id: <fc62f7deb2258f6068d77c3e734633e3c3511464.1627977494.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 3 Aug 2021 04:30:00 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id Apo3mTAw1XTlcApo4mkOgp; Tue, 03 Aug 2021 10:29:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1627979388; bh=rBHFEHoRgKbghlmNRokgE/xevfNGJWoVGkEn1QNpjYg=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=YEG8mC/KNbscVy7cPksuTz8bQzNKbPK2HrDI8Mej+Gt8S7j0RSxw0vKAPCMNNshzU
+         FxkOXnOkHRtPzjXtx2fKLY64PjODWIXaRPELbZT4pYGirCLpP7jQLQhBniEQ/nS3qI
+         Tzk0h+/q+kC2l2yxyXrNd+dYYEzc8cLSBioPSXO8QrCxavKL70AHkRpIXj+Cop2gpb
+         XXfDW9adTwiv8CpFRlnHOSSKmT2WjOIEMumj5QaHc3rEyI4GzllkP77M7pmTNml5Rh
+         aEKkjKi8jyeAS/WHEYVwPWPDNp/KDF+5k9LdeqWJqPiaHa7mNFCXWL/cqRmPOe4KYH
+         L54rlRMEADhpQ==
+Subject: Re: [PATCHv4 6/8] videobuf2: add queue memory coherency parameter
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210727070517.443167-1-senozhatsky@chromium.org>
+ <20210727070517.443167-7-senozhatsky@chromium.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <88491bca-f1b3-58f0-81e1-7ecec9f9da40@xs4all.nl>
+Date:   Tue, 3 Aug 2021 10:29:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 95.239.202.226
-X-Source-L: No
-X-Exim-ID: 1mApmQ-003t1l-Nz
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-95-239-202-226.retail.telecomitalia.it (f34.bristot.me) [95.239.202.226]:59954
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 8
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+In-Reply-To: <20210727070517.443167-7-senozhatsky@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfCcE0JfVFem28vZ0aVRJMom8GIAu4xKwsA2pJO0+H7zaaWFXDZqYBxxBERDPtSYxpgNVFkbMWaoV7CLFfzs+7eiEZps+2shd/qseHuhVgm6j70h5RHU6
+ q8z/+LoCb7128kUAL1KJ7qiZVC5kTB4rexHBjl6FGr10pykvipz1K9Mm0Z2XuiRI9D2GJL8ZCn70wdUbNEPUMgGVcJBG8XE45G6dfxk3aqKs2LP/BMfjKELt
+ ux/52uM0yRyR3OSj5ypN7eEpddCURUvfSzqXWM4JCr3rbWiqj+7iSPbJDwaquuzr9qotjDTfrPZUAjTAkdOcC0kx8jK27e0UPhYtMICOQGIag2uU/CBjgv74
+ Qt3/OeqV/lbegvmhQpYEVTTU3YdR/9hdai88NqCtO10fE4xCcyQRoHtYQdxM+xQiXXoCCfqzRLGvKfCvL49rDsMlwNqAcjzmxWDsvia8SDmTnlG7D3pU4Y3I
+ 4vn9I8OCUnO9UhJwSsp/SyIqxdtn85VgKVoXbdcsaQbaicu04ctE4gQCVcYLaDbekFDt4u/p3xWf65a3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The *main variable in start_kthread() is causing warnings in some
-compilers/analyzers. Although it is not necessarily a problem, it is
-not a problem changing the variable name too.
+On 27/07/2021 09:05, Sergey Senozhatsky wrote:
+> Preparations for future V4L2_MEMORY_FLAG_NON_COHERENT support.
+> 
+> Extend vb2_core_reqbufs() parameters list to accept requests'
 
-Rename the *main variable to *tracer_main.
+Extend -> Extend the
 
-No functional change.
+> ->flags, which will be used for memory coherency configuration.
+> 
+> An attempt to allocate a buffer with coherency requirements
+> which don't match queue's consistency model will fail.
 
-Fixes: c8895e271f79 ("trace/osnoise: Support hotplug operations")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- kernel/trace/trace_osnoise.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+which don't match -> that do not match the
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 0b11db9595b6..eda10d39da47 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -1576,20 +1576,20 @@ static void stop_per_cpu_kthreads(void)
- static int start_kthread(unsigned int cpu)
- {
- 	struct task_struct *kthread;
--	void *main = osnoise_main;
-+	void *tracer_main = osnoise_main;
- 	char comm[24];
- 
- #ifdef CONFIG_TIMERLAT_TRACER
- 	if (osnoise_data.timerlat_tracer) {
- 		snprintf(comm, 24, "timerlat/%d", cpu);
--		main = timerlat_main;
-+		tracer_main = timerlat_main;
- 	} else {
- 		snprintf(comm, 24, "osnoise/%d", cpu);
- 	}
- #else
- 	snprintf(comm, 24, "osnoise/%d", cpu);
- #endif
--	kthread = kthread_create_on_cpu(main, NULL, cpu, comm);
-+	kthread = kthread_create_on_cpu(tracer_main, NULL, cpu, comm);
- 
- 	if (IS_ERR(kthread)) {
- 		pr_err(BANNER "could not start sampling thread\n");
--- 
-2.31.1
+> 
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  .../media/common/videobuf2/videobuf2-core.c   | 38 ++++++++++++++++---
+>  .../media/common/videobuf2/videobuf2-v4l2.c   |  5 ++-
+>  drivers/media/dvb-core/dvb_vb2.c              |  2 +-
+>  include/media/videobuf2-core.h                | 10 ++++-
+>  4 files changed, 44 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index 55af63d54f23..af4db310cf5e 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -738,11 +738,31 @@ int vb2_verify_memory_type(struct vb2_queue *q,
+>  }
+>  EXPORT_SYMBOL(vb2_verify_memory_type);
+>  
+> +static void set_queue_coherency(struct vb2_queue *q, bool coherent_mem)
+> +{
+> +	q->coherent_mem = 1;
+
+This I do not like: coherent memory is the default, and so I think it will
+be more robust if this field is renamed to non_coherent_mem and so coherent
+memory will be the default since this field will be cleared initially with
+kzalloc.
+
+Basically a similar argument that you used in patch 2/8.
+
+I also think that it improves readability, since non-coherent is the
+exceptional case, not the rule, and the field name corresponds with the
+V4L2 memory flag name.
+
+I noticed that in v1 of this series it was actually called non_coherent_mem,
+and it was changed in v2, actually after some comments from me.
+
+But I changed my mind on that, and I think it makes more sense to go back to
+calling this non_coherent_mem.
+
+Regards,
+
+	Hans
+
+> +
+> +	if (!vb2_queue_allows_cache_hints(q))
+> +		return;
+> +	if (!coherent_mem)
+> +		q->coherent_mem = 0;
+> +}
+> +
+> +static bool verify_coherency_flags(struct vb2_queue *q, bool coherent_mem)
+> +{
+> +	if (coherent_mem != q->coherent_mem) {
+> +		dprintk(q, 1, "memory coherency model mismatch\n");
+> +		return false;
+> +	}
+> +	return true;
+> +}
+> +
+>  int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+> -		     unsigned int *count)
+> +		     unsigned int flags, unsigned int *count)
+>  {
+>  	unsigned int num_buffers, allocated_buffers, num_planes = 0;
+>  	unsigned plane_sizes[VB2_MAX_PLANES] = { };
+> +	bool coherent_mem = true;
+>  	unsigned int i;
+>  	int ret;
+>  
+> @@ -757,7 +777,8 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	}
+>  
+>  	if (*count == 0 || q->num_buffers != 0 ||
+> -	    (q->memory != VB2_MEMORY_UNKNOWN && q->memory != memory)) {
+> +	    (q->memory != VB2_MEMORY_UNKNOWN && q->memory != memory) ||
+> +	    !verify_coherency_flags(q, coherent_mem)) {
+>  		/*
+>  		 * We already have buffers allocated, so first check if they
+>  		 * are not in use and can be freed.
+> @@ -794,6 +815,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	num_buffers = min_t(unsigned int, num_buffers, VB2_MAX_FRAME);
+>  	memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
+>  	q->memory = memory;
+> +	set_queue_coherency(q, coherent_mem);
+>  
+>  	/*
+>  	 * Ask the driver how many buffers and planes per buffer it requires.
+> @@ -878,12 +900,13 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  EXPORT_SYMBOL_GPL(vb2_core_reqbufs);
+>  
+>  int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+> -			 unsigned int *count,
+> +			 unsigned int flags, unsigned int *count,
+>  			 unsigned int requested_planes,
+>  			 const unsigned int requested_sizes[])
+>  {
+>  	unsigned int num_planes = 0, num_buffers, allocated_buffers;
+>  	unsigned plane_sizes[VB2_MAX_PLANES] = { };
+> +	bool coherent_mem = true;
+>  	int ret;
+>  
+>  	if (q->num_buffers == VB2_MAX_FRAME) {
+> @@ -899,11 +922,14 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>  		memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
+>  		q->memory = memory;
+>  		q->waiting_for_buffers = !q->is_output;
+> +		set_queue_coherency(q, coherent_mem);
+>  	} else {
+>  		if (q->memory != memory) {
+>  			dprintk(q, 1, "memory model mismatch\n");
+>  			return -EINVAL;
+>  		}
+> +		if (!verify_coherency_flags(q, coherent_mem))
+> +			return -EINVAL;
+>  	}
+>  
+>  	num_buffers = min(*count, VB2_MAX_FRAME - q->num_buffers);
+> @@ -2576,7 +2602,7 @@ static int __vb2_init_fileio(struct vb2_queue *q, int read)
+>  	fileio->memory = VB2_MEMORY_MMAP;
+>  	fileio->type = q->type;
+>  	q->fileio = fileio;
+> -	ret = vb2_core_reqbufs(q, fileio->memory, &fileio->count);
+> +	ret = vb2_core_reqbufs(q, fileio->memory, 0, &fileio->count);
+>  	if (ret)
+>  		goto err_kfree;
+>  
+> @@ -2633,7 +2659,7 @@ static int __vb2_init_fileio(struct vb2_queue *q, int read)
+>  
+>  err_reqbufs:
+>  	fileio->count = 0;
+> -	vb2_core_reqbufs(q, fileio->memory, &fileio->count);
+> +	vb2_core_reqbufs(q, fileio->memory, 0, &fileio->count);
+>  
+>  err_kfree:
+>  	q->fileio = NULL;
+> @@ -2653,7 +2679,7 @@ static int __vb2_cleanup_fileio(struct vb2_queue *q)
+>  		vb2_core_streamoff(q, q->type);
+>  		q->fileio = NULL;
+>  		fileio->count = 0;
+> -		vb2_core_reqbufs(q, fileio->memory, &fileio->count);
+> +		vb2_core_reqbufs(q, fileio->memory, 0, &fileio->count);
+>  		kfree(fileio);
+>  		dprintk(q, 3, "file io emulator closed\n");
+>  	}
+> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> index 2fbae9bd7b52..b4f70ddb09b0 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> @@ -697,7 +697,7 @@ int vb2_reqbufs(struct vb2_queue *q, struct v4l2_requestbuffers *req)
+>  	int ret = vb2_verify_memory_type(q, req->memory, req->type);
+>  
+>  	fill_buf_caps(q, &req->capabilities);
+> -	return ret ? ret : vb2_core_reqbufs(q, req->memory, &req->count);
+> +	return ret ? ret : vb2_core_reqbufs(q, req->memory, 0, &req->count);
+>  }
+>  EXPORT_SYMBOL_GPL(vb2_reqbufs);
+>  
+> @@ -772,6 +772,7 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
+>  		if (requested_sizes[i] == 0)
+>  			return -EINVAL;
+>  	return ret ? ret : vb2_core_create_bufs(q, create->memory,
+> +						0,
+>  						&create->count,
+>  						requested_planes,
+>  						requested_sizes);
+> @@ -974,7 +975,7 @@ int vb2_ioctl_reqbufs(struct file *file, void *priv,
+>  		return res;
+>  	if (vb2_queue_is_busy(vdev, file))
+>  		return -EBUSY;
+> -	res = vb2_core_reqbufs(vdev->queue, p->memory, &p->count);
+> +	res = vb2_core_reqbufs(vdev->queue, p->memory, 0, &p->count);
+>  	/* If count == 0, then the owner has released all buffers and he
+>  	   is no longer owner of the queue. Otherwise we have a new owner. */
+>  	if (res == 0)
+> diff --git a/drivers/media/dvb-core/dvb_vb2.c b/drivers/media/dvb-core/dvb_vb2.c
+> index 6974f1731529..959d110407a4 100644
+> --- a/drivers/media/dvb-core/dvb_vb2.c
+> +++ b/drivers/media/dvb-core/dvb_vb2.c
+> @@ -342,7 +342,7 @@ int dvb_vb2_reqbufs(struct dvb_vb2_ctx *ctx, struct dmx_requestbuffers *req)
+>  
+>  	ctx->buf_siz = req->size;
+>  	ctx->buf_cnt = req->count;
+> -	ret = vb2_core_reqbufs(&ctx->vb_q, VB2_MEMORY_MMAP, &req->count);
+> +	ret = vb2_core_reqbufs(&ctx->vb_q, VB2_MEMORY_MMAP, 0, &req->count);
+>  	if (ret) {
+>  		ctx->state = DVB_VB2_STATE_NONE;
+>  		dprintk(1, "[%s] count=%d size=%d errno=%d\n", ctx->name,
+> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+> index 66e548268242..7e748cd09b7a 100644
+> --- a/include/media/videobuf2-core.h
+> +++ b/include/media/videobuf2-core.h
+> @@ -504,6 +504,8 @@ struct vb2_buf_ops {
+>   * @allow_cache_hints: when set user-space can pass cache management hints in
+>   *		order to skip cache flush/invalidation on ->prepare() or/and
+>   *		->finish().
+> + * @coherent_mem: when cleared queue will attempt to allocate buffers using
+> + *		non-coherent memory.
+>   * @lock:	pointer to a mutex that protects the &struct vb2_queue. The
+>   *		driver can set this to a mutex to let the v4l2 core serialize
+>   *		the queuing ioctls. If the driver wants to handle locking
+> @@ -583,6 +585,7 @@ struct vb2_queue {
+>  	unsigned int			uses_qbuf:1;
+>  	unsigned int			uses_requests:1;
+>  	unsigned int			allow_cache_hints:1;
+> +	unsigned int			coherent_mem:1;
+>  
+>  	struct mutex			*lock;
+>  	void				*owner;
+> @@ -748,6 +751,8 @@ void vb2_core_querybuf(struct vb2_queue *q, unsigned int index, void *pb);
+>   * vb2_core_reqbufs() - Initiate streaming.
+>   * @q:		pointer to &struct vb2_queue with videobuf2 queue.
+>   * @memory:	memory type, as defined by &enum vb2_memory.
+> + * @flags:	auxiliary queue/buffer management flags. Currently, the only
+> + *		used flag is %V4L2_MEMORY_FLAG_NON_COHERENT.
+>   * @count:	requested buffer count.
+>   *
+>   * Videobuf2 core helper to implement VIDIOC_REQBUF() operation. It is called
+> @@ -772,12 +777,13 @@ void vb2_core_querybuf(struct vb2_queue *q, unsigned int index, void *pb);
+>   * Return: returns zero on success; an error code otherwise.
+>   */
+>  int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+> -		    unsigned int *count);
+> +		     unsigned int flags, unsigned int *count);
+>  
+>  /**
+>   * vb2_core_create_bufs() - Allocate buffers and any required auxiliary structs
+>   * @q: pointer to &struct vb2_queue with videobuf2 queue.
+>   * @memory: memory type, as defined by &enum vb2_memory.
+> + * @flags: auxiliary queue/buffer management flags.
+>   * @count: requested buffer count.
+>   * @requested_planes: number of planes requested.
+>   * @requested_sizes: array with the size of the planes.
+> @@ -795,7 +801,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>   * Return: returns zero on success; an error code otherwise.
+>   */
+>  int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+> -			 unsigned int *count,
+> +			 unsigned int flags, unsigned int *count,
+>  			 unsigned int requested_planes,
+>  			 const unsigned int requested_sizes[]);
+>  
+> 
 
