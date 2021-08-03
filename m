@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395293DE81F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67353DE81C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbhHCIO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234238AbhHCIOz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:14:55 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EEDC06175F;
-        Tue,  3 Aug 2021 01:14:44 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so3696424pjd.0;
-        Tue, 03 Aug 2021 01:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=/9SojXjYKulRNr83vm1FtyvmUfogZ+luvbdjXo2aXGE=;
-        b=NccFQpSsZHFQ8ok/Yr5CXCW9v0dzQ1Zzb6LDno1qVe5rjruvHUf6+ZczBQwwEtcAx7
-         GUsIBfM8aIX3bpsC7LNuNnrE1xY2sD/4+vrlEd+KRyr3PgoPn5jl2TtxfToASawXpTyh
-         qfF4CnedozBoBfR3IQFAnwBw9Mh8WzG0HpQjkFmM4zkx4jpKbEMNS9TyJBQlBlLsrYrG
-         QhLvKmRHc3zpD8oz3SuLJBiKpDi1K/3zWlusjSxIbLkrnA2tVt1xRXKtm065Ztt7nKMd
-         ehTN2l44m7y2WKz5Vjw73a8YOzyrCo1TkTLPi6b9RFR2Szpn4xsRQSIHs46Urmx1Vc21
-         x6Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=/9SojXjYKulRNr83vm1FtyvmUfogZ+luvbdjXo2aXGE=;
-        b=fvXMzix2Vr9SMiMmOOMGoTXYN36sDPEwTjGbcHQqoS2OxF8jXCgkroYOM3TIR+cxFD
-         d7iLhKmLVp2JCqRysuS3GGa9pwKi0b/pz5nm+rA6M9BHnfcHhsV+mXQHEzLRGg4l+NxF
-         Jk88I4lJDxzU6xLk9hXH6HYLPpeQrDronvLORx4kPbcRvkS+q5HH/d0S4R/0R7phoQpo
-         byqaX5fJHFHjZK3TbGBCWSsaAsXoZAf3ioDpb+eaLMshBaeM+a1f4eg25E94PSfnezM2
-         uV7sb/slUgrkKsu+ICKUrfikTPKic87Zl8SxPw9uASKLD0AsHLJg5Ck1wyQlxo7LqlLM
-         30ag==
-X-Gm-Message-State: AOAM5315Gh3cu3xknGTE1bD3yEVKAaKytej/GlGcjweiMlRyisUSKvAG
-        gr8cdHaUgDp4mJiikuWxXZg=
-X-Google-Smtp-Source: ABdhPJwXGuLapacqlKKksk7rDnddiutOIOrRkxXIEA687wK/6T2sd9dyDdrn8LcuOcf1LyCNcFdWfw==
-X-Received: by 2002:a17:902:8648:b029:129:dda4:ddc2 with SMTP id y8-20020a1709028648b0290129dda4ddc2mr17376567plt.4.1627978483528;
-        Tue, 03 Aug 2021 01:14:43 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id i13sm9165359pfq.72.2021.08.03.01.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 01:14:42 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net 1/1] net: dsa: qca: ar9331: make proper initial port defaults
-Date:   Tue,  3 Aug 2021 16:14:35 +0800
-Message-Id: <20210803081435.2910620-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210803065424.9692-1-o.rempel@pengutronix.de>
-References: <20210803065424.9692-1-o.rempel@pengutronix.de>
+        id S234284AbhHCIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:14:54 -0400
+Received: from mga04.intel.com ([192.55.52.120]:15803 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234238AbhHCIOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:14:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="211756699"
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="scan'208";a="211756699"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:14:43 -0700
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="scan'208";a="521142332"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:14:40 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
+References: <20210723080000.93953-1-ying.huang@intel.com>
+        <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
+        <YPs6cQo7iG1JcOn8@casper.infradead.org>
+Date:   Tue, 03 Aug 2021 16:14:38 +0800
+In-Reply-To: <YPs6cQo7iG1JcOn8@casper.infradead.org> (Matthew Wilcox's message
+        of "Fri, 23 Jul 2021 22:53:53 +0100")
+Message-ID: <8735rr54i9.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 08:54:24AM +0200, Oleksij Rempel wrote:
-> +	if (dsa_is_cpu_port(ds, port)) {
-> +		/* CPU port should be allowed to communicate with all user
-> +		 * ports.
-> +		 */
-> +		port_mask = dsa_user_ports(ds);
-> +		/* Enable Atheros header on CPU port. This will allow us
-> +		 * communicate with each port separately
-> +		 */
-> +		port_ctrl |= AR9331_SW_PORT_CTRL_HEAD_EN;
-> +	} else if (dsa_is_user_port(ds, port)) {
-> +		/* User ports should communicate only with the CPU port.
-> +		 */
-> +		port_mask = BIT(dsa_to_port(ds, port)->cpu_dp->index);
-> +		port_ctrl |= AR9331_SW_PORT_CTRL_LEARN_EN;
+Matthew Wilcox <willy@infradead.org> writes:
 
-All user ports should start with address learning disabled.
-To toggle it, implement .port_pre_bridge_flags and .port_bridge_flags.
+> On Fri, Jul 23, 2021 at 01:23:07PM -0700, Hugh Dickins wrote:
+>> I was wary because, if the (never observed) race to be fixed is in
+>> swap_cluster_readahead(), why was shmem_swapin_page() being patched?
+>> Not explained in its commit message, probably a misunderstanding of
+>> how mm/shmem.c already manages races (and prefers not to be involved
+>> in swap_info_struct stuff).
+>> 
+>> But why do I now say it's bad?  Because even if you correct the EINVAL
+>> to -EINVAL, that's an unexpected error: -EEXIST is common, -ENOMEM is
+>> not surprising, -ENOSPC can need consideration, but -EIO and anything
+>> else just end up as SIGBUS when faulting (or as error from syscall).
+>> So, 2efa33fc7f6e converts a race with swapoff to SIGBUS: not good,
+>> and I think much more likely than the race to be fixed (since
+>> swapoff's percpu_ref_kill() rightly comes before synchronize_rcu()).
+>
+> Yes, I think a lot more thought was needed here.  And I would have
+> preferred to start with a reproducer instead of "hey, this could
+> happen".  Maybe something like booting a 1GB VM, adding two 2GB swap
+> partitions, swapon(partition A); run a 2GB memhog and then
+>
+> loop:
+> 	swapon(part B);
+> 	swapoff(part A);
+> 	swapon(part A);
+> 	swapoff(part B);
+>
+> to make this happen.
+>
+> but if it does happen, why would returning EINVAL be the right thing
+> to do?  We've swapped it out.  It must be on swap somewhere, or we've
+> really messed up.  So I could see there being a race where we get
+> preempted between looking up the swap entry and calling get_swap_device().
+> But if that does happen, then the page gets brought in, and potentially
+> reswapped to the other swap device.
+>
+> So returning -EEXIST here would actually work.  That forces a re-lookup
+> in the page cache, so we'll get the new swap entry that tells us which
+> swap device the page is now on.
 
-> +	} else {
-> +		/* Other ports do not need to communicate at all */
-> +		port_mask = 0;
-> +	}
-> +
+Yes.  -EEXIST is the right error code.  We use that in
+shmem_swapin_page() to deal with race condition.
+
+> But I REALLY REALLY REALLY want a reproducer.  Right now, I have a hard
+> time believing this, or any of the other races can really happen.
+
+I think the race is only theoretical too.  Firstly, swapoff is a rare
+operations in practice; secondly, the race window is really small.
+
+Best Regards,
+Huang, Ying
+
+>> 2efa33fc7f6e was intending to fix a race introduced by two-year-old
+>> 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested
+>> or not"), which added a call to inode_read_congested().  Certainly
+>> relying on si->swap_file->f_mapping->host there was new territory:
+>> whether actually racy I'm not sure offhand - I've forgotten whether
+>> synchronize_rcu() waits for preempted tasks or not.
+>> 
+>> But if it is racy, then I wonder if the right fix might be to revert
+>> 8fd2e0b505d1 too. Convincing numbers were offered for it, but I'm
+>> puzzled: because Matthew has in the past noted that the block layer
+>> broke and further broke bdi congestion tracking (I don't know the
+>> relevant release numbers), so I don't understand how checking
+>> inode_read_congested() is actually useful there nowadays.
+>
+> It might be useful for NFS?  I don't think congestion is broken there
+> (except how does the NFS client have any idea whether the server is
+> congested or not?)
