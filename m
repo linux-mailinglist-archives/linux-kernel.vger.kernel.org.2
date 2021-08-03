@@ -2,239 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B72D3DE72C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735CF3DE72F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234189AbhHCHYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
+        id S234186AbhHCH2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233966AbhHCHYS (ORCPT
+        with ESMTP id S233966AbhHCH2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:24:18 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818E3C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:24:07 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id v20so13726431eda.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:24:07 -0700 (PDT)
+        Tue, 3 Aug 2021 03:28:05 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFC9C06175F;
+        Tue,  3 Aug 2021 00:27:53 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id z18so5750297ybg.8;
+        Tue, 03 Aug 2021 00:27:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ngPgwd5W9zI3HLSERpc7IgilHG9Vxsr6eSC4mxW72lk=;
-        b=DyHh0gctVYvDn+Xqq6NcMMhLxnnFFk+pHLD2NA6dp17JJrr1R8nZBqprkOV4VkMlHa
-         eyotaWRO8lsrP3cZ4Qtw8S1IFLQEfCmpBco9kFITum0vSZLe4snD2uJzR+MX28tjGIZP
-         f+jkVkyUMIPBDAkO4s7u2sDdF77Ax2gjQHibGKETDRVrh4LsOTVO5MZiim6jkR51kUer
-         aZ/ioCG3wZKK3Tqv22tyRn0QaDXqNr6NHAgaV27esBhlQUbKH6SVhFp8RVGcn8pl8rJB
-         kBmYpIl9wGH1XFo76oydGNyiHjTCoz/dVOP7Nrcks745ALKrSgovZr63uP6yS/3VZD5M
-         bPlg==
+         :cc;
+        bh=C0npjgl+HG6crVvxafwBN6vIxikeVgWfSY9pE6rAYAA=;
+        b=q1ybkuphZ8XwwP1UWgfZwuXU3QIAycNN3HcwkuYW3bYCNdph0SEdA1be+M1hOLsewD
+         oDbLm34QbW3+3N2aA/gecXVShOZpAq37D8475xWlSSqW5BdfM721jMO2e3PdJYJn79VE
+         rJcWDcLaUCiN//ZHi+Edp65SYI5bRaB6OkOFBF3Od5RUbBHt5PR5/WZmBtkbl4cVxKhl
+         b5Y0lPHHhY4XtC3jqDhRisooemDS9Iw8er1y4YGb1OySAvEAt+f2Uj6w9n892MjwDjdQ
+         FfZcnIYfvN/tykfweQ5kiwGqOiyw1pJAfqhSDRMlzyoas1JDpdK/Tgcoh6/AxAi7RIz+
+         npNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ngPgwd5W9zI3HLSERpc7IgilHG9Vxsr6eSC4mxW72lk=;
-        b=LNFVfdBErkErRqL79mXkedFiBfW+mAWceRevRMuJlk/oGEXTHtN7wujhYfYMnMrQr3
-         DSFOmt9x5ppIIHOtjWp/n9C6YuVj43CghTQzx8nawMSD03bonwIPFV2Pinlyy2ubQ42g
-         Z+KyuqsMOeUqoFMACeieTCWpaXJhGrrEUFyODbmhXgbAkp/c6LipQwCkZ4JqWAdGyKaL
-         asxwyxXw4DcmjuKH8xmwusBVMh78XLpdN78kjZ1UVKu8/5dfxKRHHFO9t40L+uU6wVcZ
-         Ool5UZhiSgu6prDHFWfV36Io85AXzgewWRY5slNNuMHf0Wb1P19TLj5RomAGdp0rft7Q
-         2w3g==
-X-Gm-Message-State: AOAM532Wqa/2ErB5io9EVohzYcTXsWObOnixSBa2B8aH6DfuL9+wZVC/
-        r2OOFI9q9mpUyWUDDWgXbpikFRknE3b8oS4JGjeNxQ==
-X-Google-Smtp-Source: ABdhPJy1D5ri1q/JZa5RBjn16CByzeYVgMBf3GBrC8jto9FyQ3jg6vQn42uetDoMEL8cPu2vGhT4yrA13QPQ3QA8qHs=
-X-Received: by 2002:aa7:c805:: with SMTP id a5mr23702597edt.23.1627975445895;
- Tue, 03 Aug 2021 00:24:05 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=C0npjgl+HG6crVvxafwBN6vIxikeVgWfSY9pE6rAYAA=;
+        b=taf4RFFmPLjNXRxitNlFecTnjbKknDCxEwrOpJuglIWY6X/ct/qcowTQMLOxvRCQmk
+         03t+Md3Jqaal3F38dA0NQNo1oB8JNhnVDNG+rSm/gwpZCNyRUbPi5NNqOPjcNapR9X6r
+         6eAqBPYIUBmKQZ7Zp/553+T6G6zOHFzHW3fMgGYutkh8NpKlZHntgwkQctWW1/y9s+Xj
+         cJ2XKXB9qrFLuXnzQm9AtNJCahnmjGBkbK5Qc1bElxvRencCV2jYxQKq9kloYGupG8jj
+         /5Q0PiFOJc+LMYc3wa7zVXWHGd+0hJiPpqJTjhgN4HYVYtD1dXbrGGKNIzPzJ+IEcjVw
+         3z1g==
+X-Gm-Message-State: AOAM532b8ZOkLABfr0rUHQz/cL889BXm5g3GbjounJvnlWxcOclop7WP
+        AKAmzkympUnfFNQWAWKJTqStYDPgw6woah8cSk0=
+X-Google-Smtp-Source: ABdhPJzij8OZbRZgZ3RMD6+dyy/1WHOYYmERYbqjs0KqznvBC4+9fFCc5ArDbPP05yg+LkRPp/HON3cAb7YVYZaXEjw=
+X-Received: by 2002:a25:f310:: with SMTP id c16mr19079345ybs.464.1627975673074;
+ Tue, 03 Aug 2021 00:27:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210802134339.023067817@linuxfoundation.org>
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 3 Aug 2021 12:53:54 +0530
-Message-ID: <CA+G9fYv6vtBzDkEtXkg9KFJSDaZbpft897a_Pu6ODgPbH+++gg@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/67] 5.10.56-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <20210803042347.679499-1-rostedt@goodmis.org> <20210803042347.679499-2-rostedt@goodmis.org>
+In-Reply-To: <20210803042347.679499-2-rostedt@goodmis.org>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 3 Aug 2021 09:27:42 +0200
+Message-ID: <CAKXUXMzMW5NeCjxXDQEmC-imrbg3AGR4sg+TOwnj0eFRyLSb4g@mail.gmail.com>
+Subject: Re: [PATCH v2 01/21] libtracefs: Added new API tracefs_sql()
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-trace-devel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        Daniel Black <daniel@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 at 19:22, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Aug 3, 2021 at 6:23 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> This is the start of the stable review cycle for the 5.10.56 release.
-> There are 67 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 >
-> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
-> Anything received after that time might be too late.
+> This adds the API tracefs_sql() that takes a tep_handle handler, a name,
+> and a SQL string and parses it to produce a tracefs_synth synthetic event
+> handler.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.56-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
+> Currently it only supports simple SQL of the type:
 >
-> thanks,
+>   SELECT start.common_pid AS pid, end.common_timestamp.usecs AS usecs
+>     FROM sched_waking AS start JOIN sched_switch AS end
+>     ON start.pid = end.next_pid
 >
-> greg k-h
+> Special thanks to:
+>
+>   Lukas Bulwahn for first introducing the idea at RT Summit on the Summit
+>     Spring of 2019.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Thanks, Steven, for putting this idea to life.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+I hope that the tracing users appreciate this new declarative
+interface using SQL and it makes tracing events easier comprehensible
+to a larger community of users.
 
-## Build
-* kernel: 5.10.56-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: f9063e43ccbb353c5b2cafe59c6b9534aa7ddc14
-* git describe: v5.10.55-68-gf9063e43ccbb
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.55-68-gf9063e43ccbb
-
-## No regressions (compared to v5.10.55-66-g099cefcf7e6b)
-
-## No fixes (compared to v5.10.55-66-g099cefcf7e6b)
-
-
-## Test result summary
- total: 79832, pass: 65260, fail: 1954, skip: 11355, xfail: 1263,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Lukas
