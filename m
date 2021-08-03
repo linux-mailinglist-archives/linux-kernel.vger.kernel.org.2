@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8038E3DF536
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021B23DF538
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239534AbhHCTPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:15:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52482 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239520AbhHCTPN (ORCPT
+        id S239543AbhHCTP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238734AbhHCTP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:15:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628018102;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+rSWKM/T14hSNJ7CCzHqgndf9sQoQa3vUJu76cRGCd4=;
-        b=Wo64BMVTJWoSadwuW50QSR6bLo9s6EB+IedqVRQTIbKp9bFHXjdNJ8neB+XN2U2iZLxshO
-        jkkHIb+egIiw5rbo0iYcwPNqjnigfR/iBAvb5lp5CrRGGxDS1EivqD9j7pZhzPPDbwBlA/
-        CW/EW6T/TL4L2jFr21dhbwDQnhqHSVM=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-TsbnLVjgOve7DRQS5U3Jhw-1; Tue, 03 Aug 2021 15:15:00 -0400
-X-MC-Unique: TsbnLVjgOve7DRQS5U3Jhw-1
-Received: by mail-qk1-f198.google.com with SMTP id w26-20020a05620a129ab02903b9eeb8b45dso222368qki.8
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 12:15:00 -0700 (PDT)
+        Tue, 3 Aug 2021 15:15:28 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F7AC061757;
+        Tue,  3 Aug 2021 12:15:16 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id x15-20020a05683000cfb02904d1f8b9db81so10131825oto.12;
+        Tue, 03 Aug 2021 12:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i2JS5oZYaTwTQFPiqZLSvkf/A/V6SetHGv4i1KeUD2I=;
+        b=O9zQJSI/fOb94yT0zgc5TKCYqgyMfvQEPwoaSp7xRqpOAMaEbzWURc1biG/l7rywyc
+         jcYaRtdWNYazXUF1R4TY6d13FNV0K8VgvZKE3Txkhye+f20xCg58/L5FE2uaYG3xvvOJ
+         8czGnrxLFTkR430UCuba0TAjdIlB9XbH1GvUNiDSZjOVRAWtuq9sX3FLfL+8RMH9emSM
+         nqNLPQWFGeGldx+zGJItwOR9RYiCTmDHe1CD1rsdhZXimgOsAmg1DlNUgR0HM6wMpwIV
+         x9OpHSOh559Fk6ydyq4o+4TEIsDJblTwnxXGXaakVOaOUtNpWr8b7svQku8lgWDJs+5s
+         HICA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+rSWKM/T14hSNJ7CCzHqgndf9sQoQa3vUJu76cRGCd4=;
-        b=U0eadOIxbKrD2baU2JbmsVYhr6tnks28TSMHY5xIz++JEyOBS6nqX6+3Cy0PtGBJTQ
-         Vr7IFfkNIOFGogkL6MNUKABkvzImEJTngyk41FJhHbo39On+JkLVmphTMmJRtOFuWZK7
-         ulK/obCKdxFb/26t/i3sJ1lGicgNION0lqyMCzZtBc39gIQyBpEyM1aBh+aF7ie6X71V
-         k07nKfVt8pPNZ+hhHF9D0+83l41ldlNtcWSuOyRieg8xnSoo7u+HZYTCKsqjEs1Q5ncQ
-         xZx952etPOFdDbRyqA9/MeaOZvVImb+t+3hIHUglMarA/Y2G+2fRIie3ogc6o5c5nXaZ
-         2OuA==
-X-Gm-Message-State: AOAM530HHy0uIW312JD/9/6DwRpA13KQYLJF55z8HMrKQVasrr0EbVF7
-        3YOKdEti4Vx75cRjC5EkD+AKiQ5p/le30W/4QWkv9A5y9UOjrBBzxOkNV1FjCkTsNNSX/ABE96T
-        ozPqOdwRg57jzodudaRwm0d+T
-X-Received: by 2002:a37:d8c:: with SMTP id 134mr22409454qkn.433.1628018099293;
-        Tue, 03 Aug 2021 12:14:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/g25mwjJPBW3GRsT658xAjK7WfPFxd5+EX8D2glJQaP3nTHkoEEbGh1NCY2uO0kxMEiXzLw==
-X-Received: by 2002:a37:d8c:: with SMTP id 134mr22409441qkn.433.1628018099094;
-        Tue, 03 Aug 2021 12:14:59 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
-        by smtp.gmail.com with ESMTPSA id v6sm8503245qkp.117.2021.08.03.12.14.58
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=i2JS5oZYaTwTQFPiqZLSvkf/A/V6SetHGv4i1KeUD2I=;
+        b=knsgCvPs25bFVyDMcvQSjluvsrklRyBHd+tRgKva5uferU6biBxSTZVKAAZdmya1kD
+         4DsMkiwB6TIyLfbeiQHrtnua5l20x//SH8IAfYPbnYCHP1XBrBkhKnvVYsQkuWySO4ji
+         BfEhYyw/DZwvabkSz8Z0qQrQQm7t+nvv+KtvcNKUhOXEjairdignc/bnmKdzmuK6JdLQ
+         TP0dR3PMnAKAoHueTpLm2WfFbTeQLveQRYbvrlafQ9IzLqxwwUE6kA35YeoYm0zh+/3M
+         B5b3+ROq289O6DF1BxyB7vGopKvtr6N6kCF9FONzLjL62ivLEwCcwEVK75wE9XpVb9Wu
+         gn3Q==
+X-Gm-Message-State: AOAM530z2l0vvC3B4egQFQlMoU1nVzvbthsC5kzif05tcxnOtdWe32ca
+        2P+RSDuRVXK6wYMWv/6hhBI=
+X-Google-Smtp-Source: ABdhPJx4QM9/F/a1JL5iqA6f2gpzJp0AWanALuul6hLu6/noJKYfJsc+ZnUSzRHEzLUJxkoPKe4AnQ==
+X-Received: by 2002:a05:6830:2144:: with SMTP id r4mr15876731otd.19.1628018116298;
+        Tue, 03 Aug 2021 12:15:16 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 65sm2610653otb.8.2021.08.03.12.15.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 12:14:58 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 15:14:57 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH v3 4/7] KVM: X86: Introduce mmu_rmaps_stat per-vm debugfs
- file
-Message-ID: <YQmVsSKIPooRQakQ@t490s>
-References: <20210730220455.26054-1-peterx@redhat.com>
- <20210730220455.26054-5-peterx@redhat.com>
- <8964c91d-761f-8fd4-e8c6-f85d6e318a45@redhat.com>
+        Tue, 03 Aug 2021 12:15:15 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 3 Aug 2021 12:15:14 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.14 00/38] 4.14.242-rc1 review
+Message-ID: <20210803191514.GC3053441@roeck-us.net>
+References: <20210802134334.835358048@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8964c91d-761f-8fd4-e8c6-f85d6e318a45@redhat.com>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 05:25:12PM +0200, Paolo Bonzini wrote:
-> On 31/07/21 00:04, Peter Xu wrote:
-> > Use this file to dump rmap statistic information.  The statistic is done by
-> > calculating the rmap count and the result is log-2-based.
-> > 
-> > An example output of this looks like (idle 6GB guest, right after boot linux):
-> > 
-> > Rmap_Count:     0       1       2-3     4-7     8-15    16-31   32-63   64-127  128-255 256-511 512-1023
-> > Level=4K:       3086676 53045   12330   1272    502     121     76      2       0       0       0
-> > Level=2M:       5947    231     0       0       0       0       0       0       0       0       0
-> > Level=1G:       32      0       0       0       0       0       0       0       0       0       0
-> > 
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >   arch/x86/kvm/x86.c | 113 +++++++++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 113 insertions(+)
+On Mon, Aug 02, 2021 at 03:44:22PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.242 release.
+> There are 38 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This should be in debugfs.c, meaning that the kvm_mmu_slot_lpages() must be
-> in a header.  I think mmu.h should do, let me take a look and I can post
-> myself a v4 of these debugfs parts.
+> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+> Anything received after that time might be too late.
+> 
 
-Thanks, Paolo!
+Build results:
+	total: 168 pass: 168 fail: 0
+Qemu test results:
+	total: 417 pass: 417 fail: 0
 
--- 
-Peter Xu
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
+Guenter
