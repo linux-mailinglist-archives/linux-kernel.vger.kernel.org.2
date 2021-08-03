@@ -2,140 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E59C3DF037
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBB63DF03B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236549AbhHCOZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:25:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:50788 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236331AbhHCOZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:25:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4731F11FB;
-        Tue,  3 Aug 2021 07:25:03 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1436F3F66F;
-        Tue,  3 Aug 2021 07:25:00 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 15:24:58 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Yanfei Xu <yanfei.xu@windriver.com>
-Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
- non-release of rcu_node ->lock
-Message-ID: <20210803142458.teveyn6t2gwifdcp@e107158-lin.cambridge.arm.com>
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-2-paulmck@kernel.org>
+        id S236417AbhHCO0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236224AbhHCO0O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 10:26:14 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269C7C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:26:03 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id u15so12605357wmj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 07:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Hyrev4qZ9gpvHA1KPCI74nwAO20DWHqFncjdod67xeY=;
+        b=PYhmKlzHVcWBCe22CBKVh/KxzmRCtPAQBvU+UWPmJGHL6O8vEmHQ2VVS7padRiJfDv
+         M0L+E63SYkCVgoWe8p7Jfd5Lvh/vsoT3Hi5J0VWPan3CZIXdxpFKAwATKpBrOAGhUKM7
+         tW3YaxbCKIcKPv7p7/Kx3CzOZ9ev/Q1EULAYiP/qxyhk5ODDZcKhNo+GVGA0pf/cki+l
+         62n2JMxkUOb0ktuQSYOHM48ZBedtzV4VW23uslZwi4WCIUhadBSmTJ4R3hh0SDk3xtii
+         KUbHi5FBa2auiSaifO4Ufh18Eq/uukG0ta2ryDOAfVyzBOiYCbrAiIsw/XZP2hS2AE1J
+         zzag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hyrev4qZ9gpvHA1KPCI74nwAO20DWHqFncjdod67xeY=;
+        b=RvyNNTzNuHikcGRbd5f5yPt/D6oekfL8Q1tpoThmQYD45tCHhc0KfjlExKirIm3+aX
+         u+0FdbvaImQBZGNNH/i/Amn25tpIUEPa0bros5duV/d+9iVPmhhIUaJNqMJMm1SzC7XP
+         gH7T2Y1cwyR16akBLj/XkZhsvFj5E3RDLLRYnCjWuH+Dzgd2wOKIGBBHX2C0b7edBlww
+         pEY3j4pWMmvqMP09g8lpuz4bJLk2HiiD7rrF8fcgzYoMpdrKObanVfhoP+9DgxBzcF6H
+         w+e2gV2hB5fWC7w3c/LiIJ/5iSxPu43zwv9AlnNdU4ZEC7FAosiOHBFACwcMliZNhdJ1
+         Vhmg==
+X-Gm-Message-State: AOAM531K+u4+ozGqpsW68t5E2+WWZjAJSTDFRtl2mXFJyMHfq6QiX9Ez
+        QMqe33995y/rO9jFsB+loes0hg==
+X-Google-Smtp-Source: ABdhPJwBsXTY7UQoTg+5apK7w/53TzVRzoUSN5h/Ae6fXdtB2xBNWKpTQUndSfLu+uJJGNrrmH5HIw==
+X-Received: by 2002:a7b:c0c1:: with SMTP id s1mr22633670wmh.130.1628000761410;
+        Tue, 03 Aug 2021 07:26:01 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id f7sm17949139wrr.54.2021.08.03.07.25.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 07:26:00 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 15:25:58 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Chengyang Fan <cy.fan@huawei.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, kgdb-bugreport@lists.sourceforge.net
+Subject: Re: [PATCH printk v1 03/10] kgdb: delay roundup if holding printk
+ cpulock
+Message-ID: <20210803142558.cz7apumpgijs5y4y@maple.lan>
+References: <20210803131301.5588-1-john.ogness@linutronix.de>
+ <20210803131301.5588-4-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210721202127.2129660-2-paulmck@kernel.org>
+In-Reply-To: <20210803131301.5588-4-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Tue, Aug 03, 2021 at 03:18:54PM +0206, John Ogness wrote:
+> kgdb makes use of its own cpulock (@dbg_master_lock, @kgdb_active)
+> during cpu roundup. This will conflict with the printk cpulock.
 
-On 07/21/21 13:21, Paul E. McKenney wrote:
-> From: Yanfei Xu <yanfei.xu@windriver.com>
+When the full vision is realized what will be the purpose of the printk
+cpulock?
+
+I'm asking largely because it's current role is actively unhelpful
+w.r.t. kdb. It is possible that cautious use of in_dbg_master() might
+be a better (and safer) solution. However it sounds like there is a
+larger role planned for the printk cpulock...
+
+
+> Therefore, a CPU must ensure that it is not holding the printk
+> cpulock when calling kgdb_cpu_enter(). If it is, it must allow its
+> printk context to complete first.
 > 
-> If rcu_print_task_stall() is invoked on an rcu_node structure that does
-> not contain any tasks blocking the current grace period, it takes an
-> early exit that fails to release that rcu_node structure's lock.  This
-> results in a self-deadlock, which is detected by lockdep.
+> A new helper function kgdb_roundup_delay() is introduced for kgdb
+> to determine if it is holding the printk cpulock. If so, a flag is
+> set so that when the printk cpulock is released, kgdb will be
+> re-triggered for that CPU.
 > 
-> To reproduce this bug:
-> 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
-> 
-> This will also result in other complaints, including RCU's scheduler
-> hook complaining about blocking rather than preemption and an rcutorture
-> writer stall.
-> 
-> Only a partial RCU CPU stall warning message will be printed because of
-> the self-deadlock.
-> 
-> This commit therefore releases the lock on the rcu_print_task_stall()
-> function's early exit path.
-> 
-> Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 > ---
+>  arch/powerpc/include/asm/smp.h |  1 +
+>  arch/powerpc/kernel/kgdb.c     | 10 +++++++-
+>  arch/powerpc/kernel/smp.c      |  5 ++++
+>  arch/x86/kernel/kgdb.c         |  9 ++++---
+>  include/linux/kgdb.h           |  3 +++
+>  include/linux/printk.h         |  8 ++++++
+>  kernel/debug/debug_core.c      | 45 ++++++++++++++++++++--------------
+>  kernel/printk/printk.c         | 12 +++++++++
+>  8 files changed, 70 insertions(+), 23 deletions(-)
+> 
+> [...]
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 3d0c933937b4..1b546e117f10 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -44,6 +44,7 @@
+>  #include <linux/irq_work.h>
+>  #include <linux/ctype.h>
+>  #include <linux/uio.h>
+> +#include <linux/kgdb.h>
+>  #include <linux/sched/clock.h>
+>  #include <linux/sched/debug.h>
+>  #include <linux/sched/task_stack.h>
+> @@ -214,6 +215,7 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+>  #ifdef CONFIG_SMP
+>  static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
+>  static atomic_t printk_cpulock_nested = ATOMIC_INIT(0);
+> +static unsigned int kgdb_cpu = -1;
 
-We are seeing similar stall/deadlock issue on android 5.10 kernel, is the fix
-relevant here? Trying to apply the patches and test, but the problem is tricky
-to reproduce so thought worth asking first.
-
-
-	[ 1010.244334] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:"}
-	[ 1010.250538] rcu: \t2-...!: (42 GPs behind) idle=884/0/0x0 softirq=1646/1647 fqs=0  (false positive?)"}
-	[ 1010.259746] rcu: \t3-...!: (1 ticks this GP) idle=134/0/0x0 softirq=3205/3205 fqs=0  (false positive?)"}
-	[ 1010.269013] \t(detected by 4, t=6502 jiffies, g=9121, q=110)"}
-	[ 1010.274621] "}
-	[ 1010.276115] ============================================"}
-	[ 1010.281438] WARNING: possible recursive locking detected"}
-	[ 1010.286763] 5.10.43-g92fdbb553f50-ab979 #1 Not tainted"}
-	[ 1010.291912] --------------------------------------------"}
-	[ 1010.297235] swapper/4/0 is trying to acquire lock:"}
-	[ 1010.302037] ffff8000121fe618 (rcu_node_0){-.-.}-{2:2}, at: rcu_dump_cpu_stacks+0x60/0xf8"}
-	[ 1010.310183] "}
-	[ 1010.310183] but task is already holding lock:"}
-	[ 1010.316028] ffff8000121fe618 (rcu_node_0){-.-.}-{2:2}, at: rcu_sched_clock_irq+0x658/0xca0"}
-	[ 1010.324341] "}
-	[ 1010.324341] other info that might help us debug this:"}
-	[ 1010.330882]  Possible unsafe locking scenario:"}
-	[ 1010.330882] "}
-	[ 1010.336813]        CPU0"}
-	[ 1010.339263]        ----"}
-	[ 1010.341713]   lock(rcu_node_0);"}
-	[ 1010.344872]   lock(rcu_node_0);"}
-	[ 1010.348029] "}
-	[ 1010.348029]  *** DEADLOCK ***"}
-	[ 1010.348029] "}
-	[ 1010.353961]  May be due to missing lock nesting notation"}
-	[ 1010.353961] "}
-	[ 1010.360764] 1 lock held by swapper/4/0:"}
-	[ 1010.364607]  #0: ffff8000121fe618 (rcu_node_0){-.-.}-{2:2}, at: rcu_sched_clock_irq+0x658/0xca0"}
-	[ 1010.373359] "}
-	[ 1010.373359] stack backtrace:"}
-	[ 1010.377729] CPU: 4 PID: 0 Comm: swapper/4 Not tainted 5.10.43-g92fdbb553f50-ab979 #1"}
-	[ 1010.385489] Hardware name: ARM Juno development board (r0) (DT)"}
-	[ 1010.391421] Call trace:"}
-	[ 1010.393877]  dump_backtrace+0x0/0x1c0"}
-	[ 1010.397551]  show_stack+0x24/0x30"}
-	[ 1010.400877]  dump_stack_lvl+0xf4/0x130"}
-	[ 1010.404636]  dump_stack+0x18/0x58"}
-	[ 1010.407962]  __lock_acquire+0xa18/0x1ffc"}
-	[ 1010.411895]  lock_acquire.part.0+0xc8/0x30c"}
-	[ 1010.416089]  lock_acquire+0x68/0x84"}
-	[ 1010.419589]  _raw_spin_lock_irqsave+0x84/0x158"}
-	[ 1010.424045]  rcu_dump_cpu_stacks+0x60/0xf8"}
-	[ 1010.428154]  rcu_sched_clock_irq+0x8d8/0xca0"}
-	[ 1010.432435]  update_process_times+0x6c/0xb0"}
-	[ 1010.436632]  tick_sched_handle+0x3c/0x60"}
-	[ 1010.440566]  tick_sched_timer+0x58/0xb0"}
-	[ 1010.444412]  __hrtimer_run_queues+0x1a4/0x5b0"}
-	[ 1010.448781]  hrtimer_interrupt+0xf4/0x2cc"}
-	[ 1010.452803]  arch_timer_handler_phys+0x40/0x50"}
-	[ 1010.457260]  handle_percpu_devid_irq+0x98/0x180"}
-	[ 1010.461803]  __handle_domain_irq+0x80/0xec"}
-	[ 1010.465911]  gic_handle_irq+0x5c/0xf0"}
-	[ 1010.469583]  el1_irq+0xcc/0x180"}
-	[ 1010.472735]  cpuidle_enter_state+0xe8/0x350"}
-	[ 1010.476929]  cpuidle_enter+0x44/0x60"}
-	[ 1010.480515]  do_idle+0x25c/0x2f0"}
-	[ 1010.483751]  cpu_startup_entry+0x34/0x8c"}
-	[ 1010.487687]  secondary_start_kernel+0x154/0x190"}
+Is this the flag to provoke retriggering? It appears to be a write-only
+variable (at least in this patch). How is it consumed?
 
 
-Thanks
+Daniel.
 
---
-Qais Yousef
+
+>  /**
+>   * __printk_wait_on_cpu_lock() - Busy wait until the printk cpu-reentrant
+> @@ -325,6 +327,16 @@ void __printk_cpu_unlock(void)
+>  			   -1); /* LMM(__printk_cpu_unlock:B) */
+>  }
+>  EXPORT_SYMBOL(__printk_cpu_unlock);
+> +
+> +bool kgdb_roundup_delay(unsigned int cpu)
+> +{
+> +	if (cpu != atomic_read(&printk_cpulock_owner))
+> +		return false;
+> +
+> +	kgdb_cpu = cpu;
+> +	return true;
+> +}
+> +EXPORT_SYMBOL(kgdb_roundup_delay);
+>  #endif /* CONFIG_SMP */
+>  
+>  /* Number of registered extended console drivers. */
+> -- 
+> 2.20.1
+> 
