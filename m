@@ -2,161 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79A83DECC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C07C3DED0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbhHCLpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:45:09 -0400
-Received: from mga02.intel.com ([134.134.136.20]:27563 "EHLO mga02.intel.com"
+        id S235657AbhHCLq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235997AbhHCLoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:44:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="200829989"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="200829989"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 04:44:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="466640204"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga008.jf.intel.com with ESMTP; 03 Aug 2021 04:44:02 -0700
-Subject: Re: [PATCH 2/2] perf: remove shebang from
- scripts/{perl,python}/*.{pl,py}
-To:     Jiri Slaby <jslaby@suse.cz>, acme@redhat.com
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210726091434.5000-1-jslaby@suse.cz>
- <20210726091434.5000-2-jslaby@suse.cz>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <d916a46f-91fb-4e11-b72e-b96a73971117@intel.com>
-Date:   Tue, 3 Aug 2021 14:44:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S236004AbhHCLoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 07:44:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53BEA61078;
+        Tue,  3 Aug 2021 11:44:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627991083;
+        bh=SryW2t5Ze+b9tM3zx8bHTZ7bmm+Zqps8jt+VAt59OcU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=upJXxridqvaPjMXRicWLe3ExFBxU1rA13pxN/VsbKA5iayoFzaTZlO//WkWI1SIGO
+         ED0wOF641D6ObHhkycwPVDtbWBHbIMFowVVUwp3MdKTeMpe5C00G6lCC+yXHJ3g/yz
+         kRyg4LK1zIAilgk76lt187H2AE1Ugj0QDnssv7hC/ekSgsUcsKRHL1U8WGJlqyA71c
+         FpKyLzT4XNW1urTGsu3PTlKFFG+Xm15d6gEQgnr6ZG6WXiBVtvpQzlt6ok6RPhvW32
+         iprp/alY1DfnX5MZ8FKZcvtTo5mrzRym5/6v8ebOGsBf1Po3yWjv8Wd7ubSIxghlH7
+         6rwUFvw3ZmnnA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Prarit Bhargava <prarit@redhat.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-alpha@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 4/5] alpha: Send stop IPI to send to online CPUs
+Date:   Tue,  3 Aug 2021 07:44:36 -0400
+Message-Id: <20210803114437.2253079-4-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210803114437.2253079-1-sashal@kernel.org>
+References: <20210803114437.2253079-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210726091434.5000-2-jslaby@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/21 12:14 pm, Jiri Slaby wrote:
-> The scripts cannot be executed on their own. The python ones were always
-> installed without x permissions, the perl ones fail anyway:
->   BEGIN failed--compilation aborted at /usr/lib/perf-core/scripts/perl/rw-by-pid.pl line 18.
-> so there is no point to have a shebang in them. This causes rpmlint to
-> complain too:
->   W: non-executable-script /usr/lib/perf-core/scripts/perl/rw-by-file.pl 644 /usr/bin/perl -w
-> 
-> Hence drop shebangs in them all and remove x permissions in the
-> repository. If anyone wants some of them executable, they need to fix
-> the install scripts first.
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Kan Liang <kan.liang@linux.intel.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
->  tools/perf/scripts/perl/rw-by-file.pl            | 1 -
->  tools/perf/scripts/perl/rw-by-pid.pl             | 1 -
->  tools/perf/scripts/perl/rwtop.pl                 | 1 -
->  tools/perf/scripts/perl/wakeup-latency.pl        | 1 -
->  tools/perf/scripts/python/exported-sql-viewer.py | 1 -
+From: Prarit Bhargava <prarit@redhat.com>
 
-exported-sql-viewer.py is a standalone executable
+[ Upstream commit caace6ca4e06f09413fb8f8a63319594cfb7d47d ]
 
+This issue was noticed while debugging a shutdown issue where some
+secondary CPUs are not being shutdown correctly.  A fix for that [1] requires
+that secondary cpus be offlined using the cpu_online_mask so that the
+stop operation is a no-op if CPU HOTPLUG is disabled.  I, like the author in
+[1] looked at the architectures and found that alpha is one of two
+architectures that executes smp_send_stop() on all possible CPUs.
 
->  tools/perf/scripts/python/flamegraph.py          | 0
->  tools/perf/scripts/python/libxed.py              | 1 -
->  tools/perf/scripts/python/net_dropmonitor.py     | 0
->  tools/perf/scripts/python/stackcollapse.py       | 0
->  9 files changed, 6 deletions(-)
->  mode change 100755 => 100644 tools/perf/scripts/python/exported-sql-viewer.py
->  mode change 100755 => 100644 tools/perf/scripts/python/flamegraph.py
->  mode change 100755 => 100644 tools/perf/scripts/python/net_dropmonitor.py
->  mode change 100755 => 100644 tools/perf/scripts/python/stackcollapse.py
-> 
-> diff --git a/tools/perf/scripts/perl/rw-by-file.pl b/tools/perf/scripts/perl/rw-by-file.pl
-> index 92a750b8552b..e0e4e23d5597 100644
-> --- a/tools/perf/scripts/perl/rw-by-file.pl
-> +++ b/tools/perf/scripts/perl/rw-by-file.pl
-> @@ -1,4 +1,3 @@
-> -#!/usr/bin/perl -w
->  # SPDX-License-Identifier: GPL-2.0-only
->  # (c) 2009, Tom Zanussi <tzanussi@gmail.com>
->  
-> diff --git a/tools/perf/scripts/perl/rw-by-pid.pl b/tools/perf/scripts/perl/rw-by-pid.pl
-> index d789fe39caab..43fcd4823f21 100644
-> --- a/tools/perf/scripts/perl/rw-by-pid.pl
-> +++ b/tools/perf/scripts/perl/rw-by-pid.pl
-> @@ -1,4 +1,3 @@
-> -#!/usr/bin/perl -w
->  # SPDX-License-Identifier: GPL-2.0-only
->  # (c) 2009, Tom Zanussi <tzanussi@gmail.com>
->  
-> diff --git a/tools/perf/scripts/perl/rwtop.pl b/tools/perf/scripts/perl/rwtop.pl
-> index eba4df67af6b..96ce72e53f8e 100644
-> --- a/tools/perf/scripts/perl/rwtop.pl
-> +++ b/tools/perf/scripts/perl/rwtop.pl
-> @@ -1,4 +1,3 @@
-> -#!/usr/bin/perl -w
->  # SPDX-License-Identifier: GPL-2.0-only
->  # (c) 2010, Tom Zanussi <tzanussi@gmail.com>
->  
-> diff --git a/tools/perf/scripts/perl/wakeup-latency.pl b/tools/perf/scripts/perl/wakeup-latency.pl
-> index 53444ff4ec7f..f8b59f0bd949 100644
-> --- a/tools/perf/scripts/perl/wakeup-latency.pl
-> +++ b/tools/perf/scripts/perl/wakeup-latency.pl
-> @@ -1,4 +1,3 @@
-> -#!/usr/bin/perl -w
->  # SPDX-License-Identifier: GPL-2.0-only
->  # (c) 2009, Tom Zanussi <tzanussi@gmail.com>
->  
-> diff --git a/tools/perf/scripts/python/exported-sql-viewer.py b/tools/perf/scripts/python/exported-sql-viewer.py
-> old mode 100755
-> new mode 100644
-> index 13f2d8a81610..358438a648a9
-> --- a/tools/perf/scripts/python/exported-sql-viewer.py
-> +++ b/tools/perf/scripts/python/exported-sql-viewer.py
-> @@ -1,4 +1,3 @@
-> -#!/usr/bin/env python
->  # SPDX-License-Identifier: GPL-2.0
->  # exported-sql-viewer.py: view data from sql database
->  # Copyright (c) 2014-2018, Intel Corporation.
-> diff --git a/tools/perf/scripts/python/flamegraph.py b/tools/perf/scripts/python/flamegraph.py
-> old mode 100755
-> new mode 100644
-> diff --git a/tools/perf/scripts/python/libxed.py b/tools/perf/scripts/python/libxed.py
-> index 2c70a5a7eb9c..3ea5bb8195c4 100644
-> --- a/tools/perf/scripts/python/libxed.py
-> +++ b/tools/perf/scripts/python/libxed.py
-> @@ -1,4 +1,3 @@
-> -#!/usr/bin/env python
->  # SPDX-License-Identifier: GPL-2.0
->  # libxed.py: Python wrapper for libxed.so
->  # Copyright (c) 2014-2021, Intel Corporation.
-> diff --git a/tools/perf/scripts/python/net_dropmonitor.py b/tools/perf/scripts/python/net_dropmonitor.py
-> old mode 100755
-> new mode 100644
-> diff --git a/tools/perf/scripts/python/stackcollapse.py b/tools/perf/scripts/python/stackcollapse.py
-> old mode 100755
-> new mode 100644
-> 
+On alpha, smp_send_stop() sends an IPI to all possible CPUs but only needs
+to send them to online CPUs.
+
+Send the stop IPI to only the online CPUs.
+
+[1] https://lkml.org/lkml/2020/1/10/250
+
+Signed-off-by: Prarit Bhargava <prarit@redhat.com>
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Signed-off-by: Matt Turner <mattst88@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/alpha/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/alpha/kernel/smp.c b/arch/alpha/kernel/smp.c
+index d0dccae53ba9..8a89b9adb4fe 100644
+--- a/arch/alpha/kernel/smp.c
++++ b/arch/alpha/kernel/smp.c
+@@ -585,7 +585,7 @@ void
+ smp_send_stop(void)
+ {
+ 	cpumask_t to_whom;
+-	cpumask_copy(&to_whom, cpu_possible_mask);
++	cpumask_copy(&to_whom, cpu_online_mask);
+ 	cpumask_clear_cpu(smp_processor_id(), &to_whom);
+ #ifdef DEBUG_IPI_MSG
+ 	if (hard_smp_processor_id() != boot_cpu_id)
+-- 
+2.30.2
 
