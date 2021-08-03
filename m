@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7B33DE868
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F033DE8E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhHCI1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:27:17 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27062 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234517AbhHCI1G (ORCPT
+        id S234888AbhHCIuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:50:25 -0400
+Received: from gateway32.websitewelcome.com ([192.185.145.187]:18890 "EHLO
+        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234902AbhHCIuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:27:06 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1738FJln049769;
-        Tue, 3 Aug 2021 04:26:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=SykDvfuDhGiKWrRYA/vYadWCInVTWC5oFhkc3mo436A=;
- b=eFcb5DiIxjS12n3LJvOoAEU3Pag8buz1DiiQbS/CkEJtVGYT3kTOy/7TW1MI46fZm9KG
- aveqUTdLuNzqEbtjv5BQpdmdGjHKrH+5IR3h1Vy+GYfsVinRL3YljeGO22yO2rsGE84V
- y7z575hNsK3XBJK+ySgO0ISZZMD3OrdmeTgmbuV7ZV9CFXo5gOHpLFIsEjX4/ZPZ3xZ5
- J9mm9k+IC7ha+Iu9Cu2kpkRpc32AQoiZclpmhPwHrzatqM86GFV5QZ76NxAGr05eikST
- 3hXFNRJQp5giC39+4akbxpK94OpmJijxsEZO4lmLbWER6RU3rO6utNpF2TSFAodBH24M 7w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a72320bgw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 04:26:55 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1738FUEY050503;
-        Tue, 3 Aug 2021 04:26:54 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a72320bg5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 04:26:54 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1738HGB3008814;
-        Tue, 3 Aug 2021 08:26:53 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3a4wshpp42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 08:26:52 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1738NsMc56492526
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 3 Aug 2021 08:23:54 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D40FEA405F;
-        Tue,  3 Aug 2021 08:26:49 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4FF8FA406F;
-        Tue,  3 Aug 2021 08:26:49 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.75.95])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  3 Aug 2021 08:26:49 +0000 (GMT)
-From:   Pierre Morel <pmorel@linux.ibm.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
-        david@redhat.com, thuth@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, pmorel@linux.ibm.com
-Subject: [PATCH v3 3/3] s390x: optimization of the check for CPU topology change
-Date:   Tue,  3 Aug 2021 10:26:46 +0200
-Message-Id: <1627979206-32663-4-git-send-email-pmorel@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1627979206-32663-1-git-send-email-pmorel@linux.ibm.com>
-References: <1627979206-32663-1-git-send-email-pmorel@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 1PYLi39yGSt-JEAcbOEjMNil9JiYrdcm
-X-Proofpoint-ORIG-GUID: JAk0DWKu_RPKFoLoRExq4pCpq571bs7C
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-03_02:2021-08-02,2021-08-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 mlxscore=0 clxscore=1015 impostorscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 priorityscore=1501 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108030055
+        Tue, 3 Aug 2021 04:50:23 -0400
+X-Greylist: delayed 1323 seconds by postgrey-1.27 at vger.kernel.org; Tue, 03 Aug 2021 04:50:23 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway32.websitewelcome.com (Postfix) with ESMTP id D0AFC93F99
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:28:07 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id ApmRmM3vO7sOiApmRmyKC4; Tue, 03 Aug 2021 03:28:07 -0500
+X-Authority-Reason: nr=8
+Received: from host-95-239-202-226.retail.telecomitalia.it ([95.239.202.226]:59954 helo=f34.bristot.me)
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1mApmQ-003t1l-Nz; Tue, 03 Aug 2021 03:28:07 -0500
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: [PATCH] trace/osnoise: Rename main variable to tracer_main
+Date:   Tue,  3 Aug 2021 10:28:00 +0200
+Message-Id: <fc62f7deb2258f6068d77c3e734633e3c3511464.1627977494.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 95.239.202.226
+X-Source-L: No
+X-Exim-ID: 1mApmQ-003t1l-Nz
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-95-239-202-226.retail.telecomitalia.it (f34.bristot.me) [95.239.202.226]:59954
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 8
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the PTF instruction is interpreted by the SIE we can optimize
-the arch_update_cpu_topology callback to check if there is a real need
-to update the topology by using the PTF instruction.
+The *main variable in start_kthread() is causing warnings in some
+compilers/analyzers. Although it is not necessarily a problem, it is
+not a problem changing the variable name too.
 
-Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+Rename the *main variable to *tracer_main.
+
+No functional change.
+
+Fixes: c8895e271f79 ("trace/osnoise: Support hotplug operations")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- arch/s390/kernel/topology.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/trace/trace_osnoise.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
-index 26aa2614ee35..741cb447e78e 100644
---- a/arch/s390/kernel/topology.c
-+++ b/arch/s390/kernel/topology.c
-@@ -322,6 +322,9 @@ int arch_update_cpu_topology(void)
- 	struct device *dev;
- 	int cpu, rc;
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index 0b11db9595b6..eda10d39da47 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -1576,20 +1576,20 @@ static void stop_per_cpu_kthreads(void)
+ static int start_kthread(unsigned int cpu)
+ {
+ 	struct task_struct *kthread;
+-	void *main = osnoise_main;
++	void *tracer_main = osnoise_main;
+ 	char comm[24];
  
-+	if (!ptf(PTF_CHECK))
-+		return 0;
-+
- 	rc = __arch_update_cpu_topology();
- 	on_each_cpu(__arch_update_dedicated_flag, NULL, 0);
- 	for_each_online_cpu(cpu) {
+ #ifdef CONFIG_TIMERLAT_TRACER
+ 	if (osnoise_data.timerlat_tracer) {
+ 		snprintf(comm, 24, "timerlat/%d", cpu);
+-		main = timerlat_main;
++		tracer_main = timerlat_main;
+ 	} else {
+ 		snprintf(comm, 24, "osnoise/%d", cpu);
+ 	}
+ #else
+ 	snprintf(comm, 24, "osnoise/%d", cpu);
+ #endif
+-	kthread = kthread_create_on_cpu(main, NULL, cpu, comm);
++	kthread = kthread_create_on_cpu(tracer_main, NULL, cpu, comm);
+ 
+ 	if (IS_ERR(kthread)) {
+ 		pr_err(BANNER "could not start sampling thread\n");
 -- 
-2.25.1
+2.31.1
 
