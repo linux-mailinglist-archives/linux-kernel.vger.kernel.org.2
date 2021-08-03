@@ -2,86 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC283DEFC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF123DEFCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236524AbhHCOLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:11:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236432AbhHCOLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:11:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E558460560;
-        Tue,  3 Aug 2021 14:10:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627999859;
-        bh=N0ZTtrHdIHPT96G9nBYkGdXTL8PsI1Gk6OP7BRI/XWU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g+8I7RyNPSsLNAcXZ0c7bkXcr6kChyBewrKHP4n4Yvbi+42JeojCborCIczYftJB/
-         GKveQlwLIL9FhKlaZEotV+MhPEM8x5WUNZiHV+EgZx5fiwkxyBtFV0ntj5/4u8Nt1H
-         tD2jdm2C9kaYGgBrczMmXVoLDXMgoIXSrE9gBkxpLnVNgY+xOm959iOvVLkRbN4DbW
-         Z+aAU1iteh/iQzWVUtwGNZaSSsw3PQ3s+5T0YQjxyKyFnH3tgA/3mhA96byevPBy+9
-         Fs4bQXWcPeDiByrKpB5ZY4c1OTxZ/TU6nTOvZD3x2Vrhx+4YdDB54GdrCsjqJQ3VbX
-         +3n4ivjhRNj7g==
-Date:   Tue, 3 Aug 2021 15:10:45 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mason Zhang <Mason.Zhang@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
-Subject: Re: [PATCH v2 4/4] spi: tegra114: Fix set_cs_timing param
-Message-ID: <20210803141045.GN4668@sirena.org.uk>
-References: <20210803102517.20944-1-Mason.Zhang@mediatek.com>
+        id S236506AbhHCOPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236230AbhHCOPw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 10:15:52 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36C9C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:15:39 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id x3so19950636qkl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 07:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CGoeGrlFI9+sWcEgQCmH+4Ac0VkTcA2bJ22N5ENTdDg=;
+        b=YmkBhg7ZSy7zgRJs7+RhL2ezlEmxraLZ3H2cJIYpUtE5/DhGGXsw2HieBlgdMN6bq1
+         h/bjAxt/o7MfkLY3uZFogmdlJU+K6JOaAxZTrufTGGuve3u8FdGoSL+SO88OdUNTiugX
+         vr69LKfFslTGNh1JT+km+Nk6dxeOdrjCifl0RIxQAuCCfjxOCIlwM/1oLnAEl9/CSaxj
+         E2ladtVMDDGUY5n04jsimXPRC/LuYM5yA2dNEQ8xfZfDmZcZYupXzyU1BmvVGFCHf1Ys
+         N+/rXzScbRO8X31ZPN4Ho4fJWw9OIZylMuVBiYpyouhTKZ93m1To3Hh5Cm4GqaEHOh6Y
+         lc7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CGoeGrlFI9+sWcEgQCmH+4Ac0VkTcA2bJ22N5ENTdDg=;
+        b=leILNx3ZdvOIc0PD+3blSR5NMZlscyTdBZVy5K3f0XFOZohX5bgP49nnkZi2iaaqc8
+         2458EamEk/3HD1eRGxxzZTVAGXWYtH8yS5D6I2BOixUIFX5Ls1+t34M94vNmDknzblyA
+         u9xvFQR3Md8lYV4T8FFCZnP/sroMelOg1xrVQtYBi0MFz2LkjMPdGD4baiihiNa5pCIt
+         AMKdm/OtRMCl5NX6ug1uENMb5VCoAKSE5U9G6ZG7mTsvgWP6KELCLc/vX7vAVNMZb3nr
+         I1u/0tkLYly3KtuM/D5cgopO+VskOD7550PH/Z96g22sG6598502yCjtOwpsUh603Vrf
+         /rJg==
+X-Gm-Message-State: AOAM533EMI2j2JahArl8OM7pLOOd6uqAKETOw0Fh72G6Aik72wsWAVlW
+        f9WelHz6yknTnJRL98wYN40dFw==
+X-Google-Smtp-Source: ABdhPJzPp08cKt2Oi+NdOsTC+m7W0qzcKhjVfmuOxdm6waljOoR6RYCG9IzK3VHVfWTXN+mJjH+ywQ==
+X-Received: by 2002:ae9:e515:: with SMTP id w21mr20559520qkf.169.1628000139086;
+        Tue, 03 Aug 2021 07:15:39 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:7bfe])
+        by smtp.gmail.com with ESMTPSA id 143sm7935158qkf.3.2021.08.03.07.15.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 07:15:38 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 10:15:36 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Roman Gushchin <guro@fb.com>, Miaohe Lin <linmiaohe@huawei.com>,
+        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
+        shakeelb@google.com, willy@infradead.org, alexs@kernel.org,
+        richard.weiyang@gmail.com, songmuchun@bytedance.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
+Message-ID: <YQlPiLY0ieRb704V@cmpxchg.org>
+References: <20210729125755.16871-1-linmiaohe@huawei.com>
+ <20210729125755.16871-3-linmiaohe@huawei.com>
+ <YQNsxVPsRSBZcfGG@carbon.lan>
+ <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Rzq/nSLlHy1djmXS"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803102517.20944-1-Mason.Zhang@mediatek.com>
-X-Cookie: There's only one everything.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 30, 2021 at 08:50:02AM +0200, Michal Hocko wrote:
+> On Thu 29-07-21 20:06:45, Roman Gushchin wrote:
+> > On Thu, Jul 29, 2021 at 08:57:52PM +0800, Miaohe Lin wrote:
+> > > Since percpu_charge_mutex is only used inside drain_all_stock(), we can
+> > > narrow the scope of percpu_charge_mutex by moving it here.
+> > > 
+> > > Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> > > ---
+> > >  mm/memcontrol.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index 6580c2381a3e..a03e24e57cd9 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -2050,7 +2050,6 @@ struct memcg_stock_pcp {
+> > >  #define FLUSHING_CACHED_CHARGE	0
+> > >  };
+> > >  static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
+> > > -static DEFINE_MUTEX(percpu_charge_mutex);
+> > >  
+> > >  #ifdef CONFIG_MEMCG_KMEM
+> > >  static void drain_obj_stock(struct obj_stock *stock);
+> > > @@ -2209,6 +2208,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+> > >   */
+> > >  static void drain_all_stock(struct mem_cgroup *root_memcg)
+> > >  {
+> > > +	static DEFINE_MUTEX(percpu_charge_mutex);
+> > >  	int cpu, curcpu;
+> > 
+> > It's considered a good practice to protect data instead of code paths. After
+> > the proposed change it becomes obvious that the opposite is done here: the mutex
+> > is used to prevent a simultaneous execution of the code of the drain_all_stock()
+> > function.
+> 
+> The purpose of the lock was indeed to orchestrate callers more than any
+> data structure consistency.
 
---Rzq/nSLlHy1djmXS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It doesn't seem like we need the lock at all.
 
-On Tue, Aug 03, 2021 at 06:25:18PM +0800, Mason Zhang wrote:
-> This patch fixed set_cs_timing param, because cs timing delay has
-> been moved to spi_device.
->=20
-> Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
-> ---
->  drivers/spi/spi-tegra114.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+The comment says it's so we don't spawn more workers when flushing is
+already underway. But a work cannot be queued more than once - if it
+were just about that, we'd needlessly duplicate the
+test_and_set_bit(WORK_STRUCT_PENDING_BIT) in queue_work_on().
 
-Each individual patch in the series needs to be buildable by itself, if
-an earlier commit in the series causes things to fail to build then that
-commit needs to be improved so that this doesn't happen.  This supports
-things like bisection.
+git history shows we tried to remove it once:
 
-Please also look into how you're sending serieses, these patches aren't
-threaded together as normal and there's a weird "***" in the subject of
-the first patch.
+commit 8521fc50d433507a7cdc96bec280f9e5888a54cc
+Author: Michal Hocko <mhocko@suse.cz>
+Date:   Tue Jul 26 16:08:29 2011 -0700
 
---Rzq/nSLlHy1djmXS
-Content-Type: application/pgp-signature; name="signature.asc"
+    memcg: get rid of percpu_charge_mutex lock
 
------BEGIN PGP SIGNATURE-----
+but it turned out that the lock did in fact protect a data structure:
+the stock itself. Specifically stock->cached:
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEJTmQACgkQJNaLcl1U
-h9D67Qf9EAF3egsc5vOgwsyJ04565RzPgzYINu8phKCoAsP7U3wUTep3WbMcGLOx
-lFEMzwwxeT8grDvDqx3wjXvh4hb2SnSlO/6hA2UOEUuqe7K3aB+UvmIxUIdoDdZb
-mJSklejnK4Zfb0SDTf8NVYpEvvFDO92LcOvAeDVshuHGfKIbsFE3gCVXlsKmC4id
-0ztnP4SFtrwQDKgRf1cUvjJwWpUoKwdctGdzlrwz00OvCJkU+U8VMSss/tZkJUpN
-+bhfZp2R0aYi3579ReTPj9RfH0PLTNg1c2oVTVCUD7DRPtmrFvUMj0roggpKtlgp
-pn72WZmvyXwLgG0g+n0SbtErGbDITw==
-=M79B
------END PGP SIGNATURE-----
+commit 9f50fad65b87a8776ae989ca059ad6c17925dfc3
+Author: Michal Hocko <mhocko@suse.cz>
+Date:   Tue Aug 9 11:56:26 2011 +0200
 
---Rzq/nSLlHy1djmXS--
+    Revert "memcg: get rid of percpu_charge_mutex lock"
+
+    This reverts commit 8521fc50d433507a7cdc96bec280f9e5888a54cc.
+
+    The patch incorrectly assumes that using atomic FLUSHING_CACHED_CHARGE
+    bit operations is sufficient but that is not true.  Johannes Weiner has
+    reported a crash during parallel memory cgroup removal:
+
+      BUG: unable to handle kernel NULL pointer dereference at 0000000000000018
+      IP: [<ffffffff81083b70>] css_is_ancestor+0x20/0x70
+      Oops: 0000 [#1] PREEMPT SMP
+      Pid: 19677, comm: rmdir Tainted: G        W   3.0.0-mm1-00188-gf38d32b #35 ECS MCP61M-M3/MCP61M-M3
+      RIP: 0010:[<ffffffff81083b70>]  css_is_ancestor+0x20/0x70
+      RSP: 0018:ffff880077b09c88  EFLAGS: 00010202
+      Process rmdir (pid: 19677, threadinfo ffff880077b08000, task ffff8800781bb310)
+      Call Trace:
+       [<ffffffff810feba3>] mem_cgroup_same_or_subtree+0x33/0x40
+       [<ffffffff810feccf>] drain_all_stock+0x11f/0x170
+       [<ffffffff81103211>] mem_cgroup_force_empty+0x231/0x6d0
+       [<ffffffff811036c4>] mem_cgroup_pre_destroy+0x14/0x20
+       [<ffffffff81080559>] cgroup_rmdir+0xb9/0x500
+       [<ffffffff81114d26>] vfs_rmdir+0x86/0xe0
+       [<ffffffff81114e7b>] do_rmdir+0xfb/0x110
+       [<ffffffff81114ea6>] sys_rmdir+0x16/0x20
+       [<ffffffff8154d76b>] system_call_fastpath+0x16/0x1b
+
+    We are crashing because we try to dereference cached memcg when we are
+    checking whether we should wait for draining on the cache.  The cache is
+    already cleaned up, though.
+
+    There is also a theoretical chance that the cached memcg gets freed
+    between we test for the FLUSHING_CACHED_CHARGE and dereference it in
+    mem_cgroup_same_or_subtree:
+
+            CPU0                    CPU1                         CPU2
+      mem=stock->cached
+      stock->cached=NULL
+                                  clear_bit
+                                                            test_and_set_bit
+      test_bit()                    ...
+      <preempted>             mem_cgroup_destroy
+      use after free
+
+    The percpu_charge_mutex protected from this race because sync draining
+    is exclusive.
+
+    It is safer to revert now and come up with a more parallel
+    implementation later.
+
+I didn't remember this one at all!
+
+However, when you look at the codebase from back then, there was no
+rcu-protection for memcg lifetime, and drain_stock() didn't double
+check stock->cached inside the work. Hence the crash during a race.
+
+The drain code is different now: drain_local_stock() disables IRQs
+which holds up rcu, and then calls drain_stock() and drain_obj_stock()
+which both check stock->cached one more time before the deref.
+
+With workqueue managing concurrency, and rcu ensuring memcg lifetime
+during the drain, this lock indeed seems unnecessary now.
+
+Unless I'm missing something, it should just be removed instead.
