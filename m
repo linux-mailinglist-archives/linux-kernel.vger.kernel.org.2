@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58553DF393
+	by mail.lfdr.de (Postfix) with ESMTP id 326D13DF392
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237878AbhHCRHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:07:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
+        id S238036AbhHCRHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:07:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237510AbhHCRGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237502AbhHCRGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Aug 2021 13:06:20 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD08E60230;
+        by mail.kernel.org (Postfix) with ESMTPSA id AE6DC60FA0;
         Tue,  3 Aug 2021 17:06:08 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAxrj-002ubN-Fk; Tue, 03 Aug 2021 13:06:07 -0400
+        id 1mAxrj-002ubP-HU; Tue, 03 Aug 2021 13:06:07 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -27,13 +27,16 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v3 00/22] libtracefs: Introducing tracefs_sql() to create synthetice events with an SQL line
-Date:   Tue,  3 Aug 2021 13:05:44 -0400
-Message-Id: <20210803170606.694085-1-rostedt@goodmis.org>
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Daniel Black <daniel@linux.ibm.com>
+Subject: [PATCH v3 01/22] libtracefs: Added new API tracefs_sql()
+Date:   Tue,  3 Aug 2021 13:05:45 -0400
+Message-Id: <20210803170606.694085-2-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210803170606.694085-1-rostedt@goodmis.org>
+References: <20210803170606.694085-1-rostedt@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -41,454 +44,784 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
+This adds the API tracefs_sql() that takes a tep_handle handler, a name,
+and a SQL string and parses it to produce a tracefs_synth synthetic event
+handler.
+
+Currently it only supports simple SQL of the type:
+
+  SELECT start.common_pid AS pid, end.common_timestamp.usecs AS usecs
+    FROM sched_waking AS start JOIN sched_switch AS end
+    ON start.pid = end.next_pid
+
 Special thanks to:
 
   Lukas Bulwahn for first introducing the idea at RT Summit on the Summit
     Spring of 2019.
-    
+
   Daniel Black for sorting out the syntax of mapping the synthetic
     event creations into SQL statements at Linux Plumbers, Fall of 2019.
 
-This patch set depends on:
-
-   https://patchwork.kernel.org/project/linux-trace-devel/list/?series=525783
-
-Lots of bug fixes. Full diff of changes since v2 at bottom of this email.
-
-Below is from the man page, which has a fully functional parser as its
-example (in man page, not here. But the usage of that parser is described in
-the FUNCTIONAL EXAMPLE section below).
-
-Also, see patch 18, which extracts the program from the man page and builds
-it via:
-
-    make sqlhist
-
-For easy testing of this feature.
-
-struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
-				  const char *sql_buffer, char **err);
-
-struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
-                                  const char *sql_buffer, char **err);
-
-Synthetic events are dynamically created events that attach two existing
-events together via one or more matching fields between the two events. It
-can be used to find the latency between the events, or to simply pass fields
-of the first event on to the second event to display as one event.
-
-The Linux kernel interface to create synthetic events is complex, and there
-needs to be a better way to create synthetic events that is easy and can be
-understood via existing technology.
-
-If you think of each event as a table, where the fields are the column of
-the table and each instance of the event as a row, you can understand how
-SQL can be used to attach two events together and for another event (table).
-Utilizing the SQL SELECT FROM JOIN ON [ WHERE ] syntax, a synthetic event
-can easily be created from two different events.
-
-For simple SQL queries to make a histogram instead of a synthetic event, see
-HISTOGRAMS below.
-
-tracefs_sql() takes in a tep handler (See tep_local_events(3)) that is used
-to verify the events within the sql_buffer expression. The name is the name
-of the synthetic event to create. If err points to an address of a string,
-it will be filled with a detailed message on any type of parsing error,
-including fields that do not belong to an event, or if the events or fields
-are not properly compared.
-
-The example program below is a fully functional parser where it will create
-a synthetic event from a SQL syntax passed in via the command line or a
-file.
-
-The SQL format is as follows:
-
-    SELECT <fields> FROM <start-event> JOIN <end-event> ON <matching-fields> WHERE <filter>
-
-Note, although the examples show the SQL commands in uppercase, they are not
-required to be so. That is, you can use "SELECT" or "select" or "sElEct".
-
-For example:
-
-    SELECT syscalls.sys_enter_read.fd, syscalls.sys_exit_read.ret FROM syscalls.sys_enter_read
-       JOIN syscalls.sys_exit_read
-       ON syscalls.sys_enter_read.common_pid = syscalls.sys_exit_write.common_pid
-
-Will create a synthetic event that with the fields:
-
-    u64 fd; s64 ret;
-
-Because the function takes a tep handle, and usually all event names are
-unique, you can leave off the system (group) name of the event, and
-tracefs_sql() will discover the system for you.
-
-That is, the above statement would work with:
-
-    SELECT sys_enter_read.fd, sys_exit_read.ret FROM sys_enter_read JOIN sys_exit_read
-       ON sys_enter_read.common_pid = sys_exit_write.common_pid
-
-The AS keyword can be used to name the fields as well as to give an alias to
-the events, such that the above can be simplified even more as;
-
-    SELECT start.fd, end.ret FROM sys_enter_read AS start JOIN sys_exit_read AS end ON start.common_pid = end.common_pid
-
-The above aliases sys_enter_read as start and sys_exit_read as end and uses
-those aliases to reference the event throughout the statement.
-
-Using the AS keyword in the selection portion of the SQL statement will
-define what those fields will be called in the synthetic event.
-
-    SELECT start.fd AS filed, end.ret AS return FROM sys_enter_read AS start JOIN sys_exit_read AS end
-       ON start.common_pid = end.common_pid
-
-The above labels the fd of start as filed and the ret of end as return where
-the synthetic event that is created will now have the fields:
-
-    u64 filed; s64 return;
-
-The fields can also be calculated with results passed to the synthetic event:
-
-    select start.truesize, end.len, (start.truesize - end.len) as diff from napi_gro_receive_entry as start
-       JOIN netif_receive_skb as end ON start.skbaddr = end.skbaddr
-
-Which would show the truesize" of the napi_gro_receive_entry event, the
-actual len of the content, shown by the netif_receive_skb, and alse the
-delta between the two and expressed by the field *diff.
-
-The code also supports recording the timestamps at either event, and
-performing calculations on them. For wakeup latency, you have:
-
-    select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
-       JOIN sched_switch as end ON start.pid = end.next_pid
-
-The above will create a synthetic event that records the pid of the task
-being woken up, and the time difference between the sched_waking event and
-the sched_switch event. The TIMESTAMP_USECS will truncate the time down to
-microseconds as the timestamp usually recorded in the tracing buffer has
-nanosecond resolution. If you do not want that truncation, use TIMESTAMP
-instead of TIMESTAMP_USECS.
-
-Finally, the WHERE clause can be added, that will let you add filters on
-either or both events.
-
-    select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
-       JOIN sched_switch as end ON start.pid = end.next_pid
-       WHERE start.prio < 100 && (!(end.prev_pid < 1 || end.prev_prio > 100) || end.prev_pid == 0)
-
-NOTE
-
-Although both events can be used together in the WHERE clause, they must not
-be mixed outside the top most "&&" statements. You can not OR (||) the
-events together, where a filter of one event is OR’d to a filter of the
-other event. This does not make sense, as the synthetic event requires both
-events to take place to be recorded. If one is filtered out, then the
-synthetic event does not execute.
-
-    select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
-       JOIN sched_switch as end ON start.pid = end.next_pid
-       WHERE start.prio < 100 && end.prev_prio < 100
-
-The above is valid.
-
-Where as the below is not.
-
-    select start.pid, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start
-       JOIN sched_switch as end ON start.pid = end.next_pid
-       WHERE start.prio < 100 || end.prev_prio < 100
-
-KEYWORDS AS EVENT FIELDS
-
-In some cases, an event may have a keyword. For example,
-regcache_drop_region has "from" as a field and the following will not work
-
-      select from from regcache_drop_region
-
-In such cases, add a backslash to the conflicting field, and this will tell
-the parser that the "from" is a field and not a keyword:
-
-      select \from from regcache_drop_region
-
-HISTOGRAMS
-
-Simple SQL statements without the JOIN ON may also be used, which will
-create a histogram instead. When doing this, the struct tracefs_hist
-descriptor can be retrieved from the returned synthetic event descriptor via
-the tracefs_synth_get_start_hist(3).
-
-In order to utilize the histogram types (see xxx) the CAST command of SQL
-can be used.
-
-That is:
-
-      select CAST(common_pid AS comm), CAST(id AS syscall) FROM sys_enter
-
-Which produces:
-
-     # echo 'hist:keys=common_pid.execname,id.syscall' > events/raw_syscalls/sys_enter/trigger
-
-     # cat events/raw_syscalls/sys_enter/hist
-
-    { common_pid: bash            [     18248], id: sys_setpgid                   [109] } hitcount:          1
-    { common_pid: sendmail        [      1812], id: sys_read                      [  0] } hitcount:          1
-    { common_pid: bash            [     18247], id: sys_getpid                    [ 39] } hitcount:          1
-    { common_pid: bash            [     18247], id: sys_dup2                      [ 33] } hitcount:          1
-    { common_pid: gmain           [     13684], id: sys_inotify_add_watch         [254] } hitcount:          1
-    { common_pid: cat             [     18247], id: sys_access                    [ 21] } hitcount:          1
-    { common_pid: bash            [     18248], id: sys_getpid                    [ 39] } hitcount:          1
-    { common_pid: cat             [     18247], id: sys_fadvise64                 [221] } hitcount:          1
-    { common_pid: sendmail        [      1812], id: sys_openat                    [257] } hitcount:          1
-    { common_pid: less            [     18248], id: sys_munmap                    [ 11] } hitcount:          1
-    { common_pid: sendmail        [      1812], id: sys_close                     [  3] } hitcount:          1
-    { common_pid: gmain           [      1534], id: sys_poll                      [  7] } hitcount:          1
-    { common_pid: bash            [     18247], id: sys_execve                    [ 59] } hitcount:          1
-
-Note, string fields may not be cast.
-
-The possible types to cast to are:
-
-HEX - convert the value to use hex and not decimal
-
-SYM - convert a pointer to symbolic (kallsyms values)
-
-SYM-OFFSET - convert a pointer to symbolic and include the offset.
-
-SYSCALL - convert the number to the mapped system call name
-
-EXECNAME or COMM - can only be used with the common_pid field. Will show the
-task name of the process.
-
-LOG or LOG2 - bucket the key values in a log 2 values (1, 2, 3-4, 5-8, 9-16, 17-32, ...)
-
-The above fields are not case sensitive, and "LOG2" works as good as "log".
-
-A special CAST to COUNTER or COUNTER will make the field a value and not a
-key. For example:
-
-      SELECT common_pid, CAST(bytes_req AS _COUNTER_) FROM kmalloc
-
-Which will create
-
-      echo 'hist:keys=common_pid:vals=bytes_req' > events/kmem/kmalloc/trigger
-
-      cat events/kmem/kmalloc/hist
-
-    { common_pid:       1812 } hitcount:          1  bytes_req:         32
-    { common_pid:       9111 } hitcount:          2  bytes_req:        272
-    { common_pid:       1768 } hitcount:          3  bytes_req:       1112
-    { common_pid:          0 } hitcount:          4  bytes_req:        512
-    { common_pid:      18297 } hitcount:         11  bytes_req:       2004
-
-RETURN VALUE
-
-Returns 0 on success and -1 on failure. On failure, if err is defined, it
-will be allocated to hold a detailed description of what went wrong if it
-the error was caused by a parsing error, or that an event, field does not
-exist or is not compatible with what it was combined with.
-
-FUNCTIONAL EXAMPLE:
--------------------
-
-After applying this patch, and installing it. If you compile the example from the man
-page (calling it sqlhist.c):
-
- >$ gcc -o sqlhist sqlhist.c `pkg-config --cflags --libs libtracefs`
- >$ su
- ># ./sqlhist -n syscall_wait -e 'select start.id, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat  
-    from sys_enter as start join sys_exit as end on start.common_pid = end.common_pid
-    where start.id != 23 && start.id != 7 && start.id != 61 && start.id != 230 &&
-          start.id != 232 && start.id != 270 && start.id != 271 && start.id != 202'
-
-
-(All the start.id filtering is hiding the syscalls that block for a long time)
-
- ># echo 'hist:keys=id.syscall,lat.buckets=10:sort=lat' > /sys/kernel/tracing/events/synthetic/syscall_wait/trigger  
-
-<wait a while>
-
- ># cat /sys/kernel/tracing/events/synthetic/syscall_wait/hist  
- # event histogram
- #
- # trigger info: hist:keys=id.syscall,lat.buckets=10:vals=hitcount:sort=lat.buckets=10:size=2048 [active]
- #
-
-{ id: sys_fadvise64                 [221], lat: ~ 0-9 } hitcount:          1
-{ id: sys_fcntl                     [ 72], lat: ~ 0-9 } hitcount:          5
-{ id: sys_read                      [  0], lat: ~ 0-9 } hitcount:         51
-{ id: sys_dup2                      [ 33], lat: ~ 0-9 } hitcount:          1
-{ id: sys_newfstat                  [  5], lat: ~ 0-9 } hitcount:          7
-{ id: sys_getpid                    [ 39], lat: ~ 0-9 } hitcount:         18
-{ id: sys_openat                    [257], lat: ~ 0-9 } hitcount:          3
-{ id: sys_newstat                   [  4], lat: ~ 0-9 } hitcount:         22
-{ id: sys_newlstat                  [  6], lat: ~ 0-9 } hitcount:         44
-{ id: sys_write                     [  1], lat: ~ 0-9 } hitcount:         23
-{ id: sys_brk                       [ 12], lat: ~ 0-9 } hitcount:          4
-{ id: sys_readlink                  [ 89], lat: ~ 0-9 } hitcount:         11
-{ id: sys_close                     [  3], lat: ~ 0-9 } hitcount:         21
-{ id: sys_mprotect                  [ 10], lat: ~ 0-9 } hitcount:          4
-{ id: sys_arch_prctl                [158], lat: ~ 0-9 } hitcount:          2
-{ id: sys_getuid                    [102], lat: ~ 0-9 } hitcount:         12
-{ id: sys_rt_sigaction              [ 13], lat: ~ 0-9 } hitcount:        105
-{ id: sys_statfs                    [137], lat: ~ 0-9 } hitcount:          8
-{ id: sys_rt_sigprocmask            [ 14], lat: ~ 0-9 } hitcount:        121
-{ id: sys_inotify_add_watch         [254], lat: ~ 0-9 } hitcount:          7
-{ id: sys_mmap                      [  9], lat: ~ 0-9 } hitcount:         10
-{ id: sys_ioctl                     [ 16], lat: ~ 0-9 } hitcount:         32
-{ id: sys_pread64                   [ 17], lat: ~ 0-9 } hitcount:          4
-{ id: sys_setpgid                   [109], lat: ~ 0-9 } hitcount:          2
-{ id: sys_lseek                     [  8], lat: ~ 0-9 } hitcount:         11
-{ id: sys_access                    [ 21], lat: ~ 0-9 } hitcount:          1
-{ id: sys_rt_sigprocmask            [ 14], lat: ~ 10-19 } hitcount:          9
-{ id: sys_munmap                    [ 11], lat: ~ 10-19 } hitcount:          1
-{ id: sys_newstat                   [  4], lat: ~ 10-19 } hitcount:          1
-{ id: sys_rt_sigaction              [ 13], lat: ~ 10-19 } hitcount:          1
-{ id: sys_read                      [  0], lat: ~ 10-19 } hitcount:         11
-{ id: sys_openat                    [257], lat: ~ 10-19 } hitcount:         13
-{ id: sys_getpid                    [ 39], lat: ~ 10-19 } hitcount:          1
-{ id: sys_inotify_add_watch         [254], lat: ~ 10-19 } hitcount:          2
-{ id: sys_write                     [  1], lat: ~ 10-19 } hitcount:         10
-{ id: sys_read                      [  0], lat: ~ 20-29 } hitcount:          4
-{ id: sys_pipe                      [ 22], lat: ~ 20-29 } hitcount:          1
-{ id: sys_write                     [  1], lat: ~ 20-29 } hitcount:         11
-{ id: sys_write                     [  1], lat: ~ 30-39 } hitcount:          2
-{ id: sys_inotify_add_watch         [254], lat: ~ 30-39 } hitcount:          1
-{ id: sys_write                     [  1], lat: ~ 40-49 } hitcount:          1
-{ id: sys_inotify_add_watch         [254], lat: ~ 40-49 } hitcount:          1
-{ id: sys_openat                    [257], lat: ~ 40-49 } hitcount:          1
-{ id: sys_read                      [  0], lat: ~ 70-79 } hitcount:          8
-{ id: sys_read                      [  0], lat: ~ 80-89 } hitcount:          1
-{ id: sys_read                      [  0], lat: ~ 110-119 } hitcount:          2
-{ id: sys_clone                     [ 56], lat: ~ 240-249 } hitcount:          1
-{ id: sys_execve                    [ 59], lat: ~ 350-359 } hitcount:          1
-{ id: sys_write                     [  1], lat: ~ 1960-1969 } hitcount:          1
-
-Totals:
-    Hits: 615
-    Entries: 49
-    Dropped: 0
-
-Steven Rostedt (VMware) (22):
-  libtracefs: Added new API tracefs_sql()
-  tracefs: Add unit tests for tracefs_sql()
-  libtracefs: Add comparing start and end fields in tracefs_sql()
-  libtracefs: Add unit test to test tracefs_sql() compare
-  libtracefs: Add filtering for start and end events in tracefs_sql()
-  libtracefs: Add unit test to test tracefs_sql() where clause
-  libtracefs: Make sqlhist parser reentrant
-  libtracefs: Make parser unique to libtracefs
-  libtracefs: Add line number and index to expr structure
-  libtracefs: Add error message when match fields are not FROM and JOIN
-    events
-  libtracefs: Add error message when match or init fails from bad events
-  libtracefs; Add error message for bad selections to SQL sequence
-  libtracefs: Add error message when compare fields fail
-  libtracefs: Add error message for grouping events in SQL filter
-  libtracefs: Add error message for bad filters in SQL statement
-  libtracefs: Add error message when calculation has no label
-  libtracefs: Add man page for tracefs_sql()
-  libtracefs: Add Makefile rule to create sqlhist
-  libtracefs: Allow for simple SQL statements to create a histogram
-  libtracefs: Allow trace_sql() to take keywords for fields with
-    backslash
-  libtracefs: Add CAST() syntax to SQL parsing for histogram types
-  libtracefs: Add CAST(x AS _COUNTER_) syntax to create values in
-    histograms
-
- Documentation/libtracefs-sql.txt |  504 ++++++++++
- Makefile                         |   10 +
- include/tracefs-local.h          |    9 +
- include/tracefs.h                |    6 +
- src/Makefile                     |   13 +
- src/sqlhist-parse.h              |   76 ++
- src/sqlhist.l                    |   98 ++
- src/sqlhist.y                    |  250 +++++
- src/tracefs-hist.c               |  163 ++-
- src/tracefs-sqlhist.c            | 1622 ++++++++++++++++++++++++++++++
- utest/tracefs-utest.c            |   78 ++
- 11 files changed, 2790 insertions(+), 39 deletions(-)
- create mode 100644 Documentation/libtracefs-sql.txt
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Daniel Black <daniel@linux.ibm.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ include/tracefs.h     |   3 +
+ src/Makefile          |  13 +
+ src/sqlhist-parse.h   |  69 ++++
+ src/sqlhist.l         |  88 +++++
+ src/sqlhist.y         | 143 ++++++++
+ src/tracefs-sqlhist.c | 756 ++++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 1072 insertions(+)
  create mode 100644 src/sqlhist-parse.h
  create mode 100644 src/sqlhist.l
  create mode 100644 src/sqlhist.y
  create mode 100644 src/tracefs-sqlhist.c
 
--- 
-2.30.2
-
-
-
-diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
-index 7b616fa..91c99d7 100644
---- a/Documentation/libtracefs-sql.txt
-+++ b/Documentation/libtracefs-sql.txt
-@@ -42,7 +42,7 @@ with a detailed message on any type of parsing error, including fields that do n
- to an event, or if the events or fields are not properly compared.
+diff --git a/include/tracefs.h b/include/tracefs.h
+index 55f82392b004..219adba4b0ce 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -477,4 +477,7 @@ void tracefs_synth_free(struct tracefs_synth *synth);
+ int tracefs_synth_show(struct trace_seq *seq, struct tracefs_instance *instance,
+ 		       struct tracefs_synth *synth);
  
- The example program below is a fully functional parser where it will create a synthetic
--event from a SQL syntax passed in via the command line or a file. 
-+event from a SQL syntax passed in via the command line or a file.
- 
- The SQL format is as follows:
- 
-diff --git a/Makefile b/Makefile
-index 96d7f55..7f382c3 100644
---- a/Makefile
-+++ b/Makefile
-@@ -364,11 +364,21 @@ $(bdir)/libtracefs.so.$(TRACEFS_VERSION): force
- 	$(Q)mkdir -p $(bdir)
- 	$(Q)$(MAKE) -C $(src)/src libtracefs.so
- 
-+$(bdir)/sqlhist.c: Documentation/libtracefs-sql.txt
-+	cat $< | sed -ne '/^EXAMPLE/,/FILES/ { /EXAMPLE/,+2d ; /^FILES/d ;  /^--/d ; p}' > $@
++struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
++				  const char *sql_buffer, char **err);
 +
-+$(bdir)/sqlhist.o: $(bdir)/sqlhist.c
-+	$(CC) -g -Wall -c -o $@ $^ -Iinclude/ $(LIBTRACEEVENT_INCLUDES)
-+
-+sqlhist: $(bdir)/sqlhist.o $(LIBTRACEFS_STATIC)
-+	$(CC) -o $@ $^ $(LIBTRACEEVENT_LIBS)
-+
- clean:
- 	$(MAKE) -C $(src)/utest clean
- 	$(MAKE) -C $(src)/src clean
- 	$(RM) $(TARGETS) $(bdir)/*.a $(bdir)/*.so $(bdir)/*.so.* $(bdir)/*.o $(bdir)/.*.d
- 	$(RM) $(PKG_CONFIG_FILE)
- 	$(RM) $(VERSION_FILE)
-+	$(RM) $(bdir)/sqlhist.o $(bdir)/sqlhist.c sqlhist
+ #endif /* _TRACE_FS_H */
+diff --git a/src/Makefile b/src/Makefile
+index 767af49034ee..9248efc5c7fd 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -12,6 +12,11 @@ OBJS += tracefs-kprobes.o
+ OBJS += tracefs-hist.o
+ OBJS += tracefs-filter.o
  
- .PHONY: clean
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index c3aecf9..7f9cf38 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -1468,7 +1468,7 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
- 			hist = tracefs_hist_alloc(tep, system, event,
- 						  key, type);
- 			if (!hist)
--				break;
-+				return NULL;
- 		}
- 	}
++# Order matters for the the three below
++OBJS += sqlhist-lex.o
++OBJS += sqlhist.tab.o
++OBJS += tracefs-sqlhist.o
++
+ OBJS := $(OBJS:%.o=$(bdir)/%.o)
+ DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
  
+@@ -32,6 +37,14 @@ $(LIBTRACEFS_SHARED_SO): $(LIBTRACEFS_SHARED_VERSION)
+ 
+ libtracefs.so: $(LIBTRACEFS_SHARED_SO)
+ 
++# bison will create both sqlhist.tab.c and sqlhist.tab.h
++sqlhist.tab.h:
++sqlhist.tab.c: sqlhist.y sqlhist.tab.h
++	bison --debug -v --report-file=bison.report -d -o $@ $<
++
++sqlhist-lex.c: sqlhist.l sqlhist.tab.c
++	flex -o $@ $<
++
+ $(bdir)/%.o: %.c
+ 	$(Q)$(call do_fpic_compile)
+ 
+diff --git a/src/sqlhist-parse.h b/src/sqlhist-parse.h
+new file mode 100644
+index 000000000000..aa5232eea451
+--- /dev/null
++++ b/src/sqlhist-parse.h
+@@ -0,0 +1,69 @@
++#ifndef __SQLHIST_PARSE_H
++#define __SQLHIST_PARSE_H
++
++#include <stdarg.h>
++#include <tracefs.h>
++
++struct str_hash;
++#define HASH_BITS 10
++
++struct sql_table;
++
++struct sqlhist_bison {
++	const char		*buffer;
++	size_t			buffer_size;
++	size_t			buffer_idx;
++	int			line_no;
++	int			line_idx;
++	struct sql_table	*table;
++	char			*parse_error_str;
++	struct str_hash         *str_hash[1 << HASH_BITS];
++};
++
++extern struct sqlhist_bison *sb;
++
++#include "sqlhist.tab.h"
++
++enum filter_type {
++	FILTER_GROUP,
++	FILTER_NOT_GROUP,
++	FILTER_EQ,
++	FILTER_NE,
++	FILTER_LE,
++	FILTER_LT,
++	FILTER_GE,
++	FILTER_GT,
++	FILTER_BIN_AND,
++	FILTER_STR_CMP,
++	FILTER_AND,
++	FILTER_OR,
++};
++
++enum compare_type {
++	COMPARE_GROUP,
++	COMPARE_ADD,
++	COMPARE_SUB,
++	COMPARE_MUL,
++	COMPARE_DIV,
++	COMPARE_BIN_AND,
++	COMPARE_BIN_OR,
++	COMPARE_AND,
++	COMPARE_OR,
++};
++
++char * store_str(struct sqlhist_bison *sb, const char *str);
++
++int table_start(struct sqlhist_bison *sb);
++
++void *add_field(struct sqlhist_bison *sb, const char *field, const char *label);
++
++int add_match(struct sqlhist_bison *sb, void *A, void *B);
++
++int add_selection(struct sqlhist_bison *sb, void *item, const char *label);
++int add_from(struct sqlhist_bison *sb, void *item);
++int add_to(struct sqlhist_bison *sb, void *item);
++
++extern void sql_parse_error(struct sqlhist_bison *sb, const char *text,
++			    const char *fmt, va_list ap);
++
++#endif
+diff --git a/src/sqlhist.l b/src/sqlhist.l
+new file mode 100644
+index 000000000000..5dfd17517c6e
+--- /dev/null
++++ b/src/sqlhist.l
+@@ -0,0 +1,88 @@
++%{
++/* code here */
++
++#include <stdarg.h>
++#include "sqlhist-parse.h"
++
++extern int my_yyinput(char *buf, int max);
++
++#undef YY_INPUT
++#define YY_INPUT(b, r, m) ({r = my_yyinput(b, m);})
++
++#define YY_NO_INPUT
++#define YY_NO_UNPUT
++
++#define YY_EXTRA_TYPE struct sqlhist_bison *
++
++#define HANDLE_COLUMN do { sb->line_idx += strlen(yytext); } while (0)
++
++%}
++
++%option caseless
++
++field		[a-z_][a-z0-9_\.]*
++qstring		\"[^\"]*\"
++hexnum		0x[0-9a-f]+
++number		[0-9a-f]+
++
++%%
++
++select { HANDLE_COLUMN; return SELECT; }
++as { HANDLE_COLUMN; return AS; }
++from { HANDLE_COLUMN; return FROM; }
++join { HANDLE_COLUMN; return JOIN; }
++on { HANDLE_COLUMN; return ON; }
++
++{qstring} {
++	HANDLE_COLUMN;
++	yylval.string = store_str(sb, yytext);
++	return STRING;
++}
++
++{field} {
++	HANDLE_COLUMN;
++	yylval.string = store_str(sb, yytext);
++	return FIELD;
++}
++
++{hexnum} {
++	HANDLE_COLUMN;
++	yylval.number = strtol(yytext, NULL, 0);
++	return NUMBER;
++}
++
++{number} {
++	HANDLE_COLUMN;
++	yylval.number = strtol(yytext, NULL, 0);
++	return NUMBER;
++}
++
++\!= { HANDLE_COLUMN; return NEQ; }
++\<= { HANDLE_COLUMN; return LE; }
++\>= { HANDLE_COLUMN; return GE; }
++== { HANDLE_COLUMN; return EQ; }
++&& { HANDLE_COLUMN; return AND; }
++"||" { HANDLE_COLUMN; return OR; }
++[<>&~] { HANDLE_COLUMN; return yytext[0]; }
++
++[\!()\-\+\*/,=] { HANDLE_COLUMN; return yytext[0]; }
++
++[ \t] { HANDLE_COLUMN; }
++\n { sb->line_idx = 0; sb->line_no++; }
++
++. { HANDLE_COLUMN; return PARSE_ERROR; }
++%%
++
++int yywrap(void)
++{
++	return 1;
++}
++
++void yyerror(const char *fmt, ...)
++{
++	va_list ap;
++
++	va_start(ap, fmt);
++	sql_parse_error(sb, yytext, fmt, ap);
++	va_end(ap);
++}
+diff --git a/src/sqlhist.y b/src/sqlhist.y
+new file mode 100644
+index 000000000000..ecb0a0ed44b3
+--- /dev/null
++++ b/src/sqlhist.y
+@@ -0,0 +1,143 @@
++%{
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
++
++#include "sqlhist-parse.h"
++
++extern int yylex(void);
++extern void yyerror(char *fmt, ...);
++
++#define CHECK_RETURN_PTR(x)					\
++	do {							\
++		if (!(x)) {					\
++			printf("FAILED MEMORY: %s\n", #x);	\
++			return -ENOMEM;				\
++		}						\
++	} while (0)
++
++#define CHECK_RETURN_VAL(x)					\
++	do {							\
++		if ((x) < 0) {					\
++			printf("FAILED MEMORY: %s\n", #x);	\
++			return -ENOMEM;				\
++		}						\
++	} while (0)
++
++%}
++
++%union {
++	int	s32;
++	char	*string;
++	long	number;
++	void	*expr;
++}
++
++%token AS SELECT FROM JOIN ON PARSE_ERROR
++%token <number> NUMBER
++%token <string> STRING
++%token <string> FIELD
++%token <string> LE GE EQ NEQ AND OR
++
++%left '+' '-'
++%left '*' '/'
++%left '<' '>'
++%left AND OR
++
++%type <string> name label
++
++%type <expr>  selection_expr field item named_field join_clause
++
++%%
++
++start :
++   select_statement
++ ;
++
++label : AS name { CHECK_RETURN_PTR($$ = store_str(sb, $2)); }
++ | name { CHECK_RETURN_PTR($$ = store_str(sb, $1)); }
++ ;
++
++select : SELECT  { table_start(sb); }
++  ;
++
++select_statement :
++    select selection_list table_exp
++  ;
++
++selection_list :
++   selection
++ | selection ',' selection_list
++ ;
++
++selection :
++    selection_expr
++				{
++					CHECK_RETURN_VAL(add_selection(sb, $1, NULL));
++				}
++  | selection_expr label
++				{
++					CHECK_RETURN_VAL(add_selection(sb, $1, $2));
++				}
++  ;
++
++selection_expr :
++   field
++ | '(' field ')'		{  $$ = $2; }
++ ;
++
++item :
++   named_field
++ | field
++ ;
++
++field :
++   FIELD	{ $$ = add_field(sb, $1, NULL); CHECK_RETURN_PTR($$); }
++ ;
++
++named_field :
++   FIELD label { $$ = add_field(sb, $1, $2); CHECK_RETURN_PTR($$); }
++ ;
++
++name :
++   FIELD
++ ;
++
++table_exp :
++   from_clause join_clause
++ ;
++
++from_clause :
++   FROM item		{ CHECK_RETURN_VAL(add_from(sb, $2)); }
++
++/*
++ * Select from a from clause confuses the variable parsing.
++ * disable it for now.
++
++   | FROM '(' select_statement ')' label
++				{
++					from_table_end($5);
++					$$ = store_printf("FROM (%s) AS %s", $3, $5);
++				}
++*/
++ ;
++
++join_clause :
++  JOIN item ON match_clause	{ add_to(sb, $2); }
++ ;
++
++match :
++   item '=' item { CHECK_RETURN_VAL(add_match(sb, $1, $3)); }
++ | item EQ item { CHECK_RETURN_VAL(add_match(sb, $1, $3)); }
++
++ ;
++
++match_clause :
++   match
++ | match ',' match_clause
++ ;
++
++%%
++
++
 diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 1a3cf37..6224677 100644
---- a/src/tracefs-sqlhist.c
+new file mode 100644
+index 000000000000..5f2729325c1c
+--- /dev/null
 +++ b/src/tracefs-sqlhist.c
-@@ -36,7 +36,8 @@ enum alias_type {
- struct field {
- 	struct expr		*next;	/* private link list */
- 	const char		*system;
--	const char		*event;
+@@ -0,0 +1,756 @@
++// SPDX-License-Identifier: LGPL-2.1
++/*
++ * Copyright (C) 2021 VMware Inc, Steven Rostedt <rostedt@goodmis.org>
++ *
++ * Updates:
++ * Copyright (C) 2021, VMware, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
++ *
++ */
++#include <trace-seq.h>
++#include <stdlib.h>
++#include <errno.h>
++
++#include "tracefs.h"
++#include "tracefs-local.h"
++#include "sqlhist-parse.h"
++
++struct sqlhist_bison *sb;
++
++extern int yylex_init(void* ptr_yy_globals);
++extern int yylex_init_extra(struct sqlhist_bison *sb, void* ptr_yy_globals);
++extern int yylex_destroy (void * yyscanner );
++
++struct str_hash {
++	struct str_hash		*next;
++	char			*str;
++};
++
++enum alias_type {
++	ALIAS_EVENT,
++	ALIAS_FIELD,
++};
++
++#define for_each_field(expr, field, table) \
++	for (expr = (table)->fields; expr; expr = (field)->next)
++
++struct field {
++	struct expr		*next;	/* private link list */
++	const char		*system;
 +	const char		*event_name;
 +	struct tep_event	*event;
- 	const char		*raw;
- 	const char		*label;
- 	const char		*field;
-@@ -515,89 +516,175 @@ __hidden int table_start(struct sqlhist_bison *sb)
- 	return 0;
- }
- 
--static int update_vars(struct sql_table *table, struct field *event)
++	const char		*raw;
++	const char		*label;
++	const char		*field;
++};
++
++struct match {
++	struct match		*next;
++	struct expr		*lval;
++	struct expr		*rval;
++};
++
++enum expr_type
++{
++	EXPR_NUMBER,
++	EXPR_STRING,
++	EXPR_FIELD,
++};
++
++struct expr {
++	struct expr		*free_list;
++	struct expr		*next;
++	enum expr_type		type;
++	union {
++		struct field	field;
++		const char	*string;
++		long		number;
++	};
++};
++
++struct sql_table {
++	struct sqlhist_bison	*sb;
++	const char		*name;
++	struct expr		*exprs;
++	struct expr		*fields;
++	struct expr		*from;
++	struct expr		*to;
++	struct match		*matches;
++	struct match		**next_match;
++	struct expr		*selections;
++	struct expr		**next_selection;
++};
++
++__hidden int my_yyinput(char *buf, int max)
++{
++	if (!sb || !sb->buffer)
++		return -1;
++
++	if (sb->buffer_idx + max > sb->buffer_size)
++		max = sb->buffer_size - sb->buffer_idx;
++
++	if (max)
++		memcpy(buf, sb->buffer + sb->buffer_idx, max);
++
++	sb->buffer_idx += max;
++
++	return max;
++}
++
++__hidden void sql_parse_error(struct sqlhist_bison *sb, const char *text,
++			      const char *fmt, va_list ap)
++{
++	const char *buffer = sb->buffer;
++	struct trace_seq s;
++	int line = sb->line_no;
++	int idx = sb->line_idx - strlen(text);
++	int i;
++
++	if (!buffer)
++		return;
++
++	trace_seq_init(&s);
++	if (!s.buffer) {
++		fprintf(stderr, "Error allocating internal buffer\n");
++		return;
++	}
++
++	for (i = 0; line && buffer[i]; i++) {
++		if (buffer[i] == '\n')
++			line--;
++	}
++	for (; buffer[i] && buffer[i] != '\n'; i++)
++		trace_seq_putc(&s, buffer[i]);
++	trace_seq_putc(&s, '\n');
++	for (i = idx; i > 0; i--)
++		trace_seq_putc(&s, ' ');
++	trace_seq_puts(&s, "^\n");
++	trace_seq_printf(&s, "ERROR: '%s'\n", text);
++	trace_seq_vprintf(&s, fmt, ap);
++
++	trace_seq_terminate(&s);
++
++	sb->parse_error_str = strdup(s.buffer);
++	trace_seq_destroy(&s);
++}
++
++static inline unsigned int quick_hash(const char *str)
++{
++	unsigned int val = 0;
++	int len = strlen(str);
++
++	for (; len >= 4; str += 4, len -= 4) {
++		val += str[0];
++		val += str[1] << 8;
++		val += str[2] << 16;
++		val += str[3] << 24;
++	}
++	for (; len > 0; str++, len--)
++		val += str[0] << (len * 8);
++
++        val *= 2654435761;
++
++        return val & ((1 << HASH_BITS) - 1);
++}
++
++
++static struct str_hash *find_string(struct sqlhist_bison *sb, const char *str)
++{
++	unsigned int key = quick_hash(str);
++	struct str_hash *hash = sb->str_hash[key];
++
++	for (; hash; hash = hash->next) {
++		if (!strcmp(hash->str, str))
++			return hash;
++	}
++	return NULL;
++}
++
++/*
++ * If @str is found, then return the hash string.
++ * This lets store_str() know to free str.
++ */
++static char **add_hash(struct sqlhist_bison *sb, const char *str)
++{
++	struct str_hash *hash;
++	unsigned int key;
++
++	if ((hash = find_string(sb, str))) {
++		return &hash->str;
++	}
++
++	hash = malloc(sizeof(*hash));
++	if (!hash)
++		return NULL;
++	key = quick_hash(str);
++	hash->next = sb->str_hash[key];
++	sb->str_hash[key] = hash;
++	hash->str = NULL;
++	return &hash->str;
++}
++
++__hidden char *store_str(struct sqlhist_bison *sb, const char *str)
++{
++	char **pstr = add_hash(sb, str);
++
++	if (!pstr)
++		return NULL;
++
++	if (!(*pstr))
++		*pstr = strdup(str);
++
++	return *pstr;
++}
++
++__hidden int add_selection(struct sqlhist_bison *sb, void *select,
++			   const char *name)
++{
++	struct sql_table *table = sb->table;
++	struct expr *expr = select;
++
++	switch (expr->type) {
++	case EXPR_FIELD:
++		break;
++	case EXPR_NUMBER:
++	case EXPR_STRING:
++	default:
++		return -1;
++	}
++
++	if (expr->next)
++		return -1;
++
++	*table->next_selection = expr;
++	table->next_selection = &expr->next;
++
++	return 0;
++}
++
++static struct expr *find_field(struct sqlhist_bison *sb,
++				const char *raw, const char *label)
++{
++	struct field *field;
++	struct expr *expr;
++
++	for_each_field(expr, field, sb->table) {
++		field = &expr->field;
++
++		if (!strcmp(field->raw, raw)) {
++			if (label && !field->label)
++				field->label = label;
++			return expr;
++		}
++
++		if (label && !strcmp(field->raw, label)) {
++			if (!field->label) {
++				field->label = label;
++				field->raw = raw;
++			}
++			return expr;
++		}
++
++		if (!field->label)
++			continue;
++
++		if (!strcmp(field->label, raw))
++			return expr;
++
++		if (label && !strcmp(field->label, label))
++			return expr;
++	}
++	return NULL;
++}
++
++static void *create_expr(enum expr_type type, struct expr **expr_p)
++{
++	struct expr *expr;
++
++	expr = calloc(1, sizeof(*expr));
++	if (!expr)
++		return NULL;
++
++	if (expr_p)
++		*expr_p = expr;
++
++	expr->free_list = sb->table->exprs;
++	sb->table->exprs = expr;
++
++	expr->type = type;
++
++	switch (type) {
++	case EXPR_FIELD:	return &expr->field;
++	case EXPR_NUMBER:	return &expr->number;
++	case EXPR_STRING:	return &expr->string;
++	}
++
++	return NULL;
++}
++
++#define __create_expr(var, type, ENUM, expr)			\
++	do {							\
++		var = (type *)create_expr(EXPR_##ENUM, expr);	\
++	} while(0)
++
++#define create_field(var, expr)				\
++	__create_expr(var, struct field, FIELD, expr)
++
++__hidden void *add_field(struct sqlhist_bison *sb,
++			 const char *field_name, const char *label)
++{
++	struct sql_table *table = sb->table;
++	struct expr *expr;
++	struct field *field;
++
++	expr = find_field(sb, field_name, label);
++	if (expr)
++		return expr;
++
++	create_field(field, &expr);
++
++	field->next = table->fields;
++	table->fields = expr;
++
++	field->raw = field_name;
++	field->label = label;
++
++	return expr;
++}
++
++__hidden int add_match(struct sqlhist_bison *sb, void *A, void *B)
++{
++	struct sql_table *table = sb->table;
++	struct match *match;
++
++	match = calloc(1, sizeof(*match));
++	if (!match)
++		return -1;
++
++	match->lval = A;
++	match->rval = B;
++
++	*table->next_match = match;
++	table->next_match = &match->next;
++
++	return 0;
++}
++
++__hidden int add_from(struct sqlhist_bison *sb, void *item)
++{
++	struct expr *expr = item;
++
++	if (expr->type != EXPR_FIELD)
++		return -1;
++
++	sb->table->from = expr;
++
++	return 0;
++}
++
++__hidden int add_to(struct sqlhist_bison *sb, void *item)
++{
++	struct expr *expr = item;
++
++	if (expr->type != EXPR_FIELD)
++		return -1;
++
++	sb->table->to = expr;
++
++	return 0;
++}
++
++__hidden int table_start(struct sqlhist_bison *sb)
++{
++	struct sql_table *table;
++
++	table = calloc(1, sizeof(*table));
++	if (!table)
++		return -ENOMEM;
++
++	table->sb = sb;
++	sb->table = table;
++
++	table->next_match = &table->matches;
++	table->next_selection = &table->selections;
++
++	return 0;
++}
++
 +static int test_event_exists(struct tep_handle *tep,
-+			     struct sqlhist_bison *sb,
 +			     struct expr *expr, struct tep_event **pevent)
 +{
 +	struct field *field = &expr->field;
@@ -499,30 +832,18 @@ index 1a3cf37..6224677 100644
 +		field->event = tep_find_event_by_name(tep, system, event);
 +	if (pevent)
 +		*pevent = field->event;
-+
-+	if (field->event)
-+		return 0;
-+
-+	sb->line_no = expr->line;
-+	sb->line_idx = expr->idx;
-+
-+	parse_error(sb, field->raw, "event not found\n");
-+	return -1;
++	return field->event != NULL ? 0 : -1;
 +}
 +
-+static int test_field_exists(struct tep_handle *tep,
-+			     struct sqlhist_bison *sb,
-+			     struct expr *expr)
++static int test_field_exists(struct expr *expr)
 +{
 +	struct field *field = &expr->field;
 +	struct tep_format_field *tfield;
 +	char *field_name;
 +	const char *p;
 +
-+	if (!field->event) {
-+		if (test_event_exists(tep, sb, expr, NULL))
-+			return -1;
-+	}
++	if (!field->event)
++		return -1;
 +
 +	/* The field could have a conversion */
 +	p = strchr(field->field, '.');
@@ -541,124 +862,71 @@ index 1a3cf37..6224677 100644
 +		tfield = tep_find_any_field(field->event, field_name);
 +	free(field_name);
 +
-+	if (tfield)
-+		return 0;
-+
-+	sb->line_no = expr->line;
-+	sb->line_idx = expr->idx;
-+
-+	parse_error(sb, field->raw,
-+		    "Field '%s' not part of event %s\n",
-+		    field->field, field->event_name);
-+	return -1;
++	return tfield != NULL ? 0 : -1;
 +}
 +
 +static int update_vars(struct tep_handle *tep,
 +		       struct sql_table *table,
 +		       struct expr *expr)
- {
- 	struct sqlhist_bison *sb = table->sb;
--	struct expr *expr;
++{
++	struct sqlhist_bison *sb = table->sb;
 +	struct field *event_field = &expr->field;
 +	struct tep_event *event;
- 	struct field *field;
- 	const char *label;
--	const char *p, *r;
--	char *system;
--	int len;
++	struct field *field;
++	const char *label;
 +	const char *raw = event_field->raw;
 +	const char *event_name;
 +	const char *system;
 +	const char *p;
 +	int label_len = 0, event_len, system_len;
- 
--	p = strchr(event->raw, '.');
++
 +	p = strchr(raw, '.');
- 	if (p) {
--		system = strndup(event->raw, p - event->raw);
--		if (!system)
++	if (p) {
 +		char *str;
 +
 +		str = strndup(raw, p - raw);
 +		if (!str)
- 			return -1;
--		event->system = store_str(sb, system);
--		free(system);
--		if (!event->system)
++			return -1;
 +		event_field->system = store_str(sb, str);
 +		free(str);
 +		if (!event_field->system)
- 			return -1;
- 		p++;
- 	} else {
--		p = event->raw;
++			return -1;
++		p++;
++	} else {
 +		p = raw;
- 	}
- 
--	event->event = store_str(sb, p);
--	if (!event->event)
++	}
++
 +	event_field->event_name = store_str(sb, p);
 +	if (!event_field->event_name)
 +		return -1;
 +
-+	if (test_event_exists(tep, sb, expr, &event))
++	if (test_event_exists(tep, expr, &event))
 +		return -1;
 +
 +	if (!event_field->system)
 +		event_field->system = store_str(sb, event->system);
 +
 +	if (!event_field->system)
- 		return -1;
- 
--	if (!event->label)
--		event->label = event->event;
++		return -1;
++
 +	label = event_field->label;
 +	if (label)
 +		label_len = strlen(label);
 +
 +	system = event_field->system;
 +	system_len = strlen(system);
- 
--	label = event->label;
--	len = strlen(label);
++
 +	event_name = event_field->event_name;
 +	event_len = strlen(event_name);
- 
- 	for_each_field(expr, field, table) {
++
++	for_each_field(expr, field, table) {
 +		int len;
 +
- 		field = &expr->field;
- 
- 		if (field->event)
- 			continue;
- 
--		p = strchr(field->raw, '.');
--		if (p) {
--			/* Does this field have a system */
--			r = strchr(p + 1, '.');
--			if (r) {
--				/* This has a system, and is not a alias */
--				system = strndup(field->raw, p - field->raw);
--				if (!system)
--					return -1;
--				field->system = store_str(sb, system);
--				free(system);
--				if (!field->system)
--					return -1;
--
--				/* save the event as well */
--				p++;
--				system = strndup(p, r - p);
--				if (!system)
--					return -1;
--				field->event = store_str(sb, system);
--				free(system);
--				if (!field->event)
--					return -1;
--				r++;
--				field->field = store_str(sb, r);
--				goto check_timestamps;
--			}
++		field = &expr->field;
++
++		if (field->event)
++			continue;
++
 +		raw = field->raw;
 +
 +		/*
@@ -674,246 +942,265 @@ index 1a3cf37..6224677 100644
 +		    raw[len] == '.') {
 +			/* Label matches and takes precedence */
 +			goto found;
- 		}
- 
--		if (strncmp(field->raw, label, len))
--			continue;
++		}
++
 +		if (!strncmp(raw, system, system_len) &&
 +		    raw[system_len] == '.') {
 +			raw += system_len + 1;
 +			/* Check the event portion next */
 +		}
- 
--		if (field->raw[len] != '.')
++
 +		len = event_len;
 +		if (strncmp(raw, event_name, len) ||
 +		    raw[len] != '.') {
 +			/* Does not match */
- 			continue;
++			continue;
 +		}
 + found:
 +		field->system = system;
 +		field->event_name = event_name;
 +		field->event = event;
 +		field->field = raw + len + 1;
- 
--		field->system = event->system;
--		field->event = event->event;
--		field->field = field->raw + len + 1;
-- check_timestamps:
- 		if (!strcmp(field->field, "TIMESTAMP"))
- 			field->field = store_str(sb, TRACEFS_TIMESTAMP);
--		else if (!strcmp(field->field, "TIMESTAMP_USECS"))
-+		if (!strcmp(field->field, "TIMESTAMP_USECS"))
- 			field->field = store_str(sb, TRACEFS_TIMESTAMP_USECS);
-+		if (test_field_exists(tep, sb, expr))
-+			return -1;
- 	}
- 
- 	return 0;
-@@ -608,29 +695,29 @@ static int update_vars(struct sql_table *table, struct field *event)
-  * selections can be fields and not mention the event itself.
-  */
- static int update_fields(struct tep_handle *tep,
--			 struct sql_table *table, struct field *event_field)
-+			 struct sql_table *table,
-+			 struct expr *expr)
- {
-+	struct field *event_field = &expr->field;
- 	struct sqlhist_bison *sb = table->sb;
- 	struct tep_format_field *tfield;
- 	struct tep_event *event;
--	struct expr *expr;
- 	struct field *field;
- 	const char *p;
- 	int len;
- 
--	/* First update fields with aliases an such */
--	update_vars(table, event_field);
-+	/* First update fields with aliases an such and add event */
-+	update_vars(tep, table, expr);
- 
--	/* The update_vars already updated event->system and event->event */
--	event = tep_find_event_by_name(tep, event_field->system,
--				       event_field->event);
- 	/*
- 	 * If event is not found, the creation of the synth will
- 	 * add a proper error, so return "success".
- 	*/
--	if (!event)
-+	if (!event_field->event)
- 		return 0;
- 
-+	event = event_field->event;
 +
- 	for_each_field(expr, field, table) {
- 		const char *field_name;
- 
-@@ -659,7 +746,8 @@ static int update_fields(struct tep_handle *tep,
- 			continue;
- 
- 		field->system = event_field->system;
--		field->event = event_field->event;
-+		field->event_name = event_field->event_name;
-+		field->event = event;
- 		field->field = field_name;
- 	}
- 
-@@ -746,7 +834,7 @@ static void assign_match(const char *system, const char *event,
- 	rval = &match->rval->field;
- 
- 	if (lval->system == system &&
--	    lval->event == event) {
++		if (!strcmp(field->field, "TIMESTAMP"))
++			field->field = store_str(sb, TRACEFS_TIMESTAMP);
++		if (!strcmp(field->field, "TIMESTAMP_USECS"))
++			field->field = store_str(sb, TRACEFS_TIMESTAMP_USECS);
++		if (test_field_exists(expr))
++			return -1;
++	}
++
++	return 0;
++}
++
++static int test_match(struct sql_table *table, struct match *match)
++{
++	struct field *lval, *rval;
++	struct field *to, *from;
++
++	if (!match->lval || !match->rval)
++		return -1;
++
++	if (match->lval->type != EXPR_FIELD || match->rval->type != EXPR_FIELD)
++		return -1;
++
++	to = &table->to->field;
++	from = &table->from->field;
++
++	lval = &match->lval->field;
++	rval = &match->rval->field;
++
++	/*
++	 * Note, strings are stored in the string store, so all
++	 * duplicate strings are the same value, and we can use
++	 * normal "==" and "!=" instead of strcmp().
++	 *
++	 * Either lval == to and rval == from
++	 * or lval == from and rval == to.
++	 */
++	if ((lval->system != to->system) ||
++	    (lval->event != to->event)) {
++		if ((rval->system != to->system) ||
++		    (rval->event != to->event) ||
++		    (lval->system != from->system) ||
++		    (lval->event != from->event))
++			return -1;
++	} else {
++		if ((rval->system != from->system) ||
++		    (rval->event != from->event) ||
++		    (lval->system != to->system) ||
++		    (lval->event != to->event))
++			return -1;
++	}
++	return 0;
++}
++
++static void assign_match(const char *system, const char *event,
++			 struct match *match,
++			 const char **start_match, const char **end_match)
++{
++	struct field *lval, *rval;
++
++	lval = &match->lval->field;
++	rval = &match->rval->field;
++
++	if (lval->system == system &&
 +	    lval->event_name == event) {
- 		*start_match = lval->field;
- 		*end_match = rval->field;
- 	} else {
-@@ -772,7 +860,7 @@ static int build_compare(struct tracefs_synth *synth,
- 	rval = &compare->rval->field;
- 
- 	if (lval->system == system &&
--	    lval->event == event) {
-+	    lval->event_name == event) {
- 		start_field = lval->field;
- 		end_field = rval->field;
- 		calc = TRACEFS_SYNTH_DELTA_START;
-@@ -829,12 +917,12 @@ static int do_verify_filter(struct sqlhist_bison *sb, struct filter *filter,
- 	 */
- 	if (!*system && !*event) {
- 		*system = filter->lval->field.system;
--		*event = filter->lval->field.event;
-+		*event = filter->lval->field.event_name;
- 		return 0;
- 	}
- 
- 	if (filter->lval->field.system != *system ||
--	    filter->lval->field.event != *event)
-+	    filter->lval->field.event_name != *event)
- 		return verify_filter_error(sb, filter->lval, *event);
- 
- 	return 0;
-@@ -1035,45 +1123,6 @@ static int build_filter(struct tep_handle *tep, struct sqlhist_bison *sb,
- 	return ret;
- }
- 
--static int test_event_exists(struct tep_handle *tep, struct sqlhist_bison *sb,
--			     struct expr *expr, struct tep_event **pevent)
--{
--	const char *system = expr->field.system;
--	const char *event_name = expr->field.event;
--	struct tep_event *event;
--
--	event = tep_find_event_by_name(tep, system, event_name);
--	if (pevent)
--		*pevent = event;
--	if (event)
--		return 0;
--
--	sb->line_no = expr->line;
--	sb->line_idx = expr->idx;
--
--	parse_error(sb, expr->field.raw, "event not found\n");
--	return -1;
--}
--
--static int test_field_exists(struct tep_handle *tep, struct sqlhist_bison *sb,
--			     struct expr *expr)
--{
--	struct tep_event *event;
--
--	if (test_event_exists(tep, sb, expr, &event))
--		return -1;
--
--	if (trace_verify_event_field(event, expr->field.field, NULL))
--		return 0;
--
--	sb->line_no = expr->line;
--	sb->line_idx = expr->idx;
--
--	parse_error(sb, expr->field.raw, "Field '%s' not part of event %s\n",
--		    expr->field.field, expr->field.event);
--	return -1;
--}
--
- static void *field_match_error(struct tep_handle *tep, struct sqlhist_bison *sb,
- 			       struct match *match)
- {
-@@ -1233,11 +1282,11 @@ static int verify_field_type(struct tep_handle *tep,
- 	sb->line_no = expr->line;
- 	sb->line_idx = expr->idx;
- 
--	event = tep_find_event_by_name(tep, field->system, field->event);
-+	event = tep_find_event_by_name(tep, field->system, field->event_name);
- 	if (!event) {
- 		parse_error(sb, field->raw,
- 			    "Event '%s' not found\n",
--			    field->event ? : "(null)");
-+			    field->event_name ? : "(null)");
- 		return -1;
- 	}
- 
-@@ -1339,12 +1388,12 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 
- 	/* This could be a simple SQL statement to only build a histogram */
- 	if (!table->to) {
--		ret = update_fields(tep, table, &table->from->field);
-+		ret = update_fields(tep, table, table->from);
- 		if (ret < 0)
- 			return NULL;
- 
- 		start_system = table->from->field.system;
--		start_event = table->from->field.event;
-+		start_event = table->from->field.event_name;
- 
- 		synth = synth_init_from(tep, start_system, start_event);
- 		if (!synth)
-@@ -1352,12 +1401,16 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 		goto hist_only;
- 	}
- 
--	ret = update_vars(table, &table->from->field);
++		*start_match = lval->field;
++		*end_match = rval->field;
++	} else {
++		*start_match = rval->field;
++		*end_match = lval->field;
++	}
++}
++
++static struct tracefs_synth *build_synth(struct tep_handle *tep,
++					 const char *name,
++					 struct sql_table *table)
++{
++	struct tracefs_synth *synth;
++	struct field *field;
++	struct match *match;
++	struct expr *expr;
++	const char *start_system;
++	const char *start_event;
++	const char *end_system;
++	const char *end_event;
++	const char *start_match;
++	const char *end_match;
++	int ret;
++
++	if (!table->to || !table->from)
++		return NULL;
++
++	ret = update_vars(tep, table, table->to);
++	if (ret < 0)
++		return NULL;
++
 +	ret = update_vars(tep, table, table->from);
 +	if (ret < 0)
 +		return NULL;
 +
-+	ret = update_vars(tep, table, table->to);
- 	if (ret < 0)
- 		return NULL;
- 
- 	start_system = table->from->field.system;
--	start_event = table->from->field.event;
++	match = table->matches;
++	if (!match)
++		return NULL;
++
++	ret = test_match(table, match);
++	if (ret < 0)
++		return NULL;
++
++	start_system = table->from->field.system;
 +	start_event = table->from->field.event_name;
- 
- 	match = table->matches;
- 	if (!match)
-@@ -1368,7 +1421,7 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 		return NULL;
- 
- 	end_system = table->to->field.system;
--	end_event = table->to->field.event;
++
++	end_system = table->to->field.system;
 +	end_event = table->to->field.event_name;
- 
- 	assign_match(start_system, start_event, match,
- 		     &start_match, &end_match);
-@@ -1404,7 +1457,7 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 			ret = -1;
- 			field = &expr->field;
- 			if (field->system == start_system &&
--			    field->event == start_event) {
++
++	assign_match(start_system, start_event, match,
++		     &start_match, &end_match);
++
++	synth = tracefs_synth_init(tep, name, start_system,
++				   start_event, end_system, end_event,
++				   start_match, end_match, NULL);
++	if (!synth)
++		return NULL;
++
++	for (match = match->next; match; match = match->next) {
++		ret = test_match(table, match);
++		if (ret < 0)
++			goto free;
++
++		assign_match(start_system, start_event, match,
++			     &start_match, &end_match);
++
++		ret = tracefs_synth_add_match_field(synth,
++						    start_match,
++						    end_match, NULL);
++		if (ret < 0)
++			goto free;
++	}
++
++	for (expr = table->selections; expr; expr = expr->next) {
++		if (expr->type == EXPR_FIELD) {
++			field = &expr->field;
++			if (field->system == start_system &&
 +			    field->event_name == start_event) {
- 				int type;
- 				type = verify_field_type(tep, table->sb, expr);
- 				if (type < 0)
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 645c84c..09bb8f2 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -51,7 +51,7 @@
- #define SQL_2_SQL	"select woke.next_pid as woke_pid, wake.common_pid as waking_pid from sched_waking as wake join sched_switch as woke on woke.next_pid = wake.pid"
- 
- #define SQL_3_EVENT	"wakeup_lat"
--#define SQL_3_SQL	"select start.pid, end.next_prio as prio, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start join sched_switch as end on start.pid = end.next_pid"
-+#define SQL_3_SQL	"select sched_switch.next_prio as prio, end.prev_prio as pprio, (sched.sched_waking.common_timestamp.usecs - end.TIMESTAMP_USECS) as lat from sched_waking as start join sched_switch as end on start.pid = end.next_pid"
- 
- #define SQL_4_EVENT	"wakeup_lat_2"
- #define SQL_4_SQL	"select start.pid, end.next_prio as prio, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start join sched_switch as end on start.pid = end.next_pid where (start.prio >= 1 && start.prio < 100) || !(start.pid >= 0 && start.pid <= 1) && end.prev_pid != 0"
++				ret = tracefs_synth_add_start_field(synth,
++						field->field, field->label);
++			} else {
++				ret = tracefs_synth_add_end_field(synth,
++						field->field, field->label);
++			}
++			if (ret < 0)
++				goto free;
++			continue;
++		}
++		goto free;
++	}
++
++	return synth;
++ free:
++	tracefs_synth_free(synth);
++	return NULL;
++}
++
++static void free_sql_table(struct sql_table *table)
++{
++	struct match *match;
++	struct expr *expr;
++
++	if (!table)
++		return;
++
++	while ((expr = table->exprs)) {
++		table->exprs = expr->next;
++		free(expr);
++	}
++
++	while ((match = table->matches)) {
++		table->matches = match->next;
++		free(match);
++	}
++
++	free(table);
++}
++
++static void free_str_hash(struct str_hash **hash)
++{
++	struct str_hash *item;
++	int i;
++
++	for (i = 0; i < 1 << HASH_BITS; i++) {
++		while ((item = hash[i])) {
++			hash[i] = item->next;
++			free(item->str);
++			free(item);
++		}
++	}
++}
++
++static void free_sb(struct sqlhist_bison *sb)
++{
++	free_sql_table(sb->table);
++	free_str_hash(sb->str_hash);
++	free(sb->parse_error_str);
++}
++
++struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
++				  const char *sql_buffer, char **err)
++{
++	struct sqlhist_bison local_sb;
++	struct tracefs_synth *synth = NULL;
++	int ret;
++
++	if (!tep || !sql_buffer) {
++		errno = EINVAL;
++		return NULL;
++	}
++
++	memset(&local_sb, 0, sizeof(local_sb));
++
++	local_sb.buffer = sql_buffer;
++	local_sb.buffer_size = strlen(sql_buffer);
++	local_sb.buffer_idx = 0;
++
++	sb = &local_sb;
++	ret = yyparse();
++
++	if (ret)
++		goto free;
++
++	synth = build_synth(tep, name, sb->table);
++
++ free:
++	if (!synth) {
++		if (sb->parse_error_str && err) {
++			*err = sb->parse_error_str;
++			sb->parse_error_str = NULL;
++		}
++	}
++	free_sb(sb);
++	return synth;
++}
+-- 
+2.30.2
+
