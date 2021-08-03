@@ -2,239 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBF33DF5B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80543DF5D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239717AbhHCT3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:29:39 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53758 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239956AbhHCT3i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:29:38 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 760D71F43412
-Message-ID: <b89860d253b5610d6c20c1d843fc2e63d3e73c28.camel@collabora.com>
-Subject: Re: [PATCH v1 1/2] media: hevc: Add scaling matrix control
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        hverkuil@xs4all.nl, p.zabel@pengutronix.de, mchehab@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com, jc@kynesim.co.uk,
-        jernej.skrabec@gmail.com, nicolas@ndufresne.ca, cphealy@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Tue, 03 Aug 2021 16:29:14 -0300
-In-Reply-To: <20210715151223.656453-2-benjamin.gaignard@collabora.com>
-References: <20210715151223.656453-1-benjamin.gaignard@collabora.com>
-         <20210715151223.656453-2-benjamin.gaignard@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S240097AbhHCTh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:37:57 -0400
+Received: from smtp-out.kfki.hu ([148.6.0.48]:48979 "EHLO smtp-out.kfki.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240082AbhHCTh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 15:37:57 -0400
+X-Greylist: delayed 422 seconds by postgrey-1.27 at vger.kernel.org; Tue, 03 Aug 2021 15:37:56 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by smtp2.kfki.hu (Postfix) with ESMTP id 613E7CC0101;
+        Tue,  3 Aug 2021 21:30:39 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Tue,  3 Aug 2021 21:30:37 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+        by smtp2.kfki.hu (Postfix) with ESMTP id E13B9CC00FC;
+        Tue,  3 Aug 2021 21:30:36 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+        id D08AB340D60; Tue,  3 Aug 2021 21:30:36 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by blackhole.kfki.hu (Postfix) with ESMTP id CBB7B340D5D;
+        Tue,  3 Aug 2021 21:30:36 +0200 (CEST)
+Date:   Tue, 3 Aug 2021 21:30:36 +0200 (CEST)
+From:   Jozsef Kadlecsik <kadlec@netfilter.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] netfilter: ipset: Fix maximal range check in
+ hash_ipportnet4_uadt()
+In-Reply-To: <20210803191813.282980-1-nathan@kernel.org>
+Message-ID: <df715f3-9a2a-5a88-5ab4-1f176ede79ed@netfilter.org>
+References: <20210803191813.282980-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-15 at 17:12 +0200, Benjamin Gaignard wrote:
-> HEVC scaling lists are used for the scaling process for transform
-> coefficients.
-> V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED has to set when they are
-> encoded in the bitstream.
+Hi,
+
+On Tue, 3 Aug 2021, Nathan Chancellor wrote:
+
+> Clang warns:
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> net/netfilter/ipset/ip_set_hash_ipportnet.c:249:29: warning: variable
+> 'port_to' is uninitialized when used here [-Wuninitialized]
+>         if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
+>                                    ^~~~~~~
+> net/netfilter/ipset/ip_set_hash_ipportnet.c:167:45: note: initialize the
+> variable 'port_to' to silence this warning
+>         u32 ip = 0, ip_to = 0, p = 0, port, port_to;
+>                                                    ^
+>                                                     = 0
+> net/netfilter/ipset/ip_set_hash_ipportnet.c:249:39: warning: variable
+> 'port' is uninitialized when used here [-Wuninitialized]
+>         if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
+>                                              ^~~~
+> net/netfilter/ipset/ip_set_hash_ipportnet.c:167:36: note: initialize the
+> variable 'port' to silence this warning
+>         u32 ip = 0, ip_to = 0, p = 0, port, port_to;
+>                                           ^
+>                                            = 0
+> 2 warnings generated.
+> 
+> The range check was added before port and port_to are initialized.
+> Shuffle the check after the initialization so that the check works
+> properly.
+> 
+> Fixes: 7fb6c63025ff ("netfilter: ipset: Limit the maximal range of consecutive elements to add/delete")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-The HEVC control structs have some holes that we should fix soon,
-but the scaling matrix struct looks good, so I think we can merge this one.
+Yes, good catch!
 
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+Acked-by: Jozsef Kadlecsik <kadlec@netfilter.org>
 
-Thanks,
-Ezequiel
-
+Best regards,
+Jozsef
 > ---
->  .../media/v4l/ext-ctrls-codec.rst             | 57 +++++++++++++++++++
->  .../media/v4l/vidioc-queryctrl.rst            |  6 ++
->  drivers/media/v4l2-core/v4l2-ctrls-core.c     |  6 ++
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 ++
->  include/media/hevc-ctrls.h                    | 11 ++++
->  5 files changed, 84 insertions(+)
+>  net/netfilter/ipset/ip_set_hash_ipportnet.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index dc096a5562cd..ab3bda79b440 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -3071,6 +3071,63 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->  
->      \normalsize
->  
-> +``V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX (struct)``
-> +    Specifies the HEVC scaling matrix parameters used for the scaling process
-> +    for transform coefficients.
-> +    These matrix and parameters are defined according to :ref:`hevc`.
-> +    They are described in section 7.4.5 "Scaling list data semantics" of
-> +    the specification.
+> diff --git a/net/netfilter/ipset/ip_set_hash_ipportnet.c b/net/netfilter/ipset/ip_set_hash_ipportnet.c
+> index b293aa1ff258..7df94f437f60 100644
+> --- a/net/netfilter/ipset/ip_set_hash_ipportnet.c
+> +++ b/net/netfilter/ipset/ip_set_hash_ipportnet.c
+> @@ -246,9 +246,6 @@ hash_ipportnet4_uadt(struct ip_set *set, struct nlattr *tb[],
+>  		ip_set_mask_from_to(ip, ip_to, cidr);
+>  	}
+>  
+> -	if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
+> -		return -ERANGE;
+> -
+>  	port_to = port = ntohs(e.port);
+>  	if (tb[IPSET_ATTR_PORT_TO]) {
+>  		port_to = ip_set_get_h16(tb[IPSET_ATTR_PORT_TO]);
+> @@ -256,6 +253,9 @@ hash_ipportnet4_uadt(struct ip_set *set, struct nlattr *tb[],
+>  			swap(port, port_to);
+>  	}
+>  
+> +	if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
+> +		return -ERANGE;
 > +
-> +.. c:type:: v4l2_ctrl_hevc_scaling_matrix
-> +
-> +.. raw:: latex
-> +
-> +    \scriptsize
-> +
-> +.. tabularcolumns:: |p{5.4cm}|p{6.8cm}|p{5.1cm}|
-> +
-> +.. cssclass:: longtable
-> +
-> +.. flat-table:: struct v4l2_ctrl_hevc_scaling_matrix
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       1 1 2
-> +
-> +    * - __u8
-> +      - ``scaling_list_4x4[6][16]``
-> +      - Scaling list is used for the scaling process for transform
-> +        coefficients. The values on each scaling list are expected
-> +        in raster scan order.
-> +    * - __u8
-> +      - ``scaling_list_8x8[6][64]``
-> +      - Scaling list is used for the scaling process for transform
-> +        coefficients. The values on each scaling list are expected
-> +        in raster scan order.
-> +    * - __u8
-> +      - ``scaling_list_16x16[6][64]``
-> +      - Scaling list is used for the scaling process for transform
-> +        coefficients. The values on each scaling list are expected
-> +        in raster scan order.
-> +    * - __u8
-> +      - ``scaling_list_32x32[2][64]``
-> +      - Scaling list is used for the scaling process for transform
-> +        coefficients. The values on each scaling list are expected
-> +        in raster scan order.
-> +    * - __u8
-> +      - ``scaling_list_dc_coef_16x16[6]``
-> +      - Scaling list is used for the scaling process for transform
-> +        coefficients. The values on each scaling list are expected
-> +        in raster scan order.
-> +    * - __u8
-> +      - ``scaling_list_dc_coef_32x32[2]``
-> +      - Scaling list is used for the scaling process for transform
-> +        coefficients. The values on each scaling list are expected
-> +        in raster scan order.
-> +
-> +.. raw:: latex
-> +
-> +    \normalsize
-> +
->  .. c:type:: v4l2_hevc_dpb_entry
->  
->  .. raw:: latex
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> index f9ecf6276129..2f491c17dd5d 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> @@ -495,6 +495,12 @@ See also the examples in :ref:`control`.
->        - n/a
->        - A struct :c:type:`v4l2_ctrl_hevc_slice_params`, containing HEVC
->         slice parameters for stateless video decoders.
-> +    * - ``V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX``
-> +      - n/a
-> +      - n/a
-> +      - n/a
-> +      - A struct :c:type:`v4l2_ctrl_hevc_scaling_matrix`, containing HEVC
-> +       scaling matrix for stateless video decoders.
->      * - ``V4L2_CTRL_TYPE_VP8_FRAME``
->        - n/a
->        - n/a
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> index c4b5082849b6..70adfc1b9c81 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> @@ -687,6 +687,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->  
->                 break;
->  
-> +       case V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX:
-> +               break;
-> +
->         case V4L2_CTRL_TYPE_AREA:
->                 area = p;
->                 if (!area->width || !area->height)
-> @@ -1240,6 +1243,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
->         case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->                 elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
->                 break;
-> +       case V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX:
-> +               elem_size = sizeof(struct v4l2_ctrl_hevc_scaling_matrix);
-> +               break;
->         case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
->                 elem_size = sizeof(struct v4l2_ctrl_hevc_decode_params);
->                 break;
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> index b6344bbf1e00..cb29c2a7fabe 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> @@ -996,6 +996,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->         case V4L2_CID_MPEG_VIDEO_HEVC_SPS:                      return "HEVC Sequence Parameter Set";
->         case V4L2_CID_MPEG_VIDEO_HEVC_PPS:                      return "HEVC Picture Parameter Set";
->         case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:             return "HEVC Slice Parameters";
-> +       case V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX:           return "HEVC Scaling Matrix";
->         case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:            return "HEVC Decode Parameters";
->         case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:              return "HEVC Decode Mode";
->         case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:               return "HEVC Start Code";
-> @@ -1488,6 +1489,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->         case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
->                 *type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
->                 break;
-> +       case V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX:
-> +               *type = V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX;
-> +               break;
->         case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:
->                 *type = V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS;
->                 break;
-> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
-> index 781371bff2ad..ef63bc205756 100644
-> --- a/include/media/hevc-ctrls.h
-> +++ b/include/media/hevc-ctrls.h
-> @@ -19,6 +19,7 @@
->  #define V4L2_CID_MPEG_VIDEO_HEVC_SPS           (V4L2_CID_CODEC_BASE + 1008)
->  #define V4L2_CID_MPEG_VIDEO_HEVC_PPS           (V4L2_CID_CODEC_BASE + 1009)
->  #define V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS  (V4L2_CID_CODEC_BASE + 1010)
-> +#define V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX        (V4L2_CID_CODEC_BASE + 1011)
->  #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS (V4L2_CID_CODEC_BASE + 1012)
->  #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE   (V4L2_CID_CODEC_BASE + 1015)
->  #define V4L2_CID_MPEG_VIDEO_HEVC_START_CODE    (V4L2_CID_CODEC_BASE + 1016)
-> @@ -27,6 +28,7 @@
->  #define V4L2_CTRL_TYPE_HEVC_SPS 0x0120
->  #define V4L2_CTRL_TYPE_HEVC_PPS 0x0121
->  #define V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS 0x0122
-> +#define V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX 0x0123
->  #define V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS 0x0124
->  
->  enum v4l2_mpeg_video_hevc_decode_mode {
-> @@ -225,6 +227,15 @@ struct v4l2_ctrl_hevc_decode_params {
->         __u64   flags;
->  };
->  
-> +struct v4l2_ctrl_hevc_scaling_matrix {
-> +       __u8    scaling_list_4x4[6][16];
-> +       __u8    scaling_list_8x8[6][64];
-> +       __u8    scaling_list_16x16[6][64];
-> +       __u8    scaling_list_32x32[2][64];
-> +       __u8    scaling_list_dc_coef_16x16[6];
-> +       __u8    scaling_list_dc_coef_32x32[2];
-> +};
-> +
->  /*  MPEG-class control IDs specific to the Hantro driver as defined by V4L2 */
->  #define V4L2_CID_CODEC_HANTRO_BASE                             (V4L2_CTRL_CLASS_CODEC | 0x1200)
->  /*
+>  	ip2_to = ip2_from;
+>  	if (tb[IPSET_ATTR_IP2_TO]) {
+>  		ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP2_TO], &ip2_to);
+> 
+> base-commit: 4d3fc8ead710a06c98d36f382777c6a843a83b7c
+> -- 
+> 2.33.0.rc0
+> 
+> 
 
--- 
-Kindly,
-Ezequiel
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
