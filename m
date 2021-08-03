@@ -2,173 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1273DE794
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EF53DE798
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234429AbhHCHvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:51:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21345 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234305AbhHCHvM (ORCPT
+        id S234273AbhHCHwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234123AbhHCHwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:51:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627977061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oYcam7agTFSd/2Q6NOTWlhklTs5e2KArUsWMeCcGGAM=;
-        b=VdofTyAdJZV9hm305JyIHmXL7Mqfti9dV37IcC4KcHiCQeEW7g19W+inxDJkvw8DS8xOqL
-        s0Hy3pYjBqRgLJws0uQWJQ7AIBPD1OjIlifA2nupTd+M465E2GIwkYnhlDL+oUFugi1Yyu
-        +el3gQxdr3u/qAq65yx+8xs5E78SpcM=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-9RyG8nmLM1WJ28CLA1YnRQ-1; Tue, 03 Aug 2021 03:51:00 -0400
-X-MC-Unique: 9RyG8nmLM1WJ28CLA1YnRQ-1
-Received: by mail-pj1-f72.google.com with SMTP id v9-20020a17090a7c09b02901778a2a8fd6so2201382pjf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:51:00 -0700 (PDT)
+        Tue, 3 Aug 2021 03:52:30 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4FEC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:52:18 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so2682811pja.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:52:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+C78rqkO5H0cI5SQIYJOnkvtQX5mSLMpX9nmGV+h+d0=;
+        b=CrCYvKeXWn/9MlbvEOODHv74BIBGnWdBf9157dYfL+oomc5OucFsVFRxkp6EjL9Ftl
+         TBSSDc66LGOiDZNyfRcgKI9Bl5xD1vr+scXdsYzSvVyouj7U0o2BRkJCkZmwU0KmE8wk
+         HclX18gPT9VZXELl1+5SAuw4A8UgL4D7EEhFA9J0vqBR0l35BWmYDCloRIuHsDnQ/wXX
+         6dZgKOkB7T1eP/jxP0BvqfaSgI5bMABef81gY14yULfJkhaRxwUcxB86evEgBzBwwDwT
+         AifTTDIITRCY8177m6+Wsjh5plU/fejgOmmuKRJLDTXJmyHRzlPU3VSKaCsyiszBznVQ
+         Sk2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=oYcam7agTFSd/2Q6NOTWlhklTs5e2KArUsWMeCcGGAM=;
-        b=Hm0qCVABUwpZPbW4RN8J9tSAPcIbHz+DK4XWq33oXVkqlVQCSCrYak1zq0OpKUv5eW
-         AByih9BvM2C2s0ANWRfakIYAw9aBGJH3Dv7D4lluYOmCYFL3THY12KKe1L6N1CAMZBps
-         eQl4YnCAYUYFlkGgWyLPaF7yg3TH81CPqlWeWFydPGyo8vHQvv5QTApyoYua+hXdd2on
-         5bpr6M+sGT6NtDDevORFybZ1MieWcrcvkDhFLG4GXKXG8HwJb5XTmHsOb6N+P/D6ln4G
-         HoQDvETgFlyhmlxJjC5MQ9zQ9bzryWUkiTTJBNGWzEBI2PQ76YDFahClprp/KiYBT/uC
-         qkDg==
-X-Gm-Message-State: AOAM533Ag0VjKBFecGuvma6ifnvzpiFAl1r4uKL0pzvza6Pfkqr0xvCb
-        gut+rpWMOKfCMQLVMRSdbIZQ19JQH1gFAzAsYOPYuwEcusUzZhpPUCMWB2KNlgfeRzO6PrwLn0R
-        pKbjO2k7wl5zTUsQqieuPDsjtEd5RVWi0C1pxdyrsz2WgMFwIALWeEMu519kwdESAega+BVNuL/
-        Wb
-X-Received: by 2002:a05:6a00:a8a:b029:356:be61:7f18 with SMTP id b10-20020a056a000a8ab0290356be617f18mr20640914pfl.29.1627977059323;
-        Tue, 03 Aug 2021 00:50:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwLduE7LXN7Wln37TgSE39sEWlhyZA9xOCP4JLoPOJrBqHBCOe6D/dpJAaC4v4en3vOIVKYWw==
-X-Received: by 2002:a05:6a00:a8a:b029:356:be61:7f18 with SMTP id b10-20020a056a000a8ab0290356be617f18mr20640860pfl.29.1627977058989;
-        Tue, 03 Aug 2021 00:50:58 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 98sm13139744pjo.26.2021.08.03.00.50.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 00:50:58 -0700 (PDT)
-Subject: Re: [PATCH v10 03/17] vdpa: Fix code indentation
-To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
-        stefanha@redhat.com, sgarzare@redhat.com, parav@nvidia.com,
-        hch@infradead.org, christian.brauner@canonical.com,
-        rdunlap@infradead.org, willy@infradead.org,
-        viro@zeniv.linux.org.uk, axboe@kernel.dk, bcrl@kvack.org,
-        corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com, joe@perches.com
-Cc:     songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210729073503.187-1-xieyongji@bytedance.com>
- <20210729073503.187-4-xieyongji@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <aaf82d3f-05e3-13d5-3a63-52cd8045b4c6@redhat.com>
-Date:   Tue, 3 Aug 2021 15:50:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+C78rqkO5H0cI5SQIYJOnkvtQX5mSLMpX9nmGV+h+d0=;
+        b=sUYlTkaTAEGk9TnlAxgn57eZ6CPddVR4Vj2CSGS5PXKJFeBuvZ5IPXEWqs2W2t+loy
+         peCFK6LUP5/dKXpnCzCrH2jwBR84dz8rTVq8pg0xVWQqLAw2ukV4tGaZPLUDLc1mMsdy
+         eH0vd9ep3V6VbF4kc6NCbw1vZotDknIMMAIU6LBmLtkMbTo9sKTgqnMTS8TztZZBcI3X
+         LpQx3EGEPa/2PwJ9geDbwGkopx3y7AbWGnl2ao9yEJ0IBbjpAP2UfL5IM5a0CPyiUWzK
+         hthOK1zZzVe5jGPwY/6GdFTDEgTHdgM1Bwr/ojbf34/nRT9kjF1wP9j+cNHADhSDJpqp
+         1Ncg==
+X-Gm-Message-State: AOAM533ElBt4WizynDYYkSMakqd8SJYEq4uwq47o4W4I7Pcc9x9pzG4k
+        HUJ6NXEwm9IUtavgpKgCvYs=
+X-Google-Smtp-Source: ABdhPJy7mGE2N3lFwXc4DgpqLjYLCmBU7NSWeL46Mt6JyHS8DyLeGyqDo+kmo43CbgdSOWyMZH67wg==
+X-Received: by 2002:a05:6a00:1515:b029:3bb:2d88:ef34 with SMTP id q21-20020a056a001515b02903bb2d88ef34mr10532613pfu.76.1627977137956;
+        Tue, 03 Aug 2021 00:52:17 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.234])
+        by smtp.gmail.com with ESMTPSA id o8sm1872888pjh.20.2021.08.03.00.52.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 00:52:17 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] memory: fsl_ifc: fix leak of irq and nand_irq in fsl_ifc_ctrl_probe
+Date:   Tue,  3 Aug 2021 15:51:59 +0800
+Message-Id: <20210803075159.2823913-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210729073503.187-4-xieyongji@bytedance.com>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In fsl_ifc_ctrl_probe, if fsl_ifc_ctrl_init fails, we should free the
+resources allocated by irq_of_parse_and_map.
 
-ÔÚ 2021/7/29 ÏÂÎç3:34, Xie Yongji Ð´µÀ:
-> Use tabs to indent the code instead of spaces.
->
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> ---
->   include/linux/vdpa.h | 29 ++++++++++++++---------------
->   1 file changed, 14 insertions(+), 15 deletions(-)
+Fix this by adjusting the error handling code.
 
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ drivers/memory/fsl_ifc.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-It looks to me not all the warnings are addressed.
-
-Or did you silent checkpatch.pl -f?
-
-Thanks
-
-
->
-> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> index 7c49bc5a2b71..406d53a606ac 100644
-> --- a/include/linux/vdpa.h
-> +++ b/include/linux/vdpa.h
-> @@ -43,17 +43,17 @@ struct vdpa_vq_state_split {
->    * @last_used_idx: used index
->    */
->   struct vdpa_vq_state_packed {
-> -        u16	last_avail_counter:1;
-> -        u16	last_avail_idx:15;
-> -        u16	last_used_counter:1;
-> -        u16	last_used_idx:15;
-> +	u16	last_avail_counter:1;
-> +	u16	last_avail_idx:15;
-> +	u16	last_used_counter:1;
-> +	u16	last_used_idx:15;
->   };
->   
->   struct vdpa_vq_state {
-> -     union {
-> -          struct vdpa_vq_state_split split;
-> -          struct vdpa_vq_state_packed packed;
-> -     };
-> +	union {
-> +		struct vdpa_vq_state_split split;
-> +		struct vdpa_vq_state_packed packed;
-> +	};
->   };
->   
->   struct vdpa_mgmt_dev;
-> @@ -131,7 +131,7 @@ struct vdpa_iova_range {
->    *				@vdev: vdpa device
->    *				@idx: virtqueue index
->    *				@state: pointer to returned state (last_avail_idx)
-> - * @get_vq_notification: 	Get the notification area for a virtqueue
-> + * @get_vq_notification:	Get the notification area for a virtqueue
->    *				@vdev: vdpa device
->    *				@idx: virtqueue index
->    *				Returns the notifcation area
-> @@ -342,25 +342,24 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
->   
->   static inline void vdpa_reset(struct vdpa_device *vdev)
->   {
-> -        const struct vdpa_config_ops *ops = vdev->config;
-> +	const struct vdpa_config_ops *ops = vdev->config;
->   
->   	vdev->features_valid = false;
-> -        ops->set_status(vdev, 0);
-> +	ops->set_status(vdev, 0);
->   }
->   
->   static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
->   {
-> -        const struct vdpa_config_ops *ops = vdev->config;
-> +	const struct vdpa_config_ops *ops = vdev->config;
->   
->   	vdev->features_valid = true;
-> -        return ops->set_features(vdev, features);
-> +	return ops->set_features(vdev, features);
->   }
->   
-> -
->   static inline void vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
->   				   void *buf, unsigned int len)
->   {
-> -        const struct vdpa_config_ops *ops = vdev->config;
-> +	const struct vdpa_config_ops *ops = vdev->config;
->   
->   	/*
->   	 * Config accesses aren't supposed to trigger before features are set.
+diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
+index d062c2f8250f..391390dd3dcb 100644
+--- a/drivers/memory/fsl_ifc.c
++++ b/drivers/memory/fsl_ifc.c
+@@ -258,12 +258,17 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 	/* get the nand machine irq */
+ 	fsl_ifc_ctrl_dev->nand_irq =
+ 			irq_of_parse_and_map(dev->dev.of_node, 1);
++	if (fsl_ifc_ctrl_dev->nand_irq == 0) {
++		dev_err(&dev->dev, "failed to get nand_irq resource for IFC\n");
++		ret = -ENODEV;
++		goto err_unmap_irq;
++	}
+ 
+ 	fsl_ifc_ctrl_dev->dev = &dev->dev;
+ 
+ 	ret = fsl_ifc_ctrl_init(fsl_ifc_ctrl_dev);
+ 	if (ret < 0)
+-		goto err;
++		goto err_unmap_nandirq;
+ 
+ 	init_waitqueue_head(&fsl_ifc_ctrl_dev->nand_wait);
+ 
+@@ -272,7 +277,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 	if (ret != 0) {
+ 		dev_err(&dev->dev, "failed to install irq (%d)\n",
+ 			fsl_ifc_ctrl_dev->irq);
+-		goto err_irq;
++		goto err_unmap_nandirq;
+ 	}
+ 
+ 	if (fsl_ifc_ctrl_dev->nand_irq) {
+@@ -281,17 +286,17 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 		if (ret != 0) {
+ 			dev_err(&dev->dev, "failed to install irq (%d)\n",
+ 				fsl_ifc_ctrl_dev->nand_irq);
+-			goto err_nandirq;
++			goto err_free_irq;
+ 		}
+ 	}
+ 
+ 	return 0;
+ 
+-err_nandirq:
+-	free_irq(fsl_ifc_ctrl_dev->nand_irq, fsl_ifc_ctrl_dev);
+-	irq_dispose_mapping(fsl_ifc_ctrl_dev->nand_irq);
+-err_irq:
++err_free_irq:
+ 	free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
++err_unmap_nandirq:
++	irq_dispose_mapping(fsl_ifc_ctrl_dev->nand_irq);
++err_unmap_irq:
+ 	irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
+ err:
+ 	iounmap(fsl_ifc_ctrl_dev->gregs);
+-- 
+2.25.1
 
