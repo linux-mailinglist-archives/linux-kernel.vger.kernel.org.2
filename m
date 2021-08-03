@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDF83DE903
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807AA3DE905
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234839AbhHCIzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
+        id S234873AbhHCI40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234690AbhHCIzh (ORCPT
+        with ESMTP id S234714AbhHCI4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:55:37 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598E2C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 01:55:26 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id t128so27451580oig.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 01:55:26 -0700 (PDT)
+        Tue, 3 Aug 2021 04:56:25 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF342C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 01:56:14 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so2866558pja.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 01:56:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=EsZwJNaFBYTAyGw1Pi5XpaVhjkvXKuF34mVyc2ioH2g=;
-        b=IQMWqByHfAHErosenpOGw+Z00xebZ/uwdcJyLC9k0SMgw0Qz8mvFGTR9ZrCS7wDNJG
-         NywBXlnKE3SSvaSXH2G9q56JAlZstr+y8CkEo+eq1XJoXbBV8YbhKqvec+sD4BkA4YDP
-         ZqasbQQrUYT2J/E4jt1DxssJF1OACAU11iCZs=
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2VSBHI2kOyfU03u1WdUTP9YGD6lc5dbX5FmCawILdkw=;
+        b=xFyAfNKpx2lHljwdqXYLDuofUx/eI05GpD7CjNHjSTi8OzGQi6nhKb/M67VmZsIo5l
+         zgZZMg9JuCvYqwMt6HwWXuvZlVcen+VNhITVZNn4VZTLdo+zZbl7k3bQocWzR1lfvnJ7
+         s7/ZpmzSnx7ciwZjQm/x3Z8Q1fpQXLy31V2OBrGTPPOrUvlUGeDxFcW4pbce1HRnLZxc
+         6qHPZEcN5kwzyUwpTQ2ivR8gwSTDz4lFkNNr40VrvmoFb2MOnfpLCyv2Tk8a7nPJmiAI
+         xD9ScBoY0hevG7RuaXFXFPu+TS+nThE779jNPUZbARFbaoeVb/gxUO3BPVihQ5zEIpsK
+         tBOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=EsZwJNaFBYTAyGw1Pi5XpaVhjkvXKuF34mVyc2ioH2g=;
-        b=UKfzdDwXhgbk7gPyXnDgmmAIH5/aI9kZ84OdnOJCqAxk0SbOj+RbpwGFd/p/WX128M
-         mqPxQBey+n5aygTb/DXG/siNMt6lWN58cCd7Dvj27PIBXEcAY5MNdW6VYdlBlmt0UYYU
-         3UT4ZsaEWfaYFtMJKXvJYqbjWlaqZ0ODOWGVaEToNxERfXj9iMZq9rN4pnZvaWpfeAhG
-         PK5eR3W/dqs9rVHWqQwECqTVKt59zaMhTUNt+ltLJiZRL4FDZFKTbuQVI8RRQKpjA5Bz
-         GuIiNvnDEJlFJFfWuXojhf4+UDV8jwXpT6L9Tb8d5URjWPWgYTdyyYEtXc8791VVY4xT
-         OrgQ==
-X-Gm-Message-State: AOAM533WisfWGBFK32uJA5pRDHHblZRmLHZgIFAf197pje+duhkk+ZwU
-        WoMwnZyAUFBXbQH6xrhV48V83rU4EVYgJqmOm3vcBA==
-X-Google-Smtp-Source: ABdhPJzwpHkcVQ7Aar0ILGc3CwQvololSXJOgi1sdQHYLOY3sdJq+SQ3C6QiLVfDbKdEgtRgfxMFN8Uc2/Gok62IF7Y=
-X-Received: by 2002:a05:6808:619:: with SMTP id y25mr2386771oih.166.1627980925750;
- Tue, 03 Aug 2021 01:55:25 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 3 Aug 2021 01:55:25 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2VSBHI2kOyfU03u1WdUTP9YGD6lc5dbX5FmCawILdkw=;
+        b=tF6reeYFXaZnsdyCEKS/Iqa/Cs4txLOOsmcUcqSrCl7uexHWubWNSVmjTsuVBF4w2R
+         w4xD5JkjiXCcaMFDeSFUzzSiZ8S7FAjwAIdl3JiO4a0qxIlwUq7oRfILM0ibPMEnfCeQ
+         3RgJ1v15TYE8VeBlnlGXUYzP8m+0zt6BS67eN4qr3IByOaG2kJycvKiGLFAQcoNDKvbV
+         mZtPNDjPNxYMOaimX4VycCKAgestge8X1X0NNnvlEiDfATikgrNK0CvyffW0f8ivkZXy
+         TuePe7ZwfZVtFPyds/PqFgn+tjpCmVlI1KQ8TTBqShtFcoke/CaZ8H06XJprQ2eHBoOD
+         Xu1A==
+X-Gm-Message-State: AOAM532yTeCh6BafVf49xsXuYsZcbiuESHU5BSPQN4d4r0MOrmXBikXk
+        X69b+jH8uIsYgqhTgxPzwAWwGi9EnwXCONXVEwllVg==
+X-Google-Smtp-Source: ABdhPJzPp7C0RinR/iokila0E0mzC0TMDoH9Ys8TEaTlWqVMLd+0B6mNL7o+4jpCfMcAD5navb9xQle/6NO9/YMqSJs=
+X-Received: by 2002:a17:903:2302:b029:12c:bb4f:cbdf with SMTP id
+ d2-20020a1709032302b029012cbb4fcbdfmr6974312plh.22.1627980973355; Tue, 03 Aug
+ 2021 01:56:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1627935655-4090-1-git-send-email-khsieh@codeaurora.org>
-References: <1627935655-4090-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 3 Aug 2021 01:55:25 -0700
-Message-ID: <CAE-0n51qc7LX-hWiFEGWRAZqNUgQAQ3XCxO6oEYWZh7wvkxs5Q@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm/dp: update is_connected status base on sink
- count at dp_pm_resume()
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210803071811.8142-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210803071811.8142-1-lukas.bulwahn@gmail.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Tue, 3 Aug 2021 09:56:02 +0100
+Message-ID: <CAA=Fs0=V_gcfDUxn1m9OkR78cht0S=j02BsHajG1A3vuGTqQJw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: update STAGING - REALTEK RTL8188EU DRIVERS
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-08-02 13:20:55)
-> Currently at dp_pm_resume() is_connected state is decided base on hpd connection
-> status only. This will put is_connected in wrongly "true" state at the scenario
-> that dongle attached to DUT but without hmdi cable connecting to it. Fix this
-> problem by adding read sink count from dongle and decided is_connected state base
-> on both sink count and hpd connection status.
+On Tue, 3 Aug 2021 at 08:18, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 >
-> Changes in v2:
-> -- remove dp_get_sink_count() cand call drm_dp_read_sink_count()
+> Commit 55dfa29b43d2 ("staging: rtl8188eu: remove rtl8188eu driver from
+> staging dir") removes ./drivers/staging/rtl8188eu, but misses to adjust
+> the STAGING - REALTEK RTL8188EU DRIVERS section in MAINTAINERS.
 >
-> Fixes: d9aa6571b28ba ("drm/msm/dp: check sink_count before update is_connected status")
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+>
+>   no file matches    F:    drivers/staging/rtl8188eu/
+>
+> A refurnished rtl8188eu driver is available in ./drivers/staging/r8188eu/
+> and there is no existing section in MAINTAINERS for that directory.
+>
+> So, reuse the STAGING - REALTEK RTL8188EU DRIVERS section and point to the
+> refurnished driver with its current developers and maintainers according
+> to the current git log.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 > ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
+> applies cleanly on next-20210803
 >
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 8b69114..6dcb78e 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -1403,6 +1403,7 @@ static int dp_pm_resume(struct device *dev)
->         struct msm_dp *dp_display = platform_get_drvdata(pdev);
->         struct dp_display_private *dp;
->         u32 status;
+> Philipp, Larry, please ack.
+>
+> Greg, please pick this minor cleanup on your staging-next tree.
+>
+>  MAINTAINERS | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 36aee8517ab0..ef32c02b3e4d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17723,8 +17723,9 @@ F:      drivers/staging/olpc_dcon/
+>
+>  STAGING - REALTEK RTL8188EU DRIVERS
+>  M:     Larry Finger <Larry.Finger@lwfinger.net>
+> -S:     Odd Fixes
+> -F:     drivers/staging/rtl8188eu/
+> +M:     Phillip Potter <phil@philpotter.co.uk>
+> +S:     Supported
+> +F:     drivers/staging/r8188eu/
+>
+>  STAGING - REALTEK RTL8712U DRIVERS
+>  M:     Larry Finger <Larry.Finger@lwfinger.net>
+> --
+> 2.17.1
+>
+Sorry, not sure how I missed this :-)
 
-'status' is unused now, right? The compiler should be complaining about
-unused local variables.
-
-> +       int sink_count = 0;
->
->         dp = container_of(dp_display, struct dp_display_private, dp_display);
->  xlog(__func__, 1,0,0, dp->core_initialized, dp_display->power_on);
-> @@ -1417,15 +1418,26 @@ xlog(__func__, 1,0,0, dp->core_initialized, dp_display->power_on);
->
->         dp_catalog_ctrl_hpd_config(dp->catalog);
->
-> -       status = dp_catalog_link_is_connected(dp->catalog);
-> +       /*
-> +        * set sink to normal operation mode -- D0
-> +        * before dpcd read
-> +        */
-> +       dp_link_psm_config(dp->link, &dp->panel->link_info, false);
-> +
-> +       /* if sink conencted, do dpcd read sink count */
-> +       if ((status = dp_catalog_link_is_connected(dp->catalog))) {
-> +               sink_count = drm_dp_read_sink_count(dp->aux);
-> +               if (sink_count < 0)
-> +                       sink_count = 0;
-> +       }
->
-> +       dp->link->sink_count = sink_count;
->         /*
->          * can not declared display is connected unless
->          * HDMI cable is plugged in and sink_count of
->          * dongle become 1
->          */
-> -xlog(__func__, 0x12,0,0, 0, dp->link->sink_count);
-> -       if (status && dp->link->sink_count)
-> +       if (dp->link->sink_count)
->                 dp->dp_display.is_connected = true;
->         else
->                 dp->dp_display.is_connected = false;
+Acked-by: Phillip Potter <phil@philpotter.co.uk>
