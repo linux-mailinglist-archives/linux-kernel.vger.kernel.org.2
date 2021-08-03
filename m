@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5FB3DF619
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB5A3DF61C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240387AbhHCUI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 16:08:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239007AbhHCUIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 16:08:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B995F601FD;
-        Tue,  3 Aug 2021 20:08:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628021324;
-        bh=Kiad+fbB9uZ7a8K4bpylS6fqOKOGuHXtNDretFVJfgI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BLfrZWpWaYxY9Z63D1CfD4ycAPsAFJdvciJ30oHwKL43l3gvIiRPXanLKfzXMCTeg
-         l/GENU9v9rF0TZSEdOtxY7XtZQLICTzxpra35X4xW9Q+PQZdeBAX5rQkTc9aMzhxsW
-         UNrOJ1hmxiflv7l7kjpbaLKWFpbdNNEYXMcchmXy6map/bX0XDkyX6eA4agPmeHJcy
-         xk/QLLEj3ftW8+0UL8KIBL0z5XzQU413jvN7mW+Zu9gg2ttMfZvhHgsyHpe8jV9nln
-         +sujSLqNmWWdEZQF2hAIKwsLjEziQM4flvIWaqizMLrTlY7JQxtOLgUcfcHfqx9/Ub
-         b5gcvxaYkytFw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] PCI: Always initialize dev in pciconfig_read
-Date:   Tue,  3 Aug 2021 13:08:36 -0700
-Message-Id: <20210803200836.500658-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0.rc0
+        id S238924AbhHCUJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 16:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239007AbhHCUJc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 16:09:32 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4666C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 13:09:20 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so21823433ota.11
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 13:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=/KZKCjnFh5BKZu2KIsfFmmFiIjkF/h9tteMntf9BJ8Y=;
+        b=hOFgqrrzW2IAV3YZCxNDNqnJZItMegMe1VI69lm8ik30j4B5rqVxr/IEGdnIQqnB4X
+         Jq1Czj/KXh433bmpZoWbEFEylw/Pn4jdK7o90p7USNjCQxfW5eQZzRYuMpAiyjbvbPxG
+         VVdEdfkw80xXk1oAS/1vOpZ1/rJpJguVg/p3w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=/KZKCjnFh5BKZu2KIsfFmmFiIjkF/h9tteMntf9BJ8Y=;
+        b=LmhadVcselDoajUicXksyP2DZzjasxwxF5Hfw+LcUTEInPMjav9mU8zpzGCTBUp0wz
+         QvaoJzmj8mKcSvZ3qMcom598r1RReVOQvqthRCdEME24dgSp5xlZIBFefjnyMlhEha94
+         OO74VtyjZBQWFylraiVMLPdyyGWPfnnVylPV+TgicV+nCR6g2TWm+4CbG9uRygnlzefD
+         gfHKKmX8Svx+10Z9FNUIu9xvvGLSoO3AQVdenIVhR+KfyfzWFhGMhAO3FjO9zGXIxrva
+         5QRqYWxpwkDAgYU/CrnReCuqpRlwdmqKspBeIO/v25Z/JtdlUlOSVtyX9D4pInWrCHrT
+         FfOQ==
+X-Gm-Message-State: AOAM531wsEf0YWwYNaQbKYMBF1Y6OS8BcEYBIVuJSBUwce8SjX8edCCk
+        orGY8DJr2KcXdAWIDz+tCSysM7n6jpUpMgKFfPLouQ==
+X-Google-Smtp-Source: ABdhPJysxfT1U9uGt9nsh5yQLTpopi/8CZ5Kck3OSg9MK8KloJG9UDSWBnr//f2uQIsAgC8G1VK1gNshpiJ3C/EmUo8=
+X-Received: by 2002:a05:6830:1490:: with SMTP id s16mr447074otq.233.1628021360166;
+ Tue, 03 Aug 2021 13:09:20 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 3 Aug 2021 15:09:19 -0500
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1627995852-24505-1-git-send-email-skakit@codeaurora.org>
+References: <1627995852-24505-1-git-send-email-skakit@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 3 Aug 2021 15:09:19 -0500
+Message-ID: <CAE-0n51=GAb+B-46gH7MKwiMbP8EqNnFKNQr0X3JFeAMP4rPNg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Remove pm8350 and pmr735b for sc7280-idp
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        satya priya <skakit@codeaurora.org>
+Cc:     rnayak@codeaurora.org, kgunda@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+Quoting satya priya (2021-08-03 06:04:12)
+> Remove pm8350 and pmr735b die temp nodes as these pmics are
+> not present on this board.
+>
+> Correct the tabbing for pmk8350_vadc node.
+>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
 
-drivers/pci/syscall.c:25:6: warning: variable 'dev' is used
-uninitialized whenever 'if' condition is true
-[-Wsometimes-uninitialized]
-        if (!capable(CAP_SYS_ADMIN))
-            ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/pci/syscall.c:81:14: note: uninitialized use occurs here
-        pci_dev_put(dev);
-                    ^~~
-drivers/pci/syscall.c:25:2: note: remove the 'if' if its condition is
-always false
-        if (!capable(CAP_SYS_ADMIN))
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/pci/syscall.c:18:21: note: initialize the variable 'dev' to
-silence this warning
-        struct pci_dev *dev;
-                           ^
-                            = NULL
-1 warning generated.
-
-pci_dev_put accounts for a NULL pointer so initialize dev to NULL before
-the capability check so that there is no use of uninitialized memory.
-
-Fixes: 61a6199787d9 ("PCI: Return ~0 data on pciconfig_read() CAP_SYS_ADMIN failure")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/pci/syscall.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/pci/syscall.c b/drivers/pci/syscall.c
-index 525f16caed1d..61a6fe3cde21 100644
---- a/drivers/pci/syscall.c
-+++ b/drivers/pci/syscall.c
-@@ -22,6 +22,7 @@ SYSCALL_DEFINE5(pciconfig_read, unsigned long, bus, unsigned long, dfn,
- 	int err, cfg_ret;
- 
- 	err = -EPERM;
-+	dev = NULL;
- 	if (!capable(CAP_SYS_ADMIN))
- 		goto error;
- 
-
-base-commit: 21d8e94253eb09f7c94c4db00dc714efc75b8701
--- 
-2.33.0.rc0
-
+Fixes: fbd5a1d22607 ("arm64: dts: qcom: sc7280: Add ADC channel nodes
+for PMIC temperatures to sc7280-idp")
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
