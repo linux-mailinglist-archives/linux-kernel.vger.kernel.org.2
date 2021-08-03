@@ -2,155 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F334B3DE568
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 06:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1173DE56D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 06:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbhHCEeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 00:34:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230024AbhHCEeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 00:34:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6974260560;
-        Tue,  3 Aug 2021 04:33:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627965233;
-        bh=bn6oyh45wOqyplLgqkhziI/otlLb0w3ygJk6evdjAxU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jRlwO3PYvUPv9QDaHwv/dNRBelNcmniqS0QKRECyG91K3AVLdXBxuC/SWKW8Teyrb
-         eLPjN3p+XoKN+p9ZhEFSu+gd7W6Z+ZDrEv2AcWO5XWdeiaoFCDqN5OytlGZCDBcMZX
-         e/oyg0elUdR6/64lPoheR46C8nmXJroNfg2M1Efa1WGDd6vPdHJb7W1ZAYjhXHr5AU
-         ZUPJKKs/DEAlezu6U9gsudVdJ6i6rQHA83wFYs1WcuorTmETPpQQp77omV4uWxEEF/
-         CG2yWrhJ1poI2Pw9an5vetpAem44dctIhAtKMkrML/vkqbW62lSX2XUJwfd0UhLsV1
-         VwOoD0OJ8wIlQ==
-Date:   Tue, 3 Aug 2021 06:33:46 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH 3/5] dt-bindings: PCI: kirin: Add support for Kirin970
-Message-ID: <20210803063028.6566241d@coco.lan>
-In-Reply-To: <YQh2zcFSKW+qucAG@robh.at.kernel.org>
-References: <cover.1627559126.git.mchehab+huawei@kernel.org>
-        <2cf7bd80d0b54f7658a64febf79d3a36e70aba86.1627559126.git.mchehab+huawei@kernel.org>
-        <CAL_Jsq+JgWMf8XPdHQ9GRdA+7EODJ47vwuz0jGkkyeETZPXz9Q@mail.gmail.com>
-        <20210729210337.6fc9a92c@coco.lan>
-        <YQh2zcFSKW+qucAG@robh.at.kernel.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S233824AbhHCEfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 00:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233769AbhHCEfA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 00:35:00 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13638C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 21:34:48 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id q2so22173697plr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 21:34:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2S1RHICTPvCBoDexjUcvrU4GD6pFJPXLIcRegSCBHdk=;
+        b=mjbQfGcylJTRFPAW9GXK36eRTClW08a5/wkDQvK2alnHWb4D2eS+vERUS7qNyAzm+1
+         GPOqu/S8lHa8m5uo+ZyYYoFofGuGAygfi64cyXODwSXc07e5OMNaRAQrd2hisxEL9WId
+         8bJHo0J+ftMIfuvK1XFEeVM1khMmT/tH3QmTZCcifXYlcI05AohG3h1Ul64VhY49a3VU
+         sJR0NFRefikOz4/+mAOB02LWyEiRPZOQVD0hCxW7rBFywNBFaiw97Hd6hgVC2FqMOyqq
+         5bNiAkd6L7ByxvhlsNPVvpGXgJBmVqCDWIfow0jPRB2y2v0pudlSFcPMy41VuDU8J9Gn
+         ToWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2S1RHICTPvCBoDexjUcvrU4GD6pFJPXLIcRegSCBHdk=;
+        b=Lnrqsv7LXHjhKbVP21KENGZvgirZ53lBMdphllCOlMac6pK2KM5irx793cO2SQUvgv
+         ms/PJ7ZRJdVXKoPUIAli0I7/Fta4ylHqHY+y3EA4DtVLBSEyUzAolF+w0/GNmvItxKMp
+         TbDAwygHsiPSezspM55QdVHgBAevdNp/ZYPJ92B7jtrhRGslcHGIKn7AzWGR4fNkh4d6
+         uECCwaSfMsw0d+qWQLwTQJByjt8BgEHwphtsl37PGYUkU+UvmoWM9GPOfiDQjFVL9XzB
+         qdJPNokkS38EZ9PGUGL7+4C8u8boFaNDeQCV4Ym0l/u2cVRam3BJaS5TtSUEpSuT+rWO
+         v3Wg==
+X-Gm-Message-State: AOAM533TTG3Ri8TPtzBPagdXy1rqyBGjdCl49h0/KDRjKcmmC5hsC5O2
+        FkC6fPoWJXLCcdzDfMgQ0IjOoJYRUaw2Ag==
+X-Google-Smtp-Source: ABdhPJyVmHXqHdDoagUFheP2VyeQD9jdDbE1g7DzOLalHOMX9IWKd2ylNNQgDlVH6IcTo3GbFFiHaQ==
+X-Received: by 2002:a65:6813:: with SMTP id l19mr1158826pgt.118.1627965287503;
+        Mon, 02 Aug 2021 21:34:47 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id l6sm13452830pff.74.2021.08.02.21.34.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 21:34:47 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 10:04:45 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, sudeep.holla@arm.com,
+        cristian.marussi@arm.com, rjw@rjwysocki.net,
+        nicola.mazzucato@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: arm_scmi: Fix error path when allocation failed
+Message-ID: <20210803043445.7sm4mnl4f5f7co7h@vireshk-i7>
+References: <20210802204550.12647-1-lukasz.luba@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802204550.12647-1-lukasz.luba@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 2 Aug 2021 16:50:53 -0600
-Rob Herring <robh@kernel.org> escreveu:
-
-> On Thu, Jul 29, 2021 at 09:03:37PM +0200, Mauro Carvalho Chehab wrote:
-> > Em Thu, 29 Jul 2021 09:20:15 -0600
-> > Rob Herring <robh@kernel.org> escreveu:
-> >   
-
-> > 
-> > Ok. If I understood your review, the schema will then be:
-> > 
-> >       pcie@f4000000 {
-> >         compatible = "hisilicon,kirin970-pcie";
-> >         reg = <0x0 0xf4000000 0x0 0x1000000>,
-> >               <0x0 0xfc180000 0x0 0x1000>,
-> >               <0x0 0xf5000000 0x0 0x2000>;
-> >         reg-names = "dbi", "apb", "config";
-> >         bus-range = <0x0  0x1>;
-> >         msi-parent = <&its_pcie>;
-> >         #address-cells = <3>;
-> >         #size-cells = <2>;
-> >         device_type = "pci";
-> >         phys = <&pcie_phy>;
-> >         ranges = <0x02000000 0x0 0x00000000
-> >                   0x0 0xf6000000
-> >                   0x0 0x02000000>;
-> >         num-lanes = <1>;
-> >         #interrupt-cells = <1>;
-> >         interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
-> >         interrupt-names = "msi";
-> >         interrupt-map-mask = <0 0 0 7>;
-> >         interrupt-map = <0x0 0 0 1 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-> >                         <0x0 0 0 2 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-> >                         <0x0 0 0 3 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-> >                         <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
-> >         reset-gpios = <&gpio7 0 0>;
-> > 
-> >         pcie@0 { // Lane 0: upstream
-> >           reg = <0 0 0 0 0>;
-> >           compatible = "pciclass,0604";
-> >           device_type = "pci";
-> >           #address-cells = <3>;
-> >           #size-cells = <2>;
-> >           hisilicon,clken-gpios = <&gpio27 3 0 >, <&gpio17 0 0 >, <&gpio20 6 0 >;  
+On 02-08-21, 21:45, Lukasz Luba wrote:
+> Print warning and return an error which would stop the initialization
+> when cpumask allocation failed.
 > 
-> Up one more level.
-
-Yeah. This is at the upper level at the newer series:
-
-	[PATCH v2 3/4] dt-bindings: PCI: kirin: Add support for Kirin970
-	https://lore.kernel.org/lkml/93a42a6317eed3b0eb6a35b6d4c484e106cb2793.1627637448.git.mchehab+huawei@kernel.org/
-
-
-> >           ranges;
-> > 
-> >           pcie@1,0 { // Lane 4: M.2
-> >             reg = <0x800 0 0 0 0>;
-> >             compatible = "pciclass,0604";
-> >             device_type = "pci";
-> >             reset-gpios = <&gpio3 1 0>;
-> >             #address-cells = <3>;
-> >             #size-cells = <2>;
-> >             ranges;
-> >           };
-> > 
-> >           pcie@5,0 { // Lane 5: Mini PCIe
-> >             reg = <0x2800 0 0 0 0>;
-> >             compatible = "pciclass,0604";
-> >             device_type = "pci";
-> >             reset-gpios = <&gpio27 4 0 >;
-> >             #address-cells = <3>;
-> >             #size-cells = <2>;
-> >             ranges;
-> >           };
-> > 
-> >           pcie@7,0 { // Lane 7: Ethernet  
+> Fixes: 80a064dbd556 ("scmi-cpufreq: Get opp_shared_cpus from opp-v2 for EM")
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/cpufreq/scmi-cpufreq.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> Port 7 is lane 6 and Port 9 is lane 7. So I think it should be 'Lane 6'. 
+> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+> index ec9a87ca2dbb..b159123e68fd 100644
+> --- a/drivers/cpufreq/scmi-cpufreq.c
+> +++ b/drivers/cpufreq/scmi-cpufreq.c
+> @@ -133,8 +133,10 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>  		return -ENODEV;
+>  	}
+>  
+> -	if (!zalloc_cpumask_var(&opp_shared_cpus, GFP_KERNEL))
+> -		ret = -ENOMEM;
+> +	if (!zalloc_cpumask_var(&opp_shared_cpus, GFP_KERNEL)) {
+> +		dev_warn(cpu_dev, "failed to allocate cpumask\n");
 
-True. I'll fix it on v3.
+We shouldn't be printing here anything I believe as the allocation
+core does it for us. That's why you won't see a print message anywhere
+for failed allocations.
 
+> +		return -ENOMEM;
+> +	}
+>  
+>  	/* Obtain CPUs that share SCMI performance controls */
+>  	ret = scmi_get_sharing_cpus(cpu_dev, policy->cpus);
+> -- 
+> 2.17.1
 > 
-> >             reg = <0x3800 0 0 0 0>;
-> >             compatible = "pciclass,0604";
-> >             device_type = "pci";
-> >             reset-gpios = <&gpio25 2 0 >;
-> >             #address-cells = <3>;
-> >             #size-cells = <2>;
-> >             ranges;
-> >           };
-> >         };
-> >       };
-> >     };
-> > 
-> > Right?
-> > 
-> > After updating the dt-schema from your git tree, the above doesn't 
-> > generate warnings anymore.
-> > 
-> > Thanks,
-> > Mauro
-> >   
 
-Thanks,
-Mauro
+-- 
+viresh
