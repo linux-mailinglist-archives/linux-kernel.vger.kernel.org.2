@@ -2,165 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27E03DEB1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0883DEB29
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235539AbhHCKkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235536AbhHCKkm (ORCPT
+        id S235514AbhHCKmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:42:40 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:20922 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235306AbhHCKmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:40:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CFEC06179F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:40:30 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mArqL-0000Z2-TR; Tue, 03 Aug 2021 12:40:17 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mArqG-0006N5-So; Tue, 03 Aug 2021 12:40:12 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mArqG-0002vP-Qh; Tue, 03 Aug 2021 12:40:12 +0200
-Date:   Tue, 3 Aug 2021 12:40:12 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        alexandre.belloni@bootlin.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        thierry.reding@gmail.com, lee.jones@linaro.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Ludovic.Desroches@microchip.com, o.rempel@pengutronix.de,
-        andy.shevchenko@gmail.com, aardelean@deviqon.com,
-        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        broonie@kernel.org, Jonathan.Cameron@huawei.com,
-        linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        wsa@kernel.org, kernel@pengutronix.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, Claudiu.Beznea@microchip.com
-Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
- devm_clk_get for prepared and enabled clocks enabled clocks]
-Message-ID: <20210803104012.wf2buscbukxufesl@pengutronix.de>
-References: <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
- <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
- <20210728202547.7uvfwflpruku7yps@pengutronix.de>
- <20210728204033.GF22278@shell.armlinux.org.uk>
- <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
- <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
- <20210802094810.GJ22278@shell.armlinux.org.uk>
- <20210802152755.ibisunvibmwhiyry@pengutronix.de>
- <20210802163824.GK22278@shell.armlinux.org.uk>
- <162797831443.714452.3551045763456936564@swboyd.mtv.corp.google.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jsnx7dwxusk2t7bj"
-Content-Disposition: inline
-In-Reply-To: <162797831443.714452.3551045763456936564@swboyd.mtv.corp.google.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Tue, 3 Aug 2021 06:42:38 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 03 Aug 2021 03:42:28 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Aug 2021 03:42:25 -0700
+X-QCInternal: smtphost
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 03 Aug 2021 16:11:50 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id 904134BA3; Tue,  3 Aug 2021 03:41:48 -0700 (PDT)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, rnayak@codeaurora.org,
+        stable@vger.kernel.org
+Subject: [v2] drm/msm/disp/dpu1: add safe lut config in dpu driver
+Date:   Tue,  3 Aug 2021 03:41:47 -0700
+Message-Id: <1627987307-29347-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add safe lut configuration for all the targets in dpu
+driver as per QOS recommendation.
 
---jsnx7dwxusk2t7bj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Issue reported on SC7280:
 
-On Tue, Aug 03, 2021 at 01:11:54AM -0700, Stephen Boyd wrote:
-> Quoting Russell King (Oracle) (2021-08-02 09:38:24)
-> > On Mon, Aug 02, 2021 at 05:27:55PM +0200, Uwe Kleine-Konig wrote:
-> > > Hello Russell,
-> > >=20
-> > > On Mon, Aug 02, 2021 at 10:48:10AM +0100, Russell King (Oracle) wrote:
-> >=20
-> > > > There have been several different approaches to wrapping things up,
-> > > > but here's a question: should we make it easier to do the lazy thing
-> > > > (get+enable) or should we make it easier to be power efficient?
-> > > > Shouldn't we be encouraging people to write power efficient drivers?
-> > >=20
-> > > Yeah, sounds compelling, but I wonder if that's of practical importan=
-ce.
-> > > How many driver authors do you expect to lure into making a better
-> > > driver just because devm_clk_get_prepared() doesn't exist? In contras=
-t:
-> > > How many drivers become simpler with devm_clk_get_prepared() and so
-> > > it becomes easier to maintain them and easier to spot bugs?
-> > > In the absence of devm_clk_get_prepared(), is it better that several
-> > > frameworks (or drivers) open code it?
-> >=20
-> > It probably depends on where you stand on power management and power
-> > efficiency issues. Personally, I would like to see more effort put
-> > into drivers to make them more power efficient, and I believe in the
-> > coming years, power efficiency is going to become a big issue.
-> >=20
->=20
-> I agree we should put more effort into power efficiency in the kernel.
-> I've occasionally heard from driver writers that they never will turn
-> the clk off even in low power modes though. They feel like it's a
-> nuisance to have to do anything with the clk framework in their driver.
-> When I say "why not use runtime PM?" I get told that they're not turning
-> the clk off because it needs to be on all the time, so using runtime PM
-> makes the driver more complicated, not less, and adds no value. I think
-> some touchscreens are this way, and watchdogs too. Looking at the
-> drivers being converted in this series I suspect RTC is one of those
-> sorts of devices as well. But SPI and I2C most likely could benefit from
-> using runtime PM and so those ones don't feel appropriate to convert.
->=20
-> Maybe this series would be more compelling if those various drivers that
-> are hand rolling the devm action were converted to the consolidated
-> official devm function. The truth is it's already happening in various
-> subsystems so consolidating that logic into one place would be a win
-> code size wise and very hard to ignore.
->=20
-> Doing
->=20
->  $ git grep devm_add_action | grep clk
->=20
-> seems to catch quite a few of them.
+With wait-for-safe feature in smmu enabled, RT client
+buffer levels are checked to be safe before smmu invalidation.
+Since display was always set to unsafe it was delaying the
+invalidaiton process thus impacting the performance on NRT clients
+such as eMMC and NVMe.
 
-Another upside is that grepping for these drivers with a potential for
-further improvement become easier to grep for as
-devm_clk_get_{prepared,enabled} is a much better hint :-)
+Validated this change on SC7280, With this change eMMC performance
+has improved significantly.
 
-The changes to these drivers probably won't go through a clk tree, so
-adding these patches before adding devm_clk_get_enabled() would only
-help for the warm and cozy feeling that it is right to do so, correct?
+Changes in v1:
+- Add fixes tag (Sai)
+- CC stable kernel (Dimtry)
 
-As my focus is limited to (mostly) drivers/pwm and I already have quite
-some other patch quests on my list:
+Fixes: cfacf946a464d4(drm/msm/disp/dpu1: add support for display for SC7280 target)
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org> (sc7280, sc7180)
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-So can I lure you in merging the new functions and I will create a
-kernel janitor task to convert more existing drivers?
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+index d01c4c9..2e482cd 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+@@ -974,6 +974,7 @@ static const struct dpu_perf_cfg sdm845_perf_data = {
+ 	.amortizable_threshold = 25,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xf000, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sdm845_qos_linear),
+ 		.entries = sdm845_qos_linear
+@@ -1001,6 +1002,7 @@ static const struct dpu_perf_cfg sc7180_perf_data = {
+ 	.min_dram_ib = 1600000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xff, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
+ 		.entries = sc7180_qos_linear
+@@ -1028,6 +1030,7 @@ static const struct dpu_perf_cfg sm8150_perf_data = {
+ 	.min_dram_ib = 800000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff8, 0xf000, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sm8150_qos_linear),
+ 		.entries = sm8150_qos_linear
+@@ -1056,6 +1059,7 @@ static const struct dpu_perf_cfg sm8250_perf_data = {
+ 	.min_dram_ib = 800000,
+ 	.min_prefill_lines = 35,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
+ 		.entries = sc7180_qos_linear
+@@ -1084,6 +1088,7 @@ static const struct dpu_perf_cfg sc7280_perf_data = {
+ 	.min_dram_ib = 1600000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xffff, 0xffff, 0x0},
++	.safe_lut_tbl = {0xff00, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
+ 		.entries = sc7180_qos_macrotile
+-- 
+2.7.4
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---jsnx7dwxusk2t7bj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEJHQkACgkQwfwUeK3K
-7Al74wgAkhpu5oiH9zXF7yver2FOhm5lA/whLWxAmSyiMUqAURgga0ZHZaA5jSfS
-V47S5aYg2PHTPQjHsE9vffbXZ1NfmE4t+XsY/9hn1EaGA3yrwCfxF5oFeTqZnP+D
-AJxuot538b05HhV1MY2TDE/MYs7XKlKzT/BzfI14JPKIAzdFpTu33/XNNocLBs3M
-FK3NlL7d2p7tynJYDE7WCTsBH8r+k9QJmwSVl1GB8xTk7WOwEcPysg4Ts3aO5csk
-02QFW6StrFEYfMKMEPm6uf5PX0Y4G4es8MbCpy+3pU1UXGojQcRvp4ocPiszpYFt
-mqFFq7f3cn4PK8GIh5GncnlWzh7DeQ==
-=THuX
------END PGP SIGNATURE-----
-
---jsnx7dwxusk2t7bj--
