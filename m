@@ -2,143 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A97D3DEF96
+	by mail.lfdr.de (Postfix) with ESMTP id 52F4E3DEF97
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236664AbhHCOBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236576AbhHCOBk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:01:40 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A769C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:01:29 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so778271pji.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 07:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VYe459FmfkXTErN59NCMHFCl+MLvyaY1F16+cBRtvyA=;
-        b=U4R2k3n2k48lS2BRwUYv76iVvyz815A6hgNrYm0rdpL3owrkeis3ox2cHOGxwnTULb
-         3JWw5UmPhol7l4v0VbZPPUUGEX4QyaG8CXX5D/fmZl/TuW92zo+dQ4XtwC34QPhvnZtT
-         Uxz1wPJHVORWUH6y48Brt5FBrZkfI7QJoyrigWC0wCA2K1nqEZn5czKPmsanCy8hSpkp
-         RC0BIES+nR9gPex+tPgQtrdIL6mHn9tgr1Bt7ky0yfjoF6KosVcTkaj5rvJz9iJvMv1o
-         o7FSD9Ri+SijuJa883XnKn1+zWeNY+9+R2l5yh7rmfCo9vtj8tJM4rebMAWB7k3i7e50
-         PlLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VYe459FmfkXTErN59NCMHFCl+MLvyaY1F16+cBRtvyA=;
-        b=MO2x3YNe75yWdiIhdH9WJn1pNbPBIkitZ3Wpawt5SX7SG91Tj3KDpI8P6QyIGunHfN
-         eBJft7cGORXgrTfAqDyxTrt6CtYTrb4dh1GsOE2EG3MLdOZnt2SHtsFdIKpDJzfyiM5S
-         0Te2VRv42JBVCT9NK9BqvM2om1QbxZ5LmCKtk7Zr60fb1WIVVmsGmebzRWnnzpMidvqJ
-         BbozafnIVEMLzeN+Fwib6oDVUWjMXrCxXDyaj8d1x4oD4D5dHwTMIG8PcrHyqEg5N1kk
-         woMj77pXRCbq3RuRTR9MCdw9Vfmr8xaN0jkGV5m+6RP9kFo5fJE5neohQAHFHXoqX+jQ
-         Hf+w==
-X-Gm-Message-State: AOAM5322E6cVS2AueG67Bu9CuJ6xaYNHYQ92R+QFkqytfkZyG7SoX0nl
-        r+3X4x1olmdhrr4gTgB4UqTg1g==
-X-Google-Smtp-Source: ABdhPJzlGzqTO4i181dbcfsGbt7ky8G+pyW88/NT3ShzBrU98mbuEajn6etFhxKe1u8w8fsEvU/SRA==
-X-Received: by 2002:a05:6a00:1a55:b029:3c3:2231:4d16 with SMTP id h21-20020a056a001a55b02903c322314d16mr5644219pfv.18.1627999288774;
-        Tue, 03 Aug 2021 07:01:28 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id p20sm2904157pju.48.2021.08.03.07.01.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 07:01:27 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 22:01:22 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
-        suzuki.poulose@arm.com, mike.leach@linaro.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH 6/6] perf cs-etm: Add warnings for missing DSOs
-Message-ID: <20210803140122.GC247709@leoy-ThinkPad-X240s>
-References: <20210729155805.2830-1-james.clark@arm.com>
- <20210729155805.2830-7-james.clark@arm.com>
- <20210802154145.GC148327@leoy-ThinkPad-X240s>
- <YQlDefz+g45dqFsP@kernel.org>
+        id S236443AbhHCOCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236483AbhHCOBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 10:01:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E95C860EC0;
+        Tue,  3 Aug 2021 14:01:36 +0000 (UTC)
+Date:   Tue, 3 Aug 2021 16:01:33 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     CGEL <cgel.zte@gmail.com>
+Cc:     keescook@chromium.org, ktkhai@virtuozzo.com,
+        jamorris@linux.microsoft.com, varad.gautam@suse.com,
+        legion@kernel.org, dbueso@suse.de, linux-kernel@vger.kernel.org,
+        Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Subject: Re: [PATCH] ipc: add set_ownership() and permissions() callbacks for
+ posix mqueue sysctl
+Message-ID: <20210803140133.vksebmgqhlbqipla@wittgenstein>
+References: <20210729030651.536326-1-ran.xiaokai@zte.com.cn>
+ <20210729145348.hvvhu6lmlcn5js4y@wittgenstein>
+ <20210803103150.GA607784@www>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YQlDefz+g45dqFsP@kernel.org>
+In-Reply-To: <20210803103150.GA607784@www>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 10:24:09AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Aug 02, 2021 at 11:41:45PM +0800, Leo Yan escreveu:
-> > On Thu, Jul 29, 2021 at 04:58:05PM +0100, James Clark wrote:
-> > > Currently decode will silently fail if no binary data is available for
-> > > the decode. This is made worse if only partial data is available because
-> > > the decode will appear to work, but any trace from that missing DSO will
-> > > silently not be generated.
-> > > 
-> > > Add a UI popup once if there is any data missing, and then warn in the
-> > > bottom left for each individual DSO that's missing.
-> > > 
-> > > Signed-off-by: James Clark <james.clark@arm.com>
-> > > ---
-> > >  tools/perf/util/cs-etm.c | 10 +++++++++-
-> > >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> > > index 32ad92d3e454..e6851260d059 100644
-> > > --- a/tools/perf/util/cs-etm.c
-> > > +++ b/tools/perf/util/cs-etm.c
-> > > @@ -746,8 +746,16 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
-> > >  
-> > >  	len = dso__data_read_offset(al.map->dso, machine, offset, buffer, size);
-> > >  
-> > > -	if (len <= 0)
-> > > +	if (len <= 0) {
-> > > +		ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n");
-> > > +		if (!al.map->dso->auxtrace_warned) {
-> > > +			pr_err("CS ETM Trace: Debug data not found for address %#"PRIx64" in %s\n",
-> > > +				    address,
-> > > +				    al.map->dso->long_name ? al.map->dso->long_name : "Unknown");
-> > > +			al.map->dso->auxtrace_warned = true;
-> > > +		}
+On Tue, Aug 03, 2021 at 03:31:50AM -0700, CGEL wrote:
+> O Thu, Jul 29, 2021 at 04:53:48PM +0200, Christian Brauner wrote:
 > > 
-> > This is very useful.
+> > Yeah, we did that work specifically for the network namespace but knew
+> > there were quite a few places that would need fix up. This makes sense
+> > to me.
 > > 
-> > Just one comment: in particularly if the perf fails to find the kernel
-> > symbols, the user needs to enable config "CONFIG_PROC_KCORE=y" or
-> > specify option "-k /path/to/vmlinux".  In this case, using 'perf
-> > archive' is not helpful.  So I think the UI warning can be imporved
-> > like:
-> > 
-> >         ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n"
-> >                          " Enable CONFIG_PROC_KCORE or use option '-k /path/to/vmlinux' for kernel symbols\n");
+> > Please add tests for this patch though. Also make sure to run them in a
+> > tight loop on a kernel with memory and log debugging enabled.
+>   For now i have rebuilt the kernel turning on the config items you
+>   suggested and some other kernel hacking and locking debug configs.
+>   I tested this by a shell script concurrently writing the mqueue sysctl
+>   files and checking the value. Do you mean that i should add some test code in this patch?
+>   Can you give some examples for this tests code?
+
+Yep, I'd prefer to see tests with this. This should be fairly easy to
+test. There are a bunch of ways. A really trivial skeleton for a test in
+tools/testing/selftstes/mqueue/ could be:
+
+- Create a new mount and ipc namespace and mount mqueue in there.
+  Read and remember the /proc/sys/fs/mqueue/queues_max value.
+- Now create a new user + mount namespace pair in a child process.
+- Mount mqueue filesystem in there.
+- Set /proc/sys/fs/mqueue/queues_max to 1.
+- Call mq_open with O_CREAT in the child process the first time and
+  expect success keeping the fd open.
+- Call mq_open with O_CREAT in the child process a second time and
+  expect failure because of:
+
+	if (ipc_ns->mq_queues_count >= ipc_ns->mq_queues_max &&
+	    !capable(CAP_SYS_RESOURCE)) {
+		error = -ENOSPC;
+		goto out_unlock;
+	}
+	ipc_ns->mq_queues_count++;
+	spin_unlock(&mq_lock);
+
+- Reap the child in the parent expecting success.
+- Verify that the /proc/sys/fs/mqueue/queues_max value in the parent is
+  identical to the value you read before creating the child.
+
+This should be a very rough test that at least the fundamentals of this
+change are sane.
+
+This doesn't have to be complex.
+
+Here's the code from a test I've written for mount_setattr() to create
+an unpriv mount + userns which might be the annoying part:
+
+#include "../../kselftest_harness.h"
+#include "../pidfd.h" /* for wait_for_pid() */
+
+static ssize_t write_nointr(int fd, const void *buf, size_t count)
+{
+	ssize_t ret;
+
+	do {
+		ret = write(fd, buf, count);
+	} while (ret < 0 && errno == EINTR);
+
+	return ret;
+}
+
+static int write_file(const char *path, const void *buf, size_t count)
+{
+	int fd;
+	ssize_t ret;
+
+	fd = open(path, O_WRONLY | O_CLOEXEC | O_NOCTTY | O_NOFOLLOW);
+	if (fd < 0)
+		return -1;
+
+	ret = write_nointr(fd, buf, count);
+	close(fd);
+	if (ret < 0 || (size_t)ret != count)
+		return -1;
+
+	return 0;
+}
+
+static int create_and_enter_userns(void)
+{
+	uid_t uid;
+	gid_t gid;
+	char map[100];
+
+	uid = getuid();
+	gid = getgid();
+
+	if (unshare(CLONE_NEWUSER))
+		return -1;
+
+	if (write_file("/proc/self/setgroups", "deny", sizeof("deny") - 1) &&
+	    errno != ENOENT)
+		return -1;
+
+	snprintf(map, sizeof(map), "0 %d 1", uid);
+	if (write_file("/proc/self/uid_map", map, strlen(map)))
+		return -1;
+
+
+	snprintf(map, sizeof(map), "0 %d 1", gid);
+	if (write_file("/proc/self/gid_map", map, strlen(map)))
+		return -1;
+
+	if (setgid(0))
+		return -1;
+
+	if (setuid(0))
+		return -1;
+
+	return 0;
+}
+
+static int prepare_unpriv_mountns(void)
+{
+	if (create_and_enter_userns())
+		return -1;
+
+	if (unshare(CLONE_NEWNS))
+		return -1;
+
+	if (mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0))
+		return -1;
+
+	if (unshare(CLONE_NEWIPC))
+		return -1;
+
+	return 0;
+}
+
+TEST(mqueue_sysctls)
+{
+	int ret;
+	pid_t pid;
+
+	if (unshare(CLONE_NEWNS))
+		return -1;
+
+	if (mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0))
+		return -1;
+
+	if (unshare(CLONE_NEWIPC))
+		return -1;
+
+	/* Mount new mqueue instance, read and stash sysctl value. */
+
+	pid = fork();
+	ASSERT_GE(pid, 0) {
+		TH_LOG("%s - Failed to fork", strerror(errno));
+	}
+
+	if (pid == 0) {
+		ASSERT_EQ(prepare_unpriv_mountns(), 0);
+
+		/* mount new mqueue instance, setup sysctls and perform mq_open() tests. */
+
+		exit(EXIT_SUCCESS);
+	}
+
+	ASSERT_EQ(wait_for_pid(pid), 0);
+
+
+	/* Read sysctl value again making sure it's still the same as before. */
+}
+
+TEST_HARNESS_MAIN
+
 > 
-> one can also use debuginfod-client, which, as time passes, probably will
-> be the main way of finding DSOs now that we have build-ids in
-> PERF_RECORD_MMAP2 and debuginfod servers such as:
-> 
-> export DEBUGINFOD_URLS=https://debuginfod.fedoraproject.org/
+> > The whole sysctl retire stuff can't be called from rcu contexts and that's easy to
+> > miss. 
+>   for this patch, retire_mq_sysctls() is called by free_ipc_ns(), and free_ipc_ns() is 
+>   triggered by schedule_work(&free_ipc_work) in kthread context.
+>   Can you give some comments on the chance this code running on rcu
+>   context?
 
-If so, maybe should use more general description for missing DSO.
-
-> https://fedoraproject.org/wiki/Debuginfod
->  
-> > With this improvement, the patch looks good to me:
-> > 
-> > Reviewed-by: Leo Yan <leo.yan@linaro.org>
-> 
-> Does this apply to the other 5 patches in this series?
-
-I finished to reivew patches 01, 04, 05, 06/06, so my review tag can
-apply on these patches.  Current patch 06/06 needs James to improve for
-the comments.
-
-Thanks,
-Leo
+I really just prefer to see sysctl namespacing changes compiled with all
+manner of debugging options enabled as they can quite easily uncover
+bugs where the sysctl cleanup helpers are called from invalid contexts.
+That has happened to me when I worked on some sysctl changes a while
+back and thought I had followed all codepaths diligently to make sure
+that nothing calls the sysctl cleanup code from invalid contexts. I only
+caught the codepath that did because I had all of the options turned on.
