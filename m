@@ -2,455 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7559A3DF3E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DA03DF3EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238218AbhHCRZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47236 "EHLO
+        id S238213AbhHCR2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238173AbhHCRZz (ORCPT
+        with ESMTP id S237938AbhHCR2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:25:55 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E65C061757;
-        Tue,  3 Aug 2021 10:25:42 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id x8so27679670lfe.3;
-        Tue, 03 Aug 2021 10:25:42 -0700 (PDT)
+        Tue, 3 Aug 2021 13:28:09 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C9FC061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 10:27:57 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id p145so20393864ybg.6
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 10:27:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mXaWfCBJ15QkkxOL37ql3IzMIyK5Ar2gtetOmCZgwyA=;
-        b=KWMW7mCYEw1voGvv4a+mwkTa09OVWeawTceZ/yFz2Z5f8F8RvD07gJ03MY7vc2Hux3
-         un15tOYhrLvMQKk8VqxSqoVHWNxU85Qwg8Z2Tg2t+EFDe59oFyWZUNxte3qK1wpwyq4N
-         hb0Q7le1VxFi22b4Ps42pB+AzKCCe0hLiyS//sfStWga1fBcVqO0LD6Fb15DlmyK8fLc
-         uFBmQ8Ip0BuriyTyRdDzAodlF8ptgfQlkQy+tFeAQNfLjZ5gLDrtkgAc2OKfrTdSMUjP
-         tksxrHyTFUu0vrIZ5r+4HGWRm4OVtP/1oA2XPGiALuA2TCVSElwLdI/POVMcLMPqRop0
-         t/bA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tTZ5g4GTILsDQHp1eqPRFqPGKzM3iGG8XzvZFkbQn5Q=;
+        b=Q2WtkHAqT08j9j6JZNFmzJDazhybSJWhcsPGUi93jChlAh7Ooo/2WM/Wagoul/9Nl0
+         Y+kU5GD/nFBQ4T5SPxSvqmnXMmhvTTp3EaP3e89PAQkKwV66ajjGdizUmux4142dQqxR
+         BU7E0KbviB2lKuItNBO9ITKSEBuNXA0f83J07AJxgGXFXVDQ2FeES+ydhEnE67NdTR48
+         iMe8SZwe0c0Wc6RFTlxHCS7TCO/IvG07Npz0znwrjnhhxsHhZxUdaNROpbTbkmjKhAk8
+         lGcptZtMb69rNGTYsyY7wEdqJf/qcrp+gRRGAL9+aMIrACMSwlbky78bIaiDZj9BMG48
+         4ycg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mXaWfCBJ15QkkxOL37ql3IzMIyK5Ar2gtetOmCZgwyA=;
-        b=oNNMfY7fwOqadCjwjq7H3zSc+ZKAK+mGMuQTjx02OH9YaiWu65kyV9eYt7VGNYzL2o
-         HsLp6VrpRX7p/p8+NL/+8JBXIG2MMnyIWEvCliJGoCNSzqmfnxs6nezmnPSraWVMNUBy
-         BdwNsuAWY78AQZJp950BAh7ZWLygs95fPtXPau+V7BUdW44Dow7McmxErF36LGQ2uQ/k
-         SA4adMR2bWDqzsDD7UC+PKQK3tjHFdwHjfTTnSA0mMhVQZrq7z1qeoq9kPqSFwFzSa0h
-         VPwd6jbjMkplL9flarT86F2ODvb2ctNoswJYlbJlnnNzv8LZo+Pdl+1IiCqAzH+4DXNe
-         4VVQ==
-X-Gm-Message-State: AOAM531YjDYizB3bJefgP5dvYAq8y8LBZVr6pSWMa4yl7+NqIgj/9kZV
-        YjOruVh401b+ejyCpYx2Y/Q42yGkXPBwFbqm6GQYSA==
-X-Google-Smtp-Source: ABdhPJwKcG7oFk2MQThYkSj+PhWyNTzT8d1DwypcJWkqkO1SJjCKV1NcJzhbsx4gz0R3BuF1YvcSTQ==
-X-Received: by 2002:ac2:484c:: with SMTP id 12mr8732399lfy.31.1628011541066;
-        Tue, 03 Aug 2021 10:25:41 -0700 (PDT)
-Received: from nergzd-desktop.localdomain ([62.122.67.26])
-        by smtp.gmail.com with ESMTPSA id g11sm1147618ljl.139.2021.08.03.10.25.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 10:25:40 -0700 (PDT)
-From:   Markuss Broks <markuss.broks@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linus.walleij@linaro.org, phone-devel@vger.kernel.org,
-        Markuss Broks <markuss.broks@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v2] drm/panel: s6d27a1: Add driver for Samsung S6D27A1 display panel
-Date:   Tue,  3 Aug 2021 20:24:50 +0300
-Message-Id: <20210803172458.10971-1-markuss.broks@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <YQlWk5yoAAe4SRZX@ravnborg.org>
-References: <YQlWk5yoAAe4SRZX@ravnborg.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tTZ5g4GTILsDQHp1eqPRFqPGKzM3iGG8XzvZFkbQn5Q=;
+        b=dd0pNOe32TfE4vTHjq9+OMDno/v5KX2dkdF2hM2abT6YMR4+cU75VCdFPeTYTsfDqn
+         ppDwe9Uz4CSoLf1Z4yph1IjtXYqI24vv/k4nuX/uHPWj4Z3ZHGcm7fhNSj/XfXJqjViS
+         OrBOmM1sfyiwtGSPkbQnGkMZV80jL8MLweng2QYihAlzDhET6qRVNTS+f5AQL+iCCZp5
+         uq3R4KOZmV8WukSCqCUbO3KL1/R44DptFMDekf9Lbt+MbMRinJWtdrQMg5kV7KClMAR3
+         CTeljiBdzOMyob6mh0DV06HO0j9nu9H5guGPV5gWjQGIM59rWiE68KQLYfLl1J+hV5id
+         seLQ==
+X-Gm-Message-State: AOAM532cIdgW+E9QHltXxhYr+H4KFZZB28CoeyvNlzP1otcmKbPE5OQ7
+        kONn09JeXQPaI6WLp0vrGYVOlroMgI+6LA+wd3+q7g==
+X-Google-Smtp-Source: ABdhPJzQyiU4rreG5VZBo/3+o/Cqn4zQ4RIZdZLrfNJKLQ/gBgJysO57Kkp1iRQQ1WakNnYBMblrGG3vb9gVi120A4w=
+X-Received: by 2002:a25:bc2:: with SMTP id 185mr28865645ybl.23.1628011676754;
+ Tue, 03 Aug 2021 10:27:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210802221431.2251210-1-surenb@google.com> <YQkAqwZIF+AnpexA@dhcp22.suse.cz>
+In-Reply-To: <YQkAqwZIF+AnpexA@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 3 Aug 2021 10:27:45 -0700
+Message-ID: <CAJuCfpGiYAdvOydimHbK73oKS-ZfMMBtADXxWCYpxkX2qJX08g@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] mm: introduce process_mrelease system call
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a driver for Samsung S6D27A1 display controller and panel.
-This panel is found in the Samsung GT-I8160 mobile phone,
-and possibly some other mobile phones.
+On Tue, Aug 3, 2021 at 1:39 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 02-08-21 15:14:30, Suren Baghdasaryan wrote:
+> > In modern systems it's not unusual to have a system component monitoring
+> > memory conditions of the system and tasked with keeping system memory
+> > pressure under control. One way to accomplish that is to kill
+> > non-essential processes to free up memory for more important ones.
+> > Examples of this are Facebook's OOM killer daemon called oomd and
+> > Android's low memory killer daemon called lmkd.
+> > For such system component it's important to be able to free memory
+> > quickly and efficiently. Unfortunately the time process takes to free
+> > up its memory after receiving a SIGKILL might vary based on the state
+> > of the process (uninterruptible sleep), size and OPP level of the core
+> > the process is running. A mechanism to free resources of the target
+> > process in a more predictable way would improve system's ability to
+> > control its memory pressure.
+> > Introduce process_mrelease system call that releases memory of a dying
+> > process from the context of the caller. This way the memory is freed in
+> > a more controllable way with CPU affinity and priority of the caller.
+> > The workload of freeing the memory will also be charged to the caller.
+> > The operation is allowed only on a dying process.
+> >
+> > Previously I proposed a number of alternatives to accomplish this:
+> > - https://lore.kernel.org/patchwork/patch/1060407 extending
+>
+> Please use the msg-id based urls https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
 
-This display needs manufacturer commands to configure it to a working state;
-the commands used in this driver were taken from downstream driver
-by Gareth Phillips; sadly, there is almost no documentation on what they
-actually do.
+Will do. Thanks!
 
-This driver re-uses the DBI infrastructure to communicate with the display.
+>
+> > pidfd_send_signal to allow memory reaping using oom_reaper thread;
+> > - https://lore.kernel.org/patchwork/patch/1338196 extending
+>
+> https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
+>
+> > pidfd_send_signal to reap memory of the target process synchronously from
+> > the context of the caller;
+> > - https://lore.kernel.org/patchwork/patch/1344419/ to add MADV_DONTNEED
+> > support for process_madvise implementing synchronous memory reaping.
+>
+> https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
+>
+> > The end of the last discussion culminated with suggestion to introduce a
+> > dedicated system call (https://lore.kernel.org/patchwork/patch/1344418/#1553875)
+>
+> https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
+>
+> > The reasoning was that the new variant of process_madvise
+> >   a) does not work on an address range
+> >   b) is destructive
+> >   c) doesn't share much code at all with the rest of process_madvise
+> > >From the userspace point of view it was awkward and inconvenient to provide
+> > memory range for this operation that operates on the entire address space.
+> > Using special flags or address values to specify the entire address space
+> > was too hacky.
+> >
+> > The API is as follows,
+> >
+> >           int process_mrelease(int pidfd, unsigned int flags);
+> >
+> >         DESCRIPTION
+> >           The process_mrelease() system call is used to free the memory of
+> >           a process which was sent a SIGKILL signal.
+>
+> This is not really precise. The implementation will allow to use the
+> syscall on any exiting or fatal signal received process. Not just those
+> that have been SIGKILLed, right? For the purpose of the man page I would
+> go with exiting process for the wording.
 
-This driver is heavily based on WideChips WS2401 display controller
-driver by Linus Walleij and on other panel drivers for reference.
+Ack.
 
-Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
----
- drivers/gpu/drm/panel/Kconfig                 |   8 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- drivers/gpu/drm/panel/panel-samsung-s6d27a1.c | 323 ++++++++++++++++++
- 3 files changed, 332 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-samsung-s6d27a1.c
+>
+> >           The pidfd selects the process referred to by the PID file
+> >           descriptor.
+> >           (See pidofd_open(2) for further information)
+> >
+> >           The flags argument is reserved for future use; currently, this
+> >           argument must be specified as 0.
+> >
+> >         RETURN VALUE
+> >           On success, process_mrelease() returns 0. On error, -1 is
+> >           returned and errno is set to indicate the error.
+> >
+> >         ERRORS
+> >           EBADF  pidfd is not a valid PID file descriptor.
+> >
+> >           EAGAIN Failed to release part of the address space.
+> >
+> >           EINTR  The call was interrupted by a signal; see signal(7).
+> >
+> >           EINVAL flags is not 0.
+> >
+> >           EINVAL The task does not have a pending SIGKILL or its memory is
+> >                  shared with another process with no pending SIGKILL.
+>
+> again, wording here. I would go with
+>             EINVAL The memory of the task cannot be released because the
+>                    process is not exiting, the address space is shared
+>                    with an alive process or there is a core dump is in
+>                    progress..
 
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index f4fe1dba99..21007b2032 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -348,6 +348,14 @@ config DRM_PANEL_SAMSUNG_S6D16D0
- 	depends on DRM_MIPI_DSI
- 	select VIDEOMODE_HELPERS
- 
-+config DRM_PANEL_SAMSUNG_S6D27A1
-+	tristate "Samsung S6D27A1 DPI panel driver"
-+	depends on OF && SPI && GPIOLIB
-+	select DRM_MIPI_DBI
-+	help
-+	  Say Y here if you want to enable support for the Samsung
-+	  S6D27A1 DPI 480x800 panel.
-+
- config DRM_PANEL_SAMSUNG_S6E3HA2
- 	tristate "Samsung S6E3HA2 DSI video mode panel"
- 	depends on OF
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index d94c27df17..d2a6fe81e9 100644
---- a/drivers/gpu/drm/panel/Makefile
-+++ b/drivers/gpu/drm/panel/Makefile
-@@ -35,6 +35,7 @@ obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM68200) += panel-raydium-rm68200.o
- obj-$(CONFIG_DRM_PANEL_RONBO_RB070D30) += panel-ronbo-rb070d30.o
- obj-$(CONFIG_DRM_PANEL_SAMSUNG_LD9040) += panel-samsung-ld9040.o
- obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6D16D0) += panel-samsung-s6d16d0.o
-+obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6D27A1) += panel-samsung-s6d27a1.o
- obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E3HA2) += panel-samsung-s6e3ha2.o
- obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E63J0X03) += panel-samsung-s6e63j0x03.o
- obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E63M0) += panel-samsung-s6e63m0.o
-diff --git a/drivers/gpu/drm/panel/panel-samsung-s6d27a1.c b/drivers/gpu/drm/panel/panel-samsung-s6d27a1.c
-new file mode 100644
-index 0000000000..073454349d
---- /dev/null
-+++ b/drivers/gpu/drm/panel/panel-samsung-s6d27a1.c
-@@ -0,0 +1,323 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Panel driver for the Samsung S6D27A1 480x800 DPI RGB panel.
-+ * Found in the Samsung Galaxy Ace 2 GT-I8160 mobile phone.
-+ */
-+
-+#include <drm/drm_modes.h>
-+#include <drm/drm_mipi_dbi.h>
-+#include <drm/drm_panel.h>
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/media-bus-format.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/spi/spi.h>
-+
-+#include <video/mipi_display.h>
-+
-+#define S6D27A1_PASSWD_L2	0xF0	/* Password Command for Level 2 Control */
-+#define S6D27A1_RESCTL		0xB3	/* Resolution Select Control */
-+#define S6D27A1_PANELCTL2	0xB4	/* ASG Signal Control */
-+#define S6D27A1_READID1		0xDA	/* Read panel ID 1 */
-+#define S6D27A1_READID2		0xDB	/* Read panel ID 2 */
-+#define S6D27A1_READID3		0xDC	/* Read panel ID 3 */
-+#define S6D27A1_DISPCTL		0xF2	/* Display Control */
-+#define S6D27A1_MANPWR		0xF3	/* Manual Control */
-+#define S6D27A1_PWRCTL1		0xF4	/* Power Control */
-+#define S6D27A1_SRCCTL		0xF6	/* Source Control */
-+#define S6D27A1_PANELCTL	0xF7	/* Panel Control*/
-+
-+static const u8 s6d27a1_dbi_read_commands[] = {
-+	S6D27A1_READID1,
-+	S6D27A1_READID2,
-+	S6D27A1_READID3,
-+	0, /* sentinel */
-+};
-+
-+struct s6d27a1 {
-+	struct device *dev;
-+	struct mipi_dbi dbi;
-+	struct drm_panel panel;
-+	struct gpio_desc *reset;
-+	struct regulator_bulk_data regulators[2];
-+};
-+
-+static const struct drm_display_mode s6d27a1_480_800_mode = {
-+	/*
-+	 * The vendor driver states that the S6D27A1 panel
-+	 * has a pixel clock frequency of 49920000 Hz / 2 = 24960000 Hz.
-+	 */
-+	.clock = 24960,
-+	.hdisplay = 480,
-+	.hsync_start = 480 + 63,
-+	.hsync_end = 480 + 63 + 2,
-+	.htotal = 480 + 63 + 2 + 63,
-+	.vdisplay = 800,
-+	.vsync_start = 800 + 11,
-+	.vsync_end = 800 + 11 + 2,
-+	.vtotal = 800 + 11 + 2 + 10,
-+	.width_mm = 50,
-+	.height_mm = 84,
-+	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
-+};
-+
-+static inline struct s6d27a1 *to_s6d27a1(struct drm_panel *panel)
-+{
-+	return container_of(panel, struct s6d27a1, panel);
-+}
-+
-+#define s6d27a1_command(ctx, cmd, seq...) \
-+({ \
-+	struct mipi_dbi *dbi = &ctx->dbi; \
-+	int ret; \
-+	ret = mipi_dbi_command(dbi, cmd, seq);	\
-+	if (ret) { \
-+		dev_err(ctx->dev, "failure in writing command %02x\n", cmd); \
-+	} \
-+})
-+
-+static void s6d27a1_read_mtp_id(struct s6d27a1 *ctx)
-+{
-+	struct mipi_dbi *dbi = &ctx->dbi;
-+	u8 id1, id2, id3;
-+	int ret;
-+
-+	ret = mipi_dbi_command_read(dbi, S6D27A1_READID1, &id1);
-+	if (ret) {
-+		dev_err(ctx->dev, "unable to read MTP ID 1\n");
-+		return;
-+	}
-+	ret = mipi_dbi_command_read(dbi, S6D27A1_READID2, &id2);
-+	if (ret) {
-+		dev_err(ctx->dev, "unable to read MTP ID 2\n");
-+		return;
-+	}
-+	ret = mipi_dbi_command_read(dbi, S6D27A1_READID3, &id3);
-+	if (ret) {
-+		dev_err(ctx->dev, "unable to read MTP ID 3\n");
-+		return;
-+	}
-+	dev_info(ctx->dev, "MTP ID: %02x %02x %02x\n", id1, id2, id3);
-+}
-+
-+static int s6d27a1_power_on(struct s6d27a1 *ctx)
-+{
-+	int ret;
-+
-+	/* Power up */
-+	ret = regulator_bulk_enable(ARRAY_SIZE(ctx->regulators),
-+				    ctx->regulators);
-+	if (ret) {
-+		dev_err(ctx->dev, "failed to enable regulators: %d\n", ret);
-+		return ret;
-+	}
-+
-+	msleep(20);
-+
-+	/* Assert reset >=1 ms */
-+	gpiod_set_value_cansleep(ctx->reset, 1);
-+	usleep_range(1000, 5000);
-+	/* De-assert reset */
-+	gpiod_set_value_cansleep(ctx->reset, 0);
-+	/* Wait >= 10 ms */
-+	msleep(20);
-+
-+	/*
-+	 * Exit sleep mode and initialize display - some hammering is
-+	 * necessary.
-+	 */
-+	s6d27a1_command(ctx, MIPI_DCS_EXIT_SLEEP_MODE);
-+	s6d27a1_command(ctx, MIPI_DCS_EXIT_SLEEP_MODE);
-+	msleep(50);
-+
-+	/* Magic to unlock level 2 control of the display */
-+	s6d27a1_command(ctx, S6D27A1_PASSWD_L2, 0x5A, 0x5A);
-+
-+	/* Configure resolution to 480RGBx800 */
-+	s6d27a1_command(ctx, S6D27A1_RESCTL, 0x22);
-+
-+	s6d27a1_command(ctx, S6D27A1_PANELCTL2, 0x00, 0x02, 0x03, 0x04, 0x05, 0x08, 0x00, 0x0c);
-+
-+	s6d27a1_command(ctx, S6D27A1_MANPWR, 0x01, 0x00, 0x00, 0x08, 0x08, 0x02, 0x00);
-+
-+	s6d27a1_command(ctx, S6D27A1_DISPCTL, 0x19, 0x00, 0x08, 0x0D, 0x03, 0x41, 0x3F);
-+
-+	s6d27a1_command(ctx, S6D27A1_PWRCTL1, 0x00, 0x00, 0x00, 0x00, 0x55,
-+						0x44, 0x05, 0x88, 0x4B, 0x50);
-+
-+	s6d27a1_command(ctx, S6D27A1_SRCCTL, 0x03, 0x09, 0x8A, 0x00, 0x01, 0x16);
-+
-+	s6d27a1_command(ctx, S6D27A1_PANELCTL, 0x00, 0x05, 0x06, 0x07, 0x08,
-+						0x01, 0x09, 0x0D, 0x0A, 0x0E,
-+						0x0B, 0x0F, 0x0C, 0x10, 0x01,
-+						0x11, 0x12, 0x13, 0x14, 0x05,
-+						0x06, 0x07, 0x08, 0x01, 0x09,
-+						0x0D, 0x0A, 0x0E, 0x0B, 0x0F,
-+						0x0C, 0x10, 0x01, 0x11, 0x12,
-+						0x13, 0x14);
-+
-+	/* lock the level 2 control */
-+	s6d27a1_command(ctx, S6D27A1_PASSWD_L2, 0xA5, 0xA5);
-+
-+	s6d27a1_read_mtp_id(ctx);
-+
-+	return 0;
-+}
-+
-+static int s6d27a1_power_off(struct s6d27a1 *ctx)
-+{
-+	/* Go into RESET and disable regulators */
-+	gpiod_set_value_cansleep(ctx->reset, 1);
-+	return regulator_bulk_disable(ARRAY_SIZE(ctx->regulators),
-+				      ctx->regulators);
-+}
-+
-+static int s6d27a1_unprepare(struct drm_panel *panel)
-+{
-+	struct s6d27a1 *ctx = to_s6d27a1(panel);
-+
-+	s6d27a1_command(ctx, MIPI_DCS_ENTER_SLEEP_MODE);
-+	msleep(120);
-+	return s6d27a1_power_off(to_s6d27a1(panel));
-+}
-+
-+static int s6d27a1_disable(struct drm_panel *panel)
-+{
-+	struct s6d27a1 *ctx = to_s6d27a1(panel);
-+
-+	s6d27a1_command(ctx, MIPI_DCS_SET_DISPLAY_OFF);
-+	msleep(25);
-+
-+	return 0;
-+}
-+
-+static int s6d27a1_prepare(struct drm_panel *panel)
-+{
-+	return s6d27a1_power_on(to_s6d27a1(panel));
-+}
-+
-+static int s6d27a1_enable(struct drm_panel *panel)
-+{
-+	struct s6d27a1 *ctx = to_s6d27a1(panel);
-+
-+	s6d27a1_command(ctx, MIPI_DCS_SET_DISPLAY_ON);
-+
-+	return 0;
-+}
-+
-+static int s6d27a1_get_modes(struct drm_panel *panel,
-+			    struct drm_connector *connector)
-+{
-+	struct s6d27a1 *ctx = to_s6d27a1(panel);
-+	struct drm_display_mode *mode;
-+	static const u32 bus_format = MEDIA_BUS_FMT_RGB888_1X24;
-+
-+	mode = drm_mode_duplicate(connector->dev, &s6d27a1_480_800_mode);
-+	if (!mode) {
-+		dev_err(ctx->dev, "failed to add mode\n");
-+		return -ENOMEM;
-+	}
-+
-+	connector->display_info.bpc = 8;
-+	connector->display_info.width_mm = mode->width_mm;
-+	connector->display_info.height_mm = mode->height_mm;
-+	connector->display_info.bus_flags =
-+		DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE;
-+	drm_display_info_set_bus_formats(&connector->display_info,
-+					 &bus_format, 1);
-+
-+	drm_mode_set_name(mode);
-+	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
-+
-+	drm_mode_probed_add(connector, mode);
-+
-+	return 1;
-+}
-+
-+static const struct drm_panel_funcs s6d27a1_drm_funcs = {
-+	.disable = s6d27a1_disable,
-+	.unprepare = s6d27a1_unprepare,
-+	.prepare = s6d27a1_prepare,
-+	.enable = s6d27a1_enable,
-+	.get_modes = s6d27a1_get_modes,
-+};
-+
-+static int s6d27a1_probe(struct spi_device *spi)
-+{
-+	struct device *dev = &spi->dev;
-+	struct s6d27a1 *ctx;
-+	int ret;
-+
-+	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	ctx->dev = dev;
-+
-+	/*
-+	 * VCI   is the analog voltage supply
-+	 * VCCIO is the digital I/O voltage supply
-+	 */
-+	ctx->regulators[0].supply = "vci";
-+	ctx->regulators[1].supply = "vccio";
-+	ret = devm_regulator_bulk_get(dev,
-+				      ARRAY_SIZE(ctx->regulators),
-+				      ctx->regulators);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "failed to get regulators\n");
-+
-+	ctx->reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(ctx->reset)) {
-+		ret = PTR_ERR(ctx->reset);
-+		return dev_err_probe(dev, ret, "no RESET GPIO\n");
-+	}
-+
-+	ret = mipi_dbi_spi_init(spi, &ctx->dbi, NULL);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "MIPI DBI init failed\n");
-+
-+	ctx->dbi.read_commands = s6d27a1_dbi_read_commands;
-+
-+	drm_panel_init(&ctx->panel, dev, &s6d27a1_drm_funcs,
-+		       DRM_MODE_CONNECTOR_DPI);
-+
-+	spi_set_drvdata(spi, ctx);
-+
-+	drm_panel_add(&ctx->panel);
-+	dev_dbg(dev, "added panel\n");
-+
-+	return 0;
-+}
-+
-+static int s6d27a1_remove(struct spi_device *spi)
-+{
-+	struct s6d27a1 *ctx = spi_get_drvdata(spi);
-+
-+	drm_panel_remove(&ctx->panel);
-+	return 0;
-+}
-+
-+static const struct of_device_id s6d27a1_match[] = {
-+	{ .compatible = "samsung,s6d27a1", },
-+    { /* sentinel */ },
-+};
-+MODULE_DEVICE_TABLE(of, s6d27a1_match);
-+
-+static struct spi_driver s6d27a1_driver = {
-+	.probe		= s6d27a1_probe,
-+	.remove		= s6d27a1_remove,
-+	.driver		= {
-+		.name	= "s6d27a1-panel",
-+		.of_match_table = s6d27a1_match,
-+	},
-+};
-+module_spi_driver(s6d27a1_driver);
-+
-+MODULE_AUTHOR("Markuss Broks <markuss.broks@gmail.com>");
-+MODULE_DESCRIPTION("Samsung S6D27A1 panel driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.32.0
+Ack.
 
+> >
+> >           ENOSYS This system call is not supported by kernels built with no
+> >                  MMU support (CONFIG_MMU=n).
+> >
+> >           ESRCH  The target process does not exist (i.e., it has terminated
+> >                  and been waited on).
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> > changes in v4:
+> > - Replaced mmap_read_lock() with mmap_read_lock_killable(), per Michal Hocko
+> > - Added EINTR error in the manual pages documentation
+> >
+> >  mm/oom_kill.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 58 insertions(+)
+> >
+> > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> > index c729a4c4a1ac..86727794b0a8 100644
+> > --- a/mm/oom_kill.c
+> > +++ b/mm/oom_kill.c
+> > @@ -28,6 +28,7 @@
+> >  #include <linux/sched/task.h>
+> >  #include <linux/sched/debug.h>
+> >  #include <linux/swap.h>
+> > +#include <linux/syscalls.h>
+> >  #include <linux/timex.h>
+> >  #include <linux/jiffies.h>
+> >  #include <linux/cpuset.h>
+> > @@ -1141,3 +1142,60 @@ void pagefault_out_of_memory(void)
+> >       out_of_memory(&oc);
+> >       mutex_unlock(&oom_lock);
+> >  }
+> > +
+> > +SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> > +{
+> > +#ifdef CONFIG_MMU
+> > +     struct mm_struct *mm = NULL;
+> > +     struct task_struct *task;
+> > +     unsigned int f_flags;
+> > +     struct pid *pid;
+> > +     long ret = 0;
+> > +
+> > +     if (flags != 0)
+> > +             return -EINVAL;
+> > +
+> > +     pid = pidfd_get_pid(pidfd, &f_flags);
+> > +     if (IS_ERR(pid))
+> > +             return PTR_ERR(pid);
+> > +
+> > +     task = get_pid_task(pid, PIDTYPE_PID);
+> > +     if (!task) {
+> > +             ret = -ESRCH;
+> > +             goto put_pid;
+> > +     }
+> > +
+> > +     /*
+> > +      * If the task is dying and in the process of releasing its memory
+> > +      * then get its mm.
+> > +      */
+> > +     task_lock(task);
+>
+> Don't we need find_lock_task_mm here?
+
+Yes, we do. Will fix in the next rev.
+
+>
+> > +     if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
+> > +             mm = task->mm;
+> > +             mmget(mm);
+> > +     }
+> > +     task_unlock(task);
+> > +     if (!mm) {
+>
+> Do we want to treat MMF_OOM_SKIP as a failure?
+
+Yeah, I don't think we want to create additional contention if
+oom-killer is already working on this mm. Should we return EBUSY in
+this case? Other possible options is ESRCH, indicating that this
+process is a goner, so don't bother. WDYT?
+
+>
+> > +             ret = -EINVAL;
+> > +             goto put_task;
+> > +     }
+> > +
+> > +     if (mmap_read_lock_killable(mm)) {
+> > +             ret = -EINTR;
+> > +             goto put_mm;
+> > +     }
+> > +     if (!__oom_reap_task_mm(mm))
+> > +             ret = -EAGAIN;
+> > +     mmap_read_unlock(mm);
+> > +
+> > +put_mm:
+> > +     mmput(mm);
+> > +put_task:
+> > +     put_task_struct(task);
+> > +put_pid:
+> > +     put_pid(pid);
+> > +     return ret;
+> > +#else
+> > +     return -ENOSYS;
+> > +#endif /* CONFIG_MMU */
+> > +}
+> > --
+> > 2.32.0.554.ge1b32706d8-goog
+>
+
+Thanks for the review!
+
+> --
+> Michal Hocko
+> SUSE Labs
