@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEF03DF702
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5013DF704
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbhHCVkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 17:40:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52426 "EHLO mail.kernel.org"
+        id S233013AbhHCVkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 17:40:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232769AbhHCVkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232809AbhHCVkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Aug 2021 17:40:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A8DED61029;
-        Tue,  3 Aug 2021 21:40:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6EDB261050;
+        Tue,  3 Aug 2021 21:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628026805;
-        bh=YxCD1QnjAGo/1kn57KKjKdvQgiVFs1BwdQcywJc7Y7M=;
+        s=k20201202; t=1628026806;
+        bh=5JMHB0yY8QqUV9gku+h/QydoqaLTh51fWRTu1crjXPU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RH2YoDNJnp+YrLl/ead2tpdgymatXSxBedT2H33im3Ips7GFqkw66V4Ipgw5mVBLx
-         lxaOd3T0cTuqgKE+8cIdqONdpsjp4RW0RVPWa8K79EUcYF0hXMqV88+hr3r90ASZ6d
-         SM34FY/whhW2cPTIPCc5WRVdz7XqunoYMsg496j3Kd323pNMcEcQQAI4ZFnZhuuLja
-         BX3JNtpDCxxP79tI7g07OoULKgwNXii922Q8spNVNwkVrp2kMwBZrZ+ACBSvzb7PMN
-         HDcl0GA3X3wlPaUjUKKLcIMHniMDs9oH7CguBzfh56KqnlAU+/ZL+t4q6dI4mwoOIU
-         EMcf7Ef0cZyDQ==
+        b=erYr+K5AsO4XU0JtM8UkxPc8/gD65ijpSIUqmWNbdFDm6t/JgS8O8Me71HvyzIRNf
+         hjrxXDJ2xAg+qUGlkJ+oKEFGakSy3vjsaMm+ilXQrvKQXcUpQvyVQbGBeZD2M2s0Eo
+         Z4CtsJ7J6kAdBgBYH1GCLMmD3TTGT4Yl0fb9OCpOtUZ3rAURxtNKreWuZz1751PDRq
+         /AZsJYDYYOeizIQwxYGpCY1EIenTWdO3eEKCXFkjY0QJkS6jaHs0WsTMtVuTDtt/Ee
+         MlSTZHfBJhAWc32FrYDwWfAo6Tmlu7fFOtIUE/rnsdci4NTcfbESCrrEZ1Kt+6waMc
+         LLwfbyAH7pz5Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9CEDC60A49;
-        Tue,  3 Aug 2021 21:40:05 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 69FB860A6A;
+        Tue,  3 Aug 2021 21:40:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] VSOCK: handle VIRTIO_VSOCK_OP_CREDIT_REQUEST
+Subject: Re: [PATCH net-next V2] net: fec: fix MAC internal delay doesn't work
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162802680563.18812.6993058675406156401.git-patchwork-notify@kernel.org>
-Date:   Tue, 03 Aug 2021 21:40:05 +0000
-References: <20210802173506.2383-1-harshanavkis@gmail.com>
-In-Reply-To: <20210802173506.2383-1-harshanavkis@gmail.com>
-To:     Harshavardhan Unnibhavi <harshanavkis@gmail.com>
-Cc:     stefanha@redhat.com, sgarzare@redhat.com, davem@davemloft.net,
-        kuba@kernel.org, asias@redhat.com, mst@redhat.com,
-        imbrenda@linux.vnet.ibm.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Message-Id: <162802680642.18812.6472367485133674143.git-patchwork-notify@kernel.org>
+Date:   Tue, 03 Aug 2021 21:40:06 +0000
+References: <20210803052424.19008-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20210803052424.19008-1-qiangqing.zhang@nxp.com>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon,  2 Aug 2021 19:35:06 +0200 you wrote:
-> The original implementation of the virtio-vsock driver does not
-> handle a VIRTIO_VSOCK_OP_CREDIT_REQUEST as required by the
-> virtio-vsock specification. The vsock device emulated by
-> vhost-vsock and the virtio-vsock driver never uses this request,
-> which was probably why nobody noticed it. However, another
-> implementation of the device may use this request type.
+On Tue,  3 Aug 2021 13:24:24 +0800 you wrote:
+> This patch intends to fix MAC internal delay doesn't work, due to use
+> of_property_read_u32() incorrectly, and improve this feature a bit:
+> 1) check the delay value if valid, only program register when it's 2000ps.
+> 2) only enable "enet_2x_txclk" clock when require MAC internal delay.
+> 
+> Fixes: fc539459e900 ("net: fec: add MAC internal delayed clock feature support")
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] VSOCK: handle VIRTIO_VSOCK_OP_CREDIT_REQUEST
-    https://git.kernel.org/netdev/net/c/e3ea110d6e79
+  - [net-next,V2] net: fec: fix MAC internal delay doesn't work
+    https://git.kernel.org/netdev/net-next/c/b820c114eba7
 
 You are awesome, thank you!
 --
