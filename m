@@ -2,161 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8023DE82F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE2E3DE831
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbhHCITe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:19:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:44550 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234311AbhHCITd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:19:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C85A9D6E;
-        Tue,  3 Aug 2021 01:19:21 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 22C3F3F70D;
-        Tue,  3 Aug 2021 01:19:14 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
-To:     Rajat Jain <rajatja@google.com>,
-        Doug Anderson <dianders@chromium.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
-        Saravana Kannan <saravanak@google.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-pci@vger.kernel.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210624171759.4125094-1-dianders@chromium.org>
- <YNXXwvuErVnlHt+s@8bytes.org>
- <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
- <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
- <YOaymBHc4g2cIfRn@8bytes.org>
- <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
- <e3555c49-2978-355f-93bb-dbfa7d09cab8@arm.com>
- <CAD=FV=XaTqNDn=vLEXfJ2dV+EH2UoxPfzWeiS+_sZ9hrQ274bw@mail.gmail.com>
- <CACK8Z6FV+QYR01=aP4AT8rNUQMkX-WwesHzf5XY8465KuUZ=_Q@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <9a1bc174-3230-912c-09ae-25d9f021e8fc@arm.com>
-Date:   Tue, 3 Aug 2021 09:19:08 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234508AbhHCIUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:20:01 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3567 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234238AbhHCIT7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:19:59 -0400
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gf78917yXz6DJnq;
+        Tue,  3 Aug 2021 16:19:37 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 10:19:46 +0200
+Received: from [10.47.27.165] (10.47.27.165) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 3 Aug 2021
+ 09:19:45 +0100
+Subject: Re: [PATCH 02/11] perf jevents: Relocate test events to cpu folder
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <yao.jin@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <irogers@google.com>, <linuxarm@huawei.com>
+References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
+ <1627566986-30605-3-git-send-email-john.garry@huawei.com>
+ <YQgHMt4BsDeJnE09@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <90094733-741c-50e5-ac7d-f5640b5f0bdd@huawei.com>
+Date:   Tue, 3 Aug 2021 09:19:20 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <CACK8Z6FV+QYR01=aP4AT8rNUQMkX-WwesHzf5XY8465KuUZ=_Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <YQgHMt4BsDeJnE09@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.27.165]
+X-ClientProxiedBy: lhreml737-chm.china.huawei.com (10.201.108.187) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-03 01:09, Rajat Jain wrote:
-> Hi Robin, Doug,
-> 
-> On Wed, Jul 14, 2021 at 8:14 AM Doug Anderson <dianders@chromium.org> wrote:
+On 02/08/2021 15:54, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jul 29, 2021 at 09:56:17PM +0800, John Garry escreveu:
+>> In future to add support for sys events, relocate the core and uncore
+>> events to a cpu folder.
 >>
->> Hi,
+>> Signed-off-by: John Garry<john.garry@huawei.com>
+>> ---
+>>   .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/branch.json | 0
+>>   .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/cache.json  | 0
+>>   .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/other.json  | 0
+>>   .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/uncore.json | 0
+>>   tools/perf/pmu-events/jevents.c                                 | 2 +-
+>>   5 files changed, 1 insertion(+), 1 deletion(-)
+>>   rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/branch.json (100%)
+>>   rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/cache.json (100%)
+>>   rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/other.json (100%)
+>>   rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/uncore.json (100%)
 >>
->> On Tue, Jul 13, 2021 at 11:07 AM Robin Murphy <robin.murphy@arm.com> wrote:
->>>
->>> On 2021-07-08 15:36, Doug Anderson wrote:
->>> [...]
->>>>> Or document for the users that want performance how to
->>>>> change the setting, so that they can decide.
->>>>
->>>> Pushing this to the users can make sense for a Linux distribution but
->>>> probably less sense for an embedded platform. So I'm happy to make
->>>> some way for a user to override this (like via kernel command line),
->>>> but I also strongly believe there should be a default that users don't
->>>> have to futz with that we think is correct.
->>>
->>> FYI I did make progress on the "punt it to userspace" approach. I'm not
->>> posting it even as an RFC yet because I still need to set up a machine
->>> to try actually testing any of it (it's almost certainly broken
->>> somewhere), but in the end it comes out looking surprisingly not too bad
->>> overall. If you're curious to take a look in the meantime I put it here:
->>>
->>> https://gitlab.arm.com/linux-arm/linux-rm/-/commits/iommu/fq
-> 
-> I was wondering if you got any closer to testing / sending it out? I
-> looked at the patches and am trying to understand, would they also
-> make it possible to convert at runtime, an existing "non-strict"
-> domain (for a particular device) into a "strict" domain leaving the
-> other devices/domains as-is? Please let me know when you think your
-> patches are good to be tested, and I'd also be interested in trying
-> them out.
+>> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/branch.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/branch.json
+>> similarity index 100%
+>> rename from tools/perf/pmu-events/arch/test/test_cpu/branch.json
+>> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/branch.json
+>> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/cache.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/cache.json
+>> similarity index 100%
+>> rename from tools/perf/pmu-events/arch/test/test_cpu/cache.json
+>> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/cache.json
+>> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/other.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/other.json
+>> similarity index 100%
+>> rename from tools/perf/pmu-events/arch/test/test_cpu/other.json
+>> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/other.json
+>> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/uncore.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
+>> similarity index 100%
+>> rename from tools/perf/pmu-events/arch/test/test_cpu/uncore.json
+>> rename to tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
+>> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+>> index 9604446f8360..405bdd36b9b9 100644
+>> --- a/tools/perf/pmu-events/jevents.c
+>> +++ b/tools/perf/pmu-events/jevents.c
+>> @@ -814,7 +814,7 @@ static void print_mapping_test_table(FILE *outfp)
+>>   	fprintf(outfp, "\t.cpuid = \"testcpu\",\n");
+>>   	fprintf(outfp, "\t.version = \"v1\",\n");
+>>   	fprintf(outfp, "\t.type = \"core\",\n");
+>> -	fprintf(outfp, "\t.table = pme_test_cpu,\n");
+>> +	fprintf(outfp, "\t.table = pme_test_soc_cpu,\n");
+> Humm, is this already generated by some script? I.e. this
+> 'pme_test_soc_cpu' table? Or does this works only when applying the full
+> patchset?
 
-Yup, most recently here:
+So I think we need something like this:
 
-https://lore.kernel.org/linux-iommu/cover.1627468308.git.robin.murphy@arm.com/
+----->8--------
 
-I'm currently getting v3 ready, so I'll try to remember to add you to 
-the CC list.
+ From a08df563665e9ec088b1af86ceed058497e112a4 Mon Sep 17 00:00:00 2001
+From: John Garry <john.garry@huawei.com>
+Date: Tue, 3 Aug 2021 08:44:09 +0100
+Subject: [PATCH] perf jevents: Make build dependency on test JSONs
 
->> Being able to change this at runtime through sysfs sounds great and it
->> fills all the needs I'm aware of, thanks! In Chrome OS we can just use
->> this with some udev rules and get everything we need.
-> 
-> I still have another (inverse) use case where this does not work:
-> We have an Intel chromebook with the default domain type being
-> non-strict. There is an LTE modem (an internal PCI device which cannot
-> be marked external), which we'd like to be treated as a "Strict" DMA
-> domain.
-> 
-> Do I understand it right that using Rob's patches, I could potentially
-> switch the domain to "strict" *after* booting (since we don't use
-> initramfs), but by that time, the driver might have already attached
-> to the modem device (using "non-strict" domain), and thus the damage
-> may have already been done? So perhaps we still need a device property
-> that the firmware could use to indicate "strictness" for certain
-> devices at boot?
+Currently all JSONs and the mapfile for an arch are dependencies for
+building pmu-events.c
 
-Well, in my view the "external facing" firmware property *should* 
-effectively be the "I don't trust this device not to misbehave" 
-property, but I guess it's a bit too conflated with other aspects of 
-Thunderbolt root ports (at least in the ACPI definition) to abuse in 
-that manner.
+The test JSONs are missing as a dependency, so add them.
 
-Ideas off the top of my head would be to flip the default domain type 
-and manually relax all the other performance-sensitive devices instead, 
-or module_blacklist the modem driver to load manually later after 
-tweaking its group. However, if you think it's a sufficiently general 
-concern, maybe a quirk to set pci_dev->untrusted might be worth 
-exploring? It may make sense to drive such a thing from a command-line 
-option rather than a hard-coded list, though, since trust is really down 
-to the individual use-case.
+Signed-off-by: John Garry <john.garry@huawei.com>
 
-[ re gitlab.arm.com, I understand it tends not to like large transfers - 
-some colleagues have reported similar issues pushing large repos as 
-well. I'd suggest cloning the base mainline repo from kernel.org or 
-another reliable source, then fetching my branch into that. I've just 
-tried that on a different machine (outside the work network) and it 
-worked fine) ]
+diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
+index 215ba30b8534..a055dee6a46a 100644
+--- a/tools/perf/pmu-events/Build
++++ b/tools/perf/pmu-events/Build
+@@ -6,10 +6,13 @@ pmu-events-y	+= pmu-events.o
+  JDIR		=  pmu-events/arch/$(SRCARCH)
+  JSON		=  $(shell [ -d $(JDIR) ] &&				\
+  			find $(JDIR) -name '*.json' -o -name 'mapfile.csv')
++JDIR_TEST	=  pmu-events/arch/test
++JSON_TEST	=  $(shell [ -d $(JDIR_TEST) ] &&			\
++			find $(JDIR_TEST) -name '*.json')
+
+  #
+  # Locate/process JSON files in pmu-events/arch/
+  # directory and create tables in pmu-events.c.
+  #
+-$(OUTPUT)pmu-events/pmu-events.c: $(JSON) $(JEVENTS)
++$(OUTPUT)pmu-events/pmu-events.c: $(JSON) $(JSON_TEST) $(JEVENTS)
+  	$(Q)$(call echo-cmd,gen)$(JEVENTS) $(SRCARCH) pmu-events/arch 
+$(OUTPUT)pmu-events/pmu-events.c $(V)
+
+
+-----8<-----
 
 Thanks,
-Robin.
+john
