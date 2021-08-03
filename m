@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF043DF04A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1403DF048
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236558AbhHCO3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:29:35 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:60012 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236507AbhHCO3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:29:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=39kNPjDsQBCaa+m6oCrWSY0OrXd5M9GEZtjuh6gG6zs=; b=OJnMgpTiAhK9iiaqw4yuK+PzsD
-        KtFUmXot8A+cAJx7a4u7ARxcZsRrPMVbboCeLMJUjb+RKmQ3TnCPbe1BKYcScrfoQsW+m2Jv8umQ3
-        g+pLjFRs4QyPP7oDWviwIiQXSH0a7TLXbmQs/z3l9hIjWiyy8iuNSSOc400RYT3MhvMw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mAvPt-00Fyd2-4R; Tue, 03 Aug 2021 16:29:13 +0200
-Date:   Tue, 3 Aug 2021 16:29:13 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net v2 1/1] net: dsa: qca: ar9331: make proper initial
- port defaults
-Message-ID: <YQlSuX73dUli2rky@lunn.ch>
-References: <20210803085320.23605-1-o.rempel@pengutronix.de>
- <20210803090605.bud4ocr4siz3jl7r@skbuf>
- <20210803095419.y6hly7euht7gsktu@pengutronix.de>
+        id S236488AbhHCO3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:29:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51552 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234328AbhHCO32 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 10:29:28 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DB6D0200DC;
+        Tue,  3 Aug 2021 14:29:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628000956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gWrKPIOGbRT7mtmhi4hDLoxX8C67Y8PDNpZrScUS6w0=;
+        b=Tim2TPOv9wguBc5UYs/2q3aNxdtCzt3xuEhZQ6YJaKgjtnLcefyBt/RgF/gyMr3w1YuRsC
+        Nh6n9M/XEyY1H+pcDuDGEbY6XkcNuJLCKRCljqmtaFJl/Uz/R/p/MjjhzrZ7QJOZf5BbAV
+        vnRKrRUB7BylmN7fC25l9lZyCplRvsY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628000956;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gWrKPIOGbRT7mtmhi4hDLoxX8C67Y8PDNpZrScUS6w0=;
+        b=96Vlx9kN67HaimN52bjyERk0X9UiBMS14sRHqKusL1x1PsoD7dH0on9OhBozpHt+8E7vvO
+        uPSy2/IplePRpfCA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B3C2813B74;
+        Tue,  3 Aug 2021 14:29:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 1oBCK7xSCWElZwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Tue, 03 Aug 2021 14:29:16 +0000
+Subject: Re: [PATCH] slub: fix unreclaimable slab stat for bulk free
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210728155354.3440560-1-shakeelb@google.com>
+ <8c14efe2-69dc-6eab-3cd5-c042576770e7@huawei.com>
+ <CALvZod6usxk99KFhQVXGxBadsYpUyQ3QuwfSDa_sbqSLjBEgnA@mail.gmail.com>
+ <35a0b75a-f348-d21c-4ff4-fadba0c4db02@huawei.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <43cf4e71-4dd4-dc37-a70f-553fe5cba126@suse.cz>
+Date:   Tue, 3 Aug 2021 16:29:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803095419.y6hly7euht7gsktu@pengutronix.de>
+In-Reply-To: <35a0b75a-f348-d21c-4ff4-fadba0c4db02@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 11:54:19AM +0200, Oleksij Rempel wrote:
-> On Tue, Aug 03, 2021 at 12:06:05PM +0300, Vladimir Oltean wrote:
-> > On Tue, Aug 03, 2021 at 10:53:20AM +0200, Oleksij Rempel wrote:
-> > > Make sure that all external port are actually isolated from each other,
-> > > so no packets are leaked.
-> > > 
-> > > Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
-> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > ---
-> > > changes v2:
-> > > - do not enable address learning by default
-> > > 
-> > >  drivers/net/dsa/qca/ar9331.c | 98 +++++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 97 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-> > > index 6686192e1883..de7c06b6c85f 100644
-> > > --- a/drivers/net/dsa/qca/ar9331.c
-> > > +++ b/drivers/net/dsa/qca/ar9331.c
-> > > @@ -101,6 +101,46 @@
-> > >  	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
-> > >  	 AR9331_SW_PORT_STATUS_SPEED_M)
-> > >  
-> > > +#define AR9331_SW_REG_PORT_CTRL(_port)			(0x104 + (_port) * 0x100)
-> > > +#define AR9331_SW_PORT_CTRL_ING_MIRROR_EN		BIT(17)
-> > > +#define AR9331_SW_PORT_CTRL_LOCK_DROP_EN		BIT(5)
-> > 
-> > not used
+On 8/3/21 4:24 PM, Kefeng Wang wrote:
 > 
-> ack, will remove
+> On 2021/7/29 22:03, Shakeel Butt wrote:
+>> On Wed, Jul 28, 2021 at 11:52 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>>>
+>>> On 2021/7/28 23:53, Shakeel Butt wrote:
+>> I don't have a strong opinion on this. Please send a patch with
+>> reasoning if you want WARN_ON_ONCE here.
+> 
+> Ok, we met a BUG_ON(!PageCompound(page)) in kfree() twice in lts4.4, we are
+> still debugging it.
+> 
+> It's different to analyses due to no vmcore, and can't be reproduced.
+> 
+> WARN_ON() here could help us to notice the issue.
+> 
+> Also is there any experience or known fix/way to debug this kinds of issue?
+> memory corruption?
 
-Just expanding Vladimirs comment. Patches for net should be as minimal
-as possible, so they are obviously correct.
+This would typically be a use-after-free/double-free - a problem of the slab
+user, not slab itself.
 
-   Andrew
+> Any suggestion will be appreciated, thanks.
+
+debug_pagealloc could help to catch a use-after-free earlier
+
+> 
+>> .
+>>
+
