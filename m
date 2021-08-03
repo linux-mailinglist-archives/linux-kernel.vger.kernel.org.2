@@ -2,130 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41793DF170
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CEC3DF177
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236852AbhHCPaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:30:05 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:58306
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236820AbhHCP3E (ORCPT
+        id S236883AbhHCPaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236897AbhHCP30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:29:04 -0400
-Received: from localhost (36-229-239-123.dynamic-ip.hinet.net [36.229.239.123])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 940D43F0F8;
-        Tue,  3 Aug 2021 15:28:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628004520;
-        bh=LqOeJ8mEKmfOoRP9FP3XOeFTzokfryMcK7iPHjhmqGE=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=MjDRJEezUxjRkBPtMVv3lTpsQrx2fmWVsbBXc1zIoK9jRt6yLLwKAlc1qUUDlpSjE
-         qSV+TgiNXaMBE/R7YNuXFIl4j8BUPYuSHtnfe4H3Ic5k9x1KIxwnxpDTwdlRO8OimE
-         rV6WmIHlZmGVVBkbvmrmjeMscn0m3S+HWDCDt3P8WvBt9FU/fKaXz20aD3ioq79qrW
-         webKg9s9YvZV3XruH1WTGy+Rl55nYX8fQLUyjsfyi6RKasjF9LwiB1DSxAPjGVXJiC
-         Lep9ezES7XJsja5h8RJZdrJ30OIo/ng4At1yh0cKhKQQUaGcUS6OvTTlm2LfSzGN95
-         1Ge9pTHcFbGGw==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     hkallweit1@gmail.com, nic_swsd@realtek.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Tue, 3 Aug 2021 11:29:26 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2268C0617B9;
+        Tue,  3 Aug 2021 08:29:11 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id a20so24242061plm.0;
+        Tue, 03 Aug 2021 08:29:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=TlfK2VJ6iI6/r4Nhmzrn4xmy7cO/lNNzYPI68RNrCFQ=;
+        b=fTs/Iloe6nn8kpH7p7BX16GKQoe81CLly2hJENeR9Qj7CindAwu9tAhFbrRRZC/euG
+         tlf8FkOzthBGdNkPoTCoo0xxHvFBmdThHm35IOUzwelepzVFbWtp2DylyW1T9NOhUHgx
+         5iqBvvdKtq1Kz3d/6cfa9fM9ntigN6X/W92bEWf3bCdLdU3idj5tm9FNOmA2ZqkYBI9l
+         3yz4iUNpJqVPtEt6mvAxkf7gzM97Mg7VwLFa4TRLY+JPA4XhX90KDfMh7UoPbtuJrqYH
+         YZwcchAzRdB0mFb9b4zBTXmCEpkYvFM1qIc6kqhH18gxRPU88ZXYZshWCsOhBJbKoqcM
+         TVmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=TlfK2VJ6iI6/r4Nhmzrn4xmy7cO/lNNzYPI68RNrCFQ=;
+        b=sWeLGbh3hyMMVL4J2moHMb+m/LT/oOEq8HifmArxe/pOhYkDROFTrNYFzi15WcfnZj
+         UcC7UuTS+NkbUgAHnFooU+a1cw4yvCZCLWtjDO31MKenfjnapq8zt4Rmv1SLPk3O1hn+
+         EsizjUUX4duAntrxQXKMylVLpWIDBrP7OY8quBF9bM9DhisKNK06fgu+hnZpEy/NkVrp
+         EPUhJlCjL4bikEdwR+7jYxboz3I8FkYyTE2lAhq0IPrb/GMyfsP60Tikhlo+JQWU2PoO
+         RWdlF+m3WMJhtrptGw9Hx9VY9xlRUVywJqD4730f3ngo/G+z9mW1tNhE8pYYAlEfgWGG
+         1euw==
+X-Gm-Message-State: AOAM5327k/S62x+sUCN3L/8yB6jJdvBqRXkNELblVOCk53LwRtlG0uTV
+        9kLVhqYZuNQIyKbdCOZGsPU=
+X-Google-Smtp-Source: ABdhPJyWy13jq6LAmzzH+btwVFS22zDWog94fqgmyTGBy8+HveSaFu8pfbjvptmpLz0rQ/dMQhP5PA==
+X-Received: by 2002:a17:902:d383:b029:12c:bebe:725a with SMTP id e3-20020a170902d383b029012cbebe725amr7086064pld.24.1628004551377;
+        Tue, 03 Aug 2021 08:29:11 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id g1sm9205786pfo.0.2021.08.03.08.29.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 08:29:10 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        netdev@vger.kernel.org (open list:8169 10/100/1000 GIGABIT ETHERNET
-        DRIVER), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] r8169: Enable ASPM for selected NICs
-Date:   Tue,  3 Aug 2021 23:28:23 +0800
-Message-Id: <20210803152823.515849-2-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210803152823.515849-1-kai.heng.feng@canonical.com>
-References: <20210803152823.515849-1-kai.heng.feng@canonical.com>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Eric Woudstra <ericwouds@gmail.com>,
+        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: Re: [PATCH net-next 4/4] net: dsa: mt7530: always install FDB entries with IVL and FID 1
+Date:   Tue,  3 Aug 2021 23:29:01 +0800
+Message-Id: <20210803152901.2913035-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210803144552.fluxxfoey2tbqyyu@skbuf>
+References: <20210803124022.2912298-1-dqfext@gmail.com> <20210803124022.2912298-5-dqfext@gmail.com> <20210803144552.fluxxfoey2tbqyyu@skbuf>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The latest vendor driver enables ASPM for more recent r8168 NICs, do the
-same here to match the behavior.
+On Tue, Aug 03, 2021 at 05:45:52PM +0300, Vladimir Oltean wrote:
+> 
+> Maybe it would be good to resend with a set of #defines for the
+> standalone/bridged port FID values after all, what do you think?
 
-In addition, pci_disable_link_state() is only used for RTL8168D/8111D in
-vendor driver, also match that.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/net/ethernet/realtek/r8169_main.c | 34 +++++++++++++++++------
- 1 file changed, 26 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index e257d3cd885e..ec09c13514bd 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -623,7 +623,7 @@ struct rtl8169_private {
- 	} wk;
- 
- 	unsigned supports_gmii:1;
--	unsigned aspm_manageable:1;
-+	unsigned aspm_supported:1;
- 	unsigned aspm_enabled:1;
- 	struct timer_list aspm_timer;
- 	u32 aspm_packet_count;
-@@ -2666,8 +2666,11 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
- 
- static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
- {
-+	if (!tp->aspm_supported)
-+		return;
-+
- 	/* Don't enable ASPM in the chip if OS can't control ASPM */
--	if (enable && tp->aspm_manageable) {
-+	if (enable) {
- 		RTL_W8(tp, Config5, RTL_R8(tp, Config5) | ASPM_en);
- 		RTL_W8(tp, Config2, RTL_R8(tp, Config2) | ClkReqEn);
- 	} else {
-@@ -5279,6 +5282,21 @@ static void rtl_init_mac_address(struct rtl8169_private *tp)
- 	rtl_rar_set(tp, mac_addr);
- }
- 
-+static int rtl_hw_aspm_supported(struct rtl8169_private *tp)
-+{
-+	switch (tp->mac_version) {
-+	case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_36:
-+	case RTL_GIGA_MAC_VER_38:
-+	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_42:
-+	case RTL_GIGA_MAC_VER_44 ... RTL_GIGA_MAC_VER_46:
-+	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_63:
-+		return 1;
-+
-+	default:
-+		return 0;
-+	}
-+}
-+
- static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- {
- 	struct rtl8169_private *tp;
-@@ -5310,12 +5328,12 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (rc)
- 		return rc;
- 
--	/* Disable ASPM completely as that cause random device stop working
--	 * problems as well as full system hangs for some PCIe devices users.
--	 */
--	rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
--					  PCIE_LINK_STATE_L1);
--	tp->aspm_manageable = !rc;
-+	if (tp->mac_version == RTL_GIGA_MAC_VER_25)
-+		pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
-+				       PCIE_LINK_STATE_L1 |
-+				       PCIE_LINK_STATE_CLKPM);
-+
-+	tp->aspm_supported = rtl_hw_aspm_supported(tp);
- 
- 	/* enable device (incl. PCI PM wakeup and hotplug setup) */
- 	rc = pcim_enable_device(pdev);
--- 
-2.31.1
-
+Will do.
