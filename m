@@ -2,169 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBB63DF03B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF043DF04A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236417AbhHCO0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236224AbhHCO0O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:26:14 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269C7C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:26:03 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id u15so12605357wmj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 07:26:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Hyrev4qZ9gpvHA1KPCI74nwAO20DWHqFncjdod67xeY=;
-        b=PYhmKlzHVcWBCe22CBKVh/KxzmRCtPAQBvU+UWPmJGHL6O8vEmHQ2VVS7padRiJfDv
-         M0L+E63SYkCVgoWe8p7Jfd5Lvh/vsoT3Hi5J0VWPan3CZIXdxpFKAwATKpBrOAGhUKM7
-         tW3YaxbCKIcKPv7p7/Kx3CzOZ9ev/Q1EULAYiP/qxyhk5ODDZcKhNo+GVGA0pf/cki+l
-         62n2JMxkUOb0ktuQSYOHM48ZBedtzV4VW23uslZwi4WCIUhadBSmTJ4R3hh0SDk3xtii
-         KUbHi5FBa2auiSaifO4Ufh18Eq/uukG0ta2ryDOAfVyzBOiYCbrAiIsw/XZP2hS2AE1J
-         zzag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hyrev4qZ9gpvHA1KPCI74nwAO20DWHqFncjdod67xeY=;
-        b=RvyNNTzNuHikcGRbd5f5yPt/D6oekfL8Q1tpoThmQYD45tCHhc0KfjlExKirIm3+aX
-         u+0FdbvaImQBZGNNH/i/Amn25tpIUEPa0bros5duV/d+9iVPmhhIUaJNqMJMm1SzC7XP
-         gH7T2Y1cwyR16akBLj/XkZhsvFj5E3RDLLRYnCjWuH+Dzgd2wOKIGBBHX2C0b7edBlww
-         pEY3j4pWMmvqMP09g8lpuz4bJLk2HiiD7rrF8fcgzYoMpdrKObanVfhoP+9DgxBzcF6H
-         w+e2gV2hB5fWC7w3c/LiIJ/5iSxPu43zwv9AlnNdU4ZEC7FAosiOHBFACwcMliZNhdJ1
-         Vhmg==
-X-Gm-Message-State: AOAM531K+u4+ozGqpsW68t5E2+WWZjAJSTDFRtl2mXFJyMHfq6QiX9Ez
-        QMqe33995y/rO9jFsB+loes0hg==
-X-Google-Smtp-Source: ABdhPJwBsXTY7UQoTg+5apK7w/53TzVRzoUSN5h/Ae6fXdtB2xBNWKpTQUndSfLu+uJJGNrrmH5HIw==
-X-Received: by 2002:a7b:c0c1:: with SMTP id s1mr22633670wmh.130.1628000761410;
-        Tue, 03 Aug 2021 07:26:01 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id f7sm17949139wrr.54.2021.08.03.07.25.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 07:26:00 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 15:25:58 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Chengyang Fan <cy.fan@huawei.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org, kgdb-bugreport@lists.sourceforge.net
-Subject: Re: [PATCH printk v1 03/10] kgdb: delay roundup if holding printk
- cpulock
-Message-ID: <20210803142558.cz7apumpgijs5y4y@maple.lan>
-References: <20210803131301.5588-1-john.ogness@linutronix.de>
- <20210803131301.5588-4-john.ogness@linutronix.de>
+        id S236558AbhHCO3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:29:35 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60012 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236507AbhHCO3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 10:29:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=39kNPjDsQBCaa+m6oCrWSY0OrXd5M9GEZtjuh6gG6zs=; b=OJnMgpTiAhK9iiaqw4yuK+PzsD
+        KtFUmXot8A+cAJx7a4u7ARxcZsRrPMVbboCeLMJUjb+RKmQ3TnCPbe1BKYcScrfoQsW+m2Jv8umQ3
+        g+pLjFRs4QyPP7oDWviwIiQXSH0a7TLXbmQs/z3l9hIjWiyy8iuNSSOc400RYT3MhvMw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mAvPt-00Fyd2-4R; Tue, 03 Aug 2021 16:29:13 +0200
+Date:   Tue, 3 Aug 2021 16:29:13 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH net v2 1/1] net: dsa: qca: ar9331: make proper initial
+ port defaults
+Message-ID: <YQlSuX73dUli2rky@lunn.ch>
+References: <20210803085320.23605-1-o.rempel@pengutronix.de>
+ <20210803090605.bud4ocr4siz3jl7r@skbuf>
+ <20210803095419.y6hly7euht7gsktu@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803131301.5588-4-john.ogness@linutronix.de>
+In-Reply-To: <20210803095419.y6hly7euht7gsktu@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 03:18:54PM +0206, John Ogness wrote:
-> kgdb makes use of its own cpulock (@dbg_master_lock, @kgdb_active)
-> during cpu roundup. This will conflict with the printk cpulock.
-
-When the full vision is realized what will be the purpose of the printk
-cpulock?
-
-I'm asking largely because it's current role is actively unhelpful
-w.r.t. kdb. It is possible that cautious use of in_dbg_master() might
-be a better (and safer) solution. However it sounds like there is a
-larger role planned for the printk cpulock...
-
-
-> Therefore, a CPU must ensure that it is not holding the printk
-> cpulock when calling kgdb_cpu_enter(). If it is, it must allow its
-> printk context to complete first.
+On Tue, Aug 03, 2021 at 11:54:19AM +0200, Oleksij Rempel wrote:
+> On Tue, Aug 03, 2021 at 12:06:05PM +0300, Vladimir Oltean wrote:
+> > On Tue, Aug 03, 2021 at 10:53:20AM +0200, Oleksij Rempel wrote:
+> > > Make sure that all external port are actually isolated from each other,
+> > > so no packets are leaked.
+> > > 
+> > > Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
+> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > > ---
+> > > changes v2:
+> > > - do not enable address learning by default
+> > > 
+> > >  drivers/net/dsa/qca/ar9331.c | 98 +++++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 97 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
+> > > index 6686192e1883..de7c06b6c85f 100644
+> > > --- a/drivers/net/dsa/qca/ar9331.c
+> > > +++ b/drivers/net/dsa/qca/ar9331.c
+> > > @@ -101,6 +101,46 @@
+> > >  	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
+> > >  	 AR9331_SW_PORT_STATUS_SPEED_M)
+> > >  
+> > > +#define AR9331_SW_REG_PORT_CTRL(_port)			(0x104 + (_port) * 0x100)
+> > > +#define AR9331_SW_PORT_CTRL_ING_MIRROR_EN		BIT(17)
+> > > +#define AR9331_SW_PORT_CTRL_LOCK_DROP_EN		BIT(5)
+> > 
+> > not used
 > 
-> A new helper function kgdb_roundup_delay() is introduced for kgdb
-> to determine if it is holding the printk cpulock. If so, a flag is
-> set so that when the printk cpulock is released, kgdb will be
-> re-triggered for that CPU.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  arch/powerpc/include/asm/smp.h |  1 +
->  arch/powerpc/kernel/kgdb.c     | 10 +++++++-
->  arch/powerpc/kernel/smp.c      |  5 ++++
->  arch/x86/kernel/kgdb.c         |  9 ++++---
->  include/linux/kgdb.h           |  3 +++
->  include/linux/printk.h         |  8 ++++++
->  kernel/debug/debug_core.c      | 45 ++++++++++++++++++++--------------
->  kernel/printk/printk.c         | 12 +++++++++
->  8 files changed, 70 insertions(+), 23 deletions(-)
-> 
-> [...]
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 3d0c933937b4..1b546e117f10 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -44,6 +44,7 @@
->  #include <linux/irq_work.h>
->  #include <linux/ctype.h>
->  #include <linux/uio.h>
-> +#include <linux/kgdb.h>
->  #include <linux/sched/clock.h>
->  #include <linux/sched/debug.h>
->  #include <linux/sched/task_stack.h>
-> @@ -214,6 +215,7 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
->  #ifdef CONFIG_SMP
->  static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
->  static atomic_t printk_cpulock_nested = ATOMIC_INIT(0);
-> +static unsigned int kgdb_cpu = -1;
+> ack, will remove
 
-Is this the flag to provoke retriggering? It appears to be a write-only
-variable (at least in this patch). How is it consumed?
+Just expanding Vladimirs comment. Patches for net should be as minimal
+as possible, so they are obviously correct.
 
-
-Daniel.
-
-
->  /**
->   * __printk_wait_on_cpu_lock() - Busy wait until the printk cpu-reentrant
-> @@ -325,6 +327,16 @@ void __printk_cpu_unlock(void)
->  			   -1); /* LMM(__printk_cpu_unlock:B) */
->  }
->  EXPORT_SYMBOL(__printk_cpu_unlock);
-> +
-> +bool kgdb_roundup_delay(unsigned int cpu)
-> +{
-> +	if (cpu != atomic_read(&printk_cpulock_owner))
-> +		return false;
-> +
-> +	kgdb_cpu = cpu;
-> +	return true;
-> +}
-> +EXPORT_SYMBOL(kgdb_roundup_delay);
->  #endif /* CONFIG_SMP */
->  
->  /* Number of registered extended console drivers. */
-> -- 
-> 2.20.1
-> 
+   Andrew
