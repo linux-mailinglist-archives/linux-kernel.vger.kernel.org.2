@@ -2,149 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA473DF7BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 00:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65083DF7BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 00:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbhHCWUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 18:20:51 -0400
-Received: from mail-qt1-f176.google.com ([209.85.160.176]:43716 "EHLO
-        mail-qt1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhHCWUu (ORCPT
+        id S232576AbhHCWVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 18:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhHCWVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 18:20:50 -0400
-Received: by mail-qt1-f176.google.com with SMTP id k13so185371qth.10;
-        Tue, 03 Aug 2021 15:20:38 -0700 (PDT)
+        Tue, 3 Aug 2021 18:21:39 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D18C061757;
+        Tue,  3 Aug 2021 15:21:26 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so813156pjh.3;
+        Tue, 03 Aug 2021 15:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M+6JKKf52HVxLfHy469OKCbdB/YMhbbhQWcIdOqleVw=;
+        b=GqAK/nN5486TcHJjWMdZkgyfnxp3LUyPktr4rN/+JjFlwDTMYBEsBxeDDAzcw+sGBL
+         +jgkqhjB4PDxNMbn3w4qCSMrups0bFgD2OmG7P2OSdK3Hrqsjkl4g/3qf8cpP3R0PZG9
+         jwA734tjghQtz/1kJwOCDwymO26kX9d/90hEYvA9laYoLoTkYGYgwdzQKyAmMMswuyTN
+         MpnxXaxczvr4qeuvdwXIXoRVUtIZGHdH0GuKs2Dw4mjlf1gyxUcxHG60TJ4zHs47XIux
+         WOKzxCHNYC8zx8y5mOn8QrlxRyDvRxYG4dXS5on9gR2RRj6wTjsB2KBB7/8yhb/t4/xB
+         mCZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EwbBrIO14cWrGFlqXqpRuBpDy0CP5afPXaLjh9xefQM=;
-        b=ljKRAZzxux7Mtyl/x0cBE1OxeJCvOwN8wERhN7uGcOP95N74UQMCTJnatzd4N+YRNh
-         OHsDE6/AqZ4mB5HnacX/dYETw4WGOPholRg9cbCjcNqtQS/IilEVqJPtgQ2/QQYjFZyf
-         BZDjtmLMcBsNBCRcrmEs832oKvXJ9+5uTQ5zo9S5zn15lsk6bhfwovgBKhfxUFSbVUAa
-         CQeJKmdPVPiLqbNpQ8To7FKVq/0xidAEYCi2H7Cnb/hcO//QoUyKdYJtD6+g9J7fPd5V
-         ViFrqBPMPfho3AP6C3rruHDLIJ/pN83CWgoaRWSxAVt6UiLt3lm1NWvsvZ4Am+B4Qygc
-         9czg==
-X-Gm-Message-State: AOAM533pJiogg7iBKk25Mu/dHk3AB981lcNV7agsC5wjXiVlXd2JkSgc
-        yUgrTh6+n3f1EL7HfgFLYJ0CTHpdR9k=
-X-Google-Smtp-Source: ABdhPJyqqs1c3WywfIrdVuuCMMr3TwsNcYkuMe1E3+xiCyy5EEYTz++ED75z1cOa4MCYcYQ1rP6j6A==
-X-Received: by 2002:ac8:7305:: with SMTP id x5mr20507532qto.270.1628029237953;
-        Tue, 03 Aug 2021 15:20:37 -0700 (PDT)
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com. [209.85.222.175])
-        by smtp.gmail.com with ESMTPSA id f62sm172414qke.135.2021.08.03.15.20.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 15:20:37 -0700 (PDT)
-Received: by mail-qk1-f175.google.com with SMTP id e14so960106qkg.3;
-        Tue, 03 Aug 2021 15:20:37 -0700 (PDT)
-X-Received: by 2002:a37:9f0c:: with SMTP id i12mr3900923qke.273.1628029236841;
- Tue, 03 Aug 2021 15:20:36 -0700 (PDT)
+        bh=M+6JKKf52HVxLfHy469OKCbdB/YMhbbhQWcIdOqleVw=;
+        b=c8LzxlssrsZilCvvR05cnmcdnGr/HmTwjUvWrvdXhgkqmHKDtHZ0dYoUabXQ/SlcOS
+         n0Opem8xBi4Z4kM+eEkSB8Cy65kV9dreg82I81faCB+xmpyQtaWOudBSP712d26McQBv
+         z1DNyv3M2IvmB8KOlh+Hn5+R53q3vd6lFgVNqTM4UzFIPiVfk69M92mlz9qct5O2e+Qu
+         9BLkXVsQxut87JpI25akmKgjXKyPUQE4m07BbxhpNnalgs5EK4lP6Fwiyr4893kWZkuP
+         FE/zLrXgXnLqT8FGDeXRYYlbQFOfDVoC0nuffU0HsbCkwKzI7bnpJVRMDECGkySEw90K
+         pHhg==
+X-Gm-Message-State: AOAM530vFvUJwc+BR+mI91bO95CmsIJ/LKzACCU7rR4IBQeSXX1Rblef
+        Fk/ELS29m1shV35kyrGlNYNe5MPh5zIGdHX9tds=
+X-Google-Smtp-Source: ABdhPJxtN8MnoEd+1WkSekpJSRyCxssbz2Tsbrjk+zGX6hlCjM/L/F1Z6I127QgiIeh5iUnHDMLL+IQGOz78f1IznzQ=
+X-Received: by 2002:a17:90a:b10f:: with SMTP id z15mr15450178pjq.56.1628029286315;
+ Tue, 03 Aug 2021 15:21:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <1627927742-8675-1-git-send-email-raagjadav@gmail.com>
- <CADRPPNQ2M1N1pV2brfFRXOf1ASK2bhiZpQivNhNws_+RUfCT-g@mail.gmail.com> <20210803194454.GA9471@localhost>
-In-Reply-To: <20210803194454.GA9471@localhost>
-From:   Li Yang <leoyang.li@nxp.com>
-Date:   Tue, 3 Aug 2021 17:20:25 -0500
-X-Gmail-Original-Message-ID: <CADRPPNSbzpqs2VOV6DMUF5VP1Gx=W9-2W91Rt9ELEZxT+xsgvA@mail.gmail.com>
-Message-ID: <CADRPPNSbzpqs2VOV6DMUF5VP1Gx=W9-2W91Rt9ELEZxT+xsgvA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: ls1046a: fix eeprom entries
-To:     Raag Jadav <raagjadav@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>
+References: <20210803123921.2374485-1-kuba@kernel.org> <20210803221659.9847-1-yepeilin.cs@gmail.com>
+In-Reply-To: <20210803221659.9847-1-yepeilin.cs@gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Tue, 3 Aug 2021 15:21:15 -0700
+Message-ID: <CAM_iQpVUMzP8_gPsth_DncVUdC09ihizTC7jo2t1=MS9uSdfTw@mail.gmail.com>
+Subject: Re: [PATCH net-next] tc-testing: Add control-plane selftests for sch_mq
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lucas Bates <lucasb@mojatatu.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Peilin Ye <peilin.ye@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 2:45 PM Raag Jadav <raagjadav@gmail.com> wrote:
->
-> On Mon, Aug 02, 2021 at 05:44:29PM -0500, Li Yang wrote:
-> > On Mon, Aug 2, 2021 at 1:10 PM Raag Jadav <raagjadav@gmail.com> wrote:
-> > >
-> > > ls1046afrwy and ls1046ardb boards have CAT24C04[1] and CAT24C05[2]
-> > > eeproms respectively. Both are 4Kb (512 bytes) in size.
-> >
-> > These part names are from onsemi instead of atmel.  Are there same
-> > part names from atmel which are also compatible with the onsemi parts?
->
-> The part names are different, but they are functionally compatible.
->
-> >  If we want to use onsemi only part names, probably we will need two
-> > compatible strings with the first one from onsemi and the second from
-> > atmel.  Although the binding doesn't support onsemi prefix yet.
->
-> Should I add it to the at24 binding document with atmel as a fallback?
+On Tue, Aug 3, 2021 at 3:17 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+> +           "setup": [
+> +            "echo \"1 1 4\" > /sys/bus/netdevsim/new_device"
+> +           ],
+> +           "cmdUnderTest": "$TC qdisc add dev $ETH root handle 1: mq",
+> +           "expExitCode": "0",
+> +           "verifyCmd": "$TC qdisc show dev $ETH",
+> +           "matchPattern": "qdisc pfifo_fast 0: parent 1:[1-4] bands 3 priomap 1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1",
+> +           "matchCount": "4",
+> +           "teardown": [
+> +                   "echo \"1\" > /sys/bus/netdevsim/del_device"
+> +           ]
+> +       },
 
-I think that will be the best.
+Like I mentioned to Peilin, I am _not_ sure whether it is better to create
+netdevsim device in such a way. Maybe we need to create it before
+these tests and pass it via cmdline?? Lucas?
 
->
-> >
-> > > Remove multi-address entries, as we have auto-rollover support
-> > > in at24 driver.
-> >
-> > The device tree should describe hardware instead of matching how
-> > driver deal with it.  Is the board really using a single chip or
-> > multiple chips here?
->
-> Yes, both the boards have a single chip each.
-
-Then I am fine with the change, but please make it clear in the description.
-
->
-> >
-> > >
-> > > [1] https://www.onsemi.com/pdf/datasheet/cat24c01-d.pdf
-> > > [2] https://www.onsemi.com/pdf/datasheet/cat24c03-d.pdf
-> > >
-> > > Signed-off-by: Raag Jadav <raagjadav@gmail.com>
-> > > ---
-> > >  arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts | 8 +-------
-> > >  arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts  | 7 +------
-> > >  2 files changed, 2 insertions(+), 13 deletions(-)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts b/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
-> > > index db3d303..83afe21 100644
-> > > --- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
-> > > +++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts
-> > > @@ -83,15 +83,9 @@
-> > >                         };
-> > >
-> > >                         eeprom@52 {
-> > > -                               compatible = "atmel,24c512";
-> > > +                               compatible = "atmel,24c04";
-> > >                                 reg = <0x52>;
-> > >                         };
-> > > -
-> > > -                       eeprom@53 {
-> > > -                               compatible = "atmel,24c512";
-> > > -                               reg = <0x53>;
-> > > -                       };
-> > > -
-> > >                 };
-> > >         };
-> > >  };
-> > > diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
-> > > index 60acdf0..d220f98 100644
-> > > --- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
-> > > +++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
-> > > @@ -59,14 +59,9 @@
-> > >         };
-> > >
-> > >         eeprom@52 {
-> > > -               compatible = "atmel,24c512";
-> > > +               compatible = "atmel,24c04";
-> > >                 reg = <0x52>;
-> > >         };
-> > > -
-> > > -       eeprom@53 {
-> > > -               compatible = "atmel,24c512";
-> > > -               reg = <0x53>;
-> > > -       };
-> > >  };
-> > >
-> > >  &i2c3 {
-> > > --
-> > > 2.7.4
-> > >
+Thanks.
