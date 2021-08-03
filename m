@@ -2,191 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DF33DE6FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69AE43DE700
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbhHCHIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        id S234165AbhHCHIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234108AbhHCHIG (ORCPT
+        with ESMTP id S234148AbhHCHIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:08:06 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A5AC061796
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:07:55 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so2632733pjs.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:07:55 -0700 (PDT)
+        Tue, 3 Aug 2021 03:08:09 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB55CC061796
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:07:58 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id ec13so27205424edb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:07:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WN6UWlQHlJrqX7fWKP3w+a4gz17W1v3husZzZ4lYdZs=;
-        b=FG0BxQgTNclREe9wLVv4qS4z2N2sM3E8tcxJy7sG5CSbcRPTBPLmmzNBD++56n1i0Y
-         iAlp6ISBOSnkdYxdVe/Zu8i/Zkxikk3+SUwgoKONvFraMu/GvvzYdYTtcdIyhpEuRhHy
-         dvyre83Eg6GNEFlItaCRt9/Z7jox9BnAyajaE=
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=U0jio5+xFSbV7SP/KZIWsJ9guYPyBzSqjq6PsiTDQC0=;
+        b=eLJEyLouuLRMx/jBModUrxmH+ISNHhOKpcMdKIQd9Ph7RNTyBWhDNRE0X28L3xLfVu
+         WfaYl9PvuHZSKJcDNIb/q26uEMuQlfKF2om4KnMbvTBL1Quh5DfEbmqJodg6e4Wjpvr0
+         g/4QEGzN56tIuMb2eKiaNVlCjTEO+/orr6ef+JbaIO6M5cR7kMUhyPXfcZTAsM1hFmFp
+         aHChXwWuMeKlXZSNh561ANrr/itmau9zFqxOTyZPCOYiICCfY4F14evcgIDyHY/eE7e1
+         3dgp3A3Dup+0bad0UzREiHfahwfYf10aNyV4bqi6jnQbEgaHUbAQYj4rSQkYBqMZcj4U
+         lHfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WN6UWlQHlJrqX7fWKP3w+a4gz17W1v3husZzZ4lYdZs=;
-        b=SSNdjMWtASZK5fjBZrRfXCdrhL05Y0xGbwi0mplVPCTJVCy/CSjqAugfG7GzMLalsi
-         Q7wJCstmrCCudxlleJLscoAPX2q+AeoQEUkrhn+sQ+YrEPRbVPRwj4D20MKLwYCHzFXw
-         jNU2ibG94mKyL7pLIhBy1h3EMKIouf/uCG3ajkn1K1g1cvRoCtqS0WeoH170ZouHWl/k
-         wtQuLHLJS4wjVzF/YRYEWMpBNZ/GEu9VKXBSPBtVuYQ97G1EWk7x01TgU3MUedGrb7b/
-         PSy8TJEloQfEQNd/g5F+IYB6RTb13SQ20+gLvGtpaqun/v4hriVxPkhRgnBJJek6X2kK
-         yp7A==
-X-Gm-Message-State: AOAM531AmYu1xYmXJ4zJvH5aMP6SAekQLrgI/kuM4TPEN8XCtbgGw1K2
-        u1EisnLpuA+Epgah/wGsthlvUA==
-X-Google-Smtp-Source: ABdhPJzwY/O8zGrmytB0XZTu4NI3puVLQ4qTvp0bifc+rcCa4MZIaf+qz4BUpXKkmLFaMBheKpJfSg==
-X-Received: by 2002:a65:63cf:: with SMTP id n15mr189772pgv.392.1627974475115;
-        Tue, 03 Aug 2021 00:07:55 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c14sm15852676pgv.86.2021.08.03.00.07.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 00:07:54 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 00:07:53 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-hardening@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joe Perches <joe@perches.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] drivers/input: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <202108022354.49612943B7@keescook>
-References: <20210801144316.12841-1-len.baker@gmx.com>
- <20210801145959.GI22278@shell.armlinux.org.uk>
- <20210801155732.GA16547@titan>
- <202108010934.FA668DEB28@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202108010934.FA668DEB28@keescook>
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=U0jio5+xFSbV7SP/KZIWsJ9guYPyBzSqjq6PsiTDQC0=;
+        b=E2WnHvC/fiv2a0DRdkgQc4YZgBq/lG2JaiGbGaQu2XJc+61WMQBGD649SC4OnmxNEM
+         0b+REozSgKAA6+EWmnlR3XpUk5W/CQ6/NcnvgzNnTu5LI55ugR8gKT4tnuPoEf0eqCZK
+         l3hNN/5jxlRlJGNNGo5A0ifgksaOpP8Mr7Pztqd6P9pYW0iWVxiD4Hxxr7D1IFo7ucLh
+         PKlrCM9Bag9ejbHPlwpn1+qvErqdjlMoPI9DDYzhggpovATryJule0kZS4M5al31+ze4
+         /PAtLzFV/pT0Hlb0apJHHZKTK12C44xFbl6OSnlXNdY9RcCxd7Gov2oAbSs1AJ5bF6iI
+         lImA==
+X-Gm-Message-State: AOAM531MJTEVjqXZbA98GjELNIQRByBxGyLED6CfkbMGXHZ1kt1yt0/Z
+        RqfiCpz62k+CkDprJFngRr1Bi1M89bLnKcHd
+X-Google-Smtp-Source: ABdhPJz4M10SjISdU0pltgjPaL4f+YaI0qG47iOi1pjOPhxq/nbVQat6ri3yJpfU+tnlMkOFDIIUIg==
+X-Received: by 2002:a05:6402:1b11:: with SMTP id by17mr24060442edb.110.1627974477469;
+        Tue, 03 Aug 2021 00:07:57 -0700 (PDT)
+Received: from [192.168.61.233] ([37.160.213.115])
+        by smtp.gmail.com with ESMTPSA id i11sm7537591eds.72.2021.08.03.00.07.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Aug 2021 00:07:56 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH 1/3] block, bfq: do not idle if only one cgroup is
+ activated
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <c0b97b5b-c961-6d9f-7033-6da194c6b220@huawei.com>
+Date:   Tue, 3 Aug 2021 09:07:54 +0200
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8D4774E6-0DEB-4DC4-B28B-13F5A933E12F@linaro.org>
+References: <20210714094529.758808-1-yukuai3@huawei.com>
+ <20210714094529.758808-2-yukuai3@huawei.com>
+ <7DF40BD4-8F57-4C2E-88A9-CBC3DA2A891E@linaro.org>
+ <c0b97b5b-c961-6d9f-7033-6da194c6b220@huawei.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 01, 2021 at 09:44:33AM -0700, Kees Cook wrote:
-> On Sun, Aug 01, 2021 at 05:57:32PM +0200, Len Baker wrote:
-> > Hi,
-> > 
-> > On Sun, Aug 01, 2021 at 04:00:00PM +0100, Russell King (Oracle) wrote:
-> > > On Sun, Aug 01, 2021 at 04:43:16PM +0200, Len Baker wrote:
-> > > > strcpy() performs no bounds checking on the destination buffer. This
-> > > > could result in linear overflows beyond the end of the buffer, leading
-> > > > to all kinds of misbehaviors. The safe replacement is strscpy().
-> > > >
-> > > > Signed-off-by: Len Baker <len.baker@gmx.com>
-> > > > ---
-> > > > This is a task of the KSPP [1]
-> > > >
-> > > > [1] https://github.com/KSPP/linux/issues/88
-> > > >
-> > > >  drivers/input/keyboard/locomokbd.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/input/keyboard/locomokbd.c b/drivers/input/keyboard/locomokbd.c
-> > > > index dae053596572..dbb3dc48df12 100644
-> > > > --- a/drivers/input/keyboard/locomokbd.c
-> > > > +++ b/drivers/input/keyboard/locomokbd.c
-> > > > @@ -254,7 +254,7 @@ static int locomokbd_probe(struct locomo_dev *dev)
-> > > >  	locomokbd->suspend_jiffies = jiffies;
-> > > >
-> > > >  	locomokbd->input = input_dev;
-> > > > -	strcpy(locomokbd->phys, "locomokbd/input0");
-> > > > +	strscpy(locomokbd->phys, "locomokbd/input0", sizeof(locomokbd->phys));
-> > >
-> > > So if the string doesn't fit, it's fine to silently truncate it?
-> > 
-> > I think it is better than overflow :)
-> > 
-> > > Rather than converting every single strcpy() in the kernel to
-> > > strscpy(), maybe there should be some consideration given to how the
-> > > issue of a strcpy() that overflows the buffer should be handled.
-> > > E.g. in the case of a known string such as the above, if it's longer
-> > > than the destination, should we find a way to make the compiler issue
-> > > a warning at compile time?
-> > 
-> > Good point. I am a kernel newbie and have no experience. So this
-> > question should be answered by some kernel hacker :) But I agree
-> > with your proposals.
-> > 
-> > Kees and folks: Any comments?
-> > 
-> > Note: Kees is asked the same question in [2]
-> > 
-> > [2] https://lore.kernel.org/lkml/20210731135957.GB1979@titan/
-> 
-> Hi!
-> 
-> Sorry for the delay at looking into this. It didn't use to be a problem
-> (there would always have been a compile-time warning generated for
-> known-too-small cases), but that appears to have regressed when,
-> ironically, strscpy() coverage was added. I've detailed it in the bug
-> report:
-> https://github.com/KSPP/linux/issues/88
-> 
-> So, bottom line: we need to fix the missing compile-time warnings for
-> strcpy() and strscpy() under CONFIG_FORTIFY_SOURCE=y.
 
-I've got these fixed now, and will send them out likely tomorrow, but I
-did, in fact, find 4 cases of truncation, all in v4l, and all appear to
-have been truncated since introduction:
 
-struct v4l2_capability {
-...
-        __u8    card[32];
-(stores 31 characters)
+> Il giorno 31 lug 2021, alle ore 09:10, yukuai (C) <yukuai3@huawei.com> =
+ha scritto:
+>=20
+> On 2021/07/24 15:12, Paolo Valente wrote:
+>>> Il giorno 14 lug 2021, alle ore 11:45, Yu Kuai <yukuai3@huawei.com> =
+ha scritto:
+>>>=20
+>>> If only one group is activated, specifically
+>>> 'bfqd->num_groups_with_pending_reqs =3D=3D 1', there is no need to =
+guarantee
+>>> the same share of the throughput of queues in the same group.
+>>>=20
+>>> Thus change the condition from '> 0' to '> 1' in
+>>> bfq_asymmetric_scenario().
+>> I see your point, and I agree with your goal.  Yet, your change seems
+>> not to suffer from the following problem.
+>> In addition to the groups that are created explicitly, there is the
+>> implicit root group.  So, when bfqd->num_groups_with_pending_reqs =3D=3D=
 
-drivers/media/radio/radio-wl1273.c:1282
-wl1273_fm_vidioc_querycap()
-            strscpy(capability->card, "Texas Instruments Wl1273 FM Radio",
-                    sizeof(capability->card));
-33 characters, getting truncated to:
-Texas Instruments Wl1273 FM Rad
-87d1a50ce45168cbaec10397e876286a398052c1
+>> 1, there may be both active processes in the root group and active
+>> processes in the only group created explicitly.  In this case, idling
+>> is needed to preserve service guarantees.
+>> Probably your idea should be improved by making sure that there is
+>> pending I/O only from either the root group or the explicit group.
+>> Thanks,
+>> Paolo
+>=20
+>=20
+> Hi, Paolo
+>=20
 
-drivers/media/radio/si470x/radio-si470x-usb.c:514
-si470x_vidioc_querycap()
-#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
-            strscpy(capability->card, DRIVER_CARD,
-sizeof(capability->card));
-37 characters, getting truncated to:
-Silicon Labs Si470x FM Radio Re
-78656acdcf4852547a29e929a1b7a98d5ac65f17
+Hi
 
-drivers/media/radio/si470x/radio-si470x-i2c.c:225
-si470x_vidioc_querycap()
-#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
-            strscpy(capability->card, DRIVER_CARD,
-sizeof(capability->card));
-37 characters, getting truncated to:
-Silicon Labs Si470x FM Radio Re
-cc35bbddfe10f77d949f0190764b252cd2b70c3c
+> I'm trying to add support to judge if root group have pending rqs, the
+> implementation involve setting and clearing the busy state.
+>=20
 
-drivers/media/usb/tm6000/tm6000-video.c:855
-vidioc_querycap()
-            strscpy(cap->card, "Trident TVMaster TM5600/6000/6010",
-                    sizeof(cap->card));
-33 characters, getting truncated to:
-Trident TVMaster TM5600/6000/60
-e28f49b0b2a8e678af62745ffdc4e4f36d7283a6
+I wouldn't use the busy state, as it does not take in-flight requests
+into account.  For I/O control, the latter are as important as the
+ones still queued in the scheduler.  For this reason, I take in-flight
+requests into account when counting
+bfqd->num_groups_with_pending_reqs.
 
-How should these be handled? I assume v4l2_capability::card can't be
-resized since it's part of IOCTL response, so likely all the string just
-need to be shortened in some way? Seems like dropping the manufacturer
-name makes the most sense, since manufacturer can be kind of derived
-from the driver names.
+See, e.g., this
 
-Thoughts?
+	if (!bfqq->dispatched && !bfq_bfqq_busy(bfqq)) {
+		...
+		bfq_weights_tree_remove(bfqd, bfqq);
+	}
 
--Kees
+in bfq_completed_request.
 
--- 
-Kees Cook
+I would replicate the same logic in deciding whether the root group
+has pending I/O.
+
+
+> I'm thinking about setting busy in __bfq_activate_entity() if
+> bfq_entity_to_bfqq() return valid bfqq, however I'm not sure where to
+> clear the busy state.
+>=20
+> On the other hand, do you think the way I record rq size info in patch =
+2
+> is OK?
+
+First, let's see what you reply to my suggestion above.
+
+Thanks,
+Paolo
+
+>  If so, I can do this the similar way: say that root group doesn't
+> have any pending requests if bfq haven't dispatch rq from root group =
+for
+> a period of time.
+>=20
+> Thanks
+> Kuai
+
