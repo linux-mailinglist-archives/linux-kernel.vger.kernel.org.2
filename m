@@ -2,123 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05B03DF371
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0A33DF378
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237756AbhHCRB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237691AbhHCRBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:01:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D58C60F0F;
-        Tue,  3 Aug 2021 17:01:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628010067;
-        bh=xv6HDs8f0cdED9oqlZmIGfjdRrTqv1FrSIw7uMIr0g0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=i9nbXs1plRNmd9Odlhglnfe32A11VJ2JkyljXHuSCLliCVz9Vi14AeaJfWRM4fQB4
-         SVZulln4H9D+zlY1z/9KmEHt/BEZf4H7GGw7O0ZhZHnqQdOAqnv0rnMSkkoNyAoDhb
-         UH5WFTtcj+xdhkasiTcvMY/TEHvVc7DYNBJ57EvxwOlcmT5mDgKoWpvRv+G+oRd9T2
-         9q2hcBKQnq0DmLiOv+cbFX+rFhLyaxlYIFqArk8Fr1pc84qh8u8ClndXB+UGdQp2bI
-         LcURHqPudxt3UeurSjRAwizq6wvNBCZx3B2iqt1IUCi2+pjOQLh7b9mXru5SMSbWGG
-         q43TrVh87VW1A==
-Received: by mail-wm1-f54.google.com with SMTP id l11-20020a7bcf0b0000b0290253545c2997so2535599wmg.4;
-        Tue, 03 Aug 2021 10:01:06 -0700 (PDT)
-X-Gm-Message-State: AOAM531JTDpTZJB738l98frdNHDbiGkxyovtqnV2ybLlLlRTRFfGZOv/
-        ZZBKe0mOvODUXvCbJ1KxYFicJX9Qu+rqfjFP89w=
-X-Google-Smtp-Source: ABdhPJw97X/o6CV81AMjwzTqugYn505J+JoXq32bAbJq75QjyNy6S/smhZy5uTzyJLJCSdKFxevBxXiA194UwnGyOto=
-X-Received: by 2002:a7b:ce10:: with SMTP id m16mr5114379wmc.75.1628010065645;
- Tue, 03 Aug 2021 10:01:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210802145937.1155571-1-arnd@kernel.org> <20210802164907.GA9832@hoboy.vegasvil.org>
- <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com> <20210802230921.GA13623@hoboy.vegasvil.org>
- <CAK8P3a2XjgbEkYs6R7Q3RCZMV7v90gu_v82RVfFVs-VtUzw+_w@mail.gmail.com>
- <20210803155556.GD32663@hoboy.vegasvil.org> <20210803161434.GE32663@hoboy.vegasvil.org>
-In-Reply-To: <20210803161434.GE32663@hoboy.vegasvil.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 3 Aug 2021 19:00:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2Wt9gnO4Ts_4Jw1+qpBj8HQc50jU2szjmR8MmZL9wrgQ@mail.gmail.com>
-Message-ID: <CAK8P3a2Wt9gnO4Ts_4Jw1+qpBj8HQc50jU2szjmR8MmZL9wrgQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK dependencies
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Nicolas Pitre <nico@fluxnic.net>,
-        "Keller, Jacob E" <jacob.e.keller@intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234468AbhHCRDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:03:00 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39956 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234313AbhHCRCy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 13:02:54 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 173GeB6r050725;
+        Tue, 3 Aug 2021 13:01:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=MDBxIUawbm49JyOfQS1cf24GJsUXapOiLraOXIEq5J8=;
+ b=bpMsecEPcjRYfjsg28xplQ4jl24je6dsDt6kvmVh8gAdPfMUDcEjiZtPgc9evxufZylZ
+ 2WLsjUvF700/c94KGUNoSsxmINmWbVRrFc8I2N6PHa5krWtMyNSi/V/4EQ5e7oCmh+4d
+ Lqc4zkdBH6HT01k3RWdDm+9O1xkHzrysWrZZGZEhtdnqbVRjncdUc7Ijb0beLW2z+aL9
+ 0NN/uOXHnB23JcV7MEMrcWPvzH0p0KCxF4bp1uiV3ToSEWs2qs+d5ZtC/Aux0P1NAyM8
+ SuERmMVVYRWPgkrd1YsArem/ZBj8Kv/ovBzfYUB5bouWoCTdtCZOEP3ZJvPkgznxCX0P DA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a76auqc0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 13:01:37 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 173GeGDA050936;
+        Tue, 3 Aug 2021 13:01:36 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a76auqbyj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 13:01:36 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 173GvZR6004197;
+        Tue, 3 Aug 2021 17:01:33 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 3a4x58psfp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 17:01:33 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 173H1VZV55640356
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 3 Aug 2021 17:01:31 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2BA415204E;
+        Tue,  3 Aug 2021 17:01:31 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.88.204])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A48B952054;
+        Tue,  3 Aug 2021 17:01:25 +0000 (GMT)
+Message-ID: <820cd72cd77c4716bff2bf344c64d7bcb59fc4d3.camel@linux.ibm.com>
+Subject: Re: [PATCH RFC v2 00/12] Enroll kernel keys thru MOK
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org, dhowells@redhat.com,
+        dwmw2@infradead.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, jarkko@kernel.org, jmorris@namei.org,
+        serge@hallyn.com
+Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
+        torvalds@linux-foundation.org, scott.branden@broadcom.com,
+        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
+        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        glin@suse.com, konrad.wilk@oracle.com
+Date:   Tue, 03 Aug 2021 13:01:24 -0400
+In-Reply-To: <20210726171319.3133879-1-eric.snowberg@oracle.com>
+References: <20210726171319.3133879-1-eric.snowberg@oracle.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: jDB4OEcti4Hsw9NPjhd4mwZjq4CRGf-A
+X-Proofpoint-ORIG-GUID: bK1hKs2bUBz3pY1FYqq74SJ5nMcq0C3Y
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-03_05:2021-08-03,2021-08-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1011 lowpriorityscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 spamscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108030108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 6:14 PM Richard Cochran <richardcochran@gmail.com> wrote:
-> On Tue, Aug 03, 2021 at 08:55:56AM -0700, Richard Cochran wrote:
-> > On Tue, Aug 03, 2021 at 08:59:02AM +0200, Arnd Bergmann wrote:
-> > > It may well be a lost cause, but a build fix is not the time to nail down
-> > > that decision. The fix I proposed (with the added MAY_USE_PTP_1588_CLOCK
-> > > symbol) is only two extra lines and leaves everything else working for the
-> > > moment.
-> >
-> > Well, then we'll have TWO ugly and incomprehensible Kconfig hacks,
-> > imply and MAY_USE.
+Hi Eric,
 
-I'm all in favor of removing imply elsewhere as well, but that needs much
-broader consensus than removing it from PTP_1588_CLOCK.
+On Mon, 2021-07-26 at 13:13 -0400, Eric Snowberg wrote:
 
-It has already crept into cryto/ and sound/soc/codecs/, and at least in
-the latter case it does seem to even make sense, so they are less
-likely to remove it.
+> When the kernel boots, if MokListTrustedRT is set and
+> EFI_VARIABLE_NON_VOLATILE is not set, the MokListRT is loaded into the
+> mok keyring instead of the platform keyring. Mimi has suggested that
+> only CA keys or keys that can be vouched for by other kernel keys be
+> loaded into this keyring. All other certs will load into the platform
+> keyring instead.
 
-> > Can't we fix this once and for all?
-> >
-> > Seriously, "imply" has been nothing but a major PITA since day one,
-> > and all to save 22 kb.  I can't think of another subsystem which
-> > tolerates so much pain for so little gain.
->
-> Here is what I want to have, in accordance with the KISS principle:
->
-> config PTP_1588_CLOCK
->         bool "PTP clock support"
->         select NET
->         select POSIX_TIMERS
->         select PPS
->         select NET_PTP_CLASSIFY
->
-> # driver variant 1:
->
-> config ACME_MAC
->         select PTP_1588_CLOCK
->
-> # driver variant 2:
->
-> config ACME_MAC
->
-> config ACME_MAC_PTP
->         depends on ACME_MAC
->         select PTP_1588_CLOCK
->
-> Hm?
+I suggested only loading the CA keys stored in the MOK db onto the MOK
+keyring.  Like the builtin trusted keyring, the MOK keyring would also
+be linked to the secondary keyring.   Assuming the secondary keyring is
+defined, all other properly signed MOK db keys  - signed by keys on the
+builtin, secondary or MOK keyring - would be loaded onto the secondary
+keyring.
 
-Selecting a subsystem (NET, POSIX_TIMES, PPS, NET_PTP_CLASSIFY)
-from a device driver is the nightmare that 'imply' was meant to solve (but did
-not): this causes dependency loops, and unintended behavior where you
-end up accidentally enabling a lot more drivers than you actually need
-(when other symbols depend on the selected ones, and default to y).
+As previously discussed, this might require reading the MOK db twice -
+once to load the CA keys on the MOK keyring, a second time to load the
+remaining properly signed keys onto the secondary keyring.
 
-If you turn all those 'select' lines into 'depends on', this will work, but it's
-not actually much different from what I'm suggesting. Maybe we can do it
-in two steps: first fix the build failure by replacing all the 'imply'
-statements
-with the correct dependencies, and then you send a patch on top that
-turns PPS and PTP_1588_CLOCK into bool options.
 
-     Arnd
+thanks,
+
+Mimi
+
