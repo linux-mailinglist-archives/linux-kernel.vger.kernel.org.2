@@ -2,226 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F9A3DF290
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BF13DF292
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233212AbhHCQbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
+        id S233440AbhHCQcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232662AbhHCQbu (ORCPT
+        with ESMTP id S233013AbhHCQcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:31:50 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1DAC061757;
-        Tue,  3 Aug 2021 09:31:39 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DB7713F0;
-        Tue,  3 Aug 2021 18:31:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1628008296;
-        bh=szAjbLMYnVTaIxc1Bcc/bna35bdig8dzvvk/QSrpxu4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bmTR+xAxX80VNOz3kTD4f947AyBR0VjbTJEIGiBi9aRwv2NJNvsqaCpFBJC5Mso8k
-         aOHmUv3JbTvgMcrh2K9qFHaC5KWRtxvaYzKkIZUBJuPtRouILJ3A0U8ybWNKmFjs4J
-         o3mjXORvcQnYY5b2fPI6iiV1raqOOb3qfP5Gs2Es=
-Date:   Tue, 3 Aug 2021 19:31:24 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Philip Spencer <pspencer@fields.utoronto.ca>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uvcvideo: Support devices that require SET_INTERFACE(0)
- before/after streaming
-Message-ID: <YQlvXDCsM3DI6QIj@pendragon.ideasonboard.com>
-References: <alpine.LFD.2.21.2108021331010.12783@fields.fields.utoronto.ca>
- <alpine.LFD.2.21.2108031201460.28227@fields.fields.utoronto.ca>
+        Tue, 3 Aug 2021 12:32:07 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FF1C061757;
+        Tue,  3 Aug 2021 09:31:55 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id g13so40672475lfj.12;
+        Tue, 03 Aug 2021 09:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=kj/2FjFDDZ5YXBr22LV5Rs8kW87iERFRfqAT+F3hUHA=;
+        b=cPqT/YXsTQINY+ghYzjivbtquFWBbuefQPVNciBcAyHvt3xjfO5WaSBIcsOuTP0Q6I
+         JmXTrfKMfM+ItQMHWKYfS1XP6wImedAazr7EJkQzs6xe2IhvDK4PDHgH9/uMJ26dPy1S
+         t7MIueozAjNfVFfIqGK7X2H6rC8CE0G4hkQFCSp82CTR6I1dF/YgfYgTzI6hsgJWdKSh
+         neSfE/ilEuP9Wy5KgvWeZ5+Pr9FNDqlDESZlsX7a/G/VIqKeKcl/56q+IL3L7FwyPK3m
+         Ic+dOU/3iAYsBK4wwmRrbgRCThSdFRCJx9NbXUhTr1OxRw7oGWVqtKp/xMECYamgt0FG
+         9Q4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kj/2FjFDDZ5YXBr22LV5Rs8kW87iERFRfqAT+F3hUHA=;
+        b=eVOCQHBtF6MVUwsFJA60MOrKjo03TtIEVgcl+qe7mwrJZgt8tqp2n92HI6GTfhBVe4
+         rOUWSlsqptkG9toSMO0tBd5MfRYr37UOFXqGXOSMsJ6y4C5SNUsYfRA5+lmDslE6350S
+         O3CEa7gIAc0/CF5xyciTsCH1X+u3Bbe6+F+/YcjRQw095QdAsjFf2J5Q7lU+afykxiDz
+         hlmbWq1Ri4zzLuIDusDhpoTr9MzksC6tTJs5AEMdLb1ETa3RD0puhIwo6u48Kvew8yaV
+         tHIEb2PumLziv7cFyW8PuQaNaxRo4oOYoALfYMCU44EpGNA6Alc1qJuA/i886JPh6YCO
+         2C2w==
+X-Gm-Message-State: AOAM5337eyE8AKg4ZHQ5QUaKq0s8SRM45QrOmhFrYpYVchwMtZfPj0VM
+        duoTFP5OIYzvsLZT9BrJTp4=
+X-Google-Smtp-Source: ABdhPJz5KERCHLDdn9/uUYk3lyfUjNM3oIUZlz6AduG/1Um2+YsHUWHI84g2poHrhB/gsycCoRbqBA==
+X-Received: by 2002:a05:6512:13a9:: with SMTP id p41mr16772878lfa.403.1628008312065;
+        Tue, 03 Aug 2021 09:31:52 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.235])
+        by smtp.gmail.com with ESMTPSA id p21sm1291901lfa.264.2021.08.03.09.31.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 09:31:51 -0700 (PDT)
+Subject: Re: [syzbot] net-next boot error: WARNING: refcount bug in
+ fib_create_info
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     syzbot <syzbot+c5ac86461673ef58847c@syzkaller.appspotmail.com>,
+        davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+References: <0000000000005e090405c8a9e1c3@google.com>
+ <02372175-c3a1-3f8e-28fe-66d812f4c612@gmail.com>
+Message-ID: <e6eab0c9-7b2e-179b-b9c0-459dd9a75ed1@gmail.com>
+Date:   Tue, 3 Aug 2021 19:31:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.21.2108031201460.28227@fields.fields.utoronto.ca>
+In-Reply-To: <02372175-c3a1-3f8e-28fe-66d812f4c612@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philip,
-
-On Tue, Aug 03, 2021 at 12:04:29PM -0400, Philip Spencer wrote:
-> On Mon, 2 Aug 2021, Philip Spencer wrote:
+On 8/3/21 7:12 PM, Pavel Skripkin wrote:
+> On 8/3/21 7:07 PM, syzbot wrote:
+>> Hello,
+>> 
+>> syzbot found the following issue on:
+>> 
+>> HEAD commit:    1187c8c4642d net: phy: mscc: make some arrays static const..
+>> git tree:       net-next
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=140e7b3e300000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=f9bb42efdc6f1d7
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=c5ac86461673ef58847c
+>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+>> 
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+c5ac86461673ef58847c@syzkaller.appspotmail.com
+>> 
+>> FS-Cache: Netfs 'afs' registered for caching
+>> Btrfs loaded, crc32c=crc32c-intel, assert=on, zoned=yes
+>> Key type big_key registered
+>> Key type encrypted registered
+>> AppArmor: AppArmor sha1 policy hashing enabled
+>> ima: No TPM chip found, activating TPM-bypass!
+>> Loading compiled-in module X.509 certificates
+>> Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
+>> ima: Allocated hash algorithm: sha256
+>> ima: No architecture policies found
+>> evm: Initialising EVM extended attributes:
+>> evm: security.selinux (disabled)
+>> evm: security.SMACK64 (disabled)
+>> evm: security.SMACK64EXEC (disabled)
+>> evm: security.SMACK64TRANSMUTE (disabled)
+>> evm: security.SMACK64MMAP (disabled)
+>> evm: security.apparmor
+>> evm: security.ima
+>> evm: security.capability
+>> evm: HMAC attrs: 0x1
+>> PM:   Magic number: 1:990:690
+>> printk: console [netcon0] enabled
+>> netconsole: network logging started
+>> gtp: GTP module loaded (pdp ctx size 104 bytes)
+>> rdma_rxe: loaded
+>> cfg80211: Loading compiled-in X.509 certificates for regulatory database
+>> cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+>> ALSA device list:
+>>    #0: Dummy 1
+>>    #1: Loopback 1
+>>    #2: Virtual MIDI Card 1
+>> md: Waiting for all devices to be available before autodetect
+>> md: If you don't use raid, use raid=noautodetect
+>> md: Autodetecting RAID arrays.
+>> md: autorun ...
+>> md: ... autorun DONE.
+>> EXT4-fs (sda1): mounted filesystem without journal. Opts: (null). Quota mode: none.
+>> VFS: Mounted root (ext4 filesystem) readonly on device 8:1.
+>> devtmpfs: mounted
+>> Freeing unused kernel image (initmem) memory: 4476K
+>> Write protecting the kernel read-only data: 169984k
+>> Freeing unused kernel image (text/rodata gap) memory: 2012K
+>> Freeing unused kernel image (rodata/data gap) memory: 1516K
+>> Run /sbin/init as init process
+>> systemd[1]: systemd 232 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD +IDN)
+>> systemd[1]: Detected virtualization kvm.
+>> systemd[1]: Detected architecture x86-64.
+>> systemd[1]: Set hostname to <syzkaller>.
+>> ------------[ cut here ]------------
+>> refcount_t: addition on 0; use-after-free.
+>> WARNING: CPU: 1 PID: 1 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+>> Modules linked in:
+>> CPU: 1 PID: 1 Comm: systemd Not tainted 5.14.0-rc3-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+>> Code: 09 31 ff 89 de e8 d7 fa 9e fd 84 db 0f 85 36 ff ff ff e8 8a f4 9e fd 48 c7 c7 c0 81 e3 89 c6 05 70 51 81 09 01 e8 48 f8 13 05 <0f> 0b e9 17 ff ff ff e8 6b f4 9e fd 0f b6 1d 55 51 81 09 31 ff 89
+>> RSP: 0018:ffffc90000c66ab0 EFLAGS: 00010286
+>> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+>> RDX: ffff88813fe48000 RSI: ffffffff815d7b25 RDI: fffff5200018cd48
+>> RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000001
+>> R10: ffffffff815d195e R11: 0000000000000000 R12: 0000000000000004
+>> R13: 0000000000000001 R14: 0000000000000000 R15: ffff888027722e00
+>> FS:  00007f8c1c5d0500(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 000055ed0ced4368 CR3: 0000000026bac000 CR4: 00000000001506e0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> Call Trace:
+>>   __refcount_add include/linux/refcount.h:199 [inline]
+>>   __refcount_inc include/linux/refcount.h:250 [inline]
+>>   refcount_inc include/linux/refcount.h:267 [inline]
+>>   fib_create_info+0x36af/0x4910 net/ipv4/fib_semantics.c:1554
 > 
-> > (This is my first kernel-related mailing list posting; my apologies if I have
-> > targeted wrong maintainers and/or lists. This is posted on the Ubuntu
-> > launchpad bug tracker at
-> > https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1938669 and it was
-> > suggested there that I post directly to the maintainers/mailing lists).
-
-Welcome to the kernel community :-)
-
-> My apologies; I thought I had set my mailer not to mangle the patches but
-> I hadn't. Resending properly formatted patch (I hope):
-
-Could you please resend the whole patch ? Otherwise I can't apply it
-easily with git-am.
-
-> --- a/drivers/media/usb/uvc/uvc_video.c	2021-08-01 10:19:19.343564026 -0400
-> +++ b/drivers/media/usb/uvc/uvc_video.c	2021-08-01 10:38:54.234311440 -0400
-> @@ -2108,6 +2081,15 @@ int uvc_video_start_streaming(struct uvc
->  {
->  	int ret;
+> Missed refcount_set(), I think
 > 
-> +	/* On a bulk-based device where there is only one alternate
-> +	 * setting possibility, set it explicitly to 0. This should be
-> +	 * the default value, but some devices (e.g. Epiphan Systems
-> +	 * framegrabbers) freeze and won't restart streaming until they
-> +	 * receive a SET_INTERFACE(0) request.
-> +	 */
-> +	if (stream->intf->num_altsetting == 1)
-> +  		usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-
-I'm concerned about this, as it may break other bulk devices that don't
-expect a SET_INTERFACE(0) request here.
-
-It would be useful to know if Windows issues this request when starting
-streaming for bulk devices.
-
-> +
->  	ret = uvc_video_clock_init(stream);
->  	if (ret < 0)
->  		return ret;
-> @@ -2135,9 +2117,17 @@ void uvc_video_stop_streaming(struct uvc
->  {
->  	uvc_video_stop_transfer(stream, 1);
+> diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
+> index f29feb7772da..bb9949f6bb70 100644
+> --- a/net/ipv4/fib_semantics.c
+> +++ b/net/ipv4/fib_semantics.c
+> @@ -1428,6 +1428,7 @@ struct fib_info *fib_create_info(struct fib_config
+> *cfg,
+>    	}
 > 
-> -	if (stream->intf->num_altsetting > 1) {
-> -		usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-> -	} else {
-> +	/* On isochronous devices, switch back to interface 0 to move
-> +	 * the device out of the "streaming" state.
-> +	 *
-> +	 * On bulk-based devices, this interface will already be selected
-> +	 * but we re-select it explicitly because some devices seem to need
-> +	 * a SET_INTERFACE(0) request to prepare them for receiving other
-> +	 * control requests and/or to tell them to stop streaming.
-
-Does the device refuse any control request while streaming, or can you
-still set controls ? Does the driver print any error message in the
-kernel log when you stop and restart streaming without this patch ?
-
-> +	 */
-> +	usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-> +
-> +	if (stream->intf->num_altsetting == 1) {
->  		/* UVC doesn't specify how to inform a bulk-based device
->  		 * when the video stream is stopped. Windows sends a
->  		 * CLEAR_FEATURE(HALT) request to the video streaming
+>    	fib_info_cnt++;
+> +	refcount_set(&fi->fib_treeref, 1);
+>    	fi->fib_net = net;
+>    	fi->fib_protocol = cfg->fc_protocol;
+>    	fi->fib_scope = cfg->fc_scope;
 > 
-> > Video capture devices made by Epiphan Systems (vendor id 0x2b77) work once,
-> > but as soon as the video device is closed (or even if it is kept open but the
-> > application issues a VIDIOC_STREAMOFF ioctl) it won't work again - subsequent
-> > calls to VIDOC_DQBUF simply hang - until the device is unbound from and
-> > rebound to the uvcvideo module. (modprobe -r uvcvideo; modprobe uvcvideo also
-> > works).
-> >
-> > For example:
-> >
-> >   ffplay /dev/video0 -- works fine and shows the captured stream.
-> >
-> >   ffplay /dev/video0 -- when run a second time: hangs and does not capture
-> > anything
-> >
-> >   modprobe -r uvcvideo ; modprobe uvcvideo; ffplay /dev/video0 -- works fine
-> > again.
-> >
-> > Experimenting with the device and the uvcvideo module source code reveals that
-> > problem is the device is expecting SET_INTERFACE(0) to be sent to return it to
-> > a state where it can accept control requests and start streaming again.
-> >
-> > The code in uvc_video.c has several comments stating that some bulk-transfer
-> > devices require a SET_INTERFACE(0) call to be made before any control
-> > commands, even though 0 is already the default and only valid interface value.
-> > And, the function uvc_video_init makes such a call (which is why the device
-> > starts working again after rebinding to the uvcvideo module). But no such call
-> > is made when streaming is stopped then restarted.
-> >
-> > Furthermore, SET_INTERFACE(0) is the mechanism by which isochronous devices
-> > are told to stop streaming, and the comments in uvc_video_stop_streaming state
-> > that the UVC specification is unclear on how a bulk-based device should be
-> > told to stop streaming, so it is reasonable to imagine this particular
-> > bulk-based device might be expecting the same SET_INTERFACE(0) call that an
-> > isochronous device would get as means of being told to stop streaming.
+> 
+> 
+> 
+> 
 
-It would be quite confusing to use SET_INTERFACE(0) to instruct the
-device to start streaming *and* to stop streaming though. I think this
-has just not been properly thought of when the UVC specification was
-designed, it's undefined, and different devices likely implement
-different mechanisms :-(
+Oops, it's already fixed in -next, so
 
-> > The attached patch fixes the problem for these Epiphan devices by adding a
+#syz fix: ipv4: Fix refcount warning for new fib_info
 
-s/This attached patch/This commit/ as it won't be attached anymore once
-we merge this.
 
-> > SET_INTERFACE(0) call in two places. Either one by itself is sufficient to
-> > resolve the symptoms but I think it is probably safest to include both.
+BTW: there is one more bug with refcounts:
 
-I think we should be cautious. UVC devices tend to be buggy in lots of
-different ways, you can't assume that something that is valid according
-to the USB and UVC specifications will not break some devices.
+link_it:
+	ofi = fib_find_info(fi);
+	if (ofi) {
+		fi->fib_dead = 1;
+		free_fib_info(fi);
+		refcount_inc(&ofi->fib_treeref);
 
-> > The first hunk adds a SET_INTERFACE(0) call in uvc_video_start_streaming, but
-> > only in the bulk-based case where 0 is the only possible interface value (it
-> > won't mess with an isochronous device that might be set to a different
-> > interface).
-> >
-> > The second hunk modifies the behaviour of uvc_video_stop_streaming to call
-> > SET_INTERFACE(0) unconditionally instead of only calling it for isochronous
-> > devices. Since interface 0 should already be set on non-isochronous devices,
-> > it should be safe to set it again, and this way devices that are expecting it
-> > as a signal to stop streaming will get it.
-> >
-> > The patch is against 5.4.137 but also applies cleanly to 5.14-rc3.
-> >
-> > --- a/drivers/media/usb/uvc/uvc_video.c	2021-08-01 10:19:19.343564026 -0400
-> > +++ b/drivers/media/usb/uvc/uvc_video.c	2021-08-01 10:38:54.234311440 -0400
-> > @@ -2108,6 +2081,15 @@ int uvc_video_start_streaming(struct uvc
-> >  {
-> >  	int ret;
-> >
-> > +	/* On a bulk-based device where there is only one alternate
-> > +	 * setting possibility, set it explicitly to 0. This should be
-> > +	 * the default value, but some devices (e.g. Epiphan Systems
-> > +	 * framegrabbers) freeze and won't restart streaming until they
-> > +	 * receive a SET_INTERFACE(0) request.
-> > +	 */
-> > +	if (stream->intf->num_altsetting == 1) +
-> > usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-> > +
-> >  	ret = uvc_video_clock_init(stream);
-> >  	if (ret < 0)
-> >  		return ret;
-> > @@ -2135,9 +2117,17 @@ void uvc_video_stop_streaming(struct uvc
-> >  {
-> >  	uvc_video_stop_transfer(stream, 1);
-> >
-> > -	if (stream->intf->num_altsetting > 1) {
-> > -		usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-> > -	} else {
-> > +	/* On isochronous devices, switch back to interface 0 to move
-> > +	 * the device out of the "streaming" state.
-> > +	 *
-> > +	 * On bulk-based devices, this interface will already be selected
-> > +	 * but we re-select it explicitly because some devices seem to need
-> > +	 * a SET_INTERFACE(0) request to prepare them for receiving other
-> > +	 * control requests and/or to tell them to stop streaming.
-> > +	 */
-> > +	usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-> > +
-> > +	if (stream->intf->num_altsetting == 1) {
-> >  		/* UVC doesn't specify how to inform a bulk-based device
-> >  		 * when the video stream is stopped. Windows sends a
-> >  		 * CLEAR_FEATURE(HALT) request to the video streaming
-> >
+		^^^^^^^^^^^^^^^^^^^^^^^
+		/ *fib_treeref is 0 here */
 
--- 
-Regards,
+		return ofi;
+	}
 
-Laurent Pinchart
+	refcount_set(&fi->fib_treeref, 1);
+
+
+
+diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
+index f29feb7772da..38d1fc4d0be1 100644
+--- a/net/ipv4/fib_semantics.c
++++ b/net/ipv4/fib_semantics.c
+@@ -1543,6 +1543,8 @@ struct fib_info *fib_create_info(struct fib_config 
+*cfg,
+  	}
+
+  link_it:
++	refcount_set(&fi->fib_treeref, 1);
++
+  	ofi = fib_find_info(fi);
+  	if (ofi) {
+  		fi->fib_dead = 1;
+@@ -1551,7 +1553,6 @@ struct fib_info *fib_create_info(struct fib_config 
+*cfg,
+  		return ofi;
+  	}
+
+-	refcount_set(&fi->fib_treeref, 1);
+  	refcount_set(&fi->fib_clntref, 1);
+  	spin_lock_bh(&fib_info_lock);
+  	hlist_add_head(&fi->fib_hash,
+
+
+
+Thoughts?
+
+
+With regards,
+Pavel Skripkin
