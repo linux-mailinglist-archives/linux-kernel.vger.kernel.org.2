@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36F53DEB74
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F0D3DEB79
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbhHCLA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46252 "EHLO mail.kernel.org"
+        id S235661AbhHCLAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:00:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235549AbhHCLAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:00:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D97FA6112F;
+        id S235562AbhHCLAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 07:00:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1587461104;
         Tue,  3 Aug 2021 11:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1627988406;
-        bh=wTFUtRXlHb3817XlTGJsb1KVM3G4zKnll9BSqp8LD7Y=;
+        bh=kRXJ3Y+HRgp5wRxsEeqTmhF2aDWFtY3XyCRq+UUqmDo=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Kinl6f6zpJQEvyEfdhNivk9myMmV3jLGgmGObR22QkEgHTnfmav16ZXsrJlp43675
-         pL7luYga8QmrWi+ZmewdkujOdrntO8ylhRNevoJMrDNVG6/KK48T27PrrEYQ6/qDcu
-         2+pRjk2mopAA84u22WWzwEu8Hy2VCcLtrxYy/RipU517akcDPR3wXHy+Jp2zDcclkb
-         QtsJX3tEI3wWOV0bWZAMPvsot5Fyw8byETbiRDsFE/lL2t3G2eNBg9+TNtQZgEGbS7
-         t9ltBXEm5Jh5VKu/frVIBwArMH9NKUAV7oQ//9dZyuegJf9H34Ca6A+RWlPXa88M2A
-         RmJqIxkP4oZ8Q==
+        b=t68Ns+NtxgDC33T8XneJMstwmTG3cpawWgkA3XYAnvrtYok83Zch0E4iI/zvnAWxl
+         SVGgoZgXkczVJATWVI0M7JuwyRICJR2Ap34eAzoajtyYthvo1GzlX68BUF31Mp5OOd
+         jf1K7M7TrhlBPSq9x/VqHXJFgX18weSs4ktq+pZk3dkilSGTML7Pbb+kkdUsBxjQwF
+         2hhCmwBGiZl8VH0KpTlx/O3ZGk4oWG0shGrTjKXKh8R3MrtMRHIPC7fTvd1brm2v6u
+         6Z344xKeR/Pko9dMrpMHsrBpFxFubrFLWyTxHrbJgDNeyvvlVyBYCFpaa5+G1D/nTX
+         w6nCt7uSE8uLg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D138660075;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0FC6B60A49;
         Tue,  3 Aug 2021 11:00:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] qed: Remove duplicated include of kernel.h
+Subject: Re: [PATCH] net: sparx5: fix bitmask on 32-bit targets
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162798840685.8237.13025716118269286394.git-patchwork-notify@kernel.org>
+Message-Id: <162798840606.8237.17724316386643673744.git-patchwork-notify@kernel.org>
 Date:   Tue, 03 Aug 2021 11:00:06 +0000
-References: <1627870718-54491-1-git-send-email-zhouchuangao@vivo.com>
-In-Reply-To: <1627870718-54491-1-git-send-email-zhouchuangao@vivo.com>
-To:     zhouchuangao <zhouchuangao@vivo.com>
-Cc:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+References: <20210802152201.1158412-1-arnd@kernel.org>
+In-Reply-To: <20210802152201.1158412-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, lars.povlsen@microchip.com,
+        Steen.Hegelund@microchip.com, UNGLinuxDriver@microchip.com,
+        bjarni.jonasson@microchip.com, arnd@arndb.de,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -45,21 +47,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On Sun,  1 Aug 2021 19:18:38 -0700 you wrote:
-> Duplicate include header file <linux/kernel.h>
-> line 4: #include <linux/kernel.h>
-> line 7: #include <linux/kernel.h>
+On Mon,  2 Aug 2021 17:21:53 +0200 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
-> ---
->  drivers/net/ethernet/qlogic/qed/qed_nvmetcp_fw_funcs.c | 1 -
->  1 file changed, 1 deletion(-)
+> I saw the build failure that was fixed in commit 6387f65e2acb ("net:
+> sparx5: fix compiletime_assert for GCC 4.9") and noticed another
+> issue that was introduced in the same patch: Using GENMASK() to
+> create a 64-bit mask does not work on 32-bit architectures.
+> 
+> [...]
 
 Here is the summary with links:
-  - qed: Remove duplicated include of kernel.h
-    https://git.kernel.org/netdev/net-next/c/2414d628042b
+  - net: sparx5: fix bitmask on 32-bit targets
+    https://git.kernel.org/netdev/net/c/f41e57af926a
 
 You are awesome, thank you!
 --
