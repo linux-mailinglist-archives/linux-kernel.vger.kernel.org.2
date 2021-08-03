@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FB93DF3FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E95873DF3FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238293AbhHCRej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:34:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29266 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238204AbhHCRei (ORCPT
+        id S238294AbhHCRgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238204AbhHCRgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:34:38 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 173HY6kp182576;
-        Tue, 3 Aug 2021 13:34:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=xCMK8/8VXneVIihnqtZrubWggVdCb0/Uyk8DBlIiQB0=;
- b=Z4EhkCkFYE11ODtIBa8o2F/bFgxRDZcIwpAwdg5qXagt9PLjt617zl/rUphgWRyK+uaT
- ODCxer0962vJAKx6LnyjYASUL9sZ80xb/PYh+RHiHRcuNr9dIr3swWf6piAq9amCmGJW
- yRdn64jB8dfvzn8tjb3TKh4vWYk8tQk9fWilPRQ0fugaPrK/VaRaK7clznYc+mciIxoL
- 2dihYelwTvO/tzl0MsnUKhTM4nG3CdvY4tYyNJb6CswOAOAodKaWFbWuXKJvuFT+q9RQ
- i40NdfFmORwNU35X2mUjjFxqY+h2xDnn6CMeHir0r5O/rtYr7JqZyASXtAKy8b7x3Z+W 2g== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a76r5f34t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 13:34:11 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 173HWNST013340;
-        Tue, 3 Aug 2021 17:34:08 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 3a4x58psjk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 17:34:08 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 173HY51S50987408
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 3 Aug 2021 17:34:05 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 284B6A405C;
-        Tue,  3 Aug 2021 17:34:05 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DD344A4066;
-        Tue,  3 Aug 2021 17:34:04 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.42.112])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  3 Aug 2021 17:34:04 +0000 (GMT)
-Subject: Re: [PATCH v5] pseries/drmem: update LMBs after LPM
-To:     Nathan Lynch <nathanl@linux.ibm.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>
-References: <20210517090606.56930-1-ldufour@linux.ibm.com>
- <87sfzqigd9.fsf@linux.ibm.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <dfce4ad9-e779-e25a-5d8e-89a8a9dfa532@linux.ibm.com>
-Date:   Tue, 3 Aug 2021 19:34:04 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Tue, 3 Aug 2021 13:36:46 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1447C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 10:36:33 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so5772667pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 10:36:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=daBeiKU7OZ5S4Kn+dyrY3BRcedrp0R1B1krtRgfb8No=;
+        b=isr9HZVl2CDuoqbmV8NRdMoSm3OnIdAuufLeBk4y1wrrLgpw35/qtgbNyP4GR5Qhrc
+         jyQGxH9aWkYrmnoAfJjSUT1uhv/3fUTIF8nVuHTFjmDICJxcy21qN08De7sag0J+Ws6+
+         poilQisUYMXHpFlFQ9JTAHQXVbGGq9L71y6Bw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=daBeiKU7OZ5S4Kn+dyrY3BRcedrp0R1B1krtRgfb8No=;
+        b=RgVwk4J/jV5vrj0ReasZ4LSAW/3AxuTFkM456tGgY3K/Y6KJEAHEGmqEypW6pd4vMl
+         O1DAXSuOHBboltKd/BIa5hwQJzVEO4FIm/EFHIIoB6iMxM8brisYyvhzveDM4gYD3W8K
+         MyatWwtf+UQpXBespDOgOPgDgscY0jnaYJ5pMbmjAZ9/dKsR/T9wsXo9Fukaid2dNk+G
+         WMnWyFioKgS+cq3rQwbQ6eS5CCuK+qB/FHg0/SYJjP340a5wA+N3q7SRk3sMOZiPLiMK
+         NtnXlbY6KTb2CaieSo4np9AqrzwmkehsFIKOP2AICXDcSsyopPT3iIlbTLwzya9CIYqJ
+         f9cg==
+X-Gm-Message-State: AOAM532HiRfswrselFpoTVlDHldjnoFmXTo0HeaM1nkHkp7Wxl3a1GFg
+        zVCYDeG2HDbCMsh2kejA0kdr+C5VTKnu+g==
+X-Google-Smtp-Source: ABdhPJztNBFRSlMOleu0EmP7zAV1EWpprCBBVsv0JR7oy4pssZuqRUfzsBi48tBk3zW2ToWz2LwxQA==
+X-Received: by 2002:a63:2c01:: with SMTP id s1mr503565pgs.357.1628012193252;
+        Tue, 03 Aug 2021 10:36:33 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:8875:fb28:686e:1c31])
+        by smtp.gmail.com with ESMTPSA id g202sm2026748pfb.125.2021.08.03.10.36.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 10:36:32 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH v2 1/2] platform/chrome: cros_ec_proto: Update feature check
+Date:   Tue,  3 Aug 2021 10:36:19 -0700
+Message-Id: <20210803173619.91539-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
 MIME-Version: 1.0
-In-Reply-To: <87sfzqigd9.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ytNAPOyUUjceBx_GHWx4lC51zqu37OcO
-X-Proofpoint-ORIG-GUID: ytNAPOyUUjceBx_GHWx4lC51zqu37OcO
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-03_05:2021-08-03,2021-08-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
- clxscore=1011 priorityscore=1501 adultscore=0 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108030114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 03/08/2021 à 19:32, Nathan Lynch a écrit :
-> Laurent Dufour <ldufour@linux.ibm.com> writes:
->> V5:
->>   - Reword the commit's description to address Nathan's comments.
-> 
-> Thanks. Still don't like the global variable usage but:
-> 
-> Reviewed-by: Nathan Lynch <nathanl@linux.ibm.com>
-> 
+EC feature flags now require more than 32 bits to be represented. In
+order to make cros_ec_check_features() usable for more recent features,
+update it to account for the extra 32 bits of features.
 
-Thanks Nathan,
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+---
+Changes in v2:
+- No changes.
 
-I don't like either the global variable usage but I can't see any smarter way to 
-achieve that.
+ drivers/platform/chrome/cros_ec_proto.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Laurent.
+diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
+index a7404d69b2d3..772edad80593 100644
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -813,6 +813,7 @@ EXPORT_SYMBOL(cros_ec_get_host_event);
+ int cros_ec_check_features(struct cros_ec_dev *ec, int feature)
+ {
+ 	struct cros_ec_command *msg;
++	u32 mask;
+ 	int ret;
+ 
+ 	if (ec->features[0] == -1U && ec->features[1] == -1U) {
+@@ -839,7 +840,12 @@ int cros_ec_check_features(struct cros_ec_dev *ec, int feature)
+ 		kfree(msg);
+ 	}
+ 
+-	return ec->features[feature / 32] & EC_FEATURE_MASK_0(feature);
++	if (feature >= 32)
++		mask = EC_FEATURE_MASK_1(feature);
++	else
++		mask = EC_FEATURE_MASK_0(feature);
++
++	return ec->features[feature / 32] & mask;
+ }
+ EXPORT_SYMBOL_GPL(cros_ec_check_features);
+ 
+-- 
+2.32.0.554.ge1b32706d8-goog
+
