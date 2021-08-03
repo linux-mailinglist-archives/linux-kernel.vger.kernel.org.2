@@ -2,96 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A1B3DF31D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3E33DF319
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235666AbhHCQrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:47:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59634 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234108AbhHCQrn (ORCPT
+        id S234545AbhHCQqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:46:45 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:54035 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234108AbhHCQqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:47:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628009252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mt0Bnpl0TYyUpTbTuIQ/z9RCwe83HDDTaIIA9TLwjL0=;
-        b=HYz1gycY5sj/pixMsoK/tnQamsSS9ctavka/HzW5uWtbVWo/PpzQg929xw9pJ3KqtV36Ez
-        NV7R1uuWj1F+Xr9aium4cyL1LJ/RIhzdXzr4Vv8GBlY1+1XCC3Itk28T1G/LulqC+PCaq6
-        zGFqmYPt+8r2jVw5lwVos/7ZRxXYM0g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-SjcjcMWcMCeeyC0WxReiFw-1; Tue, 03 Aug 2021 12:47:30 -0400
-X-MC-Unique: SjcjcMWcMCeeyC0WxReiFw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B841C1853035;
-        Tue,  3 Aug 2021 16:47:27 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 21A4F17C58;
-        Tue,  3 Aug 2021 16:47:19 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id D2391417529F; Tue,  3 Aug 2021 13:44:02 -0300 (-03)
-Date:   Tue, 3 Aug 2021 13:44:02 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     nsaenzju@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: [patch 2/4] task isolation: sync vmstats on return to userspace
-Message-ID: <20210803164402.GA14442@fuller.cnet>
-References: <20210730201827.269106165@fuller.cnet>
- <20210730202010.270885685@fuller.cnet>
- <62a66a5744b28dfea6ff2aec4e02ca0978914819.camel@redhat.com>
+        Tue, 3 Aug 2021 12:46:39 -0400
+Received: by mail-il1-f198.google.com with SMTP id l14-20020a056e0205ceb02901f2f7ba704aso10530639ils.20
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 09:46:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HdFltufgXmkJpv/0DbuoYZjNiSCd4PDX5QM+gk3T1Pg=;
+        b=nuRyZQWGqCPYIDVLWPBGien75vZKseve+ig4ej6nZ8HpKF4jBBYty0MmzVZM70fWwo
+         kKntY29LlfSt57FhU/JObIF7snXN9djRtSOKdhoBtEo26evEs1Whz7zC/YCrtwkGcVl7
+         hbOk5RRb82ikYCxBrV/Pl8egZ2/K5vmddkY8IB90ExbshKeNFgyk2mSAJmDpysO9Y+Qr
+         a3NlipK1VrvfkYHOE6ShfqxgTZXa0hHY6c4AfsVwdPuxefeZUVcD61KsKuOwlWWSKy1F
+         Kmh9YhLNC1ZPPwPhWRB1kkqKN6klBlDIjaxHsE3+wpRZIP1hjldlzWMt4zQa/EAdYyFd
+         3yoA==
+X-Gm-Message-State: AOAM532SDCK1WcGHYP96FB7jZO+exOyYwiJQ2jUR/AsEnHJd2QB8pACW
+        AcwSGwMUu54a4xEVuAH+i7b240mnnhuyTVEBijyixg4vE5JZ
+X-Google-Smtp-Source: ABdhPJy0Yn/W/PknSJHlPsyJD75+VVPUKmolIcz0MAL+B2jEKsJJqkJuyJwpzQfxZQfntmQjXkd8OuybflHo5lz+RKrFfz88w9rA
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62a66a5744b28dfea6ff2aec4e02ca0978914819.camel@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Received: by 2002:a05:6602:2814:: with SMTP id d20mr151586ioe.65.1628009188261;
+ Tue, 03 Aug 2021 09:46:28 -0700 (PDT)
+Date:   Tue, 03 Aug 2021 09:46:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005b873305c8aa6da2@google.com>
+Subject: [syzbot] linux-next boot error: WARNING in find_vma
+From:   syzbot <syzbot+dcb8a1e30879e0d60e8c@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 05:13:03PM +0200, nsaenzju@redhat.com wrote:
-> On Fri, 2021-07-30 at 17:18 -0300, Marcelo Tosatti wrote:
-> > The logic to disable vmstat worker thread, when entering
-> > nohz full, does not cover all scenarios. For example, it is possible
-> > for the following to happen:
-> > 
-> > 1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
-> > 2) app runs mlock, which increases counters for mlock'ed pages.
-> > 3) start -RT loop
-> > 
-> > Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
-> > the mlock, vmstat shepherd can restart vmstat worker thread on
-> > the CPU in question.
-> > 
-> > To fix this, use the task isolation prctl interface to quiesce 
-> > deferred actions when returning to userspace.
-> 
-> Even though this is mostly targeted at nohz_full users, I believe I haven't
-> seen anything in this series that forces the feature to be run on nohz_full
-> CPUs (this is a good thing IMO). 
+Hello,
 
-I don't think there is such a dependency either.
+syzbot found the following issue on:
 
-> So, I'd suggest to reword the patch
-> description so it doesn't imply nohz_full is necessary to use this.
+HEAD commit:    c3f7b3be172b Add linux-next specific files for 20210803
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10b71b42300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ae62f6b8af876a89
+dashboard link: https://syzkaller.appspot.com/bug?extid=dcb8a1e30879e0d60e8c
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-Its describing a fact from nohz_full where it can't guarantee entering
-userspace with vmstat turned off (which is a reply to Christopher's
-earlier comment that "this should just work with nohz_full and
-logic to shutdown the vmstat delayed work timer").
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dcb8a1e30879e0d60e8c@syzkaller.appspotmail.com
 
-Will add a comment to make it explicit that the series does not depend
-on nohz_full.
+kAFS: Red Hat AFS client v0.1 registering.
+FS-Cache: Netfs 'afs' registered for caching
+Btrfs loaded, crc32c=crc32c-intel, assert=on, zoned=yes, fsverity=yes
+Key type big_key registered
+Key type encrypted registered
+AppArmor: AppArmor sha1 policy hashing enabled
+ima: No TPM chip found, activating TPM-bypass!
+Loading compiled-in module X.509 certificates
+Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
+ima: Allocated hash algorithm: sha256
+ima: No architecture policies found
+evm: Initialising EVM extended attributes:
+evm: security.selinux (disabled)
+evm: security.SMACK64 (disabled)
+evm: security.SMACK64EXEC (disabled)
+evm: security.SMACK64TRANSMUTE (disabled)
+evm: security.SMACK64MMAP (disabled)
+evm: security.apparmor
+evm: security.ima
+evm: security.capability
+evm: HMAC attrs: 0x1
+PM:   Magic number: 1:653:286
+usb usb32-port1: hash matches
+usb usb22: hash matches
+ppp ppp: hash matches
+tty ttyz0: hash matches
+printk: console [netcon0] enabled
+netconsole: network logging started
+gtp: GTP module loaded (pdp ctx size 104 bytes)
+rdma_rxe: loaded
+cfg80211: Loading compiled-in X.509 certificates for regulatory database
+cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+ALSA device list:
+  #0: Dummy 1
+  #1: Loopback 1
+  #2: Virtual MIDI Card 1
+md: Waiting for all devices to be available before autodetect
+md: If you don't use raid, use raid=noautodetect
+md: Autodetecting RAID arrays.
+md: autorun ...
+md: ... autorun DONE.
+EXT4-fs (sda1): mounted filesystem without journal. Opts: (null). Quota mode: none.
+VFS: Mounted root (ext4 filesystem) readonly on device 8:1.
+devtmpfs: mounted
+Freeing unused kernel image (initmem) memory: 4348K
+Write protecting the kernel read-only data: 169984k
+Freeing unused kernel image (text/rodata gap) memory: 2012K
+Freeing unused kernel image (rodata/data gap) memory: 1460K
+Run /sbin/init as init process
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 1 at include/linux/mmap_lock.h:164 mmap_assert_locked include/linux/mmap_lock.h:164 [inline]
+WARNING: CPU: 1 PID: 1 at include/linux/mmap_lock.h:164 find_vma+0xf8/0x270 mm/mmap.c:2307
+Modules linked in:
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc4-next-20210803-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:mmap_assert_locked include/linux/mmap_lock.h:164 [inline]
+RIP: 0010:find_vma+0xf8/0x270 mm/mmap.c:2307
+Code: 49 8d bc 24 28 01 00 00 be ff ff ff ff e8 00 e0 81 07 31 ff 89 c3 89 c6 e8 e5 a5 c9 ff 85 db 0f 85 61 ff ff ff e8 98 9e c9 ff <0f> 0b e9 55 ff ff ff e8 8c 9e c9 ff 4c 89 e7 e8 d4 da fb ff 0f 0b
+RSP: 0000:ffffc90000c67600 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888011a78000 RSI: ffffffff81ac1ac8 RDI: 0000000000000003
+RBP: 00007fffffffe000 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff81ac1abb R11: 0000000000000001 R12: ffff8880260df000
+R13: 0000000000000000 R14: 0000000000002016 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000000b68e000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ find_extend_vma+0x25/0x150 mm/mmap.c:2622
+ __get_user_pages+0x1c7/0xf70 mm/gup.c:1124
+ __get_user_pages_locked mm/gup.c:1359 [inline]
+ __get_user_pages_remote+0x18f/0x840 mm/gup.c:1868
+ get_user_pages_remote+0x63/0x90 mm/gup.c:1941
+ tomoyo_dump_page+0xd3/0x5b0 security/tomoyo/domain.c:915
+ tomoyo_print_bprm security/tomoyo/audit.c:46 [inline]
+ tomoyo_init_log+0xdc4/0x1ec0 security/tomoyo/audit.c:264
+ tomoyo_supervisor+0x34d/0xf00 security/tomoyo/common.c:2097
+ tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
+ tomoyo_execute_permission+0x37f/0x4a0 security/tomoyo/file.c:619
+ tomoyo_find_next_domain+0x348/0x1f80 security/tomoyo/domain.c:752
+ tomoyo_bprm_check_security security/tomoyo/tomoyo.c:101 [inline]
+ tomoyo_bprm_check_security+0x121/0x1a0 security/tomoyo/tomoyo.c:91
+ security_bprm_check+0x45/0xa0 security/security.c:865
+ search_binary_handler fs/exec.c:1711 [inline]
+ exec_binprm fs/exec.c:1764 [inline]
+ bprm_execve fs/exec.c:1833 [inline]
+ bprm_execve+0x732/0x19b0 fs/exec.c:1795
+ kernel_execve+0x370/0x460 fs/exec.c:1976
+ try_to_run_init_process+0x14/0x4e init/main.c:1426
+ kernel_init+0x12c/0x1d0 init/main.c:1542
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-Thanks.
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
