@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA893DEF63
+	by mail.lfdr.de (Postfix) with ESMTP id 934DF3DEF62
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236494AbhHCNxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48894 "EHLO
+        id S236462AbhHCNxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236405AbhHCNw6 (ORCPT
+        with ESMTP id S236356AbhHCNw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:52:58 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFEFC061798
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:52:46 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id y11-20020a4ade0b0000b029024b4146e2f5so5207716oot.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 06:52:46 -0700 (PDT)
+        Tue, 3 Aug 2021 09:52:59 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82854C06179E
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:52:47 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id f20-20020a9d6c140000b02904bb9756274cso8813312otq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 06:52:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PVmYRiU+rLASZ08i0ZQHsqvZPCSQrNJBkub0LVsh2Io=;
-        b=fCxssyIEXbFBEvk1gDhZz9TzBoNFVZw8WWiCA+hk4+6f3Fh4K44xe5xzzRZoOmZY6s
-         ux2m9QT1Xv6m5g9AD6dnfw+SvVuGWJSfnqJ2atfjNdQN/Q93rn5n4KeMByZF8zQNJ9pk
-         b93O3RD0zaynuf1y72JG1atYuFDCAv55aRQhdTFX8c+WFncFV1oD6d/K9POZ5HAWtt8d
-         1cTiwQlsHe9nbNF7IssjUGzOeLDX0dWyFLSuUYlrMYjXTr4vBYUwhHGXy6IcSwRsYnF0
-         yDfvLC9obniqkfIzEZou/bShKG8nIEF+KGhpcv0lA2tf2RB4aB1gTXGUlVlmmJi06ci4
-         SKUw==
+        bh=X4UAuQYn94Pb5XtO4XXCL46gk4gccAw2o2AYN2S6RoE=;
+        b=dDqtbEaVRVzsjEp6krfkuZvks+F6zs4JvBG8nkkkPo3r+jJ/jbMRLGHVmLbCP56M1L
+         ZqG8YkafQm/Ad9TRRjNlC8JX/tV21Rpmr/RDVpbm+KgPXMfpyWGPWqPLiGyl/AlEgWqj
+         Bpf2aC8oUVYoLzdMP1BDlofVrbwDyKhPGzDbQl3ivSUEL5RPDR3DGxyvSr6yxk8NEgyT
+         Pp2YNbt4DH4895TB3tEAkWoIOPMjorhRgS9SRCcuF/HZrjvDI/7y6KBIC+GJMSBymQAg
+         7s3ZGFzor0ZkB/7oH/x+FxI4tFYgEG2pBw20U+xDs/EYrDzMgjdmwiHgQgwKEJw5T3nM
+         cstQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=PVmYRiU+rLASZ08i0ZQHsqvZPCSQrNJBkub0LVsh2Io=;
-        b=qzfHhQ9m2ryfIatW2VVaXeiOSW5dIbzBxxi4OWWXyUYdKLPKJOR9+Uxg8lrxexnGNm
-         eOI+aPRA+TLdWpEwVz4l/CBzUsKhEzYY/iKO7UwReIM65ayKdT+XYcFE10aCgWrinTUp
-         OwHETRj8Jw71noQIq7/+SReDWVjb5P4QBwcHn7KNoxD38J0IGhcppXpT0v+ij/PKVtLr
-         mj9c4IOIs7T+RNqhbrd9oW8OpiE4Yo2wIZ91j95b+xw7qgFMR7vO3oCsXITggD2j71Ng
-         sasf8XvyPD5RKMP2E40GjWE0IFgccNtVSnqqRBfbx6KmFHWYR9mTM6Sj5wDK0pKwmQeY
-         GmFg==
-X-Gm-Message-State: AOAM5303mwmCyoyY/nc8xUuz/95tMt6jt/zYq9V9yiLmPQ/YxQnz/+UO
-        irarNwEGda2wrnRvnb2HQm8=
-X-Google-Smtp-Source: ABdhPJwliS0HE3ZXN6dcD0h4c96jB8hMyLoI346NeiYNz+EGF9akgcoFabf3oJB8/p8kqLVMB6lQZA==
-X-Received: by 2002:a4a:2242:: with SMTP id z2mr14320002ooe.90.1627998765789;
-        Tue, 03 Aug 2021 06:52:45 -0700 (PDT)
+        bh=X4UAuQYn94Pb5XtO4XXCL46gk4gccAw2o2AYN2S6RoE=;
+        b=c2PymuyMOAcfDGsBW6r3856yayX1/RKhdxsrN+v81qZdvW6bZb229XE/3oKFnMhHJH
+         7WA6Du+Dlz9ialx4Yfxb4Rd7dXo/tQPZvxQmhGv8Zv3ObONAC0ziyE5WS6YhPtm1UsOf
+         JHTtiYikOh6Vyq4q8YQG2pizUtXMTl/GPA1CQEafR2wAIYtyGQPRzqw/4R7M91E5bXoX
+         aW0o5S5ulqxucNH5IaDPz6jzgar9wcUlxwxQvRoPYwWVyedBfm1hjQ+PCeVSinNSbO2U
+         7+t43kNcJli3qUb44YDpYVO1xf8hMqfX+Ojx03xjxdhywOLLYxpAey1qJRr8ZpMhTnho
+         zTzQ==
+X-Gm-Message-State: AOAM533v/kskH7HmAXRIFH6+O1UOSpGEOzYPjoZpKhzxPlPAjqN7VvyK
+        w9BWh1hcDmpDGDe2/tg0BZA=
+X-Google-Smtp-Source: ABdhPJz4ot75JdQSO8b2wXsnG2fRjJX3v6pkUQxemGCZQPr0ckC0pqVPZ19dhALD4zbnoh6uJZq5lA==
+X-Received: by 2002:a05:6830:19c2:: with SMTP id p2mr15846766otp.49.1627998766949;
+        Tue, 03 Aug 2021 06:52:46 -0700 (PDT)
 Received: from 2603-8090-2005-39b3-0000-0000-0000-1010.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-1010.res6.spectrum.com. [2603:8090:2005:39b3::1010])
-        by smtp.gmail.com with ESMTPSA id y26sm2504106otq.23.2021.08.03.06.52.44
+        by smtp.gmail.com with ESMTPSA id y26sm2504106otq.23.2021.08.03.06.52.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 06:52:45 -0700 (PDT)
+        Tue, 03 Aug 2021 06:52:46 -0700 (PDT)
 Sender: Larry Finger <larry.finger@gmail.com>
 From:   Larry Finger <Larry.Finger@lwfinger.net>
 To:     gregkh@linuxfoundation.org
 Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Larry Finger <Larry.Finger@lwfinger.net>
-Subject: [PATCH 08/10] staging: r8188eu: Remove wrapper around do_div
-Date:   Tue,  3 Aug 2021 08:52:21 -0500
-Message-Id: <20210803135223.12543-9-Larry.Finger@lwfinger.net>
+Subject: [PATCH 09/10] staging: r8188eu: Remove some unused and ugly macros
+Date:   Tue,  3 Aug 2021 08:52:22 -0500
+Message-Id: <20210803135223.12543-10-Larry.Finger@lwfinger.net>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210803135223.12543-1-Larry.Finger@lwfinger.net>
 References: <20210803135223.12543-1-Larry.Finger@lwfinger.net>
@@ -66,59 +66,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wrapper routine rtw_modular64() contains only a call to do_div() and
-is used once in the code. Remove the wrapper.
+This driver contains a number of macros that are intended to do endian
+conversion. The first step in getting rid of them is to delete the
+ones that are not used.
 
 Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
 ---
- drivers/staging/r8188eu/hal/usb_halinit.c       | 3 ++-
- drivers/staging/r8188eu/include/osdep_service.h | 2 --
- drivers/staging/r8188eu/os_dep/osdep_service.c  | 5 -----
- 3 files changed, 2 insertions(+), 8 deletions(-)
+ .../staging/r8188eu/include/osdep_service.h   | 39 -------------------
+ 1 file changed, 39 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-index 441080bd0b74..0d945a3bb1d7 100644
---- a/drivers/staging/r8188eu/hal/usb_halinit.c
-+++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-@@ -1453,7 +1453,8 @@ static void SetHwReg8188EU(struct adapter *Adapter, u8 variable, u8 *val)
- 			struct mlme_ext_priv	*pmlmeext = &Adapter->mlmeextpriv;
- 			struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
- 
--			tsf = pmlmeext->TSFValue - rtw_modular64(pmlmeext->TSFValue, (pmlmeinfo->bcn_interval*1024)) - 1024; /* us */
-+			tsf = pmlmeext->TSFValue - do_div(pmlmeext->TSFValue,
-+							  pmlmeinfo->bcn_interval * 1024) - 1024; /* us */
- 
- 			if (((pmlmeinfo->state&0x03) == WIFI_FW_ADHOC_STATE) || ((pmlmeinfo->state&0x03) == WIFI_FW_AP_STATE))
- 				StopTxBeacon(Adapter);
 diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
-index 6203e3c219ca..52862785647f 100644
+index 52862785647f..cb876b50d68c 100644
 --- a/drivers/staging/r8188eu/include/osdep_service.h
 +++ b/drivers/staging/r8188eu/include/osdep_service.h
-@@ -344,8 +344,6 @@ void rtw_free_netdev(struct net_device *netdev);
+@@ -361,15 +361,7 @@ void rtw_free_netdev(struct net_device *netdev);
  
- #define rtw_signal_process(pid, sig) kill_pid(find_vpid((pid)),(sig), 1)
+ #define RTW_GET_BE24(a) ((((u32) (a)[0]) << 16) | (((u32) (a)[1]) << 8) | \
+ 			 ((u32) (a)[2]))
+-#define RTW_PUT_BE24(a, val)					\
+-	do {							\
+-		(a)[0] = (u8) ((((u32) (val)) >> 16) & 0xff);	\
+-		(a)[1] = (u8) ((((u32) (val)) >> 8) & 0xff);	\
+-		(a)[2] = (u8) (((u32) (val)) & 0xff);		\
+-	} while (0)
  
--u64 rtw_modular64(u64 x, u64 y);
+-#define RTW_GET_BE32(a) ((((u32) (a)[0]) << 24) | (((u32) (a)[1]) << 16) | \
+-			 (((u32) (a)[2]) << 8) | ((u32) (a)[3]))
+ #define RTW_PUT_BE32(a, val)					\
+ 	do {							\
+ 		(a)[0] = (u8) ((((u32) (val)) >> 24) & 0xff);	\
+@@ -378,37 +370,6 @@ void rtw_free_netdev(struct net_device *netdev);
+ 		(a)[3] = (u8) (((u32) (val)) & 0xff);		\
+ 	} while (0)
+ 
+-#define RTW_GET_LE32(a) ((((u32) (a)[3]) << 24) | (((u32) (a)[2]) << 16) | \
+-			 (((u32) (a)[1]) << 8) | ((u32) (a)[0]))
+-#define RTW_PUT_LE32(a, val)					\
+-	do {							\
+-		(a)[3] = (u8) ((((u32) (val)) >> 24) & 0xff);	\
+-		(a)[2] = (u8) ((((u32) (val)) >> 16) & 0xff);	\
+-		(a)[1] = (u8) ((((u32) (val)) >> 8) & 0xff);	\
+-		(a)[0] = (u8) (((u32) (val)) & 0xff);		\
+-	} while (0)
 -
- /* Macros for handling unaligned memory accesses */
- 
- #define RTW_GET_BE16(a) ((u16) (((a)[0] << 8) | (a)[1]))
-diff --git a/drivers/staging/r8188eu/os_dep/osdep_service.c b/drivers/staging/r8188eu/os_dep/osdep_service.c
-index c05b7589e9b4..f2fae1c7f147 100644
---- a/drivers/staging/r8188eu/os_dep/osdep_service.c
-+++ b/drivers/staging/r8188eu/os_dep/osdep_service.c
-@@ -283,11 +283,6 @@ int rtw_change_ifname(struct adapter *padapter, const char *ifname)
- 	return -1;
- }
- 
--u64 rtw_modular64(u64 x, u64 y)
--{
--	return do_div(x, y);
--}
+-#define RTW_GET_BE64(a) ((((u64) (a)[0]) << 56) | (((u64) (a)[1]) << 48) | \
+-			 (((u64) (a)[2]) << 40) | (((u64) (a)[3]) << 32) | \
+-			 (((u64) (a)[4]) << 24) | (((u64) (a)[5]) << 16) | \
+-			 (((u64) (a)[6]) << 8) | ((u64) (a)[7]))
+-#define RTW_PUT_BE64(a, val)				\
+-	do {						\
+-		(a)[0] = (u8) (((u64) (val)) >> 56);	\
+-		(a)[1] = (u8) (((u64) (val)) >> 48);	\
+-		(a)[2] = (u8) (((u64) (val)) >> 40);	\
+-		(a)[3] = (u8) (((u64) (val)) >> 32);	\
+-		(a)[4] = (u8) (((u64) (val)) >> 24);	\
+-		(a)[5] = (u8) (((u64) (val)) >> 16);	\
+-		(a)[6] = (u8) (((u64) (val)) >> 8);	\
+-		(a)[7] = (u8) (((u64) (val)) & 0xff);	\
+-	} while (0)
 -
- void rtw_buf_free(u8 **buf, u32 *buf_len)
- {
- 	*buf_len = 0;
+-#define RTW_GET_LE64(a) ((((u64) (a)[7]) << 56) | (((u64) (a)[6]) << 48) | \
+-			 (((u64) (a)[5]) << 40) | (((u64) (a)[4]) << 32) | \
+-			 (((u64) (a)[3]) << 24) | (((u64) (a)[2]) << 16) | \
+-			 (((u64) (a)[1]) << 8) | ((u64) (a)[0]))
+-
+ void rtw_buf_free(u8 **buf, u32 *buf_len);
+ void rtw_buf_update(u8 **buf, u32 *buf_len, u8 *src, u32 src_len);
+ 
 -- 
 2.32.0
 
