@@ -2,115 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BA73DF847
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9E23DF871
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233277AbhHCXM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 19:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45118 "EHLO
+        id S233157AbhHCXWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 19:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232864AbhHCXM4 (ORCPT
+        with ESMTP id S231815AbhHCXWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 19:12:56 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860C7C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 16:12:44 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id w6so692778oiv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 16:12:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i+DGuoeLoChs6Ei4AJ031ih+E+zcev4zRO6x+z1vz+s=;
-        b=tgrVhS0xsGM0woAKFLMfnMFTciJ1Rc6vsLIQyP/i2i8ArCp0ErwmvRnIh5IaCpVlVT
-         de6ZVG4jUMWYikAZYeiPkbmPlV2DsOGvq7lZUJ/cnhqGCo4bUXEcWINETSM5w7fv7Hva
-         meSj8az8RjT/s1kpdDIlaAiSnkSjO8AKAfP1EltllFdN/t4WHr4SCA0oVy31rtY3s0+V
-         kQJB1KPg20T8AJ2dmOSmm6ilkk26gRow/9MByAqNm5NK8kFyfkBDFOqIfG7Uz9E3879/
-         4zcK42u0y90EM4WwbBLdEpGe+F+chBSADThwzz8A/bEGNJrRef2ktx867M7jdQKxXcRn
-         0DGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i+DGuoeLoChs6Ei4AJ031ih+E+zcev4zRO6x+z1vz+s=;
-        b=jINtQRTIAiTBQzvCqOviPsF4zkDavNI/nRm6Wb2oP3R711FHLpZ5eiaCETEqty7Bsl
-         tjzTYem7oer5a4Vd6rDyMkSio2dJtfufux39OE355EWNGMaWCalSIedHBJoQJXUsdnI8
-         j7UZgcVNCWoD23hBfFFB5SfMKtdSBeHBHfAVdQxtKg/Q9AF1meL6u25e1IAuwbiNwQxS
-         bvBMSD5aCMZbdtA+Ip7/B4ZsLHf9RZVbtUuOfN1eK3syhxjBIUDWp5/ytsYu839kUEdv
-         drQNvERIEtZZvLVreCcLnh78GI7ECLifC4epOarAaFAEno4MuvZ7cvDZvkht8T9LeV9C
-         TCbg==
-X-Gm-Message-State: AOAM533ifZh8rIYudRrCL1FlMyXQAEphfR1vzwcT4SScH9PgZHKGRWod
-        agTWvh1fTE388ssBi98BDwKsfw==
-X-Google-Smtp-Source: ABdhPJwa87SFdE7d4lnFkZg5tizEp+UNMG3WPscx4sDxJhPVVs2Sft3z8URa70QYD0vL7GWqu3V4gw==
-X-Received: by 2002:a54:4107:: with SMTP id l7mr4759521oic.66.1628032363639;
-        Tue, 03 Aug 2021 16:12:43 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q187sm132746oif.2.2021.08.03.16.12.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 16:12:43 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 18:12:41 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Niklas Cassel <niklas.cassel@linaro.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Niklas Cassel <nks@flawful.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v2] PM: AVS: qcom-cpr: Use
- nvmem_cell_read_variable_le_u32()
-Message-ID: <YQnNaULsNVuQwYOz@builder.lan>
-References: <20210521134437.v2.1.Id1c70158722750aec0673d60c12e46a9c66bbfed@changeid>
- <CAD=FV=X8xgn=ueyryFZVA-VNLEU_sk8H29D08JaEpw2Qh2OFqQ@mail.gmail.com>
+        Tue, 3 Aug 2021 19:22:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB1AC061757;
+        Tue,  3 Aug 2021 16:22:00 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628032918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3sppHzO4nBHPNEurHXyRq4J2sD5L0/H0qJdAyUdF9AE=;
+        b=OlCy9rBC6qHUV5lBzNzwO1zPZHPcdt/yuNv8KWZWSkX9IMEIHqv+Hqr4GtF9SS/T2hZY2K
+        gRY92Lt3kL5GM04i6itLfA9ABSgbFKwZV+UcIBoS/r6q4t5oeLbFr6/B5xk7x/JdThhzMr
+        AqXcsvc+wJVObdT3YIERe+xExSko/aROavBF6owO2eTsorS1LL4SAwpzkOFhatR7WeK4Tc
+        liTjOwZ9BfwlKtjRFtTL+UujCKGeEW2bx9To1qAr4ohVgdyaEBfCWDxqcxRePdZjiHl4jF
+        qzVjPEnxdnPlX/p0doCUUxATrDU9axWUlfkD3epp/mqV5UEhrf2Kib34gk5/Eg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628032918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3sppHzO4nBHPNEurHXyRq4J2sD5L0/H0qJdAyUdF9AE=;
+        b=F0gwUPlbBiVah6TihUcuwDEdd9xE5yjQzfsNoszSmqtS4PVc3AMwNgtD1olZ7vk6z7hq2Y
+        DI82mdchpqgvkTBw==
+To:     Waiman Long <longman@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Luis Goncalves <lgoncalv@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] mm/memcg: Disable task obj_stock for PREEMPT_RT
+In-Reply-To: <20210803175519.22298-1-longman@redhat.com>
+References: <20210803175519.22298-1-longman@redhat.com>
+Date:   Wed, 04 Aug 2021 01:21:57 +0200
+Message-ID: <87h7g62jxm.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=X8xgn=ueyryFZVA-VNLEU_sk8H29D08JaEpw2Qh2OFqQ@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 23 Jul 18:05 CDT 2021, Doug Anderson wrote:
+Waiman,
 
-> Rafael / Bjorn,
-> 
-> On Fri, May 21, 2021 at 1:45 PM Douglas Anderson <dianders@chromium.org> wrote:
-> >
-> > Let's delete the private function cpr_read_efuse() since it does the
-> > basically the same thing as the new API call
-> > nvmem_cell_read_variable_le_u32().
-> >
-> > Differences between the new API call and the old private function:
-> > * less error printing (I assume this is OK).
-> > * will give an error if the value doesn't fit in 32-bits (the old code
-> >   would have truncated silently).
-> >
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> > I haven't done any more than compile-test this. Mostly I'm just
-> > writing this patch because it helped provide inspiration for the
-> > general API function.
-> >
-> > Changes in v2:
-> > - Resending v1 as a singleton patch; dependency is merged in mainline.
-> >
-> >  drivers/soc/qcom/cpr.c | 43 +++++-------------------------------------
-> >  1 file changed, 5 insertions(+), 38 deletions(-)
-> 
-> Are either of you interested in landing this? I guess Rafael landed
-> most of the recent changes to this driver, but it used to be under the
-> 'power' directory. Now that it's under 'drivers/soc/qcom' maybe it
-> should go through Bjorn's tree?
-> 
+On Tue, Aug 03 2021 at 13:55, Waiman Long wrote:
 
-Yes, it makes sense to pick it up through my tree, unfortunately I
-forgot about this move and ignored the patch in my queue based on the
-$subject.
+please Cc RT people on RT related patches.
 
-I've picked it up now.
+> For PREEMPT_RT kernel, preempt_disable() and local_irq_save()
+> are typically converted to local_lock() and local_lock_irqsave()
+> respectively.
 
-Regards,
-Bjorn
+That's just wrong. local_lock has a clear value even on !RT kernels. See
+
+  https://www.kernel.org/doc/html/latest/locking/locktypes.html#local-lock
+
+> These two variants of local_lock() are essentially
+> the same.
+
+Only on RT kernels.
+
+> + * For PREEMPT_RT kernel, preempt_disable() and local_irq_save() may have
+> + * to be changed to variants of local_lock(). This eliminates the
+> + * performance advantage of using preempt_disable(). Fall back to always
+> + * use local_irq_save() and use only irq_obj for simplicity.
+
+Instead of adding that comment you could have just done the full
+conversion, but see below.
+
+>   */
+> +static inline bool use_task_obj_stock(void)
+> +{
+> +	return !IS_ENABLED(CONFIG_PREEMPT_RT) && likely(in_task());
+> +}
+> +
+>  static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
+>  {
+>  	struct memcg_stock_pcp *stock;
+>  
+> -	if (likely(in_task())) {
+> +	if (use_task_obj_stock()) {
+>  		*pflags = 0UL;
+>  		preempt_disable();
+>  		stock = this_cpu_ptr(&memcg_stock);
+
+This is clearly the kind of conditional locking which is frowned upon
+rightfully.
+
+So if we go to reenable memcg for RT we end up with:
+
+	if (use_task_obj_stock()) {
+           preempt_disable();
+        } else {
+           local_lock_irqsave(memcg_stock_lock, flags);
+        }
+        
+and further down we end up with:
+
+> @@ -2212,7 +2222,7 @@ static void drain_local_stock(struct work_struct *dummy)
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	drain_obj_stock(&stock->irq_obj);
+> -	if (in_task())
+> +	if (use_task_obj_stock())
+>  		drain_obj_stock(&stock->task_obj);
+>  	drain_stock(stock);
+>  	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+
+	/*
+	 * The only protection from memory hotplug vs. drain_stock races is
+	 * that we always operate on local CPU stock here with IRQ disabled
+	 */
+-	local_irq_save(flags);
++	local_lock_irqsave(memcg_stock_lock, flags);
+        ...
+	if (use_task_obj_stock())
+  		drain_obj_stock(&stock->task_obj);
+
+which is incomprehensible garbage.
+
+The comment above the existing local_irq_save() is garbage w/o any local
+lock conversion already today (and even before the commit which
+introduced stock::task_obj) simply because that comment does not explain
+the why.
+
+I can just assume that for stock->task_obj the IRQ protection is
+completely irrelevant. If not and _all_ members of stock have to be
+protected against memory hotplug by disabling interrupts then any other
+function which just disables preemption is broken.
+
+To complete the analysis of drain_local_stock(). AFAICT that function
+can only be called from task context. So what is the purpose of this
+in_task() conditional there?
+
+	if (in_task())
+  		drain_obj_stock(&stock->task_obj);
+
+I assume it's mechanical conversion of:
+
+-       drain_obj_stock(stock);
++       drain_obj_stock(&stock->irq_obj);
++       if (in_task())
++               drain_obj_stock(&stock->task_obj);
+
+all over the place without actually looking at the surrounding code,
+comments and call sites.
+
+This patch is certainly in line with that approach, but it's just adding
+more confusion.
+
+Thanks,
+
+        tglx
