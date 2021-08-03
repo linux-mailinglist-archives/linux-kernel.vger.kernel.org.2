@@ -2,93 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E423DEB6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36F53DEB74
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235544AbhHCLAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:00:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31376 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235524AbhHCLAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:00:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627988398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aE8XCCL55f8qnxJqwivFKeV5VGgs9Ifqgx6vr3CKXek=;
-        b=JG4rv26asx9765lwBajA37EFQrQI78lmpMWKf5P3iRz3Pn17lp4qt2etyuV+Kr+Mz6h+Pf
-        wTIvBxp0Yee0QKRZMxfA2s9dOSiLvjltS4pyNP9OKxYPAu5HSbH9sJnh+/a+a9CrYTsSyl
-        1bqb4BrrhheDt0ZEgEQ9F6oE1uDrH8U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-60-m4sIGmG_O_enoSoAqyzJYA-1; Tue, 03 Aug 2021 06:59:54 -0400
-X-MC-Unique: m4sIGmG_O_enoSoAqyzJYA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECA31190B2A0;
-        Tue,  3 Aug 2021 10:59:52 +0000 (UTC)
-Received: from thuth.com (unknown [10.39.192.110])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D0C5660C5F;
-        Tue,  3 Aug 2021 10:59:49 +0000 (UTC)
-From:   Thomas Huth <thuth@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>, linux-s390@vger.kernel.org,
-        Jia He <hejianet@gmail.com>,
-        Pan Xinhui <xinhui.pan@linux.vnet.ibm.com>
-Subject: [PATCH 2/2] lockd: change the proc_handler for nsm_use_hostnames
-Date:   Tue,  3 Aug 2021 12:59:37 +0200
-Message-Id: <20210803105937.52052-3-thuth@redhat.com>
-In-Reply-To: <20210803105937.52052-1-thuth@redhat.com>
-References: <20210803105937.52052-1-thuth@redhat.com>
+        id S235610AbhHCLA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:00:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235549AbhHCLAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 07:00:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D97FA6112F;
+        Tue,  3 Aug 2021 11:00:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627988406;
+        bh=wTFUtRXlHb3817XlTGJsb1KVM3G4zKnll9BSqp8LD7Y=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Kinl6f6zpJQEvyEfdhNivk9myMmV3jLGgmGObR22QkEgHTnfmav16ZXsrJlp43675
+         pL7luYga8QmrWi+ZmewdkujOdrntO8ylhRNevoJMrDNVG6/KK48T27PrrEYQ6/qDcu
+         2+pRjk2mopAA84u22WWzwEu8Hy2VCcLtrxYy/RipU517akcDPR3wXHy+Jp2zDcclkb
+         QtsJX3tEI3wWOV0bWZAMPvsot5Fyw8byETbiRDsFE/lL2t3G2eNBg9+TNtQZgEGbS7
+         t9ltBXEm5Jh5VKu/frVIBwArMH9NKUAV7oQ//9dZyuegJf9H34Ca6A+RWlPXa88M2A
+         RmJqIxkP4oZ8Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D138660075;
+        Tue,  3 Aug 2021 11:00:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Subject: Re: [PATCH] qed: Remove duplicated include of kernel.h
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162798840685.8237.13025716118269286394.git-patchwork-notify@kernel.org>
+Date:   Tue, 03 Aug 2021 11:00:06 +0000
+References: <1627870718-54491-1-git-send-email-zhouchuangao@vivo.com>
+In-Reply-To: <1627870718-54491-1-git-send-email-zhouchuangao@vivo.com>
+To:     zhouchuangao <zhouchuangao@vivo.com>
+Cc:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia He <hejianet@gmail.com>
+Hello:
 
-nsm_use_hostnames is a module parameter and it will be exported to sysctl
-procfs. This is to let user sometimes change it from userspace. But the
-minimal unit for sysctl procfs read/write it sizeof(int).
-In big endian system, the converting from/to  bool to/from int will cause
-error for proc items.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-This patch use a new proc_handler proc_dobool to fix it.
+On Sun,  1 Aug 2021 19:18:38 -0700 you wrote:
+> Duplicate include header file <linux/kernel.h>
+> line 4: #include <linux/kernel.h>
+> line 7: #include <linux/kernel.h>
+> 
+> Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+> ---
+>  drivers/net/ethernet/qlogic/qed/qed_nvmetcp_fw_funcs.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-Signed-off-by: Jia He <hejianet@gmail.com>
-Reviewed-by: Pan Xinhui <xinhui.pan@linux.vnet.ibm.com>
-[thuth: Fix typo in commit message]
-Signed-off-by: Thomas Huth <thuth@redhat.com>
----
- fs/lockd/svc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here is the summary with links:
+  - qed: Remove duplicated include of kernel.h
+    https://git.kernel.org/netdev/net-next/c/2414d628042b
 
-diff --git a/fs/lockd/svc.c b/fs/lockd/svc.c
-index 2de048f80eb8..0ab9756ed235 100644
---- a/fs/lockd/svc.c
-+++ b/fs/lockd/svc.c
-@@ -584,7 +584,7 @@ static struct ctl_table nlm_sysctls[] = {
- 		.data		= &nsm_use_hostnames,
- 		.maxlen		= sizeof(int),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= proc_dobool,
- 	},
- 	{
- 		.procname	= "nsm_local_state",
--- 
-2.27.0
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
