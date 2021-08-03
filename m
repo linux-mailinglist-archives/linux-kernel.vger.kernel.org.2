@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D8D3DE8C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23563DE8CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbhHCItK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234453AbhHCItD (ORCPT
+        id S234724AbhHCItY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:49:24 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:38925 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234641AbhHCItW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:49:03 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F50C06175F;
-        Tue,  3 Aug 2021 01:48:52 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id nd39so35245062ejc.5;
-        Tue, 03 Aug 2021 01:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J4jATVkZ/USm62T2iGvuiu2c8duC0ne3ndhK/cNQVSc=;
-        b=n6hJ+k9Q2YTp5upYnoq+ceszi9gr2JVEy0tSNXk/SoHDzKfQz4bBEZQHEQi+IV5npO
-         yephuSH97FFPxZNlFCWVuBW5hkQ1B1+T1SnNs8AUuU9LWdgWesk0Ojko5enHuokIKZDD
-         OzPE+QvbBl3tc7yS+nJlqB6W3CYAgseweuR6EA4Y7j1ipPY6atsaijeF+3HPst+8cpIr
-         0cV7r/6StY2VZkKxWhDLKkZUZEGWhyR3xArxlb2pvQkSyoS703YKH8ziWfPwZKprB6+b
-         GI/FMdrXyprpbH0Z/X1MK+fSKqf3RBSEL6EIw8Av4CSlVwuvrSpims/wJW/7CeYWp7Qx
-         S6rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J4jATVkZ/USm62T2iGvuiu2c8duC0ne3ndhK/cNQVSc=;
-        b=RJ35Cm+xvbCCDLv3pECyOtooz6tyQhLO0ier3cxP9KoUOYtJTH6PaleVYuAIa2ejTd
-         o/pNQZHZKjwZSpQdNdw43TO9UBBnWkSKmTP5TASr4uf4lJbRvdHf5jHGug/NSzBCC9XN
-         9c/Fc24iHD9GGq3DVJpa6bF7fQpkgO5QaJ7FTC896fbkWJYvtGnWXfrVDpiEtkKchRdD
-         Jfh+fbKiK4lVGcQT21gZfhRvYGMSUSWDgSlbVf9gQQqavOOvfuHbED6W3sh5Co1z8XsN
-         cCXMkfGq4eIJVyy0qm4jlR1HSgqi4ZNojl0hp0iJJeTmRJJYlpFLlkDIoosaSg9QfUUv
-         2fow==
-X-Gm-Message-State: AOAM532BM1A4zePwFNvQ9+5f7wr+6uhV/PNjpte1MOF42rQWqBnOvpjD
-        8sDo9vwZzvUeBjZRbevFilw=
-X-Google-Smtp-Source: ABdhPJwrJu/cOeoZOifSuOW4DtEVHlePqIG5oXstLiIoWH7izVOl4JlfeLo2q7D7ls4/11Lo/cpfJQ==
-X-Received: by 2002:a17:906:7191:: with SMTP id h17mr19952376ejk.330.1627980530726;
-        Tue, 03 Aug 2021 01:48:50 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id z10sm5809224ejg.3.2021.08.03.01.48.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 01:48:50 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 11:48:48 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Woudstra <ericwouds@gmail.com>,
-        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>
-Subject: Re: [RFC net-next v2 3/4] net: dsa: mt7530: set STP state also on
- filter ID 1
-Message-ID: <20210803084848.cdvc5qxseott54yy@skbuf>
-References: <20210731191023.1329446-1-dqfext@gmail.com>
- <20210731191023.1329446-4-dqfext@gmail.com>
- <20210802134336.gv66le6u2z52kfkh@skbuf>
- <20210802153129.1817825-1-dqfext@gmail.com>
- <20210802154226.qggqzkxe6urkx3yf@skbuf>
- <20210802155810.1818085-1-dqfext@gmail.com>
- <20210802210006.fhmb5s6dsnziyk7d@skbuf>
- <20210803082316.2910759-1-dqfext@gmail.com>
+        Tue, 3 Aug 2021 04:49:22 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CD57C5809FE;
+        Tue,  3 Aug 2021 04:49:11 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 03 Aug 2021 04:49:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=U3smuC21xiclnAcPm0Ugo61M+O
+        k4GIAM2qkc0U+vSB4=; b=nKqkO4vVYQVSPC3CwB63cLS2wQOqI45dGp6q8AWmxB
+        Vz0wv6dmoSqcPaAjpzJYUXDA/+3evLAw1hVPucjotzW/K55gOdg92Lrr8+JAFYmg
+        e6uz+2CO4e9onYN4uMYyE4fI4oclyamIIa01PiN04GLHk1LLAUlTcBfNHxIwg+Tr
+        u2R2ea6uM4jQFZpqQV9YYfqXpzD1mucuZVeJNd9E2uQwkYBOPYEn6bxKH4WQ8AFO
+        8j7NSD7oOECrHZgJYNbylj/w7yNZ+0LFd4SF0Mwe5I6S8T/TFAgicu78myV0BbtI
+        ugnBUWfO9Y6K/lbLWltoUSQ2Kks3z++tIu7qN6M7tp6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=U3smuC21xiclnAcPm
+        0Ugo61M+Ok4GIAM2qkc0U+vSB4=; b=AWnxIELfCTMxO01+IGKFflnRMNVV/0jqI
+        QAppWoPTRQjyDtLC0NNMVT7xJLtcRwlzZSJk0qi2o1S2JeXgNoKhAe8pI7SNxLNL
+        asPFs72nssHezIp7QYNfIO1qSrMeNpRilS3KIfgTVXDGqPjlstTYpoCTfD3QqEma
+        9v2/nSU4Am73YCRBbTR/V5OVqkQ7t4o4+CYiBMvrR2kt/jQuai6pPZ4Nwj0oz6x2
+        nk1en5U76o3kFg7WzgNBMx61ZfPjwczfWTYVwoQGEQTGNQ5jDL5mIr8RDJEzOtqy
+        mp3zydIObNUqk2wkBJyou4mdmyFZcv0ap3kwxAb+m1cA4RJnKQGNg==
+X-ME-Sender: <xms:BwMJYaFW47IH0axo5urKZsh2xa3IuwU6fe96OxyitE4EqmX6v02aTA>
+    <xme:BwMJYbWkAi0cTDYAPdXoum8ulUykgj2-ruLwfHCT3zH-ZK3-7zunfYiTSId39PMgx
+    yoFF2z7PWeDESIXJsc>
+X-ME-Received: <xmr:BwMJYUIXV07pwyOC6Lb7SSnYYK8uYRTw6GVz3LlZqMasn5bqwFFdNuws8WtwwxJqyjWPgVfEqTThczuiLKU0IBauNUf8ClRFzmokiLDzAwhbXg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieeggddtiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheptehlihhsthgrihhr
+    ucfhrhgrnhgtihhsuceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqeenuc
+    ggtffrrghtthgvrhhnpeejleeihfdvtefgtdethfdtgefftdeiffefjeeiffefveeuleej
+    heejvefhffeukeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegrlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
+X-ME-Proxy: <xmx:BwMJYUGftYuBn9HoaWOfTWagVIQIGrH-zgDWA-1IrmtEUufTh94SnQ>
+    <xmx:BwMJYQX5mBNivNtjC0Q7Pp6uYzJeu63cL9-gMp6UJT-NNzWPmvxoMQ>
+    <xmx:BwMJYXMhXy_9EMSIx_touVSTHC9baC9bq_KXiBHgTA44jl6-dGarlQ>
+    <xmx:BwMJYfN2HEy4ALqJfJa5X7t-N2YnYInfF01jObEYncIcfkhMD1KWUA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 3 Aug 2021 04:49:05 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, pinglinux@gmail.com,
+        tatsunosuke.tobita@wacom.com, junkpainting@gmail.com,
+        ping.cheng@wacom.com
+Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        Alistair Francis <alistair@alistair23.me>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v8 1/9] dt-bindings: Add Wacom to vendor bindings
+Date:   Tue,  3 Aug 2021 18:48:54 +1000
+Message-Id: <20210803084902.336-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803082316.2910759-1-dqfext@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 04:23:16PM +0800, DENG Qingfang wrote:
-> On Tue, Aug 03, 2021 at 12:00:06AM +0300, Vladimir Oltean wrote:
-> > 
-> > So then change the port STP state only for FID 1 and resend. Any other
-> > reason why this patch series is marked RFC? It looked okay to me otherwise.
-> 
-> Okay, will resend with that change and without RFC.
-> 
-> By the way, if I were to implement .port_fast_age, should I only flush
-> dynamically learned FDB entries? What about MDB entries?
+Signed-off-by: Alistair Francis <alistair@alistair23.me>
+Acked-by: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Yes, only dynamically learned entries. That should also answer the
-question about MDB entries, since a multicast address should never be a
-source MAC address so they should never be dynamically learned.
-The bridge should handle the deletion of static entries when needed.
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 07fb0d25fc15..71da86e7b3a2 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1250,6 +1250,8 @@ patternProperties:
+     description: Vision Optical Technology Co., Ltd.
+   "^vxt,.*":
+     description: VXT Ltd
++  "^wacom,.*":
++    description: Wacom Co., Ltd
+   "^wand,.*":
+     description: Wandbord (Technexion)
+   "^waveshare,.*":
+-- 
+2.31.1
+
