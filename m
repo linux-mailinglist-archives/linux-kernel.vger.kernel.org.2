@@ -2,129 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316A83DEEEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F0C3DEEEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236197AbhHCNOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        id S236193AbhHCNQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236227AbhHCNOP (ORCPT
+        with ESMTP id S236123AbhHCNQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:14:15 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E773C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:14:03 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id e21so23670701pla.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 06:14:03 -0700 (PDT)
+        Tue, 3 Aug 2021 09:16:52 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31040C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:16:41 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id j2so25218033wrx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 06:16:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=cD44nlfYqtKH4XtlGBmcc3+xGCi39N7kSG0uWYgAZyI=;
-        b=KlyBn5EQFqcP6S++rF+krNoapVKRi0cFbUCjNnNLnv99HYe2sr5W/LXZTuDD/VbMN1
-         L6sTknsyFtEvEYrpuMrq2fPAbVNIhS4Dbs7UMXsUmU4l21oiulqjVBhULldXbbKAq4S9
-         i/yMsiRNqBea+akFov+0ycZYUjzcXXjIUGONK7fUa5SFzVC7PCAhn3VEEm7DDJb9mGms
-         dhnZslm3n/pcRYkj5ZEgL/o0nQGwUpI3kJlt/cQ/JfAMAQ+G71FhqoY0RMevXII3HEMQ
-         H38S4jpPFi2CdF+UhDp0x+v6r/pv0zv4u2VMTn1HQYKjQIFNpmdwe1QEXm59e74GVQ4n
-         9x0Q==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LY4ajhYYjBKNdvsHnzBXr58vU15+CDEnGQoQuQpIjrY=;
+        b=Bo3krVhGkUb9iZzYD0LaPXEd677pZRw4pcUbpAy1L7wJiwJY++nLFBkXKEc4Hq5SMp
+         3lOHGOlgdTqZHFk+lzT58stF2g7kcuzOpLXpvalxe9M2x4kcwVxHRc78nf0n4TJorPgI
+         9NDNMlmGYNlEBh1k6mYJAiSWr2aGbhryQsCZWH3OxX94w8qFuoT+kjyifvKy9rpQxcnO
+         xVLKJ3T3LF1NjCTNNWrf5894BHWt4RIozT5+oaZARyPmTWpPy4dRaAtzj3Z7n4Kvu62M
+         4QepXSRg9SuTzFRI0yAE7ExCHdi7bCWv1XVQva0dsJ4hqGh2Hh4rapCtxKKdLlT3GF0h
+         2OMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=cD44nlfYqtKH4XtlGBmcc3+xGCi39N7kSG0uWYgAZyI=;
-        b=NlP/MZFW21yECJiqyF6LjlL+ALUQNOdgT7JhVR7sd6zygey/NgDRHzoU8HiZYuxCq3
-         pcrmjD8xhk3Pn5yXaw39Vp6pIUityNAUg8SMMManFPO6fs8DSyd3G5mqQQU6+8d42BsJ
-         Pmnp/kgalHlluIHvNo4/gK9AexEBQYLSEy6If815JLPi84O4Ts8N/9PmczK0zdBOdFvc
-         Ue3cxUrugsz6DbuWtObQcEyNAr0a/eq1mBF1jEzVWbpmvA/Yw05I+ufTkLLOhVstEIaW
-         KG2ybegNh/u6ihmaf4b2m+1F0yKIYPngyLkUR+B17MCm9nDG6YDtVn8Nxpqz/DhAfaMH
-         hEWA==
-X-Gm-Message-State: AOAM533drrfH3P9r2cID0L+QMO8mypprxPDCildvfNnKdpeh/At76gxI
-        4MTfWw7J0Os+bHyAb1dTJPO27g==
-X-Google-Smtp-Source: ABdhPJxArDiDqJWfF+hAlpH49SYTbceqjzyGkAMccHwv5dmC+Qc2kK7ALgsBIo+uT3XMKGBETVPs1Q==
-X-Received: by 2002:a65:6248:: with SMTP id q8mr1584659pgv.279.1627996442817;
-        Tue, 03 Aug 2021 06:14:02 -0700 (PDT)
-Received: from [192.168.10.153] (219-90-184-65.ip.adam.com.au. [219.90.184.65])
-        by smtp.gmail.com with UTF8SMTPSA id w18sm15193753pjg.50.2021.08.03.06.14.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 06:14:02 -0700 (PDT)
-Message-ID: <a0665d21-a390-6263-0018-09b4cb57e87b@ozlabs.ru>
-Date:   Tue, 3 Aug 2021 23:13:57 +1000
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LY4ajhYYjBKNdvsHnzBXr58vU15+CDEnGQoQuQpIjrY=;
+        b=qkpdYMxthmLbGZcSERQb2WuYMwlcjFpXKI3sbPGQCc9NKI2eNFzxyymmMFPaTNpObQ
+         gh+Iwu4wq33onDF35rBPkERRidF7r9ajCJJsetdkC79kKK+5nwJXuWJ0FK8ej5mLYBzt
+         H2sNwe5trYh3Qv6K9jIEqMGh9ZBFgCwLaomEkwy5t4N6Hx901u14wY3JV0sE8M/iTLyF
+         1SJ23JXuLYLAvojjXhVpmwx+ycjBuQRFnmR20oluFWvAaQkw8YrWxTln1bTYuEBMn/00
+         Z0FIhfkKm9IT6fvx7aapuzhto6M7z+37i0UFitN4y0EUHnGAhtpDnl578rQbKtJSHiyg
+         ksRw==
+X-Gm-Message-State: AOAM531HQENZyRoXSsdgwAncnwqvyYCLnq3F6QVku6zYr7zX7vRaccI7
+        8AQ29PvzEabZjGwc6wf5dEUW7A==
+X-Google-Smtp-Source: ABdhPJzU/OufZtp4hvQqfr8/P1Mac8bTSvwq0I8OeJ0OSDvThVu99FhN0auH+PrAGbUsSzQrv6la0w==
+X-Received: by 2002:adf:f046:: with SMTP id t6mr23699153wro.266.1627996599750;
+        Tue, 03 Aug 2021 06:16:39 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id c12sm14820845wrm.29.2021.08.03.06.16.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 06:16:39 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 14:16:37 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v8 02/11] mfd: sy7636a: Initial commit
+Message-ID: <YQlBtQDrVHqh3N5D@google.com>
+References: <20210803084456.198-1-alistair@alistair23.me>
+ <20210803084456.198-2-alistair@alistair23.me>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:90.0) Gecko/20100101
- Thunderbird/90.0
-Subject: Re: [RFC PATCH kernel] KVM: Stop leaking memory in debugfs
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     "Kernel Mailing List, Linux" <linux-kernel@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>
-References: <20210730043217.953384-1-aik@ozlabs.ru>
- <YQklgq4NkL4UToVY@kroah.com>
- <CABgObfb+M9Qeow1EZy+eQwM1jwoZY3zdPJfZW+Q+MoWmkaqcFw@mail.gmail.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-In-Reply-To: <CABgObfb+M9Qeow1EZy+eQwM1jwoZY3zdPJfZW+Q+MoWmkaqcFw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210803084456.198-2-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 03 Aug 2021, Alistair Francis wrote:
 
-
-On 03/08/2021 22:52, Paolo Bonzini wrote:
-> On Tue, Aug 3, 2021 at 1:16 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->> On Fri, Jul 30, 2021 at 02:32:17PM +1000, Alexey Kardashevskiy wrote:
->>>        snprintf(dir_name, sizeof(dir_name), "%d-%d", task_pid_nr(current), fd);
->>>        kvm->debugfs_dentry = debugfs_create_dir(dir_name, kvm_debugfs_dir);
->>> +     if (IS_ERR_OR_NULL(kvm->debugfs_dentry)) {
->>> +             pr_err("Failed to create %s\n", dir_name);
->>> +             return 0;
->>> +     }
->>
->> It should not matter if you fail a debugfs call at all.
->>
->> If there is a larger race at work here, please fix that root cause, do
->> not paper over it by attempting to have debugfs catch the issue for you.
+> Initial support for the Silergy SY7636A Power Management chip.
 > 
-> I don't think it's a race, it's really just a bug that is intrinsic in how
-> the debugfs files are named.  You can just do something like this:
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  drivers/mfd/Kconfig         |  9 +++++
+>  drivers/mfd/Makefile        |  1 +
+>  drivers/mfd/sy7636a.c       | 72 +++++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/sy7636a.h | 45 +++++++++++++++++++++++
+>  4 files changed, 127 insertions(+)
+>  create mode 100644 drivers/mfd/sy7636a.c
+>  create mode 100644 include/linux/mfd/sy7636a.h
 > 
-> #include <unistd.h>
-> #include <stdio.h>
-> #include <fcntl.h>
-> #include <sys/wait.h>
-> #include <sys/ioctl.h>
-> #include <linux/kvm.h>
-> #include <stdlib.h>
-> int main() {
->          int kvmfd = open("/dev/kvm", O_RDONLY);
->          int fd = ioctl(kvmfd, KVM_CREATE_VM, 0);
->          if (fork() == 0) {
->                  printf("before: %d\n", fd);
->                  sleep(2);
->          } else {
->                  close(fd);
->                  sleep(1);
->                  int fd = ioctl(kvmfd, KVM_CREATE_VM, 0);
->                  printf("after: %d\n", fd);
->                  wait(NULL);
->          }
-> }
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index 6a3fd2d75f96..b82208f0c79c 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -1352,6 +1352,15 @@ config MFD_SYSCON
+>  	  Select this option to enable accessing system control registers
+>  	  via regmap.
+>  
+> +config MFD_SY7636A
+> +	tristate "Silergy SY7636A Power Management IC"
+> +	select MFD_CORE
+> +	select REGMAP_I2C
+> +	depends on I2C
+> +	help
+> +	  Select this option to enable support for the Silergy SY7636A
+> +	  Power Management IC.
+> +
+>  config MFD_DAVINCI_VOICECODEC
+>  	tristate
+>  	select MFD_CORE
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index 8116c19d5fd4..cbe581e87fa9 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -266,6 +266,7 @@ obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
+>  obj-$(CONFIG_MFD_ACER_A500_EC)	+= acer-ec-a500.o
+>  obj-$(CONFIG_MFD_QCOM_PM8008)	+= qcom-pm8008.o
+>  
+> +obj-$(CONFIG_MFD_SY7636A)	+= sy7636a.o
+>  obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
+>  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)	+= simple-mfd-i2c.o
+>  obj-$(CONFIG_MFD_INTEL_M10_BMC)   += intel-m10-bmc.o
+> diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
+> new file mode 100644
+> index 000000000000..f3ff93c7395d
+> --- /dev/null
+> +++ b/drivers/mfd/sy7636a.c
+> @@ -0,0 +1,72 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * MFD parent driver for SY7636A chip
+> + *
+> + * Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
+> + *
+> + * Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
+> + *          Alistair Francis <alistair@alistair23.me>
+> + *
+> + * Based on the lp87565 driver by Keerthy <j-keerthy@ti.com>
+> + */
+> +
+> +#include <linux/interrupt.h>
+> +#include <linux/mfd/core.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +
+> +#include <linux/mfd/sy7636a.h>
+> +
+> +static const struct regmap_config sy7636a_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +};
+> +
+> +static const struct mfd_cell sy7636a_cells[] = {
+> +	{ .name = "sy7636a-regulator", },
 
-oh nice demo :)
+What kind of regulator is 'vcom'? LDO? DCDC?
 
-although I still think there was a race when I saw it as there was no 
-fork() in the picture but continuous create/destroy VM in 16 threads on 
-16 VCPUs with no KVM_RUN in between.
-
-> 
-> So Alexey's patch is okay and I've queued it, though with pr_warn_ratelimited
-> instead of pr_err.
-
-Makes sense with your reproducer. Thanks,
-
+> +	{ .name = "sy7636a-temperature", },
+> +	{ .name = "sy7636a-thermal", },
+> +};
 
 -- 
-Alexey
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
