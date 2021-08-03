@@ -2,100 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3AB3DE813
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A053DE818
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234484AbhHCIMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:12:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234260AbhHCIMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:12:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A474260F35;
-        Tue,  3 Aug 2021 08:11:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627978315;
-        bh=msnR5QzQeo3Lq11b0UAkCf4kr/ykeiduGDAXCY8iwbw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=urCAC6Ev+tDAWmhFVuc36aGNlm/4q0CA0aQhxRhVjrC378XcgxLT+2NauPR+ev4nB
-         kSQTcqx6GV8p+sXmGA8LLjetdmJoxKzbw98++UBcURojbIMG+9Mm0XL/gx1SzH7btB
-         BfR06oa72KvsgXu+mKJxPz8EVem7/dkkHl36SBPSPGwDf9dXoauMDbP1KXYzVgIIfB
-         SciCzuPQcywiGCqSlKJeMhom/PvMoFAndKcz6gAZe4BYC7ozau3zU++5NR6L+FlLDP
-         n7EemAaNmXuEQ8uuNcrWYenWr142vQwlhSF9EjbSj3rx3hXSQ+T7/YlDJlBVD12B42
-         BuFVGL3BLEpQg==
-Content-Type: text/plain; charset="utf-8"
+        id S234435AbhHCIMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:12:38 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:36927 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234248AbhHCIMf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:12:35 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id ApXCmT3NXXTlcApXDmkLwO; Tue, 03 Aug 2021 10:12:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1627978343; bh=nJAT4/TY9kAvr0jgZL4sTyPUkvxuezWK4PADS7XhJmE=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=s4P2peHCmMtkOB6hlRicbMb/PhZ5RiRVCJADXDKDXkWXsHiokl8y5MshvaVg7S4Et
+         AmPFV7DewYB4gsPWPAt9EYIKv92gvslx5MSV9lCIGOAbfIAmL/11ctTvLzRRS/oHa7
+         aTsYUvYbiH13jSMHILR0Y6BKXLG7hh7mmZ74eLt0UGag3/KBcW3ew6H8fUgesWuvqh
+         7/pdo9B8c9UIMsFjoHooBH8+Uo8OqccnvnETbDKNKINby5xxABvqGHAgc99U9hE7P8
+         8+FvbO6qf7EkAVXYp7NuWyQtxCUsl8KkyYrYL8QZHSMNWIWL5qhIHXQSH1C9iPD8h7
+         3QauOTpZiPCaw==
+Subject: Re: [PATCHv4 5/8] videobuf2: add V4L2_MEMORY_FLAG_NON_COHERENT flag
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210727070517.443167-1-senozhatsky@chromium.org>
+ <20210727070517.443167-6-senozhatsky@chromium.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <45dbd3f1-778b-eb6c-94b3-51e8a92429b6@xs4all.nl>
+Date:   Tue, 3 Aug 2021 10:12:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210802163824.GK22278@shell.armlinux.org.uk>
-References: <YPlfcbkxiBmB+vw1@kunai> <20210723091331.wl33wtcvvnejuhau@pengutronix.de> <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com> <20210728202547.7uvfwflpruku7yps@pengutronix.de> <20210728204033.GF22278@shell.armlinux.org.uk> <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com> <20210731120004.i3affxw7upl5y4c5@pengutronix.de> <20210802094810.GJ22278@shell.armlinux.org.uk> <20210802152755.ibisunvibmwhiyry@pengutronix.de> <20210802163824.GK22278@shell.armlinux.org.uk>
-Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of devm_clk_get for prepared and enabled clocks enabled clocks]
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     alexandre.belloni@bootlin.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        thierry.reding@gmail.com, lee.jones@linaro.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Ludovic.Desroches@microchip.com, o.rempel@pengutronix.de,
-        andy.shevchenko@gmail.com, aardelean@deviqon.com,
-        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        broonie@kernel.org, Jonathan.Cameron@huawei.com,
-        linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        wsa@kernel.org, kernel@pengutronix.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, Claudiu.Beznea@microchip.com
-To:     Russell King (Oracle) <linux@armlinux.org.uk>,
-        <u.kleine-koenig@pengutronix.de>
-Date:   Tue, 03 Aug 2021 01:11:54 -0700
-Message-ID: <162797831443.714452.3551045763456936564@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210727070517.443167-6-senozhatsky@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfL9glTvDB4IJVNjXR/BbbplpliCXT7ZRiUm3ex+DKhuzQvOevne25CJdJ0yxy2idMFon6V9BnducT0FYnzUwcn+EELFJb5A+8IsC0eRllSqYpmVLpHuG
+ yWWpm2YRkcTy0eBjb0qV+YTJn8iJ/t838Km1ZJ3TNTmztldLdfyEBNLewZoTdhQbgg9R5x1O7IRhEQzhs7SF2KJ13tPEbpcv/O7XO50FthJrM5usAtE6YYGE
+ yESOIXrUw+XvJEtlF4+1N0nimaCcPgpneeKyd3r1iX+L/PAmalu3mafiMlFOVtYqgQc7nwi3MOM9DWYg2IMVsYplQY6nQdRV+KPkgrGF7dhp1mocLOZokEat
+ iG8OqoTjjvhojmhJz39iBeEJiaBCGFBa1zXdPauSZBiMun0t1cRLd+rdjlLQW8Yf11jiTzV9zNvw4dKQUGc8TvRL4fZXL2P5K02IxU7vUAnm0hYww0IZYO4P
+ CTpfRsevLMXEreFB8HQLjdSVWZOFaKYGxbsmTcgrO6owPAgm74DNATDAUVX4vN6gmjg12JWSJ+sDNyip
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Russell King (Oracle) (2021-08-02 09:38:24)
-> On Mon, Aug 02, 2021 at 05:27:55PM +0200, Uwe Kleine-Konig wrote:
-> > Hello Russell,
-> >=20
-> > On Mon, Aug 02, 2021 at 10:48:10AM +0100, Russell King (Oracle) wrote:
->=20
-> > > There have been several different approaches to wrapping things up,
-> > > but here's a question: should we make it easier to do the lazy thing
-> > > (get+enable) or should we make it easier to be power efficient?
-> > > Shouldn't we be encouraging people to write power efficient drivers?
-> >=20
-> > Yeah, sounds compelling, but I wonder if that's of practical importance.
-> > How many driver authors do you expect to lure into making a better
-> > driver just because devm_clk_get_prepared() doesn't exist? In contrast:
-> > How many drivers become simpler with devm_clk_get_prepared() and so
-> > it becomes easier to maintain them and easier to spot bugs?
-> > In the absence of devm_clk_get_prepared(), is it better that several
-> > frameworks (or drivers) open code it?
->=20
-> It probably depends on where you stand on power management and power
-> efficiency issues. Personally, I would like to see more effort put
-> into drivers to make them more power efficient, and I believe in the
-> coming years, power efficiency is going to become a big issue.
->=20
+On 27/07/2021 09:05, Sergey Senozhatsky wrote:
+> By setting or clearing V4L2_MEMORY_FLAG_NON_COHERENT flag
 
-I agree we should put more effort into power efficiency in the kernel.
-I've occasionally heard from driver writers that they never will turn
-the clk off even in low power modes though. They feel like it's a
-nuisance to have to do anything with the clk framework in their driver.
-When I say "why not use runtime PM?" I get told that they're not turning
-the clk off because it needs to be on all the time, so using runtime PM
-makes the driver more complicated, not less, and adds no value. I think
-some touchscreens are this way, and watchdogs too. Looking at the
-drivers being converted in this series I suspect RTC is one of those
-sorts of devices as well. But SPI and I2C most likely could benefit from
-using runtime PM and so those ones don't feel appropriate to convert.
+clearing -> clearing the
 
-Maybe this series would be more compelling if those various drivers that
-are hand rolling the devm action were converted to the consolidated
-official devm function. The truth is it's already happening in various
-subsystems so consolidating that logic into one place would be a win
-code size wise and very hard to ignore.
+> user-space should be able to hint vb2 that either a non-coherent
 
-Doing
+either a -> either
 
- $ git grep devm_add_action | grep clk
+> (if supported) or coherent memory should be used for the buffer
+> allocation.
 
-seems to catch quite a few of them.
+Regards,
+
+	Hans
+
+> 
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  .../userspace-api/media/v4l/buffer.rst        | 40 ++++++++++++++++++-
+>  .../media/v4l/vidioc-reqbufs.rst              |  5 ++-
+>  include/uapi/linux/videodev2.h                |  2 +
+>  3 files changed, 43 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
+> index e991ba73d873..4638ec64db00 100644
+> --- a/Documentation/userspace-api/media/v4l/buffer.rst
+> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
+> @@ -676,8 +676,6 @@ Buffer Flags
+>  
+>      \normalsize
+>  
+> -.. _memory-flags:
+> -
+>  enum v4l2_memory
+>  ================
+>  
+> @@ -701,6 +699,44 @@ enum v4l2_memory
+>        - 4
+>        - The buffer is used for :ref:`DMA shared buffer <dmabuf>` I/O.
+>  
+> +.. _memory-flags:
+> +
+> +Memory Consistency Flags
+> +------------------------
+> +
+> +.. raw:: latex
+> +
+> +    \small
+> +
+> +.. tabularcolumns:: |p{7.0cm}|p{2.1cm}|p{8.4cm}|
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table::
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       3 1 4
+> +
+> +    * .. _`V4L2-MEMORY-FLAG-NON-COHERENT`:
+> +
+> +      - ``V4L2_MEMORY_FLAG_NON_COHERENT``
+> +      - 0x00000001
+> +      - A buffer is allocated either in coherent (it will be automatically
+> +	coherent between the CPU and the bus) or non-coherent memory. The
+> +	latter can provide performance gains, for instance the CPU cache
+> +	sync/flush operations can be avoided if the buffer is accessed by the
+> +	corresponding device only and the CPU does not read/write to/from that
+> +	buffer. However, this requires extra care from the driver -- it must
+> +	guarantee memory consistency by issuing a cache flush/sync when
+> +	consistency is needed. If this flag is set V4L2 will attempt to
+> +	allocate the buffer in non-coherent memory. The flag takes effect
+> +	only if the buffer is used for :ref:`memory mapping <mmap>` I/O and the
+> +	queue reports the :ref:`V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS
+> +	<V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS>` capability.
+> +
+> +.. raw:: latex
+> +
+> +    \normalsize
+>  
+>  Timecodes
+>  =========
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> index 50ea72043bb0..e59306aba2b0 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> @@ -158,8 +158,9 @@ aborting or finishing any DMA in progress, an implicit
+>        - This capability is set by the driver to indicate that the queue supports
+>          cache and memory management hints. However, it's only valid when the
+>          queue is used for :ref:`memory mapping <mmap>` streaming I/O. See
+> -        :ref:`V4L2_BUF_FLAG_NO_CACHE_INVALIDATE <V4L2-BUF-FLAG-NO-CACHE-INVALIDATE>` and
+> -        :ref:`V4L2_BUF_FLAG_NO_CACHE_CLEAN <V4L2-BUF-FLAG-NO-CACHE-CLEAN>`.
+> +        :ref:`V4L2_BUF_FLAG_NO_CACHE_INVALIDATE <V4L2-BUF-FLAG-NO-CACHE-INVALIDATE>`,
+> +        :ref:`V4L2_BUF_FLAG_NO_CACHE_CLEAN <V4L2-BUF-FLAG-NO-CACHE-CLEAN>` and
+> +        :ref:`V4L2_MEMORY_FLAG_NON_COHERENT <V4L2-MEMORY-FLAG-NON-COHERENT>`.
+>  
+>  .. raw:: latex
+>  
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 9260791b8438..9d11e1d9c934 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -956,6 +956,8 @@ struct v4l2_requestbuffers {
+>  	__u32			reserved[1];
+>  };
+>  
+> +#define V4L2_MEMORY_FLAG_NON_COHERENT			(1 << 0)
+> +
+>  /* capabilities for struct v4l2_requestbuffers and v4l2_create_buffers */
+>  #define V4L2_BUF_CAP_SUPPORTS_MMAP			(1 << 0)
+>  #define V4L2_BUF_CAP_SUPPORTS_USERPTR			(1 << 1)
+> 
+
