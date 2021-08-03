@@ -2,86 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D887D3DE38F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9A93DE399
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbhHCA2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 20:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
+        id S232942AbhHCAfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 20:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbhHCA2U (ORCPT
+        with ESMTP id S232686AbhHCAfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 20:28:20 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EF6C06175F;
-        Mon,  2 Aug 2021 17:28:10 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so566143wms.2;
-        Mon, 02 Aug 2021 17:28:10 -0700 (PDT)
+        Mon, 2 Aug 2021 20:35:24 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B74C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 17:35:13 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id i10so21677960pla.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 17:35:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=a6zMTnyhxtAg+is2Anr1ik8iwgNvzi3rO1H5TWqTrow=;
-        b=ms3MufsY0PL33FUD0/BqRTZXAw5KkvYccyQI0Zm3JxM6faJ4hI2TDbztO8P3KdB/eP
-         YZhL703hny09+LjmCtS4xoXL3vWDRgxGK88uUG1eAO0V+HSxY7VTEVjEFWQFjRkqvn5x
-         j6vHBV7fsAtT2BKPa7mn3XYyeH8dg17bfqH3pYspa2epPBaW42eLHa8iioS0gaqTRNFT
-         YewIsOQfGmIdYs9iz0RtmyqsMm3XdKszxurVJGrow551BcJHZ02RXGjVnCzuGv0QKHtH
-         Gu+ldbHqXpO6YigUSXkFidRQhUgenFuvPz9asjrAr4bN7VHjzeG/RVctULO8lTuJwRxX
-         0DiA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5xi7k8IuxcGb5LOBYAbguxfQfTtnnwxeja/w2hdMqvk=;
+        b=BPBmBK6Oa9Fz1/ejFbBvP9PntE5M4Y/6SY4aMOApSL2NBqNeYpiuuKQDXikcP2is+8
+         KwthFSUh59S+lqmZMHGQL/iqOYk5FHP9SnNinoO4RO1xwhcM5rgxlMILuWQmOKxcAIPn
+         zJeKBCiGKcqtCYJZisFLf8biie1/ZYgMr5jveWfaC7x1qCTFlIIrCJZk1gP3QbL2B3La
+         Ki8/oXSrAOROvW1S45zSi238dvzbRFlHJnddY1BZDizVXmVMNUBr92JGVnZXe7iI0YEZ
+         CtoFFJcaY3q9gKDkWDB+mb3Sj0a3DGfi6gqy+vFZujkPJ+AkR329+XyiHF4N0jYmEkuh
+         IbTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=a6zMTnyhxtAg+is2Anr1ik8iwgNvzi3rO1H5TWqTrow=;
-        b=SpIOdCS4CMC3sOHNUl2M6JeQKA3ERo7bOFVWdiukT68TK5tBkc1QRlhIFF1ox+z46c
-         d2dyULUDZj4NK3igNpiPO3Wvd4jb9TyhZeIM07squooA5ltf4vty++YvAcmP+spXu1Dn
-         vPzC1i+6Zwv2JsbO2M8EJrEBQYBb8Pqtq9ksYgpSOTsJPbZJDNulmT527M8rYvV7/ioz
-         7awYWldeVKsrgi7ml9d07lQbS+IKyS2Nyhsyu9MFIxmgYnCGwSYtS+KCv6uNpCDqwn3Y
-         bQTNiEhbh1yCg7Veu9Jm/TQnkInJM+AgkW+vPGJmrsEoKnkuE0/2KpcjI/028H/UzX+u
-         inpA==
-X-Gm-Message-State: AOAM530+mfNcbXHI3TCvahjkUZjtjfgJCYaOKsSeYQ0/rzHipCM3QxD7
-        5XgSnCqDfkYDqtOZ0S27crzMTpAvavJMQg==
-X-Google-Smtp-Source: ABdhPJxjXMWoX3k2SCMluZicxEDWkXd2ybcJDRCRobAWAQ1euGztEasOj3CA+RGWio6U3euXkv1giA==
-X-Received: by 2002:a7b:c402:: with SMTP id k2mr1428731wmi.136.1627950488804;
-        Mon, 02 Aug 2021 17:28:08 -0700 (PDT)
-Received: from pc ([196.235.140.151])
-        by smtp.gmail.com with ESMTPSA id l41sm12748562wmp.23.2021.08.02.17.28.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 17:28:08 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 01:28:06 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Pete Zaitcev <zaitcev@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: class: usblp: replace conditional statement with min()
-Message-ID: <20210803002806.GA1541734@pc>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5xi7k8IuxcGb5LOBYAbguxfQfTtnnwxeja/w2hdMqvk=;
+        b=C0wB4S64mcDWwLkQ9Nqz7FJW9GUS/LEOWDBzbR4DCJEkNWl/6y3lj90tdHDCjdss1x
+         YN8lbTzWxHcyfVwyTFTm2crLLDYdw2KmehgOX3OllFx7BOQpaIrPytcFjOfLNC58eyKG
+         a1llUIXhpSyMaPo8b9dlPaquNKIVVzIB6PVt99rLnn4cVvP83ZznuMcbwzXtrmhd1LxZ
+         DOErv24yxwBrlKMUFtqdGpjCe+tOUi0LwTtKcTuv3hSokuf3jP9Xnvm06NkIq348tlNK
+         5NvkV0iHROT6bR6zvnnT9l6PJNHfwVZ6FNJzxGnylrVlPEuuEyYJwleOf+irx3mrn6qQ
+         SgWg==
+X-Gm-Message-State: AOAM532Sh2GqBRf3zRIjZYTOLZMWFGG5Q4Q/DnOZLxRhmGYYgL/fG/dE
+        qUj7u0U89Dm/tfNpqrhXph/vTPi8aqAFsfd1QqKeEQ==
+X-Google-Smtp-Source: ABdhPJyD/SoLzWfUHi1/eto0p7V/jbYQ+j7Zgt/Ff2rWqOX90CU7XVmBN71cEqRz0BEe3ypUcORU14MWzQ39UTDFVTA=
+X-Received: by 2002:a17:90b:1a92:: with SMTP id ng18mr20057710pjb.86.1627950912360;
+ Mon, 02 Aug 2021 17:35:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210624171759.4125094-1-dianders@chromium.org>
+ <YNXXwvuErVnlHt+s@8bytes.org> <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
+ <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
+ <YOaymBHc4g2cIfRn@8bytes.org> <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
+ <e3555c49-2978-355f-93bb-dbfa7d09cab8@arm.com> <CAD=FV=XaTqNDn=vLEXfJ2dV+EH2UoxPfzWeiS+_sZ9hrQ274bw@mail.gmail.com>
+ <CACK8Z6FV+QYR01=aP4AT8rNUQMkX-WwesHzf5XY8465KuUZ=_Q@mail.gmail.com>
+In-Reply-To: <CACK8Z6FV+QYR01=aP4AT8rNUQMkX-WwesHzf5XY8465KuUZ=_Q@mail.gmail.com>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Mon, 2 Aug 2021 17:34:36 -0700
+Message-ID: <CACK8Z6Hzy+t05kY0VGwEnzcHZXgg9BAuS+DmRf3==J+G62qXgQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
+        Saravana Kannan <saravanak@google.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Sonny Rao <sonnyrao@chromium.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace conditional statement with min() in order to make code cleaner. Issue
-found by coccinelle.
+Hi Rob,
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
----
- drivers/usb/class/usblp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Aug 2, 2021 at 5:09 PM Rajat Jain <rajatja@google.com> wrote:
+>
+> Hi Robin, Doug,
+>
+> On Wed, Jul 14, 2021 at 8:14 AM Doug Anderson <dianders@chromium.org> wrote:
+> >
+> > Hi,
+> >
+> > On Tue, Jul 13, 2021 at 11:07 AM Robin Murphy <robin.murphy@arm.com> wrote:
+> > >
+> > > On 2021-07-08 15:36, Doug Anderson wrote:
+> > > [...]
+> > > >> Or document for the users that want performance how to
+> > > >> change the setting, so that they can decide.
+> > > >
+> > > > Pushing this to the users can make sense for a Linux distribution but
+> > > > probably less sense for an embedded platform. So I'm happy to make
+> > > > some way for a user to override this (like via kernel command line),
+> > > > but I also strongly believe there should be a default that users don't
+> > > > have to futz with that we think is correct.
+> > >
+> > > FYI I did make progress on the "punt it to userspace" approach. I'm not
+> > > posting it even as an RFC yet because I still need to set up a machine
+> > > to try actually testing any of it (it's almost certainly broken
+> > > somewhere), but in the end it comes out looking surprisingly not too bad
+> > > overall. If you're curious to take a look in the meantime I put it here:
+> > >
+> > > https://gitlab.arm.com/linux-arm/linux-rm/-/commits/iommu/fq
 
-diff --git a/drivers/usb/class/usblp.c b/drivers/usb/class/usblp.c
-index f27b4aecff3d..fd779a989526 100644
---- a/drivers/usb/class/usblp.c
-+++ b/drivers/usb/class/usblp.c
-@@ -264,7 +264,7 @@ static int usblp_ctrl_msg(struct usblp *usblp, int request, int type, int dir, i
- 	dev_dbg(&usblp->intf->dev,
- 		"usblp_control_msg: rq: 0x%02x dir: %d recip: %d value: %d idx: %d len: %#x result: %d\n",
- 		request, !!dir, recip, value, index, len, retval);
--	return retval < 0 ? retval : 0;
-+	return min(retval, 0);
- }
- 
- #define usblp_read_status(usblp, status)\
--- 
-2.25.1
+BTW, is there another mirror to this? I (and another colleague) are
+getting the following error when trying to clone it:
 
+rajatja@rajat2:~/rob_iommu$ git clone
+https://git.gitlab.arm.com/linux-arm/linux-rm.git
+Cloning into 'linux-rm'...
+remote: Enumerating objects: 125712, done.
+remote: Counting objects: 100% (125712/125712), done.
+remote: Compressing objects: 100% (41203/41203), done.
+error: RPC failed; curl 18 transfer closed with outstanding read data remaining
+error: 804 bytes of body are still expected
+fetch-pack: unexpected disconnect while reading sideband packet fatal:
+early EOF
+fatal: fetch-pack: invalid index-pack output rajatja@rajat2:~/rob_iommu$
+
+We've tried both git and https methods.
+
+>
+> I was wondering if you got any closer to testing / sending it out? I
+> looked at the patches and am trying to understand, would they also
+> make it possible to convert at runtime, an existing "non-strict"
+> domain (for a particular device) into a "strict" domain leaving the
+> other devices/domains as-is? Please let me know when you think your
+> patches are good to be tested, and I'd also be interested in trying
+> them out.
+>
+> >
+> > Being able to change this at runtime through sysfs sounds great and it
+> > fills all the needs I'm aware of, thanks! In Chrome OS we can just use
+> > this with some udev rules and get everything we need.
+>
+> I still have another (inverse) use case where this does not work:
+> We have an Intel chromebook with the default domain type being
+> non-strict. There is an LTE modem (an internal PCI device which cannot
+> be marked external), which we'd like to be treated as a "Strict" DMA
+> domain.
+>
+> Do I understand it right that using Rob's patches, I could potentially
+> switch the domain to "strict" *after* booting (since we don't use
+> initramfs), but by that time, the driver might have already attached
+> to the modem device (using "non-strict" domain), and thus the damage
+> may have already been done? So perhaps we still need a device property
+> that the firmware could use to indicate "strictness" for certain
+> devices at boot?
+>
+> Thanks,
+> Rajat
