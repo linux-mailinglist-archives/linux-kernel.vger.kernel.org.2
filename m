@@ -2,75 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A103E3DE6F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DF33DE6FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233979AbhHCHGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:06:13 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60686 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbhHCHGL (ORCPT
+        id S234134AbhHCHIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234108AbhHCHIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:06:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C47C921DEB;
-        Tue,  3 Aug 2021 07:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627974359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HXoSXB6BHd2s7Z7Nu01Vf6RqwUphqbW5sKmtUSQV2Do=;
-        b=Ja/yJ8npNDs0v7SpPu7OzzCUszBh7T903Yyt+8EqKv2o/z7b/4+PO7UOISQrhGJ/wRo+x4
-        cXXEPU0ICaeucRezdCMumTcsDLF67mJrJCDIbCweya7oUFl7/dKlO7iUeqDyYAbD1el64m
-        eIZFOY7UaGmvcIyXV2XXlOkM+tX5ZRk=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 68A84A3BCB;
-        Tue,  3 Aug 2021 07:05:59 +0000 (UTC)
-Date:   Tue, 3 Aug 2021 09:05:58 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Aaron Tomlin <atomlin@redhat.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        penguin-kernel@i-love.sakura.ne.jp, rientjes@google.com,
-        llong@redhat.com, neelx@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm/oom_kill: show oom eligibility when displaying the
- current memory state of all tasks
-Message-ID: <YQjq1mXDXcS1CMMO@dhcp22.suse.cz>
-References: <20210730162002.279678-1-atomlin@redhat.com>
- <YQeR8FTlzrojIbSo@dhcp22.suse.cz>
- <20210802151250.lqn5fu5pioygsry6@ava.usersys.com>
+        Tue, 3 Aug 2021 03:08:06 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A5AC061796
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:07:55 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so2632733pjs.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WN6UWlQHlJrqX7fWKP3w+a4gz17W1v3husZzZ4lYdZs=;
+        b=FG0BxQgTNclREe9wLVv4qS4z2N2sM3E8tcxJy7sG5CSbcRPTBPLmmzNBD++56n1i0Y
+         iAlp6ISBOSnkdYxdVe/Zu8i/Zkxikk3+SUwgoKONvFraMu/GvvzYdYTtcdIyhpEuRhHy
+         dvyre83Eg6GNEFlItaCRt9/Z7jox9BnAyajaE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WN6UWlQHlJrqX7fWKP3w+a4gz17W1v3husZzZ4lYdZs=;
+        b=SSNdjMWtASZK5fjBZrRfXCdrhL05Y0xGbwi0mplVPCTJVCy/CSjqAugfG7GzMLalsi
+         Q7wJCstmrCCudxlleJLscoAPX2q+AeoQEUkrhn+sQ+YrEPRbVPRwj4D20MKLwYCHzFXw
+         jNU2ibG94mKyL7pLIhBy1h3EMKIouf/uCG3ajkn1K1g1cvRoCtqS0WeoH170ZouHWl/k
+         wtQuLHLJS4wjVzF/YRYEWMpBNZ/GEu9VKXBSPBtVuYQ97G1EWk7x01TgU3MUedGrb7b/
+         PSy8TJEloQfEQNd/g5F+IYB6RTb13SQ20+gLvGtpaqun/v4hriVxPkhRgnBJJek6X2kK
+         yp7A==
+X-Gm-Message-State: AOAM531AmYu1xYmXJ4zJvH5aMP6SAekQLrgI/kuM4TPEN8XCtbgGw1K2
+        u1EisnLpuA+Epgah/wGsthlvUA==
+X-Google-Smtp-Source: ABdhPJzwY/O8zGrmytB0XZTu4NI3puVLQ4qTvp0bifc+rcCa4MZIaf+qz4BUpXKkmLFaMBheKpJfSg==
+X-Received: by 2002:a65:63cf:: with SMTP id n15mr189772pgv.392.1627974475115;
+        Tue, 03 Aug 2021 00:07:55 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c14sm15852676pgv.86.2021.08.03.00.07.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 00:07:54 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 00:07:53 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-hardening@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joe Perches <joe@perches.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] drivers/input: Remove all strcpy() uses in favor of
+ strscpy()
+Message-ID: <202108022354.49612943B7@keescook>
+References: <20210801144316.12841-1-len.baker@gmx.com>
+ <20210801145959.GI22278@shell.armlinux.org.uk>
+ <20210801155732.GA16547@titan>
+ <202108010934.FA668DEB28@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210802151250.lqn5fu5pioygsry6@ava.usersys.com>
+In-Reply-To: <202108010934.FA668DEB28@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 02-08-21 16:12:50, Aaron Tomlin wrote:
-> On Mon 2021-08-02 08:34 +0200, Michal Hocko wrote:
-> > If you really want/need to make any change here then I would propose to
-> > either add E(eligible)/I(ligible) column without any specifics or
-> > consistently skip over all tasks which are not eligible.
+On Sun, Aug 01, 2021 at 09:44:33AM -0700, Kees Cook wrote:
+> On Sun, Aug 01, 2021 at 05:57:32PM +0200, Len Baker wrote:
+> > Hi,
+> > 
+> > On Sun, Aug 01, 2021 at 04:00:00PM +0100, Russell King (Oracle) wrote:
+> > > On Sun, Aug 01, 2021 at 04:43:16PM +0200, Len Baker wrote:
+> > > > strcpy() performs no bounds checking on the destination buffer. This
+> > > > could result in linear overflows beyond the end of the buffer, leading
+> > > > to all kinds of misbehaviors. The safe replacement is strscpy().
+> > > >
+> > > > Signed-off-by: Len Baker <len.baker@gmx.com>
+> > > > ---
+> > > > This is a task of the KSPP [1]
+> > > >
+> > > > [1] https://github.com/KSPP/linux/issues/88
+> > > >
+> > > >  drivers/input/keyboard/locomokbd.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/input/keyboard/locomokbd.c b/drivers/input/keyboard/locomokbd.c
+> > > > index dae053596572..dbb3dc48df12 100644
+> > > > --- a/drivers/input/keyboard/locomokbd.c
+> > > > +++ b/drivers/input/keyboard/locomokbd.c
+> > > > @@ -254,7 +254,7 @@ static int locomokbd_probe(struct locomo_dev *dev)
+> > > >  	locomokbd->suspend_jiffies = jiffies;
+> > > >
+> > > >  	locomokbd->input = input_dev;
+> > > > -	strcpy(locomokbd->phys, "locomokbd/input0");
+> > > > +	strscpy(locomokbd->phys, "locomokbd/input0", sizeof(locomokbd->phys));
+> > >
+> > > So if the string doesn't fit, it's fine to silently truncate it?
+> > 
+> > I think it is better than overflow :)
+> > 
+> > > Rather than converting every single strcpy() in the kernel to
+> > > strscpy(), maybe there should be some consideration given to how the
+> > > issue of a strcpy() that overflows the buffer should be handled.
+> > > E.g. in the case of a known string such as the above, if it's longer
+> > > than the destination, should we find a way to make the compiler issue
+> > > a warning at compile time?
+> > 
+> > Good point. I am a kernel newbie and have no experience. So this
+> > question should be answered by some kernel hacker :) But I agree
+> > with your proposals.
+> > 
+> > Kees and folks: Any comments?
+> > 
+> > Note: Kees is asked the same question in [2]
+> > 
+> > [2] https://lore.kernel.org/lkml/20210731135957.GB1979@titan/
 > 
-> How about the suggestion made by David i.e. exposing the value returned by
-> oom_badness(), as if I understand correctly, this would provide a more
-> complete picture with regard to the rationale used?
+> Hi!
+> 
+> Sorry for the delay at looking into this. It didn't use to be a problem
+> (there would always have been a compile-time warning generated for
+> known-too-small cases), but that appears to have regressed when,
+> ironically, strscpy() coverage was added. I've detailed it in the bug
+> report:
+> https://github.com/KSPP/linux/issues/88
+> 
+> So, bottom line: we need to fix the missing compile-time warnings for
+> strcpy() and strscpy() under CONFIG_FORTIFY_SOURCE=y.
 
-There were some attempts to print oom_score during OOM. E.g.
-http://lkml.kernel.org/r/20190808183247.28206-1-echron@arista.com. That
-one was rejected on the grounds that the number on its own doesn't
-really present any real value. It is really only valuable when comparing
-to other potential oom victims. I have to say I am still worried about
-printing this internal scoring as it should have really been an
-implementation detail but with /proc/<pid>/oom_score this is likely a
-lost battle and I am willing to give up on that front.
+I've got these fixed now, and will send them out likely tomorrow, but I
+did, in fact, find 4 cases of truncation, all in v4l, and all appear to
+have been truncated since introduction:
 
-I am still not entirely convinced this is worth doing though.
-oom_badness is not a cheap operation. task_lock has to be taken again
-during dump_tasks for each task so the already quite expensive operation
-will be more so. Is this really something we cannot live without?
+struct v4l2_capability {
+...
+        __u8    card[32];
+(stores 31 characters)
+
+drivers/media/radio/radio-wl1273.c:1282
+wl1273_fm_vidioc_querycap()
+            strscpy(capability->card, "Texas Instruments Wl1273 FM Radio",
+                    sizeof(capability->card));
+33 characters, getting truncated to:
+Texas Instruments Wl1273 FM Rad
+87d1a50ce45168cbaec10397e876286a398052c1
+
+drivers/media/radio/si470x/radio-si470x-usb.c:514
+si470x_vidioc_querycap()
+#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
+            strscpy(capability->card, DRIVER_CARD,
+sizeof(capability->card));
+37 characters, getting truncated to:
+Silicon Labs Si470x FM Radio Re
+78656acdcf4852547a29e929a1b7a98d5ac65f17
+
+drivers/media/radio/si470x/radio-si470x-i2c.c:225
+si470x_vidioc_querycap()
+#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
+            strscpy(capability->card, DRIVER_CARD,
+sizeof(capability->card));
+37 characters, getting truncated to:
+Silicon Labs Si470x FM Radio Re
+cc35bbddfe10f77d949f0190764b252cd2b70c3c
+
+drivers/media/usb/tm6000/tm6000-video.c:855
+vidioc_querycap()
+            strscpy(cap->card, "Trident TVMaster TM5600/6000/6010",
+                    sizeof(cap->card));
+33 characters, getting truncated to:
+Trident TVMaster TM5600/6000/60
+e28f49b0b2a8e678af62745ffdc4e4f36d7283a6
+
+How should these be handled? I assume v4l2_capability::card can't be
+resized since it's part of IOCTL response, so likely all the string just
+need to be shortened in some way? Seems like dropping the manufacturer
+name makes the most sense, since manufacturer can be kind of derived
+from the driver names.
+
+Thoughts?
+
+-Kees
+
 -- 
-Michal Hocko
-SUSE Labs
+Kees Cook
