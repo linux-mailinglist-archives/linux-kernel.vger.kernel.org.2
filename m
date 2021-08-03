@@ -2,258 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89223DF599
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58373DF59E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239901AbhHCT2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239730AbhHCT2N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:28:13 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960F2C06175F;
-        Tue,  3 Aug 2021 12:28:01 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 42EF81F43412
-Message-ID: <a3faa3c6b82d8fde19bb87b90ca133ca914ea526.camel@collabora.com>
-Subject: Re: [PATCH v1 2/2] media: hantro: Add scaling lists feature
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        hverkuil@xs4all.nl, p.zabel@pengutronix.de, mchehab@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com, jc@kynesim.co.uk,
-        jernej.skrabec@gmail.com, nicolas@ndufresne.ca, cphealy@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Tue, 03 Aug 2021 16:27:49 -0300
-In-Reply-To: <1c3d2d66902978e3533074b4d95c8da220cab255.camel@collabora.com>
-References: <20210715151223.656453-1-benjamin.gaignard@collabora.com>
-         <20210715151223.656453-3-benjamin.gaignard@collabora.com>
-         <1c3d2d66902978e3533074b4d95c8da220cab255.camel@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S239913AbhHCT3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:29:09 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13482 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230376AbhHCT3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 15:29:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="194045227"
+X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
+   d="scan'208";a="194045227"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 12:28:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
+   d="scan'208";a="585103661"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 03 Aug 2021 12:28:53 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 32976169; Tue,  3 Aug 2021 22:29:22 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH v1 1/5] serdev: Split and export serdev_acpi_get_uart_resource()
+Date:   Tue,  3 Aug 2021 22:29:01 +0300
+Message-Id: <20210803192905.72246-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-03 at 16:15 -0300, Ezequiel Garcia wrote:
-> On Thu, 2021-07-15 at 17:12 +0200, Benjamin Gaignard wrote:
-> > If the bitstream embedded scaling lists allow the driver to use
-> > them for decode the frames.
-> > The scaling lists are expected to be in raster scan order (i.e. not up
-> > right diagonal scan order)
-> > Allocate the memory needed to store lists.
-> > 
-> > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> 
-> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-> 
+The same as for I²C Serial Bus resource split and export
+serdev_acpi_get_uart_resource(). We have already 3 users
+one of which is converted here.
 
-Forgot to mention that I couldn't apply this patch,
-so my R-b assumes this is tested and passes the usual tests.
+Rationale of this is to consolidate parsing UART Serial Bus
+resource in one place as it's done, e.g., for I²C Serial Bus.
 
-Thanks!
-Ezequiel
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/tty/serdev/core.c | 36 +++++++++++++++++++++++++++++-------
+ include/linux/serdev.h    | 14 ++++++++++++++
+ 2 files changed, 43 insertions(+), 7 deletions(-)
 
-> Thanks!
-> 
-> > ---
-> >  drivers/staging/media/hantro/hantro_drv.c     |  8 +--
-> >  .../staging/media/hantro/hantro_g2_hevc_dec.c | 52 +++++++++++++++++++
-> >  drivers/staging/media/hantro/hantro_hevc.c    | 21 ++++++++
-> >  drivers/staging/media/hantro/hantro_hw.h      |  3 ++
-> >  4 files changed, 81 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> > index 8ad074a464fe..5610b7821a54 100644
-> > --- a/drivers/staging/media/hantro/hantro_drv.c
-> > +++ b/drivers/staging/media/hantro/hantro_drv.c
-> > @@ -267,9 +267,6 @@ static int hantro_try_ctrl(struct v4l2_ctrl *ctrl)
-> >                     sps->bit_depth_luma_minus8 != 2)
-> >                         /* Only 8-bit or 10-bit is supported */
-> >                         return -EINVAL;
-> > -               if (sps->flags & V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED)
-> > -                       /* No scaling support */
-> > -                       return -EINVAL;
-> >         }
-> >         return 0;
-> >  }
-> > @@ -451,6 +448,11 @@ static const struct hantro_ctrl controls[] = {
-> >                 .cfg = {
-> >                         .id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
-> >                 },
-> > +       }, {
-> > +               .codec = HANTRO_HEVC_DECODER,
-> > +               .cfg = {
-> > +                       .id = V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX,
-> > +               },
-> >         }, {
-> >                 .codec = HANTRO_HEVC_DECODER,
-> >                 .cfg = {
-> > diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> > index 90de74aa6b13..f95135ad553c 100644
-> > --- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> > +++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> > @@ -608,6 +608,56 @@ static void set_buffers(struct hantro_ctx *ctx)
-> >         hantro_write_addr(vpu, G2_TILE_BSD, ctx->hevc_dec.tile_bsd.dma);
-> >  }
-> >  
-> > +static void prepare_scaling_list_buffer(struct hantro_ctx *ctx)
-> > +{
-> > +       struct hantro_dev *vpu = ctx->dev;
-> > +       const struct hantro_hevc_dec_ctrls *ctrls = &ctx->hevc_dec.ctrls;
-> > +       const struct v4l2_ctrl_hevc_scaling_matrix *sc = ctrls->scaling;
-> > +       const struct v4l2_ctrl_hevc_sps *sps = ctrls->sps;
-> > +       u8 *p = ((u8 *)ctx->hevc_dec.scaling_lists.cpu);
-> > +       unsigned int scaling_list_enabled;
-> > +       unsigned int i, j, k;
-> > +
-> > +       scaling_list_enabled = !!(sps->flags & V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED);
-> > +       hantro_reg_write(vpu, &g2_scaling_list_e, scaling_list_enabled);
-> > +
-> > +       if (!scaling_list_enabled)
-> > +               return;
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(sc->scaling_list_dc_coef_16x16); i++)
-> > +               *p++ = sc->scaling_list_dc_coef_16x16[i];
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(sc->scaling_list_dc_coef_32x32); i++)
-> > +               *p++ = sc->scaling_list_dc_coef_32x32[i];
-> > +
-> > +       /* 128-bit boundary */
-> > +       p += 8;
-> > +
-> > +       /* write scaling lists column by column */
-> > +
-> > +       for (i = 0; i < 6; i++)
-> > +               for (j = 0; j < 4; j++)
-> > +                       for (k = 0; k < 4; k++)
-> > +                               *p++ = sc->scaling_list_4x4[i][4 * k + j];
-> > +
-> > +       for (i = 0; i < 6; i++)
-> > +               for (j = 0; j < 8; j++)
-> > +                       for (k = 0; k < 8; k++)
-> > +                               *p++ = sc->scaling_list_8x8[i][8 * k + j];
-> > +
-> > +       for (i = 0; i < 6; i++)
-> > +               for (j = 0; j < 8; j++)
-> > +                       for (k = 0; k < 8; k++)
-> > +                               *p++ = sc->scaling_list_16x16[i][8 * k + j];
-> > +
-> > +       for (i = 0; i < 2; i++)
-> > +               for (j = 0; j < 8; j++)
-> > +                       for (k = 0; k < 8; k++)
-> > +                               *p++ = sc->scaling_list_32x32[i][8 * k + j];
-> > +
-> > +       hantro_write_addr(vpu, HEVC_SCALING_LIST, ctx->hevc_dec.scaling_lists.dma);
-> > +}
-> > +
-> >  static void hantro_g2_check_idle(struct hantro_dev *vpu)
-> >  {
-> >         int i;
-> > @@ -668,6 +718,8 @@ int hantro_g2_hevc_dec_run(struct hantro_ctx *ctx)
-> >         set_buffers(ctx);
-> >         prepare_tile_info_buffer(ctx);
-> >  
-> > +       prepare_scaling_list_buffer(ctx);
-> > +
-> >         hantro_end_prepare_run(ctx);
-> >  
-> >         hantro_reg_write(vpu, &g2_mode, HEVC_DEC_MODE);
-> > diff --git a/drivers/staging/media/hantro/hantro_hevc.c b/drivers/staging/media/hantro/hantro_hevc.c
-> > index 4e816ea73018..95f765d9ff4e 100644
-> > --- a/drivers/staging/media/hantro/hantro_hevc.c
-> > +++ b/drivers/staging/media/hantro/hantro_hevc.c
-> > @@ -20,6 +20,8 @@
-> >  /* tile border coefficients of filter */
-> >  #define VERT_SAO_RAM_SIZE 48 /* bytes per pixel */
-> >  
-> > +#define SCALING_LIST_SIZE (16 * 64)
-> > +
-> >  #define MAX_TILE_COLS 20
-> >  #define MAX_TILE_ROWS 22
-> >  
-> > @@ -296,6 +298,11 @@ int hantro_hevc_dec_prepare_run(struct hantro_ctx *ctx)
-> >         if (WARN_ON(!ctrls->decode_params))
-> >                 return -EINVAL;
-> >  
-> > +       ctrls->scaling =
-> > +               hantro_get_ctrl(ctx, V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX);
-> > +       if (WARN_ON(!ctrls->scaling))
-> > +               return -EINVAL;
-> > +
-> >         ctrls->sps =
-> >                 hantro_get_ctrl(ctx, V4L2_CID_MPEG_VIDEO_HEVC_SPS);
-> >         if (WARN_ON(!ctrls->sps))
-> > @@ -324,6 +331,12 @@ void hantro_hevc_dec_exit(struct hantro_ctx *ctx)
-> >                                   hevc_dec->tile_sizes.dma);
-> >         hevc_dec->tile_sizes.cpu = NULL;
-> >  
-> > +       if (hevc_dec->scaling_lists.cpu)
-> > +               dma_free_coherent(vpu->dev, hevc_dec->scaling_lists.size,
-> > +                                 hevc_dec->scaling_lists.cpu,
-> > +                                 hevc_dec->scaling_lists.dma);
-> > +       hevc_dec->scaling_lists.cpu = NULL;
-> > +
-> >         if (hevc_dec->tile_filter.cpu)
-> >                 dma_free_coherent(vpu->dev, hevc_dec->tile_filter.size,
-> >                                   hevc_dec->tile_filter.cpu,
-> > @@ -367,6 +380,14 @@ int hantro_hevc_dec_init(struct hantro_ctx *ctx)
-> >  
-> >         hevc_dec->tile_sizes.size = size;
-> >  
-> > +       hevc_dec->scaling_lists.cpu = dma_alloc_coherent(vpu->dev, SCALING_LIST_SIZE,
-> > +                                                        &hevc_dec->scaling_lists.dma,
-> > +                                                        GFP_KERNEL);
-> > +       if (!hevc_dec->scaling_lists.cpu)
-> > +               return -ENOMEM;
-> > +
-> > +       hevc_dec->scaling_lists.size = SCALING_LIST_SIZE;
-> > +
-> >         hantro_hevc_ref_init(ctx);
-> >  
-> >         return 0;
-> > diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-> > index d8126f8178f5..1becc22af0f9 100644
-> > --- a/drivers/staging/media/hantro/hantro_hw.h
-> > +++ b/drivers/staging/media/hantro/hantro_hw.h
-> > @@ -108,6 +108,7 @@ struct hantro_h264_dec_hw_ctx {
-> >   */
-> >  struct hantro_hevc_dec_ctrls {
-> >         const struct v4l2_ctrl_hevc_decode_params *decode_params;
-> > +       const struct v4l2_ctrl_hevc_scaling_matrix *scaling;
-> >         const struct v4l2_ctrl_hevc_sps *sps;
-> >         const struct v4l2_ctrl_hevc_pps *pps;
-> >         u32 hevc_hdr_skip_length;
-> > @@ -120,6 +121,7 @@ struct hantro_hevc_dec_ctrls {
-> >   * @tile_sao:          Tile SAO buffer
-> >   * @tile_bsd:          Tile BSD control buffer
-> >   * @ref_bufs:          Internal reference buffers
-> > + * @scaling_lists:     Scaling lists buffer
-> >   * @ref_bufs_poc:      Internal reference buffers picture order count
-> >   * @ref_bufs_used:     Bitfield of used reference buffers
-> >   * @ctrls:             V4L2 controls attached to a run
-> > @@ -131,6 +133,7 @@ struct hantro_hevc_dec_hw_ctx {
-> >         struct hantro_aux_buf tile_sao;
-> >         struct hantro_aux_buf tile_bsd;
-> >         struct hantro_aux_buf ref_bufs[NUM_REF_PICTURES];
-> > +       struct hantro_aux_buf scaling_lists;
-> >         int ref_bufs_poc[NUM_REF_PICTURES];
-> >         u32 ref_bufs_used;
-> >         struct hantro_hevc_dec_ctrls ctrls;
-> 
-
+diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+index 92498961fd92..436e3d1ba92c 100644
+--- a/drivers/tty/serdev/core.c
++++ b/drivers/tty/serdev/core.c
+@@ -562,23 +562,45 @@ struct acpi_serdev_lookup {
+ 	int index;
+ };
+ 
++/**
++ * serdev_acpi_get_uart_resource - Gets UARTSerialBus resource if type matches
++ * @ares:	ACPI resource
++ * @uart:	Pointer to UARTSerialBus resource will be returned here
++ *
++ * Checks if the given ACPI resource is of type UARTSerialBus.
++ * In this case, returns a pointer to it to the caller.
++ *
++ * Returns true if resource type is of UARTSerialBus, otherwise false.
++ */
++bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
++				   struct acpi_resource_uart_serialbus **uart)
++{
++	struct acpi_resource_uart_serialbus *sb;
++
++	if (ares->type != ACPI_RESOURCE_TYPE_SERIAL_BUS)
++		return false;
++
++	sb = &ares->data.uart_serial_bus;
++	if (sb->type != ACPI_RESOURCE_SERIAL_TYPE_UART)
++		return false;
++
++	*uart = sb;
++	return true;
++}
++EXPORT_SYMBOL_GPL(serdev_acpi_get_uart_resource);
++
+ static int acpi_serdev_parse_resource(struct acpi_resource *ares, void *data)
+ {
+ 	struct acpi_serdev_lookup *lookup = data;
+ 	struct acpi_resource_uart_serialbus *sb;
+ 	acpi_status status;
+ 
+-	if (ares->type != ACPI_RESOURCE_TYPE_SERIAL_BUS)
+-		return 1;
+-
+-	if (ares->data.common_serial_bus.type != ACPI_RESOURCE_SERIAL_TYPE_UART)
++	if (!serdev_acpi_get_uart_resource(ares, &sb))
+ 		return 1;
+ 
+ 	if (lookup->index != -1 && lookup->n++ != lookup->index)
+ 		return 1;
+ 
+-	sb = &ares->data.uart_serial_bus;
+-
+ 	status = acpi_get_handle(lookup->device_handle,
+ 				 sb->resource_source.string_ptr,
+ 				 &lookup->controller_handle);
+@@ -586,7 +608,7 @@ static int acpi_serdev_parse_resource(struct acpi_resource *ares, void *data)
+ 		return 1;
+ 
+ 	/*
+-	 * NOTE: Ideally, we would also want to retreive other properties here,
++	 * NOTE: Ideally, we would also want to retrieve other properties here,
+ 	 * once setting them before opening the device is supported by serdev.
+ 	 */
+ 
+diff --git a/include/linux/serdev.h b/include/linux/serdev.h
+index 9f14f9c12ec4..3368c261ab62 100644
+--- a/include/linux/serdev.h
++++ b/include/linux/serdev.h
+@@ -327,4 +327,18 @@ static inline int serdev_tty_port_unregister(struct tty_port *port)
+ }
+ #endif /* CONFIG_SERIAL_DEV_CTRL_TTYPORT */
+ 
++struct acpi_resource;
++struct acpi_resource_uart_serialbus;
++
++#ifdef CONFIG_ACPI
++bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
++				   struct acpi_resource_uart_serialbus **uart);
++#else
++static inline bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
++						 struct acpi_resource_uart_serialbus **uart)
++{
++	return false;
++}
++#endif /* CONFIG_ACPI */
++
+ #endif /*_LINUX_SERDEV_H */
 -- 
-Kindly,
-Ezequiel
+2.30.2
 
