@@ -2,109 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282D73DE886
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682383DE88B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbhHCIfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:35:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:44728 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234423AbhHCIfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:35:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 376B1D6E;
-        Tue,  3 Aug 2021 01:35:20 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 785AE3F70D;
-        Tue,  3 Aug 2021 01:35:18 -0700 (PDT)
-Subject: Re: [EXTERNAL] Re: [RFC 1/1] irqchip/gic-v3-its: Add irq domain and
- chip for Direct LPI without ITS
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Boqun Feng <Boqun.Feng@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <MW4PR21MB2002BA20FA4A8DAA1C27F4C6C0199@MW4PR21MB2002.namprd21.prod.outlook.com>
- <87a6mt2jke.wl-maz@kernel.org>
- <MW4PR21MB2002E51429F7E13B61A34FFEC0E89@MW4PR21MB2002.namprd21.prod.outlook.com>
- <87tuka24kj.wl-maz@kernel.org>
- <MW4PR21MB20027EAC23E8053210364E2BC0F09@MW4PR21MB2002.namprd21.prod.outlook.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <b2dea108-9166-dc9d-abd0-d22491f78568@arm.com>
-Date:   Tue, 3 Aug 2021 09:35:12 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234546AbhHCIjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:39:20 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:34083 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234423AbhHCIjT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:39:19 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id Apx4mTE0MXTlcApx5mkQB7; Tue, 03 Aug 2021 10:39:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1627979947; bh=OIuaIpUfwyQZg8i0jOmGRNtF+4Vy/qNOyRg2//4RvjU=;
+        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=aaaK5lB14dxcmDGwVfgzYsGMHrJunlnzj5C2t9Q5Tu1BBdi400+At9eZ/LhvIzYyk
+         51VqNjOTMx+ci8QLbbP3k5Fh1FWCDmyKUU8cS2ER5+K5hLAE43HuUdnrBi/PeQRaN0
+         kTQjBIdLuOqpgz7N28h9ibUIiqDfzPIehHT3ZbqlP6l548bgKh8gmZ8Z0ob+7IkUdz
+         f0OED93EfD+4IPA8UetvqhDT6oaWZLI/D2/qKKS6dY7empJ7cFR4VOcx0flW54pBdE
+         S9zPGubyfAiaGftEW/151I0h/7nL7yJBA/i+9f1uFJgqfuqVon4l2YZUI9xr1zlsbn
+         lbIrl3q/lm5PQ==
+Subject: Re: [PATCHv4 8/8] videobuf2: handle non-contiguous DMA allocations
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210727070517.443167-1-senozhatsky@chromium.org>
+ <20210727070517.443167-9-senozhatsky@chromium.org>
+ <7e172194-9519-fd1f-6261-c40108a5d722@xs4all.nl>
+Message-ID: <9e5b1d16-bfb8-dc89-beda-94a641be793d@xs4all.nl>
+Date:   Tue, 3 Aug 2021 10:39:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <MW4PR21MB20027EAC23E8053210364E2BC0F09@MW4PR21MB2002.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <7e172194-9519-fd1f-6261-c40108a5d722@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfIBefB2Xpo3TO8NDzX/zRNhrUYtT5+9pP0AxCa7d7NhhEd2XSqsY0XE4gcpdtt49Zdi/Zj5QCv7ir3WMkRKiHIZzznmu/B/BlaVfBcuiYgMS1gpxUtBP
+ i5xTIkYdB5qMtyWoWBZHMVMzsdhxlnWPqCGkHRb3fl2GkqqZw4cldPhYSP9BPio86ACRkkguqOcepeFt9spFcG6urRuV6NQ71zaje7XFcfra5/i0Xar5s+Di
+ EcIZ1U0bgE6JFqWgEiCji50tr8X62SrM8+eSbFPPxZyAEYNYhNBOP5fFs8AobdYImoswVsyjg3FQ+GIZB8NQHvt88bhc3EKDtDzKewhV6wc0DXQuH6JapKJr
+ ec60Y9XaoUg/3zbwKAP/ot1tvhUZxvNsdE9LKQ9MU+8tI17+KA3VCtijBDM3XTbrib1qIkGfa0cALh2tngFO3UXz3jiglNyMWw9t3sRszz8Mr+zL0fcVZA1w
+ g1d/kKGvJDuVfokp9CI5/5W2IhGqR1BfsTOaO8pvebqH6hrT/ZU+sZ1caZ5Gp0AqVB5naqfbBbXcwWNG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-03 03:11, Sunil Muthuswamy wrote:
->   On Saturday, July 31, 2021 2:52 AM,
->   Marc Zyngier <maz@kernel.org> wrote:
->>
->> [...]
->>
->>>> I also want to understand *how* you are going to plumb this into both
->>>> ACPI and DT, given that neither understand how to link a PCI endpoint
->>>> to a set of RDs.
->>>>
->>>> 	M.
->>>
->>> One way to do this for NUMA-aware systems would be to use the NUMA
->>> related information that is available with PCI endpoints or root complex, to
->>> pick a Redistributor/CPU that is in the NUMA node, as specified by the PCI
->>> endpoint/root complex. In DT PCI devices can specify this using
->>> 'numa-node-id' and in ACPI using the '_PXM (Proximity)'. For systems that
->>> are not NUMA-aware, we can go with *any* Redistributor/CPU.
->>
->> This makes zero sense. From the point of view of a device, all the RDs
->> should be reachable, and firmware has no say in it. Dealing with
->> interrupt affinity is the responsibility of the endpoint driver, and
->> NUMA affinity is only a performance optimisation.
->>
->>> Is there any additional information we would be able to gather from ACPI
->>> or DT that's not there currently, that would be useful here?
->>
->> You will need some firmware information describing that a given set of
->> devices must use the RDs for their MSIs. Just like we currently
->> describe it in IORT for the ITS. You cannot /assume/ things. At the
->> moment, there is nothing at all, because no-one (including Microsoft)
->> thought it would be a good idea not to have an ITS, which is also why
->> ACPI doesn't describe MBIs as a potential MSI provider.
->>
-> I am a little bit confused by your above comment. Maybe you can help me
-> understand the ask. You indicate that from the point of the view of the
-> device, all the RDs should be reachable. But, then if we define a mapping
-> between PCI endpoint and RD in the firmware, we would be doing exactly
-> the opposite. i.e. restricting the RDs that are reachable by the device. Can
-> you please clarify?
+On 03/08/2021 10:33, Hans Verkuil wrote:
+> On 27/07/2021 09:05, Sergey Senozhatsky wrote:
+>> This adds support for new noncontiguous DMA API, which
 > 
-> Is your concern that the device should be able to only DMA to a subset of
-> GIC Redistributor, for the MSIs? If so, in the IORT, there is "memory address
-> size limit" for both device and root complex nodes. In the implementation,
-> we can enforce that the GICR is within that range. And, if a device deviates
-> further than that (ex: by having accessibility gaps within the GICR range),
-> then that is out of scope for support.
+> for -> for the
+> 
+>> requires allocators to have two execution branches: one
+>> for the current API, and one for the new one.
+>>
+>> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+>> Acked-by: Christoph Hellwig <hch@lst.de>
+>> ---
+>>  .../common/videobuf2/videobuf2-dma-contig.c   | 142 +++++++++++++++---
+>>  1 file changed, 117 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+>> index 1e218bc440c6..10f73e27d694 100644
+>> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+>> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+>> @@ -17,6 +17,7 @@
+>>  #include <linux/sched.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/dma-mapping.h>
+>> +#include <linux/highmem.h>
+>>  
+>>  #include <media/videobuf2-v4l2.h>
+>>  #include <media/videobuf2-dma-contig.h>
+>> @@ -42,6 +43,7 @@ struct vb2_dc_buf {
+>>  	struct dma_buf_attachment	*db_attach;
+>>  
+>>  	struct vb2_buffer		*vb;
+>> +	bool				coherent_mem;
+> 
+> I think that this as well should be renamed to non_coherent_mem.
+> 
+>>  };
+>>  
+>>  /*********************************************/
+>> @@ -78,14 +80,22 @@ static void *vb2_dc_cookie(struct vb2_buffer *vb, void *buf_priv)
+>>  static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
+>>  {
+>>  	struct vb2_dc_buf *buf = buf_priv;
+>> -	struct dma_buf_map map;
+>> -	int ret;
+>>  
+>> -	if (!buf->vaddr && buf->db_attach) {
+>> -		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
+>> -		buf->vaddr = ret ? NULL : map.vaddr;
+>> +	if (buf->vaddr)
+>> +		return buf->vaddr;
+>> +
+>> +	if (buf->db_attach) {
+>> +		struct dma_buf_map map;
+>> +
+>> +		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
+>> +			buf->vaddr = map.vaddr;
+>> +
+>> +		return buf->vaddr;
+>>  	}
+>>  
+>> +	if (!buf->coherent_mem)
+>> +		buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
+>> +						    buf->dma_sgt);
+>>  	return buf->vaddr;
+>>  }
+>>  
+>> @@ -101,13 +111,26 @@ static void vb2_dc_prepare(void *buf_priv)
+>>  	struct vb2_dc_buf *buf = buf_priv;
+>>  	struct sg_table *sgt = buf->dma_sgt;
+>>  
+>> +	/* This takes care of DMABUF and user-enforced cache sync hint */
+>>  	if (buf->vb->skip_cache_sync_on_prepare)
+>>  		return;
+>>  
+>> +	/*
+>> +	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
+>> +	 * and non-coherent MMAP buffers.
+>> +	 */
+>> +	if (buf->vb->memory == V4L2_MEMORY_MMAP && buf->coherent_mem)
+>> +		return;
+>> +
+>>  	if (!sgt)
+>>  		return;
+>>  
+>> +	/* For both USERPTR and non-coherent MMAP */
+>>  	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
+>> +
+>> +	/* Non-coherent MMAP only */
+>> +	if (!buf->coherent_mem && buf->vaddr)
+>> +		flush_kernel_vmap_range(buf->vaddr, buf->size);
+>>  }
+>>  
+>>  static void vb2_dc_finish(void *buf_priv)
+>> @@ -115,13 +138,26 @@ static void vb2_dc_finish(void *buf_priv)
+>>  	struct vb2_dc_buf *buf = buf_priv;
+>>  	struct sg_table *sgt = buf->dma_sgt;
+>>  
+>> +	/* This takes care of DMABUF and user-enforced cache sync hint */
+>>  	if (buf->vb->skip_cache_sync_on_finish)
+>>  		return;
+>>  
+>> +	/*
+>> +	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
+>> +	 * and non-coherent MMAP buffers.
+>> +	 */
+>> +	if (buf->vb->memory == V4L2_MEMORY_MMAP && buf->coherent_mem)
+>> +		return;
+>> +
+>>  	if (!sgt)
+>>  		return;
+>>  
+>> +	/* For both USERPTR and non-coherent MMAP */
+>>  	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
+>> +
+>> +	/* Non-coherent MMAP only */
+>> +	if (!buf->coherent_mem && buf->vaddr)
+>> +		invalidate_kernel_vmap_range(buf->vaddr, buf->size);
+>>  }
+>>  
+>>  /*********************************************/
+>> @@ -139,17 +175,66 @@ static void vb2_dc_put(void *buf_priv)
+>>  		sg_free_table(buf->sgt_base);
+>>  		kfree(buf->sgt_base);
+>>  	}
+>> -	dma_free_attrs(buf->dev, buf->size, buf->cookie, buf->dma_addr,
+>> -		       buf->attrs);
+>> +
+>> +	if (buf->coherent_mem) {
+>> +		dma_free_attrs(buf->dev, buf->size, buf->cookie,
+>> +			       buf->dma_addr, buf->attrs);
+>> +	} else {
+>> +		if (buf->vaddr)
+>> +			dma_vunmap_noncontiguous(buf->dev, buf->vaddr);
+>> +		dma_free_noncontiguous(buf->dev, buf->size,
+>> +				       buf->dma_sgt, buf->dma_dir);
+>> +	}
+>>  	put_device(buf->dev);
+>>  	kfree(buf);
+>>  }
+>>  
+>> +static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
+>> +{
+>> +	struct vb2_queue *q = buf->vb->vb2_queue;
+>> +
+>> +	buf->cookie = dma_alloc_attrs(buf->dev,
+>> +				      buf->size,
+>> +				      &buf->dma_addr,
+>> +				      GFP_KERNEL | q->gfp_flags,
+>> +				      buf->attrs);
+>> +	if (!buf->cookie)
+>> +		return -ENOMEM;
+>> +
+>> +	if (q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING)
+>> +		return 0;
+>> +
+>> +	buf->vaddr = buf->cookie;
+>> +	return 0;
+>> +}
+>> +
+>> +static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
+>> +{
+>> +	struct vb2_queue *q = buf->vb->vb2_queue;
+>> +
+>> +	buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
+>> +					       buf->size,
+>> +					       buf->dma_dir,
+>> +					       GFP_KERNEL | q->gfp_flags,
+>> +					       buf->attrs);
+>> +	if (!buf->dma_sgt)
+>> +		return -ENOMEM;
+>> +
+>> +	buf->dma_addr = sg_dma_address(buf->dma_sgt->sgl);
+>> +
+>> +	/*
+>> +	 * For requests that need kernel mapping (DMA_ATTR_NO_KERNEL_MAPPING
+>> +	 * bit is cleared) we perform dma_vmap_noncontiguous() in vb2_dc_vadd().
 
-No, please don't try to abuse the Memory Address Size Limit - that has 
-far more chance of adversely affecting normal DMA operation than of 
-being any use here.
+Typo: vb2_dc_vadd -> vb2_dc_vaddr
 
-I believe the point Marc was trying to make is that firmware should not 
-associate a device with any one *specific* redistributor, however ACPI 
-currently has no way to describe that MSIs can target redistributors *at 
-all*, only ITS groups - there is no such concept as a "redistributor group".
+Regards,
 
-Robin.
+	Hans
