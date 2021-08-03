@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F263DE3AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CD33DE3B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233082AbhHCAyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 20:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232954AbhHCAx7 (ORCPT
+        id S233235AbhHCA4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 20:56:43 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:44559 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232798AbhHCA4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 20:53:59 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27D5C06175F;
-        Mon,  2 Aug 2021 17:53:48 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id b13so12541608wrs.3;
-        Mon, 02 Aug 2021 17:53:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=6tj/BGDafQ8lrxdJ2t8l1OedOVwRD/dAn1LAouPasMU=;
-        b=EBs7lZtEVyqVB6Z9ged4Gm/+67A6At6Ie8Er/qkz7v6EoGss2bj52/DobpH2qpAesL
-         0I9JcZUl1sfOLJDLhpi9rqyR/a7+Ysw8sDlrQO7ViQEu/h/uoYkwu+X51+bkJRdJH/Ld
-         0nCXWOdOcLQPdJ+n5fS9dWOsEVwLHTwAqB5B0loxt6u532Apw8sQmTjNV+7+tHK0eQwo
-         OZxEXO6gJ+FQ6ydiPWXS+DxLz91Plf9psksJa3fxXiRGE5i3mSOqQVS1uxDeW9LkspVu
-         Xhi8a44+09szEx9VZZ/9SLn7KDnRLmPQjhAfHs3Gkn09v6urJOxHvQpy+T4JLlA0p5Gf
-         qhPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=6tj/BGDafQ8lrxdJ2t8l1OedOVwRD/dAn1LAouPasMU=;
-        b=bSXgE6bAYm608MMIAGZqn/BcAVXlPzW9gN6lIVTsqAXQJ0X1A5qhy2ROT1xbx65rI/
-         kTalclu0VaD08pU+qx3DfnG4F/zlitXcX0sRz7uRjMSsQFlCi6CaxjdSquwpvhim7P/C
-         B2SZDhOm+VwZjhpgbzQ4I+ILdthTFAAcZCAnTw1CK/klIWzmRFhcSx4sLkBgXyNfOVRM
-         uTXl0sqnws3+QfUVrlSOjk67vwHAdlygNquUPViHSPtE7FtwyidWkhCsPY7JJffcEbfu
-         3Q0Ax1kqhEDOuUgFGJUhX/6RRYcozNVhmB69aYg104lfnPm/niduCL9IZ9KHaxCg0p9d
-         kGeg==
-X-Gm-Message-State: AOAM532jK9kXP1Q8QHFSG223OY+zoiVTO82z4pQB4eSEfztMRhtc1Tas
-        j9XrYdPXpWSGwE+MLoM2S0E=
-X-Google-Smtp-Source: ABdhPJx5nwiOrVtl31n/MDa57wRh+jvoj52WtLAgtPjQlOxPPoVsHVbG5D4vvYzTNVK9Zai6D8uwgg==
-X-Received: by 2002:adf:f64b:: with SMTP id x11mr19929406wrp.155.1627952027267;
-        Mon, 02 Aug 2021 17:53:47 -0700 (PDT)
-Received: from pc ([196.235.140.151])
-        by smtp.gmail.com with ESMTPSA id w13sm12635701wrq.91.2021.08.02.17.53.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 17:53:46 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 01:53:43 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Malte Deiseroth <mdeiseroth88@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: misc: adutux: use swap()
-Message-ID: <20210803005343.GA1578854@pc>
+        Mon, 2 Aug 2021 20:56:39 -0400
+Received: (qmail 350279 invoked by uid 1000); 2 Aug 2021 20:56:28 -0400
+Date:   Mon, 2 Aug 2021 20:56:28 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Salah Triki <salah.triki@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: storage: realtek_cr: get lock before calling
+ usb_enable_autosuspend()
+Message-ID: <20210803005628.GA349864@rowland.harvard.edu>
+References: <20210802230313.GA1480457@pc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210802230313.GA1480457@pc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use swap() in order to make code cleaner. Issue found by coccinelle.
+On Tue, Aug 03, 2021 at 12:03:13AM +0100, Salah Triki wrote:
+> Based on the documentation of usb_enable_autosuspend(), the
+> caller must hold udev's device lock.
+> 
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> ---
+>  drivers/usb/storage/realtek_cr.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/usb/storage/realtek_cr.c b/drivers/usb/storage/realtek_cr.c
+> index 3789698d9d3c..6948d6fdad39 100644
+> --- a/drivers/usb/storage/realtek_cr.c
+> +++ b/drivers/usb/storage/realtek_cr.c
+> @@ -918,9 +918,13 @@ static int realtek_cr_autosuspend_setup(struct us_data *us)
+>  	timer_setup(&chip->rts51x_suspend_timer, rts51x_suspend_timer_fn, 0);
+>  	fw5895_init(us);
+>  
+> +	usb_lock_device(us->pusb_dev);
+> +
+>  	/* enable autosuspend function of the usb device */
+>  	usb_enable_autosuspend(us->pusb_dev);
+>  
+> +	usb_unlock_device(us->pusb_dev);
+> +
+>  	return 0;
+>  }
+>  #endif
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
----
- drivers/usb/misc/adutux.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+I assume you didn't test this patch, because RTS51xx card readers aren't 
+very common.  If you had tested it, you would have found that it causes 
+the system to hang.
 
-diff --git a/drivers/usb/misc/adutux.c b/drivers/usb/misc/adutux.c
-index 6d15a097b007..ed6a19254d2f 100644
---- a/drivers/usb/misc/adutux.c
-+++ b/drivers/usb/misc/adutux.c
-@@ -394,13 +394,10 @@ static ssize_t adu_read(struct file *file, __user char *buffer, size_t count,
- 			spin_lock_irqsave (&dev->buflock, flags);
- 			if (dev->read_buffer_length) {
- 				/* we secure access to the primary */
--				char *tmp;
- 				dev_dbg(&dev->udev->dev,
- 					"%s : swap, read_buffer_length = %d\n",
- 					__func__, dev->read_buffer_length);
--				tmp = dev->read_buffer_secondary;
--				dev->read_buffer_secondary = dev->read_buffer_primary;
--				dev->read_buffer_primary = tmp;
-+				swap(dev->read_buffer_primary, dev->read_buffer_secondary);
- 				dev->secondary_head = 0;
- 				dev->secondary_tail = dev->read_buffer_length;
- 				dev->read_buffer_length = 0;
--- 
-2.25.1
+This is because when realtek_cr_autosuspend_setup runs, the driver 
+already holds the device lock.  The route is a little circuitous:
 
+	realtek_cr_probe is called with the lock held, like all
+	probe routines.
+
+	It calls usb_store_probe2, which calls 
+	usb_stor_acquire_resources.  That routine calls 
+	us->unusual_dev->initFunction.  For the realtek_cr driver, the 
+	initFunction is set to init_realtek_cr (see unusual_realtek.h).
+
+	init_realtek_cr calls realtek_cr_autosuspend_setup.
+
+There is no other pathway to the usb_enable_autosuspend call.  So your 
+patch is not needed.
+
+Alan Stern
