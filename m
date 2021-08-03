@@ -2,103 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9473DF4C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEBB3DF4D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239101AbhHCSeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 14:34:01 -0400
-Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:59560 "EHLO
-        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233681AbhHCSd7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 14:33:59 -0400
-Received: from MTA-08-3.privateemail.com (mta-08-1.privateemail.com [68.65.122.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id 858C2809D1;
-        Tue,  3 Aug 2021 14:33:46 -0400 (EDT)
-Received: from mta-08.privateemail.com (localhost [127.0.0.1])
-        by mta-08.privateemail.com (Postfix) with ESMTP id 37AE7180019F;
-        Tue,  3 Aug 2021 14:33:45 -0400 (EDT)
-Received: from localhost.localdomain (unknown [10.20.151.225])
-        by mta-08.privateemail.com (Postfix) with ESMTPA id 9DA5618000A1;
-        Tue,  3 Aug 2021 14:33:43 -0400 (EDT)
-From:   Jordy Zomer <jordy@pwning.systems>
-To:     netdev@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jordy Zomer <jordy@pwning.systems>,
-        Chas Williams <3chas3@gmail.com>,
-        linux-atm-general@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] atm: [nicstar] make drain_scq explicitly unsigned
-Date:   Tue,  3 Aug 2021 20:33:37 +0200
-Message-Id: <20210803183337.927053-1-jordy@pwning.systems>
-X-Mailer: git-send-email 2.27.0
+        id S239161AbhHCSjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 14:39:10 -0400
+Received: from mga06.intel.com ([134.134.136.31]:57307 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239138AbhHCSjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 14:39:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="274809326"
+X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
+   d="scan'208";a="274809326"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 11:38:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
+   d="scan'208";a="502507467"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Aug 2021 11:38:55 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mAzJX-000EAs-8d; Tue, 03 Aug 2021 18:38:55 +0000
+Date:   Wed, 04 Aug 2021 02:37:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:fam1-next-20210729] BUILD SUCCESS
+ c78e23007f3e922ca6945598d527ba77ce4a0db8
+Message-ID: <61098d07.zln9AU9tN2pfmRQE%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The drain_scq function used to take a signed integer as a pos parameter.
-The only caller of this function passes an unsigned integer to it.
-Therefore to make it obviously safe, let's just make this an unsgined
-integer as this is used in pointer arithmetics.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git fam1-next-20210729
+branch HEAD: c78e23007f3e922ca6945598d527ba77ce4a0db8  net/ipv4: Replace one-element array with flexible-array meber
 
-Signed-off-by: Jordy Zomer <jordy@pwning.systems>
+elapsed time: 959m
+
+configs tested: 106
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                          axs101_defconfig
+sh                           se7750_defconfig
+arc                     haps_hs_smp_defconfig
+xtensa                          iss_defconfig
+mips                            gpr_defconfig
+arm                          pxa3xx_defconfig
+sh                           se7751_defconfig
+arm                         assabet_defconfig
+arm                          pxa910_defconfig
+powerpc                 mpc8315_rdb_defconfig
+sh                           se7724_defconfig
+m68k                         apollo_defconfig
+arm                       cns3420vb_defconfig
+arm                          iop32x_defconfig
+mips                 decstation_r4k_defconfig
+arm                        trizeps4_defconfig
+arm                          gemini_defconfig
+sh                   sh7770_generic_defconfig
+sh                           se7343_defconfig
+powerpc                     tqm8541_defconfig
+arm                        vexpress_defconfig
+arm                       multi_v4t_defconfig
+arm                      integrator_defconfig
+riscv                    nommu_k210_defconfig
+arm                          badge4_defconfig
+arm                              alldefconfig
+powerpc                     akebono_defconfig
+powerpc                    klondike_defconfig
+mips                       bmips_be_defconfig
+arm                          ixp4xx_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210803
+x86_64               randconfig-a004-20210803
+x86_64               randconfig-a006-20210803
+x86_64               randconfig-a003-20210803
+x86_64               randconfig-a001-20210803
+x86_64               randconfig-a005-20210803
+i386                 randconfig-a004-20210803
+i386                 randconfig-a005-20210803
+i386                 randconfig-a002-20210803
+i386                 randconfig-a006-20210803
+i386                 randconfig-a001-20210803
+i386                 randconfig-a003-20210803
+i386                 randconfig-a012-20210803
+i386                 randconfig-a011-20210803
+i386                 randconfig-a015-20210803
+i386                 randconfig-a013-20210803
+i386                 randconfig-a014-20210803
+i386                 randconfig-a016-20210803
+riscv                            allmodconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c001-20210803
+x86_64               randconfig-a012-20210803
+x86_64               randconfig-a016-20210803
+x86_64               randconfig-a013-20210803
+x86_64               randconfig-a011-20210803
+x86_64               randconfig-a014-20210803
+x86_64               randconfig-a015-20210803
+
 ---
-To make this patch build I added the correct function prototype.
-
- drivers/atm/nicstar.c | 2 +-
- 1 file changed, 6 insertion(+), 6 deletion(-)
-
-diff --git a/drivers/atm/nicstar.c b/drivers/atm/nicstar.c
-index 530683972f16..96f53dc2df79 100644
---- a/drivers/atm/nicstar.c
-+++ b/drivers/atm/nicstar.c
-@@ -134,7 +134,7 @@ static int ns_send_bh(struct atm_vcc *vcc, struct sk_buff *skb);
- static int push_scqe(ns_dev * card, vc_map * vc, scq_info * scq, ns_scqe * tbd,
- 		     struct sk_buff *skb, bool may_sleep);
- static void process_tsq(ns_dev * card);
--static void drain_scq(ns_dev * card, scq_info * scq, int pos);
-+static void drain_scq(ns_dev * card, scq_info * scq, unsigned int pos);
- static void process_rsq(ns_dev * card);
- static void dequeue_rx(ns_dev * card, ns_rsqe * rsqe);
- static void recycle_rx_buf(ns_dev * card, struct sk_buff *skb);
-@@ -1917,14 +1917,14 @@ static void process_tsq(ns_dev * card)
- 		       card->membase + TSQH);
- }
- 
--static void drain_scq(ns_dev * card, scq_info * scq, int pos)
-+static void drain_scq(ns_dev *card, scq_info *scq, unsigned int pos)
- {
- 	struct atm_vcc *vcc;
- 	struct sk_buff *skb;
--	int i;
-+	unsigned int i;
- 	unsigned long flags;
- 
--	XPRINTK("nicstar%d: drain_scq() called, scq at 0x%p, pos %d.\n",
-+	XPRINTK("nicstar%d: drain_scq() called, scq at 0x%p, pos %u.\n",
- 		card->index, scq, pos);
- 	if (pos >= scq->num_entries) {
- 		printk("nicstar%d: Bad index on drain_scq().\n", card->index);
-@@ -1932,12 +1932,12 @@ static void drain_scq(ns_dev * card, scq_info * scq, int pos)
- 	}
- 
- 	spin_lock_irqsave(&scq->lock, flags);
--	i = (int)(scq->tail - scq->base);
-+	i = (unsigned int)(scq->tail - scq->base);
- 	if (++i == scq->num_entries)
- 		i = 0;
- 	while (i != pos) {
- 		skb = scq->skb[i];
--		XPRINTK("nicstar%d: freeing skb at 0x%p (index %d).\n",
-+		XPRINTK("nicstar%d: freeing skb at 0x%p (index %u).\n",
- 			card->index, skb, i);
- 		if (skb != NULL) {
- 			dma_unmap_single(&card->pcidev->dev,
--- 
-2.27.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
