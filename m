@@ -2,445 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD3B3DE61E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A0F3DE621
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbhHCFWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 01:22:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54812 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229507AbhHCFWR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 01:22:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627968126;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CzNhCMjE7FsF93frOBLm7rQAqN66JZNal9Dg1AaF1qo=;
-        b=ZAfLxy7eN4Xlk7aLNI6EM0YoBCi4DRriy91NI0U8sFkPeJmRUfmVRrFUzt67kDpUa4GxOa
-        IoepUb8NNDBE/2Il8ijmusizzfvggIuLVMIAiz02INPrScdJQsR2+8U5TeNKq1CCEgU7rH
-        0H5292zmdclqFADDNZ3gpl1LYRgq55E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-604-RTxBgTUPMyS3UA0n_KLTuQ-1; Tue, 03 Aug 2021 01:22:04 -0400
-X-MC-Unique: RTxBgTUPMyS3UA0n_KLTuQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E09C81853038;
-        Tue,  3 Aug 2021 05:22:01 +0000 (UTC)
-Received: from [10.64.54.184] (vpn2-54-184.bne.redhat.com [10.64.54.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4DC525DEFB;
-        Tue,  3 Aug 2021 05:21:55 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v5 01/12] mm/debug_vm_pgtable: Introduce struct
- pgtable_debug_args
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
-        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
-        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
-        vgupta@synopsys.com, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210802060419.1360913-1-gshan@redhat.com>
- <20210802060419.1360913-2-gshan@redhat.com>
- <096fe199-f084-14b0-f3fa-74bb69d7ee7a@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <b40d51cf-59fd-44af-c821-cfd84082ad12@redhat.com>
-Date:   Tue, 3 Aug 2021 15:22:07 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S233741AbhHCFYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 01:24:51 -0400
+Received: from mail-eopbgr130058.outbound.protection.outlook.com ([40.107.13.58]:33614
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229507AbhHCFYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 01:24:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OHkUlhcc1/0/07zG13ZqncGQ+I2weM8KKRWuMnhlQjZCyFME3q6tJfyt69qSJnzW2oD43md5C/jOmHTTNA7fKqW2WcVb0kKBWvJZbNLzvegQZ/6hZISUum7QUwLgcFcnUXN7PO8UVUclnJNXl8VyNFNRJ7P+Osnf0bOYqAB4W3Wkuvo2SS9T4X3GZQbllHrvvZ4PshOw8zLZfY8c59vPjMdMw/4NWuhUuXqynudKLxuYTF8Z8hnm6mv5iS6CF/aLnibnVSE0a75HT1jZ4mgqzOOBj0o+xVRShOKDzX+aiBaxUmtQ1Q64iZRXGNz6ak/aOjTQhEgiqV8rS+Mytqw1DA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eIhcVf0wTcO5AtGUt5Fvq7nJf0+HNf4fyZj3jclj04g=;
+ b=jLpAMZZOKbgqMfoo+MvllHTR4jkm0xBO3LtNn5tx4W8I5V5q9xqAbko272GJHhgT6w/MsiIse4CqYaG8fSABEGF01RX0HRWXMexWEF3/PGwuC5MlxNyf8c8rXVtRlSzefx8/AemYZlH6BN1wEht2/uflW1OWowQTUrDbF5KmB7dkWRkO2jUte+BUn9lm+IAh4JOnixKtpp4hieuFuu8+wvgg8I40geAXJstVX+fNU9+Aefc3iIG8/9U/pIXnsgfLfuuPyh5CbPYxEgOTjqpOv50GOM8T7iB2wW+x0N8YrKIVDErCz6lcEY0hW/FrhCaPwm5a+uFFNcpYUfBrS3NxDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eIhcVf0wTcO5AtGUt5Fvq7nJf0+HNf4fyZj3jclj04g=;
+ b=mWgUwtmlJ4f34QOJXP7v3NUPL01Fa92XDwox6IolnaXnp77kk0yr3xqQnPuVwPaoaIGrueB9qEHN2W95v45n54Re7yMwc4Cr2lo8o/ZF2Owtm5aKGPclzWYFSMxUGYhZQjpYbGtEtiMwoPz8GQTi29xwPMQ+NQh5ibjkYpr9axs=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB9PR04MB8204.eurprd04.prod.outlook.com (2603:10a6:10:240::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Tue, 3 Aug
+ 2021 05:24:37 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9c70:fd2f:f676:4802]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9c70:fd2f:f676:4802%9]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 05:24:36 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: [PATCH net-next V2] net: fec: fix MAC internal delay doesn't work
+Date:   Tue,  3 Aug 2021 13:24:24 +0800
+Message-Id: <20210803052424.19008-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0176.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:28::32) To DB8PR04MB6795.eurprd04.prod.outlook.com
+ (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-In-Reply-To: <096fe199-f084-14b0-f3fa-74bb69d7ee7a@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0176.apcprd01.prod.exchangelabs.com (2603:1096:4:28::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20 via Frontend Transport; Tue, 3 Aug 2021 05:24:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 701d11f2-9d62-4787-0cf2-08d9563efc06
+X-MS-TrafficTypeDiagnostic: DB9PR04MB8204:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB9PR04MB82041A01C3BBDBBD3562F14EE6F09@DB9PR04MB8204.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: foO2Gqw9EeEunR8fNtaADjXEvfcqABr4Qbt/ARMqt+w/MM/kk93f/6x/+dRhU0GCRKIIY/V6bad+kQkc0/WpDai8PB4/cmYK2ahgRVCzI+Lm99rorfg5sZnaXW2B6fwL7x7IFzk8Tq1ByOzw2s+zO1Nz79TSkBNdwSEtZrBnt7DkiMexeIl6+Qz+vNnnMVh69nVPmNhH5CK93Ha3V63Hm95a1BKDwXJjB8YfdmgdVOYVa435il6UTExy7/UlIgqV+34bSY54CZKvJ6FL3PtLQylnVvaCoF9ZQU4RDtcDcvkldHrgmnFhSKLojjwN+SLZze77WcT+GMUuxsVrw734fdRbEiStvt7k52Z4yM5AUFwChk4TbB0tZHCSIY9XEr3YY5O0Q+SM+pLbFAk391DpOeTTPf57a8NmLJh8VxeGjvO3aqXExRN+ZQzuotC9yCrn9kTSeP5Tqm/dhPK9gkkA1pr1vF3aqZy+A/V+jras5Q83OK64+2GZR/ulV9PgcXTHFBDIdRNeDAJR8aWlHYl2isgGWbw6gIDOOUv0owHN/jokZ6q1Lf2IpwYhFxfhx82Ke2M4Lk+7Etc8y6/enSCfGuqiHQm/yCZhikhrQOw/7z/sKJf9skdVEAeQmoTCJE9Dx/gOyoAG10wiWjPhrPj0eL6n/OInhFVZbezvqT1L6PpdrlObIhytUUwCkAsc3x7dcS4oCXg4x2U8UL3yY5ypMA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(39860400002)(346002)(366004)(52116002)(6512007)(2906002)(8936002)(5660300002)(6506007)(2616005)(956004)(8676002)(478600001)(26005)(83380400001)(316002)(4326008)(1076003)(6666004)(86362001)(186003)(66556008)(38350700002)(38100700002)(66476007)(6486002)(36756003)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SYbq2r+KJtGLQBmjaSbKuuLHxiRPdsgIgQvL3EgPj24yqMUv9N8YPjsaWjma?=
+ =?us-ascii?Q?7SLoBp950x7sk29lu+Of/n+acidRCrkeHfUTVAefRReOnL1jqUIEj2Xl7gCP?=
+ =?us-ascii?Q?wdlklg5d6HZCUql44Ph+JffjdO9Dyl1rLkj5vxI2cinVjO7HV0Pv4ddITNps?=
+ =?us-ascii?Q?z4BG81tvjgvE0l3mWraeddOjaXhQOAWhbpx/aUbi0oFH385uyrk6U+n+UjD5?=
+ =?us-ascii?Q?AjD6hSjaXh/mCX8ylK06J/bx75pH9+N9bG01jbY4Q1P+THtAIqKI/1FSC9N4?=
+ =?us-ascii?Q?i5JoheUk+yHPkFVWelFCggc6NuzGMIsjfdFG/sn0/HhHUoiMr0RRE9xYAbRd?=
+ =?us-ascii?Q?zhyg3DtNgN0PugpD5dOKG9s4uQHlPGAto140rbfyofFKeuFOmiQy0ZRsyeeR?=
+ =?us-ascii?Q?oDBhc0gigxUI6OqedX3oCPaefQuphcqR7EDIrMnXESK80tKIeZhuhIeRpYL9?=
+ =?us-ascii?Q?/RoCbsOWvMvzJur9l+jT3fFLsftNfytFLku9vG1xBCoZLp8WDj5DftBToWF4?=
+ =?us-ascii?Q?5WHA3cUVFVkzVh5XZuaudICCOc840R3H3lxiVFHUKPpO4FHlC43mzDP7FjHh?=
+ =?us-ascii?Q?Mzqpe+WIjAwj7XcZ06s9TYjahztTdBFxh0oPRMOTUwdyKfYiUOvJQaxmdVpv?=
+ =?us-ascii?Q?+2TH89nSiOR0os91imPmyKfbIw8iENO4CIusM5HNb/53yuX6ksOS7ZavuXSz?=
+ =?us-ascii?Q?3mNPuWytNMiy5F+SOQ92eKMXdtbXLqtMC0i2dqK/2JxxCq+wymejVeDEqUHd?=
+ =?us-ascii?Q?bgVZvFFw8u+hrU2iskJa6ZRREjGJh+GXhWZzoalclIIn0am6Lmt+zyjr4901?=
+ =?us-ascii?Q?04O9y6RCCRgdZdKHEoRX8J8bBNWZTEYZXnSu722JbJrKv/4IbiLz33G4t9Jl?=
+ =?us-ascii?Q?kQq76igvom73WqUXsCvC8s/3TsjD9P7vNJhXxGExqLNcl2mV/M3RkPhl52Tt?=
+ =?us-ascii?Q?QRTB80K1vT7k5ZP+hvZLJePyELAFhOB4HFMJxOqpL7SfOLAuL7ltRq4XZsKU?=
+ =?us-ascii?Q?bDQacOK7xvMnMWL9REL2c4zUGj7F8UJZjjJvdE+bRnD1GGMPgFT+RNKSu64g?=
+ =?us-ascii?Q?CuGOsREyf8639xLXNzeki7rb8+TWiGFcpqmCgSPegcx/XNqea4B0XAPJhY37?=
+ =?us-ascii?Q?3alZl30W5Phtkpvm2KFgjqqptBTthRmiH8tBSysAE8lXjxJAyqHEyKGPObbA?=
+ =?us-ascii?Q?xiY98XqVl2AWAObu8dhuLZTAdyc6PREnPQQ9IXnj7RC27JwSBMuRDTPG0UAJ?=
+ =?us-ascii?Q?2ucccfs9tioIybLawdfMDToktWzHseTT6bXTMMbjRDuRFFJEBX3OOToRdI8A?=
+ =?us-ascii?Q?2tgN3x7Q+7k/8RStxUSn4ONP?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 701d11f2-9d62-4787-0cf2-08d9563efc06
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 05:24:36.7793
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Auq4D5BamyRQvBt85euHnquYSSyhcwE2g0atgkAVTGD9wFZw4uq3Iw7Aa9r6FaXf1RMj3je/mnyqOL+xSfslaw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8204
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+This patch intends to fix MAC internal delay doesn't work, due to use
+of_property_read_u32() incorrectly, and improve this feature a bit:
+1) check the delay value if valid, only program register when it's 2000ps.
+2) only enable "enet_2x_txclk" clock when require MAC internal delay.
 
-On 8/3/21 2:42 PM, Anshuman Khandual wrote:
-> On 8/2/21 11:34 AM, Gavin Shan wrote:
->> In debug_vm_pgtable(), there are many local variables introduced to
->> track the needed information and they are passed to the functions for
->> various test cases. It'd better to introduce a struct as place holder
->> for these information. With it, what the tests functions need is the
->> struct. In this way, the code is simplified and easier to be maintained.
->>
->> Besides, set_xxx_at() could access the data on the corresponding pages
->> in the page table modifying tests. So the accessed pages in the tests
->> should have been allocated from buddy. Otherwise, we're accessing pages
->> that aren't owned by us. This causes issues like page flag corruption
->> or kernel crash on accessing unmapped page when CONFIG_DEBUG_PAGEALLOC
->> is enabled.
->>
->> This introduces "struct pgtable_debug_args". The struct is initialized
->> and destroyed, but the information in the struct isn't used yet. It will
->> be used in subsequent patches.
->>
->> Signed-off-by: Gavin Shan <gshan@redhat.com>
->> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   mm/debug_vm_pgtable.c | 269 +++++++++++++++++++++++++++++++++++++++++-
->>   1 file changed, 268 insertions(+), 1 deletion(-)
->>
->> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
->> index 1c922691aa61..6a825f0e7cd7 100644
->> --- a/mm/debug_vm_pgtable.c
->> +++ b/mm/debug_vm_pgtable.c
->> @@ -58,6 +58,37 @@
->>   #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
->>   #define RANDOM_NZVALUE	GENMASK(7, 0)
->>   
->> +struct pgtable_debug_args {
->> +	struct mm_struct	*mm;
->> +	struct vm_area_struct	*vma;
->> +
->> +	pgd_t			*pgdp;
->> +	p4d_t			*p4dp;
->> +	pud_t			*pudp;
->> +	pmd_t			*pmdp;
->> +	pte_t			*ptep;
->> +
->> +	p4d_t			*start_p4dp;
->> +	pud_t			*start_pudp;
->> +	pmd_t			*start_pmdp;
->> +	pgtable_t		start_ptep;
->> +
->> +	unsigned long		vaddr;
->> +	pgprot_t		page_prot;
->> +	pgprot_t		page_prot_none;
->> +
->> +	bool			is_contiguous_page;
->> +	unsigned long		pud_pfn;
->> +	unsigned long		pmd_pfn;
->> +	unsigned long		pte_pfn;
->> +
->> +	unsigned long		fixed_pgd_pfn;
->> +	unsigned long		fixed_p4d_pfn;
->> +	unsigned long		fixed_pud_pfn;
->> +	unsigned long		fixed_pmd_pfn;
->> +	unsigned long		fixed_pte_pfn;
->> +};
->> +
->>   static void __init pte_basic_tests(unsigned long pfn, int idx)
->>   {
->>   	pgprot_t prot = protection_map[idx];
->> @@ -955,8 +986,238 @@ static unsigned long __init get_random_vaddr(void)
->>   	return random_vaddr;
->>   }
->>   
->> +static void __init destroy_args(struct pgtable_debug_args *args)
->> +{
->> +	struct page *page = NULL;
->> +
->> +	/* Free (huge) page */
->> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
->> +	    IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
->> +	    has_transparent_hugepage() &&
->> +	    args->pud_pfn != ULONG_MAX) {
->> +		if (args->is_contiguous_page) {
->> +			free_contig_range(args->pud_pfn,
->> +					  (1 << (HPAGE_PUD_SHIFT - PAGE_SHIFT)));
->> +		} else {
->> +			page = pfn_to_page(args->pud_pfn);
->> +			__free_pages(page, HPAGE_PUD_SHIFT - PAGE_SHIFT);
->> +		}
->> +
->> +		args->pud_pfn = ULONG_MAX;
->> +		args->pmd_pfn = ULONG_MAX;
->> +		args->pte_pfn = ULONG_MAX;
->> +	}
->> +
->> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
->> +	    has_transparent_hugepage() &&
->> +	    args->pmd_pfn != ULONG_MAX) {
->> +		if (args->is_contiguous_page) {
->> +			free_contig_range(args->pmd_pfn, (1 << HPAGE_PMD_ORDER));
->> +		} else {
->> +			page = pfn_to_page(args->pmd_pfn);
->> +			__free_pages(page, HPAGE_PMD_ORDER);
->> +		}
->> +
->> +		args->pmd_pfn = ULONG_MAX;
->> +		args->pte_pfn = ULONG_MAX;
->> +	}
->> +
->> +	if (args->pte_pfn != ULONG_MAX) {
->> +		page = pfn_to_page(args->pte_pfn);
->> +		__free_pages(page, 0);
-> 
-> 		args->pte_pfn = ULONG_MAX ?
-> 
+Fixes: fc539459e900 ("net: fec: add MAC internal delayed clock feature support")
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+---
+This fix targes to net-next as this is where the offending patch was applied.
 
-I was thinking of this. It doesn't matter to set @pte_pfn to
-ULONG_MAX as it's not used afterwards. However, I will add this
-in v6 for consistency.
+ChangeLogs:
+V1->V2:
+	* Jump to failed_rgmii_delay label to release phy_node
+---
+ drivers/net/ethernet/freescale/fec_main.c | 48 ++++++++++++++++++-----
+ 1 file changed, 38 insertions(+), 10 deletions(-)
 
->> +	}
->> +
->> +	/* Free page table entries */
->> +	if (args->start_ptep) {
->> +		pte_free(args->mm, args->start_ptep);
->> +		mm_dec_nr_ptes(args->mm);
->> +	}
->> +
->> +	if (args->start_pmdp) {
->> +		pmd_free(args->mm, args->start_pmdp);
->> +		mm_dec_nr_pmds(args->mm);
->> +	}
->> +
->> +	if (args->start_pudp) {
->> +		pud_free(args->mm, args->start_pudp);
->> +		mm_dec_nr_puds(args->mm);
->> +	}
->> +
->> +	if (args->start_p4dp)
->> +		p4d_free(args->mm, args->start_p4dp);
->> +
->> +	/* Free vma and mm struct */
->> +	if (args->vma)
->> +		vm_area_free(args->vma);
->> +
->> +	if (args->mm)
->> +		mmdrop(args->mm);
->> +}
->> +
->> +static struct page * __init debug_vm_pgtable_alloc_huge_page(
->> +				struct pgtable_debug_args *args, int order)
-> 
-> Small nit, formatting like below would have been better. But dont change yet
-> unless there is a respin.
-> 
-
-Yes, will fix in v6.
-
-> static struct page * __init
-> debug_vm_pgtable_alloc_huge_page(struct pgtable_debug_args *args, int order)
-> 
->> +{
->> +	struct page *page = NULL;
->> +
->> +#ifdef CONFIG_CONTIG_ALLOC
->> +	if (order >= MAX_ORDER) {
->> +		page = alloc_contig_pages((1 << order), GFP_KERNEL,
->> +					  first_online_node, NULL);
->> +		if (page) {
->> +			args->is_contiguous_page = true;
->> +			return page;
->> +		}
->> +	}
->> +#endif
->> +
->> +	if (order < MAX_ORDER)
->> +		page = alloc_pages(GFP_KERNEL, order);
->> +
->> +	return page;
->> +}
->> +
->> +static int __init init_args(struct pgtable_debug_args *args)
->> +{
->> +	struct page *page = NULL;
->> +	phys_addr_t phys;
->> +	int ret = 0;
->> +
->> +	/*
->> +	 * Initialize the debugging data.
->> +	 *
->> +	 * __P000 (or even __S000) will help create page table entries with
->> +	 * PROT_NONE permission as required for pxx_protnone_tests().
->> +	 */
->> +	memset(args, 0, sizeof(*args));
->> +	args->vaddr              = get_random_vaddr();
->> +	args->page_prot          = vm_get_page_prot(VMFLAGS);
->> +	args->page_prot_none     = __P000;
->> +	args->is_contiguous_page = false;
->> +	args->pud_pfn            = ULONG_MAX;
->> +	args->pmd_pfn            = ULONG_MAX;
->> +	args->pte_pfn            = ULONG_MAX;
->> +	args->fixed_pgd_pfn      = ULONG_MAX;
->> +	args->fixed_p4d_pfn      = ULONG_MAX;
->> +	args->fixed_pud_pfn      = ULONG_MAX;
->> +	args->fixed_pmd_pfn      = ULONG_MAX;
->> +	args->fixed_pte_pfn      = ULONG_MAX;
->> +
->> +	/* Allocate mm and vma */
->> +	args->mm = mm_alloc();
->> +	if (!args->mm) {
->> +		pr_err("Failed to allocate mm struct\n");
->> +		ret = -ENOMEM;
->> +		goto error;
->> +	}
->> +
->> +	args->vma = vm_area_alloc(args->mm);
->> +	if (!args->vma) {
->> +		pr_err("Failed to allocate vma\n");
->> +		ret = -ENOMEM;
->> +		goto error;
->> +	}
->> +
->> +	/*
->> +	 * Allocate page table entries. They will be modified in the tests.
->> +	 * Lets save the page table entries so that they can be released
->> +	 * when the tests are completed.
->> +	 */
->> +	args->pgdp = pgd_offset(args->mm, args->vaddr);
->> +	args->p4dp = p4d_alloc(args->mm, args->pgdp, args->vaddr);
->> +	args->start_p4dp = p4d_offset(args->pgdp, 0UL);
->> +	WARN_ON(!args->start_p4dp);
->> +	if (!args->p4dp) {
->> +		pr_err("Failed to allocate p4d entries\n");
->> +		ret = -ENOMEM;
->> +		goto error;
->> +	}
-> 
-> Expected like this instead. 'args->start_p4dp' should not be evaluated
-> unless 'args->p4dp' allocation succeeds. Otherwise on the error path,
-> it would call p4d_free(args->mm, args->start_p4dp) freeing up a page
-> table page which was never allocated !
-> 
-> 	args->pgdp = pgd_offset(args->mm, args->vaddr);
-> 	args->p4dp = p4d_alloc(args->mm, args->pgdp, args->vaddr);
-> 	if (!args->p4dp) {
-> 		pr_err("Failed to allocate p4d entries\n");
-> 		ret = -ENOMEM;
-> 		goto error;
-> 	}
-> 	args->start_p4dp = p4d_offset(args->pgdp, 0UL);
-> 	WARN_ON(!args->start_p4dp);
-> 
-> I had requested just to move these two sentences into the previous code
-> block, without changing any order. This is also applicable for all other
-> page table levels below.
-> 
-
-Yeah, I misunderstood your comments on v5 series. I wrongly thought
-NULL is returned from p4d_offset() if p4d_alloc() fails, without
-checking the implementation of p4d_offset() closely. I will fix
-it in v6. However, I will hold posting v6 to see if there are
-more comments on v5.
-
->> +
->> +	args->pudp = pud_alloc(args->mm, args->p4dp, args->vaddr);
->> +	args->start_pudp = pud_offset(args->p4dp, 0UL);
->> +	WARN_ON(!args->start_pudp);
->> +	if (!args->pudp) {
->> +		pr_err("Failed to allocate pud entries\n");
->> +		ret = -ENOMEM;
->> +		goto error;
->> +	}
->> +
->> +	args->pmdp = pmd_alloc(args->mm, args->pudp, args->vaddr);
->> +	args->start_pmdp = pmd_offset(args->pudp, 0UL);
->> +	WARN_ON(!args->start_pmdp);
->> +	if (!args->pmdp) {
->> +		pr_err("Failed to allocate pmd entries\n");
->> +		ret = -ENOMEM;
->> +		goto error;
->> +	}
->> +
->> +	args->ptep = pte_alloc_map(args->mm, args->pmdp, args->vaddr);
->> +	args->start_ptep = pmd_pgtable(READ_ONCE(*args->pmdp));
->> +	WARN_ON(!args->start_ptep);
->> +	if (!args->ptep) {
->> +		pr_err("Failed to allocate pte entries\n");
->> +		ret = -ENOMEM;
->> +		goto error;
->> +	}
->> +
->> +	/*
->> +	 * PFN for mapping at PTE level is determined from a standard kernel
->> +	 * text symbol. But pfns for higher page table levels are derived by
->> +	 * masking lower bits of this real pfn. These derived pfns might not
->> +	 * exist on the platform but that does not really matter as pfn_pxx()
->> +	 * helpers will still create appropriate entries for the test. This
->> +	 * helps avoid large memory block allocations to be used for mapping
->> +	 * at higher page table levels in some of the tests.
->> +	 */
->> +	phys = __pa_symbol(&start_kernel);
->> +	args->fixed_pgd_pfn = __phys_to_pfn(phys & PGDIR_MASK);
->> +	args->fixed_p4d_pfn = __phys_to_pfn(phys & P4D_MASK);
->> +	args->fixed_pud_pfn = __phys_to_pfn(phys & PUD_MASK);
->> +	args->fixed_pmd_pfn = __phys_to_pfn(phys & PMD_MASK);
->> +	args->fixed_pte_pfn = __phys_to_pfn(phys & PAGE_MASK);
->> +	WARN_ON(!pfn_valid(args->fixed_pte_pfn));
->> +
->> +	/*
->> +	 * Allocate (huge) pages because some of the tests need to access
->> +	 * the data in the pages. The corresponding tests will be skipped
->> +	 * if we fail to allocate (huge) pages.
->> +	 */
->> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
->> +	    IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
->> +	    has_transparent_hugepage()) {
->> +		page = debug_vm_pgtable_alloc_huge_page(args,
->> +				HPAGE_PUD_SHIFT - PAGE_SHIFT);
->> +		if (page) {
->> +			args->pud_pfn = page_to_pfn(page);
->> +			args->pmd_pfn = args->pud_pfn;
->> +			args->pte_pfn = args->pud_pfn;
->> +			return 0;
->> +		}
->> +	}
->> +
->> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
->> +	    has_transparent_hugepage()) {
->> +		page = debug_vm_pgtable_alloc_huge_page(args, HPAGE_PMD_ORDER);
->> +		if (page) {
->> +			args->pmd_pfn = page_to_pfn(page);
->> +			args->pte_pfn = args->pmd_pfn;
->> +			return 0;
->> +		}
->> +	}
->> +
->> +	page = alloc_pages(GFP_KERNEL, 0);
->> +	if (page)
->> +		args->pte_pfn = page_to_pfn(page);
->> +
->> +	return 0;
->> +
->> +error:
->> +	destroy_args(args);
->> +	return ret;
->> +}
->> +
->>   static int __init debug_vm_pgtable(void)
->>   {
->> +	struct pgtable_debug_args args;
->>   	struct vm_area_struct *vma;
->>   	struct mm_struct *mm;
->>   	pgd_t *pgdp;
->> @@ -970,9 +1231,13 @@ static int __init debug_vm_pgtable(void)
->>   	unsigned long vaddr, pte_aligned, pmd_aligned;
->>   	unsigned long pud_aligned, p4d_aligned, pgd_aligned;
->>   	spinlock_t *ptl = NULL;
->> -	int idx;
->> +	int idx, ret;
->>   
->>   	pr_info("Validating architecture page table helpers\n");
->> +	ret = init_args(&args);
->> +	if (ret)
->> +		return ret;
->> +
->>   	prot = vm_get_page_prot(VMFLAGS);
->>   	vaddr = get_random_vaddr();
->>   	mm = mm_alloc();
->> @@ -1127,6 +1392,8 @@ static int __init debug_vm_pgtable(void)
->>   	mm_dec_nr_pmds(mm);
->>   	mm_dec_nr_ptes(mm);
->>   	mmdrop(mm);
->> +
->> +	destroy_args(&args);
->>   	return 0;
->>   }
->>   late_initcall(debug_vm_pgtable);
->>
-
-Thanks,
-Gavin
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 40ea318d7396..1201c13afa6f 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -2042,6 +2042,34 @@ static int fec_enet_clk_enable(struct net_device *ndev, bool enable)
+ 	return ret;
+ }
+ 
++static int fec_enet_parse_rgmii_delay(struct fec_enet_private *fep,
++				      struct device_node *np)
++{
++	u32 rgmii_tx_delay, rgmii_rx_delay;
++
++	/* For rgmii tx internal delay, valid values are 0ps and 2000ps */
++	if (!of_property_read_u32(np, "tx-internal-delay-ps", &rgmii_tx_delay)) {
++		if (rgmii_tx_delay != 0 && rgmii_tx_delay != 2000) {
++			dev_err(&fep->pdev->dev, "The only allowed RGMII TX delay values are: 0ps, 2000ps");
++			return -EINVAL;
++		} else if (rgmii_tx_delay == 2000) {
++			fep->rgmii_txc_dly = true;
++		}
++	}
++
++	/* For rgmii rx internal delay, valid values are 0ps and 2000ps */
++	if (!of_property_read_u32(np, "rx-internal-delay-ps", &rgmii_rx_delay)) {
++		if (rgmii_rx_delay != 0 && rgmii_rx_delay != 2000) {
++			dev_err(&fep->pdev->dev, "The only allowed RGMII RX delay values are: 0ps, 2000ps");
++			return -EINVAL;
++		} else if (rgmii_rx_delay == 2000) {
++			fep->rgmii_rxc_dly = true;
++		}
++	}
++
++	return 0;
++}
++
+ static int fec_enet_mii_probe(struct net_device *ndev)
+ {
+ 	struct fec_enet_private *fep = netdev_priv(ndev);
+@@ -3719,7 +3747,6 @@ fec_probe(struct platform_device *pdev)
+ 	char irq_name[8];
+ 	int irq_cnt;
+ 	struct fec_devinfo *dev_info;
+-	u32 rgmii_delay;
+ 
+ 	fec_enet_get_queue_num(pdev, &num_tx_qs, &num_rx_qs);
+ 
+@@ -3777,12 +3804,6 @@ fec_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto failed_stop_mode;
+ 
+-	/* For rgmii internal delay, valid values are 0ps and 2000ps */
+-	if (of_property_read_u32(np, "tx-internal-delay-ps", &rgmii_delay))
+-		fep->rgmii_txc_dly = true;
+-	if (of_property_read_u32(np, "rx-internal-delay-ps", &rgmii_delay))
+-		fep->rgmii_rxc_dly = true;
+-
+ 	phy_node = of_parse_phandle(np, "phy-handle", 0);
+ 	if (!phy_node && of_phy_is_fixed_link(np)) {
+ 		ret = of_phy_register_fixed_link(np);
+@@ -3806,6 +3827,10 @@ fec_probe(struct platform_device *pdev)
+ 		fep->phy_interface = interface;
+ 	}
+ 
++	ret = fec_enet_parse_rgmii_delay(fep, np);
++	if (ret)
++		goto failed_rgmii_delay;
++
+ 	fep->clk_ipg = devm_clk_get(&pdev->dev, "ipg");
+ 	if (IS_ERR(fep->clk_ipg)) {
+ 		ret = PTR_ERR(fep->clk_ipg);
+@@ -3835,9 +3860,11 @@ fec_probe(struct platform_device *pdev)
+ 	fep->clk_ref_rate = clk_get_rate(fep->clk_ref);
+ 
+ 	/* clk_2x_txclk is optional, depends on board */
+-	fep->clk_2x_txclk = devm_clk_get(&pdev->dev, "enet_2x_txclk");
+-	if (IS_ERR(fep->clk_2x_txclk))
+-		fep->clk_2x_txclk = NULL;
++	if (fep->rgmii_txc_dly || fep->rgmii_rxc_dly) {
++		fep->clk_2x_txclk = devm_clk_get(&pdev->dev, "enet_2x_txclk");
++		if (IS_ERR(fep->clk_2x_txclk))
++			fep->clk_2x_txclk = NULL;
++	}
+ 
+ 	fep->bufdesc_ex = fep->quirks & FEC_QUIRK_HAS_BUFDESC_EX;
+ 	fep->clk_ptp = devm_clk_get(&pdev->dev, "ptp");
+@@ -3955,6 +3982,7 @@ fec_probe(struct platform_device *pdev)
+ failed_clk_ipg:
+ 	fec_enet_clk_enable(ndev, false);
+ failed_clk:
++failed_rgmii_delay:
+ 	if (of_phy_is_fixed_link(np))
+ 		of_phy_deregister_fixed_link(np);
+ 	of_node_put(phy_node);
+-- 
+2.17.1
 
