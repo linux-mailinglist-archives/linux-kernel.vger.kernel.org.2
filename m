@@ -2,74 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE523DEA74
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D607D3DEA7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235288AbhHCKHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235297AbhHCKHn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:07:43 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449B9C061387
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:07:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4wevAMoON2BVeDaC/EUtZafrKn0BGHEDvZ9AiAWBsv8=; b=GwAp6t8DYiTSvCe9CTMEDq3whN
-        PG0QRaWo/LVrHn3IEIzwzaQZXULuw5YWY0aAWKqStWCGM9KQURZtXmRXaDn0lG9LjgR62g1Q5UvuK
-        LZ9VRLcPKAhTLNH2p+qvUqRPKtVXLJmHDSyhmjtNV5+IlpVcWgp3Qr+pMn0X6qj3RrmZ0YfpkCD6P
-        sRoriF2uNYwB7SSm7V8X6D/c9WhLJbrjBHVw2eKEXy6V2ala0fJLcvV9iRhdttFQu10dVFQGir9CX
-        1FBkPYp8RJpN4AuNMPc0qbmWPBQmhbw3VRckiSMq12q5mBDPhafK3xLwbjuvo0pDpx/WT1lBxdedr
-        R35yhBgA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mArKI-005OHi-RV; Tue, 03 Aug 2021 10:07:11 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 249839862A4; Tue,  3 Aug 2021 12:07:13 +0200 (CEST)
-Date:   Tue, 3 Aug 2021 12:07:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [patch 58/63] futex: Prevent requeue_pi() lock nesting issue on
- RT
-Message-ID: <20210803100713.GB8057@worktop.programming.kicks-ass.net>
-References: <20210730135007.155909613@linutronix.de>
- <20210730135208.418508738@linutronix.de>
+        id S235195AbhHCKIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:08:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:46402 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235066AbhHCKIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 06:08:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 276111515;
+        Tue,  3 Aug 2021 03:08:37 -0700 (PDT)
+Received: from [10.57.9.94] (unknown [10.57.9.94])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51AC03F40C;
+        Tue,  3 Aug 2021 03:08:32 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] PM: EM: Increase energy calculation precision
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     peterz@infradead.org, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, Chris.Redpath@arm.com,
+        morten.rasmussen@arm.com, qperret@google.com,
+        linux-pm@vger.kernel.org, stable@vger.kernel.org,
+        rjw@rjwysocki.net, viresh.kumar@linaro.org, mingo@redhat.com,
+        juri.lelli@redhat.com, rostedt@goodmis.org, segall@google.com,
+        mgorman@suse.de, bristot@redhat.com, CCj.Yeh@mediatek.com
+References: <20210720094153.31097-1-lukasz.luba@arm.com>
+ <20210720094153.31097-2-lukasz.luba@arm.com>
+ <3a98d39b-d607-03d2-819b-5150f6755c96@arm.com>
+ <461df215-8f78-2f29-aaba-636aebb21337@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <82d9d384-80e0-f5ec-cb09-6804a713a690@arm.com>
+Date:   Tue, 3 Aug 2021 11:08:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730135208.418508738@linutronix.de>
+In-Reply-To: <461df215-8f78-2f29-aaba-636aebb21337@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 03:51:05PM +0200, Thomas Gleixner wrote:
-> @@ -219,6 +221,10 @@ struct futex_q {
->  	struct rt_mutex_waiter *rt_waiter;
->  	union futex_key *requeue_pi_key;
->  	u32 bitset;
-> +	atomic_t requeue_state;
-> +#ifdef CONFIG_PREEMPT_RT
-> +	struct rcuwait requeue_wait;
-> +#endif
->  } __randomize_layout;
->  
->  static const struct futex_q futex_q_init = {
 
-Do we want to explicitly initialize requeue_state in futex_q_init? I was
-looking where we reset the state machine and eventually figured it out,
-but I'm thinking something more explicit might help avoid this for the
-next time.
+
+On 8/3/21 10:44 AM, Dietmar Eggemann wrote:
+> On 02/08/2021 08:21, Lukasz Luba wrote:
+>> Hi Peter, Vincent,
+>>
+>> Gentle ping.
+>>
+>>
+>> On 7/20/21 10:41 AM, Lukasz Luba wrote:
+> 
+> [...]
+> 
+>>> There are corner cases when the EAS energy calculation for two
+>>> Performance
+>>> Domains (PDs) return the same value. The EAS compares these values to
+>>> choose smaller one. It might happen that this values are equal due to
+>>> rounding error. In such scenario, we need better resolution, e.g. 1000
+>>> times better. To provide this possibility increase the resolution in the
+>>> em_perf_state::cost for 64-bit architectures. The costs for increasing
+>>> resolution in 32-bit architectures are pretty high (64-bit division) and
+>>> the returns do not justify the increased costs.
+> 
+> s/The costs ... increased costs./The cost of increasing resolution on
+> 32-bit is pretty high (64-bit division) and is not justified since there
+> are no new 32bit big.LITTLE EAS systems expected which would benefit
+> from this higher resolution./ ?
+
+Sounds better indeed.
+
+> 
+>>> This patch allows to avoid the rounding to milli-Watt errors, which might
+>>> occur in EAS energy estimation for each Performance Domains (PD). The
+> 
+> s/Performance Domains (PD)/PD.
+
+OK
+
+> 
+> [...]
+> 
+>>> Scenario:
+>>> Low utilized system e.g. ~200 sum_util for PD0 and ~220 for PD1. There
+>>> are quite a few small tasks ~10-15 util. These tasks would suffer for
+>>> the rounding error. Such system utilization has been seen while playing
+>>> some simple games. In such condition our partner reported 5..10mA less
+>>> battery drain.
+> 
+> Hard to digest: Maybe s/Such system ... battery drain./These utilization
+> values are typical when running games on Android. One of our partners
+> has reported 5..10mA less battery drain when running with increased
+> resolution./ ?
+
+Sounds good.
+
+> 
+>>>
+>>> Some details:
+>>> We have two Perf Domains (PDs): PD0 (big) and PD1 (little)
+> 
+> s/Perf Domains (PDs)/PDs
+
+OK
+
+> 
+> [...]
+> 
+>>> 2. Difference in the the last find_energy_efficient_cpu(): margin filter.
+> 
+> s/in the the last find_energy_efficient_cpu(): margin filter/in the 6%
+> energy margin filter at the end of find_energy_efficient_cpu()/ ?
+
+OK
+
+[snip]
+
+> 
+> Otherwise, LGTM.
+> 
+> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+
+Thank you Dietmar for the review. I'm going to send the v3.
+
+> 
+> This is now an EM only patch (Task scheduler (i.e. CFS/EAS) is only
+> effected via compute_energy() -> em_cpu_energy().
+> 
+
+True it's EM only now, so I will ask Rafael to pick it.
