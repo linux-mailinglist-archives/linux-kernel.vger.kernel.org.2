@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA22A3DF1BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B4D3DF1C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237003AbhHCPpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:45:04 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:56657 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236745AbhHCPpD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:45:03 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UhtcbfK_1628005489;
-Received: from 30.39.225.192(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UhtcbfK_1628005489)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 03 Aug 2021 23:44:50 +0800
-Subject: Re: [PATCH] mm: memcontrol: Set the correct memcg swappiness
- restriction
-To:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <d77469b90c45c49953ccbc51e54a1d465bc18f70.1627626255.git.baolin.wang@linux.alibaba.com>
- <YQOekWWgtZUfim4M@dhcp22.suse.cz>
- <6e6570d2-44a2-1da1-6c2a-38766786c40c@suse.cz>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <02826fde-43a8-e20d-37f5-55416ba0c773@linux.alibaba.com>
-Date:   Tue, 3 Aug 2021 23:45:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237018AbhHCPsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236994AbhHCPsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 11:48:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99A5A60EFD;
+        Tue,  3 Aug 2021 15:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628005676;
+        bh=MG4fAieao0UPi4ffT0mbv01ftN/DNkPTsgdtYW/U3b0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JMxzV8817ns0XcLosSwn1TLOGdXCxTTb3nBhRBb1PdBUrW5Nnd/7xx/D7oh3eGvTM
+         WK1nrMfIGlBgj7eHwljrNB2a1OnkfMJy7eONBxFJhrggHMOCOUN1B5BN/95IaHuFIu
+         bKsNYve1kUpE/mRsq7C2W9RwB3aJbpS5fWCspPTpUnYsLDtpNQ+6joNtsFAUvZpFiS
+         Nn4D8Ebal1JPMuyTxipY5u6vuLpi6GcF7JPCcO1X6WZLcUGk2fanMfHA/k8pSD8xs5
+         e2NoXPjBkwojqn0SEcGmhOWB4eimT/NVQe+KT65xA4lDP1+U9wKRypiL6AY0r2p3m1
+         r3tLen9j4PnBg==
+Received: by mail-ed1-f51.google.com with SMTP id x90so29529755ede.8;
+        Tue, 03 Aug 2021 08:47:56 -0700 (PDT)
+X-Gm-Message-State: AOAM533wiHrQL0uvpBzbRiHK6anfO79FkzfhOAQ1prFHMycVL9n+HKem
+        H+Y7hEIFc4B67nvguEUkT+fppZkQMNd/YuHy2A==
+X-Google-Smtp-Source: ABdhPJzuBnfkNQtqqLg2h9sTkUQTkdyCINtgxA59VUetynvl9LB1QKx942SZoaOuOW2U1PMG/KLxk/DqtQdWvGwL0ik=
+X-Received: by 2002:a05:6402:2043:: with SMTP id bc3mr26352466edb.62.1628005675201;
+ Tue, 03 Aug 2021 08:47:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6e6570d2-44a2-1da1-6c2a-38766786c40c@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <cover.1627362340.git.viresh.kumar@linaro.org> <acf7402ef4aabc0ad6295c32846f2bef1cd9b56a.1627362340.git.viresh.kumar@linaro.org>
+ <YQhKKyPmOUE8z+US@robh.at.kernel.org> <20210803043014.paskwghdio6azplp@vireshk-i7>
+In-Reply-To: <20210803043014.paskwghdio6azplp@vireshk-i7>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 3 Aug 2021 09:47:42 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ6_ktTQKiy_xx9DhjQ3=imfvSZpBem5fXwVY7O49EgCw@mail.gmail.com>
+Message-ID: <CAL_JsqJ6_ktTQKiy_xx9DhjQ3=imfvSZpBem5fXwVY7O49EgCw@mail.gmail.com>
+Subject: Re: [PATCH V4 3/5] dt-bindings: gpio: Add bindings for gpio-virtio
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+n Mon, Aug 2, 2021 at 10:30 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 02-08-21, 13:40, Rob Herring wrote:
+> > Humm, how does one implement interrupts without a parent interrupt? It
+> > uses the parent virtio,mmio interrupt?
+>
+> Kind of, yeah, but not necessarily.
+>
+> The interrupt information is passed over buffers shared between host and guest.
+> Now the guest may process the buffers when it receives a notification from the
+> host, that will be at downpath of an interrupt for virtio,mmio. Or the guest may
+> poll on the virtqueue and process any buffers as soon as they are made
+> available, no interrupts then.
 
+Okay, thanks for the explanation.
 
-On 2021/8/3 23:20, Vlastimil Babka wrote:
-> On 7/30/21 8:39 AM, Michal Hocko wrote:
->> On Fri 30-07-21 14:26:35, Baolin Wang wrote:
->>> Since commit c843966c556d ("mm: allow swappiness that prefers reclaiming
->>> anon over the file workingset") has expended the swappiness value to
->>> make swap to be preferred in some systems. We should also change the
->>> memcg swappiness restriction to allow memcg swap-preferred.
->>>
->>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>
->> Yes, this looks like an omission. It doesn't really make sense to have
->> two different constrains on the value.
->>
->> Acked-by: Michal Hocko <mhocko@suse.com>
-> 
-> So, also Fixes: c843966c556d ("mm: allow swappiness that prefers reclaiming anon
-> over the file workingset")
-> ?
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Sure. Andrew, do I need resend it with adding fixes tag, or you can help 
-to add it? Thanks.
+Rob
