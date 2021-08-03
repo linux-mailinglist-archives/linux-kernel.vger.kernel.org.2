@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9513DEA88
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43FB3DEA89
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbhHCKK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:10:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33940 "EHLO
+        id S235340AbhHCKLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:11:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51776 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235290AbhHCKKg (ORCPT
+        by vger.kernel.org with ESMTP id S235297AbhHCKKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:10:36 -0400
+        Tue, 3 Aug 2021 06:10:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627985425;
+        s=mimecast20190719; t=1627985436;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OfOI5BQLkvmy3gTPFxCm3AerU5X6fkkIIhM9umQ8DpQ=;
-        b=Q9r/s5WE5cXZ9ZYGU9GHNcTlxEiCDmQEZDQiqKKcc9Nz7jwaIw2UNeSHCcWpurrtvA8g5X
-        3tY4ap1s2QrXohHR7P3dTFNi1RbXOuYPuE7XzTibPVZYBQlggBRuUdasVOhuxia9pZAu4F
-        tHJhTS9kWgJZM7+rof5s/wBTFrP05Kg=
+        bh=DYi9zCYb/+nOBKs9RrX6QQsVbPNcDstKhS42LRE6Yz8=;
+        b=EdE+icpJEI6vQMXDqA9r7TZ0WEF68ZagmUVTshjS0JRR7xnz8qEAyQR/7onsaCKiZBZwUF
+        ICYoTVvULeu1VPm1nCBymqKxF4rVyxbmJjqzD+WPLzAa/LfMscwUqaydO43syC3Yr0dr6f
+        7CrSRcdlc25sFBhBXrMo6sIze/j39rI=
 Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
  [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-mFdNTK13NWCTCC-4wofLNg-1; Tue, 03 Aug 2021 06:10:24 -0400
-X-MC-Unique: mFdNTK13NWCTCC-4wofLNg-1
-Received: by mail-ed1-f71.google.com with SMTP id u25-20020aa7d8990000b02903bb6a903d90so10231211edq.17
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 03:10:23 -0700 (PDT)
+ us-mta-129-WIE_C7EpNAyFPHa9QTQlTA-1; Tue, 03 Aug 2021 06:10:36 -0400
+X-MC-Unique: WIE_C7EpNAyFPHa9QTQlTA-1
+Received: by mail-ed1-f71.google.com with SMTP id c16-20020aa7d6100000b02903bc4c2a387bso10130860edr.21
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 03:10:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=OfOI5BQLkvmy3gTPFxCm3AerU5X6fkkIIhM9umQ8DpQ=;
-        b=FzDKRwRCtEXQDlz/hJzuAdpIcertidL/yCPOPEfXIQPH69LN3kOof5nVq7S+KsOgyW
-         5pwWe5az8VRcIT5w6rRFwvvSvfOoOolN+rB1yyQvuEN83YV2mwJW0H0Uim4Xx1ilMnPa
-         nmHP9OYSBQGUb1tyf2a5MgdYDMxZdHjmXc6LUOqQK3RWXCdUsWDhsxlzmE5T+rOUhlwW
-         bI4hJNyNLLK7qVVmKSg5FVST3bDPYmp5PScmmlkUW4mWl4phd78eEiFQWWsxxiZH3iJR
-         efiILvBBcSDmJIZKWfotUTWtSr7nsoRxIJLlP9N2eoDqFdE9Xy17/oHbKHxStdyTyq8K
-         +IRQ==
-X-Gm-Message-State: AOAM531tLbZqMb3cIyZ28tDRXDgbFysU1iZzjusPJCdhmucyra7+Pke1
-        1r3+9De34pFWAZHA8eWlOgkxRp64V38G09tJioOyD7NGXlkIl23pTj6yJP5VAhCZDmIH98HxNlL
-        f881FxtNxUJlD4TQQYxpc1wJA2cyxAp+hVBc0ICNIvi6KXFr8QW78ydfYtcVnpjOQibSnPX5EMj
-        nZ
-X-Received: by 2002:aa7:c792:: with SMTP id n18mr25043047eds.269.1627985422302;
-        Tue, 03 Aug 2021 03:10:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3kVrw5MTcDI9OybfehAfSQ7erslosbBvvpZwwtNS45igYKMuMk4BoT1R5P8G1dajNAUraxQ==
-X-Received: by 2002:aa7:c792:: with SMTP id n18mr25043014eds.269.1627985422004;
-        Tue, 03 Aug 2021 03:10:22 -0700 (PDT)
+        bh=DYi9zCYb/+nOBKs9RrX6QQsVbPNcDstKhS42LRE6Yz8=;
+        b=JQ16ELdWFD8jceRv9g0niMH0d3z9miGHiQBgNY7TUbNIUMpMnglkLBWPr+/vjB04Sv
+         Mjk7boujN3g0DjaDR0Vf0PC2hBuKQWg8my0DvcB1FIQRk/+kPO4eBUNNZNObqkYYZZQD
+         zWLCluQDryhcAo5zoiWEoWEWn9AuTTt0MTXqT4Rk3HEah50eMKrf3W5AjhcJ0GnjwCuk
+         OwqQYJP04qVqiSBNl4HSrMLtXkxLIrChX6nNAcv3Fr8+STElMnQIKBtZP307EOm+lM1h
+         KLsSm9Y9WAqMUJn8OYmQss72GJ+aWyXGqrpJypgn0YXNZX6vGk/lKeOMCvuAuo57G5XY
+         XUHA==
+X-Gm-Message-State: AOAM530l0qlSMD7P2/JEZjkDak8w8CwqHxhAu7N6pd5zRPTTSc4aXCf1
+        3+xOD1F4YJ6PawXrufKbBAKEK5+r01gPoT43AExlAHfKVY+oIYxeHyKsFjLrQ2/bb8EhUs4NYz8
+        tOY6kRZI9vonHvRHEEKk/bWsQGdCMjHpa5pzr1ztFbm+rfUPKg04XO1WWAg628TN0v/PVsBuwXQ
+        aU
+X-Received: by 2002:aa7:c956:: with SMTP id h22mr24263136edt.378.1627985434428;
+        Tue, 03 Aug 2021 03:10:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzV6j8DyxbzH8cVAeRDt3PX6sEhA8DSM2O3imatGfwfc+elhTpl5iBBXYFc80r43C859Om4EA==
+X-Received: by 2002:aa7:c956:: with SMTP id h22mr24263081edt.378.1627985433847;
+        Tue, 03 Aug 2021 03:10:33 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id cf16sm7767366edb.92.2021.08.03.03.10.20
+        by smtp.gmail.com with ESMTPSA id i14sm7857712edx.30.2021.08.03.03.10.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 03:10:21 -0700 (PDT)
-Subject: Re: [PATCH 4/4] KVM: selftests: Test access to XMM fast hypercalls
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Siddharth Chandrasekaran <sidcha@amazon.de>
-Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Tue, 03 Aug 2021 03:10:33 -0700 (PDT)
+Subject: Re: [PATCH 0/4] KVM: x86: hyper-v: Check if guest is allowed to use
+ XMM registers for hypercall input
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
         Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+        Jim Mattson <jmattson@google.com>,
+        Siddharth Chandrasekaran <sidcha@amazon.de>,
+        linux-kernel@vger.kernel.org
 References: <20210730122625.112848-1-vkuznets@redhat.com>
- <20210730122625.112848-5-vkuznets@redhat.com>
- <20210730143530.GD20232@u366d62d47e3651.ant.amazon.com>
- <878s1namap.fsf@vitty.brq.redhat.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1939b03b-cec3-2c2e-2f67-b0dfc2c83735@redhat.com>
-Date:   Tue, 3 Aug 2021 12:10:20 +0200
+Message-ID: <44b5e202-7c38-db93-25c7-c91a0ba7eb65@redhat.com>
+Date:   Tue, 3 Aug 2021 12:10:31 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <878s1namap.fsf@vitty.brq.redhat.com>
+In-Reply-To: <20210730122625.112848-1-vkuznets@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/07/21 16:50, Vitaly Kuznetsov wrote:
->> Should we also do WRITE_ONCE(nr_ur, 0) here?
-> It could probably make sense to replace 'nr_ud = 0' above with this so
-> compiler doesn't screw us up one day..
+On 30/07/21 14:26, Vitaly Kuznetsov wrote:
+> "KVM: x86: hyper-v: Fine-grained access check to Hyper-V hypercalls and
+> MSRs" and "Add support for XMM fast hypercalls" series were developed
+> at the same time so the later landed without a proper feature bit check
+> for 'strict' (KVM_CAP_HYPERV_ENFORCE_CPUID) mode. Add it now.
+> 
+> TLFS states that "Availability of the XMM fast hypercall interface is
+> indicated via the “Hypervisor Feature Identification” CPUID Leaf
+> (0x40000003, see section 2.4.4) ... Any attempt to use this interface
+> when the hypervisor does not indicate availability will result in a #UD
+> fault."
+> 
+> Vitaly Kuznetsov (4):
+>    KVM: x86: hyper-v: Check access to hypercall before reading XMM
+>      registers
+>    KVM: x86: Introduce trace_kvm_hv_hypercall_done()
+>    KVM: x86: hyper-v: Check if guest is allowed to use XMM registers for
+>      hypercall input
+>    KVM: selftests: Test access to XMM fast hypercalls
+> 
+>   arch/x86/kvm/hyperv.c                         | 18 ++++++--
+>   arch/x86/kvm/trace.h                          | 15 +++++++
+>   .../selftests/kvm/include/x86_64/hyperv.h     |  5 ++-
+>   .../selftests/kvm/x86_64/hyperv_features.c    | 41 +++++++++++++++++--
+>   4 files changed, 71 insertions(+), 8 deletions(-)
 > 
 
-It should be okay with the "memory" clobber.
+Queued, thanks.
 
 Paolo
 
