@@ -2,258 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46EA03DE542
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 06:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980713DE552
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 06:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233980AbhHCEZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 00:25:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57184 "EHLO mail.kernel.org"
+        id S233985AbhHCE1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 00:27:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233720AbhHCEYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 00:24:08 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52202611CC;
-        Tue,  3 Aug 2021 04:23:57 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAly8-002qo1-8x; Tue, 03 Aug 2021 00:23:56 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-trace-devel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v2 21/21] libtracefs: Add CAST(x AS _COUNTER_) syntax to create values in histograms
-Date:   Tue,  3 Aug 2021 00:23:47 -0400
-Message-Id: <20210803042347.679499-22-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210803042347.679499-1-rostedt@goodmis.org>
-References: <20210803042347.679499-1-rostedt@goodmis.org>
+        id S234056AbhHCEZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 00:25:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E149561158;
+        Tue,  3 Aug 2021 04:25:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627964736;
+        bh=SkJpApRxFG/jXxtvFIyQH90yLQk7myOrmz5Wih/Vuyw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=awMZtxBCR6GUxLWOagGdN/FDay6Jkz15CQMKxFG2yTgIVUsUx6vsnK4JcbxpWjx+1
+         kQlCkP6FyuwBM9ub3ON2S7ZlW9f6TjNRAwq+9Q0EaM6rh4Iu38cnCwt5hUjIPJPc0k
+         Ci84LWZzZ8CPkAXX0/HqHVO0n6U8fiiksBaVVgjBF1ZiMPygfuk7eOwfZNz5vmCpGx
+         7MgVnlsV0tv6tKMWYwZtuCn60lFP+MPUOPsqjlelHwIjM2MtAGF/fgHqBuKmc0sDVK
+         X1c69ifh+ndYVuRVbQ2B0qXpp745y3R1qrUx+UZnOEIN4HzEbUgKnfcx+K3Lwlt/aK
+         IsMAS/UCBLbpA==
+Date:   Tue, 3 Aug 2021 06:25:28 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v7 08/10] arm64: dts: HiSilicon: Add support for HiKey
+ 970 PCIe controller hardware
+Message-ID: <20210803062528.0a264682@coco.lan>
+In-Reply-To: <20210724041150.GA4053@thinkpad>
+References: <cover.1626855713.git.mchehab+huawei@kernel.org>
+        <e483ba44ed3d70e1f4ca899bb287fa38ee8a2876.1626855713.git.mchehab+huawei@kernel.org>
+        <20210722133628.GC4446@workstation>
+        <20210723085318.243f155f@coco.lan>
+        <20210724041150.GA4053@thinkpad>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Em Sat, 24 Jul 2021 09:41:50 +0530
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> escreveu:
 
-Use the CAST() command of SQL to define which items in the select should
-be cast as values and not keys. By casting the field as the special value
-_COUNTER_, it will turn the selection item into a value.
+> On Fri, Jul 23, 2021 at 08:53:18AM +0200, Mauro Carvalho Chehab wrote:
+> > Em Thu, 22 Jul 2021 19:06:28 +0530
+> > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> escreveu:
+> >   
+> > > On Wed, Jul 21, 2021 at 10:39:10AM +0200, Mauro Carvalho Chehab wrote:  
+> > > > From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > 
+> > > > Add DTS bindings for the HiKey 970 board's PCIe hardware.
+> > > > 
+> > > > Co-developed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > > ---
+> > > >  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     | 71 +++++++++++++++++++
+> > > >  .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  1 -
+> > > >  drivers/pci/controller/dwc/pcie-kirin.c       | 12 ----
+> > > >  3 files changed, 71 insertions(+), 13 deletions(-)
+> > > > 
+> > > > diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> > > > index 1f228612192c..6dfcfcfeedae 100644
+> > > > --- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> > > > +++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> > > > @@ -177,6 +177,12 @@ sctrl: sctrl@fff0a000 {
+> > > >  			#clock-cells = <1>;
+> > > >  		};
+> > > >  
+> > > > +		pmctrl: pmctrl@fff31000 {
+> > > > +			compatible = "hisilicon,hi3670-pmctrl", "syscon";
+> > > > +			reg = <0x0 0xfff31000 0x0 0x1000>;
+> > > > +			#clock-cells = <1>;
+> > > > +		};
+> > > > +    
+> > > 
+> > > Irrelevant change to this patch.  
+> > 
+> > Huh?
+> > 
+> > This is used by PCIe PHY, as part of the power on procedures:
+> > 
+> > 	+static int hi3670_pcie_noc_power(struct hi3670_pcie_phy *phy, bool enable)
+> > 	+{
+> > 	+       struct device *dev = phy->dev;
+> > 	+       u32 time = 100;
+> > 	+       unsigned int val = NOC_PW_MASK;
+> > 	+       int rst;
+> > 	+
+> > 	+       if (enable)
+> > 	+               val = NOC_PW_MASK | NOC_PW_SET_BIT;
+> > 	+       else
+> > 	+               val = NOC_PW_MASK;
+> > 	+       rst = enable ? 1 : 0;
+> > 	+
+> > 	+       regmap_write(phy->pmctrl, NOC_POWER_IDLEREQ_1, val);
+> > 
+> >   
+> 
+> Ah... you're hardcoding the syscon compatible in driver. Sorry missed that.
+> 
+> But if these syscon nodes are independent memory regions or belong to non
+> PCI/PHY memory map, you could've fetched the reference through a DT property
+> along with the offset then used it in driver.
+> 
+> Like,
+> 
+> 	pcie_phy: pcie-phy@fc000000 {
+> 		...
+> 		hisilicon,noc-power-regs = <&pmctrl 0x38c>;
+> 		hisilicon,sctrl-cmos-regs = <&sctrl 0x60>;
+> 		...
+> 	};
+> 
+> The benefit of doing this way is, if the pmctrl, sctrl register layout changes
+> in future, you can handle it without any issues.
 
-For example:
+Interesting approach, but probably overkill. I mean, the register mapping
+here should be the same for all Kirin 970 PHY based devices. A PHY for a 
+different SoC will likely have other differences than just those two regs.
 
-   SELECT common_pid, CAST(bytes_req AS _COUNTER_) FROM kmalloc
-
-Will create:
-
-  echo 'hist:keys=common_pid:vals=bytes_req' > events/kmem/kmalloc/trigger
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- Documentation/libtracefs-sql.txt | 24 ++++++++++++++++++++++++
- include/tracefs-local.h          |  2 ++
- include/tracefs.h                |  3 +++
- src/tracefs-hist.c               | 28 ++++++++++++++++++++++++++--
- src/tracefs-sqlhist.c            | 23 +++++++++++++++++++++++
- 5 files changed, 78 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
-index 314f607fa84e..7b616fa27d23 100644
---- a/Documentation/libtracefs-sql.txt
-+++ b/Documentation/libtracefs-sql.txt
-@@ -238,6 +238,30 @@ name of the process.
- 
- *LOG* or *LOG2* - bucket the key values in a log 2 values (1, 2, 3-4, 5-8, 9-16, 17-32, ...)
- 
-+The above fields are not case sensitive, and "LOG2" works as good as "log".
-+
-+A special CAST to _COUNTER_ or __COUNTER__ will make the field a value and not
-+a key. For example:
-+
-+[source,c]
-+--
-+  SELECT common_pid, CAST(bytes_req AS _COUNTER_) FROM kmalloc
-+--
-+
-+Which will create
-+
-+[source,c]
-+--
-+  echo 'hist:keys=common_pid:vals=bytes_req' > events/kmem/kmalloc/trigger
-+
-+  cat events/kmem/kmalloc/hist
-+
-+{ common_pid:       1812 } hitcount:          1  bytes_req:         32
-+{ common_pid:       9111 } hitcount:          2  bytes_req:        272
-+{ common_pid:       1768 } hitcount:          3  bytes_req:       1112
-+{ common_pid:          0 } hitcount:          4  bytes_req:        512
-+{ common_pid:      18297 } hitcount:         11  bytes_req:       2004
-+--
- 
- RETURN VALUE
- ------------
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index 07d40b2fae4f..684eccffafee 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -88,6 +88,8 @@ int trace_append_filter(char **filter, unsigned int *state,
- struct tracefs_synth *synth_init_from(struct tep_handle *tep,
- 				      const char *start_system,
- 				      const char *start_event);
-+
-+#define HIST_COUNTER_TYPE	(TRACEFS_HIST_KEY_MAX + 100)
- int synth_add_start_field(struct tracefs_synth *synth,
- 			  const char *start_field,
- 			  const char *name,
-diff --git a/include/tracefs.h b/include/tracefs.h
-index 219adba4b0ce..17020de0108a 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -264,6 +264,7 @@ enum tracefs_hist_key_type {
- 	TRACEFS_HIST_KEY_EXECNAME,
- 	TRACEFS_HIST_KEY_LOG,
- 	TRACEFS_HIST_KEY_USECS,
-+	TRACEFS_HIST_KEY_MAX
- };
- 
- enum tracefs_hist_sort_direction {
-@@ -275,6 +276,8 @@ enum tracefs_hist_sort_direction {
- #define TRACEFS_HIST_TIMESTAMP_USECS	"common_timestamp.usecs"
- #define TRACEFS_HIST_CPU		"cpu"
- 
-+#define TRACEFS_HIST_COUNTER		"__COUNTER__"
-+
- #define TRACEFS_HIST_HITCOUNT		"hitcount"
- 
- struct tracefs_hist;
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index d62422399552..c3aecf9a8fef 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -256,7 +256,7 @@ int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
- 	bool use_key = false;
- 	char *key_type = NULL;
- 	char **new_list;
--	int ret;
-+	int ret = -1;
- 
- 	switch (type) {
- 	case TRACEFS_HIST_KEY_NORMAL:
-@@ -284,6 +284,9 @@ int tracefs_hist_add_key(struct tracefs_hist *hist, const char *key,
- 	case TRACEFS_HIST_KEY_USECS:
- 		ret = asprintf(&key_type, "%s.usecs", key);
- 		break;
-+	case TRACEFS_HIST_KEY_MAX:
-+		/* error */
-+		break;
- 	}
- 
- 	if (ret < 0)
-@@ -1450,6 +1453,9 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
- 	for (i = 0; keys[i]; i++) {
- 		int type = types ? types[i] : 0;
- 
-+		if (type == HIST_COUNTER_TYPE)
-+			continue;
-+
- 		key = keys[i];
- 
- 		if (i) {
-@@ -1466,7 +1472,25 @@ tracefs_synth_get_start_hist(struct tracefs_synth *synth)
- 		}
- 	}
- 
--	if (hist && synth->start_filter) {
-+	if (!hist)
-+		return NULL;
-+
-+	for (i = 0; keys[i]; i++) {
-+		int type = types ? types[i] : 0;
-+
-+		if (type != HIST_COUNTER_TYPE)
-+			continue;
-+
-+		key = keys[i];
-+
-+		ret = tracefs_hist_add_value(hist, key);
-+		if (ret < 0) {
-+			tracefs_hist_free(hist);
-+			return NULL;
-+		}
-+	}
-+
-+	if (synth->start_filter) {
- 		hist->filter = strdup(synth->start_filter);
- 		if (!hist->filter) {
- 			tracefs_hist_free(hist);
-diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 88563e98f298..1a3cf37c84ba 100644
---- a/src/tracefs-sqlhist.c
-+++ b/src/tracefs-sqlhist.c
-@@ -1253,6 +1253,17 @@ static int verify_field_type(struct tep_handle *tep,
- 	if (!type)
- 		return -1;
- 
-+	if (!strcmp(type, TRACEFS_HIST_COUNTER) ||
-+	    !strcmp(type, "_COUNTER_")) {
-+		ret = HIST_COUNTER_TYPE;
-+		if (tfield->flags & (TEP_FIELD_IS_STRING | TEP_FIELD_IS_ARRAY)) {
-+			parse_error(sb, field->raw,
-+				    "'%s' is a string, and counters may only be used with numbers\n");
-+			ret = -1;
-+		}
-+		goto out;
-+	}
-+
- 	for (i = 0; type[i]; i++)
- 		type[i] = tolower(type[i]);
- 
-@@ -1292,6 +1303,7 @@ static int verify_field_type(struct tep_handle *tep,
- 			    field->raw, type);
- 		ret = -1;
- 	}
-+ out:
- 	free(type);
- 	return ret;
-  fail_type:
-@@ -1319,6 +1331,7 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 	const char *end_match;
- 	bool started_start = false;
- 	bool started_end = false;
-+	bool non_val = false;
- 	int ret;
- 
- 	if (!table->from)
-@@ -1396,6 +1409,8 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 				type = verify_field_type(tep, table->sb, expr);
- 				if (type < 0)
- 					goto free;
-+				if (type != HIST_COUNTER_TYPE)
-+					non_val = true;
- 				ret = synth_add_start_field(synth,
- 						field->field, field->label,
- 						type);
-@@ -1426,6 +1441,14 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 		}
- 	}
- 
-+	if (!non_val && !table->to) {
-+		table->sb->line_no = 0;
-+		table->sb->line_idx = 10;
-+		parse_error(table->sb, "CAST",
-+			    "Not all SELECT items can be of type _COUNTER_\n");
-+		goto free;
-+	}
-+
- 	for (expr = table->where; expr; expr = expr->next) {
- 		const char *filter_system = NULL;
- 		const char *filter_event = NULL;
--- 
-2.30.2
-
+Regards,
+Mauro
