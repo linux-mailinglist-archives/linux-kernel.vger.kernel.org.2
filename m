@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355483DE6CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13213DE6CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbhHCGiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 02:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
+        id S233860AbhHCGmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 02:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233902AbhHCGiH (ORCPT
+        with ESMTP id S231386AbhHCGmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 02:38:07 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2523C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 23:37:56 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mAo3i-0008Gw-12; Tue, 03 Aug 2021 08:37:50 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mAo3h-0000wv-Mt; Tue, 03 Aug 2021 08:37:49 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: [PATCH net 1/1] net: dsa: qca: ar9331: reorder MDIO write sequence
-Date:   Tue,  3 Aug 2021 08:37:46 +0200
-Message-Id: <20210803063746.3600-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        Tue, 3 Aug 2021 02:42:16 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC413C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 23:42:05 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id nh14so16689700pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 23:42:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AOXfrDIBSrb8A0VQUvY+TBcWqM660sA1rmEZT8mFt0s=;
+        b=JMZ1FFInEUptalCSIejCN3MZUGHjikyvbOOtgsgW6ZRQpBohkY6r7m/nMwZZT35YEX
+         orzqYiY7JOSJLCnZiUVzjoUVxOxYaEwgWVErNrB/rDzmDWJ1aU3i+k2GwHbYUm8vgOcB
+         8yMhHxI7J/TVOeuMWbBMjY+gvnzNrN0e02Kqs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AOXfrDIBSrb8A0VQUvY+TBcWqM660sA1rmEZT8mFt0s=;
+        b=CRWJOUvMwclDZaaqkYuCCVIPirrVZFLqD5wFQjcz5ZvC7kU3Yvv/o4F2wShmZqMO0E
+         rpqg1qFl3M8n153D0YkMl+iPkRWtbhuq9t0wjCQ7kwQ1j7zGTFk5BDFBhuqQZ9RfmGkD
+         Hyfr2iY6772fR2iadXRVLbwtsvgVJkjBJxBcjzVmm2XdQ165nyJ/NNNz0mPOdn9cPe8x
+         e1T3e8JZ2HZ6QT0ZjBZio3Vc9ZqWwgyFfCqlqxyPfk3zs9gWLVVQbrjvHlGWHURosUdp
+         bzfzkI2E0tIIzjJaj4nJz8TuaW2FdU/2kG0SkxJ6V8SXS2RQEMlbWTi7krX/3+kmLmxk
+         yqMw==
+X-Gm-Message-State: AOAM531Vkz+joOfSc8O5zkjLR76tBznp9be808qE3O+8GfUceoG6pXN8
+        2kIhuGjlC22+JktrAVnJn7ILug==
+X-Google-Smtp-Source: ABdhPJxDyJZssN32O26UbKqbNpr/MFPRDr/n3PMj9gYQuMHK587WiWxMOfYcHrsJMKNC2MUrpkSX0w==
+X-Received: by 2002:a63:f804:: with SMTP id n4mr1526796pgh.341.1627972925206;
+        Mon, 02 Aug 2021 23:42:05 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j25sm13953813pfe.198.2021.08.02.23.42.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 23:42:04 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 23:42:03 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Will Deacon <will@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] compiler_attributes.h: move
+ __compiletime_{error|warning}
+Message-ID: <202108022341.BB8EEA7@keescook>
+References: <20210802202326.1817503-1-ndesaulniers@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802202326.1817503-1-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of this switch we work with 32bit registers on top of 16bit
-bus. Some registers (for example access to forwarding database) have
-trigger bit on the first 16bit half of request and the result +
-configuration of request in the second half. Without this patch, we would
-trigger database operation and overwrite result in one run.
+On Mon, Aug 02, 2021 at 01:23:20PM -0700, Nick Desaulniers wrote:
+> I'm working on adding support for __attribute__((__error__(""))) and
+> __attribute__((__warning__(""))) to Clang. To make use of these in
+> __compiletime_error and __compiletime_warning (as used by BUILD_BUG and
+> friends) for newer clang and detect/fallback for older versions of
+> clang, move these to compiler_attributes.h and guard them with
+> __has_attribute preprocessor guards.
+> 
+> Link: https://reviews.llvm.org/D106030
+> Link: https://bugs.llvm.org/show_bug.cgi?id=16428
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1173
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-To make it work properly, we should do the second part of transfer
-before the first one is done.
+I'm looking forward to having this working in Clang! :)
 
-So far, this rule seems to work for all registers on this switch.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
- drivers/net/dsa/qca/ar9331.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-index ca2ad77b71f1..6686192e1883 100644
---- a/drivers/net/dsa/qca/ar9331.c
-+++ b/drivers/net/dsa/qca/ar9331.c
-@@ -837,16 +837,24 @@ static int ar9331_mdio_write(void *ctx, u32 reg, u32 val)
- 		return 0;
- 	}
- 
--	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg, val);
-+	/* In case of this switch we work with 32bit registers on top of 16bit
-+	 * bus. Some registers (for example access to forwarding database) have
-+	 * trigger bit on the first 16bit half of request, the result and
-+	 * configuration of request in the second half.
-+	 * To make it work properly, we should do the second part of transfer
-+	 * before the first one is done.
-+	 */
-+	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg + 2,
-+				  val >> 16);
- 	if (ret < 0)
- 		goto error;
- 
--	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg + 2,
--				  val >> 16);
-+	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg, val);
- 	if (ret < 0)
- 		goto error;
- 
- 	return 0;
-+
- error:
- 	dev_err_ratelimited(&sbus->dev, "Bus error. Failed to write register.\n");
- 	return ret;
 -- 
-2.30.2
-
+Kees Cook
