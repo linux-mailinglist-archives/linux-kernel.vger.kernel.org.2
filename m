@@ -2,117 +2,560 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB753DE70C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91FE3DE70F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234162AbhHCHNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:13:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49311 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233966AbhHCHNM (ORCPT
+        id S234181AbhHCHNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:13:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234173AbhHCHNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:13:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627974781;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yTfRzO0Fs69Ni1fmJ1gOV3/2oxiDXn4sWJEwS1/+vBM=;
-        b=Lnrzz3/qNwmmPBaCY+c7NLw8VrM0Gft7Bk7WgYoYd19dEh3GlTdOn2+GPD1pjR9X4a8eT6
-        TP8T6mL/Su3hM9e0kd7w9gqELGi2fOwoP9QWlr2ZJebYZu2uxmejbNBBEr11o/PVpjA0eJ
-        jwrIxuBbaFzc7oTwtSqEiJQ6p9sHPiE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-492-Oux1BptMOY6YqtQTpLbKyg-1; Tue, 03 Aug 2021 03:13:00 -0400
-X-MC-Unique: Oux1BptMOY6YqtQTpLbKyg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74DBC801E72;
-        Tue,  3 Aug 2021 07:12:59 +0000 (UTC)
-Received: from T590 (ovpn-13-115.pek2.redhat.com [10.72.13.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4AD736789B;
-        Tue,  3 Aug 2021 07:12:48 +0000 (UTC)
-Date:   Tue, 3 Aug 2021 15:12:56 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Bruno Goncalves <bgoncalv@redhat.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        CKI Project <cki-project@redhat.com>
-Subject: Re: WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe
- (bio_associate_blkg_from_css+0x3e5/0x650 pool_map+0x23/0x70)
-Message-ID: <YQjseFGCNjjlFoJp@T590>
-References: <CA+QYu4rzz6079ighEanS3Qq_Dmnczcf45ZoJoHKVLVATTo1e4Q@mail.gmail.com>
+        Tue, 3 Aug 2021 03:13:16 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B21AC061796
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:13:05 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d17so618486plr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AJnO/q9aMYt2BAZNZXSA0urhOrU1UN7gjNrdhJYojBM=;
+        b=Gs2yCCo/Uz2BlS91VnZxNnyU6UvZsn45TY0xHAshUYpyez8nIZA7AvqD6ey1YBgiZg
+         +V3UFUtxP8FyOCVTF9OGu0klWjSB5tjyI8kTipqWT8ACjyOtygnwojFc9R64WKGkBytG
+         Ojh5tQkU4RzJLY2xQw4VkML2dsDaQ4nqTGKEzfuBeECnVv5nlubAnT5G1AuTI33mBCo/
+         HR5jDVCfDZlYa9pfr5k+/npz/BTfM+gzag9u7kdHHNDVnic8aq91BsiknUaAB+Dd95hs
+         DwBBFIz5L3YK9/PghFhJb+l3mh5iejxx1lOKeKFFkL+cv1Bpy8kF3tHopng7ZDzuigUZ
+         ODwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AJnO/q9aMYt2BAZNZXSA0urhOrU1UN7gjNrdhJYojBM=;
+        b=T4tHTn/bqbuMxIWojOY6906QnMOUdCJ1iDCh1Vu3XVvEGWks8rVSD8NjoXBv4AB+Xh
+         FONW7RK92fCGiGlZYnMjNppaacaBlhG0pwNo/zadnsJ6xyjT7bRGla9cjC1z5ZwsgYWf
+         4oPtFWIRxMeff4CO/C6tZKio9hEhrI3JjNtYqPy5BzbnLTakG369aN+ivBkwts8ETJTM
+         AJBDgH4k5rp+u1Pqx7zhzotiP9cqX1mHbn70hkg+a2sWygmY1io/2AA7uV1maTSZi1bk
+         J53pBSLUX2y30pIYUWLVy6Bu7ExX+uLap0WHRr4ishRnsRgD+NB57B44MyL6+dri4ELx
+         Mmkw==
+X-Gm-Message-State: AOAM530yNXG85r9oEnCj+EbkRQDtLc6o7C2N7nfjYamCgcxnxDI+LxLS
+        KOHdSfcgunN9s/P7Zqt3VJucMw==
+X-Google-Smtp-Source: ABdhPJwbuIeGfRdVfbCDpH/YKMFhjYkxEYzlq7BvsicneEXmLBZnQmK/h7FJc+7i1q3LpRy10WtzIg==
+X-Received: by 2002:a05:6a00:aca:b029:392:9c79:3a39 with SMTP id c10-20020a056a000acab02903929c793a39mr20820209pfl.57.1627974784741;
+        Tue, 03 Aug 2021 00:13:04 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id c24sm16694621pgj.11.2021.08.03.00.13.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 00:13:04 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 12:43:02 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH v13 2/2] cpufreq: mediatek-hw: Add support for CPUFREQ HW
+Message-ID: <20210803071302.b4ttoqgqdq4dfmwe@vireshk-i7>
+References: <1627574891-26514-1-git-send-email-hector.yuan@mediatek.com>
+ <1627574891-26514-3-git-send-email-hector.yuan@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+QYu4rzz6079ighEanS3Qq_Dmnczcf45ZoJoHKVLVATTo1e4Q@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <1627574891-26514-3-git-send-email-hector.yuan@mediatek.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 05:11:08PM +0200, Bruno Goncalves wrote:
-> Hello,
+On 30-07-21, 00:08, Hector Yuan wrote:
+> From: "Hector.Yuan" <hector.yuan@mediatek.com>
 > 
-> We've hit the issue below twice during our tests on kernel 5.14.0-rc3.
-> Unfortunately, we don't have a reliable reproducer.
-> 
-> [  496.176739] =====================================================
-> [  496.182844] WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe lock order detected
-> [  496.189471] 5.14.0-rc3 #1 Not tainted
-> [  496.193152] -----------------------------------------------------
-> [  496.199252] systemd-udevd/12979 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
-> [  496.206399] ffff995b358dc5a0 (&q->queue_lock){....}-{2:2}, at:
-> bio_associate_blkg_from_css+0x3e5/0x650
-> [  496.215726]
->                and this task is already holding:
-> [  496.221563] ffff995b081d0ad8 (&pool->lock#3){..-.}-{2:2}, at:
-> pool_map+0x23/0x70 [dm_thin_pool]
-> [  496.230282] which would create a new lock dependency:
-> [  496.235344]  (&pool->lock#3){..-.}-{2:2} -> (&q->queue_lock){....}-{2:2}
-> [  496.242059]
->                but this new dependency connects a SOFTIRQ-irq-safe lock:
-> [  496.249988]  (&pool->lock#3){..-.}-{2:2}
-> [  496.249993]
->                ... which became SOFTIRQ-irq-safe at:
-> [  496.260111]   lock_acquire+0xb5/0x2b0
-> [  496.263785]   _raw_spin_lock_irqsave+0x48/0x60
-> [  496.268240]   overwrite_endio+0x46/0x70 [dm_thin_pool]
-> [  496.273393]   clone_endio+0xb9/0x1e0
-> [  496.276979]   clone_endio+0xb9/0x1e0
-> [  496.280565]   blk_update_request+0x25b/0x420
-> [  496.284846]   blk_mq_end_request+0x1c/0x130
-> [  496.289041]   blk_complete_reqs+0x37/0x40
-> [  496.293071]   __do_softirq+0xde/0x485
-> [  496.296744]   run_ksoftirqd+0x3a/0x70
-> [  496.300427]   smpboot_thread_fn+0xf2/0x1c0
-> [  496.304534]   kthread+0x143/0x160
-> [  496.307863]   ret_from_fork+0x22/0x30
-> [  496.311538]
->                to a SOFTIRQ-irq-unsafe lock:
-> [  496.317037]  (&blkcg->lock){+.+.}-{2:2}
-> [  496.317041]
->                ... which became SOFTIRQ-irq-unsafe at:
-> [  496.327243] ...
-> [  496.327244]   lock_acquire+0xb5/0x2b0
-> [  496.332680]   _raw_spin_lock+0x2c/0x40
-> [  496.336443]   ioc_weight_write+0x153/0x260
-> [  496.340551]   kernfs_fop_write_iter+0x134/0x1d0
-> [  496.345095]   new_sync_write+0x10b/0x180
-> [  496.349030]   vfs_write+0x26a/0x380
-> [  496.352530]   ksys_write+0x58/0xd0
-> [  496.355944]   do_syscall_64+0x5c/0x80
-> [  496.359616]   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  496.364776]
-> 
-> More logs are available on
-> https://arr-cki-prod-datawarehouse-public.s3.amazonaws.com/index.html?prefix=datawarehouse-public/2021/07/29/345042572/build_x86_64_redhat%3A1463074774/tests/lvm_snapper_test/
+> Add cpufreq HW support
 
-The following patch should fix the warning:
+Please write a proper commit log, what you are adding and which SoCs
+it will apply to. Also add a full stop (.) at the end.
 
-https://lore.kernel.org/linux-block/20210803070608.1766400-1-ming.lei@redhat.com/T/#u
+> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> ---
+>  drivers/cpufreq/Kconfig.arm           |   12 ++
+>  drivers/cpufreq/Makefile              |    1 +
+>  drivers/cpufreq/mediatek-cpufreq-hw.c |  357 +++++++++++++++++++++++++++++++++
+>  include/linux/cpufreq.h               |   39 ++++
 
+The changes to cpufreq.h should be done in a separate patch.
 
-Thanks,
-Ming
+> diff --git a/drivers/cpufreq/mediatek-cpufreq-hw.c b/drivers/cpufreq/mediatek-cpufreq-hw.c
+> new file mode 100644
+> index 0000000..ca50a3a
+> --- /dev/null
+> +++ b/drivers/cpufreq/mediatek-cpufreq-hw.c
+> @@ -0,0 +1,357 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2020 MediaTek Inc.
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/cpufreq.h>
+> +#include <linux/energy_model.h>
+> +#include <linux/init.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/pm_qos.h>
+> +#include <linux/slab.h>
+> +
+> +#define LUT_MAX_ENTRIES			32U
+> +#define LUT_FREQ			GENMASK(11, 0)
+> +#define LUT_ROW_SIZE			0x4
+> +#define CPUFREQ_HW_STATUS		BIT(0)
+> +#define SVS_HW_STATUS			BIT(1)
+> +#define POLL_USEC			1000
+> +#define TIMEOUT_USEC			300000
+> +
+> +enum {
+> +	REG_FREQ_LUT_TABLE,
+> +	REG_FREQ_ENABLE,
+> +	REG_FREQ_PERF_STATE,
+> +	REG_FREQ_HW_STATE,
+> +	REG_EM_POWER_TBL,
+> +	REG_FREQ_LATENCY,
+> +
+> +	REG_ARRAY_SIZE,
+> +};
+> +
+> +struct cpufreq_mtk {
+> +	struct cpufreq_frequency_table *table;
+> +	void __iomem *reg_bases[REG_ARRAY_SIZE];
+> +	int nr_opp;
+> +	cpumask_t related_cpus;
+> +};
+> +
+> +static const u16 cpufreq_mtk_offsets[REG_ARRAY_SIZE] = {
+> +	[REG_FREQ_LUT_TABLE]	= 0x0,
+> +	[REG_FREQ_ENABLE]	= 0x84,
+> +	[REG_FREQ_PERF_STATE]	= 0x88,
+> +	[REG_FREQ_HW_STATE]	= 0x8c,
+> +	[REG_EM_POWER_TBL]	= 0x90,
+> +	[REG_FREQ_LATENCY]	= 0x110,
+> +};
+> +
+> +static struct cpufreq_mtk *mtk_freq_domain_map[NR_CPUS];
+> +
+> +static int __maybe_unused
+> +mtk_cpufreq_get_cpu_power(unsigned long *mW,
+> +			  unsigned long *KHz, struct device *cpu_dev)
+> +{
+> +	struct cpufreq_mtk *c;
+> +	struct cpufreq_policy *policy;
+> +	int i;
+> +
+> +	policy = cpufreq_cpu_get_raw(cpu_dev->id);
+> +	if (!policy)
+> +		return 0;
+> +
+> +	c = mtk_freq_domain_map[policy->cpu];
+> +
+> +	for (i = 0; i < c->nr_opp; i++) {
+> +		if (c->table[i].frequency < *KHz)
+> +			break;
+> +	}
+> +	i--;
+> +
+> +	*KHz = c->table[i].frequency;
+> +	*mW = readl_relaxed(c->reg_bases[REG_EM_POWER_TBL] +
+> +			    i * LUT_ROW_SIZE) / 1000;
+> +
+> +	return 0;
+> +}
+> +
+> +static int mtk_cpufreq_hw_target_index(struct cpufreq_policy *policy,
+> +				       unsigned int index)
+> +{
+> +	struct cpufreq_mtk *c = policy->driver_data;
+> +
+> +	writel_relaxed(index, c->reg_bases[REG_FREQ_PERF_STATE]);
+> +
+> +	return 0;
+> +}
+> +
+> +static unsigned int mtk_cpufreq_hw_get(unsigned int cpu)
+> +{
+> +	struct cpufreq_mtk *c;
+> +	struct cpufreq_policy *policy;
+> +	unsigned int index;
+> +
+> +	policy = cpufreq_cpu_get_raw(cpu);
+> +	if (!policy)
+> +		return 0;
+> +
+> +	c = mtk_freq_domain_map[policy->cpu];
+> +
+> +	index = readl_relaxed(c->reg_bases[REG_FREQ_PERF_STATE]);
+> +	index = min(index, LUT_MAX_ENTRIES - 1);
+> +
+> +	return c->table[index].frequency;
+> +}
+> +
+> +static unsigned int mtk_cpufreq_hw_fast_switch(struct cpufreq_policy *policy,
+> +					       unsigned int target_freq)
+> +{
+> +	struct cpufreq_mtk *c = policy->driver_data;
+> +	unsigned int index;
+> +
+> +	index = cpufreq_table_find_index_dl(policy, target_freq);
+> +
+> +	writel_relaxed(index, c->reg_bases[REG_FREQ_PERF_STATE]);
+> +
+> +	return policy->freq_table[index].frequency;
+> +}
+> +
+> +static int mtk_cpu_create_freq_table(struct platform_device *pdev,
+> +				     struct cpufreq_mtk *c)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	void __iomem *base_table;
+> +	u32 data, i, freq, prev_freq = 0;
+> +
+> +	c->table = devm_kcalloc(dev, LUT_MAX_ENTRIES + 1,
+> +				sizeof(*c->table), GFP_KERNEL);
+> +	if (!c->table)
+> +		return -ENOMEM;
+> +
+> +	base_table = c->reg_bases[REG_FREQ_LUT_TABLE];
+> +
+> +	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
+> +		data = readl_relaxed(base_table + (i * LUT_ROW_SIZE));
+> +		freq = FIELD_GET(LUT_FREQ, data) * 1000;
+> +
+> +		if (freq == prev_freq)
+> +			break;
+> +
+> +		c->table[i].frequency = freq;
+> +
+> +		dev_dbg(dev, "index=%d freq=%d\n",
+> +			i, c->table[i].frequency);
 
+Won't this fit in a single line ?
+
+> +
+> +		prev_freq = freq;
+> +	}
+> +
+> +	c->table[i].frequency = CPUFREQ_TABLE_END;
+> +	c->nr_opp = i;
+> +
+> +	return 0;
+> +}
+> +
+> +static int mtk_cpu_resources_init(struct platform_device *pdev,
+> +				  unsigned int cpu, int index,
+> +				  const u16 *offsets)
+> +{
+> +	struct cpufreq_mtk *c;
+> +	struct device *dev = &pdev->dev;
+> +	int ret, i;
+> +	void __iomem *base;
+> +
+> +	if (mtk_freq_domain_map[cpu])
+
+This should not happen anymore, isn't it ?
+
+> +		return 0;
+> +
+> +	c = devm_kzalloc(dev, sizeof(*c), GFP_KERNEL);
+> +	if (!c)
+> +		return -ENOMEM;
+> +
+> +	base = devm_platform_ioremap_resource(pdev, index);
+> +	if (IS_ERR(base))
+> +		return PTR_ERR(base);
+> +
+> +	for (i = REG_FREQ_LUT_TABLE; i < REG_ARRAY_SIZE; i++)
+> +		c->reg_bases[i] = base + offsets[i];
+> +
+> +	ret = of_perf_domain_get_sharing_cpumask(index, "performance-domains",
+
+Instead of parsing parsing "performance-domains" twice, I would rather
+pass a CPU number here instead of index.
+
+> +						 "#performance-domain-cells",
+> +						 &c->related_cpus);
+
+You could have directly passed policy->cpus here instead.
+
+> +	if (ret) {
+> +		dev_info(dev, "Domain-%d failed to get related CPUs\n", index);
+> +		return ret;
+> +	}
+> +
+> +	ret = mtk_cpu_create_freq_table(pdev, c);
+> +	if (ret) {
+> +		dev_info(dev, "Domain-%d failed to create freq table\n", index);
+> +		return ret;
+> +	}
+> +
+> +	mtk_freq_domain_map[cpu] = c;
+
+I will rather use policy->driver_data to store this now.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int mtk_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+> +{
+> +	struct platform_device *pdev = cpufreq_get_driver_data();
+> +	struct cpufreq_mtk *c;
+> +	struct device *cpu_dev;
+> +	struct em_data_callback em_cb = EM_DATA_CB(mtk_cpufreq_get_cpu_power);
+> +	struct pm_qos_request *qos_request;
+> +	struct device_node *cpu_np;
+> +	struct of_phandle_args args;
+> +	const u16 *offsets;
+> +	unsigned int latency;
+> +	int sig, pwr_hw = CPUFREQ_HW_STATUS | SVS_HW_STATUS;
+> +	int ret;
+
+It looks much more organized when the variable definitions are in
+decreasing order of their length, instead of the random order as it is
+right now.
+
+> +
+> +	offsets = of_device_get_match_data(&pdev->dev);
+> +	if (!offsets)
+> +		return -EINVAL;
+> +
+> +	cpu_np = of_cpu_device_node_get(policy->cpu);
+> +	if (!cpu_np) {
+> +		dev_info(&pdev->dev, "Failed to get cpu %d device\n",
+> +			 policy->cpu);
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = of_parse_phandle_with_args(cpu_np, "performance-domains",
+> +					 "#performance-domain-cells", 0,
+> +					 &args);
+> +	if (ret < 0)
+
+What about dropping cpu_np and same later in the code as well ?
+
+> +		return ret;
+> +
+> +	/* Get the bases of cpufreq for domains */
+> +	ret = mtk_cpu_resources_init(pdev, policy->cpu, args.args[0], offsets);
+> +	if (ret) {
+> +		dev_info(&pdev->dev, "CPUFreq resource init failed\n");
+> +		return ret;
+> +	}
+> +
+> +	cpu_dev = get_cpu_device(policy->cpu);
+> +	if (!cpu_dev) {
+> +		pr_err("failed to get cpu%d device\n", policy->cpu);
+> +		return -ENODEV;
+> +	}
+> +
+> +	c = mtk_freq_domain_map[policy->cpu];
+> +	if (!c) {
+> +		pr_err("No scaling support for CPU%d\n", policy->cpu);
+> +		return -ENODEV;
+> +	}
+> +
+> +	cpumask_copy(policy->cpus, &c->related_cpus);
+> +
+> +	policy->freq_table = c->table;
+> +	policy->driver_data = c;
+
+Oh you already do this, you can remove mtk_freq_domain_map array now.
+
+> +
+> +	latency = readl_relaxed(c->reg_bases[REG_FREQ_LATENCY]);
+> +	if (!latency)
+> +		latency = CPUFREQ_ETERNAL;
+> +
+> +	/* us convert to ns */
+> +	policy->cpuinfo.transition_latency = latency * 1000;
+
+You want to multiple CPUFREQ_ETERNAL too ?
+
+> +
+> +	policy->fast_switch_possible = true;
+> +
+> +	qos_request = kzalloc(sizeof(*qos_request), GFP_KERNEL);
+
+This is a small structure, why not allocate it on stack instead ?
+
+> +	if (!qos_request)
+> +		return -ENOMEM;
+> +
+> +	/* Let CPUs leave idle-off state for SVS CPU initializing */
+> +	cpu_latency_qos_add_request(qos_request, 0);
+> +
+> +	/* HW should be in enabled state to proceed now */
+> +	writel_relaxed(0x1, c->reg_bases[REG_FREQ_ENABLE]);
+> +
+> +	if (readl_poll_timeout(c->reg_bases[REG_FREQ_HW_STATE], sig,
+> +			       (sig & pwr_hw) == pwr_hw, POLL_USEC,
+> +			       TIMEOUT_USEC)) {
+> +		if (!(sig & CPUFREQ_HW_STATUS)) {
+> +			pr_info("cpufreq hardware of CPU%d is not enabled\n",
+> +				policy->cpu);
+> +			return -ENODEV;
+> +		}
+> +
+> +		pr_info("SVS of CPU%d is not enabled\n", policy->cpu);
+> +	}
+> +
+> +	cpu_latency_qos_remove_request(qos_request);
+> +
+> +	em_dev_register_perf_domain(cpu_dev, c->nr_opp, &em_cb, policy->cpus, true);
+> +
+> +	kfree(qos_request);
+
+Why free after registering for em ? And also move the entire qos thing
+into a separate routine instead of adding it to ->init().
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int mtk_cpufreq_hw_cpu_exit(struct cpufreq_policy *policy)
+> +{
+> +	struct cpufreq_mtk *c;
+> +
+> +	c = mtk_freq_domain_map[policy->cpu];
+> +
+> +	/* HW should be in paused state now */
+> +	writel_relaxed(0x0, c->reg_bases[REG_FREQ_ENABLE]);
+
+Please make sure each and every resource is freed here and in probe on
+failures.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static struct cpufreq_driver cpufreq_mtk_hw_driver = {
+> +	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+> +			  CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
+> +			  CPUFREQ_IS_COOLING_DEV,
+> +	.verify		= cpufreq_generic_frequency_table_verify,
+> +	.target_index	= mtk_cpufreq_hw_target_index,
+> +	.get		= mtk_cpufreq_hw_get,
+> +	.init		= mtk_cpufreq_hw_cpu_init,
+> +	.exit		= mtk_cpufreq_hw_cpu_exit,
+> +	.fast_switch	= mtk_cpufreq_hw_fast_switch,
+> +	.name		= "mtk-cpufreq-hw",
+> +	.attr		= cpufreq_generic_attr,
+> +};
+> +
+> +static int mtk_cpufreq_hw_driver_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +
+> +	cpufreq_mtk_hw_driver.driver_data = pdev;
+> +
+> +	ret = cpufreq_register_driver(&cpufreq_mtk_hw_driver);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "CPUFreq HW driver failed to register\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+
+You can do return ret here and drop the earlier return and its {}.
+
+> +}
+> +
+> +static int mtk_cpufreq_hw_driver_remove(struct platform_device *pdev)
+> +{
+> +	return cpufreq_unregister_driver(&cpufreq_mtk_hw_driver);
+> +}
+> +
+> +static const struct of_device_id mtk_cpufreq_hw_match[] = {
+> +	{ .compatible = "mediatek,cpufreq-hw", .data = &cpufreq_mtk_offsets },
+> +	{}
+> +};
+> +
+> +static struct platform_driver mtk_cpufreq_hw_driver = {
+> +	.probe = mtk_cpufreq_hw_driver_probe,
+> +	.remove = mtk_cpufreq_hw_driver_remove,
+> +	.driver = {
+> +		.name = "mtk-cpufreq-hw",
+> +		.of_match_table = mtk_cpufreq_hw_match,
+> +	},
+> +};
+> +module_platform_driver(mtk_cpufreq_hw_driver);
+> +
+> +MODULE_DESCRIPTION("Mediatek cpufreq-hw driver");
+> +MODULE_LICENSE("GPL v2");
+
+You can add Module-author as well here if you want.
+
+> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+> index 9fd7194..4916d70 100644
+> --- a/include/linux/cpufreq.h
+> +++ b/include/linux/cpufreq.h
+> @@ -13,6 +13,8 @@
+>  #include <linux/completion.h>
+>  #include <linux/kobject.h>
+>  #include <linux/notifier.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <linux/pm_qos.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/sysfs.h>
+> @@ -1036,6 +1038,43 @@ void arch_set_freq_scale(const struct cpumask *cpus,
+>  }
+>  #endif
+>  
+> +#ifdef CONFIG_CPU_FREQ
+
+There is another CONFIG_CPU_FREQ a few lines above, please use the
+same block for this routine as well.
+
+> +static inline int of_perf_domain_get_sharing_cpumask(int index, const char *list_name,
+> +						     const char *cell_name,
+> +						     struct cpumask *cpumask)
+> +{
+> +	struct device_node *cpu_np;
+> +	struct of_phandle_args args;
+> +	int cpu, ret;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		cpu_np = of_cpu_device_node_get(cpu);
+> +		if (!cpu_np)
+> +			continue;
+> +
+> +		ret = of_parse_phandle_with_args(cpu_np, list_name,
+> +						 cell_name, 0,
+> +						 &args);
+> +
+> +		of_node_put(cpu_np);
+> +		if (ret < 0)
+> +			continue;
+> +
+> +		if (index == args.args[0])
+> +			cpumask_set_cpu(cpu, cpumask);
+> +	}
+> +
+> +	return 0;
+> +}
+> +#else
+> +static inline int of_perf_domain_get_sharing_cpumask(int index, const char *list_name,
+> +						     const char *cell_name,
+> +						     struct cpumask *cpumask)
+> +{
+> +	return 0;
+
+	return -EOPNOTSUPP;
+
+> +}
+> +#endif
+
+-- 
+viresh
