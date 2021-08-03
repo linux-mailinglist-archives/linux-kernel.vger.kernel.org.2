@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11CF3DF34C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792693DF357
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhHCQwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:52:42 -0400
-Received: from mga04.intel.com ([192.55.52.120]:6624 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237457AbhHCQw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:52:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="211868126"
+        id S237471AbhHCQys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:54:48 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:6977 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232290AbhHCQyr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:54:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1628009676; x=1659545676;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=uYIt3x/8UHN6h9hCPScdrOwlr7B4rNtt+KlMSwn88bw=;
+  b=oJtdk9/02wgZSRwrSrqSvQqezegiqZ22ujMy1QyisbyKO/zjeWpquBgs
+   pDVIK0vQZsmt4ZBQzFmQlgiE7Ce1xgvYnAbiB9L+iZ/MEh1DUopCSFH5J
+   kQrVPeXOW3Hnt70tqVgyMVHrhiFy4gRkU9IMYFq3ra6+mLUPYDoNdqeJo
+   2cxVEGGQQ6yvQuRmliArP8P4v0XwS37V1DSKJJu1zZVu0KAycXzSbRsog
+   tfhbHptb8bz/33yn2u8fT2YrlPvWl0eVqHOyXreAPnFrgTY0MgVzwRkMH
+   wgPYifR5NU/3NStzPRvNB2Z0zQxDYSCEIyp8Q3Mubg4kitqTKfGzpw2m2
+   g==;
+IronPort-SDR: QbaPTeX+b/60wgqTxQHWWt9ose+3MWMZqr0EDkgGtmht1tChGwp++QPcZqH3jBEBT7HXzVoDAC
+ GZgUA1INXoBc+sWmQ2TAQHG99V5j7OzVcktq9TfbDHEA/fb0K0jxzqixh4ecgUMXbR266O2clL
+ 2yxqIw1lNoASjVijRyw6lE9NRw0zNqKsuvVi6YIEfiSwM159J2wMGxfwkVEQZq1rEpgZ8lLBwP
+ xkzWzd33jmJZ1mHDIxxI+773r0ICLQYHEkN91UOW/RmsiC4NTGZEscWTRzWR1Wr9r63pu+wdUm
+ Mmcq9raeUDwtPHgIbciU11fJ
 X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="211868126"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 09:52:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="585041756"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Aug 2021 09:52:07 -0700
-Received: from alobakin-mobl.ger.corp.intel.com (mszymcza-mobl.ger.corp.intel.com [10.213.25.231])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 173Gpg7B004325;
-        Tue, 3 Aug 2021 17:52:02 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Lukasz Czapnik <lukasz.czapnik@intel.com>,
-        Marcin Kubiak <marcin.kubiak@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Sameeh Jubran <sameehj@amazon.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jian Shen <shenjian15@huawei.com>,
-        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: [PATCH ethtool-next 5/5] man: mention XDP standard statistics in help and man page
-Date:   Tue,  3 Aug 2021 18:51:40 +0200
-Message-Id: <20210803165140.172-6-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210803165140.172-1-alexandr.lobakin@intel.com>
-References: <20210803165140.172-1-alexandr.lobakin@intel.com>
+   d="scan'208";a="130883369"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Aug 2021 09:54:35 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 09:54:34 -0700
+Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 3 Aug 2021 09:54:28 -0700
+Message-ID: <50eb24a1e407b651eda7aeeff26d82d3805a6a41.camel@microchip.com>
+Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
+ for microchip lan937x
+From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>
+CC:     <netdev@vger.kernel.org>, <robh+dt@kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
+        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
+Date:   Tue, 3 Aug 2021 22:24:27 +0530
+In-Reply-To: <20210802135911.inpu6khavvwsfjsp@skbuf>
+References: <20210723173108.459770-1-prasanna.vengateshan@microchip.com>
+         <20210723173108.459770-6-prasanna.vengateshan@microchip.com>
+         <20210731150416.upe5nwkwvwajhwgg@skbuf>
+         <49678cce02ac03edc6bbbd1afb5f67606ac3efc2.camel@microchip.com>
+         <20210802121550.gqgbipqdvp5x76ii@skbuf> <YQfvXTEbyYFMLH5u@lunn.ch>
+         <20210802135911.inpu6khavvwsfjsp@skbuf>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"xdp" is a new type of standard statistics landed in with Linux
-commit a9428aaed122 ("ethtool, stats: introduce standard XDP statistics").
-Mention it in the help text and the man page source.
+On Mon, 2021-08-02 at 16:59 +0300, Vladimir Oltean wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
+> 
+> On Mon, Aug 02, 2021 at 03:13:01PM +0200, Andrew Lunn wrote:
+> > In general, the MAC does nothing, and passes the value to the PHY. The
+> > PHY inserts delays as requested. To address Vladimir point,
+> > PHY_INTERFACE_MODE_RGMII_TXID would mean the PHY adds delay in the TX
+> > direction, and assumes the RX delay comes from somewhere else,
+> > probably the PCB.
+> 
+> For the PHY, that is the only portion where things are clear.
+> 
+> > I only recommend the MAC adds delays when the PHY cannot, or there is
+> > no PHY, e.g. SoC to switch, or switch to switch link. There are a few
+> > MAC drivers that do add delays, mostly because that is how the vendor
+> > crap tree does it.
+> > 
+> > So as i said, what you propose is O.K, it follows this general rule of
+> > thumb.
+> 
+> The "rule of thumb" for a MAC driver is actually applied in reverse by
+> most MAC drivers compared to what Russell described should be happening.
+> For example, mv88e6xxx_port_set_rgmii_delay():
+> 
+>         switch (mode) {
+>         case PHY_INTERFACE_MODE_RGMII_RXID:
+>                 reg |= MV88E6XXX_PORT_MAC_CTL_RGMII_DELAY_RXCLK;
+> 
+> The mv88e6xxx is a MAC, so when it has a phy-mode = "rgmii-rxid", it
+> should assume it is connected to a link partner (PHY or otherwise) that
+> has applied the RXCLK delay already. So it should only be concerned with
+> the TXCLK delay. That is my point. I am just trying to lay out the
+> points to Prasanna that would make a sane system going forward. I am not
+> sure that we actually have an in-tree driver that is sane in that
+> regard.
+> 
+> That discussion, and Russell's point, was here, btw:
+> https://patchwork.ozlabs.org/project/netdev/patch/20200616074955.GA9092@laureti-dev/#2461123
 
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
----
- ethtool.8.in | 3 ++-
- ethtool.c    | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/ethtool.8.in b/ethtool.8.in
-index 6b7761849fca..7db0adebbdcf 100644
---- a/ethtool.8.in
-+++ b/ethtool.8.in
-@@ -245,6 +245,7 @@ ethtool \- query or control network driver and hardware settings
- .RB [\fBeth\-mac\fP]
- .RB [\fBeth\-ctrl\fP]
- .RB [\fBrmon\fP]
-+.RB [\fBxdp\fP]
- .RB ]
- .HP
- .B ethtool \-\-phy\-statistics
-@@ -673,7 +674,7 @@ naming of NIC- and driver-specific statistics across vendors.
- .B \fB\-\-all\-groups
- .E
- .TP
--.B \fB\-\-groups [\fBeth\-phy\fP] [\fBeth\-mac\fP] [\fBeth\-ctrl\fP] [\fBrmon\fP]
-+.B \fB\-\-groups [\fBeth\-phy\fP] [\fBeth\-mac\fP] [\fBeth\-ctrl\fP] [\fBrmon\fP] [\fBxdp\fP]
- Request groups of standard device statistics.
- .RE
- .TP
-diff --git a/ethtool.c b/ethtool.c
-index 33a0a492cb15..c1f1279bd9f0 100644
---- a/ethtool.c
-+++ b/ethtool.c
-@@ -5776,7 +5776,7 @@ static const struct option args[] = {
- 		.nlchk	= nl_gstats_chk,
- 		.nlfunc	= nl_gstats,
- 		.help	= "Show adapter statistics",
--		.xhelp	= "               [ --all-groups | --groups [eth-phy] [eth-mac] [eth-ctrl] [rmon] ]\n"
-+		.xhelp	= "               [ --all-groups | --groups [eth-phy] [eth-mac] [eth-ctrl] [rmon] [xdp] ]\n"
- 	},
- 	{
- 		.opts	= "--phy-statistics",
--- 
-2.31.1
+Thanks Vladimir & Andrew for the right pointers and info. The thread talks about
+"rgmii-*" are going to be applied by the PHY only as per the doc. For fixed-
+link, MAC needs to add the delay. This fixed-link can be No-PHY or MAC-MAC or
+MAC to in-accessible PHY. In such case, i am not convinced in using rgmii-tx-
+delay-ps & rgmii-rx-delay-ps on the MAC side and apply delay. I still think
+proposed code in earlier mail thread should still be okay. 
 
