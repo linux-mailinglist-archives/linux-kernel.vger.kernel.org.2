@@ -2,157 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952CD3DEB0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBFF3DEB0C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbhHCKhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        id S235447AbhHCKhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235241AbhHCKhV (ORCPT
+        with ESMTP id S235303AbhHCKhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:37:21 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482E5C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:37:10 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id h13so11308232wrp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 03:37:10 -0700 (PDT)
+        Tue, 3 Aug 2021 06:37:37 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1592C06175F;
+        Tue,  3 Aug 2021 03:37:24 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id d8so24759080wrm.4;
+        Tue, 03 Aug 2021 03:37:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=OfCoiih4+kjHguXqFPDXzH6cgIOlyrxD4TS+l5ysvFk=;
-        b=oK1JvaEldDcXbbl7XIpC2KQbuUB307XsvhZpKIw98fEC9HM3SeC2pQ3JMF0HUSBICg
-         9R/Uc4FraONJ/tY44FUQcM4ppaXjUZ2Dwth2OZi/Lblhoe/T/Y5IZ3oR36WW7xqIMmc+
-         vTKjnl6ElslWknLnGL9Nr4Of+7PNlOzZ6SSJU2GiCfw6Gp35Ul7EyZiTi+5uoKIM5pGs
-         V3+Y/4Po+Odcy3c7s5D3G+nOrmVDjkqAcUuM+ofq7D9NTaRJQzxBEwip3+hlRMlUVTbn
-         4x+TtKjws6Vpe6vw43bShnCMM7pTkw2Xsx7OkdIeGptyb/YT/1jXxJpnISXK77hONqn0
-         eaLw==
+        bh=fpoN7+6ctUN94MZA/0xjA5IQK/DNOyQCV78r073wnrw=;
+        b=WMebsYiRmVITT3E3AoVwdUn1GBdEdUBoureKf7Qc7P3/0aSTFflaVfINhUrOICLURP
+         cRoI0DbgNtJld2IAAhXOUYNwvt7R5/b1jR/QlzzGvihNM0p/+ZFiUuoUYD23JYfqMZzI
+         SJ5r8sS1ArbIh6lMdMkWg3oJpr82W7XexYM+n3N1ckONKgqaNSEdlvvTQ2NPFVVsGU+G
+         xyAkZuwlg5ZfTIc0XsECnSxaHiggJ8CPba8f3wn50XNxfqgrMKzeejjUIqST4u0cUwZq
+         hkI7/QO+kfsHqaJ6p7i9Y0Xx2s92FY8B9TMSsBC7wyF9/aQZldl2SlTS0uPb2Dh29NAK
+         isaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=OfCoiih4+kjHguXqFPDXzH6cgIOlyrxD4TS+l5ysvFk=;
-        b=l5B8Fk2qvjEoU/2yXmMu46r2BJFx9qeRPIWI++NGliOQANqqhy0WLNOn/OwKLhF1hf
-         gZtRWx/6JTzwDYwl89dHdv0OpDIUbq82uthOb7WknJDjWrbKcrdYjl1/PlXfQ5d32pOv
-         0NTKFvsUUXjDRcPoQDPR5SQy9K8bGaEmGCjDl2JjPluVpUbZXbzB8l9xToX/qBCAYV1r
-         b0Fifbw+grY2OHl90xAioY1w49GszB/rDXmtw3E+OLDAiTR3OrvRh9t80LyHJhdDyB04
-         tqgVxTkXYwc705ArN7im3CfJSjVirA9hkCQEsc8Fd9bq91ir9Z3Ak7FhVvpv4JcCBrDm
-         7QEg==
-X-Gm-Message-State: AOAM530aIdONam1PjJLm7m25biYCZp47o39/4CSF6IUe1cHzhMDjSxZe
-        MVt1bzdNKCZRi4M23xUaLwc05g==
-X-Google-Smtp-Source: ABdhPJyuLJL7/6FQ1Dy0s9kzytBeGbU4gur4MVpvOZPD2oYaeKYjAL+sZll6yArFzRDkovagShzTCg==
-X-Received: by 2002:a5d:6692:: with SMTP id l18mr21756760wru.85.1627987028707;
-        Tue, 03 Aug 2021 03:37:08 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:754:7d1b:7303:129a])
-        by smtp.gmail.com with ESMTPSA id i7sm14652599wre.64.2021.08.03.03.37.08
+        bh=fpoN7+6ctUN94MZA/0xjA5IQK/DNOyQCV78r073wnrw=;
+        b=jRvbj4z8swYwvCtqB94JrMfYkolOHuOqjqAtW/5XW6DLdqioq0JwZky4UkzvaLFgVo
+         hsP6h9AEvzvC5ubAmkm95TmqiCc5T/LM7lUBdauILL6kUM6IUB3/6oJdScdovysJvqGN
+         K8AQ3XxOtGJDwduSSngVSXqxQwzvhfX9yxjHhIFQbgv+gAmvczMHvtKrIBvQLPuTW9An
+         PADye3dAEj4oXQw7Jp/Kyr+rOpNiYm9zalslTK36+sej8F6G/m5DxJ1Ocl9O8Z1eQDqM
+         KUEQRvV9nUMeTb/PdKPEGZKelrx9cPwqublabmIAsT/9j0KwuRnXIvcPjVFx4PN6J+/W
+         2R2g==
+X-Gm-Message-State: AOAM533L149pX+/1aQjN8zVkhMBtLjB7y3Rcm1Sd+UnV3g1caM0TElEJ
+        +tdlEiYdXqCktUpuYIoRyxU=
+X-Google-Smtp-Source: ABdhPJzMMSFNiAmHXWtJE3fDy/V2q6TLj1EF0ulhoJAtSx+zq6TdjPPVLnbkYOqM32/inJ2JqJ8HYA==
+X-Received: by 2002:adf:f544:: with SMTP id j4mr22590390wrp.51.1627987043515;
+        Tue, 03 Aug 2021 03:37:23 -0700 (PDT)
+Received: from debian ([78.40.148.180])
+        by smtp.gmail.com with ESMTPSA id c12sm14328305wrm.29.2021.08.03.03.37.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 03:37:08 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 11:37:05 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        dbrazdil@google.com, kernel-team@android.com
-Subject: Re: [PATCH v3 19/21] KVM: arm64: Refactor protected nVHE stage-1
- locking
-Message-ID: <YQkcUXnrqp7hsZZT@google.com>
-References: <20210729132818.4091769-1-qperret@google.com>
- <20210729132818.4091769-20-qperret@google.com>
- <CA+EHjTwWt+jvRZsk5KEhQWzn+XqdV2gZSq7oCuOCVXRa1=JiWw@mail.gmail.com>
+        Tue, 03 Aug 2021 03:37:23 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 11:37:21 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/30] 4.19.201-rc1 review
+Message-ID: <YQkcYYWLKHArXyTC@debian>
+References: <20210802134334.081433902@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+EHjTwWt+jvRZsk5KEhQWzn+XqdV2gZSq7oCuOCVXRa1=JiWw@mail.gmail.com>
+In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Fuad,
+Hi Greg,
 
-On Tuesday 03 Aug 2021 at 07:31:03 (+0200), Fuad Tabba wrote:
-> Hi Quentin,
+On Mon, Aug 02, 2021 at 03:44:38PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.201 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On Thu, Jul 29, 2021 at 3:29 PM Quentin Perret <qperret@google.com> wrote:
-> >
-> > Refactor the hypervisor stage-1 locking in nVHE protected mode to expose
-> > a new pkvm_create_mappings_locked() function. This will be used in later
-> > patches to allow walking and changing the hypervisor stage-1 without
-> > releasing the lock.
-> >
-> > Signed-off-by: Quentin Perret <qperret@google.com>
-> > ---
-> >  arch/arm64/kvm/hyp/include/nvhe/mm.h |  1 +
-> >  arch/arm64/kvm/hyp/nvhe/mm.c         | 18 ++++++++++++++++--
-> >  2 files changed, 17 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/arm64/kvm/hyp/include/nvhe/mm.h b/arch/arm64/kvm/hyp/include/nvhe/mm.h
-> > index 8ec3a5a7744b..c76d7136ed9b 100644
-> > --- a/arch/arm64/kvm/hyp/include/nvhe/mm.h
-> > +++ b/arch/arm64/kvm/hyp/include/nvhe/mm.h
-> > @@ -23,6 +23,7 @@ int hyp_map_vectors(void);
-> >  int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back);
-> >  int pkvm_cpu_set_vector(enum arm64_hyp_spectre_vector slot);
-> >  int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot);
-> > +int pkvm_create_mappings_locked(void *from, void *to, enum kvm_pgtable_prot prot);
-> >  int __pkvm_create_mappings(unsigned long start, unsigned long size,
-> >                            unsigned long phys, enum kvm_pgtable_prot prot);
-> >  unsigned long __pkvm_create_private_mapping(phys_addr_t phys, size_t size,
-> > diff --git a/arch/arm64/kvm/hyp/nvhe/mm.c b/arch/arm64/kvm/hyp/nvhe/mm.c
-> > index a8efdf0f9003..6fbe8e8030f6 100644
-> > --- a/arch/arm64/kvm/hyp/nvhe/mm.c
-> > +++ b/arch/arm64/kvm/hyp/nvhe/mm.c
-> > @@ -67,13 +67,15 @@ unsigned long __pkvm_create_private_mapping(phys_addr_t phys, size_t size,
-> >         return addr;
-> >  }
-> >
-> > -int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
-> > +int pkvm_create_mappings_locked(void *from, void *to, enum kvm_pgtable_prot prot)
-> >  {
-> >         unsigned long start = (unsigned long)from;
-> >         unsigned long end = (unsigned long)to;
-> >         unsigned long virt_addr;
-> >         phys_addr_t phys;
-> >
-> > +       hyp_assert_lock_held(&pkvm_pgd_lock);
-> > +
-> >         start = start & PAGE_MASK;
-> >         end = PAGE_ALIGN(end);
-> >
-> > @@ -81,7 +83,8 @@ int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
-> >                 int err;
-> >
-> >                 phys = hyp_virt_to_phys((void *)virt_addr);
-> > -               err = __pkvm_create_mappings(virt_addr, PAGE_SIZE, phys, prot);
-> > +               err = kvm_pgtable_hyp_map(&pkvm_pgtable, virt_addr, PAGE_SIZE,
-> > +                                         phys, prot);
-> >                 if (err)
-> >                         return err;
-> >         }
-> > @@ -89,6 +92,17 @@ int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
-> >         return 0;
-> >  }
-> >
-> > +int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
-> > +{
-> > +       int ret;
-> > +
-> > +       hyp_spin_lock(&pkvm_pgd_lock);
-> > +       ret = pkvm_create_mappings_locked(from, to, prot);
-> > +       hyp_spin_unlock(&pkvm_pgd_lock);
-> > +
-> > +       return ret;
-> > +}
-> > +
-> 
-> I'm wondering whether this patch should also refactor
-> __pkvm_create_mappings. It doesn't quite do the exact same thing and
-> has different parameters.
+> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+> Anything received after that time might be too late.
 
-Sorry, not sure I'm understanding your suggestion here. What do you
-think should be done to __pkvm_create_mappings?
+Build test:
+mips (gcc version 11.1.1 20210723): 63 configs -> no failure
+arm (gcc version 11.1.1 20210723): 116 configs -> no new failure
+arm64 (gcc version 11.1.1 20210723): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
-Cheers,
-Quentin
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
+
