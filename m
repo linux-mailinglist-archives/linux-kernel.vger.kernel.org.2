@@ -2,127 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDE73DE5FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD203DE5FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbhHCFFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 01:05:12 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52150 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234078AbhHCFFJ (ORCPT
+        id S234113AbhHCFFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 01:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233710AbhHCFFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 01:05:09 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17354cUI094582;
-        Tue, 3 Aug 2021 00:04:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1627967078;
-        bh=poueu/euKtfcqbr8LzsTcjIQ1wgv6v/lzsChvHScOeU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=dqFKAytlSoqOZPGPIUUoqkgu711aa3ExmfYm1xDURmwSgWY4iLzvUwIxEW3bAvo3E
-         Ye3ascMO/mODZu15TvxwcN0aUsNXvgkbghpjZkvUsdLy9dk9Q9ahdYiKSr7a/2hF4/
-         O7IlBnseLwWYkK0m67DFVh60TiuAveG2L0xZIqro=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17354cpX007313
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Aug 2021 00:04:38 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 3 Aug
- 2021 00:04:38 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 3 Aug 2021 00:04:38 -0500
-Received: from a0393678-ssd.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17353BeX090231;
-        Tue, 3 Aug 2021 00:04:30 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>
-CC:     Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kishon@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH v7 7/7] Documentation: PCI: endpoint/pci-endpoint-cfs: Guide to use SR-IOV
-Date:   Tue, 3 Aug 2021 10:33:10 +0530
-Message-ID: <20210803050310.27122-8-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210803050310.27122-1-kishon@ti.com>
-References: <20210803050310.27122-1-kishon@ti.com>
+        Tue, 3 Aug 2021 01:05:51 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB64C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 22:05:41 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so3121294pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 22:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=t1x2eb6ArQwcke53LEN8sEzOMirAau5sq1TSi3sUCsY=;
+        b=DAD9hD6clhuKpwr6lD/ftBB86FlJPFcaeGWcqGpbezF8x11hUauwJjYBYtgWpTkUE4
+         ekMiL6uSzYSub/Fm2bcYDjHl2R96wJQ2EN4ZFJPtPf5Bb/DdW4nwnjfFRc7nn+kMpju0
+         d/Q8MMNpte5V74V+nn5H0Oj4SHmd27ARSMfgTUnlaPiD8ajWiZUMGz0v6ffTqHd3CPns
+         OjmeWF/RnGRxCUn813IkiM8u1HBMYfrHjm7ry0GLMPLUM56vKjYKFdi9z+XP/2Uwg7JQ
+         Tt6ALJD5AZfATEbA86bZEbYTrn67HWfeUviDgNGBD/8Xd76PmQwVQIsG41ozOyQkx5Qf
+         HuRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=t1x2eb6ArQwcke53LEN8sEzOMirAau5sq1TSi3sUCsY=;
+        b=tD5h2WTOjUkDv2dtVMX1uEv3IPesnEzsDrozwATLDgxWJ3JkIZi/S73b646Zt/g5Ni
+         XXDp6YtoxCzcJF3k5VEq7rrx4gdxtJFV+9aL57sKa5YPNo7KS1t4YCwm6q4ayePisagt
+         6AhFDj+NAUpZJFmfHnCtbIEU0pLadM0t+H4+w+TcMdgFwASmuEYlFgCOutqg/xrNZWxK
+         NAxX5St3XI6ye4K5oaF3TFpAWMJAW9Chf/onXSqoVSmCdyVIBqRUIfssOUtTX/0QI5uQ
+         641Dx/Uk7WtBAW5ITeAYqTQoofkPW0J6+DNsuZ512iBQadQmdGwVwVrRbyoY+2DKEzJz
+         Y4lg==
+X-Gm-Message-State: AOAM532qUgCk7V7i0Q6TkPLsGz+NnMuiYs3ZVxG/bgpPg4K5x0kwS3Ll
+        ewl7kStNfwpU5/lP1pjzSclRoYHjCTXYOw==
+X-Google-Smtp-Source: ABdhPJwU4eUemoyxNXuECRUbX/OoxhUNMqe/MV3WYgB0tbaRQDpF/Pp0UeKo4qjqXyRbPmmiGibzQQ==
+X-Received: by 2002:a62:606:0:b029:3b6:7e9a:fd2c with SMTP id 6-20020a6206060000b02903b67e9afd2cmr13151849pfg.24.1627967140745;
+        Mon, 02 Aug 2021 22:05:40 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id s7sm9910588pjg.34.2021.08.02.22.05.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 22:05:40 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 10:35:38 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH v13 1/2] dt-bindings: cpufreq: add bindings for MediaTek
+ cpufreq HW
+Message-ID: <20210803050538.g6aj2zsep735ywqv@vireshk-i7>
+References: <1627574891-26514-1-git-send-email-hector.yuan@mediatek.com>
+ <1627574891-26514-2-git-send-email-hector.yuan@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627574891-26514-2-git-send-email-hector.yuan@mediatek.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Documentation to help users use PCI endpoint to create virtual
-functions using configfs. An endpoint function is designated as a
-virtual endpoint function device when it is linked to a physical
-endpoint function device (instead of a endpoint controller).
+On 30-07-21, 00:08, Hector Yuan wrote:
+> From: "Hector.Yuan" <hector.yuan@mediatek.com>
+> 
+> Add devicetree bindings for MediaTek HW driver.
+> 
+> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> ---
+>  .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |   70 ++++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> new file mode 100644
+> index 0000000..6bb2c97
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> @@ -0,0 +1,70 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/cpufreq/cpufreq-mediatek-hw.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek's CPUFREQ Bindings
+> +
+> +maintainers:
+> +  - Hector Yuan <hector.yuan@mediatek.com>
+> +
+> +description:
+> +  CPUFREQ HW is a hardware engine used by MediaTek
+> +  SoCs to manage frequency in hardware. It is capable of controlling frequency
+> +  for multiple clusters.
+> +
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- Documentation/PCI/endpoint/pci-endpoint-cfs.rst | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Should this somewhere have a reference to
+Documentation/devicetree/bindings/dvfs/performance-domain.yaml ?
 
-diff --git a/Documentation/PCI/endpoint/pci-endpoint-cfs.rst b/Documentation/PCI/endpoint/pci-endpoint-cfs.rst
-index db609b97ad58..fb73345cfb8a 100644
---- a/Documentation/PCI/endpoint/pci-endpoint-cfs.rst
-+++ b/Documentation/PCI/endpoint/pci-endpoint-cfs.rst
-@@ -43,6 +43,7 @@ entries corresponding to EPF driver will be created by the EPF core.
- 		.. <EPF Driver1>/
- 			... <EPF Device 11>/
- 			... <EPF Device 21>/
-+			... <EPF Device 31>/
- 		.. <EPF Driver2>/
- 			... <EPF Device 12>/
- 			... <EPF Device 22>/
-@@ -68,6 +69,7 @@ created)
- 				... subsys_vendor_id
- 				... subsys_id
- 				... interrupt_pin
-+			        ... <Symlink EPF Device 31>/
-                                 ... primary/
- 			                ... <Symlink EPC Device1>/
-                                 ... secondary/
-@@ -79,6 +81,13 @@ interface should be added in 'primary' directory and symlink of endpoint
- controller connected to secondary interface should be added in 'secondary'
- directory.
- 
-+The <EPF Device> directory can have a list of symbolic links
-+(<Symlink EPF Device 31>) to other <EPF Device>. These symbolic links should
-+be created by the user to represent the virtual functions that are bound to
-+the physical function. In the above directory structure <EPF Device 11> is a
-+physical function and <EPF Device 31> is a virtual function. An EPF device once
-+it's linked to another EPF device, cannot be linked to a EPC device.
-+
- EPC Device
- ==========
- 
-@@ -98,7 +107,8 @@ entries corresponding to EPC device will be created by the EPC core.
- 
- The <EPC Device> directory will have a list of symbolic links to
- <EPF Device>. These symbolic links should be created by the user to
--represent the functions present in the endpoint device.
-+represent the functions present in the endpoint device. Only <EPF Device>
-+that represents a physical function can be linked to a EPC device.
- 
- The <EPC Device> directory will also have a *start* field. Once
- "1" is written to this field, the endpoint device will be ready to
+> +properties:
+> +  compatible:
+> +    const: mediatek,cpufreq-hw
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description: |
+> +      Addresses and sizes for the memory of the
+> +      HW bases in each frequency domain.
+> +
+> +  "#performance-domain-cells":
+> +    description:
+> +      Number of cells in a performance domain specifier. Typically 1 for nodes
+> +      providing multiple performance domains (e.g. performance controllers),
+> +      but can be any value as specified by device tree binding documentation
+> +      of particular provider.
+
+You say this can have any value, 1 or more, but then ...
+
+> +    const: 1
+
+You fix it to 1 ?
+
+Perhaps you should add a reference to the performance-domain.yaml here
+as well, and say const 1 here and describe how the parameter is going
+to be used. You should only explain it in respect to your SoC.
+
+But I am not that good with Yaml stuff, I will let Rob correct me here
+:)
+
 -- 
-2.17.1
-
+viresh
