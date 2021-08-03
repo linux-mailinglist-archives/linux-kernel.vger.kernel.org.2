@@ -2,158 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4353DE4B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 05:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA103DE4B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 05:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233676AbhHCDbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 23:31:01 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62016 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233197AbhHCDa7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 23:30:59 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1733Nm0M011555;
-        Mon, 2 Aug 2021 20:30:29 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=oRtwW5O7ZV7fpZbUsBUpcibJRsl5cPaqW2CnQXKDIzI=;
- b=ALlR/GKwUVBsY3yJIrh2Iu8FgOLrNngKdLnmLqsz3E7qahdCwtxNeHV+4/DH3IQe9tvU
- KgwNkV2Li3ctAPODP8GOiofjJ7GYlJFs7kNI+NtjSg2gf8dnFeHK+NoruoEV7fcwyWDJ
- jfkUlX/0eEUUVAuCsvvd68ChmhQP7yOOPqk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a6qe1j1j9-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 02 Aug 2021 20:30:29 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 2 Aug 2021 20:30:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HZk48rHljK/4OLYwcpV1AQtwF8iNckoP20/PYGp2eW+CtX/INrM2zCgOOMZfsah7izOZrV3SlxPUvvDM3BXrD2G11dr2H2/H6jvIcQIxgxwV+feHZoRdfqltDqZ4HZsKZsVqS3KNdHHwKLR2ed++wu/XBvNbT969lHGqW4U7ElsJK0tFyX0ScEedIboc/lUm48amIpFyzDOh9YXkx1wdwgvjz7ih+PGYe28C7VMLAhAYYmcPecuNOP0/TIY7VqfOkiXo3cdnJoRQ9OmioRKODbkE1DNHPRXx5bq2gur95eG4Nq7/o7BvWpLxP7uBMreFn1nsjnPShw6btVazXYMI7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oRtwW5O7ZV7fpZbUsBUpcibJRsl5cPaqW2CnQXKDIzI=;
- b=S2TK9LDXqIQV1TSArYJeLb5EdNeTb8AoJJfMDLaFGQqew1IAz1UHQGnDgQCnexhureUJEQkO75GfiikCkEeemWu/DIeV51c+Or882ZnWZRcQEFM5Kvo5yUHZNXxcVn47PnpPT0sPLGtDoVZdAFtMB4jXRz+9DtqCbe/h7EgBUaLiGxhRUal8O/QGfHLGwCg1AGWhylF+Tq9/5M8bAiCbz7mStu3c2ZHpKRGWxu9Sh6rTyIWI4xQvDERgUzoGfqHLR9GHJpLtnA0LWpy9QTsUyosnuklmZbmPJdSjhzBjO+npZrZYfOo3MH01T52XPQKIW0KfW+9N7HiFl+1INwnqPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BY3PR15MB4962.namprd15.prod.outlook.com (2603:10b6:a03:3c5::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20; Tue, 3 Aug
- 2021 03:30:25 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::9520:2bcd:e6fd:1dc7]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::9520:2bcd:e6fd:1dc7%6]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
- 03:30:25 +0000
-Date:   Mon, 2 Aug 2021 20:30:21 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH] slub: fix kmalloc_pagealloc_invalid_free unit test
-Message-ID: <YQi4TUMDTBrcXxEX@carbon.dhcp.thefacebook.com>
-References: <20210802180819.1110165-1-shakeelb@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210802180819.1110165-1-shakeelb@google.com>
-X-ClientProxiedBy: MW4PR04CA0235.namprd04.prod.outlook.com
- (2603:10b6:303:87::30) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S233645AbhHCDi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 23:38:29 -0400
+Received: from mga18.intel.com ([134.134.136.126]:35708 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233197AbhHCDi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 23:38:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="200774735"
+X-IronPort-AV: E=Sophos;i="5.84,290,1620716400"; 
+   d="scan'208";a="200774735"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 20:38:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,290,1620716400"; 
+   d="scan'208";a="510848535"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Aug 2021 20:38:15 -0700
+Date:   Tue, 3 Aug 2021 11:32:24 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, "Wu, Hao" <hao.wu@intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>
+Subject: Re: [PATCH] fpga: region: handle compat_id as an uuid
+Message-ID: <20210803033224.GA461389@yilunxu-OptiPlex-7050>
+References: <20210726202650.4074614-1-trix@redhat.com>
+ <6f30a4c6-61a0-bb57-9f13-bcad3f3589b8@intel.com>
+ <ba28bac6-9c6d-de73-523f-b8ba4bef84de@redhat.com>
+ <DM6PR11MB38199F872DC94971D9C8A53885EA9@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <YQL4qyAmqj322HTz@epycbox.lan>
+ <a5b4b303-7d9b-27d7-4c1e-cd29fea8cdb9@redhat.com>
+ <20210730014859.GA436611@yilunxu-OptiPlex-7050>
+ <dd2bc08b-3610-b14f-59fc-ab444845d0f7@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:dd54) by MW4PR04CA0235.namprd04.prod.outlook.com (2603:10b6:303:87::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Tue, 3 Aug 2021 03:30:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 25a89cb5-d8eb-4b33-39f1-08d9562f0879
-X-MS-TrafficTypeDiagnostic: BY3PR15MB4962:
-X-Microsoft-Antispam-PRVS: <BY3PR15MB4962964D5D7D54FB60ADCFE9BEF09@BY3PR15MB4962.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:446;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UKbQZ2n5zdPpaZDrZ/mCwsh94/RLYeKc3APWVuUyZiWunuI73i2NBfu5NDb1WOx6McSNjOLnp2utZsyiWNU0yRgFTbJLwInUyViH6sK98vOHqqHMFdyqft9L2uadOi5C+nqYrzI/91fVZn3Qb/XbQbRH97KiXbcZdNGPdNQppsH7l0HJrMizYkNbX0oowoFc4+FqA6C8K09R8zYFXpIJ7edDFbaMjkpPS7kMjXdqGC9UsHsPuf3jMmhqhLBSY/mE1AkQrfuhG5ZVySyXFJMPxDSFNnuK9ZXy8aLr8ingKw2DI8xPHFlzsBg9xdy8ueOL+ybPuuKj42/8/8OcU1IYhjCUWVOtRQtMCylGd5GTYKMgr1/Tahl+TElhReRa9fFLExzauLsX6j89dIqePuf4127KRKHUflKiWFSiGGIpYM+Yo2AcEuElRhT151TmQ9I0iydVGBcDUjM1apx5VP5+NZUBUAYP9/AC5smXm2j1/QhZO7IgX9J5nkkUlUvfcnbo+UzuLd7hyre4SlDW028+l1oojRIX1MDGy7A8nJCunjgw3FWSegXVYftJVnQqxC5hLPaOcd39IA9f7VpYmJAhYxDNn6I54weH/TYKLT6Z1wD8xQr2uMA/9GvzljOWuMNQcZGNR4l2g1qCuw/ejc0bWQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39860400002)(136003)(396003)(376002)(316002)(186003)(478600001)(66556008)(66476007)(66946007)(8676002)(38100700002)(8936002)(55016002)(5660300002)(4326008)(9686003)(6666004)(4744005)(86362001)(52116002)(7696005)(7416002)(83380400001)(6916009)(2906002)(6506007)(54906003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FrvGK1JiWpX5YX9beWD93Ad90s+TD3bps4rnK7EsxpFKUWz4XcIblHNKJoKZ?=
- =?us-ascii?Q?OmEGqEf7vyQXMb+h8zE1RmKOOcUHocWnZlbXgy63DCO6yEbyg2n3rIx2/Qdc?=
- =?us-ascii?Q?YGisFEpWbzV97w8VJNBMv/yV10HW2EIFxdZMmAqUqSOExa6xmZvUXqCmKgrv?=
- =?us-ascii?Q?OXk4Xv+cF9jPvofNlhkuSwQYKR9ZUurGq/LfnMUdxMZmbkbB4Z3reTXtX++g?=
- =?us-ascii?Q?WJgJ6/mDZyyiTRBO7dsv/vmIFBe7a7GE3NqUF9HwN7yl0dKcHDwbj4oE/2KA?=
- =?us-ascii?Q?u+2cVjig+snXP8Fd8xYANEgkbCNhYDMMw6eE03advu/qUU+K/83ZSNL+J0AP?=
- =?us-ascii?Q?sX/KPP4kPag6K1sONcBeoT3Z8mRrWx4mqSXg1qDmRa9muKSFuKmAMGPm9N+O?=
- =?us-ascii?Q?5OoSqTMp8j8YjCUC7HDKW7c+RnVFSwrTpkUx8hySKSUXCUA9tHA0OlFeODtE?=
- =?us-ascii?Q?fzuS2xqGm/52ATbmjyhioM1ZrYbJ5hTpNYZnbvuiqnUacsGIzxGqjg4CLQg5?=
- =?us-ascii?Q?juC/nx8ayPwHJgK8l2nHhF4Qg7eNC0IjYIgTguZnGxI7NQiHGf2O+KuKEawh?=
- =?us-ascii?Q?54j1bT2A914cJz0iav2kGvK+26aVoPQRYPJE6CIs17TAdOuUiJt/Kg22rOIO?=
- =?us-ascii?Q?zFa56l1Plc8nz1T/nMDuDQaMTh38urVCLWc7cNsq1kLD6kOy1v2vPfiuWDZI?=
- =?us-ascii?Q?P+0GXtkYP19KXWmXRV5FEkWaJ9mJIzCK6xuYXvS8io3UnvrY29MbsjTunCmd?=
- =?us-ascii?Q?JJn9Mdsss+tr95tQTxhAl2aUR7jjpCJIN8/f7ad0SwFlTbuv5Ip+UbulszIU?=
- =?us-ascii?Q?iFyTGvZ/ykk9uUwml4ZVD4BVH0mJhaU3aCcXsgDu1itMcI9RX7y5JPeIF017?=
- =?us-ascii?Q?XUl2gj5djSnj2WzZePqIirHrjVNy+YC4CXloIDmh2EFgnvS+Q7x5TIqUtigF?=
- =?us-ascii?Q?oWYiKmAh8KcRL55EGsnZTYyE2v1072heOW4vrk9lpfajydfu8Fb+zgCNWQpc?=
- =?us-ascii?Q?6os30SCH1A7OsLzttyh093vmL0z5DKNXcaR3C28uHaT42Tl00vBXVjQCW+9t?=
- =?us-ascii?Q?VZ6BmyKILnNVpe0p19xGMB53TV0TlZvgAjuOawgXMrBgHJKTfWghmZIPCe3l?=
- =?us-ascii?Q?rvCTUj8nWAj6eMhMnj3E05kK2C8AvEZQVFqDUDPZZrlqk1y39LeZqzBoFOUM?=
- =?us-ascii?Q?fCPNzxLZg+J/FD3jKa9s2tifRVe3WHiS1S/Qhrdq/Ca57itpcBYncZiT65If?=
- =?us-ascii?Q?G+dNmWlSmA0X8FlMsIt6b4kDApWgvJvjF1c3AgG5zpCcD2dxmv52onNy09d8?=
- =?us-ascii?Q?9uTwUTkVOBx25/gnV1I7rn9RFdTu4da32+1xm9lGshBxCg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25a89cb5-d8eb-4b33-39f1-08d9562f0879
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 03:30:25.6299
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O2tv9GU4hI1nxe/IZAqYkEsriHDTHPI8haRvd49NZnvleHEhVafF5w2NJkXmUj45
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB4962
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: WqfKHqqZ2ZcpLJlk3tlp1jK7zf8WGiUL
-X-Proofpoint-ORIG-GUID: WqfKHqqZ2ZcpLJlk3tlp1jK7zf8WGiUL
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-02_10:2021-08-02,2021-08-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0
- mlxlogscore=751 adultscore=0 clxscore=1011 bulkscore=0 phishscore=0
- suspectscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108030018
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dd2bc08b-3610-b14f-59fc-ab444845d0f7@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 11:08:18AM -0700, Shakeel Butt wrote:
-> The unit test kmalloc_pagealloc_invalid_free makes sure that for the
-> higher order slub allocation which goes to page allocator, the free is
-> called with the correct address i.e. the virtual address of the head
-> page.
+On Fri, Jul 30, 2021 at 05:07:00AM -0700, Tom Rix wrote:
 > 
-> The commit f227f0faf63b ("slub: fix unreclaimable slab stat for bulk
-> free") unified the free code paths for page allocator based slub
-> allocations but instead of using the address passed by the caller, it
-> extracted the address from the page. Thus making the unit test
-> kmalloc_pagealloc_invalid_free moot. So, fix this by using the address
-> passed by the caller.
+> On 7/29/21 6:48 PM, Xu Yilun wrote:
+> > On Thu, Jul 29, 2021 at 12:16:47PM -0700, Tom Rix wrote:
+> > > On 7/29/21 11:51 AM, Moritz Fischer wrote:
+> > > > On Wed, Jul 28, 2021 at 01:36:56AM +0000, Wu, Hao wrote:
+> > > > > > On 7/26/21 3:12 PM, Russ Weight wrote:
+> > > > > > > On 7/26/21 1:26 PM, trix@redhat.com wrote:
+> > > > > > > > From: Tom Rix <trix@redhat.com>
+> > > > > > > > 
+> > > > > > > > An fpga region's compat_id is exported by the sysfs
+> > > > > > > > as a 128 bit hex string formed by concatenating two
+> > > > > > > > 64 bit values together.
+> > > > > > > > 
+> > > > > > > > The only user of compat_id is dfl.  Its user library
+> > > > > > > > opae converts this value into a uuid.
+> > > > > > > > 
+> > > > > > > > ex/
+> > > > > > > > $ cat /sys/class/fpga_region/region1/compat_id
+> > > > > > > > f3c9941350814aadbced07eb84a6d0bb
+> > > > > > > > 
+> > > > > > > > Is reported as
+> > > > > > > > $ fpgainfo bmc
+> > > > > > > > ...
+> > > > > > > > Pr Interface Id                  : f3c99413-5081-4aad-bced-07eb84a6d0bb
+> > > > > > > > 
+> > > > > > > > Storing a uuid as 2 64 bit values is vendor specific.
+> > > > > > > > And concatenating them together is vendor specific.
+> > > > > > > > 
+> > > > > > > > It is better to store and print out as a vendor neutral uuid.
+> > > > > > > > 
+> > > > > > > > Change fpga_compat_id from a struct to a union.
+> > > > > > > > Keep the old 64 bit values for dfl.
+> > > > > > > > Sysfs output is now
+> > > > > > > > f3c99413-5081-4aad-bced-07eb84a6d0bb
+> > > > > > > I'm fowarding feedback from Tim Whisonant, one of the OPAE userspace
+> > > > > > > developers:
+> > > > > > > 
+> > > > > > > I think that this change to the sysfs for the compat_id node will
+> > > > > > > end up breaking the SDK, which does not expect the '-' characters to
+> > > > > > > be included when parsing the sysfs value. Currently, it is parsed as
+> > > > > > > a raw hex string without regard to any '-' characters. This goes for
+> > > > > > > any "guid" currently exported by sysfs and for what we read in the
+> > > > > > > device MMIO space.
+> > > > > > Yes, it will.
+> > > > > > 
+> > > > > > And there are other places, like dfl-afu-main.c:afu_id_show()
+> > > > > > 
+> > > > > > outputs raw hex that sdk turns into a uuid.
+> > > > > > 
+> > > > > > 
+> > > > > > Some options.
+> > > > > > 
+> > > > > > If no one but dfl will ever use it, then v1 of patchset.
+> > > > > > 
+> > > > > > If others can use it but don't want to change dfl, then v2 of patchset,
+> > > > > > my favorite.
+> > > > > > 
+> > > > > > Or this one for uuid for everyone, what have been v3 but changed too much.
+> > > > > > 
+> > > > > > 
+> > > > > > could dfl change generally to output uuid's to the sysfs ?
+> > > > > > 
+> > > > > > this would be generally helpful and a one time disruption to the sdk.
+> > > > > This change limited the output format to uuid_t, but if any hardware doesn't
+> > > > > use uuid_t on hardware may have to convert it back from the sysfs output in
+> > > > > userspace. Leave it to print hardware values (e.g. from register), and convert
+> > > > > it in userspace should be fine too I think.
+> > > > I'm not entirely sure. I seem to recall there being examples of sysfs
+> > > > files returning different things for different drivers.
+> > > > 
+> > > > That being said it seems largely cosmetic to add the '-' in between.
+> > > > 
+> > > > If it breaks userspace, I'm against it. If you *need* it make a
+> > > > compat_uuid entry or something in that case?
+> > > My gripe is
+> > > 
+> > > For a nominally common interface, compat_id has a vendor specific output.
+> > > 
+> > > If for example another vendor wanted to use this field but their natural
+> > > format was an OF string.
+> > > 
+> > > 16 bytes of raw hex would not work for them, so they would roll their own.
+> > > 
+> > > which defeats the purpose of a common interface.
+> > > 
+> > > 
+> > > The language in the docs as-is is vague on the output format.
+> > > 
+> > > DFL is the only user of the interface.
+> > > 
+> > > So ver 2
+> > > 
+> > > https://lore.kernel.org/linux-fpga/4ab7dd2d-c215-6333-6860-6f7d0ac64c3d@redhat.com/
+> > > 
+> > > Keeps the output as-is for dfl, so nothing breaks in userspace
+> > > 
+> > > And adds flexibility for vendors to output their appropriate natural form.
+> > > 
+> > > So compat_id becomes generally useful.
+> > Mixing types seems be strongly against in Documentation/filesystems/sysfs.rst.
+> > So in my opinion there should be a determined format for the output. The
+> > concern for this patch is which one is a better format, uuid style or
+> > 128 bit raw hex?
+> > 
+> > And I vote for 128 bit raw hex, as other vendors may not use uuid_t as
+> > the identifier, may be an OF string. So we don't have to force them
+> > decorate it as the uuid style.
 > 
-> Should we fix this? I think yes because dev expect kasan to catch these
-> type of programming bugs.
+> So you would be ok with v2 of this patchset ?
 
-I think so too.
+No. I prefer we keep the current implementation. I mean 128 bit raw hex
+could be a more compatible output format for all vendors, uuid style,
+string style or others.
 
-Acked-by: Roman Gushchin <guro@fb.com>
+Thanks,
+Yilun
 
-Thanks!
+> 
+> Tom
+> 
+> > 
+> > Thanks
+> > Yilun
+> > 
+> > > 
+> > > Tom
+> > > 
+> > > 
+> > > > - Moritz
+> > > > 
