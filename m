@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C85493DF017
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2003DF016
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236724AbhHCOSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55018 "EHLO
+        id S236254AbhHCOSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:18:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236622AbhHCOR1 (ORCPT
+        with ESMTP id S236614AbhHCOR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Aug 2021 10:17:27 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D051C061799;
-        Tue,  3 Aug 2021 07:17:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C8AC06179A
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:17:13 -0700 (PDT)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1628000232;
@@ -22,29 +22,27 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Mp7gi69XNNgEmtaHo/BkgdaOmbU6gfKgVITw3Sb4bDo=;
-        b=pZuEAiATXelgJB7kY7qWD2cbi4f8LLoQhrpHKJfrIKv5+3a8xbrg2ZLf0++/FzO5s7ofti
-        7xKbu318U9CR0xRUdB8yaB/72Ln39xSKN3rjpvVYLh7fVLlY9LD5qS0ggNZlAqHE0cbeZs
-        biNbyeIgyISIr74cDb07sjxQ7N4xqe0TIygG9FkfLwk52YDdKG4gjmm7fJsunFNw4c/k/x
-        Kq6xDnvP7aPTxYYc4ao95OOKOeX11UYy5uh2AkHCUcyd2Z9h/xHhuEAGDMl9zxeyELCHjR
-        TAT3GqG5sU26q8uHYBKzz6r7nCODPoXg+z1rGtiy1HQmxuYBAkmfizFx8pDEIQ==
+        bh=bfxZiNldPepJ7Rqo+8epiZj524jWZLUPNw0ku3jMnp0=;
+        b=BY1FoGiw0wVOv2SFMb4myN1pM8JlgfmGuV1efeazX1l6RAlFsOSvxSZXJtOXeF1PkY1sqi
+        epBjMWtyxsG4hOfrHt1qlm5/lFfutkzVA4MQMXY5s7J7IMvuonTlHANdDwnJuYr9/g6Ykb
+        r7C2cNdlUmyjP0rO9k/NUFvDMRikwiMTGVDWBKhTY3mJsEk6NAsuOIaiEeo3rAhQGOeYxE
+        erxnrjJec1EhC6p3Z/mkVajq1b3pmkiRBGUEjlOzI5GOyiX4B9kjFWr4fkheHE5MkYWn4c
+        Seoax97iqGJP1IcWjAWI0/1ThjOaqn27H3AXxWGWJWpNtih5LIgPCihpxKUkxQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1628000232;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Mp7gi69XNNgEmtaHo/BkgdaOmbU6gfKgVITw3Sb4bDo=;
-        b=kKKvn84SpRZSnRr1Sy/iC/LQy1hcruUhzHKsLiGRfWQZjbw47NUHCs5uHOSeJdk69+w56v
-        QTP/s6X/q8RG7oDg==
+        bh=bfxZiNldPepJ7Rqo+8epiZj524jWZLUPNw0ku3jMnp0=;
+        b=9H8KMO24qDxpfI2H1WuHsGU3JlSZjJ1MfdHYRmPe6VEAJjvFf6cxZrAaeFG8wtmr5YxWkU
+        a3HGunNnxbOY3aCg==
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
-Subject: [PATCH 24/38] cgroup: Replace deprecated CPU-hotplug functions.
-Date:   Tue,  3 Aug 2021 16:16:07 +0200
-Message-Id: <20210803141621.780504-25-bigeasy@linutronix.de>
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 25/38] genirq/affinity: Replace deprecated CPU-hotplug functions.
+Date:   Tue,  3 Aug 2021 16:16:08 +0200
+Message-Id: <20210803141621.780504-26-bigeasy@linutronix.de>
 In-Reply-To: <20210803141621.780504-1-bigeasy@linutronix.de>
 References: <20210803141621.780504-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -60,163 +58,49 @@ cpus_read_lock() and cpus_read_unlock().
 Replace deprecated CPU-hotplug functions with the official version.
 The behavior remains unchanged.
 
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: cgroups@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- kernel/cgroup/cpuset.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ kernel/irq/affinity.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index adb5190c44296..bd2b998249e8b 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -979,7 +979,7 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpum=
-ask_var_t doms_new[],
-  * 'cpus' is removed, then call this routine to rebuild the
-  * scheduler's dynamic sched domains.
-  *
-- * Call with cpuset_mutex held.  Takes get_online_cpus().
-+ * Call with cpuset_mutex held.  Takes cpus_read_lock().
-  */
- static void rebuild_sched_domains_locked(void)
- {
-@@ -1040,11 +1040,11 @@ static void rebuild_sched_domains_locked(void)
+diff --git a/kernel/irq/affinity.c b/kernel/irq/affinity.c
+index 4d89ad4fae3bb..f7ff8919dc9bb 100644
+--- a/kernel/irq/affinity.c
++++ b/kernel/irq/affinity.c
+@@ -355,7 +355,7 @@ static int irq_build_affinity_masks(unsigned int startv=
+ec, unsigned int numvecs,
+ 		goto fail_npresmsk;
 =20
- void rebuild_sched_domains(void)
- {
+ 	/* Stabilize the cpumasks */
 -	get_online_cpus();
 +	cpus_read_lock();
- 	percpu_down_write(&cpuset_rwsem);
- 	rebuild_sched_domains_locked();
- 	percpu_up_write(&cpuset_rwsem);
+ 	build_node_to_cpumask(node_to_cpumask);
+=20
+ 	/* Spread on present CPUs starting from affd->pre_vectors */
+@@ -384,7 +384,7 @@ static int irq_build_affinity_masks(unsigned int startv=
+ec, unsigned int numvecs,
+ 		nr_others =3D ret;
+=20
+  fail_build_affinity:
 -	put_online_cpus();
 +	cpus_read_unlock();
- }
 =20
- /**
-@@ -2282,7 +2282,7 @@ static int cpuset_write_u64(struct cgroup_subsys_stat=
-e *css, struct cftype *cft,
- 	cpuset_filetype_t type =3D cft->private;
- 	int retval =3D 0;
-=20
--	get_online_cpus();
-+	cpus_read_lock();
- 	percpu_down_write(&cpuset_rwsem);
- 	if (!is_cpuset_online(cs)) {
- 		retval =3D -ENODEV;
-@@ -2320,7 +2320,7 @@ static int cpuset_write_u64(struct cgroup_subsys_stat=
-e *css, struct cftype *cft,
+ 	if (ret >=3D 0)
+ 		WARN_ON(nr_present + nr_others < numvecs);
+@@ -505,9 +505,9 @@ unsigned int irq_calc_affinity_vectors(unsigned int min=
+vec, unsigned int maxvec,
+ 	if (affd->calc_sets) {
+ 		set_vecs =3D maxvec - resv;
+ 	} else {
+-		get_online_cpus();
++		cpus_read_lock();
+ 		set_vecs =3D cpumask_weight(cpu_possible_mask);
+-		put_online_cpus();
++		cpus_read_unlock();
  	}
- out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
--	put_online_cpus();
-+	cpus_read_unlock();
- 	return retval;
- }
 =20
-@@ -2331,7 +2331,7 @@ static int cpuset_write_s64(struct cgroup_subsys_stat=
-e *css, struct cftype *cft,
- 	cpuset_filetype_t type =3D cft->private;
- 	int retval =3D -ENODEV;
-=20
--	get_online_cpus();
-+	cpus_read_lock();
- 	percpu_down_write(&cpuset_rwsem);
- 	if (!is_cpuset_online(cs))
- 		goto out_unlock;
-@@ -2346,7 +2346,7 @@ static int cpuset_write_s64(struct cgroup_subsys_stat=
-e *css, struct cftype *cft,
- 	}
- out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
--	put_online_cpus();
-+	cpus_read_unlock();
- 	return retval;
- }
-=20
-@@ -2385,7 +2385,7 @@ static ssize_t cpuset_write_resmask(struct kernfs_ope=
-n_file *of,
- 	kernfs_break_active_protection(of->kn);
- 	flush_work(&cpuset_hotplug_work);
-=20
--	get_online_cpus();
-+	cpus_read_lock();
- 	percpu_down_write(&cpuset_rwsem);
- 	if (!is_cpuset_online(cs))
- 		goto out_unlock;
-@@ -2411,7 +2411,7 @@ static ssize_t cpuset_write_resmask(struct kernfs_ope=
-n_file *of,
- 	free_cpuset(trialcs);
- out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
--	put_online_cpus();
-+	cpus_read_unlock();
- 	kernfs_unbreak_active_protection(of->kn);
- 	css_put(&cs->css);
- 	flush_workqueue(cpuset_migrate_mm_wq);
-@@ -2542,7 +2542,7 @@ static ssize_t sched_partition_write(struct kernfs_op=
-en_file *of, char *buf,
- 		return -EINVAL;
-=20
- 	css_get(&cs->css);
--	get_online_cpus();
-+	cpus_read_lock();
- 	percpu_down_write(&cpuset_rwsem);
- 	if (!is_cpuset_online(cs))
- 		goto out_unlock;
-@@ -2550,7 +2550,7 @@ static ssize_t sched_partition_write(struct kernfs_op=
-en_file *of, char *buf,
- 	retval =3D update_prstate(cs, val);
- out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
--	put_online_cpus();
-+	cpus_read_unlock();
- 	css_put(&cs->css);
- 	return retval ?: nbytes;
- }
-@@ -2756,7 +2756,7 @@ static int cpuset_css_online(struct cgroup_subsys_sta=
-te *css)
- 	if (!parent)
- 		return 0;
-=20
--	get_online_cpus();
-+	cpus_read_lock();
- 	percpu_down_write(&cpuset_rwsem);
-=20
- 	set_bit(CS_ONLINE, &cs->flags);
-@@ -2809,7 +2809,7 @@ static int cpuset_css_online(struct cgroup_subsys_sta=
-te *css)
- 	spin_unlock_irq(&callback_lock);
- out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
--	put_online_cpus();
-+	cpus_read_unlock();
- 	return 0;
- }
-=20
-@@ -2828,7 +2828,7 @@ static void cpuset_css_offline(struct cgroup_subsys_s=
-tate *css)
- {
- 	struct cpuset *cs =3D css_cs(css);
-=20
--	get_online_cpus();
-+	cpus_read_lock();
- 	percpu_down_write(&cpuset_rwsem);
-=20
- 	if (is_partition_root(cs))
-@@ -2849,7 +2849,7 @@ static void cpuset_css_offline(struct cgroup_subsys_s=
-tate *css)
- 	clear_bit(CS_ONLINE, &cs->flags);
-=20
- 	percpu_up_write(&cpuset_rwsem);
--	put_online_cpus();
-+	cpus_read_unlock();
- }
-=20
- static void cpuset_css_free(struct cgroup_subsys_state *css)
+ 	return resv + min(set_vecs, maxvec - resv);
 --=20
 2.32.0
 
