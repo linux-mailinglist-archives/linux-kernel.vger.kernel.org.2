@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC593DE9A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899893DE9A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235043AbhHCJYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:24:00 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:38277 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234833AbhHCJX6 (ORCPT
+        id S235046AbhHCJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234506AbhHCJZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:23:58 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MMoKq-1mTcWM1L88-00Ihmg; Tue, 03 Aug 2021 11:23:46 +0200
-Received: by mail-wr1-f47.google.com with SMTP id b11so19224488wrx.6;
-        Tue, 03 Aug 2021 02:23:46 -0700 (PDT)
-X-Gm-Message-State: AOAM530Zg/zPSyNarWsERgOSZlDUbtpSeMnJgvC6SJr6VVtN3pQTQCd2
-        /y1AQycLUT2tN7+1i3qfM5Gnuw5XN16HYx7AjSg=
-X-Google-Smtp-Source: ABdhPJx2T95w7FUlTHjCk3O4PxfI9q9E5Hmvdla2RsV5aDOkJVgc4IYEMYQOoPe1DqVGQyB7XWepQGFBaL7VmLdTYfw=
-X-Received: by 2002:a5d:44c7:: with SMTP id z7mr22606289wrr.286.1627982625965;
- Tue, 03 Aug 2021 02:23:45 -0700 (PDT)
+        Tue, 3 Aug 2021 05:25:34 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5B1C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:25:21 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id az7so19252545qkb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
+        b=soSnfWAATNmpAe6ZQ2j5ak7EhVrbLv937C6+1XwjX9Fs5UZ/bAvbAVxSmA98koDFDu
+         Kf3SBszPIxgmp2szPJ9E8a+ywQ1uI5o2YaHDwBkcqfCnoKA0HTImXx1S4wgvyWUbxYaF
+         mVFcjpUKdKgxWQmEcUcPy//R4A+INDCw0AJdVEIYAhnz35gziNzz6P86X9B016IN4Csk
+         wkpjym5OK3f4lYaWLccvEtKLUegtIYzs+yN00wrpPcx4Ol1/OPhnDBzoBcrcE/3ddQwZ
+         byyt0rw2u9geWhA5bziQsgrC+ZZuJfGrotVQJDJ2qWlwXTNoMu5+Ood4UMUtcNsWEsHZ
+         0How==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
+        b=crNSk4DDMbTcfgLFVRItWwkSTzujJHljnEaH97OCt2XwNE9wvTkdm7/k/hANpWwn0A
+         XxYktMwAvfbNvYF2+h3wmw52HsplsJ9B4rXe+br7WhoNSCqRvrQH+GWlWber7OLtR8mo
+         n33g4CmTmGWqT8YVpicz8b3DSNugzC4EG4eYT6plVsDr+HvKuKplFEgCAm3U0nStT2JQ
+         /DnxBcCbn+ZeVr1FPtGE+r2L9oLiUd1/TsUuUNSx/lNWSbQbK0oHpyxAw9qlZFifnYon
+         x+ZZUDb+aCyhyfcXTuZ7NcolGxjnBkNRd5gKUo7dNmzuyTzkbXIPcWjMNgDnA0Bli6kC
+         5YLg==
+X-Gm-Message-State: AOAM531q2ND5ch84B5xEM0a98CjS8YMm7N+SY1OnaLfZ5ao/UIwCnlKk
+        t2Xmciw5Wn6QCPIPrB/zpl2idpHy5KekFPAPujU=
+X-Google-Smtp-Source: ABdhPJz2syIqV8+Zxe8kY0OvM+gj/kYvtjzN1nLkTAm9TuV2pdCNz+2T7kGPica+HcupjeqUcxFdsdW9mCKWu7hhNwU=
+X-Received: by 2002:a37:634e:: with SMTP id x75mr18535616qkb.35.1627982720989;
+ Tue, 03 Aug 2021 02:25:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210802233339.25285-1-broonie@kernel.org> <CAA=Fs0k95E3FN-9rwzSQcK4JmejHDKBbvk-yhRynJBTbqBNVxQ@mail.gmail.com>
-In-Reply-To: <CAA=Fs0k95E3FN-9rwzSQcK4JmejHDKBbvk-yhRynJBTbqBNVxQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 3 Aug 2021 11:23:29 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0HWO1tPwCkhasRE1iXt+-rC72nAzsUuO6jb4XasGAAPg@mail.gmail.com>
-Message-ID: <CAK8P3a0HWO1tPwCkhasRE1iXt+-rC72nAzsUuO6jb4XasGAAPg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the staging tree with the net-next tree
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Mark Brown <broonie@kernel.org>, Greg KH <greg@kroah.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
+Reply-To: zahirikeen@gmail.com
+Sender: igaidam913@gmail.com
+Received: by 2002:a05:6214:e4b:0:0:0:0 with HTTP; Tue, 3 Aug 2021 02:25:20
+ -0700 (PDT)
+From:   Zahiri Keen <zahirikeen2@gmail.com>
+Date:   Tue, 3 Aug 2021 09:25:20 +0000
+X-Google-Sender-Auth: BUIsg66FzOnMdoK0OvkypeJXR6g
+Message-ID: <CAEfhoOZ5ijdLvyqRCWPdpf=5HJ3gws0yz4Rz_5+hpMfEizdAGg@mail.gmail.com>
+Subject: URGENT.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:lgVpM/ruziTpQnjryryFpX5etwoBIgzl2LGASOqLPvetijrOzx1
- DMN70pAXuuRbSpZZgIkS69lgjYf/L72mF+FTAOJJD7DqA6LnRL0foYGixWsnGLk2kDCTxxT
- xRawIraaFF90lh0EGXP2ksbvb98rFcnVBtprIury0M0mKrHEbueRDY9pueArhbMAJKW8zp3
- AibHyQbk+iMsug4HtQVlw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cikjpRYLtGI=:UiXlzBgDzydJzJ4HuAutFt
- NL+5lb05VwEV95WgfU6QAYHIY9G+2wJ28vfu/jFVSAQRwUntvFCU3AOgRhJQB9wHUcujShKz0
- aFOmyTxiKmmLaHfbQz8dmV+S2KfYneMTJaU6u+kMk6fA53hRP36ziBZHxx7BFGYQRGE/tzl5r
- QMnZDLOXhrZWwxRRhk+8RmV78roRZE3KZGj6LAPgK90qJ7Ti+IUujXsB/KmimEPDsUXbVjqL5
- 822JrhwLPIZ2pv03nnmXDYCZMXU2EVs9anWwJqYDPjRHDrzac8eXD9I7OK3U0gXsVCXP9mjOz
- IsPxpONr0QCjoE+lKezQ6z/YU0IFnaD65hpcwNZFcp+yz9Tm9rqih8Nfq0WPtkULEAVd8ZBmQ
- Ti504P0DyotsIcyI+5KEgW5iZyV+pZI+vjIchqb75hg8LodAze17iHC0yIZCnGoOocFpDmuEj
- klLnUauLzenljlaEmjKGOsz2tOfgiYxjBK7aVZ3dX429DouAZ3tALhSuTKoY1APsX9mOPqVEl
- BoCQMSI1Qed3P3eRLJNFGBMNCOLdmCOSfOMnoectDX+iE9Bbd9F3dNUJGFPMm+IPg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 10:57 AM Phillip Potter <phil@philpotter.co.uk> wrote:
-> On Tue, 3 Aug 2021 at 00:33, Mark Brown <broonie@kernel.org> wrote:
->
-> Thank you for your e-mail - not sure what is going on here as the
-> r8188eu files are totally new - the net-next commit is touching files
-> from a different directory (rtl8188eu) so perhaps it is getting
-> confused and considering it a rename or similar? Regardless, all
-> commits for r8188eu subdirectory should come from staging, as it is a
-> different driver.
+Greetings,
 
-In net-next, the .ndo_do_ioctl() callback behaves differently, as it no
-longer gets called from user space. If you have any
-SIOCDEVPRIVATE ioctls in the driver, those need to be
-moved over to the new .ndo_siocdevprivate callback, while any
-nonstandard ioctl commands outside of that range can just be
-removed.
+            I have a Mutual/Beneficial Business Project that would be
+beneficial to you. I only have two questions to ask of you, if you are
+interested.
 
-       Arnd
+1. Can you handle this project?
+2. Can I give you this trust?
+
+Please note that the deal requires high level of maturity, honesty and
+secrecy. This will involve moving some money from my office, on trust
+to your hands or bank account. Also note that i will do everything to
+make sure that the money is moved as a purely legitimate fund, so you
+will not be exposed to any risk.
+
+I request for your full co-operation. I will give you details and
+procedure when I receive your reply, to commence this transaction, I
+require you to immediately indicate your interest by a return reply. I
+will be waiting for your response in a timely manner.
+
+Contact  Email: zahirikeen@gmail.com
+Best Regard,
+Mr Zahiri Keen.
