@@ -2,174 +2,447 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818153DE8E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637063DE90E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234695AbhHCIuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:50:51 -0400
-Received: from mga05.intel.com ([192.55.52.43]:1280 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234582AbhHCIus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:50:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="299220310"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="299220310"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:50:37 -0700
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="670072435"
-Received: from gao-cwp.sh.intel.com (HELO gao-cwp) ([10.239.159.133])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:50:34 -0700
-Date:   Tue, 3 Aug 2021 16:58:00 +0800
-From:   Chao Gao <chao.gao@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [clocksource]  8901ecc231:  stress-ng.lockbus.ops_per_sec -9.5%
- regression
-Message-ID: <20210803085759.GA31621@gao-cwp>
-References: <20210521083322.GG25531@xsang-OptiPlex-9020>
- <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
- <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
- <20210526064922.GD5262@shbuild999.sh.intel.com>
- <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
- <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
- <20210802062008.GA24720@gao-cwp>
- <20210802170257.GL4397@paulmck-ThinkPad-P17-Gen-1>
+        id S234748AbhHCI6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:58:30 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51906 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234559AbhHCI6a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:58:30 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 743F021E41;
+        Tue,  3 Aug 2021 08:58:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627981098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eQhTY10u3x+IAuEHCDabmNDZe06nM+q5fU3VI6dmgD4=;
+        b=XS2oOLiPkFT91Jpo8pXJaxShb79AvwLNEiVP7wOyJtgbxOkhPJDA9rdb+C40Nki/hpNwQ7
+        B+rJgqKNUYB5vD6Hzu/q4GEXNM9XeOwWFEHpz/5/Dfsb84oJvUIzyOMj+ySTbAP4JSvdns
+        bcZHFf7cP4tUxWT/m9ip97DsNI6bnjM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627981098;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eQhTY10u3x+IAuEHCDabmNDZe06nM+q5fU3VI6dmgD4=;
+        b=b9VcRFFOntLtSFmhEqTrquir5dZ8dbxrScxbZK+0R+wj32ll31FhuT2EF3JT939Jq1saBh
+        7Zl8B5fb8jqfO+Ag==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4069913709;
+        Tue,  3 Aug 2021 08:58:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id AV0vDioFCWGYegAAGKfGzw
+        (envelope-from <tzimmermann@suse.de>); Tue, 03 Aug 2021 08:58:18 +0000
+Subject: Re: [PATCH v5] drm/ast: Fixed CVE for DP501
+To:     Kuo-Hsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "airlied@linux.ie" <airlied@linux.ie>,
+        Jenmin Yuan <jenmin_yuan@aspeedtech.com>,
+        Arc Sung <arc_sung@aspeedtech.com>,
+        "airlied@redhat.com" <airlied@redhat.com>
+References: <214f1451-2406-b298-e233-4939cae9e1f2@suse.de>
+ <20210421085859.17761-1-kuohsiang_chou@aspeedtech.com>
+ <2662b502-edbe-b79b-b458-dbabafe6ca3c@suse.de>
+ <HK2PR06MB3300831DB8F41525C92B28708C5F9@HK2PR06MB3300.apcprd06.prod.outlook.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <a31502d1-b1ea-d74d-a5c7-b4200e52ff4d@suse.de>
+Date:   Tue, 3 Aug 2021 10:58:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802170257.GL4397@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <HK2PR06MB3300831DB8F41525C92B28708C5F9@HK2PR06MB3300.apcprd06.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="WbwMXHLLLun9aM9P6NsNCyNHCoblkJXIZ"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 10:02:57AM -0700, Paul E. McKenney wrote:
->On Mon, Aug 02, 2021 at 02:20:09PM +0800, Chao Gao wrote:
->> [snip]
->> >commit 48ebcfbfd877f5d9cddcc03c91352a8ca7b190af
->> >Author: Paul E. McKenney <paulmck@kernel.org>
->> >Date:   Thu May 27 11:03:28 2021 -0700
->> >
->> >    clocksource: Forgive repeated long-latency watchdog clocksource reads
->> >    
->> >    Currently, the clocksource watchdog reacts to repeated long-latency
->> >    clocksource reads by marking that clocksource unstable on the theory that
->> >    these long-latency reads are a sign of a serious problem.  And this theory
->> >    does in fact have real-world support in the form of firmware issues [1].
->> >    
->> >    However, it is also possible to trigger this using stress-ng on what
->> >    the stress-ng man page terms "poorly designed hardware" [2].  And it
->> >    is not necessarily a bad thing for the kernel to diagnose cases where
->> >    high-stress workloads are being run on hardware that is not designed
->> >    for this sort of use.
->> >    
->> >    Nevertheless, it is quite possible that real-world use will result in
->> >    some situation requiring that high-stress workloads run on hardware
->> >    not designed to accommodate them, and also requiring that the kernel
->> >    refrain from marking clocksources unstable.
->> >    
->> >    Therefore, provide an out-of-tree patch that reacts to this situation
->> >    by leaving the clocksource alone, but using the old 62.5-millisecond
->> >    skew-detection threshold in response persistent long-latency reads.
->> >    In addition, the offending clocksource is marked for re-initialization
->> >    in this case, which both restarts that clocksource with a clean bill of
->> >    health and avoids false-positive skew reports on later watchdog checks.
->> 
->> Hi Paul,
->> 
->> Sorry to dig out this old thread.
->
->Not a problem, especially given that this is still an experimental patch
->(marked with "EXP" in -rcu).  So one remaining question is "what is this
->patch really supposed to do, if anything?".
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--WbwMXHLLLun9aM9P6NsNCyNHCoblkJXIZ
+Content-Type: multipart/mixed; boundary="utssQvEIn1JhAZ273DIaTgvjFviyP1avd";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Kuo-Hsiang Chou <kuohsiang_chou@aspeedtech.com>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "airlied@linux.ie" <airlied@linux.ie>,
+ Jenmin Yuan <jenmin_yuan@aspeedtech.com>, Arc Sung
+ <arc_sung@aspeedtech.com>, "airlied@redhat.com" <airlied@redhat.com>
+Message-ID: <a31502d1-b1ea-d74d-a5c7-b4200e52ff4d@suse.de>
+Subject: Re: [PATCH v5] drm/ast: Fixed CVE for DP501
+References: <214f1451-2406-b298-e233-4939cae9e1f2@suse.de>
+ <20210421085859.17761-1-kuohsiang_chou@aspeedtech.com>
+ <2662b502-edbe-b79b-b458-dbabafe6ca3c@suse.de>
+ <HK2PR06MB3300831DB8F41525C92B28708C5F9@HK2PR06MB3300.apcprd06.prod.outlook.com>
+In-Reply-To: <HK2PR06MB3300831DB8F41525C92B28708C5F9@HK2PR06MB3300.apcprd06.prod.outlook.com>
 
-We are testing with TDX [1] and analyzing why kernel in a TD, or Trust Domain,
-sometimes spots a large TSC skew. We have inspected tsc hardware/ucode/tdx
-module to ensure no hardware issue, and also ported tsc_sync.c to a userspace
-tool such that this tool can help to constantly check if tsc is synchronized
-when some workload is running. Finally, we believe that the large TSC skew 
-spotted by TD kernel is a false positive.
+--utssQvEIn1JhAZ273DIaTgvjFviyP1avd
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Your patches (those are merged) have improved clocksource watchdog a lot to
-reduce false-positives. But due to the nature of TDX, switching between TD
-and host takes more time. Then, the time window between two reads from
-watchdog clocksource in cs_watchdog_read() increases, so does the
-probability of the two reads being interrupted by whatever on host. Then,
-sometimes, especially when there are heavy workloads in both host and TD,
-the maximum number of retries in cs_watchdog_read() is exceeded and tsc is
-marked unstable.
+Hi
 
-Then we apply this out-of-tree patch, it helps to further reduce
-false-positives. But TD kernel still observes TSC skew in some cases. After
-a close look into kernel logs, we find patterns in those cases: an expected
-re-initialization somehow doesn't happen. That's why we raise this issue
-and ask for your advice.
+Am 29.04.21 um 11:21 schrieb Kuo-Hsiang Chou:
+> More generally speaking, the DP501 code needs a major refactoring. It's=
+ currently bolted onto the regular VGA connector code. It should rather b=
+e a separate connector or a DRM bridge. I always wanted to work on this, =
+but don't have a device for testing. If I'd provide patches, would you be=
+ in a position to test them?
+>=20
+> NO, I can't. The patch was verified on AST2500+DP501 before, so the cor=
+rectness of this patch is promised. But customer always requested to send=
+ the platform back after bug fixed. Now, no DP501 platform on my hand, bu=
+t I try to convince custom to get the someone platform.
 
-[1]: https://software.intel.com/content/www/us/en/develop/articles/intel-trust-domain-extensions.html
+What's the hardware platform that your customer provides to you? I'd=20
+like to do more development for the DP501 code, but the hardware is hard =
 
->And here the clocksource failed the coarse-grained check and marked
->the clocksource as unstable.  Perhaps because the previous read
->forced a coarse-grained check.  Except that this should have forced
->a reinitialization.  Ah, it looks like I need to suppress setting
->CLOCK_SOURCE_WATCHDOG if coarse-grained checks have been enabled.
->That could cause false-positive failure for the next check, after all.
->
->And perhaps make cs_watchdog_read() modify its print if there is
->a watchdog reset pending or if the current clocksource has the
->CLOCK_SOURCE_WATCHDOG flag cleared.
->
->Perhaps as shown in the additional patch below, to be folded into the
->original?
+to find.
 
-Thanks. Will test with below patch applied.
+Best regards
+Thomas
 
-Thanks
-Chao
->
->							Thanx, Paul
->
->------------------------------------------------------------------------
->
->diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
->index cfa992250c388..62da2485fd574 100644
->--- a/kernel/time/clocksource.c
->+++ b/kernel/time/clocksource.c
->@@ -230,8 +230,13 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
-> 		}
-> 	}
-> 
->-	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
->-		smp_processor_id(), watchdog->name, wd_delay, nretries);
->+	if ((cs->flags & CLOCK_SOURCE_WATCHDOG) && !atomic_read(&watchdog_reset_pending)) {
->+		pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
->+			smp_processor_id(), watchdog->name, wd_delay, nretries);
->+	} else {
->+		pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, awaiting re-initialization\n",
->+			smp_processor_id(), watchdog->name, wd_delay, nretries);
->+	}
-> 	return true;
-> }
-> 
->@@ -379,7 +384,8 @@ static void clocksource_watchdog(struct timer_list *unused)
-> 		/* Clocksource initialized ? */
-> 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
-> 		    atomic_read(&watchdog_reset_pending)) {
->-			cs->flags |= CLOCK_SOURCE_WATCHDOG;
->+			if (!coarse)
->+				cs->flags |= CLOCK_SOURCE_WATCHDOG;
-> 			cs->wd_last = wdnow;
-> 			cs->cs_last = csnow;
-> 			continue;
+>=20
+> Best Regards,
+> 	Kuo-Hsiang Chou
+>=20
+> Best regards
+> Thomas
+>=20
+>=20
+>> Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> ---
+>>    drivers/gpu/drm/ast/ast_dp501.c | 139 +++++++++++++++++++++++------=
+---
+>>    drivers/gpu/drm/ast/ast_drv.h   |  12 +++
+>>    drivers/gpu/drm/ast/ast_main.c  |  11 ++-
+>>    3 files changed, 125 insertions(+), 37 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/ast/ast_dp501.c
+>> b/drivers/gpu/drm/ast/ast_dp501.c index 88121c0e0..cd93c44f2 100644
+>> --- a/drivers/gpu/drm/ast/ast_dp501.c
+>> +++ b/drivers/gpu/drm/ast/ast_dp501.c
+>> @@ -189,6 +189,9 @@ bool ast_backup_fw(struct drm_device *dev, u8 *add=
+r, u32 size)
+>>    	u32 i, data;
+>>    	u32 boot_address;
+>>
+>> +	if (ast->config_mode !=3D ast_use_p2a)
+>> +		return false;
+>> +
+>>    	data =3D ast_mindwm(ast, 0x1e6e2100) & 0x01;
+>>    	if (data) {
+>>    		boot_address =3D get_fw_base(ast);
+>> @@ -207,6 +210,9 @@ static bool ast_launch_m68k(struct drm_device *dev=
+)
+>>    	u8 *fw_addr =3D NULL;
+>>    	u8 jreg;
+>>
+>> +	if (ast->config_mode !=3D ast_use_p2a)
+>> +		return false;
+>> +
+>>    	data =3D ast_mindwm(ast, 0x1e6e2100) & 0x01;
+>>    	if (!data) {
+>>
+>> @@ -271,25 +277,55 @@ u8 ast_get_dp501_max_clk(struct drm_device *dev)=
+
+>>    	struct ast_private *ast =3D to_ast_private(dev);
+>>    	u32 boot_address, offset, data;
+>>    	u8 linkcap[4], linkrate, linklanes, maxclk =3D 0xff;
+>> +	u32 *plinkcap;
+>>
+>> -	boot_address =3D get_fw_base(ast);
+>> -
+>> -	/* validate FW version */
+>> -	offset =3D 0xf000;
+>> -	data =3D ast_mindwm(ast, boot_address + offset);
+>> -	if ((data & 0xf0) !=3D 0x10) /* version: 1x */
+>> -		return maxclk;
+>> -
+>> -	/* Read Link Capability */
+>> -	offset  =3D 0xf014;
+>> -	*(u32 *)linkcap =3D ast_mindwm(ast, boot_address + offset);
+>> -	if (linkcap[2] =3D=3D 0) {
+>> -		linkrate =3D linkcap[0];
+>> -		linklanes =3D linkcap[1];
+>> -		data =3D (linkrate =3D=3D 0x0a) ? (90 * linklanes) : (54 * linklane=
+s);
+>> -		if (data > 0xff)
+>> -			data =3D 0xff;
+>> -		maxclk =3D (u8)data;
+>> +	if (ast->config_mode =3D=3D ast_use_p2a) {
+>> +		boot_address =3D get_fw_base(ast);
+>> +
+>> +		/* validate FW version */
+>> +		offset =3D AST_DP501_GBL_VERSION;
+>> +		data =3D ast_mindwm(ast, boot_address + offset);
+>> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1)=
+ /* version: 1x */
+>> +			return maxclk;
+>> +
+>> +		/* Read Link Capability */
+>> +		offset  =3D AST_DP501_LINKRATE;
+>> +		plinkcap =3D (u32 *)linkcap;
+>> +		*plinkcap  =3D ast_mindwm(ast, boot_address + offset);
+>> +		if (linkcap[2] =3D=3D 0) {
+>> +			linkrate =3D linkcap[0];
+>> +			linklanes =3D linkcap[1];
+>> +			data =3D (linkrate =3D=3D 0x0a) ? (90 * linklanes) : (54 * linklan=
+es);
+>> +			if (data > 0xff)
+>> +				data =3D 0xff;
+>> +			maxclk =3D (u8)data;
+>> +		}
+>> +	} else {
+>> +		if (!ast->dp501_fw_buf)
+>> +			return AST_DP501_DEFAULT_DCLK;	/* 1024x768 as default */
+>> +
+>> +		/* dummy read */
+>> +		offset =3D 0x0000;
+>> +		data =3D readl(ast->dp501_fw_buf + offset);
+>> +
+>> +		/* validate FW version */
+>> +		offset =3D AST_DP501_GBL_VERSION;
+>> +		data =3D readl(ast->dp501_fw_buf + offset);
+>> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1)=
+ /* version: 1x */
+>> +			return maxclk;
+>> +
+>> +		/* Read Link Capability */
+>> +		offset =3D AST_DP501_LINKRATE;
+>> +		plinkcap =3D (u32 *)linkcap;
+>> +		*plinkcap =3D readl(ast->dp501_fw_buf + offset);
+>> +		if (linkcap[2] =3D=3D 0) {
+>> +			linkrate =3D linkcap[0];
+>> +			linklanes =3D linkcap[1];
+>> +			data =3D (linkrate =3D=3D 0x0a) ? (90 * linklanes) : (54 * linklan=
+es);
+>> +			if (data > 0xff)
+>> +				data =3D 0xff;
+>> +			maxclk =3D (u8)data;
+>> +		}
+>>    	}
+>>    	return maxclk;
+>>    }
+>> @@ -298,26 +334,57 @@ bool ast_dp501_read_edid(struct drm_device *dev,=
+ u8 *ediddata)
+>>    {
+>>    	struct ast_private *ast =3D to_ast_private(dev);
+>>    	u32 i, boot_address, offset, data;
+>> +	u32 *pEDIDidx;
+>>
+>> -	boot_address =3D get_fw_base(ast);
+>> -
+>> -	/* validate FW version */
+>> -	offset =3D 0xf000;
+>> -	data =3D ast_mindwm(ast, boot_address + offset);
+>> -	if ((data & 0xf0) !=3D 0x10)
+>> -		return false;
+>> -
+>> -	/* validate PnP Monitor */
+>> -	offset =3D 0xf010;
+>> -	data =3D ast_mindwm(ast, boot_address + offset);
+>> -	if (!(data & 0x01))
+>> -		return false;
+>> +	if (ast->config_mode =3D=3D ast_use_p2a) {
+>> +		boot_address =3D get_fw_base(ast);
+>>
+>> -	/* Read EDID */
+>> -	offset =3D 0xf020;
+>> -	for (i =3D 0; i < 128; i +=3D 4) {
+>> -		data =3D ast_mindwm(ast, boot_address + offset + i);
+>> -		*(u32 *)(ediddata + i) =3D data;
+>> +		/* validate FW version */
+>> +		offset =3D AST_DP501_GBL_VERSION;
+>> +		data =3D ast_mindwm(ast, boot_address + offset);
+>> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1)=
+
+>> +			return false;
+>> +
+>> +		/* validate PnP Monitor */
+>> +		offset =3D AST_DP501_PNPMONITOR;
+>> +		data =3D ast_mindwm(ast, boot_address + offset);
+>> +		if (!(data & AST_DP501_PNP_CONNECTED))
+>> +			return false;
+>> +
+>> +		/* Read EDID */
+>> +		offset =3D AST_DP501_EDID_DATA;
+>> +		for (i =3D 0; i < 128; i +=3D 4) {
+>> +			data =3D ast_mindwm(ast, boot_address + offset + i);
+>> +			pEDIDidx =3D (u32 *)(ediddata + i);
+>> +			*pEDIDidx =3D data;
+>> +		}
+>> +	} else {
+>> +		if (!ast->dp501_fw_buf)
+>> +			return false;
+>> +
+>> +		/* dummy read */
+>> +		offset =3D 0x0000;
+>> +		data =3D readl(ast->dp501_fw_buf + offset);
+>> +
+>> +		/* validate FW version */
+>> +		offset =3D AST_DP501_GBL_VERSION;
+>> +		data =3D readl(ast->dp501_fw_buf + offset);
+>> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1)=
+
+>> +			return false;
+>> +
+>> +		/* validate PnP Monitor */
+>> +		offset =3D AST_DP501_PNPMONITOR;
+>> +		data =3D readl(ast->dp501_fw_buf + offset);
+>> +		if (!(data & AST_DP501_PNP_CONNECTED))
+>> +			return false;
+>> +
+>> +		/* Read EDID */
+>> +		offset =3D AST_DP501_EDID_DATA;
+>> +		for (i =3D 0; i < 128; i +=3D 4) {
+>> +			data =3D readl(ast->dp501_fw_buf + offset + i);
+>> +			pEDIDidx =3D (u32 *)(ediddata + i);
+>> +			*pEDIDidx =3D data;
+>> +		}
+>>    	}
+>>
+>>    	return true;
+>> diff --git a/drivers/gpu/drm/ast/ast_drv.h
+>> b/drivers/gpu/drm/ast/ast_drv.h index e82ab8628..911f9f414 100644
+>> --- a/drivers/gpu/drm/ast/ast_drv.h
+>> +++ b/drivers/gpu/drm/ast/ast_drv.h
+>> @@ -150,6 +150,7 @@ struct ast_private {
+>>
+>>    	void __iomem *regs;
+>>    	void __iomem *ioregs;
+>> +	void __iomem *dp501_fw_buf;
+>>
+>>    	enum ast_chip chip;
+>>    	bool vga2_clone;
+>> @@ -325,6 +326,17 @@ int ast_mode_config_init(struct ast_private *ast)=
+;
+>>    #define AST_MM_ALIGN_SHIFT 4
+>>    #define AST_MM_ALIGN_MASK ((1 << AST_MM_ALIGN_SHIFT) - 1)
+>>
+>> +#define AST_DP501_FW_VERSION_MASK	GENMASK(7, 4)
+>> +#define AST_DP501_FW_VERSION_1		BIT(4)
+>> +#define AST_DP501_PNP_CONNECTED		BIT(1)
+>> +
+>> +#define AST_DP501_DEFAULT_DCLK	65
+>> +
+>> +#define AST_DP501_GBL_VERSION	0xf000
+>> +#define AST_DP501_PNPMONITOR	0xf010
+>> +#define AST_DP501_LINKRATE	0xf014
+>> +#define AST_DP501_EDID_DATA	0xf020
+>> +
+>>    int ast_mm_init(struct ast_private *ast);
+>>
+>>    /* ast post */
+>> diff --git a/drivers/gpu/drm/ast/ast_main.c
+>> b/drivers/gpu/drm/ast/ast_main.c index 0ac3c2039..3976a2587 100644
+>> --- a/drivers/gpu/drm/ast/ast_main.c
+>> +++ b/drivers/gpu/drm/ast/ast_main.c
+>> @@ -99,7 +99,7 @@ static void ast_detect_config_mode(struct drm_device=
+ *dev, u32 *scu_rev)
+>>    	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
+>>    		/* Double check it's actually working */
+>>    		data =3D ast_read32(ast, 0xf004);
+>> -		if (data !=3D 0xFFFFFFFF) {
+>> +		if ((data !=3D 0xFFFFFFFF) && (data !=3D 0x00)) {
+>>    			/* P2A works, grab silicon revision */
+>>    			ast->config_mode =3D ast_use_p2a;
+>>
+>> @@ -411,6 +411,7 @@ struct ast_private *ast_device_create(const struct=
+ drm_driver *drv,
+>>    		return ast;
+>>    	dev =3D &ast->base;
+>>
+>> +	dev->pdev =3D pdev;
+>>    	pci_set_drvdata(pdev, dev);
+>>
+>>    	ast->regs =3D pci_iomap(pdev, 1, 0);
+>> @@ -450,6 +451,14 @@ struct ast_private *ast_device_create(const
+>> struct
+> drm_driver *drv,
+>>    	if (ret)
+>>    		return ERR_PTR(ret);
+>>
+>> +	/* map reserved buffer */
+>> +	ast->dp501_fw_buf =3D NULL;
+>> +	if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
+>> +		ast->dp501_fw_buf =3D pci_iomap_range(dev->pdev, 0, dev->vram_mm->v=
+ram_size, 0);
+>> +		if (!ast->dp501_fw_buf)
+>> +			drm_info(dev, "failed to map reserved buffer!\n");
+>> +	}
+>> +
+>>    	ret =3D ast_mode_config_init(ast);
+>>    	if (ret)
+>>    		return ERR_PTR(ret);
+>> --
+>> 2.18.4
+>>
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>>
+>=20
+> --
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+> (HRB 36809, AG N=C3=BCrnberg)
+> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+>=20
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--utssQvEIn1JhAZ273DIaTgvjFviyP1avd--
+
+--WbwMXHLLLun9aM9P6NsNCyNHCoblkJXIZ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmEJBSkFAwAAAAAACgkQlh/E3EQov+Ap
+FxAAlV7NMVotZbskszqHpMIwPVIxkDt4A0GMeXda8UaFE8PWhzJRkc7/bqP00svg4I1bp5nBCmVX
+fmeoLcefspMISK4wZ7Jnn8uj0apjssw56/jtQrOvOGMLCUDTQTZyOkE9XejvI+8LOasjZ8Tantct
+N9LmCNY2mafdxtuiQGcIyuGhcmekWJM7eScYOOaAF/r6I50AzZD0SP279QSvXdYERYhauSe3bcSr
+sma5lcOQ1aGRbSKSSUn4SpMso+b/HoB114Q3/YuACNrrgTRVK0vuk0BT8oYu/hUhhDsQazGMhau8
+Cj7PlceIgTcZebDM9Tifq7M1tiUmBYBfSnPZ+bTfDj6IKLv7Ja28cof6Jn7dylF857Fjrl8x1IG9
+8rCHbfo4Vi0d85UG8/QdgChLn0L05Ew0aKa0YFFfWEF+bTpvmoNyYRZzXK3F6JzmKa48ouky+lT8
+A3qCCu0vOejyYZhQrVc4HVII5UYTOULkKeejMPLO9rdpY6WP5v5U9WbCSTTgwVrO6t20kxOvO547
+vV+qt6EvdRHz8tExb7j3J0RRGY1lXIy5L/80lzd0EvEFHdof96vIee6s77qBlqaYIZmRFYpVaAap
+AECZskxoQ06AW8q8CimnvF03h0WSgnV66ciqsyHLeSPfpmrIhQoe10JDkkvWA5YTm9GvK+QZjgg5
+Xrs=
+=lizr
+-----END PGP SIGNATURE-----
+
+--WbwMXHLLLun9aM9P6NsNCyNHCoblkJXIZ--
