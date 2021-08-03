@@ -2,149 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9872E3DF09B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BDA3DF0B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236700AbhHCOsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:48:00 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:59171 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236662AbhHCOre (ORCPT
+        id S236694AbhHCOuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232748AbhHCOuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:47:34 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id EBF245806A0;
-        Tue,  3 Aug 2021 10:46:16 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 03 Aug 2021 10:46:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=ZhhzKAcbp08j/zLplXp7CUKlTW+9yQngYwV71xLLU
-        uk=; b=F/09aFygJQYV2RtiZgmhk7lrEY/SgDHVCp9GLx/945GbshDofvqnTjhPv
-        MdQvU0XkuXuw8J+MuhKrJ5gR1GZcomEdsTK6ZD7aIFtguwONkYK584aL0vB3+uOi
-        1cZ7en9ladrjw6Am+2BpbC6fRp8uuoZu3LuWznvdmPAybGSJD4k6LsC2dgve+Rgl
-        7lVDmmuL7y/jEYsgA56vScY1S21u5F3TLg4OLHZRv4+oQDdiQgC7TWc+gnXL5h4w
-        2rvrqIo0t83pmPMDPPc41jSJk9WPHxdOeJIBVx4KzCnsejQeB77xOjaT3gfaZ5ud
-        PQwuZWkKpupEjh03t9vkMNG6BzFeQ==
-X-ME-Sender: <xms:slYJYT6kZeAR_u8nmIhOwwTdbdSTNZDG6YV26ZSH5RAkJpiwDMEecg>
-    <xme:slYJYY6-9FEu98HWO-uZSzE-IqI3ADKc0IPE-fH4fhb6O37ZXlqSYAoGH26C6xR_Y
-    3AnO0EnJ1_HFrI>
-X-ME-Received: <xmr:slYJYacOsY7ys2tiGj1OcG6XygrXSWg4xrc9GnX_-fPcsyrhgEjtC7VnWYQEv5nVsTuIg9N7CZQZGuQjxh2ppRV9AbXp_w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieeggdejjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttddunecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedvffevkeefieeiueeitedufeekveekuefhueeiudduteekgeelfedvgeehjeeh
-    hfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
-    hoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:slYJYUKzZG3Xz6r6LaeXad3wYy6LOTbk81cO0cMnwYXwbSFEc7wHjQ>
-    <xmx:slYJYXJjCcb3nZi9UnC0Hz6_YYtYtVnj1jBbwCxXsrsAsiMMX5tIkw>
-    <xmx:slYJYdxfVsvKDxmjEDddhWRd4PUJmS19TokpDNA-XT3HSimKkg7Dwg>
-    <xmx:uFYJYVgEB2oEZs8RPQxAloMFD7GNawFrzXmXD3USqGR6p1WsqWraOg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 3 Aug 2021 10:46:09 -0400 (EDT)
-Date:   Tue, 3 Aug 2021 17:46:05 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, kernel@pengutronix.de,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Russell Currey <ruscur@russell.cc>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Michael Buesch <m@bues.ch>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] PCI: Adapt all code locations to not use struct
- pci_dev::driver directly
-Message-ID: <YQlWrcCY3X01eNJJ@shredder>
-References: <20210803100150.1543597-1-u.kleine-koenig@pengutronix.de>
- <20210803100150.1543597-6-u.kleine-koenig@pengutronix.de>
+        Tue, 3 Aug 2021 10:50:03 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC79C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:49:51 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id f20-20020a9d6c140000b02904bb9756274cso8991797otq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 07:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZH2nIiiSnakY3FpS+wMVMs/uCUmksAAV/3YZm7bqsOY=;
+        b=rZ4Q93WKcb8SdHFSMM/rNBR0ZsBlSoZE4udCGLC6cH7H8DBdCCAw/EJBUSXS58Dv7D
+         k2tal+SHQdxQndFpVNoZkND/WGGp3xIbhQU+Ba5sZMtoXJcJ8w+G3RMWLFLPI4RRiY+t
+         loWNOOElrWBd13mQHhk4Q0NjJTFzxtoITIZ7GW/EjdFs6J9xEiNuK32EkCZvpvtwbokt
+         kVFReNqCSwTnUJwUJrMcik5OxG00bvzGMcJOSfOBcRz8Rznii6oMTCfg+Q6ZTfIDsjr1
+         UpCXCc593V5KBu/sg7ekFg0zp+4osuW1p63D14vcWIm0T13uVCo72qU0eW5Wk0Tas6qg
+         txSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZH2nIiiSnakY3FpS+wMVMs/uCUmksAAV/3YZm7bqsOY=;
+        b=AoDDDP8KoHzA/PSYKv1j409HMHTDwMlseoDsZth9M3gvM6H2CrGMG6vQ+/C6hAE1u1
+         mjXJQ2mqUNg5V170WqA0FW97NmEwfzOLC/JkyPzVYWruf++0N1pzcxne9tvo9moWaHgt
+         zPmoYWgbWFOOv/4O07sS5foodhAYJFY1AKTA085yHZ4apr2vlMrzPp0dTqxInkA142UD
+         pyiJBXi+r0MCFlPAwzi63AZVynb9LMKv5dl3VKiR/7/FMYajJ7cc6rhCUC+zxOAiH6FT
+         8Xfnupp0XK5+kayNR8fjE6Y5xDBfIKg+9YkRbr0GOysEavHB+pe8rrHTXkgcSYzfloRr
+         IWMw==
+X-Gm-Message-State: AOAM532F10Y60Pag2I7k+3Qk8+hWF9coqoFDGexJ6nSgfaEYMQoXftZ/
+        h4SWpICEGZzsAAE+Nslh1U2rb4p+LacKR1WjBCM=
+X-Google-Smtp-Source: ABdhPJwn0Rpz9mVkqCTZg2eV64Hl7ywnveTNQNlZAFzS8iSiYVDBfBemH1xzSX8yv8Q//ZvG3gOoeEUUWn3a+khsHK0=
+X-Received: by 2002:a9d:2072:: with SMTP id n105mr16305204ota.132.1628002190755;
+ Tue, 03 Aug 2021 07:49:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210803100150.1543597-6-u.kleine-koenig@pengutronix.de>
+References: <20210802074310.1526526-1-lizhenneng@kylinos.cn>
+ <e6e77cfb-4e6b-c30e-ae7c-ac84b82c9a75@amd.com> <YQetXMaASz/F2EyS@phenom.ffwll.local>
+ <CADnq5_PDtEn1y5HJBRHXw8o11LVwSRDKNtQgZtN5u0CW5ZspnQ@mail.gmail.com> <6a34fcc3-0aa3-85ff-21c4-86b9b5a48fd5@daenzer.net>
+In-Reply-To: <6a34fcc3-0aa3-85ff-21c4-86b9b5a48fd5@daenzer.net>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 3 Aug 2021 10:49:39 -0400
+Message-ID: <CADnq5_MJ=m2_VvzCQ7wJaFx2=OfFfLpoJtc_Ofb+a-v3eujtXg@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: Update pitch for page flip
+To:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Zhenneng Li <lizhenneng@kylinos.cn>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 12:01:49PM +0200, Uwe Kleine-König wrote:
-> This prepares removing the driver member of struct pci_dev which holds the
-> same information than struct pci_dev::dev->driver.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
->  arch/powerpc/include/asm/ppc-pci.h            |  3 +-
->  arch/powerpc/kernel/eeh_driver.c              | 12 ++++---
->  arch/x86/events/intel/uncore.c                |  2 +-
->  arch/x86/kernel/probe_roms.c                  |  2 +-
->  drivers/bcma/host_pci.c                       |  6 ++--
->  drivers/crypto/hisilicon/qm.c                 |  2 +-
->  drivers/crypto/qat/qat_common/adf_aer.c       |  2 +-
->  drivers/message/fusion/mptbase.c              |  4 +--
->  drivers/misc/cxl/guest.c                      | 21 +++++------
->  drivers/misc/cxl/pci.c                        | 25 +++++++------
->  .../ethernet/hisilicon/hns3/hns3_ethtool.c    |  2 +-
->  .../ethernet/marvell/prestera/prestera_pci.c  |  2 +-
->  drivers/net/ethernet/mellanox/mlxsw/pci.c     |  2 +-
->  .../ethernet/netronome/nfp/nfp_net_ethtool.c  |  2 +-
->  drivers/pci/iov.c                             | 23 +++++++-----
->  drivers/pci/pci-driver.c                      | 28 ++++++++-------
->  drivers/pci/pci.c                             | 10 +++---
->  drivers/pci/pcie/err.c                        | 35 ++++++++++---------
->  drivers/pci/xen-pcifront.c                    |  3 +-
->  drivers/ssb/pcihost_wrapper.c                 |  7 ++--
->  drivers/usb/host/xhci-pci.c                   |  3 +-
->  21 files changed, 112 insertions(+), 84 deletions(-)
+On Tue, Aug 3, 2021 at 4:34 AM Michel D=C3=A4nzer <michel@daenzer.net> wrot=
+e:
+>
+> On 2021-08-02 4:51 p.m., Alex Deucher wrote:
+> > On Mon, Aug 2, 2021 at 4:31 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >>
+> >> On Mon, Aug 02, 2021 at 10:12:47AM +0200, Christian K=C3=B6nig wrote:
+> >>> Am 02.08.21 um 09:43 schrieb Zhenneng Li:
+> >>>> When primary bo is updated, crtc's pitch may
+> >>>> have not been updated, this will lead to show
+> >>>> disorder content when user changes display mode,
+> >>>> we update crtc's pitch in page flip to avoid
+> >>>> this bug.
+> >>>> This refers to amdgpu's pageflip.
+> >>>
+> >>> Alex is the expert to ask about that code, but I'm not sure if that i=
+s
+> >>> really correct for the old hardware.
+> >>>
+> >>> As far as I know the crtc's pitch should not change during a page fli=
+p, but
+> >>> only during a full mode set.
+> >>>
+> >>> So could you elaborate a bit more how you trigger this?
+> >>
+> >> legacy page_flip ioctl only verifies that the fb->format stays the sam=
+e.
+> >> It doesn't check anything else (afair never has), this is all up to
+> >> drivers to verify.
+> >>
+> >> Personally I'd say add a check to reject this, since testing this and
+> >> making sure it really works everywhere is probably a bit much on this =
+old
+> >> hw.
+> >
+> > If just the pitch changed, that probably wouldn't be much of a
+> > problem, but if the pitch is changing, that probably implies other
+> > stuff has changed as well and we'll just be chasing changes.  I agree
+> > it would be best to just reject anything other than updating the
+> > scanout address.
+>
+> FWIW, that means page flipping cannot be used in some cases which work fi=
+ne by changing the pitch, which can result in tearing: https://gitlab.freed=
+esktop.org/xorg/xserver/-/issues/839 (which says the i915 driver handles th=
+is as well).
+>
 
-For mlxsw:
+Ok.  In that case, @Zhenneng can you update all of the pitch in all of
+the page_flip functions in radeon rather than just the evergreen one?
 
-Tested-by: Ido Schimmel <idosch@nvidia.com>
+Thanks,
+
+Alex
+
+
+>
+> --
+> Earthling Michel D=C3=A4nzer               |               https://redhat=
+.com
+> Libre software enthusiast             |             Mesa and X developer
