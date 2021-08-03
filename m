@@ -2,139 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540703DE41D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D423DE420
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbhHCBpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 21:45:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233182AbhHCBo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 21:44:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F68B60EEA;
-        Tue,  3 Aug 2021 01:44:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627955089;
-        bh=D2nHBzZZYP6XEc94dr6N/hp28tcnuDh4gjg52b8eIiU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NYg6g+g7ZqhVSya0wNXq6u/7ckmeQ6aqpf4BSqzanF4wfyoiS4Gv8bOKcDwfScCTN
-         xY7YjWGZcKmb6HvzVMx466MOi6d0Mx8d4XdDs/FK7K6J69q+0YmWHV39jTqCcSBU6e
-         uiAFtq34bOwnROSqpyrRY80IhdPzGycipW2a5QOpmG7o1YYyUMrsfZk39j/Y+hT/g4
-         m678pweh4NrHnGTFOcXl/nFDoXo2kR0NNl3hcAuKNkL9I/C+a0Nek4i9LQG8qa5u1F
-         1tm43bRtVA7juM386xbmVe5gew3i1X2qeOPLSM3k1+c33+TklhzQ86H+s8ZFmJExOU
-         Z6g6z5zMAm4Hw==
-Date:   Mon, 2 Aug 2021 18:44:48 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: reset free segment to prefree status
- when do_checkpoint() fail
-Message-ID: <YQifkGIYCHfaQ/AJ@google.com>
-References: <20210427082106.2755-1-frank.li@vivo.com>
- <12ae52df-bc5e-82c3-4f78-1eafe7723f93@huawei.com>
- <5f37995c-2390-e8ca-d002-3639ad39e0d3@kernel.org>
- <YPXDtEyBg5W2ToD/@google.com>
- <8d2e3a63-72f9-bcb2-24e5-dddd84136001@kernel.org>
- <YQR60QUh0Pim8vSf@google.com>
- <355ac2ff-f1f1-b9ea-bd8c-139cb24a03fb@kernel.org>
- <YQgydetYHOkgY9+B@google.com>
- <3d3ef5c9-fbb6-df85-26f7-e493da594b22@kernel.org>
+        id S233558AbhHCBp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 21:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232904AbhHCBp4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 21:45:56 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C156C06175F;
+        Mon,  2 Aug 2021 18:45:46 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id 185so22560083iou.10;
+        Mon, 02 Aug 2021 18:45:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uv1+NuI+jQm46T5UIH7fZM+sGGArCQuLnRoIYxPk0sY=;
+        b=MW3uECBVUejj6dl/243hzvdWUjNkj2HO8ic5AQ7SIj5F9+5eEFABHSv20akkmzow94
+         TiJT4EeKpFUxE17eeJsLyYcm6Xv7fjHD0wOMkjisEVv0rDAJls7ARdooL+HIMF5ay0SM
+         Helb4RyQZVZ4RBKT6zVCjNQuEwzWmmIfCViPtZeyV/v9mYMS9Xfwzvo3C0lY+Ld903eg
+         eo4MvYHlTQWV9PP0Th8j4piMx19+IctgO2gpPBuWE5ZadXKGjZCMQTzBDCnkf3m4kZUL
+         J2/CO6tQtRmrudOOD3d/n4/MEfeVO6E7XKnqwesUFPWJTigmMzNqGVr2exJm+vFhUrz6
+         jcFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uv1+NuI+jQm46T5UIH7fZM+sGGArCQuLnRoIYxPk0sY=;
+        b=QGYXkdWMj4xlEIA7qrnaFVgUXiQxwhPfGxCnOECesUDWOX92CwYnzryT2FaK7ptuGY
+         ciQeCnZ/2FrOnihcEOK/QdgjmsMm75npHmkoD0UfInLqWanFMp5k3xCHNKodFFFGbVTg
+         cvCStfUks9j2UITOtWBKIgeszNpkVb2+O6DbH5i7Z7eZ7qaVl7r1hjx6A9S0pXLPt3UV
+         BjdxdlG6MAgQ+OOHqUstLk1SUulFdJIzBRSNgbt13+1tijX9sHMEMS2lNgJY/+EPMMY9
+         vewNv22EBmCREq+2gkYLxQv2DhPATxw3ahLMMmamMef2SAkiIn1N96cEKd5eNDX6lMt7
+         Zm8A==
+X-Gm-Message-State: AOAM531xuvzNjUu/l+tT7Oc5mk4EK9n/FQ4EZwX1CG5G9tdsCiIZUUU7
+        EIeE/CF0X9mD9BDLCKzr2dMa4e9a3a4laur9AEU=
+X-Google-Smtp-Source: ABdhPJyUMDyHdvpVuqg+tL6JdAWjwy+ffyggZHU4slBKyVtqy3W1yWBlNCDo/n42AgBDLk2S+LCLh7/+4+Fx/nLbQ+Q=
+X-Received: by 2002:a05:6638:cba:: with SMTP id x26mr13354789jad.98.1627955145847;
+ Mon, 02 Aug 2021 18:45:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d3ef5c9-fbb6-df85-26f7-e493da594b22@kernel.org>
+References: <20200320212833.3507-1-sean.j.christopherson@intel.com> <20200320212833.3507-2-sean.j.christopherson@intel.com>
+In-Reply-To: <20200320212833.3507-2-sean.j.christopherson@intel.com>
+From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Date:   Tue, 3 Aug 2021 09:45:34 +0800
+Message-ID: <CAJhGHyCPyu6BVZwqvySeT2LSr81Xospdv2O=ssvTQv0Rvky0UA@mail.gmail.com>
+Subject: Re: [PATCH v3 01/37] KVM: VMX: Flush all EPTP/VPID contexts on remote
+ TLB flush
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/03, Chao Yu wrote:
-> On 2021/8/3 1:59, Jaegeuk Kim wrote:
-> > On 08/01, Chao Yu wrote:
-> > > On 2021/7/31 6:18, Jaegeuk Kim wrote:
-> > > > On 07/20, Chao Yu wrote:
-> > > > > On 2021/7/20 2:25, Jaegeuk Kim wrote:
-> > > > > > On 07/19, Chao Yu wrote:
-> > > > > > > On 2021/4/27 20:37, Chao Yu wrote:
-> > > > > > > > I think just reverting dirty/free bitmap is not enough if checkpoint fails,
-> > > > > > > > due to we have updated sbi->cur_cp_pack and nat/sit bitmap, next CP tries
-> > > > > > > > to overwrite last valid meta/node/data, then filesystem will be corrupted.
-> > > > > > > > 
-> > > > > > > > So I suggest to set cp_error if do_checkpoint() fails until we can handle
-> > > > > > > > all cases, which is not so easy.
-> > > > > > > > 
-> > > > > > > > How do you think?
-> > > > > > > 
-> > > > > > > Let's add below patch first before you figure out the patch which covers all
-> > > > > > > things.
-> > > > > > > 
-> > > > > > >    From 3af957c98e9e04259f8bb93ca0b74ba164f3f27e Mon Sep 17 00:00:00 2001
-> > > > > > > From: Chao Yu <chao@kernel.org>
-> > > > > > > Date: Mon, 19 Jul 2021 16:37:44 +0800
-> > > > > > > Subject: [PATCH] f2fs: fix to stop filesystem update once CP failed
-> > > > > > > 
-> > > > > > > During f2fs_write_checkpoint(), once we failed in
-> > > > > > > f2fs_flush_nat_entries() or do_checkpoint(), metadata of filesystem
-> > > > > > > such as prefree bitmap, nat/sit version bitmap won't be recovered,
-> > > > > > > it may cause f2fs image to be inconsistent, let's just set CP error
-> > > > > > > flag to avoid further updates until we figure out a scheme to rollback
-> > > > > > > all metadatas in such condition.
-> > > > > > > 
-> > > > > > > Reported-by: Yangtao Li <frank.li@vivo.com>
-> > > > > > > Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> > > > > > > Signed-off-by: Chao Yu <chao@kernel.org>
-> > > > > > > ---
-> > > > > > >     fs/f2fs/checkpoint.c | 10 +++++++---
-> > > > > > >     1 file changed, 7 insertions(+), 3 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-> > > > > > > index 6c208108d69c..096c85022f62 100644
-> > > > > > > --- a/fs/f2fs/checkpoint.c
-> > > > > > > +++ b/fs/f2fs/checkpoint.c
-> > > > > > > @@ -1639,8 +1639,10 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
-> > > > > > > 
-> > > > > > >     	/* write cached NAT/SIT entries to NAT/SIT area */
-> > > > > > >     	err = f2fs_flush_nat_entries(sbi, cpc);
-> > > > > > > -	if (err)
-> > > > > > > +	if (err) {
-> > > > > > > +		f2fs_stop_checkpoint(sbi, false);
-> > > > > > 
-> > > > > > I think we should abuse this, since we can get any known ENOMEM as well.
-> > > > > 
-> > > > > Yup, but one critical issue here is it can break A/B update of NAT area,
-> > > > > so, in order to fix this hole, how about using NOFAIL memory allocation
-> > > > > in f2fs_flush_nat_entries() first until we figure out the finial scheme?
-> > > > 
-> > > > NOFAIL is risky, so how about adding a retry logic on ENOMEM with a message
-> > > > and then giving up if we can't get the memory? BTW, what about EIO or other
-> > > > family?
-> > > 
-> > > How about this?
-> > 
-> > Hmm, it seems we won't get ENOMEM.
-> > 
-> > __flush_nat_entry_set
-> >   -> get_next_nat_page
-> >     -> ...
-> >      -> __get_meta_page
-> >        -> repeat on ENOMEM, but stop_checkpoint on EIO
-> 
-> Correct, I missed to check __get_meta_page() and f2fs_get_meta_page_retry().
-> 
-> > 
-> > If we have an error here, we should have stopped checkpoint. Have you seen other
-> > issue?
-> 
-> Still we should fix the case from below path?
-> 
-> - f2fs_write_checkpoint
->  - do_checkpoint
->   - f2fs_flush_device_cache failed
+(I'm replying to a very old email, so many CCs are dropped.)
 
-What about adding a retry logic to deal with EIO in __submit_flush_wait()?
-We probably need to retry submitting FLUSH commands, and then give up
-with f2fs_stop_checkpoint(). And, then how about adding f2fs_bug_on() if
-f2fs_flush_nat_entries() returns error without f2fs_cp_error()?
+On Sat, Mar 21, 2020 at 5:33 AM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> Flush all EPTP/VPID contexts if a TLB flush _may_ have been triggered by
+> a remote or deferred TLB flush, i.e. by KVM_REQ_TLB_FLUSH.  Remote TLB
+> flushes require all contexts to be invalidated, not just the active
+> contexts, e.g. all mappings in all contexts for a given HVA need to be
+> invalidated on a mmu_notifier invalidation.  Similarly, the instigator
+> of the deferred TLB flush may be expecting all contexts to be flushed,
+> e.g. vmx_vcpu_load_vmcs().
+>
+> Without nested VMX, flushing only the current EPTP/VPID context isn't
+> problematic because KVM uses a constant VPID for each vCPU, and
 
-> 
-> Thanks,
+Hello, Sean
+
+Is the patch optimized for cases where nested VMX is active?
+I think the non-nested cases are normal cases.
+
+Although the related code has been changed, the logic of the patch
+is still working now, would it be better if we restore the optimization
+for the normal cases (non-nested)?
+
+Thanks
+Lai
+
+> mmu_alloc_direct_roots() all but guarantees KVM will use a single EPTP
+> for L1.  In the rare case where a different EPTP is created or reused,
+> KVM (currently) unconditionally flushes the new EPTP context prior to
+> entering the guest.
+>
+> With nested VMX, KVM conditionally uses a different VPID for L2, and
+> unconditionally uses a different EPTP for L2.  Because KVM doesn't
+> _intentionally_ guarantee L2's EPTP/VPID context is flushed on nested
+> VM-Enter, it'd be possible for a malicious L1 to attack the host and/or
+> different VMs by exploiting the lack of flushing for L2.
+>
+>   1) Launch nested guest from malicious L1.
+>
+>   2) Nested VM-Enter to L2.
+>
+>   3) Access target GPA 'g'.  CPU inserts TLB entry tagged with L2's ASID
+>      mapping 'g' to host PFN 'x'.
+>
+>   2) Nested VM-Exit to L1.
+>
+>   3) L1 triggers kernel same-page merging (ksm) by duplicating/zeroing
+>      the page for PFN 'x'.
+>
+>   4) Host kernel merges PFN 'x' with PFN 'y', i.e. unmaps PFN 'x' and
+>      remaps the page to PFN 'y'.  mmu_notifier sends invalidate command,
+>      KVM flushes TLB only for L1's ASID.
+>
+>   4) Host kernel reallocates PFN 'x' to some other task/guest.
+>
+>   5) Nested VM-Enter to L2.  KVM does not invalidate L2's EPTP or VPID.
+>
+>   6) L2 accesses GPA 'g' and gains read/write access to PFN 'x' via its
+>      stale TLB entry.
+>
+> However, current KVM unconditionally flushes L1's EPTP/VPID context on
+> nested VM-Exit.  But, that behavior is mostly unintentional, KVM doesn't
+> go out of its way to flush EPTP/VPID on nested VM-Enter/VM-Exit, rather
+> a TLB flush is guaranteed to occur prior to re-entering L1 due to
+> __kvm_mmu_new_cr3() always being called with skip_tlb_flush=false.  On
+> nested VM-Enter, this happens via kvm_init_shadow_ept_mmu() (nested EPT
+> enabled) or in nested_vmx_load_cr3() (nested EPT disabled).  On nested
+> VM-Exit it occurs via nested_vmx_load_cr3().
+>
+> This also fixes a bug where a deferred TLB flush in the context of L2,
+> with EPT disabled, would flush L1's VPID instead of L2's VPID, as
+> vmx_flush_tlb() flushes L1's VPID regardless of is_guest_mode().
+>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Ben Gardon <bgardon@google.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Junaid Shahid <junaids@google.com>
+> Cc: Liran Alon <liran.alon@oracle.com>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: John Haxby <john.haxby@oracle.com>
+> Reviewed-by: Liran Alon <liran.alon@oracle.com>
+> Fixes: efebf0aaec3d ("KVM: nVMX: Do not flush TLB on L1<->L2 transitions if L1 uses VPID and EPT")
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.h | 28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index be93d597306c..d6d67b816ebe 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -518,7 +518,33 @@ static inline void __vmx_flush_tlb(struct kvm_vcpu *vcpu, int vpid,
+>
+>  static inline void vmx_flush_tlb(struct kvm_vcpu *vcpu, bool invalidate_gpa)
+>  {
+> -       __vmx_flush_tlb(vcpu, to_vmx(vcpu)->vpid, invalidate_gpa);
+> +       struct vcpu_vmx *vmx = to_vmx(vcpu);
+> +
+> +       /*
+> +        * Flush all EPTP/VPID contexts if the TLB flush _may_ have been
+> +        * invoked via kvm_flush_remote_tlbs(), which always passes %true for
+> +        * @invalidate_gpa.  Flushing remote TLBs requires all contexts to be
+> +        * flushed, not just the active context.
+> +        *
+> +        * Note, this also ensures a deferred TLB flush with VPID enabled and
+> +        * EPT disabled invalidates the "correct" VPID, by nuking both L1 and
+> +        * L2's VPIDs.
+> +        */
+> +       if (invalidate_gpa) {
+> +               if (enable_ept) {
+> +                       ept_sync_global();
+> +               } else if (enable_vpid) {
+> +                       if (cpu_has_vmx_invvpid_global()) {
+> +                               vpid_sync_vcpu_global();
+> +                       } else {
+> +                               WARN_ON_ONCE(!cpu_has_vmx_invvpid_single());
+> +                               vpid_sync_vcpu_single(vmx->vpid);
+> +                               vpid_sync_vcpu_single(vmx->nested.vpid02);
+> +                       }
+> +               }
+> +       } else {
+> +               __vmx_flush_tlb(vcpu, vmx->vpid, false);
+> +       }
+>  }
+>
+>  static inline void decache_tsc_multiplier(struct vcpu_vmx *vmx)
+> --
+> 2.24.1
+>
