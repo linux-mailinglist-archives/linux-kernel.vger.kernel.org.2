@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3BC3DF6F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941763DF6FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhHCVjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 17:39:11 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:38634 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbhHCVjJ (ORCPT
+        id S232736AbhHCVkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 17:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232384AbhHCVkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 17:39:09 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id DB5BF1C0B7A; Tue,  3 Aug 2021 23:38:56 +0200 (CEST)
-Date:   Tue, 3 Aug 2021 23:38:56 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Amy Parker <apark0006@student.cerritos.edu>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH 1/2] swap led_brightness from enum to typedef
-Message-ID: <20210803213855.GA30387@amd>
-References: <cover.1626383424.git.apark0006@student.cerritos.edu>
- <9b5902665dcc4c0fca7546987303e348d8657f59.1626383424.git.apark0006@student.cerritos.edu>
- <alpine.DEB.2.22.394.2107190912320.178229@ramsan.of.borg>
- <CAMuHMdXZcaR28fUuiNWF8jv-NnOYkAXxR8z+vOQ2rY3BqQMWTQ@mail.gmail.com>
+        Tue, 3 Aug 2021 17:40:12 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F040C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 14:39:56 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id y7so986856ybo.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 14:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eH7F2c4Hn9egywDlY45TqR5QW7h6BJhJpVKajFn/Dvg=;
+        b=frGpZAuU0TNGycNOUwSntnWTwUNXJjKhM/djmFxpOw4RLjxj4ZIMH/kWc6KmsJtmzd
+         5DZZF1XvLkwEjfV0d1g/+qd7fYu4p3IcXqxRh2+j2cEJmx1zwJZD59Hk+1HpT49HtK7X
+         Uqge3z5MMAj3GqdriP0bGY+4uxvfDwPHI/8AUaTv/dYUqCfItsy4CzgGG4YcVxQ2W+3k
+         8yFws8bfEWrZyIXSyrNOM13JM5LbYjDmUdpWEgK5q3XHMwmDZUH16Fn3Lcmdkk1kJ+tR
+         5f+ICl8eIJ74PX6+7FzayWfSiwsOc3t/1lDkBGqzyqADZbXQ5H4FBtmOqjk757mpLOmy
+         DCGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eH7F2c4Hn9egywDlY45TqR5QW7h6BJhJpVKajFn/Dvg=;
+        b=WLN0o0QOPDJCgFCWDlFRLxDlqIRR4Hay6j7WrvoFhG+EXUDcws2TbwD43bW5jUm+rA
+         ioyRJXZ+zY16bTiTy9nesydWPb6SJvPM0nk9WTLcTXmMM+u2A7uwcHogvjyhwTMQP/xx
+         Klfz3vUzl0J3V30KoXoxW989eyF1PTDsYBpSERblHjIwSjnnINfL9Lmyi8InPcKtThq0
+         5V1ZxrCoa4ZXef/hJAf7YiWG7/DNaD+pnBns6btXHnnGA/HB03qg8Ydc5dXsn3uEELye
+         q+AyuwjqO7w/YAJx2a3Ggnyoy3FIgXCDC2jj2Dinug1J5hxEfmlDhbMzhrEOj5MqXVib
+         vjfg==
+X-Gm-Message-State: AOAM532rUlJ7tafVRC7ekNKxGQBDmLa5kuU34IRGXdg6wXVTMnpMPuoP
+        Cw9ZKAT8Sv2bgzJs9r2cdCAJYY9qTJpPKgc4dRUtqw==
+X-Google-Smtp-Source: ABdhPJynfd6Tp5fx5X/8PoqmW8udIcLQViQbJXvKzToG91Bonke+UV5rO2Ua9gr8hn4ZJodP/4n3mFpQcnCzz5bXHoo=
+X-Received: by 2002:a25:cac7:: with SMTP id a190mr14975276ybg.290.1628026795438;
+ Tue, 03 Aug 2021 14:39:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXZcaR28fUuiNWF8jv-NnOYkAXxR8z+vOQ2rY3BqQMWTQ@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20210722190747.1986614-1-hridya@google.com> <CALAqxLVLMt7rbJBQtFBw-ikBAjKrVgfS8=Nu6NFQbp_gq1m22Q@mail.gmail.com>
+In-Reply-To: <CALAqxLVLMt7rbJBQtFBw-ikBAjKrVgfS8=Nu6NFQbp_gq1m22Q@mail.gmail.com>
+From:   Hridya Valsaraju <hridya@google.com>
+Date:   Tue, 3 Aug 2021 14:39:19 -0700
+Message-ID: <CA+wgaPOQmY4H9n302YspKuLk9iq9vBzdWBTu19EUUsiQYTUOzQ@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: heaps: Set allocation limit for system heap
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---Dxnq1zWXvFF0Q93v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> > > The TODO located at drivers/leds/TODO requests:
-> > >
-> > > * Get rid of led_brightness
-> > >
-> > > It is really an integer, as maximum is configurable. Get rid of it, or
-> > > make it into typedef or something.
-> > >
-> > > This patch changes the declaration of led_brightness from an enum to a
-> > > typedef. In order to hold the currently existing enum values, macro
-> > > definitions are provided. Files which use led_brightness are updated =
-to
-> > > conform to the new types.
-> > >
-> > > Signed-off-by: Amy Parker <apark0006@student.cerritos.edu>
+On Mon, Aug 2, 2021 at 7:18 PM John Stultz <john.stultz@linaro.org> wrote:
+>
+> On Thu, Jul 22, 2021 at 12:07 PM Hridya Valsaraju <hridya@google.com> wrote:
+> > This patch limits the size of total memory that can be requested in a
+> > single allocation from the system heap. This would prevent a
+> > buggy/malicious client from depleting system memory by requesting for an
+> > extremely large allocation which might destabilize the system.
 > >
-> > Thanks for your patch!
+> > The limit is set to half the size of the device's total RAM which is the
+> > same as what was set by the deprecated ION system heap.
 > >
-> > > 207 files changed, 437 insertions(+), 438 deletions(-)
-> >
-> > This touches a lot of files, so we better get it right.
-> >
-> > > --- a/include/linux/leds.h
-> > > +++ b/include/linux/leds.h
-> > > @@ -26,12 +26,11 @@ struct device_node;
-> > >  */
-> > >
-> > > /* This is obsolete/useless. We now support variable maximum brightne=
-ss. */
-> > > -enum led_brightness {
-> > > -     LED_OFF         =3D 0,
-> > > -     LED_ON          =3D 1,
-> > > -     LED_HALF        =3D 127,
-> > > -     LED_FULL        =3D 255,
-> > > -};
-> > > +typedef u8 led_brightness;
-> >
-> > In general, typedefs are frowned upon in the kernel, but there can be a
-> > good reason to use one.
-> > What if the maximum brightness is larger than 255?
-> > Using "unsigned int" sounds better to me, but let's wait for Pavel...
->=20
-> And as Dan just pointed out, "signed int" would be even better, as it
-> would allow a function to return an error code.
+> > Signed-off-by: Hridya Valsaraju <hridya@google.com>
+>
+> Seems sane to me, unless folks have better suggestions for allocation limits.
+>
+> Reviewed-by: John Stultz <john.stultz@linaro.org>
 
-We can not apply huge patch all at once, and changing from enum to int
-directly will result in warnings in some configurations, no?
+Thank you for taking a look John!
 
-Agreed that int would be good.
+Regards,
+Hridya
 
-Best regards,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---Dxnq1zWXvFF0Q93v
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmEJt28ACgkQMOfwapXb+vLrDACeLYg44ClynSPwfyzZhQonro29
-ypwAnRkiArkpjCD+lk/lAFDe0o4lnu0A
-=CCEG
------END PGP SIGNATURE-----
-
---Dxnq1zWXvFF0Q93v--
+>
+> thanks
+> -john
