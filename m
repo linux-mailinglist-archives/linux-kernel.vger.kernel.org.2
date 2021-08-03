@@ -2,192 +2,641 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D423DE420
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE5B3DE421
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233558AbhHCBp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 21:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbhHCBp4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 21:45:56 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C156C06175F;
-        Mon,  2 Aug 2021 18:45:46 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id 185so22560083iou.10;
-        Mon, 02 Aug 2021 18:45:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uv1+NuI+jQm46T5UIH7fZM+sGGArCQuLnRoIYxPk0sY=;
-        b=MW3uECBVUejj6dl/243hzvdWUjNkj2HO8ic5AQ7SIj5F9+5eEFABHSv20akkmzow94
-         TiJT4EeKpFUxE17eeJsLyYcm6Xv7fjHD0wOMkjisEVv0rDAJls7ARdooL+HIMF5ay0SM
-         Helb4RyQZVZ4RBKT6zVCjNQuEwzWmmIfCViPtZeyV/v9mYMS9Xfwzvo3C0lY+Ld903eg
-         eo4MvYHlTQWV9PP0Th8j4piMx19+IctgO2gpPBuWE5ZadXKGjZCMQTzBDCnkf3m4kZUL
-         J2/CO6tQtRmrudOOD3d/n4/MEfeVO6E7XKnqwesUFPWJTigmMzNqGVr2exJm+vFhUrz6
-         jcFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uv1+NuI+jQm46T5UIH7fZM+sGGArCQuLnRoIYxPk0sY=;
-        b=QGYXkdWMj4xlEIA7qrnaFVgUXiQxwhPfGxCnOECesUDWOX92CwYnzryT2FaK7ptuGY
-         ciQeCnZ/2FrOnihcEOK/QdgjmsMm75npHmkoD0UfInLqWanFMp5k3xCHNKodFFFGbVTg
-         cvCStfUks9j2UITOtWBKIgeszNpkVb2+O6DbH5i7Z7eZ7qaVl7r1hjx6A9S0pXLPt3UV
-         BjdxdlG6MAgQ+OOHqUstLk1SUulFdJIzBRSNgbt13+1tijX9sHMEMS2lNgJY/+EPMMY9
-         vewNv22EBmCREq+2gkYLxQv2DhPATxw3ahLMMmamMef2SAkiIn1N96cEKd5eNDX6lMt7
-         Zm8A==
-X-Gm-Message-State: AOAM531xuvzNjUu/l+tT7Oc5mk4EK9n/FQ4EZwX1CG5G9tdsCiIZUUU7
-        EIeE/CF0X9mD9BDLCKzr2dMa4e9a3a4laur9AEU=
-X-Google-Smtp-Source: ABdhPJyUMDyHdvpVuqg+tL6JdAWjwy+ffyggZHU4slBKyVtqy3W1yWBlNCDo/n42AgBDLk2S+LCLh7/+4+Fx/nLbQ+Q=
-X-Received: by 2002:a05:6638:cba:: with SMTP id x26mr13354789jad.98.1627955145847;
- Mon, 02 Aug 2021 18:45:45 -0700 (PDT)
+        id S233328AbhHCBtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 21:49:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233208AbhHCBtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 21:49:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F67360EB5;
+        Tue,  3 Aug 2021 01:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627955381;
+        bh=+GNsDCFcw2AdMjPTDPDgi1RppR9xr2iNucrZ7b/BZHs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V7DQoiPgXjal8IOT7F97Vqx/kF3VIguzYCuV2RHGGp2sUFs3cW6WXkjdkoXoUQDYx
+         pV9vuS6C/+l+LQk7ZSqNKO5+QiXL9488e5w5QWwGevsh5UYLFbqGf3znneD55XFOgs
+         evRBCThvvjEpxOpQB14OZxgpF+UthE2lC+IiIZlFqGG3FFDV0ZkRd4ym10G3oK7w15
+         v71Mvzf0TnzR5po7F5AT0LKdenOKglyUB7FnmAgE68tAYV88LpUtUmLhO/LXh4ul24
+         l83CYGcDFnZLfVjQScr405pl57zVTa+5bEILWdCWyp2EW9RQOuIP19UBbiz++9XEGe
+         D/94KHNjOQr6A==
+Date:   Mon, 2 Aug 2021 18:49:39 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: introduce periodic iostat io latency
+ traces
+Message-ID: <YQigsxHeFcPTfNqI@google.com>
+References: <20210802222745.2232812-1-daeho43@gmail.com>
 MIME-Version: 1.0
-References: <20200320212833.3507-1-sean.j.christopherson@intel.com> <20200320212833.3507-2-sean.j.christopherson@intel.com>
-In-Reply-To: <20200320212833.3507-2-sean.j.christopherson@intel.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Tue, 3 Aug 2021 09:45:34 +0800
-Message-ID: <CAJhGHyCPyu6BVZwqvySeT2LSr81Xospdv2O=ssvTQv0Rvky0UA@mail.gmail.com>
-Subject: Re: [PATCH v3 01/37] KVM: VMX: Flush all EPTP/VPID contexts on remote
- TLB flush
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802222745.2232812-1-daeho43@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(I'm replying to a very old email, so many CCs are dropped.)
-
-On Sat, Mar 21, 2020 at 5:33 AM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Flush all EPTP/VPID contexts if a TLB flush _may_ have been triggered by
-> a remote or deferred TLB flush, i.e. by KVM_REQ_TLB_FLUSH.  Remote TLB
-> flushes require all contexts to be invalidated, not just the active
-> contexts, e.g. all mappings in all contexts for a given HVA need to be
-> invalidated on a mmu_notifier invalidation.  Similarly, the instigator
-> of the deferred TLB flush may be expecting all contexts to be flushed,
-> e.g. vmx_vcpu_load_vmcs().
->
-> Without nested VMX, flushing only the current EPTP/VPID context isn't
-> problematic because KVM uses a constant VPID for each vCPU, and
-
-Hello, Sean
-
-Is the patch optimized for cases where nested VMX is active?
-I think the non-nested cases are normal cases.
-
-Although the related code has been changed, the logic of the patch
-is still working now, would it be better if we restore the optimization
-for the normal cases (non-nested)?
-
-Thanks
-Lai
-
-> mmu_alloc_direct_roots() all but guarantees KVM will use a single EPTP
-> for L1.  In the rare case where a different EPTP is created or reused,
-> KVM (currently) unconditionally flushes the new EPTP context prior to
-> entering the guest.
->
-> With nested VMX, KVM conditionally uses a different VPID for L2, and
-> unconditionally uses a different EPTP for L2.  Because KVM doesn't
-> _intentionally_ guarantee L2's EPTP/VPID context is flushed on nested
-> VM-Enter, it'd be possible for a malicious L1 to attack the host and/or
-> different VMs by exploiting the lack of flushing for L2.
->
->   1) Launch nested guest from malicious L1.
->
->   2) Nested VM-Enter to L2.
->
->   3) Access target GPA 'g'.  CPU inserts TLB entry tagged with L2's ASID
->      mapping 'g' to host PFN 'x'.
->
->   2) Nested VM-Exit to L1.
->
->   3) L1 triggers kernel same-page merging (ksm) by duplicating/zeroing
->      the page for PFN 'x'.
->
->   4) Host kernel merges PFN 'x' with PFN 'y', i.e. unmaps PFN 'x' and
->      remaps the page to PFN 'y'.  mmu_notifier sends invalidate command,
->      KVM flushes TLB only for L1's ASID.
->
->   4) Host kernel reallocates PFN 'x' to some other task/guest.
->
->   5) Nested VM-Enter to L2.  KVM does not invalidate L2's EPTP or VPID.
->
->   6) L2 accesses GPA 'g' and gains read/write access to PFN 'x' via its
->      stale TLB entry.
->
-> However, current KVM unconditionally flushes L1's EPTP/VPID context on
-> nested VM-Exit.  But, that behavior is mostly unintentional, KVM doesn't
-> go out of its way to flush EPTP/VPID on nested VM-Enter/VM-Exit, rather
-> a TLB flush is guaranteed to occur prior to re-entering L1 due to
-> __kvm_mmu_new_cr3() always being called with skip_tlb_flush=false.  On
-> nested VM-Enter, this happens via kvm_init_shadow_ept_mmu() (nested EPT
-> enabled) or in nested_vmx_load_cr3() (nested EPT disabled).  On nested
-> VM-Exit it occurs via nested_vmx_load_cr3().
->
-> This also fixes a bug where a deferred TLB flush in the context of L2,
-> with EPT disabled, would flush L1's VPID instead of L2's VPID, as
-> vmx_flush_tlb() flushes L1's VPID regardless of is_guest_mode().
->
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Ben Gardon <bgardon@google.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Junaid Shahid <junaids@google.com>
-> Cc: Liran Alon <liran.alon@oracle.com>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: John Haxby <john.haxby@oracle.com>
-> Reviewed-by: Liran Alon <liran.alon@oracle.com>
-> Fixes: efebf0aaec3d ("KVM: nVMX: Do not flush TLB on L1<->L2 transitions if L1 uses VPID and EPT")
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+On 08/02, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Whenever we notice some sluggish issues on our machines, we are always
+> curious about how well all types of I/O in the f2fs filesystem are
+> handled. But, it's hard to get this kind of real data. First of all,
+> we need to reproduce the issue while turning on the profiling tool like
+> blktrace, but the issue doesn't happen again easily. Second, with the
+> intervention of any tools, the overall timing of the issue will be
+> slightly changed and it sometimes makes us hard to figure it out.
+> 
+> So, I added F2FS_IOSTAT_IO_LATENCY config option to support printing out
+> IO latency statistics tracepoint events which are minimal things to
+> understand filesystem's I/O related behaviors. With "iostat_enable" sysfs
+> node on, we can get this statistics info in a periodic way and it
+> would cause the least overhead.
+> 
+> [samples]
+>  f2fs_ckpt-254:1-507     [003] ....  2842.439683: f2fs_iostat_latency:
+> dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
+> rd_data [136/1/801], rd_node [136/1/1704], rd_meta [4/2/4],
+> wr_sync_data [164/16/3331], wr_sync_node [152/3/648],
+> wr_sync_meta [160/2/4243], wr_async_data [24/13/15],
+> wr_async_node [0/0/0], wr_async_meta [0/0/0]
+> 
+>  f2fs_ckpt-254:1-507     [002] ....  2845.450514: f2fs_iostat_latency:
+> dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
+> rd_data [60/3/456], rd_node [60/3/1258], rd_meta [0/0/1],
+> wr_sync_data [120/12/2285], wr_sync_node [88/5/428],
+> wr_sync_meta [52/6/2990], wr_async_data [4/1/3],
+> wr_async_node [0/0/0], wr_async_meta [0/0/0]
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
 > ---
->  arch/x86/kvm/vmx/vmx.h | 28 +++++++++++++++++++++++++++-
->  1 file changed, 27 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index be93d597306c..d6d67b816ebe 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -518,7 +518,33 @@ static inline void __vmx_flush_tlb(struct kvm_vcpu *vcpu, int vpid,
->
->  static inline void vmx_flush_tlb(struct kvm_vcpu *vcpu, bool invalidate_gpa)
->  {
-> -       __vmx_flush_tlb(vcpu, to_vmx(vcpu)->vpid, invalidate_gpa);
-> +       struct vcpu_vmx *vmx = to_vmx(vcpu);
+>  fs/f2fs/Kconfig             |  9 ++++
+>  fs/f2fs/data.c              | 98 ++++++++++++++++++++++++++++++++++++-
+>  fs/f2fs/f2fs.h              | 87 ++++++++++++++++++++++++++++++++
+>  fs/f2fs/super.c             | 11 ++++-
+>  fs/f2fs/sysfs.c             | 49 +++++++++++++++++++
+>  include/trace/events/f2fs.h | 89 +++++++++++++++++++++++++++++++++
+>  6 files changed, 340 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+> index 7669de7b49ce..28dc5463bc87 100644
+> --- a/fs/f2fs/Kconfig
+> +++ b/fs/f2fs/Kconfig
+> @@ -135,3 +135,12 @@ config F2FS_FS_LZORLE
+>  	default y
+>  	help
+>  	  Support LZO-RLE compress algorithm, if unsure, say Y.
 > +
-> +       /*
-> +        * Flush all EPTP/VPID contexts if the TLB flush _may_ have been
-> +        * invoked via kvm_flush_remote_tlbs(), which always passes %true for
-> +        * @invalidate_gpa.  Flushing remote TLBs requires all contexts to be
-> +        * flushed, not just the active context.
-> +        *
-> +        * Note, this also ensures a deferred TLB flush with VPID enabled and
-> +        * EPT disabled invalidates the "correct" VPID, by nuking both L1 and
-> +        * L2's VPIDs.
-> +        */
-> +       if (invalidate_gpa) {
-> +               if (enable_ept) {
-> +                       ept_sync_global();
-> +               } else if (enable_vpid) {
-> +                       if (cpu_has_vmx_invvpid_global()) {
-> +                               vpid_sync_vcpu_global();
-> +                       } else {
-> +                               WARN_ON_ONCE(!cpu_has_vmx_invvpid_single());
-> +                               vpid_sync_vcpu_single(vmx->vpid);
-> +                               vpid_sync_vcpu_single(vmx->nested.vpid02);
-> +                       }
-> +               }
-> +       } else {
-> +               __vmx_flush_tlb(vcpu, vmx->vpid, false);
-> +       }
+> +config F2FS_IOSTAT_IO_LATENCY
+> +	bool "F2FS IO statistics IO latency information"
+> +	depends on F2FS_FS
+> +	default n
+> +	help
+> +	  Support printing out periodic IO latency statistics tracepoint
+> +	  events. With this, you have to turn on "iostat_enable" sysfs
+> +	  node to print this out.
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 948083c88d17..d855ba564ebd 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -34,6 +34,12 @@ static struct kmem_cache *bio_entry_slab;
+>  static mempool_t *bio_post_read_ctx_pool;
+>  static struct bio_set f2fs_bioset;
+>  
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +#define NUM_PREALLOC_IOSTAT_CTXS	128
+> +static struct kmem_cache *bio_iostat_ctx_cache;
+> +static mempool_t *bio_iostat_ctx_pool;
+> +#endif
+> +
+>  #define	F2FS_BIO_POOL_SIZE	NR_CURSEG_TYPE
+>  
+>  int __init f2fs_init_bioset(void)
+> @@ -270,7 +276,18 @@ static void f2fs_post_read_work(struct work_struct *work)
+>  static void f2fs_read_end_io(struct bio *bio)
+>  {
+>  	struct f2fs_sb_info *sbi = F2FS_P_SB(bio_first_page_all(bio));
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
+> +	struct bio_post_read_ctx *ctx = iostat_ctx->post_read_ctx;
+> +#else
+>  	struct bio_post_read_ctx *ctx = bio->bi_private;
+> +#endif
+
+Can we have some wrappers to avoid lots of COFIG_F2FS_IOSTAT_IO_LATENCY?
+
+> +
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	__update_iostat_latency(sbi, bio, 0, iostat_ctx);
+> +	mempool_free(iostat_ctx, bio_iostat_ctx_pool);
+> +	bio->bi_private = ctx;
+> +#endif
+>  
+>  	if (time_to_inject(sbi, FAULT_READ_IO)) {
+>  		f2fs_show_injection_info(sbi, FAULT_READ_IO);
+> @@ -292,10 +309,21 @@ static void f2fs_read_end_io(struct bio *bio)
+>  
+>  static void f2fs_write_end_io(struct bio *bio)
+>  {
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
+> +	struct f2fs_sb_info *sbi = iostat_ctx->sbi;
+> +#else
+>  	struct f2fs_sb_info *sbi = bio->bi_private;
+> +#endif
+>  	struct bio_vec *bvec;
+>  	struct bvec_iter_all iter_all;
+>  
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	__update_iostat_latency(sbi, bio, 1, iostat_ctx);
+> +	mempool_free(iostat_ctx, bio_iostat_ctx_pool);
+> +	bio->bi_private = sbi;
+> +#endif
+> +
+>  	if (time_to_inject(sbi, FAULT_WRITE_IO)) {
+>  		f2fs_show_injection_info(sbi, FAULT_WRITE_IO);
+>  		bio->bi_status = BLK_STS_IOERR;
+> @@ -382,6 +410,21 @@ int f2fs_target_device_index(struct f2fs_sb_info *sbi, block_t blkaddr)
+>  	return 0;
 >  }
->
->  static inline void decache_tsc_multiplier(struct vcpu_vmx *vmx)
-> --
-> 2.24.1
->
+>  
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +static inline void __alloc_iostat_ctx(struct f2fs_sb_info *sbi,
+> +		struct bio *bio, struct bio_post_read_ctx *ctx)
+> +{
+> +	struct bio_iostat_ctx *iostat_ctx;
+> +	/* Due to the mempool, this never fails. */
+> +	iostat_ctx = mempool_alloc(bio_iostat_ctx_pool, GFP_NOFS);
+> +	iostat_ctx->sbi = sbi;
+> +	iostat_ctx->submit_ts = 0;
+> +	iostat_ctx->type = 0;
+> +	iostat_ctx->post_read_ctx = ctx;
+> +	bio->bi_private = iostat_ctx;
+> +}
+> +#endif
+> +
+>  static struct bio *__bio_alloc(struct f2fs_io_info *fio, int npages)
+>  {
+>  	struct f2fs_sb_info *sbi = fio->sbi;
+> @@ -399,6 +442,9 @@ static struct bio *__bio_alloc(struct f2fs_io_info *fio, int npages)
+>  		bio->bi_write_hint = f2fs_io_type_to_rw_hint(sbi,
+>  						fio->type, fio->temp);
+>  	}
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	__alloc_iostat_ctx(sbi, bio, NULL);
+> +#endif
+>  	if (fio->io_wbc)
+>  		wbc_init_bio(fio->io_wbc, bio);
+>  
+> @@ -435,6 +481,10 @@ static bool f2fs_crypt_mergeable_bio(struct bio *bio, const struct inode *inode,
+>  static inline void __submit_bio(struct f2fs_sb_info *sbi,
+>  				struct bio *bio, enum page_type type)
+>  {
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
+> +#endif
+> +
+>  	if (!is_read_io(bio_op(bio))) {
+>  		unsigned int start;
+>  
+> @@ -480,6 +530,12 @@ static inline void __submit_bio(struct f2fs_sb_info *sbi,
+>  		trace_f2fs_submit_read_bio(sbi->sb, type, bio);
+>  	else
+>  		trace_f2fs_submit_write_bio(sbi->sb, type, bio);
+> +
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	iostat_ctx->submit_ts = jiffies;
+> +	iostat_ctx->type = type;
+> +#endif
+> +
+>  	submit_bio(bio);
+>  }
+>  
+> @@ -971,7 +1027,7 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
+>  {
+>  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>  	struct bio *bio;
+> -	struct bio_post_read_ctx *ctx;
+> +	struct bio_post_read_ctx *ctx = NULL;
+>  	unsigned int post_read_steps = 0;
+>  
+>  	bio = bio_alloc_bioset(for_write ? GFP_NOIO : GFP_KERNEL,
+> @@ -1007,6 +1063,9 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
+>  		ctx->fs_blkaddr = blkaddr;
+>  		bio->bi_private = ctx;
+>  	}
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	__alloc_iostat_ctx(sbi, bio, ctx);
+> +#endif
+>  
+>  	return bio;
+>  }
+> @@ -2195,7 +2254,9 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>  		struct page *page = dic->cpages[i];
+>  		block_t blkaddr;
+>  		struct bio_post_read_ctx *ctx;
+> -
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +		struct bio_iostat_ctx *iostat_ctx;
+> +#endif
+>  		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+>  						dn.ofs_in_node + i + 1);
+>  
+> @@ -2231,7 +2292,12 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>  		if (bio_add_page(bio, page, blocksize, 0) < blocksize)
+>  			goto submit_and_realloc;
+>  
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +		iostat_ctx = bio->bi_private;
+> +		ctx = iostat_ctx->post_read_ctx;
+> +#else
+>  		ctx = bio->bi_private;
+> +#endif
+>  		ctx->enabled_steps |= STEP_DECOMPRESS;
+>  		refcount_inc(&dic->refcnt);
+>  
+> @@ -4132,6 +4198,34 @@ void f2fs_destroy_post_read_processing(void)
+>  	kmem_cache_destroy(bio_post_read_ctx_cache);
+>  }
+>  
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +int __init f2fs_init_iostat_processing(void)
+> +{
+> +	bio_iostat_ctx_cache =
+> +		kmem_cache_create("f2fs_bio_iostat_ctx",
+> +				  sizeof(struct bio_iostat_ctx), 0, 0, NULL);
+> +	if (!bio_iostat_ctx_cache)
+> +		goto fail;
+> +	bio_iostat_ctx_pool =
+> +		mempool_create_slab_pool(NUM_PREALLOC_IOSTAT_CTXS,
+> +					 bio_iostat_ctx_cache);
+> +	if (!bio_iostat_ctx_pool)
+> +		goto fail_free_cache;
+> +	return 0;
+> +
+> +fail_free_cache:
+> +	kmem_cache_destroy(bio_iostat_ctx_cache);
+> +fail:
+> +	return -ENOMEM;
+> +}
+> +
+> +void f2fs_destroy_iostat_processing(void)
+> +{
+> +	mempool_destroy(bio_iostat_ctx_pool);
+> +	kmem_cache_destroy(bio_iostat_ctx_cache);
+> +}
+> +#endif
+> +
+>  int f2fs_init_post_read_wq(struct f2fs_sb_info *sbi)
+>  {
+>  	if (!f2fs_sb_has_encrypt(sbi) &&
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 5d16486feb8f..fbf2b36b9578 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1755,6 +1755,17 @@ struct f2fs_sb_info {
+>  	unsigned int compress_watermark;	/* cache page watermark */
+>  	atomic_t compress_page_hit;		/* cache hit count */
+>  #endif
+> +
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	/* for io latency related statistics info in one iostat period */
+> +	spinlock_t iostat_lat_lock;
+> +	u64 rd_sum_lat[NR_PAGE_TYPE];		/* sum of read io latencies */
+> +	u64 rd_peak_lat[NR_PAGE_TYPE];		/* peak read io latency */
+> +	u64 rd_bio_cnt[NR_PAGE_TYPE];		/* read bio count */
+> +	u64 wr_sum_lat[2][NR_PAGE_TYPE];	/* sum of write io latencies (sync/async) */
+> +	u64 wr_peak_lat[2][NR_PAGE_TYPE];	/* peak write io latency (sync/async) */
+> +	u64 wr_bio_cnt[2][NR_PAGE_TYPE];	/* write bio count (sync/async) */
+> +#endif
+>  };
+>  
+>  struct f2fs_private_dio {
+> @@ -3233,6 +3244,26 @@ static inline void f2fs_reset_iostat(struct f2fs_sb_info *sbi)
+>  		sbi->prev_rw_iostat[i] = 0;
+>  	}
+>  	spin_unlock(&sbi->iostat_lock);
+> +
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	spin_lock_irq(&sbi->iostat_lat_lock);
+> +	for (i = 0; i < NR_PAGE_TYPE; i++) {
+> +		sbi->rd_sum_lat[i] = 0;
+> +		sbi->rd_peak_lat[i] = 0;
+> +		sbi->rd_bio_cnt[i] = 0;
+> +	}
+> +
+> +	for (i = 0; i < 2; i++) {
+> +		int iotype;
+> +
+> +		for (iotype = 0; iotype < NR_PAGE_TYPE; iotype++) {
+> +			sbi->wr_sum_lat[i][iotype] = 0;
+> +			sbi->wr_peak_lat[i][iotype] = 0;
+> +			sbi->wr_bio_cnt[i][iotype] = 0;
+> +		}
+> +	}
+> +	spin_unlock_irq(&sbi->iostat_lat_lock);
+> +#endif
+>  }
+>  
+>  extern void f2fs_record_iostat(struct f2fs_sb_info *sbi);
+> @@ -3259,6 +3290,55 @@ static inline void f2fs_update_iostat(struct f2fs_sb_info *sbi,
+>  	f2fs_record_iostat(sbi);
+>  }
+>  
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +
+> +struct bio_post_read_ctx;
+> +
+> +struct bio_iostat_ctx {
+> +	struct f2fs_sb_info *sbi;
+> +	u64 submit_ts;
+> +	enum page_type type;
+> +	struct bio_post_read_ctx *post_read_ctx;
+> +};
+> +
+> +struct f2fs_iostat_latency {
+> +	unsigned long long peak_lat;
+> +	unsigned long long avg_lat;
+> +	unsigned long long cnt;
+> +};
+> +
+> +static inline void __update_iostat_latency(struct f2fs_sb_info *sbi,
+> +		struct bio *bio, int rw, struct bio_iostat_ctx *iostat_ctx)
+> +{
+> +	u64 ts_diff;
+> +	unsigned int iotype = iostat_ctx->type;
+> +	unsigned long flags;
+> +
+> +	if (!sbi->iostat_enable)
+> +		return;
+> +
+> +	ts_diff = jiffies - iostat_ctx->submit_ts;
+> +	if (iotype >= META_FLUSH)
+> +		iotype = META;
+> +
+> +	spin_lock_irqsave(&sbi->iostat_lat_lock, flags);
+> +	if (rw == 0) {
+> +		sbi->rd_sum_lat[iotype] += ts_diff;
+> +		sbi->rd_bio_cnt[iotype]++;
+> +		if (ts_diff > sbi->rd_peak_lat[iotype])
+> +			sbi->rd_peak_lat[iotype] = ts_diff;
+> +	} else {
+> +		int sync = bio->bi_opf & REQ_SYNC ? 0 : 1;
+> +
+> +		sbi->wr_sum_lat[sync][iotype] += ts_diff;
+> +		sbi->wr_bio_cnt[sync][iotype]++;
+> +		if (ts_diff > sbi->wr_peak_lat[sync][iotype])
+> +			sbi->wr_peak_lat[sync][iotype] = ts_diff;
+> +	}
+> +	spin_unlock_irqrestore(&sbi->iostat_lat_lock, flags);
+> +}
+> +#endif
+> +
+>  #define __is_large_section(sbi)		((sbi)->segs_per_sec > 1)
+>  
+>  #define __is_meta_io(fio) (PAGE_TYPE_OF_BIO((fio)->type) == META)
+> @@ -3645,6 +3725,13 @@ bool f2fs_overwrite_io(struct inode *inode, loff_t pos, size_t len);
+>  void f2fs_clear_page_cache_dirty_tag(struct page *page);
+>  int f2fs_init_post_read_processing(void);
+>  void f2fs_destroy_post_read_processing(void);
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +int f2fs_init_iostat_processing(void);
+> +void f2fs_destroy_iostat_processing(void);
+> +#else
+> +static inline int f2fs_init_iostat_processing(void) { return 0; }
+> +static inline void f2fs_destroy_iostat_processing(void) {}
+> +#endif
+>  int f2fs_init_post_read_wq(struct f2fs_sb_info *sbi);
+>  void f2fs_destroy_post_read_wq(struct f2fs_sb_info *sbi);
+>  
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 41765e90caa2..a7b770d6f006 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -3905,6 +3905,9 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	/* init iostat info */
+>  	spin_lock_init(&sbi->iostat_lock);
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	spin_lock_init(&sbi->iostat_lat_lock);
+> +#endif
+>  	sbi->iostat_enable = false;
+>  	sbi->iostat_period_ms = DEFAULT_IOSTAT_PERIOD_MS;
+>  
+> @@ -4415,9 +4418,12 @@ static int __init init_f2fs_fs(void)
+>  	err = f2fs_init_post_read_processing();
+>  	if (err)
+>  		goto free_root_stats;
+> -	err = f2fs_init_bio_entry_cache();
+> +	err = f2fs_init_iostat_processing();
+>  	if (err)
+>  		goto free_post_read;
+> +	err = f2fs_init_bio_entry_cache();
+> +	if (err)
+> +		goto free_iostat;
+>  	err = f2fs_init_bioset();
+>  	if (err)
+>  		goto free_bio_enrty_cache;
+> @@ -4439,6 +4445,8 @@ static int __init init_f2fs_fs(void)
+>  	f2fs_destroy_bioset();
+>  free_bio_enrty_cache:
+>  	f2fs_destroy_bio_entry_cache();
+> +free_iostat:
+> +	f2fs_destroy_iostat_processing();
+>  free_post_read:
+>  	f2fs_destroy_post_read_processing();
+>  free_root_stats:
+> @@ -4473,6 +4481,7 @@ static void __exit exit_f2fs_fs(void)
+>  	f2fs_destroy_compress_mempool();
+>  	f2fs_destroy_bioset();
+>  	f2fs_destroy_bio_entry_cache();
+> +	f2fs_destroy_iostat_processing();
+>  	f2fs_destroy_post_read_processing();
+>  	f2fs_destroy_root_stats();
+>  	unregister_filesystem(&f2fs_fs_type);
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index 44b086e5b607..51553946a055 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -1077,10 +1077,51 @@ static int __maybe_unused segment_bits_seq_show(struct seq_file *seq,
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +static inline void __record_iostat_latency(struct f2fs_sb_info *sbi,
+> +			struct f2fs_iostat_latency (*iostat_lat)[NR_PAGE_TYPE])
+> +{
+> +	int io, sync, idx = 0;
+> +	unsigned long long cnt;
+> +
+> +	spin_lock_irq(&sbi->iostat_lat_lock);
+> +	for (io = 0; io < NR_PAGE_TYPE; io++) {
+> +		cnt = sbi->rd_bio_cnt[io];
+> +		iostat_lat[idx][io].peak_lat =
+> +			jiffies_to_msecs(sbi->rd_peak_lat[io]);
+> +		iostat_lat[idx][io].cnt = cnt;
+> +		iostat_lat[idx][io].avg_lat = cnt ?
+> +			jiffies_to_msecs(sbi->rd_sum_lat[io]) / cnt : 0;
+> +		sbi->rd_sum_lat[io] = 0;
+> +		sbi->rd_peak_lat[io] = 0;
+> +		sbi->rd_bio_cnt[io] = 0;
+> +	}
+> +
+> +	for (sync = 0; sync < 2; sync++) {
+> +		idx++;
+> +		for (io = 0; io < NR_PAGE_TYPE; io++) {
+> +			cnt = sbi->wr_bio_cnt[sync][io];
+> +			iostat_lat[idx][io].peak_lat =
+> +			  jiffies_to_msecs(sbi->wr_peak_lat[sync][io]);
+> +			iostat_lat[idx][io].cnt = cnt;
+> +			iostat_lat[idx][io].avg_lat = cnt ?
+> +			  jiffies_to_msecs(sbi->wr_sum_lat[sync][io]) / cnt : 0;
+> +			sbi->wr_sum_lat[sync][io] = 0;
+> +			sbi->wr_peak_lat[sync][io] = 0;
+> +			sbi->wr_bio_cnt[sync][io] = 0;
+> +		}
+> +	}
+> +	spin_unlock_irq(&sbi->iostat_lat_lock);
+> +}
+> +#endif
+> +
+>  void f2fs_record_iostat(struct f2fs_sb_info *sbi)
+>  {
+>  	unsigned long long iostat_diff[NR_IO_TYPE];
+>  	int i;
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	struct f2fs_iostat_latency iostat_lat[3][NR_PAGE_TYPE];
+> +#endif
+>  
+>  	if (time_is_after_jiffies(sbi->iostat_next_period))
+>  		return;
+> @@ -1101,7 +1142,15 @@ void f2fs_record_iostat(struct f2fs_sb_info *sbi)
+>  	}
+>  	spin_unlock(&sbi->iostat_lock);
+>  
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	__record_iostat_latency(sbi, iostat_lat);
+> +#endif
+> +
+>  	trace_f2fs_iostat(sbi, iostat_diff);
+> +
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +	trace_f2fs_iostat_latency(sbi, iostat_lat);
+> +#endif
+>  }
+>  
+>  static int __maybe_unused iostat_info_seq_show(struct seq_file *seq,
+> diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+> index 56b113e3cd6a..df6b57e10c9d 100644
+> --- a/include/trace/events/f2fs.h
+> +++ b/include/trace/events/f2fs.h
+> @@ -1894,6 +1894,95 @@ TRACE_EVENT(f2fs_iostat,
+>  		__entry->fs_cdrio, __entry->fs_nrio, __entry->fs_mrio)
+>  );
+>  
+> +#ifdef CONFIG_F2FS_IOSTAT_IO_LATENCY
+> +TRACE_EVENT(f2fs_iostat_latency,
+> +
+> +	TP_PROTO(struct f2fs_sb_info *sbi, struct f2fs_iostat_latency (*iostat_lat)[NR_PAGE_TYPE]),
+> +
+> +	TP_ARGS(sbi, iostat_lat),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(dev_t,	dev)
+> +		__field(unsigned long long,	d_rd_peak)
+> +		__field(unsigned long long,	d_rd_avg)
+> +		__field(unsigned long long,	d_rd_cnt)
+> +		__field(unsigned long long,	n_rd_peak)
+> +		__field(unsigned long long,	n_rd_avg)
+> +		__field(unsigned long long,	n_rd_cnt)
+> +		__field(unsigned long long,	m_rd_peak)
+> +		__field(unsigned long long,	m_rd_avg)
+> +		__field(unsigned long long,	m_rd_cnt)
+> +		__field(unsigned long long,	d_wr_s_peak)
+> +		__field(unsigned long long,	d_wr_s_avg)
+> +		__field(unsigned long long,	d_wr_s_cnt)
+> +		__field(unsigned long long,	n_wr_s_peak)
+> +		__field(unsigned long long,	n_wr_s_avg)
+> +		__field(unsigned long long,	n_wr_s_cnt)
+> +		__field(unsigned long long,	m_wr_s_peak)
+> +		__field(unsigned long long,	m_wr_s_avg)
+> +		__field(unsigned long long,	m_wr_s_cnt)
+> +		__field(unsigned long long,	d_wr_as_peak)
+> +		__field(unsigned long long,	d_wr_as_avg)
+> +		__field(unsigned long long,	d_wr_as_cnt)
+> +		__field(unsigned long long,	n_wr_as_peak)
+> +		__field(unsigned long long,	n_wr_as_avg)
+> +		__field(unsigned long long,	n_wr_as_cnt)
+> +		__field(unsigned long long,	m_wr_as_peak)
+> +		__field(unsigned long long,	m_wr_as_avg)
+> +		__field(unsigned long long,	m_wr_as_cnt)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->dev		= sbi->sb->s_dev;
+> +		__entry->d_rd_peak	= iostat_lat[0][DATA].peak_lat;
+> +		__entry->d_rd_avg	= iostat_lat[0][DATA].avg_lat;
+> +		__entry->d_rd_cnt	= iostat_lat[0][DATA].cnt;
+> +		__entry->n_rd_peak	= iostat_lat[0][NODE].peak_lat;
+> +		__entry->n_rd_avg	= iostat_lat[0][NODE].avg_lat;
+> +		__entry->n_rd_cnt	= iostat_lat[0][NODE].cnt;
+> +		__entry->m_rd_peak	= iostat_lat[0][META].peak_lat;
+> +		__entry->m_rd_avg	= iostat_lat[0][META].avg_lat;
+> +		__entry->m_rd_cnt	= iostat_lat[0][META].cnt;
+> +		__entry->d_wr_s_peak	= iostat_lat[1][DATA].peak_lat;
+> +		__entry->d_wr_s_avg	= iostat_lat[1][DATA].avg_lat;
+> +		__entry->d_wr_s_cnt	= iostat_lat[1][DATA].cnt;
+> +		__entry->n_wr_s_peak	= iostat_lat[1][NODE].peak_lat;
+> +		__entry->n_wr_s_avg	= iostat_lat[1][NODE].avg_lat;
+> +		__entry->n_wr_s_cnt	= iostat_lat[1][NODE].cnt;
+> +		__entry->m_wr_s_peak	= iostat_lat[1][META].peak_lat;
+> +		__entry->m_wr_s_avg	= iostat_lat[1][META].avg_lat;
+> +		__entry->m_wr_s_cnt	= iostat_lat[1][META].cnt;
+> +		__entry->d_wr_as_peak	= iostat_lat[2][DATA].peak_lat;
+> +		__entry->d_wr_as_avg	= iostat_lat[2][DATA].avg_lat;
+> +		__entry->d_wr_as_cnt	= iostat_lat[2][DATA].cnt;
+> +		__entry->n_wr_as_peak	= iostat_lat[2][NODE].peak_lat;
+> +		__entry->n_wr_as_avg	= iostat_lat[2][NODE].avg_lat;
+> +		__entry->n_wr_as_cnt	= iostat_lat[2][NODE].cnt;
+> +		__entry->m_wr_as_peak	= iostat_lat[2][META].peak_lat;
+> +		__entry->m_wr_as_avg	= iostat_lat[2][META].avg_lat;
+> +		__entry->m_wr_as_cnt	= iostat_lat[2][META].cnt;
+> +	),
+> +
+> +	TP_printk("dev = (%d,%d), "
+> +		"iotype [peak lat.(ms)/avg lat.(ms)/count], "
+> +		"rd_data [%llu/%llu/%llu], rd_node [%llu/%llu/%llu], "
+> +		"rd_meta [%llu/%llu/%llu], wr_sync_data [%llu/%llu/%llu], "
+> +		"wr_sync_node [%llu/%llu/%llu], wr_sync_meta [%llu/%llu/%llu], "
+> +		"wr_async_data [%llu/%llu/%llu], wr_async_node [%llu/%llu/%llu], "
+> +		"wr_async_meta [%llu/%llu/%llu]",
+> +		show_dev(__entry->dev),
+> +		__entry->d_rd_peak, __entry->d_rd_avg, __entry->d_rd_cnt,
+> +		__entry->n_rd_peak, __entry->n_rd_avg, __entry->n_rd_cnt,
+> +		__entry->m_rd_peak, __entry->m_rd_avg, __entry->m_rd_cnt,
+> +		__entry->d_wr_s_peak, __entry->d_wr_s_avg, __entry->d_wr_s_cnt,
+> +		__entry->n_wr_s_peak, __entry->n_wr_s_avg, __entry->n_wr_s_cnt,
+> +		__entry->m_wr_s_peak, __entry->m_wr_s_avg, __entry->m_wr_s_cnt,
+> +		__entry->d_wr_as_peak, __entry->d_wr_as_avg, __entry->d_wr_as_cnt,
+> +		__entry->n_wr_as_peak, __entry->n_wr_as_avg, __entry->n_wr_as_cnt,
+> +		__entry->m_wr_as_peak, __entry->m_wr_as_avg, __entry->m_wr_as_cnt)
+> +);
+> +#endif
+> +
+>  TRACE_EVENT(f2fs_bmap,
+>  
+>  	TP_PROTO(struct inode *inode, sector_t lblock, sector_t pblock),
+> -- 
+> 2.32.0.554.ge1b32706d8-goog
+> 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
