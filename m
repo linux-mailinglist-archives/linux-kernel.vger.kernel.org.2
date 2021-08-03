@@ -2,232 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2290D3DE7DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72AD3DE7DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234354AbhHCIFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:05:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45655 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234238AbhHCIFo (ORCPT
+        id S234386AbhHCIGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234238AbhHCIGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:05:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627977931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lxnQE2WVmECrhGq13KVpNmk6/7w29QFo2jlDs2AIzIg=;
-        b=aOe7WWTjObV1FVkxeA0RC0FmX5ygdxuDQoi68LpdyZWU8INiUuTp7PK+zCDX1f5JYsZqdX
-        42cZp9nYYRgiOp3qginWRpmEGQvpSn0WjUSLp8XgWWH/7ogtHQv5FQJBS+Xi6qlmxLZaLe
-        15LfT72cLobrbSQEqH1k8c49YRYxEYA=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-Knt9GlAYPhaGpxWUTl7ohQ-1; Tue, 03 Aug 2021 04:05:30 -0400
-X-MC-Unique: Knt9GlAYPhaGpxWUTl7ohQ-1
-Received: by mail-wr1-f71.google.com with SMTP id s22-20020adf97960000b02901535eae4100so7286209wrb.14
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 01:05:30 -0700 (PDT)
+        Tue, 3 Aug 2021 04:06:42 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8DAC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 01:06:30 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id b11so18961622wrx.6
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 01:06:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iPbQVJkJzSXcaXx9HbEOsAieS9ipsFl/K2G+c6GXkNI=;
+        b=NLhiIT5ZqvIp6hesu5f82dogfMtWpOiJTml48Z7xZMQKMJIMqzXTFQNS+MfS0bsZBQ
+         TKP2ykFdeWmIHne9ufVz2KNi8RnrbaCA5CbIunIFErf91SCM6IEkk4BxYXQQ5UKajW/8
+         Mh/+SsI1O5U6acCO2Z/3Vzc4ABLCiAztlJ/wf/aXZ4h9BjAR8SuOT2QN/bbf1LZXCXsD
+         Vy+Dq0PiXbIgxnONTTVSIXgXr+MngMY2BP/W4EoCVpWxse9shAdQT4P2+3Hb/70SHdOs
+         ByTmigwGDH9nyJu0rHgC83ifszmgJHWUeYA7bioBHNYwS0hBgyxyc5fqQPC6j5LF3UHG
+         7yzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lxnQE2WVmECrhGq13KVpNmk6/7w29QFo2jlDs2AIzIg=;
-        b=TCQR+ZabgzgIX0f5uj0YE3hKhpFM9mW9zLn4n5eDi/SzFcVv3iffVXtYY/4R4NI2KK
-         Xd4GT0e75LVLzcab1EPsZOZhlSaIhrd7THeaJoZ9wNtJRXY0OP9PlxJ3q4Q79vSQYH3R
-         4yUOLmELhKAZ88Tm0A3uEssh+eVLcqLyQBdazmkUr7U7g97crCWYkVh5fZAKYU6IX4W4
-         qY41iNjYhRo5/kR7Q42esI1mGK6rzl1yMHXEvMddb3J74/naQxVuexk83ePkrRGQ9+lB
-         SBgI068jAfLpOa0cO+y1n+onh+nVodIM/bokdUu+ACLz3xN+uJYA0wyb52S51fcKOYSu
-         pH1w==
-X-Gm-Message-State: AOAM533XPfTD7l8uvmEa6GVx5AjHbeaYLW+tVmif/fy5YyC1b3GXyR8J
-        t71y75fx7Drwni2kq0M7UbvdR7Jjw5BjGoGCgLVFRYnBjwhAnzp/quaRNMS4FSAUfhnaNwEPv3V
-        StSc+DdlqYMu2jyWYn7cKCbIY
-X-Received: by 2002:a05:600c:1c11:: with SMTP id j17mr11601407wms.35.1627977929617;
-        Tue, 03 Aug 2021 01:05:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqmpznTYdkL70mz0iYCwLD0K/J85zW6a/vQKFKRpN9Gaae5SNV/Z2XDyKV2HqTuL/aGGHBkA==
-X-Received: by 2002:a05:600c:1c11:: with SMTP id j17mr11601390wms.35.1627977929414;
-        Tue, 03 Aug 2021 01:05:29 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id q63sm2172093wme.36.2021.08.03.01.05.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 01:05:28 -0700 (PDT)
-Subject: Re: [PATCH v3 01/12] Revert "KVM: x86/mmu: Allow zap gfn range to
- operate under the mmu read lock"
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20210802183329.2309921-1-mlevitsk@redhat.com>
- <20210802183329.2309921-2-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <14a0d715-d059-3a85-a803-63d9b0fb790f@redhat.com>
-Date:   Tue, 3 Aug 2021 10:05:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iPbQVJkJzSXcaXx9HbEOsAieS9ipsFl/K2G+c6GXkNI=;
+        b=lgmjihedJ45cFqqblcQov6D+FiZDRLiLeBM7TlTda1eRyQZZ4WTicc00KCMMnF/s1C
+         BpZB+LyYXS09FMoPIb9wje9WvRjbc3nHvBgnJexMfZJnN+1QCexxzCJ3XwLPhR98iE/3
+         OWkIfTwxVZpy19pHi4RtILLvLhcp5yxRIP0NVuLct0cEsul1qiM7pqx7hrwU4hS4xmdc
+         8ytBYQlkhauvIJraU/HZQDA0NrzVtHNhZqSXL1nj9IOwCbtB7q0+jMU5qfQkGwPbvYNn
+         uJd+FQ914nBJsporkN3jq2VZBJC10ngk9JEgLKY62vAVFOSxb1eYJygAckwxhcgqRBD3
+         DK2g==
+X-Gm-Message-State: AOAM530qoTcNcFlUmW/T0k1RXQtiK2yadysFYCgkUZ9SYR+AyEqWpfZ/
+        mGeXSZDaJk2vy6raZuoI6TPbI4z5+PrjQ0YiUCL/wA==
+X-Google-Smtp-Source: ABdhPJyN4PO+BxU1EjejPtiIX6WBg4h+HCVRraj7kpE7SS4FXwATcvwBaJlFjf7LHdc6rMAy6B3va9ZQhTFEcr8JpBY=
+X-Received: by 2002:a5d:4a4f:: with SMTP id v15mr20967610wrs.178.1627977988620;
+ Tue, 03 Aug 2021 01:06:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210802183329.2309921-2-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210729155805.2830-1-james.clark@arm.com> <20210729155805.2830-7-james.clark@arm.com>
+ <YQgGjlWtbaNApkp6@kernel.org> <20210802170307.GA3050918@p14s>
+In-Reply-To: <20210802170307.GA3050918@p14s>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Tue, 3 Aug 2021 09:06:17 +0100
+Message-ID: <CAJ9a7VhLqgsEOVV3yksLiTJ2w2FOogNS92-gX5G4sgL8wiEwCA@mail.gmail.com>
+Subject: Re: [RFC PATCH 6/6] perf cs-etm: Add warnings for missing DSOs
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-perf-users@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/21 20:33, Maxim Levitsky wrote:
-> From: Sean Christopherson <seanjc@google.com>
-> 
-> This together with the next patch will fix a future race between
-> kvm_zap_gfn_range and the page fault handler, which will happen
-> when AVIC memslot is going to be only partially disabled.
-> 
-> This is based on a patch suggested by Sean Christopherson:
-> https://lkml.org/lkml/2021/7/22/1025
+HI James,
 
-I'll also add a small note from the original message:
+On Mon, 2 Aug 2021 at 18:03, Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+>
+> On Mon, Aug 02, 2021 at 11:51:58AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Thu, Jul 29, 2021 at 04:58:05PM +0100, James Clark escreveu:
+> > > Currently decode will silently fail if no binary data is available for
+> > > the decode. This is made worse if only partial data is available because
+> > > the decode will appear to work, but any trace from that missing DSO will
+> > > silently not be generated.
+> > >
 
-     The performance impact is minimal since kvm_zap_gfn_range is only called by
-     users, update_mtrr() and kvm_post_set_cr0().  Both only use it if the guest
-     has non-coherent DMA, in order to honor the guest's UC memtype.  MTRR and CD
-     setup only happens at boot, and generally in an area where the page tables
-     should be small (for CD) or should not include the affected GFNs at all
-     (for MTRRs).
+The decoder actually outputs a OCSD_GEN_TRC_ELEM_ADDR_NACC packet if
+binary memory data is missing.
+These packets are currently ignored by perf / cs-etm-decoder.c.
 
-On top of this, I think the CD case (kvm_post_set_cr0) can be changed to use
-kvm_mmu_zap_all_fast.
+I think this per DSO warning is fine, but perhaps at some point add in
+handling for OCSD_GEN_TRC_ELEM_ADDR_NACC - which perhaps is only
+active when dumping trace packets.
 
-Paolo
+Regards
 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->   arch/x86/kvm/mmu/mmu.c     | 19 ++++++++-----------
->   arch/x86/kvm/mmu/tdp_mmu.c | 15 ++++-----------
->   arch/x86/kvm/mmu/tdp_mmu.h | 11 ++++-------
->   3 files changed, 16 insertions(+), 29 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index a8cdfd8d45c4..9d78cb1c0f35 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5638,8 +5638,9 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->   	int i;
->   	bool flush = false;
->   
-> +	write_lock(&kvm->mmu_lock);
-> +
->   	if (kvm_memslots_have_rmaps(kvm)) {
-> -		write_lock(&kvm->mmu_lock);
->   		for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
->   			slots = __kvm_memslots(kvm, i);
->   			kvm_for_each_memslot(memslot, slots) {
-> @@ -5659,22 +5660,18 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->   		}
->   		if (flush)
->   			kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
-> -		write_unlock(&kvm->mmu_lock);
->   	}
->   
->   	if (is_tdp_mmu_enabled(kvm)) {
-> -		flush = false;
-> -
-> -		read_lock(&kvm->mmu_lock);
->   		for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++)
->   			flush = kvm_tdp_mmu_zap_gfn_range(kvm, i, gfn_start,
-> -							  gfn_end, flush, true);
-> -		if (flush)
-> -			kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
-> -							   gfn_end);
-> -
-> -		read_unlock(&kvm->mmu_lock);
-> +							  gfn_end, flush);
->   	}
-> +
-> +	if (flush)
-> +		kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
-> +
-> +	write_unlock(&kvm->mmu_lock);
->   }
->   
->   static bool slot_rmap_write_protect(struct kvm *kvm,
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 43f12f5d12c0..3e0222ce3f4e 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -777,21 +777,15 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->    * non-root pages mapping GFNs strictly within that range. Returns true if
->    * SPTEs have been cleared and a TLB flush is needed before releasing the
->    * MMU lock.
-> - *
-> - * If shared is true, this thread holds the MMU lock in read mode and must
-> - * account for the possibility that other threads are modifying the paging
-> - * structures concurrently. If shared is false, this thread should hold the
-> - * MMU in write mode.
->    */
->   bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, int as_id, gfn_t start,
-> -				 gfn_t end, bool can_yield, bool flush,
-> -				 bool shared)
-> +				 gfn_t end, bool can_yield, bool flush)
->   {
->   	struct kvm_mmu_page *root;
->   
-> -	for_each_tdp_mmu_root_yield_safe(kvm, root, as_id, shared)
-> +	for_each_tdp_mmu_root_yield_safe(kvm, root, as_id, false)
->   		flush = zap_gfn_range(kvm, root, start, end, can_yield, flush,
-> -				      shared);
-> +				      false);
->   
->   	return flush;
->   }
-> @@ -803,8 +797,7 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm)
->   	int i;
->   
->   	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++)
-> -		flush = kvm_tdp_mmu_zap_gfn_range(kvm, i, 0, max_gfn,
-> -						  flush, false);
-> +		flush = kvm_tdp_mmu_zap_gfn_range(kvm, i, 0, max_gfn, flush);
->   
->   	if (flush)
->   		kvm_flush_remote_tlbs(kvm);
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index b224d126adf9..358f447d4012 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -20,14 +20,11 @@ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
->   			  bool shared);
->   
->   bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, int as_id, gfn_t start,
-> -				 gfn_t end, bool can_yield, bool flush,
-> -				 bool shared);
-> +				 gfn_t end, bool can_yield, bool flush);
->   static inline bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, int as_id,
-> -					     gfn_t start, gfn_t end, bool flush,
-> -					     bool shared)
-> +					     gfn_t start, gfn_t end, bool flush)
->   {
-> -	return __kvm_tdp_mmu_zap_gfn_range(kvm, as_id, start, end, true, flush,
-> -					   shared);
-> +	return __kvm_tdp_mmu_zap_gfn_range(kvm, as_id, start, end, true, flush);
->   }
->   static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
->   {
-> @@ -44,7 +41,7 @@ static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
->   	 */
->   	lockdep_assert_held_write(&kvm->mmu_lock);
->   	return __kvm_tdp_mmu_zap_gfn_range(kvm, kvm_mmu_page_as_id(sp),
-> -					   sp->gfn, end, false, false, false);
-> +					   sp->gfn, end, false, false);
->   }
->   
->   void kvm_tdp_mmu_zap_all(struct kvm *kvm);
-> 
+Mike
 
+
+> > > Add a UI popup once if there is any data missing, and then warn in the
+> > > bottom left for each individual DSO that's missing.
+> >
+> > Looks ok to me (the last 3 patches in this series, the rest I applied
+> > already), can I get some Acked-by/Reviewed-by from the CoreSight people?
+> >
+>
+> I have a substantial backlog of patches to go through and I will be away for the
+> next two weeks.  As such it will be some time before I get to review this set.
+>
+> Regards,
+> Mathieu
+>
+> > Thanks,
+> >
+> > - Arnaldo
+> >
+> > > Signed-off-by: James Clark <james.clark@arm.com>
+> > > ---
+> > >  tools/perf/util/cs-etm.c | 10 +++++++++-
+> > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> > > index 32ad92d3e454..e6851260d059 100644
+> > > --- a/tools/perf/util/cs-etm.c
+> > > +++ b/tools/perf/util/cs-etm.c
+> > > @@ -746,8 +746,16 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
+> > >
+> > >     len = dso__data_read_offset(al.map->dso, machine, offset, buffer, size);
+> > >
+> > > -   if (len <= 0)
+> > > +   if (len <= 0) {
+> > > +           ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n");
+> > > +           if (!al.map->dso->auxtrace_warned) {
+> > > +                   pr_err("CS ETM Trace: Debug data not found for address %#"PRIx64" in %s\n",
+> > > +                               address,
+> > > +                               al.map->dso->long_name ? al.map->dso->long_name : "Unknown");
+> > > +                   al.map->dso->auxtrace_warned = true;
+> > > +           }
+> > >             return 0;
+> > > +   }
+> > >
+> > >     return len;
+> > >  }
+> > > --
+> > > 2.28.0
+> > >
+> >
+> > --
+> >
+> > - Arnaldo
+
+
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
