@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508383DF5ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C383DF5F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240306AbhHCTq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53204 "EHLO
+        id S240326AbhHCTqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240289AbhHCTq0 (ORCPT
+        with ESMTP id S240287AbhHCTq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Aug 2021 15:46:26 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5D9C06179A
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 12:46:14 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d1so373438pll.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 12:46:14 -0700 (PDT)
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5466C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 12:46:15 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so5435955pjr.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 12:46:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=VJ90DUqMvbv4wla/gnl3TcP0CoOTBbniBpXeAQ3Q+oY=;
-        b=JP1QQA9eF9nGhWYlu1wCzlIVD7rcEeCW1LCkZGcKWweOZ+z6ldh5xlcm9G8Ym0woaf
-         zfR98TGj4DCv32Vs1NQRUblCm/nsus7dh70f5Z7nJ4FCGzfO74S1S3UEHl6uEyBZTzFa
-         c/6fESEVSobdWr+EW34Uds+RdcJo+uX2xm0IE=
+        bh=ZbrdU/UKTkICYXn4Y/qNSu6Ip6OLOZ53UNNbGHdwbHU=;
+        b=D2T4s519RH3o9DayGWyvABZ9W7BIdA95AhOD58ZBgWpCWfnrRGsupR2lelPe0MOAMS
+         GGkv5nwXbFA9GUTbRea9BKoAC/caLzEurBN+4hyeLdZrjZt24GGUJfgw1slT1428DKOe
+         3cVeZWb4UoLMsWiz+9cGUkSrXObot0nsc+NSc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VJ90DUqMvbv4wla/gnl3TcP0CoOTBbniBpXeAQ3Q+oY=;
-        b=eXWx6BQx0/CJqX4XFxnun9XmhD/oApIsyfVffaD7uVpFnvTeiTVxha/XUmuWRqVlgU
-         9soob8nbRnxmVoIQJ/O0ZvmSilpU6BHclYjMpZEvxa1xKh3s4x9QNi+eL8XqoIJuXzq0
-         fITvC1f5dzHZrCdI1ahwkHQIVBb0kk+BQhfm33EJuqliMYDpBHAL0HDukGTmd9f0dO2M
-         JNpxRxu2YQPMyrzg/pbopv5x9baVAUwL3uLWZgswVMbV993onnkQ998ErdgNBVunRHKj
-         XKUPoPCnZx35h4OJj1fMJ4ALdntRI9NTrp2QDxOg+LBq2HJZ6JJNwt+oj3YvCsEnN1P6
-         EkEQ==
-X-Gm-Message-State: AOAM531cuPbrPf8jBegumY9VVI8MJMQMR1Hg3w5j+AQZyQz8Zo7IZIB4
-        pAqqAPbr6ZeQfZzb71ajclw0tw==
-X-Google-Smtp-Source: ABdhPJxyF+4OgHXelOOHSdp4vUz34rcph+Yrir0NAkIpf0Ugk6o/kaC4Wumt1elOVq36LLK0j+xGbQ==
-X-Received: by 2002:a65:4244:: with SMTP id d4mr981837pgq.83.1628019974268;
-        Tue, 03 Aug 2021 12:46:14 -0700 (PDT)
+        bh=ZbrdU/UKTkICYXn4Y/qNSu6Ip6OLOZ53UNNbGHdwbHU=;
+        b=sWjPxr4qJHxXSJRiNikJl9tfwtwwjBdXHyJ5WIo6/eiwC/Q2HUK1hP32NpV5+iBNrL
+         NxIFs7gHIbqMjgG0XYuY/Y4lSL4Fmwxk/NmnzC6D7lAAValmWk8d3Ap4kDIKZq+GHMxP
+         v6Ala6b79B+zqioTCZotQ0W+W+E2/eH3ANGBF8FSWclH5/6dFOpR5Eu08kbWNXSLfj3p
+         k38ov3/e3xebWZeDHGTP03BJU3a3XyILeXZrnI7+yfK8zILMBPDlyzkOZ37+q+p5PQoj
+         Ac81fXb50cYkMEFB41oo11OCK5u6nyluIBz3fw+Ivs8TIrDO54EH0qNTBNxZpCqssxlL
+         2lZA==
+X-Gm-Message-State: AOAM533CoaojCHxfPsrJLF5n+cYUoVmJme5K7Ic0mSeXYClcOMePXVkZ
+        DJ0xbg89IThnmtr0yGUs99y2Fw==
+X-Google-Smtp-Source: ABdhPJyYZ9B3BySnH9oqZjhdZO0wroXHMvbLrQY9HN7ZWMHW3Jp2a0+s/gAl92r8CGhxar10BbsyDg==
+X-Received: by 2002:aa7:921a:0:b029:2cf:b55b:9d52 with SMTP id 26-20020aa7921a0000b02902cfb55b9d52mr23271704pfo.35.1628019975270;
+        Tue, 03 Aug 2021 12:46:15 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id jz24sm11359353pjb.9.2021.08.03.12.46.12
+        by smtp.gmail.com with ESMTPSA id d2sm3696139pjd.24.2021.08.03.12.46.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 03 Aug 2021 12:46:13 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -51,14 +51,14 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-hardening@vger.kernel.org
-Subject: [PATCH 2/3] media: si470x: Avoid card name truncation
-Date:   Tue,  3 Aug 2021 12:46:09 -0700
-Message-Id: <20210803194610.326030-3-keescook@chromium.org>
+Subject: [PATCH 3/3] media: tm6000: Avoid card name truncation
+Date:   Tue,  3 Aug 2021 12:46:10 -0700
+Message-Id: <20210803194610.326030-4-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210803194610.326030-1-keescook@chromium.org>
 References: <20210803194610.326030-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1850; h=from:subject; bh=pk5S9HyUZuKFzWnjx5RWPHnxnnea4OwXR05+OF0bTmo=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhCZ0B3xXj+4dTzAtDK9PitipXlqRzSf3d5bls5vkI 5KZ65k6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQmdAQAKCRCJcvTf3G3AJjsbD/ 9xaSsEGzVMifCJSncpaC0EkQ43SYFaN0uvajKxkhZQRFy6xlEZ4DISJP+Q5+oBi0JIEWxBAlKpLATD lj+SCgsY6BBF9WvPPi2MlRJtDHYGuMq7VZsmvRxlbB6+JEjkoZstlORxbCigzIzpv8bVxkmHfvrx1r VgQ12cg4TiPiQ7DI72GOD0IWbCMGWtxEmAWbiDYFexL6Y7CQ8kcVrU6x9vfmfHfulyYP0/eB1+wm6U gf5+q9ExPo12lNNQHLPKUn3Ak65InydAbBNZRLQ73nklaOdAqXXPvsQHwLZ/6P9ZFIH35QwDaX8jhM vUAC9akCqbJDLrBea56Ggjc7bPNKjKHSv/eukA0jIV68sXD81P+kwC6I9TM5v1VXHbMGKvxfyRh9NL KpY/yJjFAPi4v/eaNyKaY6iIZEjlszIH7UdZebv4YKXlrk/u26pzxPr/pNpygWeg6NiZqRbvOrbqC6 W0L/f8L2QwSoGE3//ghjGSgwm6vcLh9AW0d5zjNxRA09CpYxqzDa/WJauSUCUxwmM2l20cQijuA4fr Viixe1QkB6WB6xMAs/eKWsqvA4ItQbruKuApFqiekGI7bkQcxiWPPuxZSREJbqq1SWBjGbdAVfJ8bK 6t+oxgqAc/JWGSEW8S+gvMNmksj839lbi9PRvN40rkNjNI8mlgutS0daCXOQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1237; h=from:subject; bh=1oDzfdaSSwG4d9ZmaRw6FpYznHEboP9KMhXO0fjsR1w=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhCZ0CjUb+8eRC03abQg/vPUYewXl0dlfpCowJI9Qa wahO6baJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQmdAgAKCRCJcvTf3G3AJktXD/ 9r41B3rfRsB7I5sxiQh3GMYhUOSHYqYQqpXYTxVhhoxwCrZ/HeG8v/8KlQ7SIa0dOWK3VgRwzbkTUz sAZjRSI8PWRyKSggA2gALGOHOn9EjLnCU6ILhxnVt6PgQywGBxIvZU9LyaST7NIO52WPsDLLgLcEvO axsZzRr1TY+bDDpsREJzgvyMp6TeLZiUUdvo0iS2HKsydRnlj04KuPppyHtHxw9bsYYtTD+345vnRz +tKheOLSDPwCOL1jIxDziaPt7wWE/t1FAw8SjM96uRcgAwlzF8hGzUZQAxhwJcXMMFIOsmVwJHfP0k 1wUaaub+05dCPC5sZf2ycvapqZurCdCQpl5RyXO86JqiPqnL2SW+tlfxXoYo3d64Ggh8SLXv3rpDmo uYtUF/4Pye84w0Pq2UsdLNFAtRdm3bI0Tc1azgstp6E3ngSR27D9FeEiA1LubprBI0ZoUTAsjt1VV/ 1TmHS76Bp8C5ZMziqMBe+H5ykGvGGTniLAWjZRZ/Sw/2K8xCYJlogUUk7PqqgWRMqfBr5YxYywCeTP yTFJG4mtURnyJbplwg03ar3BXdlRYbepLObdPFbVWppCV/0d+/HFJIEARTmCDDcg+1WR7nwqtaCgmp Fp+xow7hdez1mmcEYnPDUAGK8K0D11TWU6I0aXkrT0+HCB/OkkifMxsqI/GQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -67,43 +67,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The "card" string only holds 31 characters (and the terminating NUL).
 In order to avoid truncation, use a shorter card description instead of
-the current result, "Silicon Labs Si470x FM Radio Re".
+the current result, "Trident TVMaster TM5600/6000/60".
 
 Suggested-by: Hans Verkuil <hverkuil@xs4all.nl>
-Fixes: 78656acdcf48 ("V4L/DVB (7038): USB radio driver for Silicon Labs Si470x FM Radio Receivers")
-Fixes: cc35bbddfe10 ("V4L/DVB (12416): radio-si470x: add i2c driver for si470x")
+Fixes: e28f49b0b2a8 ("V4L/DVB: tm6000: fix some info messages")
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/media/radio/si470x/radio-si470x-i2c.c | 2 +-
- drivers/media/radio/si470x/radio-si470x-usb.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/usb/tm6000/tm6000-video.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/media/radio/si470x/radio-si470x-i2c.c b/drivers/media/radio/si470x/radio-si470x-i2c.c
-index f491420d7b53..a972c0705ac7 100644
---- a/drivers/media/radio/si470x/radio-si470x-i2c.c
-+++ b/drivers/media/radio/si470x/radio-si470x-i2c.c
-@@ -11,7 +11,7 @@
+diff --git a/drivers/media/usb/tm6000/tm6000-video.c b/drivers/media/usb/tm6000/tm6000-video.c
+index 3f650ede0c3d..e293f6f3d1bc 100644
+--- a/drivers/media/usb/tm6000/tm6000-video.c
++++ b/drivers/media/usb/tm6000/tm6000-video.c
+@@ -852,8 +852,7 @@ static int vidioc_querycap(struct file *file, void  *priv,
+ 	struct tm6000_core *dev = ((struct tm6000_fh *)priv)->dev;
  
- /* driver definitions */
- #define DRIVER_AUTHOR "Joonyoung Shim <jy0922.shim@samsung.com>";
--#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
-+#define DRIVER_CARD "Silicon Labs Si470x FM Radio"
- #define DRIVER_DESC "I2C radio driver for Si470x FM Radio Receivers"
- #define DRIVER_VERSION "1.0.2"
- 
-diff --git a/drivers/media/radio/si470x/radio-si470x-usb.c b/drivers/media/radio/si470x/radio-si470x-usb.c
-index fedff68d8c49..3f8634a46573 100644
---- a/drivers/media/radio/si470x/radio-si470x-usb.c
-+++ b/drivers/media/radio/si470x/radio-si470x-usb.c
-@@ -16,7 +16,7 @@
- 
- /* driver definitions */
- #define DRIVER_AUTHOR "Tobias Lorenz <tobias.lorenz@gmx.net>"
--#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
-+#define DRIVER_CARD "Silicon Labs Si470x FM Radio"
- #define DRIVER_DESC "USB radio driver for Si470x FM Radio Receivers"
- #define DRIVER_VERSION "1.0.10"
- 
+ 	strscpy(cap->driver, "tm6000", sizeof(cap->driver));
+-	strscpy(cap->card, "Trident TVMaster TM5600/6000/6010",
+-		sizeof(cap->card));
++	strscpy(cap->card, "Trident TM5600/6000/6010", sizeof(cap->card));
+ 	usb_make_path(dev->udev, cap->bus_info, sizeof(cap->bus_info));
+ 	cap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE |
+ 			    V4L2_CAP_DEVICE_CAPS;
 -- 
 2.30.2
 
