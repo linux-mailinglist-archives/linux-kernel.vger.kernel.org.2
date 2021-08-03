@@ -2,212 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FF83DEBB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F10D3DEBAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235566AbhHCL0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:26:36 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:17960 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235554AbhHCL0g (ORCPT
+        id S235493AbhHCLYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:24:35 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3569 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235254AbhHCLYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:26:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1627989798;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=02bxvCoDOe0IHW3IpUIMEklenO/33KVZPTAhxGyNx/0=;
-    b=LbzhjXAZLmr657qMNtZa8j/Oixoq4UjXBDC5fOa+KtG0hIKHzfe7nbElPN1YGINqxS
-    EwFTrc7ocxNyWibxWTkEUoY+fFA2/DhQRpcc2jKTqQ2y+T0lGIohrxPvTd6h1n4WbHMu
-    lm/PBYrKlEHR8d0MF8suOJWG5LfOg/tMuj2akA/KoigZ6bn6tnpG7rlKhYcds1BIJdrV
-    sDF+yckESwDKUs1sPkvZHNUzaUHmZM+E3Iih5MzSZX+5t7JJ/4Kvnp1PtISrYOp5d+qw
-    7V41o6siETSRYSkM3y6eVq9QsCyJoZqUoOJSbSHBbr8Atof2m6IscwsoJy+I05VmhU4+
-    xBAQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEDlBxgAcPNuVYUcPxoP37qlUJyScjc1GiW8jydNgHFJOxomnM="
-X-RZG-CLASS-ID: mo00
-Received: from wopr.fritz.box
-    by smtp.strato.de (RZmta 47.28.1 AUTH)
-    with ESMTPSA id Z03199x73BNIp5J
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 3 Aug 2021 13:23:18 +0200 (CEST)
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-stable <stable@vger.kernel.org>,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH stable 4.4 4.9] can: raw: raw_setsockopt(): fix raw_rcv panic for sock UAF
-Date:   Tue,  3 Aug 2021 13:22:41 +0200
-Message-Id: <20210803112241.3253-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.30.2
+        Tue, 3 Aug 2021 07:24:33 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GfCF55N1Kz6F7wr;
+        Tue,  3 Aug 2021 19:24:09 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 13:24:21 +0200
+Received: from [10.47.27.165] (10.47.27.165) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 3 Aug 2021
+ 12:24:20 +0100
+Subject: Re: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+ <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
+ <CAK8P3a1D5DzmNGsEPQomkyMCmMrtD6pQ11JRMh78vbY53edp-Q@mail.gmail.com>
+ <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com>
+ <db043b76-880d-5fad-69cf-96abcd9cd34f@huawei.com>
+ <CAK8P3a3HHeP+Gw_k2P7Qtig0OmErf0HN30G22+qHic_uZTh11Q@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <a74dfb1f-befd-92ce-4c30-233cb08e04d3@huawei.com>
+Date:   Tue, 3 Aug 2021 12:23:55 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a3HHeP+Gw_k2P7Qtig0OmErf0HN30G22+qHic_uZTh11Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.27.165]
+X-ClientProxiedBy: lhreml737-chm.china.huawei.com (10.201.108.187) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+>> Anyway, one thing I mentioned earlier was that we could solve the
+>> problem of drivers accessing unmapped IO ports and crashing systems on
+>> archs which define PCI_IOBASE by building them under some "native port
+>> IO support" flag.
+> Right, that was part of the goal here.
 
-commit 54f93336d000229f72c26d8a3f69dd256b744528 upstream.
+Great
 
-We get a bug during ltp can_filter test as following.
+> 
+>> One example of such a driver was F71805F sensor. You put that under
+>> HAS_IOPORT, which would be available for all archs, I think. But I could
+>> not see where config LEGACY_PCI is introduced. Could we further refine
+>> that config to not build for such archs as arm64?
+>>
+>> BTW, I think that the PPC dependency was added there to stop building
+>> for power for that same reason, so hopefully we get rid of that.
+> Good point. It seems that I actually never added the LEGACY_PCI option
+> to my patch,
 
-===========================================
-[60919.264984] BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
-[60919.265223] PGD 8000003dda726067 P4D 8000003dda726067 PUD 3dda727067 PMD 0
-[60919.265443] Oops: 0000 [#1] SMP PTI
-[60919.265550] CPU: 30 PID: 3638365 Comm: can_filter Kdump: loaded Tainted: G        W         4.19.90+ #1
-[60919.266068] RIP: 0010:selinux_socket_sock_rcv_skb+0x3e/0x200
-[60919.293289] RSP: 0018:ffff8d53bfc03cf8 EFLAGS: 00010246
-[60919.307140] RAX: 0000000000000000 RBX: 000000000000001d RCX: 0000000000000007
-[60919.320756] RDX: 0000000000000001 RSI: ffff8d5104a8ed00 RDI: ffff8d53bfc03d30
-[60919.334319] RBP: ffff8d9338056800 R08: ffff8d53bfc29d80 R09: 0000000000000001
-[60919.347969] R10: ffff8d53bfc03ec0 R11: ffffb8526ef47c98 R12: ffff8d53bfc03d30
-[60919.350320] perf: interrupt took too long (3063 > 2500), lowering kernel.perf_event_max_sample_rate to 65000
-[60919.361148] R13: 0000000000000001 R14: ffff8d53bcf90000 R15: 0000000000000000
-[60919.361151] FS:  00007fb78b6b3600(0000) GS:ffff8d53bfc00000(0000) knlGS:0000000000000000
-[60919.400812] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[60919.413730] CR2: 0000000000000010 CR3: 0000003e3f784006 CR4: 00000000007606e0
-[60919.426479] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[60919.439339] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[60919.451608] PKRU: 55555554
-[60919.463622] Call Trace:
-[60919.475617]  <IRQ>
-[60919.487122]  ? update_load_avg+0x89/0x5d0
-[60919.498478]  ? update_load_avg+0x89/0x5d0
-[60919.509822]  ? account_entity_enqueue+0xc5/0xf0
-[60919.520709]  security_sock_rcv_skb+0x2a/0x40
-[60919.531413]  sk_filter_trim_cap+0x47/0x1b0
-[60919.542178]  ? kmem_cache_alloc+0x38/0x1b0
-[60919.552444]  sock_queue_rcv_skb+0x17/0x30
-[60919.562477]  raw_rcv+0x110/0x190 [can_raw]
-[60919.572539]  can_rcv_filter+0xbc/0x1b0 [can]
-[60919.582173]  can_receive+0x6b/0xb0 [can]
-[60919.591595]  can_rcv+0x31/0x70 [can]
-[60919.600783]  __netif_receive_skb_one_core+0x5a/0x80
-[60919.609864]  process_backlog+0x9b/0x150
-[60919.618691]  net_rx_action+0x156/0x400
-[60919.627310]  ? sched_clock_cpu+0xc/0xa0
-[60919.635714]  __do_softirq+0xe8/0x2e9
-[60919.644161]  do_softirq_own_stack+0x2a/0x40
-[60919.652154]  </IRQ>
-[60919.659899]  do_softirq.part.17+0x4f/0x60
-[60919.667475]  __local_bh_enable_ip+0x60/0x70
-[60919.675089]  __dev_queue_xmit+0x539/0x920
-[60919.682267]  ? finish_wait+0x80/0x80
-[60919.689218]  ? finish_wait+0x80/0x80
-[60919.695886]  ? sock_alloc_send_pskb+0x211/0x230
-[60919.702395]  ? can_send+0xe5/0x1f0 [can]
-[60919.708882]  can_send+0xe5/0x1f0 [can]
-[60919.715037]  raw_sendmsg+0x16d/0x268 [can_raw]
+ok, it would be nice to see that.
 
-It's because raw_setsockopt() concurrently with
-unregister_netdevice_many(). Concurrent scenario as following.
+> so I'm just not building those drivers any more, and not
+> defining the inb()/outb() helpers either, causing a build failure when I'm
+> missing an option.
+> 
+> However it sounds like you are interested in a third option here, which
+> brings us to:
+> 
+> LEGACY_PCI: any PCI driver that uses inb()/outb() or is only available
+>      on old-style PCI but not PCIe hardware without a bridge.
+>      To be disabled for most architectures and possibly distros but can
+>      be enabled for kernels that want to use those devices, as long as
+>      CONFIG_HAS_IOPORT is set by the architecture.
+> 
+> HAS_IOPORT: not a legacy PCI device, but can only be built on
+>      architectures that define inb()/outb(). To be disabled for s390
+>      and any other machine that has no useful definition of those
+>      functions.
 
-	cpu0						cpu1
-raw_bind
-raw_setsockopt					unregister_netdevice_many
-						unlist_netdevice
-dev_get_by_index				raw_notifier
-raw_enable_filters				......
-can_rx_register
-can_rcv_list_find(..., net->can.rx_alldev_list)
+That seems reasonable. And asm-generic io.h should be ifdef'ed by 
+HAS_IOPORT. In your patch you had it under CONFIG_IOPORT - was that 
+intentional?
 
-......
+On another point, I noticed SCSI driver AHA152x depends on ISA, but is 
+not an isa driver - however it does use port IO. Would such dependencies 
+need to be changed to depend on HAS_IOPORT?
 
-sock_close
-raw_release(sock_a)
+I did notice that arm32 support CONFIG_ISA - not sure why.
 
-......
+> 
+> HARDCODED_IOPORT: (or another name you might think of,) Used by
+>     drivers that unconditionally do inb()/outb() without checking the
+>     validity of the address using firmware or other methods first.
+>     depends on HAS_IOPORT and possibly architecture specific
+>     settings.
 
-can_receive
-can_rcv_filter(net->can.rx_alldev_list, ...)
-raw_rcv(skb, sock_a)
-BUG
+Yeah, that sounds the same as what I was thinking. Maybe IOPORT_NATIVE 
+could work as a name. I would think that only x86/ia64 would define it. 
+A concern though is that someone could argue that is a functional 
+dependency, rather than just a build dependency.
 
-After unlist_netdevice(), dev_get_by_index() return NULL in
-raw_setsockopt(). Function raw_enable_filters() will add sock
-and can_filter to net->can.rx_alldev_list. Then the sock is closed.
-Followed by, we sock_sendmsg() to a new vcan device use the same
-can_filter. Protocol stack match the old receiver whose sock has
-been released on net->can.rx_alldev_list in can_rcv_filter().
-Function raw_rcv() uses the freed sock. UAF BUG is triggered.
-
-We can find that the key issue is that net_device has not been
-protected in raw_setsockopt(). Use rtnl_lock to protect net_device
-in raw_setsockopt().
-
-Fixes: c18ce101f2e4 ("[CAN]: Add raw protocol")
-Link: https://lore.kernel.org/r/20210722070819.1048263-1-william.xuanziyang@huawei.com
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/raw.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 2bb50b1535c2..082965c8dcaf 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -541,10 +541,18 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 				return -EFAULT;
- 		}
- 
-+		rtnl_lock();
- 		lock_sock(sk);
- 
--		if (ro->bound && ro->ifindex)
-+		if (ro->bound && ro->ifindex) {
- 			dev = dev_get_by_index(&init_net, ro->ifindex);
-+			if (!dev) {
-+				if (count > 1)
-+					kfree(filter);
-+				err = -ENODEV;
-+				goto out_fil;
-+			}
-+		}
- 
- 		if (ro->bound) {
- 			/* (try to) register the new filters */
-@@ -581,6 +589,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 			dev_put(dev);
- 
- 		release_sock(sk);
-+		rtnl_unlock();
- 
- 		break;
- 
-@@ -593,10 +602,16 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 
- 		err_mask &= CAN_ERR_MASK;
- 
-+		rtnl_lock();
- 		lock_sock(sk);
- 
--		if (ro->bound && ro->ifindex)
-+		if (ro->bound && ro->ifindex) {
- 			dev = dev_get_by_index(&init_net, ro->ifindex);
-+			if (!dev) {
-+				err = -ENODEV;
-+				goto out_err;
-+			}
-+		}
- 
- 		/* remove current error mask */
- 		if (ro->bound) {
-@@ -618,6 +633,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 			dev_put(dev);
- 
- 		release_sock(sk);
-+		rtnl_unlock();
- 
- 		break;
- 
--- 
-2.30.2
+Thanks,
+John
 
