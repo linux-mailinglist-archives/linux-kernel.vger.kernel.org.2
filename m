@@ -2,152 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115593DE9AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6481A3DE9AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234699AbhHCJ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234506AbhHCJ3C (ORCPT
+        id S234885AbhHCJ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:29:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21978 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234506AbhHCJ3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:29:02 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB78C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:28:50 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id d6so20514531edt.7
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CrOvFvaZNsn80q6GJRAYC0L2UxPiAmkAJahNroTMzWw=;
-        b=sJ4VvJR39jrzum72mmX2j09NRS9SPJrfuVoApDoiPBuLyUdJ2UmDbQPJyi7sBkIat7
-         lAT0G8OA2XWU1rRsPvrniiXkT0GweabA2lfTSsO8yAJ0xKmYJS3S9toIlTOON6Z+7pjX
-         OoH8EQmXpM79UWzzz2ZunOWArdv+YPwqgEQ4VYu0fWVjiTbXhbh8SyaSoE/kucx5khx4
-         0Om1Z9O/LEULtjDGWSHN+ZUaiYWr0rgWHVIouFplupJdgonOaxMR2JcF65ThD9fdXO1V
-         rshWLyTfeF0vbOjTF4BESqKts03wkPoRnS6onzHkE5Ht2DgkFUg6EPMdQ1uQib8sFwyE
-         1A4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CrOvFvaZNsn80q6GJRAYC0L2UxPiAmkAJahNroTMzWw=;
-        b=FfUD9WUO0d8qF0gt1/ApRxdhahaCOkofocMRpNRpMLCIY8C1r8WqMjPhb2DpMiWR/O
-         2ai0Peizj+V2YvkBNj3nU7vFQKHyYDXGQN3DCglrpAZNBKwKlLqCptbmkDzsgAc5lsfz
-         BbyDFr/hpcSYrqJoJnrrBr7D4bNQ/hNpyYBGxyLh0gROTUhr8UDCO1p3mqASAubrX31f
-         sTUZ6JEI31Xfe/ZMOqi5Ly4V7xq1XQPRbvBL0hFuFmCUccXxhjbLLCU6FSSNKn8UR4zv
-         aJj4RHrHiODBlra3oDIOzvKs2DcjDXn0uaaj3u+TzqoEdUAFJ/dT4EtAd0ZxMpDRwuDA
-         A1dw==
-X-Gm-Message-State: AOAM532zTr6ez8vs72D2zci4iUDagk86/nBAx2PcVGXm9xdM5KRgWfm1
-        YizP2IaIzm0706SsKEu924xuWWqrawZr2nP5kWw=
-X-Google-Smtp-Source: ABdhPJx40FgCKtbZnSuzncIgNCtbPavmibXfXPduegfNAEuzGHImMWZzg3lrDxqoX6jIPEaYFIIJMvtB4CmetZfPFZs=
-X-Received: by 2002:a05:6402:28b0:: with SMTP id eg48mr24415074edb.241.1627982929392;
- Tue, 03 Aug 2021 02:28:49 -0700 (PDT)
+        Tue, 3 Aug 2021 05:29:15 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17393GN0031484;
+        Tue, 3 Aug 2021 05:29:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=UILdCH9TbqXhalafFZPDT3vaUsZmTFhkVUnO9SjA1X0=;
+ b=PZIRkwRgPxZVB6+ENEKsVVg6h5pfiekRRcodccQd2wlAQHgaPoiUqJUDuNxfPUNDonls
+ BD1fkoL39Q5DGEqRLzYvKU3qqbPUwq9HCoGEpfnOOJdX1X6lHCiKLTMg3Wu49SNTq9i8
+ q7/cV0dvePL60IPFjK4E9ZfoXz1wHEpGRHEshZB3sRRD7NU90Vt3LgGlr54wAgztY4bW
+ DXZ3772LcmRoangAb131lH9pP6zRzGVUMdZ6vySrP8U4Djb8aUNPJhXufbue19s5yb8t
+ IBq6QaaBaXd31TzT+Q4lHHvVJB0d74dH1owjctGIsqNSfo/k6CBtuJcF48VrmXKfaEio 1w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a72321p5m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 05:29:03 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1739S7L7125676;
+        Tue, 3 Aug 2021 05:29:03 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a72321p50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 05:29:03 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1739Rf7X026178;
+        Tue, 3 Aug 2021 09:29:01 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 3a4x58e3mh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 09:29:01 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1739SveI13238650
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 3 Aug 2021 09:28:57 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D2EAA4072;
+        Tue,  3 Aug 2021 09:28:57 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 25DB9A4064;
+        Tue,  3 Aug 2021 09:28:57 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.75.95])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  3 Aug 2021 09:28:57 +0000 (GMT)
+Subject: Re: [PATCH v3 3/3] s390x: optimization of the check for CPU topology
+ change
+From:   Pierre Morel <pmorel@linux.ibm.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, cohuck@redhat.com, david@redhat.com,
+        thuth@redhat.com, imbrenda@linux.ibm.com, gor@linux.ibm.com
+References: <1627979206-32663-1-git-send-email-pmorel@linux.ibm.com>
+ <1627979206-32663-4-git-send-email-pmorel@linux.ibm.com>
+ <YQkBfal/OiI2y1lA@osiris>
+ <b91ce49f-c73b-bdd2-2389-8313f4baf46c@linux.ibm.com>
+Message-ID: <a9a236c0-d248-6be5-883b-c21744d106ea@linux.ibm.com>
+Date:   Tue, 3 Aug 2021 11:28:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210803075159.2823913-1-mudongliangabcd@gmail.com> <81ccbbb5-5499-7a75-88ba-bae5328ffbf9@canonical.com>
-In-Reply-To: <81ccbbb5-5499-7a75-88ba-bae5328ffbf9@canonical.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 3 Aug 2021 17:28:22 +0800
-Message-ID: <CAD-N9QXfdossFaQFwa-DPCyY-deHZ-75=LtSQYihvPNDpzwqiw@mail.gmail.com>
-Subject: Re: [PATCH] memory: fsl_ifc: fix leak of irq and nand_irq in fsl_ifc_ctrl_probe
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b91ce49f-c73b-bdd2-2389-8313f4baf46c@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: mJ8rvJHq_yohVcKJQoqyPjvtS2cQUpHg
+X-Proofpoint-ORIG-GUID: P84lBv9HCnT072TERb52I71CdIo5k0Jo
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-03_02:2021-08-03,2021-08-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxscore=0 clxscore=1015 impostorscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108030062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 3:57 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 03/08/2021 09:51, Dongliang Mu wrote:
-> > In fsl_ifc_ctrl_probe, if fsl_ifc_ctrl_init fails, we should free the
-> > resources allocated by irq_of_parse_and_map.
->
-> Your code is doing much more. You also touch nand_irq, not only
-> fsl_ifc_ctrl_init(). This looks incorrect as IRQ is optional, isn't it?
->
-> The problem is entirely different than you described here - the error
-> paths of fsl_ifc_ctrl_init() and request_irq() are wrong. They do not
-> release resources in proper paths.
 
-Yes, you're right :). This patch rewrites the whole error handling
-code. Any comment on the code changes?
 
-I will rewrite the commit message in the patch v2.
+On 8/3/21 10:57 AM, Pierre Morel wrote:
+> 
+> 
+> On 8/3/21 10:42 AM, Heiko Carstens wrote:
+>> On Tue, Aug 03, 2021 at 10:26:46AM +0200, Pierre Morel wrote:
+>>> Now that the PTF instruction is interpreted by the SIE we can optimize
+>>> the arch_update_cpu_topology callback to check if there is a real need
+>>> to update the topology by using the PTF instruction.
+>>>
+>>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+>>> ---
+>>>   arch/s390/kernel/topology.c | 3 +++
+>>>   1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
+>>> index 26aa2614ee35..741cb447e78e 100644
+>>> --- a/arch/s390/kernel/topology.c
+>>> +++ b/arch/s390/kernel/topology.c
+>>> @@ -322,6 +322,9 @@ int arch_update_cpu_topology(void)
+>>>       struct device *dev;
+>>>       int cpu, rc;
+>>> +    if (!ptf(PTF_CHECK))
+>>> +        return 0;
+>>> +
+>>
+>> We have a timer which checks if topology changed and then triggers a
+>> call to arch_update_cpu_topology() via rebuild_sched_domains().
+>> With this change topology changes would get lost.
+> 
+> For my understanding, if PTF check return 0 it means that there are no 
+> topology changes.
+> So they could not get lost.
+> 
+> What did I miss?
+> 
+> 
+I missed that PTF clears the MCTR... and only one of the two calls will 
+return 1 while we need both to return 1...
 
-BTW, there is a minor issue: if request_irq fails, we should not
-invoke free_irq.
 
->
->
->
-> Best regards,
-> Krzysztof
->
-> >
-> > Fix this by adjusting the error handling code.
-> >
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > ---
-> >  drivers/memory/fsl_ifc.c | 19 ++++++++++++-------
-> >  1 file changed, 12 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-> > index d062c2f8250f..391390dd3dcb 100644
-> > --- a/drivers/memory/fsl_ifc.c
-> > +++ b/drivers/memory/fsl_ifc.c
-> > @@ -258,12 +258,17 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
-> >       /* get the nand machine irq */
-> >       fsl_ifc_ctrl_dev->nand_irq =
-> >                       irq_of_parse_and_map(dev->dev.of_node, 1);
-> > +     if (fsl_ifc_ctrl_dev->nand_irq == 0) {
-> > +             dev_err(&dev->dev, "failed to get nand_irq resource for IFC\n");
-> > +             ret = -ENODEV;
-> > +             goto err_unmap_irq;
-> > +     }
-> >
-> >       fsl_ifc_ctrl_dev->dev = &dev->dev;
-> >
-> >       ret = fsl_ifc_ctrl_init(fsl_ifc_ctrl_dev);
-> >       if (ret < 0)
-> > -             goto err;
-> > +             goto err_unmap_nandirq;
-> >
-> >       init_waitqueue_head(&fsl_ifc_ctrl_dev->nand_wait);
-> >
-> > @@ -272,7 +277,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
-> >       if (ret != 0) {
-> >               dev_err(&dev->dev, "failed to install irq (%d)\n",
-> >                       fsl_ifc_ctrl_dev->irq);
-> > -             goto err_irq;
-> > +             goto err_unmap_nandirq;
-> >       }
-> >
-> >       if (fsl_ifc_ctrl_dev->nand_irq) {
-> > @@ -281,17 +286,17 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
-> >               if (ret != 0) {
-> >                       dev_err(&dev->dev, "failed to install irq (%d)\n",
-> >                               fsl_ifc_ctrl_dev->nand_irq);
-> > -                     goto err_nandirq;
-> > +                     goto err_free_irq;
-> >               }
-> >       }
-> >
-> >       return 0;
-> >
-> > -err_nandirq:
-> > -     free_irq(fsl_ifc_ctrl_dev->nand_irq, fsl_ifc_ctrl_dev);
-> > -     irq_dispose_mapping(fsl_ifc_ctrl_dev->nand_irq);
-> > -err_irq:
-> > +err_free_irq:
-> >       free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
-> > +err_unmap_nandirq:
-> > +     irq_dispose_mapping(fsl_ifc_ctrl_dev->nand_irq);
-> > +err_unmap_irq:
-> >       irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
-> >  err:
-> >       iounmap(fsl_ifc_ctrl_dev->gregs);
-> >
->
+-- 
+Pierre Morel
+IBM Lab Boeblingen
