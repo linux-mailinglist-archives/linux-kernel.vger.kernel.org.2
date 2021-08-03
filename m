@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE193DF723
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF163DF728
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhHCV4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 17:56:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230124AbhHCV4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 17:56:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CC8860724;
-        Tue,  3 Aug 2021 21:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628027782;
-        bh=CtaBctNlap/TA51MNQzdE8Z4XTDacO9V6XB4566z4OY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=n9acgLJETvuySpQhKuaTGNHHDO022gVq6tFNDIgn/na1HiYPq6L21pOnReGAmMSVO
-         vQhtRlvDOQA1DLxbDVpZRApimRHDcVhTp95NaW/42nxBoQLucTiVkejeKNP/X6Cswv
-         uwsuneTKzo/LrnNWGjOhQ3qILvhJEXuCrB8pabi5wvaWSDqNMF/KnDAVSNWWtgZB5z
-         aXfBQUoP6+rjXWSOwbxoT9cwRQyccd00dkTTYqarsJtlY1GMY/HnXwiID+C8+CBarV
-         GlnW9EHhn9cU6CsADyyLVgfO41M8fn8e65MMllL/BFDu+aQmXezq07OaDNaYb7d5hm
-         jhRNju0zNN3uA==
-Date:   Tue, 3 Aug 2021 16:56:21 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] PCI: Always initialize dev in pciconfig_read
-Message-ID: <20210803215621.GA1576408@bjorn-Precision-5520>
+        id S231479AbhHCV6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 17:58:42 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:40764 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230124AbhHCV6l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 17:58:41 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 131681C0B76; Tue,  3 Aug 2021 23:58:22 +0200 (CEST)
+Date:   Tue, 3 Aug 2021 23:58:21 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: LED subsystem lagging maintenance
+Message-ID: <20210803215821.GE30387@amd>
+References: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
+ <20210728103551.GA31304@amd>
+ <179c4bce-ce9b-c9a8-4f24-cb4b3397e0f0@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ffoCPvUAPMgSXi6H"
 Content-Disposition: inline
-In-Reply-To: <20210803200836.500658-1-nathan@kernel.org>
+In-Reply-To: <179c4bce-ce9b-c9a8-4f24-cb4b3397e0f0@redhat.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 01:08:36PM -0700, Nathan Chancellor wrote:
-> Clang warns:
-> 
-> drivers/pci/syscall.c:25:6: warning: variable 'dev' is used
-> uninitialized whenever 'if' condition is true
-> [-Wsometimes-uninitialized]
->         if (!capable(CAP_SYS_ADMIN))
->             ^~~~~~~~~~~~~~~~~~~~~~~
-> drivers/pci/syscall.c:81:14: note: uninitialized use occurs here
->         pci_dev_put(dev);
->                     ^~~
-> drivers/pci/syscall.c:25:2: note: remove the 'if' if its condition is
-> always false
->         if (!capable(CAP_SYS_ADMIN))
->         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/pci/syscall.c:18:21: note: initialize the variable 'dev' to
-> silence this warning
->         struct pci_dev *dev;
->                            ^
->                             = NULL
-> 1 warning generated.
-> 
-> pci_dev_put accounts for a NULL pointer so initialize dev to NULL before
-> the capability check so that there is no use of uninitialized memory.
-> 
-> Fixes: 61a6199787d9 ("PCI: Return ~0 data on pciconfig_read() CAP_SYS_ADMIN failure")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-Squashed in locally, thanks!
+--ffoCPvUAPMgSXi6H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  drivers/pci/syscall.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pci/syscall.c b/drivers/pci/syscall.c
-> index 525f16caed1d..61a6fe3cde21 100644
-> --- a/drivers/pci/syscall.c
-> +++ b/drivers/pci/syscall.c
-> @@ -22,6 +22,7 @@ SYSCALL_DEFINE5(pciconfig_read, unsigned long, bus, unsigned long, dfn,
->  	int err, cfg_ret;
->  
->  	err = -EPERM;
-> +	dev = NULL;
->  	if (!capable(CAP_SYS_ADMIN))
->  		goto error;
->  
-> 
-> base-commit: 21d8e94253eb09f7c94c4db00dc714efc75b8701
-> -- 
-> 2.33.0.rc0
-> 
+Hi!
+
+> >> I have noticed that in the last couple of cycles the LED subsystem is
+> >> a bit laggish in terms of maintenance (*). I think it's time that
+> >> someone can help Pavel to sort things out.
+> >>
+> >> In any case, I wonder if we have any kind of procedure for what to do
+> >> in such cases. Do we need to assume that the subsystem is in a
+> >> (pre-)orphaned state? If so, who is the best to take care of patch
+> >> flow?
+> >=20
+> > To be honest, patches were not applied because they were not that
+> > important to begin with, because of lacking explanation, and because
+> > you pushed a bit too hard.
+> >=20
+> > Yes, I'm quite busy in -rc1 to -rc3 timeframe with stable reviews. No,
+> > LED subsystem is not orphaned.
+>=20
+> It is good to hear that you are still actively maintaining the LED
+> subsystem, thank you.
+>=20
+> This thread does remind me that I was planning on re-sending this
+> LED patch which seems to have fallen through the cracks:
+>=20
+> https://lore.kernel.org/alsa-devel/20210221115208.105203-1-hdegoede@redha=
+t.com/
+>=20
+> Can you pick this one up please? Or shall I resend it?
+
+Thanks, applied.
+
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--ffoCPvUAPMgSXi6H
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmEJu/0ACgkQMOfwapXb+vIm3gCdE4erM298XQat7Iyn4cBC+UZf
+h7EAnijY1Moszd5SPtdsjgfFXsfcD5TQ
+=0Lbc
+-----END PGP SIGNATURE-----
+
+--ffoCPvUAPMgSXi6H--
