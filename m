@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1353DF3A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BB83DF3AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237876AbhHCRKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:10:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237778AbhHCRKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:10:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B084060FA0;
-        Tue,  3 Aug 2021 17:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628010635;
-        bh=65H+ei0xpb7hD93+xQLQh+UXg0XMzVOm0QSLXIuPCOQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=l+/rSNSwMY9Uy/snzLVdv4wXRBdoP9L1d9JVnCFqda1sSJ3vQWqPyyDKoZ6ftmcir
-         S+3jGYRb34qgQvd7Mngo2YwsOH6e/scU7bu0+z/gumfXu9d7D/M2XwM+tT+Fgf42KO
-         +Qs2EquDdPWrgMMVm61StasHCsi127X/IJ70w/p+LMdfos2pdbRugPS4jA9RB5JOjT
-         n/MeJP9IE0kjMoVw+GUv95kbaBu0RB9+Z1Bt35PDKYQwiyoh3A1c//Gt0MIwgwyB7+
-         HlPXsJb0Jr5hEB1Q1FV1ScTD5+CbYWgta+cC1v+2WYr8s7wk6bNl7MaN9AUda6uGwZ
-         WgJTIv9YfKlkw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7B82E5C04D4; Tue,  3 Aug 2021 10:10:35 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 10:10:35 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Liu Song <liu.song11@zte.com.cn>
-Subject: Re: [PATCH rcu 15/18] rcu: Remove useless "ret" update in
- rcu_gp_fqs_loop()
-Message-ID: <20210803171035.GU4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-15-paulmck@kernel.org>
- <5a494dd8d0e04030204f61067cb1010ef0c78f27.camel@perches.com>
+        id S237786AbhHCRNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237557AbhHCRNm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 13:13:42 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFFDC061757;
+        Tue,  3 Aug 2021 10:13:31 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id z3so23195065plg.8;
+        Tue, 03 Aug 2021 10:13:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=I2bXUkEd46pGN/p5HEpGGRY38cwwH6dqSDlTkP0Mz2M=;
+        b=BFDaeMPkkK0eR0sqJZXh0E4uRJBT44zfNMC7MCxZMHhM/7hx6jZF5uellllfEdV8dA
+         /b380csIpzQpsxS+euUgDDvqoUXOguS4+exPBwbdRagcrl7o69V20/fwk56s7lveAb7j
+         Qfp+KeH0c8L8TSmm0sHwNNmGLSNBu7jSSvdQXecR+fFbrGOa4LJUKt4Zs5W/jBKMXLZJ
+         ktUMHvLC9Z+xveQvvUPVyy4Pt9oS++/FBN1Y4YlXCl+jGXfXb7ZzLo4ePxCYkHQBWJrq
+         X/Yy/df/X3GbMgeWCb7mes5S+5/6gVGMN/UZRyCMw64i5IUrgBPLsD9urmVW1gt/nT9A
+         4Tnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=I2bXUkEd46pGN/p5HEpGGRY38cwwH6dqSDlTkP0Mz2M=;
+        b=WgKz8qqoMcscuSB+P39ifNjqWRSyN++aV7OpzkRbXwf6WkGD4q5MZ23jSuxjIJbZ18
+         LDZz9QsxpkV4JHjH9SY2KG8MUuH29CuVGroIs/cMYhaym8ytMim/Enb1ap0Zys0ePXw3
+         gh26twwy1nSywYRz3kbdXD4pb3e6S7ulwMuy+pqm/ZPLlLs6rJMMONI9h8LD4gEvbTCj
+         nakHpb/bXrd3vFDhqXWy29/08WiGifveMWeYLvDT4J9ZygauWO1YKluoP0xJXl4Xh9p/
+         Tj8B/i+fD3hInGqPYXa11DXCu96NRgMmheL8gsSi+SaOMTMv4xoWrCQemwQPHgRxNBB9
+         poXQ==
+X-Gm-Message-State: AOAM533EoSfCamMrheHnW3BS76UQb7Z9nefqZhiKqxSHy7lS3LZVBRqY
+        lIZEk6Aw29f0qAzFM+RIL9Y=
+X-Google-Smtp-Source: ABdhPJwszazw7EW7d5bx/e6FqZLMf1EUKjtsldaoh66ru2HcCmV6kqtSiDkeqgSct6YLp8CN2vgnbA==
+X-Received: by 2002:a17:90a:73c6:: with SMTP id n6mr1822080pjk.128.1628010811229;
+        Tue, 03 Aug 2021 10:13:31 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id c136sm15983532pfc.53.2021.08.03.10.13.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 10:13:30 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Eric Woudstra <ericwouds@gmail.com>,
+        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: Re: [PATCH net-next v2 2/4] net: dsa: mt7530: use independent VLAN learning on VLAN-unaware bridges
+Date:   Wed,  4 Aug 2021 01:13:21 +0800
+Message-Id: <20210803171321.3026041-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210803164853.gxw4zfxmmgs2kgry@skbuf>
+References: <20210803160405.3025624-1-dqfext@gmail.com> <20210803160405.3025624-3-dqfext@gmail.com> <20210803164853.gxw4zfxmmgs2kgry@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5a494dd8d0e04030204f61067cb1010ef0c78f27.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 09:48:23AM -0700, Joe Perches wrote:
-> On Wed, 2021-07-21 at 13:21 -0700, Paul E. McKenney wrote:
-> > From: Liu Song <liu.song11@zte.com.cn>
-> > 
-> > Within rcu_gp_fqs_loop(), the "ret" local variable is set to the
-> > return value from swait_event_idle_timeout_exclusive(), but "ret" is
-> > unconditionally overwritten later in the code.  This commit therefore
-> > removes this useless assignment.
-> []
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> []
-> > @@ -1960,8 +1960,8 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
-> >  		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
-> >  				       TPS("fqswait"));
-> >  		WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_FQS);
-> > -		ret = swait_event_idle_timeout_exclusive(
-> > -				rcu_state.gp_wq, rcu_gp_fqs_check_wake(&gf), j);
-> > +		(void)swait_event_idle_timeout_exclusive(rcu_state.gp_wq,
-> > +				 rcu_gp_fqs_check_wake(&gf), j);
+On Tue, Aug 03, 2021 at 07:48:53PM +0300, Vladimir Oltean wrote:
+> After this patch set gets merged, can you also please take a look at the
+> following:
 > 
-> It doesn't seem this is a __must_check routine so why
-> bother to cast to void ?
-
-As a hint to the reader that discarding the return value is intentional
-rather than an oversight.
-
-							Thanx, Paul
-
-> >  		rcu_gp_torture_wait();
-> >  		WRITE_ONCE(rcu_state.gp_state, RCU_GP_DOING_FQS);
-> >  		/* Locking provides needed memory barriers. */
+> Documentation/networking/switchdev.rst says:
 > 
+> When the bridge has VLAN filtering enabled and a PVID is not configured on the
+> ingress port, untagged and 802.1p tagged packets must be dropped. When the bridge
+> has VLAN filtering enabled and a PVID exists on the ingress port, untagged and
+> priority-tagged packets must be accepted and forwarded according to the
+> bridge's port membership of the PVID VLAN. When the bridge has VLAN filtering
+> disabled, the presence/lack of a PVID should not influence the packet
+> forwarding decision.
 > 
+> I'm not sure if this happens or not with mt7530, since the driver
+> attempts to change the pvid back to 0. You are not changing this
+> behavior in this series, so no reason to deal with it as part of it.
+> 
+
+There is PVC.ACC_FRM which controls the acceptable frame type.
+Currently the driver does not use it, so untagged and priority-tagged frames
+can get into a VLAN-aware port without a PVID.
