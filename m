@@ -2,113 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1360E3DF160
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF3D3DF163
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236682AbhHCP06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44724 "EHLO
+        id S236720AbhHCP1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236685AbhHCP0s (ORCPT
+        with ESMTP id S236616AbhHCP11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:26:48 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FAFC061757;
-        Tue,  3 Aug 2021 08:26:25 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id m9so28614206ljp.7;
-        Tue, 03 Aug 2021 08:26:25 -0700 (PDT)
+        Tue, 3 Aug 2021 11:27:27 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A77C061757;
+        Tue,  3 Aug 2021 08:27:14 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id x15so28528441oic.9;
+        Tue, 03 Aug 2021 08:27:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CmOw+Pm/mK8de7PtTygDQNxjNMTGWeUADUOs/i9z3yo=;
-        b=Nz5QHhuS6VsUmzHCAfGeFGjXP6SkzoVYLbb38gtZBotiggF4JkvHe9033bl2PAgQwI
-         6EcYcEhi6E9jlrXEYa8Xz492YUCzZqtC9gRdGlF4JhEj+c3H7+KewvaVU97xZsxSQJHf
-         swtHpQq1309Fqz7c0rBFTM3yvdVrcEyyH0lZ+RkzXgQYQQTIMDLenxY2S6SPP+Ve57tn
-         zKtm4/3jvI6vrGRGMKtXPTvN5XptOH4rAEgz9ZszbbOSf7YPjunRgus3az+b8gbyn9gp
-         BvNmw3y1a7Mac1l4mlVkqfjIhYEtBkxDIPiMK4xtkf1t4+BLonHJGj8tvYPZoDGQfVoq
-         7CTA==
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pFZLhwf8uWtcoFg6OfsbtxXzjUjvk0s3pcwcMmfspy0=;
+        b=ni3iNbITXEYEyCTXCxrlMZen+f7/t4wpiwd3sXfLn+H4GebKXwRulbPoh5qXFILWcE
+         1F4J6eS7SDQ4KZFZ2v0V4Dadtc6qFFQJ4BkFhEbbLf/uPgAGLMaBFpsYt8VaJhNVQtoS
+         XY5HviP+PGT8ayMYiarLdzcJVbh4ilO+kIA/EYW4aqH7IBMYkgqCJISMPvakCGN5729N
+         /pF2bqYh2HSVXLurw/12eKdoLq/loO5HeM1BESS3fE+zQBE/btM6qdLZ5SJeWLztHuAX
+         z/obhYGfen9a7Ke9Iej4P0fo6lFXQIgYHjEMggmXUQP4wGvWC5li+12Hy/YVb8T7HKL4
+         UuWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CmOw+Pm/mK8de7PtTygDQNxjNMTGWeUADUOs/i9z3yo=;
-        b=kLBVEUpPFVAHUHSHbq01lKEZLp2jVpxGZiIFH/2gZqXbA6HLrU/VCL4kf/JXMS8IRm
-         prbo1MSlFv+xc1oMTIgaL5KhblGpRyTy9jY/AKMvdjoJjfYibzuLNdDLnr1z/FFPcYhm
-         n732jqUnMKoEenq7zpUhDX33FtbFiY1YGyTlaBmhgPWNaFJpEEQzKJLnkFpHTmmrflVm
-         Uf15+t3JaN11I8LwhsqiYKubEDRiO5Gd36WliCpMMgnr6lIJ4WRVvfnBUMMMY7Xvxt4M
-         sML2Ry0EfJAWpQL8cUwQrjOuXkH2BLuhpEtD7u7TaabTLHO0pKto7GuLFsx3l8uXyaGQ
-         MA7Q==
-X-Gm-Message-State: AOAM5302WkAlSf1lDNf5sVVl/SUEYtCOkHwwkR1n2FMMQosE+Pc8d8Lh
-        OMqiPvFowbfuyv67vS8qHMA=
-X-Google-Smtp-Source: ABdhPJziKtAoeu6dr48FWx+DCgCfalfKAiDyCq2XTpF8hkV+E3yReb62TWggUf95J/UkHGR6mP+9kA==
-X-Received: by 2002:a05:651c:1072:: with SMTP id y18mr15617802ljm.306.1628004382224;
-        Tue, 03 Aug 2021 08:26:22 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id t17sm1095313ljk.102.2021.08.03.08.26.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 08:26:21 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 18:26:19 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com, hch@lst.de,
-        ebiggers@kernel.org, andy.lavr@gmail.com, oleksandr@natalenko.name
-Subject: Re: [PATCH] Restyle comments to better align with kernel-doc
-Message-ID: <20210803152619.hva737erzqnksfxu@kari-VirtualBox>
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210803115709.zd3gjmxw7oe6b4zk@kari-VirtualBox>
- <20210803133833.GL25548@kadam>
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pFZLhwf8uWtcoFg6OfsbtxXzjUjvk0s3pcwcMmfspy0=;
+        b=ZlgowPs0hNdbEdRhgqCiYvFjllRwdEshV2cBXxTuSMB7WxYf5SVdDC+L4UnUA+N7K7
+         MZJX3Atv4mUp+Xh8bEr+6STXwmDXRpAPpH2Iqp2zeJX846EjtbTCLDxy3IV8W0v9tv3M
+         lDbiaFdPsOh4NuEMvbzu5h7HWfbEvE+Mc4hAyWWS92BdBJS8Nj4odLvmSjcVEvufL9/d
+         9ZMD0cn+37uBfM4F7hPzPOgvTH0v7LwPiOWxGDZFvc19pRuyaGcSuZy53z4UmINmLTfY
+         G9aT/Xh2a5ygyS+T1QyKWomuqvLibkSWylQnSgOIAVLHirhmVtDXnj2DdbALjngxAzzU
+         FulQ==
+X-Gm-Message-State: AOAM531oW7OMoJQYTInicMRIhKn+cHFizVu4RlTfAMKiO4H8iNPNMZeq
+        1AL+PX3O92elz2SpqgJZptA=
+X-Google-Smtp-Source: ABdhPJzyv9fwUlGn+ncWIpH5NywzojqyMhKAAI0QZZ4oVryaoqVD0LqTAYzCtgBIff8stPTX63tAFQ==
+X-Received: by 2002:a05:6808:1d6:: with SMTP id x22mr14906323oic.8.1628004434089;
+        Tue, 03 Aug 2021 08:27:14 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j30sm2543937otc.43.2021.08.03.08.27.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 08:27:13 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        linux-watchdog@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Michael Marley <michael@michaelmarley.com>
+References: <20210803165108.4154cd52@endymion>
+ <e13f45c4-70e2-e2c2-9513-ce38c8235b4f@siemens.com>
+ <67815219-7226-1a90-4599-5649e9bbc861@siemens.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: Faulty commit "watchdog: iTCO_wdt: Account for rebooting on
+ second timeout"
+Message-ID: <2dae7010-f375-ecbe-c477-0bbd28b92aac@roeck-us.net>
+Date:   Tue, 3 Aug 2021 08:27:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803133833.GL25548@kadam>
+In-Reply-To: <67815219-7226-1a90-4599-5649e9bbc861@siemens.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 04:38:33PM +0300, Dan Carpenter wrote:
-> Missing subsystem prefix in the subject.
+On 8/3/21 8:01 AM, Jan Kiszka wrote:
+> On 03.08.21 16:59, Jan Kiszka wrote:
+>> On 03.08.21 16:51, Jean Delvare wrote:
+>>> Hi all,
+>>>
+>>> Commit cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on
+>>> second timeout") causes a regression on several systems. Symptoms are:
+>>> system reboots automatically after a short period of time if watchdog
+>>> is enabled (by systemd for example). This has been reported in bugzilla:
+>>>
+>>> https://bugzilla.kernel.org/show_bug.cgi?id=213809
+>>>
+>>> Unfortunately this commit was backported to all stable kernel branches
+>>> (4.14, 4.19, 5.4, 5.10, 5.12 and 5.13). I'm not sure why that is the
+>>> case, BTW, as there is no Fixes tag and no Cc to stable@vger either.
+>>> And the fix is not trivial, has apparently not seen enough testing,
+>>> and addresses a problem that has a known and simple workaround. IMHO it
+>>> should never have been accepted as a stable patch in the first place.
+>>> Especially when the previous attempt to fix this issue already ended
+>>> with a regression and a revert.
+>>>
+>>> Anyway... After a glance at the patch, I see what looks like a nice
+>>> thinko:
+>>>
+>>> +	if (p->smi_res &&
+>>> +	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+>>>
+>>> The author most certainly meant inl(SMI_EN(p)) (the register's value)
+>>> and not SMI_EN(p) (the register's address).
+>>>
 
-Yeah. I was not sure what to do here because it is patch to patch. I
-will do this in the future.
+Yes, shame on me that I didn't see that.
 
-> On Tue, Aug 03, 2021 at 02:57:09PM +0300, Kari Argillander wrote:
-> > Capitalize comments and end with period for better reading.
-> > 
-> > Also function comments are now little more kernel-doc style. This way we
-> > can easily convert them to kernel-doc style if we want. Note that these
-> > are not yet complete with this style. Example function comments start
-> > with /* and in kernel-doc style they start /**.
-> > 
-> > Use imperative mood in function descriptions.
-> > 
-> > Change words like ntfs -> NTFS, linux -> Linux.
-> > 
-> > Use "we" not "I" when commenting code.
+>>
+>> https://lkml.org/lkml/2021/7/26/349
+>>
 > 
-> These are all nonsense style guidelines that you invented yourself.  We
-> already have too much pointless bureaucracy.  If you can't understand
-> the documentation or if there are typos then, sure, fix that.  But let's
-> not invent new rules.
+> That's for the fix (in line with your analysis).
+> 
+> I was also wondering if backporting that quickly was needed. Didn't
+> propose it, though.
+> 
 
-You are correct that I "invent" these. My whole point was just make
-ntfs3 constant about these rules. I also notice that I didn't make that
-clear at patch message and that was huge mistake from my part.
+I'd suggest to discuss that with Greg and Sasha. Backporting is pretty
+aggressive nowadays.
 
-Now in ntfs3 there is mixing commenting styles and I was just trying to make
-these nice before merging. I have no preference but it is nice if example one
-driver keep things constant.
-
-I would not even try to make these kind of changes if ntfs3 patch series
-was already merged to kernel. But probably I will try to bring kernel doc
-style funtion comments in future when ntfs3 gets merged.
-
-> (Also it annoys me when people pretend to be stupid "I can't understand
-> what a NULL deference is.  Ohhh...  You mean a NULL *pointer*
-> dereference!  You left out the word *pointer* so I didn't understand!")
-
+Guenter
