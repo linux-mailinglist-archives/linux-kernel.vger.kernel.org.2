@@ -2,48 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8103DF1AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E9A3DF1B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236983AbhHCPkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:40:43 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:49700 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236937AbhHCPkl (ORCPT
+        id S236986AbhHCPmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236941AbhHCPmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:40:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UhtdjCl_1628005228;
-Received: from 30.39.225.192(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UhtdjCl_1628005228)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 03 Aug 2021 23:40:29 +0800
-Subject: Re: [PATCH] mm/swap: Remove the unused get_kernel_page()
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <a6137b871658cdbd0cde9fbeecf2168bc8ec87e9.1628002955.git.baolin.wang@linux.alibaba.com>
- <YQlhBRi7dWSwpcFs@casper.infradead.org>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <23d3d3a5-5938-b2a0-716e-0413217362b4@linux.alibaba.com>
-Date:   Tue, 3 Aug 2021 23:40:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 3 Aug 2021 11:42:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB09C061757;
+        Tue,  3 Aug 2021 08:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=II/VenbTUw24iLWpdlipuMpQAdm4Yh3pDdJ39f5fTfs=; b=t+L/oQEKWQG7u56lNMjVf66Qoh
+        PuEpLd7XoUvqyNSUWG4kg+YaislStlAu3rT0agQT3mKDaPTJIJ0LzNHGsJTf3uBOntKhQweGPOZ1j
+        d+rhzTgI5pdfiKJ6xMRSg2DdLRsLDjtOjZCiU0bT5w7jtH1Ak6N6/BG3DLMXUMQJJwyYUc/gWInMy
+        kfgPtEnWUGINhJy8dwlyDK4GN+wVnV62oiRP07RGl/KXvTt0REaGYEP4dCYSI3/EBZtCkDJv3Qb5T
+        pxlB25SXe7TmG/7p57cp0sJgdiy2MAjiid0hfyxjairpZE8X3DE7+DNo/Iopzxu7ACN0hmkAlNS5H
+        PLzw6iFA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mAwYF-004ppV-K7; Tue, 03 Aug 2021 15:42:03 +0000
+Date:   Tue, 3 Aug 2021 16:41:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, rdunlap@infradead.org, joe@perches.com,
+        mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com, hch@lst.de,
+        ebiggers@kernel.org, andy.lavr@gmail.com, oleksandr@natalenko.name
+Subject: Re: [PATCH] Restyle comments to better align with kernel-doc
+Message-ID: <YQljw+wozb9vIGnU@casper.infradead.org>
+References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
+ <20210803115709.zd3gjmxw7oe6b4zk@kari-VirtualBox>
+ <20210803133833.GL25548@kadam>
+ <20210803152619.hva737erzqnksfxu@kari-VirtualBox>
 MIME-Version: 1.0
-In-Reply-To: <YQlhBRi7dWSwpcFs@casper.infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803152619.hva737erzqnksfxu@kari-VirtualBox>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 03, 2021 at 06:26:19PM +0300, Kari Argillander wrote:
+> I would not even try to make these kind of changes if ntfs3 patch series
+> was already merged to kernel. But probably I will try to bring kernel doc
+> style funtion comments in future when ntfs3 gets merged.
 
-
-> On Tue, Aug 03, 2021 at 11:07:04PM +0800, Baolin Wang wrote:
->> Now there are no users of the get_kernel_page() function,
->> thus remove it.
->>
->> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> 
-> Perhaps you should just send a Reviewed-by: for John Hubbard's patch
-> on July 29th instead?
-
-Ah, I missed that patch before. Please ignore this patch, sorry for noise.
+There's very little value to adding kernel-doc comments to individual
+filesystems.  Filesystems don't usually provide services to the rest of
+the kernel.  It's a much better use of your time to write kernel-doc
+comments for functions and structures in the VFS and MM that are used
+by many filesystems and device drivers.
