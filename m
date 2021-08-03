@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7403DF012
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CAB3DF01A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236656AbhHCOS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:18:29 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57148 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236592AbhHCORY (ORCPT
+        id S236869AbhHCOSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236631AbhHCOR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:17:24 -0400
+        Tue, 3 Aug 2021 10:17:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D31BC06179E;
+        Tue,  3 Aug 2021 07:17:14 -0700 (PDT)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628000232;
+        s=2020; t=1628000233;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=P65i0gbKnhTxPKHg3SSzE6N4pinsJNni4QQoI0J6eF8=;
-        b=JiWp6P+50wwCOHKHwPEHFju5X3ZiQT/XoOY6uZNPAfn3hQwYToLffVzzJ8adMxohpPtxU5
-        5vQyThrPq9M8LQCvg2oEgPoNU6asA2PyUbVP24207B6YPp86tHqxG5+e+c2zkvCanHO8m5
-        /4dAe1N/myW+AdFkF+/sjUy7bJFs0kW0DvHZlOyrDkVsw/D4yqRlVSOKj56XqT+FIWkhka
-        K20jSKCEollkUB22ENzheBNqnTKzUrg1oM0zCRaA1TltOlb2VKhvYXAnabo6BOsYiDdrq4
-        WfGjFeWCh+WY0svH1pztdh5HBMlJBrM28op9j/Z4yNdWOmaov1jinvEpqGLsOA==
+        bh=BIWpi0J5GKgm++CC4pz/dS7QJOqOdYQfXdusIGoqZtU=;
+        b=fbxorotkjX+w9iOuY5fTl6mXiRrH2STnzhtXgQvRtfYnyoTaLlVLRGNkIhx01UbFNg5/Xf
+        EIJfblnVYXSN3VApYpI20NeBoKobofjuVNgZ9JiBWQMPZxFQXCmJzKdqwwtbopPEnAHktQ
+        g6YZ33G+hRYMp/ew63Zy+b2umvD1ZoSqxLIFt2c5QufnDv4//zpx9piHkB5SquMoqxPSQ6
+        UZUWsbAiuNc3Bs4n9ENSIwmPn6GMdFHfi55EoIch+YddG6c38pBeJiaOT0rNcuRPl/+VgR
+        iBM/RQWicizTZatysPB6Q2UGZRcJDPzGrqb50NIPk1XFNTjQp2NEQhZVhEKJgA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628000232;
+        s=2020e; t=1628000233;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=P65i0gbKnhTxPKHg3SSzE6N4pinsJNni4QQoI0J6eF8=;
-        b=mESumFs4eF6qYKUducYMb0eOx+3AjcXP187Herw9jmTdz2xqxRqKdIZoffpc/Ux+I2KTmB
-        ykvLmw2cTGQ085Cg==
+        bh=BIWpi0J5GKgm++CC4pz/dS7QJOqOdYQfXdusIGoqZtU=;
+        b=C4y5/A858fS5TBmqcro9QQblLa4w8CPAL90ixhf1v288yA6l/ODjX87mip3hRWm7TciyXt
+        7vHG/P/k1pxIpODQ==
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org
-Subject: [PATCH 26/38] livepatch: Replace deprecated CPU-hotplug functions.
-Date:   Tue,  3 Aug 2021 16:16:09 +0200
-Message-Id: <20210803141621.780504-27-bigeasy@linutronix.de>
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH 27/38] padata: Replace deprecated CPU-hotplug functions.
+Date:   Tue,  3 Aug 2021 16:16:10 +0200
+Message-Id: <20210803141621.780504-28-bigeasy@linutronix.de>
 In-Reply-To: <20210803141621.780504-1-bigeasy@linutronix.de>
 References: <20210803141621.780504-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -61,39 +61,78 @@ cpus_read_lock() and cpus_read_unlock().
 Replace deprecated CPU-hotplug functions with the official version.
 The behavior remains unchanged.
 
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Miroslav Benes <mbenes@suse.cz>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Joe Lawrence <joe.lawrence@redhat.com>
-Cc: live-patching@vger.kernel.org
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: linux-crypto@vger.kernel.org
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- kernel/livepatch/transition.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/padata.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-index 3a4beb9395c48..291b857a6e201 100644
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -411,7 +411,7 @@ void klp_try_complete_transition(void)
- 	/*
- 	 * Ditto for the idle "swapper" tasks.
- 	 */
+diff --git a/kernel/padata.c b/kernel/padata.c
+index d4d3ba6e1728a..0b0b6e8917d10 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -733,7 +733,7 @@ int padata_set_cpumask(struct padata_instance *pinst, i=
+nt cpumask_type,
+ 	struct cpumask *serial_mask, *parallel_mask;
+ 	int err =3D -EINVAL;
+=20
 -	get_online_cpus();
 +	cpus_read_lock();
- 	for_each_possible_cpu(cpu) {
- 		task =3D idle_task(cpu);
- 		if (cpu_online(cpu)) {
-@@ -423,7 +423,7 @@ void klp_try_complete_transition(void)
- 			task->patch_state =3D klp_target_state;
- 		}
- 	}
+ 	mutex_lock(&pinst->lock);
+=20
+ 	switch (cpumask_type) {
+@@ -753,7 +753,7 @@ int padata_set_cpumask(struct padata_instance *pinst, i=
+nt cpumask_type,
+=20
+ out:
+ 	mutex_unlock(&pinst->lock);
 -	put_online_cpus();
 +	cpus_read_unlock();
 =20
- 	if (!complete) {
- 		if (klp_signals_cnt && !(klp_signals_cnt % SIGNALS_TIMEOUT))
+ 	return err;
+ }
+@@ -992,7 +992,7 @@ struct padata_instance *padata_alloc(const char *name)
+ 	if (!pinst->parallel_wq)
+ 		goto err_free_inst;
+=20
+-	get_online_cpus();
++	cpus_read_lock();
+=20
+ 	pinst->serial_wq =3D alloc_workqueue("%s_serial", WQ_MEM_RECLAIM |
+ 					   WQ_CPU_INTENSIVE, 1, name);
+@@ -1026,7 +1026,7 @@ struct padata_instance *padata_alloc(const char *name)
+ 						    &pinst->cpu_dead_node);
+ #endif
+=20
+-	put_online_cpus();
++	cpus_read_unlock();
+=20
+ 	return pinst;
+=20
+@@ -1036,7 +1036,7 @@ struct padata_instance *padata_alloc(const char *name)
+ err_free_serial_wq:
+ 	destroy_workqueue(pinst->serial_wq);
+ err_put_cpus:
+-	put_online_cpus();
++	cpus_read_unlock();
+ 	destroy_workqueue(pinst->parallel_wq);
+ err_free_inst:
+ 	kfree(pinst);
+@@ -1074,9 +1074,9 @@ struct padata_shell *padata_alloc_shell(struct padata=
+_instance *pinst)
+=20
+ 	ps->pinst =3D pinst;
+=20
+-	get_online_cpus();
++	cpus_read_lock();
+ 	pd =3D padata_alloc_pd(ps);
+-	put_online_cpus();
++	cpus_read_unlock();
+=20
+ 	if (!pd)
+ 		goto out_free_ps;
 --=20
 2.32.0
 
