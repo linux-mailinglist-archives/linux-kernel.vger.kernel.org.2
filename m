@@ -2,229 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90C03DE729
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B72D3DE72C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234163AbhHCHW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:22:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22753 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233966AbhHCHW6 (ORCPT
+        id S234189AbhHCHYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233966AbhHCHYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:22:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627975367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vvnHHx5SLZ5txIch7uBR/ScqaaZaH/q4GjsYjYEelMc=;
-        b=EH1MvqpjUFKZkzwpqLPWipLAAX2JvNP/40XWQSmQeo6LWBsP4Kmh+UPJ3X23XvDSaVJBY9
-        9/9NbFla9laCQVN+x+IyMXKKU5Gv0i9h1drgQx+mS9zoh2289+wgl/0+QR+Lmc05vMX2oh
-        t5fRLMftLLLf3xPe0pULoCx0JNLyC1c=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-Sv0By2ONMYmp-Uu-b2RHLQ-1; Tue, 03 Aug 2021 03:22:44 -0400
-X-MC-Unique: Sv0By2ONMYmp-Uu-b2RHLQ-1
-Received: by mail-wr1-f72.google.com with SMTP id p12-20020a5d68cc0000b02901426384855aso7223155wrw.11
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:22:44 -0700 (PDT)
+        Tue, 3 Aug 2021 03:24:18 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818E3C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:24:07 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id v20so13726431eda.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:24:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ngPgwd5W9zI3HLSERpc7IgilHG9Vxsr6eSC4mxW72lk=;
+        b=DyHh0gctVYvDn+Xqq6NcMMhLxnnFFk+pHLD2NA6dp17JJrr1R8nZBqprkOV4VkMlHa
+         eyotaWRO8lsrP3cZ4Qtw8S1IFLQEfCmpBco9kFITum0vSZLe4snD2uJzR+MX28tjGIZP
+         f+jkVkyUMIPBDAkO4s7u2sDdF77Ax2gjQHibGKETDRVrh4LsOTVO5MZiim6jkR51kUer
+         aZ/ioCG3wZKK3Tqv22tyRn0QaDXqNr6NHAgaV27esBhlQUbKH6SVhFp8RVGcn8pl8rJB
+         kBmYpIl9wGH1XFo76oydGNyiHjTCoz/dVOP7Nrcks745ALKrSgovZr63uP6yS/3VZD5M
+         bPlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vvnHHx5SLZ5txIch7uBR/ScqaaZaH/q4GjsYjYEelMc=;
-        b=WK4PNvceiUehsroIbTHzKkIEOJircXu+mcg9Vz7I6aBXrEtkrnyVmSYZcnxt88T/AP
-         gAu5CfrSPBSv1R0yuYA0w53hTan5WI2Im9EstU42yexszWMjpH7zdetfGGgduZA+0VlR
-         OMUTlNqveF8PFckeQ1avxa5raAqUR2yGbhwU0uxsiLK/msEUqO6L8pVDCu2sTcRcBOEw
-         mvdNxxQAhEQNu1eMDiTZmVDbZulYjxkqHw8uhwskCYJqMD9X1Z4DDDMyFZ7CdsqkfGsG
-         rLaJ5eMAk0O+Z/GNkl3glKerT2FdKQ9vx9A9fF7d+rZIr6umFDHGzWQmKzBICQz5kvkf
-         O/mw==
-X-Gm-Message-State: AOAM530bVfiZLhHKfnCwd5G+383ehQmojzcpoESp2dOeY6y888y8ME81
-        6SmmaV2InpuNjX4VpbXfgV2IfNIezMBM7XgtsbPeuXd1rwsFBEhwC0u9Ecd0cCP85qcnJwbvrC4
-        i8YqwnLHTeU288S5BKKPaaBCg
-X-Received: by 2002:a1c:7f50:: with SMTP id a77mr20328710wmd.163.1627975363072;
-        Tue, 03 Aug 2021 00:22:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx+tgS1Mk8R2aPdLRZYExFRWj4Yx3qDfpTy+W7fwabL4DjFpr/pDuM96T7v5V0HkrgnPGd44w==
-X-Received: by 2002:a1c:7f50:: with SMTP id a77mr20328690wmd.163.1627975362815;
-        Tue, 03 Aug 2021 00:22:42 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id w5sm15777146wro.45.2021.08.03.00.22.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 00:22:42 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: SVM: improve the code readability for ASID
- management
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Marc Orr <marcorr@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Alper Gun <alpergun@google.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Peter Gonda <pgonda@google.com>
-References: <20210802180903.159381-1-mizhang@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a737d476-05dc-5aea-99ec-8960fcb9fc2f@redhat.com>
-Date:   Tue, 3 Aug 2021 09:22:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ngPgwd5W9zI3HLSERpc7IgilHG9Vxsr6eSC4mxW72lk=;
+        b=LNFVfdBErkErRqL79mXkedFiBfW+mAWceRevRMuJlk/oGEXTHtN7wujhYfYMnMrQr3
+         DSFOmt9x5ppIIHOtjWp/n9C6YuVj43CghTQzx8nawMSD03bonwIPFV2Pinlyy2ubQ42g
+         Z+KyuqsMOeUqoFMACeieTCWpaXJhGrrEUFyODbmhXgbAkp/c6LipQwCkZ4JqWAdGyKaL
+         asxwyxXw4DcmjuKH8xmwusBVMh78XLpdN78kjZ1UVKu8/5dfxKRHHFO9t40L+uU6wVcZ
+         Ool5UZhiSgu6prDHFWfV36Io85AXzgewWRY5slNNuMHf0Wb1P19TLj5RomAGdp0rft7Q
+         2w3g==
+X-Gm-Message-State: AOAM532Wqa/2ErB5io9EVohzYcTXsWObOnixSBa2B8aH6DfuL9+wZVC/
+        r2OOFI9q9mpUyWUDDWgXbpikFRknE3b8oS4JGjeNxQ==
+X-Google-Smtp-Source: ABdhPJy1D5ri1q/JZa5RBjn16CByzeYVgMBf3GBrC8jto9FyQ3jg6vQn42uetDoMEL8cPu2vGhT4yrA13QPQ3QA8qHs=
+X-Received: by 2002:aa7:c805:: with SMTP id a5mr23702597edt.23.1627975445895;
+ Tue, 03 Aug 2021 00:24:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210802180903.159381-1-mizhang@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210802134339.023067817@linuxfoundation.org>
+In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 3 Aug 2021 12:53:54 +0530
+Message-ID: <CA+G9fYv6vtBzDkEtXkg9KFJSDaZbpft897a_Pu6ODgPbH+++gg@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/67] 5.10.56-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/21 20:09, Mingwei Zhang wrote:
-> KVM SEV code uses bitmaps to manage ASID states. ASID 0 was always skipped
-> because it is never used by VM. Thus, in existing code, ASID value and its
-> bitmap postion always has an 'offset-by-1' relationship.
-> 
-> Both SEV and SEV-ES shares the ASID space, thus KVM uses a dynamic range
-> [min_asid, max_asid] to handle SEV and SEV-ES ASIDs separately.
-> 
-> Existing code mixes the usage of ASID value and its bitmap position by
-> using the same variable called 'min_asid'.
-> 
-> Fix the min_asid usage: ensure that its usage is consistent with its name;
-> allocate extra size for ASID 0 to ensure that each ASID has the same value
-> with its bitmap position. Add comments on ASID bitmap allocation to clarify
-> the size change.
-> 
-> v1 -> v2:
->   - change ASID bitmap size to incorporate ASID 0 [sean]
->   - remove the 'fixes' line in commit message. [sean/joerg]
-> 
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Marc Orr <marcorr@google.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Alper Gun <alpergun@google.com>
-> Cc: Dionna Glaze <dionnaglaze@google.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Vipin Sharma <vipinsh@google.com>
-> Cc: Peter Gonda <pgonda@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> ---
->   arch/x86/kvm/svm/sev.c | 36 +++++++++++++++++++++---------------
->   1 file changed, 21 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 8d36f0c73071..42d46c30f313 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -63,6 +63,7 @@ static DEFINE_MUTEX(sev_bitmap_lock);
->   unsigned int max_sev_asid;
->   static unsigned int min_sev_asid;
->   static unsigned long sev_me_mask;
-> +static unsigned int nr_asids;
->   static unsigned long *sev_asid_bitmap;
->   static unsigned long *sev_reclaim_asid_bitmap;
->   
-> @@ -77,11 +78,11 @@ struct enc_region {
->   /* Called with the sev_bitmap_lock held, or on shutdown  */
->   static int sev_flush_asids(int min_asid, int max_asid)
->   {
-> -	int ret, pos, error = 0;
-> +	int ret, asid, error = 0;
->   
->   	/* Check if there are any ASIDs to reclaim before performing a flush */
-> -	pos = find_next_bit(sev_reclaim_asid_bitmap, max_asid, min_asid);
-> -	if (pos >= max_asid)
-> +	asid = find_next_bit(sev_reclaim_asid_bitmap, nr_asids, min_asid);
-> +	if (asid > max_asid)
->   		return -EBUSY;
->   
->   	/*
-> @@ -114,15 +115,15 @@ static bool __sev_recycle_asids(int min_asid, int max_asid)
->   
->   	/* The flush process will flush all reclaimable SEV and SEV-ES ASIDs */
->   	bitmap_xor(sev_asid_bitmap, sev_asid_bitmap, sev_reclaim_asid_bitmap,
-> -		   max_sev_asid);
-> -	bitmap_zero(sev_reclaim_asid_bitmap, max_sev_asid);
-> +		   nr_asids);
-> +	bitmap_zero(sev_reclaim_asid_bitmap, nr_asids);
->   
->   	return true;
->   }
->   
->   static int sev_asid_new(struct kvm_sev_info *sev)
->   {
-> -	int pos, min_asid, max_asid, ret;
-> +	int asid, min_asid, max_asid, ret;
->   	bool retry = true;
->   	enum misc_res_type type;
->   
-> @@ -142,11 +143,11 @@ static int sev_asid_new(struct kvm_sev_info *sev)
->   	 * SEV-enabled guests must use asid from min_sev_asid to max_sev_asid.
->   	 * SEV-ES-enabled guest can use from 1 to min_sev_asid - 1.
->   	 */
-> -	min_asid = sev->es_active ? 0 : min_sev_asid - 1;
-> +	min_asid = sev->es_active ? 1 : min_sev_asid;
->   	max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
->   again:
-> -	pos = find_next_zero_bit(sev_asid_bitmap, max_sev_asid, min_asid);
-> -	if (pos >= max_asid) {
-> +	asid = find_next_zero_bit(sev_asid_bitmap, max_sev_asid, min_asid);
-> +	if (asid > max_asid) {
->   		if (retry && __sev_recycle_asids(min_asid, max_asid)) {
->   			retry = false;
->   			goto again;
-> @@ -156,11 +157,11 @@ static int sev_asid_new(struct kvm_sev_info *sev)
->   		goto e_uncharge;
->   	}
->   
-> -	__set_bit(pos, sev_asid_bitmap);
-> +	__set_bit(asid, sev_asid_bitmap);
->   
->   	mutex_unlock(&sev_bitmap_lock);
->   
-> -	return pos + 1;
-> +	return asid;
->   e_uncharge:
->   	misc_cg_uncharge(type, sev->misc_cg, 1);
->   	put_misc_cg(sev->misc_cg);
-> @@ -1854,12 +1855,17 @@ void __init sev_hardware_setup(void)
->   	min_sev_asid = edx;
->   	sev_me_mask = 1UL << (ebx & 0x3f);
->   
-> -	/* Initialize SEV ASID bitmaps */
-> -	sev_asid_bitmap = bitmap_zalloc(max_sev_asid, GFP_KERNEL);
-> +	/*
-> +	 * Initialize SEV ASID bitmaps. Allocate space for ASID 0 in the bitmap,
-> +	 * even though it's never used, so that the bitmap is indexed by the
-> +	 * actual ASID.
-> +	 */
-> +	nr_asids = max_sev_asid + 1;
-> +	sev_asid_bitmap = bitmap_zalloc(nr_asids, GFP_KERNEL);
->   	if (!sev_asid_bitmap)
->   		goto out;
->   
-> -	sev_reclaim_asid_bitmap = bitmap_zalloc(max_sev_asid, GFP_KERNEL);
-> +	sev_reclaim_asid_bitmap = bitmap_zalloc(nr_asids, GFP_KERNEL);
->   	if (!sev_reclaim_asid_bitmap) {
->   		bitmap_free(sev_asid_bitmap);
->   		sev_asid_bitmap = NULL;
-> @@ -1904,7 +1910,7 @@ void sev_hardware_teardown(void)
->   		return;
->   
->   	/* No need to take sev_bitmap_lock, all VMs have been destroyed. */
-> -	sev_flush_asids(0, max_sev_asid);
-> +	sev_flush_asids(1, max_sev_asid);
->   
->   	bitmap_free(sev_asid_bitmap);
->   	bitmap_free(sev_reclaim_asid_bitmap);
-> 
+On Mon, 2 Aug 2021 at 19:22, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.56 release.
+> There are 67 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.56-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Queued, thanks.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Paolo
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.10.56-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: f9063e43ccbb353c5b2cafe59c6b9534aa7ddc14
+* git describe: v5.10.55-68-gf9063e43ccbb
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.55-68-gf9063e43ccbb
+
+## No regressions (compared to v5.10.55-66-g099cefcf7e6b)
+
+## No fixes (compared to v5.10.55-66-g099cefcf7e6b)
+
+
+## Test result summary
+ total: 79832, pass: 65260, fail: 1954, skip: 11355, xfail: 1263,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
