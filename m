@@ -2,91 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99C13DEDCD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1F13DEDD1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235922AbhHCMXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 08:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
+        id S235988AbhHCMYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 08:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235573AbhHCMXk (ORCPT
+        with ESMTP id S235700AbhHCMYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 08:23:40 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831AEC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 05:23:28 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id hw6so22178665ejc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 05:23:28 -0700 (PDT)
+        Tue, 3 Aug 2021 08:24:19 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81630C0613D5
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 05:24:08 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id z7so23196691iog.13
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 05:24:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XtlBN5e/EVpe5xwv2aVry/eQDKWqwL83Vio3Gr+T1UA=;
-        b=MDI+Ew8CkVlcfRk09T7+lidlFk5Se+Ws6iehNSQhtwW5KrOnmtn/0m8QeRTLIFO3GY
-         H2Twro7MvsBZLrgje+WVN3RVG/w0CC1kaG2DsUUDDpOZblATI+PicPhly91dTSNjVCj0
-         2IBf1jaM8MHnTlfnqqVjxJmU3EZKvI9HN1GAZ5IlXEHODyYq/xMa7TL7LSMZO8M98Lzr
-         FqIFeu86o3y5duVTTzCWIl5eSmiYDHHvAEsrtBk33JQ8qL4S81NvKGIw34RlA4bjEhke
-         Wx1xKOSrh9b0MtsUWjN8o+9LqUnwZAlquEYqCl/egdFNn0lvT1w9QXieL04GrVCMW1wX
-         YT0Q==
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sSAJdBXerSiLD/jae6wSlhsV/AYk+DynXxE+wOZYVUg=;
+        b=bRVwX6iPyAZEcpuyB4yiUnUe+peBOZ6yDCqxfRHK/MWWbE8extM3sSfAt80FJslR6X
+         w7dtV2Q8CnEkU3c2O9xunDbtV6DjsudWluolBahN/iVlRWXcGhWPKHd5aioLLzH8Ee7g
+         S4xBD5bemnxGWjWWt/Sahnh3ca8DkVBQ29A70=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XtlBN5e/EVpe5xwv2aVry/eQDKWqwL83Vio3Gr+T1UA=;
-        b=byGvx6Qe425cN0m0aU50+L6xhorS+5oN9be3Jv1nUaOu6bICaM/8h0HIuPX3oO8gBV
-         wup3gatXqt4GLxZTUVO5gkG2kO5YZsk8Slybapf0bOPl3kGUFaVQ864bAfQMeCmDU2PU
-         e6tGxw5ChomZAWHvykvNbvywYxYps4389ZW9o24yxxn3U+7KM+AfkRGh4gHemfUoznO1
-         wZxQLyMm91kEWQFoznTN/T3b1gTGOUlfgoK3qsShYzkPVeZ3b/D10EGCrGYxiP39nKJx
-         tCKFqdIDfg82/vBarp+OEEe16AIXKdl1V9HMz31SX4Vo3JwfH0//kKMZVD6sk0IlBCpz
-         5ewg==
-X-Gm-Message-State: AOAM532ItXcFE3+ql9LFL5nHFw8Eic+pCJc/uBePlxQPScz1/vw43N2L
-        BAHZedeSWo5WVs0un9tREI0=
-X-Google-Smtp-Source: ABdhPJxfr66p7gLYa1C8qI9woDWHJhCUQ3mR5zxfUTBCPiRHyN5cpvTx6WuKWVF1hOIHLOe95qZDtw==
-X-Received: by 2002:a17:906:9c84:: with SMTP id fj4mr19921594ejc.180.1627993407065;
-        Tue, 03 Aug 2021 05:23:27 -0700 (PDT)
-Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
-        by smtp.gmail.com with ESMTPSA id s12sm6142403ejz.36.2021.08.03.05.23.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 05:23:26 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: commit c7e88ecbe328 ("staging: r8188eu: remove rtw_buf_free() function")
-Date:   Tue, 03 Aug 2021 14:23:25 +0200
-Message-ID: <26260563.P9vmH3Ooqy@localhost.localdomain>
-In-Reply-To: <20210803072129.GA1422@agape.jhs>
-References: <20210803072129.GA1422@agape.jhs>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sSAJdBXerSiLD/jae6wSlhsV/AYk+DynXxE+wOZYVUg=;
+        b=BLQUyamACcfzYVqxf7JtKw2yxmwYMq9PM1vxh9RERloaiK5ppDP7NFRPB8DSA9cbDu
+         NG2l+NemJGpztB4dl4U7a5wP43oP6ofd4gQlJHeWesEagb9TSbGHZy2wZ9f7BNqyqT8Q
+         NJo1XUuCc+O9YpiEKXFGaK9ehT04NUdLn8PnZt4RYVWT0TptFl+k7JkymAlqPHQ5a5md
+         T9jU5uBDjJGSJWuFDA/mx8/BADbimsRU8VjlNnCSeUahU++gQ95PuD5oBkbWkoouqPtp
+         9UZkG5ews/egEoQWtv9GQMta1vlXDBbzk5RntwHUi61hlmm2K09giOdun72wsqnT0zqG
+         pSZg==
+X-Gm-Message-State: AOAM532JclOswOBQGC5gr0wRHs0Hv++BGZuCKpkxTIhugDe7XZ97HtN0
+        NsA7+bMVCBZCDmZ24xYkIu7kAnSc//ivynE1
+X-Google-Smtp-Source: ABdhPJzEGU9BDQUsOAVRriRZRQdWv2S8IfGFXRpD5rGJTVc1Hwa4BETVCCidP6Tqo9bvfIRHF54dBg==
+X-Received: by 2002:a5d:9284:: with SMTP id s4mr605937iom.131.1627993447634;
+        Tue, 03 Aug 2021 05:24:07 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id k2sm6244589ior.40.2021.08.03.05.24.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 05:24:06 -0700 (PDT)
+Subject: Re: [PATCH net-next 1/3] dt-bindings: net: qcom,ipa: make imem
+ interconnect optional
+To:     Rob Herring <robh@kernel.org>
+Cc:     Alex Elder <elder@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Gross, Andy" <agross@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Evan Green <evgreen@chromium.org>, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, Alex Elder <elder@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210719212456.3176086-1-elder@linaro.org>
+ <20210719212456.3176086-2-elder@linaro.org>
+ <20210723205252.GA2550230@robh.at.kernel.org>
+ <6c1779aa-c90c-2160-f8b9-497fb8c32dc5@ieee.org>
+ <CAL_JsqKTdUxro-tgCQBzhudaUFQ5GejJL2EMuX2ArcP0JTiG3g@mail.gmail.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <8e75f8b0-5677-42b0-54fe-06e7c69f6669@ieee.org>
+Date:   Tue, 3 Aug 2021 07:24:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <CAL_JsqKTdUxro-tgCQBzhudaUFQ5GejJL2EMuX2ArcP0JTiG3g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, August 3, 2021 9:21:30 AM CEST Fabio Aiuto wrote:
+On 7/28/21 10:33 AM, Rob Herring wrote:
+> On Mon, Jul 26, 2021 at 9:59 AM Alex Elder <elder@ieee.org> wrote:
+>>
+>> On 7/23/21 3:52 PM, Rob Herring wrote:
+>>> On Mon, Jul 19, 2021 at 04:24:54PM -0500, Alex Elder wrote:
+>>>> On some newer SoCs, the interconnect between IPA and SoC internal
+>>>> memory (imem) is not used.  Reflect this in the binding by moving
+>>>> the definition of the "imem" interconnect to the end and defining
+>>>> minItems to be 2 for both the interconnects and interconnect-names
+>>>> properties.
+>>>>
+>>>> Signed-off-by: Alex Elder <elder@linaro.org>
+>>>> ---
+>>>>    .../devicetree/bindings/net/qcom,ipa.yaml      | 18 ++++++++++--------
+>>>>    1 file changed, 10 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+>>>> index ed88ba4b94df5..4853ab7017bd9 100644
+>>>> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+>>>> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+>>>> @@ -87,16 +87,18 @@ properties:
+>>>>          - const: ipa-setup-ready
+>>>>
+>>>>      interconnects:
+>>>> +    minItems: 2
+>>>>        items:
+>>>> -      - description: Interconnect path between IPA and main memory
+>>>> -      - description: Interconnect path between IPA and internal memory
+>>>> -      - description: Interconnect path between IPA and the AP subsystem
+>>>> +      - description: Path leading to system memory
+>>>> +      - description: Path between the AP and IPA config space
+>>>> +      - description: Path leading to internal memory
+>>>>
+>>>>      interconnect-names:
+>>>> +    minItems: 2
+>>>>        items:
+>>>>          - const: memory
+>>>> -      - const: imem
+>>>>          - const: config
+>>>> +      - const: imem
+>>>
+>>> What about existing users? This will generate warnings. Doing this for
+>>> the 2nd item would avoid the need for .dts updates:
+>>>
+>>> - enum: [ imem, config ]
+
+In other words:
+
+   interconnect-names:
+     minItems: 2
+     items:
+       - const: memory
+       - enum: [ imem, config ]
+       - const: imem
+
+What do I do with the "interconnects" descriptions in that case?
+How do I make the "interconnect-names" specified this way align
+with the described interconnect values?  Is that necessary?
+
+>> If I understand correctly, the effect of this would be that
+>> the second item can either be "imem" or "config", and the third
+>> (if present) could only be "imem"?
 > 
-> Do you have any idea of what happened? This
-> topic could give us all deeper understanding
-> of kernel memory management.
+> Yes for the 2nd, but the 3rd item could only be 'config'.
+
+Sorry, yes, that's what I meant.  I might have misread the
+diff output.
+
+>> And you're saying that otherwise, existing users (the only
+>> one it applies to at the moment is "sdm845.dtsi") would
+>> produce warnings, because the interconnects are listed
+>> in an order different from what the binding specifies.
+>>
+>> Is that correct?
 > 
-Hi Fabio,
+> Yes.
+> 
+>> If so, what you propose suggests "imem" could be listed twice.
+>> It doesn't make sense, and maybe it's precluded in other ways
+>> so that's OK.
+> 
+> Good observation. There are generic checks that the strings are unique.
 
-I've just briefly looked at that c7e88ecbe328. I have no time to dig it deeper 
-but at a first look it seems that the following line is the culprit:
+I think I don't like that quite as much, because that
+"no duplicates" rule is implied.  It also avoids any
+confusion in the "respectively" relationship between
+interconnects and interconnect-names.
 
-kfree(&pmlmepriv->assoc_req);
+I understand what you're suggesting though, and I would
+be happy to update the binding in the way you suggest.
+I'd like to hear what you say about my questions above
+before doing so.
 
-It should be:
+>>   But I'd be happy to update "sdm845.dtsi" to
+>> address your concern.  (Maybe that's something you would rather
+>> avoid?)
+> 
+> Better to not change DT if you don't have to. You're probably okay if
+> all clients (consumers of the dtb) used names and didn't care about
 
-kfree(pmlmepriv->assoc_req);
+In the IPA driver, wherever names are specified for things in DT,
+names (only) are used to look them up.  So I'm "probably okay."
 
-The second line frees the memory location whose address is saved in assoc_rec; 
-the first line instead frees assoc_req itself.
+> the order. And I have no idea if all users of SDM845 are okay with a
+> DTB change being required. That's up to QCom maintainers. I only care
+> that ABI breakages are documented as such.
+> 
+>> Also, I need to make a separate update to "sm8350.dtsi" because
+>> that was defined before I understood what I do now about the
+>> interconnects.  It uses the wrong names, and should combine
+>> its first two interconnects into just one.
+> 
+> If the interconnects was ignored in that case, then the change doesn't matter.
 
-Regards,
+That platform is not yet fully supported by the IPA driver, thus
+there is (so far) no instance where it is used.  Resolving this
+is part of enabling support for that.
 
-Fabio 
+Thanks.
+
+					-Alex
 
 
+> Rob
+> 
 
