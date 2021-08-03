@@ -2,164 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEBB3DF4D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E545B3DF4D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239161AbhHCSjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 14:39:10 -0400
-Received: from mga06.intel.com ([134.134.136.31]:57307 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239138AbhHCSjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 14:39:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="274809326"
-X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="274809326"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 11:38:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="502507467"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 03 Aug 2021 11:38:55 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mAzJX-000EAs-8d; Tue, 03 Aug 2021 18:38:55 +0000
-Date:   Wed, 04 Aug 2021 02:37:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:fam1-next-20210729] BUILD SUCCESS
- c78e23007f3e922ca6945598d527ba77ce4a0db8
-Message-ID: <61098d07.zln9AU9tN2pfmRQE%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S239129AbhHCSi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 14:38:59 -0400
+Received: from mail-pj1-f48.google.com ([209.85.216.48]:42578 "EHLO
+        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234248AbhHCSi6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 14:38:58 -0400
+Received: by mail-pj1-f48.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso11pjo.1;
+        Tue, 03 Aug 2021 11:38:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WJYQcXM/ofUPMB+RBQxPq0m9h51ViO2SpCc1//JSrXM=;
+        b=qsLs31PaQBYjTG5CSQ2Qmbj+AEO3fDTJg88QCQut9RBgVJZhVK+6wC1evDA6DE3K4Y
+         guwgBHhyga6aCOZ7az5vxzXDQU3h9AF2oQarmBqgNjAASW9FBKox7dRMdfmg9oYQuKqf
+         ziDz3f7iacBVYAmrkGjDW/aeN3A1nyCBqYCi+kIzsaCfGd/8zmElK7/7oAUtuvTBJJ/3
+         D8SSkcpVvydNp5g8B3+NbHpfbbknZAFcdfELv90gI/uQd6GP8+0U00p3SO4Z5GxdWBRi
+         Gb6MI5g7Vr/+mCQ/68n79U/nnMxKKxOB81C39uhN4rJAZ32lRXYfPyCdA6EemUZj1dUz
+         9K8w==
+X-Gm-Message-State: AOAM533X/gW+VxIi55Kw15wvDW30xrl2bfdpW8V2KBJXQ4IWHH169JfY
+        rO7GO5gggJFl9o01OAO2PvA=
+X-Google-Smtp-Source: ABdhPJzgA/1jktfXbQQDFhXI8WXt99jGtglEOXQTTsjlLfwHbW6JCUWzv/sikq7++DN7OcCQGCUDkg==
+X-Received: by 2002:a65:6248:: with SMTP id q8mr267440pgv.279.1628015926799;
+        Tue, 03 Aug 2021 11:38:46 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:f630:1578:90bf:ff92])
+        by smtp.gmail.com with ESMTPSA id a8sm4388072pfk.219.2021.08.03.11.38.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 11:38:45 -0700 (PDT)
+Subject: Re: [PATCH] blk-mq: allow hardware queue to get more tag while
+ sharing a tag set
+To:     "yukuai (C)" <yukuai3@huawei.com>, axboe@kernel.dk,
+        ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+References: <20210712031818.31918-1-yukuai3@huawei.com>
+ <ade72519-5e16-1cc5-9a77-cb9ead42035e@acm.org>
+ <5ab07cf8-a2a5-a60e-c86a-ab6ea53990bb@huawei.com>
+ <e587c572-bcd7-87c4-5eea-30ccdc7455db@acm.org>
+ <b124b91b-7474-fa27-b78c-01b7e7396a17@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <07d2e6ba-d016-458a-a2ce-877fd7b72ed0@acm.org>
+Date:   Tue, 3 Aug 2021 11:38:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <b124b91b-7474-fa27-b78c-01b7e7396a17@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git fam1-next-20210729
-branch HEAD: c78e23007f3e922ca6945598d527ba77ce4a0db8  net/ipv4: Replace one-element array with flexible-array meber
+On 8/2/21 7:57 PM, yukuai (C) wrote:
+> The cpu I'm testing is Intel(R) Xeon(R) Gold 6140 CPU @ 2.30GHz, and
+> after switching to io_uring with "--thread --gtod_reduce=1
+> --ioscheduler=none", the numbers can increase to 330k, yet still
+> far behind 6000k.
 
-elapsed time: 959m
+On 
+https://ark.intel.com/content/www/us/en/ark/products/120485/intel-xeon-gold-6140-processor-24-75m-cache-2-30-ghz.html 
+I found the following information about that CPU:
+18 CPU cores
+36 hyperthreads
 
-configs tested: 106
-configs skipped: 3
+so 36 fio jobs should be sufficient. Maybe IOPS are lower than expected 
+because of how null_blk has been configured? This is the configuration 
+that I used in my test:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+modprobe null_blk nr_devices=0 &&
+     udevadm settle &&
+     cd /sys/kernel/config/nullb &&
+     mkdir nullb0 &&
+     cd nullb0 &&
+     echo 0 > completion_nsec &&
+     echo 512 > blocksize &&
+     echo 0 > home_node &&
+     echo 0 > irqmode &&
+     echo 1024 > size &&
+     echo 0 > memory_backed &&
+     echo 2 > queue_mode &&
+     echo 1 > power ||
+     exit $?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                          axs101_defconfig
-sh                           se7750_defconfig
-arc                     haps_hs_smp_defconfig
-xtensa                          iss_defconfig
-mips                            gpr_defconfig
-arm                          pxa3xx_defconfig
-sh                           se7751_defconfig
-arm                         assabet_defconfig
-arm                          pxa910_defconfig
-powerpc                 mpc8315_rdb_defconfig
-sh                           se7724_defconfig
-m68k                         apollo_defconfig
-arm                       cns3420vb_defconfig
-arm                          iop32x_defconfig
-mips                 decstation_r4k_defconfig
-arm                        trizeps4_defconfig
-arm                          gemini_defconfig
-sh                   sh7770_generic_defconfig
-sh                           se7343_defconfig
-powerpc                     tqm8541_defconfig
-arm                        vexpress_defconfig
-arm                       multi_v4t_defconfig
-arm                      integrator_defconfig
-riscv                    nommu_k210_defconfig
-arm                          badge4_defconfig
-arm                              alldefconfig
-powerpc                     akebono_defconfig
-powerpc                    klondike_defconfig
-mips                       bmips_be_defconfig
-arm                          ixp4xx_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210803
-x86_64               randconfig-a004-20210803
-x86_64               randconfig-a006-20210803
-x86_64               randconfig-a003-20210803
-x86_64               randconfig-a001-20210803
-x86_64               randconfig-a005-20210803
-i386                 randconfig-a004-20210803
-i386                 randconfig-a005-20210803
-i386                 randconfig-a002-20210803
-i386                 randconfig-a006-20210803
-i386                 randconfig-a001-20210803
-i386                 randconfig-a003-20210803
-i386                 randconfig-a012-20210803
-i386                 randconfig-a011-20210803
-i386                 randconfig-a015-20210803
-i386                 randconfig-a013-20210803
-i386                 randconfig-a014-20210803
-i386                 randconfig-a016-20210803
-riscv                            allmodconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+> The new atomic operations in the hot path is atomic_read() from
+> hctx_may_queue(), and the atomic variable will change in two
+> situations:
+> 
+> a. fail to get driver tag with dbusy not set, increase and set dbusy.
+> b. if dbusy is set when queue switch from busy to dile, decrease and
+> clear dbusy.
+> 
+> During the period a device "idle -> busy -> idle", the new atomic
+> variable can be writen twice at most, which means this is almost
+> readonly in the above test situation. So I guess the impact on
+> performance is minimal ?
 
-clang tested configs:
-x86_64               randconfig-c001-20210803
-x86_64               randconfig-a012-20210803
-x86_64               randconfig-a016-20210803
-x86_64               randconfig-a013-20210803
-x86_64               randconfig-a011-20210803
-x86_64               randconfig-a014-20210803
-x86_64               randconfig-a015-20210803
+Please measure the performance impact of your patch.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+
+Bart.
+
