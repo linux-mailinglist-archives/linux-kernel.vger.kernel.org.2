@@ -2,124 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1522A3DF28D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F9A3DF290
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbhHCQ3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:29:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230444AbhHCQ3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:29:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5AB060F94;
-        Tue,  3 Aug 2021 16:28:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628008135;
-        bh=SG2SsL3n+zwBzuqktba/kbwWFy5NerlL7sqActfnN9w=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=b2UNFfQjP1GIYDtr2RHlusAhByucBlKTlmy4Z0+XlmOvnlLgZ030Uu5XP/gMX/0e7
-         njfdRf5maVkN2pJzhh8vengrZhgaNYrEFrTUg83ujvAndQGOGC8pYa5rQE+Rhius/a
-         WPRQCuPxGPY2lIN7Je3RGBz0e3Qq7REXoMvxxt8AgRLW3rO1hDmqLxeJLX3pv2caj0
-         29jDCWwvkfeoDujXwufMXTTeMaT8y00FJHKqETWO7b7IAMiIvYuTNRxUZb6ALrz/fr
-         SO5OhGIFgLUb/DQFCwwRlnNma9MV1hzZ/ELO1kfie6ISSLkjOtb0QAYHJO+SWXq2iY
-         4fCd3RvAy6Amw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A3DA75C04D4; Tue,  3 Aug 2021 09:28:55 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 09:28:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Yanfei Xu <yanfei.xu@windriver.com>
-Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
- non-release of rcu_node ->lock
-Message-ID: <20210803162855.GT4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-2-paulmck@kernel.org>
- <20210803142458.teveyn6t2gwifdcp@e107158-lin.cambridge.arm.com>
- <20210803155226.GQ4397@paulmck-ThinkPad-P17-Gen-1>
- <20210803161221.igae6y6xa6mlzltn@e107158-lin.cambridge.arm.com>
+        id S233212AbhHCQbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232662AbhHCQbu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:31:50 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1DAC061757;
+        Tue,  3 Aug 2021 09:31:39 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DB7713F0;
+        Tue,  3 Aug 2021 18:31:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1628008296;
+        bh=szAjbLMYnVTaIxc1Bcc/bna35bdig8dzvvk/QSrpxu4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bmTR+xAxX80VNOz3kTD4f947AyBR0VjbTJEIGiBi9aRwv2NJNvsqaCpFBJC5Mso8k
+         aOHmUv3JbTvgMcrh2K9qFHaC5KWRtxvaYzKkIZUBJuPtRouILJ3A0U8ybWNKmFjs4J
+         o3mjXORvcQnYY5b2fPI6iiV1raqOOb3qfP5Gs2Es=
+Date:   Tue, 3 Aug 2021 19:31:24 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Philip Spencer <pspencer@fields.utoronto.ca>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] uvcvideo: Support devices that require SET_INTERFACE(0)
+ before/after streaming
+Message-ID: <YQlvXDCsM3DI6QIj@pendragon.ideasonboard.com>
+References: <alpine.LFD.2.21.2108021331010.12783@fields.fields.utoronto.ca>
+ <alpine.LFD.2.21.2108031201460.28227@fields.fields.utoronto.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210803161221.igae6y6xa6mlzltn@e107158-lin.cambridge.arm.com>
+In-Reply-To: <alpine.LFD.2.21.2108031201460.28227@fields.fields.utoronto.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 05:12:21PM +0100, Qais Yousef wrote:
-> On 08/03/21 08:52, Paul E. McKenney wrote:
-> > On Tue, Aug 03, 2021 at 03:24:58PM +0100, Qais Yousef wrote:
-> > > Hi
-> > > 
-> > > On 07/21/21 13:21, Paul E. McKenney wrote:
-> > > > From: Yanfei Xu <yanfei.xu@windriver.com>
-> > > > 
-> > > > If rcu_print_task_stall() is invoked on an rcu_node structure that does
-> > > > not contain any tasks blocking the current grace period, it takes an
-> > > > early exit that fails to release that rcu_node structure's lock.  This
-> > > > results in a self-deadlock, which is detected by lockdep.
-> > > > 
-> > > > To reproduce this bug:
-> > > > 
-> > > > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
-> > > > 
-> > > > This will also result in other complaints, including RCU's scheduler
-> > > > hook complaining about blocking rather than preemption and an rcutorture
-> > > > writer stall.
-> > > > 
-> > > > Only a partial RCU CPU stall warning message will be printed because of
-> > > > the self-deadlock.
-> > > > 
-> > > > This commit therefore releases the lock on the rcu_print_task_stall()
-> > > > function's early exit path.
-> > > > 
-> > > > Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> > > > Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > ---
-> > > 
-> > > We are seeing similar stall/deadlock issue on android 5.10 kernel, is the fix
-> > > relevant here? Trying to apply the patches and test, but the problem is tricky
-> > > to reproduce so thought worth asking first.
-> > 
-> > Looks like the relevant symptoms to me, so I suggest trying this series
-> > from -rcu:
-> > 
-> > 8baded711edc ("rcu: Fix to include first blocked task in stall warning")
-> > f6b3995a8b56 ("rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock")
-> 
-> Great thanks. These are the ones we picked as the rest was a bit tricky to
-> apply on 5.10.
-> 
-> While at it, we see these errors too though they look harmless. They happen
-> all the time
-> 
-> 	[  595.292685] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #02!!!"}
-> 	[  595.301467] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> 	[  595.389353] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> 	[  595.397454] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> 	[  595.417112] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> 	[  595.425215] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> 	[  595.438807] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> 
-> I used to see them on mainline a while back but seem to have been fixed.
-> Something didn't get backported to 5.10 perhaps?
+Hi Philip,
 
-I believe that you need at least this one:
-
-47c218dcae65 ("tick/sched: Prevent false positive softirq pending warnings on RT")
-
-							Thanx, Paul
-
-> It might be a question to Frederic actually..
+On Tue, Aug 03, 2021 at 12:04:29PM -0400, Philip Spencer wrote:
+> On Mon, 2 Aug 2021, Philip Spencer wrote:
 > 
-> Thanks!
+> > (This is my first kernel-related mailing list posting; my apologies if I have
+> > targeted wrong maintainers and/or lists. This is posted on the Ubuntu
+> > launchpad bug tracker at
+> > https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1938669 and it was
+> > suggested there that I post directly to the maintainers/mailing lists).
+
+Welcome to the kernel community :-)
+
+> My apologies; I thought I had set my mailer not to mangle the patches but
+> I hadn't. Resending properly formatted patch (I hope):
+
+Could you please resend the whole patch ? Otherwise I can't apply it
+easily with git-am.
+
+> --- a/drivers/media/usb/uvc/uvc_video.c	2021-08-01 10:19:19.343564026 -0400
+> +++ b/drivers/media/usb/uvc/uvc_video.c	2021-08-01 10:38:54.234311440 -0400
+> @@ -2108,6 +2081,15 @@ int uvc_video_start_streaming(struct uvc
+>  {
+>  	int ret;
 > 
-> --
-> Qais Yousef
+> +	/* On a bulk-based device where there is only one alternate
+> +	 * setting possibility, set it explicitly to 0. This should be
+> +	 * the default value, but some devices (e.g. Epiphan Systems
+> +	 * framegrabbers) freeze and won't restart streaming until they
+> +	 * receive a SET_INTERFACE(0) request.
+> +	 */
+> +	if (stream->intf->num_altsetting == 1)
+> +  		usb_set_interface(stream->dev->udev, stream->intfnum, 0);
+
+I'm concerned about this, as it may break other bulk devices that don't
+expect a SET_INTERFACE(0) request here.
+
+It would be useful to know if Windows issues this request when starting
+streaming for bulk devices.
+
+> +
+>  	ret = uvc_video_clock_init(stream);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -2135,9 +2117,17 @@ void uvc_video_stop_streaming(struct uvc
+>  {
+>  	uvc_video_stop_transfer(stream, 1);
+> 
+> -	if (stream->intf->num_altsetting > 1) {
+> -		usb_set_interface(stream->dev->udev, stream->intfnum, 0);
+> -	} else {
+> +	/* On isochronous devices, switch back to interface 0 to move
+> +	 * the device out of the "streaming" state.
+> +	 *
+> +	 * On bulk-based devices, this interface will already be selected
+> +	 * but we re-select it explicitly because some devices seem to need
+> +	 * a SET_INTERFACE(0) request to prepare them for receiving other
+> +	 * control requests and/or to tell them to stop streaming.
+
+Does the device refuse any control request while streaming, or can you
+still set controls ? Does the driver print any error message in the
+kernel log when you stop and restart streaming without this patch ?
+
+> +	 */
+> +	usb_set_interface(stream->dev->udev, stream->intfnum, 0);
+> +
+> +	if (stream->intf->num_altsetting == 1) {
+>  		/* UVC doesn't specify how to inform a bulk-based device
+>  		 * when the video stream is stopped. Windows sends a
+>  		 * CLEAR_FEATURE(HALT) request to the video streaming
+> 
+> > Video capture devices made by Epiphan Systems (vendor id 0x2b77) work once,
+> > but as soon as the video device is closed (or even if it is kept open but the
+> > application issues a VIDIOC_STREAMOFF ioctl) it won't work again - subsequent
+> > calls to VIDOC_DQBUF simply hang - until the device is unbound from and
+> > rebound to the uvcvideo module. (modprobe -r uvcvideo; modprobe uvcvideo also
+> > works).
+> >
+> > For example:
+> >
+> >   ffplay /dev/video0 -- works fine and shows the captured stream.
+> >
+> >   ffplay /dev/video0 -- when run a second time: hangs and does not capture
+> > anything
+> >
+> >   modprobe -r uvcvideo ; modprobe uvcvideo; ffplay /dev/video0 -- works fine
+> > again.
+> >
+> > Experimenting with the device and the uvcvideo module source code reveals that
+> > problem is the device is expecting SET_INTERFACE(0) to be sent to return it to
+> > a state where it can accept control requests and start streaming again.
+> >
+> > The code in uvc_video.c has several comments stating that some bulk-transfer
+> > devices require a SET_INTERFACE(0) call to be made before any control
+> > commands, even though 0 is already the default and only valid interface value.
+> > And, the function uvc_video_init makes such a call (which is why the device
+> > starts working again after rebinding to the uvcvideo module). But no such call
+> > is made when streaming is stopped then restarted.
+> >
+> > Furthermore, SET_INTERFACE(0) is the mechanism by which isochronous devices
+> > are told to stop streaming, and the comments in uvc_video_stop_streaming state
+> > that the UVC specification is unclear on how a bulk-based device should be
+> > told to stop streaming, so it is reasonable to imagine this particular
+> > bulk-based device might be expecting the same SET_INTERFACE(0) call that an
+> > isochronous device would get as means of being told to stop streaming.
+
+It would be quite confusing to use SET_INTERFACE(0) to instruct the
+device to start streaming *and* to stop streaming though. I think this
+has just not been properly thought of when the UVC specification was
+designed, it's undefined, and different devices likely implement
+different mechanisms :-(
+
+> > The attached patch fixes the problem for these Epiphan devices by adding a
+
+s/This attached patch/This commit/ as it won't be attached anymore once
+we merge this.
+
+> > SET_INTERFACE(0) call in two places. Either one by itself is sufficient to
+> > resolve the symptoms but I think it is probably safest to include both.
+
+I think we should be cautious. UVC devices tend to be buggy in lots of
+different ways, you can't assume that something that is valid according
+to the USB and UVC specifications will not break some devices.
+
+> > The first hunk adds a SET_INTERFACE(0) call in uvc_video_start_streaming, but
+> > only in the bulk-based case where 0 is the only possible interface value (it
+> > won't mess with an isochronous device that might be set to a different
+> > interface).
+> >
+> > The second hunk modifies the behaviour of uvc_video_stop_streaming to call
+> > SET_INTERFACE(0) unconditionally instead of only calling it for isochronous
+> > devices. Since interface 0 should already be set on non-isochronous devices,
+> > it should be safe to set it again, and this way devices that are expecting it
+> > as a signal to stop streaming will get it.
+> >
+> > The patch is against 5.4.137 but also applies cleanly to 5.14-rc3.
+> >
+> > --- a/drivers/media/usb/uvc/uvc_video.c	2021-08-01 10:19:19.343564026 -0400
+> > +++ b/drivers/media/usb/uvc/uvc_video.c	2021-08-01 10:38:54.234311440 -0400
+> > @@ -2108,6 +2081,15 @@ int uvc_video_start_streaming(struct uvc
+> >  {
+> >  	int ret;
+> >
+> > +	/* On a bulk-based device where there is only one alternate
+> > +	 * setting possibility, set it explicitly to 0. This should be
+> > +	 * the default value, but some devices (e.g. Epiphan Systems
+> > +	 * framegrabbers) freeze and won't restart streaming until they
+> > +	 * receive a SET_INTERFACE(0) request.
+> > +	 */
+> > +	if (stream->intf->num_altsetting == 1) +
+> > usb_set_interface(stream->dev->udev, stream->intfnum, 0);
+> > +
+> >  	ret = uvc_video_clock_init(stream);
+> >  	if (ret < 0)
+> >  		return ret;
+> > @@ -2135,9 +2117,17 @@ void uvc_video_stop_streaming(struct uvc
+> >  {
+> >  	uvc_video_stop_transfer(stream, 1);
+> >
+> > -	if (stream->intf->num_altsetting > 1) {
+> > -		usb_set_interface(stream->dev->udev, stream->intfnum, 0);
+> > -	} else {
+> > +	/* On isochronous devices, switch back to interface 0 to move
+> > +	 * the device out of the "streaming" state.
+> > +	 *
+> > +	 * On bulk-based devices, this interface will already be selected
+> > +	 * but we re-select it explicitly because some devices seem to need
+> > +	 * a SET_INTERFACE(0) request to prepare them for receiving other
+> > +	 * control requests and/or to tell them to stop streaming.
+> > +	 */
+> > +	usb_set_interface(stream->dev->udev, stream->intfnum, 0);
+> > +
+> > +	if (stream->intf->num_altsetting == 1) {
+> >  		/* UVC doesn't specify how to inform a bulk-based device
+> >  		 * when the video stream is stopped. Windows sends a
+> >  		 * CLEAR_FEATURE(HALT) request to the video streaming
+> >
+
+-- 
+Regards,
+
+Laurent Pinchart
