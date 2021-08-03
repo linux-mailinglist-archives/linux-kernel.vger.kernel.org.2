@@ -2,85 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565C93DF432
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AE13DF435
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238481AbhHCRyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238461AbhHCRyQ (ORCPT
+        id S238490AbhHCRz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:55:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20474 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238468AbhHCRz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:54:16 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BCCC0613D5;
-        Tue,  3 Aug 2021 10:54:04 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id u2so16374272plg.10;
-        Tue, 03 Aug 2021 10:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=7w7E/NHu0k1VJGAL/P9Q/nTang9rJY0W7RSl3u509B4=;
-        b=mVGRRanp+EiOMsn9nvAbHmJP777BHRDBkBea2qAhuWmI98I/0cK8q/TSwf2DUfSlZM
-         pdsc9GZkA0g6qlhmiMJXevF4y9D18N0RX+LlystQ1oHFFklPfqnvwiVBgNNC2k7RSSYG
-         si+JU6PMFUR6IVD0VWEh/uuJpVuiJYtNvwUWbpFXFVHQeJzvd/hfNLGgBNYzdBgkKMEJ
-         EDQGoVQpHLlpTru/J6n89xFTP+Bnhjq6b/RnSUCGMy2gSsjO85uKSqGm+mFBKerEndeQ
-         h/oGCFduYW7ZW4PHXTSp1LlNxR2A+fRfMhajIm+idoKoHK22+aocKCR3dt+NPzN2nUKV
-         ovtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=7w7E/NHu0k1VJGAL/P9Q/nTang9rJY0W7RSl3u509B4=;
-        b=i+sncxqnLFxChBiGhKrPYk5MvKenpiBT2fMqr7Pi40QlwKESeFu4ysrBIScf5avNs0
-         Bxbdu0BP8UhifrWrGFUUOZ6mk/BNgsDO++dwqMj336tj83MlZPQxAVk7BGr3Q02vJp4b
-         pNlCF9BxBmxXN9o3/GjQd1zes6VGHo+cRqHwOE2qhqmgJMcMccCMpqIVP2ZBtRyleirS
-         ZI3RRWUdIaWlxN2E94UW4FjpYn2dUD5L1nL/25jwxJyAjPHS7/VIfmFiU/6gr8ImpQau
-         nTLAKxTXcSF2hDuSpnlFMMBX9a/A5aSjUhbwTNwkvKoGHlu6RJtC/jIUyrsgg8jvXxsk
-         7l1w==
-X-Gm-Message-State: AOAM531xIGFzOsOOYDaQfLTfpgoBROC3jKZUwDljeQdCvPREs9jmc4Hd
-        pE7nyiQluLA7ghyaa2R3XYU=
-X-Google-Smtp-Source: ABdhPJxdF8P1ue4xo5SMrsOZy5M/V6nyz3jQvOoZz76lQW6zMbEUq5n4StGvBd+PgHggtonSkGNQrA==
-X-Received: by 2002:a17:90a:7f04:: with SMTP id k4mr24573451pjl.32.1628013244311;
-        Tue, 03 Aug 2021 10:54:04 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id k25sm16011888pfa.213.2021.08.03.10.53.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 10:54:03 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Woudstra <ericwouds@gmail.com>,
-        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: Re: [PATCH net-next v2 4/4] net: dsa: mt7530: always install FDB entries with IVL and FID 1
-Date:   Wed,  4 Aug 2021 01:53:54 +0800
-Message-Id: <20210803175354.3026608-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210803165138.3obbvtjj2xn6j2n5@skbuf>
-References: <20210803160405.3025624-1-dqfext@gmail.com> <20210803160405.3025624-5-dqfext@gmail.com> <20210803165138.3obbvtjj2xn6j2n5@skbuf>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        Tue, 3 Aug 2021 13:55:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628013346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=TSdLbIa17Dn1sbXRatCyAZJSnstw1gwhMZIeM9izR74=;
+        b=cUNoU1SqV00jwPoy7I/OiWnmAFjg0QLu9jYaEVm460aO3s2K6m0Y+t9wuhokqxHA4WA2CW
+        iZokNpjTek1UfZ7ONZvpzWStn0sIq97oeQ7qtzngis6CQvO1Z+KCzZ2YulIFPoPc/McfWi
+        ZvjIf18Az0Zm9bQ4R4eyCLYdzvAQ3Yo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-108-mJ0SJSudN9-XCPEmJb--rQ-1; Tue, 03 Aug 2021 13:55:43 -0400
+X-MC-Unique: mJ0SJSudN9-XCPEmJb--rQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F91B190A7A0;
+        Tue,  3 Aug 2021 17:55:41 +0000 (UTC)
+Received: from llong.com (unknown [10.22.33.76])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C560A19C44;
+        Tue,  3 Aug 2021 17:55:35 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Luis Goncalves <lgoncalv@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] mm/memcg: Disable task obj_stock for PREEMPT_RT
+Date:   Tue,  3 Aug 2021 13:55:19 -0400
+Message-Id: <20210803175519.22298-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 07:51:38PM +0300, Vladimir Oltean wrote:
-> 
-> The way FDB entries are installed now makes a lot more intuitive sense.
+For PREEMPT_RT kernel, preempt_disable() and local_irq_save()
+are typically converted to local_lock() and local_lock_irqsave()
+respectively. These two variants of local_lock() are essentially
+the same. Thus, there is no performance advantage in choosing one
+over the other.
 
-Did you forget to add the Reviewed-by tag?
+As there is no point in maintaining two different sets of obj_stock,
+it is simpler and more efficient to just disable task_obj and use
+only irq_obj for PREEMPT_RT. However, task_obj will still be there
+in the memcg_stock_pcp structure even though it is not used in this
+configuration.
+
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ mm/memcontrol.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 87c883227f90..4f80770cb97b 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2120,12 +2120,22 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+  * which is cheap in non-preempt kernel. The interrupt context object stock
+  * can only be accessed after disabling interrupt. User context code can
+  * access interrupt object stock, but not vice versa.
++ *
++ * For PREEMPT_RT kernel, preempt_disable() and local_irq_save() may have
++ * to be changed to variants of local_lock(). This eliminates the
++ * performance advantage of using preempt_disable(). Fall back to always
++ * use local_irq_save() and use only irq_obj for simplicity.
+  */
++static inline bool use_task_obj_stock(void)
++{
++	return !IS_ENABLED(CONFIG_PREEMPT_RT) && likely(in_task());
++}
++
+ static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
+ {
+ 	struct memcg_stock_pcp *stock;
+ 
+-	if (likely(in_task())) {
++	if (use_task_obj_stock()) {
+ 		*pflags = 0UL;
+ 		preempt_disable();
+ 		stock = this_cpu_ptr(&memcg_stock);
+@@ -2139,7 +2149,7 @@ static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
+ 
+ static inline void put_obj_stock(unsigned long flags)
+ {
+-	if (likely(in_task()))
++	if (use_task_obj_stock())
+ 		preempt_enable();
+ 	else
+ 		local_irq_restore(flags);
+@@ -2212,7 +2222,7 @@ static void drain_local_stock(struct work_struct *dummy)
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	drain_obj_stock(&stock->irq_obj);
+-	if (in_task())
++	if (use_task_obj_stock())
+ 		drain_obj_stock(&stock->task_obj);
+ 	drain_stock(stock);
+ 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+@@ -3217,7 +3227,7 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+ {
+ 	struct mem_cgroup *memcg;
+ 
+-	if (in_task() && stock->task_obj.cached_objcg) {
++	if (use_task_obj_stock() && stock->task_obj.cached_objcg) {
+ 		memcg = obj_cgroup_memcg(stock->task_obj.cached_objcg);
+ 		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
+ 			return true;
+-- 
+2.18.1
+
