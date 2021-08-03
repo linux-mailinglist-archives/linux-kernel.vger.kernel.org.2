@@ -2,120 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F123DF7C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 00:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5FA3DF7C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 00:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232706AbhHCWWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 18:22:50 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:48859 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhHCWWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 18:22:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628029358; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=xzpg5pA0ExfM1REjxgNV+oHxyk1EtEF9kRHLopdOfbk=; b=I++EZ8Fkw+R0MQ6QTXnpbs1SF+oAtUUln4dbUbVmlDnqWoPa/7ktf2WrNwUj2R5qokcslwpG
- JoFxdafrjQq8z7Bi055uQ7r/92N/ajNVhcuTKstZBP8j8lAVUVg+nGqL1sX7hWEFM1iCoMmI
- xMYBTuF6L4DtDEE1wnnBhsTLVPg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6109c1a8dc54451a537a3d70 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 22:22:32
- GMT
-Sender: rishabhb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3D372C433D3; Tue,  3 Aug 2021 22:22:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1A520C433F1;
-        Tue,  3 Aug 2021 22:22:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1A520C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
-From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
-To:     sudeep.holla@arm.com, cristian.marussi@arm.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        avajid@codeaurora.org, adharmap@codeaurora.org,
-        Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH] firmware: arm_scmi: Free mailbox channels if probe fails
-Date:   Tue,  3 Aug 2021 15:22:22 -0700
-Message-Id: <1628029342-3638-1-git-send-email-rishabhb@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S232827AbhHCWXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 18:23:08 -0400
+Received: from mail-io1-f53.google.com ([209.85.166.53]:39646 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhHCWXH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 18:23:07 -0400
+Received: by mail-io1-f53.google.com with SMTP id f6so221670ioc.6;
+        Tue, 03 Aug 2021 15:22:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8vjGdtgOlhKD6T/Y7y+vqQm8JON196rARUlkKY8t6Xc=;
+        b=sap1TsKD5gcb5wKFplVtoM6hueg59GZdOzmGb/YOVTa3G0AwiMvGvXi5UAheQEffmq
+         WpJUogkD+P6pJASAqFYJA/FKjjx3XHbypOvu7h5aVmbr6vS6+mwmGuZbg6buW0l/7VO6
+         eBRhvHy3aHfuWvosrxCmhk4Z48uJGJPvp+Be5TnwzgSytqBdstPocvmMaLDV3TjD4f09
+         Cwyra9xyYC51wOI0k55heeNurNiRv/Qk+bDOTnvQNGYMdg6rxTSCKSaZ9EP2Wzz7a8Lu
+         9l0bNZS4OJ7TtcqLRj2wgA6I5iKp1dSqSCH2OHuY8aQdcm0AaMKqchK5CqjAq+xN6Osr
+         lZ3w==
+X-Gm-Message-State: AOAM5301GSiYJYUJlKyFKs9/dORQB6OuYFw51RCq2011apsx0p9f1uy0
+        zlpaIEnZpMPWIMpdasJofqNULGbsZg==
+X-Google-Smtp-Source: ABdhPJyKKzVfEwjBGSMSfFidncWQsibFwTzulMUmOpTrvtt9JIlwsG2TDBPZI3CK0+hyN+cuB7hKwQ==
+X-Received: by 2002:a5d:925a:: with SMTP id e26mr698551iol.195.1628029375748;
+        Tue, 03 Aug 2021 15:22:55 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id l5sm249272ion.44.2021.08.03.15.22.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 15:22:55 -0700 (PDT)
+Received: (nullmailer pid 3835626 invoked by uid 1000);
+        Tue, 03 Aug 2021 22:22:53 -0000
+Date:   Tue, 3 Aug 2021 16:22:53 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] dt-bindings: PCI: kirin: Fix compatible string
+Message-ID: <YQnBvbXK6p9t7jxh@robh.at.kernel.org>
+References: <cover.1627965261.git.mchehab+huawei@kernel.org>
+ <3e3e29a88f8e71eb228edf33d70cbe70db431408.1627965261.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e3e29a88f8e71eb228edf33d70cbe70db431408.1627965261.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mailbox channels for the base protocol are setup during probe.
-There can be a scenario where probe fails to acquire the base
-protocol due to a timeout leading to cleaning up of all device
-managed memory including the scmi_mailbox structure setup during
-mailbox_chan_setup function.
-[   12.735104]arm-scmi soc:qcom,scmi: timed out in resp(caller: version_get+0x84/0x140)
-[   12.735224]arm-scmi soc:qcom,scmi: unable to communicate with SCMI
-[   12.735947]arm-scmi: probe of soc:qcom,scmi failed with error -110
+On Tue, 03 Aug 2021 06:38:55 +0200, Mauro Carvalho Chehab wrote:
+> The pcie-kirin driver doesn't declare a hisilicon,kirin-pcie.
+> Also, remove the useless comment after the description, as other
+> compat will be supported by the same driver in the future.
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/pci/kirin-pcie.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
 
-Now when a message arrives at cpu slightly after the timeout, the mailbox
-controller will try to call the rx_callback of the client and might end
-up accessing freed memory.
-[   12.758363][    C0] Call trace:
-[   12.758367][    C0]  rx_callback+0x24/0x160
-[   12.758372][    C0]  mbox_chan_received_data+0x44/0x94
-[   12.758386][    C0]  __handle_irq_event_percpu+0xd4/0x240
-This patch frees the mailbox channels setup during probe and adds some more
-error handling in case the probe fails.
-
-Change-Id: I1214ec2c4c92c4a3ca5fa73de11e0e403b13b46a
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
----
- drivers/firmware/arm_scmi/driver.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 9b2e8d4..518c7b9 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -1430,7 +1430,7 @@ static int scmi_probe(struct platform_device *pdev)
- 
- 	ret = scmi_xfer_info_init(info);
- 	if (ret)
--		return ret;
-+		goto clear_txrx_setup;
- 
- 	if (scmi_notification_init(handle))
- 		dev_err(dev, "SCMI Notifications NOT available.\n");
-@@ -1443,7 +1443,7 @@ static int scmi_probe(struct platform_device *pdev)
- 	ret = scmi_protocol_acquire(handle, SCMI_PROTOCOL_BASE);
- 	if (ret) {
- 		dev_err(dev, "unable to communicate with SCMI\n");
--		return ret;
-+		goto notification_exit;
- 	}
- 
- 	mutex_lock(&scmi_list_mutex);
-@@ -1482,6 +1482,13 @@ static int scmi_probe(struct platform_device *pdev)
- 	}
- 
- 	return 0;
-+
-+notification_exit:
-+	scmi_notification_exit(&info->handle);
-+clear_txrx_setup:
-+	idr_for_each(&info->tx_idr, info->desc->ops->chan_free, &info->tx_idr);
-+	idr_for_each(&info->rx_idr, info->desc->ops->chan_free, &info->rx_idr);
-+	return ret;
- }
- 
- void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Applied, thanks!
