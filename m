@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5864F3DF837
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69DB3DF835
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232644AbhHCXGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 19:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43436 "EHLO
+        id S233224AbhHCXGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 19:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232814AbhHCXFy (ORCPT
+        with ESMTP id S232890AbhHCXFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 19:05:54 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147D4C061757
+        Tue, 3 Aug 2021 19:05:55 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD32BC061757
         for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 16:05:43 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id k4so180840wrc.0
+Received: by mail-wm1-x336.google.com with SMTP id i10-20020a05600c354ab029025a0f317abfso2718617wmq.3
         for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 16:05:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=i0Jq8y64wYt8IiQ4pYcT3bBk2fDWTRj+O3SywM33NEA=;
-        b=KExo1FvD5nfpg4xOJo5bO9G0+M9p5sbEnbC/Guq8Wu4J3rtElaTCvj/VPG4R7Zf3gM
-         2yYsNBW2LOGMFXO5eKbjCTWeB+7Jx5FxjevtXtewCfUeElBmeNVJaDEuDS0ldnL3i2AT
-         bThQiRhhfv+iDPrDQX7PEduGpo01R75mJS67ZaKuMCixGHrvOYN4IIjqQInKRcTA/Vcc
-         /Ywv6cSe6uIQFBfPvUoR88iaEQNYcoU8qH2Uh3ccCjjhhapkMySAS3EiFPOFIRCi/jcQ
-         DLBIpC2G+/BAKcVfV0ubPSsfXcTpu0F39PWEPKrR7i3L55s2nipuRPQIBqCt+ct5u+r+
-         9ybA==
+        bh=ZDf3qHXAdeDRi+VVyrEKfVgmqaxkWw8JapgEiFWemZs=;
+        b=M+i/EzJA5AjNXqPUHe0D9rejriaqrB3HoL0JpvOKhWOX9bxxiOSnqOkx3RhOHaPNX1
+         VEwAWQ9u8KIVD8jlfFgmn46CLMTF1eSPLMJR9qfltj/9ROW3SvFH87wBORPieENn5uc4
+         Yz9n/nUd52EtnV36yJJCVYxoiNYYYuu6mCn0lJPGOWXvKN8kSWqRhd0fTmSHflJ8D48v
+         B0jK3GCq/pRWGZ7MHLkX/1l5fg0yh+Qru8H2LxUpx5npQ9qNs75UGYwR5yeAbd3qBuh2
+         noDf5B2DIuKkpoPUjCeIRJ40hb+cibHKn7/uYxMuwnVN03NC/Luq6zZDL7C670H+6k7W
+         fRIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=i0Jq8y64wYt8IiQ4pYcT3bBk2fDWTRj+O3SywM33NEA=;
-        b=LnjDfMDjWB7jhNgljaWYfgPqqsgeJLpulr1oROi/qpiI6blddO6QZx4lyr+42vjfFJ
-         0znA1vVLHljEeYOU8pctjtvHQGIiLZMyvh7GAfVrpJXUqd15X6sG6Td0KsF9q3qq4Pud
-         k9Fqi5MaUM+iQVJHl3JnkvKcCxS7yuPil741Rrk29zxEAYu66az/E92DC59SPaMdf8xf
-         X3vX2brsm6HQBBMC4fiNQ9cQM9lj+CtQSsC5c1iZg1Bqn3HAjQ8ppCCItid7yMXOaS60
-         9i1YPvnRUMbFEcbJ3AmGEa0aj7iwtGwmji+LFX6VwJuofWWA4xVJnNDoVMLzZdJzKabD
-         wcoQ==
-X-Gm-Message-State: AOAM5319APJDuA++SnwvsksjHozpDYXNpvSFnJTd2Xt/XwJEYU0jYaVx
-        wU9d5PWEvhtQFpbByImcIqsOWg==
-X-Google-Smtp-Source: ABdhPJx6Cw7atJMCXCfQcxtLU8Qn6yLP8bP1kglPPYsrgpNOlWVmO2FUgSiLs/n1ixDQs1BTdr7Ygw==
-X-Received: by 2002:a5d:5541:: with SMTP id g1mr26047429wrw.29.1628031941469;
-        Tue, 03 Aug 2021 16:05:41 -0700 (PDT)
+        bh=ZDf3qHXAdeDRi+VVyrEKfVgmqaxkWw8JapgEiFWemZs=;
+        b=l6Okwerf0ufzHDh2Idrwc4VAa6uU/qG9JHtfFoHHQFyYNUoKlYvEhe+0bagfe2/YWS
+         OUSpqBXuP6d+lp0bSvrEx6VWk8K6WVYSN2kOXzb58Oq9D4gQWcM/cNNthtePq0rLCf94
+         1czvZ0sdtumiO8Khn1/V0ElzFNHAgO+lMn+HUz5FqDNNME+3wfE9nYbDmOgGywKFQAU7
+         j0gvoKVAKfkVIl3pb3BTQahmDvvHQC2iV89/r6MJx/ve3k7nRrqPtUuuBl9YVRJdzslz
+         8TKr8TdlSEUwjn+5bvuHEc1dLMuwFbkkU4nIJj6G5VfBkfvoEpJ7+W3uA7g7Y6O+EJqo
+         gBrA==
+X-Gm-Message-State: AOAM533BFyTDcDCkryoWCJMZ0JWXvyU2oV44bzHmeviKJliMKiXSJmZ2
+        rs3ZmjDUHfk5i+Ulrx5HV7boAg==
+X-Google-Smtp-Source: ABdhPJwfDiX6tIrtFjdHvGOhySJz0EdiDQ5m/1lPC2kAlW5PNkQ3QbLzz6MdcNUAUkRum7+X4DpKpg==
+X-Received: by 2002:a05:600c:4657:: with SMTP id n23mr24304234wmo.46.1628031942405;
+        Tue, 03 Aug 2021 16:05:42 -0700 (PDT)
 Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id i29sm330045wmb.20.2021.08.03.16.05.40
+        by smtp.gmail.com with ESMTPSA id i29sm330045wmb.20.2021.08.03.16.05.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 16:05:40 -0700 (PDT)
+        Tue, 03 Aug 2021 16:05:41 -0700 (PDT)
 From:   Phillip Potter <phil@philpotter.co.uk>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, martin@kaiser.cx,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/8] staging: r8188eu: remove RT_TRACE calls from hal/rtl8188e_hal_init.c
-Date:   Wed,  4 Aug 2021 00:05:32 +0100
-Message-Id: <20210803230535.74254-6-phil@philpotter.co.uk>
+Subject: [PATCH 6/8] staging: r8188eu: remove RT_TRACE calls from hal/rtl8188e_mp.c
+Date:   Wed,  4 Aug 2021 00:05:33 +0100
+Message-Id: <20210803230535.74254-7-phil@philpotter.co.uk>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210803230535.74254-1-phil@philpotter.co.uk>
 References: <20210803230535.74254-1-phil@philpotter.co.uk>
@@ -64,113 +64,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove RT_TRACE macro calls from hal/rtl8188e_hal_init.c, so that ultimately
-the macro definition itself can eventually be removed.
+Remove RT_TRACE macro calls from hal/rtl8188e_mp.c, so that ultimately the
+macro definition itself can eventually be removed.
 
 Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 ---
- .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 25 -------------------
- 1 file changed, 25 deletions(-)
+ drivers/staging/r8188eu/hal/rtl8188e_mp.c | 43 +++--------------------
+ 1 file changed, 4 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index 1a7a62dd8504..5855ceb45472 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -409,12 +409,6 @@ static int _BlockWrite(struct adapter *padapter, void *buffer, u32 buffSize)
- 	blockCount_p1 = buffSize / blockSize_p1;
- 	remainSize_p1 = buffSize % blockSize_p1;
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_mp.c b/drivers/staging/r8188eu/hal/rtl8188e_mp.c
+index 510906cc6007..8f3cccfc23f4 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_mp.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_mp.c
+@@ -13,17 +13,11 @@ s32 Hal_SetPowerTracking(struct adapter *padapter, u8 enable)
+ 	struct hal_data_8188e	*pHalData = GET_HAL_DATA(padapter);
+ 	struct odm_dm_struct *pDM_Odm = &(pHalData->odmpriv);
  
--	if (blockCount_p1) {
--		RT_TRACE(_module_hal_init_c_, _drv_notice_,
--			 ("_BlockWrite: [P1] buffSize(%d) blockSize_p1(%d) blockCount_p1(%d) remainSize_p1(%d)\n",
--			 buffSize, blockSize_p1, blockCount_p1, remainSize_p1));
+-	if (!netif_running(padapter->pnetdev)) {
+-		RT_TRACE(_module_mp_, _drv_warning_,
+-			 ("SetPowerTracking! Fail: interface not opened!\n"));
++	if (!netif_running(padapter->pnetdev))
+ 		return _FAIL;
 -	}
+ 
+-	if (!check_fwstate(&padapter->mlmepriv, WIFI_MP_STATE)) {
+-		RT_TRACE(_module_mp_, _drv_warning_,
+-			 ("SetPowerTracking! Fail: not in MP mode!\n"));
++	if (!check_fwstate(&padapter->mlmepriv, WIFI_MP_STATE))
+ 		return _FAIL;
+-	}
+ 
+ 	if (enable)
+ 		pDM_Odm->RFCalibrateInfo.bTXPowerTracking = true;
+@@ -262,10 +256,6 @@ void Hal_SetCCKTxPower(struct adapter *pAdapter, u8 *TxPower)
+ 	write_bbreg(pAdapter, rTxAGC_B_CCK11_A_CCK2_11, bMaskByte0, TxPower[RF_PATH_B]);
+ 	tmpval = (TxPower[RF_PATH_B]<<16) | (TxPower[RF_PATH_B]<<8) | TxPower[RF_PATH_B];
+ 	write_bbreg(pAdapter, rTxAGC_B_CCK1_55_Mcs32, 0xffffff00, tmpval);
 -
- 	for (i = 0; i < blockCount_p1; i++) {
- 		ret = rtw_writeN(padapter, (FW_8188E_START_ADDRESS + i * blockSize_p1), blockSize_p1, (bufferPtr + i * blockSize_p1));
- 		if (ret == _FAIL)
-@@ -428,12 +422,6 @@ static int _BlockWrite(struct adapter *padapter, void *buffer, u32 buffSize)
- 		blockCount_p2 = remainSize_p1/blockSize_p2;
- 		remainSize_p2 = remainSize_p1%blockSize_p2;
- 
--		if (blockCount_p2) {
--				RT_TRACE(_module_hal_init_c_, _drv_notice_,
--					 ("_BlockWrite: [P2] buffSize_p2(%d) blockSize_p2(%d) blockCount_p2(%d) remainSize_p2(%d)\n",
--					 (buffSize-offset), blockSize_p2, blockCount_p2, remainSize_p2));
--		}
--
- 		for (i = 0; i < blockCount_p2; i++) {
- 			ret = rtw_writeN(padapter, (FW_8188E_START_ADDRESS + offset + i*blockSize_p2), blockSize_p2, (bufferPtr + offset + i*blockSize_p2));
- 
-@@ -448,10 +436,6 @@ static int _BlockWrite(struct adapter *padapter, void *buffer, u32 buffSize)
- 
- 		blockCount_p3 = remainSize_p2 / blockSize_p3;
- 
--		RT_TRACE(_module_hal_init_c_, _drv_notice_,
--			 ("_BlockWrite: [P3] buffSize_p3(%d) blockSize_p3(%d) blockCount_p3(%d)\n",
--			 (buffSize-offset), blockSize_p3, blockCount_p3));
--
- 		for (i = 0; i < blockCount_p3; i++) {
- 			ret = rtw_write8(padapter, (FW_8188E_START_ADDRESS + offset + i), *(bufferPtr + offset + i));
- 
-@@ -502,7 +486,6 @@ static int _WriteFW(struct adapter *padapter, void *buffer, u32 size)
- 		if (ret == _FAIL)
- 			goto exit;
- 	}
--	RT_TRACE(_module_hal_init_c_, _drv_info_, ("_WriteFW Done- for Normal chip.\n"));
- exit:
- 	return ret;
+-	RT_TRACE(_module_mp_, _drv_notice_,
+-		 ("-SetCCKTxPower: A[0x%02x] B[0x%02x]\n",
+-		  TxPower[RF_PATH_A], TxPower[RF_PATH_B]));
  }
-@@ -578,7 +561,6 @@ static int load_firmware(struct rt_firmware *pFirmware, struct device *device)
- 	}
- 	if (fw->size > FW_8188E_SIZE) {
- 		rtStatus = _FAIL;
--		RT_TRACE(_module_hal_init_c_, _drv_err_, ("Firmware size exceed 0x%X. Check it.\n", FW_8188E_SIZE));
- 		goto Exit;
- 	}
  
-@@ -610,7 +592,6 @@ s32 rtl8188e_FirmwareDownload(struct adapter *padapter)
- 	u32 FirmwareLen;
- 	static int log_version;
- 
--	RT_TRACE(_module_hal_init_c_, _drv_info_, ("+%s\n", __func__));
- 	if (!dvobj->firmware.szFwBuffer)
- 		rtStatus = load_firmware(&dvobj->firmware, device);
- 	if (rtStatus == _FAIL) {
-@@ -672,7 +653,6 @@ s32 rtl8188e_FirmwareDownload(struct adapter *padapter)
- 		DBG_88E("DL Firmware failed!\n");
- 		goto Exit;
- 	}
--	RT_TRACE(_module_hal_init_c_, _drv_info_, ("Firmware is ready to run!\n"));
- 
- Exit:
- 	return rtStatus;
-@@ -1896,7 +1876,6 @@ static s32 _LLTWrite(struct adapter *padapter, u32 address, u32 data)
- 			break;
- 
- 		if (count > POLLING_LLT_THRESHOLD) {
--			RT_TRACE(_module_hal_init_c_, _drv_err_, ("Failed to polling write LLT done at address %d!\n", address));
- 			status = _FAIL;
+ void Hal_SetOFDMTxPower(struct adapter *pAdapter, u8 *TxPower)
+@@ -514,23 +504,17 @@ void Hal_SetAntenna(struct adapter *pAdapter)
  			break;
  		}
-@@ -1955,7 +1934,6 @@ Hal_InitPGData88E(struct adapter *padapter)
- 			EFUSE_ShadowMapUpdate(padapter, EFUSE_WIFI, false);
- 		}
- 	} else {/* autoload fail */
--		RT_TRACE(_module_hci_hal_init_c_, _drv_notice_, ("AutoLoad Fail reported from CR9346!!\n"));
- 		/* update to default value 0xFF */
- 		if (!is_boot_from_eeprom(padapter))
- 			EFUSE_ShadowMapUpdate(padapter, EFUSE_WIFI, false);
-@@ -2246,9 +2224,6 @@ void Hal_EfuseParseEEPROMVer88E(struct adapter *padapter, u8 *hwinfo, bool AutoL
+ 	}
+-
+-	RT_TRACE(_module_mp_, _drv_notice_, ("-SwitchAntenna: finished\n"));
+ }
+ 
+ s32 Hal_SetThermalMeter(struct adapter *pAdapter, u8 target_ther)
+ {
+ 	struct hal_data_8188e *pHalData = GET_HAL_DATA(pAdapter);
+ 
+-	if (!netif_running(pAdapter->pnetdev)) {
+-		RT_TRACE(_module_mp_, _drv_warning_, ("SetThermalMeter! Fail: interface not opened!\n"));
++	if (!netif_running(pAdapter->pnetdev))
+ 		return _FAIL;
+-	}
+ 
+-	if (check_fwstate(&pAdapter->mlmepriv, WIFI_MP_STATE) == false) {
+-		RT_TRACE(_module_mp_, _drv_warning_, ("SetThermalMeter: Fail! not in MP mode!\n"));
++	if (check_fwstate(&pAdapter->mlmepriv, WIFI_MP_STATE) == false)
+ 		return _FAIL;
+-	}
+ 
+ 	target_ther &= 0xff;
+ 	if (target_ther < 0x07)
+@@ -568,7 +552,6 @@ void Hal_SetSingleCarrierTx(struct adapter *pAdapter, u8 bStart)
+ 	pAdapter->mppriv.MptCtx.bSingleCarrier = bStart;
+ 	if (bStart) {
+ 		/*  Start Single Carrier. */
+-		RT_TRACE(_module_mp_, _drv_alert_, ("SetSingleCarrierTx: test start\n"));
+ 		/*  1. if OFDM block on? */
+ 		if (!read_bbreg(pAdapter, rFPGA0_RFMOD, bOFDMEn))
+ 			write_bbreg(pAdapter, rFPGA0_RFMOD, bOFDMEn, bEnable);/* set OFDM block on */
+@@ -586,8 +569,6 @@ void Hal_SetSingleCarrierTx(struct adapter *pAdapter, u8 bStart)
+ 		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000500);
  	} else {
- 		pHalData->EEPROMVersion = 1;
- 	}
--	RT_TRACE(_module_hci_hal_init_c_, _drv_info_,
--		 ("Hal_EfuseParseEEPROMVer(), EEVer = %d\n",
--		 pHalData->EEPROMVersion));
- }
+ 		/*  Stop Single Carrier. */
+-		RT_TRACE(_module_mp_, _drv_alert_, ("SetSingleCarrierTx: test stop\n"));
+-
+ 		/*  Turn off all test modes. */
+ 		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMContinueTx, bDisable);
+ 		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleCarrier, bDisable);
+@@ -627,7 +608,6 @@ void Hal_SetSingleToneTx(struct adapter *pAdapter, u8 bStart)
+ 	pAdapter->mppriv.MptCtx.bSingleTone = bStart;
+ 	if (bStart) {
+ 		/*  Start Single Tone. */
+-		RT_TRACE(_module_mp_, _drv_alert_, ("SetSingleToneTx: test start\n"));
+ 		/*  <20120326, Kordan> To amplify the power of tone for Xtal calibration. (asked by Edlu) */
+ 		if (IS_HARDWARE_TYPE_8188E(pAdapter)) {
+ 			reg58 = PHY_QueryRFReg(pAdapter, RF_PATH_A, LNA_Low_Gain_3, bRFRegOffsetMask);
+@@ -660,8 +640,6 @@ void Hal_SetSingleToneTx(struct adapter *pAdapter, u8 bStart)
  
- void rtl8188e_EfuseParseChnlPlan(struct adapter *padapter, u8 *hwinfo, bool AutoLoadFail)
+ 	} else {
+ 		/*  Stop Single Tone. */
+-		RT_TRACE(_module_mp_, _drv_alert_, ("SetSingleToneTx: test stop\n"));
+-
+ 		/*  <20120326, Kordan> To amplify the power of tone for Xtal calibration. (asked by Edlu) */
+ 		/*  <20120326, Kordan> Only in single tone mode. (asked by Edlu) */
+ 		if (IS_HARDWARE_TYPE_8188E(pAdapter)) {
+@@ -695,7 +673,6 @@ void Hal_SetCarrierSuppressionTx(struct adapter *pAdapter, u8 bStart)
+ 	pAdapter->mppriv.MptCtx.bCarrierSuppression = bStart;
+ 	if (bStart) {
+ 		/*  Start Carrier Suppression. */
+-		RT_TRACE(_module_mp_, _drv_alert_, ("SetCarrierSuppressionTx: test start\n"));
+ 		if (pAdapter->mppriv.rateidx <= MPT_RATE_11M) {
+ 			/*  1. if CCK block on? */
+ 			if (!read_bbreg(pAdapter, rFPGA0_RFMOD, bCCKEn))
+@@ -718,7 +695,6 @@ void Hal_SetCarrierSuppressionTx(struct adapter *pAdapter, u8 bStart)
+ 		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000500);
+ 	} else {
+ 		/*  Stop Carrier Suppression. */
+-		RT_TRACE(_module_mp_, _drv_alert_, ("SetCarrierSuppressionTx: test stop\n"));
+ 		if (pAdapter->mppriv.rateidx <= MPT_RATE_11M) {
+ 			write_bbreg(pAdapter, rCCK0_System, bCCKBBMode, 0x0);    /* normal mode */
+ 			write_bbreg(pAdapter, rCCK0_System, bCCKScramble, 0x1);  /* turn on scramble setting */
+@@ -739,9 +715,6 @@ void Hal_SetCCKContinuousTx(struct adapter *pAdapter, u8 bStart)
+ 	u32 cckrate;
+ 
+ 	if (bStart) {
+-		RT_TRACE(_module_mp_, _drv_alert_,
+-			 ("SetCCKContinuousTx: test start\n"));
+-
+ 		/*  1. if CCK block on? */
+ 		if (!read_bbreg(pAdapter, rFPGA0_RFMOD, bCCKEn))
+ 			write_bbreg(pAdapter, rFPGA0_RFMOD, bCCKEn, bEnable);/* set CCK block on */
+@@ -760,9 +733,6 @@ void Hal_SetCCKContinuousTx(struct adapter *pAdapter, u8 bStart)
+ 		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000500);
+ 		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000500);
+ 	} else {
+-		RT_TRACE(_module_mp_, _drv_info_,
+-			 ("SetCCKContinuousTx: test stop\n"));
+-
+ 		write_bbreg(pAdapter, rCCK0_System, bCCKBBMode, 0x0);	/* normal mode */
+ 		write_bbreg(pAdapter, rCCK0_System, bCCKScramble, bEnable);	/* turn on scramble setting */
+ 
+@@ -782,7 +752,6 @@ void Hal_SetCCKContinuousTx(struct adapter *pAdapter, u8 bStart)
+ void Hal_SetOFDMContinuousTx(struct adapter *pAdapter, u8 bStart)
+ {
+ 	if (bStart) {
+-		RT_TRACE(_module_mp_, _drv_info_, ("SetOFDMContinuousTx: test start\n"));
+ 		/*  1. if OFDM block on? */
+ 		if (!read_bbreg(pAdapter, rFPGA0_RFMOD, bOFDMEn))
+ 			write_bbreg(pAdapter, rFPGA0_RFMOD, bOFDMEn, bEnable);/* set OFDM block on */
+@@ -802,7 +771,6 @@ void Hal_SetOFDMContinuousTx(struct adapter *pAdapter, u8 bStart)
+ 		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000500);
+ 
+ 	} else {
+-		RT_TRACE(_module_mp_, _drv_info_, ("SetOFDMContinuousTx: test stop\n"));
+ 		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMContinueTx, bDisable);
+ 		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleCarrier, bDisable);
+ 		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleTone, bDisable);
+@@ -823,9 +791,6 @@ void Hal_SetOFDMContinuousTx(struct adapter *pAdapter, u8 bStart)
+ 
+ void Hal_SetContinuousTx(struct adapter *pAdapter, u8 bStart)
+ {
+-	RT_TRACE(_module_mp_, _drv_info_,
+-		 ("SetContinuousTx: rate:%d\n", pAdapter->mppriv.rateidx));
+-
+ 	pAdapter->mppriv.MptCtx.bStartContTx = bStart;
+ 	if (pAdapter->mppriv.rateidx <= MPT_RATE_11M)
+ 		Hal_SetCCKContinuousTx(pAdapter, bStart);
 -- 
 2.31.1
 
