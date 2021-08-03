@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E92C3DF111
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE473DF112
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236486AbhHCPFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234206AbhHCPFo (ORCPT
+        id S236452AbhHCPJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:09:03 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:41124 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234206AbhHCPJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:05:44 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2CBC061757;
-        Tue,  3 Aug 2021 08:05:32 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id hs10so28183504ejc.0;
-        Tue, 03 Aug 2021 08:05:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r0FQ7Uc64i2oRVeUtFLzokR1HqzuLG7+aDF/yA5eX4M=;
-        b=coGMZnEccQZlJTls9FK4PV3Fnmm0Y5yzVVFAB8l4/Ff2aOyAmNbTHGTJ/gm89hYw0F
-         OnwP6qBbeUa4GSa25hJLoWOsFUQEjIliSbxhOtptkdG/C4ePagilGevFk0n+bFuGpuMc
-         ZIRibIY/+FiQ37xc7rQuokgT16s5ouV6cltQ/Edqxdrg/QbXjNFK5jWruR89cprhSxn/
-         B/mWJ06h/1Xsj1elOKjMaWHjcPSCRZP/DRCdzUZ64y4r6PueI/yGTPoiOdAUB5gLCx+4
-         6FTY+xds1q5wRG5UWz71S7ho9jo/eVLuBLL+1HqYv0ilg+bXVi/YHEUO88LJhSmZmWOY
-         ylUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r0FQ7Uc64i2oRVeUtFLzokR1HqzuLG7+aDF/yA5eX4M=;
-        b=Moo4s1UeSMTZG0MK9+WmwUn2jYzNCP/YQUQM7UUQ1aa6AUOvkycgcm7vdC+P/v6usW
-         1Qk7dYPzH3tbQ2PzRNE+adzwUcjCM4ligC8NnY+Qjc0ulCwJ1yabKjqd7k08n8oE8n91
-         cbB3G00jDrxOAFpeJuNaBMM+iSNpKzlt38khv9Gn/z9aSL+ANxacuhZFNfRjv+NGrOFl
-         ZpIo8frBWBe/LWBD+pE5w4HsWTMc0T0NBfrcwbIu1pq6LHoUMhWKsPY5KCJGeA9eeV6r
-         CICzWKX+auSSaOa8cYg5/dn/UyHYr2Rss1HpSLrPZ8i0pJwaJOre43DIs+8//qH41hQn
-         wsIA==
-X-Gm-Message-State: AOAM533gTi4Y5q2uPtRxdPVAOGrj6MxxLX2vH4DcwYOKAih6rCqb4qem
-        GUAD/UbbsbZS37W5dUjdW5Y=
-X-Google-Smtp-Source: ABdhPJxP1WfDh/SKp57yUJkwWaSPOs717d15hTVJGJ9P7zfkIDZ+IovWwaIDCd2MVfHUUsu5WL89gQ==
-X-Received: by 2002:a17:906:31cf:: with SMTP id f15mr21305332ejf.272.1628003131123;
-        Tue, 03 Aug 2021 08:05:31 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id n2sm8407071edi.32.2021.08.03.08.05.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 08:05:30 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 18:05:29 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
-        netdev@vger.kernel.org, robh+dt@kernel.org,
-        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
- for microchip lan937x
-Message-ID: <20210803150529.o2whe4jw6arpdm7d@skbuf>
-References: <20210723173108.459770-1-prasanna.vengateshan@microchip.com>
- <20210723173108.459770-6-prasanna.vengateshan@microchip.com>
- <20210731150416.upe5nwkwvwajhwgg@skbuf>
- <YQXJHA+z+hXjxe6+@lunn.ch>
- <20210802213353.qu5j3gn4753xlj43@skbuf>
- <YQlWAHSTQ4K3/zet@lunn.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQlWAHSTQ4K3/zet@lunn.ch>
+        Tue, 3 Aug 2021 11:09:02 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Uht0IwF_1628003329;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Uht0IwF_1628003329)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 03 Aug 2021 23:08:50 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     baolin.wang@linux.alibaba.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/swap: Remove the unused get_kernel_page()
+Date:   Tue,  3 Aug 2021 23:07:04 +0800
+Message-Id: <a6137b871658cdbd0cde9fbeecf2168bc8ec87e9.1628002955.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 04:43:12PM +0200, Andrew Lunn wrote:
-> There are good reasons to use an explicit phy-handle, and i would
-> never block such code. However, implicit is historically how it was
-> done. There are many DT blobs which assume it works. So implicit is
-> not going away.
-> 
-> If you want to only support explicit in U-Boot, that is fine. I would
-> suggest making this clear in the U-Boot documentation.
+Now there are no users of the get_kernel_page() function,
+thus remove it.
 
-I am happy that Prasanna made it possible for OF-based descriptions of
-the internal PHYs to be written for the lan937x generation. I did take a
-look at the bindings that Prasanna proposed and I think they would work
-with what DM_DSA can parse too. The work that Tim Harvey did was for
-ksz9897, and it is slightly different: the MDIO controller node has a
-compatible string of "microchip,ksz-mdio", and a parent container node
-of "mdios".
-https://source.denx.de/u-boot/u-boot/-/blob/master/arch/arm/dts/imx8mm-venice-gw7901.dts#L634
-However, since the lan937x would probably have a different driver even
-in U-Boot, 100% binding consistency between lan937x and ksz9897 is
-probably not necessary, since some of that can boil down to driver
-author choice too. As long as an OF based choice is available I'm
-absolutely fine.
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ include/linux/mm.h |  1 -
+ mm/swap.c          | 22 ----------------------
+ 2 files changed, 23 deletions(-)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 7bc883c..dbfee57 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1953,7 +1953,6 @@ int __account_locked_vm(struct mm_struct *mm, unsigned long pages, bool inc,
+ struct kvec;
+ int get_kernel_pages(const struct kvec *iov, int nr_pages, int write,
+ 			struct page **pages);
+-int get_kernel_page(unsigned long start, int write, struct page **pages);
+ struct page *get_dump_page(unsigned long addr);
+ 
+ extern int try_to_release_page(struct page * page, gfp_t gfp_mask);
+diff --git a/mm/swap.c b/mm/swap.c
+index 6f382ab..645b733 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -180,28 +180,6 @@ int get_kernel_pages(const struct kvec *kiov, int nr_segs, int write,
+ }
+ EXPORT_SYMBOL_GPL(get_kernel_pages);
+ 
+-/*
+- * get_kernel_page() - pin a kernel page in memory
+- * @start:	starting kernel address
+- * @write:	pinning for read/write, currently ignored
+- * @pages:	array that receives pointer to the page pinned.
+- *		Must be at least nr_segs long.
+- *
+- * Returns 1 if page is pinned. If the page was not pinned, returns
+- * -errno. The page returned must be released with a put_page() call
+- * when it is finished with.
+- */
+-int get_kernel_page(unsigned long start, int write, struct page **pages)
+-{
+-	const struct kvec kiov = {
+-		.iov_base = (void *)start,
+-		.iov_len = PAGE_SIZE
+-	};
+-
+-	return get_kernel_pages(&kiov, 1, write, pages);
+-}
+-EXPORT_SYMBOL_GPL(get_kernel_page);
+-
+ static void pagevec_lru_move_fn(struct pagevec *pvec,
+ 	void (*move_fn)(struct page *page, struct lruvec *lruvec))
+ {
+-- 
+1.8.3.1
+
