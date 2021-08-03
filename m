@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0373DF54A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7403DF55F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239618AbhHCTSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:18:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238188AbhHCTSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:18:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2D4661037;
-        Tue,  3 Aug 2021 19:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628018307;
-        bh=Ls8CHkpBnIy6o43INUTkceCYHQjgavmnxsmD78va1Rk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kLqXMEY8C39pJI+Gt66lw/xI0qFymKayRjVKoOOi3ZjlWIAmesq8AYOgHYhiYv8pX
-         bX8pIoE7SS3IQZczuX+d9/xSChaZKZjdp0qciy8FaJO/X4Q74UZCJvJo9vy/iqGx2Q
-         ApR+kqdcbXB97ju0fYYYs+XtD803oe9yqk4Y3XwpzEtkIQJxrjjobbpTMs+QSOu5Gi
-         05I3N5rOPrF+zVw17EKo69J0jHDtEulT+cXR8/uBkVydJqI6A0fA3sDSvPg1/BPsfp
-         qfNNcWOCnUkcRYyLTsXbUhCxUtz22qB5cg3g8UzU0nm9i1k8DZnbTXFHD4trbumu2U
-         vixkYquKjAEMw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] netfilter: ipset: Fix maximal range check in hash_ipportnet4_uadt()
-Date:   Tue,  3 Aug 2021 12:18:13 -0700
-Message-Id: <20210803191813.282980-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0.rc0
+        id S239733AbhHCTT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:19:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31815 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239723AbhHCTTJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 15:19:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628018337;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C5hG7wZS4PGjXuQhhl87E2VxCPw17qdRVBF2bAwnrnA=;
+        b=dDPfs8iCjSG4UHJUyNBXky+vAXNTl56geH5bWLyEF2MylgpUbHX8tTwq+3tLd1PGVcb7BK
+        iRoj4KONtdvJIWfTl/vzJ3VfNfR/xWZDteV+/DTGVAXgFN8PHDhVh3lO1feJT00k4r6Ywt
+        yrSrFcyJwK+5gQv/hTpVCgYRTHbYMio=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-146-HRHaRUdSO_Ci201wR7BTZw-1; Tue, 03 Aug 2021 15:18:55 -0400
+X-MC-Unique: HRHaRUdSO_Ci201wR7BTZw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33C1A8799F0;
+        Tue,  3 Aug 2021 19:18:54 +0000 (UTC)
+Received: from max.com (unknown [10.40.193.155])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C9DBA60C0F;
+        Tue,  3 Aug 2021 19:18:51 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH v5 08/12] iomap: Fix iomap_dio_rw return value for user copies
+Date:   Tue,  3 Aug 2021 21:18:14 +0200
+Message-Id: <20210803191818.993968-9-agruenba@redhat.com>
+In-Reply-To: <20210803191818.993968-1-agruenba@redhat.com>
+References: <20210803191818.993968-1-agruenba@redhat.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+When a user copy fails in one of the helpers of iomap_dio_rw, fail with -EFAULT
+instead of returning 0.  This matches what iomap_dio_bio_actor returns when it
+gets an -EFAULT from bio_iov_iter_get_pages.  With these changes,
+iomap_dio_actor consistently fails with -EFAULT when a user page cannot be
+faulted in.
 
-net/netfilter/ipset/ip_set_hash_ipportnet.c:249:29: warning: variable
-'port_to' is uninitialized when used here [-Wuninitialized]
-        if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
-                                   ^~~~~~~
-net/netfilter/ipset/ip_set_hash_ipportnet.c:167:45: note: initialize the
-variable 'port_to' to silence this warning
-        u32 ip = 0, ip_to = 0, p = 0, port, port_to;
-                                                   ^
-                                                    = 0
-net/netfilter/ipset/ip_set_hash_ipportnet.c:249:39: warning: variable
-'port' is uninitialized when used here [-Wuninitialized]
-        if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
-                                             ^~~~
-net/netfilter/ipset/ip_set_hash_ipportnet.c:167:36: note: initialize the
-variable 'port' to silence this warning
-        u32 ip = 0, ip_to = 0, p = 0, port, port_to;
-                                          ^
-                                           = 0
-2 warnings generated.
-
-The range check was added before port and port_to are initialized.
-Shuffle the check after the initialization so that the check works
-properly.
-
-Fixes: 7fb6c63025ff ("netfilter: ipset: Limit the maximal range of consecutive elements to add/delete")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 ---
- net/netfilter/ipset/ip_set_hash_ipportnet.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/iomap/direct-io.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/ipset/ip_set_hash_ipportnet.c b/net/netfilter/ipset/ip_set_hash_ipportnet.c
-index b293aa1ff258..7df94f437f60 100644
---- a/net/netfilter/ipset/ip_set_hash_ipportnet.c
-+++ b/net/netfilter/ipset/ip_set_hash_ipportnet.c
-@@ -246,9 +246,6 @@ hash_ipportnet4_uadt(struct ip_set *set, struct nlattr *tb[],
- 		ip_set_mask_from_to(ip, ip_to, cidr);
- 	}
+diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+index 9398b8c31323..8054f5d6c273 100644
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@ -370,7 +370,7 @@ iomap_dio_hole_actor(loff_t length, struct iomap_dio *dio)
+ {
+ 	length = iov_iter_zero(length, dio->submit.iter);
+ 	dio->size += length;
+-	return length;
++	return length ? length : -EFAULT;
+ }
  
--	if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
--		return -ERANGE;
--
- 	port_to = port = ntohs(e.port);
- 	if (tb[IPSET_ATTR_PORT_TO]) {
- 		port_to = ip_set_get_h16(tb[IPSET_ATTR_PORT_TO]);
-@@ -256,6 +253,9 @@ hash_ipportnet4_uadt(struct ip_set *set, struct nlattr *tb[],
- 			swap(port, port_to);
+ static loff_t
+@@ -397,7 +397,7 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
+ 		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
  	}
+ 	dio->size += copied;
+-	return copied;
++	return copied ? copied : -EFAULT;
+ }
  
-+	if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
-+		return -ERANGE;
-+
- 	ip2_to = ip2_from;
- 	if (tb[IPSET_ATTR_IP2_TO]) {
- 		ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP2_TO], &ip2_to);
-
-base-commit: 4d3fc8ead710a06c98d36f382777c6a843a83b7c
+ static loff_t
 -- 
-2.33.0.rc0
+2.26.3
 
