@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA3B3DF695
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92543DF69A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbhHCUsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 16:48:21 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:38978 "EHLO gloria.sntech.de"
+        id S231447AbhHCUtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 16:49:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229551AbhHCUsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 16:48:18 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mB1KX-0003f1-Ks; Tue, 03 Aug 2021 22:48:05 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, Liang Chen <cl@rock-chips.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Simon Xue <xxm@rock-chips.com>
-Subject: Re: [PATCH 5/5] arm64: dts: rockchip: rk3568-evb1-v10: add node for sd card
-Date:   Tue, 03 Aug 2021 22:48:04 +0200
-Message-ID: <2936848.7s5MMGUR32@diego>
-In-Reply-To: <20210803185309.10013-6-michael.riesch@wolfvision.net>
-References: <20210803185309.10013-1-michael.riesch@wolfvision.net> <20210803185309.10013-6-michael.riesch@wolfvision.net>
+        id S231351AbhHCUtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 16:49:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F0A9600CD;
+        Tue,  3 Aug 2021 20:49:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628023743;
+        bh=L2qchuYbxOyp+fqlYH+GFJsXG7DrUHTwSWRLZdczBU8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=A+RmfSYvHE9P11/WJxmxViKPghkRtHhAHs0LjUnjSjnxkmVH2KPrPMiliYT1Bkfs8
+         eVGh1fEYmTwW4iJl8tmCGV8VlS2/9c/cPG2sgHqZnFiJ9H4o7j3R4OKQEuXvF92pJD
+         ps1GjONP5qzzLDf7Wta6mlOCKhAlOFSlSTsjKw4QmRMgGvTMoovnupuvPzKsvBPj7C
+         DzxzKRUBT7eiWJWoe3bjWJhUYp2A0lzVFV82ceV6lRRQhj9BK2lelnV+g64cZMw89N
+         uOBJqzTMbmKzM1Fnw2DDJGMONk2sl8G2c35MRZsvKlkzHmzuwa539Aow4rDCYRY0Lf
+         FxTqvypFbSmVg==
+Date:   Tue, 3 Aug 2021 13:49:00 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
+ statistics
+Message-ID: <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210803163641.3743-4-alexandr.lobakin@intel.com>
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+        <20210803163641.3743-4-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, 3. August 2021, 20:53:09 CEST schrieb Michael Riesch:
-> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-> index 3ac70a8183c4..b0f5aa8c979c 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-> @@ -17,6 +17,7 @@
->  		ethernet0 = &gmac0;
->  		ethernet1 = &gmac1;
->  		emmc = &sdhci;
-> +		sd = &sdmmc0;
+On Tue,  3 Aug 2021 18:36:23 +0200 Alexander Lobakin wrote:
+> Most of the driver-side XDP enabled drivers provide some statistics
+> on XDP programs runs and different actions taken (number of passes,
+> drops, redirects etc.).
 
-same thing as in the previous patch.
+Could you please share the statistics to back that statement up?
+Having uAPI for XDP stats is pretty much making the recommendation 
+that drivers should implement such stats. The recommendation from
+Alexei and others back in the day (IIRC) was that XDP programs should
+implement stats, not the drivers, to avoid duplication.
 
-I guess you may want something like
+> Regarding that it's almost pretty the same across all the drivers
+> (which is obvious), we can implement some sort of "standardized"
+> statistics using Ethtool standard stats infra to eliminate a lot
+> of code and stringsets duplication, different approaches to count
+> these stats and so on.
 
-	mmc0 = &sdhci;
-	mmc1 = &sdmmc0;
+I'm not 100% sold on the fact that these should be ethtool stats. 
+Why not rtnl_fill_statsinfo() stats? Current ethtool std stats are 
+all pretty Ethernet specific, and all HW stats. Mixing HW and SW stats
+is what we're trying to get away from.
 
-maybe?
+> These new 12 fields provided by the standard XDP stats should cover
+> most, if not all, stats that might be interesting for collecting and
+> tracking.
+> Note that most NIC drivers keep XDP statistics on a per-channel
+> basis, so this also introduces a new callback for getting a number
+> of channels which a driver will provide stats for. If it's not
+> implemented or returns 0, it means stats are global/device-wide.
 
-
-Heiko
-
->  	};
->  
->  	chosen: chosen {
-> @@ -353,6 +354,20 @@
->  	status = "okay";
->  };
->  
-> +&sdmmc0 {
-> +	bus-width = <4>;
-> +	cap-sd-highspeed;
-> +	cd-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_LOW>;
-> +	disable-wp;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&sdmmc0_bus4 &sdmmc0_clk &sdmmc0_cmd &sdmmc0_det>;
-> +	sd-uhs-sdr104;
-> +	supports-sd;
-> +	vmmc-supply = <&vcc3v3_sd>;
-> +	vqmmc-supply = <&vccio_sd>;
-> +	status = "okay";
-> +};
-> +
->  &uart2 {
->  	status = "okay";
->  };
-> 
-
-
-
-
+Per-channel stats via std ethtool stats are not a good idea. Per queue
+stats must be via the queue netlink interface we keep talking about for
+ever but which doesn't seem to materialize. When stats are reported via
+a different interface than objects they pertain to matching stats,
+objects and their lifetime becomes very murky.
