@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7D33DEED0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7241C3DEED1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236283AbhHCNMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:12:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:49750 "EHLO foss.arm.com"
+        id S236357AbhHCNMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:12:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:49772 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236237AbhHCNLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:11:48 -0400
+        id S236292AbhHCNLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 09:11:51 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4250F13D5;
-        Tue,  3 Aug 2021 06:11:37 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC23811FB;
+        Tue,  3 Aug 2021 06:11:40 -0700 (PDT)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 412E23F70D;
-        Tue,  3 Aug 2021 06:11:34 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D2503F70D;
+        Tue,  3 Aug 2021 06:11:37 -0700 (PDT)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         virtualization@lists.linux-foundation.org,
@@ -30,9 +30,9 @@ Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
         mikhail.golubev@opensynergy.com, anton.yakovlev@opensynergy.com,
         Vasyl.Vavrychuk@opensynergy.com,
         Andriy.Tryshnivskyy@opensynergy.com
-Subject: [PATCH v7 11/15] firmware: arm_scmi: Add message passing abstractions for transports
-Date:   Tue,  3 Aug 2021 14:10:20 +0100
-Message-Id: <20210803131024.40280-12-cristian.marussi@arm.com>
+Subject: [PATCH v7 12/15] firmware: arm_scmi: Add optional link_supplier() transport op
+Date:   Tue,  3 Aug 2021 14:10:21 +0100
+Message-Id: <20210803131024.40280-13-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210803131024.40280-1-cristian.marussi@arm.com>
 References: <20210803131024.40280-1-cristian.marussi@arm.com>
@@ -42,204 +42,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Hilber <peter.hilber@opensynergy.com>
 
-Add abstractions for future transports using message passing, such as
-virtio. Derive the abstractions from the shared memory abstractions.
+Some transports are also effectively registered with other kernel subsystem
+in order to be properly probed and initialized; as a consequence such kind
+of transports, and their related devices, might still not have been probed
+and initialized at the time the main SCMI core driver is probed.
 
-Abstract the transport SDU through the opaque struct scmi_msg_payld.
-Also enable the transport to determine all other required information
-about the transport SDU.
+Add an optional .link_supplier() transport operation which can be used by
+the core SCMI stack to dynamically check if the transport is ready and
+dynamically link its device to the SCMI platform instance device.
 
 Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
-[ Cristian: Adapted to new SCMI Kconfig layout, updated Copyrights ]
+[ Cristian: reworded commit message ]
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
 v6 --> v7
-- removed uneeded includes
-v4 --> v5
-- adapted to new SCMI Kconfig
-- removed raw_payload msg helpers
-v3 --> v4
-- added raw_payload msg helpers
+- fixed commit message
+v5 --> v6
+- reworded commit message
 ---
- drivers/firmware/arm_scmi/Kconfig  |   6 ++
- drivers/firmware/arm_scmi/Makefile |   1 +
- drivers/firmware/arm_scmi/common.h |  15 ++++
- drivers/firmware/arm_scmi/msg.c    | 111 +++++++++++++++++++++++++++++
- 4 files changed, 133 insertions(+)
- create mode 100644 drivers/firmware/arm_scmi/msg.c
+ drivers/firmware/arm_scmi/common.h | 2 ++
+ drivers/firmware/arm_scmi/driver.c | 6 ++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-index cd84e5f2ee02..24fed705b02c 100644
---- a/drivers/firmware/arm_scmi/Kconfig
-+++ b/drivers/firmware/arm_scmi/Kconfig
-@@ -36,6 +36,12 @@ config ARM_SCMI_HAVE_SHMEM
- 	  This declares whether a shared memory based transport for SCMI is
- 	  available.
- 
-+config ARM_SCMI_HAVE_MSG
-+	bool
-+	help
-+	  This declares whether a message passing based transport for SCMI is
-+	  available.
-+
- config ARM_SCMI_TRANSPORT_MAILBOX
- 	bool "SCMI transport based on Mailbox"
- 	depends on MAILBOX
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index e0e6bd3dba9e..aaad9f6589aa 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -4,6 +4,7 @@ scmi-driver-y = driver.o notify.o
- scmi-transport-$(CONFIG_ARM_SCMI_HAVE_SHMEM) = shmem.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_MAILBOX) += mailbox.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_SMC) += smc.o
-+scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) += msg.o
- scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o
- scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
- 		    $(scmi-transport-y)
 diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index 6320345865e8..4da6cecc0a1c 100644
+index 4da6cecc0a1c..024d97fbf97b 100644
 --- a/drivers/firmware/arm_scmi/common.h
 +++ b/drivers/firmware/arm_scmi/common.h
-@@ -432,6 +432,21 @@ void shmem_clear_channel(struct scmi_shared_mem __iomem *shmem);
- bool shmem_poll_done(struct scmi_shared_mem __iomem *shmem,
- 		     struct scmi_xfer *xfer);
+@@ -348,6 +348,7 @@ struct scmi_chan_info {
+ /**
+  * struct scmi_transport_ops - Structure representing a SCMI transport ops
+  *
++ * @link_supplier: Optional callback to add link to a supplier device
+  * @chan_available: Callback to check if channel is available or not
+  * @chan_setup: Callback to allocate and setup a channel
+  * @chan_free: Callback to free a channel
+@@ -362,6 +363,7 @@ struct scmi_chan_info {
+  * @poll_done: Callback to poll transfer status
+  */
+ struct scmi_transport_ops {
++	int (*link_supplier)(struct device *dev);
+ 	bool (*chan_available)(struct device *dev, int idx);
+ 	int (*chan_setup)(struct scmi_chan_info *cinfo, struct device *dev,
+ 			  bool tx);
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index a907f3fe4c08..7ae4ec8f8d1f 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -1814,6 +1814,12 @@ static int scmi_probe(struct platform_device *pdev)
+ 	handle->devm_protocol_get = scmi_devm_protocol_get;
+ 	handle->devm_protocol_put = scmi_devm_protocol_put;
  
-+/* declarations for message passing transports */
-+struct scmi_msg_payld;
++	if (desc->ops->link_supplier) {
++		ret = desc->ops->link_supplier(dev);
++		if (ret)
++			return ret;
++	}
 +
-+/* Maximum overhead of message w.r.t. struct scmi_desc.max_msg_size */
-+#define SCMI_MSG_MAX_PROT_OVERHEAD (2 * sizeof(__le32))
-+
-+size_t msg_response_size(struct scmi_xfer *xfer);
-+size_t msg_command_size(struct scmi_xfer *xfer);
-+void msg_tx_prepare(struct scmi_msg_payld *msg, struct scmi_xfer *xfer);
-+u32 msg_read_header(struct scmi_msg_payld *msg);
-+void msg_fetch_response(struct scmi_msg_payld *msg, size_t len,
-+			struct scmi_xfer *xfer);
-+void msg_fetch_notification(struct scmi_msg_payld *msg, size_t len,
-+			    size_t max_len, struct scmi_xfer *xfer);
-+
- void scmi_notification_instance_data_set(const struct scmi_handle *handle,
- 					 void *priv);
- void *scmi_notification_instance_data_get(const struct scmi_handle *handle);
-diff --git a/drivers/firmware/arm_scmi/msg.c b/drivers/firmware/arm_scmi/msg.c
-new file mode 100644
-index 000000000000..d33a704e5814
---- /dev/null
-+++ b/drivers/firmware/arm_scmi/msg.c
-@@ -0,0 +1,111 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * For transports using message passing.
-+ *
-+ * Derived from shm.c.
-+ *
-+ * Copyright (C) 2019-2021 ARM Ltd.
-+ * Copyright (C) 2020-2021 OpenSynergy GmbH
-+ */
-+
-+#include <linux/types.h>
-+
-+#include "common.h"
-+
-+/*
-+ * struct scmi_msg_payld - Transport SDU layout
-+ *
-+ * The SCMI specification requires all parameters, message headers, return
-+ * arguments or any protocol data to be expressed in little endian format only.
-+ */
-+struct scmi_msg_payld {
-+	__le32 msg_header;
-+	__le32 msg_payload[];
-+};
-+
-+/**
-+ * msg_command_size() - Actual size of transport SDU for command.
-+ *
-+ * @xfer: message which core has prepared for sending
-+ *
-+ * Return: transport SDU size.
-+ */
-+size_t msg_command_size(struct scmi_xfer *xfer)
-+{
-+	return sizeof(struct scmi_msg_payld) + xfer->tx.len;
-+}
-+
-+/**
-+ * msg_response_size() - Maximum size of transport SDU for response.
-+ *
-+ * @xfer: message which core has prepared for sending
-+ *
-+ * Return: transport SDU size.
-+ */
-+size_t msg_response_size(struct scmi_xfer *xfer)
-+{
-+	return sizeof(struct scmi_msg_payld) + sizeof(__le32) + xfer->rx.len;
-+}
-+
-+/**
-+ * msg_tx_prepare() - Set up transport SDU for command.
-+ *
-+ * @msg: transport SDU for command
-+ * @xfer: message which is being sent
-+ */
-+void msg_tx_prepare(struct scmi_msg_payld *msg, struct scmi_xfer *xfer)
-+{
-+	msg->msg_header = cpu_to_le32(pack_scmi_header(&xfer->hdr));
-+	if (xfer->tx.buf)
-+		memcpy(msg->msg_payload, xfer->tx.buf, xfer->tx.len);
-+}
-+
-+/**
-+ * msg_read_header() - Read SCMI header from transport SDU.
-+ *
-+ * @msg: transport SDU
-+ *
-+ * Return: SCMI header
-+ */
-+u32 msg_read_header(struct scmi_msg_payld *msg)
-+{
-+	return le32_to_cpu(msg->msg_header);
-+}
-+
-+/**
-+ * msg_fetch_response() - Fetch response SCMI payload from transport SDU.
-+ *
-+ * @msg: transport SDU with response
-+ * @len: transport SDU size
-+ * @xfer: message being responded to
-+ */
-+void msg_fetch_response(struct scmi_msg_payld *msg, size_t len,
-+			struct scmi_xfer *xfer)
-+{
-+	size_t prefix_len = sizeof(*msg) + sizeof(msg->msg_payload[0]);
-+
-+	xfer->hdr.status = le32_to_cpu(msg->msg_payload[0]);
-+	xfer->rx.len = min_t(size_t, xfer->rx.len,
-+			     len >= prefix_len ? len - prefix_len : 0);
-+
-+	/* Take a copy to the rx buffer.. */
-+	memcpy(xfer->rx.buf, &msg->msg_payload[1], xfer->rx.len);
-+}
-+
-+/**
-+ * msg_fetch_notification() - Fetch notification payload from transport SDU.
-+ *
-+ * @msg: transport SDU with notification
-+ * @len: transport SDU size
-+ * @max_len: maximum SCMI payload size to fetch
-+ * @xfer: notification message
-+ */
-+void msg_fetch_notification(struct scmi_msg_payld *msg, size_t len,
-+			    size_t max_len, struct scmi_xfer *xfer)
-+{
-+	xfer->rx.len = min_t(size_t, max_len,
-+			     len >= sizeof(*msg) ? len - sizeof(*msg) : 0);
-+
-+	/* Take a copy to the rx buffer.. */
-+	memcpy(xfer->rx.buf, msg->msg_payload, xfer->rx.len);
-+}
+ 	ret = scmi_txrx_setup(info, dev, SCMI_PROTOCOL_BASE);
+ 	if (ret)
+ 		return ret;
 -- 
 2.17.1
 
