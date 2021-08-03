@@ -2,139 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306B83DE68E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D503DE692
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233867AbhHCGFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 02:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233734AbhHCGFk (ORCPT
+        id S233918AbhHCGGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 02:06:49 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:37250 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231386AbhHCGGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 02:05:40 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EDBC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 23:05:29 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so2345062pja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 23:05:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=51/WH4H+3K8+t696XglQpyQZW1lNoES93JPrqYKsZxg=;
-        b=G/fRC/zb3uF4kvM88E14wVxtUeT1gTTqB5861RuWAB1JZ4mQfVqvH+6iwK0b0Y//ou
-         q6rUewplkkZCvg5FeMxUAWu+KI6j0006uvaZVtak3ITzYmvONdH5ZlYnIbu1hNfQm0mh
-         HrfWotlfyYJTEIlsN6nEn7mcxuL9Up7SORWW8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=51/WH4H+3K8+t696XglQpyQZW1lNoES93JPrqYKsZxg=;
-        b=NSW/E9MCY6ZBReTJF0CIDvXguAiyNP4XQBjpvxeNXg3u8odRB0kuUjuSAVJ/g5G9QD
-         dCUawVk6+1t0cphk8NsbFbpHaBZP77I3tW1OcmPFOwfCuA+IjxrMn5USFs0T9kP3AWJg
-         E9sOmrb/ezpAxBaTMP2YfOGTOYsGijS2ztqCIDUl0hv3vrkpTwCNnkFA70ayyEInPDUb
-         DJeheP01J3bKb53lwybqP3484gAJOh2m3FSoE7E7rh6rxhv8T6SR5tOLSq9Vigkweqrr
-         FjoJPiHI5G7qb/quKjFDPIgkCczZ8FqNo9w39GceDNZiv8e8bY4iyKpCiAv7fO+DBJjj
-         QZxg==
-X-Gm-Message-State: AOAM531SyYgbLymi+Y0cjPTu4E5r2V3MVItdTdT5bkEkbE7a8vfyCPqv
-        SHePdOEdPJ5g/QTYB8vvdVsVhPcd/DxFCWm7iV1PMA==
-X-Google-Smtp-Source: ABdhPJy1HSMVKjdSljKukA9eioaRaXtN/w+0zAqgpjTq1m0pUhY96LCQ34rv0gbfZIf1jp6S9+Pn+bscR1D75OqUKWQ=
-X-Received: by 2002:a17:902:b788:b029:12c:2888:9589 with SMTP id
- e8-20020a170902b788b029012c28889589mr17410188pls.60.1627970728797; Mon, 02
- Aug 2021 23:05:28 -0700 (PDT)
+        Tue, 3 Aug 2021 02:06:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627970797; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=2cVRR6X0LJPFMsvW7MYfIuMqP7lLF7KckuG7UikunoI=;
+ b=nd2ren9c3OxZg54JaNlduz9187OpDIZKXnw4KrsWDphAXGV+NdaE50f11AhCjafxTG2rm5s0
+ dvw7vpmc1VM28uOVXHWqfEN0tvb1944Oig4mAMe6fzeUW8omAvZS5NDm9jxr1F3mfyWFjuXf
+ QHzi6UrRb9RjuQaPqAQvwivGg1U=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6108dcd596a66e66b227c251 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 06:06:13
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4463EC4323A; Tue,  3 Aug 2021 06:06:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 296A2C433D3;
+        Tue,  3 Aug 2021 06:06:12 +0000 (UTC)
 MIME-Version: 1.0
-References: <1627635002-24521-1-git-send-email-chunfeng.yun@mediatek.com> <1627635002-24521-8-git-send-email-chunfeng.yun@mediatek.com>
-In-Reply-To: <1627635002-24521-8-git-send-email-chunfeng.yun@mediatek.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Tue, 3 Aug 2021 14:05:18 +0800
-Message-ID: <CAATdQgDWkohpzgr=z+uzro4m9Bd=v88DNnJ-M88-5-0annhH_w@mail.gmail.com>
-Subject: Re: [PATCH 08/11] usb: xhci-mtk: update fs bus bandwidth by bw_budget_table
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 03 Aug 2021 11:36:12 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        srimuc <srimuc@codeaurora.org>, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, robdclark@chromium.org
+Subject: Re: [PATCH] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to
+ system pm callbacks
+In-Reply-To: <20210802161206.GA29168@willie-the-truck>
+References: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
+ <20210802161206.GA29168@willie-the-truck>
+Message-ID: <5aefcc8950ec8ced0a67815c92e985df@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chunfeng,
+On 2021-08-02 21:42, Will Deacon wrote:
+> On Tue, Jul 27, 2021 at 03:03:22PM +0530, Sai Prakash Ranjan wrote:
+>> Some clocks for SMMU can have parent as XO such as 
+>> gpu_cc_hub_cx_int_clk
+>> of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states 
+>> in
+>> such cases, we would need to drop the XO clock vote in unprepare call 
+>> and
+>> this unprepare callback for XO is in RPMh (Resource Power 
+>> Manager-Hardened)
+>> clock driver which controls RPMh managed clock resources for new QTI 
+>> SoCs
+>> and is a blocking call.
+>> 
+>> Given we cannot have a sleeping calls such as clk_bulk_prepare() and
+>> clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
+>> operations like map and unmap can be in atomic context and are in fast
+>> path, add this prepare and unprepare call to drop the XO vote only for
+>> system pm callbacks since it is not a fast path and we expect the 
+>> system
+>> to enter deep sleep states with system pm as opposed to runtime pm.
+>> 
+>> This is a similar sequence of clock requests (prepare,enable and
+>> disable,unprepare) in arm-smmu probe and remove.
+>> 
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> Co-developed-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> ---
+>>  drivers/iommu/arm/arm-smmu/arm-smmu.c | 20 ++++++++++++++++++--
+>>  1 file changed, 18 insertions(+), 2 deletions(-)
+> 
+> [+Rob]
+> 
+> How does this work with that funny GPU which writes to the SMMU 
+> registers
+> directly? Does the SMMU need to remain independently clocked for that 
+> to
+> work or is it all in the same clock domain?
+> 
 
-On Fri, Jul 30, 2021 at 4:51 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
->
-> Use @bw_budget_table[] to update fs bus bandwidth due to
-> not all microframes consume @bw_cost_per_microframe, see
-> setup_sch_info().
->
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
->  drivers/usb/host/xhci-mtk-sch.c | 17 +++++++----------
->  1 file changed, 7 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-> index 0bb1a6295d64..10c0f0f6461f 100644
-> --- a/drivers/usb/host/xhci-mtk-sch.c
-> +++ b/drivers/usb/host/xhci-mtk-sch.c
-> @@ -458,8 +458,8 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
->                  * Compared with hs bus, no matter what ep type,
->                  * the hub will always delay one uframe to send data
->                  */
-> -               for (j = 0; j < sch_ep->cs_count; j++) {
-> -                       tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_cost_per_microframe;
-> +               for (j = 0; j < sch_ep->num_budget_microframes; j++) {
-> +                       tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_budget_table[j];
->                         if (tmp > FS_PAYLOAD_MAX)
->                                 return -ESCH_BW_OVERFLOW;
->                 }
-> @@ -534,21 +534,18 @@ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
->  {
->         struct mu3h_sch_tt *tt = sch_ep->sch_tt;
->         u32 base, num_esit;
-> -       int bw_updated;
->         int i, j;
->
->         num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
->
-> -       if (used)
-> -               bw_updated = sch_ep->bw_cost_per_microframe;
-> -       else
-> -               bw_updated = -sch_ep->bw_cost_per_microframe;
-> -
->         for (i = 0; i < num_esit; i++) {
->                 base = sch_ep->offset + i * sch_ep->esit;
->
-> -               for (j = 0; j < sch_ep->cs_count; j++)
-> -                       tt->fs_bus_bw[base + j] += bw_updated;
-> +               for (j = 0; j < sch_ep->num_budget_microframes; j++)
-> +                       if (used)
-> +                               tt->fs_bus_bw[base + j] += sch_ep->bw_budget_table[j];
-> +                       else
-> +                               tt->fs_bus_bw[base + j] -= sch_ep->bw_budget_table[j];
+As Rob mentioned, device link should take care of all the dependencies 
+between
+SMMU and its consumers. But not sure how the question relates to this 
+patch as this
+change is for system pm and not runtime pm, so it is exactly the 
+sequence of
+SMMU probe/remove which if works currently for that GPU SMMU, then it 
+should work
+just fine for system suspend and resume as well.
 
-I agree that xhci-mtk-sch still has more rooms for tt periodic bandwidth
-but I think this approach could trigger a problem.
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
+>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> index d3c6f54110a5..9561ba4c5d39 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> @@ -2277,6 +2277,13 @@ static int __maybe_unused 
+>> arm_smmu_runtime_suspend(struct device *dev)
+>> 
+>>  static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
+>>  {
+>> +	int ret;
+>> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
+>> +
+>> +	ret = clk_bulk_prepare(smmu->num_clks, smmu->clks);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>>  	if (pm_runtime_suspended(dev))
+>>  		return 0;
+> 
+> If we subsequently fail to enable the clks in arm_smmu_runtime_resume()
+> should we unprepare them again?
+> 
 
-for example, if there are two endpoints scheduled in the same u-frame index,
-* ep1out  = iso 192bytes bw_budget_table[] = { 188, 188, 0, ...} --> y0
-* ep2in = int 64bytes, bw_budget_table[] = { 0, 0, 64, ... }  --> y0
+If we are unable to turn on the clks then its fatal and we will not live 
+for long.
 
-(If this is possible allocation from this patch),
-I guess xhci-mtk could have some problems on internal scheduling?
+Thanks,
+Sai
 
->         }
->
->         if (used)
+> Will
+> 
+>> @@ -2285,10 +2292,19 @@ static int __maybe_unused 
+>> arm_smmu_pm_resume(struct device *dev)
+>> 
+>>  static int __maybe_unused arm_smmu_pm_suspend(struct device *dev)
+>>  {
+>> +	int ret = 0;
+>> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
+>> +
+>>  	if (pm_runtime_suspended(dev))
+>> -		return 0;
+>> +		goto clk_unprepare;
+>> 
+>> -	return arm_smmu_runtime_suspend(dev);
+>> +	ret = arm_smmu_runtime_suspend(dev);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +clk_unprepare:
+>> +	clk_bulk_unprepare(smmu->num_clks, smmu->clks);
+>> +	return ret;
+>>  }
+>> 
+>>  static const struct dev_pm_ops arm_smmu_pm_ops = {
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
 
-> --
-> 2.18.0
->
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
