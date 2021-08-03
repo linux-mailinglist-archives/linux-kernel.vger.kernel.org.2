@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C283DF12D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91ACC3DF136
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236662AbhHCPOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:14:43 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:44307 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236085AbhHCPOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:14:41 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GfJLr687Hz9sTY;
-        Tue,  3 Aug 2021 17:14:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id pGJaOhC-Cw5t; Tue,  3 Aug 2021 17:14:28 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GfJLr5C1Fz9sT6;
-        Tue,  3 Aug 2021 17:14:28 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8A3BE8B77D;
-        Tue,  3 Aug 2021 17:14:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Fa2NBPNFxV5K; Tue,  3 Aug 2021 17:14:28 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 533798B763;
-        Tue,  3 Aug 2021 17:14:28 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id F37EF662BA; Tue,  3 Aug 2021 15:14:27 +0000 (UTC)
-Message-Id: <731694e0885271f6ee9ffc179eb4bcee78313682.1628003562.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/32s: Fix napping restore in data storage interrupt
- (DSI)
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Finn Thain <fthain@linux-m68k.org>, userm57@yahoo.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue,  3 Aug 2021 15:14:27 +0000 (UTC)
+        id S236665AbhHCPQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:16:09 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:57534
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234206AbhHCPQH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 11:16:07 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 284AB3F070;
+        Tue,  3 Aug 2021 15:15:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628003755;
+        bh=XxRTNfvCsCZZOY4PoI1ruoqNXeZxwETY+pJxOCsiVdE=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=tKNn5vwUayiaXsVY7ahH5QBOP1I45/1oCvVk8cdN2Fag/79mvzkadQq/hn/0DImRl
+         2C87kQYINlNym8rZyA9g2uu5KwWxzAkmKRqb3mAJ2YU4xd+Xr7miPJWwgvNCR/c34+
+         IY6zLQspic/zDuEjgXVmWw982c2AQRwwybP9AOeMJvVhAzdZcAue2itOngfu57ienQ
+         ywRQYHmz0yjOD4R3n1kzu8JC+yuQ9kHiWalymA5Ppdsyy/Mvz4wC6WWNXUbi6OzGOD
+         wcIWBYfM+hNnMmRcgit0NuSa7oL8OYEigFOVJ3vu9BxtF1CQy4FRJtJjs83PCYMACx
+         vyRM/kQRktbwg==
+Subject: Re: [PATCH 2/3][V2] rtlwifi: rtl8192de: make arrays static const,
+ makes object smaller
+To:     Joe Perches <joe@perches.com>, Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210803144949.79433-1-colin.king@canonical.com>
+ <20210803144949.79433-2-colin.king@canonical.com>
+ <e07dfde8aa6616887c74817bed1166510b5583dd.camel@perches.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <4e1d8a60-0af8-97d5-b95c-7d91502825e5@canonical.com>
+Date:   Tue, 3 Aug 2021 16:15:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <e07dfde8aa6616887c74817bed1166510b5583dd.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a DSI (Data Storage Interrupt) is taken while in NAP mode,
-r11 doesn't survive the call to power_save_ppc32_restore().
+On 03/08/2021 16:09, Joe Perches wrote:
+> On Tue, 2021-08-03 at 15:49 +0100, Colin King wrote:
+>> Don't populate arrays the stack but instead make them static const. Replace
+>> array channel_info with channel_all since it contains the same data as
+>> channel_all. Makes object code smaller by 961 bytes.
+> []
+>> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
+> []
+>> @@ -160,6 +160,15 @@ static u32 targetchnl_2g[TARGET_CHNL_NUM_2G] = {
+>>  	25711, 25658, 25606, 25554, 25502, 25451, 25328
+>>  };
+>>
+>> +static const u8 channel_all[59] = {
+> 
+> I don't believe there is a significant value in sizing the array
+> as 59 instead of letting the compiler count the elements.
 
-So use r1 instead of r11 as they both contain the virtual stack
-pointer at that point.
+I was reluctant to remove this as I supposed the original had it in for
+a purpose, e.g. to ensure that the array was not populated with more
+data than intended. Does it make much of a difference?
 
-Reported-by: Finn Thain <fthain@linux-m68k.org>
-Fixes: 4c0104a83fc3 ("powerpc/32: Dismantle EXC_XFER_STD/LITE/TEMPLATE")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/head_book3s_32.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index 764edd860ed4..68e5c0a7e99d 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -300,7 +300,7 @@ ALT_MMU_FTR_SECTION_END_IFSET(MMU_FTR_HPTE_TABLE)
- 	EXCEPTION_PROLOG_1
- 	EXCEPTION_PROLOG_2 INTERRUPT_DATA_STORAGE DataAccess handle_dar_dsisr=1
- 	prepare_transfer_to_handler
--	lwz	r5, _DSISR(r11)
-+	lwz	r5, _DSISR(r1)
- 	andis.	r0, r5, DSISR_DABRMATCH@h
- 	bne-	1f
- 	bl	do_page_fault
--- 
-2.25.0
+> 
+>> +	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+>> +	36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58,
+>> +	60, 62, 64, 100, 102, 104, 106, 108, 110, 112,
+>> +	114, 116, 118, 120, 122, 124, 126, 128,	130,
+>> +	132, 134, 136, 138, 140, 149, 151, 153, 155,
+>> +	157, 159, 161, 163, 165
+>> +};
+> 
+> 
 
