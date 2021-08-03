@@ -2,158 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6963DF1D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562323DF1DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237076AbhHCPwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:52:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237050AbhHCPwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:52:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBB5860EE8;
-        Tue,  3 Aug 2021 15:52:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628005946;
-        bh=i7hDjTR9h/oiAZYkg8AT4x1Ck7tSiz+tHAzh0re3f2w=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JSSEnCKReSKp1IrYRMZgcvkUGC3F4Ev3olZKIfLBogoro5DnCwMdmDv4s9OhKwiFO
-         xqokdeOCS2CQYnYyCo3fnLihoGQEF3pCAj7CJcx1sjGxCg5Q8DXQbybFGcFCkB1eXK
-         oH2Si/2833mXqvMB3QLFtu4EHgI2ECJMyL/QgnUfr5cIX6hmfj1iPnmGk9xZbaj1oI
-         if73z6EyJ5nBeoBaJiJu9fY9j/hUue2rSS7T/5PuURuq6pM5QmnZ4l5sSfyDSdEZiH
-         aRQTHk8seVtBdnNx3DndS2/g6w/hNX73ihWw7tkIqzLFZYI1AZjibLvyL3QrZU31ba
-         Rt2b6rvR8kCuA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 93E8B5C04D4; Tue,  3 Aug 2021 08:52:26 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 08:52:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Yanfei Xu <yanfei.xu@windriver.com>
-Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
- non-release of rcu_node ->lock
-Message-ID: <20210803155226.GQ4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-2-paulmck@kernel.org>
- <20210803142458.teveyn6t2gwifdcp@e107158-lin.cambridge.arm.com>
+        id S237139AbhHCPzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:55:20 -0400
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:20330 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237155AbhHCPzP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 11:55:15 -0400
+Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 173FqadE011516;
+        Tue, 3 Aug 2021 15:54:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=Mq8tqPB6aFUXF79BN1GSn1mnIUdBT2sWOfgnjO7kqAg=;
+ b=GMvznskQ1ZyDlzNrZ1n2XaOfOqOTMkHoPfoNhqi82mK4WfuIkyIXiD71mcToSyxaBpF0
+ SrQ3Q7cnaCWAKAbKgdpGANLJSrquEr9YaOLp3jhRRydqgteW85j5NAgq4Ef7nX8QXhdd
+ 17V+vdE/7SngXYEqPm8d6neKemEJauzUiIJ0j2ICsLdCLqSzjc3oCKKgItRkgyQ4Qz/d
+ +S2FpbCllLOWjoCgBYt4aSwjpmkGv6IGuljiVWm2Ok8f1AE9glxgHgyUvZPTcq+iHtYN
+ HyHY689rUDh5muF/MgLh86Ho9lPPGrebXHie0x8JxD6rZU8f+u37GwRBPPENLlbX3MKd Tg== 
+Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
+        by mx0b-002e3701.pphosted.com with ESMTP id 3a77rfgqse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 15:54:42 +0000
+Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
+        by g4t3426.houston.hpe.com (Postfix) with ESMTP id E8A6C4F;
+        Tue,  3 Aug 2021 15:54:41 +0000 (UTC)
+Received: from swahl-home.5wahls.com (unknown [16.99.165.124])
+        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id DC2D046;
+        Tue,  3 Aug 2021 15:54:40 +0000 (UTC)
+Date:   Tue, 3 Aug 2021 10:54:40 -0500
+From:   Steve Wahl <steve.wahl@hpe.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        Peter Zijlstra <peterz@infradead.org>,
+        Robin Holt <robinmholt@gmail.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 16/38] sgi-xpc: Replace deprecated CPU-hotplug functions.
+Message-ID: <YQlmwEmM9LS+RfNj@swahl-home.5wahls.com>
+References: <20210803141621.780504-1-bigeasy@linutronix.de>
+ <20210803141621.780504-17-bigeasy@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803142458.teveyn6t2gwifdcp@e107158-lin.cambridge.arm.com>
+In-Reply-To: <20210803141621.780504-17-bigeasy@linutronix.de>
+X-Proofpoint-ORIG-GUID: cQfetl9DCy8nJcMmqNPDlmN6KeRH_j6I
+X-Proofpoint-GUID: cQfetl9DCy8nJcMmqNPDlmN6KeRH_j6I
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-03_04:2021-08-03,2021-08-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ adultscore=0 impostorscore=0 lowpriorityscore=0 mlxlogscore=999
+ phishscore=0 spamscore=0 clxscore=1011 malwarescore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108030104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 03:24:58PM +0100, Qais Yousef wrote:
-> Hi
-> 
-> On 07/21/21 13:21, Paul E. McKenney wrote:
-> > From: Yanfei Xu <yanfei.xu@windriver.com>
-> > 
-> > If rcu_print_task_stall() is invoked on an rcu_node structure that does
-> > not contain any tasks blocking the current grace period, it takes an
-> > early exit that fails to release that rcu_node structure's lock.  This
-> > results in a self-deadlock, which is detected by lockdep.
-> > 
-> > To reproduce this bug:
-> > 
-> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
-> > 
-> > This will also result in other complaints, including RCU's scheduler
-> > hook complaining about blocking rather than preemption and an rcutorture
-> > writer stall.
-> > 
-> > Only a partial RCU CPU stall warning message will be printed because of
-> > the self-deadlock.
-> > 
-> > This commit therefore releases the lock on the rcu_print_task_stall()
-> > function's early exit path.
-> > 
-> > Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> > Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> 
-> We are seeing similar stall/deadlock issue on android 5.10 kernel, is the fix
-> relevant here? Trying to apply the patches and test, but the problem is tricky
-> to reproduce so thought worth asking first.
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
 
-Looks like the relevant symptoms to me, so I suggest trying this series
-from -rcu:
-
-8baded711edc ("rcu: Fix to include first blocked task in stall warning")
-f6b3995a8b56 ("rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock")
-
-							Thanx, Paul
-
-> 	[ 1010.244334] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:"}
-> 	[ 1010.250538] rcu: \t2-...!: (42 GPs behind) idle=884/0/0x0 softirq=1646/1647 fqs=0  (false positive?)"}
-> 	[ 1010.259746] rcu: \t3-...!: (1 ticks this GP) idle=134/0/0x0 softirq=3205/3205 fqs=0  (false positive?)"}
-> 	[ 1010.269013] \t(detected by 4, t=6502 jiffies, g=9121, q=110)"}
-> 	[ 1010.274621] "}
-> 	[ 1010.276115] ============================================"}
-> 	[ 1010.281438] WARNING: possible recursive locking detected"}
-> 	[ 1010.286763] 5.10.43-g92fdbb553f50-ab979 #1 Not tainted"}
-> 	[ 1010.291912] --------------------------------------------"}
-> 	[ 1010.297235] swapper/4/0 is trying to acquire lock:"}
-> 	[ 1010.302037] ffff8000121fe618 (rcu_node_0){-.-.}-{2:2}, at: rcu_dump_cpu_stacks+0x60/0xf8"}
-> 	[ 1010.310183] "}
-> 	[ 1010.310183] but task is already holding lock:"}
-> 	[ 1010.316028] ffff8000121fe618 (rcu_node_0){-.-.}-{2:2}, at: rcu_sched_clock_irq+0x658/0xca0"}
-> 	[ 1010.324341] "}
-> 	[ 1010.324341] other info that might help us debug this:"}
-> 	[ 1010.330882]  Possible unsafe locking scenario:"}
-> 	[ 1010.330882] "}
-> 	[ 1010.336813]        CPU0"}
-> 	[ 1010.339263]        ----"}
-> 	[ 1010.341713]   lock(rcu_node_0);"}
-> 	[ 1010.344872]   lock(rcu_node_0);"}
-> 	[ 1010.348029] "}
-> 	[ 1010.348029]  *** DEADLOCK ***"}
-> 	[ 1010.348029] "}
-> 	[ 1010.353961]  May be due to missing lock nesting notation"}
-> 	[ 1010.353961] "}
-> 	[ 1010.360764] 1 lock held by swapper/4/0:"}
-> 	[ 1010.364607]  #0: ffff8000121fe618 (rcu_node_0){-.-.}-{2:2}, at: rcu_sched_clock_irq+0x658/0xca0"}
-> 	[ 1010.373359] "}
-> 	[ 1010.373359] stack backtrace:"}
-> 	[ 1010.377729] CPU: 4 PID: 0 Comm: swapper/4 Not tainted 5.10.43-g92fdbb553f50-ab979 #1"}
-> 	[ 1010.385489] Hardware name: ARM Juno development board (r0) (DT)"}
-> 	[ 1010.391421] Call trace:"}
-> 	[ 1010.393877]  dump_backtrace+0x0/0x1c0"}
-> 	[ 1010.397551]  show_stack+0x24/0x30"}
-> 	[ 1010.400877]  dump_stack_lvl+0xf4/0x130"}
-> 	[ 1010.404636]  dump_stack+0x18/0x58"}
-> 	[ 1010.407962]  __lock_acquire+0xa18/0x1ffc"}
-> 	[ 1010.411895]  lock_acquire.part.0+0xc8/0x30c"}
-> 	[ 1010.416089]  lock_acquire+0x68/0x84"}
-> 	[ 1010.419589]  _raw_spin_lock_irqsave+0x84/0x158"}
-> 	[ 1010.424045]  rcu_dump_cpu_stacks+0x60/0xf8"}
-> 	[ 1010.428154]  rcu_sched_clock_irq+0x8d8/0xca0"}
-> 	[ 1010.432435]  update_process_times+0x6c/0xb0"}
-> 	[ 1010.436632]  tick_sched_handle+0x3c/0x60"}
-> 	[ 1010.440566]  tick_sched_timer+0x58/0xb0"}
-> 	[ 1010.444412]  __hrtimer_run_queues+0x1a4/0x5b0"}
-> 	[ 1010.448781]  hrtimer_interrupt+0xf4/0x2cc"}
-> 	[ 1010.452803]  arch_timer_handler_phys+0x40/0x50"}
-> 	[ 1010.457260]  handle_percpu_devid_irq+0x98/0x180"}
-> 	[ 1010.461803]  __handle_domain_irq+0x80/0xec"}
-> 	[ 1010.465911]  gic_handle_irq+0x5c/0xf0"}
-> 	[ 1010.469583]  el1_irq+0xcc/0x180"}
-> 	[ 1010.472735]  cpuidle_enter_state+0xe8/0x350"}
-> 	[ 1010.476929]  cpuidle_enter+0x44/0x60"}
-> 	[ 1010.480515]  do_idle+0x25c/0x2f0"}
-> 	[ 1010.483751]  cpu_startup_entry+0x34/0x8c"}
-> 	[ 1010.487687]  secondary_start_kernel+0x154/0x190"}
+On Tue, Aug 03, 2021 at 04:15:59PM +0200, Sebastian Andrzej Siewior wrote:
+> The functions get_online_cpus() and put_online_cpus() have been
+> deprecated during the CPU hotplug rework. They map directly to
+> cpus_read_lock() and cpus_read_unlock().
 > 
+> Replace deprecated CPU-hotplug functions with the official version.
+> The behavior remains unchanged.
 > 
-> Thanks
+> Cc: Robin Holt <robinmholt@gmail.com>
+> Cc: Steve Wahl <steve.wahl@hpe.com>
+> Cc: Mike Travis <mike.travis@hpe.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+>  drivers/misc/sgi-xp/xpc_uv.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> --
-> Qais Yousef
+> diff --git a/drivers/misc/sgi-xp/xpc_uv.c b/drivers/misc/sgi-xp/xpc_uv.c
+> index 7791bde81a368..ba9ae0e2df0fe 100644
+> --- a/drivers/misc/sgi-xp/xpc_uv.c
+> +++ b/drivers/misc/sgi-xp/xpc_uv.c
+> @@ -1742,7 +1742,7 @@ xpc_init_mq_node(int nid)
+>  {
+>  	int cpu;
+>  
+> -	get_online_cpus();
+> +	cpus_read_lock();
+>  
+>  	for_each_cpu(cpu, cpumask_of_node(nid)) {
+>  		xpc_activate_mq_uv =
+> @@ -1753,7 +1753,7 @@ xpc_init_mq_node(int nid)
+>  			break;
+>  	}
+>  	if (IS_ERR(xpc_activate_mq_uv)) {
+> -		put_online_cpus();
+> +		cpus_read_unlock();
+>  		return PTR_ERR(xpc_activate_mq_uv);
+>  	}
+>  
+> @@ -1767,11 +1767,11 @@ xpc_init_mq_node(int nid)
+>  	}
+>  	if (IS_ERR(xpc_notify_mq_uv)) {
+>  		xpc_destroy_gru_mq_uv(xpc_activate_mq_uv);
+> -		put_online_cpus();
+> +		cpus_read_unlock();
+>  		return PTR_ERR(xpc_notify_mq_uv);
+>  	}
+>  
+> -	put_online_cpus();
+> +	cpus_read_unlock();
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.32.0
+> 
+
+-- 
+Steve Wahl, Hewlett Packard Enterprise
