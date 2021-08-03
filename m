@@ -2,94 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8323DE7E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75BE3DE7F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234399AbhHCIHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:07:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234248AbhHCIHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:07:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4426760EBD;
-        Tue,  3 Aug 2021 08:07:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627978044;
-        bh=R50llJLkBxpzPLGaip4NVUgeif1eu/WX/0qNCl8oXrs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Xwk52u6rTkbI6AId2xMVEzDohdm7k4F1yODZ9/PwURjLSkObDAwBeqF+RmC9emWv8
-         uMiyaQcES8y1UHAXxeSJ/nkFn70sPVy/5D+VPJSgGGiBZtOjqPVt1I12WFBwZ7IK7N
-         +cAtMdBDSrBKzyqFIFoblBMBVP3LfEjzDkUNkZetvnZpUFfPx9O0U0m1OkjexdGzZf
-         p0HWsgJP1h75dn15UE9y6az4MBU2w59yvO26WygbxTx0AEfWB3RLVAXOAxqXIxWlyL
-         I6KS7otEGGJlq8raAt39vJzWSdQ/j5QuZlJY5ylPaXDHMajaZhzCoCZaEE3/UjqJTe
-         1XmGFL4UiI8vQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Krzysztof Halasa <khalasa@piap.pl>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] soc: ixp4xx: fix printing resources
-Date:   Tue,  3 Aug 2021 10:07:12 +0200
-Message-Id: <20210803080720.2081312-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234570AbhHCIJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:09:45 -0400
+Received: from www62.your-server.de ([213.133.104.62]:44598 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234455AbhHCIJT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:09:19 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mApTi-0001E5-4G; Tue, 03 Aug 2021 10:08:46 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mApTh-000HvD-J6; Tue, 03 Aug 2021 10:08:45 +0200
+Subject: Re: [PATCH net-next 1/2] net/sched: sch_ingress: Support clsact
+ egress mini-Qdisc option
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Peilin Ye <peilin.ye@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+References: <1931ca440b47344fe357d5438aeab4b439943d10.1627936393.git.peilin.ye@bytedance.com>
+ <672e6f13-bf58-d542-6712-e6f803286373@iogearbox.net>
+ <CAM_iQpUb-zbBUGdYxCwxBJSKJ=6Gm3hFwFP+nc+43E_hofuK1w@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e2a8ac28-f6ee-25e7-6cb9-cc28369b030a@iogearbox.net>
+Date:   Tue, 3 Aug 2021 10:08:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM_iQpUb-zbBUGdYxCwxBJSKJ=6Gm3hFwFP+nc+43E_hofuK1w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26251/Mon Aug  2 10:18:34 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 8/3/21 2:08 AM, Cong Wang wrote:
+> On Mon, Aug 2, 2021 at 2:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> NAK, just use clsact qdisc in the first place which has both ingress and egress
+>> support instead of adding such hack. You already need to change your scripts for
+>> clsact-on, so just swap 'tc qdisc add dev eth0 ingress' to 'tc qdisc add dev eth0
+>> clsact' w/o needing to change kernel.
+> 
+> If we were able to change the "script" as easily as you described,
+> you would not even see such a patch. The fact is it is not under
+> our control, the most we can do is change the qdisc after it is
+> created by the "script", ideally without interfering its traffic,
+> hence we have such a patch.
+> 
+> (BTW, it is actually not a script, it is a cloud platform.)
 
-When compile-testing with 64-bit resource_size_t, gcc reports an invalid
-printk format string:
+Sigh, so you're trying to solve a non-technical issue with one cloud provider by
+taking a detour for unnecessarily extending the kernel instead with functionality
+that already exists in another qdisc (and potentially waiting few years until they
+eventually upgrade). I presume Bytedance should be a big enough entity to make a
+case for that provider to change it. After all swapping ingress with clsact for
+such script is completely transparent and there is nothing that would break. (Fwiw,
+from all the major cloud providers we have never seen such issue in our deployments.)
 
-In file included from include/linux/dma-mapping.h:7,
-                 from drivers/soc/ixp4xx/ixp4xx-npe.c:15:
-drivers/soc/ixp4xx/ixp4xx-npe.c: In function 'ixp4xx_npe_probe':
-drivers/soc/ixp4xx/ixp4xx-npe.c:694:18: error: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'resource_size_t' {aka 'long long unsigned int'} [-Werror=format=]
-    dev_info(dev, "NPE%d at 0x%08x-0x%08x not available\n",
-
-Use the special %pR format string to print the resources.
-
-Fixes: 0b458d7b10f8 ("soc: ixp4xx: npe: Pass addresses as resources")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/soc/ixp4xx/ixp4xx-npe.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/soc/ixp4xx/ixp4xx-npe.c b/drivers/soc/ixp4xx/ixp4xx-npe.c
-index fea50e04d5a1..f490c4ca51f5 100644
---- a/drivers/soc/ixp4xx/ixp4xx-npe.c
-+++ b/drivers/soc/ixp4xx/ixp4xx-npe.c
-@@ -693,8 +693,8 @@ static int ixp4xx_npe_probe(struct platform_device *pdev)
- 
- 		if (!(ixp4xx_read_feature_bits() &
- 		      (IXP4XX_FEATURE_RESET_NPEA << i))) {
--			dev_info(dev, "NPE%d at 0x%08x-0x%08x not available\n",
--				 i, res->start, res->end);
-+			dev_info(dev, "NPE%d at %pR not available\n",
-+				 i, res);
- 			continue; /* NPE already disabled or not present */
- 		}
- 		npe->regs = devm_ioremap_resource(dev, res);
-@@ -702,13 +702,12 @@ static int ixp4xx_npe_probe(struct platform_device *pdev)
- 			return PTR_ERR(npe->regs);
- 
- 		if (npe_reset(npe)) {
--			dev_info(dev, "NPE%d at 0x%08x-0x%08x does not reset\n",
--				 i, res->start, res->end);
-+			dev_info(dev, "NPE%d at %pR does not reset\n",
-+				 i, res);
- 			continue;
- 		}
- 		npe->valid = 1;
--		dev_info(dev, "NPE%d at 0x%08x-0x%08x registered\n",
--			 i, res->start, res->end);
-+		dev_info(dev, "NPE%d at %pR registered\n", i, res);
- 		found++;
- 	}
- 
--- 
-2.29.2
-
+Thanks,
+Daniel
