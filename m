@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65083DF7BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 00:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F123DF7C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 00:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbhHCWVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 18:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhHCWVj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 18:21:39 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D18C061757;
-        Tue,  3 Aug 2021 15:21:26 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so813156pjh.3;
-        Tue, 03 Aug 2021 15:21:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M+6JKKf52HVxLfHy469OKCbdB/YMhbbhQWcIdOqleVw=;
-        b=GqAK/nN5486TcHJjWMdZkgyfnxp3LUyPktr4rN/+JjFlwDTMYBEsBxeDDAzcw+sGBL
-         +jgkqhjB4PDxNMbn3w4qCSMrups0bFgD2OmG7P2OSdK3Hrqsjkl4g/3qf8cpP3R0PZG9
-         jwA734tjghQtz/1kJwOCDwymO26kX9d/90hEYvA9laYoLoTkYGYgwdzQKyAmMMswuyTN
-         MpnxXaxczvr4qeuvdwXIXoRVUtIZGHdH0GuKs2Dw4mjlf1gyxUcxHG60TJ4zHs47XIux
-         WOKzxCHNYC8zx8y5mOn8QrlxRyDvRxYG4dXS5on9gR2RRj6wTjsB2KBB7/8yhb/t4/xB
-         mCZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M+6JKKf52HVxLfHy469OKCbdB/YMhbbhQWcIdOqleVw=;
-        b=c8LzxlssrsZilCvvR05cnmcdnGr/HmTwjUvWrvdXhgkqmHKDtHZ0dYoUabXQ/SlcOS
-         n0Opem8xBi4Z4kM+eEkSB8Cy65kV9dreg82I81faCB+xmpyQtaWOudBSP712d26McQBv
-         z1DNyv3M2IvmB8KOlh+Hn5+R53q3vd6lFgVNqTM4UzFIPiVfk69M92mlz9qct5O2e+Qu
-         9BLkXVsQxut87JpI25akmKgjXKyPUQE4m07BbxhpNnalgs5EK4lP6Fwiyr4893kWZkuP
-         FE/zLrXgXnLqT8FGDeXRYYlbQFOfDVoC0nuffU0HsbCkwKzI7bnpJVRMDECGkySEw90K
-         pHhg==
-X-Gm-Message-State: AOAM530vFvUJwc+BR+mI91bO95CmsIJ/LKzACCU7rR4IBQeSXX1Rblef
-        Fk/ELS29m1shV35kyrGlNYNe5MPh5zIGdHX9tds=
-X-Google-Smtp-Source: ABdhPJxtN8MnoEd+1WkSekpJSRyCxssbz2Tsbrjk+zGX6hlCjM/L/F1Z6I127QgiIeh5iUnHDMLL+IQGOz78f1IznzQ=
-X-Received: by 2002:a17:90a:b10f:: with SMTP id z15mr15450178pjq.56.1628029286315;
- Tue, 03 Aug 2021 15:21:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210803123921.2374485-1-kuba@kernel.org> <20210803221659.9847-1-yepeilin.cs@gmail.com>
-In-Reply-To: <20210803221659.9847-1-yepeilin.cs@gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 3 Aug 2021 15:21:15 -0700
-Message-ID: <CAM_iQpVUMzP8_gPsth_DncVUdC09ihizTC7jo2t1=MS9uSdfTw@mail.gmail.com>
-Subject: Re: [PATCH net-next] tc-testing: Add control-plane selftests for sch_mq
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lucas Bates <lucasb@mojatatu.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Peilin Ye <peilin.ye@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232706AbhHCWWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 18:22:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48859 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhHCWWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 18:22:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628029358; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=xzpg5pA0ExfM1REjxgNV+oHxyk1EtEF9kRHLopdOfbk=; b=I++EZ8Fkw+R0MQ6QTXnpbs1SF+oAtUUln4dbUbVmlDnqWoPa/7ktf2WrNwUj2R5qokcslwpG
+ JoFxdafrjQq8z7Bi055uQ7r/92N/ajNVhcuTKstZBP8j8lAVUVg+nGqL1sX7hWEFM1iCoMmI
+ xMYBTuF6L4DtDEE1wnnBhsTLVPg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6109c1a8dc54451a537a3d70 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 22:22:32
+ GMT
+Sender: rishabhb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3D372C433D3; Tue,  3 Aug 2021 22:22:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1A520C433F1;
+        Tue,  3 Aug 2021 22:22:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1A520C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
+From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
+To:     sudeep.holla@arm.com, cristian.marussi@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        avajid@codeaurora.org, adharmap@codeaurora.org,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [PATCH] firmware: arm_scmi: Free mailbox channels if probe fails
+Date:   Tue,  3 Aug 2021 15:22:22 -0700
+Message-Id: <1628029342-3638-1-git-send-email-rishabhb@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 3:17 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> +           "setup": [
-> +            "echo \"1 1 4\" > /sys/bus/netdevsim/new_device"
-> +           ],
-> +           "cmdUnderTest": "$TC qdisc add dev $ETH root handle 1: mq",
-> +           "expExitCode": "0",
-> +           "verifyCmd": "$TC qdisc show dev $ETH",
-> +           "matchPattern": "qdisc pfifo_fast 0: parent 1:[1-4] bands 3 priomap 1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1",
-> +           "matchCount": "4",
-> +           "teardown": [
-> +                   "echo \"1\" > /sys/bus/netdevsim/del_device"
-> +           ]
-> +       },
+Mailbox channels for the base protocol are setup during probe.
+There can be a scenario where probe fails to acquire the base
+protocol due to a timeout leading to cleaning up of all device
+managed memory including the scmi_mailbox structure setup during
+mailbox_chan_setup function.
+[   12.735104]arm-scmi soc:qcom,scmi: timed out in resp(caller: version_get+0x84/0x140)
+[   12.735224]arm-scmi soc:qcom,scmi: unable to communicate with SCMI
+[   12.735947]arm-scmi: probe of soc:qcom,scmi failed with error -110
 
-Like I mentioned to Peilin, I am _not_ sure whether it is better to create
-netdevsim device in such a way. Maybe we need to create it before
-these tests and pass it via cmdline?? Lucas?
+Now when a message arrives at cpu slightly after the timeout, the mailbox
+controller will try to call the rx_callback of the client and might end
+up accessing freed memory.
+[   12.758363][    C0] Call trace:
+[   12.758367][    C0]  rx_callback+0x24/0x160
+[   12.758372][    C0]  mbox_chan_received_data+0x44/0x94
+[   12.758386][    C0]  __handle_irq_event_percpu+0xd4/0x240
+This patch frees the mailbox channels setup during probe and adds some more
+error handling in case the probe fails.
 
-Thanks.
+Change-Id: I1214ec2c4c92c4a3ca5fa73de11e0e403b13b46a
+Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+---
+ drivers/firmware/arm_scmi/driver.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 9b2e8d4..518c7b9 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -1430,7 +1430,7 @@ static int scmi_probe(struct platform_device *pdev)
+ 
+ 	ret = scmi_xfer_info_init(info);
+ 	if (ret)
+-		return ret;
++		goto clear_txrx_setup;
+ 
+ 	if (scmi_notification_init(handle))
+ 		dev_err(dev, "SCMI Notifications NOT available.\n");
+@@ -1443,7 +1443,7 @@ static int scmi_probe(struct platform_device *pdev)
+ 	ret = scmi_protocol_acquire(handle, SCMI_PROTOCOL_BASE);
+ 	if (ret) {
+ 		dev_err(dev, "unable to communicate with SCMI\n");
+-		return ret;
++		goto notification_exit;
+ 	}
+ 
+ 	mutex_lock(&scmi_list_mutex);
+@@ -1482,6 +1482,13 @@ static int scmi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	return 0;
++
++notification_exit:
++	scmi_notification_exit(&info->handle);
++clear_txrx_setup:
++	idr_for_each(&info->tx_idr, info->desc->ops->chan_free, &info->tx_idr);
++	idr_for_each(&info->rx_idr, info->desc->ops->chan_free, &info->rx_idr);
++	return ret;
+ }
+ 
+ void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id)
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
