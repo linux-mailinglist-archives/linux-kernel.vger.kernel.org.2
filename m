@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C1A3DF383
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DEB3DF384
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235348AbhHCRGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:06:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38746 "EHLO mail.kernel.org"
+        id S237783AbhHCRGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:06:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237521AbhHCRGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237531AbhHCRGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Aug 2021 13:06:20 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC41261107;
+        by mail.kernel.org (Postfix) with ESMTPSA id EFA196112E;
         Tue,  3 Aug 2021 17:06:08 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mAxrj-002ubq-QO; Tue, 03 Aug 2021 13:06:07 -0400
+        id 1mAxrj-002ubt-RE; Tue, 03 Aug 2021 13:06:07 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -28,9 +28,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH v3 10/22] libtracefs: Add error message when match fields are not FROM and JOIN events
-Date:   Tue,  3 Aug 2021 13:05:54 -0400
-Message-Id: <20210803170606.694085-11-rostedt@goodmis.org>
+Subject: [PATCH v3 11/22] libtracefs: Add error message when match or init fails from bad events
+Date:   Tue,  3 Aug 2021 13:05:55 -0400
+Message-Id: <20210803170606.694085-12-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210803170606.694085-1-rostedt@goodmis.org>
 References: <20210803170606.694085-1-rostedt@goodmis.org>
@@ -42,101 +42,182 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-It is required that the "match" content (the ON portion of the SQL
-sequence) has a field from the FROM event and a field from the JOIN event.
-
-If they do not, then give a better message about what went wrong.
-
-To simplify addition of future errors, also add a parse_error() that calls into
-sql_parse_error() with the appropriate "ap" argument. That is, parse_error()
-takes a normal printf() form and then translates it to the vprintf from of
-sql_parse_error.
+If the tracefs_synth_init() or the matching fails due to events that do
+not exist, or if the match fields are not compatible with each other. Add
+an error message that reports this and where the problem is.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/tracefs-sqlhist.c | 43 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 41 insertions(+), 2 deletions(-)
+ src/tracefs-sqlhist.c | 98 +++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 89 insertions(+), 9 deletions(-)
 
 diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 2e301e024d13..da4668f53ea1 100644
+index da4668f53ea1..ab190d123800 100644
 --- a/src/tracefs-sqlhist.c
 +++ b/src/tracefs-sqlhist.c
-@@ -8,6 +8,7 @@
-  */
- #include <trace-seq.h>
- #include <stdlib.h>
-+#include <stdarg.h>
- #include <errno.h>
- 
- #include "tracefs.h"
-@@ -154,6 +155,16 @@ __hidden void sql_parse_error(struct sqlhist_bison *sb, const char *text,
- 	trace_seq_destroy(&s);
+@@ -507,6 +507,7 @@ __hidden int table_start(struct sqlhist_bison *sb)
  }
  
-+static void parse_error(struct sqlhist_bison *sb, const char *text,
-+			const char *fmt, ...)
-+{
-+	va_list ap;
-+
-+	va_start(ap, fmt);
-+	sql_parse_error(sb, text, fmt, ap);
-+	va_end(ap);
-+}
-+
- static inline unsigned int quick_hash(const char *str)
+ static int test_event_exists(struct tep_handle *tep,
++			     struct sqlhist_bison *sb,
+ 			     struct expr *expr, struct tep_event **pevent)
  {
- 	unsigned int val = 0;
-@@ -647,6 +658,34 @@ static int update_vars(struct tep_handle *tep,
- 	return 0;
+ 	struct field *field = &expr->field;
+@@ -517,18 +518,30 @@ static int test_event_exists(struct tep_handle *tep,
+ 		field->event = tep_find_event_by_name(tep, system, event);
+ 	if (pevent)
+ 		*pevent = field->event;
+-	return field->event != NULL ? 0 : -1;
++
++	if (field->event)
++		return 0;
++
++	sb->line_no = expr->line;
++	sb->line_idx = expr->idx;
++
++	parse_error(sb, field->raw, "event not found\n");
++	return -1;
  }
  
-+static int match_error(struct sqlhist_bison *sb, struct match *match,
-+		       struct field *lmatch, struct field *rmatch)
-+{
-+	struct field *lval = &match->lval->field;
-+	struct field *rval = &match->rval->field;
-+	struct field *field;
-+	struct expr *expr;
-+
-+	if (lval->system != lmatch->system ||
-+	    lval->event != lmatch->event) {
-+		expr = match->lval;
-+		field = lval;
-+	} else {
-+		expr = match->rval;
-+		field = rval;
+-static int test_field_exists(struct expr *expr)
++static int test_field_exists(struct tep_handle *tep,
++			     struct sqlhist_bison *sb,
++			     struct expr *expr)
+ {
+ 	struct field *field = &expr->field;
+ 	struct tep_format_field *tfield;
+ 	char *field_name;
+ 	const char *p;
+ 
+-	if (!field->event)
+-		return -1;
++	if (!field->event) {
++		if (test_event_exists(tep, sb, expr, NULL))
++			return -1;
 +	}
+ 
+ 	/* The field could have a conversion */
+ 	p = strchr(field->field, '.');
+@@ -547,7 +560,16 @@ static int test_field_exists(struct expr *expr)
+ 		tfield = tep_find_any_field(field->event, field_name);
+ 	free(field_name);
+ 
+-	return tfield != NULL ? 0 : -1;
++	if (tfield)
++		return 0;
 +
 +	sb->line_no = expr->line;
 +	sb->line_idx = expr->idx;
 +
 +	parse_error(sb, field->raw,
-+		    "'%s' and '%s' must be a field for each event: '%s' and '%s'\n",
-+		    lval->raw, rval->raw, sb->table->to->field.raw,
-+		    sb->table->from->field.raw);
-+
++		    "Field '%s' not part of event %s\n",
++		    field->field, field->event_name);
 +	return -1;
+ }
+ 
+ static int update_vars(struct tep_handle *tep,
+@@ -585,7 +607,7 @@ static int update_vars(struct tep_handle *tep,
+ 	if (!event_field->event_name)
+ 		return -1;
+ 
+-	if (test_event_exists(tep, expr, &event))
++	if (test_event_exists(tep, sb, expr, &event))
+ 		return -1;
+ 
+ 	if (!event_field->system)
+@@ -651,7 +673,7 @@ static int update_vars(struct tep_handle *tep,
+ 			field->field = store_str(sb, TRACEFS_TIMESTAMP);
+ 		if (!strcmp(field->field, "TIMESTAMP_USECS"))
+ 			field->field = store_str(sb, TRACEFS_TIMESTAMP_USECS);
+-		if (test_field_exists(expr))
++		if (test_field_exists(tep, sb, expr))
+ 			return -1;
+ 	}
+ 
+@@ -941,6 +963,62 @@ static int build_filter(struct tracefs_synth *synth,
+ 	return ret;
+ }
+ 
++static void *field_match_error(struct tep_handle *tep, struct sqlhist_bison *sb,
++			       struct match *match)
++{
++	switch (errno) {
++	case ENODEV:
++	case EBADE:
++		break;
++	default:
++		/* System error */
++		return NULL;
++	}
++
++	/* ENODEV means that an event or field does not exist */
++	if (errno == ENODEV) {
++		if (test_field_exists(tep, sb, match->lval))
++			return NULL;
++		if (test_field_exists(tep, sb, match->rval))
++			return NULL;
++		return NULL;
++	}
++
++	/* fields exist, but values are not compatible */
++	sb->line_no = match->lval->line;
++	sb->line_idx = match->lval->idx;
++
++	parse_error(sb, match->lval->field.raw,
++		    "Field '%s' is not compatible to match field '%s'\n",
++		    match->lval->field.raw, match->rval->field.raw);
++	return NULL;
 +}
 +
- static int test_match(struct sql_table *table, struct match *match)
- {
- 	struct field *lval, *rval;
-@@ -678,13 +717,13 @@ static int test_match(struct sql_table *table, struct match *match)
- 		    (rval->event != to->event) ||
- 		    (lval->system != from->system) ||
- 		    (lval->event != from->event))
--			return -1;
-+			return match_error(table->sb, match, from, to);
- 	} else {
- 		if ((rval->system != from->system) ||
- 		    (rval->event != from->event) ||
- 		    (lval->system != to->system) ||
- 		    (lval->event != to->event))
--			return -1;
-+			return match_error(table->sb, match, to, from);
++static void *synth_init_error(struct tep_handle *tep, struct sql_table *table)
++{
++	struct sqlhist_bison *sb = table->sb;
++	struct match *match = table->matches;
++
++	switch (errno) {
++	case ENODEV:
++	case EBADE:
++		break;
++	default:
++		/* System error */
++		return NULL;
++	}
++
++	/* ENODEV could mean that start or end events do not exist */
++	if (errno == ENODEV) {
++		if (test_event_exists(tep, sb, table->from, NULL))
++			return NULL;
++		if (test_event_exists(tep, sb, table->to, NULL))
++			return NULL;
++	}
++
++	return field_match_error(tep, sb, match);
++}
++
+ static struct tracefs_synth *build_synth(struct tep_handle *tep,
+ 					 const char *name,
+ 					 struct sql_table *table)
+@@ -991,7 +1069,7 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
+ 				   start_event, end_system, end_event,
+ 				   start_match, end_match, NULL);
+ 	if (!synth)
+-		return NULL;
++		return synth_init_error(tep, table);
+ 
+ 	for (match = match->next; match; match = match->next) {
+ 		ret = test_match(table, match);
+@@ -1004,8 +1082,10 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
+ 		ret = tracefs_synth_add_match_field(synth,
+ 						    start_match,
+ 						    end_match, NULL);
+-		if (ret < 0)
++		if (ret < 0) {
++			field_match_error(tep, table->sb, match);
+ 			goto free;
++		}
  	}
- 	return 0;
- }
+ 
+ 	for (expr = table->selections; expr; expr = expr->next) {
 -- 
 2.30.2
 
