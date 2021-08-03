@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3C83DF123
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE803DF128
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236643AbhHCPLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
+        id S236293AbhHCPNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236145AbhHCPLT (ORCPT
+        with ESMTP id S235607AbhHCPNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:11:19 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFE6C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 08:11:08 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id u16so15562786ple.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 08:11:08 -0700 (PDT)
+        Tue, 3 Aug 2021 11:13:10 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA82BC061757;
+        Tue,  3 Aug 2021 08:12:58 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id p145so19741390ybg.6;
+        Tue, 03 Aug 2021 08:12:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NuJ2xEEWKF1Vla0gUGurVlQWkveVpljRc+Zu/G7Vi0c=;
-        b=ieusyNcocip4+sLNejScJnPuqQlILCsYclqRn5zVJl6UmkQJQBtW0nlvO7PeSaEOzK
-         aRaUaM05kbbmI7SZAToygSXbbBc7j01WHfkuL1VmYG8ZsaMKoMN6NZoSWv6wk5m1DJVf
-         +JYw72yduJQx2LiEhHAEwLeB1bX5Jn8+pz9tnIAI55Zv7fNWMUluj0Ap5CmG43kXFU2q
-         8GKUil5wcLltM3u1f1a/UtK3MwqswA/zQLxOFBs4VOxGEgJruRBR1p/usUEk5BsVUuQY
-         aUpDpWFRZrRGRSW/p0Gwo5tQLppapoGyb+PC5nPFP9zEi/52vl0KRgOw2h5aUWuKPXmM
-         peLQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0MA4yBUv23BbJVAOn10I0A8H8/n6Yml4qJZDjujIkSo=;
+        b=JjNxfdKHLCtFD2XS5K70ZXQA2WcJLb5IdcPen4uyEfQUBbimCjc171tfxZeYtP8rM4
+         W9ZQg3+D+c81v3CGYG7ucquebzCRHerHH57GzrfHk1wx3KwcRf4KYl7iW0Y7hqH/f2yM
+         s5FZcMsUo6tS4xeHdOwu9fUh0HRZH5bmNgcDsASGJ3zsGXSFfd5uEEv06J7Btj/OEz6B
+         rNrGMnqAykS8PGrxzAAkX+eTBi5aZ87b3C0OXAs2KyndgwKGaO1IjkaEJu5tC0vmcGdI
+         C0F6dweKUaDb/wqnP48Fxj+h4GmLm3pRWDpHPGgMvDmr9k81fuCq6T47L4XfkvWMSIZL
+         zfCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NuJ2xEEWKF1Vla0gUGurVlQWkveVpljRc+Zu/G7Vi0c=;
-        b=kct205xSqS1Nw8VxobpS/pxJZd4vyiP4JNqhoUyf4slzePwxP35osmuyZnDtuD52jC
-         UOWcN0EziY5A5PlCbFA0qiPRxwoTas76dBSfZdScTSuvGJGoz7lUk+JvgwPs7G3tIIfz
-         Ats4attosKlEJ2hhboFipRCMvsn+EMESzKRyUh13acBPvVKAmE5WeeR9Ku+PoEldz6cE
-         QaHgGF1J1BBJgZ3mk60xi7Szb7bAxoW5zBB086P1OkJbqDrxmnb4glJB6Nru0EJCgNTu
-         K/gDxg+heOmkeWYzTGWR37eGXKdUq9a7GlOtfpEM/z6pnUyEDj1+AkB9soEFATygxKZV
-         rTuQ==
-X-Gm-Message-State: AOAM530wYqKCwl6htFeyYb3WvFfZVTj3R2tNpuNU9gSOC6LL7QgahiqF
-        Ub6yh5UVK1rhgKzWAnQ3+FafGQ==
-X-Google-Smtp-Source: ABdhPJxZlvIJf4rIZsrmOu4Rg+gEaKhU1VM79P45ri1rV8HqdszOC3a8i8R7/2/lEEyL1ULF5tV50g==
-X-Received: by 2002:a65:6a4d:: with SMTP id o13mr583344pgu.361.1628003467627;
-        Tue, 03 Aug 2021 08:11:07 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p8sm6767304pfw.35.2021.08.03.08.11.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 08:11:07 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 15:11:03 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v3 01/12] Revert "KVM: x86/mmu: Allow zap gfn range to
- operate under the mmu read lock"
-Message-ID: <YQlch2fVEfDnz8aX@google.com>
-References: <20210802183329.2309921-1-mlevitsk@redhat.com>
- <20210802183329.2309921-2-mlevitsk@redhat.com>
- <14a0d715-d059-3a85-a803-63d9b0fb790f@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0MA4yBUv23BbJVAOn10I0A8H8/n6Yml4qJZDjujIkSo=;
+        b=lz2DsAw8cIouHxgFkixv3irzu0uBVZQwoVEFsOdww01kMnKqIzjgVndrFaygw6vUbf
+         o4CMkCG7U1m6VhHjKGzbiLuGQEFcSxbE+3+4VejrDq3CrZEuWxM43f+6sQPwK6n794r6
+         LyMeCB0Ur0LOHeBX0e+hwOJfBkGX7+cyPmpvHq6r/G3ZYJFIF9H6eO2IExR/jiiMpvCC
+         kI56guRT0SNcO4TkFudMl7nknFbBvMBxkkQCp3mvSK2qQoZkZ1+LdwbDCUQtF626w+zP
+         QcV0VXOvrEOlsnnJoUC96j4Vevcku6wQ2Cvq1ZhHBan721EQ8pgR8VRP16rrfzfYc/Fp
+         T9uQ==
+X-Gm-Message-State: AOAM533lGBPtTQy+xK2JDfM628Pk2vBb2jVZdsrJQJ3ntag3OFkaZWK7
+        WOlxVoIKjsjge/vZPSST8mVRPgpBkHNbNBuyjBs=
+X-Google-Smtp-Source: ABdhPJxLLhOuge4lnR2ARgHXuM36tY3HcPDFl47HIWEO4m4676WjV7JTLeLnfVbbWsXbk5W2gMxOcuEvnlYqvQJpYLA=
+X-Received: by 2002:a25:3046:: with SMTP id w67mr29095940ybw.134.1628003578010;
+ Tue, 03 Aug 2021 08:12:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14a0d715-d059-3a85-a803-63d9b0fb790f@redhat.com>
+References: <20210803113531.30720-1-lukas.bulwahn@gmail.com> <f9074e8d-9314-9d7d-7bf5-5b5538c8be8d@intel.com>
+In-Reply-To: <f9074e8d-9314-9d7d-7bf5-5b5538c8be8d@intel.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 3 Aug 2021 17:12:47 +0200
+Message-ID: <CAKXUXMxQ83T7beOTuZ928=-eo2Tsr94TGxsaYh3+MHOJrDO8Bg@mail.gmail.com>
+Subject: Re: [PATCH 0/9] Kconfig symbol clean-up on ./arch/x86/
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Lubomir Rintel <lkundrak@v3.sk>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        platform-driver-x86@vger.kernel.org,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021, Paolo Bonzini wrote:
-> On 02/08/21 20:33, Maxim Levitsky wrote:
-> > From: Sean Christopherson <seanjc@google.com>
-> > 
-> > This together with the next patch will fix a future race between
-> > kvm_zap_gfn_range and the page fault handler, which will happen
-> > when AVIC memslot is going to be only partially disabled.
-> > 
-> > This is based on a patch suggested by Sean Christopherson:
-> > https://lkml.org/lkml/2021/7/22/1025
-> 
-> I'll also add a small note from the original message:
-> 
->     The performance impact is minimal since kvm_zap_gfn_range is only called by
->     users, update_mtrr() and kvm_post_set_cr0().  Both only use it if the guest
->     has non-coherent DMA, in order to honor the guest's UC memtype.  MTRR and CD
->     setup only happens at boot, and generally in an area where the page tables
->     should be small (for CD) or should not include the affected GFNs at all
->     (for MTRRs).
-> 
-> On top of this, I think the CD case (kvm_post_set_cr0) can be changed to use
-> kvm_mmu_zap_all_fast.
+On Tue, Aug 3, 2021 at 4:32 PM Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> On 8/3/21 4:35 AM, Lukas Bulwahn wrote:
+> >   - a reference to STRICT_IOMEM in arch/x86/mm/init.c
+> >     unclear to me: which exact config this refers to
+>
+> Are you referring to the reference in this comment?
+>
+> > +       /*
+> > +        * This must follow RAM test, since System RAM is considered a
+> > +        * restricted resource under CONFIG_STRICT_IOMEM.
+> > +        */
+> > +       if (iomem_is_exclusive(pagenr << PAGE_SHIFT)) {
+> > +               /* Low 1MB bypasses iomem restrictions. */
+> > +               if (pagenr < 256)
+> > +                       return 1;
+> ...
+>
 
-No, because fast zap requires kvm->slots_lock be held.  That could be relaxed by
-reverting ca333add6933 ("KVM: x86/mmu: Explicitly track only a single invalid mmu
-generation") and converting mmu_valid_gen to a u64 (to prevent wrap on 32-bit KVM).
-IMO the extra memory cost, even though it's meager savings when using TDP without
-nested, isn't worth relaxing the rules for fast zap.  Non-coherent DMA isn't very
-common these days, and toggling CR0.CD is a rare guest operation (it'd probably
-never happen if the darn architcture didn't set it on RESET).
+Yes, that is what I referred to.
+
+> That came from here:
+>
+> > commit a4866aa812518ed1a37d8ea0c881dc946409de94
+> > Author: Kees Cook <keescook@chromium.org>
+> > Date:   Wed Apr 5 09:39:08 2017 -0700
+> >
+> >     mm: Tighten x86 /dev/mem with zeroing reads
+>
+> Which also added this hunk:
+>
+> >  #ifdef CONFIG_STRICT_DEVMEM
+> > +static inline int page_is_allowed(unsigned long pfn)
+> > +{
+> > +       return devmem_is_allowed(pfn);
+> > +}
+>
+> and talks about CONFIG_STRICT_DEVMEM in the changelog:
+>
+> >     mm: Tighten x86 /dev/mem with zeroing reads
+> >
+> >     Under CONFIG_STRICT_DEVMEM, reading System RAM through /dev/mem is
+> >     disallowed. However, on x86, the first 1MB was always allowed for BIOS
+> ...
+>
+> It's a pretty safe guess that STRICT_IOMEM refers to CONFIG_STRICT_DEVMEM.
+
+Thanks, Dave.
+
+If the maintainers consider updates to comments making them consistent
+with the code as worth being picked, I will turn your analysis into a
+proper commit message and provide a patch to update that comment.
+
+Lukas
