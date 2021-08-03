@@ -2,111 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4821C3DEF47
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443F03DEF54
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236260AbhHCNtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236143AbhHCNtG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:49:06 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A8DC061757;
-        Tue,  3 Aug 2021 06:48:55 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id 21so28197135oin.8;
-        Tue, 03 Aug 2021 06:48:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oPtFDxa+gL3KJ8vrYXO1+XKHyticw4Y4C96puHF8ZXA=;
-        b=nxzx2OXARmgNtwOuxkrcCH/uu6EVLmLEGm2SHMYydJYf+jXjbSj3LYY0djUJSUYHWU
-         2XIehMN4/9D6aYpSUqFnMi/C8+f5VhPLD0FvHcc1AkTLsGq8LmnaUG6dumLR0udK1iPk
-         9BGs+9jQiDdQjLxCybAEIj5mXNlM6h5g5g9xGRRkpLogMuLrcMjVCY6EaKqVd3NJEjM2
-         svm36ox44uxKOJ/OqTPw0aVJoBKKR3DTRTOKr511Uq+ghhQeAGUR0atOuTV3jXW5MHpO
-         HW4TK9fkLr2KLhxbSNIjitR94vukx9ytTVFa7PngKoaxO/yuO5U2q7l6cie531PA2yg3
-         6NJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oPtFDxa+gL3KJ8vrYXO1+XKHyticw4Y4C96puHF8ZXA=;
-        b=oeI2YZwp7IlxrH4jBVjtXkQkKENIaF1W3tN8VV8GjO3PI6dyVJxocHXDnyHUlQUAMI
-         Y0lLumGv+/CfgwTVmBVUKN0GZQDxKmz8cmU4mX9Clv0hmslmKM2s4ZX9/lsq4ofmt0k3
-         iBZE2ctv1w6FxbUY+nWg9oVZFOMImxAAE8CyyRiv72E87azVDSDDvYO3Te7Ao7hUNFlT
-         o29++uTH2NsMeK6QJRCJpkD2QduzJOwFv9s9YGJtYn0ZgRMxSAPtnHKgAzs0KD0xN5ap
-         QZl9dyM9Ta3ifBX3Q20O/4kIdIWrlJ4SChMDp1kxDhs/VK3kk+NpIZMQctzYyV6ZoGsq
-         1/OA==
-X-Gm-Message-State: AOAM531OcJKQZ8j0RR8l6tRfC47q4Vp2xRFN0GBbFNs4PphEeelqroU5
-        oik8jzMy3lrW6hCyhLeKQP8Lmp1c88A=
-X-Google-Smtp-Source: ABdhPJx7UecJ3X3oejto0L5+qkI90Bezly0LPv/ROWlDrTjAD0tiYfUKjXvD7ocS8Wu5XSiwtiX5fw==
-X-Received: by 2002:aca:c7cb:: with SMTP id x194mr14890532oif.119.1627998534183;
-        Tue, 03 Aug 2021 06:48:54 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j20sm165327oos.13.2021.08.03.06.48.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 06:48:53 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Keep other events when receiving FRS
- and Sourcing_vbus events
-To:     Kyle Tso <kyletso@google.com>, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210803091314.3051302-1-kyletso@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <8dd797be-8912-62e4-a8da-00b8edbfb65b@roeck-us.net>
-Date:   Tue, 3 Aug 2021 06:48:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236238AbhHCNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:52:38 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39319 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234324AbhHCNwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 09:52:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="200861751"
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="scan'208";a="200861751"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 06:52:25 -0700
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="scan'208";a="670439422"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 06:52:12 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mAupt-004kJM-Mo; Tue, 03 Aug 2021 16:52:01 +0300
+Date:   Tue, 3 Aug 2021 16:52:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>, Tony Lindgren <tony@atomide.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Chengyang Fan <cy.fan@huawei.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Changbin Du <changbin.du@intel.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Cengiz Can <cengiz@kernel.wtf>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
+        Wang Qing <wangqing@vivo.com>, Andrij Abyzov <aabyzov@slb.com>,
+        Johan Hovold <johan@kernel.org>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Claire Chang <tientzu@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Al Cooper <alcooperx@gmail.com>, linux-serial@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH printk v1 00/10] printk: introduce atomic consoles and
+ sync mode
+Message-ID: <YQlKAeXS9MPmE284@smile.fi.intel.com>
+References: <20210803131301.5588-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210803091314.3051302-1-kyletso@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803131301.5588-1-john.ogness@linutronix.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/21 2:13 AM, Kyle Tso wrote:
-> When receiving FRS and Sourcing_Vbus events from low-level drivers, keep
-> other events which come a bit earlier so that they will not be ignored
-> in the event handler.
+On Tue, Aug 03, 2021 at 03:18:51PM +0206, John Ogness wrote:
+> Hi,
 > 
-> Fixes: 8dc4bd073663 ("usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)")
-> Cc: Badhri Jagan Sridharan <badhri@google.com>
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+> This is the next part of our printk-rework effort (points 3 and
+> 4 of the LPC 2019 summary [0]).
+> 
+> Here the concept of "atomic consoles" is introduced through  a
+> new (optional) write_atomic() callback for console drivers. This
+> callback must be implemented as an NMI-safe variant of the
+> write() callback, meaning that it can function from any context
+> without relying on questionable tactics such as ignoring locking
+> and also without relying on the synchronization of console
+> semaphore.
+> 
+> As an example of how such an atomic console can look like, this
+> series implements write_atomic() for the 8250 UART driver.
+> 
+> This series also introduces a new console printing mode called
+> "sync mode" that is only activated when the kernel is about to
+> end (such as panic, oops, shutdown, reboot). Sync mode can only
+> be activated if atomic consoles are available. A system without
+> registered atomic consoles will be unaffected by this series.
+> 
+> When in sync mode, the console printing behavior becomes:
+> 
+> - only consoles implementing write_atomic() will be called
+> 
+> - printing occurs within vprintk_store() instead of
+>   console_unlock(), since the console semaphore is irrelevant
+>   for atomic consoles
+> 
+> For systems that have registered atomic consoles, this series
+> improves the reliability of seeing crash messages by using new
+> locking techniques rather than "ignoring locks and hoping for
+> the best". In particular, atomic consoles rely on the
+> CPU-reentrant spinlock (i.e. the printk cpulock) for
+> synchronizing console output.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+If console is runtime suspended, who will bring it up?
+Does it mean that this callback can't be implemented on the consoles that
+do runtime suspend (some of 8250 currently, for example)?
 
-> ---
->   drivers/usb/typec/tcpm/tcpm.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 5b22a1c931a9..b9bb63d749ec 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -5369,7 +5369,7 @@ EXPORT_SYMBOL_GPL(tcpm_pd_hard_reset);
->   void tcpm_sink_frs(struct tcpm_port *port)
->   {
->   	spin_lock(&port->pd_event_lock);
-> -	port->pd_events = TCPM_FRS_EVENT;
-> +	port->pd_events |= TCPM_FRS_EVENT;
->   	spin_unlock(&port->pd_event_lock);
->   	kthread_queue_work(port->wq, &port->event_work);
->   }
-> @@ -5378,7 +5378,7 @@ EXPORT_SYMBOL_GPL(tcpm_sink_frs);
->   void tcpm_sourcing_vbus(struct tcpm_port *port)
->   {
->   	spin_lock(&port->pd_event_lock);
-> -	port->pd_events = TCPM_SOURCING_VBUS;
-> +	port->pd_events |= TCPM_SOURCING_VBUS;
->   	spin_unlock(&port->pd_event_lock);
->   	kthread_queue_work(port->wq, &port->event_work);
->   }
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
