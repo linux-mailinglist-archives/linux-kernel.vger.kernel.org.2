@@ -2,56 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5383DF6AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113CF3DF6B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhHCU7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 16:59:31 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:60866 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbhHCU73 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 16:59:29 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mB1TC-006YXJ-2M; Tue, 03 Aug 2021 20:57:02 +0000
-Date:   Tue, 3 Aug 2021 20:57:02 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH v5 03/12] Turn fault_in_pages_{readable,writeable} into
- fault_in_{readable,writeable}
-Message-ID: <YQmtnuqDwBIBf4N+@zeniv-ca.linux.org.uk>
-References: <20210803191818.993968-1-agruenba@redhat.com>
- <20210803191818.993968-4-agruenba@redhat.com>
+        id S231697AbhHCVEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 17:04:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230509AbhHCVEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 17:04:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62FB260C3F;
+        Tue,  3 Aug 2021 21:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628024676;
+        bh=ZMGrcXr8Q//EvHdWsc2BWNseegZXSNDQ76jEtLjlZ80=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CPraMzawD4vrbyneaMQzVdt3+zOWqa+aPm7448eREZkukEftRMKlCy1I+3oTdIFfV
+         NcueDYDdWq+8zPkyr62w6oalrgWgfw7Ppujwo5s4bvCvYUXnt/MaIIMlG3gAYmZ28t
+         DY83h1QiEsGGr7lrIxZ0la7t1xe5nj5FBkq9Yd3Q1lGPWN3HUvYvkz0PMRSCJhuKa6
+         89cvRy2Df4pkB4SIIX7PyjV2UXQk3IOJTcNqJy1L64Ky5mE374RGxiUOAT7kEsYSIF
+         XaHdyY6VWsm4pwl/dYguafmvB08YMbjueFH+mHQ7W9ur1cucvyNDWc0BFW1cDPhmg8
+         P0MrK/xVntmyg==
+Date:   Tue, 3 Aug 2021 14:04:35 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     syzbot <syzbot+c5ac86461673ef58847c@syzkaller.appspotmail.com>,
+        davem@davemloft.net, dsahern@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Subject: Re: [syzbot] net-next boot error: WARNING: refcount bug in
+ fib_create_info
+Message-ID: <20210803140435.19e560fe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <e6eab0c9-7b2e-179b-b9c0-459dd9a75ed1@gmail.com>
+References: <0000000000005e090405c8a9e1c3@google.com>
+        <02372175-c3a1-3f8e-28fe-66d812f4c612@gmail.com>
+        <e6eab0c9-7b2e-179b-b9c0-459dd9a75ed1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803191818.993968-4-agruenba@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 09:18:09PM +0200, Andreas Gruenbacher wrote:
-> Turn fault_in_pages_{readable,writeable} into versions that return the number
-> of bytes faulted in instead of returning a non-zero value when any of the
-> requested pages couldn't be faulted in.  This supports the existing users that
-> require all pages to be faulted in, but also new users that are happy if any
-> pages can be faulted in.
+On Tue, 3 Aug 2021 19:31:50 +0300 Pavel Skripkin wrote:
+> On 8/3/21 7:12 PM, Pavel Skripkin wrote:
+> > On 8/3/21 7:07 PM, syzbot wrote:  
+> >> Hello,
+> >> 
+> >> syzbot found the following issue on:
+> >> 
+> >> HEAD commit:    1187c8c4642d net: phy: mscc: make some arrays static const..
+> >> git tree:       net-next
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=140e7b3e300000
+> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=f9bb42efdc6f1d7
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=c5ac86461673ef58847c
+> >> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> >> 
+> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >> Reported-by: syzbot+c5ac86461673ef58847c@syzkaller.appspotmail.com
+> >> 
+> >> FS-Cache: Netfs 'afs' registered for caching
+> >> Btrfs loaded, crc32c=crc32c-intel, assert=on, zoned=yes
+> >> Key type big_key registered
+> >> Key type encrypted registered
+> >> AppArmor: AppArmor sha1 policy hashing enabled
+> >> ima: No TPM chip found, activating TPM-bypass!
+> >> Loading compiled-in module X.509 certificates
+> >> Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
+> >> ima: Allocated hash algorithm: sha256
+> >> ima: No architecture policies found
+> >> evm: Initialising EVM extended attributes:
+> >> evm: security.selinux (disabled)
+> >> evm: security.SMACK64 (disabled)
+> >> evm: security.SMACK64EXEC (disabled)
+> >> evm: security.SMACK64TRANSMUTE (disabled)
+> >> evm: security.SMACK64MMAP (disabled)
+> >> evm: security.apparmor
+> >> evm: security.ima
+> >> evm: security.capability
+> >> evm: HMAC attrs: 0x1
+> >> PM:   Magic number: 1:990:690
+> >> printk: console [netcon0] enabled
+> >> netconsole: network logging started
+> >> gtp: GTP module loaded (pdp ctx size 104 bytes)
+> >> rdma_rxe: loaded
+> >> cfg80211: Loading compiled-in X.509 certificates for regulatory database
+> >> cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+> >> ALSA device list:
+> >>    #0: Dummy 1
+> >>    #1: Loopback 1
+> >>    #2: Virtual MIDI Card 1
+> >> md: Waiting for all devices to be available before autodetect
+> >> md: If you don't use raid, use raid=noautodetect
+> >> md: Autodetecting RAID arrays.
+> >> md: autorun ...
+> >> md: ... autorun DONE.
+> >> EXT4-fs (sda1): mounted filesystem without journal. Opts: (null). Quota mode: none.
+> >> VFS: Mounted root (ext4 filesystem) readonly on device 8:1.
+> >> devtmpfs: mounted
+> >> Freeing unused kernel image (initmem) memory: 4476K
+> >> Write protecting the kernel read-only data: 169984k
+> >> Freeing unused kernel image (text/rodata gap) memory: 2012K
+> >> Freeing unused kernel image (rodata/data gap) memory: 1516K
+> >> Run /sbin/init as init process
+> >> systemd[1]: systemd 232 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD +IDN)
+> >> systemd[1]: Detected virtualization kvm.
+> >> systemd[1]: Detected architecture x86-64.
+> >> systemd[1]: Set hostname to <syzkaller>.
+> >> ------------[ cut here ]------------
+> >> refcount_t: addition on 0; use-after-free.
+> >> WARNING: CPU: 1 PID: 1 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+> >> Modules linked in:
+> >> CPU: 1 PID: 1 Comm: systemd Not tainted 5.14.0-rc3-syzkaller #0
+> >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> >> RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+> >> Code: 09 31 ff 89 de e8 d7 fa 9e fd 84 db 0f 85 36 ff ff ff e8 8a f4 9e fd 48 c7 c7 c0 81 e3 89 c6 05 70 51 81 09 01 e8 48 f8 13 05 <0f> 0b e9 17 ff ff ff e8 6b f4 9e fd 0f b6 1d 55 51 81 09 31 ff 89
+> >> RSP: 0018:ffffc90000c66ab0 EFLAGS: 00010286
+> >> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> >> RDX: ffff88813fe48000 RSI: ffffffff815d7b25 RDI: fffff5200018cd48
+> >> RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000001
+> >> R10: ffffffff815d195e R11: 0000000000000000 R12: 0000000000000004
+> >> R13: 0000000000000001 R14: 0000000000000000 R15: ffff888027722e00
+> >> FS:  00007f8c1c5d0500(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> CR2: 000055ed0ced4368 CR3: 0000000026bac000 CR4: 00000000001506e0
+> >> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >> Call Trace:
+> >>   __refcount_add include/linux/refcount.h:199 [inline]
+> >>   __refcount_inc include/linux/refcount.h:250 [inline]
+> >>   refcount_inc include/linux/refcount.h:267 [inline]
+> >>   fib_create_info+0x36af/0x4910 net/ipv4/fib_semantics.c:1554  
+> > 
+> > Missed refcount_set(), I think
+> > 
+> > diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
+> > index f29feb7772da..bb9949f6bb70 100644
+> > --- a/net/ipv4/fib_semantics.c
+> > +++ b/net/ipv4/fib_semantics.c
+> > @@ -1428,6 +1428,7 @@ struct fib_info *fib_create_info(struct fib_config
+> > *cfg,
+> >    	}
+> > 
+> >    	fib_info_cnt++;
+> > +	refcount_set(&fi->fib_treeref, 1);
+> >    	fi->fib_net = net;
+> >    	fi->fib_protocol = cfg->fc_protocol;
+> >    	fi->fib_scope = cfg->fc_scope;
 > 
-> Neither of these functions is entirely trivial and it doesn't seem useful to
-> inline them, so move them to mm/gup.c.
+> Oops, it's already fixed in -next, so
 > 
-> Rename the functions to fault_in_{readable,writeable} to make sure that code
-> that uses them can be fixed instead of breaking silently.
+> #syz fix: ipv4: Fix refcount warning for new fib_info
+> 
+> 
+> BTW: there is one more bug with refcounts:
+> 
+> link_it:
+> 	ofi = fib_find_info(fi);
+> 	if (ofi) {
+> 		fi->fib_dead = 1;
+> 		free_fib_info(fi);
+> 		refcount_inc(&ofi->fib_treeref);
+> 
+> 		^^^^^^^^^^^^^^^^^^^^^^^
+> 		/ *fib_treeref is 0 here */
 
-Sigh...  We'd already discussed that; it's bloody pointless.  Making short
-fault-in return success - absolutely.  Reporting exact number of bytes is
-not going to be of any use to callers.
+Why 0? ofi is an existing object it's already initialized.
 
-Please, don't.
+> 		return ofi;
+> 	}
+> 
+> 	refcount_set(&fi->fib_treeref, 1);
+> 
+> 
+> diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
+> index f29feb7772da..38d1fc4d0be1 100644
+> --- a/net/ipv4/fib_semantics.c
+> +++ b/net/ipv4/fib_semantics.c
+> @@ -1543,6 +1543,8 @@ struct fib_info *fib_create_info(struct fib_config 
+> *cfg,
+>   	}
+> 
+>   link_it:
+> +	refcount_set(&fi->fib_treeref, 1);
+> +
+>   	ofi = fib_find_info(fi);
+>   	if (ofi) {
+>   		fi->fib_dead = 1;
+> @@ -1551,7 +1553,6 @@ struct fib_info *fib_create_info(struct fib_config 
+> *cfg,
+>   		return ofi;
+>   	}
+> 
+> -	refcount_set(&fi->fib_treeref, 1);
+>   	refcount_set(&fi->fib_clntref, 1);
+>   	spin_lock_bh(&fib_info_lock);
+>   	hlist_add_head(&fi->fib_hash,
+> 
+> 
+> Thoughts?
+
