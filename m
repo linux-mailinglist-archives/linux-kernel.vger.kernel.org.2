@@ -2,171 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF663DF0E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D673DF0E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236405AbhHCO5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:57:36 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46450 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236022AbhHCO5c (ORCPT
+        id S236567AbhHCO5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235942AbhHCO5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:57:32 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 173Euqjp051587;
-        Tue, 3 Aug 2021 09:56:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628002612;
-        bh=+Xji1zKIuLogX0B+kK6j4X2dEkjBXwuwPZRCCqTYn94=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=hfy2ciXNXPYLOeWd5Rgr0vwK6t5j4Ywtiq8rv5tnPhp/Hi33vvUtdM5b5EKe6Ybb2
-         x/+A1Almuf8Co17KmPyhthoPXcM7ZZh0PFl4pFDHM4yQJnaoLuPMKi1vAtrdJdeb0k
-         w/iELA9P0/DoMh1ej4YYg3XR1zOSqBnlcHwvyE0g=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 173EuqjM065661
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Aug 2021 09:56:52 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 3 Aug
- 2021 09:56:52 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 3 Aug 2021 09:56:52 -0500
-Received: from [10.250.232.234] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 173Euia3020120;
-        Tue, 3 Aug 2021 09:56:45 -0500
-Subject: Re: [PATCH v7 5/7] PCI: cadence: Add support to configure virtual
- functions
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20210803050310.27122-1-kishon@ti.com>
- <20210803050310.27122-6-kishon@ti.com> <20210803114530.GE11252@lpieralisi>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <be907fe7-4095-e28b-5575-76629edc30f0@ti.com>
-Date:   Tue, 3 Aug 2021 20:26:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 3 Aug 2021 10:57:52 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31278C0613D5
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:57:41 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id e19so36809005ejs.9
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 07:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0i2FRyXkHxaXq1271k6IK3L0yRy+wcd8z9KmUNA7o8I=;
+        b=AllGqyH8UY0VArjOw9I0Gu4E7lLgYtQMQXjUMcYVbB67BHHuzLeHOrk9Jx5yXPyTO2
+         RzR9+fkR+JVgHL+upcyPbl+D7poem4Ymr7y15RKrJJT0wl1zUbaJcIBrw+px/FkEeBhj
+         6hmk4d/cmS9f1wGUrDxyHkgzoJbIVRjdYk53CC5M/C9k/BM4IV89nfG/8Rxpjux1BiXM
+         40oVMS0l1QJdqO/lcBbo4KfhI3PP+fMbAQN+sg0tGz+U4cTyz60uxW3yHfz1yL95xofZ
+         VdnFREu4539p7gJ/8xkzUN1F2joiGH4NomItuSGSezx82MpUnTgZDz++I9sSxbDFDI7F
+         /T5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0i2FRyXkHxaXq1271k6IK3L0yRy+wcd8z9KmUNA7o8I=;
+        b=bHBbMiJeutqP0Snr5lOp9OLPxecpTvy25BOLpp1aGpYBN5KVUUUmcC1kgFNdnWMktZ
+         lfjCm+Y1CAbTpZBU85BWvBWM3pRP5MVrtMux8FqVAwy/h+zSF35RGSULuOjyRlYuldJA
+         pU3T6aGLHIUGOdQ8mkt70x0cVWl58Fn+RYjAptC7EFBqqqKpbSUUYnaDbsKlJMF9ZxOc
+         qJi78JH67TO9DbsL3adbspkeNlsVtG4fg3bjHwUXmrFqF3QaRwPwWp9XnIbW2H+NETim
+         RBSa+VIJdXEOuML0tukGtPhWnhYLws4KnGUlwjIWMdCrP9xV23tK2Yl0VOTrrSTOJOoN
+         a7Lg==
+X-Gm-Message-State: AOAM530aIfmZ9PisjU9JEd8wknyTCY36+c6+jIypNOlwd+f/b88s+CEs
+        msuexyyxofsjWayexs9+PgQshdYFYN8nw5iKwI3azL7wv7ZtE9rN
+X-Google-Smtp-Source: ABdhPJw+lGxKs/G9/BamrGUYo9cPXvPx6npvObc+Ou/dCxUfQW4kvGW6yv29rJA5UZ6PCrkNdotUAeMMBmlOqFeeGL4=
+X-Received: by 2002:a17:906:8606:: with SMTP id o6mr21029379ejx.247.1628002659591;
+ Tue, 03 Aug 2021 07:57:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210803114530.GE11252@lpieralisi>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210802134332.033552261@linuxfoundation.org>
+In-Reply-To: <20210802134332.033552261@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 3 Aug 2021 20:27:28 +0530
+Message-ID: <CA+G9fYvv5vY_m-w=5L5h+U9mPDwAeiwudjJKQ2zGuaW+Lx9OAA@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/26] 4.4.278-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
+On Mon, 2 Aug 2021 at 19:16, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.278 release.
+> There are 26 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.278-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 03/08/21 5:15 pm, Lorenzo Pieralisi wrote:
-> On Tue, Aug 03, 2021 at 10:33:08AM +0530, Kishon Vijay Abraham I wrote:
->> Now that support for SR-IOV is added in PCIe endpoint core, add support
->> to configure virtual functions in the Cadence PCIe EP driver.
->>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->> Acked-by: Tom Joseph <tjoseph@cadence.com>
->> ---
->>  .../pci/controller/cadence/pcie-cadence-ep.c  | 241 +++++++++++++++---
->>  drivers/pci/controller/cadence/pcie-cadence.h |   7 +
->>  2 files changed, 217 insertions(+), 31 deletions(-)
->>
->> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
->> index 912a15be8bfd..791915054ff4 100644
->> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
->> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
->> @@ -20,7 +20,18 @@ static int cdns_pcie_ep_write_header(struct pci_epc *epc, u8 fn, u8 vfn,
->>  				     struct pci_epf_header *hdr)
->>  {
->>  	struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
->> +	u32 cap = CDNS_PCIE_EP_FUNC_SRIOV_CAP_OFFSET;
->>  	struct cdns_pcie *pcie = &ep->pcie;
->> +	u32 reg;
->> +
->> +	if (vfn > 1) {
->> +		dev_dbg(&epc->dev, "Only Virtual Function #1 has deviceID\n");
->> +		return 0;
-> 
-> Shouldn't this return an error ?
 
-Since the same function driver could be used for physical function and
-virtual function, I tried to avoid adding any additional case specific
-for virtual function in the function driver.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-If we want to return an error here, then the function driver should be
-modified to not invoke writeheader for vfn > 1.
-> 
->> +	} else if (vfn == 1) {
->> +		reg = cap + PCI_SRIOV_VF_DID;
->> +		cdns_pcie_ep_fn_writew(pcie, fn, reg, hdr->deviceid);
->> +		return 0;
->> +	}
->>  
->>  	cdns_pcie_ep_fn_writew(pcie, fn, PCI_DEVICE_ID, hdr->deviceid);
->>  	cdns_pcie_ep_fn_writeb(pcie, fn, PCI_REVISION_ID, hdr->revid);
->> @@ -51,12 +62,14 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, u8 fn, u8 vfn,
->>  				struct pci_epf_bar *epf_bar)
->>  {
->>  	struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
->> +	u32 cap = CDNS_PCIE_EP_FUNC_SRIOV_CAP_OFFSET;
->>  	struct cdns_pcie_epf *epf = &ep->epf[fn];
->>  	struct cdns_pcie *pcie = &ep->pcie;
->>  	dma_addr_t bar_phys = epf_bar->phys_addr;
->>  	enum pci_barno bar = epf_bar->barno;
->>  	int flags = epf_bar->flags;
->>  	u32 addr0, addr1, reg, cfg, b, aperture, ctrl;
->> +	u32 first_vf_offset, stride;
->>  	u64 sz;
->>  
->>  	/* BAR size is 2^(aperture + 7) */
->> @@ -92,26 +105,50 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, u8 fn, u8 vfn,
->>  
->>  	addr0 = lower_32_bits(bar_phys);
->>  	addr1 = upper_32_bits(bar_phys);
->> +
->> +	if (vfn == 1) {
->> +		/* All virtual functions use the same BAR config */
->> +		if (bar < BAR_4) {
->> +			reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG0(fn);
->> +			b = bar;
->> +		} else {
->> +			reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG1(fn);
->> +			b = bar - BAR_4;
->> +		}
->> +	} else if (vfn == 0) {
->> +		/* BAR configuration for physical function */
->> +		if (bar < BAR_4) {
->> +			reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG0(fn);
->> +			b = bar;
->> +		} else {
->> +			reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG1(fn);
->> +			b = bar - BAR_4;
->> +		}
->> +	}
-> 
-> Code in both branches is almost identical except for what is
-> assigned to reg, it is not fundamental but maybe it can be rewritten
-> more concisely.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-okay.. let me think.
+## Build
+* kernel: 4.4.278-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.4.y
+* git commit: 0de2c08236b37f04155d7a3dd65098f2a31fce22
+* git describe: v4.4.277-27-g0de2c08236b3
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
+77-27-g0de2c08236b3
 
-Thanks
-Kishon
+## No regressions (compared to v4.4.277-20-g46908ed929d6)
+
+## No fixes (compared to v4.4.277-20-g46908ed929d6)
+
+
+## Test result summary
+ total: 45986, pass: 36044, fail: 377, skip: 8270, xfail: 1295,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 37 total, 36 passed, 1 failed
+* sparc: 10 total, 10 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
