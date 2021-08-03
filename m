@@ -2,197 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89D03DEFC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2CB3DEFC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236516AbhHCOIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:08:18 -0400
-Received: from mga18.intel.com ([134.134.136.126]:12751 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236469AbhHCOIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:08:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="200888330"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="200888330"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 07:08:05 -0700
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="568680226"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 07:07:58 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mAv5C-004kW7-El; Tue, 03 Aug 2021 17:07:50 +0300
-Date:   Tue, 3 Aug 2021 17:07:50 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
-        Wang Qing <wangqing@vivo.com>, Andrij Abyzov <aabyzov@slb.com>,
-        Johan Hovold <johan@kernel.org>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Claire Chang <tientzu@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Al Cooper <alcooperx@gmail.com>, linux-serial@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH printk v1 10/10] serial: 8250: implement write_atomic
-Message-ID: <YQlNtr7TNAWtB8XF@smile.fi.intel.com>
-References: <20210803131301.5588-1-john.ogness@linutronix.de>
- <20210803131301.5588-11-john.ogness@linutronix.de>
+        id S236530AbhHCOJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236432AbhHCOJA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 10:09:00 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA79C061757;
+        Tue,  3 Aug 2021 07:08:49 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id D03856855; Tue,  3 Aug 2021 10:08:46 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org D03856855
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1627999726;
+        bh=6y1stnT7LmaJlptQnLDx23qQWH50FVnQt9YPvUgp8TU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WuhuvtS7gTovhY+upvMJtuP/kxXSDck/bfNAXucQT9EVBoU6y4KvyXnyVYeXYR2/X
+         T7+vsGVEDf6ib/5eapurYxojIDJErRdDxmrAdBVtBeZhVmN7GBTe1Cejpj0jw+/MJa
+         DuFSMZsktFBRSq64EXj1x6N8UvX6PnYSpVnIcToY=
+Date:   Tue, 3 Aug 2021 10:08:46 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Thomas Huth <thuth@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, linux-s390@vger.kernel.org,
+        Jia He <hejianet@gmail.com>,
+        Pan Xinhui <xinhui.pan@linux.vnet.ibm.com>
+Subject: Re: [PATCH 0/2] Fix /proc/sys/fs/nfs/nsm_use_hostnames on big endian
+ machines
+Message-ID: <20210803140846.GB30327@fieldses.org>
+References: <20210803105937.52052-1-thuth@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803131301.5588-11-john.ogness@linutronix.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210803105937.52052-1-thuth@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 03:19:01PM +0206, John Ogness wrote:
-> Implement an NMI-safe write_atomic() console function in order to
-> support synchronous console printing.
+Looks good to me.  Could Chuck take it with nfsd stuff if somebody could
+ACK the sysctl part?
+
+--b.
+
+On Tue, Aug 03, 2021 at 12:59:35PM +0200, Thomas Huth wrote:
+> There is an endianess problem with /proc/sys/fs/nfs/nsm_use_hostnames
+> (which can e.g. be seen on an s390x host) :
 > 
-> Since interrupts need to be disabled during transmit, all usage of
-> the IER register is wrapped with access functions that use the
-> printk cpulock to synchronize register access while tracking the
-> state of the interrupts. This is necessary because write_atomic()
-> can be called from an NMI context that has preempted write_atomic().
-
-...
-
-> +static inline void serial8250_set_IER(struct uart_8250_port *up,
-> +				      unsigned char ier)
-> +{
-> +	struct uart_port *port = &up->port;
-> +	unsigned long flags;
-> +	bool is_console;
-
-> +	is_console = uart_console(port);
-> +
-> +	if (is_console)
-> +		console_atomic_cpu_lock(flags);
-> +
-> +	serial_out(up, UART_IER, ier);
-> +
-> +	if (is_console)
-> +		console_atomic_cpu_unlock(flags);
-
-I would rewrite it as
-
-	if (uart_console()) {
-		console_atomic_cpu_lock(flags);
-		serial_out(up, UART_IER, ier);
-		console_atomic_cpu_unlock(flags);
-	} else {
-		serial_out(up, UART_IER, ier);
-	}
-
-No additional variable, easier to get the algorithm on the first glance, less
-error prone.
-
-> +}
-
-> +static inline unsigned char serial8250_clear_IER(struct uart_8250_port *up)
-> +{
-> +	struct uart_port *port = &up->port;
-> +	unsigned int clearval = 0;
-> +	unsigned long flags;
-> +	unsigned int prior;
-> +	bool is_console;
-> +
-> +	is_console = uart_console(port);
-> +
-> +	if (up->capabilities & UART_CAP_UUE)
-> +		clearval = UART_IER_UUE;
-> +
-> +	if (is_console)
-> +		console_atomic_cpu_lock(flags);
-> +
-> +	prior = serial_port_in(port, UART_IER);
-> +	serial_port_out(port, UART_IER, clearval);
-> +
-> +	if (is_console)
-> +		console_atomic_cpu_unlock(flags);
-
-Ditto.
-
-> +	return prior;
-> +}
-
-...
-
-> +		is_console = uart_console(port);
-> +
-> +		if (is_console)
-> +			console_atomic_cpu_lock(flags);
->  		up->ier = port->serial_in(port, UART_IER);
-> +		if (is_console)
-> +			console_atomic_cpu_unlock(flags);
-> +
-
-I'm wondering why you can't call above function here?
-
-...
-
-> +		is_console = uart_console(p);
-> +		if (is_console)
-> +			console_atomic_cpu_lock(flags);
->  		ier = p->serial_in(p, UART_IER);
-> +		if (is_console)
-> +			console_atomic_cpu_unlock(flags);
-
-Ditto.
-
-...
-
-> +	is_console = uart_console(port);
-> +
-> +	if (is_console)
-> +		console_atomic_cpu_lock(flags);
-> +
-> +	ier = serial_in(up, UART_IER);
-> +	serial_out(up, UART_IER, ier & (~mask));
-> +
-> +	if (is_console)
-> +		console_atomic_cpu_unlock(flags);
-
-Ditto.
-
-...
-
-> +	if (uart_console(port))
-> +		console_atomic_cpu_lock(flags);
-> +
-> +	ier = serial_in(up, UART_IER);
-> +	serial_out(up, UART_IER, ier | mask);
-> +
-> +	if (uart_console(port))
-> +		console_atomic_cpu_unlock(flags);
-
-Ditto.
-
-Looking into above note, that uart_console(port) can give different results
-here, AFAIR.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>  # modprobe lockd nsm_use_hostnames=1
+>  # cat /proc/sys/fs/nfs/nsm_use_hostnames
+>  16777216
+> 
+> The nsm_use_hostnames variable is declared as "bool" which is required
+> for the correct type for the module parameter. However, this does not
+> work correctly with the entry in the /proc filesystem since this
+> currently requires "int".
+> 
+> Jia He already provided patches for this problem a couple of years ago,
+> but apparently they felt through the cracks and never got merged. So
+> here's a rebased version to finally fix this issue.
+> 
+> Buglink: https://bugzilla.redhat.com/show_bug.cgi?id=1764075
+> 
+> Jia He (2):
+>   sysctl: introduce new proc handler proc_dobool
+>   lockd: change the proc_handler for nsm_use_hostnames
+> 
+>  fs/lockd/svc.c         |  2 +-
+>  include/linux/sysctl.h |  2 ++
+>  kernel/sysctl.c        | 42 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 45 insertions(+), 1 deletion(-)
+> 
+> -- 
+> 2.27.0
