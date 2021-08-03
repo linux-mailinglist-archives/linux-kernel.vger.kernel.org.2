@@ -2,197 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99393DF5DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A343DF5DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240075AbhHCTkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:40:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:21148 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240259AbhHCTk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:40:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="211899820"
-X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="211899820"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 12:40:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="568769186"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 03 Aug 2021 12:40:15 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 7FD15B9; Tue,  3 Aug 2021 22:40:44 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [RFT, PATCH v1 1/1] platform/x86: dell-smo8800: Convert to be a platform driver
-Date:   Tue,  3 Aug 2021 22:40:39 +0300
-Message-Id: <20210803194039.35083-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S240246AbhHCTno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240216AbhHCTnn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 15:43:43 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FE8C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 12:43:30 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id t9so446854lfc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 12:43:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nGXjTo8qo5IxOBBXxPEhxEW50sCDdvHfqLDIjlbW7zc=;
+        b=Tzy/hx7F5mnewk1vS/7V4ybuSt+vmB2LEQ0yzKr2aV7qAqeiieIyOicRnnhZvCpzH6
+         7YXOAuXieVkzX2sYRnI5mcVQquPVzK1oXd+di0HKJ2tiJg1jbXq7LOf8/21Qb7b9hjN0
+         5Z7+yHwApTuxrMSGTLtEaTC0PJ6UyA7bgfBdU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nGXjTo8qo5IxOBBXxPEhxEW50sCDdvHfqLDIjlbW7zc=;
+        b=dFoiAsqE8p5rl2psefqv+o/4o9tylEaRiaFrBRhUwX328gdwqHDXBXXYe6OcrfmCRU
+         RZ0z2QE0yXJNRdjeUKbXzbjo5b6T8v4ELJFhfc/kIv9wCiFivkoBszy+b1nK74SSdeaz
+         libAHhF2lWyhGhSZETmv4vbbqpFLtDugGpUl8WEKuxr2CGjZL15w/qhXWmf84Fmf7C3R
+         pRsnvAzIL45c7oeVMUpkYSziewM1mitBXWlNfiQQx07hVOWyrDND9pLSp7EZI4hZfNGV
+         fj9qcVBf9Z/kUNwTWikdfeHJvWaJAfCUEqurg7grlbYzVqSUMIebcu5z1owCZxuQElqW
+         EAbg==
+X-Gm-Message-State: AOAM5309BGKqsLJmkhYVHHjNe6+4MNQ424ABBijBmQ1NmiKl7Kn4h4sO
+        sidfdLK8P9OJauYI+k80J1A+b17UoOwJ4FAn
+X-Google-Smtp-Source: ABdhPJzWaqwKtyQ0m7kxE+64e2jWALvRU0c8+ZihfLnnfxBJFzAxJZAAoWckudLYycZIg/1DrChEZQ==
+X-Received: by 2002:a05:6512:220f:: with SMTP id h15mr17823883lfu.335.1628019808871;
+        Tue, 03 Aug 2021 12:43:28 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id d14sm1323666lfv.74.2021.08.03.12.43.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 12:43:28 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id h2so469075lfu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 12:43:27 -0700 (PDT)
+X-Received: by 2002:ac2:4885:: with SMTP id x5mr1818950lfc.487.1628019807490;
+ Tue, 03 Aug 2021 12:43:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210803191818.993968-1-agruenba@redhat.com> <20210803191818.993968-4-agruenba@redhat.com>
+In-Reply-To: <20210803191818.993968-4-agruenba@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 3 Aug 2021 12:43:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiF7jkOrpCe8=s+s=xxw8NovYWfNpe+kVHZth4m0mV5XQ@mail.gmail.com>
+Message-ID: <CAHk-=wiF7jkOrpCe8=s+s=xxw8NovYWfNpe+kVHZth4m0mV5XQ@mail.gmail.com>
+Subject: Re: [PATCH v5 03/12] Turn fault_in_pages_{readable,writeable} into fault_in_{readable,writeable}
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ACPI core in conjunction with platform driver core provides
-an infrastructure to enumerate ACPI devices. Use it in order
-to remove a lot of boilerplate code.
+On Tue, Aug 3, 2021 at 12:18 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+>
+> Turn fault_in_pages_{readable,writeable} into versions that return the number
+> of bytes faulted in instead of returning a non-zero value when any of the
+> requested pages couldn't be faulted in.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/platform/x86/dell/Kconfig        |  2 +-
- drivers/platform/x86/dell/dell-smo8800.c | 74 ++++++------------------
- 2 files changed, 20 insertions(+), 56 deletions(-)
+Ugh. This ends up making most users have horribly nasty conditionals.
 
-diff --git a/drivers/platform/x86/dell/Kconfig b/drivers/platform/x86/dell/Kconfig
-index 9e7314d90bea..821aba31821c 100644
---- a/drivers/platform/x86/dell/Kconfig
-+++ b/drivers/platform/x86/dell/Kconfig
-@@ -140,7 +140,7 @@ config DELL_SMBIOS_SMM
- config DELL_SMO8800
- 	tristate "Dell Latitude freefall driver (ACPI SMO88XX)"
- 	default m
--	depends on ACPI
-+	depends on ACPI || COMPILE_TEST
- 	help
- 	  Say Y here if you want to support SMO88XX freefall devices
- 	  on Dell Latitude laptops.
-diff --git a/drivers/platform/x86/dell/dell-smo8800.c b/drivers/platform/x86/dell/dell-smo8800.c
-index 5d9304a7de1b..3385e852104c 100644
---- a/drivers/platform/x86/dell/dell-smo8800.c
-+++ b/drivers/platform/x86/dell/dell-smo8800.c
-@@ -10,13 +10,14 @@
- 
- #define DRIVER_NAME "smo8800"
- 
--#include <linux/kernel.h>
--#include <linux/module.h>
--#include <linux/acpi.h>
-+#include <linux/fs.h>
- #include <linux/interrupt.h>
-+#include <linux/kernel.h>
- #include <linux/miscdevice.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
- #include <linux/uaccess.h>
--#include <linux/fs.h>
- 
- struct smo8800_device {
- 	u32 irq;                     /* acpi device irq */
-@@ -44,37 +45,6 @@ static irqreturn_t smo8800_interrupt_thread(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
--static acpi_status smo8800_get_resource(struct acpi_resource *resource,
--					void *context)
--{
--	struct acpi_resource_extended_irq *irq;
--
--	if (resource->type != ACPI_RESOURCE_TYPE_EXTENDED_IRQ)
--		return AE_OK;
--
--	irq = &resource->data.extended_irq;
--	if (!irq || !irq->interrupt_count)
--		return AE_OK;
--
--	*((u32 *)context) = irq->interrupts[0];
--	return AE_CTRL_TERMINATE;
--}
--
--static u32 smo8800_get_irq(struct acpi_device *device)
--{
--	u32 irq = 0;
--	acpi_status status;
--
--	status = acpi_walk_resources(device->handle, METHOD_NAME__CRS,
--				     smo8800_get_resource, &irq);
--	if (ACPI_FAILURE(status)) {
--		dev_err(&device->dev, "acpi_walk_resources failed\n");
--		return 0;
--	}
--
--	return irq;
--}
--
- static ssize_t smo8800_misc_read(struct file *file, char __user *buf,
- 				 size_t count, loff_t *pos)
- {
-@@ -136,7 +106,7 @@ static const struct file_operations smo8800_misc_fops = {
- 	.release = smo8800_misc_release,
- };
- 
--static int smo8800_add(struct acpi_device *device)
-+static int smo8800_probe(struct platform_device *device)
- {
- 	int err;
- 	struct smo8800_device *smo8800;
-@@ -160,14 +130,12 @@ static int smo8800_add(struct acpi_device *device)
- 		return err;
- 	}
- 
--	device->driver_data = smo8800;
-+	platform_set_drvdata(device, smo8800);
- 
--	smo8800->irq = smo8800_get_irq(device);
--	if (!smo8800->irq) {
--		dev_err(&device->dev, "failed to obtain IRQ\n");
--		err = -EINVAL;
-+	err = platform_get_irq(device, 0);
-+	if (err < 0)
- 		goto error;
--	}
-+	smo8800->irq = err;
- 
- 	err = request_threaded_irq(smo8800->irq, smo8800_interrupt_quick,
- 				   smo8800_interrupt_thread,
-@@ -189,9 +157,9 @@ static int smo8800_add(struct acpi_device *device)
- 	return err;
- }
- 
--static int smo8800_remove(struct acpi_device *device)
-+static int smo8800_remove(struct platform_device *device)
- {
--	struct smo8800_device *smo8800 = device->driver_data;
-+	struct smo8800_device *smo8800 = platform_get_drvdata(device);
- 
- 	free_irq(smo8800->irq, smo8800);
- 	misc_deregister(&smo8800->miscdev);
-@@ -211,21 +179,17 @@ static const struct acpi_device_id smo8800_ids[] = {
- 	{ "SMO8831", 0 },
- 	{ "", 0 },
- };
--
- MODULE_DEVICE_TABLE(acpi, smo8800_ids);
- 
--static struct acpi_driver smo8800_driver = {
--	.name = DRIVER_NAME,
--	.class = "Latitude",
--	.ids = smo8800_ids,
--	.ops = {
--		.add = smo8800_add,
--		.remove = smo8800_remove,
-+static struct platform_driver smo8800_driver = {
-+	.probe = smo8800_probe,
-+	.remove = smo8800_remove,
-+	.driver = {
-+		.name = DRIVER_NAME,
-+		.acpi_match_table = smo8800_ids,
- 	},
--	.owner = THIS_MODULE,
- };
--
--module_acpi_driver(smo8800_driver);
-+module_platform_driver(smo8800_driver);
- 
- MODULE_DESCRIPTION("Dell Latitude freefall driver (ACPI SMO88XX)");
- MODULE_LICENSE("GPL");
--- 
-2.30.2
+I think I suggested (or maybe that was just my internal voice and I
+never actually vocalized it) using the same semantics as
+"copy_to/from_user()" for fault_in_pages_{readable|writable}().
 
+Namely to return the number of bytes *not* faulted in.
+
+That makes it trivial to test "did I get everything" - becasue zero
+means "nothing failed" and remains the "complete success" marker.
+
+And it still allows for the (much less common) case of "ok, I need to
+know about partial failures".
+
+So instead of this horror:
+
+-               if (!fault_in_pages_writeable(buf_fx, fpu_user_xstate_size))
++               if (fault_in_writeable(buf_fx, fpu_user_xstate_size) ==
++                               fpu_user_xstate_size)
+
+you'd just have
+
+-               if (!fault_in_pages_writeable(buf_fx, fpu_user_xstate_size))
++               if (!fault_in_writeable(buf_fx, fpu_user_xstate_size))
+
+because zero would continue to be a marker of success.
+
+                 Linus
