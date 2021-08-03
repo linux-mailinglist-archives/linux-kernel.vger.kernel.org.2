@@ -2,143 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692E33DEA15
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4AF3DEA17
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234956AbhHCJyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234649AbhHCJyh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:54:37 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45376C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:54:27 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mAr7t-0001sj-I7; Tue, 03 Aug 2021 11:54:21 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mAr7r-0004Cn-QD; Tue, 03 Aug 2021 11:54:19 +0200
-Date:   Tue, 3 Aug 2021 11:54:19 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net v2 1/1] net: dsa: qca: ar9331: make proper initial
- port defaults
-Message-ID: <20210803095419.y6hly7euht7gsktu@pengutronix.de>
-References: <20210803085320.23605-1-o.rempel@pengutronix.de>
- <20210803090605.bud4ocr4siz3jl7r@skbuf>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210803090605.bud4ocr4siz3jl7r@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:25:45 up 243 days, 23:32, 25 users,  load average: 0.16, 0.13,
- 0.05
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S235041AbhHCJy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:54:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:45698 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234910AbhHCJy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 05:54:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED6E112FC;
+        Tue,  3 Aug 2021 02:54:45 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DC0623F40C;
+        Tue,  3 Aug 2021 02:54:42 -0700 (PDT)
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
+        catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
+        ink@jurassic.park.msu.ru, jonas@southpole.se,
+        juri.lelli@redhat.com, linux@armlinux.org.uk, luto@kernel.org,
+        mark.rutland@arm.com, mattst88@gmail.com, mingo@redhat.com,
+        monstr@monstr.eu, mpe@ellerman.id.au, paulmck@kernel.org,
+        paulus@samba.org, peterz@infradead.org, rth@twiddle.net,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tglx@linutronix.de, vincent.guittot@linaro.org, will@kernel.org
+Subject: [PATCH v4 01/10] thread_info: add helpers to snapshot thread flags
+Date:   Tue,  3 Aug 2021 10:54:19 +0100
+Message-Id: <20210803095428.17009-2-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20210803095428.17009-1-mark.rutland@arm.com>
+References: <20210803095428.17009-1-mark.rutland@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 12:06:05PM +0300, Vladimir Oltean wrote:
-> On Tue, Aug 03, 2021 at 10:53:20AM +0200, Oleksij Rempel wrote:
-> > Make sure that all external port are actually isolated from each other,
-> > so no packets are leaked.
-> > 
-> > Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> > changes v2:
-> > - do not enable address learning by default
-> > 
-> >  drivers/net/dsa/qca/ar9331.c | 98 +++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 97 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-> > index 6686192e1883..de7c06b6c85f 100644
-> > --- a/drivers/net/dsa/qca/ar9331.c
-> > +++ b/drivers/net/dsa/qca/ar9331.c
-> > @@ -101,6 +101,46 @@
-> >  	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
-> >  	 AR9331_SW_PORT_STATUS_SPEED_M)
-> >  
-> > +#define AR9331_SW_REG_PORT_CTRL(_port)			(0x104 + (_port) * 0x100)
-> > +#define AR9331_SW_PORT_CTRL_ING_MIRROR_EN		BIT(17)
-> > +#define AR9331_SW_PORT_CTRL_LOCK_DROP_EN		BIT(5)
-> 
-> not used
+In <linux/thread_info.h> there are helpers to manipulate individual
+thread flags, but where code wants to check several flags at once, it
+must open code reading current_thread_info()->flags and operating on a
+snapshot.
 
-ack, will remove
+As some flags can be set remotely it's necessary to use READ_ONCE() to
+get a consistent snapshot even when IRQs are disabled, but some code
+forgets to do this. Generally this is unlike to cause a problem in
+practice, but it is somewhat unsound, and KCSAN will legitimately warn
+that there is a data race.
 
-> 
-> > +#define AR9331_SW_PORT_CTRL_PORT_STATE			GENMASK(2, 0)
-> > +#define AR9331_SW_PORT_CTRL_PORT_STATE_DISABLED		0
-> > +#define AR9331_SW_PORT_CTRL_PORT_STATE_BLOCKING		1
-> > +#define AR9331_SW_PORT_CTRL_PORT_STATE_LISTENING	2
-> > +#define AR9331_SW_PORT_CTRL_PORT_STATE_LEARNING		3
-> > +#define AR9331_SW_PORT_CTRL_PORT_STATE_FORWARD		4
+To make it easier to do the right thing, and to highlight that
+concurrent modification is possible, add new helpers to snapshot the
+flags, which should be used in preference to plain reads. Subsequent
+patches will move existing code to use the new helpers.
 
-....
-> >  
-> > -static int ar9331_sw_setup(struct dsa_switch *ds)
-> > +static int ar9331_sw_setup_port(struct dsa_switch *ds, int port)
-> >  {
-> >  	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-> >  	struct regmap *regmap = priv->regmap;
-> > +	u32 port_mask, port_ctrl, val;
-> >  	int ret;
-> >  
-> > +	/* Generate default port settings */
-> > +	port_ctrl = FIELD_PREP(AR9331_SW_PORT_CTRL_PORT_STATE,
-> > +			       AR9331_SW_PORT_CTRL_PORT_STATE_DISABLED);
-> 
-> PORT_STATE_DISABLED? why? Can you ping over any interface after applying
-> this patch?
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+---
+ include/linux/thread_info.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-grr... good point. My fault, sorry.
-
-> > +
-> > +	if (dsa_is_cpu_port(ds, port)) {
-> > +		/* CPU port should be allowed to communicate with all user
-> > +		 * ports.
-> > +		 */
-> > +		port_mask = dsa_user_ports(ds);
-> > +		/* Enable Atheros header on CPU port. This will allow us
-> > +		 * communicate with each port separately
-> > +		 */
-> > +		port_ctrl |= AR9331_SW_PORT_CTRL_HEAD_EN;
-> > +	} else if (dsa_is_user_port(ds, port)) {
-> > +		/* User ports should communicate only with the CPU port.
-> > +		 */
-> > +		port_mask = BIT(dsa_to_port(ds, port)->cpu_dp->index);
-> 
-> You can use "port_mask = BIT(dsa_upstream_port(ds, port));", looks nicer
-> at least to me.
-
-ok. 
-
+diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
+index 0999f6317978..9a073535c0bd 100644
+--- a/include/linux/thread_info.h
++++ b/include/linux/thread_info.h
+@@ -118,6 +118,15 @@ static inline int test_ti_thread_flag(struct thread_info *ti, int flag)
+ 	return test_bit(flag, (unsigned long *)&ti->flags);
+ }
+ 
++/*
++ * This may be used in noinstr code, and needs to be __always_inline to prevent
++ * inadvertent instrumentation.
++ */
++static __always_inline unsigned long read_ti_thread_flags(struct thread_info *ti)
++{
++	return READ_ONCE(ti->flags);
++}
++
+ #define set_thread_flag(flag) \
+ 	set_ti_thread_flag(current_thread_info(), flag)
+ #define clear_thread_flag(flag) \
+@@ -130,6 +139,11 @@ static inline int test_ti_thread_flag(struct thread_info *ti, int flag)
+ 	test_and_clear_ti_thread_flag(current_thread_info(), flag)
+ #define test_thread_flag(flag) \
+ 	test_ti_thread_flag(current_thread_info(), flag)
++#define read_thread_flags() \
++	read_ti_thread_flags(current_thread_info())
++
++#define read_task_thread_flags(t) \
++	read_ti_thread_flags(task_thread_info(t))
+ 
+ #ifdef CONFIG_GENERIC_ENTRY
+ #define set_syscall_work(fl) \
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.11.0
+
