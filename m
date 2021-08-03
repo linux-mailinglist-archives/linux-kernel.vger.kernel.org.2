@@ -2,200 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4233DE57A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 06:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C8F3DE587
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 06:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbhHCEjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 00:39:01 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:31824 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhHCEi6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 00:38:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627965528; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=FbLhNhA4Y+LPC/c0c9AGj9/wDZXAL/8/x3Qxh+OZH8c=; b=aLBCDuDGWgHE55xdT7DUAoK10hQfu+jFPupSSe8C6w0qadBZiFCB8OS/57VRTkOFNJ+G51MS
- FOF7svaCIw2Cuw1rT1EH7zNRXj+yPwL40gtAsLKX3JyKjhAZZu/AXbVaqoiYlmNQGRs77T1e
- v1e8+h+/+8JVnv/hhIA+49rOKOE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 6108c84996a66e66b2fbe971 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 04:38:33
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 57CBCC433F1; Tue,  3 Aug 2021 04:38:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.100] (unknown [49.207.203.214])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6A433C433F1;
-        Tue,  3 Aug 2021 04:38:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6A433C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH v5 1/2] PM / Domains: Add support for 'required-opps' to
- set default perf state
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-References: <1626764876-10229-1-git-send-email-rnayak@codeaurora.org>
- <1626764876-10229-2-git-send-email-rnayak@codeaurora.org>
- <CAPDyKFrzHD6rXP5TnqrAVnrZExc2JLFe3HoGF+yM_tsaZYwh8g@mail.gmail.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <35950d34-5cab-1b09-9864-49217a83f68d@codeaurora.org>
-Date:   Tue, 3 Aug 2021 10:08:26 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234018AbhHCEjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 00:39:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233858AbhHCEjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 00:39:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B051960F92;
+        Tue,  3 Aug 2021 04:39:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627965543;
+        bh=HPK28uCi1iOsyLvrqkwrijwn8LbLWGJtlix8oYTZDDo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Kyj4k5SBhiAKWQEG+JyRR8OhCCgFqaVfhG/apEvyqWEazuD+CBUaCAT/EwzCU+Mbm
+         71MeZCySfJJRCXqhtrPYC/lJkbJFNBqBtu9QTC7dNKaQxy2DMJT2JqMiH6RDUgWlP3
+         s8m/0EgAimHcumC/KV69n5JqLNF3UzhlPM62b8M/SHKrKjTzAQ5qfT9YOKhH+N8mVP
+         wn27eqMPRz6w8mnDZBE0ZaaGL/UfRhJ6TxQs43sguM8dZMQRKdFKWl1/88BrTWCiYS
+         KCBDpZ3gfxEP0dGQUG0nTg4Ji2YAdZ1otY+BNeUUzP6YH9Nxe3KU57Ehm2BuEU211N
+         C/7pcf7MJRtOg==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mAmCj-00D8KA-EN; Tue, 03 Aug 2021 06:39:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-phy@lists.infradead.org
+Subject: [PATCH v3 0/4] DT schema changes for HiKey970 PCIe hardware to work
+Date:   Tue,  3 Aug 2021 06:38:54 +0200
+Message-Id: <cover.1627965261.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFrzHD6rXP5TnqrAVnrZExc2JLFe3HoGF+yM_tsaZYwh8g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
-On 8/2/2021 6:29 PM, Ulf Hansson wrote:
-> On Tue, 20 Jul 2021 at 09:12, Rajendra Nayak <rnayak@codeaurora.org> wrote:
->>
->> Some devices within power domains with performance states do not
->> support DVFS, but still need to vote on a default/static state
->> while they are active. They can express this using the 'required-opps'
->> property in device tree, which points to the phandle of the OPP
->> supported by the corresponding power-domains.
->>
->> Add support to parse this information from DT and then set the
->> specified performance state during attach and drop it on detach.
->> runtime suspend/resume callbacks already have logic to drop/set
->> the vote as needed and should take care of dropping the default
->> perf state vote on runtime suspend and restore it back on runtime
->> resume.
->>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> ---
->>   drivers/base/power/domain.c | 28 +++++++++++++++++++++++++---
->>   include/linux/pm_domain.h   |  1 +
->>   2 files changed, 26 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
->> index a934c67..f454031 100644
->> --- a/drivers/base/power/domain.c
->> +++ b/drivers/base/power/domain.c
->> @@ -2598,6 +2598,12 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
->>
->>          dev_dbg(dev, "removing from PM domain %s\n", pd->name);
->>
->> +       /* Drop the default performance state */
->> +       if (dev_gpd_data(dev)->default_pstate) {
->> +               dev_pm_genpd_set_performance_state(dev, 0);
->> +               dev_gpd_data(dev)->default_pstate = 0;
->> +       }
->> +
->>          for (i = 1; i < GENPD_RETRY_MAX_MS; i <<= 1) {
->>                  ret = genpd_remove_device(pd, dev);
->>                  if (ret != -EAGAIN)
->> @@ -2635,9 +2641,10 @@ static void genpd_dev_pm_sync(struct device *dev)
->>   static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->>                                   unsigned int index, bool power_on)
->>   {
->> +       struct device_node *np;
->>          struct of_phandle_args pd_args;
->>          struct generic_pm_domain *pd;
->> -       int ret;
->> +       int ret, pstate;
->>
->>          ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
->>                                  "#power-domain-cells", index, &pd_args);
->> @@ -2675,10 +2682,25 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->>                  genpd_unlock(pd);
->>          }
->>
->> -       if (ret)
->> +       if (ret) {
->>                  genpd_remove_device(pd, dev);
->> +               return -EPROBE_DEFER;
->> +       }
->> +
->> +       /* Set the default performance state */
->> +       np = base_dev->of_node;
-> 
-> Please use dev->of_node instead (it is set to the same of_node as
-> base_dev by the callers of __genpd_dev_pm_attach) as it's more
-> consistent with existing code.
-> 
->> +       if (of_parse_phandle(np, "required-opps", index)) {
->> +               pstate = of_get_required_opp_performance_state(np, index);
->> +               if (pstate < 0) {
->> +                       ret = pstate;
->> +                       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
->> +                               pd->name, ret);
->> +               }
->> +               dev_pm_genpd_set_performance_state(dev, pstate);
->> +               dev_gpd_data(dev)->default_pstate = pstate;
-> 
-> This doesn't look entirely correct to me. If we fail to translate a
-> required opp to a performance state, we shouldn't try to set it.
+That's the third version of the DT bindings for Kirin 970 PCIE and its
+corresponding PHY. 
 
-yeah, that does not seem right at all :(
+It is identical to v2, except by:
+	-          pcie@7,0 { // Lane 7: Ethernet
+	+          pcie@7,0 { // Lane 6: Ethernet
 
-> Perhaps it's also easier to call
-> of_get_required_opp_performance_state() unconditionally of whether a
-> "required-opps" specifier exists. If it fails with the translation,
-> then we just skip setting a default state and continue with returning
-> 1.
-> 
-> Would that work?
+at Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
 
-I think it should, I'll redo the error handling, hopefully right this time,
-and re-post. Thanks for the review.
+IMO, the best would be to merge this series via your tree, as it
+depends on the patch converting the DT bindings for the PCIe DWC
+driver.
 
-> 
->> +       }
->>
->> -       return ret ? -EPROBE_DEFER : 1;
->> +       return ret ? ret : 1;
->>   }
->>
->>   /**
->> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
->> index 21a0577..67017c9 100644
->> --- a/include/linux/pm_domain.h
->> +++ b/include/linux/pm_domain.h
->> @@ -198,6 +198,7 @@ struct generic_pm_domain_data {
->>          struct notifier_block *power_nb;
->>          int cpu;
->>          unsigned int performance_state;
->> +       unsigned int default_pstate;
->>          unsigned int rpm_pstate;
->>          ktime_t next_wakeup;
->>          void *data;
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->> of Code Aurora Forum, hosted by The Linux Foundation
->>
-> 
-> Kind regards
-> Uffe
-> 
+v3:
+  - Fixed a comment on patch 3: The Ethernet controller is at lane 6.
+
+v2:
+  - removed the DTS file. I'll submit it in separate, once having
+    everything else merged;
+  - it now doesn't produce any warnings with:
+        make DT_SCHEMA_FILES=Documentation/devicetree/bindings/pci/hisilicon,kirin
+-pcie.yaml DT_CHECKER_FLAGS=-m dt_binding_check
+  - added the upstream node;
+  - the clock enable now uses a new property (hisilicon,clken-gpios);
+  - the reg for the PCI devices are now properly filled;
+  - the pcie@x,y nodes now match the port number from table 4-1 from the
+   datasheet.
+
+
+Mauro Carvalho Chehab (4):
+  dt-bindings: PCI: kirin: Fix compatible string
+  dt-bindings: PCI: kirin: Convert kirin-pcie.txt to yaml
+  dt-bindings: PCI: kirin: Add support for Kirin970
+  dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
+
+ .../bindings/pci/hisilicon,kirin-pcie.yaml    | 160 ++++++++++++++++++
+ .../devicetree/bindings/pci/kirin-pcie.txt    |  50 ------
+ .../devicetree/bindings/pci/snps,dw-pcie.yaml |   2 +-
+ .../phy/hisilicon,phy-hi3670-pcie.yaml        |  86 ++++++++++
+ MAINTAINERS                                   |   2 +-
+ 5 files changed, 248 insertions(+), 52 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.31.1
+
+
