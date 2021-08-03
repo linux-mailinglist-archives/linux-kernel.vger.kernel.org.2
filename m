@@ -2,174 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3197F3DEE2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4E53DEE3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236093AbhHCMsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 08:48:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7008 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235909AbhHCMsw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 08:48:52 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 173CXF1o026900;
-        Tue, 3 Aug 2021 08:48:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=y7eI/WKog5QgbT7neYvgTkNPKlxpYkmXQahi9gRnTTE=;
- b=h2wOAO13925nivPLe5i3sHZeZ2FWsrCvN0ztNOBvkVJbhBTTNtEHvEnPyfHA4VO15W92
- 3uLowxhQPz8nbcV0fVvkvqQm1bajUT73AxgsL/aG7+peIkvCGAUiYqwWSMtA0Q7fDtqd
- zsxuJoh/a0+a6OPqsjm+GxpgHumfDb/OepMJUGyUABHqW3QhqMCLNqs2+iHg4ETr1HFq
- TYDO3ggzNAk+dEvyovndt2wmKDTuXBUEnLnyoHp7UAPGtaC+Hb9tsmUsBFs60xgbUpPj
- A+9GxfUjgr7OvL7XcuHg3/0greq84bGkK/H/tw6poKsJXa2ujWojefebkx7h20nDNOwz Yg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a5kke2g3q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 08:48:23 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 173CY5N9029863;
-        Tue, 3 Aug 2021 08:48:22 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a5kke2g2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 08:48:22 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 173Chdmr032507;
-        Tue, 3 Aug 2021 12:48:19 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 3a4x596b9s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 12:48:19 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 173CmF2Y51446018
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 3 Aug 2021 12:48:15 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4485F5204E;
-        Tue,  3 Aug 2021 12:48:15 +0000 (GMT)
-Received: from sig-9-145-29-26.uk.ibm.com (unknown [9.145.29.26])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 905AA52050;
-        Tue,  3 Aug 2021 12:48:14 +0000 (GMT)
-Message-ID: <9adb96573280c12a277ac8f63742065d6d574e54.camel@linux.ibm.com>
-Subject: Re: [patch V2 12/19] s390/pci: Do not mask MSI[-X] entries on
- teardown
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Kevin Tian <kevin.tian@intel.com>,
-        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-s390@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Date:   Tue, 03 Aug 2021 14:48:14 +0200
-In-Reply-To: <20210729222542.939798136@linutronix.de>
-References: <20210729215139.889204656@linutronix.de>
-         <20210729222542.939798136@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Tnmq2Rh380lFtGMTYA-muuklRO8VYSL0
-X-Proofpoint-ORIG-GUID: 9iN5-hZhFCBWSavvkM-BUdb7I6xKL7Y_
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-03_02:2021-08-03,2021-08-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- mlxscore=0 bulkscore=0 clxscore=1011 priorityscore=1501 adultscore=0
- mlxlogscore=981 phishscore=0 impostorscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108030084
+        id S236007AbhHCMwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 08:52:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:49126 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235805AbhHCMwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 08:52:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E61911FB;
+        Tue,  3 Aug 2021 05:52:22 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BD4A3F70D;
+        Tue,  3 Aug 2021 05:52:19 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 13:52:17 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
+        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v6 06/17] firmware: arm_scmi: Introduce monotonically
+ increasing tokens
+Message-ID: <20210803125217.GQ6592@e120937-lin>
+References: <20210712141833.6628-1-cristian.marussi@arm.com>
+ <20210712141833.6628-7-cristian.marussi@arm.com>
+ <20210728141746.chqwhspnwviz67xn@bogus>
+ <20210728165430.GJ6592@e120937-lin>
+ <20210802102425.67bhbvyrgzio7zzg@bogus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802102425.67bhbvyrgzio7zzg@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-29 at 23:51 +0200, Thomas Gleixner wrote:
-> The PCI core already ensures that the MSI[-X] state is correct when MSI[-X]
-> is disabled. For MSI the reset state is all entries unmasked and for MSI-X
-> all vectors are masked.
+On Mon, Aug 02, 2021 at 11:24:25AM +0100, Sudeep Holla wrote:
+> On Wed, Jul 28, 2021 at 05:54:30PM +0100, Cristian Marussi wrote:
+> > On Wed, Jul 28, 2021 at 03:17:46PM +0100, Sudeep Holla wrote:
+> > > On Mon, Jul 12, 2021 at 03:18:22PM +0100, Cristian Marussi wrote:
 > 
-> S390 masks all MSI entries and masks the already masked MSI-X entries
-> again. Remove it and let the device in the correct state.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: linux-s390@vger.kernel.org
-> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> ---
->  arch/s390/pci/pci_irq.c |    4 ----
->  drivers/pci/msi.c       |    4 ++--
->  include/linux/msi.h     |    2 --
->  3 files changed, 2 insertions(+), 8 deletions(-)
-> 
-> --- a/arch/s390/pci/pci_irq.c
-> +++ b/arch/s390/pci/pci_irq.c
-> @@ -365,10 +365,6 @@ void arch_teardown_msi_irqs(struct pci_d
->  	for_each_pci_msi_entry(msi, pdev) {
->  		if (!msi->irq)
->  			continue;
-> -		if (msi->msi_attrib.is_msix)
-> -			__pci_msix_desc_mask_irq(msi, 1);
-> -		else
-> -			__pci_msi_desc_mask_irq(msi, 1, 1);
->  		irq_set_msi_desc(msi->irq, NULL);
->  		irq_free_desc(msi->irq);
->  		msi->msg.address_lo = 0;
-> --- a/drivers/pci/msi.c
-> +++ b/drivers/pci/msi.c
-> @@ -143,7 +143,7 @@ static inline __attribute_const__ u32 ms
->   * reliably as devices without an INTx disable bit will then generate a
->   * level IRQ which will never be cleared.
->   */
-> -void __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
-> +static void __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
->  {
->  	raw_spinlock_t *lock = &desc->dev->msi_lock;
->  	unsigned long flags;
-> @@ -180,7 +180,7 @@ static void __iomem *pci_msix_desc_addr(
->   * file.  This saves a few milliseconds when initialising devices with lots
->   * of MSI-X interrupts.
->   */
-> -u32 __pci_msix_desc_mask_irq(struct msi_desc *desc, u32 flag)
-> +static u32 __pci_msix_desc_mask_irq(struct msi_desc *desc, u32 flag)
->  {
->  	u32 mask_bits = desc->masked;
->  	void __iomem *desc_addr;
-> --- a/include/linux/msi.h
-> +++ b/include/linux/msi.h
-> @@ -232,8 +232,6 @@ void free_msi_entry(struct msi_desc *ent
->  void __pci_read_msi_msg(struct msi_desc *entry, struct msi_msg *msg);
->  void __pci_write_msi_msg(struct msi_desc *entry, struct msi_msg *msg);
->  
-> -u32 __pci_msix_desc_mask_irq(struct msi_desc *desc, u32 flag);
-> -void __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag);
->  void pci_msi_mask_irq(struct irq_data *data);
->  void pci_msi_unmask_irq(struct irq_data *data);
->  
+> [...]
 > 
 
-I gave this patch a try, adapted for v5.14-rc4 where
-__pci_msi_desc_msg() returns a u32, and all looks good. I tested with
-our pretty quirky ISM devices too, which are the only MSI ones on
-s390x.
+Hi Sudeep,
 
-It also makes sense to me to let the common code handle this so feel
-free to add my:
+I'm goignt to post V7 with all the remarks on the series from you and Peter
+addressed.  A few notes beow on this patch.
 
-Acked-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> > > >  
+> > > > +#define SCMI_PENDING_XFERS_HT_ORDER_SZ	9
+> > > > +
+> > > 
+> > > Is there any particular reason to choose half the token size as hash bucket
+> > > size ? IOW why not 1/3 or 1/4th of it ? I would appreciate a comment here.
+> > > I see it is mentioned in the commit log. Also is it not better to associate
+> > > or keep it close to MSG_TOKEN_ID_MASK and associated macros.
+> > > 
+> > 
+> > I'll move this in the proper place where associated macros are defined.
+> > 
+> > The reason for the size choice is tricky (and not sure about its value
+> > still...so I have not commented yet :D); the ideal size of this hashtable would
+> > be desc->max_msg so equal to the maximum number of inflight messages allowed on
+> > the system in order to minimize (probably to zero) collisions on the hashtable:
+> > unfortunately max_msg is only finally available at runtime time and the
+> > kernel hashtable is statically sized by design....
+> > 
+> > I tried to play some tricks to define dynamically the size but everything falls
+> > apart since a lot of stuff in linux/hashtable.h is based on ARRAY_SIZE() and
+> > friends (to speedup all I suppose). Another non-fit (in my opinion)
+> > alternative would be using relativistic hashtable (linux/rhashtable.h) but
+> > those are definitely overkill in our case since they are hashtables that
+> > can be resized completely at runtime while populated O_o. (with even
+> > more overhead)
+> > 
+> > At the end the size that fits all possible in-flight messages minimizing
+> > collisions in any possible case that I can set at compile time would be 10,
+> > which means really 2^10 1024 HT entries (equal to MAX_MSG_TOKEN) each of which
+> > is a struct list_head (*prev,*next 16bytes) i.e. 16KB HT: Peter pointed out
+> > that it would be a lot of wasted space on normal systems in which max in-flight
+> > messages are far-less than 1024 AND would not even fit in one 4Kb page, so I
+> > reduced it to 512 entries but the best would be 256 (8) if we want to
+> > fit in one regular 4kb page. The drawback will be a bit of HT collisions on
+> > system with more than 256 possible and effective in-flight messages.
+> >
+> 
+> I agree, 256 should be fine for now. Just add a note that it is chosen to
+> fit a page and can be updated if required.
+> 
+> 
 
-and/or
+Yes I added a comment explaining the situation, but, my bad, the 'good'
+size that fits the HT into a 4k page is indeed 512 (9) because the HT array
+is made of hlist_head (so only one pointer, good I double checked on myself :P)
 
-Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> > > >  /**
+> > > >   * struct scmi_xfers_info - Structure to manage transfer information
+> > > >   *
+> > > > - * @xfer_block: Preallocated Message array
+> > > >   * @xfer_alloc_table: Bitmap table for allocated messages.
+> > > >   *	Index of this bitmap table is also used for message
+> > > >   *	sequence identifier.
+> > > >   * @xfer_lock: Protection for message allocation
+> > > > + * @last_token: A counter to use as base to generate for monotonically
+> > > > + *		increasing tokens.
+> > > > + * @free_xfers: A free list for available to use xfers. It is initialized with
+> > > > + *		a number of xfers equal to the maximum allowed in-flight
+> > > > + *		messages.
+> > > > + * @pending_xfers: An hashtable, indexed by msg_hdr.seq, used to keep all the
+> > > > + *		   currently in-flight messages.
+> > > >   */
+> > > >  struct scmi_xfers_info {
+> > > > -	struct scmi_xfer *xfer_block;
+> > > >  	unsigned long *xfer_alloc_table;
+> > > >  	spinlock_t xfer_lock;
+> > > > +	atomic_t last_token;
+> > > 
+> > > Can we merge this and transfer_last_id ? Let this be free running like
+> > > transfer_last_id and just use [0-9] from this ? I don't see any point
+> > > having 2 different monotonically increasing tokens/id.
+> > > 
+> > 
+> > Mmm I was tempted about that, but the reason I did not was that in some
+> > rare limit condition as you can see in the ASCII art (:O) I can find a hole in
+> > the next available token ids so I have to skip and update last_token itself,
+> > not sure if this could cause confusion seeing transfer_ids with holes during
+> > tracing if I unify them.
+> >
+> 
+> That should be fine as it won't be used at all.
+> 
 
-Thanks.
+In V7 I removed mx_info last_token and I'm using last_transfer_id; my
+only concern (mostly theoretical I think) is that last_transfer_id is
+picked from a global atomic and so it is shared by any platform or
+channel instance. (and being global is good for tracing correlation
+in fact...)
 
+In particular this means that it is also shared with notifications
+(which do not use monotonic seqnums), so that, if a flood of notifs
+suddenly kicks in, a lot of transfer_idS would be burnt (for tracing
+notifs.. not for seqnums) and any following command will end up picking
+a good valid monotonic seqnum BUT far away from the previous one
+(i.e. there will be holes in the set of monotonic seqnums): no issue
+with that but it could lead, under some very awkward limit conditions,
+to an early reuse of seqnums for commands (i.e. a less effective
+mitigation of seqnums reusing).
+
+Anyway in my tests on this new version I have see no issues and the
+above mentioned case is clearly borderline so I made the change (and
+noted the above scenario in a comment)
+
+Thanks,
+Cristian
 
