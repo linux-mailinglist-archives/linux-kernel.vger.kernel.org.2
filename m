@@ -2,111 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0883DEB29
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131B23DEB2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235514AbhHCKmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:42:40 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:20922 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235306AbhHCKmi (ORCPT
+        id S235557AbhHCKmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:42:52 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:20371 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235306AbhHCKmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:42:38 -0400
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 03 Aug 2021 03:42:28 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Aug 2021 03:42:25 -0700
-X-QCInternal: smtphost
-Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 03 Aug 2021 16:11:50 +0530
-Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
-        id 904134BA3; Tue,  3 Aug 2021 03:41:48 -0700 (PDT)
-From:   Kalyan Thota <kalyan_t@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        dianders@chromium.org, mkrishn@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, rnayak@codeaurora.org,
-        stable@vger.kernel.org
-Subject: [v2] drm/msm/disp/dpu1: add safe lut config in dpu driver
-Date:   Tue,  3 Aug 2021 03:41:47 -0700
-Message-Id: <1627987307-29347-1-git-send-email-kalyan_t@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 3 Aug 2021 06:42:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1627987358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BuRoum/Nad4Gf6RJJTl7K+XY4MVcbHSdL+3jOnUs6r0=;
+        b=Rzb/3IaUJZtAF/9XjuBLueto7gO2TpMY+eQkxJT2XvZbgr2fKuJigs4cOqmvPZzSOXNToX
+        S79sVcEaUAW0jfW3EajegjZIfLJa0AuMgW62VF5Zdc+keJySo0rQp2gsvo+BoMZcq+C/Et
+        xGO1n/9jwD6tiok0C7J5GhxaRF03NjE=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2107.outbound.protection.outlook.com [104.47.18.107])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-33-vZY-dygmM2qGi3BajRxXcA-1; Tue, 03 Aug 2021 12:42:36 +0200
+X-MC-Unique: vZY-dygmM2qGi3BajRxXcA-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LwMSIVcIp0GVc3UzczpDnOHMuAxPrUj7/A6VpaPMFgb3Lwi9nw37ncS+BF6x27tSHZquUVMeiJydByJOfqXXocaw0n2edh0HYwglCvmi3BYsPnJJDj1QLjkwEsFHMKSqIvrB5YNKasKccQGMaOnN9xupcckz2UslmPut+evP77fW0AL8CfloP2gKS0EUkg+9lmHN8tj/V+/M2rMsnNGmajpYSyv/B1tUV7DFpsXh1bp4Z5yhxQJ7YagiVPZqzdW1Z8ZQisJThBMHVbGr/XCcWk518NHNBk7Qkbu51pjUbxNTtBRcrsSK7chrTYrzYaTPlY0pNE2Ny80VqbD8CvyehA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dMkVA/l2nrqW9yireGHA+41NCyqRsWOtb5IB3/UnIjw=;
+ b=f2W3XayjpGWUNhHQPOtdgaLSBkHAW6IqcbLKVLW9MOcTVqChsqgQ9hivC45B+/hTqZQxlMjKA/Iz5PbmI0wRS0gJVqB08yaGCAmCWC2IzJ0h+3KDfejMEscGBO56IfbFb1ZIgDUk67J2sQ6eyaEkcY/JtOCz+/hSnHbecqROzy+eDtar+a4OWhd5TALB0uMQY6bU/NUVXrd66GYsr3bWQXB8nIgiEN2AIOsgsj4P8cBNGAty1mzjUP1m6fX0+pCPyCVD53hadxWOinlQVGTXgp6hmPkzZkZowgXDt36fCrpMzx+70v60oYC4erM2ZLqNVn+OqI8wlTyjSEjtPAomow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR0402MB2829.eurprd04.prod.outlook.com (2603:10a6:800:bb::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.23; Tue, 3 Aug
+ 2021 10:42:35 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::99d3:99cd:8adf:3eea]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::99d3:99cd:8adf:3eea%5]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 10:42:35 +0000
+Subject: Re: [PATCH 2/2] xen: rename wrong named pfn related variables
+To:     Juergen Gross <jgross@suse.com>
+CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20210616073007.5215-1-jgross@suse.com>
+ <20210616073007.5215-3-jgross@suse.com>
+ <8dbeb9ea-56c9-de30-4d5f-fc9c0ced6ac4@suse.com>
+ <79434ec4-4543-97ad-b010-3f2c1b6a55ad@suse.com>
+ <b9c64bcd-4192-0075-ddf5-711e84301063@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <94d629fd-27e2-f2be-ed26-c3e04e95c5b4@suse.com>
+Date:   Tue, 3 Aug 2021 12:42:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+In-Reply-To: <b9c64bcd-4192-0075-ddf5-711e84301063@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: PR2PR09CA0019.eurprd09.prod.outlook.com
+ (2603:10a6:101:16::31) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by PR2PR09CA0019.eurprd09.prod.outlook.com (2603:10a6:101:16::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Tue, 3 Aug 2021 10:42:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dfc0995f-998d-49d9-949a-08d9566b67b1
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB2829:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB28295A4568E4C692BECE2F2BB3F09@VI1PR0402MB2829.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PmCxdNryIsX0vr8BQHusl8I7ssAdVmulsuse7dQY8ajnyTUmrgyrKnzPmDiiIb/4Z+CDmMSCZuSTts7yKxrNV4z5mTbDgCWDIKuWRqVk01oF0mTc+CegiXcPQ+ZxK04sZuO+k8E2R1dlUkTZzojfxyGJMkec9W47kY9a2F5Mor7KfmKSSzd8KhlCBbfpuTvNMTwOMwSlZVNe4ILrwZUpvZ+RA5BDdDefnziSosAMuFceM6rpwtokn/j7tjFPIUkVCXg3wrv+KxFB5XSvtgIkaWsLspeFVn2HKZuTJsg+4mPZ5gdvVzdOQjeDEbfjA3/TtUfnW3eZsXq3W0ilBpwvdABVRM2Vs6DWslNxSKBOu6OWNhkH35r7EOm/Ut9eDlGNs8/Csl0SeRLWaTl+RKuRiTeuiufreY7Ubc6VX/dFEYaWtUf3HHoUaIcSO1kmHCjML7hGamn1PSlt3hrPCyLH5odHNwWaEl55lYhY86Vm+vkeRv7hpqRpf141FXsNQ8SYgUSexFk3quXi3tby6ZBnU4OHpC2KzyMA+8L8mknnYkaEBQINCmOzK2iVpXcVsnZPQBHOYbBvCYUtYFMHgsdZuajG/kpCgxHOrMdMzM7bhoog5diFQykY2Itj6cuPnW9oKLv03nw3dG06BSjun5loxu3iB+viWzHCd4F797M5TlAZEMdQsOnECEZWDRfakFzKakLBFqoCnTkvNxdo7MlqwTTG5wqUufAAMW23g08XdN0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(346002)(376002)(136003)(396003)(478600001)(83380400001)(66476007)(37006003)(316002)(16576012)(36756003)(66946007)(53546011)(5660300002)(8676002)(31696002)(38100700002)(66556008)(86362001)(54906003)(8936002)(31686004)(2906002)(6486002)(26005)(6862004)(4326008)(6636002)(956004)(186003)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?j8t4LPYmuM+UA/XptHS0QuCgqBEf3m/LA+jBllUfEKaKDVX3cxC84TA05+gQ?=
+ =?us-ascii?Q?hWFmdmDtzIH1lzw6y2ibwmG9l+cKNpvkR2vKvT3ANP3SJE0wv1tR8mLVnmNm?=
+ =?us-ascii?Q?W1w+sm6bEq+gIOOn8S6X2PtVTtaPpV5KN5qxSU2eMsJUvwZFR1dxp/UgKEKE?=
+ =?us-ascii?Q?XZEhaNa+eOjJNl4azExLP6UIxzP3xuP2YHGtXLEXCW4GRIgAO3973rjpDIVZ?=
+ =?us-ascii?Q?YJx6neqz/GoxsXQgKb+0u5iZPrQ4n6JGSfp4lql7clIu2ugRIrzKFoLpnsvM?=
+ =?us-ascii?Q?RjfZv8Ui3zX6VyHcjLyflD9/7y0DbCKQsgu+Y4jF1FZNKYhVpbQwMbAuMGei?=
+ =?us-ascii?Q?pHqrXvXyCtI3utEMDXNDqPMGiYqCii81fglzuSFiG/DU2h4L2AQ8pEw8MYP3?=
+ =?us-ascii?Q?HeN3/ws7yIt7Q6kKjogG54Xl/hWXNtGOUtdpDRav/DovrTlRPIIgLNLH9KU8?=
+ =?us-ascii?Q?zRL+ziGFKR/h32Q4gNSm2KOA4iHFDo3oF0JKcML/OTZ3dgTc0B51v4udyQHY?=
+ =?us-ascii?Q?fjYJ/EcgS+DmDuqK28swnRg+t2AVQM9aCCLArx2Y1x6HZsCCTdLrhm81t21O?=
+ =?us-ascii?Q?IeBAV98BxM9PLRdfq8ikJGdx8W82JQ9c8HC6RylLTFqzGyymZlIYygZnmApH?=
+ =?us-ascii?Q?14nMSms6K9Y7xF04KDKmC419um650vY7qJbjbDKe5cF936ZFVfamMszSI8mf?=
+ =?us-ascii?Q?qYQYC4l7rSdEIPDN+CuERnMcfbYVBfs4odbEe9akNYhDGqtfqzACzrmJ7hkO?=
+ =?us-ascii?Q?OblgPN89wdK49p5k6ZQs8JbWZ2cdNRjBiaZIngQuo9UBdz52rru7E0To1uRh?=
+ =?us-ascii?Q?XBSRDG0UrRbF1K09sjS9gewyH727c6Dbg7lS2MQ5DvNXYnwkoNnM6ytzfMfU?=
+ =?us-ascii?Q?3COes1bOJB2CEc35Dprd7A8XE9i8eFrTHTjJ96HhDOpMjYf/5mQMhcQFNXES?=
+ =?us-ascii?Q?NGXYvA46Z06x8JQQFcrvd62ZiD9M5urjznnW2+jUKaSQRz/55YDj+Ier25sZ?=
+ =?us-ascii?Q?BuuPRIEwB667KAsZufyAtafGXDQZcSVy7TwR67nDf5R3nGX+ohmjDvE6hc8j?=
+ =?us-ascii?Q?sSFjBFQ6YI1NM5bqBI0AbG8644hbEWZQx18llsRae3t2Hw8y0t31UHlIaXWz?=
+ =?us-ascii?Q?lySgSpcZyaVGJbFVX79yLTIAUk/mefEp1/PSkaSYiNThfD2rSS6hkWGXUvfH?=
+ =?us-ascii?Q?uVnKoeq5Bz1maX88eEYjl+amggYzd2QOc4i1EM9ObH4p0q0ikfYwo0MB5C0T?=
+ =?us-ascii?Q?B2m11AlkCaRjWinfgFL+rnZrXMRBCCwA3+GE0EFKx0O+p6pyprZRxOFU12/i?=
+ =?us-ascii?Q?jJIb7Dpmok99378J+iRStOg8?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dfc0995f-998d-49d9-949a-08d9566b67b1
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 10:42:35.2365
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F0e6H7pmWn2ZNpmsCif4akAejTQjlU6BV79PbrC3Va03NZ1v+8R7VbkZJnI3gCe2gNuttyBHfsxtmbzypvQqjg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2829
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add safe lut configuration for all the targets in dpu
-driver as per QOS recommendation.
+On 30.07.2021 11:00, Juergen Gross wrote:
+> On 16.06.21 12:43, Juergen Gross wrote:
+>> On 16.06.21 11:56, Jan Beulich wrote:
+>>> On 16.06.2021 09:30, Juergen Gross wrote:
+>>>> --- a/arch/x86/xen/p2m.c
+>>>> +++ b/arch/x86/xen/p2m.c
+>>>> @@ -95,8 +95,8 @@ unsigned long *xen_p2m_addr __read_mostly;
+>>>> =C2=A0 EXPORT_SYMBOL_GPL(xen_p2m_addr);
+>>>> =C2=A0 unsigned long xen_p2m_size __read_mostly;
+>>>> =C2=A0 EXPORT_SYMBOL_GPL(xen_p2m_size);
+>>>> -unsigned long xen_max_p2m_pfn __read_mostly;
+>>>> -EXPORT_SYMBOL_GPL(xen_max_p2m_pfn);
+>>>> +unsigned long xen_p2m_max_size __read_mostly;
+>>>> +EXPORT_SYMBOL_GPL(xen_p2m_max_size);
+>>>
+>>> Instead of renaming the exported variable (which will break consumers
+>>> anyway), how about dropping the apparently unneeded export at this
+>>> occasion?
+>>
+>> Why do you think it isn't needed? It is being referenced via the inline
+>> function __pfn_to_mfn() in arch/x86/include/asm/xen/page.h. And
+>> __pfn_to_mfn() is used via lots of other inline functions and macros.
+>>
+>>> Further it looks to me as if xen_p2m_size and this variable
+>>> were actually always kept in sync, so I'd like to put up the question
+>>> of dropping one of the two.
+>>
+>> Hmm, should be possible, yes.
+>=20
+> Looking into this it seems this is not possible.
+>=20
+> xen_p2m_size always holds the number of p2m entries in the p2m table,
+> including invalid ones at the end. xen_p2m_pfn_limit however contains
+> the (rounded up) index after the last valid p2m entry.
 
-Issue reported on SC7280:
+I'm afraid I can't follow:
 
-With wait-for-safe feature in smmu enabled, RT client
-buffer levels are checked to be safe before smmu invalidation.
-Since display was always set to unsafe it was delaying the
-invalidaiton process thus impacting the performance on NRT clients
-such as eMMC and NVMe.
+xen_build_dynamic_phys_to_machine() sets xen_p2m_size and then syncs
+its value to what so far has been xen_max_p2m_pfn.
 
-Validated this change on SC7280, With this change eMMC performance
-has improved significantly.
+xen_vmalloc_p2m_tree() sets xen_max_p2m_pfn and then syncs its value
+to xen_p2m_size.
 
-Changes in v1:
-- Add fixes tag (Sai)
-- CC stable kernel (Dimtry)
+I therefore can't see how the two values would hold different values,
+except for the brief periods between updating one and then the other.
 
-Fixes: cfacf946a464d4(drm/msm/disp/dpu1: add support for display for SC7280 target)
-Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
-Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org> (sc7280, sc7180)
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-index d01c4c9..2e482cd 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-@@ -974,6 +974,7 @@ static const struct dpu_perf_cfg sdm845_perf_data = {
- 	.amortizable_threshold = 25,
- 	.min_prefill_lines = 24,
- 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xfff0, 0xf000, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sdm845_qos_linear),
- 		.entries = sdm845_qos_linear
-@@ -1001,6 +1002,7 @@ static const struct dpu_perf_cfg sc7180_perf_data = {
- 	.min_dram_ib = 1600000,
- 	.min_prefill_lines = 24,
- 	.danger_lut_tbl = {0xff, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
- 		.entries = sc7180_qos_linear
-@@ -1028,6 +1030,7 @@ static const struct dpu_perf_cfg sm8150_perf_data = {
- 	.min_dram_ib = 800000,
- 	.min_prefill_lines = 24,
- 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xfff8, 0xf000, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sm8150_qos_linear),
- 		.entries = sm8150_qos_linear
-@@ -1056,6 +1059,7 @@ static const struct dpu_perf_cfg sm8250_perf_data = {
- 	.min_dram_ib = 800000,
- 	.min_prefill_lines = 35,
- 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
- 		.entries = sc7180_qos_linear
-@@ -1084,6 +1088,7 @@ static const struct dpu_perf_cfg sc7280_perf_data = {
- 	.min_dram_ib = 1600000,
- 	.min_prefill_lines = 24,
- 	.danger_lut_tbl = {0xffff, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xff00, 0xff00, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
- 		.entries = sc7180_qos_macrotile
--- 
-2.7.4
+Jan
 
