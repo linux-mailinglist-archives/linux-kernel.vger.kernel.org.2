@@ -2,219 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D1F3DF9B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A708F3DE4B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 05:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbhHDCcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 22:32:15 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:43264 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231950AbhHDCcO (ORCPT
+        id S233612AbhHCDa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 23:30:28 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55812 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233197AbhHCDa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 22:32:14 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210804023158epoutp02b50e1e85690b9a81b55e2dbef1ecdb37~X_a6pkR_H3073530735epoutp02j
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 02:31:58 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210804023158epoutp02b50e1e85690b9a81b55e2dbef1ecdb37~X_a6pkR_H3073530735epoutp02j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1628044318;
-        bh=kbTgHv/xYI2WEh9TgbergRaN4gUO/PT6mzRKwnk7qRo=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=ci2DyU06F29LmVm1R84Jp344ouM6yC7K0Gtv/hslnXgAg9nqmarU2UsvGfJbiDdrI
-         8eyDP0aMAzE/JfN1n0+akgA93ulvb8kyuaZBbWzAY0woLg7UBwev8tyOAhIhkMtcZZ
-         ShFwet7HoxeBLscwXifNoYQBMGT8SKGYjqDF1eRI=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20210804023157epcas5p3cd7324a34681f7f27ffa7592a3e421d8~X_a5g04oc0080600806epcas5p3D;
-        Wed,  4 Aug 2021 02:31:57 +0000 (GMT)
-Received: from epsmges5p3new.samsung.com (unknown [182.195.38.180]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4GfbNH4hR4z4x9Q8; Wed,  4 Aug
-        2021 02:31:43 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        67.96.41701.70CF9016; Wed,  4 Aug 2021 11:31:35 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210803032734epcas5p2143008ddb212fe53fcd28b813c85c9d8~XriK76wJA0307203072epcas5p22;
-        Tue,  3 Aug 2021 03:27:34 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210803032734epsmtrp250253d00a0bcb95eb389ba59e2235cb0~XriK7Nrrq0903709037epsmtrp2E;
-        Tue,  3 Aug 2021 03:27:34 +0000 (GMT)
-X-AuditID: b6c32a4b-0c1ff7000001a2e5-62-6109fc075206
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        23.9B.08394.6A7B8016; Tue,  3 Aug 2021 12:27:34 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210803032733epsmtip257f8695ca31a55a1935839128ee154b8~XriJ90RNo0958009580epsmtip2g;
-        Tue,  3 Aug 2021 03:27:33 +0000 (GMT)
-From:   Alim Akhtar <alim.akhtar@samsung.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org
-Cc:     krzysztof.kozlowski@canonical.com,
-        linux-samsung-soc@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Subject: [PATCH v11] dt-bindings: ufs: Add bindings for Samsung ufs host
-Date:   Tue,  3 Aug 2021 08:55:39 +0530
-Message-Id: <20210803032539.15676-1-alim.akhtar@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNKsWRmVeSWpSXmKPExsWy7bCmui77H85Eg4Vt1hYP5m1js9j49geT
-        xabH11gtLu+aw2Yx4/w+JovWvUfYHdg8ZjX0snlsWtXJ5rF5Sb1H35ZVjB6fN8kFsEZl22Sk
-        JqakFimk5iXnp2TmpdsqeQfHO8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYAHaCkUJaYUwoU
-        CkgsLlbSt7Mpyi8tSVXIyC8usVVKLUjJKTAp0CtOzC0uzUvXy0stsTI0MDAyBSpMyM5Yslm9
-        4IlExaXrU1gbGNuFuxg5OSQETCQWXmhh6WLk4hAS2M0o8enXUijnE6PEkhlvmCCcb4wS7X8u
-        M8O09FzdxAqR2Mso8XfnPEYIp4VJ4sKD/6wgVWwC2hJ3p29hArFFBGIkHu6ZBxZnFiiUeNFy
-        kx3EFhbwkLjT8Q4sziKgKtH1+jwbiM0rYCNxdNpiVoht8hKrNxxgBlkgIbCMXeLhlzNQCReJ
-        vx0b2SBsYYlXx7ewQ9hSEp/f7QWKcwDZ2RI9u4whwjUSS+cdY4Gw7SUOXJnDAlLCLKApsX6X
-        PkRYVmLqqXVMEGfySfT+fsIEEeeV2DEPxlaVaH53FWqMtMTE7m5WiE0eEj09LiBhIYFYiXsT
-        +5gmMMrOQliwgJFxFaNkakFxbnpqsWmBcV5qOTyakvNzNzGCU5WW9w7GRw8+6B1iZOJgPMQo
-        wcGsJMIbeoMjUYg3JbGyKrUoP76oNCe1+BCjKTDEJjJLiSbnA5NlXkm8oYmlgYmZmZmJpbGZ
-        oZI4L3v81wQhgfTEktTs1NSC1CKYPiYOTqkGpg0nVb/Nu/+rVCiUz+3sXZG2bjnWttwl4lc/
-        Pf9i2HOfd/oZ/mSViadvyvcejrnu4+d70fR4dGGbyO/V+g22v7e+ORe6NOv0I53UiiBu/75v
-        zs9jLzZof32ysfTwv9bMNy/5om03vZXM/PRGcrJzxR0pB32RiphdLCcYtB6XJBu4rU/h9s87
-        LDBX2+Z7+rJfHjoqElvzQpVaBDr+2hxuD1c33CJz/j/bTQah76b8CXfjV+8WrZiclGuicHDd
-        W2X1rblslgvOL/nvf+XXA++W0kUncqSYl0eaGOYvZrz85LbJdsUYq2/TRK9c7nd+u/3hAr7j
-        UraHt7HpiVgGHzqQ/y/bMvDvt07TT4fMczjalFiKMxINtZiLihMBharpX94DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGJMWRmVeSWpSXmKPExsWy7bCSvO6y7RyJBrtaBC0ezNvGZrHx7Q8m
-        i02Pr7FaXN41h81ixvl9TBate4+wO7B5zGroZfPYtKqTzWPzknqPvi2rGD0+b5ILYI3isklJ
-        zcksSy3St0vgyliyWb3giUTFpetTWBsY24W7GDk5JARMJHqubmLtYuTiEBLYzSixcV8nO0RC
-        WuL6xglQtrDEyn/P2SGKmpgkfl3uYANJsAloS9ydvoWpi5GDQ0QgTqJ1fTWIySxQLHH6FxNI
-        hbCAh8SdjnesIDaLgKpE1+vzYJ28AjYSR6ctZoUYLy+xesMB5gmMPAsYGVYxSqYWFOem5xYb
-        FhjmpZbrFSfmFpfmpesl5+duYgQHjZbmDsbtqz7oHWJk4mA8xCjBwawkwqvfyp4oxJuSWFmV
-        WpQfX1Sak1p8iFGag0VJnPdC18l4IYH0xJLU7NTUgtQimCwTB6dUA1Myt+7i8zNXJ614sMDB
-        1/35GsYrIQWzko4uv3Xco/7YYu6HHnUZchveVxnOPnL699+2hzKfxfbt7uXcuURiVuoFl0tF
-        nXkLApI2da/5HuB7WWNFw/9WJ4np65Q0+R1nXmJnf3G06/y1tzpn+3U4D02/LHtracH8FJ79
-        l1/eip7daDGzL3ejstWsTdU7byw4auEyUStCbf29dWqVsVfnnPHKvD5bvu6Me7nT60L9mXs+
-        x/b6yUW1/bvF8iJTT2b1qWceSxM5eXsb/vxcOPOt54SgSfc22PzoTT/lIL/wZvU3FsEEUauZ
-        j1ZsFOi4vVx445eib2sv1h1e4iCyODL9eOvJXcpKXzt7rQOdPy9afDKrTomlOCPRUIu5qDgR
-        ADeZq/6JAgAA
-X-CMS-MailID: 20210803032734epcas5p2143008ddb212fe53fcd28b813c85c9d8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210803032734epcas5p2143008ddb212fe53fcd28b813c85c9d8
-References: <CGME20210803032734epcas5p2143008ddb212fe53fcd28b813c85c9d8@epcas5p2.samsung.com>
+        Mon, 2 Aug 2021 23:30:26 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1733PTZR015381;
+        Mon, 2 Aug 2021 20:29:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=MzggrC06bOF07UdsUXgsuqCYhfxwS9khUj7MaVcp/N0=;
+ b=UYo5wwHhTd1XrAuWEmcNj/xtuCS8M+FK2vrbdSk27aM2YWWAv7Yzwa8JbQLbXW0BocOM
+ uK4Xwu8DTogr0OzsAbbTZJgfBe6ZkXi6QQNc5tTdcz6FunP+oo2gcPCB1/gpGK4De+t2
+ C7JJoWMkLsqMUR5lV53ySt/sm5hDA8efbd4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a6nmmarxv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 02 Aug 2021 20:29:01 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 20:28:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J4xtRufJaMFv/GT/IGl+6fnGTsK+ldrfBTIl3JGetFjcFU7/5Lif4dOuYpTvxqvoSr4a6x1TjpqIpc1GKzKjsY4CcmN5sXYiT+DctZIFcUeux4xjLb+HAu206lS3wutgb0N1Blz5lawDnVSAIeePfGrySFrY68rR2mW/Govuz+5/dD4f9XVDw/+PLFf1HYou+O/Ehzy1ha32hArVAgovcaV4TyEwQ/pvcXQkDlBiXUB6g0HXVAPVMYSDj56CAuTHyDlTsMEaGM2jpOitoJKvDZDo6U4BGLHQI6qxOEjSZbiPGY26Cvn2C2ehrzjlOIA8t1B+zAjEDW5NbQLHtdriVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MzggrC06bOF07UdsUXgsuqCYhfxwS9khUj7MaVcp/N0=;
+ b=YLD8IV4GovBugeMfjC58IpBT3sZ311rHYXzWwxdLAGQIbb3xGPr6OIJmSF0lsycBqP5MYIUjklGj2rGlGn14vVazRRdqE7JN5TEyDQRRqB5Au7TILR1G3Ruvve+REooi5YMM9pnu9SC396MaiuOV6VaNAGxeTj2wy9iJybLaIhKhLJrt3Oh2nK+8KG5SsuGI/TIcJ6VwE8j2FwzxI91OrZO7a4FCfizhUwZNLAJO6MWmvFWNJ05PeXPFvtSYeS+KJK7IKfWExwjxz+oCd6sJTQFHSjV7VHBmSrmiA1kum7RMlR549+XhxH3ImnZXD7YA0/uXsKLZjV2QWO/n7TwTlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2661.namprd15.prod.outlook.com (2603:10b6:a03:15b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.23; Tue, 3 Aug
+ 2021 03:28:53 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::9520:2bcd:e6fd:1dc7]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::9520:2bcd:e6fd:1dc7%6]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 03:28:53 +0000
+Date:   Mon, 2 Aug 2021 20:28:48 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Waiman Long <longman@redhat.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v2] mm/memcg: Fix incorrect flushing of lruvec data in
+ obj_stock
+Message-ID: <YQi38JlQQD4nsgeM@carbon.dhcp.thefacebook.com>
+References: <20210802143834.30578-1-longman@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210802143834.30578-1-longman@redhat.com>
+X-ClientProxiedBy: MW4PR03CA0025.namprd03.prod.outlook.com
+ (2603:10b6:303:8f::30) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:6c4e) by MW4PR03CA0025.namprd03.prod.outlook.com (2603:10b6:303:8f::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Tue, 3 Aug 2021 03:28:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ec48ea28-9ad7-403a-1a55-08d9562ed155
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2661:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB26618331CF46ACFE384CFF16BEF09@BYAPR15MB2661.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wXSSPiCYlfO1qRBSYtjWBr4TMLtS+V61H5ibjViCC6bnAiIg7VQY8BTNY+vrfNMfKn84D6dPD2zuSIQ0XX7jRC1nMMgYRjWN0H2+B4Rthzm3fjEL/nLcAh16JXQEw+bMSOZy9eNt/sO6MHZn78YdimNR1dufUDT8TmRJak6DruW/DikLQqhxaQUmVq4mPmMdIHhbV86NIzo0QXL8NXVlII9Cbs4kN0iRhRDgwOtQ3TJyYbBQ9jRPZP0oTYyqOuxolxz3q/CGaM06og37Lm3oQXWKYjmz4sq8hirM+odiEX0YJHNmiXNWH2m3J4hQVXT8WxnW6Y5VWGJ04n96BMiY3uGc2k2DqOuKEZ+LZWwB7doBlQnpSuUJOrA9ka6OI5StJvRvDIO+ZYL0tuAzskj+Ef1zr/I0NnlmOSGRSzNKgZH+skV982KNF7pZ7nYgkmEs6beAuz/D5In9z55d9laMU3IUpLQls5VCrhhxNG+eaKU3XiXy6oWUoXXv3zC37LaKzHKpR+54QcembOM6P9aE8rhSwiYcM65O4HKUCnX8L/ksw7NekeGaNj4FI6F52i6pJOady4H2kzY4md0yui/mPIRWaYTz+Gc0IU9AEjU08DQY8hs2Ec62UgpU074a35oUSaXyJRS7H5vAwiOMahLIYA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(376002)(346002)(136003)(7416002)(4326008)(478600001)(66476007)(66946007)(7696005)(66556008)(38100700002)(4744005)(6506007)(54906003)(2906002)(86362001)(5660300002)(6916009)(316002)(6666004)(8936002)(8676002)(9686003)(52116002)(186003)(55016002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?b5PIRCZm0X+YCgQsSFvhI6iR2dmXALEnn0J0qbnfA5+3bEHb1V6ieit5nkge?=
+ =?us-ascii?Q?svFgv4h9jlLC9OIOGT7oMuwfRnb9GlztoU3JfUP/8Iqyf3iapZMtrxMAOrFK?=
+ =?us-ascii?Q?CFWADOwg9uvrlPi7cSAeCwoEgxmrsB2WVTB2Itveief91IIuSido/28of5Wy?=
+ =?us-ascii?Q?x+O9DcPb9zD7zp0cJ/jaH87a9LJBLboMX6/QQoMmq5dokwP3JqWl8QpYR5oq?=
+ =?us-ascii?Q?B1UaMx7g15oW9dOF/Va11M+acf+IMwmlgrs8JUspR5xZTIbQCcgMHpRLKcZS?=
+ =?us-ascii?Q?HD4PlW/lKt/pVs8XJ5HIBWlx+/6yjP3xAl7xjaMrGQN1IugJjMs0dD6Nj8IA?=
+ =?us-ascii?Q?+6A00wm6fuBYJ/bCnJQfqUqi7gy3hlASapHmXXbIwfca4YdbLW/PIzrGjDjn?=
+ =?us-ascii?Q?YMJAhAzZGXykS14Kpaq+V6FmXLMTFtk72RfP7gP9ZNujsMoq21qkUyk8EDvK?=
+ =?us-ascii?Q?Gp2MFnjUk9xRfaLZaI1XUMIe3nZN/Zj3JpWW2xNu0Xkqs6LR7wtAz6M/K8/d?=
+ =?us-ascii?Q?zIZrPfVa6d4+EUIedcg8KXbH7lvs3+fa5FKbpH9n0Du05GVk+1hDGfVLpEAQ?=
+ =?us-ascii?Q?oQClyjGGeAZHjJhOC1KSIs6KMqEBVI/xAReG2vxsmcpA8eOorJ3h64/YTdV3?=
+ =?us-ascii?Q?KBophUHJCk4EoXYTKdatomMCLfDwDm0mLWcWaB+8hEQNHJxp/CgxdC+NNLC9?=
+ =?us-ascii?Q?6Aq6ahmHIGSPHECiyONWZgoxqPxKEfqwvLwZAluin0BG2tLZQ51hTXaKATkn?=
+ =?us-ascii?Q?3d/jyR9b2FaKpOm2jJlDmg1HHrmUUYG3xIscnmFKaFdiyO+Qq3Nwh0/uBEQL?=
+ =?us-ascii?Q?IkA6G5e/Gy5se/e665DbF/CZQuJ/kEatgPcnSUfN5hUBuxjsp6kGsw60w0D0?=
+ =?us-ascii?Q?JXwNcbbvMQPqDYIRYbgzTFhUcGqIqg9MMhJsY1K2yP+XRDjpr/FLO9fJDDPP?=
+ =?us-ascii?Q?Wu75I40wbx7TwUE3q2As8UaCZDYftJGRXD4KJh5xyL/+xK6AWwBZGODlT16L?=
+ =?us-ascii?Q?bTFbqkrh6ib6gQCSYROR8LIFqiWIgV6Wzr2g0kstZilSAC+B/4xw64OvLHRJ?=
+ =?us-ascii?Q?bwbV/Pvef1enRkPd21cOVXfSn3MNHlj1CR6qm2Smbqdza8kFgoq0nlbW4jpU?=
+ =?us-ascii?Q?GdD/srpL6NeYybc4PYfEl6Xiif09473LQLFJP40x823WMV76GywrazIBbMJ1?=
+ =?us-ascii?Q?qGVWKtInOUOM4xSrGbY2Fcr5KeqV7KGfMgq07p6njShQ4EqjEe2c8vt2WpsV?=
+ =?us-ascii?Q?4upJemzYfftYTHsuKi9S5g931jiAEpHjXEEfFJA0ImvFDcAhOQGe7+6V/hXP?=
+ =?us-ascii?Q?PuOv/qFLH61qHOkfym2EZ3CEXLCLn+O21X0mAq1v+6xKeA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec48ea28-9ad7-403a-1a55-08d9562ed155
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 03:28:53.2524
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Gmg61ffEAuQsIFTCLqESgRCEw0px2iPh91qxZe3llQ+ehDnTualrGKkXyYR4qlbZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2661
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: stwQjsgPGcESPAVaYU4khijbtogUSdyb
+X-Proofpoint-ORIG-GUID: stwQjsgPGcESPAVaYU4khijbtogUSdyb
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-02_10:2021-08-02,2021-08-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ clxscore=1011 priorityscore=1501 impostorscore=0 phishscore=0 mlxscore=0
+ adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=744 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108030018
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds DT bindings for Samsung ufs hci
+On Mon, Aug 02, 2021 at 10:38:34AM -0400, Waiman Long wrote:
+> When mod_objcg_state() is called with a pgdat that is different from
+> that in the obj_stock, the old lruvec data cached in obj_stock are
+> flushed out. Unfortunately, they were flushed to the new pgdat and
+> so the data go to the wrong node. This will screw up the slab data
+> reported in /sys/devices/system/node/node*/meminfo.
+> 
+> Fix that by flushing the data to the cached pgdat instead.
+> 
+> Fixes: 68ac5b3c8db2 ("mm/memcg: cache vmstat data in percpu memcg_stock_pcp")
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
----
-Changes since v10
-* Rebased on v5.14-rc2 
-* removed Rob Herring earlier Reviewed-by tag
+Acked-by: Roman Gushchin <guro@fb.com>
 
-This patch was part of exynos ufs driver series, somehow
-this got missed to applied on the tree, sending again as a new
-patch v11, removing Rob's earlier Reviewed-by tag.
-
- .../bindings/ufs/samsung,exynos-ufs.yaml      | 89 +++++++++++++++++++
- 1 file changed, 89 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-
-diff --git a/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-new file mode 100644
-index 000000000000..38193975c9f1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-@@ -0,0 +1,89 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/ufs/samsung,exynos-ufs.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Samsung SoC series UFS host controller Device Tree Bindings
-+
-+maintainers:
-+  - Alim Akhtar <alim.akhtar@samsung.com>
-+
-+description: |
-+  Each Samsung UFS host controller instance should have its own node.
-+  This binding define Samsung specific binding other then what is used
-+  in the common ufshcd bindings
-+  [1] Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
-+
-+properties:
-+
-+  compatible:
-+    enum:
-+      - samsung,exynos7-ufs
-+
-+  reg:
-+    items:
-+     - description: HCI register
-+     - description: vendor specific register
-+     - description: unipro register
-+     - description: UFS protector register
-+
-+  reg-names:
-+    items:
-+      - const: hci
-+      - const: vs_hci
-+      - const: unipro
-+      - const: ufsp
-+
-+  clocks:
-+    items:
-+      - description: ufs link core clock
-+      - description: unipro main clock
-+
-+  clock-names:
-+    items:
-+      - const: core_clk
-+      - const: sclk_unipro_main
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  phys:
-+    maxItems: 1
-+
-+  phy-names:
-+    const: ufs-phy
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - phys
-+  - phy-names
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/exynos7-clk.h>
-+
-+    ufs: ufs@15570000 {
-+       compatible = "samsung,exynos7-ufs";
-+       reg = <0x15570000 0x100>,
-+             <0x15570100 0x100>,
-+             <0x15571000 0x200>,
-+             <0x15572000 0x300>;
-+       reg-names = "hci", "vs_hci", "unipro", "ufsp";
-+       interrupts = <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>;
-+       clocks = <&clock_fsys1 ACLK_UFS20_LINK>,
-+                <&clock_fsys1 SCLK_UFSUNIPRO20_USER>;
-+       clock-names = "core_clk", "sclk_unipro_main";
-+       pinctrl-names = "default";
-+       pinctrl-0 = <&ufs_rst_n &ufs_refclk_out>;
-+       phys = <&ufs_phy>;
-+       phy-names = "ufs-phy";
-+    };
-+...
-
-base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
--- 
-2.17.1
-
+Thanks!
