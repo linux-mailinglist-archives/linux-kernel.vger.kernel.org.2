@@ -2,76 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07073DF52C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9FD3DF52F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239454AbhHCTN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
+        id S239500AbhHCTOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239440AbhHCTN4 (ORCPT
+        with ESMTP id S239447AbhHCTOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:13:56 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FF8C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 12:13:45 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d1so274131pll.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 12:13:45 -0700 (PDT)
+        Tue, 3 Aug 2021 15:14:33 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB13C0613D5
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 12:14:20 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id bq29so333611lfb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 12:14:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=51jbt1FVT8IlO6u6Cwrs29BEgDlHbe6XQ3u3nFa/JfM=;
-        b=ad2Yhve4zPtnMlQA1kQYZvgF/VOj4cc3VR6lgNzpoTCOSNd8h91YOig3aVFrlNOlba
-         dQD4tBLo15gSXN6IpWWIGkJh+xMc947AR/PbIe6sv+qGLnv8n0DwTiQsNfgHeVdGTxYj
-         dn/MeQ1UbBT14RiwYG82GP70rlJwO7Y54T0Xw=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o0KpkzuHgK9GvKRz84YUwSFRZoVYeFdlCPtHyXWJQI4=;
+        b=IhVvc2zO0gVenINJka9gU+HwzPs2chpbN81UxmimQd2DrzkYTxm58GZq29MO5pPrqO
+         /b1z92x2EQLw7KwxaepO60QJxHJfmkD4ODPtUrnthsHL/gv5/gwORNIwMCzIzM2rwLd3
+         +qRbm3O2pt1vJ1vzGeoeZp0BBj/Jr5gZVANa0nWwTlgd59plD4greZN1+qurDjT46QhC
+         NKNFR5yWdCfqPq2mJNpvb5Gj+DC2QnwuGUswMZ5efFinEjjCF7xUnkz/A+PNvqBlEMOz
+         IWE0sQoSSqjUMHW3BCXee39qartNBPLd7H+v6iSMe6sFtM7ZVaCK+PBx1DrGYIdXb98F
+         eFWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=51jbt1FVT8IlO6u6Cwrs29BEgDlHbe6XQ3u3nFa/JfM=;
-        b=ndAThyxNZldmUuCb44Ug9Nt6zNeEboZlaCJUevS/ChGfj83B6UoKcZbAUrYPl3leaK
-         F0iehg579IY83H2LCbhmyO0TkliXlhANVVhKHoSR76Z4mlDzihoGC68c7xBJ0pEOp8mA
-         3t7l0DY3sXuN2XsXDcLB5KcOKHNVD+zPUsZ94LQtSfvB9ZyvG5yh/WI7OqA7xekoSGOz
-         8lYzkZYvES1HhQ7kRmdFbHAduGCPPnUtcr7bQB24N5aBRK/weolZFGcT64ZDd58V2ueb
-         0UGzcST0aNOJ+UFDkZzr08IEhGTy89luigKaNT0eTOStmsw8DdHEHESlCKwyFWc64RMT
-         6AxA==
-X-Gm-Message-State: AOAM533JFHciuY8YiAthD+ThnCenPt5gJHyGiqYRyPJIGotp46n+HbsF
-        giJiVDEM/R4i+ngrywNQbwT2gQ==
-X-Google-Smtp-Source: ABdhPJwEEsxEiREkDX7Q13hRVmVm5y2g4E2WGMU7w7iJxiCZoPqfwWG/qUn0MjYFfkB6dhrzfE2h7A==
-X-Received: by 2002:a63:d104:: with SMTP id k4mr1253803pgg.196.1628018024608;
-        Tue, 03 Aug 2021 12:13:44 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:9afe:3b52:1da2:825d])
-        by smtp.gmail.com with UTF8SMTPSA id q14sm16600910pfn.73.2021.08.03.12.13.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 12:13:44 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 12:13:42 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pratham Pratap <prathampratap@codeaurora.org>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add interconnect properties
- for USB
-Message-ID: <YQmVZk42Fq+7GMST@google.com>
-References: <1627880576-22391-1-git-send-email-sanm@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o0KpkzuHgK9GvKRz84YUwSFRZoVYeFdlCPtHyXWJQI4=;
+        b=qUTITHSCn1cGIYlFn3i/7GZ8d8m5YYvcw5AYSFcsk7R6AT6akPRWobEZll7NsLi0dy
+         RZfPKb6WQunUBBosKiFbkbGeqoTcSkHHG34a98SRGrvhiSlIRtb9Q9bN4tLQM/expZd8
+         pCfvarifYG0N66hyR5ABRdB9kawXXfYohTqxWvnrfmUzCjhzzOUJlyDzbJYvYavinaiY
+         SjoQLsEl6U1fRX4yWo12kca6aaHd2rv0HWBt2nodAACtuWLlkGpsFx0ZZqZhN6Afxbd8
+         xOZBm7dtwZzFArdNXDQxzD7fpm51dO8urPsR2zzY1I7N5qMWn5559mgZBtMkBzgHFPBh
+         7GKg==
+X-Gm-Message-State: AOAM531bMzzMrttzQ1K9LqcxxKrJ0S62uopO+G8Pu1qctjcAGyOTvt7I
+        XIOeaHx0yy6INFc7Du36FBriT9ARAW+Qag8BTI5XZQ==
+X-Google-Smtp-Source: ABdhPJxhNGyqsLT6k8Bxnxe0BQDXXGxD/VmjU/Ju+m5Ftr+9Ql55KKi1LMJz+or4Ekd3G8wphgKajB3wLeYYk6dLDuc=
+X-Received: by 2002:ac2:5d4a:: with SMTP id w10mr17773309lfd.529.1628018058868;
+ Tue, 03 Aug 2021 12:14:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1627880576-22391-1-git-send-email-sanm@codeaurora.org>
+References: <20210803150904.80119-1-colin.king@canonical.com>
+In-Reply-To: <20210803150904.80119-1-colin.king@canonical.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 3 Aug 2021 21:14:07 +0200
+Message-ID: <CACRpkdZ5u-C8uH2pCr1689v_ndyzqevDDksXvtPYv=FfD=x_xg@mail.gmail.com>
+Subject: Re: [PATCH][next] brcmfmac: firmware: Fix uninitialized variable ret
+To:     Colin King <colin.king@canonical.com>
+Cc:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev <netdev@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 10:32:56AM +0530, Sandeep Maheswaram wrote:
-> Add interconnect properties in USB DT nodes for sc7280.
-> 
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+On Tue, Aug 3, 2021 at 5:09 PM Colin King <colin.king@canonical.com> wrote:
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Currently the variable ret is uninitialized and is only set if
+> the pointer alt_path is non-null. Fix this by ininitializing ret
+> to zero.
+>
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: 5ff013914c62 ("brcmfmac: firmware: Allow per-board firmware binaries")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Nice catch!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
