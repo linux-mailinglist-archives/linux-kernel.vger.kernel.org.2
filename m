@@ -2,352 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63633DEF41
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C035B3DEF42
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236228AbhHCNsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:48:19 -0400
-Received: from mga06.intel.com ([134.134.136.31]:29443 "EHLO mga06.intel.com"
+        id S236209AbhHCNsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:48:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236260AbhHCNsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:48:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="274748534"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="274748534"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 06:48:01 -0700
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="521256861"
-Received: from vmustya-mobl1.amr.corp.intel.com (HELO [10.213.171.71]) ([10.213.171.71])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 06:48:00 -0700
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_rt5682: Add max98390 echo reference
- support
-To:     Mark Hsieh <mark_hsieh@wistron.corp-partner.google.com>,
-        alsa-devel@alsa-project.org
-Cc:     cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com,
-        mac.chiang@intel.com, lance.hou@intel.com, broonie@kernel.org,
-        brent.lu@intel.com, bard.liao@intel.com,
-        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
-        perex@perex.cz, linux-kernel@vger.kernel.org,
-        mark_hsieh@wistron.com
-References: <20210803092013.10749-1-mark_hsieh@wistron.corp-partner.google.com>
-Message-ID: <1160d111-fe9c-3a66-fab0-e11675b86169@linux.intel.com>
-Date:   Tue, 3 Aug 2021 08:46:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S234324AbhHCNs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 09:48:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFD3E60EE8;
+        Tue,  3 Aug 2021 13:48:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627998496;
+        bh=zQcbProzWPaxleoMp6t5lAXDYvQgawbCdWjeOH+VTHE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=TrO/WXFKyGWb4yUP1ijh+x8hUISwQHiCHiuUMBhcvQKIh1SrJ6JIfkms6WwNG5hmf
+         O2mzGPZfH6fSTKbawZnlQk/2931/BZQLHurJ/U+urmWYMlod/IJunWR5LJbe219RWG
+         ske+xmMc2aZtQGyW6fldr4UAw4eO0DGtmsjrICKLeyCrde5rARufeEhzfVf58VOFMx
+         t6t7hLU5agvetWR52ChAciKmNjNvgRrWx4vNiS8Ll1KmW/tVZb8IDxUf1pwHJ/OwZq
+         M//JpeDeZC/BkrXQvFJ5du50bdRYN6zfMD7DEjNvehCOYABO2NOHHuILkXDOaqgXP9
+         HhfPMz/KKJ0+Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A5EE05C3C26; Tue,  3 Aug 2021 06:48:16 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 06:48:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Chao Gao <chao.gao@intel.com>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [clocksource]  8901ecc231:  stress-ng.lockbus.ops_per_sec -9.5%
+ regression
+Message-ID: <20210803134816.GO4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210521083322.GG25531@xsang-OptiPlex-9020>
+ <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
+ <20210526064922.GD5262@shbuild999.sh.intel.com>
+ <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
+ <20210802062008.GA24720@gao-cwp>
+ <20210802170257.GL4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210803085759.GA31621@gao-cwp>
 MIME-Version: 1.0
-In-Reply-To: <20210803092013.10749-1-mark_hsieh@wistron.corp-partner.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803085759.GA31621@gao-cwp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit subject is not really correct, it's not about echo reference
-support, it's really about basic support for max98390
-
-My main objection is that there's a rather large copy-paste from the
-max98373 code, when the only change I can see is the device and dai
-names, see below
-
-> +/*
-> + * Maxim MAX98390
-> + */
-> +
-> +const struct snd_soc_dapm_route max_98390_dapm_routes[] = {
-> +	/* speaker */
-> +	{ "Left Spk", NULL, "Left BE_OUT" },
-> +	{ "Right Spk", NULL, "Right BE_OUT" },
-> +};
-> +EXPORT_SYMBOL_NS(max_98390_dapm_routes, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> +
-> +static struct snd_soc_codec_conf max_98390_codec_conf[] = {
-> +	{
-> +		.dlc = COMP_CODEC_CONF(MAX_98390_DEV0_NAME),
-> +		.name_prefix = "Right",
-> +	},
-> +	{
-> +		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
-> +		.name_prefix = "Left",
-> +	},
-> +};
-> +
-> +struct snd_soc_dai_link_component max_98390_components[] = {
-> +	{  /* For Right */
-> +		.name = MAX_98373_DEV0_NAME,
-> +		.dai_name = MAX_98390_CODEC_DAI,
-> +	},
-> +	{  /* For Left */
-> +		.name = MAX_98373_DEV1_NAME,
-
-you've even left two references to 98373 in this structure...
-
-> +		.dai_name = MAX_98390_CODEC_DAI,
-> +	},
-> +};
-> +EXPORT_SYMBOL_NS(max_98390_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> +
-> +static int max_98390_hw_params(struct snd_pcm_substream *substream,
-> +			       struct snd_pcm_hw_params *params)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-> +	struct snd_soc_dai *codec_dai;
-> +	int j;
-> +
-> +	for_each_rtd_codec_dais(rtd, j, codec_dai) {
-> +		if (!strcmp(codec_dai->component->name, MAX_98390_DEV0_NAME)) {
-> +			/* DEV0 tdm slot configuration */
-> +			snd_soc_dai_set_tdm_slot(codec_dai, 0x03, 3, 8, 32);
-> +		}
-> +		if (!strcmp(codec_dai->component->name, MAX_98390_DEV1_NAME)) {
-> +			/* DEV1 tdm slot configuration */
-> +			snd_soc_dai_set_tdm_slot(codec_dai, 0x0C, 3, 8, 32);
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +int max_98390_trigger(struct snd_pcm_substream *substream, int cmd)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-> +	struct snd_soc_dai *codec_dai;
-> +	struct snd_soc_dai *cpu_dai;
-> +	int j;
-> +	int ret = 0;
-> +
-> +	/* set spk pin by playback only */
-> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-> +		return 0;
-> +
-> +	cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +	for_each_rtd_codec_dais(rtd, j, codec_dai) {
-> +		struct snd_soc_dapm_context *dapm =
-> +				snd_soc_component_get_dapm(cpu_dai->component);
-> +		char pin_name[MAX_98390_PIN_NAME];
-> +
-> +		snprintf(pin_name, ARRAY_SIZE(pin_name), "%s Spk",
-> +			 codec_dai->component->name_prefix);
-> +
-> +		switch (cmd) {
-> +		case SNDRV_PCM_TRIGGER_START:
-> +		case SNDRV_PCM_TRIGGER_RESUME:
-> +		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +			ret = snd_soc_dapm_enable_pin(dapm, pin_name);
-> +			if (!ret)
-> +				snd_soc_dapm_sync(dapm);
-> +			break;
-> +		case SNDRV_PCM_TRIGGER_STOP:
-> +		case SNDRV_PCM_TRIGGER_SUSPEND:
-> +		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +			ret = snd_soc_dapm_disable_pin(dapm, pin_name);
-> +			if (!ret)
-> +				snd_soc_dapm_sync(dapm);
-> +			break;
-> +		default:
-> +			break;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_NS(max_98390_trigger, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> +
-> +struct snd_soc_ops max_98390_ops = {
-> +	.hw_params = max_98390_hw_params,
-> +	.trigger = max_98390_trigger,
-> +};
-> +EXPORT_SYMBOL_NS(max_98390_ops, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> +
-> +int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct snd_soc_card *card = rtd->card;
-> +	int ret;
-> +
-> +	ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
-> +				      ARRAY_SIZE(max_98390_dapm_routes));
-> +	if (ret)
-> +		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_NS(max_98390_spk_codec_init, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> +
-> +void max_98390_set_codec_conf(struct snd_soc_card *card)
-> +{
-> +	card->codec_conf = max_98390_codec_conf;
-> +	card->num_configs = ARRAY_SIZE(max_98390_codec_conf);
-> +}
-> +EXPORT_SYMBOL_NS(max_98390_set_codec_conf, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> +
-
-... and until this line, I don't see much difference with 98373
->  /*
->   * Maxim MAX98357A
->   */
-> diff --git a/sound/soc/intel/boards/sof_maxim_common.h b/sound/soc/intel/boards/sof_maxim_common.h
-> index 2674f1e373ef..e1ad25dfb915 100644
-> --- a/sound/soc/intel/boards/sof_maxim_common.h
-> +++ b/sound/soc/intel/boards/sof_maxim_common.h
-> @@ -24,6 +24,21 @@ int max_98373_spk_codec_init(struct snd_soc_pcm_runtime *rtd);
->  void max_98373_set_codec_conf(struct snd_soc_card *card);
->  int max_98373_trigger(struct snd_pcm_substream *substream, int cmd);
->  
-> +/*
-> + * Maxim MAX98390
-> + */
-> +#define MAX_98390_CODEC_DAI	"max98390-aif1"
-> +#define MAX_98390_DEV0_NAME	"i2c-MX98390:00"
-> +#define MAX_98390_DEV1_NAME	"i2c-MX98390:01"
-
-again it really seems like this is the only difference?
-
-> +
-> +extern struct snd_soc_dai_link_component max_98390_components[2];
-> +extern struct snd_soc_ops max_98390_ops;
-> +extern const struct snd_soc_dapm_route max_98390_dapm_routes[];
-> +
-> +int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd);
-> +void max_98390_set_codec_conf(struct snd_soc_card *card);
-> +int max_98390_trigger(struct snd_pcm_substream *substream, int cmd);
-> +
->  /*
->   * Maxim MAX98357A
->   */
-> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-> index 39217223d50c..ea4b8056db62 100644
-> --- a/sound/soc/intel/boards/sof_rt5682.c
-> +++ b/sound/soc/intel/boards/sof_rt5682.c
-> @@ -49,6 +49,7 @@
->  #define SOF_RT1015P_SPEAKER_AMP_PRESENT		BIT(16)
->  #define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(17)
->  #define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(18)
-> +#define SOF_MAX98390_SPEAKER_AMP_PRESENT	BIT(23)
->  
->  /* BT audio offload: reserve 3 bits for future */
->  #define SOF_BT_OFFLOAD_SSP_SHIFT		19
-> @@ -162,6 +163,19 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
->  					SOF_RT5682_SSP_AMP(2) |
->  					SOF_RT5682_NUM_HDMIDEV(4)),
->  	},
-> +	{
-> +		.callback = sof_rt5682_quirk_cb,
-> +		.matches = {
-> +			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
-> +			DMI_MATCH(DMI_OEM_STRING, "AUDIO-MAX98390_ALC5682I_I2S"),
-> +		},
-> +		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
-> +					SOF_RT5682_SSP_CODEC(0) |
-> +					SOF_SPEAKER_AMP_PRESENT |
-> +					SOF_MAX98390_SPEAKER_AMP_PRESENT |
-> +					SOF_RT5682_SSP_AMP(2) |
-> +					SOF_RT5682_NUM_HDMIDEV(4)),
-> +	},
-
-this should be in a separate patch?
-
->  	{}
->  };
->  
-> @@ -445,6 +459,14 @@ static int sof_card_late_probe(struct snd_soc_card *card)
->  		if (err < 0)
->  			return err;
->  	}
-> +	if (sof_rt5682_quirk & SOF_MAX98390_SPEAKER_AMP_PRESENT) {
-> +		/* Disable Left and Right Spk pin after boot */
-> +		snd_soc_dapm_disable_pin(dapm, "Left Spk");
-> +		snd_soc_dapm_disable_pin(dapm, "Right Spk");
-> +		err = snd_soc_dapm_sync(dapm);
-> +		if (err < 0)
-> +			return err;
-> +	}
->  	return hdac_hdmi_jack_port_init(component, &card->dapm);
->  }
->  
-> @@ -781,6 +803,13 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
->  		} else if (sof_rt5682_quirk &
->  				SOF_RT1011_SPEAKER_AMP_PRESENT) {
->  			sof_rt1011_dai_link(&links[id]);
-> +		} else if (sof_rt5682_quirk &
-> +				SOF_MAX98390_SPEAKER_AMP_PRESENT) {
-> +			links[id].codecs = max_98390_components;
-> +			links[id].num_codecs = ARRAY_SIZE(max_98390_components);
-> +			links[id].init = max_98390_spk_codec_init;
-> +			links[id].ops = &max_98390_ops;
-> +			links[id].dpcm_capture = 1;
->  		} else {
->  			max_98357a_dai_link(&links[id]);
->  		}
-> @@ -917,7 +946,8 @@ static int sof_audio_probe(struct platform_device *pdev)
->  		sof_rt1011_codec_conf(&sof_audio_card_rt5682);
->  	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
->  		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
-> -
-> +	else if (sof_rt5682_quirk & SOF_MAX98390_SPEAKER_AMP_PRESENT)
-> +		max_98390_set_codec_conf(&sof_audio_card_rt5682);
->  	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
->  		sof_audio_card_rt5682.num_links++;
->  
-> @@ -1043,6 +1073,17 @@ static const struct platform_device_id board_ids[] = {
->  					SOF_RT5682_SSP_AMP(2) |
->  					SOF_RT5682_NUM_HDMIDEV(4)),
->  	},
-> +	{
-> +		.name = "adl_max98390_rt5682",
-> +		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-> +					SOF_RT5682_SSP_CODEC(0) |
-> +					SOF_SPEAKER_AMP_PRESENT |
-> +					SOF_MAX98390_SPEAKER_AMP_PRESENT |
-> +					SOF_RT5682_SSP_AMP(2) |
-> +					SOF_RT5682_NUM_HDMIDEV(4) |
-> +					SOF_BT_OFFLOAD_SSP(2) |
-> +					SOF_SSP_BT_OFFLOAD_PRESENT),
-
-I don't get why this is different from the 'Google Brya' quirk above -
-which is missing the BT_OFFLOAD information.
-
-If this is not for the same device/configuration, we should have
-different patches or a better set of comments that keeps track of the
-differences.
-
-And now that I think of it, this may be a mistake. Usually the headset
-uses SSP0, the amp SSP1 and BT offload SSP2. I am pretty sure you cannot
-use SSP2 for BT offload as well as the amplifier links, the
-configurations are different.
-
-> +	},
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(platform, board_ids);
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> index a0f6a69c7038..2db152998e4a 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> @@ -280,6 +280,11 @@ static const struct snd_soc_acpi_codecs adl_max98357a_amp = {
->  	.codecs = {"MX98357A"}
->  };
->  
-> +static const struct snd_soc_acpi_codecs adl_max98390_amp = {
-> +	.num_codecs = 1,
-> +	.codecs = {"MX98390"}
-> +};
-> +
->  struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
->  	{
->  		.id = "10EC5682",
-> @@ -297,6 +302,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
->  		.sof_fw_filename = "sof-adl.ri",
->  		.sof_tplg_filename = "sof-adl-max98357a-rt5682.tplg",
->  	},
-> +	{
-> +		.id = "10EC5682",
-> +		.drv_name = "adl_max98390_rt5682",
-> +		.machine_quirk = snd_soc_acpi_codec_list,
-> +		.quirk_data = &adl_max98390_amp,
-> +		.sof_fw_filename = "sof-adl.ri",
-> +		.sof_tplg_filename = "sof-adl-max98390-rt5682.tplg",
-> +	},
->  	{},
->  };
->  EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_adl_machines);
+On Tue, Aug 03, 2021 at 04:58:00PM +0800, Chao Gao wrote:
+> On Mon, Aug 02, 2021 at 10:02:57AM -0700, Paul E. McKenney wrote:
+> >On Mon, Aug 02, 2021 at 02:20:09PM +0800, Chao Gao wrote:
+> >> [snip]
+> >> >commit 48ebcfbfd877f5d9cddcc03c91352a8ca7b190af
+> >> >Author: Paul E. McKenney <paulmck@kernel.org>
+> >> >Date:   Thu May 27 11:03:28 2021 -0700
+> >> >
+> >> >    clocksource: Forgive repeated long-latency watchdog clocksource reads
+> >> >    
+> >> >    Currently, the clocksource watchdog reacts to repeated long-latency
+> >> >    clocksource reads by marking that clocksource unstable on the theory that
+> >> >    these long-latency reads are a sign of a serious problem.  And this theory
+> >> >    does in fact have real-world support in the form of firmware issues [1].
+> >> >    
+> >> >    However, it is also possible to trigger this using stress-ng on what
+> >> >    the stress-ng man page terms "poorly designed hardware" [2].  And it
+> >> >    is not necessarily a bad thing for the kernel to diagnose cases where
+> >> >    high-stress workloads are being run on hardware that is not designed
+> >> >    for this sort of use.
+> >> >    
+> >> >    Nevertheless, it is quite possible that real-world use will result in
+> >> >    some situation requiring that high-stress workloads run on hardware
+> >> >    not designed to accommodate them, and also requiring that the kernel
+> >> >    refrain from marking clocksources unstable.
+> >> >    
+> >> >    Therefore, provide an out-of-tree patch that reacts to this situation
+> >> >    by leaving the clocksource alone, but using the old 62.5-millisecond
+> >> >    skew-detection threshold in response persistent long-latency reads.
+> >> >    In addition, the offending clocksource is marked for re-initialization
+> >> >    in this case, which both restarts that clocksource with a clean bill of
+> >> >    health and avoids false-positive skew reports on later watchdog checks.
+> >> 
+> >> Hi Paul,
+> >> 
+> >> Sorry to dig out this old thread.
+> >
+> >Not a problem, especially given that this is still an experimental patch
+> >(marked with "EXP" in -rcu).  So one remaining question is "what is this
+> >patch really supposed to do, if anything?".
 > 
+> We are testing with TDX [1] and analyzing why kernel in a TD, or Trust Domain,
+> sometimes spots a large TSC skew. We have inspected tsc hardware/ucode/tdx
+> module to ensure no hardware issue, and also ported tsc_sync.c to a userspace
+> tool such that this tool can help to constantly check if tsc is synchronized
+> when some workload is running. Finally, we believe that the large TSC skew 
+> spotted by TD kernel is a false positive.
+> 
+> Your patches (those are merged) have improved clocksource watchdog a lot to
+> reduce false-positives. But due to the nature of TDX, switching between TD
+> and host takes more time. Then, the time window between two reads from
+> watchdog clocksource in cs_watchdog_read() increases, so does the
+> probability of the two reads being interrupted by whatever on host. Then,
+> sometimes, especially when there are heavy workloads in both host and TD,
+> the maximum number of retries in cs_watchdog_read() is exceeded and tsc is
+> marked unstable.
+> 
+> Then we apply this out-of-tree patch, it helps to further reduce
+> false-positives. But TD kernel still observes TSC skew in some cases. After
+> a close look into kernel logs, we find patterns in those cases: an expected
+> re-initialization somehow doesn't happen. That's why we raise this issue
+> and ask for your advice.
+
+I am glad that the patch at least helps.  ;-)
+
+> [1]: https://software.intel.com/content/www/us/en/develop/articles/intel-trust-domain-extensions.html
+> 
+> >And here the clocksource failed the coarse-grained check and marked
+> >the clocksource as unstable.  Perhaps because the previous read
+> >forced a coarse-grained check.  Except that this should have forced
+> >a reinitialization.  Ah, it looks like I need to suppress setting
+> >CLOCK_SOURCE_WATCHDOG if coarse-grained checks have been enabled.
+> >That could cause false-positive failure for the next check, after all.
+> >
+> >And perhaps make cs_watchdog_read() modify its print if there is
+> >a watchdog reset pending or if the current clocksource has the
+> >CLOCK_SOURCE_WATCHDOG flag cleared.
+> >
+> >Perhaps as shown in the additional patch below, to be folded into the
+> >original?
+> 
+> Thanks. Will test with below patch applied.
+
+If this patch helps, but problems remain, another thing to try is to
+increase the clocksource.max_cswd_read_retries kernel boot parameter
+above its default value of 3.  Maybe to 5 or 10?
+
+If this patch does not help, please let me know.  In that case, there
+are probably more fixes required.
+
+							Thanx, Paul
+
+> Thanks
+> Chao
+> >
+> >							Thanx, Paul
+> >
+> >------------------------------------------------------------------------
+> >
+> >diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> >index cfa992250c388..62da2485fd574 100644
+> >--- a/kernel/time/clocksource.c
+> >+++ b/kernel/time/clocksource.c
+> >@@ -230,8 +230,13 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+> > 		}
+> > 	}
+> > 
+> >-	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
+> >-		smp_processor_id(), watchdog->name, wd_delay, nretries);
+> >+	if ((cs->flags & CLOCK_SOURCE_WATCHDOG) && !atomic_read(&watchdog_reset_pending)) {
+> >+		pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, coarse-grained skew check followed by re-initialization\n",
+> >+			smp_processor_id(), watchdog->name, wd_delay, nretries);
+> >+	} else {
+> >+		pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, awaiting re-initialization\n",
+> >+			smp_processor_id(), watchdog->name, wd_delay, nretries);
+> >+	}
+> > 	return true;
+> > }
+> > 
+> >@@ -379,7 +384,8 @@ static void clocksource_watchdog(struct timer_list *unused)
+> > 		/* Clocksource initialized ? */
+> > 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
+> > 		    atomic_read(&watchdog_reset_pending)) {
+> >-			cs->flags |= CLOCK_SOURCE_WATCHDOG;
+> >+			if (!coarse)
+> >+				cs->flags |= CLOCK_SOURCE_WATCHDOG;
+> > 			cs->wd_last = wdnow;
+> > 			cs->cs_last = csnow;
+> > 			continue;
