@@ -2,182 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6DD3DEB15
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27E03DEB1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbhHCKkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:40:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235532AbhHCKkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23B7760F58;
-        Tue,  3 Aug 2021 10:39:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627987198;
-        bh=BYPyS4AlWi17PXRhXJnvrLUYWQwjf7I+Rji+oZ8bgA4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sfWFNqMa9PPSf5cTjYB0L5HGbhltwQoI0AkeLAF0rIBZ2zrU6cg7dLIThcarIvdFf
-         dWNEF1j2y4oLTvbF8QRDeMBlw23/q/63k/+nxdY1D9CEvdhaCYD3+rRoj1/JIx0Mtf
-         IoYiMIncusn0zciPu5/eEkSz4nRy2rcbMLQitRcBY8bipcllKlful4z1OJxxkmpjOf
-         0zDDXPMzhBLU7FkL8DnJck0lyE14kRaRgSTxD+KU8R8MxzR/SxRXgu/u+Kkl01ZcUB
-         9P07aIXn0swwWCKOJF81ViOIBPd3fhKRuz6j9QSu930dF2ywyNeAa8ja3S6DZfw+oo
-         VhwiGYt+LcBRw==
-From:   Chao Yu <chao@kernel.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
-        Chao Yu <chao@kernel.org>
-Subject: [PATCH] f2fs: compress: do sanity check on cluster
-Date:   Tue,  3 Aug 2021 18:39:52 +0800
-Message-Id: <20210803103952.737222-1-chao@kernel.org>
-X-Mailer: git-send-email 2.22.1
+        id S235539AbhHCKkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235536AbhHCKkm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 06:40:42 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CFEC06179F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:40:30 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mArqL-0000Z2-TR; Tue, 03 Aug 2021 12:40:17 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mArqG-0006N5-So; Tue, 03 Aug 2021 12:40:12 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mArqG-0002vP-Qh; Tue, 03 Aug 2021 12:40:12 +0200
+Date:   Tue, 3 Aug 2021 12:40:12 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        alexandre.belloni@bootlin.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        thierry.reding@gmail.com, lee.jones@linaro.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Ludovic.Desroches@microchip.com, o.rempel@pengutronix.de,
+        andy.shevchenko@gmail.com, aardelean@deviqon.com,
+        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        broonie@kernel.org, Jonathan.Cameron@huawei.com,
+        linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        wsa@kernel.org, kernel@pengutronix.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, Claudiu.Beznea@microchip.com
+Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
+ devm_clk_get for prepared and enabled clocks enabled clocks]
+Message-ID: <20210803104012.wf2buscbukxufesl@pengutronix.de>
+References: <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
+ <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
+ <20210728202547.7uvfwflpruku7yps@pengutronix.de>
+ <20210728204033.GF22278@shell.armlinux.org.uk>
+ <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
+ <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
+ <20210802094810.GJ22278@shell.armlinux.org.uk>
+ <20210802152755.ibisunvibmwhiyry@pengutronix.de>
+ <20210802163824.GK22278@shell.armlinux.org.uk>
+ <162797831443.714452.3551045763456936564@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jsnx7dwxusk2t7bj"
+Content-Disposition: inline
+In-Reply-To: <162797831443.714452.3551045763456936564@swboyd.mtv.corp.google.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds f2fs_sanity_check_cluster() to support doing
-sanity check on cluster of compressed file, it will be triggered
-from below two paths:
 
-- __f2fs_cluster_blocks()
-- f2fs_map_blocks(F2FS_GET_BLOCK_FIEMAP)
+--jsnx7dwxusk2t7bj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-And it can detect below three kind of cluster insanity status.
+On Tue, Aug 03, 2021 at 01:11:54AM -0700, Stephen Boyd wrote:
+> Quoting Russell King (Oracle) (2021-08-02 09:38:24)
+> > On Mon, Aug 02, 2021 at 05:27:55PM +0200, Uwe Kleine-Konig wrote:
+> > > Hello Russell,
+> > >=20
+> > > On Mon, Aug 02, 2021 at 10:48:10AM +0100, Russell King (Oracle) wrote:
+> >=20
+> > > > There have been several different approaches to wrapping things up,
+> > > > but here's a question: should we make it easier to do the lazy thing
+> > > > (get+enable) or should we make it easier to be power efficient?
+> > > > Shouldn't we be encouraging people to write power efficient drivers?
+> > >=20
+> > > Yeah, sounds compelling, but I wonder if that's of practical importan=
+ce.
+> > > How many driver authors do you expect to lure into making a better
+> > > driver just because devm_clk_get_prepared() doesn't exist? In contras=
+t:
+> > > How many drivers become simpler with devm_clk_get_prepared() and so
+> > > it becomes easier to maintain them and easier to spot bugs?
+> > > In the absence of devm_clk_get_prepared(), is it better that several
+> > > frameworks (or drivers) open code it?
+> >=20
+> > It probably depends on where you stand on power management and power
+> > efficiency issues. Personally, I would like to see more effort put
+> > into drivers to make them more power efficient, and I believe in the
+> > coming years, power efficiency is going to become a big issue.
+> >=20
+>=20
+> I agree we should put more effort into power efficiency in the kernel.
+> I've occasionally heard from driver writers that they never will turn
+> the clk off even in low power modes though. They feel like it's a
+> nuisance to have to do anything with the clk framework in their driver.
+> When I say "why not use runtime PM?" I get told that they're not turning
+> the clk off because it needs to be on all the time, so using runtime PM
+> makes the driver more complicated, not less, and adds no value. I think
+> some touchscreens are this way, and watchdogs too. Looking at the
+> drivers being converted in this series I suspect RTC is one of those
+> sorts of devices as well. But SPI and I2C most likely could benefit from
+> using runtime PM and so those ones don't feel appropriate to convert.
+>=20
+> Maybe this series would be more compelling if those various drivers that
+> are hand rolling the devm action were converted to the consolidated
+> official devm function. The truth is it's already happening in various
+> subsystems so consolidating that logic into one place would be a win
+> code size wise and very hard to ignore.
+>=20
+> Doing
+>=20
+>  $ git grep devm_add_action | grep clk
+>=20
+> seems to catch quite a few of them.
 
-C: COMPRESS_ADDR
-N: NULL_ADDR or NEW_ADDR
-V: valid blkaddr
-*: any value
+Another upside is that grepping for these drivers with a potential for
+further improvement become easier to grep for as
+devm_clk_get_{prepared,enabled} is a much better hint :-)
 
-1. [*|C|*|*]
-2. [C|*|C|*]
-3. [C|N|N|V]
+The changes to these drivers probably won't go through a clk tree, so
+adding these patches before adding devm_clk_get_enabled() would only
+help for the warm and cozy feeling that it is right to do so, correct?
 
-Signed-off-by: Chao Yu <chao@kernel.org>
----
- fs/f2fs/compress.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/f2fs/data.c     | 21 ++++++++++++------
- fs/f2fs/f2fs.h     |  1 +
- 3 files changed, 68 insertions(+), 7 deletions(-)
+As my focus is limited to (mostly) drivers/pwm and I already have quite
+some other patch quests on my list:
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 455561826c7d..4aa166d3d9bf 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -898,6 +898,54 @@ static bool cluster_has_invalid_data(struct compress_ctx *cc)
- 	return false;
- }
- 
-+bool f2fs_sanity_check_cluster(struct dnode_of_data *dn)
-+{
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
-+	unsigned int cluster_size = F2FS_I(dn->inode)->i_cluster_size;
-+	bool compressed = dn->data_blkaddr == COMPRESS_ADDR;
-+	int cluster_end = 0;
-+	int i;
-+	char *reason = "";
-+
-+	if (!compressed)
-+		return false;
-+
-+	/* [..., COMPR_ADDR, ...] */
-+	if (dn->ofs_in_node % cluster_size) {
-+		reason = "[*|C|*|*]";
-+		goto out;
-+	}
-+
-+	for (i = 1; i < cluster_size; i++) {
-+		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
-+							dn->ofs_in_node + i);
-+
-+		/* [COMPR_ADDR, ..., COMPR_ADDR] */
-+		if (blkaddr == COMPRESS_ADDR) {
-+			reason = "[C|*|C|*]";
-+			goto out;
-+		}
-+		if (compressed) {
-+			if (!__is_valid_data_blkaddr(blkaddr)) {
-+				if (!cluster_end)
-+					cluster_end = i;
-+				continue;
-+			}
-+			/* [COMPR_ADDR, NULL_ADDR or NEW_ADDR, valid_blkaddr] */
-+			if (cluster_end) {
-+				reason = "[C|N|N|V]";
-+				goto out;
-+			}
-+		}
-+	}
-+	return false;
-+out:
-+	f2fs_warn(sbi, "access invalid cluster, ino:%lu, nid:%u, ofs_in_node:%u, reason:%s",
-+			dn->inode->i_ino, dn->nid, dn->ofs_in_node, reason);
-+	set_sbi_flag(sbi, SBI_NEED_FSCK);
-+	return true;
-+}
-+
- static int __f2fs_cluster_blocks(struct inode *inode,
- 				unsigned int cluster_idx, bool compr)
- {
-@@ -915,6 +963,11 @@ static int __f2fs_cluster_blocks(struct inode *inode,
- 		goto fail;
- 	}
- 
-+	if (f2fs_sanity_check_cluster(&dn)) {
-+		ret = -EFSCORRUPTED;
-+		goto fail;
-+	}
-+
- 	if (dn.data_blkaddr == COMPRESS_ADDR) {
- 		int i;
- 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 948083c88d17..75dda2035f68 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -1558,13 +1558,20 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
- 			}
- 			if (flag == F2FS_GET_BLOCK_PRECACHE)
- 				goto sync_out;
--			if (flag == F2FS_GET_BLOCK_FIEMAP &&
--						blkaddr == NULL_ADDR) {
--				if (map->m_next_pgofs)
--					*map->m_next_pgofs = pgofs + 1;
--				goto sync_out;
--			}
--			if (flag != F2FS_GET_BLOCK_FIEMAP) {
-+			if (flag == F2FS_GET_BLOCK_FIEMAP) {
-+				if (blkaddr == NULL_ADDR) {
-+					if (map->m_next_pgofs)
-+						*map->m_next_pgofs = pgofs + 1;
-+					goto sync_out;
-+				}
-+#ifdef CONFIG_F2FS_FS_COMPRESSION
-+				if (f2fs_compressed_file(inode) &&
-+					f2fs_sanity_check_cluster(&dn)) {
-+					err = -EFSCORRUPTED;
-+					goto sync_out;
-+				}
-+#endif
-+			} else {
- 				/* for defragment case */
- 				if (map->m_next_pgofs)
- 					*map->m_next_pgofs = pgofs + 1;
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 20389b9b3eac..86d416ffad61 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -4060,6 +4060,7 @@ void f2fs_end_read_compressed_page(struct page *page, bool failed,
- 							block_t blkaddr);
- bool f2fs_cluster_is_empty(struct compress_ctx *cc);
- bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index);
-+bool f2fs_sanity_check_cluster(struct dnode_of_data *dn);
- void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page);
- int f2fs_write_multi_pages(struct compress_ctx *cc,
- 						int *submitted,
--- 
-2.22.1
+So can I lure you in merging the new functions and I will create a
+kernel janitor task to convert more existing drivers?
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--jsnx7dwxusk2t7bj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEJHQkACgkQwfwUeK3K
+7Al74wgAkhpu5oiH9zXF7yver2FOhm5lA/whLWxAmSyiMUqAURgga0ZHZaA5jSfS
+V47S5aYg2PHTPQjHsE9vffbXZ1NfmE4t+XsY/9hn1EaGA3yrwCfxF5oFeTqZnP+D
+AJxuot538b05HhV1MY2TDE/MYs7XKlKzT/BzfI14JPKIAzdFpTu33/XNNocLBs3M
+FK3NlL7d2p7tynJYDE7WCTsBH8r+k9QJmwSVl1GB8xTk7WOwEcPysg4Ts3aO5csk
+02QFW6StrFEYfMKMEPm6uf5PX0Y4G4es8MbCpy+3pU1UXGojQcRvp4ocPiszpYFt
+mqFFq7f3cn4PK8GIh5GncnlWzh7DeQ==
+=THuX
+-----END PGP SIGNATURE-----
+
+--jsnx7dwxusk2t7bj--
