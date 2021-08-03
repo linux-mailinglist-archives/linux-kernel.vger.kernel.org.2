@@ -2,88 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A013DE44B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609113DE44E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbhHCCSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 22:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233200AbhHCCSd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 22:18:33 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6536C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 19:18:22 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id z2so37225016lft.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 19:18:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p0Rg8uoQAdCMqNvWG4KJ4Lml0OYquOl0PzeY+NghgIs=;
-        b=rJeSRXesNgqD/ctsEcHci3GJIr+ZkXbWSPIKY0cGUASov47tyDQAO5lBimd0asmIsL
-         +4rmPRHpsXvlmc0U/W2TuK9bg1MhTeOs7bo8xF8pbSMAURvWUezdYoi0kluk8bQwRucC
-         sVI0o4Nkcozxs0qQcniS007Mw17HutvMJYPWo5XFmdPmurdTI4nsoUb6cEW5QHA4gsJ4
-         MY2BCxRTcVYUddEibbqdE6MT3YsNNPvMNUJ4G0z+qJSPoRFIEO4PXKaGHgQ81CJhLojN
-         HoAJQ0Sf6F0cfaImhnZg544kzLmUxPDV3XS8Ilm6pjvOYyzbU5onvpQy6uTTI+FiM5Jk
-         1R8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p0Rg8uoQAdCMqNvWG4KJ4Lml0OYquOl0PzeY+NghgIs=;
-        b=nOrAiONDJWapNYDcZVBmt2yKgNlixnjIWEINvgr/Qb7rAgi/NExALSA6r0Big66Tvf
-         3cmZ4HrtVfuDFQo+ZYMF4GOtrWZe57Nt2zmc9LrML22k8JJatiJ7k3yb22m1SvIVy9rq
-         08kghdO3617+IBa2dsFPqYMGbaLoOuTtN3BUSHTcURg2tO/o37lVOAAtiJtk2wYE2GK/
-         BEwUtGyT4QfSEChnwVpzMtVYu6cn/Rz2UlN9mfbzxD2jiTy9H3v+3mfy/S+8nilyEXLi
-         Sg/7qTdLjZipMMxzYLsvQfDeKRfQ5xH8kLpM2lai91MB6ZBYKOEcrQ2ZwxnrYPtLCPOL
-         +LFw==
-X-Gm-Message-State: AOAM531Cx0PHfqUNAsa3koaE8y/RaJep621fcF7lT168BILFpDfSvVR5
-        QnY2MCH1FtnvGlufS4gZE7Za9lkmzHO1Y9hbBfAP9A==
-X-Google-Smtp-Source: ABdhPJwB8Bh43O7mdPYun1vDdLefZZTbI63nsPtzVedjyUVpk4FUL0NZ+QI6+2qAksUHe2ZBeqUpGQ1yETx3aQ9XVsw=
-X-Received: by 2002:a19:c10a:: with SMTP id r10mr14608548lff.508.1627957101180;
- Mon, 02 Aug 2021 19:18:21 -0700 (PDT)
+        id S233370AbhHCCUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 22:20:06 -0400
+Received: from smtpbgeu1.qq.com ([52.59.177.22]:52539 "EHLO smtpbgeu1.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233197AbhHCCUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 22:20:05 -0400
+X-QQ-mid: bizesmtp54t1627957185tlv880xc
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Tue, 03 Aug 2021 10:19:44 +0800 (CST)
+X-QQ-SSF: 0140000000200050B000B00A0000000
+X-QQ-FEAT: zmxJYRnDXwduHfq7R4z+S0vOvR0yTtFuHhnFaC5zXhntefmduUhdOV18+BrFH
+        86vKDDBi1Xf6A7c6i/k9RUD/oJNx4dZ9Hm8lkmzlaBw/HLQZSuEu1wB890MM622mRVFfYWs
+        W3kCd5O5toNl0mBltjWc9neQWcXcrUkDLNHe9Nv0ZUlZrkgX/wwymbVB4UncOJvIdM6q2IC
+        LAgUYkEJPD5GS9bOEC57UsI2r4NSSEpPXtPdBpbrh9KHxVjF7omOPt/hKBAXmIvnLPCAYrs
+        tidXZnIhJfwp6TdjWJ42nk7LIJHWcvFHD4KtDa1RTq1nI85M/t/U1Cjqg/JqVuprrXHDyHF
+        6B6HXWiHbdE+jYbhTxjp7Cad5v/lzKIqmNKulQkxR89vqI/xHg=
+X-QQ-GoodBg: 2
+From:   Hao Chen <chenhaoa@uniontech.com>
+To:     peppe.cavallaro@st.com
+Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
+        linux@armlinux.org.uk, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Hao Chen <chenhaoa@uniontech.com>
+Subject: [net-next,v8] net: stmmac: optimize check in ops '.begin'
+Date:   Tue,  3 Aug 2021 10:18:56 +0800
+Message-Id: <20210803021856.20416-1-chenhaoa@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210722190747.1986614-1-hridya@google.com>
-In-Reply-To: <20210722190747.1986614-1-hridya@google.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 2 Aug 2021 19:18:09 -0700
-Message-ID: <CALAqxLVLMt7rbJBQtFBw-ikBAjKrVgfS8=Nu6NFQbp_gq1m22Q@mail.gmail.com>
-Subject: Re: [PATCH] dma-buf: heaps: Set allocation limit for system heap
-To:     Hridya Valsaraju <hridya@google.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 12:07 PM Hridya Valsaraju <hridya@google.com> wrote:
-> This patch limits the size of total memory that can be requested in a
-> single allocation from the system heap. This would prevent a
-> buggy/malicious client from depleting system memory by requesting for an
-> extremely large allocation which might destabilize the system.
->
-> The limit is set to half the size of the device's total RAM which is the
-> same as what was set by the deprecated ION system heap.
->
-> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+I want to get permanent MAC address when the interface is down. And I think
+it is more convenient to get statistics in the down state by 'ethtool -S'.
+But current all of the ethool command return -EBUSY.
 
-Seems sane to me, unless folks have better suggestions for allocation limits.
+I don't think we should check that the network interface is up in '.begin',
+which will cause that all the ethtool commands can't be used when the
+network interface is down. If some ethtool commands can only be used in the
+up state, check it in the corresponding ethool OPS function is better.
+This is too rude and unreasonable.
 
-Reviewed-by: John Stultz <john.stultz@linaro.org>
+Compile-tested on arm64. Tested on an arm64 system with an on-board
+STMMAC chip.
 
-thanks
--john
+Changes v7 ... v8:
+- Optimize commit description information, optimization parameters of
+  pm_runtime function.
+
+Changes v6 ... v7:
+- fix arg type error of 'dev' to 'priv->device'.
+
+Changes v5 ... v6:
+- The 4.19.90 kernel not support pm_runtime, so implemente '.begin' and
+  '.complete' again. Add return value check of pm_runtime function.
+
+Changes v4 ... v5:
+- test the '.begin' will return -13 error on my machine based on 4.19.90
+  kernel. The platform driver does not supported pm_runtime. So remove the
+  implementation of '.begin' and '.complete'.
+
+Changes v3 ... v4:
+- implement '.complete' ethtool OPS.
+
+Changes v2 ... v3:
+- add linux/pm_runtime.h head file.
+
+Changes v1 ... v2:
+- fix spell error of dev.
+
+Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
+---
+ .../ethernet/stmicro/stmmac/stmmac_ethtool.c    | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index d0ce608b81c3..8e2ae0ff7f8f 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -12,8 +12,9 @@
+ #include <linux/ethtool.h>
+ #include <linux/interrupt.h>
+ #include <linux/mii.h>
+-#include <linux/phylink.h>
+ #include <linux/net_tstamp.h>
++#include <linux/phylink.h>
++#include <linux/pm_runtime.h>
+ #include <asm/io.h>
+ 
+ #include "stmmac.h"
+@@ -410,11 +411,14 @@ static void stmmac_ethtool_setmsglevel(struct net_device *dev, u32 level)
+ 
+ }
+ 
+-static int stmmac_check_if_running(struct net_device *dev)
++static int stmmac_ethtool_begin(struct net_device *dev)
+ {
+-	if (!netif_running(dev))
+-		return -EBUSY;
+-	return 0;
++	return pm_runtime_resume_and_get(dev->dev);
++}
++
++static void stmmac_ethtool_complete(struct net_device *dev)
++{
++	pm_runtime_put(dev->dev);
+ }
+ 
+ static int stmmac_ethtool_get_regs_len(struct net_device *dev)
+@@ -1073,7 +1077,8 @@ static int stmmac_set_tunable(struct net_device *dev,
+ static const struct ethtool_ops stmmac_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
+ 				     ETHTOOL_COALESCE_MAX_FRAMES,
+-	.begin = stmmac_check_if_running,
++	.begin = stmmac_ethtool_begin,
++	.complete = stmmac_ethtool_complete,
+ 	.get_drvinfo = stmmac_ethtool_getdrvinfo,
+ 	.get_msglevel = stmmac_ethtool_getmsglevel,
+ 	.set_msglevel = stmmac_ethtool_setmsglevel,
+-- 
+2.20.1
+
+
+
