@@ -2,87 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992BB3DEABB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AEFA3DEABC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235324AbhHCKTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52850 "EHLO
+        id S235371AbhHCKUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235143AbhHCKTy (ORCPT
+        with ESMTP id S235143AbhHCKUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:19:54 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2359C06175F;
-        Tue,  3 Aug 2021 03:19:42 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id t3so21004354plg.9;
-        Tue, 03 Aug 2021 03:19:42 -0700 (PDT)
+        Tue, 3 Aug 2021 06:20:16 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8047AC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:20:05 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id b13so13858723wrs.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 03:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F7RnLTo1duVJvP6tLxEr595jWac0+5GeUDVvQVHcqHw=;
-        b=KN2u/kABvY84pUcpffrlhIsxuY9/C2uY0va5yFYWn8ZEaIlxEsthJuMbC1UqYbB7Xc
-         VNXPHviFqwdNehgCxm+QGOr6oCUokHZ0vBNefe/wHKqBAcnmynU/jjcPGPYprTyyvNX9
-         R946PjvD07V7wJSe3TaSuI1xDrVcXN6uz+O18WpueokEERDC8+Fu3d5rXQFscSPVUJHZ
-         AWgXBC5gPiv9rvYDAVF1lsE7Vj3H4ofW3kA2wQ1U7FK/VrIlU0+881x1SYzRLllPT3iD
-         3MTHMqOXRLYYUTeOrsy7trTExcSE41XxZObua8dACBw6GZ5vpb6Z2w3pc5saeVDAv4Ry
-         ElrA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BH6VSubQLcCEeiXp46qRZOXRNaTnzvfumnh86E0J8aM=;
+        b=NQYGJM/XzsrAJWy8BNxS7s5O7GkQgGVRYjx+8M/j9wHLNhSSVCVnmOw51NtulDRnRA
+         YCrgVK54gw85K3GHJCd3kW0jmE48JlVl28VXS9mK9YrBDrotXYSyUcT+NhBO+eMx71sQ
+         8KmrjMkyKg0DgnEJfodsW3C/yzAu4Y9E1ZOaW1AycJiMWXRAhJt2GqL22/BTK42XNN1m
+         EfTqLZ5rwAO1wGEkJz4bWP/rrNEq64U+FN9ar5keUt3upGBQWHWvJ5K5Zph3vhV+fgQu
+         grHCCISsAfzFD4PmL3Hhv8XvH+7cI0Sd117guye40xRgVwI2ospt3iM5xcn81EcjojHw
+         VVcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F7RnLTo1duVJvP6tLxEr595jWac0+5GeUDVvQVHcqHw=;
-        b=JcB5k6BrWZ6+Cpd86JgNwwDwM9zW6MMIzCrT9s2XxUGSH3Ggjoe3OEtfIDV4p/xYsq
-         lAaVlSyA2m8GyQvcNWJXuFTePQffRgoeDkVY9QejDH9aZU5uDC6a6lYIapfyMponNayd
-         3VA3KescwPezg7zU1ZaBkpMtGLE9aizrMm8IvjcbZtsbrkf7U1GyIX8E0f0DO5kazaAn
-         temPzMgPU8jK3rXm7UWJmROHw6gEaMMCfN75diEG382PyXZ89XrJrfnBgL9Sos++rlVj
-         U3BWX/zIwk6CSO0yeTJzedghacdVAAPP637455s8vlUOVf2ge24JFseHjHiz6RbiZ+M/
-         /AXw==
-X-Gm-Message-State: AOAM5307WuOKj5IzRz4W65gzkg3qC7SUsiKf6bYeehqts3jsUcF/AoTZ
-        Jx1+r74H90f5A1xS5R7R2CS4NxC7fUb8ov3HBxo=
-X-Google-Smtp-Source: ABdhPJy+rTe0WWJKWfgUD5NiYTKWFd0/T4ONqgUvyaBzg+FYi56KGtPJ6MVhY0FmVEPN0Rl5CYM4YFGCT6tTE7pzhFk=
-X-Received: by 2002:aa7:800b:0:b029:330:455f:57a8 with SMTP id
- j11-20020aa7800b0000b0290330455f57a8mr21285120pfi.7.1627985982087; Tue, 03
- Aug 2021 03:19:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BH6VSubQLcCEeiXp46qRZOXRNaTnzvfumnh86E0J8aM=;
+        b=PGVoAleV/GKTAD/UY0i2JIkNUScjqzAiEUGmYc8rdm/8uAlL0dlzvJ9ZuZ9YohM6TA
+         wzHvZ5LtTCzUGXIdlDKHpDMRHF1orzff8+5GBBIQEC0AzWNqJaExZSF+uKe5lfASiaJc
+         ZPbzvzu7B1yity+tH1KaZYEEhuITEiMpijpWWhs9fhhaSge9G61X7ELIL5IYQMMfIg7R
+         m1IXiUbDJCz+mO2XpzrhEsKQVSUtPRPy4zvfWputzqs7PucB8ifveMuiY0yvJb2VdRxd
+         poDQ+ST1fA2J6GY3jtyyXSmeg6m12JWwI5DNqgclVmLd9KsrawlSNOAxve2hDbroq6AY
+         oYaw==
+X-Gm-Message-State: AOAM532bBFuzTowxsFMiUMPTt6Gg2KY2fwsMmnEabQl4BvdtIPHzykfc
+        5JUixCGMgkxYy+iUxmdWjiLOoA==
+X-Google-Smtp-Source: ABdhPJz5+GPO3jAnmWN6At04JUGrSTja+UukYyBxLjRle00PwQsgFNeR9zO+8tsOnRxejD25t1bw1g==
+X-Received: by 2002:a5d:6589:: with SMTP id q9mr22819763wru.284.1627986004001;
+        Tue, 03 Aug 2021 03:20:04 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:754:7d1b:7303:129a])
+        by smtp.gmail.com with ESMTPSA id e3sm14173327wrw.51.2021.08.03.03.20.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 03:20:03 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 11:20:00 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Fuad Tabba <tabba@google.com>
+Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        dbrazdil@google.com, kernel-team@android.com
+Subject: Re: [PATCH v3 13/21] KVM: arm64: Expose host stage-2 manipulation
+ helpers
+Message-ID: <YQkYUOaXx7+/EQP/@google.com>
+References: <20210729132818.4091769-1-qperret@google.com>
+ <20210729132818.4091769-14-qperret@google.com>
+ <CA+EHjTxTaPc=bt_kyXf0TE85v5eyHnq0o3KQ3Pd6+kOwmm5oMw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210730205355.26504-1-andriy.shevchenko@linux.intel.com> <20210802231643.GA1474171@bjorn-Precision-5520>
-In-Reply-To: <20210802231643.GA1474171@bjorn-Precision-5520>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 3 Aug 2021 13:19:05 +0300
-Message-ID: <CAHp75VeKvBqi=vhkq0Vqv76t3qKzWmy_v_ZmeL4mbPztmcGb7g@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] x86/PCI: Introduce pcibios_is_irq_managed() helper
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+EHjTxTaPc=bt_kyXf0TE85v5eyHnq0o3KQ3Pd6+kOwmm5oMw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 2:17 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> On Fri, Jul 30, 2021 at 11:53:55PM +0300, Andy Shevchenko wrote:
+On Monday 02 Aug 2021 at 13:13:20 (+0200), Fuad Tabba wrote:
+> Hi Quentin,
+> 
+> On Thu, Jul 29, 2021 at 3:28 PM Quentin Perret <qperret@google.com> wrote:
+> >
+> > We will need to manipulate the host stage-2 page-table from outside
+> > mem_protect.c soon. Introduce two functions allowing this, and make
+> > them usable to users of mem_protect.h.
+> >
+> > Signed-off-by: Quentin Perret <qperret@google.com>
+> > ---
+> >  arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  2 ++
+> >  arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 17 ++++++++++++++++-
+> >  2 files changed, 18 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> > index ae355bfd8c01..47c2a0c51612 100644
+> > --- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> > +++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> > @@ -49,6 +49,8 @@ extern struct host_kvm host_kvm;
+> >  int __pkvm_prot_finalize(void);
+> >  int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end);
+> >
+> > +int host_stage2_idmap_locked(u64 start, u64 end, enum kvm_pgtable_prot prot);
+> > +int host_stage2_set_owner_locked(u64 start, u64 end, u8 owner_id);
+> >  int kvm_host_prepare_stage2(void *pgt_pool_base);
+> >  void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt);
+> >
+> > diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > index 70c57d2c3024..a7f6134789e0 100644
+> > --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > @@ -272,6 +272,21 @@ static int host_stage2_adjust_range(u64 addr, struct kvm_mem_range *range)
+> >         return 0;
+> >  }
+> >
+> > +int host_stage2_idmap_locked(u64 start, u64 end, enum kvm_pgtable_prot prot)
+> > +{
+> > +       hyp_assert_lock_held(&host_kvm.lock);
+> > +
+> > +       return host_stage2_try(__host_stage2_idmap, start, end, prot);
+> > +}
+> > +
+> > +int host_stage2_set_owner_locked(u64 start, u64 end, u8 owner_id)
+> > +{
+> > +       hyp_assert_lock_held(&host_kvm.lock);
+> > +
+> > +       return host_stage2_try(kvm_pgtable_stage2_set_owner, &host_kvm.pgt,
+> > +                              start, end - start, &host_s2_pool, owner_id);
+> > +}
+> 
+> This is a potential issue elsewhere as well, but all functions in
+> kvm_pgtable.h, including kvm_pgtable_stage2_set_owner, specify an
+> address range via address and size. The two you have introduced here
+> take a start and an end. I'm not sure if making these two consistent
+> with the ones in kvm_pgtable.h would be good, or would just complicate
+> things in other places.
 
-...
+Good point, and it looks like specifying these two with start-size
+parameters would simplify the callers a tiny bit as well, so I'll fold
+that in v4.
 
-> > -     if (!pin || !dev->irq_managed || dev->irq <= 0)
-> > +     if (!pin || !pcibios_irq_is_managed(dev))
->
-> This file may be compiled for x86, arm64, and ia64, but it looks like
-> you only defined pcibios_irq_is_managed() for x86.
-
-Ah, right. Ignore this patch.
-Thanks for the review!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+Quentin
