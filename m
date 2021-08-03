@@ -2,178 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C183DEEDB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD343DEEE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236247AbhHCNNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:13:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56050 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235954AbhHCNNP (ORCPT
+        id S236445AbhHCNNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236211AbhHCNNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:13:15 -0400
+        Tue, 3 Aug 2021 09:13:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E402C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:13:08 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1627996383;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zratP/d2dqbzr5A3KZPCTDEa+UpOjiFaTT3D2EIH/Pg=;
-        b=zk5sPz0A/N68QiMZNa4XnUH53XQGAkBgxmMF9RdDFSoOGdHXqC//ofK9o10vkQtIIgxpxy
-        o3gzfJIWcGuD/7CJSo5P2+b6eNhxoNOxZol539AjZC3laI2y9WkzZGJ7p/8XuGC/SI6py5
-        6Mpztfu+HxmsRcOTqIZJcFq3yrOVV08E2vhgrY8or5Z3uRGykD2IiT/TXmzbGy4LL+sBHS
-        cGTPp1pxVnfmrDUBXMNIf7pO9xGKJUUaHa3+Iftq3TyMFoNPnqWV077wktj4wMXkILY+0N
-        qrvzjb5E1n/5VK5Jn8gch/Yneaa2fDy8JybmbeFc/b2DSqzfflXIeOBn73Azfw==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sujL9gb9FRsF6DfOcifSfCHHB+XTlow0qpwJoRkfMQU=;
+        b=oKEGa2wjjRG9jQsypG2JRkq7h84Pqf24Srn8nMEyvLANObWEzZ0ma/GdBo0k/TejtaiXIv
+        yUKgCkaAdZd+6ActllT/5Wl++KRzdAe8NXXUzmLnHpHnjDhpUfLh0umaYxpXsyiEtLioxN
+        Vp9p1yRgbI2hpWpVCD+PddfbRHt+S+SbzBFsgKkFcw/SxNQxnGSu7QI5py4daUrPwSoyX7
+        Or++1/4Nwn6UB+t8Vz2ZjJuH4VawucqQu+GANt+X6VjyuIWIXUEc/D1Zvz/7C6+mtJL2Ki
+        3fFGcV3FcTlBSaqlrA70pbuYVBOX9hqa4ghSu6X6ARrtnH90kAgNIxiojwd6iA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1627996383;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zratP/d2dqbzr5A3KZPCTDEa+UpOjiFaTT3D2EIH/Pg=;
-        b=eiwsN3XDO7gIOKIO/tyPKCl9YBM/K+0P9ejFJ1AFeHJgY6RpWMpxmcaTC14bbaMpVCrVQI
-        kAWF+aftd/6aNtAw==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sujL9gb9FRsF6DfOcifSfCHHB+XTlow0qpwJoRkfMQU=;
+        b=EZ5N3U18IexZ3CSV0LzqrKBM1Wjx1u7viWbqmN7FXJbT8HOeVv2YfWZW/djp+7ANQBEkqX
+        OI2QE/lGtwlrQ7Bw==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Chengyang Fan <cy.fan@huawei.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Changbin Du <changbin.du@intel.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Cengiz Can <cengiz@kernel.wtf>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
-        Wang Qing <wangqing@vivo.com>, Andrij Abyzov <aabyzov@slb.com>,
-        Johan Hovold <johan@kernel.org>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Claire Chang <tientzu@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Al Cooper <alcooperx@gmail.com>, linux-serial@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH printk v1 00/10] printk: introduce atomic consoles and sync mode
-Date:   Tue,  3 Aug 2021 15:18:51 +0206
-Message-Id: <20210803131301.5588-1-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH printk v1 01/10] printk: relocate printk cpulock functions
+Date:   Tue,  3 Aug 2021 15:18:52 +0206
+Message-Id: <20210803131301.5588-2-john.ogness@linutronix.de>
+In-Reply-To: <20210803131301.5588-1-john.ogness@linutronix.de>
+References: <20210803131301.5588-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Move the printk cpulock functions "as is" further up so that they
+can be used by other printk.c functions in an upcoming commit.
 
-This is the next part of our printk-rework effort (points 3 and
-4 of the LPC 2019 summary [0]).
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ kernel/printk/printk.c | 232 ++++++++++++++++++++---------------------
+ 1 file changed, 116 insertions(+), 116 deletions(-)
 
-Here the concept of "atomic consoles" is introduced through  a
-new (optional) write_atomic() callback for console drivers. This
-callback must be implemented as an NMI-safe variant of the
-write() callback, meaning that it can function from any context
-without relying on questionable tactics such as ignoring locking
-and also without relying on the synchronization of console
-semaphore.
-
-As an example of how such an atomic console can look like, this
-series implements write_atomic() for the 8250 UART driver.
-
-This series also introduces a new console printing mode called
-"sync mode" that is only activated when the kernel is about to
-end (such as panic, oops, shutdown, reboot). Sync mode can only
-be activated if atomic consoles are available. A system without
-registered atomic consoles will be unaffected by this series.
-
-When in sync mode, the console printing behavior becomes:
-
-- only consoles implementing write_atomic() will be called
-
-- printing occurs within vprintk_store() instead of
-  console_unlock(), since the console semaphore is irrelevant
-  for atomic consoles
-
-For systems that have registered atomic consoles, this series
-improves the reliability of seeing crash messages by using new
-locking techniques rather than "ignoring locks and hoping for
-the best". In particular, atomic consoles rely on the
-CPU-reentrant spinlock (i.e. the printk cpulock) for
-synchronizing console output.
-
-John Ogness
-
-[0] https://lore.kernel.org/lkml/87k1acz5rx.fsf@linutronix.de/
-
-John Ogness (10):
-  printk: relocate printk cpulock functions
-  printk: rename printk cpulock API and always disable interrupts
-  kgdb: delay roundup if holding printk cpulock
-  printk: relocate printk_delay()
-  printk: call boot_delay_msec() in printk_delay()
-  printk: use seqcount_latch for console_seq
-  console: add write_atomic interface
-  printk: introduce kernel sync mode
-  kdb: if available, only use atomic consoles for output mirroring
-  serial: 8250: implement write_atomic
-
- arch/powerpc/include/asm/smp.h         |   1 +
- arch/powerpc/kernel/kgdb.c             |  10 +-
- arch/powerpc/kernel/smp.c              |   5 +
- arch/x86/kernel/kgdb.c                 |   9 +-
- drivers/tty/serial/8250/8250.h         |  47 ++-
- drivers/tty/serial/8250/8250_core.c    |  17 +-
- drivers/tty/serial/8250/8250_fsl.c     |   9 +
- drivers/tty/serial/8250/8250_ingenic.c |   7 +
- drivers/tty/serial/8250/8250_mtk.c     |  29 +-
- drivers/tty/serial/8250/8250_port.c    |  92 ++--
- drivers/tty/serial/8250/Kconfig        |   1 +
- include/linux/console.h                |  32 ++
- include/linux/kgdb.h                   |   3 +
- include/linux/printk.h                 |  57 +--
- include/linux/serial_8250.h            |   5 +
- kernel/debug/debug_core.c              |  45 +-
- kernel/debug/kdb/kdb_io.c              |  16 +
- kernel/printk/printk.c                 | 554 +++++++++++++++++--------
- lib/Kconfig.debug                      |   3 +
- lib/dump_stack.c                       |   4 +-
- lib/nmi_backtrace.c                    |   4 +-
- 21 files changed, 684 insertions(+), 266 deletions(-)
-
-
-base-commit: 23d8adcf8022b9483605531d8985f5b77533cb3a
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 825277e1e742..3d0c933937b4 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -211,6 +211,122 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_SMP
++static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
++static atomic_t printk_cpulock_nested = ATOMIC_INIT(0);
++
++/**
++ * __printk_wait_on_cpu_lock() - Busy wait until the printk cpu-reentrant
++ *                               spinning lock is not owned by any CPU.
++ *
++ * Context: Any context.
++ */
++void __printk_wait_on_cpu_lock(void)
++{
++	do {
++		cpu_relax();
++	} while (atomic_read(&printk_cpulock_owner) != -1);
++}
++EXPORT_SYMBOL(__printk_wait_on_cpu_lock);
++
++/**
++ * __printk_cpu_trylock() - Try to acquire the printk cpu-reentrant
++ *                          spinning lock.
++ *
++ * If no processor has the lock, the calling processor takes the lock and
++ * becomes the owner. If the calling processor is already the owner of the
++ * lock, this function succeeds immediately.
++ *
++ * Context: Any context. Expects interrupts to be disabled.
++ * Return: 1 on success, otherwise 0.
++ */
++int __printk_cpu_trylock(void)
++{
++	int cpu;
++	int old;
++
++	cpu = smp_processor_id();
++
++	/*
++	 * Guarantee loads and stores from this CPU when it is the lock owner
++	 * are _not_ visible to the previous lock owner. This pairs with
++	 * __printk_cpu_unlock:B.
++	 *
++	 * Memory barrier involvement:
++	 *
++	 * If __printk_cpu_trylock:A reads from __printk_cpu_unlock:B, then
++	 * __printk_cpu_unlock:A can never read from __printk_cpu_trylock:B.
++	 *
++	 * Relies on:
++	 *
++	 * RELEASE from __printk_cpu_unlock:A to __printk_cpu_unlock:B
++	 * of the previous CPU
++	 *    matching
++	 * ACQUIRE from __printk_cpu_trylock:A to __printk_cpu_trylock:B
++	 * of this CPU
++	 */
++	old = atomic_cmpxchg_acquire(&printk_cpulock_owner, -1,
++				     cpu); /* LMM(__printk_cpu_trylock:A) */
++	if (old == -1) {
++		/*
++		 * This CPU is now the owner and begins loading/storing
++		 * data: LMM(__printk_cpu_trylock:B)
++		 */
++		return 1;
++
++	} else if (old == cpu) {
++		/* This CPU is already the owner. */
++		atomic_inc(&printk_cpulock_nested);
++		return 1;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(__printk_cpu_trylock);
++
++/**
++ * __printk_cpu_unlock() - Release the printk cpu-reentrant spinning lock.
++ *
++ * The calling processor must be the owner of the lock.
++ *
++ * Context: Any context. Expects interrupts to be disabled.
++ */
++void __printk_cpu_unlock(void)
++{
++	if (atomic_read(&printk_cpulock_nested)) {
++		atomic_dec(&printk_cpulock_nested);
++		return;
++	}
++
++	/*
++	 * This CPU is finished loading/storing data:
++	 * LMM(__printk_cpu_unlock:A)
++	 */
++
++	/*
++	 * Guarantee loads and stores from this CPU when it was the
++	 * lock owner are visible to the next lock owner. This pairs
++	 * with __printk_cpu_trylock:A.
++	 *
++	 * Memory barrier involvement:
++	 *
++	 * If __printk_cpu_trylock:A reads from __printk_cpu_unlock:B,
++	 * then __printk_cpu_trylock:B reads from __printk_cpu_unlock:A.
++	 *
++	 * Relies on:
++	 *
++	 * RELEASE from __printk_cpu_unlock:A to __printk_cpu_unlock:B
++	 * of this CPU
++	 *    matching
++	 * ACQUIRE from __printk_cpu_trylock:A to __printk_cpu_trylock:B
++	 * of the next CPU
++	 */
++	atomic_set_release(&printk_cpulock_owner,
++			   -1); /* LMM(__printk_cpu_unlock:B) */
++}
++EXPORT_SYMBOL(__printk_cpu_unlock);
++#endif /* CONFIG_SMP */
++
+ /* Number of registered extended console drivers. */
+ static int nr_ext_console_drivers;
+ 
+@@ -3578,119 +3694,3 @@ void kmsg_dump_rewind(struct kmsg_dump_iter *iter)
+ EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
+ 
+ #endif
+-
+-#ifdef CONFIG_SMP
+-static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
+-static atomic_t printk_cpulock_nested = ATOMIC_INIT(0);
+-
+-/**
+- * __printk_wait_on_cpu_lock() - Busy wait until the printk cpu-reentrant
+- *                               spinning lock is not owned by any CPU.
+- *
+- * Context: Any context.
+- */
+-void __printk_wait_on_cpu_lock(void)
+-{
+-	do {
+-		cpu_relax();
+-	} while (atomic_read(&printk_cpulock_owner) != -1);
+-}
+-EXPORT_SYMBOL(__printk_wait_on_cpu_lock);
+-
+-/**
+- * __printk_cpu_trylock() - Try to acquire the printk cpu-reentrant
+- *                          spinning lock.
+- *
+- * If no processor has the lock, the calling processor takes the lock and
+- * becomes the owner. If the calling processor is already the owner of the
+- * lock, this function succeeds immediately.
+- *
+- * Context: Any context. Expects interrupts to be disabled.
+- * Return: 1 on success, otherwise 0.
+- */
+-int __printk_cpu_trylock(void)
+-{
+-	int cpu;
+-	int old;
+-
+-	cpu = smp_processor_id();
+-
+-	/*
+-	 * Guarantee loads and stores from this CPU when it is the lock owner
+-	 * are _not_ visible to the previous lock owner. This pairs with
+-	 * __printk_cpu_unlock:B.
+-	 *
+-	 * Memory barrier involvement:
+-	 *
+-	 * If __printk_cpu_trylock:A reads from __printk_cpu_unlock:B, then
+-	 * __printk_cpu_unlock:A can never read from __printk_cpu_trylock:B.
+-	 *
+-	 * Relies on:
+-	 *
+-	 * RELEASE from __printk_cpu_unlock:A to __printk_cpu_unlock:B
+-	 * of the previous CPU
+-	 *    matching
+-	 * ACQUIRE from __printk_cpu_trylock:A to __printk_cpu_trylock:B
+-	 * of this CPU
+-	 */
+-	old = atomic_cmpxchg_acquire(&printk_cpulock_owner, -1,
+-				     cpu); /* LMM(__printk_cpu_trylock:A) */
+-	if (old == -1) {
+-		/*
+-		 * This CPU is now the owner and begins loading/storing
+-		 * data: LMM(__printk_cpu_trylock:B)
+-		 */
+-		return 1;
+-
+-	} else if (old == cpu) {
+-		/* This CPU is already the owner. */
+-		atomic_inc(&printk_cpulock_nested);
+-		return 1;
+-	}
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(__printk_cpu_trylock);
+-
+-/**
+- * __printk_cpu_unlock() - Release the printk cpu-reentrant spinning lock.
+- *
+- * The calling processor must be the owner of the lock.
+- *
+- * Context: Any context. Expects interrupts to be disabled.
+- */
+-void __printk_cpu_unlock(void)
+-{
+-	if (atomic_read(&printk_cpulock_nested)) {
+-		atomic_dec(&printk_cpulock_nested);
+-		return;
+-	}
+-
+-	/*
+-	 * This CPU is finished loading/storing data:
+-	 * LMM(__printk_cpu_unlock:A)
+-	 */
+-
+-	/*
+-	 * Guarantee loads and stores from this CPU when it was the
+-	 * lock owner are visible to the next lock owner. This pairs
+-	 * with __printk_cpu_trylock:A.
+-	 *
+-	 * Memory barrier involvement:
+-	 *
+-	 * If __printk_cpu_trylock:A reads from __printk_cpu_unlock:B,
+-	 * then __printk_cpu_trylock:B reads from __printk_cpu_unlock:A.
+-	 *
+-	 * Relies on:
+-	 *
+-	 * RELEASE from __printk_cpu_unlock:A to __printk_cpu_unlock:B
+-	 * of this CPU
+-	 *    matching
+-	 * ACQUIRE from __printk_cpu_trylock:A to __printk_cpu_trylock:B
+-	 * of the next CPU
+-	 */
+-	atomic_set_release(&printk_cpulock_owner,
+-			   -1); /* LMM(__printk_cpu_unlock:B) */
+-}
+-EXPORT_SYMBOL(__printk_cpu_unlock);
+-#endif /* CONFIG_SMP */
 -- 
 2.20.1
 
