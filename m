@@ -2,364 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845D83DE741
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5CF3DE74B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhHCHfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:35:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38257 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234148AbhHCHfn (ORCPT
+        id S234239AbhHCHiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:38:03 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:48366
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234137AbhHCHiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:35:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627976132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mZpG8qZ893j1o8sn8JV/ZwWeTuYDoTYmM90wiNM5428=;
-        b=d9K0eYJI4JLnw3/dsc5yxP5omt7NnsO+xAXm7PWSdhS7qYsLq7E3BS7T3oCF8M3f95gAJO
-        BZamR48IJrumhJneHIru4skFERvYnbtoiUIoLJFUK5eHHk/X7hQgYgrzFSVJRXRSV/p2Nb
-        6RffO95S2XZO3gqhM9UYGzpCFJLDAwY=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-StrfDItXP4mrZoOcs1ijyQ-1; Tue, 03 Aug 2021 03:35:31 -0400
-X-MC-Unique: StrfDItXP4mrZoOcs1ijyQ-1
-Received: by mail-pj1-f71.google.com with SMTP id o13-20020a17090a9f8db0290176ab79fd33so2144076pjp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:35:31 -0700 (PDT)
+        Tue, 3 Aug 2021 03:38:02 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 3A4383F35F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:37:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627976271;
+        bh=HMiKxFSYa20UfSETkthFhrIjVbst/OK+au8qKZgzUks=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=tZPpox8+0BquNgSZ6ecGhH7CeD6Gfbvs8fSbHlXERoCPYAgrhBx0xV+eqLRUCk7dd
+         4s0XBWSKA3EWT4F6raOkB/wPlEJCAIVKHN9iJeN4YluKq5kil8flQDBO4IUOUQeApJ
+         dKtNloUtPxbD7QsOyvmdXXY3ZnGGRa0uhKLdiws/JRty/qpemQqor8EMDDhp78xFNC
+         SDsVuB0FCthYlZS6/+NEIFInmL/GlRaZu7xpGzkIw0569HElsijNyAThfKZEZC0y1V
+         SVMP1i0bkrAhPMAa0O+AY+r4rOsbYaTl2yaoEnYocmFw85Txf7sNnm27gJ8IgGlwSW
+         nWrvRf1uMKOHQ==
+Received: by mail-ed1-f69.google.com with SMTP id y39-20020a50bb2a0000b02903bc05daccbaso10025798ede.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:37:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=mZpG8qZ893j1o8sn8JV/ZwWeTuYDoTYmM90wiNM5428=;
-        b=JIELPkIhSDdCNRh28FIR+AODfW6vtHZqHe8mSqrliD/CQQYmatAPN0Ngvs+OYKvSw2
-         G04fCHcOMmX7oS2zqGJ4vpBZoCpSzZ2Y5eCYxfotdbZ1B3B3GmzWJV/7ZhzH92UMZ1AY
-         aqbnW06qLemIc7Fg9WlYh9BLcbHSONerZtWEUoDf7zZelM4P6VNCYoUz3m08t6wRvLtS
-         IsvQlgYxzAJCDJcuK6VfkM6ScRcLI0HUBrIogCp5+OKJzgfin1C0lD3LNSy6T7Kii3Gx
-         /8FOPbHvRBnIWKmqQa5aRUqd3waV2m4lspdYwG/aNn3TzFs4Iijte1i6vXr2NYa6vS3T
-         ptKg==
-X-Gm-Message-State: AOAM530FXzTUezawzz1WOVq9H2V7i8ltcGJIsh+iLU0JGmuNHGYMSm6e
-        vt1V6VIeXL/AYMo49fD6d5Iv5FOfYa0SE168X9kAR3IL+PcMDnHxiPFPVJ776N0dvbcPCJXSSVd
-        dT5COaPuOQfdcl8vmrSQir1Fz0Lo45kbx+sfK4dVR7K156nqJNaLT2W9ah0FLE5FpdDMi+05XxO
-        iR
-X-Received: by 2002:a17:902:aa82:b029:12c:6463:4880 with SMTP id d2-20020a170902aa82b029012c64634880mr17469390plr.65.1627976130096;
-        Tue, 03 Aug 2021 00:35:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzDMaQcIOIpmMckH/ZOtIpriUh01WThBYUtuU4942UPCJ7bwzpd6VLmbVHKx9AtSYCiMLzIyA==
-X-Received: by 2002:a17:902:aa82:b029:12c:6463:4880 with SMTP id d2-20020a170902aa82b029012c64634880mr17469348plr.65.1627976129721;
-        Tue, 03 Aug 2021 00:35:29 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id h7sm11648301pjs.38.2021.08.03.00.35.21
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HMiKxFSYa20UfSETkthFhrIjVbst/OK+au8qKZgzUks=;
+        b=iFV95V8HSzs5dfO4fBfrYBOLsrj5Zg/H/7FYshX6OWp8YOj0zTM0jF6K7oxk9/Po6/
+         LUxwro878NKbdhMFBkoU9saV6eAtzKpf9+jVN6XMy8bnmfm5ne5qMdGFj2iUB1r1kn/N
+         emodx4mB99OH1UZirbMTHkpj+dImU7EnIb3KINuKeLAwltB+bcV7IpfsPlGvD1L9IIZd
+         IXSW/0naYbPZ7rd0U3vkuqpbBW81LE7eq3yIU7P/q1ws1t4HTwFN7MOEz+KQ4AHpXO5S
+         0X0hoepu6neBU8NynwwMv8zJdQSPfEQ0ki7nJdxLERariBfiedGSFLc0WRe5EaPO2r6b
+         hexQ==
+X-Gm-Message-State: AOAM5309TPlkztBFjVbLMkmdeQq41kR+wj0BQULojC3YkXfY346g/HPy
+        kfSSTAKtzVrdjqMEXUyMnLqjQQnQFgWb/ZoR2mznBd6L/lmvi2ne+3d/IR89mhCG7wYtNH3Ejlo
+        LkrMdos44VQfslj/VOVTPki6L1EyECzMY40Qb2ckJ0w==
+X-Received: by 2002:a17:906:350c:: with SMTP id r12mr19518835eja.44.1627976270903;
+        Tue, 03 Aug 2021 00:37:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzyFBe5dbNxwlXlBXERsGZZkwqR37lHAwmEzaRMwA5uBHV4D/DUtM//HZhRsSt8v4oHJ3em0g==
+X-Received: by 2002:a17:906:350c:: with SMTP id r12mr19518821eja.44.1627976270751;
+        Tue, 03 Aug 2021 00:37:50 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.43.172])
+        by smtp.gmail.com with ESMTPSA id fi23sm4651493ejc.83.2021.08.03.00.37.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 00:35:28 -0700 (PDT)
-Subject: Re: [PATCH v10 17/17] Documentation: Add documentation for VDUSE
-To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
-        stefanha@redhat.com, sgarzare@redhat.com, parav@nvidia.com,
-        hch@infradead.org, christian.brauner@canonical.com,
-        rdunlap@infradead.org, willy@infradead.org,
-        viro@zeniv.linux.org.uk, axboe@kernel.dk, bcrl@kvack.org,
-        corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com, joe@perches.com
-Cc:     songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210729073503.187-1-xieyongji@bytedance.com>
- <20210729073503.187-18-xieyongji@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <05365f36-bc3a-40f4-764d-37a7249b94b1@redhat.com>
-Date:   Tue, 3 Aug 2021 15:35:19 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Tue, 03 Aug 2021 00:37:49 -0700 (PDT)
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-5-semen.protsenko@linaro.org>
+ <a1701931-136e-235c-8392-a3f64c050d74@canonical.com>
+ <CAPLW+4mMCzzyqqJTse-UEpjQoVu1b-9Xz3_3L=nmg63uKYFnGw@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 04/12] tty: serial: samsung: Init USI to keep clocks
+ running
+Message-ID: <7364ccb2-70da-6400-ae6d-6a30171b6678@canonical.com>
+Date:   Tue, 3 Aug 2021 09:37:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210729073503.187-18-xieyongji@bytedance.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPLW+4mMCzzyqqJTse-UEpjQoVu1b-9Xz3_3L=nmg63uKYFnGw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/08/2021 01:06, Sam Protsenko wrote:
 
-ÔÚ 2021/7/29 ÏÂÎç3:35, Xie Yongji Ð´µÀ:
-> VDUSE (vDPA Device in Userspace) is a framework to support
-> implementing software-emulated vDPA devices in userspace. This
-> document is intended to clarify the VDUSE design and usage.
->
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> ---
->   Documentation/userspace-api/index.rst |   1 +
->   Documentation/userspace-api/vduse.rst | 232 ++++++++++++++++++++++++++++++++++
->   2 files changed, 233 insertions(+)
->   create mode 100644 Documentation/userspace-api/vduse.rst
->
-> diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
-> index 0b5eefed027e..c432be070f67 100644
-> --- a/Documentation/userspace-api/index.rst
-> +++ b/Documentation/userspace-api/index.rst
-> @@ -27,6 +27,7 @@ place where this information is gathered.
->      iommu
->      media/index
->      sysfs-platform_profile
-> +   vduse
->   
->   .. only::  subproject and html
->   
-> diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/userspace-api/vduse.rst
-> new file mode 100644
-> index 000000000000..30c9d1482126
-> --- /dev/null
-> +++ b/Documentation/userspace-api/vduse.rst
-> @@ -0,0 +1,232 @@
-> +==================================
-> +VDUSE - "vDPA Device in Userspace"
-> +==================================
-> +
-> +vDPA (virtio data path acceleration) device is a device that uses a
-> +datapath which complies with the virtio specifications with vendor
-> +specific control path. vDPA devices can be both physically located on
-> +the hardware or emulated by software. VDUSE is a framework that makes it
-> +possible to implement software-emulated vDPA devices in userspace. And
-> +to make the device emulation more secure, the emulated vDPA device's
-> +control path is handled in the kernel and only the data path is
-> +implemented in the userspace.
-> +
-> +Note that only virtio block device is supported by VDUSE framework now,
-> +which can reduce security risks when the userspace process that implements
-> +the data path is run by an unprivileged user. The support for other device
-> +types can be added after the security issue of corresponding device driver
-> +is clarified or fixed in the future.
-> +
-> +Create/Destroy VDUSE devices
-> +------------------------
-> +
-> +VDUSE devices are created as follows:
-> +
-> +1. Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
-> +   /dev/vduse/control.
-> +
-> +2. Setup each virtqueue with ioctl(VDUSE_VQ_SETUP) on /dev/vduse/$NAME.
-> +
-> +3. Begin processing VDUSE messages from /dev/vduse/$NAME. The first
-> +   messages will arrive while attaching the VDUSE instance to vDPA bus.
-> +
-> +4. Send the VDPA_CMD_DEV_NEW netlink message to attach the VDUSE
-> +   instance to vDPA bus.
-> +
-> +VDUSE devices are destroyed as follows:
-> +
-> +1. Send the VDPA_CMD_DEV_DEL netlink message to detach the VDUSE
-> +   instance from vDPA bus.
-> +
-> +2. Close the file descriptor referring to /dev/vduse/$NAME.
-> +
-> +3. Destroy the VDUSE instance with ioctl(VDUSE_DESTROY_DEV) on
-> +   /dev/vduse/control.
-> +
-> +The netlink messages can be sent via vdpa tool in iproute2 or use the
-> +below sample codes:
-> +
-> +.. code-block:: c
-> +
-> +	static int netlink_add_vduse(const char *name, enum vdpa_command cmd)
-> +	{
-> +		struct nl_sock *nlsock;
-> +		struct nl_msg *msg;
-> +		int famid;
-> +
-> +		nlsock = nl_socket_alloc();
-> +		if (!nlsock)
-> +			return -ENOMEM;
-> +
-> +		if (genl_connect(nlsock))
-> +			goto free_sock;
-> +
-> +		famid = genl_ctrl_resolve(nlsock, VDPA_GENL_NAME);
-> +		if (famid < 0)
-> +			goto close_sock;
-> +
-> +		msg = nlmsg_alloc();
-> +		if (!msg)
-> +			goto close_sock;
-> +
-> +		if (!genlmsg_put(msg, NL_AUTO_PORT, NL_AUTO_SEQ, famid, 0, 0, cmd, 0))
-> +			goto nla_put_failure;
-> +
-> +		NLA_PUT_STRING(msg, VDPA_ATTR_DEV_NAME, name);
-> +		if (cmd == VDPA_CMD_DEV_NEW)
-> +			NLA_PUT_STRING(msg, VDPA_ATTR_MGMTDEV_DEV_NAME, "vduse");
-> +
-> +		if (nl_send_sync(nlsock, msg))
-> +			goto close_sock;
-> +
-> +		nl_close(nlsock);
-> +		nl_socket_free(nlsock);
-> +
-> +		return 0;
-> +	nla_put_failure:
-> +		nlmsg_free(msg);
-> +	close_sock:
-> +		nl_close(nlsock);
-> +	free_sock:
-> +		nl_socket_free(nlsock);
-> +		return -1;
-> +	}
-> +
-> +How VDUSE works
-> +---------------
-> +
-> +As mentioned above, a VDUSE device is created by ioctl(VDUSE_CREATE_DEV) on
-> +/dev/vduse/control. With this ioctl, userspace can specify some basic configuration
-> +such as device name (uniquely identify a VDUSE device), virtio features, virtio
-> +configuration space, the number of virtqueues and so on for this emulated device.
-> +Then a char device interface (/dev/vduse/$NAME) is exported to userspace for device
-> +emulation. Userspace can use the VDUSE_VQ_SETUP ioctl on /dev/vduse/$NAME to
-> +add per-virtqueue configuration such as the max size of virtqueue to the device.
-> +
-> +After the initialization, the VDUSE device can be attached to vDPA bus via
-> +the VDPA_CMD_DEV_NEW netlink message. Userspace needs to read()/write() on
-> +/dev/vduse/$NAME to receive/reply some control messages from/to VDUSE kernel
-> +module as follows:
-> +
-> +.. code-block:: c
-> +
-> +	static int vduse_message_handler(int dev_fd)
-> +	{
-> +		int len;
-> +		struct vduse_dev_request req;
-> +		struct vduse_dev_response resp;
-> +
-> +		len = read(dev_fd, &req, sizeof(req));
-> +		if (len != sizeof(req))
-> +			return -1;
-> +
-> +		resp.request_id = req.request_id;
-> +
-> +		switch (req.type) {
-> +
-> +		/* handle different types of messages */
-> +
-> +		}
-> +
-> +		len = write(dev_fd, &resp, sizeof(resp));
-> +		if (len != sizeof(resp))
-> +			return -1;
-> +
-> +		return 0;
-> +	}
-> +
-> +There are now three types of messages introduced by VDUSE framework:
-> +
-> +- VDUSE_GET_VQ_STATE: Get the state for virtqueue, userspace should return
-> +  avail index for split virtqueue or the device/driver ring wrap counters and
-> +  the avail and used index for packed virtqueue.
-> +
-> +- VDUSE_SET_STATUS: Set the device status, userspace should follow
-> +  the virtio spec: https://docs.oasis-open.org/virtio/virtio/v1.1/virtio-v1.1.html
-> +  to process this message. For example, fail to set the FEATURES_OK device
-> +  status bit if the device can not accept the negotiated virtio features
-> +  get from the VDUSE_DEV_GET_FEATURES ioctl.
+(...)
+
+>>> diff --git a/include/linux/serial_s3c.h b/include/linux/serial_s3c.h
+>>> index f6c3323fc4c5..013c2646863e 100644
+>>> --- a/include/linux/serial_s3c.h
+>>> +++ b/include/linux/serial_s3c.h
+>>> @@ -28,6 +28,15 @@
+>>>  #define S3C2410_UFSTAT         (0x18)
+>>>  #define S3C2410_UMSTAT         (0x1C)
+>>>
+>>> +/* USI Control Register offset */
+>>> +#define USI_CON                      (0xC4)
+>>> +/* USI Option Register offset */
+>>> +#define USI_OPTION           (0xC8)
+>>> +/* USI_CON[0] = 0b0: clear USI global software reset (Active High) */
+>>> +#define USI_RESET            (0<<0)
+>>
+>> Just 0x0. I understand you wanted to hint it is a bit field, but the
+>> shift of 0 actually creates more questions.
+>>
+> 
+> After some consideration I decided to adhere to existing style and do
+> something like this (in v2):
+> 
+> 8<--------------------------------------------------------------------->8
+> #define USI_CON          (0xC4)
+> #define USI_OPTION      (0xC8)
+> 
+> #define USI_CON_RESET_CLEAR        (0<<0)
+> #define USI_CON_RESET_SET        (1<<0)
+> #define USI_CON_RESET_MASK        (1<<0)
+> 
+> #define USI_OPTION_HWACG_CLKREQ_ON    (1<<1)
+> #define USI_OPTION_HWACG_CLKSTOP_ON    (1<<2)
+> #define USI_OPTION_HWACG_MASK        (3<<1)
+> 8<--------------------------------------------------------------------->8
+> 
+> The whole reason for those comments was missing public TRM. But in the
+> end I decided it just looks ugly. Also, this way I can do RMW
+> operation (discussed above) in more logical way.
+> 
+> Please let me know if code snippets above look good to you.
+
+Please skip the USI_CON_RESET_CLEAR. There is no such pattern in the
+code. Clearing bit is an obvious operation and such code is already
+everywhere:
+    val &= ~USI_CON_RESET
+
+(or &= ~USI_RESET_MASK)
+
+Therefore for USI_CON_RESET only:
+    #define USI_CON_RESET             (1<<0)
+    #define USI_CON_RESET_MASK        (1<<0)
 
 
-I wonder if it's better to add a section about the future work?
-
-E.g the support for the userspace device to modify status (like 
-NEEDS_RESET).
-
-
-> +
-> +- VDUSE_UPDATE_IOTLB: Notify userspace to update the memory mapping for specified
-> +  IOVA range, userspace should firstly remove the old mapping, then setup the new
-> +  mapping via the VDUSE_IOTLB_GET_FD ioctl.
-> +
-> +After DRIVER_OK status bit is set via the VDUSE_SET_STATUS message, userspace is
-> +able to start the dataplane processing as follows:
-> +
-> +1. Get the specified virtqueue's information with the VDUSE_VQ_GET_INFO ioctl,
-> +   including the size, the IOVAs of descriptor table, available ring and used ring,
-> +   the state and the ready status.
-> +
-> +2. Pass the above IOVAs to the VDUSE_IOTLB_GET_FD ioctl so that those IOVA regions
-> +   can be mapped into userspace. Some sample codes is shown below:
-> +
-> +.. code-block:: c
-> +
-> +	static int perm_to_prot(uint8_t perm)
-> +	{
-> +		int prot = 0;
-> +
-> +		switch (perm) {
-> +		case VDUSE_ACCESS_WO:
-> +			prot |= PROT_WRITE;
-> +			break;
-> +		case VDUSE_ACCESS_RO:
-> +			prot |= PROT_READ;
-> +			break;
-> +		case VDUSE_ACCESS_RW:
-> +			prot |= PROT_READ | PROT_WRITE;
-> +			break;
-> +		}
-> +
-> +		return prot;
-> +	}
-> +
-> +	static void *iova_to_va(int dev_fd, uint64_t iova, uint64_t *len)
-> +	{
-> +		int fd;
-> +		void *addr;
-> +		size_t size;
-> +		struct vduse_iotlb_entry entry;
-> +
-> +		entry.start = iova;
-> +		entry.last = iova;
-> +
-> +		/*
-> +		 * Find the first IOVA region that overlaps with the specified
-> +		 * range [start, last] and return the corresponding file descriptor.
-> +		 */
-> +		fd = ioctl(dev_fd, VDUSE_IOTLB_GET_FD, &entry);
-> +		if (fd < 0)
-> +			return NULL;
-> +
-> +		size = entry.last - entry.start + 1;
-> +		*len = entry.last - iova + 1;
-> +		addr = mmap(0, size, perm_to_prot(entry.perm), MAP_SHARED,
-> +			    fd, entry.offset);
-> +		close(fd);
-> +		if (addr == MAP_FAILED)
-> +			return NULL;
-> +
-> +		/*
-> +		 * Using some data structures such as linked list to store
-> +		 * the iotlb mapping. The munmap(2) should be called for the
-> +		 * cached mapping when the corresponding VDUSE_UPDATE_IOTLB
-> +		 * message is received or the device is reset.
-> +		 */
-> +
-> +		return addr + iova - entry.start;
-> +	}
-> +
-> +3. Setup the kick eventfd for the specified virtqueues with the VDUSE_VQ_SETUP_KICKFD
-> +   ioctl. The kick eventfd is used by VDUSE kernel module to notify userspace to
-> +   consume the available ring.
-> +
-> +4. Listen to the kick eventfd and consume the available ring. The buffer described
-> +   by the descriptors in the descriptor table should be also mapped into userspace
-> +   via the VDUSE_IOTLB_GET_FD ioctl before accessing.
-
-
-(Or userspace may poll the indices instead, the kick eventfd is not a must).
-
-
-Thanks
-
-
-> +
-> +5. Inject an interrupt for specific virtqueue with the VDUSE_INJECT_VQ_IRQ ioctl
-> +   after the used ring is filled.
-> +
-> +For more details on the uAPI, please see include/uapi/linux/vduse.h.
-
+Best regards,
+Krzysztof
