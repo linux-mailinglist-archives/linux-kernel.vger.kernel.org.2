@@ -2,198 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23DB3DE668
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC503DE66B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbhHCF5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 01:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
+        id S233898AbhHCF6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 01:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbhHCF5p (ORCPT
+        with ESMTP id S233677AbhHCF6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 01:57:45 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08BFC06175F;
-        Mon,  2 Aug 2021 22:57:33 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id nd39so34607446ejc.5;
-        Mon, 02 Aug 2021 22:57:33 -0700 (PDT)
+        Tue, 3 Aug 2021 01:58:12 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A0CC061764;
+        Mon,  2 Aug 2021 22:58:02 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id a12so13281579qtb.2;
+        Mon, 02 Aug 2021 22:58:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qQa6pcdJaaMybmAqLpeWfvCz1Z6vyYF74Ui12REMt0Y=;
-        b=MKDI89hQxBB75T66Cxr+3sMAw5RTYmdxyXrIbty6Fk59/5zzGTnvkmKmleFqN7Jl4/
-         fr5wWt5vi2YO94IbLbdIr77talJ7AWKAw2Z8LLOxUjKQPDCjyRhqxP/xkWNqVZbqCTcX
-         xduJiYwAynfga8rpYKq87G/LaPvwc8g9egsj5PVAjWMDF7x5KNZJcmQ7sUvEcO1Xq3E+
-         VTta3CDQwO+yaST3/C2rP8cNGBaxZx0CTARZhRVwV95fr9VgtWHlN3NONyW+9Uy7NhAf
-         zf53rvZlzOCW07YgMCoi8JMZKRtMCoefnl6AGGu7yJO+FNdqAXilSlNUhlfykpk73VH3
-         EV1w==
+         :cc;
+        bh=A8r1SOnghP/MBO4ignCwnrhJci8PgXDgxCYfoAoBqoM=;
+        b=diBrfg3sOAjAdEgR2fwx5obH5BQMLqcZg+0HoS3Mm+v0wWlsTHJim4DrIaVp+06oco
+         yq8pEbh/ioAUlzrWbFtle+fHa9D23Uu1hCDfgRSrZjQ1cjtEz/Q+ITDYifLNb1YWLoMo
+         Qktc+tzAtpyX4SIqgjp/anumj2joR8zCF00co=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qQa6pcdJaaMybmAqLpeWfvCz1Z6vyYF74Ui12REMt0Y=;
-        b=adzF7+me6cpoiIMpwDo/aGxFKpRYk97NefPOsSw5Rx5KeMMlHXuWFJs3UTpDIaIX5P
-         IjJwEUNR9vwPXg0JJ0EgXcFnHG0SGV2SDp659QiAGuAgJ3/+mXLAY9XCpXlJsSNtfIvQ
-         9kA1NDxIJHjqkP9VQMZyxW1By77mbJAN4OjD2nGRBH7AHqOrqU7usaTpQ82toIeuVKWq
-         INjtWBJoAFBvgX33HtXWWe68DSHdfRSHDsyfjVeB/DfhG1Eu4wWhLg+Dll6j5p9G3kyg
-         QY7NHekmBMiMqG7JU/EQOi27MlPRU9W0DYoeXFjf3fPXHqZFgxRA8QI+C8RXTue+bQCI
-         3E2g==
-X-Gm-Message-State: AOAM531aZpAfdgu9YkNIevfwylUUnmE5i8gW+Sm/gvfxqaoJX/1ObMwe
-        apAaQuW/sWMpIX8Rqt7xVskdOpVn4gnNbEMMQj0=
-X-Google-Smtp-Source: ABdhPJxPMFgHsfkBt7LZofGu0k24QG5zQkPYVOdEGwglJ8jIO0bAUlV1qhoCbD6yKmhAwpZJDSBysbj4kczcgbP4GYw=
-X-Received: by 2002:a17:906:4784:: with SMTP id cw4mr18747979ejc.160.1627970252517;
- Mon, 02 Aug 2021 22:57:32 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=A8r1SOnghP/MBO4ignCwnrhJci8PgXDgxCYfoAoBqoM=;
+        b=dZxCciG3kmJcyDjyM1gxuA+/dEFmSggsCpvLSiedKkR/N7kuf1CbAWTYHce+91fBkv
+         q2iNuw26G6/wcvsklphzugkGeK2s028pXRQHNp8jWL+wsIj9cq2q9hmliawJVbsp1tn9
+         Zf2DvaT9mbkdA9G/CVW8+RrkSmsueYQEJw0XvvGJOrRtrQ+rJSBGULt6QDFOKa+IeQ+M
+         kOGcf9/lIm8lJszqpSq3z3ETWb0QW1LF00+uxB2pSoxs2fm5JbNDECQsIE3ztYMbqZW7
+         MrdSAt366MW3Nk+hn3al5lSkR9KuQS3NsLJR/mEzQw0sX7XzQArQel8xi05pj7HBgbP+
+         u5jg==
+X-Gm-Message-State: AOAM533OqqK1fmTNWLad0bpdL/9i74V3eL3vT449/muaQK7sgbHEXzqJ
+        4kGMkQU2aWC1pekBoINdifuUS6PnaoDkWUt9JksIWSx8
+X-Google-Smtp-Source: ABdhPJxqNKg77SS3jHcROLjxWjGxNdgL8Z+BYVHbG4gOIjY5GnEIA0nxzuTN50vPMyHjoExsVMAkoBiep3qlFYYYuHA=
+X-Received: by 2002:ac8:6697:: with SMTP id d23mr16993913qtp.135.1627970281534;
+ Mon, 02 Aug 2021 22:58:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726152724.2281408-1-mudongliangabcd@gmail.com> <YQg4lehajLpQjyPd@Red>
-In-Reply-To: <YQg4lehajLpQjyPd@Red>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 3 Aug 2021 13:57:06 +0800
-Message-ID: <CAD-N9QWvR-7caWCnk1CMo8sWPEC=CfKU2_v=YkTVr0o5L7wehA@mail.gmail.com>
-Subject: Re: [PATCH] crypto: sun8i-ce: fix multiple memory leaks in sun8i_ce_hash_run
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210712100317.23298-1-steven_lee@aspeedtech.com>
+ <CAMpxmJXfUterUdaGHOJT5hwcVJ+3cqgSQVdp-6Atuyyo36FxfQ@mail.gmail.com>
+ <20210723031615.GA10457@aspeedtech.com> <CAMpxmJU4jN-hpNYPLHLbjx4uZ6vDqcyuMVQXhHg1BWXOqyS22A@mail.gmail.com>
+ <58256e8f-6c9a-4ad4-b51e-4048b6feb42a@www.fastmail.com>
+In-Reply-To: <58256e8f-6c9a-4ad4-b51e-4048b6feb42a@www.fastmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 3 Aug 2021 05:57:49 +0000
+Message-ID: <CACPK8XdfisvSzr3uWYmfd+u1UtM5+cyMBMvcDZJ+jQ38A1BSXg@mail.gmail.com>
+Subject: Re: [PATCH v6 0/9] ASPEED sgpio driver enhancement.
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Steven Lee <steven_lee@aspeedtech.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 2:25 AM Corentin Labbe <clabbe.montjoie@gmail.com> w=
-rote:
+On Tue, 3 Aug 2021 at 04:49, Andrew Jeffery <andrew@aj.id.au> wrote:
+> On Fri, 23 Jul 2021, at 17:00, Bartosz Golaszewski wrote:
+> > Joel, Andrew: can I take the GPIO patches through the GPIO tree and
+> > you'll take the ARM patches separately into v5.15?
 >
-> Le Mon, Jul 26, 2021 at 11:27:12PM +0800, Dongliang Mu a =C3=A9crit :
-> > In sun8i_ce_hash_run, all the dma_mmap_sg/single will cause memory leak
-> > due to no corresponding unmap operation if errors happen.
-> >
-> > Fix this by adding error handling part for all the dma_mmap_sg/single.
-> >
->
-> I think it could be better worded, error handling is already there (but b=
-ad).
+> I think that should be okay. I'll poke Joel.
 
-Sure. How about "Fix this by freeing the objects allocated by
-dma_mmap_sg/single when errors occur."?
+Yes, that's fine. I have merged the first four patches into the aspeed tree.
 
->
-> > Fixes: 56f6d5aee88d ("crypto: sun8i-ce - support hash algorithms")
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > ---
-> >  .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 28 +++++++++----------
-> >  1 file changed, 13 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/driver=
-s/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> > index 88194718a806..d454ad99deee 100644
-> > --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> > +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> > @@ -286,16 +286,14 @@ int sun8i_ce_hash_run(struct crypto_engine *engin=
-e, void *breq)
-> >
-> >       /* the padding could be up to two block. */
-> >       buf =3D kzalloc(bs * 2, GFP_KERNEL | GFP_DMA);
-> > -     if (!buf) {
-> > -             err =3D -ENOMEM;
-> > -             goto theend;
->
-> Please keep all goto error for being consistent.
+Cheers,
 
-OK, no problem.
-
-BTW, usually for the 1st malloc failure, I prefer returning with errno dire=
-ctly.
-
->
-> > -     }
-> > +     if (!buf)
-> > +             return -ENOMEM;
-> >       bf =3D (__le32 *)buf;
-> >
-> >       result =3D kzalloc(digestsize, GFP_KERNEL | GFP_DMA);
-> >       if (!result) {
-> > -             err =3D -ENOMEM;
-> > -             goto theend;
-> > +             kfree(buf);
-> > +             return -ENOMEM;
-> >       }
-> >
-> >       flow =3D rctx->flow;
-> > @@ -321,7 +319,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine,=
- void *breq)
-> >       if (nr_sgs <=3D 0 || nr_sgs > MAX_SG) {
-> >               dev_err(ce->dev, "Invalid sg number %d\n", nr_sgs);
-> >               err =3D -EINVAL;
-> > -             goto theend;
-> > +             goto err_result;
-> >       }
-> >
-> >       len =3D areq->nbytes;
-> > @@ -334,7 +332,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine,=
- void *breq)
-> >       if (len > 0) {
-> >               dev_err(ce->dev, "remaining len %d\n", len);
-> >               err =3D -EINVAL;
-> > -             goto theend;
-> > +             goto err_unmap_sg;
-> >       }
-> >       addr_res =3D dma_map_single(ce->dev, result, digestsize, DMA_FROM=
-_DEVICE);
-> >       cet->t_dst[0].addr =3D cpu_to_le32(addr_res);
-> > @@ -342,7 +340,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine,=
- void *breq)
-> >       if (dma_mapping_error(ce->dev, addr_res)) {
-> >               dev_err(ce->dev, "DMA map dest\n");
-> >               err =3D -EINVAL;
-> > -             goto theend;
-> > +             goto err_unmap_sg;
-> >       }
-> >
-> >       byte_count =3D areq->nbytes;
-> > @@ -392,7 +390,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine,=
- void *breq)
-> >       if (dma_mapping_error(ce->dev, addr_pad)) {
-> >               dev_err(ce->dev, "DMA error on padding SG\n");
-> >               err =3D -EINVAL;
-> > -             goto theend;
-> > +             goto err_addr_res;
-> >       }
-> >
-> >       if (ce->variant->hash_t_dlen_in_bits)
-> > @@ -405,15 +403,15 @@ int sun8i_ce_hash_run(struct crypto_engine *engin=
-e, void *breq)
-> >       err =3D sun8i_ce_run_task(ce, flow, crypto_tfm_alg_name(areq->bas=
-e.tfm));
-> >
-> >       dma_unmap_single(ce->dev, addr_pad, j * 4, DMA_TO_DEVICE);
-> > +err_addr_res:
-> > +     dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE);
-> > +err_unmap_sg:
-> >       dma_unmap_sg(ce->dev, areq->src, sg_nents(areq->src),
-> >                    DMA_TO_DEVICE);
-> > -     dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE);
-> > -
-> > -
-> >       memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
->
-> The result should be copied only when everything is ok. Please add a "if =
-(!err)"
-
-Sure.
-
->
-> Thanks for your work
-> Regards
+Joel
