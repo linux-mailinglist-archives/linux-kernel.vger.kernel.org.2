@@ -2,61 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638023DEB92
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6683DEB48
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235221AbhHCLJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:09:33 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50960 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234156AbhHCLJc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:09:32 -0400
-X-UUID: 3c6a25b1029e4b4aa70ff42139fa2d9d-20210803
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Od2MpSzeMLHI3T1P4xyf0dSDDK91tD2ThNe34CdzcnA=;
-        b=jyA4hJK21e5yEMZ0ze3OF6owXdCH0LuOLSAY7NPZPhWxc+IYPlif/MYOi0bxrXLrJqbj1a5st6TF9BwVln6iQwPGu3vYTd3Xs/wLph68Yh3qwBthHMep5Y92mL44QOXl/zDLLs2cASOV4Ja36fWTEsHjupUrS0IZ/CmZzE0NExI=;
-X-UUID: 3c6a25b1029e4b4aa70ff42139fa2d9d-20210803
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 985537256; Tue, 03 Aug 2021 19:09:19 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 3 Aug 2021 19:09:18 +0800
-Received: from [10.15.20.246] (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 3 Aug 2021 19:09:17 +0800
-Message-ID: <1627987970.27248.4.camel@mbjsdccf07>
-Subject: Re: [PATCH 2/3] spi: modify set_cs_timing parameter
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <leilk.liu@mediatek.com>,
-        <wsd_upstream@mediatek.com>
-Date:   Tue, 3 Aug 2021 18:52:50 +0800
-In-Reply-To: <1627960488.7721.2.camel@mbjsdccf07>
-References: <20210719091642.24633-1-mason.zhang@mediatek.com>
-         <20210802201614.GA39900@sirena.org.uk> <1627960488.7721.2.camel@mbjsdccf07>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S235258AbhHCKxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:53:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:47210 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234904AbhHCKxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 06:53:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 078A4106F;
+        Tue,  3 Aug 2021 03:52:56 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 703983F40C;
+        Tue,  3 Aug 2021 03:52:54 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 11:52:52 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tom Joseph <tjoseph@cadence.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, nadeem@cadence.com
+Subject: Re: [PATCH v2 0/6] PCI: Add support for J7200 and AM64
+Message-ID: <20210803105252.GD11252@lpieralisi>
+References: <20210803074932.19820-1-kishon@ti.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803074932.19820-1-kishon@ti.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA4LTAzIGF0IDExOjE0ICswODAwLCBNYXNvbiBaaGFuZyB3cm90ZToNCj4g
-RGVhciBNYXJrOg0KPiANCj4gCUkgaGF2ZSBmaXhlZCB0aGlzIGJ1aWxkIGVyciBpbiB0aGlzIHBh
-dGNoOg0KPiANCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtc3BpLzIwMjEwODAzMDIx
-MzI4LjI4MjkxLTEtTWFzb24uWmhhbmdAbWVkaWF0ZWsuY29tL1QvI3UNCj4gDQo+IA0KPiBUaGFu
-a3MNCj4gTWFzb24NCg0KRGVhciBNYXJrOg0KDQoJSSBoYXZlIHN1Ym1pdCB0aGlzIGNoYW5nZSBz
-ZXBhcmF0ZWx5LCBidXQgc3RpbGwgaGF2ZSBidWlsZCBlcnIsIHNvIEkNCmhhdmUgdXBkYXRlZCB0
-aGUgcGF0Y2ggdjIgYXMgYmVsb3c6DQoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LXNw
-aS8yMDIxMDgwMzEwMjIyOC4yNTM1LTEtTWFzb24uWmhhbmdAbWVkaWF0ZWsuY29tL1QvI3UNCg0K
-VGhhbmtzDQpNYXNvbg0K
+On Tue, Aug 03, 2021 at 01:19:26PM +0530, Kishon Vijay Abraham I wrote:
+> This series adds the compatible specific to J7200 and AM64 and
+> applies the erratas and configuration specific to them.
+> 
+> This series also includes Nadeem's patch that adds a quirk in
+> Cadence driver which is used by J7200 [1].
+> 
+> The DT binding for both J7200 and AM64 is already merged.
+> 
+> v1 of the patch series can be found at [2]
+> 
+> Changes from v1:
+> 1) As suggested by Bjorn, used unsigned int :1, instead of bool for
+> structure members
+> 2) Removed using unnecessary local variables and also fixed some
+> code alignment
+> 
+> [1] -> https://lore.kernel.org/r/20210528155626.21793-1-nadeem@cadence.com
+> [2] -> https://lore.kernel.org/r/20210706105035.9915-1-kishon@ti.com
+> 
+> Kishon Vijay Abraham I (5):
+>   PCI: cadence: Use bitfield for *quirk_retrain_flag* instead of bool
+>   PCI: j721e: Add PCIe support for J7200
+>   PCI: j721e: Add PCIe support for AM64
+>   misc: pci_endpoint_test: Do not request or allocate IRQs in probe
+>   misc: pci_endpoint_test: Add deviceID for AM64 and J7200
+> 
+> Nadeem Athani (1):
+>   PCI: cadence: Add quirk flag to set minimum delay in LTSSM
+>     Detect.Quiet state
+> 
+>  drivers/misc/pci_endpoint_test.c              | 27 ++++++--
+>  drivers/pci/controller/cadence/pci-j721e.c    | 61 +++++++++++++++++--
+>  .../pci/controller/cadence/pcie-cadence-ep.c  |  4 ++
+>  .../controller/cadence/pcie-cadence-host.c    |  3 +
+>  drivers/pci/controller/cadence/pcie-cadence.c | 17 ++++++
+>  drivers/pci/controller/cadence/pcie-cadence.h | 17 +++++-
+>  6 files changed, 117 insertions(+), 12 deletions(-)
 
+I am not convinced about patch (5) the rest of the series can be
+merged (even though I assume patch (6) depends on (5)).
+
+Please let me know,
+Lorenzo
