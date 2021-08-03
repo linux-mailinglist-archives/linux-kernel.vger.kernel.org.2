@@ -2,317 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0344A3DE3B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031A93DE3B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbhHCA6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 20:58:13 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:26115 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbhHCA6L (ORCPT
+        id S233315AbhHCA6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 20:58:46 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:33039 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232879AbhHCA6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 20:58:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627952281; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=L91wI3wMyRh86rCU8asTtP5eHLcHNJCjnnsXcpNsE5s=;
- b=HYLf2GpDBkLomgBwNz9sDQxuRCnB2kKvYZ4cIi7XgCL1Sz3mW5mwIFSw+AgUxolMp6/N4KlA
- xtrSjSXu0AM5bq9aaIm0gsY+EdAPaypJP+uNT1kt7udJbTzE11/e/KVZjOQRjkhYTwCs1JDn
- /xALAqrk7LsbiLopYxtyNQsjPR8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 610894979771b05b247670b4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 00:57:59
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 78698C4338A; Tue,  3 Aug 2021 00:57:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4DAEC433D3;
-        Tue,  3 Aug 2021 00:57:56 +0000 (UTC)
+        Mon, 2 Aug 2021 20:58:45 -0400
+Received: (qmail 350320 invoked by uid 1000); 2 Aug 2021 20:58:34 -0400
+Date:   Mon, 2 Aug 2021 20:58:34 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Salah Triki <salah.triki@gmail.com>
+Cc:     Keith Packard <keithp@keithp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: misc: chaoskey: get lock before calling
+ usb_[disable|enable]_autosuspend()
+Message-ID: <20210803005834.GB349864@rowland.harvard.edu>
+References: <20210802222205.GA1389315@pc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Aug 2021 17:57:56 -0700
-From:   abhinavk@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [Freedreno] [PATCH 08/11] drm/msm/disp/dpu1: Add support for DSC
- in encoder
-In-Reply-To: <20210715065203.709914-9-vkoul@kernel.org>
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-9-vkoul@kernel.org>
-Message-ID: <70d5abae07b4dbf63d8dbf47ba31262d@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802222205.GA1389315@pc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-14 23:52, Vinod Koul wrote:
-> When DSC is enabled in DT, we need to configure the encoder for DSC
-> configuration, calculate DSC parameters for the given timing.
+On Mon, Aug 02, 2021 at 11:22:05PM +0100, Salah Triki wrote:
+> Based on the documentation of usb_[disable|enable]_autosuspend(), the
+> caller must hold udev's device lock.
 > 
-> This patch adds that support by adding dpu_encoder_prep_dsc() which is
-> invoked when DSC is enabled in DT
-correct me if wrong but this commit text is not valid anymore in my 
-opinion.
-are there any params you are getting from DT now? I thought its all 
-coming from the panel
-driver directly.
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-agree with dmitry's comment's 
-https://patchwork.freedesktop.org/patch/444078/?series=90413&rev=2
-
-instead of dsc being part of priv->dsc it should be per encoder.
-
-On top of his comment, I also think that like on the newer chipsets, 
-moving the dsc related
-encoder configuration to a dpu_encoder_dce.c will help for future 
-expansion of other topologies
-and also for other compression algorithms.
-
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
 > ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 142 +++++++++++++++++++-
->  1 file changed, 141 insertions(+), 1 deletion(-)
+>  drivers/usb/misc/chaoskey.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> index 8d942052db8a..41140b781e66 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> @@ -21,12 +21,17 @@
->  #include "dpu_hw_intf.h"
->  #include "dpu_hw_ctl.h"
->  #include "dpu_hw_dspp.h"
-> +#include "dpu_hw_dsc.h"
->  #include "dpu_formats.h"
->  #include "dpu_encoder_phys.h"
->  #include "dpu_crtc.h"
->  #include "dpu_trace.h"
->  #include "dpu_core_irq.h"
-> 
-> +#define DSC_MODE_SPLIT_PANEL		BIT(0)
-> +#define DSC_MODE_MULTIPLEX		BIT(1)
-> +#define DSC_MODE_VIDEO			BIT(2)
-> +
->  #define DPU_DEBUG_ENC(e, fmt, ...) DPU_DEBUG("enc%d " fmt,\
->  		(e) ? (e)->base.base.id : -1, ##__VA_ARGS__)
-> 
-> @@ -135,6 +140,7 @@ enum dpu_enc_rc_states {
->   * @cur_slave:		As above but for the slave encoder.
->   * @hw_pp:		Handle to the pingpong blocks used for the display. No.
->   *			pingpong blocks can be different than num_phys_encs.
-> + * @hw_dsc		Handle to the DSC blocks used for the display.
->   * @intfs_swapped:	Whether or not the phys_enc interfaces have been 
-> swapped
->   *			for partial update right-only cases, such as pingpong
->   *			split where virtual pingpong does not generate IRQs
-> @@ -180,6 +186,7 @@ struct dpu_encoder_virt {
->  	struct dpu_encoder_phys *cur_master;
->  	struct dpu_encoder_phys *cur_slave;
->  	struct dpu_hw_pingpong *hw_pp[MAX_CHANNELS_PER_ENC];
-> +	struct dpu_hw_dsc *hw_dsc[MAX_CHANNELS_PER_ENC];
-> 
->  	bool intfs_swapped;
-> 
-> @@ -1008,7 +1015,8 @@ static void dpu_encoder_virt_mode_set(struct
-> drm_encoder *drm_enc,
->  	struct dpu_hw_blk *hw_ctl[MAX_CHANNELS_PER_ENC];
->  	struct dpu_hw_blk *hw_lm[MAX_CHANNELS_PER_ENC];
->  	struct dpu_hw_blk *hw_dspp[MAX_CHANNELS_PER_ENC] = { NULL };
-> -	int num_lm, num_ctl, num_pp;
-> +	struct dpu_hw_blk *hw_dsc[MAX_CHANNELS_PER_ENC];
-> +	int num_lm, num_ctl, num_pp, num_dsc;
->  	int i, j;
-> 
->  	if (!drm_enc) {
-> @@ -1061,11 +1069,16 @@ static void dpu_encoder_virt_mode_set(struct
-> drm_encoder *drm_enc,
->  	dpu_rm_get_assigned_resources(&dpu_kms->rm, global_state,
->  		drm_enc->base.id, DPU_HW_BLK_DSPP, hw_dspp,
->  		ARRAY_SIZE(hw_dspp));
-> +	num_dsc = dpu_rm_get_assigned_resources(&dpu_kms->rm, global_state,
-> +		drm_enc->base.id, DPU_HW_BLK_DSC, hw_dsc, ARRAY_SIZE(hw_dsc));
-> 
->  	for (i = 0; i < MAX_CHANNELS_PER_ENC; i++)
->  		dpu_enc->hw_pp[i] = i < num_pp ? to_dpu_hw_pingpong(hw_pp[i])
->  						: NULL;
-> 
-> +	for (i = 0; i < MAX_CHANNELS_PER_ENC; i++)
-> +		dpu_enc->hw_dsc[i] = i < num_dsc ? to_dpu_hw_dsc(hw_dsc[i]) : NULL;
-> +
->  	cstate = to_dpu_crtc_state(drm_crtc->state);
-> 
->  	for (i = 0; i < num_lm; i++) {
-> @@ -1810,10 +1823,133 @@ static void
-> dpu_encoder_vsync_event_work_handler(struct kthread_work *work)
->  			nsecs_to_jiffies(ktime_to_ns(wakeup_time)));
->  }
-> 
-> +static void
-> +dpu_encoder_dsc_pclk_param_calc(struct msm_display_dsc_config *dsc, 
-> u32 width)
-> +{
-> +	int slice_count, slice_per_intf;
-> +	int bytes_in_slice, total_bytes_per_intf;
-> +
-> +	if (!dsc || !dsc->drm->slice_width || !dsc->drm->slice_count) {
-> +		DPU_ERROR("Invalid DSC/slices\n");
-> +		return;
-> +	}
-> +
-> +	slice_count = dsc->drm->slice_count;
-> +	slice_per_intf = DIV_ROUND_UP(width, dsc->drm->slice_width);
-> +
-> +	/*
-> +	 * If slice_count is greater than slice_per_intf then default to 1.
-> +	 * This can happen during partial update.
-> +	 */
-> +	if (slice_count > slice_per_intf)
-> +		slice_count = 1;
-> +
-> +	bytes_in_slice = DIV_ROUND_UP(dsc->drm->slice_width *
-> +				      dsc->drm->bits_per_pixel, 8);
-> +	total_bytes_per_intf = bytes_in_slice * slice_per_intf;
-> +
-> +	dsc->eol_byte_num = total_bytes_per_intf % 3;
-> +	dsc->pclk_per_line =  DIV_ROUND_UP(total_bytes_per_intf, 3);
-> +	dsc->bytes_in_slice = bytes_in_slice;
-> +	dsc->bytes_per_pkt = bytes_in_slice * slice_count;
-> +	dsc->pkt_per_line = slice_per_intf / slice_count;
-> +}
-> +
-> +static void
-> +dpu_encoder_dsc_initial_line_calc(struct msm_display_dsc_config *dsc,
-> +				  u32 enc_ip_width)
-> +{
-> +	int ssm_delay, total_pixels, soft_slice_per_enc;
-> +
-> +	soft_slice_per_enc = enc_ip_width / dsc->drm->slice_width;
-> +
-> +	/*
-> +	 * minimum number of initial line pixels is a sum of:
-> +	 * 1. sub-stream multiplexer delay (83 groups for 8bpc,
-> +	 *    91 for 10 bpc) * 3
-> +	 * 2. for two soft slice cases, add extra sub-stream multiplexer * 3
-> +	 * 3. the initial xmit delay
-> +	 * 4. total pipeline delay through the "lock step" of encoder (47)
-> +	 * 5. 6 additional pixels as the output of the rate buffer is
-> +	 *    48 bits wide
-> +	 */
-> +	ssm_delay = ((dsc->drm->bits_per_component < 10) ? 84 : 92);
-> +	total_pixels = ssm_delay * 3 + dsc->drm->initial_xmit_delay + 47;
-> +	if (soft_slice_per_enc > 1)
-> +		total_pixels += (ssm_delay * 3);
-> +	dsc->initial_lines = DIV_ROUND_UP(total_pixels, 
-> dsc->drm->slice_width);
-> +}
-> +
-> +static void dpu_encoder_dsc_pipe_cfg(struct dpu_hw_dsc *hw_dsc,
-> +				     struct dpu_hw_pingpong *hw_pp,
-> +				     struct msm_display_dsc_config *dsc,
-> +				     u32 common_mode)
-> +{
-> +	if (hw_dsc->ops.dsc_config)
-> +		hw_dsc->ops.dsc_config(hw_dsc, dsc, common_mode);
-> +
-> +	if (hw_dsc->ops.dsc_config_thresh)
-> +		hw_dsc->ops.dsc_config_thresh(hw_dsc, dsc);
-> +
-> +	if (hw_pp->ops.setup_dsc)
-> +		hw_pp->ops.setup_dsc(hw_pp);
-> +
-> +	if (hw_pp->ops.enable_dsc)
-> +		hw_pp->ops.enable_dsc(hw_pp);
-> +}
-> +
-> +static void dpu_encoder_prep_dsc(struct dpu_encoder_virt *dpu_enc,
-> +				 struct msm_display_dsc_config *dsc)
-> +{
-> +	/* coding only for 2LM, 2enc, 1 dsc config */
-> +	struct dpu_encoder_phys *enc_master = dpu_enc->cur_master;
-> +	struct dpu_hw_dsc *hw_dsc[MAX_CHANNELS_PER_ENC];
-> +	struct dpu_hw_pingpong *hw_pp[MAX_CHANNELS_PER_ENC];
-> +	int this_frame_slices;
-> +	int intf_ip_w, enc_ip_w;
-> +	int dsc_common_mode;
-> +	int pic_width, pic_height;
-> +	int i;
-> +
-> +	for (i = 0; i < MAX_CHANNELS_PER_ENC; i++) {
-> +		hw_pp[i] = dpu_enc->hw_pp[i];
-> +		hw_dsc[i] = dpu_enc->hw_dsc[i];
-> +
-> +		if (!hw_pp[i] || !hw_dsc[i]) {
-> +			DPU_ERROR_ENC(dpu_enc, "invalid params for DSC\n");
-> +			return;
-> +		}
-> +	}
-> +
-> +	dsc_common_mode = 0;
-> +	pic_width = dsc->drm->pic_width;
-> +	pic_height = dsc->drm->pic_height;
-> +
-> +	dsc_common_mode = DSC_MODE_MULTIPLEX | DSC_MODE_SPLIT_PANEL;
-> +	if (enc_master->intf_mode == INTF_MODE_VIDEO)
-> +		dsc_common_mode |= DSC_MODE_VIDEO;
-> +
-> +	this_frame_slices = pic_width / dsc->drm->slice_width;
-> +	intf_ip_w = this_frame_slices * dsc->drm->slice_width;
-> +
-> +	dpu_encoder_dsc_pclk_param_calc(dsc, intf_ip_w);
-> +
-> +	/*
-> +	 * dsc merge case: when using 2 encoders for the same stream,
-> +	 * no. of slices need to be same on both the encoders.
-> +	 */
-> +	enc_ip_w = intf_ip_w / 2;
-> +	dpu_encoder_dsc_initial_line_calc(dsc, enc_ip_w);
-> +
-> +	for (i = 0; i < MAX_CHANNELS_PER_ENC; i++)
-> +		dpu_encoder_dsc_pipe_cfg(hw_dsc[i], hw_pp[i], dsc, dsc_common_mode);
-> +}
-> +
->  void dpu_encoder_prepare_for_kickoff(struct drm_encoder *drm_enc)
->  {
->  	struct dpu_encoder_virt *dpu_enc;
->  	struct dpu_encoder_phys *phys;
-> +	struct msm_drm_private *priv;
->  	bool needs_hw_reset = false;
->  	unsigned int i;
-> 
-> @@ -1841,6 +1977,10 @@ void dpu_encoder_prepare_for_kickoff(struct
-> drm_encoder *drm_enc)
->  			dpu_encoder_helper_hw_reset(dpu_enc->phys_encs[i]);
->  		}
->  	}
-> +
-> +	priv = drm_enc->dev->dev_private;
-> +	if (priv->dsc)
-> +		dpu_encoder_prep_dsc(dpu_enc, priv->dsc);
->  }
-> 
->  void dpu_encoder_kickoff(struct drm_encoder *drm_enc)
+> diff --git a/drivers/usb/misc/chaoskey.c b/drivers/usb/misc/chaoskey.c
+> index 87067c3d6109..8af00be7b9e8 100644
+> --- a/drivers/usb/misc/chaoskey.c
+> +++ b/drivers/usb/misc/chaoskey.c
+> @@ -206,7 +206,9 @@ static int chaoskey_probe(struct usb_interface *interface,
+>  	if (!dev->hwrng_registered)
+>  		usb_err(interface, "Unable to register with hwrng");
+>  
+> +	usb_lock_device(udev);
+>  	usb_enable_autosuspend(udev);
+> +	usb_unlock_device(udev);
+
+Not needed (indeed, actively harmful).  When this code runs it already 
+holds the device lock, because it is part of a probe routine.
+
+Alan Stern
