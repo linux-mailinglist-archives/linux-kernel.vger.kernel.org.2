@@ -2,169 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22513DF3F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2618B3DF3F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238228AbhHCR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238204AbhHCR35 (ORCPT
+        id S238238AbhHCRaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:30:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54384 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238230AbhHCRaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:29:57 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB66C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 10:29:45 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id k4-20020a17090a5144b02901731c776526so4855643pjm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 10:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Pm6SXOly+uNnAByxJnoAewZoxTAQStsO1EpbLNKxcWA=;
-        b=E7bH5OpRyrGcvLDuarlwVod9a4qZK971yFXYN3jywsvL3bwfys8jQJdhfliJeOod1a
-         nf8z/EYuc6xGtfGonTxoN7abw3WzVS+2pkUCRg1dr8L9CUTY5rMU7YE6o7MLbS5nhFWb
-         aZv6+QB+5H8PFGCqMHVCI4DlxaWA8QpYN0faM=
+        Tue, 3 Aug 2021 13:30:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628011796;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OCLO4ffT3xKaeyV7StdkUgO4drjWz8wacnMi8O6+t5Q=;
+        b=Cb+vwqElmu20RBKtITn0djjhhOXFhhdZt37OUxCZtfxbd4Xek81WMDoLrksJb1c+xDBlqQ
+        O2zpEBEeUdHyggOI5BErOrHmidRezj108qthf07unAyWfLzOYkGC93FFT+hGB578kgKxdO
+        4hf+Sypig2PuOEWPOzFhczlXLlFCDTU=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-mbdaCeruPL6N1btFYYhGBg-1; Tue, 03 Aug 2021 13:29:54 -0400
+X-MC-Unique: mbdaCeruPL6N1btFYYhGBg-1
+Received: by mail-ej1-f71.google.com with SMTP id z20-20020a1709069454b0290595651dca8eso3901375ejx.23
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 10:29:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Pm6SXOly+uNnAByxJnoAewZoxTAQStsO1EpbLNKxcWA=;
-        b=M15ENp9+huha9X1JuPN5bZz3IRDokZWbgkSUZobvoIY15NwOvs8fG6rHPWmCO3jnjQ
-         lxFfNUHVa5V8qVmRKaaiTqI5OV4Xc6LDj3qpUbmrG24s5fxOAc/8z6tw4wPlf6utPlIE
-         TNPmP+wPOY1ISh1Wj8OuWo78vQN0qg9W8GOjRTqEX22AVepEmzt7Tk4SIEoDokCOOKSd
-         FuiQLHFqrZLo0WVQpUSJ9X0aep64RUH/uKyNgAA7SFDu86g4uCKb82lVG84/md1UkJWN
-         skRwDXMkg9Swuq9jSIuICTMro/fp94uuQ55nMPy4yAPmfVou9zYnuUnOL2LfrJSyW3TD
-         wCbA==
-X-Gm-Message-State: AOAM532OKzjh99RsYw7vQMP8DFmjKkE8UArrCIIk9GAsAA18bsST4iV7
-        YVLyJx/DFlXMzvISX/pzvF/hNg==
-X-Google-Smtp-Source: ABdhPJxbn/yOiPbJAb/r7lTVk1pSFtqRW0v2kpPoxNyyjUyTZIn2w8eH5FzN/HLuFp3pjn71dfQylQ==
-X-Received: by 2002:a17:90a:784e:: with SMTP id y14mr7567732pjl.185.1628011784627;
-        Tue, 03 Aug 2021 10:29:44 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:8875:fb28:686e:1c31])
-        by smtp.gmail.com with ESMTPSA id 98sm14736030pjo.26.2021.08.03.10.29.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 10:29:44 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 10:29:43 -0700
-From:   Prashant Malani <pmalani@chromium.org>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Use existing feature
- check
-Message-ID: <YQl9B2FKb6rKHq3Z@google.com>
-References: <20210802184711.3872372-1-pmalani@chromium.org>
- <20210802184711.3872372-2-pmalani@chromium.org>
- <81610a2b-aa3f-f8d7-5214-e59a7ce839d6@collabora.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OCLO4ffT3xKaeyV7StdkUgO4drjWz8wacnMi8O6+t5Q=;
+        b=oCSPDyYo0kGSwSHXHUPRtijHhooZh29ekCke7dOMCgB0g3pS68B8VH633tbhrImpbw
+         BpyXEDbIeCqHJci6yvlwmE1QaLYfWT7sdoB8+exnrTq6AGkQSnrihKunXDmfP+e/HruC
+         HtbwKMjRrutbXe+sfb9IHWM9Og3rssJx+avqEaJQdYy4vm0QvukVRWKt6VZZNUzxblNO
+         4KaHO4/qyprxmHsL9gLw6lFSIDGhmahzFMSnTh9jrtlW/i7Lo1uzx9fYt1/DR/KeZoVo
+         ML1EOYfPJcUfA06nngP0FEPJchV1yn8qQfKNS7CGvaOur1hLOJCIkSxl4W5N98xLK8vj
+         raEw==
+X-Gm-Message-State: AOAM531xlzMNPRTkkZXvueZkkhWh9hSjCcfgBut0l+gEggZa/VbpApNs
+        2gwWUehgDF2l96HEufAmwF+MuMBMWtMpE0QfJo3mM2YHshzRHwZ2skgk+Qdvn1Ix1UdE4C+JwkK
+        J1/YgdS2H9qv775NwanmlKjLw
+X-Received: by 2002:a05:6402:1778:: with SMTP id da24mr27121469edb.385.1628011793446;
+        Tue, 03 Aug 2021 10:29:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw0R6hesP83Fxr+XTgMHjkOtDODfKTsEC0ZQ3Nem0yg6qA88Mv8wEGhTCp99MK1SQ2eXXHflw==
+X-Received: by 2002:a05:6402:1778:: with SMTP id da24mr27121436edb.385.1628011793215;
+        Tue, 03 Aug 2021 10:29:53 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id j22sm6546748ejt.11.2021.08.03.10.29.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 10:29:52 -0700 (PDT)
+Subject: Re: [PATCH v3 01/12] Revert "KVM: x86/mmu: Allow zap gfn range to
+ operate under the mmu read lock"
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20210802183329.2309921-1-mlevitsk@redhat.com>
+ <20210802183329.2309921-2-mlevitsk@redhat.com>
+ <14a0d715-d059-3a85-a803-63d9b0fb790f@redhat.com>
+ <YQlch2fVEfDnz8aX@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <15a05059-beae-904b-645e-17faf760c261@redhat.com>
+Date:   Tue, 3 Aug 2021 19:29:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <81610a2b-aa3f-f8d7-5214-e59a7ce839d6@collabora.com>
+In-Reply-To: <YQlch2fVEfDnz8aX@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Enric,
+On 03/08/21 17:11, Sean Christopherson wrote:
+>> On top of this, I think the CD case (kvm_post_set_cr0) can be changed to use
+>> kvm_mmu_zap_all_fast.
+> No, because fast zap requires kvm->slots_lock be held.
 
-Thanks for reviewing the patch.
+Yeah, that much I knew. :)  The issue is the usual ordering between 
+slots_lock and SRCU.
 
-On Tue, Aug 03, 2021 at 12:09:47PM +0200, Enric Balletbo i Serra wrote:
-> Hi Prashant,
-> 
-> Thank you for your patch.
-> 
-> On 2/8/21 20:47, Prashant Malani wrote:
-> > Replace the cros_typec_feature_supported() function with the
-> > pre-existing cros_ec_check_features() function which does the same
-> > thing.
-> > 
-> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> > ---
-> >  drivers/platform/chrome/cros_ec_typec.c | 33 +++++++++----------------
-> >  1 file changed, 11 insertions(+), 22 deletions(-)
-> > 
-> > diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> > index 27c068c4c38d..f96af8aa31b5 100644
-> > --- a/drivers/platform/chrome/cros_ec_typec.c
-> > +++ b/drivers/platform/chrome/cros_ec_typec.c
-> > @@ -1054,24 +1054,6 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
-> >  	return 0;
-> >  }
-> >  
-> > -/* Check the EC feature flags to see if TYPEC_* features are supported. */
-> > -static int cros_typec_feature_supported(struct cros_typec_data *typec, enum ec_feature_code feature)
-> > -{
-> > -	struct ec_response_get_features resp = {};
-> > -	int ret;
-> > -
-> > -	ret = cros_typec_ec_command(typec, 0, EC_CMD_GET_FEATURES, NULL, 0,
-> > -				    &resp, sizeof(resp));
-> > -	if (ret < 0) {
-> > -		dev_warn(typec->dev,
-> > -			 "Failed to get features, assuming typec feature=%d unsupported.\n",
-> > -			 feature);
-> > -		return 0;
-> > -	}
-> > -
-> > -	return resp.flags[feature / 32] & EC_FEATURE_MASK_1(feature);
-> > -}
-> > -
-> >  static void cros_typec_port_work(struct work_struct *work)
-> >  {
-> >  	struct cros_typec_data *typec = container_of(work, struct cros_typec_data, port_work);
-> > @@ -1113,6 +1095,7 @@ MODULE_DEVICE_TABLE(of, cros_typec_of_match);
-> >  
-> >  static int cros_typec_probe(struct platform_device *pdev)
-> >  {
-> > +	struct cros_ec_dev *ec_dev = NULL;
-> >  	struct device *dev = &pdev->dev;
-> >  	struct cros_typec_data *typec;
-> >  	struct ec_response_usb_pd_ports resp;
-> > @@ -1132,10 +1115,16 @@ static int cros_typec_probe(struct platform_device *pdev)
-> >  		return ret;
-> >  	}
-> >  
-> > -	typec->typec_cmd_supported = !!cros_typec_feature_supported(typec,
-> > -					EC_FEATURE_TYPEC_CMD);
-> > -	typec->needs_mux_ack = !!cros_typec_feature_supported(typec,
-> > -					EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK);
-> > +	if (typec->ec->ec)
-> 
-> Is this check really needed. Can typec->ec->ec be NULL at this point?
+Paolo
 
-Looking at it closely, it looks like it can't be NULL
-(cros_ec_register() fails if the platform device registration fails).
+   That could be relaxed by
+> reverting ca333add6933 ("KVM: x86/mmu: Explicitly track only a single invalid mmu
+> generation") and converting mmu_valid_gen to a u64 (to prevent wrap on 32-bit KVM).
+> IMO the extra memory cost, even though it's meager savings when using TDP without
+> nested, isn't worth relaxing the rules for fast zap.  Non-coherent DMA isn't very
+> common these days, and toggling CR0.CD is a rare guest operation (it'd probably
+> never happen if the darn architcture didn't set it on RESET).
+> 
 
-> 
-> > +		ec_dev = dev_get_drvdata(&typec->ec->ec->dev);
-> > +
-> > +	if (ec_dev) {
-> 
-> and this?
-
-I haven't been able to prove this solely by looking at the code, hence
-wanted to be defensive here. That said, in the ARM and x86 platforms I
-tested this change on, it wasn't NULL.
-
-> 
-> > +		typec->typec_cmd_supported = !!cros_ec_check_features(ec_dev, EC_FEATURE_TYPEC_CMD);
-> > +		typec->needs_mux_ack = !!cros_ec_check_features(ec_dev,
-> > +							EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK);
-> > +	} else {
-> 
-> and this?
-> 
-> > +		dev_warn(dev, "Invalid cros_ec_dev pointer; feature flags not checked.\n");
-> 
-> Can't just be
-> 
-> 		typec->typec_cmd_supported = !!cros_ec_check_features(ec_dev,
-> EC_FEATURE_TYPEC_CMD);
-> 		typec->needs_mux_ack = !!cros_ec_check_features(ec_dev,
-> EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK);
-
-Sure; I'll push another version with the NULL checks dropped.
-
-Thanks,
-
--Prashant
