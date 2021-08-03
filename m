@@ -2,299 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35F43DEF61
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7283DEF6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236398AbhHCNxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236415AbhHCNxB (ORCPT
+        id S236311AbhHCN4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:56:46 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:25600 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236045AbhHCN4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:53:01 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B982CC06179F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:52:49 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id q6so28185208oiw.7
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 06:52:49 -0700 (PDT)
+        Tue, 3 Aug 2021 09:56:44 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 173DGioQ016340;
+        Tue, 3 Aug 2021 13:53:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=mc0rv1449u54t1SBf7CRIqWRLBpqKys823s528t4E1Y=;
+ b=NUrJH7AbCQwDs/M2Y1wq4ty6RtXD+1bU4kBxFpRR0uMSuvWbHuCeRbMSLj5sGunB50R4
+ ehVDVNK5lR1D+Yb+AJMyvyDrc82AwZKvkxMYRg+0tCAsM7S6mwpyoJbID2YxPXH3bt6d
+ K7L1iQtqjuOD+ZSVLBE6g0+JW5D+lvT0+EFPF/xyuS9O6QvKsqKNodqtP7pQ86rzEQv2
+ sOWj3JGWyOThisRJgZtBs+uPgNkNhiPte0EwcLegfMckoA/PS7vWQKnYeRJ+ZKC9DGNb
+ YLHXX8BgTrSWnkET+3Q0cwj0sI9jDlCvr/NU8AeHqhtDRA+PikrCfjL7sbuv4Zlvy0YZ Ow== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=mc0rv1449u54t1SBf7CRIqWRLBpqKys823s528t4E1Y=;
+ b=OzK/ZB653cf0W9Nan1w7lLxrc5WYwWN+DbhOUitE4eHK9BeaVfngJ/HPv1bzuZi+vA+J
+ DzwhuK1cIjGy1Rk8zQOce4Snlq/w/pWyxXPbfb5MoOaGV0yuSjZKNruMO2IJf8LD25dQ
+ zVLfQ9TPP7crC13N8tr3bkLNS+hGa+x/NYPXoKFGddc6ctahXI7b3P/MRFa2kJhEXktH
+ d1l9VC6zuEwV3rwcwfCu6wEC1/CmA4GONljLdjEKgPF0K4H+NNuPZwXfjg3wm9iL3VRj
+ 4+eii8dKWYGMA8RofY/rj9xnOBZ2k63+itemt0OurZk9oh5Qzata8d5kYOXNOZ+pcbWR gg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a6fxhb65d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Aug 2021 13:53:23 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 173DpJmD038355;
+        Tue, 3 Aug 2021 13:53:22 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
+        by userp3020.oracle.com with ESMTP id 3a5g9v4ayq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Aug 2021 13:53:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XB1/QlHIPFvtLXvRffdRBmlKD+wEPXxdLDwTRLoUugVhXQKmbGvQSkGjYvjs34GDtDmCBWc3BVUIe+ejgSGubVaBd1O9Ku3f6j/9pkc+U49ylOP70zf4RYefVkgME/5B9agl5Uh3IUKUM0t+5dO4n1kUp0277Gkb/gY+FEwBNNZKOzZdQPp1VoRg1ZJCe3GqW59LBP9wvyP1BlIJG9rsLQqgTsE4aA5NQRRc+Bj5UrPDwY2fpu9oPwj+mPpOwQZNQ8D3lc7Hxbpt0msIqTDCl+7byHooBYrcyPcsm8JR0eMR9UCKmpzaXfsyl2UTLmSQynDIte6uqNIpkFgb3/LcGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mc0rv1449u54t1SBf7CRIqWRLBpqKys823s528t4E1Y=;
+ b=gFlx3qfw4scBrJYT3A9cyyKpyR3WdoirxH5JQ75rMK/Zs7m5+yoiuBnKfty579nGabuUPMZXjmBTYDaWrrBddJOShp7W3h4jVvcHQ/9we727Kv063KVAk5FaYlPlM8PUfV/tSfT8X8AGP6VqvnL2mabkhlpKtlVw0hI+qRwQJKNbi26YOQ1IAp+HS/nQ9uACtkF717hBsrfBJEXsXGmg8aiN8hk/sn6E7+XPoRaBYtvFzJfSqjtPcsWz21VCFvvgy/UYsf45OyJNYhzZsq7cfg+1qi9G5v5jfg+RgyIS0WNBDSof3LPxp0L1QFPIiFaP9OJWDYdpDL2YtoS2mcvpfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GpwzFW0EAiPKRSLYQnqnvltQMO0ehvzjEwDrtXLZCWc=;
-        b=VB1JAGRi+DbGpoH/wCIkSpiu9P6Lc/sE6BTjOgxlTzlWHKLjDmy2sbmabAkCltTsE8
-         E8Us1SNO/Fw+SMT2Yfe1D4xZVfGH78o7vWfCfQIxKu2EMxuyb1tbL5FJjkdZFpw19fBY
-         twQnQ9L/gtEOKqhIDOC70/dHji4snM7t+nI1qV1MhXQp1MNh2NbXa13bedrLMTh8CSLm
-         fAWHZo0y27SoxCssPXtzCV8PJEJuQ3L6li+qewqBxIHEmtB9RS6ZSyKExQse0x4G++F+
-         Uql3AFLdIelkXjag7857Rbj9JiDe9fsSUWECdf8v4Ie7mCbU4txDTp7qyOBORCzF5/n8
-         8ngQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=GpwzFW0EAiPKRSLYQnqnvltQMO0ehvzjEwDrtXLZCWc=;
-        b=FqD9z3k40G3GQaMg3I1ET8FC5tV/KAYKLoKbtI6cAlnxxGOt2DK/SDD17ngcsAqQYa
-         97J/xynL8KhPrqy+/WnpdQcse5mJzIcIkgHnaC3/lgZn910sWuGxG2N56jkgmO5m0dtB
-         TkUXoxa/XKMjzg9hZdH7rupdUS/YXn2EM1Om46XcNLPRk+DsIOfU72GNyjp+cdVvlv5x
-         3fUbA4+I+JoVfGG2ByXfa3lXaIXfO6D8ibG0fm+0MQdfTIDo4s8tle0JwRzAetiNFL4A
-         qzRpXFyBJxpQ4+ntIRMQecwwjhu5N+W9u96SV+MB7CVvV02G+Qq1Lx4/fyMK/J0h2Wra
-         jksA==
-X-Gm-Message-State: AOAM530g9lQUgLgsuQv1qLanbDsXE1a53aQ3biEfCnJOpx7IU8r12yxr
-        6IWUbUchM/EW5E4PAgglGjs=
-X-Google-Smtp-Source: ABdhPJxoVlpyymM/aafibLMfDv3snZlK91KlMyJhaguWNpAI8GvlItD+2qAovCN6q0eFW7cX9X9oAA==
-X-Received: by 2002:aca:44d4:: with SMTP id r203mr1847384oia.126.1627998769144;
-        Tue, 03 Aug 2021 06:52:49 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-1010.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-1010.res6.spectrum.com. [2603:8090:2005:39b3::1010])
-        by smtp.gmail.com with ESMTPSA id y26sm2504106otq.23.2021.08.03.06.52.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 06:52:48 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-To:     gregkh@linuxfoundation.org
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: [PATCH 10/10] staging: r8188eu: Remove some bit manipulation macros
-Date:   Tue,  3 Aug 2021 08:52:23 -0500
-Message-Id: <20210803135223.12543-11-Larry.Finger@lwfinger.net>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210803135223.12543-1-Larry.Finger@lwfinger.net>
-References: <20210803135223.12543-1-Larry.Finger@lwfinger.net>
-MIME-Version: 1.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mc0rv1449u54t1SBf7CRIqWRLBpqKys823s528t4E1Y=;
+ b=uuyJ+W6l/so1KWW0z1pKj8qJ9QtF4qnqyUGyVCFqWPovu2Dktk3sfFWoY1jOaefvP1JA9KTHdGcNBzzPZREBWbOEIsH7K9NG0hZyV5VN8JM02NQB8hJixuc35iDtgQgZei+YYBVfbGfBFRKebgGJ+1kqlehp+l8H/hzAgiJjzkY=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by BLAPR10MB4882.namprd10.prod.outlook.com (2603:10b6:208:30d::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15; Tue, 3 Aug
+ 2021 13:53:19 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::f10d:29d2:cb38:ed0]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::f10d:29d2:cb38:ed0%8]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 13:53:19 +0000
+Subject: Re: [PATCH v2 5/6] PCI: Adapt all code locations to not use struct
+ pci_dev::driver directly
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     kernel@pengutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Russell Currey <ruscur@russell.cc>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Michael Buesch <m@bues.ch>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org
+References: <20210803100150.1543597-1-u.kleine-koenig@pengutronix.de>
+ <20210803100150.1543597-6-u.kleine-koenig@pengutronix.de>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <d829c037-fab1-c886-7d33-f04f895f3aee@oracle.com>
+Date:   Tue, 3 Aug 2021 09:53:06 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+In-Reply-To: <20210803100150.1543597-6-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: SN6PR04CA0098.namprd04.prod.outlook.com
+ (2603:10b6:805:f2::39) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.74.97.38] (160.34.89.38) by SN6PR04CA0098.namprd04.prod.outlook.com (2603:10b6:805:f2::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Tue, 3 Aug 2021 13:53:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 37d7087d-83c1-4256-b078-08d956860c71
+X-MS-TrafficTypeDiagnostic: BLAPR10MB4882:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BLAPR10MB488218AAF5D031ADC6FC687C8AF09@BLAPR10MB4882.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:220;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pJbbt+5/9kOx88hw2B+e/dR3hqeLGfOWg0qKPQ1rLn2G8odXH6Og3cq0j23ZuY3529lkNoglnlfdpingHqyErdlmrq4TGMpp4GbH6yYjpeU+V0jiMRCFm9l1SEherH1rnrvn+YI2iqbVVthwC/i1GKX9556Y0Ib1B2g5dAaV1q45vZpknprEzsXIvLg7xnwht3hk90mGbl/bqlf1+Wlj2sE8u6A6DOHArQVnrE/HTOWzYK927VEDDsZ/rKquJV3rh8qThc5juiqx7D+ELR2QoUDFNXPi4XBksWmQWgg4uRX/815ljP2+EW/trsxPa+ZBNEZO1WzLq/sDU3tjjauy2rn3KHwcAaVzXU9bcvF32E/9l9iWzjeZusvn9Kp+zgwic7qnVREyhmaSTZGr1wD/wxSfn2UPq64rnATU69K5Ss8Ys54zYUSCYLny+yNYv1h9xgKdezUfWgH4KNNBlG/Tljz/E+x/YaDMWi2Ge9hogn8pCkyNHnqRc4kR52JrRNPBkeDopYlxkl8gfu6JB/yvK1yST5CKq6n/gd3oYFA4mCOLaMY3odvtvMadrqBW5t8LosdZWn1d4EhN4pOMC9NJqY7WtnF6opRm0FB1l7fS6B3K+p9jrgFJJW2r2Bbiou6IBOYL8aSFThSomzWdJFYL/UfCDvcsKxlUDDG3/UaV1+/k/3P0bL+7VOSfsakA+SKJWU4kIBtZbEV6TYqVAr6iIOuilu+8RpA7xhZoOdYxTxY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(39860400002)(376002)(396003)(366004)(31696002)(4326008)(6486002)(86362001)(26005)(478600001)(53546011)(8676002)(8936002)(5660300002)(36756003)(38100700002)(6666004)(83380400001)(7366002)(44832011)(7416002)(7406005)(316002)(31686004)(66946007)(66556008)(66476007)(16576012)(2906002)(110136005)(186003)(54906003)(2616005)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dFpLZVpHOGY1aE93bEF5VzlVQlJDeW9kc3diWUhDNERuNTlpdTNmRWhUdFQ1?=
+ =?utf-8?B?MXVOY2lrZUlEMDdzWEVHb1dzaTdtd1lIUTludUVqaGZ6eFREU1JkNlAxRmZL?=
+ =?utf-8?B?Qi82T09SV25YeHp5dDVSU2FiMHE5bU9KRVB3QXZhYlJYeWhFcGRjakZXWElX?=
+ =?utf-8?B?MldObnBJdjFtUFRkbUhQREFidEl1dmp4bGpmR0QxZFVwbmZMdUgwK0t4ZVpn?=
+ =?utf-8?B?ZEdQUzFJWE9oZENOY3BzMi8rSVRxdzF4WE8yVEdMbkpuMEJ1cUphRldvU0x3?=
+ =?utf-8?B?eWU0NzN4ODRVMlovQTFxaWQxYnNuZFBGVGRMQ3hnWkFSWXoxcHp4OVZXeGda?=
+ =?utf-8?B?VEpUYnJ6emlNN0xPazlKN01FTEZlQ2w4c09CeVpFSkRLbEdHWENtbHl1NDRx?=
+ =?utf-8?B?dVNJeUNSdVV6ZlpiNjRnd01uNkxLNzF0VlNGMmJ5SDVlbG9rR0ozdytnczRT?=
+ =?utf-8?B?MnFiZllvN1BVQjNvQVZWTHAvMTF6ZGRvYVUrdG51dHh5bmhycjE4eE1DTE1H?=
+ =?utf-8?B?RFh1US9waVdpOFcwR2Q5WllNb3g4aXNNVkxKVU9OU1c4cm9Qb0pFT2MwS3l5?=
+ =?utf-8?B?TU5mMzAyQTFSUzRyaGdOMHhJZmIrMmtqdFo5VFh4akx3Y1AyREZsMnBwZ1dl?=
+ =?utf-8?B?V1JQY0VJanRyc2hyc1k3WUNuYUxuTWw4Um1hdGh5cFZzZjdkNVhaZTMyUThj?=
+ =?utf-8?B?L2xVY2pqSEFVbGRvazdFM2JmNzBFNlpNRnpERFk4cW5ydnJwVk1XZ1V3MnBB?=
+ =?utf-8?B?NGttdE5NNEVMdzdza1hBRFM1eFNiZHVIN01CSEdITjNNWlZmdVZIQm1XRVdN?=
+ =?utf-8?B?MWNxNkRpZ2NYRk94TzRrWHpNckMrZ1paZXNPd3pwL3FRZEpMVGl1MUZISzdH?=
+ =?utf-8?B?dkRob1R2Kzl5cnlRcUMyWm5tY29aVS80cFo4Zjgxc0F2UUJUYTFudWZXVUhY?=
+ =?utf-8?B?L1RjZE9hbXk4UTFKMXZHUHJHczl3eTNkZlc5NVJOZ0dsU0dNTmJ3dTlxMlZJ?=
+ =?utf-8?B?VjJFV0M2Zk8vMkFnRURSeHlLck5RNXhNcWkzR25YczF5ank3MEUwUTF1NGpl?=
+ =?utf-8?B?d0lyQUNqQWhjNk03cVNYWE8rbE9uNFNCQkZlMjdOWVpadU1jSVQwT2ozWUhX?=
+ =?utf-8?B?Q1YrNGtUTGx1Zkw3NUljRWVyQitWSmhSSUs5TmVJS3B1MEdQMXh2TkxsTllF?=
+ =?utf-8?B?TTVnditQQ29KSG8raHppYVFUQXpuWml0VzY4eStvSHk2MlJyYkh4UjI2N0xF?=
+ =?utf-8?B?V09SMlVGNGVaVGxmOE41YU1Za2dmazZ3S0grbWlEb3dZZ3pUZWdJMExrWTM0?=
+ =?utf-8?B?SGhNd0JsZVp0UDNKVXdzekZ5Y3dKbGR2Ymd4RUQ5bVpZVWlCNXBrdlZERWNG?=
+ =?utf-8?B?dm5NR2tyWEhCcE5aOERQTGxKRmR2MzBQNGVKS1VuakpnMGgvT09BT3RqazF1?=
+ =?utf-8?B?ZEdtQTQ2em1CNzc4UE43U25DcWFvS0lmZ1BvOVp4ejdReFQ1NHRnQVk5Qkgr?=
+ =?utf-8?B?V21FRVB3MEpnd3JXTmJ5Q0JpYVZ1RTVlRnZJTEhHaVNWZmFtSlE1OVN1Nk5H?=
+ =?utf-8?B?UWcyaE9meTJwbFFGa3NkbWpXOGpyZitsNS94TXRLUHhVMnc0Wi9ab0tSTnJ3?=
+ =?utf-8?B?ZDFBZ0NXVEdsYitGd3ZTekE4TGFBSmJnVkJ3Qlpra2ZGL081emQ5cEgySUJH?=
+ =?utf-8?B?SzNXbVp6SUVZSEs0STkzcXVwYU1KcEo1Qk80V0hoeDNYYjk4cXBMM21VbnJs?=
+ =?utf-8?Q?u++K/dGtrLnXLIJa3V53YiAFG4Hu978PvfzVbNj?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37d7087d-83c1-4256-b078-08d956860c71
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 13:53:18.8559
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zkce6/FDLIFABseQgPNxfSWxiaCbO+S72NwtAQH2zQBQjgiRdAeeoZ9RhSpcUqhG5J9RN9lHXD3jORKQ+IpJ7ADMDZXmE5+q2SRmYWa8pc0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4882
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10064 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
+ spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108030092
+X-Proofpoint-GUID: 1zfowUBAnsX5uRsxf3xD4UCQWk3eimm2
+X-Proofpoint-ORIG-GUID: 1zfowUBAnsX5uRsxf3xD4UCQWk3eimm2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver defines a set of macros that get or set a bitfield in the
-RX and TX descriptors. Most of these have been replaced by the appropriate
-use of the system macros BIT() or GENMASK().
 
-While reworking these routines, I also fixed camel case variables and
-missing spaces. Some comments were also converted to the
-drivers/net/wireless preferred format.
+On 8/3/21 6:01 AM, Uwe Kleine-König wrote:
+> This prepares removing the driver member of struct pci_dev which holds the
+> same information than struct pci_dev::dev->driver.
+>
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+>  arch/powerpc/include/asm/ppc-pci.h            |  3 +-
+>  arch/powerpc/kernel/eeh_driver.c              | 12 ++++---
+>  arch/x86/events/intel/uncore.c                |  2 +-
+>  arch/x86/kernel/probe_roms.c                  |  2 +-
+>  drivers/bcma/host_pci.c                       |  6 ++--
+>  drivers/crypto/hisilicon/qm.c                 |  2 +-
+>  drivers/crypto/qat/qat_common/adf_aer.c       |  2 +-
+>  drivers/message/fusion/mptbase.c              |  4 +--
+>  drivers/misc/cxl/guest.c                      | 21 +++++------
+>  drivers/misc/cxl/pci.c                        | 25 +++++++------
+>  .../ethernet/hisilicon/hns3/hns3_ethtool.c    |  2 +-
+>  .../ethernet/marvell/prestera/prestera_pci.c  |  2 +-
+>  drivers/net/ethernet/mellanox/mlxsw/pci.c     |  2 +-
+>  .../ethernet/netronome/nfp/nfp_net_ethtool.c  |  2 +-
+>  drivers/pci/iov.c                             | 23 +++++++-----
+>  drivers/pci/pci-driver.c                      | 28 ++++++++-------
+>  drivers/pci/pci.c                             | 10 +++---
+>  drivers/pci/pcie/err.c                        | 35 ++++++++++---------
+>  drivers/pci/xen-pcifront.c                    |  3 +-
+>  drivers/ssb/pcihost_wrapper.c                 |  7 ++--
+>  drivers/usb/host/xhci-pci.c                   |  3 +-
+>  21 files changed, 112 insertions(+), 84 deletions(-)
 
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
----
- .../r8188eu/hal/Hal8188ERateAdaptive.c        |  2 +-
- .../r8188eu/include/Hal8188ERateAdaptive.h    | 59 ++++++++-----------
- drivers/staging/r8188eu/include/basic_types.h | 45 --------------
- drivers/staging/r8188eu/include/odm_types.h   | 12 ++--
- .../staging/r8188eu/include/rtl8188e_xmit.h   | 26 ++++----
- 5 files changed, 42 insertions(+), 102 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c b/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c
-index d41bfbe8ec9c..e00b38381762 100644
---- a/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c
-+++ b/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c
-@@ -626,7 +626,7 @@ void ODM_RA_TxRPT2Handle_8188E(struct odm_dm_struct *dm_odm, u8 *TxRPT_Buf, u16
- 		if (valid) {
- 			pRAInfo->RTY[0] = (u16)GET_TX_REPORT_TYPE1_RERTY_0(pBuffer);
- 			pRAInfo->RTY[1] = (u16)GET_TX_REPORT_TYPE1_RERTY_1(pBuffer);
--			pRAInfo->RTY[2] = (u16)GET_TX_REPORT_TYPE1_RERTY_2(pBuffer);
-+			pRAInfo->RTY[2] = (u16)GET_TX_REPORT_TYPE1_RERTY_2((u8 *)pBuffer);
- 			pRAInfo->RTY[3] = (u16)GET_TX_REPORT_TYPE1_RERTY_3(pBuffer);
- 			pRAInfo->RTY[4] = (u16)GET_TX_REPORT_TYPE1_RERTY_4(pBuffer);
- 			pRAInfo->DROP =   (u16)GET_TX_REPORT_TYPE1_DROP_0(pBuffer);
-diff --git a/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h b/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h
-index ce4c96d4b84a..d5ced507a648 100644
---- a/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h
-+++ b/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h
-@@ -3,19 +3,11 @@
- 
- #ifndef __INC_RA_H
- #define __INC_RA_H
--/*++
-+/* Module Name: RateAdaptive.h
-+ * Abstract: Prototype of RA and related data structure.
-+ */
- 
--Module Name:
--	RateAdaptive.h
--
--Abstract:
--	Prototype of RA and related data structure.
--
--Major Change History:
--	When       Who               What
--	---------- ---------------   -------------------------------
--	2011-08-12 Page            Create.
----*/
-+#include <linux/bitfield.h>
- 
- /*  Rate adaptive define */
- #define	PERENTRY	23
-@@ -23,31 +15,26 @@ Major Change History:
- #define	RATESIZE	28
- #define	TX_RPT2_ITEM_SIZE	8
- 
--/*  */
- /*  TX report 2 format in Rx desc */
--/*  */
--#define GET_TX_RPT2_DESC_PKT_LEN_88E(__pRxStatusDesc)		\
--	LE_BITS_TO_4BYTE(__pRxStatusDesc, 0, 9)
--#define GET_TX_RPT2_DESC_MACID_VALID_1_88E(__pRxStatusDesc)	\
--	LE_BITS_TO_4BYTE(__pRxStatusDesc+16, 0, 32)
--#define GET_TX_RPT2_DESC_MACID_VALID_2_88E(__pRxStatusDesc)	\
--	LE_BITS_TO_4BYTE(__pRxStatusDesc+20, 0, 32)
--
--#define GET_TX_REPORT_TYPE1_RERTY_0(__pAddr)			\
--	LE_BITS_TO_4BYTE(__pAddr, 0, 16)
--#define GET_TX_REPORT_TYPE1_RERTY_1(__pAddr)			\
--	LE_BITS_TO_1BYTE(__pAddr+2, 0, 8)
--#define GET_TX_REPORT_TYPE1_RERTY_2(__pAddr)			\
--	LE_BITS_TO_1BYTE(__pAddr+3, 0, 8)
--#define GET_TX_REPORT_TYPE1_RERTY_3(__pAddr)			\
--	LE_BITS_TO_1BYTE(__pAddr+4, 0, 8)
--#define GET_TX_REPORT_TYPE1_RERTY_4(__pAddr)			\
--	LE_BITS_TO_1BYTE(__pAddr+4+1, 0, 8)
--#define GET_TX_REPORT_TYPE1_DROP_0(__pAddr)			\
--	LE_BITS_TO_1BYTE(__pAddr+4+2, 0, 8)
--#define GET_TX_REPORT_TYPE1_DROP_1(__pAddr)			\
--	LE_BITS_TO_1BYTE(__pAddr+4+3, 0, 8)
--
-+#define GET_TX_RPT2_DESC_PKT_LEN_88E(__rxstatusdesc)		\
-+	le32_get_bits(*(__le32 *)__rxstatusdesc, GENMASK(8, 0))
-+#define GET_TX_RPT2_DESC_MACID_VALID_1_88E(__rxstatusdesc)	\
-+	le32_to_cpu((*(__le32 *)(__rxstatusdesc + 16))
-+#define GET_TX_RPT2_DESC_MACID_VALID_2_88E(__rxstatusdesc)	\
-+	le32_to_cpu((*(__le32 *)(__rxstatusdesc + 20))
-+
-+#define GET_TX_REPORT_TYPE1_RERTY_0(__paddr)			\
-+	le16_get_bits(*(__le16 *)__paddr, GENMASK(15, 0))
-+#define GET_TX_REPORT_TYPE1_RERTY_1(__paddr)			\
-+	LE_BITS_TO_1BYTE(__paddr + 2, 0, 8)
-+#define GET_TX_REPORT_TYPE1_RERTY_2(__paddr)			\
-+	LE_BITS_TO_1BYTE(__paddr + 3, 0, 8)
-+#define GET_TX_REPORT_TYPE1_RERTY_3(__paddr)			\
-+	LE_BITS_TO_1BYTE(__paddr + 4, 0, 8)
-+#define GET_TX_REPORT_TYPE1_RERTY_4(__paddr)			\
-+	LE_BITS_TO_1BYTE(__paddr + 5, 0, 8)
-+#define GET_TX_REPORT_TYPE1_DROP_0(__paddr)			\
-+	LE_BITS_TO_1BYTE(__paddr + 6, 0, 8)
- /*  End rate adaptive define */
- 
- void ODM_RASupport_Init(struct odm_dm_struct *dm_odm);
-diff --git a/drivers/staging/r8188eu/include/basic_types.h b/drivers/staging/r8188eu/include/basic_types.h
-index 9c34e2dad6bb..d82b2171d584 100644
---- a/drivers/staging/r8188eu/include/basic_types.h
-+++ b/drivers/staging/r8188eu/include/basic_types.h
-@@ -117,51 +117,6 @@ value to host byte ordering.*/
- 		BIT_LEN_MASK_8(__bitlen) \
- 	)
- 
--/* Description:
-- * Mask subfield (continuous bits in little-endian) of 4-byte value
-- * and return the result in 4-byte value in host byte ordering.
-- */
--#define LE_BITS_CLEARED_TO_4BYTE(__pstart, __bitoffset, __bitlen) \
--	( \
--		LE_P4BYTE_TO_HOST_4BYTE(__pstart)  & \
--		(~BIT_OFFSET_LEN_MASK_32(__bitoffset, __bitlen)) \
--	)
--#define LE_BITS_CLEARED_TO_2BYTE(__pstart, __bitoffset, __bitlen) \
--	( \
--		LE_P2BYTE_TO_HOST_2BYTE(__pstart) & \
--		(~BIT_OFFSET_LEN_MASK_16(__bitoffset, __bitlen)) \
--	)
--#define LE_BITS_CLEARED_TO_1BYTE(__pstart, __bitoffset, __bitlen) \
--	( \
--		LE_P1BYTE_TO_HOST_1BYTE(__pstart) & \
--		(~BIT_OFFSET_LEN_MASK_8(__bitoffset, __bitlen)) \
--	)
--
--/* Description:
-- * Set subfield of little-endian 4-byte value to specified value.
-- */
--#define SET_BITS_TO_LE_4BYTE(__pstart, __bitoffset, __bitlen, __val) \
--		*((u32 *)(__pstart)) =				\
--		(							\
--		LE_BITS_CLEARED_TO_4BYTE(__pstart, __bitoffset, __bitlen) | \
--		((((u32)__val) & BIT_LEN_MASK_32(__bitlen)) << (__bitoffset)) \
--		)
--
--#define SET_BITS_TO_LE_2BYTE(__pstart, __bitoffset, __bitlen, __val) \
--		*((u16 *)(__pstart)) =				\
--		(						\
--		LE_BITS_CLEARED_TO_2BYTE(__pstart, __bitoffset, __bitlen) | \
--		((((u16)__val) & BIT_LEN_MASK_16(__bitlen)) << (__bitoffset)) \
--		);
--
--#define SET_BITS_TO_LE_1BYTE(__pstart, __bitoffset, __bitlen, __val) \
--		*((u8 *)(__pstart)) = EF1BYTE			\
--		(						\
--		LE_BITS_CLEARED_TO_1BYTE(__pstart, __bitoffset, __bitlen) | \
--		((((u8)__val) & BIT_LEN_MASK_8(__bitlen)) << (__bitoffset)) \
--		)
--
--/*  Get the N-bytes aligment offset from the current length */
- #define	N_BYTE_ALIGMENT(__value, __aligment) ((__aligment == 1) ? \
- 	(__value) : (((__value + __aligment - 1) / __aligment) * __aligment))
- 
-diff --git a/drivers/staging/r8188eu/include/odm_types.h b/drivers/staging/r8188eu/include/odm_types.h
-index e2e5aa8e8054..53a2fee55e35 100644
---- a/drivers/staging/r8188eu/include/odm_types.h
-+++ b/drivers/staging/r8188eu/include/odm_types.h
-@@ -29,12 +29,12 @@ enum RT_SPINLOCK_TYPE {
- 
- #define DEV_BUS_TYPE	RT_USB_INTERFACE
- 
--#define SET_TX_DESC_ANTSEL_A_88E(__pTxDesc, __Value)			\
--	SET_BITS_TO_LE_4BYTE(__pTxDesc+8, 24, 1, __Value)
--#define SET_TX_DESC_ANTSEL_B_88E(__pTxDesc, __Value)			\
--	SET_BITS_TO_LE_4BYTE(__pTxDesc+8, 25, 1, __Value)
--#define SET_TX_DESC_ANTSEL_C_88E(__pTxDesc, __Value)			\
--	SET_BITS_TO_LE_4BYTE(__pTxDesc+28, 29, 1, __Value)
-+#define SET_TX_DESC_ANTSEL_A_88E(__ptxdesc, __value)			\
-+	le32p_replace_bits((__le32 *)(__ptxdesc + 8), __value, BIT(24))
-+#define SET_TX_DESC_ANTSEL_B_88E(__ptxdesc, __value)			\
-+	le32p_replace_bits((__le32 *)(__ptxdesc + 8), __value, BIT(25))
-+#define SET_TX_DESC_ANTSEL_C_88E(__ptxdesc, __value)			\
-+	le32p_replace_bits((__le32 *)(__ptxdesc + 28), __value, BIT(29))
- 
- /* define useless flag to avoid compile warning */
- #define	USE_WORKITEM			0
-diff --git a/drivers/staging/r8188eu/include/rtl8188e_xmit.h b/drivers/staging/r8188eu/include/rtl8188e_xmit.h
-index e9b71de0d165..95fb1ca69d46 100644
---- a/drivers/staging/r8188eu/include/rtl8188e_xmit.h
-+++ b/drivers/staging/r8188eu/include/rtl8188e_xmit.h
-@@ -18,24 +18,22 @@
- #define QSLT_CMD						0x13
- 
- /* For 88e early mode */
--#define SET_EARLYMODE_PKTNUM(__pAddr, __Value)			\
--	SET_BITS_TO_LE_4BYTE(__pAddr, 0, 3, __Value)
-+#define SET_EARLYMODE_PKTNUM(__paddr, __value)			\
-+	le32p_replace_bits((__le32 *)__paddr, __value, GENMASK(2, 0))
- #define SET_EARLYMODE_LEN0(__pAddr, __Value)			\
--	SET_BITS_TO_LE_4BYTE(__pAddr, 4, 12, __Value)
--#define SET_EARLYMODE_LEN1(__pAddr, __Value)			\
--	SET_BITS_TO_LE_4BYTE(__pAddr, 16, 12, __Value)
--#define SET_EARLYMODE_LEN2_1(__pAddr, __Value)			\
--	SET_BITS_TO_LE_4BYTE(__pAddr, 28, 4, __Value)
--#define SET_EARLYMODE_LEN2_2(__pAddr, __Value)			\
--	SET_BITS_TO_LE_4BYTE(__pAddr+4, 0, 8, __Value)
-+	le32p_replace_bits((__le32 *)__paddr, __value, GENMASK(15, 4))
-+#define SET_EARLYMODE_LEN1(__paddr, __value)			\
-+	le32p_replace_bits((__le32 *)__paddr, __value, GENMASK(27, 16))
-+#define SET_EARLYMODE_LEN2_1(__pdr, __vValue)			\
-+	le32p_replace_bits((__le32 *)__paddr, __value, GENMASK(31, 28))
-+#define SET_EARLYMODE_LEN2_2(__paddr, __value)			\
-+	le32p_replace_bits((__le32 *)(__paddr + 4), __value, GENMASK(7, 0))
- #define SET_EARLYMODE_LEN3(__pAddr, __Value)			\
--	SET_BITS_TO_LE_4BYTE(__pAddr+4, 8, 12, __Value)
--#define SET_EARLYMODE_LEN4(__pAddr, __Value)			\
--	SET_BITS_TO_LE_4BYTE(__pAddr+4, 20, 12, __Value)
-+	le32p_replace_bits((__le32 *)(__paddr + 4), __value, GENMASK(19, 8))
-+#define SET_EARLYMODE_LEN4(__paAddr, __vValue)			\
-+	le32p_replace_bits((__le32 *)(__paddr + 4), __value, GENMASK(31, 20))
- 
--/*  */
- /* defined for TX DESC Operation */
--/*  */
- 
- #define MAX_TID (15)
- 
--- 
-2.32.0
+For Xen bits:
+
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+
 
