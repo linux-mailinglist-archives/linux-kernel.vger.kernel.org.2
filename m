@@ -2,326 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB15E3DE5AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 06:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7ABE3DE5B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 06:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbhHCErG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 00:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233764AbhHCEqn (ORCPT
+        id S233819AbhHCEt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 00:49:28 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:35815 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233740AbhHCEtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 00:46:43 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D322DC061796
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 21:46:31 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id u6-20020a170902bf46b029012c971d6226so8247334pls.21
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 21:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=5UjpISDzrwGZMuhZ3ho5okX6MWp1EpQ+2CzL/sQfoi8=;
-        b=KAelLFMnY3ptM3Vh51kl5Kr8w9a7XsV9tRFIdwinbxUio60eYEp5hINBI3by/dElW1
-         Q9e7uScEWVbgKie9JhELJW0UZzob3a4ZeaLEx2H3CNA9tWMPdi+UokLIG7M7LdGrvLeB
-         KY6d6zg/zb/TgOu6slVeR4P/21AtA1y5mUzlipkKjfYy+JuCrmtrVpy57WsnJc3UPQ76
-         CeYkHbXOPu7u/7ulAF9mepbe+xvXZC/UmaegcjtiFa4LM6KjpnTjm56vD/qH0+jVAZgM
-         yExJfe9SpCeCstE+VyjVPt4l2CnUqFdyhFqN8UPCkrSl7460UmwC02y2IOMpdW2V+qUy
-         cebw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=5UjpISDzrwGZMuhZ3ho5okX6MWp1EpQ+2CzL/sQfoi8=;
-        b=ImWr3qA5Ot1+6jl9UCM+i2NwxLlFWdwKxLnRudvigULmBZ3zHoxZY6HqNbrzmB27t3
-         XbmzjV4u5/VWr0q2OztpJLCpzU1rEaFijlNMJGTWYDvRnM3DPUcKpGdibcXibeLKqy4B
-         UI7bskv+dx1CGqO+WKczzKQu0NXVM/+yK7EPACKnRqW3ZN/r7Z1nvqtCaCojNo7qLflS
-         yO815AvZ+nu9dqY39e45r6AbVx9DT0YscphHoQ6/8GsIuLg5+ClNYreIinDoT/XDkFur
-         vteqJ0+s/ezoq4D9lw8od8SOi0tHFFOs6PPJdZb3TH7xmV1LylaylG6S5jEvEsqevnDm
-         Wbew==
-X-Gm-Message-State: AOAM530YdzoISJoZW1IYdOk8XWApQ5AQIcGIk6CtxFTZ9/zjYFduMI7n
-        VUL1Qd244rz9esVNMCQRlTlcwJC5+a7L
-X-Google-Smtp-Source: ABdhPJy6wPdqBkcDiUx8rIlq1qz8BE0dfJT1TMDKJF8oJTGoGFqpFh3fZMBXDya6ruyTJNb2jexEaMbuGool
-X-Received: from mihenry-linux-desktop.kir.corp.google.com ([2620:15c:29:204:4304:2e3e:d2f5:48c8])
- (user=mizhang job=sendgmr) by 2002:a05:6a00:a88:b029:31a:c2ef:d347 with SMTP
- id b8-20020a056a000a88b029031ac2efd347mr20773323pfl.20.1627965991322; Mon, 02
- Aug 2021 21:46:31 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Mon,  2 Aug 2021 21:46:07 -0700
-In-Reply-To: <20210803044607.599629-1-mizhang@google.com>
-Message-Id: <20210803044607.599629-4-mizhang@google.com>
+        Tue, 3 Aug 2021 00:49:25 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5CF67580ACA;
+        Tue,  3 Aug 2021 00:49:14 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Tue, 03 Aug 2021 00:49:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=Wl85h6bg4MSlv1M5FS0LFGeSsIE5nFs
+        rQ2n2j7b6l98=; b=F9La31nE4Ln4oZyhaSQ4UbuRlMQA6YW2qhPgizEx7m8YpQ/
+        BTkBuWgIEmkjeXwx4SV4ibq65KLuB0b1gp5oy35HsOs0NTC1+cHVF2Wxv22I8d7n
+        o7RnT79CY7+xetGJ9oMlRVUYuFbKqdrlCm5G4gUA3D9EmUW5sGWaY+3MFGk5LSoL
+        4XHxdgBuDxDOIHfZdHNKiisCLCx6QD+Hpsb6yIbtNzdc+xmEax383WVguCFcE03B
+        +XbKkM5UiyieA/++zcDd7W3kpLXLbeQgUOQ1culTo6507nWTT19sn+jp0gWJWiSB
+        Kv766FD6ADN11GyOyi6p2CqK0DSNkJKr1uzT0XQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Wl85h6
+        bg4MSlv1M5FS0LFGeSsIE5nFsrQ2n2j7b6l98=; b=DQhxKcAc9Vem3+lknEXU7z
+        oy9hga9H96N/PjcSb0VUoVQ+4GQkUQNEl3jvAe5PFfOERL3b6qJEhBTir3SEB1iO
+        adoTBSLn/FesNvDPOGjnmIlINH4wi1iq/xGVG2svcSttzyB5UBrekPmTHh72QQxA
+        CLvjLeTBkbnlSgTeJCKE/yK9vclcZ4J8epKvLJzeJPcpSOJNPxoCbJXyImx7juKE
+        c3GwIboIC90yCtCK55wbNzYvC+fDekJIV2Lb8LmCc3bu+3G090zOzMBXfj++H793
+        h/S4/8Jx787BrMrMH3n5ULmo+yy7Ux19yyJU4S65fSZs5h8VbdJLwgKLLb1xiKGQ
+        ==
+X-ME-Sender: <xms:yMoIYYNYTY8oezsS5chwfrmbr3hS7vK4rd2yhcWNk51uTmg7cffmbQ>
+    <xme:yMoIYe99LvyJ3PBQ8Z3hmwbwrIUoAXB6zyQhW08Q1woBYvoJZztvqfDiifoKq4t9Q
+    59oIeMqn5MNd-jgEg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieefgdejkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:yMoIYfSwpHZi0w7BQpbp74gOJF5chKPYx3fsmMLzwFVftonQSSzMWg>
+    <xmx:yMoIYQv87XjcqR7slrnUb0LZmUG11CSnuMWGyaXNl9wKpJiYkXmY5A>
+    <xmx:yMoIYQf3LW4Qxk4FIfqwlSDM0D3cYTW5nN51KtyFrDfy8Fn18rP9sg>
+    <xmx:ysoIYRVZLHVokGFVwUmRCNDIihlHTiVBByqRvLzhzNC3nnIortAR9A>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 65E2EAC0DD0; Tue,  3 Aug 2021 00:49:12 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-548-g3a0b1fef7b-fm-20210802.001-g3a0b1fef
 Mime-Version: 1.0
-References: <20210803044607.599629-1-mizhang@google.com>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH v4 3/3] KVM: x86/mmu: Add detailed page size stats
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <58256e8f-6c9a-4ad4-b51e-4048b6feb42a@www.fastmail.com>
+In-Reply-To: <CAMpxmJU4jN-hpNYPLHLbjx4uZ6vDqcyuMVQXhHg1BWXOqyS22A@mail.gmail.com>
+References: <20210712100317.23298-1-steven_lee@aspeedtech.com>
+ <CAMpxmJXfUterUdaGHOJT5hwcVJ+3cqgSQVdp-6Atuyyo36FxfQ@mail.gmail.com>
+ <20210723031615.GA10457@aspeedtech.com>
+ <CAMpxmJU4jN-hpNYPLHLbjx4uZ6vDqcyuMVQXhHg1BWXOqyS22A@mail.gmail.com>
+Date:   Tue, 03 Aug 2021 14:18:51 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "Steven Lee" <steven_lee@aspeedtech.com>,
+        "Joel Stanley" <joel@jms.id.au>
+Cc:     "Linus Walleij" <linus.walleij@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Billy Tsai" <billy_tsai@aspeedtech.com>
+Subject: Re: [PATCH v6 0/9] ASPEED sgpio driver enhancement.
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Existing KVM code tracks the number of large pages regardless of their
-sizes. Therefore, when large page of 1GB (or larger) is adopted, the
-information becomes less useful because lpages counts a mix of 1G and 2M
-pages.
 
-So remove the lpages since it is easy for user space to aggregate the info.
-Instead, provide a comprehensive page stats of all sizes from 4K to 512G.
 
-Suggested-by: Ben Gardon <bgardon@google.com>
+On Fri, 23 Jul 2021, at 17:00, Bartosz Golaszewski wrote:
+> On Fri, Jul 23, 2021 at 5:16 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> >
+> > The 07/21/2021 21:27, Bartosz Golaszewski wrote:
+> > > On Mon, Jul 12, 2021 at 12:03 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> > > >
+> > > > AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
+> > > > with 80 pins, AST2500/AST2400 SoC has 1 SGPIO master interface that
+> > > > supports up to 80 pins.
+> > > > In the current driver design, the max number of sgpio pins is hardcoded
+> > > > in macro MAX_NR_HW_SGPIO and the value is 80.
+> > > >
+> > > > For supporting sgpio master interfaces of AST2600 SoC, the patch series
+> > > > contains the following enhancement:
+> > > > - Convert txt dt-bindings to yaml.
+> > > > - Update aspeed-g6 dtsi to support the enhanced sgpio.
+> > > > - Support muiltiple SGPIO master interfaces.
+> > > > - Support up to 128 pins by dts ngpios property.
+> > > > - Pair input/output GPIOs instead of using 0 as GPIO input pin base and
+> > > >   MAX_NR_HW_SGPIO as GPIO output pin base.
+> > > > - Support wdt reset tolerance.
+> > > > - Fix irq_chip issues which causes multiple sgpio devices use the same
+> > > >   irq_chip data.
+> > > > - Replace all of_*() APIs with device_*().
+> > > >
+> > > > Changes from v5:
+> > > > * Squash v5 patch-05 and patch-06 to one patch.
+> > > > * Remove MAX_NR_HW_SGPIO and corresponding design to make the gpio
+> > > >   input/output pin base are determined by ngpios.
+> > > >   For example, if MAX_NR_HW_SGPIO is 80 and ngpios is 10, the original
+> > > >   pin order is as follows:
+> > > >     Input:
+> > > >     0 1 2 3 ... 9
+> > > >     Output:
+> > > >     80 81 82 ... 89
+> > > >
+> > > >   With the new design, pin order is changed as follows:
+> > > >     Input:
+> > > >     0 2 4 6 ... 18(ngpios * 2 - 2)
+> > > >     Output:
+> > > >     1 3 5 7 ... 19(ngpios * 2 - 1)
+> > > > * Replace ast2600-sgpiom-128 and ast2600-sgpiom-80 compatibles by
+> > > >   ast2600-sgpiom.
+> > > > * Fix coding style issues.
+> > > >
+> > > > Changes from v4:
+> > > > * Remove ngpios from dtsi
+> > > > * Add ast2400 and ast2500 platform data.
+> > > > * Remove unused macros.
+> > > > * Add ngpios check in a separate patch.
+> > > > * Fix coding style issues.
+> > > >
+> > > > Changes from v3:
+> > > > * Split dt-bindings patch to 2 patches
+> > > > * Rename ast2600-sgpiom1 compatible with ast2600-sgiom-128
+> > > > * Rename ast2600-sgpiom2 compatible with ast2600-sgiom-80
+> > > > * Correct the typo in commit messages.
+> > > > * Fix coding style issues.
+> > > > * Replace all of_*() APIs with device_*().
+> > > >
+> > > > Changes from v2:
+> > > > * Remove maximum/minimum of ngpios from bindings.
+> > > > * Remove max-ngpios from bindings and dtsi.
+> > > > * Remove ast2400-sgpiom and ast2500-sgpiom compatibles from dts and
+> > > >   driver.
+> > > > * Add ast2600-sgpiom1 and ast2600-sgpiom2 compatibles as their max
+> > > >   number of available gpio pins are different.
+> > > > * Modify functions to pass aspeed_sgpio struct instead of passing
+> > > >   max_ngpios.
+> > > > * Split sgpio driver patch to 3 patches
+> > > >
+> > > > Changes from v1:
+> > > > * Fix yaml format issues.
+> > > > * Fix issues reported by kernel test robot.
+> > > >
+> > > > Please help to review.
+> > > >
+> > > > Thanks,
+> > > > Steven
+> > > >
+> > > > Steven Lee (9):
+> > > >   dt-bindings: aspeed-sgpio: Convert txt bindings to yaml.
+> > > >   dt-bindings: aspeed-sgpio: Add ast2600 sgpio
+> > > >   ARM: dts: aspeed-g6: Add SGPIO node.
+> > > >   ARM: dts: aspeed-g5: Remove ngpios from sgpio node.
+> > > >   gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
+> > > >   gpio: gpio-aspeed-sgpio: Add set_config function
+> > > >   gpio: gpio-aspeed-sgpio: Move irq_chip to aspeed-sgpio struct
+> > > >   gpio: gpio-aspeed-sgpio: Use generic device property APIs
+> > > >   gpio: gpio-aspeed-sgpio: Return error if ngpios is not multiple of 8.
+> > > >
+> > > >  .../bindings/gpio/aspeed,sgpio.yaml           |  77 ++++++++
+> > > >  .../devicetree/bindings/gpio/sgpio-aspeed.txt |  46 -----
+> > > >  arch/arm/boot/dts/aspeed-g5.dtsi              |   1 -
+> > > >  arch/arm/boot/dts/aspeed-g6.dtsi              |  28 +++
+> > > >  drivers/gpio/gpio-aspeed-sgpio.c              | 178 +++++++++++-------
+> > > >  5 files changed, 215 insertions(+), 115 deletions(-)
+> > > >  create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+> > > >  delete mode 100644 Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
+> > > >
+> > > > --
+> > > > 2.17.1
+> > > >
+> > >
+> > > The series looks good to me. Can the DTS and GPIO patches go into
+> > > v5.15 separately?
+> > >
+> >
+> > Hi Bart,
+> >
+> > Thanks for the review.
+> > Shall we do anything to make the patches go into v5.15 or wait for picking-up?
+> >
+> > Steven
+> >
+> > > Bart
+> 
+> It's more of a question to the relevant SoC maintainers.
+> 
+> Joel, Andrew: can I take the GPIO patches through the GPIO tree and
+> you'll take the ARM patches separately into v5.15?
 
-Reviewed-by: David Matlack <dmatlack@google.com>
-Reviewed-by: Ben Gardon <bgardon@google.com>
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
-Cc: Jing Zhang <jingzhangos@google.com>
-Cc: David Matlack <dmatlack@google.com>
-Cc: Sean Christopherson <seanjc@google.com>
----
- arch/x86/include/asm/kvm_host.h | 10 ++++++++-
- arch/x86/kvm/mmu.h              |  4 ++++
- arch/x86/kvm/mmu/mmu.c          | 38 ++++++++++++++++-----------------
- arch/x86/kvm/mmu/tdp_mmu.c      | 15 ++-----------
- arch/x86/kvm/x86.c              |  5 ++++-
- 5 files changed, 38 insertions(+), 34 deletions(-)
+I think that should be okay. I'll poke Joel.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 99f37781a6fc..c95bf4bbd2ff 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1206,7 +1206,15 @@ struct kvm_vm_stat {
- 	u64 mmu_recycled;
- 	u64 mmu_cache_miss;
- 	u64 mmu_unsync;
--	u64 lpages;
-+	union {
-+		struct {
-+			atomic64_t pages_4k;
-+			atomic64_t pages_2m;
-+			atomic64_t pages_1g;
-+			atomic64_t pages_512g;
-+		};
-+		atomic64_t pages[4];
-+	};
- 	u64 nx_lpage_splits;
- 	u64 max_mmu_page_hash_collisions;
- 	u64 max_mmu_rmap_size;
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 83e6c6965f1e..2883789fb5fb 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -240,4 +240,8 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
- 	return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
- }
- 
-+static inline void kvm_update_page_stats(struct kvm *kvm, int level, int count)
-+{
-+	atomic64_add(count, &kvm->stat.pages[level - 1]);
-+}
- #endif
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index f614e9df3c3b..8f46c1164f3f 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -599,10 +599,11 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
-  * state bits, it is used to clear the last level sptep.
-  * Returns the old PTE.
-  */
--static u64 mmu_spte_clear_track_bits(u64 *sptep)
-+static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
- {
- 	kvm_pfn_t pfn;
- 	u64 old_spte = *sptep;
-+	int level = sptep_to_sp(sptep)->role.level;
- 
- 	if (!spte_has_volatile_bits(old_spte))
- 		__update_clear_spte_fast(sptep, 0ull);
-@@ -612,6 +613,8 @@ static u64 mmu_spte_clear_track_bits(u64 *sptep)
- 	if (!is_shadow_present_pte(old_spte))
- 		return old_spte;
- 
-+	kvm_update_page_stats(kvm, level, -1);
-+
- 	pfn = spte_to_pfn(old_spte);
- 
- 	/*
-@@ -996,15 +999,16 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
- 	}
- }
- 
--static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
-+static void pte_list_remove(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-+			    u64 *sptep)
- {
--	mmu_spte_clear_track_bits(sptep);
-+	mmu_spte_clear_track_bits(kvm, sptep);
- 	__pte_list_remove(sptep, rmap_head);
- }
- 
- /* Return true if rmap existed and callback called, false otherwise */
--static bool pte_list_destroy(struct kvm_rmap_head *rmap_head,
--			     void (*callback)(u64 *sptep))
-+static bool pte_list_destroy(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-+			     void (*callback)(struct kvm *kvm, u64 *sptep))
- {
- 	struct pte_list_desc *desc, *next;
- 	int i;
-@@ -1014,7 +1018,7 @@ static bool pte_list_destroy(struct kvm_rmap_head *rmap_head,
- 
- 	if (!(rmap_head->val & 1)) {
- 		if (callback)
--			callback((u64 *)rmap_head->val);
-+			callback(kvm, (u64 *)rmap_head->val);
- 		goto out;
- 	}
- 
-@@ -1023,7 +1027,7 @@ static bool pte_list_destroy(struct kvm_rmap_head *rmap_head,
- 	while (desc) {
- 		if (callback)
- 			for (i = 0; i < desc->spte_count; i++)
--				callback(desc->sptes[i]);
-+				callback(kvm, desc->sptes[i]);
- 		next = desc->more;
- 		mmu_free_pte_list_desc(desc);
- 		desc = next;
-@@ -1163,7 +1167,7 @@ static u64 *rmap_get_next(struct rmap_iterator *iter)
- 
- static void drop_spte(struct kvm *kvm, u64 *sptep)
- {
--	u64 old_spte = mmu_spte_clear_track_bits(sptep);
-+	u64 old_spte = mmu_spte_clear_track_bits(kvm, sptep);
- 
- 	if (is_shadow_present_pte(old_spte))
- 		rmap_remove(kvm, sptep);
-@@ -1175,7 +1179,6 @@ static bool __drop_large_spte(struct kvm *kvm, u64 *sptep)
- 	if (is_large_pte(*sptep)) {
- 		WARN_ON(sptep_to_sp(sptep)->role.level == PG_LEVEL_4K);
- 		drop_spte(kvm, sptep);
--		--kvm->stat.lpages;
- 		return true;
- 	}
- 
-@@ -1422,15 +1425,15 @@ static bool rmap_write_protect(struct kvm_vcpu *vcpu, u64 gfn)
- 	return kvm_mmu_slot_gfn_write_protect(vcpu->kvm, slot, gfn, PG_LEVEL_4K);
- }
- 
--static void mmu_spte_clear_track_bits_cb(u64 *sptep)
-+static void mmu_spte_clear_track_bits_cb(struct kvm *kvm, u64 *sptep)
- {
--	mmu_spte_clear_track_bits(sptep);
-+	mmu_spte_clear_track_bits(kvm, sptep);
- }
- 
- static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 			  const struct kvm_memory_slot *slot)
- {
--	return pte_list_destroy(rmap_head, mmu_spte_clear_track_bits_cb);
-+	return pte_list_destroy(kvm, rmap_head, mmu_spte_clear_track_bits_cb);
- }
- 
- static bool kvm_unmap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-@@ -1461,13 +1464,13 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 		need_flush = 1;
- 
- 		if (pte_write(pte)) {
--			pte_list_remove(rmap_head, sptep);
-+			pte_list_remove(kvm, rmap_head, sptep);
- 			goto restart;
- 		} else {
- 			new_spte = kvm_mmu_changed_pte_notifier_make_spte(
- 					*sptep, new_pfn);
- 
--			mmu_spte_clear_track_bits(sptep);
-+			mmu_spte_clear_track_bits(kvm, sptep);
- 			mmu_spte_set(sptep, new_spte);
- 		}
- 	}
-@@ -2276,8 +2279,6 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
- 	if (is_shadow_present_pte(pte)) {
- 		if (is_last_spte(pte, sp->role.level)) {
- 			drop_spte(kvm, spte);
--			if (is_large_pte(pte))
--				--kvm->stat.lpages;
- 		} else {
- 			child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
- 			drop_parent_pte(child, spte);
-@@ -2736,8 +2737,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
- 	trace_kvm_mmu_set_spte(level, gfn, sptep);
- 
- 	if (!was_rmapped) {
--		if (is_large_pte(*sptep))
--			++vcpu->kvm->stat.lpages;
-+		kvm_update_page_stats(vcpu->kvm, level, 1);
- 		rmap_count = rmap_add(vcpu, sptep, gfn);
- 		if (rmap_count > RMAP_RECYCLE_THRESHOLD)
- 			rmap_recycle(vcpu, sptep, gfn);
-@@ -5740,7 +5740,7 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
- 		if (sp->role.direct && !kvm_is_reserved_pfn(pfn) &&
- 		    sp->role.level < kvm_mmu_max_mapping_level(kvm, slot, sp->gfn,
- 							       pfn, PG_LEVEL_NUM)) {
--			pte_list_remove(rmap_head, sptep);
-+			pte_list_remove(kvm, rmap_head, sptep);
- 
- 			if (kvm_available_flush_tlb_with_range())
- 				kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 4b0953fed12e..45a5c1f43433 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -413,7 +413,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 	bool was_leaf = was_present && is_last_spte(old_spte, level);
- 	bool is_leaf = is_present && is_last_spte(new_spte, level);
- 	bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
--	bool was_large, is_large;
- 
- 	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
- 	WARN_ON(level < PG_LEVEL_4K);
-@@ -472,18 +471,8 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 		return;
- 	}
- 
--	/*
--	 * Update large page stats if a large page is being zapped, created, or
--	 * is replacing an existing shadow page.
--	 */
--	was_large = was_leaf && is_large_pte(old_spte);
--	is_large = is_leaf && is_large_pte(new_spte);
--	if (was_large != is_large) {
--		if (was_large)
--			atomic64_sub(1, (atomic64_t *)&kvm->stat.lpages);
--		else
--			atomic64_add(1, (atomic64_t *)&kvm->stat.lpages);
--	}
-+	if (is_leaf != was_leaf)
-+		kvm_update_page_stats(kvm, level, is_leaf ? 1 : -1);
- 
- 	if (was_leaf && is_dirty_spte(old_spte) &&
- 	    (!is_present || !is_dirty_spte(new_spte) || pfn_changed))
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 916c976e99ab..a0a1d70981a8 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -233,7 +233,10 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
- 	STATS_DESC_COUNTER(VM, mmu_recycled),
- 	STATS_DESC_COUNTER(VM, mmu_cache_miss),
- 	STATS_DESC_ICOUNTER(VM, mmu_unsync),
--	STATS_DESC_ICOUNTER(VM, lpages),
-+	STATS_DESC_ICOUNTER(VM, pages_4k),
-+	STATS_DESC_ICOUNTER(VM, pages_2m),
-+	STATS_DESC_ICOUNTER(VM, pages_1g),
-+	STATS_DESC_ICOUNTER(VM, pages_512g),
- 	STATS_DESC_ICOUNTER(VM, nx_lpage_splits),
- 	STATS_DESC_PCOUNTER(VM, max_mmu_rmap_size),
- 	STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions)
--- 
-2.32.0.554.ge1b32706d8-goog
-
+Andrew
