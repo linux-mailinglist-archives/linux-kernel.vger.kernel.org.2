@@ -2,316 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4969B3DE3E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FB13DE3EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbhHCBQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 21:16:21 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54068 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232891AbhHCBQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 21:16:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627953370; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=wyovEPz1+nTi4zonS19BB0NcGRArsVJd0stsBjW4T9s=;
- b=xMVOZe0yyIGmnTWLuWqMJ+4/EGXL4+BjIVEfo0+8EDq7tlhzd+VKPtKAf+qB9Yd3ZRB2ruYm
- NqCF0s6l+hIW6NKaDPu3YTpOOzG8gYVOt3Ij/fU5DrVJ+yl5FomnNErB7TATQ4KOe49xU9Qr
- WHgUMmFdcdsif4z8388Xw2m6Pxk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 610898d596a66e66b29001af (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 01:16:05
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D93B7C43460; Tue,  3 Aug 2021 01:16:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AE2BFC433D3;
-        Tue,  3 Aug 2021 01:16:03 +0000 (UTC)
+        id S233469AbhHCBTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 21:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233148AbhHCBTj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 21:19:39 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021B7C06175F;
+        Mon,  2 Aug 2021 18:19:29 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id c3so18187265ilh.3;
+        Mon, 02 Aug 2021 18:19:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u9hZlNEVQtl9H4h5fUtoarYkmhlyAeJcak16DpUZk5w=;
+        b=XP074fISHdgNdmqlBDocoFPPOyy3Ag4vr397lUiFsl78eXaEeoy056KI89cuLstmPT
+         af+v8NtkcdxGgVDmFDb0jSl9ndPRl/XPasHsyX9PnFCkpKm/5L5Dk03TNtT6I41cgv/2
+         gUFk/22SzlBl+HbudPWXGDLLHmS4E3O9HuXNFBw8UWbLTTwRY9WDIBYpS4A3H+nToLd8
+         5oqi/H3AtAesgGjq4cb6o389lE0OW3kwKB5ZUnbZKKPjEjCri8Oe9eeU7CYgdxiw0Mfx
+         b+MeqNbxuMpRQqtO2il/c5zlpX3tCYN+R3HfXnNIFB0pTi75itEaP6x8bwjOcK/sEw5x
+         pTVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u9hZlNEVQtl9H4h5fUtoarYkmhlyAeJcak16DpUZk5w=;
+        b=B9heoFLM32kv+U1cPR3JYMqVT9YjMYSOwHOzqLJtaMzfQ6Tj4hUvmAAClyunl9/fop
+         //1A1HczbNkQJrJWBGQ8QGUO/XrjyKSG8dVbLgIRKJmp2DGUdzD2+SGhgczocAAW0IKa
+         Y0iuLa9P1E4q6xcuK45goGhrr9ROIQl4nRdqr/8cE2k16HK5ZUnXuf9RPPFznr3Ookj2
+         1beMfH8dYFKAMBzEv60Hdp8s+7KRlGXshcrX/M7uGJI/ehD/VIr8Wim8rOWEMkNtaBHv
+         JqZXL1f1IQ9g9YJPG1b+nUJF/pOmuwKXCpkEoW9KaHtM3idSZG4LOUAtW1uMe7QIZBmI
+         Eu7Q==
+X-Gm-Message-State: AOAM530/eboP1I5tyS2dmUZ8dbUHbeqlhU07RGvwhASu0sBIcnF/LiQJ
+        wILROqm8w5JBYM3UBZ7qojwsZSqhJBs5FMqIHPA=
+X-Google-Smtp-Source: ABdhPJwO2whEKVXD9FpKYTgzaF0VMeJTZBR6Hxntfmj81J5yV0DJZTUjbOkVVNzO+vANYCpIVcApLDWdrer3qTE3STA=
+X-Received: by 2002:a05:6e02:b43:: with SMTP id f3mr613726ilu.94.1627953568399;
+ Mon, 02 Aug 2021 18:19:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Aug 2021 18:16:03 -0700
-From:   abhinavk@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [Freedreno] [PATCH 10/11] drm/msm/dsi: Add support for DSC
- configuration
-In-Reply-To: <20210715065203.709914-11-vkoul@kernel.org>
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-11-vkoul@kernel.org>
-Message-ID: <f29a42d72e9e5cdc767f33b13492eac9@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210525213920.3340-1-jiangshanlai@gmail.com> <YQLuBDZ2MlNlIoH4@google.com>
+In-Reply-To: <YQLuBDZ2MlNlIoH4@google.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Tue, 3 Aug 2021 09:19:17 +0800
+Message-ID: <CAJhGHyCU-Om3NWLVg-kbUE7FZD1nNZft8+KeCDH3cr_FDaitXQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] kvm/x86: Keep root hpa in prev_roots as much as possible
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-14 23:52, Vinod Koul wrote:
-> When DSC is enabled, we need to configure DSI registers accordingly and
-> configure the respective stream compression registers.
-> 
-> Add support to calculate the register setting based on DSC params and
-> timing information and configure these registers.
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+On Fri, Jul 30, 2021 at 2:06 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Wed, May 26, 2021, Lai Jiangshan wrote:
+> > From: Lai Jiangshan <laijs@linux.alibaba.com>
+> >
+> > Pagetable roots in prev_roots[] are likely to be reused soon and
+> > there is no much overhead to keep it with a new need_sync field
+> > introduced.
+> >
+> > With the help of the new need_sync field, pagetable roots are
+> > kept as much as possible, and they will be re-synced before reused
+> > instead of being dropped.
+> >
+> > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> > ---
+> >
+> > This patch is just for RFC.
+> >   Is the idea Ok?
+>
+> Yes, the idea is definitely a good one.
+>
+> >   If the idea is Ok, we need to reused one bit from pgd or hpa
+> >     as need_sync to save memory.  Which one is better?
+>
+> Ha, we can do this without increasing the memory footprint and without co-opting
+> a bit from pgd or hpa.  Because of compiler alignment/padding, the u8s and bools
+> between mmu_role and prev_roots already occupy 8 bytes, even though the actual
+> size is 4 bytes.  In total, we need room for 4 roots (3 previous + current), i.e.
+> 4 bytes.  If a separate array is used, no additional memory is consumed and no
+> masking is needed when reading/writing e.g. pgd.
+>
+> The cost is an extra swap() when updating the prev_roots LRU, but that's peanuts
+> and would likely be offset by masking anyways.
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 99f37781a6fc..13bb3c3a60b4 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -424,10 +424,12 @@ struct kvm_mmu {
+>         hpa_t root_hpa;
+>         gpa_t root_pgd;
+>         union kvm_mmu_role mmu_role;
+> +       bool root_unsync;
+>         u8 root_level;
+>         u8 shadow_root_level;
+>         u8 ept_ad;
+>         bool direct_map;
+> +       bool unsync_roots[KVM_MMU_NUM_PREV_ROOTS];
+>         struct kvm_mmu_root_info prev_roots[KVM_MMU_NUM_PREV_ROOTS];
+>
 
-same comments as dmitry on this one: 
-https://patchwork.freedesktop.org/patch/444082/?series=90413&rev=2
-nothing more to add.
+Hello
 
-> ---
->  drivers/gpu/drm/msm/dsi/dsi.xml.h  |  10 ++
->  drivers/gpu/drm/msm/dsi/dsi_host.c | 142 +++++++++++++++++++++++++++--
->  2 files changed, 142 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> index 50eb4d1b8fdd..b8e9e608abfc 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> +++ b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> @@ -2310,4 +2310,14 @@ static inline uint32_t
-> REG_DSI_7nm_PHY_LN_TX_DCTRL(uint32_t i0) { return 0x00000
-> 
->  #define REG_DSI_7nm_PHY_PLL_PERF_OPTIMIZE			0x00000260
-> 
-> +#define REG_DSI_VIDEO_COMPRESSION_MODE_CTRL			0x0000029c
-> +
-> +#define REG_DSI_VIDEO_COMPRESSION_MODE_CTRL2			0x000002a0
-> +
-> +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL			0x000002a4
-> +
-> +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL2			0x000002a8
-> +
-> +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL3			0x000002ac
-> +
->  #endif /* DSI_XML */
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> index e1e5d91809b5..4e8ab1b1df8b 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> @@ -942,6 +942,26 @@ static void dsi_ctrl_config(struct msm_dsi_host
-> *msm_host, bool enable,
->  	dsi_write(msm_host, REG_DSI_CTRL, data);
->  }
-> 
-> +static int dsi_dsc_update_pic_dim(struct msm_display_dsc_config *dsc,
-> +				  int pic_width, int pic_height)
-> +{
-> +	if (!dsc || !pic_width || !pic_height) {
-> +		pr_err("DSI: invalid input: pic_width: %d pic_height: %d\n",
-> pic_width, pic_height);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if ((pic_width % dsc->drm->slice_width) || (pic_height %
-> dsc->drm->slice_height)) {
-> +		pr_err("DSI: pic_dim %dx%d has to be multiple of slice %dx%d\n",
-> +		       pic_width, pic_height, dsc->drm->slice_width, 
-> dsc->drm->slice_height);
-> +		return -EINVAL;
-> +	}
-> +
-> +	dsc->drm->pic_width = pic_width;
-> +	dsc->drm->pic_height = pic_height;
-> +
-> +	return 0;
-> +}
-> +
->  static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool 
-> is_dual_dsi)
->  {
->  	struct drm_display_mode *mode = msm_host->mode;
-> @@ -956,6 +976,7 @@ static void dsi_timing_setup(struct msm_dsi_host
-> *msm_host, bool is_dual_dsi)
->  	u32 va_end = va_start + mode->vdisplay;
->  	u32 hdisplay = mode->hdisplay;
->  	u32 wc;
-> +	u32 data;
-> 
->  	DBG("");
-> 
-> @@ -974,7 +995,73 @@ static void dsi_timing_setup(struct msm_dsi_host
-> *msm_host, bool is_dual_dsi)
->  		hdisplay /= 2;
->  	}
-> 
-> +	if (msm_host->dsc) {
-> +		struct msm_display_dsc_config *dsc = msm_host->dsc;
-> +
-> +		/* update dsc params with timing params */
-> +		dsi_dsc_update_pic_dim(dsc, mode->hdisplay, mode->vdisplay);
-> +		DBG("Mode Width- %d x Height %d\n", dsc->drm->pic_width,
-> dsc->drm->pic_height);
-> +
-> +		/* we do the calculations for dsc parameters here so that
-> +		 * panel can use these parameters
-> +		 */
-> +		dsi_populate_dsc_params(dsc);
-> +
-> +		/* Divide the display by 3 but keep back/font porch and
-> +		 * pulse width same
-> +		 */
-> +		h_total -= hdisplay;
-> +		hdisplay /= 3;
-> +		h_total += hdisplay;
-> +		ha_end = ha_start + hdisplay;
-> +	}
-> +
->  	if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO) {
-> +		if (msm_host->dsc) {
-> +			struct msm_display_dsc_config *dsc = msm_host->dsc;
-> +			u32 reg, intf_width, slice_per_intf, width;
-> +			u32 total_bytes_per_intf;
-> +
-> +			/* first calculate dsc parameters and then program
-> +			 * compress mode registers
-> +			 */
-> +			intf_width = hdisplay;
-> +			slice_per_intf = DIV_ROUND_UP(intf_width, dsc->drm->slice_width);
-> +
-> +			/* If slice_count > slice_per_intf, then use 1
-> +			 * This can happen during partial update
-> +			 */
-> +				dsc->drm->slice_count = 1;
-> +
-> +			dsc->bytes_in_slice = DIV_ROUND_UP(dsc->drm->slice_width * 8, 8);
-> +			total_bytes_per_intf = dsc->bytes_in_slice * slice_per_intf;
-> +
-> +			dsc->eol_byte_num = total_bytes_per_intf % 3;
-> +			dsc->pclk_per_line =  DIV_ROUND_UP(total_bytes_per_intf, 3);
-> +			dsc->bytes_per_pkt = dsc->bytes_in_slice * dsc->drm->slice_count;
-> +			dsc->pkt_per_line = slice_per_intf / dsc->drm->slice_count;
-> +
-> +			width = dsc->pclk_per_line;
-> +			reg = dsc->bytes_per_pkt << 16;
-> +			reg |= (0x0b << 8);    /* dtype of compressed image */
-> +
-> +			/* pkt_per_line:
-> +			 * 0 == 1 pkt
-> +			 * 1 == 2 pkt
-> +			 * 2 == 4 pkt
-> +			 * 3 pkt is not supported
-> +			 * above translates to ffs() - 1
-> +			 */
-> +			reg |= (ffs(dsc->pkt_per_line) - 1) << 6;
-> +
-> +			dsc->eol_byte_num = total_bytes_per_intf % 3;
-> +			reg |= dsc->eol_byte_num << 4;
-> +			reg |= 1;
-> +
-> +			dsi_write(msm_host,
-> +				  REG_DSI_VIDEO_COMPRESSION_MODE_CTRL, reg);
-> +		}
-> +
->  		dsi_write(msm_host, REG_DSI_ACTIVE_H,
->  			DSI_ACTIVE_H_START(ha_start) |
->  			DSI_ACTIVE_H_END(ha_end));
-> @@ -993,19 +1080,50 @@ static void dsi_timing_setup(struct
-> msm_dsi_host *msm_host, bool is_dual_dsi)
->  			DSI_ACTIVE_VSYNC_VPOS_START(vs_start) |
->  			DSI_ACTIVE_VSYNC_VPOS_END(vs_end));
->  	} else {		/* command mode */
-> +		if (msm_host->dsc) {
-> +			struct msm_display_dsc_config *dsc = msm_host->dsc;
-> +			u32 reg, reg_ctrl, reg_ctrl2;
-> +			u32 slice_per_intf, bytes_in_slice, total_bytes_per_intf;
-> +
-> +			reg_ctrl = dsi_read(msm_host, 
-> REG_DSI_COMMAND_COMPRESSION_MODE_CTRL);
-> +			reg_ctrl2 = dsi_read(msm_host, 
-> REG_DSI_COMMAND_COMPRESSION_MODE_CTRL2);
-> +
-> +			slice_per_intf = DIV_ROUND_UP(hdisplay, dsc->drm->slice_width);
-> +			bytes_in_slice = DIV_ROUND_UP(dsc->drm->slice_width *
-> +						      dsc->drm->bits_per_pixel, 8);
-> +			dsc->drm->slice_chunk_size = bytes_in_slice;
-> +			total_bytes_per_intf = dsc->bytes_in_slice * slice_per_intf;
-> +			dsc->pkt_per_line = slice_per_intf / dsc->drm->slice_count;
-> +
-> +			reg = 0x39 << 8;
-> +			reg |= ffs(dsc->pkt_per_line) << 6;
-> +
-> +			dsc->eol_byte_num = total_bytes_per_intf % 3;
-> +			reg |= dsc->eol_byte_num << 4;
-> +			reg |= 1;
-> +
-> +			reg_ctrl |= reg;
-> +			reg_ctrl2 |= bytes_in_slice;
-> +
-> +			dsi_write(msm_host, REG_DSI_COMMAND_COMPRESSION_MODE_CTRL, reg);
-> +			dsi_write(msm_host, REG_DSI_COMMAND_COMPRESSION_MODE_CTRL2, 
-> reg_ctrl2);
-> +		}
-> +
->  		/* image data and 1 byte write_memory_start cmd */
-> -		wc = hdisplay * dsi_get_bpp(msm_host->format) / 8 + 1;
-> +		if (!msm_host->dsc)
-> +			wc = hdisplay * dsi_get_bpp(msm_host->format) / 8 + 1;
-> +		else
-> +			wc = mode->hdisplay / 2 + 1;
-> 
-> -		dsi_write(msm_host, REG_DSI_CMD_MDP_STREAM0_CTRL,
-> -			DSI_CMD_MDP_STREAM0_CTRL_WORD_COUNT(wc) |
-> -			DSI_CMD_MDP_STREAM0_CTRL_VIRTUAL_CHANNEL(
-> -					msm_host->channel) |
-> -			DSI_CMD_MDP_STREAM0_CTRL_DATA_TYPE(
-> -					MIPI_DSI_DCS_LONG_WRITE));
-> +		data = DSI_CMD_MDP_STREAM0_CTRL_WORD_COUNT(wc) |
-> +		       DSI_CMD_MDP_STREAM0_CTRL_VIRTUAL_CHANNEL(msm_host->channel) |
-> +			DSI_CMD_MDP_STREAM0_CTRL_DATA_TYPE(MIPI_DSI_DCS_LONG_WRITE);
-> 
-> -		dsi_write(msm_host, REG_DSI_CMD_MDP_STREAM0_TOTAL,
-> -			DSI_CMD_MDP_STREAM0_TOTAL_H_TOTAL(hdisplay) |
-> -			DSI_CMD_MDP_STREAM0_TOTAL_V_TOTAL(mode->vdisplay));
-> +		dsi_write(msm_host, REG_DSI_CMD_MDP_STREAM0_CTRL, data);
-> +
-> +		data = DSI_CMD_MDP_STREAM0_TOTAL_H_TOTAL(hdisplay) |
-> +			DSI_CMD_MDP_STREAM0_TOTAL_V_TOTAL(mode->vdisplay);
-> +		dsi_write(msm_host, REG_DSI_CMD_MDP_STREAM0_TOTAL, data);
->  	}
->  }
-> 
-> @@ -2074,6 +2192,7 @@ int msm_dsi_host_modeset_init(struct 
-> mipi_dsi_host *host,
->  	struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
->  	const struct msm_dsi_cfg_handler *cfg_hnd = msm_host->cfg_hnd;
->  	struct platform_device *pdev = msm_host->pdev;
-> +	struct msm_drm_private *priv;
->  	int ret;
-> 
->  	msm_host->irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
-> @@ -2093,6 +2212,9 @@ int msm_dsi_host_modeset_init(struct 
-> mipi_dsi_host *host,
->  	}
-> 
->  	msm_host->dev = dev;
-> +	priv = dev->dev_private;
-> +	priv->dsc = msm_host->dsc;
-> +
->  	ret = cfg_hnd->ops->tx_buf_alloc(msm_host, SZ_4K);
->  	if (ret) {
->  		pr_err("%s: alloc tx gem obj failed, %d\n", __func__, ret);
+I think it is too complicated.  And it is hard to accept to put "unsync"
+out of struct kvm_mmu_root_info when they should be bound to each other.
+
+How about this:
+- KVM_MMU_NUM_PREV_ROOTS
++ KVM_MMU_NUM_CACHED_ROOTS
+- mmu->prev_roots[KVM_MMU_NUM_PREV_ROOTS]
++ mmu->cached_roots[KVM_MMU_NUM_CACHED_ROOTS]
+- mmu->root_hpa
++ mmu->cached_roots[0].hpa
+- mmu->root_pgd
++ mmu->cached_roots[0].pgd
+
+And using the bit63 in @pgd as the information that it is not requested
+to sync since the last sync.
+
+Thanks
+Lai.
+
+>         /*
+>
+>
+> >  arch/x86/include/asm/kvm_host.h |  3 ++-
+> >  arch/x86/kvm/mmu/mmu.c          |  6 ++++++
+> >  arch/x86/kvm/vmx/nested.c       | 12 ++++--------
+> >  arch/x86/kvm/x86.c              |  9 +++++----
+> >  4 files changed, 17 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > index 55efbacfc244..19a337cf7aa6 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -354,10 +354,11 @@ struct rsvd_bits_validate {
+> >  struct kvm_mmu_root_info {
+> >       gpa_t pgd;
+> >       hpa_t hpa;
+> > +     bool need_sync;
+>
+> Hmm, use "unsync" instead of "need_sync", purely to match the existing terminology
+> in KVM's MMU for this sort of behavior.
+>
+> >  };
+> >
+> >  #define KVM_MMU_ROOT_INFO_INVALID \
+> > -     ((struct kvm_mmu_root_info) { .pgd = INVALID_PAGE, .hpa = INVALID_PAGE })
+> > +     ((struct kvm_mmu_root_info) { .pgd = INVALID_PAGE, .hpa = INVALID_PAGE, .need_sync = true})
+> >
+> >  #define KVM_MMU_NUM_PREV_ROOTS 3
+> >
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 5e60b00e8e50..147827135549 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -3878,6 +3878,7 @@ static bool cached_root_available(struct kvm_vcpu *vcpu, gpa_t new_pgd,
+> >
+> >       root.pgd = mmu->root_pgd;
+> >       root.hpa = mmu->root_hpa;
+> > +     root.need_sync = false;
+> >
+> >       if (is_root_usable(&root, new_pgd, new_role))
+> >               return true;
+> > @@ -3892,6 +3893,11 @@ static bool cached_root_available(struct kvm_vcpu *vcpu, gpa_t new_pgd,
+> >       mmu->root_hpa = root.hpa;
+> >       mmu->root_pgd = root.pgd;
+> >
+> > +     if (i < KVM_MMU_NUM_PREV_ROOTS && root.need_sync) {
+>
+> Probably makes sense to write this as:
+>
+>         if (i >= KVM_MMU_NUM_PREV_ROOTS)
+>                 return false;
+>
+>         if (root.need_sync) {
+>                 kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
+>                 kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
+>         }
+>         return true;
+>
+> The "i < KVM_MMU_NUM_PREV_ROOTS == success" logic is just confusing enough that
+> it'd be nice to write it only once.
+>
+> And that would also play nicely with deferring a sync for the "current" root
+> (see below), e.g.
+>
+>         ...
+>         unsync = mmu->root_unsync;
+>
+>         if (is_root_usable(&root, new_pgd, new_role))
+>                 goto found_root;
+>
+>         for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++) {
+>                 swap(root, mmu->prev_roots[i]);
+>                 swap(unsync, mmu->unsync_roots[i]);
+>
+>                 if (is_root_usable(&root, new_pgd, new_role))
+>                         break;
+>         }
+>
+>         if (i >= KVM_MMU_NUM_PREV_ROOTS)
+>                 return false;
+>
+> found_root:
+>         if (unsync) {
+>                 kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
+>                 kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
+>         }
+>         return true;
+>
+> > +             kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
+> > +             kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
+> > +     }
+> > +
+> >       return i < KVM_MMU_NUM_PREV_ROOTS;
+> >  }
+> >
+> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > index 6058a65a6ede..ab7069ac6dc5 100644
+> > --- a/arch/x86/kvm/vmx/nested.c
+> > +++ b/arch/x86/kvm/vmx/nested.c
+> > @@ -5312,7 +5312,7 @@ static int handle_invept(struct kvm_vcpu *vcpu)
+> >  {
+> >       struct vcpu_vmx *vmx = to_vmx(vcpu);
+> >       u32 vmx_instruction_info, types;
+> > -     unsigned long type, roots_to_free;
+> > +     unsigned long type;
+> >       struct kvm_mmu *mmu;
+> >       gva_t gva;
+> >       struct x86_exception e;
+> > @@ -5361,29 +5361,25 @@ static int handle_invept(struct kvm_vcpu *vcpu)
+> >                       return nested_vmx_fail(vcpu,
+> >                               VMXERR_INVALID_OPERAND_TO_INVEPT_INVVPID);
+> >
+> > -             roots_to_free = 0;
+> >               if (nested_ept_root_matches(mmu->root_hpa, mmu->root_pgd,
+> >                                           operand.eptp))
+> > -                     roots_to_free |= KVM_MMU_ROOT_CURRENT;
+> > +                     kvm_mmu_free_roots(vcpu, mmu, KVM_MMU_ROOT_CURRENT);
+>
+> For a non-RFC series, I think this should do two things:
+>
+>   1. Separate INVEPT from INVPCID, i.e. do only INVPCID first.
+>   2. Enhance INVEPT to SYNC+FLUSH the current root instead of freeing it
+>
+> As alluded to above, this can be done by deferring the sync+flush (which can't
+> be done right away because INVEPT runs in L1 context, whereas KVM needs to sync+flush
+> L2 EPT context).
+>
+> >               for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++) {
+> >                       if (nested_ept_root_matches(mmu->prev_roots[i].hpa,
+> >                                                   mmu->prev_roots[i].pgd,
+> >                                                   operand.eptp))
+> > -                             roots_to_free |= KVM_MMU_ROOT_PREVIOUS(i);
+> > +                             mmu->prev_roots[i].need_sync = true;
+> >               }
+> >               break;
+> >       case VMX_EPT_EXTENT_GLOBAL:
+> > -             roots_to_free = KVM_MMU_ROOTS_ALL;
+> > +             kvm_mmu_free_roots(vcpu, mmu, KVM_MMU_ROOTS_ALL);
+> >               break;
+> >       default:
+> >               BUG();
+> >               break;
+> >       }
+> >
+> > -     if (roots_to_free)
+> > -             kvm_mmu_free_roots(vcpu, mmu, roots_to_free);
+> > -
+> >       return nested_vmx_succeed(vcpu);
+> >  }
