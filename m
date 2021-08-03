@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A8A3DE78F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D54623DE77A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234391AbhHCHui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:50:38 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36074 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234396AbhHCHue (ORCPT
+        id S234252AbhHCHt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234148AbhHCHt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:50:34 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1737oEhN031937;
-        Tue, 3 Aug 2021 02:50:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1627977014;
-        bh=BwujCQU52uufj03106RGl0byjIe1My+N311MbFxbJqE=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=jCIhHUDriaYX3ANTOwohFT5FKBFt+ykJ7/HJcSpoPw1Fgv0mysnSE6qItk+7nzHJ7
-         b8xpRNK3uL8jAJDduEiopIXjXOzfGLPSYPtaj6Nvj2qEyXyuMin1Vll7TbsnjZR09a
-         y+tZrfbcVwncewmSimgiDNSQFY5i3vITZ01jeHVU=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1737oEg9053080
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Aug 2021 02:50:14 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 3 Aug
- 2021 02:50:13 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 3 Aug 2021 02:50:14 -0500
-Received: from a0393678-ssd.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1737nXs3045202;
-        Tue, 3 Aug 2021 02:50:07 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>, <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tom Joseph <tjoseph@cadence.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <nadeem@cadence.com>
-Subject: [PATCH v2 6/6] misc: pci_endpoint_test: Add deviceID for AM64 and J7200
-Date:   Tue, 3 Aug 2021 13:19:32 +0530
-Message-ID: <20210803074932.19820-7-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210803074932.19820-1-kishon@ti.com>
-References: <20210803074932.19820-1-kishon@ti.com>
+        Tue, 3 Aug 2021 03:49:57 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17B1C0613D5
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:49:46 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so1060723wms.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:49:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=olV9WA7qn9JXM9Zr1zOTL5eTwtsnMh9ztbodG7vQpFw=;
+        b=aEVArW1QkUe7FYeYyaPKB3VIMJoTvfuFgc1uZTiBqzJ2V5hNlfiVMVVsjEiF5cziV+
+         q8+mQCNShmms13eeDvQnq0uwsnrBa7NL+SzEsFuS2wuxsQUv5QihPm7YhA2Gx9sieOQA
+         Q3adYXZBRXhqX7HImQzcErqKgC8lEQD0FrQqy2C9WlYpL3KwR9+Gvuz0zeCNQ3GA969E
+         Snb7JajiIyUz5+4qzPRu+2A/XvNEP41F6w7As1BCAmwfM5dp2I0gwJf52Yku505CBece
+         /AX2BRvQGU8fvHVjtU+TW23mR/umKGR+aFteeZolPKjN+/KrlJlRBCemStgiSo9hyeiA
+         trlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=olV9WA7qn9JXM9Zr1zOTL5eTwtsnMh9ztbodG7vQpFw=;
+        b=fJ0+cJUXkVM59DzXtDBakkBzQ65qGTkJyfBq7vWD8AQoUdlKfigFf7HpJEqt0tbyA8
+         7h7SiISd16pvJgyEtdMXO6IE1tNDHMcLhk0Q8iEGv4qeCVvsU8png3ykm9i1E+vz0ZNy
+         2g6lAvW+nBSQ5u7f0CTwjCKkcDysoPxXYmRuRQouWoOz6dU0GmK4w5n5/7AuMVki4YFG
+         esmV4vQy76N+MiOoPYQq6i7U+rTJIWZM02EP29OtdG3JL7QTS0y26xlAO5PpuZd5iS+Q
+         5//6LTv4/IV1je9S79W4v5gGhAgTabRAgi0DsLOCYv5nlrwcQwawtlWDELl9xzJzBkzt
+         VtHQ==
+X-Gm-Message-State: AOAM533pJgM5svJHlaDPLH+jDvrCB/5/ojA1gQJhsGrMRZNbbVAGlT/n
+        0BFtvX9RZ2HO4jp8LyFAWARyuGIBfW62xA==
+X-Google-Smtp-Source: ABdhPJxDnLCFN1pccysx/SKvMPBNDxfhcCF0B0cYPAeIk61rZ06he6Pgi5l6+Ow0W5TjGSSuX0Qk2w==
+X-Received: by 2002:a1c:4b12:: with SMTP id y18mr2752711wma.67.1627976985341;
+        Tue, 03 Aug 2021 00:49:45 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id 104sm14068498wrc.4.2021.08.03.00.49.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 00:49:44 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 08:49:43 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        bhupesh.sharma@linaro.org, Das Srinagesh <gurus@codeaurora.org>,
+        kgunda@codeaurora.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [RESEND PATCH V7 1/3] dt-bindings: mfd: pm8008: Add gpio-ranges
+ and spmi-gpio compatible
+Message-ID: <YQj1FwSyxpblwaxj@google.com>
+References: <1627910464-19363-1-git-send-email-skakit@codeaurora.org>
+ <1627910464-19363-2-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1627910464-19363-2-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device ID specific to AM64 and J7200 in pci_endpoint_test so that
-endpoints configured with those deviceIDs can use pci_endpoint_test
-driver.
+On Mon, 02 Aug 2021, satya priya wrote:
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- drivers/misc/pci_endpoint_test.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+> Add gpio-ranges and "qcom,spmi-gpio" compatible to match with the
+> parent qcom,pmic-gpio.yaml binding.
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> ---
+> Changes in V7:
+>  - This is newly added in V7 to resolve below error.
+>  dtschema/dtc warnings/errors:
+>  /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/qcom,pm8008.example.dt.yaml: gpio@c000: compatible: ['qcom,pm8008-gpio'] is too short
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+>  /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/qcom,pm8008.example.dt.yaml: gpio@c000: 'gpio-ranges' is a required property
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> 
+> Changes in RESEND V7:
+>  - Rebased on linux-next.
+> 
+>  Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
-index 9740f2a0e7cd..707cf9d7e8c0 100644
---- a/drivers/misc/pci_endpoint_test.c
-+++ b/drivers/misc/pci_endpoint_test.c
-@@ -69,6 +69,8 @@
- #define FLAG_USE_DMA				BIT(0)
- 
- #define PCI_DEVICE_ID_TI_AM654			0xb00c
-+#define PCI_DEVICE_ID_TI_J7200			0xb00f
-+#define PCI_DEVICE_ID_TI_AM64			0xb010
- #define PCI_DEVICE_ID_LS1088A			0x80c0
- 
- #define is_am654_pci_dev(pdev)		\
-@@ -976,6 +978,12 @@ static const struct pci_device_id pci_endpoint_test_tbl[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_J721E),
- 	  .driver_data = (kernel_ulong_t)&j721e_data,
- 	},
-+	{ PCI_DEVICE(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_J7200),
-+	  .driver_data = (kernel_ulong_t)&j721e_data,
-+	},
-+	{ PCI_DEVICE(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_AM64),
-+	  .driver_data = (kernel_ulong_t)&j721e_data,
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(pci, pci_endpoint_test_tbl);
+Applied, thanks.
+
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
