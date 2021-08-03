@@ -2,155 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14BA3DE7FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2B03DE808
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbhHCIKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:10:33 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:36117 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234238AbhHCIKc (ORCPT
+        id S234321AbhHCILN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:11:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234260AbhHCILJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:10:32 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id ApVDmT2IWXTlcApVEmkLTz; Tue, 03 Aug 2021 10:10:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1627978221; bh=FBUpuGVdHdipZbKQBlJmDYs9Xj5eIoTrrjzgo4mwn5M=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=Q1q3YISDsSP9cPWEILits+Naedtnz52s5z8eJYNUYUsVEGKvzMYIcHnhRsoxGNoPV
-         Bg3zP1X2jE8sNc81in64hCSg2MBkfSAvTESqLxDgBqk4h4QijjH78FDFV65hqq18MB
-         u7HX5FI0k6ArMOGPidDnwaBsBT796vTrt95ZBnhHut/zxuRyQr7Ge8zgInEM4XJmy3
-         Znp+oBgluQxvjj1XRr4pXF9PWG85GaE+PD8syyotoo0ZO8I48wd2v4uU8VfirGhbQ4
-         9E/i7LKgPic2ZxkiA+0JE/Ejujye4YSBG3l3H5l63J+Nhe1ICmc88tDu6f8M+5SiKM
-         uG0gd01qSbZAQ==
-Subject: Re: [PATCHv4 3/8] videobuf2: split buffer cache_hints initialisation
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210727070517.443167-1-senozhatsky@chromium.org>
- <20210727070517.443167-4-senozhatsky@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <148b9d78-7515-eb1d-7e38-f8e1052d057c@xs4all.nl>
-Date:   Tue, 3 Aug 2021 10:10:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 3 Aug 2021 04:11:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627978258;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zY0Qm6avJnx4fVfjFEoZtBf+5KuAldMVTd58ZzB3Cto=;
+        b=bNJ8lizq6MiVd9yH+5iGVvJdM2MBgBdV3O5VgUZbEql+yQF676e3dZ49eIaq2BIJWz0P52
+        /AzS+jJZu93WpHGBBdn83coKWzv0YRQeM/FMnZjm87eRaISJ9C32LXr3hPDUQoPvJpS4Eq
+        30yfgQynOZJ4/Dwse2Fc1K9e710zVDw=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-435-HqbVh8GANb6q5hRTmwu-OQ-1; Tue, 03 Aug 2021 04:10:57 -0400
+X-MC-Unique: HqbVh8GANb6q5hRTmwu-OQ-1
+Received: by mail-pj1-f70.google.com with SMTP id 16-20020a17090a1990b029017582e03c3bso2232192pji.7
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 01:10:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=zY0Qm6avJnx4fVfjFEoZtBf+5KuAldMVTd58ZzB3Cto=;
+        b=nBJq4LMKL/DFOQsN0Cu0ynzF5rEQzOpYBOc7VwLd2ysE47xbZCiYgO2PBiFWtFLzub
+         6JZgcvrLJpYOYceqmlcHjFWSo+O7M1/3rsIkdARHZJP9MGrDY5eAz1xKnfwi8vTlEJkI
+         uaiQGbVj+W+Usu7mDSm65c/rdNHNgNCRfvA3snwD2IciqaOqK4i6vHYiHGrcRSDPP7wf
+         aVKSJc8viZ0Rj2uw3FI+/FBJ5vajynyq67gUH3vvcWlnAqqVeNxjuK58ys2pAEl3CM3E
+         Nlht3W7B9VE5m+RelLB6NybwIgFMlwBkzWV36I884fbNQb73jOXbfLBB8nhWDPMiebjo
+         wNkQ==
+X-Gm-Message-State: AOAM531S3ucztfRtoPXJvn8rNNu6Q1RxRR3S8tWwI2VTST3ZXgZeEhdc
+        zLnboyM2NFQBrlh+jbdVPRNjbZFFzT5CtDadbPc4XD9dr2kQrBc/H2d1+NF9S4tLOuRuWuAenLY
+        Jjsu0wD1CsPB8CUN4qOO5GJJVn5mXYh7Ld/LM1Ixm4UI8cbzRN/ejhI1qpZjtKBlL1Tfxx8H38F
+        UN
+X-Received: by 2002:a63:f904:: with SMTP id h4mr2936206pgi.238.1627978256177;
+        Tue, 03 Aug 2021 01:10:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwH8hbLkAijKqHClsGdxbrFT2e5OFHsYSjNhxOgbwifClMzXSHDtPi9YbQ4DmXvoCPE/e8DcA==
+X-Received: by 2002:a63:f904:: with SMTP id h4mr2936146pgi.238.1627978255811;
+        Tue, 03 Aug 2021 01:10:55 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id u21sm14097827pfh.163.2021.08.03.01.10.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 01:10:55 -0700 (PDT)
+Subject: Re: [PATCH v10 05/17] vhost-vdpa: Fail the vhost_vdpa_set_status() on
+ reset failure
+To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
+        stefanha@redhat.com, sgarzare@redhat.com, parav@nvidia.com,
+        hch@infradead.org, christian.brauner@canonical.com,
+        rdunlap@infradead.org, willy@infradead.org,
+        viro@zeniv.linux.org.uk, axboe@kernel.dk, bcrl@kvack.org,
+        corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org,
+        gregkh@linuxfoundation.org, zhe.he@windriver.com,
+        xiaodong.liu@intel.com, joe@perches.com
+Cc:     songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210729073503.187-1-xieyongji@bytedance.com>
+ <20210729073503.187-6-xieyongji@bytedance.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <55191de0-1a03-ff0d-1a49-afc419014bab@redhat.com>
+Date:   Tue, 3 Aug 2021 16:10:46 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210727070517.443167-4-senozhatsky@chromium.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210729073503.187-6-xieyongji@bytedance.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfAM8DtLkuo6DSTPrzhg2tMxhW0MV0AdYHvNAMZY4vIUVFXQO9r48ZAgAF/+sxipxnZ/OVPK5FEh03unA/59iKPaajVDb3iTY8ze24vYlGDp/2srw095K
- eJHCtUYiUK13znbujQVCDLzwOZlF0XrkBxk01TphRg2sDb2k2pVdLm2RSulzIJsXwTURjQQ7DY5bpKfUUGvndUvj068E0roarim33PvpSNEE5OF6+DA/yGZk
- 3yYgdZfXzdMzwewGQ4a+m4Oz286Gw8X1RTo9dguPDdmVUo37kFyPHyFsv0actcGaUb2mEVWngkFGmBFVQ8wWlkbzp6jURzkfe8puJpK6ZiMO6mUwt7X988rz
- kDrDSeoWi/KsPysUHLgQeAEXXgEMB3sEqe/UNGnvp3gP4jMN+KzCwpbYgl1EbP8MeKoSW/5aewVabVKeY3mtJLwD8PkdB+bVGqWIJRRzoM8T+EsoJB3nYJpm
- sIdN2eOiLZFhvdUfBQRhQKAlws64f2UlZO34oTeoknzJxYSqb03G38jN2CqiTXy2RLuuFQ2HAJmE6DfI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2021 09:05, Sergey Senozhatsky wrote:
-> V4L2 is not the perfect place to manage vb2 buffer cache hints.
-> It works for V4L2 users, but there are backends that use vb2 core
 
-use -> use the
-
-> and don't use V4L2. Factor buffer cache hints init and call it
-
-Factor? You mean Refactor?
-
-Regards,
-
-	Hans
-
-> when we allocate vb2 buffer.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+ÔÚ 2021/7/29 ÏÂÎç3:34, Xie Yongji Ð´µÀ:
+> Re-read the device status to ensure it's set to zero during
+> resetting. Otherwise, fail the vhost_vdpa_set_status() after timeout.
+>
+> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 > ---
->  .../media/common/videobuf2/videobuf2-core.c   | 22 +++++++++++++++++++
->  .../media/common/videobuf2/videobuf2-v4l2.c   | 18 ---------------
->  2 files changed, 22 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index 23e41fec9880..76210c006958 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -382,6 +382,27 @@ static void __setup_offsets(struct vb2_buffer *vb)
->  	}
->  }
->  
-> +static void init_buffer_cache_hints(struct vb2_queue *q, struct vb2_buffer *vb)
-> +{
-> +	/*
-> +	 * DMA exporter should take care of cache syncs, so we can avoid
-> +	 * explicit ->prepare()/->finish() syncs. For other ->memory types
-> +	 * we always need ->prepare() or/and ->finish() cache sync.
-> +	 */
-> +	if (q->memory == VB2_MEMORY_DMABUF) {
-> +		vb->skip_cache_sync_on_finish = 1;
-> +		vb->skip_cache_sync_on_prepare = 1;
-> +		return;
+>   drivers/vhost/vdpa.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index b07aa161f7ad..dd05c1e1133c 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -157,7 +157,7 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
+>   	struct vdpa_device *vdpa = v->vdpa;
+>   	const struct vdpa_config_ops *ops = vdpa->config;
+>   	u8 status, status_old;
+> -	int nvqs = v->nvqs;
+> +	int timeout = 0, nvqs = v->nvqs;
+>   	u16 i;
+>   
+>   	if (copy_from_user(&status, statusp, sizeof(status)))
+> @@ -173,6 +173,15 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
+>   		return -EINVAL;
+>   
+>   	ops->set_status(vdpa, status);
+> +	if (status == 0) {
+> +		while (ops->get_status(vdpa)) {
+> +			timeout += 20;
+> +			if (timeout > VDPA_RESET_TIMEOUT_MS)
+> +				return -EIO;
+> +
+> +			msleep(20);
+> +		}
+
+
+Spec has introduced the reset a one of the basic facility. And consider 
+we differ reset here.
+
+This makes me think if it's better to introduce a dedicated vdpa ops for 
+reset?
+
+Thanks
+
+
 > +	}
-> +
-> +	/*
-> +	 * ->finish() cache sync can be avoided when queue direction is
-> +	 * TO_DEVICE.
-> +	 */
-> +	if (q->dma_dir == DMA_TO_DEVICE)
-> +		vb->skip_cache_sync_on_finish = 1;
-> +}
-> +
->  /*
->   * __vb2_queue_alloc() - allocate videobuf buffer structures and (for MMAP type)
->   * video buffer memory for all buffers/planes on the queue and initializes the
-> @@ -415,6 +436,7 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->  		vb->index = q->num_buffers + buffer;
->  		vb->type = q->type;
->  		vb->memory = memory;
-> +		init_buffer_cache_hints(q, vb);
->  		for (plane = 0; plane < num_planes; ++plane) {
->  			vb->planes[plane].length = plane_sizes[plane];
->  			vb->planes[plane].min_length = plane_sizes[plane];
-> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> index 454d58268602..2fbae9bd7b52 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> @@ -345,17 +345,6 @@ static void set_buffer_cache_hints(struct vb2_queue *q,
->  				   struct vb2_buffer *vb,
->  				   struct v4l2_buffer *b)
->  {
-> -	/*
-> -	 * DMA exporter should take care of cache syncs, so we can avoid
-> -	 * explicit ->prepare()/->finish() syncs. For other ->memory types
-> -	 * we always need ->prepare() or/and ->finish() cache sync.
-> -	 */
-> -	if (q->memory == VB2_MEMORY_DMABUF) {
-> -		vb->skip_cache_sync_on_finish = 1;
-> -		vb->skip_cache_sync_on_prepare = 1;
-> -		return;
-> -	}
-> -
->  	if (!vb2_queue_allows_cache_hints(q)) {
->  		/*
->  		 * Clear buffer cache flags if queue does not support user
-> @@ -367,13 +356,6 @@ static void set_buffer_cache_hints(struct vb2_queue *q,
->  		return;
->  	}
->  
-> -	/*
-> -	 * ->finish() cache sync can be avoided when queue direction is
-> -	 * TO_DEVICE.
-> -	 */
-> -	if (q->dma_dir == DMA_TO_DEVICE)
-> -		vb->skip_cache_sync_on_finish = 1;
-> -
->  	if (b->flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE)
->  		vb->skip_cache_sync_on_finish = 1;
->  
-> 
+>   
+>   	if ((status & VIRTIO_CONFIG_S_DRIVER_OK) && !(status_old & VIRTIO_CONFIG_S_DRIVER_OK))
+>   		for (i = 0; i < nvqs; i++)
 
