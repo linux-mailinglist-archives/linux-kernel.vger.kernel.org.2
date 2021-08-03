@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ED03DEB62
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193EF3DEB66
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235461AbhHCK7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:59:35 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16036 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235329AbhHCK73 (ORCPT
+        id S235490AbhHCLAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:00:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32416 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235419AbhHCLAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:59:29 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GfBcH4gy2zZwbC;
-        Tue,  3 Aug 2021 18:55:43 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 3 Aug 2021 18:59:16 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 3 Aug 2021 18:59:16 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <pabeni@redhat.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH net] net: sched: fix lockdep_set_class() typo error for sch->seqlock
-Date:   Tue, 3 Aug 2021 18:58:21 +0800
-Message-ID: <1627988301-55801-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 3 Aug 2021 07:00:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627988389;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lK2SfIHZ2Ac99hQ34j8+KB0YK297k6V7x/Zwpz7e1/A=;
+        b=fJUbLrxSP+DQDTKssD30kbeNQoKTxmipTUkXnqBbJollK7dHiNpoi3yz23swIbEvu3H4H5
+        Pqhuy6WbqVd5oFIgnZ0TzgZfcyKexiHL67Mi6agmUV+DsIIQBmoA+PqqthFGofaEjkDVlu
+        +VwSnVOCHuQQuIsGOdIzj/kzXDchNwc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-imAsvqABNjigDaIHhUijNg-1; Tue, 03 Aug 2021 06:59:47 -0400
+X-MC-Unique: imAsvqABNjigDaIHhUijNg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF2228799E0;
+        Tue,  3 Aug 2021 10:59:45 +0000 (UTC)
+Received: from thuth.com (unknown [10.39.192.110])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B5AA60C05;
+        Tue,  3 Aug 2021 10:59:42 +0000 (UTC)
+From:   Thomas Huth <thuth@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, linux-s390@vger.kernel.org,
+        Jia He <hejianet@gmail.com>,
+        Pan Xinhui <xinhui.pan@linux.vnet.ibm.com>
+Subject: [PATCH 0/2] Fix /proc/sys/fs/nfs/nsm_use_hostnames on big endian machines
+Date:   Tue,  3 Aug 2021 12:59:35 +0200
+Message-Id: <20210803105937.52052-1-thuth@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to comment in qdisc_alloc(), sch->seqlock's lockdep
-class key should be set to qdisc_tx_busylock, due to possible
-type error, sch->busylock's lockdep class key is set to
-qdisc_tx_busylock, which is duplicated because sch->busylock's
-lockdep class key is already set in qdisc_alloc().
+There is an endianess problem with /proc/sys/fs/nfs/nsm_use_hostnames
+(which can e.g. be seen on an s390x host) :
 
-So fix it by replacing sch->busylock with sch->seqlock.
+ # modprobe lockd nsm_use_hostnames=1
+ # cat /proc/sys/fs/nfs/nsm_use_hostnames
+ 16777216
 
-Fixes: 96009c7d500e ("sched: replace __QDISC_STATE_RUNNING bit with a spin lock")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
-commit ab92d68fc22f ("net: core: add generic lockdep keys")
-seems to fix the above error without mentioning that, and then
-it is reverted by commit 1a33e10e4a95 ("net: partially revert
-dynamic lockdep key changes"), but the blamed commit still be
-96009c7d500e ("sched: replace __QDISC_STATE_RUNNING bit with
-a spin lock").
----
- net/sched/sch_generic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The nsm_use_hostnames variable is declared as "bool" which is required
+for the correct type for the module parameter. However, this does not
+work correctly with the entry in the /proc filesystem since this
+currently requires "int".
 
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index d9ac60f..a8dd06c 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -913,7 +913,7 @@ struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queue,
- 
- 	/* seqlock has the same scope of busylock, for NOLOCK qdisc */
- 	spin_lock_init(&sch->seqlock);
--	lockdep_set_class(&sch->busylock,
-+	lockdep_set_class(&sch->seqlock,
- 			  dev->qdisc_tx_busylock ?: &qdisc_tx_busylock);
- 
- 	seqcount_init(&sch->running);
+Jia He already provided patches for this problem a couple of years ago,
+but apparently they felt through the cracks and never got merged. So
+here's a rebased version to finally fix this issue.
+
+Buglink: https://bugzilla.redhat.com/show_bug.cgi?id=1764075
+
+Jia He (2):
+  sysctl: introduce new proc handler proc_dobool
+  lockd: change the proc_handler for nsm_use_hostnames
+
+ fs/lockd/svc.c         |  2 +-
+ include/linux/sysctl.h |  2 ++
+ kernel/sysctl.c        | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 45 insertions(+), 1 deletion(-)
+
 -- 
-2.7.4
+2.27.0
 
