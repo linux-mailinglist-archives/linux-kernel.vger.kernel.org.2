@@ -2,142 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FE93DE9B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C869B3DE9BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbhHCJbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+        id S234990AbhHCJee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbhHCJbp (ORCPT
+        with ESMTP id S234871AbhHCJe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:31:45 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34734C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:31:33 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id n2so28117934eda.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:31:33 -0700 (PDT)
+        Tue, 3 Aug 2021 05:34:29 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A505C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:34:19 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id a8so5891479pjk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:34:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=XnFT0+T34CYtIhtj9AFRhRgp0BmU14hBeulSmSMqkco=;
-        b=lnh5e5rtm1i3OI43NQE8IstmfTWykpBHTHoQHdfbzzsQX7nlQoH6dmaIGzGDt/3IpX
-         hVaLY2SyXmPXkpBBd9scceDJf/zBQ4A76NX2+7ALhUhIU4ZBFN+VFm3yT5ahwH3xFnI5
-         e4JmTQu0w1sKOfhaBUWL7fjXF1tZIaQNk1baawfU+UMg2Icf5373OPJbGCHz6/DLMbMX
-         WiHewdxY/zEYYxZs2QOJhCw6f774C+Tq2heA/u+W2YvusHjifhzWyPmdNcLd7MathYyr
-         f4iT9bjGEC8A90IGAxotEqF8N9hdUVOFaJEcIDHz/CheJ4AdYPep42urz4UhJ0ASDRKH
-         BIYA==
+        bh=uKry6437Xp6Cf4/+d9KizqA/vEa0Seh7ohaGTHEkQRc=;
+        b=jJSoKtxZLFGJsuHj4iRJutAau6/uyzXm6P/XrBQP8N/tWoP3JGt/AGyn6/lzAbAH6P
+         Zt9n9Ky+kJZ3LPTz8kUGiQa8YnjrPkUConDYDrlO0sSprOQutiy+VSlNHYBgtHWQusxK
+         Nu8FeHReiJE2X0NJ0joTxrWU8roZfTCalVdkVJ7z7aTS4rNFoZHwBz4y0eJp5OnTeK+N
+         PWIRibE9ECjZp7W0rBztj0NK6dGh4uqsULKawfCwwOZ8/MSdApUf3gRZ1Av9H5T+oQME
+         y1/9LHFbyW6vjL4W1EUmt4ymt40U+P/vxW6ehXYMHqvifB15/EPQVeNk7OeLkpBRRV+8
+         S3cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XnFT0+T34CYtIhtj9AFRhRgp0BmU14hBeulSmSMqkco=;
-        b=tGIa3EpRjwvMGTX1MdLyHQs/TKbBAQP+w19nS0VWTFwinZf0zodLVHc4k/ARuh58mU
-         DsSsccWLXa7/uqy6Rg4k1UkAOyQRF+D+yJgl4o2sZHnpSX40PGKYg3O05Vs1/MkwKiXI
-         NnxcOMCf3/0Gw4jyJRFoto5pt/eGSCPOlPEmzGMESzXg0K7hqkTBtZraeq9V7cK5XSZy
-         W6XkdvSCPRsjhEWYntLFg07C2J29aUpMK45jfUwJrMBE1gVMD3uL/jpFaTKXNQG6R3MJ
-         l1uSl/APcB2isu6SCwq1CYfdDVnsEjRix1gZsXA64hRXy2iMynIyuUV01i1IKNBAzVrB
-         uIUg==
-X-Gm-Message-State: AOAM531hsDm6wekMfVxj4CXsZ61JDk7/o4hyHJROEjfJgC+3w0B3u8M9
-        diuyMyyA09RrNpQvEcmsC7HkU3/p15W5lMPPu/GX
-X-Google-Smtp-Source: ABdhPJy+LxOFqB8YD73zckkZYLMc9dK6jQxb/4DjwmZe9c1z6ZeWREgaWSDzSR2aIdoSx6+rDpaFnlN8W0AAfJNPoJw=
-X-Received: by 2002:a05:6402:74f:: with SMTP id p15mr24038732edy.195.1627983091785;
- Tue, 03 Aug 2021 02:31:31 -0700 (PDT)
+        bh=uKry6437Xp6Cf4/+d9KizqA/vEa0Seh7ohaGTHEkQRc=;
+        b=Qs0KoTv6lnqDSr0puYIy6y2zwd//cxTvZ0gENV2c4r9fnp/fHb4MpMvpx7ecSGNzt9
+         ZyOJ7VovgZ6Ngl8sF5b9YGW66p3qhyIEmBP4f27GloB7BfY2toGoWutLn53GR9q0ZrgW
+         xius7rLafeFKOvzsBJrmGulrM6q7ggKmettqHzj0WHsx/PDzmqmBEsMv7fSxZgcr565l
+         ddgyHKzwv30VTrXu0/kA4teIQXEn07ELHp0nnUXiwTEU15YsRmtSUyE6qPzpUR/WlYuy
+         lw7zirrPtCPNVgk766w2+n4GFo0NrV4ZZtsj+S/sN23BIin3CqYMKA6/86SimW9YCEFP
+         ntHw==
+X-Gm-Message-State: AOAM532OKqHbuhW2f9GpBIXvBFOLWAI3hWXZxe8kpjVf6XhAsctZt4hF
+        M7AnXsjTfFsdedn8UMHJ9JIs8+6MPeQBprKLWZ6jjQ==
+X-Google-Smtp-Source: ABdhPJz2eL9+KnSbDZNwM0YYYYGMT6pJ/BeAYhrgUuoii3Olu5MvKl+um75Cpx+zl0QxdTmEnIpsGAjrMAaeSPlTcl8=
+X-Received: by 2002:a17:902:b909:b029:12c:a6a2:b1c6 with SMTP id
+ bf9-20020a170902b909b029012ca6a2b1c6mr4556059plb.20.1627983258709; Tue, 03
+ Aug 2021 02:34:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210729073503.187-1-xieyongji@bytedance.com> <20210729073503.187-5-xieyongji@bytedance.com>
- <39a191f6-555b-d2e6-e712-735b540526d0@redhat.com>
-In-Reply-To: <39a191f6-555b-d2e6-e712-735b540526d0@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Tue, 3 Aug 2021 17:31:20 +0800
-Message-ID: <CACycT3sdH3zVzznsaMb0+3mzrLF7FjmB89U11fZv_23Y4_WbEw@mail.gmail.com>
-Subject: Re: [PATCH v10 04/17] vdpa: Fail the vdpa_reset() if fail to set
- device status to zero
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
+References: <20210729125755.16871-1-linmiaohe@huawei.com> <20210729125755.16871-3-linmiaohe@huawei.com>
+ <YQNsxVPsRSBZcfGG@carbon.lan> <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
+ <4a3c23c4-054c-2896-29c5-8cf9a4deee98@huawei.com> <YQi6lOT6j2DtOGlT@carbon.dhcp.thefacebook.com>
+ <95629d91-6ae8-b445-e7fc-b51c888cad59@huawei.com>
+In-Reply-To: <95629d91-6ae8-b445-e7fc-b51c888cad59@huawei.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 3 Aug 2021 17:33:41 +0800
+Message-ID: <CAMZfGtUChsJO1UrgmP6M274UwiHap0_yzCBL+mDq1OosP7JNsA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
         Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        He Zhe <zhe.he@windriver.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        Joe Perches <joe@perches.com>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        Alex Shi <alexs@kernel.org>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 3:58 PM Jason Wang <jasowang@redhat.com> wrote:
+On Tue, Aug 3, 2021 at 2:29 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
 >
->
-> =E5=9C=A8 2021/7/29 =E4=B8=8B=E5=8D=883:34, Xie Yongji =E5=86=99=E9=81=93=
-:
-> > Re-read the device status to ensure it's set to zero during
-> > resetting. Otherwise, fail the vdpa_reset() after timeout.
+> On 2021/8/3 11:40, Roman Gushchin wrote:
+> > On Sat, Jul 31, 2021 at 10:29:52AM +0800, Miaohe Lin wrote:
+> >> On 2021/7/30 14:50, Michal Hocko wrote:
+> >>> On Thu 29-07-21 20:06:45, Roman Gushchin wrote:
+> >>>> On Thu, Jul 29, 2021 at 08:57:52PM +0800, Miaohe Lin wrote:
+> >>>>> Since percpu_charge_mutex is only used inside drain_all_stock(), we=
+ can
+> >>>>> narrow the scope of percpu_charge_mutex by moving it here.
+> >>>>>
+> >>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> >>>>> ---
+> >>>>>  mm/memcontrol.c | 2 +-
+> >>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>>
+> >>>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >>>>> index 6580c2381a3e..a03e24e57cd9 100644
+> >>>>> --- a/mm/memcontrol.c
+> >>>>> +++ b/mm/memcontrol.c
+> >>>>> @@ -2050,7 +2050,6 @@ struct memcg_stock_pcp {
+> >>>>>  #define FLUSHING_CACHED_CHARGE   0
+> >>>>>  };
+> >>>>>  static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
+> >>>>> -static DEFINE_MUTEX(percpu_charge_mutex);
+> >>>>>
+> >>>>>  #ifdef CONFIG_MEMCG_KMEM
+> >>>>>  static void drain_obj_stock(struct obj_stock *stock);
+> >>>>> @@ -2209,6 +2208,7 @@ static void refill_stock(struct mem_cgroup *m=
+emcg, unsigned int nr_pages)
+> >>>>>   */
+> >>>>>  static void drain_all_stock(struct mem_cgroup *root_memcg)
+> >>>>>  {
+> >>>>> + static DEFINE_MUTEX(percpu_charge_mutex);
+> >>>>>   int cpu, curcpu;
+> >>>>
+> >>>> It's considered a good practice to protect data instead of code path=
+s. After
+> >>>> the proposed change it becomes obvious that the opposite is done her=
+e: the mutex
+> >>>> is used to prevent a simultaneous execution of the code of the drain=
+_all_stock()
+> >>>> function.
+> >>>
+> >>> The purpose of the lock was indeed to orchestrate callers more than a=
+ny
+> >>> data structure consistency.
+> >>>
+> >>>> Actually we don't need a mutex here: nobody ever sleeps on it. So I'=
+d replace
+> >>>> it with a simple atomic variable or even a single bitfield. Then the=
+ change will
+> >>>> be better justified, IMO.
+> >>>
+> >>> Yes, mutex can be replaced by an atomic in a follow up patch.
+> >>>
+> >>
+> >> Thanks for both of you. It's a really good suggestion. What do you mea=
+n is something like below=EF=BC=9F
+> >>
+> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >> index 616d1a72ece3..508a96e80980 100644
+> >> --- a/mm/memcontrol.c
+> >> +++ b/mm/memcontrol.c
+> >> @@ -2208,11 +2208,11 @@ static void refill_stock(struct mem_cgroup *me=
+mcg, unsigned int nr_pages)
+> >>   */
+> >>  static void drain_all_stock(struct mem_cgroup *root_memcg)
+> >>  {
+> >> -       static DEFINE_MUTEX(percpu_charge_mutex);
+> >>         int cpu, curcpu;
+> >> +       static atomic_t drain_all_stocks =3D ATOMIC_INIT(-1);
+> >>
+> >>         /* If someone's already draining, avoid adding running more wo=
+rkers. */
+> >> -       if (!mutex_trylock(&percpu_charge_mutex))
+> >> +       if (!atomic_inc_not_zero(&drain_all_stocks))
+> >>                 return;
 > >
-> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> > ---
-> >   include/linux/vdpa.h | 15 ++++++++++++++-
-> >   1 file changed, 14 insertions(+), 1 deletion(-)
+> > It should work, but why not a simple atomic_cmpxchg(&drain_all_stocks, =
+0, 1) and
+> > initialize it to 0? Maybe it's just my preference, but IMO (0, 1) is ea=
+sier
+> > to understand than (-1, 0) here. Not a strong opinion though, up to you=
+.
 > >
-> > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> > index 406d53a606ac..d1a80ef05089 100644
-> > --- a/include/linux/vdpa.h
-> > +++ b/include/linux/vdpa.h
-> > @@ -6,6 +6,7 @@
-> >   #include <linux/device.h>
-> >   #include <linux/interrupt.h>
-> >   #include <linux/vhost_iotlb.h>
-> > +#include <linux/delay.h>
-> >
-> >   /**
-> >    * struct vdpa_calllback - vDPA callback definition.
-> > @@ -340,12 +341,24 @@ static inline struct device *vdpa_get_dma_dev(str=
-uct vdpa_device *vdev)
-> >       return vdev->dma_dev;
-> >   }
-> >
-> > -static inline void vdpa_reset(struct vdpa_device *vdev)
-> > +#define VDPA_RESET_TIMEOUT_MS 1000
-> > +
-> > +static inline int vdpa_reset(struct vdpa_device *vdev)
-> >   {
-> >       const struct vdpa_config_ops *ops =3D vdev->config;
-> > +     int timeout =3D 0;
-> >
-> >       vdev->features_valid =3D false;
-> >       ops->set_status(vdev, 0);
-> > +     while (ops->get_status(vdev)) {
-> > +             timeout +=3D 20;
-> > +             if (timeout > VDPA_RESET_TIMEOUT_MS)
-> > +                     return -EIO;
-> > +
-> > +             msleep(20);
-> > +     }
 >
+> I think this would improve the readability. What you mean is something li=
+ke below ?
 >
-> I wonder if it's better to do this in the vDPA parent?
+> Many thanks.
 >
-> Thanks
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 616d1a72ece3..6210b1124929 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2208,11 +2208,11 @@ static void refill_stock(struct mem_cgroup *memcg=
+, unsigned int nr_pages)
+>   */
+>  static void drain_all_stock(struct mem_cgroup *root_memcg)
+>  {
+> -       static DEFINE_MUTEX(percpu_charge_mutex);
+>         int cpu, curcpu;
+> +       static atomic_t drainer =3D ATOMIC_INIT(0);
 >
+>         /* If someone's already draining, avoid adding running more worke=
+rs. */
+> -       if (!mutex_trylock(&percpu_charge_mutex))
+> +       if (atomic_cmpxchg(&drainer, 0, 1) !=3D 0)
 
-Sorry, I didn't get you here. Do you mean vDPA parent driver (e.g.
-VDUSE)? Actually I didn't find any other place where I can do
-set_status() and get_status().
+I'd like to use atomic_cmpxchg_acquire() here.
 
-Thanks,
-Yongji
+>                 return;
+>         /*
+>          * Notify other cpus that system-wide "drain" is running
+> @@ -2244,7 +2244,7 @@ static void drain_all_stock(struct mem_cgroup *root=
+_memcg)
+>                 }
+>         }
+>         put_cpu();
+> -       mutex_unlock(&percpu_charge_mutex);
+> +       atomic_set(&drainer, 0);
+
+So use atomic_set_release() here to cooperate with
+atomic_cmpxchg_acquire().
+
+Thanks.
+
+>  }
+>
+> > Thanks!
+> > .
+> >
+>
