@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1816C3DEC0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88ADE3DEC0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235688AbhHCLgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        id S235776AbhHCLgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235700AbhHCLg3 (ORCPT
+        with ESMTP id S235762AbhHCLgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:36:29 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15A3C06179A;
-        Tue,  3 Aug 2021 04:36:17 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id o7-20020a05600c5107b0290257f956e02dso1519783wms.1;
-        Tue, 03 Aug 2021 04:36:17 -0700 (PDT)
+        Tue, 3 Aug 2021 07:36:31 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11606C06175F;
+        Tue,  3 Aug 2021 04:36:20 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id e25-20020a05600c4b99b0290253418ba0fbso1927629wmp.1;
+        Tue, 03 Aug 2021 04:36:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=PnI+xpj+tguuxhwECLNvUTwNInWMqG1pkkM+TYmvSjg=;
-        b=NvpkBpgyvq8U/+BAhz73CUo1alYLmpRGSyMroht4sD/rfiJ/iRN9mWReSOtWqGoMbz
-         nfpOJHFRe0NLbT9uN6OzxEtoEWptxxNoEe/IlEYiTJdswl2SMa9WvtbxhzUAGY81sRTp
-         romfHNN1fXLKp1x8bbfQmsuZbjlTs3Ifl5nDM779BG0aKulZpZ4gq6RLxvIRcusUVK2Y
-         TFScGKOkvxgQEimyB6ngc2EB8WIxwkRXiZlq6z9dVdnndN6wYQSJcr1T9k9GU+gem9Wm
-         vU+cksyQs3okmALu9B6fB2zJHHOr5z3XMKqyMqfXFZ49tZPuOiDUu63ZdZyE9owV1lkv
-         5erg==
+        bh=7B9xwFz7QV/+u2CYKsWFbtd8WRnRlInr3OMPs/MwIsU=;
+        b=qIb55S6k4eHKWDqOLQLSvj2Vs8LnfPq2GyJzK1gmB+vKZ0IVLto2M+kg1BFbGFF3sq
+         e2Tbkvbt+FxngWgfP9S2+WmvEROMZll8V8mPVYoswxW7dtBGxyKFkL5v6yvUCah2Rers
+         qY0yuW3x5Mzccg6Litik9h/FgsJVMxumlxhX0hGITCzRBYIwFnlQD7l0cuR2+1xoOXQH
+         9+bDZ3gUrz71O7DLFY3vzfx0/Dz2dZAiTxYsvGr105mhELIoTjE/+uicUJcE+lou+BZr
+         0vtk2C3YayfPvc+fwVLa5/tWnocqpJPCp6ZopLy4kI4VV+OrpKz+a8uL+Iwrus4lbDEy
+         rBdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=PnI+xpj+tguuxhwECLNvUTwNInWMqG1pkkM+TYmvSjg=;
-        b=dy2hZB56pKhXmxl9CEHDl2lS5hs0D7C3qU8SJ3HXbU7Xcsra1b/uTaiXHpO+IeHJ85
-         cYC6/Yp9kPTFuPk0fBFM8lLdgS7a3apWQMOvHzPpvd73hN9ezf9D5lnT5X3AWqY8grHe
-         H0DOABM/rGFus4hbuGeqb5A/JyF6GmIbPrQqRQ6qDW3M/EjRjeyxgfbWFNf+s5R/ntiG
-         1Loj52wcBXLLAebB/iMJJQfvMJMs8aGvtwaOVYn9Vr+qwmNvrNqjRuMmN8sZQfgEzq5o
-         JB5p6mZIxHWL2lMYT+L6fzm0+LgGgR7jApy7nzhBKN6220xk0ThKj7l3I19/M8WcGjgD
-         vxxg==
-X-Gm-Message-State: AOAM530Soih1Nue02QSKgiMf1Ft9f6E77M535k41aS2XjIxK5/kzP1RS
-        K6wjjEUjzDbzfWWfbvLoj/4=
-X-Google-Smtp-Source: ABdhPJzNIytWoPgjmoQqVBAzQ3LD/dm1XNvLdz6ZY+nvAwf/c04PoZ22pBHRezmdM66Oyl8/vRQ8wA==
-X-Received: by 2002:a7b:c386:: with SMTP id s6mr3767101wmj.93.1627990575850;
-        Tue, 03 Aug 2021 04:36:15 -0700 (PDT)
+        bh=7B9xwFz7QV/+u2CYKsWFbtd8WRnRlInr3OMPs/MwIsU=;
+        b=a6eL/6o4qf+1Q9W6Vi0LqAGbBVOFJEQpnWJrca7Lyy8JfXIBpu70xNfW3yxHY9JbQI
+         p7jQSxiHqU3ya8qJ9Otevu9c7yPvd39mWVU6+nqMLAmUUJ4Oxe5s3UtTv0mopxzmpxmP
+         hDBQfA1uJBT80K480cwkCB2yySz0smQGHIJMAdUdg9ogopgjcIIRUqk0N82Umm0OSjf2
+         jRZJQJ9G8H0RfU6skidJQTsI68phT4Y7FW5+U2yrDnKcy3DvVUm24kVcK+RHIE0aIwNs
+         D/R/+SUKBK80NCMDT9gHSWbZVr73i/RNmMCXioCuP1HT/g59PrQqNEhp/hlJstilHi/+
+         4g1A==
+X-Gm-Message-State: AOAM533JzkKyerWI9AVCwhXue9lp/cNebfpVUZyo3YME0fgN3kDyFLy6
+        QZfsLlUGie28b54vFOFeE9k=
+X-Google-Smtp-Source: ABdhPJwUXZO8wH9rEhbY60lgep7gdCU6wj97O5eDW2795KzijsrCD5N6HLeWE3nkMGGqfoJeo76o2g==
+X-Received: by 2002:a05:600c:4fd6:: with SMTP id o22mr17085752wmq.45.1627990578659;
+        Tue, 03 Aug 2021 04:36:18 -0700 (PDT)
 Received: from felia.fritz.box ([2001:16b8:2de7:c500:a5d6:9db:2c2c:b89d])
-        by smtp.gmail.com with ESMTPSA id m14sm13961364wrs.56.2021.08.03.04.36.12
+        by smtp.gmail.com with ESMTPSA id m14sm13961364wrs.56.2021.08.03.04.36.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 04:36:13 -0700 (PDT)
+        Tue, 03 Aug 2021 04:36:17 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -62,9 +62,9 @@ Cc:     "H . Peter Anvin" <hpa@zytor.com>,
         platform-driver-x86@vger.kernel.org,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 3/9] x86/Kconfig: correct reference to MWINCHIP3D
-Date:   Tue,  3 Aug 2021 13:35:25 +0200
-Message-Id: <20210803113531.30720-4-lukas.bulwahn@gmail.com>
+Subject: [PATCH 4/9] x86/Kconfig: remove reference to obsolete MFD_INTEL_MSIC config
+Date:   Tue,  3 Aug 2021 13:35:26 +0200
+Message-Id: <20210803113531.30720-5-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210803113531.30720-1-lukas.bulwahn@gmail.com>
 References: <20210803113531.30720-1-lukas.bulwahn@gmail.com>
@@ -72,37 +72,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 69b8d3fcabdc ("x86/Kconfig: Exclude i586-class CPUs lacking PAE
-support from the HIGHMEM64G Kconfig group") intends to exclude the Winchip
-architectures and refers to CONFIG_WINCHIP3D, but the config is called
-CONFIG_MWINCHIP3D.
+Commit ef3c67b6454b ("mfd: intel_msic: Remove driver for deprecated
+platform") removes the definition of the config MFD_INTEL_MSIC in
+./drivers/mfd/Kconfig, but misses to remove a reference to it in
+config X86_INTEL_MID in ./arch/x86/Kconfig.
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
+Fortunately, ./scripts/checkkconfigsymbols.py warns:
 
-WINCHIP3D
+MFD_INTEL_MSIC
 Referencing files: arch/x86/Kconfig
 
-Correct the reference to the intended config symbol.
+Remove this reference to the obsolete config.
 
+Fixes: ef3c67b6454b ("mfd: intel_msic: Remove driver for deprecated platform")
 Suggested-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/x86/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 45962aaf2b2c..79e7457db5c9 100644
+index 79e7457db5c9..b553e8b4df4e 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1401,7 +1401,7 @@ config HIGHMEM4G
- 
- config HIGHMEM64G
- 	bool "64GB"
--	depends on !M486SX && !M486 && !M586 && !M586TSC && !M586MMX && !MGEODE_LX && !MGEODEGX1 && !MCYRIXIII && !MELAN && !MWINCHIPC6 && !WINCHIP3D && !MK6
-+	depends on !M486SX && !M486 && !M586 && !M586TSC && !M586MMX && !MGEODE_LX && !MGEODEGX1 && !MCYRIXIII && !MELAN && !MWINCHIPC6 && !MWINCHIP3D && !MK6
- 	select X86_PAE
+@@ -608,7 +608,6 @@ config X86_INTEL_MID
+ 	select DW_APB_TIMER
+ 	select APB_TIMER
+ 	select INTEL_SCU_PCI
+-	select MFD_INTEL_MSIC
  	help
- 	  Select this if you have a 32-bit processor and more than 4
+ 	  Select to build a kernel capable of supporting Intel MID (Mobile
+ 	  Internet Device) platform systems which do not have the PCI legacy
 -- 
 2.17.1
 
