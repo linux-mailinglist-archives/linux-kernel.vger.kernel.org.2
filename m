@@ -2,228 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D193DEEF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089403DEEF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236123AbhHCNRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235954AbhHCNRw (ORCPT
+        id S236214AbhHCNSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:18:41 -0400
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:36642 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235954AbhHCNSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:17:52 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38499C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:17:41 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id b7so28954197edu.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 06:17:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yR4S2ZQmok+LMwRMPbSCkfcF7S1VTidPl8mrJI1OXHY=;
-        b=naF0LMmxmvdiLihArultg5bRuKRC75ZA5oWeTTC3K8Gs/UBvNgSO5Y0pKskfkvVX9Y
-         PKIBdIDo0+5rXqpPU5tR8qnQjh6k1dBD1GRaVm/I4Zr13QVFdTsfJkkpItu6QNaRo7Ik
-         BPeRCtCf9LM0/A8/+Ia5JjhUW1D3uMVVnZDR/uIN+PRFc9xSmWuk8EEgWJtgZDlxTG3j
-         wPzumiw9qSYshJU+/WtnjNO6T6mYPFBJdgewUQAmnKHb7gaEpNzsZGfE/OzXwE2UPdGR
-         6j0hsAnvja18HbJ1S9IGnXdZMjSrRk+LgtCyPnZ1uZ46nZcR212YSVtVNV5nHVyhpQuX
-         Mu4A==
+        Tue, 3 Aug 2021 09:18:40 -0400
+Received: by mail-oo1-f49.google.com with SMTP id z3-20020a4a98430000b029025f4693434bso5180470ooi.3;
+        Tue, 03 Aug 2021 06:18:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yR4S2ZQmok+LMwRMPbSCkfcF7S1VTidPl8mrJI1OXHY=;
-        b=iyBMmoXrWmmNVpNBIfuyMPsNPNz5dSeOG4Z0dk0eKIPxMKtN8a5+etBNt3nSxtqFTW
-         RxYDfDMW5uaANgX3IPT6VMQ+YQyH3GGxFUn0NZcT6oK2z+BM8/96y5d8Eb9fa9Hzhg/e
-         iSMm4a/8lOkgcG1o4+vUm/7fPTsu59WUCtd/cjauZBYrbvl615Nr/Dmu+kEqmhiaVi7V
-         VVDuY00PkMmRsldVpxidcNSXXzkBm6jCmz4GR7Xle8EmyU6AJ2hRzwh6u8JK/9FzktDu
-         iXbehf91L27BzWNPzpDbqAeagb2dAB6cBloJn8fTgnIKYoSaOJ3hazkpMGFPGKqJaCSd
-         ECPg==
-X-Gm-Message-State: AOAM533BqOYX0C4p/vlic24k+VnwzRg0gq37zMrBEwka68yaGoR/cG1W
-        ft8Im+Ls0RkwZbF/cxcdiJ5iwqBRAczYo9i1CnL/7g==
-X-Google-Smtp-Source: ABdhPJxmVBMhBwyLrU9wZlYjM14fpf07QrSSuWhRKwy/bhfuFtk/QC+rp3AfFWRskkGwVtWXmT29uvhG1IgahYzr+mw=
-X-Received: by 2002:aa7:c805:: with SMTP id a5mr25236154edt.23.1627996659650;
- Tue, 03 Aug 2021 06:17:39 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Jzgmo5C/b0+xzlET/lKyhYqyoM2IpN27wZmzahcw0Uw=;
+        b=CtcIu0ZvnHYje+pDG6zVlm4v8+5Ki691e0v89aVwiyCwdkAMWN08StGuj0EBmpGLzD
+         I3dMt0T8lH86KtGEJJ25L9uEBlhAwSS+vOreaRnJMeAbz6f+1yB/YeXLkBDnSI/SUevB
+         L06NbdefgIYIwNF+y92TSzfyleX7Oaz5meTyqqQm2DOSXteYdK4g6i2rAqKhJR3y/mrP
+         hfjdL2lCn3UrJzYjjg987nbA8NJ3tmzbPsabIVe+kaS/LbfrgEkW7YqT0ivuz4zIOk+x
+         YwU8YMu+pRKa2rOl2bp52mRlqfYpZAkbgUXrAiN096IgZrkYU1ntQ2SSstvkv4pSmxx/
+         wSHQ==
+X-Gm-Message-State: AOAM533lptcGeSblBArJKRvRQqsjt3b6enGMVDmQs8Q7GirU21QNRk8u
+        KON9TnaawHuZMXOxnwEf3qiY7Zwp173GpHKflOcFIYOL
+X-Google-Smtp-Source: ABdhPJwUnCpBnG7Hm+qjkkQ1D0gAVQYjd5Q+13WU0ZbW44GFeWdqxs87Bjnlug4/L+rQJcjvsxdtbFL+9lAtCQCCmxE=
+X-Received: by 2002:a05:6820:161f:: with SMTP id bb31mr14245725oob.44.1627996708797;
+ Tue, 03 Aug 2021 06:18:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210802134334.835358048@linuxfoundation.org>
-In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 3 Aug 2021 18:47:27 +0530
-Message-ID: <CA+G9fYui0Z1RMgMx4Sa41btUxTXMMuZ2uEL6Nhe3G9w7hZH6Pg@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/38] 4.14.242-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <4336554.LvFx2qVVIh@kreacher> <CAAYoRsX+NnOom6f7s6=xOM8rwa_S6tPaQyReYfgDGU4wDkG2uQ@mail.gmail.com>
+In-Reply-To: <CAAYoRsX+NnOom6f7s6=xOM8rwa_S6tPaQyReYfgDGU4wDkG2uQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 3 Aug 2021 15:18:11 +0200
+Message-ID: <CAJZ5v0hFZV6xucCmdDhg6=ActBZarr4so9tkAvzA5cuT5WWjMA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] cpuidle: teo: Fix selection when idle state 0 is disabled
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 at 19:19, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Sat, Jul 31, 2021 at 6:04 AM Doug Smythies <dsmythies@telus.net> wrote:
 >
-> This is the start of the stable review cycle for the 4.14.242 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Fri, Jul 30, 2021 at 7:39 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> >
+> > Hi,
+> >
+> > Patch [1/2] fixes idle state selection in the teo governor when idle state 0
+> > is disabled (which is broken after recent changes in that governor) and patch
+> > [2/2] renames two local variables on top of that change.
+> >
+> > Please see the patch changelogs for details.
 >
-> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
-> Anything received after that time might be too late.
+> Hi Rafael,
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.242-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> I tested this version of the patches, and the idle state 0
+> disabled issue has been fixed.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.14.242-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.14.y
-* git commit: ec038bb8339f8cbc9d78324a4e62c5cb3992e69f
-* git describe: v4.14.241-39-gec038bb8339f
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
-.241-39-gec038bb8339f
-
-## No regressions (compared to v4.14.241-14-g8cb34df08062)
-
-## No fixes (compared to v4.14.241-14-g8cb34df08062)
-
-## Test result summary
- total: 66149, pass: 52221, fail: 673, skip: 11274, xfail: 1981,
-
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 24 total, 24 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 14 total, 14 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Thanks for the confirmation!
