@@ -2,191 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2233DE6E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057253DE6E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233902AbhHCGyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 02:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58868 "EHLO
+        id S234083AbhHCG5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 02:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbhHCGym (ORCPT
+        with ESMTP id S233907AbhHCG5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 02:54:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1646CC061764
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 23:54:32 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mAoJm-0001Wy-LZ; Tue, 03 Aug 2021 08:54:26 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mAoJl-0002XG-Lf; Tue, 03 Aug 2021 08:54:25 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: [PATCH net 1/1] net: dsa: qca: ar9331: make proper initial port defaults
-Date:   Tue,  3 Aug 2021 08:54:24 +0200
-Message-Id: <20210803065424.9692-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        Tue, 3 Aug 2021 02:57:10 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7744DC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 23:56:59 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id cf5so16145969edb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 23:56:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4k/291QQ0Y3kbJa/+9YyY1Du192umeFdR0cwtDAsZ9k=;
+        b=oW8Ld5wErK3IxE3XWkIhMnfw5spUGLTu0t+gc8mDh9sof3FcuBf36BBPw06XLyEwXT
+         kp7IHtoczuGoBIzdWjwSiDaH1yIDseT6TlDt1iDarN/RmZpk326mHCRyakBGxx/Nwejf
+         72QaPqkt6T+LN4hK74coN4TII31j04ZnjG2+E3dwXVwOHhvoRHByOIY8VjgMUpIDuUr2
+         37uA0TlTXd8LtUT4wfTD/b3Chwye+bvHWlPUw2RyeuTPRVUzjiAl/eEOtUMOLiwhgqZc
+         d2imvz7mgizXac6AmQZ4w+LIJeOPdC+zIYRhUguP2Nw+/yIid61FDebe17vveZIhfZ1z
+         hfTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4k/291QQ0Y3kbJa/+9YyY1Du192umeFdR0cwtDAsZ9k=;
+        b=XyfFwyBGmdOPrWLRPMcqsI+zyfAamC6lxCBmhGd/ZMOo0ZuUJPuwcDQ1MwjbBYUXDf
+         7GUuv8YHEx3lqbTXxdzRiQnloTjZNN212wI8CFxQtYWs+eqioA/w5suJlikhD2/6u/gA
+         YaVuzxYBeQMjpTCMlaw7RCcIDvysCNWc+utdoM5i2FWZO1YDm1fn2ze1WE06rFkmoNOS
+         mCpeOkmOu3kTY9hlyz99Ge5iN7sFx5Hzb5uSL1XHc8VvhrLyd5Lxk3hT2CFlssMdKETH
+         GDCTvMSl1aJvVqfZsRMGCd3Nv3Bfw6ScGAPCa0atVu08+WGdI8rWSRn9AbVRPdu01SY+
+         gmXQ==
+X-Gm-Message-State: AOAM5328B0uNEAwuQHcHz84wp8JiOHPJ53FQl1V0aoGzpL3uBiH4GoRi
+        Xxmc0AxbrG2VZ42KsuasmbMN3Da+d+iH8V4FrI2cCg==
+X-Google-Smtp-Source: ABdhPJyVeEUEVChr8RzUvCOUu5aVaoEx7i4QrWV/vqJqC+KjpCyUG9sJbWm1DTh4QaJN7o1m17By+AEF48U9Y5TYKJU=
+X-Received: by 2002:aa7:c805:: with SMTP id a5mr23601080edt.23.1627973817932;
+ Mon, 02 Aug 2021 23:56:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210802134344.028226640@linuxfoundation.org>
+In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 3 Aug 2021 12:26:46 +0530
+Message-ID: <CA+G9fYtT_PLUK0EJkOkwJd+mqBVdDkVLVAUY6i4_ZM2BRHqbkw@mail.gmail.com>
+Subject: Re: [PATCH 5.13 000/104] 5.13.8-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure that all external port are actually isolated from each other,
-so no packets are leaked.
+On Mon, 2 Aug 2021 at 19:25, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.13.8 release.
+> There are 104 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.13.8-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.13.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/dsa/qca/ar9331.c | 99 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 98 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-index 6686192e1883..360417e6cd8c 100644
---- a/drivers/net/dsa/qca/ar9331.c
-+++ b/drivers/net/dsa/qca/ar9331.c
-@@ -101,6 +101,46 @@
- 	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
- 	 AR9331_SW_PORT_STATUS_SPEED_M)
- 
-+#define AR9331_SW_REG_PORT_CTRL(_port)			(0x104 + (_port) * 0x100)
-+#define AR9331_SW_PORT_CTRL_ING_MIRROR_EN		BIT(17)
-+#define AR9331_SW_PORT_CTRL_EG_MIRROR_EN		BIT(16)
-+#define AR9331_SW_PORT_CTRL_DOUBLE_TAG_VLAN		BIT(15)
-+#define AR9331_SW_PORT_CTRL_LEARN_EN			BIT(14)
-+#define AR9331_SW_PORT_CTRL_SINGLE_VLAN_EN		BIT(13)
-+#define AR9331_SW_PORT_CTRL_MAC_LOOP_BACK		BIT(12)
-+#define AR9331_SW_PORT_CTRL_HEAD_EN			BIT(11)
-+#define AR9331_SW_PORT_CTRL_IGMP_MLD_EN			BIT(10)
-+#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE		GENMASK(9, 8)
-+#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_KEEP		0
-+#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_STRIP		1
-+#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_ADD		2
-+#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_DOUBLE		3
-+#define AR9331_SW_PORT_CTRL_LEARN_ONE_LOCK		BIT(7)
-+#define AR9331_SW_PORT_CTRL_PORT_LOCK_EN		BIT(6)
-+#define AR9331_SW_PORT_CTRL_LOCK_DROP_EN		BIT(5)
-+#define AR9331_SW_PORT_CTRL_PORT_STATE			GENMASK(2, 0)
-+#define AR9331_SW_PORT_CTRL_PORT_STATE_DISABLED		0
-+#define AR9331_SW_PORT_CTRL_PORT_STATE_BLOCKING		1
-+#define AR9331_SW_PORT_CTRL_PORT_STATE_LISTENING	2
-+#define AR9331_SW_PORT_CTRL_PORT_STATE_LEARNING		3
-+#define AR9331_SW_PORT_CTRL_PORT_STATE_FORWARD		4
-+
-+#define AR9331_SW_REG_PORT_VLAN(_port)			(0x108 + (_port) * 0x100)
-+#define AR9331_SW_PORT_VLAN_8021Q_MODE			GENMASK(31, 30)
-+#define AR9331_SW_8021Q_MODE_SECURE			3
-+#define AR9331_SW_8021Q_MODE_CHECK			2
-+#define AR9331_SW_8021Q_MODE_FALLBACK			1
-+#define AR9331_SW_8021Q_MODE_NONE			0
-+#define AR9331_SW_PORT_VLAN_ING_PORT_PRI		GENMASK(29, 27)
-+#define AR9331_SW_PORT_VLAN_FORCE_PORT_VLAN_EN		BIT(26)
-+#define AR9331_SW_PORT_VLAN_PORT_VID_MEMBER		GENMASK(25, 16)
-+#define AR9331_SW_PORT_VLAN_ARP_LEAKY_EN		BIT(15)
-+#define AR9331_SW_PORT_VLAN_UNI_LEAKY_EN		BIT(14)
-+#define AR9331_SW_PORT_VLAN_MULTI_LEAKY_EN		BIT(13)
-+#define AR9331_SW_PORT_VLAN_FORCE_DEFALUT_VID_EN	BIT(12)
-+#define AR9331_SW_PORT_VLAN_PORT_VID			GENMASK(11, 0)
-+#define AR9331_SW_PORT_VLAN_PORT_VID_DEF		1
-+
- /* MIB registers */
- #define AR9331_MIB_COUNTER(x)			(0x20000 + ((x) * 0x100))
- 
-@@ -371,12 +411,63 @@ static int ar9331_sw_mbus_init(struct ar9331_sw_priv *priv)
- 	return 0;
- }
- 
--static int ar9331_sw_setup(struct dsa_switch *ds)
-+static int ar9331_sw_setup_port(struct dsa_switch *ds, int port)
- {
- 	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
- 	struct regmap *regmap = priv->regmap;
-+	u32 port_mask, port_ctrl, val;
- 	int ret;
- 
-+	/* Generate default port settings */
-+	port_ctrl = FIELD_PREP(AR9331_SW_PORT_CTRL_PORT_STATE,
-+			       AR9331_SW_PORT_CTRL_PORT_STATE_DISABLED);
-+
-+	if (dsa_is_cpu_port(ds, port)) {
-+		/* CPU port should be allowed to communicate with all user
-+		 * ports.
-+		 */
-+		port_mask = dsa_user_ports(ds);
-+		/* Enable Atheros header on CPU port. This will allow us
-+		 * communicate with each port separately
-+		 */
-+		port_ctrl |= AR9331_SW_PORT_CTRL_HEAD_EN;
-+	} else if (dsa_is_user_port(ds, port)) {
-+		/* User ports should communicate only with the CPU port.
-+		 */
-+		port_mask = BIT(dsa_to_port(ds, port)->cpu_dp->index);
-+		port_ctrl |= AR9331_SW_PORT_CTRL_LEARN_EN;
-+	} else {
-+		/* Other ports do not need to communicate at all */
-+		port_mask = 0;
-+	}
-+
-+	val = FIELD_PREP(AR9331_SW_PORT_VLAN_8021Q_MODE,
-+			 AR9331_SW_8021Q_MODE_NONE) |
-+		FIELD_PREP(AR9331_SW_PORT_VLAN_PORT_VID_MEMBER, port_mask) |
-+		FIELD_PREP(AR9331_SW_PORT_VLAN_PORT_VID,
-+			   AR9331_SW_PORT_VLAN_PORT_VID_DEF);
-+
-+	ret = regmap_write(regmap, AR9331_SW_REG_PORT_VLAN(port), val);
-+	if (ret)
-+		goto error;
-+
-+	ret = regmap_write(regmap, AR9331_SW_REG_PORT_CTRL(port), port_ctrl);
-+	if (ret)
-+		goto error;
-+
-+	return 0;
-+error:
-+	dev_err(priv->dev, "%s: error: %i\n", __func__, ret);
-+
-+	return ret;
-+}
-+
-+static int ar9331_sw_setup(struct dsa_switch *ds)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	struct regmap *regmap = priv->regmap;
-+	int ret, i;
-+
- 	ret = ar9331_sw_reset(priv);
- 	if (ret)
- 		return ret;
-@@ -402,6 +493,12 @@ static int ar9331_sw_setup(struct dsa_switch *ds)
- 	if (ret)
- 		goto error;
- 
-+	for (i = 0; i < ds->num_ports; i++) {
-+		ret = ar9331_sw_setup_port(ds, i);
-+		if (ret)
-+			goto error;
-+	}
-+
- 	ds->configure_vlan_while_not_filtering = false;
- 
- 	return 0;
--- 
-2.30.2
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.13.8-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.13.y
+* git commit: cd55ef855022f15ca361d562635918bb2738f143
+* git describe: v5.13.7-105-gcd55ef855022
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13=
+.7-105-gcd55ef855022
+
+## No regressions (compared to v5.13.7)
+
+## No fixes (compared to v5.13.7)
+
+## Test result summary
+ total: 83254, pass: 68674, fail: 1508, skip: 12075, xfail: 997,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
