@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567923DF7F2
+	by mail.lfdr.de (Postfix) with ESMTP id EA36D3DF7F4
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 00:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233424AbhHCWgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 18:36:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53784 "EHLO mail.kernel.org"
+        id S233677AbhHCWgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 18:36:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233416AbhHCWg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 18:36:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF24360EBB;
-        Tue,  3 Aug 2021 22:36:16 +0000 (UTC)
+        id S229745AbhHCWgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 18:36:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C424461078;
+        Tue,  3 Aug 2021 22:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628030177;
-        bh=LXhoBeBzUTqbh8mDn29zpcWCz1WKAtQq4APb31gMywI=;
+        s=k20201202; t=1628030186;
+        bh=hcHr3un6vM6Jy8wur/6t7L/Lhc7LHra5hoSt0Zdm0Nk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=as3eYrOEj1INmODgOgzQjzwKcBchk8y0e9ltc9kyj+McqYMklyah52uvSJzVkphfO
-         LUoSTnLuEPZHVtRzlkwbj1+S1WSWo5akkJD2DDfRjM2vJgi//clAjHdaOIedmcRbfi
-         0uSSgjq9uj69PV8wPZokDtpENqa1tNSAOVpcvWwbJyjJ+YNpfIOXUC/cbO3lRQrLfo
-         YqA5b7lYEjagGVDC1KeG7mMK6Q/jBFdAIHMWRLTigAjzdemM2MZ5fj68ky2k2eKhHq
-         dfldOI4LwqfgFkJsej4YEOVClo0+mtvpMOv2ZLy4rW3wYM+4FkYx1svp4khYxejdd6
-         e4Bqvpwp7QSQw==
+        b=Gt7uODj/2ODw1IRh8Wtq3MriRjB4G8ItAvkRnU21Gm35JbsAP8v5Ykgz8ZdI24naW
+         j0uOlC3xxzyLHykiig/C1Fq4TGlwHRNJxX82ardqhmhxgRGkiBTUtOLnnnpvJHrVT5
+         q8d+ef/IdAnzof3/sLd1Xj5G4/93vcqqCkORxSB39wJodXaLHvfQo4fZkMUup25B+u
+         8zJyYisVT2o7QtgbaSHUDGjM7KlIqkkVFzE7JU6EOpTKUsAaff40ChfAX4/zy3YMIM
+         Ah6JhK3/2X7YtWbKktO0o8vBrIqtwJ5F/q74xEEaW5DxfmZFU0CkCjOggihxBq4E5n
+         89bFAMNtABpiQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Colin King <colin.king@canonical.com>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ASoC: rt5514: make array div static const, makes object smaller
-Date:   Tue,  3 Aug 2021 23:35:37 +0100
-Message-Id: <162802985540.42099.11025103485301142729.b4-ty@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH 1/2] ASoC: cs42l42: Fix inversion of ADC Notch Switch control
+Date:   Tue,  3 Aug 2021 23:35:40 +0100
+Message-Id: <162802985541.42099.7806067166014112149.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210801064023.138359-1-colin.king@canonical.com>
-References: <20210801064023.138359-1-colin.king@canonical.com>
+In-Reply-To: <20210803160834.9005-1-rf@opensource.cirrus.com>
+References: <20210803160834.9005-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,15 +40,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Aug 2021 07:40:23 +0100, Colin King wrote:
-> Don't populate the array div on the stack but instead it
-> static const. Makes the object code smaller by 48 bytes.
+On Tue, 3 Aug 2021 17:08:33 +0100, Richard Fitzgerald wrote:
+> The underlying register field has inverted sense (0 = enabled) so
+> the control definition must be marked as inverted.
 > 
-> Before:
->    text    data     bss     dec     hex filename
->   53894   16368     128   70390   112f6 ./sound/soc/codecs/rt5514.o
 > 
-> [...]
+> 
+> 
 
 Applied to
 
@@ -60,8 +54,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5514: make array div static const, makes object smaller
-      commit: 5c8a7efc2fd5eb716c48d7d7ab4295effbc09ba3
+[1/2] ASoC: cs42l42: Fix inversion of ADC Notch Switch control
+      commit: 30615bd21b4cc3c3bb5ae8bd70e2a915cc5f75c7
+[2/2] ASoC: cs42l42: Remove duplicate control for WNF filter frequency
+      commit: 8b353bbeae20e2214c9d9d88bcb2fda4ba145d83
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
