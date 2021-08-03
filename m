@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A273A3DEAEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992BB3DEABB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235454AbhHCK2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:28:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60036 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235440AbhHCK2j (ORCPT
+        id S235324AbhHCKTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235143AbhHCKTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:28:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627986508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DYi9zCYb/+nOBKs9RrX6QQsVbPNcDstKhS42LRE6Yz8=;
-        b=G7snbLaaWfF8G3eFM1u0JRDr1AZ9mwtz6CWkte/o38wubdewfSPh+reYyd/Gw4C/xcCzso
-        TfTMJl+HK37jHpKNjZpM3rtUechrG60hP05LA7s6rh9K+PHoPS4wsyAJw/B0mUIVYGBiHa
-        YMEp5anHNvKGiV+cJ0ECXqO4oe08Wrg=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-461-LA2T3P8JP5CdekIMZQes9A-1; Tue, 03 Aug 2021 06:17:28 -0400
-X-MC-Unique: LA2T3P8JP5CdekIMZQes9A-1
-Received: by mail-ed1-f70.google.com with SMTP id cm18-20020a0564020c92b02903bc7f21d540so8784612edb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 03:17:28 -0700 (PDT)
+        Tue, 3 Aug 2021 06:19:54 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2359C06175F;
+        Tue,  3 Aug 2021 03:19:42 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id t3so21004354plg.9;
+        Tue, 03 Aug 2021 03:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F7RnLTo1duVJvP6tLxEr595jWac0+5GeUDVvQVHcqHw=;
+        b=KN2u/kABvY84pUcpffrlhIsxuY9/C2uY0va5yFYWn8ZEaIlxEsthJuMbC1UqYbB7Xc
+         VNXPHviFqwdNehgCxm+QGOr6oCUokHZ0vBNefe/wHKqBAcnmynU/jjcPGPYprTyyvNX9
+         R946PjvD07V7wJSe3TaSuI1xDrVcXN6uz+O18WpueokEERDC8+Fu3d5rXQFscSPVUJHZ
+         AWgXBC5gPiv9rvYDAVF1lsE7Vj3H4ofW3kA2wQ1U7FK/VrIlU0+881x1SYzRLllPT3iD
+         3MTHMqOXRLYYUTeOrsy7trTExcSE41XxZObua8dACBw6GZ5vpb6Z2w3pc5saeVDAv4Ry
+         ElrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DYi9zCYb/+nOBKs9RrX6QQsVbPNcDstKhS42LRE6Yz8=;
-        b=rckDNeQXPdSUrlqKNnaFlrXyZNGEJrGLWMo92Nn3aBB/h7dva2cQGDLP9cEnLEI3eM
-         CoXzSoLO7zLMv02IuuLiGoGsf+2AnBldtJus4HJU1naoGIMtxz1thkgUhFGhacNfpGke
-         vC3kkD865e4+iBqnnapMqVnkom/2qkm1kMengL+szx76gfIGDjy5rR7LDnxqwD9zXJ7V
-         dEdQ+3lyQcNzEw5Tyw0jFxeuHbCm7Dp/z8/MKtZLeuU9Cc2JAVAfq3EsGKp5tTD66uoi
-         TcWEyafnata0HvAmkyAZReuB0M/JE7A8HTdIqDZ6jYANCR9VnHsEwuXek5T+8lVxp9kq
-         mfHA==
-X-Gm-Message-State: AOAM533plZFOpnNGEYfsJ7ZgkQwei93yYm9qaoDA/s6n3LHR34VsLcLV
-        DxPGdSazvb95RHMew24oCP3PuecI8Xiz4ChnCHEpT5mXXFFbxN8436s/jqvYHZ5JBW1mWVCC7VC
-        ZcKO3Q37sI2I+JjjyYARKPoitY6ufgntLRlY/8ZBx1yvnhRVUgoq2pIjTzAFClJdkxx6nD+Y5l5
-        HL
-X-Received: by 2002:a50:d509:: with SMTP id u9mr24862227edi.35.1627985846760;
-        Tue, 03 Aug 2021 03:17:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDS1D+kAoCLsIYfZDG+RsOKE9AsTRgy/bfs4niMLVxVR1QrN7uNK38I4Dok8Un0Xu/9yTj4Q==
-X-Received: by 2002:a50:d509:: with SMTP id u9mr24862205edi.35.1627985846600;
-        Tue, 03 Aug 2021 03:17:26 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id p23sm7850198edt.71.2021.08.03.03.17.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 03:17:26 -0700 (PDT)
-Subject: Re: [PATCH 0/4] KVM: x86: hyper-v: Check if guest is allowed to use
- XMM registers for hypercall input
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Siddharth Chandrasekaran <sidcha@amazon.de>,
-        linux-kernel@vger.kernel.org
-References: <20210730122625.112848-1-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <291904b2-a7f4-2b04-0822-7a723d09db02@redhat.com>
-Date:   Tue, 3 Aug 2021 12:17:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F7RnLTo1duVJvP6tLxEr595jWac0+5GeUDVvQVHcqHw=;
+        b=JcB5k6BrWZ6+Cpd86JgNwwDwM9zW6MMIzCrT9s2XxUGSH3Ggjoe3OEtfIDV4p/xYsq
+         lAaVlSyA2m8GyQvcNWJXuFTePQffRgoeDkVY9QejDH9aZU5uDC6a6lYIapfyMponNayd
+         3VA3KescwPezg7zU1ZaBkpMtGLE9aizrMm8IvjcbZtsbrkf7U1GyIX8E0f0DO5kazaAn
+         temPzMgPU8jK3rXm7UWJmROHw6gEaMMCfN75diEG382PyXZ89XrJrfnBgL9Sos++rlVj
+         U3BWX/zIwk6CSO0yeTJzedghacdVAAPP637455s8vlUOVf2ge24JFseHjHiz6RbiZ+M/
+         /AXw==
+X-Gm-Message-State: AOAM5307WuOKj5IzRz4W65gzkg3qC7SUsiKf6bYeehqts3jsUcF/AoTZ
+        Jx1+r74H90f5A1xS5R7R2CS4NxC7fUb8ov3HBxo=
+X-Google-Smtp-Source: ABdhPJy+rTe0WWJKWfgUD5NiYTKWFd0/T4ONqgUvyaBzg+FYi56KGtPJ6MVhY0FmVEPN0Rl5CYM4YFGCT6tTE7pzhFk=
+X-Received: by 2002:aa7:800b:0:b029:330:455f:57a8 with SMTP id
+ j11-20020aa7800b0000b0290330455f57a8mr21285120pfi.7.1627985982087; Tue, 03
+ Aug 2021 03:19:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210730122625.112848-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210730205355.26504-1-andriy.shevchenko@linux.intel.com> <20210802231643.GA1474171@bjorn-Precision-5520>
+In-Reply-To: <20210802231643.GA1474171@bjorn-Precision-5520>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 3 Aug 2021 13:19:05 +0300
+Message-ID: <CAHp75VeKvBqi=vhkq0Vqv76t3qKzWmy_v_ZmeL4mbPztmcGb7g@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] x86/PCI: Introduce pcibios_is_irq_managed() helper
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/07/21 14:26, Vitaly Kuznetsov wrote:
-> "KVM: x86: hyper-v: Fine-grained access check to Hyper-V hypercalls and
-> MSRs" and "Add support for XMM fast hypercalls" series were developed
-> at the same time so the later landed without a proper feature bit check
-> for 'strict' (KVM_CAP_HYPERV_ENFORCE_CPUID) mode. Add it now.
-> 
-> TLFS states that "Availability of the XMM fast hypercall interface is
-> indicated via the “Hypervisor Feature Identification” CPUID Leaf
-> (0x40000003, see section 2.4.4) ... Any attempt to use this interface
-> when the hypervisor does not indicate availability will result in a #UD
-> fault."
-> 
-> Vitaly Kuznetsov (4):
->    KVM: x86: hyper-v: Check access to hypercall before reading XMM
->      registers
->    KVM: x86: Introduce trace_kvm_hv_hypercall_done()
->    KVM: x86: hyper-v: Check if guest is allowed to use XMM registers for
->      hypercall input
->    KVM: selftests: Test access to XMM fast hypercalls
-> 
->   arch/x86/kvm/hyperv.c                         | 18 ++++++--
->   arch/x86/kvm/trace.h                          | 15 +++++++
->   .../selftests/kvm/include/x86_64/hyperv.h     |  5 ++-
->   .../selftests/kvm/x86_64/hyperv_features.c    | 41 +++++++++++++++++--
->   4 files changed, 71 insertions(+), 8 deletions(-)
-> 
+On Tue, Aug 3, 2021 at 2:17 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> On Fri, Jul 30, 2021 at 11:53:55PM +0300, Andy Shevchenko wrote:
 
-Queued, thanks.
+...
 
-Paolo
+> > -     if (!pin || !dev->irq_managed || dev->irq <= 0)
+> > +     if (!pin || !pcibios_irq_is_managed(dev))
+>
+> This file may be compiled for x86, arm64, and ia64, but it looks like
+> you only defined pcibios_irq_is_managed() for x86.
 
+Ah, right. Ignore this patch.
+Thanks for the review!
+
+-- 
+With Best Regards,
+Andy Shevchenko
