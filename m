@@ -2,164 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEB43DE9E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3FE3DE9EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhHCJoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:44:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:45558 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235139AbhHCJoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:44:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0D9E11D4;
-        Tue,  3 Aug 2021 02:44:42 -0700 (PDT)
-Received: from [192.168.1.13] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B563B3F40C;
-        Tue,  3 Aug 2021 02:44:39 -0700 (PDT)
-Subject: Re: [PATCH v2 1/1] PM: EM: Increase energy calculation precision
-To:     Lukasz Luba <lukasz.luba@arm.com>, peterz@infradead.org,
-        vincent.guittot@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Chris.Redpath@arm.com,
-        morten.rasmussen@arm.com, qperret@google.com,
-        linux-pm@vger.kernel.org, stable@vger.kernel.org,
-        rjw@rjwysocki.net, viresh.kumar@linaro.org, mingo@redhat.com,
-        juri.lelli@redhat.com, rostedt@goodmis.org, segall@google.com,
-        mgorman@suse.de, bristot@redhat.com, CCj.Yeh@mediatek.com
-References: <20210720094153.31097-1-lukasz.luba@arm.com>
- <20210720094153.31097-2-lukasz.luba@arm.com>
- <3a98d39b-d607-03d2-819b-5150f6755c96@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <461df215-8f78-2f29-aaba-636aebb21337@arm.com>
-Date:   Tue, 3 Aug 2021 11:44:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235139AbhHCJpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235124AbhHCJpI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 05:45:08 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36325C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:44:57 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id cf5so16661952edb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=7ArTaS55GcHRrlg8uUcqb0/VYMv30LO+TcruGsLFfOA=;
+        b=nneisuAfVkRQwNF4jkMM3S1DtCT6ZpBiwI/1yDvRZehpiYxoqROz3bsi/IoEPLpKyd
+         xxYtdUxI5AUFsvWpnWsW4VtrS1REX+NU2X4KhDcQVUfGNLY1Zpz/Ub7T43jzhs4mtanz
+         7mICSo5yZQJ2uQ+SbUsLuZ8AK/c318a9X5Qed4ZfRsOcVQY8vpHH+afBNrn1sV9xrbsr
+         LF4tcKPQxxCnFpqDHBFrI9ttcK2wtfbiUtlj+8gUtRqtaztnfyGM8F06axoGMsSJCUbk
+         8XgQjvEUFQOh+PaunyKWjeGTmxGqvAxdDZqjcaOeZ30GR3HdFULQN0ZIe9vZcPK3/sWV
+         MQzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=7ArTaS55GcHRrlg8uUcqb0/VYMv30LO+TcruGsLFfOA=;
+        b=Vef81rPC+eXOSpjuvZpHhXC6jD0gstctaPNzPZB8SfqQlydOwUhLFbCzawnY9NoUau
+         ThTRl7hDruCMywk9r7+GgTh4KF25tpeMqMkoYkQU1qvXCt2TP2LMARo9QA0wKm6v0IJx
+         GuiH+q4Grm7xrUmd8yU0b9MOfS7x/xQzt+omIJwNEX0b237jSCk2YHPiSDIdwMcbA0Qn
+         CTPYP+fr4SGKybxU33iTs5dEZpdNGNfiAWv07/2TIKaz/F//0WzGyOefdBVLL8B+mbYp
+         b5I/eqO0RxfoYT6PEdTeo9h0ZCL530cd3NjSkbuUfzDLUlQTa6q+sn9sobpADpZyYqLl
+         Yd4Q==
+X-Gm-Message-State: AOAM532Z+YREFG50JkSfr3TQrGu++4/t1K2Z8pCRhDTy/caa9O/CsWvZ
+        aSJFaEOWyM9deLuG1eUT+PwQ8NE1VgZr4SYLhRhkUA==
+X-Google-Smtp-Source: ABdhPJwiDRUWz8PbJ85/X6g/6bE/DA8L0p3jb1n24/i0E5m+g8kBV8qWpyTyCwUsN/CKVlU0ERzbNXb12Kz0b7pPzsk=
+X-Received: by 2002:aa7:de92:: with SMTP id j18mr24304786edv.141.1627983895787;
+ Tue, 03 Aug 2021 02:44:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3a98d39b-d607-03d2-819b-5150f6755c96@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a50:2486:0:0:0:0:0 with HTTP; Tue, 3 Aug 2021 02:44:55 -0700 (PDT)
+X-Originating-IP: [5.35.57.254]
+In-Reply-To: <20210803082553.25194-1-yajun.deng@linux.dev>
+References: <20210803082553.25194-1-yajun.deng@linux.dev>
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+Date:   Tue, 3 Aug 2021 12:44:55 +0300
+Message-ID: <CAOJe8K0_v0SHY913pnCHKZ9WUdNGOJ2nbagsr5t=ytiJ-Y3rrQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: Modify sock_set_keepalive() for more scenarios
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, mptcp@lists.linux.dev,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-s390@vger.kernel.org, linux-nfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2021 08:21, Lukasz Luba wrote:
-> Hi Peter, Vincent,
-> 
-> Gentle ping.
-> 
-> 
-> On 7/20/21 10:41 AM, Lukasz Luba wrote:
+On 8/3/21, Yajun Deng <yajun.deng@linux.dev> wrote:
+> Add 2nd parameter in sock_set_keepalive(), let the caller decide
+> whether to set. This can be applied to more scenarios.
 
-[...]
+It makes sense to send the patch within a context of other scenarios
 
->> There are corner cases when the EAS energy calculation for two
->> Performance
->> Domains (PDs) return the same value. The EAS compares these values to
->> choose smaller one. It might happen that this values are equal due to
->> rounding error. In such scenario, we need better resolution, e.g. 1000
->> times better. To provide this possibility increase the resolution in the
->> em_perf_state::cost for 64-bit architectures. The costs for increasing
->> resolution in 32-bit architectures are pretty high (64-bit division) and
->> the returns do not justify the increased costs.
-
-s/The costs ... increased costs./The cost of increasing resolution on
-32-bit is pretty high (64-bit division) and is not justified since there
-are no new 32bit big.LITTLE EAS systems expected which would benefit
-from this higher resolution./ ?
-
->> This patch allows to avoid the rounding to milli-Watt errors, which might
->> occur in EAS energy estimation for each Performance Domains (PD). The
-
-s/Performance Domains (PD)/PD.
-
-[...]
-
->> Scenario:
->> Low utilized system e.g. ~200 sum_util for PD0 and ~220 for PD1. There
->> are quite a few small tasks ~10-15 util. These tasks would suffer for
->> the rounding error. Such system utilization has been seen while playing
->> some simple games. In such condition our partner reported 5..10mA less
->> battery drain.
-
-Hard to digest: Maybe s/Such system ... battery drain./These utilization
-values are typical when running games on Android. One of our partners
-has reported 5..10mA less battery drain when running with increased
-resolution./ ?
-
->>
->> Some details:
->> We have two Perf Domains (PDs): PD0 (big) and PD1 (little)
-
-s/Perf Domains (PDs)/PDs
-
-[...]
-
->> 2. Difference in the the last find_energy_efficient_cpu(): margin filter.
-
-s/in the the last find_energy_efficient_cpu(): margin filter/in the 6%
-energy margin filter at the end of find_energy_efficient_cpu()/ ?
-
->> With this patch the margin comparison also has better resolution,
->> so it's possible to have better task placement thanks to that.
->>
->> Fixes: 27871f7a8a341ef ("PM: Introduce an Energy Model management
->> framework")
->> Reported-by: CCJ Yeh <CCj.Yeh@mediatek.com>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   include/linux/energy_model.h | 16 ++++++++++++++++
->>   kernel/power/energy_model.c  |  3 ++-
->>   2 files changed, 18 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
->> index 3f221dbf5f95..1834752c5617 100644
->> --- a/include/linux/energy_model.h
->> +++ b/include/linux/energy_model.h
->> @@ -53,6 +53,22 @@ struct em_perf_domain {
->>   #ifdef CONFIG_ENERGY_MODEL
->>   #define EM_MAX_POWER 0xFFFF
->>   +/*
->> + * Increase resolution of energy estimation calculations for 64-bit
->> + * architectures. The extra resolution improves decision made by EAS
->> for the
->> + * task placement when two Performance Domains might provide similar
->> energy
->> + * estimation values (w/o better resolution the values could be equal).
->> + *
->> + * We increase resolution only if we have enough bits to allow this
->> increased
->> + * resolution (i.e. 64-bit). The costs for increasing resolution when
->> 32-bit
->> + * are pretty high and the returns do not justify the increased costs.
->> + */
->> +#ifdef CONFIG_64BIT
->> +#define em_scale_power(p) ((p) * 1000)
->> +#else
->> +#define em_scale_power(p) (p)
->> +#endif
->> +
->>   struct em_data_callback {
->>       /**
->>        * active_power() - Provide power at the next performance state of
->> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
->> index 0f4530b3a8cd..bf312c04c514 100644
->> --- a/kernel/power/energy_model.c
->> +++ b/kernel/power/energy_model.c
->> @@ -170,7 +170,8 @@ static int em_create_perf_table(struct device
->> *dev, struct em_perf_domain *pd,
->>       /* Compute the cost of each performance state. */
->>       fmax = (u64) table[nr_states - 1].frequency;
->>       for (i = 0; i < nr_states; i++) {
->> -        table[i].cost = div64_u64(fmax * table[i].power,
->> +        unsigned long power_res = em_scale_power(table[i].power);
->> +        table[i].cost = div64_u64(fmax * power_res,
->>                         table[i].frequency);
->>       }
-
-Otherwise, LGTM.
-
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-
-This is now an EM only patch (Task scheduler (i.e. CFS/EAS) is only
-effected via compute_energy() -> em_cpu_energy().
+>
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+>  include/net/sock.h    |  2 +-
+>  net/core/filter.c     |  4 +---
+>  net/core/sock.c       | 10 ++++------
+>  net/mptcp/sockopt.c   |  4 +---
+>  net/rds/tcp_listen.c  |  2 +-
+>  net/smc/af_smc.c      |  2 +-
+>  net/sunrpc/xprtsock.c |  2 +-
+>  7 files changed, 10 insertions(+), 16 deletions(-)
+>
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index ff1be7e7e90b..0aae26159549 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -2772,7 +2772,7 @@ int sock_set_timestamping(struct sock *sk, int
+> optname,
+>
+>  void sock_enable_timestamps(struct sock *sk);
+>  void sock_no_linger(struct sock *sk);
+> -void sock_set_keepalive(struct sock *sk);
+> +void sock_set_keepalive(struct sock *sk, bool valbool);
+>  void sock_set_priority(struct sock *sk, u32 priority);
+>  void sock_set_rcvbuf(struct sock *sk, int val);
+>  void sock_set_mark(struct sock *sk, u32 val);
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index faf29fd82276..41b2bf140b89 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4769,9 +4769,7 @@ static int _bpf_setsockopt(struct sock *sk, int level,
+> int optname,
+>  			ret = sock_bindtoindex(sk, ifindex, false);
+>  			break;
+>  		case SO_KEEPALIVE:
+> -			if (sk->sk_prot->keepalive)
+> -				sk->sk_prot->keepalive(sk, valbool);
+> -			sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
+> +			sock_set_keepalive(sk, !!valbool);
+>  			break;
+>  		case SO_REUSEPORT:
+>  			sk->sk_reuseport = valbool;
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 9671c32e6ef5..7041e6355ae1 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -892,12 +892,12 @@ int sock_set_timestamping(struct sock *sk, int
+> optname,
+>  	return 0;
+>  }
+>
+> -void sock_set_keepalive(struct sock *sk)
+> +void sock_set_keepalive(struct sock *sk, bool valbool)
+>  {
+>  	lock_sock(sk);
+>  	if (sk->sk_prot->keepalive)
+> -		sk->sk_prot->keepalive(sk, true);
+> -	sock_valbool_flag(sk, SOCK_KEEPOPEN, true);
+> +		sk->sk_prot->keepalive(sk, valbool);
+> +	sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
+>  	release_sock(sk);
+>  }
+>  EXPORT_SYMBOL(sock_set_keepalive);
+> @@ -1060,9 +1060,7 @@ int sock_setsockopt(struct socket *sock, int level,
+> int optname,
+>  		break;
+>
+>  	case SO_KEEPALIVE:
+> -		if (sk->sk_prot->keepalive)
+> -			sk->sk_prot->keepalive(sk, valbool);
+> -		sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
+> +		sock_set_keepalive(sk, !!valbool);
+>  		break;
+>
+>  	case SO_OOBINLINE:
+> diff --git a/net/mptcp/sockopt.c b/net/mptcp/sockopt.c
+> index 8c03afac5ca0..879b8381055c 100644
+> --- a/net/mptcp/sockopt.c
+> +++ b/net/mptcp/sockopt.c
+> @@ -81,9 +81,7 @@ static void mptcp_sol_socket_sync_intval(struct mptcp_sock
+> *msk, int optname, in
+>  			sock_valbool_flag(ssk, SOCK_DBG, !!val);
+>  			break;
+>  		case SO_KEEPALIVE:
+> -			if (ssk->sk_prot->keepalive)
+> -				ssk->sk_prot->keepalive(ssk, !!val);
+> -			sock_valbool_flag(ssk, SOCK_KEEPOPEN, !!val);
+> +			sock_set_keepalive(ssk, !!val);
+>  			break;
+>  		case SO_PRIORITY:
+>  			ssk->sk_priority = val;
+> diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+> index 09cadd556d1e..b69ebb3f424a 100644
+> --- a/net/rds/tcp_listen.c
+> +++ b/net/rds/tcp_listen.c
+> @@ -44,7 +44,7 @@ void rds_tcp_keepalive(struct socket *sock)
+>  	int keepidle = 5; /* send a probe 'keepidle' secs after last data */
+>  	int keepcnt = 5; /* number of unack'ed probes before declaring dead */
+>
+> -	sock_set_keepalive(sock->sk);
+> +	sock_set_keepalive(sock->sk, true);
+>  	tcp_sock_set_keepcnt(sock->sk, keepcnt);
+>  	tcp_sock_set_keepidle(sock->sk, keepidle);
+>  	/* KEEPINTVL is the interval between successive probes. We follow
+> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> index 898389611ae8..ad8f4302037f 100644
+> --- a/net/smc/af_smc.c
+> +++ b/net/smc/af_smc.c
+> @@ -68,7 +68,7 @@ static void smc_set_keepalive(struct sock *sk, int val)
+>  {
+>  	struct smc_sock *smc = smc_sk(sk);
+>
+> -	smc->clcsock->sk->sk_prot->keepalive(smc->clcsock->sk, val);
+> +	sock_set_keepalive(smc->clcsock->sk, !!val);
+>  }
+>
+>  static struct smc_hashinfo smc_v4_hashinfo = {
+> diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
+> index e573dcecdd66..306a332f8d28 100644
+> --- a/net/sunrpc/xprtsock.c
+> +++ b/net/sunrpc/xprtsock.c
+> @@ -2127,7 +2127,7 @@ static void xs_tcp_set_socket_timeouts(struct rpc_xprt
+> *xprt,
+>  	spin_unlock(&xprt->transport_lock);
+>
+>  	/* TCP Keepalive options */
+> -	sock_set_keepalive(sock->sk);
+> +	sock_set_keepalive(sock->sk, true);
+>  	tcp_sock_set_keepidle(sock->sk, keepidle);
+>  	tcp_sock_set_keepintvl(sock->sk, keepidle);
+>  	tcp_sock_set_keepcnt(sock->sk, keepcnt);
+> --
+> 2.32.0
+>
+>
