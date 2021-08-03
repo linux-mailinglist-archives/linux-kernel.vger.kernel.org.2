@@ -2,19 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77FAD3DEFF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1793DEFEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236589AbhHCORX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236501AbhHCORS (ORCPT
+        id S236566AbhHCORV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:17:21 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56868 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236448AbhHCORR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:17:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC56EC061764;
-        Tue,  3 Aug 2021 07:17:06 -0700 (PDT)
+        Tue, 3 Aug 2021 10:17:17 -0400
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1628000225;
@@ -22,31 +19,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aHPrHYGQ8v1XEJpOG6LdVnCzD7dhUki+Kf02opOvfjU=;
-        b=ZqWIXiuVrluOH6iMS6Xlm9z7Ed3vOeofFPYHEViqoTIPemJarf5N37Ne63K+k3xJAO4NuJ
-        2yzS9PVdJ44DqcS/3f+nH5UCVQU49tGOQtnvcLGlLpPsg9xtMGM5GddgB8eLeGqBYZQOYM
-        tar59mvdyYqpgyFPDFY2cEXsWZ0TwoKLK4xOOcISCB4SV48PeSqXHVOM7I7hBGqN7dGh67
-        T4zW2qFOMLBa4jNyBJW0i/W6shbcyqtFyW+NfqDAFuuYGOzAJ7oMSVnU9RzPxcnkCz91pC
-        bIAvE1hI0YXr8g1Iq94DxJNv4UQt98IP66mJMncNkgRwt64G8BvnwOI9H4lemg==
+        bh=Uaki9fQLj1MkzriRH3NHbpRwMmzcJeDXfssyd8zuEL8=;
+        b=jTpIscGhO1q1MqzCg/lGFpXa0f2WnTrlFD2fGlSMBNGkKAJOrbXKxYEz8kUP+011c/tv+T
+        evrt/I+nnXE9jNB8+NgMuEAqGuIrLUTVl+r9X+nIiRBHjGHRjGucyk4JKAerZhu55Bh3J/
+        LSecTW9WsD70fTuN73Ios0hH0BnYz+ISmqAmh+YGYfw8GrlyPqdj0qwTVpLBcJCMl7POc9
+        t96wUWHk+Uk+4HSEZyQagZ7O+IPCUURPN+HnF7owkJycL8lpMUiC3ROUzHHsbhTy1GisAd
+        aKpF3hu3HPnsqte+pcAF9gctwTds/gTX8e4eUwrRJKu4YLxIaGp5Mcmw32+tBA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1628000225;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aHPrHYGQ8v1XEJpOG6LdVnCzD7dhUki+Kf02opOvfjU=;
-        b=6wt1eryPb47jrAEEQtsyqUMvEE2Jnwi1ug80WIzJ6t1diQJMBy4yg75wT0OqzN7iDwBoyE
-        v/7Q+HrPVFVnC2Aw==
+        bh=Uaki9fQLj1MkzriRH3NHbpRwMmzcJeDXfssyd8zuEL8=;
+        b=L1FswKe+W/s5X2YasHc3pAv8CcS+EfMoNt1AS4HiYEpY2uukc4icAHmZkQWmOaB2hZ+NjD
+        xNLlu9yKnMb6f0Cw==
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org
-Subject: [PATCH 03/38] powerpc: Replace deprecated CPU-hotplug functions.
-Date:   Tue,  3 Aug 2021 16:15:46 +0200
-Message-Id: <20210803141621.780504-4-bigeasy@linutronix.de>
+        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: [PATCH 04/38] s390: Replace deprecated CPU-hotplug functions.
+Date:   Tue,  3 Aug 2021 16:15:47 +0200
+Message-Id: <20210803141621.780504-5-bigeasy@linutronix.de>
 In-Reply-To: <20210803141621.780504-1-bigeasy@linutronix.de>
 References: <20210803141621.780504-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -62,139 +58,237 @@ cpus_read_lock() and cpus_read_unlock().
 Replace deprecated CPU-hotplug functions with the official version.
 The behavior remains unchanged.
 
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: kvm-ppc@vger.kernel.org
+Cc: linux-s390@vger.kernel.org
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- arch/powerpc/kernel/rtasd.c               |  4 ++--
- arch/powerpc/kvm/book3s_hv_builtin.c      | 10 +++++-----
- arch/powerpc/platforms/powernv/idle.c     |  4 ++--
- arch/powerpc/platforms/powernv/opal-imc.c |  8 ++++----
- 4 files changed, 13 insertions(+), 13 deletions(-)
+ arch/s390/hypfs/hypfs_diag0c.c  | 10 +++++-----
+ arch/s390/kernel/diag.c         |  4 ++--
+ arch/s390/kernel/irq.c          |  4 ++--
+ arch/s390/kernel/perf_cpum_cf.c |  4 ++--
+ arch/s390/kernel/processor.c    |  4 ++--
+ arch/s390/kernel/smp.c          |  8 ++++----
+ arch/s390/kernel/topology.c     |  4 ++--
+ arch/s390/mm/maccess.c          |  4 ++--
+ 8 files changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/arch/powerpc/kernel/rtasd.c b/arch/powerpc/kernel/rtasd.c
-index 8561dfb33f241..32ee17753eb4a 100644
---- a/arch/powerpc/kernel/rtasd.c
-+++ b/arch/powerpc/kernel/rtasd.c
-@@ -429,7 +429,7 @@ static void rtas_event_scan(struct work_struct *w)
-=20
- 	do_event_scan();
+diff --git a/arch/s390/hypfs/hypfs_diag0c.c b/arch/s390/hypfs/hypfs_diag0c.c
+index 6c43d2ba20797..5cd3d8478ac18 100644
+--- a/arch/s390/hypfs/hypfs_diag0c.c
++++ b/arch/s390/hypfs/hypfs_diag0c.c
+@@ -33,12 +33,12 @@ static void *diag0c_store(unsigned int *count)
+ 	unsigned int cpu_count, cpu, i;
+ 	void **cpu_vec;
 =20
 -	get_online_cpus();
 +	cpus_read_lock();
-=20
- 	/* raw_ OK because just using CPU as starting point. */
- 	cpu =3D cpumask_next(raw_smp_processor_id(), cpu_online_mask);
-@@ -451,7 +451,7 @@ static void rtas_event_scan(struct work_struct *w)
- 	schedule_delayed_work_on(cpu, &event_scan_work,
- 		__round_jiffies_relative(event_scan_delay, cpu));
-=20
+ 	cpu_count =3D num_online_cpus();
+ 	cpu_vec =3D kmalloc_array(num_possible_cpus(), sizeof(*cpu_vec),
+ 				GFP_KERNEL);
+ 	if (!cpu_vec)
+-		goto fail_put_online_cpus;
++		goto fail_unlock_cpus;
+ 	/* Note: Diag 0c needs 8 byte alignment and real storage */
+ 	diag0c_data =3D kzalloc(struct_size(diag0c_data, entry, cpu_count),
+ 			      GFP_KERNEL | GFP_DMA);
+@@ -54,13 +54,13 @@ static void *diag0c_store(unsigned int *count)
+ 	on_each_cpu(diag0c_fn, cpu_vec, 1);
+ 	*count =3D cpu_count;
+ 	kfree(cpu_vec);
 -	put_online_cpus();
 +	cpus_read_unlock();
+ 	return diag0c_data;
+=20
+ fail_kfree_cpu_vec:
+ 	kfree(cpu_vec);
+-fail_put_online_cpus:
+-	put_online_cpus();
++fail_unlock_cpus:
++	cpus_read_unlock();
+ 	return ERR_PTR(-ENOMEM);
  }
 =20
- #ifdef CONFIG_PPC64
-diff --git a/arch/powerpc/kvm/book3s_hv_builtin.c b/arch/powerpc/kvm/book3s=
-_hv_builtin.c
-index be8ef1c5b1bfb..fcf4760a3a0ea 100644
---- a/arch/powerpc/kvm/book3s_hv_builtin.c
-+++ b/arch/powerpc/kvm/book3s_hv_builtin.c
-@@ -137,23 +137,23 @@ long int kvmppc_rm_h_confer(struct kvm_vcpu *vcpu, in=
-t target,
-  * exist in the system. We use a counter of VMs to track this.
-  *
-  * One of the operations we need to block is onlining of secondaries, so we
-- * protect hv_vm_count with get/put_online_cpus().
-+ * protect hv_vm_count with cpus_read_lock/unlock().
-  */
- static atomic_t hv_vm_count;
-=20
- void kvm_hv_vm_activated(void)
- {
--	get_online_cpus();
-+	cpus_read_lock();
- 	atomic_inc(&hv_vm_count);
--	put_online_cpus();
-+	cpus_read_unlock();
- }
- EXPORT_SYMBOL_GPL(kvm_hv_vm_activated);
-=20
- void kvm_hv_vm_deactivated(void)
- {
--	get_online_cpus();
-+	cpus_read_lock();
- 	atomic_dec(&hv_vm_count);
--	put_online_cpus();
-+	cpus_read_unlock();
- }
- EXPORT_SYMBOL_GPL(kvm_hv_vm_deactivated);
-=20
-diff --git a/arch/powerpc/platforms/powernv/idle.c b/arch/powerpc/platforms=
-/powernv/idle.c
-index 528a7e0cf83aa..aa27689b832db 100644
---- a/arch/powerpc/platforms/powernv/idle.c
-+++ b/arch/powerpc/platforms/powernv/idle.c
-@@ -199,12 +199,12 @@ static ssize_t store_fastsleep_workaround_applyonce(s=
-truct device *dev,
- 	 */
- 	power7_fastsleep_workaround_exit =3D false;
+diff --git a/arch/s390/kernel/diag.c b/arch/s390/kernel/diag.c
+index a3f47464c3f17..4c2ac7ceef94a 100644
+--- a/arch/s390/kernel/diag.c
++++ b/arch/s390/kernel/diag.c
+@@ -59,7 +59,7 @@ static int show_diag_stat(struct seq_file *m, void *v)
+ 	unsigned long n =3D (unsigned long) v - 1;
+ 	int cpu, prec, tmp;
 =20
 -	get_online_cpus();
 +	cpus_read_lock();
- 	primary_thread_mask =3D cpu_online_cores_map();
- 	on_each_cpu_mask(&primary_thread_mask,
- 				pnv_fastsleep_workaround_apply,
- 				&err, 1);
--	put_online_cpus();
-+	cpus_read_unlock();
- 	if (err) {
- 		pr_err("fastsleep_workaround_applyonce change failed while running pnv_f=
-astsleep_workaround_apply");
- 		goto fail;
-diff --git a/arch/powerpc/platforms/powernv/opal-imc.c b/arch/powerpc/platf=
-orms/powernv/opal-imc.c
-index 7824cc364bc40..ba02a75c14102 100644
---- a/arch/powerpc/platforms/powernv/opal-imc.c
-+++ b/arch/powerpc/platforms/powernv/opal-imc.c
-@@ -186,7 +186,7 @@ static void disable_nest_pmu_counters(void)
- 	int nid, cpu;
- 	const struct cpumask *l_cpumask;
+ 	if (n =3D=3D 0) {
+ 		seq_puts(m, "         ");
 =20
--	get_online_cpus();
-+	cpus_read_lock();
- 	for_each_node_with_cpus(nid) {
- 		l_cpumask =3D cpumask_of_node(nid);
- 		cpu =3D cpumask_first_and(l_cpumask, cpu_online_mask);
-@@ -195,7 +195,7 @@ static void disable_nest_pmu_counters(void)
- 		opal_imc_counters_stop(OPAL_IMC_COUNTERS_NEST,
- 				       get_hard_smp_processor_id(cpu));
+@@ -78,7 +78,7 @@ static int show_diag_stat(struct seq_file *m, void *v)
+ 		}
+ 		seq_printf(m, "    %s\n", diag_map[n-1].name);
  	}
 -	put_online_cpus();
 +	cpus_read_unlock();
+ 	return 0;
  }
 =20
- static void disable_core_pmu_counters(void)
-@@ -203,7 +203,7 @@ static void disable_core_pmu_counters(void)
- 	cpumask_t cores_map;
- 	int cpu, rc;
+diff --git a/arch/s390/kernel/irq.c b/arch/s390/kernel/irq.c
+index 234d085257eb1..3a3145c4a3ba4 100644
+--- a/arch/s390/kernel/irq.c
++++ b/arch/s390/kernel/irq.c
+@@ -228,7 +228,7 @@ int show_interrupts(struct seq_file *p, void *v)
+ 	int index =3D *(loff_t *) v;
+ 	int cpu, irq;
 =20
 -	get_online_cpus();
 +	cpus_read_lock();
- 	/* Disable the IMC Core functions */
- 	cores_map =3D cpu_online_cores_map();
- 	for_each_cpu(cpu, &cores_map) {
-@@ -213,7 +213,7 @@ static void disable_core_pmu_counters(void)
- 			pr_err("%s: Failed to stop Core (cpu =3D %d)\n",
- 				__FUNCTION__, cpu);
+ 	if (index =3D=3D 0) {
+ 		seq_puts(p, "           ");
+ 		for_each_online_cpu(cpu)
+@@ -258,7 +258,7 @@ int show_interrupts(struct seq_file *p, void *v)
+ 		seq_putc(p, '\n');
  	}
+ out:
+-	put_online_cpus();
++	cpus_read_unlock();
+ 	return 0;
+ }
+=20
+diff --git a/arch/s390/kernel/perf_cpum_cf.c b/arch/s390/kernel/perf_cpum_c=
+f.c
+index d7dc36ec0a60e..2e3bb633acf6c 100644
+--- a/arch/s390/kernel/perf_cpum_cf.c
++++ b/arch/s390/kernel/perf_cpum_cf.c
+@@ -1138,7 +1138,7 @@ static long cfset_ioctl(struct file *file, unsigned i=
+nt cmd, unsigned long arg)
+ {
+ 	int ret;
+=20
+-	get_online_cpus();
++	cpus_read_lock();
+ 	mutex_lock(&cfset_ctrset_mutex);
+ 	switch (cmd) {
+ 	case S390_HWCTR_START:
+@@ -1155,7 +1155,7 @@ static long cfset_ioctl(struct file *file, unsigned i=
+nt cmd, unsigned long arg)
+ 		break;
+ 	}
+ 	mutex_unlock(&cfset_ctrset_mutex);
+-	put_online_cpus();
++	cpus_read_unlock();
+ 	return ret;
+ }
+=20
+diff --git a/arch/s390/kernel/processor.c b/arch/s390/kernel/processor.c
+index 82df39b17bb55..d8089a79b3f65 100644
+--- a/arch/s390/kernel/processor.c
++++ b/arch/s390/kernel/processor.c
+@@ -210,7 +210,7 @@ static inline void *c_update(loff_t *pos)
+=20
+ static void *c_start(struct seq_file *m, loff_t *pos)
+ {
+-	get_online_cpus();
++	cpus_read_lock();
+ 	return c_update(pos);
+ }
+=20
+@@ -222,7 +222,7 @@ static void *c_next(struct seq_file *m, void *v, loff_t=
+ *pos)
+=20
+ static void c_stop(struct seq_file *m, void *v)
+ {
 -	put_online_cpus();
 +	cpus_read_unlock();
  }
 =20
- int get_max_nest_dev(void)
+ const struct seq_operations cpuinfo_op =3D {
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index 8984711f72ede..b18cab79c370a 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -793,7 +793,7 @@ static int __smp_rescan_cpus(struct sclp_core_info *inf=
+o, bool early)
+ 	u16 core_id;
+ 	int nr, i;
+=20
+-	get_online_cpus();
++	cpus_read_lock();
+ 	mutex_lock(&smp_cpu_state_mutex);
+ 	nr =3D 0;
+ 	cpumask_xor(&avail, cpu_possible_mask, cpu_present_mask);
+@@ -816,7 +816,7 @@ static int __smp_rescan_cpus(struct sclp_core_info *inf=
+o, bool early)
+ 		nr +=3D smp_add_core(&info->core[i], &avail, configured, early);
+ 	}
+ 	mutex_unlock(&smp_cpu_state_mutex);
+-	put_online_cpus();
++	cpus_read_unlock();
+ 	return nr;
+ }
+=20
+@@ -1055,7 +1055,7 @@ static ssize_t cpu_configure_store(struct device *dev,
+ 		return -EINVAL;
+ 	if (val !=3D 0 && val !=3D 1)
+ 		return -EINVAL;
+-	get_online_cpus();
++	cpus_read_lock();
+ 	mutex_lock(&smp_cpu_state_mutex);
+ 	rc =3D -EBUSY;
+ 	/* disallow configuration changes of online cpus and cpu 0 */
+@@ -1104,7 +1104,7 @@ static ssize_t cpu_configure_store(struct device *dev,
+ 	}
+ out:
+ 	mutex_unlock(&smp_cpu_state_mutex);
+-	put_online_cpus();
++	cpus_read_unlock();
+ 	return rc ? rc : count;
+ }
+ static DEVICE_ATTR(configure, 0644, cpu_configure_show, cpu_configure_stor=
+e);
+diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
+index 26aa2614ee352..d2458a29618fa 100644
+--- a/arch/s390/kernel/topology.c
++++ b/arch/s390/kernel/topology.c
+@@ -406,7 +406,7 @@ static ssize_t dispatching_store(struct device *dev,
+ 	if (val !=3D 0 && val !=3D 1)
+ 		return -EINVAL;
+ 	rc =3D 0;
+-	get_online_cpus();
++	cpus_read_lock();
+ 	mutex_lock(&smp_cpu_state_mutex);
+ 	if (cpu_management =3D=3D val)
+ 		goto out;
+@@ -417,7 +417,7 @@ static ssize_t dispatching_store(struct device *dev,
+ 	topology_expect_change();
+ out:
+ 	mutex_unlock(&smp_cpu_state_mutex);
+-	put_online_cpus();
++	cpus_read_unlock();
+ 	return rc ? rc : count;
+ }
+ static DEVICE_ATTR_RW(dispatching);
+diff --git a/arch/s390/mm/maccess.c b/arch/s390/mm/maccess.c
+index a0f54bd5e98ab..9663ce3625bcd 100644
+--- a/arch/s390/mm/maccess.c
++++ b/arch/s390/mm/maccess.c
+@@ -228,7 +228,7 @@ void *xlate_dev_mem_ptr(phys_addr_t addr)
+ 	void *bounce =3D (void *) addr;
+ 	unsigned long size;
+=20
+-	get_online_cpus();
++	cpus_read_lock();
+ 	preempt_disable();
+ 	if (is_swapped(addr)) {
+ 		size =3D PAGE_SIZE - (addr & ~PAGE_MASK);
+@@ -237,7 +237,7 @@ void *xlate_dev_mem_ptr(phys_addr_t addr)
+ 			memcpy_absolute(bounce, (void *) addr, size);
+ 	}
+ 	preempt_enable();
+-	put_online_cpus();
++	cpus_read_unlock();
+ 	return bounce;
+ }
+=20
 --=20
 2.32.0
 
