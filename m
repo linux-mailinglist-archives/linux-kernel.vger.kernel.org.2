@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6C63DF007
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54373DF00B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236834AbhHCOR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:17:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57036 "EHLO
+        id S236562AbhHCOSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:18:05 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56910 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236549AbhHCORV (ORCPT
+        with ESMTP id S236546AbhHCORV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Aug 2021 10:17:21 -0400
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
@@ -19,28 +19,32 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=clbqKT1fPD2WJMpM6uc7v0qE6R46vwL2Klxs/fx6jpw=;
-        b=SHp+acffAFQJTevPnSm+5yKV+s+2pXMIke8PmGtImP6eDVosdG/thA5sw1SpFHZ5WV0RrG
-        uiLcFbBCc06KBblqI8fxVcN7DFDmdAT5ARYm6ACu7urd3hYGeWVHibV4ZobqcaBOYrkZa8
-        9vFWJh/IxFgYhcsfrWgrrogb79VpctI/nQIeUjDn4xCxE5gnA5+t4cCLrZ7wBQBCVYZYqY
-        E3mobc+LOJ1SgCVRq5I6K+4VxrUKTW0sKL0DkO6MX6jy9KOsfWihXj4MFd8Yjzht37fzS+
-        AT0yqPqeB7FLChIR4nwV5CKbAA5WsmdF+/qcm+R3KkH1rx+BcsJDJjVQljjgwA==
+        bh=VREIiyPB44EOoA48Hgenjjr9/qg/9YBkMbLcGe4Ifxc=;
+        b=MP/FrbkMnSZirNvCz/eSh7rmt6Kfps13//1GT/d1sUGObeQ3IJZBLz4iP53RsSGViwMqf9
+        DQfh2eR8o/jsNjd6MIIFpOX0tTOosCzq8JY3Ed1Bp1BMYwhnOSnJSZI4gmF1Jg9rNtsMUy
+        gQZAHOTTRzziBQ7s7RW0XMcxjGtmL50f9Q9p7wqMo3O7W2XSTQj8mTVDxOXq4tYFe1tBTf
+        SDRFCo5pCqj1qErhihHyvIO7sZXBHXQhRhksFAbiwuxSHMMX1qci00vLOlfxjYbIGne6HH
+        k59GKVAr/9tDkHel1yBwp8MxBlvFtkFOrUO1rC7zB+Z/sNuVL2v4keCuOUbpTw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1628000229;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=clbqKT1fPD2WJMpM6uc7v0qE6R46vwL2Klxs/fx6jpw=;
-        b=KasqPCA2Yv2pD4a/l519/xfeCJKQq/BCmwrsxivp1w2ab5SofeYkr2EkFl5wuJbdv6exjq
-        lxEBXSmWJNXBssAg==
+        bh=VREIiyPB44EOoA48Hgenjjr9/qg/9YBkMbLcGe4Ifxc=;
+        b=7LMkNTETBbeh+KxxNNf7KJWthuJ3w788acZientu0FcEkqE8rzIAxWZnDZJVmfMdyXXx3S
+        FwhX492j4K0VsRCg==
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org
-Subject: [PATCH 15/38] md/raid5: Replace deprecated CPU-hotplug functions.
-Date:   Tue,  3 Aug 2021 16:15:58 +0200
-Message-Id: <20210803141621.780504-16-bigeasy@linutronix.de>
+        Robin Holt <robinmholt@gmail.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 16/38] sgi-xpc: Replace deprecated CPU-hotplug functions.
+Date:   Tue,  3 Aug 2021 16:15:59 +0200
+Message-Id: <20210803141621.780504-17-bigeasy@linutronix.de>
 In-Reply-To: <20210803141621.780504-1-bigeasy@linutronix.de>
 References: <20210803141621.780504-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -56,37 +60,52 @@ cpus_read_lock() and cpus_read_unlock().
 Replace deprecated CPU-hotplug functions with the official version.
 The behavior remains unchanged.
 
-Cc: Song Liu <song@kernel.org>
-Cc: linux-raid@vger.kernel.org
+Cc: Robin Holt <robinmholt@gmail.com>
+Cc: Steve Wahl <steve.wahl@hpe.com>
+Cc: Mike Travis <mike.travis@hpe.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/md/raid5.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/misc/sgi-xp/xpc_uv.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index b8436e4930ed8..02ed53b20654c 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -2437,7 +2437,7 @@ static int resize_chunks(struct r5conf *conf, int new=
-_disks, int new_sectors)
- 	    conf->scribble_sectors >=3D new_sectors)
- 		return 0;
- 	mddev_suspend(conf->mddev);
+diff --git a/drivers/misc/sgi-xp/xpc_uv.c b/drivers/misc/sgi-xp/xpc_uv.c
+index 7791bde81a368..ba9ae0e2df0fe 100644
+--- a/drivers/misc/sgi-xp/xpc_uv.c
++++ b/drivers/misc/sgi-xp/xpc_uv.c
+@@ -1742,7 +1742,7 @@ xpc_init_mq_node(int nid)
+ {
+ 	int cpu;
+=20
 -	get_online_cpus();
 +	cpus_read_lock();
 =20
- 	for_each_present_cpu(cpu) {
- 		struct raid5_percpu *percpu;
-@@ -2449,7 +2449,7 @@ static int resize_chunks(struct r5conf *conf, int new=
-_disks, int new_sectors)
+ 	for_each_cpu(cpu, cpumask_of_node(nid)) {
+ 		xpc_activate_mq_uv =3D
+@@ -1753,7 +1753,7 @@ xpc_init_mq_node(int nid)
  			break;
+ 	}
+ 	if (IS_ERR(xpc_activate_mq_uv)) {
+-		put_online_cpus();
++		cpus_read_unlock();
+ 		return PTR_ERR(xpc_activate_mq_uv);
+ 	}
+=20
+@@ -1767,11 +1767,11 @@ xpc_init_mq_node(int nid)
+ 	}
+ 	if (IS_ERR(xpc_notify_mq_uv)) {
+ 		xpc_destroy_gru_mq_uv(xpc_activate_mq_uv);
+-		put_online_cpus();
++		cpus_read_unlock();
+ 		return PTR_ERR(xpc_notify_mq_uv);
  	}
 =20
 -	put_online_cpus();
 +	cpus_read_unlock();
- 	mddev_resume(conf->mddev);
- 	if (!err) {
- 		conf->scribble_disks =3D new_disks;
+ 	return 0;
+ }
+=20
 --=20
 2.32.0
 
