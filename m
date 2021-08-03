@@ -2,350 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784163DE8E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C418D3DE8EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234896AbhHCIuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:50:22 -0400
-Received: from mga04.intel.com ([192.55.52.120]:18401 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234689AbhHCIuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:50:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="211762837"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="211762837"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:50:08 -0700
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="510951292"
-Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.0.162]) ([10.238.0.162])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:50:06 -0700
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-Subject: Re: [PATCH v4 2/5] KVM: X86: Expose PKS to guest
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210205083706.14146-1-chenyi.qiang@intel.com>
- <20210205083706.14146-3-chenyi.qiang@intel.com> <YQLa4UErfNbdjv3l@google.com>
-Message-ID: <4c335e72-5866-9b7a-ee99-712adc9a9228@intel.com>
-Date:   Tue, 3 Aug 2021 16:50:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <YQLa4UErfNbdjv3l@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S234728AbhHCIvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:51:23 -0400
+Received: from mail-bn8nam11on2048.outbound.protection.outlook.com ([40.107.236.48]:30273
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234768AbhHCIvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:51:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PQcw5ffu744LogvHu1/1BYZkZ+E6Lc2grrd+TX3vo80YZomLwZoIjXXLoGaCOTtEuMdsXEvRoPbQ9Yq/XFdRzURT/Ak3Ap6gu5sZ9y4wkc53Te5mBBpCx9DiIVEiY0xmY4DVQvayGPRLBEOV70C1Uf5VN+KcbiUvzawDV/qS44Wsul68kPLWPOpcFgsBGsnYncIptVmBa89oL5Vz9NrkfIzv5vtj8e1eFSRX/AEwMGGc5Eqnigg49Yf1pkyxP4QOcfVI4TcYCcNajC76JVpcb3aiaFrXHT+gjMNtKgurePCaznfAT5TAbclhzh0Ht8uaVL7Ffm0nfFtru8WGiFBukA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AO7yUfjXTPeJmOG/GmFDEiCyag57fyPk4LIaD+0E9YU=;
+ b=WE7HRIliWPArQZVJEtC/i5Mg9ROlmiwT3SdOBNoGe1gISnzMo0Uv8QdjfoGhhL3PtqzporDAIPaKllqab9NykrKbBsr4xy18zamwPDLeQ+WiKknEZpygl1m+Su1KvGhAuM/EA8lMphEqjwX9zmOg09OEwuy2Qd51fs6CkoDubQ6FkvyXsFVZoTwWW3QpjRnGiVVGPx9cOArK57RDhUioW+yM9ZoUQLhk5u6oV0Q1Fep/f5rQp9mm/5NkhhZGlrfxwGxgIWAYKTna3u4QsNEKmAUkbY9YDAQfz9KlpdM1zCjODoMtbVNyimB+gxdhmQ8bpLw806eANxXVFepwYe4SaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AO7yUfjXTPeJmOG/GmFDEiCyag57fyPk4LIaD+0E9YU=;
+ b=cu198HaPUAt4ApQ3gt/iezsCWfGXlA3S1DnJDFW/KGX16UIh0nBWhoL2oNfpYzjN+yw2s8Ryj63cjq2SxAJP+MqYmix4XjvK5BoD37kkQkChdzomL6SnVPE7tB0piqTq/lRBIL7+Rmv8E7ptN0rGYZkc3bDUOl+c+mpaiqeFdK4=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
+ by BN9PR03MB6090.namprd03.prod.outlook.com (2603:10b6:408:11b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Tue, 3 Aug
+ 2021 08:50:50 +0000
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::5ced:deaa:371e:f124]) by BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::5ced:deaa:371e:f124%9]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 08:50:50 +0000
+Date:   Tue, 3 Aug 2021 16:50:43 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: sy8824x: Enable REGCACHE_FLAT
+Message-ID: <20210803165043.042ec24d@xhacker.debian>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR16CA0008.namprd16.prod.outlook.com
+ (2603:10b6:a03:1a0::21) To BN9PR03MB6058.namprd03.prod.outlook.com
+ (2603:10b6:408:137::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BY5PR16CA0008.namprd16.prod.outlook.com (2603:10b6:a03:1a0::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19 via Frontend Transport; Tue, 3 Aug 2021 08:50:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0ca9c704-7831-4933-adf0-08d9565bcb6d
+X-MS-TrafficTypeDiagnostic: BN9PR03MB6090:
+X-Microsoft-Antispam-PRVS: <BN9PR03MB60902D710EC1E3A92016615DEDF09@BN9PR03MB6090.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vd/027NtDIXwS47R2i/3YVYYipaCt8aXhX7PveudllELwDLGxn4OvN70OODGmZzDlKJtjdNqE/yuUZ+byvwdI/RL8EZc0KW4D/XWx/8lB1EO5o/Dw2E5ugZC+1yOSioAhXm4n7IgB4A8mO/yl7/lBpVrEY+wAUUfJtvWafuxtIKUt8T9sEliGhU+Pwy9bLkREu+kDtFq0XEy3KAz0REsS5HIkprgxFX45k8fjp9HC33o9IO5mF9J8EM+xoW2iRW8Vb3XGoWNTIBTGJDa50h4pZQBfiObSYA4wonPknI+uLTPKPrFWvrM/cSmkkEs/FgbUjO0Ezk8cw311cqr2tLRa1yImg9vQMsBr7k4n/FH9gaki1p6LxshpYXSCTOVcKdPW0u3jFFKxkBemfISd6qhKMZ02vQLu7mGe+VowCvqpbGuGL0Yz7+ci94c2VBPO7qSiEGyBzZs6CxHcXd/j/zmhNaNOQ/5tDUEAIz0bxLlkfnjVk9/UGsylVkj0LsX6NsdUT3+hQeso5crQfSWj5dHTnjBDI+nJnYI6N3iFVIOIpSxS8C2Mnbiu+Jzc8yItBzQJYAl1+vFQ8wfjDhT/n4e5YjFU4KWW0QbdI/Ut52saP5ugZtV6pVbX4CQrpcaxSgYxQbwriY2eucY9f8+PbmWZ+x5dJ1VNM/rZ0zMeeZ9cke0tCii5KPNDEMmIjnCeQ5/smQg03ry2zy2ND1pMZqWdw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39850400004)(396003)(136003)(366004)(55016002)(956004)(86362001)(316002)(110136005)(38100700002)(38350700002)(8676002)(1076003)(5660300002)(83380400001)(6666004)(478600001)(186003)(9686003)(7696005)(6506007)(26005)(2906002)(4326008)(66556008)(8936002)(52116002)(66946007)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IVUGgT0qn+yNorqrE1PiOl1zFKFbCTc4Zl2o4TD+N9lLBKvqSYWr22UmI5oa?=
+ =?us-ascii?Q?pHB3H30DQvvrOoJgohSKs810gMWraj29dQ89P5Lk2Q9pXuwvV1m1UChW0I0B?=
+ =?us-ascii?Q?lI+1fHnyWCC/GGgcx3G3X4jNs6qC3mvS68axy0FxXdvK+bqMIHkeX861iJNi?=
+ =?us-ascii?Q?qlsNIoa0e3H4Tx8UQb2G3/dfNYw1qyKDND36biS4Lgou2xuvCPlRUUXEtKJU?=
+ =?us-ascii?Q?hTmoahZ44e30nTeDS+WFiucqq+fflJ5ckEV5UQBS0NSYVGfzBBVKgIH9PQUl?=
+ =?us-ascii?Q?YQQSd2AMGgoKw9E/yvM9875Wa+AhAscW9wNbhh35ZhYUGvBsKnW7bdfvShWJ?=
+ =?us-ascii?Q?v0ji/Dwry5d1/WrKUt/GQUa0LXQNIQqMoMOTObOewU8faYwvwEJUP9MAWPFn?=
+ =?us-ascii?Q?sUzHP74J2YCVZgvsZ6QM3MefzJOC6zkfGLKgRCZVCGZMhhZnuiN7XMwk2RMD?=
+ =?us-ascii?Q?1ZfMwQupQ859CDWaPo6RDjjNhUB1JgcU9nnd1ScdH+MzjVoyG1J9plpCGRPi?=
+ =?us-ascii?Q?l9o3pkTQBrvhe3Ky0BI3U0GdoW7d+Po6Hh/zutGMEh7TyQsKqEsrFuP0t3uL?=
+ =?us-ascii?Q?AYqSbfIHQL7m5SLHcAhVGw6zDnWEmipzpvM7UMu99uQx8RLeby1PlW1L/iPa?=
+ =?us-ascii?Q?TzTAgKn0W3WJP8JptARr7Hd2PcC00/fbVF4g8BP6S7lrEmswcf1UBI+p58/j?=
+ =?us-ascii?Q?fsB/9tV6gMhPIVxNnYZI5w/gFwmGheL6LoNBc7FDOpZuwgSO8yM19eexLx3s?=
+ =?us-ascii?Q?3uzsjwlH/2chOJAeyIqi8WLgegcVDSVW9Wy8D4hIOLr5h2jV5msVBSDx7t4r?=
+ =?us-ascii?Q?xNiVHNrclRZSv83d73t4JrHlpfjUeRivLizpW0qQnzyw22/cSxUGY3epo6jq?=
+ =?us-ascii?Q?NDifD8aGT84CLlo1A6+6FWXPA5fxg+QlW7Zko7nBfayDSJB/uhEw+EDisyf+?=
+ =?us-ascii?Q?AxVHIC9Ky1lwu3tyAXq6BG3KSFhhv7tzSNOHCzoKuhOnLK48OkhSEZ2jZsa2?=
+ =?us-ascii?Q?3Ez/Oi/OCahvzAixIr7/WRwuUsfWkUNL8xt/d48b/LTVAoUvChlKFevPMqGE?=
+ =?us-ascii?Q?kkriEw8Ch2S95a8EwAFf+UESm5ztEN+m/AbM+wF0g3UupPdvLSs5asanyIHD?=
+ =?us-ascii?Q?t5lKtVDyIO35NMbJnehqYsKjWJZsdRwoqKFxIs8LLmJpzxdlfY4KSehJCMt1?=
+ =?us-ascii?Q?Jbdw61gU0cLRyjyGX6/oA050Advmx15VexRRJNCL/NVoLRaTwAJCDqooQ6P6?=
+ =?us-ascii?Q?FrT1en/3ghdH+sThPfWiEychwWl+fXwSsTx/O8mRxOfQrIql3wZnYO8KGFC7?=
+ =?us-ascii?Q?DwD4drAwB2mktQ2s66kSU60H?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ca9c704-7831-4933-adf0-08d9565bcb6d
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 08:50:50.6054
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pymS3ZRcacL3Mv20KRrj71LiF6kcKntkWLiG75fJPQ8P4gyEuU0GWL+cNgXln7S2fSs/PbS3cGTKHm8FvvUc/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR03MB6090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Sean for your review.
+Enable regmap cache to reduce i2c transactions and corresponding
+interrupts if regulator is accessed frequently. Since the register map
+is small -- there's only one register in sy8824c and sy8824e, there
+are only two registers in sy20276 and sy20278, so we use a FLAT regmap
+cache.
 
-On 7/30/2021 12:44 AM, Sean Christopherson wrote:
-> On Fri, Feb 05, 2021, Chenyi Qiang wrote:
->> @@ -539,6 +540,7 @@ struct kvm_vcpu_arch {
->>   	unsigned long cr8;
->>   	u32 host_pkru;
->>   	u32 pkru;
->> +	u32 pkrs;
->>   	u32 hflags;
->>   	u64 efer;
->>   	u64 apic_base;
-> 
-> ...
-> 
->> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->> index 89af692deb7e..2266d98ace6f 100644
->> --- a/arch/x86/kvm/vmx/nested.c
->> +++ b/arch/x86/kvm/vmx/nested.c
->> @@ -250,6 +250,7 @@ static void vmx_sync_vmcs_host_state(struct vcpu_vmx *vmx,
->>   	dest->ds_sel = src->ds_sel;
->>   	dest->es_sel = src->es_sel;
->>   #endif
->> +	dest->pkrs = src->pkrs;
-> 
-> This is wrong.  It also arguably belongs in patch 04.
-> 
-> The part that's missing is actually updating vmcs.HOST_IA32_PKRS.  FS/GS are
-> handled by vmx_set_host_fs_gs(), while LDT/DS/ES are oddballs where the selector
-> is also the state that's restored.
-> 
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ drivers/regulator/sy8824x.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-Will fix it. I guess it should belong in patch 05.
+diff --git a/drivers/regulator/sy8824x.c b/drivers/regulator/sy8824x.c
+index 62d243f3b904..5e915cf307b3 100644
+--- a/drivers/regulator/sy8824x.c
++++ b/drivers/regulator/sy8824x.c
+@@ -25,6 +25,7 @@ struct sy8824_config {
+ 	unsigned int vsel_min;
+ 	unsigned int vsel_step;
+ 	unsigned int vsel_count;
++	const struct regmap_config *config;
+ };
+ 
+ struct sy8824_device_info {
+@@ -110,6 +111,15 @@ static int sy8824_regulator_register(struct sy8824_device_info *di,
+ static const struct regmap_config sy8824_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
++	.num_reg_defaults_raw = 1,
++	.cache_type = REGCACHE_FLAT,
++};
++
++static const struct regmap_config sy20276_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.num_reg_defaults_raw = 2,
++	.cache_type = REGCACHE_FLAT,
+ };
+ 
+ static int sy8824_i2c_probe(struct i2c_client *client)
+@@ -134,7 +144,7 @@ static int sy8824_i2c_probe(struct i2c_client *client)
+ 	di->dev = dev;
+ 	di->cfg = of_device_get_match_data(dev);
+ 
+-	regmap = devm_regmap_init_i2c(client, &sy8824_regmap_config);
++	regmap = devm_regmap_init_i2c(client, di->cfg->config);
+ 	if (IS_ERR(regmap)) {
+ 		dev_err(dev, "Failed to allocate regmap!\n");
+ 		return PTR_ERR(regmap);
+@@ -160,6 +170,7 @@ static const struct sy8824_config sy8824c_cfg = {
+ 	.vsel_min = 762500,
+ 	.vsel_step = 12500,
+ 	.vsel_count = 64,
++	.config = &sy8824_regmap_config,
+ };
+ 
+ static const struct sy8824_config sy8824e_cfg = {
+@@ -169,6 +180,7 @@ static const struct sy8824_config sy8824e_cfg = {
+ 	.vsel_min = 700000,
+ 	.vsel_step = 12500,
+ 	.vsel_count = 64,
++	.config = &sy8824_regmap_config,
+ };
+ 
+ static const struct sy8824_config sy20276_cfg = {
+@@ -178,6 +190,7 @@ static const struct sy8824_config sy20276_cfg = {
+ 	.vsel_min = 600000,
+ 	.vsel_step = 10000,
+ 	.vsel_count = 128,
++	.config = &sy20276_regmap_config,
+ };
+ 
+ static const struct sy8824_config sy20278_cfg = {
+@@ -187,6 +200,7 @@ static const struct sy8824_config sy20278_cfg = {
+ 	.vsel_min = 762500,
+ 	.vsel_step = 12500,
+ 	.vsel_count = 64,
++	.config = &sy20276_regmap_config,
+ };
+ 
+ static const struct of_device_id sy8824_dt_ids[] = {
+-- 
+2.32.0
 
-> In other words, this will cause nested VM-Exit to load the wrong PKRS.
-> 
->>   }
->>   
->>   static void vmx_switch_vmcs(struct kvm_vcpu *vcpu, struct loaded_vmcs *vmcs)
->> diff --git a/arch/x86/kvm/vmx/vmcs.h b/arch/x86/kvm/vmx/vmcs.h
->> index 1472c6c376f7..b5ba6407c5e1 100644
->> --- a/arch/x86/kvm/vmx/vmcs.h
->> +++ b/arch/x86/kvm/vmx/vmcs.h
->> @@ -40,6 +40,7 @@ struct vmcs_host_state {
->>   #ifdef CONFIG_X86_64
->>   	u16           ds_sel, es_sel;
->>   #endif
->> +	u32           pkrs;
->>   };
->>   
->>   struct vmcs_controls_shadow {
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 47b8357b9751..a3d95492e2b7 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -363,6 +363,8 @@ module_param_cb(vmentry_l1d_flush, &vmentry_l1d_flush_ops, NULL, 0644);
->>   static u32 vmx_segment_access_rights(struct kvm_segment *var);
->>   static __always_inline void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu,
->>   							  u32 msr, int type);
->> +static __always_inline void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu,
->> +							 u32 msr, int type);
->>   
->>   void vmx_vmexit(void);
->>   
->> @@ -660,6 +662,8 @@ static bool is_valid_passthrough_msr(u32 msr)
->>   	case MSR_IA32_RTIT_ADDR0_A ... MSR_IA32_RTIT_ADDR3_B:
->>   		/* PT MSRs. These are handled in pt_update_intercept_for_msr() */
->>   		return true;
->> +	case MSR_IA32_PKRS:
->> +		return true;
-> 
-> This is wrong with respect to MSR filtering, as KVM will fail to intercept the
-> MSR in response to a filter change.  See vmx_msr_filter_changed()..  I also think
-> that special casing PKRS is a bad idea in general.  More later.
-> 
-
-Yes, msr filter support for PKRS was missing. Will add the support in 
-vmx_msr_filter_changed().
-
->>   	}
->>   
->>   	r = possible_passthrough_msr_slot(msr) != -ENOENT;
-> 
-> ...
-> 
->> +	case MSR_IA32_PKRS:
->> +		if (!kvm_pkrs_valid(data))
->> +			return 1;
->> +		if (!kvm_cpu_cap_has(X86_FEATURE_PKS) ||
->> +		    (!msr_info->host_initiated &&
->> +		    !guest_cpuid_has(vcpu, X86_FEATURE_PKS)))
->> +			return 1;
->> +		if (vcpu->arch.pkrs != data) {
-> 
-> This will need to be modified if we go with my below proposal.
-> 
->> +			vcpu->arch.pkrs = data;
->> +			vmcs_write64(GUEST_IA32_PKRS, data);
->> +		}
->> +		break;
->>   	case MSR_TSC_AUX:
->>   		if (!msr_info->host_initiated &&
->>   		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
->> @@ -2479,7 +2518,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
->>   	      VM_EXIT_LOAD_IA32_EFER |
->>   	      VM_EXIT_CLEAR_BNDCFGS |
->>   	      VM_EXIT_PT_CONCEAL_PIP |
->> -	      VM_EXIT_CLEAR_IA32_RTIT_CTL;
->> +	      VM_EXIT_CLEAR_IA32_RTIT_CTL |
->> +	      VM_EXIT_LOAD_IA32_PKRS;
->>   	if (adjust_vmx_controls(min, opt, MSR_IA32_VMX_EXIT_CTLS,
->>   				&_vmexit_control) < 0)
->>   		return -EIO;
->> @@ -2503,7 +2543,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
->>   	      VM_ENTRY_LOAD_IA32_EFER |
->>   	      VM_ENTRY_LOAD_BNDCFGS |
->>   	      VM_ENTRY_PT_CONCEAL_PIP |
->> -	      VM_ENTRY_LOAD_IA32_RTIT_CTL;
->> +	      VM_ENTRY_LOAD_IA32_RTIT_CTL |
->> +	      VM_ENTRY_LOAD_IA32_PKRS;
->>   	if (adjust_vmx_controls(min, opt, MSR_IA32_VMX_ENTRY_CTLS,
->>   				&_vmentry_control) < 0)
->>   		return -EIO;
->> @@ -3103,8 +3144,9 @@ int vmx_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
->>   	 * is in force while we are in guest mode.  Do not let guests control
->>   	 * this bit, even if host CR4.MCE == 0.
->>   	 */
->> -	unsigned long hw_cr4;
->> +	unsigned long hw_cr4, old_cr4;
->>   
->> +	old_cr4 = kvm_read_cr4(vcpu);
->>   	hw_cr4 = (cr4_read_shadow() & X86_CR4_MCE) | (cr4 & ~X86_CR4_MCE);
->>   	if (is_unrestricted_guest(vcpu))
->>   		hw_cr4 |= KVM_VM_CR4_ALWAYS_ON_UNRESTRICTED_GUEST;
->> @@ -3152,7 +3194,7 @@ int vmx_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
->>   		}
->>   
->>   		/*
->> -		 * SMEP/SMAP/PKU is disabled if CPU is in non-paging mode in
->> +		 * SMEP/SMAP/PKU/PKS is disabled if CPU is in non-paging mode in
->>   		 * hardware.  To emulate this behavior, SMEP/SMAP/PKU needs
->>   		 * to be manually disabled when guest switches to non-paging
->>   		 * mode.
->> @@ -3160,10 +3202,29 @@ int vmx_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
->>   		 * If !enable_unrestricted_guest, the CPU is always running
->>   		 * with CR0.PG=1 and CR4 needs to be modified.
->>   		 * If enable_unrestricted_guest, the CPU automatically
->> -		 * disables SMEP/SMAP/PKU when the guest sets CR0.PG=0.
->> +		 * disables SMEP/SMAP/PKU/PKS when the guest sets CR0.PG=0.
->>   		 */
->>   		if (!is_paging(vcpu))
->> -			hw_cr4 &= ~(X86_CR4_SMEP | X86_CR4_SMAP | X86_CR4_PKE);
->> +			hw_cr4 &= ~(X86_CR4_SMEP | X86_CR4_SMAP | X86_CR4_PKE |
->> +				    X86_CR4_PKS);
->> +	}
->> +
->> +	if ((hw_cr4 ^ old_cr4) & X86_CR4_PKS) {
-> 
-> Comparing hw_cr4 and old_cr4 is wrong, they are representative of two different
-> contexts.  old_cr4 is the guest's previous CR4 irrespective of KVM maniuplations,
-> whereas hw_cr4 does include KVM's modification, e.g. the is_paging() logic above
-> may clear CR4.PKS and may lead to incorrect behavior.
-> 
-> E.g.:
-> 
-> 	guest.CR4.PKS = 1
-> 	guest.CR0.PG  = 0
-> 	guest_hw.CR4.PKS = 0  // KVM
-> 	vmcs.LOAD_PKRS = 0    // KVM
-> 	guest.CR0.PG  = 1
-> 	guest_hw.CR4.PKS = 1  // KVM
-> 	vmcs.LOAD_PKRS not modified because guest.CR4.PKS == guest_hw.CR4.PKS == 1
-> 
-> This logic also fails to handle the case where L1 doesn't intercept CR4.PKS
-> modifications for L2.
-> 
-> The VM-Exit path that does:
-> 
->> +     if (static_cpu_has(X86_FEATURE_PKS) &&
->> +         kvm_read_cr4_bits(vcpu, X86_CR4_PKS))
->> +             vcpu->arch.pkrs = vmcs_read64(GUEST_IA32_PKRS)
-> 
-> is also flawed in that, per this scheme, it may unnecessarily read vmcs.GUEST_PKRS,
-> though I don't think it can get the wrong value, unless of course it's running L2...
-> 
-> In short, IMO toggling PKRS interception/load on CR4 changes is a really, really
-> bad idea.  UMIP emulation attempted do fancy toggling and got it wrong multiple
-> times, and this is more complicated than what UMIP was trying to do.
-> 
-> The only motiviation for toggling PKRS interception/load is to avoid the VMREAD in
-> the VM-Exit path.  Given that vcpu->arch.pkrs is rarely accessed by KVM, e.g. only
-> on host userspace MSR reads and and GVA->GPA translation via permission_fault(),
-> keeping vcpu->arch.pkrs up-to-date at all times is unnecessary, i.e. it can be
-> synchronized on-demand.  And regarding permission_fault(), that's indirectly gated
-> by CR4.PKS=1, thus deferring the VMREAD to permission_fault() is guaranteed to be
-> more performant than reading on every VM-Exit (with CR4.PKS=1).
-> 
-> So:
-> 
->    - Disable PKRS MSR interception if it's exposed to the guest.
->    - Load PKRS on entry/exit if it's exposed to the guest.
->    - Add VCPU_EXREG_PKRS and clear its bits in vmx_register_cache_reset().
->    - Add helpers to read/write/cache PKRS and use accordingly.
-> 
-
-Make sense. Will refactor all these mentioned in next version.
-
->> +		/* pass through PKRS to guest when CR4.PKS=1 */
->> +		if (guest_cpuid_has(vcpu, X86_FEATURE_PKS) && hw_cr4 & X86_CR4_PKS) {
->> +			vmx_disable_intercept_for_msr(vcpu, MSR_IA32_PKRS, MSR_TYPE_RW);
->> +			vm_entry_controls_setbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
->> +			vm_exit_controls_setbit(vmx, VM_EXIT_LOAD_IA32_PKRS);
->> +			/*
->> +			 * Every vm exit saves guest pkrs automatically, sync vcpu->arch.pkrs
->> +			 * to VMCS.GUEST_PKRS to avoid the pollution by host pkrs.
->> +			 */
->> +			vmcs_write64(GUEST_IA32_PKRS, vcpu->arch.pkrs);
->> +		} else {
->> +			vmx_enable_intercept_for_msr(vcpu, MSR_IA32_PKRS, MSR_TYPE_RW);
->> +			vm_entry_controls_clearbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
->> +			vm_exit_controls_clearbit(vmx, VM_EXIT_LOAD_IA32_PKRS);
->> +		}
->>   	}
->>   
->>   	vmcs_writel(CR4_READ_SHADOW, cr4);
-> 
-> ...
-> 
->> @@ -6776,6 +6841,10 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
->>   
->>   	pt_guest_exit(vmx);
->>   
->> +	if (static_cpu_has(X86_FEATURE_PKS) &&
->> +	    kvm_read_cr4_bits(vcpu, X86_CR4_PKS))
->> +		vcpu->arch.pkrs = vmcs_read64(GUEST_IA32_PKRS);
->> +
->>   	kvm_load_host_xsave_state(vcpu);
->>   
->>   	vmx->nested.nested_run_pending = 0;
->> @@ -7280,6 +7349,14 @@ static __init void vmx_set_cpu_caps(void)
->>   	if (vmx_pt_mode_is_host_guest())
->>   		kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
->>   
->> +	/*
->> +	 * PKS is not yet implemented for shadow paging.
->> +	 * If not support VM_{ENTRY, EXIT}_LOAD_IA32_PKRS,
->> +	 * don't expose the PKS as well.
->> +	 */
->> +	if (enable_ept && cpu_has_load_ia32_pkrs())
->> +		kvm_cpu_cap_check_and_set(X86_FEATURE_PKS);
->> +
->>   	if (vmx_umip_emulated())
->>   		kvm_cpu_cap_set(X86_FEATURE_UMIP);
->>   
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index f5ede41bf9e6..684ef760481c 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -1213,7 +1213,7 @@ static const u32 msrs_to_save_all[] = {
->>   	MSR_IA32_RTIT_ADDR1_A, MSR_IA32_RTIT_ADDR1_B,
->>   	MSR_IA32_RTIT_ADDR2_A, MSR_IA32_RTIT_ADDR2_B,
->>   	MSR_IA32_RTIT_ADDR3_A, MSR_IA32_RTIT_ADDR3_B,
->> -	MSR_IA32_UMWAIT_CONTROL,
->> +	MSR_IA32_UMWAIT_CONTROL, MSR_IA32_PKRS,
->>   
->>   	MSR_ARCH_PERFMON_FIXED_CTR0, MSR_ARCH_PERFMON_FIXED_CTR1,
->>   	MSR_ARCH_PERFMON_FIXED_CTR0 + 2, MSR_ARCH_PERFMON_FIXED_CTR0 + 3,
->> @@ -5718,6 +5718,10 @@ static void kvm_init_msr_list(void)
->>   				intel_pt_validate_hw_cap(PT_CAP_num_address_ranges) * 2)
->>   				continue;
->>   			break;
->> +		case MSR_IA32_PKRS:
->> +			if (!kvm_cpu_cap_has(X86_FEATURE_PKS))
->> +				continue;
->> +			break;
->>   		case MSR_ARCH_PERFMON_PERFCTR0 ... MSR_ARCH_PERFMON_PERFCTR0 + 17:
->>   			if (msrs_to_save_all[i] - MSR_ARCH_PERFMON_PERFCTR0 >=
->>   			    min(INTEL_PMC_MAX_GENERIC, x86_pmu.num_counters_gp))
->> @@ -10026,6 +10030,8 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->>   
->>   	vcpu->arch.ia32_xss = 0;
->>   
->> +	vcpu->arch.pkrs = 0;
-> 
-> This is wrong and also unreviewable.  It's wrong because the write isn't propagted
-> to vmcs.GUEST_PKRS, e.g. if the guest enables CR0.PG and CR4.PKS without writing
-> PKRS, KVM will run the guest with a stale value.
-> 
-
-Yes, should write to vmcs to do reset.
-  > It's unreviewable because the SDM doesn't specify whether PKRS is 
-cleared or
-> preserved on INIT.  The SDM needs an entry for PRKS in Table 9-1. "IA-32 and Intel
-> 64 Processor States Following Power-up, Reset, or INIT" before this can be merged.
-> 
-
-PKRS is missing in Table 9-1. It will be updated in next version of SDM, 
-just let you know to help current review:
-
-"PKRS is cleared on INIT. It should be 0 in all cases."
-
->> +
->>   	kvm_x86_ops.vcpu_reset(vcpu, init_event);
->>   }
