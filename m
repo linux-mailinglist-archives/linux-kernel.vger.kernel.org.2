@@ -2,110 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754413DF445
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0A43DF452
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238603AbhHCSBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 14:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238590AbhHCSBl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 14:01:41 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46149C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 11:01:30 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id d22so1903425ioy.11
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 11:01:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XSgoZaAM9VgXcC1Hrs8ckrp1k3/7KUr3SiJsCaEXetc=;
-        b=Z4v4AiDHaHTqqraFKHHLdvrPsRbBG9F7ytf00tCteaLiZOuNknNYMPJzznS18Bm+Pr
-         460vDxF+9logldqTlDGpzQNbpMC5RqWLbOkmBquRDPqywa1NK9sGFE16blXlA4ZdRZxp
-         Uj5ALHXj0kVNy1adYB+GWPYeiIbyRHDMxUGh0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XSgoZaAM9VgXcC1Hrs8ckrp1k3/7KUr3SiJsCaEXetc=;
-        b=mitMCWiXjX4O+n4NQd6B76+C2K8N/HVi1DZ+q4E0AoYAf4jTH1V1PTg+4qZikkmyqY
-         krl2bWZDj6yITwWlA2iyy9+GEhvNMoKc5+C3cN+ERsYpDRI3g1xauXHnYc3mPMpDIEoj
-         sQ2+fhZwPpQg6bGvtVOwqQ6u5tYk9hwhribPq9WaCuL81x3QptbPwLI8xVBWdp9wrsaq
-         TN8TBFE42LiPL2dNx4pNOKmM9bYWUNlUAnJORM+HpvQJsK0EZTqIOE6AhADyN84KuB68
-         hKHxdsOtO7f2LmgJX3Qf5l8SQr5ki8ir1UOcCERrFqUoTZbDGZtib/nvO/UMjaxqMhnI
-         kSHg==
-X-Gm-Message-State: AOAM531MegzN/K7jVlZqSfiN6uJelkW6Rr4afp8eXayNvtMaOkJwZkn1
-        TXhHSz53Z+QhTph2JYCVo9oroaxOvVCorg==
-X-Google-Smtp-Source: ABdhPJxgkInbcnZL6YuiAAHeSyp61HBnoO4GuutTKrb9eq9DFObqyq4keiO5+vnACan75CP7JQOWqQ==
-X-Received: by 2002:a5d:938a:: with SMTP id c10mr637899iol.0.1628013689626;
-        Tue, 03 Aug 2021 11:01:29 -0700 (PDT)
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com. [209.85.166.45])
-        by smtp.gmail.com with ESMTPSA id w4sm6802988ior.2.2021.08.03.11.01.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 11:01:28 -0700 (PDT)
-Received: by mail-io1-f45.google.com with SMTP id a13so25236497iol.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 11:01:27 -0700 (PDT)
-X-Received: by 2002:a05:6638:cba:: with SMTP id x26mr16380694jad.98.1628013687178;
- Tue, 03 Aug 2021 11:01:27 -0700 (PDT)
+        id S238653AbhHCSFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 14:05:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233498AbhHCSFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 14:05:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E36260F48;
+        Tue,  3 Aug 2021 18:05:34 +0000 (UTC)
+Date:   Tue, 3 Aug 2021 19:05:26 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <lenb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v3] memblock: make memblock_find_in_range method private
+Message-ID: <20210803180526.GD5786@arm.com>
+References: <20210803064218.6611-1-rppt@kernel.org>
 MIME-Version: 1.0
-References: <20210726171106.v4.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
- <d6668437-5c3b-2dff-bb95-4e3132d13711@redhat.com> <6ff28cfe-1107-347b-0327-ad36e256141b@redhat.com>
- <CAE=gft7567-2Lq7raJKrOpQ8UAvXTFWwPci=_GCRPET3nS=9SA@mail.gmail.com> <20210727141832.86695e7181eb10c6e8fd0191@linux-foundation.org>
-In-Reply-To: <20210727141832.86695e7181eb10c6e8fd0191@linux-foundation.org>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Tue, 3 Aug 2021 11:00:51 -0700
-X-Gmail-Original-Message-ID: <CAE=gft6LmTKx2JHAj7GBmph_1BrioXhmtn_xQEHtRhK+tPa6qw@mail.gmail.com>
-Message-ID: <CAE=gft6LmTKx2JHAj7GBmph_1BrioXhmtn_xQEHtRhK+tPa6qw@mail.gmail.com>
-Subject: Re: [PATCH v4] mm: Enable suspend-only swap spaces
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-api@vger.kernel.org, Alex Shi <alexs@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803064218.6611-1-rppt@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 2:18 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Tue, 27 Jul 2021 09:31:33 -0700 Evan Green <evgreen@chromium.org> wrote:
->
-> > > Pavel just mentioned uswsusp, and I wonder if it would be a possible
-> > > alternative to this patch.
-> >
-> > I think you're right that it would be possible to isolate the
-> > hibernate image with uswsusp if you avoid using the SNAPSHOT_*SWAP*
-> > ioctls. But I'd expect performance to suffer noticeably, since now
-> > every page is making a round trip out to usermode and back. I'd still
-> > very much use the HIBERNATE_ONLY flag if it were accepted, I think
-> > there's value to it.
->
-> The uswsusp option makes your patch a performance optimization rather
-> than a feature-add.  And we do like to see quantitative testing results
-> when considering a performance optimization.  Especially when the
-> performance optimization is a bit icky, putting special-case testing
-> all over the place, maintenance cost, additional testing effort, etc.
->
-> I do think that diligence demands that we quantify the difference.  Is
-> this a thing you can help with?
+On Tue, Aug 03, 2021 at 09:42:18AM +0300, Mike Rapoport wrote:
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 8490ed2917ff..0bffd2d1854f 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -74,6 +74,7 @@ phys_addr_t arm64_dma_phys_limit __ro_after_init;
+>  static void __init reserve_crashkernel(void)
+>  {
+>  	unsigned long long crash_base, crash_size;
+> +	unsigned long long crash_max = arm64_dma_phys_limit;
+>  	int ret;
+>  
+>  	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
+> @@ -84,33 +85,18 @@ static void __init reserve_crashkernel(void)
+>  
+>  	crash_size = PAGE_ALIGN(crash_size);
+>  
+> -	if (crash_base == 0) {
+> -		/* Current arm64 boot protocol requires 2MB alignment */
+> -		crash_base = memblock_find_in_range(0, arm64_dma_phys_limit,
+> -				crash_size, SZ_2M);
+> -		if (crash_base == 0) {
+> -			pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
+> -				crash_size);
+> -			return;
+> -		}
+> -	} else {
+> -		/* User specifies base address explicitly. */
+> -		if (!memblock_is_region_memory(crash_base, crash_size)) {
+> -			pr_warn("cannot reserve crashkernel: region is not memory\n");
+> -			return;
+> -		}
+> +	/* User specifies base address explicitly. */
+> +	if (crash_base)
+> +		crash_max = crash_base + crash_size;
+>  
+> -		if (memblock_is_region_reserved(crash_base, crash_size)) {
+> -			pr_warn("cannot reserve crashkernel: region overlaps reserved memory\n");
+> -			return;
+> -		}
+> -
+> -		if (!IS_ALIGNED(crash_base, SZ_2M)) {
+> -			pr_warn("cannot reserve crashkernel: base address is not 2MB aligned\n");
+> -			return;
+> -		}
+> +	/* Current arm64 boot protocol requires 2MB alignment */
+> +	crash_base = memblock_phys_alloc_range(crash_size, SZ_2M,
+> +					       crash_base, crash_max);
+> +	if (!crash_base) {
+> +		pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
+> +			crash_size);
+> +		return;
+>  	}
+> -	memblock_reserve(crash_base, crash_size);
 
-I'm wrong about the performance. Uswsusp is just as fast, and possibly
-faster in my use case than kernel-driven hibernate. What's more,
-uswsusp also helps me solve several additional problems I hadn't
-tackled yet that were looming in front of me. Thanks all for your
-patience and thoughtful review on this.
+We'll miss a bit on debug information provided to the user in case of a
+wrong crash_base/size option on the command line. Not sure we care much,
+though the alignment would probably be useful (maybe we document it
+somewhere).
 
-Patch withdrawn.
--Evan
+What I haven't checked is whether memblock_phys_alloc_range() aims to
+get a 2MB aligned end (size) as well. If crash_size is not 2MB aligned,
+crash_max wouldn't be either and the above could fail. We only care
+about the crash_base to be aligned but the memblock_phys_alloc_range()
+doc says that both the start and size would be aligned to this.
+
+-- 
+Catalin
