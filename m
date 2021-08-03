@@ -2,73 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208363DF1BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA22A3DF1BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236940AbhHCPnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:43:02 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59168
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236941AbhHCPnB (ORCPT
+        id S237003AbhHCPpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:45:04 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:56657 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236745AbhHCPpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:43:01 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 50CCD3F07A;
-        Tue,  3 Aug 2021 15:42:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628005369;
-        bh=NGuo4/5NmnxC89j3QvU804ef/HB0LY2wSjcDEMa1lNI=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=J0L5Ehe/P3aJvRWzl526hIudkfwHj0l6lLwdnfJVqAw4rEM0IaWIOu7LDwWTW60q8
-         VtsGJVDLTEOBSlirOQ76S5sF5Da5KnIHt1QZ7uDryiav5/eM3U9JH+orApgeLjGWQt
-         tXwkW2Kdh1CP4667zEsgA8Fj7UmE80PrRBMTXPcxf6CUN4UTntz/3GIPSXYiYjaxs9
-         3eGLekmhjOyXieWksoD2XWhhoFvpx5a83gYoufdD/8lrRbn+b/91KlY85oMRi7FVA4
-         dR4KMN2SI1XUjyEtjTyhIhed2rzb9y2X+b9oExTgYDqxp9DDPZ39i/UdqF9ZOE9j/f
-         3r2B346Xrlirw==
-From:   Colin King <colin.king@canonical.com>
-To:     Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] dm ima: Fix resource leaks on error return path
-Date:   Tue,  3 Aug 2021 16:42:49 +0100
-Message-Id: <20210803154249.81251-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 3 Aug 2021 11:45:03 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UhtcbfK_1628005489;
+Received: from 30.39.225.192(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UhtcbfK_1628005489)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 03 Aug 2021 23:44:50 +0800
+Subject: Re: [PATCH] mm: memcontrol: Set the correct memcg swappiness
+ restriction
+To:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <d77469b90c45c49953ccbc51e54a1d465bc18f70.1627626255.git.baolin.wang@linux.alibaba.com>
+ <YQOekWWgtZUfim4M@dhcp22.suse.cz>
+ <6e6570d2-44a2-1da1-6c2a-38766786c40c@suse.cz>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+Message-ID: <02826fde-43a8-e20d-37f5-55416ba0c773@linux.alibaba.com>
+Date:   Tue, 3 Aug 2021 23:45:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <6e6570d2-44a2-1da1-6c2a-38766786c40c@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Currently there is an error check on r that immediately returns
-on an error rather than taking the error clean-up exit path via
-label 'error'. Fix this to avoid resource leaks.
 
-Addresses-Coverity: ("Resourced leak")
-Fixes: 0a3bec81a409 ("dm ima: measure data on table load")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/md/dm-ima.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2021/8/3 23:20, Vlastimil Babka wrote:
+> On 7/30/21 8:39 AM, Michal Hocko wrote:
+>> On Fri 30-07-21 14:26:35, Baolin Wang wrote:
+>>> Since commit c843966c556d ("mm: allow swappiness that prefers reclaiming
+>>> anon over the file workingset") has expended the swappiness value to
+>>> make swap to be preferred in some systems. We should also change the
+>>> memcg swappiness restriction to allow memcg swap-preferred.
+>>>
+>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>
+>> Yes, this looks like an omission. It doesn't really make sense to have
+>> two different constrains on the value.
+>>
+>> Acked-by: Michal Hocko <mhocko@suse.com>
+> 
+> So, also Fixes: c843966c556d ("mm: allow swappiness that prefers reclaiming anon
+> over the file workingset")
+> ?
 
-diff --git a/drivers/md/dm-ima.c b/drivers/md/dm-ima.c
-index 2d796e439bee..91ea4a7202ab 100644
---- a/drivers/md/dm-ima.c
-+++ b/drivers/md/dm-ima.c
-@@ -216,7 +216,7 @@ void dm_ima_measure_on_table_load(struct dm_table *table, unsigned int status_fl
- 
- 	r = crypto_shash_init(shash);
- 	if (r)
--		return;
-+		goto error;
- 
- 	device_data_buf_len = strlen(device_data_buf);
- 	memcpy(ima_buf + l, device_data_buf, device_data_buf_len);
--- 
-2.31.1
-
+Sure. Andrew, do I need resend it with adding fixes tag, or you can help 
+to add it? Thanks.
