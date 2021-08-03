@@ -2,473 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566A73DE384
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00ECA3DE38B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhHCAY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 20:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232638AbhHCAY0 (ORCPT
+        id S233167AbhHCAZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 20:25:37 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:56655 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232910AbhHCAZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 20:24:26 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E4CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 17:24:16 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id c7-20020a9d27870000b02904d360fbc71bso19136693otb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 17:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=doGlUnC2Izu+5zn4ZCfvspedKvqr3QZYCIrVSDIo8sk=;
-        b=OJrGMH5xFj4M9BfrtuDMoJPOY/7A0gs9DjhAODbC4/++9MhtbAPyIoo2+37LuIfd+z
-         O2ufKPyCRi1loYN6iw8cqvKWp9nU4phQNrYXY5B5iNdRhcjqm1ck22GWTlV105h1kbp3
-         txBCFdoS2Ape/8UxbS5Xn994HaUXYD8fDUaPOXE+d6ETkZuU8eu5SblSTNpoMfRA449O
-         AzeNwgP9Y2miwZR5bm0Z8TC6ATC6NtLq5u5LHV8C2lwYUxa28J4TwXJjHGyLBtiC/KWT
-         2WuS0brQWTXRO7XmTPwauDW52c08x07C+ILcPR0MdLh0+9RlbNujffvlCGMjEGso6O+p
-         iy0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=doGlUnC2Izu+5zn4ZCfvspedKvqr3QZYCIrVSDIo8sk=;
-        b=NQNuAoiEzJuT4KW1dNlYarzIiWfQtS+4RAV8UcBewaCnyl76NjmMgXatp5guirAfUN
-         IHcYpmBNJrf21zin9p1YLmlb0X4S8OwAkbLbM1sl0OgWjButUsaaiqJ9ke3cQlDGVj1e
-         QR0juVZ/u4bdYx2aP+OWoW9U0BzuoN1nstn+FLb2bKTn6H6+oNdpwxqRFs0Srk4KyxT7
-         T0DSc69i7FKn0NAk+3xfUSlURAopRN94Jc2aqEr3z0LPTCnxGHE3XvM7r5NuSCxPTBGK
-         qV9LLVmVne0dRzIkb/YeZgx9HY/FafJ7vmdERrJrIDSWiW7mq1tdSQ0cRubIRNrSANZ+
-         XCkQ==
-X-Gm-Message-State: AOAM533ss9460M6WFDetwasNoC31DOJ33Zd+UepegWVaQF+myuZM7M9p
-        bUfgVmIaFGMv2sHKJEEv5QUDMIEL7Gm4hf+gPdUgMQ==
-X-Google-Smtp-Source: ABdhPJw8hTGNh2lYWwPy3nKOhvFq+7YU16hkOyePv2tW2S3BgRP5d4yHrFc5sAoQgq8Oc75oK2iZY0Cymv2+HzRolNo=
-X-Received: by 2002:a05:6830:40c2:: with SMTP id h2mr13569636otu.56.1627950255573;
- Mon, 02 Aug 2021 17:24:15 -0700 (PDT)
+        Mon, 2 Aug 2021 20:25:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627950306; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=hkpyI7Uoz+e4IQsxRQvfWnyB0MT3Cv9l9NvcdTelAwA=;
+ b=C/WV3XstIy8ZVU75egrIi1gxCV9XEynY2jvA3u9sXHZGLagIUfCwThS705lOSUb5MMDfq3jQ
+ g8hSY3xdRIBOS1nrHL1+jtk6kW6h6am1jE47u99IVfeEkXUVY8be5RyRLRopmFi7eVhooFDd
+ 4v1/eRTL34VA650r21FWs/RsI3k=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 61088cce1dd16c87880963e0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 00:24:46
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 33637C433D3; Tue,  3 Aug 2021 00:24:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F2BFDC433D3;
+        Tue,  3 Aug 2021 00:24:43 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210802211912.116329-1-jiang.wang@bytedance.com> <20210802211912.116329-3-jiang.wang@bytedance.com>
-In-Reply-To: <20210802211912.116329-3-jiang.wang@bytedance.com>
-From:   "Jiang Wang ." <jiang.wang@bytedance.com>
-Date:   Mon, 2 Aug 2021 17:24:04 -0700
-Message-ID: <CAP_N_Z-FJSZ+gaO36ui763SjVk+aDuUT0Cten3RgFTeX+h2qbQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/5] af_unix: add unix_stream_proto for sockmap
-To:     Networking <netdev@vger.kernel.org>
-Cc:     Cong Wang <cong.wang@bytedance.com>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 02 Aug 2021 17:24:43 -0700
+From:   abhinavk@codeaurora.org
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [Freedreno] [PATCH 07/11] drm/msm/disp/dpu1: Don't use DSC with
+ mode_3d
+In-Reply-To: <20210715065203.709914-8-vkoul@kernel.org>
+References: <20210715065203.709914-1-vkoul@kernel.org>
+ <20210715065203.709914-8-vkoul@kernel.org>
+Message-ID: <cd5d1e1fb3a8ce1a9970c29a39df1b4b@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 2:19 PM Jiang Wang <jiang.wang@bytedance.com> wrote:
->
-> Previously, sockmap for AF_UNIX protocol only supports
-> dgram type. This patch add unix stream type support, which
-> is similar to unix_dgram_proto. To support sockmap, dgram
-> and stream cannot share the same unix_proto anymore, because
-> they have different implementations, such as unhash for stream
-> type (which will remove closed or disconnected sockets from the map),
-> so rename unix_proto to unix_dgram_proto and add a new
-> unix_stream_proto.
->
-> Also implement stream related sockmap functions.
-> And add dgram key words to those dgram specific functions.
->
-> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-> Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+On 2021-07-14 23:51, Vinod Koul wrote:
+> We cannot enable mode_3d when we are using the DSC. So pass
+> configuration to detect DSC is enabled and not enable mode_3d
+> when we are using DSC
+> 
+> We add a helper dpu_encoder_helper_get_dsc_mode() to detect dsc
+> enabled and pass this to .setup_intf_cfg()
+> 
+This is not entirely correct. This is true only for the 2-2-1 topology 
+you are using
+on this panel.
+
+When you are using 2-2-1, you are using 2 LMs, 2 DSCs and 1 DSI.
+So 3D mux shouldnt be used.
+
+If you are using something like 4-2-1 or 4-2-2, then you have 4LMs,
+2 DSCs and 2/1 DSI.
+
+Here you need the 3D mux to convert the data from 4LMs to 2 DSCs.
+
+So please correct the commit text here and also add a check for the 
+topology.
+
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 > ---
->  include/net/af_unix.h |  8 +++-
->  net/core/sock_map.c   |  8 +++-
->  net/unix/af_unix.c    | 74 ++++++++++++++++++++++++++++-----
->  net/unix/unix_bpf.c   | 96 +++++++++++++++++++++++++++++++++----------
->  4 files changed, 150 insertions(+), 36 deletions(-)
->
-> diff --git a/include/net/af_unix.h b/include/net/af_unix.h
-> index 435a2c3d5..5d04fbf8a 100644
-> --- a/include/net/af_unix.h
-> +++ b/include/net/af_unix.h
-> @@ -84,6 +84,8 @@ long unix_outq_len(struct sock *sk);
->
->  int __unix_dgram_recvmsg(struct sock *sk, struct msghdr *msg, size_t size,
->                          int flags);
-> +int __unix_stream_recvmsg(struct sock *sk, struct msghdr *msg, size_t size,
-> +                         int flags);
->  #ifdef CONFIG_SYSCTL
->  int unix_sysctl_register(struct net *net);
->  void unix_sysctl_unregister(struct net *net);
-> @@ -93,9 +95,11 @@ static inline void unix_sysctl_unregister(struct net *net) {}
->  #endif
->
->  #ifdef CONFIG_BPF_SYSCALL
-> -extern struct proto unix_proto;
-> +extern struct proto unix_dgram_proto;
-> +extern struct proto unix_stream_proto;
->
-> -int unix_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
-> +int unix_dgram_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
-> +int unix_stream_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
->  void __init unix_bpf_build_proto(void);
->  #else
->  static inline void __init unix_bpf_build_proto(void)
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index ae5fa4338..42f50ea7a 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -517,9 +517,15 @@ static bool sk_is_tcp(const struct sock *sk)
->                sk->sk_protocol == IPPROTO_TCP;
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  5 +++--
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
+>  4 files changed, 18 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> index ecbc4be98980..d43b804528eb 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> @@ -336,6 +336,17 @@ static inline enum dpu_3d_blend_mode
+> dpu_encoder_helper_get_3d_blend_mode(
+>  	return BLEND_3D_NONE;
 >  }
->
-> +static bool sk_is_unix_stream(const struct sock *sk)
+> 
+> +static inline bool dpu_encoder_helper_get_dsc_mode(struct
+> dpu_encoder_phys *phys_enc)
 > +{
-> +       return sk->sk_type == SOCK_STREAM &&
-> +              sk->sk_protocol == PF_UNIX;
-> +}
+> +	struct drm_encoder *drm_enc = phys_enc->parent;
+> +	struct msm_drm_private *priv = drm_enc->dev->dev_private;
 > +
->  static bool sock_map_redirect_allowed(const struct sock *sk)
+> +	if (priv->dsc)
+> +		return true;
+> +
+> +	return false;
+> +}
+Check whether DSC is enabled and only if its 2-2-1 topology.
+This needs to be reworked when other topologies are supported.
+
+> +
+>  /**
+>   * dpu_encoder_helper_split_config - split display configuration
+> helper function
+>   *	This helper function may be used by physical encoders to configure
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> index b2be39b9144e..5fe87881c30c 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> @@ -69,6 +69,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
+>  	intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
+>  	intf_cfg.stream_sel = cmd_enc->stream_sel;
+>  	intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
+> +	intf_cfg.dsc = dpu_encoder_helper_get_dsc_mode(phys_enc);
+> +
+>  	ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
+>  }
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> index aeea6add61ee..f059416311ee 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> @@ -121,7 +121,7 @@ static u32 dpu_hw_ctl_get_pending_flush(struct
+> dpu_hw_ctl *ctx)
+>  	return ctx->pending_flush_mask;
+>  }
+> 
+> -static inline void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+> +static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
 >  {
-> -       if (sk_is_tcp(sk))
-> +       if (sk_is_tcp(sk) || sk_is_unix_stream(sk))
->                 return sk->sk_state != TCP_LISTEN;
->         else
->                 return sk->sk_state == TCP_ESTABLISHED;
-> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> index 0ae3fc4c8..9c1711c67 100644
-> --- a/net/unix/af_unix.c
-> +++ b/net/unix/af_unix.c
-> @@ -791,17 +791,35 @@ static void unix_close(struct sock *sk, long timeout)
->          */
->  }
->
-> -struct proto unix_proto = {
-> -       .name                   = "UNIX",
-> +static void unix_unhash(struct sock *sk)
-> +{
-> +       /* Nothing to do here, unix socket does not need a ->unhash().
-> +        * This is merely for sockmap.
-> +        */
-> +}
-> +
-> +struct proto unix_dgram_proto = {
-> +       .name                   = "UNIX-DGRAM",
-> +       .owner                  = THIS_MODULE,
-> +       .obj_size               = sizeof(struct unix_sock),
-> +       .close                  = unix_close,
-> +#ifdef CONFIG_BPF_SYSCALL
-> +       .psock_update_sk_prot   = unix_dgram_bpf_update_proto,
-> +#endif
-> +};
-> +
-> +struct proto unix_stream_proto = {
-> +       .name                   = "UNIX-STREAM",
->         .owner                  = THIS_MODULE,
->         .obj_size               = sizeof(struct unix_sock),
->         .close                  = unix_close,
-> +       .unhash                 = unix_unhash,
->  #ifdef CONFIG_BPF_SYSCALL
-> -       .psock_update_sk_prot   = unix_bpf_update_proto,
-> +       .psock_update_sk_prot   = unix_stream_bpf_update_proto,
->  #endif
+>  	DPU_REG_WRITE(&ctx->hw, CTL_DSC_FLUSH, BIT(0) | BIT(1) | BIT(2) | 
+> BIT(3));
+> 
+> @@ -522,7 +522,8 @@ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl 
+> *ctx,
+> 
+>  	intf_cfg |= (cfg->intf & 0xF) << 4;
+> 
+> -	if (cfg->mode_3d) {
+> +	/* In DSC we can't set merge, so check for dsc too */
+> +	if (cfg->mode_3d && !cfg->dsc) {
+>  		intf_cfg |= BIT(19);
+>  		intf_cfg |= (cfg->mode_3d - 0x1) << 20;
+>  	}
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> index 806c171e5df2..347a653c1e01 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> @@ -39,6 +39,7 @@ struct dpu_hw_stage_cfg {
+>   * @mode_3d:               3d mux configuration
+>   * @merge_3d:              3d merge block used
+>   * @intf_mode_sel:         Interface mode, cmd / vid
+> + * @dsc:                   DSC is enabled
+>   * @stream_sel:            Stream selection for multi-stream 
+> interfaces
+>   */
+>  struct dpu_hw_intf_cfg {
+> @@ -46,6 +47,7 @@ struct dpu_hw_intf_cfg {
+>  	enum dpu_3d_blend_mode mode_3d;
+>  	enum dpu_merge_3d merge_3d;
+>  	enum dpu_ctl_mode_sel intf_mode_sel;
+> +	bool dsc;
+>  	int stream_sel;
 >  };
->
-> -static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
-> +static struct sock *unix_create1(struct net *net, struct socket *sock, int kern, int type)
->  {
->         struct sock *sk = NULL;
->         struct unix_sock *u;
-> @@ -810,7 +828,11 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
->         if (atomic_long_read(&unix_nr_socks) > 2 * get_max_files())
->                 goto out;
->
-> -       sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_proto, kern);
-> +       if (type == SOCK_STREAM)
-> +               sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_stream_proto, kern);
-> +       else /*dgram and  seqpacket */
-> +               sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_dgram_proto, kern);
-> +
->         if (!sk)
->                 goto out;
->
-> @@ -872,7 +894,7 @@ static int unix_create(struct net *net, struct socket *sock, int protocol,
->                 return -ESOCKTNOSUPPORT;
->         }
->
-> -       return unix_create1(net, sock, kern) ? 0 : -ENOMEM;
-> +       return unix_create1(net, sock, kern, sock->type) ? 0 : -ENOMEM;
->  }
->
->  static int unix_release(struct socket *sock)
-> @@ -1286,7 +1308,7 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
->         err = -ENOMEM;
->
->         /* create new sock for complete connection */
-> -       newsk = unix_create1(sock_net(sk), NULL, 0);
-> +       newsk = unix_create1(sock_net(sk), NULL, 0, sock->type);
->         if (newsk == NULL)
->                 goto out;
->
-> @@ -2214,7 +2236,7 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg, size_t si
->         struct sock *sk = sock->sk;
->
->  #ifdef CONFIG_BPF_SYSCALL
-> -       if (sk->sk_prot != &unix_proto)
-> +       if (sk->sk_prot != &unix_dgram_proto)
->                 return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
->                                             flags & ~MSG_DONTWAIT, NULL);
->  #endif
-> @@ -2533,6 +2555,20 @@ static int unix_stream_read_actor(struct sk_buff *skb,
->         return ret ?: chunk;
->  }
->
-> +int __unix_stream_recvmsg(struct sock *sk, struct msghdr *msg,
-> +                         size_t size, int flags)
-> +{
-> +       struct unix_stream_read_state state = {
-> +               .recv_actor = unix_stream_read_actor,
-> +               .socket = sk->sk_socket,
-> +               .msg = msg,
-> +               .size = size,
-> +               .flags = flags
-> +       };
-> +
-> +       return unix_stream_read_generic(&state, true);
-> +}
-> +
->  static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
->                                size_t size, int flags)
->  {
-> @@ -2544,6 +2580,12 @@ static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
->                 .flags = flags
->         };
->
-> +#ifdef CONFIG_BPF_SYSCALL
-> +       struct sock *sk = sock->sk;
-> +       if (sk->sk_prot != &unix_stream_proto)
-> +               return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
-> +                                           flags & ~MSG_DONTWAIT, NULL);
-> +#endif
->         return unix_stream_read_generic(&state, true);
->  }
->
-> @@ -2605,6 +2647,7 @@ static int unix_shutdown(struct socket *sock, int mode)
->
->                 int peer_mode = 0;
->
-> +               other->sk_prot->unhash(other);
->                 if (mode&RCV_SHUTDOWN)
->                         peer_mode |= SEND_SHUTDOWN;
->                 if (mode&SEND_SHUTDOWN)
-> @@ -2613,8 +2656,10 @@ static int unix_shutdown(struct socket *sock, int mode)
->                 other->sk_shutdown |= peer_mode;
->                 unix_state_unlock(other);
->                 other->sk_state_change(other);
-> -               if (peer_mode == SHUTDOWN_MASK)
-> +               if (peer_mode == SHUTDOWN_MASK) {
->                         sk_wake_async(other, SOCK_WAKE_WAITD, POLL_HUP);
-> +                       other->sk_state = TCP_CLOSE;
-> +               }
->                 else if (peer_mode & RCV_SHUTDOWN)
->                         sk_wake_async(other, SOCK_WAKE_WAITD, POLL_IN);
->         }
-> @@ -2993,7 +3038,13 @@ static int __init af_unix_init(void)
->
->         BUILD_BUG_ON(sizeof(struct unix_skb_parms) > sizeof_field(struct sk_buff, cb));
->
-> -       rc = proto_register(&unix_proto, 1);
-> +       rc = proto_register(&unix_dgram_proto, 1);
-> +       if (rc != 0) {
-> +               pr_crit("%s: Cannot create unix_sock SLAB cache!\n", __func__);
-> +               goto out;
-> +       }
-> +
-> +       rc = proto_register(&unix_stream_proto, 1);
->         if (rc != 0) {
->                 pr_crit("%s: Cannot create unix_sock SLAB cache!\n", __func__);
->                 goto out;
-> @@ -3009,7 +3060,8 @@ static int __init af_unix_init(void)
->  static void __exit af_unix_exit(void)
->  {
->         sock_unregister(PF_UNIX);
-> -       proto_unregister(&unix_proto);
-> +       proto_unregister(&unix_dgram_proto);
-> +       proto_unregister(&unix_stream_proto);
->         unregister_pernet_subsys(&unix_net_ops);
->  }
->
-> diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
-> index db0cda29f..17e210666 100644
-> --- a/net/unix/unix_bpf.c
-> +++ b/net/unix/unix_bpf.c
-> @@ -38,9 +38,18 @@ static int unix_msg_wait_data(struct sock *sk, struct sk_psock *psock,
->         return ret;
->  }
->
-> -static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
-> -                                 size_t len, int nonblock, int flags,
-> -                                 int *addr_len)
-> +static int __unix_recvmsg(struct sock *sk, struct msghdr *msg,
-> +                          size_t len, int flags)
-> +{
-> +       if (sk->sk_type == SOCK_DGRAM)
-> +               return __unix_dgram_recvmsg(sk, msg, len, flags);
-> +       else
-> +               return __unix_stream_recvmsg(sk, msg, len, flags);
-> +}
-> +
-> +static int unix_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
-> +                           size_t len, int nonblock, int flags,
-> +                           int *addr_len)
->  {
->         struct unix_sock *u = unix_sk(sk);
->         struct sk_psock *psock;
-> @@ -48,12 +57,12 @@ static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
->
->         psock = sk_psock_get(sk);
->         if (unlikely(!psock))
-> -               return __unix_dgram_recvmsg(sk, msg, len, flags);
-> +               return __unix_recvmsg(sk, msg, len, flags);
->
->         mutex_lock(&u->iolock);
->         if (!skb_queue_empty(&sk->sk_receive_queue) &&
->             sk_psock_queue_empty(psock)) {
-> -               ret = __unix_dgram_recvmsg(sk, msg, len, flags);
-> +               ret = __unix_recvmsg(sk, msg, len, flags);
->                 goto out;
->         }
->
-> @@ -68,7 +77,7 @@ static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
->                 if (data) {
->                         if (!sk_psock_queue_empty(psock))
->                                 goto msg_bytes_ready;
-> -                       ret = __unix_dgram_recvmsg(sk, msg, len, flags);
-> +                       ret = __unix_recvmsg(sk, msg, len, flags);
->                         goto out;
->                 }
->                 copied = -EAGAIN;
-> @@ -80,43 +89,86 @@ static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
->         return ret;
->  }
->
-> -static struct proto *unix_prot_saved __read_mostly;
-> -static DEFINE_SPINLOCK(unix_prot_lock);
-> -static struct proto unix_bpf_prot;
-> +static struct proto *unix_dgram_prot_saved __read_mostly;
-> +static DEFINE_SPINLOCK(unix_dgram_prot_lock);
-> +static struct proto unix_dgram_bpf_prot;
-> +
-> +static struct proto *unix_stream_prot_saved __read_mostly;
-> +static DEFINE_SPINLOCK(unix_stream_prot_lock);
-> +static struct proto unix_stream_bpf_prot;
-> +
-> +static void unix_dgram_bpf_rebuild_protos(struct proto *prot, const struct proto *base)
-> +{
-> +       *prot        = *base;
-> +       prot->close  = sock_map_close;
-> +       prot->recvmsg = unix_bpf_recvmsg;
-> +}
->
-> -static void unix_bpf_rebuild_protos(struct proto *prot, const struct proto *base)
-> +static void unix_stream_bpf_rebuild_protos(struct proto *prot,
-> +                                          const struct proto *base)
->  {
->         *prot        = *base;
->         prot->close  = sock_map_close;
-> -       prot->recvmsg = unix_dgram_bpf_recvmsg;
-> +       prot->recvmsg = unix_bpf_recvmsg;
-> +       prot->unhash  = sock_map_unhash;
-> +}
-> +
-> +static void unix_dgram_bpf_check_needs_rebuild(struct proto *ops)
-> +{
-> +       if (unlikely(ops != smp_load_acquire(&unix_dgram_prot_saved))) {
-> +               spin_lock_bh(&unix_dgram_prot_lock);
-> +               if (likely(ops != unix_dgram_prot_saved)) {
-> +                       unix_dgram_bpf_rebuild_protos(&unix_dgram_bpf_prot, ops);
-> +                       smp_store_release(&unix_dgram_prot_saved, ops);
-> +               }
-> +               spin_unlock_bh(&unix_dgram_prot_lock);
-> +       }
->  }
->
-> -static void unix_bpf_check_needs_rebuild(struct proto *ops)
-> +static void unix_stream_bpf_check_needs_rebuild(struct proto *ops)
->  {
-> -       if (unlikely(ops != smp_load_acquire(&unix_prot_saved))) {
-> -               spin_lock_bh(&unix_prot_lock);
-> -               if (likely(ops != unix_prot_saved)) {
-> -                       unix_bpf_rebuild_protos(&unix_bpf_prot, ops);
-> -                       smp_store_release(&unix_prot_saved, ops);
-> +       if (unlikely(ops != smp_load_acquire(&unix_stream_prot_saved))) {
-> +               spin_lock_bh(&unix_stream_prot_lock);
-> +               if (likely(ops != unix_stream_prot_saved)) {
-> +                       unix_stream_bpf_rebuild_protos(&unix_stream_bpf_prot, ops);
-> +                       smp_store_release(&unix_stream_prot_saved, ops);
->                 }
-> -               spin_unlock_bh(&unix_prot_lock);
-> +               spin_unlock_bh(&unix_stream_prot_lock);
-> +       }
-> +}
-> +
-> +int unix_dgram_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
-> +{
-> +       if (restore) {
-> +               sk->sk_write_space = psock->saved_write_space;
-> +               WRITE_ONCE(sk->sk_prot, psock->sk_proto);
-> +               return 0;
->         }
-> +
-> +       unix_dgram_bpf_check_needs_rebuild(psock->sk_proto);
-> +       WRITE_ONCE(sk->sk_prot, &unix_dgram_bpf_prot);
-> +       return 0;
->  }
->
-> -int unix_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
-> +int unix_stream_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
->  {
-> +       if (sk->sk_type != SOCK_STREAM)
-> +               return -EOPNOTSUPP;
-> +
-
-Cong reminded me that there is no need to check sk_type here because
-unix_stream_bpf_prot is only used by stream type. I will remove this part
-in the next version.
-
-
-
->         if (restore) {
->                 sk->sk_write_space = psock->saved_write_space;
->                 WRITE_ONCE(sk->sk_prot, psock->sk_proto);
->                 return 0;
->         }
->
-> -       unix_bpf_check_needs_rebuild(psock->sk_proto);
-> -       WRITE_ONCE(sk->sk_prot, &unix_bpf_prot);
-> +       unix_stream_bpf_check_needs_rebuild(psock->sk_proto);
-> +       WRITE_ONCE(sk->sk_prot, &unix_stream_bpf_prot);
->         return 0;
->  }
->
->  void __init unix_bpf_build_proto(void)
->  {
-> -       unix_bpf_rebuild_protos(&unix_bpf_prot, &unix_proto);
-> +       unix_dgram_bpf_rebuild_protos(&unix_dgram_bpf_prot, &unix_dgram_proto);
-> +       unix_stream_bpf_rebuild_protos(&unix_stream_bpf_prot, &unix_stream_proto);
-> +
->  }
-> --
-> 2.20.1
->
