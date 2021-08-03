@@ -2,130 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED563DF547
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430F03DF54D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239605AbhHCTRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:17:47 -0400
-Received: from mail-il1-f176.google.com ([209.85.166.176]:34451 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238111AbhHCTRp (ORCPT
+        id S239636AbhHCTSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:18:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51696 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239622AbhHCTSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:17:45 -0400
-Received: by mail-il1-f176.google.com with SMTP id a14so20505202ila.1;
-        Tue, 03 Aug 2021 12:17:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X1PN+FXcllZposMsv/wBmiMU+F0yrr+LYFew9Nm0w9I=;
-        b=NPd1w4M0XJy5rA/ePl01hqXUOMrEjvbDNKfwQ7TYtXsHKg5on1fKSEGOIPuOZCvVoc
-         JbpSnlQehbxuvDBNVsQBNQNGMZLj9cs60NHaww4tjiKxSp0RWIi5noIeguNfpwbu9p9H
-         DB1efoErKmBmcnZ1nSxJiZnyIeEKd3kXFTsn3DNLbzPJoa+HW8Wdw/Vh4UPQ5AbuHxXF
-         Sm2aUQeeu21Kd/HhEecM6OPMnC3tWkNWd9wjsz5AN09f0PURzr8QPQJg3buGqxjOdCOB
-         Rw3ObrSz1LeXDovsYBWwpej6NdRXtsYdXgW1d8KVock1BHVIijQO0tAJJWa44w9nZsAI
-         0kBg==
-X-Gm-Message-State: AOAM530GE+0IVIsfXK72vihZaVaKXxZX9qvEPcStmFPaKjYR2eBWV6eL
-        RyvjlqkymbwNB2+DTnJSjg==
-X-Google-Smtp-Source: ABdhPJzhu2esfDB7VNUpLzlnS6yiTNM/VUqJ7WfIVheAbGPrU6X0bxACS+OMP9w+D/qBxhD93aOWZQ==
-X-Received: by 2002:a92:de07:: with SMTP id x7mr1911620ilm.293.1628018253359;
-        Tue, 03 Aug 2021 12:17:33 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id s195sm10469384ios.38.2021.08.03.12.17.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 12:17:32 -0700 (PDT)
-Received: (nullmailer pid 3587156 invoked by uid 1000);
-        Tue, 03 Aug 2021 19:17:30 -0000
-Date:   Tue, 3 Aug 2021 13:17:30 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Hector Yuan <hector.yuan@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com
-Subject: Re: [PATCH v13 1/2] dt-bindings: cpufreq: add bindings for MediaTek
- cpufreq HW
-Message-ID: <YQmWSj0g9ZcZGHtg@robh.at.kernel.org>
-References: <1627574891-26514-1-git-send-email-hector.yuan@mediatek.com>
- <1627574891-26514-2-git-send-email-hector.yuan@mediatek.com>
- <20210803050538.g6aj2zsep735ywqv@vireshk-i7>
+        Tue, 3 Aug 2021 15:18:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628018310;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DFWNnmq4Fr86FBlSANVnWR2moKkcBcoaXFNT4Ed8iZI=;
+        b=GUGv0mS3pNi1zkLJK9e7s+5n1E73K26ZxFODYss2YvqTvZHa+7NKApvYaD0cmOxWM605Bn
+        tvUUmFAJnYo17xufh9ElV0tEeZ+kUKGACVCW7cCz7nqx6FDovmdYDxO2PPjFwwmSc4O6k+
+        eAaYL9jZXn917E9ERK8QgkIcMU0nRLk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-F09b58fmOROfEYdP18qfSQ-1; Tue, 03 Aug 2021 15:18:29 -0400
+X-MC-Unique: F09b58fmOROfEYdP18qfSQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C48F83E741;
+        Tue,  3 Aug 2021 19:18:27 +0000 (UTC)
+Received: from max.com (unknown [10.40.193.155])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EC59860C0F;
+        Tue,  3 Aug 2021 19:18:20 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>
+Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        kvm-ppc@vger.kernel.org
+Subject: [PATCH v5 00/12] gfs2: Fix mmap + page fault deadlocks
+Date:   Tue,  3 Aug 2021 21:18:06 +0200
+Message-Id: <20210803191818.993968-1-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803050538.g6aj2zsep735ywqv@vireshk-i7>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 10:35:38AM +0530, Viresh Kumar wrote:
-> On 30-07-21, 00:08, Hector Yuan wrote:
-> > From: "Hector.Yuan" <hector.yuan@mediatek.com>
-> > 
-> > Add devicetree bindings for MediaTek HW driver.
-> > 
-> > Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
-> > ---
-> >  .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |   70 ++++++++++++++++++++
-> >  1 file changed, 70 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-> > new file mode 100644
-> > index 0000000..6bb2c97
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-> > @@ -0,0 +1,70 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/cpufreq/cpufreq-mediatek-hw.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: MediaTek's CPUFREQ Bindings
-> > +
-> > +maintainers:
-> > +  - Hector Yuan <hector.yuan@mediatek.com>
-> > +
-> > +description:
-> > +  CPUFREQ HW is a hardware engine used by MediaTek
-> > +  SoCs to manage frequency in hardware. It is capable of controlling frequency
-> > +  for multiple clusters.
-> > +
-> 
-> Should this somewhere have a reference to
-> Documentation/devicetree/bindings/dvfs/performance-domain.yaml ?
-> 
-> > +properties:
-> > +  compatible:
-> > +    const: mediatek,cpufreq-hw
-> > +
-> > +  reg:
-> > +    minItems: 1
-> > +    maxItems: 2
-> > +    description: |
-> > +      Addresses and sizes for the memory of the
-> > +      HW bases in each frequency domain.
-> > +
-> > +  "#performance-domain-cells":
-> > +    description:
-> > +      Number of cells in a performance domain specifier. Typically 1 for nodes
-> > +      providing multiple performance domains (e.g. performance controllers),
-> > +      but can be any value as specified by device tree binding documentation
-> > +      of particular provider.
-> 
-> You say this can have any value, 1 or more, but then ...
-> 
-> > +    const: 1
-> 
-> You fix it to 1 ?
-> 
-> Perhaps you should add a reference to the performance-domain.yaml here
-> as well, and say const 1 here and describe how the parameter is going
-> to be used. You should only explain it in respect to your SoC.
+Hi all,
 
-Correct in terms of what should be described, but no need to reference 
-performance-domain.yaml.
+here's another update on top of v5.14-rc4.  There seems to be a bug in
+get_user_pages_fast when called with FOLL_FAST_ONLY; please see below.
 
-Rob
+Changes:
+
+ * Change fault_in_pages_{readable,writeable} to return the number of
+   bytes that should be accessible instead of failing outright when
+   part of the requested region cannot be faulted in.  Change
+   iov_iter_fault_in_readable to those same semantics.
+
+ * Add fault_in_iov_iter_writeable for safely faulting in pages for
+   writing without modifying the pages.
+
+
+With this patch queue, fstest generic/208 (aio-dio-invalidate-failure.c)
+endlessly spins in gfs2_file_direct_write.  It looks as if there's a bug
+in get_user_pages_fast when called with FOLL_FAST_ONLY:
+
+ (1) The test case performs an aio write into a 32 MB buffer.
+
+ (2) The buffer is initially not in memory, so when iomap_dio_rw() ->
+     ... -> bio_iov_iter_get_pages() is called with the iter->noio flag
+     set, we get to get_user_pages_fast() with FOLL_FAST_ONLY set.
+     get_user_pages_fast() returns 0, which causes
+     bio_iov_iter_get_pages to return -EFAULT.
+
+ (3) Then gfs2_file_direct_write faults in the entire buffer with
+     fault_in_iov_iter_readable(), which succeeds.
+
+ (4) With the buffer in memory, we retry the iomap_dio_rw() ->
+     ... -> bio_iov_iter_get_pages() -> ... -> get_user_pages_fast().
+     This should succeed now, but get_user_pages_fast() still returns 0.
+
+ (5) Thus we end up in step (3) again.
+
+The buffered writes generic/208 performs are unrelated to this hang.
+
+
+Apart from the generic/208 hang, gfs2 still needs a better strategy for
+faulting in more reasonable chunks of memory at a time and for resuming
+requests after faulting in pages.  We've got some of the pieces in place
+for safely allowing that, but more work remains to be done.
+
+
+For immediate consideration by Al Viro:
+
+  iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
+
+
+For immediate consideration by Paul Mackerras:
+
+  powerpc/kvm: Fix kvm_use_magic_page
+
+
+Thanks,
+Andreas
+
+
+Andreas Gruenbacher (12):
+  iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
+  powerpc/kvm: Fix kvm_use_magic_page
+  Turn fault_in_pages_{readable,writeable} into
+    fault_in_{readable,writeable}
+  Turn iov_iter_fault_in_readable into fault_in_iov_iter_readable
+  iov_iter: Introduce fault_in_iov_iter_writeable
+  gfs2: Add wrapper for iomap_file_buffered_write
+  gfs2: Fix mmap + page fault deadlocks for buffered I/O
+  iomap: Fix iomap_dio_rw return value for user copies
+  iomap: Support restarting direct I/O requests after user copy failures
+  iomap: Add done_before argument to iomap_dio_rw
+  iov_iter: Introduce noio flag to disable page faults
+  gfs2: Fix mmap + page fault deadlocks for direct I/O
+
+ arch/powerpc/kernel/kvm.c           |   3 +-
+ arch/powerpc/kernel/signal_32.c     |   4 +-
+ arch/powerpc/kernel/signal_64.c     |   2 +-
+ arch/x86/kernel/fpu/signal.c        |   8 +-
+ drivers/gpu/drm/armada/armada_gem.c |   7 +-
+ fs/btrfs/file.c                     |   8 +-
+ fs/btrfs/ioctl.c                    |   7 +-
+ fs/ext4/file.c                      |   5 +-
+ fs/f2fs/file.c                      |   6 +-
+ fs/fuse/file.c                      |   2 +-
+ fs/gfs2/file.c                      |  95 ++++++++++++++++++++---
+ fs/iomap/buffered-io.c              |   2 +-
+ fs/iomap/direct-io.c                |  28 +++++--
+ fs/ntfs/file.c                      |   2 +-
+ fs/xfs/xfs_file.c                   |   6 +-
+ fs/zonefs/super.c                   |   4 +-
+ include/linux/iomap.h               |  11 ++-
+ include/linux/pagemap.h             |  58 +-------------
+ include/linux/uio.h                 |   4 +-
+ lib/iov_iter.c                      | 107 ++++++++++++++++++++------
+ mm/filemap.c                        |   4 +-
+ mm/gup.c                            | 113 ++++++++++++++++++++++++++++
+ 22 files changed, 360 insertions(+), 126 deletions(-)
+
+-- 
+2.26.3
+
