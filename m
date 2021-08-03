@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9C03DE916
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE51E3DE918
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234714AbhHCJA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:00:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55178 "EHLO
+        id S234789AbhHCJAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:00:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38860 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234554AbhHCJA0 (ORCPT
+        by vger.kernel.org with ESMTP id S234554AbhHCJAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:00:26 -0400
+        Tue, 3 Aug 2021 05:00:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627981215;
+        s=mimecast20190719; t=1627981228;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LVqXIsUVPkAmIEU6PseU80EYvc3WZN9uakwdHdrpR3k=;
-        b=i7XT4cgsLYRomXNfV65rgVpZO8MytsHwFAKIRg/Pq7Uaf23gACkwCxpSIkCPOY0OKM2Kci
-        0xZqnkcnFd4VXR/fu82JPWmdYKyjjm8xzDDwYNKzK7ktf2ByYWZfCXP4aGBcUPXK/x8k0D
-        ITwlcf7nZIz1NqiZSNQaB+qkdIQ3IGY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-KQMfaeAnMS-HWG9PI1-GDg-1; Tue, 03 Aug 2021 05:00:14 -0400
-X-MC-Unique: KQMfaeAnMS-HWG9PI1-GDg-1
-Received: by mail-wm1-f70.google.com with SMTP id 132-20020a1c018a0000b029025005348905so578016wmb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:00:13 -0700 (PDT)
+        bh=9Q7/xPZm8jUnnjCMCdU0R6LgFCbSeWcpFM+7y2Jr/KQ=;
+        b=hkGq2C8ST9yp1mr1F73ZHmun6O0zPmp66CRJ+Vp5/NjHRrq5T5C8/dTcWM06H+WrR8fVsj
+        xwr6w28Ot/T8cqsQGc+LnwUfgP2R4bZLZMKgggE7fYEUZeO265bXHOJIKT+c2c6fg2GG2q
+        uW81r9NVnpmVf2eIlwo8OAuPnKrxC+w=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-tLgi6b_MPJydYjD8eLWsTQ-1; Tue, 03 Aug 2021 05:00:27 -0400
+X-MC-Unique: tLgi6b_MPJydYjD8eLWsTQ-1
+Received: by mail-wm1-f72.google.com with SMTP id w25-20020a1cf6190000b0290252505ddd56so3705568wmc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:00:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=LVqXIsUVPkAmIEU6PseU80EYvc3WZN9uakwdHdrpR3k=;
-        b=iJjcs594t3XQvS3q6skjfGP6di41qS7POHa3FJC/E3EOaqNFQ8I9OcR2gj37FQRgsj
-         tYvMoP9T/2m+OGWE70KZ8p2xjr4yxlrc1++0JpKceIJyW7UHdKyOKTVL9QO9KXLAWfPK
-         SoMInWrMYitHL+ExQ8Qc3S1EEJ2j05nDHeecyUcp0sZFBadLO4K7K9UeyCHmpwOCHCRL
-         pycaNxnB+e0WCkwRVQaQJ+b7J5Q0Hvjr1rB3zFnbYCm42oPPPesf3cUWF/Vz2UzxF2p6
-         Jg8mXW/caKPaGZUiMJp+pvK5uJ+TmD2eEVvtbRLHTfUvt/qpNzKPGCpbew78YhGEbboW
-         mNjA==
-X-Gm-Message-State: AOAM533xeFpTa6dKHva4Mn+iGpYSzudopUXRy60hoqw/yjZk5Y+wVCdT
-        wkrLddICBMRBM6bF1qcMrANOOvKjTFsAdMhhqhzPdpS5LcRRHgha3d+9hcjHHP3GbyLhekl7vp4
-        5XsIa2H/64BC/fuaLMs9X6Td2
-X-Received: by 2002:adf:c549:: with SMTP id s9mr22004716wrf.344.1627981212677;
-        Tue, 03 Aug 2021 02:00:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxGSwnssCAwc0Ow6DmuEHV78LU1+wCt8ow9LJryG6A57npdON9sg5XznQMCHAaQ6Yaefyl+BQ==
-X-Received: by 2002:adf:c549:: with SMTP id s9mr22004682wrf.344.1627981212415;
-        Tue, 03 Aug 2021 02:00:12 -0700 (PDT)
+        bh=9Q7/xPZm8jUnnjCMCdU0R6LgFCbSeWcpFM+7y2Jr/KQ=;
+        b=tlNkRs6xgLwXEvs5U83HqddDGLH/SqGad5bOOspIfHGwzes7Dy5wvGSAIs1DMOSNk5
+         MoGN6f2F3mIBCmSJn7eijQWnXVQgAJdVSN26KA6nSUtQTcsrPzsGQAd+JwAUfmA2YK9o
+         5bZfQozaI61wqOfq2hUOR65EfeIolBfZ+iMkR73Yb1V1Zm4TBwRWxDGUYBfZg67jPaVs
+         w2wlwJOHU21Q5xWf+DqXiFa/O+Mbc9UqiLKOXGFp2Bce8A/DjPGYofTTGI6vLDKobBKA
+         mChn+xcDWScZDS6X6q7LsqQhvkMKNJsaTzexnYvB1X9ROC9lW+Dd7XV0I6bBHEZfR32z
+         ej+g==
+X-Gm-Message-State: AOAM533yRpBZScuLkz2vKSD5kSEPEyxd1Hq0jjgudartzp43Z1ZrX9vq
+        WbldT0SQh+Sep8poJxS2+CllbiOWiDa4dZNIysf0YbzF7DY9q5QyXb4X3UFlZnrGgjii1pIRoQh
+        8dVILFYGyNTeotN1CkWmLVpDz
+X-Received: by 2002:a7b:cc98:: with SMTP id p24mr3165674wma.118.1627981226421;
+        Tue, 03 Aug 2021 02:00:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJykQE+5VkJxZIVMbxOmNBn0QTX3WJWN0Jt8B5Z7DzZM/I/IFQQ7DsCaWyGb+4kCxVZ7I5vUxg==
+X-Received: by 2002:a7b:cc98:: with SMTP id p24mr3165653wma.118.1627981226235;
+        Tue, 03 Aug 2021 02:00:26 -0700 (PDT)
 Received: from [192.168.10.118] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id y66sm12796097wmy.39.2021.08.03.02.00.11
+        by smtp.gmail.com with ESMTPSA id n11sm16313687wrs.81.2021.08.03.02.00.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 02:00:11 -0700 (PDT)
+        Tue, 03 Aug 2021 02:00:25 -0700 (PDT)
+Subject: Re: [PATCH v3 02/12] KVM: x86/mmu: bump mmu notifier count in
+ kvm_zap_gfn_range
 To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
 Cc:     Wanpeng Li <wanpengli@tencent.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -66,80 +68,116 @@ Cc:     Wanpeng Li <wanpengli@tencent.com>,
         Ingo Molnar <mingo@redhat.com>,
         "H. Peter Anvin" <hpa@zytor.com>
 References: <20210802183329.2309921-1-mlevitsk@redhat.com>
- <20210802183329.2309921-12-mlevitsk@redhat.com>
+ <20210802183329.2309921-3-mlevitsk@redhat.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v3 11/12] KVM: SVM: call avic_vcpu_load/avic_vcpu_put when
- enabling/disabling AVIC
-Message-ID: <5a3b940b-7290-ca37-b3a4-bf01b7c4a6bb@redhat.com>
-Date:   Tue, 3 Aug 2021 11:00:10 +0200
+Message-ID: <8cae345b-767d-69fe-b7dc-7be559c18e2a@redhat.com>
+Date:   Tue, 3 Aug 2021 11:00:23 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210802183329.2309921-12-mlevitsk@redhat.com>
+In-Reply-To: <20210802183329.2309921-3-mlevitsk@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 02/08/21 20:33, Maxim Levitsky wrote:
-> @@ -651,6 +673,7 @@ void svm_refresh_apicv_exec_ctrl(struct kvm_vcpu *vcpu)
->   	}
->   	vmcb_mark_dirty(vmcb, VMCB_AVIC);
+> This together with previous patch, ensures that
+> kvm_zap_gfn_range doesn't race with page fault
+> running on another vcpu, and will make this page fault code
+> retry instead.
+> 
+> This is based on a patch suggested by Sean Christopherson:
+> https://lkml.org/lkml/2021/7/22/1025
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>   arch/x86/kvm/mmu/mmu.c   | 4 ++++
+>   include/linux/kvm_host.h | 5 +++++
+>   virt/kvm/kvm_main.c      | 7 +++++--
+>   3 files changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 9d78cb1c0f35..9da635e383c2 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5640,6 +5640,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
 >   
-> +	__avic_set_running(vcpu, activated);
->   	svm_set_pi_irte_mode(vcpu, activated);
+>   	write_lock(&kvm->mmu_lock);
+>   
+> +	kvm_inc_notifier_count(kvm, gfn_start, gfn_end);
+> +
+>   	if (kvm_memslots_have_rmaps(kvm)) {
+>   		for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+>   			slots = __kvm_memslots(kvm, i);
+> @@ -5671,6 +5673,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+>   	if (flush)
+>   		kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
+>   
+> +	kvm_dec_notifier_count(kvm, gfn_start, gfn_end);
+> +
+>   	write_unlock(&kvm->mmu_lock);
 >   }
 >   
-
-I'd rather have calls to avic_vcpu_load/avic_vcpu_put directly inside 
-the "if (activated)", and leaving avic_set_running to its current 
-implementation.  That way you don't need __avic_set_running (which is a 
-confusing name, because it does more than just setting the running bit).
-
->  void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu)
->  {
-> +	bool activate;
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 9d6b4ad407b8..962e11a73e8e 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -985,6 +985,11 @@ void kvm_mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc);
+>   void *kvm_mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
+>   #endif
+>   
+> +void kvm_inc_notifier_count(struct kvm *kvm, unsigned long start,
+> +				   unsigned long end);
+> +void kvm_dec_notifier_count(struct kvm *kvm, unsigned long start,
+> +				   unsigned long end);
 > +
->  	if (!lapic_in_kernel(vcpu))
->  		return;
->  
->  	mutex_lock(&vcpu->kvm->arch.apicv_update_lock);
->  
-> -	vcpu->arch.apicv_active = kvm_apicv_activated(vcpu->kvm);
-> +	activate = kvm_apicv_activated(vcpu->kvm);
-> +	if (vcpu->arch.apicv_active == activate)
-> +		goto out;
+>   long kvm_arch_dev_ioctl(struct file *filp,
+>   			unsigned int ioctl, unsigned long arg);
+>   long kvm_arch_vcpu_ioctl(struct file *filp,
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index a96cbe24c688..71042cd807b3 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -608,7 +608,7 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
+>   	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_set_spte_gfn);
+>   }
+>   
+> -static void kvm_inc_notifier_count(struct kvm *kvm, unsigned long start,
+> +void kvm_inc_notifier_count(struct kvm *kvm, unsigned long start,
+>   				   unsigned long end)
+>   {
+>   	/*
+> @@ -636,6 +636,7 @@ static void kvm_inc_notifier_count(struct kvm *kvm, unsigned long start,
+>   			max(kvm->mmu_notifier_range_end, end);
+>   	}
+>   }
+> +EXPORT_SYMBOL_GPL(kvm_inc_notifier_count);
+>   
+>   static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+>   					const struct mmu_notifier_range *range)
+> @@ -670,7 +671,7 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+>   	return 0;
+>   }
+>   
+> -static void kvm_dec_notifier_count(struct kvm *kvm, unsigned long start,
+> +void kvm_dec_notifier_count(struct kvm *kvm, unsigned long start,
+>   				   unsigned long end)
+>   {
+>   	/*
+> @@ -687,6 +688,8 @@ static void kvm_dec_notifier_count(struct kvm *kvm, unsigned long start,
+>   	 */
+>   	kvm->mmu_notifier_count--;
+>   }
+> +EXPORT_SYMBOL_GPL(kvm_dec_notifier_count);
 > +
-> +	vcpu->arch.apicv_active = activate;
->  	kvm_apic_update_apicv(vcpu);
->  	static_call(kvm_x86_refresh_apicv_exec_ctrl)(vcpu);
->  
-> @@ -9257,6 +9263,7 @@ void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu)
->  	if (!vcpu->arch.apicv_active)
->  		kvm_make_request(KVM_REQ_EVENT, vcpu);
->  
-> +out:
->  	mutex_unlock(&vcpu->kvm->arch.apicv_update_lock);
->  }
->  EXPORT_SYMBOL_GPL(kvm_vcpu_update_apicv);
+>   
+>   static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
+>   					const struct mmu_notifier_range *range)
+> 
 
-Should this be a separate patch?
-
-As an aside, we have
-
-static inline bool kvm_vcpu_apicv_active(struct kvm_vcpu *vcpu)
-{
-         return vcpu->arch.apic && vcpu->arch.apicv_active;
-}
-
-but really vcpu->arch.apicv_active should never be true if 
-vcpu->arch.apic is.  So it should be possible to change this to "return 
-vcpu->arch.apicv_active" with a comment that the serialization between 
-apicv_inhibit_reasons and apicv_active happens via apicv_update_lock.
-
-Thanks,
-
-Paolo
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
