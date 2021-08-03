@@ -2,174 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052BD3DEEC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255D23DEEC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236087AbhHCNJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:09:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:49464 "EHLO foss.arm.com"
+        id S236119AbhHCNLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:11:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:49504 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235635AbhHCNJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:09:53 -0400
+        id S236003AbhHCNLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 09:11:11 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D76E11FB;
-        Tue,  3 Aug 2021 06:09:42 -0700 (PDT)
-Received: from [10.57.36.239] (unknown [10.57.36.239])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0CE33F70D;
-        Tue,  3 Aug 2021 06:09:39 -0700 (PDT)
-Subject: Re: [PATCH 5/6] perf cs-etm: Create ETE decoder
-To:     Leo Yan <leo.yan@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     acme@kernel.org, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, al.grant@arm.com,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        mike.leach@linaro.org, John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20210721090706.21523-1-james.clark@arm.com>
- <20210721090706.21523-6-james.clark@arm.com>
- <20210731072341.GE7437@leoy-ThinkPad-X240s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <654cf3ae-325b-49c9-a9d0-ebf704a83d6f@arm.com>
-Date:   Tue, 3 Aug 2021 14:09:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210731072341.GE7437@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A277C11FB;
+        Tue,  3 Aug 2021 06:11:00 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 690DE3F70D;
+        Tue,  3 Aug 2021 06:10:57 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, cristian.marussi@arm.com,
+        igor.skalkin@opensynergy.com, peter.hilber@opensynergy.com,
+        alex.bennee@linaro.org, jean-philippe@linaro.org,
+        mikhail.golubev@opensynergy.com, anton.yakovlev@opensynergy.com,
+        Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: [PATCH v7 00/15] Introduce SCMI transport based on VirtIO
+Date:   Tue,  3 Aug 2021 14:10:09 +0100
+Message-Id: <20210803131024.40280-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
+
+While reworking this series starting from the work done up to V3 by
+OpenSynergy, I am keeping the original autorship and list distribution
+unchanged.
+
+The main aim of this rework, as said, is to simplify where possible the
+SCMI VirtIO support added in V3 by adding at first some new general
+mechanisms in the SCMI Transport layer.
+
+Indeed, after some initial small fixes, patches 03/04/05 add such new
+additional mechanisms to the SCMI core to ease implementation of more
+complex transports like virtio, while also addressing a few general issues
+already potentially affecting existing transports.
+
+In terms of rework I dropped original V3 patches 05/06/07/08/12 as no more
+needed, and modified where needed the remaining original patches to take
+advantage of the above mentioned new SCMI transport features.
+
+DT bindings patch has been ported on top of freshly YAML converted arm,scmi
+bindings.
+
+Moreover, since V5 I dropped support for polling mode from the virtio-scmi
+transport, since it is an optional general mechanism provided by the core
+to allow transports lacking a completion IRQ to work and it seemed a
+needless addition/complication in the context of virtio transport.
+
+Additionally, since V5 I simplified a bit the virtio-scmi transport probing
+sequence observing that, as of now, only one single SCMI VirtIO device can
+be possibly used, since the SCMI VirtIO devices are not identifiable from
+the VirtIO layer and neither they are currently identifiable from the DT
+config; as a consequence only one single SCMI transport channel is
+currently supported when using virtio-scmi transport.
+
+The series has been tested using an emulated fake SCMI device and also a
+proper SCP-fw SCMI stack running through QEMU vhost-users, with the SCMI
+stack compiled, in both cases, as builtin and as a loadable module, running
+tests against mocked SCMI Sensors using HWMON and IIO interfaces to check
+the functionality of notifications and sync/async commands.
+
+Virtio-scmi support has been exercised in the following testing scenario
+on a JUNO board:
+
+ - normal sync/async command transfers
+ - notifications
+ - concurrent delivery of correlated response and delayed responses
+ - out-of-order delivery of delayed responses before related responses
+ - unexpected delayed response delivery for sync commands
+ - late delivery of timed-out responses and delayed responses
+
+Some basic regression testing against mailbox transport has been performed
+for commands and notifications too.
+
+No sensible overhead in total handling time of commands and notifications
+has been observed, even though this series do indeed add a considerable
+amount of code to execute on TX path.
+
+This series is based on sudeep/for-next/scmi [1] on top of
+
+commit bdb8742dc6f7 ("firmware: arm_scmi: Fix range check for the maximum
+		     number of pending messages")
+
+Any feedback/testing is welcome :D
+
+Thanks,
+Cristian
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+---
+v6 --> v7
+ - rebased on sudeep/for-next/scmi (v5.14-rc1)
+ - added Cc: for maintainers regarding Virtio SCMI device number addition
+   in include/uapi/linux/virtio_ids.h (previously only list was Cc'ed)
+ - V6 patches 01 and 02 have been removed from V7 since already queued on
+   sudeep/for-next/scmi
+ - renamed scmi_desc .init/.exit to .transport_init/.exit
+ - moved "firmware: arm_scmi: Add priv parameter to scmi_rx_callback" later
+   in the series
+ - simplified new SCMI Kconfig layout
+ - refactored/simplified  support for non-polling transports
+ - moved introduction of xfer refcounting from "firmware: arm_scmi:
+   Introduce monotonically increasing tokens" to "firmware: arm_scmi:
+   Handle concurrent and out-of-order messages"
+ - renamed scmi_xfer_is_free to scmi_xfer_acquired
+ - moved scmi_xfer_state_update() call inside scmi_xfer_command_acquire
+ - added missing barrier in do_xfer()
+ - added proper comment to justify pending_xfers sizing and relocated such
+   #define directive
+ - removed last_token atomic counter, now generating monotonic seqnums
+   based on transfer_id
+
+V5 --> V6:
+ - removed delegated xfers and its usage
+ - add and use *priv optional parameter in scmi_rx_callback()
+ - made .poll_done and .clear_channel ops optional
+
+V4 --> V5:
+ - removed msg raw_payload helpers
+ - reworked msg helpers to use xfer->priv reference
+ - simplified SCMI device probe sequence (one static device)
+ - added new SCMI Kconfig layout
+ - removed SCMI virtio polling support
+
+V3 --> V4:
+ - using new delegated xfers support and monotonically increasing tokens
+   in virtio transport
+ - ported SCMI virtio transport DT bindings to YAML format
+ - added virtio-scmi polling support
+ - added delegated xfers support
 
 
-On 31/07/2021 08:23, Leo Yan wrote:
-> On Wed, Jul 21, 2021 at 10:07:04AM +0100, James Clark wrote:
->> If the TRCDEVARCH register was saved, and it shows that ETE is present,
->> then instantiate an OCSD_BUILTIN_DCD_ETE decoder instead of
->> OCSD_BUILTIN_DCD_ETMV4I. ETE is the new trace feature for Armv9.
->>
->> Testing performed
->> =================
->>
->> * Old files with v0 headers still open correctly
->> * Old files with v1 headers with no TRCDEVARCH saved still open
->> * New files with TRCDEVARCH open using an old version of perf that
->>   supports v1 headers
->> * Coresight decoding results in the same output if there are no new ETE
->>   packet types
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>  .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 29 ++++++++++-
->>  .../perf/util/cs-etm-decoder/cs-etm-decoder.h |  7 +++
->>  tools/perf/util/cs-etm.c                      | 49 ++++++++++++++++++-
->>  tools/perf/util/cs-etm.h                      |  1 +
->>  4 files changed, 82 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->> index 60147c908425..37bc9d6a7677 100644
->> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->> @@ -127,8 +127,12 @@ static int cs_etm_decoder__gen_etmv3_config(struct cs_etm_trace_params *params,
->>  #define TRCIDR1_TRCARCHMIN_SHIFT 4
->>  #define TRCIDR1_TRCARCHMIN_MASK  GENMASK(7, 4)
->>  #define TRCIDR1_TRCARCHMIN(x)    (((x) & TRCIDR1_TRCARCHMIN_MASK) >> TRCIDR1_TRCARCHMIN_SHIFT)
->> -static enum _ocsd_arch_version cs_etm_decoder__get_arch_ver(u32 reg_idr1)
->> +static enum _ocsd_arch_version cs_etm_decoder__get_arch_ver(u32 reg_idr1, u32 reg_devarch)
->>  {
->> +	/* ETE has to be v9 so set arch version to v8.3+ (ARCH__AA64) */
->> +	if (cs_etm__is_ete(reg_devarch))
->> +		return ARCH_AA64;
->> +
-> 
-> Based on values used in below change, I think we can unify the ETM
-> versio number like:
-> 
->   ARCH_V8R3 : REVISION, bits[19:16] is 0x3
->   ARCH_V8R4 : REVISION, bits[19:16] is 0x4
->   ARCH_V8R5 : REVISION, bits[19:16] is 0x5
+Cristian Marussi (9):
+  firmware: arm_scmi: Add support for type handling in common functions
+  firmware: arm_scmi: Remove scmi_dump_header_dbg() helper
+  firmware: arm_scmi: Add optional transport_init/exit support
+  firmware: arm_scmi: Introduce monotonically increasing tokens
+  firmware: arm_scmi: Handle concurrent and out-of-order messages
+  firmware: arm_scmi: Make .clear_channel optional
+  firmware: arm_scmi: Make polling mode optional
+  firmware: arm_scmi: Make SCMI transports configurable
+  firmware: arm_scmi: Add priv parameter to scmi_rx_callback
 
-Do you mean make this change in OpenCSD? At the moment it understands these
-values so I'm not sure if the extra ones would be useful:
+Igor Skalkin (4):
+  firmware: arm_scmi: Make shmem support optional for transports
+  firmware: arm_scmi: Add method to override max message number
+  dt-bindings: arm: Add virtio transport for SCMI
+  firmware: arm_scmi: Add virtio transport
 
-	/** Core Architecture Version */
-	typedef enum _ocsd_arch_version {
-	    ARCH_UNKNOWN = 0x0000,   /**< unknown architecture */
-	    ARCH_CUSTOM = 0x0001,    /**< None ARM, custom architecture */
-	    ARCH_V7 = 0x0700,        /**< V7 architecture */
-	    ARCH_V8 = 0x0800,        /**< V8 architecture */
-	    ARCH_V8r3 = 0x0803,      /**< V8.3 architecture */
-	    ARCH_AA64 = 0x0864,      /**< Min v8r3 plus additional AA64 PE features */
-	    ARCH_V8_max = ARCH_AA64,
-	} ocsd_arch_version_t;
+Peter Hilber (2):
+  firmware: arm_scmi: Add message passing abstractions for transports
+  firmware: arm_scmi: Add optional link_supplier() transport op
 
-[...]
+ .../bindings/firmware/arm,scmi.yaml           |   8 +-
+ MAINTAINERS                                   |   1 +
+ drivers/firmware/Kconfig                      |  34 +-
+ drivers/firmware/arm_scmi/Kconfig             |  95 +++
+ drivers/firmware/arm_scmi/Makefile            |   8 +-
+ drivers/firmware/arm_scmi/common.h            | 113 ++-
+ drivers/firmware/arm_scmi/driver.c            | 649 +++++++++++++++---
+ drivers/firmware/arm_scmi/mailbox.c           |   2 +-
+ drivers/firmware/arm_scmi/msg.c               | 111 +++
+ drivers/firmware/arm_scmi/smc.c               |   3 +-
+ drivers/firmware/arm_scmi/virtio.c            | 491 +++++++++++++
+ include/uapi/linux/virtio_ids.h               |   1 +
+ include/uapi/linux/virtio_scmi.h              |  24 +
+ 13 files changed, 1403 insertions(+), 137 deletions(-)
+ create mode 100644 drivers/firmware/arm_scmi/Kconfig
+ create mode 100644 drivers/firmware/arm_scmi/msg.c
+ create mode 100644 drivers/firmware/arm_scmi/virtio.c
+ create mode 100644 include/uapi/linux/virtio_scmi.h
 
->> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.h b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.h
->> index 11f3391d06f2..9137796fe3c5 100644
->> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.h
->> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.h
->> @@ -37,11 +37,17 @@ struct cs_etmv4_trace_params {
->>  	u32 reg_traceidr;
->>  };
->>  
->> +struct cs_ete_trace_params {
->> +	struct cs_etmv4_trace_params base_params;
->> +	u32 reg_devarch;
-> 
-> As we have said, can we directly support ETMv4.5, so that it can
-> smoothly support ETE features?  If so, we don't need to add a new
-> structure "cs_ete_trace_params" at here.
-> 
-
-I think with the new magic number change this is more likely to stay,
-what are your thoughts?
-
-[...]
-
->> +
->> +#define TRCDEVARCH_ARCHPART_SHIFT 0
->> +#define TRCDEVARCH_ARCHPART_MASK  GENMASK(11, 0)
->> +#define TRCDEVARCH_ARCHPART(x)    (((x) & TRCDEVARCH_ARCHPART_MASK) >> TRCDEVARCH_ARCHPART_SHIFT)
->> +
->> +#define TRCDEVARCH_ARCHVER_SHIFT 12
->> +#define TRCDEVARCH_ARCHVER_MASK  GENMASK(15, 12)
->> +#define TRCDEVARCH_ARCHVER(x)    (((x) & TRCDEVARCH_ARCHVER_MASK) >> TRCDEVARCH_ARCHVER_SHIFT)
->> +
->> +bool cs_etm__is_ete(u32 trcdevarch)
->> +{
->> +	/*
->> +	 * ETE if ARCHVER is 5 (ARCHVER is 4 for ETM) and ARCHPART is 0xA13.
->> +	 * See ETM_DEVARCH_ETE_ARCH in coresight-etm4x.h
->> +	 */
->> +	return TRCDEVARCH_ARCHVER(trcdevarch) == 5 && TRCDEVARCH_ARCHPART(trcdevarch) == 0xA13;
-> 
-> I think this is incorrect.
-> 
-> Here should check the bit field "REVISION, bits[19:16]".  If it's
-> field value is >= 5, then we can say it supports ETE.  I checked the
-> spec for ETMv4.4 and ETMv4.6, both use the same values for the
-> Bits[15:12] = 0x4, so the architecture ID is same for ETMv4.x IPs.
-> 
-
-I tried to copy this as closely as possible from the ETE driver. See in coresight-etm4x.h
-
-	#define ETM_DEVARCH_ETE_ARCH						\
-		(ETM_DEVARCH_ARCHITECT_ARM | ETM_DEVARCH_ARCHID_ETE | ETM_DEVARCH_PRESENT) 
-
-Where ETM_DEVARCH_ARCHID_ETE is ARCHVER == 5 and ARCHPART == 0xA13. I didn't check 
-ETM_DEVARCH_ARCHITECT_ARM because I thought that wouldn't be necessary. If we want to make
-the change do detect >= 5 then I think this should be made in the driver first. @Suzuki,
-what do you think?
-
-Thanks
-James
+-- 
+2.17.1
 
