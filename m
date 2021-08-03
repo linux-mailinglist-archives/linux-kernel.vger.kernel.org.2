@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085D63DF8A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426873DF8A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234690AbhHCXyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 19:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234668AbhHCXyR (ORCPT
+        id S234734AbhHCXzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 19:55:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60438 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233784AbhHCXzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 19:54:17 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8C0C061757;
-        Tue,  3 Aug 2021 16:54:04 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id go31so1072009ejc.6;
-        Tue, 03 Aug 2021 16:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YPFmNIw+yrL6Vwys09qoiCZ82cjs0qJnM22rwsvosfE=;
-        b=GFYk9iIHpdjVstQ495pERkDGjlm06eekiz7uUxtdEcY70Ge1H1IS3RFSpYfpzRkjKX
-         s4te386ArHsulQtxLv07zy24CjPV6sNfbBgOb7PyUvj3e8nBdU/uiAT0RWlQbf0rqiz0
-         ETgDuwnc2G3R7NGLB9TT7+AyshlrBtexhmimZoYUALM7126hewFdwbuRn3LjqP3SN1XO
-         3LhMq/isuf3zdL5RH5Kit0w70YLgYYRWVjZkC/1Byo5G9bo3JeTTgjurVNgA1GBHdcQY
-         dYOFSWjWvXQUaeONozw+fva3cIgVqfpZ2djWWsADacELHDNABTlBGI0VRCTzQMPNlcDo
-         Ku3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YPFmNIw+yrL6Vwys09qoiCZ82cjs0qJnM22rwsvosfE=;
-        b=miCeHPsji/zupsbfFKC+X0DJjIhVh+gEk65Ps2wNV6gHvgGY/yqVXptjE7b7iHX4oo
-         DH5tURnV9oP24bUqqJ19LV4OHBCoigWZuu5P9Km8jTGVot/CRRFFHwhFLuQ/K6XZXVQZ
-         Q0GyM5G0XO2jDzLB7IcE2un6chr27LgJoPYyspzOCHOT/E7w7PGpjK2klqGF7F7I/AJZ
-         fw3QEGfpH0YZCc68mycdL85t/q8H8wb0EGTPsFM3Uz8Gn2elNEKraevNix1hPxi/fti+
-         dlUbYuufRcr0iWgKhI6jytcq8pg54/Qs347E7XFpiCq8nIKW54mhqyNKTDH/CozstEi9
-         e3WA==
-X-Gm-Message-State: AOAM533UeRDpnGDtVAO5RRL0L1ZTT5h4uzQY8ceWUwVS/EpWdb6zu/mK
-        A+82aTOCgCQil8bp8jCzqC4=
-X-Google-Smtp-Source: ABdhPJyECHP/nQBnn8BFsok2EET3ndAWnGt+qeys3LYWL6o4NcQPJmun6pvxaa9zJX13fiIKMBufVg==
-X-Received: by 2002:a17:906:a08d:: with SMTP id q13mr22838074ejy.465.1628034842827;
-        Tue, 03 Aug 2021 16:54:02 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id x42sm212236edy.86.2021.08.03.16.54.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 16:54:02 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 02:54:01 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        robh+dt@kernel.org, UNGLinuxDriver@microchip.com,
-        Woojung.Huh@microchip.com, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
- for microchip lan937x
-Message-ID: <20210803235401.rctfylazg47cjah5@skbuf>
-References: <20210723173108.459770-1-prasanna.vengateshan@microchip.com>
- <20210723173108.459770-6-prasanna.vengateshan@microchip.com>
- <20210731150416.upe5nwkwvwajhwgg@skbuf>
- <49678cce02ac03edc6bbbd1afb5f67606ac3efc2.camel@microchip.com>
- <20210802121550.gqgbipqdvp5x76ii@skbuf>
- <YQfvXTEbyYFMLH5u@lunn.ch>
- <20210802135911.inpu6khavvwsfjsp@skbuf>
- <50eb24a1e407b651eda7aeeff26d82d3805a6a41.camel@microchip.com>
+        Tue, 3 Aug 2021 19:55:01 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628034888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uXPzQ106Gzz/QfQUvV21NZBY82K/Xa1WUotPKxNKs/s=;
+        b=g2tVyGLVgyvvt51y4phFCb4e/IRo+TkCrR0P7rBCXrlqqV0FKAVjAnQJdSyb3vhaHN1GmM
+        JWSCfIw6Z9h71HVqL2Fd4i8fs59RyB65mscfupaiU1TtrZDpqx3291G6iYN3YYjdcB612K
+        kI/o+QLxBFdJZICfP3jZdqsMg89RjInVaGpfpF/JObzZDzA4zvMVZtaCB1dE5rrFiOP1xF
+        Nxv2UQEayZUGtfN2y6y5P/vjiQq5C5KmuFshIrlqWHrLBchL/6WfwSceA6k0dw2XmFQ7jq
+        Ws+K18sAjWTdCQXhV73P9SYp3dTLo8YxiEVUOfXDtxbs8Il6oHwvbssnPGYTBQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628034888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uXPzQ106Gzz/QfQUvV21NZBY82K/Xa1WUotPKxNKs/s=;
+        b=ZHq7Hf3ihfyizoxoVi0V4ONzM+2F6n6diNdxjaMuOUZ9CkkB7CtkKmdUo9JFoivEPz8Nhv
+        K7baBhsWJ/AmalCw==
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 2/2] mm/vmstat: Protect per cpu variables with preempt
+ disable on RT
+In-Reply-To: <20210723100034.13353-3-mgorman@techsingularity.net>
+References: <20210723100034.13353-1-mgorman@techsingularity.net>
+ <20210723100034.13353-3-mgorman@techsingularity.net>
+Date:   Wed, 04 Aug 2021 01:54:47 +0200
+Message-ID: <87czqu2iew.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <50eb24a1e407b651eda7aeeff26d82d3805a6a41.camel@microchip.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 10:24:27PM +0530, Prasanna Vengateshan wrote:
-> Thanks Vladimir & Andrew for the right pointers and info. The thread talks about
-> "rgmii-*" are going to be applied by the PHY only as per the doc. For fixed-
-> link, MAC needs to add the delay. This fixed-link can be No-PHY or MAC-MAC or
-> MAC to in-accessible PHY. In such case, i am not convinced in using rgmii-tx-
-> delay-ps & rgmii-rx-delay-ps on the MAC side and apply delay. I still think
-> proposed code in earlier mail thread should still be okay.
+Mel!
 
-Why? I genuinely do not understand your reasoning
+On Fri, Jul 23 2021 at 11:00, Mel Gorman wrote:
+> From: Ingo Molnar <mingo@elte.hu>
+>
+> Disable preemption on -RT for the vmstat code. On vanila the code runs
+> in IRQ-off regions while on -RT it may not when stats are updated under
+> a local_lock. "preempt_disable" ensures that the same resources is not
+> updated in parallel due to preemption.
+>
+> This patch differs from the preempt-rt version where __count_vm_event and
+> __count_vm_events are also protected. The counters are explicitly "allowed
+> to be to be racy" so there is no need to protect them from preemption. Only
+> the accurate page stats that are updated by a read-modify-write need
+> protection.
+>
+> Signed-off-by: Ingo Molnar <mingo@elte.hu>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  mm/vmstat.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index b0534e068166..d06332c221b1 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -319,6 +319,7 @@ void __mod_zone_page_state(struct zone *zone, enum zone_stat_item item,
+>  	long x;
+>  	long t;
+>  
+> +	preempt_disable_rt();
 
-  - I read a thread that brings some arguments for which MACs should not
-    add delays based on the delay type in the "rgmii-*" phy-mode string
-    [ but based on explicit rgmii-tx-delay-ps and rgmii-rx-delay-ps
-    properties under the MAC OF node; this is written in the same
-    message as the quote that you chose ]
+Yes, this is smart to some extent. But in reality it's a bandaid simply
+because nobody can tell which item of vmstat requires which protection.
 
-  - I acknowledge that in certain configurations I need the MAC to apply
-    internal delays.
+If you go back in RT history then you will figure out that we were able
+to eliminate _all_ occurences of preempt_disable_rt() except for this
+one.
 
-  => I disagree that I should parse the rgmii-tx-delay-ps and
-     rgmii-rx-delay-ps OF properties of the MAC, just apply RGMII delays
-     based on the "rgmii-*" phy-mode string value, when I am a DSA CPU
-     port and in no other circumstance
+Even mm developers are wary about this:
 
-?!
+ <tglx> so in vmstat.c there is this magic comment:
+ <tglx>  * For use when we know that interrupts are disabled
+ <tglx>  * or when we know that preemption is disabled and that
+ <tglx>  * particular counter cannot be updated from interrupt context.
+ <tglx> how can I know which counters need what?
+ <mm_expert> I don't think there's a list, one would have to check on counter to counter basis :/ 
+ <tglx> and of course there is nothing which validates that, right?
+ <mm_expert> exactly
 
-I mean, feel free to feel convinced or not, but you have not actually
-brought any argument to the table here, or I'm not seeing it.
+Brilliant stuff which prevents you to do any validation on this. Over
+the years there have been several issues where callers had to be fixed
+by analysing bug reports instead of having a proper instrumentation in
+that code which would have told the developer that he got it wrong.
 
-Anyway, I don't believe that whatever you decide to do with the RGMII
-delays is likely to be a decisive factor in whether the patches are
-accepted or not, considering the fact that traditionally, everyone did
-what suited their board best and that's about it; I will stop pushing back.
+Of course on RT kernels the preempt_disable_rt() will serialize
+everything correctly, but as we have learned over the years just
+slapping _if_rt() or if_not_rt() variants of things around is most of
+the time papering over the underlying problem of badly defined
+protection scopes. Let's not proliferate that. As I said in the above
+IRC conversation:
 
-I have a theory that all the RGMII setups driven by the Linux PHY
-library cannot all work at the same time, with the same code base.
-Someone will sooner or later come and change a driver to make it do what
-they need, which will break what the original author intended, which
-will then be again patched, which will again break ..., which ....
+ <tglx> I fundamentally hate this preempt_disable_rt() muck
 
-If a perpetual motion device will ever be built by mankind, I am sure it
-will be powered by RGMII delays.
+Thanks,
+
+        tglx
