@@ -2,155 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03093DE80C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3AB3DE813
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhHCILp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:11:45 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:39489 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234284AbhHCILo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:11:44 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id ApWNmT2xeXTlcApWOmkLod; Tue, 03 Aug 2021 10:11:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1627978293; bh=VgVqgttpCYUEY7XAzzrX5spYh7tCcjaVHO0Z/TzLWV4=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=vn1nHmPRmYDwa7hSiyrqnHcBqpmwVaWJ6j7ETVpHhxKsk+qPJuaz7BXe+o+n9r+nb
-         BP6JV8LOUAZ7BlJ+SH5JKlE2xK7EzyCiAa+VeG8QDg9mVRl9S7i3uFTC5hz6yXjXLh
-         1itfcviKJBfFe+oFn8DDHQuu7A8RGrPFq9EGwUkmewE5n+ahihWl1tlNT62rrBNqfR
-         zwJI7Wno4fecMSGsM9TjeFVK/Mgtzu2b/7GgqamooaCrEe42UzmmOVhaEbUPN5KHpZ
-         EEN7ogptDETJxM1FqU83N2hWSEfDSDGsEqWx2YFrK+Go3uLEVt/4EwAPFVsEQ8/tZH
-         EW3EL6jj/u7BA==
-Subject: Re: [PATCHv4 4/8] videobuf2: move cache_hints handling to allocators
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210727070517.443167-1-senozhatsky@chromium.org>
- <20210727070517.443167-5-senozhatsky@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <9997d302-effb-7026-6891-56426823fc25@xs4all.nl>
-Date:   Tue, 3 Aug 2021 10:11:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234484AbhHCIMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:12:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234260AbhHCIMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:12:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A474260F35;
+        Tue,  3 Aug 2021 08:11:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627978315;
+        bh=msnR5QzQeo3Lq11b0UAkCf4kr/ykeiduGDAXCY8iwbw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=urCAC6Ev+tDAWmhFVuc36aGNlm/4q0CA0aQhxRhVjrC378XcgxLT+2NauPR+ev4nB
+         kSQTcqx6GV8p+sXmGA8LLjetdmJoxKzbw98++UBcURojbIMG+9Mm0XL/gx1SzH7btB
+         BfR06oa72KvsgXu+mKJxPz8EVem7/dkkHl36SBPSPGwDf9dXoauMDbP1KXYzVgIIfB
+         SciCzuPQcywiGCqSlKJeMhom/PvMoFAndKcz6gAZe4BYC7ozau3zU++5NR6L+FlLDP
+         n7EemAaNmXuEQ8uuNcrWYenWr142vQwlhSF9EjbSj3rx3hXSQ+T7/YlDJlBVD12B42
+         BuFVGL3BLEpQg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210727070517.443167-5-senozhatsky@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfP7utDhFZzvhx+Gqx1iyJwx5uU1S1ahFpycBzOARHxQNKxfGyGcn/z6HI2HRPGT+j1XD1DMcAXRT3+LZx/xKi4ckqR341WdgO+H5ZLKpkqtxl2mrK53b
- 1d9Kn0y4hGqNz5hM/CwCb4zHvAQS+GTLnlzGUsik9moyD/T/uMS9FuAAnI2RE6DEhjc5IiZf4SumD3bvkVOVlM5JFuylb/hSHUWJvZ0JSKLlejEgojciTJH1
- 7gBAv4aznx8sr0HyVxvDm8KiH5YLZA0s0gaCUAro36ctQO35cGlNwe7RoaGoNlJpLutcil/DLOb9SqFJ80Mk7TmpYEJm2qyMyvwgQFOhYq6pZjUnA+2WGIdn
- LE907lFjlOnoezk49zKnMqZds9Lti1s9yR0w9SzpU5erco+SExDuY9gAmIPhgUJzNNzqH/bS8R5eCpKNloCcOd1y4a9MEcCMxsZGZSYafayIQbZXqk2pz4QV
- P8Jt7hVoaKH6YxzI+HmUB/aXfnAyzKUhKT/Vixh90BswayxRqDhprJI6y5RC73pbKqZS1ulmxfgMssR9
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210802163824.GK22278@shell.armlinux.org.uk>
+References: <YPlfcbkxiBmB+vw1@kunai> <20210723091331.wl33wtcvvnejuhau@pengutronix.de> <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com> <20210728202547.7uvfwflpruku7yps@pengutronix.de> <20210728204033.GF22278@shell.armlinux.org.uk> <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com> <20210731120004.i3affxw7upl5y4c5@pengutronix.de> <20210802094810.GJ22278@shell.armlinux.org.uk> <20210802152755.ibisunvibmwhiyry@pengutronix.de> <20210802163824.GK22278@shell.armlinux.org.uk>
+Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of devm_clk_get for prepared and enabled clocks enabled clocks]
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     alexandre.belloni@bootlin.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        thierry.reding@gmail.com, lee.jones@linaro.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Ludovic.Desroches@microchip.com, o.rempel@pengutronix.de,
+        andy.shevchenko@gmail.com, aardelean@deviqon.com,
+        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        broonie@kernel.org, Jonathan.Cameron@huawei.com,
+        linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        wsa@kernel.org, kernel@pengutronix.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, Claudiu.Beznea@microchip.com
+To:     Russell King (Oracle) <linux@armlinux.org.uk>,
+        <u.kleine-koenig@pengutronix.de>
+Date:   Tue, 03 Aug 2021 01:11:54 -0700
+Message-ID: <162797831443.714452.3551045763456936564@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2021 09:05, Sergey Senozhatsky wrote:
-> This moves cache hints handling from videobuf2 core down
+Quoting Russell King (Oracle) (2021-08-02 09:38:24)
+> On Mon, Aug 02, 2021 at 05:27:55PM +0200, Uwe Kleine-Konig wrote:
+> > Hello Russell,
+> >=20
+> > On Mon, Aug 02, 2021 at 10:48:10AM +0100, Russell King (Oracle) wrote:
+>=20
+> > > There have been several different approaches to wrapping things up,
+> > > but here's a question: should we make it easier to do the lazy thing
+> > > (get+enable) or should we make it easier to be power efficient?
+> > > Shouldn't we be encouraging people to write power efficient drivers?
+> >=20
+> > Yeah, sounds compelling, but I wonder if that's of practical importance.
+> > How many driver authors do you expect to lure into making a better
+> > driver just because devm_clk_get_prepared() doesn't exist? In contrast:
+> > How many drivers become simpler with devm_clk_get_prepared() and so
+> > it becomes easier to maintain them and easier to spot bugs?
+> > In the absence of devm_clk_get_prepared(), is it better that several
+> > frameworks (or drivers) open code it?
+>=20
+> It probably depends on where you stand on power management and power
+> efficiency issues. Personally, I would like to see more effort put
+> into drivers to make them more power efficient, and I believe in the
+> coming years, power efficiency is going to become a big issue.
+>=20
 
-from -> from the
+I agree we should put more effort into power efficiency in the kernel.
+I've occasionally heard from driver writers that they never will turn
+the clk off even in low power modes though. They feel like it's a
+nuisance to have to do anything with the clk framework in their driver.
+When I say "why not use runtime PM?" I get told that they're not turning
+the clk off because it needs to be on all the time, so using runtime PM
+makes the driver more complicated, not less, and adds no value. I think
+some touchscreens are this way, and watchdogs too. Looking at the
+drivers being converted in this series I suspect RTC is one of those
+sorts of devices as well. But SPI and I2C most likely could benefit from
+using runtime PM and so those ones don't feel appropriate to convert.
 
-> to allocators level, because allocators do the sync/flush
+Maybe this series would be more compelling if those various drivers that
+are hand rolling the devm action were converted to the consolidated
+official devm function. The truth is it's already happening in various
+subsystems so consolidating that logic into one place would be a win
+code size wise and very hard to ignore.
 
-to allocators -> to the allocator's
+Doing
 
-> caches eventually and may take better decisions. Besides,
-> allocators already decide whether cache sync/flush should
-> be done or can be skipped. This patch moves the scattered
-> buffer cache sync logic to one common place.
+ $ git grep devm_add_action | grep clk
 
-Regards,
-
-	Hans
-
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  drivers/media/common/videobuf2/videobuf2-core.c       | 6 ------
->  drivers/media/common/videobuf2/videobuf2-dma-contig.c | 6 ++++++
->  drivers/media/common/videobuf2/videobuf2-dma-sg.c     | 6 ++++++
->  3 files changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index 76210c006958..55af63d54f23 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -328,9 +328,6 @@ static void __vb2_buf_mem_prepare(struct vb2_buffer *vb)
->  		return;
->  
->  	vb->synced = 1;
-> -	if (vb->skip_cache_sync_on_prepare)
-> -		return;
-> -
->  	for (plane = 0; plane < vb->num_planes; ++plane)
->  		call_void_memop(vb, prepare, vb->planes[plane].mem_priv);
->  }
-> @@ -347,9 +344,6 @@ static void __vb2_buf_mem_finish(struct vb2_buffer *vb)
->  		return;
->  
->  	vb->synced = 0;
-> -	if (vb->skip_cache_sync_on_finish)
-> -		return;
-> -
->  	for (plane = 0; plane < vb->num_planes; ++plane)
->  		call_void_memop(vb, finish, vb->planes[plane].mem_priv);
->  }
-> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> index 019c3843dc6d..1e218bc440c6 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> @@ -101,6 +101,9 @@ static void vb2_dc_prepare(void *buf_priv)
->  	struct vb2_dc_buf *buf = buf_priv;
->  	struct sg_table *sgt = buf->dma_sgt;
->  
-> +	if (buf->vb->skip_cache_sync_on_prepare)
-> +		return;
-> +
->  	if (!sgt)
->  		return;
->  
-> @@ -112,6 +115,9 @@ static void vb2_dc_finish(void *buf_priv)
->  	struct vb2_dc_buf *buf = buf_priv;
->  	struct sg_table *sgt = buf->dma_sgt;
->  
-> +	if (buf->vb->skip_cache_sync_on_finish)
-> +		return;
-> +
->  	if (!sgt)
->  		return;
->  
-> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> index 50265080cfc8..33ee63a99139 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> @@ -204,6 +204,9 @@ static void vb2_dma_sg_prepare(void *buf_priv)
->  	struct vb2_dma_sg_buf *buf = buf_priv;
->  	struct sg_table *sgt = buf->dma_sgt;
->  
-> +	if (buf->vb->skip_cache_sync_on_prepare)
-> +		return;
-> +
->  	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
->  }
->  
-> @@ -212,6 +215,9 @@ static void vb2_dma_sg_finish(void *buf_priv)
->  	struct vb2_dma_sg_buf *buf = buf_priv;
->  	struct sg_table *sgt = buf->dma_sgt;
->  
-> +	if (buf->vb->skip_cache_sync_on_finish)
-> +		return;
-> +
->  	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
->  }
->  
-> 
-
+seems to catch quite a few of them.
