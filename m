@@ -2,332 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF80E3DEC78
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D663DEC54
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236096AbhHCLmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:42:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235998AbhHCLmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:42:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8275460F11;
-        Tue,  3 Aug 2021 11:42:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627990924;
-        bh=sdY6MzvWnzAhWx6g0YoZjzNCW4W6FHBWO7eaWNLdiWo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=baTupv6mnYRxt1IMN9/t8+Zgk2UQaUxJZ8bAD1HgoSS5g8Omas8+4eCj8kzTzGuEM
-         FHRdGdDINy5lipBha+wPvVGQaMevfnCi4BezcvC71ZMHgtAHSyPjQzm9fcuFC9n0RU
-         JOaM8vL6SY3h7Km3ZLMlYp/QH5zizQ9N5XrHd3JdykyCNf4907tPiITqUShcfIEjCU
-         r0Qh4XyA7IgdeRQx3oE/nQFjDz08cfOmZzCiHUokEEkvy6yu+Sc1ZptciJV/DD3R1y
-         XoqwdCI6hEgsspSIUHXKlNu/71GIJVm3eZq1wQrs+8pugX1rtlgUYuiLzG6nYIBSQc
-         woVDxUibDts5A==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, Andrii Nakryiko <andriin@fb.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Doug Berger <opendmb@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Sam Creasey <sammy@sammy.net>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH v2 14/14] [net-next] ethernet: isa: convert to module_init/module_exit
-Date:   Tue,  3 Aug 2021 13:40:51 +0200
-Message-Id: <20210803114051.2112986-15-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210803114051.2112986-1-arnd@kernel.org>
-References: <20210803114051.2112986-1-arnd@kernel.org>
+        id S235737AbhHCLlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235596AbhHCLlM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 07:41:12 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BF4C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 04:41:00 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id hs10so27238462ejc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 04:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UTH1xriYdp7u5xYL3QfzWmKRaaFC9ziEV6g6dXWdnAA=;
+        b=tgjPUlEFLS9R3pe1i23bVN9uFNo5sB8O4gOOXAhmPTwVrZrVq+R0HvfFC7tCxJMGS0
+         wiQmMdBJ7Qjs8IxqQ+Kk/XPsRmKOP2ZL14CDSP5EJahGpBhZxGqN+9OziIl5Yg45A85I
+         5KfD8GlzssfveCwgOsgys80okroPvFFEkPF6mb1t0cW3CkOjQ9G8cWdaCQuhdirdHJGI
+         JlTGf8jCSLZDGkdgMDG7NLABtdeNCfzSvAPPQng1kCP8mzptXf9k8jKgq6wMbyO1zWgz
+         V/9Sa9moikRXguzOELOnYVB9mR75hUpcA59WfzrXQ2WZaagQPmNKgDsy97rVMTJMgRri
+         ku0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UTH1xriYdp7u5xYL3QfzWmKRaaFC9ziEV6g6dXWdnAA=;
+        b=t0b7e6SkBfviNIdhgPw42Blnk6YiiQjLiHZk0pmJQ5EHnhbdcbUi1e7IOfCl6i084H
+         KdT4n/+ie/Bvf+RcTWDt2Gqmwl9x+st4c4UMTH+NWyjpyuf5g4lnO5q2zoIPOUDsYc9t
+         kbvvOUySzbfQ1xc6g9FZeyxYxuJxpeyXnnYgX6UvhIgyJMDjURWpLu9V6x7yX/SmBZoc
+         4pl7ZML6aqvCwf+ib2A8wlUuZ/6W6v+i+mB3GNhwrJUf1ZdMgn+gZyALvOaz2ja8aHvA
+         GxGt75o/XdkuAkf0K8xTEsorRDzRSkHRKwb8yXn9flNED544k6T62xUzVVcgG+ckVb5X
+         CxpA==
+X-Gm-Message-State: AOAM533CZHcEp02F5fiE18Enf0U7IQT74eP+qpzNpITB2RMDamYWyqc6
+        0LViwj+dBC+hWRjSxLdgcGa02LhsRvsTMZxCmXM=
+X-Google-Smtp-Source: ABdhPJx+oRy7TDwar4JICPJWtGOTCfgTSmYrsw5qbLO26sc9JEqhl7vCfDGC77LJsFULHHYzz9kc6ojyUInie41FksE=
+X-Received: by 2002:a17:906:4d12:: with SMTP id r18mr19569693eju.537.1627990859185;
+ Tue, 03 Aug 2021 04:40:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a17:906:3018:0:0:0:0 with HTTP; Tue, 3 Aug 2021 04:40:58
+ -0700 (PDT)
+In-Reply-To: <CAL4-wQqCL1S-GYu7VKJeTT37wh=rR=SMUuwgKiXnnn_Y=uydOA@mail.gmail.com>
+References: <20210802141245.1146772-1-arnd@kernel.org> <CAL4-wQqCL1S-GYu7VKJeTT37wh=rR=SMUuwgKiXnnn_Y=uydOA@mail.gmail.com>
+From:   Martin Guy <martinwguy@gmail.com>
+Date:   Tue, 3 Aug 2021 13:40:58 +0200
+Message-ID: <CAL4-wQpKLtSj0xfNUXXLhbtN1wC051jpRneAuLYOi1riZfiinw@mail.gmail.com>
+Subject: Re: [PATCH] ARM: ep93xx: remove MaverickCrunch support
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        soc@kernel.org, Nikita Shubin <nikita.shubin@maquefel.me>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Hubert Feurstein <hubert.feurstein@contec.at>,
+        Lukasz Majewski <lukma@denx.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+I forward opinion from people currently producing and supporting EP93XX boa=
+rds:
 
-There are a couple of ISA ethernet drivers that use the old
-init_module/cleanup_module function names for the main entry
-points, nothing else uses those any more.
+From: Technologic Systems Support Team <support@embeddedarm.com>
+To: martinwguy@gmail.com
+Cc: jerome.oufella@savoirfairelinux.com
 
-Change them to the documented method with module_init()
-and module_exit() markers next to static functions.
+> I expect our customers would care if support was dropped.
+> Unfortunately I don't know to what extent.  I'd like to bring
+> Jerome Oufella of Savoir Faire Linux into the conversation here,
+> as he runs the software company who most of our customers
+> contract through when they need a modern Linux kernel running
+> on one of our Cirrus Logic EP93XX series single board computers.
+> I expect his opinion will be more valuable than mine.
+=E2=80=8B>
+> Good morning Jerome,
+>
+> A member of the Linux Kernel Development community reached out
+> to us this morning letting us know the community has suggested
+> dropping support for the MavericCrunch FPU on the EP9302 processor.
+> Would this impact any of the development your team has been doing
+> for some of our mutual customers?
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/3com/3c515.c     | 3 ++-
- drivers/net/ethernet/8390/ne.c        | 3 ++-
- drivers/net/ethernet/8390/smc-ultra.c | 9 ++++-----
- drivers/net/ethernet/8390/wd.c        | 7 ++++---
- drivers/net/ethernet/amd/lance.c      | 6 ++++--
- drivers/net/ethernet/amd/ni65.c       | 6 ++++--
- drivers/net/ethernet/cirrus/cs89x0.c  | 7 ++++---
- drivers/net/ethernet/smsc/smc9194.c   | 6 ++++--
- 8 files changed, 28 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/net/ethernet/3com/3c515.c b/drivers/net/ethernet/3com/3c515.c
-index 47b4215bb93b..8d90fed5d33e 100644
---- a/drivers/net/ethernet/3com/3c515.c
-+++ b/drivers/net/ethernet/3com/3c515.c
-@@ -407,7 +407,7 @@ MODULE_PARM_DESC(max_interrupt_work, "3c515 maximum events handled per interrupt
- /* we will need locking (and refcounting) if we ever use it for more */
- static LIST_HEAD(root_corkscrew_dev);
- 
--int init_module(void)
-+static int corkscrew_init_module(void)
- {
- 	int found = 0;
- 	if (debug >= 0)
-@@ -416,6 +416,7 @@ int init_module(void)
- 		found++;
- 	return found ? 0 : -ENODEV;
- }
-+module_init(corkscrew_init_module);
- 
- #else
- struct net_device *tc515_probe(int unit)
-diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8390/ne.c
-index d0bbe2180b9e..53660bc8d6ff 100644
---- a/drivers/net/ethernet/8390/ne.c
-+++ b/drivers/net/ethernet/8390/ne.c
-@@ -923,7 +923,7 @@ static void __init ne_add_devices(void)
- }
- 
- #ifdef MODULE
--int __init init_module(void)
-+static int __init ne_init(void)
- {
- 	int retval;
- 	ne_add_devices();
-@@ -940,6 +940,7 @@ int __init init_module(void)
- 	ne_loop_rm_unreg(0);
- 	return retval;
- }
-+module_init(ne_init);
- #else /* MODULE */
- static int __init ne_init(void)
- {
-diff --git a/drivers/net/ethernet/8390/smc-ultra.c b/drivers/net/ethernet/8390/smc-ultra.c
-index 1d8ed7357b7f..0890fa493f70 100644
---- a/drivers/net/ethernet/8390/smc-ultra.c
-+++ b/drivers/net/ethernet/8390/smc-ultra.c
-@@ -522,7 +522,6 @@ static void ultra_pio_input(struct net_device *dev, int count,
- 	/* We know skbuffs are padded to at least word alignment. */
- 	insw(ioaddr + IOPD, buf, (count+1)>>1);
- }
--
- static void ultra_pio_output(struct net_device *dev, int count,
- 							const unsigned char *buf, const int start_page)
- {
-@@ -572,8 +571,7 @@ MODULE_LICENSE("GPL");
- 
- /* This is set up so that only a single autoprobe takes place per call.
- ISA device autoprobes on a running machine are not recommended. */
--int __init
--init_module(void)
-+static int __init ultra_init_module(void)
- {
- 	struct net_device *dev;
- 	int this_dev, found = 0;
-@@ -600,6 +598,7 @@ init_module(void)
- 		return 0;
- 	return -ENXIO;
- }
-+module_init(ultra_init_module);
- 
- static void cleanup_card(struct net_device *dev)
- {
-@@ -613,8 +612,7 @@ static void cleanup_card(struct net_device *dev)
- 	iounmap(ei_status.mem);
- }
- 
--void __exit
--cleanup_module(void)
-+static void __exit ultra_cleanup_module(void)
- {
- 	int this_dev;
- 
-@@ -627,4 +625,5 @@ cleanup_module(void)
- 		}
- 	}
- }
-+module_exit(ultra_cleanup_module);
- #endif /* MODULE */
-diff --git a/drivers/net/ethernet/8390/wd.c b/drivers/net/ethernet/8390/wd.c
-index c834123560f1..263a942d81fa 100644
---- a/drivers/net/ethernet/8390/wd.c
-+++ b/drivers/net/ethernet/8390/wd.c
-@@ -519,7 +519,7 @@ MODULE_LICENSE("GPL");
- /* This is set up so that only a single autoprobe takes place per call.
- ISA device autoprobes on a running machine are not recommended. */
- 
--int __init init_module(void)
-+static int __init wd_init_module(void)
- {
- 	struct net_device *dev;
- 	int this_dev, found = 0;
-@@ -548,6 +548,7 @@ int __init init_module(void)
- 		return 0;
- 	return -ENXIO;
- }
-+module_init(wd_init_module);
- 
- static void cleanup_card(struct net_device *dev)
- {
-@@ -556,8 +557,7 @@ static void cleanup_card(struct net_device *dev)
- 	iounmap(ei_status.mem);
- }
- 
--void __exit
--cleanup_module(void)
-+static void __exit wd_cleanup_module(void)
- {
- 	int this_dev;
- 
-@@ -570,4 +570,5 @@ cleanup_module(void)
- 		}
- 	}
- }
-+module_exit(wd_cleanup_module);
- #endif /* MODULE */
-diff --git a/drivers/net/ethernet/amd/lance.c b/drivers/net/ethernet/amd/lance.c
-index 2178e6b89dbd..945bf1d87507 100644
---- a/drivers/net/ethernet/amd/lance.c
-+++ b/drivers/net/ethernet/amd/lance.c
-@@ -327,7 +327,7 @@ MODULE_PARM_DESC(dma, "LANCE/PCnet ISA DMA channel (ignored for some devices)");
- MODULE_PARM_DESC(irq, "LANCE/PCnet IRQ number (ignored for some devices)");
- MODULE_PARM_DESC(lance_debug, "LANCE/PCnet debug level (0-7)");
- 
--int __init init_module(void)
-+static int __init lance_init_module(void)
- {
- 	struct net_device *dev;
- 	int this_dev, found = 0;
-@@ -356,6 +356,7 @@ int __init init_module(void)
- 		return 0;
- 	return -ENXIO;
- }
-+module_init(lance_init_module);
- 
- static void cleanup_card(struct net_device *dev)
- {
-@@ -368,7 +369,7 @@ static void cleanup_card(struct net_device *dev)
- 	kfree(lp);
- }
- 
--void __exit cleanup_module(void)
-+static void __exit lance_cleanup_module(void)
- {
- 	int this_dev;
- 
-@@ -381,6 +382,7 @@ void __exit cleanup_module(void)
- 		}
- 	}
- }
-+module_exit(lance_cleanup_module);
- #endif /* MODULE */
- MODULE_LICENSE("GPL");
- 
-diff --git a/drivers/net/ethernet/amd/ni65.c b/drivers/net/ethernet/amd/ni65.c
-index 5c1cfb0c4a42..b5df7ad5a83f 100644
---- a/drivers/net/ethernet/amd/ni65.c
-+++ b/drivers/net/ethernet/amd/ni65.c
-@@ -1230,18 +1230,20 @@ MODULE_PARM_DESC(irq, "ni6510 IRQ number (ignored for some cards)");
- MODULE_PARM_DESC(io, "ni6510 I/O base address");
- MODULE_PARM_DESC(dma, "ni6510 ISA DMA channel (ignored for some cards)");
- 
--int __init init_module(void)
-+static int __init ni65_init_module(void)
- {
- 	dev_ni65 = ni65_probe(-1);
- 	return PTR_ERR_OR_ZERO(dev_ni65);
- }
-+module_init(ni65_init_module);
- 
--void __exit cleanup_module(void)
-+static void __exit ni65_cleanup_module(void)
- {
- 	unregister_netdev(dev_ni65);
- 	cleanup_card(dev_ni65);
- 	free_netdev(dev_ni65);
- }
-+module_exit(ni65_cleanup_module);
- #endif /* MODULE */
- 
- MODULE_LICENSE("GPL");
-diff --git a/drivers/net/ethernet/cirrus/cs89x0.c b/drivers/net/ethernet/cirrus/cs89x0.c
-index 3b08cd943b7b..d0c4c8b7a15a 100644
---- a/drivers/net/ethernet/cirrus/cs89x0.c
-+++ b/drivers/net/ethernet/cirrus/cs89x0.c
-@@ -1753,7 +1753,7 @@ MODULE_LICENSE("GPL");
-  * (hw or software util)
-  */
- 
--int __init init_module(void)
-+static int __init cs89x0_isa_init_module(void)
- {
- 	struct net_device *dev;
- 	struct net_local *lp;
-@@ -1823,9 +1823,9 @@ int __init init_module(void)
- 	free_netdev(dev);
- 	return ret;
- }
-+module_init(cs89x0_isa_init_module);
- 
--void __exit
--cleanup_module(void)
-+static void __exit cs89x0_isa_cleanup_module(void)
- {
- 	struct net_local *lp = netdev_priv(dev_cs89x0);
- 
-@@ -1835,6 +1835,7 @@ cleanup_module(void)
- 	release_region(dev_cs89x0->base_addr, NETCARD_IO_EXTENT);
- 	free_netdev(dev_cs89x0);
- }
-+module_exit(cs89x0_isa_cleanup_module);
- #endif /* MODULE */
- #endif /* CONFIG_CS89x0_ISA */
- 
-diff --git a/drivers/net/ethernet/smsc/smc9194.c b/drivers/net/ethernet/smsc/smc9194.c
-index bf7c8c8b1350..0ce403fa5f1a 100644
---- a/drivers/net/ethernet/smsc/smc9194.c
-+++ b/drivers/net/ethernet/smsc/smc9194.c
-@@ -1508,7 +1508,7 @@ MODULE_PARM_DESC(io, "SMC 99194 I/O base address");
- MODULE_PARM_DESC(irq, "SMC 99194 IRQ number");
- MODULE_PARM_DESC(ifport, "SMC 99194 interface port (0-default, 1-TP, 2-AUI)");
- 
--int __init init_module(void)
-+static int __init smc_init_module(void)
- {
- 	if (io == 0)
- 		printk(KERN_WARNING
-@@ -1518,13 +1518,15 @@ int __init init_module(void)
- 	devSMC9194 = smc_init(-1);
- 	return PTR_ERR_OR_ZERO(devSMC9194);
- }
-+module_init(smc_init_module);
- 
--void __exit cleanup_module(void)
-+static void __exit smc_cleanup_module(void)
- {
- 	unregister_netdev(devSMC9194);
- 	free_irq(devSMC9194->irq, devSMC9194);
- 	release_region(devSMC9194->base_addr, SMC_IO_EXTENT);
- 	free_netdev(devSMC9194);
- }
-+module_exit(smc_cleanup_module);
- 
- #endif /* MODULE */
--- 
-2.29.2
-
+From: Jerome Oufella<jerome.oufella@savoirfairelinux.com>
+> I am aware of a few companies who rely on variants of the TS-7250
+> running not-too-old LTS releases (4.19, 5.4) to cope with their patch pol=
+icies.
+>
+> With Linux 5.10 being the next "Super LTS", this presumably brings its
+> support lifespan until about 2030, which (I believe) they would be
+> comfortable with considering the age of the platform.
+>
+> Jerome Oufella
+> Vice-President, Technologies
+> www.savoirfairelinux.com
