@@ -2,418 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAB93DF658
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9FF3DF65A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhHCUYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 16:24:36 -0400
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:38548 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhHCUYf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 16:24:35 -0400
-Received: by mail-pl1-f173.google.com with SMTP id e21so472127pla.5;
-        Tue, 03 Aug 2021 13:24:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NmZex+6Op9y7wUYPQS8OIzRbsdWVbCNC7xgJvpuGlxw=;
-        b=KDH8bfv5oMyY5AKSXIV5wGBfCqAsAaQ2RqLHc/dZMgBrPuEsjFgohvIz923USj3izT
-         Uw1d46tkhdAKFDbF+u4byY4gKn6ac1QGGwJA9/Iz/mKfgaDhb+EVrgn9CCktQW9sVigN
-         RJhhN+J1m7I0WSdwVtJ6jNwH6Ez8whnMnU1jJaEHJkckR3osrZ5QzyTtXVE1GQwtkVAN
-         3G3djpqeXwHPquBZXStr8Y5W51foB9chT9bVqmhFUbQBCAyRHKkUquilKaXBNbNgwqQI
-         NXTVqnfwd15DoT48fkMkT9IV8pd06YH1PJKsc8iFRuGKGmVH0SIqlTFQjh9YhoSLDUHA
-         qB3A==
-X-Gm-Message-State: AOAM533tAwgxJAxAceoYJQ7GbKkRVsPlg2+b/N/LJmh6zFoElf/+wiYh
-        cawIghlCT8CxnE1i8At4TNc=
-X-Google-Smtp-Source: ABdhPJw+aZZonqY3do/CGwyqdqTC3CBxnXZ8PuGvxuPOBoc9iE/lbUizj15hxKgIM8iByjeMfc0XNw==
-X-Received: by 2002:aa7:9086:0:b029:39b:6377:17c1 with SMTP id i6-20020aa790860000b029039b637717c1mr24011596pfa.11.1628022262048;
-        Tue, 03 Aug 2021 13:24:22 -0700 (PDT)
-Received: from localhost ([191.96.121.85])
-        by smtp.gmail.com with ESMTPSA id z15sm55906pfn.90.2021.08.03.13.24.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 13:24:21 -0700 (PDT)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     lucas.demarchi@intel.com, linux-modules@vger.kernel.org
-Cc:     live-patching@vger.kernel.org, fstests@vger.kernel.org,
-        linux-block@vger.kernel.org, hare@suse.de, dgilbert@interlog.com,
-        jeyu@kernel.org, osandov@fb.com, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH] libkmod-module: add support for a patient module removal option
-Date:   Tue,  3 Aug 2021 13:24:17 -0700
-Message-Id: <20210803202417.462197-1-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231522AbhHCUYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 16:24:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229963AbhHCUYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 16:24:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E01E60FA0;
+        Tue,  3 Aug 2021 20:24:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1628022269;
+        bh=Lbfe0+3TftzrIcI1jGk4zd9mW+RI49k7pDHHdbL2+xg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nK3ENbHg2poNlAf5LQevVEliqIHrFT8y/cTk4RzAPZenCmK1wTpqtL42GUIFLT7hY
+         BFQ4REkEKkExcEYu8vghPq2NwN/eTnRZZ13t7oGQb47BppSTcDfgC33dNr69p7QjhC
+         PG1tEi1223qaNPQUQa+GKd7uNKW09boui+QPuo60=
+Date:   Tue, 3 Aug 2021 13:24:26 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     syzbot <syzbot+dcb8a1e30879e0d60e8c@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com, Luigi Rizzo <lrizzo@google.com>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Subject: Re: [syzbot] linux-next boot error: WARNING in find_vma
+Message-Id: <20210803132426.2f24a3512264e4603a08de57@linux-foundation.org>
+In-Reply-To: <0000000000005b873305c8aa6da2@google.com>
+References: <0000000000005b873305c8aa6da2@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When doing tests with modules such as scsi_debug, on test
-frameworks such as fstests [0] you may run into situations
-where false positives are triggered and a test fails but
-the reality is that the test did not fail, but what did
-fail was the removal of the module since the refcnt is
-not yet 0, as there is a delay in between umount and the
-module quiesces. This is documented on korg#21233 [1].
+On Tue, 03 Aug 2021 09:46:28 -0700 syzbot <syzbot+dcb8a1e30879e0d60e8c@syzkaller.appspotmail.com> wrote:
 
-Although there are patches for fstests to account for
-this [2] and work around it, a much suitable solution
-long term is for these hacks to use a patient module
-remover from modprobe directly. This patch does just
-that, it adds the -p option and --remove-patiently to
-modprobe which let's a removal attempt wait until the
-refcnt is 0. This is useful for cases where you know the
-refcnt is going to become 0, and it is just a matter of
-time.
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    c3f7b3be172b Add linux-next specific files for 20210803
+> git tree:       linux-next
 
-This adds a new call kmod_module_get_refcnt_wait() which
-works just as kmod_module_get_refcnt() but gives you the
-option to patiently wait. This then updates modprobe, rmmod
-to support this feature usign the -p or --remove-patiently
-argument.
+Thanks.  I'm suspecting "Add mmap_assert_locked() annotations to
+find_vma*()" found an error in Tomoyo - tomoyo_dump_page() should be
+holding mmap_lock?
 
-[0] git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=21233
-[2] https://lkml.kernel.org/r/20210727201045.2540681-1-mcgrof@kernel.org
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
-
-Cc'ing folks who I think *might* be interested in a patient
-module removal such as live-patching and blktests folks.
-
- libkmod/docs/libkmod-sections.txt  |  1 +
- libkmod/libkmod-module.c           | 50 ++++++++++++++++++++++++++++++
- libkmod/libkmod.h                  |  1 +
- libkmod/libkmod.sym                |  1 +
- libkmod/python/kmod/_libkmod_h.pxd |  1 +
- libkmod/python/kmod/module.pyx     |  4 +++
- man/modprobe.xml                   | 22 +++++++++++++
- man/rmmod.xml                      | 23 ++++++++++++++
- tools/modprobe.c                   | 11 +++++--
- tools/remove.c                     | 10 ++++--
- tools/rmmod.c                      |  9 ++++--
- 11 files changed, 127 insertions(+), 6 deletions(-)
-
-diff --git a/libkmod/docs/libkmod-sections.txt b/libkmod/docs/libkmod-sections.txt
-index e59ab7a..311a19a 100644
---- a/libkmod/docs/libkmod-sections.txt
-+++ b/libkmod/docs/libkmod-sections.txt
-@@ -102,5 +102,6 @@ kmod_module_get_initstate
- kmod_module_initstate_str
- kmod_module_get_size
- kmod_module_get_refcnt
-+kmod_module_get_refcnt_wait
- kmod_module_get_holders
- </SECTION>
-diff --git a/libkmod/libkmod-module.c b/libkmod/libkmod-module.c
-index 6e0ff1a..a609e6e 100644
---- a/libkmod/libkmod-module.c
-+++ b/libkmod/libkmod-module.c
-@@ -1915,6 +1915,56 @@ KMOD_EXPORT int kmod_module_get_refcnt(const struct kmod_module *mod)
- 	return (int)refcnt;
- }
- 
-+/**
-+ * kmod_module_get_refcnt_wait:
-+ * @mod: kmod module
-+ * @wait: if true will wait until the refcnt is 0 patiently forever
-+ *
-+ * Get the ref count of this @mod, as returned by Linux Kernel, by reading
-+ * /sys filesystem and wait patiently until the refcnt is 0, if the wait bool
-+ * argument is set to true, otherwise this behaves just as the call
-+ * kmod_module_get_refcnt(). Enabling wait is useful if you know for sure that
-+ * the module is quiescing soon, and so you should be able to remove it soon.
-+ * If wait is enabled, we wait 1 second per iteration check on the refcnt.
-+ *
-+ * Returns: the reference count on success or < 0 on failure.
-+ */
-+KMOD_EXPORT int kmod_module_get_refcnt_wait(const struct kmod_module *mod, bool wait)
-+{
-+	char path[PATH_MAX];
-+	long refcnt;
-+	int fd, err;
-+
-+	if (mod == NULL)
-+		return -ENOENT;
-+
-+	snprintf(path, sizeof(path), "/sys/module/%s/refcnt", mod->name);
-+
-+	while (true) {
-+		fd = open(path, O_RDONLY|O_CLOEXEC);
-+		if (fd < 0) {
-+			err = -errno;
-+			DBG(mod->ctx, "could not open '%s': %s\n",
-+				path, strerror(errno));
-+			return err;
-+		}
-+
-+		err = read_str_long(fd, &refcnt, 10);
-+		close(fd);
-+		if (err < 0) {
-+			ERR(mod->ctx, "could not read integer from '%s': '%s'\n",
-+				path, strerror(-err));
-+			return err;
-+		}
-+		if ((refcnt <= 0) || (refcnt > 0 && !wait))
-+			break;
-+		ERR(mod->ctx, "%s refcnt is %ld waiting for it to become 0\n", mod->name, refcnt);
-+		sleep(1);
-+	}
-+
-+	return (int)refcnt;
-+}
-+
- /**
-  * kmod_module_get_holders:
-  * @mod: kmod module
-diff --git a/libkmod/libkmod.h b/libkmod/libkmod.h
-index 3cab2e5..b8171d6 100644
---- a/libkmod/libkmod.h
-+++ b/libkmod/libkmod.h
-@@ -217,6 +217,7 @@ enum kmod_module_initstate {
- const char *kmod_module_initstate_str(enum kmod_module_initstate state);
- int kmod_module_get_initstate(const struct kmod_module *mod);
- int kmod_module_get_refcnt(const struct kmod_module *mod);
-+int kmod_module_get_refcnt_wait(const struct kmod_module *mod, bool wait);
- struct kmod_list *kmod_module_get_holders(const struct kmod_module *mod);
- struct kmod_list *kmod_module_get_sections(const struct kmod_module *mod);
- const char *kmod_module_section_get_name(const struct kmod_list *entry);
-diff --git a/libkmod/libkmod.sym b/libkmod/libkmod.sym
-index 5f5e1fb..002d3ce 100644
---- a/libkmod/libkmod.sym
-+++ b/libkmod/libkmod.sym
-@@ -49,6 +49,7 @@ global:
- 	kmod_module_initstate_str;
- 	kmod_module_get_initstate;
- 	kmod_module_get_refcnt;
-+	kmod_module_get_refcnt_wait;
- 	kmod_module_get_sections;
- 	kmod_module_section_free_list;
- 	kmod_module_section_get_name;
-diff --git a/libkmod/python/kmod/_libkmod_h.pxd b/libkmod/python/kmod/_libkmod_h.pxd
-index 7191953..2c744fc 100644
---- a/libkmod/python/kmod/_libkmod_h.pxd
-+++ b/libkmod/python/kmod/_libkmod_h.pxd
-@@ -99,6 +99,7 @@ cdef extern from 'libkmod/libkmod.h':
-     # Information regarding "live information" from module's state, as
-     # returned by kernel
-     int kmod_module_get_refcnt(const_kmod_module_ptr mod)
-+    int kmod_module_get_refcnt_wait(const_kmod_module_ptr mod, bool install)
-     long kmod_module_get_size(const_kmod_module_ptr mod)
- 
-     # Information retrieved from ELF headers and section
-diff --git a/libkmod/python/kmod/module.pyx b/libkmod/python/kmod/module.pyx
-index 42aa92e..45fe774 100644
---- a/libkmod/python/kmod/module.pyx
-+++ b/libkmod/python/kmod/module.pyx
-@@ -72,6 +72,10 @@ cdef class Module (object):
-         return _libkmod_h.kmod_module_get_refcnt(self.module)
-     refcnt = property(fget=_refcnt_get)
- 
-+    def _refcnt_get_wait(self, wait=False):
-+        return _libkmod_h.kmod_module_get_refcnt_wait(self.module, wait)
-+    refcnt = property(fget=_refcnt_get_wait)
-+
-     def _size_get(self):
-         return _libkmod_h.kmod_module_get_size(self.module)
-     size = property(fget=_size_get)
-diff --git a/man/modprobe.xml b/man/modprobe.xml
-index 0372b6b..50730e0 100644
---- a/man/modprobe.xml
-+++ b/man/modprobe.xml
-@@ -388,6 +388,28 @@
-           </para>
-         </listitem>
-       </varlistentry>
-+      <varlistentry>
-+        <term>
-+          <option>-p</option>
-+        </term>
-+        <term>
-+          <option>--remove-patiently</option>
-+        </term>
-+        <listitem>
-+          <para>
-+            This option causes <command>modprobe</command> to try to patiently
-+            remove a module by waiting until its refcnt is 0. It checks the refcnt
-+            and if its 0 it will immediately remove the module. If the refcnt is
-+            not 0, it will sleep 1 second and check the refcnt again, and repeat
-+            this until an error is found or the refcnt is 0. You can send a signal
-+            to this command if you do not want to wait anymore.
-+          </para>
-+          <para>
-+            Removing modules may be done by test infrastruture code, it can also
-+            be done to remove a live kernel patch.
-+          </para>
-+        </listitem>
-+      </varlistentry>
-       <varlistentry>
-         <term>
-           <option>-S</option>
-diff --git a/man/rmmod.xml b/man/rmmod.xml
-index e7c7e5f..55df09d 100644
---- a/man/rmmod.xml
-+++ b/man/rmmod.xml
-@@ -39,6 +39,7 @@
-     <cmdsynopsis>
-       <command>rmmod</command>
-       <arg><option>-f</option></arg>
-+      <arg><option>-p</option></arg>
-       <arg><option>-s</option></arg>
-       <arg><option>-v</option></arg>
-       <arg><replaceable>modulename</replaceable></arg>
-@@ -92,6 +93,28 @@
-           </para>
-         </listitem>
-       </varlistentry>
-+      <varlistentry>
-+        <term>
-+          <option>-p</option>
-+        </term>
-+        <term>
-+          <option>--remove-patiently</option>
-+        </term>
-+        <listitem>
-+          <para>
-+            This option tries to remove the module patiently by waiting
-+            until the module refcnt is 0. It checks the refcnt
-+            and if its 0 it will immediately remove the module. If the refcnt is
-+            not 0, it will sleep 1 second and check the refcnt again, and repeat
-+            this until an error is found or the refcnt is 0. You can send a signal
-+            to this command if you do not want to wait anymore.
-+          </para>
-+          <para>
-+            Removing modules may be done by test infrastruture code, it can also
-+            be done to remove a live kernel patch.
-+          </para>
-+        </listitem>
-+      </varlistentry>
-       <varlistentry>
-         <term>
-           <option>-s</option>
-diff --git a/tools/modprobe.c b/tools/modprobe.c
-index 9387537..1151643 100644
---- a/tools/modprobe.c
-+++ b/tools/modprobe.c
-@@ -56,11 +56,13 @@ static int strip_modversion = 0;
- static int strip_vermagic = 0;
- static int remove_dependencies = 0;
- static int quiet_inuse = 0;
-+static int do_remove_patient = 0;
- 
--static const char cmdopts_s[] = "arRibfDcnC:d:S:sqvVh";
-+static const char cmdopts_s[] = "arpRibfDcnC:d:S:sqvVh";
- static const struct option cmdopts[] = {
- 	{"all", no_argument, 0, 'a'},
- 	{"remove", no_argument, 0, 'r'},
-+	{"remove-patiently", no_argument, 0, 'p'},
- 	{"remove-dependencies", no_argument, 0, 5},
- 	{"resolve-alias", no_argument, 0, 'R'},
- 	{"first-time", no_argument, 0, 3},
-@@ -107,6 +109,7 @@ static void help(void)
- 		"\t                            be a module name to be inserted\n"
- 		"\t                            or removed (-r)\n"
- 		"\t-r, --remove                Remove modules instead of inserting\n"
-+		"\t-p, --remove-patiently      Patiently wait until the refcnt is 0 to remove\n"
- 		"\t    --remove-dependencies   Also remove modules depending on it\n"
- 		"\t-R, --resolve-alias         Only lookup and print alias and exit\n"
- 		"\t    --first-time            Fail if module already inserted or removed\n"
-@@ -424,7 +427,7 @@ static int rmmod_do_module(struct kmod_module *mod, int flags)
- 	}
- 
- 	if (!ignore_loaded && !cmd) {
--		int usage = kmod_module_get_refcnt(mod);
-+		int usage = kmod_module_get_refcnt_wait(mod, do_remove_patient);
- 
- 		if (usage > 0) {
- 			if (!quiet_inuse)
-@@ -785,6 +788,10 @@ static int do_modprobe(int argc, char **orig_argv)
- 		case 'r':
- 			do_remove = 1;
- 			break;
-+		case 'p':
-+			do_remove = 1;
-+			do_remove_patient = 1;
-+			break;
- 		case 5:
- 			remove_dependencies = 1;
- 			break;
-diff --git a/tools/remove.c b/tools/remove.c
-index 387ef0e..313c7ed 100644
---- a/tools/remove.c
-+++ b/tools/remove.c
-@@ -27,9 +27,12 @@
- 
- #include "kmod.h"
- 
--static const char cmdopts_s[] = "h";
-+static int do_remove_patient = 0;
-+
-+static const char cmdopts_s[] = "hp";
- static const struct option cmdopts[] = {
- 	{"help", no_argument, 0, 'h'},
-+	{"remove-patiently", no_argument, 0, 'p'},
- 	{ }
- };
- 
-@@ -74,7 +77,7 @@ static int check_module_inuse(struct kmod_module *mod) {
- 		return -EBUSY;
- 	}
- 
--	ret = kmod_module_get_refcnt(mod);
-+	ret = kmod_module_get_refcnt_wait(mod, do_remove_patient);
- 	if (ret > 0) {
- 		ERR("Module %s is in use\n", kmod_module_get_name(mod));
- 		return -EBUSY;
-@@ -101,6 +104,9 @@ static int do_remove(int argc, char *argv[])
- 		case 'h':
- 			help();
- 			return EXIT_SUCCESS;
-+		case 'p':
-+			do_remove_patient = 1;
-+			break;
- 
- 		default:
- 			ERR("Unexpected getopt_long() value '%c'.\n", c);
-diff --git a/tools/rmmod.c b/tools/rmmod.c
-index 3942e7b..16ce642 100644
---- a/tools/rmmod.c
-+++ b/tools/rmmod.c
-@@ -35,10 +35,12 @@
- #define DEFAULT_VERBOSE LOG_ERR
- static int verbose = DEFAULT_VERBOSE;
- static int use_syslog;
-+static int do_remove_patient;
- 
--static const char cmdopts_s[] = "fsvVwh";
-+static const char cmdopts_s[] = "fpsvVwh";
- static const struct option cmdopts[] = {
- 	{"force", no_argument, 0, 'f'},
-+	{"remove-patiently", no_argument, 0, 'p'},
- 	{"syslog", no_argument, 0, 's'},
- 	{"verbose", no_argument, 0, 'v'},
- 	{"version", no_argument, 0, 'V'},
-@@ -93,7 +95,7 @@ static int check_module_inuse(struct kmod_module *mod) {
- 		return -EBUSY;
- 	}
- 
--	ret = kmod_module_get_refcnt(mod);
-+	ret = kmod_module_get_refcnt_wait(mod, do_remove_patient);
- 	if (ret > 0) {
- 		ERR("Module %s is in use\n", kmod_module_get_name(mod));
- 		return -EBUSY;
-@@ -120,6 +122,9 @@ static int do_rmmod(int argc, char *argv[])
- 		case 'f':
- 			flags |= KMOD_REMOVE_FORCE;
- 			break;
-+		case 'p':
-+			do_remove_patient = 1;
-+			break;
- 		case 's':
- 			use_syslog = 1;
- 			break;
--- 
-2.30.2
-
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10b71b42300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ae62f6b8af876a89
+> dashboard link: https://syzkaller.appspot.com/bug?extid=dcb8a1e30879e0d60e8c
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+dcb8a1e30879e0d60e8c@syzkaller.appspotmail.com
+> 
+> kAFS: Red Hat AFS client v0.1 registering.
+> FS-Cache: Netfs 'afs' registered for caching
+> Btrfs loaded, crc32c=crc32c-intel, assert=on, zoned=yes, fsverity=yes
+> Key type big_key registered
+> Key type encrypted registered
+> AppArmor: AppArmor sha1 policy hashing enabled
+> ima: No TPM chip found, activating TPM-bypass!
+> Loading compiled-in module X.509 certificates
+> Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
+> ima: Allocated hash algorithm: sha256
+> ima: No architecture policies found
+> evm: Initialising EVM extended attributes:
+> evm: security.selinux (disabled)
+> evm: security.SMACK64 (disabled)
+> evm: security.SMACK64EXEC (disabled)
+> evm: security.SMACK64TRANSMUTE (disabled)
+> evm: security.SMACK64MMAP (disabled)
+> evm: security.apparmor
+> evm: security.ima
+> evm: security.capability
+> evm: HMAC attrs: 0x1
+> PM:   Magic number: 1:653:286
+> usb usb32-port1: hash matches
+> usb usb22: hash matches
+> ppp ppp: hash matches
+> tty ttyz0: hash matches
+> printk: console [netcon0] enabled
+> netconsole: network logging started
+> gtp: GTP module loaded (pdp ctx size 104 bytes)
+> rdma_rxe: loaded
+> cfg80211: Loading compiled-in X.509 certificates for regulatory database
+> cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+> ALSA device list:
+>   #0: Dummy 1
+>   #1: Loopback 1
+>   #2: Virtual MIDI Card 1
+> md: Waiting for all devices to be available before autodetect
+> md: If you don't use raid, use raid=noautodetect
+> md: Autodetecting RAID arrays.
+> md: autorun ...
+> md: ... autorun DONE.
+> EXT4-fs (sda1): mounted filesystem without journal. Opts: (null). Quota mode: none.
+> VFS: Mounted root (ext4 filesystem) readonly on device 8:1.
+> devtmpfs: mounted
+> Freeing unused kernel image (initmem) memory: 4348K
+> Write protecting the kernel read-only data: 169984k
+> Freeing unused kernel image (text/rodata gap) memory: 2012K
+> Freeing unused kernel image (rodata/data gap) memory: 1460K
+> Run /sbin/init as init process
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 1 at include/linux/mmap_lock.h:164 mmap_assert_locked include/linux/mmap_lock.h:164 [inline]
+> WARNING: CPU: 1 PID: 1 at include/linux/mmap_lock.h:164 find_vma+0xf8/0x270 mm/mmap.c:2307
+> Modules linked in:
+> CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc4-next-20210803-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:mmap_assert_locked include/linux/mmap_lock.h:164 [inline]
+> RIP: 0010:find_vma+0xf8/0x270 mm/mmap.c:2307
+> Code: 49 8d bc 24 28 01 00 00 be ff ff ff ff e8 00 e0 81 07 31 ff 89 c3 89 c6 e8 e5 a5 c9 ff 85 db 0f 85 61 ff ff ff e8 98 9e c9 ff <0f> 0b e9 55 ff ff ff e8 8c 9e c9 ff 4c 89 e7 e8 d4 da fb ff 0f 0b
+> RSP: 0000:ffffc90000c67600 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff888011a78000 RSI: ffffffff81ac1ac8 RDI: 0000000000000003
+> RBP: 00007fffffffe000 R08: 0000000000000000 R09: 0000000000000001
+> R10: ffffffff81ac1abb R11: 0000000000000001 R12: ffff8880260df000
+> R13: 0000000000000000 R14: 0000000000002016 R15: 0000000000000000
+> FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000000 CR3: 000000000b68e000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  find_extend_vma+0x25/0x150 mm/mmap.c:2622
+>  __get_user_pages+0x1c7/0xf70 mm/gup.c:1124
+>  __get_user_pages_locked mm/gup.c:1359 [inline]
+>  __get_user_pages_remote+0x18f/0x840 mm/gup.c:1868
+>  get_user_pages_remote+0x63/0x90 mm/gup.c:1941
+>  tomoyo_dump_page+0xd3/0x5b0 security/tomoyo/domain.c:915
+>  tomoyo_print_bprm security/tomoyo/audit.c:46 [inline]
+>  tomoyo_init_log+0xdc4/0x1ec0 security/tomoyo/audit.c:264
+>  tomoyo_supervisor+0x34d/0xf00 security/tomoyo/common.c:2097
+>  tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
+>  tomoyo_execute_permission+0x37f/0x4a0 security/tomoyo/file.c:619
+>  tomoyo_find_next_domain+0x348/0x1f80 security/tomoyo/domain.c:752
+>  tomoyo_bprm_check_security security/tomoyo/tomoyo.c:101 [inline]
+>  tomoyo_bprm_check_security+0x121/0x1a0 security/tomoyo/tomoyo.c:91
+>  security_bprm_check+0x45/0xa0 security/security.c:865
+>  search_binary_handler fs/exec.c:1711 [inline]
+>  exec_binprm fs/exec.c:1764 [inline]
+>  bprm_execve fs/exec.c:1833 [inline]
+>  bprm_execve+0x732/0x19b0 fs/exec.c:1795
+>  kernel_execve+0x370/0x460 fs/exec.c:1976
+>  try_to_run_init_process+0x14/0x4e init/main.c:1426
+>  kernel_init+0x12c/0x1d0 init/main.c:1542
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
