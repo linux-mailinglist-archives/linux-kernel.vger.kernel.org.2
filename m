@@ -2,102 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CEA3DF332
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CC93DF349
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237412AbhHCQvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237263AbhHCQvw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:51:52 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E37C061757;
-        Tue,  3 Aug 2021 09:51:41 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id o5so37374243ejy.2;
-        Tue, 03 Aug 2021 09:51:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8+umZScsOZjOsyO3Wgd5I6k6s08z12UwqmKO/ZSDzWU=;
-        b=G+XrZz7H5KnPA/nVBuuIkEaI21RE2FQpOo+vC0IjPeng/+qXv9H0vBR0xGr+AuuAvv
-         6QgZe8g1nMyJ32bUEf2+qyjh/V/+sUbDv8tb1osloY+UpXTrJ3SrhRhyD2Dsa5lbvGCP
-         Gq//U3+Oi7lesf96t/OrQVtfKYtKKcYmF0fLoClgGbrjZ4AIx1YbP3OlXConq267zcl4
-         DS/VnBRnAB6eHStgvc1oGx7dVrC5w3uSQd4wEW92f3eILcHMuXRWlLqhKG7uRv331h1a
-         y2QX9qRtOgOCJNzd4S3qhZGL+We3J+jNOppctVY1AXUbEv/nLn/GUD6a1Tc/tIqORDfU
-         56Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8+umZScsOZjOsyO3Wgd5I6k6s08z12UwqmKO/ZSDzWU=;
-        b=nAFaYwXkx6lZRxWr0UcHNF0k+ByyqML4PTvUjXtbuFBzcJgysjKZgZ26+MaPl68YcJ
-         1wua2qbaxbdGCsoWV9KZKI3+dJAhMpcIK4jHXKzh04TLHAP97LJAhDI6fKG/L16p6c27
-         Bas9AHYnkqCT4iT1CEA7KWXPyYqOEMZSyQly93LHJb9+/QJwCrbVPPG17nGhhRbX9IKY
-         YtQiyOQoLXt5hHN8s0FOBsko1NsdOnhtcMOEHJCkc8/frk7UK2Yr40Wa6riAWSbyd12O
-         yOq/bAu8eU9kEE5oDThD/+1Yk43PLOAil6Hjniz647NDGdGR2Iunjjj7mHPcQP6GFHhs
-         KMwA==
-X-Gm-Message-State: AOAM531gebb8uj/KnNwC5yNTXDooLh5Udgtu2O38ygDTRPM26k29WgYw
-        ZItFwOalS0dGdheyFcoJSlI=
-X-Google-Smtp-Source: ABdhPJzOeuhc7RhMVyEW4bwBTNsbiGz/zk2oNpxReoCzfanmHcb+Hs0q5HvBCcSEdVlFIYLwg6PVyw==
-X-Received: by 2002:a17:906:c1da:: with SMTP id bw26mr21664503ejb.253.1628009500105;
-        Tue, 03 Aug 2021 09:51:40 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id dh8sm8406135edb.14.2021.08.03.09.51.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 09:51:39 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 19:51:38 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S237559AbhHCQwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:52:38 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30476 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237432AbhHCQw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:52:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="200924763"
+X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
+   d="scan'208";a="200924763"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 09:52:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
+   d="scan'208";a="667297187"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga006.fm.intel.com with ESMTP; 03 Aug 2021 09:52:03 -0700
+Received: from alobakin-mobl.ger.corp.intel.com (mszymcza-mobl.ger.corp.intel.com [10.213.25.231])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 173Gpg7A004325;
+        Tue, 3 Aug 2021 17:51:58 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Woudstra <ericwouds@gmail.com>,
-        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: Re: [PATCH net-next v2 4/4] net: dsa: mt7530: always install FDB
- entries with IVL and FID 1
-Message-ID: <20210803165138.3obbvtjj2xn6j2n5@skbuf>
-References: <20210803160405.3025624-1-dqfext@gmail.com>
- <20210803160405.3025624-5-dqfext@gmail.com>
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: [PATCH ethtool-next 4/5] man: fix typo for "rmon" standard stat type
+Date:   Tue,  3 Aug 2021 18:51:39 +0200
+Message-Id: <20210803165140.172-5-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210803165140.172-1-alexandr.lobakin@intel.com>
+References: <20210803165140.172-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803160405.3025624-5-dqfext@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 12:04:04AM +0800, DENG Qingfang wrote:
-> This reverts commit 7e777021780e ("mt7530 mt7530_fdb_write only set ivl
-> bit vid larger than 1").
-> 
-> Before this series, the default value of all ports' PVID is 1, which is
-> copied into the FDB entry, even if the ports are VLAN unaware. So
-> `bridge fdb show` will show entries like `dev swp0 vlan 1 self` even on
-> a VLAN-unaware bridge.
-> 
-> The blamed commit does not solve that issue completely, instead it may
-> cause a new issue that FDB is inaccessible in a VLAN-aware bridge with
-> PVID 1.
-> 
-> This series sets PVID to 0 on VLAN-unaware ports, so `bridge fdb show`
-> will no longer print `vlan 1` on VLAN-unaware bridges, and that special
-> case in fdb_write is not required anymore.
-> 
-> Set FDB entries' filter ID to 1 to match the VLAN table.
-> 
-> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> ---
+Due to ".RN" instead of ".RB", "[rmon]" string was always being
+omitted from the SYNOPSIS part.
 
-The way FDB entries are installed now makes a lot more intuitive sense.
+Fixes: f8d2bc2ccd8b ("netlink: add support for standard stats")
+Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+---
+ ethtool.8.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ethtool.8.in b/ethtool.8.in
+index f83d6d17ae41..6b7761849fca 100644
+--- a/ethtool.8.in
++++ b/ethtool.8.in
+@@ -244,7 +244,7 @@ ethtool \- query or control network driver and hardware settings
+ .RB [\fBeth\-phy\fP]
+ .RB [\fBeth\-mac\fP]
+ .RB [\fBeth\-ctrl\fP]
+-.RN [\fBrmon\fP]
++.RB [\fBrmon\fP]
+ .RB ]
+ .HP
+ .B ethtool \-\-phy\-statistics
+-- 
+2.31.1
+
