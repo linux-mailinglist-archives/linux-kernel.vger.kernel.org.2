@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BB83DF3AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16413DF3AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237786AbhHCRNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237557AbhHCRNm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:13:42 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFFDC061757;
-        Tue,  3 Aug 2021 10:13:31 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id z3so23195065plg.8;
-        Tue, 03 Aug 2021 10:13:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=I2bXUkEd46pGN/p5HEpGGRY38cwwH6dqSDlTkP0Mz2M=;
-        b=BFDaeMPkkK0eR0sqJZXh0E4uRJBT44zfNMC7MCxZMHhM/7hx6jZF5uellllfEdV8dA
-         /b380csIpzQpsxS+euUgDDvqoUXOguS4+exPBwbdRagcrl7o69V20/fwk56s7lveAb7j
-         Qfp+KeH0c8L8TSmm0sHwNNmGLSNBu7jSSvdQXecR+fFbrGOa4LJUKt4Zs5W/jBKMXLZJ
-         ktUMHvLC9Z+xveQvvUPVyy4Pt9oS++/FBN1Y4YlXCl+jGXfXb7ZzLo4ePxCYkHQBWJrq
-         X/Yy/df/X3GbMgeWCb7mes5S+5/6gVGMN/UZRyCMw64i5IUrgBPLsD9urmVW1gt/nT9A
-         4Tnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=I2bXUkEd46pGN/p5HEpGGRY38cwwH6dqSDlTkP0Mz2M=;
-        b=WgKz8qqoMcscuSB+P39ifNjqWRSyN++aV7OpzkRbXwf6WkGD4q5MZ23jSuxjIJbZ18
-         LDZz9QsxpkV4JHjH9SY2KG8MUuH29CuVGroIs/cMYhaym8ytMim/Enb1ap0Zys0ePXw3
-         gh26twwy1nSywYRz3kbdXD4pb3e6S7ulwMuy+pqm/ZPLlLs6rJMMONI9h8LD4gEvbTCj
-         nakHpb/bXrd3vFDhqXWy29/08WiGifveMWeYLvDT4J9ZygauWO1YKluoP0xJXl4Xh9p/
-         Tj8B/i+fD3hInGqPYXa11DXCu96NRgMmheL8gsSi+SaOMTMv4xoWrCQemwQPHgRxNBB9
-         poXQ==
-X-Gm-Message-State: AOAM533EoSfCamMrheHnW3BS76UQb7Z9nefqZhiKqxSHy7lS3LZVBRqY
-        lIZEk6Aw29f0qAzFM+RIL9Y=
-X-Google-Smtp-Source: ABdhPJwszazw7EW7d5bx/e6FqZLMf1EUKjtsldaoh66ru2HcCmV6kqtSiDkeqgSct6YLp8CN2vgnbA==
-X-Received: by 2002:a17:90a:73c6:: with SMTP id n6mr1822080pjk.128.1628010811229;
-        Tue, 03 Aug 2021 10:13:31 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id c136sm15983532pfc.53.2021.08.03.10.13.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 10:13:30 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Woudstra <ericwouds@gmail.com>,
-        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: Re: [PATCH net-next v2 2/4] net: dsa: mt7530: use independent VLAN learning on VLAN-unaware bridges
-Date:   Wed,  4 Aug 2021 01:13:21 +0800
-Message-Id: <20210803171321.3026041-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210803164853.gxw4zfxmmgs2kgry@skbuf>
-References: <20210803160405.3025624-1-dqfext@gmail.com> <20210803160405.3025624-3-dqfext@gmail.com> <20210803164853.gxw4zfxmmgs2kgry@skbuf>
+        id S237829AbhHCRQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:16:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:52528 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237775AbhHCRPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 13:15:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8181B139F;
+        Tue,  3 Aug 2021 10:14:59 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 34F2A3F40C;
+        Tue,  3 Aug 2021 10:14:57 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 18:14:51 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH v6 8/8] PCI: hv: Turn on the host bridge probing on ARM64
+Message-ID: <20210803171451.GA15466@lpieralisi>
+References: <20210726180657.142727-1-boqun.feng@gmail.com>
+ <20210726180657.142727-9-boqun.feng@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210726180657.142727-9-boqun.feng@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 07:48:53PM +0300, Vladimir Oltean wrote:
-> After this patch set gets merged, can you also please take a look at the
-> following:
+On Tue, Jul 27, 2021 at 02:06:57AM +0800, Boqun Feng wrote:
+> Now we have everything we need, just provide a proper sysdata type for
+> the bus to use on ARM64 and everything else works.
 > 
-> Documentation/networking/switchdev.rst says:
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  drivers/pci/controller/pci-hyperv.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> When the bridge has VLAN filtering enabled and a PVID is not configured on the
-> ingress port, untagged and 802.1p tagged packets must be dropped. When the bridge
-> has VLAN filtering enabled and a PVID exists on the ingress port, untagged and
-> priority-tagged packets must be accepted and forwarded according to the
-> bridge's port membership of the PVID VLAN. When the bridge has VLAN filtering
-> disabled, the presence/lack of a PVID should not influence the packet
-> forwarding decision.
-> 
-> I'm not sure if this happens or not with mt7530, since the driver
-> attempts to change the pvid back to 0. You are not changing this
-> behavior in this series, so no reason to deal with it as part of it.
-> 
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index e6276aaa4659..62dbe98d1fe1 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -40,6 +40,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/pci.h>
+> +#include <linux/pci-ecam.h>
+>  #include <linux/delay.h>
+>  #include <linux/semaphore.h>
+>  #include <linux/irqdomain.h>
+> @@ -448,7 +449,11 @@ enum hv_pcibus_state {
+>  };
+>  
+>  struct hv_pcibus_device {
+> +#ifdef CONFIG_X86
+>  	struct pci_sysdata sysdata;
+> +#elif defined(CONFIG_ARM64)
+> +	struct pci_config_window sysdata;
 
-There is PVC.ACC_FRM which controls the acceptable frame type.
-Currently the driver does not use it, so untagged and priority-tagged frames
-can get into a VLAN-aware port without a PVID.
+This is ugly. HV does not need pci_config_window at all right
+(other than arm64 pcibios_root_bridge_prepare()) ?
+
+The issue is that in HV you have to have *some* sysdata != NULL, it is
+just some data to retrieve the hv_pcibus_device.
+
+Mmaybe we can rework ARM64 ACPI code to store the acpi_device in struct
+pci_host_bridge->private instead of retrieving it from pci_config_window
+so that we decouple HV from the ARM64 back-end.
+
+HV would just set struct pci_host_bridge->private == NULL.
+
+I need to think about this a bit, I don't think it should block
+this series though but it would be nicer.
+
+Lorenzo
+
+> +#endif
+>  	struct pci_host_bridge *bridge;
+>  	struct fwnode_handle *fwnode;
+>  	/* Protocol version negotiated with the host */
+> @@ -3075,7 +3080,9 @@ static int hv_pci_probe(struct hv_device *hdev,
+>  			 dom_req, dom);
+>  
+>  	hbus->bridge->domain_nr = dom;
+> +#ifdef CONFIG_X86
+>  	hbus->sysdata.domain = dom;
+> +#endif
+>  
+>  	hbus->hdev = hdev;
+>  	INIT_LIST_HEAD(&hbus->children);
+> -- 
+> 2.32.0
+> 
