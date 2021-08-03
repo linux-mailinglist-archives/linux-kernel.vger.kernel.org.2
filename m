@@ -2,226 +2,473 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3AE3DE375
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566A73DE384
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232892AbhHCARt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 20:17:49 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:47822 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232634AbhHCARs (ORCPT
+        id S232850AbhHCAY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 20:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232638AbhHCAY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 20:17:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UhoymnS_1627949850;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UhoymnS_1627949850)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 03 Aug 2021 08:17:36 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH v10] iomap: support reading inline data from non-zero pos
-Date:   Tue,  3 Aug 2021 08:17:27 +0800
-Message-Id: <20210803001727.50281-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
-In-Reply-To: <YQfh7V0lvLNx0QlR@B-P7TQMD6M-0146.local>
-References: <YQfh7V0lvLNx0QlR@B-P7TQMD6M-0146.local>
+        Mon, 2 Aug 2021 20:24:26 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E4CC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 17:24:16 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id c7-20020a9d27870000b02904d360fbc71bso19136693otb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 17:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=doGlUnC2Izu+5zn4ZCfvspedKvqr3QZYCIrVSDIo8sk=;
+        b=OJrGMH5xFj4M9BfrtuDMoJPOY/7A0gs9DjhAODbC4/++9MhtbAPyIoo2+37LuIfd+z
+         O2ufKPyCRi1loYN6iw8cqvKWp9nU4phQNrYXY5B5iNdRhcjqm1ck22GWTlV105h1kbp3
+         txBCFdoS2Ape/8UxbS5Xn994HaUXYD8fDUaPOXE+d6ETkZuU8eu5SblSTNpoMfRA449O
+         AzeNwgP9Y2miwZR5bm0Z8TC6ATC6NtLq5u5LHV8C2lwYUxa28J4TwXJjHGyLBtiC/KWT
+         2WuS0brQWTXRO7XmTPwauDW52c08x07C+ILcPR0MdLh0+9RlbNujffvlCGMjEGso6O+p
+         iy0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=doGlUnC2Izu+5zn4ZCfvspedKvqr3QZYCIrVSDIo8sk=;
+        b=NQNuAoiEzJuT4KW1dNlYarzIiWfQtS+4RAV8UcBewaCnyl76NjmMgXatp5guirAfUN
+         IHcYpmBNJrf21zin9p1YLmlb0X4S8OwAkbLbM1sl0OgWjButUsaaiqJ9ke3cQlDGVj1e
+         QR0juVZ/u4bdYx2aP+OWoW9U0BzuoN1nstn+FLb2bKTn6H6+oNdpwxqRFs0Srk4KyxT7
+         T0DSc69i7FKn0NAk+3xfUSlURAopRN94Jc2aqEr3z0LPTCnxGHE3XvM7r5NuSCxPTBGK
+         qV9LLVmVne0dRzIkb/YeZgx9HY/FafJ7vmdERrJrIDSWiW7mq1tdSQ0cRubIRNrSANZ+
+         XCkQ==
+X-Gm-Message-State: AOAM533ss9460M6WFDetwasNoC31DOJ33Zd+UepegWVaQF+myuZM7M9p
+        bUfgVmIaFGMv2sHKJEEv5QUDMIEL7Gm4hf+gPdUgMQ==
+X-Google-Smtp-Source: ABdhPJw8hTGNh2lYWwPy3nKOhvFq+7YU16hkOyePv2tW2S3BgRP5d4yHrFc5sAoQgq8Oc75oK2iZY0Cymv2+HzRolNo=
+X-Received: by 2002:a05:6830:40c2:: with SMTP id h2mr13569636otu.56.1627950255573;
+ Mon, 02 Aug 2021 17:24:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210802211912.116329-1-jiang.wang@bytedance.com> <20210802211912.116329-3-jiang.wang@bytedance.com>
+In-Reply-To: <20210802211912.116329-3-jiang.wang@bytedance.com>
+From:   "Jiang Wang ." <jiang.wang@bytedance.com>
+Date:   Mon, 2 Aug 2021 17:24:04 -0700
+Message-ID: <CAP_N_Z-FJSZ+gaO36ui763SjVk+aDuUT0Cten3RgFTeX+h2qbQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/5] af_unix: add unix_stream_proto for sockmap
+To:     Networking <netdev@vger.kernel.org>
+Cc:     Cong Wang <cong.wang@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Yongji Xie <xieyongji@bytedance.com>,
+        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing inline data support only works for cases where the entire
-file is stored as inline data.  For larger files, EROFS stores the
-initial blocks separately and the remainder of the file ("file tail")
-adjacent to the inode.  Generalise inline data to allow reading the
-inline file tail.  Tails may not cross a page boundary in memory.
+On Mon, Aug 2, 2021 at 2:19 PM Jiang Wang <jiang.wang@bytedance.com> wrote:
+>
+> Previously, sockmap for AF_UNIX protocol only supports
+> dgram type. This patch add unix stream type support, which
+> is similar to unix_dgram_proto. To support sockmap, dgram
+> and stream cannot share the same unix_proto anymore, because
+> they have different implementations, such as unhash for stream
+> type (which will remove closed or disconnected sockets from the map),
+> so rename unix_proto to unix_dgram_proto and add a new
+> unix_stream_proto.
+>
+> Also implement stream related sockmap functions.
+> And add dgram key words to those dgram specific functions.
+>
+> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+> Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  include/net/af_unix.h |  8 +++-
+>  net/core/sock_map.c   |  8 +++-
+>  net/unix/af_unix.c    | 74 ++++++++++++++++++++++++++++-----
+>  net/unix/unix_bpf.c   | 96 +++++++++++++++++++++++++++++++++----------
+>  4 files changed, 150 insertions(+), 36 deletions(-)
+>
+> diff --git a/include/net/af_unix.h b/include/net/af_unix.h
+> index 435a2c3d5..5d04fbf8a 100644
+> --- a/include/net/af_unix.h
+> +++ b/include/net/af_unix.h
+> @@ -84,6 +84,8 @@ long unix_outq_len(struct sock *sk);
+>
+>  int __unix_dgram_recvmsg(struct sock *sk, struct msghdr *msg, size_t size,
+>                          int flags);
+> +int __unix_stream_recvmsg(struct sock *sk, struct msghdr *msg, size_t size,
+> +                         int flags);
+>  #ifdef CONFIG_SYSCTL
+>  int unix_sysctl_register(struct net *net);
+>  void unix_sysctl_unregister(struct net *net);
+> @@ -93,9 +95,11 @@ static inline void unix_sysctl_unregister(struct net *net) {}
+>  #endif
+>
+>  #ifdef CONFIG_BPF_SYSCALL
+> -extern struct proto unix_proto;
+> +extern struct proto unix_dgram_proto;
+> +extern struct proto unix_stream_proto;
+>
+> -int unix_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
+> +int unix_dgram_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
+> +int unix_stream_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
+>  void __init unix_bpf_build_proto(void);
+>  #else
+>  static inline void __init unix_bpf_build_proto(void)
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index ae5fa4338..42f50ea7a 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -517,9 +517,15 @@ static bool sk_is_tcp(const struct sock *sk)
+>                sk->sk_protocol == IPPROTO_TCP;
+>  }
+>
+> +static bool sk_is_unix_stream(const struct sock *sk)
+> +{
+> +       return sk->sk_type == SOCK_STREAM &&
+> +              sk->sk_protocol == PF_UNIX;
+> +}
+> +
+>  static bool sock_map_redirect_allowed(const struct sock *sk)
+>  {
+> -       if (sk_is_tcp(sk))
+> +       if (sk_is_tcp(sk) || sk_is_unix_stream(sk))
+>                 return sk->sk_state != TCP_LISTEN;
+>         else
+>                 return sk->sk_state == TCP_ESTABLISHED;
+> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> index 0ae3fc4c8..9c1711c67 100644
+> --- a/net/unix/af_unix.c
+> +++ b/net/unix/af_unix.c
+> @@ -791,17 +791,35 @@ static void unix_close(struct sock *sk, long timeout)
+>          */
+>  }
+>
+> -struct proto unix_proto = {
+> -       .name                   = "UNIX",
+> +static void unix_unhash(struct sock *sk)
+> +{
+> +       /* Nothing to do here, unix socket does not need a ->unhash().
+> +        * This is merely for sockmap.
+> +        */
+> +}
+> +
+> +struct proto unix_dgram_proto = {
+> +       .name                   = "UNIX-DGRAM",
+> +       .owner                  = THIS_MODULE,
+> +       .obj_size               = sizeof(struct unix_sock),
+> +       .close                  = unix_close,
+> +#ifdef CONFIG_BPF_SYSCALL
+> +       .psock_update_sk_prot   = unix_dgram_bpf_update_proto,
+> +#endif
+> +};
+> +
+> +struct proto unix_stream_proto = {
+> +       .name                   = "UNIX-STREAM",
+>         .owner                  = THIS_MODULE,
+>         .obj_size               = sizeof(struct unix_sock),
+>         .close                  = unix_close,
+> +       .unhash                 = unix_unhash,
+>  #ifdef CONFIG_BPF_SYSCALL
+> -       .psock_update_sk_prot   = unix_bpf_update_proto,
+> +       .psock_update_sk_prot   = unix_stream_bpf_update_proto,
+>  #endif
+>  };
+>
+> -static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
+> +static struct sock *unix_create1(struct net *net, struct socket *sock, int kern, int type)
+>  {
+>         struct sock *sk = NULL;
+>         struct unix_sock *u;
+> @@ -810,7 +828,11 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
+>         if (atomic_long_read(&unix_nr_socks) > 2 * get_max_files())
+>                 goto out;
+>
+> -       sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_proto, kern);
+> +       if (type == SOCK_STREAM)
+> +               sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_stream_proto, kern);
+> +       else /*dgram and  seqpacket */
+> +               sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_dgram_proto, kern);
+> +
+>         if (!sk)
+>                 goto out;
+>
+> @@ -872,7 +894,7 @@ static int unix_create(struct net *net, struct socket *sock, int protocol,
+>                 return -ESOCKTNOSUPPORT;
+>         }
+>
+> -       return unix_create1(net, sock, kern) ? 0 : -ENOMEM;
+> +       return unix_create1(net, sock, kern, sock->type) ? 0 : -ENOMEM;
+>  }
+>
+>  static int unix_release(struct socket *sock)
+> @@ -1286,7 +1308,7 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
+>         err = -ENOMEM;
+>
+>         /* create new sock for complete connection */
+> -       newsk = unix_create1(sock_net(sk), NULL, 0);
+> +       newsk = unix_create1(sock_net(sk), NULL, 0, sock->type);
+>         if (newsk == NULL)
+>                 goto out;
+>
+> @@ -2214,7 +2236,7 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg, size_t si
+>         struct sock *sk = sock->sk;
+>
+>  #ifdef CONFIG_BPF_SYSCALL
+> -       if (sk->sk_prot != &unix_proto)
+> +       if (sk->sk_prot != &unix_dgram_proto)
+>                 return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
+>                                             flags & ~MSG_DONTWAIT, NULL);
+>  #endif
+> @@ -2533,6 +2555,20 @@ static int unix_stream_read_actor(struct sk_buff *skb,
+>         return ret ?: chunk;
+>  }
+>
+> +int __unix_stream_recvmsg(struct sock *sk, struct msghdr *msg,
+> +                         size_t size, int flags)
+> +{
+> +       struct unix_stream_read_state state = {
+> +               .recv_actor = unix_stream_read_actor,
+> +               .socket = sk->sk_socket,
+> +               .msg = msg,
+> +               .size = size,
+> +               .flags = flags
+> +       };
+> +
+> +       return unix_stream_read_generic(&state, true);
+> +}
+> +
+>  static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
+>                                size_t size, int flags)
+>  {
+> @@ -2544,6 +2580,12 @@ static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
+>                 .flags = flags
+>         };
+>
+> +#ifdef CONFIG_BPF_SYSCALL
+> +       struct sock *sk = sock->sk;
+> +       if (sk->sk_prot != &unix_stream_proto)
+> +               return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
+> +                                           flags & ~MSG_DONTWAIT, NULL);
+> +#endif
+>         return unix_stream_read_generic(&state, true);
+>  }
+>
+> @@ -2605,6 +2647,7 @@ static int unix_shutdown(struct socket *sock, int mode)
+>
+>                 int peer_mode = 0;
+>
+> +               other->sk_prot->unhash(other);
+>                 if (mode&RCV_SHUTDOWN)
+>                         peer_mode |= SEND_SHUTDOWN;
+>                 if (mode&SEND_SHUTDOWN)
+> @@ -2613,8 +2656,10 @@ static int unix_shutdown(struct socket *sock, int mode)
+>                 other->sk_shutdown |= peer_mode;
+>                 unix_state_unlock(other);
+>                 other->sk_state_change(other);
+> -               if (peer_mode == SHUTDOWN_MASK)
+> +               if (peer_mode == SHUTDOWN_MASK) {
+>                         sk_wake_async(other, SOCK_WAKE_WAITD, POLL_HUP);
+> +                       other->sk_state = TCP_CLOSE;
+> +               }
+>                 else if (peer_mode & RCV_SHUTDOWN)
+>                         sk_wake_async(other, SOCK_WAKE_WAITD, POLL_IN);
+>         }
+> @@ -2993,7 +3038,13 @@ static int __init af_unix_init(void)
+>
+>         BUILD_BUG_ON(sizeof(struct unix_skb_parms) > sizeof_field(struct sk_buff, cb));
+>
+> -       rc = proto_register(&unix_proto, 1);
+> +       rc = proto_register(&unix_dgram_proto, 1);
+> +       if (rc != 0) {
+> +               pr_crit("%s: Cannot create unix_sock SLAB cache!\n", __func__);
+> +               goto out;
+> +       }
+> +
+> +       rc = proto_register(&unix_stream_proto, 1);
+>         if (rc != 0) {
+>                 pr_crit("%s: Cannot create unix_sock SLAB cache!\n", __func__);
+>                 goto out;
+> @@ -3009,7 +3060,8 @@ static int __init af_unix_init(void)
+>  static void __exit af_unix_exit(void)
+>  {
+>         sock_unregister(PF_UNIX);
+> -       proto_unregister(&unix_proto);
+> +       proto_unregister(&unix_dgram_proto);
+> +       proto_unregister(&unix_stream_proto);
+>         unregister_pernet_subsys(&unix_net_ops);
+>  }
+>
+> diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
+> index db0cda29f..17e210666 100644
+> --- a/net/unix/unix_bpf.c
+> +++ b/net/unix/unix_bpf.c
+> @@ -38,9 +38,18 @@ static int unix_msg_wait_data(struct sock *sk, struct sk_psock *psock,
+>         return ret;
+>  }
+>
+> -static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
+> -                                 size_t len, int nonblock, int flags,
+> -                                 int *addr_len)
+> +static int __unix_recvmsg(struct sock *sk, struct msghdr *msg,
+> +                          size_t len, int flags)
+> +{
+> +       if (sk->sk_type == SOCK_DGRAM)
+> +               return __unix_dgram_recvmsg(sk, msg, len, flags);
+> +       else
+> +               return __unix_stream_recvmsg(sk, msg, len, flags);
+> +}
+> +
+> +static int unix_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
+> +                           size_t len, int nonblock, int flags,
+> +                           int *addr_len)
+>  {
+>         struct unix_sock *u = unix_sk(sk);
+>         struct sk_psock *psock;
+> @@ -48,12 +57,12 @@ static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
+>
+>         psock = sk_psock_get(sk);
+>         if (unlikely(!psock))
+> -               return __unix_dgram_recvmsg(sk, msg, len, flags);
+> +               return __unix_recvmsg(sk, msg, len, flags);
+>
+>         mutex_lock(&u->iolock);
+>         if (!skb_queue_empty(&sk->sk_receive_queue) &&
+>             sk_psock_queue_empty(psock)) {
+> -               ret = __unix_dgram_recvmsg(sk, msg, len, flags);
+> +               ret = __unix_recvmsg(sk, msg, len, flags);
+>                 goto out;
+>         }
+>
+> @@ -68,7 +77,7 @@ static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
+>                 if (data) {
+>                         if (!sk_psock_queue_empty(psock))
+>                                 goto msg_bytes_ready;
+> -                       ret = __unix_dgram_recvmsg(sk, msg, len, flags);
+> +                       ret = __unix_recvmsg(sk, msg, len, flags);
+>                         goto out;
+>                 }
+>                 copied = -EAGAIN;
+> @@ -80,43 +89,86 @@ static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
+>         return ret;
+>  }
+>
+> -static struct proto *unix_prot_saved __read_mostly;
+> -static DEFINE_SPINLOCK(unix_prot_lock);
+> -static struct proto unix_bpf_prot;
+> +static struct proto *unix_dgram_prot_saved __read_mostly;
+> +static DEFINE_SPINLOCK(unix_dgram_prot_lock);
+> +static struct proto unix_dgram_bpf_prot;
+> +
+> +static struct proto *unix_stream_prot_saved __read_mostly;
+> +static DEFINE_SPINLOCK(unix_stream_prot_lock);
+> +static struct proto unix_stream_bpf_prot;
+> +
+> +static void unix_dgram_bpf_rebuild_protos(struct proto *prot, const struct proto *base)
+> +{
+> +       *prot        = *base;
+> +       prot->close  = sock_map_close;
+> +       prot->recvmsg = unix_bpf_recvmsg;
+> +}
+>
+> -static void unix_bpf_rebuild_protos(struct proto *prot, const struct proto *base)
+> +static void unix_stream_bpf_rebuild_protos(struct proto *prot,
+> +                                          const struct proto *base)
+>  {
+>         *prot        = *base;
+>         prot->close  = sock_map_close;
+> -       prot->recvmsg = unix_dgram_bpf_recvmsg;
+> +       prot->recvmsg = unix_bpf_recvmsg;
+> +       prot->unhash  = sock_map_unhash;
+> +}
+> +
+> +static void unix_dgram_bpf_check_needs_rebuild(struct proto *ops)
+> +{
+> +       if (unlikely(ops != smp_load_acquire(&unix_dgram_prot_saved))) {
+> +               spin_lock_bh(&unix_dgram_prot_lock);
+> +               if (likely(ops != unix_dgram_prot_saved)) {
+> +                       unix_dgram_bpf_rebuild_protos(&unix_dgram_bpf_prot, ops);
+> +                       smp_store_release(&unix_dgram_prot_saved, ops);
+> +               }
+> +               spin_unlock_bh(&unix_dgram_prot_lock);
+> +       }
+>  }
+>
+> -static void unix_bpf_check_needs_rebuild(struct proto *ops)
+> +static void unix_stream_bpf_check_needs_rebuild(struct proto *ops)
+>  {
+> -       if (unlikely(ops != smp_load_acquire(&unix_prot_saved))) {
+> -               spin_lock_bh(&unix_prot_lock);
+> -               if (likely(ops != unix_prot_saved)) {
+> -                       unix_bpf_rebuild_protos(&unix_bpf_prot, ops);
+> -                       smp_store_release(&unix_prot_saved, ops);
+> +       if (unlikely(ops != smp_load_acquire(&unix_stream_prot_saved))) {
+> +               spin_lock_bh(&unix_stream_prot_lock);
+> +               if (likely(ops != unix_stream_prot_saved)) {
+> +                       unix_stream_bpf_rebuild_protos(&unix_stream_bpf_prot, ops);
+> +                       smp_store_release(&unix_stream_prot_saved, ops);
+>                 }
+> -               spin_unlock_bh(&unix_prot_lock);
+> +               spin_unlock_bh(&unix_stream_prot_lock);
+> +       }
+> +}
+> +
+> +int unix_dgram_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
+> +{
+> +       if (restore) {
+> +               sk->sk_write_space = psock->saved_write_space;
+> +               WRITE_ONCE(sk->sk_prot, psock->sk_proto);
+> +               return 0;
+>         }
+> +
+> +       unix_dgram_bpf_check_needs_rebuild(psock->sk_proto);
+> +       WRITE_ONCE(sk->sk_prot, &unix_dgram_bpf_prot);
+> +       return 0;
+>  }
+>
+> -int unix_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
+> +int unix_stream_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
+>  {
+> +       if (sk->sk_type != SOCK_STREAM)
+> +               return -EOPNOTSUPP;
+> +
 
-We currently have no filesystems that support tails and writing,
-so that case is currently disabled (see iomap_write_begin_inline).
+Cong reminded me that there is no need to check sk_type here because
+unix_stream_bpf_prot is only used by stream type. I will remove this part
+in the next version.
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-changes since v9:
- - update commit message suggested by Darrick and
-   collect his RVB;
- - update a semicolon suggested by Andreas.
 
- fs/iomap/buffered-io.c | 42 ++++++++++++++++++++++++++++++------------
- fs/iomap/direct-io.c   | 10 ++++++----
- include/linux/iomap.h  | 18 ++++++++++++++++++
- 3 files changed, 54 insertions(+), 16 deletions(-)
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..dd1e2cbec5a0 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -205,25 +205,32 @@ struct iomap_readpage_ctx {
- 	struct readahead_control *rac;
- };
- 
--static void
--iomap_read_inline_data(struct inode *inode, struct page *page,
-+static int iomap_read_inline_data(struct inode *inode, struct page *page,
- 		struct iomap *iomap)
- {
--	size_t size = i_size_read(inode);
-+	size_t size = i_size_read(inode) - iomap->offset;
- 	void *addr;
- 
- 	if (PageUptodate(page))
--		return;
-+		return 0;
- 
--	BUG_ON(page_has_private(page));
--	BUG_ON(page->index);
--	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline data must start page aligned in the file */
-+	if (WARN_ON_ONCE(offset_in_page(iomap->offset)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(size > PAGE_SIZE -
-+			 offset_in_page(iomap->inline_data)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(size > iomap->length))
-+		return -EIO;
-+	if (WARN_ON_ONCE(page_has_private(page)))
-+		return -EIO;
- 
- 	addr = kmap_atomic(page);
- 	memcpy(addr, iomap->inline_data, size);
- 	memset(addr + size, 0, PAGE_SIZE - size);
- 	kunmap_atomic(addr);
- 	SetPageUptodate(page);
-+	return 0;
- }
- 
- static inline bool iomap_block_needs_zeroing(struct inode *inode,
-@@ -247,8 +254,10 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 	sector_t sector;
- 
- 	if (iomap->type == IOMAP_INLINE) {
--		WARN_ON_ONCE(pos);
--		iomap_read_inline_data(inode, page, iomap);
-+		int ret = iomap_read_inline_data(inode, page, iomap);
-+
-+		if (ret)
-+			return ret;
- 		return PAGE_SIZE;
- 	}
- 
-@@ -589,6 +598,15 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 	return 0;
- }
- 
-+static int iomap_write_begin_inline(struct inode *inode,
-+		struct page *page, struct iomap *srcmap)
-+{
-+	/* needs more work for the tailpacking case; disable for now */
-+	if (WARN_ON_ONCE(srcmap->offset != 0))
-+		return -EIO;
-+	return iomap_read_inline_data(inode, page, srcmap);
-+}
-+
- static int
- iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-@@ -618,7 +636,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 	}
- 
- 	if (srcmap->type == IOMAP_INLINE)
--		iomap_read_inline_data(inode, page, srcmap);
-+		status = iomap_write_begin_inline(inode, page, srcmap);
- 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
- 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
- 	else
-@@ -671,11 +689,11 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
- 	void *addr;
- 
- 	WARN_ON_ONCE(!PageUptodate(page));
--	BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	BUG_ON(!iomap_inline_data_valid(iomap));
- 
- 	flush_dcache_page(page);
- 	addr = kmap_atomic(page);
--	memcpy(iomap->inline_data + pos, addr + pos, copied);
-+	memcpy(iomap_inline_data(iomap, pos), addr + pos, copied);
- 	kunmap_atomic(addr);
- 
- 	mark_inode_dirty(inode);
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 9398b8c31323..41ccbfc9dc82 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -378,23 +378,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- 		struct iomap_dio *dio, struct iomap *iomap)
- {
- 	struct iov_iter *iter = dio->submit.iter;
-+	void *inline_data = iomap_inline_data(iomap, pos);
- 	size_t copied;
- 
--	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	if (WARN_ON_ONCE(!iomap_inline_data_valid(iomap)))
-+		return -EIO;
- 
- 	if (dio->flags & IOMAP_DIO_WRITE) {
- 		loff_t size = inode->i_size;
- 
- 		if (pos > size)
--			memset(iomap->inline_data + size, 0, pos - size);
--		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-+			memset(iomap_inline_data(iomap, size), 0, pos - size);
-+		copied = copy_from_iter(inline_data, length, iter);
- 		if (copied) {
- 			if (pos + copied > size)
- 				i_size_write(inode, pos + copied);
- 			mark_inode_dirty(inode);
- 		}
- 	} else {
--		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-+		copied = copy_to_iter(inline_data, length, iter);
- 	}
- 	dio->size += copied;
- 	return copied;
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 479c1da3e221..b8ec145b2975 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -97,6 +97,24 @@ iomap_sector(struct iomap *iomap, loff_t pos)
- 	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
- }
- 
-+/*
-+ * Returns the inline data pointer for logical offset @pos.
-+ */
-+static inline void *iomap_inline_data(struct iomap *iomap, loff_t pos)
-+{
-+	return iomap->inline_data + pos - iomap->offset;
-+}
-+
-+/*
-+ * Check if the mapping's length is within the valid range for inline data.
-+ * This is used to guard against accessing data beyond the page inline_data
-+ * points at.
-+ */
-+static inline bool iomap_inline_data_valid(struct iomap *iomap)
-+{
-+	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
-+}
-+
- /*
-  * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
-  * and page_done will be called for each page written to.  This only applies to
--- 
-2.24.4
-
+>         if (restore) {
+>                 sk->sk_write_space = psock->saved_write_space;
+>                 WRITE_ONCE(sk->sk_prot, psock->sk_proto);
+>                 return 0;
+>         }
+>
+> -       unix_bpf_check_needs_rebuild(psock->sk_proto);
+> -       WRITE_ONCE(sk->sk_prot, &unix_bpf_prot);
+> +       unix_stream_bpf_check_needs_rebuild(psock->sk_proto);
+> +       WRITE_ONCE(sk->sk_prot, &unix_stream_bpf_prot);
+>         return 0;
+>  }
+>
+>  void __init unix_bpf_build_proto(void)
+>  {
+> -       unix_bpf_rebuild_protos(&unix_bpf_prot, &unix_proto);
+> +       unix_dgram_bpf_rebuild_protos(&unix_dgram_bpf_prot, &unix_dgram_proto);
+> +       unix_stream_bpf_rebuild_protos(&unix_stream_bpf_prot, &unix_stream_proto);
+> +
+>  }
+> --
+> 2.20.1
+>
