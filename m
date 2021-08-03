@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BFB3DE7AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50503DE7AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhHCH7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234344AbhHCH66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:58:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE40360F01;
-        Tue,  3 Aug 2021 07:58:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627977527;
-        bh=xrL0L5sjmEbvAkIaM5DGTisQzBhF+YdUH3ou+1qqyG4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sRBVCHEHNAVwAvlSuUBEhFfD7chxFF0uhc/a362qNsf4FIq3FHkg6HTjznR5/prww
-         l5Cg2J4mtQRpp43pjt0z7A9cOibVYYUJBbNRbtKEGa4APmlJRa9F6VIFuKQsV9nrwZ
-         DlwsCsWmBI6nLgSSMxWaiOj9mPwVdCCj9fKlavEn4FbMvVXIqUxtGrqmBGZC2KpZU5
-         F9r/V6mgrvxF4sUMCpPZzOv+NmFOUsiNLSoHS5bAO5Vf9FKFK7tsoWnBhpdmgicQUG
-         uWCwgU4ZgGTItiWhvVGDjB3+cCUrtzRmuRHAPLJdh3/Pti7VMRm3JLHyvOqI/dFQ8O
-         eLN3UYYYUGM3A==
-Date:   Tue, 3 Aug 2021 10:58:42 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 4/4] memblock: stop poisoning raw allocations
-Message-ID: <YQj3MqOON6qySFFa@kernel.org>
-References: <20210714123739.16493-1-rppt@kernel.org>
- <20210714123739.16493-5-rppt@kernel.org>
- <72be13936ca341897d2fd7c65fb4345a8467c571.camel@perches.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <72be13936ca341897d2fd7c65fb4345a8467c571.camel@perches.com>
+        id S234385AbhHCH7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234232AbhHCH7f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 03:59:35 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D01C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:59:24 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id m2-20020ac807c20000b0290269bd8044e1so12496866qth.10
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:59:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Fxd607RMBzP4aoVO0IekhXmHo+nn/xa9qFfPGrfYJnk=;
+        b=YymPx+mWp1zUbGTLO5o8137nsca5qm9tyeMBp6mwVCeFmc2hPAVp6FRtc/ojTVbd0e
+         bTJkElcc0C6ssNMxn8f1pPJx08ZJTZNOWD/QHci2jOnYQ4C9P5J7xnODtAwpF77xNzB0
+         TIdSAXiFgg300g+h+io9WAoNmjFXP4l1QYqCB/m42HWP5vCrPXgQNK44A+jsjNegQwFn
+         4CWG/kdVsURaNsXjonrIEsrPpzfl2ad18OFY+e7omyKmYqhWJ5HeVPhW68yaZszdfgDo
+         Hjd9A6DbB51Z4zL+7X+KAJITtV5AeBVr74YqKV56/qV1Tr/RpFvnsxvLGKEV5ZUQ6aTL
+         8PEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Fxd607RMBzP4aoVO0IekhXmHo+nn/xa9qFfPGrfYJnk=;
+        b=Y9LMwV181cjyaQrLDQzseaC3vuk5Zxleuk/G57k6+h13U0RhJtOVnVZ1qgEzfdhWCZ
+         0kDgC3QBlWXFnr2vHHJeffAhdP97NCW+CnvIr9EoOW5Su38eK5p9yv4joli3NG1NDVW3
+         BBcnM0WZ9C078RtWGAsuoa3m3GQ/wtHLwJ4lOE3gZXbGDFILtDRBtqz5B0hW8H8Y+hu4
+         O5PaFvb3YIeSuThQdjJHwIckIsvbFp/XBMcpyrmeDlIMl3HEiYkPT3psZH1pcTIXYb4b
+         JLtzCj8zD9APKiOX+P5+wuNMpamLCsVUILqzWayIVGojMidr2DgcQkyNqE+GVcBVW4n1
+         bppQ==
+X-Gm-Message-State: AOAM532p34dy11VHvKBU8U3zB5UnilOWm8o5r3wBt/tPvVJGCIucVstl
+        IwrKM8q6+aSdTPhomtmO6p/emIR/MWE9Sg==
+X-Google-Smtp-Source: ABdhPJysqvn+LjS2ao5Iec7fgO+cxbswRHEKmAV0xZsBvKypSr1bKig1Z1zbBeJ2hUtpYyWnPao0H7Tj6P3tAQ==
+X-Received: from suleiman1.tok.corp.google.com ([2401:fa00:8f:203:7e55:6c56:df0d:f664])
+ (user=suleiman job=sendgmr) by 2002:a05:6214:332:: with SMTP id
+ j18mr20391348qvu.21.1627977564134; Tue, 03 Aug 2021 00:59:24 -0700 (PDT)
+Date:   Tue,  3 Aug 2021 16:59:14 +0900
+Message-Id: <20210803075914.3070477-1-suleiman@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH] kvm,x86: Use the refined tsc rate for the guest tsc.
+From:   Suleiman Souhlal <suleiman@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     ssouhlal@freebsd.org, hikalium@chromium.org,
+        senozhatsky@chromium.org, Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Suleiman Souhlal <suleiman@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 10:13:04AM -0700, Joe Perches wrote:
-> On Wed, 2021-07-14 at 15:37 +0300, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Functions memblock_alloc_exact_nid_raw() and memblock_alloc_try_nid_raw()
-> > are intended for early memory allocation without overhead of zeroing the
-> > allocated memory. Since these functions were used to allocate the memory
-> > map, they have ended up with addition of a call to page_init_poison() that
-> > poisoned the allocated memory when CONFIG_PAGE_POISON was set.
-> > 
-> > Since the memory map is allocated using a dedicated memmep_alloc() function
-> > that takes care of the poisoning, remove page poisoning from the
-> > memblock_alloc_*_raw() functions.
-> []
-> > diff --git a/mm/memblock.c b/mm/memblock.c
-> []
-> > @@ -1490,18 +1490,12 @@ void * __init memblock_alloc_exact_nid_raw(
-> >  			phys_addr_t min_addr, phys_addr_t max_addr,
-> >  			int nid)
-> >  {
-> > -	void *ptr;
-> > -
-> >  	memblock_dbg("%s: %llu bytes align=0x%llx nid=%d from=%pa max_addr=%pa %pS\n",
-> >  		     __func__, (u64)size, (u64)align, nid, &min_addr,
-> >  		     &max_addr, (void *)_RET_IP_);
-> 
-> unassociated trivia:
-> 
-> casting _RET_IP_ back to void * seems odd as the define is
-> include/linux/kernel.h:#define _RET_IP_         (unsigned long)__builtin_return_address(0)
-> 
-> It's probably easier to understand as just __builtin_return_address(0)
+Prior to this change, the initial tsc rate used by kvm would be
+the unrefined rate, instead of the refined rate that is derived
+later at boot and used for timekeeping. This can cause time to
+advance at different rates between the host and the guest.
 
-Maybe, but I'm not sure it's worth the churn.
+Signed-off-by: Suleiman Souhlal <suleiman@google.com>
+---
+ arch/x86/kvm/x86.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 4116567f3d44..1e59bb326c10 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -2199,6 +2199,7 @@ static atomic_t kvm_guest_has_master_clock = ATOMIC_INIT(0);
+ #endif
  
-> > @@ -1528,18 +1522,12 @@ void * __init memblock_alloc_try_nid_raw(
-> >  			phys_addr_t min_addr, phys_addr_t max_addr,
-> >  			int nid)
-> >  {
-> > -	void *ptr;
-> > -
-> >  	memblock_dbg("%s: %llu bytes align=0x%llx nid=%d from=%pa max_addr=%pa %pS\n",
-> >  		     __func__, (u64)size, (u64)align, nid, &min_addr,
-> >  		     &max_addr, (void *)_RET_IP_);
-> 
-> here too
-> 
-
+ static DEFINE_PER_CPU(unsigned long, cpu_tsc_khz);
++static DEFINE_PER_CPU(bool, cpu_tsc_khz_changed);
+ static unsigned long max_tsc_khz;
+ 
+ static u32 adjust_tsc_khz(u32 khz, s32 ppm)
+@@ -2906,6 +2907,14 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+ 		kvm_make_request(KVM_REQ_CLOCK_UPDATE, v);
+ 		return 1;
+ 	}
++	/*
++	 * Use the refined tsc_khz instead of the tsc_khz at boot (which was
++	 * not refined yet when we got it), if the tsc frequency hasn't changed.
++	 * If the frequency does change, it does not get refined any further,
++	 * so it is safe to use the one gotten from the notifiers.
++	 */
++	if (!__this_cpu_read(cpu_tsc_khz_changed))
++		tgt_tsc_khz = tsc_khz;
+ 	if (!use_master_clock) {
+ 		host_tsc = rdtsc();
+ 		kernel_ns = get_kvmclock_base_ns();
+@@ -8086,6 +8095,8 @@ static void tsc_khz_changed(void *data)
+ 		khz = freq->new;
+ 	else if (!boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
+ 		khz = cpufreq_quick_get(raw_smp_processor_id());
++	if (khz)
++		__this_cpu_write(cpu_tsc_khz_changed, true);
+ 	if (!khz)
+ 		khz = tsc_khz;
+ 	__this_cpu_write(cpu_tsc_khz, khz);
 -- 
-Sincerely yours,
-Mike.
+2.32.0.554.ge1b32706d8-goog
+
