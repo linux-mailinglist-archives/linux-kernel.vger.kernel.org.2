@@ -2,150 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AE43DE700
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 016A23DE702
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234165AbhHCHIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbhHCHIJ (ORCPT
+        id S234182AbhHCHIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:08:44 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52360 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234055AbhHCHIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:08:09 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB55CC061796
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:07:58 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id ec13so27205424edb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:07:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=U0jio5+xFSbV7SP/KZIWsJ9guYPyBzSqjq6PsiTDQC0=;
-        b=eLJEyLouuLRMx/jBModUrxmH+ISNHhOKpcMdKIQd9Ph7RNTyBWhDNRE0X28L3xLfVu
-         WfaYl9PvuHZSKJcDNIb/q26uEMuQlfKF2om4KnMbvTBL1Quh5DfEbmqJodg6e4Wjpvr0
-         g/4QEGzN56tIuMb2eKiaNVlCjTEO+/orr6ef+JbaIO6M5cR7kMUhyPXfcZTAsM1hFmFp
-         aHChXwWuMeKlXZSNh561ANrr/itmau9zFqxOTyZPCOYiICCfY4F14evcgIDyHY/eE7e1
-         3dgp3A3Dup+0bad0UzREiHfahwfYf10aNyV4bqi6jnQbEgaHUbAQYj4rSQkYBqMZcj4U
-         lHfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=U0jio5+xFSbV7SP/KZIWsJ9guYPyBzSqjq6PsiTDQC0=;
-        b=E2WnHvC/fiv2a0DRdkgQc4YZgBq/lG2JaiGbGaQu2XJc+61WMQBGD649SC4OnmxNEM
-         0b+REozSgKAA6+EWmnlR3XpUk5W/CQ6/NcnvgzNnTu5LI55ugR8gKT4tnuPoEf0eqCZK
-         l3hNN/5jxlRlJGNNGo5A0ifgksaOpP8Mr7Pztqd6P9pYW0iWVxiD4Hxxr7D1IFo7ucLh
-         PKlrCM9Bag9ejbHPlwpn1+qvErqdjlMoPI9DDYzhggpovATryJule0kZS4M5al31+ze4
-         /PAtLzFV/pT0Hlb0apJHHZKTK12C44xFbl6OSnlXNdY9RcCxd7Gov2oAbSs1AJ5bF6iI
-         lImA==
-X-Gm-Message-State: AOAM531MJTEVjqXZbA98GjELNIQRByBxGyLED6CfkbMGXHZ1kt1yt0/Z
-        RqfiCpz62k+CkDprJFngRr1Bi1M89bLnKcHd
-X-Google-Smtp-Source: ABdhPJz4M10SjISdU0pltgjPaL4f+YaI0qG47iOi1pjOPhxq/nbVQat6ri3yJpfU+tnlMkOFDIIUIg==
-X-Received: by 2002:a05:6402:1b11:: with SMTP id by17mr24060442edb.110.1627974477469;
-        Tue, 03 Aug 2021 00:07:57 -0700 (PDT)
-Received: from [192.168.61.233] ([37.160.213.115])
-        by smtp.gmail.com with ESMTPSA id i11sm7537591eds.72.2021.08.03.00.07.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Aug 2021 00:07:56 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH 1/3] block, bfq: do not idle if only one cgroup is
- activated
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <c0b97b5b-c961-6d9f-7033-6da194c6b220@huawei.com>
-Date:   Tue, 3 Aug 2021 09:07:54 +0200
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8D4774E6-0DEB-4DC4-B28B-13F5A933E12F@linaro.org>
-References: <20210714094529.758808-1-yukuai3@huawei.com>
- <20210714094529.758808-2-yukuai3@huawei.com>
- <7DF40BD4-8F57-4C2E-88A9-CBC3DA2A891E@linaro.org>
- <c0b97b5b-c961-6d9f-7033-6da194c6b220@huawei.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-X-Mailer: Apple Mail (2.3445.104.11)
+        Tue, 3 Aug 2021 03:08:43 -0400
+X-UUID: 957638fef2044e9c9e6c04fa6efe2b9d-20210803
+X-UUID: 957638fef2044e9c9e6c04fa6efe2b9d-20210803
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <yee.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2072926632; Tue, 03 Aug 2021 15:08:29 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 3 Aug 2021 15:08:28 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 3 Aug 2021 15:08:27 +0800
+From:   <yee.lee@mediatek.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <nicholas.Tang@mediatek.com>, <Kuan-Ying.lee@mediatek.com>,
+        <chinwen.chang@mediatek.com>, Yee Lee <yee.lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v4 0/1] arm64/cpufeature: Support optionally disable MTE
+Date:   Tue, 3 Aug 2021 15:08:21 +0800
+Message-ID: <20210803070824.7586-1-yee.lee@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yee Lee <yee.lee@mediatek.com>
 
+An option in runtime to disable MTE support is necessary for some
+scenarios such as HW issue workaround, FW tests and 
+some evaluation works in performance and resoruce costs.
+ 
+This patch supoorts to override id-reg on the
+shadow capability via comandline and suppress MTE feature.
 
-> Il giorno 31 lug 2021, alle ore 09:10, yukuai (C) <yukuai3@huawei.com> =
-ha scritto:
->=20
-> On 2021/07/24 15:12, Paolo Valente wrote:
->>> Il giorno 14 lug 2021, alle ore 11:45, Yu Kuai <yukuai3@huawei.com> =
-ha scritto:
->>>=20
->>> If only one group is activated, specifically
->>> 'bfqd->num_groups_with_pending_reqs =3D=3D 1', there is no need to =
-guarantee
->>> the same share of the throughput of queues in the same group.
->>>=20
->>> Thus change the condition from '> 0' to '> 1' in
->>> bfq_asymmetric_scenario().
->> I see your point, and I agree with your goal.  Yet, your change seems
->> not to suffer from the following problem.
->> In addition to the groups that are created explicitly, there is the
->> implicit root group.  So, when bfqd->num_groups_with_pending_reqs =3D=3D=
+SCTLR_EL1.ATA/ATA0 setting is moved to cpu_enable_mte()
+since they are not allowed to be cache TLB.
 
->> 1, there may be both active processes in the root group and active
->> processes in the only group created explicitly.  In this case, idling
->> is needed to preserve service guarantees.
->> Probably your idea should be improved by making sure that there is
->> pending I/O only from either the root group or the explicit group.
->> Thanks,
->> Paolo
->=20
->=20
-> Hi, Paolo
->=20
+All works in this patch turn off related software support,
+but not fully disable MTE in HW side.
 
-Hi
+=== Test ===
+QEMU5.2 + MTE
 
-> I'm trying to add support to judge if root group have pending rqs, the
-> implementation involve setting and clearing the busy state.
->=20
+(1) normal boot
+MTE feature is enabled and HW-tags KASAN works.
 
-I wouldn't use the busy state, as it does not take in-flight requests
-into account.  For I/O control, the latter are as important as the
-ones still queued in the scheduler.  For this reason, I take in-flight
-requests into account when counting
-bfqd->num_groups_with_pending_reqs.
+(2) passed "arm64.nomte" in cmdline
+boot log:
+..(skip)
+[    0.000000] CPU features: SYS_ID_AA64PFR1_EL1[11:8]: forced to 0
 
-See, e.g., this
+====
+Changed since v4:
+ - Move ATA/ATA0 setting to cpu_enable_mte()
 
-	if (!bfqq->dispatched && !bfq_bfqq_busy(bfqq)) {
-		...
-		bfq_weights_tree_remove(bfqd, bfqq);
-	}
+Changed since v3:
+ - Add documentation text
 
-in bfq_completed_request.
+Changed since v2:
+ - Use id-reg override machanism to suppress feature.
 
-I would replicate the same logic in deciding whether the root group
-has pending I/O.
+Yee Lee (1):
+  arm64/cpufeature: Optionally disable MTE via command-line
 
+ Documentation/admin-guide/kernel-parameters.txt | 3 +++
+ arch/arm64/include/asm/sysreg.h                 | 3 +--
+ arch/arm64/kernel/cpufeature.c                  | 3 +++
+ arch/arm64/kernel/idreg-override.c              | 2 ++
+ 4 files changed, 9 insertions(+), 2 deletions(-)
 
-> I'm thinking about setting busy in __bfq_activate_entity() if
-> bfq_entity_to_bfqq() return valid bfqq, however I'm not sure where to
-> clear the busy state.
->=20
-> On the other hand, do you think the way I record rq size info in patch =
-2
-> is OK?
-
-First, let's see what you reply to my suggestion above.
-
-Thanks,
-Paolo
-
->  If so, I can do this the similar way: say that root group doesn't
-> have any pending requests if bfq haven't dispatch rq from root group =
-for
-> a period of time.
->=20
-> Thanks
-> Kuai
+-- 
+2.18.0
 
