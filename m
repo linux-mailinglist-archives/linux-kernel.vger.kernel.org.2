@@ -2,126 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0845F3DF108
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E92C3DF111
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236681AbhHCPEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:04:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26306 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236628AbhHCPD5 (ORCPT
+        id S236486AbhHCPFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234206AbhHCPFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:03:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628003025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7tbb0CsnnLf2HSZfxDfKO/Er3Zkctrt268hAInT4vLU=;
-        b=bEFDZCksmFSIkYhYuRYLmvcOhOMqwQrF28dw8vn1XwdGWCjS5oOzaJynh97G+IlQDJCgJK
-        W8cGz/ovgSwwBQ1d5ZsSknVblYcDrs3jaNCyGY0mSWx0auoq9kI1eTtjWstUNUb8kdViW+
-        Asqx7ITPhYEzZACIXadctsa25WzX9IA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-krjSLKVKMcyQj9XTqwETCw-1; Tue, 03 Aug 2021 11:03:44 -0400
-X-MC-Unique: krjSLKVKMcyQj9XTqwETCw-1
-Received: by mail-wr1-f69.google.com with SMTP id q13-20020a05600000cdb02901545f1bdac1so3930778wrx.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 08:03:44 -0700 (PDT)
+        Tue, 3 Aug 2021 11:05:44 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2CBC061757;
+        Tue,  3 Aug 2021 08:05:32 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id hs10so28183504ejc.0;
+        Tue, 03 Aug 2021 08:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=r0FQ7Uc64i2oRVeUtFLzokR1HqzuLG7+aDF/yA5eX4M=;
+        b=coGMZnEccQZlJTls9FK4PV3Fnmm0Y5yzVVFAB8l4/Ff2aOyAmNbTHGTJ/gm89hYw0F
+         OnwP6qBbeUa4GSa25hJLoWOsFUQEjIliSbxhOtptkdG/C4ePagilGevFk0n+bFuGpuMc
+         ZIRibIY/+FiQ37xc7rQuokgT16s5ouV6cltQ/Edqxdrg/QbXjNFK5jWruR89cprhSxn/
+         B/mWJ06h/1Xsj1elOKjMaWHjcPSCRZP/DRCdzUZ64y4r6PueI/yGTPoiOdAUB5gLCx+4
+         6FTY+xds1q5wRG5UWz71S7ho9jo/eVLuBLL+1HqYv0ilg+bXVi/YHEUO88LJhSmZmWOY
+         ylUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7tbb0CsnnLf2HSZfxDfKO/Er3Zkctrt268hAInT4vLU=;
-        b=c97WDpO6xArMBeHTh7HjcSuROXEQGyYyEno+uEQ7RzbHhuB0lqb01L1pMV8NiCB/Fg
-         0vPOekNOEUmWI0HCA2FC9SD2UOm3bulHrC0HjiSNWOCMRdhGQ+dXVhiWqUiKldeIYDgs
-         85/4Q9pXw7heezJz4oGLoqqwxTViDRo/14hsezblmsw/KE6j6CxbYoUnTGreE60r0+li
-         IbGhxuna51bTk1eHKcQeXIysHLvWy+vVefrjiBaE0F/tZloBgiHRm90ueTUETK5QEQK3
-         Q2taLmtvjf47+mdqJFxjWBKuNWhmuwN829qRzNJT5ItVVluQt34P4ZRWdVXZj164qvoZ
-         4dTg==
-X-Gm-Message-State: AOAM532EGhFEVZQdAb3v+stCTbrgcxueVLnJvjspl3OatGgXgvaSpiv+
-        duMA+Z+0ooPETlMl0SDPDBj/QruD0YXdsGj6mNZGYLH2WOwcdTMTCfBMf4O54TdJPDJhRMfWnAA
-        UIXPB7jcI3Es3jydii1vaQ0HWW3lBZZKnXD5z6I8I
-X-Received: by 2002:a1c:4c06:: with SMTP id z6mr4843730wmf.163.1628003023104;
-        Tue, 03 Aug 2021 08:03:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykRywpEC7AOtnyF33drX5yQPQK6cTLMRKJswnyy1gmxHAG7bcbQHRlUM/7z8pByC9MVYVggHDv1kinAc16ErE=
-X-Received: by 2002:a1c:4c06:: with SMTP id z6mr4843706wmf.163.1628003022887;
- Tue, 03 Aug 2021 08:03:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r0FQ7Uc64i2oRVeUtFLzokR1HqzuLG7+aDF/yA5eX4M=;
+        b=Moo4s1UeSMTZG0MK9+WmwUn2jYzNCP/YQUQM7UUQ1aa6AUOvkycgcm7vdC+P/v6usW
+         1Qk7dYPzH3tbQ2PzRNE+adzwUcjCM4ligC8NnY+Qjc0ulCwJ1yabKjqd7k08n8oE8n91
+         cbB3G00jDrxOAFpeJuNaBMM+iSNpKzlt38khv9Gn/z9aSL+ANxacuhZFNfRjv+NGrOFl
+         ZpIo8frBWBe/LWBD+pE5w4HsWTMc0T0NBfrcwbIu1pq6LHoUMhWKsPY5KCJGeA9eeV6r
+         CICzWKX+auSSaOa8cYg5/dn/UyHYr2Rss1HpSLrPZ8i0pJwaJOre43DIs+8//qH41hQn
+         wsIA==
+X-Gm-Message-State: AOAM533gTi4Y5q2uPtRxdPVAOGrj6MxxLX2vH4DcwYOKAih6rCqb4qem
+        GUAD/UbbsbZS37W5dUjdW5Y=
+X-Google-Smtp-Source: ABdhPJxP1WfDh/SKp57yUJkwWaSPOs717d15hTVJGJ9P7zfkIDZ+IovWwaIDCd2MVfHUUsu5WL89gQ==
+X-Received: by 2002:a17:906:31cf:: with SMTP id f15mr21305332ejf.272.1628003131123;
+        Tue, 03 Aug 2021 08:05:31 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id n2sm8407071edi.32.2021.08.03.08.05.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 08:05:30 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 18:05:29 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
+        netdev@vger.kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
+ for microchip lan937x
+Message-ID: <20210803150529.o2whe4jw6arpdm7d@skbuf>
+References: <20210723173108.459770-1-prasanna.vengateshan@microchip.com>
+ <20210723173108.459770-6-prasanna.vengateshan@microchip.com>
+ <20210731150416.upe5nwkwvwajhwgg@skbuf>
+ <YQXJHA+z+hXjxe6+@lunn.ch>
+ <20210802213353.qu5j3gn4753xlj43@skbuf>
+ <YQlWAHSTQ4K3/zet@lunn.ch>
 MIME-Version: 1.0
-References: <20210803141621.780504-1-bigeasy@linutronix.de> <20210803141621.780504-7-bigeasy@linutronix.de>
-In-Reply-To: <20210803141621.780504-7-bigeasy@linutronix.de>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Tue, 3 Aug 2021 17:03:32 +0200
-Message-ID: <CACO55tvuMM2HcYOUguZzJPi5TvYgeY=N=+psM9T1G7CMA8d=Dg@mail.gmail.com>
-Subject: Re: [Nouveau] [PATCH 06/38] x86/mmiotrace: Replace deprecated
- CPU-hotplug functions.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Karol Herbst <karolherbst@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        nouveau <nouveau@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQlWAHSTQ4K3/zet@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 4:25 PM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> The functions get_online_cpus() and put_online_cpus() have been
-> deprecated during the CPU hotplug rework. They map directly to
-> cpus_read_lock() and cpus_read_unlock().
->
-> Replace deprecated CPU-hotplug functions with the official version.
-> The behavior remains unchanged.
->
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Karol Herbst <karolherbst@gmail.com>
-> Cc: Pekka Paalanen <ppaalanen@gmail.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: nouveau@lists.freedesktop.org
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  arch/x86/mm/mmio-mod.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/mm/mmio-mod.c b/arch/x86/mm/mmio-mod.c
-> index cd768dafca9e9..933a2ebad471b 100644
-> --- a/arch/x86/mm/mmio-mod.c
-> +++ b/arch/x86/mm/mmio-mod.c
-> @@ -376,12 +376,12 @@ static void enter_uniprocessor(void)
->                 goto out;
->         }
->
-> -       get_online_cpus();
-> +       cpus_read_lock();
->         cpumask_copy(downed_cpus, cpu_online_mask);
->         cpumask_clear_cpu(cpumask_first(cpu_online_mask), downed_cpus);
->         if (num_online_cpus() > 1)
->                 pr_notice("Disabling non-boot CPUs...\n");
-> -       put_online_cpus();
-> +       cpus_read_unlock();
->
->         for_each_cpu(cpu, downed_cpus) {
->                 err = remove_cpu(cpu);
-> --
-> 2.32.0
->
+On Tue, Aug 03, 2021 at 04:43:12PM +0200, Andrew Lunn wrote:
+> There are good reasons to use an explicit phy-handle, and i would
+> never block such code. However, implicit is historically how it was
+> done. There are many DT blobs which assume it works. So implicit is
+> not going away.
+> 
+> If you want to only support explicit in U-Boot, that is fine. I would
+> suggest making this clear in the U-Boot documentation.
 
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
-
+I am happy that Prasanna made it possible for OF-based descriptions of
+the internal PHYs to be written for the lan937x generation. I did take a
+look at the bindings that Prasanna proposed and I think they would work
+with what DM_DSA can parse too. The work that Tim Harvey did was for
+ksz9897, and it is slightly different: the MDIO controller node has a
+compatible string of "microchip,ksz-mdio", and a parent container node
+of "mdios".
+https://source.denx.de/u-boot/u-boot/-/blob/master/arch/arm/dts/imx8mm-venice-gw7901.dts#L634
+However, since the lan937x would probably have a different driver even
+in U-Boot, 100% binding consistency between lan937x and ksz9897 is
+probably not necessary, since some of that can boil down to driver
+author choice too. As long as an OF based choice is available I'm
+absolutely fine.
