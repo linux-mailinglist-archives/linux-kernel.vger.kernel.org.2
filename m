@@ -2,96 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6133DF5AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBF33DF5B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240014AbhHCT31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:29:27 -0400
-Received: from mga09.intel.com ([134.134.136.24]:32499 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239936AbhHCT3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:29:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="213747208"
-X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="213747208"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 12:29:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="419770650"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 03 Aug 2021 12:28:56 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 433DE403; Tue,  3 Aug 2021 22:29:26 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH v1 5/5] Bluetooth: hci_bcm: Fix kernel doc comments
-Date:   Tue,  3 Aug 2021 22:29:05 +0300
-Message-Id: <20210803192905.72246-5-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210803192905.72246-1-andriy.shevchenko@linux.intel.com>
-References: <20210803192905.72246-1-andriy.shevchenko@linux.intel.com>
+        id S239717AbhHCT3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:29:39 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:53758 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239956AbhHCT3i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 15:29:38 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 760D71F43412
+Message-ID: <b89860d253b5610d6c20c1d843fc2e63d3e73c28.camel@collabora.com>
+Subject: Re: [PATCH v1 1/2] media: hevc: Add scaling matrix control
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hverkuil@xs4all.nl, p.zabel@pengutronix.de, mchehab@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk,
+        jernej.skrabec@gmail.com, nicolas@ndufresne.ca, cphealy@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Tue, 03 Aug 2021 16:29:14 -0300
+In-Reply-To: <20210715151223.656453-2-benjamin.gaignard@collabora.com>
+References: <20210715151223.656453-1-benjamin.gaignard@collabora.com>
+         <20210715151223.656453-2-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel doc validator complains about few missed parameter descriptions.
-Fill the gap by describing them.
+On Thu, 2021-07-15 at 17:12 +0200, Benjamin Gaignard wrote:
+> HEVC scaling lists are used for the scaling process for transform
+> coefficients.
+> V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED has to set when they are
+> encoded in the bitstream.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/bluetooth/hci_bcm.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+The HEVC control structs have some holes that we should fix soon,
+but the scaling matrix struct looks good, so I think we can merge this one.
 
-diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
-index ed99fcde2523..fd0acadb9102 100644
---- a/drivers/bluetooth/hci_bcm.c
-+++ b/drivers/bluetooth/hci_bcm.c
-@@ -51,6 +51,7 @@
- /**
-  * struct bcm_device_data - device specific data
-  * @no_early_set_baudrate: Disallow set baudrate before driver setup()
-+ * @drive_rts_on_open: drive RTS signal on ->open() when platform requires it
-  */
- struct bcm_device_data {
- 	bool	no_early_set_baudrate;
-@@ -77,6 +78,8 @@ struct bcm_device_data {
-  * @btlp: Apple ACPI method to toggle BT_WAKE pin ("Bluetooth Low Power")
-  * @btpu: Apple ACPI method to drive BT_REG_ON pin high ("Bluetooth Power Up")
-  * @btpd: Apple ACPI method to drive BT_REG_ON pin low ("Bluetooth Power Down")
-+ * @gpio_count: internal counter for GPIO resources associated with ACPI device
-+ * @gpio_int_idx: index in _CRS for GpioInt() resource
-  * @txco_clk: external reference frequency clock used by Bluetooth device
-  * @lpo_clk: external LPO clock used by Bluetooth device
-  * @supplies: VBAT and VDDIO supplies used by Bluetooth device
-@@ -88,10 +91,13 @@ struct bcm_device_data {
-  *	set to 0 if @init_speed is already the preferred baudrate
-  * @irq: interrupt triggered by HOST_WAKE_BT pin
-  * @irq_active_low: whether @irq is active low
-+ * @irq_acquired: flag to show if IRQ handler has been assigned
-  * @hu: pointer to HCI UART controller struct,
-  *	used to disable flow control during runtime suspend and system sleep
-  * @is_suspended: whether flow control is currently disabled
-  * @no_early_set_baudrate: don't set_baudrate before setup()
-+ * @drive_rts_on_open: drive RTS signal on ->open() when platform requires it
-+ * @pcm_int_params: keep the initial PCM configuration
-  */
- struct bcm_device {
- 	/* Must be the first member, hci_serdev.c expects this. */
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+
+Thanks,
+Ezequiel
+
+> ---
+>  .../media/v4l/ext-ctrls-codec.rst             | 57 +++++++++++++++++++
+>  .../media/v4l/vidioc-queryctrl.rst            |  6 ++
+>  drivers/media/v4l2-core/v4l2-ctrls-core.c     |  6 ++
+>  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 ++
+>  include/media/hevc-ctrls.h                    | 11 ++++
+>  5 files changed, 84 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index dc096a5562cd..ab3bda79b440 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -3071,6 +3071,63 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>  
+>      \normalsize
+>  
+> +``V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX (struct)``
+> +    Specifies the HEVC scaling matrix parameters used for the scaling process
+> +    for transform coefficients.
+> +    These matrix and parameters are defined according to :ref:`hevc`.
+> +    They are described in section 7.4.5 "Scaling list data semantics" of
+> +    the specification.
+> +
+> +.. c:type:: v4l2_ctrl_hevc_scaling_matrix
+> +
+> +.. raw:: latex
+> +
+> +    \scriptsize
+> +
+> +.. tabularcolumns:: |p{5.4cm}|p{6.8cm}|p{5.1cm}|
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table:: struct v4l2_ctrl_hevc_scaling_matrix
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - __u8
+> +      - ``scaling_list_4x4[6][16]``
+> +      - Scaling list is used for the scaling process for transform
+> +        coefficients. The values on each scaling list are expected
+> +        in raster scan order.
+> +    * - __u8
+> +      - ``scaling_list_8x8[6][64]``
+> +      - Scaling list is used for the scaling process for transform
+> +        coefficients. The values on each scaling list are expected
+> +        in raster scan order.
+> +    * - __u8
+> +      - ``scaling_list_16x16[6][64]``
+> +      - Scaling list is used for the scaling process for transform
+> +        coefficients. The values on each scaling list are expected
+> +        in raster scan order.
+> +    * - __u8
+> +      - ``scaling_list_32x32[2][64]``
+> +      - Scaling list is used for the scaling process for transform
+> +        coefficients. The values on each scaling list are expected
+> +        in raster scan order.
+> +    * - __u8
+> +      - ``scaling_list_dc_coef_16x16[6]``
+> +      - Scaling list is used for the scaling process for transform
+> +        coefficients. The values on each scaling list are expected
+> +        in raster scan order.
+> +    * - __u8
+> +      - ``scaling_list_dc_coef_32x32[2]``
+> +      - Scaling list is used for the scaling process for transform
+> +        coefficients. The values on each scaling list are expected
+> +        in raster scan order.
+> +
+> +.. raw:: latex
+> +
+> +    \normalsize
+> +
+>  .. c:type:: v4l2_hevc_dpb_entry
+>  
+>  .. raw:: latex
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> index f9ecf6276129..2f491c17dd5d 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> @@ -495,6 +495,12 @@ See also the examples in :ref:`control`.
+>        - n/a
+>        - A struct :c:type:`v4l2_ctrl_hevc_slice_params`, containing HEVC
+>         slice parameters for stateless video decoders.
+> +    * - ``V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX``
+> +      - n/a
+> +      - n/a
+> +      - n/a
+> +      - A struct :c:type:`v4l2_ctrl_hevc_scaling_matrix`, containing HEVC
+> +       scaling matrix for stateless video decoders.
+>      * - ``V4L2_CTRL_TYPE_VP8_FRAME``
+>        - n/a
+>        - n/a
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> index c4b5082849b6..70adfc1b9c81 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> @@ -687,6 +687,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  
+>                 break;
+>  
+> +       case V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX:
+> +               break;
+> +
+>         case V4L2_CTRL_TYPE_AREA:
+>                 area = p;
+>                 if (!area->width || !area->height)
+> @@ -1240,6 +1243,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+>         case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
+>                 elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
+>                 break;
+> +       case V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX:
+> +               elem_size = sizeof(struct v4l2_ctrl_hevc_scaling_matrix);
+> +               break;
+>         case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
+>                 elem_size = sizeof(struct v4l2_ctrl_hevc_decode_params);
+>                 break;
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> index b6344bbf1e00..cb29c2a7fabe 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> @@ -996,6 +996,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>         case V4L2_CID_MPEG_VIDEO_HEVC_SPS:                      return "HEVC Sequence Parameter Set";
+>         case V4L2_CID_MPEG_VIDEO_HEVC_PPS:                      return "HEVC Picture Parameter Set";
+>         case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:             return "HEVC Slice Parameters";
+> +       case V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX:           return "HEVC Scaling Matrix";
+>         case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:            return "HEVC Decode Parameters";
+>         case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:              return "HEVC Decode Mode";
+>         case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:               return "HEVC Start Code";
+> @@ -1488,6 +1489,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>         case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
+>                 *type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
+>                 break;
+> +       case V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX:
+> +               *type = V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX;
+> +               break;
+>         case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:
+>                 *type = V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS;
+>                 break;
+> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+> index 781371bff2ad..ef63bc205756 100644
+> --- a/include/media/hevc-ctrls.h
+> +++ b/include/media/hevc-ctrls.h
+> @@ -19,6 +19,7 @@
+>  #define V4L2_CID_MPEG_VIDEO_HEVC_SPS           (V4L2_CID_CODEC_BASE + 1008)
+>  #define V4L2_CID_MPEG_VIDEO_HEVC_PPS           (V4L2_CID_CODEC_BASE + 1009)
+>  #define V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS  (V4L2_CID_CODEC_BASE + 1010)
+> +#define V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX        (V4L2_CID_CODEC_BASE + 1011)
+>  #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS (V4L2_CID_CODEC_BASE + 1012)
+>  #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE   (V4L2_CID_CODEC_BASE + 1015)
+>  #define V4L2_CID_MPEG_VIDEO_HEVC_START_CODE    (V4L2_CID_CODEC_BASE + 1016)
+> @@ -27,6 +28,7 @@
+>  #define V4L2_CTRL_TYPE_HEVC_SPS 0x0120
+>  #define V4L2_CTRL_TYPE_HEVC_PPS 0x0121
+>  #define V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS 0x0122
+> +#define V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX 0x0123
+>  #define V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS 0x0124
+>  
+>  enum v4l2_mpeg_video_hevc_decode_mode {
+> @@ -225,6 +227,15 @@ struct v4l2_ctrl_hevc_decode_params {
+>         __u64   flags;
+>  };
+>  
+> +struct v4l2_ctrl_hevc_scaling_matrix {
+> +       __u8    scaling_list_4x4[6][16];
+> +       __u8    scaling_list_8x8[6][64];
+> +       __u8    scaling_list_16x16[6][64];
+> +       __u8    scaling_list_32x32[2][64];
+> +       __u8    scaling_list_dc_coef_16x16[6];
+> +       __u8    scaling_list_dc_coef_32x32[2];
+> +};
+> +
+>  /*  MPEG-class control IDs specific to the Hantro driver as defined by V4L2 */
+>  #define V4L2_CID_CODEC_HANTRO_BASE                             (V4L2_CTRL_CLASS_CODEC | 0x1200)
+>  /*
+
 -- 
-2.30.2
+Kindly,
+Ezequiel
 
