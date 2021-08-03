@@ -2,137 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2810E3DE843
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8543DE858
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234564AbhHCIXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:23:08 -0400
-Received: from mga02.intel.com ([134.134.136.20]:51748 "EHLO mga02.intel.com"
+        id S234503AbhHCI0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:26:30 -0400
+Received: from out2.migadu.com ([188.165.223.204]:60212 "EHLO out2.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234384AbhHCIXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:23:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="200796417"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="200796417"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:22:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="667099956"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga006.fm.intel.com with ESMTP; 03 Aug 2021 01:22:53 -0700
-Subject: Re: [PATCH V2 1/2] mmc: sdhci: Introduce max_timeout_count variable
- in sdhci_host
-To:     Sarthak Garg <sartgarg@codeaurora.org>, ulf.hansson@linaro.org
-Cc:     vbadigan@codeaurora.org, stummala@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <1626444182-2187-3-git-send-email-sartgarg@codeaurora.org>
- <1627534001-17256-1-git-send-email-sartgarg@codeaurora.org>
- <1627534001-17256-2-git-send-email-sartgarg@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <683d3e6e-34b3-03f7-0773-beed66dfce40@intel.com>
-Date:   Tue, 3 Aug 2021 11:23:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S234390AbhHCI03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:26:29 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1627979175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/v0LmeMUy3UoCS0LwhBauvix/4HwA46AmbAhAkEbA8E=;
+        b=u7uFzTyEyADueCuQGCCxAAroQPqolEGeZFGM0AWRyD9c0QmJqCSSPgOlySpRiqtKmDlzc7
+        1P//NNrc9CkNxiqdgW0lDbaKRammriCQ04gpGdeDp/TKQdkdzs9UEcrR4glzWhHyj2952x
+        sPbgh3o6gwx+rCJp8G45//eAx5nO7Pw=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, mptcp@lists.linux.dev,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-s390@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH net-next] net: Modify sock_set_keepalive() for more scenarios
+Date:   Tue,  3 Aug 2021 16:25:53 +0800
+Message-Id: <20210803082553.25194-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-In-Reply-To: <1627534001-17256-2-git-send-email-sartgarg@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/07/21 7:46 am, Sarthak Garg wrote:
-> Introduce max_timeout_count variable in the sdhci_host structure
-> and use in timeout calculation. By default its set to 0xE
-> (max timeout register value as per SDHC spec). But at the same time
-> vendors drivers can update it if they support different max timeout
-> register value than 0xE.
+Add 2nd parameter in sock_set_keepalive(), let the caller decide
+whether to set. This can be applied to more scenarios.
 
-Looks fine.  A couple of minor comments below.
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ include/net/sock.h    |  2 +-
+ net/core/filter.c     |  4 +---
+ net/core/sock.c       | 10 ++++------
+ net/mptcp/sockopt.c   |  4 +---
+ net/rds/tcp_listen.c  |  2 +-
+ net/smc/af_smc.c      |  2 +-
+ net/sunrpc/xprtsock.c |  2 +-
+ 7 files changed, 10 insertions(+), 16 deletions(-)
 
-> 
-> Signed-off-by: Sarthak Garg <sartgarg@codeaurora.org>
-> ---
->  drivers/mmc/host/sdhci.c | 15 +++++++++------
->  drivers/mmc/host/sdhci.h |  1 +
->  2 files changed, 10 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index aba6e10..2debda3 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -939,16 +939,16 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
->  	 * timeout value.
->  	 */
->  	if (host->quirks & SDHCI_QUIRK_BROKEN_TIMEOUT_VAL)
-> -		return 0xE;
-> +		return host->max_timeout_count;
-
-Please adjust the comment above this that also refers to 0xE
-e.g. "skip the check and use 0xE" -> "skip the check and use the maximum"
-
->  
->  	/* Unspecified command, asume max */
->  	if (cmd == NULL)
-> -		return 0xE;
-> +		return host->max_timeout_count;
->  
->  	data = cmd->data;
->  	/* Unspecified timeout, assume max */
->  	if (!data && !cmd->busy_timeout)
-> -		return 0xE;
-> +		return host->max_timeout_count;
->  
->  	/* timeout in us */
->  	target_timeout = sdhci_target_timeout(host, cmd, data);
-> @@ -968,15 +968,15 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
->  	while (current_timeout < target_timeout) {
->  		count++;
->  		current_timeout <<= 1;
-> -		if (count >= 0xF)
-> +		if (count > host->max_timeout_count)
->  			break;
->  	}
->  
-> -	if (count >= 0xF) {
-> +	if (count > host->max_timeout_count) {
->  		if (!(host->quirks2 & SDHCI_QUIRK2_DISABLE_HW_TIMEOUT))
->  			DBG("Too large timeout 0x%x requested for CMD%d!\n",
->  			    count, cmd->opcode);
-> -		count = 0xE;
-> +		count = host->max_timeout_count;
->  	} else {
->  		*too_big = false;
->  	}
-> @@ -3940,6 +3940,9 @@ struct sdhci_host *sdhci_alloc_host(struct device *dev,
->  	 */
->  	host->adma_table_cnt = SDHCI_MAX_SEGS * 2 + 1;
->  
-> +	if (!host->max_timeout_count)
-
-'host' has just been (zero) allocated as part of 'mmc', so the 'if' is redundant here.
-
-> +		host->max_timeout_count = 0xE;
-> +
->  	return host;
->  }
->  
-> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-> index 074dc18..e8d04e4 100644
-> --- a/drivers/mmc/host/sdhci.h
-> +++ b/drivers/mmc/host/sdhci.h
-> @@ -517,6 +517,7 @@ struct sdhci_host {
->  
->  	unsigned int max_clk;	/* Max possible freq (MHz) */
->  	unsigned int timeout_clk;	/* Timeout freq (KHz) */
-> +	u8 max_timeout_count;	/* Vendor specific max timeout count */
->  	unsigned int clk_mul;	/* Clock Muliplier value */
->  
->  	unsigned int clock;	/* Current clock (MHz) */
-> 
+diff --git a/include/net/sock.h b/include/net/sock.h
+index ff1be7e7e90b..0aae26159549 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -2772,7 +2772,7 @@ int sock_set_timestamping(struct sock *sk, int optname,
+ 
+ void sock_enable_timestamps(struct sock *sk);
+ void sock_no_linger(struct sock *sk);
+-void sock_set_keepalive(struct sock *sk);
++void sock_set_keepalive(struct sock *sk, bool valbool);
+ void sock_set_priority(struct sock *sk, u32 priority);
+ void sock_set_rcvbuf(struct sock *sk, int val);
+ void sock_set_mark(struct sock *sk, u32 val);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index faf29fd82276..41b2bf140b89 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4769,9 +4769,7 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+ 			ret = sock_bindtoindex(sk, ifindex, false);
+ 			break;
+ 		case SO_KEEPALIVE:
+-			if (sk->sk_prot->keepalive)
+-				sk->sk_prot->keepalive(sk, valbool);
+-			sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
++			sock_set_keepalive(sk, !!valbool);
+ 			break;
+ 		case SO_REUSEPORT:
+ 			sk->sk_reuseport = valbool;
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 9671c32e6ef5..7041e6355ae1 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -892,12 +892,12 @@ int sock_set_timestamping(struct sock *sk, int optname,
+ 	return 0;
+ }
+ 
+-void sock_set_keepalive(struct sock *sk)
++void sock_set_keepalive(struct sock *sk, bool valbool)
+ {
+ 	lock_sock(sk);
+ 	if (sk->sk_prot->keepalive)
+-		sk->sk_prot->keepalive(sk, true);
+-	sock_valbool_flag(sk, SOCK_KEEPOPEN, true);
++		sk->sk_prot->keepalive(sk, valbool);
++	sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
+ 	release_sock(sk);
+ }
+ EXPORT_SYMBOL(sock_set_keepalive);
+@@ -1060,9 +1060,7 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 		break;
+ 
+ 	case SO_KEEPALIVE:
+-		if (sk->sk_prot->keepalive)
+-			sk->sk_prot->keepalive(sk, valbool);
+-		sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
++		sock_set_keepalive(sk, !!valbool);
+ 		break;
+ 
+ 	case SO_OOBINLINE:
+diff --git a/net/mptcp/sockopt.c b/net/mptcp/sockopt.c
+index 8c03afac5ca0..879b8381055c 100644
+--- a/net/mptcp/sockopt.c
++++ b/net/mptcp/sockopt.c
+@@ -81,9 +81,7 @@ static void mptcp_sol_socket_sync_intval(struct mptcp_sock *msk, int optname, in
+ 			sock_valbool_flag(ssk, SOCK_DBG, !!val);
+ 			break;
+ 		case SO_KEEPALIVE:
+-			if (ssk->sk_prot->keepalive)
+-				ssk->sk_prot->keepalive(ssk, !!val);
+-			sock_valbool_flag(ssk, SOCK_KEEPOPEN, !!val);
++			sock_set_keepalive(ssk, !!val);
+ 			break;
+ 		case SO_PRIORITY:
+ 			ssk->sk_priority = val;
+diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+index 09cadd556d1e..b69ebb3f424a 100644
+--- a/net/rds/tcp_listen.c
++++ b/net/rds/tcp_listen.c
+@@ -44,7 +44,7 @@ void rds_tcp_keepalive(struct socket *sock)
+ 	int keepidle = 5; /* send a probe 'keepidle' secs after last data */
+ 	int keepcnt = 5; /* number of unack'ed probes before declaring dead */
+ 
+-	sock_set_keepalive(sock->sk);
++	sock_set_keepalive(sock->sk, true);
+ 	tcp_sock_set_keepcnt(sock->sk, keepcnt);
+ 	tcp_sock_set_keepidle(sock->sk, keepidle);
+ 	/* KEEPINTVL is the interval between successive probes. We follow
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 898389611ae8..ad8f4302037f 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -68,7 +68,7 @@ static void smc_set_keepalive(struct sock *sk, int val)
+ {
+ 	struct smc_sock *smc = smc_sk(sk);
+ 
+-	smc->clcsock->sk->sk_prot->keepalive(smc->clcsock->sk, val);
++	sock_set_keepalive(smc->clcsock->sk, !!val);
+ }
+ 
+ static struct smc_hashinfo smc_v4_hashinfo = {
+diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
+index e573dcecdd66..306a332f8d28 100644
+--- a/net/sunrpc/xprtsock.c
++++ b/net/sunrpc/xprtsock.c
+@@ -2127,7 +2127,7 @@ static void xs_tcp_set_socket_timeouts(struct rpc_xprt *xprt,
+ 	spin_unlock(&xprt->transport_lock);
+ 
+ 	/* TCP Keepalive options */
+-	sock_set_keepalive(sock->sk);
++	sock_set_keepalive(sock->sk, true);
+ 	tcp_sock_set_keepidle(sock->sk, keepidle);
+ 	tcp_sock_set_keepintvl(sock->sk, keepidle);
+ 	tcp_sock_set_keepcnt(sock->sk, keepcnt);
+-- 
+2.32.0
 
