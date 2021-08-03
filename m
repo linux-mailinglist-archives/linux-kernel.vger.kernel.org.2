@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510293DF0DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB553DF0DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236425AbhHCOzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235527AbhHCOzj (ORCPT
+        id S236507AbhHCO4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:56:08 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:34624 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235527AbhHCO4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:55:39 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D375C061757;
-        Tue,  3 Aug 2021 07:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=F74UGIITlPyfA3peXisMBcwyx6rHLr75K3DVyOZUtF0=; b=PYH+giH19IloHFBCsdZBZqqSqR
-        NiEDT1Ca9ROL4KVVB+Gg52oFSQt+VIorCSI7hk6FCe2VGl75rrpVR7Nj8V4RPTua+Qd1EKC+s5u3L
-        kiquelKkunmsv4j74frFg8pxjiAE8/9vd8jYm8PdXZBSbJDrbvl3J7bNL70E5xtUhEg5phydIbote
-        Ql/tUkUtfLwhb4qEdcmek0oHS3XqVkf95SkWiKhrqBQ/XhsE+AxzEgBLgBy+w8l3N4bpv6GDK7HbH
-        W7mtrdwRCS8tzcLurbOwdIuPIE3j8nm2l7dTDZCIHdcHaCHPKJNyDaSJMwTjLXsHafdIDNO1bM0TA
-        DU3ti67A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mAvpD-005R80-DY; Tue, 03 Aug 2021 14:55:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 149173000F2;
-        Tue,  3 Aug 2021 16:55:22 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C3D1520262923; Tue,  3 Aug 2021 16:55:22 +0200 (CEST)
-Date:   Tue, 3 Aug 2021 16:55:22 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH V2] perf/x86/intel: Apply mid ACK for small core
-Message-ID: <YQlY2o62E5A9xcdq@hirez.programming.kicks-ass.net>
-References: <1627997128-57891-1-git-send-email-kan.liang@linux.intel.com>
+        Tue, 3 Aug 2021 10:56:06 -0400
+Received: by mail-io1-f52.google.com with SMTP id y200so24590014iof.1;
+        Tue, 03 Aug 2021 07:55:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kD7lkwGnBrAWtQ4Yvyumyu5YNOwGaLH82mshMsNuV0s=;
+        b=jxVpu6ZzL7kqEtfeZeBRyfemhkCElg3bY+8zn4dHpJCC7FMjPqEWRIaxAaYGQlxo8i
+         74wIJqqX1eOzLh4rgIQfx/BzvcN1tULB5Wuat2aYfcR8cP0Lpqqg7rLb5AwBiMVWY6xr
+         8p5Iv8vTxP8yuZTYMxq4L9FVRaDYBrmzbT4WQmpmu0Hdz3sIkdCHnM0popLKDx042Lo9
+         UNQsU3f9POJlBArlGO8KKaHpueO61s062TbXF8AhCNAWfezjXxkL4N9ArTHyF91WSluQ
+         84hjbgMXFH0jvyuKw+qPokuyZ35DgW8lUi39hcIqg4ycWzGudyAIwUmTsUcV8oMjxkQ1
+         SZIg==
+X-Gm-Message-State: AOAM533AgaDgISUYmsuVpS/Gbvi/MGLOcd/jVAc616lBkRU8RzHNwKch
+        l2Bg6krXXV3stJIVVLSHvw==
+X-Google-Smtp-Source: ABdhPJzY36XqMTJ9t/2g2jsTX7vFaYI7b8gh0CL1YPRGzel3gnv1zaaoWZzPOx7BB/gaoMf2w4EdMA==
+X-Received: by 2002:a5e:9743:: with SMTP id h3mr433048ioq.52.1628002553781;
+        Tue, 03 Aug 2021 07:55:53 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id k9sm8646960ioq.55.2021.08.03.07.55.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 07:55:52 -0700 (PDT)
+Received: (nullmailer pid 3254509 invoked by uid 1000);
+        Tue, 03 Aug 2021 14:55:51 -0000
+Date:   Tue, 3 Aug 2021 08:55:51 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Andy Teng <andy.teng@mediatek.com>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] dt-bindings: mediatek: convert pinctrl to yaml
+Message-ID: <YQlY9/5GNOGKG4gv@robh.at.kernel.org>
+References: <20210803051318.2570994-1-hsinyi@chromium.org>
+ <20210803051318.2570994-3-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1627997128-57891-1-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <20210803051318.2570994-3-hsinyi@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 06:25:28AM -0700, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
+On Tue, Aug 03, 2021 at 01:13:19PM +0800, Hsin-Yi Wang wrote:
+> Convert mt65xx, mt6796, mt7622, mt8183 bindings to yaml.
 > 
-> A warning as below may be occasionally triggered in an ADL machine when
-> these conditions occur,
-> - Two perf record commands run one by one. Both record a PEBS event.
-> - Both runs on small cores.
-> - They have different adaptive PEBS configuration (PEBS_DATA_CFG).
-> 
-> [  673.663291] WARNING: CPU: 4 PID: 9874 at
-> arch/x86/events/intel/ds.c:1743
-> setup_pebs_adaptive_sample_data+0x55e/0x5b0
-> [  673.663348] RIP: 0010:setup_pebs_adaptive_sample_data+0x55e/0x5b0
-> [  673.663357] Call Trace:
-> [  673.663357]  <NMI>
-> [  673.663357]  intel_pmu_drain_pebs_icl+0x48b/0x810
-> [  673.663360]  perf_event_nmi_handler+0x41/0x80
-> [  673.663368]  </NMI>
-> [  673.663370]  __perf_event_task_sched_in+0x2c2/0x3a0
-> 
-> Different from the big core, the small core requires the ACK right
-> before re-enabling counters in the NMI handler, otherwise a stale PEBS
-> record may be dumped into the later NMI handler, which trigger the
-> warning.
-> 
-> Add a new mid_ack flag to track the case. Add all PMI handler bits in
-> the struct x86_hybrid_pmu to track the bits for different types of PMUs.
-> Apply mid ACK for the small cores on an Alder Lake machine.
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+> v2->v3:
+> fix comments in v2.
 
-Why do we need a new option? Why isn't early (as in not late) good
-enough?
+That's assumed... A good revision history will list out what changed to 
+remind reviewers what they said. (I kind of remember since it was just 
+yesterday, more more than that assume I've forgotten.) This is different 
+than the commit msg which should tell us 'why' and not 'what' as there 
+we have the diff and can read what changed.
+
+> ---
+>  .../pinctrl/mediatek,mt65xx-pinctrl.yaml      | 206 ++++++++
+>  .../pinctrl/mediatek,mt6797-pinctrl.yaml      | 173 +++++++
+>  .../pinctrl/mediatek,mt7622-pinctrl.yaml      | 373 +++++++++++++
+>  .../pinctrl/mediatek,mt8183-pinctrl.yaml      | 228 ++++++++
+>  .../bindings/pinctrl/pinctrl-mt65xx.txt       | 156 ------
+>  .../bindings/pinctrl/pinctrl-mt6797.txt       |  83 ---
+>  .../bindings/pinctrl/pinctrl-mt7622.txt       | 490 ------------------
+>  .../bindings/pinctrl/pinctrl-mt8183.txt       | 132 -----
+>  8 files changed, 980 insertions(+), 861 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt65xx-pinctrl.yaml
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt6797-pinctrl.yaml
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt7622-pinctrl.yaml
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt6797.txt
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt7622.txt
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8183.txt
+
+With the MAINTAINERS references fixed,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
