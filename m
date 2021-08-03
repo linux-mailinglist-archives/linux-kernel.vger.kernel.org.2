@@ -2,172 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9E23DF871
+	by mail.lfdr.de (Postfix) with ESMTP id B52F33DF872
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233157AbhHCXWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 19:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbhHCXWM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 19:22:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB1AC061757;
-        Tue,  3 Aug 2021 16:22:00 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628032918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3sppHzO4nBHPNEurHXyRq4J2sD5L0/H0qJdAyUdF9AE=;
-        b=OlCy9rBC6qHUV5lBzNzwO1zPZHPcdt/yuNv8KWZWSkX9IMEIHqv+Hqr4GtF9SS/T2hZY2K
-        gRY92Lt3kL5GM04i6itLfA9ABSgbFKwZV+UcIBoS/r6q4t5oeLbFr6/B5xk7x/JdThhzMr
-        AqXcsvc+wJVObdT3YIERe+xExSko/aROavBF6owO2eTsorS1LL4SAwpzkOFhatR7WeK4Tc
-        liTjOwZ9BfwlKtjRFtTL+UujCKGeEW2bx9To1qAr4ohVgdyaEBfCWDxqcxRePdZjiHl4jF
-        qzVjPEnxdnPlX/p0doCUUxATrDU9axWUlfkD3epp/mqV5UEhrf2Kib34gk5/Eg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628032918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3sppHzO4nBHPNEurHXyRq4J2sD5L0/H0qJdAyUdF9AE=;
-        b=F0gwUPlbBiVah6TihUcuwDEdd9xE5yjQzfsNoszSmqtS4PVc3AMwNgtD1olZ7vk6z7hq2Y
-        DI82mdchpqgvkTBw==
-To:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Luis Goncalves <lgoncalv@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] mm/memcg: Disable task obj_stock for PREEMPT_RT
-In-Reply-To: <20210803175519.22298-1-longman@redhat.com>
-References: <20210803175519.22298-1-longman@redhat.com>
-Date:   Wed, 04 Aug 2021 01:21:57 +0200
-Message-ID: <87h7g62jxm.ffs@tglx>
+        id S231637AbhHCXWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 19:22:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233297AbhHCXW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 19:22:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9DEE60F70;
+        Tue,  3 Aug 2021 23:22:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628032935;
+        bh=GTOm5i1eFHoZWIAtLq1pJZHY6UHGcU6XPXFTbm98e/U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Cj8bEyOJUkIviH1NJ3QclFfyphJQRwILTKSm3c2b5TLXM45hugfp6A7A3h6XQUw6P
+         yf+TdP3Bxgd6iDmefErVAbpLy2KfVGfIDTtKg85qHtoYpTZciBGJxRTGTuW/zYuuD3
+         TwF2oVrn20cEitvmEWQgs28YgN1KlqskTuJEy+cYYADGx2qgmRRqntsG2iCuRP89qu
+         B7K1BCHC2isZiL8PXj1w6swkOPiYQxTCO1ebgfummAq+L4hWSTuMU5ADo+NodE8qXE
+         siZnQ0DBwb9jElkkuV6e7FzBRh2Y+xRYLffJK7ghP31685BDiJ1xGJCJ6S7a/4C3/W
+         VC4eOE6hikbLg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Argus Lin <argus.lin@mediatek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: mediatek: mt6359: convert to use module_platform_driver
+Date:   Wed,  4 Aug 2021 00:22:00 +0100
+Message-Id: <162803121460.44131.10692737941162516565.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210531051203.228567-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+References: <20210531051203.228567-1-nobuhiro1.iwamatsu@toshiba.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Waiman,
+On Mon, 31 May 2021 14:12:03 +0900, Nobuhiro Iwamatsu wrote:
+> Simplify the code by using module_platform_driver macro for
+> mt6359-accdet.
+> 
+> 
+> 
+> 
 
-On Tue, Aug 03 2021 at 13:55, Waiman Long wrote:
+Applied to
 
-please Cc RT people on RT related patches.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> For PREEMPT_RT kernel, preempt_disable() and local_irq_save()
-> are typically converted to local_lock() and local_lock_irqsave()
-> respectively.
+Thanks!
 
-That's just wrong. local_lock has a clear value even on !RT kernels. See
+[1/1] ASoC: mediatek: mt6359: convert to use module_platform_driver
+      commit: edcade2e5e942453f001bd7a0d31f55059cec34f
 
-  https://www.kernel.org/doc/html/latest/locking/locktypes.html#local-lock
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> These two variants of local_lock() are essentially
-> the same.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Only on RT kernels.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> + * For PREEMPT_RT kernel, preempt_disable() and local_irq_save() may have
-> + * to be changed to variants of local_lock(). This eliminates the
-> + * performance advantage of using preempt_disable(). Fall back to always
-> + * use local_irq_save() and use only irq_obj for simplicity.
-
-Instead of adding that comment you could have just done the full
-conversion, but see below.
-
->   */
-> +static inline bool use_task_obj_stock(void)
-> +{
-> +	return !IS_ENABLED(CONFIG_PREEMPT_RT) && likely(in_task());
-> +}
-> +
->  static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
->  {
->  	struct memcg_stock_pcp *stock;
->  
-> -	if (likely(in_task())) {
-> +	if (use_task_obj_stock()) {
->  		*pflags = 0UL;
->  		preempt_disable();
->  		stock = this_cpu_ptr(&memcg_stock);
-
-This is clearly the kind of conditional locking which is frowned upon
-rightfully.
-
-So if we go to reenable memcg for RT we end up with:
-
-	if (use_task_obj_stock()) {
-           preempt_disable();
-        } else {
-           local_lock_irqsave(memcg_stock_lock, flags);
-        }
-        
-and further down we end up with:
-
-> @@ -2212,7 +2222,7 @@ static void drain_local_stock(struct work_struct *dummy)
->  
->  	stock = this_cpu_ptr(&memcg_stock);
->  	drain_obj_stock(&stock->irq_obj);
-> -	if (in_task())
-> +	if (use_task_obj_stock())
->  		drain_obj_stock(&stock->task_obj);
->  	drain_stock(stock);
->  	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
-
-	/*
-	 * The only protection from memory hotplug vs. drain_stock races is
-	 * that we always operate on local CPU stock here with IRQ disabled
-	 */
--	local_irq_save(flags);
-+	local_lock_irqsave(memcg_stock_lock, flags);
-        ...
-	if (use_task_obj_stock())
-  		drain_obj_stock(&stock->task_obj);
-
-which is incomprehensible garbage.
-
-The comment above the existing local_irq_save() is garbage w/o any local
-lock conversion already today (and even before the commit which
-introduced stock::task_obj) simply because that comment does not explain
-the why.
-
-I can just assume that for stock->task_obj the IRQ protection is
-completely irrelevant. If not and _all_ members of stock have to be
-protected against memory hotplug by disabling interrupts then any other
-function which just disables preemption is broken.
-
-To complete the analysis of drain_local_stock(). AFAICT that function
-can only be called from task context. So what is the purpose of this
-in_task() conditional there?
-
-	if (in_task())
-  		drain_obj_stock(&stock->task_obj);
-
-I assume it's mechanical conversion of:
-
--       drain_obj_stock(stock);
-+       drain_obj_stock(&stock->irq_obj);
-+       if (in_task())
-+               drain_obj_stock(&stock->task_obj);
-
-all over the place without actually looking at the surrounding code,
-comments and call sites.
-
-This patch is certainly in line with that approach, but it's just adding
-more confusion.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-
-        tglx
+Mark
