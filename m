@@ -2,114 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682E03DE774
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350F33DE776
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234278AbhHCHrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234137AbhHCHrx (ORCPT
+        id S234315AbhHCHsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:48:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42670 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234137AbhHCHsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:47:53 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56549C06175F;
-        Tue,  3 Aug 2021 00:47:43 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id s48so9497555ybi.7;
-        Tue, 03 Aug 2021 00:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uR3LWjGAL1MCDX9JwTGP/PowRtYOX1+NORzQOb7GgSk=;
-        b=Pvrl/oKUqB8r3YC1wMA1FrkDeissaPwOXeZfhmyLtHnhUuDrCGkXqjvcfU19vDE9H9
-         BsbNeBOqxtR0qAu7AY1a1dVg8KhDFthPLOUHxiaiQqiGgZMxeNyQNwRI7GOMe7cPh/oU
-         Y/OiFXhhhHbSj3Umc7xxJzOk0kt0jRoAxF4t+yrO/Df1nRRgpkWmMEqVDvDUPlLZwzGe
-         L6CRYFLMSc1z/rrIN2oSbVVBWrcgMImdTpBcPAANtsTJkhnxZ+z0Ef3rr4hyjWeE9InE
-         KYHPZRhYyAlu07gXwKEgiF/rOR8Owec/KjHLVVtpHlK5IUq9N4xhWBi8wn+QAPMVNB7C
-         aMtw==
+        Tue, 3 Aug 2021 03:48:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627976892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Cz4mJEVmDGl8yNoZ79kAMw4n8tDskkf0Kql/Sbl+6U=;
+        b=fM2xMnNNT532d5i+NEFsGIbGI66fE7kcS4hLJFcmnyNeTU59imtDBvWaFVhazFSZz4+7JP
+        HNVVjvBd7fLQrhXJwjoWGjuE8QfRI0qY+jPpOsUyoAyuBKN+45coNkuLbUTwkkYZnax/aF
+        bikSSWfRbEYn69KV4fb4PPBV2rm3fPk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-484-PRlgLZavNFW03BV0ILvy8A-1; Tue, 03 Aug 2021 03:48:11 -0400
+X-MC-Unique: PRlgLZavNFW03BV0ILvy8A-1
+Received: by mail-wm1-f71.google.com with SMTP id c41-20020a05600c4a29b0290253935d0f82so632763wmp.9
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:48:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uR3LWjGAL1MCDX9JwTGP/PowRtYOX1+NORzQOb7GgSk=;
-        b=tQllXVN9s9FDMGYmkEp8kM9ZqWTXNqA15cql6nf/vUwzHOZ4rh9b9bs+jKcAZ+BYJP
-         wx6HvUkDQuluWRQj+WlNWsfo1sA1EBtYxyZKwPHCDsmLsBGGZvASW8r3siWsnlHogHqu
-         D0i1F4GwIsjA7JDBpXPXah5xJ1LsAmP5xtR/ouDhtN4z/7P9VUueTVRxNvx47HH5gokd
-         Avf1W8nSFXVbk7I4KeU2Cjq/vcPsPmpjdFbtwFkoy6wit+xc8tF+I/4BzlpUWlYeeUwy
-         uc98mOjdlig2JN/I72lnjliVC0bmS2Ar0ZajJNugOF+MJjn7moDQPaK7UTECVjyL7rss
-         q5nQ==
-X-Gm-Message-State: AOAM530d1wH2f6M4TB/TrhMRe7fyxnAXYrcANOD9/+2rFHEOQ5C5oOAY
-        VOYN+8t0atWl3F45kaavWk9YpcCXrmLhB+OE40g=
-X-Google-Smtp-Source: ABdhPJz62VAj24HIFGhicDO7uNueQqGky9v9x+BD0sdP1E9Ya56dQb0nYDLYSt/pgCHb/vE3Jv09rH4ma2JexSe4yzE=
-X-Received: by 2002:a25:aa94:: with SMTP id t20mr26258560ybi.127.1627976862676;
- Tue, 03 Aug 2021 00:47:42 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=7Cz4mJEVmDGl8yNoZ79kAMw4n8tDskkf0Kql/Sbl+6U=;
+        b=ZvxvY8sSdBNaFwFkkenyQydc8xB5fBzMuIpXJGCyq5hoLyMla7QmOyu93oWGSd5k3k
+         EIMlA6l6yEFjyqLAGkEwqCD9b9WKUN5iVAopPGY508x2JaoFHZEv870XKtQhsCz/0bWI
+         3kWPKToDXOVRr6Y76AjfnJYPIwR3RAySHKNSmZ0xQ/q3YwmGwzwxcFlkSvl1naLBDlBf
+         EHA1l/C5zWxWtuLODNnY3ySYBKrCtjYDPe3gKK8IQ0SMsW/VJUKUkpOjHUQkH/6bqkvK
+         yrsej9yoM4gTuURQT5hMfQn5+LMOSd4pXxGujQO57g0g5kVUueXPNw7FoPOflj/sAJFD
+         Ty8A==
+X-Gm-Message-State: AOAM531HrFF/+B9XZiFwBjDQwd2yR7bL+q1ejoMaEZjRfW2UYgTOT+cn
+        sKb0ibFDwj4bQZhdi5hvodX+j/dVkFN8pxMyVt0SZcF9aJvX3m0VkXPrTA4Dg+cJz7/FegnfvbH
+        dYvGud5/5fdSOsQa8JFhKAGrI
+X-Received: by 2002:adf:f704:: with SMTP id r4mr22002788wrp.389.1627976889765;
+        Tue, 03 Aug 2021 00:48:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxowVVNUa0hycw1XWUzEd3fE+9kjYSa2132/0hwpvRvMe/A28XCQeByi13QdPkqhfgifHYRrg==
+X-Received: by 2002:adf:f704:: with SMTP id r4mr22002758wrp.389.1627976889502;
+        Tue, 03 Aug 2021 00:48:09 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23a79.dip0.t-ipconnect.de. [79.242.58.121])
+        by smtp.gmail.com with ESMTPSA id z12sm12229644wml.18.2021.08.03.00.48.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 00:48:09 -0700 (PDT)
+To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
+        hch@infradead.org, oleg@redhat.com, jannh@google.com,
+        shakeelb@google.com, luto@kernel.org, christian.brauner@ubuntu.com,
+        fweimer@redhat.com, jengelh@inai.de, timmurray@google.com,
+        linux-api@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+References: <20210802221431.2251210-1-surenb@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v4 1/2] mm: introduce process_mrelease system call
+Message-ID: <95eff329-a7b1-dc2d-026c-fd61e476c846@redhat.com>
+Date:   Tue, 3 Aug 2021 09:48:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CADVatmOf+ZfxXA=LBSUqDZApZG3K1Q8GV2N5CR5KgrJLqTGsfg@mail.gmail.com>
- <f38b93f3-4cdb-1f9b-bd81-51d32275555e@gmail.com> <4c339bea-87ff-cb41-732f-05fc5aff18fa@gmail.com>
- <CADVatmPwM-2oma2mCXnQViKK5DfZ2GS5FLmteEDYwOEOK-mjMg@mail.gmail.com> <8db71657-bd61-6b1f-035f-9a69221e7cb3@gmail.com>
-In-Reply-To: <8db71657-bd61-6b1f-035f-9a69221e7cb3@gmail.com>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Tue, 3 Aug 2021 08:47:06 +0100
-Message-ID: <CADVatmPPnAWyOmyqT3iggeO_hOuPpALF5hqAqbQkrdvCPB5UaQ@mail.gmail.com>
-Subject: Re: KASAN: stack-out-of-bounds in iov_iter_revert
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210802221431.2251210-1-surenb@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 12:55 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->
-> On 8/1/21 9:28 PM, Sudip Mukherjee wrote:
-> > Hi Pavel,
-> >
-> > On Sun, Aug 1, 2021 at 9:52 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
-> >>
-> >> On 8/1/21 1:10 AM, Pavel Begunkov wrote:
-> >>> On 7/31/21 7:21 PM, Sudip Mukherjee wrote:
-> >>>> Hi Jens, Pavel,
-> >>>>
-> >>>> We had been running syzkaller on v5.10.y and a "KASAN:
-> >>>> stack-out-of-bounds in iov_iter_revert" was being reported on it. I
-> >>>> got some time to check that today and have managed to get a syzkaller
-> >>>> reproducer. I dont have a C reproducer which I can share but I can use
-> >>>> the syz-reproducer to reproduce this with v5.14-rc3 and also with
-> >>>> next-20210730.
-> >>>
-> >>> Can you try out the diff below? Not a full-fledged fix, but need to
-> >>> check a hunch.
-> >>>
-> >>> If that's important, I was using this branch:
-> >>> git://git.kernel.dk/linux-block io_uring-5.14
-> >>
-> >> Or better this one, just in case it ooopses on warnings.
-> >
-> > I tested this one on top of "git://git.kernel.dk/linux-block
-> > io_uring-5.14" and the issue was still seen, but after the BUG trace I
-> > got lots of "truncated wr" message. The trace is:
->
-> That's interesting, thanks
-> Can you share the syz reproducer?
+[...]
 
-Unfortunately I dont have a C reproducer, but this is the reproducer
-for syzkaller:
+> Previously I proposed a number of alternatives to accomplish this:
+> - https://lore.kernel.org/patchwork/patch/1060407 extending
 
-r0 = syz_io_uring_setup(0x4d4f, &(0x7f0000000080)={0x0, 0x0, 0x1},
-&(0x7f00000a0000)=nil, &(0x7f0000ffc000/0x1000)=nil,
-&(0x7f0000000000)=<r1=>0x0, &(0x7f0000000140))
-r2 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x46e2, 0x0)
-syz_io_uring_setup(0x1, &(0x7f0000000080),
-&(0x7f0000ffd000/0x2000)=nil, &(0x7f0000ffc000/0x2000)=nil,
-&(0x7f0000000100), &(0x7f0000000140)=<r3=>0x0)
-syz_io_uring_submit(r1, r3, &(0x7f0000000100)=@IORING_OP_WRITE={0x17,
-0x0, 0x0, @fd=r2, 0x0, &(0x7f0000000200)="e2", 0xffffffffffffff98},
-0x200)
-io_uring_enter(r0, 0x58ab, 0x0, 0x0, 0x0, 0x0)
+I have no idea how stable these links are. Referencing via message id is 
+the common practice. For this link, we'd use
 
+https://lkml.kernel.org/r/20190411014353.113252-3-surenb@google.com/
+
+instead.
+
+> pidfd_send_signal to allow memory reaping using oom_reaper thread;
+> - https://lore.kernel.org/patchwork/patch/1338196 extending
+> pidfd_send_signal to reap memory of the target process synchronously from
+> the context of the caller;
+> - https://lore.kernel.org/patchwork/patch/1344419/ to add MADV_DONTNEED
+> support for process_madvise implementing synchronous memory reaping.
+> 
+> The end of the last discussion culminated with suggestion to introduce a
+> dedicated system call (https://lore.kernel.org/patchwork/patch/1344418/#1553875)
+> The reasoning was that the new variant of process_madvise
+>    a) does not work on an address range
+>    b) is destructive
+>    c) doesn't share much code at all with the rest of process_madvise
+>  From the userspace point of view it was awkward and inconvenient to provide
+> memory range for this operation that operates on the entire address space.
+> Using special flags or address values to specify the entire address space
+> was too hacky.
+
+I'd condense this description and only reference previous discussions to 
+put a main focus on what this patch actually does. Like
+
+"
+After previous discussions [1, 2, 3] the decision was made to introduce 
+a dedicated system call to cover this use case.
+
+...
+
+[1] https://lkml.kernel.org/r/20190411014353.113252-3-surenb@google.com/
+"
+
+> 
+> The API is as follows,
+> 
+>            int process_mrelease(int pidfd, unsigned int flags);
+> 
+>          DESCRIPTION
+>            The process_mrelease() system call is used to free the memory of
+>            a process which was sent a SIGKILL signal.
+> 
+>            The pidfd selects the process referred to by the PID file
+>            descriptor.
+>            (See pidofd_open(2) for further information)
+> 
+>            The flags argument is reserved for future use; currently, this
+>            argument must be specified as 0.
+> 
+>          RETURN VALUE
+>            On success, process_mrelease() returns 0. On error, -1 is
+>            returned and errno is set to indicate the error.
+> 
+>          ERRORS
+>            EBADF  pidfd is not a valid PID file descriptor.
+> 
+>            EAGAIN Failed to release part of the address space.
+> 
+>            EINTR  The call was interrupted by a signal; see signal(7).
+> 
+>            EINVAL flags is not 0.
+> 
+>            EINVAL The task does not have a pending SIGKILL or its memory is
+>                   shared with another process with no pending SIGKILL.
+
+Hm, I do wonder if it would make sense to have a mode (e.g., via a flag) 
+to reap all but shared memory from a dying process. Future work.
+
+> 
+>            ENOSYS This system call is not supported by kernels built with no
+>                   MMU support (CONFIG_MMU=n).
+
+Maybe "This system call is not supported, for example, without MMU 
+support built into Linux."
+
+> 
+>            ESRCH  The target process does not exist (i.e., it has terminated
+>                   and been waited on).
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+> changes in v4:
+> - Replaced mmap_read_lock() with mmap_read_lock_killable(), per Michal Hocko
+> - Added EINTR error in the manual pages documentation
+> 
+>   mm/oom_kill.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 58 insertions(+)
+> 
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index c729a4c4a1ac..86727794b0a8 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -28,6 +28,7 @@
+>   #include <linux/sched/task.h>
+>   #include <linux/sched/debug.h>
+>   #include <linux/swap.h>
+> +#include <linux/syscalls.h>
+>   #include <linux/timex.h>
+>   #include <linux/jiffies.h>
+>   #include <linux/cpuset.h>
+> @@ -1141,3 +1142,60 @@ void pagefault_out_of_memory(void)
+>   	out_of_memory(&oc);
+>   	mutex_unlock(&oom_lock);
+>   }
+> +
+> +SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> +{
+> +#ifdef CONFIG_MMU
+> +	struct mm_struct *mm = NULL;
+> +	struct task_struct *task;
+> +	unsigned int f_flags;
+> +	struct pid *pid;
+> +	long ret = 0;
+> +
+> +	if (flags != 0)
+
+if (flags)
+
+> +		return -EINVAL;
+> +
+> +	pid = pidfd_get_pid(pidfd, &f_flags);
+> +	if (IS_ERR(pid))
+> +		return PTR_ERR(pid);
+> +
+> +	task = get_pid_task(pid, PIDTYPE_PID);
+> +	if (!task) {
+> +		ret = -ESRCH;
+> +		goto put_pid;
+> +	}
+> +
+> +	/*
+> +	 * If the task is dying and in the process of releasing its memory
+> +	 * then get its mm.
+> +	 */
+> +	task_lock(task);
+> +	if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
+> +		mm = task->mm;
+> +		mmget(mm);
+> +	}
+> +	task_unlock(task);
+> +	if (!mm) {
+> +		ret = -EINVAL;
+> +		goto put_task;
+> +	}
+> +
+> +	if (mmap_read_lock_killable(mm)) {
+> +		ret = -EINTR;
+> +		goto put_mm;
+> +	}
+> +	if (!__oom_reap_task_mm(mm))
+> +		ret = -EAGAIN;
+
+I'm not an expert on __oom_reap_task_mm(), but the whole approach makes 
+sense to. So feel free to add my
+
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Regards
-Sudip
+Thanks,
+
+David / dhildenb
+
