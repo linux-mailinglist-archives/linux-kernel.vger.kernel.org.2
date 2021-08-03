@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECB13DF0B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749DA3DF0CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236597AbhHCOuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:50:08 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:55850
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235368AbhHCOuC (ORCPT
+        id S236025AbhHCOvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:51:25 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55646 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234206AbhHCOvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:50:02 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        Tue, 3 Aug 2021 10:51:23 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 7AEE73F0FF;
-        Tue,  3 Aug 2021 14:49:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628002190;
-        bh=OSXLs7UOCDaUH/Z2FsCqFS59Zra8YYCA6HkdQfm7sZs=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version:Content-Type;
-        b=Hg+RoLzmfw1V6/+4j87RoskXSf8QvgpdifyL0u9L6WCu0Dfd1NG/wkWZcAdNsIoZM
-         /be4sQu/GOR8IZgQn+aZb+Ni6oDufNdQ0pEnm9lSLk1Noje3T6yKt1yZi0jSbS1GNs
-         Lr0iwTqtN/uPqcdlxTEd3ZZQ6mb59ctSeEqW4DCw0NtLr0QP93gCC2Px8QZquLs5t3
-         u7Cc45+7pyX+rdTKNGtaWG84QP1Di6JwoKWTDNfZ7CNAL9i3CGMPzsGPDI+Z/3BwRZ
-         WUAsCd//Q67GcvTbZY9VzC6/nUPUukrmECBHp7wYVW8Lb2HRbnCsTg5Q5PNGMWzzup
-         5K+PqEdEtF2mQ==
-From:   Colin King <colin.king@canonical.com>
-To:     Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, Joe Perches <joe@perches.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] rtlwifi: rtl8192de: fix array size limit in for-loop
-Date:   Tue,  3 Aug 2021 15:49:49 +0100
-Message-Id: <20210803144949.79433-3-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210803144949.79433-1-colin.king@canonical.com>
-References: <20210803144949.79433-1-colin.king@canonical.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C3FEA2003E;
+        Tue,  3 Aug 2021 14:51:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628002271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1PAUuxbm279noUJYK+2TINkJ8jnjsLCKOAQxIlYn3fU=;
+        b=ik3DDOLN3KAwl+H0dQ5f2Dwd9Wvh566q/5UAu7qfixOfdpR1wzexpQMV5k4ei0cDotySWm
+        gdgOg/bqF1L09WxTsYmwnsuyMFpT1zOqfJyrmpza8puJeZYVUD2GmIZZGv5zXp6yX7QINg
+        Vb8q3HA9F4QcdnX8O/6LbLGGC5synVE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628002271;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1PAUuxbm279noUJYK+2TINkJ8jnjsLCKOAQxIlYn3fU=;
+        b=treT+NlWqGgfkNZ6sNhbOlQmN03hnRauEeb+lioUxMmm5yIm2Vc7uAOEPM7cc0u+H8cufI
+        MUGTO+DcqFO2rFBg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5FCB213B74;
+        Tue,  3 Aug 2021 14:51:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id RN9fFN9XCWGObQAAGKfGzw
+        (envelope-from <jdelvare@suse.de>); Tue, 03 Aug 2021 14:51:11 +0000
+Date:   Tue, 3 Aug 2021 16:51:08 +0200
+From:   Jean Delvare <jdelvare@suse.de>
+To:     linux-watchdog@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Michael Marley <michael@michaelmarley.com>
+Subject: Faulty commit "watchdog: iTCO_wdt: Account for rebooting on second
+ timeout"
+Message-ID: <20210803165108.4154cd52@endymion>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi all,
 
-Currently the size of the entire array is being used in a for-loop
-for the element count. While this works since the elements are u8
-sized, it is preferred to use ARRAY_SIZE to get the element count
-of the array.
+Commit cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on
+second timeout") causes a regression on several systems. Symptoms are:
+system reboots automatically after a short period of time if watchdog
+is enabled (by systemd for example). This has been reported in bugzilla:
 
-Kudos to Joe Perches for spotting this issue.
+https://bugzilla.kernel.org/show_bug.cgi?id=213809
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Unfortunately this commit was backported to all stable kernel branches
+(4.14, 4.19, 5.4, 5.10, 5.12 and 5.13). I'm not sure why that is the
+case, BTW, as there is no Fixes tag and no Cc to stable@vger either.
+And the fix is not trivial, has apparently not seen enough testing,
+and addresses a problem that has a known and simple workaround. IMHO it
+should never have been accepted as a stable patch in the first place.
+Especially when the previous attempt to fix this issue already ended
+with a regression and a revert.
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-index 8ae69d914312..e11728622a9e 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-@@ -1366,7 +1366,7 @@ u8 rtl92d_get_rightchnlplace_for_iqk(u8 chnl)
- 	u8 place = chnl;
- 
- 	if (chnl > 14) {
--		for (place = 14; place < sizeof(channel_all); place++) {
-+		for (place = 14; place < ARRAY_SIZE(channel_all); place++) {
- 			if (channel_all[place] == chnl)
- 				return place - 13;
- 		}
+Anyway... After a glance at the patch, I see what looks like a nice
+thinko:
+
++	if (p->smi_res &&
++	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+
+The author most certainly meant inl(SMI_EN(p)) (the register's value)
+and not SMI_EN(p) (the register's address).
+
 -- 
-2.31.1
-
+Jean Delvare
+SUSE L3 Support
