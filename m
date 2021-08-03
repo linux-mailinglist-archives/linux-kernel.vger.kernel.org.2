@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE30F3DF6BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4F83DF6BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhHCVKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 17:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhHCVKo (ORCPT
+        id S231851AbhHCVLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 17:11:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59676 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231519AbhHCVLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 17:10:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D41C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 14:10:32 -0700 (PDT)
+        Tue, 3 Aug 2021 17:11:02 -0400
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628025031;
+        s=2020; t=1628025049;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aYXjvxGH0HQCUvBaWWNs/wWnSrA4zt3AGtwfB1Zssa0=;
-        b=ljogT53oihP4xGkDAeUO9r0b+9sgo7YuhQUg9VQ4GE1e8PeALSsC/Saeouk9IF21sdbfap
-        nSfJ7joTVOEB+P497BAUC3Ap0yn2e1fUbcZuJpLJk2vVeJ7sHrfCep575SSToZqOvZSu//
-        DzAGLBBGixB2oMBOHhGkwvOA/ql83nvIjareeNmYGwjspa8C1ICBrYl+cSmMzuU3YrwI0X
-        bY4IGxWTEVTjtyyDunJ8zg6Hz9ijkWafjrM7c04j/ou1G1Mo6q5GxQEmcecT7nil2soL8I
-        pSnDFFD2U981rNBSLXD6TMnmwm7H1XN0pb66mVaixhd7nqmVQCUDrQ8Dj0fJFA==
+        bh=ucRz86x6HiHEYCtpmG/kdLyW+gMVcGd2uqgj2++FHyY=;
+        b=4qos3TSs7zhjn9p7Cdx34MeVq2fJyQrfd7ngeMgZsKH5T26mYqU5aFaClvosZQFjbHzfn1
+        m7oUlPzNL7zAYYa7UBS6GDf78kPLB61Liph0Tg8NurmmSeN1hQYZkIUHjWFJjwj0ulqt/I
+        gs2ONYuziXc3kJxI+mCj9mvSMs3+A52XTa6aVt7GXyT8zbJKRSwVdLQNToIK44qgthnzAQ
+        F8IYWyHFUyVDYbE2wmNl4AwBdNlZPdNWIv8HDAxDNm5nni1OX0QBTd0TwVD+UQAKNxzRwY
+        dVdNS1C7WK63zuJYcuw4CCPUV+H8QqJdbxPEke/PID0B0w0MlkZ85Qj+mCmwQw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628025031;
+        s=2020e; t=1628025049;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aYXjvxGH0HQCUvBaWWNs/wWnSrA4zt3AGtwfB1Zssa0=;
-        b=KmBHv0jn+KLHbV4zHl1z/CIl0ZFmfoxbH1iYjCIWjznXBNrBYak817otcy6ggYvTAq6FbD
-        MnMU7Ylb9DShc0Dg==
+        bh=ucRz86x6HiHEYCtpmG/kdLyW+gMVcGd2uqgj2++FHyY=;
+        b=sLLrnG1Ffgk44cgWqfxBMQA+vSjkvGZiDAH+Yr21+BSrUU8t1SLDUIKPp22yrYit5GrBLb
+        1/tTGt0UH2ER2IBw==
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
@@ -47,51 +44,36 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
 Subject: Re: [patch 58/63] futex: Prevent requeue_pi() lock nesting issue on RT
-In-Reply-To: <20210803102808.GA8641@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210803100713.GB8057@worktop.programming.kicks-ass.net>
 References: <20210730135007.155909613@linutronix.de>
  <20210730135208.418508738@linutronix.de>
- <YQfraWyUYKtWgsQF@hirez.programming.kicks-ass.net>
- <20210803102808.GA8641@worktop.programming.kicks-ass.net>
-Date:   Tue, 03 Aug 2021 23:10:30 +0200
-Message-ID: <87sfzq2q0p.ffs@tglx>
+ <20210803100713.GB8057@worktop.programming.kicks-ass.net>
+Date:   Tue, 03 Aug 2021 23:10:49 +0200
+Message-ID: <87pmuu2q06.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03 2021 at 12:28, Peter Zijlstra wrote:
+On Tue, Aug 03 2021 at 12:07, Peter Zijlstra wrote:
 
-> On Mon, Aug 02, 2021 at 02:56:09PM +0200, Peter Zijlstra wrote:
->>  static inline void futex_requeue_pi_complete(struct futex_q *q, int locked)
->>  {
->> +	int old, new;
+> On Fri, Jul 30, 2021 at 03:51:05PM +0200, Thomas Gleixner wrote:
+>> @@ -219,6 +221,10 @@ struct futex_q {
+>>  	struct rt_mutex_waiter *rt_waiter;
+>>  	union futex_key *requeue_pi_key;
+>>  	u32 bitset;
+>> +	atomic_t requeue_state;
+>> +#ifdef CONFIG_PREEMPT_RT
+>> +	struct rcuwait requeue_wait;
+>> +#endif
+>>  } __randomize_layout;
 >>  
->> +	old = atomic_read_acquire(&q->requeue_state);
->> +	do {
+>>  static const struct futex_q futex_q_init = {
 >
-> 		if (old == Q_REQUEUE_PI_IGNORE)
-> 			return;
->
->>  		if (locked >= 0) {
->
-> 			WARN_ON_ONCE(old != Q_REQUEUE_PI_IN_PROGRESS &&
-> 			             old != Q_REQUEUE_PI_WAIT)
->
->>  			/* Requeue succeeded. Set DONE or LOCKED */
->>  			new = Q_REQUEUE_PI_DONE + locked;
->> +		} else if (old == Q_REQUEUE_PI_IN_PROGRESS) {
->>  			/* Deadlock, no early wakeup interleave */
->>  			new = Q_REQUEUE_PI_NONE;
->>  		} else {
->
-> 			WARN_ON_ONCE(old != Q_REQUEUE_PI_WAIT);
->
->
-> I think... 
+> Do we want to explicitly initialize requeue_state in futex_q_init? I was
+> looking where we reset the state machine and eventually figured it out,
+> but I'm thinking something more explicit might help avoid this for the
+> next time.
 
-Yes, it's matching the valid transition table.
-
-Thanks,
-
-        tglx
+Sure.
