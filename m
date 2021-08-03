@@ -2,155 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72AD3DE7DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA1C3DE7E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhHCIGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234238AbhHCIGm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:06:42 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8DAC061764
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 01:06:30 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id b11so18961622wrx.6
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 01:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iPbQVJkJzSXcaXx9HbEOsAieS9ipsFl/K2G+c6GXkNI=;
-        b=NLhiIT5ZqvIp6hesu5f82dogfMtWpOiJTml48Z7xZMQKMJIMqzXTFQNS+MfS0bsZBQ
-         TKP2ykFdeWmIHne9ufVz2KNi8RnrbaCA5CbIunIFErf91SCM6IEkk4BxYXQQ5UKajW/8
-         Mh/+SsI1O5U6acCO2Z/3Vzc4ABLCiAztlJ/wf/aXZ4h9BjAR8SuOT2QN/bbf1LZXCXsD
-         Vy+Dq0PiXbIgxnONTTVSIXgXr+MngMY2BP/W4EoCVpWxse9shAdQT4P2+3Hb/70SHdOs
-         ByTmigwGDH9nyJu0rHgC83ifszmgJHWUeYA7bioBHNYwS0hBgyxyc5fqQPC6j5LF3UHG
-         7yzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iPbQVJkJzSXcaXx9HbEOsAieS9ipsFl/K2G+c6GXkNI=;
-        b=lgmjihedJ45cFqqblcQov6D+FiZDRLiLeBM7TlTda1eRyQZZ4WTicc00KCMMnF/s1C
-         BpZB+LyYXS09FMoPIb9wje9WvRjbc3nHvBgnJexMfZJnN+1QCexxzCJ3XwLPhR98iE/3
-         OWkIfTwxVZpy19pHi4RtILLvLhcp5yxRIP0NVuLct0cEsul1qiM7pqx7hrwU4hS4xmdc
-         8ytBYQlkhauvIJraU/HZQDA0NrzVtHNhZqSXL1nj9IOwCbtB7q0+jMU5qfQkGwPbvYNn
-         uJd+FQ914nBJsporkN3jq2VZBJC10ngk9JEgLKY62vAVFOSxb1eYJygAckwxhcgqRBD3
-         DK2g==
-X-Gm-Message-State: AOAM530qoTcNcFlUmW/T0k1RXQtiK2yadysFYCgkUZ9SYR+AyEqWpfZ/
-        mGeXSZDaJk2vy6raZuoI6TPbI4z5+PrjQ0YiUCL/wA==
-X-Google-Smtp-Source: ABdhPJyN4PO+BxU1EjejPtiIX6WBg4h+HCVRraj7kpE7SS4FXwATcvwBaJlFjf7LHdc6rMAy6B3va9ZQhTFEcr8JpBY=
-X-Received: by 2002:a5d:4a4f:: with SMTP id v15mr20967610wrs.178.1627977988620;
- Tue, 03 Aug 2021 01:06:28 -0700 (PDT)
+        id S234438AbhHCIHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:07:14 -0400
+Received: from mga06.intel.com ([134.134.136.31]:3408 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234440AbhHCIHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:07:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="274682761"
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="scan'208";a="274682761"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:06:53 -0700
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="scan'208";a="510938473"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 01:06:49 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yang Shi <shy828301@gmail.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Minchan Kim <minchan@kernel.org>,
+        huang ying <huang.ying.caritas@gmail.com>
+Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
+References: <20210723080000.93953-1-ying.huang@intel.com>
+        <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
+        <CAC=cRTNby4GkSJ-pjs6utgHtrQYEdy3XZQ06Qsxgyf1MJSBjrw@mail.gmail.com>
+Date:   Tue, 03 Aug 2021 16:06:47 +0800
+In-Reply-To: <CAC=cRTNby4GkSJ-pjs6utgHtrQYEdy3XZQ06Qsxgyf1MJSBjrw@mail.gmail.com>
+        (huang ying's message of "Wed, 28 Jul 2021 21:03:50 +0800")
+Message-ID: <877dh354vc.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210729155805.2830-1-james.clark@arm.com> <20210729155805.2830-7-james.clark@arm.com>
- <YQgGjlWtbaNApkp6@kernel.org> <20210802170307.GA3050918@p14s>
-In-Reply-To: <20210802170307.GA3050918@p14s>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Tue, 3 Aug 2021 09:06:17 +0100
-Message-ID: <CAJ9a7VhLqgsEOVV3yksLiTJ2w2FOogNS92-gX5G4sgL8wiEwCA@mail.gmail.com>
-Subject: Re: [RFC PATCH 6/6] perf cs-etm: Add warnings for missing DSOs
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-perf-users@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI James,
+Hi, Andrew,
 
-On Mon, 2 Aug 2021 at 18:03, Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+huang ying <huang.ying.caritas@gmail.com> writes:
+>>
+>> Thanks for catching that; and as David says, it's worse than a typo.
+>>
+>> But this is not the right fix:
+>> 2efa33fc7f6e ("mm/shmem: fix shmem_swapin() race with swapoff")
+>> needs to be reverted.
+>>
+>> It's been on my pile to look at for weeks: now I look at it and see
+>> it's just a bad patch.  Over-enthusiastic stablehands already rushed
+>> it out, I was wary, and reverts are already in -rc for 5.13 and 5.10,
+>> phew, but 5.12.19 EOL is stuck with it unfortunately, oh well.
+>>
+>> I was wary because, if the (never observed) race to be fixed is in
+>> swap_cluster_readahead(), why was shmem_swapin_page() being patched?
 >
-> On Mon, Aug 02, 2021 at 11:51:58AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Jul 29, 2021 at 04:58:05PM +0100, James Clark escreveu:
-> > > Currently decode will silently fail if no binary data is available for
-> > > the decode. This is made worse if only partial data is available because
-> > > the decode will appear to work, but any trace from that missing DSO will
-> > > silently not be generated.
-> > >
-
-The decoder actually outputs a OCSD_GEN_TRC_ELEM_ADDR_NACC packet if
-binary memory data is missing.
-These packets are currently ignored by perf / cs-etm-decoder.c.
-
-I think this per DSO warning is fine, but perhaps at some point add in
-handling for OCSD_GEN_TRC_ELEM_ADDR_NACC - which perhaps is only
-active when dumping trace packets.
-
-Regards
-
-Mike
-
-
-> > > Add a UI popup once if there is any data missing, and then warn in the
-> > > bottom left for each individual DSO that's missing.
-> >
-> > Looks ok to me (the last 3 patches in this series, the rest I applied
-> > already), can I get some Acked-by/Reviewed-by from the CoreSight people?
-> >
+> When we get a swap entry from the page table or shmem xarray, and no
+> necessary lock is held to prevent the swap device to be swapoff (e.g.
+> page table lock, page lock, etc.), it's possible that the swap device
+> has been swapoff when we operate on the swap entry (e.g. swapin).  So
+> we need to find a way to prevent the swap device to be swapoff,
+> get_swap_device() based on percpu_ref is used for that.  To avoid to
+> call get_swap_device() here and there (e.g. now it is called in many
+> different places), I think it's better to call get_swap_device() when
+> we just get a swap entry without holding the necessary lock, that is,
+> in do_swap_page() and shmem_swapin_page(), etc.  So that we can delete
+> the get_swap_device() call in lookup_swap_cache(),
+> __read_swap_cache_async(), etc.  This will make it easier to
+> understand when to use get_swap_device() and clean up the code.  Do
+> you agree?
 >
-> I have a substantial backlog of patches to go through and I will be away for the
-> next two weeks.  As such it will be some time before I get to review this set.
+>> Not explained in its commit message, probably a misunderstanding of
+>> how mm/shmem.c already manages races (and prefers not to be involved
+>> in swap_info_struct stuff).
 >
-> Regards,
-> Mathieu
+> Yes.  The commit message isn't clean enough about why we do that.
 >
-> > Thanks,
-> >
-> > - Arnaldo
-> >
-> > > Signed-off-by: James Clark <james.clark@arm.com>
-> > > ---
-> > >  tools/perf/util/cs-etm.c | 10 +++++++++-
-> > >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> > > index 32ad92d3e454..e6851260d059 100644
-> > > --- a/tools/perf/util/cs-etm.c
-> > > +++ b/tools/perf/util/cs-etm.c
-> > > @@ -746,8 +746,16 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
-> > >
-> > >     len = dso__data_read_offset(al.map->dso, machine, offset, buffer, size);
-> > >
-> > > -   if (len <= 0)
-> > > +   if (len <= 0) {
-> > > +           ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n");
-> > > +           if (!al.map->dso->auxtrace_warned) {
-> > > +                   pr_err("CS ETM Trace: Debug data not found for address %#"PRIx64" in %s\n",
-> > > +                               address,
-> > > +                               al.map->dso->long_name ? al.map->dso->long_name : "Unknown");
-> > > +                   al.map->dso->auxtrace_warned = true;
-> > > +           }
-> > >             return 0;
-> > > +   }
-> > >
-> > >     return len;
-> > >  }
-> > > --
-> > > 2.28.0
-> > >
-> >
-> > --
-> >
-> > - Arnaldo
+>> But why do I now say it's bad?  Because even if you correct the EINVAL
+>> to -EINVAL, that's an unexpected error: -EEXIST is common, -ENOMEM is
+>> not surprising, -ENOSPC can need consideration, but -EIO and anything
+>> else just end up as SIGBUS when faulting (or as error from syscall).
+>
+> Yes.  -EINVAL isn't a good choice.  If it's the swapoff race, then
+> retrying can fix the race, so -EAGAIN may be a choice.  But if the
+> swap entry is really invalid (almost impossible in theory), we may
+> need something else, for example, WARN_ON_ONCE() and SIGBUS?  This
+> reminds me that we may need to distinguish the two possibilities in
+> get_swap_device()?
 
+As Hugh pointed out, EINVAL isn't an appropriate error code for race
+condition.  After checking the code, I found that EEXIST is the error
+code used for race condition.  So I revise the patch as below.  If Hugh
+doesn't object, can you help to replace the patch with the below one?
 
+Best Regards,
+Huang, Ying
 
+-----------------------------8<---------------------------------------
+From e2b281a0b09d34d6463942e214e577ed9357c213 Mon Sep 17 00:00:00 2001
+From: Huang Ying <ying.huang@intel.com>
+Date: Tue, 3 Aug 2021 10:51:16 +0800
+Subject: [PATCH] shmem_swapin_page(): fix error processing for
+ get_swap_device()
+
+Firstly, "-" is missing before the error code.  Secondly, EINVAL isn't
+the proper error code for the race condition.  EEXIST is used in
+shmem_swapin_page() for that.  So the error code is changed to EEXIST
+too.
+
+Link: https://lkml.kernel.org/r/20210723080000.93953-1-ying.huang@intel.com
+Fixes: 2efa33fc7f6e ("mm/shmem: fix shmem_swapin() race with swapoff")
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: David Hildenbrand <david@redhat.com>
+---
+ mm/shmem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index dcc07d14162e..ba925baa4404 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1711,8 +1711,8 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+ 	/* Prevent swapoff from happening to us. */
+ 	si = get_swap_device(swap);
+ 	if (!si) {
+-		error = EINVAL;
+-		goto failed;
++		error = -EEXIST;
++		goto unlock;
+ 	}
+ 	/* Look it up and read it in.. */
+ 	page = lookup_swap_cache(swap, NULL, 0);
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+2.30.2
+
