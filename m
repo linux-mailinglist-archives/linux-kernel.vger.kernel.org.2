@@ -2,180 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218163DE4B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 05:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292EA3DE4BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 05:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbhHCDfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 23:35:32 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:48649 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233197AbhHCDfa (ORCPT
+        id S233688AbhHCDkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 23:40:51 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9808 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233519AbhHCDkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 23:35:30 -0400
-Received: by mail-il1-f198.google.com with SMTP id p6-20020a056e021446b0290205af2e2342so9542023ilo.15
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 20:35:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cDoPWhQ3zzR4QVHTckj2mt4keM5tVUqZ03dSCzHR0cA=;
-        b=Fh7el+yUbaSP2S0FYbDHxSAvSF6CdHKiY9UTY5HRTjN+UPfMOaC1/23++UMd5NHPRN
-         G5pEEqzUe0PlmgkwRn8dT/sUTl6XPXHizV/K2cPrTmGyM3dYfrB3I+rLHX6FUhF2bD/e
-         3QEvkBuhJRt0Q7kIWNqj1ZsFqbT6tZ4GeNrPNDAiRI0ju+fPZBb3Gwu6GVow/8dZXgh5
-         z+w94MkXAGtpSLr8QIogK9m06/v7UVwovRdqT59Q975Srp5XL3uYJQeiMjp0rMS9BdKd
-         7od3z9S9AiR0jNDsR+Oyu71HRgPYoiZNvUJM1NLcqbMU8R3nUg4XTi5py97WEZzIGtTN
-         dWqA==
-X-Gm-Message-State: AOAM5300iEp/+mVnlxVTCRIsmoh7CcZ7dtbGRtmDFCHH9JxOuprO+M4g
-        B48RV8y+TCb2xevWfUmqNh+QshWU922VMl9cYPJ+Ku3EBEmV
-X-Google-Smtp-Source: ABdhPJxHkgtWTgOub7BPrT76NfeA6aZEI24xN0efajCcswbnwFcgowChoVs9Gtdw6r9QmgoaR+OedUG/RVBz3+aS6PFyKT2Jbkbx
+        Mon, 2 Aug 2021 23:40:47 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1733UYpo031535;
+        Mon, 2 Aug 2021 20:40:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=kmMdd7tY7zbfnCesS+60VWwPMXzWClZuK+uqJJzvkw8=;
+ b=rh24/XUlIF6iRjdTE9NMoheJFdUL0GALOJFuFT+eebIOzDSMKiVoxERqzgeKyIqAi8D+
+ XsZ8OQx/IQBiFGYd7ZoDDplzNX4ti9rNt/9SpzZWTEGdpxWrkP910TLDGmCxLwxWMYJE
+ OL2eSrKaLJAccubs9nebgN203GB9db0PyEk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a6nkctss9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 02 Aug 2021 20:40:15 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 2 Aug 2021 20:40:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O1QIVtVxlGnwbewyLZLQhRou9CUbWH61i0yhhjQckd0m9WQJl8xixNGkA5ip4TZRYqED6gB6izXVNMf3zpDpBZa3BjaRYl1vOBfb8yeInGmHmNc/9bq9XpNIKOGAlnX037IRcYafzXr4UDLeb1Hzqweg9+WUSphcSY24u0JfqOAKIwJDeYxheitl0zKMTbtGakfkppVHIc64DBakxNo3z/7oZnKCduYXxPGrEXC/tnjFRn/wdSG/FQ0jhGCf3Dmnlu5oe0kzmylpR+g0VPhEgXJqT2rJrDiVr5furl6KJWCNKMojmixvJNmk5ELs092QLcskHBJqgsBNtgvzDWZfuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kmMdd7tY7zbfnCesS+60VWwPMXzWClZuK+uqJJzvkw8=;
+ b=CT8sZGFSOo16l2j/E+CXZRheCWWJ4v1fe55KsajvxuoKQEuEqhwSdxlPARvsHhqA4kLj0mJK4yLLXMt9i4LQsPuc0SkAIx2ElwNHndHTR7tN44V/WNjjG3Us1ufFloJtqVHuu0aWcqelTxKjBX/FE6V6FrxgbUraVG9x3iT+D1wMqCQLxCjqXeZ4oxD5rPmftrd787SyyLGjvPS1u9dzFQ+S3Vxe0b0bsyMQn9gm36g+eElX48zbLGVChB+O6eJwjkwjDTgrRk+xcdAXXDlTICr/pR9WjHqpq6YKmDuGS4sDQZM+qmRHmp6QXXRtN29vPCWEX7ewzyS6lQsAepvZ1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3141.namprd15.prod.outlook.com (2603:10b6:a03:f5::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.25; Tue, 3 Aug
+ 2021 03:40:08 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::9520:2bcd:e6fd:1dc7]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::9520:2bcd:e6fd:1dc7%6]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 03:40:08 +0000
+Date:   Mon, 2 Aug 2021 20:40:04 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+CC:     Michal Hocko <mhocko@suse.com>, <hannes@cmpxchg.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
+        <shakeelb@google.com>, <willy@infradead.org>, <alexs@kernel.org>,
+        <richard.weiyang@gmail.com>, <songmuchun@bytedance.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
+Message-ID: <YQi6lOT6j2DtOGlT@carbon.dhcp.thefacebook.com>
+References: <20210729125755.16871-1-linmiaohe@huawei.com>
+ <20210729125755.16871-3-linmiaohe@huawei.com>
+ <YQNsxVPsRSBZcfGG@carbon.lan>
+ <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
+ <4a3c23c4-054c-2896-29c5-8cf9a4deee98@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4a3c23c4-054c-2896-29c5-8cf9a4deee98@huawei.com>
+X-ClientProxiedBy: MW2PR2101CA0006.namprd21.prod.outlook.com
+ (2603:10b6:302:1::19) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9ac1:: with SMTP id x1mr1008220ion.191.1627961720434;
- Mon, 02 Aug 2021 20:35:20 -0700 (PDT)
-Date:   Mon, 02 Aug 2021 20:35:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000df3b005c89f60ab@google.com>
-Subject: [syzbot] INFO: task hung in __drain_all_pages (2)
-From:   syzbot <syzbot+ef4bb06ce1e14f09f852@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:e78d) by MW2PR2101CA0006.namprd21.prod.outlook.com (2603:10b6:302:1::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.1 via Frontend Transport; Tue, 3 Aug 2021 03:40:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1989688f-cb3e-43de-30c3-08d9563063b2
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3141:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB314185B3EE6DE6D2A8BCBC6CBEF09@BYAPR15MB3141.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O9YIZhe6Pi8zW8CZihW2cCOpVnwCpCMR+bOScSymNwVoQLsTKGGfs/K6REESm5KlC/ZIeVS2pvVTzWlz4AXnYqtrL1g+Pk1ZDjSeAO8jibX0Nd6cDp131svTUwfX/bqX+V1b86gO6NQzQwjdZ3U+QZZtBcvLNbTPUzv+10nPI8wUnWQ4dh029RP72/jUuDAcGx8zK2oNfpiha9B2vUMdvhK2N0AktutBW8+6Kp3HBCTQu3LtdxPhm88HQsM2wg9S0mvOHsVNVmr3T2b5vNJs6G9dgV/b1kvQAQxGhRhHvt6uNj6mjixj8Z/kof/9IDNIJBaXoBKuWWiwHpwobti1kj49pDz1CtUYkrRAew2feKJr7O7DMQoe7mveGFeX0vdjmb0cUXP8VjcJ0YHXkJmoii97rT79xHRmIaSubprCWuqc6Y3iOyLBdaFWLgmmMB4gpW8jWcFStfFwjrfrBB8JKlBegoG6VgFpHRvW4/4bIS8CfjT7Q07N3UHZpcGFG1keJGFmaszezEcBANeiN800kf4LMDSvM2CX8Th4BZOlEBOYOelteVXOSncg6SgesnOzFUjYVh15GwA7fX9Bb0VBCoZ7ZcYHAb+wOOJIwme9YgYyVgV4rReuoYfbz4AFQ6DYOKl9j9uwhbbRfgFuabnBLg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(396003)(39860400002)(6666004)(53546011)(52116002)(186003)(6506007)(86362001)(7696005)(83380400001)(6916009)(7416002)(9686003)(2906002)(8676002)(66946007)(55016002)(478600001)(66556008)(66476007)(5660300002)(4326008)(316002)(8936002)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NjZQNXdrcklPWHJWd2JLandyMVJjVXFMZEErRHoyd2xuTE5hMXVnT2IwNzJD?=
+ =?utf-8?B?TWlBUThkdEFEUlp1a3l5QWIyR25RNkpqNDdrSTNwMUY1WnIrNUhVVDVkWVZD?=
+ =?utf-8?B?bFpiVEF6ZDdDa0x0Z01GMHRDNk5ic2xxUldBVm4xNlhEcnNkVFJmbHdCZERE?=
+ =?utf-8?B?OThzaXpIN1V0emRnUzFjd0JJTlJlNGtLVnlxN1J4MDV4RnpGbFEzdGpDWjdF?=
+ =?utf-8?B?MkduSjZ1QkJXbWhFaDdWOFAyT1l1bG5zdWZxZ1NsSndHaTJsM1RERHkrU2l6?=
+ =?utf-8?B?UnUwc3c3UGZsKy91T09kKy9ucVlpUFlaQU1VVmY0OTVUeUhFUWhKMC9aWXNL?=
+ =?utf-8?B?MHpnYS83UXZ6a0x4NS9tK0p6VzVGUXJaR21MemxZU1JHY05vV1lTbFVsLzBz?=
+ =?utf-8?B?Ly8wWm41RDVqV0p2NU11WnoxRy94MnRyczl6cWNTaGxWYU9zK25XVnBMMGtY?=
+ =?utf-8?B?SVEvMkdEMERnZ2tDWWk1TUcyZUpQR0NJcDQxYUlMbkFkZ2FrQklvY3daK2NB?=
+ =?utf-8?B?dk9KNzlvNnJWaFV0d0ZnVVFkUzNiK0hmdThxSTllbnBZZ0ZKOFpRWGlNS3lM?=
+ =?utf-8?B?UWMxMGJTYWtVWXFEWFVQNWpxekM0eXI1WWZONmlXb1JTb3ptTXo5UW5ZMzhK?=
+ =?utf-8?B?d3ZObjVJY3RZZnY1YmxYaGkzS1V0T1UvMFU2aFdValZDejRDSmFWL2w1OVBh?=
+ =?utf-8?B?UFM2SCsyVHhwNDNiakRPMkFpVlB4S29lNUZhdEVWZ2RFMEp3VzlYbVd5c0JB?=
+ =?utf-8?B?akpOTVpQanpEejBwVVd1SWpLNWc3cERMU3Y5MExCRUh4RDRXNTlVVVFHVGw1?=
+ =?utf-8?B?RXBKZ0E5bEEzQXc0TEJhMUJCZEFhSVBVcUxRVTBvM3h0NHdWbFlXTjVIbStX?=
+ =?utf-8?B?VW5JcTU2MEJRT295MXBKZm5oblJMVFp3UHpSSFM3OVFSZGszMFVnQm1EdWo1?=
+ =?utf-8?B?SW9rNHlYZXh2aWIrTEZSZW9DeklDTG5raDBVNVZKZkxiRFJ3aXhMUmI5UWxu?=
+ =?utf-8?B?Vmh0ZnMwbS9uY1QzQ0Y0TzBVQXhHWmxGYS92aWJ3WnhvK2ZpVEtmVS9FZENT?=
+ =?utf-8?B?MDZBMkdWS1M4OHVIV1hTRG5jUzVLYzJKR3JyT0tGdTBkdE9MM0xscU5qMXlE?=
+ =?utf-8?B?cDNwcE1XV3ZkVmFDYWRPZis0aHk2MjlqcWRsQlZFZ0FUTDZUbWZMamkreVJY?=
+ =?utf-8?B?MG1BR1R3alZxb2VBMVRrbmFPZ1ByZGFBTTZORXRzRTcxYkJuVktUcmJLVEtT?=
+ =?utf-8?B?MGdSQzlqUmdSeHhNSlRjZFNncG5CKzFDY2NUSjcwV0l6SEFPNVBHSFRiRnZO?=
+ =?utf-8?B?c0pnV0RkdTZnV1c5ZnZ1QTgvYnZZSGgrUWVUZmg0eXFXVVI1aStJOEQwRXVO?=
+ =?utf-8?B?Ynh4UmNoeTZvaEdwOVkxVncxbTlPeGNhSXFRM1V0U2JodDY4MlZBVG9zNlZD?=
+ =?utf-8?B?Yk5FM3pJbUFwQmdXVGcxYmM5MTNIbUIrU2ovdkNqV3VwTTh2UXhpaW16T2JE?=
+ =?utf-8?B?UC9jNmRad2V6ZkN4cGJyQWpOd3FPQ3lST3g4M2VmU2JRMm84SkdTeFFQMUZ2?=
+ =?utf-8?B?cUFNYlZ3QjdJa2hWeDlWRUtNWk80d3BHOVY0M2svUnlWU1V4Mnp4UFJyQ2xX?=
+ =?utf-8?B?c2ZnWXppRDYwYUYrMGZKUkhpdy92V2tZRlR6VmlUcUtGbElFaGxIU3RCRWVO?=
+ =?utf-8?B?cWdkK2Z3WXRWQXFHR0kzZFpFZzUyc3N3QVZ1a2g0L1FZK1dTSGt4UmVKVUI2?=
+ =?utf-8?B?QStpVGdQL1hhemp4YnQ4Z05MZWM1QUREdkFwaUFaQStTZXQ0UHlORCtLSWJa?=
+ =?utf-8?B?aFlFRE0yLzdTM043WTVldz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1989688f-cb3e-43de-30c3-08d9563063b2
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 03:40:08.2396
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L7Inm/BgcrDlUFH7oyY90TkB6pEI0T3KFIonkJP392X07aXacatNTQK34NCyyBwB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3141
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: kNUfPUgwOiS40VVIs1hAc1ZavIjb_OGx
+X-Proofpoint-ORIG-GUID: kNUfPUgwOiS40VVIs1hAc1ZavIjb_OGx
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-02_10:2021-08-02,2021-08-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ clxscore=1015 priorityscore=1501 malwarescore=0 impostorscore=0
+ adultscore=0 mlxlogscore=646 bulkscore=0 phishscore=0 lowpriorityscore=0
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108030019
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Jul 31, 2021 at 10:29:52AM +0800, Miaohe Lin wrote:
+> On 2021/7/30 14:50, Michal Hocko wrote:
+> > On Thu 29-07-21 20:06:45, Roman Gushchin wrote:
+> >> On Thu, Jul 29, 2021 at 08:57:52PM +0800, Miaohe Lin wrote:
+> >>> Since percpu_charge_mutex is only used inside drain_all_stock(), we can
+> >>> narrow the scope of percpu_charge_mutex by moving it here.
+> >>>
+> >>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> >>> ---
+> >>>  mm/memcontrol.c | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >>> index 6580c2381a3e..a03e24e57cd9 100644
+> >>> --- a/mm/memcontrol.c
+> >>> +++ b/mm/memcontrol.c
+> >>> @@ -2050,7 +2050,6 @@ struct memcg_stock_pcp {
+> >>>  #define FLUSHING_CACHED_CHARGE	0
+> >>>  };
+> >>>  static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
+> >>> -static DEFINE_MUTEX(percpu_charge_mutex);
+> >>>  
+> >>>  #ifdef CONFIG_MEMCG_KMEM
+> >>>  static void drain_obj_stock(struct obj_stock *stock);
+> >>> @@ -2209,6 +2208,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+> >>>   */
+> >>>  static void drain_all_stock(struct mem_cgroup *root_memcg)
+> >>>  {
+> >>> +	static DEFINE_MUTEX(percpu_charge_mutex);
+> >>>  	int cpu, curcpu;
+> >>
+> >> It's considered a good practice to protect data instead of code paths. After
+> >> the proposed change it becomes obvious that the opposite is done here: the mutex
+> >> is used to prevent a simultaneous execution of the code of the drain_all_stock()
+> >> function.
+> > 
+> > The purpose of the lock was indeed to orchestrate callers more than any
+> > data structure consistency.
+> >  
+> >> Actually we don't need a mutex here: nobody ever sleeps on it. So I'd replace
+> >> it with a simple atomic variable or even a single bitfield. Then the change will
+> >> be better justified, IMO.
+> > 
+> > Yes, mutex can be replaced by an atomic in a follow up patch.
+> > 
+> 
+> Thanks for both of you. It's a really good suggestion. What do you mean is something like below？
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 616d1a72ece3..508a96e80980 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2208,11 +2208,11 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>   */
+>  static void drain_all_stock(struct mem_cgroup *root_memcg)
+>  {
+> -       static DEFINE_MUTEX(percpu_charge_mutex);
+>         int cpu, curcpu;
+> +       static atomic_t drain_all_stocks = ATOMIC_INIT(-1);
+> 
+>         /* If someone's already draining, avoid adding running more workers. */
+> -       if (!mutex_trylock(&percpu_charge_mutex))
+> +       if (!atomic_inc_not_zero(&drain_all_stocks))
+>                 return;
 
-syzbot found the following issue on:
+It should work, but why not a simple atomic_cmpxchg(&drain_all_stocks, 0, 1) and
+initialize it to 0? Maybe it's just my preference, but IMO (0, 1) is easier
+to understand than (-1, 0) here. Not a strong opinion though, up to you.
 
-HEAD commit:    7e96bf476270 Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=158907b6300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=40eef000d7648480
-dashboard link: https://syzkaller.appspot.com/bug?extid=ef4bb06ce1e14f09f852
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1239e076300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112ea71a300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ef4bb06ce1e14f09f852@syzkaller.appspotmail.com
-
-INFO: task syz-executor761:8468 blocked for more than 143 seconds.
-      Not tainted 5.14.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor761 state:D stack:24312 pid: 8468 ppid:  8451 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4683 [inline]
- __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
- schedule+0xd3/0x270 kernel/sched/core.c:6019
- schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1855
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
- __flush_work+0x50e/0xad0 kernel/workqueue.c:3053
- __drain_all_pages+0x47d/0x6c0 mm/page_alloc.c:3255
- drain_all_pages mm/page_alloc.c:3269 [inline]
- __alloc_pages_direct_reclaim mm/page_alloc.c:4643 [inline]
- __alloc_pages_slowpath.constprop.0+0x8e5/0x21b0 mm/page_alloc.c:5033
- __alloc_pages+0x412/0x500 mm/page_alloc.c:5404
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
- __get_free_pages+0x8/0x40 mm/page_alloc.c:5428
- kasan_populate_vmalloc_pte mm/kasan/shadow.c:266 [inline]
- kasan_populate_vmalloc_pte+0x25/0x160 mm/kasan/shadow.c:257
- apply_to_pte_range mm/memory.c:2532 [inline]
- apply_to_pmd_range mm/memory.c:2576 [inline]
- apply_to_pud_range mm/memory.c:2612 [inline]
- apply_to_p4d_range mm/memory.c:2648 [inline]
- __apply_to_page_range+0x694/0x1080 mm/memory.c:2682
- alloc_vmap_area+0xb2d/0x1e30 mm/vmalloc.c:1530
- __get_vm_area_node.constprop.0+0x128/0x380 mm/vmalloc.c:2389
- __vmalloc_node_range+0x12e/0x960 mm/vmalloc.c:2956
- __bpf_map_area_alloc+0xd5/0x150 kernel/bpf/syscall.c:311
- array_map_alloc+0x285/0x710 kernel/bpf/arraymap.c:139
- prog_array_map_alloc+0x1a0/0x290 kernel/bpf/arraymap.c:1055
- find_and_alloc_map kernel/bpf/syscall.c:127 [inline]
- map_create kernel/bpf/syscall.c:833 [inline]
- __sys_bpf+0xbc3/0x53b0 kernel/bpf/syscall.c:4451
- __do_sys_bpf kernel/bpf/syscall.c:4573 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4571 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4571
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x445919
-RSP: 002b:00007fb397e31318 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004ca408 RCX: 0000000000445919
-RDX: 0000000000000040 RSI: 0000000020011fd4 RDI: 0000000000000000
-RBP: 00000000004ca400 R08: 00007fb397e31700 R09: 0000000000000000
-R10: 00007fb397e31700 R11: 0000000000000246 R12: 000000000049a074
-R13: 00007fff4a85ccaf R14: 00007fb397e31400 R15: 0000000000022000
-
-Showing all locks held in the system:
-3 locks held by kworker/0:1/7:
-2 locks held by kworker/1:1/26:
-1 lock held by khungtaskd/1634:
- #0: ffffffff8b97ba40 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
-1 lock held by khugepaged/1665:
- #0: ffffffff8ba5e6a8 (lock#6){+.+.}-{3:3}, at: __lru_add_drain_all+0x65/0x760 mm/swap.c:791
-1 lock held by in:imklog/8146:
- #0: ffff888029644ff0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:974
-1 lock held by syz-executor761/8468:
- #0: ffffffff8ba9d4e8 (pcpu_drain_mutex){+.+.}-{3:3}, at: __drain_all_pages+0x4f/0x6c0 mm/page_alloc.c:3204
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1634 Comm: khungtaskd Not tainted 5.14.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0xd0a/0xfc0 kernel/hung_task.c:295
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 26 Comm: kworker/1:1 Not tainted 5.14.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events prog_array_map_clear_deferred
-RIP: 0010:hlock_class kernel/locking/lockdep.c:199 [inline]
-RIP: 0010:lookup_chain_cache_add kernel/locking/lockdep.c:3701 [inline]
-RIP: 0010:validate_chain kernel/locking/lockdep.c:3757 [inline]
-RIP: 0010:__lock_acquire+0x1637/0x54a0 kernel/locking/lockdep.c:5015
-Code: 20 66 81 e3 ff 1f 0f b7 db be 08 00 00 00 48 89 d8 48 c1 f8 06 48 8d 3c c5 a0 28 cd 8f e8 c1 04 61 00 48 0f a3 1d 49 5e 72 0e <0f> 83 fe 02 00 00 48 bd eb 83 b5 80 46 86 c8 61 49 0f af ef 48 c1
-RSP: 0018:ffffc90000e0f8e8 EFLAGS: 00000047
-RAX: 0000000000000001 RBX: 0000000000000656 RCX: ffffffff815aca4f
-RDX: fffffbfff1f9a52e RSI: 0000000000000008 RDI: ffffffff8fcd2968
-RBP: ffff888011b3c2e2 R08: 0000000000000000 R09: ffffffff8fcd296f
-R10: fffffbfff1f9a52d R11: 0000000000000000 R12: ffff888011b3c2c0
-R13: ffff888011b3b880 R14: 0000000000000000 R15: 38d833c71a517839
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000236a2b8 CR3: 0000000036efe000 CR4: 0000000000350ee0
-Call Trace:
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __mutex_lock_common kernel/locking/mutex.c:959 [inline]
- __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
- fd_array_map_delete_elem+0x120/0x2e0 kernel/bpf/arraymap.c:801
- bpf_fd_array_map_clear kernel/bpf/arraymap.c:851 [inline]
- prog_array_map_clear_deferred+0x10b/0x1b0 kernel/bpf/arraymap.c:1030
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Thanks!
