@@ -2,113 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3463DEA6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A88E3DE9E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235317AbhHCKG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:06:58 -0400
-Received: from mga18.intel.com ([134.134.136.126]:56829 "EHLO mga18.intel.com"
+        id S235121AbhHCJos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:44:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235105AbhHCKFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:05:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="200836081"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="asc'?scan'208";a="200836081"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 03:05:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="asc'?scan'208";a="441111523"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Aug 2021 03:05:21 -0700
-Date:   Tue, 3 Aug 2021 17:43:15 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210803094315.GF13928@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210721155355.173183-1-hch@lst.de>
- <DM4PR11MB55496531B246A4604FC86998CAE49@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210722112636.wj277vqhg4dez5ug@sirius.home.kraxel.org>
- <20210727121224.GA2145868@nvidia.com>
- <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210728175925.GU1721383@nvidia.com>
- <20210729072022.GB31896@lst.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="tfmLD+Hxjexp/STe"
-Content-Disposition: inline
-In-Reply-To: <20210729072022.GB31896@lst.de>
+        id S235001AbhHCJor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 05:44:47 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E60C860F48;
+        Tue,  3 Aug 2021 09:44:36 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mAqyQ-002fQL-T6; Tue, 03 Aug 2021 10:44:35 +0100
+Date:   Tue, 03 Aug 2021 10:44:34 +0100
+Message-ID: <87im0m277h.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kevin Hilman <khilman@baylibre.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build as a module
+In-Reply-To: <7h7diwgjup.fsf@baylibre.com>
+References: <20201020072532.949137-1-narmstrong@baylibre.com>
+        <20201020072532.949137-2-narmstrong@baylibre.com>
+        <7hsga8kb8z.fsf@baylibre.com>
+        <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
+        <87r1hwwier.wl-maz@kernel.org>
+        <7h7diwgjup.fsf@baylibre.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: khilman@baylibre.com, lee.jones@linaro.org, narmstrong@baylibre.com, jbrunet@baylibre.com, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, saravanak@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 14 Jun 2021 23:30:22 +0100,
+Kevin Hilman <khilman@baylibre.com> wrote:
+> 
+> Marc Zyngier <maz@kernel.org> writes:
+> 
+> > On Fri, 21 May 2021 10:47:48 +0100,
+> > Lee Jones <lee.jones@linaro.org> wrote:
+> >> 
+> >> [1  <text/plain; UTF-8 (quoted-printable)>]
+> >> On Tue, 20 Oct 2020 at 19:23, Kevin Hilman <khilman@baylibre.com> wrote:
+> >> 
+> >> > Neil Armstrong <narmstrong@baylibre.com> writes:
+> >> >
+> >> > > In order to reduce the kernel Image size on multi-platform distributions,
+> >> > > make it possible to build the Amlogic GPIO IRQ controller as a module
+> >> > > by switching it to a platform driver.
+> >> > >
+> >> > > Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> >> >
+> >> > Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+> >> > Tested-by: Kevin Hilman <khilman@baylibre.com>
+> >> >
+> >> > Tested as a module on meson-sm1-khadas-vim3l where the wired networking
+> >> > uses GPIO IRQs.
+> >> >
+> >> 
+> >> Good morning Neil, Kevin,
+> >> 
+> >> What happened to this set in the end?  I still don't see it in Mainline.
+> >
+> > Last time I tried this patch, it broke my test setup in non-obvious
+> > ways. Has someone checked that the issue I reported back then has been
+> > resolved now that fw_devlink is more usable?
+> 
+> OK, after much anticipation (and much delay due to me forgetting about
+> this), I just gave this series a spin again on top of v5.13-rc6, and it
+> seems to work fine with `fw_devlink=on`
+> 
+> I started with your config[1] and accepting all the defaults of any new
+> configs.  IOW, I ran: yes '' | make oldconfig after copying your config
+> to .config.
+> 
+> With that it seems to be working fine for me.
+> 
+> Right after boot (and before network probes) I see module loaded, but no
+> users yet in /proc/interrupts:
+> 
+> / # uname -a
+> Linux buildroot 5.13.0-rc6-00002-g679c8e852942 #5 SMP PREEMPT Mon Jun 14 15:08:40 PDT 2021 aarch64 GNU/Linux
+> / # lsmod |grep gpio
+> irq_meson_gpio         20480  0
+> leds_gpio              16384  0
+> / # cat /proc/interrupts
+>            CPU0       CPU1       CPU2       CPU3
+>   9:          0          0          0          0     GICv2  25 Level     vgic
+>  11:          0          0          0          0     GICv2  30 Level     kvm guest ptimer
+>  12:          0          0          0          0     GICv2  27 Level     kvm guest vtimer
+>  13:       1416        916        534       1421     GICv2  26 Level     arch_timer
+>  15:          5          0          0          0     GICv2  89 Edge      dw_hdmi_top_irq, ff600000.hdmi-tx
+>  22:         38          0          0          0     GICv2 225 Edge      ttyAML0
+>  23:         20          0          0          0     GICv2 227 Edge      ff805000.i2c
+>  25:          2          0          0          0     GICv2 232 Edge      ff809000.adc
+>  28:        322          0          0          0     GICv2  35 Edge      meson
+>  31:          0          0          0          0     GICv2 222 Edge      ffe05000.sd
+>  32:        787          0          0          0     GICv2 223 Edge      ffe07000.mmc
+>  34:          0          0          0          0     GICv2 194 Level     panfrost-job
+>  35:          0          0          0          0     GICv2 193 Level     panfrost-mmu
+>  36:          3          0          0          0     GICv2 192 Level     panfrost-gpu
+>  39:          0          0          0          0     GICv2  63 Level     ff400000.usb, ff400000.usb
+>  40:         32          0          0          0     GICv2  62 Level     xhci-hcd:usb1
+> IPI0:       425        544        664        925       Rescheduling interrupts
+> IPI1:        86        166        269        136       Function call interrupts
+> IPI2:         0          0          0          0       CPU stop interrupts
+> IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
+> IPI4:         0          0          0          0       Timer broadcast interrupts
+> IPI5:         0          0          0          0       IRQ work interrupts
+> IPI6:         0          0          0          0       CPU wake-up interrupts
+> Err:          0
+> 
+> So then I init the network interface and PHY works, DHCP works etc.
+> 
+> / # udhcpc
+> udhcpc: started, v1.31.1
+> [  102.250449] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=37)
+> [  102.256413] meson8b-dwmac ff3f0000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+> [  102.269433] meson8b-dwmac ff3f0000.ethernet eth0: No Safety Features support found
+> [  102.271357] meson8b-dwmac ff3f0000.ethernet eth0: PTP not supported by HW
+> [  102.278493] meson8b-dwmac ff3f0000.ethernet eth0: configuring for phy/rgmii link mode
+> udhcpc: sending discover
+> [  104.743301] meson8b-dwmac ff3f0000.ethernet eth0: Link is Up - 100Mbps/Full - flow control rx/tx
+> [  104.746470] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+> udhcpc: sending discover
+> udhcpc: sending select for 192.168.0.122
+> udhcpc: lease of 192.168.0.122 obtained, lease time 600
+> deleting routers
+> adding dns 192.168.0.254
+> adding dns 192.168.0.254
+> / # cat /proc/interrupts
+>            CPU0       CPU1       CPU2       CPU3
+>   9:          0          0          0          0     GICv2  25 Level     vgic
+>  11:          0          0          0          0     GICv2  30 Level     kvm guest ptimer
+>  12:          0          0          0          0     GICv2  27 Level     kvm guest vtimer
+>  13:       1575       1018        604       1588     GICv2  26 Level     arch_timer
+>  14:          8          0          0          0     GICv2  40 Level     eth0
+>  15:          5          0          0          0     GICv2  89 Edge      dw_hdmi_top_irq, ff600000.hdmi-tx
+>  22:        132          0          0          0     GICv2 225 Edge      ttyAML0
+>  23:         20          0          0          0     GICv2 227 Edge      ff805000.i2c
+>  25:          2          0          0          0     GICv2 232 Edge      ff809000.adc
+>  28:        322          0          0          0     GICv2  35 Edge      meson
+>  31:          0          0          0          0     GICv2 222 Edge      ffe05000.sd
+>  32:        787          0          0          0     GICv2 223 Edge      ffe07000.mmc
+>  34:          0          0          0          0     GICv2 194 Level     panfrost-job
+>  35:          0          0          0          0     GICv2 193 Level     panfrost-mmu
+>  36:          3          0          0          0     GICv2 192 Level     panfrost-gpu
+>  37:          2          0          0          0  meson-gpio-irqchip  26 Level     0.0:00
+>  39:          0          0          0          0     GICv2  63 Level     ff400000.usb, ff400000.usb
+>  40:         32          0          0          0     GICv2  62 Level     xhci-hcd:usb1
+> IPI0:       476        567        720        956       Rescheduling interrupts
+> IPI1:        93        166        270        137       Function call interrupts
+> IPI2:         0          0          0          0       CPU stop interrupts
+> IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
+> IPI4:         0          0          0          0       Timer broadcast interrupts
+> IPI5:         0          0          0          0       IRQ work interrupts
+> IPI6:         0          0          0          0       CPU wake-up interrupts
+> Err:          0
+> / #
 
---tfmLD+Hxjexp/STe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This thing keeps failing on my end. It only works if I force the
+irqchip module to be present before the MDIO module is loaded. Here's
+an example:
 
-On 2021.07.29 09:20:22 +0200, Christoph Hellwig wrote:
-> On Wed, Jul 28, 2021 at 02:59:25PM -0300, Jason Gunthorpe wrote:
-> > On Wed, Jul 28, 2021 at 01:38:58PM +0000, Wang, Zhi A wrote:
-> >=20
-> > > I guess those APIs you were talking about are KVM-only. For other
-> > > hypervisors, e.g. Xen, ARCN cannot use the APIs you mentioned. Not
-> > > sure if you have already noticed that VFIO is KVM-only right now.
-> >=20
-> > There is very little hard connection between VFIO and KVM, so no, I
-> > don't think that is completely true.
->=20
-> The only connection is the SET_KVM notifier as far as I can tell.
-> Which is used by a total of two drivers, including i915/gvt.  That
-> being said gvt does not only use vfio, but also does quite a few
-> direct cals to KVM.
+root@tiger-roach:~# modprobe mdio_mux_meson_g12a
+[  125.871544] libphy: mdio_mux: probed
+[  125.882575] g12a-mdio_mux ff64c000.mdio-multiplexer: Error: Failed to register MDIO bus for child /soc/bus@ff600000/mdio-multiplexer@4c000/mdio@0
+[  125.892630] libphy: mdio_mux: probed
 
-yeah, we mostly combined VFIO into hypervisor specific thing before,
-e.g interface to set vgpu edid, etc. along with kvm specific calls.
+Trying to bring up the Ethernet interface will fail. Note that there
+was no attempt to load the irqchip driver.
 
->=20
-> > In an event, an in-tree version of other hypervisor support for GVT
-> > needs to go through enabling VFIO support so that the existing API
-> > multiplexers we have can be used properly, not adding a shim layer
-> > trying to recreate VFIO inside a GPU driver.
->=20
-> Yes.  And if we go back to actually looking at the series a lot of
-> it just removes entirely pointless indirect calls that go to generic
-> code and not even the kvm code, or questionable data structure designs.
-> If we were to support another upstream hypervisor we'd just need to
-> union a few fields in struct intel_gpu and maybe introduce a few
-> methods.  Preferably in a way that avoids expensive indirect calls
-> in the fast path.
+root@tiger-roach:~# modprobe -r mdio_mux_meson_g12a
+root@tiger-roach:~# modprobe irq-meson-gpio 
+[  144.983344] meson-gpio-intc ffd0f080.interrupt-controller: 100 to 8 gpio interrupt mux initialized
+root@tiger-roach:~# modprobe mdio_mux_meson_g12a
+[  150.376464] libphy: mdio_mux: probed
+[  150.391039] libphy: mdio_mux: probed
 
-ok, agree on that.
+And it now works.
 
-Acked-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+Is it a MDIO issue? a fw_devlink issue? No idea. But I'd really like
+to see this addressed before taking this patch, as everything works
+just fine as long as the irqchip is built in (which on its own could
+well pure luck).
 
-Thanks a lot for this effort!
+Saravana, could you please have a look from a fw_devlink perspective?
 
---tfmLD+Hxjexp/STe
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
+	M.
 
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYQkPqQAKCRCxBBozTXgY
-J28fAKCfkK2e0YsTNF5bkYm4ywfcUrVyUwCfTp2OmZlILsmRQlQHqq/BzcFaawY=
-=TyW6
------END PGP SIGNATURE-----
-
---tfmLD+Hxjexp/STe--
+-- 
+Without deviation from the norm, progress is not possible.
