@@ -2,134 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6BB3DF04F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FBA3DF055
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236448AbhHCObP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:31:15 -0400
-Received: from mail-bn8nam11on2042.outbound.protection.outlook.com ([40.107.236.42]:21408
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234683AbhHCObO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:31:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mvZ5+3zTWYL9o9AHQ4tUS32ytSfeh6oWIE90rN3JuuvEuThcRV+rOmU/HMRF58B/DrjcEoLTxcssrt3QVn7K5fpgGh4SVN1ZFmnwnxKW+sKbNnOZk9JWmMun2PGAs7tbD4ouwH2CKs6OyEZX9IOTXVNp4CVZo/alL/9LzbwMdPQYytuKdd6cBDKvrDie/t4VlljumiFEHH0F7XfXLD//T/z8eRfwHSNrzpjHz2GO2Wkrreybj3FHy78N7GzbrgEMLapl0KmsAzc4JkXPwfTLN6kEl8UCnUYsJMmOCN3Xk9Hx7PW0PoZyU4WB1NoXlY2uEUnWnUklvwsQ53j3hbLUMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k7xsv3+TkxLMjepkn413sgd7yHpbaXXQ+WbkxmPQw3c=;
- b=brnDOoG42jMtgvFjkC9Znv195D5MkEkuc4RUd9sXQ99bsmKjVPHweqnGJGDvQxP8sq1NtTxMzVqVEfHjR8p7hNnzd/NkIklMqDFot3WC3BT8rJ6cUBQ5Kbho5b0T7NKLYs5Bb3Ft8GghNNSoHk/scSXR0PAyQ8UOGOjFT5fyvBoAERUAacsZy8FVsHJvAgqcvq71d43KsrfacTj/FLRUzDqlestq3RL3RcPIKTSqNUlAVt20FZ2ZogaCHPd8oPr1bFrTWrWioHRpAzJGuTwTmfuM0Fr4o9HJgQMHDTtGHvidLqJaabwmWVGyUIZUL+b7koDeB27mKoLRE4Gff/75OA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k7xsv3+TkxLMjepkn413sgd7yHpbaXXQ+WbkxmPQw3c=;
- b=udUdASCDNFQ76jZYIAmDTitkvPVBk6VHvb+eEFw+zAD/QBuPVakbf01VJCeK3Bpym3GI/ucK/XpnV72Y2WgxCU84SY7ig9W+N9ZhEhNO1nxphAHuxEOyPmNIPjLPBkveJKzBa5Rrj05fLyY7fJXq5O8lrdWP95NvSOoYQLh4OBYNBzRYn6Xj16iFtK0TWFBybKLv0MsEhRl0SBKJun2DLDTLsDrJk+OCf64Ap7k9H0uIWUoLi+XIQZT68lZoU2++OcbZJa5ChEX9jKSZTp3wSNFzitFwwPF58Mv++OKaK1qD2KUCNS84rXye4p2AwQAfEl5Vxx6DS+qsQZTgFeniBQ==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5141.namprd12.prod.outlook.com (2603:10b6:208:309::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Tue, 3 Aug
- 2021 14:31:00 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
- 14:31:00 +0000
-Date:   Tue, 3 Aug 2021 11:30:58 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210803143058.GA1721383@nvidia.com>
-References: <20210721155355.173183-1-hch@lst.de>
- <DM4PR11MB55496531B246A4604FC86998CAE49@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210722112636.wj277vqhg4dez5ug@sirius.home.kraxel.org>
- <20210727121224.GA2145868@nvidia.com>
- <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210728175925.GU1721383@nvidia.com>
- <20210729072022.GB31896@lst.de>
- <20210803094315.GF13928@zhen-hp.sh.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803094315.GF13928@zhen-hp.sh.intel.com>
-X-ClientProxiedBy: BL0PR0102CA0045.prod.exchangelabs.com
- (2603:10b6:208:25::22) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S236518AbhHCOcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234683AbhHCOcb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 10:32:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71948C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=dICe99PNKdaCBWC/I/hc70xHtOGdVUaGzA6/fyx1sJ4=; b=p1SVWUtwKhGmckwRMxl7JSMG9j
+        MILC+HtsQxXnnBUMank9DEr9+6jbgGZB1c6gMoD0aWmS3Amin2Kuw0QREM802MCZsFGSYyz4+JZV3
+        wDeDf32CWRXV57FNtvQzcaQnt86hAiJ/+KAB1eCmmkdFMEQCQzZgywc8wOYoDf9qY2TuLliAT0zUg
+        UvEIlXrkjNoWndvGw7LqU8n44s7Yy6He6b/zkVQMDOh+53YZW83WWOgz/Bavsr97Z5s8becQnak/T
+        k+dTtQBL29QbdFgJdMsM5iMWjljgH4h3WuvnR9VOSj/r9qK3udBOyojb70ybgVyPYN49EGtFEHkTc
+        Uu804ldA==;
+Received: from [2601:1c0:6280:3f0:e65e:37ff:febd:ee53]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mAvRr-004loT-7U; Tue, 03 Aug 2021 14:31:25 +0000
+Subject: Re: [PATCH] trace/osnoise: Rename main variable to tracer_main
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+References: <fc62f7deb2258f6068d77c3e734633e3c3511464.1627977494.git.bristot@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b4cbe5a3-c76f-4fc0-4cf6-1d6ff729b971@infradead.org>
+Date:   Tue, 3 Aug 2021 07:31:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR0102CA0045.prod.exchangelabs.com (2603:10b6:208:25::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Tue, 3 Aug 2021 14:30:59 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mAvRa-00C4PZ-Qc; Tue, 03 Aug 2021 11:30:58 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 860f2e2b-6520-4ae4-33fb-08d9568b504e
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5141:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB51416ED2052D22053F5BF302C2F09@BL1PR12MB5141.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ACg18K7XEFTnE3BiAwOeUyVKukBrvpdhWA4W3H7ZF/OsafmTaeLxwFWR0eGot+/OpDWO06q5fIJrOuV6FYYu7yeb/y7SuhZToN0TflQWCmFFAuouYP+AUWQXGJRJnYUF/Ofl4mWQ8zgE3JG34yrLD3rhylD/DEfpP4qro4MZIEAKK+bjsHlHEu6PTAdq7oeJv/cqN2WR0E/tt5Kwxh8EFeUlmTGjzKaEGzmMdJPof+FuQHRJFtvcpGGQkniUVNNhHoXILlqgK5ltPTnZ9x4y3Pjda5sTiSKalln+3EV+dcZiVw97NkKJgZof7amvMvvRO/cbvvB/D3mpB6gtD1x8DbwRr8n18wp2WfQ1/clB3vDQU9XE7VVgTZfzCf38BuGZ7C92VXh0okaNZUkN5B/MvG+gCARKKpUuh8iueotb8b41oJl0kBLWe/it8wDGAribV6CDtlGM7ELvC6WUIjVztBCj2cK26Mb2RDb42fG4Dz0k/k8EJeVuwd2XPJd+LxuP/6MaHJIv25HmzTUWjvCCLxMatXlM6DBbLR9ssFI78qACQ/9vaCcT5Q1e5odErS+UMzf3FztxWjhO0RHkQXo9RTIN4+DQ4Hg2WmH1WKbYu9P6RUBfArkNUUPMfcvbFgNjgzHLFBDtkJYeTFjziT9Vzg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(426003)(36756003)(7416002)(38100700002)(66556008)(4326008)(66476007)(66946007)(6916009)(9786002)(4744005)(9746002)(1076003)(26005)(86362001)(2616005)(186003)(8936002)(316002)(508600001)(8676002)(5660300002)(54906003)(33656002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tCE/KqA9vIbiZC9Tc0CFeF7/0y3raSaQsMpZgZAYXXqxia9w0XySG9DDKqeP?=
- =?us-ascii?Q?pxRNS80YNQQmbCjJQDQnDA/8Dv4Ff4k7/t0EsoLcvZa9ohuvPLiQpmtD+cM4?=
- =?us-ascii?Q?RfLIxc5yIYvsYzpJTSw7GxNWW2IsGDI6j/sPDmZsPiPhJbvAqjn1Ydc2h741?=
- =?us-ascii?Q?bE/XrE3/H5S8NylaymxaBudTdqgBJR+saoWuedpNkjVs8XvYYpBoLzyCt5cl?=
- =?us-ascii?Q?tw3DwO9gQfM1/zCgoXx8UuMdAr6EFIBu6iVtvnfsS6kK8BcSzBIbKR76BrMo?=
- =?us-ascii?Q?y3rgIuI3b4Y8Fkqf3vFqr9vehYbmnKXv5RPINY/HpKCTy+2whaWJlVieDSNJ?=
- =?us-ascii?Q?h/23o5wA0TY5gZntR2n+S0013E9CoWXFlY3yioLuUnSdaYGaKw8/CsRVLrpS?=
- =?us-ascii?Q?xuUIigRFQNrv7XNdhUAeb9Y5liwTSz5Jm/EmjOUuC0zryScjT5DZncaPMmZu?=
- =?us-ascii?Q?kKNZN78JoPINC8CSw7p2HawY3f2qquRTUeN3kzhN53+dqRRLZ469pLStIled?=
- =?us-ascii?Q?yBxKlOG0AsGcDhmZLcAoBjWttjkGtWb16sXgxbwkuwdNZg5pwPvrKIrUoUR3?=
- =?us-ascii?Q?0Rd0aqSerq8j6ICToPSjH+qiMHaIXcqSos9IUkbi4hN+i8P3Gy0RnTvW4cw/?=
- =?us-ascii?Q?7zGu8YLposf6jURz+OgRuNS/ts9Wal9KhvjdQ/zZpZVlS0Yv+rCIAIJXSBYT?=
- =?us-ascii?Q?08DIHpyp+loH4uoRCoYwY5O78oI4julgyxKXfjSmHyvaChxQmTTVkiAKNMQI?=
- =?us-ascii?Q?udJPs9W4CJqIhENE2K5HeaSNlJT2ItUd/nEzRQR4UAWyBZqZmGItJTpNPqVV?=
- =?us-ascii?Q?pyBcfUTTMxz0uw6E/BKB53WXsZldi7E2mqLvjD3T/UaievAWWJX8wAEocBJ0?=
- =?us-ascii?Q?vALPp1+lkpqod5rGQE5ZTHIv2OcJbCxQ/0/MGJKtui0vKI0gHGh92l/i6MAF?=
- =?us-ascii?Q?u4WTKTkd6oL+A9zIO4xcvW9fGOxFrlMRXb00iQ6s/JhhqGzeHeWKUeaMoi6u?=
- =?us-ascii?Q?goV9KAh/qti+LemNoPlR/2ydzjOU2MOoKtRgkulZ//8YhxxolYIhbwXBgnyo?=
- =?us-ascii?Q?z7/RX/3Rn43/sakLtNI+Ccp9hzZX8td3H3hZEJYYIl7eqmuXib3ugKEAsX3l?=
- =?us-ascii?Q?g1kiX1TbOk/D1QsshtDC+2BzPXkGsE47XHfVWtTsPYUE8ZLJQzwHzYSOySFp?=
- =?us-ascii?Q?Xzj42ZhBFUDoRcNCH9RE1OMrKCuTcGLKnsVE+nw3/LB4VUVFqe4hMupU32tN?=
- =?us-ascii?Q?fwCpvoIKjhGLUJuBMtcnZU11hPYYuG6LbcNyn7s+qUjHgfWOuLtcCbBcpKV1?=
- =?us-ascii?Q?XeO6yxp/Q7+u3QK9tlpTGPlW?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 860f2e2b-6520-4ae4-33fb-08d9568b504e
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 14:31:00.5585
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UQevexVoQJXy53J6hxJlPcKmdJS3Y3se2BUL+wATiQn41SVJQSKM1n6p/+IdwlHU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5141
+In-Reply-To: <fc62f7deb2258f6068d77c3e734633e3c3511464.1627977494.git.bristot@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 05:43:15PM +0800, Zhenyu Wang wrote:
-> Acked-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+On 8/3/21 1:28 AM, Daniel Bristot de Oliveira wrote:
+> The *main variable in start_kthread() is causing warnings in some
+> compilers/analyzers. Although it is not necessarily a problem, it is
+> not a problem changing the variable name too.
 > 
-> Thanks a lot for this effort!
+> Rename the *main variable to *tracer_main.
+> 
+> No functional change.
+> 
+> Fixes: c8895e271f79 ("trace/osnoise: Support hotplug operations")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-Great, do we have a submission plan for this? how much does it clash
-with my open_device/etc patch? ie does the whole thing have to go
-through the vfio tree?
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Thanks,
-Jason
+Thanks.
+
+> ---
+>   kernel/trace/trace_osnoise.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+> index 0b11db9595b6..eda10d39da47 100644
+> --- a/kernel/trace/trace_osnoise.c
+> +++ b/kernel/trace/trace_osnoise.c
+> @@ -1576,20 +1576,20 @@ static void stop_per_cpu_kthreads(void)
+>   static int start_kthread(unsigned int cpu)
+>   {
+>   	struct task_struct *kthread;
+> -	void *main = osnoise_main;
+> +	void *tracer_main = osnoise_main;
+>   	char comm[24];
+>   
+>   #ifdef CONFIG_TIMERLAT_TRACER
+>   	if (osnoise_data.timerlat_tracer) {
+>   		snprintf(comm, 24, "timerlat/%d", cpu);
+> -		main = timerlat_main;
+> +		tracer_main = timerlat_main;
+>   	} else {
+>   		snprintf(comm, 24, "osnoise/%d", cpu);
+>   	}
+>   #else
+>   	snprintf(comm, 24, "osnoise/%d", cpu);
+>   #endif
+> -	kthread = kthread_create_on_cpu(main, NULL, cpu, comm);
+> +	kthread = kthread_create_on_cpu(tracer_main, NULL, cpu, comm);
+>   
+>   	if (IS_ERR(kthread)) {
+>   		pr_err(BANNER "could not start sampling thread\n");
+> 
+
+
+-- 
+~Randy
+
