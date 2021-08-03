@@ -2,160 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AB23DE8A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE953DE8AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbhHCIpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:45:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234505AbhHCIpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:45:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09D7760F8F;
-        Tue,  3 Aug 2021 08:44:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627980299;
-        bh=+1nVyVAj/NNgkLbpzO8reIcPIyQyBfRlkRgtI6IAXIg=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=da+wPGzp2qu/HjZIMJcsL1fpvRay3yPs5kqJNEsiI8itBVaFKI4bwTM/HWqXAjIPZ
-         2cYoS800nB82V/MjZfpyg+eEU64jen9/PKji97pOM61SxB1N3oJ+uYVF7hfvDPBBw7
-         Cjnr/mA9vEtLIrHZS8l9EJuevXCyJb8LDpWfILoXB6dXMzQQOFS5C4d9ssO6jJevLl
-         feZLq2NTPpg3sW9++PrL2zwXdbznd3DhRmMMLr4rqi503suq75kOBhHd2owPci99fu
-         BL1ToKZ1WD058Zg5EMluOHfTGzKwtDwlVbcBDX/NFaVMarPO+AuIT2cz+hKhHleU7n
-         MFyzosYo/WRKQ==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <53360f31-2b3e-f2ed-d894-538d2215d6c5@codeaurora.org>
-References: <20210728180209.14764-1-collinsd@codeaurora.org> <162771961962.714452.2347964437306072737@swboyd.mtv.corp.google.com> <53360f31-2b3e-f2ed-d894-538d2215d6c5@codeaurora.org>
-Subject: Re: [RESEND PATCH] spmi: spmi-pmic-arb: fix irq_set_type race condition
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        id S234663AbhHCIqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:46:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51544 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234573AbhHCIqD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:46:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627980352;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iANhlztARO325R7WvNzYfBHyV3Zp037KAmbrWxgTFzY=;
+        b=VbONNOApG4cxHioKOGtgNNneRxg6hkJaZwWI16N4MOVVYzuFC9CYo//jPJKf8z3tX20iRK
+        55E7MUhGc3iTcQLLB8jRLuY/Aafg3Ep8d1W2rqBaje6eIzgjSjBQ4h4q3jHyiw7n17pKk7
+        WJ7y3FzsHb/EgH9U8YcfE00NpYxA0Qw=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-375-OEqxTVlkP3uPEi-_DNbMSg-1; Tue, 03 Aug 2021 04:45:51 -0400
+X-MC-Unique: OEqxTVlkP3uPEi-_DNbMSg-1
+Received: by mail-ej1-f70.google.com with SMTP id k22-20020a1709061596b02905a370b2f477so743650ejd.17
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 01:45:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iANhlztARO325R7WvNzYfBHyV3Zp037KAmbrWxgTFzY=;
+        b=WcrRlIedN4Bs6HSOW4znpShFjrgbQKzvxd4rRtcKLZbuO9jNYnrrL8XPDt5wE4fK9F
+         EDJKxkIamE/ulksWVDg1JMp8vSerp2Jtx/iXxJNSdZOgWUSwbpvqr3lNBFL8zJ6Kgevg
+         vooSpIJcPuf81WqpWYChqGqAIAihI9CoUEzsd6CbWzXLm3VACeKUS3KM538g3VtAxJMV
+         ENN55cbo8tnrJYmBR1qgCIf7eNYiVSJD0G2NuRfUEidQ3PJjmBSbYxg7oJ3va9CTl8UF
+         8tuR8fa3fCtgpkQJGCs6/xWEL9mG/+eNtXjwMGq/VSs1BYomqqYTSXbVUUnpzUBhk9zF
+         9Ujg==
+X-Gm-Message-State: AOAM531eB52Rsgx/pbt4/qd/nlsJs/egHE7t9/VnQSrZAtfDpUFG2AiP
+        iSbWx35rZATK7hFg98hdBnSWz3KgDLS9avIlzYCww4ebiPD8bXSFAwY3PxCFOXMwnQG5mPhtH04
+        t2yvWJLJ5gYCs0RPXCmN3dAUV
+X-Received: by 2002:a50:da0e:: with SMTP id z14mr24713990edj.73.1627980350569;
+        Tue, 03 Aug 2021 01:45:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzCkagRcMhtmbJrZjOBeLVemJvXcgugb6f910OjikZKE8IYSVHjybA/5Uwzx7kONUFePHtjvw==
+X-Received: by 2002:a50:da0e:: with SMTP id z14mr24713980edj.73.1627980350441;
+        Tue, 03 Aug 2021 01:45:50 -0700 (PDT)
+Received: from [192.168.10.118] ([93.56.169.140])
+        by smtp.gmail.com with ESMTPSA id dn18sm7776486edb.42.2021.08.03.01.45.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 01:45:49 -0700 (PDT)
+Subject: Re: [PATCH v3 08/12] KVM: SVM: add warning for mistmatch between AVIC
+ state and AVIC access page state
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-To:     David Collins <collinsd@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 03 Aug 2021 01:44:57 -0700
-Message-ID: <162798029780.3896750.11640439486576896470@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20210802183329.2309921-1-mlevitsk@redhat.com>
+ <20210802183329.2309921-9-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ded9040c-a841-319f-0147-92e6fd6264cc@redhat.com>
+Date:   Tue, 3 Aug 2021 10:45:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210802183329.2309921-9-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting David Collins (2021-08-02 18:37:46)
-> On 7/31/21 1:20 AM, Stephen Boyd wrote:
-> >=20
-> > Could we have a qpnpint_spmi_set_bit/clear_bit() API that takes the bit
-> > we want to touch as an argument and then does it all under the originial
-> > pmic_arb->lock? Then we don't need a different lock, we can avoid that
-> > drop the lock under the else if condition above, and the area for the
-> > lock will be contained within the set/clear function instead of here.
->=20
-> pmic_arb->lock is currently used tightly around the code in the SPMI bus =
+On 02/08/21 20:33, Maxim Levitsky wrote:
+>   
+> +	WARN_ON_ONCE(vcpu->kvm->arch.apic_access_memslot_enabled !=
+> +		     kvm_vcpu_apicv_active(vcpu));
 
-> callback functions which write to SPMI PMIC arbiter registers to trigger =
+This should also check !vcpu->kvm->arch.apicv_inhibit_reasons instead of 
+apic_access_memslot_enabled.
 
-> an SPMI transaction, poll in a loop to wait for completion, and read any =
+Paolo
 
-> command results.  Each of these uses correspond to a command defined in=20
-> the MIPI SPMI spec.  There is no read-modify-write command in the spec.
->=20
-> Thus, implementing qpnpint_spmi_set_bit/clear_bit() functions would=20
-> require an approach like one of these:
->=20
-> 1. Removing the locking from pmic_arb_read_cmd() and pmic_arb_write_cmd()=
-,=20
-> defining new wrapper functions around them to just contain the locking,=20
-> and adding a read-modify-write wrapper function that locks and calls both=
-=20
-> pmic_arb_read_cmd() and pmic_arb_write_cmd().
->=20
-> 2. Or, create a new function that duplicates the contents of both=20
-> pmic_arb_read_cmd() and pmic_arb_write_cmd(), allowing it to issue two=20
-> SPMI bus commands with pmic_arb->lock held.
->=20
-> Option #1 seems like it would result in less clear and messy code than is=
-=20
-> currently present.  It would also have a minor performance impact during =
-
-> simultaneous SPMI requests due to non-contentious checks, address look-up=
-s=20
-> and command formatting unnecessarily waiting for lock acquisition.
-
-Sorry I don't get it. Does pmic_arb_read_cmd() no longer do any locking
-after this change? I was thinking there would be=20
-
-	pmic_arb_read_cmd_unlocked()
-
-	pmic_arb_read_cmd()
-	 take lock
-	 pmic_arb_read_cmd_unlocked()
-	 release lock
-
-        pmic_arb_write_cmd_unlocked()
-
-	pmic_arb_write_cmd()
-	 take lock
-	 pmic_arb_write_cmd_unlocked()
-	 release lock
-
-	pmic_arb_read_modify_write()
-	 take lock
-	 pmic_arb_read_cmd_unlocked()
-	 do bit twiddle
-	 pmic_arb_write_cmd_unlocked()
-	 release lock
-
-but if the formatting is intensive then it could also be extracted to
-another function
-
-	pmic_arb_fmt_read_cmd()
-
-	pmic_arb_read_cmd_unlocked()
-
-	pmic_arb_read_cmd()
-	 pmic_arb_fmt_read_cmd()
-	 take lock
-	 pmic_arb_read_cmd_unlocked()
-	 release lock
-
-	pmic_arb_fmt_write_cmd()
-
-        pmic_arb_write_cmd_unlocked()
-
-	pmic_arb_write_cmd()
-	 pmic_arb_fmt_write_cmd()
-	 take lock
-	 pmic_arb_write_cmd_unlocked()
-	 release lock
-
-	pmic_arb_read_modify_write()
-	 r =3D pmic_arb_fmt_read_cmd()
-	 w =3D pmic_arb_fmt_write_cmd()
-	 take lock
-	 pmic_arb_read_cmd_unlocked(r)
-	 r &=3D w
-	 pmic_arb_write_cmd_unlocked(w)
-	 release lock
-
->=20
-> Option #2 would likely be less messy than option #1; however, it results =
-
-> in duplication of low-level code which is undesirable.
->=20
-> I prefer the approach used in this patch as it doesn't disrupt the=20
-> architecture of the SPMI bus and PMIC IRQ functions.  However, I'm willin=
-g=20
-> to switch to your suggestion if you think it is a better design and=20
-> cleaner/clearer solution.  Please let me know your thoughts.  Would you=20
-> want option #1, #2, or something else?
->=20
-
-It would probably become a huge patch which isn't great, but it would
-focus the critical section to the thing that actually matters. This is
-irq code so maybe we should write it in a way that keeps the spinlock as
-tight as possible. It looks like the current spinlock is placed tightly
-for this purpose, but then we use function pointers to format the
-message and wait, which isn't good for straight line code.
