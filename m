@@ -2,295 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DA03DF3EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22513DF3F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238213AbhHCR2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
+        id S238228AbhHCR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237938AbhHCR2J (ORCPT
+        with ESMTP id S238204AbhHCR35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:28:09 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C9FC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 10:27:57 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id p145so20393864ybg.6
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 10:27:57 -0700 (PDT)
+        Tue, 3 Aug 2021 13:29:57 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB66C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 10:29:45 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id k4-20020a17090a5144b02901731c776526so4855643pjm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 10:29:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tTZ5g4GTILsDQHp1eqPRFqPGKzM3iGG8XzvZFkbQn5Q=;
-        b=Q2WtkHAqT08j9j6JZNFmzJDazhybSJWhcsPGUi93jChlAh7Ooo/2WM/Wagoul/9Nl0
-         Y+kU5GD/nFBQ4T5SPxSvqmnXMmhvTTp3EaP3e89PAQkKwV66ajjGdizUmux4142dQqxR
-         BU7E0KbviB2lKuItNBO9ITKSEBuNXA0f83J07AJxgGXFXVDQ2FeES+ydhEnE67NdTR48
-         iMe8SZwe0c0Wc6RFTlxHCS7TCO/IvG07Npz0znwrjnhhxsHhZxUdaNROpbTbkmjKhAk8
-         lGcptZtMb69rNGTYsyY7wEdqJf/qcrp+gRRGAL9+aMIrACMSwlbky78bIaiDZj9BMG48
-         4ycg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Pm6SXOly+uNnAByxJnoAewZoxTAQStsO1EpbLNKxcWA=;
+        b=E7bH5OpRyrGcvLDuarlwVod9a4qZK971yFXYN3jywsvL3bwfys8jQJdhfliJeOod1a
+         nf8z/EYuc6xGtfGonTxoN7abw3WzVS+2pkUCRg1dr8L9CUTY5rMU7YE6o7MLbS5nhFWb
+         aZv6+QB+5H8PFGCqMHVCI4DlxaWA8QpYN0faM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tTZ5g4GTILsDQHp1eqPRFqPGKzM3iGG8XzvZFkbQn5Q=;
-        b=dd0pNOe32TfE4vTHjq9+OMDno/v5KX2dkdF2hM2abT6YMR4+cU75VCdFPeTYTsfDqn
-         ppDwe9Uz4CSoLf1Z4yph1IjtXYqI24vv/k4nuX/uHPWj4Z3ZHGcm7fhNSj/XfXJqjViS
-         OrBOmM1sfyiwtGSPkbQnGkMZV80jL8MLweng2QYihAlzDhET6qRVNTS+f5AQL+iCCZp5
-         uq3R4KOZmV8WukSCqCUbO3KL1/R44DptFMDekf9Lbt+MbMRinJWtdrQMg5kV7KClMAR3
-         CTeljiBdzOMyob6mh0DV06HO0j9nu9H5guGPV5gWjQGIM59rWiE68KQLYfLl1J+hV5id
-         seLQ==
-X-Gm-Message-State: AOAM532cIdgW+E9QHltXxhYr+H4KFZZB28CoeyvNlzP1otcmKbPE5OQ7
-        kONn09JeXQPaI6WLp0vrGYVOlroMgI+6LA+wd3+q7g==
-X-Google-Smtp-Source: ABdhPJzQyiU4rreG5VZBo/3+o/Cqn4zQ4RIZdZLrfNJKLQ/gBgJysO57Kkp1iRQQ1WakNnYBMblrGG3vb9gVi120A4w=
-X-Received: by 2002:a25:bc2:: with SMTP id 185mr28865645ybl.23.1628011676754;
- Tue, 03 Aug 2021 10:27:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Pm6SXOly+uNnAByxJnoAewZoxTAQStsO1EpbLNKxcWA=;
+        b=M15ENp9+huha9X1JuPN5bZz3IRDokZWbgkSUZobvoIY15NwOvs8fG6rHPWmCO3jnjQ
+         lxFfNUHVa5V8qVmRKaaiTqI5OV4Xc6LDj3qpUbmrG24s5fxOAc/8z6tw4wPlf6utPlIE
+         TNPmP+wPOY1ISh1Wj8OuWo78vQN0qg9W8GOjRTqEX22AVepEmzt7Tk4SIEoDokCOOKSd
+         FuiQLHFqrZLo0WVQpUSJ9X0aep64RUH/uKyNgAA7SFDu86g4uCKb82lVG84/md1UkJWN
+         skRwDXMkg9Swuq9jSIuICTMro/fp94uuQ55nMPy4yAPmfVou9zYnuUnOL2LfrJSyW3TD
+         wCbA==
+X-Gm-Message-State: AOAM532OKzjh99RsYw7vQMP8DFmjKkE8UArrCIIk9GAsAA18bsST4iV7
+        YVLyJx/DFlXMzvISX/pzvF/hNg==
+X-Google-Smtp-Source: ABdhPJxbn/yOiPbJAb/r7lTVk1pSFtqRW0v2kpPoxNyyjUyTZIn2w8eH5FzN/HLuFp3pjn71dfQylQ==
+X-Received: by 2002:a17:90a:784e:: with SMTP id y14mr7567732pjl.185.1628011784627;
+        Tue, 03 Aug 2021 10:29:44 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:8875:fb28:686e:1c31])
+        by smtp.gmail.com with ESMTPSA id 98sm14736030pjo.26.2021.08.03.10.29.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 10:29:44 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 10:29:43 -0700
+From:   Prashant Malani <pmalani@chromium.org>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Use existing feature
+ check
+Message-ID: <YQl9B2FKb6rKHq3Z@google.com>
+References: <20210802184711.3872372-1-pmalani@chromium.org>
+ <20210802184711.3872372-2-pmalani@chromium.org>
+ <81610a2b-aa3f-f8d7-5214-e59a7ce839d6@collabora.com>
 MIME-Version: 1.0
-References: <20210802221431.2251210-1-surenb@google.com> <YQkAqwZIF+AnpexA@dhcp22.suse.cz>
-In-Reply-To: <YQkAqwZIF+AnpexA@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 3 Aug 2021 10:27:45 -0700
-Message-ID: <CAJuCfpGiYAdvOydimHbK73oKS-ZfMMBtADXxWCYpxkX2qJX08g@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] mm: introduce process_mrelease system call
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81610a2b-aa3f-f8d7-5214-e59a7ce839d6@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 1:39 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 02-08-21 15:14:30, Suren Baghdasaryan wrote:
-> > In modern systems it's not unusual to have a system component monitoring
-> > memory conditions of the system and tasked with keeping system memory
-> > pressure under control. One way to accomplish that is to kill
-> > non-essential processes to free up memory for more important ones.
-> > Examples of this are Facebook's OOM killer daemon called oomd and
-> > Android's low memory killer daemon called lmkd.
-> > For such system component it's important to be able to free memory
-> > quickly and efficiently. Unfortunately the time process takes to free
-> > up its memory after receiving a SIGKILL might vary based on the state
-> > of the process (uninterruptible sleep), size and OPP level of the core
-> > the process is running. A mechanism to free resources of the target
-> > process in a more predictable way would improve system's ability to
-> > control its memory pressure.
-> > Introduce process_mrelease system call that releases memory of a dying
-> > process from the context of the caller. This way the memory is freed in
-> > a more controllable way with CPU affinity and priority of the caller.
-> > The workload of freeing the memory will also be charged to the caller.
-> > The operation is allowed only on a dying process.
-> >
-> > Previously I proposed a number of alternatives to accomplish this:
-> > - https://lore.kernel.org/patchwork/patch/1060407 extending
->
-> Please use the msg-id based urls https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
+Hi Enric,
 
-Will do. Thanks!
+Thanks for reviewing the patch.
 
->
-> > pidfd_send_signal to allow memory reaping using oom_reaper thread;
-> > - https://lore.kernel.org/patchwork/patch/1338196 extending
->
-> https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
->
-> > pidfd_send_signal to reap memory of the target process synchronously from
-> > the context of the caller;
-> > - https://lore.kernel.org/patchwork/patch/1344419/ to add MADV_DONTNEED
-> > support for process_madvise implementing synchronous memory reaping.
->
-> https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
->
-> > The end of the last discussion culminated with suggestion to introduce a
-> > dedicated system call (https://lore.kernel.org/patchwork/patch/1344418/#1553875)
->
-> https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
->
-> > The reasoning was that the new variant of process_madvise
-> >   a) does not work on an address range
-> >   b) is destructive
-> >   c) doesn't share much code at all with the rest of process_madvise
-> > >From the userspace point of view it was awkward and inconvenient to provide
-> > memory range for this operation that operates on the entire address space.
-> > Using special flags or address values to specify the entire address space
-> > was too hacky.
-> >
-> > The API is as follows,
-> >
-> >           int process_mrelease(int pidfd, unsigned int flags);
-> >
-> >         DESCRIPTION
-> >           The process_mrelease() system call is used to free the memory of
-> >           a process which was sent a SIGKILL signal.
->
-> This is not really precise. The implementation will allow to use the
-> syscall on any exiting or fatal signal received process. Not just those
-> that have been SIGKILLed, right? For the purpose of the man page I would
-> go with exiting process for the wording.
-
-Ack.
-
->
-> >           The pidfd selects the process referred to by the PID file
-> >           descriptor.
-> >           (See pidofd_open(2) for further information)
-> >
-> >           The flags argument is reserved for future use; currently, this
-> >           argument must be specified as 0.
-> >
-> >         RETURN VALUE
-> >           On success, process_mrelease() returns 0. On error, -1 is
-> >           returned and errno is set to indicate the error.
-> >
-> >         ERRORS
-> >           EBADF  pidfd is not a valid PID file descriptor.
-> >
-> >           EAGAIN Failed to release part of the address space.
-> >
-> >           EINTR  The call was interrupted by a signal; see signal(7).
-> >
-> >           EINVAL flags is not 0.
-> >
-> >           EINVAL The task does not have a pending SIGKILL or its memory is
-> >                  shared with another process with no pending SIGKILL.
->
-> again, wording here. I would go with
->             EINVAL The memory of the task cannot be released because the
->                    process is not exiting, the address space is shared
->                    with an alive process or there is a core dump is in
->                    progress..
-
-Ack.
-
-> >
-> >           ENOSYS This system call is not supported by kernels built with no
-> >                  MMU support (CONFIG_MMU=n).
-> >
-> >           ESRCH  The target process does not exist (i.e., it has terminated
-> >                  and been waited on).
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+On Tue, Aug 03, 2021 at 12:09:47PM +0200, Enric Balletbo i Serra wrote:
+> Hi Prashant,
+> 
+> Thank you for your patch.
+> 
+> On 2/8/21 20:47, Prashant Malani wrote:
+> > Replace the cros_typec_feature_supported() function with the
+> > pre-existing cros_ec_check_features() function which does the same
+> > thing.
+> > 
+> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
 > > ---
-> > changes in v4:
-> > - Replaced mmap_read_lock() with mmap_read_lock_killable(), per Michal Hocko
-> > - Added EINTR error in the manual pages documentation
-> >
-> >  mm/oom_kill.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 58 insertions(+)
-> >
-> > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> > index c729a4c4a1ac..86727794b0a8 100644
-> > --- a/mm/oom_kill.c
-> > +++ b/mm/oom_kill.c
-> > @@ -28,6 +28,7 @@
-> >  #include <linux/sched/task.h>
-> >  #include <linux/sched/debug.h>
-> >  #include <linux/swap.h>
-> > +#include <linux/syscalls.h>
-> >  #include <linux/timex.h>
-> >  #include <linux/jiffies.h>
-> >  #include <linux/cpuset.h>
-> > @@ -1141,3 +1142,60 @@ void pagefault_out_of_memory(void)
-> >       out_of_memory(&oc);
-> >       mutex_unlock(&oom_lock);
+> >  drivers/platform/chrome/cros_ec_typec.c | 33 +++++++++----------------
+> >  1 file changed, 11 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> > index 27c068c4c38d..f96af8aa31b5 100644
+> > --- a/drivers/platform/chrome/cros_ec_typec.c
+> > +++ b/drivers/platform/chrome/cros_ec_typec.c
+> > @@ -1054,24 +1054,6 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+> >  	return 0;
 > >  }
-> > +
-> > +SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
-> > +{
-> > +#ifdef CONFIG_MMU
-> > +     struct mm_struct *mm = NULL;
-> > +     struct task_struct *task;
-> > +     unsigned int f_flags;
-> > +     struct pid *pid;
-> > +     long ret = 0;
-> > +
-> > +     if (flags != 0)
-> > +             return -EINVAL;
-> > +
-> > +     pid = pidfd_get_pid(pidfd, &f_flags);
-> > +     if (IS_ERR(pid))
-> > +             return PTR_ERR(pid);
-> > +
-> > +     task = get_pid_task(pid, PIDTYPE_PID);
-> > +     if (!task) {
-> > +             ret = -ESRCH;
-> > +             goto put_pid;
-> > +     }
-> > +
-> > +     /*
-> > +      * If the task is dying and in the process of releasing its memory
-> > +      * then get its mm.
-> > +      */
-> > +     task_lock(task);
->
-> Don't we need find_lock_task_mm here?
+> >  
+> > -/* Check the EC feature flags to see if TYPEC_* features are supported. */
+> > -static int cros_typec_feature_supported(struct cros_typec_data *typec, enum ec_feature_code feature)
+> > -{
+> > -	struct ec_response_get_features resp = {};
+> > -	int ret;
+> > -
+> > -	ret = cros_typec_ec_command(typec, 0, EC_CMD_GET_FEATURES, NULL, 0,
+> > -				    &resp, sizeof(resp));
+> > -	if (ret < 0) {
+> > -		dev_warn(typec->dev,
+> > -			 "Failed to get features, assuming typec feature=%d unsupported.\n",
+> > -			 feature);
+> > -		return 0;
+> > -	}
+> > -
+> > -	return resp.flags[feature / 32] & EC_FEATURE_MASK_1(feature);
+> > -}
+> > -
+> >  static void cros_typec_port_work(struct work_struct *work)
+> >  {
+> >  	struct cros_typec_data *typec = container_of(work, struct cros_typec_data, port_work);
+> > @@ -1113,6 +1095,7 @@ MODULE_DEVICE_TABLE(of, cros_typec_of_match);
+> >  
+> >  static int cros_typec_probe(struct platform_device *pdev)
+> >  {
+> > +	struct cros_ec_dev *ec_dev = NULL;
+> >  	struct device *dev = &pdev->dev;
+> >  	struct cros_typec_data *typec;
+> >  	struct ec_response_usb_pd_ports resp;
+> > @@ -1132,10 +1115,16 @@ static int cros_typec_probe(struct platform_device *pdev)
+> >  		return ret;
+> >  	}
+> >  
+> > -	typec->typec_cmd_supported = !!cros_typec_feature_supported(typec,
+> > -					EC_FEATURE_TYPEC_CMD);
+> > -	typec->needs_mux_ack = !!cros_typec_feature_supported(typec,
+> > -					EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK);
+> > +	if (typec->ec->ec)
+> 
+> Is this check really needed. Can typec->ec->ec be NULL at this point?
 
-Yes, we do. Will fix in the next rev.
+Looking at it closely, it looks like it can't be NULL
+(cros_ec_register() fails if the platform device registration fails).
 
->
-> > +     if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
-> > +             mm = task->mm;
-> > +             mmget(mm);
-> > +     }
-> > +     task_unlock(task);
-> > +     if (!mm) {
->
-> Do we want to treat MMF_OOM_SKIP as a failure?
-
-Yeah, I don't think we want to create additional contention if
-oom-killer is already working on this mm. Should we return EBUSY in
-this case? Other possible options is ESRCH, indicating that this
-process is a goner, so don't bother. WDYT?
-
->
-> > +             ret = -EINVAL;
-> > +             goto put_task;
-> > +     }
+> 
+> > +		ec_dev = dev_get_drvdata(&typec->ec->ec->dev);
 > > +
-> > +     if (mmap_read_lock_killable(mm)) {
-> > +             ret = -EINTR;
-> > +             goto put_mm;
-> > +     }
-> > +     if (!__oom_reap_task_mm(mm))
-> > +             ret = -EAGAIN;
-> > +     mmap_read_unlock(mm);
-> > +
-> > +put_mm:
-> > +     mmput(mm);
-> > +put_task:
-> > +     put_task_struct(task);
-> > +put_pid:
-> > +     put_pid(pid);
-> > +     return ret;
-> > +#else
-> > +     return -ENOSYS;
-> > +#endif /* CONFIG_MMU */
-> > +}
-> > --
-> > 2.32.0.554.ge1b32706d8-goog
->
+> > +	if (ec_dev) {
+> 
+> and this?
 
-Thanks for the review!
+I haven't been able to prove this solely by looking at the code, hence
+wanted to be defensive here. That said, in the ARM and x86 platforms I
+tested this change on, it wasn't NULL.
 
-> --
-> Michal Hocko
-> SUSE Labs
+> 
+> > +		typec->typec_cmd_supported = !!cros_ec_check_features(ec_dev, EC_FEATURE_TYPEC_CMD);
+> > +		typec->needs_mux_ack = !!cros_ec_check_features(ec_dev,
+> > +							EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK);
+> > +	} else {
+> 
+> and this?
+> 
+> > +		dev_warn(dev, "Invalid cros_ec_dev pointer; feature flags not checked.\n");
+> 
+> Can't just be
+> 
+> 		typec->typec_cmd_supported = !!cros_ec_check_features(ec_dev,
+> EC_FEATURE_TYPEC_CMD);
+> 		typec->needs_mux_ack = !!cros_ec_check_features(ec_dev,
+> EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK);
+
+Sure; I'll push another version with the NULL checks dropped.
+
+Thanks,
+
+-Prashant
