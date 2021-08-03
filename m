@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FACE3DF89B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9210D3DF89D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234127AbhHCXoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 19:44:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233439AbhHCXoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 19:44:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49D5D60F9C;
-        Tue,  3 Aug 2021 23:43:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628034232;
-        bh=4z03omJaLgEjwC4YtIY4xE/e1z7gR6ZrX+WOvvye++0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IsGrhAwhwIGFJ3XRHyDKBzJeP7FNjYsv92rXJHNs2o0S0tJNCxifTwJp03/Kf1V0c
-         zdw2dp2AHtU40wdEnctO4AWiF5HHQnkJHfM2wJIHosIQIXY/d73NuEzhjDCvbZ0ORf
-         e0aPH0rBX5wKlsXr/dpqDOPHr5sdzQoGqdeTAtF887SbBRL8aIQ8kRbcSvYx8uAYGI
-         S3thl3MAZLxbJ/pQF3j0KpHer3VFuXkdUrvB+jYBVhacilldnIoyZ8MuNy8FWXBAGl
-         vC8+5vAhL7G/cktM2NuEeflkbB3KkZzBEwRd9mvwqXZ1Rl/Ctx45w53lfcJ8ZFNbH6
-         DLbCCUYljCZ1w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2179E5C04D4; Tue,  3 Aug 2021 16:43:52 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 16:43:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        linux-rt-users@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 1/2] rcutorture: Don't disable softirqs with preemption
- disabled when PREEMPT_RT
-Message-ID: <20210803234352.GX4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210803225437.3612591-1-valentin.schneider@arm.com>
- <20210803225437.3612591-2-valentin.schneider@arm.com>
+        id S234359AbhHCXqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 19:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229684AbhHCXqB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 19:46:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B74DC061757;
+        Tue,  3 Aug 2021 16:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=R0mXLW7elc+6/8EYD+RaHlxlUIP9yA2E2gi6qXvCjps=; b=VvdwOQuBLG6gU0rq7rgnWVjuVR
+        r+3I66UDKo7qfQOHTAT/yLBnDqux/PG5BF5WL3YCcy0aZimfXHqFm19RSZWK6rzKxtguvd2bY+5oI
+        JydgNzsNFpnPQrn5wY49pVgksCZtA0c2hZftav3GTRxAarnq+xCYGIQOy6dMQQfeLPZ7d2eCt2iP0
+        UJVkn9HXvP495VzpEbwfHHJ5AtBGIWOWSjYDbpnA3YlvwE8n+zQk3Vt6LWLX9mBRiO17NGKNVrlMx
+        2lAwy3cBxRpoFIctshkcDjnFfcnE3pqwHOzrHHF8pMOgOdmYu6vfEfAu2I1IX8JUiuXa2hkmzJkOB
+        9+XOM2oA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mB45O-005DCZ-Bg; Tue, 03 Aug 2021 23:44:50 +0000
+Date:   Wed, 4 Aug 2021 00:44:38 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        zajec5@gmail.com, "Darrick J. Wong" <djwong@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
+Message-ID: <YQnU5m/ur+0D5MfJ@casper.infradead.org>
+References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
+ <20210716114635.14797-1-papadakospan@gmail.com>
+ <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
+ <YQnHxIU+EAAxIjZA@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803225437.3612591-2-valentin.schneider@arm.com>
+In-Reply-To: <YQnHxIU+EAAxIjZA@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 11:54:36PM +0100, Valentin Schneider wrote:
-> Running RCU torture with CONFIG_PREEMPT_RT under v5.13-rt1 triggers:
-> 
-> [   10.821700] DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt))
-> [   10.821716] WARNING: CPU: 5 PID: 137 at kernel/softirq.c:173 __local_bh_disable_ip (kernel/softirq.c:173 (discriminator 31))
-> [   10.821739] Modules linked in:
-> [   10.821749] CPU: 5 PID: 137 Comm: rcu_torture_rea Not tainted 5.13.0-rt1-00005-g08bbda29766a #129
-> [   10.821759] Hardware name: ARM Juno development board (r0) (DT)
-> [   10.821765] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-> [   10.821938] Call trace:
-> [   10.821941] __local_bh_disable_ip (kernel/softirq.c:173 (discriminator 31))
-> [   10.821950] rcutorture_one_extend (./include/linux/rcupdate.h:274 ./include/linux/rcupdate.h:737 kernel/rcu/rcutorture.c:1443)
-> [   10.821960] rcu_torture_one_read (kernel/rcu/rcutorture.c:1590 kernel/rcu/rcutorture.c:1638)
-> [   10.821968] rcu_torture_reader (kernel/rcu/rcutorture.c:1730)
-> [   10.821976] kthread (kernel/kthread.c:321)
-> [   10.821986] ret_from_fork (arch/arm64/kernel/entry.S:1005)
-> [   10.821997] irq event stamp: 478635
-> [   10.822001] hardirqs last enabled at (478635): _raw_spin_unlock_irq (./arch/arm64/include/asm/irqflags.h:35 ./include/linux/spinlock_api_smp.h:168 kernel/locking/spinlock.c:202)
-> [   10.822016] hardirqs last disabled at (478634): __schedule (kernel/sched/core.c:5154 (discriminator 1))
-> [   10.822029] softirqs last enabled at (478626): __local_bh_enable_ip (./arch/arm64/include/asm/irqflags.h:85 kernel/softirq.c:262)
-> [   10.822040] softirqs last disabled at (478622): rcutorture_one_extend (./include/linux/bottom_half.h:19 kernel/rcu/rcutorture.c:1441)
-> 
-> Per this warning, softirqs cannot be disabled in a non-preemptible region
-> under CONFIG_PREEMPT_RT. Adjust RCU torture accordingly.
-> 
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  kernel/rcu/rcutorture.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 6096a7d14342..680f66b65f14 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -1537,6 +1537,8 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
->  	 * them on non-RT.
->  	 */
->  	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+On Tue, Aug 03, 2021 at 06:48:36PM -0400, Theodore Ts'o wrote:
+> So over the weekend, I decided to take efforts into my own hands, and
+> made the relatively simple changes to fstests needed to add support
+> for ntfs and ntfs3 file systems.  The results show that the number
+> fstests failures in ntfs3 is 23% *more* than ntfs.  This includes a
+> potential deadlock bug, and generic/475 reliably livelocking.  Ntfs3
+> is also currently not container compatible, because it's not properly
+> handling user namespaces.
 
-This depends on some rcutorture patches in -rt that are not yet in
--rcu.  Would -rt be a good place for this one, or are those patches
-now ready for -rcu?
+I don't understand how so many ntfs-classic xfstests pass:
 
-							Thanx, Paul
+config NTFS_RW
+        bool "NTFS write support"
+        depends on NTFS_FS
+        help
+          This enables the partial, but safe, write support in the NTFS driver.
 
-> +		/* Can't disable bh in atomic context under PREEMPT_RT */
-> +		mask &= ~(RCUTORTURE_RDR_ATOM_BH | RCUTORTURE_RDR_ATOM_RBH);
->  		/*
->  		 * Can't release the outermost rcu lock in an irq disabled
->  		 * section without preemption also being disabled, if irqs
-> -- 
-> 2.25.1
-> 
+          The only supported operation is overwriting existing files, without
+          changing the file length.  No file or directory creation, deletion or
+          renaming is possible.  Note only non-resident files can be written to
+          so you may find that some very small files (<500 bytes or so) cannot
+          be written to.
+
+Are the tests really passing, or just claiming to pass?
