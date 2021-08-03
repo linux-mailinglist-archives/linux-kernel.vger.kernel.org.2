@@ -2,212 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93443DE695
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCECA3DE69A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbhHCGHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 02:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbhHCGHW (ORCPT
+        id S233895AbhHCGPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 02:15:24 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:35392 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230096AbhHCGPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 02:07:22 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF749C061764;
-        Mon,  2 Aug 2021 23:07:10 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id go31so34545064ejc.6;
-        Mon, 02 Aug 2021 23:07:10 -0700 (PDT)
+        Tue, 3 Aug 2021 02:15:22 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1736BJFU019171;
+        Tue, 3 Aug 2021 06:15:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=to4/mMPD2nuNsT/mpNnh2JQ5Z8ZDIW0eaLpCv8YCbas=;
+ b=ZKs2FFFyA38zEj0gHaSe4pK28FkSoP0NjG0+7BUuHToRYhXis/m1E/pi0GZCN/7Ej1E0
+ invbsVZKVx7YTRV+BQ7OdKQaK9UZXbsIVKKluo9OT980b50R2/9iFG3bKx4GZ453Yz2R
+ fcQmCy9pVIkqpKWxEL6IhZH25YtYmS562QmxDfu583vkgvXR81KRgGMktZctbIGJDzjV
+ Li0GocoC5mEyEgw0FmqcOS0vth+0cwv5A6jpTLXDAimWp4RL1bPp3x7u8adGwEghuLNw
+ Vrm2Q/tG8pOkYmrcROGEXgifZEkzHm6ToCMb1Glm+ghp3WQplICj10WlnMvhdURhBDVl qQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=to4/mMPD2nuNsT/mpNnh2JQ5Z8ZDIW0eaLpCv8YCbas=;
+ b=tHrsG/PIPRUjGe4LkKTLIhtDSIKOVxXsKSJ8o95hDCyRzQ0rzJLRtXcjfRKMWFoJt1UO
+ 6bV9dQHSQcjrzrtJm2d2TlF4X+QiiHOdZZRFB1R4w4SYQJNvr158ffn7ZvK2jjnwovhG
+ m2BIu1de/P5Ov83ukkzT3DBc+wD3rkA8PkzQYk8I0notlTsIXRT1WALM23I4lM4BrSvC
+ PoqWH67eq7jVh70LaE5tAZzQj8rauXAQaeerFW51HJeSdsT7hKbxAVyE09WnuceznxwA
+ Ha/detAySnwloaTGLb+8xSndAAxMIEVITeHU8mi5PpTWXv3y4EcwQ5gikLVh6t78Jfwo 4Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a65vdb1qr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Aug 2021 06:15:07 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1736BNLR174234;
+        Tue, 3 Aug 2021 06:15:05 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2042.outbound.protection.outlook.com [104.47.74.42])
+        by userp3030.oracle.com with ESMTP id 3a4umy2pe3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Aug 2021 06:15:05 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gT6lyTZEXiGeiOAoya191YHBAzp+Wb+Soy1D6Cjo0rCRFqL25/3RI/KXbQzeTUFYlCNz7SDfixWZiFtff3/zr+y4az3vjQmZH/kQ/kRqhiOn0ueybtWPZk9AIkKZFafW+nlP7KNBP3TCAukttsz0y0Ddget6aT/zot//fhk2DlonfiQIk5BII9ywzkTBrDwu7/7CSVkZAirOb2DL/R7w6UslR8Xbw4rNLnr2LltWK9qREQJ7WDTlBdgh0huKFcRc5039Su+4AReubsUGhNUnv0oa/H4UJQyy6Zyb+XmSFMw5kRl/Vwq+zBzQn+tPcBMjczfHFAlr3S7ZUBLZJbvSVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=to4/mMPD2nuNsT/mpNnh2JQ5Z8ZDIW0eaLpCv8YCbas=;
+ b=fLN+MBZCnNEXvEnqvEb8tssyIES6j19CL4Ec6FPhbVjSTGIeo2KRLzqbuevdOi+zxPwZLAblKFHLkleVw6J63bCy5kv6GjEJ+2tNpjE2oT6A45gK1IOA2m/ZS+/4MT3Ic74ctdsbboynk5JSHoc0is6z6fof9oi6U0Hd2ULY2vAZqDTc9WKLiMEWa8t6lrGN0LRIawE80Rf9eny/X/0CXWPw9vF/83FrNrQbA+8TKbVxlU3dzT5k+y7+8iKjB3TRGrTgNG34//jfa9+Y0f31SqZInRdFRJ8hA8+Hn4aM5nO5GDeWNXRbDQCFA8q4syN3fWSbd3Dz225BFgzyLQInnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3r+75DACLv5UUEGAMg/p6dRcOLqZwifCJvbUYocHdso=;
-        b=t+VGVJ3CQj5LZ3tfmjte2QwHY0kpdQJXZpNvVg5efqsDIbP8CP6JmmPAb3HSAiVIqt
-         c6+VIpY9Pd3FSLaoiKepJwlnYQeglAmEf+6DCUDal6qhQfsPCx6Lpk3FciGHa9R7SBHj
-         x3b0h5H1lR5IKiCyBEyM/eHgXLomeO3olR/61dCBBtpXy1Iv+KEyolcmMB/WWLvZraln
-         5QGI6HP0yXFyCmP+0N7ptO0CPavxi8C0LSwy2pZmn2a7gMesutvlT6FUCdWClTeZ2I7Y
-         RdDeZZFLHOHfXGtrRm3bMrUvutphD4m4sD4IDfOL95L8YKN2y/jWX6LRU+45oXY0UL+S
-         7ggA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3r+75DACLv5UUEGAMg/p6dRcOLqZwifCJvbUYocHdso=;
-        b=mnBmDuTLwLhnrAtM7F52ZRR3AuKvevEro/3pw7DzNO85m6d9uQ8HEiOj2TAqeD3xnV
-         xEe22wXoumUIsRL8f4m2/mP8MjiOXFXiB+BsItoOd1NR3hXN+qp3Cd0Kfx7bkl7FEUm4
-         gcw930M/gr6ePYBw6uT+3jmlybTcm8/qmGkylu4KEgjl2RUiqtTUS+5TSUxtTATBfb+H
-         m+lcKcBCVel5+jOHLmZUMeQKpoOYKQePI/T5f/iE1rfWrN9ea2/b2lEPXevyTfasRyN5
-         X5TKZLg8jCrmx7VYEn05glE96GJJVU8/yOKL0y1jZebygYvRizXl9YJzxUVd0TEzjq+w
-         NTgQ==
-X-Gm-Message-State: AOAM530TTIF7QkSAvww+Pdx0owtWD/HXCqbovcwSlC/5uHm/QVsiK1i/
-        PJdFi12FFG+swA7topOrrdZLtvcAL2WKnQeBgJM=
-X-Google-Smtp-Source: ABdhPJy17ovymExQ6CM3PLsr4+BkDdHTeZRWwscEb/mx09eomxeVIh1K2yppOon6bmFvRWAaOVN8Ox0oUVjrKM0f13M=
-X-Received: by 2002:a17:906:a890:: with SMTP id ha16mr549039ejb.73.1627970829399;
- Mon, 02 Aug 2021 23:07:09 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=to4/mMPD2nuNsT/mpNnh2JQ5Z8ZDIW0eaLpCv8YCbas=;
+ b=uz1fTJzGEvhOY8biKYu1lONNiup3HDFRcbMgYEzy2Adx/xhkdMqUxece3x+o12U7REE/j1k35x1EGtkUTXSMbJzLAGqN0mxZcMtlWXNxDa474cpxdbjgdfBtdU+RG/m3b8GevlBhSrqto+o+J1ZfQDJZBqOzGGHEnBFH0YJBiHo=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO1PR10MB4466.namprd10.prod.outlook.com
+ (2603:10b6:303:9b::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Tue, 3 Aug
+ 2021 06:15:03 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 06:15:03 +0000
+Date:   Tue, 3 Aug 2021 09:14:42 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: r8188eu: core: Change the length of an array
+Message-ID: <20210803061441.GK25548@kadam>
+References: <20210802203020.9679-1-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802203020.9679-1-fmdefrancesco@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNXP275CA0016.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::28)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-References: <20210726152724.2281408-1-mudongliangabcd@gmail.com>
- <YQg4lehajLpQjyPd@Red> <CAD-N9QWvR-7caWCnk1CMo8sWPEC=CfKU2_v=YkTVr0o5L7wehA@mail.gmail.com>
-In-Reply-To: <CAD-N9QWvR-7caWCnk1CMo8sWPEC=CfKU2_v=YkTVr0o5L7wehA@mail.gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 3 Aug 2021 14:06:43 +0800
-Message-ID: <CAD-N9QVfreHCV7673DVq6aS3+3RYQ4-x8eZuGF0pvUbRhTL-Cg@mail.gmail.com>
-Subject: Re: [PATCH] crypto: sun8i-ce: fix multiple memory leaks in sun8i_ce_hash_run
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (102.222.70.252) by JNXP275CA0016.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Tue, 3 Aug 2021 06:14:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7ded76b4-cebc-4f80-efdf-08d956460800
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4466:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO1PR10MB44667312E1ACD3C1120B51C18EF09@CO1PR10MB4466.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NahareQpt4wnq0fwQVat0VkDcIic5SlvJ87h56tm3PJaAcOR2oaCCWTeMMDF1dnc9ytT21gP76cKjg7o6HGqI38cJQbNKTEocSQUg8IeXxVEvYo9KW6uL7WiNQOhgllByvISnGOOznor2RJhVt4D3azNTXKtBMUbnOAZ3QvaMYwX3cQbcNUgTRcT3W/o5N0B0y7UI9f+ptNuDfvT7rPqFDA6ZaVBp5B3lvP9w0wSMjsl6ZNhwpRUFIvPrx5VqBED/Oml6gtb+n0RfTLbDnVF9TZ+X5h+8bsrTV93OxQXEGFzioBySj47P96hkANMscQ0KTV5zzEqGhZFGU5RKQbf7jASsM4SCG2HIvi8fsIPAH1gROo56AP2jttUNBtYrTfncYu82VGoKjBzaCgIVsopBn2yh4GYCae06YPfB6LNcV9/pIa1XO1jPiSUbaB9tLvf9oOEoddEto9Ka3eo/bbcOuvihwR0gCBeq57PAhIu+F29kp0iIang4d+WKvWkK/Cd0yDe0uC1lhhuimA4pnhi7GeyetY4q9UweHqecV0wIu8VJC1IvZkRSVTv8Z67VsII1EJTah2HmW90RbjPcdYS01HYkGPYo5/O20jDnVY97gpKOFBn+qxnWBMJ+L7kK4HKwKJ2Bd4FAjFqMOGoHsqKG33SYkPBVhmsmnnPwrDTDLdWyFF67QvRUMG6FLhpE2M1/9SpE7vr9kNhV37O0eLmXA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(396003)(39860400002)(376002)(9686003)(52116002)(2906002)(6916009)(33716001)(54906003)(478600001)(6496006)(1076003)(55016002)(956004)(38350700002)(38100700002)(44832011)(4326008)(316002)(6666004)(86362001)(186003)(66556008)(8676002)(66476007)(66946007)(33656002)(4744005)(8936002)(5660300002)(26005)(9576002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XJTGoLMpW9g9lyQQvL6q5Mm57y6hDAKoSNJTuM/L9ZHkjQAKxzFC0DOGH15g?=
+ =?us-ascii?Q?d/IJsETzMR3kSTZ7pgJ2E0CvhFE4IJ1WmXUEoGilTgCoIe2ZNiVQ61A+Mm/h?=
+ =?us-ascii?Q?3nSDxE/5l+HNs7qoQO6dTu+ePbBa9WlwClkJ24rmeUJJEc7EVzVXpHQr+Xc1?=
+ =?us-ascii?Q?IlGRZq0gzcYk0y4nZSERuTvLNtz0ABydGgxWCjhf3231BvBQJ9o1WXJ6xbBe?=
+ =?us-ascii?Q?pwHL+wuxeN4BcXTf4HI04fc5Xo2UVwlP+4OHFt22i4FgZZTm1s+rWYIalVaK?=
+ =?us-ascii?Q?d6hvKgcDFasL2ceWbCu0l9mlq9sfHV6GUpgzgTS0rpoDNhdUohlVcKtqoZnf?=
+ =?us-ascii?Q?rfFrssDLEhO4y+uc4CbCXAD8xhOd3KADtfFYIhRgiJsddwg+Q907XF/a7yHK?=
+ =?us-ascii?Q?PaPHXvFV98AT39tnmL5Y4DfknXoAC+0zf2/hVo/vYr2uDJYvsiknqkYxixlj?=
+ =?us-ascii?Q?zsVy3YIe17ZYltwYJMkKYIN3RGPdbHwqwAEfKojqQGSJkiJFYEaOz89mQiGa?=
+ =?us-ascii?Q?zRM8L50/BiXri4EZ2kCJZVI2q2TIAvhlTDn1b61FAVv5tDmabbOOwj25DDvd?=
+ =?us-ascii?Q?F7RBuV2WKeUMeK8YzTMcPay0IveNf7HHGD5Hu6jef4xSs06iuS+UAQdl+GNP?=
+ =?us-ascii?Q?pHLPvlQxSptJsIYxQ5o0vBVVpAkpneuppCowTp+o4e2NImh4sZo9f3wB79mZ?=
+ =?us-ascii?Q?2HKgcav8VdoX3nCEQKMQ3JO7r3G94cQ/i4OJ+7Z0deONkMvFX6clo+MmaKRN?=
+ =?us-ascii?Q?qgpWEkD5bEzUVG8s5/tEyv9ynU+AcJw6mKU9v/sGhTJBtyehNpR11L0U8+Rd?=
+ =?us-ascii?Q?PGBmxxZtR2ISFEy04ZQrJBBayPA7XI5LENE2NM7l/syxVILbpSnQ3AaBy7+/?=
+ =?us-ascii?Q?U3W+p9oU6OStyvjxo5QHlohXhFUECM2i4LqGoSaOBLYkjZ1BTjNDGaRa9EFM?=
+ =?us-ascii?Q?W+D9hHMaVD+HNCw6YbQ8wY0Nw+ew8LGVRztRuytMQdE86zzEMigIffiTl9MD?=
+ =?us-ascii?Q?UYt8S1IWD99gVdJ2QhG1Bb09gnx4SrCf43llxXS25ncNIYUJYQZBfMhP5gaV?=
+ =?us-ascii?Q?ELUlXgaQfrr0j9ih/CtipZOhrOvmRk227sAT5AFHC3zsT6P4UjY1d71KhK66?=
+ =?us-ascii?Q?lbVzhEmKWD/nan6h8dQVlmsLYRVXAc2RbreYBRJNTaIOqwcv52Y5/4cCgZTE?=
+ =?us-ascii?Q?qqWDRkUk7bGHb1gslrxPho6KZSoio6gKmwsC5DOKwHUaWjmy5C00P1NpJ+Uq?=
+ =?us-ascii?Q?2tWJf1PXXtyggG0aTymzjA4QzGnlbCn4HuBC1InKMK2Eff7968bfLrN1VOAe?=
+ =?us-ascii?Q?dc2ur5Dsr/S4LPs/voDCzaBW?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ded76b4-cebc-4f80-efdf-08d956460800
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 06:15:03.3593
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FvfY9GvG/XtjaEouH076SC8T7GF6xQKvPssp+yZ8qtw0PizTso7MZ6GtxsHP9E6x+QYURbJrAS3jEfuhJL1PxPf66fgBBDUgT41SGd62X0s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4466
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10064 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 adultscore=0 mlxlogscore=617 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108030040
+X-Proofpoint-GUID: QMzqobScDGxYzJt0Te9_qLsMUPVUXDDK
+X-Proofpoint-ORIG-GUID: QMzqobScDGxYzJt0Te9_qLsMUPVUXDDK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 1:57 PM Dongliang Mu <mudongliangabcd@gmail.com> wro=
-te:
->
-> On Tue, Aug 3, 2021 at 2:25 AM Corentin Labbe <clabbe.montjoie@gmail.com>=
- wrote:
-> >
-> > Le Mon, Jul 26, 2021 at 11:27:12PM +0800, Dongliang Mu a =C3=A9crit :
-> > > In sun8i_ce_hash_run, all the dma_mmap_sg/single will cause memory le=
-ak
-> > > due to no corresponding unmap operation if errors happen.
-> > >
-> > > Fix this by adding error handling part for all the dma_mmap_sg/single=
-.
-> > >
-> >
-> > I think it could be better worded, error handling is already there (but=
- bad).
->
-> Sure. How about "Fix this by freeing the objects allocated by
-> dma_mmap_sg/single when errors occur."?
->
-> >
-> > > Fixes: 56f6d5aee88d ("crypto: sun8i-ce - support hash algorithms")
-> > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > ---
-> > >  .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 28 +++++++++--------=
---
-> > >  1 file changed, 13 insertions(+), 15 deletions(-)
-> > >
-> > > diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/driv=
-ers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> > > index 88194718a806..d454ad99deee 100644
-> > > --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> > > +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-> > > @@ -286,16 +286,14 @@ int sun8i_ce_hash_run(struct crypto_engine *eng=
-ine, void *breq)
-> > >
-> > >       /* the padding could be up to two block. */
-> > >       buf =3D kzalloc(bs * 2, GFP_KERNEL | GFP_DMA);
-> > > -     if (!buf) {
-> > > -             err =3D -ENOMEM;
-> > > -             goto theend;
-> >
-> > Please keep all goto error for being consistent.
->
-> OK, no problem.
->
-> BTW, usually for the 1st malloc failure, I prefer returning with errno di=
-rectly.
+On Mon, Aug 02, 2021 at 10:30:20PM +0200, Fabio M. De Francesco wrote:
+> IPX_NODE_LEN == 6, while addr.f1 should only have 4 elements.
+> Replace IPX_NODE_LEN with 4. In the while, remove the excess spaces
+> before the fields of the union.
+> 
+> Fixes: 56febcc2595e ("staging: r8188eu: Fix different base types in assignments and parameters")
 
-For this case, as crypto_finalize_hash_request must be executed, so
-directly return is incorrect. I will add a goto label before
-crypto_finalize_hash_request.
+Ugh...  I really feel we'd be better off reverting that patch entirely.
 
->
-> >
-> > > -     }
-> > > +     if (!buf)
-> > > +             return -ENOMEM;
-> > >       bf =3D (__le32 *)buf;
-> > >
-> > >       result =3D kzalloc(digestsize, GFP_KERNEL | GFP_DMA);
-> > >       if (!result) {
-> > > -             err =3D -ENOMEM;
-> > > -             goto theend;
-> > > +             kfree(buf);
-> > > +             return -ENOMEM;
-> > >       }
-> > >
-> > >       flow =3D rctx->flow;
-> > > @@ -321,7 +319,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engin=
-e, void *breq)
-> > >       if (nr_sgs <=3D 0 || nr_sgs > MAX_SG) {
-> > >               dev_err(ce->dev, "Invalid sg number %d\n", nr_sgs);
-> > >               err =3D -EINVAL;
-> > > -             goto theend;
-> > > +             goto err_result;
-> > >       }
-> > >
-> > >       len =3D areq->nbytes;
-> > > @@ -334,7 +332,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engin=
-e, void *breq)
-> > >       if (len > 0) {
-> > >               dev_err(ce->dev, "remaining len %d\n", len);
-> > >               err =3D -EINVAL;
-> > > -             goto theend;
-> > > +             goto err_unmap_sg;
-> > >       }
-> > >       addr_res =3D dma_map_single(ce->dev, result, digestsize, DMA_FR=
-OM_DEVICE);
-> > >       cet->t_dst[0].addr =3D cpu_to_le32(addr_res);
-> > > @@ -342,7 +340,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engin=
-e, void *breq)
-> > >       if (dma_mapping_error(ce->dev, addr_res)) {
-> > >               dev_err(ce->dev, "DMA map dest\n");
-> > >               err =3D -EINVAL;
-> > > -             goto theend;
-> > > +             goto err_unmap_sg;
-> > >       }
-> > >
-> > >       byte_count =3D areq->nbytes;
-> > > @@ -392,7 +390,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engin=
-e, void *breq)
-> > >       if (dma_mapping_error(ce->dev, addr_pad)) {
-> > >               dev_err(ce->dev, "DMA error on padding SG\n");
-> > >               err =3D -EINVAL;
-> > > -             goto theend;
-> > > +             goto err_addr_res;
-> > >       }
-> > >
-> > >       if (ce->variant->hash_t_dlen_in_bits)
-> > > @@ -405,15 +403,15 @@ int sun8i_ce_hash_run(struct crypto_engine *eng=
-ine, void *breq)
-> > >       err =3D sun8i_ce_run_task(ce, flow, crypto_tfm_alg_name(areq->b=
-ase.tfm));
-> > >
-> > >       dma_unmap_single(ce->dev, addr_pad, j * 4, DMA_TO_DEVICE);
-> > > +err_addr_res:
-> > > +     dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE=
-);
-> > > +err_unmap_sg:
-> > >       dma_unmap_sg(ce->dev, areq->src, sg_nents(areq->src),
-> > >                    DMA_TO_DEVICE);
-> > > -     dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE=
-);
-> > > -
-> > > -
-> > >       memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
-> >
-> > The result should be copied only when everything is ok. Please add a "i=
-f (!err)"
->
-> Sure.
->
-> >
-> > Thanks for your work
-> > Regards
+regards,
+dan carpenter
+
