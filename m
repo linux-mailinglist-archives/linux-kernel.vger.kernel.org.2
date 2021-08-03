@@ -2,119 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA0E3DEED7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C183DEEDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236248AbhHCNMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:12:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236270AbhHCNMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:12:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6330160EFD;
-        Tue,  3 Aug 2021 13:12:05 +0000 (UTC)
-Date:   Tue, 3 Aug 2021 14:12:02 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/mm: Fix idmap on [16K|36VA|48PA]
-Message-ID: <20210803131201.GB5786@arm.com>
-References: <1627879359-30303-1-git-send-email-anshuman.khandual@arm.com>
- <20210803103440.GA5786@arm.com>
- <7bad50a2-76f1-7946-3a15-35e46fb289c0@arm.com>
+        id S236247AbhHCNNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:13:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56050 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235954AbhHCNNP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 09:13:15 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627996383;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zratP/d2dqbzr5A3KZPCTDEa+UpOjiFaTT3D2EIH/Pg=;
+        b=zk5sPz0A/N68QiMZNa4XnUH53XQGAkBgxmMF9RdDFSoOGdHXqC//ofK9o10vkQtIIgxpxy
+        o3gzfJIWcGuD/7CJSo5P2+b6eNhxoNOxZol539AjZC3laI2y9WkzZGJ7p/8XuGC/SI6py5
+        6Mpztfu+HxmsRcOTqIZJcFq3yrOVV08E2vhgrY8or5Z3uRGykD2IiT/TXmzbGy4LL+sBHS
+        cGTPp1pxVnfmrDUBXMNIf7pO9xGKJUUaHa3+Iftq3TyMFoNPnqWV077wktj4wMXkILY+0N
+        qrvzjb5E1n/5VK5Jn8gch/Yneaa2fDy8JybmbeFc/b2DSqzfflXIeOBn73Azfw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627996383;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zratP/d2dqbzr5A3KZPCTDEa+UpOjiFaTT3D2EIH/Pg=;
+        b=eiwsN3XDO7gIOKIO/tyPKCl9YBM/K+0P9ejFJ1AFeHJgY6RpWMpxmcaTC14bbaMpVCrVQI
+        kAWF+aftd/6aNtAw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Chengyang Fan <cy.fan@huawei.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Changbin Du <changbin.du@intel.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Cengiz Can <cengiz@kernel.wtf>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
+        Wang Qing <wangqing@vivo.com>, Andrij Abyzov <aabyzov@slb.com>,
+        Johan Hovold <johan@kernel.org>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Claire Chang <tientzu@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Al Cooper <alcooperx@gmail.com>, linux-serial@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH printk v1 00/10] printk: introduce atomic consoles and sync mode
+Date:   Tue,  3 Aug 2021 15:18:51 +0206
+Message-Id: <20210803131301.5588-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7bad50a2-76f1-7946-3a15-35e46fb289c0@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 04:57:04PM +0530, Anshuman Khandual wrote:
-> On 8/3/21 4:04 PM, Catalin Marinas wrote:
-> > On Mon, Aug 02, 2021 at 10:12:39AM +0530, Anshuman Khandual wrote:
-> >> +/*
-> >> + * In this particular CONFIG_ARM64_16K_PAGES config, there might be a
-> >> + * scenario where 'idmap_text_end' ends up high enough in the PA range
-> >> + * requiring two additional idmap page table levels. Reduce idmap_t0sz
-> >> + * to cover the entire PA range. This prevents table misconfiguration
-> >> + * when a given idmap_t0sz value just requires single additional level
-> >> + * where as two levels have been built.
-> >> + */
-> >> +#if defined(CONFIG_ARM64_VA_BITS_36) && defined(CONFIG_ARM64_PA_BITS_48)
+Hi,
 
-I don't think you need the PA_BITS_48 check in here. It's either this
-one or PA_BITS_52 in the future. Anyway, I think so far our assumption
-is that the kernel will always be placed in the first 48-bit, so we
-don't need extra check.
+This is the next part of our printk-rework effort (points 3 and
+4 of the LPC 2019 summary [0]).
 
-> >> +	mov	x4, EXTRA_PTRS_1
-> >> +	create_table_entry x0, x3, EXTRA_SHIFT_1, x4, x5, x6
-> >> +
-> >> +	mov	x4, PTRS_PER_PTE
-> >> +	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
-> >> +
-> >> +	mov	x5, #64 - PHYS_MASK_SHIFT
-> >> +	adr_l	x6, idmap_t0sz
-> >> +	str	x5, [x6]
-> >> +	dmb	sy
-> >> +	dc	ivac, x6
-> >> +#else
-> >>  	mov	x4, EXTRA_PTRS
-> >>  	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
-> >> +#endif
-> >>  #else
-> >>  	/*
-> >>  	 * If VA_BITS == 48, we don't have to configure an additional
-> > 
-> > There's a prior idmap_t0sz setting based on __idmap_text_end. Isn't that
-> > sufficient? We don't care about covering the whole PA space, just the
-> > __idmap_text_end.
-> 
-> Right but its bit tricky here.
-> 
-> __idmap_text_end could be any where between VA_BITS (36) and PA_BITS (48)
-> which would require (one or two) additional page table levels. But in this
-> solution it creates two additional page table levels for idmap which would
-> completely map upto PA_BITS, regardless of __idmap_text_end's position. So
-> in case __idmap_text_end is between VA_BITS (36) and VA_BITS(47), a single
-> additional page table level is required where as we have created two ! So
-> to avoid such a situation, adjust idmap_t0sz accordingly. Otherwise there
-> will be a MMU mis-configuration.
+Here the concept of "atomic consoles" is introduced through  a
+new (optional) write_atomic() callback for console drivers. This
+callback must be implemented as an NMI-safe variant of the
+write() callback, meaning that it can function from any context
+without relying on questionable tactics such as ignoring locking
+and also without relying on the synchronization of console
+semaphore.
 
-I get it now. You need 4 levels with 16K pages for idmap as 3 levels
-(one extra in head.S) are not sufficient. The normal page table uses 2
-levels with 36-bit VA. Here you chose to go with 4 levels always as the
-simplest option.
+As an example of how such an atomic console can look like, this
+series implements write_atomic() for the 8250 UART driver.
 
-Do we need to adjust idmap_ptrs_per_pgd? I think even without your
-patch, its value is wrong as it doesn't seem to be adjusted for the
-extra level. I can't figure out whether it matter but I think we should
-remove this variable altogether and just set the x4 register to what we
-need in head.S
+This series also introduces a new console printing mode called
+"sync mode" that is only activated when the kernel is about to
+end (such as panic, oops, shutdown, reboot). Sync mode can only
+be activated if atomic consoles are available. A system without
+registered atomic consoles will be unaffected by this series.
 
-> This patch is indented for stable back port and hence tries to be as simple
-> and minimal as possible. So it creates two additional page table levels
-> mapping upto PA_BITS without just considering __idmap_text_end's position.
-> Reducing __idmap_t0sz upto PA_BITS should not be a problem irrespective of
-> ID_AA64MMFR0_EL1.PARANGE value. As __idmap_text_end would never be on a PA
-> which is not supported. Hence out of range PA would never be on the bus for
-> translation.
+When in sync mode, the console printing behavior becomes:
 
-I'd rather have a clean solution (might as well be this one) than
-worrying about a stable back-port. It's highly unlikely that we'll trip
-over this problem in practice: first you'd need RAM above 47-bit and
-second you'd have to enable EXPERT and 36-bit VA.
+- only consoles implementing write_atomic() will be called
 
-It looks like idmap_t0sz is used by the kvm_mmu_init() code to calculate
-hyp_va_bits. Does it mean that idmap_t0sz should always match PA_SIZE?
-Or maybe we should just decouple the two.
+- printing occurs within vprintk_store() instead of
+  console_unlock(), since the console semaphore is irrelevant
+  for atomic consoles
 
+For systems that have registered atomic consoles, this series
+improves the reliability of seeing crash messages by using new
+locking techniques rather than "ignoring locks and hoping for
+the best". In particular, atomic consoles rely on the
+CPU-reentrant spinlock (i.e. the printk cpulock) for
+synchronizing console output.
+
+John Ogness
+
+[0] https://lore.kernel.org/lkml/87k1acz5rx.fsf@linutronix.de/
+
+John Ogness (10):
+  printk: relocate printk cpulock functions
+  printk: rename printk cpulock API and always disable interrupts
+  kgdb: delay roundup if holding printk cpulock
+  printk: relocate printk_delay()
+  printk: call boot_delay_msec() in printk_delay()
+  printk: use seqcount_latch for console_seq
+  console: add write_atomic interface
+  printk: introduce kernel sync mode
+  kdb: if available, only use atomic consoles for output mirroring
+  serial: 8250: implement write_atomic
+
+ arch/powerpc/include/asm/smp.h         |   1 +
+ arch/powerpc/kernel/kgdb.c             |  10 +-
+ arch/powerpc/kernel/smp.c              |   5 +
+ arch/x86/kernel/kgdb.c                 |   9 +-
+ drivers/tty/serial/8250/8250.h         |  47 ++-
+ drivers/tty/serial/8250/8250_core.c    |  17 +-
+ drivers/tty/serial/8250/8250_fsl.c     |   9 +
+ drivers/tty/serial/8250/8250_ingenic.c |   7 +
+ drivers/tty/serial/8250/8250_mtk.c     |  29 +-
+ drivers/tty/serial/8250/8250_port.c    |  92 ++--
+ drivers/tty/serial/8250/Kconfig        |   1 +
+ include/linux/console.h                |  32 ++
+ include/linux/kgdb.h                   |   3 +
+ include/linux/printk.h                 |  57 +--
+ include/linux/serial_8250.h            |   5 +
+ kernel/debug/debug_core.c              |  45 +-
+ kernel/debug/kdb/kdb_io.c              |  16 +
+ kernel/printk/printk.c                 | 554 +++++++++++++++++--------
+ lib/Kconfig.debug                      |   3 +
+ lib/dump_stack.c                       |   4 +-
+ lib/nmi_backtrace.c                    |   4 +-
+ 21 files changed, 684 insertions(+), 266 deletions(-)
+
+
+base-commit: 23d8adcf8022b9483605531d8985f5b77533cb3a
 -- 
-Catalin
+2.20.1
+
