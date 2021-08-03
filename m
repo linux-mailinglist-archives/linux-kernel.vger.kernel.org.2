@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165573DE8B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8D53DE8B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234656AbhHCIqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:46:22 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:39851 "EHLO
+        id S234738AbhHCIq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:46:28 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:53079 "EHLO
         out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234732AbhHCIqT (ORCPT
+        by vger.kernel.org with ESMTP id S234731AbhHCIqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:46:19 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9017E5C00C4;
-        Tue,  3 Aug 2021 04:46:08 -0400 (EDT)
+        Tue, 3 Aug 2021 04:46:23 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 853515C00CC;
+        Tue,  3 Aug 2021 04:46:12 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 03 Aug 2021 04:46:08 -0400
+  by compute6.internal (MEProxy); Tue, 03 Aug 2021 04:46:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=jcXn7Uzs7Rb29
-        QcnVO48/qoLIHG3J7H1wv2fWRrP/oQ=; b=FOK7PGIH3NvfKCiiejlsPpP1jx4tm
-        U/6g1UAlASfrs1P1vHvgPmKCCYlRDmmYijsYLOFPQxlg3asgHbVvAwuxKVzzNBa3
-        VUAzLZIb/48jSrRn2qFahFGUygLgpAXXPV0NxZ1CypIW3leczx/KTSssNQXlcCCf
-        zsOGkIxG9K3EYmkIWgrbRhTYP/NWZ8oFAXxITL8UYZiFNoCfjlWs1sCjl26LUFdO
-        aRVziXgQOCS1hGZSXfhCu4fhuRUdZLXYXRA4/BCUvJMJgFMzz9cdcYx4w7at5WOk
-        ZUD97CTQBFBwlepYk5ujSvgkw0tXN0/z3CADj+XC2EhiOkNbH1rNA28vQ==
+        :mime-version:content-transfer-encoding; s=fm1; bh=aPr6JcL4pftxw
+        OS9Or0rSJmJSHuxufqjZPPreQpE5Hs=; b=Bmh7JD1tsIJDg95s8TmR9EPajSsE7
+        oZQ7gR+/cQ04LGOWGCkxuWGw3aLKsM/nii6QFj7eQ20KOX/29Z0QLfRcRZRV6+6C
+        cxYcqmixDohrKc+oTjGyDMS8eanZlYRKI3XfLsIjBEYmAEJYXmRtOv9aLd0IoP+n
+        je4dMNv8NV5dX7i2Qrv6Np9vivwqNSJjQHUrliX9qYjoxzu9oJyP8/76kL5Hzpe0
+        aO0/itnzoXgTaHFgLvG1VxfT/jxQsItjOwdC9dFKDdDnSgnDIeSecS8EtaKxjPRF
+        3MMEVR/PYK0TJ65Vx9cc0sAaps3q0pBOMkwmohFCCSWztRaJo2zpmNqwg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=jcXn7Uzs7Rb29QcnVO48/qoLIHG3J7H1wv2fWRrP/oQ=; b=wYoNUEqe
-        P7vQBeHdrwoM1jxEEtazBWhhG7kXHBEwup6adNBxel3Fq6S8EqtYwo/F25Kawbrx
-        1aGH08v+21TZnJ3YhBcorsAO+JxQmkjLvhu9uGqA+IOxpGBWzGoqTdh5U8Or31WX
-        cpr1ulMFbOjnr6gBbwykhSWGBRZlMv7Ll99uqUPx+d9fAyIPXKBwMXxSFpjhDDjF
-        DBhaCocb/TPxZDBvnNvs4kP28kxqIywnEOji2IPZHJVqdsmbfSCaMxYhmZm5cX6M
-        tUYwLcUmLnFzF9OLEf7gIUoMMnAjf+3/iXbQzrIXORzjmSMoHC4b+w66qMk9qF8W
-        GHCs7KU7oCJOdg==
-X-ME-Sender: <xms:UAIJYa99gQviEd3ur-wLOt4MrL6pyRV_t3QbAVaqhsikr6U_PnzcHg>
-    <xme:UAIJYavZVyRWYnn_XzoLaXUNWTumeKrlswExH2lSNguSTU8D0fKTYwQHbkoNAGcY-
-    KK1nZ-BGM2OtOjjZi0>
-X-ME-Received: <xmr:UAIJYQCo-1HBJ4SQBlYASZly7gaqoI2dPwmCn-KoOGHMP0_qlYxcrvuIJQjYM8Ol5gqXqJl7TErY4v-sM8V2KjSisqcx5xhZwYoQmzE1lEllWQ>
+        fm3; bh=aPr6JcL4pftxwOS9Or0rSJmJSHuxufqjZPPreQpE5Hs=; b=uesEnjKR
+        hj2Dm+ICs4kaEojLZNAsPMLfZq51U//rs4JQ0ekyI9hzLSabDlv+br86GO1ZZ0ne
+        ZU7iBbB1A/6JrndV5bP6xfbm/gq9vfTEaBCq+8kB8oK5wQkBVWOabPWfV76hRg4/
+        aH7E/GtbCx7LKA4NT+XBy+Pp2wE+NyWbq3TACwBzJ9lUR2gpNhD/suQ9sE73dmUP
+        wi1dMyloPetCRIgeQztqVIgEHXYYXGnTqG4ckmh5bYdNbM+75AcK8O/bFOrXBdBL
+        dgn0+S0qMp3vJnH5SkzhX/8jnAU+4BXH5r0IBmvD21+83ywwxlnqOjuFdT8+KFxy
+        aUCUe6wjprFodw==
+X-ME-Sender: <xms:VAIJYU9RtitGB7lb6ZUY53IhXOALsQoJtba3nxYXFYQJ5FoXsvlz6Q>
+    <xme:VAIJYcu0dygXcytN08kBjdWFYGgL82yF43wAKRz-9l2oM_67M3HK4KDoo3PiJgSZK
+    DOe66PM1jNyzS9DUBo>
+X-ME-Received: <xmr:VAIJYaC06nMu5fCTmF7ck7_1QYkX__pKYmBxeKtGqcBdXBR6OwT0hbykgewHW1F5l4ICTgS2PQBwAysOjBNBi13BHafp7xYEV15XFZ1IsjJdag>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieeggddthecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
@@ -49,20 +49,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieeggddthecutefuodetggdote
     eguefgheeuvedugedvteejveeiudegvddtkeffkeehtdetudfhnecuvehluhhsthgvrhfu
     ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhish
     htrghirhdvfedrmhgv
-X-ME-Proxy: <xmx:UAIJYSf0-SXAUPa0bPy-s4QDX9BWPRmFaBW9PtyQxpm5egHAOWFBBg>
-    <xmx:UAIJYfPC_97_reYyegvyj5OHq0SMiPPRjtgDcgR5eDBla2vRXURx7Q>
-    <xmx:UAIJYcnv9q7-YRo1kuLYmBf_Vy9xf4M2TYMf9SSraugwCz4L8wUdXw>
-    <xmx:UAIJYack5528GUmX6KFVgajImqdcSksv5bbc6VKZ3jiJACox0nayEQ>
+X-ME-Proxy: <xmx:VAIJYUcUmsGf4Ld1q0cnSlK-23cg5DtTD5Ph4ANUy4Mu1bESCk-kxQ>
+    <xmx:VAIJYZMwilzqupkODm33uAiAiI_Cp2_8_cy8dy5PRwcpRQJxIRMZ8Q>
+    <xmx:VAIJYelc5VBOMS52RuTBfU9TunZk540JouZzrBoHrlJorbxOGLACMQ>
+    <xmx:VAIJYccHNDQIx8L2bNs5_A49JJSKVi7RSVaKTGXL3UJQdFFW03ZHEg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 3 Aug 2021 04:46:04 -0400 (EDT)
+ 3 Aug 2021 04:46:08 -0400 (EDT)
 From:   Alistair Francis <alistair@alistair23.me>
 To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
         broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v8 05/11] regulator: sy7636a: Remove the poll_enable_time
-Date:   Tue,  3 Aug 2021 18:44:52 +1000
-Message-Id: <20210803084456.198-5-alistair@alistair23.me>
+Subject: [PATCH v8 06/11] regulator: sy7636a: Use the parent driver data
+Date:   Tue,  3 Aug 2021 18:44:53 +1000
+Message-Id: <20210803084456.198-6-alistair@alistair23.me>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210803084456.198-1-alistair@alistair23.me>
 References: <20210803084456.198-1-alistair@alistair23.me>
@@ -72,35 +72,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From testing on hardware the poll_enable_time isn't required and
-sometimes causes the driver probe to fail so let's remove it.
+Use the parent's MFD data instead of our data.
 
 Signed-off-by: Alistair Francis <alistair@alistair23.me>
 ---
- drivers/regulator/sy7636a-regulator.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/regulator/sy7636a-regulator.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/regulator/sy7636a-regulator.c b/drivers/regulator/sy7636a-regulator.c
-index e021ae08cbaa..c3b34cac8c7f 100644
+index c3b34cac8c7f..0bd21c3ea24a 100644
 --- a/drivers/regulator/sy7636a-regulator.c
 +++ b/drivers/regulator/sy7636a-regulator.c
-@@ -13,8 +13,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/mfd/sy7636a.h>
+@@ -33,7 +33,7 @@ static int sy7636a_get_vcom_voltage_op(struct regulator_dev *rdev)
  
--#define SY7636A_POLL_ENABLED_TIME 500
--
- static int sy7636a_get_vcom_voltage_op(struct regulator_dev *rdev)
+ static int sy7636a_get_status(struct regulator_dev *rdev)
  {
- 	int ret;
-@@ -61,7 +59,6 @@ static const struct regulator_desc desc = {
- 	.owner = THIS_MODULE,
- 	.enable_reg = SY7636A_REG_OPERATION_MODE_CRL,
- 	.enable_mask = SY7636A_OPERATION_MODE_CRL_ONOFF,
--	.poll_enabled_time = SY7636A_POLL_ENABLED_TIME,
- 	.regulators_node = of_match_ptr("regulators"),
- 	.of_match = of_match_ptr("vcom"),
- };
+-	struct sy7636a *sy7636a = rdev_get_drvdata(rdev);
++	struct sy7636a *sy7636a = dev_get_drvdata(rdev->dev.parent);
+ 	int ret = 0;
+ 
+ 	ret = gpiod_get_value_cansleep(sy7636a->pgood_gpio);
+@@ -76,9 +76,9 @@ static int sy7636a_regulator_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, sy7636a);
+ 
+-	gdp = devm_gpiod_get(sy7636a->dev, "epd-pwr-good", GPIOD_IN);
++	gdp = devm_gpiod_get(pdev->dev.parent, "epd-pwr-good", GPIOD_IN);
+ 	if (IS_ERR(gdp)) {
+-		dev_err(sy7636a->dev, "Power good GPIO fault %ld\n", PTR_ERR(gdp));
++		dev_err(pdev->dev.parent, "Power good GPIO fault %ld\n", PTR_ERR(gdp));
+ 		return PTR_ERR(gdp);
+ 	}
+ 
+@@ -86,18 +86,18 @@ static int sy7636a_regulator_probe(struct platform_device *pdev)
+ 
+ 	ret = regmap_write(sy7636a->regmap, SY7636A_REG_POWER_ON_DELAY_TIME, 0x0);
+ 	if (ret) {
+-		dev_err(sy7636a->dev, "Failed to initialize regulator: %d\n", ret);
++		dev_err(pdev->dev.parent, "Failed to initialize regulator: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	config.dev = &pdev->dev;
+-	config.dev->of_node = sy7636a->dev->of_node;
++	config.dev->of_node = pdev->dev.parent->of_node;
+ 	config.driver_data = sy7636a;
+ 	config.regmap = sy7636a->regmap;
+ 
+ 	rdev = devm_regulator_register(&pdev->dev, &desc, &config);
+ 	if (IS_ERR(rdev)) {
+-		dev_err(sy7636a->dev, "Failed to register %s regulator\n",
++		dev_err(pdev->dev.parent, "Failed to register %s regulator\n",
+ 			pdev->name);
+ 		return PTR_ERR(rdev);
+ 	}
 -- 
 2.31.1
 
