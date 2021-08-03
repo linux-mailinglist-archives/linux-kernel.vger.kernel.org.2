@@ -2,243 +2,472 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7283DEF6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8818F3DEB54
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236311AbhHCN4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:56:46 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:25600 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236045AbhHCN4o (ORCPT
+        id S235402AbhHCKzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:55:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234904AbhHCKzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:56:44 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 173DGioQ016340;
-        Tue, 3 Aug 2021 13:53:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=mc0rv1449u54t1SBf7CRIqWRLBpqKys823s528t4E1Y=;
- b=NUrJH7AbCQwDs/M2Y1wq4ty6RtXD+1bU4kBxFpRR0uMSuvWbHuCeRbMSLj5sGunB50R4
- ehVDVNK5lR1D+Yb+AJMyvyDrc82AwZKvkxMYRg+0tCAsM7S6mwpyoJbID2YxPXH3bt6d
- K7L1iQtqjuOD+ZSVLBE6g0+JW5D+lvT0+EFPF/xyuS9O6QvKsqKNodqtP7pQ86rzEQv2
- sOWj3JGWyOThisRJgZtBs+uPgNkNhiPte0EwcLegfMckoA/PS7vWQKnYeRJ+ZKC9DGNb
- YLHXX8BgTrSWnkET+3Q0cwj0sI9jDlCvr/NU8AeHqhtDRA+PikrCfjL7sbuv4Zlvy0YZ Ow== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=mc0rv1449u54t1SBf7CRIqWRLBpqKys823s528t4E1Y=;
- b=OzK/ZB653cf0W9Nan1w7lLxrc5WYwWN+DbhOUitE4eHK9BeaVfngJ/HPv1bzuZi+vA+J
- DzwhuK1cIjGy1Rk8zQOce4Snlq/w/pWyxXPbfb5MoOaGV0yuSjZKNruMO2IJf8LD25dQ
- zVLfQ9TPP7crC13N8tr3bkLNS+hGa+x/NYPXoKFGddc6ctahXI7b3P/MRFa2kJhEXktH
- d1l9VC6zuEwV3rwcwfCu6wEC1/CmA4GONljLdjEKgPF0K4H+NNuPZwXfjg3wm9iL3VRj
- 4+eii8dKWYGMA8RofY/rj9xnOBZ2k63+itemt0OurZk9oh5Qzata8d5kYOXNOZ+pcbWR gg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a6fxhb65d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Aug 2021 13:53:23 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 173DpJmD038355;
-        Tue, 3 Aug 2021 13:53:22 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
-        by userp3020.oracle.com with ESMTP id 3a5g9v4ayq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Aug 2021 13:53:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XB1/QlHIPFvtLXvRffdRBmlKD+wEPXxdLDwTRLoUugVhXQKmbGvQSkGjYvjs34GDtDmCBWc3BVUIe+ejgSGubVaBd1O9Ku3f6j/9pkc+U49ylOP70zf4RYefVkgME/5B9agl5Uh3IUKUM0t+5dO4n1kUp0277Gkb/gY+FEwBNNZKOzZdQPp1VoRg1ZJCe3GqW59LBP9wvyP1BlIJG9rsLQqgTsE4aA5NQRRc+Bj5UrPDwY2fpu9oPwj+mPpOwQZNQ8D3lc7Hxbpt0msIqTDCl+7byHooBYrcyPcsm8JR0eMR9UCKmpzaXfsyl2UTLmSQynDIte6uqNIpkFgb3/LcGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mc0rv1449u54t1SBf7CRIqWRLBpqKys823s528t4E1Y=;
- b=gFlx3qfw4scBrJYT3A9cyyKpyR3WdoirxH5JQ75rMK/Zs7m5+yoiuBnKfty579nGabuUPMZXjmBTYDaWrrBddJOShp7W3h4jVvcHQ/9we727Kv063KVAk5FaYlPlM8PUfV/tSfT8X8AGP6VqvnL2mabkhlpKtlVw0hI+qRwQJKNbi26YOQ1IAp+HS/nQ9uACtkF717hBsrfBJEXsXGmg8aiN8hk/sn6E7+XPoRaBYtvFzJfSqjtPcsWz21VCFvvgy/UYsf45OyJNYhzZsq7cfg+1qi9G5v5jfg+RgyIS0WNBDSof3LPxp0L1QFPIiFaP9OJWDYdpDL2YtoS2mcvpfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 3 Aug 2021 06:55:10 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84254C061757;
+        Tue,  3 Aug 2021 03:54:59 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id h14so38985090lfv.7;
+        Tue, 03 Aug 2021 03:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mc0rv1449u54t1SBf7CRIqWRLBpqKys823s528t4E1Y=;
- b=uuyJ+W6l/so1KWW0z1pKj8qJ9QtF4qnqyUGyVCFqWPovu2Dktk3sfFWoY1jOaefvP1JA9KTHdGcNBzzPZREBWbOEIsH7K9NG0hZyV5VN8JM02NQB8hJixuc35iDtgQgZei+YYBVfbGfBFRKebgGJ+1kqlehp+l8H/hzAgiJjzkY=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by BLAPR10MB4882.namprd10.prod.outlook.com (2603:10b6:208:30d::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15; Tue, 3 Aug
- 2021 13:53:19 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f10d:29d2:cb38:ed0]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f10d:29d2:cb38:ed0%8]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
- 13:53:19 +0000
-Subject: Re: [PATCH v2 5/6] PCI: Adapt all code locations to not use struct
- pci_dev::driver directly
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     kernel@pengutronix.de,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Russell Currey <ruscur@russell.cc>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Michael Buesch <m@bues.ch>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org
-References: <20210803100150.1543597-1-u.kleine-koenig@pengutronix.de>
- <20210803100150.1543597-6-u.kleine-koenig@pengutronix.de>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <d829c037-fab1-c886-7d33-f04f895f3aee@oracle.com>
-Date:   Tue, 3 Aug 2021 09:53:06 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <20210803100150.1543597-6-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: SN6PR04CA0098.namprd04.prod.outlook.com
- (2603:10b6:805:f2::39) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2KXoDmkCLy0mtIQV8YEk8GnrTc8AcGvkB/pIX44UiII=;
+        b=s4yF3mnIh0RL5KmUYYq24h3pLph3YZbj1gPyWqm4zVuxOWCNWpCoFuIEyrZsLwQ1Nb
+         532qFhGKH+82BDDc+eSur6zrCII+gDVC31Hdi4ek3lSsgPcgVnuZdmsP8RMam/XuGsPA
+         iaCCCSVuQ7edhUM7JegfRnq60ND5h+9lvlJaA1c6fTpB2uqRNher8IdS5/BmqC4l5M+V
+         kkgaaJ0i0W7YXv5zFdbCfIeeq/O8J3MYLJDtswk7eY+rWR/Z56u/VTfH6mlxwpqsShV6
+         Rv+/g0jUPpEAm8iZngoQz5X7fIQy4iDC7v7q5l6b/IprK8OHSWLnF+rG9IwOEcXFUr1w
+         SHGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2KXoDmkCLy0mtIQV8YEk8GnrTc8AcGvkB/pIX44UiII=;
+        b=MYf0NGLOdQrhLRaafWLMf9VpF6lqlMrHOBkwMfOGJEkjfwyzU9ugVwKzQT44D6ne2j
+         R6xZOnexRCE3MUVuajPig3ez23Hpc3hEIwAKRhI68r2awOOVhFgDvor3apClQV1GhsvA
+         SyrHEBwfEilAAA2B6N7SGKhSSSvM8S3Lq4pMSUQDYegylK5CzmpPBpVFxZlobS1nVuX5
+         MR8oP6CAhV2lj50IFjL3lUmtofmH9Q4oxAHxXlAtUBPqF5xRNTLp2icjbWSg5NXeW9ir
+         0vpoL5yRGjhFkcP36T1WFs0NcEH8iSu1cie3+oLh7h3Zb3/C08WMEoCWO6wYi3jD6OMq
+         Cqfg==
+X-Gm-Message-State: AOAM530uXaUavN3T7Gfto81G0ds/YJloyAjohe62RcaeW5QOtcLBh94Q
+        AjNh2wrcc1IEJ/AjfSqwnFdHtFif+w0ee5cIyCkH6w==
+X-Google-Smtp-Source: ABdhPJz4lkNvpLYsRHkTAYklsfJr1owvBciWveXeKlg/i/pxiBGek2lCSohwnG2cD23jt7l8hfNjIw==
+X-Received: by 2002:a05:6512:3b2a:: with SMTP id f42mr266677lfv.63.1627988097709;
+        Tue, 03 Aug 2021 03:54:57 -0700 (PDT)
+Received: from nergzd-desktop.localdomain ([62.122.67.26])
+        by smtp.gmail.com with ESMTPSA id a6sm1337576lfs.160.2021.08.03.03.54.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 03:54:57 -0700 (PDT)
+From:   Markuss Broks <markuss.broks@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, phone-devel@vger.kernel.org,
+        Markuss Broks <markuss.broks@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/panel: s6d27a1: Add driver for Samsung S6D27A1 display panel
+Date:   Tue,  3 Aug 2021 16:54:18 +0300
+Message-Id: <20210803135419.26495-1-markuss.broks@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.74.97.38] (160.34.89.38) by SN6PR04CA0098.namprd04.prod.outlook.com (2603:10b6:805:f2::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Tue, 3 Aug 2021 13:53:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 37d7087d-83c1-4256-b078-08d956860c71
-X-MS-TrafficTypeDiagnostic: BLAPR10MB4882:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BLAPR10MB488218AAF5D031ADC6FC687C8AF09@BLAPR10MB4882.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:220;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pJbbt+5/9kOx88hw2B+e/dR3hqeLGfOWg0qKPQ1rLn2G8odXH6Og3cq0j23ZuY3529lkNoglnlfdpingHqyErdlmrq4TGMpp4GbH6yYjpeU+V0jiMRCFm9l1SEherH1rnrvn+YI2iqbVVthwC/i1GKX9556Y0Ib1B2g5dAaV1q45vZpknprEzsXIvLg7xnwht3hk90mGbl/bqlf1+Wlj2sE8u6A6DOHArQVnrE/HTOWzYK927VEDDsZ/rKquJV3rh8qThc5juiqx7D+ELR2QoUDFNXPi4XBksWmQWgg4uRX/815ljP2+EW/trsxPa+ZBNEZO1WzLq/sDU3tjjauy2rn3KHwcAaVzXU9bcvF32E/9l9iWzjeZusvn9Kp+zgwic7qnVREyhmaSTZGr1wD/wxSfn2UPq64rnATU69K5Ss8Ys54zYUSCYLny+yNYv1h9xgKdezUfWgH4KNNBlG/Tljz/E+x/YaDMWi2Ge9hogn8pCkyNHnqRc4kR52JrRNPBkeDopYlxkl8gfu6JB/yvK1yST5CKq6n/gd3oYFA4mCOLaMY3odvtvMadrqBW5t8LosdZWn1d4EhN4pOMC9NJqY7WtnF6opRm0FB1l7fS6B3K+p9jrgFJJW2r2Bbiou6IBOYL8aSFThSomzWdJFYL/UfCDvcsKxlUDDG3/UaV1+/k/3P0bL+7VOSfsakA+SKJWU4kIBtZbEV6TYqVAr6iIOuilu+8RpA7xhZoOdYxTxY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(39860400002)(376002)(396003)(366004)(31696002)(4326008)(6486002)(86362001)(26005)(478600001)(53546011)(8676002)(8936002)(5660300002)(36756003)(38100700002)(6666004)(83380400001)(7366002)(44832011)(7416002)(7406005)(316002)(31686004)(66946007)(66556008)(66476007)(16576012)(2906002)(110136005)(186003)(54906003)(2616005)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dFpLZVpHOGY1aE93bEF5VzlVQlJDeW9kc3diWUhDNERuNTlpdTNmRWhUdFQ1?=
- =?utf-8?B?MXVOY2lrZUlEMDdzWEVHb1dzaTdtd1lIUTludUVqaGZ6eFREU1JkNlAxRmZL?=
- =?utf-8?B?Qi82T09SV25YeHp5dDVSU2FiMHE5bU9KRVB3QXZhYlJYeWhFcGRjakZXWElX?=
- =?utf-8?B?MldObnBJdjFtUFRkbUhQREFidEl1dmp4bGpmR0QxZFVwbmZMdUgwK0t4ZVpn?=
- =?utf-8?B?ZEdQUzFJWE9oZENOY3BzMi8rSVRxdzF4WE8yVEdMbkpuMEJ1cUphRldvU0x3?=
- =?utf-8?B?eWU0NzN4ODRVMlovQTFxaWQxYnNuZFBGVGRMQ3hnWkFSWXoxcHp4OVZXeGda?=
- =?utf-8?B?VEpUYnJ6emlNN0xPazlKN01FTEZlQ2w4c09CeVpFSkRLbEdHWENtbHl1NDRx?=
- =?utf-8?B?dVNJeUNSdVV6ZlpiNjRnd01uNkxLNzF0VlNGMmJ5SDVlbG9rR0ozdytnczRT?=
- =?utf-8?B?MnFiZllvN1BVQjNvQVZWTHAvMTF6ZGRvYVUrdG51dHh5bmhycjE4eE1DTE1H?=
- =?utf-8?B?RFh1US9waVdpOFcwR2Q5WllNb3g4aXNNVkxKVU9OU1c4cm9Qb0pFT2MwS3l5?=
- =?utf-8?B?TU5mMzAyQTFSUzRyaGdOMHhJZmIrMmtqdFo5VFh4akx3Y1AyREZsMnBwZ1dl?=
- =?utf-8?B?V1JQY0VJanRyc2hyc1k3WUNuYUxuTWw4Um1hdGh5cFZzZjdkNVhaZTMyUThj?=
- =?utf-8?B?L2xVY2pqSEFVbGRvazdFM2JmNzBFNlpNRnpERFk4cW5ydnJwVk1XZ1V3MnBB?=
- =?utf-8?B?NGttdE5NNEVMdzdza1hBRFM1eFNiZHVIN01CSEdITjNNWlZmdVZIQm1XRVdN?=
- =?utf-8?B?MWNxNkRpZ2NYRk94TzRrWHpNckMrZ1paZXNPd3pwL3FRZEpMVGl1MUZISzdH?=
- =?utf-8?B?dkRob1R2Kzl5cnlRcUMyWm5tY29aVS80cFo4Zjgxc0F2UUJUYTFudWZXVUhY?=
- =?utf-8?B?L1RjZE9hbXk4UTFKMXZHUHJHczl3eTNkZlc5NVJOZ0dsU0dNTmJ3dTlxMlZJ?=
- =?utf-8?B?VjJFV0M2Zk8vMkFnRURSeHlLck5RNXhNcWkzR25YczF5ank3MEUwUTF1NGpl?=
- =?utf-8?B?d0lyQUNqQWhjNk03cVNYWE8rbE9uNFNCQkZlMjdOWVpadU1jSVQwT2ozWUhX?=
- =?utf-8?B?Q1YrNGtUTGx1Zkw3NUljRWVyQitWSmhSSUs5TmVJS3B1MEdQMXh2TkxsTllF?=
- =?utf-8?B?TTVnditQQ29KSG8raHppYVFUQXpuWml0VzY4eStvSHk2MlJyYkh4UjI2N0xF?=
- =?utf-8?B?V09SMlVGNGVaVGxmOE41YU1Za2dmazZ3S0grbWlEb3dZZ3pUZWdJMExrWTM0?=
- =?utf-8?B?SGhNd0JsZVp0UDNKVXdzekZ5Y3dKbGR2Ymd4RUQ5bVpZVWlCNXBrdlZERWNG?=
- =?utf-8?B?dm5NR2tyWEhCcE5aOERQTGxKRmR2MzBQNGVKS1VuakpnMGgvT09BT3RqazF1?=
- =?utf-8?B?ZEdtQTQ2em1CNzc4UE43U25DcWFvS0lmZ1BvOVp4ejdReFQ1NHRnQVk5Qkgr?=
- =?utf-8?B?V21FRVB3MEpnd3JXTmJ5Q0JpYVZ1RTVlRnZJTEhHaVNWZmFtSlE1OVN1Nk5H?=
- =?utf-8?B?UWcyaE9meTJwbFFGa3NkbWpXOGpyZitsNS94TXRLUHhVMnc0Wi9ab0tSTnJ3?=
- =?utf-8?B?ZDFBZ0NXVEdsYitGd3ZTekE4TGFBSmJnVkJ3Qlpra2ZGL081emQ5cEgySUJH?=
- =?utf-8?B?SzNXbVp6SUVZSEs0STkzcXVwYU1KcEo1Qk80V0hoeDNYYjk4cXBMM21VbnJs?=
- =?utf-8?Q?u++K/dGtrLnXLIJa3V53YiAFG4Hu978PvfzVbNj?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37d7087d-83c1-4256-b078-08d956860c71
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 13:53:18.8559
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Zkce6/FDLIFABseQgPNxfSWxiaCbO+S72NwtAQH2zQBQjgiRdAeeoZ9RhSpcUqhG5J9RN9lHXD3jORKQ+IpJ7ADMDZXmE5+q2SRmYWa8pc0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4882
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10064 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
- spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108030092
-X-Proofpoint-GUID: 1zfowUBAnsX5uRsxf3xD4UCQWk3eimm2
-X-Proofpoint-ORIG-GUID: 1zfowUBAnsX5uRsxf3xD4UCQWk3eimm2
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This adds a driver for Samsung S6D27A1 display controller and panel.
+This panel is found in the Samsung GT-I8160 mobile phone,
+and possibly some other mobile phones.
 
-On 8/3/21 6:01 AM, Uwe Kleine-König wrote:
-> This prepares removing the driver member of struct pci_dev which holds the
-> same information than struct pci_dev::dev->driver.
->
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
->  arch/powerpc/include/asm/ppc-pci.h            |  3 +-
->  arch/powerpc/kernel/eeh_driver.c              | 12 ++++---
->  arch/x86/events/intel/uncore.c                |  2 +-
->  arch/x86/kernel/probe_roms.c                  |  2 +-
->  drivers/bcma/host_pci.c                       |  6 ++--
->  drivers/crypto/hisilicon/qm.c                 |  2 +-
->  drivers/crypto/qat/qat_common/adf_aer.c       |  2 +-
->  drivers/message/fusion/mptbase.c              |  4 +--
->  drivers/misc/cxl/guest.c                      | 21 +++++------
->  drivers/misc/cxl/pci.c                        | 25 +++++++------
->  .../ethernet/hisilicon/hns3/hns3_ethtool.c    |  2 +-
->  .../ethernet/marvell/prestera/prestera_pci.c  |  2 +-
->  drivers/net/ethernet/mellanox/mlxsw/pci.c     |  2 +-
->  .../ethernet/netronome/nfp/nfp_net_ethtool.c  |  2 +-
->  drivers/pci/iov.c                             | 23 +++++++-----
->  drivers/pci/pci-driver.c                      | 28 ++++++++-------
->  drivers/pci/pci.c                             | 10 +++---
->  drivers/pci/pcie/err.c                        | 35 ++++++++++---------
->  drivers/pci/xen-pcifront.c                    |  3 +-
->  drivers/ssb/pcihost_wrapper.c                 |  7 ++--
->  drivers/usb/host/xhci-pci.c                   |  3 +-
->  21 files changed, 112 insertions(+), 84 deletions(-)
+This display needs manufactrer commands to configure it to a working state;
+the commands used in this driver were taken from downstream driver
+by Gareth Phillips; sadly, there is almost no documentation on what they
+actually do.
 
+This driver re-uses the DBI infrastructure to communicate with the display.
 
-For Xen bits:
+This driver is heavily based on WideChips WS2401 display controller
+driver by Linus Walleij and on other panel drivers for reference.
 
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
+---
+ drivers/gpu/drm/panel/Kconfig                 |   8 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ drivers/gpu/drm/panel/panel-samsung-s6d27a1.c | 342 ++++++++++++++++++
+ 3 files changed, 351 insertions(+)
+ create mode 100644 drivers/gpu/drm/panel/panel-samsung-s6d27a1.c
 
+diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+index f4fe1dba99..21007b2032 100644
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -348,6 +348,14 @@ config DRM_PANEL_SAMSUNG_S6D16D0
+ 	depends on DRM_MIPI_DSI
+ 	select VIDEOMODE_HELPERS
+ 
++config DRM_PANEL_SAMSUNG_S6D27A1
++	tristate "Samsung S6D27A1 DPI panel driver"
++	depends on OF && SPI && GPIOLIB
++	select DRM_MIPI_DBI
++	help
++	  Say Y here if you want to enable support for the Samsung
++	  S6D27A1 DPI 480x800 panel.
++
+ config DRM_PANEL_SAMSUNG_S6E3HA2
+ 	tristate "Samsung S6E3HA2 DSI video mode panel"
+ 	depends on OF
+diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+index d94c27df17..d2a6fe81e9 100644
+--- a/drivers/gpu/drm/panel/Makefile
++++ b/drivers/gpu/drm/panel/Makefile
+@@ -35,6 +35,7 @@ obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM68200) += panel-raydium-rm68200.o
+ obj-$(CONFIG_DRM_PANEL_RONBO_RB070D30) += panel-ronbo-rb070d30.o
+ obj-$(CONFIG_DRM_PANEL_SAMSUNG_LD9040) += panel-samsung-ld9040.o
+ obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6D16D0) += panel-samsung-s6d16d0.o
++obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6D27A1) += panel-samsung-s6d27a1.o
+ obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E3HA2) += panel-samsung-s6e3ha2.o
+ obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E63J0X03) += panel-samsung-s6e63j0x03.o
+ obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E63M0) += panel-samsung-s6e63m0.o
+diff --git a/drivers/gpu/drm/panel/panel-samsung-s6d27a1.c b/drivers/gpu/drm/panel/panel-samsung-s6d27a1.c
+new file mode 100644
+index 0000000000..86cf8d316b
+--- /dev/null
++++ b/drivers/gpu/drm/panel/panel-samsung-s6d27a1.c
+@@ -0,0 +1,342 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Panel driver for the Samsung S6D27A1 480x800 DPI RGB panel.
++ * Found in the Samsung Galaxy Ace 2 GT-I8160 mobile phone.
++ */
++
++#include <drm/drm_modes.h>
++#include <drm/drm_mipi_dbi.h>
++#include <drm/drm_panel.h>
++
++#include <linux/backlight.h>
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/media-bus-format.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/regulator/consumer.h>
++#include <linux/spi/spi.h>
++
++#include <video/mipi_display.h>
++
++#define S6D27A1_PASSWD_L2	0xF0	/* Password Command for Level 2 Control */
++#define S6D27A1_RESCTL		0xB3	/* Resolution Select Control */
++#define S6D27A1_PANELCTL2	0xB4	/* ASG Signal Control */
++#define S6D27A1_READID1		0xDA	/* Read panel ID 1 */
++#define S6D27A1_READID2		0xDB	/* Read panel ID 2 */
++#define S6D27A1_READID3		0xDC	/* Read panel ID 3 */
++#define S6D27A1_DISPCTL		0xF2	/* Display Control */
++#define S6D27A1_MANPWR		0xF3	/* Manual Control */
++#define S6D27A1_PWRCTL1		0xF4	/* Power Control */
++#define S6D27A1_SRCCTL		0xF6	/* Source Control */
++#define S6D27A1_PANELCTL	0xF7	/* Panel Control*/
++
++static const u8 s6d27a1_dbi_read_commands[] = {
++	S6D27A1_READID1,
++	S6D27A1_READID2,
++	S6D27A1_READID3,
++	0, /* sentinel */
++};
++
++/**
++ * struct s6d27a1 - state container for a panel controlled by the WS2401
++ * controller
++ */
++struct s6d27a1 {
++	/** @dev: the container device */
++	struct device *dev;
++	/** @dbi: the DBI bus abstraction handle */
++	struct mipi_dbi dbi;
++	/** @panel: the DRM panel instance for this device */
++	struct drm_panel panel;
++	/** @width: the width of this panel in mm */
++	u32 width;
++	/** @height: the height of this panel in mm */
++	u32 height;
++	/** @reset: reset GPIO line */
++	struct gpio_desc *reset;
++	/** @regulators: VCCIO and VIO supply regulators */
++	struct regulator_bulk_data regulators[2];
++	/** @bl: Backlight, if using internal backlight */
++	struct backlight_device *bl;
++};
++
++static const struct drm_display_mode s6d27a1_480_800_mode = {
++	/*
++	 * The vendor driver states that the S6D27A1 panel
++	 * has a pixel clock frequency of 49920000 Hz / 2 = 24960000 Hz.
++	 */
++	.clock = 24960,
++	.hdisplay = 480,
++	.hsync_start = 480 + 63,
++	.hsync_end = 480 + 63 + 2,
++	.htotal = 480 + 63 + 2 + 63,
++	.vdisplay = 800,
++	.vsync_start = 800 + 11,
++	.vsync_end = 800 + 11 + 2,
++	.vtotal = 800 + 11 + 2 + 10,
++	.width_mm = 50,
++	.height_mm = 84,
++	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
++};
++
++static inline struct s6d27a1 *to_s6d27a1(struct drm_panel *panel)
++{
++	return container_of(panel, struct s6d27a1, panel);
++}
++
++#define s6d27a1_command(ctx, cmd, seq...) \
++({ \
++	struct mipi_dbi *dbi = &ctx->dbi; \
++	int ret; \
++	ret = mipi_dbi_command(dbi, cmd, seq);	\
++	if (ret) { \
++		dev_err(ctx->dev, "failure in writing command %02x\n", cmd); \
++	} \
++})
++
++static void s6d27a1_read_mtp_id(struct s6d27a1 *ctx)
++{
++	struct mipi_dbi *dbi = &ctx->dbi;
++	u8 id1, id2, id3;
++	int ret;
++
++	ret = mipi_dbi_command_read(dbi, S6D27A1_READID1, &id1);
++	if (ret) {
++		dev_err(ctx->dev, "unable to read MTP ID 1\n");
++		return;
++	}
++	ret = mipi_dbi_command_read(dbi, S6D27A1_READID2, &id1);
++	if (ret) {
++		dev_err(ctx->dev, "unable to read MTP ID 2\n");
++		return;
++	}
++	ret = mipi_dbi_command_read(dbi, S6D27A1_READID3, &id1);
++	if (ret) {
++		dev_err(ctx->dev, "unable to read MTP ID 3\n");
++		return;
++	}
++	dev_info(ctx->dev, "MTP ID: %02x %02x %02x\n", id1, id2, id3);
++}
++
++static int s6d27a1_power_on(struct s6d27a1 *ctx)
++{
++	int ret;
++
++	/* Power up */
++	ret = regulator_bulk_enable(ARRAY_SIZE(ctx->regulators),
++				    ctx->regulators);
++	if (ret) {
++		dev_err(ctx->dev, "failed to enable regulators: %d\n", ret);
++		return ret;
++	}
++	msleep(20);
++
++	/* Assert reset >=1 ms */
++	gpiod_set_value_cansleep(ctx->reset, 1);
++	usleep_range(1000, 5000);
++	/* De-assert reset */
++	gpiod_set_value_cansleep(ctx->reset, 0);
++	/* Wait >= 10 ms */
++	msleep(20);
++	dev_dbg(ctx->dev, "de-asserted RESET\n");
++
++	/*
++	 * Exit sleep mode and initialize display - some hammering is
++	 * necessary.
++	 */
++	s6d27a1_command(ctx, MIPI_DCS_EXIT_SLEEP_MODE);
++	s6d27a1_command(ctx, MIPI_DCS_EXIT_SLEEP_MODE);
++	msleep(50);
++
++	/* Magic to unlock level 2 control of the display */
++	s6d27a1_command(ctx, S6D27A1_PASSWD_L2, 0x5A, 0x5A);
++
++	/* Configure resolution to 480RGBx800 */
++	s6d27a1_command(ctx, S6D27A1_RESCTL, 0x22);
++
++	s6d27a1_command(ctx, S6D27A1_PANELCTL2, 0x00, 0x02, 0x03, 0x04, 0x05, 0x08, 0x00, 0x0c);
++
++	s6d27a1_command(ctx, S6D27A1_MANPWR, 0x01, 0x00, 0x00, 0x08, 0x08, 0x02, 0x00);
++
++	s6d27a1_command(ctx, S6D27A1_DISPCTL, 0x19, 0x00, 0x08, 0x0D, 0x03, 0x41, 0x3F);
++
++	s6d27a1_command(ctx, S6D27A1_PWRCTL1, 0x00, 0x00, 0x00, 0x00, 0x55,
++						0x44, 0x05, 0x88, 0x4B, 0x50);
++
++	s6d27a1_command(ctx, S6D27A1_SRCCTL, 0x03, 0x09, 0x8A, 0x00, 0x01, 0x16);
++
++	s6d27a1_command(ctx, S6D27A1_PANELCTL, 0x00, 0x05, 0x06, 0x07, 0x08,
++						0x01, 0x09, 0x0D, 0x0A, 0x0E,
++						0x0B, 0x0F, 0x0C, 0x10, 0x01,
++						0x11, 0x12, 0x13, 0x14, 0x05,
++						0x06, 0x07, 0x08, 0x01, 0x09,
++						0x0D, 0x0A, 0x0E, 0x0B, 0x0F,
++						0x0C, 0x10, 0x01, 0x11, 0x12,
++						0x13, 0x14);
++
++	/* lock the level 2 control */
++	s6d27a1_command(ctx, S6D27A1_PASSWD_L2, 0xA5, 0xA5);
++
++	s6d27a1_read_mtp_id(ctx);
++
++	return 0;
++}
++
++static int s6d27a1_power_off(struct s6d27a1 *ctx)
++{
++	/* Go into RESET and disable regulators */
++	gpiod_set_value_cansleep(ctx->reset, 1);
++	return regulator_bulk_disable(ARRAY_SIZE(ctx->regulators),
++				      ctx->regulators);
++}
++
++static int s6d27a1_unprepare(struct drm_panel *panel)
++{
++	struct s6d27a1 *ctx = to_s6d27a1(panel);
++
++	s6d27a1_command(ctx, MIPI_DCS_ENTER_SLEEP_MODE);
++	msleep(120);
++	return s6d27a1_power_off(to_s6d27a1(panel));
++}
++
++static int s6d27a1_disable(struct drm_panel *panel)
++{
++	struct s6d27a1 *ctx = to_s6d27a1(panel);
++
++	s6d27a1_command(ctx, MIPI_DCS_SET_DISPLAY_OFF);
++	msleep(25);
++
++	return 0;
++}
++
++static int s6d27a1_prepare(struct drm_panel *panel)
++{
++	return s6d27a1_power_on(to_s6d27a1(panel));
++}
++
++static int s6d27a1_enable(struct drm_panel *panel)
++{
++	struct s6d27a1 *ctx = to_s6d27a1(panel);
++
++	s6d27a1_command(ctx, MIPI_DCS_SET_DISPLAY_ON);
++
++	return 0;
++}
++
++/**
++ * s6d27a1_get_modes() - return the mode
++ * @panel: the panel to get the mode for
++ * @connector: reference to the central DRM connector control structure
++ */
++static int s6d27a1_get_modes(struct drm_panel *panel,
++			    struct drm_connector *connector)
++{
++	struct s6d27a1 *ctx = to_s6d27a1(panel);
++	struct drm_display_mode *mode;
++	static const u32 bus_format = MEDIA_BUS_FMT_RGB888_1X24;
++
++	mode = drm_mode_duplicate(connector->dev, &s6d27a1_480_800_mode);
++	if (!mode) {
++		dev_err(ctx->dev, "failed to add mode\n");
++		return -ENOMEM;
++	}
++
++	connector->display_info.bpc = 8;
++	connector->display_info.width_mm = mode->width_mm;
++	connector->display_info.height_mm = mode->height_mm;
++	connector->display_info.bus_flags =
++		DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE;
++	drm_display_info_set_bus_formats(&connector->display_info,
++					 &bus_format, 1);
++
++	drm_mode_set_name(mode);
++	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
++
++	drm_mode_probed_add(connector, mode);
++
++	return 1;
++}
++
++static const struct drm_panel_funcs s6d27a1_drm_funcs = {
++	.disable = s6d27a1_disable,
++	.unprepare = s6d27a1_unprepare,
++	.prepare = s6d27a1_prepare,
++	.enable = s6d27a1_enable,
++	.get_modes = s6d27a1_get_modes,
++};
++
++static int s6d27a1_probe(struct spi_device *spi)
++{
++	struct device *dev = &spi->dev;
++	struct s6d27a1 *ctx;
++	int ret;
++
++	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return -ENOMEM;
++	ctx->dev = dev;
++
++	/*
++	 * VCI   is the analog voltage supply
++	 * VCCIO is the digital I/O voltage supply
++	 */
++	ctx->regulators[0].supply = "vci";
++	ctx->regulators[1].supply = "vccio";
++	ret = devm_regulator_bulk_get(dev,
++				      ARRAY_SIZE(ctx->regulators),
++				      ctx->regulators);
++	if (ret)
++		return dev_err_probe(dev, ret, "failed to get regulators\n");
++
++	ctx->reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(ctx->reset)) {
++		ret = PTR_ERR(ctx->reset);
++		return dev_err_probe(dev, ret, "no RESET GPIO\n");
++	}
++
++	ret = mipi_dbi_spi_init(spi, &ctx->dbi, NULL);
++	if (ret)
++		return dev_err_probe(dev, ret, "MIPI DBI init failed\n");
++	ctx->dbi.read_commands = s6d27a1_dbi_read_commands;
++
++	drm_panel_init(&ctx->panel, dev, &s6d27a1_drm_funcs,
++		       DRM_MODE_CONNECTOR_DPI);
++
++	spi_set_drvdata(spi, ctx);
++
++	drm_panel_add(&ctx->panel);
++	dev_dbg(dev, "added panel\n");
++
++	return 0;
++}
++
++static int s6d27a1_remove(struct spi_device *spi)
++{
++	struct s6d27a1 *ctx = spi_get_drvdata(spi);
++
++	drm_panel_remove(&ctx->panel);
++	return 0;
++}
++
++static const struct of_device_id s6d27a1_match[] = {
++	{ .compatible = "samsung,s6d27a1", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, s6d27a1_match);
++
++static struct spi_driver s6d27a1_driver = {
++	.probe		= s6d27a1_probe,
++	.remove		= s6d27a1_remove,
++	.driver		= {
++		.name	= "s6d27a1-panel",
++		.of_match_table = s6d27a1_match,
++	},
++};
++module_spi_driver(s6d27a1_driver);
++
++MODULE_AUTHOR("Markuss Broks <markuss.broks@gmail.com>");
++MODULE_DESCRIPTION("Samsung S6D27A1 panel driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.32.0
 
