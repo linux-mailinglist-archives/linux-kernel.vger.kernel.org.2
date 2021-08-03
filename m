@@ -2,87 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993AA3DE35E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8583DE365
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhHCAIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 20:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50622 "EHLO
+        id S233074AbhHCAJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 20:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbhHCAI2 (ORCPT
+        with ESMTP id S232772AbhHCAJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 20:08:28 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BD6C061764;
-        Mon,  2 Aug 2021 17:08:12 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id j1so27419353pjv.3;
-        Mon, 02 Aug 2021 17:08:12 -0700 (PDT)
+        Mon, 2 Aug 2021 20:09:55 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFDCC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 17:09:45 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id u2so13329393plg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 17:09:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hnWZQqtS4cs6S2eqLlexSQq+7EoZ7X5M8SRSYOU4pSg=;
-        b=fa9MN6mrs7i6nnx9UkVP//SvAd4Lpxw2vszy+gNUuNmEbGA4gPhMsTCzseTry+F9JA
-         9KUIDsbNNqZon2DqmmpXXXuYfOyiLRBWrZ0eLUt1/1OxAuHG3HW1pbgH7dkB/zl6vXYX
-         hbM5xEg9XsQ8tZNHnpZzm3eQr3GUFkKm2VLmPVI06fJxz7CM6fMaZ0KPq6YeMdwV32n5
-         nAG8nhxTuypwryQ9UqbxoDeplUE7ZGbXmGn0s2O6c2/0uWsC+Tjx3uqO/3kOe+wOrEd2
-         h3ECjjXCaDUwQh9Ozd76QF7f/2/oMi9qvBJrUGOtqwexcoSUUFe5SgWqcQEgyuGJi08u
-         nKcA==
+        bh=+j4BJpyfr/0bKpgqLUIWH//i3b70ShWiDMnlMOcrZc4=;
+        b=eEcbDKMNyZMv+PMgaHxZKMzSnpGt/8lW8qX0LM8mMc1QuP2Uem3YTKkMxkzZhEpFSy
+         ViAVjzj6ya5et0R6/1h6DHh6BqGEHxuEpXjs8SyGANf18SiilZkzQ7Ne2uFbgPOuWiqd
+         kMZ2hNrdwjrUgJC6mrCRv6ZMCNHRkfRiTAhsTVlcWxX6RIY4FL8K6DJcJt2jUcJh0XZJ
+         XimfGezD2Bo8/eWKrrfVTkz1RZ423OrsSRKzH9bCJOVLSQCRknWaPW//mRMiJMBJy6FB
+         eT0yhYXtzbmVnMjkwBRujoC7WUH28TflA+iWjDphpVqDhoylN3G7VoFyA9Lfe/VP7u6Q
+         P8ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hnWZQqtS4cs6S2eqLlexSQq+7EoZ7X5M8SRSYOU4pSg=;
-        b=XgB3kUiF0VMPOQFdpmIIjNnBD295rxd7KJBZos3NWk9pIJTjS3k9y9uOUPXFYn73ru
-         ajrbgfyGr7s1bhf4hViUPImIz+eMXwXqrSgfJO7hh5npvFAsLp3xStEE7fLw7lnWIXIB
-         gQiE9w7IlMHlherVlh/poAQVOqkAuEseAe/iplJFFAGZ1UGGZx1EU8AvuMhvhJJaLTA0
-         aU4/ba0ADYPSunRyBxZAUeuv6LnpWlHelpZyqxx+HX1d/Qai3cAfhlRd0pYX/r6e34tq
-         qBXBwS+6ew4OlqyksGPyMF5e3myUaW6JVhsYVSPT15yIxd4M+YqBWcUeu+LvztZI5qJA
-         Mgbg==
-X-Gm-Message-State: AOAM532OipxC0PHTEi54YEIdrhmgty7VAT12vvOau2ugvoBFQraOtutT
-        Lgtr6NxKX3UkzJ8QvVVR8CS4cv8rV6e9TqlQn3g=
-X-Google-Smtp-Source: ABdhPJx6IA17rcZlw2ovaA9RVa6EBb8E+UvzFg4a17ZqxRkhWYJVzFkIU5ChOqjKvCcpAa5aOBVenEhHesExDGA4PNs=
-X-Received: by 2002:a63:d704:: with SMTP id d4mr791229pgg.179.1627949292197;
- Mon, 02 Aug 2021 17:08:12 -0700 (PDT)
+        bh=+j4BJpyfr/0bKpgqLUIWH//i3b70ShWiDMnlMOcrZc4=;
+        b=tdA3ZiVPs8ggy4Akpze9/Cm+CBQDBANw4h8MO3sS+3dsEx6K1caNmJFUghCmaT4JAZ
+         sxkkL74m804/Bly7YMZokP0h+4fljShSNDovRdyth+rgpfAVx9o8Xf/dZxXQGI87xILC
+         qaKDgXncFJzUVYv/8YL/Vts6SNgE9ZrNCg/4lha+05bUjmTKGN91RhAtjHqiRd06tHeR
+         al403OPN55IWEKbSRL3Nqat3BlVdJKkpD32l7EGo6AzQswCbY9XNqXnfJYELQNYNBWEG
+         QvGAZG2y8j9hGRdpkIIZv3jdFdR4jDaTPTicu1THSdJRNTirg0F4KhqXek2/0rJXwG6D
+         XgwA==
+X-Gm-Message-State: AOAM532phjtKU4DmymDBjgqekGOUTG5SrG4m4u4HoyJ8JafTA3tGb+LD
+        mrCdRZA4+vDLb3NeUFck/g+5bT2p2OqqW3dYJJ48uw==
+X-Google-Smtp-Source: ABdhPJyXrIFW+sRaGg7Z4Xh/FAU4fOb9eNxkUqQavFW+qYQNyTNyh/csjGlerOoJZ9Ud8jPayJ7E2swcUPU2nfINbbY=
+X-Received: by 2002:a63:1857:: with SMTP id 23mr673574pgy.403.1627949384952;
+ Mon, 02 Aug 2021 17:09:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <1931ca440b47344fe357d5438aeab4b439943d10.1627936393.git.peilin.ye@bytedance.com>
- <672e6f13-bf58-d542-6712-e6f803286373@iogearbox.net>
-In-Reply-To: <672e6f13-bf58-d542-6712-e6f803286373@iogearbox.net>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 2 Aug 2021 17:08:01 -0700
-Message-ID: <CAM_iQpUb-zbBUGdYxCwxBJSKJ=6Gm3hFwFP+nc+43E_hofuK1w@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] net/sched: sch_ingress: Support clsact
- egress mini-Qdisc option
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Peilin Ye <peilin.ye@bytedance.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
+References: <20210624171759.4125094-1-dianders@chromium.org>
+ <YNXXwvuErVnlHt+s@8bytes.org> <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
+ <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
+ <YOaymBHc4g2cIfRn@8bytes.org> <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
+ <e3555c49-2978-355f-93bb-dbfa7d09cab8@arm.com> <CAD=FV=XaTqNDn=vLEXfJ2dV+EH2UoxPfzWeiS+_sZ9hrQ274bw@mail.gmail.com>
+In-Reply-To: <CAD=FV=XaTqNDn=vLEXfJ2dV+EH2UoxPfzWeiS+_sZ9hrQ274bw@mail.gmail.com>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Mon, 2 Aug 2021 17:09:08 -0700
+Message-ID: <CACK8Z6FV+QYR01=aP4AT8rNUQMkX-WwesHzf5XY8465KuUZ=_Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
+        Saravana Kannan <saravanak@google.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Sonny Rao <sonnyrao@chromium.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 2:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+Hi Robin, Doug,
+
+On Wed, Jul 14, 2021 at 8:14 AM Doug Anderson <dianders@chromium.org> wrote:
 >
-> NAK, just use clsact qdisc in the first place which has both ingress and egress
-> support instead of adding such hack. You already need to change your scripts for
-> clsact-on, so just swap 'tc qdisc add dev eth0 ingress' to 'tc qdisc add dev eth0
-> clsact' w/o needing to change kernel.
+> Hi,
+>
+> On Tue, Jul 13, 2021 at 11:07 AM Robin Murphy <robin.murphy@arm.com> wrote:
+> >
+> > On 2021-07-08 15:36, Doug Anderson wrote:
+> > [...]
+> > >> Or document for the users that want performance how to
+> > >> change the setting, so that they can decide.
+> > >
+> > > Pushing this to the users can make sense for a Linux distribution but
+> > > probably less sense for an embedded platform. So I'm happy to make
+> > > some way for a user to override this (like via kernel command line),
+> > > but I also strongly believe there should be a default that users don't
+> > > have to futz with that we think is correct.
+> >
+> > FYI I did make progress on the "punt it to userspace" approach. I'm not
+> > posting it even as an RFC yet because I still need to set up a machine
+> > to try actually testing any of it (it's almost certainly broken
+> > somewhere), but in the end it comes out looking surprisingly not too bad
+> > overall. If you're curious to take a look in the meantime I put it here:
+> >
+> > https://gitlab.arm.com/linux-arm/linux-rm/-/commits/iommu/fq
 
-If we were able to change the "script" as easily as you described,
-you would not even see such a patch. The fact is it is not under
-our control, the most we can do is change the qdisc after it is
-created by the "script", ideally without interfering its traffic,
-hence we have such a patch.
+I was wondering if you got any closer to testing / sending it out? I
+looked at the patches and am trying to understand, would they also
+make it possible to convert at runtime, an existing "non-strict"
+domain (for a particular device) into a "strict" domain leaving the
+other devices/domains as-is? Please let me know when you think your
+patches are good to be tested, and I'd also be interested in trying
+them out.
 
-(BTW, it is actually not a script, it is a cloud platform.)
+>
+> Being able to change this at runtime through sysfs sounds great and it
+> fills all the needs I'm aware of, thanks! In Chrome OS we can just use
+> this with some udev rules and get everything we need.
 
-Thanks.
+I still have another (inverse) use case where this does not work:
+We have an Intel chromebook with the default domain type being
+non-strict. There is an LTE modem (an internal PCI device which cannot
+be marked external), which we'd like to be treated as a "Strict" DMA
+domain.
+
+Do I understand it right that using Rob's patches, I could potentially
+switch the domain to "strict" *after* booting (since we don't use
+initramfs), but by that time, the driver might have already attached
+to the modem device (using "non-strict" domain), and thus the damage
+may have already been done? So perhaps we still need a device property
+that the firmware could use to indicate "strictness" for certain
+devices at boot?
+
+Thanks,
+Rajat
