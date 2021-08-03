@@ -2,116 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28D13DF0E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF663DF0E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235892AbhHCO5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234206AbhHCO53 (ORCPT
+        id S236405AbhHCO5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:57:36 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46450 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236022AbhHCO5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:57:29 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648E9C061757;
-        Tue,  3 Aug 2021 07:57:17 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id a93so16123872ybi.1;
-        Tue, 03 Aug 2021 07:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9IoTpQSoFN8X9feSI035kPuC1yq++XFdeyD5Oq4YGKU=;
-        b=tfU660ceP9Cw9lVo5xVG4iqGiQldb5dnzTWtjqNPtgZ59X5oh/8gmpazWSHzOiYRHs
-         4YPnjMgkpVunHrAZj+hd+fqCPVyGNFqT0oCt795YrACgmSxgu7d2SsSCoiz5H/HbBXEa
-         mqZIagubbvvRpG3QhQXy0PMZY6fgAOnaqFt8i/z3YQYs2xdVnB0UrMpHzt8eEXUTQ8Jy
-         IhiPfdb2rJirBFo3vDdH0lSO8nIfPqbZ6b7Sla5JZJoptP17RzqoLk+SAxwkBAkDZUv2
-         Eb5RaXl6wj3rGr4Aso8br/GioipTt1kKzLXHTiaVcGeCymdzYPCCGKZS3ODB2xRkE9po
-         2z6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9IoTpQSoFN8X9feSI035kPuC1yq++XFdeyD5Oq4YGKU=;
-        b=A9HkzsNA0qaOIJmdkSEaZOXtZv6M0/M6vet31cUOszRXtgWciCVqfqaJUq9OMRmst3
-         trFHwDGWHJYzGDOJ5lDQkZszIcSmxQQY8KD3NnPxl1AskeVluuAUN8rKW+nKW1/oeFhV
-         MeH/Xv88CU62/xCPSH4Lo6jMrfG9tXZ3K+CDA2gl3a1SI4+NqGPOv409GWqw0HOs7tXL
-         RgBIa5hxyXlvE2P46mAF9kpFTNvqbjUTYtqv6nXL4eySlSUsueo4bmxPfPB505CE2lHM
-         tOTAFsfxWWZrXQUVV4w2qF9X71JUxj333Uq+KdmsBY1b2sim/mj0Gv9oWA3UgyGGXWZe
-         Hcmg==
-X-Gm-Message-State: AOAM530IkRVeX4ikxTc8omYbH9gfs3Bfr5uYv+PRmR3R9eM3k/tfRrUp
-        337zDgsuvQSEtBLeiXcfUMJeLVBzksx++P7zh90=
-X-Google-Smtp-Source: ABdhPJzznB420tcQq5+eEEI7CtIXVisjpepyS5Oyo434ofvSlrzRcz+2mrznrUI0oge3JgIa+IQmUWB6vwiOZr23O58=
-X-Received: by 2002:a25:1546:: with SMTP id 67mr29005241ybv.331.1628002636674;
- Tue, 03 Aug 2021 07:57:16 -0700 (PDT)
+        Tue, 3 Aug 2021 10:57:32 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 173Euqjp051587;
+        Tue, 3 Aug 2021 09:56:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1628002612;
+        bh=+Xji1zKIuLogX0B+kK6j4X2dEkjBXwuwPZRCCqTYn94=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=hfy2ciXNXPYLOeWd5Rgr0vwK6t5j4Ywtiq8rv5tnPhp/Hi33vvUtdM5b5EKe6Ybb2
+         x/+A1Almuf8Co17KmPyhthoPXcM7ZZh0PFl4pFDHM4yQJnaoLuPMKi1vAtrdJdeb0k
+         w/iELA9P0/DoMh1ej4YYg3XR1zOSqBnlcHwvyE0g=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 173EuqjM065661
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Aug 2021 09:56:52 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 3 Aug
+ 2021 09:56:52 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 3 Aug 2021 09:56:52 -0500
+Received: from [10.250.232.234] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 173Euia3020120;
+        Tue, 3 Aug 2021 09:56:45 -0500
+Subject: Re: [PATCH v7 5/7] PCI: cadence: Add support to configure virtual
+ functions
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+References: <20210803050310.27122-1-kishon@ti.com>
+ <20210803050310.27122-6-kishon@ti.com> <20210803114530.GE11252@lpieralisi>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <be907fe7-4095-e28b-5575-76629edc30f0@ti.com>
+Date:   Tue, 3 Aug 2021 20:26:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CADVatmOf+ZfxXA=LBSUqDZApZG3K1Q8GV2N5CR5KgrJLqTGsfg@mail.gmail.com>
- <f38b93f3-4cdb-1f9b-bd81-51d32275555e@gmail.com> <4c339bea-87ff-cb41-732f-05fc5aff18fa@gmail.com>
- <CADVatmPwM-2oma2mCXnQViKK5DfZ2GS5FLmteEDYwOEOK-mjMg@mail.gmail.com>
- <8db71657-bd61-6b1f-035f-9a69221e7cb3@gmail.com> <CADVatmPPnAWyOmyqT3iggeO_hOuPpALF5hqAqbQkrdvCPB5UaQ@mail.gmail.com>
- <98f8ec51-9d84-0e74-4c1c-a463f2d69d9d@gmail.com>
-In-Reply-To: <98f8ec51-9d84-0e74-4c1c-a463f2d69d9d@gmail.com>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Tue, 3 Aug 2021 15:56:40 +0100
-Message-ID: <CADVatmPB79srVmtudV+r5dZKtRoo8ZHZ62r0uqQLFTH-1yi+7Q@mail.gmail.com>
-Subject: Re: KASAN: stack-out-of-bounds in iov_iter_revert
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210803114530.GE11252@lpieralisi>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 11:34 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->
-> On 8/3/21 8:47 AM, Sudip Mukherjee wrote:
-> > On Mon, Aug 2, 2021 at 12:55 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
-> >>
-> >> On 8/1/21 9:28 PM, Sudip Mukherjee wrote:
-> >>> Hi Pavel,
-> >>>
-> >>> On Sun, Aug 1, 2021 at 9:52 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
-> >>>>
-> >>>> On 8/1/21 1:10 AM, Pavel Begunkov wrote:
-> >>>>> On 7/31/21 7:21 PM, Sudip Mukherjee wrote:
-> >>>>>> Hi Jens, Pavel,
-> >>>>>>
-> >>>>>> We had been running syzkaller on v5.10.y and a "KASAN:
-> >>>>>> stack-out-of-bounds in iov_iter_revert" was being reported on it. I
-> >>>>>> got some time to check that today and have managed to get a syzkaller
-> >>>>>> reproducer. I dont have a C reproducer which I can share but I can use
-> >>>>>> the syz-reproducer to reproduce this with v5.14-rc3 and also with
-> >>>>>> next-20210730.
-> >>>>>
-> >>>>> Can you try out the diff below? Not a full-fledged fix, but need to
-> >>>>> check a hunch.
-> >>>>>
-> >>>>> If that's important, I was using this branch:
-> >>>>> git://git.kernel.dk/linux-block io_uring-5.14
-> >>>>
-> >>>> Or better this one, just in case it ooopses on warnings.
-> >>>
-> >>> I tested this one on top of "git://git.kernel.dk/linux-block
-> >>> io_uring-5.14" and the issue was still seen, but after the BUG trace I
-> >>> got lots of "truncated wr" message. The trace is:
-> >>
-> >> That's interesting, thanks
-> >> Can you share the syz reproducer?
-> >
-> > Unfortunately I dont have a C reproducer, but this is the reproducer
-> > for syzkaller:
->
-> Thanks. Maybe I'm not perfectly familiar with syz, but were there
-> any options? Like threaded, collide, etc.?
+Hi Lorenzo,
 
-Sorry, my  mistake. I am still learning how syzkaller works. And I
-should have given the link to the report with my mail.
-https://elisa-builder-00.iol.unh.edu/syzkaller/report?id=959057ecd2886ff0c38cc53fa9c8eae46c1d7496
+On 03/08/21 5:15 pm, Lorenzo Pieralisi wrote:
+> On Tue, Aug 03, 2021 at 10:33:08AM +0530, Kishon Vijay Abraham I wrote:
+>> Now that support for SR-IOV is added in PCIe endpoint core, add support
+>> to configure virtual functions in the Cadence PCIe EP driver.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> Acked-by: Tom Joseph <tjoseph@cadence.com>
+>> ---
+>>  .../pci/controller/cadence/pcie-cadence-ep.c  | 241 +++++++++++++++---
+>>  drivers/pci/controller/cadence/pcie-cadence.h |   7 +
+>>  2 files changed, 217 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+>> index 912a15be8bfd..791915054ff4 100644
+>> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
+>> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+>> @@ -20,7 +20,18 @@ static int cdns_pcie_ep_write_header(struct pci_epc *epc, u8 fn, u8 vfn,
+>>  				     struct pci_epf_header *hdr)
+>>  {
+>>  	struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
+>> +	u32 cap = CDNS_PCIE_EP_FUNC_SRIOV_CAP_OFFSET;
+>>  	struct cdns_pcie *pcie = &ep->pcie;
+>> +	u32 reg;
+>> +
+>> +	if (vfn > 1) {
+>> +		dev_dbg(&epc->dev, "Only Virtual Function #1 has deviceID\n");
+>> +		return 0;
+> 
+> Shouldn't this return an error ?
 
-And also, I now have a C reproducer also, if that helps.
+Since the same function driver could be used for physical function and
+virtual function, I tried to avoid adding any additional case specific
+for virtual function in the function driver.
 
+If we want to return an error here, then the function driver should be
+modified to not invoke writeheader for vfn > 1.
+> 
+>> +	} else if (vfn == 1) {
+>> +		reg = cap + PCI_SRIOV_VF_DID;
+>> +		cdns_pcie_ep_fn_writew(pcie, fn, reg, hdr->deviceid);
+>> +		return 0;
+>> +	}
+>>  
+>>  	cdns_pcie_ep_fn_writew(pcie, fn, PCI_DEVICE_ID, hdr->deviceid);
+>>  	cdns_pcie_ep_fn_writeb(pcie, fn, PCI_REVISION_ID, hdr->revid);
+>> @@ -51,12 +62,14 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, u8 fn, u8 vfn,
+>>  				struct pci_epf_bar *epf_bar)
+>>  {
+>>  	struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
+>> +	u32 cap = CDNS_PCIE_EP_FUNC_SRIOV_CAP_OFFSET;
+>>  	struct cdns_pcie_epf *epf = &ep->epf[fn];
+>>  	struct cdns_pcie *pcie = &ep->pcie;
+>>  	dma_addr_t bar_phys = epf_bar->phys_addr;
+>>  	enum pci_barno bar = epf_bar->barno;
+>>  	int flags = epf_bar->flags;
+>>  	u32 addr0, addr1, reg, cfg, b, aperture, ctrl;
+>> +	u32 first_vf_offset, stride;
+>>  	u64 sz;
+>>  
+>>  	/* BAR size is 2^(aperture + 7) */
+>> @@ -92,26 +105,50 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, u8 fn, u8 vfn,
+>>  
+>>  	addr0 = lower_32_bits(bar_phys);
+>>  	addr1 = upper_32_bits(bar_phys);
+>> +
+>> +	if (vfn == 1) {
+>> +		/* All virtual functions use the same BAR config */
+>> +		if (bar < BAR_4) {
+>> +			reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG0(fn);
+>> +			b = bar;
+>> +		} else {
+>> +			reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG1(fn);
+>> +			b = bar - BAR_4;
+>> +		}
+>> +	} else if (vfn == 0) {
+>> +		/* BAR configuration for physical function */
+>> +		if (bar < BAR_4) {
+>> +			reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG0(fn);
+>> +			b = bar;
+>> +		} else {
+>> +			reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG1(fn);
+>> +			b = bar - BAR_4;
+>> +		}
+>> +	}
+> 
+> Code in both branches is almost identical except for what is
+> assigned to reg, it is not fundamental but maybe it can be rewritten
+> more concisely.
 
--- 
-Regards
-Sudip
+okay.. let me think.
+
+Thanks
+Kishon
