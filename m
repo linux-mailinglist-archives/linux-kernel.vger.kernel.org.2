@@ -2,311 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785093DEB35
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AA93DEB34
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235578AbhHCKpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:45:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29294 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235058AbhHCKpd (ORCPT
+        id S235535AbhHCKpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:45:19 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41920 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235058AbhHCKpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:45:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627987521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jKgg9/d8334eBYt/1ABSUHMbzu4iE6tM1orTJdxi55A=;
-        b=fbYKD/lBNBLpkh9GjxhXehuLtekEFvSrM5wM+R0fVB1CuEaxo2baRbHk1oxvPeYfj8iukW
-        InAS0IRoWcEsUvx0hNPSxaS+BVas0RlC3z/ht56mM+RvnZg3ZX0QARBZt2ajYIcFnbzq3n
-        Xx9z50YvtjAk+yE/CcHPwuCCrLu4zWE=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-164-zk2wBvp9NZ6T2NLfnAq_UQ-1; Tue, 03 Aug 2021 06:45:20 -0400
-X-MC-Unique: zk2wBvp9NZ6T2NLfnAq_UQ-1
-Received: by mail-ej1-f70.google.com with SMTP id nb40-20020a1709071ca8b02905992266c319so2401367ejc.21
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 03:45:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jKgg9/d8334eBYt/1ABSUHMbzu4iE6tM1orTJdxi55A=;
-        b=nwBifuidc9cdn/VcjzClLeRg81obYBWuS4nZ6QPt/O56OxTVKE2BTmD+M04iELHVUB
-         mJohZFswQmrbqt5thhZ2VMzOxukNHUJEAl5oARxhKQgaxsuph8BFwLcWbMjlFg94M95e
-         EEHV7E2c6ofeECWAGgTjv4ei1VpXpkQyq73wfCOWiiF1PC9ZXZtLnTS0nILRYFDAxjd6
-         XJiesDcMwd9x5/zrErR7V5F5FJK4VN7x9gUAXXYnkNzfOuUaESsKBrP2ScP0jj7Ljhfo
-         76uieZ9bHYoFqLfJ8J6/XHzMvIuHbiGH7+E2RSepsh8EBDmvDPxCR5PrEjXhCiQtGtkP
-         pIGA==
-X-Gm-Message-State: AOAM5308jGWaH/CJh195cJg2pBnxIt/nQ1UUfzmqeB9P15sUqV7lGv6d
-        Paypfq3A4UQUWOt5z7B6pb4F225YZw8uN9+cNQLBoChxqJ9Eo76ERC0u3zl6mlB3swSfAYAyHAx
-        tKZb04fNqgLcFb2ymatFk0ZvT
-X-Received: by 2002:aa7:c042:: with SMTP id k2mr25156561edo.104.1627987518814;
-        Tue, 03 Aug 2021 03:45:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPBJbv0PItHSEze5gql55lCJ9qClCLtQRaeXCgZ0XkChOhizSm0GIteumE7y859q/p48giEA==
-X-Received: by 2002:aa7:c042:: with SMTP id k2mr25156544edo.104.1627987518512;
-        Tue, 03 Aug 2021 03:45:18 -0700 (PDT)
-Received: from localhost.localdomain.com ([151.29.73.156])
-        by smtp.gmail.com with ESMTPSA id x4sm5859663ejb.106.2021.08.03.03.45.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 03:45:17 -0700 (PDT)
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     peterz@infradead.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org, vincent.guittot@linaro.org,
-        rostedt@goodmis.org, dietmar.eggemann@arm.com, bristot@redhat.com,
-        bsegall@google.com, mgorman@suse.de,
-        Mark Simmons <msimmons@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH v2] sched/rt: Fix double enqueue caused by rt_effective_prio
-Date:   Tue,  3 Aug 2021 12:45:01 +0200
-Message-Id: <20210803104501.38333-1-juri.lelli@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 3 Aug 2021 06:45:14 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 929B721EFB;
+        Tue,  3 Aug 2021 10:45:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627987502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LnNAeex2HypcjUY5rCZp4LyUWdVLz/QLbt8C8VLw12o=;
+        b=cOvzdLEm1KFavLJ03fmuXUhoEvUTTkMA2nWIA8iyV4x/V0CNoYrdtIOkZDk+Zl2p1VPy/z
+        sPKsFZ03elGTHrFdpVO7Fk4ar/Qf9hTh8dGT4X6/S/5C6DVFEy6lrvmeSPwxLrdmGHRuoz
+        OHklsOFg35y5vBuEgkSrzBkibfuoLko=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627987502;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LnNAeex2HypcjUY5rCZp4LyUWdVLz/QLbt8C8VLw12o=;
+        b=qCXPg7Hh4fXpKiEJT2yrRVwDvwGLVlNUvrjcm6zyx8dgkZhX/XJEXdjWria8F7xO9K33Ae
+        nO3EO2pMY0ZmN6Bw==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 6E8ADA3BCF;
+        Tue,  3 Aug 2021 10:45:02 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4F1121E62D6; Tue,  3 Aug 2021 12:45:02 +0200 (CEST)
+Date:   Tue, 3 Aug 2021 12:45:02 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Jan Kara <jack@suse.cz>, Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Mariotti <mariottiluca1@hotmail.it>,
+        Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
+        <holger@applied-asynchrony.com>,
+        Pietro Pedroni <pedroni.pietro.96@gmail.com>,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>,
+        Khazhy Kumykov <khazhy@google.com>
+Subject: Re: [PATCH FIXES/IMPROVEMENTS 0/7] block, bfq: preserve control,
+ boost throughput, fix bugs
+Message-ID: <20210803104502.GA10621@quack2.suse.cz>
+References: <20210619140948.98712-1-paolo.valente@linaro.org>
+ <20210622162948.GJ14261@quack2.suse.cz>
+ <2957867.CS06ZTPI5V@spock>
+ <1630141.ki6cbyAirf@natalenko.name>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1630141.ki6cbyAirf@natalenko.name>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+On Mon 02-08-21 22:40:26, Oleksandr Natalenko wrote:
+> Hello.
+> 
+> On sobota 3. července 2021 0:07:53 CEST Oleksandr Natalenko wrote:
+> > On úterý 22. června 2021 18:29:48 CEST Jan Kara wrote:
+> > > On Tue 22-06-21 09:35:05, Oleksandr Natalenko wrote:
+> > > > On úterý 22. června 2021 9:08:43 CEST Paolo Valente wrote:
+> > > > > CCing also Jan and Khazhy, because in your commit log I see also the
+> > > > > commit on bfq_requests_merged().
+> > > > > 
+> > > > > Is this OOPS reproducible for you?
+> > > > 
+> > > > No, I haven't found a reproducer, at least yet. It took half a day of
+> > > > uptime to hit this, so might not be that easy.
+> > > 
+> > > Hum, if you can acquire a crash dump it would be the easiest I guess. We'd
+> > > need to find out more about the request we crash on - whether it's
+> > > otherwise valid, in what state it is etc...
+> > 
+> > Still have no reliable reproducer and no vmcore, however I'm running v5.13
+> > with the following patches applied on top of it:
+> > 
+> > ```
+> > blk: Fix lock inversion between ioc lock and bfqd lock
+> > bfq: Remove merged request already in bfq_requests_merged()
+> > block: Remove unnecessary elevator operation checks
+> > block: Do not pull requests from the scheduler when we cannot dispatch them
+> > block, bfq: reset waker pointer with shared queues
+> > block, bfq: check waker only for queues with no in-flight I/O
+> > block, bfq: avoid delayed merge of async queues
+> > block, bfq: boost throughput by extending queue-merging times
+> > block, bfq: consider also creation time in delayed stable merge
+> > block, bfq: fix delayed stable merge check
+> > block, bfq: let also stably merged queues enjoy weight raising
+> > ```
+> > 
+> > and just got the following crash:
+> > 
+> > ```
+> > [60313.522570] ------------[ cut here ]------------
+> > [60313.522579] WARNING: CPU: 20 PID: 388 at arch/x86/include/asm/kfence.h:44
+> > kfence_protect_page+0x39/0xc0
 
-Double enqueues in rt runqueues (list) have been reported while running
-a simple test that spawns a number of threads doing a short sleep/run
-pattern while being concurrently setscheduled between rt and fair class.
+<snip>
 
-WARNING: CPU: 3 PID: 2825 at kernel/sched/rt.c:1294 enqueue_task_rt+0x355/0x360
-CPU: 3 PID: 2825 Comm: setsched__13
-RIP: 0010:enqueue_task_rt+0x355/0x360
-Call Trace:
- __sched_setscheduler+0x581/0x9d0
- _sched_setscheduler+0x63/0xa0
- do_sched_setscheduler+0xa0/0x150
- __x64_sys_sched_setscheduler+0x1a/0x30
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [60313.522665] CPU: 20 PID: 388 Comm: kworker/20:1H Tainted: G        W
+> > 5.13.0-pf2 #1
+> > [60313.522668] Hardware name: ASUS System Product Name/Pro WS X570-ACE, BIOS
+> > 3601 05/26/2021
+> > [60313.522671] Workqueue: kblockd blk_mq_run_work_fn
+> > [60313.522675] RIP: 0010:kfence_protect_page+0x39/0xc0
+> > [60313.522679] Code: 04 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 c7
+> > 44 24 04 00 00 00 00 e8 83 20 d5 ff 48 85 c0 74 07 83 7c 24 04 01 74 06
+> > <0f> 0b 31 c0 eb 4c 48 8b 38 48 89 c2 84 db 75 59 48 89 f8 0f 1f 40
+> > [60313.522682] RSP: 0018:ffffb559c0affb28 EFLAGS: 00010046
+> > [60313.522684] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
+> > ffffb559c0affb2c [60313.522687] RDX: ffffb559c0affb2c RSI: 0000000000000000
+> > RDI: 0000000000000000 [60313.522690] RBP: 0000000000000000 R08:
+> > 0000000000000000 R09:
+> > 0000000000000000
+> > [60313.522692] R10: 0000000000000000 R11: 0000000000000000 R12:
+> > 0000000000000002
+> > [60313.522694] R13: ffffb559c0affc28 R14: 00000000c0affc01 R15:
+> > 0000000000000000 [60313.522696] FS:  0000000000000000(0000)
+> > GS:ffff8cf44ef00000(0000) knlGS: 0000000000000000
+> > [60313.522698] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [60313.522700] CR2: 0000000000000120 CR3: 000000013ebce000 CR4:
+> > 0000000000350ee0
+> > [60313.522702] Call Trace:
+> > [60313.522707]  kfence_handle_page_fault+0xa6/0x280
+> > [60313.522710]  page_fault_oops+0x9d/0x2d0
+> > [60313.522714]  exc_page_fault+0x78/0x180
+> > [60313.522718]  asm_exc_page_fault+0x1e/0x30
+> > [60313.522721] RIP: 0010:bfq_dispatch_request+0x4c3/0x1280
+> > [60313.522725] Code: 4c 89 e7 e8 ef da ff ff 4c 89 ff 89 c6 e8 75 64 00 00
+> > 4c 39 bb a0 00 00 00 0f 84 86 04 00 00 49 8b 84 24 90 00 00 00 48 8b 33
+> > <ff> 80 20 01 00 00 48 89 34 24 48 8b 46 08 4c 8b 58 08 4c 89 5c 24
+> > [60313.522727] RSP: 0018:ffffb559c0affcd0 EFLAGS: 00010046
+> > [60313.522729] RAX: 0000000000000000 RBX: ffff8ced4d6a1000 RCX:
+> > 0000000000000000 [60313.522731] RDX: 0000000000000000 RSI: ffff8ced4ad90000
+> > RDI: ffff8ced52fc9f40 [60313.522733] RBP: 0000000000000000 R08:
+> > 0000000000000001 R09:
+> > 0000000000000000
+> > [60313.522735] R10: 000000000000003f R11: 0000000000000000 R12:
+> > ffff8cf20e5a5400 [60313.522737] R13: ffff8cf0e7e91c70 R14: ffff8ced4d6a1420
+> > R15: ffff8cf0e7e91c70 [60313.522741]  ? mod_delayed_work_on+0x71/0xe0
+> > [60313.522745]  ? __sbitmap_get_word+0x30/0x80
+> > [60313.522748]  __blk_mq_do_dispatch_sched+0x218/0x320
+> > [60313.522752]  __blk_mq_sched_dispatch_requests+0x107/0x150
+> > [60313.522755]  blk_mq_sched_dispatch_requests+0x2f/0x60
+> > [60313.522758]  blk_mq_run_work_fn+0x43/0xc0
+> > [60313.522761]  process_one_work+0x24e/0x430
+> > [60313.522765]  worker_thread+0x54/0x4d0
+> > [60313.522767]  ? process_one_work+0x430/0x430
+> > [60313.522770]  kthread+0x182/0x1b0
+> > [60313.522773]  ? __kthread_init_worker+0x50/0x50
+> > [60313.522776]  ret_from_fork+0x22/0x30
+> > [60313.522781] ---[ end trace 55ef262e614b59af ]---
 
-list_add double add: new=ffff9867cb629b40, prev=ffff9867cb629b40,
-                     next=ffff98679fc67ca0.
-kernel BUG at lib/list_debug.c:31!
-invalid opcode: 0000 [#1] PREEMPT_RT SMP PTI
-CPU: 3 PID: 2825 Comm: setsched__13
-RIP: 0010:__list_add_valid+0x41/0x50
-Call Trace:
- enqueue_task_rt+0x291/0x360
- __sched_setscheduler+0x581/0x9d0
- _sched_setscheduler+0x63/0xa0
- do_sched_setscheduler+0xa0/0x150
- __x64_sys_sched_setscheduler+0x1a/0x30
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+<snip>
 
-__sched_setscheduler() uses rt_effective_prio() to handle proper queuing
-of priority boosted tasks that are setscheduled while being boosted.
-rt_effective_prio() is however called twice per each
-__sched_setscheduler() call: first directly by __sched_setscheduler()
-before dequeuing the task and then by __setscheduler() to actually do
-the priority change. If the priority of the pi_top_task is concurrently
-being changed however, it might happen that the two calls return
-different results. If, for example, the first call returned the same rt
-priority the task was running at and the second one a fair priority, the
-task won't be removed by the rt list (on_list still set) and then
-enqueued in the fair runqueue. When eventually setscheduled back to rt
-it will be seen as enqueued already and the WARNING/BUG be issued.
+> This is just to let you know that I'm running v5.13.7 without any extra 
+> patches under block/ applied, and the issue is not reproducible.
+> 
+> I'll probably defer investigating this till v5.14 unless it is fixed there 
+> already.
 
-Fix this by calling rt_effective_prio() only once and then reusing the
-return value. While at it refactor code as well for clarity. Concurrent
-priority inheritance handling is still safe and will eventually converge
-to a new state by following the inheritance chain(s).
+Thanks for info! I've looked some more into this. It appears the trapping
+instruction is:
 
-Fixes: 0782e63bc6fe ("sched: Handle priority boosted tasks proper in setscheduler()")
-Reported-by: Mark Simmons <msimmons@redhat.com>
-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
-[squashed Peterz changes; added changelog]
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
----
-Changes since v1:
-  - correct fixes tag
-  - big refactor
----
- kernel/sched/core.c | 90 ++++++++++++++++++---------------------------
- 1 file changed, 35 insertions(+), 55 deletions(-)
+static void bfq_dispatch_remove(struct request_queue *q, struct request *rq)
+{
+        struct bfq_queue *bfqq = RQ_BFQQ(rq);
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 0c22cd026440..5006b62878f1 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1978,12 +1978,18 @@ void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
- 	dequeue_task(rq, p, flags);
- }
- 
--/*
-- * __normal_prio - return the priority that is based on the static prio
-- */
--static inline int __normal_prio(struct task_struct *p)
-+static inline int __normal_prio(int policy, int rt_prio, int nice)
- {
--	return p->static_prio;
-+	int prio;
-+
-+	if (dl_policy(policy))
-+		prio = MAX_DL_PRIO - 1;
-+	else if (rt_policy(policy))
-+		prio = MAX_RT_PRIO - 1 - rt_prio;
-+	else
-+		prio = NICE_TO_PRIO(nice);
-+
-+	return prio;
- }
- 
- /*
-@@ -1995,15 +2001,7 @@ static inline int __normal_prio(struct task_struct *p)
-  */
- static inline int normal_prio(struct task_struct *p)
- {
--	int prio;
--
--	if (task_has_dl_policy(p))
--		prio = MAX_DL_PRIO-1;
--	else if (task_has_rt_policy(p))
--		prio = MAX_RT_PRIO-1 - p->rt_priority;
--	else
--		prio = __normal_prio(p);
--	return prio;
-+	return __normal_prio(p->policy, p->rt_priority, PRIO_TO_NICE(p->static_prio));
- }
- 
- /*
-@@ -4096,7 +4094,7 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
- 		} else if (PRIO_TO_NICE(p->static_prio) < 0)
- 			p->static_prio = NICE_TO_PRIO(0);
- 
--		p->prio = p->normal_prio = __normal_prio(p);
-+		p->prio = p->normal_prio = p->static_prio;
- 		set_load_weight(p, false);
- 
- 		/*
-@@ -6338,6 +6336,18 @@ int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flag
- }
- EXPORT_SYMBOL(default_wake_function);
- 
-+static void __setscheduler_prio(struct task_struct *p, int prio)
-+{
-+	if (dl_prio(prio))
-+		p->sched_class = &dl_sched_class;
-+	else if (rt_prio(prio))
-+		p->sched_class = &rt_sched_class;
-+	else
-+		p->sched_class = &fair_sched_class;
-+
-+	p->prio = prio;
-+}
-+
- #ifdef CONFIG_RT_MUTEXES
- 
- static inline int __rt_effective_prio(struct task_struct *pi_task, int prio)
-@@ -6453,22 +6463,19 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
- 		} else {
- 			p->dl.pi_se = &p->dl;
- 		}
--		p->sched_class = &dl_sched_class;
- 	} else if (rt_prio(prio)) {
- 		if (dl_prio(oldprio))
- 			p->dl.pi_se = &p->dl;
- 		if (oldprio < prio)
- 			queue_flag |= ENQUEUE_HEAD;
--		p->sched_class = &rt_sched_class;
- 	} else {
- 		if (dl_prio(oldprio))
- 			p->dl.pi_se = &p->dl;
- 		if (rt_prio(oldprio))
- 			p->rt.timeout = 0;
--		p->sched_class = &fair_sched_class;
- 	}
- 
--	p->prio = prio;
-+	__setscheduler_prio(p, prio);
- 
- 	if (queued)
- 		enqueue_task(rq, p, queue_flag);
-@@ -6821,35 +6828,6 @@ static void __setscheduler_params(struct task_struct *p,
- 	set_load_weight(p, true);
- }
- 
--/* Actually do priority change: must hold pi & rq lock. */
--static void __setscheduler(struct rq *rq, struct task_struct *p,
--			   const struct sched_attr *attr, bool keep_boost)
--{
--	/*
--	 * If params can't change scheduling class changes aren't allowed
--	 * either.
--	 */
--	if (attr->sched_flags & SCHED_FLAG_KEEP_PARAMS)
--		return;
--
--	__setscheduler_params(p, attr);
--
--	/*
--	 * Keep a potential priority boosting if called from
--	 * sched_setscheduler().
--	 */
--	p->prio = normal_prio(p);
--	if (keep_boost)
--		p->prio = rt_effective_prio(p, p->prio);
--
--	if (dl_prio(p->prio))
--		p->sched_class = &dl_sched_class;
--	else if (rt_prio(p->prio))
--		p->sched_class = &rt_sched_class;
--	else
--		p->sched_class = &fair_sched_class;
--}
--
- /*
-  * Check the target process has a UID that matches the current process's:
-  */
-@@ -6870,10 +6848,8 @@ static int __sched_setscheduler(struct task_struct *p,
- 				const struct sched_attr *attr,
- 				bool user, bool pi)
- {
--	int newprio = dl_policy(attr->sched_policy) ? MAX_DL_PRIO - 1 :
--		      MAX_RT_PRIO - 1 - attr->sched_priority;
--	int retval, oldprio, oldpolicy = -1, queued, running;
--	int new_effective_prio, policy = attr->sched_policy;
-+	int oldpolicy = -1, policy = attr->sched_policy;
-+	int retval, oldprio, newprio, queued, running;
- 	const struct sched_class *prev_class;
- 	struct callback_head *head;
- 	struct rq_flags rf;
-@@ -7071,6 +7047,7 @@ static int __sched_setscheduler(struct task_struct *p,
- 	p->sched_reset_on_fork = reset_on_fork;
- 	oldprio = p->prio;
- 
-+	newprio = __normal_prio(policy, attr->sched_priority, attr->sched_nice);
- 	if (pi) {
- 		/*
- 		 * Take priority boosted tasks into account. If the new
-@@ -7079,8 +7056,8 @@ static int __sched_setscheduler(struct task_struct *p,
- 		 * the runqueue. This will be done when the task deboost
- 		 * itself.
- 		 */
--		new_effective_prio = rt_effective_prio(p, newprio);
--		if (new_effective_prio == oldprio)
-+		newprio = rt_effective_prio(p, newprio);
-+		if (newprio == oldprio)
- 			queue_flags &= ~DEQUEUE_MOVE;
- 	}
- 
-@@ -7093,7 +7070,10 @@ static int __sched_setscheduler(struct task_struct *p,
- 
- 	prev_class = p->sched_class;
- 
--	__setscheduler(rq, p, attr, pi);
-+	if (!(attr->sched_flags & SCHED_FLAG_KEEP_PARAMS)) {
-+		__setscheduler_params(p, attr);
-+		__setscheduler_prio(p, newprio);
-+	}
- 	__setscheduler_uclamp(p, attr);
- 
- 	if (queued) {
+        /*
+         * For consistency, the next instruction should have been
+         * executed after removing the request from the queue and
+         * dispatching it.  We execute instead this instruction before
+         * bfq_remove_request() (and hence introduce a temporary
+         * inconsistency), for efficiency.  In fact, should this
+         * dispatch occur for a non in-service bfqq, this anticipated
+         * increment prevents two counters related to bfqq->dispatched
+         * from risking to be, first, uselessly decremented, and then
+         * incremented again when the (new) value of bfqq->dispatched
+         * happens to be taken into account.
+         */
+>>>     bfqq->dispatched++;
+        bfq_update_peak_rate(q->elevator->elevator_data, rq);
+
+        bfq_remove_request(q, rq);
+}
+
+The bfqq is in RAX and apparently is NULL. This function was called from
+bfq_dispatch_rq_from_bfqq() and the above can only happen if bfqq->next_rq
+was pointing to a request that was no longer attached to any bfq queue
+(maybe rq was being freed?). But at this point I have no idea how this
+could have possibly happened with current codebase. Can you maybe test with
+5.14-rc4 to see whether current upstream has the issue?
+
+								Honza
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
