@@ -2,93 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1077E3DF71D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A6A3DF722
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhHCVvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 17:51:39 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40088 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhHCVvi (ORCPT
+        id S230175AbhHCV4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 17:56:34 -0400
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:41815 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhHCV4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 17:51:38 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 4F4001C0B76; Tue,  3 Aug 2021 23:51:26 +0200 (CEST)
-Date:   Tue, 3 Aug 2021 23:51:25 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     andy@surfacebook.localdomain
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Amireddy Mallikarjuna reddy 
-        <mallikarjunax.reddy@linux.intel.com>,
-        Abanoub Sameh <abanoubsameh8@gmail.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 12/13] leds: rt8515: Put fwnode in any case during
- ->probe()
-Message-ID: <20210803215125.GD30387@amd>
-References: <20210529111935.3849707-1-andy.shevchenko@gmail.com>
- <20210529111935.3849707-12-andy.shevchenko@gmail.com>
- <CACRpkdb21tMWyoxHuv8CwUB9fZeD332B_ui2jtMP7ocfbi6LSQ@mail.gmail.com>
- <YLtH45iTFAn9QcpQ@surfacebook.localdomain>
+        Tue, 3 Aug 2021 17:56:32 -0400
+Received: by mail-wm1-f51.google.com with SMTP id m28-20020a05600c3b1cb02902b5a8c22575so68420wms.0;
+        Tue, 03 Aug 2021 14:56:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KEdn0D6XFoulQDVjB2J64O1ReMdifj14YvbOIlyaTQI=;
+        b=Psnf+hD37QMtUkYwVoYbNF3B2J2lNlJvIBcXkjSn0GsrAeJoz1ZkZFLPU32fmLuLQy
+         FwWbm2CnuUQY58a0kb1pIXBwfIK+IR6LU+CD5SPMStcQzuBe8qaadKudoIROIS17Y1+l
+         Y/d+GNeD1GuKWb8DPaV22nUr8pGOHgCaKxDRo8rEuZMxdrPy2qB+BheztVOIsqpRM8SL
+         tSuKmWVawdFhHAqa9Fx18Ph+TR/82qYkTf0ZIZZBiQPxnBUgKvpXgSvjw0YkGBX8VydC
+         NZaN2M4Ns5ujNMpuxBgWuPk5wqOrDTHe8UCBd46P0Fjltn8fOwKAKeftnFGUpQc01UbX
+         VolQ==
+X-Gm-Message-State: AOAM530QhcTlgINlIvbSTuYkBVwOmyJaRiir0MHa5RjP8WX1YQfEsIEl
+        zrqzE94S8uqsSUJZXfOq2zU=
+X-Google-Smtp-Source: ABdhPJxaFrCXrIOhbU717JapIDxRtBRTH2yEvUWqOhnXxo7gqhu79AQIfJi2ryqp/mmez67LySI3rA==
+X-Received: by 2002:a05:600c:298:: with SMTP id 24mr24152258wmk.93.1628027779370;
+        Tue, 03 Aug 2021 14:56:19 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id g12sm145022wri.49.2021.08.03.14.56.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 14:56:18 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 21:56:17 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        pasha.tatashin@soleen.com, "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
+Subject: Re: [RFC v1 6/8] mshv: command line option to skip devices in
+ PV-IOMMU
+Message-ID: <20210803215617.fzx2vrzhsabrrolc@liuwe-devbox-debian-v2>
+References: <20210709114339.3467637-1-wei.liu@kernel.org>
+ <20210709114339.3467637-7-wei.liu@kernel.org>
+ <4a6918ea-e3e5-55c9-a12d-bee7261301fd@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="wULyF7TL5taEdwHz"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YLtH45iTFAn9QcpQ@surfacebook.localdomain>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <4a6918ea-e3e5-55c9-a12d-bee7261301fd@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 04, 2021 at 12:20:42AM +0530, Praveen Kumar wrote:
+> On 09-07-2021 17:13, Wei Liu wrote:
+> > Some devices may have been claimed by the hypervisor already. One such
+> > example is a user can assign a NIC for debugging purpose.
+> > 
+> > Ideally Linux should be able to tell retrieve that information, but
+> > there is no way to do that yet. And designing that new mechanism is
+> > going to take time.
+> > 
+> > Provide a command line option for skipping devices. This is a stopgap
+> > solution, so it is intentionally undocumented. Hopefully we can retire
+> > it in the future.
+> > 
+> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > ---
+> >  drivers/iommu/hyperv-iommu.c | 45 ++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 45 insertions(+)
+> > 
+> > diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
+> > index 043dcff06511..353da5036387 100644
+> > --- a/drivers/iommu/hyperv-iommu.c
+> > +++ b/drivers/iommu/hyperv-iommu.c
+> > @@ -349,6 +349,16 @@ static const struct irq_domain_ops hyperv_root_ir_domain_ops = {
+> >  
+> >  #ifdef CONFIG_HYPERV_ROOT_PVIOMMU
+> >  
+> > +/* The IOMMU will not claim these PCI devices. */
+> > +static char *pci_devs_to_skip;
+> > +static int __init mshv_iommu_setup_skip(char *str) {
+> > +	pci_devs_to_skip = str;
+> > +
+> > +	return 0;
+> > +}
+> > +/* mshv_iommu_skip=(SSSS:BB:DD.F)(SSSS:BB:DD.F) */
+> > +__setup("mshv_iommu_skip=", mshv_iommu_setup_skip);
+> > +
+> >  /* DMA remapping support */
+> >  struct hv_iommu_domain {
+> >  	struct iommu_domain domain;
+> > @@ -774,6 +784,41 @@ static struct iommu_device *hv_iommu_probe_device(struct device *dev)
+> >  	if (!dev_is_pci(dev))
+> >  		return ERR_PTR(-ENODEV);
+> >  
+> > +	/*
+> > +	 * Skip the PCI device specified in `pci_devs_to_skip`. This is a
+> > +	 * temporary solution until we figure out a way to extract information
+> > +	 * from the hypervisor what devices it is already using.
+> > +	 */
+> > +	if (pci_devs_to_skip && *pci_devs_to_skip) {
+> > +		int pos = 0;
+> > +		int parsed;
+> > +		int segment, bus, slot, func;
+> > +		struct pci_dev *pdev = to_pci_dev(dev);
+> > +
+> > +		do {
+> > +			parsed = 0;
+> > +
+> > +			sscanf(pci_devs_to_skip + pos,
+> > +				" (%x:%x:%x.%x) %n",
+> > +				&segment, &bus, &slot, &func, &parsed);
+> > +
+> > +			if (parsed <= 0)
+> > +				break;
+> > +
+> > +			if (pci_domain_nr(pdev->bus) == segment &&
+> > +				pdev->bus->number == bus &&
+> > +				PCI_SLOT(pdev->devfn) == slot &&
+> > +				PCI_FUNC(pdev->devfn) == func)
+> > +			{
+> > +				dev_info(dev, "skipped by MSHV IOMMU\n");
+> > +				return ERR_PTR(-ENODEV);
+> > +			}
+> > +
+> > +			pos += parsed;
+> > +
+> > +		} while (pci_devs_to_skip[pos]);
+> 
+> Is there a possibility of pci_devs_to_skip + pos > sizeof(pci_devs_to_skip)
+> and also a valid memory ?
 
---wULyF7TL5taEdwHz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+pos should point to the last parsed position. If parsing fails pos does
+not get updated and the code breaks out of the loop. If parsing is
+success pos should point to either the start of next element of '\0'
+(end of string). To me this is good enough.
 
-On Sat 2021-06-05 12:46:11, andy@surfacebook.localdomain wrote:
-> Tue, Jun 01, 2021 at 12:06:05PM +0200, Linus Walleij kirjoitti:
-> > On Sat, May 29, 2021 at 1:19 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> >=20
-> > > fwnode_get_next_available_child_node() bumps a reference counting of
-> > > a returned variable. We have to balance it whenever we return to
-> > > the caller.
-> > >
-> > > Fixes: e1c6edcbea13 ("leds: rt8515: Add Richtek RT8515 LED driver")
-> > > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > > Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> >=20
-> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->=20
-> Thanks!
->=20
-> Pavel, can you, please, review this batch? I think I addressed most of yo=
-ur
-> comments if not all.
+> I would recommend to have a check of size as well before accessing the
+> array content, just to be safer accessing any memory.
+> 
 
-Your original email is: From: andy@surfacebook.localdomain . I don't
-believe that's right.
+What check do you have in mind?
 
-Best regards,
-								Pavel
+Wei.
 
---=20
-http://www.livejournal.com/~pavelmachek
-
---wULyF7TL5taEdwHz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmEJul0ACgkQMOfwapXb+vKkwQCgiKGNe5VZmqG5rkBTgkbNofob
-wLUAnA4PfBVNO2HjVetvu3Wifm4D9z7J
-=fEin
------END PGP SIGNATURE-----
-
---wULyF7TL5taEdwHz--
+> > +	}
+> > +
+> >  	vdev = kzalloc(sizeof(*vdev), GFP_KERNEL);
+> >  	if (!vdev)
+> >  		return ERR_PTR(-ENOMEM);
+> > 
+> 
+> Regards,
+> 
+> ~Praveen.
