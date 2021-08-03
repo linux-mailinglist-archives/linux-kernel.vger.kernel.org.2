@@ -2,267 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3594C3DEAFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F923DEB03
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235301AbhHCKex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
+        id S235141AbhHCKfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235448AbhHCKeb (ORCPT
+        with ESMTP id S235513AbhHCKfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:34:31 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E8FC061798
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:34:14 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id e25-20020a05600c4b99b0290253418ba0fbso1818540wmp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 03:34:14 -0700 (PDT)
+        Tue, 3 Aug 2021 06:35:06 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A39EC06179B;
+        Tue,  3 Aug 2021 03:34:54 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id h13so11301608wrp.1;
+        Tue, 03 Aug 2021 03:34:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P/REJEjetsZEwwVkX2C20MU8u3V3e/RveGtnLMYVQrU=;
-        b=hYrbaXf/3SsijIhBUNfVPg/kqf4Zl1+oFP5dFVTQmfU/Z+NGnwtkEwEG7xY/rQiBta
-         ABukb7373Au6nGEQcxtC9cXgZqtpEYtPlPBf4ENZeN+hh6imq9qyIyYOYzoLgseescIy
-         t+DJ1J7Hk5457B2R1/GCKkWxAKxQJY+u5pLRsR9tP5+f2lf0cA2YVb3imValWyk+Z87t
-         VtuIefzKGygz7LPofKbtYMz/0TDGc5OOHJjSO5reMEfhkzmBRd5wmep7T2DzFrjlAAuY
-         VFYW5bMV3/6x/ec7a4eTmIiGv7kw+Y+f/3MYQlho+TLQyzAVew2OPLrvtnKqX+Ix8sph
-         yERA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qSjba3GRro5RRDG9pge8+P3LPvjbrgyCpCyq2IDQSqo=;
+        b=gEeYbBhCqyLemWelmTpmYIpipocMHbH1jtOvgqki7decDY/YUiDhGeZsF+9BE6PuH9
+         gACrfm5PYBPm1OApQOSBGVgW4fJxoyBey9dlPHE5mb+mlIsKS4j/OY34WqQonwJqPMna
+         kVrGk/Dhkgho1vf455nbTbRUdrbIYx5rCaAWsXk03IMsehue2eH2G1fMckLHM9K9EG3p
+         EYsWOypPLGyzP6iBxIikrwi4IvJjFBrD5xSEo6uUmjt1lrJdHtAlVy+5UElaScFdUJhf
+         gJgaaZxhccXrjA27kjFGXrsSVWlbk/QpchE6D9pknebUxXEpiQ1X3y5qJ6MfN0+Li89e
+         zNNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P/REJEjetsZEwwVkX2C20MU8u3V3e/RveGtnLMYVQrU=;
-        b=eyVGxp9CbvPpivux8tQQOec+5R+fMo9gzAsBQvlW/iM0fykqwYddLLkcfGVYhTQk4F
-         1kfoGOgCppFfYcecQkCmAV/JMjVyI2WBFai2pprJbjeShbDjTnZkfVK2TGCDlYBGRe2K
-         SAw0tk6wemOF79EIiHenUcAnnu2s5LQ3xv6HlPWptbWk4S03DdzmyDVbTGMon2yVYcGh
-         mMgbW0WA223y8j4HvTOzjd4o+gsVhIBL+ocOpjDRUxC3P73ygAZsPJ1Rg/WPEdLcN+3Y
-         RKav74YhOj4bmw17Pt4/FjpuNB8xQdRqdAxFgm3b81hXkZMral8EE4GxlIk2HdO5tSPi
-         lHig==
-X-Gm-Message-State: AOAM532zw+w8X9F7N8r37V2Eu1ARHbXsFodgCNMFtjSDkPuRI5/EBE4l
-        DGbEeE7IjOXtmkgVnDaSqo/PTQ==
-X-Google-Smtp-Source: ABdhPJyNSUOpD9YPYa1ks1LyBQbBgi59E15Rq3yqrsRb+HwvS1PPW0tD/4DXVPJau42sjQpLuaonWA==
-X-Received: by 2002:a7b:c00a:: with SMTP id c10mr3578344wmb.100.1627986852769;
-        Tue, 03 Aug 2021 03:34:12 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:754:7d1b:7303:129a])
-        by smtp.gmail.com with ESMTPSA id g198sm2621322wme.0.2021.08.03.03.34.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 03:34:12 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 11:34:09 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        dbrazdil@google.com, kernel-team@android.com
-Subject: Re: [PATCH v3 17/21] KVM: arm64: Mark host bss and rodata section as
- shared
-Message-ID: <YQkboRdFP9oPVJgn@google.com>
-References: <20210729132818.4091769-1-qperret@google.com>
- <20210729132818.4091769-18-qperret@google.com>
- <CA+EHjTwfsA8Z+_dJzqjsBXJ_SSC55Bcxc6HQ_Q4OJDrqmk0Unw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qSjba3GRro5RRDG9pge8+P3LPvjbrgyCpCyq2IDQSqo=;
+        b=HDT89OKXz6tnI6pRPeTUqdUnqL/GQYc+n25fIzwnJFme3/J3bJ61PppKykc6OizMxn
+         W+YwrrkvKX8Ubtc2oWg7Rh2MwsusHzjmZMKYCqQRxSt/NRtztK5AX8z4t2IU1wYyDTkr
+         GTaqTrVb7c1GPLyYt22pexfXqsKARaINP7LsK2Z5/2n/pPru9cc6NJxvtMDLpdnxsPkN
+         XBfFyIwHGheZW3z1PVtXIWZ9uUDoy9Erx5wmrNRXtG8FI4RQDz+Gm0UP95Wpgdrgx8E8
+         vGidrTzB1DeTgGXl4CzBqmNIOU9jXjtJI0YBeqiZGigQJyp9YQdSMXOf+V1hRD5gc9w4
+         1HTQ==
+X-Gm-Message-State: AOAM5337Lv0FWGwN3SSWyu5F9YxivvNkjTs93jAzNpEjPpkJ7+9FUM9W
+        +Fdl+sZ8u8mF/FFODVzEq/bP55gUK1M=
+X-Google-Smtp-Source: ABdhPJybxq+wWNJOoYa8i2KdWazctvoFqYCX2NaVvOwxAgRfqzpQnAVY9+b96vdzWuVyKbsGKCnh8g==
+X-Received: by 2002:a5d:54c7:: with SMTP id x7mr22199901wrv.77.1627986892827;
+        Tue, 03 Aug 2021 03:34:52 -0700 (PDT)
+Received: from [192.168.8.197] ([185.69.145.39])
+        by smtp.gmail.com with ESMTPSA id h8sm2102051wmb.35.2021.08.03.03.34.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 03:34:52 -0700 (PDT)
+Subject: Re: KASAN: stack-out-of-bounds in iov_iter_revert
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <CADVatmOf+ZfxXA=LBSUqDZApZG3K1Q8GV2N5CR5KgrJLqTGsfg@mail.gmail.com>
+ <f38b93f3-4cdb-1f9b-bd81-51d32275555e@gmail.com>
+ <4c339bea-87ff-cb41-732f-05fc5aff18fa@gmail.com>
+ <CADVatmPwM-2oma2mCXnQViKK5DfZ2GS5FLmteEDYwOEOK-mjMg@mail.gmail.com>
+ <8db71657-bd61-6b1f-035f-9a69221e7cb3@gmail.com>
+ <CADVatmPPnAWyOmyqT3iggeO_hOuPpALF5hqAqbQkrdvCPB5UaQ@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <98f8ec51-9d84-0e74-4c1c-a463f2d69d9d@gmail.com>
+Date:   Tue, 3 Aug 2021 11:34:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+EHjTwfsA8Z+_dJzqjsBXJ_SSC55Bcxc6HQ_Q4OJDrqmk0Unw@mail.gmail.com>
+In-Reply-To: <CADVatmPPnAWyOmyqT3iggeO_hOuPpALF5hqAqbQkrdvCPB5UaQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 03 Aug 2021 at 07:02:42 (+0200), Fuad Tabba wrote:
-> Hi Quentin,
+On 8/3/21 8:47 AM, Sudip Mukherjee wrote:
+> On Mon, Aug 2, 2021 at 12:55 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> On 8/1/21 9:28 PM, Sudip Mukherjee wrote:
+>>> Hi Pavel,
+>>>
+>>> On Sun, Aug 1, 2021 at 9:52 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>>>
+>>>> On 8/1/21 1:10 AM, Pavel Begunkov wrote:
+>>>>> On 7/31/21 7:21 PM, Sudip Mukherjee wrote:
+>>>>>> Hi Jens, Pavel,
+>>>>>>
+>>>>>> We had been running syzkaller on v5.10.y and a "KASAN:
+>>>>>> stack-out-of-bounds in iov_iter_revert" was being reported on it. I
+>>>>>> got some time to check that today and have managed to get a syzkaller
+>>>>>> reproducer. I dont have a C reproducer which I can share but I can use
+>>>>>> the syz-reproducer to reproduce this with v5.14-rc3 and also with
+>>>>>> next-20210730.
+>>>>>
+>>>>> Can you try out the diff below? Not a full-fledged fix, but need to
+>>>>> check a hunch.
+>>>>>
+>>>>> If that's important, I was using this branch:
+>>>>> git://git.kernel.dk/linux-block io_uring-5.14
+>>>>
+>>>> Or better this one, just in case it ooopses on warnings.
+>>>
+>>> I tested this one on top of "git://git.kernel.dk/linux-block
+>>> io_uring-5.14" and the issue was still seen, but after the BUG trace I
+>>> got lots of "truncated wr" message. The trace is:
+>>
+>> That's interesting, thanks
+>> Can you share the syz reproducer?
 > 
-> On Thu, Jul 29, 2021 at 3:29 PM Quentin Perret <qperret@google.com> wrote:
-> >
-> > As the hypervisor maps the host's .bss and .rodata sections in its
-> > stage-1, make sure to tag them as shared in hyp and host page-tables.
-> >
-> > But since the hypervisor relies on the presence of these mappings, we
-> > cannot let the host in complete control of the memory regions -- it
-> > must not unshare or donate them to another entity for example. To
-> > prevent this, let's transfer the ownership of those ranges to the
-> > hypervisor itself, and share the pages back with the host.
-> >
-> > Signed-off-by: Quentin Perret <qperret@google.com>
-> > ---
-> >  arch/arm64/kvm/hyp/nvhe/setup.c | 82 +++++++++++++++++++++++++++++----
-> >  1 file changed, 74 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/arch/arm64/kvm/hyp/nvhe/setup.c b/arch/arm64/kvm/hyp/nvhe/setup.c
-> > index 0b574d106519..7f557b264f62 100644
-> > --- a/arch/arm64/kvm/hyp/nvhe/setup.c
-> > +++ b/arch/arm64/kvm/hyp/nvhe/setup.c
-> > @@ -58,6 +58,7 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
-> >  {
-> >         void *start, *end, *virt = hyp_phys_to_virt(phys);
-> >         unsigned long pgt_size = hyp_s1_pgtable_pages() << PAGE_SHIFT;
-> > +       enum kvm_pgtable_prot prot;
-> >         int ret, i;
-> >
-> >         /* Recreate the hyp page-table using the early page allocator */
-> > @@ -83,10 +84,6 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
-> >         if (ret)
-> >                 return ret;
-> >
-> > -       ret = pkvm_create_mappings(__start_rodata, __end_rodata, PAGE_HYP_RO);
-> > -       if (ret)
-> > -               return ret;
-> > -
-> >         ret = pkvm_create_mappings(__hyp_rodata_start, __hyp_rodata_end, PAGE_HYP_RO);
-> >         if (ret)
-> >                 return ret;
-> > @@ -95,10 +92,6 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
-> >         if (ret)
-> >                 return ret;
-> >
-> > -       ret = pkvm_create_mappings(__hyp_bss_end, __bss_stop, PAGE_HYP_RO);
-> > -       if (ret)
-> > -               return ret;
-> > -
-> >         ret = pkvm_create_mappings(virt, virt + size, PAGE_HYP);
-> >         if (ret)
-> >                 return ret;
-> > @@ -117,6 +110,24 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
-> >                         return ret;
-> >         }
-> >
-> > +       /*
-> > +        * Map the host's .bss and .rodata sections RO in the hypervisor, but
-> > +        * transfer the ownerhsip from the host to the hypervisor itself to
-> > +        * make sure it can't be donated or shared with another entity.
+> Unfortunately I dont have a C reproducer, but this is the reproducer
+> for syzkaller:
+
+Thanks. Maybe I'm not perfectly familiar with syz, but were there
+any options? Like threaded, collide, etc.?
+
+
 > 
-> nit: ownerhsip -> ownership
+> r0 = syz_io_uring_setup(0x4d4f, &(0x7f0000000080)={0x0, 0x0, 0x1},
+> &(0x7f00000a0000)=nil, &(0x7f0000ffc000/0x1000)=nil,
+> &(0x7f0000000000)=<r1=>0x0, &(0x7f0000000140))
+> r2 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x46e2, 0x0)
+> syz_io_uring_setup(0x1, &(0x7f0000000080),
+> &(0x7f0000ffd000/0x2000)=nil, &(0x7f0000ffc000/0x2000)=nil,
+> &(0x7f0000000100), &(0x7f0000000140)=<r3=>0x0)
+> syz_io_uring_submit(r1, r3, &(0x7f0000000100)=@IORING_OP_WRITE={0x17,
+> 0x0, 0x0, @fd=r2, 0x0, &(0x7f0000000200)="e2", 0xffffffffffffff98},
+> 0x200)
+> io_uring_enter(r0, 0x58ab, 0x0, 0x0, 0x0, 0x0)
 > 
-> > +        *
-> > +        * The ownership transtion requires matching changes in the host
 > 
-> nit: transtion -> transition
-> 
-> > +        * stage-2. This will done later (see finalize_host_mappings()) once the
-> 
-> nit: will done -> will be done
 
-Urgh, I clearly went too fast writing this, thanks!
-
-> > +        * hyp_vmemmap is addressable.
-> > +        */
-> > +       prot = pkvm_mkstate(PAGE_HYP_RO, PKVM_PAGE_SHARED_OWNED);
-> > +       ret = pkvm_create_mappings(__start_rodata, __end_rodata, prot);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       ret = pkvm_create_mappings(__hyp_bss_end, __bss_stop, prot);
-> 
-> nit: for clarity, I wonder if it might be good to create an alias of
-> __hyp_bss_end as __bss_start or something. When it's been moved here,
-> it sticks out a bit more and makes the reader wonder about the
-> significance of __hyp_bss_end.
-
-I understand what you mean, but I'm not sure this aliasing is really
-going to clarify things much. We have a comment in arm.c (see
-init_hyp_mode()) to explain exactly why we're doing this, so maybe it
-would be worth adding it here too. WDYT?
-
-> > +       if (ret)
-> > +               return ret;
-> > +
-> >         return 0;
-> >  }
-> >
-> > @@ -148,6 +159,57 @@ static void hpool_put_page(void *addr)
-> >         hyp_put_page(&hpool, addr);
-> >  }
-> >
-> > +static int finalize_host_mappings_walker(u64 addr, u64 end, u32 level,
-> > +                                        kvm_pte_t *ptep,
-> > +                                        enum kvm_pgtable_walk_flags flag,
-> > +                                        void * const arg)
-> > +{
-> > +       enum kvm_pgtable_prot prot;
-> > +       enum pkvm_page_state state;
-> > +       kvm_pte_t pte = *ptep;
-> > +       phys_addr_t phys;
-> > +
-> > +       if (!kvm_pte_valid(pte))
-> > +               return 0;
-> > +
-> > +       if (level != (KVM_PGTABLE_MAX_LEVELS - 1))
-> > +               return -EINVAL;
-> 
-> I know that it's not in scope here, but I'm wondering whether we
-> should be checking for KVM_PTE_TYPE_PAGE instead of the level. Maybe
-
-Well these would check different things no?
-
-> it would be good to have a helper somewhere for all these checks both
-> for clarity and to ensure that nothing has gone wrong with the pte.
-
-The reason I need this check is just to make sure the call to
-host_stage2_idmap_locked() further down is correct with a hardcoded
-PAGE_SIZE size. The alternative would be to not be lazy and actually
-compute the current granule size based on the level and use that, as
-that would make this code robust to using block mappings at EL2 stage-1
-in the future.
-
-And I'll fix this up for v4.
-
-Cheers,
-Quentin
-
-> > +
-> > +       phys = kvm_pte_to_phys(pte);
-> > +       if (!addr_is_memory(phys))
-> > +               return 0;
-> > +
-> > +       /*
-> > +        * Adjust the host stage-2 mappings to match the ownership attributes
-> > +        * configured in the hypervisor stage-1.
-> > +        */
-> > +       state = pkvm_getstate(kvm_pgtable_hyp_pte_prot(pte));
-> > +       switch (state) {
-> > +       case PKVM_PAGE_OWNED:
-> > +               return host_stage2_set_owner_locked(phys, phys + PAGE_SIZE, pkvm_hyp_id);
-> > +       case PKVM_PAGE_SHARED_OWNED:
-> > +               prot = pkvm_mkstate(KVM_PGTABLE_PROT_RWX, PKVM_PAGE_SHARED_BORROWED);
-> > +               break;
-> > +       case PKVM_PAGE_SHARED_BORROWED:
-> > +               prot = pkvm_mkstate(KVM_PGTABLE_PROT_RWX, PKVM_PAGE_SHARED_OWNED);
-> > +               break;
-> > +       default:
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       return host_stage2_idmap_locked(phys, phys + PAGE_SIZE, prot);
-> > +}
-> > +
-> > +static int finalize_host_mappings(void)
-> > +{
-> > +       struct kvm_pgtable_walker walker = {
-> > +               .cb     = finalize_host_mappings_walker,
-> > +               .flags  = KVM_PGTABLE_WALK_LEAF,
-> > +       };
-> > +
-> > +       return kvm_pgtable_walk(&pkvm_pgtable, 0, BIT(pkvm_pgtable.ia_bits), &walker);
-> > +}
-> > +
-> >  void __noreturn __pkvm_init_finalise(void)
-> >  {
-> >         struct kvm_host_data *host_data = this_cpu_ptr(&kvm_host_data);
-> > @@ -167,6 +229,10 @@ void __noreturn __pkvm_init_finalise(void)
-> >         if (ret)
-> >                 goto out;
-> >
-> > +       ret = finalize_host_mappings();
-> > +       if (ret)
-> > +               goto out;
-> > +
-> >         pkvm_pgtable_mm_ops = (struct kvm_pgtable_mm_ops) {
-> >                 .zalloc_page = hyp_zalloc_hyp_page,
-> >                 .phys_to_virt = hyp_phys_to_virt,
-> > --
-> > 2.32.0.432.gabb21c7263-goog
-> >
-> 
-> Thanks,
-> /fuad
+-- 
+Pavel Begunkov
