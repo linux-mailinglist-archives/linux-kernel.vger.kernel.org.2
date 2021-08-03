@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE4A3DEBFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7E43DEC02
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235648AbhHCLgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43346 "EHLO
+        id S235695AbhHCLgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235534AbhHCLgL (ORCPT
+        with ESMTP id S235559AbhHCLgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:36:11 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1442CC061757;
-        Tue,  3 Aug 2021 04:35:59 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so1516118wms.2;
-        Tue, 03 Aug 2021 04:35:59 -0700 (PDT)
+        Tue, 3 Aug 2021 07:36:17 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1E7C061757;
+        Tue,  3 Aug 2021 04:36:06 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id h13so11493673wrp.1;
+        Tue, 03 Aug 2021 04:36:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Pe0Wggvjr6zccAFSTENi43f7OQ0HCRColzuTqpwhdwY=;
-        b=oz+My935puC+gde2oAps6x7qpz4A4SjiMiezO4eFNfHPC4zze6xU8zMqqQrT06HDXd
-         hSfdqvQkptKEEshuRjx5Yu/EltwmyH5UkbsmmH6bl3GS4mOQfNHBhYjsGa7UhCAk1HWB
-         B0EZWjbIhZfwwqZG0EDlBbHLjn7cTn3+1yECBJTrel0BqsQt2J9kvOk5zzE0Nwf/rmpb
-         IxRB1QgX46cD42uLmCIB+J5PKeJ8oLRCs+o39yRtGVuCxq+yIi4c0h8H150f0Wy7j/Qw
-         SfyKosH0dXHKAlU20xoDYwneUsZsizu2KpDVEvQItsbEv48W4cod+qNbmycTMvGRhiYb
-         GdoA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=6ERoO6r7b7bdnRvImyvbdNkxCXw0B3a96lAkHo2TAmc=;
+        b=Pk+RzGBAfV8k+BC3uVzXBBgKRU/9Ll3guBjNlC9e967SJVyvgdnpPko5ab7DqNjR6U
+         FY6FUeKD/zxgnt4Z7Lnfh/DIXLyJRRroLuXANJctMbeP+8yqqbJBd39NbMtUYIxIlLSS
+         OWazTi9pZa49vrNQgxu4s4K/lXOWgSAGt9orxdCvQFhZdgbgvlmVTFY2ic/q6YNNeAnH
+         JUvMYo5xUjOw3XjGYLm6s9JZmNvCPipDnf73iUwEQ2mwMtzGtboClMgiJxvGyu2Gakmz
+         C3Ip8aPRypTJuCrEgC1Lf6itE2qKsfwnZl4clrzUdbTH9L92O3HXG3MHxoKb+ol4gze4
+         fDVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Pe0Wggvjr6zccAFSTENi43f7OQ0HCRColzuTqpwhdwY=;
-        b=dTbb7e8SC0NkbfGVQUwRn7ecHzYwMsR9GXyhqvpummezB9gqYLFZMV5DNJFQ5CFVOQ
-         tBk5E34jvr7qUhj87BCrQ2ua68+iKKUhBGWCFC5zAl3EgTxePfspTtCxdsXOVxQudnUk
-         1baboh8mqmrdKceGLHK6yhbWEHxi3U7WneREMuAZ/Z5jmCF2Fud0aQLJhdhzojCml4lY
-         Es1OCuqioOx/+4cbY6Ekoss32O+WgfO9kNdOl43hiNMQW1cj6+dRE/9HXPe2CM8r2JFk
-         0T0dLDXhiYWJVqYv5JwM65pPjBHCxfoHR/kiUSUznufysTpq/usR33zxyMsN0NzUvfmr
-         aX+Q==
-X-Gm-Message-State: AOAM5329vnjoUFUh5JlLzE9QdINE3gTTB/B5mgDY7EduU0MzoAidUELP
-        SKdLPgqlMcpLXCT/CWun9Usf2bjE/2BAZQ==
-X-Google-Smtp-Source: ABdhPJyBO0jfPSs/3X9jglPANMtDSkOY/81XlxXON0j0Wu8nHEKEddqh2vU+eWk6KsaB/HCicUMxRg==
-X-Received: by 2002:a7b:cf21:: with SMTP id m1mr3712844wmg.35.1627990557552;
-        Tue, 03 Aug 2021 04:35:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=6ERoO6r7b7bdnRvImyvbdNkxCXw0B3a96lAkHo2TAmc=;
+        b=T0Oq6M+OowPewXtIcTK5DpbqMcDCKRdXdpIK72mU7aLh6Iq7b+8FNpOG6fbhSaDSTj
+         NYnGPQh628UGxNYdMl7PbhOZiblqyIP4oRuhcmT4OcSmYXPXMdfyfX6R7W/r6GVTu2ak
+         hXEhaf+Q1KEMpW+FdjGx3aB+s7dOUFipuGjAEF6EfL9zkFaxW75KjykZ8LZByHfmfxLh
+         iVbbauA37U1BBLSsXD+FAAVeshsPFBLpHcuiMWhgJQlTFM4rj7vvVa7w6UDDUp7FxbBk
+         YmetmGYv+KzWUtMV2yfyuwGxaup5tmMFvn1AcgG28i/ysOz8D3h5tSD/yd+8+2gLEMBi
+         IxVw==
+X-Gm-Message-State: AOAM533jFVfNxYO/o00IqinUakemXjAq27AjiscCsMqoNZbw9aBIpxks
+        Uy5jkD38VRN61M8MhYYfCtE=
+X-Google-Smtp-Source: ABdhPJzH0axP2mZ4ihgpWQkk8GJdzOlKW99HWkPqI4rw1+rTyJBcXNi80NTHL1VVNxM2G/PIkq/4QQ==
+X-Received: by 2002:a5d:45c5:: with SMTP id b5mr22467111wrs.32.1627990564648;
+        Tue, 03 Aug 2021 04:36:04 -0700 (PDT)
 Received: from felia.fritz.box ([2001:16b8:2de7:c500:a5d6:9db:2c2c:b89d])
-        by smtp.gmail.com with ESMTPSA id m14sm13961364wrs.56.2021.08.03.04.35.52
+        by smtp.gmail.com with ESMTPSA id m14sm13961364wrs.56.2021.08.03.04.36.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 04:35:53 -0700 (PDT)
+        Tue, 03 Aug 2021 04:36:02 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -61,90 +62,47 @@ Cc:     "H . Peter Anvin" <hpa@zytor.com>,
         platform-driver-x86@vger.kernel.org,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 0/9] Kconfig symbol clean-up on ./arch/x86/
-Date:   Tue,  3 Aug 2021 13:35:22 +0200
-Message-Id: <20210803113531.30720-1-lukas.bulwahn@gmail.com>
+Subject: [PATCH 1/9] x86/entry: correct reference to intended CONFIG_64_BIT
+Date:   Tue,  3 Aug 2021 13:35:23 +0200
+Message-Id: <20210803113531.30720-2-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210803113531.30720-1-lukas.bulwahn@gmail.com>
+References: <20210803113531.30720-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear x86 maintainers,
+Commit 662a0221893a ("x86/entry: Fix AC assertion") adds a condition with
+IS_ENABLED(CONFIG_64_BIT), but the intended config is called CONFIG_64BIT,
+as defined in ./arch/x86/Kconfig.
 
+Fortunately, ./scripts/checkkconfigsymbols.py warns:
 
-Randy Dunlap pointed out that ./scripts/checkkconfigsymbols.py warns on
-invalid references to Kconfig symbols (often, minor typos, name confusions
-or outdated references): see Link below.
+64_BIT
+Referencing files: arch/x86/include/asm/entry-common.h
 
-This is a first patch series addressing the issues reported by
-./scripts/checkkconfigsymbols.py in the ./arch/x86/ directories, quickly
-filtered down with:
+Correct the reference to the intended config symbol.
 
-  ./scripts/checkkconfigsymbols.py | grep "arch/x86" -B 1 -A 2
-
-It addresses some issues I considered to be "true positives";
-so, issues that should be addressed and cleaned up.
-
-The patches on updating the comments might arguably be considered of low
-value by itself, but as the other patches show, checkkconfigsymbols does
-detect some relevant issues in the kernel tree otherwise being unnoticed.
-So, it might be worth to clean up the kernel tree to have checkkconfigsymbols
-produce a rather short list of issues and then continuously follow and check
-what checkkconfigsymbols reports.
-
-Some work from checkkconfigsymbols on arch/x86 is deferred:
-
-  - OSNOISE_TRAECR typo in arch/x86/kernel/trace.c
-    This will added to a separate janitor cleanup series with other topics
-    on this file.
-
-  - a reference to STRICT_IOMEM in arch/x86/mm/init.c
-    unclear to me: which exact config this refers to
-
-  - Given some updates of the minimal version for binutils (now >= 2.23),
-    the whole special detection of binutils support for CONFIG_X86_X32 and
-    its speciality with CONFIG_X86_X32_ABI might be unneeded. I might look
-    into that in a separate task.
-
-The remaining issues that checkkconfigsymbols reports are (as far as I
-understand it now) "false positives" (the tool misinterprets the actual
-content) or "intentional", e.g., they refer to historic configs for the
-purpose of documentation (e.g., in changelogs) or are in various kernel
-configs that are not continuously updated to match the current set of
-kernel configs.
-
-Please pick this series of minor clean-up patches on ./arch/x86/.
-
-It applies cleanly on next-20210802.
-
-Link: https://lore.kernel.org/linux-kernel-mentees/295b8f8c-4264-9f32-6723-9d2d574021ac@infradead.org/
-
-
-Best regards,
-
-Lukas
-
-
-Lukas Bulwahn (9):
-  x86/entry: correct reference to intended CONFIG_64_BIT
-  x86, olpc: correct condition to intended CONFIG_OLPC_XO15_SCI
-  x86/Kconfig: correct reference to MWINCHIP3D
-  x86/Kconfig: remove reference to obsolete MFD_INTEL_MSIC config
-  x86/Kconfig: remove reference to obsolete APB_TIMER config
-  x86/irq: fix slightly wrong reference in comment
-  x86/uaccess: adjust comment for endif of CONFIG_CC_HAS_ASM_GOTO_OUTPUT
-  x86: page_32.h: adjust comment for endif of CONFIG_X86_USE_3DNOW
-  x86: ia32.h: adjust comment for endif of CONFIG_IA32_EMULATION
-
- arch/x86/Kconfig                    | 4 +---
+Fixes: 662a0221893a ("x86/entry: Fix AC assertion")
+Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
  arch/x86/include/asm/entry-common.h | 2 +-
- arch/x86/include/asm/ia32.h         | 2 +-
- arch/x86/include/asm/irq_stack.h    | 2 +-
- arch/x86/include/asm/page_32.h      | 2 +-
- arch/x86/include/asm/uaccess.h      | 2 +-
- arch/x86/platform/olpc/olpc.c       | 2 +-
- 7 files changed, 7 insertions(+), 9 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/x86/include/asm/entry-common.h b/arch/x86/include/asm/entry-common.h
+index 14ebd2196569..43184640b579 100644
+--- a/arch/x86/include/asm/entry-common.h
++++ b/arch/x86/include/asm/entry-common.h
+@@ -25,7 +25,7 @@ static __always_inline void arch_check_user_regs(struct pt_regs *regs)
+ 		 * For !SMAP hardware we patch out CLAC on entry.
+ 		 */
+ 		if (boot_cpu_has(X86_FEATURE_SMAP) ||
+-		    (IS_ENABLED(CONFIG_64_BIT) && boot_cpu_has(X86_FEATURE_XENPV)))
++		    (IS_ENABLED(CONFIG_64BIT) && boot_cpu_has(X86_FEATURE_XENPV)))
+ 			mask |= X86_EFLAGS_AC;
+ 
+ 		WARN_ON_ONCE(flags & mask);
 -- 
 2.17.1
 
