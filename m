@@ -2,133 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8451D3DF51B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6B33DF523
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239390AbhHCTFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239363AbhHCTFV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:05:21 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE68C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 12:05:09 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id a19so29393526oiw.6
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 12:05:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=aM8MsizluJ07UnlTpF+aEL3WsBrVhDLpeT++KkyjHek=;
-        b=adyN6qzxtZdUQzENMLDG12zaz8zsrL114h9lU0G9//qw1S2ODvXz/ISUg4V1XEZiem
-         263Tb21aV18FyqxRnnzWY+S0ltP/fCiher+Tjw/JQECap6o7A1sKOl3/DRzgZSDPmiLF
-         33PIk7Zj1TkdTQWUsSn19XRaWIOxifE1LXDEU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=aM8MsizluJ07UnlTpF+aEL3WsBrVhDLpeT++KkyjHek=;
-        b=AN0k6Opa4bVj0matGFI/RFZzq6P3c96acH+TotpxB0sE6YTWRdmfxU+9xXxcnp+yl4
-         m53E27+/fYlhI41EECifSVxRd9ejKiTIZfAhFbIplvky1u9rAf/VtGEcaUqJZknxYgb5
-         iFlTROCPU7GI1c8/kuRpIngbjXW3+7GweKoO/+3ZKDieRwp3FOcZcWj++NGMx1hEim/O
-         2q/MPRboNYbkaKbHO903sahCmIJ8Z7ujMjedFoFWKGviYZxA/J9aSy9pSlHhv3H99Mfb
-         eVi7Eea8B1fbiZKpZaNq2kOIU7FvB8HxxyquzF+xFcRy82HktwFjFWhmA2FsMqGREQzT
-         p0nQ==
-X-Gm-Message-State: AOAM5321YX5bmU5GTyzxFvZ1P/cJeWZ5k8ODdSZeKkew9aXsufdwquJI
-        omPOwhcvCN39sfRywS5yOQgQBnp77h6fPeVBXEQ+xw==
-X-Google-Smtp-Source: ABdhPJyanTbkyGw6bqxxe32BU35yQ3o5OTvmWdRLDEDn+Ge0Th1Q/eQzOsgoO7rz6Vg1n+lXDcvWL1gYbdIpBNeH7eI=
-X-Received: by 2002:a05:6808:114a:: with SMTP id u10mr15907348oiu.19.1628017509265;
- Tue, 03 Aug 2021 12:05:09 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 3 Aug 2021 12:05:08 -0700
+        id S239412AbhHCTIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:08:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239389AbhHCTIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 15:08:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6758760F9C;
+        Tue,  3 Aug 2021 19:07:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628017697;
+        bh=+C3jjxLGYKPgJknmmGMOt0xrAE6Lm0yMyg9+fV845Dg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C8zqBiAF+/8ByrtHscexhIqNJ3ZB6Q9VGNwYaOueNcmaK2iVDBJ7DZpIMyN51lRoa
+         /kdDa3fYvlvArsXTmjlHyuNAjtVH4DKC+Oco312NYeUL1Iz1dYwnmfI9MKYYGOFCf+
+         6fdAPndFlrgVFxJGXwp5I9zXWrfeCx6KfEOihedyO/RE0YoZvI8vFnE09Za7bZxbJQ
+         5kuCtIORrLGHG2vE4xsI58xJjXeJjCvuKtQyzTekCAL178KuTOc97FuEFAKt8SRvlM
+         1riAzWuQamXvHnghUF59KN2iD1n7MWJtZ/mPAM7jy2uMfj8GIHqqrCJ5AFZQQeHXLj
+         gDIpHLkooESXg==
+Date:   Tue, 3 Aug 2021 22:07:37 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <lenb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v3] memblock: make memblock_find_in_range method private
+Message-ID: <YQmT+Z9QhcwI43GK@kernel.org>
+References: <20210803064218.6611-1-rppt@kernel.org>
+ <20210803180526.GD5786@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1628007913-29892-1-git-send-email-khsieh@codeaurora.org>
-References: <1628007913-29892-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 3 Aug 2021 12:05:08 -0700
-Message-ID: <CAE-0n51yNrmrqgDrkj2+c2Bx-bYxNs1m2pQBxvVkSpBH2hxzoA@mail.gmail.com>
-Subject: Re: [PATCH v3] drm/msm/dp: update is_connected status base on sink
- count at dp_pm_resume()
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803180526.GD5786@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-08-03 09:25:13)
-> Currently at dp_pm_resume() is_connected state is decided base on hpd connection
-> status only. This will put is_connected in wrongly "true" state at the scenario
-> that dongle attached to DUT but without hmdi cable connecting to it. Fix this
-> problem by adding read sink count from dongle and decided is_connected state base
-> on both sink count and hpd connection status.
->
-> Changes in v2:
-> -- remove dp_get_sink_count() cand call drm_dp_read_sink_count()
->
-> Changes in v3:
-> -- delete status local variable from dp_pm_resume()
->
-> Fixes: d9aa6571b28ba ("drm/msm/dp: check sink_count before update is_connected status")
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 78c5301..0f39256 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -1313,7 +1313,7 @@ static int dp_pm_resume(struct device *dev)
->         struct platform_device *pdev = to_platform_device(dev);
->         struct msm_dp *dp_display = platform_get_drvdata(pdev);
->         struct dp_display_private *dp;
-> -       u32 status;
-> +       int sink_count = 0;
->
->         dp = container_of(dp_display, struct dp_display_private, dp_display);
->
-> @@ -1327,14 +1327,26 @@ static int dp_pm_resume(struct device *dev)
->
->         dp_catalog_ctrl_hpd_config(dp->catalog);
->
-> -       status = dp_catalog_link_is_connected(dp->catalog);
-> +       /*
-> +        * set sink to normal operation mode -- D0
-> +        * before dpcd read
-> +        */
-> +       dp_link_psm_config(dp->link, &dp->panel->link_info, false);
-> +
-> +       /* if sink conencted, do dpcd read sink count */
+On Tue, Aug 03, 2021 at 07:05:26PM +0100, Catalin Marinas wrote:
+> On Tue, Aug 03, 2021 at 09:42:18AM +0300, Mike Rapoport wrote:
+> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > index 8490ed2917ff..0bffd2d1854f 100644
+> > --- a/arch/arm64/mm/init.c
+> > +++ b/arch/arm64/mm/init.c
+> > @@ -74,6 +74,7 @@ phys_addr_t arm64_dma_phys_limit __ro_after_init;
+> >  static void __init reserve_crashkernel(void)
+> >  {
+> >  	unsigned long long crash_base, crash_size;
+> > +	unsigned long long crash_max = arm64_dma_phys_limit;
+> >  	int ret;
+> >  
+> >  	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
+> > @@ -84,33 +85,18 @@ static void __init reserve_crashkernel(void)
+> >  
+> >  	crash_size = PAGE_ALIGN(crash_size);
+> >  
+> > -	if (crash_base == 0) {
+> > -		/* Current arm64 boot protocol requires 2MB alignment */
+> > -		crash_base = memblock_find_in_range(0, arm64_dma_phys_limit,
+> > -				crash_size, SZ_2M);
+> > -		if (crash_base == 0) {
+> > -			pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
+> > -				crash_size);
+> > -			return;
+> > -		}
+> > -	} else {
+> > -		/* User specifies base address explicitly. */
+> > -		if (!memblock_is_region_memory(crash_base, crash_size)) {
+> > -			pr_warn("cannot reserve crashkernel: region is not memory\n");
+> > -			return;
+> > -		}
+> > +	/* User specifies base address explicitly. */
+> > +	if (crash_base)
+> > +		crash_max = crash_base + crash_size;
+> >  
+> > -		if (memblock_is_region_reserved(crash_base, crash_size)) {
+> > -			pr_warn("cannot reserve crashkernel: region overlaps reserved memory\n");
+> > -			return;
+> > -		}
+> > -
+> > -		if (!IS_ALIGNED(crash_base, SZ_2M)) {
+> > -			pr_warn("cannot reserve crashkernel: base address is not 2MB aligned\n");
+> > -			return;
+> > -		}
+> > +	/* Current arm64 boot protocol requires 2MB alignment */
+> > +	crash_base = memblock_phys_alloc_range(crash_size, SZ_2M,
+> > +					       crash_base, crash_max);
+> > +	if (!crash_base) {
+> > +		pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
+> > +			crash_size);
+> > +		return;
+> >  	}
+> > -	memblock_reserve(crash_base, crash_size);
+> 
+> We'll miss a bit on debug information provided to the user in case of a
+> wrong crash_base/size option on the command line. Not sure we care much,
+> though the alignment would probably be useful (maybe we document it
+> somewhere).
 
-s/conencted/connected/
+It is already documented:
 
-This also just says what the code is doing. Why do we only read the sink
-count if the link is connected? Can we read the sink count even if the
-link isn't connected and then consider sink count as 0 if trying to read
-fails?
+Documentation/admin-guide/kdump/kdump.rst:
+   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
+   the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
+ 
+> What I haven't checked is whether memblock_phys_alloc_range() aims to
+> get a 2MB aligned end (size) as well. If crash_size is not 2MB aligned,
+> crash_max wouldn't be either and the above could fail. We only care
+> about the crash_base to be aligned but the memblock_phys_alloc_range()
+> doc says that both the start and size would be aligned to this.
 
-> +       if (dp_catalog_link_is_connected(dp->catalog)) {
-> +               sink_count = drm_dp_read_sink_count(dp->aux);
-> +               if (sink_count < 0)
-> +                       sink_count = 0;
-> +       }
->
-> +       dp->link->sink_count = sink_count;
->         /*
->          * can not declared display is connected unless
->          * HDMI cable is plugged in and sink_count of
->          * dongle become 1
->          */
-> -       if (status && dp->link->sink_count)
-> +       if (dp->link->sink_count)
->                 dp->dp_display.is_connected = true;
->         else
->                 dp->dp_display.is_connected = false;
+The doc lies :)
+
+memblock_phys_alloc_range() boils down to 
+
+	for_each_free_mem_range_reverse(i, nid, flags, &this_start, &this_end,
+					NULL) {
+
+		/* clamp this_{start,end} to the user defined limits */
+
+		cand = round_down(this_end - size, align);
+		if (cand >= this_start)
+			return cand;
+	}
+
+-- 
+Sincerely yours,
+Mike.
