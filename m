@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395A13DE825
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86963DE828
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234409AbhHCIRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:17:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47852 "EHLO mail.kernel.org"
+        id S234331AbhHCITJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:19:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234238AbhHCIRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:17:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 674CC60F48;
-        Tue,  3 Aug 2021 08:17:31 +0000 (UTC)
+        id S234238AbhHCITI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:19:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F3DB60F48;
+        Tue,  3 Aug 2021 08:18:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627978652;
-        bh=PdhWPd9rigGSL3jfOcHcS2N75yHEquaDg28LhFIeogg=;
+        s=k20201202; t=1627978737;
+        bh=jo1vkTLSsn7o97jvaxaVfv1Rsk4Y3N0xg2r+xbu7uuY=;
         h=From:To:Cc:Subject:Date:From;
-        b=kXvpbg+Bnb7vnIFm10U1Dyz9lSDBD22mYkf26HpX8cuG/dDU0euJF8mPLmTuhNx5R
-         IASFr5fJ7POG5mCnoRxuQYuWOabkGvO1RJwwcpz66EK1dLamQg9E2Pdu/KHTQfEDxk
-         Kj0cHuiD5bWiyP9jen+mCBtU2DV37cm67gXPsSVPs0ISDsWPipgofMIWlV1dAb24ju
-         ge3hEcVfsY1l/kvSGW8ry0SUH8LL2pD/r0kcxop4JPNO3pxIlp4SDBqJCq0LS2qRc9
-         kMCQzqiLtLoNsjDKAHXHvu/ToPlkc5Ztlgf2JmRJqtymqVS5TOlhLQu9QoO6+4W9AO
-         JnhghzhYi19QQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Krzysztof Halasa <khalasa@piap.pl>,
-        =?UTF-8?q?Krzysztof=20Ha=C5=82asa?= <khc@pm.waw.pl>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] soc: ixp4xx/qmgr: fix invalid __iomem access
-Date:   Tue,  3 Aug 2021 10:17:22 +0200
-Message-Id: <20210803081728.2085286-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        b=r2fGxeWs95g1Eu6yjJQUDShK+xub4RuOqsjJmPoJ+XxjUoHgZf3qoGprsYVUZGj78
+         UjsyR49mK9ME2xiAoGnV+01NL+lPrTph7gBzqWbo+9Hx/9bsYfEhK+T5+OYmZ1+gjF
+         J6KsTv9BKdOYuwTghi5SMeg8R0YSU3WkwKlBHY8xuMxPcXX86rkXrnx3cYiZt4ul1t
+         6jUVZ6HJwRqkCZeuNOtlxtmeuAzgtKpGkITDCGyf9vTls7ZIKr85YXsUunmkB+iDk0
+         7KqrXLyC/eqa2cdoPibWSUhkeeewjgEAFTp9fYvsne0ulm4dk+4bvYuZN0WuOtujiD
+         uahTRuW6fyZcg==
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] clk fixes for v5.14-rc4
+Date:   Tue,  3 Aug 2021 01:18:56 -0700
+Message-Id: <20210803081856.3896288-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-Sparse reports a compile time warning when dereferencing an
-__iomem pointer:
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-drivers/soc/ixp4xx/ixp4xx-qmgr.c:149:37: warning: dereference of noderef expression
-drivers/soc/ixp4xx/ixp4xx-qmgr.c:153:40: warning: dereference of noderef expression
-drivers/soc/ixp4xx/ixp4xx-qmgr.c:154:40: warning: dereference of noderef expression
-drivers/soc/ixp4xx/ixp4xx-qmgr.c:174:38: warning: dereference of noderef expression
-drivers/soc/ixp4xx/ixp4xx-qmgr.c:174:44: warning: dereference of noderef expression
+are available in the Git repository at:
 
-Use __raw_readl() here for consistency with the rest of the file.
-This should really get converted to some proper accessor, as the
-__raw functions are not meant to be used in drivers, but the driver
-has used these since the start, so for the moment, let's only fix
-the warning.
+  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: d4c9e9fc9751 ("IXP42x: Add QMgr support for IXP425 rev. A0 processors.")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/soc/ixp4xx/ixp4xx-qmgr.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+for you to fetch changes up to f828b0bcacef189edbd247e9f48864fc36bfbe33:
 
-diff --git a/drivers/soc/ixp4xx/ixp4xx-qmgr.c b/drivers/soc/ixp4xx/ixp4xx-qmgr.c
-index c6bf6ef257c0..9154c7029b05 100644
---- a/drivers/soc/ixp4xx/ixp4xx-qmgr.c
-+++ b/drivers/soc/ixp4xx/ixp4xx-qmgr.c
-@@ -146,12 +146,12 @@ static irqreturn_t qmgr_irq1_a0(int irq, void *pdev)
- 	/* ACK - it may clear any bits so don't rely on it */
- 	__raw_writel(0xFFFFFFFF, &qmgr_regs->irqstat[0]);
- 
--	en_bitmap = qmgr_regs->irqen[0];
-+	en_bitmap = __raw_readl(&qmgr_regs->irqen[0]);
- 	while (en_bitmap) {
- 		i = __fls(en_bitmap); /* number of the last "low" queue */
- 		en_bitmap &= ~BIT(i);
--		src = qmgr_regs->irqsrc[i >> 3];
--		stat = qmgr_regs->stat1[i >> 3];
-+		src = __raw_readl(&qmgr_regs->irqsrc[i >> 3]);
-+		stat = __raw_readl(&qmgr_regs->stat1[i >> 3]);
- 		if (src & 4) /* the IRQ condition is inverted */
- 			stat = ~stat;
- 		if (stat & BIT(src & 3)) {
-@@ -171,7 +171,8 @@ static irqreturn_t qmgr_irq2_a0(int irq, void *pdev)
- 	/* ACK - it may clear any bits so don't rely on it */
- 	__raw_writel(0xFFFFFFFF, &qmgr_regs->irqstat[1]);
- 
--	req_bitmap = qmgr_regs->irqen[1] & qmgr_regs->statne_h;
-+	req_bitmap = __raw_readl(&qmgr_regs->irqen[1]) &
-+		     __raw_readl(&qmgr_regs->statne_h);
- 	while (req_bitmap) {
- 		i = __fls(req_bitmap); /* number of the last "high" queue */
- 		req_bitmap &= ~BIT(i);
+  clk: fix leak on devm_clk_bulk_get_all() unwind (2021-07-31 00:53:38 -0700)
+
+----------------------------------------------------------------
+A collection of clk driver fixes and one core clk API fix
+
+ - Fix stm32 clk data to avoid a crash early on
+
+ - Fix a randconfig build error in HiSilicon clk driver
+
+ - Avoid an oops at boot on Qualcomm MSM8936 SoCs due to an
+   improper consolidation of structs
+
+ - Fix imbalanced disabling of the unused MMC clock on Tegra210
+   Jetson Nano
+
+ - Plug a memory leak in devm_clk_bulk_get_all() unwind path
+
+----------------------------------------------------------------
+Brian Norris (1):
+      clk: fix leak on devm_clk_bulk_get_all() unwind
+
+Dario Binacchi (1):
+      clk: stm32f4: fix post divisor setup for I2S/SAI PLLs
+
+Dmitry Osipenko (1):
+      clk: tegra: Implement disable_unused() of tegra_clk_sdmmc_mux_ops
+
+Randy Dunlap (1):
+      clk: hisilicon: hi3559a: select RESET_HISI
+
+Shawn Guo (1):
+      clk: qcom: smd-rpm: Fix MSM8936 RPM_SMD_PCNOC_A_CLK
+
+ drivers/clk/clk-devres.c          |  9 ++++++++-
+ drivers/clk/clk-stm32f4.c         | 10 +++++-----
+ drivers/clk/hisilicon/Kconfig     |  1 +
+ drivers/clk/qcom/clk-smd-rpm.c    |  2 +-
+ drivers/clk/tegra/clk-sdmmc-mux.c | 10 ++++++++++
+ 5 files changed, 25 insertions(+), 7 deletions(-)
+
 -- 
-2.29.2
-
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
