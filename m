@@ -2,82 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375363DEBB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459443DEBB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235567AbhHCL1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235443AbhHCL06 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:26:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB81CC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 04:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BuLiq12RG7B36khxihK0IUw3DFZDJm8AYh2kdikH7as=; b=DU79JUdwPuDo5xJJBlBqhuRymq
-        XSd0/JsKh9QWGkXc1vaPCOSm46mlm3MD1Wt+9J6UY/zxsY9Ys73QosNfI4V3UQVhFBrKCAPPSW7hh
-        ouStu9WkOMaYpoGz+Wwcv4MPY+9nzZsKk+UUsw7zJPpyXjpxiPdwxtIatl5P0V7xIKpXEoAgG+w8o
-        fAEUhurdlgp29ocMYODX8vhV4kuKYqHYhBCz1aIr0WEak5/g/l/SnrZBoIdOsh7xzodsuIt5G6lAV
-        nL7yPtI8QRZyNhBDCLl+5ELB1WsBYiwhS6+fVSNLKPghvRqcBr4MI+zmJ4HBYIdRAbkOk9hgQOMwM
-        PA5oHOsQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mAsYB-004ZRc-AN; Tue, 03 Aug 2021 11:25:40 +0000
-Date:   Tue, 3 Aug 2021 12:25:35 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel@vger.kernel.org, Shuang Zhai <zhais@google.com>
-Subject: Re: [PATCH 3/3] mm: don't remap clean subpages when splitting
- isolated thp
-Message-ID: <YQknr97njybzQ3be@casper.infradead.org>
-References: <20210731063938.1391602-1-yuzhao@google.com>
- <20210731063938.1391602-4-yuzhao@google.com>
+        id S235552AbhHCL01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:26:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:47576 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235497AbhHCL01 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 07:26:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC3191396;
+        Tue,  3 Aug 2021 04:26:15 -0700 (PDT)
+Received: from [10.163.67.68] (unknown [10.163.67.68])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 921433F40C;
+        Tue,  3 Aug 2021 04:26:13 -0700 (PDT)
+Subject: Re: [PATCH] arm64/mm: Fix idmap on [16K|36VA|48PA]
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <1627879359-30303-1-git-send-email-anshuman.khandual@arm.com>
+ <20210803103440.GA5786@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <7bad50a2-76f1-7946-3a15-35e46fb289c0@arm.com>
+Date:   Tue, 3 Aug 2021 16:57:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210731063938.1391602-4-yuzhao@google.com>
+In-Reply-To: <20210803103440.GA5786@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 12:39:38AM -0600, Yu Zhao wrote:
-> +++ b/mm/migrate.c
-> @@ -168,14 +168,53 @@ void putback_movable_pages(struct list_head *l)
->  	}
->  }
->  
-> +static bool try_to_unmap_clean(struct page_vma_mapped_walk *pvmw, struct page *page)
-> +{
-> +	void *addr;
-> +	bool dirty;
-> +
-> +	VM_BUG_ON_PAGE(PageLRU(page), page);
-> +	VM_BUG_ON_PAGE(PageCompound(page), page);
-> +	VM_BUG_ON_PAGE(!PageAnon(page), page);
-> +	VM_BUG_ON_PAGE(!PageLocked(page), page);
-> +	VM_BUG_ON_PAGE(pte_present(*pvmw->pte), page);
-> +
-> +	if (PageMlocked(page) || (pvmw->vma->vm_flags & VM_LOCKED))
-> +		return false;
-> +
-> +	/*
-> +	 * The pmd entry mapping the old thp was flushed and the pte mapping
-> +	 * this subpage has been non present. Therefore, this subpage is
-> +	 * inaccessible. We don't need to remap it if it contains only zeros.
-> +	 */
-> +	addr = kmap_atomic(page);
-> +	dirty = !!memchr_inv(addr, 0, PAGE_SIZE);
-> +	kunmap_atomic(addr);
 
-kmap_local() is preferred now.  Also, Linus has a particular hatred for
-the !! idiom; just compare against NULL.
 
+On 8/3/21 4:04 PM, Catalin Marinas wrote:
+> On Mon, Aug 02, 2021 at 10:12:39AM +0530, Anshuman Khandual wrote:
+>> When creating the idmap, the kernel may add one extra level to idmap memory
+>> outside the VA range. But for [16K|36VA|48PA], we need two levels to reach
+>> 48 bits. If the bootloader places the kernel in memory above (1 << 46), the
+> 
+> Did you mean (1 << 36)?
+
+No it is actually (1 << 47). If __idmap_text_end is beyond (1 << 47), a single
+additional page table level in idmap would not be sufficient to map it. Rather
+two more levels would be required. A single additional page table level covers
+(PAGE_SHIFT - 3 = 14 - 3 = 11) bits on 16K pages.
+
+First  additional page table level covers	VA(36) --> (47)
+Second additional page table level covers	VA(48) --> (48)
+
+> 
+>> kernel will fail to enable the MMU. Although we are not aware of a platform
+>> where this happens, it is worth to accommodate such scenarios and prevent a
+>> possible kernel crash.
+>>
+>> Lets fix the problem on the above configuration by creating two additional
+>> idmap page table levels when 'idmap_text_end' is outside the VA range. This
+>> reduces 'idmap_t0sz' to cover the entire PA range which would prevent table
+>> misconfiguration (fault) when a given 'idmap_t0sz' value requires a single
+>> additional page table level where as two have been built.
+> [...]
+>> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+>> index c5c994a..da33bbc 100644
+>> --- a/arch/arm64/kernel/head.S
+>> +++ b/arch/arm64/kernel/head.S
+>> @@ -329,7 +329,9 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+>>  
+>>  #if (VA_BITS < 48)
+>>  #define EXTRA_SHIFT	(PGDIR_SHIFT + PAGE_SHIFT - 3)
+>> +#define EXTRA_SHIFT_1	(EXTRA_SHIFT + PAGE_SHIFT - 3)
+>>  #define EXTRA_PTRS	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT))
+>> +#define EXTRA_PTRS_1	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT_1))
+>>  
+>>  	/*
+>>  	 * If VA_BITS < 48, we have to configure an additional table level.
+>> @@ -342,8 +344,30 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+>>  #error "Mismatch between VA_BITS and page size/number of translation levels"
+>>  #endif
+>>  
+>> +/*
+>> + * In this particular CONFIG_ARM64_16K_PAGES config, there might be a
+>> + * scenario where 'idmap_text_end' ends up high enough in the PA range
+>> + * requiring two additional idmap page table levels. Reduce idmap_t0sz
+>> + * to cover the entire PA range. This prevents table misconfiguration
+>> + * when a given idmap_t0sz value just requires single additional level
+>> + * where as two levels have been built.
+>> + */
+>> +#if defined(CONFIG_ARM64_VA_BITS_36) && defined(CONFIG_ARM64_PA_BITS_48)
+>> +	mov	x4, EXTRA_PTRS_1
+>> +	create_table_entry x0, x3, EXTRA_SHIFT_1, x4, x5, x6
+>> +
+>> +	mov	x4, PTRS_PER_PTE
+>> +	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
+>> +
+>> +	mov	x5, #64 - PHYS_MASK_SHIFT
+>> +	adr_l	x6, idmap_t0sz
+>> +	str	x5, [x6]
+>> +	dmb	sy
+>> +	dc	ivac, x6
+>> +#else
+>>  	mov	x4, EXTRA_PTRS
+>>  	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
+>> +#endif
+>>  #else
+>>  	/*
+>>  	 * If VA_BITS == 48, we don't have to configure an additional
+> 
+> There's a prior idmap_t0sz setting based on __idmap_text_end. Isn't that
+> sufficient? We don't care about covering the whole PA space, just the
+> __idmap_text_end.
+
+Right but its bit tricky here.
+
+__idmap_text_end could be any where between VA_BITS (36) and PA_BITS (48)
+which would require (one or two) additional page table levels. But in this
+solution it creates two additional page table levels for idmap which would
+completely map upto PA_BITS, regardless of __idmap_text_end's position. So
+in case __idmap_text_end is between VA_BITS (36) and VA_BITS(47), a single
+additional page table level is required where as we have created two ! So
+to avoid such a situation, adjust idmap_t0sz accordingly. Otherwise there
+will be a MMU mis-configuration.
+
+This patch is indented for stable back port and hence tries to be as simple
+and minimal as possible. So it creates two additional page table levels
+mapping upto PA_BITS without just considering __idmap_text_end's position.
+Reducing __idmap_t0sz upto PA_BITS should not be a problem irrespective of
+ID_AA64MMFR0_EL1.PARANGE value. As __idmap_text_end would never be on a PA
+which is not supported. Hence out of range PA would never be on the bus for
+translation.
