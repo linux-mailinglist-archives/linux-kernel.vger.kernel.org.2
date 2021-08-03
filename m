@@ -2,286 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FB13DE3EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5481A3DE3EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbhHCBTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 21:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbhHCBTj (ORCPT
+        id S233305AbhHCBWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 21:22:16 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:17564 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233148AbhHCBWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 21:19:39 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021B7C06175F;
-        Mon,  2 Aug 2021 18:19:29 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id c3so18187265ilh.3;
-        Mon, 02 Aug 2021 18:19:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u9hZlNEVQtl9H4h5fUtoarYkmhlyAeJcak16DpUZk5w=;
-        b=XP074fISHdgNdmqlBDocoFPPOyy3Ag4vr397lUiFsl78eXaEeoy056KI89cuLstmPT
-         af+v8NtkcdxGgVDmFDb0jSl9ndPRl/XPasHsyX9PnFCkpKm/5L5Dk03TNtT6I41cgv/2
-         gUFk/22SzlBl+HbudPWXGDLLHmS4E3O9HuXNFBw8UWbLTTwRY9WDIBYpS4A3H+nToLd8
-         5oqi/H3AtAesgGjq4cb6o389lE0OW3kwKB5ZUnbZKKPjEjCri8Oe9eeU7CYgdxiw0Mfx
-         b+MeqNbxuMpRQqtO2il/c5zlpX3tCYN+R3HfXnNIFB0pTi75itEaP6x8bwjOcK/sEw5x
-         pTVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u9hZlNEVQtl9H4h5fUtoarYkmhlyAeJcak16DpUZk5w=;
-        b=B9heoFLM32kv+U1cPR3JYMqVT9YjMYSOwHOzqLJtaMzfQ6Tj4hUvmAAClyunl9/fop
-         //1A1HczbNkQJrJWBGQ8QGUO/XrjyKSG8dVbLgIRKJmp2DGUdzD2+SGhgczocAAW0IKa
-         Y0iuLa9P1E4q6xcuK45goGhrr9ROIQl4nRdqr/8cE2k16HK5ZUnXuf9RPPFznr3Ookj2
-         1beMfH8dYFKAMBzEv60Hdp8s+7KRlGXshcrX/M7uGJI/ehD/VIr8Wim8rOWEMkNtaBHv
-         JqZXL1f1IQ9g9YJPG1b+nUJF/pOmuwKXCpkEoW9KaHtM3idSZG4LOUAtW1uMe7QIZBmI
-         Eu7Q==
-X-Gm-Message-State: AOAM530/eboP1I5tyS2dmUZ8dbUHbeqlhU07RGvwhASu0sBIcnF/LiQJ
-        wILROqm8w5JBYM3UBZ7qojwsZSqhJBs5FMqIHPA=
-X-Google-Smtp-Source: ABdhPJwO2whEKVXD9FpKYTgzaF0VMeJTZBR6Hxntfmj81J5yV0DJZTUjbOkVVNzO+vANYCpIVcApLDWdrer3qTE3STA=
-X-Received: by 2002:a05:6e02:b43:: with SMTP id f3mr613726ilu.94.1627953568399;
- Mon, 02 Aug 2021 18:19:28 -0700 (PDT)
+        Mon, 2 Aug 2021 21:22:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627953725; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=69oMaUQoA4ReczOKXAVfPDBIj5MKdJ/GxjJmCjK/vaw=;
+ b=NAzFQcTVOwgf8ag6OPQnWJQkbvAbLzfaC2iWS/3ohSHI1+TD5Z+3wYs6jsjd36iZtqtYq9f3
+ t7OiMHZLMVpMAzAMIjTPNmzpQSdgjh487VHi1kMDV1ZDsp/2y3y7n7YCQ11ENkGDxQJPJ+le
+ fMFThAJRsAeWfgeDGxPwWfVbW6U=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 61089a3b96a66e66b293abad (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 01:22:03
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A7376C433F1; Tue,  3 Aug 2021 01:22:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D6302C433D3;
+        Tue,  3 Aug 2021 01:22:02 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210525213920.3340-1-jiangshanlai@gmail.com> <YQLuBDZ2MlNlIoH4@google.com>
-In-Reply-To: <YQLuBDZ2MlNlIoH4@google.com>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Tue, 3 Aug 2021 09:19:17 +0800
-Message-ID: <CAJhGHyCU-Om3NWLVg-kbUE7FZD1nNZft8+KeCDH3cr_FDaitXQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] kvm/x86: Keep root hpa in prev_roots as much as possible
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 02 Aug 2021 18:22:02 -0700
+From:   abhinavk@codeaurora.org
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [Freedreno] [PATCH 11/11] drm/msm/dsi: Pass DSC params to
+ drm_panel
+In-Reply-To: <20210715065203.709914-12-vkoul@kernel.org>
+References: <20210715065203.709914-1-vkoul@kernel.org>
+ <20210715065203.709914-12-vkoul@kernel.org>
+Message-ID: <d2fd4c9b0fd9a1e67ac5372803ed3853@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 2:06 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Wed, May 26, 2021, Lai Jiangshan wrote:
-> > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> >
-> > Pagetable roots in prev_roots[] are likely to be reused soon and
-> > there is no much overhead to keep it with a new need_sync field
-> > introduced.
-> >
-> > With the help of the new need_sync field, pagetable roots are
-> > kept as much as possible, and they will be re-synced before reused
-> > instead of being dropped.
-> >
-> > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> > ---
-> >
-> > This patch is just for RFC.
-> >   Is the idea Ok?
->
-> Yes, the idea is definitely a good one.
->
-> >   If the idea is Ok, we need to reused one bit from pgd or hpa
-> >     as need_sync to save memory.  Which one is better?
->
-> Ha, we can do this without increasing the memory footprint and without co-opting
-> a bit from pgd or hpa.  Because of compiler alignment/padding, the u8s and bools
-> between mmu_role and prev_roots already occupy 8 bytes, even though the actual
-> size is 4 bytes.  In total, we need room for 4 roots (3 previous + current), i.e.
-> 4 bytes.  If a separate array is used, no additional memory is consumed and no
-> masking is needed when reading/writing e.g. pgd.
->
-> The cost is an extra swap() when updating the prev_roots LRU, but that's peanuts
-> and would likely be offset by masking anyways.
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 99f37781a6fc..13bb3c3a60b4 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -424,10 +424,12 @@ struct kvm_mmu {
->         hpa_t root_hpa;
->         gpa_t root_pgd;
->         union kvm_mmu_role mmu_role;
-> +       bool root_unsync;
->         u8 root_level;
->         u8 shadow_root_level;
->         u8 ept_ad;
->         bool direct_map;
-> +       bool unsync_roots[KVM_MMU_NUM_PREV_ROOTS];
->         struct kvm_mmu_root_info prev_roots[KVM_MMU_NUM_PREV_ROOTS];
->
+On 2021-07-14 23:52, Vinod Koul wrote:
+> When DSC is enabled, we need to pass the DSC parameters to panel driver
+> as well, so add a dsc parameter in panel and set it when DSC is enabled
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-Hello
+based on the comments on prev patches in the series, this will need to 
+be reworked
+too as there wont be any priv->dsc anymore.
 
-I think it is too complicated.  And it is hard to accept to put "unsync"
-out of struct kvm_mmu_root_info when they should be bound to each other.
+Also, can you also post the panel changes? Would like to see how you 
+will use the
+dsc param there.
 
-How about this:
-- KVM_MMU_NUM_PREV_ROOTS
-+ KVM_MMU_NUM_CACHED_ROOTS
-- mmu->prev_roots[KVM_MMU_NUM_PREV_ROOTS]
-+ mmu->cached_roots[KVM_MMU_NUM_CACHED_ROOTS]
-- mmu->root_hpa
-+ mmu->cached_roots[0].hpa
-- mmu->root_pgd
-+ mmu->cached_roots[0].pgd
-
-And using the bit63 in @pgd as the information that it is not requested
-to sync since the last sync.
-
-Thanks
-Lai.
-
->         /*
->
->
-> >  arch/x86/include/asm/kvm_host.h |  3 ++-
-> >  arch/x86/kvm/mmu/mmu.c          |  6 ++++++
-> >  arch/x86/kvm/vmx/nested.c       | 12 ++++--------
-> >  arch/x86/kvm/x86.c              |  9 +++++----
-> >  4 files changed, 17 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > index 55efbacfc244..19a337cf7aa6 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -354,10 +354,11 @@ struct rsvd_bits_validate {
-> >  struct kvm_mmu_root_info {
-> >       gpa_t pgd;
-> >       hpa_t hpa;
-> > +     bool need_sync;
->
-> Hmm, use "unsync" instead of "need_sync", purely to match the existing terminology
-> in KVM's MMU for this sort of behavior.
->
-> >  };
-> >
-> >  #define KVM_MMU_ROOT_INFO_INVALID \
-> > -     ((struct kvm_mmu_root_info) { .pgd = INVALID_PAGE, .hpa = INVALID_PAGE })
-> > +     ((struct kvm_mmu_root_info) { .pgd = INVALID_PAGE, .hpa = INVALID_PAGE, .need_sync = true})
-> >
-> >  #define KVM_MMU_NUM_PREV_ROOTS 3
-> >
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 5e60b00e8e50..147827135549 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -3878,6 +3878,7 @@ static bool cached_root_available(struct kvm_vcpu *vcpu, gpa_t new_pgd,
-> >
-> >       root.pgd = mmu->root_pgd;
-> >       root.hpa = mmu->root_hpa;
-> > +     root.need_sync = false;
-> >
-> >       if (is_root_usable(&root, new_pgd, new_role))
-> >               return true;
-> > @@ -3892,6 +3893,11 @@ static bool cached_root_available(struct kvm_vcpu *vcpu, gpa_t new_pgd,
-> >       mmu->root_hpa = root.hpa;
-> >       mmu->root_pgd = root.pgd;
-> >
-> > +     if (i < KVM_MMU_NUM_PREV_ROOTS && root.need_sync) {
->
-> Probably makes sense to write this as:
->
->         if (i >= KVM_MMU_NUM_PREV_ROOTS)
->                 return false;
->
->         if (root.need_sync) {
->                 kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
->                 kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
->         }
->         return true;
->
-> The "i < KVM_MMU_NUM_PREV_ROOTS == success" logic is just confusing enough that
-> it'd be nice to write it only once.
->
-> And that would also play nicely with deferring a sync for the "current" root
-> (see below), e.g.
->
->         ...
->         unsync = mmu->root_unsync;
->
->         if (is_root_usable(&root, new_pgd, new_role))
->                 goto found_root;
->
->         for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++) {
->                 swap(root, mmu->prev_roots[i]);
->                 swap(unsync, mmu->unsync_roots[i]);
->
->                 if (is_root_usable(&root, new_pgd, new_role))
->                         break;
->         }
->
->         if (i >= KVM_MMU_NUM_PREV_ROOTS)
->                 return false;
->
-> found_root:
->         if (unsync) {
->                 kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
->                 kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
->         }
->         return true;
->
-> > +             kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
-> > +             kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
-> > +     }
-> > +
-> >       return i < KVM_MMU_NUM_PREV_ROOTS;
-> >  }
-> >
-> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > index 6058a65a6ede..ab7069ac6dc5 100644
-> > --- a/arch/x86/kvm/vmx/nested.c
-> > +++ b/arch/x86/kvm/vmx/nested.c
-> > @@ -5312,7 +5312,7 @@ static int handle_invept(struct kvm_vcpu *vcpu)
-> >  {
-> >       struct vcpu_vmx *vmx = to_vmx(vcpu);
-> >       u32 vmx_instruction_info, types;
-> > -     unsigned long type, roots_to_free;
-> > +     unsigned long type;
-> >       struct kvm_mmu *mmu;
-> >       gva_t gva;
-> >       struct x86_exception e;
-> > @@ -5361,29 +5361,25 @@ static int handle_invept(struct kvm_vcpu *vcpu)
-> >                       return nested_vmx_fail(vcpu,
-> >                               VMXERR_INVALID_OPERAND_TO_INVEPT_INVVPID);
-> >
-> > -             roots_to_free = 0;
-> >               if (nested_ept_root_matches(mmu->root_hpa, mmu->root_pgd,
-> >                                           operand.eptp))
-> > -                     roots_to_free |= KVM_MMU_ROOT_CURRENT;
-> > +                     kvm_mmu_free_roots(vcpu, mmu, KVM_MMU_ROOT_CURRENT);
->
-> For a non-RFC series, I think this should do two things:
->
->   1. Separate INVEPT from INVPCID, i.e. do only INVPCID first.
->   2. Enhance INVEPT to SYNC+FLUSH the current root instead of freeing it
->
-> As alluded to above, this can be done by deferring the sync+flush (which can't
-> be done right away because INVEPT runs in L1 context, whereas KVM needs to sync+flush
-> L2 EPT context).
->
-> >               for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++) {
-> >                       if (nested_ept_root_matches(mmu->prev_roots[i].hpa,
-> >                                                   mmu->prev_roots[i].pgd,
-> >                                                   operand.eptp))
-> > -                             roots_to_free |= KVM_MMU_ROOT_PREVIOUS(i);
-> > +                             mmu->prev_roots[i].need_sync = true;
-> >               }
-> >               break;
-> >       case VMX_EPT_EXTENT_GLOBAL:
-> > -             roots_to_free = KVM_MMU_ROOTS_ALL;
-> > +             kvm_mmu_free_roots(vcpu, mmu, KVM_MMU_ROOTS_ALL);
-> >               break;
-> >       default:
-> >               BUG();
-> >               break;
-> >       }
-> >
-> > -     if (roots_to_free)
-> > -             kvm_mmu_free_roots(vcpu, mmu, roots_to_free);
-> > -
-> >       return nested_vmx_succeed(vcpu);
-> >  }
+> ---
+>  drivers/gpu/drm/msm/dsi/dsi_host.c | 16 +++++++++++++++-
+>  include/drm/drm_panel.h            |  7 +++++++
+>  2 files changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> index 4e8ab1b1df8b..ee21cda243a7 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> @@ -2193,6 +2193,7 @@ int msm_dsi_host_modeset_init(struct 
+> mipi_dsi_host *host,
+>  	const struct msm_dsi_cfg_handler *cfg_hnd = msm_host->cfg_hnd;
+>  	struct platform_device *pdev = msm_host->pdev;
+>  	struct msm_drm_private *priv;
+> +	struct drm_panel *panel;
+>  	int ret;
+> 
+>  	msm_host->irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
+> @@ -2212,8 +2213,21 @@ int msm_dsi_host_modeset_init(struct 
+> mipi_dsi_host *host,
+>  	}
+> 
+>  	msm_host->dev = dev;
+> +	panel = msm_dsi_host_get_panel(&msm_host->base);
+>  	priv = dev->dev_private;
+> -	priv->dsc = msm_host->dsc;
+> +
+> +	if (panel && panel->dsc) {
+> +		struct msm_display_dsc_config *dsc = priv->dsc;
+> +
+> +		if (!dsc) {
+> +			dsc = kzalloc(sizeof(*dsc), GFP_KERNEL);
+> +			if (!dsc)
+> +				return -ENOMEM;
+> +			dsc->drm = panel->dsc;
+> +			priv->dsc = dsc;
+> +			msm_host->dsc = dsc;
+> +		}
+> +	}
+> 
+>  	ret = cfg_hnd->ops->tx_buf_alloc(msm_host, SZ_4K);
+>  	if (ret) {
+> diff --git a/include/drm/drm_panel.h b/include/drm/drm_panel.h
+> index 33605c3f0eba..27a7808a29f2 100644
+> --- a/include/drm/drm_panel.h
+> +++ b/include/drm/drm_panel.h
+> @@ -171,6 +171,13 @@ struct drm_panel {
+>  	 * Panel entry in registry.
+>  	 */
+>  	struct list_head list;
+> +
+> +	/**
+> +	 * @dsc:
+> +	 *
+> +	 * Panel DSC pps payload to be sent
+> +	 */
+> +	struct drm_dsc_config *dsc;
+>  };
+> 
+>  void drm_panel_init(struct drm_panel *panel, struct device *dev,
