@@ -2,109 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FED3DEEFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993AA3DE35E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236262AbhHCNUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:20:32 -0400
-Received: from mga04.intel.com ([192.55.52.120]:49599 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236045AbhHCNUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:20:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="211817657"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="211817657"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 06:20:20 -0700
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="521246523"
-Received: from vmustya-mobl1.amr.corp.intel.com (HELO [10.213.171.71]) ([10.213.171.71])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 06:20:19 -0700
-Subject: Re: [PATCH v3 2/4] ASoC: codecs: wcd: add multi button Headset
- detection support
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        broonie@kernel.org
-Cc:     robh@kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com
-References: <20210604115230.23259-1-srinivas.kandagatla@linaro.org>
- <20210604115230.23259-3-srinivas.kandagatla@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <139e6867-2d29-09e0-d059-399917e5962d@linux.intel.com>
-Date:   Mon, 2 Aug 2021 19:03:19 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S232763AbhHCAIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 20:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232208AbhHCAI2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 20:08:28 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BD6C061764;
+        Mon,  2 Aug 2021 17:08:12 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id j1so27419353pjv.3;
+        Mon, 02 Aug 2021 17:08:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hnWZQqtS4cs6S2eqLlexSQq+7EoZ7X5M8SRSYOU4pSg=;
+        b=fa9MN6mrs7i6nnx9UkVP//SvAd4Lpxw2vszy+gNUuNmEbGA4gPhMsTCzseTry+F9JA
+         9KUIDsbNNqZon2DqmmpXXXuYfOyiLRBWrZ0eLUt1/1OxAuHG3HW1pbgH7dkB/zl6vXYX
+         hbM5xEg9XsQ8tZNHnpZzm3eQr3GUFkKm2VLmPVI06fJxz7CM6fMaZ0KPq6YeMdwV32n5
+         nAG8nhxTuypwryQ9UqbxoDeplUE7ZGbXmGn0s2O6c2/0uWsC+Tjx3uqO/3kOe+wOrEd2
+         h3ECjjXCaDUwQh9Ozd76QF7f/2/oMi9qvBJrUGOtqwexcoSUUFe5SgWqcQEgyuGJi08u
+         nKcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hnWZQqtS4cs6S2eqLlexSQq+7EoZ7X5M8SRSYOU4pSg=;
+        b=XgB3kUiF0VMPOQFdpmIIjNnBD295rxd7KJBZos3NWk9pIJTjS3k9y9uOUPXFYn73ru
+         ajrbgfyGr7s1bhf4hViUPImIz+eMXwXqrSgfJO7hh5npvFAsLp3xStEE7fLw7lnWIXIB
+         gQiE9w7IlMHlherVlh/poAQVOqkAuEseAe/iplJFFAGZ1UGGZx1EU8AvuMhvhJJaLTA0
+         aU4/ba0ADYPSunRyBxZAUeuv6LnpWlHelpZyqxx+HX1d/Qai3cAfhlRd0pYX/r6e34tq
+         qBXBwS+6ew4OlqyksGPyMF5e3myUaW6JVhsYVSPT15yIxd4M+YqBWcUeu+LvztZI5qJA
+         Mgbg==
+X-Gm-Message-State: AOAM532OipxC0PHTEi54YEIdrhmgty7VAT12vvOau2ugvoBFQraOtutT
+        Lgtr6NxKX3UkzJ8QvVVR8CS4cv8rV6e9TqlQn3g=
+X-Google-Smtp-Source: ABdhPJx6IA17rcZlw2ovaA9RVa6EBb8E+UvzFg4a17ZqxRkhWYJVzFkIU5ChOqjKvCcpAa5aOBVenEhHesExDGA4PNs=
+X-Received: by 2002:a63:d704:: with SMTP id d4mr791229pgg.179.1627949292197;
+ Mon, 02 Aug 2021 17:08:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210604115230.23259-3-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1931ca440b47344fe357d5438aeab4b439943d10.1627936393.git.peilin.ye@bytedance.com>
+ <672e6f13-bf58-d542-6712-e6f803286373@iogearbox.net>
+In-Reply-To: <672e6f13-bf58-d542-6712-e6f803286373@iogearbox.net>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 2 Aug 2021 17:08:01 -0700
+Message-ID: <CAM_iQpUb-zbBUGdYxCwxBJSKJ=6Gm3hFwFP+nc+43E_hofuK1w@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] net/sched: sch_ingress: Support clsact
+ egress mini-Qdisc option
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Peilin Ye <peilin.ye@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
-cppcheck reports an issue with the use of 'hphpa_on' below
+On Mon, Aug 2, 2021 at 2:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> NAK, just use clsact qdisc in the first place which has both ingress and egress
+> support instead of adding such hack. You already need to change your scripts for
+> clsact-on, so just swap 'tc qdisc add dev eth0 ingress' to 'tc qdisc add dev eth0
+> clsact' w/o needing to change kernel.
 
-> +static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int irq, void *data)
-> +{
-> +	struct wcd_mbhc *mbhc = data;
-> +	unsigned long timeout;
-> +	int adc_threshold, output_mv, retry = 0;
-> +	bool hphpa_on = false;
+If we were able to change the "script" as easily as you described,
+you would not even see such a patch. The fact is it is not under
+our control, the most we can do is change the qdisc after it is
+created by the "script", ideally without interfering its traffic,
+hence we have such a patch.
 
-assigned here
+(BTW, it is actually not a script, it is a cloud platform.)
 
-> +
-> +	mutex_lock(&mbhc->lock);
-> +	timeout = jiffies + msecs_to_jiffies(WCD_FAKE_REMOVAL_MIN_PERIOD_MS);
-> +	adc_threshold = wcd_mbhc_adc_get_hs_thres(mbhc);
-> +
-> +	do {
-> +		retry++;
-> +		/*
-> +		 * read output_mv every 10ms to look for
-> +		 * any change in IN2_P
-> +		 */
-> +		usleep_range(10000, 10100);
-> +		output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
-> +
-> +		/* Check for fake removal */
-> +		if ((output_mv <= adc_threshold) && retry > FAKE_REM_RETRY_ATTEMPTS)
-> +			goto exit;
-> +	} while (!time_after(jiffies, timeout));
-> +
-> +	/*
-> +	 * ADC COMPLETE and ELEC_REM interrupts are both enabled for
-> +	 * HEADPHONE, need to reject the ADC COMPLETE interrupt which
-> +	 * follows ELEC_REM one when HEADPHONE is removed.
-> +	 */
-> +	if (mbhc->current_plug == MBHC_PLUG_TYPE_HEADPHONE)
-> +		mbhc->extn_cable_hph_rem = true;
-> +
-> +	wcd_mbhc_write_field(mbhc, WCD_MBHC_DETECTION_DONE, 0);
-> +	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_MODE, 0);
-> +	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_EN, 0);
-> +	wcd_mbhc_elec_hs_report_unplug(mbhc);
-> +	wcd_mbhc_write_field(mbhc, WCD_MBHC_BTN_ISRC_CTL, 0);
-
-not used, so hphpa_on == false
-
-> +	if (hphpa_on) {
-> +		hphpa_on = false;
-> +		wcd_mbhc_write_field(mbhc, WCD_MBHC_HPH_PA_EN, 3);
-> +	}
-
-And this branch is never taken.
-
-Is there a missing hphpa = true assignment somewhere?
-
-
-There's an additional issue while I am at it:
-
-sound/soc/codecs/wcd-mbhc-v2.c:1225:17: style: Variable 'clamp_state' is
-assigned a value that is never used. [unreadVariable]
- u8 clamp_state = 0;
-                ^
-
--Pierre
+Thanks.
