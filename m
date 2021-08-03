@@ -2,255 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0E03DF7B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 00:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81653DF7B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 00:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbhHCWRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 18:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhHCWRX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 18:17:23 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3595EC061757;
-        Tue,  3 Aug 2021 15:17:10 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id 184so968479qkh.1;
-        Tue, 03 Aug 2021 15:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qnVRKi3HtFJMrrAfoTHSGeqHbRWAKv0dYYUUOqnFejE=;
-        b=r2xKT1UpP9TvcE+AII2AMV3y5m4saqt3/f8LL6w6X5UQyBNG404ma9aj3qpvziKPoL
-         Rf2UaTdDfXevM9ZRux5pypAa/RbdogxOhYLM9fflySOsHJC35OEp18aAHXhDmxUUla3D
-         dticrGoa+bZ2Eg5nY/KY55Wr0mnlNiy9/LqnvUQLz99Lk1/wdZ3vrItf48lXprZZGihL
-         dA3pJfR+KqPN6Xef1OCiyaXpoaZDQi/qjrsRaKgBtC+MGw3HP0DogIX2QvveCqgXM1le
-         Z4xSh34FpZhPkj1rC4H8VmtdChSn7IEA4fcAYv+wVm9ScNc889dSbyQIo9MiQ+hkrliC
-         ujew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qnVRKi3HtFJMrrAfoTHSGeqHbRWAKv0dYYUUOqnFejE=;
-        b=tQZ0CMMq75KafuDRnkYQRys5xItLR9rCs4kcVLN0gdUZKP2CZfdSRdTDNmj2nfjEa9
-         0jMh5k8/HyVwHfw2KTrt0rNku2IeDmqmH3apPb5PAHYvCp5tNGm2ihEoeGzhH4uLyCjo
-         fZHLIco5gjeKIIwPzIbtFAACMNB8pFItO3TAKCNom7xGU9aPmobsps+G0hRCFBMUAttF
-         1mxTjksXYyb2JqDKjqBKupPkw2SjIEMvUQQid7iRPl8quQJDy0Jz1evq2R6jvpjpyTwM
-         0ywbrxqXQ/7PZP8qJoP7nWLy8Cd0Yr3PKTDNqIbOKm6BOxyN5VA/Am74HhZyHk3gRia+
-         BXCQ==
-X-Gm-Message-State: AOAM533OGR8BxesL4ZwmOFW+R3yw4sZWhPX+QavBdDCZoj6jrJ6DlEJv
-        YT9wUn4t13riUxXA5FOuJA==
-X-Google-Smtp-Source: ABdhPJwtG78PD6kRl4XlNH5SJDcyTQjsRLUCtxaAGDwminupW1fxCFNtfgl6zQ6ZSXXnHqgMrP7B7Q==
-X-Received: by 2002:a05:620a:20d7:: with SMTP id f23mr22822343qka.221.1628029029385;
-        Tue, 03 Aug 2021 15:17:09 -0700 (PDT)
-Received: from bytedance.attlocal.net (ec2-13-57-97-131.us-west-1.compute.amazonaws.com. [13.57.97.131])
-        by smtp.gmail.com with ESMTPSA id n124sm181924qkf.119.2021.08.03.15.17.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 15:17:09 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lucas Bates <lucasb@mojatatu.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Peilin Ye <peilin.ye@bytedance.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH net-next] tc-testing: Add control-plane selftests for sch_mq
-Date:   Tue,  3 Aug 2021 15:16:59 -0700
-Message-Id: <20210803221659.9847-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210803123921.2374485-1-kuba@kernel.org>
-References: <20210803123921.2374485-1-kuba@kernel.org>
+        id S232326AbhHCWSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 18:18:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhHCWSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 18:18:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E242460F01;
+        Tue,  3 Aug 2021 22:18:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628029099;
+        bh=dmC4L4bdvyZSiNCr9W4OaXUElnomSjOVPWbBcAd+9is=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RrG6MtmCWws8IM+oQHZh1IlmLZB/o+sqQgZ+5bNkSDgZNw4GHDdsp+QzG5J9q6qJa
+         vTK9XXmq4PXKzSCyWteROUS+J0DSxAF1Pw1Hvnh5lrLAyj3vyTLNoj4ESTe84yvbe2
+         L/F9XT9ReVnrZURKDfzBOpT7UOO8uAel/Txopu6hsIDBo/AO3SF5kxhBDUKPH/ObCA
+         M5n4cK+YqnftYGnliPRIYKuJskSy61SXszNMpxhl0JIqzJwhaA1swxtpP4lEyTGzAD
+         ad2KX1n4l0JkWoDqTkRZpmfc86RcYVdPKDUshIoTMcQbohGC7yWXwmLwWqB8ypbFsA
+         oVGZ8c3HnrC8g==
+Received: by mail-ed1-f54.google.com with SMTP id p21so996130edi.9;
+        Tue, 03 Aug 2021 15:18:19 -0700 (PDT)
+X-Gm-Message-State: AOAM530fjLWnrUwXjASN/QPc6+9JtVctFcP8n2qPd9/iWT/pxlhkdSWz
+        ak8P6vavuI0rBmqMUJMrtptDkIyElFJoeQ4KtA==
+X-Google-Smtp-Source: ABdhPJw6FD5Y41IoWVgZfbbuhV/RKvp2qBB181ykknmZg/sbKiL5Obes9EzO5aidDxmyPOEgKDnB+xFldDHzlbfmRQY=
+X-Received: by 2002:aa7:cb19:: with SMTP id s25mr28647216edt.194.1628029098472;
+ Tue, 03 Aug 2021 15:18:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210719073456.28666-1-chuanjia.liu@mediatek.com>
+ <20210719073456.28666-3-chuanjia.liu@mediatek.com> <1626749978.2466.14.camel@mhfsdcap03>
+In-Reply-To: <1626749978.2466.14.camel@mhfsdcap03>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 3 Aug 2021 16:18:07 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+DcNe8jVqisHXt3jQHeJAoLKmiah7o8ePVKra5OvAbGA@mail.gmail.com>
+Message-ID: <CAL_Jsq+DcNe8jVqisHXt3jQHeJAoLKmiah7o8ePVKra5OvAbGA@mail.gmail.com>
+Subject: Re: [PATCH v11 2/4] PCI: mediatek: Add new method to get shared
+ pcie-cfg base address and parse node
+To:     Chuanjia Liu <chuanjia.liu@mediatek.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        PCI <linux-pci@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <peilin.ye@bytedance.com>
+On Mon, Jul 19, 2021 at 8:59 PM Chuanjia Liu <chuanjia.liu@mediatek.com> wr=
+ote:
+>
+> On Mon, 2021-07-19 at 15:34 +0800, Chuanjia Liu wrote:
+> > For the new dts format, add a new method to get
+> > shared pcie-cfg base address and parse node.
+> >
+> > Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
+> > Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> > ---
+> >  drivers/pci/controller/pcie-mediatek.c | 52 +++++++++++++++++++-------
+> >  1 file changed, 39 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/contr=
+oller/pcie-mediatek.c
+> > index 25bee693834f..928e0983a900 100644
+> > --- a/drivers/pci/controller/pcie-mediatek.c
+> > +++ b/drivers/pci/controller/pcie-mediatek.c
+> > @@ -14,6 +14,7 @@
+> >  #include <linux/irqchip/chained_irq.h>
+> >  #include <linux/irqdomain.h>
+> >  #include <linux/kernel.h>
+> > +#include <linux/mfd/syscon.h>
+> >  #include <linux/msi.h>
+> >  #include <linux/module.h>
+> >  #include <linux/of_address.h>
+> > @@ -23,6 +24,7 @@
+> >  #include <linux/phy/phy.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/pm_runtime.h>
+> > +#include <linux/regmap.h>
+> >  #include <linux/reset.h>
+> >
+> >  #include "../pci.h"
+> > @@ -207,6 +209,7 @@ struct mtk_pcie_port {
+> >   * struct mtk_pcie - PCIe host information
+> >   * @dev: pointer to PCIe device
+> >   * @base: IO mapped register base
+> > + * @cfg: IO mapped register map for PCIe config
+> >   * @free_ck: free-run reference clock
+> >   * @mem: non-prefetchable memory resource
+> >   * @ports: pointer to PCIe port information
+> > @@ -215,6 +218,7 @@ struct mtk_pcie_port {
+> >  struct mtk_pcie {
+> >       struct device *dev;
+> >       void __iomem *base;
+> > +     struct regmap *cfg;
+> >       struct clk *free_ck;
+> >
+> >       struct list_head ports;
+> > @@ -650,7 +654,11 @@ static int mtk_pcie_setup_irq(struct mtk_pcie_port=
+ *port,
+> >               return err;
+> >       }
+> >
+> > -     port->irq =3D platform_get_irq(pdev, port->slot);
+> > +     if (of_find_property(dev->of_node, "interrupt-names", NULL))
+> > +             port->irq =3D platform_get_irq_byname(pdev, "pcie_irq");
+> > +     else
+> > +             port->irq =3D platform_get_irq(pdev, port->slot);
+> > +
+> >       if (port->irq < 0)
+> >               return port->irq;
+> >
+> > @@ -682,6 +690,10 @@ static int mtk_pcie_startup_port_v2(struct mtk_pci=
+e_port *port)
+> >               val |=3D PCIE_CSR_LTSSM_EN(port->slot) |
+> >                      PCIE_CSR_ASPM_L1_EN(port->slot);
+> >               writel(val, pcie->base + PCIE_SYS_CFG_V2);
+> > +     } else if (pcie->cfg) {
+> > +             val =3D PCIE_CSR_LTSSM_EN(port->slot) |
+> > +                   PCIE_CSR_ASPM_L1_EN(port->slot);
+> > +             regmap_update_bits(pcie->cfg, PCIE_SYS_CFG_V2, val, val);
+> >       }
+> >
+> >       /* Assert all reset signals */
+> > @@ -985,6 +997,7 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie =
+*pcie)
+> >       struct device *dev =3D pcie->dev;
+> >       struct platform_device *pdev =3D to_platform_device(dev);
+> >       struct resource *regs;
+> > +     struct device_node *cfg_node;
+> >       int err;
+> >
+> >       /* get shared registers, which are optional */
+> > @@ -995,6 +1008,14 @@ static int mtk_pcie_subsys_powerup(struct mtk_pci=
+e *pcie)
+> >                       return PTR_ERR(pcie->base);
+> >       }
+> >
+> > +     cfg_node =3D of_find_compatible_node(NULL, NULL,
+> > +                                        "mediatek,generic-pciecfg");
+> > +     if (cfg_node) {
+> > +             pcie->cfg =3D syscon_node_to_regmap(cfg_node);
+> > +             if (IS_ERR(pcie->cfg))
+> > +                     return PTR_ERR(pcie->cfg);
+> > +     }
+> > +
+> >       pcie->free_ck =3D devm_clk_get(dev, "free_ck");
+> >       if (IS_ERR(pcie->free_ck)) {
+> >               if (PTR_ERR(pcie->free_ck) =3D=3D -EPROBE_DEFER)
+> > @@ -1027,22 +1048,27 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie=
+)
+> >       struct device *dev =3D pcie->dev;
+> >       struct device_node *node =3D dev->of_node, *child;
+> >       struct mtk_pcie_port *port, *tmp;
+> > -     int err;
+> > +     int err, slot;
+> > +
+> > +     slot =3D of_get_pci_domain_nr(dev->of_node);
+> > +     if (slot < 0) {
+> > +             for_each_available_child_of_node(node, child) {
+> > +                     err =3D of_pci_get_devfn(child);
+> > +                     if (err < 0) {
+> > +                             dev_err(dev, "failed to get devfn: %d\n",=
+ err);
+> > +                             goto error_put_node;
+> > +                     }
+> >
+> > -     for_each_available_child_of_node(node, child) {
+> > -             int slot;
+> > +                     slot =3D PCI_SLOT(err);
+> >
+> > -             err =3D of_pci_get_devfn(child);
+> > -             if (err < 0) {
+> > -                     dev_err(dev, "failed to parse devfn: %d\n", err);
+> > -                     goto error_put_node;
+> > +                     err =3D mtk_pcie_parse_port(pcie, child, slot);
+> > +                     if (err)
+> > +                             goto error_put_node;
+> >               }
+> > -
+> > -             slot =3D PCI_SLOT(err);
+> > -
+> > -             err =3D mtk_pcie_parse_port(pcie, child, slot);
+> > +     } else {
+> > +             err =3D mtk_pcie_parse_port(pcie, node, slot);
+> >               if (err)
+> > -                     goto error_put_node;
+> > +                     return err;
+>
+> Hi=EF=BC=8CRob
+> I changed this in the v9 version:
+> When the new dts format is used, of_node_get() is not called.
+> So when mtk_pcie_parse_port fails, of_node_put don't need to be called.
+> if you still ok for this, I will add R-b in next version.
 
-Recently we added multi-queue support to netdevsim in commit d4861fc6be58
-("netdevsim: Add multi-queue support"); add a few control-plane selftests
-for sch_mq using this new feature.
+Yes, and that's small enough change to keep my R-b.
 
-Use nsPlugin.py to avoid network interface name collisions.
-
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
----
-Hi all,
-
-Here are some control-plane selftests for the mq Qdisc using netdevsim's
-new multi-queue feature.  We are planning to add more data-plane selftests
-in the future.
-
-Thank you,
-Peilin Ye
-
- .../tc-testing/tc-tests/qdiscs/mq.json        | 137 ++++++++++++++++++
- .../selftests/tc-testing/tdc_config.py        |   1 +
- 2 files changed, 138 insertions(+)
- create mode 100644 tools/testing/selftests/tc-testing/tc-tests/qdiscs/mq.json
-
-diff --git a/tools/testing/selftests/tc-testing/tc-tests/qdiscs/mq.json b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/mq.json
-new file mode 100644
-index 000000000000..88a20c781e49
---- /dev/null
-+++ b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/mq.json
-@@ -0,0 +1,137 @@
-+[
-+	{
-+	    "id": "ce7d",
-+	    "name": "Add mq Qdisc to multi-queue device (4 queues)",
-+	    "category": [
-+            "qdisc",
-+            "mq"
-+	    ],
-+        "plugins": {
-+            "requires": "nsPlugin"
-+        },
-+	    "setup": [
-+            "echo \"1 1 4\" > /sys/bus/netdevsim/new_device"
-+	    ],
-+	    "cmdUnderTest": "$TC qdisc add dev $ETH root handle 1: mq",
-+	    "expExitCode": "0",
-+	    "verifyCmd": "$TC qdisc show dev $ETH",
-+	    "matchPattern": "qdisc pfifo_fast 0: parent 1:[1-4] bands 3 priomap 1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1",
-+	    "matchCount": "4",
-+	    "teardown": [
-+		    "echo \"1\" > /sys/bus/netdevsim/del_device"
-+	    ]
-+	},
-+	{
-+	    "id": "2f82",
-+	    "name": "Add mq Qdisc to multi-queue device (256 queues)",
-+	    "category": [
-+            "qdisc",
-+            "mq"
-+	    ],
-+        "plugins": {
-+            "requires": "nsPlugin"
-+        },
-+	    "setup": [
-+            "echo \"1 1 256\" > /sys/bus/netdevsim/new_device"
-+	    ],
-+	    "cmdUnderTest": "$TC qdisc add dev $ETH root handle 1: mq",
-+	    "expExitCode": "0",
-+	    "verifyCmd": "$TC qdisc show dev $ETH",
-+	    "matchPattern": "qdisc pfifo_fast 0: parent 1:[1-9,a-f][0-9,a-f]{0,2} bands 3 priomap 1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1",
-+	    "matchCount": "256",
-+	    "teardown": [
-+		    "echo \"1\" > /sys/bus/netdevsim/del_device"
-+	    ]
-+	},
-+	{
-+	    "id": "c525",
-+	    "name": "Add duplicate mq Qdisc",
-+	    "category": [
-+            "qdisc",
-+            "mq"
-+	    ],
-+        "plugins": {
-+            "requires": "nsPlugin"
-+        },
-+	    "setup": [
-+            "echo \"1 1 4\" > /sys/bus/netdevsim/new_device",
-+            "$TC qdisc add dev $ETH root handle 1: mq"
-+	    ],
-+	    "cmdUnderTest": "$TC qdisc add dev $ETH root handle 1: mq",
-+	    "expExitCode": "2",
-+	    "verifyCmd": "$TC qdisc show dev $ETH",
-+	    "matchPattern": "qdisc pfifo_fast 0: parent 1:[1-4] bands 3 priomap 1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1",
-+	    "matchCount": "4",
-+	    "teardown": [
-+		    "echo \"1\" > /sys/bus/netdevsim/del_device"
-+	    ]
-+	},
-+	{
-+	    "id": "128a",
-+	    "name": "Delete nonexistent mq Qdisc",
-+	    "category": [
-+            "qdisc",
-+            "mq"
-+	    ],
-+        "plugins": {
-+            "requires": "nsPlugin"
-+        },
-+	    "setup": [
-+            "echo \"1 1 4\" > /sys/bus/netdevsim/new_device"
-+	    ],
-+	    "cmdUnderTest": "$TC qdisc del dev $ETH root handle 1: mq",
-+	    "expExitCode": "2",
-+	    "verifyCmd": "$TC qdisc show dev $ETH",
-+	    "matchPattern": "qdisc pfifo_fast 0: parent 1:[1-4] bands 3 priomap 1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1",
-+	    "matchCount": "0",
-+	    "teardown": [
-+		    "echo \"1\" > /sys/bus/netdevsim/del_device"
-+	    ]
-+	},
-+	{
-+	    "id": "03a9",
-+	    "name": "Delete mq Qdisc twice",
-+	    "category": [
-+            "qdisc",
-+            "mq"
-+	    ],
-+        "plugins": {
-+            "requires": "nsPlugin"
-+        },
-+	    "setup": [
-+            "echo \"1 1 4\" > /sys/bus/netdevsim/new_device",
-+            "$TC qdisc add dev $ETH root handle 1: mq",
-+            "$TC qdisc del dev $ETH root handle 1: mq"
-+	    ],
-+	    "cmdUnderTest": "$TC qdisc del dev $ETH root handle 1: mq",
-+	    "expExitCode": "2",
-+	    "verifyCmd": "$TC qdisc show dev $ETH",
-+	    "matchPattern": "qdisc pfifo_fast 0: parent 1:[1-4] bands 3 priomap 1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1",
-+	    "matchCount": "0",
-+	    "teardown": [
-+		    "echo \"1\" > /sys/bus/netdevsim/del_device"
-+	    ]
-+	},
-+    {
-+	    "id": "be0f",
-+	    "name": "Add mq Qdisc to single-queue device",
-+	    "category": [
-+            "qdisc",
-+            "mq"
-+	    ],
-+        "plugins": {
-+            "requires": "nsPlugin"
-+        },
-+	    "setup": [
-+            "echo \"1 1\" > /sys/bus/netdevsim/new_device"
-+	    ],
-+	    "cmdUnderTest": "$TC qdisc add dev $ETH root handle 1: mq",
-+	    "expExitCode": "2",
-+	    "verifyCmd": "$TC qdisc show dev $ETH",
-+	    "matchPattern": "qdisc pfifo_fast 0: parent 1:[1-4] bands 3 priomap 1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1",
-+	    "matchCount": "0",
-+	    "teardown": [
-+		    "echo \"1\" > /sys/bus/netdevsim/del_device"
-+	    ]
-+	}
-+]
-diff --git a/tools/testing/selftests/tc-testing/tdc_config.py b/tools/testing/selftests/tc-testing/tdc_config.py
-index cd4a27ee1466..ea04f04c173e 100644
---- a/tools/testing/selftests/tc-testing/tdc_config.py
-+++ b/tools/testing/selftests/tc-testing/tdc_config.py
-@@ -17,6 +17,7 @@ NAMES = {
-           'DEV1': 'v0p1',
-           'DEV2': '',
-           'DUMMY': 'dummy1',
-+	  'ETH': 'eth0',
-           'BATCH_FILE': './batch.txt',
-           'BATCH_DIR': 'tmp',
-           # Length of time in seconds to wait before terminating a command
--- 
-2.20.1
-
+Rob
