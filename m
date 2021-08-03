@@ -2,221 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7D63DE9F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E6F3DE9DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235187AbhHCJrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:47:37 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3568 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235115AbhHCJrf (ORCPT
+        id S235182AbhHCJmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:42:18 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:47522 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234998AbhHCJmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:47:35 -0400
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gf95F2Bw9z6DJr6;
-        Tue,  3 Aug 2021 17:47:13 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 3 Aug 2021 11:47:23 +0200
-Received: from [10.47.27.165] (10.47.27.165) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 3 Aug 2021
- 10:47:22 +0100
-Subject: Re: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     linux-arch <linux-arch@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
- <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
- <CAK8P3a1D5DzmNGsEPQomkyMCmMrtD6pQ11JRMh78vbY53edp-Q@mail.gmail.com>
- <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <db043b76-880d-5fad-69cf-96abcd9cd34f@huawei.com>
-Date:   Tue, 3 Aug 2021 10:46:57 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Tue, 3 Aug 2021 05:42:03 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1739aVVX016754;
+        Tue, 3 Aug 2021 05:39:26 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3a6ep8ufyk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 05:39:26 -0400
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 1739dPDO022658
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Aug 2021 05:39:25 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Tue, 3 Aug 2021
+ 05:39:24 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
+ Tue, 3 Aug 2021 05:39:24 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1739dJlM012491;
+        Tue, 3 Aug 2021 05:39:20 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <o.rempel@pengutronix.de>
+CC:     <alexandru.tachici@analog.com>, <andrew@lunn.ch>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <hkallweit1@gmail.com>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
+        <netdev@vger.kernel.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 0/7] net: phy: adin1100: Add initial support for ADIN1100 industrial PHY
+Date:   Tue, 3 Aug 2021 12:47:15 +0300
+Message-ID: <20210803094715.9743-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210723173257.66g3epaszn7qwrvd@pengutronix.de>
+References: <20210723173257.66g3epaszn7qwrvd@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.27.165]
-X-ClientProxiedBy: lhreml737-chm.china.huawei.com (10.201.108.187) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: neMO3aY1U-BMEwP254Cn9ExAY4juW0r1
+X-Proofpoint-GUID: neMO3aY1U-BMEwP254Cn9ExAY4juW0r1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-03_02:2021-08-03,2021-08-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ spamscore=0 clxscore=1011 phishscore=0 mlxlogscore=718 adultscore=0
+ priorityscore=1501 bulkscore=0 suspectscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108030065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/07/2021 11:06, Arnd Bergmann wrote:
-> On Sat, Jul 3, 2021 at 2:12 PM Arnd Bergmann <arnd@kernel.org> wrote:
->> The version we got here makes it no longer crash the kernel, but
->> I see your point that the runtime warning is still wrong. I'll have
->> a look at what it would take to guard all inb/outb callers with a
->> Kconfig conditional, and will report back after that.
-> 
-> I created a preliminary patch and got it to cleanly build on my randconfig box,
-> here is what that involved:
-> 
-> - added 89 Kconfig dependencies on HAS_IOPORT for PC-style devices
->    that are not on a PCI card.
-> - added 188 Kconfig dependencies on LEGACY_PCI for PCI drivers that
->    require port I/O. The idea is to have that control drivers for both pre-PCIe
->    devices and and PCIe devices that require long-deprecated features like
->    I/O resources, but possibly other features as well.
-> - The ACPI subsystem needs access to I/O ports, so that also gets a
->    dependency.
-> - CONFIG_INDIRECT_PIO requires HAS_IOPORT
-> -  /dev/ioport needs an #ifdef around it
-> - several graphics drivers need workarounds instead of a 'depends on'
->    because they are used in virtual machines: vgaconsole, bochs, qxl,
->    cirrus. They work with or without port I/O
-> - A usb-uhci rework to split pci from non-pci support
-> - Minor workarounds for optional I/O port usage in libata, ipmi, tpm,
->    dmi-firmware, altera-stapl, parport, vga
-> - lots of #ifdefs in 8250
-> - some drivers/pci/ quirks are #ifdef'd
-> - drivers using ioport_map()/pci_iomap() to access ports could be
->    kept working when I/O ports are memory mapped
-> 
-> I tested the patch on a 5.13-rc4 snapshot that already has other
-> patches applied as a baseline for randconfig testing, so it doesn't
-> apply as-is.
-> 
-> Linus, if you like this approach, then I can work on splitting it up into
-> meaningful patches and submit it for a future release. I think the
-> CONFIG_LEGACY_PCI option has value on its own, but the others
-> do introduce some churn.
-> 
-> Full patch (120KB): https://pastebin.com/yaFSmAuY
-> 
+Managed to get some answears form the HW team.
 
-Hi Arnd,
+From a safety perspective: in Explosive environments
+only 1.0 V is allowed.
 
-I am not sure if anything is happening here.
-
-Anyway, one thing I mentioned earlier was that we could solve the 
-problem of drivers accessing unmapped IO ports and crashing systems on 
-archs which define PCI_IOBASE by building them under some "native port 
-IO support" flag.
-
-One example of such a driver was F71805F sensor. You put that under 
-HAS_IOPORT, which would be available for all archs, I think. But I could 
-not see where config LEGACY_PCI is introduced. Could we further refine 
-that config to not build for such archs as arm64?
-
-BTW, I think that the PPC dependency was added there to stop building 
-for power for that same reason, so hopefully we get rid of that.
-
-Thanks,
-John
-
-> diffstat:
->   drivers/accessibility/speakup/Kconfig        |   1 +
->   drivers/acpi/Kconfig                         |   1 +
->   drivers/ata/Kconfig                          |  34 ++++++++++-----------
->   drivers/ata/ata_generic.c                    |   3 +-
->   drivers/ata/libata-sff.c                     |   2 ++
->   drivers/bus/Kconfig                          |   2 +-
->   drivers/char/Kconfig                         |   3 +-
->   drivers/char/ipmi/Makefile                   |  11 +++----
->   drivers/char/ipmi/ipmi_si_intf.c             |   3 +-
->   drivers/char/ipmi/ipmi_si_pci.c              |   3 ++
->   drivers/char/mem.c                           |   6 +++-
->   drivers/char/tpm/Kconfig                     |   1 +
->   drivers/char/tpm/tpm_infineon.c              |  14 ++++++---
->   drivers/char/tpm/tpm_tis_core.c              |  19 +++++-------
->   drivers/comedi/Kconfig                       |  53
-> +++++++++++++++++++++++++++++++++
->   drivers/firmware/dmi-sysfs.c                 |   4 +++
->   drivers/gpio/Kconfig                         |   2 +-
->   drivers/gpu/drm/bochs/Kconfig                |   1 +
->   drivers/gpu/drm/bochs/bochs_hw.c             |  24 ++++++++-------
->   drivers/gpu/drm/qxl/Kconfig                  |   1 +
->   drivers/gpu/drm/tiny/cirrus.c                |   2 ++
->   drivers/hwmon/Kconfig                        |  23 +++++++++++++--
->   drivers/i2c/busses/Kconfig                   |  31 ++++++++++---------
->   drivers/ide/Kconfig                          |   1 +
->   drivers/iio/adc/Kconfig                      |   2 +-
->   drivers/input/gameport/Kconfig               |   6 ++--
->   drivers/input/serio/Kconfig                  |   2 ++
->   drivers/input/touchscreen/Kconfig            |   1 +
->   drivers/isdn/hardware/mISDN/Kconfig          |  14 ++++-----
->   drivers/leds/Kconfig                         |   2 +-
->   drivers/media/cec/platform/Kconfig           |   2 +-
->   drivers/media/pci/dm1105/Kconfig             |   2 +-
->   drivers/media/radio/Kconfig                  |  15 +++++++++-
->   drivers/media/rc/Kconfig                     |   9 +++++-
->   drivers/message/fusion/Kconfig               |   8 ++---
->   drivers/misc/altera-stapl/Makefile           |   3 +-
->   drivers/misc/altera-stapl/altera.c           |   6 +++-
->   drivers/net/Kconfig                          |   2 +-
->   drivers/net/arcnet/Kconfig                   |   2 +-
->   drivers/net/can/cc770/Kconfig                |   1 +
->   drivers/net/can/sja1000/Kconfig              |   1 +
->   drivers/net/ethernet/8390/Kconfig            |   2 +-
->   drivers/net/ethernet/amd/Kconfig             |   2 +-
->   drivers/net/ethernet/intel/Kconfig           |   4 +--
->   drivers/net/ethernet/sis/Kconfig             |   6 ++--
->   driv
-
-ers/net/ethernet/ti/Kconfig              |   4 +--
->   drivers/net/ethernet/via/Kconfig             |   5 ++--
->   drivers/net/fddi/Kconfig                     |   4 +--
->   drivers/net/hamradio/Kconfig                 |   6 ++--
->   drivers/net/wan/Kconfig                      |   2 +-
->   drivers/net/wireless/atmel/Kconfig           |   4 +--
->   drivers/net/wireless/intersil/hostap/Kconfig |   4 +--
->   drivers/parport/Kconfig                      |   2 +-
->   drivers/pci/pci-sysfs.c                      |  16 ++++++++++
->   drivers/pci/quirks.c                         |   2 ++
->   drivers/pcmcia/Kconfig                       |   2 +-
->   drivers/platform/chrome/Kconfig              |   1 +
->   drivers/platform/chrome/wilco_ec/Kconfig     |   1 +
->   drivers/pnp/isapnp/Kconfig                   |   2 +-
->   drivers/power/reset/Kconfig                  |   1 +
->   drivers/rtc/Kconfig                          |   4 ++-
->   drivers/scsi/Kconfig                         |  21 ++++++-------
->   drivers/scsi/aic7xxx/Kconfig.aic79xx         |   2 +-
->   drivers/scsi/aic7xxx/Kconfig.aic7xxx         |   2 +-
->   drivers/scsi/aic94xx/Kconfig                 |   2 +-
->   drivers/scsi/megaraid/Kconfig.megaraid       |   2 +-
->   drivers/scsi/mvsas/Kconfig                   |   2 +-
->   drivers/scsi/qla2xxx/Kconfig                 |   2 +-
->   drivers/spi/Kconfig                          |   1 +
->   drivers/staging/kpc2000/Kconfig              |   2 +-
->   drivers/staging/sm750fb/Kconfig              |   2 +-
->   drivers/staging/vt6655/Kconfig               |   2 +-
->   drivers/tty/Kconfig                          |   2 +-
->   drivers/tty/serial/8250/8250_early.c         |   4 +++
->   drivers/tty/serial/8250/8250_pci.c           |  19 ++++++++++--
->   drivers/tty/serial/8250/8250_port.c          |  22 ++++++++++++--
->   drivers/tty/serial/8250/Kconfig              |   1 +
->   drivers/tty/serial/Kconfig                   |   2 +-
->   drivers/usb/core/hcd-pci.c                   |   4 +--
->   drivers/usb/host/Kconfig                     |   4 +--
->   drivers/usb/host/pci-quirks.c                | 128
-> +++++++++++++++++++++++++++++++++++++++++--------------------------------------
->   drivers/usb/host/pci-quirks.h                |  33 ++++++++++++++++-----
->   drivers/usb/host/uhci-hcd.c                  |   2 +-
->   drivers/usb/host/uhci-hcd.h                  |  77
-> +++++++++++++++++++++++++++++++----------------
->   drivers/video/console/Kconfig                |   4 ++-
->   drivers/video/fbdev/Kconfig                  |  24 +++++++--------
->   drivers/watchdog/Kconfig                     |   6 ++--
->   include/asm-generic/io.h                     |   6 ++++
->   include/linux/gameport.h                     |   9 ++++--
->   include/linux/parport.h                      |   2 +-
->   include/video/vga.h                          |   8 +++++
->   lib/Kconfig                                  |   4 +++
->   lib/Kconfig.kgdb                             |   1 +
->   sound/drivers/Kconfig                        |   3 ++
->   sound/isa/Kconfig                            |   1 +
->   sound/pci/Kconfig                            |  44 ++++++++++++++++++++++-----
->   96 files changed, 575 insertions(+), 272 deletions(-)
-> 
+Tests showed that 1.0 V shows spurs around 200m and
+2.4V works for up to 1.3 Km.
 
