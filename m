@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053C13DEE18
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAD23DEE2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236044AbhHCMpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 08:45:49 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:43050 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236001AbhHCMpm (ORCPT
+        id S236178AbhHCMsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 08:48:17 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3571 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236174AbhHCMsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 08:45:42 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 173Cfude029523;
-        Tue, 3 Aug 2021 14:45:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=t33nap2m+wTs8JCQipvrVQGIr/dqZ3SB4X0QkZjBKfc=;
- b=BUoUMmLXE8nH1PLGUyilUAednM8S59P8TLA/a4paDd60ySqy7Iiv9p0mqoK9YJRmhZWD
- R0SMK00Mg9+nmt7sDFn9o5whY2WboRVVEMXkL0H9yzeWke14iC2K4KNl2FCnccMWhUB4
- s4FphflfWdqLxJxtiUxHljMgvUx6WD5BK5+H28jtr4+Fk1s03z/Nz+gOQRDOt2Snjqoe
- Sn+RKDniNMYgNr3WHwf7rvbcBJBJIE3zfqxHmnByOWf3SRABd3uIoPUYNDmCneUgOnlG
- CFM0KsfU3AVvVa3Vy4iUpdGVEaskEn4RD2ipDBpAbvIFcgfksmT/9XN1arHTLuuOzItK YA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3a70js1utg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Aug 2021 14:45:22 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4AC87100034;
-        Tue,  3 Aug 2021 14:45:22 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3F30A222C87;
-        Tue,  3 Aug 2021 14:45:22 +0200 (CEST)
-Received: from localhost (10.75.127.47) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Aug 2021 14:45:21
- +0200
-From:   <patrice.chotard@foss.st.com>
-To:     <robh+dt@kernel.org>, <mark.rutland@arm.com>,
-        <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC:     <patrice.chotard@foss.st.com>, <soc@kernel.org>
-Subject: [PATCH 4/4] ARM: dts: sti: remove clk_ignore_unused from bootargs for stih410-b2260
-Date:   Tue, 3 Aug 2021 14:45:06 +0200
-Message-ID: <20210803124506.23365-5-patrice.chotard@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210803124506.23365-1-patrice.chotard@foss.st.com>
-References: <20210803124506.23365-1-patrice.chotard@foss.st.com>
+        Tue, 3 Aug 2021 08:48:08 -0400
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GfF5Y6VPrz6GD1n;
+        Tue,  3 Aug 2021 20:47:45 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 14:47:55 +0200
+Received: from localhost (10.210.169.87) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 3 Aug 2021
+ 13:47:55 +0100
+Date:   Tue, 3 Aug 2021 13:47:26 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     <alexandru.tachici@analog.com>
+CC:     <jic23@kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] iio: adc: Fix flags in sigma-delta drivers
+Message-ID: <20210803134726.000067f0@Huawei.com>
+In-Reply-To: <20210803091741.8924-1-alexandru.tachici@analog.com>
+References: <20210731150926.42a2da31@jic23-huawei>
+        <20210803091741.8924-1-alexandru.tachici@analog.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-03_02:2021-08-03,2021-08-03 signatures=0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.87]
+X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrice Chotard <patrice.chotard@foss.st.com>
+On Tue, 3 Aug 2021 12:17:41 +0300
+<alexandru.tachici@analog.com> wrote:
 
-Remove clk_ignore_unused from bootargs as it's no more needed.
+> In Sigma-Delta devices the SDO line is also used as an interrupt.
+> Leaving IRQ on level instead of falling might trigger a sample read
+> when the IRQ is enabled, as the SDO line is already low. Not sure
+> if SDO line will always imediately go high in ad_sd_buffer_postenable
+> before the IRQ is enabled.
 
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
----
- arch/arm/boot/dts/stih410-b2260.dts | 1 -
- 1 file changed, 1 deletion(-)
+ok. That last bit sounds like a good justification.  It might do the
+wrong thing on initial startup.  Please resend with that in the patch
+descriptions for those you are modifying.
 
-diff --git a/arch/arm/boot/dts/stih410-b2260.dts b/arch/arm/boot/dts/stih410-b2260.dts
-index e2bb59783146..9d579c16c295 100644
---- a/arch/arm/boot/dts/stih410-b2260.dts
-+++ b/arch/arm/boot/dts/stih410-b2260.dts
-@@ -12,7 +12,6 @@
- 	compatible = "st,stih410-b2260", "st,stih410";
- 
- 	chosen {
--		bootargs = "clk_ignore_unused";
- 		stdout-path = &uart1;
- 	};
- 
--- 
-2.17.1
+For those where it is being introduced, we probably want to leave the
+interrupt type to firmware (i.e. patch 1)
+
+> 
+> Also the datasheets seem to explicitly say the falling edge of the SDO
+> should be used as an interrupt.
+
+Reference?
+
+> 
+> -Alexandru
 
