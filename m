@@ -2,87 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2DF3DE679
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0223DE684
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233959AbhHCF7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 01:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233749AbhHCF7k (ORCPT
+        id S233839AbhHCGBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 02:01:12 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:52411 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230096AbhHCGBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 01:59:40 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947E3C06175F;
-        Mon,  2 Aug 2021 22:59:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=JFNAfoid2EflvMqbUdr93kxhjGBAuQTt0bwl7NJG+yI=; b=Jao0VIrbTAZbSu26/KOpMR6jzU
-        yUOfrChLrufy0HVxHl4tXESKFph39/WYHnXER5g0q9SlbNrAVvo2AxXPW5WE6BrpfOSGsiYH/4D3+
-        P8cgv9IXkKVSSYotxIr7YBGDTdWPifEugAG/399Vm2/pUBgXS1oeoQ0e3H5CC19Hvql3Xc05YrlvQ
-        wqHHgJjsiuB74D6JJZX4s3rJ/PyzPu9p7cqm1r97ovxUNEKiRRZXtIWuVO8F7kg/8++H1PJWYqo3k
-        FOSU3v7VDvJij42T877qTBjoLWGehMBzHqEmw3Zl+9kypsdnvPS41W49gSrCFnet8GWQW1++YAurE
-        MiZiFfhQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mAnSY-005LHc-KX; Tue, 03 Aug 2021 05:59:27 +0000
-Subject: Re: mmotm 2021-08-02-18-51 uploaded
-To:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-References: <20210803015202.vA3c5O7uP%akpm@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3ac66120-99f0-c627-c783-500993ff3da0@infradead.org>
-Date:   Mon, 2 Aug 2021 22:59:22 -0700
+        Tue, 3 Aug 2021 02:01:11 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 833E95C0097;
+        Tue,  3 Aug 2021 02:01:00 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 03 Aug 2021 02:01:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=johnericson.me;
+         h=from:subject:to:cc:references:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=1
+        t6DwB38Ya6t7Tu/rVm9U8PBSU3BOMT1sByp+5Idu5I=; b=J+HlGiCYm0yMRxz7e
+        vpYUQmVQ047hXM//JDP+47cq1vopYq99mq4xn0vzIIcOPjJ9XT5mvnQZbhHIfXYO
+        QoHKnY1ARruZ7kkgYGLbk4cEPYTs54RJLLi7Ok/WsLgG65eoM3SKUgADuJ/ZB1x6
+        QhwLlL5a8g+dhh3n6JWgj6xUE7/pg8Q163ObAZ3BwwVoV8okpi9VAmcsbtLf8NKq
+        07Tyn/E8bqg6dn+sebouIU9ooBlNBbB5HtTwb+EAPPkbIOEtghTADbTn9Z678fNk
+        1lYPQdSPE5NDqkzXAKf4gsfKEchg70TfvO/m/sYIJoACeTDrnC7Lm9Qb9zECWDpg
+        ajjxg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=1t6DwB38Ya6t7Tu/rVm9U8PBSU3BOMT1sByp+5Idu
+        5I=; b=QPMN3YMOT9ijdsl5WznkgQ//2o/aibY1ZiVaNMsxDheJZUu0mDvCteSAl
+        9bRpVk8UFe3L1HtrdW9H+wVH2qe9s4wvx56b6q5mFbe6+SeXnlkWY0xAqxVkgwb1
+        70/oGtXTw8xRU90e3Z9+wPSiunHJ0j3BKpiimtEU2wO+ayvHaMYMJOWb96Iwnc8/
+        oZ9pFiUEAM4VzUJrJ2XSBN82gHAmyj3qHhNYqWMcXfFB/tyuENDIybwfIz6olMoK
+        uPulHqINWNYMtQVxcc7zOLXum6xrDwQj3/MxFOsp3qmm1x1iaF2QZFZRlBDa+J8s
+        qHxwqwRUgvjCZJ+BIXsfPv+N8Gdjg==
+X-ME-Sender: <xms:m9sIYfOCiMSR7BjqQnqF3e-CXwuuHGkGb5-2qWgrJNfVd04aCBvMpQ>
+    <xme:m9sIYZ8vwA2Fq2KygbNUjFcM0yx_VItZcjpyRcxClfZMOEPM8MHtOqWytVtg60lVr
+    CsuzhBCG9saLBt2-nU>
+X-ME-Received: <xmr:m9sIYeR4kUXZla-H0LMJPCWOFpLp7Uoq7UFv0iAarfzB0YKRFgcDfzgFe1pCr3ZHwNgZGh3C6fZd3kFHIKM24CBTM4iluR991rHY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieefgdelvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhuffvfhfkffgfgggjtgfgsehtjeertddtfeehnecuhfhrohhmpeflohhhnhcu
+    vehothhtohhnucfgrhhitghsohhnuceomhgrihhlseflohhhnhfgrhhitghsohhnrdhmvg
+    eqnecuggftrfgrthhtvghrnhepteelveettdeuhfeuhfffkeevieejfffgvdffhfefvdeg
+    vefgfffgfffggfevffeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepmhgrihhlseflohhhnhfgrhhitghsohhnrdhmvg
+X-ME-Proxy: <xmx:m9sIYTu9oMAdw4RG7RzZX1avsJSgwzVkIN-666OEOAPsK52YQJ_Uww>
+    <xmx:m9sIYXdYG0cdT5I54Na_wqI3ad9blPLQWVXe7mQinsEy5Olb7Zg0-w>
+    <xmx:m9sIYf0wuhhTkiON84wi8XN2oVNUoe_5IIhVnxm0NaoCXFv8EeFCtA>
+    <xmx:nNsIYZvfoCTnHAgb3pt5RHcLJ39basyzFdYyrXnQfMw7-Ke7FvLb1Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 3 Aug 2021 02:00:58 -0400 (EDT)
+From:   John Cotton Ericson <mail@JohnEricson.me>
+Subject: Re: Leveraging pidfs for process creation without fork
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Jann Horn <jann@thejh.net>,
+        Christian Brauner <christian.brauner@canonical.com>
+References: <CAHmME9oHBtR4fBBUY8E_Oi7av-=OjOGkSNhQuMJMHhafCjazBw@mail.gmail.com>
+ <CALCETrVGLx5yeHo7ExAmJZmPjVjcJiV7p1JOa4iUaW5DRoEvLQ@mail.gmail.com>
+ <cf07f0732eb94dbfa67c9d56ceba738e@AcuMS.aculab.com>
+ <f8457e20-c3cc-6e56-96a4-3090d7da0cb6@JohnEricson.me>
+ <20210729142415.qovpzky537zkg3dp@wittgenstein>
+ <YQNYs+BKenJHBMSP@zeniv-ca.linux.org.uk>
+ <1468d75c-57ae-42aa-85ce-2bee8d403763@www.fastmail.com>
+ <YQXRyMUGS5cDSbzu@zeniv-ca.linux.org.uk>
+ <20210802121935.dkiw627twcrxbh54@wittgenstein>
+Message-ID: <01e72780-e328-23b5-c114-9c35125da7c6@JohnEricson.me>
+Date:   Tue, 3 Aug 2021 02:00:57 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210803015202.vA3c5O7uP%akpm@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210802121935.dkiw627twcrxbh54@wittgenstein>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/21 6:52 PM, akpm@linux-foundation.org wrote:
-> The mm-of-the-moment snapshot 2021-08-02-18-51 has been uploaded to
-> 
->     https://www.ozlabs.org/~akpm/mmotm/
-> 
-> mmotm-readme.txt says
-> 
-> README for mm-of-the-moment:
-> 
-> https://www.ozlabs.org/~akpm/mmotm/
-> 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
-> 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
-> 
-> The file broken-out.tar.gz contains two datestamp files: .DATE and
-> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-> followed by the base kernel version against which this patch series is to
-> be applied.
-> 
+On Mon, Aug 2, 2021, at 8:19 AM, Christian Brauner wrote:
+> On Sat, Jul 31, 2021 at 10:42:16PM +0000, Al Viro wrote:
+> > 
+> > It's more on the exit/exec/coredump side, actually.  For
+> > exit we want to be sure that no new live threads will appear in a
+> > group once the last live thread has entered do_exit().  For
+> > exec (de_thread(), for starters) you want to have all threads
+> > except for the one that does execve() to be killed and your
+> > thread to take over as group leader.  Look for the machinery there
+> > and in do_exit()/release_task() involved into that.  For coredump
+> > you want all threads except for dumper to be brought into do_exit()
+> > and stopped there, for dumping one to be able to access their state.
+> > 
+> > Then there's fun with ->sighand treatment - the whole thing
+> > critically relies upon ->sighand being shared for the entire thread
+> > group; look at the ->sighand->siglock uses.
+> > 
+> > The whole area is full of rather subtle places.  Again, the
+> > real headache comes from the exit and execve.  Embryonic threads are
+> > passive; it's the ones already running that can (and do) cause PITA.
 
-Andrew:
+I took a look at de_thread and begin_new_exec. It does seems whatever 
+trouble there is stems from a bit of mixing concerns as I thought.
 
-In linux-next.patch, drivers/net/mctp/Makefile is an empty file, so
-patch tools don't include/track it.  Not having it causes build errors
-in mmotm.  Just put a comment in it like so:
+Most of begin_new_exec seems about wiping clean the current process's 
+state, including the de_thread, unsharing various things. But then 
+operations like that first bprm_creds_from_file call (of perhaps more 
+recent vintage [1]) is about initializing new state from binprm argument.
 
-# dummy file for now
+It is interesting to me to note that some of the "unsharing" happens at 
+clone time (the namespaces), and some happens (also) at exec time (file 
+table, signal handlers). This to me is more good concrete evidence fork 
++ exec is awkward and strews concerns.
 
-and builds will not have so many errors.
+There perhaps will be some subtleties about in which order state can be 
+set up on the embryonic process, but I don't think any de_thread will be 
+needed because there will never be threads from a "previous" state lying 
+around. Indeed there is no "previous" anything, just the current 
+everything-inert embryonic process.
 
+I would propose trying to rip up begin_new_exec so the unsharing, 
+de_thread-ing etc. is just done in the traditional exec path, and just 
+the bprm bits with a non-current fresh embryonic task_sched are done in 
+the new one.
 
--- 
-~Randy
+[1]: 56305aa9b6fab91a5555a45796b79c1b0a6353d1
 
+ > Iiuc, you're talking about adding a thread into a thread-group tg1 from
+ > a thread in another thread-group tg2. I don't think that's a very
+ > pressing use-case and I agree that that sounds rather nasty right now.
+ > Unless I'm missing something, a simple api to create something like a
+ > processes configuration context doesn't require this.
+
+Agreed.
+
+I did mention embryonic processes with multiple threads, but was just a 
+shower thought and not something I really care about. Also, since that 
+would entail adding a thread to an inert thread group the creator has 
+full powers over (it's "on the operating table") I don't think it would 
+be so bad.
+
+(To keep this new servery metaphor going, exec would be self-surgery, 
+and adding a thread to *live* thread group would be surgery without 
+anesthesia.)
+
+ > a processes configuration context
+
+This phrase stuck to me, Christian. Not to rush you on your concrete 
+proposal, but sounds like you are envisioning building up a separate 
+struct with instructions on how to produce a process, rather than 
+mutating unscheduled but otherwise genuine `task_struct`s?
+
+ > > What do you want that for, BTW?
+
+Those security + ergonomic things I mentioned in my original email are 
+the main goal.
+
+I have a personal *long*-term goal to see something like CloudABI 
+resurrected. I think it got most of the interfaces right, but not 
+process management, and now that there are pidfds, we have a chance to 
+better.
+
+I'm in no rush, so happy to just see very linux-specific interfaces 
+evolve in a good direction for now. Writing a personality or some other 
+shim is not the interesting part, to say the least, so I'm happy to wait 
+ages before doing that while the internals marinate.
+
+John
