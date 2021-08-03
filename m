@@ -2,104 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985923DF289
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7437E3DF28C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbhHCQ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        id S233753AbhHCQ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbhHCQ2D (ORCPT
+        with ESMTP id S230444AbhHCQ2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:28:03 -0400
-Received: from mail-ua1-x949.google.com (mail-ua1-x949.google.com [IPv6:2607:f8b0:4864:20::949])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16066C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 09:27:52 -0700 (PDT)
-Received: by mail-ua1-x949.google.com with SMTP id 45-20020a9f22b00000b02902a181c33654so6999171uan.17
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 09:27:52 -0700 (PDT)
+        Tue, 3 Aug 2021 12:28:48 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36357C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 09:28:36 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id z18so7996822ybg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 09:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xcdKF8i+1pu0QNFs/CMj/QlbcYnCiXlJVcu/eX7qzmA=;
-        b=CDSVRMYu8PSUpk6wXSGgxDIylWEUQV7uQzOuxqGrq6n0tgPQd2W0RFZOnVOxBvdxir
-         gYRgbUaTHxCsok5NpNLumXsW4YYuMOpMhE+7hlw8qV8PO3BsgEoqwzTynXpVxLh0Vg3L
-         piAw3z8mIuS2s/I2Mzc6xOnmf7QgcROFGj9y0HAq7JtQKgAYkOBZUexckEC9vBrSOWru
-         rFswTei9yVyVDXBAVtPiVHTPRKg0NMRKhBgF4EL9OapKJneE3GT/CjhpHUFTvsrtSQ6y
-         JueRWQhWJdxRH3rxaZbH8OxqV5zTNMUczOu/1YYPovzGRNPhz7XFARnwmspjkf1KQ2qJ
-         fWqA==
+        bh=fSb2IKKpERpkumP5sU1ao0eAPDF2DFQMa3HuULiiIYU=;
+        b=ECRfHDayxKQkXlWojcqT3lbjECAkvI3C+PLPW3HzR3xVClyUuikfbcoLeNsf7qZjQP
+         PTXHYkpy44Zru4eFR2klLWWzKjoEsMpj6abT1N7DMb6Ys3F9IblPRSwUN2LrUh1hWOJC
+         p+PD94oh9f2eMLXAihi5PAL6Z+mwpSnhWW9OdjjqKEULG3s0Fe5kXE07B+Z02xVe8CWi
+         NIVa5skJYvvedltQsBWSVs9Va12QcuhFc37zRCTUfqMZ5nO6eD5+ffNFBFi4InGwuoD7
+         /v7G6OOP7WEKAIcfK6s1JcQ/x1y5E/TmEcuNk391EJOKT7+5t1wDim3sZGuIVMqI6u9Z
+         ZTAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=xcdKF8i+1pu0QNFs/CMj/QlbcYnCiXlJVcu/eX7qzmA=;
-        b=FNqlx8et42DMxJH3pYZD/GZGxdgAlIuUQekx47uwuX0Ag3JmyFr7RBFrygu+F4oWTT
-         CG+tEdkCACRjvTbzVfx233OpRbjd0Mno8zi35II9b8VoU0K861WTdsaj6ycg6n0Xe38e
-         kw6ra8uBwroDFXjXEgLUR1uksL9mSsygJu2W3TBCubm1SvlWwTUdBo+03xA7tSQx1zU9
-         waQGwfj7b+3YLQMZAdy73+9ju64L6KTtKFE4LV0DVeAhei43TY+gI1WcJrLRcpCWoFZV
-         bNs/8lL/TJgbjCbK7vJkibJGvSquBOCwPdUcmano1Bw5L6OZHVv4G39dDZMzw2RygeNG
-         Dw/w==
-X-Gm-Message-State: AOAM532qt9JMvqQ27htPh+rbI1kwGc8EghoFr9zM+L9t5kHHgRQbb17E
-        tnLb8Es8bfDVD2a90M3a7OrYQkXm0i2gKPYcJ9SqEg==
-X-Google-Smtp-Source: ABdhPJxsaBO5bT9DJe8VDIih1GPLXi/ilvOGO3DGbzQD4MwzK7Y64T1x11HpjLMWoXXaZ/XE0IOI2QJdeYjNCHI2RLROtg==
-X-Received: from mustash.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:337b])
- (user=richardsonnick job=sendgmr) by 2002:a05:6122:1692:: with SMTP id
- 18mr13264491vkl.20.1628008071226; Tue, 03 Aug 2021 09:27:51 -0700 (PDT)
-Date:   Tue,  3 Aug 2021 16:27:35 +0000
-In-Reply-To: <47e01747a5c648c8809c77055e981e80@huawei.com>
-Message-Id: <20210803162739.2363542-1-richardsonnick@google.com>
-Mime-Version: 1.0
-References: <47e01747a5c648c8809c77055e981e80@huawei.com>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH v4] pktgen: Remove redundant clone_skb override
-From:   Nicholas Richardson <richardsonnick@google.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     nrrichar@ncsu.edu, arunkaly@google.com,
-        Nick Richardson <richardsonnick@google.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fSb2IKKpERpkumP5sU1ao0eAPDF2DFQMa3HuULiiIYU=;
+        b=TCwaLDs16r06vhCpWNFH1RmoYkqZae1BMz3MphZ43lB5wnnUbAv9hF+oa+rKnVUFfp
+         r798yRcyBWAHQKtgkjfOLE4xtsGJNYwVdBiw5muqTzlwzOu/Tt+eGrxNrBeI1avAjENy
+         wi7A84ERWO6GHJ7Ddqiv7zB8Fa0MdH/euh8aBXeDV6KtuVz9PrhE3oBGI4wciJ9OmKWr
+         Jm8TWAHQ2sBoYG63+gomSk2qvgGA2KsCaIMTjc8FjS9iPi/ypbR+pUpCtBKZ8K9Cmh5L
+         DJKF/g7k26hUS6PuKx6MfvdkKc29scjJy6AaLkBY8yrATQqPcTF5flCoRHNMD4/v0USP
+         Fwxg==
+X-Gm-Message-State: AOAM530Ag6VNptlxHreswc/mBT6aI1q3OoGSOmvxeRIQBTR+M1BIv8U3
+        up2JMmVw4p4tciWwQA5lKgTtM/Q2Eb6LoPX5DEeFug==
+X-Google-Smtp-Source: ABdhPJx2nN0RJicb3fn4l75ad0JyGz36/5KQH9kduX6E6hvkdu6Y7YPPEdSiEBu5tQtRzz2FC6AK0vsiOstTSHBZIxY=
+X-Received: by 2002:a25:2901:: with SMTP id p1mr29523316ybp.459.1628008115237;
+ Tue, 03 Aug 2021 09:28:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <CABCJKudYRiK0KcMHGHeBFcr+Smwa9EM+NFeBpMo_ePqK+zHz0w@mail.gmail.com>
+ <20210729205317.25685-1-treasure4paddy@gmail.com>
+In-Reply-To: <20210729205317.25685-1-treasure4paddy@gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 3 Aug 2021 09:28:23 -0700
+Message-ID: <CABCJKuei==gaaKw0qH1WkshcRyUbqdS_WGRWr6anYAew1HHT2w@mail.gmail.com>
+Subject: Re: [PATCH v3] kallsyms: strip CLANG CFI postfix ".cfi_jt"
+To:     Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
+Cc:     Jessica Yu <jeyu@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Stephen Boyd <swboyd@chromium.org>,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Leesoo Ahn <dev@ooseel.net>, Ye Bin <yebin10@huawei.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Yejune Deng <yejune.deng@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        Joe Perches <joe@perches.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Richardson <richardsonnick@google.com>
+Hi,
 
-When the netif_receive xmit_mode is set, a line is supposed to set
-clone_skb to a default 0 value. This line is made redundant due to a
-preceding line that checks if clone_skb is more than zero and returns
--ENOTSUPP.
+On Thu, Jul 29, 2021 at 1:54 PM Padmanabha Srinivasaiah
+<treasure4paddy@gmail.com> wrote:
+>
+> Clang CFI adds a postfix ".cfi_jt" to a symbols of extern functions.
+> For example this breaks syscall tracer that doesn't expect such postfix,
+> so strip out the postfix from the expanded symbol.
+>
+> Signed-off-by: Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
+> ---
+>
+> Change in v3:
+>   - Modified commit message to indicate fix is for Clang CFI postfix
+>   - Rebased on recent patch from ndesaulniers@google.com.
+>   - Fix is enabled even for CONFIG_LTO_CLANG
+>
+> Change in v2:
+>   - Use existing routine in kallsyms to strip postfix ".cfi_jt" from
+>     extern function name.
+>   - Modified the commit message accordingly
+>
+>  kernel/kallsyms.c | 21 +++++++++++++++------
+>  1 file changed, 15 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> index 5cabe4dd3ff4..67d015854cbd 100644
+> --- a/kernel/kallsyms.c
+> +++ b/kernel/kallsyms.c
+> @@ -174,7 +174,8 @@ static bool cleanup_symbol_name(char *s)
+>          * foo.llvm.974640843467629774. This can break hooking of static
+>          * functions with kprobes.
+>          */
+> -       if (!IS_ENABLED(CONFIG_LTO_CLANG_THIN))
+> +       if (!(IS_ENABLED(CONFIG_LTO_CLANG) ||
+> +             IS_ENABLED(CONFIG_LTO_CLANG_THIN)))
 
-Overriding clone_skb to 0 does not make any difference to the behavior
-because if it was positive we return error. So it can be either 0 or
-negative, and in both cases the behavior is the same.
+This is redundant. LTO_CLANG is selected for both LTO modes, so
+there's no need to also check for LTO_CLANG_THIN here.
 
-Remove redundant line that sets clone_skb to zero.
+>                 return false;
+>
+>         res = strstr(s, ".llvm.");
 
-Signed-off-by: Nick Richardson <richardsonnick@google.com>
----
- net/core/pktgen.c | 5 -----
- 1 file changed, 5 deletions(-)
+However, we should probably check for ".llvm." only with LTO_CLANG_THIN.
 
-diff --git a/net/core/pktgen.c b/net/core/pktgen.c
-index 7e258d255e90..314f97acf39d 100644
---- a/net/core/pktgen.c
-+++ b/net/core/pktgen.c
-@@ -1190,11 +1190,6 @@ static ssize_t pktgen_if_write(struct file *file,
- 			 * pktgen_xmit() is called
- 			 */
- 			pkt_dev->last_ok = 1;
--
--			/* override clone_skb if user passed default value
--			 * at module loading time
--			 */
--			pkt_dev->clone_skb = 0;
- 		} else if (strcmp(f, "queue_xmit") == 0) {
- 			pkt_dev->xmit_mode = M_QUEUE_XMIT;
- 			pkt_dev->last_ok = 1;
--- 
-2.32.0.554.ge1b32706d8-goog
+> @@ -184,16 +185,24 @@ static bool cleanup_symbol_name(char *s)
+>         }
+>
+>         /*
+> -        * LLVM appends a hash to static function names when ThinLTO and CFI
+> -        * are both enabled, i.e. foo() becomes
+> -        * foo$707af9a22804d33c81801f27dcfe489b. This causes confusion and
+> -        * potentially breaks user space tools, so we strip the suffix from
+> -        * expanded symbol names.
+> +        * LLVM appends a hash to static function names when both
+> +        * (Thin/FULL) LTO and CFI are enabled, i.e. foo() becomes
+> +        * foo$707af9a22804d33c81801f27dcfe489b.
 
+That's not quite right, the hash is only appended with ThinLTO. I
+would leave this comment untouched.
+
+> +        *
+> +        * In case of non static function symbol <funcsym>,
+> +        * the local jump table will have entry as <funcsym>.cfi_jt.
+> +        *
+> +        * This causes confusion and potentially breaks
+> +        * user space tools and some built-in components.
+> +        * So we strip the suffix from expanded symbol names.
+>          */
+>         if (!IS_ENABLED(CONFIG_CFI_CLANG))
+>                 return false;
+>
+>         res = strrchr(s, '$');
+> +       if (!res)
+> +               res = strstr(s, ".cfi_jt");
+
+And add a comment about stripping .cfi_jt from jump table symbols
+before this part.
+
+> +
+>         if (res) {
+>                 *res = '\0';
+>                 return true;
+> --
+> 2.17.1
+>
+
+Sami
