@@ -2,107 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CCC3DE6E7
+	by mail.lfdr.de (Postfix) with ESMTP id AB2233DE6E6
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhHCGyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 02:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234082AbhHCGyo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233902AbhHCGyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 3 Aug 2021 02:54:44 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8892CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 23:54:30 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id o17-20020a4a64110000b0290263e1ba7ff9so4984511ooc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 23:54:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4oJ/jweDfhBNzYtl7cCA85MSZCoSaUkH+H3AHvOTrdo=;
-        b=Q7T8lrKRMiZFhbrH9Kuj8YjWlp/32J2eatqWjLvhxKq44gIXSIzEQvxjiIZjc3yow+
-         zEYXSXoLaPPcRGipX/YZKT0Zxh7KLEhgBgFIG1jQCxNqrLPpzdPHEo47vsOHoj5xzz8W
-         dpHISSOI6dWGOyKASL3fgvTNxRG+WQkmLDlv90px5w9kxPskULngQ3jV/T9espPH3S3f
-         pA+Ua687K1nU9mEDWLzhz/cGz70XczyR0ZGS+m+ckoxI/M6yZBon84Yw4hXQIq4Q4UZL
-         FnmMDdvwJbj/EnOqU+ymrGUJz2bMk+igczHoaCX3jWuSWTgV6ZulI/cZCpS4E8jcE3nS
-         lotg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4oJ/jweDfhBNzYtl7cCA85MSZCoSaUkH+H3AHvOTrdo=;
-        b=mlt/7gXsjtVh8Urg0uDSsM+vgt5rGI9Bf0QzA/wzomhyQL7eekXdYVuN3row3CHdSi
-         aNcpcRxwx+5qi6YAm3v0UMwu/KKuGZNHbBLgoyxhFy2cjN9ykonokjNmR11WXdy1V4Tr
-         G8SGDGWxvhQAlRjzfmPUMBWIgo9NzzLUREvBMOGJtSdhmgXOajZP4xysAg4T7LCka9Rd
-         ggMLPPThXK0S6n6V9mxgWY1w50Ly+1vxShBHENaiOWOydbA7KInNxHuRztl/mX5NNtxH
-         xpgopI6d54KsRxCVlB8+CKD0LeIKzZzMStR7SeJecMyAfsLQfremAskXngVaPFCeaFTL
-         Mc9A==
-X-Gm-Message-State: AOAM531iAS3URRbXryR8mMlZG19LS1a36lpJ9yuKywD/XFBU9tsO7CbX
-        VwMFbZDcOqx7YOyOYf512iPGYjcTU1Rt76UtjY8=
-X-Google-Smtp-Source: ABdhPJw/KFzh4RBceTHLwY8pNWrudKwrxWElPQzZu7APABTp0flCbC3wsOnBm6xHXk3rYBJL9ROwC5q00Dp2Iiuka+4=
-X-Received: by 2002:a4a:5dc6:: with SMTP id w189mr13495446ooa.1.1627973669935;
- Mon, 02 Aug 2021 23:54:29 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231386AbhHCGym (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 02:54:42 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1646CC061764
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 23:54:32 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mAoJm-0001Wy-LZ; Tue, 03 Aug 2021 08:54:26 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mAoJl-0002XG-Lf; Tue, 03 Aug 2021 08:54:25 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH net 1/1] net: dsa: qca: ar9331: make proper initial port defaults
+Date:   Tue,  3 Aug 2021 08:54:24 +0200
+Message-Id: <20210803065424.9692-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CAM43=SNDAcS952MZpsiD2Z-WU9Bd0EPv=7Z86i7FGdvDtsSXdQ@mail.gmail.com>
- <20210802112904.110028a4@ws>
-In-Reply-To: <20210802112904.110028a4@ws>
-From:   Mikael Pettersson <mikpelinux@gmail.com>
-Date:   Tue, 3 Aug 2021 08:54:18 +0200
-Message-ID: <CAM43=SP2TUUfo2bUiu+5fvKvT1gn0e4vofoX3zDP1pV_qnv+BA@mail.gmail.com>
-Subject: Re: [BISECTED] 5.14.0-rc4 broke drm/ttm when !CONFIG_DEBUG_FS
-To:     Duncan <j.duncan@cox.net>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 8:29 PM Duncan <j.duncan@cox.net> wrote:
->
-> [Not subscribed so please CC me.  Manual quoting after using lore's
-> in-reply-to functionality.  First time doing that so hope I got it
-> right.]
->
-> Mikael Pettersson <mikpelinux@gmail.com> wrote...
-> > Booting 5.14.0-rc4 on my box with Radeon graphics breaks with
-> >
-> > [drm:radeon_ttm_init [radeon]] *ERROR* failed initializing buffer
-> > object driver(-19).
-> > radeon 0000:01:00.0: Fatal error during GPU init
->
-> Seeing this here too.  amdgpu on polaris-11, on an old amd-fx6100
-> system.
->
-> > after which the screen goes black for the rest of kernel boot
-> > and early user-space init.
->
-> *NOT* seeing that.  However, I have boot messages turned on by default
-> and I see them as usual, only it stays in vga-console mode instead of
-> switching to framebuffer after early-boot. I'm guessing MP has a
-> high-res boot-splash which doesn't work in vga mode, thus the
-> black-screen until the login shows up.
+Make sure that all external port are actually isolated from each other,
+so no packets are leaked.
 
-Yes, I have the Fedora boot splash enabled.
+Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/dsa/qca/ar9331.c | 99 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 98 insertions(+), 1 deletion(-)
 
-> > Once the console login shows up the screen is in some legacy low-res
-> > mode and Xorg can't be started.
-> >
-> > A git bisect between v5.14-rc3 (good) and v5.14-rc4 (bad) identified
-> >
-> > # first bad commit: [69de4421bb4c103ef42a32bafc596e23918c106f]
-> > drm/ttm: Initialize debugfs from ttm_global_init()
-> >
-> > Reverting that from 5.14.0-rc4 gives me a working kernel again.
-> >
-> > Note that I have
-> > # CONFIG_DEBUG_FS is not set
->
-> That all matches here, including the unset CONFIG_DEBUG_FS and
-> confirming the revert on 5.14.0-rc4 works.
+diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
+index 6686192e1883..360417e6cd8c 100644
+--- a/drivers/net/dsa/qca/ar9331.c
++++ b/drivers/net/dsa/qca/ar9331.c
+@@ -101,6 +101,46 @@
+ 	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
+ 	 AR9331_SW_PORT_STATUS_SPEED_M)
+ 
++#define AR9331_SW_REG_PORT_CTRL(_port)			(0x104 + (_port) * 0x100)
++#define AR9331_SW_PORT_CTRL_ING_MIRROR_EN		BIT(17)
++#define AR9331_SW_PORT_CTRL_EG_MIRROR_EN		BIT(16)
++#define AR9331_SW_PORT_CTRL_DOUBLE_TAG_VLAN		BIT(15)
++#define AR9331_SW_PORT_CTRL_LEARN_EN			BIT(14)
++#define AR9331_SW_PORT_CTRL_SINGLE_VLAN_EN		BIT(13)
++#define AR9331_SW_PORT_CTRL_MAC_LOOP_BACK		BIT(12)
++#define AR9331_SW_PORT_CTRL_HEAD_EN			BIT(11)
++#define AR9331_SW_PORT_CTRL_IGMP_MLD_EN			BIT(10)
++#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE		GENMASK(9, 8)
++#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_KEEP		0
++#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_STRIP		1
++#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_ADD		2
++#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_DOUBLE		3
++#define AR9331_SW_PORT_CTRL_LEARN_ONE_LOCK		BIT(7)
++#define AR9331_SW_PORT_CTRL_PORT_LOCK_EN		BIT(6)
++#define AR9331_SW_PORT_CTRL_LOCK_DROP_EN		BIT(5)
++#define AR9331_SW_PORT_CTRL_PORT_STATE			GENMASK(2, 0)
++#define AR9331_SW_PORT_CTRL_PORT_STATE_DISABLED		0
++#define AR9331_SW_PORT_CTRL_PORT_STATE_BLOCKING		1
++#define AR9331_SW_PORT_CTRL_PORT_STATE_LISTENING	2
++#define AR9331_SW_PORT_CTRL_PORT_STATE_LEARNING		3
++#define AR9331_SW_PORT_CTRL_PORT_STATE_FORWARD		4
++
++#define AR9331_SW_REG_PORT_VLAN(_port)			(0x108 + (_port) * 0x100)
++#define AR9331_SW_PORT_VLAN_8021Q_MODE			GENMASK(31, 30)
++#define AR9331_SW_8021Q_MODE_SECURE			3
++#define AR9331_SW_8021Q_MODE_CHECK			2
++#define AR9331_SW_8021Q_MODE_FALLBACK			1
++#define AR9331_SW_8021Q_MODE_NONE			0
++#define AR9331_SW_PORT_VLAN_ING_PORT_PRI		GENMASK(29, 27)
++#define AR9331_SW_PORT_VLAN_FORCE_PORT_VLAN_EN		BIT(26)
++#define AR9331_SW_PORT_VLAN_PORT_VID_MEMBER		GENMASK(25, 16)
++#define AR9331_SW_PORT_VLAN_ARP_LEAKY_EN		BIT(15)
++#define AR9331_SW_PORT_VLAN_UNI_LEAKY_EN		BIT(14)
++#define AR9331_SW_PORT_VLAN_MULTI_LEAKY_EN		BIT(13)
++#define AR9331_SW_PORT_VLAN_FORCE_DEFALUT_VID_EN	BIT(12)
++#define AR9331_SW_PORT_VLAN_PORT_VID			GENMASK(11, 0)
++#define AR9331_SW_PORT_VLAN_PORT_VID_DEF		1
++
+ /* MIB registers */
+ #define AR9331_MIB_COUNTER(x)			(0x20000 + ((x) * 0x100))
+ 
+@@ -371,12 +411,63 @@ static int ar9331_sw_mbus_init(struct ar9331_sw_priv *priv)
+ 	return 0;
+ }
+ 
+-static int ar9331_sw_setup(struct dsa_switch *ds)
++static int ar9331_sw_setup_port(struct dsa_switch *ds, int port)
+ {
+ 	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
+ 	struct regmap *regmap = priv->regmap;
++	u32 port_mask, port_ctrl, val;
+ 	int ret;
+ 
++	/* Generate default port settings */
++	port_ctrl = FIELD_PREP(AR9331_SW_PORT_CTRL_PORT_STATE,
++			       AR9331_SW_PORT_CTRL_PORT_STATE_DISABLED);
++
++	if (dsa_is_cpu_port(ds, port)) {
++		/* CPU port should be allowed to communicate with all user
++		 * ports.
++		 */
++		port_mask = dsa_user_ports(ds);
++		/* Enable Atheros header on CPU port. This will allow us
++		 * communicate with each port separately
++		 */
++		port_ctrl |= AR9331_SW_PORT_CTRL_HEAD_EN;
++	} else if (dsa_is_user_port(ds, port)) {
++		/* User ports should communicate only with the CPU port.
++		 */
++		port_mask = BIT(dsa_to_port(ds, port)->cpu_dp->index);
++		port_ctrl |= AR9331_SW_PORT_CTRL_LEARN_EN;
++	} else {
++		/* Other ports do not need to communicate at all */
++		port_mask = 0;
++	}
++
++	val = FIELD_PREP(AR9331_SW_PORT_VLAN_8021Q_MODE,
++			 AR9331_SW_8021Q_MODE_NONE) |
++		FIELD_PREP(AR9331_SW_PORT_VLAN_PORT_VID_MEMBER, port_mask) |
++		FIELD_PREP(AR9331_SW_PORT_VLAN_PORT_VID,
++			   AR9331_SW_PORT_VLAN_PORT_VID_DEF);
++
++	ret = regmap_write(regmap, AR9331_SW_REG_PORT_VLAN(port), val);
++	if (ret)
++		goto error;
++
++	ret = regmap_write(regmap, AR9331_SW_REG_PORT_CTRL(port), port_ctrl);
++	if (ret)
++		goto error;
++
++	return 0;
++error:
++	dev_err(priv->dev, "%s: error: %i\n", __func__, ret);
++
++	return ret;
++}
++
++static int ar9331_sw_setup(struct dsa_switch *ds)
++{
++	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
++	struct regmap *regmap = priv->regmap;
++	int ret, i;
++
+ 	ret = ar9331_sw_reset(priv);
+ 	if (ret)
+ 		return ret;
+@@ -402,6 +493,12 @@ static int ar9331_sw_setup(struct dsa_switch *ds)
+ 	if (ret)
+ 		goto error;
+ 
++	for (i = 0; i < ds->num_ports; i++) {
++		ret = ar9331_sw_setup_port(ds, i);
++		if (ret)
++			goto error;
++	}
++
+ 	ds->configure_vlan_while_not_filtering = false;
+ 
+ 	return 0;
+-- 
+2.30.2
 
-Thanks for the confirmation.
