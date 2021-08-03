@@ -2,210 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D453DE483
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7756F3DE448
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233695AbhHCCrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 22:47:00 -0400
-Received: from lgeamrelo13.lge.com ([156.147.23.53]:43468 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233356AbhHCCq7 (ORCPT
+        id S233574AbhHCCRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 22:17:34 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12438 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233200AbhHCCRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 22:46:59 -0400
-X-Greylist: delayed 1799 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Aug 2021 22:46:58 EDT
-Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
-        by 156.147.23.53 with ESMTP; 3 Aug 2021 11:16:47 +0900
-X-Original-SENDERIP: 156.147.1.126
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.126 with ESMTP; 3 Aug 2021 11:16:47 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Tue, 3 Aug 2021 11:16:12 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     torvalds@linux-foundation.org, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rostedt@goodmis.org, joel@joelfernandes.org,
-        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com
-Subject: [RFC] Cross-release versus a new tool
-Message-ID: <20210803021611.GA28236@X58A-UD3R>
+        Mon, 2 Aug 2021 22:17:33 -0400
+Received: from dggeme701-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gdz242zxnzckD1;
+        Tue,  3 Aug 2021 10:13:48 +0800 (CST)
+Received: from dggpemm500021.china.huawei.com (7.185.36.109) by
+ dggeme701-chm.china.huawei.com (10.1.199.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 10:17:21 +0800
+Received: from dggpemm500021.china.huawei.com ([7.185.36.109]) by
+ dggpemm500021.china.huawei.com ([7.185.36.109]) with mapi id 15.01.2176.012;
+ Tue, 3 Aug 2021 10:17:21 +0800
+From:   "zhudi (J)" <zhudi21@huawei.com>
+To:     Nicholas Richardson <richardsonnick@google.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "nrrichar@ncsu.edu" <nrrichar@ncsu.edu>,
+        "arunkaly@google.com" <arunkaly@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "yebin (H)" <yebin10@huawei.com>,
+        Yejune Deng <yejune.deng@gmail.com>,
+        Leesoo Ahn <dev@ooseel.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjNdIHBrdGdlbjogRml4IGludmFsaWQgY2xvbmVf?=
+ =?utf-8?Q?skb_override?=
+Thread-Topic: [PATCH v3] pktgen: Fix invalid clone_skb override
+Thread-Index: AQHXh8tQ8xg7Med4W06C+qfPmCpoyKthAu9g
+Date:   Tue, 3 Aug 2021 02:17:20 +0000
+Message-ID: <47e01747a5c648c8809c77055e981e80@huawei.com>
+References: <20210802102100.5292367a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210802182057.2199810-1-richardsonnick@google.com>
+In-Reply-To: <20210802182057.2199810-1-richardsonnick@google.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.136.114.155]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
-
-Lockdep is a great tool for detecting deadlock possibility, which was
-designed for detecting wrong usage of locking API esp. typical lock e.g.
-spinlock and mutex. However, when it comes to read lock or any other
-mechanisms than typical lock, Lockdep code has been getting tweaked and
-complicated to cover all of them. It'd be getting worse over time.
-
-First of all, we should understand what a deadlock detection tool should
-do. Fundamentally, a deadlock is caused by "WAITER(S) ON ITS EVENT(S)
-THAT WILL NEVER HAPPEN" so the tool should focus on waiters and events.
-Otherwise, complexifying it just makes things worse.
-
-(NOTE: I hope you guys distinguish between dependency checking feature
-and any other supports for lock usage. I'm gonna talk about the aspect
-of dependency checking feature only in this posting. The support for
-correctness check of lock usage should still be there as is.)
-
-We can detect a deadlock by tracking waiters and its events. A deadlock
-detection tool should focus on waiters and events and its contexts, not
-specific cases like the order of acquisitions that Lockdep does, where
-waiters and its events *implicitly* exist there anyway. This way, the
-tool can be simple and straightforward, and able to cover all cases.
-
-I understand all Linux kernel features should be mature enough. I think
-Lockdep is fairly so, thanks to the folks for many years. I partially
-agree with the opinion that Lockdep should be kept and new feautures for
-a better work should be stacked onto Lockdep if needed. However, it's
-a shame that the base that Lockdep was built on is not that nice.
-
-The requirement we expect the tool should meet is, I think:
-
-   R1. It should detect a deadlock caused by typical type of lock e.g.
-       spin lock and mutex lock.
-
-       We acquire a lock before accessing a shared resource and release
-       the lock after using it, say, both the acquisition and release
-       happen at the *same context*. Using the fact so just tracking the
-       order of lock acquisitions, we can detect a deadlock.
-
-   R2. It should detect a deadlock caused by other than typical type of
-       lock e.g. read lock.
-
-       Read lock works in a different way from typical one because it
-       was introduced to avoid *wait* on contention between read locks.
-       Furthermore, they behave differently depending on if it's
-       recursive one or not. It's not easy to detect a deadlock with
-       focusing on the order unless focusing on the interesting waiters
-       and its events. Otherwise, the tool should be tweaked and getting
-       complicated to cover them, which is how Lockdep does :(
-
-   R3. It should detect a deadlock caused by any waiter e.g. page lock
-       and wait_for_completion.
-
-       Not only locks but also any waits can cause a deadlock. However,
-       Lockdep doesn't work for the cases because it wasn't designed
-       fot that. Instead, these cases have been covered by manually
-       adding Lockdep annotations like acquire/release, in case by case
-       manner when found the needs. It'd better be done automatically or
-       with simpler annotations, for example, wait/event annotation
-       instead of acquire/release.
-
-   R4. Sychronization objects e.g. lock and wait_for_completion need to
-       be classified correctly as a prerequisite, minimizing the number
-       of false positives.
-
-       A deadlock detection tool does not track all individual objects.
-       Instead, it works with *class* classified based on its code path
-       basically. Unfortunately, because not all the classification is
-       perfect, false alarms may raise. To avoid it, some classes that
-       were assigned automatically but incorrectly, have been reset by
-       the developers manually for many years.
-
-   R5. It should not overwhelm the kernel message with meaningless
-       reports. But it should still report meaningful ones.
-
-       Even though one problematic usage in terms of dependency can
-       cause more than one scenario leading deadlock, it would be
-       meaningless to report all of them because some may rather get in
-       the way when picking meaningful ones for analysis. However,
-       meaningful ones are still worth being reported.
-
-   R6. It should be mature and stable enough to handle subtle issues
-       properly.
-
-       There are a lot of subtle issues in Linux kernel. The more
-       primitives they are, the more subtle issues there might be. A
-       dependency checking tool is one of very primitives feature so
-       needs to be mature and stable enough.
-
-Lockdep has been developed fairly great for many years - by intoducing
-dynamic class assignment feature, recursive read lock support lately and
-so on - so as to cover R1, R2, R4, partially R5 and R6 for now, but,
-with the code complicated and enlarged inevitably.
-
-However, there is still a lack of R3 in the tool. I'm thinking we can
-choose one of two options to cover R3:
-
-   1. Cross-release
-
-   This feature was reverted due to a few false positive alarms in a
-   specific environment where more than one file system were stacked on
-   one another through loopback. At that time, it looked not easy to
-   assign proper classes to locks in each layer with a lack of dynamic
-   class assignment feature. Now it's been ready, I think it's worth
-   retrying to introduce Cross-release.
-
-   We can keep the all advantages Lockdep already has, esp. R6 with this
-   option. At the same time, we would keep the problems too, Lockdep has
-   e.i. the code is going more complicated and getting bigger than what
-   it actually needs.
-
-   2. A new tool
-
-   I implemented a deadlock detection tool from the scratch by tracking
-   waits and event, not acquisition or release - it was inevitable to
-   rely on BFS as Lockdep does tho. I should admit this is not as mature
-   as Lockdep so needs to be improved more esp. stability. However, I'm
-   strongly convinced that it's the right way to go with and it does
-   exactly what a deadlock detection tool should do.
-
-   However, again, the new tool has just been implemented so may not
-   cover R6 enough. So I need you guys to work together... FYI, see the
-   link, https://lkml.org/lkml/2020/11/23/236 for the patches. The work
-   is based on the mainline v5.9.
-
-   NOTE: It's worth noting that the new tool is not perfect for now. For
-   example, it has yet to support non-recursive read lock depenency. It
-   would not be that hard work tho.
-
-I've asked you for your opinion in https://lkml.org/lkml/2020/11/11/19
-one day, and someone answered like re-introducing Cross-release looks
-better. However, I decided to write this posting again and lastly
-because I thought I didn't explain the rationale, each pros and cons
-enough. Just this last time and then I'll stop asking any more.
-
-It would not be that important to doing something onto the kernel code
-but the right direction definitely should be more important. I want to
-discuss the direction and decision wrt the tool based on the facts, good
-things, and bad things without bias. Whatever decision will be made, I'd
-like to go work with it and ask you for working together once it's made.
-
-Either Cross-release or the new tool, let me go with any. Could you give
-your opinions? It would be appreciated.
-
-Thank you!
-Byungchul
-
----
-
-P.S. Trivial thing... but I'd like to mention one thing. From what I
-heard, you got overwhelmed by a ton of reports when you allowed Lockdep
-to multi-report. It's because Lockdep is not designed to work nicely
-with irq related deadlock like "irq enable -> acqusition within the irq"
-cases. It's gonna certainly overwhelm kmsg with the current design.
-
-When it comes to irq related deadlock, it would be a better decision to
-report only the shortest path in the dependency tree - assuming the tree
-reflects irq related dependencies as well - which means the most likely
-case. I tested the test case and found it didn't overwhelm even with
-multiple reporting on.
-
-Multiple reporting with Dept looks quite helpful from my experience. If
-you doubt, I'd recommend to try to see what's gonna happen with Dept on
-v5.9 with your system. Refer to the link above for the patches.
-
+PiBGcm9tOiBOaWNrIFJpY2hhcmRzb24gPHJpY2hhcmRzb25uaWNrQGdvb2dsZS5jb20+DQo+IA0K
+PiBXaGVuIHRoZSBuZXRpZl9yZWNlaXZlIHhtaXRfbW9kZSBpcyBzZXQsIGEgbGluZSBpcyBzdXBw
+b3NlZCB0byBzZXQNCj4gY2xvbmVfc2tiIHRvIGEgZGVmYXVsdCAwIHZhbHVlLiBUaGlzIGxpbmUg
+aXMgbWFkZSByZWR1bmRhbnQgZHVlIHRvIGENCj4gcHJlY2VkaW5nIGxpbmUgdGhhdCBjaGVja3Mg
+aWYgY2xvbmVfc2tiIGlzIG1vcmUgdGhhbiB6ZXJvIGFuZCByZXR1cm5zDQo+IC1FTk9UU1VQUC4N
+Cj4gDQo+IE9ubHkgdGhlIHBvc2l0aXZlIGNhc2UgZm9yIGNsb25lX3NrYiBuZWVkcyB0byBiZSBj
+aGVja2VkLiBJdA0KPiBpcyBpbXBvc3NpYmxlIGZvciBhIHVzZXIgdG8gc2V0IGNsb25lX3NrYiB0
+byBhIG5lZ2F0aXZlIG51bWJlci4NCj4gV2hlbiBhIHVzZXIgcGFzc2VzIGEgbmVnYXRpdmUgdmFs
+dWUgZm9yIGNsb25lX3NrYiwgdGhlIG51bV9hcmcoKQ0KPiBmdW5jdGlvbiBzdG9wcyBwYXJzaW5n
+IGF0IHRoZSBmaXJzdCBub25udW1lcmljIHZhbHVlLg0KPiANCj4gRm9yIGV4YW1wbGU6ICJjbG9u
+ZV9za2IgLTIwMCIgd291bGQgc3RvcCBwYXJzaW5nIGF0IHRoZQ0KPiBmaXJzdCBjaGFyICgnLScp
+IGFuZCByZXR1cm4gemVybyBmb3IgdGhlIG5ldyBjbG9uZV9za2IgdmFsdWUuDQo+IA0KPiBUaGUg
+dmFsdWUgcmVhZCBieSBudW1fYXJnKCkgY2Fubm90IGJlIG92ZXJmbG93LWVkIGludG8gdGhlIG5l
+Z2F0aXZlDQo+IHJhbmdlLCBzaW5jZSBpdCBpcyBhbiB1bnNpZ25lZCBsb25nLg0KPiANCg0KbW9k
+dWxlX3BhcmFtKHBnX2Nsb25lX3NrYl9kLCBpbnQsIDApOw0KDQpUaGlzIGtlcm5lbCBwYXJhbWV0
+ZXIgY2FuIGFsc28gc2V0IHRoZSB2YWx1ZSBvZiBwa3RfZGV2LT5jbG9uZV9za2INCkluIHBrdGdl
+bl9hZGRfZGV2aWNlKCkgYW5kIHRoZSB2YWx1ZSBjYW4gYmUgbmVnYXRpdmUuDQoNCg0KPiBSZW1v
+dmUgcmVkdW5kYW50IGxpbmUgdGhhdCBzZXRzIGNsb25lX3NrYiB0byB6ZXJvLiBJZiBjbG9uZV9z
+a2IgaXMNCj4gZXF1YWwgdG8gemVybyB0aGVuIHNldCB4bWl0X21vZGUgdG8gbmV0aWZfcmVjZWl2
+ZSBhcyB1c3VhbCBhbmQgcmV0dXJuDQo+IG5vIGVycm9yLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
+TmljayBSaWNoYXJkc29uIDxyaWNoYXJkc29ubmlja0Bnb29nbGUuY29tPg0KPiAtLS0NCj4gIG5l
+dC9jb3JlL3BrdGdlbi5jIHwgNSAtLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDUgZGVsZXRpb25z
+KC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvbmV0L2NvcmUvcGt0Z2VuLmMgYi9uZXQvY29yZS9wa3Rn
+ZW4uYw0KPiBpbmRleCA3ZTI1OGQyNTVlOTAuLjMxNGY5N2FjZjM5ZCAxMDA2NDQNCj4gLS0tIGEv
+bmV0L2NvcmUvcGt0Z2VuLmMNCj4gKysrIGIvbmV0L2NvcmUvcGt0Z2VuLmMNCj4gQEAgLTExOTAs
+MTEgKzExOTAsNiBAQCBzdGF0aWMgc3NpemVfdCBwa3RnZW5faWZfd3JpdGUoc3RydWN0IGZpbGUg
+KmZpbGUsDQo+ICAJCQkgKiBwa3RnZW5feG1pdCgpIGlzIGNhbGxlZA0KPiAgCQkJICovDQo+ICAJ
+CQlwa3RfZGV2LT5sYXN0X29rID0gMTsNCj4gLQ0KPiAtCQkJLyogb3ZlcnJpZGUgY2xvbmVfc2ti
+IGlmIHVzZXIgcGFzc2VkIGRlZmF1bHQgdmFsdWUNCj4gLQkJCSAqIGF0IG1vZHVsZSBsb2FkaW5n
+IHRpbWUNCj4gLQkJCSAqLw0KPiAtCQkJcGt0X2Rldi0+Y2xvbmVfc2tiID0gMDsNCj4gIAkJfSBl
+bHNlIGlmIChzdHJjbXAoZiwgInF1ZXVlX3htaXQiKSA9PSAwKSB7DQo+ICAJCQlwa3RfZGV2LT54
+bWl0X21vZGUgPSBNX1FVRVVFX1hNSVQ7DQo+ICAJCQlwa3RfZGV2LT5sYXN0X29rID0gMTsNCj4g
+LS0NCj4gMi4zMi4wLjU1NC5nZTFiMzI3MDZkOC1nb29nDQoNCg==
