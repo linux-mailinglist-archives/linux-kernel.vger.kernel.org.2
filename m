@@ -2,176 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131B23DEB2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0155F3DEB2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235557AbhHCKmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:42:52 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:20371 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235306AbhHCKmv (ORCPT
+        id S235558AbhHCKnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235306AbhHCKnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:42:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1627987358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BuRoum/Nad4Gf6RJJTl7K+XY4MVcbHSdL+3jOnUs6r0=;
-        b=Rzb/3IaUJZtAF/9XjuBLueto7gO2TpMY+eQkxJT2XvZbgr2fKuJigs4cOqmvPZzSOXNToX
-        S79sVcEaUAW0jfW3EajegjZIfLJa0AuMgW62VF5Zdc+keJySo0rQp2gsvo+BoMZcq+C/Et
-        xGO1n/9jwD6tiok0C7J5GhxaRF03NjE=
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05lp2107.outbound.protection.outlook.com [104.47.18.107])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-33-vZY-dygmM2qGi3BajRxXcA-1; Tue, 03 Aug 2021 12:42:36 +0200
-X-MC-Unique: vZY-dygmM2qGi3BajRxXcA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LwMSIVcIp0GVc3UzczpDnOHMuAxPrUj7/A6VpaPMFgb3Lwi9nw37ncS+BF6x27tSHZquUVMeiJydByJOfqXXocaw0n2edh0HYwglCvmi3BYsPnJJDj1QLjkwEsFHMKSqIvrB5YNKasKccQGMaOnN9xupcckz2UslmPut+evP77fW0AL8CfloP2gKS0EUkg+9lmHN8tj/V+/M2rMsnNGmajpYSyv/B1tUV7DFpsXh1bp4Z5yhxQJ7YagiVPZqzdW1Z8ZQisJThBMHVbGr/XCcWk518NHNBk7Qkbu51pjUbxNTtBRcrsSK7chrTYrzYaTPlY0pNE2Ny80VqbD8CvyehA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dMkVA/l2nrqW9yireGHA+41NCyqRsWOtb5IB3/UnIjw=;
- b=f2W3XayjpGWUNhHQPOtdgaLSBkHAW6IqcbLKVLW9MOcTVqChsqgQ9hivC45B+/hTqZQxlMjKA/Iz5PbmI0wRS0gJVqB08yaGCAmCWC2IzJ0h+3KDfejMEscGBO56IfbFb1ZIgDUk67J2sQ6eyaEkcY/JtOCz+/hSnHbecqROzy+eDtar+a4OWhd5TALB0uMQY6bU/NUVXrd66GYsr3bWQXB8nIgiEN2AIOsgsj4P8cBNGAty1mzjUP1m6fX0+pCPyCVD53hadxWOinlQVGTXgp6hmPkzZkZowgXDt36fCrpMzx+70v60oYC4erM2ZLqNVn+OqI8wlTyjSEjtPAomow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR0402MB2829.eurprd04.prod.outlook.com (2603:10a6:800:bb::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.23; Tue, 3 Aug
- 2021 10:42:35 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::99d3:99cd:8adf:3eea]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::99d3:99cd:8adf:3eea%5]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
- 10:42:35 +0000
-Subject: Re: [PATCH 2/2] xen: rename wrong named pfn related variables
-To:     Juergen Gross <jgross@suse.com>
-CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-References: <20210616073007.5215-1-jgross@suse.com>
- <20210616073007.5215-3-jgross@suse.com>
- <8dbeb9ea-56c9-de30-4d5f-fc9c0ced6ac4@suse.com>
- <79434ec4-4543-97ad-b010-3f2c1b6a55ad@suse.com>
- <b9c64bcd-4192-0075-ddf5-711e84301063@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <94d629fd-27e2-f2be-ed26-c3e04e95c5b4@suse.com>
-Date:   Tue, 3 Aug 2021 12:42:32 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-In-Reply-To: <b9c64bcd-4192-0075-ddf5-711e84301063@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: PR2PR09CA0019.eurprd09.prod.outlook.com
- (2603:10a6:101:16::31) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Tue, 3 Aug 2021 06:43:47 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BC6C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:43:31 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id n12-20020a05600c3b8cb029025a67bbd40aso1443344wms.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 03:43:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Yf8CYtfpcYFP2kmmB7d8YySkiG5qMULsKJdwwdNKGdo=;
+        b=Xkiwr86aB2b2IXXyQ3phMRfh8j3QEJwOW7FaShfOp1omNRlMQWdhDJdftT6kLOdoXj
+         OF27SQRuNeKZ6jACRqI28pFLd2PjfeCpMs/uH20SdNEERHpOcMNe9l6tPazr2405LMNF
+         66NnQjUg7OmdHTKYTMai1NebDBdvZCPsScPC4lz5MsjMpUOek1wUIHGerM9NWqdK5YpN
+         1BSoe4cffaRhlstFm5B7iu/oWRtTkTMJd6J9I2cy+30cL9nDA5jFHY4XGKJYgjyv0pLW
+         NBX7by79WZj5GrWezI0pd1FNLQGRdnKzTmBMfeWBn6nysNzSfixSF/oWcKHaIviptQyy
+         ysxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yf8CYtfpcYFP2kmmB7d8YySkiG5qMULsKJdwwdNKGdo=;
+        b=taA+tQEgK/OyJZz3exnixHCv6QBpTl1dRZQYfj7/2BNiUQ/mCTmqBhGgYBHAfDvnpR
+         A/wsvtIIp+tHnYLQi4pHNgq7jhuq+sjAqm7Tg+z5bAwS+SdQ0XhkLREIzHvznFUsNFrB
+         h5LsRloHj9YjJP8wXWsO14EQrtO0mC1DXeuj/z7+2rywkRSrQf+tzUU1nbiv6xgzRAl3
+         j+QMsBgj26C6FqX1scQsqMVYL5hITT1xwVyS/Uv3IiLClTQESrMMACo/TBAZ8SHw9THM
+         5SQyRWevdbHaxtqrdl8S8rhO3iAtupD+gol/oljwT5XVU6rQ77mUIFNSEqqI4JCUpvPi
+         QZHg==
+X-Gm-Message-State: AOAM533r+ipa4/AUyRU/WQk+yLnAutCPuo2yUMSM1rkm+B3AV5f348QM
+        Vsf54JeBM1xGdNtAm8IZn2I0DA==
+X-Google-Smtp-Source: ABdhPJyIy4ipDSmV4jxH9j18cKuik8k9waAqFprPdKpKXfO5PYVYNRiwJnu2X48LUmk/Ifz3OBSMeA==
+X-Received: by 2002:a7b:c930:: with SMTP id h16mr21943168wml.2.1627987409823;
+        Tue, 03 Aug 2021 03:43:29 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:754:7d1b:7303:129a])
+        by smtp.gmail.com with ESMTPSA id x9sm2162756wmj.41.2021.08.03.03.43.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 03:43:29 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 11:43:26 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Fuad Tabba <tabba@google.com>
+Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        dbrazdil@google.com, kernel-team@android.com
+Subject: Re: [PATCH v3 20/21] KVM: arm64: Restrict EL2 stage-1 changes in
+ protected mode
+Message-ID: <YQkdztIHwXfj7Sbc@google.com>
+References: <20210729132818.4091769-1-qperret@google.com>
+ <20210729132818.4091769-21-qperret@google.com>
+ <CA+EHjTw7W=5JqH+oZAqLPrf_6222eazDnSk24h4EuGE1VLwKYg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by PR2PR09CA0019.eurprd09.prod.outlook.com (2603:10a6:101:16::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Tue, 3 Aug 2021 10:42:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dfc0995f-998d-49d9-949a-08d9566b67b1
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB2829:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB28295A4568E4C692BECE2F2BB3F09@VI1PR0402MB2829.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PmCxdNryIsX0vr8BQHusl8I7ssAdVmulsuse7dQY8ajnyTUmrgyrKnzPmDiiIb/4Z+CDmMSCZuSTts7yKxrNV4z5mTbDgCWDIKuWRqVk01oF0mTc+CegiXcPQ+ZxK04sZuO+k8E2R1dlUkTZzojfxyGJMkec9W47kY9a2F5Mor7KfmKSSzd8KhlCBbfpuTvNMTwOMwSlZVNe4ILrwZUpvZ+RA5BDdDefnziSosAMuFceM6rpwtokn/j7tjFPIUkVCXg3wrv+KxFB5XSvtgIkaWsLspeFVn2HKZuTJsg+4mPZ5gdvVzdOQjeDEbfjA3/TtUfnW3eZsXq3W0ilBpwvdABVRM2Vs6DWslNxSKBOu6OWNhkH35r7EOm/Ut9eDlGNs8/Csl0SeRLWaTl+RKuRiTeuiufreY7Ubc6VX/dFEYaWtUf3HHoUaIcSO1kmHCjML7hGamn1PSlt3hrPCyLH5odHNwWaEl55lYhY86Vm+vkeRv7hpqRpf141FXsNQ8SYgUSexFk3quXi3tby6ZBnU4OHpC2KzyMA+8L8mknnYkaEBQINCmOzK2iVpXcVsnZPQBHOYbBvCYUtYFMHgsdZuajG/kpCgxHOrMdMzM7bhoog5diFQykY2Itj6cuPnW9oKLv03nw3dG06BSjun5loxu3iB+viWzHCd4F797M5TlAZEMdQsOnECEZWDRfakFzKakLBFqoCnTkvNxdo7MlqwTTG5wqUufAAMW23g08XdN0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(346002)(376002)(136003)(396003)(478600001)(83380400001)(66476007)(37006003)(316002)(16576012)(36756003)(66946007)(53546011)(5660300002)(8676002)(31696002)(38100700002)(66556008)(86362001)(54906003)(8936002)(31686004)(2906002)(6486002)(26005)(6862004)(4326008)(6636002)(956004)(186003)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?j8t4LPYmuM+UA/XptHS0QuCgqBEf3m/LA+jBllUfEKaKDVX3cxC84TA05+gQ?=
- =?us-ascii?Q?hWFmdmDtzIH1lzw6y2ibwmG9l+cKNpvkR2vKvT3ANP3SJE0wv1tR8mLVnmNm?=
- =?us-ascii?Q?W1w+sm6bEq+gIOOn8S6X2PtVTtaPpV5KN5qxSU2eMsJUvwZFR1dxp/UgKEKE?=
- =?us-ascii?Q?XZEhaNa+eOjJNl4azExLP6UIxzP3xuP2YHGtXLEXCW4GRIgAO3973rjpDIVZ?=
- =?us-ascii?Q?YJx6neqz/GoxsXQgKb+0u5iZPrQ4n6JGSfp4lql7clIu2ugRIrzKFoLpnsvM?=
- =?us-ascii?Q?RjfZv8Ui3zX6VyHcjLyflD9/7y0DbCKQsgu+Y4jF1FZNKYhVpbQwMbAuMGei?=
- =?us-ascii?Q?pHqrXvXyCtI3utEMDXNDqPMGiYqCii81fglzuSFiG/DU2h4L2AQ8pEw8MYP3?=
- =?us-ascii?Q?HeN3/ws7yIt7Q6kKjogG54Xl/hWXNtGOUtdpDRav/DovrTlRPIIgLNLH9KU8?=
- =?us-ascii?Q?zRL+ziGFKR/h32Q4gNSm2KOA4iHFDo3oF0JKcML/OTZ3dgTc0B51v4udyQHY?=
- =?us-ascii?Q?fjYJ/EcgS+DmDuqK28swnRg+t2AVQM9aCCLArx2Y1x6HZsCCTdLrhm81t21O?=
- =?us-ascii?Q?IeBAV98BxM9PLRdfq8ikJGdx8W82JQ9c8HC6RylLTFqzGyymZlIYygZnmApH?=
- =?us-ascii?Q?14nMSms6K9Y7xF04KDKmC419um650vY7qJbjbDKe5cF936ZFVfamMszSI8mf?=
- =?us-ascii?Q?qYQYC4l7rSdEIPDN+CuERnMcfbYVBfs4odbEe9akNYhDGqtfqzACzrmJ7hkO?=
- =?us-ascii?Q?OblgPN89wdK49p5k6ZQs8JbWZ2cdNRjBiaZIngQuo9UBdz52rru7E0To1uRh?=
- =?us-ascii?Q?XBSRDG0UrRbF1K09sjS9gewyH727c6Dbg7lS2MQ5DvNXYnwkoNnM6ytzfMfU?=
- =?us-ascii?Q?3COes1bOJB2CEc35Dprd7A8XE9i8eFrTHTjJ96HhDOpMjYf/5mQMhcQFNXES?=
- =?us-ascii?Q?NGXYvA46Z06x8JQQFcrvd62ZiD9M5urjznnW2+jUKaSQRz/55YDj+Ier25sZ?=
- =?us-ascii?Q?BuuPRIEwB667KAsZufyAtafGXDQZcSVy7TwR67nDf5R3nGX+ohmjDvE6hc8j?=
- =?us-ascii?Q?sSFjBFQ6YI1NM5bqBI0AbG8644hbEWZQx18llsRae3t2Hw8y0t31UHlIaXWz?=
- =?us-ascii?Q?lySgSpcZyaVGJbFVX79yLTIAUk/mefEp1/PSkaSYiNThfD2rSS6hkWGXUvfH?=
- =?us-ascii?Q?uVnKoeq5Bz1maX88eEYjl+amggYzd2QOc4i1EM9ObH4p0q0ikfYwo0MB5C0T?=
- =?us-ascii?Q?B2m11AlkCaRjWinfgFL+rnZrXMRBCCwA3+GE0EFKx0O+p6pyprZRxOFU12/i?=
- =?us-ascii?Q?jJIb7Dpmok99378J+iRStOg8?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dfc0995f-998d-49d9-949a-08d9566b67b1
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 10:42:35.2365
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F0e6H7pmWn2ZNpmsCif4akAejTQjlU6BV79PbrC3Va03NZ1v+8R7VbkZJnI3gCe2gNuttyBHfsxtmbzypvQqjg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2829
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+EHjTw7W=5JqH+oZAqLPrf_6222eazDnSk24h4EuGE1VLwKYg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.07.2021 11:00, Juergen Gross wrote:
-> On 16.06.21 12:43, Juergen Gross wrote:
->> On 16.06.21 11:56, Jan Beulich wrote:
->>> On 16.06.2021 09:30, Juergen Gross wrote:
->>>> --- a/arch/x86/xen/p2m.c
->>>> +++ b/arch/x86/xen/p2m.c
->>>> @@ -95,8 +95,8 @@ unsigned long *xen_p2m_addr __read_mostly;
->>>> =C2=A0 EXPORT_SYMBOL_GPL(xen_p2m_addr);
->>>> =C2=A0 unsigned long xen_p2m_size __read_mostly;
->>>> =C2=A0 EXPORT_SYMBOL_GPL(xen_p2m_size);
->>>> -unsigned long xen_max_p2m_pfn __read_mostly;
->>>> -EXPORT_SYMBOL_GPL(xen_max_p2m_pfn);
->>>> +unsigned long xen_p2m_max_size __read_mostly;
->>>> +EXPORT_SYMBOL_GPL(xen_p2m_max_size);
->>>
->>> Instead of renaming the exported variable (which will break consumers
->>> anyway), how about dropping the apparently unneeded export at this
->>> occasion?
->>
->> Why do you think it isn't needed? It is being referenced via the inline
->> function __pfn_to_mfn() in arch/x86/include/asm/xen/page.h. And
->> __pfn_to_mfn() is used via lots of other inline functions and macros.
->>
->>> Further it looks to me as if xen_p2m_size and this variable
->>> were actually always kept in sync, so I'd like to put up the question
->>> of dropping one of the two.
->>
->> Hmm, should be possible, yes.
->=20
-> Looking into this it seems this is not possible.
->=20
-> xen_p2m_size always holds the number of p2m entries in the p2m table,
-> including invalid ones at the end. xen_p2m_pfn_limit however contains
-> the (rounded up) index after the last valid p2m entry.
+On Tuesday 03 Aug 2021 at 10:22:03 (+0200), Fuad Tabba wrote:
+> Hi Quentin,
+> 
+> > diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > index 0ccea58df7e0..1b67f562b6fc 100644
+> > --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > @@ -338,6 +338,95 @@ static int host_stage2_idmap(u64 addr)
+> >         return ret;
+> >  }
+> >
+> > +static inline bool check_prot(enum kvm_pgtable_prot prot,
+> > +                             enum kvm_pgtable_prot required,
+> > +                             enum kvm_pgtable_prot denied)
+> > +{
+> > +       return (prot & (required | denied)) == required;
+> > +}
+> > +
+> > +int __pkvm_host_share_hyp(u64 pfn)
+> > +{
+> > +       phys_addr_t addr = hyp_pfn_to_phys(pfn);
+> > +       enum kvm_pgtable_prot prot, cur;
+> > +       void *virt = __hyp_va(addr);
+> > +       enum pkvm_page_state state;
+> > +       kvm_pte_t pte;
+> > +       u32 level;
+> > +       int ret;
+> > +
+> > +       if (!range_is_memory(addr, addr + PAGE_SIZE))
+> > +               return -EINVAL;
+> > +
+> > +       hyp_spin_lock(&host_kvm.lock);
+> > +       hyp_spin_lock(&pkvm_pgd_lock);
+> > +
+> > +       ret = kvm_pgtable_get_leaf(&host_kvm.pgt, addr, &pte, &level);
+> > +       if (ret)
+> > +               goto unlock;
+> > +       if (!pte)
+> > +               goto map_shared;
+> 
+> Should this check whether kvm_pte_valid as well, is that guaranteed to
+> always be the case, or implicitly handled later?
 
-I'm afraid I can't follow:
+Yep, this is implicitly handled by kvm_pgtable_stage2_pte_prot() which
+is guaranteed not to return KVM_PGTABLE_PROT_RWX for an invalid mapping.
 
-xen_build_dynamic_phys_to_machine() sets xen_p2m_size and then syncs
-its value to what so far has been xen_max_p2m_pfn.
+> > +
+> > +       /*
+> > +        * Check attributes in the host stage-2 PTE. We need the page to be:
+> > +        *  - mapped RWX as we're sharing memory;
+> > +        *  - not borrowed, as that implies absence of ownership.
+> > +        * Otherwise, we can't let it got through
+> > +        */
+> > +       cur = kvm_pgtable_stage2_pte_prot(pte);
+> > +       prot = pkvm_mkstate(0, PKVM_PAGE_SHARED_BORROWED);
+> > +       if (!check_prot(cur, KVM_PGTABLE_PROT_RWX, prot)) {
+> > +               ret = -EPERM;
+> > +               goto unlock;
+> > +       }
+> > +
+> > +       state = pkvm_getstate(cur);
+> > +       if (state == PKVM_PAGE_OWNED)
+> > +               goto map_shared;
+> > +
+> > +       /*
+> > +        * Tolerate double-sharing the same page, but this requires
+> > +        * cross-checking the hypervisor stage-1.
+> > +        */
+> > +       if (state != PKVM_PAGE_SHARED_OWNED) {
+> > +               ret = -EPERM;
+> > +               goto unlock;
+> > +       }
+> > +
+> > +       ret = kvm_pgtable_get_leaf(&pkvm_pgtable, (u64)virt, &pte, &level);
+> > +       if (ret)
+> > +               goto unlock;
+> > +
+> > +       /*
+> > +        * If the page has been shared with the hypervisor, it must be
+> > +        * SHARED_BORROWED already.
+> > +        */
+> 
+> This comment confused me at first, but then I realized it's referring
+> to the page from the hyp's point of view. Could you add something to
+> the comment to that effect?
 
-xen_vmalloc_p2m_tree() sets xen_max_p2m_pfn and then syncs its value
-to xen_p2m_size.
+Sure thing.
 
-I therefore can't see how the two values would hold different values,
-except for the brief periods between updating one and then the other.
+> It might also make it easier to follow if the variables could be
+> annotated to specify whether cur, state, and prot are the host's or
+> hyps (and not reuse the same one for both).
+> 
+> > +       cur = kvm_pgtable_hyp_pte_prot(pte);
+> > +       prot = pkvm_mkstate(PAGE_HYP, PKVM_PAGE_SHARED_BORROWED);
+> > +       if (!check_prot(cur, prot, ~prot))
+> > +               ret = EPERM;
+> > +       goto unlock;
+> > +
+> > +map_shared:
+> > +       /*
+> > +        * If the page is not yet shared, adjust mappings in both page-tables
+> > +        * while both locks are held.
+> > +        */
+> > +       prot = pkvm_mkstate(PAGE_HYP, PKVM_PAGE_SHARED_BORROWED);
+> > +       ret = pkvm_create_mappings_locked(virt, virt + PAGE_SIZE, prot);
+> > +       BUG_ON(ret);
+> > +
+> > +       prot = pkvm_mkstate(KVM_PGTABLE_PROT_RWX, PKVM_PAGE_SHARED_OWNED);
+> > +       ret = host_stage2_idmap_locked(addr, addr + PAGE_SIZE, prot);
+> > +       BUG_ON(ret);
+> > +
+> > +unlock:
+> > +       hyp_spin_unlock(&pkvm_pgd_lock);
+> > +       hyp_spin_unlock(&host_kvm.lock);
+> > +
+> > +       return ret;
+> > +}
+> > +
+> >  void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt)
+> >  {
+> >         struct kvm_vcpu_fault_info fault;
+> > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> > index 0625bf2353c2..cbab146cda6a 100644
+> > --- a/arch/arm64/kvm/mmu.c
+> > +++ b/arch/arm64/kvm/mmu.c
+> > @@ -259,10 +259,8 @@ static int __create_hyp_mappings(unsigned long start, unsigned long size,
+> >  {
+> >         int err;
+> >
+> > -       if (!kvm_host_owns_hyp_mappings()) {
+> > -               return kvm_call_hyp_nvhe(__pkvm_create_mappings,
+> > -                                        start, size, phys, prot);
+> > -       }
+> > +       if (WARN_ON(!kvm_host_owns_hyp_mappings()))
+> > +               return -EINVAL;
+> >
+> >         mutex_lock(&kvm_hyp_pgd_mutex);
+> >         err = kvm_pgtable_hyp_map(hyp_pgtable, start, size, phys, prot);
+> > @@ -282,6 +280,21 @@ static phys_addr_t kvm_kaddr_to_phys(void *kaddr)
+> >         }
+> >  }
+> >
+> > +static int pkvm_share_hyp(phys_addr_t start, phys_addr_t end)
+> > +{
+> > +       phys_addr_t addr;
+> > +       int ret;
+> > +
+> > +       for (addr = ALIGN_DOWN(start, PAGE_SIZE); addr < end; addr += PAGE_SIZE) {
+> > +               ret = kvm_call_hyp_nvhe(__pkvm_host_share_hyp,
+> > +                                       __phys_to_pfn(addr));
+> 
+> I guess we don't expect this to happen often, but I wonder if it would
+> be better to have the looping in the hyp call rather than here, to
+> reduce the number of hyp calls when sharing.
 
-Jan
+Yes, I was wondering the same thing, but ended up doing the looping here
+to avoid spending long periods of time in a non-preemptible state at
+EL2. Probably doesn't make a big difference for now, but it might if we
+ever need to share large memory regions.
 
+Cheers,
+Quentin
+
+> 
+> Thanks,
+> /fuad
+> 
+> > +               if (ret)
+> > +                       return ret;
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> >  /**
+> >   * create_hyp_mappings - duplicate a kernel virtual address range in Hyp mode
+> >   * @from:      The virtual kernel start address of the range
+> > @@ -302,6 +315,13 @@ int create_hyp_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
+> >         if (is_kernel_in_hyp_mode())
+> >                 return 0;
+> >
+> > +       if (!kvm_host_owns_hyp_mappings()) {
+> > +               if (WARN_ON(prot != PAGE_HYP))
+> > +                       return -EPERM;
+> > +               return pkvm_share_hyp(kvm_kaddr_to_phys(from),
+> > +                                     kvm_kaddr_to_phys(to));
+> > +       }
+> > +
+> >         start = start & PAGE_MASK;
+> >         end = PAGE_ALIGN(end);
+> >
+> > --
+> > 2.32.0.432.gabb21c7263-goog
+> >
