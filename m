@@ -2,168 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A053DE818
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395293DE81F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234435AbhHCIMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:12:38 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:36927 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234248AbhHCIMf (ORCPT
+        id S234442AbhHCIO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234238AbhHCIOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:12:35 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id ApXCmT3NXXTlcApXDmkLwO; Tue, 03 Aug 2021 10:12:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1627978343; bh=nJAT4/TY9kAvr0jgZL4sTyPUkvxuezWK4PADS7XhJmE=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=s4P2peHCmMtkOB6hlRicbMb/PhZ5RiRVCJADXDKDXkWXsHiokl8y5MshvaVg7S4Et
-         AmPFV7DewYB4gsPWPAt9EYIKv92gvslx5MSV9lCIGOAbfIAmL/11ctTvLzRRS/oHa7
-         aTsYUvYbiH13jSMHILR0Y6BKXLG7hh7mmZ74eLt0UGag3/KBcW3ew6H8fUgesWuvqh
-         7/pdo9B8c9UIMsFjoHooBH8+Uo8OqccnvnETbDKNKINby5xxABvqGHAgc99U9hE7P8
-         8+FvbO6qf7EkAVXYp7NuWyQtxCUsl8KkyYrYL8QZHSMNWIWL5qhIHXQSH1C9iPD8h7
-         3QauOTpZiPCaw==
-Subject: Re: [PATCHv4 5/8] videobuf2: add V4L2_MEMORY_FLAG_NON_COHERENT flag
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210727070517.443167-1-senozhatsky@chromium.org>
- <20210727070517.443167-6-senozhatsky@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <45dbd3f1-778b-eb6c-94b3-51e8a92429b6@xs4all.nl>
-Date:   Tue, 3 Aug 2021 10:12:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 3 Aug 2021 04:14:55 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EEDC06175F;
+        Tue,  3 Aug 2021 01:14:44 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so3696424pjd.0;
+        Tue, 03 Aug 2021 01:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=/9SojXjYKulRNr83vm1FtyvmUfogZ+luvbdjXo2aXGE=;
+        b=NccFQpSsZHFQ8ok/Yr5CXCW9v0dzQ1Zzb6LDno1qVe5rjruvHUf6+ZczBQwwEtcAx7
+         GUsIBfM8aIX3bpsC7LNuNnrE1xY2sD/4+vrlEd+KRyr3PgoPn5jl2TtxfToASawXpTyh
+         qfF4CnedozBoBfR3IQFAnwBw9Mh8WzG0HpQjkFmM4zkx4jpKbEMNS9TyJBQlBlLsrYrG
+         QhLvKmRHc3zpD8oz3SuLJBiKpDi1K/3zWlusjSxIbLkrnA2tVt1xRXKtm065Ztt7nKMd
+         ehTN2l44m7y2WKz5Vjw73a8YOzyrCo1TkTLPi6b9RFR2Szpn4xsRQSIHs46Urmx1Vc21
+         x6Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=/9SojXjYKulRNr83vm1FtyvmUfogZ+luvbdjXo2aXGE=;
+        b=fvXMzix2Vr9SMiMmOOMGoTXYN36sDPEwTjGbcHQqoS2OxF8jXCgkroYOM3TIR+cxFD
+         d7iLhKmLVp2JCqRysuS3GGa9pwKi0b/pz5nm+rA6M9BHnfcHhsV+mXQHEzLRGg4l+NxF
+         Jk88I4lJDxzU6xLk9hXH6HYLPpeQrDronvLORx4kPbcRvkS+q5HH/d0S4R/0R7phoQpo
+         byqaX5fJHFHjZK3TbGBCWSsaAsXoZAf3ioDpb+eaLMshBaeM+a1f4eg25E94PSfnezM2
+         uV7sb/slUgrkKsu+ICKUrfikTPKic87Zl8SxPw9uASKLD0AsHLJg5Ck1wyQlxo7LqlLM
+         30ag==
+X-Gm-Message-State: AOAM5315Gh3cu3xknGTE1bD3yEVKAaKytej/GlGcjweiMlRyisUSKvAG
+        gr8cdHaUgDp4mJiikuWxXZg=
+X-Google-Smtp-Source: ABdhPJwXGuLapacqlKKksk7rDnddiutOIOrRkxXIEA687wK/6T2sd9dyDdrn8LcuOcf1LyCNcFdWfw==
+X-Received: by 2002:a17:902:8648:b029:129:dda4:ddc2 with SMTP id y8-20020a1709028648b0290129dda4ddc2mr17376567plt.4.1627978483528;
+        Tue, 03 Aug 2021 01:14:43 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id i13sm9165359pfq.72.2021.08.03.01.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 01:14:42 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH net 1/1] net: dsa: qca: ar9331: make proper initial port defaults
+Date:   Tue,  3 Aug 2021 16:14:35 +0800
+Message-Id: <20210803081435.2910620-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210803065424.9692-1-o.rempel@pengutronix.de>
+References: <20210803065424.9692-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210727070517.443167-6-senozhatsky@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfL9glTvDB4IJVNjXR/BbbplpliCXT7ZRiUm3ex+DKhuzQvOevne25CJdJ0yxy2idMFon6V9BnducT0FYnzUwcn+EELFJb5A+8IsC0eRllSqYpmVLpHuG
- yWWpm2YRkcTy0eBjb0qV+YTJn8iJ/t838Km1ZJ3TNTmztldLdfyEBNLewZoTdhQbgg9R5x1O7IRhEQzhs7SF2KJ13tPEbpcv/O7XO50FthJrM5usAtE6YYGE
- yESOIXrUw+XvJEtlF4+1N0nimaCcPgpneeKyd3r1iX+L/PAmalu3mafiMlFOVtYqgQc7nwi3MOM9DWYg2IMVsYplQY6nQdRV+KPkgrGF7dhp1mocLOZokEat
- iG8OqoTjjvhojmhJz39iBeEJiaBCGFBa1zXdPauSZBiMun0t1cRLd+rdjlLQW8Yf11jiTzV9zNvw4dKQUGc8TvRL4fZXL2P5K02IxU7vUAnm0hYww0IZYO4P
- CTpfRsevLMXEreFB8HQLjdSVWZOFaKYGxbsmTcgrO6owPAgm74DNATDAUVX4vN6gmjg12JWSJ+sDNyip
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2021 09:05, Sergey Senozhatsky wrote:
-> By setting or clearing V4L2_MEMORY_FLAG_NON_COHERENT flag
+On Tue, Aug 03, 2021 at 08:54:24AM +0200, Oleksij Rempel wrote:
+> +	if (dsa_is_cpu_port(ds, port)) {
+> +		/* CPU port should be allowed to communicate with all user
+> +		 * ports.
+> +		 */
+> +		port_mask = dsa_user_ports(ds);
+> +		/* Enable Atheros header on CPU port. This will allow us
+> +		 * communicate with each port separately
+> +		 */
+> +		port_ctrl |= AR9331_SW_PORT_CTRL_HEAD_EN;
+> +	} else if (dsa_is_user_port(ds, port)) {
+> +		/* User ports should communicate only with the CPU port.
+> +		 */
+> +		port_mask = BIT(dsa_to_port(ds, port)->cpu_dp->index);
+> +		port_ctrl |= AR9331_SW_PORT_CTRL_LEARN_EN;
 
-clearing -> clearing the
+All user ports should start with address learning disabled.
+To toggle it, implement .port_pre_bridge_flags and .port_bridge_flags.
 
-> user-space should be able to hint vb2 that either a non-coherent
-
-either a -> either
-
-> (if supported) or coherent memory should be used for the buffer
-> allocation.
-
-Regards,
-
-	Hans
-
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  .../userspace-api/media/v4l/buffer.rst        | 40 ++++++++++++++++++-
->  .../media/v4l/vidioc-reqbufs.rst              |  5 ++-
->  include/uapi/linux/videodev2.h                |  2 +
->  3 files changed, 43 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
-> index e991ba73d873..4638ec64db00 100644
-> --- a/Documentation/userspace-api/media/v4l/buffer.rst
-> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
-> @@ -676,8 +676,6 @@ Buffer Flags
->  
->      \normalsize
->  
-> -.. _memory-flags:
-> -
->  enum v4l2_memory
->  ================
->  
-> @@ -701,6 +699,44 @@ enum v4l2_memory
->        - 4
->        - The buffer is used for :ref:`DMA shared buffer <dmabuf>` I/O.
->  
-> +.. _memory-flags:
+> +	} else {
+> +		/* Other ports do not need to communicate at all */
+> +		port_mask = 0;
+> +	}
 > +
-> +Memory Consistency Flags
-> +------------------------
-> +
-> +.. raw:: latex
-> +
-> +    \small
-> +
-> +.. tabularcolumns:: |p{7.0cm}|p{2.1cm}|p{8.4cm}|
-> +
-> +.. cssclass:: longtable
-> +
-> +.. flat-table::
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       3 1 4
-> +
-> +    * .. _`V4L2-MEMORY-FLAG-NON-COHERENT`:
-> +
-> +      - ``V4L2_MEMORY_FLAG_NON_COHERENT``
-> +      - 0x00000001
-> +      - A buffer is allocated either in coherent (it will be automatically
-> +	coherent between the CPU and the bus) or non-coherent memory. The
-> +	latter can provide performance gains, for instance the CPU cache
-> +	sync/flush operations can be avoided if the buffer is accessed by the
-> +	corresponding device only and the CPU does not read/write to/from that
-> +	buffer. However, this requires extra care from the driver -- it must
-> +	guarantee memory consistency by issuing a cache flush/sync when
-> +	consistency is needed. If this flag is set V4L2 will attempt to
-> +	allocate the buffer in non-coherent memory. The flag takes effect
-> +	only if the buffer is used for :ref:`memory mapping <mmap>` I/O and the
-> +	queue reports the :ref:`V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS
-> +	<V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS>` capability.
-> +
-> +.. raw:: latex
-> +
-> +    \normalsize
->  
->  Timecodes
->  =========
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> index 50ea72043bb0..e59306aba2b0 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> @@ -158,8 +158,9 @@ aborting or finishing any DMA in progress, an implicit
->        - This capability is set by the driver to indicate that the queue supports
->          cache and memory management hints. However, it's only valid when the
->          queue is used for :ref:`memory mapping <mmap>` streaming I/O. See
-> -        :ref:`V4L2_BUF_FLAG_NO_CACHE_INVALIDATE <V4L2-BUF-FLAG-NO-CACHE-INVALIDATE>` and
-> -        :ref:`V4L2_BUF_FLAG_NO_CACHE_CLEAN <V4L2-BUF-FLAG-NO-CACHE-CLEAN>`.
-> +        :ref:`V4L2_BUF_FLAG_NO_CACHE_INVALIDATE <V4L2-BUF-FLAG-NO-CACHE-INVALIDATE>`,
-> +        :ref:`V4L2_BUF_FLAG_NO_CACHE_CLEAN <V4L2-BUF-FLAG-NO-CACHE-CLEAN>` and
-> +        :ref:`V4L2_MEMORY_FLAG_NON_COHERENT <V4L2-MEMORY-FLAG-NON-COHERENT>`.
->  
->  .. raw:: latex
->  
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index 9260791b8438..9d11e1d9c934 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -956,6 +956,8 @@ struct v4l2_requestbuffers {
->  	__u32			reserved[1];
->  };
->  
-> +#define V4L2_MEMORY_FLAG_NON_COHERENT			(1 << 0)
-> +
->  /* capabilities for struct v4l2_requestbuffers and v4l2_create_buffers */
->  #define V4L2_BUF_CAP_SUPPORTS_MMAP			(1 << 0)
->  #define V4L2_BUF_CAP_SUPPORTS_USERPTR			(1 << 1)
-> 
-
