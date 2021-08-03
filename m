@@ -2,153 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42B73DEE5E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F219A3DEE65
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236107AbhHCMzq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Aug 2021 08:55:46 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6646 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236094AbhHCMzl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 08:55:41 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4GfFB20Fmzz18Nbw;
-        Tue,  3 Aug 2021 20:51:38 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 3 Aug 2021 20:55:27 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Tue, 3 Aug 2021 13:55:25 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Will Deacon <will@kernel.org>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>,
-        "qperret@google.com" <qperret@google.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU schedule
- out
-Thread-Topic: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU schedule
- out
-Thread-Index: AQHXhGar1JrryboKrU+7h+yU/0K2/6thny2AgAAaZCA=
-Date:   Tue, 3 Aug 2021 12:55:25 +0000
-Message-ID: <ee2863107d614ef8a36006b5aa912eca@huawei.com>
-References: <20210729104009.382-1-shameerali.kolothum.thodi@huawei.com>
- <20210729104009.382-5-shameerali.kolothum.thodi@huawei.com>
- <20210803114034.GB30853@willie-the-truck>
-In-Reply-To: <20210803114034.GB30853@willie-the-truck>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.86.18]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S236004AbhHCM6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 08:58:04 -0400
+Received: from smtpbg587.qq.com ([113.96.223.105]:38622 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235895AbhHCM6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 08:58:02 -0400
+X-QQ-mid: bizesmtp37t1627995332t0z35aya
+Received: from localhost.localdomain (unknown [125.69.40.136])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Tue, 03 Aug 2021 20:55:30 +0800 (CST)
+X-QQ-SSF: 01000000002000B0C000B00A0000000
+X-QQ-FEAT: FsG0r2mBeltZwXHsnSFyQIVXmyMoeC5BD2c5iGCpiLDw2FB21T+BluHr2+WdJ
+        oph6RdKQTsSFUCzmZUnpNtkvp7eRJJ7u4igpOBS3y1HdKXXsaVO7JQf5TGooeEoSctgHhA8
+        OXl9EoQ04EBtRvwL3HqP+UCbpDMWLeVkuWP3fiXqES3NnB44Hyo5mQ1OoJemMhdsRwVPFxE
+        Qn3LIQsc1dHzAB5VHQ7o+h4EE1wdh7/PGW+rcJmy8JOO3AagTdn8xhSW26L620rIClOA0LB
+        JmUxJ0S/Cx2RsqipiQbq1yD67gbfWKBZTBJy0J4LL1wFz+stATLDWWpOxFfU/SGyz+ZJYmL
+        k/6kLXzErmCrW71M+Y=
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     herbert@gondor.apana.org.au
+Cc:     clabbe.montjoie@gmail.com, davem@davemloft.net, mripard@kernel.org,
+        wens@csie.org, jernej.skrabec@gmail.com, wangborong@cdjrlc.com,
+        mchehab+huawei@kernel.org, corbet@lwn.net, baijiaju1990@gmail.com,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: sun8i-ce - use kfree_sensitive to clear and free sensitive data
+Date:   Tue,  3 Aug 2021 20:55:25 +0800
+Message-Id: <20210803125525.72603-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The kfree_sensitive is a kernel API to clear sensitive information
+that should not be leaked to other future users of the same memory
+objects and free the memory. Its function is the same as the
+combination  of memzero_explicit and kfree. Thus, we can replace the
+combination APIs with the single kfree_sensitive API.
 
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+---
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 9 +++------
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c | 3 +--
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
-> -----Original Message-----
-> From: Will Deacon [mailto:will@kernel.org]
-> Sent: 03 August 2021 12:41
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> Cc: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
-> linux-kernel@vger.kernel.org; maz@kernel.org; catalin.marinas@arm.com;
-> james.morse@arm.com; julien.thierry.kdev@gmail.com;
-> suzuki.poulose@arm.com; jean-philippe@linaro.org;
-> Alexandru.Elisei@arm.com; qperret@google.com; Linuxarm
-> <linuxarm@huawei.com>
-> Subject: Re: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU
-> schedule out
-> 
-> On Thu, Jul 29, 2021 at 11:40:09AM +0100, Shameer Kolothum wrote:
-> > Like ASID allocator, we copy the active_vmids into the
-> > reserved_vmids on a rollover. But it's unlikely that
-> > every CPU will have a vCPU as current task and we may
-> > end up unnecessarily reserving the VMID space.
-> >
-> > Hence, clear active_vmids when scheduling out a vCPU.
-> >
-> > Suggested-by: Will Deacon <will@kernel.org>
-> > Signed-off-by: Shameer Kolothum
-> <shameerali.kolothum.thodi@huawei.com>
-> > ---
-> >  arch/arm64/include/asm/kvm_host.h | 1 +
-> >  arch/arm64/kvm/arm.c              | 1 +
-> >  arch/arm64/kvm/vmid.c             | 6 ++++++
-> >  3 files changed, 8 insertions(+)
-> >
-> > diff --git a/arch/arm64/include/asm/kvm_host.h
-> b/arch/arm64/include/asm/kvm_host.h
-> > index bb993bce1363..d93141cb8d16 100644
-> > --- a/arch/arm64/include/asm/kvm_host.h
-> > +++ b/arch/arm64/include/asm/kvm_host.h
-> > @@ -687,6 +687,7 @@ extern unsigned int kvm_arm_vmid_bits;
-> >  int kvm_arm_vmid_alloc_init(void);
-> >  void kvm_arm_vmid_alloc_free(void);
-> >  void kvm_arm_vmid_update(struct kvm_vmid *kvm_vmid);
-> > +void kvm_arm_vmid_clear_active(void);
-> >
-> >  static inline void kvm_arm_pvtime_vcpu_init(struct kvm_vcpu_arch
-> *vcpu_arch)
-> >  {
-> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> > index 077e55a511a9..b134a1b89c84 100644
-> > --- a/arch/arm64/kvm/arm.c
-> > +++ b/arch/arm64/kvm/arm.c
-> > @@ -435,6 +435,7 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
-> >  	kvm_timer_vcpu_put(vcpu);
-> >  	kvm_vgic_put(vcpu);
-> >  	kvm_vcpu_pmu_restore_host(vcpu);
-> > +	kvm_arm_vmid_clear_active();
-> >
-> >  	vcpu->cpu = -1;
-> >  }
-> > diff --git a/arch/arm64/kvm/vmid.c b/arch/arm64/kvm/vmid.c
-> > index 5584e84aed95..5fd51f5445c1 100644
-> > --- a/arch/arm64/kvm/vmid.c
-> > +++ b/arch/arm64/kvm/vmid.c
-> > @@ -116,6 +116,12 @@ static u64 new_vmid(struct kvm_vmid
-> *kvm_vmid)
-> >  	return idx2vmid(vmid) | generation;
-> >  }
-> >
-> > +/* Call with preemption disabled */
-> > +void kvm_arm_vmid_clear_active(void)
-> > +{
-> > +	atomic64_set(this_cpu_ptr(&active_vmids), 0);
-> > +}
-> 
-> I think this is very broken, as it will force everybody to take the
-> slow-path when they see an active_vmid of 0.
-
-Yes. I have seen that happening in my test setup.
-
-> It also doesn't solve the issue I mentioned before, as an active_vmid of 0
-> means that the reserved vmid is preserved.
-> 
-> Needs more thought...
-
-How about we clear all the active_vmids in kvm_arch_free_vm() if it
-matches the kvm_vmid->id ? But we may have to hold the lock 
-there.
-
-Thanks,
-Shameer
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+index cd1baee424a1..b3a9bbfb8831 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+@@ -26,8 +26,7 @@ void sun8i_ce_prng_exit(struct crypto_tfm *tfm)
+ {
+ 	struct sun8i_ce_rng_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
  
+-	memzero_explicit(ctx->seed, ctx->slen);
+-	kfree(ctx->seed);
++	kfree_sensitive(ctx->seed);
+ 	ctx->seed = NULL;
+ 	ctx->slen = 0;
+ }
+@@ -38,8 +37,7 @@ int sun8i_ce_prng_seed(struct crypto_rng *tfm, const u8 *seed,
+ 	struct sun8i_ce_rng_tfm_ctx *ctx = crypto_rng_ctx(tfm);
+ 
+ 	if (ctx->seed && ctx->slen != slen) {
+-		memzero_explicit(ctx->seed, ctx->slen);
+-		kfree(ctx->seed);
++		kfree_sensitive(ctx->seed);
+ 		ctx->slen = 0;
+ 		ctx->seed = NULL;
+ 	}
+@@ -157,9 +155,8 @@ int sun8i_ce_prng_generate(struct crypto_rng *tfm, const u8 *src,
+ 		memcpy(dst, d, dlen);
+ 		memcpy(ctx->seed, d + dlen, ctx->slen);
+ 	}
+-	memzero_explicit(d, todo);
+ err_iv:
+-	kfree(d);
++	kfree_sensitive(d);
+ err_mem:
+ 	return err;
+ }
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
+index 5b7af4498bd5..19cd2e52f89d 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
+@@ -95,9 +95,8 @@ static int sun8i_ce_trng_read(struct hwrng *rng, void *data, size_t max, bool wa
+ 		memcpy(data, d, max);
+ 		err = max;
+ 	}
+-	memzero_explicit(d, todo);
+ err_dst:
+-	kfree(d);
++	kfree_sensitive(d);
+ 	return err;
+ }
+ 
+-- 
+2.32.0
 
