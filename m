@@ -2,83 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B6D3DF892
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8FD3DF897
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 01:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234363AbhHCXiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 19:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234262AbhHCXiG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 19:38:06 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8136C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 16:37:54 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id m9so510537ljp.7
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 16:37:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wgcU07P8d98LR001HIP6m4+/OqdYkIdGGA3CcX8rXNU=;
-        b=rKdwokq955nH4grtwUQdwUcWLmx/qiIuS8oPGDwfyMTgvVntboPQ/ZU+cvIInSMLLy
-         xNpFAqRH+piza3H5pFzlNsVQcFFIASiVyreCmHIRJQ1/wpA56oTBmDhE9RoOwu/c2AzU
-         CrXPeTYO1O9B4fLMUAlLYXhiUvKHzCyhp34kxYXQ09JZzXpiY5uV91NqOF53LsBj7DTa
-         UcpU0SQuygBKw/0tAJx5qvvEIIQ0d2L6UXYPhBiHY94ifzhnjmDbqJrr8sBDX8V/uGyX
-         nDl3rovtNqPQFEJ5fvInCcYfERei5QdO3vtm57afEdDiCtYFPqcPaZcmtEEazQ/J71DK
-         aOnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wgcU07P8d98LR001HIP6m4+/OqdYkIdGGA3CcX8rXNU=;
-        b=ApVzd1Ap7HdzNS0G6cr59bY8hysDoLrO6+o1A/e8wS/ywvbJSVd0joY5dQhq5VaB5Z
-         vG3U1xj9JCuRpBtIShNnC5CFg5txHe1hGAdpaFOIIAcCH7/7fAvz9fWOcCZsUKXp2o/2
-         Q+alx2TIYWCBWGv1a4YMajA0vh9/2rngc1M/vU247cUv3O5F9IQ1n42xhfnINZv9c5bP
-         g+yyWaaFgHp0RuJzkuBJBH9bZZb4KDHaOWThJ6buxU+M/D2sed1QotfEmiVQoDV1iFb8
-         AksuMSSKx0hWuyEI4bJ+l+Hu6WkviToQMdufyMwzZLY4RxsTewc7eCm7YUvtPQ0xJJMD
-         zJLw==
-X-Gm-Message-State: AOAM532lINuXmojUpq6SuFt0aXxYh2QFdvdpPTiBDd/hHKuYMbhzYqC/
-        n8YvzYfNE/GRIAIfxwlol33Rp2ZfQx7TxCAaLzmBCw==
-X-Google-Smtp-Source: ABdhPJwzckOkwBUeYQMWYEIsex+AHjlvavF2W82n9ctLhzOVO7QJq4N3oQEEp6wdBNNH0DVeYDGzgCxQx5YZqjLZRE4=
-X-Received: by 2002:a2e:b615:: with SMTP id r21mr4207328ljn.368.1628033873263;
- Tue, 03 Aug 2021 16:37:53 -0700 (PDT)
+        id S234510AbhHCXlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 19:41:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234469AbhHCXls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 19:41:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F38CE60F9C;
+        Tue,  3 Aug 2021 23:41:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628034097;
+        bh=60vc5YBOFHnJ/0fUzt8dSgNUf9l01ixqvdltGqLDIWw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=IFDRNNxc9cPfp+H4DVLeIsysfdk0gqroJnqHN7YNbL1Zq0lE2KsTUuziF0E4BaPSZ
+         XirCvFViPaUaVZEx1iOCPpwSa3hwh6yeIzhA+MEqsX/yhWHHmfnfEqTTiNqSL2Pqf/
+         Sak0PmwP3n8x7c88lRwM3d7ZYqPul0hmvSzbRIjZeK94z8ELNdslMtckFfjD0/n09w
+         HGJgwOwuEgxwSusKHnMIQ8BWhqCegrT0/eBQtqyvBsCo/AEipkTFLqOLZHralMCUoY
+         CIyHKrfheVp9B43hxMRYqw945WtpJdcAKuRr0C2GIEQ4iVTvHRwJ3tzLqXlsSFCrhN
+         OAFeUGiO6Bnsg==
+Date:   Tue, 3 Aug 2021 18:41:35 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Wasim Khan <wasim.khan@oss.nxp.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, V.Sethi@nxp.com,
+        Wasim Khan <wasim.khan@nxp.com>
+Subject: Re: [PATCH v3] PCI: Add ACS quirk for NXP LX2XX0 and LX2XX2 platforms
+Message-ID: <20210803234135.GA1587049@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210803082034.2085618-1-arnd@kernel.org>
-In-Reply-To: <20210803082034.2085618-1-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 4 Aug 2021 01:37:42 +0200
-Message-ID: <CACRpkdZOzCPKMiCaB3McYAmXZ1oC=L6jKER9a7g2oM6EHE55Fg@mail.gmail.com>
-Subject: Re: [PATCH] soc: ixp4xx: fix printing resources
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Krzysztof Halasa <khalasa@piap.pl>, Arnd Bergmann <arnd@arndb.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803180021.3252886-1-wasim.khan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 10:20 AM Arnd Bergmann <arnd@kernel.org> wrote:
+On Tue, Aug 03, 2021 at 08:00:21PM +0200, Wasim Khan wrote:
+> From: Wasim Khan <wasim.khan@nxp.com>
+> 
+> Root Ports in NXP LX2XX0 and LX2XX2 where each Root Port
+> is a Root Complex with unique segment numbers do provide
+> isolation features to disable peer transactions and
+> validate bus numbers in requests, but do not provide an
+> actual PCIe ACS capability.
+> 
+> Add ACS quirk for NXP LX2XX0 A/C/E/N and LX2XX2 A/C/E/N
+> platforms
+> 
+> LX2XX0A : without security features + CAN-FD
+> 	  LX2160A (0x8d81) - 16 cores
+> 	  LX2120A (0x8da1) - 12 cores
+> 	  LX2080A (0x8d83) - 8  cores
+> 
+> LX2XX0C : security features + CAN-FD
+> 	  LX2160C (0x8d80) - 16 cores
+> 	  LX2120C (0x8da0) - 12 cores
+> 	  LX2080C (0x8d82) - 8  cores
+> 
+> LX2XX0E : security features + CAN
+> 	  LX2160E (0x8d90) - 16 cores
+> 	  LX2120E (0x8db0) - 12 cores
+> 	  LX2080E (0x8d92) - 8  cores
+> 
+> LX2XX0N : without security features + CAN
+> 	  LX2160N (0x8d91) - 16 cores
+> 	  LX2120N (0x8db1) - 12 cores
+> 	  LX2080N (0x8d93) - 8  cores
+> 
+> LX2XX2A : without security features + CAN-FD
+> 	  LX2162A (0x8d89) - 16 cores
+> 	  LX2122A (0x8da9) - 12 cores
+> 	  LX2082A (0x8d8b) - 8  cores
+> 
+> LX2XX2C : security features + CAN-FD
+> 	  LX2162C (0x8d88) - 16 cores
+> 	  LX2122C (0x8da8) - 12 cores
+> 	  LX2082C (0x8d8a) - 8  cores
+> 
+> LX2XX2E : security features + CAN
+> 	  LX2162E (0x8d98) - 16 cores
+> 	  LX2122E (0x8db8) - 12 cores
+> 	  LX2082E (0x8d9a) - 8  cores
+> 
+> LX2XX2N : without security features + CAN
+> 	  LX2162N (0x8d99) - 16 cores
+> 	  LX2122N (0x8db9) - 12 cores
+> 	  LX2082N (0x8d9b) - 8  cores
+> 
+> Signed-off-by: Wasim Khan <wasim.khan@nxp.com>
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> When compile-testing with 64-bit resource_size_t, gcc reports an invalid
-> printk format string:
->
-> In file included from include/linux/dma-mapping.h:7,
->                  from drivers/soc/ixp4xx/ixp4xx-npe.c:15:
-> drivers/soc/ixp4xx/ixp4xx-npe.c: In function 'ixp4xx_npe_probe':
-> drivers/soc/ixp4xx/ixp4xx-npe.c:694:18: error: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'resource_size_t' {aka 'long long unsigned int'} [-Werror=format=]
->     dev_info(dev, "NPE%d at 0x%08x-0x%08x not available\n",
->
-> Use the special %pR format string to print the resources.
->
-> Fixes: 0b458d7b10f8 ("soc: ixp4xx: npe: Pass addresses as resources")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+If I understand correctly, this is really an expansion of your
+previous patch [1], so I just squashed them together into a single
+patch and applied it to pci/virtualization for v5.15.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+[1] https://lore.kernel.org/r/20210729121747.1823086-1-wasim.khan@oss.nxp.com
 
-Yours,
-Linus Walleij
+> ---
+> Changes in v3:
+> - Updated PCIe ID for LX2XX0 and LX2XX2 A/C/E/N
+>   platforms and arranged then in order
+> - Updated commit description and included
+>   device to ID mapping
+>  
+>  drivers/pci/quirks.c | 31 ++++++++++++++++++++++++++++++-
+>  1 file changed, 30 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 24343a76c034..d445d2944592 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -4784,9 +4784,38 @@ static const struct pci_dev_acs_enabled {
+>  	{ PCI_VENDOR_ID_ZHAOXIN, 0x3104, pci_quirk_mf_endpoint_acs },
+>  	{ PCI_VENDOR_ID_ZHAOXIN, 0x9083, pci_quirk_mf_endpoint_acs },
+>  	/* NXP root ports */
+> +	/* LX2XX0A */
+> +	{ PCI_VENDOR_ID_NXP, 0x8d81, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8da1, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8d83, pci_quirk_nxp_rp_acs },
+> +	/* LX2XX0C */
+>  	{ PCI_VENDOR_ID_NXP, 0x8d80, pci_quirk_nxp_rp_acs },
+> -	{ PCI_VENDOR_ID_NXP, 0x8d88, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8da0, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8d82, pci_quirk_nxp_rp_acs },
+> +	/* LX2XX0E */
+> +	{ PCI_VENDOR_ID_NXP, 0x8d90, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8db0, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8d92, pci_quirk_nxp_rp_acs },
+> +	/* LX2XX0N */
+> +	{ PCI_VENDOR_ID_NXP, 0x8d91, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8db1, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8d93, pci_quirk_nxp_rp_acs },
+> +	/* LX2XX2A */
+>  	{ PCI_VENDOR_ID_NXP, 0x8d89, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8da9, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8d8b, pci_quirk_nxp_rp_acs },
+> +	/* LX2XX2C */
+> +	{ PCI_VENDOR_ID_NXP, 0x8d88, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8da8, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8d8a, pci_quirk_nxp_rp_acs },
+> +	/* LX2XX2E */
+> +	{ PCI_VENDOR_ID_NXP, 0x8d98, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8db8, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8d9a, pci_quirk_nxp_rp_acs },
+> +	/* LX2XX2N */
+> +	{ PCI_VENDOR_ID_NXP, 0x8d99, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8db9, pci_quirk_nxp_rp_acs },
+> +	{ PCI_VENDOR_ID_NXP, 0x8d9b, pci_quirk_nxp_rp_acs },
+>  	/* Zhaoxin Root/Downstream Ports */
+>  	{ PCI_VENDOR_ID_ZHAOXIN, PCI_ANY_ID, pci_quirk_zhaoxin_pcie_ports_acs },
+>  	{ 0 }
+> -- 
+> 2.25.1
+> 
