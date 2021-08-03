@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420793DF206
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53C63DF20A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhHCQBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:01:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230313AbhHCQBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:01:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6B9460F46;
-        Tue,  3 Aug 2021 16:01:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628006499;
-        bh=iId+jcd+Lb5NqerVcNUHfB7V9rsOw1s5kqlWUWaOjBc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=isRNP0G8hK6pSZrXnFgDk0Oji763HeVqdnOlO4f69eQLoM9sgjU24jJq+tf69mWPI
-         qw9OTeJ2ZdtHJ0W7AL7mEP8c7b5UHvCBqcYHTixCMMthb7We3aRhhdtxNRAxDF7bn8
-         UQFjHA+x77v2Ao88LFRmhRDPqMSEL40ns2eFXYHxwhfVZVQAMAZfJo/rBpGx8dWado
-         yanY44MK5+VZuvlgNre+1UWTXM1/Qnt7Zbw54kXVRAYovy5gkMy9+mqD5DT0KW50UJ
-         U+Sa3yld+HeZ4YshTXHgvAJSXNqEDZ7QRS4FzA/aqGS84aULe6Ecyjw+I3J+KlnxfC
-         XqXpGKnGryO2w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8E5425C04D4; Tue,  3 Aug 2021 09:01:39 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 09:01:39 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
-        boqun.feng@gmail.com, bp@alien8.de, catalin.marinas@arm.com,
-        dvyukov@google.com, elver@google.com, ink@jurassic.park.msu.ru,
-        jonas@southpole.se, juri.lelli@redhat.com, linux@armlinux.org.uk,
-        luto@kernel.org, mattst88@gmail.com, mingo@redhat.com,
-        monstr@monstr.eu, mpe@ellerman.id.au, paulus@samba.org,
-        peterz@infradead.org, rth@twiddle.net, shorne@gmail.com,
-        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
-        vincent.guittot@linaro.org, will@kernel.org
-Subject: Re: [PATCH v4 00/10] thread_info: use helpers to snapshot thread
- flags
-Message-ID: <20210803160139.GS4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210803095428.17009-1-mark.rutland@arm.com>
+        id S231338AbhHCQE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhHCQE2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:04:28 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D42C061757;
+        Tue,  3 Aug 2021 09:04:17 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id u2so16011301plg.10;
+        Tue, 03 Aug 2021 09:04:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Q+M9bdfzC5vw78BK6KF6b7X1yy5cTQ6a22GkGLbvW8=;
+        b=EL6GO19w/yJX4+hYApVgoQg03d4gp72M5TckCBpAxCoSwFnzcgS9agnQbNQiPTTIvR
+         53OlXPv7BPOh7DjH9xOt9GPMFo+Wf/V+ASVsEPeFMio9dH/SDGa1NrUCa/xQa56E5FQt
+         BzeiVT4VzatMocLdr+hQlIgdTGNfhhHzAjI9T8yjHeHTN/+p82zKejs93QvgtfSRoORa
+         EMNwTkwbOi7VFoseVVpFY7MY4wDFc/mdXFXfxD0dhWrCA6JGMPf/1THayV9WBdq4BXv/
+         I66X4qJft2+Dsr6VVIhsU8H9HePaiKhD4+ciIZEUSE2gaNdVU2xs5XErXpLw7wRV68Pk
+         b72A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Q+M9bdfzC5vw78BK6KF6b7X1yy5cTQ6a22GkGLbvW8=;
+        b=a8ouHAaSyXlF5KrKCgbqTYVNblkC1XAMXAYKX2St/jlk2xCPCo+li9RF2Tg1EYIvwe
+         SHmZZGfjupYlHHWOr/zvfOuvcHfqRSs9ouk23JdR6MD+gDOHG/hAiFMLOLmiQFW5FFNu
+         lj+J1d48ohjl4MtFJVoi061uoYQ2nF++zdcCCTcNjX0U7FrbzQBrdPNwOVi68q9/tyCs
+         ju8FiO/KJ7IWO6m2nmAawRm1HXeyUly0LG6FJRMVe47NVQMS9EUHOVvJ+ZkIWtvV8Kk4
+         asY5YY0Wko+/boWFCcMz4DmGNblHorEukoEm+AxhQy7ScK262+KwK3UsLh0cRyFUH2YO
+         kPOA==
+X-Gm-Message-State: AOAM532orCCYndeI/kAfM224AKTyv4Y5/nxc2z1tWRNNKt8kzkChIpjL
+        ZZlyMw700NY4I/GpxVbhqN0=
+X-Google-Smtp-Source: ABdhPJxe1Q/tx1mCHBBgNfuGn0U0PA6NgtEr/CiQbM+pLNCCSAHZbz6U3WIyTP0ViiUweMKXBNDoaQ==
+X-Received: by 2002:a17:90a:c912:: with SMTP id v18mr23181709pjt.135.1628006656475;
+        Tue, 03 Aug 2021 09:04:16 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id y6sm14390653pjr.48.2021.08.03.09.04.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 09:04:15 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Eric Woudstra <ericwouds@gmail.com>,
+        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: [PATCH net-next v2 0/4] mt7530 software fallback bridging fix
+Date:   Wed,  4 Aug 2021 00:04:00 +0800
+Message-Id: <20210803160405.3025624-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803095428.17009-1-mark.rutland@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 10:54:18AM +0100, Mark Rutland wrote:
-> As thread_info::flags scan be manipulated by remote threads, it is
-> necessary to use atomics or READ_ONCE() to ensure that code manipulates
-> a consistent snapshot, but we open-code plain accesses to
-> thread_info::flags across the kernel tree.
-> 
-> Generally we get away with this, but tools like KCSAN legitimately warn
-> that there is a data-race, and this is potentially fragile with compiler
-> optimizations, LTO, etc.
-> 
-> These patches introduce new helpers to snahpshot the thread flags, with
-> the intent being that these should replace all plain accesses.
+DSA core has gained software fallback support since commit 2f5dc00f7a3e
+("net: bridge: switchdev: let drivers inform which bridge ports are
+offloaded"), but it does not work properly on mt7530. This patch series
+fixes the issues.
 
-For the series:
+DENG Qingfang (4):
+  net: dsa: mt7530: enable assisted learning on CPU port
+  net: dsa: mt7530: use independent VLAN learning on VLAN-unaware
+    bridges
+  net: dsa: mt7530: set STP state on filter ID 1
+  net: dsa: mt7530: always install FDB entries with IVL and FID 1
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+ drivers/net/dsa/mt7530.c | 88 ++++++++++++++++++++++++++++------------
+ drivers/net/dsa/mt7530.h | 14 +++++--
+ 2 files changed, 72 insertions(+), 30 deletions(-)
 
-> Since v1 [1]:
-> * Drop RFC
-> * Make read_ti_thread_flags() __always_inline
-> * Clarify commit messages
-> * Fix typo in arm64 patch
-> * Accumulate Reviewed-by / Acked-by tags
-> * Drop powerpc patch to avoid potential conflicts (per [2])
-> 
-> Since v2 [3]:
-> * Rebase to v5.14-rc1
-> * Reinstate powerpc patch
-> 
-> Since v3 [4]:
-> * Rebase to v5.14-rc4
-> 
-> [1] https://lore.kernel.org/r/20210609122001.18277-1-mark.rutland@arm.com
-> [2] https://lore.kernel.org/r/87k0mvtgeb.fsf@mpe.ellerman.id.au
-> [3] https://lore.kernel.org/r/20210621090602.16883-1-mark.rutland@arm.com
-> [4] https://lore.kernel.org/r/20210713113842.2106-1-mark.rutland@arm.com
-> 
-> Thanks,
-> Mark.
-> 
-> Mark Rutland (10):
->   thread_info: add helpers to snapshot thread flags
->   entry: snapshot thread flags
->   sched: snapshot thread flags
->   alpha: snapshot thread flags
->   arm: snapshot thread flags
->   arm64: snapshot thread flags
->   microblaze: snapshot thread flags
->   openrisc: snapshot thread flags
->   powerpc: snapshot thread flags
->   x86: snapshot thread flags
-> 
->  arch/alpha/kernel/signal.c          |  2 +-
->  arch/arm/kernel/signal.c            |  2 +-
->  arch/arm/mm/alignment.c             |  2 +-
->  arch/arm64/kernel/ptrace.c          |  4 ++--
->  arch/arm64/kernel/signal.c          |  2 +-
->  arch/arm64/kernel/syscall.c         |  4 ++--
->  arch/microblaze/kernel/signal.c     |  2 +-
->  arch/openrisc/kernel/signal.c       |  2 +-
->  arch/powerpc/kernel/interrupt.c     | 13 ++++++-------
->  arch/powerpc/kernel/ptrace/ptrace.c |  3 +--
->  arch/x86/kernel/process.c           |  8 ++++----
->  arch/x86/kernel/process.h           |  6 +++---
->  arch/x86/mm/tlb.c                   |  2 +-
->  include/linux/entry-kvm.h           |  2 +-
->  include/linux/thread_info.h         | 14 ++++++++++++++
->  kernel/entry/common.c               |  4 ++--
->  kernel/entry/kvm.c                  |  4 ++--
->  kernel/sched/core.c                 |  2 +-
->  18 files changed, 45 insertions(+), 33 deletions(-)
-> 
-> -- 
-> 2.11.0
-> 
+-- 
+2.25.1
+
