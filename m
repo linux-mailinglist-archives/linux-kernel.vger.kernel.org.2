@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9511B3DE55E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 06:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109FB3DE571
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 06:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbhHCEab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 00:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233157AbhHCEa3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 00:30:29 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014D0C061764
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 21:30:17 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso3012806pjf.4
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 21:30:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WuU0zqp5FxDzXHdF6RFEsqh5sXTxns57RbzCe8eINV4=;
-        b=U0yP0tud2140rIMQ9BsrY0xo0wzev+KHGRy4B6aHwt9CP2EJ8MocyiIyz6yYB2ZIEi
-         6E6HN96OA3LJipeTxDzH+TNXQgVULyaQXWnUW/n1JlvjmsuBXmSDgkPgcNB3+RhQ6o+a
-         ovnCxRYGzDDoJ7RcGNJmCYAS8gJLdYcBSYIEJAExO2xfpAHCwtCg79OsAXUpotjUU2BE
-         spNmP4St0+FcuQt0c5hi/YfpOtY9epEeQ7lDNvdb91GTR4e5l44hQFy43MMux7+ienso
-         1fgASFok9lixiXvGJaxhUw8PkcDvlGkykRO/WbHigND+qBGpks5pa/MByls6+VnwNc8W
-         MIkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WuU0zqp5FxDzXHdF6RFEsqh5sXTxns57RbzCe8eINV4=;
-        b=aMA/6dPkKF+GSODvVaQS0HEEME4s2jjgg8hfrBi/iJoY9vjJoDz0gUku9MiPB1KSAa
-         D0iwt4TI7C+JFx2nmiLdHM4JEKTu/AFkVIWn4lPRQAYq+BVhmKFRAz2K3fkbRelg5gOn
-         p/TTQHHOViT5lF2xOrlVfKt/ogmEZ7xVGyFmcPAAnUEX0VrUzdJXMf/cGT8O+I0pSfu+
-         nXfChaVzR2cWcWiitgPBNu9hLl6MqfdoO5Qbfya0Gvq36nFZV6QqkjjtDWq9SzaB0nUR
-         WPof6pt6elHRq1Ck5fImf4Gl5c8gI8l0p+i8HPNhqxJ9o/R6npRZ/8CcV1cUt3q0pafk
-         KTog==
-X-Gm-Message-State: AOAM532Ysv5rSpg7Z2TvgTKl8KBf63Olcfn51os2GA3mVr46pIaEZtI/
-        o17BDoMUK5eafZWKfqWtf4JprQ==
-X-Google-Smtp-Source: ABdhPJwWgvDbFps8MFCa+isFcB0DfTlVKe9/ZNKxGryq1uLTkKlvKLKaFxw5Sik7NQhNI35ZTv1CSA==
-X-Received: by 2002:a62:8fd4:0:b029:3af:3fa7:c993 with SMTP id n203-20020a628fd40000b02903af3fa7c993mr19305886pfd.77.1627965017486;
-        Mon, 02 Aug 2021 21:30:17 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id 21sm13539667pfh.103.2021.08.02.21.30.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 21:30:16 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 10:00:14 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH V4 3/5] dt-bindings: gpio: Add bindings for gpio-virtio
-Message-ID: <20210803043014.paskwghdio6azplp@vireshk-i7>
-References: <cover.1627362340.git.viresh.kumar@linaro.org>
- <acf7402ef4aabc0ad6295c32846f2bef1cd9b56a.1627362340.git.viresh.kumar@linaro.org>
- <YQhKKyPmOUE8z+US@robh.at.kernel.org>
+        id S233772AbhHCEgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 00:36:15 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59142 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233836AbhHCEeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 00:34:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627965247; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
+ Subject: Sender; bh=wrdeL63EpfiHuLivTRuqRl1jTMPJRFK0P49w0g47988=; b=qzHGSVpPLzT86gZbRjBhx13F3bd0Tn7zMH8+4xibCIu/rz4xGJcA3O25Np8V/STAEdhidoEm
+ eY/IBxC3K72fVts9mxFtq1NuivJF4YyfdYIy5A0dtGiJtpk2hdpMMSERGAqExTMC+STEgeeH
+ +RMT8jCphIQ6Re2rZu2cL0XkwHU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6108c71317c2b4047d6eb790 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 04:33:23
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5E780C4360C; Tue,  3 Aug 2021 04:33:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.100] (unknown [49.207.203.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 49604C4338A;
+        Tue,  3 Aug 2021 04:33:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 49604C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280-idp: Add device tree files
+ for IDP2
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skakit@codeaurora.org
+References: <1627897145-28020-1-git-send-email-rnayak@codeaurora.org>
+ <1627897145-28020-3-git-send-email-rnayak@codeaurora.org>
+ <aedc1f03-59ef-ca17-59e6-a6464367990d@somainline.org>
+ <bb608936-65e0-ed68-9410-44a40faf2f61@codeaurora.org>
+Message-ID: <029e9d59-ced7-af14-3e9e-2c7a62671abf@codeaurora.org>
+Date:   Tue, 3 Aug 2021 10:03:16 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQhKKyPmOUE8z+US@robh.at.kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <bb608936-65e0-ed68-9410-44a40faf2f61@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-08-21, 13:40, Rob Herring wrote:
-> Humm, how does one implement interrupts without a parent interrupt? It 
-> uses the parent virtio,mmio interrupt?
 
-Kind of, yeah, but not necessarily.
 
-The interrupt information is passed over buffers shared between host and guest.
-Now the guest may process the buffers when it receives a notification from the
-host, that will be at downpath of an interrupt for virtio,mmio. Or the guest may
-poll on the virtqueue and process any buffers as soon as they are made
-available, no interrupts then.
+On 8/2/2021 6:06 PM, Rajendra Nayak wrote:
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>>> index 73225e3..f014cda 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>>> @@ -7,19 +7,12 @@
+>>>   /dts-v1/;
+>>> -#include <dt-bindings/gpio/gpio.h>
+>>> -#include <dt-bindings/iio/qcom,spmi-adc7-pmr735a.h>
+  
+I re-read your comment and I guess you meant this ^^^ header include
+should stay too, and that's right, I seem to have wrongly moved it
+to the common dtsi, will fix when I respost. thanks.
+
+>>> -#include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
+>>
+>> Don't you want pmr735a include to stay here in SKU1 and not be included in the common one, as the hw is not present on sku2?
+> []..
+>>>   #include "pmr735a.dtsi"
+> 
+> Right, that's why this ^^^ include stays here and is not part of the common dtsi.
 
 -- 
-viresh
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
