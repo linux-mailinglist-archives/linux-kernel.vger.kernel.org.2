@@ -2,250 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350F33DE776
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E59F3DE77D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234315AbhHCHsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:48:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42670 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234137AbhHCHsX (ORCPT
+        id S234310AbhHCHuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:50:06 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35722 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234271AbhHCHuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:48:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627976892;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Cz4mJEVmDGl8yNoZ79kAMw4n8tDskkf0Kql/Sbl+6U=;
-        b=fM2xMnNNT532d5i+NEFsGIbGI66fE7kcS4hLJFcmnyNeTU59imtDBvWaFVhazFSZz4+7JP
-        HNVVjvBd7fLQrhXJwjoWGjuE8QfRI0qY+jPpOsUyoAyuBKN+45coNkuLbUTwkkYZnax/aF
-        bikSSWfRbEYn69KV4fb4PPBV2rm3fPk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-484-PRlgLZavNFW03BV0ILvy8A-1; Tue, 03 Aug 2021 03:48:11 -0400
-X-MC-Unique: PRlgLZavNFW03BV0ILvy8A-1
-Received: by mail-wm1-f71.google.com with SMTP id c41-20020a05600c4a29b0290253935d0f82so632763wmp.9
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:48:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=7Cz4mJEVmDGl8yNoZ79kAMw4n8tDskkf0Kql/Sbl+6U=;
-        b=ZvxvY8sSdBNaFwFkkenyQydc8xB5fBzMuIpXJGCyq5hoLyMla7QmOyu93oWGSd5k3k
-         EIMlA6l6yEFjyqLAGkEwqCD9b9WKUN5iVAopPGY508x2JaoFHZEv870XKtQhsCz/0bWI
-         3kWPKToDXOVRr6Y76AjfnJYPIwR3RAySHKNSmZ0xQ/q3YwmGwzwxcFlkSvl1naLBDlBf
-         EHA1l/C5zWxWtuLODNnY3ySYBKrCtjYDPe3gKK8IQ0SMsW/VJUKUkpOjHUQkH/6bqkvK
-         yrsej9yoM4gTuURQT5hMfQn5+LMOSd4pXxGujQO57g0g5kVUueXPNw7FoPOflj/sAJFD
-         Ty8A==
-X-Gm-Message-State: AOAM531HrFF/+B9XZiFwBjDQwd2yR7bL+q1ejoMaEZjRfW2UYgTOT+cn
-        sKb0ibFDwj4bQZhdi5hvodX+j/dVkFN8pxMyVt0SZcF9aJvX3m0VkXPrTA4Dg+cJz7/FegnfvbH
-        dYvGud5/5fdSOsQa8JFhKAGrI
-X-Received: by 2002:adf:f704:: with SMTP id r4mr22002788wrp.389.1627976889765;
-        Tue, 03 Aug 2021 00:48:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxowVVNUa0hycw1XWUzEd3fE+9kjYSa2132/0hwpvRvMe/A28XCQeByi13QdPkqhfgifHYRrg==
-X-Received: by 2002:adf:f704:: with SMTP id r4mr22002758wrp.389.1627976889502;
-        Tue, 03 Aug 2021 00:48:09 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23a79.dip0.t-ipconnect.de. [79.242.58.121])
-        by smtp.gmail.com with ESMTPSA id z12sm12229644wml.18.2021.08.03.00.48.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 00:48:09 -0700 (PDT)
-To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
-        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
-        hch@infradead.org, oleg@redhat.com, jannh@google.com,
-        shakeelb@google.com, luto@kernel.org, christian.brauner@ubuntu.com,
-        fweimer@redhat.com, jengelh@inai.de, timmurray@google.com,
-        linux-api@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-References: <20210802221431.2251210-1-surenb@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v4 1/2] mm: introduce process_mrelease system call
-Message-ID: <95eff329-a7b1-dc2d-026c-fd61e476c846@redhat.com>
-Date:   Tue, 3 Aug 2021 09:48:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 3 Aug 2021 03:50:05 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1737ndL5031663;
+        Tue, 3 Aug 2021 02:49:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1627976979;
+        bh=jU6NdUOo1QvDJP+eJFQCU2O42F89bmLL3ZejTmPvGHk=;
+        h=From:To:CC:Subject:Date;
+        b=dSQa9pc7mip0liDz7RQSJn4WMD2X1/FGOvkztAz/4xNW5Yapv+Bgj8HDjknIyCbio
+         D1aaKTyNHYIOR9JLS2jKg+d/9Rm1eTcJhUkHl176RDLMX+nOLlPczPBiprr0kLC9Je
+         kH26BZGGTyy5p8ZTvqOF1a2l+SBDdEOCTOh/w/nc=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1737ndu4120998
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Aug 2021 02:49:39 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 3 Aug
+ 2021 02:49:38 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 3 Aug 2021 02:49:38 -0500
+Received: from a0393678-ssd.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1737nXrv045202;
+        Tue, 3 Aug 2021 02:49:34 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>, <kishon@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tom Joseph <tjoseph@cadence.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nadeem@cadence.com>
+Subject: [PATCH v2 0/6] PCI: Add support for J7200 and AM64
+Date:   Tue, 3 Aug 2021 13:19:26 +0530
+Message-ID: <20210803074932.19820-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210802221431.2251210-1-surenb@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+This series adds the compatible specific to J7200 and AM64 and
+applies the erratas and configuration specific to them.
 
-> Previously I proposed a number of alternatives to accomplish this:
-> - https://lore.kernel.org/patchwork/patch/1060407 extending
+This series also includes Nadeem's patch that adds a quirk in
+Cadence driver which is used by J7200 [1].
 
-I have no idea how stable these links are. Referencing via message id is 
-the common practice. For this link, we'd use
+The DT binding for both J7200 and AM64 is already merged.
 
-https://lkml.kernel.org/r/20190411014353.113252-3-surenb@google.com/
+v1 of the patch series can be found at [2]
 
-instead.
+Changes from v1:
+1) As suggested by Bjorn, used unsigned int :1, instead of bool for
+structure members
+2) Removed using unnecessary local variables and also fixed some
+code alignment
 
-> pidfd_send_signal to allow memory reaping using oom_reaper thread;
-> - https://lore.kernel.org/patchwork/patch/1338196 extending
-> pidfd_send_signal to reap memory of the target process synchronously from
-> the context of the caller;
-> - https://lore.kernel.org/patchwork/patch/1344419/ to add MADV_DONTNEED
-> support for process_madvise implementing synchronous memory reaping.
-> 
-> The end of the last discussion culminated with suggestion to introduce a
-> dedicated system call (https://lore.kernel.org/patchwork/patch/1344418/#1553875)
-> The reasoning was that the new variant of process_madvise
->    a) does not work on an address range
->    b) is destructive
->    c) doesn't share much code at all with the rest of process_madvise
->  From the userspace point of view it was awkward and inconvenient to provide
-> memory range for this operation that operates on the entire address space.
-> Using special flags or address values to specify the entire address space
-> was too hacky.
+[1] -> https://lore.kernel.org/r/20210528155626.21793-1-nadeem@cadence.com
+[2] -> https://lore.kernel.org/r/20210706105035.9915-1-kishon@ti.com
 
-I'd condense this description and only reference previous discussions to 
-put a main focus on what this patch actually does. Like
+Kishon Vijay Abraham I (5):
+  PCI: cadence: Use bitfield for *quirk_retrain_flag* instead of bool
+  PCI: j721e: Add PCIe support for J7200
+  PCI: j721e: Add PCIe support for AM64
+  misc: pci_endpoint_test: Do not request or allocate IRQs in probe
+  misc: pci_endpoint_test: Add deviceID for AM64 and J7200
 
-"
-After previous discussions [1, 2, 3] the decision was made to introduce 
-a dedicated system call to cover this use case.
+Nadeem Athani (1):
+  PCI: cadence: Add quirk flag to set minimum delay in LTSSM
+    Detect.Quiet state
 
-...
-
-[1] https://lkml.kernel.org/r/20190411014353.113252-3-surenb@google.com/
-"
-
-> 
-> The API is as follows,
-> 
->            int process_mrelease(int pidfd, unsigned int flags);
-> 
->          DESCRIPTION
->            The process_mrelease() system call is used to free the memory of
->            a process which was sent a SIGKILL signal.
-> 
->            The pidfd selects the process referred to by the PID file
->            descriptor.
->            (See pidofd_open(2) for further information)
-> 
->            The flags argument is reserved for future use; currently, this
->            argument must be specified as 0.
-> 
->          RETURN VALUE
->            On success, process_mrelease() returns 0. On error, -1 is
->            returned and errno is set to indicate the error.
-> 
->          ERRORS
->            EBADF  pidfd is not a valid PID file descriptor.
-> 
->            EAGAIN Failed to release part of the address space.
-> 
->            EINTR  The call was interrupted by a signal; see signal(7).
-> 
->            EINVAL flags is not 0.
-> 
->            EINVAL The task does not have a pending SIGKILL or its memory is
->                   shared with another process with no pending SIGKILL.
-
-Hm, I do wonder if it would make sense to have a mode (e.g., via a flag) 
-to reap all but shared memory from a dying process. Future work.
-
-> 
->            ENOSYS This system call is not supported by kernels built with no
->                   MMU support (CONFIG_MMU=n).
-
-Maybe "This system call is not supported, for example, without MMU 
-support built into Linux."
-
-> 
->            ESRCH  The target process does not exist (i.e., it has terminated
->                   and been waited on).
-> 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
-> changes in v4:
-> - Replaced mmap_read_lock() with mmap_read_lock_killable(), per Michal Hocko
-> - Added EINTR error in the manual pages documentation
-> 
->   mm/oom_kill.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 58 insertions(+)
-> 
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index c729a4c4a1ac..86727794b0a8 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -28,6 +28,7 @@
->   #include <linux/sched/task.h>
->   #include <linux/sched/debug.h>
->   #include <linux/swap.h>
-> +#include <linux/syscalls.h>
->   #include <linux/timex.h>
->   #include <linux/jiffies.h>
->   #include <linux/cpuset.h>
-> @@ -1141,3 +1142,60 @@ void pagefault_out_of_memory(void)
->   	out_of_memory(&oc);
->   	mutex_unlock(&oom_lock);
->   }
-> +
-> +SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
-> +{
-> +#ifdef CONFIG_MMU
-> +	struct mm_struct *mm = NULL;
-> +	struct task_struct *task;
-> +	unsigned int f_flags;
-> +	struct pid *pid;
-> +	long ret = 0;
-> +
-> +	if (flags != 0)
-
-if (flags)
-
-> +		return -EINVAL;
-> +
-> +	pid = pidfd_get_pid(pidfd, &f_flags);
-> +	if (IS_ERR(pid))
-> +		return PTR_ERR(pid);
-> +
-> +	task = get_pid_task(pid, PIDTYPE_PID);
-> +	if (!task) {
-> +		ret = -ESRCH;
-> +		goto put_pid;
-> +	}
-> +
-> +	/*
-> +	 * If the task is dying and in the process of releasing its memory
-> +	 * then get its mm.
-> +	 */
-> +	task_lock(task);
-> +	if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
-> +		mm = task->mm;
-> +		mmget(mm);
-> +	}
-> +	task_unlock(task);
-> +	if (!mm) {
-> +		ret = -EINVAL;
-> +		goto put_task;
-> +	}
-> +
-> +	if (mmap_read_lock_killable(mm)) {
-> +		ret = -EINTR;
-> +		goto put_mm;
-> +	}
-> +	if (!__oom_reap_task_mm(mm))
-> +		ret = -EAGAIN;
-
-I'm not an expert on __oom_reap_task_mm(), but the whole approach makes 
-sense to. So feel free to add my
-
-Acked-by: David Hildenbrand <david@redhat.com>
+ drivers/misc/pci_endpoint_test.c              | 27 ++++++--
+ drivers/pci/controller/cadence/pci-j721e.c    | 61 +++++++++++++++++--
+ .../pci/controller/cadence/pcie-cadence-ep.c  |  4 ++
+ .../controller/cadence/pcie-cadence-host.c    |  3 +
+ drivers/pci/controller/cadence/pcie-cadence.c | 17 ++++++
+ drivers/pci/controller/cadence/pcie-cadence.h | 17 +++++-
+ 6 files changed, 117 insertions(+), 12 deletions(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
