@@ -2,134 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58023DE3BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6403DE3D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233413AbhHCBBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 21:01:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50742 "EHLO mail.kernel.org"
+        id S233427AbhHCBGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 21:06:38 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48850 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232848AbhHCBBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 21:01:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82D1F6023F;
-        Tue,  3 Aug 2021 01:00:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627952458;
-        bh=07UiOBm70AqBSviL4tUxOYvDv/m1dWzDfeaIuqRX+X0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=i5pOBM3LhdrWSMotAIVIaSJktxkkqPWgqur222gSoFrFE4gVQwU7xpvTpMkqemBBM
-         Q1ID8sk9gtLNIIBfYw2TtCevJWLC1ekPapsPuZWNxl4ptfX6qGC4eUj9skalpo4Oi4
-         13SZvg4iEv5JpGEQg84LKeSQUOthGTcgLwZyUFvQ18a4NNEfbOlan03tOKxvEezauV
-         lEb2lFW9G0CcJqUtgMIIldXvc85bynPVmVc1xjAzsmxVsSpOPCCW6qSrY/uyWN+QYt
-         SDDo189jPgPffjXVVRp2XRMyfQ4P0IzUB1XfF9JM3IAwy6mjPzG2BBF00aP7ivdPbd
-         1z55Q+NPWUE9g==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: reset free segment to prefree status
- when do_checkpoint() fail
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210427082106.2755-1-frank.li@vivo.com>
- <12ae52df-bc5e-82c3-4f78-1eafe7723f93@huawei.com>
- <5f37995c-2390-e8ca-d002-3639ad39e0d3@kernel.org>
- <YPXDtEyBg5W2ToD/@google.com>
- <8d2e3a63-72f9-bcb2-24e5-dddd84136001@kernel.org>
- <YQR60QUh0Pim8vSf@google.com>
- <355ac2ff-f1f1-b9ea-bd8c-139cb24a03fb@kernel.org>
- <YQgydetYHOkgY9+B@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <3d3ef5c9-fbb6-df85-26f7-e493da594b22@kernel.org>
-Date:   Tue, 3 Aug 2021 09:00:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232891AbhHCBGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 21:06:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627952786; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7bOpFp7obdoq6Euoam+mDRvGfl+5Uird7in8uKDL+WM=;
+ b=dZIypBSxR9cTR5eRPXz4kvu0zVKs63LfUEwCcFcsLGycnQWCjCuyXcoiiJlNPaxe+xDs98rC
+ hwGbuwgXJPrPmJ2OcZ12gKDq3TIE8n41iJVFrrQ6uChR9wXmlznzv9H7IcmNCVCNR17E3NvN
+ wzeChCcQXwpilfUaCH1a+9pY3MU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6108967138fa9bfe9c32efb2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 01:05:53
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1277DC43460; Tue,  3 Aug 2021 01:05:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8849EC433F1;
+        Tue,  3 Aug 2021 01:05:50 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <YQgydetYHOkgY9+B@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 02 Aug 2021 18:05:50 -0700
+From:   abhinavk@codeaurora.org
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [Freedreno] [PATCH 09/11] drm/msm/disp/dpu1: Add support for DSC
+ in topology
+In-Reply-To: <20210715065203.709914-10-vkoul@kernel.org>
+References: <20210715065203.709914-1-vkoul@kernel.org>
+ <20210715065203.709914-10-vkoul@kernel.org>
+Message-ID: <3fd739ca72c5704a3ca15a20492c5eac@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/3 1:59, Jaegeuk Kim wrote:
-> On 08/01, Chao Yu wrote:
->> On 2021/7/31 6:18, Jaegeuk Kim wrote:
->>> On 07/20, Chao Yu wrote:
->>>> On 2021/7/20 2:25, Jaegeuk Kim wrote:
->>>>> On 07/19, Chao Yu wrote:
->>>>>> On 2021/4/27 20:37, Chao Yu wrote:
->>>>>>> I think just reverting dirty/free bitmap is not enough if checkpoint fails,
->>>>>>> due to we have updated sbi->cur_cp_pack and nat/sit bitmap, next CP tries
->>>>>>> to overwrite last valid meta/node/data, then filesystem will be corrupted.
->>>>>>>
->>>>>>> So I suggest to set cp_error if do_checkpoint() fails until we can handle
->>>>>>> all cases, which is not so easy.
->>>>>>>
->>>>>>> How do you think?
->>>>>>
->>>>>> Let's add below patch first before you figure out the patch which covers all
->>>>>> things.
->>>>>>
->>>>>>    From 3af957c98e9e04259f8bb93ca0b74ba164f3f27e Mon Sep 17 00:00:00 2001
->>>>>> From: Chao Yu <chao@kernel.org>
->>>>>> Date: Mon, 19 Jul 2021 16:37:44 +0800
->>>>>> Subject: [PATCH] f2fs: fix to stop filesystem update once CP failed
->>>>>>
->>>>>> During f2fs_write_checkpoint(), once we failed in
->>>>>> f2fs_flush_nat_entries() or do_checkpoint(), metadata of filesystem
->>>>>> such as prefree bitmap, nat/sit version bitmap won't be recovered,
->>>>>> it may cause f2fs image to be inconsistent, let's just set CP error
->>>>>> flag to avoid further updates until we figure out a scheme to rollback
->>>>>> all metadatas in such condition.
->>>>>>
->>>>>> Reported-by: Yangtao Li <frank.li@vivo.com>
->>>>>> Signed-off-by: Yangtao Li <frank.li@vivo.com>
->>>>>> Signed-off-by: Chao Yu <chao@kernel.org>
->>>>>> ---
->>>>>>     fs/f2fs/checkpoint.c | 10 +++++++---
->>>>>>     1 file changed, 7 insertions(+), 3 deletions(-)
->>>>>>
->>>>>> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->>>>>> index 6c208108d69c..096c85022f62 100644
->>>>>> --- a/fs/f2fs/checkpoint.c
->>>>>> +++ b/fs/f2fs/checkpoint.c
->>>>>> @@ -1639,8 +1639,10 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
->>>>>>
->>>>>>     	/* write cached NAT/SIT entries to NAT/SIT area */
->>>>>>     	err = f2fs_flush_nat_entries(sbi, cpc);
->>>>>> -	if (err)
->>>>>> +	if (err) {
->>>>>> +		f2fs_stop_checkpoint(sbi, false);
->>>>>
->>>>> I think we should abuse this, since we can get any known ENOMEM as well.
->>>>
->>>> Yup, but one critical issue here is it can break A/B update of NAT area,
->>>> so, in order to fix this hole, how about using NOFAIL memory allocation
->>>> in f2fs_flush_nat_entries() first until we figure out the finial scheme?
->>>
->>> NOFAIL is risky, so how about adding a retry logic on ENOMEM with a message
->>> and then giving up if we can't get the memory? BTW, what about EIO or other
->>> family?
->>
->> How about this?
+On 2021-07-14 23:52, Vinod Koul wrote:
+> For DSC to work we typically need a 2,2,1 configuration. This should
+> suffice for resolutions upto 4k. For more resolutions like 8k this 
+> won't
+> work.
 > 
-> Hmm, it seems we won't get ENOMEM.
-> 
-> __flush_nat_entry_set
->   -> get_next_nat_page
->     -> ...
->      -> __get_meta_page
->        -> repeat on ENOMEM, but stop_checkpoint on EIO
+> The topology information is provided by DTS so we try to deduce the
+> topology required for DSC.
+> Furthermore, we can use 1 DSC encoder in lesser resolutions, but that 
+> is
+> not power efficient according to Abhinav, it is better to use 2 mixers
+> as that will split width/2 and is proven to be power efficient.
 
-Correct, I missed to check __get_meta_page() and f2fs_get_meta_page_retry().
+I think now that we have added the technical reason of why it is better 
+to use
+2-2-1 ( using 2 LMs is better than one as it will half layer width), we 
+can drop my name from the commit text
+as it holds less value than the actual reason itself :)
+You can still keep my signed-off and co-developed by tag
 
 > 
-> If we have an error here, we should have stopped checkpoint. Have you seen other
-> issue?
-
-Still we should fix the case from below path?
-
-- f2fs_write_checkpoint
-  - do_checkpoint
-   - f2fs_flush_device_cache failed
-
-Thanks,
+> Also, the panel has been tested only with 2,2,1 configuration, so for
+> now we blindly create 2,2,1 topology when DSC is enabled
+> 
+> Co-developed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> Signed-off-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+> Changes since RFC:
+>  - Add more details in changelog
+> 
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> index 41140b781e66..8f0a8bd9c8ff 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> @@ -573,6 +573,8 @@ static struct msm_display_topology 
+> dpu_encoder_get_topology(
+>  			struct drm_display_mode *mode)
+>  {
+>  	struct msm_display_topology topology = {0};
+> +	struct drm_encoder *drm_enc;
+> +	struct msm_drm_private *priv;
+>  	int i, intf_count = 0;
+> 
+>  	for (i = 0; i < MAX_PHYS_ENCODERS_PER_VIRTUAL; i++)
+> @@ -607,8 +609,22 @@ static struct msm_display_topology
+> dpu_encoder_get_topology(
+>  	topology.num_enc = 0;
+>  	topology.num_intf = intf_count;
+> 
+> +	drm_enc = &dpu_enc->base;
+> +	priv = drm_enc->dev->dev_private;
+> +	if (priv && priv->dsc) {
+if dsc is moved to the encoder, this will need to be changed too
+> +		/* In case of Display Stream Compression DSC, we would use
+> +		 * 2 encoders, 2 line mixers and 1 interface
+> +		 * this is power optimal and can drive upto (including) 4k
+> +		 * screens
+> +		 */
+> +		topology.num_enc = 2;
+> +		topology.num_intf = 1;
+> +		topology.num_lm = 2;
+> +	}
+> +
+>  	return topology;
+>  }
+> +
+>  static int dpu_encoder_virt_atomic_check(
+>  		struct drm_encoder *drm_enc,
+>  		struct drm_crtc_state *crtc_state,
