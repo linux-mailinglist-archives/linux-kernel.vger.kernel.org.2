@@ -2,160 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F0C3DEEEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D193DEEF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236193AbhHCNQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
+        id S236123AbhHCNRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236123AbhHCNQw (ORCPT
+        with ESMTP id S235954AbhHCNRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:16:52 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31040C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:16:41 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id j2so25218033wrx.9
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 06:16:41 -0700 (PDT)
+        Tue, 3 Aug 2021 09:17:52 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38499C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:17:41 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id b7so28954197edu.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 06:17:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=LY4ajhYYjBKNdvsHnzBXr58vU15+CDEnGQoQuQpIjrY=;
-        b=Bo3krVhGkUb9iZzYD0LaPXEd677pZRw4pcUbpAy1L7wJiwJY++nLFBkXKEc4Hq5SMp
-         3lOHGOlgdTqZHFk+lzT58stF2g7kcuzOpLXpvalxe9M2x4kcwVxHRc78nf0n4TJorPgI
-         9NDNMlmGYNlEBh1k6mYJAiSWr2aGbhryQsCZWH3OxX94w8qFuoT+kjyifvKy9rpQxcnO
-         xVLKJ3T3LF1NjCTNNWrf5894BHWt4RIozT5+oaZARyPmTWpPy4dRaAtzj3Z7n4Kvu62M
-         4QepXSRg9SuTzFRI0yAE7ExCHdi7bCWv1XVQva0dsJ4hqGh2Hh4rapCtxKKdLlT3GF0h
-         2OMQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yR4S2ZQmok+LMwRMPbSCkfcF7S1VTidPl8mrJI1OXHY=;
+        b=naF0LMmxmvdiLihArultg5bRuKRC75ZA5oWeTTC3K8Gs/UBvNgSO5Y0pKskfkvVX9Y
+         PKIBdIDo0+5rXqpPU5tR8qnQjh6k1dBD1GRaVm/I4Zr13QVFdTsfJkkpItu6QNaRo7Ik
+         BPeRCtCf9LM0/A8/+Ia5JjhUW1D3uMVVnZDR/uIN+PRFc9xSmWuk8EEgWJtgZDlxTG3j
+         wPzumiw9qSYshJU+/WtnjNO6T6mYPFBJdgewUQAmnKHb7gaEpNzsZGfE/OzXwE2UPdGR
+         6j0hsAnvja18HbJ1S9IGnXdZMjSrRk+LgtCyPnZ1uZ46nZcR212YSVtVNV5nHVyhpQuX
+         Mu4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LY4ajhYYjBKNdvsHnzBXr58vU15+CDEnGQoQuQpIjrY=;
-        b=qkpdYMxthmLbGZcSERQb2WuYMwlcjFpXKI3sbPGQCc9NKI2eNFzxyymmMFPaTNpObQ
-         gh+Iwu4wq33onDF35rBPkERRidF7r9ajCJJsetdkC79kKK+5nwJXuWJ0FK8ej5mLYBzt
-         H2sNwe5trYh3Qv6K9jIEqMGh9ZBFgCwLaomEkwy5t4N6Hx901u14wY3JV0sE8M/iTLyF
-         1SJ23JXuLYLAvojjXhVpmwx+ycjBuQRFnmR20oluFWvAaQkw8YrWxTln1bTYuEBMn/00
-         Z0FIhfkKm9IT6fvx7aapuzhto6M7z+37i0UFitN4y0EUHnGAhtpDnl578rQbKtJSHiyg
-         ksRw==
-X-Gm-Message-State: AOAM531HQENZyRoXSsdgwAncnwqvyYCLnq3F6QVku6zYr7zX7vRaccI7
-        8AQ29PvzEabZjGwc6wf5dEUW7A==
-X-Google-Smtp-Source: ABdhPJzU/OufZtp4hvQqfr8/P1Mac8bTSvwq0I8OeJ0OSDvThVu99FhN0auH+PrAGbUsSzQrv6la0w==
-X-Received: by 2002:adf:f046:: with SMTP id t6mr23699153wro.266.1627996599750;
-        Tue, 03 Aug 2021 06:16:39 -0700 (PDT)
-Received: from google.com ([109.180.115.228])
-        by smtp.gmail.com with ESMTPSA id c12sm14820845wrm.29.2021.08.03.06.16.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 06:16:39 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 14:16:37 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com
-Subject: Re: [PATCH v8 02/11] mfd: sy7636a: Initial commit
-Message-ID: <YQlBtQDrVHqh3N5D@google.com>
-References: <20210803084456.198-1-alistair@alistair23.me>
- <20210803084456.198-2-alistair@alistair23.me>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yR4S2ZQmok+LMwRMPbSCkfcF7S1VTidPl8mrJI1OXHY=;
+        b=iyBMmoXrWmmNVpNBIfuyMPsNPNz5dSeOG4Z0dk0eKIPxMKtN8a5+etBNt3nSxtqFTW
+         RxYDfDMW5uaANgX3IPT6VMQ+YQyH3GGxFUn0NZcT6oK2z+BM8/96y5d8Eb9fa9Hzhg/e
+         iSMm4a/8lOkgcG1o4+vUm/7fPTsu59WUCtd/cjauZBYrbvl615Nr/Dmu+kEqmhiaVi7V
+         VVDuY00PkMmRsldVpxidcNSXXzkBm6jCmz4GR7Xle8EmyU6AJ2hRzwh6u8JK/9FzktDu
+         iXbehf91L27BzWNPzpDbqAeagb2dAB6cBloJn8fTgnIKYoSaOJ3hazkpMGFPGKqJaCSd
+         ECPg==
+X-Gm-Message-State: AOAM533BqOYX0C4p/vlic24k+VnwzRg0gq37zMrBEwka68yaGoR/cG1W
+        ft8Im+Ls0RkwZbF/cxcdiJ5iwqBRAczYo9i1CnL/7g==
+X-Google-Smtp-Source: ABdhPJxmVBMhBwyLrU9wZlYjM14fpf07QrSSuWhRKwy/bhfuFtk/QC+rp3AfFWRskkGwVtWXmT29uvhG1IgahYzr+mw=
+X-Received: by 2002:aa7:c805:: with SMTP id a5mr25236154edt.23.1627996659650;
+ Tue, 03 Aug 2021 06:17:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210803084456.198-2-alistair@alistair23.me>
+References: <20210802134334.835358048@linuxfoundation.org>
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 3 Aug 2021 18:47:27 +0530
+Message-ID: <CA+G9fYui0Z1RMgMx4Sa41btUxTXMMuZ2uEL6Nhe3G9w7hZH6Pg@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/38] 4.14.242-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 03 Aug 2021, Alistair Francis wrote:
+On Mon, 2 Aug 2021 at 19:19, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.242 release.
+> There are 38 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.242-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> Initial support for the Silergy SY7636A Power Management chip.
-> 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
->  drivers/mfd/Kconfig         |  9 +++++
->  drivers/mfd/Makefile        |  1 +
->  drivers/mfd/sy7636a.c       | 72 +++++++++++++++++++++++++++++++++++++
->  include/linux/mfd/sy7636a.h | 45 +++++++++++++++++++++++
->  4 files changed, 127 insertions(+)
->  create mode 100644 drivers/mfd/sy7636a.c
->  create mode 100644 include/linux/mfd/sy7636a.h
-> 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 6a3fd2d75f96..b82208f0c79c 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -1352,6 +1352,15 @@ config MFD_SYSCON
->  	  Select this option to enable accessing system control registers
->  	  via regmap.
->  
-> +config MFD_SY7636A
-> +	tristate "Silergy SY7636A Power Management IC"
-> +	select MFD_CORE
-> +	select REGMAP_I2C
-> +	depends on I2C
-> +	help
-> +	  Select this option to enable support for the Silergy SY7636A
-> +	  Power Management IC.
-> +
->  config MFD_DAVINCI_VOICECODEC
->  	tristate
->  	select MFD_CORE
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index 8116c19d5fd4..cbe581e87fa9 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -266,6 +266,7 @@ obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
->  obj-$(CONFIG_MFD_ACER_A500_EC)	+= acer-ec-a500.o
->  obj-$(CONFIG_MFD_QCOM_PM8008)	+= qcom-pm8008.o
->  
-> +obj-$(CONFIG_MFD_SY7636A)	+= sy7636a.o
->  obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
->  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)	+= simple-mfd-i2c.o
->  obj-$(CONFIG_MFD_INTEL_M10_BMC)   += intel-m10-bmc.o
-> diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
-> new file mode 100644
-> index 000000000000..f3ff93c7395d
-> --- /dev/null
-> +++ b/drivers/mfd/sy7636a.c
-> @@ -0,0 +1,72 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * MFD parent driver for SY7636A chip
-> + *
-> + * Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
-> + *
-> + * Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
-> + *          Alistair Francis <alistair@alistair23.me>
-> + *
-> + * Based on the lp87565 driver by Keerthy <j-keerthy@ti.com>
-> + */
-> +
-> +#include <linux/interrupt.h>
-> +#include <linux/mfd/core.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +
-> +#include <linux/mfd/sy7636a.h>
-> +
-> +static const struct regmap_config sy7636a_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +};
-> +
-> +static const struct mfd_cell sy7636a_cells[] = {
-> +	{ .name = "sy7636a-regulator", },
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-What kind of regulator is 'vcom'? LDO? DCDC?
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> +	{ .name = "sy7636a-temperature", },
-> +	{ .name = "sy7636a-thermal", },
-> +};
+## Build
+* kernel: 4.14.242-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.14.y
+* git commit: ec038bb8339f8cbc9d78324a4e62c5cb3992e69f
+* git describe: v4.14.241-39-gec038bb8339f
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.241-39-gec038bb8339f
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+## No regressions (compared to v4.14.241-14-g8cb34df08062)
+
+## No fixes (compared to v4.14.241-14-g8cb34df08062)
+
+## Test result summary
+ total: 66149, pass: 52221, fail: 673, skip: 11274, xfail: 1981,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
