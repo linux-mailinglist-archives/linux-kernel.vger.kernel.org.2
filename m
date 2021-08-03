@@ -2,117 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A143DE926
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5273DE92F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhHCJCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33790 "EHLO
+        id S234827AbhHCJFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234948AbhHCJCV (ORCPT
+        with ESMTP id S234554AbhHCJFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:02:21 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D16C061796
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:02:09 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id n2so28028910eda.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:02:09 -0700 (PDT)
+        Tue, 3 Aug 2021 05:05:00 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5773C06175F;
+        Tue,  3 Aug 2021 02:04:49 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id b133so2707565ybg.4;
+        Tue, 03 Aug 2021 02:04:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3wZFhZTC8zZY+D9UvhMcL30+qrKHqoBqQtpm1vOADzM=;
-        b=JKe8MBo/Q/9jJiWfNFv7/6FozVELAtit9lfH9d5TxXXMYzq/K+Pmkq5MZfy0MK2cFu
-         cx6FhhWxNDc+0E1xzGVvot63Tu4Ur8FkAtBApXV5HGWA7B6YAue4z52aDqp2cPeuObcM
-         NbvLlt0iETqmIH/loBFX6RmK5lnhTeVCMIO5KKZH9Z5CWgGXEldHbQTMQQrf9uJEnfFB
-         86l/PEM0xk2vAai/1RJXq5azCxa1fJfFP2bTdkelMNkruzkW1VP4XZZrR/YihWu8I9cm
-         wPq3kJhM7XQVmw7qPL2HCPQ0a2PjgZxJc4l7AroO/DlUf8xZiD0v/CMDlg12kwVoA4f6
-         XDfQ==
+         :cc;
+        bh=dOVxQw7hzMqouTzTMaPZlulc5riwZNLlilwvv6ofE+E=;
+        b=sQ97r/JNoBCJgkPUntBNSlD3p7drzkqCjEcAHwx/Lziby3BbKxI/N9EJy+iBdMs4E/
+         c7+GimebIBY68m9tGcdstovhH6LRib3ysxl541hZW0f84BOJm2vBNNOJsMHug79eHEtU
+         65NdPF7JYp863KHp7FcMV9EvbIPJwm3vKgwIxquaSh//MDbM5CFpwoxd6YdI56CFqBI1
+         3M8Y0QvtTWGJWl4g1epX9EDyfHF6nbFwVwH8toXc0mu9U1j32/dwufi58nqpDMYDMRCJ
+         UM0ACj/l4HfwstG6CR3Cm1ohopUsOdHRqRXkLXMXb8scIpuEPRGOgZft+0z6aMaBHkHF
+         rQFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3wZFhZTC8zZY+D9UvhMcL30+qrKHqoBqQtpm1vOADzM=;
-        b=WbdLouVp0lolrTq2nZrk2ianYeI76wI6gePaKJcOpkkhJDaiAkzufG5u3M65iaUSgg
-         gahiYuPN3frI+01xhnslWaiNxtOUzdDJEHBl8UMKARng4xCnmrlN4iDVpKmF3sfFTAfV
-         Ee9tQk4rftp98yEvBSzuSwlma+gdTt4aSs0wTxRwEvuuD0+ih07DcYA8rmWiUcpm1U4F
-         HYu4VEXe4P9d1odySIsJebIcR/ycnwKmrEy7tyGb6ZT4ApnagiXinhSGBSv5HaJwfwPz
-         uYE2bcZfmt1ofH6qaB+ysgezz8uYwYRDLOUTabCGGI6KmYf0jUXrNijgkP3FCA//Byhq
-         t5Yw==
-X-Gm-Message-State: AOAM532tJ09CLdJMUXrqy9FKyp33Kbt1WmU12+c+K4Z+qApYT4kLz9KX
-        vsZHrKvsfGyC/SVxoeyIivAqxmnfv5w3/1qoYKQV
-X-Google-Smtp-Source: ABdhPJyS6bOrWfuvjmdwVRGONpMTv6Y0zVE0kh7I9sjtSTBg5XbDmv85P6yS8Pkoi3kNsB54rx4AF9ZFKn4Qu8vMSM8=
-X-Received: by 2002:aa7:c50a:: with SMTP id o10mr23739559edq.118.1627981328237;
- Tue, 03 Aug 2021 02:02:08 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=dOVxQw7hzMqouTzTMaPZlulc5riwZNLlilwvv6ofE+E=;
+        b=HCzzj/YcKV2ygVpWotj/Bwyrf5o2dMRF8L7PnuUbm8rpv30UX7DVTiUYiS37Mzd7Gv
+         mJGtCtduvWzg/lHbq0jF32NU8dMB5HQMIsM21SVoK9nYG6LG0iYGmPaD5Sx8KnW3kmJl
+         0TO6cwbzy4+zKTWeVdVima/G7WO7LqLvjbV0z82YC/nU3EMuq6SNSbNBqtRr3USj2qzj
+         1yhh5iybvzaR6mHfDD8n4NVfCI1hYOPgKmL97P+HIvgugW9J+EG33XKEhANBmV8541+W
+         e5WC3/bEF0RT3sKfcrd/Oq3HUD6GaAHgLI7AB1ljR8DRkfUVCG07XrJvHs5tAn67Zz4H
+         sWyQ==
+X-Gm-Message-State: AOAM530uTlSWdSMrCEeJemcbBCL1IV+5e18lw85HATceSdtD63P9Md1a
+        n5GDEXON1nryM05hHkza26BDPWc7b5QGKVn4f84=
+X-Google-Smtp-Source: ABdhPJyrKEqicYc3NhFDQcYPh9BmSWMMTJbWGej2LVyhJGiCSkSNvAjmLhOmgZ6vY7YnZswvIRqqBYRbX1HyMmKrk1Y=
+X-Received: by 2002:a25:d290:: with SMTP id j138mr28773857ybg.151.1627981488909;
+ Tue, 03 Aug 2021 02:04:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210729073503.187-1-xieyongji@bytedance.com> <20210729073503.187-3-xieyongji@bytedance.com>
- <a0ab081a-db06-6b7a-b22e-4ace96a5c7db@redhat.com>
-In-Reply-To: <a0ab081a-db06-6b7a-b22e-4ace96a5c7db@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Tue, 3 Aug 2021 17:01:57 +0800
-Message-ID: <CACycT3sdx8nA8fh3pjO_=pbiM+Bs5y+h4fuGkFQEsRSaBnph7Q@mail.gmail.com>
-Subject: Re: [PATCH v10 02/17] file: Export receive_fd() to modules
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        He Zhe <zhe.he@windriver.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        Joe Perches <joe@perches.com>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210803071811.8142-1-lukas.bulwahn@gmail.com> <CAA=Fs0=V_gcfDUxn1m9OkR78cht0S=j02BsHajG1A3vuGTqQJw@mail.gmail.com>
+In-Reply-To: <CAA=Fs0=V_gcfDUxn1m9OkR78cht0S=j02BsHajG1A3vuGTqQJw@mail.gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 3 Aug 2021 11:04:38 +0200
+Message-ID: <CAKXUXMygDgw6oehMshsHuDo8a5j01=wErDxpgA9oiW-KMLF7=g@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: update STAGING - REALTEK RTL8188EU DRIVERS
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 3:46 PM Jason Wang <jasowang@redhat.com> wrote:
+On Tue, Aug 3, 2021 at 10:56 AM Phillip Potter <phil@philpotter.co.uk> wrote:
 >
->
-> =E5=9C=A8 2021/7/29 =E4=B8=8B=E5=8D=883:34, Xie Yongji =E5=86=99=E9=81=93=
-:
-> > Export receive_fd() so that some modules can use
-> > it to pass file descriptor between processes without
-> > missing any security stuffs.
+> On Tue, 3 Aug 2021 at 08:18, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 > >
-> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> > Commit 55dfa29b43d2 ("staging: rtl8188eu: remove rtl8188eu driver from
+> > staging dir") removes ./drivers/staging/rtl8188eu, but misses to adjust
+> > the STAGING - REALTEK RTL8188EU DRIVERS section in MAINTAINERS.
+> >
+> > Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> >
+> >   no file matches    F:    drivers/staging/rtl8188eu/
+> >
+> > A refurnished rtl8188eu driver is available in ./drivers/staging/r8188eu/
+> > and there is no existing section in MAINTAINERS for that directory.
+> >
+> > So, reuse the STAGING - REALTEK RTL8188EU DRIVERS section and point to the
+> > refurnished driver with its current developers and maintainers according
+> > to the current git log.
+> >
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 > > ---
-> >   fs/file.c            | 6 ++++++
-> >   include/linux/file.h | 7 +++----
-> >   2 files changed, 9 insertions(+), 4 deletions(-)
+> > applies cleanly on next-20210803
 > >
-> > diff --git a/fs/file.c b/fs/file.c
-> > index 86dc9956af32..210e540672aa 100644
-> > --- a/fs/file.c
-> > +++ b/fs/file.c
-> > @@ -1134,6 +1134,12 @@ int receive_fd_replace(int new_fd, struct file *=
-file, unsigned int o_flags)
-> >       return new_fd;
-> >   }
+> > Philipp, Larry, please ack.
 > >
-> > +int receive_fd(struct file *file, unsigned int o_flags)
-> > +{
-> > +     return __receive_fd(file, NULL, o_flags);
->
->
-> Any reason that receive_fd_user() can live in the file.h?
+> > Greg, please pick this minor cleanup on your staging-next tree.
+> >
+> >  MAINTAINERS | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 36aee8517ab0..ef32c02b3e4d 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -17723,8 +17723,9 @@ F:      drivers/staging/olpc_dcon/
+> >
+> >  STAGING - REALTEK RTL8188EU DRIVERS
+> >  M:     Larry Finger <Larry.Finger@lwfinger.net>
+> > -S:     Odd Fixes
+> > -F:     drivers/staging/rtl8188eu/
+> > +M:     Phillip Potter <phil@philpotter.co.uk>
+> > +S:     Supported
+> > +F:     drivers/staging/r8188eu/
+> >
+> >  STAGING - REALTEK RTL8712U DRIVERS
+> >  M:     Larry Finger <Larry.Finger@lwfinger.net>
+> > --
+> > 2.17.1
+> >
+> Sorry, not sure how I missed this :-)
 >
 
-Since no modules use it.
+No worries. That is what janitors are good for... ;)
 
-Thanks,
-Yongji
+Lukas
