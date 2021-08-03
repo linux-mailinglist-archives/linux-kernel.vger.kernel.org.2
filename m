@@ -2,58 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179153DF1F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4058C3DF1F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237225AbhHCP7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:59:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48938 "EHLO mail.kernel.org"
+        id S237214AbhHCQAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:00:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237186AbhHCP7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:59:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99C5360F45;
-        Tue,  3 Aug 2021 15:59:31 +0000 (UTC)
+        id S237135AbhHCQAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:00:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 545D260F45;
+        Tue,  3 Aug 2021 16:00:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628006372;
-        bh=ChhPSCYwVwBW+Gw7+iatuovIf2TIbBAIu4oLOgUZzyY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CXEcYW8VOiRy/IqDk4w1z47ZV6TB8DMXPTzW1CYY5HfajRsDDtvi8Xev/ZUwWC48+
-         Aa51HsvYdXIMh8yk5fPYG1VmnBomN8B/Upoq7GG5AzB6SdEhYNL0QSksUWV8kHjKX5
-         lQuqpJzsqwsPv6M7XeD8A3Mn4C6MTFIOaDuaKGvo6egbC7csK0LzykiKuk1XGKtvwN
-         /pNDxIDlyTL3a5/+kc1KmIonqd46lgyDOr548FG0l6EC8AcJjUWNc56z32KU1oKWbz
-         M7higY0/dGWoOrUd7ahds/l7oZ46vMzb6IOwp0J0I6mwXo6rp+4o2jXSrek6Ya4TRD
-         5vDGdL3cNsNPQ==
-Date:   Tue, 3 Aug 2021 08:59:30 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     yajun.deng@linux.dev
-Cc:     "kernel test robot" <lkp@intel.com>, davem@davemloft.net,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        kbuild-all@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        mptcp@lists.linux.dev, Denis Kirjanov <kda@linux-powerpc.org>
-Subject: Re: [PATCH net-next] net: Modify sock_set_keepalive() for more
- scenarios
-Message-ID: <20210803085930.103d37dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <a37faefd6dcad9f01212d60f8bb32f4f@linux.dev>
-References: <202108031929.b1AMeeUj-lkp@intel.com>
-        <20210803082553.25194-1-yajun.deng@linux.dev>
-        <a37faefd6dcad9f01212d60f8bb32f4f@linux.dev>
+        s=k20201202; t=1628006421;
+        bh=cn21b26xb0ddfDtkJ/ZSGanqT6OffWbsd/0X6amzDzo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=DIu/sT9tsRLLSAkcqEJj9LJGX0c4tK3dROCaLYdbbGyoNF3WdFyoc44o/K8cbIwMy
+         CHt5fkZrSaa2DmhDAEtNrnnhHqgR2NQFmUDvv5Lrqzwqc+DUOapW+CaSEbLf43pUvr
+         +CbEByvv6UtgweVoKOPzzbVraOFZLAt9zTngpaVmibWK1acOjfgUaQxelZhF9sj20m
+         ugCSoFRJkMwirvqc1IQfPfQF1cssQUGi2cNofG+m2w1/oJoTNNILfoCOvMfz3dNHlt
+         Ap5WZxpGZoH7VeKRHenyWZ322ucmWUSA+swZnz97OFPOKL2hJnD6afmCsJARICDNqK
+         1UdcwjYj1P1PQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1F7555C04D4; Tue,  3 Aug 2021 09:00:21 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 09:00:21 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 31/38] rcu: Replace deprecated CPU-hotplug functions.
+Message-ID: <20210803160021.GR4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210803141621.780504-1-bigeasy@linutronix.de>
+ <20210803141621.780504-32-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803141621.780504-32-bigeasy@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 03 Aug 2021 11:42:39 +0000 yajun.deng@linux.dev wrote:
-> The tcp_create_listen_sock() function was already dropped in commit
-> <2dc6b1158c28c3a5e86d162628810312f98d5e97> by Alexander Aring.
+On Tue, Aug 03, 2021 at 04:16:14PM +0200, Sebastian Andrzej Siewior wrote:
+> The functions get_online_cpus() and put_online_cpus() have been
+> deprecated during the CPU hotplug rework. They map directly to
+> cpus_read_lock() and cpus_read_unlock().
+> 
+> Replace deprecated CPU-hotplug functions with the official version.
+> The behavior remains unchanged.
+> 
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: rcu@vger.kernel.org
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-We don't have the commit you're quoting in the networking trees.
+I have queued this one and 35/38 (rcutorture) for v5.16.  If you would
+prefer to send them some other route, please let me know and:
 
-You should modify tcp_create_listen_sock() and we'll deal with 
-the conflict during the merge window.
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-Unless obviously you should wait and "send the patch within a context
-of other scenarios".. (I'm unclear on what Denis is referring to.)
+> ---
+>  kernel/rcu/tree.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 51f24ecd94b26..f116ce58f4e68 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4050,7 +4050,7 @@ void rcu_barrier(void)
+>  	 */
+>  	init_completion(&rcu_state.barrier_completion);
+>  	atomic_set(&rcu_state.barrier_cpu_count, 2);
+> -	get_online_cpus();
+> +	cpus_read_lock();
+>  
+>  	/*
+>  	 * Force each CPU with callbacks to register a new callback.
+> @@ -4081,7 +4081,7 @@ void rcu_barrier(void)
+>  					  rcu_state.barrier_sequence);
+>  		}
+>  	}
+> -	put_online_cpus();
+> +	cpus_read_unlock();
+>  
+>  	/*
+>  	 * Now that we have an rcu_barrier_callback() callback on each
+> -- 
+> 2.32.0
+> 
