@@ -2,238 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E133DE48E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1843DE4B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 05:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbhHCC5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 22:57:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233716AbhHCC5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 22:57:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 248B860E09;
-        Tue,  3 Aug 2021 02:57:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627959439;
-        bh=Y7JS2RKVmLZCbQYjykePluXtJFgoKFda+j0S7/shrSY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=M9QEmlrHOU8jGbXL8DEGa+EsYxjYZKKY1pyO0UX8pZpX+XlsUTb2s2ko5067wlucn
-         YpkWon1Ea22pDSnc3zZHt1nHjnBqscWtldV4hg+B9BCz42HTeOCkV5v+dQFzKEzcAC
-         7wgmaZb+JObj2XnnZhPTKI7qs4yS9hWdYmZfBEoxms8+Fd/smfUs/CgW7XOVTKnBlr
-         shvrkNb0VF4LsiVSZsGq0AFPrXGhEQjzlwshLHKkETYbXgi41t8vl9U5lVAP+mZxjB
-         gw6P5sCV89RpN43zNTteIJA/jG5D4brhGPqEBrE/gqsdoXJq1COm9ZUX3lqVcB3XF+
-         5sL7gM6153Ilg==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: reset free segment to prefree status
- when do_checkpoint() fail
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210427082106.2755-1-frank.li@vivo.com>
- <12ae52df-bc5e-82c3-4f78-1eafe7723f93@huawei.com>
- <5f37995c-2390-e8ca-d002-3639ad39e0d3@kernel.org>
- <YPXDtEyBg5W2ToD/@google.com>
- <8d2e3a63-72f9-bcb2-24e5-dddd84136001@kernel.org>
- <YQR60QUh0Pim8vSf@google.com>
- <355ac2ff-f1f1-b9ea-bd8c-139cb24a03fb@kernel.org>
- <YQgydetYHOkgY9+B@google.com>
- <3d3ef5c9-fbb6-df85-26f7-e493da594b22@kernel.org>
- <YQifkGIYCHfaQ/AJ@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <a37e3ec3-365d-6eb6-85e6-1d7610b93784@kernel.org>
-Date:   Tue, 3 Aug 2021 10:57:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233716AbhHCDbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 23:31:31 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:53458 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233197AbhHCDba (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 23:31:30 -0400
+X-UUID: 66120b80f6974681ac30056544c75e59-20210803
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=aU3UvCi1IbFyB5KtaIThVBbat1eD0yrQK0PdCy+027E=;
+        b=PU73T0HuGn4C+6b9Vu3jwWvIIbgTnHaz8yuS9VpiO/X7iZSOcACPBMpfygcR/XMAHLcgjGzRBTLb/pT74vCIP7ZRsCj/7NJv50T6YzFaa4mnFb/FiZQ8AQkfAUXUap840Cld6d5GOslcvuc8pkMWRcsgVUiWEj8ip7P1+zIeOaE=;
+X-UUID: 66120b80f6974681ac30056544c75e59-20210803
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 73031877; Tue, 03 Aug 2021 11:31:16 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 3 Aug 2021 11:31:15 +0800
+Received: from [10.15.20.246] (10.15.20.246) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 3 Aug 2021 11:31:14 +0800
+Message-ID: <1627960488.7721.2.camel@mbjsdccf07>
+Subject: Re: [PATCH 2/3] spi: modify set_cs_timing parameter
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <leilk.liu@mediatek.com>,
+        <wsd_upstream@mediatek.com>
+Date:   Tue, 3 Aug 2021 11:14:48 +0800
+In-Reply-To: <20210802201614.GA39900@sirena.org.uk>
+References: <20210719091642.24633-1-mason.zhang@mediatek.com>
+         <20210802201614.GA39900@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <YQifkGIYCHfaQ/AJ@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/3 9:44, Jaegeuk Kim wrote:
-> On 08/03, Chao Yu wrote:
->> On 2021/8/3 1:59, Jaegeuk Kim wrote:
->>> On 08/01, Chao Yu wrote:
->>>> On 2021/7/31 6:18, Jaegeuk Kim wrote:
->>>>> On 07/20, Chao Yu wrote:
->>>>>> On 2021/7/20 2:25, Jaegeuk Kim wrote:
->>>>>>> On 07/19, Chao Yu wrote:
->>>>>>>> On 2021/4/27 20:37, Chao Yu wrote:
->>>>>>>>> I think just reverting dirty/free bitmap is not enough if checkpoint fails,
->>>>>>>>> due to we have updated sbi->cur_cp_pack and nat/sit bitmap, next CP tries
->>>>>>>>> to overwrite last valid meta/node/data, then filesystem will be corrupted.
->>>>>>>>>
->>>>>>>>> So I suggest to set cp_error if do_checkpoint() fails until we can handle
->>>>>>>>> all cases, which is not so easy.
->>>>>>>>>
->>>>>>>>> How do you think?
->>>>>>>>
->>>>>>>> Let's add below patch first before you figure out the patch which covers all
->>>>>>>> things.
->>>>>>>>
->>>>>>>>     From 3af957c98e9e04259f8bb93ca0b74ba164f3f27e Mon Sep 17 00:00:00 2001
->>>>>>>> From: Chao Yu <chao@kernel.org>
->>>>>>>> Date: Mon, 19 Jul 2021 16:37:44 +0800
->>>>>>>> Subject: [PATCH] f2fs: fix to stop filesystem update once CP failed
->>>>>>>>
->>>>>>>> During f2fs_write_checkpoint(), once we failed in
->>>>>>>> f2fs_flush_nat_entries() or do_checkpoint(), metadata of filesystem
->>>>>>>> such as prefree bitmap, nat/sit version bitmap won't be recovered,
->>>>>>>> it may cause f2fs image to be inconsistent, let's just set CP error
->>>>>>>> flag to avoid further updates until we figure out a scheme to rollback
->>>>>>>> all metadatas in such condition.
->>>>>>>>
->>>>>>>> Reported-by: Yangtao Li <frank.li@vivo.com>
->>>>>>>> Signed-off-by: Yangtao Li <frank.li@vivo.com>
->>>>>>>> Signed-off-by: Chao Yu <chao@kernel.org>
->>>>>>>> ---
->>>>>>>>      fs/f2fs/checkpoint.c | 10 +++++++---
->>>>>>>>      1 file changed, 7 insertions(+), 3 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->>>>>>>> index 6c208108d69c..096c85022f62 100644
->>>>>>>> --- a/fs/f2fs/checkpoint.c
->>>>>>>> +++ b/fs/f2fs/checkpoint.c
->>>>>>>> @@ -1639,8 +1639,10 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
->>>>>>>>
->>>>>>>>      	/* write cached NAT/SIT entries to NAT/SIT area */
->>>>>>>>      	err = f2fs_flush_nat_entries(sbi, cpc);
->>>>>>>> -	if (err)
->>>>>>>> +	if (err) {
->>>>>>>> +		f2fs_stop_checkpoint(sbi, false);
->>>>>>>
->>>>>>> I think we should abuse this, since we can get any known ENOMEM as well.
->>>>>>
->>>>>> Yup, but one critical issue here is it can break A/B update of NAT area,
->>>>>> so, in order to fix this hole, how about using NOFAIL memory allocation
->>>>>> in f2fs_flush_nat_entries() first until we figure out the finial scheme?
->>>>>
->>>>> NOFAIL is risky, so how about adding a retry logic on ENOMEM with a message
->>>>> and then giving up if we can't get the memory? BTW, what about EIO or other
->>>>> family?
->>>>
->>>> How about this?
->>>
->>> Hmm, it seems we won't get ENOMEM.
->>>
->>> __flush_nat_entry_set
->>>    -> get_next_nat_page
->>>      -> ...
->>>       -> __get_meta_page
->>>         -> repeat on ENOMEM, but stop_checkpoint on EIO
->>
->> Correct, I missed to check __get_meta_page() and f2fs_get_meta_page_retry().
->>
->>>
->>> If we have an error here, we should have stopped checkpoint. Have you seen other
->>> issue?
->>
->> Still we should fix the case from below path?
->>
->> - f2fs_write_checkpoint
->>   - do_checkpoint
->>    - f2fs_flush_device_cache failed
-> 
-> What about adding a retry logic to deal with EIO in __submit_flush_wait()?
-> We probably need to retry submitting FLUSH commands, and then give up
-> with f2fs_stop_checkpoint(). And, then how about adding f2fs_bug_on() if
-> f2fs_flush_nat_entries() returns error without f2fs_cp_error()?
-
-Agreed, how about this?
-
- From 357da99968f6a31375ea47423b691400c5f66547 Mon Sep 17 00:00:00 2001
-From: Chao Yu <chao@kernel.org>
-Date: Mon, 19 Jul 2021 16:37:44 +0800
-Subject: [PATCH v3] f2fs: fix to stop filesystem update once CP failed
-
-During f2fs_write_checkpoint(), once we failed in
-f2fs_flush_nat_entries() or do_checkpoint(), metadata of filesystem
-such as prefree bitmap, nat/sit version bitmap won't be recovered,
-it may cause f2fs image to be inconsistent, let's just set CP error
-flag to avoid further updates until we figure out a scheme to rollback
-all metadatas in such condition.
-
-Reported-by: Yangtao Li <frank.li@vivo.com>
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v3:
-- add f2fs_bug_on in error path of f2fs_flush_nat_entries()
-- add retry logic in f2fs_flush_device_cache()
-  fs/f2fs/checkpoint.c | 12 +++++++++---
-  fs/f2fs/f2fs.h       |  1 +
-  fs/f2fs/segment.c    |  8 +++++++-
-  3 files changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index 6c208108d69c..1d5a2a867282 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -1639,8 +1639,11 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
-
-  	/* write cached NAT/SIT entries to NAT/SIT area */
-  	err = f2fs_flush_nat_entries(sbi, cpc);
--	if (err)
-+	if (err) {
-+		f2fs_err(sbi, "f2fs_flush_nat_entries failed err:%d, stop checkpoint", err);
-+		f2fs_bug_on(sbi, !f2fs_cp_error(sbi));
-  		goto stop;
-+	}
-
-  	f2fs_flush_sit_entries(sbi, cpc);
-
-@@ -1648,10 +1651,13 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
-  	f2fs_save_inmem_curseg(sbi);
-
-  	err = do_checkpoint(sbi, cpc);
--	if (err)
-+	if (err) {
-+		f2fs_err(sbi, "do_checkpoint failed err:%d, stop checkpoint", err);
-+		f2fs_stop_checkpoint(sbi, false);
-  		f2fs_release_discard_addrs(sbi);
--	else
-+	} else {
-  		f2fs_clear_prefree_segments(sbi, cpc);
-+	}
-
-  	f2fs_restore_inmem_curseg(sbi);
-  stop:
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 1feef4cb78b6..97eae0e066ee 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -548,6 +548,7 @@ enum {
-  };
-
-  #define DEFAULT_RETRY_IO_COUNT	8	/* maximum retry read IO count */
-+#define DEFAULT_RETRY_FLUSH_COUNT	3	/* maximum retry flush count */
-
-  /* congestion wait timeout value, default: 20ms */
-  #define	DEFAULT_IO_TIMEOUT	(msecs_to_jiffies(20))
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 80f26158e304..37c7a05659fe 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -776,9 +776,15 @@ int f2fs_flush_device_cache(struct f2fs_sb_info *sbi)
-  		return 0;
-
-  	for (i = 1; i < sbi->s_ndevs; i++) {
-+		int count = DEFAULT_RETRY_FLUSH_COUNT;
-+
-  		if (!f2fs_test_bit(i, (char *)&sbi->dirty_device))
-  			continue;
--		ret = __submit_flush_wait(sbi, FDEV(i).bdev);
-+
-+		do {
-+			ret = __submit_flush_wait(sbi, FDEV(i).bdev);
-+		} while (ret && --count);
-+
-  		if (ret)
-  			break;
-
--- 
-2.22.1
-
+T24gTW9uLCAyMDIxLTA4LTAyIGF0IDIxOjE2ICswMTAwLCBNYXJrIEJyb3duIHdyb3RlOg0KPiBP
+biBNb24sIEp1bCAxOSwgMjAyMSBhdCAwNToxNjo0M1BNICswODAwLCBNYXNvbiBaaGFuZyB3cm90
+ZToNCj4gPiBGcm9tOiBNYXNvbiBaaGFuZyA8TWFzb24uWmhhbmdAbWVkaWF0ZWsuY29tPg0KPiA+
+IA0KPiA+IE5vIG5lZWQgcGFzcyBpbiBzcGlfZGVsYXkgdG8gc2V0X2NzX3RpbWluZyBjYWxsYmFj
+ay4NCj4gDQo+IFRoaXMgYnJlYWtzIHRoZSBidWlsZDoNCj4gDQo+IC9tbnQva2VybmVsL2RyaXZl
+cnMvc3BpL3NwaS10ZWdyYTExNC5jOiBJbiBmdW5jdGlvbiAndGVncmFfc3BpX3Byb2JlJzoNCj4g
+L21udC9rZXJuZWwvZHJpdmVycy9zcGkvc3BpLXRlZ3JhMTE0LmM6MTMyODoyNDogZXJyb3I6IGFz
+c2lnbm1lbnQgdG8gJ2ludCAoKikoc3RydWN0IHNwaV9kZXZpY2UgKiknIGZyb20gaW5jb21wYXRp
+YmxlIHBvaW50ZXIgdHlwZSAnaW50ICgqKShzdHJ1Y3Qgc3BpX2RldmljZSAqLCBzdHJ1Y3Qgc3Bp
+X2RlbGF5ICosIHN0cnVjdCBzcGlfZGVsYXkgKiwgc3RydWN0IHNwaV9kZWxheSAqKScgWy1XZXJy
+b3I9aW5jb21wYXRpYmxlLXBvaW50ZXItdHlwZXNdDQo+ICAgbWFzdGVyLT5zZXRfY3NfdGltaW5n
+ID0gdGVncmFfc3BpX3NldF9od19jc190aW1pbmc7DQo+ICAgICAgICAgICAgICAgICAgICAgICAg
+IF4NCg0KRGVhciBNYXJrOg0KDQoJSSBoYXZlIGZpeGVkIHRoaXMgYnVpbGQgZXJyIGluIHRoaXMg
+cGF0Y2g6DQoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LXNwaS8yMDIxMDgwMzAyMTMy
+OC4yODI5MS0xLU1hc29uLlpoYW5nQG1lZGlhdGVrLmNvbS9ULyN1DQoNCg0KVGhhbmtzDQpNYXNv
+bg0K
 
