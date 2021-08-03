@@ -2,142 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FF13DE3A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3983DE3AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbhHCAng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 20:43:36 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:52697 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232311AbhHCAnd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 20:43:33 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 05F325C0167;
-        Mon,  2 Aug 2021 20:43:23 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 02 Aug 2021 20:43:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-id:content-type:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=rTy3dKsPoajPmNli8ExRtsgRJClAC4+cHirejhq0af0=; b=gHaOx2og
-        7UxXtoTnVvlBJFD4rhjsp2UJzdXIfpvua6QYeqYCW2YgY/e3hv4Nw36t/S1lYSFr
-        U0KM0VFqiXYVi31udYjYGyJUD52E2PbLvprNuq6eoV5eOm7lUqLL0fZyQf2ijPRW
-        LB8i/V9bTp83/k/+FNHobB3gXPzd1dLAKgu+mgvFyMqZwa/TEpWpCtoq5aW8GosT
-        +jfkGmbUoCnBjH9XhQ163V1R25hkphTuG/AtG8IUdh64gbdAh1amM1BCWwMHn4Fh
-        J8rlSSWmXtgRCS7rZqWll3bJWLn3ALJHJ0tIkKyfVoBUMqFPRxLmX73WhmlkSL9X
-        Bjtga70UP5z43A==
-X-ME-Sender: <xms:KJEIYf4vBGAfEVA5ewHcBKsN7xoyOKOLRlrccAJFQNz-eLlgu9KhGQ>
-    <xme:KJEIYU6_BG_KyuAW0R1NnNsZw-B9NB9PFIOWO9Dwpq0ptAveGZUXl9KpneUNfOre3
-    wf_NPLQM3cDcWZ2ic0>
-X-ME-Received: <xmr:KJEIYWfgLYCO1Xl4fz7yTSxsTi7Wu_R4vUqgq9dWvgqoGxuNyjL9BweYmq5pYcM_pBvW5VQKxZbBdX3A5xWsCg9tzixMVQyRCP8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieefgddvkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeetvedvueduheehkeejhedukeevheejkedvffdugeehkeffkeekgfehkedvleel
-    teenucffohhmrghinhepfedvrdhssgenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:KJEIYQKC_EDIXx5thghUnVKWJCBBfF6jZUG5XNYTMB_kc-Bqjm4hKw>
-    <xmx:KJEIYTLrbFr5a-aT0AOLpzvw5mCcXSlYi9n0-gB7Xe39AfuqCPngJA>
-    <xmx:KJEIYZysrQryQ8HXTPEoc9rErzUNVJKmLVqxynNuCkHXspzj3Ok8Dw>
-    <xmx:K5EIYZjz_XMXWroheeZZ8i7aJHLFN8vap22H5P22yvZ5igJMuokyUQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 2 Aug 2021 20:43:17 -0400 (EDT)
-Date:   Tue, 3 Aug 2021 10:43:13 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Stan Johnson <userm57@yahoo.com>,
-        LEROY Christophe <christophe.leroy@csgroup.eu>
-cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Nick Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH v3 31/41] powerpc/32: Dismantle
- EXC_XFER_STD/LITE/TEMPLATE
-In-Reply-To: <9b64dde3-6ebd-b446-41d9-61e8cb0d8c39@csgroup.eu>
-Message-ID: <216b7b17-28f4-7976-c338-1dedeba14ce7@linux-m68k.org>
-References: <cover.1615552866.git.christophe.leroy@csgroup.eu> <ca5795d04a220586b7037dbbbe6951dfa9e768eb.1615552867.git.christophe.leroy@csgroup.eu> <666e3ab4-372-27c2-4621-7cc3933756dd@linux-m68k.org> <20210731173954.Horde.fV2Xkw7-sxjG0DUcZ_JO_g3@messagerie.c-s.fr>
- <1d601b7c-1e39-e372-39a5-e1e98e56e2a5@linux-m68k.org> <9b64dde3-6ebd-b446-41d9-61e8cb0d8c39@csgroup.eu>
+        id S232910AbhHCAxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 20:53:43 -0400
+Received: from mail-bn8nam11on2115.outbound.protection.outlook.com ([40.107.236.115]:36320
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232311AbhHCAxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 20:53:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JLbKqYGsbTLs1j16iUQPciIR6AjaDXtvME/Ak5untUJ4egmPogBTBip2BfRQ5PBCt4hL1NDIX8J6u7iI//YHuZyHsEqYyQ888to5KEk/2zWEpd0Zi0LP1CYJhEE2jNGMvkhARfzmBpqKd0iF/BZ1YwDZl8xJlNOfnPKTs1EqlRSxi7sSeRtK92MdNkN14BY8IsupEO1GmQsGHNIjzdTwSVJ9DRufggpZClIKYn8F1dY/nKz48HbV2B0KaJq4swP3KQWL3mThlINds4qtFdx5HALvf+fTMZ37WvIwmdlYDuC1jCT9LUb79/CxwlZnzC5h4NCMMuAPl4AsmKY9xryVaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jByOASg+aE4eik3859cfIhBilRfHMjNMD6DWGOmJbGI=;
+ b=J7uCbdz5QgnAavv0QipxuZ9dRXAttiNAYqVKY0sHmtBCmg+gNEf5CSiPgi+hBI+w7BEGgRZT7DYla7ktPPQT0YjTLEkoQyUL59BkwUfFnAEliSOC8wG+ArwiqkMqiENrzBFZVvq2zjilInCptewZv93P9VIM/ongoxbrf2tE3tMtJYLUXFquC0idma2vn5vERdIt+UEAC0uL1N+m0Y4Fi/kY5zEE59uL23rcLubp7vyXBZF0yTS+DZkjXgMmPkB+ZW9rddlXQnn9Pw73VqvfY9Kvh30T0yAia/jvuQ4tnEKnNpc+UBW1NJbchYOpq3I8DpTzc2SNHSOEsGQo95aszA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=concurrent-rt.com; dmarc=pass action=none
+ header.from=concurrent-rt.com; dkim=pass header.d=concurrent-rt.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=concurrentrt.onmicrosoft.com; s=selector2-concurrentrt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jByOASg+aE4eik3859cfIhBilRfHMjNMD6DWGOmJbGI=;
+ b=pV7kZV8izxepSASQuSrZlqkpY3V1Qpz8iZHJ4VWY/W4nTTniQrRrIY07btRZ2sZFvol/Dnwqv6J3HX+8Uz5MsP4Qpn/S45/1zZKjA7xo1fsZIIyxF8b2MjaTl+ZnzD8lKSvNAerApX777KzlR2JPgzbBK6XJVA3+R4TtbwEx9f0=
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none
+ header.from=concurrent-rt.com;
+Received: from CY4PR11MB2007.namprd11.prod.outlook.com (2603:10b6:903:30::7)
+ by CY4PR1101MB2135.namprd11.prod.outlook.com (2603:10b6:910:1d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.25; Tue, 3 Aug
+ 2021 00:53:30 +0000
+Received: from CY4PR11MB2007.namprd11.prod.outlook.com
+ ([fe80::542c:7439:3edd:1a9b]) by CY4PR11MB2007.namprd11.prod.outlook.com
+ ([fe80::542c:7439:3edd:1a9b%3]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 00:53:29 +0000
+Date:   Mon, 2 Aug 2021 20:53:25 -0400
+From:   Joe Korty <joe.korty@concurrent-rt.com>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable <stable@vger.kernel.org>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Sasha Levin <sasha.levin@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4.4 00/11] Fix a potential infinite loop in RT futex-pi
+ scenarios
+Message-ID: <20210803005325.GA32484@zipoli.concurrent-rt.com>
+Reply-To: Joe Korty <joe.korty@concurrent-rt.com>
+References: <20210802134624.1934-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802134624.1934-1-thunder.leizhen@huawei.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-ClientProxiedBy: BN9PR03CA0438.namprd03.prod.outlook.com
+ (2603:10b6:408:113::23) To CY4PR11MB2007.namprd11.prod.outlook.com
+ (2603:10b6:903:30::7)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463811774-1281028418-1627951377=:28"
-Content-ID: <11d1109a-eda8-9252-f7e-84519fa8d55@nippy.intranet>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from zipoli.concurrent-rt.com (12.220.59.2) by BN9PR03CA0438.namprd03.prod.outlook.com (2603:10b6:408:113::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20 via Frontend Transport; Tue, 3 Aug 2021 00:53:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1d97ed6d-a665-499b-cbf9-08d956191c0d
+X-MS-TrafficTypeDiagnostic: CY4PR1101MB2135:
+X-Microsoft-Antispam-PRVS: <CY4PR1101MB2135C15F4BBB86FEF5D4F557A0F09@CY4PR1101MB2135.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I5bbbrv1S6ZTHDvo8hBCW9heva1o9zAwmricMuWzIUnVQyDbfFijFQ5xZBbpUszUCmqvTpEmufkAPXYmD9gvL+UnpvCDQzneC51dipK2DN18ckaYc+Pm2+mzf2GksXRAfvIFOCV0/aPveh4jtkpK8vo2uzH3S13C3CYGCP24CAd7y1iHRiiDjnynkF3rT5R77GKUQUom0b9nmNut2tteSy2Ee/Liwu0VdKUSfIazMf1IqefUcF/ZlCcbES/zG039S4Kl/Jd+bD9nhi67M8Y0bo5kPBA/6m55xFGtT0P+tKnMY4c/zuYwXsneRUuuWlT1SRhFbZiht8Ps0SDZGISSLWSYU09VBj+F+eDCLbY4XEViZ3JWtiEiMB41NSadWB60p8LmM3XzgZxQi+ZjDOjJJBX78GF9jQQenpp2icEu+K9a3YWYVJsZmqU81o7dFz8Y8sn7eHxZp3nOFy2UR14sAa2WHmXIhWbz76T9r8SiTh3A5ri8FP24/w3B4XbKy3TIy9D9YEIScAS4GJtD9s9pqgOakktR4xRzsIDYO00TNelY7Cn+sX4xkiD3QqQRAo/i3ZDrDCz2sHMfW0pJq7eD/3sHXDt48tQf2qrXpM4yLkogB4tU7qjy+MW6oNR/WUJcCyMuopr2Ukj+MQVg4AX92IEfzhSHnxfX5EUy9DsYlw820vvsOck3r2psL/U1HBgQ2KAHPo1Puj+67GQEKtUbow==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB2007.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(346002)(39840400004)(396003)(186003)(26005)(66946007)(54906003)(6666004)(55016002)(8676002)(52116002)(316002)(2906002)(7696005)(478600001)(6916009)(38100700002)(38350700002)(7416002)(86362001)(83380400001)(66556008)(66476007)(956004)(5660300002)(8936002)(44832011)(1076003)(3450700001)(33656002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SNIIadGompjOt5HxXJr4RZYTcB7+Qgs+0nDe55wW6QffgIBoREsuzaZXaRue?=
+ =?us-ascii?Q?lc/hSF8YyZ25ntF9IcSWGEpj3Je9BCPAz5incTddjOihAb5w8+PcIQD8iBwl?=
+ =?us-ascii?Q?Js9y+hP+d4fdMZCksilRv7xVUVXnVQqBDjTvDRU/OlTBROgnReOgHjXX4JdS?=
+ =?us-ascii?Q?QbUCt9nU3JkhbZGRbnN1uSxMcQlACRcYHXipD/fQfyt4cJM0H2Xa8uI9Hww9?=
+ =?us-ascii?Q?EDWVqHrokCrL7yOHSuVIhHbTH/xEc0q/LkopSF6ikVnUOD2YyRw4H9I91pBf?=
+ =?us-ascii?Q?F5ysYYn3FaiEBnlvZxY76VgM51oT7ufa8KMGrwbetVmc24vEWMmTE3Ndcngs?=
+ =?us-ascii?Q?NbYH/dxo49VHrmkLxd8FUezfIbfrmhrlt/HVAxK16VqC85n4ImxOt+KzssWZ?=
+ =?us-ascii?Q?vqXkkKHjzqT2ogCyItIw2VGWsMmuoNbrscwaawoUFCIJ17oTkvpPUSeVtIs9?=
+ =?us-ascii?Q?Ke5XE0w1H7PsH5CBdn684Eo2fa7f6sTXyAtx+I8qcNo70T6MO3X8xrvcuNZd?=
+ =?us-ascii?Q?Tx9pqrep8D6JAxo4JK+A5SQ96dcCbNl5MyJx8jAJaDzge4NVa/i97hpuOWXc?=
+ =?us-ascii?Q?/AZB9kcAOrMD963wGZduU9RxEESOEfadZY4rfC2LyoRgwhIBVjefV2Pe5RrC?=
+ =?us-ascii?Q?EnHY8+Va39I9ns6TSQmA70jR4cRJm1jdZjnGx9SxiiOz0TpqYbXgqRUTPtll?=
+ =?us-ascii?Q?aAE3VmedkIcgCkdz0AmuS3HUdn0BGxW6y3DRZYwF1QjiX+b0cJsCJnXKl1Lk?=
+ =?us-ascii?Q?nyJrrshqXvbrzFHBWarSpKN1HctKz7fPSpM4nNwoDHBbYX64fD+lnEIiSdbi?=
+ =?us-ascii?Q?DlCU953t8Ox1EigBoJni/6NP+Vy9MxSEtkQYHdQ6blWwqCgORg5dgqdn4Dok?=
+ =?us-ascii?Q?TiTgc56p6S3AWXiwlVQt00FuQk+RnMDEsJaAkLSwus/t2SSdTUwbw+GvVLF9?=
+ =?us-ascii?Q?xE+m/7+UjnuqbaKlL+q+gkvnd+IEoRCrDERv4k0Nj2FvqztJOFlo5kMnnvEL?=
+ =?us-ascii?Q?r4Y11xIBUuMXgVpMR6GANgyFls6vAvI5PfBJKsijEU5h4yU38ElRGwcsl6Lr?=
+ =?us-ascii?Q?g6mXkXKmIdMK2Y1fW/mB8dir33+AeVuac9Trd8DogIUx9E7dK4liTLK6FbyC?=
+ =?us-ascii?Q?atgAzhdKh01wc9o7R7ZvTcHJFWRhyeRtXpP/NYyDPZZS6CPQ7BkB4u10DK7T?=
+ =?us-ascii?Q?evhn+d4dUGSRqiqxsKyyk553tpxHdFuA0uNUI2Uoa2eRfXJ6btB237NaNGgP?=
+ =?us-ascii?Q?0vfBPHWUireReze2Ayal3DNuSogMrbwFUmBMAd19DKBPxxP9/VraWS7jmwkI?=
+ =?us-ascii?Q?4r0vW4ahNnMUqH3Z37eM0KLD?=
+X-OriginatorOrg: concurrent-rt.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d97ed6d-a665-499b-cbf9-08d956191c0d
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB2007.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 00:53:29.6492
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 38747689-e6b0-4933-86c0-1116ee3ef93e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: anE41yWK7/gP5iDdnlPGVLnRseJDus27+K29IahGaXGkqTEnrAxuW0ncEmdxqe/Cv7nGfg+07AVoGBvqCdxUOgbh5uT6jj4lnFdvKnLnqTI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Mon, Aug 02, 2021 at 09:46:13PM +0800, Zhen Lei wrote:
+> Commit 73d786bd043e "futex: Rework inconsistent rt_mutex/futex_q state"
+> mentions that it could cause an infinite loop, and will fix it in the later
+> patches:
+> bebe5b514345f09 futex: Futex_unlock_pi() determinism
+> cfafcd117da0216 futex: Rework futex_lock_pi() to use rt_mutex_*_proxy_lock()
+> 
+> But at the moment they're not backported. In a single-core environment, the
+> probability of triggering is high.
+> 
+> I also backported commit b4abf91047cf ("rtmutex: Make wait_lock irq safe"),
+> it fixes a potential deadlock problem. Although it hasn't actually been
+> triggered in our environment at the moment.
+> 
+> Other patches are used to resolve conflicts or fix problems caused by new
+> patches.
+> 
+> 
+> Anna-Maria Gleixner (1):
+>   rcu: Update documentation of rcu_read_unlock()
+> 
+> Mike Galbraith (1):
+>   futex: Handle transient "ownerless" rtmutex state correctly
+> 
+> Peter Zijlstra (6):
+>   futex: Cleanup refcounting
+>   futex,rt_mutex: Introduce rt_mutex_init_waiter()
+>   futex: Pull rt_mutex_futex_unlock() out from under hb->lock
+>   futex: Rework futex_lock_pi() to use rt_mutex_*_proxy_lock()
+>   futex: Futex_unlock_pi() determinism
+>   futex,rt_mutex: Fix rt_mutex_cleanup_proxy_lock()
+> 
+> Thomas Gleixner (3):
+>   futex: Rename free_pi_state() to put_pi_state()
+>   rtmutex: Make wait_lock irq safe
+>   futex: Avoid freeing an active timer
+> 
+>  include/linux/rcupdate.h        |   4 +-
+>  kernel/futex.c                  | 245 +++++++++++++++++++++-----------
+>  kernel/locking/rtmutex.c        | 185 +++++++++++++-----------
+>  kernel/locking/rtmutex_common.h |   2 +-
+>  4 files changed, 262 insertions(+), 174 deletions(-)
 
----1463811774-1281028418-1627951377=:28
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <86b5d84-d157-9cb8-3a40-99b6e82a91fa@nippy.intranet>
 
-On Mon, 2 Aug 2021, LEROY Christophe wrote:
+To all concerned,
 
-> Le 01/08/2021 =C3=A0 03:21, Finn Thain a =C3=A9crit=C2=A0:
-> > On Sat, 31 Jul 2021, Christophe Leroy wrote:
-> >=20
-> > > >=20
-> > > > Stan Johnson contacted me about a regression in mainline that he
-> > > > observed on his G3 Powerbooks. Using 'git bisect' we determined tha=
-t
-> > > > this patch was the cause of the regression, i.e. commit 4c0104a83fc=
-3
-> > > > ("powerpc/32: Dismantle EXC_XFER_STD/LITE/TEMPLATE").
-> > > >=20
-> > > > When testing 4c0104a83fc and all subsequent builds, various user
-> > > > processes were liable to segfault. Here is the console log that Sta=
-n
-> > > > provided:
-> > >=20
-> > > Hi, i will be able to look at that more in details next week, however=
- I
-> > > have a few preliminary qurstions.
-> > >=20
-> > > Can you reliabily reproduce the problem with the said commit, and can
-> > > you reliabily run without problem with the parent commit ?
-> >=20
-> > Yes and yes. (I already asked Stan to establish those things before I
-> > contacted the list.)
->=20
-> I think I found the problem with that commit. Can you retry with the foll=
-owing
-> change:
->=20
-> diff --git a/arch/powerpc/kernel/head_book3s_32.S
-> b/arch/powerpc/kernel/head_book3s_32.S
-> index 0a3d7d4a9ec4..a294103a91a1 100644
-> --- a/arch/powerpc/kernel/head_book3s_32.S
-> +++ b/arch/powerpc/kernel/head_book3s_32.S
-> @@ -299,7 +299,7 @@ ALT_MMU_FTR_SECTION_END_IFSET(MMU_FTR_HPTE_TABLE)
->  =09EXCEPTION_PROLOG_1
->  =09EXCEPTION_PROLOG_2 0x300 DataAccess handle_dar_dsisr=3D1
->  =09prepare_transfer_to_handler
-> -=09lwz=09r5, _DSISR(r11)
-> +=09lwz=09r5, _DSISR(r1)
->  =09andis.=09r0, r5, DSISR_DABRMATCH@h
->  =09bne-=091f
->  =09bl=09do_page_fault
+I have verified that this series of patches, when applied
+to 4.4.277, passes the futex-unlock-pi replicator I posted
+to lkml on July 19.
 
-That patch doesn't apply to mainline. This version might help.
+  Subject: [BUG] 4.4.262: infinite loop in futex_unlock_pi (EAGAIN loop)
 
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/hea=
-d_book3s_32.S
-index 764edd860ed4..68e5c0a7e99d 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -300,7 +300,7 @@ ALT_MMU_FTR_SECTION_END_IFSET(MMU_FTR_HPTE_TABLE)
- =09EXCEPTION_PROLOG_1
- =09EXCEPTION_PROLOG_2 INTERRUPT_DATA_STORAGE DataAccess handle_dar_dsisr=
-=3D1
- =09prepare_transfer_to_handler
--=09lwz=09r5, _DSISR(r11)
-+=09lwz=09r5, _DSISR(r1)
- =09andis.=09r0, r5, DSISR_DABRMATCH@h
- =09bne-=091f
- =09bl=09do_page_fault
----1463811774-1281028418-1627951377=:28--
+Acked-by: Joe Korty <joe.korty@concurrent-rt.com>
+
