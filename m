@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C523DF288
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985923DF289
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbhHCQ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        id S232252AbhHCQ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232252AbhHCQ1t (ORCPT
+        with ESMTP id S230444AbhHCQ2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:27:49 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7557C061757;
-        Tue,  3 Aug 2021 09:27:37 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2804:14c:1a9:2434:b693:c9:5cb6:b688])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 946C51F42408;
-        Tue,  3 Aug 2021 17:27:26 +0100 (BST)
-From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Russell King <linux@armlinux.org.uk>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, ~lkcamp/patches@lists.sr.ht,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v3 5/5] ARM: dts: qcom: msm8974-hammerhead: Enable and configure flash LED node
-Date:   Tue,  3 Aug 2021 13:26:41 -0300
-Message-Id: <20210803162641.1525980-6-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210803162641.1525980-1-nfraprado@collabora.com>
-References: <20210803162641.1525980-1-nfraprado@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Tue, 3 Aug 2021 12:28:03 -0400
+Received: from mail-ua1-x949.google.com (mail-ua1-x949.google.com [IPv6:2607:f8b0:4864:20::949])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16066C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 09:27:52 -0700 (PDT)
+Received: by mail-ua1-x949.google.com with SMTP id 45-20020a9f22b00000b02902a181c33654so6999171uan.17
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 09:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=xcdKF8i+1pu0QNFs/CMj/QlbcYnCiXlJVcu/eX7qzmA=;
+        b=CDSVRMYu8PSUpk6wXSGgxDIylWEUQV7uQzOuxqGrq6n0tgPQd2W0RFZOnVOxBvdxir
+         gYRgbUaTHxCsok5NpNLumXsW4YYuMOpMhE+7hlw8qV8PO3BsgEoqwzTynXpVxLh0Vg3L
+         piAw3z8mIuS2s/I2Mzc6xOnmf7QgcROFGj9y0HAq7JtQKgAYkOBZUexckEC9vBrSOWru
+         rFswTei9yVyVDXBAVtPiVHTPRKg0NMRKhBgF4EL9OapKJneE3GT/CjhpHUFTvsrtSQ6y
+         JueRWQhWJdxRH3rxaZbH8OxqV5zTNMUczOu/1YYPovzGRNPhz7XFARnwmspjkf1KQ2qJ
+         fWqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=xcdKF8i+1pu0QNFs/CMj/QlbcYnCiXlJVcu/eX7qzmA=;
+        b=FNqlx8et42DMxJH3pYZD/GZGxdgAlIuUQekx47uwuX0Ag3JmyFr7RBFrygu+F4oWTT
+         CG+tEdkCACRjvTbzVfx233OpRbjd0Mno8zi35II9b8VoU0K861WTdsaj6ycg6n0Xe38e
+         kw6ra8uBwroDFXjXEgLUR1uksL9mSsygJu2W3TBCubm1SvlWwTUdBo+03xA7tSQx1zU9
+         waQGwfj7b+3YLQMZAdy73+9ju64L6KTtKFE4LV0DVeAhei43TY+gI1WcJrLRcpCWoFZV
+         bNs/8lL/TJgbjCbK7vJkibJGvSquBOCwPdUcmano1Bw5L6OZHVv4G39dDZMzw2RygeNG
+         Dw/w==
+X-Gm-Message-State: AOAM532qt9JMvqQ27htPh+rbI1kwGc8EghoFr9zM+L9t5kHHgRQbb17E
+        tnLb8Es8bfDVD2a90M3a7OrYQkXm0i2gKPYcJ9SqEg==
+X-Google-Smtp-Source: ABdhPJxsaBO5bT9DJe8VDIih1GPLXi/ilvOGO3DGbzQD4MwzK7Y64T1x11HpjLMWoXXaZ/XE0IOI2QJdeYjNCHI2RLROtg==
+X-Received: from mustash.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:337b])
+ (user=richardsonnick job=sendgmr) by 2002:a05:6122:1692:: with SMTP id
+ 18mr13264491vkl.20.1628008071226; Tue, 03 Aug 2021 09:27:51 -0700 (PDT)
+Date:   Tue,  3 Aug 2021 16:27:35 +0000
+In-Reply-To: <47e01747a5c648c8809c77055e981e80@huawei.com>
+Message-Id: <20210803162739.2363542-1-richardsonnick@google.com>
+Mime-Version: 1.0
+References: <47e01747a5c648c8809c77055e981e80@huawei.com>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH v4] pktgen: Remove redundant clone_skb override
+From:   Nicholas Richardson <richardsonnick@google.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     nrrichar@ncsu.edu, arunkaly@google.com,
+        Nick Richardson <richardsonnick@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Leesoo Ahn <dev@ooseel.net>, Ye Bin <yebin10@huawei.com>,
+        Di Zhu <zhudi21@huawei.com>,
+        Yejune Deng <yejune.deng@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the flash LED node from PM8941 and configure the LEDs. This
-enables the Nexus 5 to make use of the LEDs as flash or lantern.
+From: Nick Richardson <richardsonnick@google.com>
 
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+When the netif_receive xmit_mode is set, a line is supposed to set
+clone_skb to a default 0 value. This line is made redundant due to a
+preceding line that checks if clone_skb is more than zero and returns
+-ENOTSUPP.
+
+Overriding clone_skb to 0 does not make any difference to the behavior
+because if it was positive we return error. So it can be either 0 or
+negative, and in both cases the behavior is the same.
+
+Remove redundant line that sets clone_skb to zero.
+
+Signed-off-by: Nick Richardson <richardsonnick@google.com>
 ---
+ net/core/pktgen.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Added in v3
-
- .../qcom-msm8974-lge-nexus5-hammerhead.dts    | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-index 30ee913faae6..78ac56be81b3 100644
---- a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-@@ -759,4 +759,24 @@ otg {
- 			};
- 		};
- 	};
-+
-+	pm8941@1 {
-+		spmi-flash-leds@d300 {
-+			status = "okay";
-+
-+			led@0 {
-+				led-max-microamp = <200000>;
-+				flash-max-microamp = <1000000>;
-+				flash-max-timeout-us = <1280000>;
-+				default-state = "off";
-+			};
-+
-+			led@1 {
-+				led-max-microamp = <200000>;
-+				flash-max-microamp = <1000000>;
-+				flash-max-timeout-us = <1280000>;
-+				default-state = "off";
-+			};
-+		};
-+	};
- };
+diff --git a/net/core/pktgen.c b/net/core/pktgen.c
+index 7e258d255e90..314f97acf39d 100644
+--- a/net/core/pktgen.c
++++ b/net/core/pktgen.c
+@@ -1190,11 +1190,6 @@ static ssize_t pktgen_if_write(struct file *file,
+ 			 * pktgen_xmit() is called
+ 			 */
+ 			pkt_dev->last_ok = 1;
+-
+-			/* override clone_skb if user passed default value
+-			 * at module loading time
+-			 */
+-			pkt_dev->clone_skb = 0;
+ 		} else if (strcmp(f, "queue_xmit") == 0) {
+ 			pkt_dev->xmit_mode = M_QUEUE_XMIT;
+ 			pkt_dev->last_ok = 1;
 -- 
-2.32.0
+2.32.0.554.ge1b32706d8-goog
 
