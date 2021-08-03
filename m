@@ -2,81 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C303DE726
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C90C03DE729
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 09:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhHCHVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 03:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233966AbhHCHVo (ORCPT
+        id S234163AbhHCHW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 03:22:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22753 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233966AbhHCHW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:21:44 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEE9C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 00:21:34 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id hw6so20987549ejc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=zk0yCGi4r/e9LLvJfBDttH3vA3pT29iC5wtMDHsFnhI=;
-        b=Gu/y1gR/N5bVT2sjUnGBnBISedvSaO8jO1zbORVDt+181l16GoiDJRNb3almtafKxf
-         prS7kDlPqtoTqmapvgc/t6MEl3BrgTJz1MYLX2u5R2KInDMX6x9mFVXI0rzHv+ijgYER
-         RKVvaTla/ARDSgLG9t1ggTNoXCJrkP9hCPmvZhD/fGc4Qj6WmGOqmD+7Bh3qpJL4ThFn
-         hxfYHf6xtAOXTcytYClzpuXskwYmLWzeWUImmVJ+tNJvEa6N6bqFm2DSeHWFoU2SobWu
-         f1PLD0sYwGjfFVd9I78iZOp0010oD4g7gVgLmtN1kNISiGZrSnZTuo9B5YxtYa1lDdVA
-         q9Sw==
+        Tue, 3 Aug 2021 03:22:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627975367;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vvnHHx5SLZ5txIch7uBR/ScqaaZaH/q4GjsYjYEelMc=;
+        b=EH1MvqpjUFKZkzwpqLPWipLAAX2JvNP/40XWQSmQeo6LWBsP4Kmh+UPJ3X23XvDSaVJBY9
+        9/9NbFla9laCQVN+x+IyMXKKU5Gv0i9h1drgQx+mS9zoh2289+wgl/0+QR+Lmc05vMX2oh
+        t5fRLMftLLLf3xPe0pULoCx0JNLyC1c=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-571-Sv0By2ONMYmp-Uu-b2RHLQ-1; Tue, 03 Aug 2021 03:22:44 -0400
+X-MC-Unique: Sv0By2ONMYmp-Uu-b2RHLQ-1
+Received: by mail-wr1-f72.google.com with SMTP id p12-20020a5d68cc0000b02901426384855aso7223155wrw.11
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 00:22:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=zk0yCGi4r/e9LLvJfBDttH3vA3pT29iC5wtMDHsFnhI=;
-        b=l0gH/eXzOnmjtfEzcS0OR+YLStMgYmLcBosnOQPzH5zT9RdltYYAnbWmviRXnpshnm
-         vjoQKG6/Vgk2AM1PKfRKeAODs3Jw03gEBx8rjdk+ggxy2Xe0AQmjWQXWE36K/OBgFR37
-         rgJ8f1uIldlc8KKIPIAPnvDfIg9+fEx4EDyOU8lgJ/AROBRrdic6p+mGX6OLPMIn++gN
-         kXPiRHWiqxDArmv2db8Eg45Nw4BuYggU+5qUPZfgdLhdahXn//GuYBD9tG6bXR2YGWtJ
-         AXsXZtQkWQHPjePfK2/HTfo8dbqYCOmjf6ej9tCupAUCD382i8VH6Fw/5tH26xnMEaVk
-         oxKw==
-X-Gm-Message-State: AOAM531eETloPtLY/FsFzadtwf+pF4Okfu0fmyxak5qEyL3DPBcRapf6
-        oZWtQ3Dz5RauSDrSnumUoSY=
-X-Google-Smtp-Source: ABdhPJyJp6pv1N3arKVhJ2ltXsGX2o4Aoxf7YbAcMHytQpVOJpFMwTDLyoNtSFlWMI/3bfdtTxUwww==
-X-Received: by 2002:a17:906:b794:: with SMTP id dt20mr18676491ejb.363.1627975292930;
-        Tue, 03 Aug 2021 00:21:32 -0700 (PDT)
-Received: from agape.jhs ([5.171.72.207])
-        by smtp.gmail.com with ESMTPSA id mc11sm5280061ejb.110.2021.08.03.00.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 00:21:32 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 09:21:30 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: commit c7e88ecbe328 ("staging: r8188eu: remove rtw_buf_free()
- function")
-Message-ID: <20210803072129.GA1422@agape.jhs>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vvnHHx5SLZ5txIch7uBR/ScqaaZaH/q4GjsYjYEelMc=;
+        b=WK4PNvceiUehsroIbTHzKkIEOJircXu+mcg9Vz7I6aBXrEtkrnyVmSYZcnxt88T/AP
+         gAu5CfrSPBSv1R0yuYA0w53hTan5WI2Im9EstU42yexszWMjpH7zdetfGGgduZA+0VlR
+         OMUTlNqveF8PFckeQ1avxa5raAqUR2yGbhwU0uxsiLK/msEUqO6L8pVDCu2sTcRcBOEw
+         mvdNxxQAhEQNu1eMDiTZmVDbZulYjxkqHw8uhwskCYJqMD9X1Z4DDDMyFZ7CdsqkfGsG
+         rLaJ5eMAk0O+Z/GNkl3glKerT2FdKQ9vx9A9fF7d+rZIr6umFDHGzWQmKzBICQz5kvkf
+         O/mw==
+X-Gm-Message-State: AOAM530bVfiZLhHKfnCwd5G+383ehQmojzcpoESp2dOeY6y888y8ME81
+        6SmmaV2InpuNjX4VpbXfgV2IfNIezMBM7XgtsbPeuXd1rwsFBEhwC0u9Ecd0cCP85qcnJwbvrC4
+        i8YqwnLHTeU288S5BKKPaaBCg
+X-Received: by 2002:a1c:7f50:: with SMTP id a77mr20328710wmd.163.1627975363072;
+        Tue, 03 Aug 2021 00:22:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+tgS1Mk8R2aPdLRZYExFRWj4Yx3qDfpTy+W7fwabL4DjFpr/pDuM96T7v5V0HkrgnPGd44w==
+X-Received: by 2002:a1c:7f50:: with SMTP id a77mr20328690wmd.163.1627975362815;
+        Tue, 03 Aug 2021 00:22:42 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id w5sm15777146wro.45.2021.08.03.00.22.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 00:22:42 -0700 (PDT)
+Subject: Re: [PATCH v2] KVM: SVM: improve the code readability for ASID
+ management
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Alper Gun <alpergun@google.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Peter Gonda <pgonda@google.com>
+References: <20210802180903.159381-1-mizhang@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a737d476-05dc-5aea-99ec-8960fcb9fc2f@redhat.com>
+Date:   Tue, 3 Aug 2021 09:22:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210802180903.159381-1-mizhang@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Greg,
+On 02/08/21 20:09, Mingwei Zhang wrote:
+> KVM SEV code uses bitmaps to manage ASID states. ASID 0 was always skipped
+> because it is never used by VM. Thus, in existing code, ASID value and its
+> bitmap postion always has an 'offset-by-1' relationship.
+> 
+> Both SEV and SEV-ES shares the ASID space, thus KVM uses a dynamic range
+> [min_asid, max_asid] to handle SEV and SEV-ES ASIDs separately.
+> 
+> Existing code mixes the usage of ASID value and its bitmap position by
+> using the same variable called 'min_asid'.
+> 
+> Fix the min_asid usage: ensure that its usage is consistent with its name;
+> allocate extra size for ASID 0 to ensure that each ASID has the same value
+> with its bitmap position. Add comments on ASID bitmap allocation to clarify
+> the size change.
+> 
+> v1 -> v2:
+>   - change ASID bitmap size to incorporate ASID 0 [sean]
+>   - remove the 'fixes' line in commit message. [sean/joerg]
+> 
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Alper Gun <alpergun@google.com>
+> Cc: Dionna Glaze <dionnaglaze@google.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Vipin Sharma <vipinsh@google.com>
+> Cc: Peter Gonda <pgonda@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> ---
+>   arch/x86/kvm/svm/sev.c | 36 +++++++++++++++++++++---------------
+>   1 file changed, 21 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 8d36f0c73071..42d46c30f313 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -63,6 +63,7 @@ static DEFINE_MUTEX(sev_bitmap_lock);
+>   unsigned int max_sev_asid;
+>   static unsigned int min_sev_asid;
+>   static unsigned long sev_me_mask;
+> +static unsigned int nr_asids;
+>   static unsigned long *sev_asid_bitmap;
+>   static unsigned long *sev_reclaim_asid_bitmap;
+>   
+> @@ -77,11 +78,11 @@ struct enc_region {
+>   /* Called with the sev_bitmap_lock held, or on shutdown  */
+>   static int sev_flush_asids(int min_asid, int max_asid)
+>   {
+> -	int ret, pos, error = 0;
+> +	int ret, asid, error = 0;
+>   
+>   	/* Check if there are any ASIDs to reclaim before performing a flush */
+> -	pos = find_next_bit(sev_reclaim_asid_bitmap, max_asid, min_asid);
+> -	if (pos >= max_asid)
+> +	asid = find_next_bit(sev_reclaim_asid_bitmap, nr_asids, min_asid);
+> +	if (asid > max_asid)
+>   		return -EBUSY;
+>   
+>   	/*
+> @@ -114,15 +115,15 @@ static bool __sev_recycle_asids(int min_asid, int max_asid)
+>   
+>   	/* The flush process will flush all reclaimable SEV and SEV-ES ASIDs */
+>   	bitmap_xor(sev_asid_bitmap, sev_asid_bitmap, sev_reclaim_asid_bitmap,
+> -		   max_sev_asid);
+> -	bitmap_zero(sev_reclaim_asid_bitmap, max_sev_asid);
+> +		   nr_asids);
+> +	bitmap_zero(sev_reclaim_asid_bitmap, nr_asids);
+>   
+>   	return true;
+>   }
+>   
+>   static int sev_asid_new(struct kvm_sev_info *sev)
+>   {
+> -	int pos, min_asid, max_asid, ret;
+> +	int asid, min_asid, max_asid, ret;
+>   	bool retry = true;
+>   	enum misc_res_type type;
+>   
+> @@ -142,11 +143,11 @@ static int sev_asid_new(struct kvm_sev_info *sev)
+>   	 * SEV-enabled guests must use asid from min_sev_asid to max_sev_asid.
+>   	 * SEV-ES-enabled guest can use from 1 to min_sev_asid - 1.
+>   	 */
+> -	min_asid = sev->es_active ? 0 : min_sev_asid - 1;
+> +	min_asid = sev->es_active ? 1 : min_sev_asid;
+>   	max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
+>   again:
+> -	pos = find_next_zero_bit(sev_asid_bitmap, max_sev_asid, min_asid);
+> -	if (pos >= max_asid) {
+> +	asid = find_next_zero_bit(sev_asid_bitmap, max_sev_asid, min_asid);
+> +	if (asid > max_asid) {
+>   		if (retry && __sev_recycle_asids(min_asid, max_asid)) {
+>   			retry = false;
+>   			goto again;
+> @@ -156,11 +157,11 @@ static int sev_asid_new(struct kvm_sev_info *sev)
+>   		goto e_uncharge;
+>   	}
+>   
+> -	__set_bit(pos, sev_asid_bitmap);
+> +	__set_bit(asid, sev_asid_bitmap);
+>   
+>   	mutex_unlock(&sev_bitmap_lock);
+>   
+> -	return pos + 1;
+> +	return asid;
+>   e_uncharge:
+>   	misc_cg_uncharge(type, sev->misc_cg, 1);
+>   	put_misc_cg(sev->misc_cg);
+> @@ -1854,12 +1855,17 @@ void __init sev_hardware_setup(void)
+>   	min_sev_asid = edx;
+>   	sev_me_mask = 1UL << (ebx & 0x3f);
+>   
+> -	/* Initialize SEV ASID bitmaps */
+> -	sev_asid_bitmap = bitmap_zalloc(max_sev_asid, GFP_KERNEL);
+> +	/*
+> +	 * Initialize SEV ASID bitmaps. Allocate space for ASID 0 in the bitmap,
+> +	 * even though it's never used, so that the bitmap is indexed by the
+> +	 * actual ASID.
+> +	 */
+> +	nr_asids = max_sev_asid + 1;
+> +	sev_asid_bitmap = bitmap_zalloc(nr_asids, GFP_KERNEL);
+>   	if (!sev_asid_bitmap)
+>   		goto out;
+>   
+> -	sev_reclaim_asid_bitmap = bitmap_zalloc(max_sev_asid, GFP_KERNEL);
+> +	sev_reclaim_asid_bitmap = bitmap_zalloc(nr_asids, GFP_KERNEL);
+>   	if (!sev_reclaim_asid_bitmap) {
+>   		bitmap_free(sev_asid_bitmap);
+>   		sev_asid_bitmap = NULL;
+> @@ -1904,7 +1910,7 @@ void sev_hardware_teardown(void)
+>   		return;
+>   
+>   	/* No need to take sev_bitmap_lock, all VMs have been destroyed. */
+> -	sev_flush_asids(0, max_sev_asid);
+> +	sev_flush_asids(1, max_sev_asid);
+>   
+>   	bitmap_free(sev_asid_bitmap);
+>   	bitmap_free(sev_reclaim_asid_bitmap);
+> 
 
-I followed the discussion about the bug that was
-introduced by commit c7e88ecbe328. But I can't
-understand why this patch introduced such a bug.
-In the changelog of the revert patch you wrote
-that you forgot how pointers work (:-D), but
-I think I forgot either (if ever known :P).
+Queued, thanks.
 
-Do you have any idea of what happened? This
-topic could give us all deeper understanding
-of kernel memory management.
+Paolo
 
-Thank you in advance,
-
-fabio
