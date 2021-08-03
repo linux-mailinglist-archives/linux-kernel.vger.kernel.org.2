@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0873DF55B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0373DF54A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 21:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239780AbhHCTTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 15:19:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24410 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239714AbhHCTTF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 15:19:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628018334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+5BC1mFHM8gqsESWA6R9wx6W+Jva1HWfryPTXX6lIUw=;
-        b=hwW94Z1q4LPzh3jpiBR1mkJgskKqsTj23SeVjZI1lxW/57PYtMXYoFBhtfGrgnMKrizvyu
-        kSv+kc6UJUpbDvCNjl26N71MThaJNhCunXkBT9Kuvr1YPJJWT/UardnkF12r6ERnzpLy0a
-        s/H3ipUi5WfuRy/Wks2iIBftk9axCQE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-GIPZ1TGXPMCWBUpDsykEQQ-1; Tue, 03 Aug 2021 15:18:52 -0400
-X-MC-Unique: GIPZ1TGXPMCWBUpDsykEQQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 751B81084F56;
-        Tue,  3 Aug 2021 19:18:51 +0000 (UTC)
-Received: from max.com (unknown [10.40.193.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F1B8E60C0F;
-        Tue,  3 Aug 2021 19:18:48 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH v5 07/12] gfs2: Fix mmap + page fault deadlocks for buffered I/O
-Date:   Tue,  3 Aug 2021 21:18:13 +0200
-Message-Id: <20210803191818.993968-8-agruenba@redhat.com>
-In-Reply-To: <20210803191818.993968-1-agruenba@redhat.com>
-References: <20210803191818.993968-1-agruenba@redhat.com>
+        id S239618AbhHCTSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 15:18:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238188AbhHCTSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 15:18:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2D4661037;
+        Tue,  3 Aug 2021 19:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628018307;
+        bh=Ls8CHkpBnIy6o43INUTkceCYHQjgavmnxsmD78va1Rk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kLqXMEY8C39pJI+Gt66lw/xI0qFymKayRjVKoOOi3ZjlWIAmesq8AYOgHYhiYv8pX
+         bX8pIoE7SS3IQZczuX+d9/xSChaZKZjdp0qciy8FaJO/X4Q74UZCJvJo9vy/iqGx2Q
+         ApR+kqdcbXB97ju0fYYYs+XtD803oe9yqk4Y3XwpzEtkIQJxrjjobbpTMs+QSOu5Gi
+         05I3N5rOPrF+zVw17EKo69J0jHDtEulT+cXR8/uBkVydJqI6A0fA3sDSvPg1/BPsfp
+         qfNNcWOCnUkcRYyLTsXbUhCxUtz22qB5cg3g8UzU0nm9i1k8DZnbTXFHD4trbumu2U
+         vixkYquKjAEMw==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] netfilter: ipset: Fix maximal range check in hash_ipportnet4_uadt()
+Date:   Tue,  3 Aug 2021 12:18:13 -0700
+Message-Id: <20210803191813.282980-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0.rc0
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the .read_iter and .write_iter file operations, we're accessing
-user-space memory while holding the inodes glock.  There's a possibility
-that the memory is mapped to the same file, in which case we'd recurse on
-the same glock.
+Clang warns:
 
-More complex scenarios can involve multiple glocks, processes, and even cluster
-nodes.
+net/netfilter/ipset/ip_set_hash_ipportnet.c:249:29: warning: variable
+'port_to' is uninitialized when used here [-Wuninitialized]
+        if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
+                                   ^~~~~~~
+net/netfilter/ipset/ip_set_hash_ipportnet.c:167:45: note: initialize the
+variable 'port_to' to silence this warning
+        u32 ip = 0, ip_to = 0, p = 0, port, port_to;
+                                                   ^
+                                                    = 0
+net/netfilter/ipset/ip_set_hash_ipportnet.c:249:39: warning: variable
+'port' is uninitialized when used here [-Wuninitialized]
+        if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
+                                             ^~~~
+net/netfilter/ipset/ip_set_hash_ipportnet.c:167:36: note: initialize the
+variable 'port' to silence this warning
+        u32 ip = 0, ip_to = 0, p = 0, port, port_to;
+                                          ^
+                                           = 0
+2 warnings generated.
 
-Avoids these kinds of problems by disabling page faults while holding a glock.
-If a page fault occurs, we either end up with a partial read or write, or with
--EFAULT if nothing could be read or written.  In that case, we drop the glock,
-fault in the requested pages manually, and repeat the operation.
+The range check was added before port and port_to are initialized.
+Shuffle the check after the initialization so that the check works
+properly.
 
-This locking problem in gfs2 was originally reported by Jan Kara.  Linus came
-up with the proposal to disable page faults.  Many thanks to Al Viro and
-Matthew Wilcox for their feedback as well.
-
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Fixes: 7fb6c63025ff ("netfilter: ipset: Limit the maximal range of consecutive elements to add/delete")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- fs/gfs2/file.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ net/netfilter/ipset/ip_set_hash_ipportnet.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index 55ec1cadc9e6..c0f86a28f1bf 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -843,6 +843,12 @@ static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 	size_t written = 0;
- 	ssize_t ret;
- 
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we drop the
-+	 * inode glock, fault in the pages manually, and retry.
-+	 */
-+
- 	if (iocb->ki_flags & IOCB_DIRECT) {
- 		ret = gfs2_file_direct_read(iocb, to, &gh);
- 		if (likely(ret != -ENOTBLK))
-@@ -864,13 +870,20 @@ static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+diff --git a/net/netfilter/ipset/ip_set_hash_ipportnet.c b/net/netfilter/ipset/ip_set_hash_ipportnet.c
+index b293aa1ff258..7df94f437f60 100644
+--- a/net/netfilter/ipset/ip_set_hash_ipportnet.c
++++ b/net/netfilter/ipset/ip_set_hash_ipportnet.c
+@@ -246,9 +246,6 @@ hash_ipportnet4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 		ip_set_mask_from_to(ip, ip_to, cidr);
  	}
- 	ip = GFS2_I(iocb->ki_filp->f_mapping->host);
- 	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
-+retry:
- 	ret = gfs2_glock_nq(&gh);
- 	if (ret)
- 		goto out_uninit;
-+	pagefault_disable();
- 	ret = generic_file_read_iter(iocb, to);
-+	pagefault_enable();
- 	if (ret > 0)
- 		written += ret;
- 	gfs2_glock_dq(&gh);
-+	if (unlikely(iov_iter_count(to) && (ret > 0 || ret == -EFAULT)) &&
-+	    iter_is_iovec(to) &&
-+	    fault_in_iov_iter_writeable(to, SIZE_MAX) != 0)
-+		goto retry;
- out_uninit:
- 	gfs2_holder_uninit(&gh);
- 	return written ? written : ret;
-@@ -882,9 +895,22 @@ static ssize_t gfs2_file_buffered_write(struct kiocb *iocb, struct iov_iter *fro
- 	struct inode *inode = file_inode(file);
- 	ssize_t ret;
  
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we drop the
-+	 * inode glock, fault in the pages manually, and retry.
-+	 */
+-	if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
+-		return -ERANGE;
+-
+ 	port_to = port = ntohs(e.port);
+ 	if (tb[IPSET_ATTR_PORT_TO]) {
+ 		port_to = ip_set_get_h16(tb[IPSET_ATTR_PORT_TO]);
+@@ -256,6 +253,9 @@ hash_ipportnet4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 			swap(port, port_to);
+ 	}
+ 
++	if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
++		return -ERANGE;
 +
-+retry:
- 	current->backing_dev_info = inode_to_bdi(inode);
-+	pagefault_disable();
- 	ret = iomap_file_buffered_write(iocb, from, &gfs2_iomap_ops);
-+	pagefault_enable();
- 	current->backing_dev_info = NULL;
-+	if (unlikely(ret == -EFAULT) &&
-+	    iter_is_iovec(from) &&
-+	    fault_in_iov_iter_readable(from, SIZE_MAX) != 0)
-+		goto retry;
- 	return ret;
- }
- 
+ 	ip2_to = ip2_from;
+ 	if (tb[IPSET_ATTR_IP2_TO]) {
+ 		ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP2_TO], &ip2_to);
+
+base-commit: 4d3fc8ead710a06c98d36f382777c6a843a83b7c
 -- 
-2.26.3
+2.33.0.rc0
 
