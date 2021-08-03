@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933B53DF35C
+	by mail.lfdr.de (Postfix) with ESMTP id 4A55A3DF35B
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237514AbhHCQzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:55:31 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:49856 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237481AbhHCQzV (ORCPT
+        id S237500AbhHCQz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:55:28 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48008 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232290AbhHCQzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:55:21 -0400
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9AF62208AB1C;
-        Tue,  3 Aug 2021 09:55:10 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9AF62208AB1C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1628009710;
-        bh=HaZnRch7qGYi+vNB3ZsL/DxMMvFWSWo7WErtYkFspsA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AqQiLw3VaKWqCUN/H+n8qq2pZUS23BFriOKYNXAuSb5jhXpYWj7G7LgFeojqxQf6x
-         mqZCNPddKk6DpRikD/4RZs93ChrmcXeQayXWgMqEASjuhGNmzU8GgwYgn3LeG4aDPP
-         RTktki0FfxbM66o0jXqUM/6/BCX7CCWClgzilF/c=
-Received: by mail-pj1-f48.google.com with SMTP id k4-20020a17090a5144b02901731c776526so4697267pjm.4;
-        Tue, 03 Aug 2021 09:55:10 -0700 (PDT)
-X-Gm-Message-State: AOAM530lBTF+WHfndLqJmgsZKbRogdnFwPDhgN6UJPhM+NtGCE/Vjyt3
-        cdAhxa+LLE+qgrPYFAjDxgk/lFCtyKw4D0rovOI=
-X-Google-Smtp-Source: ABdhPJyHModUoYFzGPnywl2pyBQ07SohodjnVZXvcoB4fJpsM/A9bOGcvvOjahQitRFqSsVmmvwQ8KmF3rNa1iPU0F0=
-X-Received: by 2002:a17:90a:ad85:: with SMTP id s5mr23048097pjq.187.1628009710193;
- Tue, 03 Aug 2021 09:55:10 -0700 (PDT)
+        Tue, 3 Aug 2021 12:55:16 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 173GXi96056904;
+        Tue, 3 Aug 2021 12:54:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=fXnWJHvn1o1ua8XNwo9QTLIS65vV3L5LhMAgWQBcIkU=;
+ b=gVtLEmE78wMO4j24PYF7ipfGSEva5ygbxCUV5iT8LVZf0zXB8BS6MJzsNNfE6iWvIRGw
+ oBqms6tAEJMnZUh6SvLwtgZCT22zyehfMKkhKNLe68L6Cq9l4icAxcWJs8e1yunsAKZR
+ T09+4rh1EcNFQPF/IreDtwf/9hnxhH/9iWNRjPSCMjRkLT/37rFyStROpdadb8Enq3Jz
+ CCGbva51FAA0bl1ZkyVi5toKvdnmudo5R7GZkIobLD8I5ACdwwvE9yigd9zFEmoR31TD
+ OgAWTECHrTYeVTW42J0By/rLV08kJM66eGmYi0KipeWjrrYgN4xrq9BpehOstnmFQ0fQ 3A== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a733j655c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 12:54:43 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 173Gqgfm025618;
+        Tue, 3 Aug 2021 16:54:42 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma04dal.us.ibm.com with ESMTP id 3a4x5d2qrh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 16:54:42 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 173Gsfft43581936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 3 Aug 2021 16:54:41 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA30C6A05F;
+        Tue,  3 Aug 2021 16:54:40 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CC1A76A04D;
+        Tue,  3 Aug 2021 16:54:40 +0000 (GMT)
+Received: from localhost (unknown [9.211.83.167])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue,  3 Aug 2021 16:54:40 +0000 (GMT)
+From:   Nathan Lynch <nathanl@linux.ibm.com>
+To:     Laurent Dufour <ldufour@linux.ibm.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] pseries: prevent free CPU ids to be reused on
+ another node
+In-Reply-To: <20210429174908.16613-1-ldufour@linux.ibm.com>
+References: <20210429174908.16613-1-ldufour@linux.ibm.com>
+Date:   Tue, 03 Aug 2021 11:54:40 -0500
+Message-ID: <87v94mii3z.fsf@linux.ibm.com>
 MIME-Version: 1.0
-References: <20210719114314.132364-1-mcroce@linux.microsoft.com>
-In-Reply-To: <20210719114314.132364-1-mcroce@linux.microsoft.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Tue, 3 Aug 2021 18:54:34 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1QpMc87+-hwPa887iQQGCjjkGNanVSKOUsE-0ti82jrA@mail.gmail.com>
-Message-ID: <CAFnufp1QpMc87+-hwPa887iQQGCjjkGNanVSKOUsE-0ti82jrA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: use the generic string routines
-To:     linux-riscv <linux-riscv@lists.infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Guo Ren <guoren@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 0-Tub6NlkC0RPb4sJ-Cox4dKZFgIq0VP
+X-Proofpoint-GUID: 0-Tub6NlkC0RPb4sJ-Cox4dKZFgIq0VP
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-03_04:2021-08-03,2021-08-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 adultscore=0
+ mlxlogscore=963 suspectscore=0 lowpriorityscore=0 mlxscore=0
+ impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2107140000 definitions=main-2108030105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 1:44 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
->
-> From: Matteo Croce <mcroce@microsoft.com>
->
-> Use the generic routines which handle alignment properly.
->
-> These are the performances measured on a BeagleV machine for a
-> 32 mbyte buffer:
->
-> memcpy:
-> original aligned:        75 Mb/s
-> original unaligned:      75 Mb/s
-> new aligned:            114 Mb/s
-> new unaligned:          107 Mb/s
->
-> memset:
-> original aligned:       140 Mb/s
-> original unaligned:     140 Mb/s
-> new aligned:            241 Mb/s
-> new unaligned:          241 Mb/s
->
-> TCP throughput with iperf3 gives a similar improvement as well.
->
-> This is the binary size increase according to bloat-o-meter:
->
-> add/remove: 0/0 grow/shrink: 4/2 up/down: 432/-36 (396)
-> Function                                     old     new   delta
-> memcpy                                        36     324    +288
-> memset                                        32     148    +116
-> strlcpy                                      116     132     +16
-> strscpy_pad                                   84      96     +12
-> strlcat                                      176     164     -12
-> memmove                                       76      52     -24
-> Total: Before=1225371, After=1225767, chg +0.03%
->
-> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> ---
+Laurent Dufour <ldufour@linux.ibm.com> writes:
+> V5:
+>  - Rework code structure
+>  - Reintroduce the capability to reuse other node's ids.
 
-Hi,
+OK. While I preferred v4, where we would fail an add rather than allow
+CPU IDs to appear to "travel" between nodes, this change is a net
+improvement.
 
-can someone have a look at this change and share opinions?
-
-Regards,
--- 
-per aspera ad upstream
+Reviewed-by: Nathan Lynch <nathanl@linux.ibm.com>
