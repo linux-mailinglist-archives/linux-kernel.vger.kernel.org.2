@@ -2,179 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FAB3DE8E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7734C3DE8D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 10:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234891AbhHCIuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 04:50:03 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50123 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234784AbhHCIuA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 04:50:00 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 46A615809FE;
-        Tue,  3 Aug 2021 04:49:49 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 03 Aug 2021 04:49:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=aTJFKJHurQDp2
-        WDR9JQ4KJfW6/cQqFXs3yKB0BYzJAY=; b=iZIxinplCmIp6MJ3epKnC2SgWTFaX
-        pXrVWsF5fucYfIZg742gvITmCtSwY00ne7a8r3KfySj4ryvgusCUsb4MPEYBikYF
-        HUS7PN3KaJNn5avYjNNip3wS0444IV0o9SX1nUn4NKeNxmiv/QnQcODnXZjmGAyq
-        3BhPxMbNlSWLPc0FMCpaGOJrVflw2dj0/uu0J1tVWVwCzUdcH60T5ZVgUdXLvj65
-        mDBCmS91b83YJfvULrOTSY0v45ny/5PE1IhChFweNdL35+d5FLnv06SLCvAuaP9D
-        XcFUS3HkVm7vhutcI4nZvXAlEEZ40h9iHfF5wj/leajvY1p6yxhBzQBlA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=aTJFKJHurQDp2WDR9JQ4KJfW6/cQqFXs3yKB0BYzJAY=; b=FxUlhqG+
-        /DnSYzxh26JrrPEkvvkK/F1sjHBcLVPxq2DCTifi8OvzkCDBLWO0jDyvxpA6NmLV
-        WN3dSBB8UZo79bQ7j4Tz1Z9I4dsdybPeIfEatFa9EXLvZ98vGs4krwS/VsPE6o4x
-        Hol3c153qFSj8TdNiri+MIJjjqXWBB/AxV6ALPi6lHsyS8YvcfVg1hYM9j2/9FGE
-        RpzQl6qEG4b0tKhNliJyT1aLUrVws1qa1YORPvfo3MolgUhzGG7CtGcdKFj5VQQc
-        VnhbHBahK3dle10nYrUsX7VeSVN3ONhoGnty+hHY5aGQg+kgihXJLdVzEakIaecy
-        7qGX/CkfFQ9YNw==
-X-ME-Sender: <xms:LQMJYb1if0sUF-EP5kX7iyUtQpnSQgWnTUAdjdXIpIAr2TY95VZMIg>
-    <xme:LQMJYaH0JMw1BAIWfWcgh-Fd2pPdpB51gRbnHLPgyqepOArDbefutJXwITMP2A5by
-    X3s1e5XkvkD5n62IPg>
-X-ME-Received: <xmr:LQMJYb4mUTnYhPFlWZiHwYTf6xyLaYa9MaO7dUSjZBYV0CwR-ki8dovnNg4bIa4Hux_gdlUYlvS0M4tb9ycbS7REv9e1Nhn0_f9KBNCp-dcwlw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieeggddtjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghi
-    rhesrghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepgeegtdetjeekge
-    eguefgheeuvedugedvteejveeiudegvddtkeffkeehtdetudfhnecuvehluhhsthgvrhfu
-    ihiivgepudenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhish
-    htrghirhdvfedrmhgv
-X-ME-Proxy: <xmx:LQMJYQ2fZxBTe4y_-N6O_KQ-oBDmSVZTlEI58ZVsCYbfldUc9vugrA>
-    <xmx:LQMJYeEqRDdIbzulRpDgpt6kApjsCyXj-txQdc9SY3y3HGQ3kmygRg>
-    <xmx:LQMJYR8E3-x-LmJqDXxtGZLwnbbXznOoj66dI94qqIu3bJEsBoP1Fw>
-    <xmx:LQMJYW83_-7hFIFJpM8m4ZyYSoiVEtwkKMLA95-yBQRmeqDpqLssKw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 3 Aug 2021 04:49:45 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, pinglinux@gmail.com,
-        tatsunosuke.tobita@wacom.com, junkpainting@gmail.com,
-        ping.cheng@wacom.com
-Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v8 9/9] ARM: dts: imx7d: remarkable2: add wacom digitizer device
-Date:   Tue,  3 Aug 2021 18:49:02 +1000
-Message-Id: <20210803084902.336-9-alistair@alistair23.me>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210803084902.336-1-alistair@alistair23.me>
-References: <20210803084902.336-1-alistair@alistair23.me>
+        id S234829AbhHCItl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 04:49:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:44852 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234622AbhHCIti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 04:49:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AF0611D4;
+        Tue,  3 Aug 2021 01:49:27 -0700 (PDT)
+Received: from [10.57.9.94] (unknown [10.57.9.94])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14E523F40C;
+        Tue,  3 Aug 2021 01:49:23 -0700 (PDT)
+Subject: Re: [PATCH] cpufreq: arm_scmi: Fix error path when allocation failed
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, sudeep.holla@arm.com,
+        cristian.marussi@arm.com, rjw@rjwysocki.net,
+        nicola.mazzucato@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+References: <20210802204550.12647-1-lukasz.luba@arm.com>
+ <20210803043445.7sm4mnl4f5f7co7h@vireshk-i7>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <455e76f8-43c5-2976-e10b-a0fffeaee25f@arm.com>
+Date:   Tue, 3 Aug 2021 09:49:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210803043445.7sm4mnl4f5f7co7h@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the wacom_i2c touchscreen for the reMarkable2.
+Hi Viresh,
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
----
- arch/arm/boot/dts/imx7d-remarkable2.dts | 61 +++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+On 8/3/21 5:34 AM, Viresh Kumar wrote:
+> On 02-08-21, 21:45, Lukasz Luba wrote:
+>> Print warning and return an error which would stop the initialization
+>> when cpumask allocation failed.
+>>
+>> Fixes: 80a064dbd556 ("scmi-cpufreq: Get opp_shared_cpus from opp-v2 for EM")
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   drivers/cpufreq/scmi-cpufreq.c | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+>> index ec9a87ca2dbb..b159123e68fd 100644
+>> --- a/drivers/cpufreq/scmi-cpufreq.c
+>> +++ b/drivers/cpufreq/scmi-cpufreq.c
+>> @@ -133,8 +133,10 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>>   		return -ENODEV;
+>>   	}
+>>   
+>> -	if (!zalloc_cpumask_var(&opp_shared_cpus, GFP_KERNEL))
+>> -		ret = -ENOMEM;
+>> +	if (!zalloc_cpumask_var(&opp_shared_cpus, GFP_KERNEL)) {
+>> +		dev_warn(cpu_dev, "failed to allocate cpumask\n");
+> 
+> We shouldn't be printing here anything I believe as the allocation
+> core does it for us. That's why you won't see a print message anywhere
+> for failed allocations.
 
-diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
-index 89cbf13097a4..cc33b53ae6ba 100644
---- a/arch/arm/boot/dts/imx7d-remarkable2.dts
-+++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-@@ -34,6 +34,19 @@ reg_brcm: regulator-brcm {
- 		startup-delay-us = <150>;
- 	};
- 
-+	reg_digitizer: regulator-digitizer {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDD_3V3_DIGITIZER";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_digitizer_reg>;
-+		pinctrl-1 = <&pinctrl_digitizer_reg>;
-+		gpio = <&gpio1 6 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		startup-delay-us = <100000>; /* 100 ms */
-+	};
-+
- 	wifi_pwrseq: wifi_pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		pinctrl-names = "default";
-@@ -51,6 +64,28 @@ &clks {
- 	assigned-clock-rates = <0>, <32768>;
- };
- 
-+&i2c1 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
-+
-+	wacom_digitizer: digitizer@9 {
-+		compatible = "wacom,i2c-30";
-+		reg = <0x09>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_wacom>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
-+		flip-tilt-x;
-+		flip-tilt-y;
-+		flip-pos-x;
-+		flip-pos-y;
-+		flip-distance;
-+		vdd-supply = <&reg_digitizer>;
-+	};
-+};
-+
- &snvs_pwrkey {
- 	status = "okay";
- };
-@@ -117,6 +152,25 @@ &wdog1 {
- 	fsl,ext-reset-output;
- };
- 
-+&iomuxc_lpsr {
-+	pinctrl_digitizer_reg: digitizerreggrp {
-+		fsl,pins = <
-+			/* DIGITIZER_PWR_EN */
-+			MX7D_PAD_LPSR_GPIO1_IO06__GPIO1_IO6	0x14
-+		>;
-+	};
-+
-+	pinctrl_wacom: wacomgrp {
-+		fsl,pins = <
-+			/*MX7D_PAD_LPSR_GPIO1_IO05__GPIO1_IO5	0x00000014 /* FWE */
-+			MX7D_PAD_LPSR_GPIO1_IO04__GPIO1_IO4	0x00000074 /* PDCTB */
-+			MX7D_PAD_LPSR_GPIO1_IO01__GPIO1_IO1	0x00000034 /* WACOM INT */
-+			/*MX7D_PAD_LPSR_GPIO1_IO06__GPIO1_IO6	0x00000014 /* WACOM PWR ENABLE */
-+			/*MX7D_PAD_LPSR_GPIO1_IO00__GPIO1_IO0	0x00000074 /* WACOM RESET */
-+		>;
-+	};
-+};
-+
- &iomuxc {
- 	pinctrl_brcm_reg: brcmreggrp {
- 		fsl,pins = <
-@@ -125,6 +179,13 @@ MX7D_PAD_SAI1_TX_BCLK__GPIO6_IO13	0x14
- 		>;
- 	};
- 
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX7D_PAD_I2C1_SDA__I2C1_SDA		0x4000007f
-+			MX7D_PAD_I2C1_SCL__I2C1_SCL		0x4000007f
-+		>;
-+	};
-+
- 	pinctrl_uart1: uart1grp {
- 		fsl,pins = <
- 			MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX	0x79
--- 
-2.31.1
-
+Thanks for the comment. Let me send the v2.
