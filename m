@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9FF3DF65A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DC73DF65C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 22:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhHCUYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 16:24:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58352 "EHLO mail.kernel.org"
+        id S229686AbhHCU0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 16:26:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229963AbhHCUYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 16:24:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E01E60FA0;
-        Tue,  3 Aug 2021 20:24:29 +0000 (UTC)
+        id S229551AbhHCU0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 16:26:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 199996056B;
+        Tue,  3 Aug 2021 20:25:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1628022269;
-        bh=Lbfe0+3TftzrIcI1jGk4zd9mW+RI49k7pDHHdbL2+xg=;
+        s=korg; t=1628022356;
+        bh=4UYyWRfegSMj4Y3aIRE3t+wlvCWreIb2YkpXno8GWJ8=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nK3ENbHg2poNlAf5LQevVEliqIHrFT8y/cTk4RzAPZenCmK1wTpqtL42GUIFLT7hY
-         BFQ4REkEKkExcEYu8vghPq2NwN/eTnRZZ13t7oGQb47BppSTcDfgC33dNr69p7QjhC
-         PG1tEi1223qaNPQUQa+GKd7uNKW09boui+QPuo60=
-Date:   Tue, 3 Aug 2021 13:24:26 -0700
+        b=NpkXsJyLuV8Rto+fPBp/xHoG9B7ruK6eYb8Z7oC7u8GRdLsJ8QBsTlea5Zu7XVjQm
+         3pQLDu6NvFJw5H/xSqZhv9tZxnC1zJjfwMf+lA5rOsFGOpIjr6s79ctI9TkBeCcLMW
+         U29HEHnj0fUYAJCegoW4d70q9xfFl6TPyJZ8fn1I=
+Date:   Tue, 3 Aug 2021 13:25:55 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
-To:     syzbot <syzbot+dcb8a1e30879e0d60e8c@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com, Luigi Rizzo <lrizzo@google.com>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [syzbot] linux-next boot error: WARNING in find_vma
-Message-Id: <20210803132426.2f24a3512264e4603a08de57@linux-foundation.org>
-In-Reply-To: <0000000000005b873305c8aa6da2@google.com>
-References: <0000000000005b873305c8aa6da2@google.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: Set the correct memcg swappiness
+ restriction
+Message-Id: <20210803132555.51b95495b453180060526cab@linux-foundation.org>
+In-Reply-To: <02826fde-43a8-e20d-37f5-55416ba0c773@linux.alibaba.com>
+References: <d77469b90c45c49953ccbc51e54a1d465bc18f70.1627626255.git.baolin.wang@linux.alibaba.com>
+        <YQOekWWgtZUfim4M@dhcp22.suse.cz>
+        <6e6570d2-44a2-1da1-6c2a-38766786c40c@suse.cz>
+        <02826fde-43a8-e20d-37f5-55416ba0c773@linux.alibaba.com>
 X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -42,126 +43,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 03 Aug 2021 09:46:28 -0700 syzbot <syzbot+dcb8a1e30879e0d60e8c@syzkaller.appspotmail.com> wrote:
+On Tue, 3 Aug 2021 23:45:20 +0800 Baolin Wang <baolin.wang@linux.alibaba.com> wrote:
 
-> Hello,
+> > So, also Fixes: c843966c556d ("mm: allow swappiness that prefers reclaiming anon
+> > over the file workingset")
+> > ?
 > 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    c3f7b3be172b Add linux-next specific files for 20210803
-> git tree:       linux-next
+> Sure. Andrew, do I need resend it with adding fixes tag, or you can help 
+> to add it? Thanks.
 
-Thanks.  I'm suspecting "Add mmap_assert_locked() annotations to
-find_vma*()" found an error in Tomoyo - tomoyo_dump_page() should be
-holding mmap_lock?
-
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10b71b42300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ae62f6b8af876a89
-> dashboard link: https://syzkaller.appspot.com/bug?extid=dcb8a1e30879e0d60e8c
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+dcb8a1e30879e0d60e8c@syzkaller.appspotmail.com
-> 
-> kAFS: Red Hat AFS client v0.1 registering.
-> FS-Cache: Netfs 'afs' registered for caching
-> Btrfs loaded, crc32c=crc32c-intel, assert=on, zoned=yes, fsverity=yes
-> Key type big_key registered
-> Key type encrypted registered
-> AppArmor: AppArmor sha1 policy hashing enabled
-> ima: No TPM chip found, activating TPM-bypass!
-> Loading compiled-in module X.509 certificates
-> Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
-> ima: Allocated hash algorithm: sha256
-> ima: No architecture policies found
-> evm: Initialising EVM extended attributes:
-> evm: security.selinux (disabled)
-> evm: security.SMACK64 (disabled)
-> evm: security.SMACK64EXEC (disabled)
-> evm: security.SMACK64TRANSMUTE (disabled)
-> evm: security.SMACK64MMAP (disabled)
-> evm: security.apparmor
-> evm: security.ima
-> evm: security.capability
-> evm: HMAC attrs: 0x1
-> PM:   Magic number: 1:653:286
-> usb usb32-port1: hash matches
-> usb usb22: hash matches
-> ppp ppp: hash matches
-> tty ttyz0: hash matches
-> printk: console [netcon0] enabled
-> netconsole: network logging started
-> gtp: GTP module loaded (pdp ctx size 104 bytes)
-> rdma_rxe: loaded
-> cfg80211: Loading compiled-in X.509 certificates for regulatory database
-> cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
-> ALSA device list:
->   #0: Dummy 1
->   #1: Loopback 1
->   #2: Virtual MIDI Card 1
-> md: Waiting for all devices to be available before autodetect
-> md: If you don't use raid, use raid=noautodetect
-> md: Autodetecting RAID arrays.
-> md: autorun ...
-> md: ... autorun DONE.
-> EXT4-fs (sda1): mounted filesystem without journal. Opts: (null). Quota mode: none.
-> VFS: Mounted root (ext4 filesystem) readonly on device 8:1.
-> devtmpfs: mounted
-> Freeing unused kernel image (initmem) memory: 4348K
-> Write protecting the kernel read-only data: 169984k
-> Freeing unused kernel image (text/rodata gap) memory: 2012K
-> Freeing unused kernel image (rodata/data gap) memory: 1460K
-> Run /sbin/init as init process
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 1 at include/linux/mmap_lock.h:164 mmap_assert_locked include/linux/mmap_lock.h:164 [inline]
-> WARNING: CPU: 1 PID: 1 at include/linux/mmap_lock.h:164 find_vma+0xf8/0x270 mm/mmap.c:2307
-> Modules linked in:
-> CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc4-next-20210803-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:mmap_assert_locked include/linux/mmap_lock.h:164 [inline]
-> RIP: 0010:find_vma+0xf8/0x270 mm/mmap.c:2307
-> Code: 49 8d bc 24 28 01 00 00 be ff ff ff ff e8 00 e0 81 07 31 ff 89 c3 89 c6 e8 e5 a5 c9 ff 85 db 0f 85 61 ff ff ff e8 98 9e c9 ff <0f> 0b e9 55 ff ff ff e8 8c 9e c9 ff 4c 89 e7 e8 d4 da fb ff 0f 0b
-> RSP: 0000:ffffc90000c67600 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: ffff888011a78000 RSI: ffffffff81ac1ac8 RDI: 0000000000000003
-> RBP: 00007fffffffe000 R08: 0000000000000000 R09: 0000000000000001
-> R10: ffffffff81ac1abb R11: 0000000000000001 R12: ffff8880260df000
-> R13: 0000000000000000 R14: 0000000000002016 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 000000000b68e000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  find_extend_vma+0x25/0x150 mm/mmap.c:2622
->  __get_user_pages+0x1c7/0xf70 mm/gup.c:1124
->  __get_user_pages_locked mm/gup.c:1359 [inline]
->  __get_user_pages_remote+0x18f/0x840 mm/gup.c:1868
->  get_user_pages_remote+0x63/0x90 mm/gup.c:1941
->  tomoyo_dump_page+0xd3/0x5b0 security/tomoyo/domain.c:915
->  tomoyo_print_bprm security/tomoyo/audit.c:46 [inline]
->  tomoyo_init_log+0xdc4/0x1ec0 security/tomoyo/audit.c:264
->  tomoyo_supervisor+0x34d/0xf00 security/tomoyo/common.c:2097
->  tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
->  tomoyo_execute_permission+0x37f/0x4a0 security/tomoyo/file.c:619
->  tomoyo_find_next_domain+0x348/0x1f80 security/tomoyo/domain.c:752
->  tomoyo_bprm_check_security security/tomoyo/tomoyo.c:101 [inline]
->  tomoyo_bprm_check_security+0x121/0x1a0 security/tomoyo/tomoyo.c:91
->  security_bprm_check+0x45/0xa0 security/security.c:865
->  search_binary_handler fs/exec.c:1711 [inline]
->  exec_binprm fs/exec.c:1764 [inline]
->  bprm_execve fs/exec.c:1833 [inline]
->  bprm_execve+0x732/0x19b0 fs/exec.c:1795
->  kernel_execve+0x370/0x460 fs/exec.c:1976
->  try_to_run_init_process+0x14/0x4e init/main.c:1426
->  kernel_init+0x12c/0x1d0 init/main.c:1542
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I added the Fixes tag, thanks.
