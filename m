@@ -2,156 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC793DE6AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260693DE6B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233909AbhHCG32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 02:29:28 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:13227 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbhHCG31 (ORCPT
+        id S233944AbhHCGcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 02:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230096AbhHCGcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 02:29:27 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gf4hj4X4Mz1CRwp;
-        Tue,  3 Aug 2021 14:29:09 +0800 (CST)
-Received: from [10.174.179.25] (10.174.179.25) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 3 Aug 2021 14:29:13 +0800
-Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
-To:     Roman Gushchin <guro@fb.com>
-CC:     Michal Hocko <mhocko@suse.com>, <hannes@cmpxchg.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
-        <shakeelb@google.com>, <willy@infradead.org>, <alexs@kernel.org>,
-        <richard.weiyang@gmail.com>, <songmuchun@bytedance.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <cgroups@vger.kernel.org>
-References: <20210729125755.16871-1-linmiaohe@huawei.com>
- <20210729125755.16871-3-linmiaohe@huawei.com> <YQNsxVPsRSBZcfGG@carbon.lan>
- <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
- <4a3c23c4-054c-2896-29c5-8cf9a4deee98@huawei.com>
- <YQi6lOT6j2DtOGlT@carbon.dhcp.thefacebook.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <95629d91-6ae8-b445-e7fc-b51c888cad59@huawei.com>
-Date:   Tue, 3 Aug 2021 14:29:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 3 Aug 2021 02:32:19 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6D0C06175F;
+        Mon,  2 Aug 2021 23:32:08 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so3402306pjd.0;
+        Mon, 02 Aug 2021 23:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yU/myYHh2vReN4tRl5M0xqMvdpICyJtLf/+F4kJ0R+M=;
+        b=TZtD0oQ73gj9v7Da7Y/ZSJEVOvJiUczdZ0KYyXvZV8m1yErq8P6aEiyn4MUt8J8glv
+         1eYnR7hKsRmo8IurIe3j2XLp7G5dCoKMYRbdceZvaCY5o5jhN+oi9SjhJXVKJHTQadvw
+         8X6FQOXGr9Wtmkb0/Kw20RdY3En5TkDk0v3ZjGTSeYauvd6PVFl5RbCE14DTFbjk9O92
+         FLUTEG8kEVlxfuGhYAxjHZ99zzuwYLlX1ei4Sl8/WjR56wz/sEpRld4vcqjNsynYsELk
+         csZDKukeBrZEYuh4qr40cyuFEFqJ+Rgd7ArDFXdTNE3Pw4+dyOJd50xwzcOrTO4B2XQB
+         e2Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yU/myYHh2vReN4tRl5M0xqMvdpICyJtLf/+F4kJ0R+M=;
+        b=Me/nldWEEXKrdFix1sto4dO7SNOERYodGLpUsf3uCx9xV//lySvVpLDswywJ0Sgboy
+         +3wWsVjEa7JdVmfCHVv5Wh5ZlulaTfGxM869t+DZ82tkvu3Hckx2+3gwj0PewGxLBVaT
+         7yttuGBuWNDGnuJCKV3Qhsdza2LvTfO4GTQA7etNpx4p5sJqHH9cBy0nKAL34KGXOhXU
+         qtz30oNvrtNDuhTm8dWkuqQJ0axnZX/Z0QhfWNuoufIO9hY2HmeiQ5AOK+mnIVLNe162
+         FB2/+VIWmxRlNNRkuEpP+JXFNsogp+VOEJ0Crt7UxbbshdFOhceL4BEE7OnmrHpfisPg
+         6BsA==
+X-Gm-Message-State: AOAM531Xb/YcZ8en84o0LHObSgozTxE5G7N9cfVshtyG6zXI1aLev/Sd
+        ooHGFWpG5BjPczcYHKr2q0o=
+X-Google-Smtp-Source: ABdhPJzdhyt16qsZxVu9D9Au4hF2N/SKOZjyWadJzIJxW87rj0ZSLZBnXxtkqiSoJoUHtrimXw0tJw==
+X-Received: by 2002:a63:5c04:: with SMTP id q4mr1699247pgb.127.1627972327547;
+        Mon, 02 Aug 2021 23:32:07 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.234])
+        by smtp.gmail.com with ESMTPSA id l10sm12529401pjg.11.2021.08.02.23.32.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 23:32:07 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Corentin Labbe <clabbe@baylibre.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] crypto: sun8i-ce: fix multiple memory leaks in sun8i_ce_hash_run
+Date:   Tue,  3 Aug 2021 14:31:38 +0800
+Message-Id: <20210803063149.2821093-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YQi6lOT6j2DtOGlT@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.25]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/3 11:40, Roman Gushchin wrote:
-> On Sat, Jul 31, 2021 at 10:29:52AM +0800, Miaohe Lin wrote:
->> On 2021/7/30 14:50, Michal Hocko wrote:
->>> On Thu 29-07-21 20:06:45, Roman Gushchin wrote:
->>>> On Thu, Jul 29, 2021 at 08:57:52PM +0800, Miaohe Lin wrote:
->>>>> Since percpu_charge_mutex is only used inside drain_all_stock(), we can
->>>>> narrow the scope of percpu_charge_mutex by moving it here.
->>>>>
->>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>>> ---
->>>>>  mm/memcontrol.c | 2 +-
->>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>>>> index 6580c2381a3e..a03e24e57cd9 100644
->>>>> --- a/mm/memcontrol.c
->>>>> +++ b/mm/memcontrol.c
->>>>> @@ -2050,7 +2050,6 @@ struct memcg_stock_pcp {
->>>>>  #define FLUSHING_CACHED_CHARGE	0
->>>>>  };
->>>>>  static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
->>>>> -static DEFINE_MUTEX(percpu_charge_mutex);
->>>>>  
->>>>>  #ifdef CONFIG_MEMCG_KMEM
->>>>>  static void drain_obj_stock(struct obj_stock *stock);
->>>>> @@ -2209,6 +2208,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
->>>>>   */
->>>>>  static void drain_all_stock(struct mem_cgroup *root_memcg)
->>>>>  {
->>>>> +	static DEFINE_MUTEX(percpu_charge_mutex);
->>>>>  	int cpu, curcpu;
->>>>
->>>> It's considered a good practice to protect data instead of code paths. After
->>>> the proposed change it becomes obvious that the opposite is done here: the mutex
->>>> is used to prevent a simultaneous execution of the code of the drain_all_stock()
->>>> function.
->>>
->>> The purpose of the lock was indeed to orchestrate callers more than any
->>> data structure consistency.
->>>  
->>>> Actually we don't need a mutex here: nobody ever sleeps on it. So I'd replace
->>>> it with a simple atomic variable or even a single bitfield. Then the change will
->>>> be better justified, IMO.
->>>
->>> Yes, mutex can be replaced by an atomic in a follow up patch.
->>>
->>
->> Thanks for both of you. It's a really good suggestion. What do you mean is something like below？
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 616d1a72ece3..508a96e80980 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -2208,11 +2208,11 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
->>   */
->>  static void drain_all_stock(struct mem_cgroup *root_memcg)
->>  {
->> -       static DEFINE_MUTEX(percpu_charge_mutex);
->>         int cpu, curcpu;
->> +       static atomic_t drain_all_stocks = ATOMIC_INIT(-1);
->>
->>         /* If someone's already draining, avoid adding running more workers. */
->> -       if (!mutex_trylock(&percpu_charge_mutex))
->> +       if (!atomic_inc_not_zero(&drain_all_stocks))
->>                 return;
-> 
-> It should work, but why not a simple atomic_cmpxchg(&drain_all_stocks, 0, 1) and
-> initialize it to 0? Maybe it's just my preference, but IMO (0, 1) is easier
-> to understand than (-1, 0) here. Not a strong opinion though, up to you.
-> 
+In sun8i_ce_hash_run, all the dma_mmap_sg/single will cause memory leak
+due to no corresponding unmap operation if errors happen.
 
-I think this would improve the readability. What you mean is something like below ?
+Fix this by freeing the objects allocated bydma_mmap_sg/single
+when errors occur.
 
-Many thanks.
+Fixes: 56f6d5aee88d ("crypto: sun8i-ce - support hash algorithms")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+v1->v2: fix some wording and keep error handling code consistent
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 27 ++++++++++---------
+ 1 file changed, 15 insertions(+), 12 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 616d1a72ece3..6210b1124929 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2208,11 +2208,11 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
-  */
- static void drain_all_stock(struct mem_cgroup *root_memcg)
- {
--       static DEFINE_MUTEX(percpu_charge_mutex);
-        int cpu, curcpu;
-+       static atomic_t drainer = ATOMIC_INIT(0);
-
-        /* If someone's already draining, avoid adding running more workers. */
--       if (!mutex_trylock(&percpu_charge_mutex))
-+       if (atomic_cmpxchg(&drainer, 0, 1) != 0)
-                return;
-        /*
-         * Notify other cpus that system-wide "drain" is running
-@@ -2244,7 +2244,7 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
-                }
-        }
-        put_cpu();
--       mutex_unlock(&percpu_charge_mutex);
-+       atomic_set(&drainer, 0);
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+index 88194718a806..05bb781da701 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+@@ -288,14 +288,14 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	buf = kzalloc(bs * 2, GFP_KERNEL | GFP_DMA);
+ 	if (!buf) {
+ 		err = -ENOMEM;
+-		goto theend;
++		goto out;
+ 	}
+ 	bf = (__le32 *)buf;
+ 
+ 	result = kzalloc(digestsize, GFP_KERNEL | GFP_DMA);
+ 	if (!result) {
+ 		err = -ENOMEM;
+-		goto theend;
++		goto err_buf;
+ 	}
+ 
+ 	flow = rctx->flow;
+@@ -321,7 +321,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (nr_sgs <= 0 || nr_sgs > MAX_SG) {
+ 		dev_err(ce->dev, "Invalid sg number %d\n", nr_sgs);
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_result;
+ 	}
+ 
+ 	len = areq->nbytes;
+@@ -334,7 +334,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (len > 0) {
+ 		dev_err(ce->dev, "remaining len %d\n", len);
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_unmap_sg;
+ 	}
+ 	addr_res = dma_map_single(ce->dev, result, digestsize, DMA_FROM_DEVICE);
+ 	cet->t_dst[0].addr = cpu_to_le32(addr_res);
+@@ -342,7 +342,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (dma_mapping_error(ce->dev, addr_res)) {
+ 		dev_err(ce->dev, "DMA map dest\n");
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_unmap_sg;
+ 	}
+ 
+ 	byte_count = areq->nbytes;
+@@ -392,7 +392,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (dma_mapping_error(ce->dev, addr_pad)) {
+ 		dev_err(ce->dev, "DMA error on padding SG\n");
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_addr_res;
+ 	}
+ 
+ 	if (ce->variant->hash_t_dlen_in_bits)
+@@ -405,15 +405,18 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	err = sun8i_ce_run_task(ce, flow, crypto_tfm_alg_name(areq->base.tfm));
+ 
+ 	dma_unmap_single(ce->dev, addr_pad, j * 4, DMA_TO_DEVICE);
++err_addr_res:
++	dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE);
++err_unmap_sg:
+ 	dma_unmap_sg(ce->dev, areq->src, sg_nents(areq->src),
+ 		     DMA_TO_DEVICE);
+-	dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+-
+-
+ 	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
+-theend:
+-	kfree(buf);
++err_result:
+ 	kfree(result);
+-	crypto_finalize_hash_request(engine, breq, err);
++err_buf:
++	kfree(buf);
++out:
++	if (!err)
++		crypto_finalize_hash_request(engine, breq, err);
+ 	return 0;
  }
-
-> Thanks!
-> .
-> 
+-- 
+2.25.1
 
