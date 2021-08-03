@@ -2,72 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EA13DF467
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4C73DF45E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238770AbhHCSMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 14:12:37 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:60446 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238753AbhHCSMf (ORCPT
+        id S237230AbhHCSLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 14:11:40 -0400
+Received: from smtprelay0214.hostedemail.com ([216.40.44.214]:48354 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238708AbhHCSLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 14:12:35 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 809469d732130fdb; Tue, 3 Aug 2021 20:12:19 +0200
-Received: from kreacher.localnet (89-64-81-181.dynamic.chello.pl [89.64.81.181])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 4841A66A01E;
-        Tue,  3 Aug 2021 20:12:19 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Bob Moore <robert.moore@intel.com>
-Subject: [PATCH 6/7] ACPICA: Add method name "_DIS" For use with aslmethod.c
-Date:   Tue, 03 Aug 2021 20:11:21 +0200
-Message-ID: <9943028.nUPlyArG6x@kreacher>
-In-Reply-To: <5748555.lOV4Wx5bFT@kreacher>
-References: <5748555.lOV4Wx5bFT@kreacher>
+        Tue, 3 Aug 2021 14:11:36 -0400
+Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 03FE0180A5AE4;
+        Tue,  3 Aug 2021 18:11:24 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 901B21124F6;
+        Tue,  3 Aug 2021 18:11:22 +0000 (UTC)
+Message-ID: <39b42c868d1aa01bb421733aac32f072dc85e393.camel@perches.com>
+Subject: Re: [PATCH 3/3] rtlwifi: rtl8192de: fix array size limit in for-loop
+From:   Joe Perches <joe@perches.com>
+To:     Colin King <colin.king@canonical.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 03 Aug 2021 11:11:21 -0700
+In-Reply-To: <20210803144949.79433-3-colin.king@canonical.com>
+References: <20210803144949.79433-1-colin.king@canonical.com>
+         <20210803144949.79433-3-colin.king@canonical.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.81.181
-X-CLIENT-HOSTNAME: 89-64-81-181.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrieeggdduudelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefgkedtheeuheetffeuleelhefhfffgjedthedvtdefteejffevteehhedvjefgudenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeekledrieegrdekuddrudekudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekuddrudekuddphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrohgsvghrthdrmhhoohhrvgesihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 901B21124F6
+X-Spam-Status: No, score=-0.81
+X-Stat-Signature: f43mm98h5s78yd93cws6ugihst4azt4w
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18QSI7hc6+5FTVBkzOo7iXdxLGDbZcQUPY=
+X-HE-Tag: 1628014282-693020
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Moore <robert.moore@intel.com>
+On Tue, 2021-08-03 at 15:49 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Currently the size of the entire array is being used in a for-loop
+> for the element count. While this works since the elements are u8
+> sized, it is preferred to use ARRAY_SIZE to get the element count
+> of the array.
+[]
+> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
+[]
+> @@ -1366,7 +1366,7 @@ u8 rtl92d_get_rightchnlplace_for_iqk(u8 chnl)
+>  	u8 place = chnl;
+> 
+>  	if (chnl > 14) {
+> -		for (place = 14; place < sizeof(channel_all); place++) {
+> +		for (place = 14; place < ARRAY_SIZE(channel_all); place++) {
+>  			if (channel_all[place] == chnl)
+>  				return place - 13;
+>  		}
 
-ACPICA commit 5acc6818c537888be147d9da6b280a0b8c241a1d
+Thanks.
 
-Link: https://github.com/acpica/acpica/commit/5acc6818
-Signed-off-by: Bob Moore <robert.moore@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- include/acpi/acnames.h | 1 +
- 1 file changed, 1 insertion(+)
+It seems a relatively common copy/paste use in rtlwifi
 
-diff --git a/include/acpi/acnames.h b/include/acpi/acnames.h
-index a2bc381c7ce7..30869ab77fba 100644
---- a/include/acpi/acnames.h
-+++ b/include/acpi/acnames.h
-@@ -20,6 +20,7 @@
- #define METHOD_NAME__CLS        "_CLS"
- #define METHOD_NAME__CRS        "_CRS"
- #define METHOD_NAME__DDN        "_DDN"
-+#define METHOD_NAME__DIS        "_DIS"
- #define METHOD_NAME__DMA        "_DMA"
- #define METHOD_NAME__HID        "_HID"
- #define METHOD_NAME__INI        "_INI"
--- 
-2.26.2
-
+$ git grep -P -n 'for\b.*<\s*sizeof\s*\(\s*\w+\w*\)\s*;' drivers/net/wireless/realtek/rtlwifi/
+drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:893:               for (place = 14; place < sizeof(channel5g); place++) {
+drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:1368:              for (place = 14; place < sizeof(channel_all); place++) {
+drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:2430:      for (i = 0; i < sizeof(channel5g); i++)
+drivers/net/wireless/realtek/rtlwifi/rtl8192ee/phy.c:2781:              for (place = 14; place < sizeof(channel_all); place++) {
+drivers/net/wireless/realtek/rtlwifi/rtl8723be/phy.c:2170:              for (place = 14; place < sizeof(channel_all); place++) {
+drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:3610:              for (place = 14; place < sizeof(channel_all); place++)
 
 
 
