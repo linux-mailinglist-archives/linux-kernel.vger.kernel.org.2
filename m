@@ -2,157 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7437E3DF28C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1522A3DF28D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233753AbhHCQ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbhHCQ2s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:28:48 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36357C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 09:28:36 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id z18so7996822ybg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 09:28:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fSb2IKKpERpkumP5sU1ao0eAPDF2DFQMa3HuULiiIYU=;
-        b=ECRfHDayxKQkXlWojcqT3lbjECAkvI3C+PLPW3HzR3xVClyUuikfbcoLeNsf7qZjQP
-         PTXHYkpy44Zru4eFR2klLWWzKjoEsMpj6abT1N7DMb6Ys3F9IblPRSwUN2LrUh1hWOJC
-         p+PD94oh9f2eMLXAihi5PAL6Z+mwpSnhWW9OdjjqKEULG3s0Fe5kXE07B+Z02xVe8CWi
-         NIVa5skJYvvedltQsBWSVs9Va12QcuhFc37zRCTUfqMZ5nO6eD5+ffNFBFi4InGwuoD7
-         /v7G6OOP7WEKAIcfK6s1JcQ/x1y5E/TmEcuNk391EJOKT7+5t1wDim3sZGuIVMqI6u9Z
-         ZTAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fSb2IKKpERpkumP5sU1ao0eAPDF2DFQMa3HuULiiIYU=;
-        b=TCwaLDs16r06vhCpWNFH1RmoYkqZae1BMz3MphZ43lB5wnnUbAv9hF+oa+rKnVUFfp
-         r798yRcyBWAHQKtgkjfOLE4xtsGJNYwVdBiw5muqTzlwzOu/Tt+eGrxNrBeI1avAjENy
-         wi7A84ERWO6GHJ7Ddqiv7zB8Fa0MdH/euh8aBXeDV6KtuVz9PrhE3oBGI4wciJ9OmKWr
-         Jm8TWAHQ2sBoYG63+gomSk2qvgGA2KsCaIMTjc8FjS9iPi/ypbR+pUpCtBKZ8K9Cmh5L
-         DJKF/g7k26hUS6PuKx6MfvdkKc29scjJy6AaLkBY8yrATQqPcTF5flCoRHNMD4/v0USP
-         Fwxg==
-X-Gm-Message-State: AOAM530Ag6VNptlxHreswc/mBT6aI1q3OoGSOmvxeRIQBTR+M1BIv8U3
-        up2JMmVw4p4tciWwQA5lKgTtM/Q2Eb6LoPX5DEeFug==
-X-Google-Smtp-Source: ABdhPJx2nN0RJicb3fn4l75ad0JyGz36/5KQH9kduX6E6hvkdu6Y7YPPEdSiEBu5tQtRzz2FC6AK0vsiOstTSHBZIxY=
-X-Received: by 2002:a25:2901:: with SMTP id p1mr29523316ybp.459.1628008115237;
- Tue, 03 Aug 2021 09:28:35 -0700 (PDT)
+        id S233776AbhHCQ3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:29:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230444AbhHCQ3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:29:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5AB060F94;
+        Tue,  3 Aug 2021 16:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628008135;
+        bh=SG2SsL3n+zwBzuqktba/kbwWFy5NerlL7sqActfnN9w=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=b2UNFfQjP1GIYDtr2RHlusAhByucBlKTlmy4Z0+XlmOvnlLgZ030Uu5XP/gMX/0e7
+         njfdRf5maVkN2pJzhh8vengrZhgaNYrEFrTUg83ujvAndQGOGC8pYa5rQE+Rhius/a
+         WPRQCuPxGPY2lIN7Je3RGBz0e3Qq7REXoMvxxt8AgRLW3rO1hDmqLxeJLX3pv2caj0
+         29jDCWwvkfeoDujXwufMXTTeMaT8y00FJHKqETWO7b7IAMiIvYuTNRxUZb6ALrz/fr
+         SO5OhGIFgLUb/DQFCwwRlnNma9MV1hzZ/ELO1kfie6ISSLkjOtb0QAYHJO+SWXq2iY
+         4fCd3RvAy6Amw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A3DA75C04D4; Tue,  3 Aug 2021 09:28:55 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 09:28:55 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Yanfei Xu <yanfei.xu@windriver.com>
+Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
+ non-release of rcu_node ->lock
+Message-ID: <20210803162855.GT4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-2-paulmck@kernel.org>
+ <20210803142458.teveyn6t2gwifdcp@e107158-lin.cambridge.arm.com>
+ <20210803155226.GQ4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210803161221.igae6y6xa6mlzltn@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-References: <CABCJKudYRiK0KcMHGHeBFcr+Smwa9EM+NFeBpMo_ePqK+zHz0w@mail.gmail.com>
- <20210729205317.25685-1-treasure4paddy@gmail.com>
-In-Reply-To: <20210729205317.25685-1-treasure4paddy@gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 3 Aug 2021 09:28:23 -0700
-Message-ID: <CABCJKuei==gaaKw0qH1WkshcRyUbqdS_WGRWr6anYAew1HHT2w@mail.gmail.com>
-Subject: Re: [PATCH v3] kallsyms: strip CLANG CFI postfix ".cfi_jt"
-To:     Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
-Cc:     Jessica Yu <jeyu@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803161221.igae6y6xa6mlzltn@e107158-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Aug 03, 2021 at 05:12:21PM +0100, Qais Yousef wrote:
+> On 08/03/21 08:52, Paul E. McKenney wrote:
+> > On Tue, Aug 03, 2021 at 03:24:58PM +0100, Qais Yousef wrote:
+> > > Hi
+> > > 
+> > > On 07/21/21 13:21, Paul E. McKenney wrote:
+> > > > From: Yanfei Xu <yanfei.xu@windriver.com>
+> > > > 
+> > > > If rcu_print_task_stall() is invoked on an rcu_node structure that does
+> > > > not contain any tasks blocking the current grace period, it takes an
+> > > > early exit that fails to release that rcu_node structure's lock.  This
+> > > > results in a self-deadlock, which is detected by lockdep.
+> > > > 
+> > > > To reproduce this bug:
+> > > > 
+> > > > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
+> > > > 
+> > > > This will also result in other complaints, including RCU's scheduler
+> > > > hook complaining about blocking rather than preemption and an rcutorture
+> > > > writer stall.
+> > > > 
+> > > > Only a partial RCU CPU stall warning message will be printed because of
+> > > > the self-deadlock.
+> > > > 
+> > > > This commit therefore releases the lock on the rcu_print_task_stall()
+> > > > function's early exit path.
+> > > > 
+> > > > Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
+> > > > Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > ---
+> > > 
+> > > We are seeing similar stall/deadlock issue on android 5.10 kernel, is the fix
+> > > relevant here? Trying to apply the patches and test, but the problem is tricky
+> > > to reproduce so thought worth asking first.
+> > 
+> > Looks like the relevant symptoms to me, so I suggest trying this series
+> > from -rcu:
+> > 
+> > 8baded711edc ("rcu: Fix to include first blocked task in stall warning")
+> > f6b3995a8b56 ("rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock")
+> 
+> Great thanks. These are the ones we picked as the rest was a bit tricky to
+> apply on 5.10.
+> 
+> While at it, we see these errors too though they look harmless. They happen
+> all the time
+> 
+> 	[  595.292685] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #02!!!"}
+> 	[  595.301467] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
+> 	[  595.389353] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
+> 	[  595.397454] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
+> 	[  595.417112] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
+> 	[  595.425215] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
+> 	[  595.438807] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
+> 
+> I used to see them on mainline a while back but seem to have been fixed.
+> Something didn't get backported to 5.10 perhaps?
 
-On Thu, Jul 29, 2021 at 1:54 PM Padmanabha Srinivasaiah
-<treasure4paddy@gmail.com> wrote:
->
-> Clang CFI adds a postfix ".cfi_jt" to a symbols of extern functions.
-> For example this breaks syscall tracer that doesn't expect such postfix,
-> so strip out the postfix from the expanded symbol.
->
-> Signed-off-by: Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
-> ---
->
-> Change in v3:
->   - Modified commit message to indicate fix is for Clang CFI postfix
->   - Rebased on recent patch from ndesaulniers@google.com.
->   - Fix is enabled even for CONFIG_LTO_CLANG
->
-> Change in v2:
->   - Use existing routine in kallsyms to strip postfix ".cfi_jt" from
->     extern function name.
->   - Modified the commit message accordingly
->
->  kernel/kallsyms.c | 21 +++++++++++++++------
->  1 file changed, 15 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> index 5cabe4dd3ff4..67d015854cbd 100644
-> --- a/kernel/kallsyms.c
-> +++ b/kernel/kallsyms.c
-> @@ -174,7 +174,8 @@ static bool cleanup_symbol_name(char *s)
->          * foo.llvm.974640843467629774. This can break hooking of static
->          * functions with kprobes.
->          */
-> -       if (!IS_ENABLED(CONFIG_LTO_CLANG_THIN))
-> +       if (!(IS_ENABLED(CONFIG_LTO_CLANG) ||
-> +             IS_ENABLED(CONFIG_LTO_CLANG_THIN)))
+I believe that you need at least this one:
 
-This is redundant. LTO_CLANG is selected for both LTO modes, so
-there's no need to also check for LTO_CLANG_THIN here.
+47c218dcae65 ("tick/sched: Prevent false positive softirq pending warnings on RT")
 
->                 return false;
->
->         res = strstr(s, ".llvm.");
+							Thanx, Paul
 
-However, we should probably check for ".llvm." only with LTO_CLANG_THIN.
-
-> @@ -184,16 +185,24 @@ static bool cleanup_symbol_name(char *s)
->         }
->
->         /*
-> -        * LLVM appends a hash to static function names when ThinLTO and CFI
-> -        * are both enabled, i.e. foo() becomes
-> -        * foo$707af9a22804d33c81801f27dcfe489b. This causes confusion and
-> -        * potentially breaks user space tools, so we strip the suffix from
-> -        * expanded symbol names.
-> +        * LLVM appends a hash to static function names when both
-> +        * (Thin/FULL) LTO and CFI are enabled, i.e. foo() becomes
-> +        * foo$707af9a22804d33c81801f27dcfe489b.
-
-That's not quite right, the hash is only appended with ThinLTO. I
-would leave this comment untouched.
-
-> +        *
-> +        * In case of non static function symbol <funcsym>,
-> +        * the local jump table will have entry as <funcsym>.cfi_jt.
-> +        *
-> +        * This causes confusion and potentially breaks
-> +        * user space tools and some built-in components.
-> +        * So we strip the suffix from expanded symbol names.
->          */
->         if (!IS_ENABLED(CONFIG_CFI_CLANG))
->                 return false;
->
->         res = strrchr(s, '$');
-> +       if (!res)
-> +               res = strstr(s, ".cfi_jt");
-
-And add a comment about stripping .cfi_jt from jump table symbols
-before this part.
-
-> +
->         if (res) {
->                 *res = '\0';
->                 return true;
+> It might be a question to Frederic actually..
+> 
+> Thanks!
+> 
 > --
-> 2.17.1
->
-
-Sami
+> Qais Yousef
