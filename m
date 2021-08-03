@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138923DEE3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35483DEE21
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236056AbhHCMwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 08:52:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34545 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235635AbhHCMwp (ORCPT
+        id S236126AbhHCMrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 08:47:13 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12441 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236022AbhHCMrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 08:52:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627995154;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1e0CmMEL83WqdLcdVYEsCcbtntf5BnVnii0Ea1ZAFFA=;
-        b=CwlBDCkv81kyOWCw6dCW+xukC7oZlrE1EJwFjCUsTeh7RMosKGWs7IDV3Xm40g9QKeqpIv
-        hrWl4SNTug52xZiCTHpXDtxRd/rsqsTT2AFrdB3Ty0K0meTlhvQiHkV37A3eobHYFuvJyh
-        BTUbW81UqB+kM+ajd1AsMhznLng5ji0=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-iFDlqXdHPzKR4kWkEEqHRg-1; Tue, 03 Aug 2021 08:52:30 -0400
-X-MC-Unique: iFDlqXdHPzKR4kWkEEqHRg-1
-Received: by mail-pj1-f70.google.com with SMTP id g12-20020a17090ace8cb029017797b2c0f8so9436150pju.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 05:52:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1e0CmMEL83WqdLcdVYEsCcbtntf5BnVnii0Ea1ZAFFA=;
-        b=E0hOnK5ZmxFEYQX/1/YDQhpN6j2C9Ddz8LFHH8bKUUqgyLEXNcSe3JiZ5BczocUwYD
-         7vmxch1h1kTgRPxUZc2qEojL7MiDUsbQhJQ4yldK4QI03we4KQVZ2u4K9vR0k4Z4bfmH
-         SAzXRvvWn6r+2eLeAn+Cy6PXl3VtyIpE4pbYP8IEQAZEL/z0Hq2dE7Ul11QXjJB18FN9
-         UWpb2R7HzGMV2vKNcxSFZd+cZkgq8zkGrr8BdgWXtt+gnm4PQPGYqmcxUrf7GgvE8rzi
-         Igf1gYEY7yKZA2kSBdoVruXe8ZgofCSmxGa7LPi1B+aX9Bhq7qA1e7iPrVyAy+nmhd3P
-         UyLQ==
-X-Gm-Message-State: AOAM530Kd+fhWmni/lbX1RhI+OO/0mMbGLic/CqQgkUz995/JLbAFSVW
-        Q40r8oCUJs5Zpk+pTW8tLTAiIfBRWcVmTTJWVa2px/EaMK7EeErAzB+O3Q+3dJQX5+eMnih4OFT
-        aKz4t/YIjgIAJ5vI2prJVgODGBrEG0TNUq8X9JXTw
-X-Received: by 2002:a62:b615:0:b029:34a:3920:a7ea with SMTP id j21-20020a62b6150000b029034a3920a7eamr22355465pff.21.1627995149487;
-        Tue, 03 Aug 2021 05:52:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx4ikkr08NYYktnHUlEdmpFVB7A+oX79XPR1VnPIsMyaCkS1EbwHZ+ZyqfBBTwjkVz3XU8wsDGoYgkiCgoB/Tg=
-X-Received: by 2002:a62:b615:0:b029:34a:3920:a7ea with SMTP id
- j21-20020a62b6150000b029034a3920a7eamr22355435pff.21.1627995149184; Tue, 03
- Aug 2021 05:52:29 -0700 (PDT)
+        Tue, 3 Aug 2021 08:47:11 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GfF0Y4gFnzck3K;
+        Tue,  3 Aug 2021 20:43:25 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 20:46:58 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 3 Aug 2021
+ 20:46:58 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <stable@vger.kernel.org>
+CC:     <steffen.klassert@secunet.com>, <daniel.m.jordan@oracle.com>,
+        <herbert@gondor.apana.org.au>, <gregkh@linuxfoundation.org>,
+        <sashal@kernel.org>
+Subject: [PATCH 4.19 0/2] fix divide zero error in padata_do_parallel()
+Date:   Tue, 3 Aug 2021 20:52:59 +0800
+Message-ID: <20210803125301.77629-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210730043217.953384-1-aik@ozlabs.ru> <YQklgq4NkL4UToVY@kroah.com>
-In-Reply-To: <YQklgq4NkL4UToVY@kroah.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Date:   Tue, 3 Aug 2021 14:52:17 +0200
-Message-ID: <CABgObfb+M9Qeow1EZy+eQwM1jwoZY3zdPJfZW+Q+MoWmkaqcFw@mail.gmail.com>
-Subject: Re: [RFC PATCH kernel] KVM: Stop leaking memory in debugfs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        "Kernel Mailing List, Linux" <linux-kernel@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 1:16 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> On Fri, Jul 30, 2021 at 02:32:17PM +1000, Alexey Kardashevskiy wrote:
-> >       snprintf(dir_name, sizeof(dir_name), "%d-%d", task_pid_nr(current), fd);
-> >       kvm->debugfs_dentry = debugfs_create_dir(dir_name, kvm_debugfs_dir);
-> > +     if (IS_ERR_OR_NULL(kvm->debugfs_dentry)) {
-> > +             pr_err("Failed to create %s\n", dir_name);
-> > +             return 0;
-> > +     }
->
-> It should not matter if you fail a debugfs call at all.
->
-> If there is a larger race at work here, please fix that root cause, do
-> not paper over it by attempting to have debugfs catch the issue for you.
+It can reproduced by the following commands:
 
-I don't think it's a race, it's really just a bug that is intrinsic in how
-the debugfs files are named.  You can just do something like this:
+  # modprobe pcrypt
+  # echo 2 > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
+  # echo 0 > /sys/devices/system/cpu/cpu1/online
+  # modprobe tcrypt alg="pcrypt(rfc4106(gcm(aes)))" type=3
 
-#include <unistd.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/wait.h>
-#include <sys/ioctl.h>
-#include <linux/kvm.h>
-#include <stdlib.h>
-int main() {
-        int kvmfd = open("/dev/kvm", O_RDONLY);
-        int fd = ioctl(kvmfd, KVM_CREATE_VM, 0);
-        if (fork() == 0) {
-                printf("before: %d\n", fd);
-                sleep(2);
-        } else {
-                close(fd);
-                sleep(1);
-                int fd = ioctl(kvmfd, KVM_CREATE_VM, 0);
-                printf("after: %d\n", fd);
-                wait(NULL);
-        }
-}
+[  229.549005] divide error: 0000 [#1] SMP PTI
+[  229.549130] CPU: 32 PID: 9565 Comm: cryptomgr_test Kdump: loaded Not tainted 4.19.200 #3
+[  229.549381] Hardware name: Huawei 2288H V5/BC11SPSCB0, BIOS 0.68 05/03/2018
+[  229.549607] RIP: 0010:padata_do_parallel+0x96/0x150
+[  229.549750] Code: 5e 10 89 56 18 f0 0f c1 6b 20 8b 35 78 b1 24 01 48 8b 7b 28 e8 eb d6 20 00 89 c1 8d 45 01 31 d2 8b 35 62 b1 24 01 48 8b 7b 28 <f7> f1 41 89 d7 e8 d0 45 21 00 45 85 ff 41 89 c4 7e 19 31 ed 48 8b
+[  229.550335] RSP: 0018:ffffa48b8e1cbbc8 EFLAGS: 00010246
+[  229.550498] RAX: 0000000000000000 RBX: ffff964940883bc0 RCX: 0000000000000000
+[  229.550720] RDX: 0000000000000000 RSI: 0000000000000038 RDI: ffff9687b6e45650
+[  229.550943] RBP: 00000000ffffffff R08: 0000000000000000 R09: ffff96c7af6f6200
+[  229.551165] R10: ffff9687b6e45650 R11: ffff968839629000 R12: 0000000000000010
+[  229.551388] R13: ffff9687b6997f50 R14: ffff96c7ad84d700 R15: ffffffff9287a220
+[  229.551610] FS:  0000000000000000(0000) GS:ffff9687bfc80000(0000) knlGS:0000000000000000
+[  229.551863] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  229.552044] CR2: 00007fad13d47564 CR3: 000000759480a004 CR4: 00000000007606e0
+[  229.552265] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  229.552488] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  229.552710] PKRU: 55555554
+[  229.552796] Call Trace:
+[  229.552878]  pcrypt_aead_encrypt+0xbb/0xc7 [pcrypt]
+[  229.553028]  __test_aead+0x654/0x15d0
+[  229.553139]  ? _cond_resched+0x15/0x40
+[  229.553257]  ? crypto_create_tfm+0x4e/0xe0
+[  229.553385]  ? crypto_spawn_tfm2+0x2e/0x50
+[  229.553513]  ? _cond_resched+0x15/0x40
+[  229.553632]  ? crypto_acomp_scomp_free_ctx+0x30/0x30
+[  229.553786]  test_aead+0x21/0xa0
+[  229.553889]  alg_test_aead+0x3f/0xa0
+[  229.554001]  alg_test.part.15+0x178/0x380
+[  229.554127]  ? __switch_to+0x8c/0x400
+[  229.554239]  ? __switch_to_asm+0x41/0x70
+[  229.554362]  ? __switch_to_asm+0x35/0x70
+[  229.554486]  ? __schedule+0x25d/0x850
+[  229.554602]  ? __wake_up_common+0x76/0x170
+[  229.554727]  ? crypto_acomp_scomp_free_ctx+0x30/0x30
+[  229.554884]  cryptomgr_test+0x40/0x50
+[  229.554999]  kthread+0x113/0x130
+[  229.555099]  ? kthread_create_worker_on_cpu+0x70/0x70
+[  229.555255]  ret_from_fork+0x35/0x40
 
-So Alexey's patch is okay and I've queued it, though with pr_warn_ratelimited
-instead of pr_err.
 
-Paolo
+Daniel Jordan (2):
+  padata: validate cpumask without removed CPU during offline
+  padata: add separate cpuhp node for CPUHP_PADATA_DEAD
+
+ include/linux/cpuhotplug.h |  1 +
+ include/linux/padata.h     |  6 ++++--
+ kernel/padata.c            | 28 ++++++++++++++++++++--------
+ 3 files changed, 25 insertions(+), 10 deletions(-)
+
+-- 
+2.25.1
 
