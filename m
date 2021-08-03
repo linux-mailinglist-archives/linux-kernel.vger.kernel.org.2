@@ -2,208 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3FE3DE9EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7D63DE9F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 11:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235139AbhHCJpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 05:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235124AbhHCJpI (ORCPT
+        id S235187AbhHCJrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 05:47:37 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3568 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235115AbhHCJrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:45:08 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36325C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 02:44:57 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id cf5so16661952edb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 02:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=7ArTaS55GcHRrlg8uUcqb0/VYMv30LO+TcruGsLFfOA=;
-        b=nneisuAfVkRQwNF4jkMM3S1DtCT6ZpBiwI/1yDvRZehpiYxoqROz3bsi/IoEPLpKyd
-         xxYtdUxI5AUFsvWpnWsW4VtrS1REX+NU2X4KhDcQVUfGNLY1Zpz/Ub7T43jzhs4mtanz
-         7mICSo5yZQJ2uQ+SbUsLuZ8AK/c318a9X5Qed4ZfRsOcVQY8vpHH+afBNrn1sV9xrbsr
-         LF4tcKPQxxCnFpqDHBFrI9ttcK2wtfbiUtlj+8gUtRqtaztnfyGM8F06axoGMsSJCUbk
-         8XgQjvEUFQOh+PaunyKWjeGTmxGqvAxdDZqjcaOeZ30GR3HdFULQN0ZIe9vZcPK3/sWV
-         MQzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=7ArTaS55GcHRrlg8uUcqb0/VYMv30LO+TcruGsLFfOA=;
-        b=Vef81rPC+eXOSpjuvZpHhXC6jD0gstctaPNzPZB8SfqQlydOwUhLFbCzawnY9NoUau
-         ThTRl7hDruCMywk9r7+GgTh4KF25tpeMqMkoYkQU1qvXCt2TP2LMARo9QA0wKm6v0IJx
-         GuiH+q4Grm7xrUmd8yU0b9MOfS7x/xQzt+omIJwNEX0b237jSCk2YHPiSDIdwMcbA0Qn
-         CTPYP+fr4SGKybxU33iTs5dEZpdNGNfiAWv07/2TIKaz/F//0WzGyOefdBVLL8B+mbYp
-         b5I/eqO0RxfoYT6PEdTeo9h0ZCL530cd3NjSkbuUfzDLUlQTa6q+sn9sobpADpZyYqLl
-         Yd4Q==
-X-Gm-Message-State: AOAM532Z+YREFG50JkSfr3TQrGu++4/t1K2Z8pCRhDTy/caa9O/CsWvZ
-        aSJFaEOWyM9deLuG1eUT+PwQ8NE1VgZr4SYLhRhkUA==
-X-Google-Smtp-Source: ABdhPJwiDRUWz8PbJ85/X6g/6bE/DA8L0p3jb1n24/i0E5m+g8kBV8qWpyTyCwUsN/CKVlU0ERzbNXb12Kz0b7pPzsk=
-X-Received: by 2002:aa7:de92:: with SMTP id j18mr24304786edv.141.1627983895787;
- Tue, 03 Aug 2021 02:44:55 -0700 (PDT)
+        Tue, 3 Aug 2021 05:47:35 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gf95F2Bw9z6DJr6;
+        Tue,  3 Aug 2021 17:47:13 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 11:47:23 +0200
+Received: from [10.47.27.165] (10.47.27.165) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 3 Aug 2021
+ 10:47:22 +0100
+Subject: Re: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+ <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
+ <CAK8P3a1D5DzmNGsEPQomkyMCmMrtD6pQ11JRMh78vbY53edp-Q@mail.gmail.com>
+ <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <db043b76-880d-5fad-69cf-96abcd9cd34f@huawei.com>
+Date:   Tue, 3 Aug 2021 10:46:57 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Received: by 2002:a50:2486:0:0:0:0:0 with HTTP; Tue, 3 Aug 2021 02:44:55 -0700 (PDT)
-X-Originating-IP: [5.35.57.254]
-In-Reply-To: <20210803082553.25194-1-yajun.deng@linux.dev>
-References: <20210803082553.25194-1-yajun.deng@linux.dev>
-From:   Denis Kirjanov <kda@linux-powerpc.org>
-Date:   Tue, 3 Aug 2021 12:44:55 +0300
-Message-ID: <CAOJe8K0_v0SHY913pnCHKZ9WUdNGOJ2nbagsr5t=ytiJ-Y3rrQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: Modify sock_set_keepalive() for more scenarios
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, mptcp@lists.linux.dev,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-s390@vger.kernel.org, linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.27.165]
+X-ClientProxiedBy: lhreml737-chm.china.huawei.com (10.201.108.187) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/21, Yajun Deng <yajun.deng@linux.dev> wrote:
-> Add 2nd parameter in sock_set_keepalive(), let the caller decide
-> whether to set. This can be applied to more scenarios.
+On 05/07/2021 11:06, Arnd Bergmann wrote:
+> On Sat, Jul 3, 2021 at 2:12 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>> The version we got here makes it no longer crash the kernel, but
+>> I see your point that the runtime warning is still wrong. I'll have
+>> a look at what it would take to guard all inb/outb callers with a
+>> Kconfig conditional, and will report back after that.
+> 
+> I created a preliminary patch and got it to cleanly build on my randconfig box,
+> here is what that involved:
+> 
+> - added 89 Kconfig dependencies on HAS_IOPORT for PC-style devices
+>    that are not on a PCI card.
+> - added 188 Kconfig dependencies on LEGACY_PCI for PCI drivers that
+>    require port I/O. The idea is to have that control drivers for both pre-PCIe
+>    devices and and PCIe devices that require long-deprecated features like
+>    I/O resources, but possibly other features as well.
+> - The ACPI subsystem needs access to I/O ports, so that also gets a
+>    dependency.
+> - CONFIG_INDIRECT_PIO requires HAS_IOPORT
+> -  /dev/ioport needs an #ifdef around it
+> - several graphics drivers need workarounds instead of a 'depends on'
+>    because they are used in virtual machines: vgaconsole, bochs, qxl,
+>    cirrus. They work with or without port I/O
+> - A usb-uhci rework to split pci from non-pci support
+> - Minor workarounds for optional I/O port usage in libata, ipmi, tpm,
+>    dmi-firmware, altera-stapl, parport, vga
+> - lots of #ifdefs in 8250
+> - some drivers/pci/ quirks are #ifdef'd
+> - drivers using ioport_map()/pci_iomap() to access ports could be
+>    kept working when I/O ports are memory mapped
+> 
+> I tested the patch on a 5.13-rc4 snapshot that already has other
+> patches applied as a baseline for randconfig testing, so it doesn't
+> apply as-is.
+> 
+> Linus, if you like this approach, then I can work on splitting it up into
+> meaningful patches and submit it for a future release. I think the
+> CONFIG_LEGACY_PCI option has value on its own, but the others
+> do introduce some churn.
+> 
+> Full patch (120KB): https://pastebin.com/yaFSmAuY
+> 
 
-It makes sense to send the patch within a context of other scenarios
+Hi Arnd,
 
->
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  include/net/sock.h    |  2 +-
->  net/core/filter.c     |  4 +---
->  net/core/sock.c       | 10 ++++------
->  net/mptcp/sockopt.c   |  4 +---
->  net/rds/tcp_listen.c  |  2 +-
->  net/smc/af_smc.c      |  2 +-
->  net/sunrpc/xprtsock.c |  2 +-
->  7 files changed, 10 insertions(+), 16 deletions(-)
->
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index ff1be7e7e90b..0aae26159549 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -2772,7 +2772,7 @@ int sock_set_timestamping(struct sock *sk, int
-> optname,
->
->  void sock_enable_timestamps(struct sock *sk);
->  void sock_no_linger(struct sock *sk);
-> -void sock_set_keepalive(struct sock *sk);
-> +void sock_set_keepalive(struct sock *sk, bool valbool);
->  void sock_set_priority(struct sock *sk, u32 priority);
->  void sock_set_rcvbuf(struct sock *sk, int val);
->  void sock_set_mark(struct sock *sk, u32 val);
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index faf29fd82276..41b2bf140b89 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -4769,9 +4769,7 @@ static int _bpf_setsockopt(struct sock *sk, int level,
-> int optname,
->  			ret = sock_bindtoindex(sk, ifindex, false);
->  			break;
->  		case SO_KEEPALIVE:
-> -			if (sk->sk_prot->keepalive)
-> -				sk->sk_prot->keepalive(sk, valbool);
-> -			sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
-> +			sock_set_keepalive(sk, !!valbool);
->  			break;
->  		case SO_REUSEPORT:
->  			sk->sk_reuseport = valbool;
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 9671c32e6ef5..7041e6355ae1 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -892,12 +892,12 @@ int sock_set_timestamping(struct sock *sk, int
-> optname,
->  	return 0;
->  }
->
-> -void sock_set_keepalive(struct sock *sk)
-> +void sock_set_keepalive(struct sock *sk, bool valbool)
->  {
->  	lock_sock(sk);
->  	if (sk->sk_prot->keepalive)
-> -		sk->sk_prot->keepalive(sk, true);
-> -	sock_valbool_flag(sk, SOCK_KEEPOPEN, true);
-> +		sk->sk_prot->keepalive(sk, valbool);
-> +	sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
->  	release_sock(sk);
->  }
->  EXPORT_SYMBOL(sock_set_keepalive);
-> @@ -1060,9 +1060,7 @@ int sock_setsockopt(struct socket *sock, int level,
-> int optname,
->  		break;
->
->  	case SO_KEEPALIVE:
-> -		if (sk->sk_prot->keepalive)
-> -			sk->sk_prot->keepalive(sk, valbool);
-> -		sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
-> +		sock_set_keepalive(sk, !!valbool);
->  		break;
->
->  	case SO_OOBINLINE:
-> diff --git a/net/mptcp/sockopt.c b/net/mptcp/sockopt.c
-> index 8c03afac5ca0..879b8381055c 100644
-> --- a/net/mptcp/sockopt.c
-> +++ b/net/mptcp/sockopt.c
-> @@ -81,9 +81,7 @@ static void mptcp_sol_socket_sync_intval(struct mptcp_sock
-> *msk, int optname, in
->  			sock_valbool_flag(ssk, SOCK_DBG, !!val);
->  			break;
->  		case SO_KEEPALIVE:
-> -			if (ssk->sk_prot->keepalive)
-> -				ssk->sk_prot->keepalive(ssk, !!val);
-> -			sock_valbool_flag(ssk, SOCK_KEEPOPEN, !!val);
-> +			sock_set_keepalive(ssk, !!val);
->  			break;
->  		case SO_PRIORITY:
->  			ssk->sk_priority = val;
-> diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-> index 09cadd556d1e..b69ebb3f424a 100644
-> --- a/net/rds/tcp_listen.c
-> +++ b/net/rds/tcp_listen.c
-> @@ -44,7 +44,7 @@ void rds_tcp_keepalive(struct socket *sock)
->  	int keepidle = 5; /* send a probe 'keepidle' secs after last data */
->  	int keepcnt = 5; /* number of unack'ed probes before declaring dead */
->
-> -	sock_set_keepalive(sock->sk);
-> +	sock_set_keepalive(sock->sk, true);
->  	tcp_sock_set_keepcnt(sock->sk, keepcnt);
->  	tcp_sock_set_keepidle(sock->sk, keepidle);
->  	/* KEEPINTVL is the interval between successive probes. We follow
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index 898389611ae8..ad8f4302037f 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -68,7 +68,7 @@ static void smc_set_keepalive(struct sock *sk, int val)
->  {
->  	struct smc_sock *smc = smc_sk(sk);
->
-> -	smc->clcsock->sk->sk_prot->keepalive(smc->clcsock->sk, val);
-> +	sock_set_keepalive(smc->clcsock->sk, !!val);
->  }
->
->  static struct smc_hashinfo smc_v4_hashinfo = {
-> diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-> index e573dcecdd66..306a332f8d28 100644
-> --- a/net/sunrpc/xprtsock.c
-> +++ b/net/sunrpc/xprtsock.c
-> @@ -2127,7 +2127,7 @@ static void xs_tcp_set_socket_timeouts(struct rpc_xprt
-> *xprt,
->  	spin_unlock(&xprt->transport_lock);
->
->  	/* TCP Keepalive options */
-> -	sock_set_keepalive(sock->sk);
-> +	sock_set_keepalive(sock->sk, true);
->  	tcp_sock_set_keepidle(sock->sk, keepidle);
->  	tcp_sock_set_keepintvl(sock->sk, keepidle);
->  	tcp_sock_set_keepcnt(sock->sk, keepcnt);
-> --
-> 2.32.0
->
->
+I am not sure if anything is happening here.
+
+Anyway, one thing I mentioned earlier was that we could solve the 
+problem of drivers accessing unmapped IO ports and crashing systems on 
+archs which define PCI_IOBASE by building them under some "native port 
+IO support" flag.
+
+One example of such a driver was F71805F sensor. You put that under 
+HAS_IOPORT, which would be available for all archs, I think. But I could 
+not see where config LEGACY_PCI is introduced. Could we further refine 
+that config to not build for such archs as arm64?
+
+BTW, I think that the PPC dependency was added there to stop building 
+for power for that same reason, so hopefully we get rid of that.
+
+Thanks,
+John
+
+> diffstat:
+>   drivers/accessibility/speakup/Kconfig        |   1 +
+>   drivers/acpi/Kconfig                         |   1 +
+>   drivers/ata/Kconfig                          |  34 ++++++++++-----------
+>   drivers/ata/ata_generic.c                    |   3 +-
+>   drivers/ata/libata-sff.c                     |   2 ++
+>   drivers/bus/Kconfig                          |   2 +-
+>   drivers/char/Kconfig                         |   3 +-
+>   drivers/char/ipmi/Makefile                   |  11 +++----
+>   drivers/char/ipmi/ipmi_si_intf.c             |   3 +-
+>   drivers/char/ipmi/ipmi_si_pci.c              |   3 ++
+>   drivers/char/mem.c                           |   6 +++-
+>   drivers/char/tpm/Kconfig                     |   1 +
+>   drivers/char/tpm/tpm_infineon.c              |  14 ++++++---
+>   drivers/char/tpm/tpm_tis_core.c              |  19 +++++-------
+>   drivers/comedi/Kconfig                       |  53
+> +++++++++++++++++++++++++++++++++
+>   drivers/firmware/dmi-sysfs.c                 |   4 +++
+>   drivers/gpio/Kconfig                         |   2 +-
+>   drivers/gpu/drm/bochs/Kconfig                |   1 +
+>   drivers/gpu/drm/bochs/bochs_hw.c             |  24 ++++++++-------
+>   drivers/gpu/drm/qxl/Kconfig                  |   1 +
+>   drivers/gpu/drm/tiny/cirrus.c                |   2 ++
+>   drivers/hwmon/Kconfig                        |  23 +++++++++++++--
+>   drivers/i2c/busses/Kconfig                   |  31 ++++++++++---------
+>   drivers/ide/Kconfig                          |   1 +
+>   drivers/iio/adc/Kconfig                      |   2 +-
+>   drivers/input/gameport/Kconfig               |   6 ++--
+>   drivers/input/serio/Kconfig                  |   2 ++
+>   drivers/input/touchscreen/Kconfig            |   1 +
+>   drivers/isdn/hardware/mISDN/Kconfig          |  14 ++++-----
+>   drivers/leds/Kconfig                         |   2 +-
+>   drivers/media/cec/platform/Kconfig           |   2 +-
+>   drivers/media/pci/dm1105/Kconfig             |   2 +-
+>   drivers/media/radio/Kconfig                  |  15 +++++++++-
+>   drivers/media/rc/Kconfig                     |   9 +++++-
+>   drivers/message/fusion/Kconfig               |   8 ++---
+>   drivers/misc/altera-stapl/Makefile           |   3 +-
+>   drivers/misc/altera-stapl/altera.c           |   6 +++-
+>   drivers/net/Kconfig                          |   2 +-
+>   drivers/net/arcnet/Kconfig                   |   2 +-
+>   drivers/net/can/cc770/Kconfig                |   1 +
+>   drivers/net/can/sja1000/Kconfig              |   1 +
+>   drivers/net/ethernet/8390/Kconfig            |   2 +-
+>   drivers/net/ethernet/amd/Kconfig             |   2 +-
+>   drivers/net/ethernet/intel/Kconfig           |   4 +--
+>   drivers/net/ethernet/sis/Kconfig             |   6 ++--
+>   driv
+
+ers/net/ethernet/ti/Kconfig              |   4 +--
+>   drivers/net/ethernet/via/Kconfig             |   5 ++--
+>   drivers/net/fddi/Kconfig                     |   4 +--
+>   drivers/net/hamradio/Kconfig                 |   6 ++--
+>   drivers/net/wan/Kconfig                      |   2 +-
+>   drivers/net/wireless/atmel/Kconfig           |   4 +--
+>   drivers/net/wireless/intersil/hostap/Kconfig |   4 +--
+>   drivers/parport/Kconfig                      |   2 +-
+>   drivers/pci/pci-sysfs.c                      |  16 ++++++++++
+>   drivers/pci/quirks.c                         |   2 ++
+>   drivers/pcmcia/Kconfig                       |   2 +-
+>   drivers/platform/chrome/Kconfig              |   1 +
+>   drivers/platform/chrome/wilco_ec/Kconfig     |   1 +
+>   drivers/pnp/isapnp/Kconfig                   |   2 +-
+>   drivers/power/reset/Kconfig                  |   1 +
+>   drivers/rtc/Kconfig                          |   4 ++-
+>   drivers/scsi/Kconfig                         |  21 ++++++-------
+>   drivers/scsi/aic7xxx/Kconfig.aic79xx         |   2 +-
+>   drivers/scsi/aic7xxx/Kconfig.aic7xxx         |   2 +-
+>   drivers/scsi/aic94xx/Kconfig                 |   2 +-
+>   drivers/scsi/megaraid/Kconfig.megaraid       |   2 +-
+>   drivers/scsi/mvsas/Kconfig                   |   2 +-
+>   drivers/scsi/qla2xxx/Kconfig                 |   2 +-
+>   drivers/spi/Kconfig                          |   1 +
+>   drivers/staging/kpc2000/Kconfig              |   2 +-
+>   drivers/staging/sm750fb/Kconfig              |   2 +-
+>   drivers/staging/vt6655/Kconfig               |   2 +-
+>   drivers/tty/Kconfig                          |   2 +-
+>   drivers/tty/serial/8250/8250_early.c         |   4 +++
+>   drivers/tty/serial/8250/8250_pci.c           |  19 ++++++++++--
+>   drivers/tty/serial/8250/8250_port.c          |  22 ++++++++++++--
+>   drivers/tty/serial/8250/Kconfig              |   1 +
+>   drivers/tty/serial/Kconfig                   |   2 +-
+>   drivers/usb/core/hcd-pci.c                   |   4 +--
+>   drivers/usb/host/Kconfig                     |   4 +--
+>   drivers/usb/host/pci-quirks.c                | 128
+> +++++++++++++++++++++++++++++++++++++++++--------------------------------------
+>   drivers/usb/host/pci-quirks.h                |  33 ++++++++++++++++-----
+>   drivers/usb/host/uhci-hcd.c                  |   2 +-
+>   drivers/usb/host/uhci-hcd.h                  |  77
+> +++++++++++++++++++++++++++++++----------------
+>   drivers/video/console/Kconfig                |   4 ++-
+>   drivers/video/fbdev/Kconfig                  |  24 +++++++--------
+>   drivers/watchdog/Kconfig                     |   6 ++--
+>   include/asm-generic/io.h                     |   6 ++++
+>   include/linux/gameport.h                     |   9 ++++--
+>   include/linux/parport.h                      |   2 +-
+>   include/video/vga.h                          |   8 +++++
+>   lib/Kconfig                                  |   4 +++
+>   lib/Kconfig.kgdb                             |   1 +
+>   sound/drivers/Kconfig                        |   3 ++
+>   sound/isa/Kconfig                            |   1 +
+>   sound/pci/Kconfig                            |  44 ++++++++++++++++++++++-----
+>   96 files changed, 575 insertions(+), 272 deletions(-)
+> 
+
