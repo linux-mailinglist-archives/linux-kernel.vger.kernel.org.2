@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C393DF144
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B903DF146
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 17:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236638AbhHCPUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 11:20:51 -0400
-Received: from mga02.intel.com ([134.134.136.20]:48588 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236085AbhHCPUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 11:20:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="200882459"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="200882459"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 08:20:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="441219102"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Aug 2021 08:20:22 -0700
-Received: from [10.212.187.158] (kliang2-MOBL.ccr.corp.intel.com [10.212.187.158])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S236687AbhHCPU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 11:20:56 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33076 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236648AbhHCPUx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 11:20:53 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 6766B5808EF;
-        Tue,  3 Aug 2021 08:20:21 -0700 (PDT)
-Subject: Re: [PATCH V2] perf/x86/intel: Apply mid ACK for small core
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        stable@vger.kernel.org
-References: <1627997128-57891-1-git-send-email-kan.liang@linux.intel.com>
- <YQlY2o62E5A9xcdq@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <9b0cb4ec-e8b8-3739-7b8d-e1c05785023a@linux.intel.com>
-Date:   Tue, 3 Aug 2021 11:20:20 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3AADC200E1;
+        Tue,  3 Aug 2021 15:20:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628004041; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ersUyOxiWFVo1kZan9calBKiFWyiEpXiBiaAlyP0RUk=;
+        b=QQKupwhLEkgmEnJJYUoCR2y56AeRN1vJHq7a+JYfpBxspF6+tdBBHJ1PU/5vxtoYDVQb/h
+        G22A9nYpesaAojCZwymzFeK+7epUmG6+jdfB5Bg6oOq3Pv5RTh0LlgHdlKBk5rc1sxYMEP
+        s9KBxaft90NRdh31hjGXtYPcf02PCBU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628004041;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ersUyOxiWFVo1kZan9calBKiFWyiEpXiBiaAlyP0RUk=;
+        b=Q2d1r4HmCHf/1RhdxXRthGFYySUD/PbxzwbcLE2qK1ZXy8aeFFycQFy3r0HhgmpChEgwkP
+        mjzibAym07HUe7Ag==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1516113B68;
+        Tue,  3 Aug 2021 15:20:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id C7/hA8leCWEEdgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Tue, 03 Aug 2021 15:20:41 +0000
+Subject: Re: [PATCH] mm: memcontrol: Set the correct memcg swappiness
+ restriction
+To:     Michal Hocko <mhocko@suse.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <d77469b90c45c49953ccbc51e54a1d465bc18f70.1627626255.git.baolin.wang@linux.alibaba.com>
+ <YQOekWWgtZUfim4M@dhcp22.suse.cz>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <6e6570d2-44a2-1da1-6c2a-38766786c40c@suse.cz>
+Date:   Tue, 3 Aug 2021 17:20:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <YQlY2o62E5A9xcdq@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YQOekWWgtZUfim4M@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/3/2021 10:55 AM, Peter Zijlstra wrote:
-> On Tue, Aug 03, 2021 at 06:25:28AM -0700, kan.liang@linux.intel.com wrote:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> A warning as below may be occasionally triggered in an ADL machine when
->> these conditions occur,
->> - Two perf record commands run one by one. Both record a PEBS event.
->> - Both runs on small cores.
->> - They have different adaptive PEBS configuration (PEBS_DATA_CFG).
->>
->> [  673.663291] WARNING: CPU: 4 PID: 9874 at
->> arch/x86/events/intel/ds.c:1743
->> setup_pebs_adaptive_sample_data+0x55e/0x5b0
->> [  673.663348] RIP: 0010:setup_pebs_adaptive_sample_data+0x55e/0x5b0
->> [  673.663357] Call Trace:
->> [  673.663357]  <NMI>
->> [  673.663357]  intel_pmu_drain_pebs_icl+0x48b/0x810
->> [  673.663360]  perf_event_nmi_handler+0x41/0x80
->> [  673.663368]  </NMI>
->> [  673.663370]  __perf_event_task_sched_in+0x2c2/0x3a0
->>
->> Different from the big core, the small core requires the ACK right
->> before re-enabling counters in the NMI handler, otherwise a stale PEBS
->> record may be dumped into the later NMI handler, which trigger the
->> warning.
->>
->> Add a new mid_ack flag to track the case. Add all PMI handler bits in
->> the struct x86_hybrid_pmu to track the bits for different types of PMUs.
->> Apply mid ACK for the small cores on an Alder Lake machine.
+On 7/30/21 8:39 AM, Michal Hocko wrote:
+> On Fri 30-07-21 14:26:35, Baolin Wang wrote:
+>> Since commit c843966c556d ("mm: allow swappiness that prefers reclaiming
+>> anon over the file workingset") has expended the swappiness value to
+>> make swap to be preferred in some systems. We should also change the
+>> memcg swappiness restriction to allow memcg swap-preferred.
+>> 
+>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 > 
-> Why do we need a new option? Why isn't early (as in not late) good
-> enough?
+> Yes, this looks like an omission. It doesn't really make sense to have
+> two different constrains on the value.
+> 
+> Acked-by: Michal Hocko <mhocko@suse.com>
+
+So, also Fixes: c843966c556d ("mm: allow swappiness that prefers reclaiming anon
+over the file workingset")
+?
+
+> Thanks!
+> 
+>> ---
+>>  mm/memcontrol.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 6580c23..988fc94 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -4046,7 +4046,7 @@ static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
+>>  {
+>>  	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+>>  
+>> -	if (val > 100)
+>> +	if (val > 200)
+>>  		return -EINVAL;
+>>  
+>>  	if (!mem_cgroup_is_root(memcg))
+>> -- 
+>> 1.8.3.1
 > 
 
-The early ACK can fix this issue, however it triggers a spurious NMI 
-during the stress test. I'm told to do the ACK right before re-enabling 
-counters for small cores. That indeed fixes all the issues.
-
-Thanks,
-Kan
