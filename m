@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA36D3DF7F4
+	by mail.lfdr.de (Postfix) with ESMTP id A199C3DF7F3
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 00:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233677AbhHCWgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 18:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54012 "EHLO mail.kernel.org"
+        id S233416AbhHCWgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 18:36:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229745AbhHCWgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 18:36:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C424461078;
-        Tue,  3 Aug 2021 22:36:25 +0000 (UTC)
+        id S233399AbhHCWgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 18:36:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52206601FD;
+        Tue,  3 Aug 2021 22:36:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628030186;
-        bh=hcHr3un6vM6Jy8wur/6t7L/Lhc7LHra5hoSt0Zdm0Nk=;
+        s=k20201202; t=1628030188;
+        bh=DOyU2sYorvQY4kQgLU4xRaU30VsJypmI5w2Lq/QPj1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gt7uODj/2ODw1IRh8Wtq3MriRjB4G8ItAvkRnU21Gm35JbsAP8v5Ykgz8ZdI24naW
-         j0uOlC3xxzyLHykiig/C1Fq4TGlwHRNJxX82ardqhmhxgRGkiBTUtOLnnnpvJHrVT5
-         q8d+ef/IdAnzof3/sLd1Xj5G4/93vcqqCkORxSB39wJodXaLHvfQo4fZkMUup25B+u
-         8zJyYisVT2o7QtgbaSHUDGjM7KlIqkkVFzE7JU6EOpTKUsAaff40ChfAX4/zy3YMIM
-         Ah6JhK3/2X7YtWbKktO0o8vBrIqtwJ5F/q74xEEaW5DxfmZFU0CkCjOggihxBq4E5n
-         89bFAMNtABpiQ==
+        b=mJNgikBqAHXwSOywcGo5VU4P3Tj/C+pEjPqGfm4bXxcKiHYWMXUavkSi6zA0co2JI
+         vduvjGSg09xv766Qi0TyIIhilCX1702yvctSMKWj9s6MKBZgrLhgFFzvGIkkIS/362
+         u9YxQXlDK8NdjUdRtMb/+h7K30jWCuhxivhNLHUwIOV2eboUrY2IWTCupksdnJCyxF
+         hG1syLWZXJX6lEjndS+S/evcbzlgWVR3lcI2IWp3WArnzq05xf/e4s7rryfRFI0Ihr
+         QXkXtyoq3SvI286rw2u0lrzn16dqANM6oAAH759fErreakDGTEhRU2dYIFe493iuw9
+         9GqOo0lKJplbA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH 1/2] ASoC: cs42l42: Fix inversion of ADC Notch Switch control
-Date:   Tue,  3 Aug 2021 23:35:40 +0100
-Message-Id: <162802985541.42099.7806067166014112149.b4-ty@kernel.org>
+To:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
+        nuno.sa@analog.com, lars@metafoo.de, nicolas.ferre@microchip.com,
+        perex@perex.cz, tiwai@suse.com
+Subject: Re: [PATCH] ASoC: codecs: ad193x: add support for 96kHz and 192kHz playback rates
+Date:   Tue,  3 Aug 2021 23:35:41 +0100
+Message-Id: <162802985539.42099.2701841258072136197.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210803160834.9005-1-rf@opensource.cirrus.com>
-References: <20210803160834.9005-1-rf@opensource.cirrus.com>
+In-Reply-To: <20210803104825.2198335-1-codrin.ciubotariu@microchip.com>
+References: <20210803104825.2198335-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,13 +42,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Aug 2021 17:08:33 +0100, Richard Fitzgerald wrote:
-> The underlying register field has inverted sense (0 = enabled) so
-> the control definition must be marked as inverted.
-> 
-> 
-> 
-> 
+On Tue, 3 Aug 2021 13:48:25 +0300, Codrin Ciubotariu wrote:
+> ad193x devices support 96KHz and 192KHz sampling rates, when PLL/MCLK is
+> referenced to 48kHz.
+> Tested on ad1934.
 
 Applied to
 
@@ -54,10 +53,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: cs42l42: Fix inversion of ADC Notch Switch control
-      commit: 30615bd21b4cc3c3bb5ae8bd70e2a915cc5f75c7
-[2/2] ASoC: cs42l42: Remove duplicate control for WNF filter frequency
-      commit: 8b353bbeae20e2214c9d9d88bcb2fda4ba145d83
+[1/1] ASoC: codecs: ad193x: add support for 96kHz and 192kHz playback rates
+      commit: 0d73297e483e5b7ce197c0a923424e5dd96eae4d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
