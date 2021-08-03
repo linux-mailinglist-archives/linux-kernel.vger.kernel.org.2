@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2823DED4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 14:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B7F3DED43
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235802AbhHCMA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 08:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49646 "EHLO
+        id S235732AbhHCL7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235709AbhHCMA7 (ORCPT
+        with ESMTP id S235533AbhHCL7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 08:00:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C99C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 05:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mWWcG5RvzZnZtzlTEpwyxElez8u4/J5+F8NGP5+ob2I=; b=HrXnZbf8ZK+Qr50SSMhpEZCtgU
-        l0YFFCxnK++awS8wJVr5m49RsENKHlMUb5wHA6U/ljSvInTXQabW2yyEp7b5/2XlgTBKSS6frG03k
-        evTCgGgRDnmjsR4++F8tjEEPEYWdG5WYpldllArWVwMyoGKNaFl8lnUQ9iHqOFBJ8+xa3rMs5x4HK
-        w5gozJoYw9BKU2ha1loKSuDyyRrzs2+gtE2maPM9rJ9jpYkFNII7Rmp8y7nSH081PCMOTnAOOrCkK
-        ZJNLBDpgumgWyD+bBdPiwt38iDoLU94Pc19NDF7M2892jtQja3pfewd0l/IQzjk+m2x83pHawSeCf
-        nQEXC+0Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mAt4g-004bvm-21; Tue, 03 Aug 2021 11:59:17 +0000
-Date:   Tue, 3 Aug 2021 12:59:10 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Shi <shy828301@gmail.com>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Minchan Kim <minchan@kernel.org>,
-        huang ying <huang.ying.caritas@gmail.com>
-Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
-Message-ID: <YQkvjng6ljwtp9eb@casper.infradead.org>
-References: <20210723080000.93953-1-ying.huang@intel.com>
- <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
- <CAC=cRTNby4GkSJ-pjs6utgHtrQYEdy3XZQ06Qsxgyf1MJSBjrw@mail.gmail.com>
- <877dh354vc.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        Tue, 3 Aug 2021 07:59:54 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31753C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 04:59:43 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mAt58-0003MC-AO; Tue, 03 Aug 2021 13:59:38 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mAt55-0007jw-Tg; Tue, 03 Aug 2021 13:59:35 +0200
+Date:   Tue, 3 Aug 2021 13:59:35 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     alexandru.tachici@analog.com
+Cc:     andrew@lunn.ch, davem@davemloft.net, devicetree@vger.kernel.org,
+        hkallweit1@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v2 0/7] net: phy: adin1100: Add initial support for
+ ADIN1100 industrial PHY
+Message-ID: <20210803115935.pzpno6n3mukyzara@pengutronix.de>
+References: <20210723173257.66g3epaszn7qwrvd@pengutronix.de>
+ <20210803094715.9743-1-alexandru.tachici@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <877dh354vc.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <20210803094715.9743-1-alexandru.tachici@analog.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 13:57:55 up 244 days,  2:04, 25 users,  load average: 0.01, 0.03,
+ 0.00
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 04:06:47PM +0800, Huang, Ying wrote:
-> As Hugh pointed out, EINVAL isn't an appropriate error code for race
-> condition.  After checking the code, I found that EEXIST is the error
-> code used for race condition.  So I revise the patch as below.  If Hugh
-> doesn't object, can you help to replace the patch with the below one?
+On Tue, Aug 03, 2021 at 12:47:15PM +0300, alexandru.tachici@analog.com wrote:
+> Managed to get some answears form the HW team.
 > 
-> Best Regards,
-> Huang, Ying
+> From a safety perspective: in Explosive environments
+> only 1.0 V is allowed.
 > 
-> -----------------------------8<---------------------------------------
-> >From e2b281a0b09d34d6463942e214e577ed9357c213 Mon Sep 17 00:00:00 2001
-> From: Huang Ying <ying.huang@intel.com>
-> Date: Tue, 3 Aug 2021 10:51:16 +0800
-> Subject: [PATCH] shmem_swapin_page(): fix error processing for
->  get_swap_device()
-> 
-> Firstly, "-" is missing before the error code.  Secondly, EINVAL isn't
-> the proper error code for the race condition.  EEXIST is used in
-> shmem_swapin_page() for that.  So the error code is changed to EEXIST
-> too.
-> 
-> Link: https://lkml.kernel.org/r/20210723080000.93953-1-ying.huang@intel.com
-> Fixes: 2efa33fc7f6e ("mm/shmem: fix shmem_swapin() race with swapoff")
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Tests showed that 1.0 V shows spurs around 200m and
+> 2.4V works for up to 1.3 Km.
 
-Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+It will be probably better to drop this functionality for now and
+provide it as separate patch set. This will probably need new UAPI and
+some discussions.
 
-Also, the description is poor.  How about:
+Can you please add me to CC by the next patch rounds for this PHY.
 
-If we hit this rare race, returning EINVAL (or even -EINVAL) would cause
-the page fault to be handled as a SIGBUS.  This is not correct; the page
-is not missing or unreadable, it has simply changed location.  Returning
--EEXIST here will cause the lookup to be retried by the caller.
-
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
