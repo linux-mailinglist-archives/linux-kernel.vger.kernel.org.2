@@ -2,130 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5B13DEAF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107E93DEB06
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235229AbhHCKeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
+        id S235400AbhHCKgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234674AbhHCKeH (ORCPT
+        with ESMTP id S235254AbhHCKgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:34:07 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775EAC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:33:55 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so4062854pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 03:33:55 -0700 (PDT)
+        Tue, 3 Aug 2021 06:36:13 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B45BC06175F;
+        Tue,  3 Aug 2021 03:36:01 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id b13so13906098wrs.3;
+        Tue, 03 Aug 2021 03:36:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=M+P09UYsgBUeZcTU8h1JnZ3LSSnMLTRIwZzJkf+vohM=;
-        b=aYiS8O6yfH4RXLh5tsW0rUzfNmOf85niYQL8XSJr6R+tGFje/QeWK6zhSNG2RIzmks
-         9Rozjsh2h+s/sTo4APqNHzLhnUbSKFKupmoTIqSi3pZu9GhMBFOU4Ykxj6VKzGuMJ/7d
-         qLOla3h3ZswF/uHIM7eVNH3If6KctvKTPrwfgGk6eROEm6zY008X/7Xe86q2ZHPSjqA7
-         doMW1AofGD+8P8BgqLZCsCDALihzXGtvyJi6lbzSROXMhL9DWeo7mSR5keU5XFav+B6u
-         0z+yzT6W4aPpm/71b1gkIb3V1oo9nz2vtpTRkGEgBcptT7LyvRF+LmS3Vtd0z43uf1XC
-         hxzg==
+        bh=5gnsnzTGI54ChlStN7U51FwYFJHyQet6tZdsRBwdagg=;
+        b=fpkA1Qr8QHvpMIZSgQrmalSO/MWPPaXNJAQT7Roa2w/W/+Ia+CO5lg7HoDNFoMsakw
+         eXh+v9wno5ozCZ6s2Tz04fsjKhnUQ4SubcOvMe2K2C+9a8Owtd01rK/EmN4EF+eLFM0K
+         s4GDlBLexIjFbj0EISKPdqgSdUTYL8DxPc5es6bXdr4094u0gVpLBjZI8b/9TMeBtumb
+         S9H9Dm7ylMHRkRBi3706be7xyuFO/mn9YlcoHzYOohYpAQFWL61v0iR3Q+YBB9A9iknN
+         pOZlIBf47VIH/AhMjVq8dWXgv6wqvp/CcHIPKhDL56qF4ItyS5q0F5mgf/spXIf4NDwV
+         IAxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=M+P09UYsgBUeZcTU8h1JnZ3LSSnMLTRIwZzJkf+vohM=;
-        b=S/eE/CLkSwZdGX7tEeHUjnE4+Velu2W7Ycm0WkHt67IFS/lbMnsK4a2xreJr31o/LM
-         /3WL2WFRCcAhkGR0H4zU+QJ5XgQS2NuMgb2eUQImOkuTWmjgDS5aT098wTNMwrtTRXpt
-         i67XOLPavraF6G24GfW8ISfCIdjMcfJotb62ZspKmKUK0p+RePh1oFNapC1s/9WSOXcn
-         QLBiE8UD5nSLc2S1gL4X6dooNtdd5BGn2LDt/n76PkQfV6t05KDE7LqNsae7w2K1w8A1
-         ylN+wbHQeVfZTpwfHuxdRH4vzEuM0QQqGAcqxbRbsAA8PQJXLoCkdSlvxQNx/Nl/kjWZ
-         txSA==
-X-Gm-Message-State: AOAM533LN4S6KvV0CBtaj7A2LHyKFseYnF/o2OipHtDY7BAfocYZ9cb7
-        v2Ed1VZ1cHVcq52hIeuJd0Q=
-X-Google-Smtp-Source: ABdhPJy/JgmcuTd4eI4S5cnSAlTKT3aOyEsqpOjGOd04rNnpA1AwiY26x48eOHuxs5+aerv2oD9CxA==
-X-Received: by 2002:a17:903:1203:b029:12b:599b:524c with SMTP id l3-20020a1709031203b029012b599b524cmr18090633plh.10.1627986835078;
-        Tue, 03 Aug 2021 03:33:55 -0700 (PDT)
-Received: from localhost ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id n7sm10364089pjh.8.2021.08.03.03.33.54
+        bh=5gnsnzTGI54ChlStN7U51FwYFJHyQet6tZdsRBwdagg=;
+        b=sY0dQ+EOalCJCXkMYvdq5AczMwT/uxkG6WqKFoBGJ4eETy41nas9MXSB0j2YHy6ydq
+         lb565yxPH/YmxQQV5v3WJ1vxZtoRjE7x5BOiggdjkZtrOLPzrnq1+lMDknIf8n4pr3+x
+         /gGXa2GnEvENUXy4WnEYwvXUkSYXT0t6btDDlW4qSeMlv9Ko7LUIWK2JJutkVzgps4Gn
+         3fDeYCWsgFUQhbuYVokJGi2EfpJNwI6BNRtlxOQjWzNa6yC/LowajteZlAFP+wmuQgO1
+         RFweRMizZn/rUNUZfoWEEIKFlJqzpAgAVK/cW4bS/yDIf57B12jHkh6WJYing0HnNvaz
+         y5bg==
+X-Gm-Message-State: AOAM530Jq42TE/gZCyg3xTnMzreBUIKneKco2TtgAUpLErBKaXZOFOEh
+        +uy6CK7G7zUN+POnDZ9QciQ=
+X-Google-Smtp-Source: ABdhPJyWpLkXEiPW9udwjTC40JRgY4wWWDkK1h+sS4aphghCXTY/a8GS6BK94LrUzev5Gq8waSAokg==
+X-Received: by 2002:a5d:61c8:: with SMTP id q8mr22211371wrv.151.1627986959799;
+        Tue, 03 Aug 2021 03:35:59 -0700 (PDT)
+Received: from debian ([78.40.148.180])
+        by smtp.gmail.com with ESMTPSA id l2sm13580435wru.67.2021.08.03.03.35.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 03:33:54 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 03:34:45 -0700
-From:   CGEL <cgel.zte@gmail.com>
-To:     Davidlohr Bueso <dbueso@suse.de>
-Cc:     keescook@chromium.org, christian.brauner@ubuntu.com,
-        ktkhai@virtuozzo.com, jamorris@linux.microsoft.com,
-        varad.gautam@suse.com, legion@kernel.org,
-        linux-kernel@vger.kernel.org, Ran Xiaokai <ran.xiaokai@zte.com.cn>
-Subject: Re: [PATCH] ipc: add set_ownership() and permissions() callbacks for
- posix mqueue sysctl
-Message-ID: <20210803103445.GB607784@www>
-References: <20210729030651.536326-1-ran.xiaokai@zte.com.cn>
- <4b67a8df7823cc14ffb69657c82562b2@suse.de>
+        Tue, 03 Aug 2021 03:35:59 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 11:35:57 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/40] 5.4.138-rc1 review
+Message-ID: <YQkcDRc8iF/+wHnA@debian>
+References: <20210802134335.408294521@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4b67a8df7823cc14ffb69657c82562b2@suse.de>
+In-Reply-To: <20210802134335.408294521@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-O Fri, Jul 30, 2021 at 08:09:32AM -0700, Davidlohr Bueso wrote:
-> On 2021-07-28 20:06, cgel.zte@gmail.com wrote:
-> > This patch adds a ctl_table_set per ipc namespace, and also the
-> > set_ownership() and permissions() callbacks for the new ctl_table_root
-> > for ipc mqueue syscgtls.
->                   ^^ sysctls
-> 
-> This makes sense to me, just some nits below.
-> 
-> Acked-by: Davidlohr Bueso <dbueso@suse.de>
-> 
-> > 
-> > Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
-> > ---
-> ...
-> > +static int set_permissions(struct ctl_table_header *head,
-> > +				struct ctl_table *table)
-> > +{
-> 
-> Please use curly braces for the else.
-> 
-> > +	return (mode << 6) | (mode << 3) | mode;
-> > +}
-> > +
-> > +static void set_ownership(struct ctl_table_header *head,
-> > +				struct ctl_table *table,
-> > +				kuid_t *uid, kgid_t *gid)
-> > +{
-> > +	struct ipc_namespace *ipc_ns =
-> > +		container_of(head->set, struct ipc_namespace, mq_set);
-> > +	struct user_namespace *user_ns = ipc_ns->user_ns;
-> > +	kuid_t ns_root_uid;
-> > +	kgid_t ns_root_gid;
-> > +
-> > +	ns_root_uid = make_kuid(user_ns, 0);
-> > +	if (uid_valid(ns_root_uid))
-> > +		*uid = ns_root_uid;
-> > +
-> > +	ns_root_gid = make_kgid(user_ns, 0);
-> > +	if (gid_valid(ns_root_gid))
-> > +		*gid = ns_root_gid;
-> > +}
-> 
-> Could set_permissions() and set_ownership() be factored such that we can
-> avoid duplicated code between ipc and net ns? Something like:
-> 
-> void set_permissions(struct ctl_table_header *head, struct ctl_table *table)
-> {
->     struct ipc_namespace *ipc_ns = container_of(head->set, struct
-> ipc_namespace, mq_set);
->     set_permissions_common(ipc_ns->user_ns);
-> }
-> 
-> Thanks,
-> Davidlohr
+Hi Greg,
 
-Hi Davidlohr
+On Mon, Aug 02, 2021 at 03:44:40PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.138 release.
+> There are 40 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+> Anything received after that time might be too late.
 
-Thanks for your comments.
-I will sent a v2 patch together with Christian's comments.
+Build test:
+mips (gcc version 11.1.1 20210723): 65 configs -> no failure
+arm (gcc version 11.1.1 20210723): 107 configs -> no new failure
+arm64 (gcc version 11.1.1 20210723): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
 
