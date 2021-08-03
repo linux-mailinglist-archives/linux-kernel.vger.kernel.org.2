@@ -2,194 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5223DE41C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540703DE41D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbhHCBnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 21:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbhHCBnC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 21:43:02 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F14EC06175F;
-        Mon,  2 Aug 2021 18:42:51 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id e14so1009625qkg.3;
-        Mon, 02 Aug 2021 18:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LhJekVuEhxikT2dkgVUERpPtmPxTduNhkA9B/Qb17as=;
-        b=kIwwj3o6wwPZAELE5SOdYKdHZcr3NRAwGCFmSnpNErgJ+e2yLyONsr4BLnqSNYYKuk
-         V4dMPHCh11tp3NMkXn+fvrVhOK49hCLHBqpKp7MnnGb+cRnwASYIVWXi4+qlctt69x8C
-         6BBLBzLeP8b0vpRIvn7ozXGJ0RDUwbJDuC/NQe3TOJ7Vcip3M5Z5pI8i6OuuivSKd5q5
-         dTAFZIEq0hVIpVSR9a8ij7yAMERWrtBDsA4p0xfH405SrwC9JzSbFox0qtCoxzpAqFT6
-         /EEZ3vhWhJa68JLUWfn0P75ac0CpTf4UZwrLGWmAfJcoTg+pF9ZR4W0W/wb1/7dvpxdN
-         dlxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LhJekVuEhxikT2dkgVUERpPtmPxTduNhkA9B/Qb17as=;
-        b=Csx/TGMOhv/ZFuFXbU3MaXeO0TX5JLMfIJTO1TxumhRpZraat8NBaUzTp0AXa6h+w1
-         3wt5MJ1Q24v5PXkljTw3xEcagRW2uUOX2hfj+4lWykZnj9d0G7BqOVSJmrtwW88G+n36
-         9+lca99Cxn/pcGEaykqQy+ce37Ax+mIeDJW1eZ5LHJXy5GUm7QFq+0K+JXyOicZPsjGV
-         4Ta1Cpmkggl1IEPQ1720WKJnB3FInamxcMhVzkhKEhqgAsxbgt/4tWH/ZnTZjMMNC3yo
-         O8dfh3lwvJLEgBdpZljN1GgiIrjODYsGIpxpUzb9WlRDRXB3npO5yxzNXJIpXwZT2dze
-         B7ww==
-X-Gm-Message-State: AOAM530gOC6rtEoo577d9IJAYAzq6U6cRJuUwbIt1uBQJXNEB5a77/37
-        oM6ygDLIHMrEW/U+xrPPPJ0ssKAZCS7gHdqg1zM=
-X-Google-Smtp-Source: ABdhPJxGgMMVUlxSb45H8MeLcXhKO1hJwRdVOC68mZ/ef+XBALkIgBhOsLqjsugaVpWqCEmhq0uFwEDfQgOASkhy9Js=
-X-Received: by 2002:a05:620a:109a:: with SMTP id g26mr19016731qkk.25.1627954970697;
- Mon, 02 Aug 2021 18:42:50 -0700 (PDT)
+        id S233592AbhHCBpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 21:45:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233182AbhHCBo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 21:44:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F68B60EEA;
+        Tue,  3 Aug 2021 01:44:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627955089;
+        bh=D2nHBzZZYP6XEc94dr6N/hp28tcnuDh4gjg52b8eIiU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NYg6g+g7ZqhVSya0wNXq6u/7ckmeQ6aqpf4BSqzanF4wfyoiS4Gv8bOKcDwfScCTN
+         xY7YjWGZcKmb6HvzVMx466MOi6d0Mx8d4XdDs/FK7K6J69q+0YmWHV39jTqCcSBU6e
+         uiAFtq34bOwnROSqpyrRY80IhdPzGycipW2a5QOpmG7o1YYyUMrsfZk39j/Y+hT/g4
+         m678pweh4NrHnGTFOcXl/nFDoXo2kR0NNl3hcAuKNkL9I/C+a0Nek4i9LQG8qa5u1F
+         1tm43bRtVA7juM386xbmVe5gew3i1X2qeOPLSM3k1+c33+TklhzQ86H+s8ZFmJExOU
+         Z6g6z5zMAm4Hw==
+Date:   Mon, 2 Aug 2021 18:44:48 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH] f2fs: reset free segment to prefree status
+ when do_checkpoint() fail
+Message-ID: <YQifkGIYCHfaQ/AJ@google.com>
+References: <20210427082106.2755-1-frank.li@vivo.com>
+ <12ae52df-bc5e-82c3-4f78-1eafe7723f93@huawei.com>
+ <5f37995c-2390-e8ca-d002-3639ad39e0d3@kernel.org>
+ <YPXDtEyBg5W2ToD/@google.com>
+ <8d2e3a63-72f9-bcb2-24e5-dddd84136001@kernel.org>
+ <YQR60QUh0Pim8vSf@google.com>
+ <355ac2ff-f1f1-b9ea-bd8c-139cb24a03fb@kernel.org>
+ <YQgydetYHOkgY9+B@google.com>
+ <3d3ef5c9-fbb6-df85-26f7-e493da594b22@kernel.org>
 MIME-Version: 1.0
-References: <20210802234304.3519577-1-ndesaulniers@google.com>
-In-Reply-To: <20210802234304.3519577-1-ndesaulniers@google.com>
-From:   Khem Raj <raj.khem@gmail.com>
-Date:   Mon, 2 Aug 2021 18:42:24 -0700
-Message-ID: <CAMKF1spr_i+GugX5Mtw8bKVAHRE=GaFK6ANF3=Ya1HQSSotRTQ@mail.gmail.com>
-Subject: Re: [PATCH] scripts/Makefile.clang: default to LLVM_IAS=1
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d3ef5c9-fbb6-df85-26f7-e493da594b22@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 4:43 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> LLVM_IAS=1 controls enabling clang's integrated assembler via
-> -integrated-as. This was an explicit opt in until we could enable
-> assembler support in Clang for more architecures. Now we have support
-> and CI coverage of LLVM_IAS=1 for all architecures except a few more
-> bugs affecting s390 and powerpc.
->
-> This commit flips the default from opt in via LLVM_IAS=1 to opt out via
-> LLVM_IAS=0.  CI systems or developers that were previously doing builds
-> with CC=clang or LLVM=1 without explicitly setting LLVM_IAS must now
-> explicitly opt out via LLVM_IAS=0, otherwise they will be implicitly
-> opted-in.
->
-> This finally shortens the command line invocation when cross compiling
-> with LLVM to simply:
->
-> $ make ARCH=arm64 LLVM=1
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1434
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Note: base is:
-> https://lore.kernel.org/lkml/20210802183910.1802120-1-ndesaulniers@google.com/
->
->  Documentation/kbuild/llvm.rst | 14 ++++++++------
->  Makefile                      |  2 +-
->  arch/riscv/Makefile           |  2 +-
->  scripts/Makefile.clang        |  6 +++---
->  4 files changed, 13 insertions(+), 11 deletions(-)
->
-> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> index f8a360958f4c..16712fab4d3a 100644
-> --- a/Documentation/kbuild/llvm.rst
-> +++ b/Documentation/kbuild/llvm.rst
-> @@ -60,17 +60,14 @@ They can be enabled individually. The full list of the parameters: ::
->           OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
->           HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
->
-> -Currently, the integrated assembler is disabled by default. You can pass
-> -``LLVM_IAS=1`` to enable it.
-> +Currently, the integrated assembler is enabled by default. You can pass
-> +``LLVM_IAS=0`` to disable it.
->
->  Omitting CROSS_COMPILE
->  ----------------------
->
->  As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
->
-> -Unless ``LLVM_IAS=1`` is specified, ``CROSS_COMPILE`` is also used to derive
-> -``--prefix=<path>`` to search for the GNU assembler and linker.
-> -
->  If ``CROSS_COMPILE`` is not specified, the ``--target=<triple>`` is inferred
->  from ``ARCH``.
->
-> @@ -78,7 +75,12 @@ That means if you use only LLVM tools, ``CROSS_COMPILE`` becomes unnecessary.
->
->  For example, to cross-compile the arm64 kernel::
->
-> -       make ARCH=arm64 LLVM=1 LLVM_IAS=1
-> +       make ARCH=arm64 LLVM=1
-> +
-> +If ``LLVM_IAS=0`` is specified, ``CROSS_COMPILE`` is also used to derive
-> +``--prefix=<path>`` to search for the GNU assembler and linker. ::
-> +
+On 08/03, Chao Yu wrote:
+> On 2021/8/3 1:59, Jaegeuk Kim wrote:
+> > On 08/01, Chao Yu wrote:
+> > > On 2021/7/31 6:18, Jaegeuk Kim wrote:
+> > > > On 07/20, Chao Yu wrote:
+> > > > > On 2021/7/20 2:25, Jaegeuk Kim wrote:
+> > > > > > On 07/19, Chao Yu wrote:
+> > > > > > > On 2021/4/27 20:37, Chao Yu wrote:
+> > > > > > > > I think just reverting dirty/free bitmap is not enough if checkpoint fails,
+> > > > > > > > due to we have updated sbi->cur_cp_pack and nat/sit bitmap, next CP tries
+> > > > > > > > to overwrite last valid meta/node/data, then filesystem will be corrupted.
+> > > > > > > > 
+> > > > > > > > So I suggest to set cp_error if do_checkpoint() fails until we can handle
+> > > > > > > > all cases, which is not so easy.
+> > > > > > > > 
+> > > > > > > > How do you think?
+> > > > > > > 
+> > > > > > > Let's add below patch first before you figure out the patch which covers all
+> > > > > > > things.
+> > > > > > > 
+> > > > > > >    From 3af957c98e9e04259f8bb93ca0b74ba164f3f27e Mon Sep 17 00:00:00 2001
+> > > > > > > From: Chao Yu <chao@kernel.org>
+> > > > > > > Date: Mon, 19 Jul 2021 16:37:44 +0800
+> > > > > > > Subject: [PATCH] f2fs: fix to stop filesystem update once CP failed
+> > > > > > > 
+> > > > > > > During f2fs_write_checkpoint(), once we failed in
+> > > > > > > f2fs_flush_nat_entries() or do_checkpoint(), metadata of filesystem
+> > > > > > > such as prefree bitmap, nat/sit version bitmap won't be recovered,
+> > > > > > > it may cause f2fs image to be inconsistent, let's just set CP error
+> > > > > > > flag to avoid further updates until we figure out a scheme to rollback
+> > > > > > > all metadatas in such condition.
+> > > > > > > 
+> > > > > > > Reported-by: Yangtao Li <frank.li@vivo.com>
+> > > > > > > Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> > > > > > > Signed-off-by: Chao Yu <chao@kernel.org>
+> > > > > > > ---
+> > > > > > >     fs/f2fs/checkpoint.c | 10 +++++++---
+> > > > > > >     1 file changed, 7 insertions(+), 3 deletions(-)
+> > > > > > > 
+> > > > > > > diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+> > > > > > > index 6c208108d69c..096c85022f62 100644
+> > > > > > > --- a/fs/f2fs/checkpoint.c
+> > > > > > > +++ b/fs/f2fs/checkpoint.c
+> > > > > > > @@ -1639,8 +1639,10 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+> > > > > > > 
+> > > > > > >     	/* write cached NAT/SIT entries to NAT/SIT area */
+> > > > > > >     	err = f2fs_flush_nat_entries(sbi, cpc);
+> > > > > > > -	if (err)
+> > > > > > > +	if (err) {
+> > > > > > > +		f2fs_stop_checkpoint(sbi, false);
+> > > > > > 
+> > > > > > I think we should abuse this, since we can get any known ENOMEM as well.
+> > > > > 
+> > > > > Yup, but one critical issue here is it can break A/B update of NAT area,
+> > > > > so, in order to fix this hole, how about using NOFAIL memory allocation
+> > > > > in f2fs_flush_nat_entries() first until we figure out the finial scheme?
+> > > > 
+> > > > NOFAIL is risky, so how about adding a retry logic on ENOMEM with a message
+> > > > and then giving up if we can't get the memory? BTW, what about EIO or other
+> > > > family?
+> > > 
+> > > How about this?
+> > 
+> > Hmm, it seems we won't get ENOMEM.
+> > 
+> > __flush_nat_entry_set
+> >   -> get_next_nat_page
+> >     -> ...
+> >      -> __get_meta_page
+> >        -> repeat on ENOMEM, but stop_checkpoint on EIO
+> 
+> Correct, I missed to check __get_meta_page() and f2fs_get_meta_page_retry().
+> 
+> > 
+> > If we have an error here, we should have stopped checkpoint. Have you seen other
+> > issue?
+> 
+> Still we should fix the case from below path?
+> 
+> - f2fs_write_checkpoint
+>  - do_checkpoint
+>   - f2fs_flush_device_cache failed
 
-I am not sure if LLVM_IAS should also impacts linker selection
+What about adding a retry logic to deal with EIO in __submit_flush_wait()?
+We probably need to retry submitting FLUSH commands, and then give up
+with f2fs_stop_checkpoint(). And, then how about adding f2fs_bug_on() if
+f2fs_flush_nat_entries() returns error without f2fs_cp_error()?
 
-> +       make ARCH=arm64 LLVM=1 LLVM_IAS=0 CROSS_COMPILE=aarch64-linux-gnu-
->
->  Supported Architectures
->  -----------------------
-> diff --git a/Makefile b/Makefile
-> index 444558e62cbc..b24b48c9ebb7 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -845,7 +845,7 @@ else
->  DEBUG_CFLAGS   += -g
->  endif
->
-> -ifneq ($(LLVM_IAS),1)
-> +ifeq ($(LLVM_IAS),0)
->  KBUILD_AFLAGS  += -Wa,-gdwarf-2
->  endif
->
-> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> index bc74afdbf31e..807f7c94bc6f 100644
-> --- a/arch/riscv/Makefile
-> +++ b/arch/riscv/Makefile
-> @@ -41,7 +41,7 @@ endif
->  ifeq ($(CONFIG_LD_IS_LLD),y)
->         KBUILD_CFLAGS += -mno-relax
->         KBUILD_AFLAGS += -mno-relax
-> -ifneq ($(LLVM_IAS),1)
-> +ifeq ($(LLVM_IAS),0)
->         KBUILD_CFLAGS += -Wa,-mno-relax
->         KBUILD_AFLAGS += -Wa,-mno-relax
->  endif
-> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-> index 1f4e3eb70f88..3ae63bd35582 100644
-> --- a/scripts/Makefile.clang
-> +++ b/scripts/Makefile.clang
-> @@ -22,12 +22,12 @@ else
->  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
->  endif # CROSS_COMPILE
->
-> -ifeq ($(LLVM_IAS),1)
-> -CLANG_FLAGS    += -integrated-as
-> -else
-> +ifeq ($(LLVM_IAS),0)
->  CLANG_FLAGS    += -no-integrated-as
->  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
->  CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> +else
-> +CLANG_FLAGS    += -integrated-as
->  endif
->  CLANG_FLAGS    += -Werror=unknown-warning-option
->  KBUILD_CFLAGS  += $(CLANG_FLAGS)
->
-> base-commit: d7a86429dbc691bf540688fcc8542cc20246a85b
-> prerequisite-patch-id: 0d3072ecb5fd06ff6fd6ea81fe601f6c54c23910
-> prerequisite-patch-id: 2654829756eb8a094a0ffad1679caa75a4d86619
-> prerequisite-patch-id: a51e7885ca2376d008bbf146a5589da247806f7b
-> --
-> 2.32.0.554.ge1b32706d8-goog
->
+> 
+> Thanks,
