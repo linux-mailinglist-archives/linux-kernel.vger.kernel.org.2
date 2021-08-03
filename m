@@ -2,240 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057253DE6E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4009A3DE6ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234083AbhHCG5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 02:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233907AbhHCG5K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 02:57:10 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7744DC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 23:56:59 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id cf5so16145969edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 23:56:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4k/291QQ0Y3kbJa/+9YyY1Du192umeFdR0cwtDAsZ9k=;
-        b=oW8Ld5wErK3IxE3XWkIhMnfw5spUGLTu0t+gc8mDh9sof3FcuBf36BBPw06XLyEwXT
-         kp7IHtoczuGoBIzdWjwSiDaH1yIDseT6TlDt1iDarN/RmZpk326mHCRyakBGxx/Nwejf
-         72QaPqkt6T+LN4hK74coN4TII31j04ZnjG2+E3dwXVwOHhvoRHByOIY8VjgMUpIDuUr2
-         37uA0TlTXd8LtUT4wfTD/b3Chwye+bvHWlPUw2RyeuTPRVUzjiAl/eEOtUMOLiwhgqZc
-         d2imvz7mgizXac6AmQZ4w+LIJeOPdC+zIYRhUguP2Nw+/yIid61FDebe17vveZIhfZ1z
-         hfTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4k/291QQ0Y3kbJa/+9YyY1Du192umeFdR0cwtDAsZ9k=;
-        b=XyfFwyBGmdOPrWLRPMcqsI+zyfAamC6lxCBmhGd/ZMOo0ZuUJPuwcDQ1MwjbBYUXDf
-         7GUuv8YHEx3lqbTXxdzRiQnloTjZNN212wI8CFxQtYWs+eqioA/w5suJlikhD2/6u/gA
-         YaVuzxYBeQMjpTCMlaw7RCcIDvysCNWc+utdoM5i2FWZO1YDm1fn2ze1WE06rFkmoNOS
-         mCpeOkmOu3kTY9hlyz99Ge5iN7sFx5Hzb5uSL1XHc8VvhrLyd5Lxk3hT2CFlssMdKETH
-         GDCTvMSl1aJvVqfZsRMGCd3Nv3Bfw6ScGAPCa0atVu08+WGdI8rWSRn9AbVRPdu01SY+
-         gmXQ==
-X-Gm-Message-State: AOAM5328B0uNEAwuQHcHz84wp8JiOHPJ53FQl1V0aoGzpL3uBiH4GoRi
-        Xxmc0AxbrG2VZ42KsuasmbMN3Da+d+iH8V4FrI2cCg==
-X-Google-Smtp-Source: ABdhPJyVeEUEVChr8RzUvCOUu5aVaoEx7i4QrWV/vqJqC+KjpCyUG9sJbWm1DTh4QaJN7o1m17By+AEF48U9Y5TYKJU=
-X-Received: by 2002:aa7:c805:: with SMTP id a5mr23601080edt.23.1627973817932;
- Mon, 02 Aug 2021 23:56:57 -0700 (PDT)
+        id S234102AbhHCG7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 02:59:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233907AbhHCG7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 02:59:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B208F61050;
+        Tue,  3 Aug 2021 06:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627973959;
+        bh=4Sb+0NOSFm85LKdgmKosHIsr0gryivEtorknGClKzc0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TGnes8jOpj6iNpciHe/Ich4G5+4pDqiCAGNBduT9YDitlBkjcuK6yWBmWN67IgPVS
+         EswliryEaIBjUMyDgglxZtwmwywFImbRj713uEMW+GbIkae9ihlWz5OLO0xgtssbYi
+         cPXN2ncD2qg/IxeHwGB3C7ksdJC9Ghar9qCCn/gJxj6h7WTxexd4VFBacy5LxEjRVz
+         LK5NOrskOw/eW/IjraAfBO/3NFoL5dm61FW1hu8vYvWl2wUvAPT1ejwSUGSEjTVyts
+         3vPhByIal78BBCpNgCQFWGwY/meu3yj6Ad1trz9Sl/h3MJ1Vnp6mlWl3kDctf2z2Q3
+         yk7w93q4b3SFQ==
+Received: by mail-wm1-f46.google.com with SMTP id x17so5535473wmc.5;
+        Mon, 02 Aug 2021 23:59:19 -0700 (PDT)
+X-Gm-Message-State: AOAM5328fcEBa1z7RK6m/Jth42NKA/DAPEZYBsVnSXjLbo9tx6BfiFhm
+        AfoLmRBfMjXX13nHnk1A9QM/3vrwpFoyKGPxG5Q=
+X-Google-Smtp-Source: ABdhPJw6f6eacQ6aHBp9WoW5eKY4Ovz5FQXgdVsMZJU/hB32fKJbdMrav10kWSfqlmfhDt2zauF+Yc3fWxlYRpp9M8g=
+X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr11424785wmq.43.1627973958225;
+ Mon, 02 Aug 2021 23:59:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210802134344.028226640@linuxfoundation.org>
-In-Reply-To: <20210802134344.028226640@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 3 Aug 2021 12:26:46 +0530
-Message-ID: <CA+G9fYtT_PLUK0EJkOkwJd+mqBVdDkVLVAUY6i4_ZM2BRHqbkw@mail.gmail.com>
-Subject: Re: [PATCH 5.13 000/104] 5.13.8-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <20210802145937.1155571-1-arnd@kernel.org> <20210802164907.GA9832@hoboy.vegasvil.org>
+ <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com> <20210802230921.GA13623@hoboy.vegasvil.org>
+In-Reply-To: <20210802230921.GA13623@hoboy.vegasvil.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 3 Aug 2021 08:59:02 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2XjgbEkYs6R7Q3RCZMV7v90gu_v82RVfFVs-VtUzw+_w@mail.gmail.com>
+Message-ID: <CAK8P3a2XjgbEkYs6R7Q3RCZMV7v90gu_v82RVfFVs-VtUzw+_w@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK dependencies
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     "Keller, Jacob E" <jacob.e.keller@intel.com>,
+        Nicolas Pitre <nicolas.pitre@linaro.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 at 19:25, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Aug 3, 2021 at 1:09 AM Richard Cochran <richardcochran@gmail.com> wrote:
 >
-> This is the start of the stable review cycle for the 5.13.8 release.
-> There are 104 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Mon, Aug 02, 2021 at 07:54:20PM +0000, Keller, Jacob E wrote:
+> > So go back to "select"?
 >
-> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
-> Anything received after that time might be too late.
+> Why not keep it simple?
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.13.8-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.13.y
-> and the diffstat can be found below.
+> PTP core:
+>    Boolean PTP_1588_CLOCK
 >
-> thanks,
+> drivers:
+>    depends on PTP_1588_CLOCK
 >
-> greg k-h
+> Also, make Posix timers always part of the core.  Tinification is a
+> lost cause.
 
+It may well be a lost cause, but a build fix is not the time to nail down
+that decision. The fix I proposed (with the added MAY_USE_PTP_1588_CLOCK
+symbol) is only two extra lines and leaves everything else working for the
+moment. I would suggest we merge that first and then raise the question
+about whether to give up on tinyfication on the summit list, there are a few
+other things that have come up that would also benefit from trying less hard,
+but if we overdo this, we can get to the point of hurting even systems that are
+otherwise still well supported (64MB MIPS/ARMv5 SoCs, small boot partitions,
+etc.).
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.13.8-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.13.y
-* git commit: cd55ef855022f15ca361d562635918bb2738f143
-* git describe: v5.13.7-105-gcd55ef855022
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13=
-.7-105-gcd55ef855022
-
-## No regressions (compared to v5.13.7)
-
-## No fixes (compared to v5.13.7)
-
-## Test result summary
- total: 83254, pass: 68674, fail: 1508, skip: 12075, xfail: 997,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+        Arnd
