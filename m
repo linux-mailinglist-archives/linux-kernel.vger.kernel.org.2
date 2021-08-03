@@ -2,56 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EBE3DE486
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC4B3DE48B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233702AbhHCCtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 22:49:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233436AbhHCCtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 22:49:19 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7CC960E09;
-        Tue,  3 Aug 2021 02:49:07 +0000 (UTC)
-Date:   Mon, 2 Aug 2021 22:49:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>
-Subject: Re: [PATCH 01/17] libtracefs: Added new API tracefs_sql()
-Message-ID: <20210802224900.20c2b419@oasis.local.home>
-In-Reply-To: <CAM9d7cieXRLU3huWVSha-A=CvumEFq59QU_pXYDkeBNS3m_mRA@mail.gmail.com>
-References: <20210730221824.595597-1-rostedt@goodmis.org>
-        <20210730221824.595597-2-rostedt@goodmis.org>
-        <CAM9d7cieXRLU3huWVSha-A=CvumEFq59QU_pXYDkeBNS3m_mRA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233707AbhHCC5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 22:57:19 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13226 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233436AbhHCC5S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 22:57:18 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gdzzy1Hg2z1CR2F;
+        Tue,  3 Aug 2021 10:57:02 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 10:57:06 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 3 Aug 2021 10:57:05 +0800
+Subject: Re: [PATCH] blk-mq: allow hardware queue to get more tag while
+ sharing a tag set
+To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210712031818.31918-1-yukuai3@huawei.com>
+ <ade72519-5e16-1cc5-9a77-cb9ead42035e@acm.org>
+ <5ab07cf8-a2a5-a60e-c86a-ab6ea53990bb@huawei.com>
+ <e587c572-bcd7-87c4-5eea-30ccdc7455db@acm.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <b124b91b-7474-fa27-b78c-01b7e7396a17@huawei.com>
+Date:   Tue, 3 Aug 2021 10:57:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <e587c572-bcd7-87c4-5eea-30ccdc7455db@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 16:45:39 -0700
-Namhyung Kim <namhyung@kernel.org> wrote:
-
-> > +%option caseless
-> > +
-> > +field          [a-z_][a-z0-9_\.]*
-> > +qstring                \"[^\"]*\"
-> > +hexnum         0x[0-9a-z]+
-> > +number         [0-9a-z]+  
+On 2021/08/03 0:17, Bart Van Assche wrote:
+> On 8/2/21 6:34 AM, yukuai (C) wrote:
+>> I run a test on both null_blk and nvme, results show that there are no
+>> performance degradation:
+>>
+>> test platform: x86
+>> test cpu: 2 nodes, total 72
+>> test scheduler: none
+>> test device: null_blk / nvme
+>>
+>> test cmd: fio -filename=/dev/xxx -name=test -ioengine=libaio -direct=1
+>> -numjobs=72 -iodepth=16 -bs=4k -rw=write -offset_increment=1G
+>> -cpus_allowed=0:71 -cpus_allowed_policy=split -group_reporting
+>> -runtime=120
+>>
+>> test results: iops
+>> 1) null_blk before this patch: 280k
+>> 2) null_blk after this patch: 282k
+>> 3) nvme before this patch: 378k
+>> 4) nvme after this patch: 384k
 > 
-> Do you mean a-f ?
+> Please use io_uring for performance tests.
+> 
+> The null_blk numbers seem way too low to me. If I run a null_blk 
+> performance test inside a VM with 6 CPU cores (Xeon W-2135 CPU) I see 
+> about 6 million IOPS for synchronous I/O and about 4.4 million IOPS when 
+> using libaio. The options I used and that are not in the above command 
+> line are: --thread --gtod_reduce=1 --ioscheduler=none.
+> 
 
-Doh! Thanks, I'll fix that up for v2.
+Hi, Bart
 
--- Steve
+The cpu I'm testing is Intel(R) Xeon(R) Gold 6140 CPU @ 2.30GHz, and
+after switching to io_uring with "--thread --gtod_reduce=1
+--ioscheduler=none", the numbers can increase to 330k, yet still
+far behind 6000k.
+
+The new atomic operations in the hot path is atomic_read() from
+hctx_may_queue(), and the atomic variable will change in two
+situations:
+
+a. fail to get driver tag with dbusy not set, increase and set dbusy.
+b. if dbusy is set when queue switch from busy to dile, decrease and
+clear dbusy.
+
+During the period a device "idle -> busy -> idle", the new atomic
+variable can be writen twice at most, which means this is almost
+readonly in the above test situation. So I guess the impact on
+performance is minimal ?
+
+Thanks!
+Kuai
