@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD7F3DE64A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505723DE649
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhHCFlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 01:41:52 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:54046 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhHCFlu (ORCPT
+        id S233827AbhHCFlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 01:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhHCFli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 01:41:50 -0400
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 1735fNxQ029902
-        for <linux-kernel@vger.kernel.org>; Tue, 3 Aug 2021 14:41:23 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 1735fNxQ029902
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627969283;
-        bh=ViaPnwpbmXT/7F8lQ252gytz1LPyxMDXw/eLqLQ+tS4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0E/eTrWQvraAtD+M6NVVMwuCSlMrAhO08AJwRU0pV51W5APN0q22X1wiUbT9/kvWv
-         no61GCh8m4lZf6e21FeEvRUOMQnmbDOr0W4CmN9so5So2R/Qx2/ZZ7EEfjHaV19Ke5
-         TAj0yoAqR3w7zUaiTvVvKtTpf2BG1grSXIjrAglbrOxL0LdHBXkY68oIvBlBvUt5Pp
-         PZ63jYSpYrf5Po8NcscpjyPamPZy26GS6n/NU1NzKOPKHQ8X50agDyL1Dnx2Xrjub+
-         hBh/gcecO7Zg+cK8dyiDl96Czrbgs5Ddixrj9oBh9pRbYT5K2Mqx9jARUzCPLRmV6j
-         luSASlm9jhcuw==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so2291116pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 22:41:23 -0700 (PDT)
-X-Gm-Message-State: AOAM530kPXLdjMHBwm9Zxabmc6SGehrSi+fxJI9cssPgWPNXrSCN7ycn
-        eUqEDJ6lEjWx/Cy7cPduLoXoFrGs2wZicHfUAXQ=
-X-Google-Smtp-Source: ABdhPJzREULFuTK23zdIrPuCKXys9eGxfHn8HeDU3FLnvRnRAGSTSdj8oJwpXyRBE987wvMPwqZTHDA7yPIzjJ0cJA8=
-X-Received: by 2002:a63:dd51:: with SMTP id g17mr283420pgj.47.1627969282733;
- Mon, 02 Aug 2021 22:41:22 -0700 (PDT)
+        Tue, 3 Aug 2021 01:41:38 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29A2C06175F;
+        Mon,  2 Aug 2021 22:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=uwAkekVM3YUihzDR1kquqE04ZiF9bUkpWcr7bm0ku1c=; b=an7jhKrep5fjlnXrbAgvOtNqTo
+        Pa+gpw2pMXTpDnI1mi1Poh3vO3mzOdDihRcH7SrRaMppCQs8ZH/ZbXob2LrWKpL3x1NGVFYsLvFc8
+        WOmWfig5EdLAX0zloaTkZvDaIJhpjyCRII7VNSEWCHjUcn7wIrKS1dHNpf09SThogXYsJwpvfzjKN
+        clvgA4cGLF3xdrA8rlWOjBHPopUjlBpzY3VFy71mP9vuFna+Dj8Z8cGpflgOwdw1xMa75Fn8kBnYd
+        BilXhRw3bgMlQ+4Ia6TNxj2UFsPhySoUcIVCgtF015bi5ajJM/SveTU8GhMX2TYTskyoHafjqW1wY
+        Etbawong==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mAnB1-005Kyq-Ew; Tue, 03 Aug 2021 05:41:20 +0000
+Subject: Re: mmotm 2021-08-02-18-51 uploaded (struct user_struct when
+ CONFIG_EPOLL is not set)
+To:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Nicholas Piggin <npiggin@gmail.com>
+References: <20210803015202.vA3c5O7uP%akpm@linux-foundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ff69bf0c-39b2-1eb0-67cb-5a596c2049d8@infradead.org>
+Date:   Mon, 2 Aug 2021 22:41:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210729140527.443116-1-masahiroy@kernel.org> <20210802124624.GG18685@arm.com>
-In-Reply-To: <20210802124624.GG18685@arm.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 3 Aug 2021 14:40:44 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARFWRgGsea03mZJfSPjyxYLxz3g6fjTs9aon9hxYvsxcw@mail.gmail.com>
-Message-ID: <CAK7LNARFWRgGsea03mZJfSPjyxYLxz3g6fjTs9aon9hxYvsxcw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: move the (z)install rules to arch/arm64/Makefile
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210803015202.vA3c5O7uP%akpm@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 9:46 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Thu, Jul 29, 2021 at 11:05:27PM +0900, Masahiro Yamada wrote:
-> > Currently, the (z)install targets in arch/arm64/Makefile descend into
-> > arch/arm64/boot/Makefile to invoke the shell script, but there is no
-> > good reason to do so.
-> >
-> > arch/arm64/Makefile can run the shell script directly.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  arch/arm64/Makefile      | 7 +++++--
-> >  arch/arm64/boot/Makefile | 8 --------
-> >  2 files changed, 5 insertions(+), 10 deletions(-)
->
-> Is this part of some cross-arch clean-up? I can see x86 for example does
-> the same thing.
->
-> Thanks.
->
+On 8/2/21 6:52 PM, akpm@linux-foundation.org wrote:
+> The mm-of-the-moment snapshot 2021-08-02-18-51 has been uploaded to
+> 
+>     https://www.ozlabs.org/~akpm/mmotm/
+> 
+> mmotm-readme.txt says
+> 
+> README for mm-of-the-moment:
+> 
+> https://www.ozlabs.org/~akpm/mmotm/
+> 
+> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> more than once a week.
+> 
+> You will need quilt to apply these patches to the latest Linus release (5.x
+> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+> https://ozlabs.org/~akpm/mmotm/series
+> 
+> The file broken-out.tar.gz contains two datestamp files: .DATE and
+> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+> followed by the base kernel version against which this patch series is to
+> be applied.
+> 
 
-Yes. I want to do these cleanups tree-wide, but
-I sent patches per arch.
+I am seeing build errors on i386 or x86_64 when CONFIG_EPOLL is not set:
 
-Please pick it up to your arm64 tree
-if you do not mind.
-
+../kernel/user.c: In function ‘free_user’:
+../kernel/user.c:141:30: error: ‘struct user_struct’ has no member named 
+‘epoll_watches’; did you mean ‘nr_watches’?
+   percpu_counter_destroy(&up->epoll_watches);
+                               ^~~~~~~~~~~~~
+                               nr_watches
+In file included from ../include/linux/sched/user.h:7:0,
+                  from ../kernel/user.c:17:
+../kernel/user.c: In function ‘alloc_uid’:
+../kernel/user.c:189:33: error: ‘struct user_struct’ has no member named 
+‘epoll_watches’; did you mean ‘nr_watches’?
+    if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
+                                  ^
+../include/linux/percpu_counter.h:38:25: note: in definition of macro 
+‘percpu_counter_init’
+    __percpu_counter_init(fbc, value, gfp, &__key);  \
+                          ^~~
+../kernel/user.c:203:33: error: ‘struct user_struct’ has no member named 
+‘epoll_watches’; did you mean ‘nr_watches’?
+     percpu_counter_destroy(&new->epoll_watches);
+                                  ^~~~~~~~~~~~~
+                                  nr_watches
+In file included from ../include/linux/sched/user.h:7:0,
+                  from ../kernel/user.c:17:
+../kernel/user.c: In function ‘uid_cache_init’:
+../kernel/user.c:225:37: error: ‘struct user_struct’ has no member named 
+‘epoll_watches’; did you mean ‘nr_watches’?
+   if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
+                                      ^
+../include/linux/percpu_counter.h:38:25: note: in definition of macro 
+‘percpu_counter_init’
+    __percpu_counter_init(fbc, value, gfp, &__key);  \
+                          ^~~
 
 
 -- 
-Best Regards
-Masahiro Yamada
+~Randy
+
