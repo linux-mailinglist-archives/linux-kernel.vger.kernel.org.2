@@ -2,135 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D673DE3A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2F93DE3A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233232AbhHCAic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 20:38:32 -0400
-Received: from mga14.intel.com ([192.55.52.115]:59360 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232540AbhHCAia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 20:38:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="213287155"
-X-IronPort-AV: E=Sophos;i="5.84,290,1620716400"; 
-   d="scan'208";a="213287155"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 17:38:19 -0700
-X-IronPort-AV: E=Sophos;i="5.84,290,1620716400"; 
-   d="scan'208";a="510573535"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.175.54]) ([10.249.175.54])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 17:38:15 -0700
-Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Tao Xu <tao3.xu@intel.com>, pbonzini@redhat.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210525051204.1480610-1-tao3.xu@intel.com>
- <YQRkBI9RFf6lbifZ@google.com>
- <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
- <YQgTPakbT+kCwMLP@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
-Date:   Tue, 3 Aug 2021 08:38:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S233321AbhHCAjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 20:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232540AbhHCAjM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 20:39:12 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC46C06175F;
+        Mon,  2 Aug 2021 17:39:01 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id h13so9913585wrp.1;
+        Mon, 02 Aug 2021 17:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=l/8Ed6S0tN2RxUJlIUubNrUkmTB8gmmGFdOP6HVjrCw=;
+        b=RHXZddUxeu9vMosOBdyoYFmH6hmpjVoW82NV/WeNb2JH88GZf9wV3rcfj4TWW4IP1h
+         LNBcMyNVo6I0I9fOPXrhlB7U+5J3szLweAlwL7GoZn0AvijkIrnszvqT/QZ9q2IOQ37V
+         juC3PmTDRpe3jJxNgnmRXMP3bM8Uwknaf7BpJLtsoO8FnpMhkIt7niYfYc3oV66LyoxG
+         LgcsYLuI+4wlH5dDFZtKsX0K6CGFgomOGcBKU8p72aCd3b1s7/UqWXP50kGDHGxNazCA
+         XZrxs/X9K7TbpiJZROpPYN0to6b+oc57Zi7gUwSR7DitI6RMucnxU7GgyY1Q3xlgiZYF
+         +p+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=l/8Ed6S0tN2RxUJlIUubNrUkmTB8gmmGFdOP6HVjrCw=;
+        b=MubJrcDesCtVaQ4yqwNF9X0U47Wbw0GpzaA2gpE2AO1kYul6uRAg7q3GzzA4ti8RLn
+         ZpnaI2v4XYgGj6HsaX3esCxNlz0oJsFHoKk8jNtLp/73OvthHIOTFM2Lno6ZexZVd/ZW
+         G0DTYGbLplq6LgIyZiQhLjDAdccBJPnuX1oX7/zIQDpC4alPqhHPd/UljSIf9xWCyFH6
+         0YeDz9miNvPUVYcb9yqyhEFbyM7/52RCiopuWNmMdr+xDqLWcDANIel14ef4k9kE9fJH
+         I8rccRhFy4wZyKfHONYNN1FCUjbC9w0a7CHtBVKvyTSvzPZTa+Onok9Qbd7SjX2y8MkY
+         gIrQ==
+X-Gm-Message-State: AOAM5308uiF/gAvqBKSCaDAGSqZTEfvI3frwr58SzLlSWYbeiyeSkDGU
+        /3uiTbka0Q7UVtyVr03/p08=
+X-Google-Smtp-Source: ABdhPJzz63IvUKyA5AoTWr+A0TdMWEtEkHbw6sAzHHL6/g1JpGI3dzFiTmuQXbYkdOOJCgmIek7gPg==
+X-Received: by 2002:adf:f4c5:: with SMTP id h5mr18618668wrp.292.1627951140105;
+        Mon, 02 Aug 2021 17:39:00 -0700 (PDT)
+Received: from pc ([196.235.140.151])
+        by smtp.gmail.com with ESMTPSA id z6sm11645350wmp.1.2021.08.02.17.38.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 17:38:59 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 01:38:57 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Salah Triki <salah.triki@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, gregkh@linuxfoundation.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] input: touchscreen: replace conditional statement with max()
+Message-ID: <20210803003857.GA1560352@pc>
 MIME-Version: 1.0
-In-Reply-To: <YQgTPakbT+kCwMLP@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/2021 11:46 PM, Sean Christopherson wrote:
-> On Mon, Aug 02, 2021, Xiaoyao Li wrote:
->> On 7/31/2021 4:41 AM, Sean Christopherson wrote:
->>> On Tue, May 25, 2021, Tao Xu wrote:
->>>>    #endif /* __KVM_X86_VMX_CAPS_H */
->>>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->>>> index 4bceb5ca3a89..c0ad01c88dac 100644
->>>> --- a/arch/x86/kvm/vmx/vmx.c
->>>> +++ b/arch/x86/kvm/vmx/vmx.c
->>>> @@ -205,6 +205,10 @@ module_param(ple_window_max, uint, 0444);
->>>>    int __read_mostly pt_mode = PT_MODE_SYSTEM;
->>>>    module_param(pt_mode, int, S_IRUGO);
->>>> +/* Default is 0, less than 0 (for example, -1) disables notify window. */
->>>> +static int __read_mostly notify_window;
->>>
->>> I'm not sure I like the idea of trusting ucode to select an appropriate internal
->>> threshold.  Unless the internal threshold is architecturally defined to be at
->>> least N nanoseconds or whatever, I think KVM should provide its own sane default.
->>> E.g. it's not hard to imagine a scenario where a ucode patch gets rolled out that
->>> adjusts the threshold and starts silently degrading guest performance.
->>
->> You mean when internal threshold gets smaller somehow, and cases
->> false-positive that leads unexpected VM exit on normal instruction? In this
->> case, we set increase the vmcs.notify_window in KVM.
-> 
-> Not while VMs are running though.
-> 
->> I think there is no better to avoid this case if ucode changes internal
->> threshold. Unless KVM's default notify_window is bigger enough.
->>
->>> Even if the internal threshold isn't architecturally constrained, it would be very,
->>> very helpful if Intel could publish the per-uarch/stepping thresholds, e.g. to give
->>> us a ballpark idea of how agressive KVM can be before it risks false positives.
->>
->> Even Intel publishes the internal threshold, we still need to provide a
->> final best_value (internal + vmcs.notify_window). Then what's that value?
-> 
-> The ideal value would be high enough to guarantee there are zero false positives,
-> yet low enough to prevent a malicious guest from causing instability in the host
-> by blocking events for an extended duration.  The problem is that there's no
-> magic answer for the threshold at which a blocked event would lead to system
-> instability, and without at least a general idea of the internal value there's no
-> answer at all.
-> 
-> IIRC, SGX instructions have a hard upper bound of 25k cycles before they have to
-> check for pending interrupts, e.g. it's why EINIT is interruptible.  The 25k cycle
-> limit is likely a good starting point for the combined minimum.  That's why I want
-> to know the internal minimum; if the internal minimum is _guaranteed_ to be >25k,
-> then KVM can be more aggressive with its default value.
+Replace conditional statement with max() in order to make code cleaner.
+Issue found by coccinelle.
 
-OK. I will go internally to see if we can publish the internal threshold.
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/input/touchscreen/usbtouchscreen.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> If we have an option for final best_value, then I think it's OK to just let
->> vmcs.notify_window = best_value. Then the true final value is best_value +
->> internal.
->>   - if it's a normal instruction, it should finish within best_value or
->> best_value + internal. So it makes no difference.
->>   - if it's an instruction in malicious case, it won't go to next instruction
->> whether wait for best_value or best_value + internal.
-> 
-> ...
-> 
->>>> +
->>>>    	vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, 0);
->>>>    	vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, 0);
->>>>    	vmcs_write32(CR3_TARGET_COUNT, 0);           /* 22.2.1 */
->>>> @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
->>>>    	return 0;
->>>>    }
->>>> +static int handle_notify(struct kvm_vcpu *vcpu)
->>>> +{
->>>> +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
->>>> +
->>>> +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
->>>
->>> What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
->>
->> It means whether the VM context is corrupted and not valid in the VMCS.
-> 
-> Well that's a bit terrifying.  Under what conditions can the VM context become
-> corrupted?  E.g. if the context can be corrupted by an inopportune NOTIFY exit,
-> then KVM needs to be ultra conservative as a false positive could be fatal to a
-> guest.
-> 
+diff --git a/drivers/input/touchscreen/usbtouchscreen.c b/drivers/input/touchscreen/usbtouchscreen.c
+index 43c521f50c85..69f36d4f6cea 100644
+--- a/drivers/input/touchscreen/usbtouchscreen.c
++++ b/drivers/input/touchscreen/usbtouchscreen.c
+@@ -269,7 +269,7 @@ static int e2i_read_data(struct usbtouch_usb *dev, unsigned char *pkt)
+ 
+ 	tmp = tmp - 0xA000;
+ 	dev->touch = (tmp > 0);
+-	dev->press = (tmp > 0 ? tmp : 0);
++	dev->press = max(tmp, 0);
+ 
+ 	return 1;
+ }
+-- 
+2.25.1
 
-Short answer is no case will set the VM_CONTEXT_INVALID bit.
-
-VM_CONTEXT_INVALID is so fatal and IMHO it won't be set for any 
-inopportune NOTIFY exit.
