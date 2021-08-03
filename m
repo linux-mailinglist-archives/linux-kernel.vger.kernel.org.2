@@ -2,80 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C3D3DF216
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3823DF21D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbhHCQFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:05:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231410AbhHCQFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:05:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AB4F61078;
-        Tue,  3 Aug 2021 16:05:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628006701;
-        bh=ChOrB3CPLBJVhPiQkbuSn1ArNPEzKoeGUjX+n3TXo5g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VBZMvvmIWB5Ddyrebf1dgYRpzzt3wrxaVS92W9vqG+Migtd90Ap/V60TOLNDUBjRF
-         OYczL/lkmhA6R/cFRmcp2IPVKawEE22zzbr9twJZPbign1OqbGTBgkukjX9mZXbLUk
-         Cm+RiPsRtBAhXMGclWrmkldogpH11A751IdjR7p89Mp0mqQo4JmqpZqfR21VC3e3jy
-         WLIU16cHsVTp3mdYpvkU5OF6trMMsp6VV1MwRRKmQtYWzIBmCwN4G7qK73B98Gbzww
-         hmNWOO9MFGjhhpU0Nb3Ghq4EOz4jR86TzidUhIRWSwtJBf0tv5r66ZMbfMjU6aFtGn
-         rgS3QRmMGx/ng==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Tree for Aug 3
-Date:   Tue,  3 Aug 2021 17:04:45 +0100
-Message-Id: <20210803160445.22331-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S231764AbhHCQHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:07:39 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:42625 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229903AbhHCQHa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:07:30 -0400
+Received: by mail-io1-f69.google.com with SMTP id l2-20020a6b7f020000b0290439ea50822eso14550063ioq.9
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 09:07:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/TFQ9YeY70c6pdy1+lx9h86IEkrjaoJ6fBxIz0y1hSA=;
+        b=hym3SGNNdetnnXrQxgVOj6TcEtUTLiWEZbcNnUbsydRFcN1Ujpfzj+bHoF1VOOedEw
+         e8yOQCX6jLK6VsQTXGUxma+RMUdFvnJ4AXnFl7VqntfkXF0l/IAcvifY8hIq7Ztylewu
+         aoLla90WnZF8qfULffctGidS0skSuWIqAtUwUQs4nf9eWFWawgPi9UK775QX8ukqOhLh
+         FJFwYXuRzMV/B8mixOJv5jA7JlIjdaBegRgK4qy7Wgs5K4PhMkDE3KHi8y04p7D7WAe7
+         KZmyZb0ctknPL71mXGcHpRkgVwtsCixMFSESUxfqz1g00x8EPqvNuOLs525BSZD3mZAS
+         dUwQ==
+X-Gm-Message-State: AOAM533fsYO7yzZ6gkTKw5kwV/MSLc+QW5YejDVkviUIbIsQCytQAYIn
+        h+bacNEBU9EpFhUx5HEj0+PVDZsK9eCb5Wf7lcUn7CjYXoNB
+X-Google-Smtp-Source: ABdhPJxKSWlBHmh2yP37WsW8Iw8NipjFBBUKkuhYwt6jHJgDuoIFolUN9Q2j8KBSNr/VjK2jsu97+tuYLV2+5ZCs+GFDlObp27FY
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c10d:: with SMTP id p13mr1842563ile.83.1628006839615;
+ Tue, 03 Aug 2021 09:07:19 -0700 (PDT)
+Date:   Tue, 03 Aug 2021 09:07:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005e090405c8a9e1c3@google.com>
+Subject: [syzbot] net-next boot error: WARNING: refcount bug in fib_create_info
+From:   syzbot <syzbot+c5ac86461673ef58847c@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hello,
 
-Changes since 20210802:
+syzbot found the following issue on:
 
-The staging tree has a build failure so I used the tree from
-20210728.
+HEAD commit:    1187c8c4642d net: phy: mscc: make some arrays static const..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=140e7b3e300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f9bb42efdc6f1d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=c5ac86461673ef58847c
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-Non-merge commits (relative to Linus' tree): 4499
- 4999 files changed, 327140 insertions(+), 124203 deletions(-)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c5ac86461673ef58847c@syzkaller.appspotmail.com
 
-----------------------------------------------------------------------------
+FS-Cache: Netfs 'afs' registered for caching
+Btrfs loaded, crc32c=crc32c-intel, assert=on, zoned=yes
+Key type big_key registered
+Key type encrypted registered
+AppArmor: AppArmor sha1 policy hashing enabled
+ima: No TPM chip found, activating TPM-bypass!
+Loading compiled-in module X.509 certificates
+Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
+ima: Allocated hash algorithm: sha256
+ima: No architecture policies found
+evm: Initialising EVM extended attributes:
+evm: security.selinux (disabled)
+evm: security.SMACK64 (disabled)
+evm: security.SMACK64EXEC (disabled)
+evm: security.SMACK64TRANSMUTE (disabled)
+evm: security.SMACK64MMAP (disabled)
+evm: security.apparmor
+evm: security.ima
+evm: security.capability
+evm: HMAC attrs: 0x1
+PM:   Magic number: 1:990:690
+printk: console [netcon0] enabled
+netconsole: network logging started
+gtp: GTP module loaded (pdp ctx size 104 bytes)
+rdma_rxe: loaded
+cfg80211: Loading compiled-in X.509 certificates for regulatory database
+cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+ALSA device list:
+  #0: Dummy 1
+  #1: Loopback 1
+  #2: Virtual MIDI Card 1
+md: Waiting for all devices to be available before autodetect
+md: If you don't use raid, use raid=noautodetect
+md: Autodetecting RAID arrays.
+md: autorun ...
+md: ... autorun DONE.
+EXT4-fs (sda1): mounted filesystem without journal. Opts: (null). Quota mode: none.
+VFS: Mounted root (ext4 filesystem) readonly on device 8:1.
+devtmpfs: mounted
+Freeing unused kernel image (initmem) memory: 4476K
+Write protecting the kernel read-only data: 169984k
+Freeing unused kernel image (text/rodata gap) memory: 2012K
+Freeing unused kernel image (rodata/data gap) memory: 1516K
+Run /sbin/init as init process
+systemd[1]: systemd 232 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD +IDN)
+systemd[1]: Detected virtualization kvm.
+systemd[1]: Detected architecture x86-64.
+systemd[1]: Set hostname to <syzkaller>.
+------------[ cut here ]------------
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 1 PID: 1 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+Modules linked in:
+CPU: 1 PID: 1 Comm: systemd Not tainted 5.14.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+Code: 09 31 ff 89 de e8 d7 fa 9e fd 84 db 0f 85 36 ff ff ff e8 8a f4 9e fd 48 c7 c7 c0 81 e3 89 c6 05 70 51 81 09 01 e8 48 f8 13 05 <0f> 0b e9 17 ff ff ff e8 6b f4 9e fd 0f b6 1d 55 51 81 09 31 ff 89
+RSP: 0018:ffffc90000c66ab0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88813fe48000 RSI: ffffffff815d7b25 RDI: fffff5200018cd48
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff815d195e R11: 0000000000000000 R12: 0000000000000004
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff888027722e00
+FS:  00007f8c1c5d0500(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055ed0ced4368 CR3: 0000000026bac000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __refcount_add include/linux/refcount.h:199 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ fib_create_info+0x36af/0x4910 net/ipv4/fib_semantics.c:1554
+ fib_table_insert+0x1cd/0x1af0 net/ipv4/fib_trie.c:1224
+ fib_magic+0x455/0x540 net/ipv4/fib_frontend.c:1087
+ fib_add_ifaddr+0x16c/0x500 net/ipv4/fib_frontend.c:1109
+ fib_inetaddr_event+0x162/0x2a0 net/ipv4/fib_frontend.c:1420
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ blocking_notifier_call_chain kernel/notifier.c:337 [inline]
+ blocking_notifier_call_chain+0x67/0x90 kernel/notifier.c:325
+ __inet_insert_ifa+0x919/0xc20 net/ipv4/devinet.c:553
+ inet_insert_ifa net/ipv4/devinet.c:560 [inline]
+ inetdev_event+0x1243/0x15d0 net/ipv4/devinet.c:1570
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2123
+ call_netdevice_notifiers_extack net/core/dev.c:2135 [inline]
+ call_netdevice_notifiers net/core/dev.c:2149 [inline]
+ __dev_notify_flags+0x110/0x2b0 net/core/dev.c:8878
+ dev_change_flags+0x112/0x170 net/core/dev.c:8916
+ do_setlink+0x913/0x3910 net/core/rtnetlink.c:2710
+ rtnl_setlink+0x24d/0x3c0 net/core/rtnetlink.c:3003
+ rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ __sys_sendto+0x21c/0x320 net/socket.c:2030
+ __do_sys_sendto net/socket.c:2042 [inline]
+ __se_sys_sendto net/socket.c:2038 [inline]
+ __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2038
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f8c1ae6d693
+Code: 79 20 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb cd 66 0f 1f 44 00 00 83 3d 39 bd 20 00 00 75 13 49 89 ca b8 2c 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 34 c3 48 83 ec 08 e8 cb f7 ff ff 48 89 04 24
+RSP: 002b:00007fffa5944aa8 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 000055ed0ceca9a0 RCX: 00007f8c1ae6d693
+RDX: 0000000000000020 RSI: 000055ed0ceca2b0 RDI: 0000000000000004
+RBP: 000055ed0cecaab0 R08: 00007fffa5944ab0 R09: 0000000000000010
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fffa5944b14
+R13: 0000000000000001 R14: 0000000000000001 R15: 0000000000000001
 
-I have created today's linux-next tree at
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
-are tracking the linux-next tree using git, you should not use "git pull"
-to do so as that will try to merge the new linux-next release with the
-old one.  You should use "git fetch" and checkout or reset to the new
-master.
 
-You can see which trees have been included by looking in the Next/Trees
-file in the source.  There are also quilt-import.log and merge.log
-files in the Next directory.  Between each merge, the tree was built
-with an arm64 defconfig, an allmodconfig for x86_64, a
-multi_v7_defconfig for arm and a native build of tools/perf. After
-the final fixups (if any), I do an x86_64 modules_install followed by
-builds for x86_64 allnoconfig, arm64 allnoconfig and i386, and htmldocs.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Below is a summary of the state of the merge.
-
-I am currently merging 333 trees (counting Linus' and 90 trees of bug
-fix patches pending for the current merge release).
-
-Stats about the size of the tree over time can be seen at
-http://neuling.org/linux-next-size.html .
-
-Status of my local build tests will be at
-http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-advice about cross compilers/configs that work, we are always open to add
-more builds.
-
-Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-Gortmaker for triage and bug fixes.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
