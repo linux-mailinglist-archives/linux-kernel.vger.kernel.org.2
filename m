@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D844B3DEFE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77FAD3DEFF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236537AbhHCORT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54960 "EHLO
+        id S236589AbhHCORX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236488AbhHCORR (ORCPT
+        with ESMTP id S236501AbhHCORS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:17:17 -0400
+        Tue, 3 Aug 2021 10:17:18 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9747EC06175F;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC56EC061764;
         Tue,  3 Aug 2021 07:17:06 -0700 (PDT)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -22,29 +22,31 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=myV3fFPpmckxFi8iG+1Cz4HE7geihL0CQ+OBM5u9Dbk=;
-        b=g2RGayE7tYJ78jHshfPZKWu5U5dR72hCbCO1rsQHagt9X7BHN68a8LUoBHtBq48oPWseii
-        xv68Biasr4LjXE3GkNSkIoUD/rIh5GbfaJL9w1laDLWZzdSRV8B9+H32R3RWPCNPC9WA7h
-        Xlvcs9eyUlwYCfjTRofzo/VUZHRe1UpcGy6nZHqUhfn0sbzhFqSS3yRBcj5CeB56QeQpgf
-        XaxXqJjOx2+8eIDrCx1pTGazRBJTR+96a11/+KgImr4XdUtrQT0Mj0X8leV6+HmzvTPBnX
-        Z9iLwn5xy5I8iXDdU0P/WCEa6eyBDSUxdzy4J//JxG7d4LswGV7NuCegCV5CPw==
+        bh=aHPrHYGQ8v1XEJpOG6LdVnCzD7dhUki+Kf02opOvfjU=;
+        b=ZqWIXiuVrluOH6iMS6Xlm9z7Ed3vOeofFPYHEViqoTIPemJarf5N37Ne63K+k3xJAO4NuJ
+        2yzS9PVdJ44DqcS/3f+nH5UCVQU49tGOQtnvcLGlLpPsg9xtMGM5GddgB8eLeGqBYZQOYM
+        tar59mvdyYqpgyFPDFY2cEXsWZ0TwoKLK4xOOcISCB4SV48PeSqXHVOM7I7hBGqN7dGh67
+        T4zW2qFOMLBa4jNyBJW0i/W6shbcyqtFyW+NfqDAFuuYGOzAJ7oMSVnU9RzPxcnkCz91pC
+        bIAvE1hI0YXr8g1Iq94DxJNv4UQt98IP66mJMncNkgRwt64G8BvnwOI9H4lemg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1628000225;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=myV3fFPpmckxFi8iG+1Cz4HE7geihL0CQ+OBM5u9Dbk=;
-        b=EOz/aqqRv+PoPnF3qErKabqMDj7hgItZeIjKJNOZHB4wZs6VB+l82ZuzfLyQ9emawL5PeM
-        uz+dzyv6P9PsRsBA==
+        bh=aHPrHYGQ8v1XEJpOG6LdVnCzD7dhUki+Kf02opOvfjU=;
+        b=6wt1eryPb47jrAEEQtsyqUMvEE2Jnwi1ug80WIzJ6t1diQJMBy4yg75wT0OqzN7iDwBoyE
+        v/7Q+HrPVFVnC2Aw==
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH 02/38] MIPS: Replace deprecated CPU-hotplug functions.
-Date:   Tue,  3 Aug 2021 16:15:45 +0200
-Message-Id: <20210803141621.780504-3-bigeasy@linutronix.de>
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org
+Subject: [PATCH 03/38] powerpc: Replace deprecated CPU-hotplug functions.
+Date:   Tue,  3 Aug 2021 16:15:46 +0200
+Message-Id: <20210803141621.780504-4-bigeasy@linutronix.de>
 In-Reply-To: <20210803141621.780504-1-bigeasy@linutronix.de>
 References: <20210803141621.780504-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -60,84 +62,139 @@ cpus_read_lock() and cpus_read_unlock().
 Replace deprecated CPU-hotplug functions with the official version.
 The behavior remains unchanged.
 
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: kvm-ppc@vger.kernel.org
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- arch/mips/kernel/mips-mt-fpaff.c | 10 +++++-----
- arch/mips/kernel/process.c       |  4 ++--
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ arch/powerpc/kernel/rtasd.c               |  4 ++--
+ arch/powerpc/kvm/book3s_hv_builtin.c      | 10 +++++-----
+ arch/powerpc/platforms/powernv/idle.c     |  4 ++--
+ arch/powerpc/platforms/powernv/opal-imc.c |  8 ++++----
+ 4 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/arch/mips/kernel/mips-mt-fpaff.c b/arch/mips/kernel/mips-mt-fp=
-aff.c
-index 6c590ef276482..67e130d3f0385 100644
---- a/arch/mips/kernel/mips-mt-fpaff.c
-+++ b/arch/mips/kernel/mips-mt-fpaff.c
-@@ -76,13 +76,13 @@ asmlinkage long mipsmt_sys_sched_setaffinity(pid_t pid,=
- unsigned int len,
- 	if (copy_from_user(&new_mask, user_mask_ptr, sizeof(new_mask)))
- 		return -EFAULT;
+diff --git a/arch/powerpc/kernel/rtasd.c b/arch/powerpc/kernel/rtasd.c
+index 8561dfb33f241..32ee17753eb4a 100644
+--- a/arch/powerpc/kernel/rtasd.c
++++ b/arch/powerpc/kernel/rtasd.c
+@@ -429,7 +429,7 @@ static void rtas_event_scan(struct work_struct *w)
+=20
+ 	do_event_scan();
 =20
 -	get_online_cpus();
 +	cpus_read_lock();
- 	rcu_read_lock();
 =20
- 	p =3D find_process_by_pid(pid);
- 	if (!p) {
- 		rcu_read_unlock();
--		put_online_cpus();
-+		cpus_read_unlock();
- 		return -ESRCH;
- 	}
+ 	/* raw_ OK because just using CPU as starting point. */
+ 	cpu =3D cpumask_next(raw_smp_processor_id(), cpu_online_mask);
+@@ -451,7 +451,7 @@ static void rtas_event_scan(struct work_struct *w)
+ 	schedule_delayed_work_on(cpu, &event_scan_work,
+ 		__round_jiffies_relative(event_scan_delay, cpu));
 =20
-@@ -147,7 +147,7 @@ asmlinkage long mipsmt_sys_sched_setaffinity(pid_t pid,=
- unsigned int len,
- 	free_cpumask_var(cpus_allowed);
- out_put_task:
- 	put_task_struct(p);
 -	put_online_cpus();
 +	cpus_read_unlock();
- 	return retval;
  }
 =20
-@@ -166,7 +166,7 @@ asmlinkage long mipsmt_sys_sched_getaffinity(pid_t pid,=
- unsigned int len,
- 	if (len < real_len)
- 		return -EINVAL;
+ #ifdef CONFIG_PPC64
+diff --git a/arch/powerpc/kvm/book3s_hv_builtin.c b/arch/powerpc/kvm/book3s=
+_hv_builtin.c
+index be8ef1c5b1bfb..fcf4760a3a0ea 100644
+--- a/arch/powerpc/kvm/book3s_hv_builtin.c
++++ b/arch/powerpc/kvm/book3s_hv_builtin.c
+@@ -137,23 +137,23 @@ long int kvmppc_rm_h_confer(struct kvm_vcpu *vcpu, in=
+t target,
+  * exist in the system. We use a counter of VMs to track this.
+  *
+  * One of the operations we need to block is onlining of secondaries, so we
+- * protect hv_vm_count with get/put_online_cpus().
++ * protect hv_vm_count with cpus_read_lock/unlock().
+  */
+ static atomic_t hv_vm_count;
 =20
+ void kvm_hv_vm_activated(void)
+ {
 -	get_online_cpus();
 +	cpus_read_lock();
- 	rcu_read_lock();
-=20
- 	retval =3D -ESRCH;
-@@ -182,7 +182,7 @@ asmlinkage long mipsmt_sys_sched_getaffinity(pid_t pid,=
- unsigned int len,
-=20
- out_unlock:
- 	rcu_read_unlock();
+ 	atomic_inc(&hv_vm_count);
 -	put_online_cpus();
 +	cpus_read_unlock();
- 	if (retval)
- 		return retval;
- 	if (copy_to_user(user_mask_ptr, &mask, real_len))
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index 73c8e7990a973..95aa86fa60778 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -859,10 +859,10 @@ int mips_set_process_fp_mode(struct task_struct *task=
-, unsigned int value)
- 	 * scheduled in then it will already have picked up the new FP mode
- 	 * whilst doing so.
+ }
+ EXPORT_SYMBOL_GPL(kvm_hv_vm_activated);
+=20
+ void kvm_hv_vm_deactivated(void)
+ {
+-	get_online_cpus();
++	cpus_read_lock();
+ 	atomic_dec(&hv_vm_count);
+-	put_online_cpus();
++	cpus_read_unlock();
+ }
+ EXPORT_SYMBOL_GPL(kvm_hv_vm_deactivated);
+=20
+diff --git a/arch/powerpc/platforms/powernv/idle.c b/arch/powerpc/platforms=
+/powernv/idle.c
+index 528a7e0cf83aa..aa27689b832db 100644
+--- a/arch/powerpc/platforms/powernv/idle.c
++++ b/arch/powerpc/platforms/powernv/idle.c
+@@ -199,12 +199,12 @@ static ssize_t store_fastsleep_workaround_applyonce(s=
+truct device *dev,
  	 */
+ 	power7_fastsleep_workaround_exit =3D false;
+=20
 -	get_online_cpus();
 +	cpus_read_lock();
- 	for_each_cpu_and(cpu, &process_cpus, cpu_online_mask)
- 		work_on_cpu(cpu, prepare_for_fp_mode_switch, NULL);
+ 	primary_thread_mask =3D cpu_online_cores_map();
+ 	on_each_cpu_mask(&primary_thread_mask,
+ 				pnv_fastsleep_workaround_apply,
+ 				&err, 1);
 -	put_online_cpus();
 +	cpus_read_unlock();
+ 	if (err) {
+ 		pr_err("fastsleep_workaround_applyonce change failed while running pnv_f=
+astsleep_workaround_apply");
+ 		goto fail;
+diff --git a/arch/powerpc/platforms/powernv/opal-imc.c b/arch/powerpc/platf=
+orms/powernv/opal-imc.c
+index 7824cc364bc40..ba02a75c14102 100644
+--- a/arch/powerpc/platforms/powernv/opal-imc.c
++++ b/arch/powerpc/platforms/powernv/opal-imc.c
+@@ -186,7 +186,7 @@ static void disable_nest_pmu_counters(void)
+ 	int nid, cpu;
+ 	const struct cpumask *l_cpumask;
 =20
- 	return 0;
+-	get_online_cpus();
++	cpus_read_lock();
+ 	for_each_node_with_cpus(nid) {
+ 		l_cpumask =3D cpumask_of_node(nid);
+ 		cpu =3D cpumask_first_and(l_cpumask, cpu_online_mask);
+@@ -195,7 +195,7 @@ static void disable_nest_pmu_counters(void)
+ 		opal_imc_counters_stop(OPAL_IMC_COUNTERS_NEST,
+ 				       get_hard_smp_processor_id(cpu));
+ 	}
+-	put_online_cpus();
++	cpus_read_unlock();
  }
+=20
+ static void disable_core_pmu_counters(void)
+@@ -203,7 +203,7 @@ static void disable_core_pmu_counters(void)
+ 	cpumask_t cores_map;
+ 	int cpu, rc;
+=20
+-	get_online_cpus();
++	cpus_read_lock();
+ 	/* Disable the IMC Core functions */
+ 	cores_map =3D cpu_online_cores_map();
+ 	for_each_cpu(cpu, &cores_map) {
+@@ -213,7 +213,7 @@ static void disable_core_pmu_counters(void)
+ 			pr_err("%s: Failed to stop Core (cpu =3D %d)\n",
+ 				__FUNCTION__, cpu);
+ 	}
+-	put_online_cpus();
++	cpus_read_unlock();
+ }
+=20
+ int get_max_nest_dev(void)
 --=20
 2.32.0
 
