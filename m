@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0C03DF269
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C733DF26D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhHCQZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:25:27 -0400
-Received: from mail-co1nam11on2084.outbound.protection.outlook.com ([40.107.220.84]:56193
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233319AbhHCQZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:25:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CqNgql7GSNxeT5sg+WyUyuS479a/dOCAhipa6nOoXrlFUTfvxp4gGu9xXEO2YT9Ceg3F53SOyl/tMOaSysNCzR9GETCYKx/jqVzKHSMxacdAwttfGJJKHUsClviLm7bQrZSTqgdU+FHEwL2M55uSfBR4+XcSKHnxT5Y+2mFQfc42y28Cm6n8VdVVHhWwRCnnss44rNI1A8jqmaFjzxG5RwG8XM3AfNIaXDVFSd00r7ExRxxuonFO87mNxHqoXxQFxiR113H0VgLZZNGWIJ/e/lu2YxzV3bj6Ap8pNcved6y+ts1qLFsE6fVsbB93jcGBcdDULJ1JO9TpjLcjlU1Gkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+bSrgEVsPee3fmFzfxVJHc/4OcLlIqaAQgGhd0NwqHI=;
- b=oDjRg7USBpADsgQ16AInhVuSkmSRhZtJOdKl1CUm9RYxo+H48+QYyWvEGZTgBxgtuBtbOi7fZZrzmZRA0TzaUZfhKIym5hRBRSK9XhxkzNTtUpEAaKlYaafTR19/9Qp1ccQXofQlCMQt1TKkGmtiCtSIXtM4WwV0ACmZBhaVokJ2ElcUS+VR2jO9A8oAQ79ThWcK7k2QL2bXSgeG4jHzh8oyCoXxpZG+TIHSmMJTi7OphGd80bYIbCczf9yv+MeKeRcrGqVJFcKfD2DXWJ2DOTOxTCOBx2Ebdv019UdwFc67ZjitWhdBKt24UMlIQr2RjYP2NWTcmbeKyiFWHERRug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+bSrgEVsPee3fmFzfxVJHc/4OcLlIqaAQgGhd0NwqHI=;
- b=hV1nO8+uYTfOi3ZrhtbvhkBzX5tMbno7R1RLYC1ts447++IY/bCnpaWFOg0ruKIJZUvVtdoORg3hywEZPBx8DOzTTsQfPWN/EXDaqm9q9tYxEPq6DE7AEUy43EHpcaW9ma6+zgabSuYeKLo0kxGyScMJdCoe34yW4P0sYZNwCWCMGzZaJAqCdCwrLdCu+YZEahcgOHO77kbdvIz+YTp0x3JU6T/pDm7+EpPiy+MkUa88CrfiTi+UA1UC3peC0Tfp4GSpJg2F4xDdK6UQgFaNkNLSPEYVJuuKg42iT/ynpO4odlClA0skK2+5D/KkUwwBxWIubLzJjGsuxXNUZIyrxA==
-Authentication-Results: cn.fujitsu.com; dkim=none (message not signed)
- header.d=none;cn.fujitsu.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5030.namprd12.prod.outlook.com (2603:10b6:208:313::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19; Tue, 3 Aug
- 2021 16:25:08 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
- 16:25:08 +0000
-Date:   Tue, 3 Aug 2021 13:25:07 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Li Zhijian <lizhijian@cn.fujitsu.com>
-Cc:     leon@kernel.org, dledford@redhat.com, linux-rdma@vger.kernel.org,
+        id S233379AbhHCQZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:25:48 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:44665 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233319AbhHCQZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:25:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628007936; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=lUeOCPrR13OHTaYKCt/w/DFsAJkjHb7mUobM2Op+tQE=; b=KCM2hHf8+fLebokymdj4gh0ZsEMsqPWStJ2KFqdDpaN/iATe318CvO2sqhPjZkKF/+OZBTeT
+ mxRdNn1d1C2jVp16mqsrqI5bXHEoB1y5KD0h5OgkMTM71UUfzYBhGN+jnVJM5fL2gYV96Hqr
+ mH+GyU4OhJtnY6bzyPqrtUmQjnI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 61096df2dc54451a533dd650 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 16:25:22
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3BBA6C43144; Tue,  3 Aug 2021 16:25:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 73DBBC433F1;
+        Tue,  3 Aug 2021 16:25:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 73DBBC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
-Message-ID: <20210803162507.GA2892108@nvidia.com>
-References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
-X-ClientProxiedBy: BLAPR03CA0034.namprd03.prod.outlook.com
- (2603:10b6:208:32d::9) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BLAPR03CA0034.namprd03.prod.outlook.com (2603:10b6:208:32d::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21 via Frontend Transport; Tue, 3 Aug 2021 16:25:08 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mAxE3-00C8Or-8c; Tue, 03 Aug 2021 13:25:07 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 257c6672-b171-4c87-27ae-08d9569b424b
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5030:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5030EF4F71363E805002608FC2F09@BL1PR12MB5030.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2150;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vz3Tj4l8EhfwZUY/jcxrASTngRzSlLDA9yhXekfvHOYTJnqFdCKqTMX90HqnTziTAq9+1y2+h2zWBZNpfTJ7nrCyC+0ooB27Nc6c7gWkFCgH17AG8MHHrsy2xIBTR9O/1m0q9R8sBtqiyX/tOu7wQINwqlM6zQtLdee6aNLFeYPffa0gbbV9uGn8syi1UkcxM75tB6JyJDNRLu0PzvtnDPtZUPtYj2N/M3i0VYCAJ6zQTdaFf5SEcjgDmvx/SCZHi+KmZfF0EI+RUznoh9RoVbkBpMNbu7Ks/t8vDgH3E4On60/68zPchdPWSLei/9kCunNaESuLS/dKc+nwMI0F2NhsFCuOMGnq8UtHWGEBMxq6/F4HQYZrhGQWotQaC4e0m3GGih4lLrJCFeom+KxGLtQT69RsXmhVfdS2dQn1wSUPgrkd48AnJ5c7rQWCeUBnfYHeAHmn1O3vwLI/5wWOsA5ejbU3YhrwhObkKMxaMcTeCN/1Fs1dNSLf4rpwD6lX8FthBYw8Cf6mKa9kT3cAIyYKqg7B0X9ZTHrwNHZNz+yMYnycPwayiwEvBL21hBhui7aZEwYgUcek4lezK//yy3hAGdphsJRY9bPKJ8aMicCG3tUXHNFKd/XkyR9UxPXf4OKSFrP/sh8RBdm8HlDjsA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(376002)(366004)(426003)(8676002)(5660300002)(26005)(4744005)(86362001)(66946007)(6916009)(66556008)(316002)(9746002)(9786002)(66476007)(2616005)(186003)(478600001)(8936002)(83380400001)(2906002)(33656002)(38100700002)(36756003)(4326008)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SDbNtgAiDp17I9B3g2EZRETT3lggPlNWswAAeuIb19gByoL0lLK1VrA7DNSy?=
- =?us-ascii?Q?l/MDoeV/GU8nqfjeE1KL2tBHRV+PA1MvZ+BnkB05KiW3E5IvzhUoYFB8l11X?=
- =?us-ascii?Q?rX1b41z20IcMo3wGN699As2JPt/WEeqMG3vKt+hv4URvcYUMl5jr3vIBxi0B?=
- =?us-ascii?Q?H2Pd3Az2z3fTYWMKr0CoYcA2OFwsZ0bk7JcSdoY52n+1NjJ3xUkmx9KwqvKK?=
- =?us-ascii?Q?sO8EaxvuDlo91VDJReREzVnJRhzkNNZ4VTBTW9Ii9I1p8i2kvsUXil89dUMn?=
- =?us-ascii?Q?07hYg1eDrTx3IQNGnBUEI1SY6l3kSErNwN63IYdFt37FxV0d4KI9LlcRhrcW?=
- =?us-ascii?Q?8usCSOw9yqlHnboV71emG3vR/Ti6EHHqIGSe74XUEPUn7wAtGOhDUz6YCbxO?=
- =?us-ascii?Q?I/OgHZGBV//swiiPNVDNmjYXTMqqzUiluQeZSOrfU7Q0RvukLTYRFMUaKSrY?=
- =?us-ascii?Q?COqIK6b0f6UOdb2zF5VvDkZesgkAHMUQRc/NuLmEtzJwgUji7rBE+Oy9LyLx?=
- =?us-ascii?Q?ffLLeGj8oDW5/aui2psfmGdMFQo2OhnpjSgpFtHG4Dvo+NPRaIxpIWcTgppF?=
- =?us-ascii?Q?W9Bfqwk6JiIPfmPkzYwMpJ+P57um2/iUU/GnlrQ4EKrae84rDaY3OxEFm4bz?=
- =?us-ascii?Q?OAbCQJt52mzylcWGNWfFTUWJ1896gYh2FSfJuG2Q3jlBBmdIF9epw3ExYJE2?=
- =?us-ascii?Q?7SOmgemNLsHqykZUoGnqPYZ7oF4QvgKVp/aC2kepv/WHRkIzgzfd3/PbMh3o?=
- =?us-ascii?Q?9414/jMxm+pGhVOTGOBH6d+O2x/unts/lU11Fkd7pWFQdTt3hhnsf65vJALo?=
- =?us-ascii?Q?A+oJ+N9TQtCg/+2g0OKtUScOifIBLQN/od2KRbxK7YHhUrKGiORwzqRtJ4NL?=
- =?us-ascii?Q?fJc9FSmA1SnZ3t1oKJOYb0Er+7mKyYQ5icOiQKK73bOT+oeHmQiyxVCaXGI/?=
- =?us-ascii?Q?3ML1RLTUBb4QROafDetNzvoU2CvXfJx0Y/kNZ7lbNP1AFRArjE8Liim37oJX?=
- =?us-ascii?Q?TpKz/+G0eig4IvEFKZ9v9Nxaefv6/1AuBwXG312UF5oUtQ90s6NYYMDy3iHp?=
- =?us-ascii?Q?gag3Q4ZPpQ33fnOXTaCEyiG8WpcvVAvns6SFreZMLr7hvirtKZ0gBnBQhM9J?=
- =?us-ascii?Q?KT5r4qqIXbepaVVWYm5OV0CuX8kmVb9hyIWX7N/I6rqUMUPfEOqw5AM6wSGV?=
- =?us-ascii?Q?LmuDuAtfN2TK8NIjKfsnU1Tdu0Yr4xk6ZggpYRjO3HNHSTxYCDUQIj/4YJWj?=
- =?us-ascii?Q?HecxoQ+Aawn7GvqKgXgPjSQoMHvN+wA30zyAYRBUAzRwi0kGht0OI4IiGj4Y?=
- =?us-ascii?Q?xQ04tQr4JBigl/alQjpjzo+f?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 257c6672-b171-4c87-27ae-08d9569b424b
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 16:25:08.3678
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hcBISQiCUQ4bTVrJUx3U9dAu97Vmhx05+lI+gzAM+v8DlDzIWMc54iWwjikd/b/3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5030
+Subject: [PATCH v3] drm/msm/dp: update is_connected status base on sink count at dp_pm_resume()
+Date:   Tue,  3 Aug 2021 09:25:13 -0700
+Message-Id: <1628007913-29892-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 01, 2021 at 05:20:50PM +0800, Li Zhijian wrote:
-> ibv_advise_mr(3) says:
-> EFAULT In one of the following: o When the range requested is out of the  MR  bounds,
->        or  when  parts of it are not part of the process address space. o One of the
->        lkeys provided in the scatter gather list is invalid or with wrong write access
-> 
-> Actually get_prefetchable_mr() will return NULL if it see above conditions
+Currently at dp_pm_resume() is_connected state is decided base on hpd connection
+status only. This will put is_connected in wrongly "true" state at the scenario
+that dongle attached to DUT but without hmdi cable connecting to it. Fix this
+problem by adding read sink count from dongle and decided is_connected state base
+on both sink count and hpd connection status.
 
-No, get_prefetchable_mr() returns NULL if the mkey is invalid
+Changes in v2:
+-- remove dp_get_sink_count() cand call drm_dp_read_sink_count()
 
-The above is talking about the address, which is checked inside
-pagefault_mr() and does return EFAULT for all the cases I can see?
+Changes in v3:
+-- delete status local variable from dp_pm_resume()
 
-Jason
+Fixes: d9aa6571b28ba ("drm/msm/dp: check sink_count before update is_connected status")
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 78c5301..0f39256 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -1313,7 +1313,7 @@ static int dp_pm_resume(struct device *dev)
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	struct msm_dp *dp_display = platform_get_drvdata(pdev);
+ 	struct dp_display_private *dp;
+-	u32 status;
++	int sink_count = 0;
+ 
+ 	dp = container_of(dp_display, struct dp_display_private, dp_display);
+ 
+@@ -1327,14 +1327,26 @@ static int dp_pm_resume(struct device *dev)
+ 
+ 	dp_catalog_ctrl_hpd_config(dp->catalog);
+ 
+-	status = dp_catalog_link_is_connected(dp->catalog);
++	/*
++	 * set sink to normal operation mode -- D0
++	 * before dpcd read
++	 */
++	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
++
++	/* if sink conencted, do dpcd read sink count */
++	if (dp_catalog_link_is_connected(dp->catalog)) {
++		sink_count = drm_dp_read_sink_count(dp->aux);
++		if (sink_count < 0)
++			sink_count = 0;
++	}
+ 
++	dp->link->sink_count = sink_count;
+ 	/*
+ 	 * can not declared display is connected unless
+ 	 * HDMI cable is plugged in and sink_count of
+ 	 * dongle become 1
+ 	 */
+-	if (status && dp->link->sink_count)
++	if (dp->link->sink_count)
+ 		dp->dp_display.is_connected = true;
+ 	else
+ 		dp->dp_display.is_connected = false;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
