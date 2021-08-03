@@ -2,131 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B043DF3FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9D53DF402
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 19:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238310AbhHCRhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 13:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238204AbhHCRhF (ORCPT
+        id S238318AbhHCRiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 13:38:23 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33742 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238227AbhHCRiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:37:05 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFF7C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 10:36:54 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id q2so24579108plr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 10:36:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kVHFkbYxov8P54Gvz7uidbv1qRggx9Wu8jBqilyaQew=;
-        b=gLHsqVrry/WfOnFBPp7woMWg9Y+G4sSHtKMhAfeO17rEYG/GbjE08YXyhbNqqWCTdu
-         AVA1F++imAM9WBrMmulU7wIRwMiGhviaW6aJtCo6zqPoOxAzr6ukIC8gcIu+v9roFXK8
-         SwhBmf2eATOpwGClE5CkXASGlEyEsVTAUvg9U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kVHFkbYxov8P54Gvz7uidbv1qRggx9Wu8jBqilyaQew=;
-        b=Kt9pL9Uy/e7VfJCQTGBAegy+vIwPdaBm3aPU6AdNE1+XwqFuICBgE4w7VX/odTuqGN
-         G4NCJMofu264Fojg52Vy3sJyyALWUouQKTW2Ac8tZMqND2PRrRlyBEussJn/lRph38O8
-         HKXkIJ9AeiNQD+s+VoWv67xdb8jLgrK/0w9svT4B4okucgdL9ttlByQThoGV6HU/RjRv
-         H1524hkX58DG2mIhEBplBwm1R+MRVBAwcMf811lVLLGsLcCXBaXdJ/FKt1IsWNb7OehX
-         BQ+P6DnUtbfZn0SGrt/5y4pFJpSiPZ2RiouketmfwrznRglclSAfWmrfEkXm92TgCVd3
-         3IlQ==
-X-Gm-Message-State: AOAM530S8bvrrSO8F37pKp8+Kuf4aUywTkHfxXhfB8KIXBBmVtVPXLPH
-        Hz71Bv+xJ/eHHKGmwWetkAEk/oiX3mz/Ew==
-X-Google-Smtp-Source: ABdhPJzjcvb04ZJoN0in9XsWkxRu0pDzHz+htd/iyOod1O8dMKh/v3ycnaqdMGV+Eso4862bNpnF7w==
-X-Received: by 2002:a62:dd42:0:b029:330:6bf8:b02c with SMTP id w63-20020a62dd420000b02903306bf8b02cmr22992582pff.67.1628012213807;
-        Tue, 03 Aug 2021 10:36:53 -0700 (PDT)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:8875:fb28:686e:1c31])
-        by smtp.gmail.com with ESMTPSA id g202sm2026748pfb.125.2021.08.03.10.36.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 10:36:53 -0700 (PDT)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Use existing feature check
-Date:   Tue,  3 Aug 2021 10:36:21 -0700
-Message-Id: <20210803173619.91539-2-pmalani@chromium.org>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-In-Reply-To: <20210803173619.91539-1-pmalani@chromium.org>
-References: <20210803173619.91539-1-pmalani@chromium.org>
+        Tue, 3 Aug 2021 13:38:22 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 173HWptF087804;
+        Tue, 3 Aug 2021 13:37:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=TCbWjUes1nMwS2rcYx9EkBy9sx391NeStjD5HTtMch0=;
+ b=CTE45sj5a2HPaxcsvCQtV0+JwNUWCYbgEhAXZDW+iFa98jic3VjyFrn75bRfKKY6ht3H
+ ktjCSVLuho37uFAw6kp+gYLHHdoQsKd/ZEXwwAlas/S/eFBLmFmQUPZ5bKRgbCMnLo07
+ EXBAG5jmLgv/IDrrEXt/mXxX4gwiO0LhBekuLpxv17wtDBoXuzL4w04cFDpt1i/sdg/s
+ dxpdytiCk374AtSw7EPRUggtJSpLb6jMIneV1PkrHbaA7LGIIVjjS3/Tz8vWVr0ds0yk
+ lZ4Bxs/tzo+dE83Xeq8Mil447QygLMHKSIqpksYEMbBPrg+aGjtqsWsibvX7lvj2XD4y VQ== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a76c3qry1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 13:37:54 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 173HXQJj030228;
+        Tue, 3 Aug 2021 17:37:53 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma05fra.de.ibm.com with ESMTP id 3a4x58eu52-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Aug 2021 17:37:53 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 173HYs8U32440674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 3 Aug 2021 17:34:54 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7B67CA4064;
+        Tue,  3 Aug 2021 17:37:50 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B6C5A4054;
+        Tue,  3 Aug 2021 17:37:50 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.42.112])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  3 Aug 2021 17:37:50 +0000 (GMT)
+Subject: Re: [PATCH v5] pseries: prevent free CPU ids to be reused on another
+ node
+To:     Nathan Lynch <nathanl@linux.ibm.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210429174908.16613-1-ldufour@linux.ibm.com>
+ <87v94mii3z.fsf@linux.ibm.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <1bfe14e7-0742-fcae-72f7-de7874232ee1@linux.ibm.com>
+Date:   Tue, 3 Aug 2021 19:37:50 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <87v94mii3z.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 3TQF_fIQAJ3cyBZ_1hpK3gbsV4RlNGoY
+X-Proofpoint-GUID: 3TQF_fIQAJ3cyBZ_1hpK3gbsV4RlNGoY
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-03_05:2021-08-03,2021-08-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 adultscore=0 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 suspectscore=0 spamscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108030114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the cros_typec_feature_supported() function with the
-pre-existing cros_ec_check_features() function which does the same
-thing.
+Le 03/08/2021 à 18:54, Nathan Lynch a écrit :
+> Laurent Dufour <ldufour@linux.ibm.com> writes:
+>> V5:
+>>   - Rework code structure
+>>   - Reintroduce the capability to reuse other node's ids.
+> 
+> OK. While I preferred v4, where we would fail an add rather than allow
+> CPU IDs to appear to "travel" between nodes, this change is a net
+> improvement.
+> 
+> Reviewed-by: Nathan Lynch <nathanl@linux.ibm.com>
+> 
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
----
-Changes in v2:
-- Dropped unnecessary NULL checks, per review comments.
+Thanks Nathan,
 
- drivers/platform/chrome/cros_ec_typec.c | 27 +++++--------------------
- 1 file changed, 5 insertions(+), 22 deletions(-)
+Regarding the reuse of other nodes free CPU ids, with this patch the kernel does 
+it best to prevent that. Instead of failing adding new CPUs, I think it's better 
+to reuse free CPU ids of other nodes, otherwise, only a reboot would allow the 
+CPU adding operation to succeed.
 
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index 27c068c4c38d..262a891eded3 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -1054,24 +1054,6 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
- 	return 0;
- }
- 
--/* Check the EC feature flags to see if TYPEC_* features are supported. */
--static int cros_typec_feature_supported(struct cros_typec_data *typec, enum ec_feature_code feature)
--{
--	struct ec_response_get_features resp = {};
--	int ret;
--
--	ret = cros_typec_ec_command(typec, 0, EC_CMD_GET_FEATURES, NULL, 0,
--				    &resp, sizeof(resp));
--	if (ret < 0) {
--		dev_warn(typec->dev,
--			 "Failed to get features, assuming typec feature=%d unsupported.\n",
--			 feature);
--		return 0;
--	}
--
--	return resp.flags[feature / 32] & EC_FEATURE_MASK_1(feature);
--}
--
- static void cros_typec_port_work(struct work_struct *work)
- {
- 	struct cros_typec_data *typec = container_of(work, struct cros_typec_data, port_work);
-@@ -1113,6 +1095,7 @@ MODULE_DEVICE_TABLE(of, cros_typec_of_match);
- 
- static int cros_typec_probe(struct platform_device *pdev)
- {
-+	struct cros_ec_dev *ec_dev = NULL;
- 	struct device *dev = &pdev->dev;
- 	struct cros_typec_data *typec;
- 	struct ec_response_usb_pd_ports resp;
-@@ -1132,10 +1115,10 @@ static int cros_typec_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	typec->typec_cmd_supported = !!cros_typec_feature_supported(typec,
--					EC_FEATURE_TYPEC_CMD);
--	typec->needs_mux_ack = !!cros_typec_feature_supported(typec,
--					EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK);
-+	ec_dev = dev_get_drvdata(&typec->ec->ec->dev);
-+	typec->typec_cmd_supported = !!cros_ec_check_features(ec_dev, EC_FEATURE_TYPEC_CMD);
-+	typec->needs_mux_ack = !!cros_ec_check_features(ec_dev,
-+							EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK);
- 
- 	ret = cros_typec_ec_command(typec, 0, EC_CMD_USB_PD_PORTS, NULL, 0,
- 				    &resp, sizeof(resp));
--- 
-2.32.0.554.ge1b32706d8-goog
-
+Laurent.
