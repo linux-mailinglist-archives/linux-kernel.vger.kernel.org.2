@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941763DF6FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BB73DF6FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 23:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhHCVkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 17:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbhHCVkM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 17:40:12 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F040C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 14:39:56 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id y7so986856ybo.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 14:39:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eH7F2c4Hn9egywDlY45TqR5QW7h6BJhJpVKajFn/Dvg=;
-        b=frGpZAuU0TNGycNOUwSntnWTwUNXJjKhM/djmFxpOw4RLjxj4ZIMH/kWc6KmsJtmzd
-         5DZZF1XvLkwEjfV0d1g/+qd7fYu4p3IcXqxRh2+j2cEJmx1zwJZD59Hk+1HpT49HtK7X
-         Uqge3z5MMAj3GqdriP0bGY+4uxvfDwPHI/8AUaTv/dYUqCfItsy4CzgGG4YcVxQ2W+3k
-         8yFws8bfEWrZyIXSyrNOM13JM5LbYjDmUdpWEgK5q3XHMwmDZUH16Fn3Lcmdkk1kJ+tR
-         5f+ICl8eIJ74PX6+7FzayWfSiwsOc3t/1lDkBGqzyqADZbXQ5H4FBtmOqjk757mpLOmy
-         DCGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eH7F2c4Hn9egywDlY45TqR5QW7h6BJhJpVKajFn/Dvg=;
-        b=WLN0o0QOPDJCgFCWDlFRLxDlqIRR4Hay6j7WrvoFhG+EXUDcws2TbwD43bW5jUm+rA
-         ioyRJXZ+zY16bTiTy9nesydWPb6SJvPM0nk9WTLcTXmMM+u2A7uwcHogvjyhwTMQP/xx
-         Klfz3vUzl0J3V30KoXoxW989eyF1PTDsYBpSERblHjIwSjnnINfL9Lmyi8InPcKtThq0
-         5V1ZxrCoa4ZXef/hJAf7YiWG7/DNaD+pnBns6btXHnnGA/HB03qg8Ydc5dXsn3uEELye
-         q+AyuwjqO7w/YAJx2a3Ggnyoy3FIgXCDC2jj2Dinug1J5hxEfmlDhbMzhrEOj5MqXVib
-         vjfg==
-X-Gm-Message-State: AOAM532rUlJ7tafVRC7ekNKxGQBDmLa5kuU34IRGXdg6wXVTMnpMPuoP
-        Cw9ZKAT8Sv2bgzJs9r2cdCAJYY9qTJpPKgc4dRUtqw==
-X-Google-Smtp-Source: ABdhPJynfd6Tp5fx5X/8PoqmW8udIcLQViQbJXvKzToG91Bonke+UV5rO2Ua9gr8hn4ZJodP/4n3mFpQcnCzz5bXHoo=
-X-Received: by 2002:a25:cac7:: with SMTP id a190mr14975276ybg.290.1628026795438;
- Tue, 03 Aug 2021 14:39:55 -0700 (PDT)
+        id S232865AbhHCVkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 17:40:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52432 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232768AbhHCVkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 17:40:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B78356105A;
+        Tue,  3 Aug 2021 21:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628026805;
+        bh=SeBOOVHqpljrUUPRiBqGRbCd5MLXu2hyxG7yH/9GdRg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=PUTLJEAU5NnlnMjY0log4ZdM+Oze7MSCYldrQxn3dhX19P4q7egfbfFb8c4K03KlP
+         4DPXmhn1Yv9caKQIH+hxQra8GOjU3R1sLDbsQlljwXV+Py80oklQAeDSTfzHk6A6ZD
+         eq0XXtdSQhMMbaN6I8lQSGaBvuCyE1cJhQbQbVSfWMyR7C/m5OBNqDFaxKFbKtnUIO
+         aZpybB7Yb7uVZbCvBnN0igzR/WW8dwM2Uns8QxdCT2n8xgBX3ciWfFmYeaNqlCf6YT
+         pp3A/IHQ2211VU57WXTrNudlWVwaYRGQ4t/ffjqVB7uGl/+OnHs8I6GUtd2VSFvP6C
+         Hiu6OSNqlrIaA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id ACEAD60A44;
+        Tue,  3 Aug 2021 21:40:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210722190747.1986614-1-hridya@google.com> <CALAqxLVLMt7rbJBQtFBw-ikBAjKrVgfS8=Nu6NFQbp_gq1m22Q@mail.gmail.com>
-In-Reply-To: <CALAqxLVLMt7rbJBQtFBw-ikBAjKrVgfS8=Nu6NFQbp_gq1m22Q@mail.gmail.com>
-From:   Hridya Valsaraju <hridya@google.com>
-Date:   Tue, 3 Aug 2021 14:39:19 -0700
-Message-ID: <CA+wgaPOQmY4H9n302YspKuLk9iq9vBzdWBTu19EUUsiQYTUOzQ@mail.gmail.com>
-Subject: Re: [PATCH] dma-buf: heaps: Set allocation limit for system heap
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 1/1] net: dsa: qca: ar9331: reorder MDIO write sequence
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162802680570.18812.8483353906615372549.git-patchwork-notify@kernel.org>
+Date:   Tue, 03 Aug 2021 21:40:05 +0000
+References: <20210803063746.3600-1-o.rempel@pengutronix.de>
+In-Reply-To: <20210803063746.3600-1-o.rempel@pengutronix.de>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 7:18 PM John Stultz <john.stultz@linaro.org> wrote:
->
-> On Thu, Jul 22, 2021 at 12:07 PM Hridya Valsaraju <hridya@google.com> wrote:
-> > This patch limits the size of total memory that can be requested in a
-> > single allocation from the system heap. This would prevent a
-> > buggy/malicious client from depleting system memory by requesting for an
-> > extremely large allocation which might destabilize the system.
-> >
-> > The limit is set to half the size of the device's total RAM which is the
-> > same as what was set by the deprecated ION system heap.
-> >
-> > Signed-off-by: Hridya Valsaraju <hridya@google.com>
->
-> Seems sane to me, unless folks have better suggestions for allocation limits.
->
-> Reviewed-by: John Stultz <john.stultz@linaro.org>
+Hello:
 
-Thank you for taking a look John!
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Regards,
-Hridya
+On Tue,  3 Aug 2021 08:37:46 +0200 you wrote:
+> In case of this switch we work with 32bit registers on top of 16bit
+> bus. Some registers (for example access to forwarding database) have
+> trigger bit on the first 16bit half of request and the result +
+> configuration of request in the second half. Without this patch, we would
+> trigger database operation and overwrite result in one run.
+> 
+> To make it work properly, we should do the second part of transfer
+> before the first one is done.
+> 
+> [...]
 
->
-> thanks
-> -john
+Here is the summary with links:
+  - [net,1/1] net: dsa: qca: ar9331: reorder MDIO write sequence
+    https://git.kernel.org/netdev/net/c/d1a58c013a58
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
