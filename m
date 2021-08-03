@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD083DEEDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57C13DEEE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 15:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236408AbhHCNNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 09:13:25 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56184 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236232AbhHCNNR (ORCPT
+        id S236376AbhHCNNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 09:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236292AbhHCNNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 09:13:17 -0400
+        Tue, 3 Aug 2021 09:13:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F079C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 06:13:08 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1627996385;
@@ -19,29 +22,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1Qr1/Kql4O0uUbgY9eaNCn9AjwMvkGvYOIbAKwtn7DQ=;
-        b=l7gAQM6vPEFU3q48/AIDY/E5KMgsfBKluKK2sHEkc6iK5ofJlzL6jlU/2MkzrD4ND8sFB5
-        CE+7+MVik84513uwVP0Fk/HJYNulgNtEdffhPmgZm8JdFebQ6sUaKOHKNgw170FoGj3S4/
-        GiCNLOjt7gQX+H8SAO+futriABH1bpyFHzyF1/vCVleMmG1lF63lJOspnFYnH1WRf4uCwR
-        BORqpgsMsJuim+9JoOQS/x7acqw7OcEanCBDJcwTRuq/k+02sv4tZGn+vaEvxi5ei8b+oo
-        BptfMVYEVTCbDFc68eIEneJlPcyhnzG3UtKwsfptX8TC2gVIpr+shb9XKNzotg==
+        bh=YrVcD8ygaFjwAnuxINro61t3A9aQfh8ZamB2CFd3jhk=;
+        b=gcgMBAhwyVAMXqC4uuTXYVp1dcSdpln/lAUtuECym+NJZaQLzAApQUWRoE3WS63RBxfHFZ
+        Yg/OiCEhKyGX3wcUMoHqYaTnwppyWaZX5UMXw6kcvGGA+Wa5ZZ3axrccKy84fo4QY63a0s
+        8bm1yho/8xZ8UjB53gkob+CDULq2rm83TH+VKB/XEmGIF1IGnHNARyBMABUQ5MdWqAuW57
+        N97geq/IGvUSjbviFLSeZykvde42ud6HNb9pP781UiRQVTSfgeWUuj8CYrFl1WYs5MiwSR
+        LtceLqeYjRlitAJRLCzLCOfLAYypaLCyyNjwQygnFqX/prSJ/h4ohMiLzJLSrQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1627996385;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1Qr1/Kql4O0uUbgY9eaNCn9AjwMvkGvYOIbAKwtn7DQ=;
-        b=8iQnPrlVkMTkTFvufX6/nDahtEIhBbn10FVm0uK/6R1D0PUjy7CGZKIbkQcFlQFzpyZ5fX
-        ie151AQHliJ/tFCA==
+        bh=YrVcD8ygaFjwAnuxINro61t3A9aQfh8ZamB2CFd3jhk=;
+        b=4K6kVET+39M5t/VjLgk8/OajILonh7E9bxt6LVvKHCzyzSvPWDcL0Ew96AY7fnOqshHJts
+        DfnConNRCWwYcmBQ==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH printk v1 04/10] printk: relocate printk_delay()
-Date:   Tue,  3 Aug 2021 15:18:55 +0206
-Message-Id: <20210803131301.5588-5-john.ogness@linutronix.de>
+Subject: [PATCH printk v1 05/10] printk: call boot_delay_msec() in printk_delay()
+Date:   Tue,  3 Aug 2021 15:18:56 +0206
+Message-Id: <20210803131301.5588-6-john.ogness@linutronix.de>
 In-Reply-To: <20210803131301.5588-1-john.ogness@linutronix.de>
 References: <20210803131301.5588-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -50,60 +53,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move printk_delay() "as is" further up so that it can be used by
-new functions in an upcoming commit.
+boot_delay_msec() is always called immediately before printk_delay()
+so just call it from within printk_delay().
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/printk/printk.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ kernel/printk/printk.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 1b546e117f10..8bdfac4c9ee9 100644
+index 8bdfac4c9ee9..d07d98c1e846 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -1875,6 +1875,20 @@ SYSCALL_DEFINE3(syslog, int, type, char __user *, buf, int, len)
- 	return do_syslog(type, buf, len, SYSLOG_FROM_READER);
- }
+@@ -1877,8 +1877,10 @@ SYSCALL_DEFINE3(syslog, int, type, char __user *, buf, int, len)
  
-+int printk_delay_msec __read_mostly;
-+
-+static inline void printk_delay(void)
-+{
-+	if (unlikely(printk_delay_msec)) {
-+		int m = printk_delay_msec;
-+
-+		while (m--) {
-+			mdelay(1);
-+			touch_nmi_watchdog();
-+		}
-+	}
-+}
-+
- /*
-  * Special console_lock variants that help to reduce the risk of soft-lockups.
-  * They allow to pass console_lock to another printk() call using a busy wait.
-@@ -2129,20 +2143,6 @@ static u8 *__printk_recursion_counter(void)
- 		local_irq_restore(flags);		\
- 	} while (0)
+ int printk_delay_msec __read_mostly;
  
--int printk_delay_msec __read_mostly;
--
 -static inline void printk_delay(void)
--{
--	if (unlikely(printk_delay_msec)) {
--		int m = printk_delay_msec;
--
--		while (m--) {
--			mdelay(1);
--			touch_nmi_watchdog();
--		}
--	}
--}
--
- static inline u32 printk_caller_id(void)
++static inline void printk_delay(int level)
  {
- 	return in_task() ? task_pid_nr(current) :
++	boot_delay_msec(level);
++
+ 	if (unlikely(printk_delay_msec)) {
+ 		int m = printk_delay_msec;
+ 
+@@ -2350,8 +2352,7 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 		in_sched = true;
+ 	}
+ 
+-	boot_delay_msec(level);
+-	printk_delay();
++	printk_delay(level);
+ 
+ 	printed_len = vprintk_store(facility, level, dev_info, fmt, args);
+ 
 -- 
 2.20.1
 
