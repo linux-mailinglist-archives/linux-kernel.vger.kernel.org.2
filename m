@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28D53DF47E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D443DF480
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 20:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238045AbhHCSPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 14:15:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57622 "EHLO mail.kernel.org"
+        id S238909AbhHCSPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 14:15:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237791AbhHCSO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 14:14:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90E7A60F94;
-        Tue,  3 Aug 2021 18:14:48 +0000 (UTC)
+        id S238836AbhHCSP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 14:15:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9733460F94;
+        Tue,  3 Aug 2021 18:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628014488;
-        bh=y6Owg5DoECYYo90go9bqM2xn64ncDckRi7C80Fr3184=;
+        s=k20201202; t=1628014517;
+        bh=hLVKfXDfBbYG+vuudBBsmhloXJZnrpsdo74uilvto0o=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JWKjElDEt1G9/O8qKeH4tYxeXcb7xS3oY/mRfwZIPrLjFcEwm16HZDduvb6C0pajT
-         Exhg4xOw5A/14T0+rBprLOA6n2cLTgU9N95kQUc16TPbWK4pdr58SMkyNMcG7qt5pE
-         H30rFzZ/V5JXMjxxqbQ+cT2iX65lA+6ixpZNr9fGPyl6s+w30b28xji6FXrrPykTm0
-         kWrtrADi1y9UuOUcSR15l/an6is99L/RyDxf7NpZvxYT0e8kodfYTiS0HJ40eOhwIJ
-         sbBhdBBnyFeQVc1hnmrZe2jF8/rGc7NeEI5UY96UfCL0/JE/GMvJP6QpVDDLCK+d/V
-         dT/QNl+yMnvdg==
-Date:   Tue, 3 Aug 2021 11:14:47 -0700
+        b=LFs0iMYHM1AzNWC6XP5r12NGDGEE++nlqD1+TgrMtq9b9CVvEUjeJEqCpMc8i+Zln
+         X7AM16ZK6kKojRqYgkvUpyqZ2ph+eg7dFkz964UG1/sMiDdXqOFHrxfg+yfcZm7sb/
+         xKvF135uUQojTPEUYfmKOAdznldhlnIpbVYhwmkpQP5KlMWbh4va0Sqk+Qbs2bqs8E
+         3YQQ+jU5g+JQ4PICvUybO0OX4FoO+45izlXJGFGU27WqXsOqVePPvxXqOzBFPybhfc
+         nqOZ2HAKoZhS/1hwJtSr20C099aFFHs3E8LkZ32bw0vaJIjsZtI4iXKhCS0XNHrtfL
+         DS6Du2XYi2AiA==
+Date:   Tue, 3 Aug 2021 11:15:16 -0700
 From:   Jaegeuk Kim <jaegeuk@kernel.org>
 To:     Chao Yu <chao@kernel.org>
 Cc:     Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net
 Subject: Re: [f2fs-dev] [PATCH] f2fs: reset free segment to prefree status
  when do_checkpoint() fail
-Message-ID: <YQmHl88ItokYGjj9@google.com>
+Message-ID: <YQmHtFQHMWNW8sFK@google.com>
 References: <12ae52df-bc5e-82c3-4f78-1eafe7723f93@huawei.com>
  <5f37995c-2390-e8ca-d002-3639ad39e0d3@kernel.org>
  <YPXDtEyBg5W2ToD/@google.com>
@@ -189,9 +189,6 @@ On 08/03, Chao Yu wrote:
 > -	if (err)
 > +	if (err) {
 > +		f2fs_err(sbi, "do_checkpoint failed err:%d, stop checkpoint", err);
-
-		f2fs_bug_on(sbi, !f2fs_cp_error(sbi)); ?
-
 > +		f2fs_stop_checkpoint(sbi, false);
 >  		f2fs_release_discard_addrs(sbi);
 > -	else
@@ -222,9 +219,6 @@ On 08/03, Chao Yu wrote:
 > 
 >  	for (i = 1; i < sbi->s_ndevs; i++) {
 > +		int count = DEFAULT_RETRY_FLUSH_COUNT;
-
-Just use DEFAULT_RETRY_IO_COUNT?
-
 > +
 >  		if (!f2fs_test_bit(i, (char *)&sbi->dirty_device))
 >  			continue;
@@ -232,12 +226,12 @@ Just use DEFAULT_RETRY_IO_COUNT?
 > +
 > +		do {
 > +			ret = __submit_flush_wait(sbi, FDEV(i).bdev);
-
-			congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-
 > +		} while (ret && --count);
 > +
 >  		if (ret)
+
+Actually, we need to stop checkpoint here?
+
 >  			break;
 > 
 > -- 
