@@ -2,198 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED713DE66E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33B23DE676
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 07:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233910AbhHCF6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 01:58:23 -0400
-Received: from mail-eopbgr60086.outbound.protection.outlook.com ([40.107.6.86]:48864
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233839AbhHCF6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 01:58:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CepS2Dhvti8ozONCzjJkYnVYyFOXeh8ruycB/XPr1UsdeaRnmZOYgLFTtHbtFIDKipOF0p14QohBMj7dvU8DwcHupoBQ6lWdE2rMRY1p82pDFRxKbZH15ClqeF5jIDYjkz+x0iug5nEzsH83dsVwKq90vqgVB37N3jrJW6XwyWFB0V37PiaOMP8OqWrMa43hQE74ZcMJY6cBzjkFuPnhSXJkgHty+UEvObVZHFAizCoDEM1QLAyqvM4JT7YqQsiRrOGrgWUev8o38qA1I0LOQwVW9t0sU8X4s1MiV30ny+Gu461nraCHJioHX9q19I00OhN2e510YQRUc4R31FHqpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BrQiZl1Pz97N0jQyjxdvHkasMCCNfaKy3BwFEMJoAOY=;
- b=fCkED2NL1STTru/MZi/jX2qGHx6lHUnD3q/AHhk1Ur1CPoYBnyWU2rAkFIAUavmHk0xPGSmaRsdfrdejbQnh+jc2PrtS1up07Z1+di7A0m82fzDGn7LWQEAHJ3y4pufYOSc7bbjvnCCy9tWOGYyzdGEM8q+43Xrh5gsiA8mpzy6iD7Hz7bE9F7s9QUks92ZqNyJtDcFm551n++ej+MAnWT4uBFNbVBtd0ca+8RZKBBN2gnbGZr0NqSV59fIKt7UIeZigiOp73BxCnOA8gL2maOBGPs5yCCcR/gzw6mbatxIvqOHVuRmy6umgrGoBmgYLymNT/MKx63AG97SzACGB5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BrQiZl1Pz97N0jQyjxdvHkasMCCNfaKy3BwFEMJoAOY=;
- b=GhjV6iLwk4TZUOcyIYI22O6Kuf6bl5/RZdqbT4WymrCeAxA3SOdh99OPBCnkC7SHKs2e9MEuFhcznPcilKtg5OA113XHlqgoWM1FoEjR0UGxusfg+VfdQuSd4nCDlrs0atUfpOvhdDeb3/ng+lmAiVwAwJIrd6Pgz3VNt62S1tk=
-Received: from DU2PR04MB8726.eurprd04.prod.outlook.com (2603:10a6:10:2dd::9)
- by DU2PR04MB8758.eurprd04.prod.outlook.com (2603:10a6:10:2e1::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19; Tue, 3 Aug
- 2021 05:58:09 +0000
-Received: from DU2PR04MB8726.eurprd04.prod.outlook.com
- ([fe80::e50a:234a:7fb7:11d4]) by DU2PR04MB8726.eurprd04.prod.outlook.com
- ([fe80::e50a:234a:7fb7:11d4%9]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
- 05:58:08 +0000
-From:   "Wasim Khan (OSS)" <wasim.khan@oss.nxp.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        "Wasim Khan (OSS)" <wasim.khan@oss.nxp.com>
-CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Varun Sethi <V.Sethi@nxp.com>
-Subject: RE: [PATCH v2] PCI: Add ACS quirk for NXP LX2160 and LX2162 C/E/N
- platforms
-Thread-Topic: [PATCH v2] PCI: Add ACS quirk for NXP LX2160 and LX2162 C/E/N
- platforms
-Thread-Index: AQHXh7cFKOZKp7QqQEes/qfC0L8GMqtgYL0AgADoZ/A=
-Date:   Tue, 3 Aug 2021 05:58:08 +0000
-Message-ID: <DU2PR04MB8726E7690B48B101D8D0F0AB90F09@DU2PR04MB8726.eurprd04.prod.outlook.com>
-References: <20210802155644.3089929-1-wasim.khan@oss.nxp.com>
- <20210802160434.GA1383714@bjorn-Precision-5520>
-In-Reply-To: <20210802160434.GA1383714@bjorn-Precision-5520>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6408b34b-724c-4e2e-a218-08d95643ab78
-x-ms-traffictypediagnostic: DU2PR04MB8758:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DU2PR04MB8758F1E0D0C963C0572C4C08D1F09@DU2PR04MB8758.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Zw7eDrfgKxZWPaxuTLt1wjvZHUnHOG1em08tase5jbxPbI23/1xkDxgMF1HAFj/Jm6+8n24D3PSJIVvTEAyvdyEg6jycZZjouP6R7YDSXWeNtcVBs5lE7171V/j5hrr7sw/APIRXT9AbiBmwS8SMs5pxwbHJkCuZLvV7tUVYZPZP5ceWif/xkQMTOy9+UBquKmDMr3FcqQDdYO2aVs7NKppowX28T+QF5Cip7NI2Zs8BjDab8HxclCch3YS6vn8IUjZY5jBJgafRcRhiRILwB36sa6MFdUK3/J7EID0OjI/LSU2gatTu0ctul9UHtoJoeG3Goh8cQhA2VmTgkCjFctf+cF9tF5Gm9ksuKIVLfiRc2FUbnFwJp81VdECkeebu92nBnaKbNB6ET7kVzRJVJkltg5II3XqFy4kM7za6QPQtbc37YZsOBysxpnRDVqhnLF7xCSH5sxuPnw450csPi+Sdtns60vp6+ERTa2IspqK4Xv7AnoyW7B5hB4X6eecYnUmhgYxyHshWIe3I9NY/w5xKLUchCg7Xx3K5Cqxtf3ng7uuO1WBvu5zMVPU0Y8RLigZiH1ZAZX7msZF8JPbtVFA186yZi37mrRXaC80gjwb1EQSlHz/b+cHoPkV01sUqhHWWh8lydDNiehgLkj5p6NK4XqsoSbra3GXGiLQ8ioTWi7Jxp6AGRFU6jQV717i5q7+ek90uhHoaH3pIBYSDag==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8726.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(366004)(376002)(39860400002)(83380400001)(4326008)(71200400001)(478600001)(76116006)(8936002)(316002)(86362001)(33656002)(38070700005)(5660300002)(7696005)(38100700002)(55016002)(8676002)(53546011)(26005)(2906002)(6506007)(122000001)(186003)(9686003)(66476007)(52536014)(110136005)(66946007)(66446008)(66556008)(64756008)(54906003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?DdLQsmncKs04scztUZRiq4GGNJMtd0epnb3h5YTlA6RwQD1VqvlbHpiyAgfm?=
- =?us-ascii?Q?QsMtTpdbP/oRgpJRV3lPje0nZZ/QxIRnF5TRD6xy2pPJ2uW33FJN8n4pg6ji?=
- =?us-ascii?Q?2hRGu0HzXPCNkltc9oXG2v/rBRDZPRYKNoDMHSj8ThX1qQ4lzC2MJFn2Ltlv?=
- =?us-ascii?Q?rcW4W2wI9VQKynWiKlyPqfK+KQhzc4N8bpBzRw+2/sEcdNwJoBEfMJtObFc4?=
- =?us-ascii?Q?8DO678sF9K1JOZKRYzqHw4VGmV/AHuoeSUGM+ocwB1OZCEtIGuI2ST2fazTk?=
- =?us-ascii?Q?tfluNojZNqh+TEuKB4io0/x+MUmskLQpcvtmx+1dGSpanMBNPEkQXla3/Bwv?=
- =?us-ascii?Q?Ca9edFhC8rj0OLf98JuzFVbJId+JhMrbrAijgR6o9VuHK+7JVExHpfiF8YN2?=
- =?us-ascii?Q?KIg/R9jaS8MIh77p6bf2Bxi59qh0L/6QQ5gwjMRnVbvC0K0u++7QI8CGTy4x?=
- =?us-ascii?Q?9hBCMca3KqhbnZtzd1iII5IjQMDk40f1Sue7FGgWsDYo8cUQmCegXBBOte5G?=
- =?us-ascii?Q?u7at45Gw4KwI809mj5O10NiBHoy5H94EVMg+YViLooyGfzYars0+FWwaIh6x?=
- =?us-ascii?Q?A0BwI97OTFZaaJTWb3LPNuAas7+LBI4d7Vt3SMiD8eCVqSejnhIKfmkw4L6b?=
- =?us-ascii?Q?5bNUwKzIjRS7ctTjmHPtBtZbagGcaXTMbytRjt86zoZZNctDrjMRscBoyu/4?=
- =?us-ascii?Q?f8T5c+LJGAL50F9UrYl8M5ZQiZSoGTpSnqWNvuQFEoWxz/J1LxtPq3Xyp/NX?=
- =?us-ascii?Q?v/I1HJWngfOwdk0qTDNCvRsQMPMeMvGAn2tOKWksuYE9vTFtmJwFxZroxFLH?=
- =?us-ascii?Q?8kd/TeXTo/yvc6RhUdef+jpOq1bM3B69BP40Om9Gj44DLSRUBk/pf8m+jZH2?=
- =?us-ascii?Q?QYY1o3n9aJDsm1ykHt1xTlOrKm1IgGS3eiVTqPk5lv2CVMmgK9nsQXf/bH0O?=
- =?us-ascii?Q?DXAQ2KJlCngAErsSydlPP9Z6v7+V8HTpgcm//l48beIYsGLBVRLZZ/DKQ/YZ?=
- =?us-ascii?Q?9piIRhU2Ch5SsGM7OB2IwDImFk36X4OrdaNFEi9b4ZNdyqVyw40VHaXVSgYF?=
- =?us-ascii?Q?G0xRN+bM2aQR79DYGhWo3hbeBu+K7CSvvflXdO9V91sA0SYUk8SKfFD4xq9S?=
- =?us-ascii?Q?3ySORqfj+DM/rStCPe2L4quhtFwLb4x3NpuzI7kAszv2OCAHsRjhAfrZfUen?=
- =?us-ascii?Q?PiBNYBEZOqt5ZLX1ujOXxy5f3hHT5u+YfUWxYOGb9xxYrpnQlGT6ttNtEAoI?=
- =?us-ascii?Q?+ES5RlwStS/yCLkwQ0OxtPDJ8gngPxhrudd7J5pBmYS3x+P6F4os7w9uVpqF?=
- =?us-ascii?Q?Ea4a9+eCL/1rxaesNLAh+Mtc?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8726.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6408b34b-724c-4e2e-a218-08d95643ab78
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2021 05:58:08.8028
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fcCqrV0HWUIf0cDqktjrWdHDMp9yeGwOs+3iFXRCOGg9sQZDA8khs4FnlIHzsAfOYGrHqOAdMwmVbgh15V4Xbg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8758
+        id S233928AbhHCF7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 01:59:42 -0400
+Received: from mga01.intel.com ([192.55.52.88]:34927 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230096AbhHCF7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 01:59:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="235529224"
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="scan'208";a="235529224"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2021 22:59:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
+   d="scan'208";a="479233310"
+Received: from shbuild999.sh.intel.com ([10.239.146.151])
+  by fmsmga008.fm.intel.com with ESMTP; 02 Aug 2021 22:59:23 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
+        Feng Tang <feng.tang@intel.com>
+Subject: [PATCH v7 0/5] Introduce multi-preference mempolicy
+Date:   Tue,  3 Aug 2021 13:59:17 +0800
+Message-Id: <1627970362-61305-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series introduces the concept of the MPOL_PREFERRED_MANY mempolicy.
+This mempolicy mode can be used with either the set_mempolicy(2) or mbind(2)
+interfaces. Like the MPOL_PREFERRED interface, it allows an application to set a
+preference for nodes which will fulfil memory allocation requests. Unlike the
+MPOL_PREFERRED mode, it takes a set of nodes. Like the MPOL_BIND interface, it
+works over a set of nodes. Unlike MPOL_BIND, it will not cause a SIGSEGV or
+invoke the OOM killer if those preferred nodes are not available.
+
+Along with these patches are patches for libnuma, numactl, numademo, and memhog.
+They still need some polish, but can be found here:
+https://gitlab.com/bwidawsk/numactl/-/tree/prefer-many
+It allows new usage: `numactl -P 0,3,4`
+
+The goal of the new mode is to enable some use-cases when using tiered memory
+usage models which I've lovingly named.
+1a. The Hare - The interconnect is fast enough to meet bandwidth and latency
+requirements allowing preference to be given to all nodes with "fast" memory.
+1b. The Indiscriminate Hare - An application knows it wants fast memory (or
+perhaps slow memory), but doesn't care which node it runs on. The application
+can prefer a set of nodes and then xpu bind to the local node (cpu, accelerator,
+etc). This reverses the nodes are chosen today where the kernel attempts to use
+local memory to the CPU whenever possible. This will attempt to use the local
+accelerator to the memory.
+2. The Tortoise - The administrator (or the application itself) is aware it only
+needs slow memory, and so can prefer that.
+
+Much of this is almost achievable with the bind interface, but the bind
+interface suffers from an inability to fallback to another set of nodes if
+binding fails to all nodes in the nodemask.
+
+Like MPOL_BIND a nodemask is given. Inherently this removes ordering from the
+preference.
+
+> /* Set first two nodes as preferred in an 8 node system. */
+> const unsigned long nodes = 0x3
+> set_mempolicy(MPOL_PREFER_MANY, &nodes, 8);
+
+> /* Mimic interleave policy, but have fallback *.
+> const unsigned long nodes = 0xaa
+> set_mempolicy(MPOL_PREFER_MANY, &nodes, 8);
+
+Some internal discussion took place around the interface. There are two
+alternatives which we have discussed, plus one I stuck in:
+1. Ordered list of nodes. Currently it's believed that the added complexity is
+   nod needed for expected usecases.
+2. A flag for bind to allow falling back to other nodes. This confuses the
+   notion of binding and is less flexible than the current solution.
+3. Create flags or new modes that helps with some ordering. This offers both a
+   friendlier API as well as a solution for more customized usage. It's unknown
+   if it's worth the complexity to support this. Here is sample code for how
+   this might work:
+
+> // Prefer specific nodes for some something wacky
+> set_mempolicy(MPOL_PREFER_MANY, 0x17c, 1024);
+>
+> // Default
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_SOCKET, NULL, 0);
+> // which is the same as
+> set_mempolicy(MPOL_DEFAULT, NULL, 0);
+>
+> // The Hare
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE, NULL, 0);
+>
+> // The Tortoise
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE_REV, NULL, 0);
+>
+> // Prefer the fast memory of the first two sockets
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE, -1, 2);
+>
+
+In v1, Andi Kleen brought up reusing MPOL_PREFERRED as the mode for the API.
+There wasn't consensus around this, so I've left the existing API as it was. I'm
+open to more feedback here, but my slight preference is to use a new API as it
+ensures if people are using it, they are entirely aware of what they're doing
+and not accidentally misusing the old interface. (In a similar way to how
+MPOL_LOCAL was introduced).
+
+In v1, Michal also brought up renaming this MPOL_PREFERRED_MASK. I'm equally
+fine with that change, but I hadn't heard much emphatic support for one way or
+another, so I've left that too.
+
+- Ben/Dave/Feng
+
+---
+Changelog: 
+
+  Sice v6:
+  * merge the 2/6, 3/6 patch into one (Michal Hocko)
+  * change the policy_node and policy_mask handling (Michal Hocko)
+  * refine the kernel doc for 'prefer-many' policy (Michal Hocko)
+
+  Since v5:
+  * Rebased against 5.14-rc1. 
+
+  Since v4:
+  * Rebased on latest -mm tree (v5.13-rc), whose mempolicy code has
+    been refactored much since v4 submission
+  * add a dedicated alloc_page_preferred_many() (Michal Hocko)
+  * refactor and add fix to hugetlb supporting code (Michal Hocko) 
+
+  Since v3:
+  * Rebased against v5.12-rc2
+  * Drop the v3/0013 patch of creating NO_SLOWPATH gfp_mask bit
+  * Skip direct reclaim for the first allocation try for
+    MPOL_PREFERRED_MANY, which makes its semantics close to
+    existing MPOL_PREFFERRED policy
+
+  Since v2:
+  * Rebased against v5.11
+  * Fix a stack overflow related panic, and a kernel warning (Feng)
+  * Some code clearup (Feng)
+  * One RFC patch to speedup mem alloc in some case (Feng)
+
+  Since v1:
+  * Dropped patch to replace numa_node_id in some places (mhocko)
+  * Dropped all the page allocation patches in favor of new mechanism to
+    use fallbacks. (mhocko)
+  * Dropped the special snowflake preferred node algorithm (bwidawsk)
+  * If the preferred node fails, ALL nodes are rechecked instead of just
+    the non-preferred nodes.
 
 
-> -----Original Message-----
-> From: Bjorn Helgaas <helgaas@kernel.org>
-> Sent: Monday, August 2, 2021 9:35 PM
-> To: Wasim Khan (OSS) <wasim.khan@oss.nxp.com>
-> Cc: bhelgaas@google.com; linux-pci@vger.kernel.org; linux-
-> kernel@vger.kernel.org; Varun Sethi <V.Sethi@nxp.com>; Wasim Khan
-> <wasim.khan@nxp.com>
-> Subject: Re: [PATCH v2] PCI: Add ACS quirk for NXP LX2160 and LX2162 C/E/=
-N
-> platforms
->=20
-> On Mon, Aug 02, 2021 at 05:56:44PM +0200, Wasim Khan wrote:
-> > From: Wasim Khan <wasim.khan@nxp.com>
-> >
-> > LX2160C : security features + CAN-FD
-> > LX2160E : security features + CAN
-> > LX2160N : without security features + CAN LX2162C : security features
-> > + CAN-FD LX2162E : security features + CAN LX2162N : without security
-> > features + CAN
->=20
-> Can you associate these with the device IDs, please?  Ideally a one-line
-> comment in the code, but if that doesn't fit nicely, at least include the=
- device
-> ID for each here in the commit log.
+Ben Widawsky (2):
+  mm/hugetlb: add support for mempolicy MPOL_PREFERRED_MANY
+  mm/mempolicy: Advertise new MPOL_PREFERRED_MANY
 
-Thank you for the review.
-Sure, I will associate them with device IDs and send updated version.
+Dave Hansen (1):
+  mm/mempolicy: Add MPOL_PREFERRED_MANY for multiple preferred nodes
 
->=20
-> > Root Ports in NXP LX2160 and LX2162 where each Root Port is a Root
-> > Complex with unique segment numbers do provide isolation features to
-> > disable peer transactions and validate bus numbers in requests, but do
-> > not provide an actual PCIe ACS capability.
-> >
-> > Enable ACS quirk for NXP LX2160C/E/N and LX2162C/E/N platforms
-> >
-> > Signed-off-by: Wasim Khan <wasim.khan@nxp.com>
-> > ---
-> > Changes in v2:
-> > - removed duplicate entry of 0x8d80 and 0x8d88
-> >
-> >  drivers/pci/quirks.c | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> >
-> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c index
-> > 24343a76c034..1ad158066d39 100644
-> > --- a/drivers/pci/quirks.c
-> > +++ b/drivers/pci/quirks.c
-> > @@ -4787,6 +4787,23 @@ static const struct pci_dev_acs_enabled {
-> >  	{ PCI_VENDOR_ID_NXP, 0x8d80, pci_quirk_nxp_rp_acs },
-> >  	{ PCI_VENDOR_ID_NXP, 0x8d88, pci_quirk_nxp_rp_acs },
-> >  	{ PCI_VENDOR_ID_NXP, 0x8d89, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8d90, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8d91, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8da1, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8db0, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8d92, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8d82, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8d93, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8da0, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8db1, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8d99, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8d8a, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8d9b, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8da8, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8db9, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8d98, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8db8, pci_quirk_nxp_rp_acs },
-> > +	{ PCI_VENDOR_ID_NXP, 0x8d9a, pci_quirk_nxp_rp_acs },
->=20
-> Sort these in order of device ID so it's easier to see duplicates and to =
-find the
-> one you're looking for.
->=20
-> >  	/* Zhaoxin Root/Downstream Ports */
-> >  	{ PCI_VENDOR_ID_ZHAOXIN, PCI_ANY_ID,
-> pci_quirk_zhaoxin_pcie_ports_acs },
-> >  	{ 0 }
-> > --
-> > 2.25.1
-> >
+Feng Tang (2):
+  mm/memplicy: add page allocation function for MPOL_PREFERRED_MANY
+    policy
+  mm/mempolicy: unify the create() func for bind/interleave/prefer-many
+    policies
+
+ .../admin-guide/mm/numa_memory_policy.rst          | 15 +++-
+ include/uapi/linux/mempolicy.h                     |  1 +
+ mm/hugetlb.c                                       | 27 ++++++
+ mm/mempolicy.c                                     | 98 +++++++++++++++++-----
+ 4 files changed, 114 insertions(+), 27 deletions(-)
+
+-- 
+2.14.1
+
