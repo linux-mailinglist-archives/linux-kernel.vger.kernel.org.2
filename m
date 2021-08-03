@@ -2,146 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5481A3DE3EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9653DE3F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 03:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbhHCBWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 21:22:16 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:17564 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbhHCBWP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 21:22:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627953725; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=69oMaUQoA4ReczOKXAVfPDBIj5MKdJ/GxjJmCjK/vaw=;
- b=NAzFQcTVOwgf8ag6OPQnWJQkbvAbLzfaC2iWS/3ohSHI1+TD5Z+3wYs6jsjd36iZtqtYq9f3
- t7OiMHZLMVpMAzAMIjTPNmzpQSdgjh487VHi1kMDV1ZDsp/2y3y7n7YCQ11ENkGDxQJPJ+le
- fMFThAJRsAeWfgeDGxPwWfVbW6U=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 61089a3b96a66e66b293abad (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 03 Aug 2021 01:22:03
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A7376C433F1; Tue,  3 Aug 2021 01:22:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D6302C433D3;
-        Tue,  3 Aug 2021 01:22:02 +0000 (UTC)
+        id S233348AbhHCBZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 21:25:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233073AbhHCBZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 21:25:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07E9F60FC4;
+        Tue,  3 Aug 2021 01:24:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627953894;
+        bh=QrFoksWYIiAlKdefpChb6q8SDLrES7NeHLRULsZxfe8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WTOVv0CEP605/NeLE3rYNNevXWfB6oBoTaz93XSVSDE/JZguC+8ZdRHjomS7mpiwf
+         qE378TmvQG3LLQu39o0ldRWWWKwwoAlyeQPVgn5QFCjs2ggAn8Q8g35VTo9rd0N7Cn
+         IVHWdQG7aNtfyLOAvfJvxvooXpV+jx6BCuQTotpycx4WY9A+BZH+e7I46pFcygmXVz
+         ji+PEbaF91NVGzB1JaCfu4c6eWVTAbTnnMKaWGr6CFd70W0wvh5sVIeftVtM1ym1zO
+         4/GlPSZ0HCZom8ljiww01SA/JtpL7TDI2UeZaGXDVpTlb1p5rX6PlBZq4VjWaF5gjz
+         Me4BAP61ku20Q==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Aug 2
+Date:   Tue,  3 Aug 2021 02:24:40 +0100
+Message-Id: <20210803012440.49513-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 02 Aug 2021 18:22:02 -0700
-From:   abhinavk@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [Freedreno] [PATCH 11/11] drm/msm/dsi: Pass DSC params to
- drm_panel
-In-Reply-To: <20210715065203.709914-12-vkoul@kernel.org>
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-12-vkoul@kernel.org>
-Message-ID: <d2fd4c9b0fd9a1e67ac5372803ed3853@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-14 23:52, Vinod Koul wrote:
-> When DSC is enabled, we need to pass the DSC parameters to panel driver
-> as well, so add a dsc parameter in panel and set it when DSC is enabled
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Hi all,
 
-based on the comments on prev patches in the series, this will need to 
-be reworked
-too as there wont be any priv->dsc anymore.
+Changes since 20210730:
 
-Also, can you also post the panel changes? Would like to see how you 
-will use the
-dsc param there.
+The staging tree has a build failure so I used the tree from
+20210728.
 
-> ---
->  drivers/gpu/drm/msm/dsi/dsi_host.c | 16 +++++++++++++++-
->  include/drm/drm_panel.h            |  7 +++++++
->  2 files changed, 22 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> index 4e8ab1b1df8b..ee21cda243a7 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> @@ -2193,6 +2193,7 @@ int msm_dsi_host_modeset_init(struct 
-> mipi_dsi_host *host,
->  	const struct msm_dsi_cfg_handler *cfg_hnd = msm_host->cfg_hnd;
->  	struct platform_device *pdev = msm_host->pdev;
->  	struct msm_drm_private *priv;
-> +	struct drm_panel *panel;
->  	int ret;
-> 
->  	msm_host->irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
-> @@ -2212,8 +2213,21 @@ int msm_dsi_host_modeset_init(struct 
-> mipi_dsi_host *host,
->  	}
-> 
->  	msm_host->dev = dev;
-> +	panel = msm_dsi_host_get_panel(&msm_host->base);
->  	priv = dev->dev_private;
-> -	priv->dsc = msm_host->dsc;
-> +
-> +	if (panel && panel->dsc) {
-> +		struct msm_display_dsc_config *dsc = priv->dsc;
-> +
-> +		if (!dsc) {
-> +			dsc = kzalloc(sizeof(*dsc), GFP_KERNEL);
-> +			if (!dsc)
-> +				return -ENOMEM;
-> +			dsc->drm = panel->dsc;
-> +			priv->dsc = dsc;
-> +			msm_host->dsc = dsc;
-> +		}
-> +	}
-> 
->  	ret = cfg_hnd->ops->tx_buf_alloc(msm_host, SZ_4K);
->  	if (ret) {
-> diff --git a/include/drm/drm_panel.h b/include/drm/drm_panel.h
-> index 33605c3f0eba..27a7808a29f2 100644
-> --- a/include/drm/drm_panel.h
-> +++ b/include/drm/drm_panel.h
-> @@ -171,6 +171,13 @@ struct drm_panel {
->  	 * Panel entry in registry.
->  	 */
->  	struct list_head list;
-> +
-> +	/**
-> +	 * @dsc:
-> +	 *
-> +	 * Panel DSC pps payload to be sent
-> +	 */
-> +	struct drm_dsc_config *dsc;
->  };
-> 
->  void drm_panel_init(struct drm_panel *panel, struct device *dev,
+Non-merge commits (relative to Linus' tree): 4430
+ 4902 files changed, 326250 insertions(+), 126481 deletions(-)
+
+----------------------------------------------------------------------------
+
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+are tracking the linux-next tree using git, you should not use "git pull"
+to do so as that will try to merge the new linux-next release with the
+old one.  You should use "git fetch" and checkout or reset to the new
+master.
+
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There are also quilt-import.log and merge.log
+files in the Next directory.  Between each merge, the tree was built
+with an arm64 defconfig, an allmodconfig for x86_64, a
+multi_v7_defconfig for arm and a native build of tools/perf. After
+the final fixups (if any), I do an x86_64 modules_install followed by
+builds for x86_64 allnoconfig, arm64 allnoconfig and i386, and htmldocs.
+
+Below is a summary of the state of the merge.
+
+I am currently merging 333 trees (counting Linus' and 90 trees of bug
+fix patches pending for the current merge release).
+
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of my local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to add
+more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
