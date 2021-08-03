@@ -2,88 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8A43DE6BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99B23DE6C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 08:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhHCGep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 02:34:45 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33922 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233966AbhHCGek (ORCPT
+        id S234143AbhHCGex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 02:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234103AbhHCGep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 02:34:40 -0400
-X-UUID: 5368b2d6c8a24e20afaadfa304052ec8-20210803
-X-UUID: 5368b2d6c8a24e20afaadfa304052ec8-20210803
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 260222576; Tue, 03 Aug 2021 14:34:27 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 3 Aug 2021 14:34:27 +0800
-Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 3 Aug 2021 14:34:26 +0800
-From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v10 5/5] arm64: dts: mt8192: add spmi node
-Date:   Tue, 3 Aug 2021 14:34:21 +0800
-Message-ID: <1627972461-2627-6-git-send-email-hsin-hsiung.wang@mediatek.com>
-X-Mailer: git-send-email 2.6.4
-In-Reply-To: <1627972461-2627-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1627972461-2627-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+        Tue, 3 Aug 2021 02:34:45 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E16C0613D5;
+        Mon,  2 Aug 2021 23:34:34 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so2432510pja.5;
+        Mon, 02 Aug 2021 23:34:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sRwYfIMmqsxjBnnSXDo+aOgwj2et1AAa2hNgV9gFeYU=;
+        b=vK1v22D+JBRGXG7Q00FuhVstwwDDjd6Gj1BHWhp/st/bsblY/un4WudZXFCPTPDZID
+         k81+q2delU6pX+EfBuQuAPZfREnS0GtRE8l+sAdATbGeCXvlBO7qIVneLb0JQNhY8T0K
+         RuG7itocLlrk/NfIVY/M/Q9bdRg604nzPzHkRkR7DbkAoqqsHtCTij988fehY6bQu++5
+         H4Jja/EkO6hFNz4FrhoX+1VB4p1G9jZAZRfz7kFieAjz9GvEVmviQ3goermt1c4qyC1c
+         KoUzPulIfTH6pugM+EUsTKugiqA6H6s2BoxWyWQJsMSJOwxMZw6nT2yHpVVKLvrph87g
+         /V/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sRwYfIMmqsxjBnnSXDo+aOgwj2et1AAa2hNgV9gFeYU=;
+        b=GV49kNiabzzsovWenYKASQ5T7VI7RWnsF+aI7u2KejUju+kMj22or3BD6alWPDWPOP
+         9IwrUiQjhTNZGuIsHGmSeh8cTX80mk/MMF7jaNQTVMrkEkZ9N6R1FLM+6Kz5oJ4PQRLO
+         UU7EfJEGyvLOqRW6E86Tq2Wk0SoFg7OUmkS73EuEUbGxeZkTr+pK505omrWE7UXUdTCL
+         asEoaFoS+mUA7oJxBDrhxkdAbayzzZ195TpNfUE59RNq7xLDL6G08G6OcDQNfk37lXfP
+         5ONJ4ubpymGDCtetd7D8SoeZknU3vMwA7MSIfA/mh3D7K/WkNcQTKwYBNd+gcrmf28uL
+         IVkQ==
+X-Gm-Message-State: AOAM533dDFJA7g9cA36FUjuZG5kzxn7CoIz3qUOFGVSXEgw52/vnjt9g
+        lNn5s9JIgsmVyEN3cppSwMc=
+X-Google-Smtp-Source: ABdhPJxy+cGjCgn9IXbnog8GeKn8D3W4gtzT1zah26FxsUyTxXauGklyXEvV0PkmOCxNin21lfqO3Q==
+X-Received: by 2002:a17:902:ba90:b029:12c:acd:88f3 with SMTP id k16-20020a170902ba90b029012c0acd88f3mr17223871pls.3.1627972474000;
+        Mon, 02 Aug 2021 23:34:34 -0700 (PDT)
+Received: from localhost ([139.5.31.186])
+        by smtp.gmail.com with ESMTPSA id w8sm12839194pja.24.2021.08.02.23.34.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 23:34:33 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 12:04:24 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v13 5/9] PCI: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210803063424.aybmwdxxj6bt2iax@archlinux>
+References: <20210801142518.1224-6-ameynarkhede03@gmail.com>
+ <20210802225559.GA1472320@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802225559.GA1472320@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add spmi node to SOC MT8192.
+On 21/08/02 05:55PM, Bjorn Helgaas wrote:
+> On Sun, Aug 01, 2021 at 07:55:14PM +0530, Amey Narkhede wrote:
+> > Add reset_method sysfs attribute to enable user to query and set user
+> > preferred device reset methods and their ordering.
+> >
+> > Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > ---
+> > +
+[...]
+> > +static ssize_t reset_method_store(struct device *dev,
+> > +				  struct device_attribute *attr,
+> > +				  const char *buf, size_t count)
+> > +{
+> > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > +	int i = 0;
+> > +	char *name, *options = NULL;
+> > +
+> > +	if (count >= (PAGE_SIZE - 1))
+> > +		return -EINVAL;
+> > +
+> > +	if (sysfs_streq(buf, "")) {
+> > +		pdev->reset_methods[0] = 0;
+> > +		pci_warn(pdev, "All device reset methods disabled by user");
+> > +		return count;
+> > +	}
+>
+> I think it's possible for the user to disable all reset methods by
+> supplying only junk.  Maybe this check could be moved to the end of
+> the function to catch both the "empty input" and the "input contains
+> only junk" cases?
+>
+Supplying only junk doesn't disable the reset. It returns -EINVAL as it
+will go in following while loop. The check m == PCI_NUM_RESET_METHODS
+returns -EINVAL
 
-Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
----
-changes since v9:
-- No change.
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+> > +	if (sysfs_streq(buf, "default")) {
+> > +		pci_init_reset_methods(pdev);
+> > +		return count;
+> > +	}
+> > +
+> > +	options = kstrndup(buf, count, GFP_KERNEL);
+> > +	if (!options)
+> > +		return -ENOMEM;
+> > +
+>
+>   i = 0;
+>
+> here so it's nearer the loop it controls.
+>
+> > +	while ((name = strsep(&options, " ")) != NULL) {
+> > +		int m;
+> > +
+> > +		if (sysfs_streq(name, ""))
+> > +			continue;
+> > +
+> > +		name = strim(name);
+> > +
+> > +		for (m = 1; m < PCI_NUM_RESET_METHODS && i < PCI_NUM_RESET_METHODS; m++) {
+> > +			if (sysfs_streq(name, pci_reset_fn_methods[m].name) &&
+> > +			    !pci_reset_fn_methods[m].reset_fn(pdev, 1)) {
+> > +				pdev->reset_methods[i++] = m;
+> > +				break;
+> > +			}
+> > +		}
+> > +
+> > +		if (m == PCI_NUM_RESET_METHODS) {
+> > +			kfree(options);
+> > +			return -EINVAL;
+>
+> In this case, I think we have actually updated pdev->reset_methods[],
+> but we still return -EINVAL, right?  If we decide to silently ignore
+> unrecognized methods, we probably should return success here.
+>
+Is it okay to do that? I hope it won't cause any trouble for user
+scripts
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index 9810f1d441da..1237e3624e44 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -316,6 +316,23 @@
- 			clock-names = "clk13m";
- 		};
- 
-+		spmi: spmi@10027000 {
-+			compatible = "mediatek,mt6873-spmi";
-+			reg = <0 0x10027000 0 0x000e00>,
-+			      <0 0x10029000 0 0x000100>;
-+			reg-names = "pmif", "spmimst";
-+			clocks = <&infracfg CLK_INFRA_PMIC_AP>,
-+				 <&infracfg CLK_INFRA_PMIC_TMR>,
-+				 <&topckgen CLK_TOP_SPMI_MST_SEL>;
-+			clock-names = "pmif_sys_ck",
-+				      "pmif_tmr_ck",
-+				      "spmimst_clk_mux";
-+			assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_OSC_D10>;
-+			#address-cells = <2>;
-+			#size-cells = <0>;
-+		};
-+
- 		scp_adsp: clock-controller@10720000 {
- 			compatible = "mediatek,mt8192-scp_adsp";
- 			reg = <0 0x10720000 0 0x1000>;
--- 
-2.18.0
+Thanks,
+Amey
 
+[...]
