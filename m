@@ -2,125 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8C53DF24B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81ACC3DF248
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhHCQPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232730AbhHCQP3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:15:29 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58227C06179E;
-        Tue,  3 Aug 2021 09:14:38 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id t3so22221283plg.9;
-        Tue, 03 Aug 2021 09:14:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=E9dbUJDad8OiM9R3ggYpWCXMN+1fcOESzDIg2KJQygw=;
-        b=DXb1TeufSEOKzA1N8WwwJgNTA95J9va75S/3IZ1UmG4lb1BCe1SX7mW2nTIWgWHvIp
-         haLoj13+rka/QsRm9dtIcjP3Q6ICjbi0VZwwEsWARisrhmKJKhku4HKRLDmzksA7GB7J
-         BiIVSAo2zCKyiv8NDcS8PslY1pq4GMKTDEkxn/TQimOqOvh8vwDDNzPKXhZCd47F3mDA
-         fQYVucAuQP8buLmOP6fkGFNCVwzG7vWWO+ZBSq2jROFSTVzGRAquHYkBgmuTK6V7UEKU
-         4zhc48KTyOpUSjn8skQ6LWN8uWfELZ9eYOwXg0cFWLhGun8NamGjNOX6GDp9NNCy5Gt+
-         Qfzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=E9dbUJDad8OiM9R3ggYpWCXMN+1fcOESzDIg2KJQygw=;
-        b=V8sUqOGVqVa5DKJJhvIiV2GgDbI/zNAfgqo7XKyp8wSwMOT7eFOYwGdFT63Hlq2ZBp
-         fGkAykB/l1aojtCViGWAD2W4C9UbXMc+Ag7nGlJ7wavnyi+Zp+HM7tDG8oddik3u/iIa
-         RQWSd/SnerRXRLE6RZMuOjepHOyqo1eedP8Lm3oZNrswf3zS3XiANcAOTc8svli06NAC
-         I/EcLRPNjmmgZIhWUcBt8KiD/3Ip0YAwIfNzOwuGFUwhUmzVBPDTa9XCER1vqVu1fuuu
-         9q9s3MhVWJ/ZtkWPEs14Z4e4LndI1YicgUpbR1BQfiZWoj6KL0IYF8UildXQsVP7Y+co
-         7VhQ==
-X-Gm-Message-State: AOAM533sJ6VlvH4KZ7CuDpq+EGqLGjgyJ/ZJ1kN7fnWk77XdSWTyMrMI
-        2BVN2wIiEl6KnHOU5kd7Qcg=
-X-Google-Smtp-Source: ABdhPJxVcHpsP99XpPOvvXRfpcDZM8Dnodn7xITd7SwrzdMcSWsPw5ipwGU/7tr/vJQZGRcWCj6LPA==
-X-Received: by 2002:aa7:99c1:0:b029:39a:56d1:6d43 with SMTP id v1-20020aa799c10000b029039a56d16d43mr22828297pfi.58.1628007277881;
-        Tue, 03 Aug 2021 09:14:37 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id t8sm18482127pgh.18.2021.08.03.09.14.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 09:14:37 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 09:14:34 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Nicolas Pitre <nico@fluxnic.net>,
-        "Keller, Jacob E" <jacob.e.keller@intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2] ethernet/intel: fix PTP_1588_CLOCK
- dependencies
-Message-ID: <20210803161434.GE32663@hoboy.vegasvil.org>
-References: <20210802145937.1155571-1-arnd@kernel.org>
- <20210802164907.GA9832@hoboy.vegasvil.org>
- <bd631e36-1701-b120-a9b0-8825d14cc694@intel.com>
- <20210802230921.GA13623@hoboy.vegasvil.org>
- <CAK8P3a2XjgbEkYs6R7Q3RCZMV7v90gu_v82RVfFVs-VtUzw+_w@mail.gmail.com>
- <20210803155556.GD32663@hoboy.vegasvil.org>
+        id S232638AbhHCQPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:15:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232739AbhHCQP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:15:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63D6A60F94;
+        Tue,  3 Aug 2021 16:15:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628007301;
+        bh=bMtEE0op4VpnwAaaWde78RzZyPAaxccP4CS1l+2PHjU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GYtJL2eJJcsgaxku226YHMTshEwEcwA8YKfBEK0wKTHCrx2rOrCpiff00TVcZcDBB
+         /yGbAxLAGAjKIA9M5bcJkk7GtgPIgJlByBfyfCzojAqItG1/mmaYjZFNt+j/Kz81gm
+         aqYsmBIPNj8Lz4OUpc01Cb/NdY2Ud6vBAE7YxFiftBdwDIM305CV5GloYCbfWo1f7x
+         n5ATd0xY1TOL7HtfG8rkRhYMoksURf4AuTWqAdR5wPFzPpqflsnGa2xPMKCn3XLgne
+         KLN7wzElfffK2DTnvTW+6xFcukSi6bJdnvcvWcRQIEDlUrOGHTQY7Cq1id7k0z0oS6
+         CnWQBI/2yweoQ==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 1F7583C0C9B; Tue,  3 Aug 2021 18:14:59 +0200 (CEST)
+Date:   Tue, 3 Aug 2021 18:14:59 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Elliot Berman <eberman@codeaurora.org>
+Subject: Re: [PATCH 3/3] power: reset: Enable tristate on restart power-off
+ driver
+Message-ID: <20210803161459.5752zkc6jhj3mduf@earth.universe>
+References: <20210803155452.435812-1-lee.jones@linaro.org>
+ <20210803155452.435812-4-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="e2m5yujkkw3dgt3d"
 Content-Disposition: inline
-In-Reply-To: <20210803155556.GD32663@hoboy.vegasvil.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210803155452.435812-4-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 08:55:56AM -0700, Richard Cochran wrote:
-> On Tue, Aug 03, 2021 at 08:59:02AM +0200, Arnd Bergmann wrote:
-> > It may well be a lost cause, but a build fix is not the time to nail down
-> > that decision. The fix I proposed (with the added MAY_USE_PTP_1588_CLOCK
-> > symbol) is only two extra lines and leaves everything else working for the
-> > moment.
-> 
-> Well, then we'll have TWO ugly and incomprehensible Kconfig hacks,
-> imply and MAY_USE.
-> 
-> Can't we fix this once and for all?
-> 
-> Seriously, "imply" has been nothing but a major PITA since day one,
-> and all to save 22 kb.  I can't think of another subsystem which
-> tolerates so much pain for so little gain.
 
-Here is what I want to have, in accordance with the KISS principle:
+--e2m5yujkkw3dgt3d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-config PTP_1588_CLOCK
-	bool "PTP clock support"
-	select NET
-	select POSIX_TIMERS
-	select PPS
-	select NET_PTP_CLASSIFY
+Hi,
 
-# driver variant 1:
+On Tue, Aug 03, 2021 at 04:54:52PM +0100, Lee Jones wrote:
+> From: Elliot Berman <eberman@codeaurora.org>
+>=20
+> Since reboot_mode is an exported symbol, restart power-off driver can be
+> compiled as module.
+>=20
+> Signed-off-by: Elliot Berman <eberman@codeaurora.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
 
-config ACME_MAC
-	select PTP_1588_CLOCK
+Acked-by: Sebastian Reichel <sre@kernel.org>
 
-# driver variant 2:
+-- Sebastian
 
-config ACME_MAC
+>  drivers/power/reset/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+> index 4d1192062508d..e155b2e2a75c4 100644
+> --- a/drivers/power/reset/Kconfig
+> +++ b/drivers/power/reset/Kconfig
+> @@ -192,7 +192,7 @@ config POWER_RESET_REGULATOR
+>  	  power regulator defined in the devicetree.
+> =20
+>  config POWER_RESET_RESTART
+> -	bool "Restart power-off driver"
+> +	tristate "Restart power-off driver"
+>  	help
+>  	  Some boards don't actually have the ability to power off.
+>  	  Instead they restart, and u-boot holds the SoC until the
+> --=20
+> 2.32.0.554.ge1b32706d8-goog
+>=20
 
-config ACME_MAC_PTP
-	depends on ACME_MAC
-	select PTP_1588_CLOCK
+--e2m5yujkkw3dgt3d
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Hm?	
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Richard
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEJa3oACgkQ2O7X88g7
++pq93w/+PlZeAuqctCncZwRgceV2EBkH+i018Pp4f0mfC9R95P60LETyavwm0Ftw
+Jrif0Lv51hSPlsY6QXSqPoIQ9hSIHLsi6uh/ipfrXvUo2WnINvsGEcx8Vbu5tht6
+NAl/RMC+pbkMYOSWAhqHLbkMLtki9cwEG7XoI02Das87kQFxsiBDKB/yOp9OFpdo
+KXyMV7tgeZdmUO7+h70q/8JBYRgrWdtNuN52wd1IR1m5eUrvZ1otFHR1EhNdXL7U
+09r4/YNVezVRC9AOID68TB9wUa48+d47oueWXhjWOlgyoNsP5VK8NjV2AoXLHYre
+5jR5hLFqNyvR0qpfrE2AEuEbYm+ZYqYun+vUy9VELl5nc+h4NsB28mcmHHKdN5YB
+xseIuViBUsisTMeTobIZ99H4/d1i1V4cyVr+wpmwNepg2DJMGj88tAHk1+drzGOH
+limgDkxPqCIgrYx2bqXO/+wjgrOn0uKQ3cGsLoV/NRtlhF7Hd7/30g3zI2EQHBIt
+MCpujRKejq6RgGaeKQU/ZWTdremGvHsDoJYcXGD5vjT3mn06VbzQ3b6sDgPXMBDa
+E0FArIrbIJNincHlkip0mrak9XY3liqjwcxresD1VAgnThYSZ98MBKLvl4GdPdV6
+UoZJyUnVBAa1Y6xkGZFnsckVZohsSn+/9JEpFQivM9ArkjYv81U=
+=h0Ad
+-----END PGP SIGNATURE-----
+
+--e2m5yujkkw3dgt3d--
