@@ -2,113 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037F63DEA72
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE523DEA74
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 12:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235278AbhHCKHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 06:07:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235311AbhHCKGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 06:06:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FEB161037;
-        Tue,  3 Aug 2021 10:06:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627985190;
-        bh=amKFWwxpJKw04QvdgzwXcqsqQ+F/NFHyOuqZIXDbk1c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XjEoXzfxmIrUj6YEyI/1nn/bFs2XN+/1xIOKmEHh0ZliMJ5miWSi+KFFZIRV3i7G2
-         FBrJg3xGZEemgh0lmKXUutXASdMU7DRx9DckTewzZjBLWp8lRLMRMUSKGKuqcCKO+l
-         ywlbG/UOew23gdqMNVJAxev4x7DpcgrR/mzQCI5/+dKHpgKqkUE+Na3I3u+kLYkjtX
-         i7/fC/yZfwtjd0GzE8BnThUGq2RudTGu5crO5cEWqVvtHEJtMfwwbOno3XDsozhmOW
-         KL5VuuEoYMgqxbSYgNBVZlbXHbiix9eK5dS/jUIJeg3C+Rwmm3iFECfc3wGbsjWa+I
-         jwqXueqQa3flg==
-Received: by mail-wr1-f44.google.com with SMTP id h14so24656967wrx.10;
-        Tue, 03 Aug 2021 03:06:29 -0700 (PDT)
-X-Gm-Message-State: AOAM531A7mScJe+/xPVmNxqueEODpJTRthL+CSgYUTN+tombAV3UEeDh
-        3I1G4HQ9haAkq3D/ZZwCdieaWY7b7spDR1L2NkY=
-X-Google-Smtp-Source: ABdhPJzwT+J+VFXSnW3+4tMTTqosPNaK30l2tA5qRE27wNMPCM24C2S98cstSFdgN7ZgaXO1ODqphFr5sTVPXXlD+B8=
-X-Received: by 2002:adf:e107:: with SMTP id t7mr22121083wrz.165.1627985188658;
- Tue, 03 Aug 2021 03:06:28 -0700 (PDT)
+        id S235288AbhHCKHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 06:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235297AbhHCKHn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 06:07:43 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449B9C061387
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 03:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4wevAMoON2BVeDaC/EUtZafrKn0BGHEDvZ9AiAWBsv8=; b=GwAp6t8DYiTSvCe9CTMEDq3whN
+        PG0QRaWo/LVrHn3IEIzwzaQZXULuw5YWY0aAWKqStWCGM9KQURZtXmRXaDn0lG9LjgR62g1Q5UvuK
+        LZ9VRLcPKAhTLNH2p+qvUqRPKtVXLJmHDSyhmjtNV5+IlpVcWgp3Qr+pMn0X6qj3RrmZ0YfpkCD6P
+        sRoriF2uNYwB7SSm7V8X6D/c9WhLJbrjBHVw2eKEXy6V2ala0fJLcvV9iRhdttFQu10dVFQGir9CX
+        1FBkPYp8RJpN4AuNMPc0qbmWPBQmhbw3VRckiSMq12q5mBDPhafK3xLwbjuvo0pDpx/WT1lBxdedr
+        R35yhBgA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mArKI-005OHi-RV; Tue, 03 Aug 2021 10:07:11 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 249839862A4; Tue,  3 Aug 2021 12:07:13 +0200 (CEST)
+Date:   Tue, 3 Aug 2021 12:07:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [patch 58/63] futex: Prevent requeue_pi() lock nesting issue on
+ RT
+Message-ID: <20210803100713.GB8057@worktop.programming.kicks-ass.net>
+References: <20210730135007.155909613@linutronix.de>
+ <20210730135208.418508738@linutronix.de>
 MIME-Version: 1.0
-References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
- <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
- <CAK8P3a1D5DzmNGsEPQomkyMCmMrtD6pQ11JRMh78vbY53edp-Q@mail.gmail.com>
- <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com> <db043b76-880d-5fad-69cf-96abcd9cd34f@huawei.com>
-In-Reply-To: <db043b76-880d-5fad-69cf-96abcd9cd34f@huawei.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 3 Aug 2021 12:06:12 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3HHeP+Gw_k2P7Qtig0OmErf0HN30G22+qHic_uZTh11Q@mail.gmail.com>
-Message-ID: <CAK8P3a3HHeP+Gw_k2P7Qtig0OmErf0HN30G22+qHic_uZTh11Q@mail.gmail.com>
-Subject: Re: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
-To:     John Garry <john.garry@huawei.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730135208.418508738@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 11:46 AM John Garry <john.garry@huawei.com> wrote:
-> On 05/07/2021 11:06, Arnd Bergmann wrote:
+On Fri, Jul 30, 2021 at 03:51:05PM +0200, Thomas Gleixner wrote:
+> @@ -219,6 +221,10 @@ struct futex_q {
+>  	struct rt_mutex_waiter *rt_waiter;
+>  	union futex_key *requeue_pi_key;
+>  	u32 bitset;
+> +	atomic_t requeue_state;
+> +#ifdef CONFIG_PREEMPT_RT
+> +	struct rcuwait requeue_wait;
+> +#endif
+>  } __randomize_layout;
+>  
+>  static const struct futex_q futex_q_init = {
 
-> >
-> > Linus, if you like this approach, then I can work on splitting it up into
-> > meaningful patches and submit it for a future release. I think the
-> > CONFIG_LEGACY_PCI option has value on its own, but the others
-> > do introduce some churn.
-> >
-> > Full patch (120KB): https://pastebin.com/yaFSmAuY
-> >
->
-> Hi Arnd,
->
-> I am not sure if anything is happening here.
-
-No, I'm not currently working on this, though I have it applied to
-my randconfig tree.
-
-> Anyway, one thing I mentioned earlier was that we could solve the
-> problem of drivers accessing unmapped IO ports and crashing systems on
-> archs which define PCI_IOBASE by building them under some "native port
-> IO support" flag.
-
-Right, that was part of the goal here.
-
-> One example of such a driver was F71805F sensor. You put that under
-> HAS_IOPORT, which would be available for all archs, I think. But I could
-> not see where config LEGACY_PCI is introduced. Could we further refine
-> that config to not build for such archs as arm64?
->
-> BTW, I think that the PPC dependency was added there to stop building
-> for power for that same reason, so hopefully we get rid of that.
-
-Good point. It seems that I actually never added the LEGACY_PCI option
-to my patch, so I'm just not building those drivers any more, and not
-defining the inb()/outb() helpers either, causing a build failure when I'm
-missing an option.
-
-However it sounds like you are interested in a third option here, which
-brings us to:
-
-LEGACY_PCI: any PCI driver that uses inb()/outb() or is only available
-    on old-style PCI but not PCIe hardware without a bridge.
-    To be disabled for most architectures and possibly distros but can
-    be enabled for kernels that want to use those devices, as long as
-    CONFIG_HAS_IOPORT is set by the architecture.
-
-HAS_IOPORT: not a legacy PCI device, but can only be built on
-    architectures that define inb()/outb(). To be disabled for s390
-    and any other machine that has no useful definition of those
-    functions.
-
-HARDCODED_IOPORT: (or another name you might think of,) Used by
-   drivers that unconditionally do inb()/outb() without checking the
-   validity of the address using firmware or other methods first.
-   depends on HAS_IOPORT and possibly architecture specific
-   settings.
-
-        Arnd
+Do we want to explicitly initialize requeue_state in futex_q_init? I was
+looking where we reset the state machine and eventually figured it out,
+but I'm thinking something more explicit might help avoid this for the
+next time.
