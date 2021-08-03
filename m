@@ -2,133 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3A03DEBA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FF83DEBB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 13:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235463AbhHCLWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 07:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235254AbhHCLWf (ORCPT
+        id S235566AbhHCL0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 07:26:36 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.163]:17960 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235554AbhHCL0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:22:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66E6C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 04:22:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oCfToeqn1k3lFs3DOIR5EL/mFEuSqiZC986MzVwbPdU=; b=YOL9Vm4aXFmSu4ThuUzXqnI3hP
-        xbEEDdxX6CJ271tInSEedEQOmZypN7wwUxoTCKSJn+0k0hBQOJ3OwlX7e6j/ccHaUnND73fj1MFgd
-        M0ZgErz8X4EmE/JOqXTKRMngtIz1+gvm5WGT5P6UvqWBqYv/NafXs9tyuQdw3jhWCGT99hBnt6c9t
-        A/oFsFy1MhAobuHEQKQUeHbBK8ODwKyfKkOBXAgEpkTGJrgZGcg0Mdfq2z8TdONdSiAYKAmqI+kRS
-        BH3IziUukPn16BQsgtGbUV+ZU/j9VzZb+B2vj+mOA2eYs+sxhxQHBmPTRY2TCals4c2v3Qn+XdwEs
-        YtWoeHLg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mAsTc-004ZGI-Tq; Tue, 03 Aug 2021 11:21:01 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 17CF39862A8; Tue,  3 Aug 2021 13:20:51 +0200 (CEST)
-Date:   Tue, 3 Aug 2021 13:20:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [patch 58/63] futex: Prevent requeue_pi() lock nesting issue on
- RT
-Message-ID: <20210803112051.GC8057@worktop.programming.kicks-ass.net>
-References: <20210730135007.155909613@linutronix.de>
- <20210730135208.418508738@linutronix.de>
+        Tue, 3 Aug 2021 07:26:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1627989798;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=02bxvCoDOe0IHW3IpUIMEklenO/33KVZPTAhxGyNx/0=;
+    b=LbzhjXAZLmr657qMNtZa8j/Oixoq4UjXBDC5fOa+KtG0hIKHzfe7nbElPN1YGINqxS
+    EwFTrc7ocxNyWibxWTkEUoY+fFA2/DhQRpcc2jKTqQ2y+T0lGIohrxPvTd6h1n4WbHMu
+    lm/PBYrKlEHR8d0MF8suOJWG5LfOg/tMuj2akA/KoigZ6bn6tnpG7rlKhYcds1BIJdrV
+    sDF+yckESwDKUs1sPkvZHNUzaUHmZM+E3Iih5MzSZX+5t7JJ/4Kvnp1PtISrYOp5d+qw
+    7V41o6siETSRYSkM3y6eVq9QsCyJoZqUoOJSbSHBbr8Atof2m6IscwsoJy+I05VmhU4+
+    xBAQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEDlBxgAcPNuVYUcPxoP37qlUJyScjc1GiW8jydNgHFJOxomnM="
+X-RZG-CLASS-ID: mo00
+Received: from wopr.fritz.box
+    by smtp.strato.de (RZmta 47.28.1 AUTH)
+    with ESMTPSA id Z03199x73BNIp5J
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 3 Aug 2021 13:23:18 +0200 (CEST)
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        linux-stable <stable@vger.kernel.org>,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH stable 4.4 4.9] can: raw: raw_setsockopt(): fix raw_rcv panic for sock UAF
+Date:   Tue,  3 Aug 2021 13:22:41 +0200
+Message-Id: <20210803112241.3253-1-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730135208.418508738@linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 03:51:05PM +0200, Thomas Gleixner wrote:
-> @@ -3082,27 +3302,22 @@ static int futex_unlock_pi(u32 __user *u
->  }
->  
->  /**
-> - * handle_early_requeue_pi_wakeup() - Detect early wakeup on the initial futex
-> + * handle_early_requeue_pi_wakeup() - Handle early wakeup on the initial futex
->   * @hb:		the hash_bucket futex_q was original enqueued on
->   * @q:		the futex_q woken while waiting to be requeued
-> - * @key2:	the futex_key of the requeue target futex
->   * @timeout:	the timeout associated with the wait (NULL if none)
->   *
-> - * Detect if the task was woken on the initial futex as opposed to the requeue
-> - * target futex.  If so, determine if it was a timeout or a signal that caused
-> - * the wakeup and return the appropriate error code to the caller.  Must be
-> - * called with the hb lock held.
-> + * Determine the cause for the early wakeup.
->   *
->   * Return:
-> - *  -  0 = no early wakeup detected;
-> - *  - <0 = -ETIMEDOUT or -ERESTARTNOINTR
-> + *  -EWOULDBLOCK or -ETIMEDOUT or -ERESTARTNOINTR
->   */
->  static inline
->  int handle_early_requeue_pi_wakeup(struct futex_hash_bucket *hb,
-> -				   struct futex_q *q, union futex_key *key2,
-> +				   struct futex_q *q,
->  				   struct hrtimer_sleeper *timeout)
->  {
-> -	int ret = 0;
-> +	int ret;
->  
->  	/*
->  	 * With the hb lock held, we avoid races while we process the wakeup.
-> @@ -3111,22 +3326,21 @@ int handle_early_requeue_pi_wakeup(struc
->  	 * It can't be requeued from uaddr2 to something else since we don't
->  	 * support a PI aware source futex for requeue.
->  	 */
-> -	if (!match_futex(&q->key, key2)) {
-> -		WARN_ON(q->lock_ptr && (&hb->lock != q->lock_ptr));
-> -		/*
-> -		 * We were woken prior to requeue by a timeout or a signal.
-> -		 * Unqueue the futex_q and determine which it was.
-> -		 */
-> -		plist_del(&q->list, &hb->chain);
-> -		hb_waiters_dec(hb);
-> +	WARN_ON_ONCE(&hb->lock != q->lock_ptr);
->  
-> -		/* Handle spurious wakeups gracefully */
-> -		ret = -EWOULDBLOCK;
-> -		if (timeout && !timeout->task)
-> -			ret = -ETIMEDOUT;
-> -		else if (signal_pending(current))
-> -			ret = -ERESTARTNOINTR;
-> -	}
-> +	/*
-> +	 * We were woken prior to requeue by a timeout or a signal.
-> +	 * Unqueue the futex_q and determine which it was.
-> +	 */
-> +	plist_del(&q->list, &hb->chain);
-> +	hb_waiters_dec(hb);
-> +
-> +	/* Handle spurious wakeups gracefully */
-> +	ret = -EWOULDBLOCK;
-> +	if (timeout && !timeout->task)
-> +		ret = -ETIMEDOUT;
-> +	else if (signal_pending(current))
-> +		ret = -ERESTARTNOINTR;
->  	return ret;
->  }
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-AFAICT this change is a separate cleanup, possible because the only
-callsite already does that match_futex() test before calling this.
+commit 54f93336d000229f72c26d8a3f69dd256b744528 upstream.
 
-I think it might be worth splitting out, just to reduce the complexity
-of this patch.
+We get a bug during ltp can_filter test as following.
+
+===========================================
+[60919.264984] BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
+[60919.265223] PGD 8000003dda726067 P4D 8000003dda726067 PUD 3dda727067 PMD 0
+[60919.265443] Oops: 0000 [#1] SMP PTI
+[60919.265550] CPU: 30 PID: 3638365 Comm: can_filter Kdump: loaded Tainted: G        W         4.19.90+ #1
+[60919.266068] RIP: 0010:selinux_socket_sock_rcv_skb+0x3e/0x200
+[60919.293289] RSP: 0018:ffff8d53bfc03cf8 EFLAGS: 00010246
+[60919.307140] RAX: 0000000000000000 RBX: 000000000000001d RCX: 0000000000000007
+[60919.320756] RDX: 0000000000000001 RSI: ffff8d5104a8ed00 RDI: ffff8d53bfc03d30
+[60919.334319] RBP: ffff8d9338056800 R08: ffff8d53bfc29d80 R09: 0000000000000001
+[60919.347969] R10: ffff8d53bfc03ec0 R11: ffffb8526ef47c98 R12: ffff8d53bfc03d30
+[60919.350320] perf: interrupt took too long (3063 > 2500), lowering kernel.perf_event_max_sample_rate to 65000
+[60919.361148] R13: 0000000000000001 R14: ffff8d53bcf90000 R15: 0000000000000000
+[60919.361151] FS:  00007fb78b6b3600(0000) GS:ffff8d53bfc00000(0000) knlGS:0000000000000000
+[60919.400812] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[60919.413730] CR2: 0000000000000010 CR3: 0000003e3f784006 CR4: 00000000007606e0
+[60919.426479] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[60919.439339] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[60919.451608] PKRU: 55555554
+[60919.463622] Call Trace:
+[60919.475617]  <IRQ>
+[60919.487122]  ? update_load_avg+0x89/0x5d0
+[60919.498478]  ? update_load_avg+0x89/0x5d0
+[60919.509822]  ? account_entity_enqueue+0xc5/0xf0
+[60919.520709]  security_sock_rcv_skb+0x2a/0x40
+[60919.531413]  sk_filter_trim_cap+0x47/0x1b0
+[60919.542178]  ? kmem_cache_alloc+0x38/0x1b0
+[60919.552444]  sock_queue_rcv_skb+0x17/0x30
+[60919.562477]  raw_rcv+0x110/0x190 [can_raw]
+[60919.572539]  can_rcv_filter+0xbc/0x1b0 [can]
+[60919.582173]  can_receive+0x6b/0xb0 [can]
+[60919.591595]  can_rcv+0x31/0x70 [can]
+[60919.600783]  __netif_receive_skb_one_core+0x5a/0x80
+[60919.609864]  process_backlog+0x9b/0x150
+[60919.618691]  net_rx_action+0x156/0x400
+[60919.627310]  ? sched_clock_cpu+0xc/0xa0
+[60919.635714]  __do_softirq+0xe8/0x2e9
+[60919.644161]  do_softirq_own_stack+0x2a/0x40
+[60919.652154]  </IRQ>
+[60919.659899]  do_softirq.part.17+0x4f/0x60
+[60919.667475]  __local_bh_enable_ip+0x60/0x70
+[60919.675089]  __dev_queue_xmit+0x539/0x920
+[60919.682267]  ? finish_wait+0x80/0x80
+[60919.689218]  ? finish_wait+0x80/0x80
+[60919.695886]  ? sock_alloc_send_pskb+0x211/0x230
+[60919.702395]  ? can_send+0xe5/0x1f0 [can]
+[60919.708882]  can_send+0xe5/0x1f0 [can]
+[60919.715037]  raw_sendmsg+0x16d/0x268 [can_raw]
+
+It's because raw_setsockopt() concurrently with
+unregister_netdevice_many(). Concurrent scenario as following.
+
+	cpu0						cpu1
+raw_bind
+raw_setsockopt					unregister_netdevice_many
+						unlist_netdevice
+dev_get_by_index				raw_notifier
+raw_enable_filters				......
+can_rx_register
+can_rcv_list_find(..., net->can.rx_alldev_list)
+
+......
+
+sock_close
+raw_release(sock_a)
+
+......
+
+can_receive
+can_rcv_filter(net->can.rx_alldev_list, ...)
+raw_rcv(skb, sock_a)
+BUG
+
+After unlist_netdevice(), dev_get_by_index() return NULL in
+raw_setsockopt(). Function raw_enable_filters() will add sock
+and can_filter to net->can.rx_alldev_list. Then the sock is closed.
+Followed by, we sock_sendmsg() to a new vcan device use the same
+can_filter. Protocol stack match the old receiver whose sock has
+been released on net->can.rx_alldev_list in can_rcv_filter().
+Function raw_rcv() uses the freed sock. UAF BUG is triggered.
+
+We can find that the key issue is that net_device has not been
+protected in raw_setsockopt(). Use rtnl_lock to protect net_device
+in raw_setsockopt().
+
+Fixes: c18ce101f2e4 ("[CAN]: Add raw protocol")
+Link: https://lore.kernel.org/r/20210722070819.1048263-1-william.xuanziyang@huawei.com
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ net/can/raw.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 2bb50b1535c2..082965c8dcaf 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -541,10 +541,18 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 				return -EFAULT;
+ 		}
+ 
++		rtnl_lock();
+ 		lock_sock(sk);
+ 
+-		if (ro->bound && ro->ifindex)
++		if (ro->bound && ro->ifindex) {
+ 			dev = dev_get_by_index(&init_net, ro->ifindex);
++			if (!dev) {
++				if (count > 1)
++					kfree(filter);
++				err = -ENODEV;
++				goto out_fil;
++			}
++		}
+ 
+ 		if (ro->bound) {
+ 			/* (try to) register the new filters */
+@@ -581,6 +589,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 			dev_put(dev);
+ 
+ 		release_sock(sk);
++		rtnl_unlock();
+ 
+ 		break;
+ 
+@@ -593,10 +602,16 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 
+ 		err_mask &= CAN_ERR_MASK;
+ 
++		rtnl_lock();
+ 		lock_sock(sk);
+ 
+-		if (ro->bound && ro->ifindex)
++		if (ro->bound && ro->ifindex) {
+ 			dev = dev_get_by_index(&init_net, ro->ifindex);
++			if (!dev) {
++				err = -ENODEV;
++				goto out_err;
++			}
++		}
+ 
+ 		/* remove current error mask */
+ 		if (ro->bound) {
+@@ -618,6 +633,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 			dev_put(dev);
+ 
+ 		release_sock(sk);
++		rtnl_unlock();
+ 
+ 		break;
+ 
+-- 
+2.30.2
+
