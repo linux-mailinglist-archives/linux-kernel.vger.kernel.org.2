@@ -2,151 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8583DE365
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844E83DE36B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 02:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbhHCAJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 20:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbhHCAJz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 20:09:55 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFDCC061764
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 17:09:45 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id u2so13329393plg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 17:09:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+j4BJpyfr/0bKpgqLUIWH//i3b70ShWiDMnlMOcrZc4=;
-        b=eEcbDKMNyZMv+PMgaHxZKMzSnpGt/8lW8qX0LM8mMc1QuP2Uem3YTKkMxkzZhEpFSy
-         ViAVjzj6ya5et0R6/1h6DHh6BqGEHxuEpXjs8SyGANf18SiilZkzQ7Ne2uFbgPOuWiqd
-         kMZ2hNrdwjrUgJC6mrCRv6ZMCNHRkfRiTAhsTVlcWxX6RIY4FL8K6DJcJt2jUcJh0XZJ
-         XimfGezD2Bo8/eWKrrfVTkz1RZ423OrsSRKzH9bCJOVLSQCRknWaPW//mRMiJMBJy6FB
-         eT0yhYXtzbmVnMjkwBRujoC7WUH28TflA+iWjDphpVqDhoylN3G7VoFyA9Lfe/VP7u6Q
-         P8ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+j4BJpyfr/0bKpgqLUIWH//i3b70ShWiDMnlMOcrZc4=;
-        b=tdA3ZiVPs8ggy4Akpze9/Cm+CBQDBANw4h8MO3sS+3dsEx6K1caNmJFUghCmaT4JAZ
-         sxkkL74m804/Bly7YMZokP0h+4fljShSNDovRdyth+rgpfAVx9o8Xf/dZxXQGI87xILC
-         qaKDgXncFJzUVYv/8YL/Vts6SNgE9ZrNCg/4lha+05bUjmTKGN91RhAtjHqiRd06tHeR
-         al403OPN55IWEKbSRL3Nqat3BlVdJKkpD32l7EGo6AzQswCbY9XNqXnfJYELQNYNBWEG
-         QvGAZG2y8j9hGRdpkIIZv3jdFdR4jDaTPTicu1THSdJRNTirg0F4KhqXek2/0rJXwG6D
-         XgwA==
-X-Gm-Message-State: AOAM532phjtKU4DmymDBjgqekGOUTG5SrG4m4u4HoyJ8JafTA3tGb+LD
-        mrCdRZA4+vDLb3NeUFck/g+5bT2p2OqqW3dYJJ48uw==
-X-Google-Smtp-Source: ABdhPJyXrIFW+sRaGg7Z4Xh/FAU4fOb9eNxkUqQavFW+qYQNyTNyh/csjGlerOoJZ9Ud8jPayJ7E2swcUPU2nfINbbY=
-X-Received: by 2002:a63:1857:: with SMTP id 23mr673574pgy.403.1627949384952;
- Mon, 02 Aug 2021 17:09:44 -0700 (PDT)
+        id S232975AbhHCANT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 20:13:19 -0400
+Received: from mail-dm3nam07on2055.outbound.protection.outlook.com ([40.107.95.55]:36193
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232311AbhHCANS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 2 Aug 2021 20:13:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V099Tvg9WFCMc3RrC+j48CudR7ng9c4sPgMgdj91eIs2BHI8QgLwSDNmRo8gajJCcJE6kAtFrjcTA//RpzKYwjZbGfrCdcVx719xoabAWpxbtjc8HHqTHeqZotX0hFAqgoyNNFZxX4Qx4aiOXsbtB8DA+dosAuqM7W4rAAsnSb668J2U2Brl8xjybVIWgHaIvZN7Nh+OogdybnsLDwEl7VFnsKMS8bmmM8N3el8IjG/N+jGjPX8slfziuZlGoOItPKKZUBpT5xaRP6xXd+9CuAC8fQdjSYrbSYEZa0lrM3s78IoLSKhop1CsfQzPWZOeb+bA+pejrmDJwjWedMIbKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fk22+HFw6B0jgEsyWedPFpYUSfH+2q9taCcabLA0S0g=;
+ b=Xu+dTMMgtbDORL2gZ78fke1QGkXdfrRQcqDjnillHTf6I9J7f/EIhbMQpayUAnRQUskUjuVoRK5xjeU/z7XXRyWft7JyyBQOc9zFUw11nlddxzFL7RyC4xvRayxZ5anfKvhZMu88RsViF2kgL3hY0UsULeM/4XaPzzDehfYmV0hG1x0lewAtSAj0Hp7VjXVRd4sSWF0E7GTfC3GXJQXetntBaNl1AdvIQdPsN1mZfTkgm0aj7wA/nOA0GS4jVFMCoTcQbENgAJqll/kw5GQ3M8LaLqbIrg3C39/356esodHG94Oosy3FhOEKRYxMRsEWPJXxC0VStm5AuYaMGPlRXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fk22+HFw6B0jgEsyWedPFpYUSfH+2q9taCcabLA0S0g=;
+ b=BanV6wQKD+4EuHVw/0v3pbFLr4xrH9kJXyHR4ijy0/f5/9/hpZcKkJLQWRTv9B5xXHirirV3FYogD1hln0s44LrLaC2lE0BPMBlo073ePHfeoY/lhKMgm9NFmZMqsj2s/YzmF9H6j605iRDR/9rxg41Vl+Hp6fe33tHbH5HezJM=
+Received: from DM3PR11CA0008.namprd11.prod.outlook.com (2603:10b6:0:54::18) by
+ DM5PR12MB2342.namprd12.prod.outlook.com (2603:10b6:4:ba::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4373.18; Tue, 3 Aug 2021 00:13:06 +0000
+Received: from DM6NAM11FT036.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:0:54:cafe::6e) by DM3PR11CA0008.outlook.office365.com
+ (2603:10b6:0:54::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend
+ Transport; Tue, 3 Aug 2021 00:13:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT036.mail.protection.outlook.com (10.13.172.64) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4373.18 via Frontend Transport; Tue, 3 Aug 2021 00:13:05 +0000
+Received: from hr-amd (10.180.168.240) by SATLEXMB04.amd.com (10.181.40.145)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Mon, 2 Aug
+ 2021 19:13:03 -0500
+Date:   Tue, 3 Aug 2021 08:13:39 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cpufreq: enhance the sequency of governor change
+Message-ID: <20210803001339.GG2563957@hr-amd>
+References: <20210721101658.9235-1-ray.huang@amd.com>
 MIME-Version: 1.0
-References: <20210624171759.4125094-1-dianders@chromium.org>
- <YNXXwvuErVnlHt+s@8bytes.org> <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
- <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
- <YOaymBHc4g2cIfRn@8bytes.org> <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
- <e3555c49-2978-355f-93bb-dbfa7d09cab8@arm.com> <CAD=FV=XaTqNDn=vLEXfJ2dV+EH2UoxPfzWeiS+_sZ9hrQ274bw@mail.gmail.com>
-In-Reply-To: <CAD=FV=XaTqNDn=vLEXfJ2dV+EH2UoxPfzWeiS+_sZ9hrQ274bw@mail.gmail.com>
-From:   Rajat Jain <rajatja@google.com>
-Date:   Mon, 2 Aug 2021 17:09:08 -0700
-Message-ID: <CACK8Z6FV+QYR01=aP4AT8rNUQMkX-WwesHzf5XY8465KuUZ=_Q@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
-        Saravana Kannan <saravanak@google.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-pci@vger.kernel.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210721101658.9235-1-ray.huang@amd.com>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 61dec347-53bc-4579-95d6-08d956137776
+X-MS-TrafficTypeDiagnostic: DM5PR12MB2342:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB23422DB43603F142E5C9A221ECF09@DM5PR12MB2342.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1332;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Eo6fHbyCITiNdf1HNLS7pfwjjjL0y36RtU53NeKZ4HVbzlSJa+NaA1nEfR4PwUghFIuE3m0U/fMMAbWirBEshJXl6XoCdAfo/JrsWwLt54o4JknIRuUwizr//EVboOc6w4XZELRyFLleJ6pJT9Xp5s7GkHVHc/2r1oBtll8N6j3UrF3N6iB7Az3EUv2RUOS1i7UCnP92ZITVeTcQK8YLQ46Vdro/CZf3upqZtaX7wpQQdWM6FDe+xnjnsYdEhuKG1I5JKpNuY8MHU0grdX3IufQK2CsD2jFUpT4GQIb1nuznrgiHQNsTfFQADogSTo6vSrc4bYBMRT3EUvhAYC0qoBzMbo354II22h+rmfY2ZEoVRraUztjmmxZNH0/ztVMCR26r4lyvN/vP8OLXXcl4eS9W7mKFAUR9qviz20fDfMyleD7e6IPaaUSjjN+wpsUaC8JCIy1/QGo4kmE4MNFDn8/bn6lucdNO+C6DZ8gJV6D15KuLIxetYAidonptq6unp0oTLgSasaPytTHtYT1PPXf08tg3pfzuS4oNygYXNuR3R3rolxrI5HnQe/EuoPnfGBw6VtcCWnRux2Dq6GnETSO+EMvRDcE4PYH+rubU3MYyZz2JoELf0qCMwaLgJ6UGoMCPxEybJQgShUKYNgTZc5cyvWOO3Y80VQ5ixBNtVLejxUMrcJI5pINSXQd6fq0aS1u/SW0s3LhHka2it1LA8qelHXY0vTEhSanQ0PqwWgk=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(396003)(39860400002)(46966006)(36840700001)(6666004)(8676002)(8936002)(33656002)(82310400003)(110136005)(336012)(26005)(9686003)(70206006)(70586007)(55016002)(81166007)(316002)(83380400001)(33716001)(86362001)(426003)(36860700001)(5660300002)(47076005)(478600001)(186003)(1076003)(356005)(2906002)(82740400003)(16526019)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 00:13:05.6894
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61dec347-53bc-4579-95d6-08d956137776
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT036.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2342
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin, Doug,
+Ping~
 
-On Wed, Jul 14, 2021 at 8:14 AM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Tue, Jul 13, 2021 at 11:07 AM Robin Murphy <robin.murphy@arm.com> wrote:
-> >
-> > On 2021-07-08 15:36, Doug Anderson wrote:
-> > [...]
-> > >> Or document for the users that want performance how to
-> > >> change the setting, so that they can decide.
-> > >
-> > > Pushing this to the users can make sense for a Linux distribution but
-> > > probably less sense for an embedded platform. So I'm happy to make
-> > > some way for a user to override this (like via kernel command line),
-> > > but I also strongly believe there should be a default that users don't
-> > > have to futz with that we think is correct.
-> >
-> > FYI I did make progress on the "punt it to userspace" approach. I'm not
-> > posting it even as an RFC yet because I still need to set up a machine
-> > to try actually testing any of it (it's almost certainly broken
-> > somewhere), but in the end it comes out looking surprisingly not too bad
-> > overall. If you're curious to take a look in the meantime I put it here:
-> >
-> > https://gitlab.arm.com/linux-arm/linux-rm/-/commits/iommu/fq
-
-I was wondering if you got any closer to testing / sending it out? I
-looked at the patches and am trying to understand, would they also
-make it possible to convert at runtime, an existing "non-strict"
-domain (for a particular device) into a "strict" domain leaving the
-other devices/domains as-is? Please let me know when you think your
-patches are good to be tested, and I'd also be interested in trying
-them out.
-
->
-> Being able to change this at runtime through sysfs sounds great and it
-> fills all the needs I'm aware of, thanks! In Chrome OS we can just use
-> this with some udev rules and get everything we need.
-
-I still have another (inverse) use case where this does not work:
-We have an Intel chromebook with the default domain type being
-non-strict. There is an LTE modem (an internal PCI device which cannot
-be marked external), which we'd like to be treated as a "Strict" DMA
-domain.
-
-Do I understand it right that using Rob's patches, I could potentially
-switch the domain to "strict" *after* booting (since we don't use
-initramfs), but by that time, the driver might have already attached
-to the modem device (using "non-strict" domain), and thus the damage
-may have already been done? So perhaps we still need a device property
-that the firmware could use to indicate "strictness" for certain
-devices at boot?
-
-Thanks,
-Rajat
+On Wed, Jul 21, 2021 at 06:16:58PM +0800, Huang, Ray wrote:
+> Keep the "success" case of governor change in the mainline of the
+> function not in "if" case. And using restart_old_gov flag to indicate
+> the fallback case to old governor. This is more readable and no function
+> change.
+> 
+> Signed-off-by: Huang Rui <ray.huang@amd.com>
+> ---
+>  drivers/cpufreq/cpufreq.c | 23 +++++++++++++++--------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 802abc925b2a..4f7005ddb70c 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -2545,18 +2545,25 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
+>  	/* start new governor */
+>  	policy->governor = new_gov;
+>  	ret = cpufreq_init_governor(policy);
+> -	if (!ret) {
+> -		ret = cpufreq_start_governor(policy);
+> -		if (!ret) {
+> -			pr_debug("governor change\n");
+> -			sched_cpufreq_governor_change(policy, old_gov);
+> -			return 0;
+> -		}
+> +	if (ret)
+> +		goto restart_old_gov;
+> +
+> +	ret = cpufreq_start_governor(policy);
+> +	if (ret) {
+>  		cpufreq_exit_governor(policy);
+> +		goto restart_old_gov;
+>  	}
+>  
+> +	pr_debug("governor change\n");
+> +
+> +	sched_cpufreq_governor_change(policy, old_gov);
+> +
+> +	return 0;
+> +
+> +restart_old_gov:
+>  	/* new governor failed, so re-start old one */
+> -	pr_debug("starting governor %s failed\n", policy->governor->name);
+> +	pr_debug("starting governor %s failed\n",
+> +		 policy->governor->name);
+>  	if (old_gov) {
+>  		policy->governor = old_gov;
+>  		if (cpufreq_init_governor(policy))
+> -- 
+> 2.25.1
+> 
