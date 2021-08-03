@@ -2,110 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7283DF21E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CBE3DF220
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 18:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhHCQI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 12:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbhHCQIS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:08:18 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5421DC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 09:08:06 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id z24so20322166qkz.7
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 09:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iyCXAcMeIygPfeNpqIKsbcgJBDobLnmtPrfQp9eNkL0=;
-        b=hxg9+iUASxlzqzBVXrSOlNky+hxKLLQ7M7j1RMjkX9B3r6kCJZU6P6RNb8GPMepoQv
-         PTQU0UTyMBuqBnUIt+3q5/jcmRFjGTJbeISJmV9hnZXI3HBRoOAlc64Cy7wFoj1EkiwA
-         OJP/pELqR7hYC/3zwnziPfJu9/MFmxS8yrR2mxhZGBlegYuyE61f1/U5nD1pWs4qZc9Z
-         TfJexvLl1wGqeZ/WJA6NZ+CVG6cU06ED7Gx7xyjaeNQSNEjlNmiY4jHyCSMIv2XouBd3
-         gg54MCzrHYa5C5x8ifsuuIqCCnCqypiwudb6YschEJ9fw3s+6mpv4rE9kKF/Lcj6AsA2
-         qFsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iyCXAcMeIygPfeNpqIKsbcgJBDobLnmtPrfQp9eNkL0=;
-        b=h+T1VYTxPKhYtFGFRfBLCiIUmjmOpjgegXbymxEn8xpsDQ9+Yhx4hqG75zqntPkdD+
-         P+ImUXkG/z/DjTrSJnfk8yenNkal1+9NCanE0nunbHsXuLgWrqfglKbsB0OBbeN5Q4lt
-         pL9PFENtS4ISWNaQuABujOhMPxH0/GM55ex6NnvBqk0JL0OVBBZ5cBgPco6MRIzuGP0W
-         tzYkjI6dLVIusUyVrYZZ5oYQmGDM2ME+KtjspqRWN6sM0J1sWofrVIZ0RI2Z3dRKjD5e
-         mOq9PG3PM6jfGGIeW5iTMHFAN1hJfWUwlVdgfrJR/69yDi1KEt/FQdPI9ezyYVkJtu6a
-         T7nA==
-X-Gm-Message-State: AOAM531nma3MBeupkNjaGsPAjlEcwvcpGIvdP2FWt7MFvATE2adDKFIf
-        O5rJA1H9ZKjAe6HpnGTjUTiyUg==
-X-Google-Smtp-Source: ABdhPJyemqrq0Ku/2lZ2TcmypbvrUHRvhVq/sYGHrrFwdl5cXfq31Pp+xQ2l+fzkmE1Ai2uuRdkbgg==
-X-Received: by 2002:a05:620a:159a:: with SMTP id d26mr21706626qkk.495.1628006885572;
-        Tue, 03 Aug 2021 09:08:05 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id v5sm7961090qkh.39.2021.08.03.09.08.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 09:08:04 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mAwxX-00C7pH-T1; Tue, 03 Aug 2021 13:08:03 -0300
-Date:   Tue, 3 Aug 2021 13:08:03 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Luigi Rizzo <lrizzo@google.com>, Jann Horn <jannh@google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
-Subject: Re: [PATCH] Add mmap_assert_locked() annotations to find_vma*()
-Message-ID: <20210803160803.GG543798@ziepe.ca>
-References: <20210731175341.3458608-1-lrizzo@google.com>
+        id S231987AbhHCQId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 12:08:33 -0400
+Received: from mail-bn8nam12on2042.outbound.protection.outlook.com ([40.107.237.42]:36723
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231871AbhHCQIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:08:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZSOKo08xfMcQEppHiaAK/36FsK1jYRv8SeWEuO4ZYlz4JpiLzQmWAoxssfPGq0WncusqSSFKGLxsIxq5y+dAwe9qcvk3ysbtB3fAEe6Uhu2noOWufIL1+Nlq65JlHt750yauBNTqz3fdQiPWxSeU469orzRjDtJgELkLNqcddLTmvloL+tgSTczNYa1ZQz0zIkYPHhXFO0ya03IdlPdCsp5Bc0kM7gzI0RbBvdjErzzLFqnd75GvDYcuZSM1kNla4yL26l0ooaE9y9Er8m731EPgN9Rm4Mpk+cJuHi/Q9bdK5/s7x2OBCvbozeluWnCqK3MTMUqPNQuGomZykH/hEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FJSSGXfjp4dqZZe+cEwG9spB/YGpX6UQg7IHAVa4ozE=;
+ b=DajbNwFHFSPnHSsszEr/vF3rTJQCZj0OAyjPPsmx6BzcDlU9ytmFQabQJCIdUrn20eCw+bbQijWhlJb5JQl9+zL8GnYoyvFF5AesFDnFxy8iyrG+sPAOFKwh8KEB9lKmy1UpLsgaKPoks2d8FvBBmcLiikqmu3nyg/ue+6JeC5u9StwKfZXB1mS6pde7V7mZf3yrzMz6nqqFzECjblaCBGNWcd4n3FLds1hYMQTDVX67z4bzUhXm2PDJ6g9zRnYogABDxgZPjzT6D9E2mbFRYCynAyZMN9lT8l8nUBhdS4X8ku+He9UF/Id3c3AsroaAJJGfsJ6Pc+gKg8BM3ctUTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.35) smtp.rcpttodomain=nxp.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FJSSGXfjp4dqZZe+cEwG9spB/YGpX6UQg7IHAVa4ozE=;
+ b=QZNYEM3QFX3ciMS4AVRgAe4xcdB0np6w2k42sV6vgA2ZnAatu3uKI2sIzehneLGLfUnReDfAC2DmR/psXy4QUNgj70MUwIAEicPiBtsrfnpZvlmTHat1KrsLtJztG03j2fDpylsOzaUJ7uhuTS3a6mEllPaJrscPHm24WAy4ht4+kAGFAmRhi1mCwhld1D7Ro0s+PcoT904PHU96Iui/imsE97SDu28+ibfDzXRDAEEmH8b4tzG4GHSkPINyOPXFZFm9PJhDRkhXv003D4I9WsA+G/yTY3YQjOW3SS341qgDTqqsCw0rFgm29pgCCai6DzTUhxGj8e1GtX0No/d8Sw==
+Received: from BN9PR03CA0278.namprd03.prod.outlook.com (2603:10b6:408:f5::13)
+ by MW2PR12MB2539.namprd12.prod.outlook.com (2603:10b6:907:9::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.25; Tue, 3 Aug
+ 2021 16:08:18 +0000
+Received: from BN8NAM11FT050.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:f5:cafe::3a) by BN9PR03CA0278.outlook.office365.com
+ (2603:10b6:408:f5::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.25 via Frontend
+ Transport; Tue, 3 Aug 2021 16:08:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ smtp.mailfrom=nvidia.com; nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.35; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.35) by
+ BN8NAM11FT050.mail.protection.outlook.com (10.13.177.5) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4373.18 via Frontend Transport; Tue, 3 Aug 2021 16:08:18 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Aug
+ 2021 16:08:15 +0000
+Received: from [10.25.100.144] (172.20.187.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Aug 2021
+ 16:08:12 +0000
+Subject: Re: [PATCH 2/2] PCI: designware-ep: Fix the access to DBI/iATU
+ registers before enabling controller
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Xiaowei Bao <xiaowei.bao@nxp.com>
+References: <1627429537-4554-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1627429537-4554-3-git-send-email-hayashi.kunihiko@socionext.com>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <bc5b914e-16cb-a019-1b0e-6619a97cf00a@nvidia.com>
+Date:   Tue, 3 Aug 2021 21:38:09 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210731175341.3458608-1-lrizzo@google.com>
+In-Reply-To: <1627429537-4554-3-git-send-email-hayashi.kunihiko@socionext.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 56530d4a-f516-4287-f6cc-08d95698e87d
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2539:
+X-Microsoft-Antispam-PRVS: <MW2PR12MB25391A83F90432E8D2CDFBC1B8F09@MW2PR12MB2539.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4apjgr3dDse4cOxbGhnxdGRkOA2QMuxqpYDXO/bPtUIflaar/wHwpz0ctE5gRtfX8G+RpYePov2RuWDRPVDJKPXgbhT3G1Rhy/GMtmrOMLMTJxGFU2inF8YOXdWoXqcX/EB9peDNXhHZ0B7ujwNisTR5na0DK/NJcT6kJc5nDnl8iYGCCtlmTet2hAaBFYVXAoLnbG3rHNfaAq+uTc1HXlDd8SKZa07oN57B5LB61DCpZ2GDQVDAvTcM10nwVAwwdMgIApbXxUPTctbxrcDAalCiwS9XYdvlRjhNygPt2CsexP0VmqgE1qzPOo4c4MMBKiPCfyEx8B0wpSDaNnZ8fIv5YYLCbdeDSiSdLevQRmqvCd3tcApatdUi55gm2yNQWhnWIJ8itAuuUg9PvNdemtLbgbqGmQVj5G3usKSLA9raDGuevXu5Usn+J9sZ3Tc8wBQsQ4cyYQQbybRM7DlCqcfY46sGWK5zhIguusTN8h9XuiBLttAyni6uXgm6w2gexcpos0U0zmVjqG71x+MKF26QsEPFQgJLIudegSyjNWKCqF0e76Jkuw2/kuVCXAql42Um/uH42boxfq2ikXDRkckyFz7lU+KkJ7rNFK9z8gx772x7W22Am/KbQE7rzqrxOqpOglTsMx10rX8eMWGaHn6+wjJpSnaQeredMAs7ZHxonzBMGGPTh23zkLBF/D1CrcMSX8bjkj9gu2avK4pJZz6cH4bkyA8VBemzAZVS7SM=
+X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid04.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(376002)(396003)(36840700001)(46966006)(16526019)(54906003)(6666004)(336012)(186003)(110136005)(26005)(70206006)(316002)(8676002)(16576012)(36906005)(2906002)(36756003)(478600001)(70586007)(53546011)(82310400003)(7416002)(47076005)(356005)(31686004)(82740400003)(86362001)(31696002)(36860700001)(2616005)(426003)(8936002)(7636003)(5660300002)(83380400001)(4326008)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 16:08:18.3423
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56530d4a-f516-4287-f6cc-08d95698e87d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT050.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2539
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 10:53:41AM -0700, Luigi Rizzo wrote:
-> find_vma() and variants need protection when used.
-> This patch adds mmap_assert_lock() calls in the functions.
+Reviewed-by: Vidya Sagar <vidyas@nvidia.com>
+
+On 7/28/2021 5:15 AM, Kunihiko Hayashi wrote:
+> External email: Use caution opening links or attachments
 > 
-> To make sure the invariant is satisfied, we also need to add a
-> mmap_read_loc() around the get_user_pages_remote() call in
-> get_arg_page(). The lock is not strictly necessary because the mm
-> has been newly created, but the extra cost is limited because
-> the same mutex was also acquired shortly before in __bprm_mm_init(),
-> so it is hot and uncontended.
 > 
-> Signed-off-by: Luigi Rizzo <lrizzo@google.com>
->  fs/exec.c | 2 ++
->  mm/mmap.c | 2 ++
->  2 files changed, 4 insertions(+)
+> The driver using core_init_notifier, e.g. pcie-tegra194.c, runs according
+> to the following sequence:
 > 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 38f63451b928..ac7603e985b4 100644
-> +++ b/fs/exec.c
-> @@ -217,8 +217,10 @@ static struct page *get_arg_page(struct linux_binprm *bprm, unsigned long pos,
->  	 * We are doing an exec().  'current' is the process
->  	 * doing the exec and bprm->mm is the new process's mm.
->  	 */
-> +	mmap_read_lock(bprm->mm);
->  	ret = get_user_pages_remote(bprm->mm, pos, 1, gup_flags,
->  			&page, NULL, NULL);
-> +	mmap_read_unlock(bprm->mm);
->  	if (ret <= 0)
->  		return NULL;
-
-Wasn't Jann Horn working on something like this too?
-
-https://lore.kernel.org/linux-mm/20201016225713.1971256-1-jannh@google.com/
-
-IIRC it was very tricky here, are you sure it is OK to obtain this lock
-here?
-
-I would much rather see Jann's complete solution be merged then
-hacking at the exec problem on the side..
-
-Jason
+>      probe()
+>          dw_pcie_ep_init()
+> 
+>      bind()
+>          dw_pcie_ep_start()
+>              enable_irq()
+> 
+>      (interrupt occurred)
+>      handler()
+>          [enable controller]
+>          dw_pcie_ep_init_complete()
+>          dw_pcie_ep_init_notify()
+> 
+> After receiving an interrupt from RC, the handler enables the controller
+> and the controller registers can be accessed.
+> So accessing the registers should do in dw_pcie_ep_init_complete().
+> 
+> Currently dw_pcie_ep_init() has functions dw_iatu_detect() and
+> dw_pcie_ep_find_capability() that include accesses to DWC registers.
+> As a result, accessing the registers before enabling the controller,
+> the access will fail.
+> 
+> The function dw_pcie_ep_init() shouldn't have any access to DWC registers
+> if the controller is enabled after calling bind(). This moves access codes
+> to DBI/iATU registers and depending variables from dw_pcie_ep_init() to
+> dw_pcie_ep_init_complete().
+> 
+> Cc: Xiaowei Bao <xiaowei.bao@nxp.com>
+> Cc: Vidya Sagar <vidyas@nvidia.com>
+> Fixes: 6bfc9c3a2c70 ("PCI: designware-ep: Move the function of getting MSI capability forward")
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> ---
+>   drivers/pci/controller/dwc/pcie-designware-ep.c | 81 +++++++++++++------------
+>   1 file changed, 41 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> index 8d028a8..f0c93d7 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> @@ -636,16 +636,56 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
+>   int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
+>   {
+>          struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
+> +       struct dw_pcie_ep_func *ep_func;
+> +       struct device *dev = pci->dev;
+>          unsigned int offset;
+>          unsigned int nbars;
+>          u8 hdr_type;
+> +       u8 func_no;
+> +       void *addr;
+>          u32 reg;
+>          int i;
+> 
+> +       dw_pcie_iatu_detect(pci);
+> +
+> +       ep->ib_window_map = devm_kcalloc(dev,
+> +                                        BITS_TO_LONGS(pci->num_ib_windows),
+> +                                        sizeof(long),
+> +                                        GFP_KERNEL);
+> +       if (!ep->ib_window_map)
+> +               return -ENOMEM;
+> +
+> +       ep->ob_window_map = devm_kcalloc(dev,
+> +                                        BITS_TO_LONGS(pci->num_ob_windows),
+> +                                        sizeof(long),
+> +                                        GFP_KERNEL);
+> +       if (!ep->ob_window_map)
+> +               return -ENOMEM;
+> +
+> +       addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
+> +                           GFP_KERNEL);
+> +       if (!addr)
+> +               return -ENOMEM;
+> +       ep->outbound_addr = addr;
+> +
+> +       for (func_no = 0; func_no < ep->epc->max_functions; func_no++) {
+> +               ep_func = devm_kzalloc(dev, sizeof(*ep_func), GFP_KERNEL);
+> +               if (!ep_func)
+> +                       return -ENOMEM;
+> +
+> +               ep_func->func_no = func_no;
+> +               ep_func->msi_cap = dw_pcie_ep_find_capability(ep, func_no,
+> +                                                             PCI_CAP_ID_MSI);
+> +               ep_func->msix_cap = dw_pcie_ep_find_capability(ep, func_no,
+> +                                                              PCI_CAP_ID_MSIX);
+> +
+> +               list_add_tail(&ep_func->list, &ep->func_list);
+> +       }
+> +
+>          hdr_type = dw_pcie_readb_dbi(pci, PCI_HEADER_TYPE) &
+>                     PCI_HEADER_TYPE_MASK;
+>          if (hdr_type != PCI_HEADER_TYPE_NORMAL) {
+> -               dev_err(pci->dev,
+> +               dev_err(dev,
+>                          "PCIe controller is not set to EP mode (hdr_type:0x%x)!\n",
+>                          hdr_type);
+>                  return -EIO;
+> @@ -674,8 +714,6 @@ EXPORT_SYMBOL_GPL(dw_pcie_ep_init_complete);
+>   int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+>   {
+>          int ret;
+> -       void *addr;
+> -       u8 func_no;
+>          struct resource *res;
+>          struct pci_epc *epc;
+>          struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
+> @@ -683,7 +721,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+>          struct platform_device *pdev = to_platform_device(dev);
+>          struct device_node *np = dev->of_node;
+>          const struct pci_epc_features *epc_features;
+> -       struct dw_pcie_ep_func *ep_func;
+> 
+>          INIT_LIST_HEAD(&ep->func_list);
+> 
+> @@ -705,8 +742,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+>                  }
+>          }
+> 
+> -       dw_pcie_iatu_detect(pci);
+> -
+>          res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "addr_space");
+>          if (!res)
+>                  return -EINVAL;
+> @@ -714,26 +749,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+>          ep->phys_base = res->start;
+>          ep->addr_size = resource_size(res);
+> 
+> -       ep->ib_window_map = devm_kcalloc(dev,
+> -                                        BITS_TO_LONGS(pci->num_ib_windows),
+> -                                        sizeof(long),
+> -                                        GFP_KERNEL);
+> -       if (!ep->ib_window_map)
+> -               return -ENOMEM;
+> -
+> -       ep->ob_window_map = devm_kcalloc(dev,
+> -                                        BITS_TO_LONGS(pci->num_ob_windows),
+> -                                        sizeof(long),
+> -                                        GFP_KERNEL);
+> -       if (!ep->ob_window_map)
+> -               return -ENOMEM;
+> -
+> -       addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
+> -                           GFP_KERNEL);
+> -       if (!addr)
+> -               return -ENOMEM;
+> -       ep->outbound_addr = addr;
+> -
+>          if (pci->link_gen < 1)
+>                  pci->link_gen = of_pci_get_max_link_speed(np);
+> 
+> @@ -750,20 +765,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+>          if (ret < 0)
+>                  epc->max_functions = 1;
+> 
+> -       for (func_no = 0; func_no < epc->max_functions; func_no++) {
+> -               ep_func = devm_kzalloc(dev, sizeof(*ep_func), GFP_KERNEL);
+> -               if (!ep_func)
+> -                       return -ENOMEM;
+> -
+> -               ep_func->func_no = func_no;
+> -               ep_func->msi_cap = dw_pcie_ep_find_capability(ep, func_no,
+> -                                                             PCI_CAP_ID_MSI);
+> -               ep_func->msix_cap = dw_pcie_ep_find_capability(ep, func_no,
+> -                                                              PCI_CAP_ID_MSIX);
+> -
+> -               list_add_tail(&ep_func->list, &ep->func_list);
+> -       }
+> -
+>          if (ep->ops->ep_init)
+>                  ep->ops->ep_init(ep);
+> 
+> --
+> 2.7.4
+> 
