@@ -2,177 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F5A3DEF95
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A97D3DEF96
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 16:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236556AbhHCOBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 10:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
+        id S236664AbhHCOBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 10:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236425AbhHCOB0 (ORCPT
+        with ESMTP id S236576AbhHCOBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 10:01:26 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3F5C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:01:14 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id y1so1184218iod.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 07:01:14 -0700 (PDT)
+        Tue, 3 Aug 2021 10:01:40 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A769C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 07:01:29 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so778271pji.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 07:01:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9xgFJ2O3o+xh8TRsR9/dwHZ0i0/DPfaZ/VOsIjzUQQc=;
-        b=pJQoaQvVUn3JNlOc3qa2UNUQeOtRG3JUgNv/NUMugpxH7VOCBRVsXw2QXW8JFkRbep
-         gW0cSP5UpfReiKlli569aEtyPVKy9j5i8/plWbXFvUvrUiXjtHaX9gHZi9rGCsVLHUjT
-         acSJqMXURRPcsfTw/oPUtjZ+7mgPMun8ikMCEdVkKqx2Wne9jgZ3pIZwDGmEEnucwed5
-         FHHbK+kcZv5FyrEx8XmXUA8bnt9ERQHwN6IanyDdgwWo0tP3vVwPjk1BwbdL5e7ge4MR
-         wSeKaUpJHTZ98PhIHORLybGkqDkWKC59jzXcX/rFTg6jApLk5AZdzpxajye0bk9lV1ip
-         i22A==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VYe459FmfkXTErN59NCMHFCl+MLvyaY1F16+cBRtvyA=;
+        b=U4R2k3n2k48lS2BRwUYv76iVvyz815A6hgNrYm0rdpL3owrkeis3ox2cHOGxwnTULb
+         3JWw5UmPhol7l4v0VbZPPUUGEX4QyaG8CXX5D/fmZl/TuW92zo+dQ4XtwC34QPhvnZtT
+         Uxz1wPJHVORWUH6y48Brt5FBrZkfI7QJoyrigWC0wCA2K1nqEZn5czKPmsanCy8hSpkp
+         RC0BIES+nR9gPex+tPgQtrdIL6mHn9tgr1Bt7ky0yfjoF6KosVcTkaj5rvJz9iJvMv1o
+         o7FSD9Ri+SijuJa883XnKn1+zWeNY+9+R2l5yh7rmfCo9vtj8tJM4rebMAWB7k3i7e50
+         PlLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9xgFJ2O3o+xh8TRsR9/dwHZ0i0/DPfaZ/VOsIjzUQQc=;
-        b=nkgSzUiwYP0dWao4wzjlQSaI+Tt3U84YnP+qE4Ezz/4g9InA2632O/tY8aZoDUnwaN
-         oh5oBzzIK1qUrsP3yMgAeww2oaMAl6TM5whRBKLaSDFR7NL60pRjvFf7aTs6gYCb1phm
-         +rvZ5DoAohuWV/pXiumoXIH/pTHyRx6MIISwIV/uuVrmk7fE2dT+JYStM0mLI+zEIDG/
-         +Gts1XQoC6HZOUiWuIYyDJkSUm+RYPCnJvAsdS2Ug+c2TAnZFbxe2s1Nws83ITFuBvQf
-         GgyhFltMdMFU66xa0QlqkImMgnCyf57++phradv+fUCbXnIZCxYT1PlBH4/D0AaG1M8d
-         39YQ==
-X-Gm-Message-State: AOAM531DjdSqxlGJOGYb337jJXU2GVZT+ranE5frnJtLltJrbbYv2JFL
-        K/1cjKZNBWFIikJ+W9Jqm0bEsw==
-X-Google-Smtp-Source: ABdhPJwmEYbp7iZS3289pqyDtLfQtun6wK72L87ApIcQzS42M+TFhFgXsXQVBdeGIZndqoWrJG/JOQ==
-X-Received: by 2002:a05:6602:1790:: with SMTP id y16mr2071136iox.12.1627999273887;
-        Tue, 03 Aug 2021 07:01:13 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id w7sm9456798iox.1.2021.08.03.07.01.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VYe459FmfkXTErN59NCMHFCl+MLvyaY1F16+cBRtvyA=;
+        b=MO2x3YNe75yWdiIhdH9WJn1pNbPBIkitZ3Wpawt5SX7SG91Tj3KDpI8P6QyIGunHfN
+         eBJft7cGORXgrTfAqDyxTrt6CtYTrb4dh1GsOE2EG3MLdOZnt2SHtsFdIKpDJzfyiM5S
+         0Te2VRv42JBVCT9NK9BqvM2om1QbxZ5LmCKtk7Zr60fb1WIVVmsGmebzRWnnzpMidvqJ
+         BbozafnIVEMLzeN+Fwib6oDVUWjMXrCxXDyaj8d1x4oD4D5dHwTMIG8PcrHyqEg5N1kk
+         woMj77pXRCbq3RuRTR9MCdw9Vfmr8xaN0jkGV5m+6RP9kFo5fJE5neohQAHFHXoqX+jQ
+         Hf+w==
+X-Gm-Message-State: AOAM5322E6cVS2AueG67Bu9CuJ6xaYNHYQ92R+QFkqytfkZyG7SoX0nl
+        r+3X4x1olmdhrr4gTgB4UqTg1g==
+X-Google-Smtp-Source: ABdhPJzlGzqTO4i181dbcfsGbt7ky8G+pyW88/NT3ShzBrU98mbuEajn6etFhxKe1u8w8fsEvU/SRA==
+X-Received: by 2002:a05:6a00:1a55:b029:3c3:2231:4d16 with SMTP id h21-20020a056a001a55b02903c322314d16mr5644219pfv.18.1627999288774;
+        Tue, 03 Aug 2021 07:01:28 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([202.155.204.36])
+        by smtp.gmail.com with ESMTPSA id p20sm2904157pju.48.2021.08.03.07.01.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 07:01:13 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 6/6] net: ipa: disable GSI interrupts while suspended
-Date:   Tue,  3 Aug 2021 09:01:03 -0500
-Message-Id: <20210803140103.1012697-7-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210803140103.1012697-1-elder@linaro.org>
-References: <20210803140103.1012697-1-elder@linaro.org>
+        Tue, 03 Aug 2021 07:01:27 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 22:01:22 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
+        suzuki.poulose@arm.com, mike.leach@linaro.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 6/6] perf cs-etm: Add warnings for missing DSOs
+Message-ID: <20210803140122.GC247709@leoy-ThinkPad-X240s>
+References: <20210729155805.2830-1-james.clark@arm.com>
+ <20210729155805.2830-7-james.clark@arm.com>
+ <20210802154145.GC148327@leoy-ThinkPad-X240s>
+ <YQlDefz+g45dqFsP@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQlDefz+g45dqFsP@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce new functions gsi_suspend() and gsi_resume(), which will
-disable the GSI interrupt handler after all endpoints are suspended
-and re-enable it before endpoints are resumed.  This will ensure no
-GSI interrupt handler will fire when the hardware is suspended.
+On Tue, Aug 03, 2021 at 10:24:09AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Aug 02, 2021 at 11:41:45PM +0800, Leo Yan escreveu:
+> > On Thu, Jul 29, 2021 at 04:58:05PM +0100, James Clark wrote:
+> > > Currently decode will silently fail if no binary data is available for
+> > > the decode. This is made worse if only partial data is available because
+> > > the decode will appear to work, but any trace from that missing DSO will
+> > > silently not be generated.
+> > > 
+> > > Add a UI popup once if there is any data missing, and then warn in the
+> > > bottom left for each individual DSO that's missing.
+> > > 
+> > > Signed-off-by: James Clark <james.clark@arm.com>
+> > > ---
+> > >  tools/perf/util/cs-etm.c | 10 +++++++++-
+> > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> > > index 32ad92d3e454..e6851260d059 100644
+> > > --- a/tools/perf/util/cs-etm.c
+> > > +++ b/tools/perf/util/cs-etm.c
+> > > @@ -746,8 +746,16 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
+> > >  
+> > >  	len = dso__data_read_offset(al.map->dso, machine, offset, buffer, size);
+> > >  
+> > > -	if (len <= 0)
+> > > +	if (len <= 0) {
+> > > +		ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n");
+> > > +		if (!al.map->dso->auxtrace_warned) {
+> > > +			pr_err("CS ETM Trace: Debug data not found for address %#"PRIx64" in %s\n",
+> > > +				    address,
+> > > +				    al.map->dso->long_name ? al.map->dso->long_name : "Unknown");
+> > > +			al.map->dso->auxtrace_warned = true;
+> > > +		}
+> > 
+> > This is very useful.
+> > 
+> > Just one comment: in particularly if the perf fails to find the kernel
+> > symbols, the user needs to enable config "CONFIG_PROC_KCORE=y" or
+> > specify option "-k /path/to/vmlinux".  In this case, using 'perf
+> > archive' is not helpful.  So I think the UI warning can be imporved
+> > like:
+> > 
+> >         ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' to export data from the traced system.\n"
+> >                          " Enable CONFIG_PROC_KCORE or use option '-k /path/to/vmlinux' for kernel symbols\n");
+> 
+> one can also use debuginfod-client, which, as time passes, probably will
+> be the main way of finding DSOs now that we have build-ids in
+> PERF_RECORD_MMAP2 and debuginfod servers such as:
+> 
+> export DEBUGINFOD_URLS=https://debuginfod.fedoraproject.org/
 
-Here's a little further explanation.  There are seven GSI interrupt
-types, and most are disabled except when needed.
-  - These two are not used (never enabled):
-      GSI_INTER_EE_CH_CTRL
-      GSI_INTER_EE_EV_CTRL
-  - These two are only used to implement channel and event ring
-    commands, and are only enabled while a command is underway:
-      GSI_CH_CTRL
-      GSI_EV_CTRL
-  - The IEOB interrupt signals I/O completion.  It will not fire
-    when a channel is stopped (or "suspended").
-      GSI_IEOB
-  - This interrupt is used to allocate or halt modem channels,
-    and is only enabled while such a command is underway.
-      GSI_GLOB_EE
-    However it also is used to signal certain errors, and this could
-    occur at any time.
-  - The general interrupt signals general errors, and could occur at
-    any time.
-      GSI_GENERAL
+If so, maybe should use more general description for missing DSO.
 
-The purpose for this change is to ensure no global or general
-interrupts fire due to errors while the hardware is suspended.
-We enable the clock on resume, and at that time we can "handle"
-(at least report) these error conditions.
+> https://fedoraproject.org/wiki/Debuginfod
+>  
+> > With this improvement, the patch looks good to me:
+> > 
+> > Reviewed-by: Leo Yan <leo.yan@linaro.org>
+> 
+> Does this apply to the other 5 patches in this series?
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/gsi.c      | 12 ++++++++++++
- drivers/net/ipa/gsi.h      | 12 ++++++++++++
- drivers/net/ipa/ipa_main.c |  5 ++++-
- 3 files changed, 28 insertions(+), 1 deletion(-)
+I finished to reivew patches 01, 04, 05, 06/06, so my review tag can
+apply on these patches.  Current patch 06/06 needs James to improve for
+the comments.
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index c555ccd778bb8..a2fcdb1abdb96 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -981,6 +981,18 @@ int gsi_channel_resume(struct gsi *gsi, u32 channel_id)
- 	return __gsi_channel_start(channel, true);
- }
- 
-+/* Prevent all GSI interrupts while suspended */
-+void gsi_suspend(struct gsi *gsi)
-+{
-+	disable_irq(gsi->irq);
-+}
-+
-+/* Allow all GSI interrupts again when resuming */
-+void gsi_resume(struct gsi *gsi)
-+{
-+	enable_irq(gsi->irq);
-+}
-+
- /**
-  * gsi_channel_tx_queued() - Report queued TX transfers for a channel
-  * @channel:	Channel for which to report
-diff --git a/drivers/net/ipa/gsi.h b/drivers/net/ipa/gsi.h
-index 97163b58b4ebc..88b80dc3db79f 100644
---- a/drivers/net/ipa/gsi.h
-+++ b/drivers/net/ipa/gsi.h
-@@ -232,6 +232,18 @@ int gsi_channel_stop(struct gsi *gsi, u32 channel_id);
-  */
- void gsi_channel_reset(struct gsi *gsi, u32 channel_id, bool doorbell);
- 
-+/**
-+ * gsi_suspend() - Prepare the GSI subsystem for suspend
-+ * @gsi:	GSI pointer
-+ */
-+void gsi_suspend(struct gsi *gsi);
-+
-+/**
-+ * gsi_resume() - Resume the GSI subsystem following suspend
-+ * @gsi:	GSI pointer
-+ */
-+void gsi_resume(struct gsi *gsi);
-+
- /**
-  * gsi_channel_suspend() - Suspend a GSI channel
-  * @gsi:	GSI pointer
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 2e728d4914c82..ae51109dea01b 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -892,6 +892,7 @@ static int ipa_suspend(struct device *dev)
- 	if (ipa->setup_complete) {
- 		__clear_bit(IPA_FLAG_RESUMED, ipa->flags);
- 		ipa_endpoint_suspend(ipa);
-+		gsi_suspend(&ipa->gsi);
- 	}
- 
- 	ipa_clock_put(ipa);
-@@ -919,8 +920,10 @@ static int ipa_resume(struct device *dev)
- 	ipa_clock_get(ipa);
- 
- 	/* Endpoints aren't usable until setup is complete */
--	if (ipa->setup_complete)
-+	if (ipa->setup_complete) {
-+		gsi_resume(&ipa->gsi);
- 		ipa_endpoint_resume(ipa);
-+	}
- 
- 	return 0;
- }
--- 
-2.27.0
-
+Thanks,
+Leo
