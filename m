@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7756F3DE448
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A013DE44B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Aug 2021 04:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233574AbhHCCRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Aug 2021 22:17:34 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12438 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233200AbhHCCRd (ORCPT
+        id S233644AbhHCCSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Aug 2021 22:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233200AbhHCCSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Aug 2021 22:17:33 -0400
-Received: from dggeme701-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gdz242zxnzckD1;
-        Tue,  3 Aug 2021 10:13:48 +0800 (CST)
-Received: from dggpemm500021.china.huawei.com (7.185.36.109) by
- dggeme701-chm.china.huawei.com (10.1.199.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 3 Aug 2021 10:17:21 +0800
-Received: from dggpemm500021.china.huawei.com ([7.185.36.109]) by
- dggpemm500021.china.huawei.com ([7.185.36.109]) with mapi id 15.01.2176.012;
- Tue, 3 Aug 2021 10:17:21 +0800
-From:   "zhudi (J)" <zhudi21@huawei.com>
-To:     Nicholas Richardson <richardsonnick@google.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "nrrichar@ncsu.edu" <nrrichar@ncsu.edu>,
-        "arunkaly@google.com" <arunkaly@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "yebin (H)" <yebin10@huawei.com>,
-        Yejune Deng <yejune.deng@gmail.com>,
-        Leesoo Ahn <dev@ooseel.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjNdIHBrdGdlbjogRml4IGludmFsaWQgY2xvbmVf?=
- =?utf-8?Q?skb_override?=
-Thread-Topic: [PATCH v3] pktgen: Fix invalid clone_skb override
-Thread-Index: AQHXh8tQ8xg7Med4W06C+qfPmCpoyKthAu9g
-Date:   Tue, 3 Aug 2021 02:17:20 +0000
-Message-ID: <47e01747a5c648c8809c77055e981e80@huawei.com>
-References: <20210802102100.5292367a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210802182057.2199810-1-richardsonnick@google.com>
-In-Reply-To: <20210802182057.2199810-1-richardsonnick@google.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.136.114.155]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 2 Aug 2021 22:18:33 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6536C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Aug 2021 19:18:22 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id z2so37225016lft.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Aug 2021 19:18:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p0Rg8uoQAdCMqNvWG4KJ4Lml0OYquOl0PzeY+NghgIs=;
+        b=rJeSRXesNgqD/ctsEcHci3GJIr+ZkXbWSPIKY0cGUASov47tyDQAO5lBimd0asmIsL
+         +4rmPRHpsXvlmc0U/W2TuK9bg1MhTeOs7bo8xF8pbSMAURvWUezdYoi0kluk8bQwRucC
+         sVI0o4Nkcozxs0qQcniS007Mw17HutvMJYPWo5XFmdPmurdTI4nsoUb6cEW5QHA4gsJ4
+         MY2BCxRTcVYUddEibbqdE6MT3YsNNPvMNUJ4G0z+qJSPoRFIEO4PXKaGHgQ81CJhLojN
+         HoAJQ0Sf6F0cfaImhnZg544kzLmUxPDV3XS8Ilm6pjvOYyzbU5onvpQy6uTTI+FiM5Jk
+         1R8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p0Rg8uoQAdCMqNvWG4KJ4Lml0OYquOl0PzeY+NghgIs=;
+        b=nOrAiONDJWapNYDcZVBmt2yKgNlixnjIWEINvgr/Qb7rAgi/NExALSA6r0Big66Tvf
+         3cmZ4HrtVfuDFQo+ZYMF4GOtrWZe57Nt2zmc9LrML22k8JJatiJ7k3yb22m1SvIVy9rq
+         08kghdO3617+IBa2dsFPqYMGbaLoOuTtN3BUSHTcURg2tO/o37lVOAAtiJtk2wYE2GK/
+         BEwUtGyT4QfSEChnwVpzMtVYu6cn/Rz2UlN9mfbzxD2jiTy9H3v+3mfy/S+8nilyEXLi
+         Sg/7qTdLjZipMMxzYLsvQfDeKRfQ5xH8kLpM2lai91MB6ZBYKOEcrQ2ZwxnrYPtLCPOL
+         +LFw==
+X-Gm-Message-State: AOAM531Cx0PHfqUNAsa3koaE8y/RaJep621fcF7lT168BILFpDfSvVR5
+        QnY2MCH1FtnvGlufS4gZE7Za9lkmzHO1Y9hbBfAP9A==
+X-Google-Smtp-Source: ABdhPJwB8Bh43O7mdPYun1vDdLefZZTbI63nsPtzVedjyUVpk4FUL0NZ+QI6+2qAksUHe2ZBeqUpGQ1yETx3aQ9XVsw=
+X-Received: by 2002:a19:c10a:: with SMTP id r10mr14608548lff.508.1627957101180;
+ Mon, 02 Aug 2021 19:18:21 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210722190747.1986614-1-hridya@google.com>
+In-Reply-To: <20210722190747.1986614-1-hridya@google.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 2 Aug 2021 19:18:09 -0700
+Message-ID: <CALAqxLVLMt7rbJBQtFBw-ikBAjKrVgfS8=Nu6NFQbp_gq1m22Q@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: heaps: Set allocation limit for system heap
+To:     Hridya Valsaraju <hridya@google.com>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBOaWNrIFJpY2hhcmRzb24gPHJpY2hhcmRzb25uaWNrQGdvb2dsZS5jb20+DQo+IA0K
-PiBXaGVuIHRoZSBuZXRpZl9yZWNlaXZlIHhtaXRfbW9kZSBpcyBzZXQsIGEgbGluZSBpcyBzdXBw
-b3NlZCB0byBzZXQNCj4gY2xvbmVfc2tiIHRvIGEgZGVmYXVsdCAwIHZhbHVlLiBUaGlzIGxpbmUg
-aXMgbWFkZSByZWR1bmRhbnQgZHVlIHRvIGENCj4gcHJlY2VkaW5nIGxpbmUgdGhhdCBjaGVja3Mg
-aWYgY2xvbmVfc2tiIGlzIG1vcmUgdGhhbiB6ZXJvIGFuZCByZXR1cm5zDQo+IC1FTk9UU1VQUC4N
-Cj4gDQo+IE9ubHkgdGhlIHBvc2l0aXZlIGNhc2UgZm9yIGNsb25lX3NrYiBuZWVkcyB0byBiZSBj
-aGVja2VkLiBJdA0KPiBpcyBpbXBvc3NpYmxlIGZvciBhIHVzZXIgdG8gc2V0IGNsb25lX3NrYiB0
-byBhIG5lZ2F0aXZlIG51bWJlci4NCj4gV2hlbiBhIHVzZXIgcGFzc2VzIGEgbmVnYXRpdmUgdmFs
-dWUgZm9yIGNsb25lX3NrYiwgdGhlIG51bV9hcmcoKQ0KPiBmdW5jdGlvbiBzdG9wcyBwYXJzaW5n
-IGF0IHRoZSBmaXJzdCBub25udW1lcmljIHZhbHVlLg0KPiANCj4gRm9yIGV4YW1wbGU6ICJjbG9u
-ZV9za2IgLTIwMCIgd291bGQgc3RvcCBwYXJzaW5nIGF0IHRoZQ0KPiBmaXJzdCBjaGFyICgnLScp
-IGFuZCByZXR1cm4gemVybyBmb3IgdGhlIG5ldyBjbG9uZV9za2IgdmFsdWUuDQo+IA0KPiBUaGUg
-dmFsdWUgcmVhZCBieSBudW1fYXJnKCkgY2Fubm90IGJlIG92ZXJmbG93LWVkIGludG8gdGhlIG5l
-Z2F0aXZlDQo+IHJhbmdlLCBzaW5jZSBpdCBpcyBhbiB1bnNpZ25lZCBsb25nLg0KPiANCg0KbW9k
-dWxlX3BhcmFtKHBnX2Nsb25lX3NrYl9kLCBpbnQsIDApOw0KDQpUaGlzIGtlcm5lbCBwYXJhbWV0
-ZXIgY2FuIGFsc28gc2V0IHRoZSB2YWx1ZSBvZiBwa3RfZGV2LT5jbG9uZV9za2INCkluIHBrdGdl
-bl9hZGRfZGV2aWNlKCkgYW5kIHRoZSB2YWx1ZSBjYW4gYmUgbmVnYXRpdmUuDQoNCg0KPiBSZW1v
-dmUgcmVkdW5kYW50IGxpbmUgdGhhdCBzZXRzIGNsb25lX3NrYiB0byB6ZXJvLiBJZiBjbG9uZV9z
-a2IgaXMNCj4gZXF1YWwgdG8gemVybyB0aGVuIHNldCB4bWl0X21vZGUgdG8gbmV0aWZfcmVjZWl2
-ZSBhcyB1c3VhbCBhbmQgcmV0dXJuDQo+IG5vIGVycm9yLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
-TmljayBSaWNoYXJkc29uIDxyaWNoYXJkc29ubmlja0Bnb29nbGUuY29tPg0KPiAtLS0NCj4gIG5l
-dC9jb3JlL3BrdGdlbi5jIHwgNSAtLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDUgZGVsZXRpb25z
-KC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvbmV0L2NvcmUvcGt0Z2VuLmMgYi9uZXQvY29yZS9wa3Rn
-ZW4uYw0KPiBpbmRleCA3ZTI1OGQyNTVlOTAuLjMxNGY5N2FjZjM5ZCAxMDA2NDQNCj4gLS0tIGEv
-bmV0L2NvcmUvcGt0Z2VuLmMNCj4gKysrIGIvbmV0L2NvcmUvcGt0Z2VuLmMNCj4gQEAgLTExOTAs
-MTEgKzExOTAsNiBAQCBzdGF0aWMgc3NpemVfdCBwa3RnZW5faWZfd3JpdGUoc3RydWN0IGZpbGUg
-KmZpbGUsDQo+ICAJCQkgKiBwa3RnZW5feG1pdCgpIGlzIGNhbGxlZA0KPiAgCQkJICovDQo+ICAJ
-CQlwa3RfZGV2LT5sYXN0X29rID0gMTsNCj4gLQ0KPiAtCQkJLyogb3ZlcnJpZGUgY2xvbmVfc2ti
-IGlmIHVzZXIgcGFzc2VkIGRlZmF1bHQgdmFsdWUNCj4gLQkJCSAqIGF0IG1vZHVsZSBsb2FkaW5n
-IHRpbWUNCj4gLQkJCSAqLw0KPiAtCQkJcGt0X2Rldi0+Y2xvbmVfc2tiID0gMDsNCj4gIAkJfSBl
-bHNlIGlmIChzdHJjbXAoZiwgInF1ZXVlX3htaXQiKSA9PSAwKSB7DQo+ICAJCQlwa3RfZGV2LT54
-bWl0X21vZGUgPSBNX1FVRVVFX1hNSVQ7DQo+ICAJCQlwa3RfZGV2LT5sYXN0X29rID0gMTsNCj4g
-LS0NCj4gMi4zMi4wLjU1NC5nZTFiMzI3MDZkOC1nb29nDQoNCg==
+On Thu, Jul 22, 2021 at 12:07 PM Hridya Valsaraju <hridya@google.com> wrote:
+> This patch limits the size of total memory that can be requested in a
+> single allocation from the system heap. This would prevent a
+> buggy/malicious client from depleting system memory by requesting for an
+> extremely large allocation which might destabilize the system.
+>
+> The limit is set to half the size of the device's total RAM which is the
+> same as what was set by the deprecated ION system heap.
+>
+> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+
+Seems sane to me, unless folks have better suggestions for allocation limits.
+
+Reviewed-by: John Stultz <john.stultz@linaro.org>
+
+thanks
+-john
