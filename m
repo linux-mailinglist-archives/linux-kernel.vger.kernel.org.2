@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364DA3E0977
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 22:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E4A3E0979
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 22:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240903AbhHDUkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 16:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
+        id S240911AbhHDUmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 16:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbhHDUkb (ORCPT
+        with ESMTP id S234610AbhHDUmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 16:40:31 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999F8C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 13:40:17 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id c16so4369542plh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 13:40:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dit+/Sp1lC6totPcj+YpQn69uliJHNZ4tY9ArlksPHo=;
-        b=TyhICT6tJ0ec1RQ9pgr0YmqC90JE7hdXdP9UHrKdA7/bYeqUiHI+/nBKIv/P4hiOw+
-         e/Yv7wWWzyvnpq21xxdocilZp1rd8PFDdUuAP4+tOm45At8VQXSL9nMgJ+fEe1uuLlDb
-         lExEJV936MlFwfML+b9yOzDzNo075cp1cjL3CsLlyTAk4hjENo2fCoHh8pnhn3GkRWyt
-         0+taDDBsLRajHbuYiY6LbKPw2+6/KZ7q/5R1TpIMEtP7ZFK/ov9y0fk89ftNF/aXQwXD
-         zh/LtCSF+KdYyVSdQE7yfEZUKZMt0CuZe+qQC9ZCX2h6evLEU05WEnfrOVgtXYGmnzH/
-         JL/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=dit+/Sp1lC6totPcj+YpQn69uliJHNZ4tY9ArlksPHo=;
-        b=Ylxmg3G/kAOIjWMhgcnWGdCzyXKHrpVMfunPhL6d8moKNS1KqJYDupdMLqLDI8ZoRu
-         KQPAcV3tQMfSq15/zVHVD7VYEn176fRTFyFkDif5VkHX7b85VgnR6eNtL+HF5aQopgz9
-         NT6z9hj5U9BtUs1W8ziNZ+NgeUogP2MISA1/WROaebQN2PDHzMoDGZuLJqphbdN40YMX
-         ONZRIE7FvsMRzdZQaUbamamZo1Yg73n6BFopoQmAWbByb5zMD8PnyHS3SnItHGkflvKl
-         cYHTcmz2OzG5hjLwvQFvolqgENkCabiCKDJl0v8hQBJIzGraEcA0Loje5BOg7M5Y3QdZ
-         8x5Q==
-X-Gm-Message-State: AOAM5329oALTHn/gVBNXekutPwsM/d0nWhSjS+wft3CQ3SpZ49SUqYbq
-        C5Nu65V9YlOXFH+4ZS8eOzF5Jg==
-X-Google-Smtp-Source: ABdhPJwnTJVkLHdHiuNAm+IAtSRcOGH2SY6t5oaxIRPc4QRcH3junRf7HX4/2yey0W5WRXV6OeJy9g==
-X-Received: by 2002:a17:90a:df05:: with SMTP id gp5mr916796pjb.165.1628109617098;
-        Wed, 04 Aug 2021 13:40:17 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id ms8sm7067173pjb.36.2021.08.04.13.40.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 13:40:16 -0700 (PDT)
-Date:   Wed, 04 Aug 2021 13:40:16 -0700 (PDT)
-X-Google-Original-Date: Wed, 04 Aug 2021 13:40:14 PDT (-0700)
-Subject:     Re: [PATCH] riscv: use the generic string routines
-In-Reply-To: <CAFnufp1QpMc87+-hwPa887iQQGCjjkGNanVSKOUsE-0ti82jrA@mail.gmail.com>
-CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Atish Patra <Atish.Patra@wdc.com>,
-        kernel@esmil.dk, akira.tsukamoto@gmail.com, drew@beagleboard.org,
-        bmeng.cn@gmail.com, David.Laight@aculab.com, guoren@kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     mcroce@linux.microsoft.com, mcroce@linux.microsoft.com
-Message-ID: <mhng-7b8d3a12-e223-4b69-a35a-617b0d7ac8f7@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Wed, 4 Aug 2021 16:42:04 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD87C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 13:41:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=f9gSgEz86yFFQ7CEO9gWv946kye+BSxNr15YYmTIIXs=; b=f0EXkLpLotyGgBVVyg/MPMzSlF
+        LikWAmrnOndI5J5MFM5sTgNa2lbW5/Ss/CBg+cDayuEShzqnOVS9XwYspfWfRdcas5pn4WgYFYLD1
+        kaKaCzE5di9CjUHC5WDLjzEyjnil2p+ynAD4YEDuyfNJDcvgE1/qGmXQAOoF4aC4MR5FVskoHASlp
+        7jQiMD+LhqqHgoFQmB9Xgw/l0yJqNbOWEu1HYUr7mwt3JNxfxHJ601QnhSXyoAtjfYDqX6HT8VpDX
+        lJE+fku0pDff+4p5pqsjV3meVjN6Tr0hLbpjevBvWpNKhMM+w9TvDL8rG0OJhyAQiITf1xVDGTcvM
+        HhGoo6sQ==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBNi1-007QAy-Pu; Wed, 04 Aug 2021 20:41:50 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH -next] drm/i915: fix i915_globals_exit() section mismatch error
+Date:   Wed,  4 Aug 2021 13:41:47 -0700
+Message-Id: <20210804204147.2070-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 03 Aug 2021 09:54:34 PDT (-0700), mcroce@linux.microsoft.com wrote:
-> On Mon, Jul 19, 2021 at 1:44 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
->>
->> From: Matteo Croce <mcroce@microsoft.com>
->>
->> Use the generic routines which handle alignment properly.
->>
->> These are the performances measured on a BeagleV machine for a
->> 32 mbyte buffer:
->>
->> memcpy:
->> original aligned:        75 Mb/s
->> original unaligned:      75 Mb/s
->> new aligned:            114 Mb/s
->> new unaligned:          107 Mb/s
->>
->> memset:
->> original aligned:       140 Mb/s
->> original unaligned:     140 Mb/s
->> new aligned:            241 Mb/s
->> new unaligned:          241 Mb/s
->>
->> TCP throughput with iperf3 gives a similar improvement as well.
->>
->> This is the binary size increase according to bloat-o-meter:
->>
->> add/remove: 0/0 grow/shrink: 4/2 up/down: 432/-36 (396)
->> Function                                     old     new   delta
->> memcpy                                        36     324    +288
->> memset                                        32     148    +116
->> strlcpy                                      116     132     +16
->> strscpy_pad                                   84      96     +12
->> strlcat                                      176     164     -12
->> memmove                                       76      52     -24
->> Total: Before=1225371, After=1225767, chg +0.03%
->>
->> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
->> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
->> ---
->
-> Hi,
->
-> can someone have a look at this change and share opinions?
+Fix modpost Section mismatch error in i915_globals_exit().
+Since both an __init function and an __exit function can call
+i915_globals_exit(), any function that i915_globals_exit() calls
+should not be marked as __init or __exit. I.e., it needs to be
+available for either of them.
 
-This LGTM.  How are the generic string routines landing?  I'm happy to 
-take this into my for-next, but IIUC we need the optimized generic 
-versions first so we don't have a performance regression falling back to 
-the trivial ones for a bit.  Is there a shared tag I can pull in?
+WARNING: modpost: vmlinux.o(.text+0x8b796a): Section mismatch in reference from the function i915_globals_exit() to the function .exit.text:__i915_globals_flush()
+The function i915_globals_exit() references a function in an exit section.
+Often the function __i915_globals_flush() has valid usage outside the exit section
+and the fix is to remove the __exit annotation of __i915_globals_flush.
+
+ERROR: modpost: Section mismatches detected.
+Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
+
+Fixes: 1354d830cb8f ("drm/i915: Call i915_globals_exit() if pci_register_device() fails")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jason Ekstrand <jason@jlekstrand.net>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc: intel-gfx@lists.freedesktop.org
+Cc: dri-devel@lists.freedesktop.org
+---
+ drivers/gpu/drm/i915/i915_globals.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linext-2021-0804.orig/drivers/gpu/drm/i915/i915_globals.c
++++ linext-2021-0804/drivers/gpu/drm/i915/i915_globals.c
+@@ -138,7 +138,7 @@ void i915_globals_unpark(void)
+ 	atomic_inc(&active);
+ }
+ 
+-static void __exit __i915_globals_flush(void)
++static void  __i915_globals_flush(void)
+ {
+ 	atomic_inc(&active); /* skip shrinking */
+ 
