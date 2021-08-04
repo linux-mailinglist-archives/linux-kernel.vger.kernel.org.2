@@ -2,240 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2553E01DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF3B3E01E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238361AbhHDNYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:24:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238061AbhHDNX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:23:59 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S238425AbhHDNZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:25:08 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:53642
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238061AbhHDNZG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 09:25:06 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D760260F43;
-        Wed,  4 Aug 2021 13:23:40 +0000 (UTC)
-Date:   Wed, 4 Aug 2021 09:23:39 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Zanussi <zanussi@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>
-Subject: Re: [PATCH v2 00/21] libtracefs: Introducing tracefs_sql() to
- create synthetice events with an SQL line
-Message-ID: <20210804092339.786315cd@oasis.local.home>
-In-Reply-To: <YQqAjBCtd8MnhV1v@lx-t490>
-References: <20210803042347.679499-1-rostedt@goodmis.org>
-        <YQqAjBCtd8MnhV1v@lx-t490>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 1B9AD3F048;
+        Wed,  4 Aug 2021 13:24:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628083492;
+        bh=mNny2UeZ7EC33QeUY4d+BcD45KNxvsJvrlo9CuSGuJM=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=M2+wnNjXXnjEIRbvy795fDakdp+JGEWk6fyhvs5o9o8DBiR90N4VJo01gzPSNH6H4
+         cu7CHCLaAog7vGmAG5Cp6cxUzt6rvwCt9qYv15MBCzZb5Dx7kwnFOBrh8UBqJveBER
+         htSLE7slj2JhnAiKj+vRfTa9OGDhpjot3ZZj+nWDFuyoVCBX3FKvtAW/r0JWf40e7b
+         zk2lqLke6WzX3KFmAkLl/12bb/umDuuT7RfEZfoLEsmH4E0nekGBxVQ6sk5LNa41py
+         HDdyyVIkjK6hIIBMjNsKUNwfyhGS/KCgRP74yisUzYU2qtOYlSMelhqHD+Y0XxSUda
+         pwaSmZZAyQGcQ==
+From:   Colin King <colin.king@canonical.com>
+To:     James Smart <james.smart@broadcom.com>,
+        Ram Vegesna <ram.vegesna@broadcom.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: elx: efct: Remove redundant initialization of variable ret
+Date:   Wed,  4 Aug 2021 14:24:51 +0100
+Message-Id: <20210804132451.113086-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Aug 2021 13:57:00 +0200
-"Ahmed S. Darwish" <a.darwish@linutronix.de> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
+The variable ret is being initialized with a value that is never
+read, it is being updated later on. The assignment is redundant and
+can be removed.
 
-> Thanks a lot! Actually, I meant going even one step further ;)
-> 
-> I was imagining something like the following:
-> 
-> $ trace-cmd sql-shell		# OR
-> 
-> $ perf tracefs-sql-shell
-> 
->   Welcome to tracefs SQL shell...
-> 
->   > SELECT PNAME(common_pid),msr,val  
->     FROM write_msr
->     WHERE msr=72 OR msr=2096
-> 
->   .-------------------------------------------.
->   | PNAME(common_pid)   |  msr  |    val      |
->   |---------------------|------ |-------------|
->   | qemu-system-x86     | 0x48  | 0           |
->   | qemu-system-x86     | 0x48  | 0           |
->   | qemu-system-x86     | 0x48  | 0           |
->   | kworker/u16:2       | 0x830 | 0x1000008fb |
->   | ....                | ....  | .....       |
->   +-------------------------------------------+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/scsi/elx/efct/efct_lio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Well, the above looks more like a normal trace just being processed
-differently. If you want that, I already have this:
-
-  https://lore.kernel.org/linux-trace-devel/20200116104804.5d2f71e2@gandalf.local.home/
-
-Which I created to test the idea of using SQL to create synthetic events.
-
-It simply converts the events in a trace.dat file into a sql format
-file that can be used to read into a SQL database. As the patch shows:
-
- $ trace-cmd sqldump > dump
- $ mysql events < dump
-
-MariaDB [events]> show tables;
-+-----------------------------+
-| Tables_in_events            |
-+-----------------------------+
-| sched_migrate_task          |
-| sched_move_numa             |
-| sched_process_exec          |
-| sched_process_exit          |
-| sched_stat_runtime          |
-| sched_switch                |
-| sched_wake_idle_without_ipi |
-| sched_wakeup                |
-| sched_waking                |
-+-----------------------------+
-9 rows in set (0.001 sec)
-
-MariaDB [events]> select * from sched_move_numa;
-+-------------------+-------------+--------------+----------------------+------------+-------+-------+-------+---------+---------+---------+---------+
-| common_timestamp  | common_type | common_flags | common_preempt_count | common_pid | pid   | tgid  | ngid  | src_cpu | src_nid | dst_cpu | dst_nid |
-+-------------------+-------------+--------------+----------------------+------------+-------+-------+-------+---------+---------+---------+---------+
-| 14943901721165973 |         305 |            0 |                    0 |      27451 | 27451 | 27451 | 27451 |       5 |       1 |      22 |       0 |
-| 14943901722548756 |         305 |            0 |                    0 |       3684 |  3684 |  3684 |  3684 |      23 |       1 |      22 |       0 |
-| 14943901779987828 |         305 |            0 |                    0 |      13693 | 13693 | 13677 | 13693 |       7 |       1 |      22 |       0 |
-+-------------------+-------------+--------------+----------------------+------------+-------+-------+-------+---------+---------+---------+---------+
-3 rows in set (0.001 sec)
-
-I never applied the patch, but perhaps you would be interested in this?
-
-> 
->   > SELECT MAX(end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) AS MaxSystemLatency_us,  
->       PNAME(common_pid)
->     FROM sched_waking AS start JOIN sched_switch AS end
->     ON start.pid = stop.next_pid
-
-
-Now the above would require parsing the histogram data, which is next
-on our agenda. There's two routes we can take with this:
-
- 1) Add a "hist_raw" that shows the raw data from the kernel's
- histogram table. It would still be in ASCII, but will be formatted for
- machine readability and not for humans (like /proc/$$/stat vs /proc/$$/status)
-
- 2) We write another bison parser to parse the current format of the
- histogram output, which looks like this:
-
-  # sqlhist -n lat -e 'SELECT end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat
-         FROM sched_waking as start JOIN sched_switch as end ON start.pid = end.next_pid'
-  # trace-cmd start -e lat -R 'hist:keys=common_pid.execname,lat:sort=lat'
-  # cat /sys/kernel/tracing/events/synthetic/lat/hist
-# event histogram
-#
-# trigger info: hist:keys=common_pid.execname,lat:vals=hitcount:sort=lat:size=2048 [active]
-#
-
-{ common_pid: <idle>          [         0], lat:          2 } hitcount:          9
-{ common_pid: <idle>          [         0], lat:          3 } hitcount:          3
-{ common_pid: kworker/0:0     [     10041], lat:          3 } hitcount:          7
-{ common_pid: kworker/0:0     [     10041], lat:          4 } hitcount:          5
-{ common_pid: <idle>          [         0], lat:          4 } hitcount:          2
-{ common_pid: <idle>          [         0], lat:          5 } hitcount:          9
-{ common_pid: kworker/0:0     [     10041], lat:          5 } hitcount:         14
-{ common_pid: kworker/0:0     [     10041], lat:          6 } hitcount:          5
-{ common_pid: <idle>          [         0], lat:          6 } hitcount:         16
-{ common_pid: <idle>          [         0], lat:          7 } hitcount:         19
-[..]
-{ common_pid: JS Helper       [      1366], lat:         96 } hitcount:          1
-{ common_pid: <idle>          [         0], lat:         97 } hitcount:          1
-{ common_pid: <idle>          [         0], lat:         99 } hitcount:          1
-{ common_pid: <idle>          [         0], lat:        107 } hitcount:          1
-{ common_pid: <idle>          [         0], lat:        108 } hitcount:          3
-{ common_pid: <idle>          [         0], lat:        117 } hitcount:          1
-{ common_pid: <idle>          [         0], lat:        118 } hitcount:          1
-{ common_pid: sendmail        [      1739], lat:        130 } hitcount:          1
-
-Totals:
-    Hits: 2212
-    Entries: 130
-    Dropped: 0
-
-That file is a user space API, and we can write up another bison parser
-to parse out the data.
-
-
-Between the two approaches, #1 is probably the better way, but that
-requires a kernel change, and the feature will not be available in
-older kernels, and not available until we actually implement it.
-
-Approach #2 can be done today and will work for older kernels too. Also,
-if we do #2, it doesn't mean we can't still do #1.
-
-
-> 
->   .-------------------------------------------.
->   | MaxSystemLatency_us | PNAME(common_pid)   |
->   |---------------------|---------------------|
->   | 350                 | cyclictest          |
->   +-------------------------------------------+
-> 
->   > SELECT (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) AS latency,  
->       PNAME(common_pid), PRIO(common_pid)
->     FROM sched_waking AS start JOIN sched_switch AS end
->     ON start.pid = stop.next_pid
->     ORDER BY latency DESC
->     LIMIT 5
-> 
->   .----------------------------------------------------------.
->   | Latency | PNAME(common_pid)           | PRIO(common_pid) |
->   |---------|-----------------------------|------------------|
->   | 829     | cyclictest                  | SCHED_FIFO:98    |
->   | 400     | cyclictest                  | SCHED_FIFO:98    |
->   | 192     | pulseaudio-rt               | SCHED_RR:48      |
->   | 30      | firefox                     | SCHED_OTHER:0:0  |
->   | 10      | kworker/0:0H-events_highpri | SCHED_OTHER:0:-20|
->   +----------------------------------------------------------+
-> 
->   > SELECT (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as MaxIRQLatency_us  
->     FROM irq_disable as start JOIN irq_enable as end
->     ON start.common_pid = end.common_pid,
->        start.parent_offs == end.parent_offs
->     ORDER BY max_irq_disable
->     LIMIT 1
-> 
->   .------------------.
->   | MaxIRQLatency_us |
->   |------------------|
->   | 37               |
->   +------------------+
-> 
-> And so on....
-> 
-> The idea was that since the community already picked SQL as a
-> higher-level tracing language, why hard-code the SQL language with
-> synthetic events and histograms?
-> 
-> The language can alredy offer something *way more generic*, out of the
-> box, while still covering the desired special cases.
-> 
-> We can support the standard SQL aggregate functions (e.g., MAX(), MIN(),
-> SUM(), COUNT(), DISTINCT(), AVG(), etc.) + some kernel-specific
-> functions (e.g., PROCESS_NAME(), PROCESS_PRIO(), USECS(), etc.) + the
-> standard SQL keyworkds like ORDER BY, LIMIT, DESC, ASC, etc. This would
-> offer some nice friendly competition to BPF tracing, while still being a
-> (relatively) simple *query-only* language.
-> 
-> I'm not sure if you would be OK with this, but I thought a proposal
-> won't hurt :)
-> 
-> I can also write some patches on top of this series if you are OK with
-> the principle in general.
->
-
-I'm not against it, and was thinking of implementing some kind of
- "trace-cmd sql" feature. But before we can get there, we need a way to
- get that information out from the kernel.
-
--- Steve
+diff --git a/drivers/scsi/elx/efct/efct_lio.c b/drivers/scsi/elx/efct/efct_lio.c
+index e0d798d6baee..bb3b460dc0bc 100644
+--- a/drivers/scsi/elx/efct/efct_lio.c
++++ b/drivers/scsi/elx/efct/efct_lio.c
+@@ -780,7 +780,7 @@ efct_lio_npiv_make_nport(struct target_fabric_configfs *tf,
+ {
+ 	struct efct_lio_vport *lio_vport;
+ 	struct efct *efct;
+-	int ret = -1;
++	int ret;
+ 	u64 p_wwpn, npiv_wwpn, npiv_wwnn;
+ 	char *p, *pbuf, tmp[128];
+ 	struct efct_lio_vport_list_t *vport_list;
+-- 
+2.31.1
 
