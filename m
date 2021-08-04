@@ -2,95 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AECA3E0A95
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D4A3E0A99
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235467AbhHDWwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235246AbhHDWw3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:52:29 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D89C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 15:52:15 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x8so7239300lfe.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:52:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DYdZtyj8pNJFHp1KzrJy5cVFfneYSipKoxottjQPwPY=;
-        b=doSXqBlBbAIFWmKvVcXxT/K32bvtAZZBK2FEyHzxixpcjRxWFOx5udQqJpS6DdhtUe
-         FL6OBkaguKCSYQAvHnzfiO0SLkhTRKxL7FoaP745lcIisR4UxslZW4xaAUoGk5sL254z
-         dPbVtjCVGSnJOwY+ifIHr6gVFxZx7b/1x5vAzq/WvplArlpLcM6kpF3eLtdXYFOukoPW
-         gFxu+uT5qKvWCWeKj/nDRJJTZ3rNCo9FZyWE3f2K4S4vtFaaxHDCQsNUbPoZIq4mPh34
-         ykez7xP+bCu8oV26aiyBysa0HQ3f6MBXVuZnnK32yWUWEelmtGzNtyBhl5aIul9VHvEe
-         kPog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DYdZtyj8pNJFHp1KzrJy5cVFfneYSipKoxottjQPwPY=;
-        b=rqnmHiTTRAQnODQH9Qr4LVueJ/u3EX6P0cup77EFwnQXNFJ4bVaGk4Dgq/zXGK3Mp0
-         Cx3GezhBRnBfJZD3DGX+WWc4uNZ7eAgHG2VOMwLeJpcSau2YvOxBnveuajRdUKU1ygdp
-         IAm4TUiI6m/D95f5d+yrO8MusVIz2fVtXwg7AT4scg9CJgxQv46bw60xKF7vDBHnbAic
-         IzMMp8Hz2x0L/O5cxhNn5LnXJUPDp6P1rtujYalaa5MprUwzbwYvcDpg+JFAhvGCGgzJ
-         d5w6duPQCgkBNQPv4ZqsRyj+4R8/KCYaV3g4oVHai4jHXDF3BPfjU9oDvNEiNntr8oFf
-         GBmg==
-X-Gm-Message-State: AOAM532H+TRM4t9ZpyPUD9v7IXyu65xmliVeiAB/ajeyKQIZKOaAN3Vj
-        2NyC0ZLOhH94NcyFaEpqujbCYw4WWVRuSIuJGcnr8w==
-X-Google-Smtp-Source: ABdhPJxilMlJha+CPg1BqDjtl7sd+Vy6Ff1gM+CV6JM+oj4VrZKGn4WYEmB51egRJoRDeYJ/4vNw3rBQtVbz5qFDYF8=
-X-Received: by 2002:a05:6512:132a:: with SMTP id x42mr1051247lfu.291.1628117533435;
- Wed, 04 Aug 2021 15:52:13 -0700 (PDT)
+        id S234835AbhHDWxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:53:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229910AbhHDWxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:53:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85CF860C41;
+        Wed,  4 Aug 2021 22:53:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628117612;
+        bh=ev4UpvDYu8mIq8C3cYDsqXhIp/L+bKQKL2Gw0rAfHT4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=aXE14yecsD+xHGwyDq5U01Db/6hJ60InuTSGgdOkfFA1JTHSydwLoeoIhy8AJJW30
+         dEmooEFSXDADjwkrSiCpDlYwCefhLxTJE5SAgAy2LUSzm1V9hyfD+qzNOA8V+K70kA
+         nM37EW4iYBfxOI0SOR5uV1LOiuXRDyEy9bu23Nb86S6e5G8zWqW4LQe5kRjm5xs2r5
+         JEPEvbDol27Lt+jJt+DWZotzX0qARMdRtsgPjoEQ0FZu336tyZnIMlrmSrw8L/vZFF
+         Gjqy63LGFcxaYuFcQ1SnviwEn9ZGFPJwKJhVSY5rLN54FS3Dak/+fKFR/oQ7duvyQq
+         FJADt02L0rFIg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 55B745C22D9; Wed,  4 Aug 2021 15:53:32 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 15:53:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 2/2] rcutorture: Nudge ksoftirqd priority for RCU boost
+ testing
+Message-ID: <20210804225332.GB4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210803225437.3612591-1-valentin.schneider@arm.com>
+ <20210803225437.3612591-3-valentin.schneider@arm.com>
+ <20210803234231.GW4397@paulmck-ThinkPad-P17-Gen-1>
+ <87tuk5a4yk.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210801233314.3150754-1-linus.walleij@linaro.org>
- <20210801233314.3150754-2-linus.walleij@linaro.org> <YQejHNP1AzFHZ6gK@google.com>
-In-Reply-To: <YQejHNP1AzFHZ6gK@google.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 5 Aug 2021 00:52:02 +0200
-Message-ID: <CACRpkdaK0pBgmFSazjJ5NOj9rF9DzUyCfumxyi8PNaS_61_=Ww@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mfd: db8500-prcmu: Handle missing FW variant
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        phone-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87tuk5a4yk.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 9:47 AM Lee Jones <lee.jones@linaro.org> wrote:
-> On Mon, 02 Aug 2021, Linus Walleij wrote:
->
-> > There was an "unknown" firmware variant turning up in the wild
-> > causing problems in the clock driver. Add this missing variant
-> > and clarify that varian 11 and 15 are Samsung variants, as this
-> > is now very well known from released products.
+On Wed, Aug 04, 2021 at 11:18:11AM +0100, Valentin Schneider wrote:
+> On 03/08/21 16:42, Paul E. McKenney wrote:
+> > On Tue, Aug 03, 2021 at 11:54:37PM +0100, Valentin Schneider wrote:
+> >> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> >> index 680f66b65f14..3dd5fa75f469 100644
+> >> --- a/kernel/rcu/rcutorture.c
+> >> +++ b/kernel/rcu/rcutorture.c
+> >> @@ -948,12 +948,26 @@ static int rcu_torture_boost(void *arg)
+> >>      unsigned long endtime;
+> >>      unsigned long oldstarttime;
+> >>      struct rcu_boost_inflight rbi = { .inflight = 0 };
+> >> +	struct task_struct *ksoftirqd = this_cpu_ksoftirqd();
+> >>
+> >>      VERBOSE_TOROUT_STRING("rcu_torture_boost started");
+> >>
+> >>      /* Set real-time priority. */
+> >>      sched_set_fifo_low(current);
+> >>
+> >> +	/*
+> >> +	 * Boost testing requires TIMER_SOFTIRQ to run at a higher priority
+> >> +	 * than the CPU-hogging torture kthreads, otherwise said threads
+> >> +	 * will never let timer expiry for the RCU GP kthread happen, which will
+> >> +	 * prevent any boosting.
+> >> +	 */
+> >> +	if (current->normal_prio < ksoftirqd->normal_prio) {
 > >
-> > Cc: Michael Turquette <mturquette@baylibre.com>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: linux-clk@vger.kernel.org
-> > Cc: phone-devel@vger.kernel.org
-> > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> > ---
-> > Clock maintainers: could you please ACK this so Lee can take
-> > this into the MFD tree? The chances of merge collisions are
-> > zero, this code changes very seldom.
-> > ---
-> >  drivers/clk/ux500/u8500_of_clk.c | 3 ++-
->
-> >  drivers/mfd/db8500-prcmu.c       | 6 ++++--
-> >  include/linux/mfd/dbx500-prcmu.h | 3 ++-
->
-> Acked-by: Lee Jones <lee.jones@linaro.org>
+> > Would it make sense to add IS_ENABLED(CONFIG_PREEMPT_RT) to the above
+> > condition?
+> >
+> 
+> Hm so v5.13-rt1 has this commit:
+> 
+>   5e59fba573e6 ("rcutorture: Fix testing of RCU priority boosting")
+> 
+> which gates RCU boost torture testing under CONFIG_PREEMPT_RT. Now, AFAICT
+> the TIMER_SOFTIRQ priority problem is there regardless of
+> CONFIG_PREEMPT_RT, so this patch would (should?) make sense even on
+> !CONFIG_PREEMPT_RT.
 
-Actually I intended for the clock people to ACK it for you
-but since it is completely independent of 1/2 it actually works
-either way, maybe they will rather pick it up, who knows? :D
+What rcutorture scenario TREE03 does is to boot with tree.use_softirq=0
+and threadirqs.  I see your point about timers and softirq, but this
+does run reliably for me.
 
-Yours,
-Linus Walleij
+Ah, I see why.  Commit ea6d962e80b6 ("rcutorture: Judge RCU priority
+boosting on grace periods, not callbacks") includes boosting the priority
+of the ksoftirqd kthreads.  But only when running rcutorture builtin,
+not as a module.  Here is the code in rcu_torture_init():
+
+		// Testing RCU priority boosting requires rcutorture do
+		// some serious abuse.  Counter this by running ksoftirqd
+		// at higher priority.
+		if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)) {
+			for_each_online_cpu(cpu) {
+				struct sched_param sp;
+				struct task_struct *t;
+
+				t = per_cpu(ksoftirqd, cpu);
+				WARN_ON_ONCE(!t);
+				sp.sched_priority = 2;
+				sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+			}
+		}
+
+I take it that you were running rcutorture as a module?
+
+This describes how to run it built-in, if that works for you:
+
+https://paulmck.livejournal.com/61432.html
+
+More specifically: https://paulmck.livejournal.com/57769.html
+
+Alternatively, the "IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)" check could be
+removed in the above code, and the ksoftirqd kthreads could have their
+original priority restored in rcu_torture_cleanup().
+
+Thoughts?
+
+							Thanx, Paul
+
+> >> +		struct sched_param sp = { .sched_priority = 2 };
+> >> +
+> >> +		pr_alert("%s(): Adjusting %s priority\n", __func__, ksoftirqd->comm);
+> >> +		sched_setscheduler_nocheck(ksoftirqd, SCHED_FIFO, &sp);
+> >> +	}
+> >> +
+> >>      init_rcu_head_on_stack(&rbi.rcu);
+> >>      /* Each pass through the following loop does one boost-test cycle. */
+> >>      do {
+> >> --
+> >> 2.25.1
+> >>
