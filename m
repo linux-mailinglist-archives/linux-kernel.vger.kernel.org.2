@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8893DFC33
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003513DFC35
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235889AbhHDHjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 03:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235619AbhHDHjM (ORCPT
+        id S235863AbhHDHjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 03:39:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49034 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235619AbhHDHjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 03:39:12 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0762EC0613D5;
-        Wed,  4 Aug 2021 00:38:59 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id z3so2073084plg.8;
-        Wed, 04 Aug 2021 00:38:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/1fnGxDd0u/KO3OYmBt1hqVEy3ZVm3ezsLmdUm+AT1k=;
-        b=t2al545lGWXDE+IrBUj6kjABFhNlXPKjpi56OsfM7nDToutk0x/+13Lf3lB9dk921F
-         NgunzaL3NJsp0ssYMW3cYYlTgmkvmPbi7yuUDgvMXpxMCR22qHZWp+5AXHJm8UHDEEdO
-         mmpSwMxWuTn8qexitJAZLwt6O71r6tX1Froe+sCz4tVhTPTUaRH1KQ6qn5JN6aGf0aJ6
-         DTAPDpmZE83qkcV+ELy/p3jZao1eb7RovcdF8KxC1QZkcSqvVC84A7uN0gPY7RGVcuiZ
-         nm8+X2tmEjWwYJQ2AChm0AvKiEVfkAyNsCquLqeP88hVZA44cOIpnxNNlcTXVlZy5C/w
-         KEDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/1fnGxDd0u/KO3OYmBt1hqVEy3ZVm3ezsLmdUm+AT1k=;
-        b=sqV875GEEtTkMfaTqV5/W4DsfUxBxvv1TBUO6Ko2cHxmkNzoFlUSFvjy7rpTJNo6EF
-         wQ89zS/fx/ezgIICqe7Ux4pcCJedTT/rYIFGrrwxYNWLBl9jUZZFNA8Havzg8/aXEFl+
-         8v2L9VVN/4Hmodn6w/n2nEbPI6242Skos8m7HF2ZBc+Y2mCO44gBp0gzYXKOHk+h/gXS
-         9AkBFGhODi6bwUa7VXqgIq/oJrERX3hUGmUavo/sK006xuYujr3lDJ37YVoT6R9KStky
-         NIy77e3q16pgdls4HCO4is5Dkc3tZrAYAqCrKnlWXq3YVT+yRg6+4tL6c3X+0O1UOf1R
-         CuCg==
-X-Gm-Message-State: AOAM531l7FMvK2fTIQt0Kx+J+3QJLxFKlovonIHJcrMBE+21XboN/BiU
-        yIaUa2yx6RjDKAfUO4olYOFpvOprmBrV80rxFjU=
-X-Google-Smtp-Source: ABdhPJyo6k11qe9mgZUkeiX2Z9vHXhC8pf9bZuDidjcgojlx9+1dWKRxa087OehLD6AqCLTzmoD9XaA+RTZC00T0z20=
-X-Received: by 2002:a17:902:b713:b029:12b:b249:693f with SMTP id
- d19-20020a170902b713b029012bb249693fmr5415074pls.17.1628062738544; Wed, 04
- Aug 2021 00:38:58 -0700 (PDT)
+        Wed, 4 Aug 2021 03:39:36 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D4D9C22193;
+        Wed,  4 Aug 2021 07:39:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628062763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fvd9pPr9EanKWBW5cDt9Sg5pvM2uTEKHOrqxlKqLhuE=;
+        b=UzHHJ65hvzZkwrhUytOaNbHvEDJs+m6w9AqJrpSN6Eu7Fk+tWYzFaysfAMgWLxPAXRKsK5
+        WgC5cerdwOJLCAD+Yad0uXurjc6hwK/zhAl5uAC5zbuB/OBcUpIK7RFkkHtnosVMYVepM2
+        V7ivdH+N7LSHpj0BA9Q4M6aMZRESDds=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628062763;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fvd9pPr9EanKWBW5cDt9Sg5pvM2uTEKHOrqxlKqLhuE=;
+        b=l4IOXECy3nbKl00pW05d5t9CIG9R796gBwYSXRuZBE5IUbxcGEybBzu45/vZBwug9NuH04
+        XOt3qwD29AbYVVDg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 97E8B13768;
+        Wed,  4 Aug 2021 07:39:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id AunDIytECmHVSwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 04 Aug 2021 07:39:23 +0000
+Subject: Re: [PATCH] mm/memcg: Disable task obj_stock for PREEMPT_RT
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Luis Goncalves <lgoncalv@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210803175519.22298-1-longman@redhat.com> <87h7g62jxm.ffs@tglx>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <93dfe0d4-c687-93f8-da75-c5d3c9bd0ac7@suse.cz>
+Date:   Wed, 4 Aug 2021 09:39:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210729053937.20281-1-shruthi.sanil@intel.com>
- <20210729053937.20281-2-shruthi.sanil@intel.com> <YQh1HMMkJyO8g/RP@robh.at.kernel.org>
- <BYAPR11MB31281638EBA0C2B815DF56F9F1F19@BYAPR11MB3128.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB31281638EBA0C2B815DF56F9F1F19@BYAPR11MB3128.namprd11.prod.outlook.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 4 Aug 2021 10:38:22 +0300
-Message-ID: <CAHp75VeAnm-9oy5BinY8DU5tRj0EhU_vVxkvcp0M+wXPSv8Wdw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] dt-bindings: timer: Add bindings for Intel Keem
- Bay SoC Timer
-To:     "Sanil, Shruthi" <shruthi.sanil@intel.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "kris.pan@linux.intel.com" <kris.pan@linux.intel.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "Thokala, Srikanth" <srikanth.thokala@intel.com>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Sangannavar, Mallikarjunappa" 
-        <mallikarjunappa.sangannavar@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87h7g62jxm.ffs@tglx>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 8:35 AM Sanil, Shruthi <shruthi.sanil@intel.com> wro=
-te:
-> > From: Rob Herring <robh@kernel.org>
-> > Sent: Tuesday, August 3, 2021 4:14 AM
+On 8/4/21 1:21 AM, Thomas Gleixner wrote:
+> 	/*
+> 	 * The only protection from memory hotplug vs. drain_stock races is
+> 	 * that we always operate on local CPU stock here with IRQ disabled
+> 	 */
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(memcg_stock_lock, flags);
+>         ...
+> 	if (use_task_obj_stock())
+>   		drain_obj_stock(&stock->task_obj);
+> 
+> which is incomprehensible garbage.
+> 
+> The comment above the existing local_irq_save() is garbage w/o any local
+> lock conversion already today (and even before the commit which
+> introduced stock::task_obj) simply because that comment does not explain
+> the why.
 
-...
-
-> > > +properties:
-> >
-> > You need a 'compatible' here. Otherwise, how does one know what 'reg'
-> > contains. Also, without it, this schema will never be applied.
-> >
->
-> This is a parent block that has the common configuration register address=
- defined which we would need during the initialization of the child nodes. =
-This block in itself is not doing anything. We have this because, we have a=
- common register that is required to be accessed during all the timers and =
-counter initialization.
-> The child nodes have the compatible string, which is used in the driver. =
-I have validated this on the Keem Bay HW and see that the timer probes are =
-being called and the timers are functional as expected.
-
-I think I understand now. The problem is that the current state of
-affairs with this block is incorrect software representation. What you
-need is to create an MFD device driver (for which the compatible will
-exactly the one Rob is telling about) and from it you register the
-rest of your drivers. The existing drivers for this block should be
-converted to MFD schema.
-
---=20
-With Best Regards,
-Andy Shevchenko
+Michal, this seems to be your comment from commit 72f0184c8a00 ("mm, memcg:
+remove hotplug locking from try_charge"). Was "memory hotplug" a mistake,
+because the rest of the commit is about cpu hotplug, and I don't really see a
+memory hotplug connection there?
