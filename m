@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47D83DFEB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04443DFEB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237331AbhHDKCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 06:02:40 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:59620 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237322AbhHDKCe (ORCPT
+        id S237353AbhHDKCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 06:02:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2352 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237322AbhHDKCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 06:02:34 -0400
-Received: from fsav313.sakura.ne.jp (fsav313.sakura.ne.jp [153.120.85.144])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 174A0eWe063169;
-        Wed, 4 Aug 2021 19:00:40 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav313.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp);
- Wed, 04 Aug 2021 19:00:40 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 174A0d05063165
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 4 Aug 2021 19:00:40 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [syzbot] linux-next boot error: WARNING in find_vma
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Luigi Rizzo <lrizzo@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        syzbot <syzbot+dcb8a1e30879e0d60e8c@syzkaller.appspotmail.com>
-References: <0000000000005b873305c8aa6da2@google.com>
- <20210803132426.2f24a3512264e4603a08de57@linux-foundation.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <58bb6bf7-a57e-8a40-e74b-39584b415152@i-love.sakura.ne.jp>
-Date:   Wed, 4 Aug 2021 19:00:37 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 4 Aug 2021 06:02:43 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1749YBTD061927;
+        Wed, 4 Aug 2021 06:02:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=Si2RaYEKACLc9gmdxcROUfh0ObjMKmBVxrlDiI0m+P8=;
+ b=ceTPa6JehcJh6u1IYa79vhNqhiaGEvErhoJJwneWRZm+xq2iVBK4Mk38NPYU9KVZ/Mf1
+ KYSvDyHeOxx6tCwuHj3UuxzLmaNYtSLdhP9hfaAKWjY3m1xyKTMcnnae9R+k/UcJtkwR
+ q5WhXH8JZLp21nxIZ9rlyesSZeLFEd2g6HjYw9ADdXSfLh1WM0t1ZAu6ELQDjOrptdzz
+ 7nrXCTbauVmIEdtBykdtE47gjV56EHEucs502RZIoQl5ISYJHvP1XP8eM/yoDUOAqeGT
+ 6NoPtkyLRJQX4K+V5/d0a+tjSyeKdtg6eMfHIhuo48naWKi7ffOv6qDQNYK8/hWVz+qt zA== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a7cfc8erg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Aug 2021 06:02:06 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1749vMqE017669;
+        Wed, 4 Aug 2021 10:02:03 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 3a4x58r3j6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Aug 2021 10:02:03 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 174A1x8A47448328
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 4 Aug 2021 10:01:59 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3D132A407B;
+        Wed,  4 Aug 2021 10:01:59 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 01E0DA4040;
+        Wed,  4 Aug 2021 10:01:56 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed,  4 Aug 2021 10:01:55 +0000 (GMT)
+Date:   Wed, 4 Aug 2021 15:31:55 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>
+Subject: Re: [PATCH v2 1/2] sched/topology: Skip updating masks for
+ non-online nodes
+Message-ID: <20210804100155.GE4072958@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20210701041552.112072-1-srikar@linux.vnet.ibm.com>
+ <20210701041552.112072-2-srikar@linux.vnet.ibm.com>
+ <875yxu85wi.mognet@arm.com>
+ <20210712124856.GA3836887@linux.vnet.ibm.com>
+ <87zguqmay9.mognet@arm.com>
+ <20210723143914.GI3836887@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210803132426.2f24a3512264e4603a08de57@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20210723143914.GI3836887@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: kyLPPIU7EN9hswyoUw8Cy49AOnuzhdLT
+X-Proofpoint-GUID: kyLPPIU7EN9hswyoUw8Cy49AOnuzhdLT
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-04_03:2021-08-04,2021-08-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 bulkscore=0 clxscore=1015
+ priorityscore=1501 spamscore=0 mlxscore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108040047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/08/04 5:24, Andrew Morton wrote:
-> Thanks.  I'm suspecting "Add mmap_assert_locked() annotations to
-> find_vma*()" found an error in Tomoyo - tomoyo_dump_page() should be
-> holding mmap_lock?
+* Srikar Dronamraju <srikar@linux.vnet.ibm.com> [2021-07-23 20:09:14]:
 
-Yes, TOMOYO needs the same protection which get_arg_page() needs.
-Please fold below diff into "mm/pagemap: add mmap_assert_locked() annotations to find_vma*()".
+> * Valentin Schneider <valentin.schneider@arm.com> [2021-07-13 17:32:14]:
+> 
+> > On 12/07/21 18:18, Srikar Dronamraju wrote:
+> > > Hi Valentin,
+> > >
+> > >> On 01/07/21 09:45, Srikar Dronamraju wrote:
+> > >> > @@ -1891,12 +1894,30 @@ void sched_init_numa(void)
+> > >> >  void sched_domains_numa_masks_set(unsigned int cpu)
+> > >> >  {
+> > >
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 816c7e347c9c..c982de69fab9 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -214,8 +214,7 @@ static struct page *get_arg_page(struct linux_binprm *bprm, unsigned long pos,
- 		gup_flags |= FOLL_WRITE;
- 
- 	/*
--	 * We are doing an exec().  'current' is the process
--	 * doing the exec and bprm->mm is the new process's mm.
-+	 * We are doing an exec(). bprm->mm is the new process's mm.
- 	 */
- 	mmap_read_lock(bprm->mm);
- 	ret = get_user_pages_remote(bprm->mm, pos, 1, gup_flags,
-diff --git a/security/tomoyo/domain.c b/security/tomoyo/domain.c
-index 98d985895ec8..31af29f669d2 100644
---- a/security/tomoyo/domain.c
-+++ b/security/tomoyo/domain.c
-@@ -897,6 +897,9 @@ bool tomoyo_dump_page(struct linux_binprm *bprm, unsigned long pos,
- 		      struct tomoyo_page_dump *dump)
- {
- 	struct page *page;
-+#ifdef CONFIG_MMU
-+	int ret;
-+#endif
- 
- 	/* dump->data is released by tomoyo_find_next_domain(). */
- 	if (!dump->data) {
-@@ -909,11 +912,13 @@ bool tomoyo_dump_page(struct linux_binprm *bprm, unsigned long pos,
- 	/*
- 	 * This is called at execve() time in order to dig around
- 	 * in the argv/environment of the new proceess
--	 * (represented by bprm).  'current' is the process doing
--	 * the execve().
-+	 * (represented by bprm).
- 	 */
--	if (get_user_pages_remote(bprm->mm, pos, 1,
--				FOLL_FORCE, &page, NULL, NULL) <= 0)
-+	mmap_read_lock(bprm->mm);
-+	ret = get_user_pages_remote(bprm->mm, pos, 1,
-+				    FOLL_FORCE, &page, NULL, NULL);
-+	mmap_read_unlock(bprm->mm);
-+	if (ret <= 0)
- 		return false;
- #else
- 	page = bprm->page[pos / PAGE_SIZE];
+Hey Valentin / Peter
+
+Did you get a chance to look at this?
+
+-- 
+Thanks and Regards
+Srikar Dronamraju
