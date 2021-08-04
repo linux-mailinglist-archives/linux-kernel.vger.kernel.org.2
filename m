@@ -2,147 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715413DFD0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5203E3DFD15
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236621AbhHDIh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:37:26 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:58473 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236493AbhHDIhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:37:22 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GflTw4r3dz9sVl;
-        Wed,  4 Aug 2021 10:37:08 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4YTPUHOfzsKL; Wed,  4 Aug 2021 10:37:08 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GflTw3XfSz9sVg;
-        Wed,  4 Aug 2021 10:37:08 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3336A8B7A3;
-        Wed,  4 Aug 2021 10:37:08 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 3ppPbVI8GWdy; Wed,  4 Aug 2021 10:37:08 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A0F328B7A1;
-        Wed,  4 Aug 2021 10:37:07 +0200 (CEST)
-Subject: Re: [PATCH] powerpc: Remove MSR_PR check in
- interrupt_exit_{user/kernel}_prepare()
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <b36623df00ef3d2296f928487b6e23f93a217afa.1628054802.git.christophe.leroy@csgroup.eu>
- <1628064412.48kzr1eula.astroid@bobo.none>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <cd5f54fd-fbf4-e471-9971-1e8c86755754@csgroup.eu>
-Date:   Wed, 4 Aug 2021 10:37:08 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <1628064412.48kzr1eula.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S236632AbhHDIj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:39:28 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:62537 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236477AbhHDIj0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 04:39:26 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 04 Aug 2021 01:39:14 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Aug 2021 01:39:11 -0700
+X-QCInternal: smtphost
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 04 Aug 2021 14:08:36 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id EAE404C72; Wed,  4 Aug 2021 01:38:34 -0700 (PDT)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, rnayak@codeaurora.org,
+        stable@vger.kernel.org
+Subject: [Resend v3] drm/msm/disp/dpu1: add safe lut config in dpu driver
+Date:   Wed,  4 Aug 2021 01:38:33 -0700
+Message-Id: <1628066313-9717-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add safe lut configuration for all the targets in dpu
+driver as per QOS recommendation.
 
+Issue reported on SC7280:
 
-Le 04/08/2021 à 10:08, Nicholas Piggin a écrit :
-> Excerpts from Christophe Leroy's message of August 4, 2021 3:27 pm:
->> In those hot functions that are called at every interrupt, any saved
->> cycle is worth it.
->>
->> interrupt_exit_user_prepare() and interrupt_exit_kernel_prepare() are
->> called from three places:
->> - From entry_32.S
->> - From interrupt_64.S
->> - From interrupt_exit_user_restart() and interrupt_exit_kernel_restart()
->>
->> In entry_32.S, there are inambiguously called based on MSR_PR:
->>
->> 	interrupt_return:
->> 		lwz	r4,_MSR(r1)
->> 		addi	r3,r1,STACK_FRAME_OVERHEAD
->> 		andi.	r0,r4,MSR_PR
->> 		beq	.Lkernel_interrupt_return
->> 		bl	interrupt_exit_user_prepare
->> 	...
->> 	.Lkernel_interrupt_return:
->> 		bl	interrupt_exit_kernel_prepare
->>
->> In interrupt_64.S, that's similar:
->>
->> 	interrupt_return_\srr\():
->> 		ld	r4,_MSR(r1)
->> 		andi.	r0,r4,MSR_PR
->> 		beq	interrupt_return_\srr\()_kernel
->> 	interrupt_return_\srr\()_user: /* make backtraces match the _kernel variant */
->> 		addi	r3,r1,STACK_FRAME_OVERHEAD
->> 		bl	interrupt_exit_user_prepare
->> 	...
->> 	interrupt_return_\srr\()_kernel:
->> 		addi	r3,r1,STACK_FRAME_OVERHEAD
->> 		bl	interrupt_exit_kernel_prepare
->>
->> In interrupt_exit_user_restart() and interrupt_exit_kernel_restart(),
->> MSR_PR is verified respectively by BUG_ON(!user_mode(regs)) and
->> BUG_ON(user_mode(regs)) prior to calling interrupt_exit_user_prepare()
->> and interrupt_exit_kernel_prepare().
->>
->> The verification in interrupt_exit_user_prepare() and
->> interrupt_exit_kernel_prepare() are therefore useless and can be removed.
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> 
-> Probably okay to do now things are ironing out.
-> 
-> Unless we want to make a new define for interrupt handler debug and put
-> a bunch of these asserts under it. There's quite a lot more here, and
-> in asm/interrupt.h, etc.
+With wait-for-safe feature in smmu enabled, RT client
+buffer levels are checked to be safe before smmu invalidation.
+Since display was always set to unsafe it was delaying the
+invalidaiton process thus impacting the performance on NRT clients
+such as eMMC and NVMe.
 
-But that one is so trivial that I'm not sure there is any point in keeping it even as a kind of 
-additional DEBUG level, unless you want those BUG_ONs because you don't trust the compiler.
+Validated this change on SC7280, With this change eMMC performance
+has improved significantly.
 
-Christophe
+Changes in v2:
+- Add fixes tag (Sai)
+- CC stable kernel (Dimtry)
 
-> 
-> Thanks,
-> Nick
-> 
->> ---
->>   arch/powerpc/kernel/interrupt.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
->> index 21bbd615ca41..f26caf911ab5 100644
->> --- a/arch/powerpc/kernel/interrupt.c
->> +++ b/arch/powerpc/kernel/interrupt.c
->> @@ -465,7 +465,6 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs)
->>   
->>   	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
->>   		BUG_ON(!(regs->msr & MSR_RI));
->> -	BUG_ON(!(regs->msr & MSR_PR));
->>   	BUG_ON(arch_irq_disabled_regs(regs));
->>   	CT_WARN_ON(ct_state() == CONTEXT_USER);
->>   
->> @@ -499,7 +498,6 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs)
->>   	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x) &&
->>   	    unlikely(!(regs->msr & MSR_RI)))
->>   		unrecoverable_exception(regs);
->> -	BUG_ON(regs->msr & MSR_PR);
->>   	/*
->>   	 * CT_WARN_ON comes here via program_check_exception,
->>   	 * so avoid recursion.
->> -- 
->> 2.25.0
->>
->>
+Changes in v3:
+- Correct fixes tag with appropriate hash (stephen)
+- Resend patch adding reviewed by tag
+
+Fixes: 591e34a091d1 ("drm/msm/disp/dpu1: add support for display for SC7280 target")
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org> (sc7280, sc7180)
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+index d01c4c9..2e482cd 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+@@ -974,6 +974,7 @@ static const struct dpu_perf_cfg sdm845_perf_data = {
+ 	.amortizable_threshold = 25,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xf000, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sdm845_qos_linear),
+ 		.entries = sdm845_qos_linear
+@@ -1001,6 +1002,7 @@ static const struct dpu_perf_cfg sc7180_perf_data = {
+ 	.min_dram_ib = 1600000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xff, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
+ 		.entries = sc7180_qos_linear
+@@ -1028,6 +1030,7 @@ static const struct dpu_perf_cfg sm8150_perf_data = {
+ 	.min_dram_ib = 800000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff8, 0xf000, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sm8150_qos_linear),
+ 		.entries = sm8150_qos_linear
+@@ -1056,6 +1059,7 @@ static const struct dpu_perf_cfg sm8250_perf_data = {
+ 	.min_dram_ib = 800000,
+ 	.min_prefill_lines = 35,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
+ 		.entries = sc7180_qos_linear
+@@ -1084,6 +1088,7 @@ static const struct dpu_perf_cfg sc7280_perf_data = {
+ 	.min_dram_ib = 1600000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xffff, 0xffff, 0x0},
++	.safe_lut_tbl = {0xff00, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
+ 		.entries = sc7180_qos_macrotile
+-- 
+2.7.4
+
