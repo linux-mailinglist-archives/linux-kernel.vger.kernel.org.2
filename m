@@ -2,107 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0143DFB32
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142B03DFB38
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235338AbhHDFq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 01:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235019AbhHDFqz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 01:46:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE3AC0613D5
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 22:46:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=jRUGig0EXzdTjF3M0VcYNt0Nv98YmJSiq/SwjB8bR3k=; b=UlW0DvUjar7j970g0tYwOJtxpD
-        7vny0Us8GoUsWybJqqkbDw5GI855zgZTv5iYjp4QwRU4QEsEbFxISpFWCqD8QjSSWk7RrYvbI5zcd
-        VyDUzE/5bRrzqJMED4DKvUy2Fs6Isq/7L7uE11yZ56ZdG09M0cEDJZdpandDq94zu0mENOD1GPQNS
-        EbqnrXKXUsctkZLKbcMSGHDKRDVXOPyM/vJmrfDug1vTD/L3M3flp4vkUypcYFOutuhswWweiKFCe
-        SN3TgLDan/jrrl+Gr5bHtSG+SUEAqIdur5HEKZ0NkL92QJsMDMjPirzEObw1mX7ZRH47UPLGbW0ss
-        Jfp6HGcw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mB9jJ-005SPK-N8; Wed, 04 Aug 2021 05:46:21 +0000
-Subject: Re: undefined reference to `.radix__create_section_mapping'
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        kernel test robot <lkp@intel.com>,
-        Jordan Niethe <jniethe5@gmail.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <202108010251.C4jhEEBW-lkp@intel.com>
- <082eea82-c788-72e0-f6a4-eadfb54d1231@infradead.org>
- <c4398495-a50a-a749-6679-7510ed862db2@csgroup.eu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <85498c30-6151-de0e-1647-fdb41b4b3320@infradead.org>
-Date:   Tue, 3 Aug 2021 22:46:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S235424AbhHDFrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 01:47:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235012AbhHDFrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 01:47:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DBC260F35;
+        Wed,  4 Aug 2021 05:47:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628056060;
+        bh=1gdAXIFEnMmmgxkAapvaJqxB+Vq0F+z7XRSiH/DqABE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tz7FyKHQV1AMtEtC+epww0ohe2WtFEph3g6Spy1b5mz6khm47prW89VVSyRhfzjLx
+         zLL8g7wB+u3lOBUwnFnlTvcwO5Rce31LNm7Y2FCf9m2ayBQ3OimThsKKAYjcd1UfGg
+         ZbBF3shZ4a9z9/PD9t9KWy4ZX9tKc4Jh6lOawyhIY632toTDhbXharRkPINL7yN5K2
+         W1Q1/fhbHhhWSUStVToCEn0GdJkSINuFzgKPs7aw/UxAYXYHbw3VHmM4HYTZ+YeW8f
+         PQH8iwS1TCEc0ecbqa44NCMYCnN716BvnwG/qLR1ZvbSMx/sziwECBwy3c/6EACTb+
+         fBmSksFmmzZ4Q==
+Date:   Wed, 4 Aug 2021 08:47:36 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, mptcp@lists.linux.dev,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-s390@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH net-next v2] net: Modify sock_set_keepalive() for more
+ scenarios
+Message-ID: <YQop+GhJcKICdwZ0@unreal>
+References: <20210804032856.4005-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-In-Reply-To: <c4398495-a50a-a749-6679-7510ed862db2@csgroup.eu>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210804032856.4005-1-yajun.deng@linux.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/21 10:31 PM, Christophe Leroy wrote:
-> Hi Randy,
+On Wed, Aug 04, 2021 at 11:28:56AM +0800, Yajun Deng wrote:
+> Add 2nd parameter in sock_set_keepalive(), let the caller decide
+> whether to set. This can be applied to more scenarios.
 > 
-> Le 04/08/2021 à 04:40, Randy Dunlap a écrit :
->> On 7/31/21 11:22 AM, kernel test robot wrote:
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   c7d102232649226a69dddd58a4942cf13cff4f7c
->>> commit: fe3dc333d2ed50c9764d281869d87bae0d795ce5 powerpc/mmu: Don't duplicate radix_enabled()
->>> date:   3 months ago
->>> config: powerpc64-randconfig-r013-20210731 (attached as .config)
->>> compiler: powerpc-linux-gcc (GCC) 10.3.0
->>> reproduce (this is a W=1 build):
->>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>          chmod +x ~/bin/make.cross
->>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe3dc333d2ed50c9764d281869d87bae0d795ce5
->>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>          git fetch --no-tags linus master
->>>          git checkout fe3dc333d2ed50c9764d281869d87bae0d795ce5
->>>          # save the attached .config to linux build tree
->>>          mkdir build_dir
->>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>     powerpc-linux-ld: arch/powerpc/mm/book3s64/pgtable.o: in function `.create_section_mapping':
->>>>> (.meminit.text+0x3c): undefined reference to `.radix__create_section_mapping'
->>>     powerpc-linux-ld: arch/powerpc/mm/book3s64/pgtable.o: in function `.remove_section_mapping':
->>>>> (.meminit.text+0x90): undefined reference to `.radix__remove_section_mapping'
->>
->> In the randconfig file:
->> # CONFIG_PPC_RADIX_MMU is not set
->>
->> It is default y, but maybe that is not strong enough?
->> I.e., should it be selected by PPC_BOOK3S_64?
->>
->> Changing the config to PPC_RADIX_MMU=y fixes the build errors.
->>
->> Or should arch/powerpc/mm/book3s64/pgtable.c be modified to handle
->> the case of PPC_RADIX_MMU is not set?
->>
+> v2:
+>  - add the change in fs/dlm.
 > 
-> Can you test https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210804013724.514468-1-jniethe5@gmail.com/ ?
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+>  fs/dlm/lowcomms.c     |  2 +-
+>  include/net/sock.h    |  2 +-
+>  net/core/filter.c     |  4 +---
+>  net/core/sock.c       | 10 ++++------
+>  net/mptcp/sockopt.c   |  4 +---
+>  net/rds/tcp_listen.c  |  2 +-
+>  net/smc/af_smc.c      |  2 +-
+>  net/sunrpc/xprtsock.c |  2 +-
+>  8 files changed, 11 insertions(+), 17 deletions(-)
 
-Hi Christophe,
+1. Don't add changelogs in the commit messages and put them under --- marker.
+2. Add an explanation to the commit message WHY this change is necessary
+and HOW will it be used.
+3. Drop all your double NOT in front of values (!!val) and rely on C
+that casts int to bool naturally.
 
-Yes, that builds without a problem. Thanks for the pointer.
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
--- 
-~Randy
+Thanks
