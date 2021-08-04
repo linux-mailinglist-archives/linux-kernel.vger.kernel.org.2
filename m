@@ -2,218 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA063E06AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3513E06B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239791AbhHDRU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhHDRUy (ORCPT
+        id S239859AbhHDRXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:23:06 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:33447 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230133AbhHDRXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:20:54 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10743C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 10:20:42 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id u10so3688576oiw.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 10:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SsLjeKiLuliSZOE+wUaPOjaCl3gVgPx+PNBKHSFfAc0=;
-        b=hVC8CZtsjkFOsvIinLJF30LOuTeXy5igNSPk7hFv9p92XBKklcEs4hRIgS5etqqoyk
-         Ex95PKSsiEj/BIIpSYMCXBpJJqiH/5bSpUtu467tZBV8HYK5j+gEiLPcsWBFOX+A76Bz
-         JQ70k6t5f/6C/3n/OaC5HAKi3bKsajwSq0Tl1GgURhePM/VohVmGQ8oqkiXqAisNMjXn
-         eeHuS+zUQmQd6Fd1jtrlFXGp45uGhY89q+X9Iye1mtthZzGL2CodxGIT+vCYy9ESHOca
-         nzkl3F/QNRx10oWyG57E0AG0qj+C3s6cveoKrfI/8lgHfHl936IVjVr+tKTpkIlR6IYn
-         KIrA==
+        Wed, 4 Aug 2021 13:23:04 -0400
+Received: by mail-oi1-f178.google.com with SMTP id 26so3753317oiy.0;
+        Wed, 04 Aug 2021 10:22:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SsLjeKiLuliSZOE+wUaPOjaCl3gVgPx+PNBKHSFfAc0=;
-        b=eNwTDLFkOZTPIBoNwVTt6/4IFTHtaronNfRhqJXEDfTDGl8J7+0FU+W+bpWe5SnPrE
-         JeNuI/xnjhkue/CiWWwkwg33rUSZkvhZphKbSKj+yX1D2QylcgDrMI9K/mBeKYvfuun5
-         JwOnK1kn7EzrXB2YSoQiNXoblgxvqGvOfTMx/vgeOJsQNYEtFOn43oaLe1UU7ANnkszs
-         kR4d8S2yUzph2H+ncnpnsffV44eCBIgO0qJJ+DQXCQ/LGDeiKvhw3ET/aHXJSQC7cO9w
-         qMlYYZ+cYUZCfw3UNoXSo/o23PphmalU2zvEFz/kCeeCPEUP4Z1reo0eX5Bl4yoN3Iig
-         JN4g==
-X-Gm-Message-State: AOAM530QB9cwhczYVH0UuRBEjQmcKUoR12ClkVPoQTZN1k1KrBy3tk+N
-        xZjj+BMb9UqBBRH9Gg5PX1RB7naIKRNT5l+WM7C+1Q==
-X-Google-Smtp-Source: ABdhPJydHT8T09LV2c5tCC/zHhUe+u5O3+JdHKYpJP9RhhU+4ivVPQngJmG/KHsv0HSdDX7wN70cCyRdKW8apbASMIk=
-X-Received: by 2002:a05:6808:d53:: with SMTP id w19mr447537oik.48.1628097641355;
- Wed, 04 Aug 2021 10:20:41 -0700 (PDT)
+        bh=Ot6+sRJDnG9IEdLmbWzLgDoJPTVltWWliDN67LVwt3M=;
+        b=g2VmYFpri/CEJsr/r+amddO1Q6/vqVuJMdH8CPsQT9E0sZpGFeoj7ARSrcGPfIf2AY
+         pMT1Mg1dI1dTv4uwFt63QuxY05HKrTKb6+74Ov7lLkqDmy+OwcyGk6tjvK5T/DFDtm6n
+         i/OLIDVlHHKrYrZYmwssBVj8chFb+tCNAGhQUx/jCHBLPvodOGCyqvINY9inr8EgHbXr
+         kLVH84d9EkqYlFHTaFQd8sQDzV4SNqxYbc25Ol+w5144XJFCmk9hq1G8qD6+k+crF7/q
+         gLgT2KL0gm/8I4RLyvJP4IKPt+Bh9/xjMMUxiUU7l3ds5Ovmq4t9e91uOvafU9bcdEFX
+         Uieg==
+X-Gm-Message-State: AOAM5306OmSOTOcFR81lsCLTp/nPaC0UGO+ab0KgiM/ybzJHrAVozTV3
+        nBRVQmuBi76ywOkH/PiPhJGFRrcrfH3YRotX4ac=
+X-Google-Smtp-Source: ABdhPJxVZiwA8lZTVCO6Rh7vKMaNJ5VdX2cJIC7ivVZvOJfrmVlciXkJiJL8ssFLJpM7zSeaocjr9CanwuMOgkC9Q8o=
+X-Received: by 2002:a05:6808:198c:: with SMTP id bj12mr430848oib.71.1628097770612;
+ Wed, 04 Aug 2021 10:22:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210802211912.116329-1-jiang.wang@bytedance.com>
- <20210802211912.116329-3-jiang.wang@bytedance.com> <87zgtxcfig.fsf@cloudflare.com>
-In-Reply-To: <87zgtxcfig.fsf@cloudflare.com>
-From:   "Jiang Wang ." <jiang.wang@bytedance.com>
-Date:   Wed, 4 Aug 2021 10:20:30 -0700
-Message-ID: <CAP_N_Z_c5CidNPdnaf=M=Vpm9-rJvODi+-5rZ0DNO+mwOpKJpw@mail.gmail.com>
-Subject: Re: Re: [PATCH bpf-next v3 2/5] af_unix: add unix_stream_proto for sockmap
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
+References: <20210723182759.74491-1-pankaj.gupta.linux@gmail.com>
+In-Reply-To: <20210723182759.74491-1-pankaj.gupta.linux@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 4 Aug 2021 19:22:39 +0200
+Message-ID: <CAJZ5v0hV-3KXJM0WiQ=5nLoO06-A5ky_E7FViokj9uDax8zg1Q@mail.gmail.com>
+Subject: Re: [PATCH] cpuidle: set poll_limit_ns out of if-else
+To:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pankaj Gupta <pankaj.gupta@ionos.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 9:59 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+On Fri, Jul 23, 2021 at 8:28 PM Pankaj Gupta
+<pankaj.gupta.linux@gmail.com> wrote:
 >
-> On Mon, Aug 02, 2021 at 11:19 PM CEST, Jiang Wang wrote:
+> From: Pankaj Gupta <pankaj.gupta@ionos.com>
 >
-> [...]
->
-> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> > index ae5fa4338..42f50ea7a 100644
-> > --- a/net/core/sock_map.c
-> > +++ b/net/core/sock_map.c
-> > @@ -517,9 +517,15 @@ static bool sk_is_tcp(const struct sock *sk)
-> >              sk->sk_protocol == IPPROTO_TCP;
-> >  }
-> >
-> > +static bool sk_is_unix_stream(const struct sock *sk)
-> > +{
-> > +     return sk->sk_type == SOCK_STREAM &&
-> > +            sk->sk_protocol == PF_UNIX;
-> > +}
-> > +
-> >  static bool sock_map_redirect_allowed(const struct sock *sk)
-> >  {
-> > -     if (sk_is_tcp(sk))
-> > +     if (sk_is_tcp(sk) || sk_is_unix_stream(sk))
-> >               return sk->sk_state != TCP_LISTEN;
-> >       else
-> >               return sk->sk_state == TCP_ESTABLISHED;
->
-> Let me provide some context.
->
-> The reason why we check != TCP_LISTEN for TCP sockets is that we want to
-> allow redirect redirect to sockets that are about to transition from
-> TCP_SYN_RECV to TCP_ESTABLISHED, in addition to sockets already in
-> TCP_ESTABLISHED state.
->
-> That's because BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB callback happens when
-> socket is still in TCP_SYN_RECV state. With BPF sockops program, we can
-> insert such socket into a sockmap. Hence, there is a short window of
-> opportunity when we could redirect to a socket in TCP_SYN_RECV.
->
-> UNIX sockets can be only in TCP_{CLOSE,LISTEN,ESTABLISHED} state,
-> AFAIK. So it is sufficient to rely on the default == TCP_ESTABLISHED
-> check.
->
-Got it. Thanks for the explanation. I will change unix sockets to only
-check == TCP_ESTABLISHED condition.
+>  Since poll_limit_ns is being set at the end of both if and else statement.
 
-> > diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> > index 0ae3fc4c8..9c1711c67 100644
-> > --- a/net/unix/af_unix.c
-> > +++ b/net/unix/af_unix.c
-> > @@ -791,17 +791,35 @@ static void unix_close(struct sock *sk, long timeout)
-> >        */
-> >  }
-> >
-> > -struct proto unix_proto = {
-> > -     .name                   = "UNIX",
-> > +static void unix_unhash(struct sock *sk)
-> > +{
-> > +     /* Nothing to do here, unix socket does not need a ->unhash().
-> > +      * This is merely for sockmap.
-> > +      */
-> > +}
-> > +
-> > +struct proto unix_dgram_proto = {
-> > +     .name                   = "UNIX-DGRAM",
-> > +     .owner                  = THIS_MODULE,
-> > +     .obj_size               = sizeof(struct unix_sock),
-> > +     .close                  = unix_close,
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +     .psock_update_sk_prot   = unix_dgram_bpf_update_proto,
-> > +#endif
-> > +};
-> > +
-> > +struct proto unix_stream_proto = {
-> > +     .name                   = "UNIX-STREAM",
-> >       .owner                  = THIS_MODULE,
-> >       .obj_size               = sizeof(struct unix_sock),
-> >       .close                  = unix_close,
-> > +     .unhash                 = unix_unhash,
-> >  #ifdef CONFIG_BPF_SYSCALL
-> > -     .psock_update_sk_prot   = unix_bpf_update_proto,
-> > +     .psock_update_sk_prot   = unix_stream_bpf_update_proto,
-> >  #endif
-> >  };
-> >
-> > -static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
-> > +static struct sock *unix_create1(struct net *net, struct socket *sock, int kern, int type)
-> >  {
-> >       struct sock *sk = NULL;
-> >       struct unix_sock *u;
-> > @@ -810,7 +828,11 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
-> >       if (atomic_long_read(&unix_nr_socks) > 2 * get_max_files())
-> >               goto out;
-> >
-> > -     sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_proto, kern);
-> > +     if (type == SOCK_STREAM)
-> > +             sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_stream_proto, kern);
-> > +     else /*dgram and  seqpacket */
-> > +             sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_dgram_proto, kern);
-> > +
-> >       if (!sk)
-> >               goto out;
-> >
-> > @@ -872,7 +894,7 @@ static int unix_create(struct net *net, struct socket *sock, int protocol,
-> >               return -ESOCKTNOSUPPORT;
-> >       }
-> >
-> > -     return unix_create1(net, sock, kern) ? 0 : -ENOMEM;
-> > +     return unix_create1(net, sock, kern, sock->type) ? 0 : -ENOMEM;
-> >  }
-> >
-> >  static int unix_release(struct socket *sock)
-> > @@ -1286,7 +1308,7 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
-> >       err = -ENOMEM;
-> >
-> >       /* create new sock for complete connection */
-> > -     newsk = unix_create1(sock_net(sk), NULL, 0);
-> > +     newsk = unix_create1(sock_net(sk), NULL, 0, sock->type);
-> >       if (newsk == NULL)
-> >               goto out;
-> >
-> > @@ -2214,7 +2236,7 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg, size_t si
-> >       struct sock *sk = sock->sk;
-> >
-> >  #ifdef CONFIG_BPF_SYSCALL
-> > -     if (sk->sk_prot != &unix_proto)
-> > +     if (sk->sk_prot != &unix_dgram_proto)
-> >               return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
-> >                                           flags & ~MSG_DONTWAIT, NULL);
-> >  #endif
->
->
-> KASAN might be unhappy about access to sk->sk_prot not annotated with
-> READ_ONCE. In unix_bpf we have WRITE_ONCE(sk->sk_prot, ...) [1]
->
-Got it.  Will check and add READ_ONCE if necessary.
+But they are if () and else if (), so not really.
 
-> [...]
+>  Moving and setting it out at one place.
 >
-> [1] https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE#why-kernel-code-should-use-read_once-and-write_once-for-shared-memory-accesses
+> Signed-off-by: Pankaj Gupta <pankaj.gupta@ionos.com>
+> ---
+>  drivers/cpuidle/governors/haltpoll.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/cpuidle/governors/haltpoll.c b/drivers/cpuidle/governors/haltpoll.c
+> index cb2a96eafc02..7d0e95bc94f3 100644
+> --- a/drivers/cpuidle/governors/haltpoll.c
+> +++ b/drivers/cpuidle/governors/haltpoll.c
+> @@ -90,7 +90,6 @@ static void adjust_poll_limit(struct cpuidle_device *dev, u64 block_ns)
+>                 if (val > guest_halt_poll_ns)
+>                         val = guest_halt_poll_ns;
+>
+> -               dev->poll_limit_ns = val;
+>         } else if (block_ns > guest_halt_poll_ns &&
+>                    guest_halt_poll_allow_shrink) {
+>                 unsigned int shrink = guest_halt_poll_shrink;
+> @@ -100,8 +99,9 @@ static void adjust_poll_limit(struct cpuidle_device *dev, u64 block_ns)
+>                         val = 0;
+>                 else
+>                         val /= shrink;
+> -               dev->poll_limit_ns = val;
+>         }
+> +
+> +       dev->poll_limit_ns = val;
+>  }
+>
+>  /**
+> --
+> 2.25.1
+>
