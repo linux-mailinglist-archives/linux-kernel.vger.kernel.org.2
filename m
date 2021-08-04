@@ -2,140 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06413E0A77
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7A33E0A78
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbhHDWgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhHDWgl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:36:41 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC33EC0613D5;
-        Wed,  4 Aug 2021 15:36:26 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x8so7177647lfe.3;
-        Wed, 04 Aug 2021 15:36:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AnR/vwLGsL7Poij+z8KIk9gwayPey3/PAXIR24vHmP0=;
-        b=c2q/uQrMO4jPVQnQdZ9sjj+CN79C/J8jIUpR4Pc7BSXnwzep3tlimNRR/H2xhI7r6g
-         t9D2kA58NXmF1rqVtdzP0FR8q9jJM22Mn6hWLWADNWK8MxxY4tjkI3YeDcLL7q5Ye6W4
-         Vd8n9Q6h0bWS0pozeAtwyIu5N/GLYGIHpovDwgEtyd80IypPv8CUvmJV+VsbVMjNuUB2
-         bTwUoXTWuqUUXAxubDTnps3NtV8zE8czLZOiP4YvnTVMnUoHxybN+CO7NKXDYoVb+2JX
-         EEWYg5JWheFJyWDRADgSIAigH3Z9vfuZ7kP3ZbwQ1fxPV6iEjPjojHIFKhEBv4D99Fkx
-         l9yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AnR/vwLGsL7Poij+z8KIk9gwayPey3/PAXIR24vHmP0=;
-        b=bfezMsyZAj5nm/LrzQ3cfsImf5BtwVJyCoZPJu2vCMGtVAPO0+FZQVY/KHkJ+Qxjoo
-         MjAEs963JWIX/OVIrpVnZe33+PSptouVNQWXhG/IY+y8JZG9ltMNIxlLq6aehvnjimcd
-         cTRKgBiaTmw2tgjr+OiZmXRsSEb065IpdfyggIk3RrZf9Jvo3N564TmcKqFNPysReO/T
-         ryIusBnkkrTXS0s4IbfJIAjIHdZpqYgj6k0axBcuNzPGO7P2kGAlVLhnMpwbha0bS3v9
-         rcE5CPDzdFTv8/LcggIu665XVsr3rvpey1m12J3HTM/ppYuePtcjwHJt00LvgSYUSfW5
-         Lujg==
-X-Gm-Message-State: AOAM533qVaubkAGyM9iFv2elwZ5GfsR9To882qRWc/jNevxFdMoFNaNm
-        UtJM4PmB00AKeRH4ItE+B0HJOEs0WxUdO44Stw==
-X-Google-Smtp-Source: ABdhPJxLxuyttu7imt6SnqjaH9qPL5KqPGfCTvbu+tVQhehjnWS73vs3lJQiFmP5Zsx+YK9RTSzIftCqHotYVCX4WqQ=
-X-Received: by 2002:a05:6512:a8c:: with SMTP id m12mr1020129lfu.526.1628116585131;
- Wed, 04 Aug 2021 15:36:25 -0700 (PDT)
+        id S231482AbhHDWh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:37:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229611AbhHDWh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:37:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A4C60F41;
+        Wed,  4 Aug 2021 22:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628116632;
+        bh=CZDc3cuXIwg9cgSdNmFX+JqgPpKv7JvIYL0xpPA/LpY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZKUVPraVYkfCzKNwBVmOMqZ5pvwwG1NhufBNSrcln+cpyDr3l2dafv/3GPXEfTXSH
+         IrPFtutGDy3ybFQPQGqtKSQeVFLFaUQzRjwGt5Dp/cMUU+aAe0zQFj9/sRyHrBwP/Y
+         eqGNkQYKfL/aT5TnPlWcRwfU9/lwcB1CGREu+t92WOLMxXQwoJZuWalbsquaI8tUKf
+         29ktO/4KqXZGTEpsoyaJOSt0WGMWl5qP4k+ENCNSVWdLX36GEAGZgGyt6YYiWkylTH
+         GWdv3J1o6f9F7eRBjUs0eqHfokzwd3KbGgwihKExwZpAsU0UtUWFojRj9GYjH48uSB
+         J38/ArSapK0oQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 950F85C22D9; Wed,  4 Aug 2021 15:37:12 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 15:37:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Scott Wood <swood@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 1/2] rcutorture: Don't disable softirqs with preemption
+ disabled when PREEMPT_RT
+Message-ID: <20210804223712.GA4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210803225437.3612591-1-valentin.schneider@arm.com>
+ <20210803225437.3612591-2-valentin.schneider@arm.com>
+ <20210803234352.GX4397@paulmck-ThinkPad-P17-Gen-1>
+ <87v94la4zm.mognet@arm.com>
 MIME-Version: 1.0
-References: <8ee569d3-7fac-68c6-a1f7-f6457ce0343c@gmail.com>
-In-Reply-To: <8ee569d3-7fac-68c6-a1f7-f6457ce0343c@gmail.com>
-From:   Gabriel C <nix.or.die@googlemail.com>
-Date:   Thu, 5 Aug 2021 00:35:59 +0200
-Message-ID: <CAEJqkgiUv1q3tz2JPSyqrAifQQDsS8uPf6QmbG3C4Hs6fDRTJA@mail.gmail.com>
-Subject: Re: [pinctrl-amd] 5.14-rcX, d62bd5ce12d79bcd6a6c3e4381daa7375dc21158
- breaks poweroff/shutdown on ThinkPads
-To:     Raul E Rangel <rrangel@chromium.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v94la4zm.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding gpio list to CC
+On Wed, Aug 04, 2021 at 11:17:33AM +0100, Valentin Schneider wrote:
+> 
+> +Cc Scott, Sebastian
+> 
+> On 03/08/21 16:43, Paul E. McKenney wrote:
+> > On Tue, Aug 03, 2021 at 11:54:36PM +0100, Valentin Schneider wrote:
+> >> Running RCU torture with CONFIG_PREEMPT_RT under v5.13-rt1 triggers:
+> >>
+> >> [   10.821700] DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt))
+> >> [   10.821716] WARNING: CPU: 5 PID: 137 at kernel/softirq.c:173 __local_bh_disable_ip (kernel/softirq.c:173 (discriminator 31))
+> >> [   10.821739] Modules linked in:
+> >> [   10.821749] CPU: 5 PID: 137 Comm: rcu_torture_rea Not tainted 5.13.0-rt1-00005-g08bbda29766a #129
+> >> [   10.821759] Hardware name: ARM Juno development board (r0) (DT)
+> >> [   10.821765] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> >> [   10.821938] Call trace:
+> >> [   10.821941] __local_bh_disable_ip (kernel/softirq.c:173 (discriminator 31))
+> >> [   10.821950] rcutorture_one_extend (./include/linux/rcupdate.h:274 ./include/linux/rcupdate.h:737 kernel/rcu/rcutorture.c:1443)
+> >> [   10.821960] rcu_torture_one_read (kernel/rcu/rcutorture.c:1590 kernel/rcu/rcutorture.c:1638)
+> >> [   10.821968] rcu_torture_reader (kernel/rcu/rcutorture.c:1730)
+> >> [   10.821976] kthread (kernel/kthread.c:321)
+> >> [   10.821986] ret_from_fork (arch/arm64/kernel/entry.S:1005)
+> >> [   10.821997] irq event stamp: 478635
+> >> [   10.822001] hardirqs last enabled at (478635): _raw_spin_unlock_irq (./arch/arm64/include/asm/irqflags.h:35 ./include/linux/spinlock_api_smp.h:168 kernel/locking/spinlock.c:202)
+> >> [   10.822016] hardirqs last disabled at (478634): __schedule (kernel/sched/core.c:5154 (discriminator 1))
+> >> [   10.822029] softirqs last enabled at (478626): __local_bh_enable_ip (./arch/arm64/include/asm/irqflags.h:85 kernel/softirq.c:262)
+> >> [   10.822040] softirqs last disabled at (478622): rcutorture_one_extend (./include/linux/bottom_half.h:19 kernel/rcu/rcutorture.c:1441)
+> >>
+> >> Per this warning, softirqs cannot be disabled in a non-preemptible region
+> >> under CONFIG_PREEMPT_RT. Adjust RCU torture accordingly.
+> >>
+> >> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> >> ---
+> >>  kernel/rcu/rcutorture.c | 2 ++
+> >>  1 file changed, 2 insertions(+)
+> >>
+> >> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> >> index 6096a7d14342..680f66b65f14 100644
+> >> --- a/kernel/rcu/rcutorture.c
+> >> +++ b/kernel/rcu/rcutorture.c
+> >> @@ -1537,6 +1537,8 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
+> >>       * them on non-RT.
+> >>       */
+> >>      if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> >
+> > This depends on some rcutorture patches in -rt that are not yet in
+> > -rcu.  Would -rt be a good place for this one, or are those patches
+> > now ready for -rcu?
+> >
+> 
+> Right, this goes along with
+> 
+>   72d6f4f680bf ("rcutorture: Avoid problematic critical section nesting on RT")
+> 
+> (from v5.13-rt1), which seems to apply cleanly on top of the current
+> mainline. So if we want this to go straight into -rcu, the above needs to
+> go along with it.
 
+Ah, this one needs to have its changes conditioned on PREEMPT_RT.
+The situations that this patch excludes really can happen in mainline,
+so they still need to be tested in mainline.
 
-Am Mo., 2. Aug. 2021 um 20:18 Uhr schrieb Gabriel C <nix.or.die@googlemail.com>:
->
-> Hello,
->
-> while doing S0ix testing on my P14s gen1 AMD I noticed the machine won't
-> poweroff/shutdown anymore starting with 5.14-rc1,
->
-> it just reboots. The machine set to S3 in BIOS works as expected.
->
-> I have  confirmed the T14/T14s/X13 AMD gen1 models have the same problem
-> so I've run a bisect.
->
->
-> crazy@ThinkPad-P14s:~/Work/kernel/git/linux$ git bisect log
-> git bisect start
-> # bad: [e73f0f0ee7541171d89f2e2491130c7771ba58d3] Linux 5.14-rc1
-> git bisect bad e73f0f0ee7541171d89f2e2491130c7771ba58d3
-> # good: [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
-> git bisect good 62fb9874f5da54fdb243003b386128037319b219
-> # good: [e058a84bfddc42ba356a2316f2cf1141974625c9] Merge tag
-> 'drm-next-2021-07-01' of git://anongit.freedesktop.org/drm/drm
-> git bisect good e058a84bfddc42ba356a2316f2cf1141974625c9
-> # bad: [eed0218e8cae9fcd186c30e9fcf5fe46a87e056e] Merge tag
-> 'char-misc-5.14-rc1' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc
-> git bisect bad eed0218e8cae9fcd186c30e9fcf5fe46a87e056e
-> # bad: [bd31b9efbf549d9630bf2f269a3a56dcb29fcac1] Merge tag 'scsi-misc'
-> of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi
-> git bisect bad bd31b9efbf549d9630bf2f269a3a56dcb29fcac1
-> # bad: [406254918b232db198ed60f5bf1f8b84d96bca00] Merge tag
-> 'perf-tools-for-v5.14-2021-07-01' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
-> git bisect bad 406254918b232db198ed60f5bf1f8b84d96bca00
-> # good: [e04360a2ea01bf42aa639b65aad81f502e896c7f] Merge tag 'for-linus'
-> of git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma
-> git bisect good e04360a2ea01bf42aa639b65aad81f502e896c7f
-> # good: [b869d5be0acf0e125e69adcffdca04000dc5b17c] ipc/util.c: use
-> binary search for max_idx
-> git bisect good b869d5be0acf0e125e69adcffdca04000dc5b17c
-> # good: [6495e762522d4cf73d0b339830091799881eb025] perf dlfilter: Add
-> attr() to perf_dlfilter_fns
-> git bisect good 6495e762522d4cf73d0b339830091799881eb025
-> # bad: [a32b344e6f4375c5bdc3e89d0997b7eae187a3b1] Merge tag
-> 'pinctrl-v5.14-1' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl
-> git bisect bad a32b344e6f4375c5bdc3e89d0997b7eae187a3b1
-> # bad: [897120d41e7afd9da435cb00041a142aeeb53c07] pinctrl: mcp23s08: fix
-> race condition in irq handler
-> git bisect bad 897120d41e7afd9da435cb00041a142aeeb53c07
-> # bad: [8b4c397d88d97d4fd9c3f3527aa66688b1a3387a] dt-bindings: pinctrl:
-> mt65xx: add mt8365 SoC binding
-> git bisect bad 8b4c397d88d97d4fd9c3f3527aa66688b1a3387a
-> # bad: [ef9385fbf30e9484e4291db76e000b8961419782] pinctrl: iproc-gpio:
-> Remove redundant error printing in iproc_gpio_probe()
-> git bisect bad ef9385fbf30e9484e4291db76e000b8961419782
-> # bad: [969ef42b1ae094da99b8acbf14864f94d37f6e58] pinctrl: qcom:
-> spmi-mpp: Add compatible for pmi8994
-> git bisect bad 969ef42b1ae094da99b8acbf14864f94d37f6e58
-> # bad: [d62bd5ce12d79bcd6a6c3e4381daa7375dc21158] pinctrl: amd:
-> Implement irq_set_wake
-> git bisect bad d62bd5ce12d79bcd6a6c3e4381daa7375dc21158
-> # good: [ac5f8197d15cf37d7ae37ff5b6438abe6c8509a6] dt-bindings: pinctrl:
-> convert Broadcom Northstar to the json-schema
-> git bisect good ac5f8197d15cf37d7ae37ff5b6438abe6c8509a6
-> # first bad commit: [d62bd5ce12d79bcd6a6c3e4381daa7375dc21158] pinctrl:
-> amd: Implement irq_set_wake
->
->
-> Reverting d62bd5ce12d79bcd6a6c3e4381daa7375dc21158 fixes the problem.
->
->
-> Best Regards,
->
->
-> Gabriel C.
->
+It all comes back now.  ;-)
+
+							Thanx, Paul
+
+> Thomas et al, any objections?
+> 
+> >                                                       Thanx, Paul
+> >
+> >> +		/* Can't disable bh in atomic context under PREEMPT_RT */
+> >> +		mask &= ~(RCUTORTURE_RDR_ATOM_BH | RCUTORTURE_RDR_ATOM_RBH);
+> >>              /*
+> >>               * Can't release the outermost rcu lock in an irq disabled
+> >>               * section without preemption also being disabled, if irqs
+> >> --
+> >> 2.25.1
+> >>
