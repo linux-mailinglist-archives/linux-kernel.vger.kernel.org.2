@@ -2,147 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DED3DFBF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB30B3DFBFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235833AbhHDHTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 03:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235762AbhHDHTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 03:19:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 625E760F8F;
-        Wed,  4 Aug 2021 07:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628061541;
-        bh=+H9v5GjIE5Eik9iuQ3wu2uXDaeBxC37Uf+jlcQ4RMI8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NGAkVlwXXMuFhU087pFHbMBw4KFpyKBaasbiFJrwmlBUHwwtbt8vVD54/8XXLFT4m
-         OqspaUAYPa8aRwF116gwclVXhsUWeKKacDsjRiF9c28u3q0ke5XhL3SdsR/E2BVbcu
-         NQ+kgA6elxuh2wOkYhAZsMizK+BecFCQaIKiYmJn2VRzkt6kjmfFrCHV3QVxuu00Xw
-         KLJ+otbB7D+OawqonSB1MhEdkFGGeR0q7oftvy7N6opvr92kB2AN8IqQfOXpJZdiVw
-         FE/3lHwwss2FkYFcXqMMQ08bt8HcBxdk0oz+gqYwvx4VbKCYGZUoofbgSHUfbmOdJn
-         WmlS6Y88evoYg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mBBB5-000BlP-9c; Wed, 04 Aug 2021 09:18:59 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: [PATCH v4 4/4] dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
-Date:   Wed,  4 Aug 2021 09:18:57 +0200
-Message-Id: <461495431dd28ad2779658659f137db4bd747aa8.1628061310.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1628061310.git.mchehab+huawei@kernel.org>
-References: <cover.1628061310.git.mchehab+huawei@kernel.org>
+        id S235786AbhHDHVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 03:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235394AbhHDHVW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 03:21:22 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FECEC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 00:21:10 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mBBD5-00075N-7L; Wed, 04 Aug 2021 09:21:03 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:e44:2d7c:bf4a:7b36])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id E25D96605B5;
+        Wed,  4 Aug 2021 07:20:59 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 09:20:58 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Angelo Dureghello <angelo@kernel-space.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: can: flexcan: add mcf5441x support
+Message-ID: <20210804072058.vechdbtfcdz66rmz@pengutronix.de>
+References: <7c80c17f-e38a-8fb1-f3c7-987187a2c4d8@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ujbc5qq3llttedpi"
+Content-Disposition: inline
+In-Reply-To: <7c80c17f-e38a-8fb1-f3c7-987187a2c4d8@canonical.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the bindings for HiKey 970 (hi3670) PCIe PHY
-interface, supported via the pcie-kirin driver.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../phy/hisilicon,phy-hi3670-pcie.yaml        | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+--ujbc5qq3llttedpi
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
-new file mode 100644
-index 000000000000..17367a0275fe
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
-@@ -0,0 +1,82 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/hisilicon,phy-hi3670-pcie.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: HiSilicon Kirin970 PCIe PHY
-+
-+maintainers:
-+  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-+
-+description: |+
-+  Bindings for PCIe PHY on HiSilicon Kirin 970.
-+
-+properties:
-+  compatible:
-+    const: hisilicon,hi970-pcie-phy
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  reg:
-+    maxItems: 1
-+    description: PHY Control registers
-+
-+  phy-supply:
-+    description: The PCIe PHY power supply
-+
-+  clocks:
-+    items:
-+      - description: PCIe PHY clock
-+      - description: PCIe AUX clock
-+      - description: PCIe APB PHY clock
-+      - description: PCIe APB SYS clock
-+      - description: PCIe ACLK clock
-+
-+  clock-names:
-+    items:
-+      - const: phy_ref
-+      - const: aux
-+      - const: apb_phy
-+      - const: apb_sys
-+      - const: aclk
-+
-+  hisilicon,eye-diagram-param:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description: Eye diagram for phy.
-+
-+required:
-+  - "#phy-cells"
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - hisilicon,eye-diagram-param
-+  - phy-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/hi3670-clock.h>
-+
-+    soc {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+      pcie_phy: pcie-phy@fc000000 {
-+        compatible = "hisilicon,hi970-pcie-phy";
-+        reg = <0x0 0xfc000000 0x0 0x80000>;
-+        #phy-cells = <0>;
-+        phy-supply = <&ldo33>;
-+        clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
-+                 <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
-+                 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
-+                 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
-+                 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
-+        clock-names = "phy_ref", "aux",
-+                      "apb_phy", "apb_sys", "aclk";
-+        hisilicon,eye-diagram-param = <0xffffffff 0xffffffff
-+                                       0xffffffff 0xffffffff 0xffffffff>;
-+      };
-+    };
--- 
-2.31.1
+On 03.08.2021 16:23:26, Colin Ian King wrote:
+> I'm not sure if it's possible for priv->clk_ipg and priv_clk_per to both
+> be null, so I'm not sure if err can end up being not set. However, it
+> does seem that either err should be zero or some err value, but I was
+> unsure how err should be initialized in this corner case. As it stands,
+> err probably needs to be set just to be safe.
 
+ACK - There was already a patch that fixes the problem, but I've not
+included it in a pull request:
+
+https://lore.kernel.org/linux-can/20210728075428.1493568-1-mkl@pengutronix.=
+de/
+
+Will send now one.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--ujbc5qq3llttedpi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEKP9cACgkQqclaivrt
+76nhcQf+JviYcYhXs2AfGXxhXa1mOiIyxbhtAdJofmRGNZosFUBcRk7VUI8t4e8B
+f9bZ1kVN3VwybiLQoYdxeAHcoSCEC0DYFoAuJlQFuOC5wsk3b0/lph/aK8D37Z4d
++cqxEdhu95JgZDDROYwYabWIN0vuym5jPAqyGKwvbvbBVxShHhpQrEbimZq4eENR
+9OImRAkrjyP3v90E8scC4aupHcrsGmiDPZTSvqw1KOqK4hKYwl/wzgiIoB7QWftL
+5+vHqrLqejpmhCYaHsF6UvLAd5rg2+3nyu83r9o5stuMKn7c0o4lDezpA/S0hi8x
+0cVLp12P4s5rJCJkJ04lZmZLYQ11kQ==
+=V9nl
+-----END PGP SIGNATURE-----
+
+--ujbc5qq3llttedpi--
