@@ -2,83 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B093DFE2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0CF3DFE34
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237154AbhHDJkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:40:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237035AbhHDJkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:40:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BFD7C60EFD;
-        Wed,  4 Aug 2021 09:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628070007;
-        bh=QXpULJATBq1ZyXA3JX9FK+mWuomZpAHxFxxPXQSCX6g=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JvmOqXldfE/BVuyTcMgRpXC0tK+0fyQ19jbtO/0K7LSUxLQYRuaMxmzwtvUV/JzlW
-         3fJHgcVu75AyKAmUi9R+hLiuRYzuaTr01V/8l351dvdLalxjX/cWrC3hqdHwcmAdTA
-         vOL7zsmZAlYoklbcVd09CT6aoE2saJbNfbEwWOxmXceqmj3XXYxOPmPUGvCGAlI9Kh
-         zxo6k/2phGkRUgRh+kt/SiIGlC009iAMFnvGNFK54xWC0xVgKFKrxfKZg8QkVes9s6
-         Znm+cOCtk8to8P74Imrl49luMcl7TrdlTtqVJKyDQzmFP00RZX1elQ6mK489SweGJx
-         6EI5UE6Zih4Ww==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B0CC060A49;
-        Wed,  4 Aug 2021 09:40:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/4] mt7530 software fallback bridging fix
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162807000771.29242.1625831528843804010.git-patchwork-notify@kernel.org>
-Date:   Wed, 04 Aug 2021 09:40:07 +0000
-References: <20210803160405.3025624-1-dqfext@gmail.com>
-In-Reply-To: <20210803160405.3025624-1-dqfext@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     sean.wang@mediatek.com, Landen.Chao@mediatek.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, matthias.bgg@gmail.com,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ericwouds@gmail.com, opensource@vdorst.com,
-        frank-w@public-files.de, ilya.lipnitskiy@gmail.com
+        id S237157AbhHDJlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:41:25 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:10843 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236511AbhHDJlW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 05:41:22 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 04 Aug 2021 02:41:10 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Aug 2021 02:41:08 -0700
+X-QCInternal: smtphost
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 04 Aug 2021 15:10:31 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id 244B54C65; Wed,  4 Aug 2021 02:40:30 -0700 (PDT)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, rnayak@codeaurora.org,
+        stable@vger.kernel.org
+Subject: [Resend v3] drm/msm/disp/dpu1: add safe lut config in dpu driver
+Date:   Wed,  4 Aug 2021 02:40:28 -0700
+Message-Id: <1628070028-2616-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Add safe lut configuration for all the targets in dpu
+driver as per QOS recommendation.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+Issue reported on SC7280:
 
-On Wed,  4 Aug 2021 00:04:00 +0800 you wrote:
-> DSA core has gained software fallback support since commit 2f5dc00f7a3e
-> ("net: bridge: switchdev: let drivers inform which bridge ports are
-> offloaded"), but it does not work properly on mt7530. This patch series
-> fixes the issues.
-> 
-> DENG Qingfang (4):
->   net: dsa: mt7530: enable assisted learning on CPU port
->   net: dsa: mt7530: use independent VLAN learning on VLAN-unaware
->     bridges
->   net: dsa: mt7530: set STP state on filter ID 1
->   net: dsa: mt7530: always install FDB entries with IVL and FID 1
-> 
-> [...]
+With wait-for-safe feature in smmu enabled, RT client
+buffer levels are checked to be safe before smmu invalidation.
+Since display was always set to unsafe it was delaying the
+invalidaiton process thus impacting the performance on NRT clients
+such as eMMC and NVMe.
 
-Here is the summary with links:
-  - [net-next,v2,1/4] net: dsa: mt7530: enable assisted learning on CPU port
-    https://git.kernel.org/netdev/net-next/c/0b69c54c74bc
-  - [net-next,v2,2/4] net: dsa: mt7530: use independent VLAN learning on VLAN-unaware bridges
-    https://git.kernel.org/netdev/net-next/c/6087175b7991
-  - [net-next,v2,3/4] net: dsa: mt7530: set STP state on filter ID 1
-    https://git.kernel.org/netdev/net-next/c/a9e3f62dff3c
-  - [net-next,v2,4/4] net: dsa: mt7530: always install FDB entries with IVL and FID 1
-    https://git.kernel.org/netdev/net-next/c/73c447cacbbd
+Validated this change on SC7280, With this change eMMC performance
+has improved significantly.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Changes in v2:
+- Add fixes tag (Sai)
+- CC stable kernel (Dimtry)
 
+Changes in v3:
+- Correct fixes tag with appropriate hash (stephen)
+- Resend patch adding reviewed by tag
+- Resend patch adding correct format for pushing into stable tree (Greg)
+
+Fixes: 591e34a091d1 ("drm/msm/disp/dpu1: add support for display for SC7280 target")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org> (sc7280, sc7180)
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+index d01c4c9..2e482cd 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+@@ -974,6 +974,7 @@ static const struct dpu_perf_cfg sdm845_perf_data = {
+ 	.amortizable_threshold = 25,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xf000, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sdm845_qos_linear),
+ 		.entries = sdm845_qos_linear
+@@ -1001,6 +1002,7 @@ static const struct dpu_perf_cfg sc7180_perf_data = {
+ 	.min_dram_ib = 1600000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xff, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
+ 		.entries = sc7180_qos_linear
+@@ -1028,6 +1030,7 @@ static const struct dpu_perf_cfg sm8150_perf_data = {
+ 	.min_dram_ib = 800000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff8, 0xf000, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sm8150_qos_linear),
+ 		.entries = sm8150_qos_linear
+@@ -1056,6 +1059,7 @@ static const struct dpu_perf_cfg sm8250_perf_data = {
+ 	.min_dram_ib = 800000,
+ 	.min_prefill_lines = 35,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
+ 		.entries = sc7180_qos_linear
+@@ -1084,6 +1088,7 @@ static const struct dpu_perf_cfg sc7280_perf_data = {
+ 	.min_dram_ib = 1600000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xffff, 0xffff, 0x0},
++	.safe_lut_tbl = {0xff00, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
+ 		.entries = sc7180_qos_macrotile
+-- 
+2.7.4
 
