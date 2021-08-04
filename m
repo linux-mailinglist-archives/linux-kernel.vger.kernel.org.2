@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971C33E0A7D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2DE3E0A83
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbhHDWnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
+        id S233648AbhHDWqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhHDWnF (ORCPT
+        with ESMTP id S229775AbhHDWqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:43:05 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD319C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 15:42:52 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id a8so5168465pjk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:42:52 -0700 (PDT)
+        Wed, 4 Aug 2021 18:46:21 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F5FC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 15:46:08 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id s21-20020a4ae5550000b02902667598672bso842602oot.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:46:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1Huhb/ZWYkqoMTFohaR6PMUez2GhXcYt3lJghVmrrsg=;
-        b=QlgNMDJfDZLTWBn3U4zM0Og4yLBPOn+xZe6IhRk1m8mzGP8ikKbLsVyYHkTd7olAjE
-         BfrfOrW12EwMqNe67di/0aFhlWLI1jX2yoZgmA1i54Um2EhGGMuEM454Tpzm3pbnX2xs
-         JfdMI4AEfh/4Q+xPe2BChpfYJJYo3v9OLe6z+rP9NAbycSn2s4P+CnBDKP/9nV/Mg8e1
-         fGwezbYKfrVQ6HcPv1H0e2GkjaTa/RaAYy9lOSaqf5zNn8B6ECBXiOsNs5pMXBvXnNfB
-         H5d6d6sW4cOveRQXC12wZRMwsRXAA4PGRlXep5dmXPsmuQGlOzUUtskFjA152/ohQOwS
-         eSyg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wvjJXIAyDtPL/Ndk/Btj800bsnjEboaOCHdw/tjENlE=;
+        b=NvgNV1BmOyqa+ONMf/ndrJq3FcJ7c5LtBMHtnvF0HO93XBKfRK4RrR34Cc/uKakySh
+         m7ZcUjTOAWSAAigDKMZlCvF7srO4sHeRrHLUrLoJxffYgyd+VQBKS40QzRAd432FN48J
+         RSWCYqHIZn95SJUMdLqpkiUnfZs96ZUZQ7ggQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1Huhb/ZWYkqoMTFohaR6PMUez2GhXcYt3lJghVmrrsg=;
-        b=kQkedeuIFyqtLWvYaeuokoryYfrnNU+YNW4dytLUb+SAuCwRYSAFju2OBSLW+3FXvR
-         ZBj50bRwKGWabtrbjRtB3mohkd5Nzi/loEcu8FnV9L0fFZFX7rltKRn9RuoWON8mHWoD
-         nHtM3JQi9Ivg5t+38uyTKNIf9s2iJTxgY64EZvIt/7MYH45+/9/VpaC1j1WhjatCBeC1
-         4YqTV2DOT3LIrrHq2jIpdEGkAtW4gvyepsZW6fugJsEUBst8S6WALI2V/wkQiV2hHLDI
-         BT89BdvypAtY6F1dOLW06m9H4s+c/2IjC0VYI0siA+pyynxKX0sZLaE1qSp+KymiDLSg
-         95DQ==
-X-Gm-Message-State: AOAM530TFDfZJwTREWI4+MOzrRD15fhmlb5Z/FwclqxzjDbyJw4M8vTO
-        4OtE0oZrEzajM+Pbq1B6sSJK1g==
-X-Google-Smtp-Source: ABdhPJydmrYbz5uh6AAEQ6utdvOp7NV15BxwePykUAeQxF3FVYlEW4Xi0wy+cihgFvmYPW6dauvEUg==
-X-Received: by 2002:a17:90a:604b:: with SMTP id h11mr1342460pjm.220.1628116972126;
-        Wed, 04 Aug 2021 15:42:52 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f5sm4001697pfn.134.2021.08.04.15.42.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 15:42:51 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 22:42:47 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX
- guest
-Message-ID: <YQsX54MPVYFuLmFr@google.com>
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQsNpG55v7dhFqIb@google.com>
- <9c576f24-e6de-f816-623d-408a4a2ae747@intel.com>
- <4f28fe6e-a8ce-e444-51db-d0eb564eca8f@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wvjJXIAyDtPL/Ndk/Btj800bsnjEboaOCHdw/tjENlE=;
+        b=poY7LvVXd1mFXIRE1WoXzVqP836qDD+9ska/ItOVhDiKE2tS/xsgVyHhEvf3sTgmnx
+         zWiBWJKUnYAo7oxEqBBnPeLAJ8yKqflGv4PXXDaYYS1ww9TbWL2IUAqeRfX8ct84Rf9G
+         C6plEk9sydM097YWf99Cr9Zt1dg+q+EfQqgwYpnTGtIttdZEvfQfB2G6U0Rl3hUuQMn4
+         osd5auCNBZtxfkPBWqvHXycyScHTmRlPmmgHlY5HB4tJ7MkCjDrLo303/R9mGhf8Qng8
+         X0Ihv2dflEzFdArH6E7t4ExSOxxkPc+T+0tBNaYfz+izWEL2sCZO/ngMyBqZaseo+U2T
+         7ztw==
+X-Gm-Message-State: AOAM5332dP0UYEDSzoTwAsbfGfUe9cBMdt/MmL3H9Aj2Zn93vybV57pB
+        aYNa+Z4Rhf8bSjFV11vcvQm5pMuW/y7L4A==
+X-Google-Smtp-Source: ABdhPJzI3pBFPCo4fmYWkFuXbU3r+mY6WCNRzDwd+Hf6CwkBWIYotxS3mViUJ5ZHfJYMhS737R603Q==
+X-Received: by 2002:a4a:e907:: with SMTP id z7mr1098471ood.20.1628117167321;
+        Wed, 04 Aug 2021 15:46:07 -0700 (PDT)
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com. [209.85.167.179])
+        by smtp.gmail.com with ESMTPSA id x38sm646367ott.42.2021.08.04.15.46.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 15:46:06 -0700 (PDT)
+Received: by mail-oi1-f179.google.com with SMTP id a19so4789105oiw.6
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:46:06 -0700 (PDT)
+X-Received: by 2002:aca:110d:: with SMTP id 13mr7258895oir.77.1628117166068;
+ Wed, 04 Aug 2021 15:46:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f28fe6e-a8ce-e444-51db-d0eb564eca8f@linux.intel.com>
+References: <20210804020305.29812-1-islituo@gmail.com>
+In-Reply-To: <20210804020305.29812-1-islituo@gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Wed, 4 Aug 2021 15:45:54 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXPxMBeVwb+708Z5ZwKsNmBhcAE1AwbbRvsQMDiNaGJXQQ@mail.gmail.com>
+Message-ID: <CA+ASDXPxMBeVwb+708Z5ZwKsNmBhcAE1AwbbRvsQMDiNaGJXQQ@mail.gmail.com>
+Subject: Re: [PATCH] mwifiex: drop redundant null-pointer check in mwifiex_dnld_cmd_to_fw()
+To:     Tuo Li <islituo@gmail.com>
+Cc:     amit karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        baijiaju1990@gmail.com, TOTE Robot <oslab@tsinghua.edu.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021, Kuppuswamy, Sathyanarayanan wrote:
-> 
-> On 8/4/21 3:03 PM, Dave Hansen wrote:
-> > > > +#include <asm/processor.h>
-> > > > +#include <asm/tdx.h>
-> > > > +
-> > > >   #ifndef __ASSEMBLY__
-> > > >   static inline bool prot_guest_has(unsigned int attr)
-> > > >   {
-> > > >   	if (sme_me_mask)
-> > > >   		return amd_prot_guest_has(attr);
-> > > > +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
-> > > Why not "boot_cpu_has(X86_FEATURE_TDX_GUEST)"?
-> > Even better: cpu_feature_enabled(X86_FEATURE_TDX_GUEST).  That gets you
-> > both static patching*and*  compile-time optimization if you hook
+On Tue, Aug 3, 2021 at 7:03 PM Tuo Li <islituo@gmail.com> wrote:
+>
+> There is no case in which the variable cmd_node->cmd_skb has no ->data,
+> and thus the variable host_cmd is guaranteed to be not NULL. Therefore,
+> the null-pointer check is redundant and can be dropped.
+>
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Tuo Li <islituo@gmail.com>
 
-Ah, I keep forgetting it can be compiled out.
-
-> > X86_FEATURE_TDX_GUEST into disabled-features.h.
-> 
-> This is how Borislav preferred it. tdx_prot_guest_has() internally uses
-> cpu_feature_enabled(X86_FEATURE_TDX_GUEST) to return the status.
-> 
-> I think the intention is to keep the first call generic (non TDX
-> specific). So that it can be extended for other use cases.
-
-What other possible use case is there for invoking tdx_prot_guest_has() beyond
-running as a TDX guest?  If it were e.g. intel_prot_guest_has() then I would at
-least understand the code, if not agree with the sub-optimal approach, but as is
-it makes no sense.
-
-Given amd_prot_guest_has(), my guess is Boris intended intel_prot_guest_has()...
+Tested-by: Brian Norris <briannorris@chromium.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
