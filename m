@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7960D3DFFA1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4FF3DFFA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237617AbhHDKwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 06:52:04 -0400
-Received: from mga17.intel.com ([192.55.52.151]:29882 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237593AbhHDKwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 06:52:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="194176956"
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="scan'208";a="194176956"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 03:51:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="scan'208";a="419390433"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga006.jf.intel.com with ESMTP; 04 Aug 2021 03:51:47 -0700
-Subject: Re: [PATCH v4 2/5] mmc: sdhci: always obey programmable clock config
- in preset value
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Kevin Liu <kliu5@marvell.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Cooper <alcooperx@gmail.com>
-References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
- <e65dc96eb24caf8baa5431a51fe694b969e2d51f.1627204633.git.mirq-linux@rere.qmqm.pl>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <fe01b20d-779b-1e2c-7702-5a4702900d84@intel.com>
-Date:   Wed, 4 Aug 2021 13:52:21 +0300
+        id S237643AbhHDKxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 06:53:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30104 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237591AbhHDKxd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 06:53:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628074400;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6KanqtDGf5yMoMf0Yr0/h3HuP/VnRTg0lfzUasPTQcw=;
+        b=OzMXQ47PWo2i1mLT0hHMp06NcQ3RLHc+pMiOYxsMw1tQnjQnhHWiyWgrXPcxK7i6eMJTnA
+        b/XxgrIS4a8yixpQQqwSe951TIEgauMKb8E/klhN+tAFIpzpaDDbf+C9N3MA1X+wDnVav2
+        ye0cEFAqFWvmnGFoPcXxw2bQtDk4N70=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-tavSgEmnNjak7pj9hLZc_w-1; Wed, 04 Aug 2021 06:53:17 -0400
+X-MC-Unique: tavSgEmnNjak7pj9hLZc_w-1
+Received: by mail-wm1-f71.google.com with SMTP id 21-20020a05600c0255b02902571fa93802so1550431wmj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 03:53:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6KanqtDGf5yMoMf0Yr0/h3HuP/VnRTg0lfzUasPTQcw=;
+        b=E4VVJuXVpJSNOX8PkEdhXFanhfkAd5OSbqqsqJBBw8L5YFMeu/UhbbL+HAEU40MTGV
+         TOjjpVhSIrxQOi2y+fg0IXD9aBqnX3cO9jBCgtypJheNZ37hOf4qVOYfZ1Y8W/fZ+DLT
+         H2pwK0PhcrGiIR3VX2+IYFRqr6lSI9dwiXA6Y9AppXhFG1+xeEmawsuidKKAtTh63QZc
+         PFbfzK2DOEOPjYsznK4ZcE3i1d7CIDf7KNb1AsWzs/2QyY0rgc7Mhpg3LS6tkm1OIG0U
+         ztO7zelH1i/lRD7EA6UUSvYF/SqHLw8W2Kfnwm5kBJOw7AgcG30xYpMmwTAHPMJhhT4X
+         S8dA==
+X-Gm-Message-State: AOAM531F984Y5PJNB5y1+7flw6DKdxWmd18hoWNR/Rp+fVR00ch6DTYW
+        zNBBJaOA9enVv9eK38GpBu7Di+GUbcjCCiZL7npLCf5ERJPitjvPzTVtdYX3m9QqYxlxIEHPpH6
+        CFKUvs4f9YAJqiuu0B1XO2kGs
+X-Received: by 2002:a1c:20ce:: with SMTP id g197mr9309323wmg.46.1628074395309;
+        Wed, 04 Aug 2021 03:53:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjtjf0U1T/UySuCXKrvBA+Akcv6vU4ZionNIPodF9VTA/UUHbVay0Z2xl6itwUausCAMPYaw==
+X-Received: by 2002:a1c:20ce:: with SMTP id g197mr9309296wmg.46.1628074395109;
+        Wed, 04 Aug 2021 03:53:15 -0700 (PDT)
+Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
+        by smtp.gmail.com with ESMTPSA id h16sm2114466wre.52.2021.08.04.03.53.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 03:53:14 -0700 (PDT)
+Subject: Re: [PATCH v2] KVM: SVM: improve the code readability for ASID
+ management
+To:     Sean Christopherson <seanjc@google.com>,
+        Mingwei Zhang <mizhang@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Alper Gun <alpergun@google.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20210802180903.159381-1-mizhang@google.com>
+ <YQlz4YDu/W8+YsZl@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3226fb50-94c3-49d2-de9a-d4fea81b5b0a@redhat.com>
+Date:   Wed, 4 Aug 2021 12:53:07 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <e65dc96eb24caf8baa5431a51fe694b969e2d51f.1627204633.git.mirq-linux@rere.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YQlz4YDu/W8+YsZl@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/21 12:20 pm, Michał Mirosław wrote:
-> When host controller uses programmable clock presets but doesn't
-> advertise programmable clock support, we can only guess what frequency
-> it generates. Let's at least return correct SDHCI_PROG_CLOCK_MODE bit
-> value in this case.
+On 03/08/21 18:50, Sean Christopherson wrote:
+> This patch missed sev_asid_free().
+> 
+> And on a very related topic, I'm pretty sure the VMCB+ASID invalidation logic
+> indexes sev_vmcbs incorrectly.  pre_sev_run() indexes sev_vmcbs by the ASID,
+> whereas sev_asid_free() indexes by ASID-1, i.e. on free KVM nullifies the wrong
+> sev_vmcb entry.  sev_cpu_init() allocates for max_sev_asid+1, so indexing by
+> ASID appears to be the intended behavior.  That code is also a good candidate for
+> conversion to nr_asids in this patch.
 
-If the preset value doesn't make sense, why use it at all?
+It's also missing this (off by one for SEV guests, pointless extra work for
+SEV-ES):
 
-> 
-> Fixes: 52983382c74f ("mmc: sdhci: enhance preset value function")
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> ---
-> v4: no changes
-> v3: added a comment for this case
-> v2: no changes
-> ---
->  drivers/mmc/host/sdhci.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index c7438dd13e3e..3ab60e7f936b 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -1859,11 +1859,14 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
->  
->  			pre_val = sdhci_get_preset_value(host);
->  			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
-> -			if (host->clk_mul &&
-> -				(pre_val & SDHCI_PRESET_CLKGEN_SEL)) {
-> +			if (pre_val & SDHCI_PRESET_CLKGEN_SEL) {
->  				clk = SDHCI_PROG_CLOCK_MODE;
->  				real_div = div + 1;
->  				clk_mul = host->clk_mul;
-> +				if (!clk_mul) {
-> +					/* The clock frequency is unknown. Assume undivided base. */
-> +					clk_mul = 1;
-> +				}
->  			} else {
->  				real_div = max_t(int, 1, div << 1);
->  			}
-> 
+index da5b9515a47b..7fbce342eec4 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -147,7 +147,7 @@ static int sev_asid_new(struct kvm_sev_info *sev)
+  	min_asid = sev->es_active ? 1 : min_sev_asid;
+  	max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
+  again:
+-	asid = find_next_zero_bit(sev_asid_bitmap, max_sev_asid, min_asid);
++	asid = find_next_zero_bit(sev_asid_bitmap, max_asid + 1, min_asid);
+  	if (asid > max_asid) {
+  		if (retry && __sev_recycle_asids(min_asid, max_asid)) {
+  			retry = false;
+
+
+Queued both Mingwei's patch and yours, thanks (to 5.14-rc in order to avoid conflicts).
+
+Paolo
 
