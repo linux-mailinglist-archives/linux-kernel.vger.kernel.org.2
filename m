@@ -2,241 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD073E0A72
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8283E0A74
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhHDWfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
+        id S232158AbhHDWfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhHDWe7 (ORCPT
+        with ESMTP id S229987AbhHDWfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:34:59 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA41C061799
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 15:34:46 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id y11-20020a4ade0b0000b029024b4146e2f5so850151oot.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:34:46 -0700 (PDT)
+        Wed, 4 Aug 2021 18:35:02 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4ECC061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 15:34:48 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id x14so5514287edr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:34:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UZJcNHJO4LQR36ixWf/ziwUjfQuMb7Mm0UXvd1Hg4gg=;
-        b=tYW3NQDOaoOAmJhieZdnjoNjyaKSHVE6lyBu/OX7HVPsqfng6qLWGieMImgOnYOTJi
-         cYngNaDNRi+IYluKEdjg2VZop0ieSPcf9B+mXmwNjeBrVp1v/38uzGbg7XC8EZm1aFpf
-         tiFQ8nlYg0YZzyumw/O9+hiqvT0Jw8ihLS6nbGMrj7vqKue0Uq1+aldnBbWl7OoZPXuz
-         kqWQZnQISxU2gZWw8cPt8ezEhjDk3bDetIIylfrpL7z3qftYHAcdSCW9pJSXTLw4UY2z
-         6YacG1MWStILNWzVOCNFqRAS0EY3KK/v9lETqF5C99PjApimrc+i7Gj6c0v1XBuA8Z++
-         0qYw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=hiLIiSRSV3TZEXAA0kxjMOuadkawxJ0XO1cbaaBygHg=;
+        b=AJOWgiuJv6xT3mh6BVJvYVOQY+elVEUmz1KcpdP0gup5z4a52gEUi9RcSY6aGs9iIt
+         +o7Eyu8sSDlI8Uu9gO6HnyG8Cf/BzeFwqLVAGYnkrjwRlaK8GSOrMzNX10g6hnRx3ZcM
+         LSw2Skpv7AG8Irs8cPfUmq1EzB8qPCuSWgzhXWQ5BXomVXTG8m/0NWvyYqNEuANFk0TP
+         jI51Rz3SDxOaeg/Tsfzdj1VzNtPTjt1x5W8WcmGCf0a0tkwgAicZhGe/fspKeEQLBb1K
+         MM8ToCCNb8p6t5V8UTlgQIU0GMOyA3XmjQvhMCrBylle60CtbBae/0nVTSibvmRqhawa
+         p+gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UZJcNHJO4LQR36ixWf/ziwUjfQuMb7Mm0UXvd1Hg4gg=;
-        b=WrHCiQcJfyhv1JM05KcA7uNFjKgkCYR7RVVTn0GyQs4BAfICBqowToF8it+99b9mOY
-         U1dF0QRWxaHzqn3HiJe2iNwiQUzpw8BP4zdKCnaK432YOsdgg91DKB9qnoOQO9hJ5417
-         G4apyoMmr0BruVN05af+/MbYCdyOMpwekAo9br7bQDDz51MQfCRw+CxflWBgGFhNPswM
-         aTKeiviCpHLmkfd2OD6nsnlbBCVWk0UAUzONo21b1yhwjnXgVa5bRWSHB+jMoi32u6uD
-         IlVZXZ7KrjviUA055O4d3uIUX5HxyjNz6qOnykkxBSowqxPAOzAkdlpUx0gx2sqBreQY
-         L+6A==
-X-Gm-Message-State: AOAM53026F6TCiKdX7IOrynQpnyOZsv36WXvBWffE0FoUsWEZPWCxRRS
-        hAoxLHHo4tNRTJ7AdhjvfHRZLg==
-X-Google-Smtp-Source: ABdhPJzoI974+mp/rfGo+7Xq9nqrA8eJ6Be/tx/TkRzTQ2z3SwevKn0NJ4P732tpLcSoO/FyWG+urg==
-X-Received: by 2002:a4a:d812:: with SMTP id f18mr1073419oov.50.1628116485417;
-        Wed, 04 Aug 2021 15:34:45 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r15sm455538otn.33.2021.08.04.15.34.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 15:34:45 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 17:34:43 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Kees Cook <keescook@chromium.org>, Andy Gross <agross@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-hardening@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3] drivers/soc: Remove all strcpy() uses
-Message-ID: <YQsWA0iyol+EWoPd@builder.lan>
-References: <20210801131958.6144-1-len.baker@gmx.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=hiLIiSRSV3TZEXAA0kxjMOuadkawxJ0XO1cbaaBygHg=;
+        b=J5vQDgmcxiqHkqaRH4NtP2Y9k75d2/Ijdy79bNygJ0sNLDvR/ysTu2JzOiBOnmtQPu
+         CTfT3YmvNlBPCVoNP0xLFwGlZhDu2KNPbdsY/yo+7XUTardYvN8yCT9O2CqpCo0ItIeV
+         cSubHnuHCZ2bzeBmU15aVNV58194Pfv1UQoZA7dEHa82g5YFGqwN91SPeXn1kMMMXnlq
+         Xx2fD6Do8Ad1SqQp+1BejD26ASafOthHu1xca8aFGBppWdxJ3rAZMSKkuUCO9w5L1FlT
+         9dUk7uZL60oM08KgE+XrTv8fbw78WeShJOImHrBQbzNwm6AlHRWLBcmMpI8wHQibo8w3
+         769A==
+X-Gm-Message-State: AOAM531xjlbBjN9cgGjpOLJYWHOOXK5zRLKUcKTBxts9Z74rBWU1mxUQ
+        2qMlAHCsAIQu/DA+2rPV9lKNJNKCAx1R2BsEe0o=
+X-Google-Smtp-Source: ABdhPJzrZsPs/ensmGPT5de1SyQKJEsWsK3uo8vnwf6j5ohU5AIBDEREjWS5+/4n2YUSqMIPlSf0LYT+e3/AEYBMHqM=
+X-Received: by 2002:aa7:c0d1:: with SMTP id j17mr2289250edp.217.1628116486542;
+ Wed, 04 Aug 2021 15:34:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210801131958.6144-1-len.baker@gmx.com>
+Received: by 2002:a54:21c3:0:0:0:0:0 with HTTP; Wed, 4 Aug 2021 15:34:46 -0700 (PDT)
+Reply-To: mrs.chantalmuammar2021@email.com
+From:   "Mrs. bill Chantal" <gthgrf023@gmail.com>
+Date:   Wed, 4 Aug 2021 22:34:46 +0000
+Message-ID: <CACXV63_L0bTd2_BqsyZyLCmHvbwZrNuOB=6Z6ToVhgb3p2dyEQ@mail.gmail.com>
+Subject: Dear Friend.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 01 Aug 08:19 CDT 2021, Len Baker wrote:
+Dear Friend
 
-> strcpy() performs no bounds checking on the destination buffer. This
-> could result in linear overflows beyond the end of the buffer, leading
-> to all kinds of misbehaviors. The safe replacement is strscpy().
-> 
-> Moreover, when the size of the destination buffer cannot be obtained
-> using "sizeof", use the memcpy function instead of strscpy.
-> 
-> Signed-off-by: Len Baker <len.baker@gmx.com>
+You have been compensated with the sum of 4.4 million dollars in this
+united nation the payment will be Issue into ATM visa card and send to
+you from the Santander bank in Spain we need your address passport and
+your Whatsapp number
+Thanks
 
-Forgot one thing, it's unclear who should pick this patch up and there's
-definitely a chance that it will cause merge conflicts regardless of
-whom of us end up picking it.
-
-Could you please split it so that the qcom, renesas and ti pieces can be
-picked up by respective maintainer?
-
-Thanks,
-Bjorn
-
-> ---
-> This is a task of the KSPP [1]
-> 
-> [1] https://github.com/KSPP/linux/issues/88
-> 
-> Changelog v1 -> v2
-> - Change the "area_name_size" variable for a shorter name (Geert
->   Uytterhoeven).
-> - Add the "Reviewed-by: Geert Uytterhoeven" tag.
-> - Use the memcpy function instead of strscpy function when the
->   size of the destination buffer cannot be obtained with "sizeof"
->   (David Laight, Robin Murphy).
-> 
-> Changelog v2 -> v3
-> - Remove the "Reviewed-by: Geert Uytterhoeven" tag since the code
->   has changed after the v1 review (use of memcpy instead of
->   strscpy).
-> 
->  drivers/soc/qcom/pdr_interface.c    | 13 +++++++------
->  drivers/soc/renesas/r8a779a0-sysc.c |  6 ++++--
->  drivers/soc/renesas/rcar-sysc.c     |  6 ++++--
->  drivers/soc/ti/knav_dma.c           |  2 +-
->  4 files changed, 16 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/soc/qcom/pdr_interface.c b/drivers/soc/qcom/pdr_interface.c
-> index 915d5bc3d46e..cf119fde749d 100644
-> --- a/drivers/soc/qcom/pdr_interface.c
-> +++ b/drivers/soc/qcom/pdr_interface.c
-> @@ -131,7 +131,7 @@ static int pdr_register_listener(struct pdr_handle *pdr,
->  		return ret;
-> 
->  	req.enable = enable;
-> -	strcpy(req.service_path, pds->service_path);
-> +	strscpy(req.service_path, pds->service_path, sizeof(req.service_path));
-> 
->  	ret = qmi_send_request(&pdr->notifier_hdl, &pds->addr,
->  			       &txn, SERVREG_REGISTER_LISTENER_REQ,
-> @@ -257,7 +257,7 @@ static int pdr_send_indack_msg(struct pdr_handle *pdr, struct pdr_service *pds,
->  		return ret;
-> 
->  	req.transaction_id = tid;
-> -	strcpy(req.service_path, pds->service_path);
-> +	strscpy(req.service_path, pds->service_path, sizeof(req.service_path));
-> 
->  	ret = qmi_send_request(&pdr->notifier_hdl, &pds->addr,
->  			       &txn, SERVREG_SET_ACK_REQ,
-> @@ -406,7 +406,7 @@ static int pdr_locate_service(struct pdr_handle *pdr, struct pdr_service *pds)
->  		return -ENOMEM;
-> 
->  	/* Prepare req message */
-> -	strcpy(req.service_name, pds->service_name);
-> +	strscpy(req.service_name, pds->service_name, sizeof(req.service_name));
->  	req.domain_offset_valid = true;
->  	req.domain_offset = 0;
-> 
-> @@ -531,8 +531,8 @@ struct pdr_service *pdr_add_lookup(struct pdr_handle *pdr,
->  		return ERR_PTR(-ENOMEM);
-> 
->  	pds->service = SERVREG_NOTIFIER_SERVICE;
-> -	strcpy(pds->service_name, service_name);
-> -	strcpy(pds->service_path, service_path);
-> +	strscpy(pds->service_name, service_name, sizeof(pds->service_name));
-> +	strscpy(pds->service_path, service_path, sizeof(pds->service_path));
->  	pds->need_locator_lookup = true;
-> 
->  	mutex_lock(&pdr->list_lock);
-> @@ -587,7 +587,8 @@ int pdr_restart_pd(struct pdr_handle *pdr, struct pdr_service *pds)
->  			break;
-> 
->  		/* Prepare req message */
-> -		strcpy(req.service_path, pds->service_path);
-> +		strscpy(req.service_path, pds->service_path,
-> +			sizeof(req.service_path));
->  		addr = pds->addr;
->  		break;
->  	}
-> diff --git a/drivers/soc/renesas/r8a779a0-sysc.c b/drivers/soc/renesas/r8a779a0-sysc.c
-> index d464ffa1be33..7410b9fa9846 100644
-> --- a/drivers/soc/renesas/r8a779a0-sysc.c
-> +++ b/drivers/soc/renesas/r8a779a0-sysc.c
-> @@ -404,19 +404,21 @@ static int __init r8a779a0_sysc_pd_init(void)
->  	for (i = 0; i < info->num_areas; i++) {
->  		const struct r8a779a0_sysc_area *area = &info->areas[i];
->  		struct r8a779a0_sysc_pd *pd;
-> +		size_t n;
-> 
->  		if (!area->name) {
->  			/* Skip NULLified area */
->  			continue;
->  		}
-> 
-> -		pd = kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
-> +		n = strlen(area->name) + 1;
-> +		pd = kzalloc(sizeof(*pd) + n, GFP_KERNEL);
->  		if (!pd) {
->  			error = -ENOMEM;
->  			goto out_put;
->  		}
-> 
-> -		strcpy(pd->name, area->name);
-> +		memcpy(pd->name, area->name, n);
->  		pd->genpd.name = pd->name;
->  		pd->pdr = area->pdr;
->  		pd->flags = area->flags;
-> diff --git a/drivers/soc/renesas/rcar-sysc.c b/drivers/soc/renesas/rcar-sysc.c
-> index 53387a72ca00..b0a80de34c98 100644
-> --- a/drivers/soc/renesas/rcar-sysc.c
-> +++ b/drivers/soc/renesas/rcar-sysc.c
-> @@ -396,19 +396,21 @@ static int __init rcar_sysc_pd_init(void)
->  	for (i = 0; i < info->num_areas; i++) {
->  		const struct rcar_sysc_area *area = &info->areas[i];
->  		struct rcar_sysc_pd *pd;
-> +		size_t n;
-> 
->  		if (!area->name) {
->  			/* Skip NULLified area */
->  			continue;
->  		}
-> 
-> -		pd = kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
-> +		n = strlen(area->name) + 1;
-> +		pd = kzalloc(sizeof(*pd) + n, GFP_KERNEL);
->  		if (!pd) {
->  			error = -ENOMEM;
->  			goto out_put;
->  		}
-> 
-> -		strcpy(pd->name, area->name);
-> +		memcpy(pd->name, area->name, n);
->  		pd->genpd.name = pd->name;
->  		pd->ch.chan_offs = area->chan_offs;
->  		pd->ch.chan_bit = area->chan_bit;
-> diff --git a/drivers/soc/ti/knav_dma.c b/drivers/soc/ti/knav_dma.c
-> index 591d14ebcb11..5f9816d317a5 100644
-> --- a/drivers/soc/ti/knav_dma.c
-> +++ b/drivers/soc/ti/knav_dma.c
-> @@ -691,7 +691,7 @@ static int dma_init(struct device_node *cloud, struct device_node *dma_node)
->  	dma->max_rx_flow = max_rx_flow;
->  	dma->max_tx_chan = min(max_tx_chan, max_tx_sched);
->  	atomic_set(&dma->ref_count, 0);
-> -	strcpy(dma->name, node->name);
-> +	strscpy(dma->name, node->name, sizeof(dma->name));
->  	spin_lock_init(&dma->lock);
-> 
->  	for (i = 0; i < dma->max_tx_chan; i++) {
-> --
-> 2.25.1
-> 
+Mrs. bill Chantal
