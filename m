@@ -2,126 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACCA3DFEE3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0E43DFEE5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237387AbhHDKFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S237423AbhHDKFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 06:05:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237375AbhHDKFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Aug 2021 06:05:09 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:48707 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235066AbhHDKFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 06:05:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628071493; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=01PL1JCEftvWMZM72aDccUWunAyiu+MxKdhkYk1qIOw=; b=Vqh5RFeJNpIUoNzMMxoIM6roA+cbki3DgzCKefias+Q5TEX6EfkWm/ncW+Qc3Tb6MMV37MVA
- bO1WyA+eVwv8Ff7YMTdSAPj92rV2tNW2KdxmjnhjBSBnKlueO7mst8Fa3Rvt/cXchnmiulXQ
- AT8XY54uZ/DHTE6pde8TM8AH92E=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 610a6634bcdc32aad357d116 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 10:04:36
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 61656C433D3; Wed,  4 Aug 2021 10:04:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 72776C43460;
-        Wed,  4 Aug 2021 10:04:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 72776C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zijuhu@codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v1] Bluetooth: btusb: Add support different nvm to distinguish different factory for WCN6855 controller
-Date:   Wed,  4 Aug 2021 18:04:27 +0800
-Message-Id: <1628071467-27190-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8DEC61004;
+        Wed,  4 Aug 2021 10:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628071496;
+        bh=k3LqIh7WmygExsaYiICBd+md8eg9IPVoWz97p7hp8qo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sHG6EnRvleLDE61AO+j4tBSSrZNk8acuco+XVYWh9F/V5Mxcb1L8hxqnisWJJU7W8
+         5ncBCKpy+7JXJ6XNkvXGbNq/tjm4idnlnDQ4CVcUdG58T3ntlQ6W5RWoPWG9ZGWhEm
+         or2UekZpFB2lRzolzIfJjliagsaPuh7hChlzWtPI=
+Date:   Wed, 4 Aug 2021 12:04:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Peter Collingbourne <pcc@google.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Alistair Delva <adelva@google.com>,
+        William McVicker <willmcvicker@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Mitch Phillips <mitchp@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        donnyxia@google.com
+Subject: Re: [PATCH 5.13 191/223] selftest: use mmap instead of
+ posix_memalign to allocate memory
+Message-ID: <YQpmRSI+04noKhtV@kroah.com>
+References: <20210726153846.245305071@linuxfoundation.org>
+ <20210726153852.445207631@linuxfoundation.org>
+ <CAMn1gO42sPYDajZN7MuysTeGJmxvby=sFuU1eXt0APo_Y5FFSQ@mail.gmail.com>
+ <YQOCUu0nALesF1HB@kroah.com>
+ <CAMn1gO4TqPccK6GqiB8zzm=CzQd-kqGBh0HrVf_2W_VpaSq_+A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMn1gO4TqPccK6GqiB8zzm=CzQd-kqGBh0HrVf_2W_VpaSq_+A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Jiang <tjiang@codeaurora.org>
+On Mon, Aug 02, 2021 at 01:10:47PM -0700, Peter Collingbourne wrote:
+> On Thu, Jul 29, 2021 at 9:38 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Jul 29, 2021 at 10:58:11AM -0700, Peter Collingbourne wrote:
+> > > On Mon, Jul 26, 2021 at 9:16 AM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > From: Peter Collingbourne <pcc@google.com>
+> > > >
+> > > > commit 0db282ba2c12c1515d490d14a1ff696643ab0f1b upstream.
+> > > >
+> > > > This test passes pointers obtained from anon_allocate_area to the
+> > > > userfaultfd and mremap APIs.  This causes a problem if the system
+> > > > allocator returns tagged pointers because with the tagged address ABI
+> > > > the kernel rejects tagged addresses passed to these APIs, which would
+> > > > end up causing the test to fail.  To make this test compatible with such
+> > > > system allocators, stop using the system allocator to allocate memory in
+> > > > anon_allocate_area, and instead just use mmap.
+> > > >
+> > > > Link: https://lkml.kernel.org/r/20210714195437.118982-3-pcc@google.com
+> > > > Link: https://linux-review.googlesource.com/id/Icac91064fcd923f77a83e8e133f8631c5b8fc241
+> > > > Fixes: c47174fc362a ("userfaultfd: selftest")
+> > > > Co-developed-by: Lokesh Gidra <lokeshgidra@google.com>
+> > > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> > > > Signed-off-by: Peter Collingbourne <pcc@google.com>
+> > > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > > Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> > > > Cc: Dave Martin <Dave.Martin@arm.com>
+> > > > Cc: Will Deacon <will@kernel.org>
+> > > > Cc: Andrea Arcangeli <aarcange@redhat.com>
+> > > > Cc: Alistair Delva <adelva@google.com>
+> > > > Cc: William McVicker <willmcvicker@google.com>
+> > > > Cc: Evgenii Stepanov <eugenis@google.com>
+> > > > Cc: Mitch Phillips <mitchp@google.com>
+> > > > Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> > > > Cc: <stable@vger.kernel.org>    [5.4]
+> > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > ---
+> > > >  tools/testing/selftests/vm/userfaultfd.c |    6 ++++--
+> > > >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > > >
+> > > > --- a/tools/testing/selftests/vm/userfaultfd.c
+> > > > +++ b/tools/testing/selftests/vm/userfaultfd.c
+> > > > @@ -197,8 +197,10 @@ static int anon_release_pages(char *rel_
+> > > >
+> > > >  static void anon_allocate_area(void **alloc_area)
+> > > >  {
+> > > > -       if (posix_memalign(alloc_area, page_size, nr_pages * page_size)) {
+> > > > -               fprintf(stderr, "out of memory\n");
+> > > > +       *alloc_area = mmap(NULL, nr_pages * page_size, PROT_READ | PROT_WRITE,
+> > > > +                          MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+> > > > +       if (*alloc_area == MAP_FAILED)
+> > >
+> > > Hi Greg,
+> > >
+> > > It looks like your backport of this patch (and the backports to stable
+> > > kernels) are missing a left brace here.
+> >
+> > Already fixed up in the latest -rc releases, right?
+> 
+> It looks like you fixed it on linux-4.19.y and linux-5.4.y, but not
+> linux-4.14.y, linux-5.10.y or linux-5.13.y.
 
-we have different factory to produce wcn6855 soc chip, so we should use
-different nvm file with surfix to distinguish them.
+4.14 had not had a release with this in it yet (it is in the queue), I
+missed that I also broke this on 5.10 and 5.13 so will go add it there
+as well.
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
----
- drivers/bluetooth/btusb.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
+thanks!
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index b1a05bb9f4bf..cc9618575ab4 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -4013,6 +4013,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
- #define QCA_DFU_TIMEOUT		3000
- #define QCA_FLAG_MULTI_NVM      0x80
- 
-+#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-+#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-+
- struct qca_version {
- 	__le32	rom_version;
- 	__le32	patch_version;
-@@ -4044,6 +4047,7 @@ static const struct qca_device_info qca_devices_table[] = {
- 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
- 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
- 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-+	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
- };
- 
- static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
-@@ -4209,12 +4213,28 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
- 	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
- 		/* if boardid equal 0, use default nvm without surfix */
- 		if (le16_to_cpu(ver->board_id) == 0x0) {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--				 le32_to_cpu(ver->rom_version));
-+			/* if ram version is for gf factory, we should add surfix gf to
-+			 * distinguish with default one .
-+			 */
-+			if (ver->ram_version == WCN6855_2_0_RAM_VERSION_GF ||
-+					ver->ram_version == WCN6855_2_1_RAM_VERSION_GF) {
-+				snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_gf.bin",
-+					 le32_to_cpu(ver->rom_version));
-+			} else {
-+				snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-+					 le32_to_cpu(ver->rom_version));
-+			}
- 		} else {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
--				le32_to_cpu(ver->rom_version),
--				le16_to_cpu(ver->board_id));
-+			if (ver->ram_version == WCN6855_2_0_RAM_VERSION_GF ||
-+					ver->ram_version == WCN6855_2_1_RAM_VERSION_GF) {
-+				snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_gf_%04x.bin",
-+					le32_to_cpu(ver->rom_version),
-+					le16_to_cpu(ver->board_id));
-+			} else {
-+				snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
-+					le32_to_cpu(ver->rom_version),
-+					le16_to_cpu(ver->board_id));
-+			}
- 		}
- 	} else {
- 		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
-
+greg k-h
