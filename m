@@ -2,100 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51D73E002C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410453E0033
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237707AbhHDL3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 07:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
+        id S236967AbhHDLcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 07:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237450AbhHDL3r (ORCPT
+        with ESMTP id S232885AbhHDLcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 07:29:47 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C437C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 04:29:34 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id k9so3039109edr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 04:29:34 -0700 (PDT)
+        Wed, 4 Aug 2021 07:32:17 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DF1C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 04:32:04 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so3688891wms.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 04:32:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6IjBPgUQiBzbKNMi/FqQflOksi54xC4hLPMuwWM9yuc=;
-        b=Hi4y/RvWTwSkdoxFsy+D8hFllLfBttHMByIe0A+ZzHr1MI/bW1Wpwb/pvj/WX97q4m
-         zvBHSHQpXBGWVFhoh9wC1WC0JZejktthiHb5p6DuKAW9lbZBhZ/ofpMeDP+MEYcqH0/m
-         P+AKSMJzg6a6mYHdMbx7BUeTBWzh1bYh4ix3MUBC6hJUuZZ/1C0PFB55/seEQCo0i3Gq
-         D82ueVcGMChaezq5Vdm6+dMADmNtQxBzkb+YC4ThTt9D5cMWfsyYXEnc4THrW9M0GO+Z
-         3Z1W8F9bfkIO28/KDi6+KTFw9vo3cQW3yZNuLMA22RKRPLre2aSZOnHsfJg6uJ6zvpSA
-         ph6A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ITDkwNA0SrOgCt3xKILvBBfzHrvWx642jjB6XzvfTgw=;
+        b=IIqny7kHdyo1TIIRVeGnK30q75dZHmNBPetoYhf9xuSUVj+HW1uX+ehq0Onoi6pQ62
+         iYIcpwq+9tkd3XI5kMeSFTJShksqa3Bdy1vkQGXpnp0+aCyOQIkP2K3Vy1C0xnUPZDr5
+         3wQWyF09PDzCtQQFKlOlnFYW1VU0MV8AuQ+5nl2adtN5blwmZGX0BHfxs0M1jGPidPf4
+         IX6qqIQj5UAzAqiMqq21rtKWUuWwhQiEzGv3e1CrissJlKpqGdMojHcNHEtrlKIz2T00
+         M4AeiKpp3pPUTLcjiWSgGx1opwpdZKB9fMXnZZSBrCDBYTgADeVtGjT6ZBGX+9U/xK5g
+         h9dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6IjBPgUQiBzbKNMi/FqQflOksi54xC4hLPMuwWM9yuc=;
-        b=c7oYY/R2dCMvG7oDMs0KB6v2MVypzda34xV/XOjKQyG70D6rnwbeGvoMVfjYNAj7ET
-         rPPkA5gDzgyAqXDsPg8ZklD8a3mbI1qqMeihe7Cr6ftNllzPWPc9GkXsAGmynMT55X++
-         FRNdjOVCJChhtWMJSeyIrGba79Xoja9+6faojT+EWyv5dEx53wsft/NbT+u25mFYoKyD
-         el0lseiYdjjwqU1QL7919nBHXiw+k1pZT3xScl6AZQIPuGfSn3IIDlxdNHqA+kfOGMEM
-         +IabQY+lixdTIjqIW5D4sr1hT9ziH/u/Ctrd71wPQ3nvDJFIMUpeKCXwHj5jwKDYManv
-         wwig==
-X-Gm-Message-State: AOAM530TUeFGdYpMXhhKaya5uJAFZehvm74BbECrE0JAivnopmx3RPfy
-        GIR+ZV0oQGXt8pZtfTdS9a4=
-X-Google-Smtp-Source: ABdhPJyH52ECuoMPPc7gIRHzfao4GCsT7/i1HKTewFXp+KFg9gF4auaOMGtJHRxJQTTWYoYNDVgm4w==
-X-Received: by 2002:a05:6402:2073:: with SMTP id bd19mr2831702edb.262.1628076573017;
-        Wed, 04 Aug 2021 04:29:33 -0700 (PDT)
-Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
-        by smtp.gmail.com with ESMTPSA id c6sm579413eje.105.2021.08.04.04.29.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ITDkwNA0SrOgCt3xKILvBBfzHrvWx642jjB6XzvfTgw=;
+        b=NXRu4erxk43iQzjzRrqL38oHcoTRAHrNbFgeTtAvqzJHt8XoALf3Z44IVgvmJVKUsV
+         d1vwQUvj5td503bN43+Fahkrcy0/fsFvREowbcpECPIWjUz3PZkfujNxOE66lmHfAUO9
+         gVAbStVSQRQtHVbBBK27yhBGmq5o7BFiIIg1vGKa3+HPXy3qJ1OD55MLCgTi0aMGY7PW
+         TafdOskrmOb94oo0ILQupkr4TZhKQ5NZ4vJeVgSik8rQEgWRnmTJg0RXeM7KOEkZXeda
+         Mz3sxy2OlBikM/f7UGWDgbPuUNdr9IE2hi9a/ANibqDXgQt5Kz1+sWwFcdQgWKznmU3S
+         fu1g==
+X-Gm-Message-State: AOAM530u9ONEbl8ssp1QcKJXaHyGVsMPorWTSN41Y0K8CgPOZbpDBo03
+        NIC3PBOxdZfJV6PC7CJAeII4Cw==
+X-Google-Smtp-Source: ABdhPJy/y/96VfskHSf1nxHCfFTzgM1ULlQBbTosuqXARHtkKNr1SvBCiWrhCDLpQSPUVhnNS7JIXg==
+X-Received: by 2002:a7b:ce99:: with SMTP id q25mr27852908wmj.4.1628076722619;
+        Wed, 04 Aug 2021 04:32:02 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id f3sm2350593wro.30.2021.08.04.04.32.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 04:29:32 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Fix different base types in assignments and parameters
-Date:   Wed, 04 Aug 2021 13:29:31 +0200
-Message-ID: <6010274.OVh6iHOyDd@localhost.localdomain>
-In-Reply-To: <20210804095839.GC22532@kadam>
-References: <20210730181452.23062-1-fmdefrancesco@gmail.com> <4550286.edLFIWPnRF@localhost.localdomain> <20210804095839.GC22532@kadam>
+        Wed, 04 Aug 2021 04:32:01 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 12:31:59 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Chengyang Fan <cy.fan@huawei.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, kgdb-bugreport@lists.sourceforge.net
+Subject: Re: [PATCH printk v1 03/10] kgdb: delay roundup if holding printk
+ cpulock
+Message-ID: <20210804113159.lsnoyylifg6v5i35@maple.lan>
+References: <20210803131301.5588-1-john.ogness@linutronix.de>
+ <20210803131301.5588-4-john.ogness@linutronix.de>
+ <20210803142558.cz7apumpgijs5y4y@maple.lan>
+ <87tuk635rb.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87tuk635rb.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, August 4, 2021 11:58:39 AM CEST Dan Carpenter wrote:
-> The patch was based on the faulty premise that the original code was
-> buggy so I don't think it can be fixed.  It just needs to be reverted.
+On Tue, Aug 03, 2021 at 05:36:32PM +0206, John Ogness wrote:
+> On 2021-08-03, Daniel Thompson <daniel.thompson@linaro.org> wrote:
+> > On Tue, Aug 03, 2021 at 03:18:54PM +0206, John Ogness wrote:
+> >> kgdb makes use of its own cpulock (@dbg_master_lock, @kgdb_active)
+> >> during cpu roundup. This will conflict with the printk cpulock.
+> >
+> > When the full vision is realized what will be the purpose of the printk
+> > cpulock?
+> >
+> > I'm asking largely because it's current role is actively unhelpful
+> > w.r.t. kdb. It is possible that cautious use of in_dbg_master() might
+> > be a better (and safer) solution. However it sounds like there is a
+> > larger role planned for the printk cpulock...
 > 
-> regards,
-> dan carpenter
+> The printk cpulock is used as a synchronization mechanism for
+> implementing atomic consoles, which need to be able to safely interrupt
+> the console write() activity at any time and immediately continue with
+> their own printing. The ultimate goal is to move all console printing
+> into per-console dedicated kthreads, so the primary function of the
+> printk cpulock is really to immediately _stop_ the CPU/kthread
+> performing write() in order to allow write_atomic() (from any context on
+> any CPU) to safely and reliably take over.
 
-With the original code, GCC + sparse emit a dozen of warnings like the 
-following ones:
+I see.
 
-drivers/staging/r8188eu/core/rtw_br_ext.c:693:101: warning: incorrect type in 
-argument 2 (different base types)
-drivers/staging/r8188eu/core/rtw_br_ext.c:693:101:    expected unsigned int 
-*ipxNetAddr
-drivers/staging/r8188eu/core/rtw_br_ext.c:693:101:    got restricted __be32 *
-drivers/staging/r8188eu/core/rtw_br_ext.c:693:123: warning: incorrect type in 
-argument 3 (different base types)
-drivers/staging/r8188eu/core/rtw_br_ext.c:693:123:    expected unsigned short 
-*ipxSocketAddr
-drivers/staging/r8188eu/core/rtw_br_ext.c:693:123:    got restricted __be16 *
-drivers/staging/r8188eu/core/rtw_br_ext.c:698:99: warning: incorrect type in 
-argument 2 (different base types)
+Is there any mileage in allowing in_dbg_master() to suppress taking
+the console lock?
 
-Do we want the above pasted warnings and leave the code as-is?
+There's a couple of reasons to worry about the current approach.
 
-Regards,
+The first is that we don't want this code to trigger in the case when
+kgdb is enabled and kdb is not since it is only kdb (a self-hosted
+debugger) than uses the consoles. This case is relatively trivial to
+address since we can rename it kdb_roundup_delay() and alter the way it
+is conditionally compiled.
 
-Fabio
+The second is more of a problem however. kdb will only call into the
+console code from the debug master. By default this is the CPU that
+takes the debug trap so initial prints will work fine. However it is
+possible to switch to a different master (so we can read per-CPU
+registers and things like that). This will result in one of the CPUs
+that did the IPI round up calling into console code and this is unsafe
+in that instance.
+
+There are a couple of tricks we could adopt to work around this but
+given the slightly odd calling context for kdb (all CPUs quiesced, no
+log interleaving possible) it sounds like it would remain safe to
+bypass the lock if in_dbg_master() is true.
+
+Bypassing an inconvenient lock might sound icky but:
+
+1. If the lock is not owned by any CPU then what kdb will do is safe.
+
+2. If the lock is owned by any CPU then we have quiesced it anyway
+   and this makes is safe for the owning CPU to share its ownership
+   (since it isn't much different to recursive acquisition on a single
+   CPU)
 
 
+> Atomic consoles are actually quite similar to the kgdb_io ops. For
+> example, comparing:
+> 
+> serial8250_console_write_atomic() + serial8250_console_putchar_locked()
+> 
+> with
+> 
+> serial8250_put_poll_char()
+> 
+> The difference is that serial8250_console_write_atomic() is line-based
+> and synchronizing with serial8250_console_write() so that if the kernel
+> crashes while outputing to the console, write() can be interrupted by
+> write_atomic() and cleanly formatted crash data can be output.
+> 
+> Also serial8250_put_poll_char() is calling into __pm_runtime_resume(),
+> which includes a spinlock and possibly sleeping. This would not be
+> acceptable for atomic consoles.
+
+spinlocks aren't allowed in polled I/O either.
+
+However IIRC there is a rather nasty trick being played here to allow
+code sharing. I believe there was a deliberate unbalanced resume in the
+poll_init() function that results (again IIRC) in the PM calls in
+poll_char() becoming nothing but atomic add and subtract (e.g. enabling
+polled I/O effectively suppresses PM activity).
 
 
+Daniel.
 
-
+> Although, as Andy pointed out [0], I
+> will need to figure out how to deal with suspended consoles. Or just
+> implement a policy that registered atomic consoles may never be
+> suspended.
+> 
+> I had not considered merging kgdb_io ops with atomic console ops. But
+> now that I look at it more closely, there may be some useful overlap. I
+> will consider this. Thank you for this idea.
+> 
+> >> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> >> index 3d0c933937b4..1b546e117f10 100644
+> >> --- a/kernel/printk/printk.c
+> >> +++ b/kernel/printk/printk.c
+> >> @@ -214,6 +215,7 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+> >>  #ifdef CONFIG_SMP
+> >>  static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
+> >>  static atomic_t printk_cpulock_nested = ATOMIC_INIT(0);
+> >> +static unsigned int kgdb_cpu = -1;
+> >
+> > Is this the flag to provoke retriggering? It appears to be a write-only
+> > variable (at least in this patch). How is it consumed?
+> 
+> Critical catch! Thank you. I am quite unhappy to see these hunks were
+> accidentally dropped when generating this series.
+> 
+> @@ -3673,6 +3675,9 @@ EXPORT_SYMBOL(__printk_cpu_trylock);
+>   */
+>  void __printk_cpu_unlock(void)
+>  {
+> +	bool trigger_kgdb = false;
+> +	unsigned int cpu;
+> +
+>  	if (atomic_read(&printk_cpulock_nested)) {
+>  		atomic_dec(&printk_cpulock_nested);
+>  		return;
+> @@ -3683,6 +3688,12 @@ void __printk_cpu_unlock(void)
+>  	 * LMM(__printk_cpu_unlock:A)
+>  	 */
+>  
+> +	cpu = smp_processor_id();
+> +	if (kgdb_cpu == cpu) {
+> +		trigger_kgdb = true;
+> +		kgdb_cpu = -1;
+> +	}
+> +
+>  	/*
+>  	 * Guarantee loads and stores from this CPU when it was the
+>  	 * lock owner are visible to the next lock owner. This pairs
+> @@ -3703,6 +3714,21 @@ void __printk_cpu_unlock(void)
+>  	 */
+>  	atomic_set_release(&printk_cpulock_owner,
+>  			   -1); /* LMM(__printk_cpu_unlock:B) */
+> +
+> +	if (trigger_kgdb) {
+> +		pr_warn("re-triggering kgdb roundup for CPU#%d\n", cpu);
+> +		kgdb_roundup_cpu(cpu);
+> +	}
+>  }
+>  EXPORT_SYMBOL(__printk_cpu_unlock);
+> 
+> John Ogness
+> 
+> [0] https://lore.kernel.org/lkml/YQlKAeXS9MPmE284@smile.fi.intel.com
