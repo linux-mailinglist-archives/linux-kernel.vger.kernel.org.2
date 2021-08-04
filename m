@@ -2,79 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AF93E0AAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1C03E0AB2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234169AbhHDXAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 19:00:36 -0400
-Received: from mga03.intel.com ([134.134.136.65]:17519 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229479AbhHDXAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 19:00:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="214059107"
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="214059107"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 16:00:21 -0700
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="512261135"
-Received: from bguvendi-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.99.93])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 16:00:20 -0700
-Subject: Re: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX
- guest
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQsNpG55v7dhFqIb@google.com>
- <9c576f24-e6de-f816-623d-408a4a2ae747@intel.com>
- <4f28fe6e-a8ce-e444-51db-d0eb564eca8f@linux.intel.com>
- <YQsX54MPVYFuLmFr@google.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <ca4aa25c-7d88-9812-4852-ced3274493a8@linux.intel.com>
-Date:   Wed, 4 Aug 2021 16:00:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S233112AbhHDXC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 19:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhHDXCZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 19:02:25 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB9BC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 16:02:11 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id l4so4457033ljq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SWwfAxfR7c4JrRsq35ex9D7DmgW1MFN8V1BR9OdGE3s=;
+        b=Keuv9rmwBrPD0mImQNgZzTd90sUsS01XNQNiwlt6tUctK265kK/0g+VQw++Z0LJ8qV
+         GA4DWAfZNHOkzruKioaUUOXybY/N3gQn6kkN3XLaOSBakIKXZndZXC2tiRDeFktVD7Nj
+         U0Lm5nC5tMADC75PQ/9NHb8NooglHWqHmvM+OHuDYnUSML3W4AbM0TTOy2LNgvhKuSei
+         lf/5OI2gFbsAb20Sh2cs5P7osRk0xkL/MEsxQKRh+GvSwbLa/5U+6VT+VQd2vAdi3xPY
+         H4PSSHtVkLqf95+zWzC9dGeT086BV7ACrUGMssBe6ycVsdo1gmnobhnCi4EAlC7j/Kgp
+         D28A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SWwfAxfR7c4JrRsq35ex9D7DmgW1MFN8V1BR9OdGE3s=;
+        b=b5mrYWRnB/eEit3JzRLuAl7nwGdicmTIz0p86Opdi2tjvgghAAvWnf0dR2Tivva3F9
+         gpENuquK1YX3726r1uY/Rn6zd5bhQVKnp2CRJm0VsRWy7blx8kaXgNJYJfwPaIPrgg+v
+         ffxHlTVBpQOkLjpje6bytFBgA+foZ62D9lk7Gxwo+xWw8J6saVKqnaM9/rHhreEYpbna
+         0rzBl2W1i71HWnpko0uY4K4wFNwV/QHoTBxJWfpVhuWeIQdWemrM7ARYub4gd5K+Iqqf
+         jbbwSjBqF5PnfamoqLnwLIVGCWeQ8dwpeQEXxQRa5XDwMT9ky6aXOxhGp63uMC/gd8Nv
+         16bg==
+X-Gm-Message-State: AOAM5311qihz6nt1urVr56Ukd/c/Ge13O3soupOXs/xnygAwL5WhGYpS
+        2dDrEmjOaunNwH0lUKcLfKGH+bqGBkKsx/qoRgEoKw==
+X-Google-Smtp-Source: ABdhPJz61O47mzHH9624bGfk/bfpBA1SJ3dnMpXd9CQG2hHPT+eKzKSoE6RiH7zQjaw6hJgUxRPNoePE54zpybhVLJI=
+X-Received: by 2002:a2e:7c04:: with SMTP id x4mr1038597ljc.273.1628118129818;
+ Wed, 04 Aug 2021 16:02:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YQsX54MPVYFuLmFr@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210710081722.1828-1-zhiyong.tao@mediatek.com>
+ <20210710081722.1828-2-zhiyong.tao@mediatek.com> <CAGXv+5GXg0RuOQkh4vaRmcLpehZiXnEUXBvEaObiatAa1sXvaA@mail.gmail.com>
+ <1626940470.29611.9.camel@mhfsdcap03> <CAGXv+5F_-W4aNt0WVSDBGLo_t8orNUq59GMKk_4xVr+hMb9Ctg@mail.gmail.com>
+ <07388dac4e25e0f260725e8f80ba099d5aa80949.camel@mediatek.com> <CAGXv+5EagmhYYpri+nzo6WgGz8A=oiU3Vy+2AVjho=eo6Z+DLw@mail.gmail.com>
+In-Reply-To: <CAGXv+5EagmhYYpri+nzo6WgGz8A=oiU3Vy+2AVjho=eo6Z+DLw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 5 Aug 2021 01:01:58 +0200
+Message-ID: <CACRpkdZ4k9Km3vBtdN6AnBM89c4355GtPMzCQ0_YHaTb4V5cKA@mail.gmail.com>
+Subject: Re: [PATCH v10 1/2] dt-bindings: pinctrl: mt8195: add rsel define
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     "zhiyong.tao" <zhiyong.tao@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 29, 2021 at 11:43 AM Chen-Yu Tsai <wenst@chromium.org> wrote:
+> On Thu, Jul 29, 2021 at 4:23 PM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
 
+> > The rsel actual bias resistance of each setting is different in
+> > different IC. we think that the define "MTK_PULL_SET_RSEL_000" is more
+> > common for all different IC.
+>
+> I see. I personally prefer having things clearly described. I can
+> understand this might be an extra burden to support different chips
+> with different parameters, though this should be fairly straightforward
+> with lookup tables tied to the compatible strings.
+>
+> Let's see if Rob and Linus have anything to add.
 
-On 8/4/21 3:42 PM, Sean Christopherson wrote:
-> What other possible use case is there for invoking tdx_prot_guest_has() beyond
-> running as a TDX guest?  If it were e.g. intel_prot_guest_has() then I would at
-> least understand the code, if not agree with the sub-optimal approach, but as is
-> it makes no sense.
+Not much. We have "soft pushed" for this to be described as generic
+as possible, using SI units (ohms). But we also allow vendor-specific
+numbers in this attribute. Especially when reverse engineering SoCs
+that the contributor don't really have specs on (example M1 Mac).
 
-Yes. I think his original intention is to implement intel_prot_guest_has() in
-arch/x86/kernel/cpu/intel.c and then call tdx_prot_guest_has() from it. But since
-we have no other use cases, we have called tdx_prot_*() directly here.
+The intent with the SI units is especially for people like you folks working
+with Chromium to be able to use different SoCs and not feel lost
+to a forest of different ways of doing things and associated
+mistakes because vendors have hopelessly idiomatic pin configs.
 
-Boris, how do you want to proceed? Do you want me to implement intel_prot_guest_has()
-or change comparison log to TDX specific?
-
-
-> 
-> Given amd_prot_guest_has(), my guess is Boris intended intel_prot_guest_has()...
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Yours,
+Linus Walleij
