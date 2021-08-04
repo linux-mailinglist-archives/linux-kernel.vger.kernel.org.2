@@ -2,111 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B8E3DFB42
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84AE3DFB45
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235458AbhHDFtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 01:49:52 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:53130 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhHDFtv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 01:49:51 -0400
-Received: by mail-wm1-f54.google.com with SMTP id n11so476594wmd.2;
-        Tue, 03 Aug 2021 22:49:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GgdNz1NgdkEFekSLCkbFNoAD3gpMYm5SQwudLZkpI3s=;
-        b=jKO2Kke4trqSkgaxC7tOVaA20x2UKiU5MC/uyspehE2OlCBg4Stit3nbx9hdd11r23
-         X0FLZh6HCLt9Yoob3yjk/OnveChPP459yIbaobMMNk80tOE4o1S7z/GWtKA/aiLB7zMV
-         gvUwQCuFl+mAx4yk7wzcZkjxgJUYIZjFzw+R8lytQUGsG4wQLozwfNfGffcdTbAgn6yr
-         hbxrJlgyLrWeDSUO5anXPsyhfZKliIMUT80wJ+FwkHh3fg5nT5aHjxz4BjbVrmbHB5sh
-         0YJjg+h6zOgg48UaoMszd2CZIyGyKAuK11S/AIRUS+JKJ3J/Rklni5PEF6QCCzL0G2WL
-         Q8Lw==
-X-Gm-Message-State: AOAM533k9uIJm/pFEIv0Kj6lpVq0Bl1I7k/ElGlygf/AS6+JHBmRL/t/
-        d1tC1h4MvkVJOv0/2xf6dfo=
-X-Google-Smtp-Source: ABdhPJxofAvpnCFZX4nJ0UPWt2mV75icXOQNyrc4tU5T+2WesSFrsXlPCkkbDyw6LlSm0GWW7alUyA==
-X-Received: by 2002:a1c:1b17:: with SMTP id b23mr7735903wmb.178.1628056178447;
-        Tue, 03 Aug 2021 22:49:38 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id c10sm1051400wmb.40.2021.08.03.22.49.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 22:49:37 -0700 (PDT)
-Subject: Re: [PATCH 2/2] perf: remove shebang from
- scripts/{perl,python}/*.{pl,py}
-To:     Adrian Hunter <adrian.hunter@intel.com>, acme@redhat.com
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210726091434.5000-1-jslaby@suse.cz>
- <20210726091434.5000-2-jslaby@suse.cz>
- <d916a46f-91fb-4e11-b72e-b96a73971117@intel.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <8c62e5f1-be91-0104-898b-250d9f533f8f@kernel.org>
-Date:   Wed, 4 Aug 2021 07:49:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S235469AbhHDFxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 01:53:04 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:50925 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231138AbhHDFxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 01:53:01 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GfgrJ3ZWDz9sWD;
+        Wed,  4 Aug 2021 07:52:48 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id C62R_8tTsmRg; Wed,  4 Aug 2021 07:52:48 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GfgrJ2Y27z9sVt;
+        Wed,  4 Aug 2021 07:52:48 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 182368B79C;
+        Wed,  4 Aug 2021 07:52:48 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id s7x32NG_3SaB; Wed,  4 Aug 2021 07:52:47 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 90CD88B764;
+        Wed,  4 Aug 2021 07:52:47 +0200 (CEST)
+Subject: Re: [PATCH] powerpc/32: Fix critical and debug interrupts on BOOKE
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     radu.rendec@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+References: <028d5483b4851b01ea4334d0751e7f260419092b.1625637264.git.christophe.leroy@csgroup.eu>
+Message-ID: <c9f3a3e2-e5ed-6074-b700-99911d925012@csgroup.eu>
+Date:   Wed, 4 Aug 2021 07:52:43 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <d916a46f-91fb-4e11-b72e-b96a73971117@intel.com>
+In-Reply-To: <028d5483b4851b01ea4334d0751e7f260419092b.1625637264.git.christophe.leroy@csgroup.eu>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03. 08. 21, 13:44, Adrian Hunter wrote:
-> On 26/07/21 12:14 pm, Jiri Slaby wrote:
->> The scripts cannot be executed on their own. The python ones were always
->> installed without x permissions, the perl ones fail anyway:
->>    BEGIN failed--compilation aborted at /usr/lib/perf-core/scripts/perl/rw-by-pid.pl line 18.
->> so there is no point to have a shebang in them. This causes rpmlint to
->> complain too:
->>    W: non-executable-script /usr/lib/perf-core/scripts/perl/rw-by-file.pl 644 /usr/bin/perl -w
->>
->> Hence drop shebangs in them all and remove x permissions in the
->> repository. If anyone wants some of them executable, they need to fix
->> the install scripts first.
->>
->> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
->> Cc: Adrian Hunter <adrian.hunter@intel.com>
->> Cc: Andi Kleen <ak@linux.intel.com>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Jiri Olsa <jolsa@redhat.com>
->> Cc: Kan Liang <kan.liang@linux.intel.com>
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Namhyung Kim <namhyung@kernel.org>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
->> ---
->>   tools/perf/scripts/perl/rw-by-file.pl            | 1 -
->>   tools/perf/scripts/perl/rw-by-pid.pl             | 1 -
->>   tools/perf/scripts/perl/rwtop.pl                 | 1 -
->>   tools/perf/scripts/perl/wakeup-latency.pl        | 1 -
->>   tools/perf/scripts/python/exported-sql-viewer.py | 1 -
+Hi Radu,
+
+Le 07/07/2021 à 07:55, Christophe Leroy a écrit :
+> 32 bits BOOKE have special interrupts for debug and other
+> critical events.
+
+Were you able to test this patch ?
+
+Thanks
+Christophe
+
+
 > 
-> exported-sql-viewer.py is a standalone executable
-
-That's great, but in fact noone can run it when make-installed as I 
-stated above:
-
- >> If anyone wants some of them executable, they need to fix
- >> the install scripts first.
-
-See:
-$(INSTALL) scripts/python/*.py -m 644 -t 
-'$(DESTDIR_SQ)$(perfexec_instdir_SQ)/scripts/python';
-
-thanks,
--- 
-js
-suse labs
+> When handling those interrupts, dedicated registers are saved
+> in the stack frame in addition to the standard registers, leading
+> to a shift of the pt_regs struct.
+> 
+> Since commit db297c3b07af ("powerpc/32: Don't save thread.regs on
+> interrupt entry"), the pt_regs struct is expected to be at the
+> same place all the time.
+> 
+> Instead of handling a special struct in addition to pt_regs, just
+> add those special registers to struct pt_regs.
+> 
+> Reported-by: Radu Rendec <radu.rendec@gmail.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Fixes: db297c3b07af ("powerpc/32: Don't save thread.regs on interrupt entry")
+> Cc: stable@vger.kernel.org
+> ---
+>   arch/powerpc/include/asm/ptrace.h | 16 ++++++++++++++++
+>   arch/powerpc/kernel/asm-offsets.c | 31 ++++++++++++++-----------------
+>   arch/powerpc/kernel/head_booke.h  | 27 +++------------------------
+>   3 files changed, 33 insertions(+), 41 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
+> index 3e5d470a6155..14422e851494 100644
+> --- a/arch/powerpc/include/asm/ptrace.h
+> +++ b/arch/powerpc/include/asm/ptrace.h
+> @@ -70,6 +70,22 @@ struct pt_regs
+>   		unsigned long __pad[4];	/* Maintain 16 byte interrupt stack alignment */
+>   	};
+>   #endif
+> +#if defined(CONFIG_PPC32) && defined(CONFIG_BOOKE)
+> +	struct { /* Must be a multiple of 16 bytes */
+> +		unsigned long mas0;
+> +		unsigned long mas1;
+> +		unsigned long mas2;
+> +		unsigned long mas3;
+> +		unsigned long mas6;
+> +		unsigned long mas7;
+> +		unsigned long srr0;
+> +		unsigned long srr1;
+> +		unsigned long csrr0;
+> +		unsigned long csrr1;
+> +		unsigned long dsrr0;
+> +		unsigned long dsrr1;
+> +	};
+> +#endif
+>   };
+>   #endif
+>   
+> diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+> index a47eefa09bcb..5bee245d832b 100644
+> --- a/arch/powerpc/kernel/asm-offsets.c
+> +++ b/arch/powerpc/kernel/asm-offsets.c
+> @@ -309,24 +309,21 @@ int main(void)
+>   	STACK_PT_REGS_OFFSET(STACK_REGS_IAMR, iamr);
+>   #endif
+>   
+> -#if defined(CONFIG_PPC32)
+> -#if defined(CONFIG_BOOKE) || defined(CONFIG_40x)
+> -	DEFINE(EXC_LVL_SIZE, STACK_EXC_LVL_FRAME_SIZE);
+> -	DEFINE(MAS0, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas0));
+> +#if defined(CONFIG_PPC32) && defined(CONFIG_BOOKE)
+> +	STACK_PT_REGS_OFFSET(MAS0, mas0);
+>   	/* we overload MMUCR for 44x on MAS0 since they are mutually exclusive */
+> -	DEFINE(MMUCR, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas0));
+> -	DEFINE(MAS1, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas1));
+> -	DEFINE(MAS2, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas2));
+> -	DEFINE(MAS3, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas3));
+> -	DEFINE(MAS6, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas6));
+> -	DEFINE(MAS7, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas7));
+> -	DEFINE(_SRR0, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, srr0));
+> -	DEFINE(_SRR1, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, srr1));
+> -	DEFINE(_CSRR0, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, csrr0));
+> -	DEFINE(_CSRR1, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, csrr1));
+> -	DEFINE(_DSRR0, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, dsrr0));
+> -	DEFINE(_DSRR1, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, dsrr1));
+> -#endif
+> +	STACK_PT_REGS_OFFSET(MMUCR, mas0);
+> +	STACK_PT_REGS_OFFSET(MAS1, mas1);
+> +	STACK_PT_REGS_OFFSET(MAS2, mas2);
+> +	STACK_PT_REGS_OFFSET(MAS3, mas3);
+> +	STACK_PT_REGS_OFFSET(MAS6, mas6);
+> +	STACK_PT_REGS_OFFSET(MAS7, mas7);
+> +	STACK_PT_REGS_OFFSET(_SRR0, srr0);
+> +	STACK_PT_REGS_OFFSET(_SRR1, srr1);
+> +	STACK_PT_REGS_OFFSET(_CSRR0, csrr0);
+> +	STACK_PT_REGS_OFFSET(_CSRR1, csrr1);
+> +	STACK_PT_REGS_OFFSET(_DSRR0, dsrr0);
+> +	STACK_PT_REGS_OFFSET(_DSRR1, dsrr1);
+>   #endif
+>   
+>   	/* About the CPU features table */
+> diff --git a/arch/powerpc/kernel/head_booke.h b/arch/powerpc/kernel/head_booke.h
+> index 87b806e8eded..e5503420b6c6 100644
+> --- a/arch/powerpc/kernel/head_booke.h
+> +++ b/arch/powerpc/kernel/head_booke.h
+> @@ -168,20 +168,18 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
+>   /* only on e500mc */
+>   #define DBG_STACK_BASE		dbgirq_ctx
+>   
+> -#define EXC_LVL_FRAME_OVERHEAD	(THREAD_SIZE - INT_FRAME_SIZE - EXC_LVL_SIZE)
+> -
+>   #ifdef CONFIG_SMP
+>   #define BOOKE_LOAD_EXC_LEVEL_STACK(level)		\
+>   	mfspr	r8,SPRN_PIR;				\
+>   	slwi	r8,r8,2;				\
+>   	addis	r8,r8,level##_STACK_BASE@ha;		\
+>   	lwz	r8,level##_STACK_BASE@l(r8);		\
+> -	addi	r8,r8,EXC_LVL_FRAME_OVERHEAD;
+> +	addi	r8,r8,THREAD_SIZE - INT_FRAME_SIZE;
+>   #else
+>   #define BOOKE_LOAD_EXC_LEVEL_STACK(level)		\
+>   	lis	r8,level##_STACK_BASE@ha;		\
+>   	lwz	r8,level##_STACK_BASE@l(r8);		\
+> -	addi	r8,r8,EXC_LVL_FRAME_OVERHEAD;
+> +	addi	r8,r8,THREAD_SIZE - INT_FRAME_SIZE;
+>   #endif
+>   
+>   /*
+> @@ -208,7 +206,7 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
+>   	mtmsr	r11;							\
+>   	mfspr	r11,SPRN_SPRG_THREAD;	/* if from user, start at top of   */\
+>   	lwz	r11, TASK_STACK - THREAD(r11); /* this thread's kernel stack */\
+> -	addi	r11,r11,EXC_LVL_FRAME_OVERHEAD;	/* allocate stack frame    */\
+> +	addi	r11,r11,THREAD_SIZE - INT_FRAME_SIZE;	/* allocate stack frame    */\
+>   	beq	1f;							     \
+>   	/* COMING FROM USER MODE */					     \
+>   	stw	r9,_CCR(r11);		/* save CR			   */\
+> @@ -516,24 +514,5 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
+>   	bl	kernel_fp_unavailable_exception;			      \
+>   	b	interrupt_return
+>   
+> -#else /* __ASSEMBLY__ */
+> -struct exception_regs {
+> -	unsigned long mas0;
+> -	unsigned long mas1;
+> -	unsigned long mas2;
+> -	unsigned long mas3;
+> -	unsigned long mas6;
+> -	unsigned long mas7;
+> -	unsigned long srr0;
+> -	unsigned long srr1;
+> -	unsigned long csrr0;
+> -	unsigned long csrr1;
+> -	unsigned long dsrr0;
+> -	unsigned long dsrr1;
+> -};
+> -
+> -/* ensure this structure is always sized to a multiple of the stack alignment */
+> -#define STACK_EXC_LVL_FRAME_SIZE	ALIGN(sizeof (struct exception_regs), 16)
+> -
+>   #endif /* __ASSEMBLY__ */
+>   #endif /* __HEAD_BOOKE_H__ */
+> 
