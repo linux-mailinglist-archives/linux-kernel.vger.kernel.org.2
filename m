@@ -2,181 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9E53E05BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFEF3E05CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236807AbhHDQTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:19:38 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:52095 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229731AbhHDQTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:19:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1628093964;
-  x=1659629964;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=y/VvGw8hfjncPA/ggJtRSsIGz48Wf3sLzSxNjYJFhPE=;
-  b=h7NGW4Ri27qooXSuEu3bT90ivImk9a/lVByL2nfCowp/pjE8DKI3LJ8d
-   RSZA6Shf6Mw9F6/wuAMmZEwlM9Zs+FRe+kImigEqBfrlcnsssqBWKhCqQ
-   jrmWgvrBzKGiulxyWPxGoZEVFpiXx4z1vWNbe3AOWI2C44oWGsBRjEmhj
-   Hjeuu7NO/AqBIbSlcZbrSuMS2NwtuL8bJYYQKNSiSDCeAYw5FPoHEABgl
-   yVFGuW4ydLjxeOlFQTxC/qVOOtaKWdQEtYgoGVl+n5MqySsuNyP6rsUfR
-   N4iMfxbdCZOzzvKLsSkPB236wd6+MgUawN5LCQIXYLForEodlUuETZLjT
-   A==;
-From:   Borys Movchan <borysmn@axis.com>
-To:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <kernel@axis.com>, Borys Movchan <borysmn@axis.com>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-Date:   Wed, 4 Aug 2021 18:21:31 +0200
-Message-ID: <20210804162132.24786-1-borysmn@axis.com>
-X-Mailer: git-send-email 2.20.1
+        id S237194AbhHDQWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236975AbhHDQWq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 12:22:46 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C91DC0613D5;
+        Wed,  4 Aug 2021 09:22:34 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 18:22:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628094152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VYAu+x/wAlGvb/Mk3k0JT/DRiAXNKYQWd63guiFfZG4=;
+        b=dsSnqlrsS+kJGLUNtVOx6VUnKY0gldGjRifRsZbHXPISJH09MPnHz3WctVMULa7tYoMvA5
+        Aw8dpbFZL70KCt/8aFaSmC1cRnWSst7lKyBn8Uxm1QBX3GMpyKRlMh2AvI5cShNnklVEud
+        BAd8zHi3lPHiI/K3k052RN3J4FCy6JLvVVDT0MT+I36lC3Wo5g2QJgaEy6qtugWakCWIbu
+        LV6GS318yt7LQIEc0Jglcpreoka/H+AB5KnwalHW2WDPzbt0ONP2YYiI9tgbL0r+mEoTgY
+        DXa/FIJPtPSEKqrZUuMByDOxMQJLPlZuu+blzvBNA43eqrcylrkHkcp6Y91DSQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628094152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VYAu+x/wAlGvb/Mk3k0JT/DRiAXNKYQWd63guiFfZG4=;
+        b=tvu6dZTlyWOa8Np7RFGAqI1yqmsyEgi0kwXBBq0DDkKGUX+qN8rK5Fx1BFI9e0bsXLjfHQ
+        Ylqds5yuk40P7iCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <wagi@monom.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org
+Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
+Message-ID: <20210804162231.rfj5i736lqc4nsio@linutronix.de>
+References: <20210804104803.4nwxi74sa2vwiujd@linutronix.de>
+ <20210804110057.chsvt7l5xpw7bo5r@linutronix.de>
+ <20210804131731.GG8057@worktop.programming.kicks-ass.net>
+ <4f549344-1040-c677-6a6a-53e243c5f364@kernel.dk>
+ <feebf183-2e33-36b5-4538-62a40b2a58b6@kernel.dk>
+ <20210804153308.oasahcxjmcw7vivo@linutronix.de>
+ <f2d0a028-fe85-28ff-9cea-8ab1d26a15d0@kernel.dk>
+ <20210804154743.niogqvnladdkfgi2@linutronix.de>
+ <7c946918-ae0d-6195-6a78-b019f9bc1fd3@kernel.dk>
+ <20210804121704.1587c41b@oasis.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail03w.axis.com (10.20.40.9) To se-mail07w.axis.com
- (10.20.40.13)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210804121704.1587c41b@oasis.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If something went wrong during the TPM firmware upgrade, like power
-failure or the firmware image file get corrupted, the TPM might end
-up in Upgrade or Failure mode upon the next start. The state is
-persistent between the TPM power cycle/restart.
+On 2021-08-04 12:17:04 [-0400], Steven Rostedt wrote:
+> Perhaps in this situation, we could open code it to:
+> 
+>   	if (stall_hash != -1U) {
+> 		raw_spin_unlock(&wqe->lock);
+> 
+> 		/* On RT the spin_lock_irq() does not disable interrupts */
+> 		if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> 			local_irq_enable();
 
-According to TPM specification:
- * If the TPM is in Upgrade mode, it will answer with TPM2_RC_UPGRADE
-   to all commands except Field Upgrade related ones.
- * If the TPM is in Failure mode, it will allow performing TPM
-   initialization but will not provide any crypto operations.
-   Will happily respond to Field Upgrade calls.
+no preemption happens here with NEED_RESCHED set.
 
-The fix changes the behavior of the `tpm2_auto_startup` function, so
-it tries to detect what mode TPM is running in. If the chip is in the
-Upgrade or Failure mode, the function returns -EIO error code which
-can be used later to adjust driver behavior later.
-After `tpm_chip_register` calls `tpm2_auto_startup` it checks for the
-error code. If the TPM is in Upgrade or Failure mode, set the
-`limited_mode` flag. The calls to `tpm2_get_cc_attrs_tbl`,
-`tpm_add_hwrng` and `tpm_get_pcr_allocation` will fail if the TPM is
-in Failure or Upgrade mode, so use `limited_mode` flag to exclude
-them from the module initialization sequence.
+>  		io_wait_on_hash(wqe, stall_hash);
+> 
+> 		if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> 			local_irq_disable();
+> 		raw_spin_lock(&wqe->lock);
+>  	}
+> 
+> Note, I haven't looked at the rest of the code to know the ripple
+> effect of this, but I'm just suggesting the idea.
+> 
 
-Signed-off-by: Borys Movchan <borysmn@axis.com>
----
-
-Notes:
-    Commit message updated
-
- drivers/char/tpm/tpm-chip.c | 23 +++++++++++++++--------
- drivers/char/tpm/tpm2-cmd.c | 12 ++++++++++--
- include/linux/tpm.h         |  1 +
- 3 files changed, 26 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-index ddaeceb7e109..ff2367c447fb 100644
---- a/drivers/char/tpm/tpm-chip.c
-+++ b/drivers/char/tpm/tpm-chip.c
-@@ -574,20 +574,25 @@ static int tpm_get_pcr_allocation(struct tpm_chip *chip)
- int tpm_chip_register(struct tpm_chip *chip)
- {
- 	int rc;
-+	bool limited_mode = false;
- 
- 	rc = tpm_chip_start(chip);
- 	if (rc)
- 		return rc;
- 	rc = tpm_auto_startup(chip);
--	if (rc) {
-+	if (rc == -EIO) {
-+		limited_mode = true;
-+	} else if (rc) {
- 		tpm_chip_stop(chip);
- 		return rc;
- 	}
- 
--	rc = tpm_get_pcr_allocation(chip);
--	tpm_chip_stop(chip);
--	if (rc)
--		return rc;
-+	if (!limited_mode) {
-+		rc = tpm_get_pcr_allocation(chip);
-+		tpm_chip_stop(chip);
-+		if (rc)
-+			return rc;
-+	}
- 
- 	tpm_sysfs_add_device(chip);
- 
-@@ -595,9 +600,11 @@ int tpm_chip_register(struct tpm_chip *chip)
- 
- 	tpm_add_ppi(chip);
- 
--	rc = tpm_add_hwrng(chip);
--	if (rc)
--		goto out_ppi;
-+	if (!limited_mode) {
-+		rc = tpm_add_hwrng(chip);
-+		if (rc)
-+			goto out_ppi;
-+	}
- 
- 	rc = tpm_add_char_device(chip);
- 	if (rc)
-diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-index a25815a6f625..7468353ed67d 100644
---- a/drivers/char/tpm/tpm2-cmd.c
-+++ b/drivers/char/tpm/tpm2-cmd.c
-@@ -718,7 +718,8 @@ static int tpm2_startup(struct tpm_chip *chip)
-  *                     sequence
-  * @chip: TPM chip to use
-  *
-- * Returns 0 on success, < 0 in case of fatal error.
-+ * Returns 0 on success, -ENODEV in case of fatal error,
-+ *	    -EIO in case of Reduced/Upgrade mode
-  */
- int tpm2_auto_startup(struct tpm_chip *chip)
- {
-@@ -729,7 +730,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
- 		goto out;
- 
- 	rc = tpm2_do_selftest(chip);
--	if (rc && rc != TPM2_RC_INITIALIZE)
-+	if (rc == TPM2_RC_UPGRADE) {
-+		rc = -EIO;
-+		goto out;
-+	} else if (rc && rc != TPM2_RC_INITIALIZE)
- 		goto out;
- 
- 	if (rc == TPM2_RC_INITIALIZE) {
-@@ -743,6 +747,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
- 	}
- 
- 	rc = tpm2_get_cc_attrs_tbl(chip);
-+	if (rc) { /* Succeeded until here, but failed -> reduced mode */
-+		rc = -EIO;
-+		goto out;
-+	}
- 
- out:
- 	if (rc > 0)
-diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-index aa11fe323c56..e873c42907f0 100644
---- a/include/linux/tpm.h
-+++ b/include/linux/tpm.h
-@@ -207,6 +207,7 @@ enum tpm2_return_codes {
- 	TPM2_RC_INITIALIZE	= 0x0100, /* RC_VER1 */
- 	TPM2_RC_FAILURE		= 0x0101,
- 	TPM2_RC_DISABLED	= 0x0120,
-+	TPM2_RC_UPGRADE		= 0x012D,
- 	TPM2_RC_COMMAND_CODE    = 0x0143,
- 	TPM2_RC_TESTING		= 0x090A, /* RC_WARN */
- 	TPM2_RC_REFERENCE_H0	= 0x0910,
--- 
-2.20.1
-
+Sebastian
