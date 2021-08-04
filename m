@@ -2,93 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1BB3E03CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49CD3E03CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238935AbhHDPBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:01:35 -0400
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:23745 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238939AbhHDPBc (ORCPT
+        id S238941AbhHDPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238826AbhHDPBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:01:32 -0400
-Date:   Wed, 04 Aug 2021 15:01:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail; t=1628089275;
-        bh=Uxwz3jXRe7LOguIMwMuWtaEHnBl60v6KEdbcFAjb0Vw=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=I5k+d4qR1w3jO8skGL8TN61R3kwXhfhc0z/d2binXyel9BZecYSfHOLH8nbV34NGd
-         HEjx7sEnV/NHXAUTf0aHYholQuIK39Iqs4CKRVuiVnwJkr+fRPQvnjbD5Hh7gLLdYB
-         ZMM5Fi5B2eK/TTLZPb0e8M+93xPC8jbozsHOOqujuD8a7O//eBo+OMlEQeWzZ6TeQ+
-         I/Xuf1EcpL9wvr5tPdrUUBqF5rBihSJ1LyJ4j2/YjUK7Qf69NIT4IyuiYr0p4HBs6B
-         jBqALspjjLV5bBUYi3wW9Ib9QVbWbz5g4+nCbB13PKyDGsB5kNENinkwsvasDkAx5o
-         xeziI2AXvC3jA==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Bryan Brattlof <hello@bryanbrattlof.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH] staging: rtl8723bs: remove unused BT structures
-Message-ID: <20210804144812.715695-1-hello@bryanbrattlof.com>
+        Wed, 4 Aug 2021 11:01:41 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E53C0613D5;
+        Wed,  4 Aug 2021 08:01:27 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id k4so2655010wrc.0;
+        Wed, 04 Aug 2021 08:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=b/CGPGKAIJdU81c9VKQNODFZgreiXcLnh2tcMHBfuZM=;
+        b=HpKqdQAoj25mhjTtSvf7761Z6DAeK91j7qgoD2Xp7GxroakkEZsXbCvN6pO7F+Lqnu
+         7MZk7nRZkIM/kSoEepSC9DW/KjZUlVEpC8yTJhYIBFeW8+SPH2jzSmiFfncFLT32zWrO
+         APamyL5VaHn/njXG12sVKlUzDiEYe4ESGPmz3nm7UfJlz19VLu2EBKKINlbQLbokeZAF
+         K48scpqfuq6Y6D+W51wVGs2dl1LSOfC49220MXexYKgxLaoXvX5yV712fWFR+C7xyTMW
+         Vme6E8g/34yZld/s3Z9xM0wkzvcONsE+0xPe/igBPe3vSnmRshE2p94FXe0ohY8iDgfs
+         lDSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=b/CGPGKAIJdU81c9VKQNODFZgreiXcLnh2tcMHBfuZM=;
+        b=JE0PkpWoAhZnsIJ+kL+m1ezrD4TWBX25SQDMYBUEDZCXPjUjuqJKMoLz8XfGEvx8e8
+         aH/XuW//guC95NPwB5duEIlu374NKiW5YXS92D01ULRp5TrDqjtJuXdoi7LdzN5HGvJk
+         sLIN0YqN7L+BvzHwpppLCMJLKRXdYPxKzzikNzH9VPpHh0oDrV8Nvi6ncXGfJlVxmNf+
+         1yP/13tfo+0kE5AM1oDuFQYBBV/+3GxopQZqlgzbMKIYessAVBGPdjME5do7+PeZs+bc
+         uWyVHXVVv/U3uK79wjw9UDUZiOZzF7aIx7t9xu7OJMSxz++IVyjGDEi+Zz7Hr8fOhHyG
+         645w==
+X-Gm-Message-State: AOAM531ZcmRd1Umcmel6HbI7OADHk6SsUMgq8jDtyKOP1toQexpEKuHE
+        ZsLnR/GoIXCL5z6UyZxLB3561gVXXn0ayA==
+X-Google-Smtp-Source: ABdhPJz1VngK4KyOLmBahayZ/13L7txbqaR776m8lVaezd/WsyTRfY1khzKVSoMshxjY5e6l520jKQ==
+X-Received: by 2002:a5d:4e91:: with SMTP id e17mr29179159wru.7.1628089286553;
+        Wed, 04 Aug 2021 08:01:26 -0700 (PDT)
+Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
+        by smtp.gmail.com with ESMTPSA id g11sm3005787wrd.97.2021.08.04.08.01.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 08:01:25 -0700 (PDT)
+Subject: Re: [PATCH 1/2] dt-bindings: usb: mtk-musb: add MT7623 compatible
+To:     Sungbo Eo <mans0n@gorani.run>, linux-mediatek@lists.infradead.org
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Min Guo <min.guo@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210803151320.71531-1-mans0n@gorani.run>
+ <20210803151320.71531-2-mans0n@gorani.run>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <353c79de-2dab-0367-32e8-63b0fd89900d@gmail.com>
+Date:   Wed, 4 Aug 2021 17:01:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210803151320.71531-2-mans0n@gorani.run>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove static BT debugging structures no longer in use.
-
-Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
----
- drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c | 6 ------
- drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c | 6 ------
- 2 files changed, 12 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c b/drivers/stag=
-ing/rtl8723bs/hal/HalBtc8723b1Ant.c
-index 242c14959176..b3d7f50fac4c 100644
---- a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-+++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-@@ -13,12 +13,6 @@ static struct coex_dm_8723b_1ant *pCoexDm =3D &GLCoexDm8=
-723b1Ant;
- static struct coex_sta_8723b_1ant GLCoexSta8723b1Ant;
- static struct coex_sta_8723b_1ant *pCoexSta =3D &GLCoexSta8723b1Ant;
-
--static const char *const GLBtInfoSrc8723b1Ant[] =3D {
--=09"BT Info[wifi fw]",
--=09"BT Info[bt rsp]",
--=09"BT Info[bt auto report]",
--};
--
- /*  local function proto type if needed */
- /*  local function start with halbtc8723b1ant_ */
- static u8 halbtc8723b1ant_BtRssiState(
-diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c b/drivers/stag=
-ing/rtl8723bs/hal/HalBtc8723b2Ant.c
-index 3e36a7dc72a6..c1c7b5cc17a7 100644
---- a/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c
-+++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b2Ant.c
-@@ -20,12 +20,6 @@ static struct coex_dm_8723b_2ant *pCoexDm =3D &GLCoexDm8=
-723b2Ant;
- static struct coex_sta_8723b_2ant GLCoexSta8723b2Ant;
- static struct coex_sta_8723b_2ant *pCoexSta =3D &GLCoexSta8723b2Ant;
-
--static const char *const GLBtInfoSrc8723b2Ant[] =3D {
--=09"BT Info[wifi fw]",
--=09"BT Info[bt rsp]",
--=09"BT Info[bt auto report]",
--};
--
- /*  local function start with halbtc8723b2ant_ */
- static u8 halbtc8723b2ant_BtRssiState(
- =09u8 levelNum, u8 rssiThresh, u8 rssiThresh1
---
-2.30.2
 
 
+On 03/08/2021 17:13, Sungbo Eo wrote:
+> Document MT7623 compatible for mtk-musb.
+> 
+> Signed-off-by: Sungbo Eo <mans0n@gorani.run>
+
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+> ---
+>  Documentation/devicetree/bindings/usb/mediatek,musb.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,musb.yaml b/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
+> index 84ddacfdbe9b..03d62d60ce5f 100644
+> --- a/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
+> @@ -19,6 +19,7 @@ properties:
+>        - enum:
+>            - mediatek,mt8516-musb
+>            - mediatek,mt2701-musb
+> +          - mediatek,mt7623-musb
+>        - const: mediatek,mtk-musb
+>  
+>    reg:
+> 
