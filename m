@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EA73E0600
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39843E05E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237689AbhHDQeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238242AbhHDQeK (ORCPT
+        id S237473AbhHDQ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:28:30 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:44782 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229725AbhHDQ22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:34:10 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D25AEC0613D5;
-        Wed,  4 Aug 2021 09:33:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=p6wkqSiM6eUcutE3r2QlZPPHyVU7BUrvZOHrQArYeWM=; b=b1Hh5qH3g4WOf
-        KANdDOBB5z47t0gBtffuKzIszpQ0Yr4C/iKaqyGgVG27uvvXN9uCVs/2sPnd4Qhg
-        dMcrgpEIGOyApiEJ8oqtBpdhr9RzZVcj3pdQQr1dxTwtSPuwdr9VvJ4m000KKmXT
-        L7n8V1ZDnlad8RAkLrW4tnuwyMyyA4=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBHT29qwQph1eeUAA--.4949S2;
-        Thu, 05 Aug 2021 00:33:46 +0800 (CST)
-Date:   Thu, 5 Aug 2021 00:27:39 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH] Documentation/features/vm: riscv supports THP now
-Message-ID: <20210805002739.23f44d2d@xhacker>
+        Wed, 4 Aug 2021 12:28:28 -0400
+Received: by mail-ot1-f51.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so2132092ota.11;
+        Wed, 04 Aug 2021 09:28:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j3kzQ55GGFtb0Mnc40mJ/qjwvjBGrMWl/RUKJOzRSJ4=;
+        b=V/uWiOX4GvD84Kx08E41CAuH525XmKyBaEXVGwNFTcMB4zptUeeJLHWaof7DT7YxkM
+         eCROhGvYSMpugK/OctniIkKrtYWLvWAdbJnViofJjsQxODwLSTwn7YRIrhwW3CxK6ZbZ
+         5a6mE6Bgk4NOc1slWm9wOr4d5lFRIKjRLMmSYoxCxCHV+nvHAs42GVksPDdiB6T6ZTN/
+         j1PkuQ9St7nYwni/LY2CuzOmjqZObPIvM9Uytqn4En4H1AN1Y5EovG71DnI9ynwDDp+d
+         8gQELrh1AFaeJnKLe1O0tRbFzHhpZ//TVl4Au5Wrxl3HyqUOvAr8NuRUID0ChmCaNTtG
+         i5zw==
+X-Gm-Message-State: AOAM5301yYliCatiPHX1wVgwUyiW3jSZTav3G09I4n9MXmqe+Y7H7LAN
+        67RHwJ3KWFp10EJDo6bMccLrRHfzsdNbkk/OAMo=
+X-Google-Smtp-Source: ABdhPJz3wrMIcjsODR4s1X5t9UxcGX3nbsnfrHYhJrS5pP8rhRT2xB1xfqzyfplseVLyyccz/6Wp2X6PeyiM1uJwaTo=
+X-Received: by 2002:a9d:5c8b:: with SMTP id a11mr461995oti.206.1628094494364;
+ Wed, 04 Aug 2021 09:28:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygBHT29qwQph1eeUAA--.4949S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFy3Gr13XF13Jr15AFyUGFg_yoW3GFbEv3
-        W3AayaqrWUt3s2vwn8JF1UCr10vw1FkrZ7Gr1Igw48A3WUZFnxKF9Fk39xA3s8urW3ur4r
-        J34qgr9xta42yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbFAYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I
-        3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxV
-        WUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
-        wI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcI
-        k0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
-        Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8rcTPUUUUU==
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+References: <20210722193450.35321-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0h6OQDB2hijnfinwpwpo_483UkcjGi8jYX4J6VETqLBEA@mail.gmail.com>
+ <CAJZ5v0iCmu+P=phePuNeWC4MgMJ08hMtJrKoCUAzjSSnxBzObw@mail.gmail.com> <162809409848.19113.15878488082512415331@swboyd.mtv.corp.google.com>
+In-Reply-To: <162809409848.19113.15878488082512415331@swboyd.mtv.corp.google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 4 Aug 2021 18:28:03 +0200
+Message-ID: <CAJZ5v0iu_6yxh1hgNT+C7efJX774fK0jaYYXkC2eMt24cd+Lhg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] clk: x86: Rename clk-lpt to more specific clk-lpss-atom
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+On Wed, Aug 4, 2021 at 6:21 PM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Rafael J. Wysocki (2021-08-04 09:03:31)
+> > On Fri, Jul 23, 2021 at 3:40 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > >
+> > > On Thu, Jul 22, 2021 at 9:34 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > >
+> > > > The LPT stands for Lynxpoint PCH. However the driver is used on a few
+> > > > Intel Atom SoCs. Rename it to reflect this in a way how another clock
+> > > > driver, i.e. clk-pmc-atom, is called.
+> > > >
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > ---
+> > > >
+> > > > Good to go either via ACPI or CCF tree.
+> > >
+> > > In case you want the latter:
+> > >
+> > > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Assuming that this hasn't been picked up, I'm going to apply it as
+> > 5.15 material.
+> >
+>
+> I applied it already to clk tree. Maybe I forgot to send the email,
+> sorry.
 
-After commit e88b333142e4 ("riscv: mm: add THP support on 64-bit"),
-riscv can support THP.
-
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- Documentation/features/vm/THP/arch-support.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/features/vm/THP/arch-support.txt b/Documentation/features/vm/THP/arch-support.txt
-index e8238cb2a4da..7dbd6967b37e 100644
---- a/Documentation/features/vm/THP/arch-support.txt
-+++ b/Documentation/features/vm/THP/arch-support.txt
-@@ -22,7 +22,7 @@
-     |    openrisc: |  ..  |
-     |      parisc: | TODO |
-     |     powerpc: |  ok  |
--    |       riscv: | TODO |
-+    |       riscv: |  ok  |
-     |        s390: |  ok  |
-     |          sh: |  ..  |
-     |       sparc: |  ok  |
--- 
-2.32.0
-
-
+No prob, dropping it now.
