@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0056F3DF9C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EB03DF9C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234647AbhHDClp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 22:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhHDCll (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 22:41:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD70FC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 19:41:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=ujaps8s3fJlAlAP4Dhd8BqjvyYaCWRLuuClahQZg6cs=; b=wG7cSv1+kc/iI3FPpRHP6TDPqw
-        LHzTHvwns4HBKBb480yZrTvIigBcYVVEwG2gO9zb6bsfRlJQj9N2qMD3w1VglUWXjicRUUTyEBBTf
-        kPpbr1IVroXnNasUgKiXz0FnRsP4t52FrjHMpaHJjZn4mOiiLiOQBUOiP6vM32Qoun1xIoaFN1ZgG
-        LQ3ieQ6RuMGU/DYLbuXKyQoXUMShB0AAOCSzN7JU5LBb3DdkTQzHHyAC4tCifhK/70rFqpKqxWIu7
-        NxfZEsH9/syMrAe+1IrcVz7zwG6BR/WcILnjgimbPDaWTxemMJISTP3FHHzkqDWBZJhplXgygvogS
-        eVcjaNsA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mB6pI-005KWU-Cd; Wed, 04 Aug 2021 02:40:24 +0000
-Subject: Re: undefined reference to `.radix__create_section_mapping'
-To:     kernel test robot <lkp@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <202108010251.C4jhEEBW-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <082eea82-c788-72e0-f6a4-eadfb54d1231@infradead.org>
-Date:   Tue, 3 Aug 2021 19:40:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234504AbhHDCkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 22:40:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231656AbhHDCkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 22:40:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61F9F61029;
+        Wed,  4 Aug 2021 02:40:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628044827;
+        bh=b/yCEEYrBrU+A3fTEWp0ZEibouN5QfokYnKFbTWvxss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qQOZ9FSdm+2PCME3CspbMkLT7pOP/d89rmPN+Iw8wbJRwemq4lViz37QJtRdt7JiO
+         VrQOkqCkO1eW+yrdj+yQAPbPfEJ5FXJErfsJNpwgg8nNkr57Q6OnG7cGctvI7BRnB/
+         ZP3LtND+r1YBI+LvXu1IdVpdVi/+bEygAak59SBAu61BRuf+ErCEk0+EVSAyvOyYcs
+         IQ+vVS2QeN48ASCpuLjoo5t1TjEGmaYPNWj1sm7FRIztUhKvy9UWAMIr7f8bHhYkKa
+         5qlz47Kl4kQDfxzwcOdgvh0kk03PqObqBzgyBPylFnSZbHci4OT+Tq4blHihs7nmz6
+         lbVY5/VRdlSIQ==
+Date:   Tue, 3 Aug 2021 19:40:26 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ucounts: add missing data type changes
+Message-ID: <YQn+GomdRCoYc/E8@Ryzen-9-3900X.localdomain>
+References: <20210730062854.3601635-1-svens@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <202108010251.C4jhEEBW-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730062854.3601635-1-svens@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/21 11:22 AM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   c7d102232649226a69dddd58a4942cf13cff4f7c
-> commit: fe3dc333d2ed50c9764d281869d87bae0d795ce5 powerpc/mmu: Don't duplicate radix_enabled()
-> date:   3 months ago
-> config: powerpc64-randconfig-r013-20210731 (attached as .config)
-> compiler: powerpc-linux-gcc (GCC) 10.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe3dc333d2ed50c9764d281869d87bae0d795ce5
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout fe3dc333d2ed50c9764d281869d87bae0d795ce5
->          # save the attached .config to linux build tree
->          mkdir build_dir
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
+On Fri, Jul 30, 2021 at 08:28:54AM +0200, Sven Schnelle wrote:
+> commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
+> changed the data type of ucounts/ucounts_max to long, but missed to
+> adjust a few other places. This is noticeable on big endian platforms
+> from user space because the /proc/sys/user/max_*_names files all
+> contain 0.
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->     powerpc-linux-ld: arch/powerpc/mm/book3s64/pgtable.o: in function `.create_section_mapping':
->>> (.meminit.text+0x3c): undefined reference to `.radix__create_section_mapping'
->     powerpc-linux-ld: arch/powerpc/mm/book3s64/pgtable.o: in function `.remove_section_mapping':
->>> (.meminit.text+0x90): undefined reference to `.radix__remove_section_mapping'
+> Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
+> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
 
-In the randconfig file:
-# CONFIG_PPC_RADIX_MMU is not set
+This patch in -next as commit e43fc41d1f7f ("ucounts: add missing data type
+changes") causes Windows Subsystem for Linux to fail to start:
 
-It is default y, but maybe that is not strong enough?
-I.e., should it be selected by PPC_BOOK3S_64?
+[error 0x8007010b when launching `wsl.exe -d Arch'] Could not access starting
+directory "\\wsl$\Arch\home\nathan"
 
-Changing the config to PPC_RADIX_MMU=y fixes the build errors.
+Specifically, it is the change to max_user_watches in
+fs/notify/inotify/inotify_user.c, as the below diff gets me back to working.
+Unfortunately, I have no additional information to offer beyond that as WSL's
+init is custom and closed source (as far as I am aware) and there are no real
+debugging utilities.
 
-Or should arch/powerpc/mm/book3s64/pgtable.c be modified to handle
-the case of PPC_RADIX_MMU is not set?
+Cheers,
+Nathan
 
-
-thanks.
--- 
-~Randy
+diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+index 55fe7cdea2fb..32178a95c1b3 100644
+--- a/fs/notify/inotify/inotify_user.c
++++ b/fs/notify/inotify/inotify_user.c
+@@ -68,9 +68,9 @@ struct ctl_table inotify_table[] = {
+        {
+                .procname       = "max_user_watches",
+                .data           = &init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES],
+-               .maxlen         = sizeof(long),
++               .maxlen         = sizeof(int),
+                .mode           = 0644,
+-               .proc_handler   = proc_doulongvec_minmax,
++               .proc_handler   = proc_dointvec_minmax,
+                .extra1         = SYSCTL_ZERO,
+                .extra2         = SYSCTL_INT_MAX,
+        },
 
