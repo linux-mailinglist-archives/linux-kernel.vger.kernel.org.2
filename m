@@ -2,158 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FD33E0A24
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6616C3E0A25
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234613AbhHDVse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhHDVsc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:48:32 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905E7C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:48:19 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id e5so4240873ljp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:48:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p61PC16bUuso/Amoh3NYJjFdJNg2Vvrhz9NsPLJI2kI=;
-        b=rvH4kgg0GfGFnEqKfX34PZtd4ehblaAK7jJ9hyMOOGjVH+azWRtio4V2hO76ltXawm
-         I0l+U5lkfhILEgFrFhOdJTeWg0PQTfkwCjIapcPmvhX7ztYsdP73TtGkdGjd8oxtDa3z
-         7AXLy8EEvJyiJYDX5NA8ik/RnHMGGKMh+5qV7rzmdz1DQncFm+SdXJTPs46Aj66RFWYv
-         rnDHtR7lWptKqcCbkeEiPh7DbVVOrNlL0bGh45HkONt82MA8ndGc2tlEcpXEGKEuiUr6
-         ud42MPgiwPzmCXvss7OVmDfvE3zkTgQAX+hn0I5kTHVP2WxXNw4a4KPDc/fn9G+C/rEh
-         OUaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p61PC16bUuso/Amoh3NYJjFdJNg2Vvrhz9NsPLJI2kI=;
-        b=mpPSxFxH5UdrZwuLMkrZiwkUfcPZT5moXNkdk/7xt6tdk5D0Hxz+SV0KkIm5ysvl7g
-         rRsBZ6Lt0lvKXEdjx/A1ULmnx7Mc2ACLWzY06nrHJwAgFuXOyJijursHvANlmHx74n5B
-         K1TaT2k1q8qZFkzme67En39j6h7lHTq38aWLQUQFlIP3NIQk9yYxG9nPZdjigfnO3tfn
-         AuvcXcpUV3mSALOP1vrFKCzWwooJWs1AS6FkkW6CcBhx0W2Kp+k11f4RZektA5xGpXr3
-         jryDStkMubX3F0+1i2AZ8SdgmKWLYfVV8vesb5Otyd7cfMlHuPxgh1r2zQb4oKNw0RPk
-         Woyw==
-X-Gm-Message-State: AOAM533qe2yuYWaFUMmc9EyYZzJRcNzPls1/JtbFXnvM5wHnL5MU7lsc
-        54sugZgOBF5QkaJam7wpFGvUQaXjq0I3Jb43em6QUw==
-X-Google-Smtp-Source: ABdhPJwGgHKbETvILP+pVn9YEjSNQhACoXNI8lG+ruWmThNwylH3Op3qp1odulRPt5jvlWyOgQyUV9eqUIcRkkoQkZs=
-X-Received: by 2002:a2e:95cc:: with SMTP id y12mr859265ljh.387.1628113697696;
- Wed, 04 Aug 2021 14:48:17 -0700 (PDT)
+        id S234765AbhHDVsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:48:55 -0400
+Received: from mga18.intel.com ([134.134.136.126]:45893 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234653AbhHDVsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 17:48:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="201204390"
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="201204390"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 14:48:40 -0700
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="671115571"
+Received: from cmalmber-mobl1.amr.corp.intel.com (HELO [10.212.219.120]) ([10.212.219.120])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 14:48:39 -0700
+Subject: Re: [PATCH v5 11/12] x86/tdx: Don't write CSTAR MSR on Intel
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQrdFLPaUnC8Q5bn@google.com>
+ <4c1ee7b9-9941-fdc4-73f5-3d2ef0530556@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <2f2f0bfa-4881-81dc-65a3-1e5c7cbf85c0@intel.com>
+Date:   Wed, 4 Aug 2021 14:48:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210801200617.623745-4-posk@google.com> <605a9d20-8fe4-ec9a-97b4-bc6db38da62f@uwaterloo.ca>
-In-Reply-To: <605a9d20-8fe4-ec9a-97b4-bc6db38da62f@uwaterloo.ca>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Wed, 4 Aug 2021 14:48:06 -0700
-Message-ID: <CAPNVh5fjcJHKJOuQP+UebpYf+GBMDkj5me1c=EzS9cpDSTbzfA@mail.gmail.com>
-Subject: Re: [PATCH 3/4 v0.4] sched/umcg: add Documentation/userspace-api/umcg.rst
-To:     Thierry Delisle <tdelisle@uwaterloo.ca>
-Cc:     posk@posk.io, avagin@google.com, bsegall@google.com,
-        jannh@google.com, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, pjt@google.com, tglx@linutronix.de,
-        Peter Buhr <pabuhr@uwaterloo.ca>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4c1ee7b9-9941-fdc4-73f5-3d2ef0530556@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 12:13 PM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
->
-> These state transition descriptions are very helpful, but what is not
-> clear is the details of these transitions when there are concurrent
-> wake/waits. I do not know enough about the kernel code to be able to
-> read the implementation and answer my own questions.
->
-> For example, imagine two worker threads W1 and W2. W1 adds itself to a
-> concurrent list and calls umcg_wait(next_tid = 0). W2 pops from the list
-> and calls umcg_wait(UMCG_WAIT_WAKE_ONLY | UMCG_WAIT_WF_CURRENT_CPU) on the
-> popped worker, W1 in this example.
+On 8/4/21 2:03 PM, Kuppuswamy, Sathyanarayanan wrote:
+>> Is #GP the actual TDX-Module behavior?  If so, isn't that a
+>> contradiction with
+> 
+> No, #GP is triggered by guest.
+...
+>> Regardless of #GP versus #VE, "Table 16.2 MSR Virtualization" needs
+>> to state the actual behavior.
+> 
+> Even in this case, it will trigger #VE. But since CSTAR MSR is not 
+> supported, write to it will fail and leads to #VE fault.
 
-All _umcg_ state changes here happen in the userspace before
-sys_umcg_wait() is called. So:
+Sathya, I think there might be a mixup of terminology here that's
+confusing.  I'm confused by this exchange.
 
-W1: cmpxchg W1:RUNNING => W1:IDLE
- - if OK, call sys_umcg_wait()
- - if failed, do something else (notes below)
+In general, we refer to hardware exceptions by their architecture names:
+#GP for general protection fault, #PF for page fault, #VE for
+Virtualization Exception.
 
-W2: cmpxchg W1:IDLE => W1:RUNNING
- - if OK, lock itself, set W2:next_tid to W1, call sys_umcg_wait()
-(will not block nor spin), restore next_tid and state/unlock upon
-syscall return
- - if failed, do something else
+Those hardware exceptions are wired up to software handlers:
+#GP lands in asm_exc_general_protection
+#PF ends up in exc_page_fault
+#VE ends up in exc_virtualization_exception
+... and more of course
 
-So assuming the cmpxchg() calls succeeded, sys_umcg_wait() will be called.
+But, to add to the confusion, the #VE handler
+(exc_virtualization_exception()) itself calls (or did once upon a time
+call) do_general_protection() when it can't handle something.
+do_general_protection() is (was?) *ALSO* called by the #GP handler.
 
-W1 sys_umcg_wait(): (W1 sleeping):
-- (1) mark itself as TASK_INTERRUPTIBLE (sleeping)
-- (2) check _umcg_ state
-  - (a) if UMCG_RUNNING, mark itself as TASK_RUNNING, return to userspace
-  - (b) if still UMCG_IDLE, sleep
-- (3) upon wakeup, go to step (1)
+So, is that what you meant?  By "#GP is triggered by guest", you mean
+that a write to the CSTAR MSR and the resulting #VE will end up being
+handled in a way that is similar to how a #GP hardware exception would
+have been handled?
 
-W2 sys_umcg_wait(): (wake W1):
-- call try_to_wake_up(W1): if W1 is INTERRUPTIBLE, change it to
-TASK_RUNNING, wake
-- return
-
-Note the ordering and interplay of UMCG state changes
-(UMCG_IDLE/UMCG_RUNNING) and TASK state changes
-(TASK_INTERRUPTIBLE/TASK_RUNNING).
-
-As you can see, W2 does not block nor spin. W1 will either catch
-_umcg_ state change to UMCG_RUNNING and abort, or ttwu() will wake it
-_after_ it is marked as UMCG_RUNNING.
-
-Now what happens if cmpxchg() calls above fail? That means that W1 is
-still running when W2 tries to change its state RUNNING => IDLE. This
-is a race in the userspace, and two options are available:
-- the userspace spins waiting for W1 to become IDLE (note that the
-userspace spins, not the kernel)
-- the userspace "queues the wakeup" and returns; the sleeper (W1) sees
-wakeup_queued and does not go to sleep; this is the solution I
-have/use. See the previous version here:
-https://lore.kernel.org/patchwork/patch/1433971/, search for
-UMCG_TF_WAKEUP_QUEUED.
-
-In the current version 0.4 WAKEUP_QUEUED is a purely userspace flag,
-so it is not documented in the _kernel API_ doc. I'll post the
-userspace parts (libumcg, selftests) a bit later. In short, wait/wake
-races do not result in spinning, and sometimes even elide syscalls by
-using WAKEUP_QUEUED userspace state flag.
-
->
-> If W1 calls umcg_wait first, W2 context-switches to W1 and W2's state
-> changes to IDLE. My understanding is that wake detection/block does not
-> apply to this case.
->
-> If W2 calls umcg_wait first, what happens? I can imagine two different
-> behaviour in this case:
->
-> 1. W2 waits for W1 to call umcg_wait, by spinning or blocking, and then
->     execution proceed like the first ordering.
->
-> 2. W2 sets W1's state to RUNNING. When W1 eventually calls umcg_wait, it
->     simply notices the state change and returns without context-switching.
->     In this case, W1 is not migrated to W2's CPU.
->
-> Behaviour 1 makes me uncomfortable since it means umcg_wait must wait for
-> cooperation that potentially never comes.
->
-> But in Behaviour 2, the state of W2 after both calls to umcg_wait is not
-> clear to me, either. I could imagine that W2 is set to IDLE, but since W1
-> is not migrated, W2 could also simply be left RUNNING.
->
-> Which behaviour is correct and in what state does W2 end up?
-
-W2 will always end up RUNNING, as everything here is about W1. W2 will
-never sleep nor spin. Just a couple of atomic ops and maybe a syscall
-that does the same.
-
->
-> Thierry
->
+If that's what you meant, I'm not _sure_ that's totally accurate.  Could
+you elaborate on this a bit?  It also would be really handy if you were
+able to adopt the terminology I talked about above.  It will really make
+things less confusing.
