@@ -2,68 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88123E0413
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C9D3E041A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238963AbhHDPXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:23:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238324AbhHDPW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:22:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B5FC60C51;
-        Wed,  4 Aug 2021 15:22:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628090566;
-        bh=ovDUOoVhQtVbR5pY5X4EDSq5lR4QMG9dd1pLVfP4CTg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YSYRcWSHAVN+wB+yXKXj2JyMZlWEbGEPBI55wySVW7eJ3IOhy9/DL8MOrIkmW5Gui
-         SLWIDrfaXWYMZURs8xMwMnA98Kow0WMjioAyqHPGkkuo/4JXJE68WQSerCA+Rq9J0q
-         8WZvMv8hGg31y3n46MQjnc9ohg0nKKchc+XkNCDsJinjDZPxd+GftH3leKBXEIpnOa
-         omkgLxtabH4wVSYM67FNGhSmFcm1sbCiU2gb8h53wm34ZMGZyCgxOs8gxgaD8U2dzr
-         MJjd3/FZmpgTAF5yZpO3K98SpaTPt6/4uD6KIQrve0xwuB9H1eNaaNZT1nyznRaS3w
-         om9ypZ40lxH8A==
-From:   Mark Brown <broonie@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>
-Subject: linux-next: manual merge of the mhi tree with the net tree
-Date:   Wed,  4 Aug 2021 16:22:30 +0100
-Message-Id: <20210804152230.36220-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S238978AbhHDPZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:25:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33728 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237429AbhHDPZL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 11:25:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628090698;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FOnK+veu0wWChnkChEJGDHGZFXwH5RbR5XEsiBmdrMU=;
+        b=IT2j9TcMKjdnNhXXsEwFuUuyJsX8TcNkk923TWbuWq5IqlM59RQIOvB7qgdjnWCL9a7+wv
+        MXI00M+zc+QHNlGOFPhY/sn1BA1rNOHnxo7Vk4CH4l4Aea4Ol6idsZ4gBdl51B7dLcw1oL
+        6S8jUYRy7h3QKrg774SonTA6oE6Zaso=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-CYGh4U8qPaWw_bBgQEpX3g-1; Wed, 04 Aug 2021 11:23:53 -0400
+X-MC-Unique: CYGh4U8qPaWw_bBgQEpX3g-1
+Received: by mail-ed1-f70.google.com with SMTP id y39-20020a50bb2a0000b02903bc05daccbaso1635283ede.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:23:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FOnK+veu0wWChnkChEJGDHGZFXwH5RbR5XEsiBmdrMU=;
+        b=uZhJuWaggNhSfXIjZ7S/8q5W4rszqQUG3kptZl0nZG2KSwtqAUdcQ1q1wc36oU4MLA
+         pAFrI08s1nlDhOCq7r+LBlJAeQ3ueXfjjYhkydc7i8QWVLxgVuT8WhjBrCnZmIkGo5G0
+         /82AEML6ZIunxvz6QFJJR3/W5r8b6DmYK56B0DUn6is9sA+AN85hcgFJEVWGKVacbC7J
+         UtjVkP2e6cHUFN//jvemt3fnZbrO+M9m+DZF53Ipu+QOz1Q3gbsS3//1B2u/9h6P+ZxM
+         WEfH9GAtFiDHjKFO8F3p51E5HOryoon3gjLNMkzlQZVEfvXt4jQpUqEvBSXMzJmZZ+9T
+         WgKA==
+X-Gm-Message-State: AOAM533VmEXvJpRJX1bC5ff348j+to4k8uxSROQidyUV4+ojSPlVgwiE
+        qXL5X8Mck1iZHaZB6RB3Mxh0Xb42oLkSP6Aa+OWyydRuXB29oTxlJn7p5PK4vZKTuiwJPupSY8G
+        NOWgZ27hHAOCD4CtRVpaRCBEZ
+X-Received: by 2002:a05:6402:184b:: with SMTP id v11mr279747edy.267.1628090631912;
+        Wed, 04 Aug 2021 08:23:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz/39HeEjVjl3cpnIoTdSCpE59bH+X7ttEEVWnEzeo9TkvSQoRZJeV8fS+jTMea1+k26xJCDw==
+X-Received: by 2002:a05:6402:184b:: with SMTP id v11mr279724edy.267.1628090631769;
+        Wed, 04 Aug 2021 08:23:51 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id nd14sm736547ejc.113.2021.08.04.08.23.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 08:23:51 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 17:23:49 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     =?utf-8?B?5YKF5YWz5Lie?= <fuguancheng@bytedance.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>, jasowang@redhat.com,
+        stefanha@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        arseny.krasnov@kaspersky.com, andraprs@amazon.com,
+        Colin King <colin.king@canonical.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [External] Re: [PATCH 0/4] Add multi-cid support for vsock driver
+Message-ID: <20210804152349.o4vh233xjdruh4pv@steredhat>
+References: <20210802120720.547894-1-fuguancheng@bytedance.com>
+ <20210802134251.hgg2wnepia4cjwnv@steredhat>
+ <CAKv9dH5KbN25m8_Wmej9WXgJWheRV5S-tyPCdjUHHEFoWk-V1w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKv9dH5KbN25m8_Wmej9WXgJWheRV5S-tyPCdjUHHEFoWk-V1w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Wed, Aug 04, 2021 at 03:09:41PM +0800, 傅关丞 wrote:
+>Sorry I cannot figure out a good use case.
+>
+>It is normal for a host to have multiple ip addresses used for
+>communication.
+>So I thought it might be nice to have both  host and guest use multiple
+>CIDs for communication.
+>I know this is not a very strong argument.
 
-Today's linux-next merge of the mhi tree got a conflict in:
+Maybe there could be a use case for guests (which I don't see now), but 
+for the host it seems pointless. The strength of vsock is that the guest 
+knows that using CID=2 always reaches the host.
 
-  net/qrtr/mhi.c
+Moreover we have recently merged VMADDR_FLAG_TO_HOST that when set 
+allows you to forward any packet to the host, regardless of the CID (not 
+yet supported by vhost-vsock).
 
-between commit:
+>
+>The vsock driver does not work if one of the two peers doesn't support
+>multiple CIDs.
 
-  ce78ffa3ef16 ("net: really fix the build...")
+This is absolutely to be avoided.
 
-from the net tree and commit:
+I think the virtio device feature negotiation can help here.
 
-  51caa4ed8542 ("bus: mhi: Add inbound buffers allocation flag")
+>
+>I have a possible solution here, but there may be some problems with it
+>that I haven't noticed.
+>
+>Hypervisors will use different ways to send CIDs setup to the kernel based
+>on their vsock setup.
+>
+>------For host-------
+>If host vsock driver supports multi-cid, the hypervisor will use the
+>modified VHOST_VSOCK_SET_GUEST_CID call to set its CIDs.
+>Otherwise, the original call is used.
+>
+>------For guest-------
+>Now the virtio_vsock_config looks like this:
+>u64 guest_cid
+>u32 num_guest_cid;
+>u32 num_host_cid;
+>u32 index;
+>u64 cid;
+>
+>If the guest vsock driver supports multi-cid, it will read num_guest_cid
+>and num_host_cid from the device config space.
+>Then it writes an index register, which is the cid it wants to read.  After
+>hypervisors handle this issue, it can read the cid
+>from the cid register.
+>
+>If it does not support multi-cid, it will just read the guest_cid from the
+>config space, which should work just fine.
+>
 
-from the mhi tree.
+Why not add a new device feature to enable or disable multi-cid?
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
 
-diff --cc net/qrtr/mhi.c
-index 1dc955ca57d3,29b4fa3b72ab..000000000000
---- a/net/qrtr/mhi.c
-+++ b/net/qrtr/mhi.c
+>
+>-------Communication--------
+>For communication issues, we might need to use a new feature bit.  Let's
+>call it VHOST_VSOCK_SUPPORT_MULTI_CID.
+>The basic idea is that this feature bit is set when both host and guest
+>support using multiple CIDs.  After negotiation, if the feature bit
+>is set, the host can use all the CIDs specified to communicate with the
+>guest.  Otherwise, the first cid passed in will
+>be used as the guest_cid to communicate with guests.
+
+I think the same feature bit can be used for the virtio_vsock_config, 
+no?
+
+>
+>Also, if the bit is set for guests, all the CIDs can be used to communicate
+>with the host.  Otherwise, the first cid with index 0 will be
+>used as the guest_cid while the VMADDR_HOST_CID will be used for host cid.
+
+We already have VMADDR_FLAG_TO_HOST to forward all packets to the host, 
+we only need to support in some way in vhost-vsock.
+
+Thanks,
+Stefano
+
