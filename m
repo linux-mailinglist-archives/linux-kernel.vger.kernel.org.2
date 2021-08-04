@@ -2,109 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6E03DFB6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5693F3DFB6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235388AbhHDGZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 02:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233280AbhHDGZv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 02:25:51 -0400
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11164C0613D5;
-        Tue,  3 Aug 2021 23:25:39 -0700 (PDT)
-Received: from [10.32.112.20] (55862176.cust.multi.fi [85.134.33.118])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: tmb)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 388791B001E8;
-        Wed,  4 Aug 2021 09:25:35 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1628058335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wxtt8KNuWwpP7gtvj6O94l8wyhQFK14FxF4B830ik+k=;
-        b=d/pxRZXfthkNC6xGq8HNha1T3HjDzc+spHVHA1P4d7vTGTm0R1vDXzRlqB5okijQgNPC6Y
-        ewgZexVVtghUM1uwOBw1heKxF4jugd4FVDjWcsvRRZhBoXmDARhUyXYYWNo9r3aRtIQHdD
-        8lOs2sdMD71tgrsDQh0zsixdBxH8dB1zGjihOV7scFjSwYS/3hdgBV3V+/u002YBkJfGQz
-        mhfCJlrTDqPv7WvRrlnl3tyTR9hVSrN5pM9x/d0MQK6vKPBmhFqjktALTP9OoRLG29aDhX
-        ZqhNbx2/lKrF96C3H4fUgoh5g7kKNYXk/1mvbcSUCNLE3Nr/GI79fHcLEyBDAQ==
-Subject: Re: [PATCH 5.10 00/67] 5.10.56-rc1 review
-To:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20210802134339.023067817@linuxfoundation.org>
- <20210803192607.GA14540@duo.ucw.cz>
-From:   Thomas Backlund <tmb@iki.fi>
-Message-ID: <e591d78c-0196-a218-59dd-91d83aa65f90@iki.fi>
-Date:   Wed, 4 Aug 2021 09:25:34 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S235540AbhHDG1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 02:27:12 -0400
+Received: from mga11.intel.com ([192.55.52.93]:43804 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235303AbhHDG1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 02:27:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="210746858"
+X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
+   d="scan'208";a="210746858"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 23:26:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
+   d="scan'208";a="466985968"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by orsmga008.jf.intel.com with ESMTP; 03 Aug 2021 23:26:55 -0700
+Subject: Re: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read
+ Performance of GL9763E
+To:     Renius Chen <reniuschengl@gmail.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
+References: <20210705090050.15077-1-reniuschengl@gmail.com>
+ <CAPDyKFotmw-HQpZKCOD_8kThEa0_KSPnn36FNFLKRyUHYRHQjQ@mail.gmail.com>
+ <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
+ <CAPDyKFqXsn91BvkJXMYSnc7X=RP9DXxXp2nKMmv+aMPoNdK2Tw@mail.gmail.com>
+ <CAJU4x8srB7skGFVcj1SPrzEZSnVkwKiW3OPN0GQxvgtRG7GAAQ@mail.gmail.com>
+ <CAPDyKFq0yHxX7wb4XGeiMiSGGiOf8RKJ5ahhFQ+_vodqnyPV9Q@mail.gmail.com>
+ <CAJU4x8uGxb5VD1WVV5-QeLkVzuuR09-NacL-9nuXe8Zofzb2=w@mail.gmail.com>
+ <CAPDyKFpvCFYQVEp77hiRHY6CVDej-ffF5UE=LH=HSGcqMZA02w@mail.gmail.com>
+ <CAJU4x8t+aOqq82EJMUNDpWiE3GPeyZkjFhy=AkmctcDE3mx6fA@mail.gmail.com>
+ <CAPDyKFoSOk+4pmW60uGzKaYw3XOXshx+NSNqF_po=VLkK1-7Qw@mail.gmail.com>
+ <CAJU4x8sMJSOnfBwDq7tVygRGFRw-SyrM1z8GBsF_Mur64-Y3_g@mail.gmail.com>
+ <CAJU4x8uCAQoozeAqa6icVba61uo_eP+NtOxgnLzsXh6g2HeQdA@mail.gmail.com>
+ <02c26834-f16e-e1c7-9ea9-36414d1c4403@intel.com>
+ <CAJU4x8u+BtU5iUna0tSws9rfUTJWfHZ21jteB5nk8e_2iMJgNg@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <43448d8e-c680-62bf-7414-4620e16de524@intel.com>
+Date:   Wed, 4 Aug 2021 09:27:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210803192607.GA14540@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: sv
-Content-Transfer-Encoding: 7bit
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=tmb smtp.mailfrom=tmb@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1628058335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wxtt8KNuWwpP7gtvj6O94l8wyhQFK14FxF4B830ik+k=;
-        b=p9XqdDbKzBPrZybQvzAqglHBkNNWRh9BQNVd2/981R+eLCajaOqhnynKLYt7gL41q4DMWo
-        7SpT/wOVjeWG9hTAyPrgY4H+HjgYiKv0va1xAA+jr8P6F1PdlysSuhKhr6gWnnIWojV5DD
-        cgpEktxVGcKMmcHUUsexycZjH+Nz62vtCh56stvNfTnj3CWxEOLNSNdMuDYKjbiM+l2pJZ
-        Hpc3IxDRotpFgJf9LHU1WA8yX8hFDKyGFoEU7K3sFCmikex1uuaP7JOP2MLMmYt/AgPhdX
-        at2/M9mZQueL6ubE2NCVs7A4w8ZUhFPxFGnHDuZIs7M5YgKGQHCUTf8ch2L6LQ==
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1628058335; a=rsa-sha256;
-        cv=none;
-        b=GLrdONjZ15KCe67xuhNxmDuv9dGd8U7vnCEQietyqwk5L/3pQZ6VX8U9TIclG0ucVsh2Wt
-        spXRntV4aZCmNyUqXSEFUSwIXahTGMAeCDswLvLQ9ZyLFQF2qNbPewhJxptDijBLEivDpU
-        3/quacx77s21C/z2Y9FNcO6t+c3z2CbOVIL53zWzSGUP89H+nav+6FXg6DRn0f+yosIRoW
-        JlS83fmQbV+2lrDS67bjKHuEcOVW+O/+Sm6eLkwCYSEc0Q6h2vTmfjNoOKVnJHU1RNR7tm
-        VJb6eL1AdddTk9/DnkStfu/Q4j0XyqJ4bDnOJzwjC5zERDPor6PNPsvtGHXBMQ==
+In-Reply-To: <CAJU4x8u+BtU5iUna0tSws9rfUTJWfHZ21jteB5nk8e_2iMJgNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Den 03-08-2021 kl. 22:26, skrev Pavel Machek:
-> Hi!
+On 19/07/21 12:26 pm, Renius Chen wrote:
+> Adrian Hunter <adrian.hunter@intel.com> 於 2021年7月16日 週五 下午6:27寫道：
+>>
+>> On 14/07/21 5:15 am, Renius Chen wrote:
+>>> Hi Adrain,
+>>>
+>>> What do you think of this patch?
+>>> Or do you have any ideas or suggestions about the modification for
+>>> Ulf's comments?
+>>
+>> Perhaps try to define your power management requirements in terms of
+>> latencies instead of request size, and then take the issue to the
+>> power management mailing list and power management maintainers for
+>> suggestions.  You will probably need to point out why runtime PM doesn't
+>> met your requirements.
+>>
 > 
->> This is the start of the stable review cycle for the 5.10.56 release.
->> There are 67 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
+> Hi Adrain,
 > 
-> Not sure what went wrong, but 50 or so patches disappeared from the queue:
 > 
-> 48156f3dce81b215b9d6dd524ea34f7e5e029e6b (origin/queue/5.10) btrfs: fix lost inode on log replay after mix of fsync, rename and inode eviction
-> 474a423936753742c112e265b5481dddd8c02f33 btrfs: fix race causing unnecessary inode logging during link and rename
-> 2fb9fc485825505e31b634b68d4c05e193a224da Revert "drm/i915: Propagate errors on awaiting already signaled fences"
-> b1c92988bfcb7aa46bdf8198541f305c9ff2df25 drm/i915: Revert "drm/i915/gem: Asynchronous cmdparser"
-> 11fe69a17195cf58eff523f26f90de50660d0100 (tag: v5.10.55) Linux 5.10.55
-> 984e93b8e20731f83e453dd056f8a3931b4a66e5 ipv6: ip6_finish_output2: set
-> sk into newly allocated nskb
+> Thanks for your advice.
+> 
+> Our purpose is only to improve the performance of 4K reads, and we
+> hope that it doesn't affect any other use cases. If we look into the
+> latencies, it may affect not only 4K reads but also some other use
+> cases.
+
+I just meant that, if you present the problem to people on the power
+management mailing lists,  you probably need to describe the problem at
+an engineering level, instead of describing your solution at a
+programming level.
+
+> 
+> Behaviors of ASPM is controlled by circuits of hardware. Drivers only
+> enable or disable ASPM or set some parameters for ASPM, and are not
+> able to know when the device enters or exits the L0s/L1 state. So the
+> PM part of drivers may not suit this case.
+> 
+> This patch could be simply divided into two parts:
+> 1. Monitor requests.
+> 2. Set a vendor specific register of GL9763e.
+> 
+> The part 2 is no problems we think. And Ulf thinks that the behaviors
+> of part 1 should not be implemented in sdhci-pci-gli.c. Do you have
+> any suggestions on where we can implement the monitoring?
+> 
+> Thank you.
+> 
 > 
 > Best regards,
+> 
+> Renius
+> 
+>>>
+>>> Thank you.
+>>>
+>>>
+>>> Best regards,
+>>>
+>>> Renius
+>>>
+>>> Renius Chen <reniuschengl@gmail.com> 於 2021年7月7日 週三 下午9:49寫道：
+>>>>
+>>>> Ulf Hansson <ulf.hansson@linaro.org> 於 2021年7月7日 週三 下午8:16寫道：
+>>>>>
+>>>>> [...]
+>>>>>
+>>>>>>
+>>>>>> Thanks, I understand what you mean.
+>>>>>>
+>>>>>> I simply searched for the keyword "MMC_READ_MULTIPLE_BLOCK" in the
+>>>>>> drivers/mmc/host folder, and found that in some SD/MMC host controller
+>>>>>> driver codes such as alcor.c, cavium.c, ...etc, there are also
+>>>>>> behaviors for monitoring the request in their driver. What's the
+>>>>>> difference between theirs and ours?
+>>>>>
+>>>>> Those checks are there to allow the HWs to be supported properly.
+>>>>>
+>>>>>>
+>>>>>> And if the code that monitors the requstes does not belong the driver,
+>>>>>> where should I implement the code and how to add some functions only
+>>>>>> for GL9763e in that place, in your opinion?
+>>>>>
+>>>>> Honestly, I am not sure what suits your use case best.
+>>>>>
+>>>>> So far we have used runtime PM with a default auto suspend timeout, in
+>>>>> combination with dev PM Qos. In other words, run as fast as possible
+>>>>> to complete the requests in the queue then go back to idle and enter a
+>>>>> low power state. Clearly, that seems not to be sufficient for your use
+>>>>> case, sorry.
+>>>>>
+>>>> Yes, the runtime PM, auto suspend, and PM Qos are all about the
+>>>> suspend/resume behaviors of the system or related to power states such
+>>>> as D0/D3 of the device. But these are totally different from the ASPM
+>>>> L0s/L1 for link states. Entering/exiting the ASPM is pure hardware
+>>>> behavior on the link layer and is not handled by any codes in
+>>>> drivers/mmc/core or drivers/mmc/host. We'd like to try to modify the
+>>>> patch by your opinions, but we are also confused about what or where
+>>>> suits our use case best. So we wonder how to start the modification
+>>>> and may need some suggestions to deal with the work, sorry.
+>>>>
+>>>> Thank you.
+>>>>
+>>>>
+>>>> Best regards,
+>>>>
+>>>> Renius
+>>>>
+>>>>
+>>>>> Kind regards
+>>>>> Uffe
+>>
 
-Looks like a fallout of switching to use rc-* for current review queues 
-and apparently keep queue-* for upcoming stuff
-
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/tree/ 
-
-
-
---
-Thomas
