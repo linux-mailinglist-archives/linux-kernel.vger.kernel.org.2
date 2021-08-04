@@ -2,75 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C083A3E0A8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A853E0A8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235260AbhHDWuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:50:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34612 "EHLO mail.kernel.org"
+        id S235309AbhHDWuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:50:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229775AbhHDWuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:50:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 767D661008;
-        Wed,  4 Aug 2021 22:50:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628117405;
-        bh=+cXz/rOvQSGw8tu/6sxQ4BKvpQtXXmU5qTfkfz7dRgQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jDkGYmEjZlRgvZuQDCG/KUu5rN5iXERGT5vt0BzBW8G5BQklmDb2KaOC8zYAyl+W7
-         N6XHoX+kzawuxum+kKivE3XGfyR+AxY5o3uUHeZ79qAQTzBCydyAVOp80mDhJnMq4h
-         QvskNTDNTsaailWpZ4FqS5pc14TtZDM3j99W5BOMAF3IqNwbJFePWI9JBX4lsENqeD
-         8MqzzYv7evr7zNw8NFSB4RU7Qn2JVYGV9l8flzjoOZ4Ej/jDkM7M/s9I17nK42tt8t
-         ESF3RIJQWzNVYLDfBPiXiyFfxyLsGvfqn9UITLKWyyySNec7R9j1QlPmZqzE2GU1Ea
-         vhVz7IQWQ1Nug==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6832A609E2;
-        Wed,  4 Aug 2021 22:50:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] samples/bpf: xdp_redirect_cpu: Add mprog-disable to
- optstring.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162811740542.13655.7097622991414354603.git-patchwork-notify@kernel.org>
-Date:   Wed, 04 Aug 2021 22:50:05 +0000
-References: <20210731005632.13228-1-matthew.cover@stackpath.com>
-In-Reply-To: <20210731005632.13228-1-matthew.cover@stackpath.com>
-To:     Matt Cover <werekraken@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        lorenzo@kernel.org, matthew.cover@stackpath.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S229775AbhHDWum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:50:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D76F601FE;
+        Wed,  4 Aug 2021 22:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1628117428;
+        bh=au1jMsHrlZQGAFtzrot7CCPS+RgEAXFEcGYA0uxvwUA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=O4pj+MUbZwCirnYWew8Dlfb93x0HyiTgZGzxQRxfDe2cCKD9mmUaO/UBk3HS5o85X
+         +iXxVrhGnbwzdi1E8oJHSppWyTUsv/w/Crsj4UEOIdnq3i7j+tsAGvPAtI8QFWeoMG
+         MavZmyqLfP1+ptt0e4qk0PPEXD3nST0irkff/xDA=
+Date:   Wed, 4 Aug 2021 15:50:24 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
+        hch@infradead.org, oleg@redhat.com, david@redhat.com,
+        jannh@google.com, shakeelb@google.com, luto@kernel.org,
+        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
+        timmurray@google.com, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v6 1/2] mm: introduce process_mrelease system call
+Message-Id: <20210804155024.e4e42e1b7b087937271fa7ce@linux-foundation.org>
+In-Reply-To: <20210804185004.1304692-1-surenb@google.com>
+References: <20210804185004.1304692-1-surenb@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed,  4 Aug 2021 11:50:03 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Fri, 30 Jul 2021 17:56:32 -0700 you wrote:
-> Commit ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program
-> on cpumap") added the following option, but missed adding it to optstring:
-> - mprog-disable: disable loading XDP program on cpumap entries
+> In modern systems it's not unusual to have a system component monitoring
+> memory conditions of the system and tasked with keeping system memory
+> pressure under control. One way to accomplish that is to kill
+> non-essential processes to free up memory for more important ones.
+> Examples of this are Facebook's OOM killer daemon called oomd and
+> Android's low memory killer daemon called lmkd.
+> For such system component it's important to be able to free memory
+> quickly and efficiently. Unfortunately the time process takes to free
+> up its memory after receiving a SIGKILL might vary based on the state
+> of the process (uninterruptible sleep), size and OPP level of the core
+> the process is running. A mechanism to free resources of the target
+> process in a more predictable way would improve system's ability to
+> control its memory pressure.
+> Introduce process_mrelease system call that releases memory of a dying
+> process from the context of the caller. This way the memory is freed in
+> a more controllable way with CPU affinity and priority of the caller.
+> The workload of freeing the memory will also be charged to the caller.
+> The operation is allowed only on a dying process.
 > 
-> Add the missing option character.
+> After previous discussions [1, 2, 3] the decision was made [4] to introduce
+> a dedicated system call to cover this use case.
 > 
-> Fixes: ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program on cpumap")
-> Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
+> The API is as follows,
 > 
-> [...]
+>           int process_mrelease(int pidfd, unsigned int flags);
+> 
+>         DESCRIPTION
+>           The process_mrelease() system call is used to free the memory of
+>           an exiting process.
+> 
+>           The pidfd selects the process referred to by the PID file
+>           descriptor.
+>           (See pidofd_open(2) for further information)
 
-Here is the summary with links:
-  - [bpf-next] samples/bpf: xdp_redirect_cpu: Add mprog-disable to optstring.
-    https://git.kernel.org/bpf/bpf-next/c/34ad6d9d8c27
+I did s/pidofd_open/pidfd_open/
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> 
+>           The flags argument is reserved for future use; currently, this
+>           argument must be specified as 0.
+> 
+>         RETURN VALUE
+>           On success, process_mrelease() returns 0. On error, -1 is
+>           returned and errno is set to indicate the error.
+> 
+>         ERRORS
+>           EBADF  pidfd is not a valid PID file descriptor.
+> 
+>           EAGAIN Failed to release part of the address space.
+> 
+>           EINTR  The call was interrupted by a signal; see signal(7).
+> 
+>           EINVAL flags is not 0.
+> 
+>           EINVAL The memory of the task cannot be released because the
+>                  process is not exiting, the address space is shared
+>                  with another live process or there is a core dump in
+>                  progress.
+> 
+>           ENOSYS This system call is not supported, for example, without
+>                  MMU support built into Linux.
+> 
+>           ESRCH  The target process does not exist (i.e., it has terminated
+>                  and been waited on).
+> 
+> ...
+>
+>  mm/oom_kill.c | 65 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 65 insertions(+)
 
+The code is nice and simple.
 
+Can we get a test suite into tools/testing/selftests?
